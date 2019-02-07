@@ -77,14 +77,14 @@ public class PBDecryptCommand extends AbstractCommand {
 
         if (!StringUtils.hasText(password)) {
             console.writeError("A password is required to attempt password-based encryption or decryption.");
-            printHelp(console);
+            printQuickHelp(console);
             return;
         }
 
         List<String> inputValues = options.getArgList();
         if (inputValues.isEmpty()) {
             console.writeError("Please enter a string to encrypt.");
-            printHelp(console);
+            printQuickHelp(console);
             return;
         }
 

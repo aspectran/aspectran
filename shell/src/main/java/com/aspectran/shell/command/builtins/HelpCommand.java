@@ -20,6 +20,7 @@ import com.aspectran.shell.command.Command;
 import com.aspectran.shell.command.CommandRegistry;
 import com.aspectran.shell.command.option.Arguments;
 import com.aspectran.shell.command.option.HelpFormatter;
+import com.aspectran.shell.command.option.Option;
 import com.aspectran.shell.command.option.OptionUtils;
 import com.aspectran.shell.command.option.ParsedOptions;
 import com.aspectran.shell.console.Console;
@@ -41,10 +42,23 @@ public class HelpCommand extends AbstractCommand {
 
     public HelpCommand(CommandRegistry registry) {
         super(registry);
+
+        addOption(Option.builder("h")
+                .longName("help")
+                .desc("Display help for this command")
+                .build());
+
+        Arguments arguments = touchArguments();
+        arguments.put("<commands>", "Commands to display help");
+        arguments.setRequired(false);
     }
 
     @Override
     public void execute(ParsedOptions options, Console console) throws Exception {
+        if (options.hasOption("help")) {
+            printHelp(console);
+            return;
+        }
         String[] targetCommands = null;
         if (options.hasArgs()) {
             targetCommands = options.getArgs();
@@ -57,7 +71,6 @@ public class HelpCommand extends AbstractCommand {
         } else if (targetCommands.length == 1) {
             Command command = getCommandRegistry().getCommand(targetCommands[0]);
             if (command != null) {
-                console.writeLine(command.getDescriptor().getDescription());
                 command.printHelp(console);
             } else {
                 console.writeLine("No command mapped to '" + targetCommands[0] +  "'");
@@ -164,12 +177,12 @@ public class HelpCommand extends AbstractCommand {
 
         @Override
         public String getDescription() {
-            return "Display information about all built-in commands";
+            return "Display helpful information about builtin commands";
         }
 
         @Override
         public String getUsage() {
-            return "help [<commands>]";
+            return "help [-h] [<commands>]";
         }
 
     }

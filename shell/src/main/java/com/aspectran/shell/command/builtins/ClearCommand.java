@@ -17,6 +17,7 @@ package com.aspectran.shell.command.builtins;
 
 import com.aspectran.shell.command.AbstractCommand;
 import com.aspectran.shell.command.CommandRegistry;
+import com.aspectran.shell.command.option.Option;
 import com.aspectran.shell.command.option.ParsedOptions;
 import com.aspectran.shell.console.Console;
 
@@ -33,11 +34,20 @@ public class ClearCommand extends AbstractCommand {
 
     public ClearCommand(CommandRegistry registry) {
         super(registry);
+
+        addOption(Option.builder("h")
+                .longName("help")
+                .desc("Display help for this command")
+                .build());
     }
 
     @Override
     public void execute(ParsedOptions options, Console console) throws Exception {
-        console.clearScreen();
+        if (options.hasOption("help")) {
+            printHelp(console);
+        } else {
+            console.clearScreen();
+        }
     }
 
     @Override

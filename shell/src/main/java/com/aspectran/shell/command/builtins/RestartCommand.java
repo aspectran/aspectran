@@ -17,6 +17,7 @@ package com.aspectran.shell.command.builtins;
 
 import com.aspectran.shell.command.AbstractCommand;
 import com.aspectran.shell.command.CommandRegistry;
+import com.aspectran.shell.command.option.Option;
 import com.aspectran.shell.command.option.ParsedOptions;
 import com.aspectran.shell.console.Console;
 
@@ -33,11 +34,18 @@ public class RestartCommand extends AbstractCommand {
 
     public RestartCommand(CommandRegistry registry) {
         super(registry);
+
+        addOption(Option.builder("h")
+                .longName("help")
+                .desc("Display help for this command")
+                .build());
     }
 
     @Override
     public void execute(ParsedOptions options, Console console) throws Exception {
-        if (console.confirmRestart()) {
+        if (options.hasOption("help")) {
+            printHelp(console);
+        } else if (console.confirmRestart()) {
             console.clearScreen();
             getService().getServiceController().restart();
         }

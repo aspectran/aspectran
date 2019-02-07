@@ -15,6 +15,7 @@
  */
 package com.aspectran.shell.command;
 
+import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.ToStringBuilder;
 import com.aspectran.shell.console.Console;
 
@@ -130,6 +131,9 @@ public class OutputRedirection {
         if (redirectionList != null && !redirectionList.isEmpty()) {
             List<Writer> writers = new ArrayList<>(redirectionList.size());
             for (OutputRedirection redirection : redirectionList) {
+                if (!StringUtils.hasText(redirection.getOperand())) {
+                    throw new FileNotFoundException("Target file for redirection not specified");
+                }
                 File file;
                 Path path = Paths.get(redirection.getOperand());
                 if (path.isAbsolute()) {

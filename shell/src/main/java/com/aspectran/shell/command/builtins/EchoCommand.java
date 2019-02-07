@@ -23,17 +23,17 @@ import com.aspectran.shell.command.option.ParsedOptions;
 import com.aspectran.shell.console.Console;
 
 /**
- * Turns on or off the mode that displays a description of the translet before it is executed.
+ * Displays a message on the screen.
  */
-public class VerboseCommand extends AbstractCommand {
+public class EchoCommand extends AbstractCommand {
 
     private static final String NAMESPACE = "builtins";
 
-    private static final String COMMAND_NAME = "verbose";
+    private static final String COMMAND_NAME = "echo";
 
     private final CommandDescriptor descriptor = new CommandDescriptor();
 
-    public VerboseCommand(CommandRegistry registry) {
+    public EchoCommand(CommandRegistry registry) {
         super(registry);
 
         addOption(Option.builder("h")
@@ -42,31 +42,16 @@ public class VerboseCommand extends AbstractCommand {
                 .build());
 
         Arguments arguments = touchArguments();
-        arguments.setTitle("Commands:");
-        arguments.put("on", "Enable verbose mode");
-        arguments.put("off", "Disable verbose mode");
+        arguments.put("<message>", "Specifies the text to display on the screen");
+        arguments.setRequired(false);
     }
 
     @Override
     public void execute(ParsedOptions options, Console console) throws Exception {
         if (options.hasOption("help")) {
             printHelp(console);
-        } else if (options.hasArgs()) {
-            String arg = options.getFirstArg();
-            if ("on".equals(arg)) {
-                getService().setVerbose(true);
-                console.writeLine("Verbose mode is enabled.");
-                console.writeLine("Displays a description of the translet before it is executed.");
-            } else if ("off".equals(arg)) {
-                getService().setVerbose(false);
-                console.writeLine("Verbose mode is disabled.");
-                console.writeLine("Do not displays a description of the translet before it is executed.");
-            } else {
-                console.writeError("Unknown command '" + String.join(" ", options.getArgs()) + "'");
-                printQuickHelp(console);
-            }
         } else {
-            printQuickHelp(console);
+            console.writeLine(String.join(" ", options.getArgs()));
         }
     }
 
@@ -89,7 +74,7 @@ public class VerboseCommand extends AbstractCommand {
 
         @Override
         public String getDescription() {
-            return "Turns on or off the translet description display feature";
+            return "Displays a message on the screen";
         }
 
         @Override

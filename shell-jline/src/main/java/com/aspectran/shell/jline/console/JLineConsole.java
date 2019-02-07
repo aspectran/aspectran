@@ -22,7 +22,6 @@ import org.jline.reader.History;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
 import org.jline.reader.UserInterruptException;
-import org.jline.reader.impl.DefaultParser;
 import org.jline.reader.impl.history.DefaultHistory;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
@@ -74,27 +73,22 @@ public class JLineConsole extends AbstractConsole {
     public JLineConsole(String encoding) throws IOException {
         super(encoding);
 
+        this.terminal = TerminalBuilder.builder().encoding(getEncoding()).build();
         this.commandCompleter = new CommandCompleter(this);
         this.commandHighlighter = new CommandHighlighter(this);
         this.commandHistory = new DefaultHistory();
 
-        DefaultParser parser = new DefaultParser();
-        //It will be applied from jline 3.9.1
-        //parser.setEscapeChars(null);
-
-        this.terminal = TerminalBuilder.builder().encoding(getEncoding()).build();
         this.reader = LineReaderBuilder.builder()
                 .appName(APP_NAME)
-                .parser(parser)
                 .terminal(terminal)
                 .build();
         this.reader.unsetOpt(LineReader.Option.INSERT_TAB);
+
         this.commandReader = LineReaderBuilder.builder()
                 .appName(APP_NAME)
                 .completer(commandCompleter)
                 .highlighter(commandHighlighter)
                 .history(commandHistory)
-                .parser(parser)
                 .terminal(terminal)
                 .build();
         this.commandReader.unsetOpt(LineReader.Option.INSERT_TAB);

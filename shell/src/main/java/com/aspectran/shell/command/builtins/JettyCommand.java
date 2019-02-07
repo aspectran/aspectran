@@ -62,6 +62,15 @@ public class JettyCommand extends AbstractCommand {
 
     @Override
     public void execute(ParsedOptions options, Console console) throws Exception {
+        if (!options.hasOptions() && !options.hasArgs()) {
+            printQuickHelp(console);
+            return;
+        }
+        if (options.hasOption("help")) {
+            printHelp(console);
+            return;
+        }
+
         ShellService service = getService();
 
         String serverName = options.getValue("server", "jetty.server");
@@ -74,12 +83,8 @@ public class JettyCommand extends AbstractCommand {
             return;
         }
 
-        String command = null;
         if (options.hasArgs()) {
-            String[] args = options.getArgs();
-            if (args.length > 0) {
-                command = args[0];
-            }
+            String command = options.getFirstArg();
             if ("start".equals(command)) {
                 if (jettyServer.isRunning()) {
                     console.writeError("Jetty server is already running");
@@ -115,7 +120,7 @@ public class JettyCommand extends AbstractCommand {
             } else if ("status".equals(command)) {
                 printStatus(jettyServer, console);
             } else {
-                console.writeError("Unknown command '" + String.join(" ", args) + "'");
+                console.writeError("Unknown command '" + String.join(" ", options.getArgs()) + "'");
                 printQuickHelp(console);
             }
         } else {

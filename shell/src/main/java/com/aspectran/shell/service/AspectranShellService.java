@@ -80,8 +80,7 @@ public class AspectranShellService extends AbstractShellService {
             try {
                 outputWriter = OutputRedirection.determineOutputWriter(redirectionList, console);
             } catch (Exception e) {
-                console.writeError("Invalid Output Redirection");
-                console.writeLine(e.getMessage());
+                console.writeError("Invalid Output Redirection - " + e.getMessage());
                 return null;
             }
         }

@@ -39,11 +39,17 @@ public class HistoryCommand extends AbstractCommand {
                 .longName("clear")
                 .desc("Clear command history")
                 .build());
+        addOption(Option.builder("h")
+                .longName("help")
+                .desc("Display help for this command")
+                .build());
     }
 
     @Override
     public void execute(ParsedOptions options, Console console) throws Exception {
-        if (options.hasOption("clear")) {
+        if (options.hasOption("help")) {
+            printHelp(console);
+        } else if (options.hasOption("clear")) {
             console.clearCommandHistory();
         } else {
             listHistory(console);

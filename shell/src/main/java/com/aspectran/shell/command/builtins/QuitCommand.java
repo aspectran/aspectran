@@ -18,6 +18,7 @@ package com.aspectran.shell.command.builtins;
 import com.aspectran.shell.command.AbstractCommand;
 import com.aspectran.shell.command.CommandRegistry;
 import com.aspectran.shell.command.ConsoleTerminatedException;
+import com.aspectran.shell.command.option.Option;
 import com.aspectran.shell.command.option.ParsedOptions;
 import com.aspectran.shell.console.Console;
 
@@ -34,11 +35,18 @@ public class QuitCommand extends AbstractCommand {
 
     public QuitCommand(CommandRegistry registry) {
         super(registry);
+
+        addOption(Option.builder("h")
+                .longName("help")
+                .desc("Display help for this command")
+                .build());
     }
 
     @Override
     public void execute(ParsedOptions options, Console console) throws Exception {
-        if (console.confirmQuit()) {
+        if (options.hasOption("help")) {
+            printHelp(console);
+        } else if (console.confirmQuit()) {
             throw new ConsoleTerminatedException();
         }
     }

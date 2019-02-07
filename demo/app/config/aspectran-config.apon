@@ -55,6 +55,7 @@ shell: {
         com.aspectran.shell.command.builtins.PBEncryptCommand
         com.aspectran.shell.command.builtins.PBDecryptCommand
         com.aspectran.shell.command.builtins.SysInfoCommand
+        com.aspectran.shell.command.builtins.EchoCommand
         com.aspectran.shell.command.builtins.HelpCommand
         com.aspectran.shell.command.builtins.HistoryCommand
         com.aspectran.shell.command.builtins.VerboseCommand
