@@ -79,7 +79,9 @@ public class AspectCommand extends AbstractCommand {
     @Override
     public void execute(ParsedOptions options, Console console) throws Exception {
         ShellService service = getService();
-        if (options.hasOption("list")) {
+        if (options.hasOption("help")) {
+            printHelp(console);
+        } else if (options.hasOption("list")) {
             String[] keywords = options.getValues("list");
             listAspects(service, console, keywords);
         } else if (options.hasOption("detail")) {
@@ -92,7 +94,7 @@ public class AspectCommand extends AbstractCommand {
             String[] aspectIds = options.getValues("disable");
             changeAspectActiveState(service, console, aspectIds, true);
         } else {
-            printHelp(console);
+            printQuickHelp(console);
         }
     }
 

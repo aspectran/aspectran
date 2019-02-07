@@ -90,6 +90,14 @@ public abstract class AbstractCommand implements Command {
 
     @Override
     public void printHelp(Console console) {
+        if (getDescriptor().getDescription() != null) {
+            console.writeLine(getDescriptor().getDescription());
+        }
+        printQuickHelp(console);
+    }
+
+    @Override
+    public void printQuickHelp(Console console) {
         HelpFormatter formatter = new HelpFormatter(console);
         formatter.printHelp(this);
     }

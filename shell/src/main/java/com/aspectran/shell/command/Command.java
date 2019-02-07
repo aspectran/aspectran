@@ -48,6 +48,8 @@ public interface Command {
      */
     void printHelp(Console console);
 
+    void printQuickHelp(Console console);
+
     /**
      * This method returns an instance of Command.Descriptor.
      * The descriptor is meta information about the command.

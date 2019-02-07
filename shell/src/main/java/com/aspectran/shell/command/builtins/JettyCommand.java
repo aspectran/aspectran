@@ -76,9 +76,9 @@ public class JettyCommand extends AbstractCommand {
 
         String command = null;
         if (options.hasArgs()) {
-            String[] optArgs = options.getArgs();
-            if (optArgs.length > 0) {
-                command = optArgs[0];
+            String[] args = options.getArgs();
+            if (args.length > 0) {
+                command = args[0];
             }
             if ("start".equals(command)) {
                 if (jettyServer.isRunning()) {
@@ -115,11 +115,11 @@ public class JettyCommand extends AbstractCommand {
             } else if ("status".equals(command)) {
                 printStatus(jettyServer, console);
             } else {
-                console.writeError("Unknown command '" + String.join(" ", optArgs) + "'");
-                printHelp(console);
+                console.writeError("Unknown command '" + String.join(" ", args) + "'");
+                printQuickHelp(console);
             }
         } else {
-            printHelp(console);
+            printQuickHelp(console);
         }
     }
 

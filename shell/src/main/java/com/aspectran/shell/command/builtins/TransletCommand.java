@@ -83,27 +83,25 @@ public class TransletCommand extends AbstractCommand {
                 .valueName("request_method")
                 .desc("Specifies the request method for the translet\n(GET, PUT, POST, DELETE)")
                 .build());
+        addOption(Option.builder("v")
+                .longName("verbose")
+                .desc("Display description about the translet")
+                .build());
         addOption(Option.builder("h")
                 .longName("help")
                 .desc("Display help for this command")
                 .build());
 
         Arguments arguments = touchArguments();
-        arguments.put("<translet_name>", "Name of the Translet to execute");
+        arguments.put("<translet_name>", "Name of the translet to execute");
         arguments.setRequired(false);
     }
 
     @Override
     public void execute(ParsedOptions options, Console console) throws Exception {
         ShellService service = getService();
-        if (!options.hasOptions() && options.hasArgs()) {
-            CommandLineParser lineParser = new CommandLineParser(options.getFirstArg());
-            TransletCommandLine transletCommandLine = new TransletCommandLine(lineParser);
-            try {
-                service.translate(transletCommandLine, console);
-            } catch (TransletNotFoundException e) {
-                console.writeError("No translet mapped to '" + e.getTransletName() + "'");
-            }
+        if (options.hasOption("help")) {
+            printHelp(console);
         } else if (options.hasOption("list")) {
             String[] keywords = options.getValues("list");
             listTranslets(service, console, keywords, false);
@@ -128,8 +126,22 @@ public class TransletCommand extends AbstractCommand {
                 return;
             }
             detailTransletRule(service, console, transletNames, requestMethod, true);
+        } else if (options.hasArgs()) {
+            CommandLineParser lineParser = new CommandLineParser(options.getFirstArg());
+            TransletCommandLine transletCommandLine = new TransletCommandLine(lineParser);
+            boolean verbose = service.isVerbose();
+            try {
+                if (options.hasOption("verbose")) {
+                    service.setVerbose(true);
+                }
+                service.translate(transletCommandLine, console);
+            } catch (TransletNotFoundException e) {
+                console.writeError("No translet mapped to '" + e.getTransletName() + "'");
+            } finally {
+                service.setVerbose(verbose);
+            }
         } else {
-            printHelp(console);
+            printQuickHelp(console);
         }
     }
 

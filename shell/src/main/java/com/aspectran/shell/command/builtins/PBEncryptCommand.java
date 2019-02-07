@@ -59,7 +59,11 @@ public class PBEncryptCommand extends AbstractCommand {
 
     @Override
     public void execute(ParsedOptions options, Console console) throws Exception {
-        if (options.hasOption("help") || (!options.hasOptions() && !options.hasArgs())) {
+        if (!options.hasOptions() && !options.hasArgs()) {
+            printQuickHelp(console);
+            return;
+        }
+        if (options.hasOption("help")) {
             printHelp(console);
             return;
         }
@@ -83,7 +87,6 @@ public class PBEncryptCommand extends AbstractCommand {
             printHelp(console);
             return;
         }
-
 
         if (!implicitPassword) {
             console.writeLine("----------------------------------------------------------------------------");

@@ -79,7 +79,9 @@ public class JobCommand extends AbstractCommand {
     @Override
     public void execute(ParsedOptions options, Console console) throws Exception {
         ShellService service = getService();
-        if (options.hasOption("list")) {
+        if (options.hasOption("help")) {
+            printHelp(console);
+        } else if (options.hasOption("list")) {
             String[] keywords = options.getValues("list");
             listScheduledJobs(service, console, keywords);
         } else if (options.hasOption("detail")) {
@@ -92,7 +94,7 @@ public class JobCommand extends AbstractCommand {
             String[] transletNames = options.getValues("disable");
             changeJobActiveState(service, console, transletNames, true);
         } else {
-            printHelp(console);
+            printQuickHelp(console);
         }
     }
 

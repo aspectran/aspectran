@@ -117,9 +117,13 @@ public class CommandCompleter implements Completer {
                     }
                 }
                 for (Arguments arguments : command.getArgumentsList()) {
-                    for (String name : arguments.keySet()) {
-                        candidates.add(new Candidate(name, name,
-                                arguments.getTitle(), null, null, null, false));
+                    if (arguments.getTitle() != null) {
+                        for (String name : arguments.keySet()) {
+                            if (!name.startsWith("<") || !name.endsWith(">")) {
+                                candidates.add(new Candidate(name, name,
+                                        arguments.getTitle(), null, null, null, false));
+                            }
+                        }
                     }
                 }
             }

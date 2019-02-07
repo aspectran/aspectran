@@ -65,7 +65,9 @@ public class SysInfoCommand extends AbstractCommand {
 
     @Override
     public void execute(ParsedOptions options, Console console) throws Exception {
-        if (options.hasOption("props")) {
+        if (options.hasOption("help")) {
+            printHelp(console);
+        } else if (options.hasOption("props")) {
             printSysProperties(console);
         } else if (options.hasOption("cp")) {
             printClasspath(console);
@@ -74,7 +76,7 @@ public class SysInfoCommand extends AbstractCommand {
         } else if (options.hasOption("gc")) {
             mem(true, console);
         } else {
-            printHelp(console);
+            printQuickHelp(console);
         }
     }
 
