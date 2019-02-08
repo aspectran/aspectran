@@ -49,9 +49,6 @@ public class TransletCommandLine extends AbstractCommandLine {
             if (getLineParser().getCommandName() == null) {
                 getLineParser().setCommandName(commandName);
             }
-            if (requestMethod == null) {
-
-            }
         }
         super.parse();
     }

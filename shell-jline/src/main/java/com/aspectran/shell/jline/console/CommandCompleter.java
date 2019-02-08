@@ -42,7 +42,7 @@ public class CommandCompleter implements Completer {
 
     private final Console console;
 
-    private boolean disabled;
+    private boolean limited;
 
     public CommandCompleter(Console console) {
         if (console == null) {
@@ -51,17 +51,17 @@ public class CommandCompleter implements Completer {
         this.console = console;
     }
 
-    public boolean isDisabled() {
-        return disabled;
+    public boolean isLimited() {
+        return limited;
     }
 
-    public void setDisabled(boolean disabled) {
-        this.disabled = disabled;
+    public void setLimited(boolean limited) {
+        this.limited = limited;
     }
 
     @Override
     public void complete(LineReader reader, ParsedLine line, List<Candidate> candidates) {
-        if (!isDisabled() && console.getInterpreter() != null) {
+        if (!isLimited() && console.getInterpreter() != null) {
             if (line.wordIndex() == 0) {
                 makeCommandCandidates(line.word(), candidates);
                 makeTransletCandidates(line.word(), candidates);

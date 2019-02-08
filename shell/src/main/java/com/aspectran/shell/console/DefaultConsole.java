@@ -32,10 +32,6 @@ import java.util.List;
  */
 public class DefaultConsole extends AbstractConsole {
 
-    private static final String MULTILINE_DELIMITER = "\\";
-
-    private static final String COMMENT_DELIMITER = "//";
-
     private volatile boolean reading;
 
     public DefaultConsole() {
@@ -66,11 +62,7 @@ public class DefaultConsole extends AbstractConsole {
                 line = reader.readLine().trim();
             }
             line = readCommandMultiLine(line);
-            if (line == null || line.startsWith(COMMENT_DELIMITER)) {
-                return null;
-            } else {
-                return line;
-            }
+            return line;
         } catch (IOException e) {
             throw new IOError(e);
         }
@@ -78,45 +70,54 @@ public class DefaultConsole extends AbstractConsole {
 
     private String readCommandMultiLine(String line) throws IOException {
         boolean comments = COMMENT_DELIMITER.equals(line);
-        boolean continuous = (MULTILINE_DELIMITER.equals(line) || comments);
-        if (line == null || continuous) {
+        boolean multiline = MULTILINE_DELIMITER.equals(line);
+        boolean quoted = ("\"".equals(line) || "'".equals(line));
+        if (comments || multiline || quoted) {
             if (System.console() != null) {
-                line = System.console().readLine("> ").trim();
+                line = System.console().readLine(comments ? COMMENT_PROMPT : MULTILINE_PROMPT).trim();
             } else {
-                write("> ");
+                write(comments ? COMMENT_PROMPT : MULTILINE_PROMPT);
                 BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
                 line = reader.readLine().trim();
             }
         }
-        String nextLine = null;
-        if (continuous) {
-            if (!line.isEmpty()) {
-                if (comments) {
-                    nextLine = readCommandMultiLine(COMMENT_DELIMITER);
-                } else {
-                    nextLine = readCommandMultiLine(MULTILINE_DELIMITER);
-                }
-            } else {
-                return null;
-            }
-            if (line.equals(MULTILINE_DELIMITER)) {
-                line = "";
-            }
-        } else if (line.endsWith(MULTILINE_DELIMITER)) {
-            line = line.substring(0, line.length() - MULTILINE_DELIMITER.length()).trim();
-            nextLine = readCommandMultiLine(null);
-        }
         if (comments) {
-            if (nextLine != null) {
-                return COMMENT_DELIMITER + line + System.lineSeparator() + nextLine;
-            } else {
-                return COMMENT_DELIMITER + line;
+            if (line.isEmpty()) {
+                return line;
             }
-        } else {
-            if (nextLine != null && !nextLine.isEmpty()) {
-                return line + " " + nextLine;
+            readCommandMultiLine(COMMENT_DELIMITER);
+            return "";
+        }
+        if (quoted) {
+            return line;
+        }
+        String next = null;
+        String quote = searchQuote(line);
+        if (quote != null) {
+            next = readCommandMultiLine(quote);
+            line += System.lineSeparator() + next;
+            quote = searchQuote(line);
+            if (quote != null) {
+                return readCommandMultiLine(line);
+            } else if (!line.endsWith(MULTILINE_DELIMITER)) {
+                return line;
+            }
+        }
+        if (line.endsWith(MULTILINE_DELIMITER)) {
+            line = line.substring(0, line.length() - MULTILINE_DELIMITER.length()).trim();
+            next = readCommandMultiLine(MULTILINE_DELIMITER);
+        }
+        if (!line.isEmpty() && !line.startsWith(COMMENT_DELIMITER)) {
+            if (next != null && !next.isEmpty()) {
+                return line + " " + next;
             } else {
                 return line;
+            }
+        } else {
+            if (next != null && !next.isEmpty()) {
+                return next;
+            } else {
+                return "";
             }
         }
     }
@@ -151,9 +152,9 @@ public class DefaultConsole extends AbstractConsole {
     private String readMultiLine(String line) throws IOException {
         if (line == null) {
             if (System.console() != null) {
-                line = System.console().readLine("> ").trim();
+                line = System.console().readLine(MULTILINE_PROMPT).trim();
             } else {
-                write("> ");
+                write(MULTILINE_PROMPT);
                 BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
                 line = reader.readLine().trim();
             }

@@ -39,7 +39,7 @@ public class CommandHighlighter implements Highlighter {
 
     private final Console console;
 
-    private boolean disabled;
+    private boolean limited;
 
     public CommandHighlighter(Console console) {
         if (console == null) {
@@ -48,45 +48,72 @@ public class CommandHighlighter implements Highlighter {
         this.console = console;
     }
 
-    public boolean isDisabled() {
-        return disabled;
+    public boolean isLimited() {
+        return limited;
     }
 
-    public void setDisabled(boolean disabled) {
-        this.disabled = disabled;
+    public void setLimited(boolean limited) {
+        this.limited = limited;
     }
 
     @Override
     public AttributedString highlight(LineReader reader, String buffer) {
-        if (isDisabled()) {
-            return new AttributedString(buffer);
-        }
-        String str = StringUtils.trimLeadingWhitespace(buffer);
-        String best = getMatchedCommandName(str);
-        if (best == null) {
-            best = getMatchedTransletName(str);
-        }
-        if (best != null) {
-            String prefix;
-            if (str.length() < buffer.length()) {
-                prefix = buffer.substring(0, buffer.length() - str.length());
-            } else {
-                prefix = "";
+        if (!isLimited()) {
+            String str = StringUtils.trimLeadingWhitespace(buffer);
+            String best = getMatchedCommandName(str);
+            if (best == null) {
+                best = getMatchedTransletName(str);
             }
-            return new AttributedStringBuilder(buffer.length())
-                    .append(prefix + best, AttributedStyle.BOLD)
-                    .append(buffer.substring(prefix.length() + best.length()))
-                    .toAttributedString();
+            if (best != null) {
+                String prefix;
+                if (str.length() < buffer.length()) {
+                    prefix = buffer.substring(0, buffer.length() - str.length());
+                } else {
+                    prefix = "";
+                }
+                if (buffer.endsWith(Console.MULTILINE_DELIMITER)) {
+                    AttributedStringBuilder asb = new AttributedStringBuilder(buffer.length());
+                    asb.append(prefix + best, AttributedStyle.BOLD);
+                    asb.append(buffer.substring(prefix.length() + best.length(),
+                            buffer.length() - Console.MULTILINE_DELIMITER.length()));
+                    asb.append(new AttributedString(buffer.substring(buffer.length() - Console.MULTILINE_DELIMITER.length()),
+                            AttributedStyle.DEFAULT.foreground(AttributedStyle.MAGENTA)));
+                    return asb.toAttributedString();
+                } else {
+                    AttributedStringBuilder asb = new AttributedStringBuilder(buffer.length());
+                    asb.append(prefix + best, AttributedStyle.BOLD);
+                    asb.append(buffer.substring(prefix.length() + best.length()));
+                    return asb.toAttributedString();
+                }
+            }
+        }
+        if (buffer.startsWith(Console.COMMENT_DELIMITER) && buffer.endsWith(Console.MULTILINE_DELIMITER)) {
+            AttributedStringBuilder asb = new AttributedStringBuilder(buffer.length());
+            asb.append(new AttributedString(buffer.substring(0, Console.COMMENT_DELIMITER.length()),
+                    AttributedStyle.DEFAULT.foreground(AttributedStyle.BLUE | AttributedStyle.BRIGHT)));
+            asb.append(new AttributedString(buffer.substring(Console.COMMENT_DELIMITER.length(),
+                    buffer.length() - Console.MULTILINE_DELIMITER.length())));
+            asb.append(new AttributedString(buffer.substring(buffer.length() - Console.MULTILINE_DELIMITER.length()),
+                    AttributedStyle.DEFAULT.foreground(AttributedStyle.MAGENTA)));
+            return asb.toAttributedString();
+        } else if (buffer.startsWith(Console.COMMENT_DELIMITER)) {
+            AttributedStringBuilder asb = new AttributedStringBuilder(buffer.length());
+            asb.append(new AttributedString(buffer.substring(0, Console.COMMENT_DELIMITER.length()),
+                    AttributedStyle.DEFAULT.foreground(AttributedStyle.BLUE | AttributedStyle.BRIGHT)));
+            asb.append(new AttributedString(buffer.substring(Console.COMMENT_DELIMITER.length())));
+            return asb.toAttributedString();
+        } else if (buffer.endsWith(Console.MULTILINE_DELIMITER)) {
+            AttributedStringBuilder asb = new AttributedStringBuilder(buffer.length());
+            asb.append(new AttributedString(buffer.substring(0, buffer.length() - Console.MULTILINE_DELIMITER.length())));
+            asb.append(new AttributedString(buffer.substring(buffer.length() - Console.MULTILINE_DELIMITER.length()),
+                    AttributedStyle.DEFAULT.foreground(AttributedStyle.MAGENTA)));
+            return asb.toAttributedString();
         } else {
-            if (buffer.startsWith(JLineConsole.COMMENT_DELIMITER)) {
+            if (isLimited()) {
                 return new AttributedString(buffer);
             } else {
-                if (buffer.endsWith(JLineConsole.MULTILINE_DELIMITER)) {
-                    return new AttributedString(buffer);
-                } else {
-                    return new AttributedString(buffer,
-                            AttributedStyle.DEFAULT.foreground(AttributedStyle.RED | AttributedStyle.BRIGHT));
-                }
+                return new AttributedString(buffer,
+                        AttributedStyle.DEFAULT.foreground(AttributedStyle.RED | AttributedStyle.BRIGHT));
             }
         }
     }
@@ -100,7 +127,7 @@ public class CommandHighlighter implements Highlighter {
                 String name = command.getDescriptor().getName();
                 if (name.length() > len) {
                     if (buffer.equals(name) || buffer.startsWith(name + " ") ||
-                            buffer.startsWith(name + JLineConsole.MULTILINE_DELIMITER)) {
+                            buffer.startsWith(name + Console.MULTILINE_DELIMITER)) {
                         best = name;
                         len = name.length();
                     }
@@ -125,7 +152,7 @@ public class CommandHighlighter implements Highlighter {
                         }
                     } else if (name.length() > len) {
                         if (buffer.equals(name) || buffer.startsWith(name + " ") ||
-                                buffer.startsWith(name + JLineConsole.MULTILINE_DELIMITER)) {
+                                buffer.startsWith(name + Console.MULTILINE_DELIMITER)) {
                             best = name;
                             len = name.length();
                         }

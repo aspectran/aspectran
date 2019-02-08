@@ -46,10 +46,6 @@ public class JLineConsole extends AbstractConsole {
 
     private static final Character MASK_CHAR = '*';
 
-    static final String MULTILINE_DELIMITER = "\\";
-
-    static final String COMMENT_DELIMITER = "//";
-
     private final Terminal terminal;
 
     private final LineReader reader;
@@ -107,11 +103,7 @@ public class JLineConsole extends AbstractConsole {
         try {
             String line = commandReader.readLine(prompt).trim();
             line = readCommandMultiLine(line);
-            if (line == null || line.startsWith(COMMENT_DELIMITER)) {
-                return null;
-            } else {
-                return line;
-            }
+            return line;
         } catch (EndOfFileException e) {
             throw new ConsoleTerminatedException();
         } catch (UserInterruptException e) {
@@ -125,41 +117,52 @@ public class JLineConsole extends AbstractConsole {
 
     private String readCommandMultiLine(String line) {
         boolean comments = COMMENT_DELIMITER.equals(line);
-        boolean continuous = (MULTILINE_DELIMITER.equals(line) || comments);
-        if (line == null || continuous) {
-            line = commandReader.readLine("> ").trim();
+        boolean multiline = MULTILINE_DELIMITER.equals(line);
+        boolean quoted = ("\"".equals(line) || "'".equals(line));
+        if (comments || multiline || quoted) {
+            commandCompleter.setLimited(true);
+            commandHighlighter.setLimited(true);
+            line = commandReader.readLine(comments ? COMMENT_PROMPT : MULTILINE_PROMPT).trim();
+            commandCompleter.setLimited(false);
+            commandHighlighter.setLimited(false);
         }
-        multilineStarted();
-        String nextLine = null;
-        if (continuous) {
-            if (!line.isEmpty()) {
-                if (comments) {
-                    nextLine = readCommandMultiLine(COMMENT_DELIMITER);
-                } else {
-                    nextLine = readCommandMultiLine(MULTILINE_DELIMITER);
-                }
-            } else {
-                return null;
-            }
-            if (line.equals(MULTILINE_DELIMITER)) {
-                line = "";
-            }
-        } else if (line.endsWith(MULTILINE_DELIMITER)) {
-            line = line.substring(0, line.length() - MULTILINE_DELIMITER.length()).trim();
-            nextLine = readCommandMultiLine(null);
-        }
-        multilineEnded();
         if (comments) {
-            if (nextLine != null) {
-                return COMMENT_DELIMITER + line + System.lineSeparator() + nextLine;
-            } else {
-                return COMMENT_DELIMITER + line;
+            if (line.isEmpty()) {
+                return line;
             }
-        } else {
-            if (nextLine != null && !nextLine.isEmpty()) {
-                return line + " " + nextLine;
+            readCommandMultiLine(COMMENT_DELIMITER);
+            return "";
+        }
+        if (quoted) {
+            return line;
+        }
+        String next = null;
+        String quote = searchQuote(line);
+        if (quote != null) {
+            next = readCommandMultiLine(quote);
+            line += System.lineSeparator() + next;
+            quote = searchQuote(line);
+            if (quote != null) {
+                return readCommandMultiLine(line);
+            } else if (!line.endsWith(MULTILINE_DELIMITER)) {
+                return line;
+            }
+        }
+        if (line.endsWith(MULTILINE_DELIMITER)) {
+            line = line.substring(0, line.length() - MULTILINE_DELIMITER.length()).trim();
+            next = readCommandMultiLine(MULTILINE_DELIMITER);
+        }
+        if (!line.isEmpty() && !line.startsWith(COMMENT_DELIMITER)) {
+            if (next != null && !next.isEmpty()) {
+                return line + " " + next;
             } else {
                 return line;
+            }
+        } else {
+            if (next != null && !next.isEmpty()) {
+                return next;
+            } else {
+                return "";
             }
         }
     }
@@ -181,7 +184,7 @@ public class JLineConsole extends AbstractConsole {
 
     private String readMultiLine(String line) {
         if (line == null) {
-            line = reader.readLine("> ").trim();
+            line = reader.readLine(MULTILINE_PROMPT).trim();
         }
         if (line.endsWith(MULTILINE_DELIMITER)) {
             line = line.substring(0, line.length() - MULTILINE_DELIMITER.length()) +
@@ -355,16 +358,6 @@ public class JLineConsole extends AbstractConsole {
     public void setCommandHistoryFile(String historyFile) {
         commandReader.setVariable(LineReader.HISTORY_FILE, historyFile);
         commandHistory.attach(commandReader);
-    }
-
-    private void multilineStarted() {
-        commandCompleter.setDisabled(true);
-        commandHighlighter.setDisabled(true);
-    }
-
-    private void multilineEnded() {
-        commandCompleter.setDisabled(false);
-        commandHighlighter.setDisabled(false);
     }
 
 }

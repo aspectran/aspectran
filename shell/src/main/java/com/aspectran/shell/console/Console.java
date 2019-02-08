@@ -31,7 +31,15 @@ import java.util.List;
  */
 public interface Console {
 
-    String DEFAULT_COMMAND_PROMPT = "Aspectran> ";
+    String DEFAULT_PROMPT = "Aspectran> ";
+
+    String MULTILINE_PROMPT = "> ";
+
+    String COMMENT_PROMPT = "// ";
+
+    String MULTILINE_DELIMITER = "\\";
+
+    String COMMENT_DELIMITER = "//";
 
     String readCommandLine();
 

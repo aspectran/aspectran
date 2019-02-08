@@ -27,7 +27,7 @@ import java.nio.charset.Charset;
  */
 public abstract class AbstractConsole implements Console {
 
-    private String commandPrompt = DEFAULT_COMMAND_PROMPT;
+    private String commandPrompt = DEFAULT_PROMPT;
 
     private final String encoding;
 
@@ -76,6 +76,26 @@ public abstract class AbstractConsole implements Console {
     @Override
     public void setInterpreter(CommandInterpreter interpreter) {
         this.interpreter = interpreter;
+    }
+
+    protected String searchQuote(String line) {
+        boolean doubleQuote = false;
+        boolean singleQuote = false;
+        for (int i = 0; i < line.length(); i++) {
+            char c = line.charAt(i);
+            if (c == '"' && !singleQuote) {
+                doubleQuote = !doubleQuote;
+            } else if (c == '\'' && !doubleQuote) {
+                singleQuote = !singleQuote;
+            }
+        }
+        if (doubleQuote) {
+            return "\"";
+        } else if (singleQuote) {
+            return "'";
+        } else {
+            return null;
+        }
     }
 
 }
