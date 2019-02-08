@@ -7,7 +7,10 @@
         <echo id="page">
             <attributes>
                 <item name="headline">Hello, World!</item>
-                <item name="teaser">This is the output of a JSP page that is part of the HelloWorld application.</item>
+                <item name="teaser">
+                    This is the output of a JSP page that is part
+                    of the HelloWorld application.
+                </item>
                 <item name="include">examples/hello-world</item>
             </attributes>
         </echo>

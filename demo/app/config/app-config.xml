@@ -7,9 +7,8 @@
         |
         |{{bold}}Commands that can run examples:{{bold:off}}
         |   {{CYAN}}hello{{fg:reset}}      Prints "Hello, World!" in your console
-        |   {{CYAN}}hello2{{fg:reset}}     Prints "Hello, World!" in your console using ANSI escape sequences
-        |   {{CYAN}}echo{{fg:reset}}       It accepts parameters and print as is
-        |   {{CYAN}}echo2{{fg:reset}}      It accepts parameters and attributes, and print them as is
+        |   {{CYAN}}hello2{{fg:reset}}     Prints "Hello, World!" in your console using ANSI color codes
+        |   {{CYAN}}echo1{{fg:reset}}      It accepts parameters and print as is
         |   --- for more examples, type '{{GREEN}}translet -l{{reset}}' ---
         |
         |{{bold}}The Jetty Server is currently running.{{bold:off}}
@@ -21,23 +20,6 @@
 
     <bean id="basePath" class="com.aspectran.core.support.BasePathFactoryBean"/>
     <bean id="currentTranslet" class="com.aspectran.core.support.CurrentTransletFactoryBean" scope="request"/>
-    <bean id="currentActivityData" class="com.aspectran.core.support.CurrentActivityDataFactoryBean" scope="request"/>
-
-    <aspect id="activityDataAccessibility">
-        <description>
-            The Activity Data Map of all translets can be referenced as a "data" attribute in View Dispatching.
-        </description>
-        <joinpoint target="translet"/>
-        <advice>
-            <before>
-                <echo>
-                    <item name="data">
-                        <call bean="currentActivityData"/>
-                    </item>
-                </echo>
-            </before>
-        </advice>
-    </aspect>
 
     <aspect id="errorReport">
         <description>
