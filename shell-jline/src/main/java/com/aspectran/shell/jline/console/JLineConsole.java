@@ -82,6 +82,7 @@ public class JLineConsole extends AbstractConsole {
                 .appName(APP_NAME)
                 .terminal(terminal)
                 .build();
+        this.reader.setOpt(LineReader.Option.DISABLE_EVENT_EXPANSION);
         this.reader.unsetOpt(LineReader.Option.INSERT_TAB);
 
         this.commandReader = LineReaderBuilder.builder()
@@ -91,6 +92,7 @@ public class JLineConsole extends AbstractConsole {
                 .history(commandHistory)
                 .terminal(terminal)
                 .build();
+        this.commandReader.setOpt(LineReader.Option.DISABLE_EVENT_EXPANSION);
         this.commandReader.unsetOpt(LineReader.Option.INSERT_TAB);
     }
 
@@ -138,6 +140,9 @@ public class JLineConsole extends AbstractConsole {
                 }
             } else {
                 return null;
+            }
+            if (line.equals(MULTILINE_DELIMITER)) {
+                line = "";
             }
         } else if (line.endsWith(MULTILINE_DELIMITER)) {
             line = line.substring(0, line.length() - MULTILINE_DELIMITER.length()).trim();

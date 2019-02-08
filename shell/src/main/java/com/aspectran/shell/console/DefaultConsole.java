@@ -32,7 +32,7 @@ import java.util.List;
  */
 public class DefaultConsole extends AbstractConsole {
 
-    private static final String MULTILINE_DELIMITER = "\\\\";
+    private static final String MULTILINE_DELIMITER = "\\";
 
     private static final String COMMENT_DELIMITER = "//";
 
@@ -98,6 +98,9 @@ public class DefaultConsole extends AbstractConsole {
                 }
             } else {
                 return null;
+            }
+            if (line.equals(MULTILINE_DELIMITER)) {
+                line = "";
             }
         } else if (line.endsWith(MULTILINE_DELIMITER)) {
             line = line.substring(0, line.length() - MULTILINE_DELIMITER.length()).trim();

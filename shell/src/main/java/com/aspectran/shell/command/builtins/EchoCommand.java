@@ -51,7 +51,8 @@ public class EchoCommand extends AbstractCommand {
         if (options.hasOption("help")) {
             printHelp(console);
         } else {
-            console.writeLine(String.join(" ", options.getArgs()));
+            String message = String.join(" ", options.getArgs());
+            console.writeLine(message);
         }
     }
 
