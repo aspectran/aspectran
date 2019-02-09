@@ -25,12 +25,11 @@ shell: {
         com.aspectran.shell.command.builtins.PBEncryptCommand
         com.aspectran.shell.command.builtins.PBDecryptCommand
         com.aspectran.shell.command.builtins.EchoCommand
-        com.aspectran.shell.command.builtins.HelpCommand
-        com.aspectran.shell.command.builtins.VerboseCommand
-        com.aspectran.shell.command.builtins.RestartCommand
-        com.aspectran.shell.command.builtins.PauseCommand
-        com.aspectran.shell.command.builtins.ResumeCommand
+        com.aspectran.shell.command.builtins.HistoryCommand
         com.aspectran.shell.command.builtins.ClearCommand
+        com.aspectran.shell.command.builtins.VerboseCommand
+        com.aspectran.shell.command.builtins.HelpCommand
+        com.aspectran.shell.command.builtins.RestartCommand
         com.aspectran.shell.command.builtins.QuitCommand
     ]
     greetings: (

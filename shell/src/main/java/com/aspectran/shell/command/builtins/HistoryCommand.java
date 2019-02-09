@@ -58,7 +58,7 @@ public class HistoryCommand extends AbstractCommand {
 
     private void listHistory(Console console) {
         console.writeLine("-%4s-+-%-67s-", "----", "-------------------------------------------------------------------");
-        console.writeLine(" %4s | %-67s ", "No.", "Commands");
+        console.writeLine(" %4s | %-67s ", "No.", "User input commands");
         console.writeLine("-%4s-+-%-67s-", "----", "-------------------------------------------------------------------");
         int num = 0;
         for (String line : console.getCommandHistory()) {
