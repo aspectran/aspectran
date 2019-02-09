@@ -67,7 +67,9 @@ public class TemplateRuleRegistry extends AbstractComponent {
             }
         }
 
-        assistantLocal.getAssistant().resolveBeanClass(templateRule);
+        if (assistantLocal != null) {
+            assistantLocal.getAssistant().resolveBeanClass(templateRule);
+        }
         templateRuleMap.put(templateRule.getId(), templateRule);
 
         if (log.isTraceEnabled()) {
