@@ -19,7 +19,9 @@
     </translet>
 
     <translet name="print-resource!">
-        <description>Prints the contents of the resource sample_resource.txt</description>
+        <description style="apon">
+            |{{bg:magenta,fg:white}} Prints the contents of the resource "sample_resource.txt"                   {{reset}}
+        </description>
         <transform type="transform/text">
             <template resource="sample_resource.txt"/>
         </transform>

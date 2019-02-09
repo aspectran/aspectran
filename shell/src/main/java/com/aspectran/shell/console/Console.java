@@ -83,7 +83,7 @@ public interface Console {
 
     void styleOff();
 
-    boolean isReading();
+    boolean isBusy();
 
     boolean confirmRestart();
 

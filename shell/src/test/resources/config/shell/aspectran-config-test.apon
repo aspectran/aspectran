@@ -17,7 +17,7 @@ scheduler: {
     startup: false
 }
 shell: {
-    prompt: "aspectran-shell-test:> "
+    prompt: "default-shell-test> "
     commands: [
         com.aspectran.shell.command.builtins.JettyCommand
         com.aspectran.shell.command.builtins.TransletCommand

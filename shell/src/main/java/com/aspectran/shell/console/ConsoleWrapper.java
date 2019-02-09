@@ -158,8 +158,8 @@ public class ConsoleWrapper implements Console {
     }
 
     @Override
-    public boolean isReading() {
-        return console.isReading();
+    public boolean isBusy() {
+        return console.isBusy();
     }
 
     @Override

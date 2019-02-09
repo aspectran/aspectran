@@ -32,7 +32,7 @@ import java.util.List;
  */
 public class DefaultConsole extends AbstractConsole {
 
-    private volatile boolean reading;
+    private volatile boolean busy;
 
     public DefaultConsole() {
         this(null);
@@ -50,76 +50,7 @@ public class DefaultConsole extends AbstractConsole {
 
     @Override
     public String readCommandLine(String prompt) {
-        try {
-            String line;
-            if (System.console() != null) {
-                line = System.console().readLine(prompt).trim();
-            } else {
-                if (prompt != null) {
-                    write(prompt);
-                }
-                BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-                line = reader.readLine().trim();
-            }
-            line = readCommandMultiLine(line);
-            return line;
-        } catch (IOException e) {
-            throw new IOError(e);
-        }
-    }
-
-    private String readCommandMultiLine(String line) throws IOException {
-        boolean comments = COMMENT_DELIMITER.equals(line);
-        boolean multiline = MULTILINE_DELIMITER.equals(line);
-        boolean quoted = ("\"".equals(line) || "'".equals(line));
-        if (comments || multiline || quoted) {
-            if (System.console() != null) {
-                line = System.console().readLine(comments ? COMMENT_PROMPT : MULTILINE_PROMPT).trim();
-            } else {
-                write(comments ? COMMENT_PROMPT : MULTILINE_PROMPT);
-                BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-                line = reader.readLine().trim();
-            }
-        }
-        if (comments) {
-            if (line.isEmpty()) {
-                return line;
-            }
-            readCommandMultiLine(COMMENT_DELIMITER);
-            return "";
-        }
-        if (quoted) {
-            return line;
-        }
-        String next = null;
-        String quote = searchQuote(line);
-        if (quote != null) {
-            next = readCommandMultiLine(quote);
-            line += System.lineSeparator() + next;
-            quote = searchQuote(line);
-            if (quote != null) {
-                return readCommandMultiLine(line);
-            } else if (!line.endsWith(MULTILINE_DELIMITER)) {
-                return line;
-            }
-        }
-        if (line.endsWith(MULTILINE_DELIMITER)) {
-            line = line.substring(0, line.length() - MULTILINE_DELIMITER.length()).trim();
-            next = readCommandMultiLine(MULTILINE_DELIMITER);
-        }
-        if (!line.isEmpty() && !line.startsWith(COMMENT_DELIMITER)) {
-            if (next != null && !next.isEmpty()) {
-                return line + " " + next;
-            } else {
-                return line;
-            }
-        } else {
-            if (next != null && !next.isEmpty()) {
-                return next;
-            } else {
-                return "";
-            }
-        }
+        return readMultiCommandLine(readRawLine(prompt).trim());
     }
 
     @Override
@@ -130,40 +61,11 @@ public class DefaultConsole extends AbstractConsole {
     @Override
     public String readLine(String prompt) {
         try {
-            reading = true;
-            String line;
-            if (System.console() != null) {
-                line = System.console().readLine(prompt);
-            } else {
-                if (prompt != null) {
-                    write(prompt);
-                }
-                BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-                line = reader.readLine();
-            }
-            return readMultiLine(line);
-        } catch (IOException e) {
-            throw new IOError(e);
+            busy = true;
+            return readMultiLine(readRawLine(prompt));
         } finally {
-            reading = false;
+            busy = false;
         }
-    }
-
-    private String readMultiLine(String line) throws IOException {
-        if (line == null) {
-            if (System.console() != null) {
-                line = System.console().readLine(MULTILINE_PROMPT).trim();
-            } else {
-                write(MULTILINE_PROMPT);
-                BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-                line = reader.readLine().trim();
-            }
-        }
-        if (line.endsWith(MULTILINE_DELIMITER)) {
-            line = line.substring(0, line.length() - MULTILINE_DELIMITER.length()) +
-                    System.lineSeparator() + readMultiLine(null);
-        }
-        return line;
     }
 
     @Override
@@ -188,6 +90,30 @@ public class DefaultConsole extends AbstractConsole {
     @Override
     public String readPassword(String format, Object... args) {
         return readPassword(String.format(format, args));
+    }
+
+    @Override
+    protected String readRawCommandLine(String prompt) {
+        return readRawLine(prompt);
+    }
+
+    @Override
+    protected String readRawLine(String prompt) {
+        try {
+            String line;
+            if (System.console() != null) {
+                line = System.console().readLine(prompt);
+            } else {
+                if (prompt != null) {
+                    write(prompt);
+                }
+                BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+                line = reader.readLine();
+            }
+            return line;
+        } catch (IOException e) {
+            throw new IOError(e);
+        }
     }
 
     @Override
@@ -265,8 +191,8 @@ public class DefaultConsole extends AbstractConsole {
     }
 
     @Override
-    public boolean isReading() {
-        return reading;
+    public boolean isBusy() {
+        return busy;
     }
 
     @Override
@@ -276,7 +202,7 @@ public class DefaultConsole extends AbstractConsole {
 
     @Override
     public boolean confirmRestart(String message) {
-        if (isReading()) {
+        if (isBusy()) {
             writeLine("Illegal State");
             return false;
         }

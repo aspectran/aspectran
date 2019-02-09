@@ -178,7 +178,7 @@ public abstract class AbstractShellService extends AspectranCoreService implemen
 
     @Override
     public boolean isBusy() {
-        return console.isReading();
+        return console.isBusy();
     }
 
 }

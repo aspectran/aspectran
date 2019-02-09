@@ -78,7 +78,51 @@ public abstract class AbstractConsole implements Console {
         this.interpreter = interpreter;
     }
 
-    protected String searchQuote(String line) {
+    protected String readMultiCommandLine(String line) {
+        if (COMMENT_DELIMITER.equals(line)) {
+            String next = readRawCommandLine(COMMENT_PROMPT);
+            if (next.isEmpty()) {
+                return next;
+            }
+            readMultiCommandLine(COMMENT_DELIMITER);
+        }
+        String quote = searchQuote(line);
+        if (quote != null || line.endsWith(MULTILINE_DELIMITER)) {
+            String next = readRawCommandLine(MULTILINE_PROMPT).trim();
+            if (next.startsWith(COMMENT_DELIMITER)) {
+                line = readMultiCommandLine(line);
+            } else if (quote != null) {
+                line += System.lineSeparator() + next;
+            } else {
+                line = line.substring(0, line.length() - MULTILINE_DELIMITER.length()).trim() + " " + next;
+            }
+        }
+        quote = searchQuote(line);
+        if (quote != null) {
+            return readMultiCommandLine(line);
+        }
+        if (line.endsWith(MULTILINE_DELIMITER)) {
+            line = readMultiCommandLine(line);
+        }
+        return line;
+    }
+
+    protected String readMultiLine(String line) {
+        if (line == null) {
+            line = readRawLine(MULTILINE_PROMPT);
+        }
+        if (line.endsWith(MULTILINE_DELIMITER)) {
+            line = line.substring(0, line.length() - MULTILINE_DELIMITER.length()) +
+                    System.lineSeparator() + readMultiLine(null);
+        }
+        return line;
+    }
+
+    abstract protected String readRawCommandLine(String prompt);
+
+    abstract protected String readRawLine(String prompt);
+
+    private String searchQuote(String line) {
         boolean doubleQuote = false;
         boolean singleQuote = false;
         for (int i = 0; i < line.length(); i++) {

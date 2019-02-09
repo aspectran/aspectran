@@ -1,5 +1,5 @@
 shell: {
-    prompt: "aspectran-shell-only-test:> "
+    prompt: "default-shell-test> "
     commands: [
         com.aspectran.shell.command.builtins.SysInfoCommand
         com.aspectran.shell.command.builtins.PBEncryptCommand

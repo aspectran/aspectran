@@ -102,7 +102,11 @@ public class JLineConsole extends AbstractConsole {
     public String readCommandLine(String prompt) {
         try {
             String line = commandReader.readLine(prompt).trim();
-            line = readCommandMultiLine(line);
+            commandCompleter.setLimited(true);
+            commandHighlighter.setLimited(true);
+            line = readMultiCommandLine(line);
+            commandCompleter.setLimited(false);
+            commandHighlighter.setLimited(false);
             return line;
         } catch (EndOfFileException e) {
             throw new ConsoleTerminatedException();
@@ -115,58 +119,6 @@ public class JLineConsole extends AbstractConsole {
         }
     }
 
-    private String readCommandMultiLine(String line) {
-        boolean comments = COMMENT_DELIMITER.equals(line);
-        boolean multiline = MULTILINE_DELIMITER.equals(line);
-        boolean quoted = ("\"".equals(line) || "'".equals(line));
-        if (comments || multiline || quoted) {
-            commandCompleter.setLimited(true);
-            commandHighlighter.setLimited(true);
-            line = commandReader.readLine(comments ? COMMENT_PROMPT : MULTILINE_PROMPT).trim();
-            commandCompleter.setLimited(false);
-            commandHighlighter.setLimited(false);
-        }
-        if (comments) {
-            if (line.isEmpty()) {
-                return line;
-            }
-            readCommandMultiLine(COMMENT_DELIMITER);
-            return "";
-        }
-        if (quoted) {
-            return line;
-        }
-        String next = null;
-        String quote = searchQuote(line);
-        if (quote != null) {
-            next = readCommandMultiLine(quote);
-            line += System.lineSeparator() + next;
-            quote = searchQuote(line);
-            if (quote != null) {
-                return readCommandMultiLine(line);
-            } else if (!line.endsWith(MULTILINE_DELIMITER)) {
-                return line;
-            }
-        }
-        if (line.endsWith(MULTILINE_DELIMITER)) {
-            line = line.substring(0, line.length() - MULTILINE_DELIMITER.length()).trim();
-            next = readCommandMultiLine(MULTILINE_DELIMITER);
-        }
-        if (!line.isEmpty() && !line.startsWith(COMMENT_DELIMITER)) {
-            if (next != null && !next.isEmpty()) {
-                return line + " " + next;
-            } else {
-                return line;
-            }
-        } else {
-            if (next != null && !next.isEmpty()) {
-                return next;
-            } else {
-                return "";
-            }
-        }
-    }
-
     @Override
     public String readLine() {
         return readLine(null);
@@ -175,22 +127,10 @@ public class JLineConsole extends AbstractConsole {
     @Override
     public String readLine(String prompt) {
         try {
-            String line = reader.readLine(prompt);
-            return readMultiLine(line);
+            return readMultiLine(reader.readLine(prompt));
         } catch (EndOfFileException | UserInterruptException e) {
             throw new ConsoleTerminatedException();
         }
-    }
-
-    private String readMultiLine(String line) {
-        if (line == null) {
-            line = reader.readLine(MULTILINE_PROMPT).trim();
-        }
-        if (line.endsWith(MULTILINE_DELIMITER)) {
-            line = line.substring(0, line.length() - MULTILINE_DELIMITER.length()) +
-                    System.lineSeparator() + readMultiLine(null);
-        }
-        return line;
     }
 
     @Override
@@ -215,6 +155,16 @@ public class JLineConsole extends AbstractConsole {
     @Override
     public String readPassword(String format, Object... args) {
         return readPassword(String.format(format, args));
+    }
+
+    @Override
+    protected String readRawCommandLine(String prompt) {
+        return commandReader.readLine(prompt);
+    }
+
+    @Override
+    protected String readRawLine(String prompt) {
+        return reader.readLine(prompt);
     }
 
     @Override
@@ -307,7 +257,7 @@ public class JLineConsole extends AbstractConsole {
     }
 
     @Override
-    public boolean isReading() {
+    public boolean isBusy() {
         return reader.isReading();
     }
 

@@ -77,7 +77,7 @@ public class CommandHighlighter implements Highlighter {
                     asb.append(buffer.substring(prefix.length() + best.length(),
                             buffer.length() - Console.MULTILINE_DELIMITER.length()));
                     asb.append(new AttributedString(buffer.substring(buffer.length() - Console.MULTILINE_DELIMITER.length()),
-                            AttributedStyle.DEFAULT.foreground(AttributedStyle.MAGENTA)));
+                            AttributedStyle.DEFAULT.foreground(AttributedStyle.GREEN | AttributedStyle.BRIGHT)));
                     return asb.toAttributedString();
                 } else {
                     AttributedStringBuilder asb = new AttributedStringBuilder(buffer.length());
@@ -94,7 +94,7 @@ public class CommandHighlighter implements Highlighter {
             asb.append(new AttributedString(buffer.substring(Console.COMMENT_DELIMITER.length(),
                     buffer.length() - Console.MULTILINE_DELIMITER.length())));
             asb.append(new AttributedString(buffer.substring(buffer.length() - Console.MULTILINE_DELIMITER.length()),
-                    AttributedStyle.DEFAULT.foreground(AttributedStyle.MAGENTA)));
+                    AttributedStyle.DEFAULT.foreground(AttributedStyle.GREEN | AttributedStyle.BRIGHT)));
             return asb.toAttributedString();
         } else if (buffer.startsWith(Console.COMMENT_DELIMITER)) {
             AttributedStringBuilder asb = new AttributedStringBuilder(buffer.length());
@@ -106,7 +106,7 @@ public class CommandHighlighter implements Highlighter {
             AttributedStringBuilder asb = new AttributedStringBuilder(buffer.length());
             asb.append(new AttributedString(buffer.substring(0, buffer.length() - Console.MULTILINE_DELIMITER.length())));
             asb.append(new AttributedString(buffer.substring(buffer.length() - Console.MULTILINE_DELIMITER.length()),
-                    AttributedStyle.DEFAULT.foreground(AttributedStyle.MAGENTA)));
+                    AttributedStyle.DEFAULT.foreground(AttributedStyle.GREEN | AttributedStyle.BRIGHT)));
             return asb.toAttributedString();
         } else {
             if (isLimited()) {

@@ -697,9 +697,6 @@ public class RuleToParamsConverter {
                 templateParameters.putValue(TemplateParameters.content, templateRule.getContent());
                 templateParameters.putValueNonNull(TemplateParameters.style, textStyleType);
             }
-        } else {
-            templateParameters.putValueNonNull(TemplateParameters.content, templateRule.getTemplateSource());
-            templateParameters.putValueNonNull(TemplateParameters.style, templateRule.getContentStyle());
         }
         templateParameters.putValueNonNull(TemplateParameters.encoding, templateRule.getEncoding());
         templateParameters.putValueNonNull(TemplateParameters.noCache, templateRule.getNoCache());
