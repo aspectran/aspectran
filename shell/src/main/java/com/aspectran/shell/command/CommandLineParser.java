@@ -35,7 +35,7 @@ import java.util.regex.Pattern;
  */
 public class CommandLineParser {
 
-    private static final Pattern ARGS_PATTERN = Pattern.compile("\"([^\"]*)\"|'([^']*)'|([^\\s\"']+)");
+    private static final Pattern ARGS_PATTERN = Pattern.compile("[\\s]+\"([^\"]*)\"|\"([^\"]*)\"|[\\s]+'([^']*)'|'([^']*)'|([^\\s\"']+)");
 
     private static final Pattern REDIRECTION_PATTERN = Pattern.compile("(>>)|(>)|(\")|(\')");
 
@@ -114,9 +114,23 @@ public class CommandLineParser {
             if (m.group(1) != null) {
                 list.add(m.group(1));
             } else if (m.group(2) != null) {
-                list.add(m.group(2));
-            } else {
+                if (!list.isEmpty()) {
+                    int index = list.size() - 1;
+                    list.set(index, list.get(index) + m.group(2));
+                } else {
+                    list.add(m.group(2));
+                }
+            } else if (m.group(3) != null) {
                 list.add(m.group(3));
+            } else if (m.group(4) != null) {
+                if (!list.isEmpty()) {
+                    int index = list.size() - 1;
+                    list.set(index, list.get(index) + m.group(4));
+                } else {
+                    list.add(m.group(4));
+                }
+            } else {
+                list.add(m.group(5));
             }
         }
         return list.toArray(new String[0]);
