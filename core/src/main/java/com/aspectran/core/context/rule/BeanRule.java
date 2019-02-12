@@ -67,6 +67,8 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 
     private Method factoryMethod;
 
+    private AutowireRule factoryAutowireRule;
+
     private boolean factoryMethodRequiresTranslet;
 
     private boolean factoryOffered;
@@ -335,6 +337,14 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 
     public void setFactoryMethod(Method factoryMethod) {
         this.factoryMethod = factoryMethod;
+    }
+
+    public AutowireRule getFactoryAutowireRule() {
+        return factoryAutowireRule;
+    }
+
+    public void setFactoryAutowireRule(AutowireRule factoryAutowireRule) {
+        this.factoryAutowireRule = factoryAutowireRule;
     }
 
     public boolean isFactoryMethodRequiresTranslet() {
@@ -798,12 +808,14 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
             tsb.append("scope", scopeType);
             tsb.append("factoryBean", factoryBeanId);
             tsb.append("factoryMethod", factoryMethodName);
+            tsb.append("factoryAutowireRule", factoryAutowireRule);
             tsb.append("initMethod", initMethodName);
             tsb.append("destroyMethod", destroyMethodName);
             tsb.append("lazyInit", lazyInit);
             tsb.append("important", important);
             tsb.append("proxied", proxied);
         }
+        tsb.append("factoryOffered", factoryOffered);
         return tsb.toString();
     }
 

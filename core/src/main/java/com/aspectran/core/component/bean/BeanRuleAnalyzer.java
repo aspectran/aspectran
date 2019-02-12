@@ -74,24 +74,32 @@ public class BeanRuleAnalyzer {
     }
 
     protected static Class<?> determineFactoryMethodTargetBeanClass(Class<?> beanClass, BeanRule beanRule) {
-        String factoryMethodName = beanRule.getFactoryMethodName();
-        Method m1 = MethodUtils.getAccessibleMethod(beanClass, factoryMethodName, TRANSLET_ACTION_PARAMETER_TYPES);
-        Class<?> targetBeanClass;
-        if (m1 != null) {
-            beanRule.setFactoryMethod(m1);
-            beanRule.setFactoryMethodRequiresTranslet(true);
-            targetBeanClass = m1.getReturnType();
+        if (beanRule.getFactoryMethod() != null) {
+            Class<?> targetBeanClass = beanRule.getFactoryMethod().getReturnType();
+            beanRule.setTargetBeanClass(targetBeanClass);
+            return targetBeanClass;
         } else {
-            Method m2 = MethodUtils.getAccessibleMethod(beanClass, factoryMethodName);
-            if (m2 == null) {
-                throw new BeanRuleException("No such factory method " + factoryMethodName +
-                        "() on bean class: " + beanClass.getName(), beanRule);
+            String factoryMethodName = beanRule.getFactoryMethodName();
+            Method m1 = MethodUtils.getAccessibleMethod(beanClass, factoryMethodName, TRANSLET_ACTION_PARAMETER_TYPES);
+            Class<?> targetBeanClass;
+            if (m1 != null) {
+                beanRule.setFactoryMethod(m1);
+                beanRule.setFactoryAutowireRule(AnnotatedConfigParser.parseAutowireRule(m1));
+                beanRule.setFactoryMethodRequiresTranslet(true);
+                targetBeanClass = m1.getReturnType();
+            } else {
+                Method m2 = MethodUtils.getAccessibleMethod(beanClass, factoryMethodName);
+                if (m2 == null) {
+                    throw new BeanRuleException("No such factory method " + factoryMethodName +
+                            "() on bean class: " + beanClass.getName(), beanRule);
+                }
+                beanRule.setFactoryMethod(m2);
+                beanRule.setFactoryAutowireRule(AnnotatedConfigParser.parseAutowireRule(m2));
+                targetBeanClass = m2.getReturnType();
             }
-            beanRule.setFactoryMethod(m2);
-            targetBeanClass = m2.getReturnType();
+            beanRule.setTargetBeanClass(targetBeanClass);
+            return targetBeanClass;
         }
-        beanRule.setTargetBeanClass(targetBeanClass);
-        return targetBeanClass;
     }
 
     public static void checkInitMethod(Class<?> beanClass, BeanRule beanRule) {

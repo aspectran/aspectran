@@ -59,7 +59,8 @@ public class ConfigBeanMethodAction extends AbstractAction {
     public Object execute(Activity activity) throws Exception {
         try {
             Object bean = activity.getConfigBean(configBeanClass);
-            return invokeMethod(activity, bean, configBeanMethodActionRule.getMethod(), configBeanMethodActionRule.isRequiresTranslet());
+            return invokeMethod(activity, bean, configBeanMethodActionRule.getMethod(),
+                    configBeanMethodActionRule.isRequiresTranslet());
         } catch (Exception e) {
             log.error("Failed to execute config bean method action " + configBeanMethodActionRule);
             throw e;

@@ -16,6 +16,7 @@
 package com.aspectran.core.component.bean;
 
 import com.aspectran.core.activity.Activity;
+import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.process.action.ConfigBeanMethodAction;
 import com.aspectran.core.component.AbstractComponent;
 import com.aspectran.core.component.bean.ablility.DisposableBean;
@@ -55,7 +56,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -196,15 +196,18 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
 
         try {
             if (factoryBeanClass != null) {
-                if (factoryBeanClass.isAnnotationPresent(Component.class)) {
-                    bean = activity.getConfigBean(factoryBeanClass);
+                if (Modifier.isInterface(factoryBeanClass.getModifiers())) {
+                    bean = null;
                 } else {
-                    bean = activity.getBean(factoryBeanClass);
+                    if (factoryBeanClass.isAnnotationPresent(Component.class)) {
+                        bean = activity.getConfigBean(factoryBeanClass);
+                    } else {
+                        bean = activity.getBean(factoryBeanClass);
+                    }
                 }
             } else {
                 bean = activity.getBean(factoryBeanId);
             }
-
             bean = invokeFactoryMethod(beanRule, bean, activity);
             if (bean == null) {
                 throw new NullPointerException("Factory Method [" + beanRule.getFactoryMethod() + "] has returned null");
@@ -278,9 +281,8 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
     }
 
     private void autowiring(BeanRule beanRule, Object bean, Activity activity) {
-        List<AutowireRule> autowireRuleList = beanRule.getAutowireRuleList();
-        if (autowireRuleList != null) {
-            for (AutowireRule autowireRule : autowireRuleList) {
+        if (beanRule.getAutowireRuleList() != null) {
+            for (AutowireRule autowireRule : beanRule.getAutowireRuleList()) {
                 if (autowireRule.getTargetType() == AutowireTargetType.FIELD) {
                     Field field = autowireRule.getTarget();
                     Class<?>[] types = autowireRule.getTypes();
@@ -378,8 +380,31 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
     private Object invokeFactoryMethod(BeanRule beanRule, Object bean, Activity activity) {
         try {
             Method factoryMethod = beanRule.getFactoryMethod();
-            boolean requiresTranslet = beanRule.isFactoryMethodRequiresTranslet();
-            return ConfigBeanMethodAction.invokeMethod(activity, bean, factoryMethod, requiresTranslet);
+            if (beanRule.getFactoryAutowireRule() != null) {
+                AutowireRule autowireRule = beanRule.getFactoryAutowireRule();
+                String[] qualifiers = autowireRule.getQualifiers();
+                Class<?>[] argTypes = autowireRule.getTypes();
+                Object[] args = new Object[argTypes.length];
+                for (int i = 0; i < argTypes.length; i++) {
+                    if (argTypes[i] == Translet.class) {
+                        args[i] = activity.getTranslet();
+                    } else {
+                        if (autowireRule.isRequired()) {
+                            args[i] = activity.getBean(argTypes[i], qualifiers[i]);
+                        } else {
+                            try {
+                                args[i] = activity.getBean(argTypes[i], qualifiers[i]);
+                            } catch (BeanNotFoundException | NoUniqueBeanException e) {
+                                args[i] = null;
+                                log.warn(e.getMessage());
+                            }
+                        }
+                    }
+                }
+                return factoryMethod.invoke(bean, args);
+            } else {
+                return factoryMethod.invoke(bean, MethodUtils.EMPTY_OBJECT_ARRAY);
+            }
         } catch (Exception e) {
             throw new BeanCreationException("An exception occurred while executing a factory method of the bean",
                     beanRule, e);
@@ -388,19 +413,19 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
 
     private Object invokeMethodOfFactoryBean(BeanRule beanRule, Object bean) {
         FactoryBean<?> factoryBean = (FactoryBean<?>)bean;
-        Object exposedBean;
+        Object resultBean;
         try {
-            exposedBean = factoryBean.getObject();
+            resultBean = factoryBean.getObject();
         } catch (Exception e) {
             throw new BeanCreationException("FactoryBean threw exception on object creation", beanRule, e);
         }
-        if (exposedBean == null) {
+        if (resultBean == null) {
             throw new FactoryBeanNotInitializedException(
                             "FactoryBean returned null object: " +
                             "probably not fully initialized (maybe due to circular bean reference)",
                             beanRule);
         }
-        return exposedBean;
+        return resultBean;
     }
 
     /**

@@ -115,14 +115,14 @@ public class BeanClassScanner extends ClassScanner {
         }
 
         @Override
-        public void save(String resourceName, Class<?> scannedClass) {
-            if (scannedClass.isInterface()
-                    || Modifier.isAbstract(scannedClass.getModifiers())
-                    || !Modifier.isPublic(scannedClass.getModifiers())) {
+        public void save(String resourceName, Class<?> targetClass) {
+            if (!Modifier.isPublic(targetClass.getModifiers()) ||
+                    (!Modifier.isInterface(targetClass.getModifiers()) &&
+                            Modifier.isAbstract(targetClass.getModifiers()))) {
                 return;
             }
 
-            String className = scannedClass.getName();
+            String className = targetClass.getName();
             String beanId = className;
 
             if (beanIdMaskPattern != null) {
@@ -136,7 +136,7 @@ public class BeanClassScanner extends ClassScanner {
             }
 
             if (beanClassScanFilter != null) {
-                beanId = beanClassScanFilter.filter(beanId, resourceName, scannedClass);
+                beanId = beanClassScanFilter.filter(beanId, resourceName, targetClass);
                 if (beanId == null) {
                     return;
                 }
@@ -158,7 +158,7 @@ public class BeanClassScanner extends ClassScanner {
                 }
             }
 
-            saveHandler.save(beanId, scannedClass);
+            saveHandler.save(beanId, targetClass);
 
             if (log.isTraceEnabled()) {
                 log.trace(String.format("scanned bean class {beanId: %s, className: %s}", beanId, className));

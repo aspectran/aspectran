@@ -279,8 +279,8 @@ public class BeanRuleRegistry {
         if (beanRule.isImportant()) {
             importantBeanTypeSet.add(beanClass);
         }
-        Set<BeanRule> list = typeBasedBeanRuleMap.computeIfAbsent(beanClass, k -> new HashSet<>());
-        list.add(beanRule);
+        Set<BeanRule> set = typeBasedBeanRuleMap.computeIfAbsent(beanClass, k -> new HashSet<>());
+        set.add(beanRule);
     }
 
     private void saveBeanRule(Class<?>[] interfaces, BeanRule beanRule) {
