@@ -69,8 +69,6 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 
     private AutowireRule factoryAutowireRule;
 
-    private boolean factoryMethodRequiresTranslet;
-
     private boolean factoryOffered;
 
     private Class<?> targetBeanClass;
@@ -345,14 +343,6 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 
     public void setFactoryAutowireRule(AutowireRule factoryAutowireRule) {
         this.factoryAutowireRule = factoryAutowireRule;
-    }
-
-    public boolean isFactoryMethodRequiresTranslet() {
-        return factoryMethodRequiresTranslet;
-    }
-
-    public void setFactoryMethodRequiresTranslet(boolean factoryMethodRequiresTranslet) {
-        this.factoryMethodRequiresTranslet = factoryMethodRequiresTranslet;
     }
 
     public boolean isFactoryOffered() {
