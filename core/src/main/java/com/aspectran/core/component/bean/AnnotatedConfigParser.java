@@ -702,6 +702,9 @@ public class AnnotatedConfigParser {
 
     private DispatchRule parseDispatchRule(Dispatch dispatchAnno) {
         String name = StringUtils.emptyToNull(dispatchAnno.name());
+        if (name == null) {
+            name = StringUtils.emptyToNull(dispatchAnno.value());
+        }
         String dispatcher = StringUtils.emptyToNull(dispatchAnno.dispatcher());
         String contentType = StringUtils.emptyToNull(dispatchAnno.contentType());
         String encoding = StringUtils.emptyToNull(dispatchAnno.encoding());
