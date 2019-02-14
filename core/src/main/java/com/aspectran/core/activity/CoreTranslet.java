@@ -413,8 +413,8 @@ public class CoreTranslet extends AbstractTranslet {
     }
 
     @Override
-    public <T> T getConfigBean(Class<T> classType) {
-        return activity.getConfigBean(classType);
+    public <T> T getConfiguredBean(Class<T> classType) {
+        return activity.getConfiguredBean(classType);
     }
 
     @Override

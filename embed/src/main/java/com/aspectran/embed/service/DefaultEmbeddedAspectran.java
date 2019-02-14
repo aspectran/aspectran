@@ -85,100 +85,40 @@ public class DefaultEmbeddedAspectran extends AspectranCoreService implements Em
         return new AspectranSessionAdapter(agent);
     }
 
-    /**
-     * Executes the translet.
-     *
-     * @param name the translet name
-     * @return the {@code Translet} object
-     */
     public Translet translate(String name) {
         return translate(name, null, null, null);
     }
 
-    /**
-     * Executes the translet.
-     *
-     * @param name the translet name
-     * @param parameterMap the parameter map
-     * @return the {@code Translet} object
-     */
     @Override
     public Translet translate(String name, ParameterMap parameterMap) {
         return translate(name, null, parameterMap, null);
     }
 
-    /**
-     * Executes the translet.
-     *
-     * @param name the translet name
-     * @param parameterMap the parameter map
-     * @param attributeMap the attribute map
-     * @return the {@code Translet} object
-     */
     @Override
     public Translet translate(String name, ParameterMap parameterMap, Map<String, Object> attributeMap) {
         return translate(name, null, parameterMap, attributeMap);
     }
 
-    /**
-     * Executes the translet.
-     *
-     * @param name the translet name
-     * @param attributeMap the attribute map
-     * @return the {@code Translet} object
-     */
     @Override
     public Translet translate(String name, Map<String, Object> attributeMap) {
         return translate(name, null, null, attributeMap);
     }
 
-    /**
-     * Executes the translet.
-     *
-     * @param name the translet name
-     * @param method the request method
-     * @return the {@code Translet} object
-     */
     @Override
     public Translet translate(String name, MethodType method) {
         return translate(name, method, null, null);
     }
 
-    /**
-     * Executes the translet.
-     *
-     * @param name the translet name
-     * @param method the request method
-     * @param parameterMap the parameter map
-     * @return the {@code Translet} object
-     */
     @Override
     public Translet translate(String name, MethodType method, ParameterMap parameterMap) {
         return translate(name, method, parameterMap, null);
     }
 
-    /**
-     * Executes the translet.
-     *
-     * @param name the translet name
-     * @param method the request method
-     * @param attributeMap the attribute map
-     * @return the {@code Translet} object
-     */
     @Override
     public Translet translate(String name, MethodType method, Map<String, Object> attributeMap) {
         return translate(name, method, null, attributeMap);
     }
 
-    /**
-     * Executes the translet.
-     *
-     * @param name the translet name
-     * @param method the request method
-     * @param parameterMap the parameter map
-     * @param attributeMap the attribute map
-     * @return the {@code Translet} object
-     */
     @Override
     public Translet translate(String name, MethodType method, ParameterMap parameterMap, Map<String, Object> attributeMap) {
         if (name == null) {
@@ -218,51 +158,23 @@ public class DefaultEmbeddedAspectran extends AspectranCoreService implements Em
         return translet;
     }
 
-    /**
-     * Evaluates the template without any provided variables.
-     *
-     * @param templateId the template id
-     * @return the output string of the template
-     */
     @Override
-    public String template(String templateId) {
-        return template(templateId, null, null);
+    public String render(String templateId) {
+        return render(templateId, null, null);
     }
 
-    /**
-     * Evaluates the template with a set of parameters.
-     *
-     * @param templateId the template id
-     * @param parameterMap the parameter map
-     * @return the output string of the template
-     */
     @Override
-    public String template(String templateId, ParameterMap parameterMap) {
-        return template(templateId, parameterMap, null);
+    public String render(String templateId, ParameterMap parameterMap) {
+        return render(templateId, parameterMap, null);
     }
 
-    /**
-     * Evaluate the template with a set of parameters.
-     *
-     * @param templateId the template id
-     * @param attributeMap the attribute map
-     * @return the output string of the template
-     */
     @Override
-    public String template(String templateId, Map<String, Object> attributeMap) {
-        return template(templateId, null, attributeMap);
+    public String render(String templateId, Map<String, Object> attributeMap) {
+        return render(templateId, null, attributeMap);
     }
 
-    /**
-     * Evaluates the template with a set of parameters and attributes.
-     *
-     * @param templateId the template id
-     * @param parameterMap the parameter map
-     * @param attributeMap the attribute map
-     * @return the output string of the template
-     */
     @Override
-    public String template(String templateId, ParameterMap parameterMap, Map<String, Object> attributeMap) {
+    public String render(String templateId, ParameterMap parameterMap, Map<String, Object> attributeMap) {
         if (pauseTimeout != 0L) {
             if (pauseTimeout == -1L || pauseTimeout >= System.currentTimeMillis()) {
                 if (log.isDebugEnabled()) {
@@ -278,7 +190,7 @@ public class DefaultEmbeddedAspectran extends AspectranCoreService implements Em
             InstantActivity activity = new InstantActivity(getActivityContext(), parameterMap, attributeMap);
             activity.setSessionAdapter(newSessionAdapter());
 
-            getActivityContext().getTemplateProcessor().process(templateId, activity);
+            getActivityContext().getTemplateRenderer().render(templateId, activity);
 
             return activity.getResponseAdapter().getWriter().toString();
         } catch (Exception e) {

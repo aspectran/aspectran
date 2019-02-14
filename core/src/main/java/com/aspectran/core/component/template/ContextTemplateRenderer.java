@@ -31,84 +31,84 @@ import java.util.Locale;
 import java.util.Map;
 
 /**
- * The Class ContextTemplateProcessor.
+ * The Class ContextTemplateRenderer.
  *
  * <p>Created: 2016. 1. 14.</p>
  */
-public class ContextTemplateProcessor extends AbstractComponent implements TemplateProcessor {
+public class ContextTemplateRenderer extends AbstractComponent implements TemplateRenderer {
 
     private final ActivityContext context;
 
     private final TemplateRuleRegistry templateRuleRegistry;
 
     /**
-     * Instantiates a new context template processor.
+     * Instantiates a new context template renderer.
      *
      * @param context the activity context
      * @param templateRuleRegistry the template rule registry
      */
-    public ContextTemplateProcessor(ActivityContext context, TemplateRuleRegistry templateRuleRegistry) {
+    public ContextTemplateRenderer(ActivityContext context, TemplateRuleRegistry templateRuleRegistry) {
         this.context = context;
         this.templateRuleRegistry = templateRuleRegistry;
     }
 
     @Override
-    public String process(String templateId) {
+    public String render(String templateId) {
         StringWriter writer = new StringWriter();
-        process(templateId, null, null, writer);
+        render(templateId, null, null, writer);
         return writer.toString();
     }
 
     @Override
-    public String process(String templateId, Map<String, Object> model) {
+    public String render(String templateId, Map<String, Object> model) {
         StringWriter writer = new StringWriter();
-        process(templateId, null, model, writer);
+        render(templateId, null, model, writer);
         return writer.toString();
     }
 
     @Override
-    public String process(TemplateRule templateRule, Map<String, Object> model) {
+    public String render(TemplateRule templateRule, Map<String, Object> model) {
         StringWriter writer = new StringWriter();
-        process(templateRule, null, model, writer);
+        render(templateRule, null, model, writer);
         return writer.toString();
     }
 
     @Override
-    public void process(String templateId, Activity activity) {
-        process(templateId, activity, null, null);
+    public void render(String templateId, Activity activity) {
+        render(templateId, activity, null, null);
     }
 
     @Override
-    public void process(TemplateRule templateRule, Activity activity) {
-        process(templateRule, activity, null, null);
+    public void render(TemplateRule templateRule, Activity activity) {
+        render(templateRule, activity, null, null);
     }
 
     @Override
-    public void process(String templateId, Activity activity, Map<String, Object> model) {
-        process(templateId, activity, model, null);
+    public void render(String templateId, Activity activity, Map<String, Object> model) {
+        render(templateId, activity, model, null);
     }
 
     @Override
-    public void process(String templateId, Activity activity, Writer writer) {
-        process(templateId, activity, null, writer);
+    public void render(String templateId, Activity activity, Writer writer) {
+        render(templateId, activity, null, writer);
     }
 
     @Override
-    public void process(TemplateRule templateRule, Activity activity, Map<String, Object> model) {
-        process(templateRule, activity, model, null);
+    public void render(TemplateRule templateRule, Activity activity, Map<String, Object> model) {
+        render(templateRule, activity, model, null);
     }
 
     @Override
-    public void process(String templateId, Activity activity, Map<String, Object> model, Writer writer) {
+    public void render(String templateId, Activity activity, Map<String, Object> model, Writer writer) {
         TemplateRule templateRule = templateRuleRegistry.getTemplateRule(templateId);
         if (templateRule == null) {
             throw new TemplateNotFoundException(templateId);
         }
-        process(templateRule, activity, model, writer);
+        render(templateRule, activity, model, writer);
     }
 
     @Override
-    public void process(TemplateRule templateRule, Activity activity, Map<String, Object> model, Writer writer) {
+    public void render(TemplateRule templateRule, Activity activity, Map<String, Object> model, Writer writer) {
         try {
             if (activity == null) {
                 activity = context.getCurrentActivity();
@@ -167,7 +167,7 @@ public class ContextTemplateProcessor extends AbstractComponent implements Templ
                 }
             }
         } catch (Exception e) {
-            throw new TemplateProcessorException("An error occurred while processing template", templateRule, e);
+            throw new TemplateRenderingException("An error occurred during rendering of the template", templateRule, e);
         }
     }
 

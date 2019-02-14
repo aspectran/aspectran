@@ -22,84 +22,84 @@ import java.io.Writer;
 import java.util.Map;
 
 /**
- * The Interface TemplateProcessor.
+ * The Interface TemplateRenderer.
  *
  * <p>Created: 2016. 1. 14.</p>
  */
-public interface TemplateProcessor {
+public interface TemplateRenderer {
 
     /**
-     * Template processing with specified TemplateRule by its ID.
+     * Renders the template with specified TemplateRule by its ID.
      *
      * @param templateId the template id
      * @return the output string of the template
      */
-    String process(String templateId);
+    String render(String templateId);
 
     /**
-     * Template processing with specified TemplateRule by its ID.
+     * Renders the template with specified TemplateRule by its ID.
      *
      * @param templateId the template id
      * @param model the holder of the variables visible from the template (name-value pairs)
      * @return the output string of the template
      */
-    String process(String templateId, Map<String, Object> model);
+    String render(String templateId, Map<String, Object> model);
 
     /**
-     * Template processing with specified TemplateRule.
+     * Renders the template with specified TemplateRule.
      *
      * @param templateRule the template rule
      * @param model the holder of the variables visible from the template (name-value pairs)
      * @return the output string of the template
      */
-    String process(TemplateRule templateRule, Map<String, Object> model);
+    String render(TemplateRule templateRule, Map<String, Object> model);
 
     /**
-     * Template processing with specified TemplateRule by its ID.
+     * Renders the template with specified TemplateRule by its ID.
      *
      * @param templateId the template id
      * @param activity the activity
      */
-    void process(String templateId, Activity activity);
+    void render(String templateId, Activity activity);
 
     /**
-     * Template processing with specified TemplateRule.
+     * Renders the template with specified TemplateRule.
      *
      * @param templateRule the template rule
      * @param activity the activity
      */
-    void process(TemplateRule templateRule, Activity activity);
+    void render(TemplateRule templateRule, Activity activity);
 
     /**
-     * Template processing with specified TemplateRule by its ID.
+     * Renders the template with specified TemplateRule by its ID.
      *
      * @param templateId the template id
      * @param activity the activity
      * @param model the holder of the variables visible from the template (name-value pairs)
      */
-    void process(String templateId, Activity activity, Map<String, Object> model);
+    void render(String templateId, Activity activity, Map<String, Object> model);
 
     /**
-     * Template processing with specified TemplateRule by its ID.
+     * Renders the template with specified TemplateRule by its ID.
      *
      * @param templateId the template id
      * @param activity the activity
      * @param writer the {@link Writer} where the output of the template will go.
      *         {@link Writer#close()} is not called.
      */
-    void process(String templateId, Activity activity, Writer writer);
+    void render(String templateId, Activity activity, Writer writer);
 
     /**
-     * Template processing with specified TemplateRule.
+     * Renders the template with specified TemplateRule.
      *
      * @param templateRule the template rule
      * @param activity the activity
      * @param model the holder of the variables visible from the template (name-value pairs)
      */
-    void process(TemplateRule templateRule, Activity activity, Map<String, Object> model);
+    void render(TemplateRule templateRule, Activity activity, Map<String, Object> model);
 
     /**
-     * Template processing with specified TemplateRule by its ID.
+     * TRenders the template with specified TemplateRule by its ID.
      * Writing the generated output to the supplied {@link Writer}.
      *
      * @param templateId the template id
@@ -108,10 +108,10 @@ public interface TemplateProcessor {
      * @param writer the {@link Writer} where the output of the template will go.
      *         {@link Writer#close()} is not called.
      */
-    void process(String templateId, Activity activity, Map<String, Object> model, Writer writer);
+    void render(String templateId, Activity activity, Map<String, Object> model, Writer writer);
 
     /**
-     * Template processing with specified TemplateRule.
+     * Renders the template with specified TemplateRule.
      * Writing the generated output to the supplied {@link Writer}.
      *
      * @param templateRule the template rule
@@ -120,6 +120,6 @@ public interface TemplateProcessor {
      * @param writer the {@link Writer} where the output of the template will go.
      *         {@link Writer#close()} is not called.
      */
-    void process(TemplateRule templateRule, Activity activity, Map<String, Object> model, Writer writer);
+    void render(TemplateRule templateRule, Activity activity, Map<String, Object> model, Writer writer);
 
 }

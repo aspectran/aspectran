@@ -109,7 +109,7 @@ public class BeanReferenceInspector {
                     }
                 }
                 if (beanRule == null && beanRules == null) {
-                    beanRule = beanRuleRegistry.getConfigBeanRule(beanClass);
+                    beanRule = beanRuleRegistry.getConfiguredBeanRule(beanClass);
                 }
             } else if (beanId != null) {
                 beanRule = beanRuleRegistry.getBeanRule(beanId);

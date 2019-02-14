@@ -74,7 +74,7 @@ public interface BeanRegistry {
      * @return an instance of the bean
      * @since 2.0.0
      */
-    <T> T getConfigBean(Class<T> requiredType);
+    <T> T getConfiguredBean(Class<T> requiredType);
 
     /**
      * Return whether a bean with the specified id is present.

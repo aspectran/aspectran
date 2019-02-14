@@ -22,8 +22,8 @@ import com.aspectran.core.component.aspect.AspectRuleRegistry;
 import com.aspectran.core.component.bean.BeanRegistry;
 import com.aspectran.core.component.bean.ContextBeanRegistry;
 import com.aspectran.core.component.schedule.ScheduleRuleRegistry;
-import com.aspectran.core.component.template.ContextTemplateProcessor;
-import com.aspectran.core.component.template.TemplateProcessor;
+import com.aspectran.core.component.template.ContextTemplateRenderer;
+import com.aspectran.core.component.template.TemplateRenderer;
 import com.aspectran.core.component.translet.TransletRuleRegistry;
 import com.aspectran.core.context.env.ContextEnvironment;
 import com.aspectran.core.context.env.Environment;
@@ -56,7 +56,7 @@ public class AspectranActivityContext extends AbstractComponent implements Activ
 
     private ContextBeanRegistry contextBeanRegistry;
 
-    private ContextTemplateProcessor contextTemplateProcessor;
+    private ContextTemplateRenderer contextTemplateRenderer;
 
     private ScheduleRuleRegistry scheduleRuleRegistry;
 
@@ -125,17 +125,17 @@ public class AspectranActivityContext extends AbstractComponent implements Activ
     }
 
     @Override
-    public TemplateProcessor getTemplateProcessor() {
-        return contextTemplateProcessor;
+    public TemplateRenderer getTemplateRenderer() {
+        return contextTemplateRenderer;
     }
 
     /**
      * Sets the template processor.
      *
-     * @param contextTemplateProcessor the new template processor
+     * @param contextTemplateRenderer the new template processor
      */
-    public void setContextTemplateProcessor(ContextTemplateProcessor contextTemplateProcessor) {
-        this.contextTemplateProcessor = contextTemplateProcessor;
+    public void setContextTemplateRenderer(ContextTemplateRenderer contextTemplateRenderer) {
+        this.contextTemplateRenderer = contextTemplateRenderer;
     }
 
     @Override
@@ -218,8 +218,8 @@ public class AspectranActivityContext extends AbstractComponent implements Activ
         if (contextBeanRegistry != null) {
             contextBeanRegistry.initialize();
         }
-        if (contextTemplateProcessor != null) {
-            contextTemplateProcessor.initialize();
+        if (contextTemplateRenderer != null) {
+            contextTemplateRenderer.initialize();
         }
         if (scheduleRuleRegistry != null) {
             scheduleRuleRegistry.initialize();
@@ -242,9 +242,9 @@ public class AspectranActivityContext extends AbstractComponent implements Activ
             scheduleRuleRegistry.destroy();
             scheduleRuleRegistry = null;
         }
-        if (contextTemplateProcessor != null) {
-            contextTemplateProcessor.destroy();
-            contextTemplateProcessor = null;
+        if (contextTemplateRenderer != null) {
+            contextTemplateRenderer.destroy();
+            contextTemplateRenderer = null;
         }
         if (contextBeanRegistry != null) {
             contextBeanRegistry.destroy();

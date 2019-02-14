@@ -60,7 +60,7 @@ public class BeanRuleRegistry {
 
     private final Map<Class<?>, Set<BeanRule>> typeBasedBeanRuleMap = new LinkedHashMap<>(256);
 
-    private final Map<Class<?>, BeanRule> configBeanRuleMap = new LinkedHashMap<>(256);
+    private final Map<Class<?>, BeanRule> configuredBeanRuleMap = new LinkedHashMap<>(256);
 
     private final Set<Class<?>> ignoredDependencyInterfaces = new HashSet<>();
 
@@ -122,8 +122,8 @@ public class BeanRuleRegistry {
         }
     }
 
-    public BeanRule getConfigBeanRule(Class<?> requiredType) {
-        return configBeanRuleMap.get(requiredType);
+    public BeanRule getConfiguredBeanRule(Class<?> requiredType) {
+        return configuredBeanRuleMap.get(requiredType);
     }
 
     public boolean containsBeanRule(Object idOrRequiredType) {
@@ -153,8 +153,8 @@ public class BeanRuleRegistry {
         return typeBasedBeanRuleMap;
     }
 
-    public Map<Class<?>, BeanRule> getConfigBeanRuleMap() {
-        return configBeanRuleMap;
+    public Map<Class<?>, BeanRule> getConfiguredBeanRuleMap() {
+        return configuredBeanRuleMap;
     }
 
     public Collection<BeanRule> getIdBasedBeanRules() {
@@ -165,11 +165,11 @@ public class BeanRuleRegistry {
         return typeBasedBeanRuleMap.values();
     }
 
-    public Collection<BeanRule> getConfigBeanRules() {
-        return configBeanRuleMap.values();
+    public Collection<BeanRule> getConfiguredBeanRules() {
+        return configuredBeanRuleMap.values();
     }
 
-    public void scanConfigBeans(String... basePackages) throws IOException {
+    public void scanConfiguredBeans(String... basePackages) throws IOException {
         if (basePackages == null || basePackages.length == 0) {
             return;
         }
@@ -180,7 +180,7 @@ public class BeanRuleRegistry {
                 if (scannedClass.isAnnotationPresent(Component.class)) {
                     BeanRule beanRule = new BeanRule();
                     beanRule.setBeanClass(scannedClass);
-                    saveConfigBeanRule(beanRule);
+                    saveConfiguredBeanRule(beanRule);
                 }
             });
         }
@@ -250,7 +250,7 @@ public class BeanRuleRegistry {
             if (!beanRule.isFactoryOffered()) {
                 if (targetBeanClass.isAnnotationPresent(Component.class)) {
                     // bean rule for configuration
-                    saveConfigBeanRule(beanRule);
+                    saveConfiguredBeanRule(beanRule);
                 } else {
                     saveBeanRule(targetBeanClass, beanRule);
                     saveBeanRule(targetBeanClass.getInterfaces(), beanRule);
@@ -291,11 +291,11 @@ public class BeanRuleRegistry {
         }
     }
 
-    private void saveConfigBeanRule(BeanRule beanRule) {
+    private void saveConfiguredBeanRule(BeanRule beanRule) {
         if (beanRule.getBeanClass() == null) {
             throw new AspectranRuntimeException("Illegal Bean Rule " + beanRule);
         }
-        configBeanRuleMap.put(beanRule.getBeanClass(), beanRule);
+        configuredBeanRuleMap.put(beanRule.getBeanClass(), beanRule);
     }
 
     public void postProcess(ContextRuleAssistant assistant) throws IllegalRuleException {

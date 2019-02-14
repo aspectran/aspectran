@@ -103,8 +103,8 @@ public class ChooseWhenRule implements ActionRuleApplicable, ResponseRuleApplica
     }
 
     @Override
-    public Executable applyActionRule(ConfigBeanMethodActionRule configBeanMethodActionRule) {
-        Executable action = touchActionList().applyActionRule(configBeanMethodActionRule);
+    public Executable applyActionRule(AnnotatedMethodActionRule annotatedMethodActionRule) {
+        Executable action = touchActionList().applyActionRule(annotatedMethodActionRule);
         action.setCaseNo(caseNo);
         return action;
     }

@@ -26,7 +26,7 @@ import com.aspectran.core.component.aspect.pointcut.PointcutFactory;
 import com.aspectran.core.component.bean.BeanRuleRegistry;
 import com.aspectran.core.component.bean.ContextBeanRegistry;
 import com.aspectran.core.component.schedule.ScheduleRuleRegistry;
-import com.aspectran.core.component.template.ContextTemplateProcessor;
+import com.aspectran.core.component.template.ContextTemplateRenderer;
 import com.aspectran.core.component.template.TemplateRuleRegistry;
 import com.aspectran.core.component.translet.TransletRuleRegistry;
 import com.aspectran.core.context.ActivityContext;
@@ -354,7 +354,7 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
         ContextBeanRegistry contextBeanRegistry = new ContextBeanRegistry(activityContext, beanRuleRegistry, beanProxifierType);
 
         TemplateRuleRegistry templateRuleRegistry = assistant.getTemplateRuleRegistry();
-        ContextTemplateProcessor contextTemplateProcessor = new ContextTemplateProcessor(activityContext, templateRuleRegistry);
+        ContextTemplateRenderer contextTemplateRenderer = new ContextTemplateRenderer(activityContext, templateRuleRegistry);
 
         ScheduleRuleRegistry scheduleRuleRegistry = assistant.getScheduleRuleRegistry();
         TransletRuleRegistry transletRuleRegistry = assistant.getTransletRuleRegistry();
@@ -362,7 +362,7 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
         activityContext.setAspectRuleRegistry(aspectRuleRegistry);
         activityContext.setContextBeanRegistry(contextBeanRegistry);
         activityContext.setScheduleRuleRegistry(scheduleRuleRegistry);
-        activityContext.setContextTemplateProcessor(contextTemplateProcessor);
+        activityContext.setContextTemplateRenderer(contextTemplateRenderer);
         activityContext.setTransletRuleRegistry(transletRuleRegistry);
         activityContext.setDescription(assistant.getAssistantLocal().getDescription());
 

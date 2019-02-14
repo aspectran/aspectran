@@ -70,13 +70,13 @@ class EmbeddedAspectranTest {
         params.setParameter("name", "tester");
         params.setParameter("email", "tester@aspectran.com");
 
-        String echo = aspectran.template("echo", params);
+        String echo = aspectran.render("echo", params);
         System.out.println(echo);
 
-        String selectQuery = aspectran.template("selectQuery", params);
+        String selectQuery = aspectran.render("selectQuery", params);
         System.out.println(selectQuery);
 
-        String updateQuery = aspectran.template("updateQuery", params);
+        String updateQuery = aspectran.render("updateQuery", params);
         System.out.println(updateQuery);
     }
 

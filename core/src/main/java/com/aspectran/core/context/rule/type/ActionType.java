@@ -23,7 +23,7 @@ package com.aspectran.core.context.rule.type;
 public enum ActionType {
 
     BEAN_METHOD("beanMethod"),
-    CONFIG_BEAN_METHOD("configBeanMethod"),
+    ANNOTATED_METHOD("annotatedMethod"),
     INCLUDE("include"),
     ECHO("echo"),
     HEADER("header");

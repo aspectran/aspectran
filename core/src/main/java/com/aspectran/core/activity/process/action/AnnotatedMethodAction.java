@@ -17,7 +17,7 @@ package com.aspectran.core.activity.process.action;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.process.ActionList;
-import com.aspectran.core.context.rule.ConfigBeanMethodActionRule;
+import com.aspectran.core.context.rule.AnnotatedMethodActionRule;
 import com.aspectran.core.context.rule.type.ActionType;
 import com.aspectran.core.util.MethodUtils;
 import com.aspectran.core.util.ToStringBuilder;
@@ -28,41 +28,41 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
- * The ConfigBeanMethodAction that invoking method in the bean instance.
+ * The AnnotatedMethodAction that invoking method in the bean instance.
  * 
  * <p>Created: 2016. 2. 9.</p>
  *
  * @since 2.0.0
  */
-public class ConfigBeanMethodAction extends AbstractAction {
+public class AnnotatedMethodAction extends AbstractAction {
 
-    private static final Log log = LogFactory.getLog(ConfigBeanMethodAction.class);
+    private static final Log log = LogFactory.getLog(AnnotatedMethodAction.class);
 
-    private final ConfigBeanMethodActionRule configBeanMethodActionRule;
+    private final AnnotatedMethodActionRule annotatedMethodActionRule;
 
-    private final Class<?> configBeanClass;
+    private final Class<?> beanClass;
 
     /**
-     * Instantiates a new ConfigBeanMethodAction.
+     * Instantiates a new AnnotatedMethodAction.
      *
-     * @param configBeanMethodActionRule the config bean method action rule
+     * @param annotatedMethodActionRule the annotated method action rule
      * @param parent the parent of this action
      */
-    public ConfigBeanMethodAction(ConfigBeanMethodActionRule configBeanMethodActionRule, ActionList parent) {
+    public AnnotatedMethodAction(AnnotatedMethodActionRule annotatedMethodActionRule, ActionList parent) {
         super(parent);
 
-        this.configBeanMethodActionRule = configBeanMethodActionRule;
-        this.configBeanClass = configBeanMethodActionRule.getConfigBeanClass();
+        this.annotatedMethodActionRule = annotatedMethodActionRule;
+        this.beanClass = annotatedMethodActionRule.getBeanClass();
     }
 
     @Override
     public Object execute(Activity activity) throws Exception {
         try {
-            Object bean = activity.getConfigBean(configBeanClass);
-            return invokeMethod(activity, bean, configBeanMethodActionRule.getMethod(),
-                    configBeanMethodActionRule.isRequiresTranslet());
+            Object bean = activity.getConfiguredBean(beanClass);
+            return invokeMethod(activity, bean, annotatedMethodActionRule.getMethod(),
+                    annotatedMethodActionRule.isRequiresTranslet());
         } catch (Exception e) {
-            log.error("Failed to execute config bean method action " + configBeanMethodActionRule);
+            log.error("Failed to execute annotated bean method action " + annotatedMethodActionRule);
             throw e;
         }
     }
@@ -79,17 +79,17 @@ public class ConfigBeanMethodAction extends AbstractAction {
     }
 
     /**
-     * Returns the config bean method action rule.
+     * Returns the annotated bean method action rule.
      *
-     * @return the config bean method action rule
+     * @return the annotated bean method action rule
      */
-    public ConfigBeanMethodActionRule getConfigBeanMethodActionRule() {
-        return configBeanMethodActionRule;
+    public AnnotatedMethodActionRule getAnnotatedMethodActionRule() {
+        return annotatedMethodActionRule;
     }
 
     @Override
     public String getActionId() {
-        return configBeanMethodActionRule.getActionId();
+        return annotatedMethodActionRule.getActionId();
     }
 
     @Override
@@ -99,20 +99,20 @@ public class ConfigBeanMethodAction extends AbstractAction {
 
     @Override
     public ActionType getActionType() {
-        return ActionType.CONFIG_BEAN_METHOD;
+        return ActionType.ANNOTATED_METHOD;
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <T> T getActionRule() {
-        return (T)configBeanMethodActionRule;
+        return (T) annotatedMethodActionRule;
     }
 
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.append("actionType", getActionType());
-        tsb.append("configBeanMethodActionRule", configBeanMethodActionRule);
+        tsb.append("annotatedMethodActionRule", annotatedMethodActionRule);
         return tsb.toString();
     }
 

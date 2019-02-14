@@ -23,7 +23,7 @@ import com.aspectran.core.util.ToStringBuilder;
 import java.lang.reflect.Method;
 
 /**
- * The Class BeanActionRule.
+ * The Class BeanMethodActionRule.
  * 
  * <p>Created: 2008. 03. 22 PM 5:50:35</p>
  */

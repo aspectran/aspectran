@@ -318,11 +318,11 @@ public abstract class AdviceActivity extends AbstractActivity {
                             putAspectAdviceBean(aspectAdviceRule.getAspectId(), adviceBean);
                         }
                     }
-                } else if (action.getActionType() == ActionType.CONFIG_BEAN_METHOD) {
+                } else if (action.getActionType() == ActionType.ANNOTATED_METHOD) {
                     // If Annotated Aspect
                     Object adviceBean = getAspectAdviceBean(aspectAdviceRule.getAspectId());
                     if (adviceBean == null) {
-                        adviceBean = getConfigBean(aspectAdviceRule.getAdviceBeanClass());
+                        adviceBean = getConfiguredBean(aspectAdviceRule.getAdviceBeanClass());
                         putAspectAdviceBean(aspectAdviceRule.getAspectId(), adviceBean);
                     }
                 }

@@ -69,8 +69,8 @@ public abstract class AbstractResponseRule implements ActionRuleApplicable {
     }
 
     @Override
-    public Executable applyActionRule(ConfigBeanMethodActionRule configBeanMethodActionRule) {
-        return touchActionList().applyActionRule(configBeanMethodActionRule);
+    public Executable applyActionRule(AnnotatedMethodActionRule annotatedMethodActionRule) {
+        return touchActionList().applyActionRule(annotatedMethodActionRule);
     }
 
     @Override

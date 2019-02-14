@@ -42,7 +42,7 @@ public interface EmbeddedAspectran extends CoreService {
     SessionAdapter newSessionAdapter();
 
     /**
-     * Execute the translet.
+     * Executes the translet.
      *
      * @param name the translet name
      * @return the {@code Translet} object
@@ -50,7 +50,7 @@ public interface EmbeddedAspectran extends CoreService {
     Translet translate(String name);
 
     /**
-     * Execute the translet.
+     * Executes the translet with the given parameters.
      *
      * @param name the translet name
      * @param parameterMap the parameter map
@@ -59,7 +59,7 @@ public interface EmbeddedAspectran extends CoreService {
     Translet translate(String name, ParameterMap parameterMap);
 
     /**
-     * Execute the translet.
+     * Executes the translet with the given parameters and attributes.
      *
      * @param name the translet name
      * @param parameterMap the parameter map
@@ -69,7 +69,7 @@ public interface EmbeddedAspectran extends CoreService {
     Translet translate(String name, ParameterMap parameterMap, Map<String, Object> attributeMap);
 
     /**
-     * Execute the translet.
+     * Executes the translet with the given parameters.
      *
      * @param name the translet name
      * @param attributeMap the attribute map
@@ -78,7 +78,7 @@ public interface EmbeddedAspectran extends CoreService {
     Translet translate(String name, Map<String, Object> attributeMap);
 
     /**
-     * Execute the translet.
+     * Executes the translet without the supplied variables.
      *
      * @param name the translet name
      * @param method the request method
@@ -87,7 +87,7 @@ public interface EmbeddedAspectran extends CoreService {
     Translet translate(String name, MethodType method);
 
     /**
-     * Execute the translet.
+     * Executes the translet with the given parameters.
      *
      * @param name the translet name
      * @param method the request method
@@ -97,7 +97,7 @@ public interface EmbeddedAspectran extends CoreService {
     Translet translate(String name, MethodType method, ParameterMap parameterMap);
 
     /**
-     * Execute the translet.
+     * Executes the translet with the given attributes.
      *
      * @param name the translet name
      * @param method the request method
@@ -107,7 +107,7 @@ public interface EmbeddedAspectran extends CoreService {
     Translet translate(String name, MethodType method, Map<String, Object> attributeMap);
 
     /**
-     * Execute the translet.
+     * Executes the translet with the given parameters and attributes.
      *
      * @param name the translet name
      * @param method the request method
@@ -118,40 +118,40 @@ public interface EmbeddedAspectran extends CoreService {
     Translet translate(String name, MethodType method, ParameterMap parameterMap, Map<String, Object> attributeMap);
 
     /**
-     * Evaluate the template without any provided variables.
+     * Renders the template without the supplied variables.
      *
      * @param templateId the template id
      * @return the output string of the template
      */
-    String template(String templateId);
+    String render(String templateId);
 
     /**
-     * Evaluate the template with a set of parameters.
+     * Renders the template with the given parameters.
      *
      * @param templateId the template id
      * @param parameterMap the parameter map
      * @return the output string of the template
      */
-    String template(String templateId, ParameterMap parameterMap);
+    String render(String templateId, ParameterMap parameterMap);
 
     /**
-     * Evaluate the template with a set of parameters.
+     * Renders the template with the given attributes.
      *
      * @param templateId the template id
      * @param attributeMap the attribute map
      * @return the output string of the template
      */
-    String template(String templateId, Map<String, Object> attributeMap);
+    String render(String templateId, Map<String, Object> attributeMap);
 
     /**
-     * Evaluate the template with a set of parameters and a set of attributes.
+     * Renders the template with the given parameters and attributes.
      *
      * @param templateId the template id
      * @param parameterMap the parameter map
      * @param attributeMap the attribute map
      * @return the output string of the template
      */
-    String template(String templateId, ParameterMap parameterMap, Map<String, Object> attributeMap);
+    String render(String templateId, ParameterMap parameterMap, Map<String, Object> attributeMap);
 
     /**
      * Stop the service and release all allocated resources.

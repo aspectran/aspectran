@@ -70,7 +70,7 @@ class ActivityContextBuilderTest {
 
         builder.setActiveProfiles("dev", "debug");
         ActivityContext context1 = builder.build("/config/sample/test-config.xml");
-        String result = context1.getTemplateProcessor().process("echo1");
+        String result = context1.getTemplateRenderer().render("echo1");
         //System.out.println(result);
         assertEquals("ECHO-1", result);
 
@@ -85,7 +85,7 @@ class ActivityContextBuilderTest {
 
         builder.setActiveProfiles("local");
         ActivityContext context2 = builder.build();
-        String result2 = context2.getTemplateProcessor().process("echo2");
+        String result2 = context2.getTemplateRenderer().render("echo2");
         //System.out.println(result2);
         assertEquals("ECHO-2", result2);
 

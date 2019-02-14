@@ -67,10 +67,10 @@ class BeanTest {
     @Test
     void testProperties() {
         beanRegistry.getBean("properties");
-        String property1 = context.getTemplateProcessor().process("property-1");
-        String property2 = context.getTemplateProcessor().process("property-2");
-        String property3 = context.getTemplateProcessor().process("property-3");
-        String property4 = context.getTemplateProcessor().process("property-4");
+        String property1 = context.getTemplateRenderer().render("property-1");
+        String property2 = context.getTemplateRenderer().render("property-2");
+        String property3 = context.getTemplateRenderer().render("property-3");
+        String property4 = context.getTemplateRenderer().render("property-4");
         assertEquals(property1, "DEV-This is a Property-1");
         assertEquals(property2, "DEV-This is a Property-2");
         assertEquals(property3, "DEV-This is a Property-3");

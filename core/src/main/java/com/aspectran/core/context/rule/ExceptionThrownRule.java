@@ -16,7 +16,7 @@
 package com.aspectran.core.context.rule;
 
 import com.aspectran.core.activity.process.action.BeanMethodAction;
-import com.aspectran.core.activity.process.action.ConfigBeanMethodAction;
+import com.aspectran.core.activity.process.action.AnnotatedMethodAction;
 import com.aspectran.core.activity.process.action.EchoAction;
 import com.aspectran.core.activity.process.action.Executable;
 import com.aspectran.core.activity.process.action.HeaderAction;
@@ -77,7 +77,7 @@ public class ExceptionThrownRule implements ActionRuleApplicable, ResponseRuleAp
         return action;
     }
 
-    public void setAction(ConfigBeanMethodAction action) {
+    public void setAction(AnnotatedMethodAction action) {
         this.action = action;
     }
 
@@ -135,9 +135,9 @@ public class ExceptionThrownRule implements ActionRuleApplicable, ResponseRuleAp
     }
 
     @Override
-    public Executable applyActionRule(ConfigBeanMethodActionRule configBeanMethodActionRule) {
+    public Executable applyActionRule(AnnotatedMethodActionRule annotatedMethodActionRule) {
         throw new IllegalArgumentException(
-                "Cannot apply the config bean method action rule to the exception thrown rule");
+                "Cannot apply the annotated method action rule to the exception thrown rule");
     }
 
     @Override
@@ -215,7 +215,7 @@ public class ExceptionThrownRule implements ActionRuleApplicable, ResponseRuleAp
         return response;
     }
 
-    public static ExceptionThrownRule newInstance(Class<? extends Throwable>[] types, ConfigBeanMethodAction action) {
+    public static ExceptionThrownRule newInstance(Class<? extends Throwable>[] types, AnnotatedMethodAction action) {
         ExceptionThrownRule exceptionThrownRule = new ExceptionThrownRule();
         if (types != null && types.length > 0) {
             String[] exceptionTypes = new String[types.length];

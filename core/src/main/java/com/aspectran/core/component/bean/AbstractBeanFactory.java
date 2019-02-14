@@ -17,7 +17,7 @@ package com.aspectran.core.component.bean;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.Translet;
-import com.aspectran.core.activity.process.action.ConfigBeanMethodAction;
+import com.aspectran.core.activity.process.action.AnnotatedMethodAction;
 import com.aspectran.core.component.AbstractComponent;
 import com.aspectran.core.component.bean.ablility.DisposableBean;
 import com.aspectran.core.component.bean.ablility.FactoryBean;
@@ -200,7 +200,7 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
                     bean = null;
                 } else {
                     if (factoryBeanClass.isAnnotationPresent(Component.class)) {
-                        bean = activity.getConfigBean(factoryBeanClass);
+                        bean = activity.getConfiguredBean(factoryBeanClass);
                     } else {
                         bean = activity.getBean(factoryBeanClass);
                     }
@@ -370,7 +370,7 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
         try {
             Method initMethod = beanRule.getInitMethod();
             boolean requiresTranslet = beanRule.isInitMethodRequiresTranslet();
-            ConfigBeanMethodAction.invokeMethod(activity, bean, initMethod, requiresTranslet);
+            AnnotatedMethodAction.invokeMethod(activity, bean, initMethod, requiresTranslet);
         } catch (Exception e) {
             throw new BeanCreationException("An exception occurred while executing an initialization method of the bean",
                     beanRule, e);
@@ -445,7 +445,7 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
                 instantiateSingleton(beanRule, activity);
             }
         }
-        for (BeanRule beanRule : beanRuleRegistry.getConfigBeanRules()) {
+        for (BeanRule beanRule : beanRuleRegistry.getConfiguredBeanRules()) {
             instantiateSingleton(beanRule, activity);
         }
     }
@@ -475,7 +475,7 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
                 failedDestroyes += doDestroySingleton(beanRule);
             }
         }
-        for (BeanRule beanRule : beanRuleRegistry.getConfigBeanRules()) {
+        for (BeanRule beanRule : beanRuleRegistry.getConfiguredBeanRules()) {
             failedDestroyes += doDestroySingleton(beanRule);
         }
         if (failedDestroyes > 0) {

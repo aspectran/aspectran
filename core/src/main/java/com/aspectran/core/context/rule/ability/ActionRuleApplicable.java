@@ -17,7 +17,7 @@ package com.aspectran.core.context.rule.ability;
 
 import com.aspectran.core.activity.process.action.Executable;
 import com.aspectran.core.context.rule.BeanMethodActionRule;
-import com.aspectran.core.context.rule.ConfigBeanMethodActionRule;
+import com.aspectran.core.context.rule.AnnotatedMethodActionRule;
 import com.aspectran.core.context.rule.EchoActionRule;
 import com.aspectran.core.context.rule.HeaderActionRule;
 import com.aspectran.core.context.rule.IncludeActionRule;
@@ -40,12 +40,12 @@ public interface ActionRuleApplicable {
     Executable applyActionRule(BeanMethodActionRule beanMethodActionRule);
 
     /**
-     * Adds the config bean method action rule.
+     * Adds the annotated method action rule.
      *
-     * @param configBeanMethodActionRule the config bean method action rule
+     * @param annotatedMethodActionRule the annotated method action rule
      * @return an instance of the executable action
      */
-    Executable applyActionRule(ConfigBeanMethodActionRule configBeanMethodActionRule);
+    Executable applyActionRule(AnnotatedMethodActionRule annotatedMethodActionRule);
 
     /**
      * Adds the include action rule.

@@ -18,43 +18,40 @@ package com.aspectran.core.component.template;
 import com.aspectran.core.context.rule.TemplateRule;
 
 /**
- * The Class TemplateRuleException.
+ * Thrown when an error occurs during template rendering.
+ * 
+ * <p>Created: 2016. 01. 15.</p>
  */
-public class TemplateRuleException extends TemplateException {
+public class TemplateRenderingException extends TemplateException {
 
     /** @serial */
-    private static final long serialVersionUID = -3101097393726872156L;
+    private static final long serialVersionUID = -1495281620922964138L;
 
     private final TemplateRule templateRule;
 
     /**
-     * Instantiates a new TemplateRuleException.
+     * Instantiates a new TemplateRenderingException.
      *
      * @param msg the detail message
      * @param templateRule the template rule
      */
-    public TemplateRuleException(String msg, TemplateRule templateRule) {
+    public TemplateRenderingException(String msg, TemplateRule templateRule) {
         super(msg + " " + templateRule);
         this.templateRule = templateRule;
     }
 
     /**
-     * Instantiates a new TemplateRuleException.
+     * Instantiates a new TemplateRenderingException.
      *
      * @param msg the detail message
      * @param templateRule the template rule
      * @param cause the root cause
      */
-    public TemplateRuleException(String msg, TemplateRule templateRule, Throwable cause) {
+    public TemplateRenderingException(String msg, TemplateRule templateRule, Throwable cause) {
         super(msg + " " + templateRule, cause);
         this.templateRule = templateRule;
     }
 
-    /**
-     * Gets bean rule.
-     *
-     * @return the template rule
-     */
     public TemplateRule getTemplateRule() {
         return templateRule;
     }

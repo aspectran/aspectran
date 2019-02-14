@@ -16,7 +16,7 @@
 package com.aspectran.core.context.rule;
 
 import com.aspectran.core.activity.process.action.BeanMethodAction;
-import com.aspectran.core.activity.process.action.ConfigBeanMethodAction;
+import com.aspectran.core.activity.process.action.AnnotatedMethodAction;
 import com.aspectran.core.activity.process.action.EchoAction;
 import com.aspectran.core.activity.process.action.Executable;
 import com.aspectran.core.activity.process.action.HeaderAction;
@@ -92,9 +92,9 @@ public class AspectAdviceRule implements ActionRuleApplicable {
     }
 
     @Override
-    public Executable applyActionRule(ConfigBeanMethodActionRule configBeanMethodActionRule) {
+    public Executable applyActionRule(AnnotatedMethodActionRule annotatedMethodActionRule) {
         throw new UnsupportedOperationException(
-                "Cannot apply the config bean method action Rule to the Aspect Advice Rule");
+                "Cannot apply the annotated method action Rule to the Aspect Advice Rule");
     }
 
     @Override
@@ -132,7 +132,7 @@ public class AspectAdviceRule implements ActionRuleApplicable {
         return action;
     }
 
-    public void setExecutableAction(ConfigBeanMethodAction action) {
+    public void setExecutableAction(AnnotatedMethodAction action) {
         this.action = action;
     }
 

@@ -16,23 +16,23 @@
 package com.aspectran.core.context.rule;
 
 import com.aspectran.core.activity.Translet;
-import com.aspectran.core.activity.process.action.ConfigBeanMethodAction;
+import com.aspectran.core.activity.process.action.AnnotatedMethodAction;
 import com.aspectran.core.util.ToStringBuilder;
 
 import java.lang.reflect.Method;
 
 /**
- * The Class ConfigBeanMethodActionRule.
+ * The Class AnnotatedMethodActionRule.
  * 
  * <p>Created: 2016. 2. 10.</p>
  * 
  * @since 2.0.0
  */
-public class ConfigBeanMethodActionRule {
+public class AnnotatedMethodActionRule {
 
     private String actionId;
 
-    private Class<?> configBeanClass;
+    private Class<?> beanClass;
 
     private Method method;
 
@@ -46,12 +46,12 @@ public class ConfigBeanMethodActionRule {
         this.actionId = actionId;
     }
 
-    public Class<?> getConfigBeanClass() {
-        return configBeanClass;
+    public Class<?> getBeanClass() {
+        return beanClass;
     }
 
-    public void setConfigBeanClass(Class<?> configBeanClass) {
-        this.configBeanClass = configBeanClass;
+    public void setBeanClass(Class<?> beanClass) {
+        this.beanClass = beanClass;
     }
 
     public Method getMethod() {
@@ -74,25 +74,25 @@ public class ConfigBeanMethodActionRule {
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
-        if (configBeanClass != null) {
-            tsb.append("class", configBeanClass.getName());
+        if (beanClass != null) {
+            tsb.append("class", beanClass.getName());
         }
         tsb.append("method", method);
         return tsb.toString();
     }
 
     /**
-     * Returns a new derived instance of ConfigBeanMethodActionRule.
+     * Returns a new derived instance of AnnotatedMethodActionRule.
      *
      * @param actionClass the action class
      * @param method the method
-     * @return the config bean method action rule
+     * @return the annotated method action rule
      */
-    public static ConfigBeanMethodActionRule newInstance(Class<?> actionClass, Method method) {
-        ConfigBeanMethodActionRule configBeanMethodActionRule = new ConfigBeanMethodActionRule();
-        configBeanMethodActionRule.setConfigBeanClass(actionClass);
-        configBeanMethodActionRule.setMethod(method);
-        return configBeanMethodActionRule;
+    public static AnnotatedMethodActionRule newInstance(Class<?> actionClass, Method method) {
+        AnnotatedMethodActionRule annotatedMethodActionRule = new AnnotatedMethodActionRule();
+        annotatedMethodActionRule.setBeanClass(actionClass);
+        annotatedMethodActionRule.setMethod(method);
+        return annotatedMethodActionRule;
     }
 
     public static boolean isRequiresTranslet(Method method) {
@@ -104,11 +104,11 @@ public class ConfigBeanMethodActionRule {
         }
     }
 
-    public static ConfigBeanMethodAction newConfigBeanMethodAction(Class<?> configBeanClass, Method method) {
-        ConfigBeanMethodActionRule configBeanMethodActionRule = new ConfigBeanMethodActionRule();
-        configBeanMethodActionRule.setConfigBeanClass(configBeanClass);
-        configBeanMethodActionRule.setMethod(method);
-        return new ConfigBeanMethodAction(configBeanMethodActionRule, null);
+    public static AnnotatedMethodAction newAnnotatedMethodAction(Class<?> beanClass, Method method) {
+        AnnotatedMethodActionRule annotatedMethodActionRule = new AnnotatedMethodActionRule();
+        annotatedMethodActionRule.setBeanClass(beanClass);
+        annotatedMethodActionRule.setMethod(method);
+        return new AnnotatedMethodAction(annotatedMethodActionRule, null);
     }
 
 }

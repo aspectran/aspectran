@@ -19,7 +19,7 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.DefaultActivity;
 import com.aspectran.core.activity.request.FileParameter;
 import com.aspectran.core.component.bean.RequiredTypeBeanNotFoundException;
-import com.aspectran.core.component.template.TemplateProcessor;
+import com.aspectran.core.component.template.TemplateRenderer;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.rule.type.TokenDirectiveType;
@@ -452,10 +452,10 @@ public class TokenExpression implements TokenEvaluator {
      * @return the generated output as {@code String}
      */
     protected String getTemplate(Token token) {
-        TemplateProcessor templateProcessor = activity.getActivityContext().getTemplateProcessor();
+        TemplateRenderer templateRenderer = activity.getActivityContext().getTemplateRenderer();
 
         StringWriter writer = new StringWriter();
-        templateProcessor.process(token.getName(), activity, writer);
+        templateRenderer.render(token.getName(), activity, writer);
 
         String result = writer.toString();
         return (result != null ? result : token.getDefaultValue());

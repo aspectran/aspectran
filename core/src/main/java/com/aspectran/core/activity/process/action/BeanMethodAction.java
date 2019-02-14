@@ -120,7 +120,7 @@ public class BeanMethodAction extends AbstractAction {
                     Object[] args = createArguments(activity, argumentItemRuleMap, evaluator, beanMethodActionRule.isRequiresTranslet());
                     return method.invoke(bean, args);
                 } else {
-                    return ConfigBeanMethodAction.invokeMethod(activity, bean, method, beanMethodActionRule.isRequiresTranslet());
+                    return AnnotatedMethodAction.invokeMethod(activity, bean, method, beanMethodActionRule.isRequiresTranslet());
                 }
             } else {
                 String methodName = beanMethodActionRule.getMethodName();

@@ -214,8 +214,8 @@ public abstract class AbstractActivity implements Activity {
     }
 
     @Override
-    public <T> T getConfigBean(Class<T> classType) {
-        return context.getBeanRegistry().getConfigBean(classType);
+    public <T> T getConfiguredBean(Class<T> classType) {
+        return context.getBeanRegistry().getConfiguredBean(classType);
     }
 
     @Override

@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.component.bean;
 
-import com.aspectran.core.component.template.TemplateProcessor;
+import com.aspectran.core.component.template.TemplateRenderer;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.builder.ActivityContextBuilder;
 import com.aspectran.core.context.builder.ActivityContextBuilderException;
@@ -73,8 +73,8 @@ class CallTest {
 
     @Test
     void testTemplateCall() {
-        TemplateProcessor templateProcessor = context.getTemplateProcessor();
-        String result1 = templateProcessor.process("template-2");
+        TemplateRenderer templateRenderer = context.getTemplateRenderer();
+        String result1 = templateRenderer.render("template-2");
 
         //System.out.println("-------------------------------");
         //System.out.println(" Test cases for template calls");
@@ -83,24 +83,24 @@ class CallTest {
         assertEquals("TEMPLATE-1", result1);
         //System.out.println(result1);
 
-        String result2 = templateProcessor.process("template-4");
+        String result2 = templateRenderer.render("template-4");
 
         assertEquals("TEMPLATE-3", result2);
         //System.out.println(result2);
 
-        String result4 = templateProcessor.process("aponStyle");
+        String result4 = templateRenderer.render("aponStyle");
         //System.out.println("=== aponStyle ===");
         //System.out.println(result4);
 
-        String result5 = templateProcessor.process("compactStyle");
+        String result5 = templateRenderer.render("compactStyle");
         //System.out.println("=== compactStyle ===");
         //System.out.println(result5);
 
-        String result6 = templateProcessor.process("compressedStyle");
+        String result6 = templateRenderer.render("compressedStyle");
         //System.out.println("=== compressedStyle ===");
         //System.out.println(result6);
 
-        String result7 = templateProcessor.process("aspectranVersion");
+        String result7 = templateRenderer.render("aspectranVersion");
         //System.out.println("=== static method call ===");
         //System.out.println(result7);
     }

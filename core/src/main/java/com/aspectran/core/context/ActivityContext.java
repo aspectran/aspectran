@@ -19,7 +19,7 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.component.aspect.AspectRuleRegistry;
 import com.aspectran.core.component.bean.BeanRegistry;
 import com.aspectran.core.component.schedule.ScheduleRuleRegistry;
-import com.aspectran.core.component.template.TemplateProcessor;
+import com.aspectran.core.component.template.TemplateRenderer;
 import com.aspectran.core.component.translet.TransletRuleRegistry;
 import com.aspectran.core.context.env.Environment;
 import com.aspectran.core.service.CoreService;
@@ -93,11 +93,11 @@ public interface ActivityContext {
     ScheduleRuleRegistry getScheduleRuleRegistry();
 
     /**
-     * Gets the template processor.
+     * Gets the template renderer.
      *
-     * @return the template processor
+     * @return the template renderer
      */
-    TemplateProcessor getTemplateProcessor();
+    TemplateRenderer getTemplateRenderer();
 
     /**
      * Gets the translet rule registry.
