@@ -84,7 +84,7 @@ public class BeanRuleAnalyzer {
             Class<?> targetBeanClass;
             if (m1 != null) {
                 beanRule.setFactoryMethod(m1);
-                beanRule.setFactoryAutowireRule(AnnotatedConfigParser.makeAutowireRuleForMethod(m1));
+                beanRule.setFactoryAutowireRule(AnnotatedConfigParser.makeAutowireRuleForMethod(m1, false));
                 targetBeanClass = m1.getReturnType();
             } else {
                 Method m2 = MethodUtils.getAccessibleMethod(beanClass, factoryMethodName);
@@ -93,7 +93,7 @@ public class BeanRuleAnalyzer {
                             "() on bean class: " + beanClass.getName(), beanRule);
                 }
                 beanRule.setFactoryMethod(m2);
-                beanRule.setFactoryAutowireRule(AnnotatedConfigParser.makeAutowireRuleForMethod(m2));
+                beanRule.setFactoryAutowireRule(AnnotatedConfigParser.makeAutowireRuleForMethod(m2, false));
                 targetBeanClass = m2.getReturnType();
             }
             beanRule.setTargetBeanClass(targetBeanClass);

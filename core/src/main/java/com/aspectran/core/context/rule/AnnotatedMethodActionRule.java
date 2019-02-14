@@ -36,7 +36,7 @@ public class AnnotatedMethodActionRule {
 
     private Method method;
 
-    private boolean requiresTranslet;
+    private AutowireRule autowireRule;
 
     public String getActionId() {
         return actionId;
@@ -60,15 +60,18 @@ public class AnnotatedMethodActionRule {
 
     public void setMethod(Method method) {
         this.method = method;
-        this.requiresTranslet = isRequiresTranslet(method);
     }
 
     public String getMethodName() {
         return (method != null ? method.getName() : null);
     }
 
-    public boolean isRequiresTranslet() {
-        return requiresTranslet;
+    public AutowireRule getAutowireRule() {
+        return autowireRule;
+    }
+
+    public void setAutowireRule(AutowireRule autowireRule) {
+        this.autowireRule = autowireRule;
     }
 
     @Override
@@ -78,21 +81,8 @@ public class AnnotatedMethodActionRule {
             tsb.append("class", beanClass.getName());
         }
         tsb.append("method", method);
+        tsb.append("autowireRule", autowireRule);
         return tsb.toString();
-    }
-
-    /**
-     * Returns a new derived instance of AnnotatedMethodActionRule.
-     *
-     * @param actionClass the action class
-     * @param method the method
-     * @return the annotated method action rule
-     */
-    public static AnnotatedMethodActionRule newInstance(Class<?> actionClass, Method method) {
-        AnnotatedMethodActionRule annotatedMethodActionRule = new AnnotatedMethodActionRule();
-        annotatedMethodActionRule.setBeanClass(actionClass);
-        annotatedMethodActionRule.setMethod(method);
-        return annotatedMethodActionRule;
     }
 
     public static boolean isRequiresTranslet(Method method) {

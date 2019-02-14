@@ -44,6 +44,8 @@ public class AutowireRule implements BeanReferenceInspectable {
 
     private String[] qualifiers;
 
+    private String[] formats;
+
     private Token token;
 
     private boolean required;
@@ -87,6 +89,14 @@ public class AutowireRule implements BeanReferenceInspectable {
 
     public void setQualifiers(String... qualifiers) {
         this.qualifiers = qualifiers;
+    }
+
+    public String[] getFormats() {
+        return formats;
+    }
+
+    public void setFormats(String[] formats) {
+        this.formats = formats;
     }
 
     public Token getToken() {

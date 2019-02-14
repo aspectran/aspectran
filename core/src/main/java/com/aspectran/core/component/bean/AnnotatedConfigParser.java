@@ -29,6 +29,7 @@ import com.aspectran.core.component.bean.annotation.Description;
 import com.aspectran.core.component.bean.annotation.Destroy;
 import com.aspectran.core.component.bean.annotation.Dispatch;
 import com.aspectran.core.component.bean.annotation.ExceptionThrown;
+import com.aspectran.core.component.bean.annotation.Format;
 import com.aspectran.core.component.bean.annotation.Forward;
 import com.aspectran.core.component.bean.annotation.Initialize;
 import com.aspectran.core.component.bean.annotation.Joinpoint;
@@ -50,11 +51,11 @@ import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.env.Environment;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.expr.token.TokenParser;
+import com.aspectran.core.context.rule.AnnotatedMethodActionRule;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.AutowireRule;
 import com.aspectran.core.context.rule.BeanRule;
-import com.aspectran.core.context.rule.AnnotatedMethodActionRule;
 import com.aspectran.core.context.rule.DispatchRule;
 import com.aspectran.core.context.rule.ExceptionThrownRule;
 import com.aspectran.core.context.rule.ForwardRule;
@@ -279,7 +280,7 @@ public class AnnotatedConfigParser {
         while (beanClass != null) {
             for (Method method : beanClass.getDeclaredMethods()) {
                 if (method.isAnnotationPresent(Autowired.class)) {
-                    AutowireRule autowireRule = makeAutowireRuleForMethod(method);
+                    AutowireRule autowireRule = makeAutowireRuleForMethod(method, false);
                     beanRule.addAutowireRule(autowireRule);
                     relater.relay(autowireRule);
                 } else if (method.isAnnotationPresent(Required.class)) {
@@ -366,7 +367,7 @@ public class AnnotatedConfigParser {
         return autowireRule;
     }
 
-    static AutowireRule makeAutowireRuleForMethod(Method method) {
+    static AutowireRule makeAutowireRuleForMethod(Method method, boolean withPramName) {
         Autowired autowiredAnno = method.getAnnotation(Autowired.class);
         boolean required = (autowiredAnno == null || autowiredAnno.required());
         Qualifier qualifierAnno = method.getAnnotation(Qualifier.class);
@@ -375,16 +376,22 @@ public class AnnotatedConfigParser {
         java.lang.reflect.Parameter[] params = method.getParameters();
         Class<?>[] paramTypes = new Class<?>[params.length];
         String[] paramQualifiers = new String[params.length];
+        String[] paramFormats = new String[params.length];
         for (int i = 0; i < params.length; i++) {
             Qualifier paramQualifierAnno = params[i].getAnnotation(Qualifier.class);
+            Format paramFormatAnno = params[i].getAnnotation(Format.class);
             String paramQualifier;
             if (paramQualifierAnno != null) {
                 paramQualifier = StringUtils.emptyToNull(paramQualifierAnno.value());
             } else {
                 paramQualifier = qualifier;
             }
+            if (withPramName && paramQualifier == null) {
+                paramQualifier = params[i].getName();
+            }
             paramTypes[i] = params[i].getType();
             paramQualifiers[i] = paramQualifier;
+            paramFormats[i] = (paramFormatAnno != null ? StringUtils.emptyToNull(paramFormatAnno.value()) : null);
         }
 
         AutowireRule autowireRule = new AutowireRule();
@@ -392,6 +399,7 @@ public class AnnotatedConfigParser {
         autowireRule.setTarget(method);
         autowireRule.setTypes(paramTypes);
         autowireRule.setQualifiers(paramQualifiers);
+        autowireRule.setFormats(paramFormats);
         autowireRule.setRequired(required);
         return autowireRule;
     }
@@ -554,7 +562,7 @@ public class AnnotatedConfigParser {
         beanRule.setFactoryBeanClass(beanClass);
         beanRule.setFactoryMethodName(method.getName());
         beanRule.setFactoryMethod(method);
-        beanRule.setFactoryAutowireRule(makeAutowireRuleForMethod(method));
+        beanRule.setFactoryAutowireRule(makeAutowireRuleForMethod(method, false));
         beanRule.setFactoryOffered(true);
         beanRule.setInitMethodName(initMethodName);
         beanRule.setDestroyMethodName(destroyMethodName);
@@ -660,6 +668,7 @@ public class AnnotatedConfigParser {
         annotatedMethodActionRule.setActionId(actionId);
         annotatedMethodActionRule.setBeanClass(beanClass);
         annotatedMethodActionRule.setMethod(method);
+        annotatedMethodActionRule.setAutowireRule(makeAutowireRuleForMethod(method, true));
         transletRule.applyActionRule(annotatedMethodActionRule);
 
         if (method.isAnnotationPresent(Dispatch.class)) {

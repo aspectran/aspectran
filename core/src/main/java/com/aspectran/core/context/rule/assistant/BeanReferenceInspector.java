@@ -161,7 +161,6 @@ public class BeanReferenceInspector {
         if (beanMethodActionRule.getArgumentItemRuleMap() == null) {
             Class<?> beanClass = beanRule.getTargetBeanClass();
             String methodName = beanMethodActionRule.getMethodName();
-
             Method m1 = MethodUtils.getAccessibleMethod(beanClass, methodName, BeanRuleAnalyzer.TRANSLET_ACTION_PARAMETER_TYPES);
             if (m1 != null) {
                 beanMethodActionRule.setMethod(m1);

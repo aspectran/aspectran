@@ -120,7 +120,7 @@ public class BeanMethodAction extends AbstractAction {
                     Object[] args = createArguments(activity, argumentItemRuleMap, evaluator, beanMethodActionRule.isRequiresTranslet());
                     return method.invoke(bean, args);
                 } else {
-                    return AnnotatedMethodAction.invokeMethod(activity, bean, method, beanMethodActionRule.isRequiresTranslet());
+                    return invokeMethod(activity, bean, method, beanMethodActionRule.isRequiresTranslet());
                 }
             } else {
                 String methodName = beanMethodActionRule.getMethodName();
@@ -181,6 +181,17 @@ public class BeanMethodAction extends AbstractAction {
         }
 
         return args;
+    }
+
+    public static Object invokeMethod(Activity activity, Object bean, Method method, boolean requiresTranslet)
+            throws IllegalAccessException, InvocationTargetException {
+        Object[] args;
+        if (requiresTranslet) {
+            args = new Object[] { activity.getTranslet() };
+        } else {
+            args = MethodUtils.EMPTY_OBJECT_ARRAY;
+        }
+        return method.invoke(bean, args);
     }
 
     private static Object invokeMethod(Activity activity, Object bean, String methodName,

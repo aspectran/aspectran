@@ -16,8 +16,8 @@
 package com.aspectran.core.component.bean;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.process.action.AnnotatedMethodAction;
+import com.aspectran.core.activity.process.action.BeanMethodAction;
 import com.aspectran.core.component.AbstractComponent;
 import com.aspectran.core.component.bean.ablility.DisposableBean;
 import com.aspectran.core.component.bean.ablility.FactoryBean;
@@ -370,7 +370,7 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
         try {
             Method initMethod = beanRule.getInitMethod();
             boolean requiresTranslet = beanRule.isInitMethodRequiresTranslet();
-            AnnotatedMethodAction.invokeMethod(activity, bean, initMethod, requiresTranslet);
+            BeanMethodAction.invokeMethod(activity, bean, initMethod, requiresTranslet);
         } catch (Exception e) {
             throw new BeanCreationException("An exception occurred while executing an initialization method of the bean",
                     beanRule, e);
@@ -382,26 +382,7 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
             Method factoryMethod = beanRule.getFactoryMethod();
             if (beanRule.getFactoryAutowireRule() != null) {
                 AutowireRule autowireRule = beanRule.getFactoryAutowireRule();
-                String[] qualifiers = autowireRule.getQualifiers();
-                Class<?>[] argTypes = autowireRule.getTypes();
-                Object[] args = new Object[argTypes.length];
-                for (int i = 0; i < argTypes.length; i++) {
-                    if (argTypes[i] == Translet.class) {
-                        args[i] = activity.getTranslet();
-                    } else {
-                        if (autowireRule.isRequired()) {
-                            args[i] = activity.getBean(argTypes[i], qualifiers[i]);
-                        } else {
-                            try {
-                                args[i] = activity.getBean(argTypes[i], qualifiers[i]);
-                            } catch (BeanNotFoundException | NoUniqueBeanException e) {
-                                args[i] = null;
-                                log.warn(e.getMessage());
-                            }
-                        }
-                    }
-                }
-                return factoryMethod.invoke(bean, args);
+                return AnnotatedMethodAction.invokeMethod(activity, bean, factoryMethod, autowireRule);
             } else {
                 return factoryMethod.invoke(bean, MethodUtils.EMPTY_OBJECT_ARRAY);
             }

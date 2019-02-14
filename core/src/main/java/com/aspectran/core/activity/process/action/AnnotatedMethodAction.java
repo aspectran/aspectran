@@ -16,16 +16,21 @@
 package com.aspectran.core.activity.process.action;
 
 import com.aspectran.core.activity.Activity;
+import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.context.rule.AnnotatedMethodActionRule;
+import com.aspectran.core.context.rule.AutowireRule;
 import com.aspectran.core.context.rule.type.ActionType;
-import com.aspectran.core.util.MethodUtils;
 import com.aspectran.core.util.ToStringBuilder;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 
 /**
  * The AnnotatedMethodAction that invoking method in the bean instance.
@@ -40,8 +45,6 @@ public class AnnotatedMethodAction extends AbstractAction {
 
     private final AnnotatedMethodActionRule annotatedMethodActionRule;
 
-    private final Class<?> beanClass;
-
     /**
      * Instantiates a new AnnotatedMethodAction.
      *
@@ -52,30 +55,57 @@ public class AnnotatedMethodAction extends AbstractAction {
         super(parent);
 
         this.annotatedMethodActionRule = annotatedMethodActionRule;
-        this.beanClass = annotatedMethodActionRule.getBeanClass();
     }
 
     @Override
     public Object execute(Activity activity) throws Exception {
         try {
-            Object bean = activity.getConfiguredBean(beanClass);
-            return invokeMethod(activity, bean, annotatedMethodActionRule.getMethod(),
-                    annotatedMethodActionRule.isRequiresTranslet());
+            Object bean = activity.getConfiguredBean(annotatedMethodActionRule.getBeanClass());
+            Method method = annotatedMethodActionRule.getMethod();
+            AutowireRule autowireRule = annotatedMethodActionRule.getAutowireRule();
+            return invokeMethod(activity, bean, method, autowireRule);
         } catch (Exception e) {
             log.error("Failed to execute annotated bean method action " + annotatedMethodActionRule);
             throw e;
         }
     }
 
-    public static Object invokeMethod(Activity activity, Object bean, Method method, boolean requiresTranslet)
-            throws IllegalAccessException, InvocationTargetException {
-        Object[] args;
-        if (requiresTranslet) {
-            args = new Object[] { activity.getTranslet() };
-        } else {
-            args = MethodUtils.EMPTY_OBJECT_ARRAY;
+    public static Object invokeMethod(Activity activity, Object bean, Method method, AutowireRule autowireRule)
+            throws InvocationTargetException, IllegalAccessException {
+        Translet translet = activity.getTranslet();
+        String[] qualifiers = autowireRule.getQualifiers();
+        String[] formats = autowireRule.getFormats();
+        Class<?>[] argTypes = autowireRule.getTypes();
+        Object[] args = new Object[argTypes.length];
+        for (int i = 0; i < argTypes.length; i++) {
+            Class<?> type = argTypes[i];
+            String name = qualifiers[i];
+            String format = formats[i];
+            args[i] = autowire(type, name, format, translet);
         }
         return method.invoke(bean, args);
+    }
+
+    private static Object autowire(Class<?> type, String name, String format, Translet translet) {
+        Object result = null;
+        if (translet != null) {
+            if (type == Translet.class) {
+                result = translet;
+            } else if (type == String.class) {
+                result = translet.getParameter(name);
+            } else if (type == Date.class) {
+                String value = translet.getParameter(name);
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
+                LocalDateTime ldt = LocalDateTime.parse(value, formatter);
+                result = Date.from(ldt.atZone(ZoneId.systemDefault()).toInstant());
+            } else if (type == Boolean.class) {
+                String value = translet.getParameter(name);
+                result = Boolean.valueOf(value);
+            } else if (type == Number.class) {
+                //TODO
+            }
+        }
+        return result;
     }
 
     /**
