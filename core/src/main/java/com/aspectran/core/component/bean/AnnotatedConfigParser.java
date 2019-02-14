@@ -37,11 +37,11 @@ import com.aspectran.core.component.bean.annotation.Profile;
 import com.aspectran.core.component.bean.annotation.Qualifier;
 import com.aspectran.core.component.bean.annotation.Redirect;
 import com.aspectran.core.component.bean.annotation.Request;
-import com.aspectran.core.component.bean.annotation.RequestAsDelete;
-import com.aspectran.core.component.bean.annotation.RequestAsGet;
-import com.aspectran.core.component.bean.annotation.RequestAsPatch;
-import com.aspectran.core.component.bean.annotation.RequestAsPost;
-import com.aspectran.core.component.bean.annotation.RequestAsPut;
+import com.aspectran.core.component.bean.annotation.RequestToDelete;
+import com.aspectran.core.component.bean.annotation.RequestToGet;
+import com.aspectran.core.component.bean.annotation.RequestToPatch;
+import com.aspectran.core.component.bean.annotation.RequestToPost;
+import com.aspectran.core.component.bean.annotation.RequestToPut;
 import com.aspectran.core.component.bean.annotation.Required;
 import com.aspectran.core.component.bean.annotation.Settings;
 import com.aspectran.core.component.bean.annotation.Transform;
@@ -205,11 +205,11 @@ public class AnnotatedConfigParser {
                 if (method.isAnnotationPresent(Bean.class)) {
                     parseBeanRule(beanClass, method, nameArray);
                 } else if (method.isAnnotationPresent(Request.class) ||
-                        method.isAnnotationPresent(RequestAsGet.class) ||
-                        method.isAnnotationPresent(RequestAsPost.class) ||
-                        method.isAnnotationPresent(RequestAsPut.class) ||
-                        method.isAnnotationPresent(RequestAsPatch.class) ||
-                        method.isAnnotationPresent(RequestAsDelete.class)) {
+                        method.isAnnotationPresent(RequestToGet.class) ||
+                        method.isAnnotationPresent(RequestToPost.class) ||
+                        method.isAnnotationPresent(RequestToPut.class) ||
+                        method.isAnnotationPresent(RequestToPatch.class) ||
+                        method.isAnnotationPresent(RequestToDelete.class)) {
                     parseTransletRule(beanClass, method, nameArray);
                 }
             }
@@ -577,11 +577,11 @@ public class AnnotatedConfigParser {
 
     private void parseTransletRule(Class<?> beanClass, Method method, String[] nameArray) throws IllegalRuleException {
         Request requestAnno = method.getAnnotation(Request.class);
-        RequestAsGet requestAsGetAnno = method.getAnnotation(RequestAsGet.class);
-        RequestAsPost requestAsPostAnno = method.getAnnotation(RequestAsPost.class);
-        RequestAsPut requestAsPutAnno = method.getAnnotation(RequestAsPut.class);
-        RequestAsPatch requestAsPatchAnno = method.getAnnotation(RequestAsPatch.class);
-        RequestAsDelete requestAsDeleteAnno = method.getAnnotation(RequestAsDelete.class);
+        RequestToGet requestToGetAnno = method.getAnnotation(RequestToGet.class);
+        RequestToPost requestToPostAnno = method.getAnnotation(RequestToPost.class);
+        RequestToPut requestToPutAnno = method.getAnnotation(RequestToPut.class);
+        RequestToPatch requestToPatchAnno = method.getAnnotation(RequestToPatch.class);
+        RequestToDelete requestToDeleteAnno = method.getAnnotation(RequestToDelete.class);
 
         String transletName = null;
         MethodType[] allowedMethods = null;
@@ -595,46 +595,46 @@ public class AnnotatedConfigParser {
             allowedMethods = requestAnno.method();
             parameters = requestAnno.parameters();
             attributes = requestAnno.attributes();
-        } else if (requestAsGetAnno != null) {
-            transletName = StringUtils.emptyToNull(requestAsGetAnno.value());
+        } else if (requestToGetAnno != null) {
+            transletName = StringUtils.emptyToNull(requestToGetAnno.value());
             if (transletName == null) {
-                transletName = StringUtils.emptyToNull(requestAsGetAnno.value());
+                transletName = StringUtils.emptyToNull(requestToGetAnno.value());
             }
             allowedMethods = new MethodType[] { MethodType.GET };
-            parameters = requestAsGetAnno.parameters();
-            attributes = requestAsGetAnno.attributes();
-        } else if (requestAsPostAnno != null) {
-            transletName = StringUtils.emptyToNull(requestAsPostAnno.value());
+            parameters = requestToGetAnno.parameters();
+            attributes = requestToGetAnno.attributes();
+        } else if (requestToPostAnno != null) {
+            transletName = StringUtils.emptyToNull(requestToPostAnno.value());
             if (transletName == null) {
-                transletName = StringUtils.emptyToNull(requestAsPostAnno.value());
+                transletName = StringUtils.emptyToNull(requestToPostAnno.value());
             }
             allowedMethods = new MethodType[] { MethodType.POST };
-            parameters = requestAsPostAnno.parameters();
-            attributes = requestAsPostAnno.attributes();
-        } else if (requestAsPutAnno != null) {
-            transletName = StringUtils.emptyToNull(requestAsPutAnno.value());
+            parameters = requestToPostAnno.parameters();
+            attributes = requestToPostAnno.attributes();
+        } else if (requestToPutAnno != null) {
+            transletName = StringUtils.emptyToNull(requestToPutAnno.value());
             if (transletName == null) {
-                transletName = StringUtils.emptyToNull(requestAsPutAnno.value());
+                transletName = StringUtils.emptyToNull(requestToPutAnno.value());
             }
             allowedMethods = new MethodType[] { MethodType.PUT };
-            parameters = requestAsPutAnno.parameters();
-            attributes = requestAsPutAnno.attributes();
-        } else if (requestAsPatchAnno != null) {
-            transletName = StringUtils.emptyToNull(requestAsPatchAnno.value());
+            parameters = requestToPutAnno.parameters();
+            attributes = requestToPutAnno.attributes();
+        } else if (requestToPatchAnno != null) {
+            transletName = StringUtils.emptyToNull(requestToPatchAnno.value());
             if (transletName == null) {
-                transletName = StringUtils.emptyToNull(requestAsPatchAnno.value());
+                transletName = StringUtils.emptyToNull(requestToPatchAnno.value());
             }
             allowedMethods = new MethodType[] { MethodType.PATCH };
-            parameters = requestAsPatchAnno.parameters();
-            attributes = requestAsPatchAnno.attributes();
-        } else if (requestAsDeleteAnno != null) {
-            transletName = StringUtils.emptyToNull(requestAsDeleteAnno.value());
+            parameters = requestToPatchAnno.parameters();
+            attributes = requestToPatchAnno.attributes();
+        } else if (requestToDeleteAnno != null) {
+            transletName = StringUtils.emptyToNull(requestToDeleteAnno.value());
             if (transletName == null) {
-                transletName = StringUtils.emptyToNull(requestAsDeleteAnno.value());
+                transletName = StringUtils.emptyToNull(requestToDeleteAnno.value());
             }
             allowedMethods = new MethodType[] { MethodType.DELETE };
-            parameters = requestAsDeleteAnno.parameters();
-            attributes = requestAsDeleteAnno.attributes();
+            parameters = requestToDeleteAnno.parameters();
+            attributes = requestToDeleteAnno.attributes();
         }
         if (transletName == null) {
             transletName = method.getName();
