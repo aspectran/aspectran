@@ -16,7 +16,6 @@
 package com.aspectran.core.activity.process.action;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.context.expr.ItemEvaluator;
 import com.aspectran.core.context.expr.ItemExpression;
 import com.aspectran.core.context.rule.EchoActionRule;
@@ -41,10 +40,8 @@ public class EchoAction extends AbstractAction {
      * Instantiates a new EchoAction.
      *
      * @param echoActionRule the echo action rule
-     * @param parent the parent
      */
-    public EchoAction(EchoActionRule echoActionRule, ActionList parent) {
-        super(parent);
+    public EchoAction(EchoActionRule echoActionRule) {
         this.echoActionRule = echoActionRule;
     }
 

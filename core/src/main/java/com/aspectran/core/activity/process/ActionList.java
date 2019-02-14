@@ -66,35 +66,35 @@ public class ActionList extends ArrayList<Executable> implements ActionRuleAppli
 
     @Override
     public Executable applyActionRule(BeanMethodActionRule beanMethodActionRule) {
-        Executable action = new BeanMethodAction(beanMethodActionRule, this);
+        Executable action = new BeanMethodAction(beanMethodActionRule);
         add(action);
         return action;
     }
 
     @Override
     public Executable applyActionRule(AnnotatedMethodActionRule annotatedMethodActionRule) {
-        Executable action = new AnnotatedMethodAction(annotatedMethodActionRule, this);
+        Executable action = new AnnotatedMethodAction(annotatedMethodActionRule);
         add(action);
         return action;
     }
 
     @Override
     public Executable applyActionRule(IncludeActionRule includeActionRule) {
-        Executable action = new IncludeAction(includeActionRule, this);
+        Executable action = new IncludeAction(includeActionRule);
         add(action);
         return action;
     }
 
     @Override
     public Executable applyActionRule(EchoActionRule echoActionRule) {
-        Executable action = new EchoAction(echoActionRule, this);
+        Executable action = new EchoAction(echoActionRule);
         add(action);
         return action;
     }
 
     @Override
     public Executable applyActionRule(HeaderActionRule headerActionRule) {
-        Executable action = new HeaderAction(headerActionRule, this);
+        Executable action = new HeaderAction(headerActionRule);
         add(action);
         return action;
     }

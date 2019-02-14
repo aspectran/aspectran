@@ -17,7 +17,6 @@ package com.aspectran.core.component.bean;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.process.action.AnnotatedMethodAction;
-import com.aspectran.core.activity.process.action.BeanMethodAction;
 import com.aspectran.core.component.AbstractComponent;
 import com.aspectran.core.component.bean.ablility.DisposableBean;
 import com.aspectran.core.component.bean.ablility.FactoryBean;
@@ -369,8 +368,8 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
     private void invokeInitMethod(BeanRule beanRule, Object bean, Activity activity) {
         try {
             Method initMethod = beanRule.getInitMethod();
-            boolean requiresTranslet = beanRule.isInitMethodRequiresTranslet();
-            BeanMethodAction.invokeMethod(activity, bean, initMethod, requiresTranslet);
+            AutowireRule autowireRule = beanRule.getInitAutowireRule();
+            AnnotatedMethodAction.invokeMethod(activity, bean, initMethod, autowireRule);
         } catch (Exception e) {
             throw new BeanCreationException("An exception occurred while executing an initialization method of the bean",
                     beanRule, e);

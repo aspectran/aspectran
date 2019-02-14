@@ -15,8 +15,6 @@
  */
 package com.aspectran.core.activity.process.action;
 
-import com.aspectran.core.activity.process.ActionList;
-
 /**
  * The Class AbstractAction.
  * 
@@ -24,25 +22,9 @@ import com.aspectran.core.activity.process.ActionList;
  */
 public abstract class AbstractAction implements Executable {
 
-    private final ActionList parent;
-
     private int caseNo;
 
     private boolean lastInChooseWhen;
-
-    /**
-     * Instantiates a new AbstractAction.
-     *
-     * @param parent the parent
-     */
-    public AbstractAction(ActionList parent) {
-        this.parent = parent;
-    }
-
-    @Override
-    public ActionList getParent() {
-        return parent;
-    }
 
     @Override
     public abstract String getActionId();

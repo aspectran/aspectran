@@ -84,7 +84,7 @@ public class BeanRuleAnalyzer {
             Class<?> targetBeanClass;
             if (m1 != null) {
                 beanRule.setFactoryMethod(m1);
-                beanRule.setFactoryAutowireRule(AnnotatedConfigParser.makeAutowireRuleForMethod(m1, false));
+                beanRule.setFactoryAutowireRule(AnnotatedConfigParser.createAutowireRuleForMethod(m1, false));
                 targetBeanClass = m1.getReturnType();
             } else {
                 Method m2 = MethodUtils.getAccessibleMethod(beanClass, factoryMethodName);
@@ -93,7 +93,7 @@ public class BeanRuleAnalyzer {
                             "() on bean class: " + beanClass.getName(), beanRule);
                 }
                 beanRule.setFactoryMethod(m2);
-                beanRule.setFactoryAutowireRule(AnnotatedConfigParser.makeAutowireRuleForMethod(m2, false));
+                beanRule.setFactoryAutowireRule(AnnotatedConfigParser.createAutowireRuleForMethod(m2, false));
                 targetBeanClass = m2.getReturnType();
             }
             beanRule.setTargetBeanClass(targetBeanClass);
@@ -115,7 +115,7 @@ public class BeanRuleAnalyzer {
         Method m1 = MethodUtils.getAccessibleMethod(beanClass, initMethodName, TRANSLET_ACTION_PARAMETER_TYPES);
         if (m1 != null) {
             beanRule.setInitMethod(m1);
-            beanRule.setInitMethodRequiresTranslet(true);
+            beanRule.setInitAutowireRule(AnnotatedConfigParser.createAutowireRuleForMethod(m1, true));
         } else {
             Method m2 = MethodUtils.getAccessibleMethod(beanClass, initMethodName);
             if (m2 == null) {
@@ -123,6 +123,7 @@ public class BeanRuleAnalyzer {
                         initMethodName + "() on bean class: " + beanClass.getName(), beanRule);
             }
             beanRule.setInitMethod(m2);
+            beanRule.setInitAutowireRule(AnnotatedConfigParser.createAutowireRuleForMethod(m2, true));
         }
     }
 

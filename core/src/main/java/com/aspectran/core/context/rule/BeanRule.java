@@ -77,7 +77,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 
     private Method initMethod;
 
-    private boolean initMethodRequiresTranslet;
+    private AutowireRule initAutowireRule;
 
     private String destroyMethodName;
 
@@ -405,22 +405,12 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
         this.initMethod = initMethod;
     }
 
-    /**
-     * Returns whether the initialization method requires the Translet argument.
-     *
-     * @return true if the initialization method requires the Translet argument; false otherwise
-     */
-    public boolean isInitMethodRequiresTranslet() {
-        return initMethodRequiresTranslet;
+    public AutowireRule getInitAutowireRule() {
+        return initAutowireRule;
     }
 
-    /**
-     * Sets whether the initialization method requires the Translet argument.
-     *
-     * @param initMethodRequiresTranslet whether or not the initialization method requires Translet argument
-     */
-    public void setInitMethodRequiresTranslet(boolean initMethodRequiresTranslet) {
-        this.initMethodRequiresTranslet = initMethodRequiresTranslet;
+    public void setInitAutowireRule(AutowireRule initAutowireRule) {
+        this.initAutowireRule = initAutowireRule;
     }
 
     /**

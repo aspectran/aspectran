@@ -15,8 +15,6 @@
  */
 package com.aspectran.core.context.rule;
 
-import com.aspectran.core.activity.Translet;
-import com.aspectran.core.activity.process.action.AnnotatedMethodAction;
 import com.aspectran.core.util.ToStringBuilder;
 
 import java.lang.reflect.Method;
@@ -83,22 +81,6 @@ public class AnnotatedMethodActionRule {
         tsb.append("method", method);
         tsb.append("autowireRule", autowireRule);
         return tsb.toString();
-    }
-
-    public static boolean isRequiresTranslet(Method method) {
-        if (method.getParameterCount() == 1) {
-            Class<?>[] paramTypes = method.getParameterTypes();
-            return paramTypes[0].isAssignableFrom(Translet.class);
-        } else {
-            return false;
-        }
-    }
-
-    public static AnnotatedMethodAction newAnnotatedMethodAction(Class<?> beanClass, Method method) {
-        AnnotatedMethodActionRule annotatedMethodActionRule = new AnnotatedMethodActionRule();
-        annotatedMethodActionRule.setBeanClass(beanClass);
-        annotatedMethodActionRule.setMethod(method);
-        return new AnnotatedMethodAction(annotatedMethodActionRule, null);
     }
 
 }

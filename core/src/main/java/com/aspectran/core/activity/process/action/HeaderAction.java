@@ -16,7 +16,6 @@
 package com.aspectran.core.activity.process.action;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.expr.ItemEvaluator;
 import com.aspectran.core.context.expr.ItemExpression;
@@ -48,10 +47,8 @@ public class HeaderAction extends AbstractAction {
      * Instantiates a new HeaderAction.
      *
      * @param headerActionRule the header action rule
-     * @param parent the parent
      */
-    public HeaderAction(HeaderActionRule headerActionRule, ActionList parent) {
-        super(parent);
+    public HeaderAction(HeaderActionRule headerActionRule) {
         this.headerActionRule = headerActionRule;
     }
 
@@ -108,7 +105,7 @@ public class HeaderAction extends AbstractAction {
     @Override
     @SuppressWarnings("unchecked")
     public <T> T getActionRule() {
-        return (T)headerActionRule;
+        return (T)getHeaderActionRule();
     }
 
     @Override

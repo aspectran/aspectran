@@ -126,7 +126,7 @@ public class ExceptionThrownRule implements ActionRuleApplicable, ResponseRuleAp
 
     @Override
     public Executable applyActionRule(BeanMethodActionRule beanMethodActionRule) {
-        BeanMethodAction action = new BeanMethodAction(beanMethodActionRule, null);
+        BeanMethodAction action = new BeanMethodAction(beanMethodActionRule);
         if (aspectAdviceRule != null && beanMethodActionRule.getBeanId() == null) {
             action.setAspectAdviceRule(aspectAdviceRule);
         }
@@ -148,14 +148,14 @@ public class ExceptionThrownRule implements ActionRuleApplicable, ResponseRuleAp
 
     @Override
     public Executable applyActionRule(EchoActionRule echoActionRule) {
-        Executable action = new EchoAction(echoActionRule, null);
+        Executable action = new EchoAction(echoActionRule);
         this.action = action;
         return action;
     }
 
     @Override
     public Executable applyActionRule(HeaderActionRule headerActionRule) {
-        Executable action = new HeaderAction(headerActionRule, null);
+        Executable action = new HeaderAction(headerActionRule);
         this.action = action;
         return action;
     }

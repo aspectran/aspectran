@@ -17,7 +17,6 @@ package com.aspectran.core.activity.process.action;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.Translet;
-import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.context.expr.ItemEvaluator;
 import com.aspectran.core.context.expr.ItemExpression;
 import com.aspectran.core.context.rule.AspectAdviceRule;
@@ -54,11 +53,8 @@ public class BeanMethodAction extends AbstractAction {
      * Instantiates a new BeanMethodAction.
      *
      * @param beanMethodActionRule the bean method action rule
-     * @param parent the parent
      */
-    public BeanMethodAction(BeanMethodActionRule beanMethodActionRule, ActionList parent) {
-        super(parent);
-
+    public BeanMethodAction(BeanMethodActionRule beanMethodActionRule) {
         this.beanMethodActionRule = beanMethodActionRule;
     }
 
@@ -155,6 +151,47 @@ public class BeanMethodAction extends AbstractAction {
         }
     }
 
+    /**
+     * Returns the bean method action rule.
+     *
+     * @return the bean method action rule
+     */
+    public BeanMethodActionRule getBeanMethodActionRule() {
+        return beanMethodActionRule;
+    }
+
+    @Override
+    public String getActionId() {
+        return beanMethodActionRule.getActionId();
+    }
+
+    @Override
+    public boolean isHidden() {
+        return beanMethodActionRule.isHidden();
+    }
+
+    @Override
+    public ActionType getActionType() {
+        return ActionType.BEAN_METHOD;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T> T getActionRule() {
+        return (T)getBeanMethodActionRule();
+    }
+
+    @Override
+    public String toString() {
+        ToStringBuilder tsb = new ToStringBuilder();
+        tsb.append("actionType", getActionType());
+        tsb.append("beanMethodActionRule", beanMethodActionRule);
+        if (aspectAdviceRule != null) {
+            tsb.append("aspectAdviceRule", aspectAdviceRule.toString(true));
+        }
+        return tsb.toString();
+    }
+
     private static Object[] createArguments(Activity activity, ItemRuleMap argumentItemRuleMap,
                                             ItemEvaluator evaluator, boolean requiresTranslet) {
         if (evaluator == null) {
@@ -197,7 +234,7 @@ public class BeanMethodAction extends AbstractAction {
     private static Object invokeMethod(Activity activity, Object bean, String methodName,
                                        ItemRuleMap argumentItemRuleMap, ItemEvaluator evaluator,
                                        boolean requiresTranslet)
-        throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+            throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         Class<?>[] argsTypes = null;
         Object[] argsObjects = null;
 
@@ -234,47 +271,6 @@ public class BeanMethodAction extends AbstractAction {
         }
 
         return MethodUtils.invokeMethod(bean, methodName, argsObjects, argsTypes);
-    }
-
-    /**
-     * Returns the bean method action rule.
-     *
-     * @return the bean method action rule
-     */
-    public BeanMethodActionRule getBeanMethodActionRule() {
-        return beanMethodActionRule;
-    }
-
-    @Override
-    public String getActionId() {
-        return beanMethodActionRule.getActionId();
-    }
-
-    @Override
-    public boolean isHidden() {
-        return beanMethodActionRule.isHidden();
-    }
-
-    @Override
-    public ActionType getActionType() {
-        return ActionType.BEAN_METHOD;
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public <T> T getActionRule() {
-        return (T)beanMethodActionRule;
-    }
-
-    @Override
-    public String toString() {
-        ToStringBuilder tsb = new ToStringBuilder();
-        tsb.append("actionType", getActionType());
-        tsb.append("beanMethodActionRule", beanMethodActionRule);
-        if (aspectAdviceRule != null) {
-            tsb.append("aspectAdviceRule", aspectAdviceRule.toString(true));
-        }
-        return tsb.toString();
     }
 
 }

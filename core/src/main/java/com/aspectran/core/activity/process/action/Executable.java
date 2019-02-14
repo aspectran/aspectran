@@ -16,7 +16,6 @@
 package com.aspectran.core.activity.process.action;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.context.rule.type.ActionType;
 
 /**
@@ -49,13 +48,6 @@ public interface Executable {
      * @return true, if is hidden action
      */
     boolean isHidden();
-
-    /**
-     * Gets the action list.
-     *
-     * @return the action list
-     */
-    ActionList getParent();
 
     /**
      * Gets the Action Type.

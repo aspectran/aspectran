@@ -16,7 +16,6 @@
 package com.aspectran.core.activity.process.action;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.context.expr.ItemEvaluator;
 import com.aspectran.core.context.expr.ItemExpression;
 import com.aspectran.core.context.rule.IncludeActionRule;
@@ -43,10 +42,8 @@ public class IncludeAction extends AbstractAction {
      * Instantiates a new IncludeAction.
      *
      * @param includeActionRule the process call action rule
-     * @param parent the parent
      */
-    public IncludeAction(IncludeActionRule includeActionRule, ActionList parent) {
-        super(parent);
+    public IncludeAction(IncludeActionRule includeActionRule) {
         this.includeActionRule = includeActionRule;
     }
 
@@ -113,7 +110,7 @@ public class IncludeAction extends AbstractAction {
     @Override
     @SuppressWarnings("unchecked")
     public <T> T getActionRule() {
-        return (T)includeActionRule;
+        return (T)getIncludeActionRule();
     }
 
     @Override
