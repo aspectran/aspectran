@@ -20,6 +20,10 @@ import com.aspectran.core.activity.Translet;
 import com.aspectran.core.context.rule.AnnotatedMethodActionRule;
 import com.aspectran.core.context.rule.AutowireRule;
 import com.aspectran.core.context.rule.type.ActionType;
+import com.aspectran.core.util.BeanDescriptor;
+import com.aspectran.core.util.BeanUtils;
+import com.aspectran.core.util.ClassUtils;
+import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.ToStringBuilder;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -27,10 +31,17 @@ import com.aspectran.core.util.logging.LogFactory;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * The AnnotatedMethodAction that invoking method in the bean instance.
@@ -42,6 +53,8 @@ import java.util.Date;
 public class AnnotatedMethodAction extends AbstractAction {
 
     private static final Log log = LogFactory.getLog(AnnotatedMethodAction.class);
+
+    private static final Object UNKNOWN_VALUE_TYPE = new Object();
 
     private final AnnotatedMethodActionRule annotatedMethodActionRule;
 
@@ -121,41 +134,205 @@ public class AnnotatedMethodAction extends AbstractAction {
             Class<?> type = argTypes[i];
             String name = qualifiers[i];
             String format = formats[i];
-            args[i] = autowire(translet, type, name, format);
+            args[i] = parseArgument(translet, type, name, format);
+            if (autowireRule.isRequired() && args[i] == null) {
+                throw new IllegalArgumentException("");
+            }
         }
         return method.invoke(bean, args);
     }
 
-    private static Object autowire(Translet translet, Class<?> type, String name, String format) {
+    private static Object parseArgument(Translet translet, Class<?> type, String name, String format) {
         Object result = null;
         if (translet != null) {
-            if (type == Translet.class) {
-                result = translet;
-            } else if (type == String.class) {
-                result = translet.getParameter(name);
-            } else if (type == String[].class) {
-                result = translet.getParameterValues(name);
-            } else if (type == Date.class) {
-                String value = translet.getParameter(name);
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
-                LocalDateTime ldt = LocalDateTime.parse(value, formatter);
-                result = Date.from(ldt.atZone(ZoneId.systemDefault()).toInstant());
-            } else if (type == Boolean.class) {
-                String value = translet.getParameter(name);
-                result = Boolean.valueOf(value);
-            } else if (type == Integer.class) {
-                String value = translet.getParameter(name);
-                result = Integer.valueOf(value);
-            } else if (type == Integer[].class) {
-                String[] values = translet.getParameterValues(name);
-                if (values != null && values.length > 0) {
-                    Integer[] arr = new Integer[values.length];
-                    int i = 0;
-                    for (String val : values) {
-                        arr[i++] = Integer.valueOf(val);
+            try {
+                if (type == Translet.class) {
+                    result = translet;
+                } else if (type.isArray()) {
+                    type = type.getComponentType();
+                    if (type == Translet.class) {
+                        result = new Translet[] { translet };
+                    } else {
+                        String[] values = translet.getParameterValues(name);
+                        result = parseValue(type, values, format);
+                        if (result == UNKNOWN_VALUE_TYPE) {
+                            result = null;
+                        }
                     }
-                    result = arr;
+                } else if (Collection.class.isAssignableFrom(type)) {
+                    if (!type.isInterface()) {
+                        @SuppressWarnings("unchecked")
+                        Collection<String> collection = (Collection<String>)ClassUtils.createInstance(type);
+                        collection.addAll(Arrays.asList(translet.getParameterValues(name)));
+                    } else {
+                        result = new HashMap<>(translet.getAllParameters());
+                    }
+                } else if (Map.class.isAssignableFrom(type)) {
+                    if (!type.isInterface()) {
+                        result = ClassUtils.createInstance(type, translet.getAllParameters());
+                    } else {
+                        result = new HashMap<>(translet.getAllParameters());
+                    }
+                } else {
+                    String value = translet.getParameter(name);
+                    if (StringUtils.hasLength(value)) {
+                        result = parseValue(type, value, format);
+                        if (result == UNKNOWN_VALUE_TYPE) {
+                            Object obj = ClassUtils.createInstance(type);
+                            BeanDescriptor bd = BeanDescriptor.getInstance(type);
+                            for (String setterName : bd.getWritablePropertyNames()) {
+                                Class<?> setterType = bd.getSetterType(setterName);
+                                Object val = parseValue(setterType, setterName, null);
+                                if (val != null) {
+                                    BeanUtils.setProperty(obj, setterName, val);
+                                }
+                            }
+                            result = obj;
+                        }
+                    }
                 }
+            } catch (Exception e) {
+                if (log.isDebugEnabled()) {
+                    log.debug("Unable to autowire parameter '" + name + "'", e);
+                }
+            }
+        }
+        return result;
+    }
+
+    private static Object parseValue(Class<?> type, String value, String format) {
+        Object result;
+        if (type == String.class) {
+            result = value;
+        } else if (type == Date.class) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
+            LocalDateTime ldt = LocalDateTime.parse(value, formatter);
+            result = Date.from(ldt.atZone(ZoneId.systemDefault()).toInstant());
+        } else if (type == LocalDateTime.class) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
+            result = LocalDateTime.parse(value, formatter);
+        } else if (type == LocalDate.class) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
+            result = LocalDate.parse(value, formatter);
+        } else if (type == Boolean.class) {
+            result = Boolean.valueOf(value);
+        } else if (type == Byte.class) {
+            result = Byte.valueOf(value);
+        } else if (type == Short.class) {
+            result = Short.valueOf(value);
+        } else if (type == Integer.class) {
+            result = Integer.valueOf(value);
+        } else if (type == Long.class) {
+            result = Long.valueOf(value);
+        } else if (type == Float.class) {
+            result = Float.valueOf(value);
+        } else if (type == Double.class) {
+            result = Double.valueOf(value);
+        } else if (type == BigDecimal.class) {
+            result = new BigDecimal(value);
+        } else if (type == BigInteger.class) {
+            result = new BigInteger(value);
+        } else {
+            result = UNKNOWN_VALUE_TYPE;
+        }
+        return result;
+    }
+
+    private static Object parseValue(Class<?> type, String[] values, String format) {
+        Object result = null;
+        if (values != null && values.length > 0) {
+            if (type == String.class) {
+                result = values;
+            } else if (type == Date.class) {
+                Date[] arr = new Date[values.length];
+                int i = 0;
+                for (String val : values) {
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
+                    LocalDateTime ldt = LocalDateTime.parse(val, formatter);
+                    arr[i++] = Date.from(ldt.atZone(ZoneId.systemDefault()).toInstant());
+                }
+                result = arr;
+            } else if (type == LocalDateTime.class) {
+                LocalDateTime[] arr = new LocalDateTime[values.length];
+                int i = 0;
+                for (String val : values) {
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
+                    arr[i++] = LocalDateTime.parse(val, formatter);
+                }
+                result = arr;
+            } else if (type == LocalDate.class) {
+                LocalDate[] arr = new LocalDate[values.length];
+                int i = 0;
+                for (String val : values) {
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
+                    arr[i++] = LocalDate.parse(val, formatter);
+                }
+                result = arr;
+            } else if (type == Boolean.class) {
+                Boolean[] arr = new Boolean[values.length];
+                int i = 0;
+                for (String val : values) {
+                    arr[i++] = Boolean.valueOf(val);
+                }
+                result = arr;
+            } else if (type == Byte.class) {
+                Byte[] arr = new Byte[values.length];
+                int i = 0;
+                for (String val : values) {
+                    arr[i++] = Byte.valueOf(val);
+                }
+                result = arr;
+            } else if (type == Short.class) {
+                Short[] arr = new Short[values.length];
+                int i = 0;
+                for (String val : values) {
+                    arr[i++] = Short.valueOf(val);
+                }
+                result = arr;
+            } else if (type == Integer.class) {
+                Integer[] arr = new Integer[values.length];
+                int i = 0;
+                for (String val : values) {
+                    arr[i++] = Integer.valueOf(val);
+                }
+                result = arr;
+            } else if (type == Long.class) {
+                Long[] arr = new Long[values.length];
+                int i = 0;
+                for (String val : values) {
+                    arr[i++] = Long.valueOf(val);
+                }
+                result = arr;
+            } else if (type == Float.class) {
+                Float[] arr = new Float[values.length];
+                int i = 0;
+                for (String val : values) {
+                    arr[i++] = Float.valueOf(val);
+                }
+                result = arr;
+            } else if (type == Double.class) {
+                Double[] arr = new Double[values.length];
+                int i = 0;
+                for (String val : values) {
+                    arr[i++] = Double.valueOf(val);
+                }
+                result = arr;
+            } else if (type == BigDecimal.class) {
+                BigDecimal[] arr = new BigDecimal[values.length];
+                int i = 0;
+                for (String val : values) {
+                    arr[i++] = new BigDecimal(val);
+                }
+                result = arr;
+            } else if (type == BigInteger.class) {
+                BigInteger[] arr = new BigInteger[values.length];
+                int i = 0;
+                for (String val : values) {
+                    arr[i++] = new BigInteger(val);
+                }
+                result = arr;
+            } else {
+                result = UNKNOWN_VALUE_TYPE;
             }
         }
         return result;

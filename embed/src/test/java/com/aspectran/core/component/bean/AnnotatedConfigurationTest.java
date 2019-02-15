@@ -16,6 +16,7 @@
 package com.aspectran.core.component.bean;
 
 import com.aspectran.core.context.config.AspectranConfig;
+import com.aspectran.core.context.config.ContextConfig;
 import com.aspectran.embed.sample.anno.ThirdResult;
 import com.aspectran.embed.service.EmbeddedAspectran;
 import org.junit.jupiter.api.AfterAll;
@@ -40,6 +41,8 @@ class AnnotatedConfigurationTest {
         String appConfigRootFile = "classpath:config/anno/annotated-configuration-test-config.xml";
         AspectranConfig aspectranConfig = new AspectranConfig();
         aspectranConfig.updateAppConfigRootFile(appConfigRootFile);
+        ContextConfig contextConfig = aspectranConfig.touchContextConfig();
+        contextConfig.putValue(ContextConfig.scan, "com.aspectran.embed.sample.anno");
         aspectran = EmbeddedAspectran.run(aspectranConfig);
     }
 
@@ -54,6 +57,11 @@ class AnnotatedConfigurationTest {
     void firstTest() {
         ThirdResult thirdResult = aspectran.getActivityContext().getBeanRegistry().getBean("thirdResult");
         assertEquals(thirdResult.getMessage(), "This is a second bean.");
+    }
+
+    @Test
+    void invokeMethodTest() {
+        aspectran.translate("/action1");
     }
 
 }

@@ -717,7 +717,7 @@ public class AnnotatedConfigParser {
 
     static AutowireRule createAutowireRuleForMethod(Method method, boolean withPramName) {
         Autowired autowiredAnno = method.getAnnotation(Autowired.class);
-        boolean required = (autowiredAnno == null || autowiredAnno.required());
+        boolean required = (autowiredAnno != null && autowiredAnno.required());
         Qualifier qualifierAnno = method.getAnnotation(Qualifier.class);
         String qualifier = (qualifierAnno != null ? StringUtils.emptyToNull(qualifierAnno.value()) : null);
 

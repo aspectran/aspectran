@@ -13,30 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.aop;
+package com.aspectran.embed.sample.anno;
 
 import com.aspectran.core.activity.Translet;
+import com.aspectran.core.component.bean.annotation.Bean;
 import com.aspectran.core.component.bean.annotation.Component;
+import com.aspectran.core.component.bean.annotation.Parameter;
 import com.aspectran.core.component.bean.annotation.Request;
 
-/**
- * <p>Created: 2016. 11. 5.</p>
- */
 @Component
-public class SimpleAopTestAction {
+@Bean
+public class AnnotatedAction {
 
-    @Request("aop/test/action1")
-    public void action1(Translet translet) {
-        System.out.println("===> aspect02: [SimpleAopTestAction]=== Action Result (Action-1)");
-        SampleAnnotatedAspect sampleAnnotatedAspect = translet.getAspectAdviceBean("aspect02");
-        sampleAnnotatedAspect.foo();
-    }
-
-    @Request("aop/test/action2")
-    public void action2() {
-        System.out.println("===> aspect02: [SimpleAopTestAction]=== Action Result (Action-2)");
-        System.out.println("===> aspect02: [SimpleAopTestAction]=== Force Exception ==============");
-        throw new SimpleAopTestException();
+    @Request(translet = "/action1",
+            parameters = {
+                    @Parameter(
+                            name = "param1",
+                            value = "Apple"
+                    ),
+                    @Parameter(
+                            name = "param2",
+                            value = "Tomato"
+                    )
+            }
+    )
+    public void action1(Translet translet, String param1, String param2) {
+        System.out.println(translet);
+        System.out.println("param1: " + param1);
+        System.out.println("param2: " + param2);
     }
 
 }
