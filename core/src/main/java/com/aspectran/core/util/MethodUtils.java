@@ -220,7 +220,7 @@ public class MethodUtils {
             if (arguments == 0) {
                 paramTypes = EMPTY_CLASS_PARAMETERS;
             } else {
-                paramTypes = new Class[arguments];
+                paramTypes = new Class<?>[arguments];
                 for (int i = 0; i < arguments; i++) {
                     if (args[i] != null) {
                         paramTypes[i] = args[i].getClass();
@@ -316,7 +316,7 @@ public class MethodUtils {
             if (arguments == 0) {
                 paramTypes = EMPTY_CLASS_PARAMETERS;
             } else {
-                paramTypes = new Class[arguments];
+                paramTypes = new Class<?>[arguments];
                 for (int i = 0; i < arguments; i++) {
                     if (args[i] != null)
                         paramTypes[i] = args[i].getClass();
@@ -462,7 +462,7 @@ public class MethodUtils {
             args = EMPTY_OBJECT_ARRAY;
         }
         int arguments = args.length;
-        Class<?>[] paramTypes = new Class[arguments];
+        Class<?>[] paramTypes = new Class<?>[arguments];
         for (int i = 0; i < arguments; i++) {
             paramTypes[i] = args[i].getClass();
         }
@@ -560,7 +560,7 @@ public class MethodUtils {
             args = EMPTY_OBJECT_ARRAY;
         }
         int arguments = args.length;
-        Class<?>[] paramTypes = new Class[arguments];
+        Class<?>[] paramTypes = new Class<?>[arguments];
         for (int i = 0; i < arguments; i++) {
             paramTypes[i] = args[i].getClass();
         }

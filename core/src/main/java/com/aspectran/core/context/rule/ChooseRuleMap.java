@@ -24,6 +24,8 @@ import static com.aspectran.core.context.rule.ChooseRule.toCaseGroupNo;
  */
 public class ChooseRuleMap extends LinkedHashMap<Integer, ChooseRule> {
 
+    private static final long serialVersionUID = 4736467004685193206L;
+
     public ChooseRuleMap() {
         super();
     }

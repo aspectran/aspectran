@@ -60,8 +60,23 @@ class AnnotatedConfigurationTest {
     }
 
     @Test
-    void invokeMethodTest() {
-        aspectran.translate("/action1");
+    void testInvokeMethod_1() {
+        aspectran.translate("/action-1");
+    }
+
+    @Test
+    void testInvokeMethod_2() {
+        aspectran.translate("/action-2");
+    }
+
+    @Test
+    void testInvokeMethod_3() {
+        aspectran.translate("/action-3");
+    }
+
+    @Test
+    void testInvokeMethod_4() {
+        aspectran.translate("/action-4");
     }
 
 }

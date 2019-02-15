@@ -36,6 +36,7 @@ import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;
+import com.aspectran.core.context.rule.type.ScopeType;
 import com.aspectran.core.util.PrefixSuffixPattern;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -180,6 +181,7 @@ public class BeanRuleRegistry {
                 if (scannedClass.isAnnotationPresent(Component.class)) {
                     BeanRule beanRule = new BeanRule();
                     beanRule.setBeanClass(scannedClass);
+                    beanRule.setScopeType(ScopeType.SINGLETON);
                     saveConfiguredBeanRule(beanRule);
                 }
             });

@@ -92,7 +92,6 @@ public class Session {
         }
     }
 
-    @SuppressWarnings("unchecked")
     public <T> T getAttribute(String name) {
         try (Lock ignored = locker.lockIfNotHeld()) {
             checkValidForRead();

@@ -823,6 +823,7 @@ public class StringUtils {
      * @return a number of bytes
      * @throws NumberFormatException if failed parse given size
      */
+    @SuppressWarnings("fallthrough")
     public static long convertToMachineFriendlyByteSize(String size) {
         double d;
         try {

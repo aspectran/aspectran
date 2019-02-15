@@ -16,7 +16,6 @@
 package com.aspectran.core.adapter;
 
 import com.aspectran.core.component.bean.scope.SessionScope;
-import com.aspectran.core.component.session.Session;
 import com.aspectran.core.component.session.SessionAgent;
 
 import java.util.Enumeration;
@@ -39,8 +38,8 @@ public class BasicSessionAdapter extends AbstractSessionAdapter {
 
     @Override
     @SuppressWarnings("unchecked")
-    public Session getAdaptee() {
-        return getSessionAgent().getSession(true);
+    public <T> T getAdaptee() {
+        return (T)getSessionAgent().getSession(true);
     }
 
     @Override
@@ -103,7 +102,7 @@ public class BasicSessionAdapter extends AbstractSessionAdapter {
     }
 
     public SessionAgent getSessionAgent() {
-        return (SessionAgent)adaptee;
+        return super.getAdaptee();
     }
 
     public void sessionAccess() {

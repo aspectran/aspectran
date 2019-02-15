@@ -47,12 +47,13 @@ public class CustomObjectInputStream extends ObjectInputStream {
 
     @Override
     protected Class<?> resolveProxyClass(String[] interfaces)
-            throws IOException, ClassNotFoundException {
+            throws ClassNotFoundException {
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
         ClassLoader nonPublicLoader = null;
         boolean hasNonPublicInterface = false;
 
         // define proxy in class loader of non-public interface(s), if any
+        @SuppressWarnings("rawtypes")
         Class<?>[] classObjs = new Class[interfaces.length];
         for (int i = 0; i < interfaces.length; i++) {
             Class<?> cl = Class.forName(interfaces[i], false, loader);

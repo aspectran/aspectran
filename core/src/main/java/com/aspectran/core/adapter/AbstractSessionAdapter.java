@@ -24,7 +24,7 @@ import com.aspectran.core.util.ToStringBuilder;
  */
 public abstract class AbstractSessionAdapter implements SessionAdapter {
 
-    protected Object adaptee;
+    private Object adaptee;
 
     /**
      * Instantiates a new AbstractSessionAdapter.

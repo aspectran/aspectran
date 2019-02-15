@@ -44,57 +44,57 @@ public class AdviceHttpSessionAdapter extends AbstractSessionAdapter {
 
     @Override
     public String getId() {
-        return ((HttpSession)adaptee).getId();
+        return ((HttpSession)getAdaptee()).getId();
     }
 
     @Override
     public boolean isNew() {
-        return ((HttpSession)adaptee).isNew();
+        return ((HttpSession)getAdaptee()).isNew();
     }
 
     @Override
     public long getCreationTime() {
-        return ((HttpSession)adaptee).getCreationTime();
+        return ((HttpSession)getAdaptee()).getCreationTime();
     }
 
     @Override
     public long getLastAccessedTime() {
-        return ((HttpSession)adaptee).getLastAccessedTime();
+        return ((HttpSession)getAdaptee()).getLastAccessedTime();
     }
 
     @Override
     public int getMaxInactiveInterval() {
-        return ((HttpSession)adaptee).getMaxInactiveInterval();
+        return ((HttpSession)getAdaptee()).getMaxInactiveInterval();
     }
 
     public void setMaxInactiveInterval(int interval) {
-        ((HttpSession)adaptee).setMaxInactiveInterval(interval);
+        ((HttpSession)getAdaptee()).setMaxInactiveInterval(interval);
     }
 
     @Override
     public Enumeration<String> getAttributeNames() {
-        return ((HttpSession)adaptee).getAttributeNames();
+        return ((HttpSession)getAdaptee()).getAttributeNames();
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <T> T getAttribute(String name) {
-        return (T)((HttpSession)adaptee).getAttribute(name);
+        return (T)((HttpSession)getAdaptee()).getAttribute(name);
     }
 
     @Override
     public void setAttribute(String name, Object value) {
-        ((HttpSession)adaptee).setAttribute(name, value);
+        ((HttpSession)getAdaptee()).setAttribute(name, value);
     }
 
     @Override
     public void removeAttribute(String name) {
-        ((HttpSession)adaptee).removeAttribute(name);
+        ((HttpSession)getAdaptee()).removeAttribute(name);
     }
 
     @Override
     public void invalidate() {
-        ((HttpSession)adaptee).invalidate();
+        ((HttpSession)getAdaptee()).invalidate();
     }
 
 }

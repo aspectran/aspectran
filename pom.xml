@@ -318,7 +318,10 @@
                         <optimize>true</optimize>
                         <showDeprecation>true</showDeprecation>
                         <showWarnings>true</showWarnings>
-                        <compilerArgument>-Xlint:-options</compilerArgument>
+                        <compilerArgs>
+                            <arg>-Xlint:-try,-path,-options</arg>
+                            <arg>-parameters</arg>
+                        </compilerArgs>
                         <meminitial>256m</meminitial>
                         <maxmem>1024m</maxmem>
                         <excludes>

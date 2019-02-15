@@ -113,7 +113,7 @@ public class ClassScanner {
             URL resource = resources.nextElement();
 
             if (log.isDebugEnabled()) {
-                log.debug("Scanning for classes " + classNamePattern + " within " + resource.getFile());
+                log.debug("Scanning for classes " + classNamePattern + " from " + resource.getFile());
             }
 
             if (isJarResource(resource)) {
@@ -163,8 +163,8 @@ public class ClassScanner {
                 String relativePath = className.substring(basePackageName.length());
                 if (matcher.matches(relativePath)) {
                     String resourceName = targetPath + fileName;
-                    Class<?> classType = loadClass(className);
-                    saveHandler.save(resourceName, classType);
+                    Class<?> targetClass = loadClass(className);
+                    saveHandler.save(resourceName, targetClass);
                 }
             }
             return false;
@@ -222,8 +222,8 @@ public class ClassScanner {
                     if (matcher.matches(entryNameSuffix)) {
                         String resourceName = jarFileUrl + ResourceUtils.JAR_URL_SEPARATOR + entryName;
                         String className = entryNamePrefix + entryNameSuffix;
-                        Class<?> classType = loadClass(className);
-                        saveHandler.save(resourceName, classType);
+                        Class<?> targetClass = loadClass(className);
+                        saveHandler.save(resourceName, targetClass);
                     }
                 }
             }
@@ -285,7 +285,9 @@ public class ClassScanner {
     }
 
     public interface SaveHandler {
-        void save(String resourceName, Class<?> scannedClass);
+
+        void save(String resourceName, Class<?> targetClass);
+
     }
 
 }

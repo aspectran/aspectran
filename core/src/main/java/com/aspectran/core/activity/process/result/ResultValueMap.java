@@ -19,6 +19,8 @@ import java.util.LinkedHashMap;
 
 public class ResultValueMap extends LinkedHashMap<String, Object> {
 
+    private static final long serialVersionUID = 1904311925549971136L;
+
     protected ResultValueMap() {
         super(1 << 3);
     }

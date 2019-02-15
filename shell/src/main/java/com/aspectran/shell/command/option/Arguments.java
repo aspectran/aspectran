@@ -22,6 +22,8 @@ import java.util.LinkedHashMap;
  */
 public class Arguments extends LinkedHashMap<String, String> {
 
+    private static final long serialVersionUID = 2065201886243368933L;
+
     private String title;
 
     private boolean required;

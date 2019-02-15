@@ -63,6 +63,7 @@ public class OgnlSupport {
         return evaluateAsBoolean(expression, null, root);
     }
 
+    @SuppressWarnings("rawtypes")
     public static Boolean evaluateAsBoolean(String expression, Object represented, Object root) throws IllegalRuleException {
         if (represented == null) {
             represented = parseExpression(expression);
@@ -78,6 +79,7 @@ public class OgnlSupport {
         }
     }
 
+    @SuppressWarnings("rawtypes")
     private static Map createDefaultContext(Object root) {
         return Ognl.createDefaultContext(root, MEMBER_ACCESS, CLASS_RESOLVER, null);
     }

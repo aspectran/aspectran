@@ -87,7 +87,7 @@ public class SimpleFileUploadAction {
     @RequestToPost("/files")
     @Transform(type = TransformType.JSON)
     @Action(id = "files")
-    public Collection upload(Translet translet) throws IOException {
+    public Collection<UploadedFile> upload(Translet translet) throws IOException {
         if (!translet.getRequestAdapter().isMaxLengthExceeded()) {
             FileParameter fileParameter = translet.getFileParameter("file");
             if (fileParameter != null) {
@@ -140,7 +140,7 @@ public class SimpleFileUploadAction {
     @RequestToGet("/files")
     @Transform(type = TransformType.JSON)
     @Action(id = "files")
-    public Collection list() {
+    public Collection<UploadedFile> list() {
         return uploadedFiles.values();
     }
 

@@ -63,7 +63,7 @@ public class AutowireRule implements BeanReferenceInspectable {
         return (T)target;
     }
 
-    public void setTarget(Constructor constructor) {
+    public void setTarget(Constructor<?> constructor) {
         this.target = constructor;
     }
 

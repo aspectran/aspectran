@@ -71,7 +71,7 @@ public abstract class ClassUtils {
      *      (which will be passed as is)
      */
     public static <T> T createInstance(Class<T> cls, Object... args) {
-        Class[] argTypes = new Class[args.length];
+        Class<?>[] argTypes = new Class<?>[args.length];
         for (int i = 0; i < args.length; i++) {
             argTypes[i] = args[i].getClass();
         }

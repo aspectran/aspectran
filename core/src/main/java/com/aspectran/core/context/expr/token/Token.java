@@ -78,7 +78,7 @@ import com.aspectran.core.util.ToStringBuilder;
  *
  * <p>Created: 2008. 03. 27 PM 10:20:06</p>
  */
-public class Token implements BeanReferenceInspectable, Replicable {
+public class Token implements BeanReferenceInspectable, Replicable<Token> {
 
     private static final BeanRefererType BEAN_REFERER_TYPE = BeanRefererType.TOKEN;
 

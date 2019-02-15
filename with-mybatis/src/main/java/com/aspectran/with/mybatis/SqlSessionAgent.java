@@ -124,11 +124,13 @@ public class SqlSessionAgent implements SqlSession, ActivityContextAware {
     }
 
     @Override
+    @SuppressWarnings("rawtypes")
     public void select(String statement, Object parameter, ResultHandler handler) {
         getSqlSession().select(statement, parameter, handler);
     }
 
     @Override
+    @SuppressWarnings("rawtypes")
     public void select(String statement, ResultHandler handler) {
         if (autoParameters) {
             getSqlSession().select(statement, getActivityDataMap(), handler);
@@ -138,6 +140,7 @@ public class SqlSessionAgent implements SqlSession, ActivityContextAware {
     }
 
     @Override
+    @SuppressWarnings("rawtypes")
     public void select(String statement, Object parameter, RowBounds rowBounds, ResultHandler handler) {
         getSqlSession().select(statement, parameter, rowBounds, handler);
     }

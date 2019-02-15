@@ -26,6 +26,8 @@ import java.util.List;
  */
 public class MultiException extends Exception {
 
+    private static final long serialVersionUID = 2675035125716434028L;
+
     private List<Throwable> nested;
 
     public MultiException() {
@@ -76,23 +78,19 @@ public class MultiException extends Exception {
      *      MultiException itself if nested is more than 1.
      */
     public void ifExceptionThrow() throws Exception {
-        if(nested == null) {
+        if(nested == null || nested.isEmpty()) {
             return;
         }
-        switch (nested.size()) {
-            case 0:
-                break;
-            case 1:
-                Throwable th = nested.get(0);
-                if (th instanceof Error) {
-                    throw (Error)th;
-                }
-                if (th instanceof Exception) {
-                    throw (Exception)th;
-                }
-            default:
-                throw this;
+        if (nested.size() == 1) {
+            Throwable th = nested.get(0);
+            if (th instanceof Error) {
+                throw (Error)th;
+            }
+            if (th instanceof Exception) {
+                throw (Exception)th;
+            }
         }
+        throw this;
     }
 
     /**
@@ -106,24 +104,20 @@ public class MultiException extends Exception {
      *      it is not an error, or it contains more than 1 {@link Throwable} of any type
      */
     public void ifExceptionThrowRuntime() throws Error {
-        if(nested == null) {
+        if(nested == null || nested.isEmpty()) {
             return;
         }
-        switch (nested.size()) {
-            case 0:
-                break;
-            case 1:
-                Throwable th = nested.get(0);
-                if (th instanceof Error) {
-                    throw (Error) th;
-                } else if (th instanceof RuntimeException) {
-                    throw (RuntimeException) th;
-                } else {
-                    throw new RuntimeException(th);
-                }
-            default:
-                throw new RuntimeException(this);
+        if (nested.size() == 1) {
+            Throwable th = nested.get(0);
+            if (th instanceof Error) {
+                throw (Error)th;
+            } else if (th instanceof RuntimeException) {
+                throw (RuntimeException)th;
+            } else {
+                throw new RuntimeException(th);
+            }
         }
+        throw new RuntimeException(this);
     }
 
     /**
@@ -135,10 +129,7 @@ public class MultiException extends Exception {
      * @throws MultiException the MultiException if there are nested exception
      */
     public void ifExceptionThrowMulti() throws MultiException {
-        if(nested == null) {
-            return;
-        }
-        if (nested.size() > 0) {
+        if(nested != null && !nested.isEmpty()) {
             throw this;
         }
     }

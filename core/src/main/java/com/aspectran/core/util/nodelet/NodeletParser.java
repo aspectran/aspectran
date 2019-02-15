@@ -71,6 +71,7 @@ public class NodeletParser {
         this.nodeParser = nodeParser;
     }
 
+    @SuppressWarnings("unchecked")
     public <N> N getNodeParser() {
         return (N)nodeParser;
     }

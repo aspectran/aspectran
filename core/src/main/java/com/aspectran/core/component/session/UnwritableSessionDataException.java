@@ -24,6 +24,8 @@ import com.aspectran.core.context.AspectranCheckedException;
  */
 public class UnwritableSessionDataException extends AspectranCheckedException {
 
+    private static final long serialVersionUID = -8936664134645201545L;
+
     private String id;
 
     public UnwritableSessionDataException(String id, Throwable t) {

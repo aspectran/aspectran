@@ -16,8 +16,8 @@
 package com.aspectran.core.context.rule.ability;
 
 import com.aspectran.core.activity.process.action.Executable;
-import com.aspectran.core.context.rule.BeanMethodActionRule;
 import com.aspectran.core.context.rule.AnnotatedMethodActionRule;
+import com.aspectran.core.context.rule.BeanMethodActionRule;
 import com.aspectran.core.context.rule.EchoActionRule;
 import com.aspectran.core.context.rule.HeaderActionRule;
 import com.aspectran.core.context.rule.IncludeActionRule;

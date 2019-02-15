@@ -83,6 +83,7 @@ public class SessionData implements Serializable {
         return (T)attributes.get(name);
     }
 
+    @SuppressWarnings("unchecked")
     public <T> T setAttribute(String name, Object value) {
         T old;
         if (value == null) {

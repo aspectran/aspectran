@@ -540,9 +540,9 @@ public class ItemRule {
             if (tokensMap == null || tokensMap.isEmpty()) {
                 return null;
             } else if (tokensMap.size() == 1) {
-                Iterator it = tokensMap.values().iterator();
+                Iterator<Token[]> it = tokensMap.values().iterator();
                 if (it.hasNext()) {
-                    return (Token[])it.next();
+                    return it.next();
                 } else {
                     return new Token[0];
                 }

@@ -54,8 +54,8 @@ public class HttpSessionAdapter extends AbstractSessionAdapter {
 
     @Override
     @SuppressWarnings("unchecked")
-    public HttpSession getAdaptee() {
-        return getSession(true);
+    public <T> T getAdaptee() {
+        return (T)getSession(true);
     }
 
     @Override
@@ -73,37 +73,31 @@ public class HttpSessionAdapter extends AbstractSessionAdapter {
 
     @Override
     public String getId() {
-        HttpSession session = getSession(true);
-        return session.getId();
+        return getSession(true).getId();
     }
 
     @Override
     public boolean isNew() {
-        HttpSession session = getSession(true);
-        return session.isNew();
+        return getSession(true).isNew();
     }
 
     @Override
     public long getCreationTime() {
-        HttpSession session = getSession(true);
-        return session.getCreationTime();
+       return getSession(true).getCreationTime();
     }
 
     @Override
     public long getLastAccessedTime() {
-        HttpSession session = getSession(true);
-        return session.getLastAccessedTime();
+        return getSession(true).getLastAccessedTime();
     }
 
     @Override
     public int getMaxInactiveInterval() {
-        HttpSession session = getSession(true);
-        return session.getMaxInactiveInterval();
+        return getSession(true).getMaxInactiveInterval();
     }
 
     public void setMaxInactiveInterval(int interval) {
-        HttpSession session = getSession(true);
-        session.setMaxInactiveInterval(interval);
+        getSession(true).setMaxInactiveInterval(interval);
     }
 
     @Override
@@ -166,10 +160,10 @@ public class HttpSessionAdapter extends AbstractSessionAdapter {
     }
 
     protected HttpSession getSession(boolean create) {
-        if (adaptee == null) {
+        if (super.getAdaptee() == null) {
             throw new IllegalStateException("Session has been expired or not yet initialized");
         }
-        return ((HttpServletRequest)adaptee).getSession(create);
+        return ((HttpServletRequest)super.getAdaptee()).getSession(create);
     }
 
 }
