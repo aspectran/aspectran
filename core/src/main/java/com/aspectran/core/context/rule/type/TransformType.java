@@ -22,6 +22,7 @@ package com.aspectran.core.context.rule.type;
  */
 public enum TransformType {
 
+    NONE("transform/none"),
     XML("transform/xml"),
     XSL("transform/xsl"),
     TEXT("transform/text"),

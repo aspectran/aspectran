@@ -56,7 +56,7 @@ public class TransformResponseFactory {
             }
             transformResponse = new AponTransformResponse(transformRule);
         } else {
-            transformResponse = new NullTransformResponse(transformRule);
+            transformResponse = new NoneTransformResponse(transformRule);
         }
         return transformResponse;
     }

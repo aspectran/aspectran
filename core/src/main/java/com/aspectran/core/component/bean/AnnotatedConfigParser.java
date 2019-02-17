@@ -561,7 +561,13 @@ public class AnnotatedConfigParser {
         }
 
         Action actionAnno = method.getAnnotation(Action.class);
-        String actionId = (actionAnno != null ? StringUtils.emptyToNull(actionAnno.id()) : null);
+        String actionId = null;
+        if (actionAnno != null) {
+            actionId = StringUtils.emptyToNull(actionAnno.id());
+            if (actionId == null) {
+                actionId = StringUtils.emptyToNull(actionAnno.value());
+            }
+        }
 
         Executable annotatedMethodAction = createAnnotatedMethodAction(actionId, beanClass, method);
         transletRule.applyActionRule(annotatedMethodAction);
@@ -595,6 +601,9 @@ public class AnnotatedConfigParser {
 
     private TransformRule parseTransformRule(Transform transformAnno) {
         TransformType transformType = transformAnno.type();
+        if (transformType == TransformType.NONE) {
+            transformType = transformAnno.value();
+        }
         String contentType = StringUtils.emptyToNull(transformAnno.contentType());
         String templateId = StringUtils.emptyToNull(transformAnno.template());
         String encoding = StringUtils.emptyToNull(transformAnno.encoding());

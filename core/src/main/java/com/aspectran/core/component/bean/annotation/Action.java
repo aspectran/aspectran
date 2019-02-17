@@ -28,4 +28,6 @@ public @interface Action {
 
     String id() default "";
 
+    String value() default "";
+
 }

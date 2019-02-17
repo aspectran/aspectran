@@ -24,20 +24,20 @@ import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
 /**
- * The Class NullTransformResponse.
+ * The Class NoneTransformResponse.
  * 
  * <p>Created: 2018. 09. 11 PM 10:54:58</p>
  */
-public class NullTransformResponse extends TransformResponse {
+public class NoneTransformResponse extends TransformResponse {
 
-    private static final Log log = LogFactory.getLog(NullTransformResponse.class);
+    private static final Log log = LogFactory.getLog(NoneTransformResponse.class);
 
     /**
-     * Instantiates a new NullTransformResponse.
+     * Instantiates a new NoneTransformResponse.
      *
      * @param transformRule the transform rule
      */
-    public NullTransformResponse(TransformRule transformRule) {
+    public NoneTransformResponse(TransformRule transformRule) {
         super(transformRule);
     }
 
@@ -64,7 +64,7 @@ public class NullTransformResponse extends TransformResponse {
 
     @Override
     public Response replicate() {
-        return new NullTransformResponse(getTransformRule().replicate());
+        return new NoneTransformResponse(getTransformRule().replicate());
     }
 
 }
