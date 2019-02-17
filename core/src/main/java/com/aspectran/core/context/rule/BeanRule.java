@@ -67,7 +67,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 
     private Method factoryMethod;
 
-    private AutowireRule factoryAutowireRule;
+    private ParameterMappingRule[] factoryMethodParameterMappingRules;
 
     private boolean factoryOffered;
 
@@ -77,7 +77,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
 
     private Method initMethod;
 
-    private AutowireRule initAutowireRule;
+    private ParameterMappingRule[] initMethodParameterMappingRules;
 
     private String destroyMethodName;
 
@@ -337,12 +337,12 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
         this.factoryMethod = factoryMethod;
     }
 
-    public AutowireRule getFactoryAutowireRule() {
-        return factoryAutowireRule;
+    public ParameterMappingRule[] getFactoryMethodParameterMappingRules() {
+        return factoryMethodParameterMappingRules;
     }
 
-    public void setFactoryAutowireRule(AutowireRule factoryAutowireRule) {
-        this.factoryAutowireRule = factoryAutowireRule;
+    public void setFactoryMethodParameterMappingRules(ParameterMappingRule[] parameterMappingRules) {
+        this.factoryMethodParameterMappingRules = parameterMappingRules;
     }
 
     public boolean isFactoryOffered() {
@@ -405,12 +405,12 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
         this.initMethod = initMethod;
     }
 
-    public AutowireRule getInitAutowireRule() {
-        return initAutowireRule;
+    public ParameterMappingRule[] getInitMethodParameterMappingRules() {
+        return initMethodParameterMappingRules;
     }
 
-    public void setInitAutowireRule(AutowireRule initAutowireRule) {
-        this.initAutowireRule = initAutowireRule;
+    public void setInitMethodParameterMappingRules(ParameterMappingRule[] parameterMappingRules) {
+        this.initMethodParameterMappingRules = parameterMappingRules;
     }
 
     /**
@@ -788,7 +788,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceInspectable 
             tsb.append("scope", scopeType);
             tsb.append("factoryBean", factoryBeanId);
             tsb.append("factoryMethod", factoryMethodName);
-            tsb.append("factoryAutowireRule", factoryAutowireRule);
+            tsb.append("factoryAutowireRule", factoryMethodParameterMappingRules);
             tsb.append("initMethod", initMethodName);
             tsb.append("destroyMethod", destroyMethodName);
             tsb.append("lazyInit", lazyInit);

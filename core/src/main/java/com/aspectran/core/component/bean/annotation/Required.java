@@ -25,7 +25,7 @@ import java.lang.annotation.Target;
  * the setter method must be configured to be dependency-injected with a value.
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
+@Target({ElementType.METHOD, ElementType.PARAMETER})
 public @interface Required {
 
 }

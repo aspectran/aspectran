@@ -31,7 +31,7 @@ public class BeanRuleAnalyzer {
 
     public static final Class<?>[] TRANSLET_ACTION_PARAMETER_TYPES = { Translet.class };
 
-    public static Class<?> determineBeanClass(BeanRule beanRule) {
+    static Class<?> determineBeanClass(BeanRule beanRule) {
         Class<?> targetBeanClass;
         if (beanRule.isFactoryOffered()) {
             targetBeanClass = beanRule.getFactoryBeanClass();
@@ -62,7 +62,7 @@ public class BeanRuleAnalyzer {
         return targetBeanClass;
     }
 
-    public static Class<?> determineTargetBeanClassForFactoryBean(Class<?> beanClass, BeanRule beanRule) {
+    private static Class<?> determineTargetBeanClassForFactoryBean(Class<?> beanClass, BeanRule beanRule) {
         try {
             Method m = MethodUtils.getAccessibleMethod(beanClass, FactoryBean.FACTORY_METHOD_NAME);
             Class<?> targetBeanClass = m.getReturnType();
@@ -73,7 +73,7 @@ public class BeanRuleAnalyzer {
         }
     }
 
-    protected static Class<?> determineFactoryMethodTargetBeanClass(Class<?> beanClass, BeanRule beanRule) {
+    static Class<?> determineFactoryMethodTargetBeanClass(Class<?> beanClass, BeanRule beanRule) {
         if (beanRule.getFactoryMethod() != null) {
             Class<?> targetBeanClass = beanRule.getFactoryMethod().getReturnType();
             beanRule.setTargetBeanClass(targetBeanClass);
@@ -84,7 +84,7 @@ public class BeanRuleAnalyzer {
             Class<?> targetBeanClass;
             if (m1 != null) {
                 beanRule.setFactoryMethod(m1);
-                beanRule.setFactoryAutowireRule(AnnotatedConfigParser.createAutowireRuleForMethod(m1, false));
+                beanRule.setFactoryMethodParameterMappingRules(AnnotatedConfigParser.createParameterMappingRules(m1));
                 targetBeanClass = m1.getReturnType();
             } else {
                 Method m2 = MethodUtils.getAccessibleMethod(beanClass, factoryMethodName);
@@ -93,7 +93,7 @@ public class BeanRuleAnalyzer {
                             "() on bean class: " + beanClass.getName(), beanRule);
                 }
                 beanRule.setFactoryMethod(m2);
-                beanRule.setFactoryAutowireRule(AnnotatedConfigParser.createAutowireRuleForMethod(m2, false));
+                beanRule.setFactoryMethodParameterMappingRules(AnnotatedConfigParser.createParameterMappingRules(m2));
                 targetBeanClass = m2.getReturnType();
             }
             beanRule.setTargetBeanClass(targetBeanClass);
@@ -101,7 +101,7 @@ public class BeanRuleAnalyzer {
         }
     }
 
-    public static void checkInitMethod(Class<?> beanClass, BeanRule beanRule) {
+    static void checkInitMethod(Class<?> beanClass, BeanRule beanRule) {
         if (beanRule.isInitializableBean()) {
             throw new BeanRuleException("Bean initialization method is duplicated; " +
                     "Already implemented the InitializableBean", beanRule);
@@ -115,7 +115,7 @@ public class BeanRuleAnalyzer {
         Method m1 = MethodUtils.getAccessibleMethod(beanClass, initMethodName, TRANSLET_ACTION_PARAMETER_TYPES);
         if (m1 != null) {
             beanRule.setInitMethod(m1);
-            beanRule.setInitAutowireRule(AnnotatedConfigParser.createAutowireRuleForMethod(m1, true));
+            beanRule.setInitMethodParameterMappingRules(AnnotatedConfigParser.createParameterMappingRules(m1));
         } else {
             Method m2 = MethodUtils.getAccessibleMethod(beanClass, initMethodName);
             if (m2 == null) {
@@ -123,11 +123,11 @@ public class BeanRuleAnalyzer {
                         initMethodName + "() on bean class: " + beanClass.getName(), beanRule);
             }
             beanRule.setInitMethod(m2);
-            beanRule.setInitAutowireRule(AnnotatedConfigParser.createAutowireRuleForMethod(m2, true));
+            beanRule.setInitMethodParameterMappingRules(AnnotatedConfigParser.createParameterMappingRules(m2));
         }
     }
 
-    public static void checkDestroyMethod(Class<?> beanClass, BeanRule beanRule) {
+    static void checkDestroyMethod(Class<?> beanClass, BeanRule beanRule) {
         if (beanRule.isDisposableBean()) {
             throw new BeanRuleException("Bean destroy method is duplicated; " +
                     "Already implemented the DisposableBean", beanRule);
@@ -142,7 +142,7 @@ public class BeanRuleAnalyzer {
         beanRule.setDestroyMethod(m);
     }
 
-    public static void checkRequiredProperty(BeanRule beanRule, Method method) {
+    static void checkRequiredProperty(BeanRule beanRule, Method method) {
         String propertyName = dropCase(method.getName());
         ItemRuleMap propertyItemRuleMap = beanRule.getPropertyItemRuleMap();
         if (propertyItemRuleMap != null) {

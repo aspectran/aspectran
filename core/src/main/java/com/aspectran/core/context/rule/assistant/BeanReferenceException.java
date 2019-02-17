@@ -17,7 +17,7 @@ package com.aspectran.core.context.rule.assistant;
 
 import com.aspectran.core.context.rule.parser.ActivityContextParserException;
 
-import java.util.Set;
+import java.util.Collection;
 
 /**
  * This exception will be thrown when cannot resolve reference to bean.
@@ -41,7 +41,7 @@ public class BeanReferenceException extends ActivityContextParserException {
      *
      * @param brokenReferences the list of beans that can not find
      */
-    public BeanReferenceException(Set<Object> brokenReferences) {
+    public BeanReferenceException(Collection<Object> brokenReferences) {
         super(getMessage(brokenReferences));
     }
 
@@ -51,13 +51,13 @@ public class BeanReferenceException extends ActivityContextParserException {
      * @param brokenReferences the list of beans that can not find
      * @return the message
      */
-    private static String getMessage(Set<Object> brokenReferences) {
+    private static String getMessage(Collection<Object> brokenReferences) {
         StringBuilder sb = new StringBuilder();
-        for (Object brokenReference : brokenReferences) {
+        for (Object o : brokenReferences) {
             if (sb.length() > 0) {
                 sb.append(", ");
             }
-            sb.append(brokenReference);
+            sb.append(o);
         }
         return "Unable to resolve reference to bean [" + sb.toString() + "]";
     }

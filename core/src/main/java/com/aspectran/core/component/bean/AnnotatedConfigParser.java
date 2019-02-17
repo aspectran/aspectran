@@ -63,6 +63,7 @@ import com.aspectran.core.context.rule.ForwardRule;
 import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.JoinpointRule;
+import com.aspectran.core.context.rule.ParameterMappingRule;
 import com.aspectran.core.context.rule.PointcutRule;
 import com.aspectran.core.context.rule.RedirectRule;
 import com.aspectran.core.context.rule.ResponseRule;
@@ -205,7 +206,7 @@ public class AnnotatedConfigParser {
                     }
                 }
                 if (method.isAnnotationPresent(Bean.class)) {
-                    parseBeanRule(beanClass, method, nameArray);
+                    parseFactoryBeanRule(beanClass, method, nameArray);
                 } else if (method.isAnnotationPresent(Request.class) ||
                         method.isAnnotationPresent(RequestToGet.class) ||
                         method.isAnnotationPresent(RequestToPost.class) ||
@@ -281,7 +282,7 @@ public class AnnotatedConfigParser {
         while (beanClass != null) {
             for (Method method : beanClass.getDeclaredMethods()) {
                 if (method.isAnnotationPresent(Autowired.class)) {
-                    AutowireRule autowireRule = createAutowireRuleForMethod(method, false);
+                    AutowireRule autowireRule = createAutowireRuleForMethod(method);
                     beanRule.addAutowireRule(autowireRule);
                     relater.relay(autowireRule);
                 } else if (method.isAnnotationPresent(Required.class)) {
@@ -290,7 +291,7 @@ public class AnnotatedConfigParser {
                     if (!beanRule.isInitializableBean() && !beanRule.isInitializableTransletBean() &&
                             beanRule.getInitMethod() == null) {
                         beanRule.setInitMethod(method);
-                        beanRule.setInitAutowireRule(createAutowireRuleForMethod(method, true));
+                        beanRule.setInitMethodParameterMappingRules(createParameterMappingRules(method));
                     }
                 } else if (method.isAnnotationPresent(Destroy.class)) {
                     if (!beanRule.isDisposableBean() && beanRule.getDestroyMethod() == null) {
@@ -435,7 +436,7 @@ public class AnnotatedConfigParser {
         relater.relay(beanClass, beanRule);
     }
 
-    private void parseBeanRule(Class<?> beanClass, Method method, String[] nameArray) {
+    private void parseFactoryBeanRule(Class<?> beanClass, Method method, String[] nameArray) {
         Bean beanAnno = method.getAnnotation(Bean.class);
         String beanId = StringUtils.emptyToNull(beanAnno.id());
         if (beanId == null) {
@@ -460,7 +461,7 @@ public class AnnotatedConfigParser {
         beanRule.setFactoryBeanClass(beanClass);
         beanRule.setFactoryMethodName(method.getName());
         beanRule.setFactoryMethod(method);
-        beanRule.setFactoryAutowireRule(createAutowireRuleForMethod(method, false));
+        beanRule.setFactoryMethodParameterMappingRules(createParameterMappingRules(method));
         beanRule.setFactoryOffered(true);
         beanRule.setInitMethodName(initMethodName);
         beanRule.setDestroyMethodName(destroyMethodName);
@@ -640,15 +641,6 @@ public class AnnotatedConfigParser {
         return redirectRule;
     }
 
-    private AnnotatedMethodAction createAnnotatedMethodAction(String actionId, Class<?> beanClass, Method method) {
-        AnnotatedMethodActionRule annotatedMethodActionRule = new AnnotatedMethodActionRule();
-        annotatedMethodActionRule.setActionId(actionId);
-        annotatedMethodActionRule.setBeanClass(beanClass);
-        annotatedMethodActionRule.setMethod(method);
-        annotatedMethodActionRule.setAutowireRule(createAutowireRuleForMethod(method, true));
-        return new AnnotatedMethodAction(annotatedMethodActionRule);
-    }
-
     private AutowireRule createAutowireRuleForConstructor(Constructor<?> candidate) {
         java.lang.reflect.Parameter[] params = candidate.getParameters();
         if (params.length == 0) {
@@ -715,31 +707,23 @@ public class AnnotatedConfigParser {
         return autowireRule;
     }
 
-    static AutowireRule createAutowireRuleForMethod(Method method, boolean withPramName) {
+    private AutowireRule createAutowireRuleForMethod(Method method) {
         Autowired autowiredAnno = method.getAnnotation(Autowired.class);
-        boolean required = (autowiredAnno != null && autowiredAnno.required());
-        Qualifier qualifierAnno = method.getAnnotation(Qualifier.class);
-        String qualifier = (qualifierAnno != null ? StringUtils.emptyToNull(qualifierAnno.value()) : null);
+        boolean required = (autowiredAnno == null || autowiredAnno.required());
+        Qualifier typicalQualifierAnno = method.getAnnotation(Qualifier.class);
+        String typicalQualifier = (typicalQualifierAnno != null ? typicalQualifierAnno.value() : null);
 
         java.lang.reflect.Parameter[] params = method.getParameters();
         Class<?>[] paramTypes = new Class<?>[params.length];
         String[] paramQualifiers = new String[params.length];
-        String[] paramFormats = new String[params.length];
         for (int i = 0; i < params.length; i++) {
-            Qualifier paramQualifierAnno = params[i].getAnnotation(Qualifier.class);
-            Format paramFormatAnno = params[i].getAnnotation(Format.class);
-            String paramQualifier;
-            if (paramQualifierAnno != null) {
-                paramQualifier = StringUtils.emptyToNull(paramQualifierAnno.value());
-            } else {
-                paramQualifier = qualifier;
-            }
-            if (withPramName && paramQualifier == null) {
-                paramQualifier = params[i].getName();
-            }
             paramTypes[i] = params[i].getType();
-            paramQualifiers[i] = paramQualifier;
-            paramFormats[i] = (paramFormatAnno != null ? StringUtils.emptyToNull(paramFormatAnno.value()) : null);
+            Qualifier qualifierAnno = params[i].getAnnotation(Qualifier.class);
+            if (qualifierAnno != null) {
+                paramQualifiers[i] = StringUtils.emptyToNull(qualifierAnno.value());
+            } else {
+                paramQualifiers[i] = typicalQualifier;
+            }
         }
 
         AutowireRule autowireRule = new AutowireRule();
@@ -747,9 +731,50 @@ public class AnnotatedConfigParser {
         autowireRule.setTarget(method);
         autowireRule.setTypes(paramTypes);
         autowireRule.setQualifiers(paramQualifiers);
-        autowireRule.setFormats(paramFormats);
         autowireRule.setRequired(required);
         return autowireRule;
+    }
+
+    private AnnotatedMethodAction createAnnotatedMethodAction(String actionId, Class<?> beanClass, Method method) {
+        AnnotatedMethodActionRule annotatedMethodActionRule = new AnnotatedMethodActionRule();
+        annotatedMethodActionRule.setActionId(actionId);
+        annotatedMethodActionRule.setBeanClass(beanClass);
+        annotatedMethodActionRule.setMethod(method);
+        annotatedMethodActionRule.setParameterMappingRules(createParameterMappingRules(method));
+        return new AnnotatedMethodAction(annotatedMethodActionRule);
+    }
+
+    static ParameterMappingRule[] createParameterMappingRules(Method method) {
+        java.lang.reflect.Parameter[] params = method.getParameters();
+        if (params.length == 0) {
+            return null;
+        }
+        ParameterMappingRule[] mappingRules = new ParameterMappingRule[params.length];
+        int cnt = 0;
+        for (java.lang.reflect.Parameter param : params) {
+            Qualifier qualifierAnno = param.getAnnotation(Qualifier.class);
+            String qualifier = null;
+            if (qualifierAnno != null) {
+                qualifier = StringUtils.emptyToNull(qualifierAnno.value());
+            }
+            if (qualifier == null) {
+                qualifier = param.getName();
+            }
+            Format formatAnno = param.getAnnotation(Format.class);
+            String format = null;
+            if (formatAnno != null) {
+                format = StringUtils.emptyToNull(formatAnno.value());
+            }
+            boolean required = param.isAnnotationPresent(Required.class);
+
+            ParameterMappingRule mappingRule = new ParameterMappingRule();
+            mappingRule.setType(param.getType());
+            mappingRule.setName(qualifier);
+            mappingRule.setFormat(format);
+            mappingRule.setRequired(required);
+            mappingRules[cnt++] = mappingRule;
+        }
+        return mappingRules;
     }
 
     private String[] splitNamespace(String namespace) {

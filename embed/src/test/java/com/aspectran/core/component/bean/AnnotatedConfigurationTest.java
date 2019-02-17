@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.component.bean;
 
+import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.config.ContextConfig;
 import com.aspectran.embed.sample.anno.ThirdResult;
@@ -77,6 +78,83 @@ class AnnotatedConfigurationTest {
     @Test
     void testInvokeMethod_4() {
         aspectran.translate("/action-4");
+    }
+
+    @Test
+    void testInvokeMethod_5() {
+        aspectran.translate("/action-5");
+    }
+
+    @Test
+    void testInvokeMethod_6() {
+        ParameterMap params = new ParameterMap();
+        params.setParameterValues("param1", new String[] { "v1", "v2", "v3" });
+        aspectran.translate("/action-6", params);
+    }
+
+    @Test
+    void testInvokeMethod_7() {
+        ParameterMap params = new ParameterMap();
+        params.setParameterValues("param3", new String[] { "AA", "BB", "CC" });
+        aspectran.translate("/action-7", params);
+    }
+
+    @Test
+    void testInvokeMethod_8() {
+        ParameterMap params = new ParameterMap();
+        params.setParameterValues("param1", new String[] { "1", "2", "3" });
+        aspectran.translate("/action-8", params);
+    }
+
+    @Test
+    void testInvokeMethod_9() {
+        ParameterMap params = new ParameterMap();
+        params.setParameter("string", "Apple");
+        params.setParameterValues("strings", new String[] { "Orange", "Grape", "Melon" });
+
+        params.setParameter("character", "A");
+        params.setParameterValues("characters", new String[] { "A", "B", "C" });
+        params.setParameter("pcharacter", "A");
+        params.setParameterValues("pcharacters", new String[] { "A", "B", "C" });
+
+        params.setParameter("abyte", "1");
+        params.setParameterValues("bytes", new String[] { "1", "2", "3" });
+        params.setParameter("pbyte", "1");
+        params.setParameterValues("pbytes", new String[] { "1", "2", "3" });
+
+        params.setParameter("ashort", "1");
+        params.setParameterValues("shorts", new String[] { "1", "2", "3" });
+        params.setParameter("pshort", "1");
+        params.setParameterValues("pshorts", new String[] { "1", "2", "3" });
+
+        params.setParameter("integer", "1");
+        params.setParameterValues("integers", new String[] { "1", "2", "3" });
+        params.setParameter("pinteger", "1");
+        params.setParameterValues("pintegers", new String[] { "1", "2", "3" });
+
+        params.setParameter("along", "1");
+        params.setParameterValues("longs", new String[] { "1", "2", "3" });
+        params.setParameter("plong", "1");
+        params.setParameterValues("plongs", new String[] { "1", "2", "3" });
+
+        params.setParameter("afloat", "1");
+        params.setParameterValues("floats", new String[] { "1", "2", "3" });
+        params.setParameter("pfloat", "1");
+        params.setParameterValues("pfloats", new String[] { "1", "2", "3" });
+
+        params.setParameter("adouble", "1");
+        params.setParameterValues("doubles", new String[] { "1", "2", "3" });
+        params.setParameter("pdouble", "1");
+        params.setParameterValues("pdoubles", new String[] { "1", "2", "3" });
+
+        params.setParameter("bigInteger", "1");
+        params.setParameterValues("bigIntegers", new String[] { "1", "2", "3" });
+        params.setParameter("bigDecimal", "1");
+        params.setParameterValues("bigDecimals", new String[] { "1", "2", "3" });
+
+        params.setParameter("date", "2019-02-17");
+
+        aspectran.translate("/action-9", params);
     }
 
 }

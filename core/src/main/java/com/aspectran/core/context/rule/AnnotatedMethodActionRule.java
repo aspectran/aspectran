@@ -34,7 +34,7 @@ public class AnnotatedMethodActionRule {
 
     private Method method;
 
-    private AutowireRule autowireRule;
+    private ParameterMappingRule[] parameterMappingRules;
 
     public String getActionId() {
         return actionId;
@@ -64,12 +64,12 @@ public class AnnotatedMethodActionRule {
         return (method != null ? method.getName() : null);
     }
 
-    public AutowireRule getAutowireRule() {
-        return autowireRule;
+    public ParameterMappingRule[] getParameterMappingRules() {
+        return parameterMappingRules;
     }
 
-    public void setAutowireRule(AutowireRule autowireRule) {
-        this.autowireRule = autowireRule;
+    public void setParameterMappingRules(ParameterMappingRule[] parameterMappingRules) {
+        this.parameterMappingRules = parameterMappingRules;
     }
 
     @Override
@@ -79,7 +79,7 @@ public class AnnotatedMethodActionRule {
             tsb.append("class", beanClass.getName());
         }
         tsb.append("method", method);
-        tsb.append("autowireRule", autowireRule);
+        tsb.append("autowireRule", parameterMappingRules);
         return tsb.toString();
     }
 

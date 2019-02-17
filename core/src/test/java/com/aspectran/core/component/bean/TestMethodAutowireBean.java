@@ -29,7 +29,9 @@ public class TestMethodAutowireBean {
 
     @Autowired
     @Qualifier("bean.TestFieldValueAutowireBean")
-    public void setBean1(TestFieldValueAutowireBean bean) {
+    public void setBean1(
+            TestFieldValueAutowireBean bean
+    ) {
         this.bean1 = bean;
     }
 
@@ -38,8 +40,9 @@ public class TestMethodAutowireBean {
     }
 
     @Autowired(required = false)
-    @Qualifier("bean.TestFieldValueAutowireBean3")
-    public void setBean2(TestFieldValueAutowireBean bean) {
+    public void setBean2(
+            @Qualifier("bean.TestFieldValueAutowireBean3") TestFieldValueAutowireBean bean
+    ) {
         this.bean2 = bean;
     }
 

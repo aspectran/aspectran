@@ -18,6 +18,7 @@ package com.aspectran.core.util;
 import com.aspectran.core.component.bean.annotation.NonSerializable;
 import com.aspectran.core.context.AspectranRuntimeException;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -47,23 +48,24 @@ public class BeanDescriptor {
 
     private final String[] distinctMethodNames;
 
-    private final Map<String, Method> readMethods = new HashMap<>();
+    private final Map<String, Method> getterMethods = new HashMap<>();
 
-    private final Map<String, Class<?>> readTypes = new HashMap<>();
+    private final Map<String, Class<?>> getterTypes = new HashMap<>();
 
-    private final Map<String, Method> writeMethods = new HashMap<>();
+    private final Map<String, Method> setterMethods = new HashMap<>();
 
-    private final Map<String, Class<?>> writeTypes = new HashMap<>();
+    private final Map<String, Class<?>> setterTypes = new HashMap<>();
 
     private BeanDescriptor(Class<?> beanClass) {
         this.className = beanClass.getName();
         Method[] methods = getAllMethods(beanClass);
 
-        Set<String> nonSerializableReadPropertyNames = addReadMethods(methods);
-        this.readablePropertyNames = readMethods.keySet().toArray(new String[0]);
+        Set<String> nonSerializableReadPropertyNames = addGetterMethods(methods);
+        this.readablePropertyNames = getterMethods.keySet().toArray(new String[0]);
 
         if (!nonSerializableReadPropertyNames.isEmpty()) {
-            String[] serializableReadablePropertyNames = new String[readablePropertyNames.length - nonSerializableReadPropertyNames.size()];
+            String[] serializableReadablePropertyNames =
+                    new String[readablePropertyNames.length - nonSerializableReadPropertyNames.size()];
             int index = 0;
             for (String name : readablePropertyNames) {
                 if (!nonSerializableReadPropertyNames.contains(name)) {
@@ -75,8 +77,8 @@ public class BeanDescriptor {
             this.serializableReadablePropertyNames = this.readablePropertyNames;
         }
 
-        addWriteMethods(methods);
-        this.writablePropertyNames = writeMethods.keySet().toArray(new String[0]);
+        addSetterMethods(methods);
+        this.writablePropertyNames = setterMethods.keySet().toArray(new String[0]);
 
         Set<String> nameSet = new HashSet<>();
         for (Method method : methods) {
@@ -85,7 +87,7 @@ public class BeanDescriptor {
         this.distinctMethodNames = nameSet.toArray(new String[0]);
     }
 
-    private Set<String> addReadMethods(Method[] methods) {
+    private Set<String> addGetterMethods(Method[] methods) {
         Set<String> nonSerializableReadPropertyNames = new HashSet<>();
         for (Method method : methods) {
             if (method.getParameterCount() == 0) {
@@ -93,7 +95,7 @@ public class BeanDescriptor {
                 if ((name.startsWith("get") && name.length() > 3) ||
                         (name.startsWith("is") && name.length() > 2)) {
                     name = dropCase(name);
-                    addGetMethod(name, method);
+                    addGetterMethod(name, method);
                     if (method.isAnnotationPresent(NonSerializable.class)) {
                         nonSerializableReadPropertyNames.add(name);
                     }
@@ -103,12 +105,12 @@ public class BeanDescriptor {
         return nonSerializableReadPropertyNames;
     }
 
-    private void addGetMethod(String name, Method method) {
-        readMethods.put(name, method);
-        readTypes.put(name, method.getReturnType());
+    private void addGetterMethod(String name, Method method) {
+        getterMethods.put(name, method);
+        getterTypes.put(name, method.getReturnType());
     }
 
-    private void addWriteMethods(Method[] methods) {
+    private void addSetterMethods(Method[] methods) {
         Map<String, List<Method>> conflictingSetters = new HashMap<>();
         for (Method method : methods) {
             if (method.getParameterCount() == 1) {
@@ -132,9 +134,9 @@ public class BeanDescriptor {
             List<Method> setters = conflictingSetters.get(propName);
             Method firstMethod = setters.get(0);
             if (setters.size() == 1) {
-                addWriteMethod(propName, firstMethod);
+                addSetterMethod(propName, firstMethod);
             } else {
-                Class<?> expectedType = readTypes.get(propName);
+                Class<?> expectedType = getterTypes.get(propName);
                 if (expectedType == null) {
                     throw new AspectranRuntimeException("Illegal overloaded setter method with ambiguous type for property " +
                             propName + " in class " + firstMethod.getDeclaringClass() + ".  This breaks the JavaBeans " +
@@ -154,15 +156,15 @@ public class BeanDescriptor {
                                 propName + " in class " + firstMethod.getDeclaringClass() + ".  This breaks the JavaBeans " +
                                 "specification and can cause unpredictable results.");
                     }
-                    addWriteMethod(propName, setter);
+                    addSetterMethod(propName, setter);
                 }
             }
         }
     }
 
-    private void addWriteMethod(String name, Method method) {
-        writeMethods.put(name, method);
-        writeTypes.put(name, method.getParameterTypes()[0]);
+    private void addSetterMethod(String name, Method method) {
+        setterMethods.put(name, method);
+        setterTypes.put(name, method.getParameterTypes()[0]);
     }
 
     /**
@@ -235,22 +237,6 @@ public class BeanDescriptor {
     }
 
     /**
-     * Gets the setter for a property as a Method object.
-     *
-     * @param name the name of the property
-     * @return the setter method
-     * @throws NoSuchMethodException when a setter method cannot be found
-     */
-    public Method getSetter(String name) throws NoSuchMethodException {
-        Method method = writeMethods.get(name);
-        if (method == null) {
-            throw new NoSuchMethodException("There is no WRITABLE property named '" + name +
-                    "' in class '" + className + "'");
-        }
-        return method;
-    }
-
-    /**
      * Gets the getter for a property as a Method object.
      *
      * @param name the name of the property
@@ -258,7 +244,7 @@ public class BeanDescriptor {
      * @throws NoSuchMethodException when a getter method cannot be found
      */
     public Method getGetter(String name) throws NoSuchMethodException {
-        Method method = readMethods.get(name);
+        Method method = getterMethods.get(name);
         if (method == null) {
             throw new NoSuchMethodException("There is no READABLE property named '" + name +
                     "' in class '" + className + "'");
@@ -267,19 +253,19 @@ public class BeanDescriptor {
     }
 
     /**
-     * Gets the type for a property setter.
+     * Gets the setter for a property as a Method object.
      *
      * @param name the name of the property
-     * @return the Class of the property setter
-     * @throws NoSuchMethodException when a getter method cannot be found
+     * @return the setter method
+     * @throws NoSuchMethodException when a setter method cannot be found
      */
-    public Class<?> getSetterType(String name) throws NoSuchMethodException {
-        Class<?> clazz = writeTypes.get(name);
-        if (clazz == null) {
+    public Method getSetter(String name) throws NoSuchMethodException {
+        Method method = setterMethods.get(name);
+        if (method == null) {
             throw new NoSuchMethodException("There is no WRITABLE property named '" + name +
                     "' in class '" + className + "'");
         }
-        return clazz;
+        return method;
     }
 
     /**
@@ -290,12 +276,68 @@ public class BeanDescriptor {
      * @throws NoSuchMethodException when a getter method cannot be found
      */
     public Class<?> getGetterType(String name) throws NoSuchMethodException {
-        Class<?> clazz = readTypes.get(name);
-        if (clazz == null) {
+        Class<?> type = getterTypes.get(name);
+        if (type == null) {
             throw new NoSuchMethodException("There is no READABLE property named '" + name +
                     "' in class '" + className + "'");
         }
-        return clazz;
+        return type;
+    }
+
+    /**
+     * Gets the type for a property setter.
+     *
+     * @param name the name of the property
+     * @return the Class of the property setter
+     * @throws NoSuchMethodException when a setter method cannot be found
+     */
+    public Class<?> getSetterType(String name) throws NoSuchMethodException {
+        Class<?> type = setterTypes.get(name);
+        if (type == null) {
+            throw new NoSuchMethodException("There is no WRITABLE property named '" + name +
+                    "' in class '" + className + "'");
+        }
+        return type;
+    }
+
+    /**
+     * Invokes the annotation of the given type.
+     *
+     * @param name the given setter name
+     * @param annotationType the annotation type to look for
+     * @param <T> the annotation type
+     * @return the annotation object, or null if not found
+     * @throws NoSuchMethodException when a setter method cannot be found
+     */
+    public <T extends Annotation> T getSetterAnnotation(String name, Class<T> annotationType)
+            throws NoSuchMethodException {
+        Method method = getSetter(name);
+        return getSetterAnnotation(method, annotationType);
+    }
+
+    /**
+     * Invokes the annotation of the given type.
+     *
+     * @param method the given setter method
+     * @param annotationType the annotation type to look for
+     * @param <T> the annotation type
+     * @return the annotation object, or null if not found
+     */
+    @SuppressWarnings("unchecked")
+    public <T extends Annotation> T getSetterAnnotation(Method method, Class<T> annotationType) {
+        T annotation = method.getAnnotation(annotationType);
+        if (annotation != null) {
+            return annotation;
+        }
+        Annotation[][] parameterAnnotations = method.getParameterAnnotations();
+        if (parameterAnnotations.length > 0 ) {
+            for (Annotation anno : parameterAnnotations[0]) {
+                if (annotationType.isInstance(anno)) {
+                    return (T)anno;
+                }
+            }
+        }
+        return null;
     }
 
     /**
@@ -327,7 +369,7 @@ public class BeanDescriptor {
      * @return true if the object has a writable property by the name
      */
     public boolean hasWritableProperty(String propertyName) {
-        return writeMethods.keySet().contains(propertyName);
+        return setterMethods.keySet().contains(propertyName);
     }
 
     /**
@@ -337,7 +379,7 @@ public class BeanDescriptor {
      * @return true if the object has a readable property by the name
      */
     public boolean hasReadableProperty(String propertyName) {
-        return readMethods.keySet().contains(propertyName);
+        return getterMethods.keySet().contains(propertyName);
     }
 
     /**
@@ -352,14 +394,14 @@ public class BeanDescriptor {
     /**
      * Gets an instance of ClassDescriptor for the specified class.
      *
-     * @param clazz the class for which to lookup the method cache
+     * @param type the class for which to lookup the method cache
      * @return the method cache for the class
      */
-    public static BeanDescriptor getInstance(Class<?> clazz) {
-        BeanDescriptor bd = cache.get(clazz);
+    public static BeanDescriptor getInstance(Class<?> type) {
+        BeanDescriptor bd = cache.get(type);
         if (bd == null) {
-            bd = new BeanDescriptor(clazz);
-            BeanDescriptor existing = cache.putIfAbsent(clazz, bd);
+            bd = new BeanDescriptor(type);
+            BeanDescriptor existing = cache.putIfAbsent(type, bd);
             if (existing != null) {
                 bd = existing;
             }

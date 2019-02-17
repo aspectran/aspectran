@@ -23,8 +23,8 @@ import java.lang.annotation.Target;
 /**
  * The NonSerializable attribute marks a variable to not be serialized.
  */
-@Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
 public @interface NonSerializable {
 
 }
