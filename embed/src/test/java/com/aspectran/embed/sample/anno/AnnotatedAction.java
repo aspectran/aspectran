@@ -16,6 +16,7 @@
 package com.aspectran.embed.sample.anno;
 
 import com.aspectran.core.activity.Translet;
+import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.component.bean.annotation.Component;
 import com.aspectran.core.component.bean.annotation.Format;
 import com.aspectran.core.component.bean.annotation.Parameter;
@@ -28,6 +29,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -250,6 +252,19 @@ public class AnnotatedAction {
         assertArrayEquals(new BigDecimal[] { new BigDecimal("1"), new BigDecimal("2"), new BigDecimal("3") }, model.getBigDecimals());
 
         assertEquals("2019-02-17", new SimpleDateFormat("yyyy-MM-dd").format(model.getDate()));
+    }
+
+    @Request("/action-10")
+    public void action10(ParameterMap params) {
+        assertArrayEquals(new String[] {"1"}, params.getParameterValues("one"));
+        assertArrayEquals(new String[] {"2"}, params.getParameterValues("two"));
+        assertArrayEquals(new String[] {"3"}, params.getParameterValues("three"));
+        assertArrayEquals(new String[] {"1", "2", "3", "4"}, params.getParameterValues("four"));
+    }
+
+    @Request("/action-11")
+    public void action11(List<String> list) {
+        assertArrayEquals(new String[] {"1", "2", "3"}, list.toArray(new String[0]));
     }
 
 }

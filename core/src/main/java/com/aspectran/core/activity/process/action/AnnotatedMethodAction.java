@@ -17,6 +17,7 @@ package com.aspectran.core.activity.process.action;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.Translet;
+import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.component.bean.annotation.Format;
 import com.aspectran.core.component.bean.annotation.Qualifier;
 import com.aspectran.core.component.bean.annotation.Required;
@@ -187,19 +188,36 @@ public class AnnotatedMethodAction extends AbstractAction {
                         result = null;
                     }
                 }
-            } else if (Collection.class.isAssignableFrom(type)) {
+            } else if (type == ParameterMap.class) {
+                ParameterMap parameterMap = new ParameterMap();
+                for (String paramName : translet.getParameterNames()) {
+                    parameterMap.setParameterValues(paramName, translet.getParameterValues(paramName));
+                }
+                result = parameterMap;
+            } else if (Map.class.isAssignableFrom(type)) {
                 if (!type.isInterface()) {
                     @SuppressWarnings("unchecked")
-                    Collection<String> collection = (Collection<String>)ClassUtils.createInstance(type);
-                    collection.addAll(Arrays.asList(translet.getParameterValues(name)));
+                    Map<String, Object> map = (Map<String, Object>)ClassUtils.createInstance(type);
+                    map.putAll(translet.getAllParameters());
+                    result = map;
                 } else {
                     result = new HashMap<>(translet.getAllParameters());
                 }
-            } else if (Map.class.isAssignableFrom(type)) {
+            } else if (Collection.class.isAssignableFrom(type)) {
+                String[] values = translet.getParameterValues(name);
                 if (!type.isInterface()) {
-                    result = ClassUtils.createInstance(type, translet.getAllParameters());
+                    @SuppressWarnings("unchecked")
+                    Collection<String> collection = (Collection<String>)ClassUtils.createInstance(type);
+                    if (values != null) {
+                        collection.addAll(Arrays.asList(values));
+                    }
+                    result = collection;
                 } else {
-                    result = new HashMap<>(translet.getAllParameters());
+                    if (values != null) {
+                        result = new ArrayList<>(Arrays.asList(values));
+                    } else {
+                        result = new ArrayList<>();
+                    }
                 }
             } else {
                 String value = translet.getParameter(name);

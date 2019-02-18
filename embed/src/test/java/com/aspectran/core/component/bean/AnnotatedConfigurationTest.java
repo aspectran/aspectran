@@ -157,4 +157,21 @@ class AnnotatedConfigurationTest {
         aspectran.translate("/action-9", params);
     }
 
+    @Test
+    void testInvokeMethod_10() {
+        ParameterMap params = new ParameterMap();
+        params.setParameter("one", "1");
+        params.setParameter("two", "2");
+        params.setParameter("three", "3");
+        params.setParameterValues("four", new String[] {"1", "2", "3", "4"});
+        aspectran.translate("/action-10", params);
+    }
+
+    @Test
+    void testInvokeMethod_11() {
+        ParameterMap params = new ParameterMap();
+        params.setParameterValues("list", new String[] {"1", "2", "3"});
+        aspectran.translate("/action-11", params);
+    }
+
 }
