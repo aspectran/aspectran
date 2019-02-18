@@ -38,6 +38,7 @@ import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;
 import com.aspectran.core.context.rule.type.ScopeType;
 import com.aspectran.core.util.PrefixSuffixPattern;
+import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
@@ -170,12 +171,20 @@ public class BeanRuleRegistry {
         return configuredBeanRuleMap.values();
     }
 
+    /**
+     * Scans for annotated components.
+     *
+     * @param basePackages the base packages to scan for annotated components
+     * @throws IOException
+     */
     public void scanConfiguredBeans(String... basePackages) throws IOException {
         if (basePackages == null || basePackages.length == 0) {
             return;
         }
+
+        log.info("Auto component scanning on packages [" + StringUtils.joinCommaDelimitedList(basePackages) + "]");
+
         for (String basePackage : basePackages) {
-            log.info("Auto components scan on package " + basePackage);
             BeanClassScanner scanner = new BeanClassScanner(classLoader);
             scanner.scan(basePackage + ".**", (resourceName, scannedClass) -> {
                 if (scannedClass.isAnnotationPresent(Component.class)) {

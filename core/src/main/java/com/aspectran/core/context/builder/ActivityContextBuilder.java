@@ -53,8 +53,18 @@ public interface ActivityContextBuilder {
 
     void setResourceLocations(String... resourceLocations);
 
+    /**
+     * Returns the base packages to scan for annotated components.
+     *
+     * @return the base packages
+     */
     String[] getScanBasePackages();
 
+    /**
+     * Sets the base packages to scan for annotated components.
+     *
+     * @param scanBasePackages the base packages to scan
+     */
     void setScanBasePackages(String[] scanBasePackages);
 
     String[] getActiveProfiles();
