@@ -24,11 +24,14 @@ import com.aspectran.core.util.logging.LogFactory;
 
 import javax.servlet.http.HttpSessionBindingEvent;
 import javax.servlet.http.HttpSessionBindingListener;
+import java.io.Serializable;
 
 /**
  * The Class HttpSessionScope.
  */
-public class HttpSessionScope extends SessionScope implements HttpSessionBindingListener {
+public class HttpSessionScope extends SessionScope implements HttpSessionBindingListener, Serializable {
+
+    private static final long serialVersionUID = -8425032253436397737L;
 
     private static final Log log = LogFactory.getLog(HttpSessionScope.class);
 
