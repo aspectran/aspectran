@@ -18,13 +18,13 @@ package com.aspectran.core.context.rule.ability;
 import com.aspectran.core.context.rule.type.BeanRefererType;
 
 /**
- * The Interface BeanReferenceInspectable.
+ * The Interface BeanReferenceable.
  *
  * <p>Created: 2016. 2. 20.</p>
  *
  * @since 2.0.0
  */
-public interface BeanReferenceInspectable {
+public interface BeanReferenceable {
 
     /**
      * Returns the Bean Referrer Type.

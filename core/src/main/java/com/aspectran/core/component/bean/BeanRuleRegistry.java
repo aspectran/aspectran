@@ -175,7 +175,7 @@ public class BeanRuleRegistry {
      * Scans for annotated components.
      *
      * @param basePackages the base packages to scan for annotated components
-     * @throws IOException
+     * @throws IOException if an error occurs while scanning the bean class
      */
     public void scanConfiguredBeans(String... basePackages) throws IOException {
         if (basePackages == null || basePackages.length == 0) {
@@ -386,7 +386,7 @@ public class BeanRuleRegistry {
         }
         if (offeredFactoryBeanRule.isFactoryOffered()) {
             throw new BeanRuleException("Invalid BeanRule: An offered factory bean can not call " +
-                    "another offered factory bean. caller:", beanRule);
+                    "another offered factory bean; Caller:", beanRule);
         }
         return offeredFactoryBeanRule.getTargetBeanClass();
     }

@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.context.rule;
 
-import com.aspectran.core.context.rule.ability.BeanReferenceInspectable;
+import com.aspectran.core.context.rule.ability.BeanReferenceable;
 import com.aspectran.core.context.rule.type.BeanRefererType;
 import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.ToStringBuilder;
@@ -27,7 +27,7 @@ import java.lang.reflect.Method;
  * 
  * <p>Created: 2008. 03. 22 PM 5:50:35</p>
  */
-public class BeanMethodActionRule implements BeanReferenceInspectable {
+public class BeanMethodActionRule implements BeanReferenceable {
 
     private static final BeanRefererType BEAN_REFERER_TYPE = BeanRefererType.BEAN_METHOD_ACTION_RULE;
 

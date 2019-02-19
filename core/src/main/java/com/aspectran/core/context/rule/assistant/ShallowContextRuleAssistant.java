@@ -24,7 +24,7 @@ import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ScheduleRule;
 import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.TransletRule;
-import com.aspectran.core.context.rule.ability.BeanReferenceInspectable;
+import com.aspectran.core.context.rule.ability.BeanReferenceable;
 import com.aspectran.core.context.rule.appender.ShallowRuleAppendHandler;
 
 import java.util.ArrayList;
@@ -182,7 +182,7 @@ public class ShallowContextRuleAssistant extends ContextRuleAssistant {
     }
 
     @Override
-    public void reserveBeanReference(String beanId, Class<?> beanClass, BeanReferenceInspectable inspectable) {
+    public void reserveBeanReference(String beanId, Class<?> beanClass, BeanReferenceable referenceable) {
         // Do Nothing
     }
 

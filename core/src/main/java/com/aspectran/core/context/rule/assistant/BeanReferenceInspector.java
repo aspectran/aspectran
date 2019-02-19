@@ -22,7 +22,7 @@ import com.aspectran.core.component.bean.NoUniqueBeanException;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.rule.BeanMethodActionRule;
 import com.aspectran.core.context.rule.BeanRule;
-import com.aspectran.core.context.rule.ability.BeanReferenceInspectable;
+import com.aspectran.core.context.rule.ability.BeanReferenceable;
 import com.aspectran.core.context.rule.appender.RuleAppender;
 import com.aspectran.core.context.rule.type.BeanRefererType;
 import com.aspectran.core.util.BeanUtils;
@@ -46,25 +46,25 @@ public class BeanReferenceInspector {
 
     private static final Log log = LogFactory.getLog(BeanReferenceInspector.class);
 
-    private final Map<RefererKey, Set<RefererInfo>> refererInfoMap = new LinkedHashMap<>();
+    private final Map<RefererKey, Set<RefererInfo>> refererInfoMap = new LinkedHashMap<>(256);
 
     /**
      * Reserves to bean reference inspection.
      *
      * @param beanId the bean id
      * @param beanClass the bean class
-     * @param inspectable the object to be inspected
+     * @param referenceable the object to be inspected
      * @param ruleAppender the rule appender
      */
-    public void reserve(String beanId, Class<?> beanClass, BeanReferenceInspectable inspectable, RuleAppender ruleAppender) {
-        RefererKey key = new RefererKey(beanId, beanClass);
+    public void reserve(String beanId, Class<?> beanClass, BeanReferenceable referenceable, RuleAppender ruleAppender) {
+        RefererKey key = new RefererKey(beanClass, beanId);
         Set<RefererInfo> refererInfoSet = refererInfoMap.get(key);
         if (refererInfoSet == null) {
             refererInfoSet = new LinkedHashSet<>();
-            refererInfoSet.add(new RefererInfo(inspectable, ruleAppender));
+            refererInfoSet.add(new RefererInfo(referenceable, ruleAppender));
             refererInfoMap.put(key, refererInfoSet);
         } else {
-            refererInfoSet.add(new RefererInfo(inspectable, ruleAppender));
+            refererInfoSet.add(new RefererInfo(referenceable, ruleAppender));
         }
     }
 
@@ -79,8 +79,8 @@ public class BeanReferenceInspector {
 
         for (Map.Entry<RefererKey, Set<RefererInfo>> entry : refererInfoMap.entrySet()) {
             RefererKey refererKey = entry.getKey();
-            String beanId = refererKey.getBeanId();
-            Class<?> beanClass = refererKey.getBeanClass();
+            String beanId = refererKey.getQualifier();
+            Class<?> beanClass = refererKey.getType();
             Set<RefererInfo> refererInfoSet = entry.getValue();
 
             BeanRule beanRule = null;
@@ -117,25 +117,34 @@ public class BeanReferenceInspector {
 
             if (beanRule == null) {
                 if (beanRules != null && beanRules.length > 1) {
-                    String referer = refererKey.getBeanClass().getName();
-                    brokenReferences.add(referer);
-                    log.error("No unique bean of type [" + referer + "] is defined: " +
-                            "expected single matching bean but found " + beanRules.length + ": [" +
-                            NoUniqueBeanException.getBeanDescriptions(beanRules) + "]");
+                    for (RefererInfo refererInfo : refererInfoSet) {
+                        if (beanId != null) {
+                            log.error("Cannot resolve reference to bean " + refererKey +
+                                    "; Referer: " + refererInfo);
+                        } else {
+                            log.error("No unique bean of type [" + beanClass + "] is defined: " +
+                                    "expected single matching bean but found " + beanRules.length + ": [" +
+                                    NoUniqueBeanException.getBeanDescriptions(beanRules) + "]; Referer: " + refererInfo);
+                        }
+                    }
+                    brokenReferences.add(refererKey);
                 } else {
+                    int count = 0;
                     for (RefererInfo refererInfo : refererInfoSet) {
                         if (!isStaticMethodReference(refererInfo)) {
-                            String referer = refererKey.toString();
-                            brokenReferences.add(referer);
-                            log.error("Cannot resolve reference to bean " + referer +
-                                    " on " + refererInfo);
+                            count++;
+                            log.error("Cannot resolve reference to bean " + refererKey +
+                                    "; Referer: " + refererInfo);
                         }
+                    }
+                    if (count > 0) {
+                        brokenReferences.add(refererKey);
                     }
                 }
             } else {
                 for (RefererInfo refererInfo : refererInfoSet) {
                     if (refererInfo.getBeanRefererType() == BeanRefererType.BEAN_METHOD_ACTION_RULE) {
-                        checkTransletActionParameter((BeanMethodActionRule)refererInfo.getInspectable(),
+                        checkTransletActionParameter((BeanMethodActionRule)refererInfo.getReferenceable(),
                                 beanRule, refererInfo);
                     }
                 }
@@ -149,7 +158,7 @@ public class BeanReferenceInspector {
 
     private boolean isStaticMethodReference(RefererInfo refererInfo) {
         if (refererInfo.getBeanRefererType() == BeanRefererType.TOKEN) {
-            Token t = (Token)refererInfo.getInspectable();
+            Token t = (Token)refererInfo.getReferenceable();
             if (t.getAlternativeValue() != null && t.getGetterName() != null) {
                 return BeanUtils.hasReadableProperty((Class<?>)t.getAlternativeValue(), t.getGetterName());
             }
@@ -179,23 +188,23 @@ public class BeanReferenceInspector {
 
     private class RefererKey {
 
-        private final String beanId;
+        private final Class<?> type;
 
-        private final Class<?> beanClass;
+        private final String qualifier;
 
         private volatile int hashCode;
 
-        RefererKey(String beanId, Class<?> beanClass) {
-            this.beanId = beanId;
-            this.beanClass = beanClass;
+        RefererKey(Class<?> type, String qualifier) {
+            this.type = type;
+            this.qualifier = qualifier;
         }
 
-        String getBeanId() {
-            return beanId;
+        Class<?> getType() {
+            return type;
         }
 
-        Class<?> getBeanClass() {
-            return beanClass;
+        String getQualifier() {
+            return qualifier;
         }
 
         @Override
@@ -204,8 +213,8 @@ public class BeanReferenceInspector {
                 return true;
             }
             RefererKey key = (RefererKey)obj;
-            return (Objects.equals(beanId, key.beanId) &&
-                    Objects.equals(beanClass, key.beanClass));
+            return (Objects.equals(type, key.type) &&
+                    Objects.equals(qualifier, key.qualifier));
         }
 
         @Override
@@ -213,11 +222,11 @@ public class BeanReferenceInspector {
             final int prime = 31;
             int result = hashCode;
             if (result == 0) {
-                if (beanId != null) {
-                    result = prime * result + beanId.hashCode();
+                if (type != null) {
+                    result = prime * result + type.hashCode();
                 }
-                if (beanClass != null) {
-                    result = prime * result + beanClass.hashCode();
+                if (qualifier != null) {
+                    result = prime * result + qualifier.hashCode();
                 }
                 hashCode = result;
             }
@@ -226,30 +235,24 @@ public class BeanReferenceInspector {
 
         @Override
         public String toString() {
-            if (beanId != null && beanClass != null) {
-                ToStringBuilder tsb = new ToStringBuilder();
-                tsb.append("class", beanClass);
-                tsb.append("qualifier", beanId);
-                return tsb.toString();
-            } else if (beanId != null) {
-                return beanId;
-            } else {
-                return beanClass.toString();
-            }
+            ToStringBuilder tsb = new ToStringBuilder();
+            tsb.append("type", type);
+            tsb.append("qualifier", qualifier);
+            return tsb.toString();
         }
 
     }
 
     private class RefererInfo {
 
-        private final BeanReferenceInspectable inspectable;
+        private final BeanReferenceable referenceable;
 
         private final RuleAppender ruleAppender;
 
         private final NodeTracker nodeTracker;
 
-        RefererInfo(BeanReferenceInspectable inspectable, RuleAppender ruleAppender) {
-            this.inspectable = inspectable;
+        RefererInfo(BeanReferenceable referenceable, RuleAppender ruleAppender) {
+            this.referenceable = referenceable;
             this.ruleAppender = ruleAppender;
 
             if (ruleAppender != null) {
@@ -264,8 +267,8 @@ public class BeanReferenceInspector {
             }
         }
 
-        BeanReferenceInspectable getInspectable() {
-            return inspectable;
+        BeanReferenceable getReferenceable() {
+            return referenceable;
         }
 
         RuleAppender getRuleAppender() {
@@ -273,7 +276,7 @@ public class BeanReferenceInspector {
         }
 
         BeanRefererType getBeanRefererType() {
-            return inspectable.getBeanRefererType();
+            return referenceable.getBeanRefererType();
         }
 
         NodeTracker getNodeTracker() {
@@ -291,9 +294,9 @@ public class BeanReferenceInspector {
                 }
                 sb.append(" ");
             }
-            sb.append(inspectable.getBeanRefererType());
+            sb.append(referenceable.getBeanRefererType());
             sb.append(" ");
-            sb.append(inspectable);
+            sb.append(referenceable);
             return sb.toString();
         }
 

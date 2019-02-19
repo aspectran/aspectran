@@ -16,7 +16,7 @@
 package com.aspectran.core.context.rule;
 
 import com.aspectran.core.context.expr.token.Token;
-import com.aspectran.core.context.rule.ability.BeanReferenceInspectable;
+import com.aspectran.core.context.rule.ability.BeanReferenceable;
 import com.aspectran.core.context.rule.type.AutowireTargetType;
 import com.aspectran.core.context.rule.type.BeanRefererType;
 import com.aspectran.core.util.ToStringBuilder;
@@ -32,7 +32,7 @@ import java.lang.reflect.Method;
  * 
  * @since 2.0.0
  */
-public class AutowireRule implements BeanReferenceInspectable {
+public class AutowireRule implements BeanReferenceable {
 
     private static final BeanRefererType BEAN_REFERER_TYPE = BeanRefererType.AUTOWIRE_RULE;
 

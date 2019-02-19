@@ -34,7 +34,7 @@ import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.ScheduleRule;
 import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.TransletRule;
-import com.aspectran.core.context.rule.ability.BeanReferenceInspectable;
+import com.aspectran.core.context.rule.ability.BeanReferenceable;
 import com.aspectran.core.context.rule.appender.RuleAppendHandler;
 import com.aspectran.core.context.rule.type.AutowireTargetType;
 import com.aspectran.core.context.rule.type.DefaultSettingType;
@@ -530,16 +530,16 @@ public class ContextRuleAssistant {
         }
     }
 
-    public void reserveBeanReference(String beanId, BeanReferenceInspectable inspectable) {
-        reserveBeanReference(beanId, null, inspectable);
+    public void reserveBeanReference(String beanId, BeanReferenceable referenceable) {
+        reserveBeanReference(beanId, null, referenceable);
     }
 
-    public void reserveBeanReference(Class<?> beanClass, BeanReferenceInspectable inspectable) {
-        reserveBeanReference(null, beanClass, inspectable);
+    public void reserveBeanReference(Class<?> beanClass, BeanReferenceable referenceable) {
+        reserveBeanReference(null, beanClass, referenceable);
     }
 
-    public void reserveBeanReference(String beanId, Class<?> beanClass, BeanReferenceInspectable inspectable) {
-        beanReferenceInspector.reserve(beanId, beanClass, inspectable, ruleAppendHandler.getCurrentRuleAppender());
+    public void reserveBeanReference(String beanId, Class<?> beanClass, BeanReferenceable referenceable) {
+        beanReferenceInspector.reserve(beanId, beanClass, referenceable, ruleAppendHandler.getCurrentRuleAppender());
     }
 
     /**

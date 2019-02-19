@@ -122,7 +122,7 @@ public class RuleToParamsConverter {
         return rootParameters;
     }
 
-    public AspectranParameters toAspectranParameters() {
+    private AspectranParameters toAspectranParameters() {
         AspectranParameters aspectranParameters = new AspectranParameters();
 
         AssistantLocal assistantLocal = assistant.getAssistantLocal();

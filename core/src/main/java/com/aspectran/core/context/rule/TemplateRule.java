@@ -18,7 +18,7 @@ package com.aspectran.core.context.rule;
 import com.aspectran.core.context.env.Environment;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.expr.token.Tokenizer;
-import com.aspectran.core.context.rule.ability.BeanReferenceInspectable;
+import com.aspectran.core.context.rule.ability.BeanReferenceable;
 import com.aspectran.core.context.rule.ability.Replicable;
 import com.aspectran.core.context.rule.type.BeanRefererType;
 import com.aspectran.core.context.rule.type.TextStyleType;
@@ -37,7 +37,7 @@ import java.util.List;
  * 
  * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */
-public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceInspectable {
+public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceable {
 
     private static final String INTERNAL_TEMPLATE_ENGINE_NAME = "token";
 
