@@ -68,9 +68,9 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
 
     private static final Log log = LogFactory.getLog(AbstractBeanFactory.class);
 
-    protected final ActivityContext context;
+    private final ActivityContext context;
 
-    protected final BeanRuleRegistry beanRuleRegistry;
+    private final BeanRuleRegistry beanRuleRegistry;
 
     private final BeanProxifierType beanProxifierType;
 
@@ -78,6 +78,14 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
         this.context = context;
         this.beanRuleRegistry = beanRuleRegistry;
         this.beanProxifierType = (beanProxifierType == null ? BeanProxifierType.JAVASSIST : beanProxifierType);
+    }
+
+    protected ActivityContext getContext() {
+        return context;
+    }
+
+    protected BeanRuleRegistry getBeanRuleRegistry() {
+        return beanRuleRegistry;
     }
 
     protected Object createBean(BeanRule beanRule) {
@@ -114,14 +122,11 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
             Object[] args;
             Class<?>[] argTypes;
 
-            ItemRuleMap constructorArgumentItemRuleMap = beanRule.getConstructorArgumentItemRuleMap();
-            ItemRuleMap propertyItemRuleMap = beanRule.getPropertyItemRuleMap();
             ItemEvaluator evaluator = null;
-
+            ItemRuleMap constructorArgumentItemRuleMap = beanRule.getConstructorArgumentItemRuleMap();
             if (constructorArgumentItemRuleMap != null && !constructorArgumentItemRuleMap.isEmpty()) {
                 evaluator = new ItemExpression(activity);
                 Map<String, Object> valueMap = evaluator.evaluate(constructorArgumentItemRuleMap);
-
                 args = new Object[constructorArgumentItemRuleMap.size()];
                 argTypes = new Class<?>[constructorArgumentItemRuleMap.size()];
                 int i = 0;
@@ -136,7 +141,6 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
                 if (ctorAutowireRule != null) {
                     Class<?>[] types = ctorAutowireRule.getTypes();
                     String[] qualifiers = ctorAutowireRule.getQualifiers();
-
                     args = new Object[types.length];
                     argTypes = new Class<?>[types.length];
                     for (int i = 0; i < types.length; i++) {
@@ -158,7 +162,7 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
                 }
             }
 
-            final Object bean = createBeanInstance(beanRule, args, argTypes);
+            Object bean = createBeanInstance(beanRule, args, argTypes);
 
             if (beanRule.isSingleton()) {
                 beanRule.setInstantiatedBean(new InstantiatedBean(bean));
@@ -167,6 +171,7 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
             invokeAwareMethods(bean);
             autowiring(beanRule, bean, activity);
 
+            ItemRuleMap propertyItemRuleMap = beanRule.getPropertyItemRuleMap();
             if (propertyItemRuleMap != null && !propertyItemRuleMap.isEmpty()) {
                 if (evaluator == null) {
                     evaluator = new ItemExpression(activity);
@@ -244,12 +249,10 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
         Object bean;
         if (beanRule.isProxied()) {
             bean = createDynamicBeanProxy(beanRule, args, argTypes);
+        } else if (args != null) {
+            bean = newInstance(beanRule.getBeanClass(), args, argTypes);
         } else {
-            if (args != null && argTypes != null) {
-                bean = newInstance(beanRule.getBeanClass(), args, argTypes);
-            } else {
-                bean = newInstance(beanRule.getBeanClass());
-            }
+            bean = newInstance(beanRule.getBeanClass());
         }
         return bean;
     }

@@ -151,7 +151,7 @@ public class DefaultCorsProcessor extends AbstractCorsProcessor {
      * Invoked when one of the CORS checks failed.
      * The default implementation sets the response status to 403.
      *
-     * @param translet the translet
+     * @param translet the Translet instance
      * @param ce the CORS Exception
      * @throws CorsException if the request is denied
      */

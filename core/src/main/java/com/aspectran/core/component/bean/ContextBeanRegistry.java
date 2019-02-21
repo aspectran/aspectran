@@ -185,7 +185,7 @@ public class ContextBeanRegistry extends AbstractBeanRegistry {
     }
 
     private Scope getRequestScope() {
-        Activity activity = context.getCurrentActivity();
+        Activity activity = getContext().getCurrentActivity();
         if (activity != null) {
             RequestAdapter requestAdapter = activity.getRequestAdapter();
             if (requestAdapter != null) {
@@ -196,7 +196,7 @@ public class ContextBeanRegistry extends AbstractBeanRegistry {
     }
 
     private Scope getSessionScope() {
-        Activity activity = context.getCurrentActivity();
+        Activity activity = getContext().getCurrentActivity();
         if (activity != null) {
             SessionAdapter sessionAdapter = activity.getSessionAdapter();
             if (sessionAdapter != null) {
@@ -207,7 +207,7 @@ public class ContextBeanRegistry extends AbstractBeanRegistry {
     }
 
     private Scope getApplicationScope() {
-        return context.getEnvironment().getApplicationAdapter().getApplicationScope();
+        return getContext().getEnvironment().getApplicationAdapter().getApplicationScope();
     }
 
 }

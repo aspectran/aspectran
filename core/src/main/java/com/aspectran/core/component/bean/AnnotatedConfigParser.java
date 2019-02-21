@@ -126,12 +126,12 @@ public class AnnotatedConfigParser {
         }
 
         if (log.isDebugEnabled()) {
-            log.debug("Now try to parse annotated configurations");
+            log.debug("Now trying to parse annotated configurations");
         }
 
         if (!configuredBeanRuleMap.isEmpty()) {
             if (log.isDebugEnabled()) {
-                log.debug("Parsing bean rules for configuring: " + configuredBeanRuleMap.size());
+                log.debug("Parsing bean rules for annotated configurations: " + configuredBeanRuleMap.size());
             }
             for (BeanRule beanRule : configuredBeanRuleMap.values()) {
                 if (log.isTraceEnabled()) {
@@ -148,7 +148,7 @@ public class AnnotatedConfigParser {
 
         if (!idBasedBeanRuleMap.isEmpty()) {
             if (log.isDebugEnabled()) {
-                log.debug("Parsing ID-based bean rules: " + idBasedBeanRuleMap.size());
+                log.debug("Parsing for ID-based bean rules: " + idBasedBeanRuleMap.size());
             }
             for (BeanRule beanRule : idBasedBeanRuleMap.values()) {
                 if (log.isTraceEnabled()) {
@@ -164,7 +164,7 @@ public class AnnotatedConfigParser {
 
         if (!typeBasedBeanRuleMap.isEmpty()) {
             if (log.isDebugEnabled()) {
-                log.debug("Parsing Type-based bean rules: " + typeBasedBeanRuleMap.size());
+                log.debug("Parsing for type-based bean rules: " + typeBasedBeanRuleMap.size());
             }
             for (Set<BeanRule> set : typeBasedBeanRuleMap.values()) {
                 for (BeanRule beanRule : set) {
@@ -800,14 +800,13 @@ public class AnnotatedConfigParser {
             return arr;
         }
 
-        StringTokenizer st = new StringTokenizer(namespace, ActivityContext.ID_SEPARATOR);
         List<String> list = new ArrayList<>();
+        StringTokenizer st = new StringTokenizer(namespace, ActivityContext.ID_SEPARATOR);
         while (st.hasMoreTokens()) {
             list.add(st.nextToken());
         }
         list.add(null);
         Collections.reverse(list);
-
         return list.toArray(new String[0]);
     }
 
