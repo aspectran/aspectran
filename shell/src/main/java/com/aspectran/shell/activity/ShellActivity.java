@@ -360,7 +360,7 @@ public class ShellActivity extends CoreActivity {
         console.setStyle("bold");
         console.write(itemRule.getName());
         console.styleOff();
-        if (itemRule.isSecurity()) {
+        if (itemRule.isSecret()) {
             return console.readPassword(": ");
         } else {
             return console.readLine(": ");
@@ -413,16 +413,16 @@ public class ShellActivity extends CoreActivity {
                     continue;
                 }
                 Set<ItemRule> rules = entry.getValue();
-                boolean security = false;
+                boolean secret = false;
                 for (ItemRule ir : rules) {
-                    if (ir.isSecurity()) {
-                        security = true;
+                    if (ir.isSecret()) {
+                        secret = true;
                         break;
                     }
                 }
                 console.write("   ");
                 writeToken(token);
-                if (security) {
+                if (secret) {
                     value = console.readPassword(": ");
                 } else {
                     value = console.readLine(": ");

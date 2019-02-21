@@ -202,14 +202,14 @@ public class TransletInterpreter implements ActivityContextAware {
             map.put("defaultValue", token.getDefaultValue());
             map.put("string", token.stringify());
 
-            boolean security = false;
+            boolean secret = false;
             for (ItemRule ir : rules) {
-                if (ir.isSecurity()) {
-                    security = true;
+                if (ir.isSecret()) {
+                    secret = true;
                     break;
                 }
             }
-            map.put("security", security);
+            map.put("secret", secret);
 
             boolean mandatory = false;
             for (ItemRule ir : rules) {
@@ -235,7 +235,7 @@ public class TransletInterpreter implements ActivityContextAware {
             map.put("value", itemRule.getValue());
             map.put("defaultValue", itemRule.getDefaultValue());
             map.put("mandatory", itemRule.isMandatory());
-            map.put("security", itemRule.isSecurity());
+            map.put("secret", itemRule.isSecret());
 
             Token[] tokens = itemRule.getAllTokens();
             if (tokens == null) {

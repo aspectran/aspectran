@@ -36,6 +36,6 @@ public @interface Attribute {
 
     boolean mandatory() default false;
 
-    boolean security() default false;
+    boolean secret() default false;
 
 }

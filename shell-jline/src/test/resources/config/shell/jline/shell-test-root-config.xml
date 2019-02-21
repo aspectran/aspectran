@@ -148,7 +148,7 @@
         <request>
             <parameters>
                 <item name="email">${emailId}@${emailDomain}</item>
-                <item name="password" security="true"/>
+                <item name="password" secret="true"/>
             </parameters>
         </request>
         <transform type="transform/text">
@@ -171,8 +171,8 @@
         <request>
             <parameters>
                 <item name="email">${emailId}@${emailDomain}</item>
-                <item name="password" security="true"/>
-                <item name="confirmPassword" security="true"/>
+                <item name="password" secret="true"/>
+                <item name="confirmPassword" secret="true"/>
             </parameters>
         </request>
         <transform type="transform/text">

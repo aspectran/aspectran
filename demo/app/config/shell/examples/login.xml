@@ -16,11 +16,11 @@
         <parameters>
             <item name="id" mandatory="true"/>
             <item name="email" mandatory="true">${id}@${domain}</item>
-            <item name="password" security="true" defaultValue="(none)"/>
+            <item name="password" secret="true" defaultValue="(none)"/>
         </parameters>
         <attributes>
             <item name="attr1" mandatory="true">${id}@${domain}</item>
-            <item name="attr2" mandatory="true" security="true">${password}</item>
+            <item name="attr2" mandatory="true" secret="true">${password}</item>
         </attributes>
         <transform type="transform/text">
             <template style="apon">
@@ -45,8 +45,8 @@
         </description>
         <parameters>
             <item name="email">${emailId}@${emailDomain}</item>
-            <item name="password" security="true"/>
-            <item name="confirmPassword" security="true"/>
+            <item name="password" secret="true"/>
+            <item name="confirmPassword" secret="true"/>
         </parameters>
         <transform type="transform/text">
             <template style="apon">

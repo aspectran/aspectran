@@ -840,7 +840,7 @@ public class RuleToParamsConverter {
         itemParameters.putValueNonNull(ItemParameters.defaultValue, itemRule.getDefaultValue());
         itemParameters.putValueNonNull(ItemParameters.tokenize, itemRule.getTokenize());
         itemParameters.putValueNonNull(ItemParameters.mandatory, itemRule.getMandatory());
-        itemParameters.putValueNonNull(ItemParameters.security, itemRule.getSecurity());
+        itemParameters.putValueNonNull(ItemParameters.secret, itemRule.getSecret());
 
         if (itemRule.getType() == ItemType.SINGLE) {
             Object o = determineItemValue(itemRule.getValueType(), itemRule.getValue());

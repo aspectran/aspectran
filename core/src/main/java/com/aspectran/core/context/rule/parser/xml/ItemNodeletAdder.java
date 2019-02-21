@@ -47,9 +47,9 @@ class ItemNodeletAdder implements NodeletAdder {
             String defaultValue = attrs.get("defaultValue");
             Boolean tokenize = BooleanUtils.toNullableBooleanObject(attrs.get("tokenize"));
             Boolean mandatory = BooleanUtils.toNullableBooleanObject(attrs.get("mandatory"));
-            Boolean security = BooleanUtils.toNullableBooleanObject(attrs.get("security"));
+            Boolean secret = BooleanUtils.toNullableBooleanObject(attrs.get("secret"));
 
-            ItemRule itemRule = ItemRule.newInstance(type, name, valueType, defaultValue, tokenize, mandatory, security);
+            ItemRule itemRule = ItemRule.newInstance(type, name, valueType, defaultValue, tokenize, mandatory, secret);
             if (value != null && itemRule.getType() == ItemType.SINGLE) {
                 itemRule.setValue(value);
             }

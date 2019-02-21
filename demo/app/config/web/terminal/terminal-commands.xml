@@ -7,11 +7,11 @@
         <request>
             <parameters>
                 <item name="email" mandatory="true">${id}@${domain}</item>
-                <item name="password" mandatory="true" security="true"/>
+                <item name="password" mandatory="true" secret="true"/>
             </parameters>
             <attributes>
                 <item name="attr1" mandatory="true">${id}@${domain}</item>
-                <item name="attr2" mandatory="true" security="true">${password}</item>
+                <item name="attr2" mandatory="true" secret="true">${password}</item>
                 <item name="attr3" mandatory="true"/>
                 <item name="attr4" mandatory="true"/>
             </attributes>

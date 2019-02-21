@@ -257,7 +257,7 @@
   defaultValue CDATA #IMPLIED
   tokenize     (true | false) #IMPLIED
   mandatory    (true | false) #IMPLIED
-  security     (true | false) #IMPLIED
+  secret       (true | false) #IMPLIED
 >
 
 <!ELEMENT value (#PCDATA | call | null)*>

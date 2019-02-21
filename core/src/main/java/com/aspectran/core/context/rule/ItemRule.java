@@ -71,7 +71,7 @@ public class ItemRule {
 
     private Boolean mandatory;
 
-    private Boolean security;
+    private Boolean secret;
 
     private boolean autoNamed;
 
@@ -495,30 +495,30 @@ public class ItemRule {
     }
 
     /**
-     * Returns whether this item requires security input.
+     * Returns whether this item requires secure input.
      *
-     * @return whether or not this item requires security input
+     * @return whether or not this item requires secure input
      */
-    public Boolean getSecurity() {
-        return security;
+    public Boolean getSecret() {
+        return secret;
     }
 
     /**
-     * Returns whether this item requires security input.
+     * Returns whether this item requires secure input.
      *
-     * @return whether or not this item requires security input
+     * @return whether or not this item requires secure input
      */
-    public boolean isSecurity() {
-        return (security == Boolean.TRUE);
+    public boolean isSecret() {
+        return (secret == Boolean.TRUE);
     }
 
     /**
-     * Sets whether this item requires security input.
+     * Sets whether this item requires secure input.
      *
-     * @param security whether or not this item requires security input
+     * @param secret whether or not this item requires secure input
      */
-    public void setSecurity(Boolean security) {
-        this.security = security;
+    public void setSecret(Boolean secret) {
+        this.secret = secret;
     }
 
     public Token[] getAllTokens() {
@@ -585,8 +585,7 @@ public class ItemRule {
         }
         tsb.append("tokenize", tokenize);
         tsb.append("mandatory", mandatory);
-        tsb.append("security", security);
-        tsb.append("autoNamed", autoNamed);
+        tsb.append("secret", secret);
         return tsb.toString();
     }
 
@@ -663,12 +662,12 @@ public class ItemRule {
      * @param defaultValue the default value
      * @param tokenize whether to tokenize
      * @param mandatory whether or not this item is mandatory
-     * @param security whether or not this item requires security input
+     * @param secret whether or not this item requires secure input
      * @return the item rule
      * @throws IllegalRuleException if an illegal rule is found
      */
     public static ItemRule newInstance(String type, String name, String valueType, String defaultValue, Boolean tokenize,
-                                       Boolean mandatory, Boolean security) throws IllegalRuleException {
+                                       Boolean mandatory, Boolean secret) throws IllegalRuleException {
         ItemRule itemRule = new ItemRule();
 
         ItemType itemType = ItemType.resolve(type);
@@ -707,8 +706,8 @@ public class ItemRule {
             itemRule.setMandatory(mandatory);
         }
 
-        if (security != null) {
-            itemRule.setSecurity(security);
+        if (secret != null) {
+            itemRule.setSecret(secret);
         }
 
         return itemRule;
@@ -853,10 +852,10 @@ public class ItemRule {
         String defaultValue = itemParameters.getString(ItemParameters.defaultValue);
         Boolean tokenize = itemParameters.getBoolean(ItemParameters.tokenize);
         Boolean mandatory = itemParameters.getBoolean(ItemParameters.mandatory);
-        Boolean security = itemParameters.getBoolean(ItemParameters.security);
+        Boolean secret = itemParameters.getBoolean(ItemParameters.secret);
         Parameters callParameters = itemParameters.getParameters(ItemParameters.call);
 
-        ItemRule itemRule = ItemRule.newInstance(type, name, valueType, defaultValue, tokenize, mandatory, security);
+        ItemRule itemRule = ItemRule.newInstance(type, name, valueType, defaultValue, tokenize, mandatory, secret);
 
         if (callParameters != null) {
             String bean = StringUtils.emptyToNull(callParameters.getString(CallParameters.bean));
@@ -943,9 +942,9 @@ public class ItemRule {
         String defaultValue = parameter.defaultValue();
         boolean tokenize = parameter.tokenize();
         boolean mandatory = parameter.mandatory();
-        boolean security = parameter.security();
+        boolean secret = parameter.secret();
 
-        ItemRule itemRule = ItemRule.newInstance(null, name, null, defaultValue, tokenize, mandatory, security);
+        ItemRule itemRule = ItemRule.newInstance(null, name, null, defaultValue, tokenize, mandatory, secret);
         itemRule.setValue(value);
         return itemRule;
     }
@@ -967,9 +966,9 @@ public class ItemRule {
         String defaultValue = attribute.defaultValue();
         boolean tokenize = attribute.tokenize();
         boolean mandatory = attribute.mandatory();
-        boolean security = attribute.security();
+        boolean secret = attribute.secret();
 
-        ItemRule itemRule = ItemRule.newInstance(null, name, null, defaultValue, tokenize, mandatory, security);
+        ItemRule itemRule = ItemRule.newInstance(null, name, null, defaultValue, tokenize, mandatory, secret);
         itemRule.setValue(value);
         return itemRule;
     }
