@@ -183,7 +183,7 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
         parser.addNodelet(itemNodeletAdder);
         parser.addNodeEndlet(text -> {
             ItemRuleMap irm = parser.popObject();
-            ForwardRule forwardRule = parser.peekObject(1);
+            ForwardRule forwardRule = parser.peekObject();
             irm = assistant.profiling(irm, forwardRule.getAttributeItemRuleMap());
             forwardRule.setAttributeItemRuleMap(irm);
         });
@@ -237,7 +237,7 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
         parser.addNodelet(itemNodeletAdder);
         parser.addNodeEndlet(text -> {
             ItemRuleMap irm = parser.popObject();
-            RedirectRule redirectRule = parser.peekObject(1);
+            RedirectRule redirectRule = parser.peekObject();
             irm = assistant.profiling(irm, redirectRule.getParameterItemRuleMap());
             redirectRule.setParameterItemRuleMap(irm);
         });
