@@ -133,7 +133,7 @@ public class AspectranDaemonService extends AspectranCoreService implements Daem
             translet = activity.getTranslet();
         } catch (ActivityTerminatedException e) {
             if (log.isDebugEnabled()) {
-                log.debug("Activity terminated: Cause: " + e.getMessage());
+                log.debug("Activity terminated; Cause: " + e.getMessage());
             }
         } catch (Exception e) {
             throw new AspectranRuntimeException("An error occurred while processing translet: " + name, e);

@@ -28,6 +28,7 @@ import com.aspectran.core.service.AspectranCoreService;
 import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.CoreService;
 import com.aspectran.core.service.ServiceStateListener;
+import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.web.activity.WebActivity;
@@ -86,14 +87,14 @@ public class AspectranWebService extends AspectranCoreService implements WebServ
                 }
             } catch (Exception e) {
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-                log.error("An unexposed Translet passed over to the default servlet and an error" +
+                log.error("An unexposed Translet passed over to the default servlet and an error " +
                         "occurred during processing", e);
             }
             return;
         }
 
         if (log.isDebugEnabled()) {
-            log.debug("Request URI: " + requestUri);
+            log.debug(request.getMethod() + " " + requestUri + " from " + getClientIp(request));
         }
 
         if (pauseTimeout != 0L) {
@@ -137,7 +138,7 @@ public class AspectranWebService extends AspectranCoreService implements WebServ
             response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
         } catch (ActivityTerminatedException e) {
             if (log.isDebugEnabled()) {
-                log.debug("Activity terminated: Cause: " + e.getMessage());
+                log.debug("Activity terminated; Cause: " + e.getMessage());
             }
         } catch (Exception e) {
             log.error("An error occurred while processing request: " + requestUri, e);
@@ -147,6 +148,14 @@ public class AspectranWebService extends AspectranCoreService implements WebServ
                 activity.finish();
             }
         }
+    }
+
+    private static String getClientIp(HttpServletRequest request) {
+        String remoteAddr = request.getHeader("X-FORWARDED-FOR");
+        if (StringUtils.isEmpty(remoteAddr)) {
+            remoteAddr = request.getRemoteAddr();
+        }
+        return remoteAddr;
     }
 
     private DefaultServletHttpRequestHandler getDefaultServletHttpRequestHandler() {

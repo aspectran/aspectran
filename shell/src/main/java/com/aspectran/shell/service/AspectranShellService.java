@@ -104,7 +104,7 @@ public class AspectranShellService extends AbstractShellService {
             throw e;
         } catch (ActivityTerminatedException e) {
             if (log.isDebugEnabled()) {
-                log.debug("Activity terminated: Cause: " + e.getMessage());
+                log.debug("Activity terminated; Cause: " + e.getMessage());
             }
         } catch (Exception e) {
             throw new AspectranRuntimeException("An error occurred while processing translet: " + transletName, e);
