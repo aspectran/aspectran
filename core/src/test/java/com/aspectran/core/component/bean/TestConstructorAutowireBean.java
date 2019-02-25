@@ -16,11 +16,13 @@
 package com.aspectran.core.component.bean;
 
 import com.aspectran.core.component.bean.annotation.Autowired;
+import com.aspectran.core.component.bean.annotation.Component;
 import com.aspectran.core.component.bean.annotation.Qualifier;
 
 /**
  * <p>Created: 2017. 11. 29.</p>
  */
+@Component
 public class TestConstructorAutowireBean {
 
     public TestFieldValueAutowireBean bean1;

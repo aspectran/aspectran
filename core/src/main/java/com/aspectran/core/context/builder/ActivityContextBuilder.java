@@ -65,7 +65,7 @@ public interface ActivityContextBuilder {
      *
      * @param scanBasePackages the base packages to scan
      */
-    void setScanBasePackages(String[] scanBasePackages);
+    void setScanBasePackages(String... scanBasePackages);
 
     String[] getActiveProfiles();
 

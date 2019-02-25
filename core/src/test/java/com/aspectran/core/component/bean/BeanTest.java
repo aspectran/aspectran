@@ -53,6 +53,7 @@ class BeanTest {
         builder.setBasePath(baseDir.getCanonicalPath());
         builder.setHybridLoad(false);
         builder.setActiveProfiles("dev", "local");
+        builder.setScanBasePackages("com.aspectran.core.component.bean");
         context = builder.build("/config/bean/bean-test-config.xml");
         beanRegistry = context.getBeanRegistry();
     }

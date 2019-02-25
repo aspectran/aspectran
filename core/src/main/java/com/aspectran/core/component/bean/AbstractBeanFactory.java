@@ -203,12 +203,10 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
             if (factoryBeanClass != null) {
                 if (Modifier.isInterface(factoryBeanClass.getModifiers())) {
                     bean = null;
+                } else if (factoryBeanClass.isAnnotationPresent(Component.class)) {
+                    bean = activity.getConfiguredBean(factoryBeanClass);
                 } else {
-                    if (factoryBeanClass.isAnnotationPresent(Component.class)) {
-                        bean = activity.getConfiguredBean(factoryBeanClass);
-                    } else {
-                        bean = activity.getBean(factoryBeanClass);
-                    }
+                    bean = activity.getBean(factoryBeanClass);
                 }
             } else {
                 bean = activity.getBean(factoryBeanId);

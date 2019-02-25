@@ -138,8 +138,8 @@ public class AnnotatedConfigParser {
                     log.trace("configuredBeanRule " + beanRule);
                 }
                 if (!beanRule.isFactoryOffered()) {
-                    parseConstructorAutowire(beanRule);
                     parseConfiguredBean(beanRule);
+                    parseConstructorAutowire(beanRule);
                     parseFieldAutowire(beanRule);
                     parseMethodAutowire(beanRule);
                 }

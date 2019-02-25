@@ -15,8 +15,6 @@
  */
 package com.aspectran.core.component.bean;
 
-import com.aspectran.core.activity.Activity;
-import com.aspectran.core.activity.Translet;
 import com.aspectran.core.component.bean.ablility.DisposableBean;
 import com.aspectran.core.component.bean.ablility.FactoryBean;
 import com.aspectran.core.component.bean.ablility.InitializableBean;
@@ -29,7 +27,6 @@ import com.aspectran.core.component.bean.aware.CurrentActivityAware;
 import com.aspectran.core.component.bean.aware.EnvironmentAware;
 import com.aspectran.core.component.bean.scan.BeanClassScanFailedException;
 import com.aspectran.core.component.bean.scan.BeanClassScanner;
-import com.aspectran.core.context.AspectranRuntimeException;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.AutowireRule;
 import com.aspectran.core.context.rule.BeanRule;
@@ -86,8 +83,6 @@ public class BeanRuleRegistry {
         ignoreDependencyInterface(ClassLoaderAware.class);
         ignoreDependencyInterface(CurrentActivityAware.class);
         ignoreDependencyInterface(EnvironmentAware.class);
-        ignoreDependencyInterface(Activity.class);
-        ignoreDependencyInterface(Translet.class);
         ignoreDependencyInterface(java.io.Serializable.class);
         ignoreDependencyInterface(java.lang.Comparable.class);
         ignoreDependencyInterface(java.lang.CharSequence.class);
@@ -186,10 +181,10 @@ public class BeanRuleRegistry {
 
         for (String basePackage : basePackages) {
             BeanClassScanner scanner = new BeanClassScanner(classLoader);
-            scanner.scan(basePackage + ".**", (resourceName, scannedClass) -> {
-                if (scannedClass.isAnnotationPresent(Component.class)) {
+            scanner.scan(basePackage + ".**", (resourceName, targetClass) -> {
+                if (targetClass.isAnnotationPresent(Component.class)) {
                     BeanRule beanRule = new BeanRule();
-                    beanRule.setBeanClass(scannedClass);
+                    beanRule.setBeanClass(targetClass);
                     beanRule.setScopeType(ScopeType.SINGLETON);
                     saveConfiguredBeanRule(beanRule);
                 }
@@ -216,7 +211,7 @@ public class BeanRuleRegistry {
                     scanner.setBeanIdMaskPattern(beanRule.getMaskPattern());
                 }
                 try {
-                    scanner.scan(scanPattern, (resourceName, scannedClass) -> {
+                    scanner.scan(scanPattern, (resourceName, targetClass) -> {
                         BeanRule beanRule2 = beanRule.replicate();
                         if (prefixSuffixPattern != null) {
                             beanRule2.setId(prefixSuffixPattern.join(resourceName));
@@ -227,7 +222,7 @@ public class BeanRuleRegistry {
                                 beanRule2.setId(resourceName);
                             }
                         }
-                        beanRule2.setBeanClass(scannedClass);
+                        beanRule2.setBeanClass(targetClass);
                         dissectBeanRule(beanRule2);
                     });
                 } catch (IOException e) {
@@ -260,7 +255,6 @@ public class BeanRuleRegistry {
             }
             if (!beanRule.isFactoryOffered()) {
                 if (targetBeanClass.isAnnotationPresent(Component.class)) {
-                    // bean rule for configuration
                     saveConfiguredBeanRule(beanRule);
                 } else {
                     saveBeanRule(targetBeanClass, beanRule);
@@ -275,7 +269,7 @@ public class BeanRuleRegistry {
 
     private void saveBeanRule(String beanId, BeanRule beanRule) {
         if (importantBeanIdSet.contains(beanId)) {
-            throw new BeanRuleException("Already exists the id based named bean", beanRule);
+            throw new BeanRuleException("Already exists the ID-based named bean", beanRule);
         }
         if (beanRule.isImportant()) {
             importantBeanIdSet.add(beanRule.getId());
@@ -285,7 +279,7 @@ public class BeanRuleRegistry {
 
     private void saveBeanRule(Class<?> beanClass, BeanRule beanRule) {
         if (importantBeanTypeSet.contains(beanClass)) {
-            throw new BeanRuleException("Already exists the type based named bean", beanRule);
+            throw new BeanRuleException("Already exists the type-based named bean", beanRule);
         }
         if (beanRule.isImportant()) {
             importantBeanTypeSet.add(beanClass);
@@ -304,7 +298,7 @@ public class BeanRuleRegistry {
 
     private void saveConfiguredBeanRule(BeanRule beanRule) {
         if (beanRule.getBeanClass() == null) {
-            throw new AspectranRuntimeException("Illegal Bean Rule " + beanRule);
+            throw new BeanRuleException("No specified bean class", beanRule);
         }
         configuredBeanRuleMap.put(beanRule.getBeanClass(), beanRule);
     }

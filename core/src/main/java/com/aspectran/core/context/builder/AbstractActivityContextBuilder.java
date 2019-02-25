@@ -174,8 +174,10 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
     }
 
     @Override
-    public void setScanBasePackages(String[] scanBasePackages) {
-        this.scanBasePackages = scanBasePackages;
+    public void setScanBasePackages(String... scanBasePackages) {
+        if (scanBasePackages != null && scanBasePackages.length > 0) {
+            this.scanBasePackages = scanBasePackages;
+        }
     }
 
     @Override
