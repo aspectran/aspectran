@@ -295,7 +295,9 @@ public class AnnotatedMethodAction extends AbstractAction {
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
                 result = LocalDateTime.parse(value, formatter);
             }
-        } else if (type == boolean.class || type == Boolean.class) {
+        } else if (type == boolean.class) {
+            result = Boolean.valueOf(value);
+        } else if (type == Boolean.class) {
             if (value != null) {
                 result = Boolean.valueOf(value);
             }
