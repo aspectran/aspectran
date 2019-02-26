@@ -63,7 +63,7 @@ import com.aspectran.core.context.rule.ForwardRule;
 import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.JoinpointRule;
-import com.aspectran.core.context.rule.ParameterMappingRule;
+import com.aspectran.core.context.rule.ParameterBindingRule;
 import com.aspectran.core.context.rule.PointcutRule;
 import com.aspectran.core.context.rule.RedirectRule;
 import com.aspectran.core.context.rule.ResponseRule;
@@ -291,7 +291,7 @@ public class AnnotatedConfigParser {
                     if (!beanRule.isInitializableBean() && !beanRule.isInitializableTransletBean() &&
                             beanRule.getInitMethod() == null) {
                         beanRule.setInitMethod(method);
-                        beanRule.setInitMethodParameterMappingRules(createParameterMappingRules(method));
+                        beanRule.setInitMethodParameterBindingRules(createParameterBindingRules(method));
                     }
                 } else if (method.isAnnotationPresent(Destroy.class)) {
                     if (!beanRule.isDisposableBean() && beanRule.getDestroyMethod() == null) {
@@ -461,7 +461,7 @@ public class AnnotatedConfigParser {
         beanRule.setFactoryBeanClass(beanClass);
         beanRule.setFactoryMethodName(method.getName());
         beanRule.setFactoryMethod(method);
-        beanRule.setFactoryMethodParameterMappingRules(createParameterMappingRules(method));
+        beanRule.setFactoryMethodParameterBindingRules(createParameterBindingRules(method));
         beanRule.setFactoryOffered(true);
         beanRule.setInitMethodName(initMethodName);
         beanRule.setDestroyMethodName(destroyMethodName);
@@ -749,16 +749,16 @@ public class AnnotatedConfigParser {
         annotatedMethodActionRule.setActionId(actionId);
         annotatedMethodActionRule.setBeanClass(beanClass);
         annotatedMethodActionRule.setMethod(method);
-        annotatedMethodActionRule.setParameterMappingRules(createParameterMappingRules(method));
+        annotatedMethodActionRule.setParameterBindingRules(createParameterBindingRules(method));
         return new AnnotatedMethodAction(annotatedMethodActionRule);
     }
 
-    static ParameterMappingRule[] createParameterMappingRules(Method method) {
+    static ParameterBindingRule[] createParameterBindingRules(Method method) {
         java.lang.reflect.Parameter[] params = method.getParameters();
         if (params.length == 0) {
             return null;
         }
-        ParameterMappingRule[] mappingRules = new ParameterMappingRule[params.length];
+        ParameterBindingRule[] bindingRules = new ParameterBindingRule[params.length];
         int cnt = 0;
         for (java.lang.reflect.Parameter param : params) {
             Qualifier qualifierAnno = param.getAnnotation(Qualifier.class);
@@ -776,14 +776,14 @@ public class AnnotatedConfigParser {
             }
             boolean required = param.isAnnotationPresent(Required.class);
 
-            ParameterMappingRule mappingRule = new ParameterMappingRule();
+            ParameterBindingRule mappingRule = new ParameterBindingRule();
             mappingRule.setType(param.getType());
             mappingRule.setName(qualifier);
             mappingRule.setFormat(format);
             mappingRule.setRequired(required);
-            mappingRules[cnt++] = mappingRule;
+            bindingRules[cnt++] = mappingRule;
         }
-        return mappingRules;
+        return bindingRules;
     }
 
     private String[] splitNamespace(String namespace) {

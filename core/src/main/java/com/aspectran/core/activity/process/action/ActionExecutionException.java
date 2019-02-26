@@ -65,8 +65,8 @@ public class ActionExecutionException extends ProcessException {
         super(msg, cause);
     }
 
-    public ActionExecutionException(String actionName, Executable action, Throwable cause) {
-        super("Failed to execute " + actionName + " action " + action.toString() + " Cause: " + cause, cause);
+    public ActionExecutionException(Executable action, Throwable cause) {
+        super("Failed to execute action " + action + "; Cause: " + cause, cause);
         this.action = action;
     }
 

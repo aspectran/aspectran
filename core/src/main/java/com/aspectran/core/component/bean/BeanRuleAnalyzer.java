@@ -84,7 +84,7 @@ public class BeanRuleAnalyzer {
             Class<?> targetBeanClass;
             if (m1 != null) {
                 beanRule.setFactoryMethod(m1);
-                beanRule.setFactoryMethodParameterMappingRules(AnnotatedConfigParser.createParameterMappingRules(m1));
+                beanRule.setFactoryMethodParameterBindingRules(AnnotatedConfigParser.createParameterBindingRules(m1));
                 targetBeanClass = m1.getReturnType();
             } else {
                 Method m2 = MethodUtils.getAccessibleMethod(beanClass, factoryMethodName);
@@ -93,7 +93,7 @@ public class BeanRuleAnalyzer {
                             "() on bean class: " + beanClass.getName(), beanRule);
                 }
                 beanRule.setFactoryMethod(m2);
-                beanRule.setFactoryMethodParameterMappingRules(AnnotatedConfigParser.createParameterMappingRules(m2));
+                beanRule.setFactoryMethodParameterBindingRules(AnnotatedConfigParser.createParameterBindingRules(m2));
                 targetBeanClass = m2.getReturnType();
             }
             beanRule.setTargetBeanClass(targetBeanClass);
@@ -115,7 +115,7 @@ public class BeanRuleAnalyzer {
         Method m1 = MethodUtils.getAccessibleMethod(beanClass, initMethodName, TRANSLET_ACTION_PARAMETER_TYPES);
         if (m1 != null) {
             beanRule.setInitMethod(m1);
-            beanRule.setInitMethodParameterMappingRules(AnnotatedConfigParser.createParameterMappingRules(m1));
+            beanRule.setInitMethodParameterBindingRules(AnnotatedConfigParser.createParameterBindingRules(m1));
         } else {
             Method m2 = MethodUtils.getAccessibleMethod(beanClass, initMethodName);
             if (m2 == null) {
@@ -123,7 +123,7 @@ public class BeanRuleAnalyzer {
                         initMethodName + "() on bean class: " + beanClass.getName(), beanRule);
             }
             beanRule.setInitMethod(m2);
-            beanRule.setInitMethodParameterMappingRules(AnnotatedConfigParser.createParameterMappingRules(m2));
+            beanRule.setInitMethodParameterBindingRules(AnnotatedConfigParser.createParameterBindingRules(m2));
         }
     }
 

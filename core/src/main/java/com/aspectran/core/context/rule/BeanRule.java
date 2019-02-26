@@ -67,7 +67,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
 
     private Method factoryMethod;
 
-    private ParameterMappingRule[] factoryMethodParameterMappingRules;
+    private ParameterBindingRule[] factoryMethodParameterBindingRules;
 
     private boolean factoryOffered;
 
@@ -77,7 +77,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
 
     private Method initMethod;
 
-    private ParameterMappingRule[] initMethodParameterMappingRules;
+    private ParameterBindingRule[] initMethodParameterBindingRules;
 
     private String destroyMethodName;
 
@@ -337,12 +337,12 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
         this.factoryMethod = factoryMethod;
     }
 
-    public ParameterMappingRule[] getFactoryMethodParameterMappingRules() {
-        return factoryMethodParameterMappingRules;
+    public ParameterBindingRule[] getFactoryMethodParameterBindingRules() {
+        return factoryMethodParameterBindingRules;
     }
 
-    public void setFactoryMethodParameterMappingRules(ParameterMappingRule[] parameterMappingRules) {
-        this.factoryMethodParameterMappingRules = parameterMappingRules;
+    public void setFactoryMethodParameterBindingRules(ParameterBindingRule[] parameterBindingRules) {
+        this.factoryMethodParameterBindingRules = parameterBindingRules;
     }
 
     public boolean isFactoryOffered() {
@@ -405,12 +405,12 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
         this.initMethod = initMethod;
     }
 
-    public ParameterMappingRule[] getInitMethodParameterMappingRules() {
-        return initMethodParameterMappingRules;
+    public ParameterBindingRule[] getInitMethodParameterBindingRules() {
+        return initMethodParameterBindingRules;
     }
 
-    public void setInitMethodParameterMappingRules(ParameterMappingRule[] parameterMappingRules) {
-        this.initMethodParameterMappingRules = parameterMappingRules;
+    public void setInitMethodParameterBindingRules(ParameterBindingRule[] parameterBindingRules) {
+        this.initMethodParameterBindingRules = parameterBindingRules;
     }
 
     /**
@@ -788,7 +788,6 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
             tsb.append("scope", scopeType);
             tsb.append("factoryBean", factoryBeanId);
             tsb.append("factoryMethod", factoryMethodName);
-            tsb.append("factoryAutowireRule", factoryMethodParameterMappingRules);
             tsb.append("initMethod", initMethodName);
             tsb.append("destroyMethod", destroyMethodName);
             tsb.append("lazyInit", lazyInit);

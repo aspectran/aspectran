@@ -42,7 +42,7 @@ import com.aspectran.core.context.rule.AutowireRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
-import com.aspectran.core.context.rule.ParameterMappingRule;
+import com.aspectran.core.context.rule.ParameterBindingRule;
 import com.aspectran.core.context.rule.type.AutowireTargetType;
 import com.aspectran.core.context.rule.type.BeanProxifierType;
 import com.aspectran.core.util.ClassUtils;
@@ -370,8 +370,8 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
     private void invokeInitMethod(BeanRule beanRule, Object bean, Activity activity) {
         try {
             Method initMethod = beanRule.getInitMethod();
-            ParameterMappingRule[] parameterMappingRules = beanRule.getInitMethodParameterMappingRules();
-            AnnotatedMethodAction.invokeMethod(activity, bean, initMethod, parameterMappingRules);
+            ParameterBindingRule[] parameterBindingRules = beanRule.getInitMethodParameterBindingRules();
+            AnnotatedMethodAction.invokeMethod(activity, bean, initMethod, parameterBindingRules);
         } catch (Exception e) {
             throw new BeanCreationException("An exception occurred while executing an initialization method of the bean",
                     beanRule, e);
@@ -381,8 +381,8 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
     private Object invokeFactoryMethod(BeanRule beanRule, Object bean, Activity activity) {
         try {
             Method factoryMethod = beanRule.getFactoryMethod();
-            ParameterMappingRule[] parameterMappingRules = beanRule.getInitMethodParameterMappingRules();
-            return AnnotatedMethodAction.invokeMethod(activity, bean, factoryMethod, parameterMappingRules);
+            ParameterBindingRule[] parameterBindingRules = beanRule.getInitMethodParameterBindingRules();
+            return AnnotatedMethodAction.invokeMethod(activity, bean, factoryMethod, parameterBindingRules);
         } catch (Exception e) {
             throw new BeanCreationException("An exception occurred while executing a factory method of the bean",
                     beanRule, e);

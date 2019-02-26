@@ -22,7 +22,7 @@ import com.aspectran.core.component.bean.annotation.Format;
 import com.aspectran.core.component.bean.annotation.Qualifier;
 import com.aspectran.core.component.bean.annotation.Required;
 import com.aspectran.core.context.rule.AnnotatedMethodActionRule;
-import com.aspectran.core.context.rule.ParameterMappingRule;
+import com.aspectran.core.context.rule.ParameterBindingRule;
 import com.aspectran.core.context.rule.type.ActionType;
 import com.aspectran.core.util.BeanDescriptor;
 import com.aspectran.core.util.BeanUtils;
@@ -33,7 +33,6 @@ import com.aspectran.core.util.ToStringBuilder;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
@@ -84,8 +83,8 @@ public class AnnotatedMethodAction extends AbstractAction {
                 bean = null;
             }
             Method method = annotatedMethodActionRule.getMethod();
-            ParameterMappingRule[] parameterMappingRules = annotatedMethodActionRule.getParameterMappingRules();
-            return invokeMethod(activity, bean, method, parameterMappingRules);
+            ParameterBindingRule[] parameterBindingRules = annotatedMethodActionRule.getParameterBindingRules();
+            return invokeMethod(activity, bean, method, parameterBindingRules);
         } catch (Exception e) {
             log.error("Failed to execute annotated bean method action " + annotatedMethodActionRule);
             throw e;
@@ -130,19 +129,21 @@ public class AnnotatedMethodAction extends AbstractAction {
         return tsb.toString();
     }
 
-    public static Object invokeMethod(Activity activity, Object bean, Method method, ParameterMappingRule[] parameterMappingRules)
-            throws InvocationTargetException, IllegalAccessException {
+    public static Object invokeMethod(Activity activity, Object bean, Method method, ParameterBindingRule[] parameterBindingRules)
+            throws Exception {
+        ParameterBindingRule parameterBindingRule = null;
         try {
-            if (parameterMappingRules == null) {
+            if (parameterBindingRules == null) {
                 return method.invoke(bean, MethodUtils.EMPTY_OBJECT_ARRAY);
             }
             Translet translet = activity.getTranslet();
-            Object[] args = new Object[parameterMappingRules.length];
-            for (int i = 0; i < parameterMappingRules.length; i++) {
-                Class<?> type = parameterMappingRules[i].getType();
-                String name = parameterMappingRules[i].getName();
-                String format = parameterMappingRules[i].getFormat();
-                boolean required = parameterMappingRules[i].isRequired();
+            Object[] args = new Object[parameterBindingRules.length];
+            for (int i = 0; i < parameterBindingRules.length; i++) {
+                parameterBindingRule = parameterBindingRules[i];
+                Class<?> type = parameterBindingRule.getType();
+                String name = parameterBindingRule.getName();
+                String format = parameterBindingRule.getFormat();
+                boolean required = parameterBindingRule.isRequired();
                 Exception thrown = null;
                 try {
                     args[i] = parseArgument(translet, type, name, format);
@@ -170,9 +171,14 @@ public class AnnotatedMethodAction extends AbstractAction {
                     }
                 }
             }
+            parameterBindingRule = null;
             return method.invoke(bean, args);
         } catch (Exception e) {
-            
+            if (parameterBindingRule != null) {
+                throw new ParameterBindingException(parameterBindingRule, e);
+            } else {
+                throw e;
+            }
         }
     }
 
