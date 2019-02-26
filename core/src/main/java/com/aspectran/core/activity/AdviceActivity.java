@@ -344,10 +344,10 @@ public abstract class AdviceActivity extends AbstractActivity {
                 } else {
                     setRaisedException(e);
                     if (throwable) {
-                        log.error("Failed to execute an advice action " + aspectAdviceRule, e);
-                    } else {
                         throw new AspectAdviceException("Failed to execute an advice action " +
                                 aspectAdviceRule, aspectAdviceRule, e);
+                    } else {
+                        log.error("Failed to execute an advice action " + aspectAdviceRule, e);
                     }
                 }
             } finally {
