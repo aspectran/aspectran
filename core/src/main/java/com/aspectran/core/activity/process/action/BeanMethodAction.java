@@ -143,9 +143,9 @@ public class BeanMethodAction extends AbstractAction {
             }
         } catch (Exception e) {
             if (aspectAdviceRule != null) {
-                log.error("Failed to execute advice bean method action " + aspectAdviceRule);
+                log.error("Failed to execute advice bean method action " + aspectAdviceRule, e);
             } else {
-                log.error("Failed to execute bean method action " + beanMethodActionRule);
+                log.error("Failed to execute bean method action " + beanMethodActionRule, e);
             }
             throw e;
         }

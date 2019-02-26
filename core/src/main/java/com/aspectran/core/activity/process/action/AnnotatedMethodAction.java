@@ -86,7 +86,7 @@ public class AnnotatedMethodAction extends AbstractAction {
             ParameterBindingRule[] parameterBindingRules = annotatedMethodActionRule.getParameterBindingRules();
             return invokeMethod(activity, bean, method, parameterBindingRules);
         } catch (Exception e) {
-            log.error("Failed to execute annotated bean method action " + annotatedMethodActionRule);
+            log.error("Failed to execute annotated bean method action " + annotatedMethodActionRule, e);
             throw e;
         }
     }
@@ -165,7 +165,7 @@ public class AnnotatedMethodAction extends AbstractAction {
                 if (required && (args[i] == null || thrown != null)) {
                     if (thrown != null) {
                         throw new IllegalArgumentException("Missing required parameter '" + name + "'; Cause: " +
-                                thrown.getMessage(), thrown);
+                                thrown, thrown);
                     } else {
                         throw new IllegalArgumentException("Missing required parameter '" + name + "'");
                     }

@@ -182,9 +182,6 @@ public abstract class AbstractActivity implements Activity {
     public void setRaisedException(Throwable raisedException) {
         if (this.raisedException == null) {
             this.raisedException = raisedException;
-            if (log.isDebugEnabled()) {
-                log.error("Raised exception: ", getRootCauseOfRaisedException());
-            }
         }
     }
 
