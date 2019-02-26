@@ -132,44 +132,48 @@ public class AnnotatedMethodAction extends AbstractAction {
 
     public static Object invokeMethod(Activity activity, Object bean, Method method, ParameterMappingRule[] parameterMappingRules)
             throws InvocationTargetException, IllegalAccessException {
-        if (parameterMappingRules == null) {
-            return method.invoke(bean, MethodUtils.EMPTY_OBJECT_ARRAY);
-        }
-        Translet translet = activity.getTranslet();
-        Object[] args = new Object[parameterMappingRules.length];
-        for (int i = 0; i < parameterMappingRules.length; i++) {
-            Class<?> type = parameterMappingRules[i].getType();
-            String name = parameterMappingRules[i].getName();
-            String format = parameterMappingRules[i].getFormat();
-            boolean required = parameterMappingRules[i].isRequired();
-            Exception thrown = null;
-            try {
-                args[i] = parseArgument(translet, type, name, format);
-            } catch (NumberFormatException e) {
-                thrown = e;
-                if (type.isPrimitive()) {
-                    args[i] = 0;
-                }
-            } catch (IllegalArgumentException e) {
-                throw e;
-            } catch (Exception e) {
-                thrown = e;
+        try {
+            if (parameterMappingRules == null) {
+                return method.invoke(bean, MethodUtils.EMPTY_OBJECT_ARRAY);
             }
-            if (thrown != null) {
-                if (log.isDebugEnabled()) {
-                    log.debug("Invalid parameter '" + name + "'; Cause: " + thrown.getMessage(), thrown);
+            Translet translet = activity.getTranslet();
+            Object[] args = new Object[parameterMappingRules.length];
+            for (int i = 0; i < parameterMappingRules.length; i++) {
+                Class<?> type = parameterMappingRules[i].getType();
+                String name = parameterMappingRules[i].getName();
+                String format = parameterMappingRules[i].getFormat();
+                boolean required = parameterMappingRules[i].isRequired();
+                Exception thrown = null;
+                try {
+                    args[i] = parseArgument(translet, type, name, format);
+                } catch (NumberFormatException e) {
+                    thrown = e;
+                    if (type.isPrimitive()) {
+                        args[i] = 0;
+                    }
+                } catch (IllegalArgumentException e) {
+                    throw e;
+                } catch (Exception e) {
+                    thrown = e;
                 }
-            }
-            if (required && (args[i] == null || thrown != null)) {
                 if (thrown != null) {
-                    throw new IllegalArgumentException("Missing required parameter '" + name + "'; Cause: " +
-                            thrown.getMessage(), thrown);
-                } else {
-                    throw new IllegalArgumentException("Missing required parameter '" + name + "'");
+                    if (log.isDebugEnabled()) {
+                        log.debug("Invalid parameter '" + name + "'; Cause: " + thrown.getMessage(), thrown);
+                    }
+                }
+                if (required && (args[i] == null || thrown != null)) {
+                    if (thrown != null) {
+                        throw new IllegalArgumentException("Missing required parameter '" + name + "'; Cause: " +
+                                thrown.getMessage(), thrown);
+                    } else {
+                        throw new IllegalArgumentException("Missing required parameter '" + name + "'");
+                    }
                 }
             }
+            return method.invoke(bean, args);
+        } catch (Exception e) {
+            
         }
-        return method.invoke(bean, args);
     }
 
     private static Object parseArgument(Translet translet, Class<?> type, String name, String format) throws Exception {
@@ -442,11 +446,13 @@ public class AnnotatedMethodAction extends AbstractAction {
                 result = new boolean[0];
             }
         } else if (type == Boolean.class) {
-            Boolean[] arr = new Boolean[values.length];
-            for (int i = 0; i < values.length; i++) {
-                arr[i] = Boolean.valueOf(values[i]);
+            if (values != null) {
+                Boolean[] arr = new Boolean[values.length];
+                for (int i = 0; i < values.length; i++) {
+                    arr[i] = Boolean.valueOf(values[i]);
+                }
+                result = arr;
             }
-            result = arr;
         } else if (type == byte.class) {
             if (values != null) {
                 byte[] arr = new byte[values.length];
@@ -458,11 +464,13 @@ public class AnnotatedMethodAction extends AbstractAction {
                 result = new byte[0];
             }
         } else if (type == Byte.class) {
-            Byte[] arr = new Byte[values.length];
-            for (int i = 0; i < values.length; i++) {
-                arr[i] = Byte.valueOf(values[i]);
+            if (values != null) {
+                Byte[] arr = new Byte[values.length];
+                for (int i = 0; i < values.length; i++) {
+                    arr[i] = Byte.valueOf(values[i]);
+                }
+                result = arr;
             }
-            result = arr;
         } else if (type == short.class) {
             if (values != null) {
                 short[] arr = new short[values.length];
@@ -474,11 +482,13 @@ public class AnnotatedMethodAction extends AbstractAction {
                 result = new short[0];
             }
         } else if (type == Short.class) {
-            Short[] arr = new Short[values.length];
-            for (int i = 0; i < values.length; i++) {
-                arr[i] = Short.valueOf(values[i]);
+            if (values != null) {
+                Short[] arr = new Short[values.length];
+                for (int i = 0; i < values.length; i++) {
+                    arr[i] = Short.valueOf(values[i]);
+                }
+                result = arr;
             }
-            result = arr;
         } else if (type == int.class) {
             if (values != null) {
                 int[] arr = new int[values.length];
@@ -490,11 +500,13 @@ public class AnnotatedMethodAction extends AbstractAction {
                 result = new int[0];
             }
         } else if (type == Integer.class) {
-            Integer[] arr = new Integer[values.length];
-            for (int i = 0; i < values.length; i++) {
-                arr[i] = Integer.valueOf(values[i]);
+            if (values != null) {
+                Integer[] arr = new Integer[values.length];
+                for (int i = 0; i < values.length; i++) {
+                    arr[i] = Integer.valueOf(values[i]);
+                }
+                result = arr;
             }
-            result = arr;
         } else if (type == long.class) {
             if (values != null) {
                 long[] arr = new long[values.length];
@@ -506,11 +518,13 @@ public class AnnotatedMethodAction extends AbstractAction {
                 result = new long[0];
             }
         } else if (type == Long.class) {
-            Long[] arr = new Long[values.length];
-            for (int i = 0; i < values.length; i++) {
-                arr[i] = Long.valueOf(values[i]);
+            if (values != null) {
+                Long[] arr = new Long[values.length];
+                for (int i = 0; i < values.length; i++) {
+                    arr[i] = Long.valueOf(values[i]);
+                }
+                result = arr;
             }
-            result = arr;
         } else if (type == float.class) {
             if (values != null) {
                 float[] arr = new float[values.length];
@@ -522,11 +536,13 @@ public class AnnotatedMethodAction extends AbstractAction {
                 result = new float[0];
             }
         } else if (type == Float.class) {
-            Float[] arr = new Float[values.length];
-            for (int i = 0; i < values.length; i++) {
-                arr[i] = Float.valueOf(values[i]);
+            if (values != null) {
+                Float[] arr = new Float[values.length];
+                for (int i = 0; i < values.length; i++) {
+                    arr[i] = Float.valueOf(values[i]);
+                }
+                result = arr;
             }
-            result = arr;
         } else if (type == double.class) {
             if (values != null) {
                 double[] arr = new double[values.length];
@@ -538,23 +554,29 @@ public class AnnotatedMethodAction extends AbstractAction {
                 result = new double[0];
             }
         } else if (type == Double.class) {
-            Double[] arr = new Double[values.length];
-            for (int i = 0; i < values.length; i++) {
-                arr[i] = Double.valueOf(values[i]);
+            if (values != null) {
+                Double[] arr = new Double[values.length];
+                for (int i = 0; i < values.length; i++) {
+                    arr[i] = Double.valueOf(values[i]);
+                }
+                result = arr;
             }
-            result = arr;
         } else if (type == BigInteger.class) {
-            BigInteger[] arr = new BigInteger[values.length];
-            for (int i = 0; i < values.length; i++) {
-                arr[i] = new BigInteger(values[i]);
+            if (values != null) {
+                BigInteger[] arr = new BigInteger[values.length];
+                for (int i = 0; i < values.length; i++) {
+                    arr[i] = new BigInteger(values[i]);
+                }
+                result = arr;
             }
-            result = arr;
         } else if (type == BigDecimal.class) {
-            BigDecimal[] arr = new BigDecimal[values.length];
-            for (int i = 0; i < values.length; i++) {
-                arr[i] = new BigDecimal(values[i]);
+            if (values != null) {
+                BigDecimal[] arr = new BigDecimal[values.length];
+                for (int i = 0; i < values.length; i++) {
+                    arr[i] = new BigDecimal(values[i]);
+                }
+                result = arr;
             }
-            result = arr;
         } else {
             result = UNKNOWN_VALUE_TYPE;
         }
