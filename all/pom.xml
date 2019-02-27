@@ -367,11 +367,11 @@
                         </group>
                         <group>
                             <title>Aspectran with Jetty</title>
-                            <packages>com.aspectran.with.jetty*</packages>
+                            <packages>com.aspectran.jetty*</packages>
                         </group>
                         <group>
                             <title>Aspectran with MyBatis</title>
-                            <packages>com.aspectran.with.mybatis*</packages>
+                            <packages>com.aspectran.mybatis*</packages>
                         </group>
                     </groups>
                     <stylesheetfile>${project.basedir}/src/main/javadoc/stylesheet.css</stylesheetfile>

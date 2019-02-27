@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.with.mybatis;
+package com.aspectran.mybatis;
 
 import com.aspectran.core.util.ToStringBuilder;
 import com.aspectran.core.util.logging.Log;

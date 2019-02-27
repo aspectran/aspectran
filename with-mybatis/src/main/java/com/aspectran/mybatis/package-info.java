@@ -16,4 +16,4 @@
 /**
  * Add-on package for integrating MyBatis.
  */
-package com.aspectran.with.mybatis;
+package com.aspectran.mybatis;

@@ -26,7 +26,7 @@ import com.aspectran.daemon.command.CommandRegistry;
 import com.aspectran.daemon.command.CommandResult;
 import com.aspectran.daemon.command.polling.CommandParameters;
 import com.aspectran.daemon.service.DaemonService;
-import com.aspectran.with.jetty.JettyServer;
+import com.aspectran.jetty.JettyServer;
 
 import java.net.BindException;
 
@@ -51,9 +51,9 @@ public class JettyCommand extends AbstractCommand {
 
         try {
             ClassLoader classLoader = service.getActivityContext().getEnvironment().getClassLoader();
-            classLoader.loadClass("com.aspectran.with.jetty.JettyServer");
+            classLoader.loadClass("com.aspectran.jetty.JettyServer");
         } catch (ClassNotFoundException e) {
-            return failed("Unable to load class com.aspectran.with.jetty.JettyServer " +
+            return failed("Unable to load class com.aspectran.jetty.JettyServer " +
                     "due to missing dependency 'aspectran-with-jetty'", e);
         }
 
@@ -76,7 +76,7 @@ public class JettyCommand extends AbstractCommand {
             BeanRegistry beanRegistry = service.getActivityContext().getBeanRegistry();
             JettyServer jettyServer;
             try {
-                jettyServer = beanRegistry.getBean(com.aspectran.with.jetty.JettyServer.class, serverName);
+                jettyServer = beanRegistry.getBean(JettyServer.class, serverName);
             } catch (Exception e) {
                 return failed("Jetty server is not available", e);
             }

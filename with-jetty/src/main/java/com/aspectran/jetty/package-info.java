@@ -16,4 +16,4 @@
 /**
  * Add-on package for integrating Embedded Jetty.
  */
-package com.aspectran.with.jetty;
+package com.aspectran.jetty;

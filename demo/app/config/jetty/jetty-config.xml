@@ -23,7 +23,7 @@
         </properties>
     </environment>
 
-    <bean id="jetty.server" class="com.aspectran.with.jetty.JettyServer">
+    <bean id="jetty.server" class="com.aspectran.jetty.JettyServer">
         <constructor>
             <arguments>
                 <item name="threadPool">
@@ -103,7 +103,7 @@
         </properties>
     </bean>
 
-    <bean id="jetty.contexts.root" class="com.aspectran.with.jetty.JettyWebAppContext" scope="prototype">
+    <bean id="jetty.contexts.root" class="com.aspectran.jetty.JettyWebAppContext" scope="prototype">
         <properties>
             <item name="contextPath" value="/"/>
             <item name="war" value="#{basePath}/webapps/root"/>
@@ -113,7 +113,7 @@
         </properties>
     </bean>
 
-    <bean id="jetty.sessionHandler" class="com.aspectran.with.jetty.JettySessionHandler" scope="prototype">
+    <bean id="jetty.sessionHandler" class="com.aspectran.jetty.JettySessionHandler" scope="prototype">
         <properties>
             <item name="sessionDataStore"><call bean="jetty.sessionDataStoreFactory"/></item>
         </properties>
