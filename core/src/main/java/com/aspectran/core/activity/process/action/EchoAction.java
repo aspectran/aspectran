@@ -55,8 +55,7 @@ public class EchoAction extends AbstractAction {
             ItemEvaluator evaluator = new ItemExpression(activity);
             return evaluator.evaluate(itemRuleMap);
         } catch (Exception e) {
-            log.error("Failed to execute echo action " + echoActionRule, e);
-            throw e;
+            throw new ActionExecutionException("Failed to execute echo action " + this, e);
         }
     }
 

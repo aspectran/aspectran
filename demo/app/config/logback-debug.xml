@@ -29,7 +29,7 @@
     </appender>
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%-5level %msg%n</pattern>
+            <pattern>%-5level %d{yyyy-MM-dd HH:mm:ss} [%thread] %msg - %logger{30}.%M\(%line\)%n</pattern>
         </encoder>
     </appender>
     <appender name="DAEMON" class="ch.qos.logback.core.ConsoleAppender">

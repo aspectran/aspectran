@@ -78,8 +78,8 @@ public class BeanMethodAction extends AbstractAction {
 
     @Override
     public Object execute(Activity activity) throws Exception {
+        Object bean = null;
         try {
-            Object bean = null;
             if (aspectAdviceRule != null) {
                 bean = activity.getAspectAdviceBean(aspectAdviceRule.getAspectId());
                 if (bean == null) {
@@ -141,13 +141,10 @@ public class BeanMethodAction extends AbstractAction {
                 }
                 return result;
             }
-        } catch (Exception e) {
-            if (aspectAdviceRule != null) {
-                log.error("Failed to execute advice bean method action " + aspectAdviceRule, e);
-            } else {
-                log.error("Failed to execute bean method action " + beanMethodActionRule, e);
-            }
+        } catch (ActionExecutionException e) {
             throw e;
+        } catch (Exception e) {
+            throw new ActionExecutionException("Failed to execute bean method action " + this + " targetBean=" + bean, e);
         }
     }
 
@@ -220,21 +217,28 @@ public class BeanMethodAction extends AbstractAction {
         return args;
     }
 
-    public static Object invokeMethod(Activity activity, Object bean, Method method, boolean requiresTranslet)
-            throws IllegalAccessException, InvocationTargetException {
+    private static Object invokeMethod(Activity activity, Object bean, Method method, boolean requiresTranslet)
+            throws Exception {
         Object[] args;
         if (requiresTranslet) {
             args = new Object[] { activity.getTranslet() };
         } else {
             args = MethodUtils.EMPTY_OBJECT_ARRAY;
         }
-        return method.invoke(bean, args);
+        try {
+            return method.invoke(bean, args);
+        } catch (Exception e) {
+            if (e instanceof InvocationTargetException) {
+                e = (Exception)e.getCause();
+            }
+            throw e;
+        }
     }
 
     private static Object invokeMethod(Activity activity, Object bean, String methodName,
                                        ItemRuleMap argumentItemRuleMap, ItemEvaluator evaluator,
                                        boolean requiresTranslet)
-            throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+            throws Exception {
         Class<?>[] argsTypes = null;
         Object[] argsObjects = null;
 
@@ -270,7 +274,14 @@ public class BeanMethodAction extends AbstractAction {
             argsObjects = new Object[] { activity.getTranslet() };
         }
 
-        return MethodUtils.invokeMethod(bean, methodName, argsObjects, argsTypes);
+        try {
+            return MethodUtils.invokeMethod(bean, methodName, argsObjects, argsTypes);
+        } catch (Exception e) {
+            if (e instanceof InvocationTargetException) {
+                e = (Exception)e.getCause();
+            }
+            throw e;
+        }
     }
 
 }

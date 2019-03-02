@@ -74,8 +74,7 @@ public class IncludeAction extends AbstractAction {
             innerActivity.perform();
             return innerActivity.getProcessResult();
         } catch (Exception e) {
-            log.error("Failed to execute include action " + includeActionRule, e);
-            throw e;
+            throw new ActionExecutionException("Failed to execute include action " + this, e);
         } finally {
             if (innerActivity != null) {
                 innerActivity.finish();

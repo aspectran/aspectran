@@ -20,7 +20,7 @@ import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.ToStringBuilder;
 
 /**
- * The Class ActionResult.
+ * Holds the result of an action's execution.
  * 
  * <p>Created: 2008. 03. 23 PM 12:01:24</p>
  */

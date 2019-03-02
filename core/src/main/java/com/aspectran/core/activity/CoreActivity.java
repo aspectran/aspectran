@@ -474,8 +474,10 @@ public class CoreActivity extends AdviceActivity {
     private void parsePathVariable() {
         Token[] nameTokens = getTransletRule().getNameTokens();
         if (nameTokens != null && !(nameTokens.length == 1 && nameTokens[0].getType() == TokenType.TEXT)) {
-            PathVariableMap pathVariableMap = PathVariableMap.newInstance(nameTokens, translet.getRequestName());
-            pathVariableMap.applyTo(translet);
+            PathVariableMap pathVariableMap = PathVariableMap.parse(nameTokens, translet.getRequestName());
+            if (pathVariableMap != null) {
+                pathVariableMap.applyTo(translet);
+            }
         }
     }
 
@@ -595,6 +597,9 @@ public class CoreActivity extends AdviceActivity {
             if (action.isLastInChooseWhen() && chooseWhenRule != null && chooseWhenRule.getResponse() != null) {
                 reserveResponse(chooseWhenRule.getResponse());
             }
+        } catch (ActionExecutionException e) {
+            setRaisedException(e.getCause() != null ? e.getCause() : e);
+            throw e;
         } catch (Exception e) {
             setRaisedException(e);
             throw new ActionExecutionException("Failed to execute action " + action, e);

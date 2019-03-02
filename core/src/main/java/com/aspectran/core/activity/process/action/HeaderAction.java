@@ -73,8 +73,7 @@ public class HeaderAction extends AbstractAction {
             }
             return valueMap;
         } catch (Exception e) {
-            log.error("Failed to execute header action " + headerActionRule, e);
-            throw e;
+            throw new ActionExecutionException("Failed to execute header action " + this, e);
         }
     }
 

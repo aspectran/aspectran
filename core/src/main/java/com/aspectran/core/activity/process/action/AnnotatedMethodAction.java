@@ -33,6 +33,7 @@ import com.aspectran.core.util.ToStringBuilder;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
@@ -86,8 +87,7 @@ public class AnnotatedMethodAction extends AbstractAction {
             ParameterBindingRule[] parameterBindingRules = annotatedMethodActionRule.getParameterBindingRules();
             return invokeMethod(activity, bean, method, parameterBindingRules);
         } catch (Exception e) {
-            log.error("Failed to execute annotated bean method action " + annotatedMethodActionRule, e);
-            throw e;
+            throw new ActionExecutionException("Failed to execute annotated bean method action " + this, e);
         }
     }
 
@@ -173,6 +173,8 @@ public class AnnotatedMethodAction extends AbstractAction {
             }
             parameterBindingRule = null;
             return method.invoke(bean, args);
+        } catch (InvocationTargetException e) {
+            throw (Exception)e.getCause();
         } catch (Exception e) {
             if (parameterBindingRule != null) {
                 throw new ParameterBindingException(parameterBindingRule, e);

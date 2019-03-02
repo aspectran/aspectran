@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * <p>Created: 2016. 3. 1.</p>
@@ -33,18 +32,18 @@ class PathVariableMapTest {
     @Test
     void testNewInstance() {
         String transletNamePattern = "/aaa/${bbb1}/bbb2/ccc/${ddd:eee}/fff/@{ggg:ggg}";
-        String requestTransletName = "/aaa/bbb1/bbb2/ccc/ddd/fff/";
+        String requestName = "/aaa/bbb1/bbb2/ccc/ddd/fff/";
 
         List<Token> tokenList = Tokenizer.tokenize(transletNamePattern, false);
         Token[] nameTokens = tokenList.toArray(new Token[0]);
 
-        Map<Token, String> map = PathVariableMap.newInstance(nameTokens, requestTransletName);
+        Map<Token, String> map = PathVariableMap.parse(nameTokens, requestName);
 
-        assertNotNull(map);
-
+        assert map != null;
         for (Map.Entry<Token, String> entry : map.entrySet()) {
             Token token = entry.getKey();
             String value = entry.getValue();
+            //System.out.println(token.getName() + " : " + value);
             assertEquals(token.getName(), value);
         }
     }

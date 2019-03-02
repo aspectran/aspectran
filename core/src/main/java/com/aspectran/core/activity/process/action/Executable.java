@@ -37,8 +37,7 @@ public interface Executable {
      *
      * @param activity the activity
      * @return the result of action execution
-     * @throws Exception the exception
-     * @throws ActionExecutionException the action execution exception
+     * @throws Exception if the action fails to execute
      */
     Object execute(Activity activity) throws Exception;
 
