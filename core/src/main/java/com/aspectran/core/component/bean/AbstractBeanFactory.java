@@ -363,7 +363,7 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
                 ((InitializableTransletBean)bean).initialize(activity.getTranslet());
             }
         } catch (Exception e) {
-            throw new BeanCreationException("An exception occurred while initialization of the bean", beanRule, e);
+            throw new BeanCreationException("An exception occurred while initialization of bean", beanRule, e);
         }
     }
 
@@ -373,7 +373,7 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
             ParameterBindingRule[] parameterBindingRules = beanRule.getInitMethodParameterBindingRules();
             AnnotatedMethodAction.invokeMethod(activity, bean, initMethod, parameterBindingRules);
         } catch (Exception e) {
-            throw new BeanCreationException("An exception occurred while executing an initialization method of the bean",
+            throw new BeanCreationException("An exception occurred while executing an initialization method of bean",
                     beanRule, e);
         }
     }
@@ -384,16 +384,15 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
             ParameterBindingRule[] parameterBindingRules = beanRule.getInitMethodParameterBindingRules();
             return AnnotatedMethodAction.invokeMethod(activity, bean, factoryMethod, parameterBindingRules);
         } catch (Exception e) {
-            throw new BeanCreationException("An exception occurred while executing a factory method of the bean",
+            throw new BeanCreationException("An exception occurred while executing a factory method of bean",
                     beanRule, e);
         }
     }
 
     private Object invokeMethodOfFactoryBean(BeanRule beanRule, Object bean) {
-        FactoryBean<?> factoryBean = (FactoryBean<?>)bean;
         Object resultBean;
         try {
-            resultBean = factoryBean.getObject();
+            resultBean = ((FactoryBean<?>)bean).getObject();
         } catch (Exception e) {
             throw new BeanCreationException("FactoryBean threw exception on object creation", beanRule, e);
         }
@@ -515,18 +514,22 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
             }
             return ctor.newInstance(args);
         } catch (InstantiationException e) {
-            throw new BeanInstantiationException(ctor.getDeclaringClass(), "Is it an abstract class?", e);
+            throw new BeanInstantiationException(ctor.getDeclaringClass(),
+                    "Is it an abstract class?", e);
         } catch (IllegalAccessException e) {
-            throw new BeanInstantiationException(ctor.getDeclaringClass(), "Has the class definition changed? Is the constructor accessible?", e);
+            throw new BeanInstantiationException(ctor.getDeclaringClass(),
+                    "Has the class definition changed? Is the constructor accessible?", e);
         } catch (IllegalArgumentException e) {
-            throw new BeanInstantiationException(ctor.getDeclaringClass(), "Illegal arguments for constructor", e);
+            throw new BeanInstantiationException(ctor.getDeclaringClass(),
+                    "Illegal arguments for constructor", e);
         } catch (InvocationTargetException e) {
-            throw new BeanInstantiationException(ctor.getDeclaringClass(), "Constructor threw exception", e.getTargetException());
+            throw new BeanInstantiationException(ctor.getDeclaringClass(),
+                    "Constructor threw exception", e.getTargetException());
         }
     }
 
-    private static Constructor<?> getMatchConstructor(Class<?> clazz, Object[] args) {
-        Constructor<?>[] candidates = clazz.getDeclaredConstructors();
+    private static Constructor<?> getMatchConstructor(Class<?> beanClass, Object[] args) {
+        Constructor<?>[] candidates = beanClass.getDeclaredConstructors();
         Constructor<?> constructorToUse = null;
         float bestMatchWeight = Float.MAX_VALUE;
         float matchWeight;

@@ -174,7 +174,11 @@ public class AnnotatedMethodAction extends AbstractAction {
             parameterBindingRule = null;
             return method.invoke(bean, args);
         } catch (InvocationTargetException e) {
-            throw (Exception)e.getCause();
+            if (e.getCause() != null) {
+                throw (Exception)e.getCause();
+            } else {
+                throw e;
+            }
         } catch (Exception e) {
             if (parameterBindingRule != null) {
                 throw new ParameterBindingException(parameterBindingRule, e);

@@ -114,7 +114,7 @@ public class BeanMethodAction extends AbstractAction {
             if (method != null) {
                 if (argumentItemRuleMap != null && !argumentItemRuleMap.isEmpty()) {
                     Object[] args = createArguments(activity, argumentItemRuleMap, evaluator, beanMethodActionRule.isRequiresTranslet());
-                    return method.invoke(bean, args);
+                    return invokeMethod(bean, method, args);
                 } else {
                     return invokeMethod(activity, bean, method, beanMethodActionRule.isRequiresTranslet());
                 }
@@ -189,34 +189,6 @@ public class BeanMethodAction extends AbstractAction {
         return tsb.toString();
     }
 
-    private static Object[] createArguments(Activity activity, ItemRuleMap argumentItemRuleMap,
-                                            ItemEvaluator evaluator, boolean requiresTranslet) {
-        if (evaluator == null) {
-            evaluator = new ItemExpression(activity);
-        }
-
-        Object[] args;
-        int size = argumentItemRuleMap.size();
-        int index;
-        if (requiresTranslet) {
-            index = 1;
-            args = new Object[size + index];
-            args[0] = activity.getTranslet();
-        } else {
-            index = 0;
-            args = new Object[size];
-        }
-
-        Map<String, Object> valueMap = evaluator.evaluate(argumentItemRuleMap);
-        for (String name : argumentItemRuleMap.keySet()) {
-            Object o = valueMap.get(name);
-            args[index] = o;
-            index++;
-        }
-
-        return args;
-    }
-
     private static Object invokeMethod(Activity activity, Object bean, Method method, boolean requiresTranslet)
             throws Exception {
         Object[] args;
@@ -225,13 +197,18 @@ public class BeanMethodAction extends AbstractAction {
         } else {
             args = MethodUtils.EMPTY_OBJECT_ARRAY;
         }
+        return invokeMethod(bean, method, args);
+    }
+
+    private static Object invokeMethod(Object bean, Method method, Object[] args) throws Exception {
         try {
             return method.invoke(bean, args);
-        } catch (Exception e) {
-            if (e instanceof InvocationTargetException) {
-                e = (Exception)e.getCause();
+        } catch (InvocationTargetException e) {
+            if (e.getCause() != null) {
+                throw (Exception)e.getCause();
+            } else {
+                throw e;
             }
-            throw e;
         }
     }
 
@@ -276,12 +253,41 @@ public class BeanMethodAction extends AbstractAction {
 
         try {
             return MethodUtils.invokeMethod(bean, methodName, argsObjects, argsTypes);
-        } catch (Exception e) {
-            if (e instanceof InvocationTargetException) {
-                e = (Exception)e.getCause();
+        } catch (InvocationTargetException e) {
+            if (e.getCause() != null) {
+                throw (Exception)e.getCause();
+            } else {
+                throw e;
             }
-            throw e;
         }
+    }
+
+    private static Object[] createArguments(Activity activity, ItemRuleMap argumentItemRuleMap,
+                                            ItemEvaluator evaluator, boolean requiresTranslet) {
+        if (evaluator == null) {
+            evaluator = new ItemExpression(activity);
+        }
+
+        Object[] args;
+        int size = argumentItemRuleMap.size();
+        int index;
+        if (requiresTranslet) {
+            index = 1;
+            args = new Object[size + index];
+            args[0] = activity.getTranslet();
+        } else {
+            index = 0;
+            args = new Object[size];
+        }
+
+        Map<String, Object> valueMap = evaluator.evaluate(argumentItemRuleMap);
+        for (String name : argumentItemRuleMap.keySet()) {
+            Object o = valueMap.get(name);
+            args[index] = o;
+            index++;
+        }
+
+        return args;
     }
 
 }
