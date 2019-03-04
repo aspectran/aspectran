@@ -94,7 +94,7 @@ public class AspectranWebService extends AspectranCoreService implements WebServ
         }
 
         if (log.isDebugEnabled()) {
-            log.debug(request.getMethod() + " " + requestUri + " from " + getClientIp(request));
+            log.debug(getRequestInfo(request));
         }
 
         if (pauseTimeout != 0L) {
@@ -150,12 +150,18 @@ public class AspectranWebService extends AspectranCoreService implements WebServ
         }
     }
 
-    private static String getClientIp(HttpServletRequest request) {
+    private String getRequestInfo(HttpServletRequest request) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(request.getMethod()).append(" ");
+        sb.append(request.getRequestURI()).append(" ");
+        sb.append(request.getProtocol()).append(" ");
         String remoteAddr = request.getHeader("X-FORWARDED-FOR");
-        if (StringUtils.isEmpty(remoteAddr)) {
-            remoteAddr = request.getRemoteAddr();
+        if (!StringUtils.isEmpty(remoteAddr)) {
+            sb.append(remoteAddr);
+        } else {
+            sb.append(request.getRemoteAddr());
         }
-        return remoteAddr;
+        return sb.toString();
     }
 
     private DefaultServletHttpRequestHandler getDefaultServletHttpRequestHandler() {
