@@ -119,7 +119,7 @@ public class MessageSourceSupport {
             if (messageFormatsPerLocale != null) {
                 messageFormat = messageFormatsPerLocale.get(locale);
             } else {
-                messageFormatsPerLocale = new HashMap<Locale, MessageFormat>();
+                messageFormatsPerLocale = new HashMap<>();
                 this.messageFormatsPerMessage.put(msg, messageFormatsPerLocale);
             }
             if (messageFormat == null) {
