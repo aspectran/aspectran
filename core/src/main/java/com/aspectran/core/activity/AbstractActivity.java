@@ -22,8 +22,6 @@ import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.env.Environment;
 import com.aspectran.core.util.ExceptionUtils;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
 
 /**
  * The Class AbstractActivity.
@@ -31,8 +29,6 @@ import com.aspectran.core.util.logging.LogFactory;
  * <p>Created: 2008. 03. 22 PM 5:48:09</p>
  */
 public abstract class AbstractActivity implements Activity {
-
-    private static final Log log = LogFactory.getLog(AbstractActivity.class);
 
     private final ActivityContext context;
 
@@ -211,8 +207,8 @@ public abstract class AbstractActivity implements Activity {
     }
 
     @Override
-    public <T> T getConfiguredBean(Class<T> classType) {
-        return context.getBeanRegistry().getConfiguredBean(classType);
+    public <T> T getBeanForConfig(Class<T> requiredType) {
+        return context.getBeanRegistry().getBeanForConfig(requiredType);
     }
 
     @Override

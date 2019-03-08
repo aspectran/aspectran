@@ -23,7 +23,7 @@ package com.aspectran.core.component.bean;
 public interface BeanRegistry {
 
     /**
-     * Return an instance of the bean that matches the given id.
+     * Returns an instance of the bean that matches the given id.
      *
      * @param <T> the generic type
      * @param id the id of the bean to retrieve
@@ -32,49 +32,51 @@ public interface BeanRegistry {
     <T> T getBean(String id);
 
     /**
-     * Return an instance of the bean that matches the given object type.
+     * Returns the bean instance that uniquely matches the given object type.
      *
      * @param <T> the generic type
-     * @param requiredType the type the bean must match; can be an interface or superclass. {@code null} is disallowed.
+     * @param requiredType the type the bean must match; can be an interface or superclass
      * @return an instance of the bean
      * @since 1.3.1
      */
     <T> T getBean(Class<T> requiredType);
 
     /**
-     * Return an instance of the bean that matches the given id.
-     * If the bean is not of the required type then throw a BeanNotOfRequiredTypeException.
+     * Returns an instance of the bean that matches the given id.
+     * If the bean is not of the required type then throw a {@code BeanNotOfRequiredTypeException}.
      *
      * @param <T> the generic type
      * @param id the id of the bean to retrieve
-     * @param requiredType type the bean must match; can be an interface or superclass. {@code null} is disallowed.
+     * @param requiredType type the bean must match; can be an interface or superclass
      * @return an instance of the bean
      * @since 1.3.1
      */
     <T> T getBean(String id, Class<T> requiredType);
 
     /**
-     * Return an instance of the bean that matches the given object type.
-     * If the bean is not exists ,retrieve the bean with the specified id.
+     * Returns an instance of the bean that matches the given object type.
+     * If the bean is not exists, retrieve the bean with the specified id.
      *
      * @param <T> the generic type
-     * @param requiredType type the bean must match; can be an interface or superclass. {@code null} is allowed.
-     * @param id the id of the bean to retrieve; if requiredType is {@code null}.
+     * @param requiredType type the bean must match; can be an interface or superclass
+     * @param id the id of the bean to retrieve
      * @return an instance of the bean
      * @since 2.0.0
      */
     <T> T getBean(Class<T> requiredType, String id);
 
     /**
-     * Return the bean instance that matches the specified object type.
-     * If the bean is not of the required type then throw a {@code BeanNotOfRequiredTypeException}.
+     * Returns the bean instance used for the annotated configuration that matches
+     * the specified object type.
+     * If the configurable bean is not of the required type then throw
+     * a {@code RequiredTypeBeanNotFoundException}.
      *
      * @param <T> the generic type
-     * @param requiredType type the bean must match; can be an interface or superclass. {@code null} is disallowed.
+     * @param requiredType type the bean must match; can be an interface or superclass
      * @return an instance of the bean
      * @since 2.0.0
      */
-    <T> T getConfiguredBean(Class<T> requiredType);
+    <T> T getBeanForConfig(Class<T> requiredType);
 
     /**
      * Return whether a bean with the specified id is present.

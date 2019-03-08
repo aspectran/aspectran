@@ -325,7 +325,7 @@ public abstract class AdviceActivity extends AbstractActivity {
                     // If Annotated Aspect
                     Object adviceBean = getAspectAdviceBean(aspectAdviceRule.getAspectId());
                     if (adviceBean == null) {
-                        adviceBean = getConfiguredBean(aspectAdviceRule.getAdviceBeanClass());
+                        adviceBean = getBeanForConfig(aspectAdviceRule.getAdviceBeanClass());
                         putAspectAdviceBean(aspectAdviceRule.getAspectId(), adviceBean);
                     }
                 }

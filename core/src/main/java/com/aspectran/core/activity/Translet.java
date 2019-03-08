@@ -22,17 +22,16 @@ import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
-import com.aspectran.core.component.bean.BeanRegistry;
 import com.aspectran.core.context.env.Environment;
 import com.aspectran.core.context.rule.DispatchRule;
 import com.aspectran.core.context.rule.ForwardRule;
 import com.aspectran.core.context.rule.RedirectRule;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.context.rule.type.MethodType;
-import com.aspectran.core.support.i18n.message.MessageSource;
 import com.aspectran.core.support.i18n.message.NoSuchMessageException;
 
 import java.util.Collection;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -40,7 +39,7 @@ import java.util.Map;
  *
  * <p>Created: 2008. 7. 5. AM 12:35:44</p>
  */
-public interface Translet extends BeanRegistry, MessageSource {
+public interface Translet {
 
     /**
      * Returns the request name for this {@code Translet}.
@@ -528,6 +527,82 @@ public interface Translet extends BeanRegistry, MessageSource {
     boolean hasPathVariable();
 
     /**
+     * Return an instance of the bean that matches the given id.
+     *
+     * @param <T> the generic type
+     * @param id the id of the bean to retrieve
+     * @return an instance of the bean
+     */
+    <T> T getBean(String id);
+
+    /**
+     * Return an instance of the bean that matches the given object type.
+     *
+     * @param <T> the generic type
+     * @param requiredType the type the bean must match; can be an interface or superclass.
+     *      {@code null} is disallowed.
+     * @return an instance of the bean
+     * @since 1.3.1
+     */
+    <T> T getBean(Class<T> requiredType);
+
+    /**
+     * Return an instance of the bean that matches the given id.
+     * If the bean is not of the required type then throw a BeanNotOfRequiredTypeException.
+     *
+     * @param <T> the generic type
+     * @param id the id of the bean to retrieve
+     * @param requiredType type the bean must match; can be an interface or superclass.
+     *      {@code null} is disallowed.
+     * @return an instance of the bean
+     * @since 1.3.1
+     */
+    <T> T getBean(String id, Class<T> requiredType);
+
+    /**
+     * Return an instance of the bean that matches the given object type.
+     * If the bean is not exists ,retrieve the bean with the specified id.
+     *
+     * @param <T> the generic type
+     * @param requiredType type the bean must match; can be an interface or superclass.
+     *      {@code null} is allowed.
+     * @param id the id of the bean to retrieve; if requiredType is {@code null}.
+     * @return an instance of the bean
+     * @since 2.0.0
+     */
+    <T> T getBean(Class<T> requiredType, String id);
+
+    /**
+     * Return the bean instance that matches the specified object type.
+     * If the bean is not of the required type then throw a {@code BeanNotOfRequiredTypeException}.
+     *
+     * @param <T> the generic type
+     * @param requiredType type the bean must match; can be an interface or superclass.
+     *      {@code null} is disallowed.
+     * @return an instance of the bean
+     * @since 2.0.0
+     */
+    <T> T getBeanForConfig(Class<T> requiredType);
+
+    /**
+     * Return whether a bean with the specified id is present.
+     *
+     * @param id the id of the bean to query
+     * @return whether a bean with the specified id is present
+     */
+    boolean containsBean(String id);
+
+    /**
+     * Return whether a bean with the specified object type is present.
+     *
+     * @param requiredType the object type of the bean to query
+     * @return whether a bean with the specified type is present
+     */
+    boolean containsBean(Class<?> requiredType);
+
+
+
+    /**
      * Try to resolve the message. Return default message if no message was found.
      *
      * @param code the code to lookup up, such as 'calculator.noRateSet'. Users of
@@ -555,5 +630,36 @@ public interface Translet extends BeanRegistry, MessageSource {
      * @see java.text.MessageFormat
      */
     String getMessage(String code, Object[] args) throws NoSuchMessageException;
+
+    /**
+     * Try to resolve the message. Return default message if no message was found.
+     *
+     * @param code the code to lookup up, such as 'calculator.noRateSet'. Users of
+     *         this class are encouraged to base message names on the relevant fully
+     *         qualified class name, thus avoiding conflict and ensuring maximum clarity.
+     * @param args array of arguments that will be filled in for params within
+     *         the message (params look like "{0}", "{1,date}", "{2,time}" within a message),
+     *         or {@code null} if none.
+     * @param defaultMessage String to return if the lookup fails
+     * @param locale the Locale in which to do the lookup
+     * @return the resolved message if the lookup was successful;
+     *         otherwise the default message passed as a parameter
+     * @see java.text.MessageFormat
+     */
+    String getMessage(String code, Object[] args, String defaultMessage, Locale locale);
+
+    /**
+     * Try to resolve the message. Treat as an error if the message can't be found.
+     *
+     * @param code the code to lookup up, such as 'calculator.noRateSet'
+     * @param args Array of arguments that will be filled in for params within
+     *         the message (params look like "{0}", "{1,date}", "{2,time}" within a message),
+     *         or {@code null} if none.
+     * @param locale the Locale in which to do the lookup
+     * @return the resolved message
+     * @throws NoSuchMessageException if the message wasn't found
+     * @see java.text.MessageFormat
+     */
+    String getMessage(String code, Object[] args, Locale locale) throws NoSuchMessageException;
 
 }

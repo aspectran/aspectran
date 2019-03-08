@@ -18,7 +18,7 @@ package com.aspectran.core.component.bean;
 /**
  * The Class RequiredTypeBeanNotFoundException.
  */
-public class RequiredTypeBeanNotFoundException extends BeanException {
+public class RequiredTypeBeanNotFoundException extends BeanNotFoundException {
 
     /** @serial */
     private static final long serialVersionUID = 4313746137902620189L;
@@ -26,22 +26,12 @@ public class RequiredTypeBeanNotFoundException extends BeanException {
     private Class<?> requiredType;
 
     /**
-     * Instantiates a new BeanNotFoundException.
+     * Instantiates a new RequiredTypeBeanNotFoundException.
      *
      * @param requiredType the required type
      */
     public RequiredTypeBeanNotFoundException(Class<?> requiredType) {
-        super("No matching bean of type [" + requiredType + "] found");
-        this.requiredType = requiredType;
-    }
-
-    /**
-     * Gets the required type.
-     *
-     * @return the required type
-     */
-    public Class<?> getRequiredType() {
-        return requiredType;
+        super(requiredType);
     }
 
 }

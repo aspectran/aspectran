@@ -662,7 +662,7 @@ public class ContextRuleAssistant {
         for (Set<BeanRule> brs : beanRuleRegistry.getTypeBasedBeanRules()) {
             capacity += brs.size();
         }
-        capacity += beanRuleRegistry.getConfiguredBeanRules().size();
+        capacity += beanRuleRegistry.getConfigurableBeanRules().size();
         capacity = (int)(capacity / 0.9f) + 1;
 
         Set<BeanRule> beanRuleSet = new HashSet<>(capacity, 0.9f);
@@ -670,7 +670,7 @@ public class ContextRuleAssistant {
         for (Set<BeanRule> brs : beanRuleRegistry.getTypeBasedBeanRules()) {
             beanRuleSet.addAll(brs);
         }
-        beanRuleSet.addAll(beanRuleRegistry.getConfiguredBeanRules());
+        beanRuleSet.addAll(beanRuleRegistry.getConfigurableBeanRules());
         return beanRuleSet;
     }
 

@@ -75,7 +75,7 @@ public class AspectAdviceRulePreRegister {
     }
 
     public void register(BeanRuleRegistry beanRuleRegistry) {
-        for (BeanRule beanRule : beanRuleRegistry.getConfiguredBeanRules()) {
+        for (BeanRule beanRule : beanRuleRegistry.getConfigurableBeanRules()) {
             if (beanRule.isProxiable()) {
                 determineProxyBean(beanRule);
             }

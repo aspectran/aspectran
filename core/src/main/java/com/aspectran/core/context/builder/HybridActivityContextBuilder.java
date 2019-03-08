@@ -116,7 +116,7 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
 
             if (getScanBasePackages() != null) {
                 BeanRuleRegistry beanRuleRegistry = assistant.getBeanRuleRegistry();
-                beanRuleRegistry.scanConfiguredBeans(getScanBasePackages());
+                beanRuleRegistry.scanConfigurableBeans(getScanBasePackages());
             }
 
             if (appConfigRootFile != null || aspectranParameters != null) {

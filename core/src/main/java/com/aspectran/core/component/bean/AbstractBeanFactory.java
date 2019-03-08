@@ -204,7 +204,7 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
                 if (Modifier.isInterface(factoryBeanClass.getModifiers())) {
                     bean = null;
                 } else if (factoryBeanClass.isAnnotationPresent(Component.class)) {
-                    bean = activity.getConfiguredBean(factoryBeanClass);
+                    bean = activity.getBeanForConfig(factoryBeanClass);
                 } else {
                     bean = activity.getBean(factoryBeanClass);
                 }
@@ -381,7 +381,7 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
     private Object invokeFactoryMethod(BeanRule beanRule, Object bean, Activity activity) {
         try {
             Method factoryMethod = beanRule.getFactoryMethod();
-            ParameterBindingRule[] parameterBindingRules = beanRule.getInitMethodParameterBindingRules();
+            ParameterBindingRule[] parameterBindingRules = beanRule.getFactoryMethodParameterBindingRules();
             return AnnotatedMethodAction.invokeMethod(activity, bean, factoryMethod, parameterBindingRules);
         } catch (Exception e) {
             throw new BeanCreationException("An exception occurred while executing a factory method of bean",
@@ -422,7 +422,7 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
                 instantiateSingleton(beanRule, activity);
             }
         }
-        for (BeanRule beanRule : beanRuleRegistry.getConfiguredBeanRules()) {
+        for (BeanRule beanRule : beanRuleRegistry.getConfigurableBeanRules()) {
             instantiateSingleton(beanRule, activity);
         }
     }
@@ -452,7 +452,7 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
                 failedDestroyes += doDestroySingleton(beanRule);
             }
         }
-        for (BeanRule beanRule : beanRuleRegistry.getConfiguredBeanRules()) {
+        for (BeanRule beanRule : beanRuleRegistry.getConfigurableBeanRules()) {
             failedDestroyes += doDestroySingleton(beanRule);
         }
         if (failedDestroyes > 0) {

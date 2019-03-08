@@ -79,7 +79,7 @@ public class AnnotatedMethodAction extends AbstractAction {
         try {
             Object bean;
             if (!Modifier.isInterface(annotatedMethodActionRule.getBeanClass().getModifiers())) {
-                bean = activity.getConfiguredBean(annotatedMethodActionRule.getBeanClass());
+                bean = activity.getBeanForConfig(annotatedMethodActionRule.getBeanClass());
             } else {
                 bean = null;
             }

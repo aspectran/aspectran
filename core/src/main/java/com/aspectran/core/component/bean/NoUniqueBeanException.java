@@ -31,7 +31,7 @@ public class NoUniqueBeanException extends BeanException {
     private BeanRule[] beanRules;
 
     /**
-     * Instantiates a new BeanNotFoundException.
+     * Instantiates a new NoUniqueBeanException.
      *
      * @param requiredType the required type
      * @param beanRules the bean rules

@@ -184,13 +184,13 @@ public class LocaleChangeInterceptor {
     }
 
     private boolean checkRequestMethod(MethodType requestMethod) {
-        String[] configuredMethods = getAllowedMethods();
-        if (configuredMethods == null || configuredMethods.length == 0) {
+        String[] allowedMethods = getAllowedMethods();
+        if (allowedMethods == null || allowedMethods.length == 0) {
             return true;
         }
         if (requestMethod != null) {
-            for (String configuredMethod : configuredMethods) {
-                if (requestMethod.matches(configuredMethod)) {
+            for (String method : allowedMethods) {
+                if (requestMethod.matches(method)) {
                     return true;
                 }
             }

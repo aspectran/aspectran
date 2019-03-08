@@ -110,18 +110,18 @@ public class AnnotatedConfigParser {
 
     private final Map<Class<?>, Set<BeanRule>> typeBasedBeanRuleMap;
 
-    private final Map<Class<?>, BeanRule> configuredBeanRuleMap;
+    private final Map<Class<?>, BeanRule> configurableBeanRuleMap;
 
     public AnnotatedConfigParser(ContextRuleAssistant assistant, AnnotatedConfigRelater relater) {
         this.environment = assistant.getContextEnvironment();
         this.idBasedBeanRuleMap = assistant.getBeanRuleRegistry().getIdBasedBeanRuleMap();
         this.typeBasedBeanRuleMap = assistant.getBeanRuleRegistry().getTypeBasedBeanRuleMap();
-        this.configuredBeanRuleMap = assistant.getBeanRuleRegistry().getConfiguredBeanRuleMap();
+        this.configurableBeanRuleMap = assistant.getBeanRuleRegistry().getConfigurableBeanRuleMap();
         this.relater = relater;
     }
 
     public void parse() throws IllegalRuleException {
-        if (configuredBeanRuleMap.isEmpty() && idBasedBeanRuleMap.isEmpty() && typeBasedBeanRuleMap.isEmpty()) {
+        if (configurableBeanRuleMap.isEmpty() && idBasedBeanRuleMap.isEmpty() && typeBasedBeanRuleMap.isEmpty()) {
             return;
         }
 
@@ -129,16 +129,16 @@ public class AnnotatedConfigParser {
             log.debug("Now trying to parse annotated configurations");
         }
 
-        if (!configuredBeanRuleMap.isEmpty()) {
+        if (!configurableBeanRuleMap.isEmpty()) {
             if (log.isDebugEnabled()) {
-                log.debug("Parsing bean rules for annotated configurations: " + configuredBeanRuleMap.size());
+                log.debug("Parsing bean rules for annotated configurations: " + configurableBeanRuleMap.size());
             }
-            for (BeanRule beanRule : configuredBeanRuleMap.values()) {
+            for (BeanRule beanRule : configurableBeanRuleMap.values()) {
                 if (log.isTraceEnabled()) {
-                    log.trace("configuredBeanRule " + beanRule);
+                    log.trace("configurableBeanRule " + beanRule);
                 }
                 if (!beanRule.isFactoryOffered()) {
-                    parseConfiguredBean(beanRule);
+                    parseConfigurableBean(beanRule);
                     parseConstructorAutowire(beanRule);
                     parseFieldAutowire(beanRule);
                     parseMethodAutowire(beanRule);
@@ -181,7 +181,7 @@ public class AnnotatedConfigParser {
         }
     }
 
-    private void parseConfiguredBean(BeanRule beanRule) throws IllegalRuleException {
+    private void parseConfigurableBean(BeanRule beanRule) throws IllegalRuleException {
         Class<?> beanClass = beanRule.getBeanClass();
         Component componentAnno = beanClass.getAnnotation(Component.class);
         if (componentAnno != null) {
@@ -433,7 +433,8 @@ public class AnnotatedConfigParser {
             beanRule.setDescription(description);
         }
 
-        relater.relay(beanClass, beanRule);
+        Class<?> targetBeanClass = BeanRuleAnalyzer.determineBeanClass(beanRule);
+        relater.relay(targetBeanClass, beanRule);
     }
 
     private void parseFactoryBeanRule(Class<?> beanClass, Method method, String[] nameArray) {

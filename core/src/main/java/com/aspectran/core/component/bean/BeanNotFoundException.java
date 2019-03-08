@@ -23,7 +23,9 @@ public class BeanNotFoundException extends BeanException {
     /** @serial */
     private static final long serialVersionUID = 1866105813455720749L;
 
-    private String beanId;
+    private final String beanId;
+
+    private final Class<?> beanType;
 
     /**
      * Instantiates a new BeanNotFoundException.
@@ -33,7 +35,20 @@ public class BeanNotFoundException extends BeanException {
     public BeanNotFoundException(String beanId) {
         super("No bean named '" + beanId + "' is defined");
         this.beanId = beanId;
+        this.beanType = null;
     }
+
+    /**
+     * Instantiates a new BeanNotFoundException.
+     *
+     * @param type the required type
+     */
+    public BeanNotFoundException(Class<?> type) {
+        super("No matching bean of type [" + type + "] found");
+        this.beanType = type;
+        this.beanId = null;
+    }
+
 
     /**
      * Gets the bean id.
@@ -42,6 +57,15 @@ public class BeanNotFoundException extends BeanException {
      */
     public String getBeanId() {
         return beanId;
+    }
+
+    /**
+     * Gets the required type.
+     *
+     * @return the required type
+     */
+    public Class<?> getBeanType() {
+        return beanType;
     }
 
 }
