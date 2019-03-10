@@ -18,6 +18,8 @@ package com.aspectran.core.activity.process.action;
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.request.ParameterMap;
+import com.aspectran.core.component.bean.NoUniqueBeanException;
+import com.aspectran.core.component.bean.annotation.Component;
 import com.aspectran.core.component.bean.annotation.Format;
 import com.aspectran.core.component.bean.annotation.Qualifier;
 import com.aspectran.core.component.bean.annotation.Required;
@@ -239,7 +241,15 @@ public class AnnotatedMethodAction extends AbstractAction {
                 String value = translet.getParameter(name);
                 result = parseValue(type, value, format);
                 if (result == UNKNOWN_VALUE_TYPE) {
-                    result = parseModel(translet, type);
+                    if (type.isAnnotationPresent(Component.class)) {
+                        try {
+                            result = translet.getBean(type);
+                        } catch (NoUniqueBeanException e) {
+                            result = translet.getBean(type, name);
+                        }
+                    } else {
+                        result = parseModel(translet, type);
+                    }
                 }
             }
         }

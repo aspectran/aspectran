@@ -91,5 +91,6 @@ web: {
     defaultServletName: default
     exposals: {
         +: /**
+        -: /favicon.ico
     }
 }
