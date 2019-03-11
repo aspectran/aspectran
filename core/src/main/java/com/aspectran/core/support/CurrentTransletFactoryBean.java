@@ -22,9 +22,9 @@ import com.aspectran.core.component.bean.annotation.AvoidAdvice;
 import com.aspectran.core.component.bean.aware.CurrentActivityAware;
 
 /**
- * {@code CurrentTransletFactoryBean} that returns the {@code Translet} for the current request.
+ * {@link CurrentTransletFactoryBean} that returns the {@link Translet} for the current request.
  * It should be declared as a {@code request} or {@code prototype} bean because it is intended
- * to use the value that the current {@code Translet} has.
+ * to use the value that the current {@link Translet} has.
  *
  * <p>Created: 2017. 10. 22.</p>
  */

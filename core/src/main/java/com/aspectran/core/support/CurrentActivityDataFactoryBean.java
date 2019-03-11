@@ -23,7 +23,7 @@ import com.aspectran.core.component.bean.annotation.AvoidAdvice;
 import com.aspectran.core.component.bean.aware.CurrentActivityAware;
 
 /**
- * {@code CurrentActivityDataFactoryBean} that returns the {@code ActivityDataMap} for
+ * {@link CurrentActivityDataFactoryBean} that returns the {@link ActivityDataMap} for
  * the current request.
  * It should be declared as a {@code request} or {@code prototype} bean because it is
  * intended to use the value that the current Translet has.
