@@ -34,6 +34,7 @@ import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;
 import com.aspectran.core.context.rule.type.ScopeType;
+import com.aspectran.core.util.ClassUtils;
 import com.aspectran.core.util.PrefixSuffixPattern;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Log;
@@ -83,9 +84,10 @@ public class BeanRuleRegistry {
         ignoreDependencyInterface(ClassLoaderAware.class);
         ignoreDependencyInterface(CurrentActivityAware.class);
         ignoreDependencyInterface(EnvironmentAware.class);
-        ignoreDependencyInterface(java.io.Serializable.class);
         ignoreDependencyInterface(java.lang.Comparable.class);
         ignoreDependencyInterface(java.lang.CharSequence.class);
+        ignoreDependencyInterface(java.io.Serializable.class);
+        ignoreDependencyInterface(java.io.Closeable.class);
     }
 
     public BeanRule getBeanRule(Object idOrRequiredType) {
@@ -258,7 +260,7 @@ public class BeanRuleRegistry {
                     saveConfigurableBeanRule(beanRule);
                 } else {
                     saveBeanRule(targetBeanClass, beanRule);
-                    saveBeanRule(targetBeanClass.getInterfaces(), beanRule);
+                    saveBeanRuleWithInterfaces(targetBeanClass, beanRule);
                 }
             }
             if (log.isTraceEnabled()) {
@@ -288,10 +290,27 @@ public class BeanRuleRegistry {
         set.add(beanRule);
     }
 
-    private void saveBeanRule(Class<?>[] interfaces, BeanRule beanRule) {
-        for (Class<?> ifc : interfaces) {
-            if (!ignoredDependencyInterfaces.contains(ifc)) {
-                saveBeanRule(ifc, beanRule);
+    private void saveBeanRuleWithInterfaces(Class<?> beanClass, BeanRule beanRule) {
+        if (beanClass.isInterface()) {
+            Class<?>[] ifcs = beanClass.getInterfaces();
+            for (Class<?> ifc : ifcs) {
+                if (!ignoredDependencyInterfaces.contains(ifc) &&
+                        ClassUtils.isVisible(ifc, classLoader)) {
+                    saveBeanRule(ifc, beanRule);
+                }
+            }
+        } else {
+            Class<?> current = beanClass;
+            while (current != null) {
+                Class<?>[] ifcs = current.getInterfaces();
+                for (Class<?> ifc : ifcs) {
+                    if (!ignoredDependencyInterfaces.contains(ifc) &&
+                            ClassUtils.isVisible(ifc, classLoader)) {
+                        saveBeanRule(ifc, beanRule);
+                        saveBeanRuleWithInterfaces(ifc, beanRule);
+                    }
+                }
+                current = current.getSuperclass();
             }
         }
     }
@@ -320,7 +339,7 @@ public class BeanRuleRegistry {
                         BeanRuleAnalyzer.checkDestroyMethod(targetBeanClass, beanRule);
                     }
                     saveBeanRule(targetBeanClass, beanRule);
-                    saveBeanRule(targetBeanClass.getInterfaces(), beanRule);
+                    saveBeanRuleWithInterfaces(targetBeanClass, beanRule);
                 }
             }
             postProcessBeanRuleMap.clear();
@@ -338,7 +357,7 @@ public class BeanRuleRegistry {
                     saveBeanRule(beanRule.getId(), beanRule);
                 }
                 saveBeanRule(targetBeanClass, beanRule);
-                saveBeanRule(targetBeanClass.getInterfaces(), beanRule);
+                saveBeanRuleWithInterfaces(targetBeanClass, beanRule);
             }
 
             @Override

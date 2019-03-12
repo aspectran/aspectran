@@ -136,4 +136,46 @@ public abstract class ClassUtils {
         return ctor;
     }
 
+    /**
+     * Check whether the given class is visible in the given ClassLoader.
+     *
+     * @param clazz the class to check (typically an interface)
+     * @param classLoader the ClassLoader to check against
+     *      (may be {@code null} in which case this method will always return {@code true})
+     * @since 6.0.0
+     */
+    public static boolean isVisible(Class<?> clazz, ClassLoader classLoader) {
+        if (classLoader == null) {
+            return true;
+        }
+        try {
+            if (clazz.getClassLoader() == classLoader) {
+                return true;
+            }
+        } catch (SecurityException ex) {
+            // Fall through to loadable check below
+        }
+
+        // Visible if same Class can be loaded from given ClassLoader
+        return isLoadable(clazz, classLoader);
+    }
+
+    /**
+     * Check whether the given class is loadable in the given ClassLoader.
+     *
+     * @param clazz the class to check (typically an interface)
+     * @param classLoader the ClassLoader to check against
+     * @since 6.0.0
+     */
+    private static boolean isLoadable(Class<?> clazz, ClassLoader classLoader) {
+        try {
+            return (clazz == classLoader.loadClass(clazz.getName()));
+            // Else: different class with same name found
+        }
+        catch (ClassNotFoundException ex) {
+            // No corresponding class found at all
+            return false;
+        }
+    }
+
 }
