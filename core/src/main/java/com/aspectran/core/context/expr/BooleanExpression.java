@@ -34,6 +34,9 @@ public class BooleanExpression {
     protected final Activity activity;
 
     public BooleanExpression(Activity activity) {
+        if (activity == null) {
+            throw new IllegalArgumentException("activity must not be null");
+        }
         this.activity = activity;
     }
 

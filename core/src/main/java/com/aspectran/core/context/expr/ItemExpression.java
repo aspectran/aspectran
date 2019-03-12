@@ -18,7 +18,6 @@ package com.aspectran.core.context.expr;
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.request.FileParameter;
 import com.aspectran.core.activity.request.ParameterMap;
-import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
@@ -55,15 +54,6 @@ public class ItemExpression extends TokenExpression implements ItemEvaluator {
      */
     public ItemExpression(Activity activity) {
         super(activity);
-    }
-
-    /**
-     * Instantiates a new ItemExpression.
-     *
-     * @param context the activity context
-     */
-    public ItemExpression(ActivityContext context) {
-        super(context);
     }
 
     @Override

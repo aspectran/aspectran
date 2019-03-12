@@ -74,8 +74,8 @@ class ActivityContextBuilderTest {
         //System.out.println(result);
         assertEquals("ECHO-1", result);
 
-        String devProp1 = context1.getEnvironment().getProperty("prop-1", context1);
-        String devProp2 = context1.getEnvironment().getProperty("prop-2", context1);
+        String devProp1 = context1.getEnvironment().getProperty("prop-1", context1.getDefaultActivity());
+        String devProp2 = context1.getEnvironment().getProperty("prop-2", context1.getDefaultActivity());
         assertEquals("dev-debug-1", devProp1);
         assertEquals("dev-debug-2", devProp2);
 
@@ -89,8 +89,8 @@ class ActivityContextBuilderTest {
         //System.out.println(result2);
         assertEquals("ECHO-2", result2);
 
-        String localProp1 = context2.getEnvironment().getProperty("prop-1", context1);
-        String localProp2 = context2.getEnvironment().getProperty("prop-2", context1);
+        String localProp1 = context2.getEnvironment().getProperty("prop-1", context1.getDefaultActivity());
+        String localProp2 = context2.getEnvironment().getProperty("prop-2", context1.getDefaultActivity());
         assertEquals("local-!debug-1", localProp1);
         assertEquals("local-!debug-2", localProp2);
 

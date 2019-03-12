@@ -63,7 +63,7 @@ public class JettyCommand extends AbstractCommand {
 
             ItemRuleMap parameterItemRuleMap = parameters.getParameterItemRuleMap();
             if ((parameterItemRuleMap != null && !parameterItemRuleMap.isEmpty())) {
-                ItemEvaluator evaluator = new ItemExpression(service.getActivityContext());
+                ItemEvaluator evaluator = new ItemExpression(service.getDefaultActivity());
                 ParameterMap parameterMap = evaluator.evaluateAsParameterMap(parameterItemRuleMap);
                 mode = parameterMap.getParameter("mode");
                 serverName = parameterMap.getParameter("server");

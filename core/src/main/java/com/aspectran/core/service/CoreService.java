@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.service;
 
+import com.aspectran.core.activity.Activity;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.config.AspectranConfig;
@@ -48,6 +49,13 @@ public interface CoreService {
      * @return the activity context
      */
     ActivityContext getActivityContext();
+
+    /**
+     * Gets the default activity.
+     *
+     * @return the default activity
+     */
+    Activity getDefaultActivity();
 
     /**
      * Gets the aspectran class loader.

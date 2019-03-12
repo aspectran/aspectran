@@ -50,7 +50,7 @@ public class TransletCommand extends AbstractCommand {
         }
 
         try {
-            ItemEvaluator evaluator = new ItemExpression(service.getActivityContext());
+            ItemEvaluator evaluator = new ItemExpression(service.getDefaultActivity());
 
             ParameterMap parameterMap = null;
             ItemRuleMap parameterItemRuleMap = parameters.getParameterItemRuleMap();

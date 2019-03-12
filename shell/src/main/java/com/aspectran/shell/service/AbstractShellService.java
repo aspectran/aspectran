@@ -133,7 +133,7 @@ public abstract class AbstractShellService extends AspectranCoreService implemen
     @Override
     public void printGreetings() {
         if (greetingsTokens != null) {
-            TokenEvaluator evaluator = new TokenExpression(getActivityContext());
+            TokenEvaluator evaluator = new TokenExpression(getDefaultActivity());
             String message = evaluator.evaluateAsString(greetingsTokens);
             console.writeLine(message);
         } else if (greetings != null) {

@@ -107,7 +107,7 @@ public abstract class AbstractActivity implements Activity {
      *
      * @param included whether or not included in other activity
      */
-    public void setIncluded(boolean included) {
+    protected void setIncluded(boolean included) {
         this.included = included;
     }
 

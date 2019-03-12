@@ -46,7 +46,7 @@ public class PollingIntervalCommand extends AbstractCommand {
 
             ItemRuleList itemRuleList = parameters.getArgumentItemRuleList();
             if (!itemRuleList.isEmpty()) {
-                ItemEvaluator evaluator = new ItemExpression(service.getActivityContext());
+                ItemEvaluator evaluator = new ItemExpression(service.getDefaultActivity());
                 pollingInterval = evaluator.evaluate(itemRuleList.get(0));
             }
 

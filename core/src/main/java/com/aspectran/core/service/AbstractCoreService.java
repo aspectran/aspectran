@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.service;
 
+import com.aspectran.core.activity.Activity;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.InsufficientEnvironmentException;
@@ -124,6 +125,14 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
 
     public void setActivityContext(ActivityContext activityContext) {
         this.activityContext = activityContext;
+    }
+
+    @Override
+    public Activity getDefaultActivity() {
+        if (getActivityContext() == null) {
+            throw new IllegalStateException("ActivityContext is not yet created");
+        }
+        return getActivityContext().getDefaultActivity();
     }
 
     @Override

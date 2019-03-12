@@ -44,9 +44,9 @@ public class AspectranActivityContext extends AbstractComponent implements Activ
 
     private final ThreadLocal<Activity> currentActivityHolder = new ThreadLocal<>();
 
-    private final Activity defaultActivity;
-
     private final ContextEnvironment contextEnvironment;
+
+    private final Activity defaultActivity;
 
     private String description;
 
@@ -70,8 +70,8 @@ public class AspectranActivityContext extends AbstractComponent implements Activ
      * @param contextEnvironment the context environment
      */
     public AspectranActivityContext(ContextEnvironment contextEnvironment) {
-        this.defaultActivity = new DefaultActivity(this);
         this.contextEnvironment = contextEnvironment;
+        this.defaultActivity = new DefaultActivity(this);
     }
 
     @Override
@@ -177,7 +177,7 @@ public class AspectranActivityContext extends AbstractComponent implements Activ
     @Override
     public Activity getCurrentActivity() {
         Activity activity = currentActivityHolder.get();
-        return (activity != null ? activity : defaultActivity);
+        return (activity != null ? activity : getDefaultActivity());
     }
 
     @Override

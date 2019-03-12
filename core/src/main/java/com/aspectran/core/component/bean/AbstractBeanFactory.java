@@ -90,9 +90,6 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
 
     protected Object createBean(BeanRule beanRule) {
         Activity activity = context.getCurrentActivity();
-        if (activity == null) {
-            throw new BeanException("Cannot create a bean because an active activity is not found");
-        }
         return createBean(beanRule, activity);
     }
 

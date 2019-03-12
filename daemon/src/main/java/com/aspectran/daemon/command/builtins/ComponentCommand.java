@@ -71,7 +71,7 @@ public class ComponentCommand extends AbstractCommand {
         DaemonService service = getService();
 
         try {
-            ItemEvaluator evaluator = new ItemExpression(getService().getActivityContext());
+            ItemEvaluator evaluator = new ItemExpression(getService().getDefaultActivity());
 
             ParameterMap parameterMap = null;
             ItemRuleMap parameterItemRuleMap = parameters.getParameterItemRuleMap();

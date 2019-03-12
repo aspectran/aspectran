@@ -16,7 +16,6 @@
 package com.aspectran.core.context.env;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.expr.ItemEvaluator;
 import com.aspectran.core.context.expr.ItemExpression;
 import com.aspectran.core.context.rule.ItemRule;
@@ -247,21 +246,6 @@ public abstract class AbstractEnvironment implements Environment {
         }
 
         ItemEvaluator evaluator = new ItemExpression(activity);
-        return evaluator.evaluate(itemRule);
-    }
-
-    @Override
-    public <T> T getProperty(String name, ActivityContext context) {
-        if (propertyItemRuleMap == null || propertyItemRuleMap.isEmpty()) {
-            return null;
-        }
-
-        ItemRule itemRule = propertyItemRuleMap.get(name);
-        if (itemRule == null) {
-            return null;
-        }
-
-        ItemEvaluator evaluator = new ItemExpression(context);
         return evaluator.evaluate(itemRule);
     }
 

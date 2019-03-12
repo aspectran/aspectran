@@ -17,7 +17,6 @@ package com.aspectran.core.context.env;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.adapter.ApplicationAdapter;
-import com.aspectran.core.context.ActivityContext;
 
 import java.io.File;
 import java.io.IOException;
@@ -69,16 +68,6 @@ public interface Environment {
      * @return the value of the property on environment
      */
     <T> T getProperty(String name, Activity activity);
-
-    /**
-     * Returns the value of the property on environment via ActivityContext.
-     *
-     * @param <T> the type of the value
-     * @param name the given property name
-     * @param context the activity context
-     * @return the value of the property on environment
-     */
-    <T> T getProperty(String name, ActivityContext context);
 
     /**
      * Returns the application adapter.

@@ -16,11 +16,9 @@
 package com.aspectran.core.context.expr;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.activity.DefaultActivity;
 import com.aspectran.core.activity.request.FileParameter;
 import com.aspectran.core.component.bean.RequiredTypeBeanNotFoundException;
 import com.aspectran.core.component.template.TemplateRenderer;
-import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.rule.type.TokenDirectiveType;
 import com.aspectran.core.context.rule.type.TokenType;
@@ -56,16 +54,10 @@ public class TokenExpression implements TokenEvaluator {
      * @param activity the current Activity
      */
     public TokenExpression(Activity activity) {
+        if (activity == null) {
+            throw new IllegalArgumentException("activity must not be null");
+        }
         this.activity = activity;
-    }
-
-    /**
-     * Instantiates a new token expression parser.
-     *
-     * @param context the activity context
-     */
-    public TokenExpression(ActivityContext context) {
-        this(new DefaultActivity(context));
     }
 
     @Override
