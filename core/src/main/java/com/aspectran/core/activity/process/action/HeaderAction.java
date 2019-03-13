@@ -24,8 +24,6 @@ import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.type.ActionType;
 import com.aspectran.core.util.MultiValueMap;
 import com.aspectran.core.util.ToStringBuilder;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
 
 import java.util.List;
 import java.util.Map;
@@ -38,8 +36,6 @@ import java.util.Map;
  * @since 3.0.0
  */
 public class HeaderAction extends AbstractAction {
-
-    private static final Log log = LogFactory.getLog(HeaderAction.class);
 
     private final HeaderActionRule headerActionRule;
 

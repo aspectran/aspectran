@@ -22,8 +22,6 @@ import com.aspectran.core.context.rule.EchoActionRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.type.ActionType;
 import com.aspectran.core.util.ToStringBuilder;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
 
 /**
  * The Class EchoAction.
@@ -31,8 +29,6 @@ import com.aspectran.core.util.logging.LogFactory;
  * <p>Created: 2008. 03. 22 PM 5:50:44</p>
  */
 public class EchoAction extends AbstractAction {
-
-    private static final Log log = LogFactory.getLog(EchoAction.class);
 
     private final EchoActionRule echoActionRule;
 

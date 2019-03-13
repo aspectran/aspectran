@@ -22,8 +22,6 @@ import com.aspectran.core.context.rule.IncludeActionRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.type.ActionType;
 import com.aspectran.core.util.ToStringBuilder;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
 
 import java.util.Map;
 
@@ -33,8 +31,6 @@ import java.util.Map;
  * <p>Created: 2008. 06. 05 PM 9:22:05</p>
  */
 public class IncludeAction extends AbstractAction {
-
-    private static final Log log = LogFactory.getLog(IncludeAction.class);
 
     private final IncludeActionRule includeActionRule;
 
