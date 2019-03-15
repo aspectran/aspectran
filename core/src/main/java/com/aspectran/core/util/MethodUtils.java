@@ -688,23 +688,15 @@ public class MethodUtils {
             return null;
         }
 
-        boolean sameClass;
         if (clazz == null) {
-            sameClass = true;
             clazz = method.getDeclaringClass();
-        } else {
-            sameClass = clazz.equals(method.getDeclaringClass());
-            if (!method.getDeclaringClass().isAssignableFrom(clazz)) {
-                throw new IllegalArgumentException(clazz.getName() + " is not assignable from " +
-                        method.getDeclaringClass().getName());
-            }
+        } else if (!method.getDeclaringClass().isAssignableFrom(clazz)) {
+            throw new IllegalArgumentException(clazz.getName() + " is not assignable from " +
+                    method.getDeclaringClass().getName());
         }
 
         // If the class is public, we are done
         if (Modifier.isPublic(clazz.getModifiers())) {
-            if (!sameClass) {
-                ReflectionUtils.makeAccessible(method); // Default access superclass workaround
-            }
             return method;
         }
 
@@ -834,7 +826,6 @@ public class MethodUtils {
         // most of the time this works and it's much faster
         try {
             Method method = clazz.getMethod(methodName, paramTypes);
-            ReflectionUtils.makeAccessible(method); // Default access superclass workaround
             cache.put(md, new Method[] { method });
             return method;
         } catch (NoSuchMethodException e) {

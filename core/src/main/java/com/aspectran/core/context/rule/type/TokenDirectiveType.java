@@ -22,6 +22,8 @@ package com.aspectran.core.context.rule.type;
  */
 public enum TokenDirectiveType {
 
+    FIELD("field"),
+    METHOD("method"),
     CLASS("class"),
     CLASSPATH("classpath");
 

@@ -17,6 +17,7 @@ package com.aspectran.core.context.expr;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.request.FileParameter;
+import com.aspectran.core.component.bean.NoUniqueBeanException;
 import com.aspectran.core.component.bean.RequiredTypeBeanNotFoundException;
 import com.aspectran.core.component.template.TemplateRenderer;
 import com.aspectran.core.context.expr.token.Token;
@@ -24,11 +25,15 @@ import com.aspectran.core.context.rule.type.TokenDirectiveType;
 import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.util.BeanUtils;
 import com.aspectran.core.util.PropertiesLoaderUtils;
+import com.aspectran.core.util.ReflectionUtils;
 
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -352,41 +357,58 @@ public class TokenExpression implements TokenEvaluator {
      * @return an instance of the bean
      */
     protected Object getBean(Token token) {
+        Object value;
         if (token.getAlternativeValue() != null) {
-            Object value;
-            try {
-                value = activity.getBean((Class<?>)token.getAlternativeValue());
-            } catch (RequiredTypeBeanNotFoundException e) {
-                if (token.getGetterName() != null) {
-                    try {
-                        value = BeanUtils.getProperty((Class<?>)token.getAlternativeValue(), token.getGetterName());
-                        if (value == null) {
-                            value = token.getDefaultValue();
-                        }
-                        return value;
-                    } catch (InvocationTargetException e2) {
-                        // ignore
-                    }
+            if (token.getDirectiveType() == TokenDirectiveType.FIELD) {
+                Field field = (Field)token.getAlternativeValue();
+                if (Modifier.isStatic(field.getModifiers())) {
+                    value = ReflectionUtils.getField(field, null);
+                } else {
+                    Class<?> cls = field.getDeclaringClass();
+                    Object target = activity.getBean(cls);
+                    value = ReflectionUtils.getField(field, target);
                 }
-                throw e;
+            } else if (token.getDirectiveType() == TokenDirectiveType.METHOD) {
+                Method method = (Method)token.getAlternativeValue();
+                if (Modifier.isStatic(method.getModifiers())) {
+                    value = ReflectionUtils.invokeMethod(method, null);
+                } else {
+                    Class<?> cls = method.getDeclaringClass();
+                    Object target = activity.getBean(cls);
+                    value = ReflectionUtils.invokeMethod(method, target);
+                }
+            } else {
+                Class<?> type = (Class<?>)token.getAlternativeValue();
+                try {
+                    value = activity.getBean(type);
+                } catch (RequiredTypeBeanNotFoundException | NoUniqueBeanException e) {
+                    if (token.getGetterName() != null) {
+                        try {
+                            value = BeanUtils.getProperty(type, token.getGetterName());
+                            if (value == null) {
+                                value = token.getDefaultValue();
+                            }
+                            return value;
+                        } catch (InvocationTargetException e2) {
+                            // ignore
+                        }
+                    }
+                    throw e;
+                }
+                if (value != null && token.getGetterName() != null) {
+                    value = getBeanProperty(value, token.getGetterName());
+                }
             }
-            if (value != null && token.getGetterName() != null) {
-                value = getBeanProperty(value, token.getGetterName());
-            }
-            if (value == null) {
-                value = token.getDefaultValue();
-            }
-            return value;
         } else {
-            Object value = activity.getBean(token.getName());
+            value = activity.getBean(token.getName());
             if (value != null && token.getGetterName() != null) {
                 value = getBeanProperty(value, token.getGetterName());
             }
-            if (value == null) {
-                value = token.getDefaultValue();
-            }
-            return value;
         }
+        if (value == null) {
+            value = token.getDefaultValue();
+        }
+        return value;
     }
 
     /**

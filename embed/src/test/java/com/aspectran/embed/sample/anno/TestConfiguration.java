@@ -24,7 +24,7 @@ import com.aspectran.core.context.rule.type.ScopeType;
 public class TestConfiguration {
 
     @Autowired
-    private FirstBean firstBean;
+    public FirstBean firstBean;
 
     @Bean(id = "thirdResult", scope = ScopeType.SINGLETON, lazyInit = true)
     public ThirdResult getThirdResult() {

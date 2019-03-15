@@ -53,7 +53,7 @@ public abstract class ClassUtils {
             return ctor.newInstance();
         } catch (Exception e) {
             ExceptionUtils.unwrapAndThrowAsIAE(e, "Unable to instantiate class " +
-                    cls.getName() + ", problem: " + e.getMessage());
+                    cls.getName() + ": " + e.getMessage());
             throw new IllegalArgumentException(e);
         }
     }

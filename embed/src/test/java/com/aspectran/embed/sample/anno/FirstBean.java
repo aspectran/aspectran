@@ -20,7 +20,7 @@ import com.aspectran.core.component.bean.annotation.Autowired;
 public class FirstBean {
 
     @Autowired
-    private SecondBean secondBean;
+    public SecondBean secondBean;
 
     public String getMessage() {
         return secondBean.getMessage();

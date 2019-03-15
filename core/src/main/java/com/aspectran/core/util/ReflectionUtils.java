@@ -19,7 +19,6 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 
 /**
  * Simple utility class for working with the reflection API.
@@ -27,6 +26,24 @@ import java.lang.reflect.Modifier;
  * @since 2.0.0
  */
 public class ReflectionUtils {
+
+    /**
+     * Get the field represented by the supplied {@link Field field object} on the
+     * specified {@link Object target object}. In accordance with {@link Field#get(Object)}
+     * semantics, the returned value is automatically wrapped if the underlying field
+     * has a primitive type.
+     *
+     * @param field the field to get
+     * @param target the target object from which to get the field
+     * @return the field's current value
+     */
+    public static Object getField(Field field, Object target) {
+        try {
+            return field.get(target);
+        } catch (IllegalAccessException e) {
+            throw new IllegalStateException("Could not access field: " + field, e);
+        }
+    }
 
     /**
      * Set the field represented by the supplied {@link Field field object} on the
@@ -40,13 +57,9 @@ public class ReflectionUtils {
      */
     public static void setField(Field field, Object target, Object value) {
         try {
-            boolean accessibled = makeAccessible(field);
             field.set(target, value);
-            if (accessibled) {
-                field.setAccessible(false);
-            }
         } catch (IllegalAccessException e) {
-            throw new IllegalStateException("Could not access field: " + field, ExceptionUtils.getRootCause(e));
+            throw new IllegalStateException("Could not access field: " + field, e);
         }
     }
 
@@ -66,60 +79,6 @@ public class ReflectionUtils {
         } catch (InvocationTargetException | IllegalAccessException e) {
             throw new IllegalStateException("Could not access method: " + method, ExceptionUtils.getRootCause(e));
         }
-    }
-
-    /**
-     * Make the given field accessible, explicitly setting it accessible if
-     * necessary. The {@code setAccessible(true)} method is only called when
-     * actually necessary, to avoid unnecessary conflicts with a JVM
-     * SecurityManager (if active).
-     *
-     * @param field the field to make accessible
-     * @return true, if successful
-     * @see java.lang.reflect.Field#setAccessible
-     */
-    @SuppressWarnings("deprecation") // on JDK 9
-    public static boolean makeAccessible(Field field) {
-        try {
-            if ((!Modifier.isPublic(field.getModifiers())
-                    || !Modifier.isPublic(field.getDeclaringClass().getModifiers())
-                    || Modifier.isFinal(field.getModifiers())) && !field.isAccessible()) {
-                field.setAccessible(true);
-                return true;
-            }
-            return false;
-        } catch (SecurityException se) {
-            Class<?> declClass = field.getDeclaringClass();
-            throw new IllegalArgumentException("Can not access " + field + " (from class " + declClass.getName() +
-                    "; failed to set access: " + se.getMessage());
-        }
-    }
-
-    /**
-     * Make the given method accessible, explicitly setting it accessible if
-     * necessary. The {@code setAccessible(true)} method is only called when
-     * actually necessary, to avoid unnecessary conflicts with a JVM
-     * SecurityManager (if active).
-     *
-     * @param method the method to make accessible
-     * @return true, if successful
-     * @see java.lang.reflect.Method#setAccessible
-     */
-    @SuppressWarnings("deprecation") // on JDK 9
-    public static boolean makeAccessible(Method method) {
-        try {
-            if ((!Modifier.isPublic(method.getModifiers())
-                    || !Modifier.isPublic(method.getDeclaringClass().getModifiers()))
-                    && !method.isAccessible()) {
-                method.setAccessible(true);
-                return true;
-            }
-        } catch (SecurityException se) {
-            Class<?> declClass = method.getDeclaringClass();
-            throw new IllegalArgumentException("Can not access " + method + " (from class " + declClass.getName() +
-                    "; failed to set access: " + se.getMessage());
-        }
-        return false;
     }
 
     /**
