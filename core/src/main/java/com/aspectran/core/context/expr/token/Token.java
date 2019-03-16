@@ -22,6 +22,9 @@ import com.aspectran.core.context.rule.type.TokenDirectiveType;
 import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.util.ToStringBuilder;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+
 /**
  * A token has a string value of its own or contains information
  * for fetching a specific value from another provider.
@@ -437,7 +440,6 @@ public class Token implements BeanReferenceable, Replicable<Token> {
         tsb.append("type", type);
         tsb.append("name", name);
         tsb.append("value", value);
-        tsb.append("alternativeValue", alternativeValue);
         tsb.append("getterName", getterName);
         tsb.append("defaultValue", defaultValue);
         return tsb.toString();
@@ -455,6 +457,20 @@ public class Token implements BeanReferenceable, Replicable<Token> {
                 || c == PARAMETER_SYMBOL
                 || c == ATTRIBUTE_SYMBOL
                 || c == PROPERTY_SYMBOL);
+    }
+
+    public static boolean hasToken(String str) {
+        char[] ca = str.toCharArray();
+        boolean open = false;
+        for (int i = 1; i < ca.length; i++) {
+            if (isTokenSymbol(ca[i - 1]) && ca[i] == START_BRACKET) {
+                i++;
+                open = true;
+            } else if (open && ca[i] == END_BRACKET) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -481,18 +497,43 @@ public class Token implements BeanReferenceable, Replicable<Token> {
         return type;
     }
 
-    public static boolean hasToken(String str) {
-        char[] ca = str.toCharArray();
-        boolean open = false;
-        for (int i = 1; i < ca.length; i++) {
-            if (isTokenSymbol(ca[i - 1]) && ca[i] == START_BRACKET) {
-                i++;
-                open = true;
-            } else if (open && ca[i] == END_BRACKET) {
-                return true;
+    public static void resolveAlternativeValue(Token token, ClassLoader classLoader) {
+        if (token != null && token.getType() == TokenType.BEAN) {
+            if (token.getDirectiveType() == TokenDirectiveType.FIELD) {
+                if (token.getGetterName() == null) {
+                    throw new InvalidTokenException("Target field name not specified", token);
+                }
+                try {
+                    Class<?> cls = classLoader.loadClass(token.getValue());
+                    Field field = cls.getField(token.getGetterName());
+                    token.setAlternativeValue(field);
+                } catch (ClassNotFoundException e) {
+                    throw new IllegalArgumentException("Unable to load class: " + token.getValue(), e);
+                } catch (NoSuchFieldException e) {
+                    throw new IllegalArgumentException("Could not access field: " + token.getGetterName(), e);
+                }
+            } else if (token.getDirectiveType() == TokenDirectiveType.METHOD) {
+                if (token.getGetterName() == null) {
+                    throw new InvalidTokenException("Target method name not specified", token);
+                }
+                try {
+                    Class<?> cls = classLoader.loadClass(token.getValue());
+                    Method method = cls.getMethod(token.getGetterName());
+                    token.setAlternativeValue(method);
+                } catch (ClassNotFoundException e) {
+                    throw new IllegalArgumentException("Unable to load class: " + token.getValue(), e);
+                } catch (NoSuchMethodException e) {
+                    throw new IllegalArgumentException("Could not access method: " + token.getGetterName(), e);
+                }
+            } else if (token.getDirectiveType() == TokenDirectiveType.CLASS) {
+                try {
+                    Class<?> cls = classLoader.loadClass(token.getValue());
+                    token.setAlternativeValue(cls);
+                } catch (ClassNotFoundException e) {
+                    throw new IllegalArgumentException("Unable to load class: " + token.getValue(), e);
+                }
             }
         }
-        return false;
     }
 
 }

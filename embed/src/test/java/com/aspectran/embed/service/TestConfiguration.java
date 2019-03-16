@@ -23,6 +23,8 @@ import com.aspectran.core.component.bean.annotation.Qualifier;
 @Component
 public class TestConfiguration {
 
+    public static final String STATIC_FIELD = "static field";
+
     private FirstBean firstBean;
 
     @Autowired
@@ -33,6 +35,14 @@ public class TestConfiguration {
     @Bean(id = "thirdBean", lazyInit = true)
     public FirstBean getThirdBean() {
         return firstBean;
+    }
+
+    public String getField() {
+        return STATIC_FIELD;
+    }
+
+    public static String getStaticField() {
+        return STATIC_FIELD;
     }
 
 }

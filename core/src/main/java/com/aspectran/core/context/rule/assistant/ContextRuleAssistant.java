@@ -22,6 +22,7 @@ import com.aspectran.core.component.schedule.ScheduleRuleRegistry;
 import com.aspectran.core.component.template.TemplateRuleRegistry;
 import com.aspectran.core.component.translet.TransletRuleRegistry;
 import com.aspectran.core.context.env.ContextEnvironment;
+import com.aspectran.core.context.expr.token.InvalidTokenException;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.AutowireRule;
@@ -42,6 +43,9 @@ import com.aspectran.core.context.rule.type.TokenDirectiveType;
 import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.util.StringUtils;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -428,13 +432,47 @@ public class ContextRuleAssistant {
      * @param token the token
      */
     public void resolveBeanClass(Token token) {
+        resolveBeanClass(token, token);
+    }
+
+    private void resolveBeanClass(Token token, BeanReferenceable referenceable) {
         if (token != null && token.getType() == TokenType.BEAN) {
-            if (token.getDirectiveType() == TokenDirectiveType.CLASS) {
-                Class<?> beanClass = loadClass(token.getValue(), token);
-                token.setAlternativeValue(beanClass);
-                reserveBeanReference(beanClass, token);
+            if (token.getDirectiveType() == TokenDirectiveType.FIELD) {
+                if (token.getGetterName() == null) {
+                    throw new InvalidTokenException("Target field name not specified", token);
+                }
+                Class<?> cls = loadClass(token.getValue(), token);
+                try {
+                    Field field = cls.getField(token.getGetterName());
+                    token.setAlternativeValue(field);
+                    if (!Modifier.isStatic(field.getModifiers())) {
+                        reserveBeanReference(cls, referenceable);
+                    }
+                } catch (NoSuchFieldException e) {
+                    throw new IllegalArgumentException("Could not access field: " + token.getGetterName() +
+                            " on " + ruleAppendHandler.getCurrentRuleAppender().getQualifiedName() + " " + token, e);
+                }
+            } else if (token.getDirectiveType() == TokenDirectiveType.METHOD) {
+                if (token.getGetterName() == null) {
+                    throw new InvalidTokenException("Target method name not specified", token);
+                }
+                Class<?> cls = loadClass(token.getValue(), token);
+                try {
+                    Method method = cls.getMethod(token.getGetterName());
+                    token.setAlternativeValue(method);
+                    if (!Modifier.isStatic(method.getModifiers())) {
+                        reserveBeanReference(cls, referenceable);
+                    }
+                } catch (NoSuchMethodException e) {
+                    throw new IllegalArgumentException("Could not access method: " + token.getGetterName() +
+                            " on " + ruleAppendHandler.getCurrentRuleAppender().getQualifiedName() + " " + token, e);
+                }
+            } else if (token.getDirectiveType() == TokenDirectiveType.CLASS) {
+                Class<?> cls = loadClass(token.getValue(), token);
+                token.setAlternativeValue(cls);
+                reserveBeanReference(cls, referenceable);
             } else {
-                reserveBeanReference(token.getName(), token);
+                reserveBeanReference(token.getName(), referenceable);
             }
         }
     }
@@ -453,15 +491,7 @@ public class ContextRuleAssistant {
             }
         } else if (autowireRule.getTargetType() == AutowireTargetType.FIELD_VALUE) {
             Token token = autowireRule.getToken();
-            if (token.getType() == TokenType.BEAN) {
-                if (token.getDirectiveType() == TokenDirectiveType.CLASS) {
-                    Class<?> beanClass = loadClass(token.getValue(), token);
-                    token.setAlternativeValue(beanClass);
-                    reserveBeanReference(beanClass, autowireRule);
-                } else {
-                    reserveBeanReference(token.getName(), autowireRule);
-                }
-            }
+            resolveBeanClass(token, autowireRule);
         } else if (autowireRule.getTargetType() == AutowireTargetType.METHOD ||
                 autowireRule.getTargetType() == AutowireTargetType.CONSTRUCTOR) {
             if (autowireRule.isRequired()) {

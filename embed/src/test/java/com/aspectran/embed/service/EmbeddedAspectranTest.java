@@ -166,4 +166,10 @@ class EmbeddedAspectranTest {
         System.out.println(response);
     }
 
+    @Test
+    void fieldCallTest() {
+        String message = aspectran.render("fieldCallTest");
+        System.out.println(message);
+    }
+
 }

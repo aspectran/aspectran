@@ -378,13 +378,13 @@ public class TokenExpression implements TokenEvaluator {
                     value = ReflectionUtils.invokeMethod(method, target);
                 }
             } else {
-                Class<?> type = (Class<?>)token.getAlternativeValue();
+                Class<?> cls = (Class<?>)token.getAlternativeValue();
                 try {
-                    value = activity.getBean(type);
+                    value = activity.getBean(cls);
                 } catch (RequiredTypeBeanNotFoundException | NoUniqueBeanException e) {
                     if (token.getGetterName() != null) {
                         try {
-                            value = BeanUtils.getProperty(type, token.getGetterName());
+                            value = BeanUtils.getProperty(cls, token.getGetterName());
                             if (value == null) {
                                 value = token.getDefaultValue();
                             }

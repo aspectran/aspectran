@@ -25,8 +25,6 @@ import com.aspectran.core.context.expr.TokenEvaluator;
 import com.aspectran.core.context.expr.TokenExpression;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.expr.token.TokenParser;
-import com.aspectran.core.context.rule.type.TokenDirectiveType;
-import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.service.AspectranCoreService;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Log;
@@ -147,14 +145,9 @@ public abstract class AbstractShellService extends AspectranCoreService implemen
             if (greetingsTokens != null) {
                 try {
                     for (Token token : greetingsTokens) {
-                        if (token.getType() == TokenType.BEAN) {
-                            if (token.getDirectiveType() == TokenDirectiveType.CLASS) {
-                                Class<?> beanClass = getAspectranClassLoader().loadClass(token.getValue());
-                                token.setAlternativeValue(beanClass);
-                            }
-                        }
+                        Token.resolveAlternativeValue(token, getAspectranClassLoader());
                     }
-                } catch (ClassNotFoundException e) {
+                } catch (Exception e) {
                     greetingsTokens = null;
                     log.error("Failed to parse greetings", e);
                 }

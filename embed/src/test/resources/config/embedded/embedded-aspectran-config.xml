@@ -286,4 +286,10 @@
         </exception>
     </translet>
 
+    <template id="fieldCallTest" engine="token" style="apon">
+        |#{field:com.aspectran.embed.service.TestConfiguration^STATIC_FIELD}
+        |#{method:com.aspectran.embed.service.TestConfiguration^getStaticField}
+        |#{method:com.aspectran.embed.service.TestConfiguration^getField}
+    </template>
+
 </aspectran>
