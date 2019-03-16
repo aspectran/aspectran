@@ -15,14 +15,12 @@
  */
 package com.aspectran.core.component.template;
 
-import com.aspectran.core.context.AspectranRuntimeException;
-
 /**
  * This class is the basic exception that gets thrown from the template package.
  * 
  * <p>Created: 2016. 01. 15.</p>
  */
-public class TemplateException extends AspectranRuntimeException {
+public class TemplateException extends RuntimeException {
 
     /** @serial */
     private static final long serialVersionUID = -6904998412140480762L;

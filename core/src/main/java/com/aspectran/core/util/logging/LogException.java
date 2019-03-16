@@ -15,12 +15,10 @@
  */
 package com.aspectran.core.util.logging;
 
-import com.aspectran.core.context.AspectranRuntimeException;
-
 /**
  * @author Clinton Begin
  */
-public class LogException extends AspectranRuntimeException {
+public class LogException extends RuntimeException {
 
     /** @serial */
     private static final long serialVersionUID = 1007835506486086212L;

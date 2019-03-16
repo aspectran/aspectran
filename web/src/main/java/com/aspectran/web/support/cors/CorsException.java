@@ -15,8 +15,6 @@
  */
 package com.aspectran.web.support.cors;
 
-import com.aspectran.core.context.AspectranCheckedException;
-
 import javax.servlet.http.HttpServletResponse;
 
 /**
@@ -27,7 +25,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @since 2.3.0
  */
-public class CorsException extends AspectranCheckedException {
+public class CorsException extends Exception {
 
     private static final long serialVersionUID = -4522029461215151946L;
 

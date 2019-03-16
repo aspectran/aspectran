@@ -16,7 +16,6 @@
 package com.aspectran.core.util;
 
 import com.aspectran.core.component.bean.annotation.NonSerializable;
-import com.aspectran.core.context.AspectranRuntimeException;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -138,7 +137,7 @@ public class BeanDescriptor {
             } else {
                 Class<?> expectedType = getterTypes.get(propName);
                 if (expectedType == null) {
-                    throw new AspectranRuntimeException("Illegal overloaded setter method with ambiguous type for property " +
+                    throw new RuntimeException("Illegal overloaded setter method with ambiguous type for property " +
                             propName + " in class " + firstMethod.getDeclaringClass() + ".  This breaks the JavaBeans " +
                             "specification and can cause unpredictable results.");
                 } else {
@@ -152,7 +151,7 @@ public class BeanDescriptor {
                         }
                     }
                     if (setter == null) {
-                        throw new AspectranRuntimeException("Illegal overloaded setter method with ambiguous type for property " +
+                        throw new RuntimeException("Illegal overloaded setter method with ambiguous type for property " +
                                 propName + " in class " + firstMethod.getDeclaringClass() + ".  This breaks the JavaBeans " +
                                 "specification and can cause unpredictable results.");
                     }

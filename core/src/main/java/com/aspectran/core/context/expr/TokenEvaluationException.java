@@ -15,18 +15,17 @@
  */
 package com.aspectran.core.context.expr;
 
-import com.aspectran.core.context.AspectranRuntimeException;
 import com.aspectran.core.context.expr.token.Token;
 
 /**
  * The Class TokenEvaluationException.
  */
-public class TokenEvaluationException extends AspectranRuntimeException {
+public class TokenEvaluationException extends RuntimeException {
 
     /** @serial */
     private static final long serialVersionUID = 2303202652519466514L;
 
-    private Token token;
+    private final Token token;
 
     /**
      * Instantiates a new token evaluation exception.

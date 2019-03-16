@@ -15,8 +15,6 @@
  */
 package com.aspectran.core.support.i18n.message;
 
-import com.aspectran.core.context.AspectranRuntimeException;
-
 import java.util.Locale;
 
 /**
@@ -24,7 +22,7 @@ import java.util.Locale;
  *
  * <p>Created: 2016. 2. 8.</p>
  */
-public class NoSuchMessageException extends AspectranRuntimeException {
+public class NoSuchMessageException extends RuntimeException {
 
     private static final long serialVersionUID = -2677086951169637323L;
 

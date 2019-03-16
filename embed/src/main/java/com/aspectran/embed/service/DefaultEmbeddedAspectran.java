@@ -15,6 +15,7 @@
  */
 package com.aspectran.embed.service;
 
+import com.aspectran.core.activity.ActivityException;
 import com.aspectran.core.activity.ActivityTerminatedException;
 import com.aspectran.core.activity.InstantActivity;
 import com.aspectran.core.activity.Translet;
@@ -23,7 +24,6 @@ import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.component.session.DefaultSessionManager;
 import com.aspectran.core.component.session.SessionAgent;
 import com.aspectran.core.component.session.SessionManager;
-import com.aspectran.core.context.AspectranRuntimeException;
 import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.config.ContextConfig;
 import com.aspectran.core.context.config.SessionConfig;
@@ -146,10 +146,12 @@ public class DefaultEmbeddedAspectran extends AspectranCoreService implements Em
             translet = activity.getTranslet();
         } catch (ActivityTerminatedException e) {
             if (log.isDebugEnabled()) {
-                log.debug("Activity terminated; Cause: " + e.getMessage());
+                log.debug("Activity terminated: " + e.getMessage());
             }
+        } catch (ActivityException e) {
+            throw e;
         } catch (Exception e) {
-            throw new AspectranRuntimeException("An error occurred while processing translet: " + name, e);
+            throw new ActivityException("An error occurred while processing translet: " + name, e);
         } finally {
             if (activity != null) {
                 activity.finish();
@@ -194,7 +196,7 @@ public class DefaultEmbeddedAspectran extends AspectranCoreService implements Em
 
             return activity.getResponseAdapter().getWriter().toString();
         } catch (Exception e) {
-            throw new AspectranRuntimeException("An error occurred while processing template: " + templateId, e);
+            throw new ActivityException("An error occurred while rendering template: " + templateId, e);
         }
     }
 

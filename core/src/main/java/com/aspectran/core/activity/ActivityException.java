@@ -15,14 +15,12 @@
  */
 package com.aspectran.core.activity;
 
-import com.aspectran.core.context.AspectranRuntimeException;
-
 /**
  * This exception will be thrown when activity is failed.
  * 
  * <p>Created: 2008. 01. 07 AM 3:35:55</p>
  */
-public class ActivityException extends AspectranRuntimeException {
+public class ActivityException extends RuntimeException {
 
     /** @serial */
     private static final long serialVersionUID = -4400747654771758521L;

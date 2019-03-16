@@ -15,7 +15,6 @@
  */
 package com.aspectran.core.context.resource;
 
-import com.aspectran.core.context.AspectranRuntimeException;
 import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.core.util.ToStringBuilder;
 import com.aspectran.core.util.logging.Log;
@@ -113,7 +112,7 @@ public class LocalResourceManager extends ResourceManager {
             try {
                 resourceEntries.putResource(resourceName, file);
             } catch (InvalidResourceException e) {
-                throw new AspectranRuntimeException(e);
+                throw new RuntimeException(e);
             }
             if (file.isDirectory()) {
                 findResourceInDir(file, jarFileList);

@@ -15,14 +15,12 @@
  */
 package com.aspectran.core.component.translet;
 
-import com.aspectran.core.context.AspectranRuntimeException;
-
 /**
  * The Class TransletException.
  * 
  * <p>Created: 2008. 01. 07 AM 3:35:55</p>
  */
-public class TransletException extends AspectranRuntimeException {
+public class TransletException extends RuntimeException {
 
     /** @serial */
     private static final long serialVersionUID = 3736262494374232352L;

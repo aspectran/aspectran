@@ -15,14 +15,12 @@
  */
 package com.aspectran.core.context.rule.parser;
 
-import com.aspectran.core.context.AspectranCheckedException;
-
 /**
  * This exception is thrown when ActivityContext parsing fails.
  * 
  * <p>Created: 2008. 01. 07 AM 3:35:55</p>
  */
-public class ActivityContextParserException extends AspectranCheckedException {
+public class ActivityContextParserException extends Exception {
 
     /** @serial */
     private static final long serialVersionUID = 5702282474852901391L;

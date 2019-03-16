@@ -15,12 +15,10 @@
  */
 package com.aspectran.shell.command;
 
-import com.aspectran.core.context.AspectranRuntimeException;
-
 /**
  * This exception raised if a console is terminated.
  */
-public class ConsoleTerminatedException extends AspectranRuntimeException {
+public class ConsoleTerminatedException extends RuntimeException {
 
     /** @serial */
     private static final long serialVersionUID = -8812494142589655857L;

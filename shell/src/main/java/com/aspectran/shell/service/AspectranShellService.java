@@ -15,11 +15,11 @@
  */
 package com.aspectran.shell.service;
 
+import com.aspectran.core.activity.ActivityException;
 import com.aspectran.core.activity.ActivityTerminatedException;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.component.translet.TransletNotFoundException;
-import com.aspectran.core.context.AspectranRuntimeException;
 import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.config.ContextConfig;
 import com.aspectran.core.context.config.ExposalsConfig;
@@ -100,14 +100,14 @@ public class AspectranShellService extends AbstractShellService {
             activity.prepare(transletName, requestMethod);
             activity.perform();
             translet = activity.getTranslet();
-        } catch (TransletNotFoundException e) {
-            throw e;
         } catch (ActivityTerminatedException e) {
             if (log.isDebugEnabled()) {
-                log.debug("Activity terminated; Cause: " + e.getMessage());
+                log.debug("Activity terminated: " + e.getMessage());
             }
+        } catch (TransletNotFoundException | ActivityException e) {
+            throw e;
         } catch (Exception e) {
-            throw new AspectranRuntimeException("An error occurred while processing translet: " + transletName, e);
+            throw new ActivityException("An error occurred while processing translet: " + transletName, e);
         } finally {
             if (activity != null) {
                 activity.finish();

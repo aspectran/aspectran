@@ -15,14 +15,12 @@
  */
 package com.aspectran.core.activity;
 
-import com.aspectran.core.context.AspectranCheckedException;
-
 /**
  * The Class AdapterException.
  * 
  * <p>Created: 2016. 2. 14.</p>
  */
-public class AdapterException extends AspectranCheckedException {
+public class AdapterException extends Exception {
 
     /** @serial */
     private static final long serialVersionUID = -4222246026009174749L;

@@ -15,14 +15,12 @@
  */
 package com.aspectran.core.context.builder;
 
-import com.aspectran.core.context.AspectranCheckedException;
-
 /**
  * This exception is thrown when ActivityContext building fails.
  * 
  * <p>Created: 2017. 04. 08 PM 8:17:55</p>
  */
-public class ActivityContextBuilderException extends AspectranCheckedException {
+public class ActivityContextBuilderException extends Exception {
 
     /** @serial */
     private static final long serialVersionUID = -276971044899838358L;

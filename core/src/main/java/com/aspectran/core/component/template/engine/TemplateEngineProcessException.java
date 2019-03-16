@@ -15,14 +15,12 @@
  */
 package com.aspectran.core.component.template.engine;
 
-import com.aspectran.core.context.AspectranCheckedException;
-
 /**
  * The Class TemplateEngineProcessException.
  * 
  * <p>Created: 2016. 01. 23.</p>
  */
-public class TemplateEngineProcessException extends AspectranCheckedException {
+public class TemplateEngineProcessException extends Exception {
 
     /** @serial */
     private static final long serialVersionUID = 3136366504332981036L;

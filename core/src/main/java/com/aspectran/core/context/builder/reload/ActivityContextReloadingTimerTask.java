@@ -15,7 +15,6 @@
  */
 package com.aspectran.core.context.builder.reload;
 
-import com.aspectran.core.context.AspectranRuntimeException;
 import com.aspectran.core.service.ServiceController;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Log;
@@ -107,7 +106,7 @@ public class ActivityContextReloadingTimerTask extends TimerTask {
             String message = "Some resource file changes have been detected.";
             serviceController.restart(message);
         } catch (Exception e) {
-            throw new AspectranRuntimeException(e);
+            throw new RuntimeException(e);
         } finally {
             modified = false;
         }

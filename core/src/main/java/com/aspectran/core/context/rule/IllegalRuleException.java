@@ -15,14 +15,12 @@
  */
 package com.aspectran.core.context.rule;
 
-import com.aspectran.core.context.AspectranCheckedException;
-
 /**
  * This exception will be thrown if an illegal rule is found.
  * 
  * <p>Created: 2017. 11. 10.</p>
  */
-public class IllegalRuleException extends AspectranCheckedException {
+public class IllegalRuleException extends Exception {
 
     /** @serial */
     private static final long serialVersionUID = 4725758105730046172L;

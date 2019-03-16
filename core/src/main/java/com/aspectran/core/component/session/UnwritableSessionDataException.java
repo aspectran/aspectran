@@ -15,18 +15,16 @@
  */
 package com.aspectran.core.component.session;
 
-import com.aspectran.core.context.AspectranCheckedException;
-
 /**
  * Exception raised when session data can not be written.
  *
  * <p>Created: 2017. 9. 27.</p>
  */
-public class UnwritableSessionDataException extends AspectranCheckedException {
+public class UnwritableSessionDataException extends Exception {
 
     private static final long serialVersionUID = -8936664134645201545L;
 
-    private String id;
+    private final String id;
 
     public UnwritableSessionDataException(String id, Throwable t) {
         super("Unwritable session " + id, t);

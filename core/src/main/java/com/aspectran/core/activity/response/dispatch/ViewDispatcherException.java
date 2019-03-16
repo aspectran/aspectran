@@ -15,14 +15,12 @@
  */
 package com.aspectran.core.activity.response.dispatch;
 
-import com.aspectran.core.context.AspectranCheckedException;
-
 /**
  * Base class for exceptions thrown during view dispatching.
  * 
  * <p>Created: 2008. 01. 07 AM 3:35:55</p>
  */
-public class ViewDispatcherException extends AspectranCheckedException {
+public class ViewDispatcherException extends Exception {
 
     /** @serial */
     private static final long serialVersionUID = 5341799597740412582L;
