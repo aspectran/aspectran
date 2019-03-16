@@ -15,15 +15,15 @@
  */
 package com.aspectran.core.context.expr.token;
 
-import com.aspectran.core.context.expr.TokenEvaluationException;
-
 /**
  * The Class InvalidTokenException.
  */
-public class InvalidTokenException extends TokenEvaluationException {
+public class InvalidTokenException extends RuntimeException {
 
     /** @serial */
     private static final long serialVersionUID = -3013940354563756601L;
+
+    private final Token token;
 
     /**
      * Instantiates a new invalid token exception.
@@ -31,7 +31,7 @@ public class InvalidTokenException extends TokenEvaluationException {
      * @param token the token
      */
     public InvalidTokenException(Token token) {
-        super("Invalid token", token);
+        this("Invalid token", token);
     }
 
     /**
@@ -41,7 +41,12 @@ public class InvalidTokenException extends TokenEvaluationException {
      * @param token the token
      */
     public InvalidTokenException(String msg, Token token) {
-        super(msg, token);
+        super(msg + " " + token);
+        this.token = token;
+    }
+
+    public Token getToken() {
+        return this.token;
     }
 
 }

@@ -27,8 +27,12 @@ import java.util.List;
 @Bean
 public class CustomerAction {
 
-    @Autowired
     private CustomerRepository repository;
+
+    @Autowired
+    public CustomerAction(CustomerRepository repository) {
+        this.repository = repository;
+    }
 
     public List<Customer> getCustomerList() {
         return repository.getCustomerList();

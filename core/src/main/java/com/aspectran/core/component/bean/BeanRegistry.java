@@ -55,7 +55,7 @@ public interface BeanRegistry {
 
     /**
      * Returns an instance of the bean that matches the given object type.
-     * If the bean is not exists, retrieve the bean with the specified id.
+     * If more than one matching bean is found, we pick a bean that matches the given id.
      *
      * @param <T> the generic type
      * @param requiredType type the bean must match; can be an interface or superclass

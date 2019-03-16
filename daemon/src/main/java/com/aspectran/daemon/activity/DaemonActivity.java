@@ -86,7 +86,7 @@ public class DaemonActivity extends CoreActivity {
 
             super.adapt();
         } catch (Exception e) {
-            throw new AdapterException("Failed to specify adapters required for daemon service activity", e);
+            throw new AdapterException("Failed to specify adapter for daemon service activity", e);
         }
     }
 

@@ -93,7 +93,7 @@ public class AspectranActivity extends CoreActivity {
 
             super.adapt();
         } catch (Exception e) {
-            throw new AdapterException("Failed to specify adapters required for embedded aspectran activity", e);
+            throw new AdapterException("Failed to specify adapter for embedded aspectran activity", e);
         }
     }
 

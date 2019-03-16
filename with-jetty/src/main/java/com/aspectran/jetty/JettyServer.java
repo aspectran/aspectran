@@ -17,10 +17,18 @@ package com.aspectran.jetty;
 
 import com.aspectran.core.component.bean.ablility.DisposableBean;
 import com.aspectran.core.component.bean.ablility.InitializableBean;
+import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
+import org.eclipse.jetty.server.Connector;
+import org.eclipse.jetty.server.HandlerContainer;
+import org.eclipse.jetty.server.NetworkConnector;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.handler.ContextHandler;
 import org.eclipse.jetty.util.thread.ThreadPool;
+
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 /**
  * The Jetty Server managed by Aspectran.
@@ -30,6 +38,8 @@ import org.eclipse.jetty.util.thread.ThreadPool;
 public class JettyServer extends Server implements InitializableBean, DisposableBean {
 
     private static final Log log = LogFactory.getLog(JettyServer.class);
+
+    private final Object monitor = new Object();
 
     private boolean autoStart;
 
@@ -55,26 +65,50 @@ public class JettyServer extends Server implements InitializableBean, Disposable
 
     @Override
     public void initialize() throws Exception {
-        synchronized (this) {
+        synchronized (monitor) {
             if (autoStart) {
-                log.info("Starting the Jetty server");
+                log.info("Starting embedded Jetty server");
                 start();
+                log.info("Jetty started on port(s) " + getActualPortsDescription()
+                        + " with context path '" + getContextPath() + "'");
             }
         }
     }
 
     @Override
     public void destroy() {
-        synchronized (this) {
-            log.info("Stopping the Jetty server");
+        synchronized (monitor) {
+            log.info("Stopping embedded Jetty server");
             try {
                 stop();
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             } catch (Exception e) {
-                log.error("Failed to stop the Jetty server", e);
+                log.error("Unable to stop embedded Jetty server", e);
             }
         }
+    }
+
+    private String getContextPath() {
+        HandlerContainer handlerContainer = (HandlerContainer)getHandler();
+        return Arrays.stream(handlerContainer.getChildHandlers())
+                .filter(ContextHandler.class::isInstance).map(ContextHandler.class::cast)
+                .map(ContextHandler::getContextPath).collect(Collectors.joining("', '"));
+    }
+
+    private String getActualPortsDescription() {
+        StringBuilder ports = new StringBuilder();
+        for (Connector connector : getConnectors()) {
+            NetworkConnector connector1 = (NetworkConnector)connector;
+            if (ports.length() != 0) {
+                ports.append(", ");
+            }
+            ports.append(connector1.getLocalPort());
+            ports.append(" (");
+            ports.append(StringUtils.joinCommaDelimitedList(connector.getProtocols()));
+            ports.append(")");
+        }
+        return ports.toString();
     }
 
 }
