@@ -64,6 +64,7 @@
         <properties profile="dev">
             <item name="handlers" type="array">
                 <value><call bean="jetty.gzipHandler"/></value>
+                <value><call bean="jetty.requestLog"/></value>
             </item>
         </properties>
         <properties profile="!dev">
@@ -130,19 +131,30 @@
 
     <bean id="jetty.requestLog" class="org.eclipse.jetty.server.handler.RequestLogHandler" scope="prototype">
         <properties>
-            <item name="requestLog">#{jetty.ncsaRequestLog}</item>
+            <item name="requestLog">#{jetty.customRequestLog}</item>
         </properties>
     </bean>
 
-    <bean id="jetty.ncsaRequestLog" class="org.eclipse.jetty.server.NCSARequestLog" scope="prototype">
+    <bean id="jetty.customRequestLog" class="org.eclipse.jetty.server.CustomRequestLog" scope="prototype">
+        <constructor>
+            <arguments>
+                <item>#{jetty.asyncRequestLogWriter}</item>
+                <item>#{field:org.eclipse.jetty.server.CustomRequestLog^EXTENDED_NCSA_FORMAT}</item>
+            </arguments>
+        </constructor>
+    </bean>
+
+    <bean id="jetty.asyncRequestLogWriter" class="org.eclipse.jetty.server.AsyncRequestLogWriter" scope="prototype">
+        <constructor>
+            <arguments>
+                <item>#{basePath}/logs/jetty-yyyy_mm_dd.request.log</item>
+            </arguments>
+        </constructor>
         <properties>
-            <item name="filename">#{basePath}/logs/demo-yyyy_mm_dd.request.log</item>
             <item name="filenameDateFormat">yyyy_MM_dd</item>
-            <item name="logDateFormat">yyyy-MM-dd HH:mm:ss Z</item>
-            <item name="logTimeZone">GMT+9</item>
             <item name="retainDays" valueType="int">90</item>
             <item name="append" valueType="boolean">true</item>
-            <item name="logLatency" valueType="boolean">true</item>
+            <item name="timeZone">GMT+9</item>
         </properties>
     </bean>
 
