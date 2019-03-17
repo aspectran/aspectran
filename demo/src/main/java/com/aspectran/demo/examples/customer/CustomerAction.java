@@ -27,7 +27,7 @@ import java.util.List;
 @Bean
 public class CustomerAction {
 
-    private CustomerRepository repository;
+    private final CustomerRepository repository;
 
     @Autowired
     public CustomerAction(CustomerRepository repository) {
