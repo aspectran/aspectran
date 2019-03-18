@@ -37,9 +37,7 @@ public class FreeMarkerViewDispatcher implements ViewDispatcher {
 
     private static final Log log = LogFactory.getLog(FreeMarkerViewDispatcher.class);
 
-    private static final boolean debugEnabled = log.isDebugEnabled();
-
-    private Configuration configuration;
+    private final Configuration configuration;
 
     private String contentType;
 
@@ -113,7 +111,7 @@ public class FreeMarkerViewDispatcher implements ViewDispatcher {
                 }
             }
 
-            if (debugEnabled) {
+            if (log.isDebugEnabled()) {
                 log.debug("Dispatching to FreeMarker template [" + dispatchName + "]");
             }
 

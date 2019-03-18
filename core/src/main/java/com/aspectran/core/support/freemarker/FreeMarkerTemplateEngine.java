@@ -33,7 +33,7 @@ import java.util.Map;
  */
 public class FreeMarkerTemplateEngine implements TemplateEngine {
 
-    private Configuration configuration;
+    private final Configuration configuration;
 
     public FreeMarkerTemplateEngine(Configuration configuration) {
         this.configuration = configuration;

@@ -37,15 +37,13 @@ public class PebbleViewDispatcher implements ViewDispatcher {
 
     private static final Log log = LogFactory.getLog(PebbleViewDispatcher.class);
 
-    private static final boolean debugEnabled = log.isDebugEnabled();
-
     private final PebbleEngine pebbleEngine;
 
     private String contentType;
 
-    private String templateNamePrefix;
+    private String prefix;
 
-    private String templateNameSuffix;
+    private String suffix;
 
     public PebbleViewDispatcher(PebbleEngine pebbleEngine) {
         this.pebbleEngine = pebbleEngine;
@@ -63,19 +61,19 @@ public class PebbleViewDispatcher implements ViewDispatcher {
     /**
      * Sets the prefix for the template name.
      *
-     * @param templateNamePrefix the new prefix for the template name
+     * @param prefix the new prefix for the template name
      */
-    public void setTemplateNamePrefix(String templateNamePrefix) {
-        this.templateNamePrefix = templateNamePrefix;
+    public void setPrefix(String prefix) {
+        this.prefix = prefix;
     }
 
     /**
      * Sets the suffix for the template name.
      *
-     * @param templateNameSuffix the new suffix for the template name
+     * @param suffix the new suffix for the template name
      */
-    public void setTemplateNameSuffix(String templateNameSuffix) {
-        this.templateNameSuffix = templateNameSuffix;
+    public void setSuffix(String suffix) {
+        this.suffix = suffix;
     }
 
     @Override
@@ -88,12 +86,12 @@ public class PebbleViewDispatcher implements ViewDispatcher {
                 throw new IllegalArgumentException("No specified dispatch name");
             }
 
-            if (templateNamePrefix != null && templateNameSuffix != null) {
-                dispatchName = templateNamePrefix + dispatchName + templateNameSuffix;
-            } else if (templateNamePrefix != null) {
-                dispatchName = templateNamePrefix + dispatchName;
-            } else if (templateNameSuffix != null) {
-                dispatchName = dispatchName + templateNameSuffix;
+            if (prefix != null && suffix != null) {
+                dispatchName = prefix + dispatchName + suffix;
+            } else if (prefix != null) {
+                dispatchName = prefix + dispatchName;
+            } else if (suffix != null) {
+                dispatchName = dispatchName + suffix;
             }
 
             ResponseAdapter responseAdapter = activity.getResponseAdapter();
@@ -113,7 +111,7 @@ public class PebbleViewDispatcher implements ViewDispatcher {
                 }
             }
 
-            if (debugEnabled) {
+            if (log.isDebugEnabled()) {
                 log.debug("Dispatching to Pebble template [" + dispatchName + "]");
             }
 
