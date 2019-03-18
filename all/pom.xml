@@ -86,6 +86,12 @@
         </dependency>
         <dependency>
             <groupId>com.aspectran</groupId>
+            <artifactId>aspectran-with-freemarker</artifactId>
+            <scope>compile</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.aspectran</groupId>
             <artifactId>aspectran-with-jetty</artifactId>
             <scope>compile</scope>
             <optional>true</optional>
@@ -93,6 +99,12 @@
         <dependency>
             <groupId>com.aspectran</groupId>
             <artifactId>aspectran-with-mybatis</artifactId>
+            <scope>compile</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.aspectran</groupId>
+            <artifactId>aspectran-with-pebble</artifactId>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
@@ -163,16 +175,6 @@
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.freemarker</groupId>
-            <artifactId>freemarker</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>io.pebbletemplates</groupId>
-            <artifactId>pebble</artifactId>
             <optional>true</optional>
         </dependency>
         <!-- Test dependencies -->

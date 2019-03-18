@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.support.freemarker;
+package com.aspectran.freemarker;
 
 import com.aspectran.core.component.template.engine.TemplateEngine;
 import com.aspectran.core.component.template.engine.TemplateEngineProcessException;

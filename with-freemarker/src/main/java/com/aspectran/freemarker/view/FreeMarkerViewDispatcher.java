@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.support.view;
+package com.aspectran.freemarker.view;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.response.dispatch.ViewDispatcher;
@@ -23,21 +23,21 @@ import com.aspectran.core.component.template.TemplateDataMap;
 import com.aspectran.core.context.rule.DispatchRule;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
-import com.mitchellbosecke.pebble.PebbleEngine;
-import com.mitchellbosecke.pebble.template.PebbleTemplate;
+import freemarker.template.Configuration;
+import freemarker.template.Template;
 
 /**
- * The Class PebbleViewDispatcher.
+ * The Class FreeMarkerViewDispatcher.
  *
  * <p>Created: 2016. 1. 27.</p>
  *
  * @since 2.0.0
  */
-public class PebbleViewDispatcher implements ViewDispatcher {
+public class FreeMarkerViewDispatcher implements ViewDispatcher {
 
-    private static final Log log = LogFactory.getLog(PebbleViewDispatcher.class);
+    private static final Log log = LogFactory.getLog(FreeMarkerViewDispatcher.class);
 
-    private final PebbleEngine pebbleEngine;
+    private final Configuration configuration;
 
     private String contentType;
 
@@ -45,8 +45,8 @@ public class PebbleViewDispatcher implements ViewDispatcher {
 
     private String suffix;
 
-    public PebbleViewDispatcher(PebbleEngine pebbleEngine) {
-        this.pebbleEngine = pebbleEngine;
+    public FreeMarkerViewDispatcher(Configuration configuration) {
+        this.configuration = configuration;
     }
 
     @Override
@@ -81,7 +81,7 @@ public class PebbleViewDispatcher implements ViewDispatcher {
         String dispatchName = null;
 
         try {
-            dispatchName = dispatchRule.getName();
+            dispatchName = dispatchRule.getName(activity);
             if (dispatchName == null) {
                 throw new IllegalArgumentException("No specified dispatch name");
             }
@@ -112,14 +112,14 @@ public class PebbleViewDispatcher implements ViewDispatcher {
             }
 
             if (log.isDebugEnabled()) {
-                log.debug("Dispatching to Pebble template [" + dispatchName + "]");
+                log.debug("Dispatching to FreeMarker template [" + dispatchName + "]");
             }
 
             TemplateDataMap model = new TemplateDataMap(activity);
-            PebbleTemplate compiledTemplate = pebbleEngine.getTemplate(dispatchName);
-            compiledTemplate.evaluate(responseAdapter.getWriter(), model);
+            Template template = configuration.getTemplate(dispatchName);
+            template.process(model, responseAdapter.getWriter());
         } catch (Exception e) {
-            throw new ViewDispatcherException("Failed to dispatch to Pebble template " +
+            throw new ViewDispatcherException("Failed to dispatch to FreeMarker template " +
                     dispatchRule.toString(this, dispatchName), e);
         }
     }

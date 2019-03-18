@@ -90,8 +90,10 @@
         <module>shell</module>
         <module>shell-jline</module>
         <module>web</module>
+        <module>with-freemarker</module>
         <module>with-jetty</module>
         <module>with-mybatis</module>
+        <module>with-pebble</module>
         <module>demo</module>
     </modules>
 
@@ -158,12 +160,22 @@
             </dependency>
             <dependency>
                 <groupId>com.aspectran</groupId>
+                <artifactId>aspectran-with-freemarker</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.aspectran</groupId>
                 <artifactId>aspectran-with-jetty</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.aspectran</groupId>
                 <artifactId>aspectran-with-mybatis</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.aspectran</groupId>
+                <artifactId>aspectran-with-pebble</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -200,16 +212,6 @@
                 <groupId>ognl</groupId>
                 <artifactId>ognl</artifactId>
                 <version>3.2.10</version>
-            </dependency>
-            <dependency>
-                <groupId>org.freemarker</groupId>
-                <artifactId>freemarker</artifactId>
-                <version>2.3.28</version>
-            </dependency>
-            <dependency>
-                <groupId>io.pebbletemplates</groupId>
-                <artifactId>pebble</artifactId>
-                <version>3.0.8</version>
             </dependency>
             <dependency>
                 <groupId>commons-fileupload</groupId>

@@ -100,16 +100,6 @@
             <artifactId>log4j</artifactId>
             <optional>true</optional>
         </dependency>
-        <dependency>
-            <groupId>org.freemarker</groupId>
-            <artifactId>freemarker</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>io.pebbletemplates</groupId>
-            <artifactId>pebble</artifactId>
-            <optional>true</optional>
-        </dependency>
         <!-- Test dependencies -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>

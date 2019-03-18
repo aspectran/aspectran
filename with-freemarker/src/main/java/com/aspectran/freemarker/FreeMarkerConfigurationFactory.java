@@ -13,18 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.support.freemarker;
+package com.aspectran.freemarker;
 
 import com.aspectran.core.component.bean.aware.EnvironmentAware;
 import com.aspectran.core.context.env.Environment;
-import com.aspectran.core.support.freemarker.directive.CustomTrimDirective;
-import com.aspectran.core.support.freemarker.directive.TrimDirective;
-import com.aspectran.core.support.freemarker.directive.TrimDirectiveGroup;
-import com.aspectran.core.support.freemarker.directive.Trimmer;
 import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.freemarker.directive.CustomTrimDirective;
+import com.aspectran.freemarker.directive.TrimDirective;
+import com.aspectran.freemarker.directive.TrimDirectiveGroup;
+import com.aspectran.freemarker.directive.Trimmer;
 import freemarker.cache.ClassTemplateLoader;
 import freemarker.cache.FileTemplateLoader;
 import freemarker.cache.MultiTemplateLoader;

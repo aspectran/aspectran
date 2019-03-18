@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.support.pebble;
+package com.aspectran.pebble;
 
 import com.aspectran.core.component.template.engine.TemplateEngine;
 import com.aspectran.core.component.template.engine.TemplateEngineProcessException;

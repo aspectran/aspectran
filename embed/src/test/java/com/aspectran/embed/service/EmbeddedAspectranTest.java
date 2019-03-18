@@ -72,12 +72,6 @@ class EmbeddedAspectranTest {
 
         String echo = aspectran.render("echo", params);
         System.out.println(echo);
-
-        String selectQuery = aspectran.render("selectQuery", params);
-        System.out.println(selectQuery);
-
-        String updateQuery = aspectran.render("updateQuery", params);
-        System.out.println(updateQuery);
     }
 
     @Test

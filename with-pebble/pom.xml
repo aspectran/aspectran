@@ -23,11 +23,11 @@
         <version>6.0.0-RC17-SNAPSHOT</version>
     </parent>
 
-    <artifactId>aspectran-embed</artifactId>
+    <artifactId>aspectran-with-pebble</artifactId>
     <packaging>jar</packaging>
 
-    <name>Aspectran Embed</name>
-    <description>Provides an interface for embedding Aspectran in Java applications</description>
+    <name>Aspectran with Pebble</name>
+    <description>Add-on package for integrating Pebble</description>
 
     <licenses>
         <license>
@@ -39,6 +39,7 @@
 
     <properties>
         <main.basedir>${project.parent.basedir}</main.basedir>
+        <pebble.version>3.0.8</pebble.version>
     </properties>
 
     <dependencies>
@@ -46,7 +47,18 @@
             <groupId>com.aspectran</groupId>
             <artifactId>aspectran-core</artifactId>
         </dependency>
+        <!-- Pebble dependencies -->
+        <dependency>
+            <groupId>io.pebbletemplates</groupId>
+            <artifactId>pebble</artifactId>
+            <version>${pebble.version}</version>
+        </dependency>
         <!-- Test dependencies -->
+        <dependency>
+            <groupId>com.aspectran</groupId>
+            <artifactId>aspectran-embed</artifactId>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>

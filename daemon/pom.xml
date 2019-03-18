@@ -58,8 +58,8 @@
         </dependency>
         <!-- Test dependencies -->
         <dependency>
-            <groupId>org.freemarker</groupId>
-            <artifactId>freemarker</artifactId>
+            <groupId>com.aspectran</groupId>
+            <artifactId>aspectran-with-freemarker</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>

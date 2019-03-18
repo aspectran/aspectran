@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 6.0//EN"
+        "aspectran-6-test.dtd">
+<aspectran>
+
+    <description>
+        This is an Aspectran Configuration for Testing.
+    </description>
+
+    <settings>
+        <setting name="defaultTemplateEngineBean" value="pebble"/>
+    </settings>
+
+    <bean id="pebbleConfigurationFactory" class="com.aspectran.pebble.PebbleEngineFactoryBean"/>
+
+    <bean id="pebble" class="com.aspectran.pebble.PebbleTemplateEngine">
+        <constructor>
+            <arguments>
+                <item><call bean="pebbleConfigurationFactory"/></item>
+            </arguments>
+        </constructor>
+    </bean>
+
+    <template id="pebble" engine="pebble" style="apon">
+        |Using Pebble Template Engine
+        |-------------------------------------
+        |input_1: {{ input_1 }}
+        |input_2: {{ input_2 }}
+    </template>
+
+</aspectran>
