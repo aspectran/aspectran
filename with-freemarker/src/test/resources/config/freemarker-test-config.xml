@@ -48,7 +48,7 @@
         </constructor>
     </bean>
 
-    <translet name="echo1">
+    <translet name="echo-1">
         <request>
             <parameters>
                 <item name="input_1">${input_1:12345}</item>
@@ -62,7 +62,7 @@
         </transform>
     </translet>
 
-    <template id="sampleSql" engine="freemarker" style="apon">
+    <template id="select-template" engine="freemarker" style="apon">
         <![CDATA[
         |SELECT
         |    '${name}' as name,
@@ -80,7 +80,11 @@
         |    </#if>
         |</@directive.where>
         |ORDER BY name
-        |---------------------------------------------
+        ]]>
+    </template>
+
+    <template id="update-template" engine="freemarker" style="apon">
+        <![CDATA[
         |UPDATE table1
         |<@directive.set>
         |    <#if name??>
@@ -96,7 +100,7 @@
         ]]>
     </template>
 
-    <translet name="sql">
+    <translet name="select-translet">
         <request>
             <attributes>
                 <item name="name">${name:Jane}</item>
@@ -104,7 +108,19 @@
             </attributes>
         </request>
         <transform type="transform/text">
-            <call template="sampleSql"/>
+            <call template="select-template"/>
+        </transform>
+    </translet>
+
+    <translet name="update-translet">
+        <request>
+            <attributes>
+                <item name="name">${name:Jane}</item>
+                <item name="email">${email:jane@mail.com}</item>
+            </attributes>
+        </request>
+        <transform type="transform/text">
+            <call template="update-template"/>
         </transform>
     </translet>
 

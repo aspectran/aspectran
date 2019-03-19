@@ -37,18 +37,30 @@ class FreeMarkerTemplateEngineTest {
 
     @Test
     void testEcho1() {
-        Translet translet = aspectran.translate("echo1");
+        Translet translet = aspectran.translate("echo-1");
         assertEquals("1234567890", translet.toString());
     }
 
     @Test
-    void testSqlStatement1() {
+    void testSelectStatement() {
         ParameterMap params = new ParameterMap();
         params.setParameter("name", "tester");
         params.setParameter("email", "tester@aspectran.com");
 
-        String result1 = aspectran.render("sampleSql", params.extractAsMap());
-        Translet translet = aspectran.translate("sql", params);
+        String result1 = aspectran.render("select-template", params.extractAsMap());
+        Translet translet = aspectran.translate("select-translet", params);
+
+        assertEquals(result1, translet.toString());
+    }
+
+    @Test
+    void testUpdateStatement() {
+        ParameterMap params = new ParameterMap();
+        params.setParameter("name", "tester");
+        params.setParameter("email", "tester@aspectran.com");
+
+        String result1 = aspectran.render("update-template", params.extractAsMap());
+        Translet translet = aspectran.translate("update-translet", params);
 
         assertEquals(result1, translet.toString());
     }
