@@ -176,7 +176,7 @@ public class FreeMarkerConfigurationFactory implements EnvironmentAware {
                     String suffix = p.getString(TrimDirective.SUFFIX_PARAM_NAME);
                     String[] deprefixes = p.getStringArray(TrimDirective.DEPREFIXES_PARAM_NAME);
                     String[] desuffixes = p.getStringArray(TrimDirective.DESUFFIXES_PARAM_NAME);
-                    Boolean caseSensitive = Boolean.valueOf(p.getString(TrimDirective.CASE_SENSITIVE_PARAM_NAME));
+                    boolean caseSensitive = Boolean.parseBoolean(p.getString(TrimDirective.CASE_SENSITIVE_PARAM_NAME));
 
                     if (directiveName != null) {
                         Trimmer trimmer;
