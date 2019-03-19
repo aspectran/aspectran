@@ -180,7 +180,7 @@ public abstract class AbstractRequest {
      * @return an {@code Map<String, Object>} object, must not be {@code null}
      */
     public Map<String, Object> getAllParameters() {
-        return getParameterMap().extractParameters();
+        return getParameterMap().extractAsMap();
     }
 
     public void putAllParameters(ParameterMap parameterMap) {
@@ -189,7 +189,7 @@ public abstract class AbstractRequest {
 
     public void extractParameters(Map<String, Object> targetMap) {
         if (hasParameters()) {
-            getParameterMap().extractParameters(targetMap);
+            getParameterMap().extractAsMap(targetMap);
         }
     }
 

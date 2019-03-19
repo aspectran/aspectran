@@ -38,7 +38,7 @@ class FreeMarkerTemplateEngineTest {
         params.setParameter("id", "0001");
         params.setParameter("name", "tester");
         params.setParameter("email", "tester@aspectran.com");
-        String result = context1.getTemplateRenderer().render("sampleSql", params.extractParameters());
+        String result = context1.getTemplateRenderer().render("sampleSql", params.extractAsMap());
         System.out.println(result);
     }
 

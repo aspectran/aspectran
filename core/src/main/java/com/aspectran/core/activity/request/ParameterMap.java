@@ -128,12 +128,12 @@ public class ParameterMap extends LinkedHashMap<String, String[]> {
         }
     }
 
-    public Map<String, Object> extractParameters() {
-        Map<String, Object> refinedParameters = new HashMap<>();
-        return extractParameters(refinedParameters);
+    public Map<String, Object> extractAsMap() {
+        Map<String, Object> map = new HashMap<>();
+        return extractAsMap(map);
     }
 
-    public Map<String, Object> extractParameters(Map<String, Object> targetMap) {
+    public Map<String, Object> extractAsMap(Map<String, Object> targetMap) {
         if (targetMap == null) {
             throw new IllegalArgumentException("targetMap must not be null");
         }
