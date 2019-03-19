@@ -85,7 +85,7 @@ public class ShellCommandInterpreter implements CommandInterpreter {
         }
 
         ShellConfig shellConfig = aspectranConfig.touchShellConfig();
-        String commandPrompt = shellConfig.getString(ShellConfig.prompt);
+        String commandPrompt = shellConfig.getPrompt();
         if (commandPrompt != null) {
             console.setCommandPrompt(commandPrompt);
         }
@@ -94,23 +94,23 @@ public class ShellCommandInterpreter implements CommandInterpreter {
             service = AspectranShellService.create(aspectranConfig, console);
             service.start();
         } else {
-            String greetings = shellConfig.getString(ShellConfig.greetings);
+            String greetings = shellConfig.getGreetings();
             if (StringUtils.hasText(greetings)) {
                 console.writeLine(greetings);
             }
         }
 
         commandRegistry = new ShellCommandRegistry(this);
-        commandRegistry.addCommand(shellConfig.getStringArray(ShellConfig.commands));
+        commandRegistry.addCommand(shellConfig.getCommands());
         if (commandRegistry.getCommand(QuitCommand.class) == null) {
             commandRegistry.addCommand(QuitCommand.class);
         }
 
-        File workingDir = determineWorkingDir(basePath, shellConfig.getString(ShellConfig.workingDir));
+        File workingDir = determineWorkingDir(basePath, shellConfig.getWorkingDir());
         console.setWorkingDir(workingDir);
 
-        if (shellConfig.hasValue(ShellConfig.historyFile)) {
-            String historyFile = shellConfig.getString(ShellConfig.historyFile);
+        String historyFile = shellConfig.getHistoryFile();
+        if (!StringUtils.isEmpty(historyFile)) {
             historyFile = new File(basePath, historyFile).getCanonicalPath();
             console.setCommandHistoryFile(historyFile);
         }

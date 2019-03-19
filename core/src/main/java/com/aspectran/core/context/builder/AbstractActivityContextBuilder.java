@@ -267,7 +267,7 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
 
         this.rootFile = contextConfig.getRootFile();
 
-        AspectranParameters aspectranParameters = contextConfig.getParameters();
+        AspectranParameters aspectranParameters = contextConfig.getAspectranParameters();
         if (aspectranParameters != null) {
             this.aspectranParameters = aspectranParameters;
         }
@@ -279,7 +279,7 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
 
         this.basePackages = contextConfig.getBasePackages();
 
-        if (contextConfig.hasContextProfiles()) {
+        if (contextConfig.hasProfiles()) {
             setActiveProfiles(contextConfig.getActiveProfiles());
             setDefaultProfiles(contextConfig.getDefaultProfiles());
         }

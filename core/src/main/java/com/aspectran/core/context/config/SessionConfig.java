@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.context.config;
 
+import com.aspectran.core.context.rule.type.SessionStoreType;
 import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterDefinition;
 import com.aspectran.core.util.apon.ParameterValueType;
@@ -53,6 +54,38 @@ public class SessionConfig extends AbstractParameters {
 
     public SessionConfig() {
         super(parameterDefinitions);
+    }
+
+    public int getTimeout() {
+        return getInt(timeout, -1);
+    }
+
+    public boolean hasTimeout() {
+        return hasValue(timeout);
+    }
+
+    public void setTimeout(int timeout) {
+        putValue(SessionConfig.timeout, timeout);
+    }
+
+    public String getStoreType() {
+        return getString(storeType);
+    }
+
+    public void setStoreType(SessionStoreType sessionStoreType) {
+        putValue(storeType, sessionStoreType.toString());
+    }
+
+    public SessionFileStoreConfig getFileStoreConfig() {
+        return getParameters(fileStore);
+    }
+
+    public SessionFileStoreConfig newFileStoreConfig() {
+        return newParameters(fileStore);
+    }
+
+    public SessionFileStoreConfig touchFileStoreConfig() {
+        return touchParameters(fileStore);
     }
 
 }

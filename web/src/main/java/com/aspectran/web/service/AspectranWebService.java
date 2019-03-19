@@ -287,7 +287,7 @@ public class AspectranWebService extends AspectranCoreService implements WebServ
 
         ContextConfig contextConfig = aspectranConfig.touchContextConfig();
         String rootFile = contextConfig.getRootFile();
-        if (!StringUtils.hasText(rootFile) && contextConfig.getParameters() == null) {
+        if (!StringUtils.hasText(rootFile) && !contextConfig.hasAspectranParameters()) {
             contextConfig.setRootFile(DEFAULT_APP_CONFIG_ROOT_FILE);
         }
 
@@ -305,17 +305,17 @@ public class AspectranWebService extends AspectranCoreService implements WebServ
     }
 
     private static void applyWebConfig(AspectranWebService service, WebConfig webConfig) {
-        service.setUriDecoding(webConfig.getString(WebConfig.uriDecoding));
+        service.setUriDecoding(webConfig.getUriDecoding());
 
-        String defaultServletName = webConfig.getString(WebConfig.defaultServletName);
+        String defaultServletName = webConfig.getDefaultServletName();
         if (defaultServletName != null) {
             service.getDefaultServletHttpRequestHandler().setDefaultServletName(defaultServletName);
         }
 
         ExposalsConfig exposalsConfig = webConfig.getExposalsConfig();
         if (exposalsConfig != null) {
-            String[] includePatterns = exposalsConfig.getStringArray(ExposalsConfig.plus);
-            String[] excludePatterns = exposalsConfig.getStringArray(ExposalsConfig.minus);
+            String[] includePatterns = exposalsConfig.getIncludePatterns();
+            String[] excludePatterns = exposalsConfig.getExcludePatterns();
             service.setExposals(includePatterns, excludePatterns);
         }
     }

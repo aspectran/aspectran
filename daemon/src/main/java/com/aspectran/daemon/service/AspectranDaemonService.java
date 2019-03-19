@@ -160,10 +160,10 @@ public class AspectranDaemonService extends AspectranCoreService implements Daem
      */
     public static AspectranDaemonService create(AspectranConfig aspectranConfig) {
         ContextConfig contextConfig = aspectranConfig.touchContextConfig();
-        String rootFile = contextConfig.getString(ContextConfig.root);
+        String rootFile = contextConfig.getRootFile();
         if (!StringUtils.hasText(rootFile)) {
-            if (contextConfig.getParameter(ContextConfig.parameters) == null) {
-                contextConfig.putValue(ContextConfig.root, DEFAULT_APP_CONFIG_ROOT_FILE);
+            if (!contextConfig.hasAspectranParameters()) {
+                contextConfig.setRootFile(DEFAULT_APP_CONFIG_ROOT_FILE);
             }
         }
 
@@ -180,8 +180,8 @@ public class AspectranDaemonService extends AspectranCoreService implements Daem
     private static void applyDaemonConfig(AspectranDaemonService service, DaemonConfig daemonConfig) {
         ExposalsConfig exposalsConfig = daemonConfig.getExposalsConfig();
         if (exposalsConfig != null) {
-            String[] includePatterns = exposalsConfig.getStringArray(ExposalsConfig.plus);
-            String[] excludePatterns = exposalsConfig.getStringArray(ExposalsConfig.minus);
+            String[] includePatterns = exposalsConfig.getIncludePatterns();
+            String[] excludePatterns = exposalsConfig.getExcludePatterns();
             service.setExposals(includePatterns, excludePatterns);
         }
     }

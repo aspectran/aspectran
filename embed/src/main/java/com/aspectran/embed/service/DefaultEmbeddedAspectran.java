@@ -218,7 +218,7 @@ public class DefaultEmbeddedAspectran extends AspectranCoreService implements Em
         }
 
         String rootFile = contextConfig.getRootFile();
-        if (!StringUtils.hasText(rootFile) && contextConfig.getParameters() == null) {
+        if (!StringUtils.hasText(rootFile) && !contextConfig.hasAspectranParameters()) {
             contextConfig.setRootFile(DEFAULT_APP_CONFIG_ROOT_FILE);
         }
 

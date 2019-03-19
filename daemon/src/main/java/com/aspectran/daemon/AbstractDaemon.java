@@ -120,7 +120,7 @@ public class AbstractDaemon implements Daemon {
             this.commandPoller = new FileCommandPoller(this, pollerConfig);
 
             DaemonCommandRegistry commandRegistry = new DaemonCommandRegistry(this);
-            commandRegistry.addCommand(daemonConfig.getStringArray(DaemonConfig.commands));
+            commandRegistry.addCommand(daemonConfig.getCommands());
             if (commandRegistry.getCommand(QuitCommand.class) == null) {
                 commandRegistry.addCommand(QuitCommand.class);
             }

@@ -55,12 +55,40 @@ public class ShellConfig extends AbstractParameters {
         super(parameterDefinitions);
     }
 
-    public ExposalsConfig touchExposalsConfig() {
-        return touchParameters(exposals);
+    public String getPrompt() {
+        return getString(prompt);
+    }
+
+    public String[] getCommands() {
+        return getStringArray(commands);
+    }
+
+    public String getGreetings() {
+        return getString(greetings);
+    }
+
+    public String getWorkingDir() {
+        return getString(workingDir);
+    }
+
+    public String getHistoryFile() {
+        return getString(historyFile);
+    }
+
+    public boolean isVerbose() {
+        return getBoolean(verbose, false);
     }
 
     public ExposalsConfig getExposalsConfig() {
         return getParameters(exposals);
+    }
+
+    public ExposalsConfig newExposalsConfig() {
+        return newParameters(exposals);
+    }
+
+    public ExposalsConfig touchExposalsConfig() {
+        return touchParameters(exposals);
     }
 
 }

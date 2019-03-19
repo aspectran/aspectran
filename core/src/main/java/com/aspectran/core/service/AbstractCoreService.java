@@ -181,17 +181,15 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
 
             ContextConfig contextConfig = aspectranConfig.getContextConfig();
             if (contextConfig != null) {
-                String basePath = contextConfig.getString(ContextConfig.base);
+                String basePath = contextConfig.getBasePath();
                 if (basePath != null) {
                     setBasePath(basePath);
                 }
 
-                Boolean singleton = contextConfig.getBoolean(ContextConfig.singleton);
-                if (Boolean.TRUE.equals(singleton)) {
-                    if (!checkSingletonLock()) {
-                        throw new InsufficientEnvironmentException("Another instance of Aspectran is already running; " +
-                                "Only one instance is allowed (context.singleton is set to true)");
-                    }
+                boolean singleton = contextConfig.isSingleton();
+                if (singleton && !checkSingletonLock()) {
+                    throw new InsufficientEnvironmentException("Another instance of Aspectran is already running; " +
+                            "Only one instance is allowed (context.singleton is set to true)");
                 }
             }
 
@@ -247,13 +245,12 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
             return null;
         }
 
-        boolean schedulerStartup = schedulerConfig.getBoolean(SchedulerConfig.startup);
-        if (!schedulerStartup) {
+        if (!schedulerConfig.isStartup()) {
             return null;
         }
 
-        int startDelaySeconds = schedulerConfig.getInt(SchedulerConfig.startDelaySeconds.getName(), -1);
-        boolean waitOnShutdown = schedulerConfig.getBoolean(SchedulerConfig.waitOnShutdown);
+        int startDelaySeconds = schedulerConfig.getStartDelaySeconds();
+        boolean waitOnShutdown = schedulerConfig.isWaitOnShutdown();
         ExposalsConfig exposalsConfig = schedulerConfig.getExposalsConfig();
 
         if (startDelaySeconds == -1) {
@@ -267,8 +264,8 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
         }
         schedulerService.setStartDelaySeconds(startDelaySeconds);
         if (exposalsConfig != null) {
-            String[] includePatterns = exposalsConfig.getStringArray(ExposalsConfig.plus);
-            String[] excludePatterns = exposalsConfig.getStringArray(ExposalsConfig.minus);
+            String[] includePatterns = exposalsConfig.getIncludePatterns();
+            String[] excludePatterns = exposalsConfig.getExcludePatterns();
             schedulerService.setExposals(includePatterns, excludePatterns);
         }
         return schedulerService;

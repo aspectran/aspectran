@@ -133,7 +133,7 @@ public class ContextConfig extends AbstractParameters {
         contextProfilesConfig.addDefaultProfile(defaultProfile);
     }
 
-    public boolean hasContextProfiles() {
+    public boolean hasProfiles() {
         return hasParameter(profiles);
     }
 
@@ -157,8 +157,12 @@ public class ContextConfig extends AbstractParameters {
         putValue(ContextConfig.singleton, singleton);
     }
 
-    public AspectranParameters getParameters() {
+    public AspectranParameters getAspectranParameters() {
         return getParameters(parameters);
+    }
+
+    public boolean hasAspectranParameters() {
+        return hasParameter(parameters);
     }
 
     public AspectranParameters newAspectranParameters() {

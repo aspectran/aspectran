@@ -43,20 +43,24 @@ public class WebConfig extends AbstractParameters {
         super(parameterDefinitions);
     }
 
-    public ExposalsConfig newExposalsConfig() {
-        return newParameters(exposals);
+    public String getUriDecoding() {
+        return getString(uriDecoding);
     }
 
-    public ExposalsConfig touchExposalsConfig() {
-        return touchParameters(exposals);
+    public String getDefaultServletName() {
+        return getString(defaultServletName);
     }
 
     public ExposalsConfig getExposalsConfig() {
         return getParameters(exposals);
     }
 
-    public void putExposalsConfig(ExposalsConfig exposalsConfig) {
-        putValue(exposals, exposalsConfig);
+    public ExposalsConfig newExposalsConfig() {
+        return newParameters(exposals);
+    }
+
+    public ExposalsConfig touchExposalsConfig() {
+        return touchParameters(exposals);
     }
 
 }

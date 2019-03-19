@@ -46,6 +46,22 @@ public class SchedulerConfig extends AbstractParameters {
         super(parameterDefinitions);
     }
 
+    public int getStartDelaySeconds() {
+        return getInt(startDelaySeconds, -1);
+    }
+
+    public boolean isWaitOnShutdown() {
+        return getBoolean(waitOnShutdown, false);
+    }
+
+    public boolean isStartup() {
+        return getBoolean(startup, false);
+    }
+
+    public ExposalsConfig getExposalsConfig() {
+        return getParameters(exposals);
+    }
+
     public ExposalsConfig newExposalsConfig() {
         return newParameters(exposals);
     }
@@ -54,11 +70,7 @@ public class SchedulerConfig extends AbstractParameters {
         return touchParameters(exposals);
     }
 
-    public ExposalsConfig getExposalsConfig() {
-        return getParameters(exposals);
-    }
-
-    public void putExposalsConfig(ExposalsConfig exposalsConfig) {
+    public void setExposalsConfig(ExposalsConfig exposalsConfig) {
         putValue(exposals, exposalsConfig);
     }
 

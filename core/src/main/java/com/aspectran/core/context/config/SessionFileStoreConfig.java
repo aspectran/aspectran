@@ -28,7 +28,7 @@ public class SessionFileStoreConfig extends AbstractParameters {
 
     static {
         path = new ParameterDefinition("path", ParameterValueType.STRING);
-        deleteUnrestorableFiles = new ParameterDefinition("deleteUnrestorableFiles", ParameterValueType.STRING);
+        deleteUnrestorableFiles = new ParameterDefinition("deleteUnrestorableFiles", ParameterValueType.BOOLEAN);
 
         parameterDefinitions = new ParameterDefinition[] {
                 path,
@@ -38,6 +38,14 @@ public class SessionFileStoreConfig extends AbstractParameters {
 
     public SessionFileStoreConfig() {
         super(parameterDefinitions);
+    }
+
+    public String getPath() {
+        return getString(path);
+    }
+
+    public boolean isDeleteUnrestorableFiles() {
+        return getBoolean(deleteUnrestorableFiles, false);
     }
 
 }

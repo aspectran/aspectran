@@ -48,16 +48,28 @@ public class DaemonConfig extends AbstractParameters {
         super(parameterDefinitions);
     }
 
+    public String[] getCommands() {
+        return getStringArray(commands);
+    }
+
+    public DaemonPollerConfig newDaemonPollerConfig() {
+        return newParameters(poller);
+    }
+
     public DaemonPollerConfig touchDaemonPollerConfig() {
         return touchParameters(poller);
     }
 
-    public ExposalsConfig touchExposalsConfig() {
-        return touchParameters(exposals);
-    }
-
     public ExposalsConfig getExposalsConfig() {
         return getParameters(exposals);
+    }
+
+    public ExposalsConfig newExposalsConfig() {
+        return newParameters(exposals);
+    }
+
+    public ExposalsConfig touchExposalsConfig() {
+        return touchParameters(exposals);
     }
 
 }

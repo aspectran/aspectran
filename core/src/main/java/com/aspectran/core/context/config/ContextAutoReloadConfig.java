@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.context.config;
 
+import com.aspectran.core.context.rule.type.AutoReloadType;
 import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterDefinition;
 import com.aspectran.core.util.apon.ParameterValueType;
@@ -57,6 +58,10 @@ public class ContextAutoReloadConfig extends AbstractParameters {
 
     public String getReloadMode() {
         return getString(reloadMode);
+    }
+
+    public void setReloadMode(AutoReloadType autoReloadType) {
+        putValue(reloadMode, autoReloadType.toString());
     }
 
     public int getScanIntervalSeconds() {

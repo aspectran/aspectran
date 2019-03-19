@@ -65,7 +65,7 @@ public class FileCommandPoller extends AbstractCommandPoller {
 
         try {
             String basePath = (getDaemon().getService() != null ? getDaemon().getService().getBasePath() : null);
-            String inboundPath = pollerConfig.getString(DaemonPollerConfig.inbound, DEFAULT_INBOUND_PATH);
+            String inboundPath = pollerConfig.getInboundPath(DEFAULT_INBOUND_PATH);
             File inboundDir;
             if (inboundPath.startsWith(ResourceUtils.FILE_URL_PREFIX)) {
                 // Using url fully qualified paths

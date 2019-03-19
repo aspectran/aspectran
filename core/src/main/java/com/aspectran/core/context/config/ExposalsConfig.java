@@ -40,8 +40,16 @@ public class ExposalsConfig extends AbstractParameters {
         super(parameterDefinitions);
     }
 
+    public String[] getIncludePatterns() {
+        return getStringArray(plus);
+    }
+
     public void addIncludePattern(String pattern) {
         putValue(plus, pattern);
+    }
+
+    public String[] getExcludePatterns() {
+        return getStringArray(minus);
     }
 
     public void addExcludePattern(String pattern) {

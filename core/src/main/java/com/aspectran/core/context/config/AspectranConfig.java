@@ -77,6 +77,10 @@ public class AspectranConfig extends AbstractParameters {
         AponReader.parse(reader, this);
     }
 
+    public ContextConfig getContextConfig() {
+        return getParameters(context);
+    }
+
     public ContextConfig newContextConfig() {
         return newParameters(context);
     }
@@ -85,12 +89,12 @@ public class AspectranConfig extends AbstractParameters {
         return touchParameters(context);
     }
 
-    public ContextConfig getContextConfig() {
-        return getParameters(context);
-    }
-
     public void setContextConfig(ContextConfig contextConfig) {
         putValue(context, contextConfig);
+    }
+
+    public SessionConfig getSessionConfig() {
+        return getParameters(session);
     }
 
     public SessionConfig newSessionConfig() {
@@ -101,12 +105,12 @@ public class AspectranConfig extends AbstractParameters {
         return touchParameters(session);
     }
 
-    public SessionConfig getSessionConfig() {
-        return getParameters(session);
-    }
-
     public void setSessionConfig(SessionConfig sessionConfig) {
         putValue(session, sessionConfig);
+    }
+
+    public SchedulerConfig getSchedulerConfig() {
+        return getParameters(scheduler);
     }
 
     public SchedulerConfig newSchedulerConfig() {
@@ -115,10 +119,6 @@ public class AspectranConfig extends AbstractParameters {
 
     public SchedulerConfig touchSchedulerConfig() {
         return touchParameters(scheduler);
-    }
-
-    public SchedulerConfig getSchedulerConfig() {
-        return getParameters(scheduler);
     }
 
     public void setSchedulerConfig(SchedulerConfig schedulerConfig) {
@@ -133,6 +133,10 @@ public class AspectranConfig extends AbstractParameters {
         setSchedulerConfig(schedulerConfig);
     }
 
+    public DaemonConfig getDaemonConfig() {
+        return getParameters(daemon);
+    }
+
     public DaemonConfig newDaemonConfig() {
         return newParameters(daemon);
     }
@@ -141,12 +145,12 @@ public class AspectranConfig extends AbstractParameters {
         return touchParameters(daemon);
     }
 
-    public DaemonConfig getDaemonConfig() {
-        return getParameters(daemon);
-    }
-
     public void setDaemonConfig(DaemonConfig daemonConfig) {
         putValue(daemon, daemonConfig);
+    }
+
+    public ShellConfig getShellConfig() {
+        return getParameters(shell);
     }
 
     public ShellConfig newShellConfig() {
@@ -157,12 +161,12 @@ public class AspectranConfig extends AbstractParameters {
         return touchParameters(shell);
     }
 
-    public ShellConfig getShellConfig() {
-        return getParameters(shell);
-    }
-
     public void setShellConfig(ShellConfig shellConfig) {
         putValue(shell, shellConfig);
+    }
+
+    public WebConfig getWebConfig() {
+        return getParameters(web);
     }
 
     public WebConfig newWebConfig() {
@@ -171,10 +175,6 @@ public class AspectranConfig extends AbstractParameters {
 
     public WebConfig touchWebConfig() {
         return touchParameters(web);
-    }
-
-    public WebConfig getWebConfig() {
-        return getParameters(web);
     }
 
     public void setWebConfig(WebConfig webConfig) {

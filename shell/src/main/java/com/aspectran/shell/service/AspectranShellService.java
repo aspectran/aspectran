@@ -26,7 +26,6 @@ import com.aspectran.core.context.config.ExposalsConfig;
 import com.aspectran.core.context.config.ShellConfig;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.service.ServiceStateListener;
-import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -160,8 +159,8 @@ public class AspectranShellService extends AbstractShellService {
      */
     public static AspectranShellService create(AspectranConfig aspectranConfig, Console console) {
         ContextConfig contextConfig = aspectranConfig.touchContextConfig();
-        String rootFile = contextConfig.getString(ContextConfig.root);
-        if (!StringUtils.hasText(rootFile) && contextConfig.getParameters() == null) {
+        String rootFile = contextConfig.getRootFile();
+        if (!StringUtils.hasText(rootFile) && !contextConfig.hasAspectranParameters()) {
             contextConfig.setRootFile(DEFAULT_APP_CONFIG_ROOT_FILE);
         }
 
@@ -176,12 +175,12 @@ public class AspectranShellService extends AbstractShellService {
     }
 
     private static void applyShellConfig(AspectranShellService service, ShellConfig shellConfig) {
-        service.setVerbose(BooleanUtils.toBoolean(shellConfig.getBoolean(ShellConfig.verbose)));
-        service.setGreetings(shellConfig.getString(ShellConfig.greetings));
+        service.setVerbose(shellConfig.isVerbose());
+        service.setGreetings(shellConfig.getGreetings());
         ExposalsConfig exposalsConfig = shellConfig.getExposalsConfig();
         if (exposalsConfig != null) {
-            String[] includePatterns = exposalsConfig.getStringArray(ExposalsConfig.plus);
-            String[] excludePatterns = exposalsConfig.getStringArray(ExposalsConfig.minus);
+            String[] includePatterns = exposalsConfig.getIncludePatterns();
+            String[] excludePatterns = exposalsConfig.getExcludePatterns();
             service.setExposals(includePatterns, excludePatterns);
         }
     }

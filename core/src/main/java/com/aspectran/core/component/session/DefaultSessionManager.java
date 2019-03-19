@@ -104,26 +104,26 @@ public class DefaultSessionManager extends AbstractSessionHandler implements Ses
         }
 
         if (sessionConfig != null) {
-            if (sessionConfig.hasValue(SessionConfig.timeout)) {
-                int timeout = sessionConfig.getInt(SessionConfig.timeout);
+            if (sessionConfig.hasTimeout()) {
+                int timeout = sessionConfig.getTimeout();
                 setDefaultMaxIdleSecs(timeout);
             }
 
             if (getSessionCache().getSessionDataStore() != null) {
-                String storeType = sessionConfig.getString(SessionConfig.storeType);
+                String storeType = sessionConfig.getStoreType();
                 SessionStoreType sessionStoreType = SessionStoreType.resolve(storeType);
                 if (sessionStoreType == SessionStoreType.FILE) {
                     FileSessionDataStore fileSessionDataStore = new FileSessionDataStore();
-                    SessionFileStoreConfig fileStoreConfig = sessionConfig.getParameters(SessionConfig.fileStore);
+                    SessionFileStoreConfig fileStoreConfig = sessionConfig.getFileStoreConfig();
 
-                    String path = fileStoreConfig.getString(SessionFileStoreConfig.path);
+                    String path = fileStoreConfig.getPath();
                     if (StringUtils.hasText(path)) {
                         fileSessionDataStore.setStoreDir(new File(path));
                     }
 
-                    Boolean deleteUnrestorableFiles = fileStoreConfig.getBoolean(SessionFileStoreConfig.deleteUnrestorableFiles);
-                    if (deleteUnrestorableFiles != null) {
-                        fileSessionDataStore.setDeleteUnrestorableFiles(deleteUnrestorableFiles);
+                    boolean deleteUnrestorableFiles = fileStoreConfig.isDeleteUnrestorableFiles();
+                    if (deleteUnrestorableFiles) {
+                        fileSessionDataStore.setDeleteUnrestorableFiles(true);
                     }
 
                     fileSessionDataStore.initialize();
