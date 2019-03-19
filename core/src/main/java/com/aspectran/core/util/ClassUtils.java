@@ -142,6 +142,7 @@ public abstract class ClassUtils {
      * @param clazz the class to check (typically an interface)
      * @param classLoader the ClassLoader to check against
      *      (may be {@code null} in which case this method will always return {@code true})
+     * @return true if the given class is visible; otherwise false
      * @since 6.0.0
      */
     public static boolean isVisible(Class<?> clazz, ClassLoader classLoader) {
@@ -165,14 +166,14 @@ public abstract class ClassUtils {
      *
      * @param clazz the class to check (typically an interface)
      * @param classLoader the ClassLoader to check against
+     * @return true if the given class is loadable; otherwise false
      * @since 6.0.0
      */
     private static boolean isLoadable(Class<?> clazz, ClassLoader classLoader) {
         try {
             return (clazz == classLoader.loadClass(clazz.getName()));
             // Else: different class with same name found
-        }
-        catch (ClassNotFoundException ex) {
+        } catch (ClassNotFoundException ex) {
             // No corresponding class found at all
             return false;
         }

@@ -38,9 +38,9 @@ class EmbeddedAspectranTest {
 
     @BeforeAll
     void ready() {
-        String appConfigRootFile = "classpath:config/embedded/embedded-aspectran-config.xml";
+        String rootFile = "classpath:config/embedded/embedded-aspectran-config.xml";
         AspectranConfig aspectranConfig = new AspectranConfig();
-        aspectranConfig.updateAppConfigRootFile(appConfigRootFile);
+        aspectranConfig.newContextConfig().setRootFile(rootFile);
         aspectran = EmbeddedAspectran.run(aspectranConfig);
     }
 

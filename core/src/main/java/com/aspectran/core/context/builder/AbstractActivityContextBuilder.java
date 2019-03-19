@@ -35,7 +35,6 @@ import com.aspectran.core.context.builder.reload.ActivityContextReloadingTimer;
 import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.config.ContextAutoReloadConfig;
 import com.aspectran.core.context.config.ContextConfig;
-import com.aspectran.core.context.config.ContextProfilesConfig;
 import com.aspectran.core.context.env.ContextEnvironment;
 import com.aspectran.core.context.resource.AspectranClassLoader;
 import com.aspectran.core.context.resource.InvalidResourceException;
@@ -71,13 +70,13 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
 
     private String basePath;
 
-    private String appConfigRootFile;
+    private String rootFile;
 
     private String encoding;
 
     private String[] resourceLocations;
 
-    private String[] scanBasePackages;
+    private String[] basePackages;
 
     private String[] activeProfiles;
 
@@ -124,7 +123,7 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
     @Override
     public void setAspectranParameters(AspectranParameters aspectranParameters) {
         this.aspectranParameters = aspectranParameters;
-        this.appConfigRootFile = null;
+        this.rootFile = null;
     }
 
     @Override
@@ -138,13 +137,13 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
     }
 
     @Override
-    public String getAppConfigRootFile() {
-        return appConfigRootFile;
+    public String getRootFile() {
+        return rootFile;
     }
 
     @Override
-    public void setAppConfigRootFile(String appConfigRootFile) {
-        this.appConfigRootFile = appConfigRootFile;
+    public void setRootFile(String rootFile) {
+        this.rootFile = rootFile;
         this.aspectranParameters = null;
     }
 
@@ -169,14 +168,14 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
     }
 
     @Override
-    public String[] getScanBasePackages() {
-        return scanBasePackages;
+    public String[] getBasePackages() {
+        return basePackages;
     }
 
     @Override
-    public void setScanBasePackages(String... scanBasePackages) {
-        if (scanBasePackages != null && scanBasePackages.length > 0) {
-            this.scanBasePackages = scanBasePackages;
+    public void setBasePackages(String... basePackages) {
+        if (basePackages != null && basePackages.length > 0) {
+            this.basePackages = basePackages;
         }
     }
 
@@ -263,36 +262,35 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
         this.contextConfig = contextConfig;
 
         if (getBasePath() == null) {
-            setBasePath(contextConfig.getString(ContextConfig.base));
+            setBasePath(contextConfig.getBasePath());
         }
 
-        this.appConfigRootFile = contextConfig.getString(ContextConfig.root);
+        this.rootFile = contextConfig.getRootFile();
 
-        AspectranParameters aspectranParameters = contextConfig.getParameters(ContextConfig.parameters);
+        AspectranParameters aspectranParameters = contextConfig.getParameters();
         if (aspectranParameters != null) {
             this.aspectranParameters = aspectranParameters;
         }
 
-        this.encoding = contextConfig.getString(ContextConfig.encoding);
+        this.encoding = contextConfig.getEncoding();
 
-        String[] resourceLocations = contextConfig.getStringArray(ContextConfig.resources);
+        String[] resourceLocations = contextConfig.getResourceLocations();
         this.resourceLocations = AspectranClassLoader.checkResourceLocations(resourceLocations, getBasePath());
 
-        this.scanBasePackages = contextConfig.getStringArray(ContextConfig.scan);
+        this.basePackages = contextConfig.getBasePackages();
 
-        ContextProfilesConfig contextProfilesConfig = contextConfig.getParameters(ContextConfig.profiles);
-        if (contextProfilesConfig != null) {
-            setActiveProfiles(contextProfilesConfig.getStringArray(ContextProfilesConfig.activeProfiles));
-            setDefaultProfiles(contextProfilesConfig.getStringArray(ContextProfilesConfig.defaultProfiles));
+        if (contextConfig.hasContextProfiles()) {
+            setActiveProfiles(contextConfig.getActiveProfiles());
+            setDefaultProfiles(contextConfig.getDefaultProfiles());
         }
 
-        this.hybridLoad = contextConfig.getBoolean(ContextConfig.hybridLoad, false);
+        this.hybridLoad = contextConfig.isHybridLoad();
 
-        ContextAutoReloadConfig contextAutoReloadConfig = contextConfig.getParameters(ContextConfig.autoReload);
-        if (contextAutoReloadConfig != null) {
-            String reloadMode = contextAutoReloadConfig.getString(ContextAutoReloadConfig.reloadMode);
-            int scanIntervalSeconds = contextAutoReloadConfig.getInt(ContextAutoReloadConfig.scanIntervalSeconds, -1);
-            boolean autoReloadStartup = contextAutoReloadConfig.getBoolean(ContextAutoReloadConfig.startup, false);
+        ContextAutoReloadConfig autoReloadConfig = contextConfig.getContextAutoReloadConfig();
+        if (autoReloadConfig != null) {
+            String reloadMode = autoReloadConfig.getReloadMode();
+            int scanIntervalSeconds = autoReloadConfig.getScanIntervalSeconds();
+            boolean autoReloadStartup = autoReloadConfig.isStartup();
             this.hardReload = "hard".equals(reloadMode);
             this.autoReloadStartup = autoReloadStartup;
             this.scanIntervalSeconds = scanIntervalSeconds;
@@ -303,8 +301,8 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
         if (this.autoReloadStartup) {
             if (this.scanIntervalSeconds == -1) {
                 this.scanIntervalSeconds = 10;
-                String contextAutoReloadingParamName = AspectranConfig.context.getName() + "." + ContextConfig.autoReload.getName();
-                log.info("'" + contextAutoReloadingParamName + "' is not specified, defaulting to 10 seconds");
+                String autoReloadingParamName = AspectranConfig.context.getName() + "." + ContextConfig.autoReload.getName();
+                log.info("'" + autoReloadingParamName + "' is not specified, defaulting to 10 seconds");
             }
         }
     }

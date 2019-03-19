@@ -16,7 +16,7 @@
 package com.aspectran.core.context.rule.appender;
 
 import com.aspectran.core.context.rule.AppendRule;
-import com.aspectran.core.context.rule.type.AppenderFileFormatType;
+import com.aspectran.core.context.rule.type.AppendedFileFormatType;
 import com.aspectran.core.context.rule.type.AppenderType;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.nodelet.NodeTracker;
@@ -36,7 +36,7 @@ abstract class AbstractRuleAppender implements RuleAppender {
 
     private AppendRule appendRule;
 
-    private AppenderFileFormatType appenderFileFormatType;
+    private AppendedFileFormatType appendedFileFormatType;
 
     private String[] profiles;
 
@@ -62,9 +62,9 @@ abstract class AbstractRuleAppender implements RuleAppender {
     public void setAppendRule(AppendRule appendRule) {
         this.appendRule = appendRule;
 
-        AppenderFileFormatType appenderFileFormatType = AppenderFileFormatType.resolve(appendRule.getFormat());
-        if (appenderFileFormatType != null) {
-            this.appenderFileFormatType = appenderFileFormatType;
+        AppendedFileFormatType appendedFileFormatType = appendRule.getFormat();
+        if (appendedFileFormatType != null) {
+            this.appendedFileFormatType = appendedFileFormatType;
         }
 
         String profile = appendRule.getProfile();
@@ -79,20 +79,20 @@ abstract class AbstractRuleAppender implements RuleAppender {
     }
 
     @Override
-    public AppenderFileFormatType getAppenderFileFormatType() {
-        return appenderFileFormatType;
+    public AppendedFileFormatType getAppendedFileFormatType() {
+        return appendedFileFormatType;
     }
 
     @Override
-    public void setAppenderFileFormatType(AppenderFileFormatType appenderFileFormatType) {
-        this.appenderFileFormatType = appenderFileFormatType;
+    public void setAppendedFileFormatType(AppendedFileFormatType appendedFileFormatType) {
+        this.appendedFileFormatType = appendedFileFormatType;
     }
 
-    protected void determineAppenderFileFormatType(String resourceName) {
+    protected void determineAppendedFileFormatType(String resourceName) {
         if (resourceName.toLowerCase().endsWith(".apon")) {
-            setAppenderFileFormatType(AppenderFileFormatType.APON);
+            setAppendedFileFormatType(AppendedFileFormatType.APON);
         } else {
-            setAppenderFileFormatType(AppenderFileFormatType.XML);
+            setAppendedFileFormatType(AppendedFileFormatType.XML);
         }
     }
 

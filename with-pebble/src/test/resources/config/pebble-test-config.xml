@@ -21,11 +21,31 @@
         </constructor>
     </bean>
 
+    <translet name="echo1">
+        <request>
+            <parameters>
+                <item name="input_1">${input_1:12345}</item>
+                <item name="input_2">${input_2:67890}</item>
+            </parameters>
+        </request>
+        <transform type="transform/text">
+            <template engine="pebble" style="apon">
+                |{{ input_1 }}{{ input_2 }}
+            </template>
+        </transform>
+    </translet>
+
+    <translet name="echo2">
+        <transform type="transform/text">
+            <call template="pebble"/>
+        </transform>
+    </translet>
+
     <template id="pebble" engine="pebble" style="apon">
         |Using Pebble Template Engine
         |-------------------------------------
-        |input_1: {{ input_1 }}
-        |input_2: {{ input_2 }}
+        |Name: {{ name }}
+        |Email: {{ email }}
     </template>
 
 </aspectran>

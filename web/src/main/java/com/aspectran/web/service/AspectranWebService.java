@@ -286,9 +286,9 @@ public class AspectranWebService extends AspectranCoreService implements WebServ
         }
 
         ContextConfig contextConfig = aspectranConfig.touchContextConfig();
-        String appConfigRootFile = contextConfig.getString(ContextConfig.root);
-        if (appConfigRootFile == null || appConfigRootFile.isEmpty()) {
-            contextConfig.putValue(ContextConfig.root, DEFAULT_APP_CONFIG_ROOT_FILE);
+        String rootFile = contextConfig.getRootFile();
+        if (!StringUtils.hasText(rootFile) && contextConfig.getParameters() == null) {
+            contextConfig.setRootFile(DEFAULT_APP_CONFIG_ROOT_FILE);
         }
 
         AspectranWebService service = new AspectranWebService(servletContext);

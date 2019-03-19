@@ -41,9 +41,9 @@ public interface ActivityContextBuilder {
 
     void setAspectranParameters(AspectranParameters aspectranParameters);
 
-    String getAppConfigRootFile();
+    String getRootFile();
 
-    void setAppConfigRootFile(String appConfigRootFile);
+    void setRootFile(String rootFile);
 
     String getEncoding();
 
@@ -58,14 +58,14 @@ public interface ActivityContextBuilder {
      *
      * @return the base packages
      */
-    String[] getScanBasePackages();
+    String[] getBasePackages();
 
     /**
      * Sets the base packages to scan for annotated components.
      *
-     * @param scanBasePackages the base packages to scan
+     * @param basePackages the base packages to scan
      */
-    void setScanBasePackages(String... scanBasePackages);
+    void setBasePackages(String... basePackages);
 
     String[] getActiveProfiles();
 
@@ -99,7 +99,7 @@ public interface ActivityContextBuilder {
 
     ActivityContext build(AspectranParameters aspectranParameters) throws ActivityContextBuilderException;
 
-    ActivityContext build(String appConfigRootFile) throws ActivityContextBuilderException;
+    ActivityContext build(String rootFile) throws ActivityContextBuilderException;
 
     ActivityContext build() throws ActivityContextBuilderException;
 

@@ -39,11 +39,11 @@ class AnnotatedConfigurationTest {
 
     @BeforeAll
     void ready() {
-        String appConfigRootFile = "classpath:config/anno/annotated-configuration-test-config.xml";
+        String rootFile = "classpath:config/anno/annotated-configuration-test-config.xml";
         AspectranConfig aspectranConfig = new AspectranConfig();
-        aspectranConfig.updateAppConfigRootFile(appConfigRootFile);
-        ContextConfig contextConfig = aspectranConfig.touchContextConfig();
-        contextConfig.putValue(ContextConfig.scan, "com.aspectran.embed.sample.anno");
+        ContextConfig contextConfig = aspectranConfig.newContextConfig();
+        contextConfig.setRootFile(rootFile);
+        contextConfig.addBasePackage("com.aspectran.embed.sample.anno");
         aspectran = EmbeddedAspectran.run(aspectranConfig);
     }
 

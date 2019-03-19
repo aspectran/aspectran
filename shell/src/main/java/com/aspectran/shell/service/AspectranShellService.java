@@ -160,11 +160,9 @@ public class AspectranShellService extends AbstractShellService {
      */
     public static AspectranShellService create(AspectranConfig aspectranConfig, Console console) {
         ContextConfig contextConfig = aspectranConfig.touchContextConfig();
-        String appConfigRootFile = contextConfig.getString(ContextConfig.root);
-        if (!StringUtils.hasText(appConfigRootFile)) {
-            if (contextConfig.getParameter(ContextConfig.parameters) == null) {
-                contextConfig.putValue(ContextConfig.root, DEFAULT_APP_CONFIG_ROOT_FILE);
-            }
+        String rootFile = contextConfig.getString(ContextConfig.root);
+        if (!StringUtils.hasText(rootFile) && contextConfig.getParameters() == null) {
+            contextConfig.setRootFile(DEFAULT_APP_CONFIG_ROOT_FILE);
         }
 
         AspectranShellService service = new AspectranShellService(console);

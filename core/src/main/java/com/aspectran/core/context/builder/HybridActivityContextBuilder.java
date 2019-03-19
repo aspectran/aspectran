@@ -69,9 +69,9 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
     }
 
     @Override
-    public ActivityContext build(String appConfigRootFile) throws ActivityContextBuilderException {
+    public ActivityContext build(String rootFile) throws ActivityContextBuilderException {
         synchronized (this.buildDestroyMonitor) {
-            setAppConfigRootFile(appConfigRootFile);
+            setRootFile(rootFile);
             return doBuild();
         }
     }
@@ -89,15 +89,15 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
                 throw new IllegalStateException("An ActivityContext already activated");
             }
 
-            String appConfigRootFile = getAppConfigRootFile();
+            String rootFile = getRootFile();
             AspectranParameters aspectranParameters = getAspectranParameters();
 
-            if (appConfigRootFile != null) {
-                log.info("Building an ActivityContext with " + appConfigRootFile);
+            if (rootFile != null) {
+                log.info("Building an ActivityContext with " + rootFile);
             } else if (aspectranParameters != null) {
                 log.info("Building an ActivityContext with AspectranParameters");
             } else {
-                log.info("No appConfigRootFile or aspectranParameters have been specified");
+                log.info("No rootFile or aspectranParameters have been specified");
             }
 
             if (getActiveProfiles() != null) {
@@ -114,17 +114,17 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
             ContextRuleAssistant assistant = new ContextRuleAssistant(contextEnvironment);
             assistant.ready();
 
-            if (getScanBasePackages() != null) {
+            if (getBasePackages() != null) {
                 BeanRuleRegistry beanRuleRegistry = assistant.getBeanRuleRegistry();
-                beanRuleRegistry.scanConfigurableBeans(getScanBasePackages());
+                beanRuleRegistry.scanConfigurableBeans(getBasePackages());
             }
 
-            if (appConfigRootFile != null || aspectranParameters != null) {
+            if (rootFile != null || aspectranParameters != null) {
                 ActivityContextParser parser = new HybridActivityContextParser(assistant);
                 parser.setEncoding(getEncoding());
                 parser.setHybridLoad(isHybridLoad());
-                if (appConfigRootFile != null) {
-                    parser.parse(appConfigRootFile);
+                if (rootFile != null) {
+                    parser.parse(rootFile);
                 } else {
                     parser.parse(aspectranParameters);
                 }

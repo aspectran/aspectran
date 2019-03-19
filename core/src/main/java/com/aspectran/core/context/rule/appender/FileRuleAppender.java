@@ -44,7 +44,7 @@ public class FileRuleAppender extends AbstractRuleAppender {
         this.basePath = basePath;
         this.filePath = filePath;
 
-        determineAppenderFileFormatType(filePath);
+        determineAppendedFileFormatType(filePath);
     }
 
     public String getBasePath() {
@@ -97,7 +97,7 @@ public class FileRuleAppender extends AbstractRuleAppender {
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.append("type", getAppenderType());
         tsb.append("filePath", filePath);
-        tsb.append("format", getAppenderFileFormatType());
+        tsb.append("format", getAppendedFileFormatType());
         tsb.append("profile", getProfiles());
         return tsb.toString();
     }

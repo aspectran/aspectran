@@ -81,7 +81,7 @@ public class ShellCommandInterpreter implements CommandInterpreter {
                     aspectranConfigFile, e);
         }
         if (basePath != null) {
-            aspectranConfig.updateBasePath(basePath);
+            aspectranConfig.touchContextConfig().setBasePath(basePath);
         }
 
         ShellConfig shellConfig = aspectranConfig.touchShellConfig();

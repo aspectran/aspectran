@@ -40,4 +40,20 @@ public class ContextProfilesConfig extends AbstractParameters {
         super(parameterDefinitions);
     }
 
+    public void addActiveProfile(String activeProfile) {
+        putValue(activeProfiles, activeProfile);
+    }
+
+    public void addDefaultProfile(String defaultProfile) {
+        putValue(defaultProfiles, defaultProfile);
+    }
+
+    public String[] getActiveProfiles() {
+        return getStringArray(activeProfiles);
+    }
+
+    public String[] getDefaultProfiles() {
+        return getStringArray(defaultProfiles);
+    }
+
 }

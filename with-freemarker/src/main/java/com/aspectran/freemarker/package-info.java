@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * Provides overall functionality for building web applications.
+ * Add-on package for integrating Freemarker.
  */
-package com.aspectran.web;
+package com.aspectran.freemarker;

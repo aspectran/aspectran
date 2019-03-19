@@ -19,7 +19,6 @@ import com.aspectran.core.util.SystemUtils;
 import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.AponReader;
 import com.aspectran.core.util.apon.ParameterDefinition;
-import com.aspectran.core.util.apon.Parameters;
 
 import java.io.File;
 import java.io.Reader;
@@ -90,7 +89,7 @@ public class AspectranConfig extends AbstractParameters {
         return getParameters(context);
     }
 
-    public void putContextConfig(ContextConfig contextConfig) {
+    public void setContextConfig(ContextConfig contextConfig) {
         putValue(context, contextConfig);
     }
 
@@ -106,7 +105,7 @@ public class AspectranConfig extends AbstractParameters {
         return getParameters(session);
     }
 
-    public void putSessionConfig(SessionConfig sessionConfig) {
+    public void setSessionConfig(SessionConfig sessionConfig) {
         putValue(session, sessionConfig);
     }
 
@@ -122,8 +121,16 @@ public class AspectranConfig extends AbstractParameters {
         return getParameters(scheduler);
     }
 
-    public void putSchedulerConfig(SchedulerConfig schedulerConfig) {
+    public void setSchedulerConfig(SchedulerConfig schedulerConfig) {
         putValue(scheduler, schedulerConfig);
+    }
+
+    public void setSchedulerConfig(int startDelaySeconds, boolean waitOnShutdown, boolean startup) {
+        SchedulerConfig schedulerConfig = new SchedulerConfig();
+        schedulerConfig.putValue(SchedulerConfig.startDelaySeconds, startDelaySeconds);
+        schedulerConfig.putValue(SchedulerConfig.waitOnShutdown, waitOnShutdown);
+        schedulerConfig.putValue(SchedulerConfig.startup, startup);
+        setSchedulerConfig(schedulerConfig);
     }
 
     public DaemonConfig newDaemonConfig() {
@@ -138,7 +145,7 @@ public class AspectranConfig extends AbstractParameters {
         return getParameters(daemon);
     }
 
-    public void putDaemonConfig(DaemonConfig daemonConfig) {
+    public void setDaemonConfig(DaemonConfig daemonConfig) {
         putValue(daemon, daemonConfig);
     }
 
@@ -154,7 +161,7 @@ public class AspectranConfig extends AbstractParameters {
         return getParameters(shell);
     }
 
-    public void putShellConfig(ShellConfig shellConfig) {
+    public void setShellConfig(ShellConfig shellConfig) {
         putValue(shell, shellConfig);
     }
 
@@ -170,34 +177,8 @@ public class AspectranConfig extends AbstractParameters {
         return getParameters(web);
     }
 
-    public void putWebConfig(WebConfig webConfig) {
+    public void setWebConfig(WebConfig webConfig) {
         putValue(web, webConfig);
-    }
-
-    public void updateBasePath(String basePath) {
-        Parameters contextParameters = touchParameters(context);
-        contextParameters.putValue(ContextConfig.base, basePath);
-    }
-
-    public void updateAppConfigRootFile(String appConfigRootFile) {
-        Parameters contextParameters = touchParameters(context);
-        contextParameters.putValue(ContextConfig.root, appConfigRootFile);
-    }
-
-    public void updateSchedulerConfig(int startDelaySeconds, boolean waitOnShutdown, boolean startup) {
-        Parameters schedulerParameters = touchParameters(scheduler);
-        schedulerParameters.putValue(SchedulerConfig.startDelaySeconds, startDelaySeconds);
-        schedulerParameters.putValue(SchedulerConfig.waitOnShutdown, waitOnShutdown);
-        schedulerParameters.putValue(SchedulerConfig.startup, startup);
-    }
-
-    public String getAppConfigRootFile() {
-        Parameters contextParameters = getContextConfig();
-        if (contextParameters != null) {
-            return contextParameters.getString(ContextConfig.root);
-        } else {
-            return null;
-        }
     }
 
     public static String determineBasePath(String[] args) {

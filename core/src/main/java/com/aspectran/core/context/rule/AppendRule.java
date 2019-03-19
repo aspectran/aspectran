@@ -16,12 +16,12 @@
 package com.aspectran.core.context.rule;
 
 import com.aspectran.core.context.rule.params.AspectranParameters;
-import com.aspectran.core.context.rule.type.AppenderFileFormatType;
+import com.aspectran.core.context.rule.type.AppendedFileFormatType;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.ToStringBuilder;
 
 /**
- * Define rules for importing other rules.
+ * Define rule for importing other rules.
  * 
  * <p>Created: 2017. 05. 06.</p>
  */
@@ -33,7 +33,7 @@ public class AppendRule {
 
     private String url;
 
-    private String format;
+    private AppendedFileFormatType format;
 
     private String profile;
 
@@ -63,11 +63,11 @@ public class AppendRule {
         this.url = url;
     }
 
-    public String getFormat() {
+    public AppendedFileFormatType getFormat() {
         return format;
     }
 
-    public void setFormat(String format) {
+    public void setFormat(AppendedFileFormatType format) {
         this.format = format;
     }
 
@@ -124,10 +124,11 @@ public class AppendRule {
             throw new IllegalRuleException("The 'append' element requires either a 'file' or a 'resource' or a 'url' attribute");
         }
 
-        AppenderFileFormatType appenderFileFormatType = AppenderFileFormatType.resolve(format);
-        if (format != null && appenderFileFormatType == null) {
-            throw new IllegalRuleException("No appender file format type for '" + format + "'");
+        AppendedFileFormatType appendedFileFormatType = AppendedFileFormatType.resolve(format);
+        if (format != null && appendedFileFormatType == null) {
+            throw new IllegalRuleException("No appended file format type for '" + format + "'");
         }
+        appendRule.setFormat(appendedFileFormatType);
 
         if (profile != null && !profile.isEmpty()) {
             appendRule.setProfile(profile);
@@ -139,13 +140,13 @@ public class AppendRule {
     /**
      * Create a new AppendRule.
      *
-     * @param aspectran the sub aspectran to append
+     * @param aspectranParameters the aspectran parameters to append
      * @param profile the environment profile name
      * @return an {@code AppendRule} object
      */
-    public static AppendRule newInstance(AspectranParameters aspectran, String profile) {
+    public static AppendRule newInstance(AspectranParameters aspectranParameters, String profile) {
         AppendRule appendRule = new AppendRule();
-        appendRule.setAspectranParameters(aspectran);
+        appendRule.setAspectranParameters(aspectranParameters);
         if (profile != null && !profile.isEmpty()) {
             appendRule.setProfile(profile);
         }

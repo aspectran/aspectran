@@ -34,7 +34,7 @@ class PebbleViewDispatcherTest {
         AspectranConfig aspectranConfig = new AspectranConfig();
         ContextConfig contextConfig = aspectranConfig.newContextConfig();
 
-        AspectranParameters parameters = contextConfig.newParameters(ContextConfig.parameters);
+        AspectranParameters parameters = contextConfig.newAspectranParameters();
         parameters.setDefaultTemplateEngineBean("pebble");
 
         BeanRule pebbleEngineFactoryBeanRule = new BeanRule();
@@ -63,7 +63,7 @@ class PebbleViewDispatcherTest {
         transletRule4.applyResponseRule(transformRule4);
         aspectran1.addRule(transletRule4);
 
-        parameters.addRule(aspectran1);
+        parameters.append(aspectran1);
 
         aspectran = EmbeddedAspectran.run(aspectranConfig);
     }

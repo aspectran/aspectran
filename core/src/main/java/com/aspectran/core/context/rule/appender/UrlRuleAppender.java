@@ -37,7 +37,7 @@ public class UrlRuleAppender extends AbstractRuleAppender {
 
         this.ruleUrl = ruleUrl;
 
-        determineAppenderFileFormatType(ruleUrl);
+        determineAppendedFileFormatType(ruleUrl);
     }
 
     @Override
@@ -62,7 +62,7 @@ public class UrlRuleAppender extends AbstractRuleAppender {
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.append("type", getAppenderType());
         tsb.append("url", ruleUrl);
-        tsb.append("format", getAppenderFileFormatType());
+        tsb.append("format", getAppendedFileFormatType());
         tsb.append("profile", getProfiles());
         return tsb.toString();
     }

@@ -16,7 +16,7 @@
 package com.aspectran.core.context.rule.appender;
 
 import com.aspectran.core.context.rule.AppendRule;
-import com.aspectran.core.context.rule.type.AppenderFileFormatType;
+import com.aspectran.core.context.rule.type.AppendedFileFormatType;
 import com.aspectran.core.context.rule.type.AppenderType;
 import com.aspectran.core.util.nodelet.NodeTracker;
 
@@ -37,9 +37,9 @@ public interface RuleAppender {
 
     void setAppendRule(AppendRule appendRule);
 
-    AppenderFileFormatType getAppenderFileFormatType();
+    AppendedFileFormatType getAppendedFileFormatType();
 
-    void setAppenderFileFormatType(AppenderFileFormatType appenderFileFormatType);
+    void setAppendedFileFormatType(AppendedFileFormatType appendedFileFormatType);
 
     String[] getProfiles();
 

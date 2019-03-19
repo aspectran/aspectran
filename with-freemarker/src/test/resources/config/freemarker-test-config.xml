@@ -48,10 +48,7 @@
         </constructor>
     </bean>
 
-    <translet name="free">
-        <description>
-            두 개의 입력 값과 Freemarker 템플릿 엔진을 사용해서 텍스트 형식으로 출력합니다.
-        </description>
+    <translet name="echo1">
         <request>
             <parameters>
                 <item name="input_1">${input_1:12345}</item>
@@ -60,10 +57,7 @@
         </request>
         <transform type="transform/text">
             <template engine="freemarker" style="apon">
-                |Using Freemarker Template Engine
-                |-------------------------------------
-                |input_1: ${input_1}
-                |input_2: ${input_2}
+                |${input_1}${input_2}
             </template>
         </transform>
     </translet>
@@ -103,9 +97,6 @@
     </template>
 
     <translet name="sql">
-        <description>
-            Freemarker 템플릿 엔진을 사용해서 간단한 SQL문을 생성하는 예제입니다.
-        </description>
         <request>
             <attributes>
                 <item name="name">${name:Jane}</item>

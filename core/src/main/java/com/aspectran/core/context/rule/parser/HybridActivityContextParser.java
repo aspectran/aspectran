@@ -33,18 +33,18 @@ public class HybridActivityContextParser extends AbstractActivityContextParser {
     }
 
     @Override
-    public ContextRuleAssistant parse(String appConfigRootFile) throws ActivityContextParserException {
+    public ContextRuleAssistant parse(String rootFile) throws ActivityContextParserException {
         try {
-            if (appConfigRootFile == null) {
-                throw new IllegalArgumentException("appConfigRootFile must not be null");
+            if (rootFile == null) {
+                throw new IllegalArgumentException("rootFile must not be null");
             }
 
             RuleAppendHandler appendHandler = createRuleAppendHandler();
-            appendHandler.handle(resolveAppender(appConfigRootFile));
+            appendHandler.handle(resolveAppender(rootFile));
 
             return getContextRuleAssistant();
         } catch (Exception e) {
-            throw new ActivityContextParserException("Failed to parse configuration: " + appConfigRootFile, e);
+            throw new ActivityContextParserException("Failed to parse configuration: " + rootFile, e);
         }
     }
 

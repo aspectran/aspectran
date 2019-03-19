@@ -46,8 +46,7 @@ class ViewDispatcherTest {
     void ready() {
         AspectranConfig aspectranConfig = new AspectranConfig();
         ContextConfig contextConfig = aspectranConfig.newContextConfig();
-
-        AspectranParameters parameters = contextConfig.newParameters(ContextConfig.parameters);
+        AspectranParameters parameters = contextConfig.newAspectranParameters();
 
         // Append a child Aspectran
         AspectranParameters aspectran1 = new AspectranParameters();
@@ -63,7 +62,7 @@ class ViewDispatcherTest {
         transletRule2.applyResponseRule(transformRule2);
         aspectran1.addRule(transletRule2);
 
-        parameters.addRule(aspectran1);
+        parameters.append(aspectran1);
 
         aspectran = EmbeddedAspectran.run(aspectranConfig);
     }

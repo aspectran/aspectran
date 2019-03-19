@@ -16,18 +16,18 @@
 package com.aspectran.core.context.rule.type;
 
 /**
- * The enum AppenderFileFormatType.
+ * The enum AppendedFileFormatType.
  * 
  * <p>Created: 2015. 02. 22 AM 4:52:38</p>
  */
-public enum AppenderFileFormatType {
+public enum AppendedFileFormatType {
 
     XML("xml"),
     APON("apon");
 
     private final String alias;
 
-    AppenderFileFormatType(String alias) {
+    AppendedFileFormatType(String alias) {
         this.alias = alias;
     }
 
@@ -37,14 +37,14 @@ public enum AppenderFileFormatType {
     }
 
     /**
-     * Returns an {@code AppenderFileFormatType} with a value represented
+     * Returns an {@code AppendedFileFormatType} with a value represented
      * by the specified {@code String}.
      *
-     * @param alias the appender file format type as a {@code String}
-     * @return an {@code AppenderFileFormatType}, may be {@code null}
+     * @param alias the appended file format type as a {@code String}
+     * @return an {@code AppendedFileFormatType}, may be {@code null}
      */
-    public static AppenderFileFormatType resolve(String alias) {
-        for (AppenderFileFormatType type : values()) {
+    public static AppendedFileFormatType resolve(String alias) {
+        for (AppendedFileFormatType type : values()) {
             if (type.alias.equals(alias)) {
                 return type;
             }

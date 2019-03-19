@@ -42,7 +42,7 @@ class FreeMarkerViewDispatcherTest {
         AspectranConfig aspectranConfig = new AspectranConfig();
         ContextConfig contextConfig = aspectranConfig.newContextConfig();
 
-        AspectranParameters parameters = contextConfig.newParameters(ContextConfig.parameters);
+        AspectranParameters parameters = contextConfig.newAspectranParameters();
         parameters.setDefaultTemplateEngineBean("freemarker");
 
         BeanRule freeMarkerConfigurationBeanRule = new BeanRule();
@@ -106,7 +106,7 @@ class FreeMarkerViewDispatcherTest {
         transletRule3.applyResponseRule(dispatchRule1);
         aspectran1.addRule(transletRule3);
 
-        parameters.addRule(aspectran1);
+        parameters.append(aspectran1);
 
         aspectran = EmbeddedAspectran.run(aspectranConfig);
     }

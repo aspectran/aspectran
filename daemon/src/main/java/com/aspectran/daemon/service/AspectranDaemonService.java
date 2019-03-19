@@ -155,25 +155,13 @@ public class AspectranDaemonService extends AspectranCoreService implements Daem
     /**
      * Returns a new instance of {@code AspectranDaemonService}.
      *
-     * @param appConfigRootFile the application configuration root file
-     * @return the instance of {@code AspectranDaemonService}
-     */
-    public static AspectranDaemonService create(String appConfigRootFile) {
-        AspectranConfig aspectranConfig = new AspectranConfig();
-        aspectranConfig.updateAppConfigRootFile(appConfigRootFile);
-        return create(aspectranConfig);
-    }
-
-    /**
-     * Returns a new instance of {@code AspectranDaemonService}.
-     *
      * @param aspectranConfig the parameters for aspectran configuration
      * @return the instance of {@code AspectranDaemonService}
      */
     public static AspectranDaemonService create(AspectranConfig aspectranConfig) {
         ContextConfig contextConfig = aspectranConfig.touchContextConfig();
-        String appConfigRootFile = contextConfig.getString(ContextConfig.root);
-        if (!StringUtils.hasText(appConfigRootFile)) {
+        String rootFile = contextConfig.getString(ContextConfig.root);
+        if (!StringUtils.hasText(rootFile)) {
             if (contextConfig.getParameter(ContextConfig.parameters) == null) {
                 contextConfig.putValue(ContextConfig.root, DEFAULT_APP_CONFIG_ROOT_FILE);
             }

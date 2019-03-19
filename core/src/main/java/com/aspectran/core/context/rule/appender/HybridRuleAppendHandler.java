@@ -23,7 +23,7 @@ import com.aspectran.core.context.rule.converter.RuleToParamsConverter;
 import com.aspectran.core.context.rule.params.AspectranParameters;
 import com.aspectran.core.context.rule.params.RootParameters;
 import com.aspectran.core.context.rule.parser.xml.AspectranNodeParser;
-import com.aspectran.core.context.rule.type.AppenderFileFormatType;
+import com.aspectran.core.context.rule.type.AppendedFileFormatType;
 import com.aspectran.core.context.rule.type.AppenderType;
 import com.aspectran.core.util.apon.AponReader;
 import com.aspectran.core.util.apon.AponWriter;
@@ -67,7 +67,7 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
                 AspectranParameters aspectranParameters = appender.getAppendRule().getAspectranParameters();
                 RootParameters rootParameters = new RootParameters(aspectranParameters);
                 getRuleConverter().convertAsRule(rootParameters);
-            } else if (appender.getAppenderFileFormatType() == AppenderFileFormatType.APON) {
+            } else if (appender.getAppendedFileFormatType() == AppendedFileFormatType.APON) {
                 RootParameters rootParameters = AponReader.parse(appender.getReader(encoding), new RootParameters());
                 getRuleConverter().convertAsRule(rootParameters);
             } else {
@@ -103,7 +103,7 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
         if (appender != null) {
             if (!hybridon && hybridLoad) {
                 if (appender.getAppenderType() == AppenderType.FILE
-                        && appender.getAppenderFileFormatType() == AppenderFileFormatType.XML) {
+                        && appender.getAppendedFileFormatType() == AppendedFileFormatType.XML) {
                     //appender.setProfiles(null);
                     saveAsAponFormatted((FileRuleAppender)appender);
                 }
@@ -163,7 +163,7 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
 
     private File makeAponFile(FileRuleAppender fileRuleAppender) {
         String basePath = fileRuleAppender.getBasePath();
-        String filePath = fileRuleAppender.getFilePath() + "." + AppenderFileFormatType.APON.toString();
+        String filePath = fileRuleAppender.getFilePath() + "." + AppendedFileFormatType.APON.toString();
         return new File(basePath, filePath);
     }
 

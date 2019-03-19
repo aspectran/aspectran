@@ -142,21 +142,21 @@ public class AspectranParameters extends AbstractParameters {
         putValue(template, RuleToParamsConverter.toTemplateParameters(templateRule));
     }
 
-    public void addRule(AppendRule appendRule) {
+    public void append(AppendRule appendRule) {
         putValue(append, RuleToParamsConverter.toAppendParameters(appendRule));
     }
 
-    public void addRule(AspectranParameters aspectranParameters) {
-        addRule(aspectranParameters, null);
+    public void append(AspectranParameters aspectranParameters) {
+        append(aspectranParameters, null);
     }
 
-    public void addRule(AspectranParameters aspectranParameters, String profile) {
+    public void append(AspectranParameters aspectranParameters, String profile) {
         AppendRule appendRule = new AppendRule();
         appendRule.setAspectranParameters(aspectranParameters);
         if (profile != null && !profile.isEmpty()) {
             appendRule.setProfile(profile);
         }
-        addRule(appendRule);
+        append(appendRule);
     }
 
 }

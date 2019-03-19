@@ -65,4 +65,104 @@ public class ContextConfig extends AbstractParameters {
         super(parameterDefinitions);
     }
 
+    public String getBasePath() {
+        return getString(base);
+    }
+
+    public void setBasePath(String basePath) {
+        putValue(base, basePath);
+    }
+
+    public String getRootFile() {
+        return getString(root);
+    }
+
+    public void setRootFile(String rootFile) {
+        putValue(root, rootFile);
+    }
+
+    public String getEncoding() {
+        return getString(encoding);
+    }
+
+    public void setEncoding(String encoding) {
+        putValue(ContextConfig.encoding, encoding);
+    }
+
+    public String[] getResourceLocations() {
+        return getStringArray(resources);
+    }
+
+    public void addResourceLocation(String resourceLocation) {
+        putValue(resources, resourceLocation);
+    }
+
+    public String[] getBasePackages() {
+        return getStringArray(scan);
+    }
+
+    public void addBasePackage(String basePackage) {
+        putValue(scan, basePackage);
+    }
+
+    public String[] getActiveProfiles() {
+        ContextProfilesConfig contextProfilesConfig = getParameters(profiles);
+        if (contextProfilesConfig != null) {
+            return contextProfilesConfig.getActiveProfiles();
+        } else {
+            return null;
+        }
+    }
+
+    public void addActivieProfile(String activeProfile) {
+        ContextProfilesConfig contextProfilesConfig = touchParameters(profiles);
+        contextProfilesConfig.addActiveProfile(activeProfile);
+    }
+
+    public String[] getDefaultProfiles() {
+        ContextProfilesConfig contextProfilesConfig = getParameters(profiles);
+        if (contextProfilesConfig != null) {
+            return contextProfilesConfig.getDefaultProfiles();
+        } else {
+            return null;
+        }
+    }
+
+    public void addDefaultProfile(String defaultProfile) {
+        ContextProfilesConfig contextProfilesConfig = touchParameters(profiles);
+        contextProfilesConfig.addDefaultProfile(defaultProfile);
+    }
+
+    public boolean hasContextProfiles() {
+        return hasParameter(profiles);
+    }
+
+    public boolean isHybridLoad() {
+        return getBoolean(hybridLoad, false);
+    }
+
+    public void setHybridLoad(boolean hybridLoad) {
+        putValue(ContextConfig.hybridLoad, hybridLoad);
+    }
+
+    public ContextAutoReloadConfig getContextAutoReloadConfig() {
+        return getParameters(autoReload);
+    }
+
+    public boolean isSingleton() {
+        return getBoolean(singleton, false);
+    }
+
+    public void setSingleton(boolean singleton) {
+        putValue(ContextConfig.singleton, singleton);
+    }
+
+    public AspectranParameters getParameters() {
+        return getParameters(parameters);
+    }
+
+    public AspectranParameters newAspectranParameters() {
+        return newParameters(parameters);
+    }
+
 }

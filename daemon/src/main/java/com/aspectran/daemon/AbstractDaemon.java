@@ -96,7 +96,7 @@ public class AbstractDaemon implements Daemon {
                     aspectranConfigFile, e);
         }
         if (basePath != null) {
-            aspectranConfig.updateBasePath(basePath);
+            aspectranConfig.touchContextConfig().setBasePath(basePath);
         }
 
         init(aspectranConfig);
