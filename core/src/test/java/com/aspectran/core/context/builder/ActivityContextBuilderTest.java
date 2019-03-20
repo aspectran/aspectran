@@ -41,7 +41,6 @@ class ActivityContextBuilderTest {
 
     @BeforeAll
     void ready() throws IOException {
-        //baseDir = new File("./target/test-classes");
         baseDir = ResourceUtils.getResourceAsFile(".");
 
         System.out.println(baseDir.getCanonicalPath());

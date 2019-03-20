@@ -22,7 +22,6 @@ import com.aspectran.core.context.rule.params.FilterParameters;
 import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.TextStyler;
-import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.nodelet.NodeletAdder;
 import com.aspectran.core.util.nodelet.NodeletParser;
 
@@ -88,14 +87,14 @@ class BeanNodeletAdder implements NodeletAdder {
         parser.setXpath(xpath + "/bean/filter");
         parser.addNodelet(attrs -> {
             String classScanFilterClassName = attrs.get("class");
-            Parameters filterParameters = new FilterParameters();
+            FilterParameters filterParameters = new FilterParameters();
             if (StringUtils.hasText(classScanFilterClassName)) {
                 filterParameters.putValue(FilterParameters.filterClass, classScanFilterClassName);
             }
             parser.pushObject(filterParameters);
         });
         parser.addNodeEndlet(text -> {
-            Parameters filterParameters = parser.popObject();
+            FilterParameters filterParameters = parser.popObject();
             if (StringUtils.hasText(text)) {
                 filterParameters = new FilterParameters();
                 filterParameters.readFrom(text);

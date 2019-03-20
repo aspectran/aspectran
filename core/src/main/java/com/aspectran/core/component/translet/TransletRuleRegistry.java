@@ -16,7 +16,7 @@
 package com.aspectran.core.component.translet;
 
 import com.aspectran.core.component.AbstractComponent;
-import com.aspectran.core.component.translet.scan.TransletFileScanner;
+import com.aspectran.core.component.translet.scan.TransletScanner;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.env.Environment;
 import com.aspectran.core.context.expr.token.Token;
@@ -197,7 +197,7 @@ public class TransletRuleRegistry extends AbstractComponent {
     public void addTransletRule(final TransletRule transletRule) {
         String scanPath = transletRule.getScanPath();
         if (scanPath != null) {
-            TransletFileScanner scanner = new TransletFileScanner(basePath, classLoader);
+            TransletScanner scanner = new TransletScanner(basePath, classLoader);
             if (transletRule.getFilterParameters() != null) {
                 scanner.setFilterParameters(transletRule.getFilterParameters());
             }
@@ -211,10 +211,8 @@ public class TransletRuleRegistry extends AbstractComponent {
                 TransletRule newTransletRule = TransletRule.replicate(transletRule, filePath);
                 if (prefixSuffixPattern.isSplitted()) {
                     newTransletRule.setName(prefixSuffixPattern.join(filePath));
-                } else {
-                    if (transletRule.getName() != null) {
-                        newTransletRule.setName(transletRule.getName() + filePath);
-                    }
+                } else if (transletRule.getName() != null) {
+                    newTransletRule.setName(transletRule.getName() + filePath);
                 }
                 dissectTransletRule(newTransletRule);
             });

@@ -36,13 +36,13 @@ public class BeanClassScanner extends ClassScanner {
 
     private static final Log log = LogFactory.getLog(BeanClassScanner.class);
 
-    private Parameters filterParameters;
+    private final Map<String, WildcardPattern> excludePatternCache = new HashMap<>();
+
+    private FilterParameters filterParameters;
 
     private BeanClassScanFilter beanClassScanFilter;
 
     private WildcardPattern beanIdMaskPattern;
-
-    private Map<String, WildcardPattern> excludePatternCache = new HashMap<>();
 
     public BeanClassScanner(ClassLoader classLoader) {
         super(classLoader);
@@ -52,12 +52,16 @@ public class BeanClassScanner extends ClassScanner {
         return filterParameters;
     }
 
-    public void setFilterParameters(Parameters filterParameters) {
+    public void setFilterParameters(FilterParameters filterParameters) {
+        if (filterParameters == null) {
+            throw new IllegalArgumentException("filterParameters must not be null");
+        }
+
         this.filterParameters = filterParameters;
 
-        String classScanFilterClassName = filterParameters.getString(FilterParameters.filterClass);
-        if (classScanFilterClassName != null) {
-            setBeanClassScanFilter(classScanFilterClassName);
+        String beanClassScanFilterClassName = filterParameters.getString(FilterParameters.filterClass);
+        if (beanClassScanFilterClassName != null) {
+            setBeanClassScanFilter(beanClassScanFilterClassName);
         }
     }
 
@@ -67,6 +71,20 @@ public class BeanClassScanner extends ClassScanner {
 
     public void setBeanClassScanFilter(BeanClassScanFilter beanClassScanFilter) {
         this.beanClassScanFilter = beanClassScanFilter;
+    }
+
+    public void setBeanClassScanFilter(String beanClassScanFilterClassName) {
+        if (beanClassScanFilterClassName == null) {
+            throw new IllegalArgumentException("beanClassScanFilterClassName must not be null");
+        }
+        Class<?> filterClass;
+        try {
+            filterClass = getClassLoader().loadClass(beanClassScanFilterClassName);
+        } catch (ClassNotFoundException e) {
+            throw new BeanClassScanFailedException("Failed to instantiate BeanClassScanFilter [" +
+                    beanClassScanFilterClassName + "]", e);
+        }
+        setBeanClassScanFilter(filterClass);
     }
 
     public void setBeanClassScanFilter(Class<?> beanClassScanFilterClass) {
@@ -87,30 +105,22 @@ public class BeanClassScanner extends ClassScanner {
     }
 
     public void setBeanIdMaskPattern(String beanIdMaskPattern) {
-        this.beanIdMaskPattern = new WildcardPattern(beanIdMaskPattern, ActivityContext.ID_SEPARATOR_CHAR);
-    }
-
-    public void setBeanClassScanFilter(String classScanFilterClassName) {
-        Class<?> filterClass;
-        try {
-            filterClass = getClassLoader().loadClass(classScanFilterClassName);
-        } catch (ClassNotFoundException e) {
-            throw new BeanClassScanFailedException("Failed to instantiate BeanClassScanFilter [" +
-                    classScanFilterClassName + "]", e);
+        if (beanIdMaskPattern == null) {
+            throw new IllegalArgumentException("beanIdMaskPattern must not be null");
         }
-        setBeanClassScanFilter(filterClass);
+        this.beanIdMaskPattern = new WildcardPattern(beanIdMaskPattern, ActivityContext.ID_SEPARATOR_CHAR);
     }
 
     @Override
     public void scan(String classNamePattern, SaveHandler saveHandler) throws IOException {
-        super.scan(classNamePattern, new InnerSaveHandler(saveHandler));
+        super.scan(classNamePattern, new BeanSaveHandler(saveHandler));
     }
 
-    private class InnerSaveHandler implements SaveHandler {
+    private class BeanSaveHandler implements SaveHandler {
 
         private SaveHandler saveHandler;
 
-        public InnerSaveHandler(SaveHandler saveHandler) {
+        public BeanSaveHandler(SaveHandler saveHandler) {
             this.saveHandler = saveHandler;
         }
 
@@ -161,7 +171,7 @@ public class BeanClassScanner extends ClassScanner {
             saveHandler.save(beanId, targetClass);
 
             if (log.isTraceEnabled()) {
-                log.trace(String.format("scanned bean class {beanId: %s, className: %s}", beanId, className));
+                log.trace(String.format("Scanned bean class {beanId=%s, className=%s}", beanId, className));
             }
         }
     }

@@ -40,4 +40,22 @@ public class FilterParameters extends AbstractParameters {
         super(parameterDefinitions);
     }
 
+    public String getFilterClass() {
+        return getString(filterClass);
+    }
+
+    public FilterParameters setFilterClass(String filterClass) {
+        putValue(FilterParameters.filterClass, filterClass);
+        return this;
+    }
+
+    public String[] getExcludePatterns() {
+        return getStringArray(exclude);
+    }
+
+    public FilterParameters addExcludePattern(String excludePattern) {
+        putValue(exclude, excludePattern);
+        return this;
+    }
+
 }

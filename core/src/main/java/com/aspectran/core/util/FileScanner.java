@@ -22,6 +22,8 @@ import java.io.File;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import static com.aspectran.core.util.ResourceUtils.REGULAR_FILE_SEPARATOR_CHAR;
+
 /**
  * A utility class that finds files corresponding to a given pattern.
  * Note that the file separator always uses a slash (/), regardless of the OS.
@@ -30,8 +32,6 @@ import java.util.Map;
  * @since 1.3.0
  */
 public class FileScanner {
-
-    private static final char FILE_SEPARATOR = '/';
 
     private final String basePath;
 
@@ -58,7 +58,7 @@ public class FileScanner {
             throw new IllegalArgumentException("filePathPattern must not be null");
         }
 
-        WildcardPattern pattern = WildcardPattern.compile(filePathPattern, FILE_SEPARATOR);
+        WildcardPattern pattern = WildcardPattern.compile(filePathPattern, REGULAR_FILE_SEPARATOR_CHAR);
         WildcardMatcher matcher = new WildcardMatcher(pattern);
         matcher.separate(filePathPattern);
 
@@ -68,13 +68,13 @@ public class FileScanner {
             if (term.length() > 0) {
                 if (!WildcardPattern.hasWildcards(term)) {
                     if (sb.length() > 0)
-                        sb.append(FILE_SEPARATOR);
+                        sb.append(REGULAR_FILE_SEPARATOR_CHAR);
                     sb.append(term);
                 } else {
                     break;
                 }
             } else {
-                sb.append(FILE_SEPARATOR);
+                sb.append(REGULAR_FILE_SEPARATOR_CHAR);
             }
         }
 
@@ -93,9 +93,9 @@ public class FileScanner {
     }
 
     public void scan(String basePath, String filePathPattern, SaveHandler saveHandler) {
-        WildcardPattern pattern = WildcardPattern.compile(filePathPattern, FILE_SEPARATOR);
+        WildcardPattern pattern = WildcardPattern.compile(filePathPattern, REGULAR_FILE_SEPARATOR_CHAR);
         WildcardMatcher matcher = new WildcardMatcher(pattern);
-        if (basePath.charAt(basePath.length() - 1) == FILE_SEPARATOR) {
+        if (basePath.charAt(basePath.length() - 1) == REGULAR_FILE_SEPARATOR_CHAR) {
             basePath = basePath.substring(0, basePath.length() - 1);
         }
         scan(basePath, matcher, saveHandler);
@@ -112,7 +112,7 @@ public class FileScanner {
             return;
         }
         target.listFiles(file -> {
-            String filePath = targetPath + FILE_SEPARATOR + file.getName();
+            String filePath = targetPath + REGULAR_FILE_SEPARATOR_CHAR + file.getName();
             if (file.isDirectory()) {
                 scan(filePath, matcher, saveHandler);
             } else {

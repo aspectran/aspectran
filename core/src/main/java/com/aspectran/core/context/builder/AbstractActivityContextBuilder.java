@@ -48,6 +48,7 @@ import com.aspectran.core.context.rule.assistant.BeanReferenceException;
 import com.aspectran.core.context.rule.assistant.BeanReferenceInspector;
 import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;
 import com.aspectran.core.context.rule.params.AspectranParameters;
+import com.aspectran.core.context.rule.type.AutoReloadType;
 import com.aspectran.core.context.rule.type.BeanProxifierType;
 import com.aspectran.core.context.rule.type.DefaultSettingType;
 import com.aspectran.core.context.rule.type.JoinpointTargetType;
@@ -292,7 +293,7 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
             String reloadMode = autoReloadConfig.getReloadMode();
             int scanIntervalSeconds = autoReloadConfig.getScanIntervalSeconds();
             boolean autoReloadStartup = autoReloadConfig.isStartup();
-            this.hardReload = "hard".equals(reloadMode);
+            this.hardReload = AutoReloadType.HARD.toString().equals(reloadMode);
             this.autoReloadStartup = autoReloadStartup;
             this.scanIntervalSeconds = scanIntervalSeconds;
         }

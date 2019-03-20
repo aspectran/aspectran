@@ -32,6 +32,9 @@ import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+import static com.aspectran.core.util.ClassUtils.PACKAGE_SEPARATOR_CHAR;
+import static com.aspectran.core.util.ResourceUtils.REGULAR_FILE_SEPARATOR_CHAR;
+
 /**
  * The Class ClassScanner.
  * 
@@ -87,7 +90,7 @@ public class ClassScanner {
             throw new IllegalArgumentException("classNamePattern must not be null");
         }
 
-        classNamePattern = classNamePattern.replace(ClassUtils.PACKAGE_SEPARATOR_CHAR, ResourceUtils.REGULAR_FILE_SEPARATOR_CHAR);
+        classNamePattern = classNamePattern.replace(PACKAGE_SEPARATOR_CHAR, REGULAR_FILE_SEPARATOR_CHAR);
         String basePackageName = determineBasePackageName(classNamePattern);
         if (basePackageName == null) {
             return;
@@ -100,13 +103,13 @@ public class ClassScanner {
             subPattern = StringUtils.EMPTY;
         }
 
-        WildcardPattern pattern = WildcardPattern.compile(subPattern, ResourceUtils.REGULAR_FILE_SEPARATOR_CHAR);
+        WildcardPattern pattern = WildcardPattern.compile(subPattern, REGULAR_FILE_SEPARATOR_CHAR);
         WildcardMatcher matcher = new WildcardMatcher(pattern);
 
         Enumeration<URL> resources = classLoader.getResources(basePackageName);
 
-        if (!StringUtils.endsWith(basePackageName, ResourceUtils.REGULAR_FILE_SEPARATOR_CHAR)) {
-            basePackageName += ResourceUtils.REGULAR_FILE_SEPARATOR_CHAR;
+        if (!StringUtils.endsWith(basePackageName, REGULAR_FILE_SEPARATOR_CHAR)) {
+            basePackageName += REGULAR_FILE_SEPARATOR_CHAR;
         }
 
         while (resources.hasMoreElements()) {
@@ -249,13 +252,13 @@ public class ClassScanner {
         }
     }
 
-    private boolean isJarResource(URL url) throws IOException {
+    private boolean isJarResource(URL url) {
         String protocol = url.getProtocol();
         return (ResourceUtils.URL_PROTOCOL_JAR.equals(protocol) || ResourceUtils.URL_PROTOCOL_ZIP.equals(protocol));
     }
 
     private String determineBasePackageName(String classNamePattern) {
-        WildcardPattern pattern = new WildcardPattern(classNamePattern, ResourceUtils.REGULAR_FILE_SEPARATOR_CHAR);
+        WildcardPattern pattern = new WildcardPattern(classNamePattern, REGULAR_FILE_SEPARATOR_CHAR);
         WildcardMatcher matcher = new WildcardMatcher(pattern);
 
         boolean matched = matcher.matches(classNamePattern);
@@ -269,13 +272,13 @@ public class ClassScanner {
             if (WildcardPattern.hasWildcards(str)) {
                 break;
             }
-            sb.append(str).append(ResourceUtils.REGULAR_FILE_SEPARATOR_CHAR);
+            sb.append(str).append(REGULAR_FILE_SEPARATOR_CHAR);
         }
         return sb.toString();
     }
 
     private Class<?> loadClass(String className) {
-        className = className.replace(ResourceUtils.REGULAR_FILE_SEPARATOR_CHAR, ClassUtils.PACKAGE_SEPARATOR_CHAR);
+        className = className.replace(REGULAR_FILE_SEPARATOR_CHAR, PACKAGE_SEPARATOR_CHAR);
 
         try {
             return classLoader.loadClass(className);

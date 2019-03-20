@@ -22,11 +22,11 @@ import com.aspectran.core.component.bean.ablility.InitializableBean;
 import com.aspectran.core.component.bean.ablility.InitializableTransletBean;
 import com.aspectran.core.context.rule.ability.BeanReferenceable;
 import com.aspectran.core.context.rule.ability.Replicable;
+import com.aspectran.core.context.rule.params.FilterParameters;
 import com.aspectran.core.context.rule.type.BeanRefererType;
 import com.aspectran.core.context.rule.type.ScopeType;
 import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.ToStringBuilder;
-import com.aspectran.core.util.apon.Parameters;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -53,7 +53,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
 
     private String maskPattern;
 
-    private Parameters filterParameters;
+    private FilterParameters filterParameters;
 
     private ScopeType scopeType;
 
@@ -208,7 +208,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
      *
      * @return the filter parameters
      */
-    public Parameters getFilterParameters() {
+    public FilterParameters getFilterParameters() {
         return filterParameters;
     }
 
@@ -217,7 +217,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
      *
      * @param filterParameters the new filter parameters
      */
-    public void setFilterParameters(Parameters filterParameters) {
+    public void setFilterParameters(FilterParameters filterParameters) {
         this.filterParameters = filterParameters;
     }
 
