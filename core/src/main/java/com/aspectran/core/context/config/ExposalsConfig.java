@@ -21,8 +21,8 @@ import com.aspectran.core.util.apon.ParameterValueType;
 
 public class ExposalsConfig extends AbstractParameters {
 
-    public static final ParameterDefinition plus;
-    public static final ParameterDefinition minus;
+    private static final ParameterDefinition plus;
+    private static final ParameterDefinition minus;
 
     private static final ParameterDefinition[] parameterDefinitions;
 

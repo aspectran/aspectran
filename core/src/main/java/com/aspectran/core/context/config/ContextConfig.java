@@ -22,16 +22,16 @@ import com.aspectran.core.util.apon.ParameterValueType;
 
 public class ContextConfig extends AbstractParameters {
 
-    public static final ParameterDefinition base;
-    public static final ParameterDefinition root;
-    public static final ParameterDefinition encoding;
-    public static final ParameterDefinition resources;
-    public static final ParameterDefinition scan;
-    public static final ParameterDefinition profiles;
-    public static final ParameterDefinition hybridLoad;
-    public static final ParameterDefinition autoReload;
-    public static final ParameterDefinition singleton;
-    public static final ParameterDefinition parameters;
+    private static final ParameterDefinition base;
+    private static final ParameterDefinition root;
+    private static final ParameterDefinition encoding;
+    private static final ParameterDefinition resources;
+    private static final ParameterDefinition scan;
+    private static final ParameterDefinition profiles;
+    private static final ParameterDefinition hybridLoad;
+    private static final ParameterDefinition autoReload;
+    private static final ParameterDefinition singleton;
+    private static final ParameterDefinition parameters;
 
     private static final ParameterDefinition[] parameterDefinitions;
 
@@ -118,7 +118,7 @@ public class ContextConfig extends AbstractParameters {
     }
 
     public boolean hasProfilesConfig() {
-        return hasParameter(profiles);
+        return hasValue(profiles);
     }
 
     public boolean isHybridLoad() {
@@ -162,7 +162,7 @@ public class ContextConfig extends AbstractParameters {
     }
 
     public boolean hasAspectranParameters() {
-        return hasParameter(parameters);
+        return hasValue(parameters);
     }
 
 }

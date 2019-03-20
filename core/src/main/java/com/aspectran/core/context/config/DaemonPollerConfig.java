@@ -26,10 +26,10 @@ import com.aspectran.core.util.apon.ParameterValueType;
  */
 public class DaemonPollerConfig extends AbstractParameters {
 
-    public static final ParameterDefinition pollingInterval;
-    public static final ParameterDefinition maxThreads;
-    public static final ParameterDefinition inbound;
-    public static final ParameterDefinition requeue;
+    private static final ParameterDefinition pollingInterval;
+    private static final ParameterDefinition maxThreads;
+    private static final ParameterDefinition inbound;
+    private static final ParameterDefinition requeue;
 
     private static final ParameterDefinition[] parameterDefinitions;
 

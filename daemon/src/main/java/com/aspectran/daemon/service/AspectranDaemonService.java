@@ -66,7 +66,7 @@ public class AspectranDaemonService extends AspectranCoreService implements Daem
         sessionManager = new DefaultSessionManager(getActivityContext());
         sessionManager.setGroupName("DM");
 
-        SessionConfig sessionConfig = getAspectranConfig().getParameters(AspectranConfig.session);
+        SessionConfig sessionConfig = getAspectranConfig().getSessionConfig();
         if (sessionConfig != null) {
             sessionManager.setSessionConfig(sessionConfig);
         }

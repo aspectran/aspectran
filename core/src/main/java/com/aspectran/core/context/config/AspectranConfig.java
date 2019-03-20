@@ -31,12 +31,12 @@ public class AspectranConfig extends AbstractParameters {
     public static final String DEFAULT_ASPECTRAN_CONFIG_FILE = "aspectran-config.apon";
     public static final String DEFAULT_APP_CONFIG_ROOT_FILE = "classpath:app-config.xml";
 
-    public static final ParameterDefinition context;
-    public static final ParameterDefinition session;
-    public static final ParameterDefinition scheduler;
-    public static final ParameterDefinition daemon;
-    public static final ParameterDefinition shell;
-    public static final ParameterDefinition web;
+    private static final ParameterDefinition context;
+    private static final ParameterDefinition session;
+    private static final ParameterDefinition scheduler;
+    private static final ParameterDefinition daemon;
+    private static final ParameterDefinition shell;
+    private static final ParameterDefinition web;
 
     private static final ParameterDefinition[] parameterDefinitions;
 
@@ -89,6 +89,10 @@ public class AspectranConfig extends AbstractParameters {
         return touchParameters(context);
     }
 
+    public boolean hasContextConfig() {
+        return hasValue(context);
+    }
+
     public void setContextConfig(ContextConfig contextConfig) {
         putValue(context, contextConfig);
     }
@@ -127,9 +131,9 @@ public class AspectranConfig extends AbstractParameters {
 
     public void setSchedulerConfig(int startDelaySeconds, boolean waitOnShutdown, boolean startup) {
         SchedulerConfig schedulerConfig = new SchedulerConfig();
-        schedulerConfig.putValue(SchedulerConfig.startDelaySeconds, startDelaySeconds);
-        schedulerConfig.putValue(SchedulerConfig.waitOnShutdown, waitOnShutdown);
-        schedulerConfig.putValue(SchedulerConfig.startup, startup);
+        schedulerConfig.setStartDelaySeconds(startDelaySeconds);
+        schedulerConfig.setWaitOnShutdown(waitOnShutdown);
+        schedulerConfig.setStartup(startup);
         setSchedulerConfig(schedulerConfig);
     }
 

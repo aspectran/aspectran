@@ -65,7 +65,7 @@ public class DefaultEmbeddedAspectran extends AspectranCoreService implements Em
         sessionManager = new DefaultSessionManager(getActivityContext());
         sessionManager.setGroupName("EM");
 
-        SessionConfig sessionConfig = getAspectranConfig().getParameters(AspectranConfig.session);
+        SessionConfig sessionConfig = getAspectranConfig().getSessionConfig();
         if (sessionConfig != null) {
             sessionManager.setSessionConfig(sessionConfig);
         }

@@ -19,7 +19,6 @@ import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.component.session.DefaultSessionManager;
 import com.aspectran.core.component.session.SessionAgent;
 import com.aspectran.core.component.session.SessionManager;
-import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.config.SessionConfig;
 import com.aspectran.core.context.expr.TokenEvaluator;
 import com.aspectran.core.context.expr.TokenExpression;
@@ -68,7 +67,7 @@ public abstract class AbstractShellService extends AspectranCoreService implemen
     public void afterContextLoaded() throws Exception {
         sessionManager = new DefaultSessionManager(getActivityContext());
         sessionManager.setGroupName("SH");
-        SessionConfig sessionConfig = getAspectranConfig().getParameters(AspectranConfig.session);
+        SessionConfig sessionConfig = getAspectranConfig().getSessionConfig();
         if (sessionConfig != null) {
             sessionManager.setSessionConfig(sessionConfig);
         }

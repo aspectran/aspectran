@@ -21,13 +21,13 @@ import com.aspectran.core.util.apon.ParameterValueType;
 
 public class ShellConfig extends AbstractParameters {
 
-    public static final ParameterDefinition prompt;
-    public static final ParameterDefinition commands;
-    public static final ParameterDefinition greetings;
-    public static final ParameterDefinition workingDir;
-    public static final ParameterDefinition historyFile;
-    public static final ParameterDefinition verbose;
-    public static final ParameterDefinition exposals;
+    private static final ParameterDefinition prompt;
+    private static final ParameterDefinition commands;
+    private static final ParameterDefinition greetings;
+    private static final ParameterDefinition workingDir;
+    private static final ParameterDefinition historyFile;
+    private static final ParameterDefinition verbose;
+    private static final ParameterDefinition exposals;
 
     private static final ParameterDefinition[] parameterDefinitions;
 

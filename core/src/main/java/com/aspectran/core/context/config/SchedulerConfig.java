@@ -21,10 +21,10 @@ import com.aspectran.core.util.apon.ParameterValueType;
 
 public class SchedulerConfig extends AbstractParameters {
 
-    public static final ParameterDefinition startDelaySeconds;
-    public static final ParameterDefinition waitOnShutdown;
-    public static final ParameterDefinition startup;
-    public static final ParameterDefinition exposals;
+    private static final ParameterDefinition startDelaySeconds;
+    private static final ParameterDefinition waitOnShutdown;
+    private static final ParameterDefinition startup;
+    private static final ParameterDefinition exposals;
 
     private static final ParameterDefinition[] parameterDefinitions;
 
@@ -50,12 +50,24 @@ public class SchedulerConfig extends AbstractParameters {
         return getInt(startDelaySeconds, -1);
     }
 
+    public void setStartDelaySeconds(int startDelaySeconds) {
+        putValue(SchedulerConfig.startDelaySeconds, startDelaySeconds);
+    }
+
     public boolean isWaitOnShutdown() {
         return getBoolean(waitOnShutdown, false);
     }
 
+    public void setWaitOnShutdown(boolean waitOnShutdown) {
+        putValue(SchedulerConfig.waitOnShutdown, waitOnShutdown);
+    }
+
     public boolean isStartup() {
         return getBoolean(startup, false);
+    }
+
+    public void setStartup(boolean startup) {
+        putValue(SchedulerConfig.startup, startup);
     }
 
     public ExposalsConfig getExposalsConfig() {

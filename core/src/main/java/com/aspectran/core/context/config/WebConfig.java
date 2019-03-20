@@ -21,9 +21,9 @@ import com.aspectran.core.util.apon.ParameterValueType;
 
 public class WebConfig extends AbstractParameters {
 
-    public static final ParameterDefinition uriDecoding;
-    public static final ParameterDefinition defaultServletName;
-    public static final ParameterDefinition exposals;
+    private static final ParameterDefinition uriDecoding;
+    private static final ParameterDefinition defaultServletName;
+    private static final ParameterDefinition exposals;
 
     private static final ParameterDefinition[] parameterDefinitions;
 

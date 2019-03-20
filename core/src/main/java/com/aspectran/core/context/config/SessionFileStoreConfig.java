@@ -21,8 +21,8 @@ import com.aspectran.core.util.apon.ParameterValueType;
 
 public class SessionFileStoreConfig extends AbstractParameters {
 
-    public static final ParameterDefinition path;
-    public static final ParameterDefinition deleteUnrestorableFiles;
+    private static final ParameterDefinition path;
+    private static final ParameterDefinition deleteUnrestorableFiles;
 
     private static final ParameterDefinition[] parameterDefinitions;
 

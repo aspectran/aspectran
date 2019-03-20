@@ -32,7 +32,6 @@ import com.aspectran.core.component.translet.TransletRuleRegistry;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.AspectranActivityContext;
 import com.aspectran.core.context.builder.reload.ActivityContextReloadingTimer;
-import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.config.ContextAutoReloadConfig;
 import com.aspectran.core.context.config.ContextConfig;
 import com.aspectran.core.context.config.ContextProfilesConfig;
@@ -303,8 +302,9 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
         if (this.autoReloadStartup) {
             if (this.scanIntervalSeconds == -1) {
                 this.scanIntervalSeconds = 10;
-                String autoReloadingParamName = AspectranConfig.context.getName() + "." + ContextConfig.autoReload.getName();
-                log.info("'" + autoReloadingParamName + "' is not specified, defaulting to 10 seconds");
+                if (log.isDebugEnabled()) {
+                    log.debug("context.autoReload parameter is not specified, defaulting to 10 seconds");
+                }
             }
         }
     }

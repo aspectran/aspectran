@@ -22,13 +22,13 @@ import com.aspectran.core.util.apon.ParameterValueType;
 
 public class SessionConfig extends AbstractParameters {
 
-    public static final ParameterDefinition timeout;
-    public static final ParameterDefinition evictionPolicy;
-    public static final ParameterDefinition saveOnCreate;
-    public static final ParameterDefinition saveOnInactiveEviction;
-    public static final ParameterDefinition removeUnloadableSessions;
-    public static final ParameterDefinition storeType;
-    public static final ParameterDefinition fileStore;
+    private static final ParameterDefinition timeout;
+    private static final ParameterDefinition evictionPolicy;
+    private static final ParameterDefinition saveOnCreate;
+    private static final ParameterDefinition saveOnInactiveEviction;
+    private static final ParameterDefinition removeUnloadableSessions;
+    private static final ParameterDefinition storeType;
+    private static final ParameterDefinition fileStore;
 
     private static final ParameterDefinition[] parameterDefinitions;
 

@@ -25,18 +25,18 @@ public class ContextAutoReloadConfig extends AbstractParameters {
     /**
      * The reload mode, which is either "hard" or "soft".
      */
-    public static final ParameterDefinition reloadMode;
+    private static final ParameterDefinition reloadMode;
 
     /**
      * The interval in seconds between scanning the specified resources for file changes.
      * If file changes are detected, the activity context is reloaded.
      */
-    public static final ParameterDefinition scanIntervalSeconds;
+    private static final ParameterDefinition scanIntervalSeconds;
 
     /**
      *  Defaults to {@code false}, which disables automatic reloading.
      */
-    public static final ParameterDefinition startup;
+    private static final ParameterDefinition startup;
 
     private static final ParameterDefinition[] parameterDefinitions;
 

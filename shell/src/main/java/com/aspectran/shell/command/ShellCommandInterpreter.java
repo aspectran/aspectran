@@ -90,7 +90,7 @@ public class ShellCommandInterpreter implements CommandInterpreter {
             console.setCommandPrompt(commandPrompt);
         }
 
-        if (aspectranConfig.hasValue(AspectranConfig.context)) {
+        if (aspectranConfig.hasContextConfig()) {
             service = AspectranShellService.create(aspectranConfig, console);
             service.start();
         } else {

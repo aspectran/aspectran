@@ -26,9 +26,9 @@ import com.aspectran.core.util.apon.ParameterValueType;
  */
 public class DaemonConfig extends AbstractParameters {
 
-    public static final ParameterDefinition commands;
-    public static final ParameterDefinition poller;
-    public static final ParameterDefinition exposals;
+    private static final ParameterDefinition commands;
+    private static final ParameterDefinition poller;
+    private static final ParameterDefinition exposals;
 
     private static final ParameterDefinition[] parameterDefinitions;
 

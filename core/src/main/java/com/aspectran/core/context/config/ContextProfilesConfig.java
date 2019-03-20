@@ -21,8 +21,8 @@ import com.aspectran.core.util.apon.ParameterValueType;
 
 public class ContextProfilesConfig extends AbstractParameters {
 
-    public static final ParameterDefinition activeProfiles;
-    public static final ParameterDefinition defaultProfiles;
+    private static final ParameterDefinition activeProfiles;
+    private static final ParameterDefinition defaultProfiles;
 
     private static final ParameterDefinition[] parameterDefinitions;
 
