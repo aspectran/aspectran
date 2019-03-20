@@ -52,8 +52,9 @@ public class DaemonConfig extends AbstractParameters {
         return getStringArray(commands);
     }
 
-    public void addCommand(String command) {
+    public DaemonConfig addCommand(String command) {
         putValue(DaemonConfig.commands, command);
+        return this;
     }
 
     public DaemonPollerConfig getPollerConfig() {

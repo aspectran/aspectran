@@ -33,8 +33,13 @@ class AspectranSchedulerTest {
     @BeforeAll
     void ready() {
         AspectranConfig aspectranConfig = new AspectranConfig();
-        aspectranConfig.newContextConfig().setRootFile("classpath:config/scheduler/scheduler-config.xml");
-        aspectranConfig.setSchedulerConfig(0, true, true);
+        aspectranConfig.newContextConfig()
+                .setRootFile("classpath:config/scheduler/scheduler-config.xml");
+        aspectranConfig.newSchedulerConfig()
+                .setStartDelaySeconds(0)
+                .setWaitOnShutdown(true)
+                .setStartup(true);
+
         aspectran = EmbeddedAspectran.run(aspectranConfig);
     }
 

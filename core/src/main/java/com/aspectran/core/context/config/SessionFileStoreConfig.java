@@ -44,8 +44,18 @@ public class SessionFileStoreConfig extends AbstractParameters {
         return getString(path);
     }
 
+    public SessionFileStoreConfig setPath(String path) {
+        putValue(SessionFileStoreConfig.path, path);
+        return this;
+    }
+
     public boolean isDeleteUnrestorableFiles() {
         return getBoolean(deleteUnrestorableFiles, false);
+    }
+
+    public SessionFileStoreConfig setDeleteUnrestorableFiles(boolean deleteUnrestorableFiles) {
+        putValue(SessionFileStoreConfig.deleteUnrestorableFiles, deleteUnrestorableFiles);
+        return this;
     }
 
 }

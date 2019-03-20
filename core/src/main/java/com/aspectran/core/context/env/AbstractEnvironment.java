@@ -226,7 +226,7 @@ public abstract class AbstractEnvironment implements Environment {
         this.propertyItemRuleMap = propertyItemRuleMap;
     }
 
-    public void addPropertyItemRuleMap(ItemRuleMap propertyItemRuleMap) {
+    public void addPropertyItemRule(ItemRuleMap propertyItemRuleMap) {
         if (this.propertyItemRuleMap == null) {
             this.propertyItemRuleMap = new ItemRuleMap(propertyItemRuleMap);
         } else {

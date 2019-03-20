@@ -50,24 +50,27 @@ public class SchedulerConfig extends AbstractParameters {
         return getInt(startDelaySeconds, -1);
     }
 
-    public void setStartDelaySeconds(int startDelaySeconds) {
+    public SchedulerConfig setStartDelaySeconds(int startDelaySeconds) {
         putValue(SchedulerConfig.startDelaySeconds, startDelaySeconds);
+        return this;
     }
 
     public boolean isWaitOnShutdown() {
         return getBoolean(waitOnShutdown, false);
     }
 
-    public void setWaitOnShutdown(boolean waitOnShutdown) {
+    public SchedulerConfig setWaitOnShutdown(boolean waitOnShutdown) {
         putValue(SchedulerConfig.waitOnShutdown, waitOnShutdown);
+        return this;
     }
 
     public boolean isStartup() {
         return getBoolean(startup, false);
     }
 
-    public void setStartup(boolean startup) {
+    public SchedulerConfig setStartup(boolean startup) {
         putValue(SchedulerConfig.startup, startup);
+        return this;
     }
 
     public ExposalsConfig getExposalsConfig() {

@@ -93,10 +93,6 @@ public class AspectranConfig extends AbstractParameters {
         return hasValue(context);
     }
 
-    public void setContextConfig(ContextConfig contextConfig) {
-        putValue(context, contextConfig);
-    }
-
     public SessionConfig getSessionConfig() {
         return getParameters(session);
     }
@@ -107,10 +103,6 @@ public class AspectranConfig extends AbstractParameters {
 
     public SessionConfig touchSessionConfig() {
         return touchParameters(session);
-    }
-
-    public void setSessionConfig(SessionConfig sessionConfig) {
-        putValue(session, sessionConfig);
     }
 
     public SchedulerConfig getSchedulerConfig() {
@@ -125,18 +117,6 @@ public class AspectranConfig extends AbstractParameters {
         return touchParameters(scheduler);
     }
 
-    public void setSchedulerConfig(SchedulerConfig schedulerConfig) {
-        putValue(scheduler, schedulerConfig);
-    }
-
-    public void setSchedulerConfig(int startDelaySeconds, boolean waitOnShutdown, boolean startup) {
-        SchedulerConfig schedulerConfig = new SchedulerConfig();
-        schedulerConfig.setStartDelaySeconds(startDelaySeconds);
-        schedulerConfig.setWaitOnShutdown(waitOnShutdown);
-        schedulerConfig.setStartup(startup);
-        setSchedulerConfig(schedulerConfig);
-    }
-
     public DaemonConfig getDaemonConfig() {
         return getParameters(daemon);
     }
@@ -147,10 +127,6 @@ public class AspectranConfig extends AbstractParameters {
 
     public DaemonConfig touchDaemonConfig() {
         return touchParameters(daemon);
-    }
-
-    public void setDaemonConfig(DaemonConfig daemonConfig) {
-        putValue(daemon, daemonConfig);
     }
 
     public ShellConfig getShellConfig() {
@@ -165,10 +141,6 @@ public class AspectranConfig extends AbstractParameters {
         return touchParameters(shell);
     }
 
-    public void setShellConfig(ShellConfig shellConfig) {
-        putValue(shell, shellConfig);
-    }
-
     public WebConfig getWebConfig() {
         return getParameters(web);
     }
@@ -179,10 +151,6 @@ public class AspectranConfig extends AbstractParameters {
 
     public WebConfig touchWebConfig() {
         return touchParameters(web);
-    }
-
-    public void setWebConfig(WebConfig webConfig) {
-        putValue(web, webConfig);
     }
 
     public static String determineBasePath(String[] args) {

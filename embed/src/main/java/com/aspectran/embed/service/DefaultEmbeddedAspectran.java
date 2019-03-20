@@ -212,11 +212,11 @@ public class DefaultEmbeddedAspectran extends AspectranCoreService implements Em
      * @return the instance of {@code DefaultEmbeddedAspectran}
      */
     protected static DefaultEmbeddedAspectran create(AspectranConfig aspectranConfig) {
-        ContextConfig contextConfig = aspectranConfig.getContextConfig();
-        if (contextConfig == null) {
-            contextConfig = aspectranConfig.newContextConfig();
+        if (aspectranConfig == null) {
+            throw new IllegalArgumentException("aspectranConfig must not be null");
         }
 
+        ContextConfig contextConfig = aspectranConfig.touchContextConfig();
         String rootFile = contextConfig.getRootFile();
         if (!StringUtils.hasText(rootFile) && !contextConfig.hasAspectranParameters()) {
             contextConfig.setRootFile(DEFAULT_APP_CONFIG_ROOT_FILE);
@@ -224,7 +224,6 @@ public class DefaultEmbeddedAspectran extends AspectranCoreService implements Em
 
         DefaultEmbeddedAspectran aspectran = new DefaultEmbeddedAspectran();
         aspectran.prepare(aspectranConfig);
-
         setServiceStateListener(aspectran);
         return aspectran;
     }

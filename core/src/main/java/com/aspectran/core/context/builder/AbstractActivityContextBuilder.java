@@ -210,7 +210,7 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
     }
 
     @Override
-    public void addPropertyItemRuleMap(ItemRuleMap propertyItemRuleMap) {
+    public void addPropertyItemRule(ItemRuleMap propertyItemRuleMap) {
         if (this.propertyItemRuleMap == null) {
             this.propertyItemRuleMap = new ItemRuleMap(propertyItemRuleMap);
         } else {
@@ -303,7 +303,7 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
             if (this.scanIntervalSeconds == -1) {
                 this.scanIntervalSeconds = 10;
                 if (log.isDebugEnabled()) {
-                    log.debug("context.autoReload parameter is not specified, defaulting to 10 seconds");
+                    log.debug("Context option 'autoReload' not specified, defaulting to 10 seconds");
                 }
             }
         }
@@ -406,7 +406,7 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
                     for (ItemRuleMap propertyItemRuleMap : environmentRule.getPropertyItemRuleMapList()) {
                         String[] profiles2 = StringUtils.splitCommaDelimitedString(propertyItemRuleMap.getProfile());
                         if (environment.acceptsProfiles(profiles2)) {
-                            environment.addPropertyItemRuleMap(propertyItemRuleMap);
+                            environment.addPropertyItemRule(propertyItemRuleMap);
                         }
                     }
                 }

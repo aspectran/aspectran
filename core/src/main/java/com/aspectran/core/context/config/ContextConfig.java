@@ -69,40 +69,45 @@ public class ContextConfig extends AbstractParameters {
         return getString(base);
     }
 
-    public void setBasePath(String basePath) {
+    public ContextConfig setBasePath(String basePath) {
         putValue(base, basePath);
+        return this;
     }
 
     public String getRootFile() {
         return getString(root);
     }
 
-    public void setRootFile(String rootFile) {
+    public ContextConfig setRootFile(String rootFile) {
         putValue(root, rootFile);
+        return this;
     }
 
     public String getEncoding() {
         return getString(encoding);
     }
 
-    public void setEncoding(String encoding) {
+    public ContextConfig setEncoding(String encoding) {
         putValue(ContextConfig.encoding, encoding);
+        return this;
     }
 
     public String[] getResourceLocations() {
         return getStringArray(resources);
     }
 
-    public void addResourceLocation(String resourceLocation) {
+    public ContextConfig addResourceLocation(String resourceLocation) {
         putValue(resources, resourceLocation);
+        return this;
     }
 
     public String[] getBasePackages() {
         return getStringArray(scan);
     }
 
-    public void addBasePackage(String basePackage) {
+    public ContextConfig addBasePackage(String basePackage) {
         putValue(scan, basePackage);
+        return this;
     }
 
     public ContextProfilesConfig getProfilesConfig() {
@@ -125,8 +130,9 @@ public class ContextConfig extends AbstractParameters {
         return getBoolean(hybridLoad, false);
     }
 
-    public void setHybridLoad(boolean hybridLoad) {
+    public ContextConfig setHybridLoad(boolean hybridLoad) {
         putValue(ContextConfig.hybridLoad, hybridLoad);
+        return this;
     }
 
     public ContextAutoReloadConfig getAutoReloadConfig() {
@@ -145,8 +151,9 @@ public class ContextConfig extends AbstractParameters {
         return getBoolean(singleton, false);
     }
 
-    public void setSingleton(boolean singleton) {
+    public ContextConfig setSingleton(boolean singleton) {
         putValue(ContextConfig.singleton, singleton);
+        return this;
     }
 
     public AspectranParameters getAspectranParameters() {

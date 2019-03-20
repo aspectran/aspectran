@@ -200,9 +200,6 @@ public interface EmbeddedAspectran extends CoreService {
      * @return the instance of {@code EmbeddedAspectran}
      */
     static EmbeddedAspectran run(AspectranConfig aspectranConfig) {
-        if (aspectranConfig == null) {
-            throw new IllegalArgumentException("aspectranConfig must not be null");
-        }
         try {
             DefaultEmbeddedAspectran aspectran = DefaultEmbeddedAspectran.create(aspectranConfig);
             aspectran.start();

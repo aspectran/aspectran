@@ -49,7 +49,8 @@ class JettyServerTest {
         FileUtils.copyDirectory(ResourceUtils.getResourceAsFile("webapps"), new File(basePath, "webapps"));
 
         AspectranConfig aspectranConfig = new AspectranConfig(configFile);
-        aspectranConfig.touchContextConfig().setBasePath(basePath);
+        aspectranConfig.touchContextConfig()
+                .setBasePath(basePath);
 
         aspectran = EmbeddedAspectran.run(aspectranConfig);
         aspectran.translate("jetty start");

@@ -79,7 +79,7 @@ public interface ActivityContextBuilder {
 
     void setPropertyItemRuleMap(ItemRuleMap propertyItemRuleMap);
 
-    void addPropertyItemRuleMap(ItemRuleMap propertyItemRuleMap);
+    void addPropertyItemRule(ItemRuleMap propertyItemRuleMap);
 
     boolean isHybridLoad();
 

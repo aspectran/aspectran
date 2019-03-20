@@ -3,7 +3,6 @@ package com.aspectran.pebble.view;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.context.config.AspectranConfig;
-import com.aspectran.core.context.config.ContextConfig;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.TemplateRule;
@@ -32,9 +31,7 @@ class PebbleViewDispatcherTest {
     @BeforeAll
     void ready() {
         AspectranConfig aspectranConfig = new AspectranConfig();
-        ContextConfig contextConfig = aspectranConfig.newContextConfig();
-
-        AspectranParameters parameters = contextConfig.newAspectranParameters();
+        AspectranParameters parameters = aspectranConfig.newContextConfig().newAspectranParameters();
         parameters.setDefaultTemplateEngineBean("pebble");
 
         BeanRule pebbleEngineFactoryBeanRule = new BeanRule();
@@ -50,7 +47,7 @@ class PebbleViewDispatcherTest {
         parameters.addRule(pebbleBeanRule);
 
         // Append a child Aspectran
-        AspectranParameters aspectran1 = new AspectranParameters();
+        AspectranParameters aspectran1 = parameters.newAspectranParameters();
 
         TransletRule transletRule4 = new TransletRule();
         transletRule4.setName("test/pebble");
@@ -62,8 +59,6 @@ class PebbleViewDispatcherTest {
         transformRule4.setTemplateRule(templateRule3);
         transletRule4.applyResponseRule(transformRule4);
         aspectran1.addRule(transletRule4);
-
-        parameters.append(aspectran1);
 
         aspectran = EmbeddedAspectran.run(aspectranConfig);
     }
@@ -85,7 +80,6 @@ class PebbleViewDispatcherTest {
         String result = translet.toString();
 
         assertEquals("hello pebble", result);
-        //System.out.println(result);
     }
 
 }

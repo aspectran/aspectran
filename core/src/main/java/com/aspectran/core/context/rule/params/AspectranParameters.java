@@ -74,89 +74,109 @@ public class AspectranParameters extends AbstractParameters {
         super(parameterDefinitions);
     }
 
-    public void setDescription(String desc) {
+    public AspectranParameters setDescription(String desc) {
         putValue(description, desc);
+        return this;
     }
 
-    public void setTransletNamePattern(String namePattern) {
+    public AspectranParameters setTransletNamePattern(String namePattern) {
         DefaultSettingsParameters settingsParameters = touchParameters(settings);
         settingsParameters.putValue(DefaultSettingsParameters.transletNamePattern, namePattern);
+        return this;
     }
 
-    public void setTransletNamePrefix(String prefixPattern) {
+    public AspectranParameters setTransletNamePrefix(String prefixPattern) {
         DefaultSettingsParameters settingsParameters = touchParameters(settings);
         settingsParameters.putValue(DefaultSettingsParameters.transletNamePrefix, prefixPattern);
+        return this;
     }
 
-    public void setTransletNameSuffix(String suffixPattern) {
+    public AspectranParameters setTransletNameSuffix(String suffixPattern) {
         DefaultSettingsParameters settingsParameters = touchParameters(settings);
         settingsParameters.putValue(DefaultSettingsParameters.transletNameSuffix, suffixPattern);
+        return this;
     }
 
-    public void setBeanProxifier(String proxifierName) {
+    public AspectranParameters setBeanProxifier(String proxifierName) {
         DefaultSettingsParameters settingsParameters = touchParameters(settings);
         settingsParameters.putValue(DefaultSettingsParameters.beanProxifier, proxifierName);
+        return this;
     }
 
-    public void setPointcutPatternVerifiable(boolean verifiable) {
+    public AspectranParameters setPointcutPatternVerifiable(boolean verifiable) {
         DefaultSettingsParameters settingsParameters = touchParameters(settings);
         settingsParameters.putValue(DefaultSettingsParameters.pointcutPatternVerifiable, verifiable);
+        return this;
     }
 
-    public void setDefaultTemplateEngineBean(String beanName) {
+    public AspectranParameters setDefaultTemplateEngineBean(String beanName) {
         DefaultSettingsParameters settingsParameters = touchParameters(settings);
         settingsParameters.putValue(DefaultSettingsParameters.defaultTemplateEngineBean, beanName);
+        return this;
     }
 
-    public void setDefaultSchedulerBean(String beanName) {
+    public AspectranParameters setDefaultSchedulerBean(String beanName) {
         DefaultSettingsParameters settingsParameters = touchParameters(settings);
         settingsParameters.putValue(DefaultSettingsParameters.defaultSchedulerBean, beanName);
+        return this;
     }
 
-    public void addTypeAlias(String alias, String type) {
+    public AspectranParameters addTypeAlias(String alias, String type) {
         Parameters typeAliasParameters = touchParameters(typeAlias);
         typeAliasParameters.putValue(alias, type);
+        return this;
     }
 
-    public void addRule(EnvironmentRule environmentRule) {
+    public AspectranParameters addRule(EnvironmentRule environmentRule) {
         putValue(environment, RuleToParamsConverter.toEnvironmentParameters(environmentRule));
+        return this;
     }
 
-    public void addRule(AspectRule aspectRule) {
+    public AspectranParameters addRule(AspectRule aspectRule) {
         putValue(aspect, RuleToParamsConverter.toAspectParameters(aspectRule));
+        return this;
     }
 
-    public void addRule(BeanRule beanRule) {
+    public AspectranParameters addRule(BeanRule beanRule) {
         putValue(bean, RuleToParamsConverter.toBeanParameters(beanRule));
+        return this;
     }
 
-    public void addRule(ScheduleRule scheduleRule) {
+    public AspectranParameters addRule(ScheduleRule scheduleRule) {
         putValue(schedule, RuleToParamsConverter.toScheduleParameters(scheduleRule));
+        return this;
     }
 
-    public void addRule(TransletRule transletRule) {
+    public AspectranParameters addRule(TransletRule transletRule) {
         putValue(translet, RuleToParamsConverter.toTransletParameters(transletRule));
+        return this;
     }
 
-    public void addRule(TemplateRule templateRule) {
+    public AspectranParameters addRule(TemplateRule templateRule) {
         putValue(template, RuleToParamsConverter.toTemplateParameters(templateRule));
+        return this;
     }
 
-    public void append(AppendRule appendRule) {
+    public AspectranParameters append(AppendRule appendRule) {
         putValue(append, RuleToParamsConverter.toAppendParameters(appendRule));
+        return this;
     }
 
-    public void append(AspectranParameters aspectranParameters) {
-        append(aspectranParameters, null);
+    public AspectranParameters append(AspectranParameters aspectranParameters) {
+        return append(aspectranParameters, null);
     }
 
-    public void append(AspectranParameters aspectranParameters, String profile) {
+    public AspectranParameters append(AspectranParameters aspectranParameters, String profile) {
         AppendRule appendRule = new AppendRule();
         appendRule.setAspectranParameters(aspectranParameters);
         if (profile != null && !profile.isEmpty()) {
             appendRule.setProfile(profile);
         }
-        append(appendRule);
+        return append(appendRule);
+    }
+
+    public AspectranParameters newAspectranParameters() {
+        return append(new AspectranParameters());
     }
 
 }

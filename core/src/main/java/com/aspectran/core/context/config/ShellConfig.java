@@ -59,48 +59,54 @@ public class ShellConfig extends AbstractParameters {
         return getString(prompt);
     }
 
-    public void setPrompt(String prompt) {
+    public ShellConfig setPrompt(String prompt) {
         putValue(ShellConfig.prompt, prompt);
+        return this;
     }
 
     public String[] getCommands() {
         return getStringArray(commands);
     }
 
-    public void addCommand(String command) {
+    public ShellConfig addCommand(String command) {
         putValue(ShellConfig.commands, command);
+        return this;
     }
 
     public String getGreetings() {
         return getString(greetings);
     }
 
-    public void setGreetings(String greetings) {
+    public ShellConfig setGreetings(String greetings) {
         putValue(ShellConfig.greetings, greetings);
+        return this;
     }
 
     public String getWorkingDir() {
         return getString(workingDir);
     }
 
-    public void setWorkingDir(String workingDir) {
+    public ShellConfig setWorkingDir(String workingDir) {
         putValue(ShellConfig.workingDir, workingDir);
+        return this;
     }
 
     public String getHistoryFile() {
         return getString(historyFile);
     }
 
-    public void setHistoryFile(String historyFile) {
+    public ShellConfig setHistoryFile(String historyFile) {
         putValue(ShellConfig.historyFile, historyFile);
+        return this;
     }
 
     public boolean isVerbose() {
         return getBoolean(verbose, false);
     }
 
-    public void setVerbose(boolean verbose) {
+    public ShellConfig setVerbose(boolean verbose) {
         putValue(ShellConfig.verbose, verbose);
+        return this;
     }
 
     public ExposalsConfig getExposalsConfig() {

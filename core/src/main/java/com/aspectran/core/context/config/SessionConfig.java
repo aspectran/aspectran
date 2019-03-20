@@ -60,20 +60,22 @@ public class SessionConfig extends AbstractParameters {
         return getInt(timeout, -1);
     }
 
-    public boolean hasTimeout() {
-        return hasValue(timeout);
+    public SessionConfig setTimeout(int timeout) {
+        putValue(SessionConfig.timeout, timeout);
+        return this;
     }
 
-    public void setTimeout(int timeout) {
-        putValue(SessionConfig.timeout, timeout);
+    public boolean hasTimeout() {
+        return hasValue(timeout);
     }
 
     public String getStoreType() {
         return getString(storeType);
     }
 
-    public void setStoreType(SessionStoreType sessionStoreType) {
+    public SessionConfig setStoreType(SessionStoreType sessionStoreType) {
         putValue(storeType, sessionStoreType.toString());
+        return this;
     }
 
     public SessionFileStoreConfig getFileStoreConfig() {

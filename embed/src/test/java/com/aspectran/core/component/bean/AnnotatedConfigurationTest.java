@@ -17,7 +17,6 @@ package com.aspectran.core.component.bean;
 
 import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.context.config.AspectranConfig;
-import com.aspectran.core.context.config.ContextConfig;
 import com.aspectran.embed.sample.anno.ThirdResult;
 import com.aspectran.embed.service.EmbeddedAspectran;
 import org.junit.jupiter.api.AfterAll;
@@ -39,11 +38,11 @@ class AnnotatedConfigurationTest {
 
     @BeforeAll
     void ready() {
-        String rootFile = "classpath:config/anno/annotated-configuration-test-config.xml";
         AspectranConfig aspectranConfig = new AspectranConfig();
-        ContextConfig contextConfig = aspectranConfig.newContextConfig();
-        contextConfig.setRootFile(rootFile);
-        contextConfig.addBasePackage("com.aspectran.embed.sample.anno");
+        aspectranConfig.newContextConfig()
+                .setRootFile("classpath:config/anno/annotated-configuration-test-config.xml")
+                .addBasePackage("com.aspectran.embed.sample.anno");
+
         aspectran = EmbeddedAspectran.run(aspectranConfig);
     }
 

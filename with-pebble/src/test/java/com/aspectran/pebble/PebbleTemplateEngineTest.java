@@ -3,7 +3,6 @@ package com.aspectran.pebble;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.context.config.AspectranConfig;
-import com.aspectran.core.context.config.ContextConfig;
 import com.aspectran.core.context.rule.ResourceAppendRule;
 import com.aspectran.core.context.rule.params.AspectranParameters;
 import com.aspectran.embed.service.EmbeddedAspectran;
@@ -25,8 +24,7 @@ class PebbleTemplateEngineTest {
     @BeforeAll
     void ready() {
         AspectranConfig aspectranConfig = new AspectranConfig();
-        ContextConfig contextConfig = aspectranConfig.newContextConfig();
-        AspectranParameters parameters = contextConfig.newAspectranParameters();
+        AspectranParameters parameters = aspectranConfig.newContextConfig().newAspectranParameters();
         parameters.setDefaultTemplateEngineBean("pebble");
         parameters.append(new ResourceAppendRule("config/pebble-test-config.xml"));
 

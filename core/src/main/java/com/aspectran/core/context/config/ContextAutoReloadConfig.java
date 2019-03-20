@@ -60,24 +60,27 @@ public class ContextAutoReloadConfig extends AbstractParameters {
         return getString(reloadMode);
     }
 
-    public void setReloadMode(AutoReloadType autoReloadType) {
+    public ContextAutoReloadConfig setReloadMode(AutoReloadType autoReloadType) {
         putValue(reloadMode, autoReloadType.toString());
+        return this;
     }
 
     public int getScanIntervalSeconds() {
         return getInt(scanIntervalSeconds, -1);
     }
 
-    public void setScanIntervalSeconds(int scanIntervalSeconds) {
+    public ContextAutoReloadConfig setScanIntervalSeconds(int scanIntervalSeconds) {
         putValue(ContextAutoReloadConfig.scanIntervalSeconds, scanIntervalSeconds);
+        return this;
     }
 
     public boolean isStartup() {
         return getBoolean(startup, false);
     }
 
-    public void setStartup(boolean startup) {
+    public ContextAutoReloadConfig setStartup(boolean startup) {
         putValue(ContextAutoReloadConfig.startup, startup);
+        return this;
     }
 
 }

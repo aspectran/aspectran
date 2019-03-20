@@ -18,7 +18,6 @@ package com.aspectran.core.activity.response.dispatch;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.context.config.AspectranConfig;
-import com.aspectran.core.context.config.ContextConfig;
 import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.context.rule.TransletRule;
@@ -45,11 +44,9 @@ class ViewDispatcherTest {
     @BeforeAll
     void ready() {
         AspectranConfig aspectranConfig = new AspectranConfig();
-        ContextConfig contextConfig = aspectranConfig.newContextConfig();
-        AspectranParameters parameters = contextConfig.newAspectranParameters();
-
-        // Append a child Aspectran
-        AspectranParameters aspectran1 = new AspectranParameters();
+        AspectranParameters parameters = aspectranConfig
+                .newContextConfig()
+                .newAspectranParameters();
 
         TransletRule transletRule2 = new TransletRule();
         transletRule2.setName("test/appended/echo");
@@ -60,9 +57,7 @@ class ViewDispatcherTest {
         templateRule2.setTemplateSource("${param1} ${param2}");
         transformRule2.setTemplateRule(templateRule2);
         transletRule2.applyResponseRule(transformRule2);
-        aspectran1.addRule(transletRule2);
-
-        parameters.append(aspectran1);
+        parameters.addRule(transletRule2);
 
         aspectran = EmbeddedAspectran.run(aspectranConfig);
     }

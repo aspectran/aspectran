@@ -100,10 +100,15 @@ public class ContextTemplateRenderer extends AbstractComponent implements Templa
 
     @Override
     public void render(String templateId, Activity activity, Map<String, Object> model, Writer writer) {
+        if (templateId == null) {
+            throw new IllegalArgumentException("templateId must not be null");
+        }
+
         TemplateRule templateRule = templateRuleRegistry.getTemplateRule(templateId);
         if (templateRule == null) {
             throw new TemplateNotFoundException(templateId);
         }
+
         render(templateRule, activity, model, writer);
     }
 

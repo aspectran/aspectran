@@ -254,8 +254,10 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
         ExposalsConfig exposalsConfig = schedulerConfig.getExposalsConfig();
 
         if (startDelaySeconds == -1) {
-            log.info("Scheduler option 'startDelaySeconds' not specified; So defaulting to 5 seconds");
             startDelaySeconds = 5;
+            if (log.isDebugEnabled()) {
+                log.debug("Scheduler option 'startDelaySeconds' not specified, defaulting to 5 seconds");
+            }
         }
 
         SchedulerService schedulerService = new QuartzSchedulerService(this);

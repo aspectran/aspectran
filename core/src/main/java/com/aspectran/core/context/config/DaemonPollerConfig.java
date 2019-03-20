@@ -55,16 +55,18 @@ public class DaemonPollerConfig extends AbstractParameters {
         return getLong(pollingInterval, defaultPollingInterval);
     }
 
-    public void setPollingInterval(long pollingInterval) {
+    public DaemonPollerConfig setPollingInterval(long pollingInterval) {
         putValue(DaemonPollerConfig.pollingInterval, pollingInterval);
+        return this;
     }
 
     public int getMaxThreads(int defaultMaxThreads) {
         return getInt(maxThreads, defaultMaxThreads);
     }
 
-    public void setMaxThreads(int maxThreads) {
+    public DaemonPollerConfig setMaxThreads(int maxThreads) {
         putValue(DaemonPollerConfig.maxThreads, maxThreads);
+        return this;
     }
 
     public String getInboundPath() {
@@ -75,16 +77,18 @@ public class DaemonPollerConfig extends AbstractParameters {
         return getString(inbound, defaultInboundPath);
     }
 
-    public void setInboundPath(String inboundPath) {
+    public DaemonPollerConfig setInboundPath(String inboundPath) {
         putValue(inbound, inboundPath);
+        return this;
     }
 
     public boolean isRequeue() {
         return getBoolean(requeue, false);
     }
 
-    public void setRequeue(boolean requeue) {
+    public DaemonPollerConfig setRequeue(boolean requeue) {
         putValue(DaemonPollerConfig.requeue, requeue);
+        return this;
     }
 
 }
