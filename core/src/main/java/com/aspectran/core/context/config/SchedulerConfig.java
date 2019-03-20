@@ -70,8 +70,4 @@ public class SchedulerConfig extends AbstractParameters {
         return touchParameters(exposals);
     }
 
-    public void setExposalsConfig(ExposalsConfig exposalsConfig) {
-        putValue(exposals, exposalsConfig);
-    }
-
 }

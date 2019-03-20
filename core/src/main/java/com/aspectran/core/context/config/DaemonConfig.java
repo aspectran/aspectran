@@ -52,11 +52,19 @@ public class DaemonConfig extends AbstractParameters {
         return getStringArray(commands);
     }
 
-    public DaemonPollerConfig newDaemonPollerConfig() {
+    public void addCommand(String command) {
+        putValue(DaemonConfig.commands, command);
+    }
+
+    public DaemonPollerConfig getPollerConfig() {
+        return getParameters(poller);
+    }
+
+    public DaemonPollerConfig newPollerConfig() {
         return newParameters(poller);
     }
 
-    public DaemonPollerConfig touchDaemonPollerConfig() {
+    public DaemonPollerConfig touchPollerConfig() {
         return touchParameters(poller);
     }
 

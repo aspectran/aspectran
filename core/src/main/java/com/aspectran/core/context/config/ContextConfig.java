@@ -105,35 +105,19 @@ public class ContextConfig extends AbstractParameters {
         putValue(scan, basePackage);
     }
 
-    public String[] getActiveProfiles() {
-        ContextProfilesConfig contextProfilesConfig = getParameters(profiles);
-        if (contextProfilesConfig != null) {
-            return contextProfilesConfig.getActiveProfiles();
-        } else {
-            return null;
-        }
+    public ContextProfilesConfig getProfilesConfig() {
+        return getParameters(profiles);
     }
 
-    public void addActivieProfile(String activeProfile) {
-        ContextProfilesConfig contextProfilesConfig = touchParameters(profiles);
-        contextProfilesConfig.addActiveProfile(activeProfile);
+    public ContextProfilesConfig newProfilesConfig() {
+        return newParameters(profiles);
     }
 
-    public String[] getDefaultProfiles() {
-        ContextProfilesConfig contextProfilesConfig = getParameters(profiles);
-        if (contextProfilesConfig != null) {
-            return contextProfilesConfig.getDefaultProfiles();
-        } else {
-            return null;
-        }
+    public ContextProfilesConfig touchProfilesConfig() {
+        return touchParameters(profiles);
     }
 
-    public void addDefaultProfile(String defaultProfile) {
-        ContextProfilesConfig contextProfilesConfig = touchParameters(profiles);
-        contextProfilesConfig.addDefaultProfile(defaultProfile);
-    }
-
-    public boolean hasProfiles() {
+    public boolean hasProfilesConfig() {
         return hasParameter(profiles);
     }
 
@@ -145,8 +129,16 @@ public class ContextConfig extends AbstractParameters {
         putValue(ContextConfig.hybridLoad, hybridLoad);
     }
 
-    public ContextAutoReloadConfig getContextAutoReloadConfig() {
+    public ContextAutoReloadConfig getAutoReloadConfig() {
         return getParameters(autoReload);
+    }
+
+    public ContextAutoReloadConfig newAutoReloadConfig() {
+        return newParameters(autoReload);
+    }
+
+    public ContextAutoReloadConfig touchAutoReloadConfig() {
+        return touchParameters(autoReload);
     }
 
     public boolean isSingleton() {
@@ -161,12 +153,16 @@ public class ContextConfig extends AbstractParameters {
         return getParameters(parameters);
     }
 
-    public boolean hasAspectranParameters() {
-        return hasParameter(parameters);
-    }
-
     public AspectranParameters newAspectranParameters() {
         return newParameters(parameters);
+    }
+
+    public AspectranParameters touchAspectranParameters() {
+        return touchParameters(parameters);
+    }
+
+    public boolean hasAspectranParameters() {
+        return hasParameter(parameters);
     }
 
 }

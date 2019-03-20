@@ -68,8 +68,16 @@ public class ContextAutoReloadConfig extends AbstractParameters {
         return getInt(scanIntervalSeconds, -1);
     }
 
+    public void setScanIntervalSeconds(int scanIntervalSeconds) {
+        putValue(ContextAutoReloadConfig.scanIntervalSeconds, scanIntervalSeconds);
+    }
+
     public boolean isStartup() {
         return getBoolean(startup, false);
+    }
+
+    public void setStartup(boolean startup) {
+        putValue(ContextAutoReloadConfig.startup, startup);
     }
 
 }

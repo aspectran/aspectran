@@ -47,8 +47,16 @@ public class WebConfig extends AbstractParameters {
         return getString(uriDecoding);
     }
 
+    public void setUriDecoding(String uriDecoding) {
+        putValue(WebConfig.uriDecoding, uriDecoding);
+    }
+
     public String getDefaultServletName() {
         return getString(defaultServletName);
+    }
+
+    public void setDefaultServletName(String defaultServletName) {
+        putValue(WebConfig.defaultServletName, defaultServletName);
     }
 
     public ExposalsConfig getExposalsConfig() {

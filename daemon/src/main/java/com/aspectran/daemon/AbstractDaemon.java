@@ -115,7 +115,7 @@ public class AbstractDaemon implements Daemon {
 
     protected void init(DaemonConfig daemonConfig) throws Exception {
         try {
-            DaemonPollerConfig pollerConfig = daemonConfig.touchDaemonPollerConfig();
+            DaemonPollerConfig pollerConfig = daemonConfig.touchPollerConfig();
 
             this.commandPoller = new FileCommandPoller(this, pollerConfig);
 

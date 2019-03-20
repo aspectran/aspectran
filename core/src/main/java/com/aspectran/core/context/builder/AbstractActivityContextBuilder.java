@@ -35,6 +35,7 @@ import com.aspectran.core.context.builder.reload.ActivityContextReloadingTimer;
 import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.config.ContextAutoReloadConfig;
 import com.aspectran.core.context.config.ContextConfig;
+import com.aspectran.core.context.config.ContextProfilesConfig;
 import com.aspectran.core.context.env.ContextEnvironment;
 import com.aspectran.core.context.resource.AspectranClassLoader;
 import com.aspectran.core.context.resource.InvalidResourceException;
@@ -279,14 +280,15 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
 
         this.basePackages = contextConfig.getBasePackages();
 
-        if (contextConfig.hasProfiles()) {
-            setActiveProfiles(contextConfig.getActiveProfiles());
-            setDefaultProfiles(contextConfig.getDefaultProfiles());
+        ContextProfilesConfig profilesConfig = contextConfig.getProfilesConfig();
+        if (profilesConfig != null) {
+            setActiveProfiles(profilesConfig.getActiveProfiles());
+            setDefaultProfiles(profilesConfig.getDefaultProfiles());
         }
 
         this.hybridLoad = contextConfig.isHybridLoad();
 
-        ContextAutoReloadConfig autoReloadConfig = contextConfig.getContextAutoReloadConfig();
+        ContextAutoReloadConfig autoReloadConfig = contextConfig.getAutoReloadConfig();
         if (autoReloadConfig != null) {
             String reloadMode = autoReloadConfig.getReloadMode();
             int scanIntervalSeconds = autoReloadConfig.getScanIntervalSeconds();
