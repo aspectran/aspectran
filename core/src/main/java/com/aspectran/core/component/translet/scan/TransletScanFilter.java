@@ -18,7 +18,7 @@ package com.aspectran.core.component.translet.scan;
 import java.io.File;
 
 /**
- * The Interface TransletFileScanFilter.
+ * The Interface TransletScanFilter.
  * 
  * @since 2.0.0
  */

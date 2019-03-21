@@ -22,11 +22,11 @@ package com.aspectran.core.component.bean;
  *
  * @since 3.2.0
  */
-public class InstantiatedBean {
+public class BeanInstance {
 
     private Object bean;
 
-    public InstantiatedBean(Object bean) {
+    public BeanInstance(Object bean) {
         this.bean = bean;
     }
 

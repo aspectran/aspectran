@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.context.rule;
 
-import com.aspectran.core.component.bean.InstantiatedBean;
+import com.aspectran.core.component.bean.BeanInstance;
 import com.aspectran.core.component.bean.ablility.DisposableBean;
 import com.aspectran.core.component.bean.ablility.FactoryBean;
 import com.aspectran.core.component.bean.ablility.InitializableBean;
@@ -115,7 +115,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
 
     private boolean methodAutowireParsed;
 
-    private InstantiatedBean instantiatedBean; // only for singleton
+    private BeanInstance beanInstance; // only for singleton
 
     /**
      * Returns the bean id.
@@ -719,17 +719,17 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
      *
      * @return the instantiated object of this bean
      */
-    public InstantiatedBean getInstantiatedBean() {
-        return instantiatedBean;
+    public BeanInstance getBeanInstance() {
+        return beanInstance;
     }
 
     /**
      * Sets the instantiated object of this bean.
      *
-     * @param instantiatedBean the instantiated object of this bean
+     * @param beanInstance the instantiated object of this bean
      */
-    public void setInstantiatedBean(InstantiatedBean instantiatedBean) {
-        this.instantiatedBean = instantiatedBean;
+    public void setBeanInstance(BeanInstance beanInstance) {
+        this.beanInstance = beanInstance;
     }
 
     /**
@@ -777,7 +777,6 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
             tsb.append("lazyInit", lazyInit);
             tsb.append("important", important);
             tsb.append("proxied", proxied);
-            tsb.append("replicated", replicated);
             if (constructorArgumentItemRuleMap != null) {
                 tsb.append("constructorArguments", constructorArgumentItemRuleMap.keySet());
             }

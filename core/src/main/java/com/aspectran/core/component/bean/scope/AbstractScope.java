@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.component.bean.scope;
 
-import com.aspectran.core.component.bean.InstantiatedBean;
+import com.aspectran.core.component.bean.BeanInstance;
 import com.aspectran.core.component.bean.ablility.DisposableBean;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.type.ScopeType;
@@ -40,11 +40,11 @@ public class AbstractScope implements Scope {
 
     private final ReadWriteLock scopeLock = new ReentrantReadWriteLock();
 
-    protected final Map<BeanRule, InstantiatedBean> scopedBeanMap = new HashMap<>();
+    private final Map<BeanRule, BeanInstance> scopedBeanMap = new HashMap<>();
 
     private final ScopeType scopeType;
 
-    public AbstractScope(ScopeType scopeType) {
+    AbstractScope(ScopeType scopeType) {
         this.scopeType = scopeType;
     }
 
@@ -54,13 +54,13 @@ public class AbstractScope implements Scope {
     }
 
     @Override
-    public InstantiatedBean getInstantiatedBean(BeanRule beanRule) {
+    public BeanInstance getBeanInstance(BeanRule beanRule) {
         return scopedBeanMap.get(beanRule);
     }
 
     @Override
-    public void putInstantiatedBean(BeanRule beanRule, InstantiatedBean instantiatedBean) {
-        scopedBeanMap.put(beanRule, instantiatedBean);
+    public void putBeanInstance(BeanRule beanRule, BeanInstance beanInstance) {
+        scopedBeanMap.put(beanRule, beanInstance);
     }
 
     @Override
@@ -71,9 +71,9 @@ public class AbstractScope implements Scope {
             }
         }
 
-        for (Map.Entry<BeanRule, InstantiatedBean> entry : scopedBeanMap.entrySet()) {
+        for (Map.Entry<BeanRule, BeanInstance> entry : scopedBeanMap.entrySet()) {
             BeanRule beanRule = entry.getKey();
-            InstantiatedBean instantiatedBean = entry.getValue();
+            BeanInstance instantiatedBean = entry.getValue();
             Object bean = instantiatedBean.getBean();
             if (bean != null) {
                 doDestroy(beanRule, bean);

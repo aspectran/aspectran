@@ -62,12 +62,20 @@ public class TransletScanner extends FileScanner {
     }
 
     public void setTransletNameMaskPattern(String transletNameMaskPattern) {
+        if (transletNameMaskPattern == null) {
+            throw new IllegalArgumentException("transletNameMaskPattern must not be null");
+        }
         this.transletNameMaskPattern = new WildcardPattern(transletNameMaskPattern, NAME_SEPARATOR_CHAR);
     }
 
     @Override
-    protected void scan(final String targetPath, final WildcardMatcher matcher, final SaveHandler saveHandler) {
-        super.scan(targetPath, matcher, new TransletSaveHandler(saveHandler));
+    protected void scan(String targetPath, WildcardMatcher matcher, SaveHandler saveHandler) {
+        try {
+            super.scan(targetPath, matcher, new TransletSaveHandler(saveHandler));
+        } catch (Exception e) {
+            throw new TransletScanFailedException("Failed to scan translets from given path: " +
+                    targetPath, e);
+        }
     }
 
     private class TransletSaveHandler implements SaveHandler {
@@ -93,8 +101,8 @@ public class TransletScanner extends FileScanner {
             }
 
             if (transletScanFilter != null) {
-                boolean pass = transletScanFilter.filter(transletName, scannedFile);
-                if (!pass) {
+                boolean passing = transletScanFilter.filter(transletName, scannedFile);
+                if (!passing) {
                     return;
                 }
             }

@@ -25,6 +25,7 @@ import com.aspectran.core.component.bean.aware.ApplicationAdapterAware;
 import com.aspectran.core.component.bean.aware.ClassLoaderAware;
 import com.aspectran.core.component.bean.aware.CurrentActivityAware;
 import com.aspectran.core.component.bean.aware.EnvironmentAware;
+import com.aspectran.core.component.bean.scan.BeanClassScanFilter;
 import com.aspectran.core.component.bean.scan.BeanClassScanner;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.AutowireRule;
@@ -32,6 +33,7 @@ import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;
+import com.aspectran.core.context.rule.params.FilterParameters;
 import com.aspectran.core.context.rule.type.ScopeType;
 import com.aspectran.core.util.ClassUtils;
 import com.aspectran.core.util.PrefixSuffixPattern;
@@ -39,10 +41,11 @@ import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -171,9 +174,8 @@ public class BeanRuleRegistry {
      * Scans for annotated components.
      *
      * @param basePackages the base packages to scan for annotated components
-     * @throws IOException if an error occurs while scanning the bean class
      */
-    public void scanConfigurableBeans(String... basePackages) throws IOException {
+    public void scanConfigurableBeans(String... basePackages) throws BeanRuleException {
         if (basePackages == null || basePackages.length == 0) {
             return;
         }
@@ -182,14 +184,18 @@ public class BeanRuleRegistry {
 
         for (String basePackage : basePackages) {
             BeanClassScanner scanner = new BeanClassScanner(classLoader);
+            List<BeanRule> beanRules = new ArrayList<>();
             scanner.scan(basePackage + ".**", (resourceName, targetClass) -> {
                 if (targetClass.isAnnotationPresent(Component.class)) {
                     BeanRule beanRule = new BeanRule();
                     beanRule.setBeanClass(targetClass);
                     beanRule.setScopeType(ScopeType.SINGLETON);
-                    saveConfigurableBeanRule(beanRule);
+                    beanRules.add(beanRule);
                 }
             });
+            for (BeanRule beanRule : beanRules) {
+                saveConfigurableBeanRule(beanRule);
+            }
         }
     }
 
@@ -200,50 +206,71 @@ public class BeanRuleRegistry {
      * @throws IllegalRuleException if an error occurs while adding a bean rule
      */
     public void addBeanRule(final BeanRule beanRule) throws IllegalRuleException {
-//        try {
-            final PrefixSuffixPattern prefixSuffixPattern = PrefixSuffixPattern.parse(beanRule.getId());
-            String scanPattern = beanRule.getScanPattern();
-            if (scanPattern != null) {
-                BeanClassScanner scanner = new BeanClassScanner(classLoader);
-                if (beanRule.getFilterParameters() != null) {
-                    scanner.setFilterParameters(beanRule.getFilterParameters());
-                }
-                if (beanRule.getMaskPattern() != null) {
-                    scanner.setBeanIdMaskPattern(beanRule.getMaskPattern());
-                }
-//                try {
-                    scanner.scan(scanPattern, (resourceName, targetClass) -> {
-                        BeanRule beanRule2 = beanRule.replicate();
-                        if (prefixSuffixPattern != null) {
-                            beanRule2.setId(prefixSuffixPattern.join(resourceName));
-                        } else {
-                            if (beanRule.getId() != null) {
-                                beanRule2.setId(beanRule.getId() + resourceName);
-                            } else if (beanRule.getMaskPattern() != null) {
-                                beanRule2.setId(resourceName);
-                            }
-                        }
-                        beanRule2.setBeanClass(targetClass);
-                        dissectBeanRule(beanRule2);
-                    });
-//                } catch (IOException e) {
-//                    throw new BeanClassScanFailedException("Failed to scan bean classes with given pattern: " +
-//                            scanPattern, e);
-//                }
-            } else {
-                if (!beanRule.isFactoryOffered()) {
-                    String className = beanRule.getClassName();
-                    if (prefixSuffixPattern != null) {
-                        beanRule.setId(prefixSuffixPattern.join(className));
+        PrefixSuffixPattern prefixSuffixPattern = PrefixSuffixPattern.parse(beanRule.getId());
+        String scanPattern = beanRule.getScanPattern();
+        if (scanPattern != null) {
+            BeanClassScanner scanner = createBeanClassScanner(beanRule);
+            List<BeanRule> beanRules = new ArrayList<>();
+            scanner.scan(scanPattern, (resourceName, targetClass) -> {
+                BeanRule beanRule2 = beanRule.replicate();
+                if (prefixSuffixPattern != null) {
+                    beanRule2.setId(prefixSuffixPattern.join(resourceName));
+                } else {
+                    if (beanRule.getId() != null) {
+                        beanRule2.setId(beanRule.getId() + resourceName);
+                    } else if (beanRule.getMaskPattern() != null) {
+                        beanRule2.setId(resourceName);
                     }
-                    Class<?> beanClass = classLoader.loadClass(className);
-                    beanRule.setBeanClass(beanClass);
                 }
-                dissectBeanRule(beanRule);
+                beanRule2.setBeanClass(targetClass);
+                beanRules.add(beanRule2);
+            });
+            for (BeanRule beanRule2 : beanRules) {
+                dissectBeanRule(beanRule2);
             }
-//        } catch(Exception e) {
-//            throw new BeanRuleException("Could not add bean rule", beanRule, e);
-//        }
+        } else {
+            if (!beanRule.isFactoryOffered()) {
+                String className = beanRule.getClassName();
+                if (prefixSuffixPattern != null) {
+                    beanRule.setId(prefixSuffixPattern.join(className));
+                }
+                Class<?> beanClass;
+                try {
+                    beanClass = classLoader.loadClass(className);
+                } catch (ClassNotFoundException e) {
+                    throw new BeanRuleException("Failed to load bean class", beanRule, e);
+                }
+                beanRule.setBeanClass(beanClass);
+            }
+            dissectBeanRule(beanRule);
+        }
+    }
+
+    private BeanClassScanner createBeanClassScanner(BeanRule beanRule) throws IllegalRuleException {
+        BeanClassScanner scanner = new BeanClassScanner(classLoader);
+        if (beanRule.getFilterParameters() != null) {
+            FilterParameters filterParameters = beanRule.getFilterParameters();
+            String beanClassScanFilterClassName = filterParameters.getString(FilterParameters.filterClass);
+            if (beanClassScanFilterClassName != null) {
+                BeanClassScanFilter beanClassScanFilter;
+                try {
+                    Class<?> filterClass = classLoader.loadClass(beanClassScanFilterClassName);
+                    beanClassScanFilter = (BeanClassScanFilter)ClassUtils.createInstance(filterClass);
+                } catch (Exception e) {
+                    throw new IllegalRuleException("Failed to instantiate BeanClassScanFilter [" +
+                            beanClassScanFilterClassName + "]", e);
+                }
+                scanner.setBeanClassScanFilter(beanClassScanFilter);
+            }
+            String[] excludePatterns = filterParameters.getStringArray(FilterParameters.exclude);
+            if (excludePatterns != null) {
+                scanner.setExcludePatterns(excludePatterns);
+            }
+        }
+        if (beanRule.getMaskPattern() != null) {
+            scanner.setBeanIdMaskPattern(beanRule.getMaskPattern());
+        }
+        return scanner;
     }
 
     private void dissectBeanRule(BeanRule beanRule) throws BeanRuleException {

@@ -74,7 +74,7 @@ public class BeanReferenceInspector {
      * @param beanRuleRegistry the bean rule registry
      * @throws BeanReferenceException the bean reference exception
      */
-    public void inspect(BeanRuleRegistry beanRuleRegistry) throws BeanReferenceException {
+    public void inspect(BeanRuleRegistry beanRuleRegistry) throws BeanReferenceException, BeanRuleException {
         Set<Object> brokenReferences = new LinkedHashSet<>();
 
         for (Map.Entry<RefererKey, Set<RefererInfo>> entry : refererInfoMap.entrySet()) {
@@ -166,7 +166,8 @@ public class BeanReferenceInspector {
         return false;
     }
 
-    private void checkTransletActionParameter(BeanMethodActionRule beanMethodActionRule, BeanRule beanRule, RefererInfo refererInfo) {
+    private void checkTransletActionParameter(BeanMethodActionRule beanMethodActionRule, BeanRule beanRule, RefererInfo refererInfo)
+            throws BeanRuleException {
         if (beanMethodActionRule.getArgumentItemRuleMap() == null) {
             Class<?> beanClass = beanRule.getTargetBeanClass();
             String methodName = beanMethodActionRule.getMethodName();

@@ -162,7 +162,7 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
             Object bean = createBeanInstance(beanRule, args, argTypes);
 
             if (beanRule.isSingleton()) {
-                beanRule.setInstantiatedBean(new InstantiatedBean(bean));
+                beanRule.setBeanInstance(new BeanInstance(bean));
             }
 
             invokeAwareMethods(bean);
@@ -223,7 +223,7 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
         }
 
         if (beanRule.isSingleton()) {
-            beanRule.setInstantiatedBean(new InstantiatedBean(bean));
+            beanRule.setBeanInstance(new BeanInstance(bean));
         }
 
         try {
@@ -432,7 +432,7 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
 
     private void instantiateSingleton(BeanRule beanRule, Activity activity) {
         if (beanRule.isSingleton()
-                && beanRule.getInstantiatedBean() == null
+                && beanRule.getBeanInstance() == null
                 && !beanRule.isLazyInit()) {
             createBean(beanRule, activity);
         }
@@ -467,9 +467,9 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
 
     private int doDestroySingleton(BeanRule beanRule) {
         int failedCount = 0;
-        if (beanRule.getInstantiatedBean() != null && beanRule.isSingleton()) {
+        if (beanRule.getBeanInstance() != null && beanRule.isSingleton()) {
             try {
-                InstantiatedBean instantiatedBean = beanRule.getInstantiatedBean();
+                BeanInstance instantiatedBean = beanRule.getBeanInstance();
                 Object bean = instantiatedBean.getBean();
                 if (bean != null) {
                     if (beanRule.isDisposableBean()) {
@@ -483,7 +483,7 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
                 failedCount++;
                 log.error("Could not destroy singleton bean " + beanRule, e);
             }
-            beanRule.setInstantiatedBean(null);
+            beanRule.setBeanInstance(null);
         }
         return failedCount;
     }

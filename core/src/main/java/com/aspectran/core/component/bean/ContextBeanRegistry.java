@@ -73,13 +73,13 @@ public class ContextBeanRegistry extends AbstractBeanRegistry {
         singletonScopeLock.readLock().lock();
         Object bean;
         try {
-            InstantiatedBean instantiatedBean = beanRule.getInstantiatedBean();
+            BeanInstance instantiatedBean = beanRule.getBeanInstance();
             if (instantiatedBean == null) {
                 readLocked = false;
                 singletonScopeLock.readLock().unlock();
                 singletonScopeLock.writeLock().lock();
                 try {
-                    instantiatedBean = beanRule.getInstantiatedBean();
+                    instantiatedBean = beanRule.getBeanInstance();
                     if (instantiatedBean == null) {
                         bean = createBean(beanRule);
                     } else {
@@ -92,7 +92,7 @@ public class ContextBeanRegistry extends AbstractBeanRegistry {
                     singletonScopeLock.writeLock().unlock();
                 }
             } else {
-                instantiatedBean = beanRule.getInstantiatedBean();
+                instantiatedBean = beanRule.getBeanInstance();
                 bean = instantiatedBean.getBean();
                 if (bean != null && beanRule.isFactoryProductionRequired()) {
                     readLocked = false;
@@ -144,16 +144,16 @@ public class ContextBeanRegistry extends AbstractBeanRegistry {
         scopeLock.readLock().lock();
         Object bean;
         try {
-            InstantiatedBean instantiatedBean = scope.getInstantiatedBean(beanRule);
+            BeanInstance instantiatedBean = scope.getBeanInstance(beanRule);
             if (instantiatedBean == null) {
                 readLocked = false;
                 scopeLock.readLock().unlock();
                 scopeLock.writeLock().lock();
                 try {
-                    instantiatedBean = scope.getInstantiatedBean(beanRule);
+                    instantiatedBean = scope.getBeanInstance(beanRule);
                     if (instantiatedBean == null) {
                         bean = createBean(beanRule);
-                        scope.putInstantiatedBean(beanRule, new InstantiatedBean(bean));
+                        scope.putBeanInstance(beanRule, new BeanInstance(bean));
                     } else {
                         bean = instantiatedBean.getBean();
                     }
