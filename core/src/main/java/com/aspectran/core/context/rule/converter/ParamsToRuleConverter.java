@@ -194,7 +194,7 @@ public class ParamsToRuleConverter {
         }
     }
 
-    private void convertAsDefaultSettings(DefaultSettingsParameters defaultSettingsParameters) {
+    private void convertAsDefaultSettings(DefaultSettingsParameters defaultSettingsParameters) throws IllegalRuleException {
         if (defaultSettingsParameters == null) {
             return;
         }

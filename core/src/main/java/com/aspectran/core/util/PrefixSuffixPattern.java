@@ -41,7 +41,8 @@ public class PrefixSuffixPattern {
         } else {
             prefix = (start > 0 ? input.substring(0, start) : null);
             suffix = (start < input.length() - 1 ? input.substring(start + 1) : null);
-            splitted = (prefix != null || suffix != null || (input.length() == 1 && input.charAt(0) == PREFIX_SUFFIX_PATTERN_SEPARATOR));
+            splitted = (prefix != null || suffix != null ||
+                    (input.length() == 1 && input.charAt(0) == PREFIX_SUFFIX_PATTERN_SEPARATOR));
         }
         return splitted;
     }

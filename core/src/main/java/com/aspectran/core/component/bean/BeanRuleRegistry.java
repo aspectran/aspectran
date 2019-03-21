@@ -25,7 +25,6 @@ import com.aspectran.core.component.bean.aware.ApplicationAdapterAware;
 import com.aspectran.core.component.bean.aware.ClassLoaderAware;
 import com.aspectran.core.component.bean.aware.CurrentActivityAware;
 import com.aspectran.core.component.bean.aware.EnvironmentAware;
-import com.aspectran.core.component.bean.scan.BeanClassScanFailedException;
 import com.aspectran.core.component.bean.scan.BeanClassScanner;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.AutowireRule;
@@ -201,7 +200,7 @@ public class BeanRuleRegistry {
      * @throws IllegalRuleException if an error occurs while adding a bean rule
      */
     public void addBeanRule(final BeanRule beanRule) throws IllegalRuleException {
-        try {
+//        try {
             final PrefixSuffixPattern prefixSuffixPattern = PrefixSuffixPattern.parse(beanRule.getId());
             String scanPattern = beanRule.getScanPattern();
             if (scanPattern != null) {
@@ -212,7 +211,7 @@ public class BeanRuleRegistry {
                 if (beanRule.getMaskPattern() != null) {
                     scanner.setBeanIdMaskPattern(beanRule.getMaskPattern());
                 }
-                try {
+//                try {
                     scanner.scan(scanPattern, (resourceName, targetClass) -> {
                         BeanRule beanRule2 = beanRule.replicate();
                         if (prefixSuffixPattern != null) {
@@ -227,10 +226,10 @@ public class BeanRuleRegistry {
                         beanRule2.setBeanClass(targetClass);
                         dissectBeanRule(beanRule2);
                     });
-                } catch (IOException e) {
-                    throw new BeanClassScanFailedException("Failed to scan bean classes with given pattern: " +
-                            scanPattern, e);
-                }
+//                } catch (IOException e) {
+//                    throw new BeanClassScanFailedException("Failed to scan bean classes with given pattern: " +
+//                            scanPattern, e);
+//                }
             } else {
                 if (!beanRule.isFactoryOffered()) {
                     String className = beanRule.getClassName();
@@ -242,12 +241,12 @@ public class BeanRuleRegistry {
                 }
                 dissectBeanRule(beanRule);
             }
-        } catch(Exception e) {
-            throw new IllegalRuleException("Could not add bean rule " + beanRule, e);
-        }
+//        } catch(Exception e) {
+//            throw new BeanRuleException("Could not add bean rule", beanRule, e);
+//        }
     }
 
-    private void dissectBeanRule(BeanRule beanRule) {
+    private void dissectBeanRule(BeanRule beanRule) throws BeanRuleException {
         Class<?> targetBeanClass = BeanRuleAnalyzer.determineBeanClass(beanRule);
         if (targetBeanClass == null) {
             postProcessBeanRuleMap.add(beanRule);
@@ -269,9 +268,10 @@ public class BeanRuleRegistry {
         }
     }
 
-    private void saveBeanRule(String beanId, BeanRule beanRule) {
+    private void saveBeanRule(String beanId, BeanRule beanRule) throws BeanRuleException {
         if (importantBeanIdSet.contains(beanId)) {
-            throw new BeanRuleException("Already exists the ID-based named bean", beanRule);
+            throw new BeanRuleException("Already exists an ID-based bean that can not be overridden; Duplicated bean",
+                    beanRule);
         }
         if (beanRule.isImportant()) {
             importantBeanIdSet.add(beanRule.getId());
@@ -279,9 +279,10 @@ public class BeanRuleRegistry {
         idBasedBeanRuleMap.put(beanId, beanRule);
     }
 
-    private void saveBeanRule(Class<?> beanClass, BeanRule beanRule) {
+    private void saveBeanRule(Class<?> beanClass, BeanRule beanRule) throws BeanRuleException {
         if (importantBeanTypeSet.contains(beanClass)) {
-            throw new BeanRuleException("Already exists the type-based named bean", beanRule);
+            throw new BeanRuleException("Already exists a type-based bean that can not be overridden; Duplicated bean",
+                    beanRule);
         }
         if (beanRule.isImportant()) {
             importantBeanTypeSet.add(beanClass);
@@ -290,7 +291,7 @@ public class BeanRuleRegistry {
         set.add(beanRule);
     }
 
-    private void saveBeanRuleWithInterfaces(Class<?> beanClass, BeanRule beanRule) {
+    private void saveBeanRuleWithInterfaces(Class<?> beanClass, BeanRule beanRule) throws BeanRuleException {
         if (beanClass.isInterface()) {
             Class<?>[] ifcs = beanClass.getInterfaces();
             for (Class<?> ifc : ifcs) {
@@ -315,7 +316,7 @@ public class BeanRuleRegistry {
         }
     }
 
-    private void saveConfigurableBeanRule(BeanRule beanRule) {
+    private void saveConfigurableBeanRule(BeanRule beanRule) throws BeanRuleException {
         if (beanRule.getBeanClass() == null) {
             throw new BeanRuleException("No specified bean class", beanRule);
         }
@@ -352,7 +353,7 @@ public class BeanRuleRegistry {
     private void parseAnnotatedConfig(ContextRuleAssistant assistant) throws IllegalRuleException {
         AnnotatedConfigRelater relater = new AnnotatedConfigRelater() {
             @Override
-            public void relay(Class<?> targetBeanClass, BeanRule beanRule) {
+            public void relay(Class<?> targetBeanClass, BeanRule beanRule) throws IllegalRuleException {
                 if (beanRule.getId() != null) {
                     saveBeanRule(beanRule.getId(), beanRule);
                 }
@@ -366,12 +367,12 @@ public class BeanRuleRegistry {
             }
 
             @Override
-            public void relay(TransletRule transletRule) {
+            public void relay(TransletRule transletRule) throws IllegalRuleException {
                 assistant.addTransletRule(transletRule);
             }
 
             @Override
-            public void relay(AutowireRule autowireRule) {
+            public void relay(AutowireRule autowireRule) throws IllegalRuleException {
                 assistant.resolveBeanClass(autowireRule);
             }
         };
@@ -380,26 +381,31 @@ public class BeanRuleRegistry {
         parser.parse();
     }
 
-    private Class<?> resolveOfferedFactoryBeanClass(BeanRule beanRule) {
+    private Class<?> resolveOfferedFactoryBeanClass(BeanRule beanRule) throws BeanRuleException {
         BeanRule offeredFactoryBeanRule;
         if (beanRule.getFactoryBeanClass() == null) {
             offeredFactoryBeanRule = getBeanRule(beanRule.getFactoryBeanId());
             if (offeredFactoryBeanRule == null) {
-                throw new BeanNotFoundException(beanRule.getFactoryBeanId());
+                throw new BeanRuleException("No factory bean named '" + beanRule.getFactoryBeanId() +
+                        "' is defined; Caller bean ", beanRule);
             }
         } else {
             BeanRule[] beanRules = getBeanRules(beanRule.getFactoryBeanClass());
             if (beanRules == null || beanRules.length == 0) {
-                throw new RequiredTypeBeanNotFoundException(beanRule.getFactoryBeanClass());
+                throw new BeanRuleException("No matching factory bean of type [" +
+                        beanRule.getFactoryBeanClass().getName() + "] found", beanRule);
             }
             if (beanRules.length > 1) {
-                throw new NoUniqueBeanException(beanRule.getFactoryBeanClass(), beanRules);
+                throw new BeanRuleException("No unique factory bean of type [" +
+                        beanRule.getFactoryBeanClass().getName() + "] is defined: expected single matching bean but found " +
+                        beanRules.length + ": [" + NoUniqueBeanException.getBeanDescriptions(beanRules) + "]; Caller bean ",
+                        beanRule);
             }
             offeredFactoryBeanRule = beanRules[0];
         }
         if (offeredFactoryBeanRule.isFactoryOffered()) {
-            throw new BeanRuleException("Invalid BeanRule: An offered factory bean can not call " +
-                    "another offered factory bean; Caller:", beanRule);
+            throw new BeanRuleException("An offered factory bean can not call " +
+                    "another offered factory bean; Caller bean ", beanRule);
         }
         return offeredFactoryBeanRule.getTargetBeanClass();
     }

@@ -501,7 +501,7 @@ public class Token implements BeanReferenceable, Replicable<Token> {
         if (token != null && token.getType() == TokenType.BEAN) {
             if (token.getDirectiveType() == TokenDirectiveType.FIELD) {
                 if (token.getGetterName() == null) {
-                    throw new InvalidTokenException("Target field name not specified", token);
+                    throw new InvalidTokenException("Target field name is unspecified token", token);
                 }
                 try {
                     Class<?> cls = classLoader.loadClass(token.getValue());
@@ -514,7 +514,7 @@ public class Token implements BeanReferenceable, Replicable<Token> {
                 }
             } else if (token.getDirectiveType() == TokenDirectiveType.METHOD) {
                 if (token.getGetterName() == null) {
-                    throw new InvalidTokenException("Target method name not specified", token);
+                    throw new InvalidTokenException("Target method name is unspecified token", token);
                 }
                 try {
                     Class<?> cls = classLoader.loadClass(token.getValue());

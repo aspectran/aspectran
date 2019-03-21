@@ -16,18 +16,22 @@
 package com.aspectran.core.component.translet;
 
 import com.aspectran.core.component.AbstractComponent;
+import com.aspectran.core.component.translet.scan.TransletScanFilter;
 import com.aspectran.core.component.translet.scan.TransletScanner;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.env.Environment;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.expr.token.Tokenizer;
+import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.context.rule.RequestRule;
 import com.aspectran.core.context.rule.ResponseRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.assistant.AssistantLocal;
 import com.aspectran.core.context.rule.assistant.DefaultSettings;
+import com.aspectran.core.context.rule.params.FilterParameters;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.context.rule.type.TokenType;
+import com.aspectran.core.util.ClassUtils;
 import com.aspectran.core.util.PrefixSuffixPattern;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Log;
@@ -100,6 +104,9 @@ public class TransletRuleRegistry extends AbstractComponent {
     }
 
     public TransletRule getTransletRule(String transletName, MethodType requestMethod) {
+        if (transletName == null) {
+            throw new IllegalArgumentException("transletName must not be null");
+        }
         if (requestMethod == null) {
             throw new IllegalArgumentException("requestMethod must not be null");
         }
@@ -194,18 +201,10 @@ public class TransletRuleRegistry extends AbstractComponent {
         return (getTransletRule(transletName, requestMethod) != null);
     }
 
-    public void addTransletRule(final TransletRule transletRule) {
+    public void addTransletRule(final TransletRule transletRule) throws IllegalRuleException {
         String scanPath = transletRule.getScanPath();
         if (scanPath != null) {
-            TransletScanner scanner = new TransletScanner(basePath, classLoader);
-            if (transletRule.getFilterParameters() != null) {
-                scanner.setFilterParameters(transletRule.getFilterParameters());
-            }
-            if (transletRule.getMaskPattern() != null) {
-                scanner.setTransletNameMaskPattern(transletRule.getMaskPattern());
-            } else {
-                scanner.setTransletNameMaskPattern(scanPath);
-            }
+            TransletScanner scanner = createTransletScanner(transletRule);
             PrefixSuffixPattern prefixSuffixPattern = new PrefixSuffixPattern(transletRule.getName());
             scanner.scan(scanPath, (filePath, scannedFile) -> {
                 TransletRule newTransletRule = TransletRule.replicate(transletRule, filePath);
@@ -219,6 +218,35 @@ public class TransletRuleRegistry extends AbstractComponent {
         } else {
             dissectTransletRule(transletRule);
         }
+    }
+
+    private TransletScanner createTransletScanner(TransletRule transletRule) throws IllegalRuleException {
+        TransletScanner scanner = new TransletScanner(basePath);
+        if (transletRule.getFilterParameters() != null) {
+            FilterParameters filterParameters = transletRule.getFilterParameters();
+            String transletScanFilterClassName = filterParameters.getString(FilterParameters.filterClass);
+            if (transletScanFilterClassName != null) {
+                TransletScanFilter transletScanFilter;
+                try {
+                    Class<?> filterClass = classLoader.loadClass(transletScanFilterClassName);
+                    transletScanFilter = (TransletScanFilter)ClassUtils.createInstance(filterClass);
+                } catch (Exception e) {
+                    throw new IllegalRuleException("Failed to instantiate TransletScanFilter [" +
+                            transletScanFilterClassName + "]", e);
+                }
+                scanner.setTransletScanFilter(transletScanFilter);
+            }
+            String[] excludePatterns = filterParameters.getStringArray(FilterParameters.exclude);
+            if (excludePatterns != null) {
+                scanner.setExcludePatterns(excludePatterns);
+            }
+        }
+        if (transletRule.getMaskPattern() != null) {
+            scanner.setTransletNameMaskPattern(transletRule.getMaskPattern());
+        } else {
+            scanner.setTransletNameMaskPattern(transletRule.getScanPath());
+        }
+        return scanner;
     }
 
     private void dissectTransletRule(TransletRule transletRule) {
@@ -448,21 +476,21 @@ public class TransletRuleRegistry extends AbstractComponent {
     class WeightComparator implements Comparator<TransletRule> {
 
         @Override
-        public int compare(TransletRule transletRule1, TransletRule transletRule2) {
-            if (transletRule1.getNamePattern() != null && transletRule2.getNamePattern() != null) {
-                float weight1 = transletRule1.getNamePattern().getWeight();
-                float weight2 = transletRule2.getNamePattern().getWeight();
+        public int compare(TransletRule tr1, TransletRule tr2) {
+            if (tr1.getNamePattern() != null && tr2.getNamePattern() != null) {
+                float weight1 = tr1.getNamePattern().getWeight();
+                float weight2 = tr2.getNamePattern().getWeight();
                 int cmp = Float.compare(weight2, weight1);
                 if (cmp == 0) {
-                    cmp = transletRule1.getNamePattern().toString().compareTo(transletRule2.getNamePattern().toString());
+                    cmp = tr1.getNamePattern().toString().compareTo(tr2.getNamePattern().toString());
                 }
                 return cmp;
-            } else if (transletRule1.getNamePattern() != null) {
-                return transletRule2.getName().compareTo(transletRule1.getNamePattern().toString());
-            } else if (transletRule2.getNamePattern() != null) {
-                return transletRule1.getName().compareTo(transletRule2.getNamePattern().toString());
+            } else if (tr1.getNamePattern() != null) {
+                return tr2.getName().compareTo(tr1.getNamePattern().toString());
+            } else if (tr2.getNamePattern() != null) {
+                return tr1.getName().compareTo(tr2.getNamePattern().toString());
             } else {
-                return transletRule2.getName().compareTo(transletRule1.getName());
+                return tr2.getName().compareTo(tr1.getName());
             }
         }
 

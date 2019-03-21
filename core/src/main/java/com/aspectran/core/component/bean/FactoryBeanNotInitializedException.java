@@ -22,7 +22,7 @@ import com.aspectran.core.context.rule.BeanRule;
  * if the bean is not fully initialized yet,
  * for example because it is involved in a circular reference.
  */
-public class FactoryBeanNotInitializedException extends BeanRuleException {
+public class FactoryBeanNotInitializedException extends BeanCreationException {
 
     /** @serial */
     private static final long serialVersionUID = 5961471681939634699L;

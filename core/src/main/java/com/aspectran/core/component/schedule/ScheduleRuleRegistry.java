@@ -16,6 +16,7 @@
 package com.aspectran.core.component.schedule;
 
 import com.aspectran.core.component.AbstractComponent;
+import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.context.rule.ScheduleRule;
 import com.aspectran.core.context.rule.ScheduledJobRule;
 import com.aspectran.core.context.rule.assistant.AssistantLocal;
@@ -59,7 +60,7 @@ public class ScheduleRuleRegistry extends AbstractComponent {
         return scheduleRuleMap.containsKey(scheduleId);
     }
 
-    public void addScheduleRule(ScheduleRule scheduleRule) {
+    public void addScheduleRule(ScheduleRule scheduleRule) throws IllegalRuleException {
         if (scheduleRule.getSchedulerBeanId() == null && assistantLocal != null) {
             DefaultSettings defaultSettings = assistantLocal.getDefaultSettings();
             if (defaultSettings != null && defaultSettings.getDefaultSchedulerBean() != null) {

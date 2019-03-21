@@ -22,7 +22,6 @@ import com.aspectran.core.component.schedule.ScheduleRuleRegistry;
 import com.aspectran.core.component.template.TemplateRuleRegistry;
 import com.aspectran.core.component.translet.TransletRuleRegistry;
 import com.aspectran.core.context.env.ContextEnvironment;
-import com.aspectran.core.context.expr.token.InvalidTokenException;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.AutowireRule;
@@ -196,13 +195,13 @@ public class ContextRuleAssistant {
      * @param name the name
      * @param value the value
      */
-    public void putSetting(String name, String value) {
+    public void putSetting(String name, String value) throws IllegalRuleException {
         if (StringUtils.isEmpty(name)) {
-            throw new IllegalArgumentException("Default setting name can not be null");
+            throw new IllegalRuleException("Default setting name can not be null");
         }
         DefaultSettingType settingType = DefaultSettingType.resolve(name);
         if (settingType == null) {
-            throw new IllegalArgumentException("No such default setting name as '" + name + "'");
+            throw new IllegalRuleException("No such default setting name as '" + name + "'");
         }
         settings.put(settingType, value);
     }
@@ -345,7 +344,7 @@ public class ContextRuleAssistant {
      *
      * @param aspectRule the aspect rule
      */
-    public void resolveAdviceBeanClass(AspectRule aspectRule) {
+    public void resolveAdviceBeanClass(AspectRule aspectRule) throws IllegalRuleException {
         String beanIdOrClass = aspectRule.getAdviceBeanId();
         if (beanIdOrClass != null) {
             Class<?> beanClass = resolveBeanClass(beanIdOrClass, aspectRule);
@@ -363,7 +362,7 @@ public class ContextRuleAssistant {
      *
      * @param beanMethodActionRule the bean method action rule
      */
-    public void resolveActionBeanClass(BeanMethodActionRule beanMethodActionRule) {
+    public void resolveActionBeanClass(BeanMethodActionRule beanMethodActionRule) throws IllegalRuleException {
         String beanIdOrClass = beanMethodActionRule.getBeanId();
         if (beanIdOrClass != null) {
             Class<?> beanClass = resolveBeanClass(beanIdOrClass, beanMethodActionRule);
@@ -381,7 +380,7 @@ public class ContextRuleAssistant {
      *
      * @param beanRule the bean rule
      */
-    public void resolveFactoryBeanClass(BeanRule beanRule) {
+    public void resolveFactoryBeanClass(BeanRule beanRule) throws IllegalRuleException {
         String beanIdOrClass = beanRule.getFactoryBeanId();
         if (beanRule.isFactoryOffered() && beanIdOrClass != null) {
             Class<?> beanClass = resolveBeanClass(beanIdOrClass, beanRule);
@@ -399,7 +398,7 @@ public class ContextRuleAssistant {
      *
      * @param itemRule the item rule
      */
-    public void resolveBeanClass(ItemRule itemRule) {
+    public void resolveBeanClass(ItemRule itemRule) throws IllegalRuleException {
         Iterator<Token[]> it = ItemRule.tokenIterator(itemRule);
         if (it != null) {
             while (it.hasNext()) {
@@ -418,7 +417,7 @@ public class ContextRuleAssistant {
      *
      * @param tokens an array of tokens
      */
-    public void resolveBeanClass(Token[] tokens) {
+    public void resolveBeanClass(Token[] tokens) throws IllegalRuleException {
         if (tokens != null) {
             for (Token token : tokens) {
                 resolveBeanClass(token);
@@ -431,15 +430,15 @@ public class ContextRuleAssistant {
      *
      * @param token the token
      */
-    public void resolveBeanClass(Token token) {
+    public void resolveBeanClass(Token token) throws IllegalRuleException {
         resolveBeanClass(token, token);
     }
 
-    private void resolveBeanClass(Token token, BeanReferenceable referenceable) {
+    private void resolveBeanClass(Token token, BeanReferenceable referenceable) throws IllegalRuleException {
         if (token != null && token.getType() == TokenType.BEAN) {
             if (token.getDirectiveType() == TokenDirectiveType.FIELD) {
                 if (token.getGetterName() == null) {
-                    throw new InvalidTokenException("Target field name not specified", token);
+                    throw new IllegalRuleException("Target field name is unspecified token " + token);
                 }
                 Class<?> cls = loadClass(token.getValue(), token);
                 try {
@@ -449,12 +448,12 @@ public class ContextRuleAssistant {
                         reserveBeanReference(cls, referenceable);
                     }
                 } catch (NoSuchFieldException e) {
-                    throw new IllegalArgumentException("Could not access field: " + token.getGetterName() +
+                    throw new IllegalRuleException("Could not access field: " + token.getGetterName() +
                             " on " + ruleAppendHandler.getCurrentRuleAppender().getQualifiedName() + " " + token, e);
                 }
             } else if (token.getDirectiveType() == TokenDirectiveType.METHOD) {
                 if (token.getGetterName() == null) {
-                    throw new InvalidTokenException("Target method name not specified", token);
+                    throw new IllegalRuleException("Target method name is unspecified token " + token);
                 }
                 Class<?> cls = loadClass(token.getValue(), token);
                 try {
@@ -464,7 +463,7 @@ public class ContextRuleAssistant {
                         reserveBeanReference(cls, referenceable);
                     }
                 } catch (NoSuchMethodException e) {
-                    throw new IllegalArgumentException("Could not access method: " + token.getGetterName() +
+                    throw new IllegalRuleException("Could not access method: " + token.getGetterName() +
                             " on " + ruleAppendHandler.getCurrentRuleAppender().getQualifiedName() + " " + token, e);
                 }
             } else if (token.getDirectiveType() == TokenDirectiveType.CLASS) {
@@ -482,7 +481,7 @@ public class ContextRuleAssistant {
      *
      * @param autowireRule the autowire rule
      */
-    public void resolveBeanClass(AutowireRule autowireRule) {
+    public void resolveBeanClass(AutowireRule autowireRule) throws IllegalRuleException {
         if (autowireRule.getTargetType() == AutowireTargetType.FIELD) {
             if (autowireRule.isRequired()) {
                 Class<?>[] types = autowireRule.getTypes();
@@ -509,7 +508,7 @@ public class ContextRuleAssistant {
      *
      * @param scheduleRule the schedule rule
      */
-    public void resolveBeanClass(ScheduleRule scheduleRule) {
+    public void resolveBeanClass(ScheduleRule scheduleRule) throws IllegalRuleException {
         String beanId = scheduleRule.getSchedulerBeanId();
         if (beanId != null) {
             Class<?> beanClass = resolveBeanClass(beanId, scheduleRule);
@@ -527,7 +526,7 @@ public class ContextRuleAssistant {
      *
      * @param templateRule the template rule
      */
-    public void resolveBeanClass(TemplateRule templateRule) {
+    public void resolveBeanClass(TemplateRule templateRule) throws IllegalRuleException {
         String beanId = templateRule.getEngineBeanId();
         if (beanId != null) {
             Class<?> beanClass = resolveBeanClass(beanId, templateRule);
@@ -542,7 +541,7 @@ public class ContextRuleAssistant {
         }
     }
 
-    private Class<?> resolveBeanClass(String beanIdOrClass, Object referer) {
+    private Class<?> resolveBeanClass(String beanIdOrClass, Object referer) throws IllegalRuleException {
         if (beanIdOrClass != null && beanIdOrClass.startsWith(BeanRule.CLASS_DIRECTIVE_PREFIX)) {
             String className = beanIdOrClass.substring(BeanRule.CLASS_DIRECTIVE_PREFIX.length());
             return loadClass(className, referer);
@@ -551,11 +550,11 @@ public class ContextRuleAssistant {
         }
     }
 
-    private Class<?> loadClass(String className, Object referer) {
+    private Class<?> loadClass(String className, Object referer) throws IllegalRuleException {
         try {
             return classLoader.loadClass(className);
         } catch (ClassNotFoundException e) {
-            throw new IllegalArgumentException("Unable to load class: " + className +
+            throw new IllegalRuleException("Unable to load class: " + className +
                     " on " + ruleAppendHandler.getCurrentRuleAppender().getQualifiedName() + " " + referer, e);
         }
     }
@@ -606,7 +605,7 @@ public class ContextRuleAssistant {
      *
      * @param scheduleRule the schedule rule to add
      */
-    public void addScheduleRule(ScheduleRule scheduleRule) {
+    public void addScheduleRule(ScheduleRule scheduleRule) throws IllegalRuleException {
         scheduleRuleRegistry.addScheduleRule(scheduleRule);
     }
 
@@ -615,7 +614,7 @@ public class ContextRuleAssistant {
      *
      * @param transletRule the translet rule to add
      */
-    public void addTransletRule(TransletRule transletRule) {
+    public void addTransletRule(TransletRule transletRule) throws IllegalRuleException {
         transletRuleRegistry.addTransletRule(transletRule);
     }
 
@@ -624,7 +623,7 @@ public class ContextRuleAssistant {
      *
      * @param templateRule the template rule to add
      */
-    public void addTemplateRule(TemplateRule templateRule) {
+    public void addTemplateRule(TemplateRule templateRule) throws IllegalRuleException {
         templateRuleRegistry.addTemplateRule(templateRule);
     }
 

@@ -16,16 +16,38 @@
 package com.aspectran.core.component.bean;
 
 import com.aspectran.core.context.rule.BeanRule;
+import com.aspectran.core.context.rule.IllegalRuleException;
 
 /**
  * The Class BeanRuleException.
  */
-public class BeanRuleException extends BeanException {
+public class BeanRuleException extends IllegalRuleException {
 
     /** @serial */
     private static final long serialVersionUID = -8362121026201328444L;
 
     private final BeanRule beanRule;
+
+    /**
+     * Instantiates a new BeanRuleException.
+     *
+     * @param beanRule the bean rule
+     */
+    public BeanRuleException(BeanRule beanRule) {
+        super("Invalid bean " + beanRule);
+        this.beanRule = beanRule;
+    }
+
+    /**
+     * Instantiates a new BeanRuleException.
+     *
+     * @param beanRule the bean rule
+     * @param cause the root cause
+     */
+    public BeanRuleException(BeanRule beanRule, Throwable cause) {
+        super("Invalid bean " + beanRule, cause);
+        this.beanRule = beanRule;
+    }
 
     /**
      * Instantiates a new BeanRuleException.

@@ -23,8 +23,6 @@ public class RequiredTypeBeanNotFoundException extends BeanNotFoundException {
     /** @serial */
     private static final long serialVersionUID = 4313746137902620189L;
 
-    private Class<?> requiredType;
-
     /**
      * Instantiates a new RequiredTypeBeanNotFoundException.
      *

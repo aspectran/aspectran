@@ -21,7 +21,7 @@ import com.aspectran.core.context.rule.type.ScopeType;
 /**
  * The Class UnsupportedBeanScopeException.
  */
-public class UnsupportedBeanScopeException extends BeanRuleException {
+public class UnsupportedBeanScopeException extends BeanException {
 
     /** @serial */
     private static final long serialVersionUID = -5350555208208267662L;
@@ -33,7 +33,7 @@ public class UnsupportedBeanScopeException extends BeanRuleException {
      * @param beanRule the bean rule
      */
     public UnsupportedBeanScopeException(ScopeType scopeType, BeanRule beanRule) {
-        super("The " + scopeType + " scope is not available. beanRule", beanRule);
+        super("The " + scopeType + " scope is not available for bean " + beanRule);
     }
 
 }

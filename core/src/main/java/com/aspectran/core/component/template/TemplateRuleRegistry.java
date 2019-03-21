@@ -16,6 +16,7 @@
 package com.aspectran.core.component.template;
 
 import com.aspectran.core.component.AbstractComponent;
+import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.assistant.AssistantLocal;
 import com.aspectran.core.context.rule.assistant.DefaultSettings;
@@ -58,7 +59,7 @@ public class TemplateRuleRegistry extends AbstractComponent {
         return templateRuleMap.containsKey(templateId);
     }
 
-    public void addTemplateRule(TemplateRule templateRule) {
+    public void addTemplateRule(TemplateRule templateRule) throws IllegalRuleException {
         if (templateRule.getEngine() == null && assistantLocal != null) {
             DefaultSettings defaultSettings = assistantLocal.getDefaultSettings();
             if (defaultSettings != null && defaultSettings.getDefaultTemplateEngineBean() != null) {

@@ -219,7 +219,7 @@ public class AnnotatedConfigParser {
         }
     }
 
-    private void parseConstructorAutowire(BeanRule beanRule) {
+    private void parseConstructorAutowire(BeanRule beanRule) throws IllegalRuleException {
         if (beanRule.isConstructorAutowireParsed()) {
             return;
         } else {
@@ -247,7 +247,7 @@ public class AnnotatedConfigParser {
         }
     }
 
-    private void parseFieldAutowire(BeanRule beanRule) {
+    private void parseFieldAutowire(BeanRule beanRule) throws IllegalRuleException {
         if (beanRule.isFieldAutowireParsed()) {
             return;
         } else {
@@ -272,7 +272,7 @@ public class AnnotatedConfigParser {
         }
     }
 
-    private void parseMethodAutowire(BeanRule beanRule) {
+    private void parseMethodAutowire(BeanRule beanRule) throws IllegalRuleException {
         if (beanRule.isMethodAutowireParsed()) {
             return;
         } else {
@@ -400,7 +400,7 @@ public class AnnotatedConfigParser {
         relater.relay(aspectRule);
     }
 
-    private void parseBeanRule(BeanRule beanRule, String[] nameArray) {
+    private void parseBeanRule(BeanRule beanRule, String[] nameArray) throws IllegalRuleException {
         Class<?> beanClass = beanRule.getBeanClass();
         Bean beanAnno = beanClass.getAnnotation(Bean.class);
         String beanId = StringUtils.emptyToNull(beanAnno.id());
@@ -437,7 +437,7 @@ public class AnnotatedConfigParser {
         relater.relay(targetBeanClass, beanRule);
     }
 
-    private void parseFactoryBeanRule(Class<?> beanClass, Method method, String[] nameArray) {
+    private void parseFactoryBeanRule(Class<?> beanClass, Method method, String[] nameArray) throws IllegalRuleException {
         Bean beanAnno = method.getAnnotation(Bean.class);
         String beanId = StringUtils.emptyToNull(beanAnno.id());
         if (beanId == null) {

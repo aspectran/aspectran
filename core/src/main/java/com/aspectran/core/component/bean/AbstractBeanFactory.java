@@ -186,6 +186,8 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
             }
 
             return bean;
+        } catch (BeanCreationException e) {
+            throw e;
         } catch (Exception e) {
             throw new BeanCreationException(beanRule, e);
         }
@@ -212,6 +214,8 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
             if (bean == null) {
                 throw new NullPointerException("Factory Method [" + beanRule.getFactoryMethod() + "] has returned null");
             }
+        } catch (BeanCreationException e) {
+            throw e;
         } catch (Exception e) {
             throw new BeanCreationException(
                     "An exception occurred while invoking a factory method from the offered factory bean",
@@ -235,6 +239,8 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
                 invokeInitMethod(beanRule, bean, activity);
             }
             return bean;
+        } catch (BeanCreationException e) {
+            throw e;
         } catch (Exception e) {
             throw new BeanCreationException(beanRule, e);
         }
@@ -482,8 +488,7 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
         return failedCount;
     }
 
-    private static Object newInstance(Class<?> beanClass, Object[] args, Class<?>[] argTypes)
-            throws BeanInstantiationException {
+    private static Object newInstance(Class<?> beanClass, Object[] args, Class<?>[] argTypes) {
         if (beanClass.isInterface()) {
             throw new BeanInstantiationException(beanClass, "Specified class is an interface");
         }
@@ -499,11 +504,11 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
         return newInstance(constructorToUse, args);
     }
 
-    private static Object newInstance(Class<?> beanClass) throws BeanInstantiationException {
+    private static Object newInstance(Class<?> beanClass) {
         return newInstance(beanClass, MethodUtils.EMPTY_OBJECT_ARRAY, MethodUtils.EMPTY_CLASS_PARAMETERS);
     }
 
-    private static Object newInstance(Constructor<?> ctor, Object[] args) throws BeanInstantiationException {
+    private static Object newInstance(Constructor<?> ctor, Object[] args) {
         try {
             if (!Modifier.isPublic(ctor.getModifiers())
                     || !Modifier.isPublic(ctor.getDeclaringClass().getModifiers())) {

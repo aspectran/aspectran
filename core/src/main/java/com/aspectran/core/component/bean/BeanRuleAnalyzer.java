@@ -31,7 +31,7 @@ public class BeanRuleAnalyzer {
 
     public static final Class<?>[] TRANSLET_ACTION_PARAMETER_TYPES = { Translet.class };
 
-    static Class<?> determineBeanClass(BeanRule beanRule) {
+    static Class<?> determineBeanClass(BeanRule beanRule) throws BeanRuleException {
         Class<?> targetBeanClass;
         if (beanRule.isFactoryOffered()) {
             targetBeanClass = beanRule.getFactoryBeanClass();
@@ -44,7 +44,7 @@ public class BeanRuleAnalyzer {
             targetBeanClass = beanRule.getBeanClass();
         }
         if (targetBeanClass == null) {
-            throw new BeanRuleException("Invalid BeanRule", beanRule);
+            throw new BeanRuleException(beanRule);
         }
         if (beanRule.getInitMethodName() != null) {
             checkInitMethod(targetBeanClass, beanRule);
@@ -62,18 +62,19 @@ public class BeanRuleAnalyzer {
         return targetBeanClass;
     }
 
-    private static Class<?> determineTargetBeanClassForFactoryBean(Class<?> beanClass, BeanRule beanRule) {
+    private static Class<?> determineTargetBeanClassForFactoryBean(Class<?> beanClass, BeanRule beanRule)
+            throws BeanRuleException {
         try {
             Method m = MethodUtils.getAccessibleMethod(beanClass, FactoryBean.FACTORY_METHOD_NAME);
             Class<?> targetBeanClass = m.getReturnType();
             beanRule.setTargetBeanClass(targetBeanClass);
             return targetBeanClass;
         } catch (Exception e) {
-            throw new BeanRuleException("Invalid BeanRule", beanRule);
+            throw new BeanRuleException(beanRule, e);
         }
     }
 
-    static Class<?> determineFactoryMethodTargetBeanClass(Class<?> beanClass, BeanRule beanRule) {
+    static Class<?> determineFactoryMethodTargetBeanClass(Class<?> beanClass, BeanRule beanRule) throws BeanRuleException {
         if (beanRule.getFactoryMethod() != null) {
             Class<?> targetBeanClass = beanRule.getFactoryMethod().getReturnType();
             beanRule.setTargetBeanClass(targetBeanClass);
@@ -101,7 +102,7 @@ public class BeanRuleAnalyzer {
         }
     }
 
-    static void checkInitMethod(Class<?> beanClass, BeanRule beanRule) {
+    static void checkInitMethod(Class<?> beanClass, BeanRule beanRule) throws BeanRuleException {
         if (beanRule.isInitializableBean()) {
             throw new BeanRuleException("Bean initialization method is duplicated; " +
                     "Already implemented the InitializableBean", beanRule);
@@ -127,7 +128,7 @@ public class BeanRuleAnalyzer {
         }
     }
 
-    static void checkDestroyMethod(Class<?> beanClass, BeanRule beanRule) {
+    static void checkDestroyMethod(Class<?> beanClass, BeanRule beanRule) throws BeanRuleException {
         if (beanRule.isDisposableBean()) {
             throw new BeanRuleException("Bean destroy method is duplicated; " +
                     "Already implemented the DisposableBean", beanRule);
@@ -142,7 +143,7 @@ public class BeanRuleAnalyzer {
         beanRule.setDestroyMethod(m);
     }
 
-    static void checkRequiredProperty(BeanRule beanRule, Method method) {
+    static void checkRequiredProperty(BeanRule beanRule, Method method) throws BeanRuleException {
         String propertyName = dropCase(method.getName());
         ItemRuleMap propertyItemRuleMap = beanRule.getPropertyItemRuleMap();
         if (propertyItemRuleMap != null) {

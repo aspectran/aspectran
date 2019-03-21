@@ -20,10 +20,12 @@ import com.aspectran.core.context.rule.BeanRule;
 /**
  * The Class BeanCreationException.
  */
-public class BeanCreationException extends BeanRuleException {
+public class BeanCreationException extends BeanException {
 
     /** @serial */
     private static final long serialVersionUID = -4711272699122321571L;
+
+    private final BeanRule beanRule;
 
     /**
      * Instantiates a new BeanCreationException.
@@ -31,7 +33,8 @@ public class BeanCreationException extends BeanRuleException {
      * @param beanRule the bean rule
      */
     public BeanCreationException(BeanRule beanRule) {
-        super("Cannot create a bean", beanRule);
+        super("Cannot create a bean " + beanRule);
+        this.beanRule = beanRule;
     }
 
     /**
@@ -41,7 +44,8 @@ public class BeanCreationException extends BeanRuleException {
      * @param beanRule the bean rule
      */
     public BeanCreationException(String msg, BeanRule beanRule) {
-        super(msg, beanRule);
+        super(msg + " " + beanRule);
+        this.beanRule = beanRule;
     }
 
     /**
@@ -51,7 +55,8 @@ public class BeanCreationException extends BeanRuleException {
      * @param cause the root cause
      */
     public BeanCreationException(BeanRule beanRule, Throwable cause) {
-        super("Cannot create a bean", beanRule, cause);
+        super("Cannot create a bean " + beanRule, cause);
+        this.beanRule = beanRule;
     }
 
     /**
@@ -62,7 +67,17 @@ public class BeanCreationException extends BeanRuleException {
      * @param cause the root cause
      */
     public BeanCreationException(String msg, BeanRule beanRule, Throwable cause) {
-        super(msg, beanRule, cause);
+        super(msg + " " + beanRule, cause);
+        this.beanRule = beanRule;
+    }
+
+    /**
+     * Gets bean rule.
+     *
+     * @return the bean rule
+     */
+    public BeanRule getBeanRule() {
+        return beanRule;
     }
 
 }
