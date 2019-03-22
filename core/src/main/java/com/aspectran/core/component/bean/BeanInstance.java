@@ -24,7 +24,7 @@ package com.aspectran.core.component.bean;
  */
 public class BeanInstance {
 
-    private Object bean;
+    private final Object bean;
 
     public BeanInstance(Object bean) {
         this.bean = bean;

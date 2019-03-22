@@ -64,7 +64,8 @@ public class OgnlSupport {
     }
 
     @SuppressWarnings("rawtypes")
-    public static Boolean evaluateAsBoolean(String expression, Object represented, Object root) throws IllegalRuleException {
+    public static Boolean evaluateAsBoolean(String expression, Object represented, Object root)
+            throws IllegalRuleException {
         if (represented == null) {
             represented = parseExpression(expression);
         }

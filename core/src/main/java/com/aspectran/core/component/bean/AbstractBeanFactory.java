@@ -74,10 +74,11 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
 
     private final BeanProxifierType beanProxifierType;
 
-    public AbstractBeanFactory(ActivityContext context, BeanRuleRegistry beanRuleRegistry, BeanProxifierType beanProxifierType) {
+    public AbstractBeanFactory(ActivityContext context, BeanRuleRegistry beanRuleRegistry,
+                               BeanProxifierType beanProxifierType) {
         this.context = context;
         this.beanRuleRegistry = beanRuleRegistry;
-        this.beanProxifierType = (beanProxifierType == null ? BeanProxifierType.JAVASSIST : beanProxifierType);
+        this.beanProxifierType = (beanProxifierType != null ? beanProxifierType : BeanProxifierType.JAVASSIST);
     }
 
     protected ActivityContext getContext() {
@@ -510,10 +511,6 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
 
     private static Object newInstance(Constructor<?> ctor, Object[] args) {
         try {
-            if (!Modifier.isPublic(ctor.getModifiers())
-                    || !Modifier.isPublic(ctor.getDeclaringClass().getModifiers())) {
-                ctor.setAccessible(true);
-            }
             return ctor.newInstance(args);
         } catch (InstantiationException e) {
             throw new BeanInstantiationException(ctor.getDeclaringClass(),
