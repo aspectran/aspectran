@@ -249,6 +249,11 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
         this.contentList = contentList;
     }
 
+    /**
+     * Returns whether the translet name has tokens for extracting parameters or attributes.
+     *
+     * @return true if the translet name has tokens for extracting parameters or attributes
+     */
     public boolean hasPathVariables() {
         return (nameTokens != null);
     }

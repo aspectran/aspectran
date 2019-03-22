@@ -26,7 +26,7 @@ import java.io.Writer;
 import java.util.Map;
 
 /**
- * The activity that handles the temporary request.
+ * An activity that handles the temporary request.
  *
  * <p>Note that this is an activity that has nothing to do with
  * advice. This does not execute any advice at all, and if you

@@ -372,7 +372,7 @@ public class CoreTranslet extends AbstractTranslet {
     }
 
     @Override
-    public boolean hasPathVariable() {
+    public boolean hasPathVariables() {
         return activity.getTransletRule().hasPathVariables();
     }
 

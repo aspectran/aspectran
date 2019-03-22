@@ -524,7 +524,12 @@ public interface Translet {
      */
     <T> T getFinallyAdviceResult(String aspectId);
 
-    boolean hasPathVariable();
+    /**
+     * Returns whether the translet name has tokens for extracting parameters or attributes.
+     *
+     * @return true if the translet name has tokens for extracting parameters or attributes
+     */
+    boolean hasPathVariables();
 
     /**
      * Return an instance of the bean that matches the given id.
@@ -599,8 +604,6 @@ public interface Translet {
      * @return whether a bean with the specified type is present
      */
     boolean containsBean(Class<?> requiredType);
-
-
 
     /**
      * Try to resolve the message. Return default message if no message was found.
