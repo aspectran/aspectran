@@ -734,6 +734,6 @@ public interface Parameters {
 
     void setIndentString(String indentString);
 
-    void readFrom(String text);
+    void readFrom(String text) throws AponParseException;
 
 }

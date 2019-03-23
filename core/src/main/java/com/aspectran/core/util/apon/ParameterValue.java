@@ -192,7 +192,7 @@ public class ParameterValue implements Parameter {
     public void arraylize() {
         if (assigned) {
             throw new IllegalStateException(
-                    "This parameter can not be converted to an array type because it already has a value assigned to it");
+                    "This parameter can not be converted to an array type: it already has a value assigned to it");
         }
         array = true;
         bracketed = true;
@@ -447,7 +447,7 @@ public class ParameterValue implements Parameter {
             putValue(p);
             return p;
         } catch (Exception e) {
-            throw new InvalidParameterException("Could not instantiate Parameters with " + parametersClass, e);
+            throw new InvalidParameterException("Could not instantiate Parameters: " + parametersClass, e);
         }
     }
 

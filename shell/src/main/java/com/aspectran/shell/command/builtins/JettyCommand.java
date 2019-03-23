@@ -98,7 +98,7 @@ public class JettyCommand extends AbstractCommand {
                 }
             } else if ("stop".equals(command)) {
                 if (!jettyServer.isRunning()) {
-                    console.writeError("Jetty Server is not running");
+                    console.writeError("Jetty server is not running");
                     return;
                 }
                 try {
@@ -129,10 +129,12 @@ public class JettyCommand extends AbstractCommand {
     }
 
     private void printStatus(JettyServer jettyServer, Console console) {
+        console.writeLine("----------------------------------------------------------------------------");
         console.setStyle("YELLOW");
         console.write(jettyServer.getState());
         console.styleOff();
         console.writeLine(" - Jetty " + JettyServer.getVersion());
+        console.writeLine("----------------------------------------------------------------------------");
     }
 
     @Override

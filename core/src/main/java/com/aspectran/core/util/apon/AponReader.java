@@ -65,7 +65,7 @@ public class AponReader extends AponFormat {
     }
 
     /**
-     * Reads an APON document into a {@link VariableParameters} object.
+     * Reads an APON document into a {@code VariableParameters} object.
      *
      * @return the Parameters object
      * @throws AponParseException if reading APON format document fails
@@ -83,13 +83,15 @@ public class AponReader extends AponFormat {
      * @return the Parameters object
      * @throws AponParseException if reading APON format document fails
      */
-    public <T extends Parameters> T read(T parameters) {
+    public <T extends Parameters> T read(T parameters) throws AponParseException {
         if (parameters == null) {
             throw new IllegalArgumentException("parameters must not be null");
         }
         addable = parameters.isAddable();
         try {
             valuelize(parameters, NO_CONTROL_CHAR, null, null, null, false);
+        } catch (AponParseException e) {
+            throw e;
         } catch (Exception e) {
             throw new AponParseException("Could not read an APON formatted document into a Parameters object", e);
         }
@@ -164,7 +166,7 @@ public class AponReader extends AponFormat {
                     parameterValueType = parameterValue.getParameterValueType();
                 } else {
                     if (!addable) {
-                        throw new InvalidParameterException(lineNumber, line, tline, "Parameter '" +
+                        throw new AponSyntaxException(lineNumber, line, tline, "Parameter '" +
                                 name + "' is not predefined; Note that only predefined parameters are allowed");
                     }
                     parameterValueType = ParameterValueType.resolveByHint(name);
@@ -185,24 +187,24 @@ public class AponReader extends AponFormat {
                 }
                 if (parameterValueType != null) {
                     if (parameterValue != null && !parameterValue.isArray() && SQUARE_BRACKET_OPEN == cchar) {
-                        throw new IncompatibleParameterValueTypeException(lineNumber, line, tline,
+                        throw new AponSyntaxException(lineNumber, line, tline,
                                 "Parameter value is not an array type");
                     }
                     if (parameterValueType != ParameterValueType.PARAMETERS && CURLY_BRACKET_OPEN == cchar) {
-                        throw new IncompatibleParameterValueTypeException(lineNumber, line, tline, parameterValue, parameterValueType);
+                        throw new AponSyntaxException(lineNumber, line, tline, parameterValue, parameterValueType);
                     }
                     if (parameterValueType != ParameterValueType.TEXT && ROUND_BRACKET_OPEN == cchar) {
-                        throw new IncompatibleParameterValueTypeException(lineNumber, line, tline, parameterValue, parameterValueType);
+                        throw new AponSyntaxException(lineNumber, line, tline, parameterValue, parameterValueType);
                     }
                 }
             }
 
             if (parameterValue != null && !parameterValue.isArray()) {
                 if (parameterValueType == ParameterValueType.PARAMETERS && CURLY_BRACKET_OPEN != cchar) {
-                    throw new IncompatibleParameterValueTypeException(lineNumber, line, tline, parameterValue, parameterValueType);
+                    throw new AponSyntaxException(lineNumber, line, tline, parameterValue, parameterValueType);
                 }
                 if (parameterValueType == ParameterValueType.TEXT && ROUND_BRACKET_OPEN != cchar) {
-                    throw new IncompatibleParameterValueTypeException(lineNumber, line, tline, parameterValue, parameterValueType);
+                    throw new AponSyntaxException(lineNumber, line, tline, parameterValue, parameterValueType);
                 }
             }
 
@@ -298,8 +300,7 @@ public class AponReader extends AponFormat {
                     if (parameterValue.getParameterValueType() == ParameterValueType.VARIABLE) {
                         parameterValue.setParameterValueType(parameterValueType);
                     } else if (parameterValue.getParameterValueType() != parameterValueType) {
-                        throw new IncompatibleParameterValueTypeException(
-                                lineNumber, line, tline, parameterValue, parameterValue.getParameterValueType());
+                        throw new AponSyntaxException(lineNumber, line, tline, parameterValue, parameterValue.getParameterValueType());
                     }
                 }
 

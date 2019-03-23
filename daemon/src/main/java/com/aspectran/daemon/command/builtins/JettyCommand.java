@@ -108,7 +108,7 @@ public class JettyCommand extends AbstractCommand {
                     }
                 case "stop":
                     if (!jettyServer.isRunning()) {
-                        return failed(warn("Jetty Server is not running"));
+                        return failed(warn("Jetty server is not running"));
                     }
                     try {
                         jettyServer.stop();

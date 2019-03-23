@@ -27,18 +27,22 @@ import com.aspectran.core.context.config.DaemonConfig;
  */
 public class SimpleDaemon extends AbstractDaemon {
 
+    @Override
     public void init(DaemonConfig daemonConfig) throws Exception {
         super.init(daemonConfig);
     }
 
+    @Override
     public void start() throws Exception {
         super.start();
     }
 
+    @Override
     public void start(boolean wait) throws Exception {
         super.start(wait);
     }
 
+    @Override
     public void start(long wait) throws Exception {
         super.start(wait);
     }

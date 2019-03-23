@@ -16,6 +16,7 @@
 package com.aspectran.core.context.rule.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
+import com.aspectran.core.util.apon.AponParseException;
 import com.aspectran.core.util.apon.ParameterDefinition;
 import com.aspectran.core.util.apon.ParameterValueType;
 
@@ -61,7 +62,7 @@ public class TriggerParameters extends AbstractParameters {
         super(parameterDefinitions);
     }
 
-    public TriggerParameters(String text) {
+    public TriggerParameters(String text) throws AponParseException {
         this();
         readFrom(text);
     }

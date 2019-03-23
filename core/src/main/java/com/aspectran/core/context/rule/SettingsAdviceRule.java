@@ -89,10 +89,14 @@ public class SettingsAdviceRule {
         return sar;
     }
 
-    public static void updateSettingsAdviceRule(SettingsAdviceRule sar, String text)
-            throws AponParseException {
+    public static void updateSettingsAdviceRule(SettingsAdviceRule sar, String text) throws IllegalRuleException {
         if (StringUtils.hasText(text)) {
-            Parameters settingsParameters = new VariableParameters(text);
+            Parameters settingsParameters;
+            try {
+                settingsParameters = new VariableParameters(text);
+            } catch (AponParseException e) {
+                throw new IllegalRuleException("Settings parameter can not be parsed", e);
+            }
             updateSettingsAdviceRule(sar, settingsParameters);
         }
     }

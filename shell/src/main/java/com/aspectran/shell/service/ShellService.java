@@ -53,12 +53,22 @@ public interface ShellService extends CoreService {
      */
     void setVerbose(boolean verbose);
 
+    /**
+     * Returns the greeting message.
+     *
+     * @return the greeting message
+     */
     String getGreetings();
 
+    /**
+     * Specifies the greeting message.
+     *
+     * @param greetings the greeting message
+     */
     void setGreetings(String greetings);
 
     /**
-     * Prints welcome message.
+     * Prints greeting message.
      */
     void printGreetings();
 
@@ -68,7 +78,7 @@ public interface ShellService extends CoreService {
     void printHelp();
 
     /**
-     * Returns whether the translet is exposed in the shell execution environment.
+     * Returns whether or not the translet can be exposed to the shell service.
      *
      * @param transletName the name of the translet to check
      * @return true if the translet can be exposed; false otherwise
@@ -76,7 +86,7 @@ public interface ShellService extends CoreService {
     boolean isExposable(String transletName);
 
     /**
-     * Executes the translet.
+     * Executes translet.
      *
      * @param transletCommandLine the translet command line
      * @param console the {@code Console} instance

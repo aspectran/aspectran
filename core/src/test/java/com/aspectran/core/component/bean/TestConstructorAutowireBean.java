@@ -25,9 +25,9 @@ import com.aspectran.core.component.bean.annotation.Qualifier;
 @Component
 public class TestConstructorAutowireBean {
 
-    public TestFieldValueAutowireBean bean1;
+    TestFieldValueAutowireBean bean1;
 
-    public TestFieldValueAutowireBean bean2;
+    TestFieldValueAutowireBean bean2;
 
     @Autowired
     public TestConstructorAutowireBean(

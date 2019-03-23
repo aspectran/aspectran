@@ -15,36 +15,36 @@
  */
 package com.aspectran.core.context.expr;
 
-import com.aspectran.core.context.expr.token.Token;
+import com.aspectran.core.context.rule.ItemRule;
 
 /**
- * The Class TokenEvaluationException.
+ * The Class ItemEvaluationException.
  */
-public class TokenEvaluationException extends RuntimeException {
+public class ItemEvaluationException extends RuntimeException {
 
     /** @serial */
-    private static final long serialVersionUID = 2303202652519466514L;
+    private static final long serialVersionUID = -139399791062499758L;
 
-    private final Token token;
+    private final ItemRule itemRule;
 
     /**
-     * Instantiates a new token evaluation exception.
+     * Instantiates a new item evaluation exception.
      *
-     * @param token the token
+     * @param itemRule the item rule
      * @param cause the root cause
      */
-    public TokenEvaluationException(Token token, Throwable cause) {
-        super("Failed to evaluate token " + token, cause);
-        this.token = token;
+    public ItemEvaluationException(ItemRule itemRule, Throwable cause) {
+        super("Failed to evaluate item " + itemRule, cause);
+        this.itemRule = itemRule;
     }
 
     /**
-     * Gets the token which is failed to evaluate expression.
+     * Gets the item rule which is failed to evaluate expression.
      *
-     * @return the token
+     * @return the item rule
      */
-    public Token getToken() {
-        return this.token;
+    public ItemRule getItemRule() {
+        return this.itemRule;
     }
 
 }

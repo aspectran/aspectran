@@ -39,7 +39,7 @@ public interface WebService extends CoreService {
     String STANDALONE_WEB_SERVICE_ATTRIBUTE_PREFIX = WebService.class.getName() + ".STANDALONE:";
 
     /**
-     * Executes a Web Activity.
+     * Executes web activity.
      *
      * @param request current HTTP servlet request
      * @param response current HTTP servlet response

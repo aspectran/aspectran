@@ -57,7 +57,7 @@ public class ContextBeanRegistry extends AbstractBeanRegistry {
         } else if (beanRule.getScopeType() == ScopeType.APPLICATION) {
             return (T)getApplicationScopeBean(beanRule);
         }
-        throw new BeanException();
+        throw new BeanCreationException(beanRule);
     }
 
     private Object getPrototypeScopeBean(BeanRule beanRule) {
@@ -98,7 +98,6 @@ public class ContextBeanRegistry extends AbstractBeanRegistry {
                     readLocked = false;
                     singletonScopeLock.readLock().unlock();
                     singletonScopeLock.writeLock().lock();
-
                     try {
                         bean = getFactoryProducedObject(beanRule, bean);
                     } finally {

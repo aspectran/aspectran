@@ -22,7 +22,7 @@ package com.aspectran.core.adapter;
  */
 public abstract class AbstractResponseAdapter implements ResponseAdapter {
 
-    private Object adaptee;
+    private final Object adaptee;
 
     /**
      * Instantiates a new AbstractResponseAdapter.

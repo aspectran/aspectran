@@ -104,12 +104,12 @@ public class ParamsToRuleConverter {
         this.assistant = assistant;
     }
 
-    public void convertAsRule(RootParameters rootParameters) throws Exception {
+    public void convertAsRule(RootParameters rootParameters) throws IllegalRuleException {
         AspectranParameters aspectranParameters = rootParameters.getParameters(RootParameters.aspectran);
         convertAsRule(aspectranParameters);
     }
 
-    public void convertAsRule(AspectranParameters aspectranParameters) throws Exception {
+    public void convertAsRule(AspectranParameters aspectranParameters) throws IllegalRuleException {
         String description = aspectranParameters.getString(AspectranParameters.description);
         if (description != null) {
             assistant.getAssistantLocal().setDescription(description);
@@ -175,7 +175,7 @@ public class ParamsToRuleConverter {
         }
     }
 
-    private void convertAsPendingAppender(AppendParameters appendParameters) throws Exception {
+    private void convertAsPendingAppender(AppendParameters appendParameters) throws IllegalRuleException {
         RuleAppendHandler appendHandler = assistant.getRuleAppendHandler();
         if (appendHandler != null) {
             AspectranParameters aspectran = appendParameters.getParameters(AppendParameters.aspectran);

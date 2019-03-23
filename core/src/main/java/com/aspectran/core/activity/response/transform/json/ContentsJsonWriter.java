@@ -22,7 +22,6 @@ import com.aspectran.core.util.json.JsonWriter;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
 
 /**
@@ -62,7 +61,7 @@ public class ContentsJsonWriter extends JsonWriter {
     }
 
     @Override
-    public ContentsJsonWriter write(Object object) throws IOException, InvocationTargetException {
+    public ContentsJsonWriter write(Object object) throws IOException {
         if (object instanceof ProcessResult) {
             write((ProcessResult)object);
         } else {
@@ -76,9 +75,8 @@ public class ContentsJsonWriter extends JsonWriter {
      *
      * @param processResult the {@code ProcessResult} object to write to a character-output stream
      * @throws IOException if an I/O error has occurred
-     * @throws InvocationTargetException the invocation target exception
      */
-    private void write(ProcessResult processResult) throws IOException, InvocationTargetException {
+    private void write(ProcessResult processResult) throws IOException {
         if (processResult.getName() != null) {
             openCurlyBracket();
             writeName(processResult.getName());
@@ -110,9 +108,8 @@ public class ContentsJsonWriter extends JsonWriter {
      *
      * @param contentResult the {@code ContentResult} object to write to a character-output stream.
      * @throws IOException if an I/O error has occurred
-     * @throws InvocationTargetException the invocation target exception
      */
-    private void write(ContentResult contentResult) throws IOException, InvocationTargetException {
+    private void write(ContentResult contentResult) throws IOException {
         if (contentResult.getName() != null) {
             openCurlyBracket();
             writeName(contentResult.getName());

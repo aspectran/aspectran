@@ -29,7 +29,7 @@ public class VariableParameters extends AbstractParameters implements Serializab
         super(null);
     }
 
-    public VariableParameters(String text) {
+    public VariableParameters(String text) throws AponParseException {
         this(null, text);
     }
 
@@ -37,7 +37,7 @@ public class VariableParameters extends AbstractParameters implements Serializab
         super(parameterDefinitions);
     }
 
-    public VariableParameters(ParameterDefinition[] parameterDefinitions, String text) {
+    public VariableParameters(ParameterDefinition[] parameterDefinitions, String text) throws AponParseException {
         super(parameterDefinitions);
         readFrom(text);
     }

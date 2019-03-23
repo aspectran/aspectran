@@ -20,9 +20,9 @@ package com.aspectran.core.component.bean;
  */
 public class TestConstructorAutowireBean3 {
 
-    public TestFieldAutowireBean bean1;
+    TestFieldAutowireBean bean1;
 
-    public TestFieldValueAutowireBean bean2;
+    TestFieldValueAutowireBean bean2;
 
     public TestConstructorAutowireBean3(
             TestFieldAutowireBean bean1,

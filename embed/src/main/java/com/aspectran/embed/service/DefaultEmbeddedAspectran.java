@@ -211,11 +211,7 @@ public class DefaultEmbeddedAspectran extends AspectranCoreService implements Em
      * @param aspectranConfig the parameters for aspectran configuration
      * @return the instance of {@code DefaultEmbeddedAspectran}
      */
-    protected static DefaultEmbeddedAspectran create(AspectranConfig aspectranConfig) {
-        if (aspectranConfig == null) {
-            throw new IllegalArgumentException("aspectranConfig must not be null");
-        }
-
+    static DefaultEmbeddedAspectran create(AspectranConfig aspectranConfig) {
         ContextConfig contextConfig = aspectranConfig.touchContextConfig();
         String rootFile = contextConfig.getRootFile();
         if (!StringUtils.hasText(rootFile) && !contextConfig.hasAspectranParameters()) {

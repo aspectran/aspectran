@@ -147,35 +147,29 @@ public class ContentsXMLReader implements XMLReader {
     }
 
     @Override
-    public void parse(InputSource is) throws IOException, SAXException {
+    public void parse(InputSource is) throws SAXException {
         if (handler == null) {
             throw new SAXException("No XML ContentHandler");
         }
-        try {
-            ContentsInputSource cis = (ContentsInputSource)is;
-            ProcessResult processResult = cis.getProcessResult();
-            handler.startDocument();
-            if (processResult != null && !processResult.isEmpty()) {
-                parse(processResult);
-            } else {
-                handler.startElement(StringUtils.EMPTY, EMPTY_TAG, EMPTY_TAG, NULL_ATTRS);
-                handler.endElement(StringUtils.EMPTY, EMPTY_TAG, EMPTY_TAG);
-            }
-            handler.endDocument();
-        } catch (InvocationTargetException e) {
-            throw new SAXException("Process results could not be parsed. Cause: " + e.toString());
+        ContentsInputSource cis = (ContentsInputSource)is;
+        ProcessResult processResult = cis.getProcessResult();
+        handler.startDocument();
+        if (processResult != null && !processResult.isEmpty()) {
+            parse(processResult);
+        } else {
+            handler.startElement(StringUtils.EMPTY, EMPTY_TAG, EMPTY_TAG, NULL_ATTRS);
+            handler.endElement(StringUtils.EMPTY, EMPTY_TAG, EMPTY_TAG);
         }
+        handler.endDocument();
     }
 
     /**
      * Parses a {@code ProcessResult} object.
      *
      * @param processResult a {@code ProcessResult} object
-     * @throws IOException if an I/O error has occurred
      * @throws SAXException the SAX exception
-     * @throws InvocationTargetException the invocation target exception
      */
-    private void parse(ProcessResult processResult) throws IOException, SAXException, InvocationTargetException {
+    private void parse(ProcessResult processResult) throws SAXException {
         String contentsName = processResult.getName();
         if (processResult.isExplicit()) {
             if (contentsName != null) {
@@ -225,12 +219,10 @@ public class ContentsXMLReader implements XMLReader {
      * Parses an object.
      *
      * @param object the object
-     * @throws IOException if an I/O error has occurred
      * @throws SAXException the SAX exception
-     * @throws InvocationTargetException the invocation target exception
      */
     @SuppressWarnings("unchecked")
-    private void parse(Object object) throws IOException, SAXException, InvocationTargetException {
+    private void parse(Object object) throws SAXException {
         if (object == null) {
             return;
         }
@@ -284,7 +276,12 @@ public class ContentsXMLReader implements XMLReader {
             String[] readablePropertyNames = BeanUtils.getReadablePropertyNamesWithoutNonSerializable(object);
             if (readablePropertyNames != null && readablePropertyNames.length > 0) {
                 for (String name : readablePropertyNames) {
-                    Object value = BeanUtils.getProperty(object, name);
+                    Object value;
+                    try {
+                        value = BeanUtils.getProperty(object, name);
+                    } catch (InvocationTargetException e) {
+                        throw new SAXException(e);
+                    }
                     checkCircularReference(object, value);
                     handler.startElement(StringUtils.EMPTY, name, name, NULL_ATTRS);
                     parse(value);
@@ -294,9 +291,9 @@ public class ContentsXMLReader implements XMLReader {
         }
     }
 
-    private void checkCircularReference(Object wrapper, Object member) {
+    private void checkCircularReference(Object wrapper, Object member) throws SAXException {
         if (wrapper.equals(member)) {
-            throw new IllegalArgumentException("XML Serialization Failure: A circular reference was detected" +
+            throw new SAXException("XML Serialization Failure: A circular reference was detected" +
                     " while converting a member object [" + member + "] in [" + wrapper + "]");
         }
     }

@@ -21,6 +21,7 @@ import com.aspectran.core.context.rule.type.BeanRefererType;
 import com.aspectran.core.context.rule.type.TriggerType;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.ToStringBuilder;
+import com.aspectran.core.util.apon.AponParseException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -156,14 +157,19 @@ public class ScheduleRule implements BeanReferenceable {
         return scheduleRule;
     }
 
-    public static void updateTrigger(ScheduleRule scheduleRule, String type, String text) {
+    public static void updateTrigger(ScheduleRule scheduleRule, String type, String text) throws IllegalRuleException {
         updateTriggerType(scheduleRule, type);
         updateTrigger(scheduleRule, text);
     }
 
-    public static void updateTrigger(ScheduleRule scheduleRule, String text) {
+    public static void updateTrigger(ScheduleRule scheduleRule, String text) throws IllegalRuleException {
         if (StringUtils.hasText(text)) {
-            TriggerParameters triggerParameters = new TriggerParameters(text);
+            TriggerParameters triggerParameters;
+            try {
+                triggerParameters = new TriggerParameters(text);
+            } catch (AponParseException e) {
+                throw new IllegalRuleException("Trigger parameter can not be parsed", e);
+            }
             updateTrigger(scheduleRule, triggerParameters);
         }
     }

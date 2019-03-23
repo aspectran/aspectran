@@ -26,13 +26,6 @@ public class AponSyntaxException extends AponParseException {
     private static final long serialVersionUID = -2012813522496665651L;
 
     /**
-     * Simple constructor.
-     */
-    public AponSyntaxException() {
-        super();
-    }
-
-    /**
      * Constructor to create exception with a message.
      *
      * @param msg a message to associate with the exception
@@ -50,26 +43,21 @@ public class AponSyntaxException extends AponParseException {
      * @param msg a message to associate with the exception
      */
     public AponSyntaxException(int lineNumber, String line, String tline, String msg) {
-        super(createMessage(lineNumber, line, tline, msg));
+        super(makeMessage(lineNumber, line, tline, msg));
     }
 
     /**
-     * Constructor to create exception to wrap another exception.
+     * Constructor to create exception with a message.
      *
-     * @param cause the real cause of the exception
+     * @param lineNumber the line number
+     * @param line the character line
+     * @param tline the trimmed character line
+     * @param parameterValue the actual value type
+     * @param expectedParameterValueType the expected value type
      */
-    public AponSyntaxException(Throwable cause) {
-        super(cause);
-    }
-
-    /**
-     * Constructor to create exception to wrap another exception and pass a message.
-     *
-     * @param msg the message
-     * @param cause the real cause of the exception
-     */
-    public AponSyntaxException(String msg, Throwable cause) {
-        super(msg, cause);
+    public AponSyntaxException(int lineNumber, String line, String tline, ParameterValue parameterValue,
+                               ParameterValueType expectedParameterValueType) {
+        super(makeMessage(lineNumber, line, tline, parameterValue, expectedParameterValueType));
     }
 
     /**
@@ -81,7 +69,7 @@ public class AponSyntaxException extends AponParseException {
      * @param msg the message
      * @return the detail message
      */
-    protected static String createMessage(int lineNumber, String line, String tline, String msg) {
+    private static String makeMessage(int lineNumber, String line, String tline, String msg) {
         int columnNumber = (tline != null ? line.indexOf(tline) : 0);
         StringBuilder sb = new StringBuilder();
         if (msg != null) {
@@ -104,6 +92,18 @@ public class AponSyntaxException extends AponParseException {
             sb.append("] ").append(tline);
         }
         return sb.toString();
+    }
+
+    private static String makeMessage(int lineNumber, String line, String tline, ParameterValue parameterValue,
+                                        ParameterValueType expectedParameterValueType) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Incompatible value type with expected value type '");
+        sb.append(expectedParameterValueType).append("'");
+        if (parameterValue != null) {
+            sb.append(" for the specified parameter ").append(parameterValue);
+        }
+
+        return makeMessage(lineNumber, line, tline, sb.toString());
     }
 
 }

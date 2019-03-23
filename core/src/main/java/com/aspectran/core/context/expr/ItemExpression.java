@@ -73,28 +73,32 @@ public class ItemExpression extends TokenExpression implements ItemEvaluator {
     @Override
     @SuppressWarnings("unchecked")
     public <T> T evaluate(ItemRule itemRule) {
-        ItemType itemType = itemRule.getType();
-        ItemValueType valueType = itemRule.getValueType();
-        String name = itemRule.getName();
-        Object value = null;
-        if (itemType == ItemType.SINGLE) {
-            Token[] tokens = itemRule.getTokens();
-            value = evaluate(name, tokens, valueType);
-            if (value == null) {
-                value = itemRule.getDefaultValue();
+        try {
+            ItemType itemType = itemRule.getType();
+            ItemValueType valueType = itemRule.getValueType();
+            String name = itemRule.getName();
+            Object value = null;
+            if (itemType == ItemType.SINGLE) {
+                Token[] tokens = itemRule.getTokens();
+                value = evaluate(name, tokens, valueType);
+                if (value == null) {
+                    value = itemRule.getDefaultValue();
+                }
+            } else if (itemType == ItemType.ARRAY) {
+                value = evaluateAsArray(name, itemRule.getTokensList(), valueType);
+            } else if (itemType == ItemType.LIST) {
+                value = evaluateAsList(name, itemRule.getTokensList(), valueType);
+            } else if (itemType == ItemType.SET) {
+                value = evaluateAsSet(name, itemRule.getTokensList(), valueType);
+            } else if (itemType == ItemType.MAP) {
+                value = evaluateAsMap(name, itemRule.getTokensMap(), valueType);
+            } else if (itemType == ItemType.PROPERTIES) {
+                value = evaluateAsProperties(name, itemRule.getTokensMap(), valueType);
             }
-        } else if (itemType == ItemType.ARRAY) {
-            value = evaluateAsArray(name, itemRule.getTokensList(), valueType);
-        } else if (itemType == ItemType.LIST) {
-            value = evaluateAsList(name, itemRule.getTokensList(), valueType);
-        } else if (itemType == ItemType.SET) {
-            value = evaluateAsSet(name, itemRule.getTokensList(), valueType);
-        } else if (itemType == ItemType.MAP) {
-            value = evaluateAsMap(name, itemRule.getTokensMap(), valueType);
-        } else if (itemType == ItemType.PROPERTIES) {
-            value = evaluateAsProperties(name, itemRule.getTokensMap(), valueType);
+            return (T)value;
+        } catch (Exception e) {
+            throw new ItemEvaluationException(itemRule, e);
         }
-        return (T)value;
     }
 
     @Override
@@ -129,55 +133,59 @@ public class ItemExpression extends TokenExpression implements ItemEvaluator {
 
     @Override
     public String[] evaluateAsStringArray(ItemRule itemRule) {
-        ItemType itemType = itemRule.getType();
-        ItemValueType valueType = itemRule.getValueType();
-        String name = itemRule.getName();
-        if (itemType == ItemType.SINGLE) {
-            Token[] tokens = itemRule.getTokens();
-            Object value = evaluate(name, tokens, valueType);
-            if (value != null) {
-                if (value instanceof String[]) {
-                    return (String[])value;
-                } else {
-                    return new String[] { value.toString() };
+        try {
+            ItemType itemType = itemRule.getType();
+            ItemValueType valueType = itemRule.getValueType();
+            String name = itemRule.getName();
+            if (itemType == ItemType.SINGLE) {
+                Token[] tokens = itemRule.getTokens();
+                Object value = evaluate(name, tokens, valueType);
+                if (value != null) {
+                    if (value instanceof String[]) {
+                        return (String[])value;
+                    } else {
+                        return new String[] {value.toString()};
+                    }
+                }
+            } else if (itemType == ItemType.ARRAY) {
+                Object[] values = evaluateAsArray(name, itemRule.getTokensList(), valueType);
+                if (values != null) {
+                    return Arrays.stream(values).map(Object::toString).toArray(String[]::new);
+                }
+            } else if (itemType == ItemType.LIST) {
+                List<Object> list = evaluateAsList(name, itemRule.getTokensList(), valueType);
+                if (list != null) {
+                    return Arrays.stream(list.toArray()).map(Object::toString).toArray(String[]::new);
+                }
+            } else if (itemType == ItemType.SET) {
+                Set<Object> set = evaluateAsSet(name, itemRule.getTokensList(), valueType);
+                if (set != null) {
+                    return Arrays.stream(set.toArray()).map(Object::toString).toArray(String[]::new);
+                }
+            } else if (itemType == ItemType.MAP) {
+                Map<String, Object> map = evaluateAsMap(name, itemRule.getTokensMap(), valueType);
+                if (map != null) {
+                    return new String[] {map.toString()};
+                }
+            } else if (itemType == ItemType.PROPERTIES) {
+                Properties properties = evaluateAsProperties(name, itemRule.getTokensMap(), valueType);
+                if (properties != null) {
+                    return new String[] {properties.toString()};
                 }
             }
-        } else if (itemType == ItemType.ARRAY) {
-            Object[] values = evaluateAsArray(name, itemRule.getTokensList(), valueType);
-            if (values != null) {
-                return Arrays.stream(values).map(Object::toString).toArray(String[]::new);
-            }
-        } else if (itemType == ItemType.LIST) {
-            List<Object> list = evaluateAsList(name, itemRule.getTokensList(), valueType);
-            if (list != null) {
-                return Arrays.stream(list.toArray()).map(Object::toString).toArray(String[]::new);
-            }
-        } else if (itemType == ItemType.SET) {
-            Set<Object> set = evaluateAsSet(name, itemRule.getTokensList(), valueType);
-            if (set != null) {
-                return Arrays.stream(set.toArray()).map(Object::toString).toArray(String[]::new);
-            }
-        } else if (itemType == ItemType.MAP) {
-            Map<String, Object> map = evaluateAsMap(name, itemRule.getTokensMap(), valueType);
-            if (map != null) {
-                return new String[] { map.toString() };
-            }
-        } else if (itemType == ItemType.PROPERTIES) {
-            Properties properties = evaluateAsProperties(name, itemRule.getTokensMap(), valueType);
-            if (properties != null) {
-                return new String[] { properties.toString() };
-            }
+            return null;
+        } catch (Exception e) {
+            throw new ItemEvaluationException(itemRule, e);
         }
-        return null;
     }
 
-    private Object evaluate(String parameterName, Token[] tokens, ItemValueType valueType) {
+    private Object evaluate(String parameterName, Token[] tokens, ItemValueType valueType) throws Exception {
         Object value = evaluate(parameterName, tokens);
         return ((value == null || valueType == null) ? value : valuelize(value, valueType));
     }
 
     @SuppressWarnings("all")
-    private Object[] evaluateAsArray(String parameterName, List<Token[]> tokensList, ItemValueType valueType) {
+    private Object[] evaluateAsArray(String parameterName, List<Token[]> tokensList, ItemValueType valueType) throws Exception {
         List<Object> list = evaluateAsList(parameterName, tokensList, valueType);
         if (list == null) {
             return null;
@@ -205,7 +213,8 @@ public class ItemExpression extends TokenExpression implements ItemEvaluator {
         }
     }
 
-    private List<Object> evaluateAsList(String parameterName, List<Token[]> tokensList, ItemValueType valueType) {
+    private List<Object> evaluateAsList(String parameterName, List<Token[]> tokensList, ItemValueType valueType)
+            throws Exception {
         if (tokensList == null || tokensList.isEmpty()) {
             return getParameterAsList(parameterName, valueType);
         }
@@ -220,7 +229,8 @@ public class ItemExpression extends TokenExpression implements ItemEvaluator {
         return valueList;
     }
 
-    private Set<Object> evaluateAsSet(String parameterName, List<Token[]> tokensList, ItemValueType valueType) {
+    private Set<Object> evaluateAsSet(String parameterName, List<Token[]> tokensList, ItemValueType valueType)
+            throws Exception {
         if (tokensList == null || tokensList.isEmpty()) {
             return getParameterAsSet(parameterName, valueType);
         }
@@ -235,7 +245,8 @@ public class ItemExpression extends TokenExpression implements ItemEvaluator {
         return valueSet;
     }
 
-    private Map<String, Object> evaluateAsMap(String parameterName, Map<String, Token[]> tokensMap, ItemValueType valueType) {
+    private Map<String, Object> evaluateAsMap(String parameterName, Map<String, Token[]> tokensMap, ItemValueType valueType)
+            throws Exception {
         if (tokensMap == null || tokensMap.isEmpty()) {
             Object value = getParameter(parameterName, valueType);
             if (value == null) {
@@ -259,7 +270,8 @@ public class ItemExpression extends TokenExpression implements ItemEvaluator {
         return valueMap;
     }
 
-    private Properties evaluateAsProperties(String parameterName, Map<String, Token[]> tokensMap, ItemValueType valueType) {
+    private Properties evaluateAsProperties(String parameterName, Map<String, Token[]> tokensMap, ItemValueType valueType)
+            throws Exception {
         if (tokensMap == null || tokensMap.isEmpty()) {
             Object value = getParameter(parameterName, valueType);
             if (value == null) {
@@ -302,7 +314,7 @@ public class ItemExpression extends TokenExpression implements ItemEvaluator {
         }
     }
 
-    private List<Object> getParameterAsList(String name, ItemValueType valueType) {
+    private List<Object> getParameterAsList(String name, ItemValueType valueType) throws Exception {
         Object[] values = getParameterValues(name, valueType);
         if (values == null) {
             return null;
@@ -319,7 +331,7 @@ public class ItemExpression extends TokenExpression implements ItemEvaluator {
         return valueList;
     }
 
-    private Set<Object> getParameterAsSet(String name, ItemValueType valueType) {
+    private Set<Object> getParameterAsSet(String name, ItemValueType valueType) throws Exception {
         Object[] values = getParameterValues(name, valueType);
         if (values == null) {
             return null;
@@ -336,7 +348,7 @@ public class ItemExpression extends TokenExpression implements ItemEvaluator {
         return valueSet;
     }
 
-    private Object valuelize(Object value, ItemValueType valueType) {
+    private Object valuelize(Object value, ItemValueType valueType) throws Exception {
         if (valueType == ItemValueType.STRING) {
             return value.toString();
         } else if (valueType == ItemValueType.INT) {

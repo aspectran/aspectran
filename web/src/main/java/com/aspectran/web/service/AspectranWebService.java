@@ -29,6 +29,7 @@ import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.CoreService;
 import com.aspectran.core.service.ServiceStateListener;
 import com.aspectran.core.util.StringUtils;
+import com.aspectran.core.util.apon.AponParseException;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.web.activity.WebActivity;
@@ -280,7 +281,12 @@ public class AspectranWebService extends AspectranCoreService implements WebServ
     private static AspectranWebService create(ServletContext servletContext, String aspectranConfigParam) {
         AspectranConfig aspectranConfig;
         if (aspectranConfigParam != null) {
-            aspectranConfig = new AspectranConfig(aspectranConfigParam);
+            try {
+                aspectranConfig = new AspectranConfig(aspectranConfigParam);
+            } catch (AponParseException e) {
+                throw new AspectranServiceException("Error parsing '" + ASPECTRAN_CONFIG_PARAM +
+                        "' initialization parameter for Aspectran Configuration", e);
+            }
         } else {
             aspectranConfig = new AspectranConfig();
         }

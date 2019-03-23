@@ -65,10 +65,24 @@ public class JettyServer extends Server implements InitializableBean, Disposable
 
     @Override
     public void initialize() throws Exception {
+        start();
+    }
+
+    @Override
+    public void destroy() {
+        try {
+            stop();
+        } catch (Exception e) {
+            log.error("Error while stopping jetty server: " + e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public void doStart() throws Exception {
         synchronized (monitor) {
             if (autoStart) {
                 log.info("Starting embedded Jetty server");
-                start();
+                super.doStart();
                 log.info("Jetty started on port(s) " + getActualPortsDescription()
                         + " with context path '" + getContextPath() + "'");
             }
@@ -76,11 +90,11 @@ public class JettyServer extends Server implements InitializableBean, Disposable
     }
 
     @Override
-    public void destroy() {
+    public void doStop() {
         synchronized (monitor) {
             log.info("Stopping embedded Jetty server");
             try {
-                stop();
+                super.doStop();
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             } catch (Exception e) {

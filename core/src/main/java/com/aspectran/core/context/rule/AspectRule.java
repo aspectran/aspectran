@@ -25,7 +25,6 @@ import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.ToStringBuilder;
-import com.aspectran.core.util.apon.AponParseException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -327,7 +326,7 @@ public class AspectRule implements BeanReferenceable {
     }
 
     public static void updateJoinpoint(AspectRule aspectRule, String type, String text)
-            throws IllegalRuleException, AponParseException {
+            throws IllegalRuleException {
         JoinpointRule joinpointRule = JoinpointRule.newInstance();
         JoinpointRule.updateJoinpointTargetType(joinpointRule, type);
         JoinpointRule.updateJoinpoint(joinpointRule, text);

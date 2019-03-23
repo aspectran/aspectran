@@ -21,7 +21,6 @@ import com.aspectran.core.component.bean.annotation.Parameter;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.expr.token.TokenParser;
 import com.aspectran.core.context.rule.params.CallParameters;
-import com.aspectran.core.context.rule.params.ItemHolderParameters;
 import com.aspectran.core.context.rule.params.ItemParameters;
 import com.aspectran.core.context.rule.type.ItemType;
 import com.aspectran.core.context.rule.type.ItemValueType;
@@ -899,30 +898,6 @@ public class ItemRule {
         }
 
         return itemRule;
-    }
-
-    /**
-     * Convert the given {@code String} into an Item {@code Parameters}.
-     *
-     * @param text the {@code String} to convert
-     * @return the item parameters list
-     */
-    public static List<ItemParameters> toItemParametersList(String text) {
-        Parameters holder = new ItemHolderParameters(text);
-        return holder.getParametersList(ItemHolderParameters.item);
-    }
-
-    /**
-     * Convert the given {@code String} into an {@code ItemRuleMap}.
-     *
-     * @param text the {@code String} to convert
-     * @return an {@code ItemRuleMap}
-     * @throws IllegalRuleException if an illegal rule is found
-     */
-    public static ItemRuleMap toItemRuleMap(String text) throws IllegalRuleException {
-        ItemHolderParameters holder = new ItemHolderParameters(text);
-        List<ItemParameters> itemParametersList = holder.getParametersList();
-        return toItemRuleMap(itemParametersList);
     }
 
     public static ItemRuleMap toItemRuleMap(Parameter[] parameters) throws IllegalRuleException {

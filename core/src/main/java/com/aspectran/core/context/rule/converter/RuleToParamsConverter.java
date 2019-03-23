@@ -95,6 +95,7 @@ import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.core.context.rule.type.ScopeType;
 import com.aspectran.core.context.rule.type.TextStyleType;
 import com.aspectran.core.util.TextStyler;
+import com.aspectran.core.util.apon.AponParseException;
 import com.aspectran.core.util.apon.Parameter;
 import com.aspectran.core.util.apon.ParameterDefinition;
 import com.aspectran.core.util.apon.Parameters;
@@ -874,7 +875,11 @@ public class RuleToParamsConverter {
             return null;
         }
         if (valueType == ItemValueType.PARAMETERS) {
-            return new VariableParameters(value);
+            try {
+                return new VariableParameters(value);
+            } catch (AponParseException e) {
+                throw new RuntimeException("Trigger parameter can not be parsed", e);
+            }
         } else {
             return value;
         }

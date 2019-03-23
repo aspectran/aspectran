@@ -18,17 +18,10 @@ package com.aspectran.core.util.apon;
 /**
  * Exception thrown when an invalid parameter is encountered.
  */
-public class InvalidParameterException extends AponSyntaxException {
+public class InvalidParameterException extends RuntimeException {
 
     /** @serial */
     private static final long serialVersionUID = -459157992330424751L;
-
-    /**
-     * Simple constructor.
-     */
-    public InvalidParameterException() {
-        super();
-    }
 
     /**
      * Constructor to create exception with a message.
@@ -37,18 +30,6 @@ public class InvalidParameterException extends AponSyntaxException {
      */
     public InvalidParameterException(String msg) {
         super(msg);
-    }
-
-    /**
-     * Constructor to create exception with a message.
-     *
-     * @param lineNumber the line number
-     * @param line the character line
-     * @param tline the trimmed character line
-     * @param msg a message to associate with the exception
-     */
-    public InvalidParameterException(int lineNumber, String line, String tline, String msg) {
-        super(lineNumber, line, tline, msg);
     }
 
     /**

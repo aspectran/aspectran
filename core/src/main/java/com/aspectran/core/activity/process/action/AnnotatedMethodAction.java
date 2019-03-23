@@ -131,7 +131,8 @@ public class AnnotatedMethodAction extends AbstractAction {
         return tsb.toString();
     }
 
-    public static Object invokeMethod(Activity activity, Object bean, Method method, ParameterBindingRule[] parameterBindingRules)
+    public static Object invokeMethod(Activity activity, Object bean, Method method,
+                                      ParameterBindingRule[] parameterBindingRules)
             throws Exception {
         ParameterBindingRule parameterBindingRule = null;
         try {

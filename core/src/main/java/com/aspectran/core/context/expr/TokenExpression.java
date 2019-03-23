@@ -67,22 +67,26 @@ public class TokenExpression implements TokenEvaluator {
 
     @Override
     public Object evaluate(Token token) {
-        TokenType tokenType = token.getType();
-        Object value = null;
-        if (tokenType == TokenType.TEXT) {
-            value = token.getDefaultValue();
-        } else if (tokenType == TokenType.BEAN) {
-            value = getBean(token);
-        } else if (tokenType == TokenType.TEMPLATE) {
-            value = getTemplate(token);
-        } else if (tokenType == TokenType.PARAMETER) {
-            value = getParameter(token.getName(), token.getDefaultValue());
-        } else if (tokenType == TokenType.ATTRIBUTE) {
-            value = getAttribute(token);
-        } else if (tokenType == TokenType.PROPERTY) {
-            value = getProperty(token);
+        try {
+            TokenType tokenType = token.getType();
+            Object value = null;
+            if (tokenType == TokenType.TEXT) {
+                value = token.getDefaultValue();
+            } else if (tokenType == TokenType.BEAN) {
+                value = getBean(token);
+            } else if (tokenType == TokenType.TEMPLATE) {
+                value = getTemplate(token);
+            } else if (tokenType == TokenType.PARAMETER) {
+                value = getParameter(token.getName(), token.getDefaultValue());
+            } else if (tokenType == TokenType.ATTRIBUTE) {
+                value = getAttribute(token);
+            } else if (tokenType == TokenType.PROPERTY) {
+                value = getProperty(token);
+            }
+            return value;
+        } catch (Exception e) {
+            throw new TokenEvaluationException(token, e);
         }
-        return value;
     }
 
     @Override
@@ -440,14 +444,9 @@ public class TokenExpression implements TokenEvaluator {
      * @param token the token
      * @return an environment variable
      */
-    protected Object getProperty(Token token) {
+    protected Object getProperty(Token token) throws IOException {
         if (token.getDirectiveType() == TokenDirectiveType.CLASSPATH) {
-            Properties props;
-            try {
-                props = PropertiesLoaderUtils.loadProperties(token.getValue(), activity.getEnvironment().getClassLoader());
-            } catch (IOException e) {
-                throw new TokenEvaluationException("Unable to load properties file for token", token, e);
-            }
+            Properties props = PropertiesLoaderUtils.loadProperties(token.getValue(), activity.getEnvironment().getClassLoader());
             Object value = (token.getGetterName() != null ? props.get(token.getGetterName()) : props);
             return (value != null ? value : token.getDefaultValue());
         } else {
@@ -484,7 +483,7 @@ public class TokenExpression implements TokenEvaluator {
      * @return a casted {@code List} object
      */
     @SuppressWarnings("unchecked")
-    protected static <T> List<T> cast(List<?> list) {
+    private static <T> List<T> cast(List<?> list) {
         return (List<T>)list;
     }
 
@@ -497,7 +496,7 @@ public class TokenExpression implements TokenEvaluator {
      * @return a casted {@code Set} object
      */
     @SuppressWarnings("unchecked")
-    protected static <T> Set<T> cast(Set<?> set) {
+    private static <T> Set<T> cast(Set<?> set) {
         return (Set<T>)set;
     }
 

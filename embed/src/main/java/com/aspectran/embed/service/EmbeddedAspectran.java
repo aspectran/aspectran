@@ -22,6 +22,7 @@ import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.CoreService;
+import com.aspectran.core.util.apon.AponParseException;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
@@ -167,6 +168,9 @@ public interface EmbeddedAspectran extends CoreService {
      * @return the instance of {@code EmbeddedAspectran}
      */
     static EmbeddedAspectran run(String aspectranConfigFile) {
+        if (aspectranConfigFile == null) {
+            throw new IllegalArgumentException("aspectranConfigFile must not be null");
+        }
         File configFile = new File(aspectranConfigFile);
         return run(configFile);
     }
@@ -178,7 +182,15 @@ public interface EmbeddedAspectran extends CoreService {
      * @return the instance of {@code EmbeddedAspectran}
      */
     static EmbeddedAspectran run(File aspectranConfigFile) {
-        AspectranConfig aspectranConfig = new AspectranConfig(aspectranConfigFile);
+        if (aspectranConfigFile == null) {
+            throw new IllegalArgumentException("aspectranConfigFile must not be null");
+        }
+        AspectranConfig aspectranConfig;
+        try {
+            aspectranConfig = new AspectranConfig(aspectranConfigFile);
+        } catch (AponParseException e) {
+            throw new AspectranServiceException("Error parsing aspectran configuration file: " + aspectranConfigFile, e);
+        }
         return run(aspectranConfig);
     }
 
@@ -189,7 +201,15 @@ public interface EmbeddedAspectran extends CoreService {
      * @return the instance of {@code EmbeddedAspectran}
      */
     static EmbeddedAspectran run(Reader configFileReader) {
-        AspectranConfig aspectranConfig = new AspectranConfig(configFileReader);
+        if (configFileReader == null) {
+            throw new IllegalArgumentException("aspectranConfigFile must not be null");
+        }
+        AspectranConfig aspectranConfig;
+        try {
+            aspectranConfig = new AspectranConfig(configFileReader);
+        } catch (AponParseException e) {
+            throw new AspectranServiceException("Error parsing aspectran configuration", e);
+        }
         return run(aspectranConfig);
     }
 
@@ -200,6 +220,9 @@ public interface EmbeddedAspectran extends CoreService {
      * @return the instance of {@code EmbeddedAspectran}
      */
     static EmbeddedAspectran run(AspectranConfig aspectranConfig) {
+        if (aspectranConfig == null) {
+            throw new IllegalArgumentException("aspectranConfig must not be null");
+        }
         try {
             DefaultEmbeddedAspectran aspectran = DefaultEmbeddedAspectran.create(aspectranConfig);
             aspectran.start();

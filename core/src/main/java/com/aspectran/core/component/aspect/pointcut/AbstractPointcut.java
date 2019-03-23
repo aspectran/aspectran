@@ -25,9 +25,9 @@ import java.util.List;
  */
 public abstract class AbstractPointcut implements Pointcut {
 
-    protected final List<PointcutPatternRule> pointcutPatternRuleList;
+    private final List<PointcutPatternRule> pointcutPatternRuleList;
 
-    protected final boolean existsBeanMethodNamePattern;
+    private final boolean existsBeanMethodNamePattern;
 
     public AbstractPointcut(List<PointcutPatternRule> pointcutPatternRuleList) {
         this.pointcutPatternRuleList = pointcutPatternRuleList;
@@ -97,7 +97,8 @@ public abstract class AbstractPointcut implements Pointcut {
      * @param methodName the name of the method that is executed in the bean
      * @return true, if exists matched
      */
-    protected boolean matches(PointcutPatternRule pointcutPatternRule, String transletName, String beanId, String className, String methodName) {
+    protected boolean matches(PointcutPatternRule pointcutPatternRule, String transletName,
+                              String beanId, String className, String methodName) {
         if ((transletName == null && pointcutPatternRule.getTransletNamePattern() != null)
                 || (beanId == null && pointcutPatternRule.getBeanIdPattern() != null)
                 || (className == null && pointcutPatternRule.getClassNamePattern() != null)
@@ -141,16 +142,20 @@ public abstract class AbstractPointcut implements Pointcut {
      * @param methodName the name of the method that is executed in the bean
      * @return true if exists matched; false otherwise
      */
-    protected boolean exists(PointcutPatternRule pointcutPatternRule, String transletName, String beanId, String className, String methodName) {
+    protected boolean exists(PointcutPatternRule pointcutPatternRule, String transletName,
+                             String beanId, String className, String methodName) {
         boolean matched = true;
         if (transletName != null && pointcutPatternRule.getTransletNamePattern() != null) {
-            matched = patternMatches(pointcutPatternRule.getTransletNamePattern(), transletName, ActivityContext.NAME_SEPARATOR_CHAR);
+            matched = patternMatches(pointcutPatternRule.getTransletNamePattern(), transletName,
+                    ActivityContext.NAME_SEPARATOR_CHAR);
         }
         if (matched && beanId != null && pointcutPatternRule.getBeanIdPattern() != null) {
-            matched = patternMatches(pointcutPatternRule.getBeanIdPattern(), beanId, ActivityContext.ID_SEPARATOR_CHAR);
+            matched = patternMatches(pointcutPatternRule.getBeanIdPattern(), beanId,
+                    ActivityContext.ID_SEPARATOR_CHAR);
         }
         if (matched && className != null && pointcutPatternRule.getClassNamePattern() != null) {
-            matched = patternMatches(pointcutPatternRule.getClassNamePattern(), className, ActivityContext.ID_SEPARATOR_CHAR);
+            matched = patternMatches(pointcutPatternRule.getClassNamePattern(), className,
+                    ActivityContext.ID_SEPARATOR_CHAR);
         }
         if (matched && methodName != null && pointcutPatternRule.getMethodNamePattern() != null) {
             matched = patternMatches(pointcutPatternRule.getMethodNamePattern(), methodName);

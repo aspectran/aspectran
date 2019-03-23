@@ -239,7 +239,7 @@ public abstract class AbstractSessionCache implements SessionCache {
      *
      * @param id the session id
      * @return a Session object filled with data or null if the session doesn't exist
-     * @throws Exception
+     * @throws Exception if the session can not be loaded
      */
     private Session loadSession(String id) throws Exception {
         if (sessionDataStore == null) {

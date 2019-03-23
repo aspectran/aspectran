@@ -17,6 +17,7 @@ package com.aspectran.core.context.config;
 
 import com.aspectran.core.util.SystemUtils;
 import com.aspectran.core.util.apon.AbstractParameters;
+import com.aspectran.core.util.apon.AponParseException;
 import com.aspectran.core.util.apon.AponReader;
 import com.aspectran.core.util.apon.ParameterDefinition;
 
@@ -62,17 +63,17 @@ public class AspectranConfig extends AbstractParameters {
         super(parameterDefinitions);
     }
 
-    public AspectranConfig(String text) {
+    public AspectranConfig(String text) throws AponParseException {
         this();
         readFrom(text);
     }
 
-    public AspectranConfig(File configFile) {
+    public AspectranConfig(File configFile) throws AponParseException {
         this();
         AponReader.parse(configFile, this);
     }
 
-    public AspectranConfig(Reader reader) {
+    public AspectranConfig(Reader reader) throws AponParseException {
         this();
         AponReader.parse(reader, this);
     }

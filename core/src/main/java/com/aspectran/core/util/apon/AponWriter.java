@@ -595,8 +595,8 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
             aponWriter.write(parameters);
             aponWriter.close();
             return writer.toString();
-        } catch (Exception e) {
-            throw new AponException("Could not convert to APON formatted string", e);
+        } catch (IOException e) {
+            return null;
         }
     }
 

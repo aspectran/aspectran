@@ -22,6 +22,7 @@ import com.aspectran.core.context.rule.type.JoinpointTargetType;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.ToStringBuilder;
+import com.aspectran.core.util.apon.AponParseException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -150,7 +151,12 @@ public class JoinpointRule {
     public static void updateJoinpoint(JoinpointRule joinpointRule, String text)
             throws IllegalRuleException {
         if (StringUtils.hasText(text)) {
-            JoinpointParameters joinpointParameters = new JoinpointParameters(text);
+            JoinpointParameters joinpointParameters;
+            try {
+                joinpointParameters = new JoinpointParameters(text);
+            } catch (AponParseException e) {
+                throw new IllegalRuleException("Joinpoint parameter can not be parsed", e);
+            }
             updateJoinpoint(joinpointRule, joinpointParameters);
         }
     }
