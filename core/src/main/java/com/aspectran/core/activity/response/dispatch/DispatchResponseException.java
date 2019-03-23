@@ -28,42 +28,7 @@ public class DispatchResponseException extends ResponseException {
     /** @serial */
     private static final long serialVersionUID = 6318844460136930428L;
 
-    private DispatchRule dispatchRule;
-
-    /**
-     * Simple constructor.
-     */
-    public DispatchResponseException() {
-        super();
-    }
-
-    /**
-     * Constructor to create exception with a message.
-     *
-     * @param msg a message to associate with the exception
-     */
-    public DispatchResponseException(String msg) {
-        super(msg);
-    }
-
-    /**
-     * Constructor to create exception to wrap another exception.
-     *
-     * @param cause the real cause of the exception
-     */
-    public DispatchResponseException(Throwable cause) {
-        super(cause);
-    }
-
-    /**
-     * Constructor to create exception to wrap another exception and pass a message.
-     *
-     * @param msg the detail message
-     * @param cause the real cause of the exception
-     */
-    public DispatchResponseException(String msg, Throwable cause) {
-        super(msg, cause);
-    }
+    private final DispatchRule dispatchRule;
 
     /**
      * Constructor to create exception to wrap another exception and pass a message.

@@ -23,7 +23,7 @@ public class TemplateNotFoundException extends TemplateException {
     /** @serial */
     private static final long serialVersionUID = 7022297599581677022L;
 
-    private String templateId;
+    private final String templateId;
 
     /**
      * Instantiates a new TemplateNotFoundException.

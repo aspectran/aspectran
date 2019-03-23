@@ -26,9 +26,9 @@ public class NoUniqueBeanException extends BeanException {
     /** @serial */
     private static final long serialVersionUID = 8350428939010030065L;
 
-    private Class<?> requiredType;
+    private final Class<?> requiredType;
 
-    private BeanRule[] beanRules;
+    private final BeanRule[] beanRules;
 
     /**
      * Instantiates a new NoUniqueBeanException.

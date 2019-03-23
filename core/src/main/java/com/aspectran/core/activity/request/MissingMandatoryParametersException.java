@@ -30,7 +30,7 @@ public class MissingMandatoryParametersException extends RequestException {
     /** @serial */
     private static final long serialVersionUID = 6311784727928597298L;
 
-    private ItemRuleList itemRuleList;
+    private final ItemRuleList itemRuleList;
 
     /**
      * Creates a new MissingMandatoryParametersException referencing

@@ -23,7 +23,7 @@ public class BeanInstantiationException extends BeanException {
     /** @serial */
     private static final long serialVersionUID = 387409430536237392L;
 
-    private Class<?> beanClass;
+    private final Class<?> beanClass;
 
     /**
      * Create a new BeanInstantiationException.

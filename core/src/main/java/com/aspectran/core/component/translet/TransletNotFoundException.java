@@ -25,7 +25,7 @@ public class TransletNotFoundException extends TransletException {
     /** @serial */
     private static final long serialVersionUID = -5619283297296999361L;
 
-    private String transletName;
+    private final String transletName;
 
     /**
      * Constructor to create exception with a message.

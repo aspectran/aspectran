@@ -26,7 +26,7 @@ public class AspectAdviceException extends AspectException {
     /** @serial */
     private static final long serialVersionUID = 6813516429436576091L;
 
-    private AspectAdviceRule aspectAdviceRule;
+    private final AspectAdviceRule aspectAdviceRule;
 
     /**
      * Constructor to create exception to wrap another exception and pass a message.

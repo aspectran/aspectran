@@ -28,42 +28,7 @@ public class TransformResponseException extends ResponseException {
     /** @serial */
     private static final long serialVersionUID = -2902489274291058715L;
 
-    private TransformRule transformRule;
-
-    /**
-     * Instantiates a new TransformResponseException.
-     */
-    public TransformResponseException() {
-        super();
-    }
-
-    /**
-     * Instantiates a new TransformResponseException.
-     *
-     * @param msg a message to associate with the exception
-     */
-    public TransformResponseException(String msg) {
-        super(msg);
-    }
-
-    /**
-     * Instantiates a new TransformResponseException.
-     *
-     * @param cause the real cause of the exception
-     */
-    public TransformResponseException(Throwable cause) {
-        super(cause);
-    }
-
-    /**
-     * Instantiates a new TransformResponseException.
-     *
-     * @param msg the detail message
-     * @param cause the real cause of the exception
-     */
-    public TransformResponseException(String msg, Throwable cause) {
-        super(msg, cause);
-    }
+    private final TransformRule transformRule;
 
     /**
      * Instantiates a new TransformResponseException.

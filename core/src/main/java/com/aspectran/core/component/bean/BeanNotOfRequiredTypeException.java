@@ -25,7 +25,7 @@ public class BeanNotOfRequiredTypeException extends BeanException {
     /** @serial */
     private static final long serialVersionUID = -6483506119764294512L;
 
-    private Class<?> requiredType;
+    private final Class<?> requiredType;
 
     /**
      * Create a new BeanNotOfRequiredTypeException.

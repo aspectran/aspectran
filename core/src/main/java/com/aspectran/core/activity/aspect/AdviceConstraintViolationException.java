@@ -32,9 +32,9 @@ public class AdviceConstraintViolationException extends AspectException {
     /** @serial */
     private static final long serialVersionUID = -5175491727350661063L;
 
-    private Set<AspectRule> relevantAspectRules = new LinkedHashSet<>();
+    private final Set<AspectRule> relevantAspectRules = new LinkedHashSet<>();
 
-    private List<String> violations = new ArrayList<>();
+    private final List<String> violations = new ArrayList<>();
 
     public AdviceConstraintViolationException() {
         super("Advice constraint violation has occurred");
