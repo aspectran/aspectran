@@ -40,7 +40,7 @@ class ContentsAponAssemblerTest {
         actionResult2.setResultValue("action1.result2", "value2");
         contentResult.addActionResult(actionResult2);
 
-        Parameters parameters = ContentsAponAssembler.assemble(processResult);
+        Parameters parameters = ContentsAponReader.read(processResult);
 
         System.out.println(parameters);
     }
@@ -66,7 +66,7 @@ class ContentsAponAssemblerTest {
         actionResult3.setResultValue("action1", "value3");
         contentResult.addActionResult(actionResult3);
 
-        Parameters parameters = ContentsAponAssembler.assemble(processResult);
+        Parameters parameters = ContentsAponReader.read(processResult);
 
         System.out.println(parameters);
     }
@@ -93,7 +93,7 @@ class ContentsAponAssemblerTest {
         actionResult3.setResultValue("action3", "value3");
         contentResult.addActionResult(actionResult3);
 
-        Parameters parameters = ContentsAponAssembler.assemble(processResult);
+        Parameters parameters = ContentsAponReader.read(processResult);
 
         System.out.println(parameters);
     }
@@ -139,7 +139,7 @@ class ContentsAponAssemblerTest {
         actionResult23.setResultValue("action3", "value3");
         contentResult2.addActionResult(actionResult23);
 
-        Parameters parameters = ContentsAponAssembler.assemble(processResult);
+        Parameters parameters = ContentsAponReader.read(processResult);
 
         System.out.println(parameters);
     }
@@ -159,7 +159,7 @@ class ContentsAponAssemblerTest {
         actionResult1.setResultValue(null, map);
         contentResult.addActionResult(actionResult1);
 
-        Parameters parameters = ContentsAponAssembler.assemble(processResult);
+        Parameters parameters = ContentsAponReader.read(processResult);
 
         System.out.println(parameters);
     }
@@ -188,7 +188,7 @@ class ContentsAponAssemblerTest {
         actionResult3.setResultValue("action2", "value3");
         contentResult.addActionResult(actionResult3);
 
-        Parameters parameters = ContentsAponAssembler.assemble(processResult);
+        Parameters parameters = ContentsAponReader.read(processResult);
 
         System.out.println(parameters);
     }

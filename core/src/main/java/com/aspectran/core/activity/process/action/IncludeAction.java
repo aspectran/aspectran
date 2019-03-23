@@ -26,7 +26,7 @@ import com.aspectran.core.util.ToStringBuilder;
 import java.util.Map;
 
 /**
- * The Class IncludeAction.
+ * {@code IncludeAction} to get the execution result of another translet.
  * 
  * <p>Created: 2008. 06. 05 PM 9:22:05</p>
  */

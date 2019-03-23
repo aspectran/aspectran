@@ -35,7 +35,7 @@ import java.lang.reflect.Method;
 import java.util.Map;
 
 /**
- * The BeanMethodAction that invoking method in the bean instance.
+ * {@code BeanMethodAction} that invokes a method of the bean instance.
  * 
  * <p>Created: 2008. 03. 22 PM 5:50:35</p>
  */

@@ -19,6 +19,7 @@ import com.aspectran.core.activity.process.result.ActionResult;
 import com.aspectran.core.activity.process.result.ContentResult;
 import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.util.BeanUtils;
+import com.aspectran.core.util.apon.InvalidParameterException;
 import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.apon.VariableParameters;
 
@@ -33,9 +34,9 @@ import java.util.Map;
  * 
  * <p>Created: 2015. 03. 16 PM 11:14:29</p>
  */
-public class ContentsAponAssembler {
+public class ContentsAponReader {
 
-    public static Parameters assemble(ProcessResult processResult) throws InvocationTargetException {
+    public static Parameters read(ProcessResult processResult) {
         if (processResult == null || processResult.isEmpty()) {
             return null;
         }
@@ -55,12 +56,12 @@ public class ContentsAponAssembler {
 
         Parameters container = new VariableParameters();
         for (ContentResult contentResult : processResult) {
-            assemble(contentResult, container);
+            read(contentResult, container);
         }
         return container;
     }
 
-    private static void assemble(ContentResult contentResult, Parameters container) throws InvocationTargetException {
+    private static void read(ContentResult contentResult, Parameters container) {
         if (contentResult.getName() != null) {
             Parameters p = new VariableParameters();
             container.putValue(contentResult.getName(), p);
@@ -71,12 +72,12 @@ public class ContentsAponAssembler {
         }
     }
 
-    private static void putValue(Parameters container, String name, Object value) throws InvocationTargetException {
+    private static void putValue(Parameters container, String name, Object value) {
         if (value == null) {
             return;
         }
         if (name == null) {
-            Object o = assemble(value);
+            Object o = valuelize(value);
             if (o instanceof Parameters) {
                 container.putAll((Parameters)o);
             }
@@ -87,7 +88,7 @@ public class ContentsAponAssembler {
             if (value instanceof Collection<?>) {
                 for (Object o : ((Collection<?>)value)) {
                     if (o != null) {
-                        container.putValue(name, assemble(o));
+                        container.putValue(name, valuelize(o));
                     }
                 }
             } else if (value.getClass().isArray()) {
@@ -95,17 +96,16 @@ public class ContentsAponAssembler {
                 for (int i = 0; i < len; i++) {
                     Object o = Array.get(value, i);
                     if (o != null) {
-                        container.putValue(name, assemble(o));
+                        container.putValue(name, valuelize(o));
                     }
                 }
             } else {
-                container.putValue(name, assemble(value));
+                container.putValue(name, valuelize(value));
             }
         }
     }
 
-    @SuppressWarnings("unchecked")
-    private static Object assemble(Object object) throws InvocationTargetException {
+    private static Object valuelize(Object object) {
         if (object instanceof Parameters
                 || object instanceof String
                 || object instanceof Number
@@ -114,11 +114,11 @@ public class ContentsAponAssembler {
             return object;
         } else if (object instanceof Map<?, ?>) {
             Parameters p = new VariableParameters();
-            for (Map.Entry<Object, Object> entry : ((Map<Object, Object>)object).entrySet()) {
+            for (Map.Entry<?, ?> entry : ((Map<?, ?>)object).entrySet()) {
                 String name = entry.getKey().toString();
                 Object value = entry.getValue();
                 checkCircularReference(object, value);
-                p.putValue(name, assemble(value));
+                p.putValue(name, valuelize(value));
             }
             return p;
         } else if (object instanceof Collection<?>) {
@@ -130,9 +130,14 @@ public class ContentsAponAssembler {
             if (readablePropertyNames != null && readablePropertyNames.length > 0) {
                 Parameters p = new VariableParameters();
                 for (String name : readablePropertyNames) {
-                    Object value = BeanUtils.getProperty(object, name);
+                    Object value;
+                    try {
+                        value = BeanUtils.getProperty(object, name);
+                    } catch (InvocationTargetException e) {
+                        throw new InvalidParameterException(e);
+                    }
                     checkCircularReference(object, value);
-                    p.putValue(name, assemble(value));
+                    p.putValue(name, valuelize(value));
                 }
                 return p;
             } else {
@@ -143,7 +148,7 @@ public class ContentsAponAssembler {
 
     private static void checkCircularReference(Object wrapper, Object member) {
         if (wrapper.equals(member)) {
-            throw new IllegalArgumentException("APON Serialization Failure: A circular reference was detected " +
+            throw new InvalidParameterException("APON Serialization Failure: A circular reference was detected " +
                     "while converting a member object [" + member + "] in [" + wrapper + "]");
         }
     }

@@ -126,26 +126,6 @@ public class ContentsXMLReader implements XMLReader {
         return false;
     }
 
-    /**
-     * Outputs a string.
-     *
-     * @param s the input string
-     * @throws SAXException the SAX exception
-     */
-    protected void outputString(String s) throws SAXException {
-        handler.characters(s.toCharArray(), 0, s.length());
-    }
-
-    /**
-     * Output a ignorable whitespace string.
-     *
-     * @param s the whitespace string
-     * @throws SAXException the SAX exception
-     */
-    protected void outputIgnorableWhitespace(String s) throws SAXException {
-        handler.characters(s.toCharArray(), 0, s.length());
-    }
-
     @Override
     public void parse(InputSource is) throws SAXException {
         if (handler == null) {
@@ -155,7 +135,7 @@ public class ContentsXMLReader implements XMLReader {
         ProcessResult processResult = cis.getProcessResult();
         handler.startDocument();
         if (processResult != null && !processResult.isEmpty()) {
-            parse(processResult);
+            output(processResult);
         } else {
             handler.startElement(StringUtils.EMPTY, EMPTY_TAG, EMPTY_TAG, NULL_ATTRS);
             handler.endElement(StringUtils.EMPTY, EMPTY_TAG, EMPTY_TAG);
@@ -163,13 +143,7 @@ public class ContentsXMLReader implements XMLReader {
         handler.endDocument();
     }
 
-    /**
-     * Parses a {@code ProcessResult} object.
-     *
-     * @param processResult a {@code ProcessResult} object
-     * @throws SAXException the SAX exception
-     */
-    private void parse(ProcessResult processResult) throws SAXException {
+    private void output(ProcessResult processResult) throws SAXException {
         String contentsName = processResult.getName();
         if (processResult.isExplicit()) {
             if (contentsName != null) {
@@ -193,7 +167,7 @@ public class ContentsXMLReader implements XMLReader {
                 if (actionId != null) {
                     handler.startElement(StringUtils.EMPTY, actionId, actionId, NULL_ATTRS);
                 }
-                parse(resultValue);
+                output(resultValue);
                 if (actionId != null) {
                     handler.endElement(StringUtils.EMPTY, actionId, actionId);
                 }
@@ -215,19 +189,12 @@ public class ContentsXMLReader implements XMLReader {
         }
     }
 
-    /**
-     * Parses an object.
-     *
-     * @param object the object
-     * @throws SAXException the SAX exception
-     */
-    @SuppressWarnings("unchecked")
-    private void parse(Object object) throws SAXException {
+    private void output(Object object) throws SAXException {
         if (object == null) {
             return;
         }
         if (object instanceof ProcessResult) {
-            parse((ProcessResult)object);
+            output((ProcessResult)object);
         } else if (object instanceof String
                 || object instanceof Number
                 || object instanceof Boolean
@@ -240,24 +207,24 @@ public class ContentsXMLReader implements XMLReader {
                 Object value = p.getValue();
                 checkCircularReference(object, value);
                 handler.startElement(StringUtils.EMPTY, name, name, NULL_ATTRS);
-                parse(value);
+                output(value);
                 handler.endElement(StringUtils.EMPTY, name, name);
             }
         } else if (object instanceof Map<?, ?>) {
-            for (Map.Entry<Object, Object> entry : ((Map<Object, Object>)object).entrySet()) {
+            for (Map.Entry<?, ?> entry : ((Map<?, ?>)object).entrySet()) {
                 String name = entry.getKey().toString();
                 Object value = entry.getValue();
                 checkCircularReference(object, value);
                 handler.startElement(StringUtils.EMPTY, name, name, NULL_ATTRS);
-                parse(value);
+                output(value);
                 handler.endElement(StringUtils.EMPTY, name, name);
             }
         } else if (object instanceof Collection<?>) {
             handler.startElement(StringUtils.EMPTY, ROWS_TAG, ROWS_TAG, NULL_ATTRS);
-            for (Object value : ((Collection<Object>) object)) {
+            for (Object value : ((Collection<?>) object)) {
                 checkCircularReference(object, value);
                 handler.startElement(StringUtils.EMPTY, ROW_TAG, ROW_TAG, NULL_ATTRS);
-                parse(value);
+                output(value);
                 handler.endElement(StringUtils.EMPTY, ROW_TAG, ROW_TAG);
             }
             handler.endElement(StringUtils.EMPTY, ROWS_TAG, ROWS_TAG);
@@ -268,7 +235,7 @@ public class ContentsXMLReader implements XMLReader {
                 Object value = Array.get(object, i);
                 checkCircularReference(object, value);
                 handler.startElement(StringUtils.EMPTY, ROW_TAG, ROW_TAG, NULL_ATTRS);
-                parse(value);
+                output(value);
                 handler.endElement(StringUtils.EMPTY, ROW_TAG, ROW_TAG);
             }
             handler.endElement(StringUtils.EMPTY, ROWS_TAG, ROWS_TAG);
@@ -284,11 +251,21 @@ public class ContentsXMLReader implements XMLReader {
                     }
                     checkCircularReference(object, value);
                     handler.startElement(StringUtils.EMPTY, name, name, NULL_ATTRS);
-                    parse(value);
+                    output(value);
                     handler.endElement(StringUtils.EMPTY, name, name);
                 }
             }
         }
+    }
+
+    /**
+     * Outputs a string.
+     *
+     * @param s the input string
+     * @throws SAXException the SAX exception
+     */
+    private void outputString(String s) throws SAXException {
+        handler.characters(s.toCharArray(), 0, s.length());
     }
 
     private void checkCircularReference(Object wrapper, Object member) throws SAXException {

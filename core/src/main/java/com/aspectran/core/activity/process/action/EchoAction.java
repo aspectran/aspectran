@@ -24,7 +24,7 @@ import com.aspectran.core.context.rule.type.ActionType;
 import com.aspectran.core.util.ToStringBuilder;
 
 /**
- * The Class EchoAction.
+ * {@code EchoAction} to produce attributes.
  * 
  * <p>Created: 2008. 03. 22 PM 5:50:44</p>
  */

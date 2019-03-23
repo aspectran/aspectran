@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Action rule for setting headers in response.
+ * {@code HeaderAction} to set response headers.
  * 
  * <p>Created: 2016. 08. 23.</p>
  * 

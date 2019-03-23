@@ -19,7 +19,7 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.activity.response.Response;
-import com.aspectran.core.activity.response.transform.apon.ContentsAponAssembler;
+import com.aspectran.core.activity.response.transform.apon.ContentsAponReader;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.util.apon.AponWriter;
@@ -83,7 +83,7 @@ public class AponTransformResponse extends TransformResponse {
 
             Writer writer = responseAdapter.getWriter();
             ProcessResult processResult = activity.getProcessResult();
-            Parameters parameters = ContentsAponAssembler.assemble(processResult);
+            Parameters parameters = ContentsAponReader.read(processResult);
 
             AponWriter aponWriter;
             if (pretty == Boolean.FALSE) {

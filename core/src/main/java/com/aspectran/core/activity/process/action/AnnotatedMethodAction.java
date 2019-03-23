@@ -53,7 +53,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * The AnnotatedMethodAction that invoking method in the bean instance.
+ * {@code AnnotatedMethodAction} that invokes a method of the bean instance
+ * specified by the annotation.
  * 
  * <p>Created: 2016. 2. 9.</p>
  *
