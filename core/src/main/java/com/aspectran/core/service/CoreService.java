@@ -26,10 +26,15 @@ import com.aspectran.core.context.resource.AspectranClassLoader;
  */
 public interface CoreService {
 
+    /**
+     * Returns the base path where the root application is running.
+     *
+     * @return the base path for the root application
+     */
     String getBasePath();
 
     /**
-     * Gets the application adapter.
+     * Returns the application adapter.
      *
      * @return the application adapter
      */
@@ -44,21 +49,21 @@ public interface CoreService {
     boolean isLateStart();
 
     /**
-     * Gets the activity context.
+     * Returns the activity context.
      *
      * @return the activity context
      */
     ActivityContext getActivityContext();
 
     /**
-     * Gets the default activity.
+     * Returns the default activity.
      *
      * @return the default activity
      */
     Activity getDefaultActivity();
 
     /**
-     * Gets the aspectran class loader.
+     * Returns the aspectran class loader.
      *
      * @return the aspectran class loader
      */

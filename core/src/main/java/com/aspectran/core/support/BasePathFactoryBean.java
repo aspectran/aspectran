@@ -21,7 +21,7 @@ import com.aspectran.core.component.bean.aware.EnvironmentAware;
 import com.aspectran.core.context.env.Environment;
 
 /**
- * {@code BasePathFactoryBean} that returns the base path under which the application is running.
+ * {@code BasePathFactoryBean} that returns the base path where the root application is running.
  * This can be used to reference the base path by declaring it as a bean in the Aspectran
  * configuration metadata.
  *
