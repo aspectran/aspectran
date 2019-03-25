@@ -272,7 +272,7 @@ public abstract class AbstractServiceController implements ServiceController {
                 }
 
                 try {
-                    log.info("Stopping the " + getServiceName());
+                    log.info("Stopping " + getServiceName());
 
                     doStop();
 

@@ -98,15 +98,15 @@ do_start() {
 do_stop() {
     sleep 0.5
     if [ ! -f "$LOCK_FILE" ]; then
-        echo "Aspectran daemon not running, will do nothing."
+        echo "Aspectran daemon is not running, will do nothing."
         exit 1
     else
-        echo "Stopping the Aspectran daemon..."
+        echo "Stopping Aspectran daemon..."
         echo "command: quit" > "$BASE_DIR/inbound/99-quit.apon"
         while [ -f "$LOCK_FILE" ]; do
             sleep 0.5
         done
-        echo "The Aspectran daemon has stopped."
+        echo "Aspectran daemon has stopped."
     fi
     sleep 0.5
 }

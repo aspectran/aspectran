@@ -15,7 +15,6 @@
  */
 package com.aspectran.scheduler.service;
 
-import com.aspectran.core.activity.process.action.ActionExecutionException;
 import com.aspectran.core.component.schedule.ScheduleRuleRegistry;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.ScheduleRule;
@@ -53,11 +52,11 @@ import java.util.Set;
  */
 public class QuartzSchedulerService extends AbstractServiceController implements SchedulerService {
 
+    private static final Log log = LogFactory.getLog(QuartzSchedulerService.class);
+
     static final String SERVICE_DATA_KEY = "SERVICE";
 
     static final String JOB_RULE_DATA_KEY = "JOB_RULE";
-
-    private static final Log log = LogFactory.getLog(QuartzSchedulerService.class);
 
     private final Set<Scheduler> schedulerSet = new HashSet<>();
 
@@ -251,7 +250,7 @@ public class QuartzSchedulerService extends AbstractServiceController implements
             scheduler = getActivityContext().getBeanRegistry().getBean(scheduleRule.getSchedulerBeanId());
         }
         if (scheduler == null) {
-            throw new ActionExecutionException("No such scheduler bean; Invalid ScheduleRule " + scheduleRule);
+            throw new SchedulerServiceException("No such scheduler bean; Invalid ScheduleRule " + scheduleRule);
         }
 
         List<ScheduledJobRule> jobRuleList = scheduleRule.getScheduledJobRuleList();

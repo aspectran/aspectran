@@ -63,7 +63,7 @@ public class JsvcDaemon implements Daemon {
     public void stop() throws Exception {
         if (defaultDaemon != null) {
             if (!defaultDaemon.isActive()) {
-                throw new Exception("Aspectran daemon not running, will do nothing");
+                throw new Exception("Aspectran daemon is not running, will do nothing");
             }
             defaultDaemon.stop();
         }

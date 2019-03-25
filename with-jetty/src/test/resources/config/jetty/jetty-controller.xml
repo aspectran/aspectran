@@ -54,7 +54,7 @@
     <translet name="jetty stop">
         <description style="apon">
             |
-            |   {{cyan}}Stopping the Jetty Server...{{reset}}
+            |   {{cyan}}Stopping Jetty Server...{{reset}}
             |-----------------------------------------
         </description>
         <action bean="jetty.server" method="stop"/>
