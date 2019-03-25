@@ -443,6 +443,7 @@ public class TokenExpression implements TokenEvaluator {
      *
      * @param token the token
      * @return an environment variable
+     * @throws IOException if an I/O error has occurred
      */
     protected Object getProperty(Token token) throws IOException {
         if (token.getDirectiveType() == TokenDirectiveType.CLASSPATH) {

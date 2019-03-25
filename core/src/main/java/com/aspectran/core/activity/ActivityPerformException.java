@@ -16,47 +16,47 @@
 package com.aspectran.core.activity;
 
 /**
- * Exception thrown when an activity fails.
- * 
- * <p>Created: 2008. 01. 07 AM 3:35:55</p>
+ * Exception thrown when an attempt to perform an activity fails.
+ *
+ * <p>Created: 2019. 03. 25.</p>
  */
-public class ActivityException extends RuntimeException {
+public class ActivityPerformException extends ActivityException {
 
     /** @serial */
-    private static final long serialVersionUID = -4400747654771758521L;
+    private static final long serialVersionUID = 2728451652587414622L;
 
     /**
-     * Instantiates a new ActivityException.
+     * Instantiates a new ActivityPerformException.
      */
-    public ActivityException() {
+    public ActivityPerformException() {
         super();
     }
 
     /**
-     * Instantiates a new ActivityException.
+     * Instantiates a new ActivityPerformException.
      *
      * @param msg a message to associate with the exception
      */
-    public ActivityException(String msg) {
+    public ActivityPerformException(String msg) {
         super(msg);
     }
 
     /**
-     * Instantiates a new ActivityException.
+     * Instantiates a new ActivityPerformException.
      *
      * @param cause the real cause of the exception
      */
-    public ActivityException(Throwable cause) {
+    public ActivityPerformException(Throwable cause) {
         super(cause);
     }
 
     /**
-     * Instantiates a new ActivityException.
+     * Instantiates a new ActivityPerformException.
      *
      * @param msg the message
      * @param cause the real cause of the exception
      */
-    public ActivityException(String msg, Throwable cause) {
+    public ActivityPerformException(String msg, Throwable cause) {
         super(msg, cause);
     }
 

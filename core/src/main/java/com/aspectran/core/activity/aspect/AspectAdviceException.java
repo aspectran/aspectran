@@ -15,13 +15,13 @@
  */
 package com.aspectran.core.activity.aspect;
 
-import com.aspectran.core.component.aspect.AspectException;
+import com.aspectran.core.activity.ActivityException;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 
 /**
  * The Class AspectAdviceException.
  */
-public class AspectAdviceException extends AspectException {
+public class AspectAdviceException extends ActivityException {
 
     /** @serial */
     private static final long serialVersionUID = 6813516429436576091L;

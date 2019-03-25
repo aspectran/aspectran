@@ -17,8 +17,8 @@ package com.aspectran.web.service;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.ActivityTerminatedException;
+import com.aspectran.core.activity.TransletNotFoundException;
 import com.aspectran.core.activity.request.RequestMethodNotAllowedException;
-import com.aspectran.core.component.translet.TransletNotFoundException;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.config.ContextConfig;

@@ -21,7 +21,6 @@ import com.aspectran.shell.console.Console;
 import com.aspectran.shell.jline.console.JLineConsole;
 
 import java.io.File;
-import java.io.IOException;
 
 /**
  * Main entry point for the Aspectran Shell using JLine.
@@ -38,7 +37,7 @@ public class JLineAspectranShell {
         try {
             Console console = new JLineConsole();
             AspectranShell.bootstrap(basePath, aspectranConfigFile, console);
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace(System.err);
         }
     }

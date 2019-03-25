@@ -29,7 +29,6 @@ import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.adapter.BasicSessionAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.component.bean.scope.Scope;
-import com.aspectran.core.component.translet.TransletNotFoundException;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.expr.BooleanExpression;
 import com.aspectran.core.context.expr.ItemEvaluator;
@@ -163,7 +162,7 @@ public class CoreActivity extends AdviceActivity {
 
             prepareAspectAdviceRule(transletRule, (parentTranslet != null));
             parseRequest();
-            parsePathVariable();
+            parsePathVariables();
 
             if (parentTranslet == null) {
                 resolveLocale();
@@ -171,7 +170,7 @@ public class CoreActivity extends AdviceActivity {
         } catch (ActivityTerminatedException e) {
             throw e;
         } catch (Exception e) {
-            throw new ActivityException("Failed to prepare activity for translet " + transletRule, e);
+            throw new ActivityPrepareException("Failed to prepare activity for translet " + transletRule, e);
         }
     }
 
@@ -234,8 +233,10 @@ public class CoreActivity extends AdviceActivity {
             }
 
             setCurrentAspectAdviceType(null);
+        } catch (ActivityTerminatedException e) {
+            throw e;
         } catch (Throwable e) {
-            throw new ActivityException("An error occurred while performing the activity", e);
+            throw new ActivityPerformException("An error occurred while performing the activity", e);
         } finally {
             if (forwardRule == null) {
                 Scope requestScope = getRequestAdapter().getRequestScope(false);
@@ -334,7 +335,7 @@ public class CoreActivity extends AdviceActivity {
                 getResponseAdapter().flush();
             }
         } catch (Exception e) {
-            log.error("Failed to finish activity", e);
+            log.error("An error was detected while finishing an activity", e);
         } finally {
             removeCurrentActivity();
         }
@@ -471,7 +472,7 @@ public class CoreActivity extends AdviceActivity {
         }
     }
 
-    private void parsePathVariable() {
+    private void parsePathVariables() {
         Token[] nameTokens = getTransletRule().getNameTokens();
         if (nameTokens != null && !(nameTokens.length == 1 && nameTokens[0].getType() == TokenType.TEXT)) {
             PathVariableMap pathVariableMap = PathVariableMap.parse(nameTokens, translet.getRequestName());
@@ -588,7 +589,7 @@ public class CoreActivity extends AdviceActivity {
             Object resultValue = action.execute(this);
             if (!action.isHidden() && contentResult != null && resultValue != ActionResult.NO_RESULT) {
                 if (resultValue instanceof ProcessResult) {
-                    contentResult.addActionResult(action, (ProcessResult)resultValue);
+                    contentResult.addActionResult(action, (ProcessResult) resultValue);
                 } else {
                     contentResult.addActionResult(action, resultValue);
                 }
@@ -598,7 +599,6 @@ public class CoreActivity extends AdviceActivity {
                 reserveResponse(chooseWhenRule.getResponse());
             }
         } catch (ActionExecutionException e) {
-            setRaisedException(e.getCause() != null ? e.getCause() : e);
             throw e;
         } catch (Exception e) {
             setRaisedException(e);

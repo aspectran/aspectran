@@ -82,11 +82,11 @@ public class FileRuleAppender extends AbstractRuleAppender {
         try {
             File file = getFile();
             if (!file.isFile()) {
-                throw new IOException("Is this a file?");
+                throw new IllegalArgumentException("Not a file: " + file);
             }
             setLastModified(file.lastModified());
             return new FileInputStream(file);
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new IOException("Failed to create input stream from rule file: " +
                     getFile().getAbsolutePath(), e);
         }

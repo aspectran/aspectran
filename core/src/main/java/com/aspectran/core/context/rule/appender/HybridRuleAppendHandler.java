@@ -75,7 +75,9 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
                     File aponFile = makeAponFile((FileRuleAppender)appender);
 
                     if (appender.getLastModified() == aponFile.lastModified()) {
-                        log.info("Rapid configuration loading with an APON file: " + aponFile);
+                        if (log.isDebugEnabled()) {
+                            log.debug("Rapid configuration loading with an APON file: " + aponFile);
+                        }
 
                         hybridon = true;
 
@@ -105,7 +107,7 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
                 if (appender.getAppenderType() == AppenderType.FILE
                         && appender.getAppendedFileFormatType() == AppendedFileFormatType.XML) {
                     //appender.setProfiles(null);
-                    saveAsAponFormatted((FileRuleAppender)appender);
+                    saveAsAponFile((FileRuleAppender)appender);
                 }
             }
         }
@@ -118,8 +120,10 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
         return ruleConverter;
     }
 
-    private void saveAsAponFormatted(FileRuleAppender fileRuleAppender) {
-        log.info("Save as APON formatted: " + fileRuleAppender);
+    private void saveAsAponFile(FileRuleAppender fileRuleAppender) {
+        if (log.isDebugEnabled()) {
+            log.debug("Save as APON file: " + fileRuleAppender);
+        }
 
         File aponFile = null;
         try {
@@ -157,7 +161,7 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
 
             aponFile.setLastModified(fileRuleAppender.getLastModified());
         } catch (Exception e) {
-            log.error("Failed to save converted to APON format file: " + aponFile, e);
+            log.error("Failed to save file converted to APON format: " + aponFile, e);
         }
     }
 

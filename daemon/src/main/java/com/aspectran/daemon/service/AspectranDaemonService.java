@@ -15,7 +15,6 @@
  */
 package com.aspectran.daemon.service;
 
-import com.aspectran.core.activity.ActivityException;
 import com.aspectran.core.activity.ActivityTerminatedException;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.request.ParameterMap;
@@ -30,6 +29,7 @@ import com.aspectran.core.context.config.ExposalsConfig;
 import com.aspectran.core.context.config.SessionConfig;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.service.AspectranCoreService;
+import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.ServiceStateListener;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Log;
@@ -135,10 +135,8 @@ public class AspectranDaemonService extends AspectranCoreService implements Daem
             if (log.isDebugEnabled()) {
                 log.debug("Activity terminated: " + e.getMessage());
             }
-        } catch (ActivityException e) {
-            throw e;
         } catch (Exception e) {
-            throw new ActivityException("An error occurred while processing translet: " + name, e);
+            throw new AspectranServiceException("An error occurred while processing translet: " + name, e);
         } finally {
             if (activity != null) {
                 activity.finish();
@@ -201,7 +199,8 @@ public class AspectranDaemonService extends AspectranCoreService implements Daem
             @Override
             public void paused(long millis) {
                 if (millis < 0L) {
-                    throw new IllegalArgumentException("Pause timeout in milliseconds needs to be set to a value of greater than 0");
+                    throw new IllegalArgumentException("Pause timeout in milliseconds needs to be set " +
+                            "to a value of greater than 0");
                 }
                 service.pauseTimeout = System.currentTimeMillis() + millis;
             }

@@ -194,6 +194,7 @@ public class ContextRuleAssistant {
      *
      * @param name the name
      * @param value the value
+     * @throws IllegalRuleException if an unknown setting name is found
      */
     public void putSetting(String name, String value) throws IllegalRuleException {
         if (StringUtils.isEmpty(name)) {
@@ -343,6 +344,7 @@ public class ContextRuleAssistant {
      * Resolve bean class for the aspect rule.
      *
      * @param aspectRule the aspect rule
+     * @throws IllegalRuleException if an illegal rule is found
      */
     public void resolveAdviceBeanClass(AspectRule aspectRule) throws IllegalRuleException {
         String beanIdOrClass = aspectRule.getAdviceBeanId();
@@ -361,6 +363,7 @@ public class ContextRuleAssistant {
      * Resolve bean class for bean method action rule.
      *
      * @param beanMethodActionRule the bean method action rule
+     * @throws IllegalRuleException if an illegal rule is found
      */
     public void resolveActionBeanClass(BeanMethodActionRule beanMethodActionRule) throws IllegalRuleException {
         String beanIdOrClass = beanMethodActionRule.getBeanId();
@@ -379,6 +382,7 @@ public class ContextRuleAssistant {
      * Resolve bean class for factory bean rule.
      *
      * @param beanRule the bean rule
+     * @throws IllegalRuleException if an illegal rule is found
      */
     public void resolveFactoryBeanClass(BeanRule beanRule) throws IllegalRuleException {
         String beanIdOrClass = beanRule.getFactoryBeanId();
@@ -397,6 +401,7 @@ public class ContextRuleAssistant {
      * Resolve bean class.
      *
      * @param itemRule the item rule
+     * @throws IllegalRuleException if an illegal rule is found
      */
     public void resolveBeanClass(ItemRule itemRule) throws IllegalRuleException {
         Iterator<Token[]> it = ItemRule.tokenIterator(itemRule);
@@ -416,6 +421,7 @@ public class ContextRuleAssistant {
      * Resolve bean class for token.
      *
      * @param tokens an array of tokens
+     * @throws IllegalRuleException if an illegal rule is found
      */
     public void resolveBeanClass(Token[] tokens) throws IllegalRuleException {
         if (tokens != null) {
@@ -429,6 +435,7 @@ public class ContextRuleAssistant {
      * Resolve bean class for token.
      *
      * @param token the token
+     * @throws IllegalRuleException if an illegal rule is found
      */
     public void resolveBeanClass(Token token) throws IllegalRuleException {
         resolveBeanClass(token, token);
@@ -480,6 +487,7 @@ public class ContextRuleAssistant {
      * Resolve bean class for the autowire rule.
      *
      * @param autowireRule the autowire rule
+     * @throws IllegalRuleException if an illegal rule is found
      */
     public void resolveBeanClass(AutowireRule autowireRule) throws IllegalRuleException {
         if (autowireRule.getTargetType() == AutowireTargetType.FIELD) {
@@ -507,6 +515,7 @@ public class ContextRuleAssistant {
      * Resolve bean class for the schedule rule.
      *
      * @param scheduleRule the schedule rule
+     * @throws IllegalRuleException if an illegal rule is found
      */
     public void resolveBeanClass(ScheduleRule scheduleRule) throws IllegalRuleException {
         String beanId = scheduleRule.getSchedulerBeanId();
@@ -525,6 +534,7 @@ public class ContextRuleAssistant {
      * Resolve bean class for the template rule.
      *
      * @param templateRule the template rule
+     * @throws IllegalRuleException if an illegal rule is found
      */
     public void resolveBeanClass(TemplateRule templateRule) throws IllegalRuleException {
         String beanId = templateRule.getEngineBeanId();
@@ -604,6 +614,7 @@ public class ContextRuleAssistant {
      * Adds the schedule rule.
      *
      * @param scheduleRule the schedule rule to add
+     * @throws IllegalRuleException if an illegal rule is found
      */
     public void addScheduleRule(ScheduleRule scheduleRule) throws IllegalRuleException {
         scheduleRuleRegistry.addScheduleRule(scheduleRule);
@@ -613,6 +624,7 @@ public class ContextRuleAssistant {
      * Add the translet rule.
      *
      * @param transletRule the translet rule to add
+     * @throws IllegalRuleException if an illegal rule is found
      */
     public void addTransletRule(TransletRule transletRule) throws IllegalRuleException {
         transletRuleRegistry.addTransletRule(transletRule);
@@ -622,6 +634,7 @@ public class ContextRuleAssistant {
      * Add the template rule.
      *
      * @param templateRule the template rule to add
+     * @throws IllegalRuleException if an illegal rule is found
      */
     public void addTemplateRule(TemplateRule templateRule) throws IllegalRuleException {
         templateRuleRegistry.addTemplateRule(templateRule);

@@ -79,18 +79,17 @@ public class AnnotatedMethodAction extends AbstractAction {
 
     @Override
     public Object execute(Activity activity) throws Exception {
+        Object bean = null;
         try {
-            Object bean;
             if (!Modifier.isInterface(annotatedMethodActionRule.getBeanClass().getModifiers())) {
                 bean = activity.getBeanForConfig(annotatedMethodActionRule.getBeanClass());
-            } else {
-                bean = null;
             }
             Method method = annotatedMethodActionRule.getMethod();
             ParameterBindingRule[] parameterBindingRules = annotatedMethodActionRule.getParameterBindingRules();
             return invokeMethod(activity, bean, method, parameterBindingRules);
         } catch (Exception e) {
-            throw new ActionExecutionException("Failed to execute annotated bean method action " + this, e);
+            throw new ActionExecutionException("Failed to execute annotated bean method action " +
+                    this + " in bean " + bean, e);
         }
     }
 

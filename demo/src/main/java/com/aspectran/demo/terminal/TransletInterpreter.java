@@ -17,13 +17,13 @@ package com.aspectran.demo.terminal;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.Translet;
+import com.aspectran.core.activity.TransletNotFoundException;
 import com.aspectran.core.component.bean.annotation.Bean;
 import com.aspectran.core.component.bean.annotation.Component;
 import com.aspectran.core.component.bean.annotation.RequestToGet;
 import com.aspectran.core.component.bean.annotation.RequestToPost;
 import com.aspectran.core.component.bean.annotation.Transform;
 import com.aspectran.core.component.bean.aware.ActivityContextAware;
-import com.aspectran.core.component.translet.TransletNotFoundException;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.expr.token.TokenParser;

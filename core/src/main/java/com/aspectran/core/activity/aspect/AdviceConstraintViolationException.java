@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.activity.aspect;
 
-import com.aspectran.core.component.aspect.AspectException;
+import com.aspectran.core.activity.ActivityException;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.util.StringUtils;
 
@@ -27,7 +27,7 @@ import java.util.Set;
 /**
  * Exception thrown when an Advice Constraint Violation occurs.
  */
-public class AdviceConstraintViolationException extends AspectException {
+public class AdviceConstraintViolationException extends ActivityException {
 
     /** @serial */
     private static final long serialVersionUID = -5175491727350661063L;

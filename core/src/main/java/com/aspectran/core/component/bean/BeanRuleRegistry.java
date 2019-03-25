@@ -174,6 +174,7 @@ public class BeanRuleRegistry {
      * Scans for annotated components.
      *
      * @param basePackages the base packages to scan for annotated components
+     * @throws BeanRuleException if an illegal bean rule is found
      */
     public void scanConfigurableBeans(String... basePackages) throws BeanRuleException {
         if (basePackages == null || basePackages.length == 0) {

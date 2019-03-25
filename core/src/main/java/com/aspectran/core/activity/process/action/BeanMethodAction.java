@@ -144,7 +144,7 @@ public class BeanMethodAction extends AbstractAction {
         } catch (ActionExecutionException e) {
             throw e;
         } catch (Exception e) {
-            throw new ActionExecutionException("Failed to execute bean method action " + this + " targetBean=" + bean, e);
+            throw new ActionExecutionException("Failed to execute bean method action " + this + " in bean " + bean, e);
         }
     }
 

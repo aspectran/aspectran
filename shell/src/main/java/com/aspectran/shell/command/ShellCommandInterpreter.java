@@ -15,7 +15,7 @@
  */
 package com.aspectran.shell.command;
 
-import com.aspectran.core.component.translet.TransletNotFoundException;
+import com.aspectran.core.activity.TransletNotFoundException;
 import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.config.ShellConfig;
 import com.aspectran.core.util.StringUtils;

@@ -73,6 +73,7 @@ public class BeanReferenceInspector {
      *
      * @param beanRuleRegistry the bean rule registry
      * @throws BeanReferenceException the bean reference exception
+     * @throws BeanRuleException if an illegal bean rule is found
      */
     public void inspect(BeanRuleRegistry beanRuleRegistry) throws BeanReferenceException, BeanRuleException {
         Set<Object> brokenReferences = new LinkedHashSet<>();

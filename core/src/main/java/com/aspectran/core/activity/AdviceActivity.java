@@ -244,9 +244,6 @@ public abstract class AdviceActivity extends AbstractActivity {
 
         try {
             action.execute(this);
-        } catch (ActionExecutionException e) {
-            setRaisedException(e.getCause() != null ? e.getCause() : e);
-            throw e;
         } catch (Exception e) {
             setRaisedException(e);
             throw new ActionExecutionException("Failed to execute advice action " + action, e);

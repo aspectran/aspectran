@@ -16,7 +16,7 @@
 package com.aspectran.core.activity;
 
 /**
- * Raised if an activity is terminated during processing.
+ * Exception thrown when an activity is terminated during preparation or execution.
  */
 public class ActivityTerminatedException extends ActivityException {
 

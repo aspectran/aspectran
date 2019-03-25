@@ -74,7 +74,7 @@ public class HttpPutFormContentParser {
                 }
             }
         } catch (Exception e) {
-            throw new RequestParseException("Could not parse multipart servlet request", e);
+            throw new RequestParseException("Could not parse HTTP PUT request data", e);
         }
     }
 

@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.component.translet;
+package com.aspectran.core.activity;
 
 /**
  * This exception will be thrown when a translet not found.
  * 
  * <p>Created: 2008. 01. 07 AM 3:35:55</p>
  */
-public class TransletNotFoundException extends TransletException {
+public class TransletNotFoundException extends ActivityException {
 
     /** @serial */
     private static final long serialVersionUID = -5619283297296999361L;
@@ -34,18 +34,6 @@ public class TransletNotFoundException extends TransletException {
      */
     public TransletNotFoundException(String transletName) {
         super("Unknown translet: " + transletName);
-        this.transletName = transletName;
-    }
-
-    /**
-     * Constructor to create exception to wrap another exception and pass a
-     * message.
-     *
-     * @param transletName the translet name
-     * @param cause the real cause of the exception
-     */
-    public TransletNotFoundException(String transletName, Throwable cause) {
-        super("Unknown translet: " + transletName, cause);
         this.transletName = transletName;
     }
 

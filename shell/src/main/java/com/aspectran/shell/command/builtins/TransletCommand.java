@@ -15,7 +15,7 @@
  */
 package com.aspectran.shell.command.builtins;
 
-import com.aspectran.core.component.translet.TransletNotFoundException;
+import com.aspectran.core.activity.TransletNotFoundException;
 import com.aspectran.core.component.translet.TransletRuleRegistry;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.converter.RuleToParamsConverter;
