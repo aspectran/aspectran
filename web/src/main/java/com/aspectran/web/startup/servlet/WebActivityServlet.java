@@ -90,7 +90,6 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
 
         if (standalone) {
             log.info("Do not terminate the application server while destroying all scoped beans");
-
             webService.stop();
         }
 

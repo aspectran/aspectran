@@ -236,7 +236,7 @@ public class CoreActivity extends AdviceActivity {
         } catch (ActivityTerminatedException e) {
             throw e;
         } catch (Throwable e) {
-            throw new ActivityPerformException("An error occurred while performing the activity", e);
+            throw new ActivityPerformException("Failed to perform the activity", e);
         } finally {
             if (forwardRule == null) {
                 Scope requestScope = getRequestAdapter().getRequestScope(false);
