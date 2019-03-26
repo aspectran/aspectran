@@ -287,13 +287,17 @@ public class ParamsToRuleConverter {
 
             AdviceActionParameters finallyAdviceParameters = adviceParameters.getParameters(AdviceParameters.finallyAdvice);
             if (finallyAdviceParameters != null) {
-                ActionParameters actionParameters = finallyAdviceParameters.getParameters(AdviceActionParameters.action);
                 AspectAdviceRule aspectAdviceRule = aspectRule.touchAspectAdviceRule(AspectAdviceType.FINALLY);
-                convertAsActionRule(actionParameters, aspectAdviceRule);
+                ActionParameters actionParameters = finallyAdviceParameters.getParameters(AdviceActionParameters.action);
+                if (actionParameters != null) {
+                    convertAsActionRule(actionParameters, aspectAdviceRule);
+                }
                 // for thrown
                 ExceptionThrownParameters etParameters = finallyAdviceParameters.getParameters(AdviceActionParameters.thrown);
-                ExceptionThrownRule etr = convertAsExceptionThrownRule(etParameters, aspectAdviceRule);
-                aspectAdviceRule.setExceptionThrownRule(etr);
+                if (etParameters != null) {
+                    ExceptionThrownRule etr = convertAsExceptionThrownRule(etParameters, aspectAdviceRule);
+                    aspectAdviceRule.setExceptionThrownRule(etr);
+                }
             }
         }
 

@@ -40,7 +40,6 @@ class AspectranConfigTest {
         AponWriter aponWriter = new AponWriter(outputFile);
         aponWriter.setPrettyPrint(true);
         aponWriter.setIndentString("    ");
-        aponWriter.setNoQuotes(true);
         aponWriter.write(aspectranConfig);
         aponWriter.close();
     }

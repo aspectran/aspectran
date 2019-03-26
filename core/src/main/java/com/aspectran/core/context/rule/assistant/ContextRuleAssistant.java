@@ -700,19 +700,23 @@ public class ContextRuleAssistant {
      * @return the bean rules
      */
     public Collection<BeanRule> getBeanRules() {
-        int capacity = beanRuleRegistry.getIdBasedBeanRules().size();
-        for (Set<BeanRule> brs : beanRuleRegistry.getTypeBasedBeanRules()) {
+        Collection<BeanRule> idBasedBeanRules = beanRuleRegistry.getIdBasedBeanRules();
+        Collection<Set<BeanRule>> typeBasedBeanRules = beanRuleRegistry.getTypeBasedBeanRules();
+        Collection<BeanRule> configurableBeanRules = beanRuleRegistry.getConfigurableBeanRules();
+
+        int capacity = idBasedBeanRules.size();
+        for (Set<BeanRule> brs : typeBasedBeanRules) {
             capacity += brs.size();
         }
-        capacity += beanRuleRegistry.getConfigurableBeanRules().size();
+        capacity += configurableBeanRules.size();
         capacity = (int)(capacity / 0.9f) + 1;
 
         Set<BeanRule> beanRuleSet = new HashSet<>(capacity, 0.9f);
-        beanRuleSet.addAll(beanRuleRegistry.getIdBasedBeanRules());
-        for (Set<BeanRule> brs : beanRuleRegistry.getTypeBasedBeanRules()) {
+        beanRuleSet.addAll(idBasedBeanRules);
+        for (Set<BeanRule> brs : typeBasedBeanRules) {
             beanRuleSet.addAll(brs);
         }
-        beanRuleSet.addAll(beanRuleRegistry.getConfigurableBeanRules());
+        beanRuleSet.addAll(configurableBeanRules);
         return beanRuleSet;
     }
 
@@ -771,7 +775,7 @@ public class ContextRuleAssistant {
     }
 
     public ItemRuleMap profiling(ItemRuleMap irm, ItemRuleMap presentIrm) {
-        if (irm.getProfile() != null) {
+        if (irm.getProfile() != null && getContextEnvironment() != null) {
             String[] profiles = StringUtils.splitCommaDelimitedString(irm.getProfile());
             if (getContextEnvironment().acceptsProfiles(profiles)) {
                 if (presentIrm == null) {

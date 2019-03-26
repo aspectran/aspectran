@@ -91,8 +91,6 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
 
     private Boolean important;
 
-    private String description;
-
     private boolean factoryBean;
 
     private boolean disposableBean;
@@ -116,6 +114,8 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
     private boolean methodAutowireParsed;
 
     private BeanInstance beanInstance; // only for singleton
+
+    private String description;
 
     /**
      * Returns the bean id.

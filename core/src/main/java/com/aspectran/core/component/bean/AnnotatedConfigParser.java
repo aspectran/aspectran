@@ -777,12 +777,12 @@ public class AnnotatedConfigParser {
             }
             boolean required = param.isAnnotationPresent(Required.class);
 
-            ParameterBindingRule mappingRule = new ParameterBindingRule();
-            mappingRule.setType(param.getType());
-            mappingRule.setName(qualifier);
-            mappingRule.setFormat(format);
-            mappingRule.setRequired(required);
-            bindingRules[cnt++] = mappingRule;
+            ParameterBindingRule bindingRule = new ParameterBindingRule();
+            bindingRule.setType(param.getType());
+            bindingRule.setName(qualifier);
+            bindingRule.setFormat(format);
+            bindingRule.setRequired(required);
+            bindingRules[cnt++] = bindingRule;
         }
         return bindingRules;
     }

@@ -24,6 +24,7 @@ import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.activity.response.ResponseMap;
 import com.aspectran.core.activity.response.dispatch.DispatchResponse;
 import com.aspectran.core.activity.response.transform.TransformResponse;
+import com.aspectran.core.context.rule.AnnotatedMethodActionRule;
 import com.aspectran.core.context.rule.AppendRule;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
@@ -720,6 +721,9 @@ public class RuleToParamsConverter {
             if (action.getActionType() == ActionType.BEAN_METHOD) {
                 BeanMethodActionRule beanMethodActionRule = action.getActionRule();
                 actionParameters = toActionParameters(beanMethodActionRule);
+            } else if (action.getActionType() == ActionType.ANNOTATED_METHOD) {
+                AnnotatedMethodActionRule annotatedMethodActionRule = action.getActionRule();
+                actionParameters = toActionParameters(annotatedMethodActionRule);
             } else if (action.getActionType() == ActionType.INCLUDE) {
                 IncludeActionRule includeActionRule = action.getActionRule();
                 actionParameters = toActionParameters(includeActionRule);
@@ -756,6 +760,14 @@ public class RuleToParamsConverter {
             toItemHolderParameters(argumentItemRuleMap, actionParameters, ActionParameters.arguments);
         }
 
+        return actionParameters;
+    }
+
+    public static ActionParameters toActionParameters(AnnotatedMethodActionRule annotatedMethodActionRule) {
+        ActionParameters actionParameters = new ActionParameters();
+        actionParameters.putValueNonNull(ActionParameters.id, annotatedMethodActionRule.getActionId());
+        actionParameters.putValueNonNull(ActionParameters.bean, annotatedMethodActionRule.getBeanClass().toString());
+        actionParameters.putValueNonNull(ActionParameters.method, annotatedMethodActionRule.getMethod().toString());
         return actionParameters;
     }
 
@@ -878,7 +890,7 @@ public class RuleToParamsConverter {
             try {
                 return new VariableParameters(value);
             } catch (AponParseException e) {
-                throw new RuntimeException("Trigger parameter can not be parsed", e);
+                throw new RuntimeException("Parameters can not be parsed", e);
             }
         } else {
             return value;

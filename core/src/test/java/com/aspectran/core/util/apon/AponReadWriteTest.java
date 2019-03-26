@@ -35,7 +35,6 @@ class AponReadWriteTest {
 
         AponWriter aponWriter = new AponWriter(outputFile);
         aponWriter.setPrettyPrint(true);
-        aponWriter.setNoQuotes(true);
         aponWriter.setNullWrite(true);
         //aponWriter.setTypeHintWrite(true);
         aponWriter.setIndentString("  ");

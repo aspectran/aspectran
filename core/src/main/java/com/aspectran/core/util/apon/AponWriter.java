@@ -42,8 +42,6 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
 
     private int indentDepth;
 
-    private boolean noQuotes;
-
     private boolean nullWrite;
 
     private boolean typeHintWrite;
@@ -113,15 +111,6 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
 
     public void setIndentString(String indentString) {
         this.indentString = indentString;
-    }
-
-    /**
-     * Sets whether wrap a string in quotes.
-     *
-     * @param noQuotes true, wrap a string in quotes
-     */
-    public void setNoQuotes(boolean noQuotes) {
-        this.noQuotes = noQuotes;
     }
 
     /**
@@ -378,21 +367,20 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
     }
 
     private void writeString(String value) throws IOException {
-        if (value != null) {
-            if (noQuotes && !NULL.equals(value)) {
-                writer.write(escape(value, true));
+        if (value == null) {
+            writeNull();
+        } else {
+            if (value.isEmpty()) {
+                writer.write(DOUBLE_QUOTE_CHAR);
+                writer.write(DOUBLE_QUOTE_CHAR);
+            } else if (value.startsWith(SPACE) || value.endsWith(SPACE)) {
+                writer.write(DOUBLE_QUOTE_CHAR);
+                writer.write(escape(value, false));
+                writer.write(DOUBLE_QUOTE_CHAR);
             } else {
-                if (value.startsWith(SPACE) || value.endsWith(SPACE)) {
-                    writer.write(DOUBLE_QUOTE_CHAR);
-                    writer.write(escape(value, false));
-                    writer.write(DOUBLE_QUOTE_CHAR);
-                } else {
-                    writer.write(escape(value, true));
-                }
+                writer.write(escape(value, true));
             }
             newLine();
-        } else {
-            writeNull();
         }
     }
 

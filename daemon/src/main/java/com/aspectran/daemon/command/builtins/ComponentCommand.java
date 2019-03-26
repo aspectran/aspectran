@@ -88,7 +88,7 @@ public class ComponentCommand extends AbstractCommand {
             String[] targets = parameterMap.getParameterValues("targets");
 
             if (!StringUtils.hasLength(type)) {
-                return failed(error("The component type is not specified"));
+                return failed(error("Component type is not specified"));
             }
 
             switch (type) {
