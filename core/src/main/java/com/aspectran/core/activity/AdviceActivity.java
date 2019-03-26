@@ -369,17 +369,21 @@ public abstract class AdviceActivity extends AbstractActivity {
 
     @Override
     public void handleException(List<ExceptionRule> exceptionRuleList) {
-        for (ExceptionRule exceptionRule : exceptionRuleList) {
-            handleException(exceptionRule);
+        if (exceptionRuleList != null) {
+            for (ExceptionRule exceptionRule : exceptionRuleList) {
+                handleException(exceptionRule);
+            }
         }
     }
 
     protected void handleException(ExceptionRule exceptionRule) {
-        ExceptionThrownRule exceptionThrownRule = exceptionRule.getExceptionThrownRule(getRaisedException());
-        if (exceptionThrownRule != null) {
-            Executable action = exceptionThrownRule.getAction();
-            if (action != null) {
-                executeAdvice(action);
+        if (exceptionRule != null) {
+            ExceptionThrownRule exceptionThrownRule = exceptionRule.getExceptionThrownRule(getRaisedException());
+            if (exceptionThrownRule != null) {
+                Executable action = exceptionThrownRule.getAction();
+                if (action != null) {
+                    executeAdvice(action);
+                }
             }
         }
     }

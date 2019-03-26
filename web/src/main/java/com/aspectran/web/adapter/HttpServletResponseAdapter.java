@@ -135,6 +135,10 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
 
     @Override
     public String redirect(RedirectRule redirectRule) throws IOException {
+        if (redirectRule == null) {
+            throw new IllegalArgumentException("redirectRule must not be null");
+        }
+
         String path = redirectRule.getPath(activity);
         int questionPos = -1;
 
