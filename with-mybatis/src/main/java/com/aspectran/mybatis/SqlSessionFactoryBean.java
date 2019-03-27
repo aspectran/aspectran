@@ -18,8 +18,8 @@ package com.aspectran.mybatis;
 import com.aspectran.core.component.bean.ablility.FactoryBean;
 import com.aspectran.core.component.bean.ablility.InitializableBean;
 import com.aspectran.core.component.bean.annotation.AvoidAdvice;
-import com.aspectran.core.component.bean.aware.ActivityContextAware;
-import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.component.bean.aware.EnvironmentAware;
+import com.aspectran.core.context.env.Environment;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 
@@ -33,10 +33,10 @@ import java.util.Properties;
  * using default MyBatis Configuration.
  */
 @AvoidAdvice
-public class SqlSessionFactoryBean implements ActivityContextAware, InitializableBean,
+public class SqlSessionFactoryBean implements EnvironmentAware, InitializableBean,
         FactoryBean<SqlSessionFactory> {
 
-    private ActivityContext context;
+    private Environment contextEnvironment;
 
     private String configLocation;
 
@@ -69,31 +69,30 @@ public class SqlSessionFactoryBean implements ActivityContextAware, Initializabl
     }
 
     protected SqlSessionFactory buildSqlSessionFactory(File configFile) {
-        ClassLoader originalClassLoader = Thread.currentThread().getContextClassLoader();
         try (Reader reader = new FileReader(configFile)) {
-            Thread.currentThread().setContextClassLoader(context.getEnvironment().getClassLoader());
             SqlSessionFactoryBuilder sqlSessionFactoryBuilder = new SqlSessionFactoryBuilder();
             return sqlSessionFactoryBuilder.build(reader, environment, properties);
         } catch(Exception ex) {
             throw new IllegalArgumentException("Failed to parse mybatis config resource: " +
                     configLocation, ex);
-        } finally {
-            Thread.currentThread().setContextClassLoader(originalClassLoader);
         }
     }
 
     @Override
-    public void setActivityContext(ActivityContext context) {
-        this.context = context;
+    public void setEnvironment(Environment environment) {
+        this.contextEnvironment = environment;
     }
 
     @Override
     public void initialize() throws Exception {
+        if (contextEnvironment == null) {
+            throw new IllegalStateException("contextEnvironment is not specified");
+        }
         if(sqlSessionFactory == null) {
             if(configLocation == null) {
                 throw new IllegalArgumentException("Property 'configLocation' is required");
             }
-            File configFile = context.getEnvironment().toRealPathAsFile(configLocation);
+            File configFile = contextEnvironment.toRealPathAsFile(configLocation);
             sqlSessionFactory = buildSqlSessionFactory(configFile);
         }
     }

@@ -394,6 +394,7 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
                 acl.setResourceLocations(resourceLocations);
             }
             aspectranClassLoader = acl;
+            Thread.currentThread().setContextClassLoader(acl);
         }
         return aspectranClassLoader;
     }

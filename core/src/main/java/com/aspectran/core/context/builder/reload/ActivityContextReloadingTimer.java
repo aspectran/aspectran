@@ -60,7 +60,7 @@ public class ActivityContextReloadingTimer {
         timerTask = new ActivityContextReloadingTimerTask(serviceController);
         timerTask.setResources(resources);
 
-        timer = new Timer("ActivityContextReloadingTimer");
+        timer = new Timer("reloading@" + timerTask.hashCode());
         timer.schedule(timerTask, 0, scanIntervalSeconds * 1000L);
     }
 
