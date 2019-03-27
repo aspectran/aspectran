@@ -262,55 +262,19 @@ public class RuleToParamsConverter {
             for (AspectAdviceRule aspectAdviceRule : aspectRule.getAspectAdviceRuleList()) {
                 if (aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.BEFORE) {
                     AdviceActionParameters adviceActionParameters = adviceParameters.newParameters(AdviceParameters.beforeAdvice);
-                    if (aspectAdviceRule.getActionType() == ActionType.BEAN_METHOD) {
-                        BeanMethodActionRule beanMethodActionRule = aspectAdviceRule.getExecutableAction().getActionRule();
-                        adviceActionParameters.putValue(AdviceActionParameters.action, toActionParameters(beanMethodActionRule));
-                    } else if (aspectAdviceRule.getActionType() == ActionType.ECHO) {
-                        EchoActionRule echoActionRule = aspectAdviceRule.getExecutableAction().getActionRule();
-                        adviceActionParameters.putValue(AdviceActionParameters.action, toActionParameters(echoActionRule));
-                    } else if (aspectAdviceRule.getActionType() == ActionType.HEADER) {
-                        HeaderActionRule headerActionRule = aspectAdviceRule.getExecutableAction().getActionRule();
-                        adviceActionParameters.putValue(AdviceActionParameters.action, toActionParameters(headerActionRule));
-                    }
+                    applyAdviceActionParameters(aspectAdviceRule, adviceActionParameters);
                 } else if (aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.AFTER) {
                     AdviceActionParameters adviceActionParameters = adviceParameters.newParameters(AdviceParameters.afterAdvice);
-                    if (aspectAdviceRule.getActionType() == ActionType.BEAN_METHOD) {
-                        BeanMethodActionRule beanMethodActionRule = aspectAdviceRule.getExecutableAction().getActionRule();
-                        adviceActionParameters.putValue(AdviceActionParameters.action, toActionParameters(beanMethodActionRule));
-                    } else if (aspectAdviceRule.getActionType() == ActionType.ECHO) {
-                        EchoActionRule echoActionRule = aspectAdviceRule.getExecutableAction().getActionRule();
-                        adviceActionParameters.putValue(AdviceActionParameters.action, toActionParameters(echoActionRule));
-                    } else if (aspectAdviceRule.getActionType() == ActionType.HEADER) {
-                        HeaderActionRule headerActionRule = aspectAdviceRule.getExecutableAction().getActionRule();
-                        adviceActionParameters.putValue(AdviceActionParameters.action, toActionParameters(headerActionRule));
-                    }
+                    applyAdviceActionParameters(aspectAdviceRule, adviceActionParameters);
                 } else if (aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.AROUND) {
                     AdviceActionParameters adviceActionParameters = adviceParameters.newParameters(AdviceParameters.aroundAdvice);
-                    if (aspectAdviceRule.getActionType() == ActionType.BEAN_METHOD) {
-                        BeanMethodActionRule beanMethodActionRule = aspectAdviceRule.getExecutableAction().getActionRule();
-                        adviceActionParameters.putValue(AdviceActionParameters.action, toActionParameters(beanMethodActionRule));
-                    } else if (aspectAdviceRule.getActionType() == ActionType.ECHO) {
-                        EchoActionRule echoActionRule = aspectAdviceRule.getExecutableAction().getActionRule();
-                        adviceActionParameters.putValue(AdviceActionParameters.action, toActionParameters(echoActionRule));
-                    } else if (aspectAdviceRule.getActionType() == ActionType.HEADER) {
-                        HeaderActionRule headerActionRule = aspectAdviceRule.getExecutableAction().getActionRule();
-                        adviceActionParameters.putValue(AdviceActionParameters.action, toActionParameters(headerActionRule));
-                    }
+                    applyAdviceActionParameters(aspectAdviceRule, adviceActionParameters);
                 } else if (aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.FINALLY) {
                     AdviceActionParameters adviceActionParameters = adviceParameters.newParameters(AdviceParameters.finallyAdvice);
                     if (aspectAdviceRule.getExceptionThrownRule() != null) {
                         adviceActionParameters.putValue(AdviceActionParameters.thrown, toExceptionThrownParameters(aspectAdviceRule.getExceptionThrownRule()));
                     }
-                    if (aspectAdviceRule.getActionType() == ActionType.BEAN_METHOD) {
-                        BeanMethodActionRule beanMethodActionRule = aspectAdviceRule.getExecutableAction().getActionRule();
-                        adviceActionParameters.putValue(AdviceActionParameters.action, toActionParameters(beanMethodActionRule));
-                    } else if (aspectAdviceRule.getActionType() == ActionType.ECHO) {
-                        EchoActionRule echoActionRule = aspectAdviceRule.getExecutableAction().getActionRule();
-                        adviceActionParameters.putValue(AdviceActionParameters.action, toActionParameters(echoActionRule));
-                    } else if (aspectAdviceRule.getActionType() == ActionType.HEADER) {
-                        HeaderActionRule headerActionRule = aspectAdviceRule.getExecutableAction().getActionRule();
-                        adviceActionParameters.putValue(AdviceActionParameters.action, toActionParameters(headerActionRule));
-                    }
+                    applyAdviceActionParameters(aspectAdviceRule, adviceActionParameters);
                 }
             }
         }
@@ -474,16 +438,16 @@ public class RuleToParamsConverter {
                 for (ActionList actionList : contentList) {
                     ContentParameters contentParameters = contentsParameters.newParameters(ContentsParameters.content);
                     contentParameters.putValueNonNull(ContentParameters.name, actionList.getName());
-                    toActionList(actionList, contentParameters, ContentParameters.action);
+                    applyActionParameters(actionList, contentParameters, ContentParameters.action);
                 }
             } else {
                 for (ActionList actionList : contentList) {
                     if (actionList.isExplicit()) {
                         ContentParameters contentParameters = transletParameters.newParameters(TransletParameters.content);
                         contentParameters.putValueNonNull(ContentParameters.name, actionList.getName());
-                        toActionList(actionList, contentParameters, ContentParameters.action);
+                        applyActionParameters(actionList, contentParameters, ContentParameters.action);
                     } else {
-                        toActionList(actionList, transletParameters, TransletParameters.action);
+                        applyActionParameters(actionList, transletParameters, TransletParameters.action);
                     }
                 }
             }
@@ -610,7 +574,7 @@ public class RuleToParamsConverter {
 
         ActionList actionList = transformRule.getActionList();
         if (actionList != null) {
-            toActionList(actionList, transformParameters, TransformParameters.action);
+            applyActionParameters(actionList, transformParameters, TransformParameters.action);
         }
 
         if (transformRule.getTemplateId() != null) {
@@ -635,7 +599,7 @@ public class RuleToParamsConverter {
 
         ActionList actionList = dispatchRule.getActionList();
         if (actionList != null) {
-            toActionList(actionList, dispatchParameters, DispatchParameters.action);
+            applyActionParameters(actionList, dispatchParameters, DispatchParameters.action);
         }
 
         return dispatchParameters;
@@ -654,7 +618,7 @@ public class RuleToParamsConverter {
 
         ActionList actionList = forwardRule.getActionList();
         if (actionList != null) {
-            toActionList(actionList, forwardParameters, ForwardParameters.action);
+            applyActionParameters(actionList, forwardParameters, ForwardParameters.action);
         }
 
         return forwardParameters;
@@ -676,7 +640,7 @@ public class RuleToParamsConverter {
 
         ActionList actionList = redirectRule.getActionList();
         if (actionList != null) {
-            toActionList(actionList, redirectParameters, RedirectParameters.action);
+            applyActionParameters(actionList, redirectParameters, RedirectParameters.action);
         }
 
         return redirectParameters;
@@ -715,7 +679,7 @@ public class RuleToParamsConverter {
         return templateParameters;
     }
 
-    private static void toActionList(ActionList actionList, Parameters parameters, ParameterDefinition actionParam) {
+    private static void applyActionParameters(ActionList actionList, Parameters parameters, ParameterDefinition actionParam) {
         for (Executable action : actionList) {
             ActionParameters actionParameters = null;
             if (action.getActionType() == ActionType.BEAN_METHOD) {
@@ -740,6 +704,22 @@ public class RuleToParamsConverter {
                 }
                 parameters.putValue(actionParam, actionParameters);
             }
+        }
+    }
+
+    private static void applyAdviceActionParameters(AspectAdviceRule aspectAdviceRule, AdviceActionParameters adviceActionParameters) {
+        if (aspectAdviceRule.getActionType() == ActionType.BEAN_METHOD) {
+            BeanMethodActionRule beanMethodActionRule = aspectAdviceRule.getExecutableAction().getActionRule();
+            adviceActionParameters.putValue(AdviceActionParameters.action, toActionParameters(beanMethodActionRule));
+        } else if (aspectAdviceRule.getActionType() == ActionType.ANNOTATED_METHOD) {
+            AnnotatedMethodActionRule annotatedMethodActionRule = aspectAdviceRule.getExecutableAction().getActionRule();
+            adviceActionParameters.putValue(AdviceActionParameters.action, toActionParameters(annotatedMethodActionRule));
+        } else if (aspectAdviceRule.getActionType() == ActionType.ECHO) {
+            EchoActionRule echoActionRule = aspectAdviceRule.getExecutableAction().getActionRule();
+            adviceActionParameters.putValue(AdviceActionParameters.action, toActionParameters(echoActionRule));
+        } else if (aspectAdviceRule.getActionType() == ActionType.HEADER) {
+            HeaderActionRule headerActionRule = aspectAdviceRule.getExecutableAction().getActionRule();
+            adviceActionParameters.putValue(AdviceActionParameters.action, toActionParameters(headerActionRule));
         }
     }
 

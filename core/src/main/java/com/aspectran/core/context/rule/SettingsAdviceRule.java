@@ -21,7 +21,7 @@ import com.aspectran.core.util.apon.AponParseException;
 import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.apon.VariableParameters;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -64,7 +64,7 @@ public class SettingsAdviceRule {
             throw new IllegalArgumentException("Setting name can not be null");
         }
         if (settings == null) {
-            settings = new HashMap<>();
+            settings = new LinkedHashMap<>();
         }
         settings.put(name, value);
     }
