@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.util;
 
+import com.aspectran.core.context.resource.AspectranClassLoader;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
@@ -39,7 +41,7 @@ public class CustomObjectInputStream extends ObjectInputStream {
     public Class<?> resolveClass(java.io.ObjectStreamClass cl)
             throws IOException, ClassNotFoundException {
         try {
-            return Class.forName(cl.getName(), false, Thread.currentThread().getContextClassLoader());
+            return Class.forName(cl.getName(), false, AspectranClassLoader.getDefaultClassLoader());
         } catch (ClassNotFoundException e) {
             return super.resolveClass(cl);
         }
@@ -48,7 +50,7 @@ public class CustomObjectInputStream extends ObjectInputStream {
     @Override
     protected Class<?> resolveProxyClass(String[] interfaces)
             throws ClassNotFoundException {
-        ClassLoader loader = Thread.currentThread().getContextClassLoader();
+        ClassLoader loader = AspectranClassLoader.getDefaultClassLoader();
         ClassLoader nonPublicLoader = null;
         boolean hasNonPublicInterface = false;
 

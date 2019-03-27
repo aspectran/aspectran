@@ -110,7 +110,7 @@ public class LocalResourceManager extends ResourceManager {
             String filePath = file.getAbsolutePath();
             String resourceName = filePath.substring(resourceNameStart);
             try {
-                resourceEntries.putResource(resourceName, file);
+                putResource(resourceName, file);
             } catch (InvalidResourceException e) {
                 throw new RuntimeException(e);
             }
@@ -131,7 +131,7 @@ public class LocalResourceManager extends ResourceManager {
             jarFile = new JarFile(target);
             for (Enumeration<JarEntry> entries = jarFile.entries(); entries.hasMoreElements();) {
                 JarEntry entry = entries.nextElement();
-                resourceEntries.putResource(target, entry);
+                putResource(target, entry);
             }
         } finally {
             if (jarFile != null) {
@@ -148,7 +148,7 @@ public class LocalResourceManager extends ResourceManager {
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.appendForce("resourceLocation", resourceLocation);
-        tsb.append("resourceEntries", resourceEntries);
+        tsb.append("resourceEntries", getResourceEntries());
         tsb.append("owner", owner);
         return tsb.toString();
     }

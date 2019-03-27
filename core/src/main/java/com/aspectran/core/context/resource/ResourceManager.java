@@ -17,12 +17,14 @@ package com.aspectran.core.context.resource;
 
 import com.aspectran.core.util.StringUtils;
 
+import java.io.File;
 import java.net.URL;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.jar.JarEntry;
 
 import static com.aspectran.core.util.ResourceUtils.REGULAR_FILE_SEPARATOR_CHAR;
 
@@ -33,13 +35,9 @@ import static com.aspectran.core.util.ResourceUtils.REGULAR_FILE_SEPARATOR_CHAR;
  */
 public class ResourceManager {
 
-    protected final ResourceEntries resourceEntries = new ResourceEntries();
+    private final ResourceEntries resourceEntries = new ResourceEntries();
 
     public ResourceManager() {
-    }
-
-    protected ResourceEntries getResourceEntries() {
-        return resourceEntries;
     }
 
     public URL getResource(String name) {
@@ -220,8 +218,20 @@ public class ResourceManager {
         };
     }
 
-    public int getResourceEntriesSize() {
+    protected ResourceEntries getResourceEntries() {
+        return resourceEntries;
+    }
+
+    public int getNumberOfResources() {
         return resourceEntries.size();
+    }
+
+    protected void putResource(String resourceName, File file) throws InvalidResourceException {
+        resourceEntries.putResource(resourceName, file);
+    }
+
+    protected void putResource(File file, JarEntry entry) throws InvalidResourceException {
+        resourceEntries.putResource(file, entry);
     }
 
     public void reset() throws InvalidResourceException {

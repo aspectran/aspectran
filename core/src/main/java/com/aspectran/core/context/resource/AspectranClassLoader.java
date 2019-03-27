@@ -17,8 +17,6 @@ package com.aspectran.core.context.resource;
 
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.ToStringBuilder;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -53,8 +51,6 @@ import static com.aspectran.core.util.ResourceUtils.REGULAR_FILE_SEPARATOR_CHAR;
  */
 public class AspectranClassLoader extends ClassLoader {
 
-    private static final Log log = LogFactory.getLog(AspectranClassLoader.class);
-
     private final int id;
 
     private final AspectranClassLoader root;
@@ -85,10 +81,6 @@ public class AspectranClassLoader extends ClassLoader {
         this.firstborn = true;
         this.resourceLocation = null;
         this.resourceManager = new LocalResourceManager(this);
-
-        if (log.isTraceEnabled()) {
-            log.trace("Root AspectranClassLoader " + this);
-        }
     }
 
     public AspectranClassLoader(String resourceLocation) throws InvalidResourceException {
@@ -103,10 +95,6 @@ public class AspectranClassLoader extends ClassLoader {
         this.firstborn = true;
         this.resourceLocation = resourceLocation;
         this.resourceManager = new LocalResourceManager(resourceLocation, this);
-
-        if (log.isTraceEnabled()) {
-            log.trace("Root AspectranClassLoader " + this);
-        }
     }
 
     public AspectranClassLoader(String[] resourceLocations) throws InvalidResourceException {
@@ -178,14 +166,7 @@ public class AspectranClassLoader extends ClassLoader {
         if (!firstborn) {
             throw new IllegalStateException("Only the firstborn AspectranClassLoader can create a child");
         }
-
-        AspectranClassLoader newChild = new AspectranClassLoader(resourceLocation, this);
-
-        if (log.isTraceEnabled()) {
-            log.trace("New Child AspectranClassLoader " + newChild);
-        }
-
-        return newChild;
+        return new AspectranClassLoader(resourceLocation, this);
     }
 
     /**
@@ -295,10 +276,6 @@ public class AspectranClassLoader extends ClassLoader {
     private void reload(AspectranClassLoader self) throws InvalidResourceException {
         self.increaseReloadedCount();
 
-        if (log.isTraceEnabled()) {
-            log.trace("Reloading AspectranClassLoader " + self);
-        }
-
         if (self.getResourceManager() != null) {
             self.getResourceManager().reset();
         }
@@ -326,10 +303,6 @@ public class AspectranClassLoader extends ClassLoader {
 
     private void leave(List<AspectranClassLoader> brothers) {
         for (AspectranClassLoader acl : brothers) {
-            if (log.isTraceEnabled()) {
-                log.trace("Remove a child AspectranClassLoader " + acl);
-            }
-
             ResourceManager rm = acl.getResourceManager();
             if (rm != null) {
                 rm.release();
@@ -341,12 +314,6 @@ public class AspectranClassLoader extends ClassLoader {
     @Override
     protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
         synchronized (getClassLoadingLock(name)) {
-            if (log.isTraceEnabled()) {
-                log.trace("loadClass(" + name + ", " + resolve + ") from " + this);
-            }
-
-            ClassLoader system = getSystemClassLoader();
-
             // First check if the class is already loaded
             Class<?> c = findLoadedClass(name);
             if (c != null) {
@@ -356,14 +323,12 @@ public class AspectranClassLoader extends ClassLoader {
                 return c;
             }
 
-            // Try loading the class with the system class loader, to prevent
-            // the webapp from overriding J2SE classes
+            ClassLoader system = getSystemClassLoader();
+
+            // Try loading the class with the system class loader
             try {
                 c = system.loadClass(name);
                 if (c != null) {
-                    if (log.isTraceEnabled()) {
-                        log.trace("- Loading class " + name + " from system");
-                    }
                     if (resolve) {
                         resolveClass(c);
                     }
@@ -391,8 +356,7 @@ public class AspectranClassLoader extends ClassLoader {
                     try {
                         securityManager.checkPackageAccess(name.substring(0, index));
                     } catch (SecurityException se) {
-                        String error = "Security Violation, attempt to use " + "Restricted Class: " + name;
-                        log.warn(error, se);
+                        String error = "Security Violation, attempt to use Restricted Class: " + name;
                         throw new ClassNotFoundException(error, se);
                     }
                 }
@@ -402,9 +366,6 @@ public class AspectranClassLoader extends ClassLoader {
             try {
                 c = findClass(name);
                 if (c != null) {
-                    if (log.isTraceEnabled()) {
-                        log.trace("- Loading class " + name + " from local repository " + resourceManager);
-                    }
                     if (resolve) {
                         resolveClass(c);
                     }
@@ -422,9 +383,6 @@ public class AspectranClassLoader extends ClassLoader {
             try {
                 c = Class.forName(name, false, loader);
                 if (c != null) {
-                    if (log.isTraceEnabled()) {
-                        log.trace("- Loading class from parent " + getParent());
-                    }
                     if (resolve) {
                         resolveClass(c);
                     }
@@ -448,10 +406,8 @@ public class AspectranClassLoader extends ClassLoader {
                 throw new ClassNotFoundException(name);
             }
         } catch (InvalidResourceException e) {
-            log.warn("Invalid resource " + name, e);
             throw new ClassNotFoundException(name, e);
         } catch (RuntimeException e) {
-            log.warn("Unable to load class " + name, e);
             throw e;
         }
     }
@@ -549,7 +505,7 @@ public class AspectranClassLoader extends ClassLoader {
         tsb.append("root", this == root);
         tsb.append("firstborn", firstborn);
         tsb.append("resourceLocation", resourceLocation);
-        tsb.append("numberOfResource", resourceManager.getResourceEntriesSize());
+        tsb.append("numberOfResource", resourceManager.getNumberOfResources());
         tsb.appendSize("numberOfChildren", children);
         tsb.append("reloadedCount", reloadedCount);
         return tsb.toString();
