@@ -323,21 +323,21 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
     /**
      * Writes a comment to the character-output stream.
      *
-     * @param describe the comment to write to a character-output stream
+     * @param message the comment to write to a character-output stream
      * @throws IOException if an I/O error occurs
      */
-    public void comment(String describe) throws IOException {
-        if (describe.indexOf(NEW_LINE_CHAR) != -1) {
+    public void comment(String message) throws IOException {
+        if (message.indexOf(NEW_LINE_CHAR) != -1) {
             String line;
             int start = 0;
-            while ((line = readLine(describe, start)) != null) {
+            while ((line = readLine(message, start)) != null) {
                 writer.write(COMMENT_LINE_START);
                 writer.write(SPACE_CHAR);
                 writer.write(line);
                 newLine();
 
                 start += line.length();
-                start = skipNewLineChar(describe, start);
+                start = skipNewLineChar(message, start);
                 if (start == -1) {
                     break;
                 }
@@ -349,7 +349,7 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
         } else {
             writer.write(COMMENT_LINE_START);
             writer.write(SPACE_CHAR);
-            writer.write(describe);
+            writer.write(message);
             newLine();
         }
     }
