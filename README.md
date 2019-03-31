@@ -6,9 +6,7 @@
 [![DepShield Badge](https://depshield.sonatype.org/badges/aspectran/aspectran/depshield.svg)](https://depshield.github.io)
 [![License](https://img.shields.io/:license-apache-orange.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
-![aspectran](http://www.aspectran.com/images/header_aspectran.png)
-
-[![asciicast](https://asciinema.org/a/226455.png)](https://asciinema.org/a/226455)
+[![asciicast](https://asciinema.org/a/237909.png)](https://asciinema.org/a/237909)
 
 Aspectran is a concise, easy-to-use Java application framework.
 Some of the widely used Java application frameworks are becoming more and more complex with more features as they mature. A typical example would be the Spring Framework. Aspectran is a single-structure, next-generation framework that incorporates some of the key features of the Spring Framework with new perspectives.
