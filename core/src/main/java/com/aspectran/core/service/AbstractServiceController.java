@@ -97,7 +97,7 @@ public abstract class AbstractServiceController implements ServiceController {
             }
 
             if (!isDerived()) {
-                log.info("Starting the " + getServiceName());
+                log.info("Starting " + getServiceName());
 
                 doStart();
 
@@ -126,7 +126,7 @@ public abstract class AbstractServiceController implements ServiceController {
                     throw new IllegalStateException(getServiceName() + " is not yet started");
                 }
 
-                log.info("Restarting the " + getServiceName());
+                log.info("Restarting " + getServiceName());
             } else {
                 if (active) {
                     throw new IllegalStateException(getServiceName() + " should never be run separately");

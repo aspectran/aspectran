@@ -33,6 +33,8 @@ import static com.aspectran.core.context.rule.ChooseRule.checkCaseNo;
 
 /**
  * <p>Created: 2019-01-06</p>
+ *
+ * @since 6.0.0
  */
 public class ChooseWhenRule implements ActionRuleApplicable, ResponseRuleApplicable {
 

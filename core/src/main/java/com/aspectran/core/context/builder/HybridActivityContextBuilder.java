@@ -93,11 +93,11 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
             AspectranParameters aspectranParameters = getAspectranParameters();
 
             if (rootFile != null) {
-                log.info("Building an ActivityContext with " + rootFile);
+                log.info("Building ActivityContext with " + rootFile);
             } else if (aspectranParameters != null) {
-                log.info("Building an ActivityContext with AspectranParameters");
+                log.info("Building ActivityContext with specified AspectranParameters");
             } else {
-                log.info("No rootFile or aspectranParameters have been specified");
+                log.info("No rootFile or aspectranParameters specified");
             }
 
             if (getActiveProfiles() != null) {

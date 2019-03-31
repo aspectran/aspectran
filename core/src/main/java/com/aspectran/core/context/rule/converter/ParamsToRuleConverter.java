@@ -105,11 +105,19 @@ public class ParamsToRuleConverter {
     }
 
     public void convertAsRule(RootParameters rootParameters) throws IllegalRuleException {
+        if (rootParameters == null) {
+            throw new IllegalArgumentException("rootParameters must not be null");
+        }
+
         AspectranParameters aspectranParameters = rootParameters.getParameters(RootParameters.aspectran);
         convertAsRule(aspectranParameters);
     }
 
     public void convertAsRule(AspectranParameters aspectranParameters) throws IllegalRuleException {
+        if (aspectranParameters == null) {
+            throw new IllegalArgumentException("aspectranParameters must not be null");
+        }
+
         String description = aspectranParameters.getString(AspectranParameters.description);
         if (description != null) {
             assistant.getAssistantLocal().setDescription(description);
@@ -877,14 +885,6 @@ public class ParamsToRuleConverter {
             dispatchRule.setActionList(actionList);
         }
         return dispatchRule;
-    }
-
-    private void convertAsForwardRule(List<ForwardParameters> forwardParametersList, ResponseRuleApplicable responseRuleApplicable)
-            throws IllegalRuleException {
-        for (ForwardParameters forwardParameters : forwardParametersList) {
-            ForwardRule forwardRule = convertAsForwardRule(forwardParameters);
-            responseRuleApplicable.applyResponseRule(forwardRule);
-        }
     }
 
     private ForwardRule convertAsForwardRule(ForwardParameters forwardParameters) throws IllegalRuleException {

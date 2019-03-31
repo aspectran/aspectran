@@ -205,6 +205,10 @@ public class RuleToParamsConverter {
     }
 
     public static AppendParameters toAppendParameters(AppendRule appendRule) {
+        if (appendRule == null) {
+            throw new IllegalArgumentException("appendRule must not be null");
+        }
+
         AppendParameters appendParameters = new AppendParameters();
         appendParameters.putValueNonNull(AppendParameters.file, appendRule.getFile());
         appendParameters.putValueNonNull(AppendParameters.resource, appendRule.getResource());
@@ -216,6 +220,10 @@ public class RuleToParamsConverter {
     }
 
     public static EnvironmentParameters toEnvironmentParameters(EnvironmentRule environmentRule) {
+        if (environmentRule == null) {
+            throw new IllegalArgumentException("environmentRule must not be null");
+        }
+
         EnvironmentParameters environmentParameters = new EnvironmentParameters();
         environmentParameters.putValueNonNull(EnvironmentParameters.description, environmentRule.getDescription());
         environmentParameters.putValueNonNull(EnvironmentParameters.profile, environmentRule.getProfile());
@@ -229,6 +237,10 @@ public class RuleToParamsConverter {
     }
 
     public static AspectParameters toAspectParameters(AspectRule aspectRule) {
+        if (aspectRule == null) {
+            throw new IllegalArgumentException("aspectRule must not be null");
+        }
+
         AspectParameters aspectParameters = new AspectParameters();
         aspectParameters.putValueNonNull(AspectParameters.description, aspectRule.getDescription());
         aspectParameters.putValueNonNull(AspectParameters.id, aspectRule.getId());
@@ -292,6 +304,10 @@ public class RuleToParamsConverter {
     }
 
     public static BeanParameters toBeanParameters(BeanRule beanRule) {
+        if (beanRule == null) {
+            throw new IllegalArgumentException("beanRule must not be null");
+        }
+
         BeanParameters beanParameters = new BeanParameters();
         beanParameters.putValueNonNull(BeanParameters.description, beanRule.getDescription());
         beanParameters.putValueNonNull(BeanParameters.id, beanRule.getId());
@@ -326,6 +342,10 @@ public class RuleToParamsConverter {
     }
 
     public static ScheduleParameters toScheduleParameters(ScheduleRule scheduleRule) {
+        if (scheduleRule == null) {
+            throw new IllegalArgumentException("scheduleRule must not be null");
+        }
+
         ScheduleParameters scheduleParameters = new ScheduleParameters();
         scheduleParameters.putValueNonNull(ScheduleParameters.description, scheduleRule.getDescription());
         scheduleParameters.putValueNonNull(ScheduleParameters.id, scheduleRule.getId());
@@ -350,6 +370,10 @@ public class RuleToParamsConverter {
     }
 
     public static ScheduledJobParameters toScheduledJobParameters(ScheduledJobRule scheduledJobRule) {
+        if (scheduledJobRule == null) {
+            throw new IllegalArgumentException("scheduledJobRule must not be null");
+        }
+
         ScheduledJobParameters jobParameters = new ScheduledJobParameters();
         jobParameters.putValue(ScheduledJobParameters.translet, scheduledJobRule.getTransletName());
         jobParameters.putValueNonNull(ScheduledJobParameters.disabled, scheduledJobRule.getDisabled());
@@ -357,6 +381,10 @@ public class RuleToParamsConverter {
     }
 
     public static TransletParameters toTransletParameters(TransletRule transletRule) {
+        if (transletRule == null) {
+            throw new IllegalArgumentException("transletRule must not be null");
+        }
+
         TransletParameters transletParameters = new TransletParameters();
         transletParameters.putValueNonNull(TransletParameters.description, transletRule.getDescription());
         transletParameters.putValueNonNull(TransletParameters.name, transletRule.getName());
@@ -499,6 +527,10 @@ public class RuleToParamsConverter {
     }
 
     public static ExceptionThrownParameters toExceptionThrownParameters(ExceptionThrownRule exceptionThrownRule) {
+        if (exceptionThrownRule == null) {
+            throw new IllegalArgumentException("exceptionThrownRule must not be null");
+        }
+
         ExceptionThrownParameters etParameters = new ExceptionThrownParameters();
         if (exceptionThrownRule.getExceptionTypes() != null) {
             for (String exceptionType : exceptionThrownRule.getExceptionTypes()) {
@@ -537,6 +569,10 @@ public class RuleToParamsConverter {
     }
 
     public static ResponseParameters toResponseParameters(ResponseRule responseRule) {
+        if (responseRule == null) {
+            throw new IllegalArgumentException("responseRule must not be null");
+        }
+
         ResponseParameters responseParameters = new ResponseParameters();
         responseParameters.putValueNonNull(ResponseParameters.name, responseRule.getName());
         responseParameters.putValueNonNull(ResponseParameters.encoding, responseRule.getEncoding());
@@ -561,6 +597,10 @@ public class RuleToParamsConverter {
     }
 
     public static TransformParameters toTransformParameters(TransformRule transformRule) {
+        if (transformRule == null) {
+            throw new IllegalArgumentException("transformRule must not be null");
+        }
+
         TransformParameters transformParameters = new TransformParameters();
 
         if (transformRule.getTransformType() != null) {
@@ -590,6 +630,10 @@ public class RuleToParamsConverter {
     }
 
     public static DispatchParameters toDispatchParameters(DispatchRule dispatchRule) {
+        if (dispatchRule == null) {
+            throw new IllegalArgumentException("dispatchRule must not be null");
+        }
+
         DispatchParameters dispatchParameters = new DispatchParameters();
         dispatchParameters.putValueNonNull(DispatchParameters.name, dispatchRule.getName());
         dispatchParameters.putValueNonNull(DispatchParameters.dispatcher, dispatchRule.getDispatcherName());
@@ -606,6 +650,10 @@ public class RuleToParamsConverter {
     }
 
     public static ForwardParameters toForwardParameters(ForwardRule forwardRule) {
+        if (forwardRule == null) {
+            throw new IllegalArgumentException("forwardRule must not be null");
+        }
+
         ForwardParameters forwardParameters = new ForwardParameters();
         forwardParameters.putValueNonNull(ForwardParameters.contentType, forwardRule.getContentType());
         forwardParameters.putValueNonNull(ForwardParameters.translet, forwardRule.getTransletName());
@@ -625,6 +673,10 @@ public class RuleToParamsConverter {
     }
 
     public static RedirectParameters toRedirectParameters(RedirectRule redirectRule) {
+        if (redirectRule == null) {
+            throw new IllegalArgumentException("redirectRule must not be null");
+        }
+
         RedirectParameters redirectParameters = new RedirectParameters();
         redirectParameters.putValueNonNull(RedirectParameters.contentType, redirectRule.getContentType());
         redirectParameters.putValueNonNull(RedirectParameters.path, redirectRule.getPath());
@@ -647,6 +699,10 @@ public class RuleToParamsConverter {
     }
 
     public static TemplateParameters toTemplateParameters(TemplateRule templateRule) {
+        if (templateRule == null) {
+            throw new IllegalArgumentException("templateRule must not be null");
+        }
+
         TemplateParameters templateParameters = new TemplateParameters();
         templateParameters.putValueNonNull(TemplateParameters.id, templateRule.getId());
         templateParameters.putValueNonNull(TemplateParameters.engine, templateRule.getEngine());
@@ -724,6 +780,10 @@ public class RuleToParamsConverter {
     }
 
     public static ActionParameters toActionParameters(BeanMethodActionRule beanMethodActionRule) {
+        if (beanMethodActionRule == null) {
+            throw new IllegalArgumentException("beanMethodActionRule must not be null");
+        }
+
         ActionParameters actionParameters = new ActionParameters();
         actionParameters.putValueNonNull(ActionParameters.id, beanMethodActionRule.getActionId());
         actionParameters.putValueNonNull(ActionParameters.bean, beanMethodActionRule.getBeanId());
@@ -744,6 +804,10 @@ public class RuleToParamsConverter {
     }
 
     public static ActionParameters toActionParameters(AnnotatedMethodActionRule annotatedMethodActionRule) {
+        if (annotatedMethodActionRule == null) {
+            throw new IllegalArgumentException("annotatedMethodActionRule must not be null");
+        }
+
         ActionParameters actionParameters = new ActionParameters();
         actionParameters.putValueNonNull(ActionParameters.id, annotatedMethodActionRule.getActionId());
         actionParameters.putValueNonNull(ActionParameters.bean, annotatedMethodActionRule.getBeanClass().toString());
@@ -752,6 +816,10 @@ public class RuleToParamsConverter {
     }
 
     public static ActionParameters toActionParameters(IncludeActionRule includeActionRule) {
+        if (includeActionRule == null) {
+            throw new IllegalArgumentException("includeActionRule must not be null");
+        }
+
         ActionParameters actionParameters = new ActionParameters();
         actionParameters.putValueNonNull(ActionParameters.id, includeActionRule.getActionId());
         actionParameters.putValueNonNull(ActionParameters.include, includeActionRule.getTransletName());
@@ -772,6 +840,10 @@ public class RuleToParamsConverter {
     }
 
     public static ActionParameters toActionParameters(EchoActionRule echoActionRule) {
+        if (echoActionRule == null) {
+            throw new IllegalArgumentException("echoActionRule must not be null");
+        }
+
         ActionParameters actionParameters = new ActionParameters();
         actionParameters.putValueNonNull(ActionParameters.id, echoActionRule.getActionId());
         actionParameters.putValueNonNull(ActionParameters.hidden, echoActionRule.getHidden());
@@ -785,6 +857,10 @@ public class RuleToParamsConverter {
     }
 
     public static ActionParameters toActionParameters(HeaderActionRule headerActionRule) {
+        if (headerActionRule == null) {
+            throw new IllegalArgumentException("headerActionRule must not be null");
+        }
+
         ActionParameters actionParameters = new ActionParameters();
         actionParameters.putValueNonNull(ActionParameters.id, headerActionRule.getActionId());
         actionParameters.putValueNonNull(ActionParameters.hidden, headerActionRule.getHidden());
@@ -798,6 +874,10 @@ public class RuleToParamsConverter {
     }
 
     public static ItemHolderParameters toItemHolderParameters(ItemRuleMap itemRuleMap) {
+        if (itemRuleMap == null) {
+            throw new IllegalArgumentException("itemRuleMap must not be null");
+        }
+
         ItemHolderParameters itemHolderParameters = new ItemHolderParameters();
         if (itemRuleMap.getProfile() != null) {
             itemHolderParameters.putValue(ItemHolderParameters.profile, itemRuleMap.getProfile());
@@ -819,6 +899,10 @@ public class RuleToParamsConverter {
     }
 
     public static ItemParameters toItemParameters(ItemRule itemRule) {
+        if (itemRule == null) {
+            throw new IllegalArgumentException("itemRule must not be null");
+        }
+
         ItemParameters itemParameters = new ItemParameters();
         if (itemRule.getType() != null && itemRule.getType() != ItemType.SINGLE) {
             itemParameters.putValue(ItemParameters.type, itemRule.getType().toString());

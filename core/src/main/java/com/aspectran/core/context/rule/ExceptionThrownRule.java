@@ -136,13 +136,13 @@ public class ExceptionThrownRule implements ActionRuleApplicable, ResponseRuleAp
 
     @Override
     public Executable applyActionRule(AnnotatedMethodActionRule annotatedMethodActionRule) {
-        throw new IllegalArgumentException(
+        throw new UnsupportedOperationException(
                 "Cannot apply the annotated method action rule to the exception thrown rule");
     }
 
     @Override
     public Executable applyActionRule(IncludeActionRule includeActionRule) {
-        throw new IllegalArgumentException(
+        throw new UnsupportedOperationException(
                 "Cannot apply the include action rule to the exception thrown rule");
     }
 
@@ -167,7 +167,7 @@ public class ExceptionThrownRule implements ActionRuleApplicable, ResponseRuleAp
 
     @Override
     public void applyActionRule(Collection<Executable> actionList) {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("Only one action allowed");
     }
 
     @Override
@@ -198,7 +198,7 @@ public class ExceptionThrownRule implements ActionRuleApplicable, ResponseRuleAp
 
     @Override
     public Response applyResponseRule(ForwardRule forwardRule) {
-        throw new IllegalArgumentException(
+        throw new UnsupportedOperationException(
                 "Cannot apply the forward response rule to the exception thrown rule");
     }
 

@@ -87,7 +87,7 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
             throw new IllegalArgumentException("rootService must not be null");
         }
         if (rootService.getActivityContext() == null) {
-            throw new IllegalStateException("Oops! rootService's ActivityContext is not yet created");
+            throw new IllegalStateException("Oops! ActivityContext is not yet created");
         }
 
         rootService.joinDerivedService(this);
