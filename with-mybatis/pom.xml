@@ -39,7 +39,7 @@
 
     <properties>
         <main.basedir>${project.parent.basedir}</main.basedir>
-        <mybatis.version>3.5.0</mybatis.version>
+        <mybatis.version>3.5.1</mybatis.version>
     </properties>
 
     <dependencies>
