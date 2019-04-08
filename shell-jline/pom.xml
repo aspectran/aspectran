@@ -39,6 +39,7 @@
 
     <properties>
         <main.basedir>${project.parent.basedir}</main.basedir>
+        <jline.version>3.11.0</jline.version>
     </properties>
 
     <dependencies>
@@ -49,10 +50,12 @@
         <dependency>
             <groupId>org.jline</groupId>
             <artifactId>jline</artifactId>
+            <version>${jline.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jline</groupId>
             <artifactId>jline-terminal-jansi</artifactId>
+            <version>${jline.version}</version>
             <scope>runtime</scope>
         </dependency>
         <!-- Test dependencies -->
