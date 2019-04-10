@@ -214,7 +214,7 @@ public class SqlSessionAgent implements SqlSession, ActivityContextAware {
 
     @Override
     public void close() {
-        arbitrarilyClose();
+        getSqlSessionTxAdvice().close(true);
     }
 
     @Override
@@ -235,10 +235,6 @@ public class SqlSessionAgent implements SqlSession, ActivityContextAware {
     @Override
     public Connection getConnection() {
         return getSqlSession().getConnection();
-    }
-
-    private void arbitrarilyClose() {
-        getSqlSessionTxAdvice().close(true);
     }
 
     @AvoidAdvice

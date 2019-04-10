@@ -68,8 +68,11 @@ public class Aspectran {
      */
     public static void printAboutMe(PrintStream out) {
         out.println("Aspectran:   " + VERSION);
-        out.println("JVM:         " + System.getProperty("java.version") + " (\"" + System.getProperty("java.vm.vendor") + "\"" + " " + System.getProperty("java.runtime.version") + ")");
-        out.println("OS:          " + System.getProperty("os.name") + " " + System.getProperty("os.version") + " " + System.getProperty("os.arch"));
+        out.println("JVM:         " + System.getProperty("java.version") +
+                " (\"" + System.getProperty("java.vm.vendor") + "\"" + " " +
+                System.getProperty("java.runtime.version") + ")");
+        out.println("OS:          " + System.getProperty("os.name") + " " +
+                System.getProperty("os.version") + " " + System.getProperty("os.arch"));
     }
 
     /**
@@ -80,8 +83,11 @@ public class Aspectran {
     public static void printPrettyAboutMe(PrintStream out) {
         out.println("-----------------------------------------------------------------");
         out.println(String.format(" %1$-9s : %2$s", "Aspectran", VERSION));
-        out.println(String.format(" %1$-9s : %2$s", "JVM", System.getProperty("java.version") + " (\"" + System.getProperty("java.vm.vendor") + "\"" + " " + System.getProperty("java.runtime.version") + ")"));
-        out.println(String.format(" %1$-9s : %2$s", "OS", System.getProperty("os.name") + " " + System.getProperty("os.version") + " " + System.getProperty("os.arch")));
+        out.println(String.format(" %1$-9s : %2$s", "JVM", System.getProperty("java.version") +
+                " (\"" + System.getProperty("java.vm.vendor") + "\"" + " " +
+                System.getProperty("java.runtime.version") + ")"));
+        out.println(String.format(" %1$-9s : %2$s", "OS", System.getProperty("os.name") + " " +
+                System.getProperty("os.version") + " " + System.getProperty("os.arch")));
         out.println("-----------------------------------------------------------------");
     }
 

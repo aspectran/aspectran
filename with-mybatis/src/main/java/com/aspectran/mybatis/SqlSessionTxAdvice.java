@@ -193,7 +193,9 @@ public class SqlSessionTxAdvice {
         close(false);
     }
     /**
-     * Closes the session.
+     * Closes the session arbitrarily.
+     * If the transaction advice does not finally close the session, the session
+     * will automatically reopen whenever necessary.
      *
      * @param arbitrarily true if the session is closed arbitrarily; otherwise false
      */
