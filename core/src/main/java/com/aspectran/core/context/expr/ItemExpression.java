@@ -150,7 +150,11 @@ public class ItemExpression extends TokenExpression implements ItemEvaluator {
             } else if (itemType == ItemType.ARRAY) {
                 Object[] values = evaluateAsArray(name, itemRule.getTokensList(), valueType);
                 if (values != null) {
-                    return Arrays.stream(values).map(Object::toString).toArray(String[]::new);
+                    if (values instanceof String[]) {
+                        return (String[])values;
+                    } else {
+                        return Arrays.stream(values).map(Object::toString).toArray(String[]::new);
+                    }
                 }
             } else if (itemType == ItemType.LIST) {
                 List<Object> list = evaluateAsList(name, itemRule.getTokensList(), valueType);
@@ -179,14 +183,15 @@ public class ItemExpression extends TokenExpression implements ItemEvaluator {
         }
     }
 
-    private Object evaluate(String parameterName, Token[] tokens, ItemValueType valueType) throws Exception {
-        Object value = evaluate(parameterName, tokens);
+    private Object evaluate(String name, Token[] tokens, ItemValueType valueType) throws Exception {
+        Object value = evaluate(name, tokens);
         return ((value == null || valueType == null) ? value : valuelize(value, valueType));
     }
 
     @SuppressWarnings("all")
-    private Object[] evaluateAsArray(String parameterName, List<Token[]> tokensList, ItemValueType valueType) throws Exception {
-        List<Object> list = evaluateAsList(parameterName, tokensList, valueType);
+    private Object[] evaluateAsArray(String name, List<Token[]> tokensList, ItemValueType valueType)
+            throws Exception {
+        List<Object> list = evaluateAsList(name, tokensList, valueType);
         if (list == null) {
             return null;
         }
@@ -213,14 +218,14 @@ public class ItemExpression extends TokenExpression implements ItemEvaluator {
         }
     }
 
-    private List<Object> evaluateAsList(String parameterName, List<Token[]> tokensList, ItemValueType valueType)
+    private List<Object> evaluateAsList(String name, List<Token[]> tokensList, ItemValueType valueType)
             throws Exception {
         if (tokensList == null || tokensList.isEmpty()) {
-            return getParameterAsList(parameterName, valueType);
+            return getParameterAsList(name, valueType);
         }
         List<Object> valueList = new ArrayList<>(tokensList.size());
         for (Token[] tokens : tokensList) {
-            Object value = evaluate(parameterName, tokens);
+            Object value = evaluate(name, tokens);
             if (value != null && valueType != null) {
                 value = valuelize(value, valueType);
             }
@@ -229,14 +234,14 @@ public class ItemExpression extends TokenExpression implements ItemEvaluator {
         return valueList;
     }
 
-    private Set<Object> evaluateAsSet(String parameterName, List<Token[]> tokensList, ItemValueType valueType)
+    private Set<Object> evaluateAsSet(String name, List<Token[]> tokensList, ItemValueType valueType)
             throws Exception {
         if (tokensList == null || tokensList.isEmpty()) {
-            return getParameterAsSet(parameterName, valueType);
+            return getParameterAsSet(name, valueType);
         }
         Set<Object> valueSet = new HashSet<>();
         for (Token[] tokens : tokensList) {
-            Object value = evaluate(parameterName, tokens);
+            Object value = evaluate(name, tokens);
             if (value != null && valueType != null) {
                 value = valuelize(value, valueType);
             }
@@ -245,10 +250,10 @@ public class ItemExpression extends TokenExpression implements ItemEvaluator {
         return valueSet;
     }
 
-    private Map<String, Object> evaluateAsMap(String parameterName, Map<String, Token[]> tokensMap, ItemValueType valueType)
+    private Map<String, Object> evaluateAsMap(String name, Map<String, Token[]> tokensMap, ItemValueType valueType)
             throws Exception {
         if (tokensMap == null || tokensMap.isEmpty()) {
-            Object value = getParameter(parameterName, valueType);
+            Object value = getParameter(name, valueType);
             if (value == null) {
                 return null;
             }
@@ -256,7 +261,7 @@ public class ItemExpression extends TokenExpression implements ItemEvaluator {
                 value = valuelize(value, valueType);
             }
             Map<String, Object> valueMap = new LinkedHashMap<>();
-            valueMap.put(parameterName, value);
+            valueMap.put(name, value);
             return valueMap;
         }
         Map<String, Object> valueMap = new LinkedHashMap<>();
@@ -270,10 +275,10 @@ public class ItemExpression extends TokenExpression implements ItemEvaluator {
         return valueMap;
     }
 
-    private Properties evaluateAsProperties(String parameterName, Map<String, Token[]> tokensMap, ItemValueType valueType)
+    private Properties evaluateAsProperties(String name, Map<String, Token[]> tokensMap, ItemValueType valueType)
             throws Exception {
         if (tokensMap == null || tokensMap.isEmpty()) {
-            Object value = getParameter(parameterName, valueType);
+            Object value = getParameter(name, valueType);
             if (value == null) {
                 return null;
             }
@@ -281,7 +286,7 @@ public class ItemExpression extends TokenExpression implements ItemEvaluator {
                 value = valuelize(value, valueType);
             }
             Properties prop = new Properties();
-            prop.put(parameterName, value);
+            prop.put(name, value);
             return prop;
         }
 
@@ -323,10 +328,9 @@ public class ItemExpression extends TokenExpression implements ItemEvaluator {
         List<Object> valueList = new ArrayList<>(values.length);
         for (Object value : values) {
             if (value != null && valueType != null) {
-                valueList.add(valuelize(value, valueType));
-            } else {
-                valueList.add(value);
+                value = valuelize(value, valueType);
             }
+            valueList.add(value);
         }
         return valueList;
     }
@@ -340,10 +344,9 @@ public class ItemExpression extends TokenExpression implements ItemEvaluator {
         Set<Object> valueSet = new LinkedHashSet<>(values.length);
         for (Object value : values) {
             if (value != null && valueType != null) {
-                valueSet.add(valuelize(value, valueType));
-            } else {
-                valueSet.add(value);
+                value = valuelize(value, valueType);
             }
+            valueSet.add(value);
         }
         return valueSet;
     }

@@ -40,6 +40,8 @@ public class SqlSessionTxAdvice {
 
     private SqlSession sqlSession;
 
+    private boolean arbitrarilyClosed;
+
     public SqlSessionTxAdvice(SqlSessionFactory sqlSessionFactory) {
         this.sqlSessionFactory = sqlSessionFactory;
     }
@@ -72,15 +74,20 @@ public class SqlSessionTxAdvice {
             if (executorType == null) {
                 executorType = ExecutorType.SIMPLE;
             }
+
             sqlSession = sqlSessionFactory.openSession(executorType, autoCommit);
 
             if (log.isDebugEnabled()) {
-                ToStringBuilder tsb = new ToStringBuilder(String.format("Created %s@%x",
-                        sqlSession.getClass().getSimpleName(), sqlSession.hashCode()));
+                ToStringBuilder tsb = new ToStringBuilder(String.format("%s %s@%x",
+                        (arbitrarilyClosed ? "Reopened" : "Opened"),
+                        sqlSession.getClass().getSimpleName(),
+                        sqlSession.hashCode()));
                 tsb.append("executorType", executorType);
                 tsb.append("autoCommit", autoCommit);
                 log.debug(tsb.toString());
             }
+
+            arbitrarilyClosed = false;
         }
     }
 
@@ -106,7 +113,9 @@ public class SqlSessionTxAdvice {
      * To force the commit call {@link #commit(boolean)}
      */
     public void commit() {
-        checkSession();
+        if (checkSession()) {
+            return;
+        }
 
         if (log.isDebugEnabled()) {
             log.debug(String.format("Committing transactional %s@%x",
@@ -123,7 +132,9 @@ public class SqlSessionTxAdvice {
      * @param force forces connection commit
      */
     public void commit(boolean force) {
-        checkSession();
+        if (checkSession()) {
+            return;
+        }
 
         if (log.isDebugEnabled()) {
             ToStringBuilder tsb = new ToStringBuilder(String.format("Committing transactional %s@%x",
@@ -141,7 +152,9 @@ public class SqlSessionTxAdvice {
      * To force the rollback call {@link #rollback(boolean)}
      */
     public void rollback() {
-        checkSession();
+        if (checkSession()) {
+            return;
+        }
 
         if (log.isDebugEnabled()) {
             log.debug(String.format("Rolling back transactional %s@%x",
@@ -159,7 +172,9 @@ public class SqlSessionTxAdvice {
      * @param force forces connection rollback
      */
     public void rollback(boolean force) {
-        checkSession();
+        if (checkSession()) {
+            return;
+        }
 
         if (log.isDebugEnabled()) {
             ToStringBuilder tsb = new ToStringBuilder(String.format("Rolling back transactional %s@%x",
@@ -175,7 +190,19 @@ public class SqlSessionTxAdvice {
      * Closes the session.
      */
     public void close() {
-        checkSession();
+        close(false);
+    }
+    /**
+     * Closes the session.
+     *
+     * @param arbitrarily true if the session is closed arbitrarily; otherwise false
+     */
+    public void close(boolean arbitrarily) {
+        if (checkSession()) {
+            return;
+        }
+
+        arbitrarilyClosed = arbitrarily;
         sqlSession.close();
 
         if (log.isDebugEnabled()) {
@@ -188,12 +215,27 @@ public class SqlSessionTxAdvice {
     }
 
     /**
-     * Checks if the SqlSession is open.
+     * Returns whether the session is arbitrarily closed.
+     *
+     * @return whether the session is arbitrarily closed
      */
-    private void checkSession() {
+    public boolean isArbitrarilyClosed() {
+        return arbitrarilyClosed;
+    }
+
+    /**
+     * Checks if the SqlSession is open.
+     *
+     * @return whether the session is arbitrarily closed
+     */
+    private boolean checkSession() {
+        if (arbitrarilyClosed) {
+            return true;
+        }
         if(sqlSession == null) {
             throw new IllegalStateException("SqlSession is not open");
         }
+        return false;
     }
 
 }

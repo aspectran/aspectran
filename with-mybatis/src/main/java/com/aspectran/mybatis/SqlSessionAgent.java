@@ -214,7 +214,7 @@ public class SqlSessionAgent implements SqlSession, ActivityContextAware {
 
     @Override
     public void close() {
-        getSqlSession().close();
+        arbitrarilyClose();
     }
 
     @Override
@@ -237,11 +237,21 @@ public class SqlSessionAgent implements SqlSession, ActivityContextAware {
         return getSqlSession().getConnection();
     }
 
+    private void arbitrarilyClose() {
+        getSqlSessionTxAdvice().close(true);
+    }
+
     @AvoidAdvice
     private SqlSession getSqlSession() {
-        SqlSession sqlSession = getSqlSessionTxAdvice().getSqlSession();
+        SqlSessionTxAdvice sqlSessionTxAdvice = getSqlSessionTxAdvice();
+        SqlSession sqlSession = sqlSessionTxAdvice.getSqlSession();
         if (sqlSession == null) {
-            throw new IllegalArgumentException("SqlSession is not opened");
+            if (sqlSessionTxAdvice.isArbitrarilyClosed()) {
+                getSqlSessionTxAdvice().open();
+                sqlSession = getSqlSessionTxAdvice().getSqlSession();
+            } else {
+                throw new IllegalArgumentException("SqlSession is not opened");
+            }
         }
         return sqlSession;
     }
