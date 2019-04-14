@@ -41,7 +41,7 @@ public class ShutdownHooks {
         }
 
         if (hook == null) {
-            hook = addHook(new Thread("ShutdownHook") {
+            hook = addHook(new Thread("goodbye") {
                 @Override
                 public void run() {
                     runTasks();
