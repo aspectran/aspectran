@@ -33,13 +33,11 @@ class AponReadWriteTest {
 
         File outputFile = new File(ResourceUtils.getResourceAsFile("config/apon"), "apon-test-output.apon");
 
-        AponWriter aponWriter = new AponWriter(outputFile);
-        aponWriter.setPrettyPrint(true);
-        aponWriter.setNullWrite(true);
-        //aponWriter.setTypeHintWrite(true);
-        aponWriter.setIndentString("  ");
-        aponWriter.write(parameters);
-        aponWriter.close();
+        try (AponWriter aponWriter = new AponWriter(outputFile)) {
+            aponWriter.setNullWritable(true);
+            //aponWriter.setTypeHintWrite(true);
+            aponWriter.write(parameters);
+        }
     }
 
 }

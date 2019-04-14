@@ -47,7 +47,7 @@ public class AponFormat {
 
     public static final String NEW_LINE = System.lineSeparator();
 
-    protected static final String INDENT_STRING = "\t";
+    protected static final String DEFAULT_INDENT_STRING = "  ";
 
     protected static final String SPACE = " ";
 

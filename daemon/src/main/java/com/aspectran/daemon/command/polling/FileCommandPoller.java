@@ -216,7 +216,6 @@ public class FileCommandPoller extends AbstractCommandPoller {
                 log.debug("Write command file: " + file.getAbsolutePath());
             }
             AponWriter aponWriter = new AponWriter(file);
-            aponWriter.setPrettyPrint(true);
             aponWriter.setIndentString("    ");
             aponWriter.write(parameters);
             aponWriter.close();

@@ -43,7 +43,7 @@ class AponWriterTest {
 
             AponWriter aponWriter = new AponWriter(new PrintWriter(System.out));
             aponWriter.comment("\ncomment line-1\ncomment line-2\ncomment line-3\n");
-            aponWriter.setTypeHintWrite(false);
+            aponWriter.setTypeHintWritable(false);
             aponWriter.write(aspectranConfig);
             aponWriter.close();
 

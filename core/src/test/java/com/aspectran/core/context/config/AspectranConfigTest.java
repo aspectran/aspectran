@@ -37,11 +37,9 @@ class AspectranConfigTest {
 
         File outputFile = new File("./target/test-classes/config/aspectran-config-test-output.apon");
 
-        AponWriter aponWriter = new AponWriter(outputFile);
-        aponWriter.setPrettyPrint(true);
-        aponWriter.setIndentString("    ");
-        aponWriter.write(aspectranConfig);
-        aponWriter.close();
+        try (AponWriter aponWriter = new AponWriter(outputFile)) {
+            aponWriter.write(aspectranConfig);
+        }
     }
 
 }

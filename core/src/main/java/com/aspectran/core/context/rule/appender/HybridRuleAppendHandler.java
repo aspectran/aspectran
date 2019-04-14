@@ -136,7 +136,6 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
             } else {
                 aponWriter = new AponWriter(new FileWriter(aponFile));
             }
-            aponWriter.setIndentString("  ");
 
             try {
                 ContextRuleAssistant assistant = new ShallowContextRuleAssistant();

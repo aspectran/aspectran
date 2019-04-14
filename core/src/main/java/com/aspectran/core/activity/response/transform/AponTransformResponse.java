@@ -85,15 +85,13 @@ public class AponTransformResponse extends TransformResponse {
             ProcessResult processResult = activity.getProcessResult();
             Parameters parameters = ContentsAponReader.read(processResult);
 
-            AponWriter aponWriter;
+            AponWriter aponWriter = new AponWriter(writer);
             if (pretty == Boolean.FALSE) {
-                aponWriter = new AponWriter(writer, false);
+                aponWriter.setIndentString(null);
             } else {
                 String indentString = activity.getSetting("indentString");
                 if (indentString != null) {
-                    aponWriter = new AponWriter(writer, indentString);
-                } else {
-                    aponWriter = new AponWriter(writer, (pretty != null));
+                    aponWriter.setIndentString(indentString);
                 }
             }
             aponWriter.write(parameters);

@@ -224,7 +224,8 @@ public class AponReader extends AponFormat {
 
             if (parameterValueType == ParameterValueType.PARAMETERS) {
                 if (parameterValue == null) {
-                    parameterValue = parameters.newParameterValue(name, parameterValueType, (openBracket == SQUARE_BRACKET_OPEN));
+                    parameterValue = parameters.newParameterValue(name, parameterValueType,
+                            (openBracket == SQUARE_BRACKET_OPEN));
                     parameterValue.setValueTypeHinted(valueTypeHinted);
                 }
                 Parameters parameters2 = parameters.newParameters(parameterValue.getName());
@@ -232,7 +233,8 @@ public class AponReader extends AponFormat {
                 valuelize(parameters2, CURLY_BRACKET_OPEN, null, null, null, valueTypeHinted);
             } else if (parameterValueType == ParameterValueType.TEXT) {
                 if (parameterValue == null) {
-                    parameterValue = parameters.newParameterValue(name, parameterValueType, (openBracket == SQUARE_BRACKET_OPEN));
+                    parameterValue = parameters.newParameterValue(name, parameterValueType, 
+                            (openBracket == SQUARE_BRACKET_OPEN));
                     parameterValue.setValueTypeHinted(valueTypeHinted);
                 }
                 if (ROUND_BRACKET_OPEN == cchar) {
@@ -294,13 +296,15 @@ public class AponReader extends AponFormat {
                 }
 
                 if (parameterValue == null) {
-                    parameterValue = parameters.newParameterValue(name, parameterValueType, (openBracket == SQUARE_BRACKET_OPEN));
+                    parameterValue = parameters.newParameterValue(name, parameterValueType,
+                            (openBracket == SQUARE_BRACKET_OPEN));
                     parameterValue.setValueTypeHinted(valueTypeHinted);
                 } else {
                     if (parameterValue.getParameterValueType() == ParameterValueType.VARIABLE) {
                         parameterValue.setParameterValueType(parameterValueType);
                     } else if (parameterValue.getParameterValueType() != parameterValueType) {
-                        throw new AponSyntaxException(lineNumber, line, tline, parameterValue, parameterValue.getParameterValueType());
+                        throw new AponSyntaxException(lineNumber, line, tline, parameterValue,
+                                parameterValue.getParameterValueType());
                     }
                 }
 

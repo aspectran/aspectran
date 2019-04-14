@@ -27,88 +27,46 @@ import java.io.Writer;
 import java.util.List;
 
 /**
- * Converts a Parameters object to an APON formatted string.
+ * Writes a APON object to an output source.
  *
- * <p>If pretty-printing is enabled, includes spaces, tabs to make the format more readable.
- * By default, pretty-printing is enabled, and the indent string is a tab character.</p>
+ * <p>By default, the indentation string is "  " (two blanks)</p>
  */
 public class AponWriter extends AponFormat implements Flushable, Closeable {
 
     private Writer writer;
 
-    private boolean prettyPrint;
-
-    private String indentString;
+    private String indentString = DEFAULT_INDENT_STRING;
 
     private int indentDepth;
 
-    private boolean nullWrite;
+    private boolean nullWritable;
 
-    private boolean typeHintWrite;
+    private boolean typeHintWritable;
 
     /**
      * Instantiates a new AponWriter.
-     * By default, pretty printing is enabled, and the indent string is a tab character.
      *
      * @param writer the character-output stream
      */
     public AponWriter(Writer writer) {
-        this(writer, true);
-    }
-
-    /**
-     * Instantiates a new AponWriter.
-     * If pretty-printing is enabled, includes spaces, tabs to make the format more readable.
-     * By default, the indent string is a tab character.
-     *
-     * @param writer the character-output stream
-     * @param prettyPrint enables or disables pretty-printing
-     */
-    public AponWriter(Writer writer, boolean prettyPrint) {
         this.writer = writer;
-        this.prettyPrint = prettyPrint;
-        this.indentString = (prettyPrint ? INDENT_STRING : null);
-    }
-
-    /**
-     * Instantiates a new AponWriter.
-     * If pretty-printing is enabled, includes spaces, tabs to make the format more readable.
-     *
-     * @param writer the character-output stream
-     * @param indentString the string that should be used for indentation when pretty-printing is enabled
-     */
-    public AponWriter(Writer writer, String indentString) {
-        this.writer = writer;
-        this.prettyPrint = (indentString != null);
-        this.indentString = indentString;
-    }
-
-    /**
-     * Instantiates a new AponWriter.
-     *
-     * @param file  a File object to write to
-     * @throws IOException if an I/O error occurs
-     */
-    public AponWriter(File file) throws IOException {
-        this(file, false);
     }
 
     /**
      * Instantiates a new AponWriter.
      *
      * @param file a File object to write to
-     * @param append if {@code true}, then bytes will be written
-     *               to the end of the file rather than the beginning
      * @throws IOException if an I/O error occurs
      */
-    public AponWriter(File file, boolean append) throws IOException {
-        this.writer = new FileWriter(file, append);
+    public AponWriter(File file) throws IOException {
+        this(new FileWriter(file));
     }
 
-    public void setPrettyPrint(boolean prettyPrint) {
-        this.prettyPrint = prettyPrint;
-    }
-
+    /**
+     * Specifies the indent string.
+     *
+     * @param indentString the indentation string, by default "  " (two blanks).
+     */
     public void setIndentString(String indentString) {
         this.indentString = indentString;
     }
@@ -116,19 +74,19 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
     /**
      * Sets whether to write a null parameter.
      *
-     * @param nullWrite true, write a null parameter
+     * @param nullWritable true, write a null parameter
      */
-    public void setNullWrite(boolean nullWrite) {
-        this.nullWrite = nullWrite;
+    public void setNullWritable(boolean nullWritable) {
+        this.nullWritable = nullWritable;
     }
 
     /**
      * Sets whether write a type hint for values.
      *
-     * @param typeHintWrite true, write a type hint for values
+     * @param typeHintWritable true, write a type hint for values
      */
-    public void setTypeHintWrite(boolean typeHintWrite) {
-        this.typeHintWrite = typeHintWrite;
+    public void setTypeHintWritable(boolean typeHintWritable) {
+        this.typeHintWritable = typeHintWritable;
     }
 
     /**
@@ -178,7 +136,7 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
                     }
                 }
             } else {
-                if (nullWrite || parameter.getValueAsParameters() != null) {
+                if (nullWritable || parameter.getValueAsParameters() != null) {
                     writeName(parameter);
                     openCurlyBracket();
                     write(parameter.getValueAsParameters());
@@ -218,7 +176,7 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
                 }
             } else {
                 Object value = parameter.getValue();
-                if (nullWrite || value != null) {
+                if (nullWritable || value != null) {
                     writeName(parameter);
                     openCurlyBracket();
                     if (value instanceof Parameters) {
@@ -252,7 +210,7 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
                 }
             } else {
                 String s = parameter.getValueAsString();
-                if (nullWrite || s != null) {
+                if (nullWritable || s != null) {
                     writeName(parameter);
                     writeString(s);
                 }
@@ -287,7 +245,7 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
                     openRoundBracket();
                     writeText(text);
                     closeRoundBracket();
-                } else if (nullWrite) {
+                } else if (nullWritable) {
                     writeName(parameter);
                     writeNull();
                 }
@@ -312,7 +270,7 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
                     }
                 }
             } else {
-                if (nullWrite || parameter.getValue() != null) {
+                if (nullWritable || parameter.getValue() != null) {
                     writeName(parameter);
                     write(parameter.getValue());
                 }
@@ -357,7 +315,7 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
     private void writeName(Parameter parameter) throws IOException {
         indent();
         writer.write(parameter.getName());
-        if (typeHintWrite || parameter.isValueTypeHinted()) {
+        if (typeHintWritable || parameter.isValueTypeHinted()) {
             writer.write(ROUND_BRACKET_OPEN);
             writer.write(parameter.getParameterValueType().toString());
             writer.write(ROUND_BRACKET_CLOSE);
@@ -464,7 +422,7 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
     }
 
     private void indent() throws IOException {
-        if (prettyPrint && indentString != null) {
+        if (indentString != null) {
             for (int i = 0; i < indentDepth; i++) {
                 writer.write(indentString);
             }
@@ -472,13 +430,13 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
     }
 
     private void increaseIndent() {
-        if (prettyPrint) {
+        if (indentString != null) {
             indentDepth++;
         }
     }
 
     private void decreaseIndent() {
-        if (prettyPrint) {
+        if (indentString != null) {
             indentDepth--;
         }
     }
@@ -525,7 +483,7 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
     }
 
     /**
-     * Closes the writer.
+     * Closes this APON writer.
      *
      * @throws IOException if an I/O error occurs
      */
@@ -539,38 +497,19 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
 
     /**
      * Converts a Parameters object to an APON formatted string.
-     * By default, pretty printing is enabled, and the indent string is a tab character.
      *
      * @param parameters the Parameters object to be converted
      * @return a string that contains the APON text
      */
     public static String stringify(Parameters parameters) {
-        return stringify(parameters, INDENT_STRING);
+        return stringify(parameters, DEFAULT_INDENT_STRING);
     }
 
     /**
      * Converts a Parameters object to an APON formatted string.
-     * If pretty-printing is enabled, includes spaces, tabs to make the format more readable.
-     * The default indentation string is a tab character.
      *
      * @param parameters the Parameters object to be converted
-     * @param prettyPrint enables or disables pretty-printing
-     * @return a string that contains the APON text
-     */
-    public static String stringify(Parameters parameters, boolean prettyPrint) {
-        if (prettyPrint) {
-            return stringify(parameters, INDENT_STRING);
-        } else {
-            return stringify(parameters, null);
-        }
-    }
-
-    /**
-     * Converts a Parameters object to an APON formatted string.
-     * If pretty-printing is enabled, includes spaces, tabs to make the format more readable.
-     *
-     * @param parameters the Parameters object to be converted
-     * @param indentString the string that should be used for indentation when pretty-printing is enabled
+     * @param indentString the indentation string
      * @return a string that contains the APON text
      */
     public static String stringify(Parameters parameters, String indentString) {
@@ -579,7 +518,8 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
         }
         try {
             Writer writer = new StringWriter();
-            AponWriter aponWriter = new AponWriter(writer, indentString);
+            AponWriter aponWriter = new AponWriter(writer);
+            aponWriter.setIndentString(indentString);
             aponWriter.write(parameters);
             aponWriter.close();
             return writer.toString();

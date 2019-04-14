@@ -33,10 +33,9 @@ import java.util.Map;
 
 /**
  * Converts an object to a JSON formatted string.
- * If pretty-printing is enabled, includes spaces, tabs and new-lines to make the format more readable.
- * Pretty-printing is disabled by default.
- * The default indentation string is a tab character.
- * 
+ * <p>If pretty-printing is enabled, the JsonWriter will add newlines and
+ * indentation to the written data. Pretty-printing is disabled by default.</p>
+ *
  * <p>Created: 2008. 06. 12 PM 8:20:54</p>
  * 
  * @author Juho Jeong

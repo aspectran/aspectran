@@ -236,8 +236,7 @@ public class TransletCommand extends AbstractCommand {
             if (count == 0) {
                 console.writeLine("----------------------------------------------------------------------------");
             }
-            AponWriter aponWriter = new AponWriter(console.getWriter(), true);
-            aponWriter.setIndentString("  ");
+            AponWriter aponWriter = new AponWriter(console.getWriter());
             aponWriter.write(transletParameters);
             console.writeLine("----------------------------------------------------------------------------");
             count++;
