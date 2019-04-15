@@ -26,7 +26,7 @@ class PebbleTemplateEngineTest {
         AspectranConfig aspectranConfig = new AspectranConfig();
         AspectranParameters parameters = aspectranConfig.newContextConfig().newAspectranParameters();
         parameters.setDefaultTemplateEngineBean("pebble");
-        parameters.append(new ResourceAppendRule("config/pebble-test-config.xml"));
+        parameters.addRule(new ResourceAppendRule("config/pebble-test-config.xml"));
 
         aspectran = EmbeddedAspectran.run(aspectranConfig);
     }

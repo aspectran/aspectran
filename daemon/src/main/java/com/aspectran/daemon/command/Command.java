@@ -22,6 +22,14 @@ import com.aspectran.daemon.command.polling.CommandParameters;
  */
 public interface Command {
 
+
+    /**
+     * Returns whether it is a command that must be guaranteed not to be executed
+     * at the same time as another command.
+     *
+     * @return true if the command should ensure that it is not executed at the same
+     *      time as another command; false otherwise
+     */
     boolean isIsolated();
 
     /**

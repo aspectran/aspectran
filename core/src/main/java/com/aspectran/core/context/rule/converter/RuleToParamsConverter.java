@@ -880,10 +880,10 @@ public class RuleToParamsConverter {
 
         ItemHolderParameters itemHolderParameters = new ItemHolderParameters();
         if (itemRuleMap.getProfile() != null) {
-            itemHolderParameters.putValue(ItemHolderParameters.profile, itemRuleMap.getProfile());
+            itemHolderParameters.setProfile(itemRuleMap.getProfile());
         }
         for (ItemRule itemRule : itemRuleMap.values()) {
-            itemHolderParameters.putValue(ItemHolderParameters.item, toItemParameters(itemRule));
+            itemHolderParameters.addItemParameters(toItemParameters(itemRule));
         }
         return itemHolderParameters;
     }

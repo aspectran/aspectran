@@ -32,15 +32,15 @@ import java.util.List;
  */
 public class CommandParameters extends AbstractParameters {
 
-    public static final ParameterDefinition command;
-    public static final ParameterDefinition translet;
-    public static final ParameterDefinition bean;
-    public static final ParameterDefinition method;
-    public static final ParameterDefinition arguments;
-    public static final ParameterDefinition properties;
-    public static final ParameterDefinition parameters;
-    public static final ParameterDefinition attributes;
-    public static final ParameterDefinition output;
+    private static final ParameterDefinition command;
+    private static final ParameterDefinition translet;
+    private static final ParameterDefinition bean;
+    private static final ParameterDefinition method;
+    private static final ParameterDefinition arguments;
+    private static final ParameterDefinition properties;
+    private static final ParameterDefinition parameters;
+    private static final ParameterDefinition attributes;
+    private static final ParameterDefinition output;
 
     private static final ParameterDefinition[] parameterDefinitions;
 
@@ -107,7 +107,7 @@ public class CommandParameters extends AbstractParameters {
     public ItemRuleList getArgumentItemRuleList() throws IllegalRuleException {
         ItemHolderParameters itemHolderParameters = getParameters(arguments);
         if (itemHolderParameters != null) {
-            List<ItemParameters> itemParametersList = itemHolderParameters.getParametersList();
+            List<ItemParameters> itemParametersList = itemHolderParameters.getItemParametersList();
             return ItemRule.toItemRuleList(itemParametersList);
         } else {
             return null;
@@ -117,7 +117,7 @@ public class CommandParameters extends AbstractParameters {
     public ItemRuleMap getArgumentItemRuleMap() throws IllegalRuleException {
         ItemHolderParameters itemHolderParameters = getParameters(arguments);
         if (itemHolderParameters != null) {
-            List<ItemParameters> itemParametersList = itemHolderParameters.getParametersList();
+            List<ItemParameters> itemParametersList = itemHolderParameters.getItemParametersList();
             return ItemRule.toItemRuleMap(itemParametersList);
         } else {
             return null;
@@ -127,7 +127,7 @@ public class CommandParameters extends AbstractParameters {
     public ItemRuleMap getPropertyItemRuleMap() throws IllegalRuleException {
         ItemHolderParameters itemHolderParameters = getParameters(properties);
         if (itemHolderParameters != null) {
-            List<ItemParameters> itemParametersList = itemHolderParameters.getParametersList();
+            List<ItemParameters> itemParametersList = itemHolderParameters.getItemParametersList();
             return ItemRule.toItemRuleMap(itemParametersList);
         } else {
             return null;
@@ -137,7 +137,7 @@ public class CommandParameters extends AbstractParameters {
     public ItemRuleMap getParameterItemRuleMap() throws IllegalRuleException {
         ItemHolderParameters itemHolderParameters = getParameters(parameters);
         if (itemHolderParameters != null) {
-            List<ItemParameters> itemParametersList = itemHolderParameters.getParametersList();
+            List<ItemParameters> itemParametersList = itemHolderParameters.getItemParametersList();
             return ItemRule.toItemRuleMap(itemParametersList);
         } else {
             return null;
@@ -147,7 +147,7 @@ public class CommandParameters extends AbstractParameters {
     public ItemRuleMap getAttributeItemRuleMap() throws IllegalRuleException {
         ItemHolderParameters itemHolderParameters = getParameters(attributes);
         if (itemHolderParameters != null) {
-            List<ItemParameters> itemParametersList = itemHolderParameters.getParametersList();
+            List<ItemParameters> itemParametersList = itemHolderParameters.getItemParametersList();
             return ItemRule.toItemRuleMap(itemParametersList);
         } else {
             return null;

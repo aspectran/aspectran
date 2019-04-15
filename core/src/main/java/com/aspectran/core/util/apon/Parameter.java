@@ -304,6 +304,6 @@ public interface Parameter {
      * @param identifier the specified identifier {@code Parameter}
      * @return a {@code Parameters}
      */
-    Parameters newParameters(Parameter identifier);
+    <T extends Parameters> T newParameters(Parameter identifier);
 
 }

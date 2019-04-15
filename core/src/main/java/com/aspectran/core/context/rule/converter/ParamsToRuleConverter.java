@@ -953,7 +953,7 @@ public class ParamsToRuleConverter {
 
     private ItemRuleMap convertAsItemRuleMap(ItemHolderParameters itemHolderParameters) throws IllegalRuleException {
         String profile = itemHolderParameters.getProfile();
-        List<ItemParameters> itemParametersList = itemHolderParameters.getParametersList();
+        List<ItemParameters> itemParametersList = itemHolderParameters.getItemParametersList();
         ItemRuleMap itemRuleMap = ItemRule.toItemRuleMap(itemParametersList);
         if (itemRuleMap != null) {
             itemRuleMap.setProfile(profile);

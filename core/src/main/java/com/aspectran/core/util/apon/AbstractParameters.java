@@ -543,14 +543,12 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public <T extends Parameters> T newParameters(String name) {
         Parameter p = getParameter(name);
         if (p == null) {
             throw new UnknownParameterException(name, this);
         }
-        Parameters parameters = p.newParameters(p);
-        return (T)parameters;
+        return p.newParameters(p);
 }
 
     @Override

@@ -24,8 +24,8 @@ import java.util.List;
 
 public class ItemHolderParameters extends AbstractParameters {
 
-    public static final ParameterDefinition profile;
-    public static final ParameterDefinition item;
+    private static final ParameterDefinition profile;
+    private static final ParameterDefinition item;
 
     private static final ParameterDefinition[] parameterDefinitions;
 
@@ -52,8 +52,22 @@ public class ItemHolderParameters extends AbstractParameters {
         return getString(profile);
     }
 
-    public List<ItemParameters> getParametersList() {
+    public ItemHolderParameters setProfile(String profile) {
+        putValue(ItemHolderParameters.profile, profile);
+        return this;
+    }
+
+    public List<ItemParameters> getItemParametersList() {
         return getParametersList(item);
+    }
+
+    public ItemHolderParameters addItemParameters(ItemParameters itemParameters) {
+        putValue(item, itemParameters);
+        return this;
+    }
+
+    public ItemParameters newItemParameters() {
+        return newParameters(item);
     }
 
 }

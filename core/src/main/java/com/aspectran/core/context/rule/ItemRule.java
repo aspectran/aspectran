@@ -81,9 +81,9 @@ public class ItemRule {
     }
 
     /**
-     * Gets the type.
+     * Gets the item type.
      *
-     * @return the type
+     * @return the item type
      */
     public ItemType getType() {
         return type;
@@ -108,7 +108,7 @@ public class ItemRule {
     }
 
     /**
-     * Sets the name of a item.
+     * Sets the name of the item.
      *
      * @param name the name to set
      */
@@ -655,17 +655,18 @@ public class ItemRule {
     /**
      * Returns a new derived instance of ItemRule.
      *
-     * @param type the type
-     * @param name the name
-     * @param valueType the value type
-     * @param defaultValue the default value
+     * @param type the item type
+     * @param name the name of the item
+     * @param valueType the type of value an item can have
+     * @param defaultValue the default value used if the item has not been assigned a value or is null
      * @param tokenize whether to tokenize
      * @param mandatory whether or not this item is mandatory
      * @param secret whether or not this item requires secure input
      * @return the item rule
      * @throws IllegalRuleException if an illegal rule is found
      */
-    public static ItemRule newInstance(String type, String name, String valueType, String defaultValue, Boolean tokenize,
+    public static ItemRule newInstance(String type, String name, String valueType,
+                                       String defaultValue, Boolean tokenize,
                                        Boolean mandatory, Boolean secret) throws IllegalRuleException {
         ItemRule itemRule = new ItemRule();
 
@@ -919,7 +920,8 @@ public class ItemRule {
         boolean mandatory = parameter.mandatory();
         boolean secret = parameter.secret();
 
-        ItemRule itemRule = ItemRule.newInstance(null, name, null, defaultValue, tokenize, mandatory, secret);
+        ItemRule itemRule = ItemRule.newInstance(null, name, null, defaultValue,
+                tokenize, mandatory, secret);
         itemRule.setValue(value);
         return itemRule;
     }
@@ -943,7 +945,8 @@ public class ItemRule {
         boolean mandatory = attribute.mandatory();
         boolean secret = attribute.secret();
 
-        ItemRule itemRule = ItemRule.newInstance(null, name, null, defaultValue, tokenize, mandatory, secret);
+        ItemRule itemRule = ItemRule.newInstance(null, name, null, defaultValue,
+                tokenize, mandatory, secret);
         itemRule.setValue(value);
         return itemRule;
     }

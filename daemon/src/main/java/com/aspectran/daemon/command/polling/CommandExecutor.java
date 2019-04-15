@@ -95,7 +95,7 @@ public class CommandExecutor {
             Thread currentThread = Thread.currentThread();
             String oldThreadName = currentThread.getName();
             try {
-                String threadName = "command-" + commandName + "-" + queueSize;
+                String threadName = "cmd-" + commandName + "-" + queueSize;
                 currentThread.setName(threadName);
 
                 if (command.isIsolated()) {

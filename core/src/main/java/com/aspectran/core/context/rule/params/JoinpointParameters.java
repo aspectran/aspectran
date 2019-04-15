@@ -68,4 +68,8 @@ public class JoinpointParameters extends AbstractParameters {
         return newParameters(pointcut);
     }
 
+    public PointcutParameters touchPointcutParameters() {
+        return touchParameters(pointcut);
+    }
+
 }
