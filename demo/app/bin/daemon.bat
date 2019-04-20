@@ -13,12 +13,12 @@ if not defined LOGGING_CONFIG (
 
 "%JAVA_HOME%\bin\java.exe" ^
     %JAVA_OPTS% ^
-    -classpath "%BASE_DIR%/lib/*" ^
+    -classpath "%BASE_DIR%\lib\*" ^
     -Dlogback.configurationFile="%LOGGING_CONFIG%" ^
     -Daspectran.basePath="%BASE_DIR%" ^
     %ASPECTRAN_OPTS% ^
     com.aspectran.daemon.DefaultDaemon ^
-    %BASE_DIR%/config/aspectran-config.apon
+    %BASE_DIR%\config\aspectran-config.apon
 goto end
 
 :java-not-set
