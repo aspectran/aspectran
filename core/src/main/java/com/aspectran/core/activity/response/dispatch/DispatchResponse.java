@@ -168,22 +168,28 @@ public class DispatchResponse implements Response {
     }
 
     /**
-     * Stores an attribute in request.
+     * Save processing results as request attributes.
      *
      * @param requestAdapter the request adapter
      * @param processResult the process result
      */
-    public static void fetchAttributes(RequestAdapter requestAdapter, ProcessResult processResult) {
+    public static void saveAttributes(RequestAdapter requestAdapter, ProcessResult processResult) {
         if (processResult != null) {
             for (ContentResult contentResult : processResult) {
                 for (ActionResult actionResult : contentResult) {
                     Object actionResultValue = actionResult.getResultValue();
                     if (actionResultValue instanceof ProcessResult) {
-                        fetchAttributes(requestAdapter, (ProcessResult)actionResultValue);
+                        saveAttributes(requestAdapter, (ProcessResult)actionResultValue);
                     } else {
                         String actionId = actionResult.getActionId();
                         if (actionId != null) {
                             requestAdapter.setAttribute(actionId, actionResultValue);
+                        } else if (actionResultValue instanceof Map<?, ?>) {
+                            for (Map.Entry<?, ?> entry : ((Map<?, ?>)actionResultValue).entrySet()) {
+                                String name = entry.getKey().toString();
+                                Object value = entry.getValue();
+                                requestAdapter.setAttribute(name, value);
+                            }
                         }
                     }
                 }

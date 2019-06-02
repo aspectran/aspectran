@@ -117,7 +117,7 @@ public class JspViewDispatcher implements ViewDispatcher {
             }
 
             ProcessResult processResult = activity.getProcessResult();
-            DispatchResponse.fetchAttributes(requestAdapter, processResult);
+            DispatchResponse.saveAttributes(requestAdapter, processResult);
 
             HttpServletRequest request = requestAdapter.getAdaptee();
             HttpServletResponse response = responseAdapter.getAdaptee();
