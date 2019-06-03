@@ -140,8 +140,9 @@ public class TokenExpression implements TokenEvaluator {
                 }
             }
             return null;
+        } else {
+            return evaluate(tokens);
         }
-        return evaluate(tokens);
     }
 
     @Override
@@ -155,6 +156,7 @@ public class TokenExpression implements TokenEvaluator {
         if (tokensList == null || tokensList.isEmpty()) {
             return cast(getParameterAsList(parameterName));
         }
+
         List<Object> valueList = new ArrayList<>(tokensList.size());
         for (Token[] tokens : tokensList) {
             Object value = evaluate(parameterName, tokens);
@@ -168,6 +170,7 @@ public class TokenExpression implements TokenEvaluator {
         if (tokensSet == null || tokensSet.isEmpty()) {
             return cast(getParameterAsSet(parameterName));
         }
+
         Set<Object> valueSet = new HashSet<>();
         for (Token[] tokens : tokensSet) {
             Object value = evaluate(parameterName, tokens);

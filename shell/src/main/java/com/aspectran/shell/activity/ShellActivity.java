@@ -143,6 +143,9 @@ public class ShellActivity extends CoreActivity {
             if (itemRule.getType() != ItemType.SINGLE) {
                 return false;
             }
+            if (itemRule.getDefaultValue() != null) {
+                return false;
+            }
             Token[] tokens = itemRule.getAllTokens();
             if (tokens != null && tokens.length > 0) {
                 if (tokens.length == 1) {
@@ -151,9 +154,6 @@ public class ShellActivity extends CoreActivity {
                         return false;
                     }
                     if (!itemRule.getName().equals(t.getName())) {
-                        return false;
-                    }
-                    if (itemRule.getDefaultValue() != null) {
                         return false;
                     }
                 } else {
