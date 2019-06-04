@@ -30,8 +30,6 @@ public @interface Attribute {
 
     String value() default "";
 
-    String defaultValue() default "";
-
     boolean tokenize() default true;
 
     boolean mandatory() default false;

@@ -44,8 +44,6 @@ public class JLineConsole extends AbstractConsole {
 
     private static final String APP_NAME = "Aspectran Shell";
 
-    private static final Character MASK_CHAR = '*';
-
     private final Terminal terminal;
 
     private final LineReader reader;
@@ -121,7 +119,7 @@ public class JLineConsole extends AbstractConsole {
 
     @Override
     public String readLine() {
-        return readLine(getPrompt());
+        return readLine(null);
     }
 
     @Override
@@ -132,7 +130,10 @@ public class JLineConsole extends AbstractConsole {
     @Override
     public String readLine(String prompt, String buffer) {
         try {
-            return readMultiLine(readRawLine(prompt));
+            if (prompt == null) {
+                prompt = getPrompt();
+            }
+            return readMultiLine(readRawLine(prompt, null, buffer));
         } catch (EndOfFileException | UserInterruptException e) {
             throw new ConsoleTerminatedException();
         }
@@ -140,7 +141,7 @@ public class JLineConsole extends AbstractConsole {
 
     @Override
     public String readPassword() {
-        return readPassword(getPrompt());
+        return readPassword(null);
     }
 
     @Override
@@ -151,7 +152,10 @@ public class JLineConsole extends AbstractConsole {
     @Override
     public String readPassword(String prompt, String buffer) {
         try {
-            return reader.readLine(prompt, MASK_CHAR, buffer);
+            if (prompt == null) {
+                prompt = getPrompt();
+            }
+            return readRawLine(prompt, MASK_CHAR, buffer);
         } catch (EndOfFileException | UserInterruptException e) {
             throw new ConsoleTerminatedException();
         }
@@ -164,11 +168,11 @@ public class JLineConsole extends AbstractConsole {
 
     @Override
     protected String readRawLine(String prompt) {
-        return reader.readLine(prompt);
+        return readRawLine(prompt, null, null);
     }
 
-    protected String readRawLine(String prompt, String buffer) {
-        return reader.readLine(prompt, null, buffer);
+    private String readRawLine(String prompt, Character mask, String buffer) {
+        return reader.readLine(prompt, mask, buffer);
     }
 
     @Override

@@ -41,6 +41,8 @@ public interface Console {
 
     String COMMENT_DELIMITER = "//";
 
+    char MASK_CHAR = '*';
+
     String readCommandLine();
 
     String readCommandLine(String prompt);
@@ -49,13 +51,13 @@ public interface Console {
 
     String readLine(String prompt);
 
-    String readLine(String format, String buffer);
+    String readLine(String prompt, String buffer);
 
     String readPassword();
 
     String readPassword(String prompt);
 
-    String readPassword(String format, String buffer);
+    String readPassword(String prompt, String buffer);
 
     void write(String string);
 

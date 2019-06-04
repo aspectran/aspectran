@@ -81,9 +81,6 @@ public class ItemExpression extends TokenExpression implements ItemEvaluator {
             if (itemType == ItemType.SINGLE) {
                 Token[] tokens = itemRule.getTokens();
                 value = evaluate(name, tokens, valueType);
-                if (value == null) {
-                    value = itemRule.getDefaultValue();
-                }
             } else if (itemType == ItemType.ARRAY) {
                 value = evaluateAsArray(name, itemRule.getTokensList(), valueType);
             } else if (itemType == ItemType.LIST) {

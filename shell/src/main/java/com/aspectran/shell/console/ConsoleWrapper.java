@@ -53,8 +53,8 @@ public class ConsoleWrapper implements Console {
     }
 
     @Override
-    public String readLine(String format, String buffer) {
-        return console.readLine(format, buffer);
+    public String readLine(String prompt, String buffer) {
+        return console.readLine(prompt, buffer);
     }
 
     @Override
@@ -68,8 +68,8 @@ public class ConsoleWrapper implements Console {
     }
 
     @Override
-    public String readPassword(String format, String buffer) {
-        return console.readPassword(format, buffer);
+    public String readPassword(String prompt, String buffer) {
+        return console.readPassword(prompt, buffer);
     }
 
     @Override

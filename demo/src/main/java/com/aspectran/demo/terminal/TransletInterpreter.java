@@ -38,7 +38,6 @@ import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -64,7 +63,7 @@ public class TransletInterpreter implements ActivityContextAware {
 
     @RequestToGet("/query/@{_translet_}")
     @Transform(type = TransformType.TEXT, contentType = "application/json")
-    public void query(Translet translet) throws IOException, InvocationTargetException {
+    public void query(Translet translet) throws IOException {
         String transletName = translet.getAttribute("_translet_");
         if (StringUtils.isEmpty(transletName)) {
             return;
@@ -170,7 +169,6 @@ public class TransletInterpreter implements ActivityContextAware {
             Token[] tokens = itemRule.getAllTokens();
             if (tokens == null || tokens.length == 0) {
                 Token t = new Token(TokenType.PARAMETER, itemRule.getName());
-                t.setDefaultValue(itemRule.getDefaultValue());
                 tokens = new Token[] { t };
             }
             for (Token t1 : tokens) {
@@ -233,14 +231,12 @@ public class TransletInterpreter implements ActivityContextAware {
             map.put("type", itemRule.getType().toString());
             map.put("name", itemRule.getName());
             map.put("value", itemRule.getValue());
-            map.put("defaultValue", itemRule.getDefaultValue());
             map.put("mandatory", itemRule.isMandatory());
             map.put("secret", itemRule.isSecret());
 
             Token[] tokens = itemRule.getAllTokens();
             if (tokens == null) {
                 Token t = new Token(TokenType.PARAMETER, itemRule.getName());
-                t.setDefaultValue(itemRule.getDefaultValue());
                 tokens = new Token[] { t };
             }
             map.put("tokenString", TokenParser.toString(tokens));

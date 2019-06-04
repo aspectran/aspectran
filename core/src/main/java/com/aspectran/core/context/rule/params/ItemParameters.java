@@ -25,7 +25,6 @@ public class ItemParameters extends AbstractParameters {
     public static final ParameterDefinition name;
     public static final ParameterDefinition value;
     public static final ParameterDefinition valueType;
-    public static final ParameterDefinition defaultValue;
     public static final ParameterDefinition tokenize;
     public static final ParameterDefinition mandatory;
     public static final ParameterDefinition secret;
@@ -38,7 +37,6 @@ public class ItemParameters extends AbstractParameters {
         name = new ParameterDefinition("name", ParameterValueType.STRING);
         value = new ParameterDefinition("value", ParameterValueType.VARIABLE);
         valueType = new ParameterDefinition("valueType", ParameterValueType.STRING);
-        defaultValue = new ParameterDefinition("defaultValue", ParameterValueType.STRING);
         tokenize = new ParameterDefinition("tokenize", ParameterValueType.BOOLEAN);
         mandatory = new ParameterDefinition("mandatory", ParameterValueType.BOOLEAN);
         secret = new ParameterDefinition("secret", ParameterValueType.BOOLEAN);
@@ -49,7 +47,6 @@ public class ItemParameters extends AbstractParameters {
                 name,
                 value,
                 valueType,
-                defaultValue,
                 tokenize,
                 mandatory,
                 secret,

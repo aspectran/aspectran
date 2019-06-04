@@ -152,7 +152,7 @@
         <parameters>
             <item name="id" mandatory="true"/>
             <item name="email" mandatory="true">${id}@${domain}</item>
-            <item name="password" secret="true" defaultValue="(none)"/>
+            <item name="password" secret="true" value="(none)"/>
         </parameters>
         <transform type="transform/text">
             <template style="apon">

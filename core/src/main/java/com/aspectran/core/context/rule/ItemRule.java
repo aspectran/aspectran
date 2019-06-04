@@ -58,8 +58,6 @@ public class ItemRule {
 
     private ItemValueType valueType;
 
-    private String defaultValue;
-
     private Boolean tokenize;
 
     private Token[] tokens;
@@ -386,24 +384,6 @@ public class ItemRule {
     }
 
     /**
-     * Gets the default value of this item.
-     *
-     * @return the default value
-     */
-    public String getDefaultValue() {
-        return defaultValue;
-    }
-
-    /**
-     * Sets the default value of this item.
-     *
-     * @param defaultValue the new default value
-     */
-    public void setDefaultValue(String defaultValue) {
-        this.defaultValue = defaultValue;
-    }
-
-    /**
      * Returns whether to tokenize.
      *
      * @return whether to tokenize
@@ -658,15 +638,13 @@ public class ItemRule {
      * @param type the item type
      * @param name the name of the item
      * @param valueType the type of value an item can have
-     * @param defaultValue the default value used if the item has not been assigned a value or is null
      * @param tokenize whether to tokenize
      * @param mandatory whether or not this item is mandatory
      * @param secret whether or not this item requires secure input
      * @return the item rule
      * @throws IllegalRuleException if an illegal rule is found
      */
-    public static ItemRule newInstance(String type, String name, String valueType,
-                                       String defaultValue, Boolean tokenize,
+    public static ItemRule newInstance(String type, String name, String valueType, Boolean tokenize,
                                        Boolean mandatory, Boolean secret) throws IllegalRuleException {
         ItemRule itemRule = new ItemRule();
 
@@ -677,7 +655,7 @@ public class ItemRule {
         if (itemType != null) {
             itemRule.setType(itemType);
         } else {
-            itemRule.setType(ItemType.SINGLE); //default
+            itemRule.setType(ItemType.SINGLE); // default
         }
 
         if (!StringUtils.isEmpty(name)) {
@@ -696,10 +674,6 @@ public class ItemRule {
                 throw new IllegalRuleException("No item value type for '" + valueType + "'");
             }
             itemRule.setValueType(itemValueType);
-        }
-
-        if (defaultValue != null) {
-            itemRule.setDefaultValue(defaultValue);
         }
 
         if (mandatory != null) {
@@ -825,7 +799,6 @@ public class ItemRule {
      *       code2: "value2"
      *     }
      *     valueType: "java.lang.String"
-     *     defaultValue: "default value"
      *     tokenize: true
      *   }
      *   {
@@ -849,13 +822,12 @@ public class ItemRule {
         String type = itemParameters.getString(ItemParameters.type);
         String name = itemParameters.getString(ItemParameters.name);
         String valueType = itemParameters.getString(ItemParameters.valueType);
-        String defaultValue = itemParameters.getString(ItemParameters.defaultValue);
         Boolean tokenize = itemParameters.getBoolean(ItemParameters.tokenize);
         Boolean mandatory = itemParameters.getBoolean(ItemParameters.mandatory);
         Boolean secret = itemParameters.getBoolean(ItemParameters.secret);
         Parameters callParameters = itemParameters.getParameters(ItemParameters.call);
 
-        ItemRule itemRule = ItemRule.newInstance(type, name, valueType, defaultValue, tokenize, mandatory, secret);
+        ItemRule itemRule = ItemRule.newInstance(type, name, valueType, tokenize, mandatory, secret);
 
         if (callParameters != null) {
             String bean = StringUtils.emptyToNull(callParameters.getString(CallParameters.bean));
@@ -915,12 +887,11 @@ public class ItemRule {
     public static ItemRule toItemRule(Parameter parameter) throws IllegalRuleException {
         String name = parameter.name();
         String value = parameter.value();
-        String defaultValue = parameter.defaultValue();
         boolean tokenize = parameter.tokenize();
         boolean mandatory = parameter.mandatory();
         boolean secret = parameter.secret();
 
-        ItemRule itemRule = ItemRule.newInstance(null, name, null, defaultValue,
+        ItemRule itemRule = ItemRule.newInstance(null, name, null,
                 tokenize, mandatory, secret);
         itemRule.setValue(value);
         return itemRule;
@@ -940,12 +911,11 @@ public class ItemRule {
     public static ItemRule toItemRule(Attribute attribute) throws IllegalRuleException {
         String name = attribute.name();
         String value = attribute.value();
-        String defaultValue = attribute.defaultValue();
         boolean tokenize = attribute.tokenize();
         boolean mandatory = attribute.mandatory();
         boolean secret = attribute.secret();
 
-        ItemRule itemRule = ItemRule.newInstance(null, name, null, defaultValue,
+        ItemRule itemRule = ItemRule.newInstance(null, name, null,
                 tokenize, mandatory, secret);
         itemRule.setValue(value);
         return itemRule;

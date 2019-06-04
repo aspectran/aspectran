@@ -35,19 +35,19 @@ public class StringUtils {
      * of length 0.
      * <p>Note: this method returns {@code true} for a {@code CharSequence}
      * that purely consists of whitespace.
-     * <pre class="code">
+     * <pre>
      * StringUtils.hasLength(null) = false
      * StringUtils.hasLength("") = false
      * StringUtils.hasLength(" ") = true
      * StringUtils.hasLength("Hello") = true
      * </pre>
      *
-     * @param str the {@code CharSequence} to check (may be {@code null})
+     * @param chars the {@code CharSequence} to check (may be {@code null})
      * @return {@code true} if the {@code CharSequence} is not {@code null} and has length
      * @see #hasText(String)
      */
-    public static boolean hasLength(CharSequence str) {
-        return (str != null && str.length() > 0);
+    public static boolean hasLength(CharSequence chars) {
+        return (chars != null && chars.length() > 0);
     }
 
     /**
@@ -69,7 +69,7 @@ public class StringUtils {
      * <p>More specifically, this method returns {@code true} if the
      * {@code CharSequence} is not {@code null}, its length is greater than
      * 0, and it contains at least one non-whitespace character.
-     * <pre class="code">
+     * <pre>
      * StringUtils.hasText(null) = false
      * StringUtils.hasText("") = false
      * StringUtils.hasText(" ") = false
@@ -732,6 +732,24 @@ public class StringUtils {
      */
     public static String joinCommaDelimitedList(Collection<?> list) {
         return toDelimitedString(list, ", ");
+    }
+
+    /**
+     * Returns padding using the specified delimiter repeated to a given length.
+     *
+     * @param ch character to repeat
+     * @param repeat number of times to repeat char, negative treated as zero
+     * @return String with repeated character
+     */
+    public static String repeat(char ch, final int repeat) {
+        if (repeat <= 0) {
+            return EMPTY;
+        }
+        char[] buf = new char[repeat];
+        for (int i = repeat - 1; i >= 0; i--) {
+            buf[i] = ch;
+        }
+        return new String(buf);
     }
 
     /**

@@ -15,6 +15,8 @@
  */
 package com.aspectran.shell.console;
 
+import com.aspectran.core.util.StringUtils;
+
 import java.io.BufferedReader;
 import java.io.IOError;
 import java.io.IOException;
@@ -60,17 +62,34 @@ public class DefaultConsole extends AbstractConsole {
 
     @Override
     public String readLine(String prompt) {
-        try {
-            busy = true;
-            return readMultiLine(readRawLine(prompt));
-        } finally {
-            busy = false;
-        }
+        return readLine(prompt, null);
     }
 
     @Override
     public String readLine(String prompt, String buffer) {
-        return readLine(prompt + "[" + buffer + "]: ");
+        try {
+            busy = true;
+            if (prompt == null) {
+                prompt = getPrompt();
+            }
+            if (prompt != null) {
+                if (buffer != null) {
+                    prompt += "[" + buffer + "]: ";
+                }
+            } else {
+                if (buffer != null) {
+                    prompt = "[" + buffer + "]: ";
+                }
+            }
+            String line = readMultiLine(readRawLine(prompt));
+            if (buffer != null && StringUtils.isEmpty(line)) {
+                return buffer;
+            } else {
+                return line;
+            }
+        } finally {
+            busy = false;
+        }
     }
 
     @Override
@@ -83,13 +102,35 @@ public class DefaultConsole extends AbstractConsole {
         if (System.console() != null) {
             return new String(System.console().readPassword(prompt));
         } else {
-            return readLine(prompt);
+            return readRawLine(prompt);
         }
     }
 
     @Override
     public String readPassword(String prompt, String buffer) {
-        return readPassword(prompt);
+        try {
+            busy = true;
+            if (prompt == null) {
+                prompt = getPrompt();
+            }
+            if (prompt != null) {
+                if (buffer != null) {
+                    prompt += "[" + StringUtils.repeat(MASK_CHAR, 8) + "]: ";
+                }
+            } else {
+                if (buffer != null) {
+                    prompt = "[" + StringUtils.repeat(MASK_CHAR, 8) + "]: ";
+                }
+            }
+            String line = readRawPassword(prompt);
+            if (buffer != null && StringUtils.isEmpty(line)) {
+                return buffer;
+            } else {
+                return line;
+            }
+        } finally {
+            busy = false;
+        }
     }
 
     @Override
@@ -113,6 +154,14 @@ public class DefaultConsole extends AbstractConsole {
             return line;
         } catch (IOException e) {
             throw new IOError(e);
+        }
+    }
+
+    private String readRawPassword(String prompt) {
+        if (System.console() != null) {
+            return new String(System.console().readPassword(prompt));
+        } else {
+            return readRawLine(prompt);
         }
     }
 

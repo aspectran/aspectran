@@ -914,7 +914,6 @@ public class RuleToParamsConverter {
             itemParameters.putValue(ItemParameters.valueType, itemRule.getValueType().toString());
         }
 
-        itemParameters.putValueNonNull(ItemParameters.defaultValue, itemRule.getDefaultValue());
         itemParameters.putValueNonNull(ItemParameters.tokenize, itemRule.getTokenize());
         itemParameters.putValueNonNull(ItemParameters.mandatory, itemRule.getMandatory());
         itemParameters.putValueNonNull(ItemParameters.secret, itemRule.getSecret());

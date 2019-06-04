@@ -89,15 +89,15 @@ public class Token implements BeanReferenceable, Replicable<Token> {
 
     static final char TEMPLATE_SYMBOL = '~';
 
-    static final char PARAMETER_SYMBOL = '$';
+    public static final char PARAMETER_SYMBOL = '$';
 
     static final char ATTRIBUTE_SYMBOL = '@';
 
     static final char PROPERTY_SYMBOL = '%';
 
-    static final char START_BRACKET = '{';
+    public static final char BRACKET_OPEN = '{';
 
-    static final char END_BRACKET = '}';
+    public static final char BRACKET_CLOSE = '}';
 
     static final char VALUE_SEPARATOR = ':';
 
@@ -303,7 +303,7 @@ public class Token implements BeanReferenceable, Replicable<Token> {
         StringBuilder sb = new StringBuilder();
         if (type == TokenType.BEAN) {
             sb.append(BEAN_SYMBOL);
-            sb.append(START_BRACKET);
+            sb.append(BRACKET_OPEN);
             if (name != null) {
                 sb.append(name);
             }
@@ -317,19 +317,19 @@ public class Token implements BeanReferenceable, Replicable<Token> {
             }
         } else if (type == TokenType.TEMPLATE) {
             sb.append(TEMPLATE_SYMBOL);
-            sb.append(START_BRACKET);
+            sb.append(BRACKET_OPEN);
             if (name != null) {
                 sb.append(name);
             }
         } else if (type == TokenType.PARAMETER) {
             sb.append(PARAMETER_SYMBOL);
-            sb.append(START_BRACKET);
+            sb.append(BRACKET_OPEN);
             if (name != null) {
                 sb.append(name);
             }
         } else if (type == TokenType.ATTRIBUTE) {
             sb.append(ATTRIBUTE_SYMBOL);
-            sb.append(START_BRACKET);
+            sb.append(BRACKET_OPEN);
             if (name != null) {
                 sb.append(name);
             }
@@ -339,7 +339,7 @@ public class Token implements BeanReferenceable, Replicable<Token> {
             }
         } else if (type == TokenType.PROPERTY) {
             sb.append(PROPERTY_SYMBOL);
-            sb.append(START_BRACKET);
+            sb.append(BRACKET_OPEN);
             if (name != null) {
                 sb.append(name);
             }
@@ -358,7 +358,7 @@ public class Token implements BeanReferenceable, Replicable<Token> {
             sb.append(VALUE_SEPARATOR);
             sb.append(defaultValue);
         }
-        sb.append(END_BRACKET);
+        sb.append(BRACKET_CLOSE);
         return sb.toString();
     }
 
@@ -463,10 +463,10 @@ public class Token implements BeanReferenceable, Replicable<Token> {
         char[] ca = str.toCharArray();
         boolean open = false;
         for (int i = 1; i < ca.length; i++) {
-            if (isTokenSymbol(ca[i - 1]) && ca[i] == START_BRACKET) {
+            if (isTokenSymbol(ca[i - 1]) && ca[i] == BRACKET_OPEN) {
                 i++;
                 open = true;
-            } else if (open && ca[i] == END_BRACKET) {
+            } else if (open && ca[i] == BRACKET_CLOSE) {
                 return true;
             }
         }

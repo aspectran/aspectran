@@ -253,8 +253,7 @@
   type         (single | array | list | map | set | properties) #IMPLIED
   name         CDATA #IMPLIED
   value        CDATA #IMPLIED
-  valueType    (string | int | long | float | double | boolean | parameters | file | multipartFile) #IMPLIED
-  defaultValue CDATA #IMPLIED
+  valueType    (string | int | long | float | double | boolean | parameters | file | multipart-file) #IMPLIED
   tokenize     (true | false) #IMPLIED
   mandatory    (true | false) #IMPLIED
   secret       (true | false) #IMPLIED

@@ -88,7 +88,7 @@ public class Tokenizer {
                 break;
             case AT_TOKEN_SYMBOL:
                 textBuf.append(c);
-                if (c == Token.START_BRACKET) {
+                if (c == Token.BRACKET_OPEN) {
                     status = AT_TOKEN_NAME;
                 } else {
                     if (Token.isTokenSymbol(c)) {
@@ -110,7 +110,7 @@ public class Tokenizer {
                         break;
                     }
                 }
-                if (c == Token.END_BRACKET) {
+                if (c == Token.BRACKET_CLOSE) {
                     if (nameBuf.length() > 0 || valueBuf.length() > 0) {
                         // save previous non-token string
                         if (tokenStartOffset > 0) {

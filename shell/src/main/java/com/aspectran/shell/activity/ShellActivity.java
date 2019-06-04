@@ -62,7 +62,7 @@ public class ShellActivity extends CoreActivity {
 
     private Writer outputWriter;
 
-    private boolean simpleInputMode;
+    private boolean simpleReading;
 
     /**
      * Instantiates a new ShellActivity.
@@ -143,18 +143,15 @@ public class ShellActivity extends CoreActivity {
             if (itemRule.getType() != ItemType.SINGLE) {
                 return false;
             }
-            if (itemRule.getDefaultValue() != null) {
-                return false;
-            }
             Token[] tokens = itemRule.getAllTokens();
             if (tokens != null && tokens.length > 0) {
                 if (tokens.length == 1) {
                     Token t = tokens[0];
-                    if (t.getType() != TokenType.PARAMETER) {
-                        return false;
-                    }
-                    if (!itemRule.getName().equals(t.getName())) {
-                        return false;
+                    if (t.getType() != TokenType.TEXT) {
+                        if (t.getType() != TokenType.PARAMETER ||
+                                !itemRule.getName().equals(t.getName())) {
+                            return false;
+                        }
                     }
                 } else {
                     return false;
@@ -164,8 +161,8 @@ public class ShellActivity extends CoreActivity {
         return true;
     }
 
-    private void determineSimpleMode(ItemRuleList itemRuleList) {
-        simpleInputMode = isSimpleItemRules(itemRuleList);
+    private void determineSimpleReading(ItemRuleList itemRuleList) {
+        simpleReading = isSimpleItemRules(itemRuleList);
     }
 
     /**
@@ -175,18 +172,17 @@ public class ShellActivity extends CoreActivity {
         ItemRuleMap parameterItemRuleMap = getRequestRule().getParameterItemRuleMap();
         if (parameterItemRuleMap != null && !parameterItemRuleMap.isEmpty()) {
             ItemRuleList parameterItemRuleList = new ItemRuleList(parameterItemRuleMap.values());
-            determineSimpleMode(parameterItemRuleList);
+            determineSimpleReading(parameterItemRuleList);
             if (procedural) {
                 console.setStyle("GREEN");
                 console.writeLine("Required parameters:");
                 console.styleOff();
 
-                if (!simpleInputMode) {
+                if (!simpleReading) {
                     for (ItemRule itemRule : parameterItemRuleList) {
                         Token[] tokens = itemRule.getAllTokens();
                         if (tokens == null) {
                             Token t = new Token(TokenType.PARAMETER, itemRule.getName());
-                            t.setDefaultValue(itemRule.getDefaultValue());
                             tokens = new Token[] { t };
                         }
                         console.setStyle("YELLOW");
@@ -208,7 +204,7 @@ public class ShellActivity extends CoreActivity {
     private void readRequiredParameters(ItemRuleList parameterItemRuleList) {
         ItemRuleList missingItemRules1;
         if (procedural) {
-            if (simpleInputMode) {
+            if (simpleReading) {
                 missingItemRules1 = readEachParameter(parameterItemRuleList);
             } else {
                 missingItemRules1 = readEachToken(parameterItemRuleList);
@@ -222,7 +218,7 @@ public class ShellActivity extends CoreActivity {
             console.styleOff();
 
             ItemRuleList missingItemRules2;
-            if (simpleInputMode) {
+            if (simpleReading) {
                 missingItemRules2 = readEachParameter(missingItemRules1);
             } else {
                 missingItemRules2 = readEachToken(missingItemRules1);
@@ -248,18 +244,17 @@ public class ShellActivity extends CoreActivity {
         ItemRuleMap attributeItemRuleMap = getRequestRule().getAttributeItemRuleMap();
         if (attributeItemRuleMap != null && !attributeItemRuleMap.isEmpty()) {
             ItemRuleList attributeItemRuleList = new ItemRuleList(attributeItemRuleMap.values());
-            determineSimpleMode(attributeItemRuleList);
+            determineSimpleReading(attributeItemRuleList);
             if (procedural) {
                 console.setStyle("GREEN");
                 console.writeLine("Required attributes:");
                 console.styleOff();
 
-                if (!simpleInputMode) {
+                if (!simpleReading) {
                     for (ItemRule itemRule : attributeItemRuleList) {
                         Token[] tokens = itemRule.getAllTokens();
                         if (tokens == null) {
                             Token t = new Token(TokenType.PARAMETER, itemRule.getName());
-                            t.setDefaultValue(itemRule.getDefaultValue());
                             tokens = new Token[] { t };
                         }
                         console.setStyle("YELLOW");
@@ -281,7 +276,7 @@ public class ShellActivity extends CoreActivity {
     private void readRequiredAttributes(ItemRuleList attributeItemRuleList) {
         ItemRuleList missingItemRules1;
         if (procedural) {
-            if (simpleInputMode) {
+            if (simpleReading) {
                 missingItemRules1 = readEachAttribute(attributeItemRuleList);
             } else {
                 missingItemRules1 = readEachToken(attributeItemRuleList);
@@ -295,7 +290,7 @@ public class ShellActivity extends CoreActivity {
             console.styleOff();
 
             ItemRuleList missingItemRules2;
-            if (simpleInputMode) {
+            if (simpleReading) {
                 missingItemRules2 = readEachParameter(missingItemRules1);
             } else {
                 missingItemRules2 = readEachToken(missingItemRules1);
@@ -319,7 +314,7 @@ public class ShellActivity extends CoreActivity {
         try {
             for (ItemRule ir : itemRuleList) {
                 String value = readParameter(ir);
-                if (!StringUtils.isEmpty(value)) {
+                if (StringUtils.hasLength(value)) {
                     getRequestAdapter().setParameter(ir.getName(), value);
                 } else if (ir.isMandatory()) {
                     missingItemRules.add(ir);
@@ -337,7 +332,7 @@ public class ShellActivity extends CoreActivity {
         try {
             for (ItemRule ir : itemRuleList) {
                 String value = readParameter(ir);
-                if (!StringUtils.isEmpty(value)) {
+                if (StringUtils.hasLength(value)) {
                     getRequestAdapter().setAttribute(ir.getName(), value);
                 } else if (ir.isMandatory()) {
                     missingItemRules.add(ir);
@@ -359,10 +354,20 @@ public class ShellActivity extends CoreActivity {
         console.appendPrompt(itemRule.getName());
         console.styleOff();
         console.appendPrompt(": ");
+
+        String defaultValue = null;
+        Token[] tokens = itemRule.getAllTokens();
+        if (tokens != null && tokens.length == 1) {
+            Token token = tokens[0];
+            if (token.getType() == TokenType.TEXT) {
+                defaultValue = token.getDefaultValue();
+            }
+        }
+
         if (itemRule.isSecret()) {
-            return console.readPassword();
+            return console.readPassword(null, defaultValue);
         } else {
-            return console.readLine();
+            return console.readLine(null, defaultValue);
         }
     }
 
@@ -378,7 +383,6 @@ public class ShellActivity extends CoreActivity {
                 Token[] tokens = itemRule.getAllTokens();
                 if (tokens == null || tokens.length == 0) {
                     Token t = new Token(TokenType.PARAMETER, itemRule.getName());
-                    t.setDefaultValue(itemRule.getDefaultValue());
                     tokens = new Token[] { t };
                 }
                 for (Token t1 : tokens) {
@@ -411,41 +415,35 @@ public class ShellActivity extends CoreActivity {
                     console.writeLine(value);
                     continue;
                 }
-                Set<ItemRule> rules = entry.getValue();
+                Set<ItemRule> itemRules = entry.getValue();
                 boolean secret = false;
-                for (ItemRule ir : rules) {
+                for (ItemRule ir : itemRules) {
                     if (ir.isSecret()) {
                         secret = true;
                         break;
                     }
                 }
+                String defaultValue = token.getDefaultValue();
                 console.clearPrompt();
                 console.appendPrompt("   ");
-                if (token.getType() == TokenType.TEXT) {
-                    console.appendPrompt(token.stringify());
-                } else {
-                    String str = token.stringify();
-                    console.setStyle("CYAN");
-                    console.appendPrompt(str.substring(0, 2));
-                    console.styleOff();
-                    console.appendPrompt(str.substring(2, str.length() - 1));
-                    console.setStyle("CYAN");
-                    console.appendPrompt(str.substring(str.length() - 1));
-                    console.styleOff();
-                }
+                console.setStyle("CYAN");
+                console.appendPrompt(String.valueOf(Token.PARAMETER_SYMBOL));
+                console.appendPrompt(String.valueOf(Token.BRACKET_OPEN));
+                console.styleOff();
+                console.appendPrompt(token.getName());
+                console.setStyle("CYAN");
+                console.appendPrompt(String.valueOf(Token.BRACKET_CLOSE));
+                console.styleOff();
                 console.appendPrompt(": ");
                 if (secret) {
-                    value = console.readPassword();
+                    value = console.readPassword(null, defaultValue);
                 } else {
-                    value = console.readLine();
+                    value = console.readLine(null, defaultValue);
                 }
-                if (StringUtils.isEmpty(value)) {
-                    value = token.getDefaultValue();
-                }
-                if (!StringUtils.isEmpty(value)) {
+                if (StringUtils.hasLength(value)) {
                     getRequestAdapter().setParameter(token.getName(), value);
                 } else {
-                    for (ItemRule ir : rules) {
+                    for (ItemRule ir : itemRules) {
                         if (ir.isMandatory()) {
                             missingItemRules.add(ir);
                         }
