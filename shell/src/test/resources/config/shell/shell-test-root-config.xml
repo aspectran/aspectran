@@ -23,8 +23,7 @@
 
     <bean id="sampleAdvice" class="com.aspectran.shell.sample.SampleAdvice">
         <description>
-            Action Method 실행 전 후에 주입할 Advice Action Method를 가지고 있는
-            singleton 스코프를 가지는 Bean을 정의합니다.
+            Defines the Advice Bean that has the Advice Method to be injected before and after the Action Method.
         </description>
     </bean>
 
@@ -32,9 +31,9 @@
 
     <aspect id="sampleAdviceAspect">
         <description>
-            sampleAction Bean의 helloWorld 메쏘드를 실행하는 Translet이 발견되면,
-            해당 Translet의 실행 전에는 sampleAdvice Bean의 welcome 메쏘드를 실행하고,
-            해당 Translet의 실행 후에는 sampleAdvice Bean의 goodbye 메쏘드를 실행합니다.
+            If a Translet that executes the helloWorld method of the sampleAction bean is found,
+            executes the welcome() method of the sampleAdvice bean before executing the translet,
+            and executes the goodbye() method of the sampleAdvice bean after executing the translet.
         </description>
         <joinpoint target="translet">
             pointcut: {
@@ -52,9 +51,13 @@
     </aspect>
 
     <translet name="hello">
-        <description>
-            sampleAction 빈에서 helloWorld 메쏘드를 실행합니다.
-            helloWorld 메쏘드가 반환하는 "Hello, World." 문자열을 텍스트 형식의 컨텐츠로 응답합니다.
+        <description style="apon">
+            |
+            |   Runs the helloWorld() method of the sampleAction bean and prints the returned value to the console.
+            |   Maybe the words "Hello, World." will be printed on the console.
+            |   Is it difficult to find the words "Hello, World." printed on the console?
+            |   If so, try running the "hello2" command.
+            |---------------------------------------------------------------------------------------------------------
         </description>
         <transform type="transform/text">
             <action id="helloData" bean="sampleAction" method="helloWorld"/>
