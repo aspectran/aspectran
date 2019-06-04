@@ -126,16 +126,16 @@ public class JLineConsole extends AbstractConsole {
 
     @Override
     public String readLine(String prompt) {
+        return readLine(prompt, null);
+    }
+
+    @Override
+    public String readLine(String prompt, String buffer) {
         try {
             return readMultiLine(readRawLine(prompt));
         } catch (EndOfFileException | UserInterruptException e) {
             throw new ConsoleTerminatedException();
         }
-    }
-
-    @Override
-    public String readLine(String format, Object... args) {
-        return readLine(String.format(format, args));
     }
 
     @Override
@@ -145,16 +145,16 @@ public class JLineConsole extends AbstractConsole {
 
     @Override
     public String readPassword(String prompt) {
-        try {
-            return reader.readLine(prompt, MASK_CHAR);
-        } catch (EndOfFileException | UserInterruptException e) {
-            throw new ConsoleTerminatedException();
-        }
+        return readPassword(prompt, null);
     }
 
     @Override
-    public String readPassword(String format, Object... args) {
-        return readPassword(String.format(format, args));
+    public String readPassword(String prompt, String buffer) {
+        try {
+            return reader.readLine(prompt, MASK_CHAR, buffer);
+        } catch (EndOfFileException | UserInterruptException e) {
+            throw new ConsoleTerminatedException();
+        }
     }
 
     @Override
@@ -165,6 +165,10 @@ public class JLineConsole extends AbstractConsole {
     @Override
     protected String readRawLine(String prompt) {
         return reader.readLine(prompt);
+    }
+
+    protected String readRawLine(String prompt, String buffer) {
+        return reader.readLine(prompt, null, buffer);
     }
 
     @Override

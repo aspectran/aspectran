@@ -49,13 +49,13 @@ public interface Console {
 
     String readLine(String prompt);
 
-    String readLine(String format, Object... args);
+    String readLine(String format, String buffer);
 
     String readPassword();
 
     String readPassword(String prompt);
 
-    String readPassword(String format, Object... args);
+    String readPassword(String format, String buffer);
 
     void write(String string);
 

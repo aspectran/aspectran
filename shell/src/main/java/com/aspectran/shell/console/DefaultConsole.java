@@ -69,8 +69,8 @@ public class DefaultConsole extends AbstractConsole {
     }
 
     @Override
-    public String readLine(String format, Object... args) {
-        return readLine(String.format(format, args));
+    public String readLine(String prompt, String buffer) {
+        return readLine(prompt + "[" + buffer + "]: ");
     }
 
     @Override
@@ -88,8 +88,8 @@ public class DefaultConsole extends AbstractConsole {
     }
 
     @Override
-    public String readPassword(String format, Object... args) {
-        return readPassword(String.format(format, args));
+    public String readPassword(String prompt, String buffer) {
+        return readPassword(prompt);
     }
 
     @Override
