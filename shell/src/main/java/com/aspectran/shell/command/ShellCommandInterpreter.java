@@ -31,6 +31,7 @@ import com.aspectran.shell.service.AspectranShellService;
 import com.aspectran.shell.service.ShellService;
 
 import java.io.File;
+import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -49,6 +50,10 @@ public class ShellCommandInterpreter implements CommandInterpreter {
     private ShellCommandRegistry commandRegistry;
 
     private AspectranShellService service;
+
+    private PrintStream originalSystemOut;
+
+    private PrintStream originalSystemErr;
 
     public ShellCommandInterpreter(Console console) {
         if (console == null) {
@@ -116,6 +121,13 @@ public class ShellCommandInterpreter implements CommandInterpreter {
         }
 
         console.setInterpreter(this);
+
+        originalSystemOut = System.out;
+        originalSystemErr = System.err;
+        PrintStream out = new PrintStreamWrapper(originalSystemOut, console);
+        PrintStream err = new PrintStreamWrapper(originalSystemErr, console);
+        System.setOut(out);
+        System.setErr(err);
     }
 
     public void perform() {
@@ -209,6 +221,14 @@ public class ShellCommandInterpreter implements CommandInterpreter {
     }
 
     public void release() {
+        if (originalSystemOut != null) {
+            System.setOut(originalSystemOut);
+            originalSystemOut = null;
+        }
+        if (originalSystemErr != null) {
+            System.setErr(originalSystemErr);
+            originalSystemErr = null;
+        }
         if (service != null) {
             service.stop();
             service = null;
@@ -237,6 +257,31 @@ public class ShellCommandInterpreter implements CommandInterpreter {
             dir.mkdirs();
         }
         return dir;
+    }
+
+    private class PrintStreamWrapper extends PrintStream {
+
+        private final Console console;
+
+        PrintStreamWrapper(PrintStream parent, Console console) {
+            super(parent);
+            this.console = console;
+        }
+
+        @Override
+        public void write(int b) {
+            console.clearLine();
+            super.write(b);
+            console.redrawLine();
+        }
+
+        @Override
+        public void write(byte[] buf, int off, int len) {
+            console.clearLine();
+            super.write(buf, off, len);
+            console.redrawLine();
+        }
+
     }
 
 }

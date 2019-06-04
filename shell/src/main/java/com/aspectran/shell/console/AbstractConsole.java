@@ -27,9 +27,11 @@ import java.nio.charset.Charset;
  */
 public abstract class AbstractConsole implements Console {
 
+    private final String encoding;
+
     private String commandPrompt = DEFAULT_PROMPT;
 
-    private final String encoding;
+    private final StringBuilder promptBuilder = new StringBuilder();
 
     private File workingDir;
 
@@ -56,6 +58,20 @@ public abstract class AbstractConsole implements Console {
     @Override
     public void setCommandPrompt(String commandPrompt) {
         this.commandPrompt = commandPrompt;
+    }
+
+    protected String getPrompt() {
+        return (promptBuilder.length() > 0 ? promptBuilder.toString() : null);
+    }
+
+    @Override
+    public void appendPrompt(String string) {
+        promptBuilder.append(string);
+    }
+
+    @Override
+    public void clearPrompt() {
+        promptBuilder.setLength(0);
     }
 
     @Override

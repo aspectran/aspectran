@@ -71,7 +71,15 @@ public interface Console {
 
     void writeError(String format, Object... args);
 
+    void appendPrompt(String string);
+
+    void clearPrompt();
+
     void clearScreen();
+
+    void clearLine();
+
+    void redrawLine();
 
     OutputStream getOutput();
 
@@ -110,5 +118,5 @@ public interface Console {
     CommandInterpreter getInterpreter();
 
     void setInterpreter(CommandInterpreter interpreter);
-}
 
+}

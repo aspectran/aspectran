@@ -120,8 +120,28 @@ public class ConsoleWrapper implements Console {
     }
 
     @Override
+    public void appendPrompt(String string) {
+        console.appendPrompt(string);
+    }
+
+    @Override
+    public void clearPrompt() {
+        console.clearPrompt();
+    }
+
+    @Override
     public void clearScreen() {
         console.clearScreen();
+    }
+
+    @Override
+    public void clearLine() {
+        console.clearLine();
+    }
+
+    @Override
+    public void redrawLine() {
+        console.redrawLine();
     }
 
     @Override

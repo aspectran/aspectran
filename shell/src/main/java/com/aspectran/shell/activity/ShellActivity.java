@@ -187,11 +187,10 @@ public class ShellActivity extends CoreActivity {
                         if (tokens == null) {
                             Token t = new Token(TokenType.PARAMETER, itemRule.getName());
                             t.setDefaultValue(itemRule.getDefaultValue());
-                            tokens = new Token[] {t};
+                            tokens = new Token[] { t };
                         }
-                        String mandatoryMarker = itemRule.isMandatory() ? " * " : "   ";
                         console.setStyle("YELLOW");
-                        console.write(mandatoryMarker);
+                        console.write(getMandatoryMarker(itemRule.isMandatory()));
                         console.styleOff();
                         console.setStyle("bold");
                         console.write(itemRule.getName());
@@ -261,11 +260,10 @@ public class ShellActivity extends CoreActivity {
                         if (tokens == null) {
                             Token t = new Token(TokenType.PARAMETER, itemRule.getName());
                             t.setDefaultValue(itemRule.getDefaultValue());
-                            tokens = new Token[] {t};
+                            tokens = new Token[] { t };
                         }
-                        String mandatoryMarker = itemRule.isMandatory() ? " * " : "   ";
                         console.setStyle("YELLOW");
-                        console.write(mandatoryMarker);
+                        console.write(getMandatoryMarker(itemRule.isMandatory()));
                         console.styleOff();
                         console.setStyle("bold");
                         console.write(itemRule.getName());
@@ -353,17 +351,18 @@ public class ShellActivity extends CoreActivity {
     }
 
     private String readParameter(ItemRule itemRule) {
-        String mandatoryMarker = itemRule.isMandatory() ? " * " : "   ";
+        console.clearPrompt();
         console.setStyle("YELLOW");
-        console.write(mandatoryMarker);
+        console.appendPrompt(getMandatoryMarker(itemRule.isMandatory()));
         console.styleOff();
         console.setStyle("bold");
-        console.write(itemRule.getName());
+        console.appendPrompt(itemRule.getName());
         console.styleOff();
+        console.appendPrompt(": ");
         if (itemRule.isSecret()) {
-            return console.readPassword(": ");
+            return console.readPassword();
         } else {
-            return console.readLine(": ");
+            return console.readLine();
         }
     }
 
@@ -420,12 +419,25 @@ public class ShellActivity extends CoreActivity {
                         break;
                     }
                 }
-                console.write("   ");
-                writeToken(token);
-                if (secret) {
-                    value = console.readPassword(": ");
+                console.clearPrompt();
+                console.appendPrompt("   ");
+                if (token.getType() == TokenType.TEXT) {
+                    console.appendPrompt(token.stringify());
                 } else {
-                    value = console.readLine(": ");
+                    String str = token.stringify();
+                    console.setStyle("CYAN");
+                    console.appendPrompt(str.substring(0, 2));
+                    console.styleOff();
+                    console.appendPrompt(str.substring(2, str.length() - 1));
+                    console.setStyle("CYAN");
+                    console.appendPrompt(str.substring(str.length() - 1));
+                    console.styleOff();
+                }
+                console.appendPrompt(": ");
+                if (secret) {
+                    value = console.readPassword();
+                } else {
+                    value = console.readLine();
                 }
                 if (StringUtils.isEmpty(value)) {
                     value = token.getDefaultValue();
@@ -445,6 +457,10 @@ public class ShellActivity extends CoreActivity {
             terminate("User interrupt occurred");
         }
         return (missingItemRules.isEmpty() ? null : new ItemRuleList(missingItemRules));
+    }
+
+    private String getMandatoryMarker(boolean mandatory) {
+        return (mandatory ? " * " : "   ");
     }
 
     private void writeToken(Token[] tokens) {

@@ -158,6 +158,16 @@ public class DefaultConsole extends AbstractConsole {
     }
 
     @Override
+    public void clearLine() {
+        // Nothing to do
+    }
+
+    @Override
+    public void redrawLine() {
+        // Nothing to do
+    }
+
+    @Override
     public String getEncoding() {
         return Charset.defaultCharset().name();
     }

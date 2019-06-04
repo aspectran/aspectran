@@ -101,7 +101,7 @@ public class JLineConsole extends AbstractConsole {
     @Override
     public String readCommandLine(String prompt) {
         try {
-            String line = commandReader.readLine(prompt).trim();
+            String line = readRawCommandLine(prompt).trim();
             commandCompleter.setLimited(true);
             commandHighlighter.setLimited(true);
             line = readMultiCommandLine(line);
@@ -121,13 +121,13 @@ public class JLineConsole extends AbstractConsole {
 
     @Override
     public String readLine() {
-        return readLine(null);
+        return readLine(getPrompt());
     }
 
     @Override
     public String readLine(String prompt) {
         try {
-            return readMultiLine(reader.readLine(prompt));
+            return readMultiLine(readRawLine(prompt));
         } catch (EndOfFileException | UserInterruptException e) {
             throw new ConsoleTerminatedException();
         }
@@ -140,7 +140,7 @@ public class JLineConsole extends AbstractConsole {
 
     @Override
     public String readPassword() {
-        return readPassword(null);
+        return readPassword(getPrompt());
     }
 
     @Override
@@ -184,12 +184,8 @@ public class JLineConsole extends AbstractConsole {
 
     @Override
     public void writeLine(String string) {
-        if (attributedStyle != null) {
-            AttributedString as = new AttributedString(string, attributedStyle);
-            getWriter().println(as.toAnsi(terminal));
-        } else {
-            getWriter().println(toAnsi(string));
-        }
+        write(string);
+        getWriter().println();
     }
 
     @Override
@@ -220,9 +216,49 @@ public class JLineConsole extends AbstractConsole {
     }
 
     @Override
+    public void appendPrompt(String string) {
+        if (attributedStyle != null) {
+            AttributedString as = new AttributedString(string, attributedStyle);
+            super.appendPrompt(as.toAnsi(terminal));
+        } else {
+            super.appendPrompt(toAnsi(string));
+        }
+    }
+
+    @Override
     public void clearScreen() {
-        terminal.puts(InfoCmp.Capability.clear_screen);
-        terminal.flush();
+        if (commandReader.isReading()) {
+            commandReader.callWidget(LineReader.CLEAR_SCREEN);
+            commandReader.callWidget(LineReader.REDRAW_LINE);
+            commandReader.callWidget(LineReader.REDISPLAY);
+        } else if (reader.isReading()) {
+            reader.callWidget(LineReader.CLEAR_SCREEN);
+            reader.callWidget(LineReader.REDRAW_LINE);
+            reader.callWidget(LineReader.REDISPLAY);
+        } else {
+            terminal.puts(InfoCmp.Capability.clear_screen);
+            terminal.flush();
+        }
+    }
+
+    @Override
+    public void clearLine() {
+        if (commandReader.isReading()) {
+            commandReader.callWidget(LineReader.CLEAR);
+        } else if (reader.isReading()) {
+            reader.callWidget(LineReader.CLEAR);
+        }
+    }
+
+    @Override
+    public void redrawLine() {
+        if (commandReader.isReading()) {
+            commandReader.callWidget(LineReader.REDRAW_LINE);
+            commandReader.callWidget(LineReader.REDISPLAY);
+        } else if (reader.isReading()) {
+            reader.callWidget(LineReader.REDRAW_LINE);
+            reader.callWidget(LineReader.REDISPLAY);
+        }
     }
 
     @Override
