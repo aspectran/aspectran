@@ -24,11 +24,9 @@
             |   you type.
             |
         </description>
-        <request>
-            <parameters>
-                <item name="text"/>
-            </parameters>
-        </request>
+        <parameters>
+            <item name="text" mandatory="true"/>
+        </parameters>
         <action bean="speaker" method="speak">
             <arguments>
                 <item>${text:Hello}</item>
