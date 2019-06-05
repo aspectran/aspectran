@@ -18,6 +18,8 @@ package com.aspectran.shell.activity;
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.AdapterException;
 import com.aspectran.core.activity.CoreActivity;
+import com.aspectran.core.activity.request.MissingMandatoryAttributesException;
+import com.aspectran.core.activity.request.MissingMandatoryParametersException;
 import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.context.expr.ItemEvaluator;
 import com.aspectran.core.context.expr.ItemExpression;
@@ -38,6 +40,7 @@ import com.aspectran.shell.console.Console;
 import com.aspectran.shell.service.ShellService;
 
 import java.io.Writer;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -119,11 +122,41 @@ public class ShellActivity extends CoreActivity {
     protected void parseRequest() {
         showDescription();
 
-        readParameters();
-        parseDeclaredParameters();
+        try {
+            readParameters();
+            parseDeclaredParameters();
+        } catch (MissingMandatoryParametersException e) {
+            ItemRuleList itemRuleList = e.getItemRuleList();
+            console.setStyle("RED");
+            console.writeLine("Required parameters are missing:");
+            console.styleOff();
+            for (ItemRule ir : itemRuleList) {
+                console.setStyle("RED");
+                console.write(" - ");
+                console.setStyle("YELLOW");
+                console.writeLine(ir.getName());
+                console.styleOff();
+            }
+            terminate("Required parameters are missing");
+        }
 
-        readAttributes();
-        parseDeclaredAttributes();
+        try {
+            readAttributes();
+            parseDeclaredAttributes();
+        } catch (MissingMandatoryAttributesException e) {
+            ItemRuleList itemRuleList = e.getItemRuleList();
+            console.setStyle("RED");
+            console.writeLine("Required attributes are missing:");
+            console.styleOff();
+            for (ItemRule ir : itemRuleList) {
+                console.setStyle("RED");
+                console.write(" - ");
+                console.setStyle("YELLOW");
+                console.writeLine(ir.getName());
+                console.styleOff();
+            }
+            terminate("Required attributes are missing");
+        }
     }
 
     /**
@@ -169,70 +202,48 @@ public class ShellActivity extends CoreActivity {
      * Read required input parameters.
      */
     private void readParameters() {
-        ItemRuleMap parameterItemRuleMap = getRequestRule().getParameterItemRuleMap();
-        if (parameterItemRuleMap != null && !parameterItemRuleMap.isEmpty()) {
-            ItemRuleList parameterItemRuleList = new ItemRuleList(parameterItemRuleMap.values());
-            determineSimpleReading(parameterItemRuleList);
+        ItemRuleMap itemRuleMap = getRequestRule().getParameterItemRuleMap();
+        if (itemRuleMap != null && !itemRuleMap.isEmpty()) {
+            ItemRuleList itemRuleList = new ItemRuleList(itemRuleMap.values());
+            determineSimpleReading(itemRuleList);
             if (procedural) {
                 console.setStyle("GREEN");
                 console.writeLine("Required parameters:");
                 console.styleOff();
-
                 if (!simpleReading) {
-                    for (ItemRule itemRule : parameterItemRuleList) {
-                        Token[] tokens = itemRule.getAllTokens();
-                        if (tokens == null) {
-                            Token t = new Token(TokenType.PARAMETER, itemRule.getName());
-                            tokens = new Token[] { t };
-                        }
-                        console.setStyle("YELLOW");
-                        console.write(getMandatoryMarker(itemRule.isMandatory()));
-                        console.styleOff();
-                        console.setStyle("bold");
-                        console.write(itemRule.getName());
-                        console.styleOff();
-                        console.write(": ");
-                        writeToken(tokens);
-                        console.writeLine();
-                    }
+                    writeItems(itemRuleList, TokenType.PARAMETER);
                 }
             }
-            readRequiredParameters(parameterItemRuleList);
+            readRequiredParameters(itemRuleList);
         }
     }
 
-    private void readRequiredParameters(ItemRuleList parameterItemRuleList) {
-        ItemRuleList missingItemRules1;
+    private void readRequiredParameters(ItemRuleList itemRuleList) {
+        ItemRuleList missingItemRules;
         if (procedural) {
             if (simpleReading) {
-                missingItemRules1 = readEachParameter(parameterItemRuleList);
+                missingItemRules = readEachParameter(itemRuleList);
             } else {
-                missingItemRules1 = readEachToken(parameterItemRuleList);
+                missingItemRules = readEachToken(itemRuleList, true);
             }
         } else {
-            missingItemRules1 = checkRequiredParameters(parameterItemRuleList);
+            missingItemRules = checkRequiredParameters(itemRuleList);
         }
-        if (missingItemRules1 != null) {
+        if (missingItemRules != null) {
             console.setStyle("YELLOW");
-            console.writeLine("Required parameters are missing.");
+            console.writeLine("Missing required parameters:");
             console.styleOff();
-
+            if (!simpleReading) {
+                writeItems(missingItemRules, TokenType.PARAMETER);
+            }
             ItemRuleList missingItemRules2;
             if (simpleReading) {
-                missingItemRules2 = readEachParameter(missingItemRules1);
+                missingItemRules2 = readEachParameter(missingItemRules);
             } else {
-                missingItemRules2 = readEachToken(missingItemRules1);
+                missingItemRules2 = readEachToken(missingItemRules, true);
             }
             if (missingItemRules2 != null) {
-                String[] itemNames = missingItemRules2.getItemNames();
-                console.setStyle("RED");
-                console.writeLine("Missing required parameters:");
-                console.setStyle("bold");
-                for (String name : itemNames) {
-                    console.writeLine("   %s", name);
-                }
-                console.styleOff();
-                terminate("Required parameters are missing");
+                throw new MissingMandatoryParametersException(missingItemRules2);
             }
         }
     }
@@ -241,70 +252,48 @@ public class ShellActivity extends CoreActivity {
      * Read required input attributes.
      */
     private void readAttributes() {
-        ItemRuleMap attributeItemRuleMap = getRequestRule().getAttributeItemRuleMap();
-        if (attributeItemRuleMap != null && !attributeItemRuleMap.isEmpty()) {
-            ItemRuleList attributeItemRuleList = new ItemRuleList(attributeItemRuleMap.values());
-            determineSimpleReading(attributeItemRuleList);
+        ItemRuleMap itemRuleMap = getRequestRule().getAttributeItemRuleMap();
+        if (itemRuleMap != null && !itemRuleMap.isEmpty()) {
+            ItemRuleList itemRuleList = new ItemRuleList(itemRuleMap.values());
+            determineSimpleReading(itemRuleList);
             if (procedural) {
                 console.setStyle("GREEN");
                 console.writeLine("Required attributes:");
                 console.styleOff();
-
                 if (!simpleReading) {
-                    for (ItemRule itemRule : attributeItemRuleList) {
-                        Token[] tokens = itemRule.getAllTokens();
-                        if (tokens == null) {
-                            Token t = new Token(TokenType.PARAMETER, itemRule.getName());
-                            tokens = new Token[] { t };
-                        }
-                        console.setStyle("YELLOW");
-                        console.write(getMandatoryMarker(itemRule.isMandatory()));
-                        console.styleOff();
-                        console.setStyle("bold");
-                        console.write(itemRule.getName());
-                        console.styleOff();
-                        console.write(": ");
-                        writeToken(tokens);
-                        console.writeLine();
-                    }
+                    writeItems(itemRuleList, TokenType.ATTRIBUTE);
                 }
             }
-            readRequiredAttributes(attributeItemRuleList);
+            readRequiredAttributes(itemRuleList);
         }
     }
 
-    private void readRequiredAttributes(ItemRuleList attributeItemRuleList) {
-        ItemRuleList missingItemRules1;
+    private void readRequiredAttributes(ItemRuleList itemRuleList) {
+        ItemRuleList missingItemRules;
         if (procedural) {
             if (simpleReading) {
-                missingItemRules1 = readEachAttribute(attributeItemRuleList);
+                missingItemRules = readEachAttribute(itemRuleList);
             } else {
-                missingItemRules1 = readEachToken(attributeItemRuleList);
+                missingItemRules = readEachToken(itemRuleList, false);
             }
         } else {
-            missingItemRules1 = checkRequiredAttributes(attributeItemRuleList);
+            missingItemRules = checkRequiredAttributes(itemRuleList);
         }
-        if (missingItemRules1 != null) {
+        if (missingItemRules != null) {
             console.setStyle("YELLOW");
-            console.writeLine("Required attributes are missing.");
+            console.writeLine("Missing required attributes:");
             console.styleOff();
-
+            if (!simpleReading) {
+                writeItems(missingItemRules, TokenType.ATTRIBUTE);
+            }
             ItemRuleList missingItemRules2;
             if (simpleReading) {
-                missingItemRules2 = readEachParameter(missingItemRules1);
+                missingItemRules2 = readEachParameter(missingItemRules);
             } else {
-                missingItemRules2 = readEachToken(missingItemRules1);
+                missingItemRules2 = readEachToken(missingItemRules, false);
             }
             if (missingItemRules2 != null) {
-                String[] itemNames = missingItemRules2.getItemNames();
-                console.setStyle("RED");
-                console.writeLine("Missing required attributes:");
-                console.setStyle("bold");
-                for (String name : itemNames) {
-                    console.writeLine("   %s", name);
-                }
-                console.styleOff();
-                terminate("Required attributes are missing");
+                throw new MissingMandatoryAttributesException(missingItemRules2);
             }
         }
     }
@@ -371,7 +360,7 @@ public class ShellActivity extends CoreActivity {
         }
     }
 
-    private ItemRuleList readEachToken(ItemRuleList itemRuleList) {
+    private ItemRuleList readEachToken(ItemRuleList itemRuleList, boolean forParameters) {
         console.setStyle("GREEN");
         console.writeLine("Enter a value for each token:");
         console.styleOff();
@@ -381,46 +370,53 @@ public class ShellActivity extends CoreActivity {
             Map<Token, Set<ItemRule>> inputTokens = new LinkedHashMap<>();
             for (ItemRule itemRule : itemRuleList) {
                 Token[] tokens = itemRule.getAllTokens();
-                if (tokens == null || tokens.length == 0) {
-                    Token t = new Token(TokenType.PARAMETER, itemRule.getName());
-                    tokens = new Token[] { t };
+                if (forParameters) {
+                    if (tokens == null || tokens.length == 0) {
+                        Token t = new Token(TokenType.PARAMETER, itemRule.getName());
+                        tokens = new Token[] { t };
+                    } else if (tokens.length == 1 && tokens[0].getType() == TokenType.TEXT) {
+                        Token t = new Token(TokenType.PARAMETER, itemRule.getName());
+                        t.setDefaultValue(tokens[0].getDefaultValue());
+                        tokens = new Token[] { t };
+                    }
                 }
-                for (Token t1 : tokens) {
-                    if (t1.getType() == TokenType.PARAMETER) {
-                        boolean exists = false;
-                        for (Token t2 : inputTokens.keySet()) {
-                            if (t2.equals(t1)) {
-                                exists = true;
-                                break;
+                if (tokens != null) {
+                    for (Token t1 : tokens) {
+                        if (t1.getType() == TokenType.PARAMETER) {
+                            boolean exists = false;
+                            for (Token t2 : inputTokens.keySet()) {
+                                if (t2.equals(t1)) {
+                                    exists = true;
+                                    break;
+                                }
                             }
-                        }
-                        if (exists) {
-                            Set<ItemRule> rules = inputTokens.get(t1);
-                            rules.add(itemRule);
-                        } else {
-                            Set<ItemRule> rules = new LinkedHashSet<>();
-                            rules.add(itemRule);
-                            inputTokens.put(t1, rules);
+                            if (exists) {
+                                Set<ItemRule> rules = inputTokens.get(t1);
+                                rules.add(itemRule);
+                            } else {
+                                Set<ItemRule> rules = new LinkedHashSet<>();
+                                rules.add(itemRule);
+                                inputTokens.put(t1, rules);
+                            }
                         }
                     }
                 }
             }
             for (Map.Entry<Token, Set<ItemRule>> entry : inputTokens.entrySet()) {
                 Token token = entry.getKey();
-                String value = getRequestAdapter().getParameter(token.getName());
-                if (value != null) {
-                    console.write("   ");
-                    writeToken(token);
-                    console.write(": ");
-                    console.writeLine(value);
-                    continue;
-                }
                 Set<ItemRule> itemRules = entry.getValue();
-                boolean secret = false;
-                for (ItemRule ir : itemRules) {
-                    if (ir.isSecret()) {
-                        secret = true;
-                        break;
+                boolean secret = hasSecretItem(itemRules);
+                if (!forParameters) {
+                    String value = getRequestAdapter().getParameter(token.getName());
+                    if (value != null) {
+                        if (secret) {
+                            value = StringUtils.repeat(Console.MASK_CHAR, value.length());
+                        }
+                        console.write("   ");
+                        writeToken(token);
+                        console.write(": ");
+                        console.writeLine(value);
+                        continue;
                     }
                 }
                 String defaultValue = token.getDefaultValue();
@@ -435,13 +431,14 @@ public class ShellActivity extends CoreActivity {
                 console.appendPrompt(String.valueOf(Token.BRACKET_CLOSE));
                 console.styleOff();
                 console.appendPrompt(": ");
+                String line;
                 if (secret) {
-                    value = console.readPassword(null, defaultValue);
+                    line = console.readPassword(null, defaultValue);
                 } else {
-                    value = console.readLine(null, defaultValue);
+                    line = console.readLine(null, defaultValue);
                 }
-                if (StringUtils.hasLength(value)) {
-                    getRequestAdapter().setParameter(token.getName(), value);
+                if (StringUtils.hasLength(line)) {
+                    getRequestAdapter().setParameter(token.getName(), line);
                 } else {
                     for (ItemRule ir : itemRules) {
                         if (ir.isMandatory()) {
@@ -457,14 +454,50 @@ public class ShellActivity extends CoreActivity {
         return (missingItemRules.isEmpty() ? null : new ItemRuleList(missingItemRules));
     }
 
+    private boolean hasSecretItem(Collection<ItemRule> itemRules) {
+        boolean secret = false;
+        for (ItemRule ir : itemRules) {
+            if (ir.isSecret()) {
+                secret = true;
+                break;
+            }
+        }
+        return secret;
+    }
+
     private String getMandatoryMarker(boolean mandatory) {
         return (mandatory ? " * " : "   ");
     }
 
-    private void writeToken(Token[] tokens) {
-        for (Token token : tokens) {
-            writeToken(token);
+    private void writeItems(ItemRuleList itemRuleList, TokenType tokenType) {
+        for (ItemRule itemRule : itemRuleList) {
+            if (simpleReading) {
+                writeItem(itemRule, null);
+            } else {
+                Token[] tokens = itemRule.getAllTokens();
+                if (tokens == null) {
+                    Token t = new Token(tokenType, itemRule.getName());
+                    tokens = new Token[] { t };
+                }
+                writeItem(itemRule, tokens);
+            }
         }
+    }
+
+    private void writeItem(ItemRule itemRule, Token[] tokens) {
+        console.setStyle("YELLOW");
+        console.write(getMandatoryMarker(itemRule.isMandatory()));
+        console.styleOff();
+        console.setStyle("bold");
+        console.write(itemRule.getName());
+        console.styleOff();
+        if (tokens != null && tokens.length > 0) {
+            console.write(": ");
+            for (Token token : tokens) {
+                writeToken(token);
+            }
+        }
+        console.writeLine();
     }
 
     private void writeToken(Token token) {

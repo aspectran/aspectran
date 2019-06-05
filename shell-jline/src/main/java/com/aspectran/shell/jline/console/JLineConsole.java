@@ -194,6 +194,7 @@ public class JLineConsole extends AbstractConsole {
     public void writeLine(String string) {
         write(string);
         getWriter().println();
+        getWriter().flush();
     }
 
     @Override

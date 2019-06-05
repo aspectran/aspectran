@@ -19,34 +19,34 @@ import com.aspectran.core.context.rule.ItemRuleList;
 import com.aspectran.core.util.StringUtils;
 
 /**
- * An exception to indicate mandatory parameters missing from the request.
+ * An exception to indicate mandatory attributes missing from the request.
  *
- * <p>Created: 2016. 8. 21.</p>
+ * <p>Created: 2019. 6. 5.</p>
  *
- * @since 3.0.0
+ * @since 6.1.0
  */
-public class MissingMandatoryParametersException extends RequestException {
+public class MissingMandatoryAttributesException extends RequestException {
 
     /** @serial */
-    private static final long serialVersionUID = 6311784727928597298L;
+    private static final long serialVersionUID = 797995027591720096L;
 
     private final ItemRuleList itemRuleList;
 
     /**
-     * Creates a new MissingMandatoryParametersException referencing
-     * the specified parameter.
+     * Creates a new MissingMandatoryAttributesException referencing
+     * the specified attribute.
      *
-     * @param itemRuleList an item rule list that represents missing parameters
+     * @param itemRuleList an item rule list that represents missing attributes
      */
-    public MissingMandatoryParametersException(ItemRuleList itemRuleList) {
-        super("Missing mandatory parameters: " + StringUtils.joinCommaDelimitedList(itemRuleList));
+    public MissingMandatoryAttributesException(ItemRuleList itemRuleList) {
+        super("Missing mandatory attributes: " + StringUtils.joinCommaDelimitedList(itemRuleList));
         this.itemRuleList = itemRuleList;
     }
 
     /**
-     * Returns an item rule list that represents missing parameters.
+     * Returns an item rule list that represents missing attributes.
      *
-     * @return an item rule list that represents missing parameters
+     * @return an item rule list that represents missing attributes
      */
     public ItemRuleList getItemRuleList() {
         return itemRuleList;

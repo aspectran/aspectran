@@ -141,7 +141,7 @@ public class ItemExpression extends TokenExpression implements ItemEvaluator {
                     if (value instanceof String[]) {
                         return (String[])value;
                     } else {
-                        return new String[] {value.toString()};
+                        return new String[] { value.toString() };
                     }
                 }
             } else if (itemType == ItemType.ARRAY) {

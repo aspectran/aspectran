@@ -22,6 +22,7 @@ import com.aspectran.core.activity.process.action.Executable;
 import com.aspectran.core.activity.process.result.ActionResult;
 import com.aspectran.core.activity.process.result.ContentResult;
 import com.aspectran.core.activity.process.result.ProcessResult;
+import com.aspectran.core.activity.request.MissingMandatoryAttributesException;
 import com.aspectran.core.activity.request.MissingMandatoryParametersException;
 import com.aspectran.core.activity.request.PathVariableMap;
 import com.aspectran.core.activity.response.ForwardResponse;
@@ -426,11 +427,11 @@ public class CoreActivity extends AdviceActivity {
      * Parses the declared parameters.
      */
     protected void parseDeclaredParameters() {
-        ItemRuleMap parameterItemRuleMap = getRequestRule().getParameterItemRuleMap();
-        if (parameterItemRuleMap != null && !parameterItemRuleMap.isEmpty()) {
+        ItemRuleMap itemRuleMap = getRequestRule().getParameterItemRuleMap();
+        if (itemRuleMap != null && !itemRuleMap.isEmpty()) {
             ItemEvaluator evaluator = null;
             ItemRuleList missingItemRules = null;
-            for (ItemRule itemRule : parameterItemRuleMap.values()) {
+            for (ItemRule itemRule : itemRuleMap.values()) {
                 Token[] tokens = itemRule.getTokens();
                 if (tokens != null) {
                     if (evaluator == null) {
@@ -462,12 +463,27 @@ public class CoreActivity extends AdviceActivity {
      * Parses the declared attributes.
      */
     protected void parseDeclaredAttributes() {
-        ItemRuleMap attributeItemRuleMap = getRequestRule().getAttributeItemRuleMap();
-        if (attributeItemRuleMap != null && !attributeItemRuleMap.isEmpty()) {
+        ItemRuleMap itemRuleMap = getRequestRule().getAttributeItemRuleMap();
+        if (itemRuleMap != null && !itemRuleMap.isEmpty()) {
             ItemEvaluator evaluator = new ItemExpression(this);
-            for (ItemRule itemRule : attributeItemRuleMap.values()) {
+            ItemRuleList missingItemRules = null;
+            for (ItemRule itemRule : itemRuleMap.values()) {
                 Object value = evaluator.evaluate(itemRule);
-                getRequestAdapter().setAttribute(itemRule.getName(), value);
+                Object oldValue =  getRequestAdapter().getAttribute(itemRule.getName());
+                if (value != oldValue) {
+                    getRequestAdapter().setAttribute(itemRule.getName(), value);
+                }
+                if (itemRule.isMandatory()) {
+                    if (value == null) {
+                        if (missingItemRules == null) {
+                            missingItemRules = new ItemRuleList();
+                        }
+                        missingItemRules.add(itemRule);
+                    }
+                }
+            }
+            if (missingItemRules != null) {
+                throw new MissingMandatoryAttributesException(missingItemRules);
             }
         }
     }

@@ -13,7 +13,7 @@
             |It accepts parameters and print them to the console.
         </description>
         <parameters>
-            <item name="param1" mandatory="false"/>
+            <item name="param1" mandatory="false" value="hello"/>
             <item name="param2" mandatory="true"/>
         </parameters>
         <transform type="transform/text">
