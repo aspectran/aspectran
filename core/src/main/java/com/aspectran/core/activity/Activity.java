@@ -176,6 +176,9 @@ public interface Activity {
      */
     void setRaisedException(Throwable raisedException);
 
+    /**
+     * Clears the exception that occurred during activity processing.
+     */
     void clearRaisedException();
 
     /**
@@ -185,6 +188,11 @@ public interface Activity {
      */
     void registerAspectRule(AspectRule aspectRule);
 
+    /**
+     * Register a settings advice rule dynamically.
+     *
+     * @param settingsAdviceRule the settings advice rule
+     */
     void registerSettingsAdviceRule(SettingsAdviceRule settingsAdviceRule);
 
     /**

@@ -128,7 +128,8 @@ public class DispatchResponse implements Response {
             } else {
                 dispatcherName = activity.getSetting(ViewDispatcher.VIEW_DISPATCHER_SETTING_NAME);
                 if (dispatcherName == null) {
-                    throw new IllegalArgumentException("The settings name '" + ViewDispatcher.VIEW_DISPATCHER_SETTING_NAME +
+                    throw new IllegalArgumentException("The settings name '" +
+                            ViewDispatcher.VIEW_DISPATCHER_SETTING_NAME +
                             "' has not been specified in the default response rule");
                 }
             }

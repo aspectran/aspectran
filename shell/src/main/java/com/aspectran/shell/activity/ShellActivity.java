@@ -367,7 +367,7 @@ public class ShellActivity extends CoreActivity {
 
         Set<ItemRule> missingItemRules = new LinkedHashSet<>();
         try {
-            Map<Token, Set<ItemRule>> inputTokens = new LinkedHashMap<>();
+            Map<Token, Set<ItemRule>> valueTokens = new LinkedHashMap<>();
             for (ItemRule itemRule : itemRuleList) {
                 Token[] tokens = itemRule.getAllTokens();
                 if (forParameters) {
@@ -384,25 +384,25 @@ public class ShellActivity extends CoreActivity {
                     for (Token t1 : tokens) {
                         if (t1.getType() == TokenType.PARAMETER) {
                             boolean exists = false;
-                            for (Token t2 : inputTokens.keySet()) {
+                            for (Token t2 : valueTokens.keySet()) {
                                 if (t2.equals(t1)) {
                                     exists = true;
                                     break;
                                 }
                             }
                             if (exists) {
-                                Set<ItemRule> rules = inputTokens.get(t1);
+                                Set<ItemRule> rules = valueTokens.get(t1);
                                 rules.add(itemRule);
                             } else {
                                 Set<ItemRule> rules = new LinkedHashSet<>();
                                 rules.add(itemRule);
-                                inputTokens.put(t1, rules);
+                                valueTokens.put(t1, rules);
                             }
                         }
                     }
                 }
             }
-            for (Map.Entry<Token, Set<ItemRule>> entry : inputTokens.entrySet()) {
+            for (Map.Entry<Token, Set<ItemRule>> entry : valueTokens.entrySet()) {
                 Token token = entry.getKey();
                 Set<ItemRule> itemRules = entry.getValue();
                 boolean secret = hasSecretItem(itemRules);

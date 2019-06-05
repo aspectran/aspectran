@@ -184,7 +184,8 @@ public class FileParameter {
 
             final byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
             int len;
-            try (InputStream input = getInputStream(); OutputStream output = new FileOutputStream(destFile)) {
+            try (InputStream input = getInputStream();
+                 OutputStream output = new FileOutputStream(destFile)) {
                 while ((len = input.read(buffer)) != -1) {
                     output.write(buffer, 0, len);
                 }
