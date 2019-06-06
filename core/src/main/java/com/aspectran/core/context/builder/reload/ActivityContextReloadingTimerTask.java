@@ -113,4 +113,3 @@ public class ActivityContextReloadingTimerTask extends TimerTask {
     }
 
 }
-

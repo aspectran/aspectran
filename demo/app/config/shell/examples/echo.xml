@@ -77,4 +77,37 @@
         </transform>
     </translet>
 
+    <translet name="echo4">
+        <description style="apon">
+            |
+            |   It accepts parameters required for login and prints them.
+            |
+        </description>
+        <parameters>
+            <item name="id" mandatory="true"/>
+            <item name="email" mandatory="true">${id}@${domain}</item>
+            <item name="password" secret="true" value="${password:(none)}"/>
+            <item name="attr3"/>
+        </parameters>
+        <attributes>
+            <item name="attr1" mandatory="true">${id}@${domain}</item>
+            <item name="attr2" mandatory="true" secret="true">${password}</item>
+            <item name="attr3" mandatory="true">${attr3}</item>
+        </attributes>
+        <transform type="transform/text">
+            <template style="apon">
+                |-------------------------------------------------------------------------
+                |You have entered the following parameters:
+                |   email: ${email}
+                |   password: ${password}
+                |   attr3: ${attr3}
+                |These are the attributes to which the input parameters are assigned:
+                |   attr1: @{attr1}
+                |   attr2: @{attr2}
+                |   attr3: @{attr3}
+                |-------------------------------------------------------------------------
+            </template>
+        </transform>
+    </translet>
+
 </aspectran>

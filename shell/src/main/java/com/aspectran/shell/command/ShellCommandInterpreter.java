@@ -270,16 +270,24 @@ public class ShellCommandInterpreter implements CommandInterpreter {
 
         @Override
         public void write(int b) {
-            console.clearLine();
+            if (service.isActive()) {
+                console.clearLine();
+            }
             super.write(b);
-            console.redrawLine();
+            if (service.isActive()) {
+                console.redrawLine();
+            }
         }
 
         @Override
         public void write(byte[] buf, int off, int len) {
-            console.clearLine();
+            if (service.isActive()) {
+                console.clearLine();
+            }
             super.write(buf, off, len);
-            console.redrawLine();
+            if (service.isActive()) {
+                console.redrawLine();
+            }
         }
 
     }

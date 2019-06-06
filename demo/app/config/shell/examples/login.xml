@@ -18,21 +18,12 @@
             <item name="email" mandatory="true">${id}@${domain}</item>
             <item name="password" secret="true" value="${password:(none)}"/>
         </parameters>
-        <attributes>
-            <item name="attr1" mandatory="true">${id}@${domain}</item>
-            <item name="attr2" mandatory="true" secret="true">${password}</item>
-            <item name="attr3" mandatory="true"/>
-        </attributes>
         <transform type="transform/text">
             <template style="apon">
                 |-------------------------------------------------------------------------
                 |You have entered the following parameters for login:
                 |   email: ${email}
                 |   password: ${password}
-                |The attributes you entered are:
-                |   attr1: @{attr1}
-                |   attr2: @{attr2}
-                |   attr3: @{attr3}
                 |-------------------------------------------------------------------------
             </template>
         </transform>
