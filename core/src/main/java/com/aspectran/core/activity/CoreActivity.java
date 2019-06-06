@@ -432,8 +432,7 @@ public class CoreActivity extends AdviceActivity {
             ItemEvaluator evaluator = null;
             ItemRuleList missingItemRules = null;
             for (ItemRule itemRule : itemRuleMap.values()) {
-                Token[] tokens = itemRule.getTokens();
-                if (tokens != null) {
+                if (itemRule.getTokens() != null) {
                     if (evaluator == null) {
                         evaluator = new ItemExpression(this);
                     }
@@ -468,12 +467,15 @@ public class CoreActivity extends AdviceActivity {
             ItemEvaluator evaluator = new ItemExpression(this);
             ItemRuleList missingItemRules = null;
             for (ItemRule itemRule : itemRuleMap.values()) {
-                Object value = evaluator.evaluate(itemRule);
-                Object oldValue =  getRequestAdapter().getAttribute(itemRule.getName());
-                if (value != oldValue) {
-                    getRequestAdapter().setAttribute(itemRule.getName(), value);
+                if (itemRule.getTokens() != null) {
+                    Object value = evaluator.evaluate(itemRule);
+                    Object oldValue = getRequestAdapter().getAttribute(itemRule.getName());
+                    if (value != oldValue) {
+                        getRequestAdapter().setAttribute(itemRule.getName(), value);
+                    }
                 }
                 if (itemRule.isMandatory()) {
+                    Object value = getRequestAdapter().getAttribute(itemRule.getName());
                     if (value == null) {
                         if (missingItemRules == null) {
                             missingItemRules = new ItemRuleList();

@@ -35,10 +35,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -129,130 +127,55 @@ public class TokenExpression implements TokenEvaluator {
     }
 
     @Override
-    public Object evaluate(String parameterName, Token[] tokens) {
-        if (tokens == null || tokens.length == 0) {
-            String[] values = getParameterValues(parameterName);
-            if (values != null) {
-                if (values.length == 1) {
-                    return values[0];
-                } else if (values.length > 1) {
-                    return values;
-                }
-            }
-            return null;
-        } else {
-            return evaluate(tokens);
-        }
-    }
-
-    @Override
-    public String evaluateAsString(String parameterName, Token[] tokens) {
-        Object value = evaluate(parameterName, tokens);
-        return (value != null ? value.toString() : null);
-    }
-
-    @Override
-    public List<Object> evaluateAsList(String parameterName, List<Token[]> tokensList) {
+    public List<Object> evaluateAsList(List<Token[]> tokensList) {
         if (tokensList == null || tokensList.isEmpty()) {
-            return cast(getParameterAsList(parameterName));
+            return null;
         }
-
         List<Object> valueList = new ArrayList<>(tokensList.size());
         for (Token[] tokens : tokensList) {
-            Object value = evaluate(parameterName, tokens);
+            Object value = evaluate(tokens);
             valueList.add(value);
         }
         return valueList;
     }
 
     @Override
-    public Set<Object> evaluateAsSet(String parameterName, Set<Token[]> tokensSet) {
+    public Set<Object> evaluateAsSet(Set<Token[]> tokensSet) {
         if (tokensSet == null || tokensSet.isEmpty()) {
-            return cast(getParameterAsSet(parameterName));
+            return null;
         }
-
         Set<Object> valueSet = new HashSet<>();
         for (Token[] tokens : tokensSet) {
-            Object value = evaluate(parameterName, tokens);
+            Object value = evaluate(tokens);
             valueSet.add(value);
         }
         return valueSet;
     }
 
     @Override
-    public Map<String, Object> evaluateAsMap(String parameterName, Map<String, Token[]> tokensMap) {
+    public Map<String, Object> evaluateAsMap(Map<String, Token[]> tokensMap) {
         if (tokensMap == null || tokensMap.isEmpty()) {
-            String value = getParameter(parameterName);
-            if (value == null) {
-                return null;
-            }
-            Map<String, Object> valueMap = new LinkedHashMap<>();
-            valueMap.put(parameterName, value);
-            return valueMap;
+            return null;
         }
-
         Map<String, Object> valueMap = new LinkedHashMap<>();
         for (Map.Entry<String, Token[]> entry : tokensMap.entrySet()) {
-            Object value = evaluate(entry.getKey(), entry.getValue());
+            Object value = evaluate(entry.getValue());
             valueMap.put(entry.getKey(), value);
         }
         return valueMap;
     }
 
     @Override
-    public Properties evaluateAsProperties(String parameterName, Properties tokensProp) {
+    public Properties evaluateAsProperties(Properties tokensProp) {
         if (tokensProp == null || tokensProp.isEmpty()) {
-            String value = getParameter(parameterName);
-            if (value == null) {
-                return null;
-            }
-            Properties prop = new Properties();
-            prop.put(parameterName, value);
-            return prop;
+            return null;
         }
-
         Properties prop = new Properties();
         for (Map.Entry<Object, Object> entry : tokensProp.entrySet()) {
-            Object value = evaluate(entry.getKey().toString(), (Token[])entry.getValue());
+            Object value = evaluate((Token[])entry.getValue());
             prop.put(entry.getKey(), value);
         }
         return prop;
-    }
-
-    /**
-     * Returns the value of an activity's request parameter as a {@code List},
-     * or {@code null} if the parameter does not exist.
-     *
-     * @param name a {@code String} specifying the name of the parameter
-     * @return a {@code List} objects containing the parameter's values
-     */
-    private List<String> getParameterAsList(String name) {
-        String[] values = getParameterValues(name);
-        if (values == null) {
-            return null;
-        }
-
-        List<String> valueList = new ArrayList<>(values.length);
-        Collections.addAll(valueList, values);
-        return valueList;
-    }
-
-    /**
-     * Returns the value of an activity's request parameter as a {@code Set},
-     * or {@code null} if the parameter does not exist.
-     *
-     * @param name a {@code String} specifying the name of the parameter
-     * @return a {@code Set} objects containing the parameter's values
-     */
-    private Set<String> getParameterAsSet(String name) {
-        String[] values = getParameterValues(name);
-        if (values == null) {
-            return null;
-        }
-
-        Set<String> valueSet = new LinkedHashSet<>(values.length);
-        Collections.addAll(valueSet, values);
-        return valueSet;
     }
 
     /**
@@ -430,7 +353,6 @@ public class TokenExpression implements TokenEvaluator {
         try {
             value = BeanUtils.getProperty(object, propertyName);
         } catch (InvocationTargetException e) {
-            // ignore
             value = null;
         }
         return value;
@@ -477,32 +399,6 @@ public class TokenExpression implements TokenEvaluator {
 
         String result = writer.toString();
         return (result != null ? result : token.getDefaultValue());
-    }
-
-    /**
-     * This method will cast {@code Set<?>} to {@code List<T>}
-     * assuming {@code ?} is castable to {@code T}.
-     *
-     * @param <T> the generic type
-     * @param list a {@code List} object
-     * @return a casted {@code List} object
-     */
-    @SuppressWarnings("unchecked")
-    private static <T> List<T> cast(List<?> list) {
-        return (List<T>)list;
-    }
-
-    /**
-     * This method will cast {@code Set<?>} to {@code Set<T>}
-     * assuming {@code ?} is castable to {@code T}.
-     *
-     * @param <T> the generic type
-     * @param set a {@code Set} object
-     * @return a casted {@code Set} object
-     */
-    @SuppressWarnings("unchecked")
-    private static <T> Set<T> cast(Set<?> set) {
-        return (Set<T>)set;
     }
 
 }

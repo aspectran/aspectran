@@ -41,17 +41,13 @@ public interface TokenEvaluator {
 
     String evaluateAsString(Token[] tokens);
 
-    Object evaluate(String parameterName, Token[] tokens);
+    List<Object> evaluateAsList(List<Token[]> tokensList);
 
-    String evaluateAsString(String parameterName, Token[] tokens);
+    Set<Object> evaluateAsSet(Set<Token[]> tokensSet);
 
-    List<Object> evaluateAsList(String parameterName, List<Token[]> tokensList);
+    Map<String, Object> evaluateAsMap(Map<String, Token[]> tokensMap);
 
-    Set<Object> evaluateAsSet(String parameterName, Set<Token[]> tokensSet);
-
-    Map<String, Object> evaluateAsMap(String parameterName, Map<String, Token[]> tokensMap);
-
-    Properties evaluateAsProperties(String parameterName, Properties tokensProp);
+    Properties evaluateAsProperties(Properties tokensProp);
 
     static Object evaluate(String str, Activity activity) {
         if (Token.hasToken(str)) {

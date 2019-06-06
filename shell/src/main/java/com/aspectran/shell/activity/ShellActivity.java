@@ -179,10 +179,10 @@ public class ShellActivity extends CoreActivity {
             Token[] tokens = itemRule.getAllTokens();
             if (tokens != null && tokens.length > 0) {
                 if (tokens.length == 1) {
-                    Token t = tokens[0];
-                    if (t.getType() != TokenType.TEXT) {
-                        if (t.getType() != TokenType.PARAMETER ||
-                                !itemRule.getName().equals(t.getName())) {
+                    Token token = tokens[0];
+                    if (token.getType() != TokenType.TEXT) {
+                        if (token.getType() != TokenType.PARAMETER ||
+                                !token.getName().equals(itemRule.getName())) {
                             return false;
                         }
                     }
@@ -349,6 +349,9 @@ public class ShellActivity extends CoreActivity {
         if (tokens != null && tokens.length == 1) {
             Token token = tokens[0];
             if (token.getType() == TokenType.TEXT) {
+                defaultValue = token.getDefaultValue();
+            } else if (token.getType() == TokenType.PARAMETER &&
+                    token.getName().equals(itemRule.getName())) {
                 defaultValue = token.getDefaultValue();
             }
         }
