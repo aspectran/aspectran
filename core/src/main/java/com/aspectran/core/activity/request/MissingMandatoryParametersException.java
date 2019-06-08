@@ -15,8 +15,10 @@
  */
 package com.aspectran.core.activity.request;
 
-import com.aspectran.core.context.rule.ItemRuleList;
+import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.util.StringUtils;
+
+import java.util.Collection;
 
 /**
  * An exception to indicate mandatory parameters missing from the request.
@@ -30,17 +32,17 @@ public class MissingMandatoryParametersException extends RequestException {
     /** @serial */
     private static final long serialVersionUID = 6311784727928597298L;
 
-    private final ItemRuleList itemRuleList;
+    private final Collection<ItemRule> itemRules;
 
     /**
      * Creates a new MissingMandatoryParametersException referencing
      * the specified parameter.
      *
-     * @param itemRuleList an item rule list that represents missing parameters
+     * @param itemRules an item rule list that represents missing parameters
      */
-    public MissingMandatoryParametersException(ItemRuleList itemRuleList) {
-        super("Missing mandatory parameters: " + StringUtils.joinCommaDelimitedList(itemRuleList));
-        this.itemRuleList = itemRuleList;
+    public MissingMandatoryParametersException(Collection<ItemRule> itemRules) {
+        super("Missing mandatory parameters: " + StringUtils.joinCommaDelimitedList(itemRules));
+        this.itemRules = itemRules;
     }
 
     /**
@@ -48,8 +50,8 @@ public class MissingMandatoryParametersException extends RequestException {
      *
      * @return an item rule list that represents missing parameters
      */
-    public ItemRuleList getItemRuleList() {
-        return itemRuleList;
+    public Collection<ItemRule> getItemRules() {
+        return itemRules;
     }
 
 }
