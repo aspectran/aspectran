@@ -301,6 +301,7 @@ public interface Parameter {
      * Creates a new instance of {@code Parameters} with the specified
      * identifier {@code Parameter}.
      *
+     * @param <T> the type of the new Parameters object
      * @param identifier the specified identifier {@code Parameter}
      * @return a {@code Parameters}
      */
