@@ -28,6 +28,18 @@ import java.io.IOException;
 public interface Environment {
 
     /**
+     * Name of property to set to specify active profiles: {@value}. Value may be comma
+     * delimited.
+     */
+    String ACTIVE_PROFILES_PROPERTY_NAME = "aspectran.profiles.active";
+
+    /**
+     * Name of property to set to specify profiles active by default: {@value}. Value may
+     * be comma delimited.
+     */
+    String DEFAULT_PROFILES_PROPERTY_NAME = "aspectran.profiles.default";
+
+    /**
      * Returns the set of profiles explicitly made active for this environment.
      *
      * @return the set of profiles explicitly made active

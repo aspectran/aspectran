@@ -35,18 +35,6 @@ public abstract class AbstractEnvironment implements Environment {
 
     private static final Log log = LogFactory.getLog(AbstractEnvironment.class);
 
-    /**
-     * Name of property to set to specify active profiles: {@value}. Value may be comma
-     * delimited.
-     */
-    private static final String ACTIVE_PROFILES_PROPERTY_NAME = "aspectran.profiles.active";
-
-    /**
-     * Name of property to set to specify profiles active by default: {@value}. Value may
-     * be comma delimited.
-     */
-    private static final String DEFAULT_PROFILES_PROPERTY_NAME = "aspectran.profiles.default";
-
     private final Set<String> activeProfiles = new LinkedHashSet<>();
 
     private final Set<String> defaultProfiles = new LinkedHashSet<>();

@@ -7,7 +7,7 @@ context: {
         com.aspectran.demo
     ]
     profiles: {
-        active: [
+        default: [
             dev
         ]
     }

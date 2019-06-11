@@ -33,8 +33,8 @@
 
     <append file="/config/web/home/main.xml"/>
     <append file="/config/web/examples/hello-world.xml"/>
-    <append file="/config/web/examples/gs-rest-service.xml"/>
-    <append file="/config/web/examples/file-upload.xml"/>
-    <append file="/config/web/terminal/translet-interpreter.xml"/>
+    <append file="/config/web/examples/gs-rest-service.xml" profile="!daemon"/>
+    <append file="/config/web/examples/file-upload.xml" profile="!daemon"/>
+    <append file="/config/web/terminal/translet-interpreter.xml" profile="!daemon"/>
 
 </aspectran>

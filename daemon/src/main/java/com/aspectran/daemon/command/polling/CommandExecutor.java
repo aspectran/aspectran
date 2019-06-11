@@ -141,9 +141,9 @@ public class CommandExecutor {
                 return false;
             }
         } catch (Exception e) {
-            log.error("Failed to execute command", e);
-            parameters.setOutput("[FAILED] Failed to execute command" +
-                    ExceptionUtils.getStacktrace(e));
+            log.error("Error executing daemon command " + command, e);
+            parameters.setOutput("[FAILED] Error executing daemon command " + command +
+                    System.lineSeparator() + ExceptionUtils.getStacktrace(e));
             return false;
         }
     }

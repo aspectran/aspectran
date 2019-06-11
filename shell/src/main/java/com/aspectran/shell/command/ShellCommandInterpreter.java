@@ -159,7 +159,7 @@ public class ShellCommandInterpreter implements CommandInterpreter {
         } catch (ConsoleTerminatedException e) {
             // Will be shutdown
         } catch (Throwable e) {
-            log.error("Error occurred while processing shell command", e);
+            log.error("Error executing shell command", e);
         } finally {
             if (service != null && service.getServiceController().isActive()) {
                 if (log.isDebugEnabled()) {
