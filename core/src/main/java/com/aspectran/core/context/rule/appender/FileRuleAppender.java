@@ -96,7 +96,7 @@ public class FileRuleAppender extends AbstractRuleAppender {
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.append("type", getAppenderType());
-        tsb.append("filePath", filePath);
+        tsb.append("file", filePath);
         tsb.append("format", getAppendedFileFormatType());
         tsb.append("profile", getProfiles());
         return tsb.toString();
