@@ -52,6 +52,8 @@ public interface EmbeddedAspectran extends CoreService {
      */
     Translet translate(String name);
 
+    Translet translate(String name, String body);
+
     /**
      * Executes the translet with the given parameters.
      *
@@ -116,9 +118,10 @@ public interface EmbeddedAspectran extends CoreService {
      * @param method the request method
      * @param parameterMap the parameter map
      * @param attributeMap the attribute map
+     * @param attributeMap the request body
      * @return the {@code Translet} object
      */
-    Translet translate(String name, MethodType method, ParameterMap parameterMap, Map<String, Object> attributeMap);
+    Translet translate(String name, MethodType method, ParameterMap parameterMap, Map<String, Object> attributeMap, String body);
 
     /**
      * Renders the template without the supplied variables.

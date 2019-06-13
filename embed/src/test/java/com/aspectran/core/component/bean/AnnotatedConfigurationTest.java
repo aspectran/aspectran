@@ -173,4 +173,10 @@ class AnnotatedConfigurationTest {
         aspectran.translate("/action-11", params);
     }
 
+    @Test
+    void testInvokeMethod_12() {
+        String body = "p1(int): 1234\np2(int): 5678";
+        aspectran.translate("/action-12", body);
+    }
+
 }

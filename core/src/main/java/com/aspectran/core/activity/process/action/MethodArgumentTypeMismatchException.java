@@ -16,7 +16,6 @@
 package com.aspectran.core.activity.process.action;
 
 import com.aspectran.core.activity.process.ProcessException;
-import com.aspectran.core.context.rule.ParameterBindingRule;
 
 /**
  * This exception will be thrown when failing to bind the request parameter
@@ -24,19 +23,19 @@ import com.aspectran.core.context.rule.ParameterBindingRule;
  * 
  * <p>Created: 2009. 02. 26</p>
  */
-public class ParameterBindingException extends ProcessException {
+public class MethodArgumentTypeMismatchException extends ProcessException {
 
-    private final ParameterBindingRule parameterBindingRule;
+    private final Throwable cause;
 
-    public ParameterBindingException(ParameterBindingRule parameterBindingRule, Throwable cause) {
-        super("Failed to bind request parameter to action method parameter " +
-                parameterBindingRule + "; Cause: " + cause, cause);
+    public MethodArgumentTypeMismatchException(Class<?> valueType, Class<?> requiredType, Throwable cause) {
+        super("Failed to convert value of type [" + valueType.getName() + "] " +
+                "to required type [" + requiredType.getName() + "]; nested exception is " + cause, cause);
 
-        this.parameterBindingRule = parameterBindingRule;
+        this.cause = cause;
     }
 
-    public ParameterBindingRule getParameterBindingRule() {
-        return parameterBindingRule;
+    public Throwable getCause() {
+        return cause;
     }
 
 }

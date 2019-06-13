@@ -87,41 +87,46 @@ public class DefaultEmbeddedAspectran extends AspectranCoreService implements Em
 
     @Override
     public Translet translate(String name) {
-        return translate(name, null, null, null);
+        return translate(name, null, null, null, null);
+    }
+
+    @Override
+    public Translet translate(String name, String body) {
+        return translate(name, null, null, null, body);
     }
 
     @Override
     public Translet translate(String name, ParameterMap parameterMap) {
-        return translate(name, null, parameterMap, null);
+        return translate(name, null, parameterMap, null, null);
     }
 
     @Override
     public Translet translate(String name, ParameterMap parameterMap, Map<String, Object> attributeMap) {
-        return translate(name, null, parameterMap, attributeMap);
+        return translate(name, null, parameterMap, attributeMap, null);
     }
 
     @Override
     public Translet translate(String name, Map<String, Object> attributeMap) {
-        return translate(name, null, null, attributeMap);
+        return translate(name, null, null, attributeMap, null);
     }
 
     @Override
     public Translet translate(String name, MethodType method) {
-        return translate(name, method, null, null);
+        return translate(name, method, null, null, null);
     }
 
     @Override
     public Translet translate(String name, MethodType method, ParameterMap parameterMap) {
-        return translate(name, method, parameterMap, null);
+        return translate(name, method, parameterMap, null, null);
     }
 
     @Override
     public Translet translate(String name, MethodType method, Map<String, Object> attributeMap) {
-        return translate(name, method, null, attributeMap);
+        return translate(name, method, null, attributeMap, null);
     }
 
     @Override
-    public Translet translate(String name, MethodType method, ParameterMap parameterMap, Map<String, Object> attributeMap) {
+    public Translet translate(String name, MethodType method, ParameterMap parameterMap, Map<String, Object> attributeMap, String body) {
         if (name == null) {
             throw new IllegalArgumentException("name must not be null");
         }
@@ -142,6 +147,7 @@ public class DefaultEmbeddedAspectran extends AspectranCoreService implements Em
             activity = new AspectranActivity(this);
             activity.setParameterMap(parameterMap);
             activity.setAttributeMap(attributeMap);
+            activity.setBody(body);
             activity.prepare(name, method);
             activity.perform();
             translet = activity.getTranslet();

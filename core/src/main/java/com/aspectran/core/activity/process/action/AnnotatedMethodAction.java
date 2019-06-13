@@ -32,6 +32,7 @@ import com.aspectran.core.util.ClassUtils;
 import com.aspectran.core.util.MethodUtils;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.ToStringBuilder;
+import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
@@ -150,13 +151,15 @@ public class AnnotatedMethodAction extends AbstractAction {
                 Exception thrown = null;
                 try {
                     args[i] = parseArgument(translet, type, name, format);
-                } catch (NumberFormatException e) {
-                    thrown = e;
-                    if (type.isPrimitive()) {
-                        args[i] = 0;
-                    }
                 } catch (IllegalArgumentException e) {
                     throw e;
+                } catch (MethodArgumentTypeMismatchException e) {
+                    thrown = e;
+                    if (e.getCause() instanceof NumberFormatException) {
+                        if (type.isPrimitive()) {
+                            args[i] = 0;
+                        }
+                    }
                 } catch (Exception e) {
                     thrown = e;
                 }
@@ -191,7 +194,7 @@ public class AnnotatedMethodAction extends AbstractAction {
         }
     }
 
-    private static Object parseArgument(Translet translet, Class<?> type, String name, String format) throws Exception {
+    private static Object parseArgument(Translet translet, Class<?> type, String name, String format) {
         Object result = null;
         if (translet != null) {
             if (type == Translet.class) {
@@ -238,6 +241,15 @@ public class AnnotatedMethodAction extends AbstractAction {
                         result = new ArrayList<>();
                     }
                 }
+            } else if (Parameters.class.isAssignableFrom(type)) {
+                if (type.isInterface()) {
+                    return translet.getRequestAdapter().getBodyAsParameters();
+                } else {
+                    @SuppressWarnings("unchecked")
+                    Class<? extends Parameters> requiredType = (Class<? extends Parameters>)type;
+                    return translet.getRequestAdapter().getBodyAsParameters(requiredType);
+                }
+
             } else {
                 String value = translet.getParameter(name);
                 result = parseValue(type, value, format);
@@ -294,316 +306,324 @@ public class AnnotatedMethodAction extends AbstractAction {
         return model;
     }
 
-    private static Object parseValue(Class<?> type, String value, String format) throws Exception {
-        Object result = null;
-        if (type == String.class) {
-            result = value;
-        } else if (type == char.class) {
-            if (value != null && !value.isEmpty()) {
-                result = value.charAt(0);
-            } else {
-                result = Character.MIN_VALUE;
-            }
-        } else if (type == Character.class) {
-            if (value != null && !value.isEmpty()) {
-                result = value.charAt(0);
-            }
-        } else if (type == Date.class) {
-            if (value != null) {
-                result = new SimpleDateFormat(format).parse(value);
-            }
-        } else if (type == LocalDate.class) {
-            if (value != null) {
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
-                result = LocalDate.parse(value, formatter);
-            }
-        } else if (type == LocalDateTime.class) {
-            if (value != null) {
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
-                result = LocalDateTime.parse(value, formatter);
-            }
-        } else if (type == boolean.class) {
-            result = Boolean.valueOf(value);
-        } else if (type == Boolean.class) {
-            if (value != null) {
+    private static Object parseValue(Class<?> type, String value, String format) {
+        try {
+            Object result = null;
+            if (type == String.class) {
+                result = value;
+            } else if (type == char.class) {
+                if (value != null && !value.isEmpty()) {
+                    result = value.charAt(0);
+                } else {
+                    result = Character.MIN_VALUE;
+                }
+            } else if (type == Character.class) {
+                if (value != null && !value.isEmpty()) {
+                    result = value.charAt(0);
+                }
+            } else if (type == Date.class) {
+                if (value != null) {
+                    result = new SimpleDateFormat(format).parse(value);
+                }
+            } else if (type == LocalDate.class) {
+                if (value != null) {
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
+                    result = LocalDate.parse(value, formatter);
+                }
+            } else if (type == LocalDateTime.class) {
+                if (value != null) {
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
+                    result = LocalDateTime.parse(value, formatter);
+                }
+            } else if (type == boolean.class) {
                 result = Boolean.valueOf(value);
-            }
-        } else if (type == byte.class) {
-            if (value != null) {
-                result = Byte.valueOf(value);
+            } else if (type == Boolean.class) {
+                if (value != null) {
+                    result = Boolean.valueOf(value);
+                }
+            } else if (type == byte.class) {
+                if (value != null) {
+                    result = Byte.valueOf(value);
+                } else {
+                    result = 0;
+                }
+            } else if (type == Byte.class) {
+                if (value != null) {
+                    result = Byte.valueOf(value);
+                }
+            } else if (type == short.class) {
+                if (value != null) {
+                    result = Short.valueOf(value);
+                } else {
+                    result = 0;
+                }
+            } else if (type == Short.class) {
+                if (value != null) {
+                    result = Short.valueOf(value);
+                }
+            } else if (type == int.class) {
+                if (value != null) {
+                    result = Integer.valueOf(value);
+                } else {
+                    result = 0;
+                }
+            } else if (type == Integer.class) {
+                if (value != null) {
+                    result = Integer.valueOf(value);
+                }
+            } else if (type == long.class) {
+                if (value != null) {
+                    result = Long.valueOf(value);
+                } else {
+                    result = 0L;
+                }
+            } else if (type == Long.class) {
+                if (value != null) {
+                    result = Long.valueOf(value);
+                }
+            } else if (type == float.class) {
+                if (value != null) {
+                    result = Float.valueOf(value);
+                } else {
+                    result = 0f;
+                }
+            } else if (type == Float.class) {
+                if (value != null) {
+                    result = Float.valueOf(value);
+                }
+            } else if (type == double.class) {
+                if (value != null) {
+                    result = Double.valueOf(value);
+                } else {
+                    result = 0d;
+                }
+            } else if (type == Double.class) {
+                if (value != null) {
+                    result = Double.valueOf(value);
+                }
+            } else if (type == BigInteger.class) {
+                if (value != null) {
+                    result = new BigInteger(value);
+                }
+            } else if (type == BigDecimal.class) {
+                if (value != null) {
+                    result = new BigDecimal(value);
+                }
             } else {
-                result = 0;
+                result = UNKNOWN_VALUE_TYPE;
             }
-        } else if (type == Byte.class) {
-            if (value != null) {
-                result = Byte.valueOf(value);
-            }
-        } else if (type == short.class) {
-            if (value != null) {
-                result = Short.valueOf(value);
-            } else {
-                result = 0;
-            }
-        } else if (type == Short.class) {
-            if (value != null) {
-                result = Short.valueOf(value);
-            }
-        } else if (type == int.class) {
-            if (value != null) {
-                result = Integer.valueOf(value);
-            } else {
-                result = 0;
-            }
-        } else if (type == Integer.class) {
-            if (value != null) {
-                result = Integer.valueOf(value);
-            }
-        } else if (type == long.class) {
-            if (value != null) {
-                result = Long.valueOf(value);
-            } else {
-                result = 0L;
-            }
-        } else if (type == Long.class) {
-            if (value != null) {
-                result = Long.valueOf(value);
-            }
-        } else if (type == float.class) {
-            if (value != null) {
-                result = Float.valueOf(value);
-            } else {
-                result = 0f;
-            }
-        } else if (type == Float.class) {
-            if (value != null) {
-                result = Float.valueOf(value);
-            }
-        } else if (type == double.class) {
-            if (value != null) {
-                result = Double.valueOf(value);
-            } else {
-                result = 0d;
-            }
-        } else if (type == Double.class) {
-            if (value != null) {
-                result = Double.valueOf(value);
-            }
-        } else if (type == BigInteger.class) {
-            if (value != null) {
-                result = new BigInteger(value);
-            }
-        } else if (type == BigDecimal.class) {
-            if (value != null) {
-                result = new BigDecimal(value);
-            }
-        } else {
-            result = UNKNOWN_VALUE_TYPE;
+            return result;
+        } catch (Exception e) {
+            throw new MethodArgumentTypeMismatchException(String.class, type, e);
         }
-        return result;
     }
 
-    private static Object parseArrayValues(Class<?> type, String[] values, String format) throws Exception {
-        Object result = null;
-        if (type == String.class) {
-            result = values;
-        } else if (type == char.class) {
-            if (values != null) {
-                char[] arr = new char[values.length];
-                for (int i = 0; i < values.length; i++) {
-                    if (!values[i].isEmpty()) {
-                        arr[i] = values[i].charAt(0);
-                    } else {
-                        arr[i] = Character.MIN_VALUE;
+    private static Object parseArrayValues(Class<?> type, String[] values, String format) {
+        try {
+            Object result = null;
+            if (type == String.class) {
+                result = values;
+            } else if (type == char.class) {
+                if (values != null) {
+                    char[] arr = new char[values.length];
+                    for (int i = 0; i < values.length; i++) {
+                        if (!values[i].isEmpty()) {
+                            arr[i] = values[i].charAt(0);
+                        } else {
+                            arr[i] = Character.MIN_VALUE;
+                        }
                     }
+                    result = arr;
+                } else {
+                    result = new char[0];
                 }
-                result = arr;
-            } else {
-                result = new char[0];
-            }
-        } else if (type == Character.class) {
-            if (values != null) {
-                Character[] arr = new Character[values.length];
-                for (int i = 0; i < values.length; i++) {
-                    if (!values[i].isEmpty()) {
-                        arr[i] = values[i].charAt(0);
-                    } else {
-                        arr[i] = null;
+            } else if (type == Character.class) {
+                if (values != null) {
+                    Character[] arr = new Character[values.length];
+                    for (int i = 0; i < values.length; i++) {
+                        if (!values[i].isEmpty()) {
+                            arr[i] = values[i].charAt(0);
+                        } else {
+                            arr[i] = null;
+                        }
                     }
+                    result = arr;
                 }
-                result = arr;
-            }
-        } else if (type == Date.class) {
-            if (values != null) {
-                Date[] arr = new Date[values.length];
-                for (int i = 0; i < values.length; i++) {
-                    arr[i] = new SimpleDateFormat(format).parse(values[i]);
+            } else if (type == Date.class) {
+                if (values != null) {
+                    Date[] arr = new Date[values.length];
+                    for (int i = 0; i < values.length; i++) {
+                        arr[i] = new SimpleDateFormat(format).parse(values[i]);
+                    }
+                    result = arr;
                 }
-                result = arr;
-            }
-        } else if (type == LocalDate.class) {
-            if (values != null) {
-                LocalDate[] arr = new LocalDate[values.length];
-                for (int i = 0; i < values.length; i++) {
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
-                    arr[i] = LocalDate.parse(values[i], formatter);
+            } else if (type == LocalDate.class) {
+                if (values != null) {
+                    LocalDate[] arr = new LocalDate[values.length];
+                    for (int i = 0; i < values.length; i++) {
+                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
+                        arr[i] = LocalDate.parse(values[i], formatter);
+                    }
+                    result = arr;
                 }
-                result = arr;
-            }
-        } else if (type == LocalDateTime.class) {
-            if (values != null) {
-                LocalDateTime[] arr = new LocalDateTime[values.length];
-                for (int i = 0; i < values.length; i++) {
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
-                    arr[i] = LocalDateTime.parse(values[i], formatter);
+            } else if (type == LocalDateTime.class) {
+                if (values != null) {
+                    LocalDateTime[] arr = new LocalDateTime[values.length];
+                    for (int i = 0; i < values.length; i++) {
+                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
+                        arr[i] = LocalDateTime.parse(values[i], formatter);
+                    }
+                    result = arr;
                 }
-                result = arr;
-            }
-        } else if (type == boolean.class) {
-            if (values != null) {
-                boolean[] arr = new boolean[values.length];
-                for (int i = 0; i < values.length; i++) {
-                    arr[i] = Boolean.valueOf(values[i]);
+            } else if (type == boolean.class) {
+                if (values != null) {
+                    boolean[] arr = new boolean[values.length];
+                    for (int i = 0; i < values.length; i++) {
+                        arr[i] = Boolean.valueOf(values[i]);
+                    }
+                    result = arr;
+                } else {
+                    result = new boolean[0];
                 }
-                result = arr;
+            } else if (type == Boolean.class) {
+                if (values != null) {
+                    Boolean[] arr = new Boolean[values.length];
+                    for (int i = 0; i < values.length; i++) {
+                        arr[i] = Boolean.valueOf(values[i]);
+                    }
+                    result = arr;
+                }
+            } else if (type == byte.class) {
+                if (values != null) {
+                    byte[] arr = new byte[values.length];
+                    for (int i = 0; i < values.length; i++) {
+                        arr[i] = Byte.parseByte(values[i]);
+                    }
+                    result = arr;
+                } else {
+                    result = new byte[0];
+                }
+            } else if (type == Byte.class) {
+                if (values != null) {
+                    Byte[] arr = new Byte[values.length];
+                    for (int i = 0; i < values.length; i++) {
+                        arr[i] = Byte.valueOf(values[i]);
+                    }
+                    result = arr;
+                }
+            } else if (type == short.class) {
+                if (values != null) {
+                    short[] arr = new short[values.length];
+                    for (int i = 0; i < values.length; i++) {
+                        arr[i] = Short.parseShort(values[i]);
+                    }
+                    result = arr;
+                } else {
+                    result = new short[0];
+                }
+            } else if (type == Short.class) {
+                if (values != null) {
+                    Short[] arr = new Short[values.length];
+                    for (int i = 0; i < values.length; i++) {
+                        arr[i] = Short.valueOf(values[i]);
+                    }
+                    result = arr;
+                }
+            } else if (type == int.class) {
+                if (values != null) {
+                    int[] arr = new int[values.length];
+                    for (int i = 0; i < values.length; i++) {
+                        arr[i] = Integer.parseInt(values[i]);
+                    }
+                    result = arr;
+                } else {
+                    result = new int[0];
+                }
+            } else if (type == Integer.class) {
+                if (values != null) {
+                    Integer[] arr = new Integer[values.length];
+                    for (int i = 0; i < values.length; i++) {
+                        arr[i] = Integer.valueOf(values[i]);
+                    }
+                    result = arr;
+                }
+            } else if (type == long.class) {
+                if (values != null) {
+                    long[] arr = new long[values.length];
+                    for (int i = 0; i < values.length; i++) {
+                        arr[i] = Long.parseLong(values[i]);
+                    }
+                    result = arr;
+                } else {
+                    result = new long[0];
+                }
+            } else if (type == Long.class) {
+                if (values != null) {
+                    Long[] arr = new Long[values.length];
+                    for (int i = 0; i < values.length; i++) {
+                        arr[i] = Long.valueOf(values[i]);
+                    }
+                    result = arr;
+                }
+            } else if (type == float.class) {
+                if (values != null) {
+                    float[] arr = new float[values.length];
+                    for (int i = 0; i < values.length; i++) {
+                        arr[i] = Float.parseFloat(values[i]);
+                    }
+                    result = arr;
+                } else {
+                    result = new float[0];
+                }
+            } else if (type == Float.class) {
+                if (values != null) {
+                    Float[] arr = new Float[values.length];
+                    for (int i = 0; i < values.length; i++) {
+                        arr[i] = Float.valueOf(values[i]);
+                    }
+                    result = arr;
+                }
+            } else if (type == double.class) {
+                if (values != null) {
+                    double[] arr = new double[values.length];
+                    for (int i = 0; i < values.length; i++) {
+                        arr[i] = Double.parseDouble(values[i]);
+                    }
+                    result = arr;
+                } else {
+                    result = new double[0];
+                }
+            } else if (type == Double.class) {
+                if (values != null) {
+                    Double[] arr = new Double[values.length];
+                    for (int i = 0; i < values.length; i++) {
+                        arr[i] = Double.valueOf(values[i]);
+                    }
+                    result = arr;
+                }
+            } else if (type == BigInteger.class) {
+                if (values != null) {
+                    BigInteger[] arr = new BigInteger[values.length];
+                    for (int i = 0; i < values.length; i++) {
+                        arr[i] = new BigInteger(values[i]);
+                    }
+                    result = arr;
+                }
+            } else if (type == BigDecimal.class) {
+                if (values != null) {
+                    BigDecimal[] arr = new BigDecimal[values.length];
+                    for (int i = 0; i < values.length; i++) {
+                        arr[i] = new BigDecimal(values[i]);
+                    }
+                    result = arr;
+                }
             } else {
-                result = new boolean[0];
+                result = UNKNOWN_VALUE_TYPE;
             }
-        } else if (type == Boolean.class) {
-            if (values != null) {
-                Boolean[] arr = new Boolean[values.length];
-                for (int i = 0; i < values.length; i++) {
-                    arr[i] = Boolean.valueOf(values[i]);
-                }
-                result = arr;
-            }
-        } else if (type == byte.class) {
-            if (values != null) {
-                byte[] arr = new byte[values.length];
-                for (int i = 0; i < values.length; i++) {
-                    arr[i] = Byte.parseByte(values[i]);
-                }
-                result = arr;
-            } else {
-                result = new byte[0];
-            }
-        } else if (type == Byte.class) {
-            if (values != null) {
-                Byte[] arr = new Byte[values.length];
-                for (int i = 0; i < values.length; i++) {
-                    arr[i] = Byte.valueOf(values[i]);
-                }
-                result = arr;
-            }
-        } else if (type == short.class) {
-            if (values != null) {
-                short[] arr = new short[values.length];
-                for (int i = 0; i < values.length; i++) {
-                    arr[i] = Short.parseShort(values[i]);
-                }
-                result = arr;
-            } else {
-                result = new short[0];
-            }
-        } else if (type == Short.class) {
-            if (values != null) {
-                Short[] arr = new Short[values.length];
-                for (int i = 0; i < values.length; i++) {
-                    arr[i] = Short.valueOf(values[i]);
-                }
-                result = arr;
-            }
-        } else if (type == int.class) {
-            if (values != null) {
-                int[] arr = new int[values.length];
-                for (int i = 0; i < values.length; i++) {
-                    arr[i] = Integer.parseInt(values[i]);
-                }
-                result = arr;
-            } else {
-                result = new int[0];
-            }
-        } else if (type == Integer.class) {
-            if (values != null) {
-                Integer[] arr = new Integer[values.length];
-                for (int i = 0; i < values.length; i++) {
-                    arr[i] = Integer.valueOf(values[i]);
-                }
-                result = arr;
-            }
-        } else if (type == long.class) {
-            if (values != null) {
-                long[] arr = new long[values.length];
-                for (int i = 0; i < values.length; i++) {
-                    arr[i] = Long.parseLong(values[i]);
-                }
-                result = arr;
-            } else {
-                result = new long[0];
-            }
-        } else if (type == Long.class) {
-            if (values != null) {
-                Long[] arr = new Long[values.length];
-                for (int i = 0; i < values.length; i++) {
-                    arr[i] = Long.valueOf(values[i]);
-                }
-                result = arr;
-            }
-        } else if (type == float.class) {
-            if (values != null) {
-                float[] arr = new float[values.length];
-                for (int i = 0; i < values.length; i++) {
-                    arr[i] = Float.parseFloat(values[i]);
-                }
-                result = arr;
-            } else {
-                result = new float[0];
-            }
-        } else if (type == Float.class) {
-            if (values != null) {
-                Float[] arr = new Float[values.length];
-                for (int i = 0; i < values.length; i++) {
-                    arr[i] = Float.valueOf(values[i]);
-                }
-                result = arr;
-            }
-        } else if (type == double.class) {
-            if (values != null) {
-                double[] arr = new double[values.length];
-                for (int i = 0; i < values.length; i++) {
-                    arr[i] = Double.parseDouble(values[i]);
-                }
-                result = arr;
-            } else {
-                result = new double[0];
-            }
-        } else if (type == Double.class) {
-            if (values != null) {
-                Double[] arr = new Double[values.length];
-                for (int i = 0; i < values.length; i++) {
-                    arr[i] = Double.valueOf(values[i]);
-                }
-                result = arr;
-            }
-        } else if (type == BigInteger.class) {
-            if (values != null) {
-                BigInteger[] arr = new BigInteger[values.length];
-                for (int i = 0; i < values.length; i++) {
-                    arr[i] = new BigInteger(values[i]);
-                }
-                result = arr;
-            }
-        } else if (type == BigDecimal.class) {
-            if (values != null) {
-                BigDecimal[] arr = new BigDecimal[values.length];
-                for (int i = 0; i < values.length; i++) {
-                    arr[i] = new BigDecimal(values[i]);
-                }
-                result = arr;
-            }
-        } else {
-            result = UNKNOWN_VALUE_TYPE;
+            return result;
+        } catch (Exception e) {
+            throw new MethodArgumentTypeMismatchException(String.class, type, e);
         }
-        return result;
     }
 
 }

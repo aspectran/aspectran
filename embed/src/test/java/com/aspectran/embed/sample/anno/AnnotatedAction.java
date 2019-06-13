@@ -22,6 +22,7 @@ import com.aspectran.core.component.bean.annotation.Format;
 import com.aspectran.core.component.bean.annotation.Parameter;
 import com.aspectran.core.component.bean.annotation.Qualifier;
 import com.aspectran.core.component.bean.annotation.Request;
+import com.aspectran.core.util.apon.Parameters;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -265,6 +266,12 @@ public class AnnotatedAction {
     @Request("/action-11")
     public void action11(List<String> list) {
         assertArrayEquals(new String[] {"1", "2", "3"}, list.toArray(new String[0]));
+    }
+
+    @Request("/action-12")
+    public void action12(Parameters parameters) {
+        assertEquals(1234, parameters.getInt("p1"));
+        assertEquals(5678, parameters.getInt("p2"));
     }
 
 }

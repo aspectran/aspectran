@@ -40,6 +40,8 @@ public class AspectranActivity extends CoreActivity {
 
     private Map<String, Object> attributeMap;
 
+    private String body;
+
     /**
      * Instantiates a new embedded aspectran activity.
      *
@@ -70,6 +72,10 @@ public class AspectranActivity extends CoreActivity {
         this.attributeMap = attributeMap;
     }
 
+    public void setBody(String body) {
+        this.body = body;
+    }
+
     @Override
     protected void adapt() throws AdapterException {
         try {
@@ -89,6 +95,9 @@ public class AspectranActivity extends CoreActivity {
             }
             if (attributeMap != null) {
                 requestAdapter.setAttributeMap(attributeMap);
+            }
+            if (body != null) {
+                requestAdapter.setBody(body);
             }
 
             super.adapt();

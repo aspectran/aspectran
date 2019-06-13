@@ -129,20 +129,19 @@ public interface Parameters {
     boolean hasValue(ParameterDefinition parameterDefinition);
 
     /**
-     * Return the value for the specified parameter,
-     * or {@code null} if the parameter does not exist.
+     * Returns the Parameter with the specified name.
      *
      * @param name the parameter name
-     * @return the value for the specified parameter, or {@code null}
+     * @return the Parameter with the specified name, or {@code null} if it does not exist
      */
     Parameter getParameter(String name);
 
     /**
-     * Return the value for the specified parameter,
-     * or {@code null} if the parameter does not exist.
+     * Returns the Parameter corresponding to the specified parameter definition.
      *
      * @param parameterDefinition the parameter definition
-     * @return the value for the specified parameter, or {@code null}
+     * @return the Parameter corresponding to the specified parameter definition,
+     *      or {@code null} if it does not exist
      */
     Parameter getParameter(ParameterDefinition parameterDefinition);
 
@@ -167,7 +166,7 @@ public interface Parameters {
     void putAll(Parameters parameters);
 
     /**
-     * Put a value of the parameter corresponding to the given name.
+     * Put a value into the Parameter with the specified name.
      *
      * @param name the parameter name
      * @param value the value of parameter
@@ -175,7 +174,7 @@ public interface Parameters {
     void putValue(String name, Object value);
 
     /**
-     * Put a value of the parameter corresponding to the given parameter definition.
+     * Put a value into the Parameter with the specified parameter definition.
      *
      * @param parameterDefinition the parameter definition
      * @param value the value of parameter
@@ -184,7 +183,7 @@ public interface Parameters {
 
     /**
      * Put a value of the parameter corresponding to the given name.
-     * If a value is null then that value is ignored.
+     * If the value is null, ignore it.
      *
      * @param name the parameter name
      * @param value the value of parameter
@@ -193,7 +192,7 @@ public interface Parameters {
 
     /**
      * Put a value of the parameter corresponding to the given parameter definition.
-     * If a value is null then that value is ignored.
+     * If the value is null, ignore it.
      *
      * @param parameterDefinition the parameter definition
      * @param value the value of parameter

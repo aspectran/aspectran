@@ -16,8 +16,12 @@
 package com.aspectran.core.activity.request;
 
 import com.aspectran.core.context.rule.type.MethodType;
+import com.aspectran.core.util.ClassUtils;
 import com.aspectran.core.util.LinkedCaseInsensitiveMultiValueMap;
 import com.aspectran.core.util.MultiValueMap;
+import com.aspectran.core.util.StringUtils;
+import com.aspectran.core.util.apon.Parameters;
+import com.aspectran.core.util.apon.VariableParameters;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Collection;
@@ -393,6 +397,23 @@ public abstract class AbstractRequest {
 
     public void setBody(String body) {
         this.body = body;
+    }
+
+    public Parameters getBodyAsParameters() {
+        return getBodyAsParameters(VariableParameters.class);
+    }
+
+    public <T extends Parameters> T getBodyAsParameters(Class<T> requiredType) {
+        if (StringUtils.isEmpty(getBody())) {
+            return null;
+        }
+        try {
+            T parameters = ClassUtils.createInstance(requiredType);
+            parameters.readFrom(getBody());
+            return parameters;
+        } catch (Exception e) {
+            throw new RequestException("Failed to parse request body to required type [" + requiredType + "]");
+        }
     }
 
 }

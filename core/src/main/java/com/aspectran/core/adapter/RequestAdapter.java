@@ -20,6 +20,7 @@ import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.component.bean.scope.RequestScope;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.util.MultiValueMap;
+import com.aspectran.core.util.apon.Parameters;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Collection;
@@ -444,5 +445,9 @@ public interface RequestAdapter {
     String getBody();
 
     void setBody(String body);
+
+    Parameters getBodyAsParameters();
+
+    <T extends Parameters> T getBodyAsParameters(Class<T> requiredType);
 
 }

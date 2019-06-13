@@ -23,8 +23,7 @@ import com.aspectran.web.activity.request.RequestAttributeMap;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.util.Enumeration;
 import java.util.Map;
@@ -36,7 +35,7 @@ import java.util.Map;
  */
 public class HttpServletRequestAdapter extends AbstractRequestAdapter {
 
-    private static final int BUFFER_SIZE = 4096;
+    private static final int BUFFER_SIZE = 1024;
 
     private volatile boolean headersHeld;
 
@@ -88,11 +87,10 @@ public class HttpServletRequestAdapter extends AbstractRequestAdapter {
         if (super.getBody() == null) {
             try {
                 StringBuilder sb = new StringBuilder();
-                InputStream is = ((HttpServletRequest) getAdaptee()).getInputStream();
-                InputStreamReader reader = new InputStreamReader(is, getEncoding());
+                Reader reader = ((HttpServletRequest)getAdaptee()).getReader();
                 char[] buffer = new char[BUFFER_SIZE];
                 int bytesRead;
-                while ((bytesRead = reader.read(buffer)) != -1) {
+                while ((bytesRead = reader.read(buffer)) > 0) {
                     sb.append(buffer, 0, bytesRead);
                 }
                 super.setBody(sb.toString());
