@@ -32,7 +32,7 @@ import com.aspectran.core.support.i18n.locale.LocaleChangeInterceptor;
 import com.aspectran.core.support.i18n.locale.LocaleResolver;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.web.activity.request.ActivityRequestWrapper;
-import com.aspectran.web.activity.request.HttpPutFormContentParser;
+import com.aspectran.web.activity.request.URLEncodedFormDataParser;
 import com.aspectran.web.activity.request.MultipartFormDataParser;
 import com.aspectran.web.activity.request.MultipartRequestParseException;
 import com.aspectran.web.adapter.HttpServletRequestAdapter;
@@ -150,11 +150,8 @@ public class WebActivity extends CoreActivity {
         if (contentType != null) {
             if (MethodType.POST.equals(requestMethod) && contentType.startsWith(MULTIPART_FORM_DATA)) {
                 parseMultipartFormData();
-            } else if ((MethodType.PUT.equals(requestMethod) ||
-                    MethodType.PATCH.equals(requestMethod) ||
-                    MethodType.DELETE.equals(requestMethod)) &&
-                    contentType.startsWith(APPLICATION_FORM_URLENCODED)) {
-                parseHttpPutFormContent();
+            } else if (contentType.startsWith(APPLICATION_FORM_URLENCODED)) {
+                parseURLEncodedFormData();
             }
         }
 
@@ -180,10 +177,10 @@ public class WebActivity extends CoreActivity {
     }
 
     /**
-     * Parse the HTTP PUT requests.
+     * Parse the URL-encoded Form Data to get the request parameters.
      */
-    private void parseHttpPutFormContent() {
-        HttpPutFormContentParser.parse(getRequestAdapter());
+    private void parseURLEncodedFormData() {
+        URLEncodedFormDataParser.parse(getRequestAdapter());
     }
 
     @Override

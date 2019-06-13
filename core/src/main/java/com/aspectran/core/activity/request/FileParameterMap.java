@@ -40,7 +40,7 @@ public class FileParameterMap extends LinkedHashMap<String, FileParameter[]> {
         put(name, new FileParameter[] { fileParameter });
     }
 
-    public void setFileParameter(String name, FileParameter[] fileParameters) {
+    public void setFileParameterValues(String name, FileParameter[] fileParameters) {
         put(name, fileParameters);
     }
 

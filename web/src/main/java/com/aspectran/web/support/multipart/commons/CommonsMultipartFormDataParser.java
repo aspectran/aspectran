@@ -200,23 +200,8 @@ public class CommonsMultipartFormDataParser implements MultipartFormDataParser {
             }
         }
 
-        if (!parameterMap.isEmpty()) {
-            for (Map.Entry<String, List<String>> entry : parameterMap.entrySet()) {
-                String name = entry.getKey();
-                List<String> list = entry.getValue();
-                String[] values = list.toArray(new String[0]);
-                requestAdapter.setParameter(name, values);
-            }
-        }
-
-        if (!fileParameterMap.isEmpty()) {
-            for (Map.Entry<String, List<FileParameter>> entry : fileParameterMap.entrySet()) {
-                String name = entry.getKey();
-                List<FileParameter> list = entry.getValue();
-                FileParameter[] values = list.toArray(new FileParameter[0]);
-                requestAdapter.setFileParameter(name, values);
-            }
-        }
+        requestAdapter.putAllParameters(parameterMap);
+        requestAdapter.putAllFileParameters(fileParameterMap);
     }
 
     private String getString(FileItem fileItem, String encoding) {

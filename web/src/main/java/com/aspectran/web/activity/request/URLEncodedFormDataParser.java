@@ -27,8 +27,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URLDecoder;
 import java.nio.charset.Charset;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Support for HTTP request methods like PUT/PATCH/DELETE.
@@ -40,7 +38,7 @@ import java.util.Map;
  *
  * @since 2.3.0
  */
-public class HttpPutFormContentParser {
+public class URLEncodedFormDataParser {
 
     private static final Charset DEFAULT_CHARSET = Charset.forName(ActivityContext.DEFAULT_ENCODING);
 
@@ -51,42 +49,38 @@ public class HttpPutFormContentParser {
             HttpServletRequest request = requestAdapter.getAdaptee();
             String requestEncoding = requestAdapter.getEncoding();
             Charset charset = (requestEncoding != null ? Charset.forName(requestEncoding) : DEFAULT_CHARSET);
-            String body = copyToString(request.getInputStream(), charset);
-            String[] pairs = StringUtils.tokenize(body, "&");
-            MultiValueMap<String, String> parameterMap = new LinkedMultiValueMap<>();
-            for (String pair : pairs) {
-                int idx = pair.indexOf('=');
-                if (idx == -1) {
-                    String name = URLDecoder.decode(pair, charset.name());
-                    parameterMap.add(name, null);
-                } else {
-                    String name = URLDecoder.decode(pair.substring(0, idx), charset.name());
-                    String value = URLDecoder.decode(pair.substring(idx + 1), charset.name());
-                    parameterMap.add(name, value);
+            String body = extractBody(request.getInputStream(), charset);
+            if (body != null) {
+                String[] pairs = StringUtils.tokenize(body, "&");
+                MultiValueMap<String, String> parameterMap = new LinkedMultiValueMap<>();
+                for (String pair : pairs) {
+                    int idx = pair.indexOf('=');
+                    if (idx == -1) {
+                        String name = URLDecoder.decode(pair, charset.name());
+                        parameterMap.add(name, null);
+                    } else {
+                        String name = URLDecoder.decode(pair.substring(0, idx), charset.name());
+                        String value = URLDecoder.decode(pair.substring(idx + 1), charset.name());
+                        parameterMap.add(name, value);
+                    }
                 }
-            }
-            if (!parameterMap.isEmpty()) {
-                for (Map.Entry<String, List<String>> entry : parameterMap.entrySet()) {
-                    String name = entry.getKey();
-                    List<String> list = entry.getValue();
-                    String[] values = list.toArray(new String[0]);
-                    requestAdapter.setParameter(name, values);
-                }
+                requestAdapter.putAllParameters(parameterMap);
             }
         } catch (Exception e) {
-            throw new RequestParseException("Could not parse HTTP PUT request data", e);
+            throw new RequestParseException("Could not parse HTTP " +
+                    requestAdapter.getRequestMethod() + " request body", e);
         }
     }
 
-    private static String copyToString(InputStream in, Charset charset) throws IOException {
+    private static String extractBody(InputStream in, Charset charset) throws IOException {
+        StringBuilder sb = new StringBuilder();
         InputStreamReader reader = new InputStreamReader(in, charset);
-        StringBuilder out = new StringBuilder();
         char[] buffer = new char[BUFFER_SIZE];
         int bytesRead;
         while ((bytesRead = reader.read(buffer)) != -1) {
-            out.append(buffer, 0, bytesRead);
+            sb.append(buffer, 0, bytesRead);
         }
-        return out.toString();
+        return (sb.length() > 0 ? sb.toString() : null);
     }
 
 }

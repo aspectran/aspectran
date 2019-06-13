@@ -187,6 +187,17 @@ public abstract class AbstractRequest {
         getParameterMap().putAll(parameterMap);
     }
 
+    public void putAllParameters(MultiValueMap<String, String> parameterMap) {
+        if (parameterMap != null && !parameterMap.isEmpty()) {
+            for (Map.Entry<String, List<String>> entry : parameterMap.entrySet()) {
+                String name = entry.getKey();
+                List<String> list = entry.getValue();
+                String[] values = list.toArray(new String[0]);
+                getParameterMap().setParameterValues(name, values);
+            }
+        }
+    }
+
     public void extractParameters(Map<String, Object> targetMap) {
         if (hasParameters()) {
             getParameterMap().extractAsMap(targetMap);
@@ -231,7 +242,7 @@ public abstract class AbstractRequest {
     }
 
     public void setFileParameter(String name, FileParameter[] fileParameters) {
-        getFileParameterMap().setFileParameter(name, fileParameters);
+        getFileParameterMap().setFileParameterValues(name, fileParameters);
     }
 
     public void removeFileParameter(String name) {
@@ -243,6 +254,17 @@ public abstract class AbstractRequest {
             fileParameterMap = new FileParameterMap();
         }
         return fileParameterMap;
+    }
+
+    public void putAllFileParameters(MultiValueMap<String, FileParameter> fileParameterMap) {
+        if (fileParameterMap != null && !fileParameterMap.isEmpty()) {
+            for (Map.Entry<String, List<FileParameter>> entry : fileParameterMap.entrySet()) {
+                String name = entry.getKey();
+                List<FileParameter> list = entry.getValue();
+                FileParameter[] values = list.toArray(new FileParameter[0]);
+                getFileParameterMap().setFileParameterValues(name, values);
+            }
+        }
     }
 
     public boolean hasFileParameters() {

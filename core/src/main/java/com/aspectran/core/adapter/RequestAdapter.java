@@ -206,6 +206,14 @@ public interface RequestAdapter {
     void putAllParameters(ParameterMap parameterMap);
 
     /**
+     * Copies all of the mappings from the specified parameters.
+     *
+     * @param parameterMap the specified parameters
+     * @since 6.1.2
+     */
+    void putAllParameters(MultiValueMap<String, String> parameterMap);
+
+    /**
      * Extracts all the parameters and fills in the specified map.
      *
      * @param targetParameters the target parameter map to be filled
@@ -291,6 +299,14 @@ public interface RequestAdapter {
      * @param name a {@code String} specifying the name of the file parameter
      */
     void removeFileParameter(String name);
+
+    /**
+     * Copies all of the mappings from the specified file parameters.
+     *
+     * @param fileParameterMap the specified file parameters
+     * @since 6.1.2
+     */
+    void putAllFileParameters(MultiValueMap<String, FileParameter> fileParameterMap);
 
     /**
      * Returns whether the request has file parameters.
