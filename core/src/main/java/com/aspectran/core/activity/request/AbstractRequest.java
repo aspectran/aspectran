@@ -52,6 +52,8 @@ public abstract class AbstractRequest {
 
     private boolean maxLengthExceeded;
 
+    private String body;
+
     public AbstractRequest() {
     }
 
@@ -383,6 +385,14 @@ public abstract class AbstractRequest {
      */
     public boolean isMaxLengthExceeded() {
         return maxLengthExceeded;
+    }
+
+    public String getBody() {
+        return body;
+    }
+
+    public void setBody(String body) {
+        this.body = body;
     }
 
 }

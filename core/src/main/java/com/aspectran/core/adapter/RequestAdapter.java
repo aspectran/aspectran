@@ -441,4 +441,8 @@ public interface RequestAdapter {
      */
     void setMaxLengthExceeded(boolean maxLengthExceeded);
 
+    String getBody();
+
+    void setBody(String body);
+
 }

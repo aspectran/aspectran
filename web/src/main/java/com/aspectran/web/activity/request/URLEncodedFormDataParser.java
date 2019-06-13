@@ -16,17 +16,11 @@
 package com.aspectran.web.activity.request;
 
 import com.aspectran.core.adapter.RequestAdapter;
-import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.util.LinkedMultiValueMap;
 import com.aspectran.core.util.MultiValueMap;
 import com.aspectran.core.util.StringUtils;
 
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.URLDecoder;
-import java.nio.charset.Charset;
 
 /**
  * Support for HTTP request methods like PUT/PATCH/DELETE.
@@ -40,27 +34,21 @@ import java.nio.charset.Charset;
  */
 public class URLEncodedFormDataParser {
 
-    private static final Charset DEFAULT_CHARSET = Charset.forName(ActivityContext.DEFAULT_ENCODING);
-
-    private static final int BUFFER_SIZE = 4096;
-
     public static void parse(RequestAdapter requestAdapter) {
         try {
-            HttpServletRequest request = requestAdapter.getAdaptee();
-            String requestEncoding = requestAdapter.getEncoding();
-            Charset charset = (requestEncoding != null ? Charset.forName(requestEncoding) : DEFAULT_CHARSET);
-            String body = extractBody(request.getInputStream(), charset);
-            if (body != null) {
+            String body = requestAdapter.getBody();
+            if (body != null && !body.isEmpty()) {
+                String encoding = requestAdapter.getEncoding();
                 String[] pairs = StringUtils.tokenize(body, "&");
                 MultiValueMap<String, String> parameterMap = new LinkedMultiValueMap<>();
                 for (String pair : pairs) {
                     int idx = pair.indexOf('=');
                     if (idx == -1) {
-                        String name = URLDecoder.decode(pair, charset.name());
+                        String name = URLDecoder.decode(pair, encoding);
                         parameterMap.add(name, null);
                     } else {
-                        String name = URLDecoder.decode(pair.substring(0, idx), charset.name());
-                        String value = URLDecoder.decode(pair.substring(idx + 1), charset.name());
+                        String name = URLDecoder.decode(pair.substring(0, idx), encoding);
+                        String value = URLDecoder.decode(pair.substring(idx + 1), encoding);
                         parameterMap.add(name, value);
                     }
                 }
@@ -70,17 +58,6 @@ public class URLEncodedFormDataParser {
             throw new RequestParseException("Could not parse HTTP " +
                     requestAdapter.getRequestMethod() + " request body", e);
         }
-    }
-
-    private static String extractBody(InputStream in, Charset charset) throws IOException {
-        StringBuilder sb = new StringBuilder();
-        InputStreamReader reader = new InputStreamReader(in, charset);
-        char[] buffer = new char[BUFFER_SIZE];
-        int bytesRead;
-        while ((bytesRead = reader.read(buffer)) != -1) {
-            sb.append(buffer, 0, bytesRead);
-        }
-        return (sb.length() > 0 ? sb.toString() : null);
     }
 
 }

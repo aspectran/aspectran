@@ -22,6 +22,9 @@ import com.aspectran.web.activity.request.ActivityRequestWrapper;
 import com.aspectran.web.activity.request.RequestAttributeMap;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.Enumeration;
 import java.util.Map;
@@ -32,6 +35,8 @@ import java.util.Map;
  * @since 2011. 3. 13.
  */
 public class HttpServletRequestAdapter extends AbstractRequestAdapter {
+
+    private static final int BUFFER_SIZE = 4096;
 
     private volatile boolean headersHeld;
 
@@ -78,7 +83,27 @@ public class HttpServletRequestAdapter extends AbstractRequestAdapter {
         }
     }
 
-    public HttpServletRequest getHttpServletRequest() {
+    @Override
+    public String getBody() {
+        if (super.getBody() == null) {
+            try {
+                StringBuilder sb = new StringBuilder();
+                InputStream is = ((HttpServletRequest) getAdaptee()).getInputStream();
+                InputStreamReader reader = new InputStreamReader(is, getEncoding());
+                char[] buffer = new char[BUFFER_SIZE];
+                int bytesRead;
+                while ((bytesRead = reader.read(buffer)) != -1) {
+                    sb.append(buffer, 0, bytesRead);
+                }
+                super.setBody(sb.toString());
+            } catch (IOException e) {
+                return null;
+            }
+        }
+        return super.getBody();
+    }
+
+    private HttpServletRequest getHttpServletRequest() {
         if (getAdaptee() instanceof ActivityRequestWrapper) {
             return (HttpServletRequest)((ActivityRequestWrapper)getAdaptee()).getRequest();
         } else {
