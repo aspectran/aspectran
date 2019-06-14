@@ -15,6 +15,8 @@
  */
 package com.aspectran.web.activity.request;
 
+import com.aspectran.core.activity.request.RequestParseException;
+
 /**
  * Exception thrown when multipart request parse fails.
  */

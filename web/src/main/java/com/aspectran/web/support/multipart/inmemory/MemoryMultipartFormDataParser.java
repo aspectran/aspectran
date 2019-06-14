@@ -138,7 +138,7 @@ public class MemoryMultipartFormDataParser implements MultipartFormDataParser {
             }
             parseMultipartParameters(fileItemListMap, requestAdapter);
         } catch (Exception e) {
-            throw new MultipartRequestParseException("Could not parse multipart servlet request", e);
+            throw new MultipartRequestParseException("Failed to parse multipart request; nested exception is " + e, e);
         }
     }
 

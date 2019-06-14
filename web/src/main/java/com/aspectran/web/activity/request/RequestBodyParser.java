@@ -15,6 +15,7 @@
  */
 package com.aspectran.web.activity.request;
 
+import com.aspectran.core.activity.request.RequestParseException;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.util.ClassUtils;
