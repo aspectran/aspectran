@@ -18,12 +18,12 @@ package com.aspectran.web.adapter;
 import com.aspectran.core.adapter.AbstractRequestAdapter;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.util.MultiValueMap;
+import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.web.activity.request.ActivityRequestWrapper;
 import com.aspectran.web.activity.request.RequestAttributeMap;
+import com.aspectran.web.activity.request.RequestBodyParser;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.util.Enumeration;
 import java.util.Map;
@@ -34,8 +34,6 @@ import java.util.Map;
  * @since 2011. 3. 13.
  */
 public class HttpServletRequestAdapter extends AbstractRequestAdapter {
-
-    private static final int BUFFER_SIZE = 1024;
 
     private volatile boolean headersHeld;
 
@@ -85,20 +83,19 @@ public class HttpServletRequestAdapter extends AbstractRequestAdapter {
     @Override
     public String getBody() {
         if (super.getBody() == null) {
-            try {
-                StringBuilder sb = new StringBuilder();
-                Reader reader = ((HttpServletRequest)getAdaptee()).getReader();
-                char[] buffer = new char[BUFFER_SIZE];
-                int bytesRead;
-                while ((bytesRead = reader.read(buffer)) > 0) {
-                    sb.append(buffer, 0, bytesRead);
-                }
-                super.setBody(sb.toString());
-            } catch (IOException e) {
-                return null;
-            }
+            RequestBodyParser.parseBody(this);
         }
         return super.getBody();
+    }
+
+    @Override
+    public <T extends Parameters> T getBodyAsParameters(Class<T> requiredType) {
+        String contentType = ((HttpServletRequest)getAdaptee()).getContentType();
+        if (RequestBodyParser.isURLEncodedForm(contentType)) {
+            return RequestBodyParser.parseURLEncoded(this, requiredType);
+        } else {
+            return super.getBodyAsParameters(requiredType);
+        }
     }
 
     private HttpServletRequest getHttpServletRequest() {
@@ -112,7 +109,7 @@ public class HttpServletRequestAdapter extends AbstractRequestAdapter {
     private void preparse(HttpServletRequest request) {
         setRequestMethod(MethodType.resolve(request.getMethod()));
         setAttributeMap(new RequestAttributeMap(request));
-        setLocale((request.getLocale()));
+        setLocale(request.getLocale());
 
         Map<String, String[]> parameters = request.getParameterMap();
         if (!parameters.isEmpty()) {

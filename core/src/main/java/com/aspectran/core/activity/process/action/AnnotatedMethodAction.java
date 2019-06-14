@@ -242,14 +242,21 @@ public class AnnotatedMethodAction extends AbstractAction {
                     }
                 }
             } else if (Parameters.class.isAssignableFrom(type)) {
+                Parameters parameters;
                 if (type.isInterface()) {
-                    return translet.getRequestAdapter().getBodyAsParameters();
+                    parameters = translet.getRequestAdapter().getBodyAsParameters();
+                    if (parameters == null) {
+                        parameters = translet.getRequestAdapter().getParameters();
+                    }
                 } else {
                     @SuppressWarnings("unchecked")
                     Class<? extends Parameters> requiredType = (Class<? extends Parameters>)type;
-                    return translet.getRequestAdapter().getBodyAsParameters(requiredType);
+                    parameters = translet.getRequestAdapter().getBodyAsParameters(requiredType);
+                    if (parameters == null) {
+                        parameters = translet.getRequestAdapter().getParameters(requiredType);
+                    }
                 }
-
+                return parameters;
             } else {
                 String value = translet.getParameter(name);
                 result = parseValue(type, value, format);
@@ -622,7 +629,7 @@ public class AnnotatedMethodAction extends AbstractAction {
             }
             return result;
         } catch (Exception e) {
-            throw new MethodArgumentTypeMismatchException(String.class, type, e);
+            throw new MethodArgumentTypeMismatchException(String[].class, type, e);
         }
     }
 

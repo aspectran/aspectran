@@ -450,4 +450,8 @@ public interface RequestAdapter {
 
     <T extends Parameters> T getBodyAsParameters(Class<T> requiredType);
 
+    Parameters getParameters();
+
+    <T extends Parameters> T getParameters(Class<T> requiredType);
+
 }

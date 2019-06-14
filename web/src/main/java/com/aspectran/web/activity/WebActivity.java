@@ -32,9 +32,9 @@ import com.aspectran.core.support.i18n.locale.LocaleChangeInterceptor;
 import com.aspectran.core.support.i18n.locale.LocaleResolver;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.web.activity.request.ActivityRequestWrapper;
-import com.aspectran.web.activity.request.URLEncodedFormDataParser;
 import com.aspectran.web.activity.request.MultipartFormDataParser;
 import com.aspectran.web.activity.request.MultipartRequestParseException;
+import com.aspectran.web.activity.request.RequestBodyParser;
 import com.aspectran.web.adapter.HttpServletRequestAdapter;
 import com.aspectran.web.adapter.HttpServletResponseAdapter;
 import com.aspectran.web.adapter.HttpSessionAdapter;
@@ -52,10 +52,6 @@ import java.io.UnsupportedEncodingException;
 public class WebActivity extends CoreActivity {
 
     private static final String MULTIPART_FORM_DATA_PARSER_SETTING_NAME = "multipartFormDataParser";
-
-    private static final String MULTIPART_FORM_DATA = "multipart/form-data";
-
-    private static final String APPLICATION_FORM_URLENCODED = "application/x-www-form-urlencoded";
 
     private final HttpServletRequest request;
 
@@ -148,9 +144,9 @@ public class WebActivity extends CoreActivity {
 
         String contentType = request.getContentType();
         if (contentType != null) {
-            if (MethodType.POST.equals(requestMethod) && contentType.startsWith(MULTIPART_FORM_DATA)) {
+            if (RequestBodyParser.isMultipartForm(requestMethod, contentType)) {
                 parseMultipartFormData();
-            } else if (contentType.startsWith(APPLICATION_FORM_URLENCODED)) {
+            } else if (RequestBodyParser.isURLEncodedForm(contentType)) {
                 parseURLEncodedFormData();
             }
         }
@@ -180,7 +176,7 @@ public class WebActivity extends CoreActivity {
      * Parse the URL-encoded Form Data to get the request parameters.
      */
     private void parseURLEncodedFormData() {
-        URLEncodedFormDataParser.parse(getRequestAdapter());
+        RequestBodyParser.parseURLEncoded(getRequestAdapter());
     }
 
     @Override

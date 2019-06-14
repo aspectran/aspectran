@@ -49,14 +49,6 @@
         <transform type="transform/json"/>
     </translet>
 
-    <translet name="customers/${id}" method="PUT">
-        <description>
-            Update customer info by a given id parameter.
-        </description>
-        <action bean="class:com.aspectran.demo.examples.customer.CustomerAction" method="updateCustomer"/>
-        <transform type="transform/json"/>
-    </translet>
-
     <translet name="customers/${id}/attributes" method="PUT">
         <description>
             Update customer's attributes by a given id parameter.

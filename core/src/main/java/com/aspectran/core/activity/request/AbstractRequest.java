@@ -374,18 +374,18 @@ public abstract class AbstractRequest {
     }
 
     /**
-     * Sets whether the request header has exceeded the maximum length.
+     * Sets whether the maximum request length has been exceeded.
      *
-     * @param maxLengthExceeded whether the request header has exceeded the maximum length
+     * @param maxLengthExceeded whether the maximum request length has been exceeded
      */
     public void setMaxLengthExceeded(boolean maxLengthExceeded) {
         this.maxLengthExceeded = maxLengthExceeded;
     }
 
     /**
-     * Returns whether request header has exceed the maximum length.
+     * Returns whether the maximum request length has been exceeded.
      *
-     * @return true, if is max length exceeded
+     * @return true if the maximum request length has been exceeded, otherwise false
      */
     public boolean isMaxLengthExceeded() {
         return maxLengthExceeded;
@@ -412,8 +412,25 @@ public abstract class AbstractRequest {
             parameters.readFrom(getBody());
             return parameters;
         } catch (Exception e) {
-            throw new RequestException("Failed to parse request body to required type [" + requiredType + "]");
+            throw new RequestParseException("Failed to parse request body to required type [" +
+                    requiredType.getName() + "]");
         }
+    }
+
+    public Parameters getParameters() {
+        return getParameters(VariableParameters.class);
+    }
+
+    public <T extends Parameters> T getParameters(Class<T> requiredType) {
+        T parameters = ClassUtils.createInstance(requiredType);
+        for (Map.Entry<String, String[]> entry : getParameterMap().entrySet()) {
+            String name = entry.getKey();
+            String[] values = entry.getValue();
+            for (String value : values) {
+                parameters.putValue(name, value);
+            }
+        }
+        return parameters;
     }
 
 }

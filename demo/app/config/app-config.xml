@@ -30,11 +30,8 @@
             <thrown>
                 <transform type="transform/text">
                     <template style="apon">
-                        |
-                        |   {{RED}}An Error Occurred!{{reset}}
-                        |{{BLUE}}-----------------------------------------------------------------{{reset}}
-                        |   #{currentTranslet^rootCauseOfRaisedException}
-                        |
+                        |An Error Occurred!
+                        |#{currentTranslet^rootCauseOfRaisedException}
                     </template>
                 </transform>
             </thrown>

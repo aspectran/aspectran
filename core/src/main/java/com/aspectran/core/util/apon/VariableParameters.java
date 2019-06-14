@@ -18,7 +18,7 @@ package com.aspectran.core.util.apon;
 import java.io.Serializable;
 
 /**
- * The Class VariableParameters.
+ * Parameters that determine the name and value type of each parameter in real time.
  */
 public class VariableParameters extends AbstractParameters implements Serializable {
 

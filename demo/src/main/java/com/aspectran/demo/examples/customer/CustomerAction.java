@@ -19,11 +19,18 @@ import com.aspectran.core.activity.Translet;
 import com.aspectran.core.component.bean.annotation.Autowired;
 import com.aspectran.core.component.bean.annotation.Bean;
 import com.aspectran.core.component.bean.annotation.Component;
+import com.aspectran.core.component.bean.annotation.Description;
+import com.aspectran.core.component.bean.annotation.RequestToPut;
+import com.aspectran.core.component.bean.annotation.Required;
+import com.aspectran.core.component.bean.annotation.Transform;
+import com.aspectran.core.context.rule.type.TransformType;
+import com.aspectran.core.util.apon.Parameters;
+import com.aspectran.web.support.http.HttpHeaders;
 import com.aspectran.web.support.http.HttpStatusSetter;
 
 import java.util.List;
 
-@Component
+@Component(namespace = "/examples/gs-rest-service")
 @Bean
 public class CustomerAction {
 
@@ -39,6 +46,10 @@ public class CustomerAction {
     }
 
     public Customer getCustomer(Translet translet) {
+        translet.getRequestAdapter().getBodyAsParameters();
+        String contentType3 = translet.getRequestAdapter().getHeader(HttpHeaders.ACCEPT);
+        System.out.println(contentType3);
+
         int id = Integer.parseInt(translet.getParameter("id"));
 
         Customer customer = repository.getCustomer(id);
@@ -69,11 +80,13 @@ public class CustomerAction {
         return customer;
     }
 
-    public Customer updateCustomer(Translet translet) {
-        int id = Integer.parseInt(translet.getParameter("id"));
-        String name = translet.getParameter("name");
-        int age = Integer.valueOf(translet.getParameter("age"));
-        boolean approved = "Y".equals(translet.getParameter("approved"));
+    @RequestToPut("/customers/${id}")
+    @Description("Update customer info with a given ID.")
+    @Transform(TransformType.JSON)
+    public Customer updateCustomer(Translet translet, @Required int id, Parameters parameters) {
+        String name = parameters.getString("name");
+        int age = Integer.valueOf(parameters.getString("age"));
+        boolean approved = "Y".equals(parameters.getString("approved"));
 
         Customer customer = new Customer();
         customer.putValue(Customer.id, id);
