@@ -165,13 +165,13 @@ public class AnnotatedMethodAction extends AbstractAction {
                 }
                 if (thrown != null) {
                     if (log.isDebugEnabled()) {
-                        log.debug("Invalid parameter '" + name + "'; Cause: " + thrown.getMessage(), thrown);
+                        log.debug("Failed to bind argument " + parameterBindingRule + "; Cause: " + thrown.getMessage(), thrown);
                     }
                 }
                 if (required && (args[i] == null || thrown != null)) {
                     if (thrown != null) {
                         throw new IllegalArgumentException("Missing required parameter '" + name + "'; Cause: " +
-                                thrown, thrown);
+                                thrown.getMessage(), thrown);
                     } else {
                         throw new IllegalArgumentException("Missing required parameter '" + name + "'");
                     }

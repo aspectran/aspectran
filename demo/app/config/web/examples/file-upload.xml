@@ -43,16 +43,13 @@
 
     <translet name="/">
         <action id="files" bean="class:com.aspectran.demo.examples.upload.SimpleFileUploadAction" method="list"/>
-        <dispatch name="templates/default">
-            <echo id="page">
-                <attributes>
-                    <item name="headline">Uploading Files</item>
-                    <item name="teaser">This guide walks you through the process of creating a server application that can receive HTTP multi-part file uploads.</item>
-                    <item name="include">examples/file-upload</item>
-                    <item name="maxFiles">#{class:com.aspectran.demo.examples.upload.SimpleFileUploadAction^maxFiles}</item>
-                </attributes>
-            </echo>
-        </dispatch>
+        <echo id="page">
+            <item name="headline">Uploading Files</item>
+            <item name="teaser">This guide walks you through the process of creating a server application that can receive HTTP multi-part file uploads.</item>
+            <item name="include">examples/file-upload</item>
+            <item name="maxFiles">#{class:com.aspectran.demo.examples.upload.SimpleFileUploadAction^maxFiles}</item>
+        </echo>
+        <dispatch name="templates/default"/>
     </translet>
 
 </aspectran>

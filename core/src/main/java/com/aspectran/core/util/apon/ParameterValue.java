@@ -200,17 +200,11 @@ public class ParameterValue implements Parameter {
 
     @Override
     public void putValue(Object value) {
-        if (!predefined && value != null) {
-            if (parameterValueType == ParameterValueType.STRING) {
-                if (value.toString().indexOf(AponFormat.NEW_LINE_CHAR) != -1) {
-                    parameterValueType = ParameterValueType.TEXT;
-                }
-            } else if (parameterValueType == ParameterValueType.VARIABLE && value instanceof String) {
-                if (value.toString().indexOf(AponFormat.NEW_LINE_CHAR) != -1) {
-                    parameterValueType = ParameterValueType.TEXT;
-                } else {
-                    parameterValueType = ParameterValueType.STRING;
-                }
+        if (value != null) {
+            if (predefined) {
+                value = fitValue(value);
+            } else {
+                determineValueType(value);
             }
         }
         if (!predefined && !array && this.value != null) {
@@ -316,7 +310,7 @@ public class ParameterValue implements Parameter {
 
     @Override
     public Integer getValueAsInt() {
-        checkParameterValueType(ParameterValueType.INT);
+        checkValueType(ParameterValueType.INT);
         return (Integer)value;
     }
 
@@ -329,13 +323,13 @@ public class ParameterValue implements Parameter {
     @Override
     @SuppressWarnings("unchecked")
     public List<Integer> getValueAsIntList() {
-        checkParameterValueType(ParameterValueType.INT);
+        checkValueType(ParameterValueType.INT);
         return (List<Integer>)getValueList();
     }
 
     @Override
     public Long getValueAsLong() {
-        checkParameterValueType(ParameterValueType.LONG);
+        checkValueType(ParameterValueType.LONG);
         return (Long)value;
     }
 
@@ -348,13 +342,13 @@ public class ParameterValue implements Parameter {
     @Override
     @SuppressWarnings("unchecked")
     public List<Long> getValueAsLongList() {
-        checkParameterValueType(ParameterValueType.LONG);
+        checkValueType(ParameterValueType.LONG);
         return (List<Long>)getValueList();
     }
 
     @Override
     public Float getValueAsFloat() {
-        checkParameterValueType(ParameterValueType.FLOAT);
+        checkValueType(ParameterValueType.FLOAT);
         return (Float)value;
     }
 
@@ -367,13 +361,13 @@ public class ParameterValue implements Parameter {
     @Override
     @SuppressWarnings("unchecked")
     public List<Float> getValueAsFloatList() {
-        checkParameterValueType(ParameterValueType.FLOAT);
+        checkValueType(ParameterValueType.FLOAT);
         return (List<Float>)getValueList();
     }
 
     @Override
     public Double getValueAsDouble() {
-        checkParameterValueType(ParameterValueType.DOUBLE);
+        checkValueType(ParameterValueType.DOUBLE);
         return (Double)value;
     }
 
@@ -386,13 +380,13 @@ public class ParameterValue implements Parameter {
     @Override
     @SuppressWarnings("unchecked")
     public List<Double> getValueAsDoubleList() {
-        checkParameterValueType(ParameterValueType.DOUBLE);
+        checkValueType(ParameterValueType.DOUBLE);
         return (List<Double>)getValueList();
     }
 
     @Override
     public Boolean getValueAsBoolean() {
-        checkParameterValueType(ParameterValueType.BOOLEAN);
+        checkValueType(ParameterValueType.BOOLEAN);
         return (Boolean)value;
     }
 
@@ -405,13 +399,13 @@ public class ParameterValue implements Parameter {
     @Override
     @SuppressWarnings("unchecked")
     public List<Boolean> getValueAsBooleanList() {
-        checkParameterValueType(ParameterValueType.BOOLEAN);
+        checkValueType(ParameterValueType.BOOLEAN);
         return (List<Boolean>)getValueList();
     }
 
     @Override
     public Parameters getValueAsParameters() {
-        checkParameterValueType(ParameterValueType.PARAMETERS);
+        checkValueType(ParameterValueType.PARAMETERS);
         return (Parameters)value;
     }
 
@@ -431,30 +425,86 @@ public class ParameterValue implements Parameter {
     }
 
     @Override
-    public Parameters newParameters(Parameter identifier) {
+    @SuppressWarnings("unchecked")
+    public <T extends Parameters> T newParameters(Parameter identifier) {
         if (parameterValueType == ParameterValueType.VARIABLE) {
             parameterValueType = ParameterValueType.PARAMETERS;
             parametersClass = VariableParameters.class;
         } else {
-            checkParameterValueType(ParameterValueType.PARAMETERS);
+            checkValueType(ParameterValueType.PARAMETERS);
             if (parametersClass == null) {
                 parametersClass = VariableParameters.class;
             }
         }
         try {
-            Parameters p = ClassUtils.createInstance(parametersClass);
+            T p = (T)ClassUtils.createInstance(parametersClass);
             p.setIdentifier(identifier);
             putValue(p);
             return p;
         } catch (Exception e) {
-            throw new InvalidParameterException("Could not instantiate Parameters: " + parametersClass, e);
+            throw new InvalidParameterValueException("Failed to instantiate " + parametersClass, e);
         }
     }
 
-    private void checkParameterValueType(ParameterValueType parameterValueType) {
+    private void checkValueType(ParameterValueType parameterValueType) {
         if (this.parameterValueType != ParameterValueType.VARIABLE && this.parameterValueType != parameterValueType) {
             throw new IncompatibleParameterValueTypeException(this, parameterValueType);
         }
+    }
+
+    private void determineValueType(Object value) {
+        if (parameterValueType == ParameterValueType.STRING) {
+            if (value.toString().indexOf(AponFormat.NEW_LINE_CHAR) != -1) {
+                parameterValueType = ParameterValueType.TEXT;
+            }
+        } else if (parameterValueType == ParameterValueType.VARIABLE && value instanceof String) {
+            if (value.toString().indexOf(AponFormat.NEW_LINE_CHAR) != -1) {
+                parameterValueType = ParameterValueType.TEXT;
+            } else {
+                parameterValueType = ParameterValueType.STRING;
+            }
+        }
+    }
+
+    private Object fitValue(Object value) {
+        if (parameterValueType == ParameterValueType.BOOLEAN) {
+            if (!(value instanceof Boolean)) {
+                return Boolean.valueOf(value.toString());
+            }
+        } else if (parameterValueType == ParameterValueType.INT) {
+            if (!(value instanceof Integer)) {
+                try {
+                    return Integer.valueOf(value.toString());
+                } catch (NumberFormatException e) {
+                    throw new ParameterValueTypeMismatchException(value.getClass(), Integer.class, e);
+                }
+            }
+        } else if (parameterValueType == ParameterValueType.LONG) {
+            if (!(value instanceof Long)) {
+                try {
+                    return Long.valueOf(value.toString());
+                } catch (NumberFormatException e) {
+                    throw new ParameterValueTypeMismatchException(value.getClass(), Long.class, e);
+                }
+            }
+        } else if (parameterValueType == ParameterValueType.FLOAT) {
+            if (!(value instanceof Float)) {
+                try {
+                    return Float.valueOf(value.toString());
+                } catch (NumberFormatException e) {
+                    throw new ParameterValueTypeMismatchException(value.getClass(), Float.class, e);
+                }
+            }
+        } else if (parameterValueType == ParameterValueType.DOUBLE) {
+            if (!(value instanceof Double)) {
+                try {
+                    return Double.valueOf(value.toString());
+                } catch (NumberFormatException e) {
+                    throw new ParameterValueTypeMismatchException(value.getClass(), Double.class, e);
+                }
+            }
+        }
+        return value;
     }
 
     @Override

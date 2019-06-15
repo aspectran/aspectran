@@ -66,7 +66,7 @@ public class ActionExecutionException extends ProcessException {
     }
 
     public ActionExecutionException(Executable action, Throwable cause) {
-        super("Failed to execute action " + action + "; Cause: " + cause, cause);
+        super("Failed to execute action " + action + "; nested exception is " + cause, cause);
         this.action = action;
     }
 

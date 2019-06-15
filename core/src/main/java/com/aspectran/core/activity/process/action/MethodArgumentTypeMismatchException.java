@@ -25,6 +25,8 @@ import com.aspectran.core.activity.process.ProcessException;
  */
 public class MethodArgumentTypeMismatchException extends ProcessException {
 
+    private static final long serialVersionUID = 6873343194941720116L;
+
     private final Throwable cause;
 
     public MethodArgumentTypeMismatchException(Class<?> valueType, Class<?> requiredType, Throwable cause) {

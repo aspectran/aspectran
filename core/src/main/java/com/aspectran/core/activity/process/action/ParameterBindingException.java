@@ -26,11 +26,13 @@ import com.aspectran.core.context.rule.ParameterBindingRule;
  */
 public class ParameterBindingException extends ProcessException {
 
+    private static final long serialVersionUID = 1094222427227812288L;
+
     private final ParameterBindingRule parameterBindingRule;
 
     public ParameterBindingException(ParameterBindingRule parameterBindingRule, Throwable cause) {
         super("Failed to bind request parameter to action method parameter " +
-                parameterBindingRule + "; Cause: " + cause, cause);
+                parameterBindingRule + "; nested exception is " + cause, cause);
 
         this.parameterBindingRule = parameterBindingRule;
     }

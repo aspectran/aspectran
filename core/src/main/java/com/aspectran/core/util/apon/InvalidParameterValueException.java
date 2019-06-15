@@ -16,9 +16,9 @@
 package com.aspectran.core.util.apon;
 
 /**
- * Exception thrown when an invalid parameter is encountered.
+ * Exception thrown when an invalid parameter value is encountered.
  */
-public class InvalidParameterException extends RuntimeException {
+public class InvalidParameterValueException extends RuntimeException {
 
     /** @serial */
     private static final long serialVersionUID = -459157992330424751L;
@@ -28,7 +28,7 @@ public class InvalidParameterException extends RuntimeException {
      *
      * @param msg a message to associate with the exception
      */
-    public InvalidParameterException(String msg) {
+    public InvalidParameterValueException(String msg) {
         super(msg);
     }
 
@@ -37,7 +37,7 @@ public class InvalidParameterException extends RuntimeException {
      *
      * @param cause the real cause of the exception
      */
-    public InvalidParameterException(Throwable cause) {
+    public InvalidParameterValueException(Throwable cause) {
         super(cause);
     }
 
@@ -47,7 +47,7 @@ public class InvalidParameterException extends RuntimeException {
      * @param msg the message
      * @param cause the real cause of the exception
      */
-    public InvalidParameterException(String msg, Throwable cause) {
+    public InvalidParameterValueException(String msg, Throwable cause) {
         super(msg, cause);
     }
 

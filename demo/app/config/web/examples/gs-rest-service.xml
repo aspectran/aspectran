@@ -7,62 +7,16 @@
         A collection of Translets for the Restful Web Service example.
     </description>
 
-    <settings>
-        <setting name="transletNamePattern" value="/examples/gs-rest-service/*"/>
-    </settings>
-
-    <translet name="/">
+    <translet name="/examples/gs-rest-service/">
         <echo id="page">
-            <attributes>
-                <item name="headline">Building a RESTful Web Service</item>
-                <item name="teaser">
-                    A sample page that uses RESTful web services using HTTP support methods such as
-                    GET, PUT, POST, and DELETE.
-                </item>
-                <item name="include">examples/gs-rest-service</item>
-            </attributes>
+            <item name="headline">Building a RESTful Web Service</item>
+            <item name="teaser">
+                A sample page that uses RESTful web services using HTTP support methods such as
+                GET, PUT, POST, and DELETE.
+            </item>
+            <item name="include">examples/gs-rest-service</item>
         </echo>
         <dispatch name="templates/default"/>
-    </translet>
-
-    <translet name="customers" method="GET">
-        <description>
-            Returns a list of all customers in JSON format.
-        </description>
-        <action id="customers" bean="class:com.aspectran.demo.examples.customer.CustomerAction" method="getCustomerList"/>
-        <transform type="transform/json"/>
-    </translet>
-
-    <translet name="customers/${id:guest}" method="GET">
-        <description>
-            Retrieve customer info by a given id parameter.
-        </description>
-        <action id="customer" bean="class:com.aspectran.demo.examples.customer.CustomerAction" method="getCustomer"/>
-        <transform type="transform/json"/>
-    </translet>
-
-    <translet name="customers" method="POST">
-        <description>
-            Register a new customer.
-        </description>
-        <action bean="class:com.aspectran.demo.examples.customer.CustomerAction" method="insertCustomer"/>
-        <transform type="transform/json"/>
-    </translet>
-
-    <translet name="customers/${id}/attributes" method="PUT">
-        <description>
-            Update customer's attributes by a given id parameter.
-        </description>
-        <action id="result" bean="class:com.aspectran.demo.examples.customer.CustomerAction" method="updateAttributes"/>
-        <transform type="transform/json"/>
-    </translet>
-
-    <translet name="customers/${id}" method="DELETE">
-        <description>
-            Delete customer info by a given id parameter.
-        </description>
-        <action id="result" bean="class:com.aspectran.demo.examples.customer.CustomerAction" method="deleteCustomer"/>
-        <transform type="transform/json"/>
     </translet>
 
 </aspectran>

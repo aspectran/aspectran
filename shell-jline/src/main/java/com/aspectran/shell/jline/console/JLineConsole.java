@@ -56,6 +56,8 @@ public class JLineConsole extends AbstractConsole {
 
     private final History commandHistory;
 
+    private final boolean dumb;
+
     private AttributedStyle attributedStyle;
 
     private String[] styles;
@@ -88,6 +90,9 @@ public class JLineConsole extends AbstractConsole {
                 .build();
         this.commandReader.setOpt(LineReader.Option.DISABLE_EVENT_EXPANSION);
         this.commandReader.unsetOpt(LineReader.Option.INSERT_TAB);
+
+        this.dumb = (Terminal.TYPE_DUMB.equals(terminal.getType()) ||
+                Terminal.TYPE_DUMB_COLOR.equals(terminal.getType()));
     }
 
     @Override
@@ -256,6 +261,10 @@ public class JLineConsole extends AbstractConsole {
             commandReader.callWidget(LineReader.CLEAR);
         } else if (reader.isReading()) {
             reader.callWidget(LineReader.CLEAR);
+        }
+        if (dumb) {
+            getWriter().print("\r");
+            getWriter().flush();
         }
     }
 

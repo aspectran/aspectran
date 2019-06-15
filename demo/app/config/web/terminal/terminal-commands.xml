@@ -4,18 +4,16 @@
 <aspectran>
 
     <translet name="/hello">
-        <request>
-            <parameters>
-                <item name="email" mandatory="true">${id}@${domain}</item>
-                <item name="password" mandatory="true" secret="true"/>
-            </parameters>
-            <attributes>
-                <item name="attr1" mandatory="true">${id}@${domain}</item>
-                <item name="attr2" mandatory="true" secret="true">${password}</item>
-                <item name="attr3" mandatory="true">${attr3}</item>
-                <item name="attr4" mandatory="true">${attr4}</item>
-            </attributes>
-        </request>
+        <parameters>
+            <item name="email" mandatory="true">${id}@${domain}</item>
+            <item name="password" mandatory="true" secret="true"/>
+        </parameters>
+        <attributes>
+            <item name="attr1" mandatory="true">${id}@${domain}</item>
+            <item name="attr2" mandatory="true" secret="true">${password}</item>
+            <item name="attr3" mandatory="true">${attr3}</item>
+            <item name="attr4" mandatory="true">${attr4}</item>
+        </attributes>
         <transform type="transform/text">
             <template style="apon">
                 |------------------------------------------------

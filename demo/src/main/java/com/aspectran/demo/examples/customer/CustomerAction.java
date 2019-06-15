@@ -16,16 +16,18 @@
 package com.aspectran.demo.examples.customer;
 
 import com.aspectran.core.activity.Translet;
+import com.aspectran.core.component.bean.annotation.Action;
 import com.aspectran.core.component.bean.annotation.Autowired;
 import com.aspectran.core.component.bean.annotation.Bean;
 import com.aspectran.core.component.bean.annotation.Component;
 import com.aspectran.core.component.bean.annotation.Description;
+import com.aspectran.core.component.bean.annotation.RequestToDelete;
+import com.aspectran.core.component.bean.annotation.RequestToGet;
+import com.aspectran.core.component.bean.annotation.RequestToPost;
 import com.aspectran.core.component.bean.annotation.RequestToPut;
 import com.aspectran.core.component.bean.annotation.Required;
 import com.aspectran.core.component.bean.annotation.Transform;
 import com.aspectran.core.context.rule.type.TransformType;
-import com.aspectran.core.util.apon.Parameters;
-import com.aspectran.web.support.http.HttpHeaders;
 import com.aspectran.web.support.http.HttpStatusSetter;
 
 import java.util.List;
@@ -41,17 +43,19 @@ public class CustomerAction {
         this.repository = repository;
     }
 
+    @RequestToGet("/customers")
+    @Description("Returns a list of all customers in JSON format.")
+    @Action("customers")
+    @Transform(TransformType.JSON)
     public List<Customer> getCustomerList() {
         return repository.getCustomerList();
     }
 
-    public Customer getCustomer(Translet translet) {
-        translet.getRequestAdapter().getBodyAsParameters();
-        String contentType3 = translet.getRequestAdapter().getHeader(HttpHeaders.ACCEPT);
-        System.out.println(contentType3);
-
-        int id = Integer.parseInt(translet.getParameter("id"));
-
+    @RequestToGet("/customers/${id:guest}")
+    @Description("Retrieve customer info by a given id parameter.")
+    @Action("customer")
+    @Transform(TransformType.JSON)
+    public Customer getCustomer(Translet translet, @Required Integer id) {
         Customer customer = repository.getCustomer(id);
 
         if(customer == null) {
@@ -62,16 +66,10 @@ public class CustomerAction {
         return customer;
     }
 
-    public Customer insertCustomer(Translet translet) {
-        String name = translet.getParameter("name");
-        int age = Integer.valueOf(translet.getParameter("age"));
-        boolean approved = "Y".equals(translet.getParameter("approved"));
-
-        Customer customer = new Customer();
-        customer.putValue(Customer.name, name);
-        customer.putValue(Customer.age, age);
-        customer.putValue(Customer.approved, approved);
-
+    @RequestToPost("/customers")
+    @Description("Register a new customer.")
+    @Transform(TransformType.JSON)
+    public Customer insertCustomer(Translet translet, Customer customer) {
         int id = repository.insertCustomer(customer);
 
         String resourceUri = translet.getRequestName() + "/" + id;
@@ -83,17 +81,7 @@ public class CustomerAction {
     @RequestToPut("/customers/${id}")
     @Description("Update customer info with a given ID.")
     @Transform(TransformType.JSON)
-    public Customer updateCustomer(Translet translet, @Required int id, Parameters parameters) {
-        String name = parameters.getString("name");
-        int age = Integer.valueOf(parameters.getString("age"));
-        boolean approved = "Y".equals(parameters.getString("approved"));
-
-        Customer customer = new Customer();
-        customer.putValue(Customer.id, id);
-        customer.putValue(Customer.name, name);
-        customer.putValue(Customer.age, age);
-        customer.putValue(Customer.approved, approved);
-
+    public Customer updateCustomer(Translet translet, Customer customer) {
         boolean updated = repository.updateCustomer(customer);
 
         if(!updated) {
@@ -104,9 +92,11 @@ public class CustomerAction {
         return customer;
     }
 
-    public boolean deleteCustomer(Translet translet) {
-        int id = Integer.parseInt(translet.getParameter("id"));
-
+    @RequestToDelete("/customers/${id}")
+    @Description("Delete customer info by a given id parameter.")
+    @Action("result")
+    @Transform(TransformType.JSON)
+    public boolean deleteCustomer(Translet translet, @Required Integer id) {
         boolean deleted = repository.deleteCustomer(id);
 
         if(!deleted) {
@@ -117,10 +107,10 @@ public class CustomerAction {
         return true;
     }
 
-    public boolean updateAttributes(Translet translet) {
-        int id = Integer.parseInt(translet.getParameter("id"));
-        boolean approved = Boolean.parseBoolean(translet.getParameter("approved"));
-
+    @RequestToPut("/customers/${id}/attributes")
+    @Description("Update customer's attributes by a given id parameter.")
+    @Transform(TransformType.JSON)
+    public boolean updateAttributes(Translet translet, @Required Integer id, @Required Boolean approved) {
         boolean updated = repository.approve(id, approved);
 
         if(!updated) {

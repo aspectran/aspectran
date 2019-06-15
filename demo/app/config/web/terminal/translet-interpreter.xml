@@ -12,15 +12,12 @@
     </settings>
 
     <translet name="/">
-        <dispatch name="templates/default">
-            <echo id="page">
-                <attributes>
-                    <item name="headline">Translet Interpreter</item>
-                    <item name="teaser">You can run translets with a command line interpreter implemented using the jQuery Terminal Emulator.</item>
-                    <item name="include">terminal/translet-interpreter</item>
-                </attributes>
-            </echo>
-        </dispatch>
+        <echo id="page">
+            <item name="headline">Translet Interpreter</item>
+            <item name="teaser">You can run translets with a command line interpreter implemented using the jQuery Terminal Emulator.</item>
+            <item name="include">terminal/translet-interpreter</item>
+        </echo>
+        <dispatch name="templates/default"/>
     </translet>
 
     <append file="/config/web/terminal/terminal-commands.xml"/>

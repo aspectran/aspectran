@@ -19,7 +19,7 @@ import com.aspectran.core.activity.process.result.ActionResult;
 import com.aspectran.core.activity.process.result.ContentResult;
 import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.util.BeanUtils;
-import com.aspectran.core.util.apon.InvalidParameterException;
+import com.aspectran.core.util.apon.InvalidParameterValueException;
 import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.apon.VariableParameters;
 
@@ -134,7 +134,7 @@ public class ContentsAponReader {
                     try {
                         value = BeanUtils.getProperty(object, name);
                     } catch (InvocationTargetException e) {
-                        throw new InvalidParameterException(e);
+                        throw new InvalidParameterValueException(e);
                     }
                     checkCircularReference(object, value);
                     p.putValue(name, valuelize(value));
@@ -148,7 +148,7 @@ public class ContentsAponReader {
 
     private static void checkCircularReference(Object wrapper, Object member) {
         if (wrapper.equals(member)) {
-            throw new InvalidParameterException("APON Serialization Failure: A circular reference was detected " +
+            throw new InvalidParameterValueException("APON Serialization Failure: A circular reference was detected " +
                     "while converting a member object [" + member + "] in [" + wrapper + "]");
         }
     }
