@@ -42,14 +42,14 @@ public class NoneTransformResponse extends TransformResponse {
     }
 
     @Override
-    public void commit(Activity activity) throws TransformResponseException {
+    public void commit(Activity activity) {
         ResponseAdapter responseAdapter = activity.getResponseAdapter();
         if (responseAdapter == null) {
             return;
         }
 
         if (log.isDebugEnabled()) {
-            log.debug("Response " + transformRule);
+            log.debug("Response " + getTransformRule());
         }
 
         if (getContentType() != null) {
@@ -59,7 +59,7 @@ public class NoneTransformResponse extends TransformResponse {
 
     @Override
     public ActionList getActionList() {
-        return transformRule.getActionList();
+        return getTransformRule().getActionList();
     }
 
     @Override

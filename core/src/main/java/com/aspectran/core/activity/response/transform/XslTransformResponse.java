@@ -43,6 +43,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Objects;
 import java.util.Properties;
 
 /**
@@ -83,14 +84,14 @@ public class XslTransformResponse extends TransformResponse {
     }
 
     @Override
-    public void commit(Activity activity) throws TransformResponseException {
+    public void commit(Activity activity) {
         ResponseAdapter responseAdapter = activity.getResponseAdapter();
         if (responseAdapter == null) {
             return;
         }
 
         if (log.isDebugEnabled()) {
-            log.debug("Response " + transformRule);
+            log.debug("Response " + getTransformRule());
         }
 
         try {
@@ -112,13 +113,13 @@ public class XslTransformResponse extends TransformResponse {
             Transformer transformer = templates.newTransformer();
             transformer.transform(new SAXSource(xreader, isource), new StreamResult(writer));
         } catch (Exception e) {
-            throw new TransformResponseException(transformRule, e);
+            throw new TransformResponseException(getTransformRule(), e);
         }
     }
 
     @Override
     public ActionList getActionList() {
-        return transformRule.getActionList();
+        return getTransformRule().getActionList();
     }
 
     @Override
@@ -154,14 +155,14 @@ public class XslTransformResponse extends TransformResponse {
         } else if (templateResource != null) {
             if (noCache) {
                 ClassLoader classLoader = environment.getClassLoader();
-                this.templates = createTemplates(classLoader.getResource(templateResource));
+                this.templates = createTemplates(Objects.requireNonNull(classLoader.getResource(templateResource)));
                 determineOutputStyle();
             } else {
                 if (!this.templateLoaded) {
                     synchronized (this) {
                         if (!this.templateLoaded) {
                             ClassLoader classLoader = environment.getClassLoader();
-                            this.templates = createTemplates(classLoader.getResource(templateResource));
+                            this.templates = createTemplates(Objects.requireNonNull(classLoader.getResource(templateResource)));
                             determineOutputStyle();
                             this.templateLoaded = true;
                         }
@@ -189,14 +190,14 @@ public class XslTransformResponse extends TransformResponse {
     }
 
     private void determineOutputStyle() {
-        contentType = transformRule.getContentType();
+        contentType = getTransformRule().getContentType();
         if (contentType == null) {
             contentType = getContentType(templates);
         }
 
         outputEncoding = getOutputEncoding(templates);
         if (outputEncoding == null) {
-            outputEncoding = transformRule.getEncoding();
+            outputEncoding = getTransformRule().getEncoding();
         }
     }
 

@@ -26,9 +26,9 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 public @interface Aspect {
 
-    String id() default "";
-
     String value() default "";
+
+    String id() default "";
 
     int order() default Integer.MAX_VALUE;
 

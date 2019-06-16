@@ -18,6 +18,7 @@ package com.aspectran.core.activity;
 import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.activity.request.FileParameter;
 import com.aspectran.core.activity.response.Response;
+import com.aspectran.core.activity.response.transform.CustomTransformer;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
@@ -387,6 +388,8 @@ public interface Translet {
      * @param transformRule the transformation rule
      */
     void transform(TransformRule transformRule);
+
+    void transform(CustomTransformer transformer);
 
     /**
      * Dispatch to other resources as the given name.

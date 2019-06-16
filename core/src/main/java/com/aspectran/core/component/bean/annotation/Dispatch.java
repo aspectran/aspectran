@@ -26,9 +26,9 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface Dispatch {
 
-    String name() default "";
-
     String value() default "";
+
+    String name() default "";
 
     String dispatcher() default "";
 

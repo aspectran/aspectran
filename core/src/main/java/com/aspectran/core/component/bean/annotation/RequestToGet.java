@@ -26,9 +26,9 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface RequestToGet {
 
-    String translet() default "";
-
     String value() default "";
+
+    String translet() default "";
 
     Parameter[] parameters() default {};
 

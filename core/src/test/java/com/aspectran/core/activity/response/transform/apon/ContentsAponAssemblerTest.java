@@ -21,14 +21,13 @@ import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.util.apon.Parameters;
 import org.junit.jupiter.api.Test;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 class ContentsAponAssemblerTest {
 
     @Test
-    void testAssemble0() throws InvocationTargetException {
+    void testAssemble0() {
         ProcessResult processResult = new ProcessResult();
         ContentResult contentResult = new ContentResult(processResult, 4);
 
@@ -40,13 +39,13 @@ class ContentsAponAssemblerTest {
         actionResult2.setResultValue("action1.result2", "value2");
         contentResult.addActionResult(actionResult2);
 
-        Parameters parameters = ContentsAponReader.read(processResult);
+        Parameters parameters = ContentsAponConverter.from(processResult);
 
         System.out.println(parameters);
     }
 
     @Test
-    void testAssemble1() throws InvocationTargetException {
+    void testAssemble1() {
         ProcessResult processResult = new ProcessResult();
         ContentResult contentResult = new ContentResult(processResult, 4);
 
@@ -66,13 +65,13 @@ class ContentsAponAssemblerTest {
         actionResult3.setResultValue("action1", "value3");
         contentResult.addActionResult(actionResult3);
 
-        Parameters parameters = ContentsAponReader.read(processResult);
+        Parameters parameters = ContentsAponConverter.from(processResult);
 
         System.out.println(parameters);
     }
 
     @Test
-    void testAssemble2() throws InvocationTargetException {
+    void testAssemble2() {
         ProcessResult processResult = new ProcessResult();
         ContentResult contentResult = new ContentResult(processResult, 4);
         contentResult.setName("content1");
@@ -93,13 +92,13 @@ class ContentsAponAssemblerTest {
         actionResult3.setResultValue("action3", "value3");
         contentResult.addActionResult(actionResult3);
 
-        Parameters parameters = ContentsAponReader.read(processResult);
+        Parameters parameters = ContentsAponConverter.from(processResult);
 
         System.out.println(parameters);
     }
 
     @Test
-    void testAssemble3() throws InvocationTargetException {
+    void testAssemble3() {
         ProcessResult processResult = new ProcessResult();
         ContentResult contentResult = new ContentResult(processResult, 4);
         contentResult.setName("content1");
@@ -139,13 +138,13 @@ class ContentsAponAssemblerTest {
         actionResult23.setResultValue("action3", "value3");
         contentResult2.addActionResult(actionResult23);
 
-        Parameters parameters = ContentsAponReader.read(processResult);
+        Parameters parameters = ContentsAponConverter.from(processResult);
 
         System.out.println(parameters);
     }
 
     @Test
-    void testAssemble4() throws InvocationTargetException {
+    void testAssemble4() {
         ProcessResult processResult = new ProcessResult();
         ContentResult contentResult = new ContentResult(processResult, 4);
 
@@ -159,13 +158,13 @@ class ContentsAponAssemblerTest {
         actionResult1.setResultValue(null, map);
         contentResult.addActionResult(actionResult1);
 
-        Parameters parameters = ContentsAponReader.read(processResult);
+        Parameters parameters = ContentsAponConverter.from(processResult);
 
         System.out.println(parameters);
     }
 
     @Test
-    void testAssemble5() throws InvocationTargetException {
+    void testAssemble5() {
         ProcessResult processResult = new ProcessResult();
         ContentResult contentResult = new ContentResult(processResult, 3);
         contentResult.setName("content1");
@@ -188,7 +187,7 @@ class ContentsAponAssemblerTest {
         actionResult3.setResultValue("action2", "value3");
         contentResult.addActionResult(actionResult3);
 
-        Parameters parameters = ContentsAponReader.read(processResult);
+        Parameters parameters = ContentsAponConverter.from(processResult);
 
         System.out.println(parameters);
     }

@@ -61,14 +61,14 @@ public class TextTransformResponse extends TransformResponse {
     }
 
     @Override
-    public void commit(Activity activity) throws TransformResponseException {
+    public void commit(Activity activity) {
         ResponseAdapter responseAdapter = activity.getResponseAdapter();
         if (responseAdapter == null) {
             return;
         }
 
         if (log.isDebugEnabled()) {
-            log.debug("Response " + transformRule);
+            log.debug("Response " + getTransformRule());
         }
 
         try {
@@ -107,13 +107,13 @@ public class TextTransformResponse extends TransformResponse {
                 }
             }
         } catch (Exception e) {
-            throw new TransformResponseException(transformRule, e);
+            throw new TransformResponseException(getTransformRule(), e);
         }
     }
 
     @Override
     public ActionList getActionList() {
-        return transformRule.getActionList();
+        return getTransformRule().getActionList();
     }
 
     @Override

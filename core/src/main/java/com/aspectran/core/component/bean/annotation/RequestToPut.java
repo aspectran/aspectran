@@ -26,9 +26,9 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface RequestToPut {
 
-    String translet() default "";
-
     String value() default "";
+
+    String translet() default "";
 
     Parameter[] parameters() default {};
 

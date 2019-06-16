@@ -26,8 +26,8 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface Action {
 
-    String id() default "";
-
     String value() default "";
+
+    String id() default "";
 
 }

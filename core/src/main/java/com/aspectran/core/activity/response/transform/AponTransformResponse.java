@@ -19,7 +19,7 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.activity.response.Response;
-import com.aspectran.core.activity.response.transform.apon.ContentsAponReader;
+import com.aspectran.core.activity.response.transform.apon.ContentsAponConverter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.util.apon.AponWriter;
@@ -58,14 +58,14 @@ public class AponTransformResponse extends TransformResponse {
     }
 
     @Override
-    public void commit(Activity activity) throws TransformResponseException {
+    public void commit(Activity activity) {
         ResponseAdapter responseAdapter = activity.getResponseAdapter();
         if (responseAdapter == null) {
             return;
         }
 
         if (log.isDebugEnabled()) {
-            log.debug("Response " + transformRule);
+            log.debug("Response " + getTransformRule());
         }
 
         try {
@@ -83,7 +83,7 @@ public class AponTransformResponse extends TransformResponse {
 
             Writer writer = responseAdapter.getWriter();
             ProcessResult processResult = activity.getProcessResult();
-            Parameters parameters = ContentsAponReader.read(processResult);
+            Parameters parameters = ContentsAponConverter.from(processResult);
 
             AponWriter aponWriter = new AponWriter(writer);
             if (pretty == Boolean.FALSE) {
@@ -96,13 +96,13 @@ public class AponTransformResponse extends TransformResponse {
             }
             aponWriter.write(parameters);
         } catch (Exception e) {
-            throw new TransformResponseException(transformRule, e);
+            throw new TransformResponseException(getTransformRule(), e);
         }
     }
 
     @Override
     public ActionList getActionList() {
-        return transformRule.getActionList();
+        return getTransformRule().getActionList();
     }
 
     @Override

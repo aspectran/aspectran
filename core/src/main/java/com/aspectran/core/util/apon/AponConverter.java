@@ -13,15 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.activity.response.transform.apon;
+package com.aspectran.core.util.apon;
 
-import com.aspectran.core.activity.process.result.ActionResult;
-import com.aspectran.core.activity.process.result.ContentResult;
-import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.util.BeanUtils;
-import com.aspectran.core.util.apon.InvalidParameterValueException;
-import com.aspectran.core.util.apon.Parameters;
-import com.aspectran.core.util.apon.VariableParameters;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
@@ -30,49 +24,19 @@ import java.util.Date;
 import java.util.Map;
 
 /**
- * Converts a ProcessResult object to a APON object.
+ * A converter from Object to APON.
  * 
  * <p>Created: 2015. 03. 16 PM 11:14:29</p>
  */
-public class ContentsAponReader {
+public class AponConverter {
 
-    public static Parameters read(ProcessResult processResult) {
-        if (processResult == null || processResult.isEmpty()) {
-            return null;
-        }
-
-        if (processResult.size() == 1) {
-            ContentResult contentResult = processResult.get(0);
-            if (contentResult.getName() == null && contentResult.size() == 1) {
-                ActionResult actionResult = contentResult.get(0);
-                if (actionResult.getActionId() == null) {
-                    Object resultValue = actionResult.getResultValue();
-                    if (resultValue instanceof Parameters) {
-                        return (Parameters)resultValue;
-                    }
-                }
-            }
-        }
-
+    public static Parameters from(Object object) {
         Parameters container = new VariableParameters();
-        for (ContentResult contentResult : processResult) {
-            read(contentResult, container);
-        }
+        putValue(container, null, object);
         return container;
     }
 
-    private static void read(ContentResult contentResult, Parameters container) {
-        if (contentResult.getName() != null) {
-            Parameters p = new VariableParameters();
-            container.putValue(contentResult.getName(), p);
-            container = p;
-        }
-        for (ActionResult actionResult : contentResult) {
-            putValue(container, actionResult.getActionId(), actionResult.getResultValue());
-        }
-    }
-
-    private static void putValue(Parameters container, String name, Object value) {
+    public static void putValue(Parameters container, String name, Object value) {
         if (value == null) {
             return;
         }

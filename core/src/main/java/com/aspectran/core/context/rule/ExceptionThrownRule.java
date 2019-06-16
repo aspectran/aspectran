@@ -24,6 +24,7 @@ import com.aspectran.core.activity.response.RedirectResponse;
 import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.activity.response.ResponseMap;
 import com.aspectran.core.activity.response.dispatch.DispatchResponse;
+import com.aspectran.core.activity.response.transform.CustomTransformResponse;
 import com.aspectran.core.activity.response.transform.TransformResponseFactory;
 import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
 import com.aspectran.core.context.rule.ability.ResponseRuleApplicable;
@@ -172,7 +173,7 @@ public class ExceptionThrownRule implements ActionRuleApplicable, ResponseRuleAp
 
     @Override
     public Response applyResponseRule(TransformRule transformRule) {
-        Response response = TransformResponseFactory.createTransformResponse(transformRule);
+        Response response = TransformResponseFactory.create(transformRule);
         touchResponseMap().put(transformRule.getContentType(), response);
         if (transformRule.isDefaultResponse()) {
             defaultResponse = response;
@@ -180,6 +181,13 @@ public class ExceptionThrownRule implements ActionRuleApplicable, ResponseRuleAp
         if (defaultResponse == null && transformRule.getContentType() == null) {
             defaultResponse = response;
         }
+        return response;
+    }
+
+    @Override
+    public Response applyResponseRule(CustomTransformRule customTransformRule) {
+        Response response = new CustomTransformResponse(customTransformRule);
+        defaultResponse = response;
         return response;
     }
 

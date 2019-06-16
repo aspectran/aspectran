@@ -26,9 +26,9 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface Redirect {
 
-    String path() default "";
-
     String value() default "";
+
+    String path() default "";
 
     Parameter[] parameters() default {};
 

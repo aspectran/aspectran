@@ -13,25 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.component.bean.annotation;
+package com.aspectran.core.activity.response.transform;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import com.aspectran.core.activity.Activity;
 
-@Documented
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-public @interface RequestToPatch {
+/**
+ * The Interface CustomTransformer.
+ * 
+ * <p>Created: 2019. 06. 15</p>
+ */
+public interface CustomTransformer {
 
-    String value() default "";
-
-    String translet() default "";
-
-    Parameter[] parameters() default {};
-
-    Attribute[] attributes() default {};
+    void transform(Activity activity) throws Exception;
 
 }

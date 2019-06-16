@@ -89,7 +89,7 @@ public class AponReader extends AponFormat {
         }
         addable = parameters.isAddable();
         try {
-            valuelize(parameters, NO_CONTROL_CHAR, null, null, null, false);
+            read(parameters, NO_CONTROL_CHAR, null, null, null, false);
         } catch (AponParseException e) {
             throw e;
         } catch (Exception e) {
@@ -110,8 +110,8 @@ public class AponReader extends AponFormat {
      * @throws IOException if an I/O error occurs
      * @throws AponParseException if an invalid parameter is detected
      */
-    private void valuelize(Parameters parameters, char openBracket, String name, ParameterValue parameterValue,
-            ParameterValueType parameterValueType, boolean valueTypeHinted)
+    private void read(Parameters parameters, char openBracket, String name, ParameterValue parameterValue,
+                      ParameterValueType parameterValueType, boolean valueTypeHinted)
             throws IOException, AponParseException {
         Map<String, ParameterValue> parameterValueMap = parameters.getParameterValueMap();
 
@@ -210,7 +210,7 @@ public class AponReader extends AponFormat {
 
             if (parameterValue == null || parameterValue.isArray() || parameterValueType == null) {
                 if (SQUARE_BRACKET_OPEN == cchar) {
-                    valuelize(parameters, SQUARE_BRACKET_OPEN, name, parameterValue, parameterValueType, valueTypeHinted);
+                    read(parameters, SQUARE_BRACKET_OPEN, name, parameterValue, parameterValueType, valueTypeHinted);
                     continue;
                 }
             }
@@ -230,7 +230,7 @@ public class AponReader extends AponFormat {
                 }
                 Parameters parameters2 = parameters.newParameters(parameterValue.getName());
                 addable = parameters2.isAddable();
-                valuelize(parameters2, CURLY_BRACKET_OPEN, null, null, null, valueTypeHinted);
+                read(parameters2, CURLY_BRACKET_OPEN, null, null, null, valueTypeHinted);
             } else if (parameterValueType == ParameterValueType.TEXT) {
                 if (parameterValue == null) {
                     parameterValue = parameters.newParameterValue(name, parameterValueType, 
@@ -238,7 +238,7 @@ public class AponReader extends AponFormat {
                     parameterValue.setValueTypeHinted(valueTypeHinted);
                 }
                 if (ROUND_BRACKET_OPEN == cchar) {
-                    parameterValue.putValue(valuelizeText());
+                    parameterValue.putValue(readText());
                 } else if (NULL.equals(value)) {
                     parameterValue.putValue(null);
                 } else {
@@ -344,7 +344,7 @@ public class AponReader extends AponFormat {
         }
     }
 
-    private String valuelizeText() throws IOException, AponSyntaxException {
+    private String readText() throws IOException, AponSyntaxException {
         String line;
         String tline = null;
         String str;

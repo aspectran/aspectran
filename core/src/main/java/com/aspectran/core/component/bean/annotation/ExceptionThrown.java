@@ -26,6 +26,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface ExceptionThrown {
 
-    Class<? extends Throwable>[] type() default {};
+    Class<? extends Throwable>[] value() default {};
 
 }

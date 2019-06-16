@@ -37,30 +37,7 @@ public class TransformResponseException extends ResponseException {
      * @param cause the real cause of the exception
      */
     public TransformResponseException(TransformRule transformRule, Throwable cause) {
-        super("Failed to transform " + transformRule, cause);
-        this.transformRule = transformRule;
-    }
-
-    /**
-     * Instantiates a new TransformResponseException.
-     *
-     * @param transformRule the transform rule
-     * @param msg the detail message
-     * @param cause the real cause of the exception
-     */
-    public TransformResponseException(TransformRule transformRule, String msg, Throwable cause) {
-        super(msg + " " + transformRule, cause);
-        this.transformRule = transformRule;
-    }
-
-    /**
-     * Instantiates a new TransformResponseException.
-     *
-     * @param transformRule the transform rule
-     * @param msg the detail message
-     */
-    public TransformResponseException(TransformRule transformRule, String msg) {
-        super(msg + " " + transformRule);
+        super("Failed to transform " + transformRule + "; nested exception is " + cause, cause);
         this.transformRule = transformRule;
     }
 

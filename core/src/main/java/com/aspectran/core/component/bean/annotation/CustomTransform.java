@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.component.bean.annotation;
 
+import com.aspectran.core.activity.response.transform.CustomTransformer;
+
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -24,14 +26,8 @@ import java.lang.annotation.Target;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface RequestToPatch {
+public @interface CustomTransform {
 
-    String value() default "";
-
-    String translet() default "";
-
-    Parameter[] parameters() default {};
-
-    Attribute[] attributes() default {};
+    Class<? extends CustomTransformer> value();
 
 }

@@ -21,6 +21,8 @@ import com.aspectran.core.activity.response.ForwardResponse;
 import com.aspectran.core.activity.response.RedirectResponse;
 import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.activity.response.dispatch.DispatchResponse;
+import com.aspectran.core.activity.response.transform.CustomTransformResponse;
+import com.aspectran.core.activity.response.transform.CustomTransformer;
 import com.aspectran.core.activity.response.transform.TransformResponseFactory;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.adapter.RequestAdapter;
@@ -263,7 +265,19 @@ public class CoreTranslet extends AbstractTranslet {
 
     @Override
     public void transform(TransformRule transformRule) {
-        Response res = TransformResponseFactory.createTransformResponse(transformRule);
+        if (transformRule == null) {
+            throw new IllegalArgumentException("transformRule must not be null");
+        }
+        Response res = TransformResponseFactory.create(transformRule);
+        response(res);
+    }
+
+    @Override
+    public void transform(CustomTransformer transformer) {
+        if (transformer == null) {
+            throw new IllegalArgumentException("transformer must not be null");
+        }
+        Response res = new CustomTransformResponse(transformer);
         response(res);
     }
 
@@ -282,6 +296,9 @@ public class CoreTranslet extends AbstractTranslet {
 
     @Override
     public void dispatch(DispatchRule dispatchRule) {
+        if (dispatchRule == null) {
+            throw new IllegalArgumentException("transformRule must not be null");
+        }
         Response res = new DispatchResponse(dispatchRule);
         response(res);
     }
@@ -295,6 +312,9 @@ public class CoreTranslet extends AbstractTranslet {
 
     @Override
     public void forward(ForwardRule forwardRule) {
+        if (forwardRule == null) {
+            throw new IllegalArgumentException("forwardRule must not be null");
+        }
         if (forwardRule.getTransletName() == null) {
             forwardRule.setTransletName(StringUtils.EMPTY);
         }
@@ -317,6 +337,9 @@ public class CoreTranslet extends AbstractTranslet {
 
     @Override
     public void redirect(RedirectRule redirectRule) {
+        if (redirectRule == null) {
+            throw new IllegalArgumentException("redirectRule must not be null");
+        }
         Response res = new RedirectResponse(redirectRule);
         response(res);
     }

@@ -64,6 +64,10 @@ public class TransformRule extends AbstractResponseRule implements Replicable<Tr
      * @param transformType the transformType to set
      */
     public void setTransformType(TransformType transformType) {
+        if (transformType == TransformType.CUSTOM) {
+            throw new IllegalArgumentException("Custom Transform is only allowed to be defined via an annotated method");
+        }
+
         this.transformType = transformType;
 
         if (contentType == null && transformType != null) {
@@ -212,18 +216,12 @@ public class TransformRule extends AbstractResponseRule implements Replicable<Tr
     public static TransformRule newInstance(String type, String contentType,
             String encoding, Boolean defaultResponse, Boolean pretty) {
         TransformType transformType = TransformType.resolve(type);
-        if (transformType == null && contentType != null) {
-            transformType = TransformType.resolve(ContentType.resolve(contentType));
-        }
-        TransformRule tr = new TransformRule();
-        tr.setTransformType(transformType);
-        if (contentType != null) {
-            tr.setContentType(contentType);
-        }
-        tr.setEncoding(encoding);
-        tr.setDefaultResponse(defaultResponse);
-        tr.setPretty(pretty);
-        return tr;
+        return newInstance(transformType, contentType, encoding, defaultResponse, pretty);
+    }
+
+    public static TransformRule newInstance(TransformType transformType, String contentType,
+            String encoding, Boolean pretty) {
+        return newInstance(transformType, contentType, encoding, null, pretty);
     }
 
     public static TransformRule newInstance(TransformType transformType, String contentType,

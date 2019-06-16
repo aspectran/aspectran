@@ -21,11 +21,6 @@ import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.core.context.rule.type.TransformType;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.net.URLConnection;
-
 /**
  * The Class TransformResponse.
  * 
@@ -33,7 +28,7 @@ import java.net.URLConnection;
  */
 public abstract class TransformResponse implements Response {
 
-    protected final TransformRule transformRule;
+    private final TransformRule transformRule;
 
     /**
      * Instantiates a new TransformResponse.
@@ -75,18 +70,6 @@ public abstract class TransformResponse implements Response {
      */
     public TransformRule getTransformRule() {
         return transformRule;
-    }
-
-    /**
-     * Gets the template as stream.
-     *
-     * @param url the url of the template
-     * @return the input stream of the template
-     * @throws IOException if an I/O error has occurred
-     */
-    protected InputStream getTemplateAsStream(URL url) throws IOException {
-        URLConnection conn = url.openConnection();
-        return conn.getInputStream();
     }
 
     @Override

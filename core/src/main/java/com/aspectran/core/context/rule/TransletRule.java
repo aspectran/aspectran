@@ -363,6 +363,14 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
     }
 
     @Override
+    public Response applyResponseRule(CustomTransformRule customTransformRule) {
+        if (responseRule == null) {
+            responseRule = new ResponseRule(false);
+        }
+        return responseRule.applyResponseRule(customTransformRule);
+    }
+
+    @Override
     public Response applyResponseRule(DispatchRule dispatchRule) {
         if (responseRule == null) {
             responseRule = new ResponseRule(false);

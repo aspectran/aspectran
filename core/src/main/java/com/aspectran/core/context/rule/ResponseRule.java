@@ -19,6 +19,7 @@ import com.aspectran.core.activity.response.ForwardResponse;
 import com.aspectran.core.activity.response.RedirectResponse;
 import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.activity.response.dispatch.DispatchResponse;
+import com.aspectran.core.activity.response.transform.CustomTransformResponse;
 import com.aspectran.core.activity.response.transform.TransformResponseFactory;
 import com.aspectran.core.context.rule.ability.Replicable;
 import com.aspectran.core.context.rule.ability.ResponseRuleApplicable;
@@ -98,7 +99,14 @@ public class ResponseRule implements ResponseRuleApplicable, Replicable<Response
 
     @Override
     public Response applyResponseRule(TransformRule transformRule) {
-        Response response = TransformResponseFactory.createTransformResponse(transformRule);
+        Response response = TransformResponseFactory.create(transformRule);
+        this.response = response;
+        return response;
+    }
+
+    @Override
+    public Response applyResponseRule(CustomTransformRule customTransformRule) {
+        Response response = new CustomTransformResponse(customTransformRule);
         this.response = response;
         return response;
     }
@@ -153,15 +161,15 @@ public class ResponseRule implements ResponseRuleApplicable, Replicable<Response
         return responseRule;
     }
 
-    public static ResponseRule newInstance(DispatchRule dispatchRule) {
-        ResponseRule responseRule = new ResponseRule(false);
-        responseRule.applyResponseRule(dispatchRule);
-        return responseRule;
-    }
-
     public static ResponseRule newInstance(TransformRule transformRule) {
         ResponseRule responseRule = new ResponseRule(false);
         responseRule.applyResponseRule(transformRule);
+        return responseRule;
+    }
+
+    public static ResponseRule newInstance(DispatchRule dispatchRule) {
+        ResponseRule responseRule = new ResponseRule(false);
+        responseRule.applyResponseRule(dispatchRule);
         return responseRule;
     }
 
@@ -174,6 +182,16 @@ public class ResponseRule implements ResponseRuleApplicable, Replicable<Response
     public static ResponseRule newInstance(RedirectRule redirectRule) {
         ResponseRule responseRule = new ResponseRule(false);
         responseRule.applyResponseRule(redirectRule);
+        return responseRule;
+    }
+
+    public static ResponseRule newInstance(CustomTransformRule customTransformRule) {
+        return newInstance(new CustomTransformResponse(customTransformRule));
+    }
+
+    public static ResponseRule newInstance(CustomTransformResponse response) {
+        ResponseRule responseRule = new ResponseRule(false);
+        responseRule.setResponse(response);
         return responseRule;
     }
 

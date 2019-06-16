@@ -157,9 +157,14 @@ public class ChooseWhenRule implements ActionRuleApplicable, ResponseRuleApplica
 
     @Override
     public Response applyResponseRule(TransformRule transformRule) {
-        Response response = TransformResponseFactory.createTransformResponse(transformRule);
+        Response response = TransformResponseFactory.create(transformRule);
         this.response = response;
         return response;
+    }
+
+    @Override
+    public Response applyResponseRule(CustomTransformRule customTransformRule) {
+        throw new UnsupportedOperationException("Custom Transform is only allowed to be defined via an annotated method");
     }
 
     @Override

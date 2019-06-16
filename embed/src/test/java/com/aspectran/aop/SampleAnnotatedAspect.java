@@ -87,7 +87,7 @@ public class SampleAnnotatedAspect {
         return msg;
     }
 
-    @ExceptionThrown(type = SimpleAopTestException.class)
+    @ExceptionThrown(SimpleAopTestException.class)
     public String oops() {
         String msg = "Oops!!!!!!!!!!!!!!!";
 

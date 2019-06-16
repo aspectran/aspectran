@@ -28,9 +28,9 @@ import java.lang.annotation.Target;
 @Target({ElementType.TYPE, ElementType.METHOD})
 public @interface Bean {
 
-    String id() default "";
-
     String value() default "";
+
+    String id() default "";
 
     ScopeType scope() default ScopeType.SINGLETON;
 

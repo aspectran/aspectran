@@ -37,11 +37,11 @@ public class JsonTransformResponse extends TransformResponse {
 
     private static final Log log = LogFactory.getLog(JsonTransformResponse.class);
 
-    private static final String CALLBACK_PARAM_NAME = "callback";
+    public static final String CALLBACK_PARAM_NAME = "callback";
 
-    private static final String ROUND_BRACKET_OPEN = "(";
+    public static final String ROUND_BRACKET_OPEN = "(";
 
-    private static final String ROUND_BRACKET_CLOSE = ")";
+    public static final String ROUND_BRACKET_CLOSE = ")";
 
     private final String encoding;
 
@@ -63,14 +63,14 @@ public class JsonTransformResponse extends TransformResponse {
     }
 
     @Override
-    public void commit(Activity activity) throws TransformResponseException {
+    public void commit(Activity activity) {
         ResponseAdapter responseAdapter = activity.getResponseAdapter();
         if (responseAdapter == null) {
             return;
         }
 
         if (log.isDebugEnabled()) {
-            log.debug("Response " + transformRule);
+            log.debug("Response " + getTransformRule());
         }
 
         try {
@@ -111,13 +111,13 @@ public class JsonTransformResponse extends TransformResponse {
                 writer.write(ROUND_BRACKET_CLOSE);
             }
         } catch (Exception e) {
-            throw new TransformResponseException(transformRule, e);
+            throw new TransformResponseException(getTransformRule(), e);
         }
     }
 
     @Override
     public ActionList getActionList() {
-        return transformRule.getActionList();
+        return getTransformRule().getActionList();
     }
 
     @Override

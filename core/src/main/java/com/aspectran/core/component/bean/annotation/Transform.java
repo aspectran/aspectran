@@ -28,9 +28,9 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface Transform {
 
-    TransformType type() default TransformType.NONE;
-
     TransformType value() default TransformType.NONE;
+
+    TransformType type() default TransformType.NONE;
 
     String contentType() default "";
 

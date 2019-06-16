@@ -607,7 +607,7 @@ public class CoreActivity extends AdviceActivity {
             Object resultValue = action.execute(this);
             if (!action.isHidden() && contentResult != null && resultValue != ActionResult.NO_RESULT) {
                 if (resultValue instanceof ProcessResult) {
-                    contentResult.addActionResult(action, (ProcessResult) resultValue);
+                    contentResult.addActionResult(action, (ProcessResult)resultValue);
                 } else {
                     contentResult.addActionResult(action, resultValue);
                 }

@@ -33,32 +33,32 @@ public class TransformResponseFactory {
      * @param transformRule the transform rule
      * @return the transform response
      */
-    public static Response createTransformResponse(TransformRule transformRule) {
-        TransformType transformType = transformRule.getTransformType();
-        Response transformResponse;
-        if (transformType == TransformType.XSL) {
-            transformResponse = new XslTransformResponse(transformRule);
-        } else if (transformType == TransformType.XML) {
+    public static Response create(TransformRule transformRule) {
+        TransformType type = transformRule.getTransformType();
+        Response res;
+        if (type == TransformType.XSL) {
+            res = new XslTransformResponse(transformRule);
+        } else if (type == TransformType.XML) {
             if (transformRule.getContentType() == null) {
                 transformRule.setContentType(ContentType.TEXT_XML.toString());
             }
-            transformResponse = new XmlTransformResponse(transformRule);
-        } else if (transformType == TransformType.TEXT) {
-            transformResponse = new TextTransformResponse(transformRule);
-        } else if (transformType == TransformType.JSON) {
+            res = new XmlTransformResponse(transformRule);
+        } else if (type == TransformType.TEXT) {
+            res = new TextTransformResponse(transformRule);
+        } else if (type == TransformType.JSON) {
             if (transformRule.getContentType() == null) {
                 transformRule.setContentType(ContentType.TEXT_PLAIN.toString());
             }
-            transformResponse = new JsonTransformResponse(transformRule);
-        } else if (transformType == TransformType.APON) {
+            res = new JsonTransformResponse(transformRule);
+        } else if (type == TransformType.APON) {
             if (transformRule.getContentType() == null) {
                 transformRule.setContentType(ContentType.TEXT_PLAIN.toString());
             }
-            transformResponse = new AponTransformResponse(transformRule);
+            res = new AponTransformResponse(transformRule);
         } else {
-            transformResponse = new NoneTransformResponse(transformRule);
+            res = new NoneTransformResponse(transformRule);
         }
-        return transformResponse;
+        return res;
     }
 
 }

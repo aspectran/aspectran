@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.component.bean;
 
+import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.embed.sample.anno.ThirdResult;
@@ -23,6 +24,8 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+
+import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -177,6 +180,16 @@ class AnnotatedConfigurationTest {
     void testInvokeMethod_12() {
         String body = "p1(int): 1234\np2(int): 5678";
         aspectran.translate("/action-12", body);
+    }
+
+    @Test
+    void testInvokeMethod_13() throws IOException {
+        ParameterMap params = new ParameterMap();
+        params.setParameter("one", "1");
+        params.setParameter("two", "2");
+        Translet translet = aspectran.translate("/action-13", params);
+        String result = translet.getResponseAdapter().getWriter().toString();
+        assertEquals("12", result);
     }
 
 }
