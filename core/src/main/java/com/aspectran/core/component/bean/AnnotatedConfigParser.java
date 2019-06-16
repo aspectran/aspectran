@@ -502,7 +502,7 @@ public class AnnotatedConfigParser {
             parameters = requestAnno.parameters();
             attributes = requestAnno.attributes();
         } else if (requestToGetAnno != null) {
-            transletName = StringUtils.emptyToNull(requestToGetAnno.value());
+            transletName = StringUtils.emptyToNull(requestToGetAnno.translet());
             if (transletName == null) {
                 transletName = StringUtils.emptyToNull(requestToGetAnno.value());
             }
@@ -510,7 +510,7 @@ public class AnnotatedConfigParser {
             parameters = requestToGetAnno.parameters();
             attributes = requestToGetAnno.attributes();
         } else if (requestToPostAnno != null) {
-            transletName = StringUtils.emptyToNull(requestToPostAnno.value());
+            transletName = StringUtils.emptyToNull(requestToPostAnno.translet());
             if (transletName == null) {
                 transletName = StringUtils.emptyToNull(requestToPostAnno.value());
             }
@@ -518,7 +518,7 @@ public class AnnotatedConfigParser {
             parameters = requestToPostAnno.parameters();
             attributes = requestToPostAnno.attributes();
         } else if (requestToPutAnno != null) {
-            transletName = StringUtils.emptyToNull(requestToPutAnno.value());
+            transletName = StringUtils.emptyToNull(requestToPutAnno.translet());
             if (transletName == null) {
                 transletName = StringUtils.emptyToNull(requestToPutAnno.value());
             }
@@ -526,7 +526,7 @@ public class AnnotatedConfigParser {
             parameters = requestToPutAnno.parameters();
             attributes = requestToPutAnno.attributes();
         } else if (requestToPatchAnno != null) {
-            transletName = StringUtils.emptyToNull(requestToPatchAnno.value());
+            transletName = StringUtils.emptyToNull(requestToPatchAnno.translet());
             if (transletName == null) {
                 transletName = StringUtils.emptyToNull(requestToPatchAnno.value());
             }
@@ -534,7 +534,7 @@ public class AnnotatedConfigParser {
             parameters = requestToPatchAnno.parameters();
             attributes = requestToPatchAnno.attributes();
         } else if (requestToDeleteAnno != null) {
-            transletName = StringUtils.emptyToNull(requestToDeleteAnno.value());
+            transletName = StringUtils.emptyToNull(requestToDeleteAnno.translet());
             if (transletName == null) {
                 transletName = StringUtils.emptyToNull(requestToDeleteAnno.value());
             }
@@ -571,14 +571,14 @@ public class AnnotatedConfigParser {
         Executable annotatedMethodAction = createAnnotatedMethodAction(actionId, beanClass, method);
         transletRule.applyActionRule(annotatedMethodAction);
 
-        if (method.isAnnotationPresent(Dispatch.class)) {
-            Dispatch dispatchAnno = method.getAnnotation(Dispatch.class);
-            DispatchRule dispatchRule = parseDispatchRule(dispatchAnno);
-            transletRule.setResponseRule(ResponseRule.newInstance(dispatchRule));
-        } else if (method.isAnnotationPresent(Transform.class)) {
+        if (method.isAnnotationPresent(Transform.class)) {
             Transform transformAnno = method.getAnnotation(Transform.class);
             TransformRule transformRule = parseTransformRule(transformAnno);
             transletRule.setResponseRule(ResponseRule.newInstance(transformRule));
+        } else if (method.isAnnotationPresent(Dispatch.class)) {
+            Dispatch dispatchAnno = method.getAnnotation(Dispatch.class);
+            DispatchRule dispatchRule = parseDispatchRule(dispatchAnno);
+            transletRule.setResponseRule(ResponseRule.newInstance(dispatchRule));
         } else if (method.isAnnotationPresent(Forward.class)) {
             Forward forwardAnno = method.getAnnotation(Forward.class);
             ForwardRule forwardRule = parseForwardRule(forwardAnno);
