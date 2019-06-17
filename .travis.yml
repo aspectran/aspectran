@@ -10,8 +10,9 @@ env:
     - MAVEN_OPTIONS="-V -B -s $MAVEN_SETTINGS"
 
 jdk:
-  - oraclejdk8
   - oraclejdk11
+  - oraclejdk8
+  - openjdk-ea
   - openjdk12
   - openjdk11
   - openjdk8
