@@ -279,7 +279,7 @@
                     <artifactId>license-maven-plugin</artifactId>
                     <version>3.0</version>
                     <configuration>
-                        <header>${main.basedir}/header-template.txt</header>
+                        <header>${main.basedir}/license.txt</header>
                         <failIfMissing>true</failIfMissing>
                         <aggregate>true</aggregate>
                         <strictCheck>true</strictCheck>
