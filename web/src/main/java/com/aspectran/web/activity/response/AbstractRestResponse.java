@@ -16,7 +16,6 @@
 package com.aspectran.web.activity.response;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.activity.response.transform.CustomTransformer;
 import com.aspectran.core.activity.response.transform.JsonTransformResponse;
 import com.aspectran.core.activity.response.transform.apon.ContentsAponConverter;
 import com.aspectran.core.activity.response.transform.json.ContentsJsonWriter;
@@ -35,42 +34,153 @@ import java.io.Writer;
 /**
  * <p>Created: 2019-06-16</p>
  */
-public class RestResponse implements CustomTransformer {
+public abstract class AbstractRestResponse<T> {
 
     private static final String APPLICATION_JSON = "application/json";
 
     private static final String APPLICATION_APON = "application/apon";
 
-    private final Object data;
+    private int status;
+
+    private String location;
 
     private boolean prettyPrint = true;
 
-    public RestResponse() {
-        this(null);
+    public AbstractRestResponse() {
     }
 
-    public RestResponse(Object data) {
-        this.data = data;
+    @SuppressWarnings("unchecked")
+    public T ok() {
+        this.status = HttpStatus.OK.value();
+        return (T)this;
     }
 
-    public void setPrettyPrint(boolean prettyPrint) {
+    public T created() {
+        return created(null);
+    }
+
+    @SuppressWarnings("unchecked")
+    public T created(String location) {
+        this.status = HttpStatus.CREATED.value();
+        this.location = location;
+        return (T)this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public T accepted() {
+        this.status = HttpStatus.ACCEPTED.value();
+        return (T)this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public T noContent() {
+        this.status = HttpStatus.NO_CONTENT.value();
+        return (T)this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public T movedPermanently() {
+        this.status = HttpStatus.MOVED_PERMANENTLY.value();
+        return (T)this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public T seeOther() {
+        this.status = HttpStatus.SEE_OTHER.value();
+        return (T)this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public T notModified() {
+        this.status = HttpStatus.NOT_MODIFIED.value();
+        return (T)this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public T temporaryRedirect() {
+        this.status = HttpStatus.TEMPORARY_REDIRECT.value();
+        return (T)this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public T badRequest() {
+        this.status = HttpStatus.BAD_REQUEST.value();
+        return (T)this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public T unauthorized() {
+        this.status = HttpStatus.UNAUTHORIZED.value();
+        return (T)this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public T forbidden() {
+        this.status = HttpStatus.FORBIDDEN.value();
+        return (T)this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public T notFound() {
+        this.status = HttpStatus.NOT_FOUND.value();
+        return (T)this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public T methodNotAllowed() {
+        this.status = HttpStatus.METHOD_NOT_ALLOWED.value();
+        return (T)this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public T notAcceptable() {
+        this.status = HttpStatus.NOT_ACCEPTABLE.value();
+        return (T)this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public T conflict() {
+        this.status = HttpStatus.CONFLICT.value();
+        return (T)this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public T preconditionFailed() {
+        this.status = HttpStatus.PRECONDITION_FAILED.value();
+        return (T)this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public T unsupportedMediaType() {
+        this.status = HttpStatus.UNSUPPORTED_MEDIA_TYPE.value();
+        return (T)this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public T internalServerError() {
+        this.status = HttpStatus.INTERNAL_SERVER_ERROR.value();
+        return (T)this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public T prettyPrint(boolean prettyPrint) {
         this.prettyPrint = prettyPrint;
+        return (T)this;
     }
 
-    @Override
-    public void transform(Activity activity) throws Exception {
-        ResponseAdapter responseAdapter = activity.getResponseAdapter();
-        String acceptContentType = determineAcceptContentType(responseAdapter);
-        if (APPLICATION_JSON.equals(acceptContentType)) {
-            toJSON(activity);
-        } else if (APPLICATION_APON.equals(acceptContentType)) {
-            toAPON(activity);
-        } else {
-            responseAdapter.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
-        }
+    protected int getStatus() {
+        return status;
     }
 
-    private void toJSON(Activity activity) throws IOException {
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    protected String getLocation() {
+        return location;
+    }
+
+    protected void toJSON(Activity activity, Object data) throws IOException {
         RequestAdapter requestAdapter = activity.getRequestAdapter();
         ResponseAdapter responseAdapter = activity.getResponseAdapter();
         Writer writer = responseAdapter.getWriter();
@@ -104,7 +214,7 @@ public class RestResponse implements CustomTransformer {
         }
     }
 
-    private void toAPON(Activity activity) throws IOException {
+    protected void toAPON(Activity activity, Object data) throws IOException {
         ResponseAdapter responseAdapter = activity.getResponseAdapter();
         Writer writer = responseAdapter.getWriter();
 
@@ -134,7 +244,7 @@ public class RestResponse implements CustomTransformer {
         }
     }
 
-    private static String determineAcceptContentType(ResponseAdapter responseAdapter) {
+    protected static String determineAcceptContentType(ResponseAdapter responseAdapter) {
         String acceptType = getAcceptType(responseAdapter);
         if (acceptType == null) {
             return getContentType(responseAdapter);
@@ -143,13 +253,13 @@ public class RestResponse implements CustomTransformer {
         }
     }
 
-    private static String getAcceptType(ResponseAdapter responseAdapter) {
+    protected static String getAcceptType(ResponseAdapter responseAdapter) {
         // String acceptType = responseAdapter.getHeader(HttpHeaders.ACCEPT);
         // TODO
         return null;
     }
 
-    private static String getContentType(ResponseAdapter responseAdapter) {
+    protected static String getContentType(ResponseAdapter responseAdapter) {
         String contentType = responseAdapter.getHeader(HttpHeaders.CONTENT_TYPE);
         if (contentType.startsWith(APPLICATION_JSON)) {
             return APPLICATION_JSON;
