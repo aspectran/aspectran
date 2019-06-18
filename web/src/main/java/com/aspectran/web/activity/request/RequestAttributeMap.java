@@ -15,6 +15,9 @@
  */
 package com.aspectran.web.activity.request;
 
+import com.aspectran.core.lang.NonNull;
+import com.aspectran.core.lang.Nullable;
+
 import javax.servlet.http.HttpServletRequest;
 import java.util.AbstractMap;
 import java.util.ArrayList;
@@ -90,7 +93,7 @@ public class RequestAttributeMap implements Map<String, Object> {
     }
 
     @Override
-    public void putAll(Map<? extends String, ?> map) {
+    public void putAll(@Nullable Map<? extends String, ?> map) {
         if (map != null) {
             for (Entry<? extends String, ?> entry : map.entrySet()) {
                 request.setAttribute(entry.getKey(), entry.getValue());
@@ -106,11 +109,13 @@ public class RequestAttributeMap implements Map<String, Object> {
     }
 
     @Override
+    @NonNull
     public Set<String> keySet() {
         return new HashSet<>(Collections.list(request.getAttributeNames()));
     }
 
     @Override
+    @NonNull
     public Collection<Object> values() {
         List<Object> list = new ArrayList<>();
         Enumeration<String> names = request.getAttributeNames();
@@ -123,6 +128,7 @@ public class RequestAttributeMap implements Map<String, Object> {
     }
 
     @Override
+    @NonNull
     public Set<Entry<String, Object>> entrySet() {
         Set<Entry<String, Object>> set = new HashSet<>();
         Enumeration<String> names = request.getAttributeNames();

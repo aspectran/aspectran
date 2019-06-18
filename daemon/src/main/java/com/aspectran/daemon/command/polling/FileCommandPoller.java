@@ -209,7 +209,7 @@ public class FileCommandPoller extends AbstractCommandPoller {
         File file = null;
         try {
             synchronized (lock) {
-                file = FilenameUtils.getUniqueFile(new File(dir, fileName));
+                file = FilenameUtils.generateUniqueFile(new File(dir, fileName));
                 file.createNewFile();
             }
             if (log.isDebugEnabled()) {

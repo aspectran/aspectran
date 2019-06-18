@@ -93,7 +93,7 @@ public class SimpleFileUploadAction {
             if (fileParameter != null) {
                 String key = UUID.randomUUID().toString();
                 String ext = FilenameUtils.getExtension(fileParameter.getFileName());
-                if (ext != null) {
+                if (StringUtils.hasLength(ext)) {
                     key += "." + ext.toLowerCase();
                 }
                 UploadedFile uploadedFile = new UploadedFile();

@@ -234,7 +234,7 @@ public class FileParameter {
             }
             return destFile;
         } else {
-            return FilenameUtils.getUniqueFile(destFile);
+            return FilenameUtils.generateUniqueFile(destFile);
         }
     }
 
