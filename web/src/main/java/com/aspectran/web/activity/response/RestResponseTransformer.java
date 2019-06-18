@@ -22,6 +22,7 @@ import com.aspectran.core.activity.response.transform.apon.ContentsAponConverter
 import com.aspectran.core.activity.response.transform.json.ContentsJsonWriter;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
+import com.aspectran.core.lang.Nullable;
 import com.aspectran.core.util.apon.AponConverter;
 import com.aspectran.core.util.apon.AponWriter;
 import com.aspectran.core.util.apon.Parameters;
@@ -34,7 +35,10 @@ import com.aspectran.web.support.http.MediaType;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>Created: 2019-06-16</p>
@@ -43,27 +47,46 @@ public class RestResponseTransformer extends AbstractRestResponse<RestResponseTr
 
     private static final List<MediaType> supportedContentTypes;
     static {
-        supportedContentTypes = new ArrayList<>();
-        supportedContentTypes.add(MediaType.APPLICATION_JSON);
-        supportedContentTypes.add(MediaType.APPLICATION_APON);
+        List<MediaType> contentTypes = new ArrayList<>();
+        contentTypes.add(MediaType.APPLICATION_JSON);
+        contentTypes.add(MediaType.APPLICATION_APON);
+        supportedContentTypes = Collections.unmodifiableList(contentTypes);
     }
+
+    private static final Map<String, MediaType> supportedPathExtensions;
+    static {
+        Map<String, MediaType> pathExtensions = new HashMap<>();
+        pathExtensions.put("json", MediaType.APPLICATION_JSON);
+        pathExtensions.put("apon", MediaType.APPLICATION_APON);
+        supportedPathExtensions = Collections.unmodifiableMap(pathExtensions);
+    }
+
 
     public RestResponseTransformer() {
         super();
     }
 
-    public RestResponseTransformer(Object data) {
+    public RestResponseTransformer(@Nullable Object data) {
         super(data);
     }
 
     @Override
+    protected List<MediaType> getSupportedContentTypes() {
+        return supportedContentTypes;
+    }
+
+    @Override
+    protected MediaType getContentTypeByPathExtension(String extension) {
+        return supportedPathExtensions.get(extension);
+    }
+
+    @Override
     public void transform(Activity activity) throws Exception {
-        RequestAdapter requestAdapter = activity.getRequestAdapter();
         ResponseAdapter responseAdapter = activity.getResponseAdapter();
 
         MediaType contentType;
         try {
-            contentType = determineContentType(requestAdapter, supportedContentTypes);
+            contentType = determineContentType(activity);
         } catch (HttpMediaTypeNotAcceptableException e) {
             responseAdapter.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
             return;

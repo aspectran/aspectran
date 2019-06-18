@@ -15,7 +15,9 @@
  */
 package com.aspectran.web.activity.response;
 
-import com.aspectran.core.adapter.RequestAdapter;
+import com.aspectran.core.activity.Activity;
+import com.aspectran.core.util.FilenameUtils;
+import com.aspectran.core.util.StringUtils;
 import com.aspectran.web.activity.request.RequestHeaderParser;
 import com.aspectran.web.support.http.HttpMediaTypeNotAcceptableException;
 import com.aspectran.web.support.http.HttpStatus;
@@ -23,6 +25,7 @@ import com.aspectran.web.support.http.MediaType;
 import com.aspectran.web.support.http.MediaTypeUtils;
 
 import java.util.List;
+import java.util.Locale;
 
 /**
  * <p>Created: 2019-06-16</p>
@@ -299,38 +302,45 @@ public abstract class AbstractRestResponse<T> implements RestResponse {
         return location;
     }
 
-    protected MediaType determineContentType(RequestAdapter requestAdapter, List<MediaType> supportedContentTypes)
-        throws HttpMediaTypeNotAcceptableException {
-        List<MediaType> contentTypes = resolveContentTypes(requestAdapter);
-        if (contentTypes != null) {
+    abstract protected List<MediaType> getSupportedContentTypes();
+
+    abstract protected MediaType getContentTypeByPathExtension(String extension);
+
+    protected MediaType determineContentType(Activity activity)
+            throws HttpMediaTypeNotAcceptableException {
+        if (isFavorPathExtension()) {
+            String path = activity.getTranslet().getRequestName();
+            String ext = FilenameUtils.getExtension(path);
+            if (StringUtils.hasLength(ext)) {
+                ext = ext.toLowerCase(Locale.ENGLISH);
+                MediaType contentType = getContentTypeByPathExtension(ext);
+                if (contentType != null) {
+                    return contentType;
+                }
+            }
+            if (!isIgnoreUnknownPathExtensions()) {
+                throw new HttpMediaTypeNotAcceptableException(getSupportedContentTypes());
+            }
+        }
+        if (!isIgnoreAcceptHeader()) {
+            List<MediaType> contentTypes = RequestHeaderParser.resolveAcceptContentTypes(activity.getRequestAdapter());
             for (MediaType mediaType : contentTypes) {
                 if (mediaType.equals(MediaType.ALL) && getDefaultContentType() != null) {
-                    if (supportedContentTypes.contains(getDefaultContentType())) {
+                    if (getSupportedContentTypes().contains(getDefaultContentType())) {
                         return getDefaultContentType();
                     }
                 }
-                for (MediaType supportedContentType : supportedContentTypes) {
+                for (MediaType supportedContentType : getSupportedContentTypes()) {
                     if (mediaType.includes(supportedContentType)) {
                         return supportedContentType;
                     }
                 }
             }
+            if (getSupportedContentTypes().contains(getDefaultContentType())) {
+                return getDefaultContentType();
+            }
         }
-        if (supportedContentTypes.contains(getDefaultContentType())) {
-            return getDefaultContentType();
-        }
-        throw new HttpMediaTypeNotAcceptableException(supportedContentTypes);
-    }
-
-    protected List<MediaType> resolveContentTypes(RequestAdapter requestAdapter) throws HttpMediaTypeNotAcceptableException {
-        List<MediaType> contentTypes = null;
-        if (isFavorPathExtension()) {
-            //TODO
-        }
-        if (contentTypes == null && !isIgnoreAcceptHeader()) {
-            contentTypes = RequestHeaderParser.resolveAcceptContentTypes(requestAdapter);
-        }
-        return contentTypes;
+        throw new HttpMediaTypeNotAcceptableException(getSupportedContentTypes());
     }
 
 }

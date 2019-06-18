@@ -16,6 +16,7 @@
 package com.aspectran.web.activity.request;
 
 import com.aspectran.core.adapter.RequestAdapter;
+import com.aspectran.core.lang.NonNull;
 import com.aspectran.web.support.http.HttpHeaders;
 import com.aspectran.web.support.http.HttpMediaTypeNotAcceptableException;
 import com.aspectran.web.support.http.InvalidMediaTypeException;
@@ -42,8 +43,9 @@ public class RequestHeaderParser {
     private RequestHeaderParser() {
     }
 
+    @NonNull
     public static List<MediaType> resolveAcceptContentTypes(RequestAdapter requestAdapter)
-        throws HttpMediaTypeNotAcceptableException {
+            throws HttpMediaTypeNotAcceptableException {
         Collection<String> acceptHeaderValues = requestAdapter.getHeaderValues(HttpHeaders.ACCEPT);
         if (acceptHeaderValues == null || acceptHeaderValues.isEmpty()) {
             return MEDIA_TYPE_ALL_LIST;

@@ -276,14 +276,6 @@ public class MediaType implements Comparable<MediaType>, Serializable {
      */
     public static final String TEXT_XML_VALUE = "text/xml";
 
-    private static final String PARAM_QUALITY_FACTOR = "q";
-
-    public static final String WILDCARD_TYPE = "*";
-
-    private static final String PARAM_CHARSET = "charset";
-
-    private static final BitSet TOKEN;
-
     static {
         // Not using "valueOf' to avoid static init cost
         ALL = new MediaType("*", "*");
@@ -309,7 +301,17 @@ public class MediaType implements Comparable<MediaType>, Serializable {
         TEXT_MARKDOWN = new MediaType("text", "markdown");
         TEXT_PLAIN = new MediaType("text", "plain");
         TEXT_XML = new MediaType("text", "xml");
+    }
 
+    private static final String PARAM_QUALITY_FACTOR = "q";
+
+    public static final String WILDCARD_TYPE = "*";
+
+    private static final String PARAM_CHARSET = "charset";
+
+    private static final BitSet TOKEN;
+
+    static {
         // variable names refer to RFC 2616, section 2.2
         BitSet ctl = new BitSet(128);
         for (int i = 0; i <= 31; i++) {
@@ -513,7 +515,7 @@ public class MediaType implements Comparable<MediaType>, Serializable {
      * @return whether the subtype is a wildcard
      */
     public boolean isWildcardSubtype() {
-        return WILDCARD_TYPE.equals(getSubtype()) || getSubtype().startsWith("*+");
+        return (WILDCARD_TYPE.equals(getSubtype()) || getSubtype().startsWith("*+"));
     }
 
     /**
@@ -523,7 +525,7 @@ public class MediaType implements Comparable<MediaType>, Serializable {
      * @return whether this MIME Type is concrete
      */
     public boolean isConcrete() {
-        return !isWildcardType() && !isWildcardSubtype();
+        return (!isWildcardType() && !isWildcardSubtype());
     }
 
     /**
