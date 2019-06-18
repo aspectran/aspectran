@@ -23,6 +23,7 @@ import com.aspectran.core.util.LinkedMultiValueMap;
 import com.aspectran.core.util.MultiValueMap;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.apon.Parameters;
+import com.aspectran.web.support.http.MediaType;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -39,10 +40,6 @@ import java.util.Map;
  * @since 6.2.0
  */
 public class RequestBodyParser {
-
-    private static final String MULTIPART_FORM_DATA = "multipart/form-data";
-
-    private static final String APPLICATION_FORM_URLENCODED = "application/x-www-form-urlencoded";
 
     private static final String DEFAULT_ENCODING = "iso-8859-1";
 
@@ -132,11 +129,11 @@ public class RequestBodyParser {
     }
 
     public static boolean isMultipartForm(MethodType requestMethod, String contentType) {
-        return MethodType.POST.equals(requestMethod) && contentType.startsWith(MULTIPART_FORM_DATA);
+        return MethodType.POST.equals(requestMethod) && contentType.startsWith(MediaType.MULTIPART_FORM_DATA_VALUE);
     }
 
     public static boolean isURLEncodedForm(String contentType) {
-        return contentType.startsWith(APPLICATION_FORM_URLENCODED);
+        return contentType.startsWith(MediaType.APPLICATION_FORM_URLENCODED_VALUE);
     }
 
 }
