@@ -229,7 +229,7 @@ public abstract class MediaTypeUtils {
                 int eqIndex = parameter.indexOf('=');
                 if (eqIndex >= 0) {
                     String attribute = parameter.substring(0, eqIndex).trim();
-                    String value = parameter.substring(eqIndex + 1, parameter.length()).trim();
+                    String value = parameter.substring(eqIndex + 1).trim();
                     parameters.put(attribute, value);
                 }
             }
