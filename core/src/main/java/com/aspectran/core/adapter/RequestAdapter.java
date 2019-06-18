@@ -86,7 +86,7 @@ public interface RequestAdapter {
      * @return a (possibly empty) {@code Collection} of the values
      *         of the response header with the given name
      */
-    Collection<String> getHeaders(String name);
+    Collection<String> getHeaderValues(String name);
 
     /**
      * Returns the names of the headers of this response.

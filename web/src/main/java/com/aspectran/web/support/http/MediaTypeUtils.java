@@ -1,5 +1,7 @@
 package com.aspectran.web.support.http;
 
+import com.aspectran.core.lang.Nullable;
+import com.aspectran.core.util.Assert;
 import com.aspectran.core.util.StringUtils;
 
 import java.nio.charset.StandardCharsets;
@@ -33,10 +35,10 @@ import java.util.stream.Collectors;
 public abstract class MediaTypeUtils {
 
     private static final byte[] BOUNDARY_CHARS =
-            new byte[] {'-', '_', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', 'a', 'b', 'c', 'd', 'e', 'f', 'g',
-                    'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A',
-                    'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U',
-                    'V', 'W', 'X', 'Y', 'Z'};
+        new byte[]{'-', '_', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', 'a', 'b', 'c', 'd', 'e', 'f', 'g',
+            'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A',
+            'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U',
+            'V', 'W', 'X', 'Y', 'Z'};
 
     /**
      * Comparator used by {@link #sortBySpecificity(List)}.
@@ -55,7 +57,7 @@ public abstract class MediaTypeUtils {
 
     /**
      * Public constant mime type for {@code application/json}.
-     * */
+     */
     public static final MediaType APPLICATION_JSON;
 
     /**
@@ -65,7 +67,7 @@ public abstract class MediaTypeUtils {
 
     /**
      * Public constant mime type for {@code application/octet-stream}.
-     *  */
+     */
     public static final MediaType APPLICATION_OCTET_STREAM;
 
     /**
@@ -115,7 +117,7 @@ public abstract class MediaTypeUtils {
 
     /**
      * Public constant mime type for {@code text/html}.
-     *  */
+     */
     public static final MediaType TEXT_HTML;
 
     /**
@@ -125,7 +127,7 @@ public abstract class MediaTypeUtils {
 
     /**
      * Public constant mime type for {@code text/plain}.
-     *  */
+     */
     public static final MediaType TEXT_PLAIN;
 
     /**
@@ -135,7 +137,7 @@ public abstract class MediaTypeUtils {
 
     /**
      * Public constant mime type for {@code text/xml}.
-     *  */
+     */
     public static final MediaType TEXT_XML;
 
     /**
@@ -145,7 +147,7 @@ public abstract class MediaTypeUtils {
 
 
     private static final ConcurrentLruCache<String, MediaType> cachedMediaTypes =
-            new ConcurrentLruCache<>(64, MediaTypeUtils::parseMediaTypeInternal);
+        new ConcurrentLruCache<>(64, MediaTypeUtils::parseMediaTypeInternal);
 
     @Nullable
     private static volatile Random random;
@@ -164,27 +166,27 @@ public abstract class MediaTypeUtils {
         TEXT_XML = new MediaType("text", "xml");
     }
 
-
     /**
      * Parse the given String into a single {@code MediaType}.
      * Recently parsed {@code MediaType} are cached for further retrieval.
-     * @param MediaType the string to parse
+     *
+     * @param mediaType the string to parse
      * @return the mime type
      * @throws InvalidMediaTypeException if the string cannot be parsed
      */
-    public static MediaType parseMediaType(String MediaType) {
-        return cachedMediaTypes.get(MediaType);
+    public static MediaType parseMediaType(String mediaType) {
+        return cachedMediaTypes.get(mediaType);
     }
 
-    private static MediaType parseMediaTypeInternal(String MediaType) {
-        if (!StringUtils.hasLength(MediaType)) {
-            throw new InvalidMediaTypeException(MediaType, "'MediaType' must not be empty");
+    private static MediaType parseMediaTypeInternal(String mediaType) {
+        if (!StringUtils.hasLength(mediaType)) {
+            throw new InvalidMediaTypeException(mediaType, "'MediaType' must not be empty");
         }
 
-        int index = MediaType.indexOf(';');
-        String fullType = (index >= 0 ? MediaType.substring(0, index) : MediaType).trim();
+        int index = mediaType.indexOf(';');
+        String fullType = (index >= 0 ? mediaType.substring(0, index) : mediaType).trim();
         if (fullType.isEmpty()) {
-            throw new InvalidMediaTypeException(MediaType, "'MediaType' must not be empty");
+            throw new InvalidMediaTypeException(mediaType, "'MediaType' must not be empty");
         }
 
         // java.net.HttpURLConnection returns a *; q=.2 Accept header
@@ -193,34 +195,33 @@ public abstract class MediaTypeUtils {
         }
         int subIndex = fullType.indexOf('/');
         if (subIndex == -1) {
-            throw new InvalidMediaTypeException(MediaType, "does not contain '/'");
+            throw new InvalidMediaTypeException(mediaType, "does not contain '/'");
         }
         if (subIndex == fullType.length() - 1) {
-            throw new InvalidMediaTypeException(MediaType, "does not contain subtype after '/'");
+            throw new InvalidMediaTypeException(mediaType, "does not contain subtype after '/'");
         }
         String type = fullType.substring(0, subIndex);
-        String subtype = fullType.substring(subIndex + 1, fullType.length());
+        String subtype = fullType.substring(subIndex + 1);
         if (MediaType.WILDCARD_TYPE.equals(type) && !MediaType.WILDCARD_TYPE.equals(subtype)) {
-            throw new InvalidMediaTypeException(MediaType, "wildcard type is legal only in '*/*' (all mime types)");
+            throw new InvalidMediaTypeException(mediaType, "wildcard type is legal only in '*/*' (all mime types)");
         }
 
         Map<String, String> parameters = null;
         do {
             int nextIndex = index + 1;
             boolean quoted = false;
-            while (nextIndex < MediaType.length()) {
-                char ch = MediaType.charAt(nextIndex);
+            while (nextIndex < mediaType.length()) {
+                char ch = mediaType.charAt(nextIndex);
                 if (ch == ';') {
                     if (!quoted) {
                         break;
                     }
-                }
-                else if (ch == '"') {
+                } else if (ch == '"') {
                     quoted = !quoted;
                 }
                 nextIndex++;
             }
-            String parameter = MediaType.substring(index + 1, nextIndex).trim();
+            String parameter = mediaType.substring(index + 1, nextIndex).trim();
             if (parameter.length() > 0) {
                 if (parameters == null) {
                     parameters = new LinkedHashMap<>(4);
@@ -234,58 +235,57 @@ public abstract class MediaTypeUtils {
             }
             index = nextIndex;
         }
-        while (index < MediaType.length());
+        while (index < mediaType.length());
 
         try {
             return new MediaType(type, subtype, parameters);
-        }
-        catch (UnsupportedCharsetException ex) {
-            throw new InvalidMediaTypeException(MediaType, "unsupported charset '" + ex.getCharsetName() + "'");
-        }
-        catch (IllegalArgumentException ex) {
-            throw new InvalidMediaTypeException(MediaType, ex.getMessage());
+        } catch (UnsupportedCharsetException ex) {
+            throw new InvalidMediaTypeException(mediaType, "unsupported charset '" + ex.getCharsetName() + "'");
+        } catch (IllegalArgumentException ex) {
+            throw new InvalidMediaTypeException(mediaType, ex.getMessage());
         }
     }
 
     /**
      * Parse the comma-separated string into a list of {@code MediaType} objects.
-     * @param MediaTypes the string to parse
+     *
+     * @param mediaTypes the string to parse
      * @return the list of mime types
      * @throws InvalidMediaTypeException if the string cannot be parsed
      */
-    public static List<MediaType> parseMediaTypes(String MediaTypes) {
-        if (!StringUtils.hasLength(MediaTypes)) {
+    public static List<MediaType> parseMediaTypes(String mediaTypes) {
+        if (!StringUtils.hasLength(mediaTypes)) {
             return Collections.emptyList();
         }
-        return tokenize(MediaTypes).stream()
-                .map(MediaTypeUtils::parseMediaType).collect(Collectors.toList());
+        return tokenize(mediaTypes).stream()
+            .map(MediaTypeUtils::parseMediaType).collect(Collectors.toList());
     }
-
 
     /**
      * Tokenize the given comma-separated string of {@code MediaType} objects
      * into a {@code List<String>}. Unlike simple tokenization by ",", this
      * method takes into account quoted parameters.
-     * @param MediaTypes the string to tokenize
+     *
+     * @param mediaTypes the string to tokenize
      * @return the list of tokens
      * @since 5.1.3
      */
-    public static List<String> tokenize(String MediaTypes) {
-        if (!StringUtils.hasLength(MediaTypes)) {
+    public static List<String> tokenize(String mediaTypes) {
+        if (!StringUtils.hasLength(mediaTypes)) {
             return Collections.emptyList();
         }
         List<String> tokens = new ArrayList<>();
         boolean inQuotes = false;
         int startIndex = 0;
         int i = 0;
-        while (i < MediaTypes.length()) {
-            switch (MediaTypes.charAt(i)) {
+        while (i < mediaTypes.length()) {
+            switch (mediaTypes.charAt(i)) {
                 case '"':
                     inQuotes = !inQuotes;
                     break;
                 case ',':
                     if (!inQuotes) {
-                        tokens.add(MediaTypes.substring(startIndex, i));
+                        tokens.add(mediaTypes.substring(startIndex, i));
                         startIndex = i + 1;
                     }
                     break;
@@ -295,19 +295,20 @@ public abstract class MediaTypeUtils {
             }
             i++;
         }
-        tokens.add(MediaTypes.substring(startIndex));
+        tokens.add(mediaTypes.substring(startIndex));
         return tokens;
     }
 
     /**
      * Return a string representation of the given list of {@code MediaType} objects.
-     * @param MediaTypes the string to parse
+     *
+     * @param mediaTypes the string to parse
      * @return the list of mime types
      * @throws IllegalArgumentException if the String cannot be parsed
      */
-    public static String toString(Collection<? extends MediaType> MediaTypes) {
+    public static String toString(Collection<MediaType> mediaTypes) {
         StringBuilder builder = new StringBuilder();
-        for (Iterator<? extends MediaType> iterator = MediaTypes.iterator(); iterator.hasNext();) {
+        for (Iterator<? extends MediaType> iterator = mediaTypes.iterator(); iterator.hasNext(); ) {
             MediaType MediaType = iterator.next();
             MediaType.appendTo(builder);
             if (iterator.hasNext()) {
@@ -332,24 +333,22 @@ public abstract class MediaTypeUtils {
      * <li>if the two mime types have a different amount of
      * {@linkplain MediaType#getParameter(String) parameters}, then the mime type with the most
      * parameters is ordered before the other.</li>
-     * </ol>
+     * </ol></p>
      * <p>For example: <blockquote>audio/basic &lt; audio/* &lt; *&#047;*</blockquote>
      * <blockquote>audio/basic;level=1 &lt; audio/basic</blockquote>
      * <blockquote>audio/basic == text/html</blockquote> <blockquote>audio/basic ==
-     * audio/wave</blockquote>
+     * audio/wave</blockquote></p>
+     *
      * @param mediaTypes the list of mime types to be sorted
      * @see <a href="https://tools.ietf.org/html/rfc7231#section-5.3.2">HTTP 1.1: Semantics
      * and Content, section 5.3.2</a>
      */
     public static void sortBySpecificity(List<MediaType> mediaTypes) {
-        if (mediaTypes == null) {
-            throw new IllegalArgumentException("mediaTypes must not be null");
-        }
+        Assert.notNull(mediaTypes, "'mimeTypes' must not be null");
         if (mediaTypes.size() > 1) {
             mediaTypes.sort(SPECIFICITY_COMPARATOR);
         }
     }
-
 
     /**
      * Lazily initialize the {@link SecureRandom} for {@link #generateMultipartBoundary()}.
@@ -394,6 +393,7 @@ public abstract class MediaTypeUtils {
      * <p>This implementation is backed by a {@code ConcurrentHashMap} for storing
      * the cached values and a {@code ConcurrentLinkedQueue} for ordering the keys
      * and choosing the least recently used key when the cache is at full capacity.
+     *
      * @param <K> the type of the key used for caching
      * @param <V> the type of the cached values
      */
@@ -410,12 +410,8 @@ public abstract class MediaTypeUtils {
         private final Function<K, V> generator;
 
         public ConcurrentLruCache(int maxSize, Function<K, V> generator) {
-            if (maxSize > 0) {
-                throw new IllegalArgumentException("LRU max size should be positive");
-            }
-            if (generator == null) {
-                throw new IllegalArgumentException("Generator function should not be null");
-            }
+            Assert.isTrue(maxSize > 0, "LRU max size should be positive");
+            Assert.notNull(generator, "Generator function should not be null");
             this.maxSize = maxSize;
             this.generator = generator;
         }
@@ -427,8 +423,7 @@ public abstract class MediaTypeUtils {
                     this.queue.add(key);
                     return this.cache.get(key);
                 }
-            }
-            finally {
+            } finally {
                 this.lock.readLock().unlock();
             }
             this.lock.writeLock().lock();
@@ -443,8 +438,7 @@ public abstract class MediaTypeUtils {
                 this.queue.add(key);
                 this.cache.put(key, value);
                 return value;
-            }
-            finally {
+            } finally {
                 this.lock.writeLock().unlock();
             }
         }

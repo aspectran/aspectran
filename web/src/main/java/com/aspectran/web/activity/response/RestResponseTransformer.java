@@ -17,42 +17,62 @@ package com.aspectran.web.activity.response;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.response.transform.CustomTransformer;
+import com.aspectran.core.activity.response.transform.JsonTransformResponse;
+import com.aspectran.core.activity.response.transform.apon.ContentsAponConverter;
+import com.aspectran.core.activity.response.transform.json.ContentsJsonWriter;
+import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
+import com.aspectran.core.util.apon.AponConverter;
+import com.aspectran.core.util.apon.AponWriter;
+import com.aspectran.core.util.apon.Parameters;
+import com.aspectran.core.util.json.JsonWriter;
 import com.aspectran.web.support.http.HttpHeaders;
+import com.aspectran.web.support.http.HttpMediaTypeNotAcceptableException;
 import com.aspectran.web.support.http.HttpStatus;
+import com.aspectran.web.support.http.MediaType;
+
+import java.io.IOException;
+import java.io.Writer;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * <p>Created: 2019-06-16</p>
  */
 public class RestResponseTransformer extends AbstractRestResponse<RestResponseTransformer> implements CustomTransformer {
 
-    private static final String APPLICATION_JSON = "application/json";
-
-    private static final String APPLICATION_APON = "application/apon";
-
-    private final Object data;
+    private static final List<MediaType> supportedContentTypes;
+    static {
+        supportedContentTypes = new ArrayList<>();
+        supportedContentTypes.add(MediaType.APPLICATION_JSON);
+        supportedContentTypes.add(MediaType.APPLICATION_APON);
+    }
 
     public RestResponseTransformer() {
-        this(null);
+        super();
     }
 
     public RestResponseTransformer(Object data) {
-        super();
-        this.data = data;
+        super(data);
     }
 
     @Override
     public void transform(Activity activity) throws Exception {
+        RequestAdapter requestAdapter = activity.getRequestAdapter();
         ResponseAdapter responseAdapter = activity.getResponseAdapter();
 
-        String acceptContentType = determineAcceptContentType(responseAdapter);
-        if (APPLICATION_JSON.equals(acceptContentType)) {
-            toJSON(activity, data);
-        } else if (APPLICATION_APON.equals(acceptContentType)) {
-            toAPON(activity, data);
-        } else {
+        MediaType contentType;
+        try {
+            contentType = determineContentType(requestAdapter, supportedContentTypes);
+        } catch (HttpMediaTypeNotAcceptableException e) {
             responseAdapter.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
             return;
+        }
+
+        if (contentType.equals(MediaType.APPLICATION_JSON)) {
+            toJSON(activity);
+        } else if (contentType.equals(MediaType.APPLICATION_APON)) {
+            toAPON(activity);
         }
 
         if (getStatus() > 0) {
@@ -60,6 +80,70 @@ public class RestResponseTransformer extends AbstractRestResponse<RestResponseTr
             if (getStatus() == HttpStatus.CREATED.value() && getLocation() != null) {
                 responseAdapter.setHeader(HttpHeaders.LOCATION, getLocation());
             }
+        }
+    }
+
+    private void toJSON(Activity activity) throws IOException {
+        RequestAdapter requestAdapter = activity.getRequestAdapter();
+        ResponseAdapter responseAdapter = activity.getResponseAdapter();
+        Writer writer = responseAdapter.getWriter();
+
+        // support for jsonp
+        String callback = requestAdapter.getParameter(JsonTransformResponse.CALLBACK_PARAM_NAME);
+        if (callback != null) {
+            writer.write(callback + JsonTransformResponse.ROUND_BRACKET_OPEN);
+        }
+        if (getData() != null) {
+            JsonWriter jsonWriter;
+            if (isPrettyPrint()) {
+                String indentString = activity.getSetting("indentString");
+                jsonWriter = new JsonWriter(writer, indentString);
+            } else {
+                jsonWriter = new JsonWriter(writer, false);
+            }
+            jsonWriter.write(getData());
+        } else {
+            JsonWriter jsonWriter;
+            if (isPrettyPrint()) {
+                String indentString = activity.getSetting("indentString");
+                jsonWriter = new ContentsJsonWriter(writer, indentString);
+            } else {
+                jsonWriter = new ContentsJsonWriter(writer, false);
+            }
+            jsonWriter.write(activity.getProcessResult());
+        }
+        if (callback != null) {
+            writer.write(JsonTransformResponse.ROUND_BRACKET_CLOSE);
+        }
+    }
+
+    private void toAPON(Activity activity) throws IOException {
+        ResponseAdapter responseAdapter = activity.getResponseAdapter();
+        Writer writer = responseAdapter.getWriter();
+
+        AponWriter aponWriter = new AponWriter(writer);
+        if (getData() != null) {
+            Parameters parameters = AponConverter.from(getData());
+            if (isPrettyPrint()) {
+                String indentString = activity.getSetting("indentString");
+                if (indentString != null) {
+                    aponWriter.setIndentString(indentString);
+                }
+            } else {
+                aponWriter.setIndentString(null);
+            }
+            aponWriter.write(parameters);
+        } else {
+            Parameters parameters = ContentsAponConverter.from(activity.getProcessResult());
+            if (isPrettyPrint()) {
+                String indentString = activity.getSetting("indentString");
+                if (indentString != null) {
+                    aponWriter.setIndentString(indentString);
+                }
+            } else {
+                aponWriter.setIndentString(null);
+            }
+            aponWriter.write(parameters);
         }
     }
 

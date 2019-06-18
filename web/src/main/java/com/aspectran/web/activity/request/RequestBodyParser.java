@@ -48,6 +48,9 @@ public class RequestBodyParser {
 
     private static final int BUFFER_SIZE = 1024;
 
+    private RequestBodyParser() {
+    }
+
     public static void parseBody(RequestAdapter requestAdapter) {
         try {
             StringBuilder sb = new StringBuilder();

@@ -91,7 +91,7 @@ public abstract class AbstractRequest {
      * @return a (possibly empty) {@code Collection} of the values
      *         of the response header with the given name
      */
-    public Collection<String> getHeaders(String name) {
+    public Collection<String> getHeaderValues(String name) {
         return getHeaderMap().get(name);
     }
 

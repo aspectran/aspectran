@@ -25,7 +25,7 @@ import java.lang.reflect.Proxy;
 
 /**
  * For re-inflating serialized objects, this class uses the thread context classloader
- * rather than the jvm's default classloader selection.
+ * rather than the JVM's default classloader selection.
  */
 public class CustomObjectInputStream extends ObjectInputStream {
 

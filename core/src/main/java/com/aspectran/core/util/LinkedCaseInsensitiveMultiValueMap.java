@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.util;
 
+import com.aspectran.core.lang.NonNull;
+
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
@@ -26,6 +28,8 @@ import java.util.Map;
 import java.util.Set;
 
 /**
+ * <p>(This class is a member of the Spring Framework.)</p>
+ *
  * {@link LinkedHashMap} variant that stores String keys in a case-insensitive
  * manner, for example for key-based access in a results table.
  *
@@ -140,7 +144,7 @@ public class LinkedCaseInsensitiveMultiValueMap<V> implements MultiValueMap<Stri
     }
 
     @Override
-    public void putAll(Map<? extends String, ? extends List<V>> map) {
+    public void putAll(@NonNull Map<? extends String, ? extends List<V>> map) {
         this.values.putAll(map);
     }
 
@@ -150,16 +154,19 @@ public class LinkedCaseInsensitiveMultiValueMap<V> implements MultiValueMap<Stri
     }
 
     @Override
+    @NonNull
     public Set<String> keySet() {
         return this.values.keySet();
     }
 
     @Override
+    @NonNull
     public Collection<List<V>> values() {
         return this.values.values();
     }
 
     @Override
+    @NonNull
     public Set<Entry<String, List<V>>> entrySet() {
         return this.values.entrySet();
     }

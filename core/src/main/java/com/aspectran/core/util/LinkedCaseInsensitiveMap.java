@@ -24,6 +24,8 @@ import java.util.Map;
 import java.util.Set;
 
 /**
+ * <p>(This class is a member of the Spring Framework.)</p>
+ *
  * {@link LinkedHashMap} variant that stores String keys in a case-insensitive
  * manner, for example for key-based access in a results table.
  *
@@ -86,6 +88,7 @@ public class LinkedCaseInsensitiveMap<V> implements Map<String, V>, Serializable
      * @param locale the Locale to use for case-insensitive key conversion
      * @see #convertKey(String)
      */
+    @SuppressWarnings("serial")
     public LinkedCaseInsensitiveMap(int initialCapacity, Locale locale) {
         this.targetMap = new LinkedHashMap<String, V>(initialCapacity) {
             @Override

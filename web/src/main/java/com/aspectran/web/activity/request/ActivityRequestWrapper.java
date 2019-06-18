@@ -60,7 +60,7 @@ public class ActivityRequestWrapper extends HttpServletRequestWrapper {
         if (requestAdapter == null) {
             return super.getHeaders(name);
         }
-        return Collections.enumeration(requestAdapter.getHeaders(name));
+        return Collections.enumeration(requestAdapter.getHeaderValues(name));
     }
 
     @Override
