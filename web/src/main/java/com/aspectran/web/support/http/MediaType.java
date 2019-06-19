@@ -1,10 +1,10 @@
 package com.aspectran.web.support.http;
 
+import com.aspectran.core.lang.Nullable;
 import com.aspectran.core.util.Assert;
 import com.aspectran.core.util.LinkedCaseInsensitiveMap;
 import com.aspectran.core.util.ObjectUtils;
 import com.aspectran.core.util.StringUtils;
-import jdk.internal.jline.internal.Nullable;
 
 import java.io.Serializable;
 import java.nio.charset.Charset;
@@ -24,7 +24,7 @@ import java.util.TreeSet;
  * <p>(This class is a member of the Spring Framework.)</p>
  *
  * Represents an Internet Media Type, as defined in the HTTP specification.
- * </p>This class contain support for the q-parameters used in HTTP content negotiation.</p>
+ * <p>This class contain support for the q-parameters used in HTTP content negotiation.</p>
  *
  * @author Arjen Poutsma
  * @author Juergen Hoeller
@@ -469,7 +469,7 @@ public class MediaType implements Comparable<MediaType>, Serializable {
         }
     }
 
-    protected void checkParameters(String attribute, String value) {
+    private void checkParameters(String attribute, String value) {
         Assert.hasLength(attribute, "'attribute' must not be empty");
         Assert.hasLength(value, "'value' must not be empty");
         checkToken(attribute);
@@ -495,13 +495,15 @@ public class MediaType implements Comparable<MediaType>, Serializable {
         }
     }
 
-    protected String unquote(String s) {
+    private String unquote(String s) {
         return (isQuotedString(s) ? s.substring(1, s.length() - 1) : s);
     }
 
     /**
      * Indicates whether the {@linkplain #getType() type} is the wildcard character
      * <code>&#42;</code> or not.
+     *
+     * @return true if it is a wildcard character; Otherwise false
      */
     public boolean isWildcardType() {
         return WILDCARD_TYPE.equals(getType());
@@ -530,6 +532,8 @@ public class MediaType implements Comparable<MediaType>, Serializable {
 
     /**
      * Return the primary type.
+     *
+     * @return the primary type
      */
     public String getType() {
         return this.type;
@@ -537,6 +541,8 @@ public class MediaType implements Comparable<MediaType>, Serializable {
 
     /**
      * Return the subtype.
+     *
+     * @return the subtype
      */
     public String getSubtype() {
         return this.subtype;
@@ -847,6 +853,7 @@ public class MediaType implements Comparable<MediaType>, Serializable {
     /**
      * Return a replica of this instance with the quality value of the given {@code MediaType}.
      *
+     * @param mediaType the media type
      * @return the same instance if the given MediaType doesn't have a quality value,
      * or a new one otherwise
      */
@@ -936,7 +943,7 @@ public class MediaType implements Comparable<MediaType>, Serializable {
 
     /**
      * Return a string representation of the given list of {@code MediaType} objects.
-     * <p>This method can be used to for an {@code Accept} or {@code Content-Type} header.
+     * <p>This method can be used to for an {@code Accept} or {@code Content-Type} header.</p>
      *
      * @param mediaTypes the media types to create a string representation for
      * @return the string representation
@@ -947,7 +954,7 @@ public class MediaType implements Comparable<MediaType>, Serializable {
 
     /**
      * Sorts the given list of {@code MediaType} objects by specificity.
-     * <p>Given two media types:
+     * <p>Given two media types:</p>
      * <ol>
      * <li>if either media type has a {@linkplain #isWildcardType() wildcard type}, then the media type without the
      * wildcard is ordered before the other.</li>
@@ -962,12 +969,12 @@ public class MediaType implements Comparable<MediaType>, Serializable {
      * <li>if the two media types have a different amount of {@linkplain #getParameter(String) parameters}, then the
      * media type with the most parameters is ordered before the other.</li>
      * </ol>
-     * <p>For example:
+     * <p>For example:</p>
      * <blockquote>audio/basic &lt; audio/* &lt; *&#047;*</blockquote>
      * <blockquote>audio/* &lt; audio/*;q=0.7; audio/*;q=0.3</blockquote>
      * <blockquote>audio/basic;level=1 &lt; audio/basic</blockquote>
      * <blockquote>audio/basic == text/html</blockquote>
-     * <blockquote>audio/basic == audio/wave</blockquote></p>
+     * <blockquote>audio/basic == audio/wave</blockquote>
      *
      * @param mediaTypes the list of media types to be sorted
      * @see <a href="https://tools.ietf.org/html/rfc7231#section-5.3.2">HTTP 1.1: Semantics
@@ -982,7 +989,7 @@ public class MediaType implements Comparable<MediaType>, Serializable {
 
     /**
      * Sorts the given list of {@code MediaType} objects by quality value.
-     * <p>Given two media types:
+     * <p>Given two media types:</p>
      * <ol>
      * <li>if the two media types have different {@linkplain #getQualityValue() quality value}, then the media type
      * with the highest quality value is ordered before the other.</li>
@@ -1012,6 +1019,7 @@ public class MediaType implements Comparable<MediaType>, Serializable {
      * Sorts the given list of {@code MediaType} objects by specificity as the
      * primary criteria and quality value the secondary.
      *
+     * @param mediaTypes the list of media types to sort
      * @see MediaType#sortBySpecificity(List)
      * @see MediaType#sortByQualityValue(List)
      */
@@ -1027,6 +1035,7 @@ public class MediaType implements Comparable<MediaType>, Serializable {
      * with this method name following the 'valueOf' naming convention
      *
      * @param value the string to parse
+     * @return the media type
      * @throws InvalidMediaTypeException if the media type value cannot be parsed
      * @see #parseMediaType(String)
      */

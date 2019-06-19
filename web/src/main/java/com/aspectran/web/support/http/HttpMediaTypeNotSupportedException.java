@@ -69,6 +69,8 @@ public class HttpMediaTypeNotSupportedException extends HttpMediaTypeException {
 
     /**
      * Return the HTTP request content type method that caused the failure.
+     *
+     * @return the media type
      */
     @Nullable
     public MediaType getContentType() {

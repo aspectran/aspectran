@@ -61,7 +61,6 @@ public class RestResponseTransformer extends AbstractRestResponse<RestResponseTr
         supportedPathExtensions = Collections.unmodifiableMap(pathExtensions);
     }
 
-
     public RestResponseTransformer() {
         super();
     }

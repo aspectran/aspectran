@@ -23,7 +23,7 @@ import java.util.function.Supplier;
 
 /**
  * <p>(This class is a member of the Spring Framework.)</p>
- *
+ * <p>
  * Assertion utility class that assists in validating arguments.
  *
  * <p>Useful for identifying programmer errors early and clearly at runtime.</p>
@@ -44,7 +44,7 @@ import java.util.function.Supplier;
  *
  * <pre class="code">
  * Assert.notNull(clazz, "The class must not be null");
- * Assert.isTrue(i > 0, "The value must be greater than zero");</pre>
+ * Assert.isTrue(i &gt; 0, "The value must be greater than zero");</pre>
  *
  * <p>Mainly for internal use within the framework; consider
  * <a href="https://commons.apache.org/proper/commons-lang/">Apache's Commons Lang</a>
@@ -63,7 +63,7 @@ public abstract class Assert {
      * Assert a boolean expression, throwing an {@code IllegalStateException}
      * if the expression evaluates to {@code false}.
      * <p>Call {@link #isTrue} if you wish to throw an {@code IllegalArgumentException}
-     * on an assertion failure.
+     * on an assertion failure.</p>
      * <pre class="code">Assert.state(id == null, "The id property must not already be initialized");</pre>
      *
      * @param expression a boolean expression
@@ -332,7 +332,7 @@ public abstract class Assert {
 
     /**
      * Assert that an array contains no {@code null} elements.
-     * <p>Note: Does not complain if the array is empty!
+     * <p>Note: Does not complain if the array is empty!</p>
      * <pre class="code">Assert.noNullElements(array, "The array must contain non-null elements");</pre>
      *
      * @param array   the array to check
@@ -351,7 +351,7 @@ public abstract class Assert {
 
     /**
      * Assert that an array contains no {@code null} elements.
-     * <p>Note: Does not complain if the array is empty!
+     * <p>Note: Does not complain if the array is empty!</p>
      * <pre class="code">
      * Assert.noNullElements(array, () -&gt; "The " + arrayType + " array must contain non-null elements");
      * </pre>

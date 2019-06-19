@@ -4,9 +4,7 @@ import com.aspectran.core.lang.Nullable;
 import com.aspectran.core.util.Assert;
 import com.aspectran.core.util.StringUtils;
 
-import java.nio.charset.StandardCharsets;
 import java.nio.charset.UnsupportedCharsetException;
-import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -46,7 +44,7 @@ public abstract class MediaTypeUtils {
     public static final Comparator<MediaType> SPECIFICITY_COMPARATOR = new MediaType.SpecificityComparator<>();
 
     /**
-     * Public constant mime type that includes all media ranges (i.e. "&#42;/&#42;").
+     * Public constant media type that includes all media ranges (i.e. "&#42;/&#42;").
      */
     public static final MediaType ALL;
 
@@ -56,7 +54,7 @@ public abstract class MediaTypeUtils {
     public static final String ALL_VALUE = "*/*";
 
     /**
-     * Public constant mime type for {@code application/json}.
+     * Public constant media type for {@code application/json}.
      */
     public static final MediaType APPLICATION_JSON;
 
@@ -66,7 +64,7 @@ public abstract class MediaTypeUtils {
     public static final String APPLICATION_JSON_VALUE = "application/json";
 
     /**
-     * Public constant mime type for {@code application/octet-stream}.
+     * Public constant media type for {@code application/octet-stream}.
      */
     public static final MediaType APPLICATION_OCTET_STREAM;
 
@@ -76,7 +74,7 @@ public abstract class MediaTypeUtils {
     public static final String APPLICATION_OCTET_STREAM_VALUE = "application/octet-stream";
 
     /**
-     * Public constant mime type for {@code application/xml}.
+     * Public constant media type for {@code application/xml}.
      */
     public static final MediaType APPLICATION_XML;
 
@@ -86,7 +84,7 @@ public abstract class MediaTypeUtils {
     public static final String APPLICATION_XML_VALUE = "application/xml";
 
     /**
-     * Public constant mime type for {@code image/gif}.
+     * Public constant media type for {@code image/gif}.
      */
     public static final MediaType IMAGE_GIF;
 
@@ -96,7 +94,7 @@ public abstract class MediaTypeUtils {
     public static final String IMAGE_GIF_VALUE = "image/gif";
 
     /**
-     * Public constant mime type for {@code image/jpeg}.
+     * Public constant media type for {@code image/jpeg}.
      */
     public static final MediaType IMAGE_JPEG;
 
@@ -106,7 +104,7 @@ public abstract class MediaTypeUtils {
     public static final String IMAGE_JPEG_VALUE = "image/jpeg";
 
     /**
-     * Public constant mime type for {@code image/png}.
+     * Public constant media type for {@code image/png}.
      */
     public static final MediaType IMAGE_PNG;
 
@@ -116,7 +114,7 @@ public abstract class MediaTypeUtils {
     public static final String IMAGE_PNG_VALUE = "image/png";
 
     /**
-     * Public constant mime type for {@code text/html}.
+     * Public constant media type for {@code text/html}.
      */
     public static final MediaType TEXT_HTML;
 
@@ -126,7 +124,7 @@ public abstract class MediaTypeUtils {
     public static final String TEXT_HTML_VALUE = "text/html";
 
     /**
-     * Public constant mime type for {@code text/plain}.
+     * Public constant media type for {@code text/plain}.
      */
     public static final MediaType TEXT_PLAIN;
 
@@ -136,7 +134,7 @@ public abstract class MediaTypeUtils {
     public static final String TEXT_PLAIN_VALUE = "text/plain";
 
     /**
-     * Public constant mime type for {@code text/xml}.
+     * Public constant media type for {@code text/xml}.
      */
     public static final MediaType TEXT_XML;
 
@@ -171,7 +169,7 @@ public abstract class MediaTypeUtils {
      * Recently parsed {@code MediaType} are cached for further retrieval.
      *
      * @param mediaType the string to parse
-     * @return the mime type
+     * @return the media type
      * @throws InvalidMediaTypeException if the string cannot be parsed
      */
     public static MediaType parseMediaType(String mediaType) {
@@ -180,13 +178,13 @@ public abstract class MediaTypeUtils {
 
     private static MediaType parseMediaTypeInternal(String mediaType) {
         if (!StringUtils.hasLength(mediaType)) {
-            throw new InvalidMediaTypeException(mediaType, "'MediaType' must not be empty");
+            throw new InvalidMediaTypeException(mediaType, "'mediaType' must not be empty");
         }
 
         int index = mediaType.indexOf(';');
         String fullType = (index >= 0 ? mediaType.substring(0, index) : mediaType).trim();
         if (fullType.isEmpty()) {
-            throw new InvalidMediaTypeException(mediaType, "'MediaType' must not be empty");
+            throw new InvalidMediaTypeException(mediaType, "'mediaType' must not be empty");
         }
 
         // java.net.HttpURLConnection returns a *; q=.2 Accept header
@@ -203,7 +201,7 @@ public abstract class MediaTypeUtils {
         String type = fullType.substring(0, subIndex);
         String subtype = fullType.substring(subIndex + 1);
         if (MediaType.WILDCARD_TYPE.equals(type) && !MediaType.WILDCARD_TYPE.equals(subtype)) {
-            throw new InvalidMediaTypeException(mediaType, "wildcard type is legal only in '*/*' (all mime types)");
+            throw new InvalidMediaTypeException(mediaType, "wildcard type is legal only in '*/*' (all media types)");
         }
 
         Map<String, String> parameters = null;
@@ -250,7 +248,7 @@ public abstract class MediaTypeUtils {
      * Parse the comma-separated string into a list of {@code MediaType} objects.
      *
      * @param mediaTypes the string to parse
-     * @return the list of mime types
+     * @return the list of media types
      * @throws InvalidMediaTypeException if the string cannot be parsed
      */
     public static List<MediaType> parseMediaTypes(String mediaTypes) {
@@ -303,7 +301,7 @@ public abstract class MediaTypeUtils {
      * Return a string representation of the given list of {@code MediaType} objects.
      *
      * @param mediaTypes the string to parse
-     * @return the list of mime types
+     * @return the list of media types
      * @throws IllegalArgumentException if the String cannot be parsed
      */
     public static String toString(Collection<MediaType> mediaTypes) {
@@ -320,26 +318,27 @@ public abstract class MediaTypeUtils {
 
     /**
      * Sorts the given list of {@code MediaType} objects by specificity.
-     * <p>Given two mime types:
+     * <p>Given two media types:</p>
      * <ol>
-     * <li>if either mime type has a {@linkplain MediaType#isWildcardType() wildcard type},
-     * then the mime type without the wildcard is ordered before the other.</li>
-     * <li>if the two mime types have different {@linkplain MediaType#getType() types},
+     * <li>if either media type has a {@linkplain MediaType#isWildcardType() wildcard type},
+     * then the media type without the wildcard is ordered before the other.</li>
+     * <li>if the two media types have different {@linkplain MediaType#getType() types},
      * then they are considered equal and remain their current order.</li>
-     * <li>if either mime type has a {@linkplain MediaType#isWildcardSubtype() wildcard subtype}
-     * , then the mime type without the wildcard is sorted before the other.</li>
-     * <li>if the two mime types have different {@linkplain MediaType#getSubtype() subtypes},
+     * <li>if either media type has a {@linkplain MediaType#isWildcardSubtype() wildcard subtype}
+     * , then the media type without the wildcard is sorted before the other.</li>
+     * <li>if the two media types have different {@linkplain MediaType#getSubtype() subtypes},
      * then they are considered equal and remain their current order.</li>
-     * <li>if the two mime types have a different amount of
-     * {@linkplain MediaType#getParameter(String) parameters}, then the mime type with the most
+     * <li>if the two media types have a different amount of
+     * {@linkplain MediaType#getParameter(String) parameters}, then the media type with the most
      * parameters is ordered before the other.</li>
-     * </ol></p>
-     * <p>For example: <blockquote>audio/basic &lt; audio/* &lt; *&#047;*</blockquote>
+     * </ol>
+     * <p>For example:</p>
+     * <blockquote>audio/basic &lt; audio/* &lt; *&#047;*</blockquote>
      * <blockquote>audio/basic;level=1 &lt; audio/basic</blockquote>
-     * <blockquote>audio/basic == text/html</blockquote> <blockquote>audio/basic ==
-     * audio/wave</blockquote></p>
+     * <blockquote>audio/basic == text/html</blockquote>
+     * <blockquote>audio/basic == audio/wave</blockquote>
      *
-     * @param mediaTypes the list of mime types to be sorted
+     * @param mediaTypes the list of media types to be sorted
      * @see <a href="https://tools.ietf.org/html/rfc7231#section-5.3.2">HTTP 1.1: Semantics
      * and Content, section 5.3.2</a>
      */
@@ -348,42 +347,6 @@ public abstract class MediaTypeUtils {
         if (mediaTypes.size() > 1) {
             mediaTypes.sort(SPECIFICITY_COMPARATOR);
         }
-    }
-
-    /**
-     * Lazily initialize the {@link SecureRandom} for {@link #generateMultipartBoundary()}.
-     */
-    private static Random initRandom() {
-        Random randomToUse = random;
-        if (randomToUse == null) {
-            synchronized (MediaTypeUtils.class) {
-                randomToUse = random;
-                if (randomToUse == null) {
-                    randomToUse = new SecureRandom();
-                    random = randomToUse;
-                }
-            }
-        }
-        return randomToUse;
-    }
-
-    /**
-     * Generate a random MIME boundary as bytes, often used in multipart mime types.
-     */
-    public static byte[] generateMultipartBoundary() {
-        Random randomToUse = initRandom();
-        byte[] boundary = new byte[randomToUse.nextInt(11) + 30];
-        for (int i = 0; i < boundary.length; i++) {
-            boundary[i] = BOUNDARY_CHARS[randomToUse.nextInt(BOUNDARY_CHARS.length)];
-        }
-        return boundary;
-    }
-
-    /**
-     * Generate a random MIME boundary as String, often used in multipart mime types.
-     */
-    public static String generateMultipartBoundaryString() {
-        return new String(generateMultipartBoundary(), StandardCharsets.US_ASCII);
     }
 
 

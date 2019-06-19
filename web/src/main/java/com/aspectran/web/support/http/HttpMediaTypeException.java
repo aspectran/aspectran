@@ -21,7 +21,7 @@ import java.util.List;
 
 /**
  * <p>(This class is a member of the Spring Framework.)</p>
- *
+ * <p>
  * Abstract base for exceptions related to media types.
  * Adds a list of supported {@link MediaType MediaTypes}.
  *
@@ -45,6 +45,7 @@ public abstract class HttpMediaTypeException extends ServletException {
     /**
      * Create a new HttpMediaTypeException with a list of supported media types.
      *
+     * @param message the exception message
      * @param supportedMediaTypes the list of supported media types
      */
     protected HttpMediaTypeException(String message, List<MediaType> supportedMediaTypes) {
@@ -55,6 +56,8 @@ public abstract class HttpMediaTypeException extends ServletException {
 
     /**
      * Return the list of supported media types.
+     *
+     * @return the list of supported media types
      */
     public List<MediaType> getSupportedMediaTypes() {
         return this.supportedMediaTypes;

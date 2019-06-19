@@ -9,24 +9,26 @@ package com.aspectran.web.support.http;
 @SuppressWarnings("serial")
 public class InvalidMediaTypeException extends IllegalArgumentException {
 
-    private final String mimeType;
+    private final String mediaType;
 
     /**
      * Create a new InvalidContentTypeException for the given content type.
-     * @param mimeType the offending media type
-     * @param message a detail message indicating the invalid part
+     *
+     * @param mediaType the offending media type
+     * @param message   a detail message indicating the invalid part
      */
-    public InvalidMediaTypeException(String mimeType, String message) {
-        super("Invalid mime type \"" + mimeType + "\": " + message);
-        this.mimeType = mimeType;
+    public InvalidMediaTypeException(String mediaType, String message) {
+        super("Invalid media type \"" + mediaType + "\": " + message);
+        this.mediaType = mediaType;
     }
 
-
     /**
-     * Return the offending content type.
+     * Return the offending media type.
+     *
+     * @return the media type
      */
-    public String getMimeType() {
-        return this.mimeType;
+    public String getMediaType() {
+        return this.mediaType;
     }
 
 }
