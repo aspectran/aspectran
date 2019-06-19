@@ -22,7 +22,6 @@ import com.aspectran.core.activity.response.transform.apon.ContentsAponConverter
 import com.aspectran.core.activity.response.transform.json.ContentsJsonWriter;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
-import com.aspectran.core.lang.Nullable;
 import com.aspectran.core.util.apon.AponConverter;
 import com.aspectran.core.util.apon.AponWriter;
 import com.aspectran.core.util.apon.Parameters;
@@ -43,7 +42,7 @@ import java.util.Map;
 /**
  * <p>Created: 2019-06-16</p>
  */
-public class RestResponseTransformer extends AbstractRestResponse<RestResponseTransformer> implements CustomTransformer {
+public class RestResponseTransformer extends AbstractRestResponse implements CustomTransformer {
 
     private static final List<MediaType> supportedContentTypes;
     static {
@@ -65,7 +64,7 @@ public class RestResponseTransformer extends AbstractRestResponse<RestResponseTr
         super();
     }
 
-    public RestResponseTransformer(@Nullable Object data) {
+    public RestResponseTransformer(Object data) {
         super(data);
     }
 

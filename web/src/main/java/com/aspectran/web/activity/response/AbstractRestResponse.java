@@ -30,7 +30,7 @@ import java.util.Locale;
 /**
  * <p>Created: 2019-06-16</p>
  */
-public abstract class AbstractRestResponse<T> implements RestResponse {
+public abstract class AbstractRestResponse implements RestResponse {
 
     private Object data;
 
@@ -76,10 +76,9 @@ public abstract class AbstractRestResponse<T> implements RestResponse {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public T prettyPrint(boolean prettyPrint) {
+    public RestResponse prettyPrint(boolean prettyPrint) {
         setPrettyPrint(prettyPrint);
-        return (T)this;
+        return this;
     }
 
     @Override
@@ -93,10 +92,9 @@ public abstract class AbstractRestResponse<T> implements RestResponse {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public T favorPathExtension(boolean favorPathExtension) {
+    public RestResponse favorPathExtension(boolean favorPathExtension) {
         setFavorPathExtension(favorPathExtension);
-        return (T)this;
+        return this;
     }
 
     @Override
@@ -110,10 +108,9 @@ public abstract class AbstractRestResponse<T> implements RestResponse {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public T ignoreUnknownPathExtensions(boolean ignoreUnknownPathExtensions) {
+    public RestResponse ignoreUnknownPathExtensions(boolean ignoreUnknownPathExtensions) {
         setIgnoreUnknownPathExtensions(ignoreUnknownPathExtensions);
-        return (T)this;
+        return this;
     }
 
     @Override
@@ -127,10 +124,9 @@ public abstract class AbstractRestResponse<T> implements RestResponse {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public T ignoreAcceptHeader(boolean ignoreAcceptHeader) {
+    public RestResponse ignoreAcceptHeader(boolean ignoreAcceptHeader) {
         setIgnoreAcceptHeader(ignoreAcceptHeader);
-        return (T)this;
+        return this;
     }
 
     @Override
@@ -149,142 +145,123 @@ public abstract class AbstractRestResponse<T> implements RestResponse {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public T defaultContentType(MediaType defaultContentType) {
+    public RestResponse defaultContentType(MediaType defaultContentType) {
         setDefaultContentType(defaultContentType);
-        return (T)this;
+        return this;
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public T ok() {
+    public RestResponse ok() {
         this.status = HttpStatus.OK.value();
-        return (T)this;
+        return this;
     }
 
     @Override
-    public T created() {
+    public RestResponse created() {
         return created(null);
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public T created(String location) {
+    public RestResponse created(String location) {
         this.status = HttpStatus.CREATED.value();
         this.location = location;
-        return (T)this;
+        return this;
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public T accepted() {
+    public RestResponse accepted() {
         this.status = HttpStatus.ACCEPTED.value();
-        return (T)this;
+        return this;
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public T noContent() {
+    public RestResponse noContent() {
         this.status = HttpStatus.NO_CONTENT.value();
-        return (T)this;
+        return this;
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public T movedPermanently() {
+    public RestResponse movedPermanently() {
         this.status = HttpStatus.MOVED_PERMANENTLY.value();
-        return (T)this;
+        return this;
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public T seeOther() {
+    public RestResponse seeOther() {
         this.status = HttpStatus.SEE_OTHER.value();
-        return (T)this;
+        return this;
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public T notModified() {
+    public RestResponse notModified() {
         this.status = HttpStatus.NOT_MODIFIED.value();
-        return (T)this;
+        return this;
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public T temporaryRedirect() {
+    public RestResponse temporaryRedirect() {
         this.status = HttpStatus.TEMPORARY_REDIRECT.value();
-        return (T)this;
+        return this;
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public T badRequest() {
+    public RestResponse badRequest() {
         this.status = HttpStatus.BAD_REQUEST.value();
-        return (T)this;
+        return this;
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public T unauthorized() {
+    public RestResponse unauthorized() {
         this.status = HttpStatus.UNAUTHORIZED.value();
-        return (T)this;
+        return this;
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public T forbidden() {
+    public RestResponse forbidden() {
         this.status = HttpStatus.FORBIDDEN.value();
-        return (T)this;
+        return this;
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public T notFound() {
+    public RestResponse notFound() {
         this.status = HttpStatus.NOT_FOUND.value();
-        return (T)this;
+        return this;
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public T methodNotAllowed() {
+    public RestResponse methodNotAllowed() {
         this.status = HttpStatus.METHOD_NOT_ALLOWED.value();
-        return (T)this;
+        return this;
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public T notAcceptable() {
+    public RestResponse notAcceptable() {
         this.status = HttpStatus.NOT_ACCEPTABLE.value();
-        return (T)this;
+        return this;
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public T conflict() {
+    public RestResponse conflict() {
         this.status = HttpStatus.CONFLICT.value();
-        return (T)this;
+        return this;
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public T preconditionFailed() {
+    public RestResponse preconditionFailed() {
         this.status = HttpStatus.PRECONDITION_FAILED.value();
-        return (T)this;
+        return this;
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public T unsupportedMediaType() {
+    public RestResponse unsupportedMediaType() {
         this.status = HttpStatus.UNSUPPORTED_MEDIA_TYPE.value();
-        return (T)this;
+        return this;
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public T internalServerError() {
+    public RestResponse internalServerError() {
         this.status = HttpStatus.INTERNAL_SERVER_ERROR.value();
-        return (T)this;
+        return this;
     }
 
     @Override

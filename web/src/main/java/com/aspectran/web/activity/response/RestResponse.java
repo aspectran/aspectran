@@ -10,27 +10,34 @@ public interface RestResponse {
 
     boolean isPrettyPrint();
 
+    /**
+     * Sets whether to apply indentations and line breaks
+     * when generating response data.
+     *
+     * @param prettyPrint true if responding with indentations
+     *                    and line breaks; otherwise false
+     */
     void setPrettyPrint(boolean prettyPrint);
 
-    Object prettyPrint(boolean prettyPrint);
+    RestResponse prettyPrint(boolean prettyPrint);
 
     boolean isFavorPathExtension();
 
     void setFavorPathExtension(boolean favorPathExtension);
 
-    Object favorPathExtension(boolean favorPathExtension);
+    RestResponse favorPathExtension(boolean favorPathExtension);
 
     boolean isIgnoreUnknownPathExtensions();
 
     void setIgnoreUnknownPathExtensions(boolean ignoreUnknownPathExtensions);
 
-    Object ignoreUnknownPathExtensions(boolean ignoreUnknownPathExtensions);
+    RestResponse ignoreUnknownPathExtensions(boolean ignoreUnknownPathExtensions);
 
     boolean isIgnoreAcceptHeader();
 
     void setIgnoreAcceptHeader(boolean ignoreAcceptHeader);
 
-    Object ignoreAcceptHeader(boolean ignoreAcceptHeader);
+    RestResponse ignoreAcceptHeader(boolean ignoreAcceptHeader);
 
     MediaType getDefaultContentType();
 
@@ -38,45 +45,45 @@ public interface RestResponse {
 
     void setDefaultContentType(String defaultContentType);
 
-    Object defaultContentType(MediaType defaultContentType);
+    RestResponse defaultContentType(MediaType defaultContentType);
 
-    Object ok();
+    RestResponse ok();
 
-    Object created();
+    RestResponse created();
 
-    Object created(String location);
+    RestResponse created(String location);
 
-    Object accepted();
+    RestResponse accepted();
 
-    Object noContent();
+    RestResponse noContent();
 
-    Object movedPermanently();
+    RestResponse movedPermanently();
 
-    Object seeOther();
+    RestResponse seeOther();
 
-    Object notModified();
+    RestResponse notModified();
 
-    Object temporaryRedirect();
+    RestResponse temporaryRedirect();
 
-    Object badRequest();
+    RestResponse badRequest();
 
-    Object unauthorized();
+    RestResponse unauthorized();
 
-    Object forbidden();
+    RestResponse forbidden();
 
-    Object notFound();
+    RestResponse notFound();
 
-    Object methodNotAllowed();
+    RestResponse methodNotAllowed();
 
-    Object notAcceptable();
+    RestResponse notAcceptable();
 
-    Object conflict();
+    RestResponse conflict();
 
-    Object preconditionFailed();
+    RestResponse preconditionFailed();
 
-    Object unsupportedMediaType();
+    RestResponse unsupportedMediaType();
 
-    Object internalServerError();
+    RestResponse internalServerError();
 
     int getStatus();
 
