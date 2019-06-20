@@ -107,11 +107,12 @@ public class XslTransformResponse extends TransformResponse {
             Writer writer = responseAdapter.getWriter();
             ProcessResult processResult = activity.getProcessResult();
 
-            ContentsXMLReader xreader = new ContentsXMLReader();
-            ContentsInputSource isource = new ContentsInputSource(processResult);
+            ContentsXMLReader xmlReader = new ContentsXMLReader();
+            ContentsInputSource inputSource = new ContentsInputSource(processResult);
+            Source source = new SAXSource(xmlReader, inputSource);
 
             Transformer transformer = templates.newTransformer();
-            transformer.transform(new SAXSource(xreader, isource), new StreamResult(writer));
+            transformer.transform(source, new StreamResult(writer));
         } catch (Exception e) {
             throw new TransformResponseException(getTransformRule(), e);
         }

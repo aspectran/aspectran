@@ -95,10 +95,9 @@ public class JsonWriter implements Flushable {
      * Write an object to a character stream.
      *
      * @param object the object to write to a character-output stream.
-     * @return this JsonWriter
      * @throws IOException if an I/O error has occurred.
      */
-    public JsonWriter write(Object object) throws IOException {
+    public void write(Object object) throws IOException {
         if (object == null) {
             writeNull();
         } else if (object instanceof String
@@ -203,7 +202,6 @@ public class JsonWriter implements Flushable {
                 writeValue(object.toString());
             }
         }
-        return this;
     }
 
     private void checkCircularReference(Object wrapper, Object member) throws IOException {

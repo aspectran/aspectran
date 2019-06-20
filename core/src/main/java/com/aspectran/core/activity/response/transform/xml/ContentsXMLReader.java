@@ -55,8 +55,6 @@ public class ContentsXMLReader implements XMLReader {
 
     private static final String ROW_TAG = "row";
 
-    private static final String EMPTY_TAG = "empty";
-
     private static final Attributes NULL_ATTRS = new AttributesImpl();
 
     private ContentHandler handler;
@@ -132,18 +130,22 @@ public class ContentsXMLReader implements XMLReader {
             throw new SAXException("No XML ContentHandler");
         }
         ContentsInputSource cis = (ContentsInputSource)is;
-        ProcessResult processResult = cis.getProcessResult();
+        Object data = cis.getData();
         handler.startDocument();
-        if (processResult != null && !processResult.isEmpty()) {
-            output(processResult);
-        } else {
-            handler.startElement(StringUtils.EMPTY, EMPTY_TAG, EMPTY_TAG, NULL_ATTRS);
-            handler.endElement(StringUtils.EMPTY, EMPTY_TAG, EMPTY_TAG);
+        if (data != null) {
+            if (data instanceof ProcessResult) {
+                ProcessResult processResult = (ProcessResult)data;
+                if (!processResult.isEmpty()) {
+                    parseProcessResult(processResult);
+                }
+            } else {
+                parseObject(data);
+            }
         }
         handler.endDocument();
     }
 
-    private void output(ProcessResult processResult) throws SAXException {
+    private void parseProcessResult(ProcessResult processResult) throws SAXException {
         String contentsName = processResult.getName();
         if (processResult.isExplicit()) {
             if (contentsName != null) {
@@ -167,7 +169,7 @@ public class ContentsXMLReader implements XMLReader {
                 if (actionId != null) {
                     handler.startElement(StringUtils.EMPTY, actionId, actionId, NULL_ATTRS);
                 }
-                output(resultValue);
+                parseObject(resultValue);
                 if (actionId != null) {
                     handler.endElement(StringUtils.EMPTY, actionId, actionId);
                 }
@@ -189,17 +191,17 @@ public class ContentsXMLReader implements XMLReader {
         }
     }
 
-    private void output(Object object) throws SAXException {
+    private void parseObject(Object object) throws SAXException {
         if (object == null) {
             return;
         }
         if (object instanceof ProcessResult) {
-            output((ProcessResult)object);
+            parseProcessResult((ProcessResult)object);
         } else if (object instanceof String
                 || object instanceof Number
                 || object instanceof Boolean
                 || object instanceof Date) {
-            outputString(object.toString());
+            parseString(object.toString());
         } else if (object instanceof Parameters) {
             Map<String, ParameterValue> params = ((Parameters)object).getParameterValueMap();
             for (Parameter p: params.values()) {
@@ -207,7 +209,7 @@ public class ContentsXMLReader implements XMLReader {
                 Object value = p.getValue();
                 checkCircularReference(object, value);
                 handler.startElement(StringUtils.EMPTY, name, name, NULL_ATTRS);
-                output(value);
+                parseObject(value);
                 handler.endElement(StringUtils.EMPTY, name, name);
             }
         } else if (object instanceof Map<?, ?>) {
@@ -216,7 +218,7 @@ public class ContentsXMLReader implements XMLReader {
                 Object value = entry.getValue();
                 checkCircularReference(object, value);
                 handler.startElement(StringUtils.EMPTY, name, name, NULL_ATTRS);
-                output(value);
+                parseObject(value);
                 handler.endElement(StringUtils.EMPTY, name, name);
             }
         } else if (object instanceof Collection<?>) {
@@ -224,7 +226,7 @@ public class ContentsXMLReader implements XMLReader {
             for (Object value : ((Collection<?>) object)) {
                 checkCircularReference(object, value);
                 handler.startElement(StringUtils.EMPTY, ROW_TAG, ROW_TAG, NULL_ATTRS);
-                output(value);
+                parseObject(value);
                 handler.endElement(StringUtils.EMPTY, ROW_TAG, ROW_TAG);
             }
             handler.endElement(StringUtils.EMPTY, ROWS_TAG, ROWS_TAG);
@@ -235,7 +237,7 @@ public class ContentsXMLReader implements XMLReader {
                 Object value = Array.get(object, i);
                 checkCircularReference(object, value);
                 handler.startElement(StringUtils.EMPTY, ROW_TAG, ROW_TAG, NULL_ATTRS);
-                output(value);
+                parseObject(value);
                 handler.endElement(StringUtils.EMPTY, ROW_TAG, ROW_TAG);
             }
             handler.endElement(StringUtils.EMPTY, ROWS_TAG, ROWS_TAG);
@@ -251,20 +253,14 @@ public class ContentsXMLReader implements XMLReader {
                     }
                     checkCircularReference(object, value);
                     handler.startElement(StringUtils.EMPTY, name, name, NULL_ATTRS);
-                    output(value);
+                    parseObject(value);
                     handler.endElement(StringUtils.EMPTY, name, name);
                 }
             }
         }
     }
 
-    /**
-     * Outputs a string.
-     *
-     * @param s the input string
-     * @throws SAXException the SAX exception
-     */
-    private void outputString(String s) throws SAXException {
+    private void parseString(String s) throws SAXException {
         handler.characters(s.toCharArray(), 0, s.length());
     }
 

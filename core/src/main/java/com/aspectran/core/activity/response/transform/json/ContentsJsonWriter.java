@@ -61,13 +61,12 @@ public class ContentsJsonWriter extends JsonWriter {
     }
 
     @Override
-    public ContentsJsonWriter write(Object object) throws IOException {
+    public void write(Object object) throws IOException {
         if (object instanceof ProcessResult) {
             write((ProcessResult)object);
         } else {
             super.write(object);
         }
-        return this;
     }
 
     /**
@@ -76,7 +75,7 @@ public class ContentsJsonWriter extends JsonWriter {
      * @param processResult the {@code ProcessResult} object to write to a character-output stream
      * @throws IOException if an I/O error has occurred
      */
-    private void write(ProcessResult processResult) throws IOException {
+    public void write(ProcessResult processResult) throws IOException {
         if (processResult.getName() != null) {
             openCurlyBracket();
             writeName(processResult.getName());

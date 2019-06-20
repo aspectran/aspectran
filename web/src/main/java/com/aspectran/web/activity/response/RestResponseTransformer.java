@@ -18,6 +18,7 @@ package com.aspectran.web.activity.response;
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.response.transform.CustomTransformer;
 import com.aspectran.core.activity.response.transform.JsonTransformResponse;
+import com.aspectran.core.activity.response.transform.XmlTransformResponse;
 import com.aspectran.core.activity.response.transform.apon.ContentsAponConverter;
 import com.aspectran.core.activity.response.transform.json.ContentsJsonWriter;
 import com.aspectran.core.adapter.RequestAdapter;
@@ -31,6 +32,7 @@ import com.aspectran.web.support.http.HttpMediaTypeNotAcceptableException;
 import com.aspectran.web.support.http.HttpStatus;
 import com.aspectran.web.support.http.MediaType;
 
+import javax.xml.transform.TransformerException;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
@@ -94,6 +96,8 @@ public class RestResponseTransformer extends AbstractRestResponse implements Cus
             toJSON(activity);
         } else if (contentType.equals(MediaType.APPLICATION_APON)) {
             toAPON(activity);
+        } else if (contentType.equals(MediaType.APPLICATION_XML)) {
+            toXML(activity);
         }
 
         if (getStatus() > 0) {
@@ -165,6 +169,17 @@ public class RestResponseTransformer extends AbstractRestResponse implements Cus
                 aponWriter.setIndentString(null);
             }
             aponWriter.write(parameters);
+        }
+    }
+
+    private void toXML(Activity activity) throws IOException, TransformerException {
+        ResponseAdapter responseAdapter = activity.getResponseAdapter();
+        Writer writer = responseAdapter.getWriter();
+
+        if (getData() != null) {
+            XmlTransformResponse.toXML(getData(), writer, null, isPrettyPrint());
+        } else {
+            XmlTransformResponse.toXML(activity.getProcessResult(), writer, null, isPrettyPrint());
         }
     }
 

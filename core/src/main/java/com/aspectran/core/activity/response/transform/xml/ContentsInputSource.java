@@ -15,7 +15,6 @@
  */
 package com.aspectran.core.activity.response.transform.xml;
 
-import com.aspectran.core.activity.process.result.ProcessResult;
 import org.xml.sax.InputSource;
 
 /**
@@ -25,24 +24,24 @@ import org.xml.sax.InputSource;
  */
 public class ContentsInputSource extends InputSource {
 
-    private ProcessResult processResult;
+    private final Object data;
 
     /**
      * Instantiates a new ContentsInputSource.
      *
-     * @param processResult a {@code ProcessResult} object
+     * @param data the data to be the input source
      */
-    public ContentsInputSource(ProcessResult processResult) {
-        this.processResult = processResult;
+    public ContentsInputSource(Object data) {
+        this.data = data;
     }
 
     /**
-     * Returns a {@code ProcessResult} object.
+     * Returns the data to be the input source.
      *
-     * @return a {@code ProcessResult} object
+     * @return the data to be the input source
      */
-    public ProcessResult getProcessResult() {
-        return processResult;
+    public Object getData() {
+        return data;
     }
 
 }

@@ -29,12 +29,12 @@ import java.io.StringWriter;
 class XmlTransformResponseTest {
 
     @Test
-    void transformXml() throws TransformerException {
+    void toXml() throws TransformerException {
         ProcessResult processResult = new ProcessResult();
         processResult.setName("wrap1");
         processResult.setExplicit(true);
 
-        ContentResult contentResult = new ContentResult(processResult, 4);
+        ContentResult contentResult = new ContentResult(processResult);
         contentResult.setName("subwrap");
         contentResult.setExplicit(true);
 
@@ -56,7 +56,7 @@ class XmlTransformResponseTest {
         contentResult.addActionResult(actionResult3);
 
         StringWriter writer = new StringWriter();
-        XmlTransformResponse.transformXml(processResult, writer, null, true);
+        XmlTransformResponse.toXML(processResult, writer, null, true);
 
         System.out.println(writer.toString());
     }

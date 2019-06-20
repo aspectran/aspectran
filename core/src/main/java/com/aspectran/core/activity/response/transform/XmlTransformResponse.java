@@ -27,6 +27,7 @@ import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
 import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
@@ -97,7 +98,7 @@ public class XmlTransformResponse extends TransformResponse {
 
             ProcessResult processResult = activity.getProcessResult();
             Writer writer = responseAdapter.getWriter();
-            transformXml(processResult, writer, encoding, pretty);
+            toXML(processResult, writer, encoding, pretty);
         } catch (Exception e) {
             throw new TransformResponseException(getTransformRule(), e);
         }
@@ -113,7 +114,7 @@ public class XmlTransformResponse extends TransformResponse {
         return new XmlTransformResponse(getTransformRule().replicate());
     }
 
-    public static void transformXml(ProcessResult processResult, Writer writer, String encoding, boolean pretty)
+    public static void toXML(Object object, Writer writer, String encoding, boolean pretty)
             throws TransformerException {
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
         if (pretty) {
@@ -130,9 +131,10 @@ public class XmlTransformResponse extends TransformResponse {
             transformer.setOutputProperty(OutputKeys.DOCTYPE_PUBLIC, YES);
         }
 
-        ContentsXMLReader xreader = new ContentsXMLReader();
-        ContentsInputSource isource = new ContentsInputSource(processResult);
-        transformer.transform(new SAXSource(xreader, isource), new StreamResult(writer));
+        ContentsXMLReader xmlReader = new ContentsXMLReader();
+        ContentsInputSource inputSource = new ContentsInputSource(object);
+        Source source = new SAXSource(xmlReader, inputSource);
+        transformer.transform(source, new StreamResult(writer));
     }
 
 }
