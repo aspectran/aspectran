@@ -617,6 +617,7 @@ public class CoreActivity extends AdviceActivity {
                 reserveResponse(chooseWhenRule.getResponse());
             }
         } catch (ActionExecutionException e) {
+            log.error("Failed to execute action " + action, e);
             throw e;
         } catch (Exception e) {
             setRaisedException(e);

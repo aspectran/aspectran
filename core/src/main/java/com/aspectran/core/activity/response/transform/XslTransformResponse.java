@@ -225,7 +225,7 @@ public class XslTransformResponse extends TransformResponse {
         String contentType = null;
         if (outputMethod != null) {
             if (outputMethod.equalsIgnoreCase(XslTransformResponse.OUTPUT_METHOD_XML)) {
-                contentType = ContentType.TEXT_XML.toString();
+                contentType = ContentType.APPLICATION_XML.toString();
             } else if (outputMethod.equalsIgnoreCase(XslTransformResponse.OUTPUT_METHOD_HTML)) {
                 contentType = ContentType.TEXT_HTML.toString();
             } else if (outputMethod.equalsIgnoreCase(XslTransformResponse.OUTPUT_METHOD_TEXT)) {

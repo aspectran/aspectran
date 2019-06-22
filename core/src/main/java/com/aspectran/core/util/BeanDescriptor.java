@@ -19,6 +19,7 @@ import com.aspectran.core.component.bean.annotation.NonSerializable;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -89,7 +90,7 @@ public class BeanDescriptor {
     private Set<String> addGetterMethods(Method[] methods) {
         Set<String> nonSerializableReadPropertyNames = new HashSet<>();
         for (Method method : methods) {
-            if (method.getParameterCount() == 0) {
+            if (Modifier.isPublic(method.getModifiers()) && method.getParameterCount() == 0) {
                 String name = method.getName();
                 if ((name.startsWith("get") && name.length() > 3) ||
                         (name.startsWith("is") && name.length() > 2)) {
@@ -112,7 +113,7 @@ public class BeanDescriptor {
     private void addSetterMethods(Method[] methods) {
         Map<String, List<Method>> conflictingSetters = new HashMap<>();
         for (Method method : methods) {
-            if (method.getParameterCount() == 1) {
+            if (Modifier.isPublic(method.getModifiers()) && method.getParameterCount() == 1) {
                 String name = method.getName();
                 if (name.startsWith("set") && name.length() > 3) {
                     name = dropCase(name);

@@ -22,10 +22,10 @@ package com.aspectran.core.context.rule.type;
  */
 public enum ContentType {
 
+    APPLICATION_APON("application/apon"),
+    APPLICATION_JSON("application/json"),
+    APPLICATION_XML("application/xml"),
     TEXT_PLAIN("text/plain"),
-    TEXT_XML("text/xml"),
-    TEXT_JSON("application/json"),
-    TEXT_APON("text/apon"),
     TEXT_HTML("text/html");
 
     private final String alias;

@@ -18,11 +18,14 @@ package com.aspectran.core.activity.response.transform.apon;
 import com.aspectran.core.activity.process.result.ActionResult;
 import com.aspectran.core.activity.process.result.ContentResult;
 import com.aspectran.core.activity.process.result.ProcessResult;
+import com.aspectran.core.util.apon.AponFormat;
 import com.aspectran.core.util.apon.Parameters;
 import org.junit.jupiter.api.Test;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ContentsAponAssemblerTest {
 
@@ -41,7 +44,10 @@ class ContentsAponAssemblerTest {
 
         Parameters parameters = ContentsAponConverter.from(processResult);
 
-        System.out.println(parameters);
+        //System.out.println(parameters);
+
+        String result = "action1: {\n  result1: value1\n  result2: value2\n}\n".replace("\n", AponFormat.NEW_LINE);
+        assertEquals(result.trim(), parameters.toString().trim());
     }
 
     @Test
@@ -67,7 +73,10 @@ class ContentsAponAssemblerTest {
 
         Parameters parameters = ContentsAponConverter.from(processResult);
 
-        System.out.println(parameters);
+        //System.out.println(parameters);
+
+        String result = "action0: value0\naction1: value3".replace("\n", AponFormat.NEW_LINE);
+        assertEquals(result.trim(), parameters.toString().trim());
     }
 
     @Test

@@ -28,7 +28,6 @@ import com.aspectran.core.component.bean.annotation.Autowired;
 import com.aspectran.core.component.bean.annotation.Bean;
 import com.aspectran.core.component.bean.annotation.Before;
 import com.aspectran.core.component.bean.annotation.Component;
-import com.aspectran.core.component.bean.annotation.CustomTransform;
 import com.aspectran.core.component.bean.annotation.Description;
 import com.aspectran.core.component.bean.annotation.Destroy;
 import com.aspectran.core.component.bean.annotation.Dispatch;
@@ -60,7 +59,6 @@ import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.AutowireRule;
 import com.aspectran.core.context.rule.BeanRule;
-import com.aspectran.core.context.rule.CustomTransformRule;
 import com.aspectran.core.context.rule.DispatchRule;
 import com.aspectran.core.context.rule.ExceptionThrownRule;
 import com.aspectran.core.context.rule.ForwardRule;
@@ -379,10 +377,6 @@ public class AnnotatedConfigParser {
                     Transform transformAnno = method.getAnnotation(Transform.class);
                     TransformRule transformRule = parseTransformRule(transformAnno);
                     exceptionThrownRule.applyResponseRule(transformRule);
-                } else if (method.isAnnotationPresent(CustomTransform.class)) {
-                    CustomTransform customTransformAnno = method.getAnnotation(CustomTransform.class);
-                    CustomTransformRule customTransformRule = parseCustomTransformRule(customTransformAnno);
-                    exceptionThrownRule.applyResponseRule(customTransformRule);
                 } else if (method.isAnnotationPresent(Dispatch.class)) {
                     Dispatch dispatchAnno = method.getAnnotation(Dispatch.class);
                     DispatchRule dispatchRule = parseDispatchRule(dispatchAnno);
@@ -587,10 +581,6 @@ public class AnnotatedConfigParser {
                 Transform transformAnno = method.getAnnotation(Transform.class);
                 TransformRule transformRule = parseTransformRule(transformAnno);
                 transletRule.setResponseRule(ResponseRule.newInstance(transformRule));
-            } else if (method.isAnnotationPresent(CustomTransform.class)) {
-                CustomTransform customTransformAnno = method.getAnnotation(CustomTransform.class);
-                CustomTransformRule customTransformRule = parseCustomTransformRule(customTransformAnno);
-                transletRule.setResponseRule(ResponseRule.newInstance(customTransformRule));
             } else if (method.isAnnotationPresent(Dispatch.class)) {
                 Dispatch dispatchAnno = method.getAnnotation(Dispatch.class);
                 DispatchRule dispatchRule = parseDispatchRule(dispatchAnno);
@@ -627,11 +617,6 @@ public class AnnotatedConfigParser {
         TransformRule transformRule = TransformRule.newInstance(transformType, contentType, encoding, pretty);
         transformRule.setTemplateId(templateId);
         return transformRule;
-    }
-
-    private CustomTransformRule parseCustomTransformRule(CustomTransform customTransformAnno) {
-        Class<? extends CustomTransformer> transformerType = customTransformAnno.value();
-        return CustomTransformRule.newInstance(transformerType);
     }
 
     private DispatchRule parseDispatchRule(Dispatch dispatchAnno) {

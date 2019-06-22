@@ -22,14 +22,13 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import java.lang.reflect.InvocationTargetException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ContentsJsonWriterTest {
 
     @Test
-    void testWrite() throws IOException, InvocationTargetException {
+    void testWrite() throws IOException {
         ProcessResult processResult = new ProcessResult();
         ContentResult contentResult = new ContentResult(processResult, 4);
 

@@ -98,6 +98,7 @@ function getCustomerList() {
     url: backend + "/gs-rest-service/customers",
     dataType: "json",
     success: function(data, textStatus, xhr) {
+      console.log(data);
       describe("GET", this.url, xhr);
       var list = $("select[name=customerList]");
       list.empty();

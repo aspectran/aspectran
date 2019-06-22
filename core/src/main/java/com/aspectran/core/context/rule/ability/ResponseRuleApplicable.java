@@ -16,7 +16,6 @@
 package com.aspectran.core.context.rule.ability;
 
 import com.aspectran.core.activity.response.Response;
-import com.aspectran.core.context.rule.CustomTransformRule;
 import com.aspectran.core.context.rule.DispatchRule;
 import com.aspectran.core.context.rule.ForwardRule;
 import com.aspectran.core.context.rule.RedirectRule;
@@ -34,8 +33,6 @@ public interface ResponseRuleApplicable {
      * @return the response
      */
     Response applyResponseRule(TransformRule transformRule);
-
-    Response applyResponseRule(CustomTransformRule customTransformRule);
 
     /**
      * Apply the dispatch rule to the response rule.

@@ -41,27 +41,22 @@ public class CustomerRepository {
     
     public CustomerRepository() {
         // Pre-create 10 customers whose names begin with "Guest"
-        customerMap = new ConcurrentSkipListMap<>();
-        
+        Map<Integer, Customer> customerMap = new ConcurrentSkipListMap<>();
         for(int i = 1; i <= 10; i++) {
             Customer customer = new Customer();
             customer.putValue(Customer.id, i);
             customer.putValue(Customer.name, "Guest - " + i);
             customer.putValue(Customer.age, i + 20);
             customer.putValue(Customer.approved, true);
-
             customerMap.put(i, customer);
         }
-
+        this.customerMap = customerMap;
         counter.set(customerMap.size());
     }
     
     public Customer getCustomer(int id) {
         log.debug("Gets the details of customer: " + id);
-
-        Customer customer = customerMap.get(id);
-        
-        return customer;
+        return customerMap.get(id);
 
     }
 
@@ -98,14 +93,13 @@ public class CustomerRepository {
 
     public synchronized boolean updateCustomer(Customer customer) {
         int id = customer.getInt(Customer.id);
-        
         if(customerMap.containsKey(id)) {
             log.debug("Update customer: " + id);
             customerMap.put(id, customer);
             return true;
+        } else {
+            return false;
         }
-
-        return false;
     }
 
     public synchronized boolean deleteCustomer(int id) {
@@ -113,32 +107,30 @@ public class CustomerRepository {
             log.debug("Delete customer: " + id);
             customerMap.remove(id);
             return true;
+        } else {
+            return false;
         }
-        
-        return false;
     }
     
     public boolean approve(int id, boolean approved) {
         Customer customer = customerMap.get(id);
-        
         if(customer != null) {
             log.debug(id + "Approval for customer " + id + " (approved: " + approved + ")");
             customer.putValue(Customer.approved, approved);
             return true;
+        } else {
+            return false;
         }
-        
-        return false;
     }
 
     public boolean isApproved(int id) {
         Customer customer = customerMap.get(id);
-        
         if(customer != null) {
             log.debug("Returns whether customer " + id + " is approved");
             return customer.getBoolean(Customer.approved);
+        } else {
+            return false;
         }
-        
-        return false;
     }
     
 }

@@ -36,25 +36,25 @@ public class TransformResponseFactory {
     public static Response create(TransformRule transformRule) {
         TransformType type = transformRule.getTransformType();
         Response res;
-        if (type == TransformType.XSL) {
-            res = new XslTransformResponse(transformRule);
-        } else if (type == TransformType.XML) {
+        if (type == TransformType.APON) {
             if (transformRule.getContentType() == null) {
-                transformRule.setContentType(ContentType.TEXT_XML.toString());
+                transformRule.setContentType(ContentType.APPLICATION_APON.toString());
             }
-            res = new XmlTransformResponse(transformRule);
-        } else if (type == TransformType.TEXT) {
-            res = new TextTransformResponse(transformRule);
+            res = new AponTransformResponse(transformRule);
         } else if (type == TransformType.JSON) {
             if (transformRule.getContentType() == null) {
                 transformRule.setContentType(ContentType.TEXT_PLAIN.toString());
             }
             res = new JsonTransformResponse(transformRule);
-        } else if (type == TransformType.APON) {
+        } else if (type == TransformType.TEXT) {
+            res = new TextTransformResponse(transformRule);
+        } else if (type == TransformType.XML) {
             if (transformRule.getContentType() == null) {
-                transformRule.setContentType(ContentType.TEXT_PLAIN.toString());
+                transformRule.setContentType(ContentType.APPLICATION_XML.toString());
             }
-            res = new AponTransformResponse(transformRule);
+            res = new XmlTransformResponse(transformRule);
+        } else if (type == TransformType.XSL) {
+            res = new XslTransformResponse(transformRule);
         } else {
             res = new NoneTransformResponse(transformRule);
         }

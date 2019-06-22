@@ -16,7 +16,6 @@
 package com.aspectran.demo.examples.customer;
 
 import com.aspectran.core.activity.Translet;
-import com.aspectran.core.component.bean.annotation.Action;
 import com.aspectran.core.component.bean.annotation.Autowired;
 import com.aspectran.core.component.bean.annotation.Bean;
 import com.aspectran.core.component.bean.annotation.Component;
@@ -26,9 +25,8 @@ import com.aspectran.core.component.bean.annotation.RequestToGet;
 import com.aspectran.core.component.bean.annotation.RequestToPost;
 import com.aspectran.core.component.bean.annotation.RequestToPut;
 import com.aspectran.core.component.bean.annotation.Required;
-import com.aspectran.core.component.bean.annotation.Transform;
-import com.aspectran.core.context.rule.type.TransformType;
-import com.aspectran.web.support.http.HttpStatusSetter;
+import com.aspectran.web.activity.response.DefaultRestResponse;
+import com.aspectran.web.activity.response.RestResponse;
 
 import java.util.List;
 
@@ -45,80 +43,70 @@ public class CustomerAction {
 
     @RequestToGet("/customers")
     @Description("Returns a list of all customers in JSON format.")
-    @Action("customers")
-    @Transform(TransformType.JSON)
-    public List<Customer> getCustomerList() {
-        return repository.getCustomerList();
+    public RestResponse getCustomerList() {
+        List<Customer> list = repository.getCustomerList();
+        return new DefaultRestResponse("customers", list).ok();
     }
 
     @RequestToGet("/customers/${id:guest}")
     @Description("Retrieve customer info by a given id parameter.")
-    @Action("customer")
-    @Transform(TransformType.JSON)
-    public Customer getCustomer(Translet translet, @Required Integer id) {
+    public RestResponse getCustomer(@Required Integer id) {
         Customer customer = repository.getCustomer(id);
-
-        if(customer == null) {
-            HttpStatusSetter.notFound(translet);
-            return null;
+        RestResponse response = new DefaultRestResponse();
+        if(customer != null) {
+            response.setData("customer", customer);
+        } else {
+            response.notFound();
         }
-
-        return customer;
+        return response;
     }
 
     @RequestToPost("/customers")
     @Description("Register a new customer.")
-    @Transform(TransformType.JSON)
-    public Customer insertCustomer(Translet translet, Customer customer) {
+    public RestResponse insertCustomer(Translet translet, Customer customer) {
         int id = repository.insertCustomer(customer);
-
         String resourceUri = translet.getRequestName() + "/" + id;
-        HttpStatusSetter.created(translet, resourceUri);
-
-        return customer;
+        return new DefaultRestResponse(customer)
+                .created(resourceUri);
     }
 
     @RequestToPut("/customers/${id}")
     @Description("Update customer info with a given ID.")
-    @Transform(TransformType.JSON)
-    public Customer updateCustomer(Translet translet, Customer customer) {
+    public RestResponse updateCustomer(Customer customer) {
         boolean updated = repository.updateCustomer(customer);
-
+        RestResponse response = new DefaultRestResponse();
         if(!updated) {
-            HttpStatusSetter.notFound(translet);
-            return null;
+            response.setData("customer", customer);
+        } else {
+            response.notFound();
         }
-
-        return customer;
+        return response;
     }
 
     @RequestToDelete("/customers/${id}")
     @Description("Delete customer info by a given id parameter.")
-    @Action("result")
-    @Transform(TransformType.JSON)
-    public boolean deleteCustomer(Translet translet, @Required Integer id) {
+    public RestResponse deleteCustomer(@Required Integer id) {
         boolean deleted = repository.deleteCustomer(id);
-
-        if(!deleted) {
-            HttpStatusSetter.notFound(translet);
-            return false;
+        RestResponse response = new DefaultRestResponse();
+        if(deleted) {
+            response.setData("result", Boolean.TRUE);
+        } else {
+            response.notFound();
         }
-
-        return true;
+        return response;
     }
 
     @RequestToPut("/customers/${id}/attributes")
     @Description("Update customer's attributes by a given id parameter.")
-    @Transform(TransformType.JSON)
-    public boolean updateAttributes(Translet translet, @Required Integer id, @Required Boolean approved) {
+    public RestResponse updateAttributes(@Required Integer id, @Required Boolean approved) {
         boolean updated = repository.approve(id, approved);
-
-        if(!updated) {
-            HttpStatusSetter.notFound(translet);
-            return false;
+        RestResponse response = new DefaultRestResponse();
+        if(updated) {
+            response.setData("result", Boolean.TRUE);
+        } else {
+            response.notFound();
         }
-
-        return true;
+        return response;
     }
 
 }

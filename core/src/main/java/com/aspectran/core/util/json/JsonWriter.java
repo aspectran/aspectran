@@ -97,7 +97,7 @@ public class JsonWriter implements Flushable {
      * @param object the object to write to a character-output stream.
      * @throws IOException if an I/O error has occurred.
      */
-    public void write(Object object) throws IOException {
+    public JsonWriter write(Object object) throws IOException {
         if (object == null) {
             writeNull();
         } else if (object instanceof String
@@ -202,26 +202,7 @@ public class JsonWriter implements Flushable {
                 writeValue(object.toString());
             }
         }
-    }
-
-    private void checkCircularReference(Object wrapper, Object member) throws IOException {
-        if (wrapper.equals(member)) {
-            throw new IOException("JSON Serialization Failure: A circular reference was detected " +
-                    "while converting a member object [" + member + "] in [" + wrapper + "]");
-        }
-    }
-
-    /**
-     * Write a tab character to a character stream.
-     *
-     * @throws IOException if an I/O error has occurred
-     */
-    protected void indent() throws IOException {
-        if (prettyPrint) {
-            for (int i = 0; i < indentDepth; i++) {
-                writer.write(indentString);
-            }
-        }
+        return this;
     }
 
     /**
@@ -318,17 +299,6 @@ public class JsonWriter implements Flushable {
     }
 
     /**
-     * Write a new line character to a character stream.
-     *
-     * @throws IOException if an I/O error has occurred
-     */
-    protected void nextLine() throws IOException {
-        if (prettyPrint) {
-            writer.write("\n");
-        }
-    }
-
-    /**
      * Open a single curly bracket.
      *
      * @return this JsonWriter
@@ -389,6 +359,30 @@ public class JsonWriter implements Flushable {
         return this;
     }
 
+    /**
+     * Write a tab character to a character stream.
+     *
+     * @throws IOException if an I/O error has occurred
+     */
+    protected void indent() throws IOException {
+        if (prettyPrint) {
+            for (int i = 0; i < indentDepth; i++) {
+                writer.write(indentString);
+            }
+        }
+    }
+
+    /**
+     * Write a new line character to a character stream.
+     *
+     * @throws IOException if an I/O error has occurred
+     */
+    protected void nextLine() throws IOException {
+        if (prettyPrint) {
+            writer.write("\n");
+        }
+    }
+
     @Override
     public void flush() throws IOException {
         writer.flush();
@@ -402,6 +396,13 @@ public class JsonWriter implements Flushable {
     public void close() throws IOException {
         if (writer != null) {
             writer.close();
+        }
+    }
+
+    private void checkCircularReference(Object wrapper, Object member) throws IOException {
+        if (wrapper.equals(member)) {
+            throw new IOException("JSON Serialization Failure: A circular reference was detected " +
+                    "while converting a member object [" + member + "] in [" + wrapper + "]");
         }
     }
 

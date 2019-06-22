@@ -23,7 +23,6 @@ import com.aspectran.core.context.expr.ItemEvaluator;
 import com.aspectran.core.context.expr.ItemExpression;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.RedirectRule;
-import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.core.context.rule.type.TransformType;
 
 import javax.servlet.http.HttpServletResponse;
@@ -200,7 +199,7 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
 
     private void precommit() {
         Response response = activity.getDeclaredResponse();
-        if (response != null && response.getResponseType() == ResponseType.TRANSFORM) {
+        if (response instanceof TransformResponse) {
             TransformType transformType = ((TransformResponse)response).getTransformType();
             if (transformType == null) {
                 response.commit(activity);

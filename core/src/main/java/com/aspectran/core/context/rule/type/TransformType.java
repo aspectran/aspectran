@@ -24,11 +24,11 @@ public enum TransformType {
 
     NONE("transform/none"),
     CUSTOM("transform/custom"),
-    XML("transform/xml"),
-    XSL("transform/xsl"),
     TEXT("transform/text"),
+    APON("transform/apon"),
     JSON("transform/json"),
-    APON("transform/apon");
+    XML("transform/xml"),
+    XSL("transform/xsl");
 
     private final String alias;
 
@@ -67,12 +67,12 @@ public enum TransformType {
     public static TransformType resolve(ContentType contentType) {
         if (contentType == ContentType.TEXT_PLAIN) {
             return TEXT;
-        } else if (contentType == ContentType.TEXT_XML) {
-            return XML;
-        } else if (contentType == ContentType.TEXT_JSON) {
-            return JSON;
-        } else if (contentType == ContentType.TEXT_APON) {
+        } else if (contentType == ContentType.APPLICATION_APON) {
             return APON;
+        } else if (contentType == ContentType.APPLICATION_JSON) {
+            return JSON;
+        } else if (contentType == ContentType.APPLICATION_XML) {
+            return XML;
         } else {
             return null;
         }

@@ -18,6 +18,7 @@ package com.aspectran.core.activity.response.transform.json;
 import com.aspectran.core.activity.process.result.ActionResult;
 import com.aspectran.core.activity.process.result.ContentResult;
 import com.aspectran.core.activity.process.result.ProcessResult;
+import com.aspectran.core.util.Assert;
 import com.aspectran.core.util.json.JsonWriter;
 
 import java.io.IOException;
@@ -61,12 +62,13 @@ public class ContentsJsonWriter extends JsonWriter {
     }
 
     @Override
-    public void write(Object object) throws IOException {
+    public ContentsJsonWriter write(Object object) throws IOException {
         if (object instanceof ProcessResult) {
             write((ProcessResult)object);
         } else {
             super.write(object);
         }
+        return this;
     }
 
     /**
@@ -76,6 +78,7 @@ public class ContentsJsonWriter extends JsonWriter {
      * @throws IOException if an I/O error has occurred
      */
     public void write(ProcessResult processResult) throws IOException {
+        Assert.notNull(processResult, "'processResult' must not be null");
         if (processResult.getName() != null) {
             openCurlyBracket();
             writeName(processResult.getName());

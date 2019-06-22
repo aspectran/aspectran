@@ -32,18 +32,25 @@ public class AponConverter {
 
     public static Parameters from(Object object) {
         Parameters container = new VariableParameters();
-        putValue(container, null, object);
+        putValue(container, object);
         return container;
     }
 
+    public static void putValue(Parameters container, Object value) {
+        putValue(container, null, value);
+    }
+
     public static void putValue(Parameters container, String name, Object value) {
-        if (value == null) {
-            return;
-        }
         if (name == null) {
             Object o = valuelize(value);
             if (o instanceof Parameters) {
                 container.putAll((Parameters)o);
+            }
+        } else if (value == null) {
+            if (container.hasParameter(name)) {
+                container.clearValue(name);
+            } else {
+                container.putValue(name, null);
             }
         } else {
             if (container.hasParameter(name)) {
@@ -70,6 +77,9 @@ public class AponConverter {
     }
 
     private static Object valuelize(Object object) {
+        if (object == null) {
+            return null;
+        }
         if (object instanceof Parameters
                 || object instanceof String
                 || object instanceof Number

@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.util.apon;
 
+import com.aspectran.core.util.Assert;
 import com.aspectran.core.util.StringUtils;
 
 import java.io.Closeable;
@@ -27,7 +28,7 @@ import java.io.Writer;
 import java.util.List;
 
 /**
- * Writes a APON object to an output source.
+ * Writes an APON object to an output source.
  *
  * <p>By default, the indentation string is "  " (two blanks)</p>
  */
@@ -35,13 +36,13 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
 
     private Writer writer;
 
+    private boolean nullWritable = true;
+
+    private boolean typeHintWritable = false;
+
     private String indentString = DEFAULT_INDENT_STRING;
 
     private int indentDepth;
-
-    private boolean nullWritable;
-
-    private boolean typeHintWritable;
 
     /**
      * Instantiates a new AponWriter.
@@ -98,7 +99,7 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
     public void write(Parameters parameters) throws IOException {
         if (parameters != null) {
             for (Parameter pv : parameters.getParameterValueMap().values()) {
-                if (pv.isAssigned()) {
+                if (nullWritable || pv.isAssigned()) {
                     write(pv);
                 }
             }
@@ -112,6 +113,7 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
      * @throws IOException if an I/O error occurs
      */
     public void write(Parameter parameter) throws IOException {
+        Assert.notNull(parameter, "'parameter' must not be null");
         if (parameter.getParameterValueType() == ParameterValueType.PARAMETERS) {
             if (parameter.isArray()) {
                 List<Parameters> list = parameter.getValueAsParametersList();
@@ -285,30 +287,32 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
      * @throws IOException if an I/O error occurs
      */
     public void comment(String message) throws IOException {
-        if (message.indexOf(NEW_LINE_CHAR) != -1) {
-            String line;
-            int start = 0;
-            while ((line = readLine(message, start)) != null) {
+        if (message != null) {
+            if (message.indexOf(NEW_LINE_CHAR) != -1) {
+                String line;
+                int start = 0;
+                while ((line = readLine(message, start)) != null) {
+                    writer.write(COMMENT_LINE_START);
+                    writer.write(SPACE_CHAR);
+                    writer.write(line);
+                    newLine();
+
+                    start += line.length();
+                    start = skipNewLineChar(message, start);
+                    if (start == -1) {
+                        break;
+                    }
+                }
+                if (start != -1) {
+                    writer.write(COMMENT_LINE_START);
+                    newLine();
+                }
+            } else {
                 writer.write(COMMENT_LINE_START);
                 writer.write(SPACE_CHAR);
-                writer.write(line);
-                newLine();
-
-                start += line.length();
-                start = skipNewLineChar(message, start);
-                if (start == -1) {
-                    break;
-                }
-            }
-            if (start != -1) {
-                writer.write(COMMENT_LINE_START);
+                writer.write(message);
                 newLine();
             }
-        } else {
-            writer.write(COMMENT_LINE_START);
-            writer.write(SPACE_CHAR);
-            writer.write(message);
-            newLine();
         }
     }
 

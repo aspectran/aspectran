@@ -38,26 +38,26 @@ public class TextTransformResponse extends TransformResponse {
 
     private static final Log log = LogFactory.getLog(TextTransformResponse.class);
 
+    private final String contentType;
+
+    private final String encoding;
+
     private final String templateId;
 
     private final TemplateRule templateRule;
 
-    private final String encoding;
-
-    private final String contentType;
-
     /**
-     * Instantiates a new TextTransform.
+     * Instantiates a new TextTransformResponse.
      *
      * @param transformRule the transform rule
      */
     public TextTransformResponse(TransformRule transformRule) {
         super(transformRule);
 
+        this.contentType = transformRule.getContentType();
+        this.encoding = transformRule.getEncoding();
         this.templateId = transformRule.getTemplateId();
         this.templateRule = transformRule.getTemplateRule();
-        this.encoding = transformRule.getEncoding();
-        this.contentType = transformRule.getContentType();
     }
 
     @Override

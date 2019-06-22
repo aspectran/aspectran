@@ -34,7 +34,7 @@ class AponReadWriteTest {
         File outputFile = new File(ResourceUtils.getResourceAsFile("config/apon"), "apon-test-output.apon");
 
         try (AponWriter aponWriter = new AponWriter(outputFile)) {
-            aponWriter.setNullWritable(true);
+            //aponWriter.setNullWritable(true);
             //aponWriter.setTypeHintWrite(true);
             aponWriter.write(parameters);
         }

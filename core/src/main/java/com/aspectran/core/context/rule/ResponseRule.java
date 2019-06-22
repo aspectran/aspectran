@@ -105,13 +105,6 @@ public class ResponseRule implements ResponseRuleApplicable, Replicable<Response
     }
 
     @Override
-    public Response applyResponseRule(CustomTransformRule customTransformRule) {
-        Response response = new CustomTransformResponse(customTransformRule);
-        this.response = response;
-        return response;
-    }
-
-    @Override
     public Response applyResponseRule(DispatchRule dispatchRule) {
         Response response = new DispatchResponse(dispatchRule);
         this.response = response;
@@ -183,10 +176,6 @@ public class ResponseRule implements ResponseRuleApplicable, Replicable<Response
         ResponseRule responseRule = new ResponseRule(false);
         responseRule.applyResponseRule(redirectRule);
         return responseRule;
-    }
-
-    public static ResponseRule newInstance(CustomTransformRule customTransformRule) {
-        return newInstance(new CustomTransformResponse(customTransformRule));
     }
 
     public static ResponseRule newInstance(CustomTransformResponse response) {

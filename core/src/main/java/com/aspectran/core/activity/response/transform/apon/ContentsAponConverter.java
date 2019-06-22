@@ -18,21 +18,20 @@ package com.aspectran.core.activity.response.transform.apon;
 import com.aspectran.core.activity.process.result.ActionResult;
 import com.aspectran.core.activity.process.result.ContentResult;
 import com.aspectran.core.activity.process.result.ProcessResult;
+import com.aspectran.core.util.Assert;
 import com.aspectran.core.util.apon.AponConverter;
 import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.apon.VariableParameters;
 
 /**
- * Converts a ProcessResult object to a APON object.
+ * Converts a ProcessResult object to an APON object.
  * 
  * <p>Created: 2015. 03. 16 PM 11:14:29</p>
  */
 public class ContentsAponConverter {
 
     public static Parameters from(ProcessResult processResult) {
-        if (processResult == null || processResult.isEmpty()) {
-            return null;
-        }
+        Assert.notNull(processResult, "'processResult' must not be null");
 
         if (processResult.size() == 1) {
             ContentResult contentResult = processResult.get(0);

@@ -16,6 +16,7 @@
 package com.aspectran.web.activity.response;
 
 import com.aspectran.core.activity.Activity;
+import com.aspectran.core.util.Assert;
 import com.aspectran.core.util.FilenameUtils;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.web.activity.request.RequestHeaderParser;
@@ -31,6 +32,8 @@ import java.util.Locale;
  * <p>Created: 2019-06-16</p>
  */
 public abstract class AbstractRestResponse implements RestResponse {
+
+    private String name;
 
     private Object data;
 
@@ -52,7 +55,16 @@ public abstract class AbstractRestResponse implements RestResponse {
     }
 
     public AbstractRestResponse(Object data) {
-        this.data = data;
+        this(null, data);
+    }
+
+    public AbstractRestResponse(String name, Object data) {
+        setData(name, data);
+    }
+
+    @Override
+    public String getName() {
+        return name;
     }
 
     @Override
@@ -62,6 +74,18 @@ public abstract class AbstractRestResponse implements RestResponse {
 
     @Override
     public void setData(Object data) {
+        setData(null, data);
+    }
+
+    @Override
+    public void setData(String name, Object data) {
+        if (name != null) {
+            name = name.trim();
+            if (name.isEmpty()) {
+                name = null;
+            }
+        }
+        this.name = name;
         this.data = data;
     }
 
@@ -272,6 +296,12 @@ public abstract class AbstractRestResponse implements RestResponse {
     @Override
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    @Override
+    public void setStatus(HttpStatus status) {
+        Assert.notNull(status, "'status' must not be null");
+        this.status = status.value();
     }
 
     @Override

@@ -38,9 +38,9 @@ public class AponTransformResponse extends TransformResponse {
 
     private static final Log log = LogFactory.getLog(AponTransformResponse.class);
 
-    private final String encoding;
-
     private final String contentType;
+
+    private final String encoding;
 
     private final Boolean pretty;
 
@@ -52,8 +52,8 @@ public class AponTransformResponse extends TransformResponse {
     public AponTransformResponse(TransformRule transformRule) {
         super(transformRule);
 
-        this.encoding = transformRule.getEncoding();
         this.contentType = transformRule.getContentType();
+        this.encoding = transformRule.getEncoding();
         this.pretty = transformRule.getPretty();
     }
 
@@ -83,18 +83,19 @@ public class AponTransformResponse extends TransformResponse {
 
             Writer writer = responseAdapter.getWriter();
             ProcessResult processResult = activity.getProcessResult();
-            Parameters parameters = ContentsAponConverter.from(processResult);
-
-            AponWriter aponWriter = new AponWriter(writer);
-            if (pretty == Boolean.FALSE) {
-                aponWriter.setIndentString(null);
-            } else {
-                String indentString = activity.getSetting("indentString");
-                if (indentString != null) {
-                    aponWriter.setIndentString(indentString);
+            if (processResult != null && !processResult.isEmpty()) {
+                Parameters parameters = ContentsAponConverter.from(processResult);
+                AponWriter aponWriter = new AponWriter(writer);
+                if (pretty == Boolean.FALSE) {
+                    aponWriter.setIndentString(null);
+                } else {
+                    String indentString = activity.getSetting("indentString");
+                    if (indentString != null) {
+                        aponWriter.setIndentString(indentString);
+                    }
                 }
+                aponWriter.write(parameters);
             }
-            aponWriter.write(parameters);
         } catch (Exception e) {
             throw new TransformResponseException(getTransformRule(), e);
         }

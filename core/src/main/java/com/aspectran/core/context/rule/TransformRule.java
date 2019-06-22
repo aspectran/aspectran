@@ -74,9 +74,9 @@ public class TransformRule extends AbstractResponseRule implements Replicable<Tr
             if (transformType == TransformType.TEXT) {
                 contentType = ContentType.TEXT_PLAIN.toString();
             } else if (transformType == TransformType.JSON) {
-                contentType = ContentType.TEXT_JSON.toString();
+                contentType = ContentType.APPLICATION_JSON.toString();
             } else if (transformType == TransformType.XML) {
-                contentType = ContentType.TEXT_XML.toString();
+                contentType = ContentType.APPLICATION_XML.toString();
             }
         }
     }

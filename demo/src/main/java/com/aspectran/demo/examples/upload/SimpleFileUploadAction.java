@@ -121,7 +121,8 @@ public class SimpleFileUploadAction {
         UploadedFile uploadedFile = uploadedFiles.get(key);
         if (uploadedFile != null) {
             translet.getResponseAdapter().setContentType(uploadedFile.getFileType());
-            translet.getResponseAdapter().setHeader("Content-disposition", "attachment; filename=\"" + uploadedFile.getFileName() + "\"");
+            translet.getResponseAdapter().setHeader("Content-disposition",
+                    "attachment; filename=\"" + uploadedFile.getFileName() + "\"");
             translet.getResponseAdapter().getOutputStream().write(uploadedFile.getBytes());
         } else {
             HttpStatusSetter.setStatus(HttpStatus.NOT_FOUND, translet);

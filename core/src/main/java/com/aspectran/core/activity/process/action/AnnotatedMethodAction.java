@@ -165,7 +165,8 @@ public class AnnotatedMethodAction extends AbstractAction {
                 }
                 if (thrown != null) {
                     if (log.isDebugEnabled()) {
-                        log.debug("Failed to bind argument " + parameterBindingRule + "; Cause: " + thrown.getMessage(), thrown);
+                        log.debug("Failed to bind argument " + parameterBindingRule + "; Cause: " +
+                                thrown.getMessage(), thrown);
                     }
                 }
                 if (required && (args[i] == null || thrown != null)) {
@@ -180,7 +181,7 @@ public class AnnotatedMethodAction extends AbstractAction {
             parameterBindingRule = null;
             return method.invoke(bean, args);
         } catch (InvocationTargetException e) {
-            if (e.getCause() != null) {
+            if (e.getCause() instanceof Exception) {
                 throw (Exception)e.getCause();
             } else {
                 throw e;

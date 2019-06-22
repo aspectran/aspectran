@@ -18,7 +18,6 @@ package com.aspectran.core.context.rule;
 import com.aspectran.core.activity.response.transform.CustomTransformer;
 import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.core.context.rule.type.TransformType;
-import com.aspectran.core.util.ClassUtils;
 import com.aspectran.core.util.ToStringBuilder;
 
 /**
@@ -74,14 +73,6 @@ public class CustomTransformRule extends AbstractResponseRule {
         if (transformer == null) {
             throw new IllegalArgumentException("transformer must not be null");
         }
-        return new CustomTransformRule(transformer);
-    }
-
-    public static CustomTransformRule newInstance(Class<? extends CustomTransformer> transformerType) {
-        if (transformerType == null) {
-            throw new IllegalArgumentException("transformerType must not be null");
-        }
-        CustomTransformer transformer = ClassUtils.createInstance(transformerType);
         return new CustomTransformRule(transformer);
     }
 

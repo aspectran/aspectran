@@ -52,9 +52,9 @@ public class XmlTransformResponse extends TransformResponse {
 
     private static final Log log = LogFactory.getLog(XmlTransformResponse.class);
 
-    private final String encoding;
-
     private final String contentType;
+
+    private final String encoding;
 
     private final boolean pretty;
 
@@ -66,8 +66,8 @@ public class XmlTransformResponse extends TransformResponse {
     public XmlTransformResponse(TransformRule transformRule) {
         super(transformRule);
 
-        this.encoding = transformRule.getEncoding();
         this.contentType = transformRule.getContentType();
+        this.encoding = transformRule.getEncoding();
         this.pretty = transformRule.isPretty();
     }
 

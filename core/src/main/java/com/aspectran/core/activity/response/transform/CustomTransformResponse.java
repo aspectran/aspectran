@@ -58,15 +58,6 @@ public class CustomTransformResponse implements Response {
         this.customTransformRule = CustomTransformRule.newInstance(transformer);
     }
 
-    /**
-     * Instantiates a new CustomTransformResponse.
-     *
-     * @param customTransformRule the custom transform rule
-     */
-    public CustomTransformResponse(CustomTransformRule customTransformRule) {
-        this.customTransformRule = customTransformRule;
-    }
-
     @Override
     public void commit(Activity activity) {
         ResponseAdapter responseAdapter = activity.getResponseAdapter();

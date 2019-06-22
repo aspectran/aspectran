@@ -163,11 +163,6 @@ public class ChooseWhenRule implements ActionRuleApplicable, ResponseRuleApplica
     }
 
     @Override
-    public Response applyResponseRule(CustomTransformRule customTransformRule) {
-        throw new UnsupportedOperationException("Custom Transform is only allowed to be defined via an annotated method");
-    }
-
-    @Override
     public Response applyResponseRule(DispatchRule dispatchRule) {
         Response response = new DispatchResponse(dispatchRule);
         this.response = response;

@@ -1,12 +1,29 @@
 package com.aspectran.web.activity.response;
 
+import com.aspectran.core.activity.response.transform.CustomTransformer;
+import com.aspectran.web.support.http.HttpStatus;
 import com.aspectran.web.support.http.MediaType;
 
-public interface RestResponse {
+public interface RestResponse extends CustomTransformer {
+
+    String getName();
 
     Object getData();
 
+    /**
+     * Specifies response data.
+     *
+     * @param data the response data
+     */
     void setData(Object data);
+
+    /**
+     * Specifies response data with a name.
+     *
+     * @param name the name of the response data
+     * @param data the response data
+     */
+    void setData(String name, Object data);
 
     boolean isPrettyPrint();
 
@@ -88,6 +105,8 @@ public interface RestResponse {
     int getStatus();
 
     void setStatus(int status);
+
+    void setStatus(HttpStatus status);
 
     String getLocation();
 

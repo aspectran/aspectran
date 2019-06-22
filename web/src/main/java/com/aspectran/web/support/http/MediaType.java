@@ -276,33 +276,6 @@ public class MediaType implements Comparable<MediaType>, Serializable {
      */
     public static final String TEXT_XML_VALUE = "text/xml";
 
-    static {
-        // Not using "valueOf' to avoid static init cost
-        ALL = new MediaType("*", "*");
-        APPLICATION_ATOM_XML = new MediaType("application", "atom+xml");
-        APPLICATION_CBOR = new MediaType("application", "cbor");
-        APPLICATION_FORM_URLENCODED = new MediaType("application", "x-www-form-urlencoded");
-        APPLICATION_JSON = new MediaType("application", "json");
-        APPLICATION_APON = new MediaType("application", "apon");
-        APPLICATION_OCTET_STREAM = new MediaType("application", "octet-stream");
-        APPLICATION_PDF = new MediaType("application", "pdf");
-        APPLICATION_PROBLEM_JSON = new MediaType("application", "problem+json");
-        APPLICATION_PROBLEM_XML = new MediaType("application", "problem+xml");
-        APPLICATION_RSS_XML = new MediaType("application", "rss+xml");
-        APPLICATION_STREAM_JSON = new MediaType("application", "stream+json");
-        APPLICATION_XHTML_XML = new MediaType("application", "xhtml+xml");
-        APPLICATION_XML = new MediaType("application", "xml");
-        IMAGE_GIF = new MediaType("image", "gif");
-        IMAGE_JPEG = new MediaType("image", "jpeg");
-        IMAGE_PNG = new MediaType("image", "png");
-        MULTIPART_FORM_DATA = new MediaType("multipart", "form-data");
-        TEXT_EVENT_STREAM = new MediaType("text", "event-stream");
-        TEXT_HTML = new MediaType("text", "html");
-        TEXT_MARKDOWN = new MediaType("text", "markdown");
-        TEXT_PLAIN = new MediaType("text", "plain");
-        TEXT_XML = new MediaType("text", "xml");
-    }
-
     private static final String PARAM_QUALITY_FACTOR = "q";
 
     public static final String WILDCARD_TYPE = "*";
@@ -344,6 +317,31 @@ public class MediaType implements Comparable<MediaType>, Serializable {
         TOKEN.set(0, 128);
         TOKEN.andNot(ctl);
         TOKEN.andNot(separators);
+
+        // Not using "valueOf' to avoid static init cost
+        ALL = new MediaType("*", "*");
+        APPLICATION_ATOM_XML = new MediaType("application", "atom+xml");
+        APPLICATION_CBOR = new MediaType("application", "cbor");
+        APPLICATION_FORM_URLENCODED = new MediaType("application", "x-www-form-urlencoded");
+        APPLICATION_JSON = new MediaType("application", "json");
+        APPLICATION_APON = new MediaType("application", "apon");
+        APPLICATION_OCTET_STREAM = new MediaType("application", "octet-stream");
+        APPLICATION_PDF = new MediaType("application", "pdf");
+        APPLICATION_PROBLEM_JSON = new MediaType("application", "problem+json");
+        APPLICATION_PROBLEM_XML = new MediaType("application", "problem+xml");
+        APPLICATION_RSS_XML = new MediaType("application", "rss+xml");
+        APPLICATION_STREAM_JSON = new MediaType("application", "stream+json");
+        APPLICATION_XHTML_XML = new MediaType("application", "xhtml+xml");
+        APPLICATION_XML = new MediaType("application", "xml");
+        IMAGE_GIF = new MediaType("image", "gif");
+        IMAGE_JPEG = new MediaType("image", "jpeg");
+        IMAGE_PNG = new MediaType("image", "png");
+        MULTIPART_FORM_DATA = new MediaType("multipart", "form-data");
+        TEXT_EVENT_STREAM = new MediaType("text", "event-stream");
+        TEXT_HTML = new MediaType("text", "html");
+        TEXT_MARKDOWN = new MediaType("text", "markdown");
+        TEXT_PLAIN = new MediaType("text", "plain");
+        TEXT_XML = new MediaType("text", "xml");
     }
 
     private final String type;

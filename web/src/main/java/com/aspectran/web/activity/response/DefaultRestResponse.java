@@ -16,16 +16,15 @@
 package com.aspectran.web.activity.response;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.activity.response.transform.CustomTransformer;
 import com.aspectran.core.activity.response.transform.JsonTransformResponse;
 import com.aspectran.core.activity.response.transform.XmlTransformResponse;
-import com.aspectran.core.activity.response.transform.apon.ContentsAponConverter;
-import com.aspectran.core.activity.response.transform.json.ContentsJsonWriter;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
+import com.aspectran.core.util.Assert;
 import com.aspectran.core.util.apon.AponConverter;
 import com.aspectran.core.util.apon.AponWriter;
 import com.aspectran.core.util.apon.Parameters;
+import com.aspectran.core.util.apon.VariableParameters;
 import com.aspectran.core.util.json.JsonWriter;
 import com.aspectran.web.support.http.HttpHeaders;
 import com.aspectran.web.support.http.HttpMediaTypeNotAcceptableException;
@@ -44,13 +43,14 @@ import java.util.Map;
 /**
  * <p>Created: 2019-06-16</p>
  */
-public class RestResponseTransformer extends AbstractRestResponse implements CustomTransformer {
+public class DefaultRestResponse extends AbstractRestResponse {
 
     private static final List<MediaType> supportedContentTypes;
     static {
         List<MediaType> contentTypes = new ArrayList<>();
         contentTypes.add(MediaType.APPLICATION_JSON);
         contentTypes.add(MediaType.APPLICATION_APON);
+        contentTypes.add(MediaType.APPLICATION_XML);
         supportedContentTypes = Collections.unmodifiableList(contentTypes);
     }
 
@@ -59,15 +59,20 @@ public class RestResponseTransformer extends AbstractRestResponse implements Cus
         Map<String, MediaType> pathExtensions = new HashMap<>();
         pathExtensions.put("json", MediaType.APPLICATION_JSON);
         pathExtensions.put("apon", MediaType.APPLICATION_APON);
+        pathExtensions.put("xml", MediaType.APPLICATION_XML);
         supportedPathExtensions = Collections.unmodifiableMap(pathExtensions);
     }
 
-    public RestResponseTransformer() {
+    public DefaultRestResponse() {
         super();
     }
 
-    public RestResponseTransformer(Object data) {
+    public DefaultRestResponse(Object data) {
         super(data);
+    }
+
+    public DefaultRestResponse(String label, Object data) {
+        super(label, data);
     }
 
     @Override
@@ -82,6 +87,7 @@ public class RestResponseTransformer extends AbstractRestResponse implements Cus
 
     @Override
     public void transform(Activity activity) throws Exception {
+        Assert.notNull(activity, "'activity' must not be null");
         ResponseAdapter responseAdapter = activity.getResponseAdapter();
 
         MediaType contentType;
@@ -92,19 +98,25 @@ public class RestResponseTransformer extends AbstractRestResponse implements Cus
             return;
         }
 
-        if (contentType.equals(MediaType.APPLICATION_JSON)) {
-            toJSON(activity);
-        } else if (contentType.equals(MediaType.APPLICATION_APON)) {
-            toAPON(activity);
-        } else if (contentType.equals(MediaType.APPLICATION_XML)) {
-            toXML(activity);
-        }
+        responseAdapter.setContentType(contentType.toString());
+
+        transformByContentType(contentType, activity);
 
         if (getStatus() > 0) {
             responseAdapter.setStatus(getStatus());
             if (getStatus() == HttpStatus.CREATED.value() && getLocation() != null) {
                 responseAdapter.setHeader(HttpHeaders.LOCATION, getLocation());
             }
+        }
+    }
+
+    protected void transformByContentType(MediaType contentType, Activity activity) throws Exception {
+        if (MediaType.APPLICATION_JSON.equals(contentType)) {
+            toJSON(activity);
+        } else if (MediaType.APPLICATION_APON.equals(contentType)) {
+            toAPON(activity);
+        } else if (MediaType.APPLICATION_XML.equals(contentType)) {
+            toXML(activity);
         }
     }
 
@@ -118,7 +130,7 @@ public class RestResponseTransformer extends AbstractRestResponse implements Cus
         if (callback != null) {
             writer.write(callback + JsonTransformResponse.ROUND_BRACKET_OPEN);
         }
-        if (getData() != null) {
+        if (getName() != null || getData() != null) {
             JsonWriter jsonWriter;
             if (isPrettyPrint()) {
                 String indentString = activity.getSetting("indentString");
@@ -126,16 +138,14 @@ public class RestResponseTransformer extends AbstractRestResponse implements Cus
             } else {
                 jsonWriter = new JsonWriter(writer, false);
             }
-            jsonWriter.write(getData());
-        } else {
-            JsonWriter jsonWriter;
-            if (isPrettyPrint()) {
-                String indentString = activity.getSetting("indentString");
-                jsonWriter = new ContentsJsonWriter(writer, indentString);
-            } else {
-                jsonWriter = new ContentsJsonWriter(writer, false);
+            if (getName() != null) {
+                jsonWriter.openCurlyBracket();
+                jsonWriter.writeName(getName());
             }
-            jsonWriter.write(activity.getProcessResult());
+            jsonWriter.write(getData());
+            if (getName() != null) {
+                jsonWriter.closeCurlyBracket();
+            }
         }
         if (callback != null) {
             writer.write(JsonTransformResponse.ROUND_BRACKET_CLOSE);
@@ -146,20 +156,11 @@ public class RestResponseTransformer extends AbstractRestResponse implements Cus
         ResponseAdapter responseAdapter = activity.getResponseAdapter();
         Writer writer = responseAdapter.getWriter();
 
-        AponWriter aponWriter = new AponWriter(writer);
-        if (getData() != null) {
-            Parameters parameters = AponConverter.from(getData());
-            if (isPrettyPrint()) {
-                String indentString = activity.getSetting("indentString");
-                if (indentString != null) {
-                    aponWriter.setIndentString(indentString);
-                }
-            } else {
-                aponWriter.setIndentString(null);
-            }
-            aponWriter.write(parameters);
-        } else {
-            Parameters parameters = ContentsAponConverter.from(activity.getProcessResult());
+        if (getName() != null || getData() != null) {
+            Parameters parameters = new VariableParameters();
+            AponConverter.putValue(parameters, getName(), getData());
+
+            AponWriter aponWriter = new AponWriter(writer);
             if (isPrettyPrint()) {
                 String indentString = activity.getSetting("indentString");
                 if (indentString != null) {
@@ -177,9 +178,12 @@ public class RestResponseTransformer extends AbstractRestResponse implements Cus
         Writer writer = responseAdapter.getWriter();
 
         if (getData() != null) {
-            XmlTransformResponse.toXML(getData(), writer, null, isPrettyPrint());
-        } else {
-            XmlTransformResponse.toXML(activity.getProcessResult(), writer, null, isPrettyPrint());
+            if (getName() != null) {
+                XmlTransformResponse.toXML(Collections.singletonMap(getName(), getData()),
+                        writer, null, isPrettyPrint());
+            } else {
+                XmlTransformResponse.toXML(getData(), writer, null, isPrettyPrint());
+            }
         }
     }
 

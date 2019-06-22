@@ -43,9 +43,9 @@ public class JsonTransformResponse extends TransformResponse {
 
     public static final String ROUND_BRACKET_CLOSE = ")";
 
-    private final String encoding;
-
     private final String contentType;
+
+    private final String encoding;
 
     private final Boolean pretty;
 
@@ -57,8 +57,8 @@ public class JsonTransformResponse extends TransformResponse {
     public JsonTransformResponse(TransformRule transformRule) {
         super(transformRule);
 
-        this.encoding = transformRule.getEncoding();
         this.contentType = transformRule.getContentType();
+        this.encoding = transformRule.getEncoding();
         this.pretty = transformRule.getPretty();
     }
 
