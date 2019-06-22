@@ -619,7 +619,7 @@ public class AnnotatedConfigParser {
         return transformRule;
     }
 
-    private DispatchRule parseDispatchRule(Dispatch dispatchAnno) {
+    private DispatchRule parseDispatchRule(Dispatch dispatchAnno) throws IllegalRuleException {
         String name = StringUtils.emptyToNull(dispatchAnno.value());
         if (name == null) {
             name = StringUtils.emptyToNull(dispatchAnno.name());

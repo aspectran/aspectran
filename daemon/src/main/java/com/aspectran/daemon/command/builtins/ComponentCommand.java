@@ -197,7 +197,7 @@ public class ComponentCommand extends AbstractCommand {
                 writer.write(AponFormat.NEW_LINE);
             }
 
-            AponWriter aponWriter = new AponWriter(writer);
+            AponWriter aponWriter = new AponWriter(writer, false);
             aponWriter.write(aspectParameters);
             count++;
         }
@@ -324,7 +324,7 @@ public class ComponentCommand extends AbstractCommand {
                 writer.write(AponFormat.NEW_LINE);
             }
 
-            AponWriter aponWriter = new AponWriter(writer);
+            AponWriter aponWriter = new AponWriter(writer, false);
             aponWriter.write(transletParameters);
             count++;
         }
@@ -381,7 +381,7 @@ public class ComponentCommand extends AbstractCommand {
                     writer.write("----------------------------------------------------------------------------");
                     writer.write(AponFormat.NEW_LINE);
                 }
-                AponWriter aponWriter = new AponWriter(writer);
+                AponWriter aponWriter = new AponWriter(writer, false);
                 aponWriter.write(scheduleParameters);
                 count++;
             }
@@ -425,7 +425,7 @@ public class ComponentCommand extends AbstractCommand {
                                 writer.write("----------------------------------------------------------------------------");
                                 writer.write(AponFormat.NEW_LINE);
                             }
-                            AponWriter aponWriter = new AponWriter(writer);
+                            AponWriter aponWriter = new AponWriter(writer, false);
                             aponWriter.write(scheduleParameters);
                             count++;
                         }

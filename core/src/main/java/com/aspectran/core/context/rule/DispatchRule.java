@@ -79,17 +79,18 @@ public class DispatchRule extends AbstractResponseRule implements Replicable<Dis
      * @param name the new dispatch name
      */
     public void setName(String name) {
+        if (name == null) {
+            setName(null, null);
+            return;
+        }
         this.name = name;
-
         List<Token> tokens = Tokenizer.tokenize(name, true);
         int tokenCount = 0;
-
         for (Token t : tokens) {
             if (t.getType() != TokenType.TEXT) {
                 tokenCount++;
             }
         }
-
         if (tokenCount > 0) {
             this.nameTokens = tokens.toArray(new Token[0]);
         } else {
@@ -219,9 +220,13 @@ public class DispatchRule extends AbstractResponseRule implements Replicable<Dis
      * @param encoding the character encoding
      * @param defaultResponse whether it is the default response
      * @return an instance of DispatchRule
+     * @throws IllegalRuleException if an illegal rule is found
      */
     public static DispatchRule newInstance(String name, String dispatcherName, String contentType,
-                                           String encoding, Boolean defaultResponse) {
+                                           String encoding, Boolean defaultResponse) throws IllegalRuleException {
+        if (name == null) {
+            throw new IllegalRuleException("name must not be null");
+        }
         DispatchRule dr = new DispatchRule();
         dr.setName(name);
         dr.setDispatcherName(dispatcherName);
@@ -239,8 +244,10 @@ public class DispatchRule extends AbstractResponseRule implements Replicable<Dis
      * @param contentType the content type
      * @param encoding the character encoding
      * @return the dispatch rule
+     * @throws IllegalRuleException if an illegal rule is found
      */
-    public static DispatchRule newInstance(String name, String dispatcher, String contentType, String encoding) {
+    public static DispatchRule newInstance(String name, String dispatcher, String contentType, String encoding)
+            throws IllegalRuleException {
         return newInstance(name, dispatcher, contentType, encoding, null);
     }
 

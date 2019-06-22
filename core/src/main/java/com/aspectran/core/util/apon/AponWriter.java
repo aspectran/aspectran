@@ -34,11 +34,11 @@ import java.util.List;
  */
 public class AponWriter extends AponFormat implements Flushable, Closeable {
 
-    private Writer writer;
+    private final Writer writer;
 
-    private boolean nullWritable = true;
+    private final boolean nullWritable;
 
-    private boolean typeHintWritable = false;
+    private boolean typeHintWritable;
 
     private String indentString = DEFAULT_INDENT_STRING;
 
@@ -50,7 +50,18 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
      * @param writer the character-output stream
      */
     public AponWriter(Writer writer) {
+        this(writer, true);
+    }
+
+    /**
+     * Instantiates a new AponWriter.
+     *
+     * @param writer the character-output stream
+     * @param nullWritable whether to write a null parameter
+     */
+    public AponWriter(Writer writer, boolean nullWritable) {
         this.writer = writer;
+        this.nullWritable = nullWritable;
     }
 
     /**
@@ -64,21 +75,14 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
     }
 
     /**
-     * Specifies the indent string.
+     * Instantiates a new AponWriter.
      *
-     * @param indentString the indentation string, by default "  " (two blanks).
+     * @param file a File object to write to
+     * @param nullWritable whether to write a null parameter
+     * @throws IOException if an I/O error occurs
      */
-    public void setIndentString(String indentString) {
-        this.indentString = indentString;
-    }
-
-    /**
-     * Sets whether to write a null parameter.
-     *
-     * @param nullWritable true, write a null parameter
-     */
-    public void setNullWritable(boolean nullWritable) {
-        this.nullWritable = nullWritable;
+    public AponWriter(File file, boolean nullWritable) throws IOException {
+        this(new FileWriter(file), nullWritable);
     }
 
     /**
@@ -88,6 +92,15 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
      */
     public void setTypeHintWritable(boolean typeHintWritable) {
         this.typeHintWritable = typeHintWritable;
+    }
+
+    /**
+     * Specifies the indent string.
+     *
+     * @param indentString the indentation string, by default "  " (two blanks).
+     */
+    public void setIndentString(String indentString) {
+        this.indentString = indentString;
     }
 
     /**
@@ -496,7 +509,6 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
         if (writer != null) {
             writer.close();
         }
-        writer = null;
     }
 
     /**

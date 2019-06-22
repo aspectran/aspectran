@@ -275,22 +275,28 @@ public class ParamsToRuleConverter {
             AdviceActionParameters beforeAdviceParameters = adviceParameters.getParameters(AdviceParameters.beforeAdvice);
             if (beforeAdviceParameters != null) {
                 ActionParameters actionParameters = beforeAdviceParameters.getParameters(AdviceActionParameters.action);
-                AspectAdviceRule aspectAdviceRule = aspectRule.touchAspectAdviceRule(AspectAdviceType.BEFORE);
-                convertAsActionRule(actionParameters, aspectAdviceRule);
+                if (actionParameters != null) {
+                    AspectAdviceRule aspectAdviceRule = aspectRule.touchAspectAdviceRule(AspectAdviceType.BEFORE);
+                    convertAsActionRule(actionParameters, aspectAdviceRule);
+                }
             }
 
             AdviceActionParameters afterAdviceParameters = adviceParameters.getParameters(AdviceParameters.afterAdvice);
             if (afterAdviceParameters != null) {
                 ActionParameters actionParameters = afterAdviceParameters.getParameters(AdviceActionParameters.action);
-                AspectAdviceRule aspectAdviceRule = aspectRule.touchAspectAdviceRule(AspectAdviceType.AFTER);
-                convertAsActionRule(actionParameters, aspectAdviceRule);
+                if (actionParameters != null) {
+                    AspectAdviceRule aspectAdviceRule = aspectRule.touchAspectAdviceRule(AspectAdviceType.AFTER);
+                    convertAsActionRule(actionParameters, aspectAdviceRule);
+                }
             }
 
             AdviceActionParameters aroundAdviceParameters = adviceParameters.getParameters(AdviceParameters.aroundAdvice);
             if (aroundAdviceParameters != null) {
                 ActionParameters actionParameters = aroundAdviceParameters.getParameters(AdviceActionParameters.action);
-                AspectAdviceRule aspectAdviceRule = aspectRule.touchAspectAdviceRule(AspectAdviceType.AROUND);
-                convertAsActionRule(actionParameters, aspectAdviceRule);
+                if (actionParameters != null) {
+                    AspectAdviceRule aspectAdviceRule = aspectRule.touchAspectAdviceRule(AspectAdviceType.AROUND);
+                    convertAsActionRule(actionParameters, aspectAdviceRule);
+                }
             }
 
             AdviceActionParameters finallyAdviceParameters = adviceParameters.getParameters(AdviceParameters.finallyAdvice);
@@ -840,7 +846,9 @@ public class ParamsToRuleConverter {
         }
         if (callParameters != null) {
             String templateId = StringUtils.emptyToNull(callParameters.getString(CallParameters.template));
-            TransformRule.updateTemplateId(transformRule, templateId);
+            if (templateId !=null) {
+                TransformRule.updateTemplateId(transformRule, templateId);
+            }
         }
         if (templateParameters != null) {
             String engine = templateParameters.getString(TemplateParameters.engine);

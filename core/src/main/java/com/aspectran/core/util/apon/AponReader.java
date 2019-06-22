@@ -203,7 +203,7 @@ public class AponReader extends AponFormat {
                 if (parameterValueType == ParameterValueType.PARAMETERS && CURLY_BRACKET_OPEN != cchar) {
                     throw new AponSyntaxException(lineNumber, line, tline, parameterValue, parameterValueType);
                 }
-                if (parameterValueType == ParameterValueType.TEXT && ROUND_BRACKET_OPEN != cchar) {
+                if (parameterValueType == ParameterValueType.TEXT && !NULL.equals(value) && ROUND_BRACKET_OPEN != cchar) {
                     throw new AponSyntaxException(lineNumber, line, tline, parameterValue, parameterValueType);
                 }
             }
