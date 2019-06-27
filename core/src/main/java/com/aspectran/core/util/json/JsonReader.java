@@ -36,7 +36,7 @@ import java.util.Arrays;
  * an entry point method that creates a {@code JsonReader}.
  *
  * <p>Next, create handler methods for each structure in your JSON text. You'll
- * need a method for each object type and for each array type.
+ * need a method for each object type and for each array type.</p>
  * <ul>
  *   <li>Within <strong>array handling</strong> methods, first call {@link
  *       #beginArray} to consume the array's opening bracket. Then create a
@@ -50,15 +50,15 @@ import java.util.Arrays;
  *       read the object's closing brace by calling {@link #endObject}.
  * </ul>
  * <p>When a nested object or array is encountered, delegate to the
- * corresponding handler method.
+ * corresponding handler method.</p>
  *
  * <p>When an unknown name is encountered, strict parsers should fail with an
  * exception. Lenient parsers should call {@link #skipValue()} to recursively
- * skip the value's nested tokens, which may otherwise conflict.
+ * skip the value's nested tokens, which may otherwise conflict.</p>
  *
  * <p>If a value may be null, you should first check using {@link #peek()}.
  * Null literals can be consumed using either {@link #nextNull()} or {@link
- * #skipValue()}.
+ * #skipValue()}.</p>
  *
  * <h3>Example</h3>
  * Suppose we'd like to parse a stream of messages such as the following: <pre> {@code
@@ -169,7 +169,7 @@ import java.util.Arrays;
  * precision loss, extremely large values should be written and read as strings
  * in JSON.
  *
- * <a name="nonexecuteprefix"/><h3>Non-Execute Prefix</h3>
+ * <h3 id="nonexecuteprefix">Non-Execute Prefix</h3>
  * Web servers that serve private data using JSON may be vulnerable to <a
  * href="http://en.wikipedia.org/wiki/JSON#Cross-site_request_forgery">Cross-site
  * request forgery</a> attacks. In such an attack, a malicious site gains access
@@ -179,10 +179,10 @@ import java.util.Arrays;
  * by {@code <script>} tags, disarming the attack. Since the prefix is malformed
  * JSON, strict parsing fails when it is encountered. This class permits the
  * non-execute prefix when {@link #setLenient(boolean) lenient parsing} is
- * enabled.
+ * enabled.</p>
  *
  * <p>Each {@code JsonReader} may be used to read a single JSON stream. Instances
- * of this class are not thread safe.
+ * of this class are not thread safe.</p>
  *
  * @author Jesse Wilson
  */
@@ -815,7 +815,7 @@ public class JsonReader implements Closeable {
      * Returns the next token, a {@link JsonToken#NAME property name}, and
      * consumes it.
      *
-     * @throws java.io.IOException if the next token in the stream is not a property
+     * @throws IOException if the next token in the stream is not a property
      *     name.
      */
     public String nextName() throws IOException {
