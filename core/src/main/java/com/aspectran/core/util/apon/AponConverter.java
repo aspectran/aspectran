@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.util.apon;
 
+import com.aspectran.core.lang.Nullable;
 import com.aspectran.core.util.ArrayStack;
 import com.aspectran.core.util.BeanUtils;
 import com.aspectran.core.util.json.JsonReader;
@@ -42,11 +43,13 @@ public class AponConverter {
     }
 
     public static Parameters fromJson(String json) throws IOException {
-        Parameters container = new VariableParameters();
-        return fromJson(json, container);
+        return fromJson(json, null);
     }
 
-    public static Parameters fromJson(String json, Parameters container) throws IOException {
+    public static Parameters fromJson(String json, @Nullable Parameters container) throws IOException {
+        if (json == null) {
+            throw new IllegalArgumentException("json must not be null");
+        }
         ArrayStack<Parameters> stack = new ArrayStack<>();
         JsonReader reader = new JsonReader(new StringReader(json));
         String name = null;
@@ -70,6 +73,7 @@ public class AponConverter {
                 if (container == null) {
                     container = new VariableParameters();
                     stack.push(container);
+                    name = "noname";
                 }
             } else if(JsonToken.NAME == nextToken) {
                 name = reader.nextName();
