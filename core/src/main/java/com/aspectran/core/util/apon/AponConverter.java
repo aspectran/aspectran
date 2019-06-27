@@ -15,8 +15,13 @@
  */
 package com.aspectran.core.util.apon;
 
+import com.aspectran.core.util.ArrayStack;
 import com.aspectran.core.util.BeanUtils;
+import com.aspectran.core.util.json.JsonReader;
+import com.aspectran.core.util.json.JsonToken;
 
+import java.io.IOException;
+import java.io.StringReader;
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
@@ -33,6 +38,62 @@ public class AponConverter {
     public static Parameters from(Object object) {
         Parameters container = new VariableParameters();
         putValue(container, object);
+        return container;
+    }
+
+    public static Parameters fromJson(String json) throws IOException {
+        Parameters container = new VariableParameters();
+        return fromJson(json, container);
+    }
+
+    public static Parameters fromJson(String json, Parameters container) throws IOException {
+        ArrayStack<Parameters> stack = new ArrayStack<>();
+        JsonReader reader = new JsonReader(new StringReader(json));
+        String name = null;
+        while (reader.hasNext()) {
+            JsonToken nextToken = reader.peek();
+            if (JsonToken.BEGIN_OBJECT == nextToken) {
+                reader.beginObject();
+                if (container == null) {
+                    container = new VariableParameters();
+                    stack.push(container);
+                }
+                if (name != null) {
+                    Parameters parameters = stack.peek();
+                    Parameters subParameters = parameters.newParameters(name);
+                    stack.push(subParameters);
+                }
+            } else if (JsonToken.END_OBJECT == nextToken) {
+                Parameters parameters = stack.pop();
+                name = parameters.getParent().getName();
+            } else if (JsonToken.BEGIN_ARRAY == nextToken) {
+                if (container == null) {
+                    container = new VariableParameters();
+                    stack.push(container);
+                }
+            } else if(JsonToken.NAME == nextToken) {
+                name = reader.nextName();
+            } else if(JsonToken.STRING == nextToken) {
+                String value =  reader.nextString();
+                stack.peek().putValue(name, value);
+            } else if(JsonToken.BOOLEAN == nextToken) {
+                boolean value =  reader.nextBoolean();
+                stack.peek().putValue(name, value);
+            } else if(JsonToken.NUMBER == nextToken) {
+                try {
+                    int value = reader.nextInt();
+                    stack.peek().putValue(name, value);
+                } catch (NumberFormatException e0) {
+                    try {
+                        long value = reader.nextLong();
+                        stack.peek().putValue(name, value);
+                    } catch (NumberFormatException e1) {
+                        double value = reader.nextDouble();
+                        stack.peek().putValue(name, value);
+                    }
+                }
+            }
+        }
         return container;
     }
 

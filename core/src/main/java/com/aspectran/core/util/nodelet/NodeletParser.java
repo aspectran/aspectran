@@ -55,7 +55,7 @@ public class NodeletParser {
 
     private final Map<String, NodeEndlet> endletMap = new HashMap<>(1024);
 
-    private final ArrayStack objectStack = new ArrayStack();
+    private final ArrayStack<Object> objectStack = new ArrayStack<>();
 
     private boolean validating;
 

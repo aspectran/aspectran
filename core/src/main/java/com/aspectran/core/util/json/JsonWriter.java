@@ -44,7 +44,7 @@ public class JsonWriter implements Flushable {
 
     private static final String DEFAULT_INDENT_STRING = "\t";
 
-    private Writer writer;
+    private final Writer out;
 
     private boolean prettyPrint;
 
@@ -58,10 +58,10 @@ public class JsonWriter implements Flushable {
      * Instantiates a new JsonWriter.
      * Pretty-printing is disabled by default.
      *
-     * @param writer the character-output stream
+     * @param out the character-output stream
      */
-    public JsonWriter(Writer writer) {
-        this(writer, false);
+    public JsonWriter(Writer out) {
+        this(out, false);
     }
 
     /**
@@ -69,11 +69,11 @@ public class JsonWriter implements Flushable {
      * If pretty-printing is enabled, includes spaces, tabs and new-lines to make the format more readable.
      * The default indentation string is a tab character.
      *
-     * @param writer the character-output stream
+     * @param out the character-output stream
      * @param prettyPrint enables or disables pretty-printing
      */
-    public JsonWriter(Writer writer, boolean prettyPrint) {
-        this.writer = writer;
+    public JsonWriter(Writer out, boolean prettyPrint) {
+        this.out = out;
         this.prettyPrint = prettyPrint;
         this.indentString = (prettyPrint ? DEFAULT_INDENT_STRING : null);
     }
@@ -82,11 +82,11 @@ public class JsonWriter implements Flushable {
      * Instantiates a new JsonWriter.
      * If pretty-printing is enabled, includes spaces, tabs and new-lines to make the format more readable.
      *
-     * @param writer the character-output stream
+     * @param out the character-output stream
      * @param indentString the string that should be used for indentation when pretty-printing is enabled
      */
-    public JsonWriter(Writer writer, String indentString) {
-        this.writer = writer;
+    public JsonWriter(Writer out, String indentString) {
+        this.out = out;
         this.prettyPrint = (indentString != null);
         this.indentString = indentString;
     }
@@ -214,10 +214,10 @@ public class JsonWriter implements Flushable {
      */
     public JsonWriter writeName(String name) throws IOException {
         indent();
-        writer.write(escape(name));
-        writer.write(":");
+        out.write(escape(name));
+        out.write(":");
         if (prettyPrint) {
-            writer.write(" ");
+            out.write(" ");
         }
         willWriteValue = true;
         return this;
@@ -235,7 +235,7 @@ public class JsonWriter implements Flushable {
         if (!willWriteValue) {
             indent();
         }
-        writer.write(escape(value));
+        out.write(escape(value));
         willWriteValue = false;
         return this;
     }
@@ -251,7 +251,7 @@ public class JsonWriter implements Flushable {
         if (!willWriteValue) {
             indent();
         }
-        writer.write(value.toString());
+        out.write(value.toString());
         willWriteValue = false;
         return this;
     }
@@ -267,7 +267,7 @@ public class JsonWriter implements Flushable {
         if (!willWriteValue) {
             indent();
         }
-        writer.write(value.toString());
+        out.write(value.toString());
         willWriteValue = false;
         return this;
     }
@@ -279,7 +279,7 @@ public class JsonWriter implements Flushable {
      * @throws IOException if an I/O error has occurred
      */
     public JsonWriter writeNull() throws IOException {
-        writer.write("null");
+        out.write("null");
         return this;
     }
 
@@ -290,9 +290,9 @@ public class JsonWriter implements Flushable {
      * @throws IOException if an I/O error has occurred
      */
     public JsonWriter writeComma() throws IOException {
-        writer.write(",");
+        out.write(",");
         if (prettyPrint) {
-            writer.write(" ");
+            out.write(" ");
         }
         nextLine();
         return this;
@@ -308,7 +308,7 @@ public class JsonWriter implements Flushable {
         if (!willWriteValue) {
             indent();
         }
-        writer.write("{");
+        out.write("{");
         nextLine();
         indentDepth++;
         return this;
@@ -324,7 +324,7 @@ public class JsonWriter implements Flushable {
         indentDepth--;
         nextLine();
         indent();
-        writer.write("}");
+        out.write("}");
         return this;
     }
 
@@ -338,7 +338,7 @@ public class JsonWriter implements Flushable {
         if (!willWriteValue) {
             indent();
         }
-        writer.write("[");
+        out.write("[");
         nextLine();
         indentDepth++;
         willWriteValue = false;
@@ -355,7 +355,7 @@ public class JsonWriter implements Flushable {
         indentDepth--;
         nextLine();
         indent();
-        writer.write("]");
+        out.write("]");
         return this;
     }
 
@@ -367,7 +367,7 @@ public class JsonWriter implements Flushable {
     protected void indent() throws IOException {
         if (prettyPrint) {
             for (int i = 0; i < indentDepth; i++) {
-                writer.write(indentString);
+                out.write(indentString);
             }
         }
     }
@@ -379,13 +379,13 @@ public class JsonWriter implements Flushable {
      */
     protected void nextLine() throws IOException {
         if (prettyPrint) {
-            writer.write("\n");
+            out.write("\n");
         }
     }
 
     @Override
     public void flush() throws IOException {
-        writer.flush();
+        out.flush();
     }
 
     /**
@@ -394,8 +394,8 @@ public class JsonWriter implements Flushable {
      * @throws IOException if an I/O error has occurred
      */
     public void close() throws IOException {
-        if (writer != null) {
-            writer.close();
+        if (out != null) {
+            out.close();
         }
     }
 

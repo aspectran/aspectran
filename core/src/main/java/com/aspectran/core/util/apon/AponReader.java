@@ -33,7 +33,7 @@ import java.util.Objects;
  */
 public class AponReader extends AponFormat {
 
-    private BufferedReader reader;
+    private final BufferedReader in;
 
     private boolean addable;
 
@@ -51,16 +51,16 @@ public class AponReader extends AponFormat {
     /**
      * Instantiates a new AponReader.
      *
-     * @param reader the character stream whose contents can be parsed as APON
+     * @param in the character stream whose contents can be parsed as APON
      */
-    public AponReader(Reader reader) {
-        if (reader == null) {
-            throw new IllegalArgumentException("reader must not be null");
+    public AponReader(Reader in) {
+        if (in == null) {
+            throw new IllegalArgumentException("in must not be null");
         }
-        if (reader instanceof BufferedReader) {
-            this.reader = (BufferedReader)reader;
+        if (in instanceof BufferedReader) {
+            this.in = (BufferedReader)in;
         } else {
-            this.reader = new BufferedReader(reader);
+            this.in = new BufferedReader(in);
         }
     }
 
@@ -122,7 +122,7 @@ public class AponReader extends AponFormat {
         int vlen;
         char cchar;
 
-        while ((line = reader.readLine()) != null) {
+        while ((line = in.readLine()) != null) {
             lineNumber++;
             tline = line.trim();
             tlen = tline.length();
@@ -352,7 +352,7 @@ public class AponReader extends AponFormat {
         char tchar;
         StringBuilder sb = null;
 
-        while ((line = reader.readLine()) != null) {
+        while ((line = in.readLine()) != null) {
             lineNumber++;
 
             tline = line.trim();
@@ -401,10 +401,9 @@ public class AponReader extends AponFormat {
      * @throws IOException if an I/O error occurs
      */
     public void close() throws IOException {
-        if (reader != null) {
-            reader.close();
+        if (in != null) {
+            in.close();
         }
-        reader = null;
     }
 
     /**

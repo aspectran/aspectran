@@ -458,7 +458,7 @@ public class JsonReader implements Closeable {
         if (p == PEEKED_NONE) {
             p = doPeek();
         }
-        return p != PEEKED_END_OBJECT && p != PEEKED_END_ARRAY;
+        return (p != PEEKED_END_OBJECT && p != PEEKED_END_ARRAY);
     }
 
     /**
@@ -503,7 +503,7 @@ public class JsonReader implements Closeable {
         }
     }
 
-    int doPeek() throws IOException {
+    private int doPeek() throws IOException {
         int peekStack = stack[stackSize - 1];
         if (peekStack == EMPTY_ARRAY) {
             stack[stackSize - 1] = NONEMPTY_ARRAY;
@@ -1490,11 +1490,12 @@ public class JsonReader implements Closeable {
         return false;
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return getClass().getSimpleName() + locationString();
     }
 
-    String locationString() {
+    private String locationString() {
         int line = lineNumber + 1;
         int column = pos - lineStart + 1;
         return " at line " + line + " column " + column + " path " + getPath();
