@@ -372,6 +372,7 @@
                         <doctitle>${javadoc.title}</doctitle>
                         <windowtitle>${javadoc.title}</windowtitle>
                         <locale>${javadoc.locale}</locale>
+                        <doclint>all,-missing</doclint>
                         <detectLinks>false</detectLinks>
                         <detectOfflineLinks>false</detectOfflineLinks>
                         <detectJavaApiLink>false</detectJavaApiLink>
