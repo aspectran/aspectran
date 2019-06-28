@@ -22,11 +22,11 @@ import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.CoreService;
-import com.aspectran.core.util.apon.AponParseException;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.Reader;
 import java.util.Map;
 
@@ -191,7 +191,7 @@ public interface EmbeddedAspectran extends CoreService {
         AspectranConfig aspectranConfig;
         try {
             aspectranConfig = new AspectranConfig(aspectranConfigFile);
-        } catch (AponParseException e) {
+        } catch (IOException e) {
             throw new AspectranServiceException("Error parsing aspectran configuration file: " + aspectranConfigFile, e);
         }
         return run(aspectranConfig);
@@ -210,7 +210,7 @@ public interface EmbeddedAspectran extends CoreService {
         AspectranConfig aspectranConfig;
         try {
             aspectranConfig = new AspectranConfig(configFileReader);
-        } catch (AponParseException e) {
+        } catch (IOException e) {
             throw new AspectranServiceException("Error parsing aspectran configuration", e);
         }
         return run(aspectranConfig);

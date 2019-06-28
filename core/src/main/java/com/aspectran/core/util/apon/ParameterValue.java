@@ -126,12 +126,12 @@ public class ParameterValue implements Parameter {
     }
 
     @Override
-    public ParameterValueType getParameterValueType() {
+    public ParameterValueType getValueType() {
         return parameterValueType;
     }
 
     @Override
-    public void setParameterValueType(ParameterValueType parameterValueType) {
+    public void setValueType(ParameterValueType parameterValueType) {
         this.parameterValueType = parameterValueType;
     }
 

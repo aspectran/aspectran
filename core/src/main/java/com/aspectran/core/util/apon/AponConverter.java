@@ -55,8 +55,8 @@ public class AponConverter {
         String name = null;
         while (reader.hasNext()) {
             JsonToken nextToken = reader.peek();
-            if (JsonToken.BEGIN_OBJECT == nextToken) {
-                reader.beginObject();
+            if (JsonToken.BEGIN_BLOCK == nextToken) {
+                reader.beginBlock();
                 if (container == null) {
                     container = new VariableParameters();
                     stack.push(container);
@@ -66,7 +66,7 @@ public class AponConverter {
                     Parameters subParameters = parameters.newParameters(name);
                     stack.push(subParameters);
                 }
-            } else if (JsonToken.END_OBJECT == nextToken) {
+            } else if (JsonToken.END_BLOCK == nextToken) {
                 Parameters parameters = stack.pop();
                 name = parameters.getParent().getName();
             } else if (JsonToken.BEGIN_ARRAY == nextToken) {

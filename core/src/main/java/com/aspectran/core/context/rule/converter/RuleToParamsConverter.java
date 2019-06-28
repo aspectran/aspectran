@@ -96,12 +96,12 @@ import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.core.context.rule.type.ScopeType;
 import com.aspectran.core.context.rule.type.TextStyleType;
 import com.aspectran.core.util.TextStyler;
-import com.aspectran.core.util.apon.AponParseException;
 import com.aspectran.core.util.apon.Parameter;
 import com.aspectran.core.util.apon.ParameterDefinition;
 import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.apon.VariableParameters;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -952,7 +952,7 @@ public class RuleToParamsConverter {
         if (valueType == ItemValueType.PARAMETERS) {
             try {
                 return new VariableParameters(value);
-            } catch (AponParseException e) {
+            } catch (IOException e) {
                 throw new RuntimeException("Parameters can not be parsed", e);
             }
         } else {

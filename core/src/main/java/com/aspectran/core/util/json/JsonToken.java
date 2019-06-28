@@ -35,14 +35,14 @@ public enum JsonToken {
     END_ARRAY,
 
     /**
-     * The opening of a JSON object.
+     * The opening of a JSON object block.
      */
-    BEGIN_OBJECT,
+    BEGIN_BLOCK,
 
     /**
-     * The closing of a JSON object.
+     * The closing of a JSON object block.
      */
-    END_OBJECT,
+    END_BLOCK,
 
     /**
      * A JSON property name. Within objects, tokens alternate between names and

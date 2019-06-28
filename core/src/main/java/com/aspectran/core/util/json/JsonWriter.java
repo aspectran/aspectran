@@ -20,6 +20,7 @@ import com.aspectran.core.util.apon.Parameter;
 import com.aspectran.core.util.apon.ParameterValue;
 import com.aspectran.core.util.apon.Parameters;
 
+import java.io.Closeable;
 import java.io.Flushable;
 import java.io.IOException;
 import java.io.StringWriter;
@@ -40,7 +41,7 @@ import java.util.Map;
  * 
  * @author Juho Jeong
  */
-public class JsonWriter implements Flushable {
+public class JsonWriter implements Flushable, Closeable {
 
     private static final String DEFAULT_INDENT_STRING = "\t";
 
@@ -108,7 +109,7 @@ public class JsonWriter implements Flushable {
         } else if (object instanceof Number) {
             writeValue((Number)object);
         } else if (object instanceof Parameters) {
-            openCurlyBracket();
+            beginBlock();
 
             Map<String, ParameterValue> params = ((Parameters)object).getParameterValueMap();
             Iterator<ParameterValue> it = params.values().iterator();
@@ -125,9 +126,9 @@ public class JsonWriter implements Flushable {
                 }
             }
 
-            closeCurlyBracket();
+            endBlock();
         } else if (object instanceof Map<?, ?>) {
-            openCurlyBracket();
+            beginBlock();
 
             @SuppressWarnings("unchecked")
             Iterator<Map.Entry<Object, Object>> it = ((Map<Object, Object>)object).entrySet().iterator();
@@ -144,9 +145,9 @@ public class JsonWriter implements Flushable {
                 }
             }
 
-            closeCurlyBracket();
+            endBlock();
         } else if (object instanceof Collection<?>) {
-            openSquareBracket();
+            beginArray();
 
             @SuppressWarnings("unchecked")
             Iterator<Object> it = ((Collection<Object>)object).iterator();
@@ -160,9 +161,9 @@ public class JsonWriter implements Flushable {
                 }
             }
 
-            closeSquareBracket();
+            endArray();
         } else if (object.getClass().isArray()) {
-            openSquareBracket();
+            beginArray();
 
             int len = Array.getLength(object);
             for (int i = 0; i < len; i++) {
@@ -175,11 +176,11 @@ public class JsonWriter implements Flushable {
                 write(value);
             }
 
-            closeSquareBracket();
+            endArray();
         } else {
             String[] readablePropertyNames = BeanUtils.getReadablePropertyNamesWithoutNonSerializable(object);
             if (readablePropertyNames != null && readablePropertyNames.length > 0) {
-                openCurlyBracket();
+                beginBlock();
 
                 for (int i = 0; i < readablePropertyNames.length; i++) {
                     Object value;
@@ -197,7 +198,7 @@ public class JsonWriter implements Flushable {
                     }
                 }
 
-                closeCurlyBracket();
+                endBlock();
             } else {
                 writeValue(object.toString());
             }
@@ -304,7 +305,7 @@ public class JsonWriter implements Flushable {
      * @return this JsonWriter
      * @throws IOException if an I/O error has occurred
      */
-    public JsonWriter openCurlyBracket() throws IOException {
+    public JsonWriter beginBlock() throws IOException {
         if (!willWriteValue) {
             indent();
         }
@@ -320,7 +321,7 @@ public class JsonWriter implements Flushable {
      * @return this JsonWriter
      * @throws IOException if an I/O error has occurred
      */
-    public JsonWriter closeCurlyBracket() throws IOException {
+    public JsonWriter endBlock() throws IOException {
         indentDepth--;
         nextLine();
         indent();
@@ -334,7 +335,7 @@ public class JsonWriter implements Flushable {
      * @return this JsonWriter
      * @throws IOException if an I/O error has occurred
      */
-    public JsonWriter openSquareBracket() throws IOException {
+    public JsonWriter beginArray() throws IOException {
         if (!willWriteValue) {
             indent();
         }
@@ -351,7 +352,7 @@ public class JsonWriter implements Flushable {
      * @return this JsonWriter
      * @throws IOException if an I/O error has occurred
      */
-    public JsonWriter closeSquareBracket() throws IOException {
+    public JsonWriter endArray() throws IOException {
         indentDepth--;
         nextLine();
         indent();
@@ -388,11 +389,7 @@ public class JsonWriter implements Flushable {
         out.flush();
     }
 
-    /**
-     * Closes the writer.
-     *
-     * @throws IOException if an I/O error has occurred
-     */
+    @Override
     public void close() throws IOException {
         if (out != null) {
             out.close();

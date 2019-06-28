@@ -27,7 +27,7 @@ import java.io.IOException;
 class AponReadWriteTest {
 
     @Test
-    void writeTest() throws IOException, AponParseException {
+    void writeTest() throws IOException {
         File file = ResourceUtils.getResourceAsFile("config/apon/apon-test.apon");
         Parameters parameters = AponReader.parse(file);
 

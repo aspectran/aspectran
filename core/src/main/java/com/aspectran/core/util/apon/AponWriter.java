@@ -126,45 +126,45 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
      * @throws IOException if an I/O error occurs
      */
     public void write(Parameter parameter) throws IOException {
-        Assert.notNull(parameter, "'parameter' must not be null");
-        if (parameter.getParameterValueType() == ParameterValueType.PARAMETERS) {
+        Assert.notNull(parameter, "parameter must not be null");
+        if (parameter.getValueType() == ParameterValueType.PARAMETERS) {
             if (parameter.isArray()) {
                 List<Parameters> list = parameter.getValueAsParametersList();
                 if (list != null) {
                     if (parameter.isBracketed()) {
                         writeName(parameter);
-                        openSquareBracket();
+                        beginArray();
                         for (Parameters p : list) {
                             indent();
-                            openCurlyBracket();
+                            beginBlock();
                             write(p);
-                            closeCurlyBracket();
+                            endBlock();
                         }
-                        closeSquareBracket();
+                        endArray();
                     } else {
                         for (Parameters p : list) {
                             writeName(parameter);
-                            openCurlyBracket();
+                            beginBlock();
                             write(p);
-                            closeCurlyBracket();
+                            endBlock();
                         }
                     }
                 }
             } else {
                 if (nullWritable || parameter.getValueAsParameters() != null) {
                     writeName(parameter);
-                    openCurlyBracket();
+                    beginBlock();
                     write(parameter.getValueAsParameters());
-                    closeCurlyBracket();
+                    endBlock();
                 }
             }
-        } else if (parameter.getParameterValueType() == ParameterValueType.VARIABLE) {
+        } else if (parameter.getValueType() == ParameterValueType.VARIABLE) {
             if (parameter.isArray()) {
                 List<?> list = parameter.getValueList();
                 if (list != null) {
                     if (parameter.isBracketed()) {
                         writeName(parameter);
-                        openSquareBracket();
+                        beginArray();
                         for (Object value : list) {
                             indent();
                             if (value instanceof Parameters) {
@@ -175,7 +175,7 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
                                 writeNull();
                             }
                         }
-                        closeSquareBracket();
+                        endArray();
                     } else {
                         for (Object value : list) {
                             writeName(parameter);
@@ -193,7 +193,7 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
                 Object value = parameter.getValue();
                 if (nullWritable || value != null) {
                     writeName(parameter);
-                    openCurlyBracket();
+                    beginBlock();
                     if (value instanceof Parameters) {
                         write((Parameters)value);
                     } else if (value != null) {
@@ -201,21 +201,21 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
                     } else {
                         writeNull();
                     }
-                    closeCurlyBracket();
+                    endBlock();
                 }
             }
-        } else if (parameter.getParameterValueType() == ParameterValueType.STRING) {
+        } else if (parameter.getValueType() == ParameterValueType.STRING) {
             if (parameter.isArray()) {
                 List<String> list = parameter.getValueAsStringList();
                 if (list != null) {
                     if (parameter.isBracketed()) {
                         writeName(parameter);
-                        openSquareBracket();
+                        beginArray();
                         for (String value : list) {
                             indent();
                             writeString(value);
                         }
-                        closeSquareBracket();
+                        endArray();
                     } else {
                         for (String value : list) {
                             writeName(parameter);
@@ -230,26 +230,26 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
                     writeString(s);
                 }
             }
-        } else if (parameter.getParameterValueType() == ParameterValueType.TEXT) {
+        } else if (parameter.getValueType() == ParameterValueType.TEXT) {
             if (parameter.isArray()) {
                 List<String> list = parameter.getValueAsStringList();
                 if (list != null) {
                     if (parameter.isBracketed()) {
                         writeName(parameter);
-                        openSquareBracket();
+                        beginArray();
                         for (String text : list) {
                             indent();
-                            openRoundBracket();
+                            beginText();
                             writeText(text);
-                            closeRoundBracket();
+                            endText();
                         }
-                        closeSquareBracket();
+                        endArray();
                     } else {
                         for (String text : list) {
                             writeName(parameter);
-                            openRoundBracket();
+                            beginText();
                             writeText(text);
-                            closeRoundBracket();
+                            endText();
                         }
                     }
                 }
@@ -257,9 +257,9 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
                 String text = parameter.getValueAsString();
                 if (text != null) {
                     writeName(parameter);
-                    openRoundBracket();
+                    beginText();
                     writeText(text);
-                    closeRoundBracket();
+                    endText();
                 } else if (nullWritable) {
                     writeName(parameter);
                     writeNull();
@@ -271,12 +271,12 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
                 if (list != null) {
                     if (parameter.isBracketed()) {
                         writeName(parameter);
-                        openSquareBracket();
+                        beginArray();
                         for (Object value : list) {
                             indent();
                             write(value);
                         }
-                        closeSquareBracket();
+                        endArray();
                     } else {
                         for (Object value : list) {
                             writeName(parameter);
@@ -334,7 +334,7 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
         out.write(parameter.getName());
         if (typeHintWritable || parameter.isValueTypeHinted()) {
             out.write(ROUND_BRACKET_OPEN);
-            out.write(parameter.getParameterValueType().toString());
+            out.write(parameter.getValueType().toString());
             out.write(ROUND_BRACKET_CLOSE);
         }
         out.write(NAME_VALUE_SEPARATOR);
@@ -395,39 +395,39 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
         newLine();
     }
 
-    private void openCurlyBracket() throws IOException {
+    private void beginBlock() throws IOException {
         out.write(CURLY_BRACKET_OPEN);
         newLine();
         increaseIndent();
     }
 
-    private void closeCurlyBracket() throws IOException {
+    private void endBlock() throws IOException {
         decreaseIndent();
         indent();
         out.write(CURLY_BRACKET_CLOSE);
         newLine();
     }
 
-    private void openSquareBracket() throws IOException {
+    private void beginArray() throws IOException {
         out.write(SQUARE_BRACKET_OPEN);
         newLine();
         increaseIndent();
     }
 
-    private void closeSquareBracket() throws IOException {
+    private void endArray() throws IOException {
         decreaseIndent();
         indent();
         out.write(SQUARE_BRACKET_CLOSE);
         newLine();
     }
 
-    private void openRoundBracket() throws IOException {
+    private void beginText() throws IOException {
         out.write(ROUND_BRACKET_OPEN);
         newLine();
         increaseIndent();
     }
 
-    private void closeRoundBracket() throws IOException {
+    private void endText() throws IOException {
         decreaseIndent();
         indent();
         out.write(ROUND_BRACKET_CLOSE);
@@ -499,11 +499,6 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
         out.flush();
     }
 
-    /**
-     * Closes this APON writer.
-     *
-     * @throws IOException if an I/O error occurs
-     */
     @Override
     public void close() throws IOException {
         if (out != null) {

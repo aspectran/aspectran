@@ -22,17 +22,11 @@ package com.aspectran.core.util.apon;
  */
 public class ParameterValueTypeMismatchException extends InvalidParameterValueException {
 
-    private final Throwable cause;
+    private static final long serialVersionUID = 3022910656886563259L;
 
     public ParameterValueTypeMismatchException(Class<?> valueType, Class<?> requiredType, Throwable cause) {
         super("Failed to convert value of type [" + valueType.getName() + "] " +
                 "to required type [" + requiredType.getName() + "]; nested exception is " + cause, cause);
-
-        this.cause = cause;
-    }
-
-    public Throwable getCause() {
-        return cause;
     }
 
 }

@@ -20,7 +20,7 @@ import com.aspectran.core.util.StringUtils;
 /**
  * This exception is raised when attempting to read (or write) a malformed APON element.
  */
-public class AponSyntaxException extends AponParseException {
+public class MalformedAponException extends AponParseException {
 
     /** @serial */
     private static final long serialVersionUID = -2012813522496665651L;
@@ -30,7 +30,7 @@ public class AponSyntaxException extends AponParseException {
      *
      * @param msg a message to associate with the exception
      */
-    public AponSyntaxException(String msg) {
+    public MalformedAponException(String msg) {
         super(msg);
     }
 
@@ -42,7 +42,7 @@ public class AponSyntaxException extends AponParseException {
      * @param tline the trimmed character line
      * @param msg a message to associate with the exception
      */
-    public AponSyntaxException(int lineNumber, String line, String tline, String msg) {
+    public MalformedAponException(int lineNumber, String line, String tline, String msg) {
         super(makeMessage(lineNumber, line, tline, msg));
     }
 
@@ -55,8 +55,8 @@ public class AponSyntaxException extends AponParseException {
      * @param parameterValue the actual value type
      * @param expectedParameterValueType the expected value type
      */
-    public AponSyntaxException(int lineNumber, String line, String tline, ParameterValue parameterValue,
-                               ParameterValueType expectedParameterValueType) {
+    public MalformedAponException(int lineNumber, String line, String tline, ParameterValue parameterValue,
+                                  ParameterValueType expectedParameterValueType) {
         super(makeMessage(lineNumber, line, tline, parameterValue, expectedParameterValueType));
     }
 

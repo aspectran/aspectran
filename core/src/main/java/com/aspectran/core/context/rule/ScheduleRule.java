@@ -21,8 +21,8 @@ import com.aspectran.core.context.rule.type.BeanRefererType;
 import com.aspectran.core.context.rule.type.TriggerType;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.ToStringBuilder;
-import com.aspectran.core.util.apon.AponParseException;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -167,7 +167,7 @@ public class ScheduleRule implements BeanReferenceable {
             TriggerParameters triggerParameters;
             try {
                 triggerParameters = new TriggerParameters(text);
-            } catch (AponParseException e) {
+            } catch (IOException e) {
                 throw new IllegalRuleException("Trigger parameter can not be parsed", e);
             }
             updateTrigger(scheduleRule, triggerParameters);

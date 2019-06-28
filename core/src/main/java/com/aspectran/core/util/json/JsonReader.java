@@ -44,10 +44,10 @@ import java.util.Arrays;
  *       is false. Finally, read the array's closing bracket by calling {@link
  *       #endArray}.
  *   <li>Within <strong>object handling</strong> methods, first call {@link
- *       #beginObject} to consume the object's opening brace. Then create a
+ *       #beginBlock} to consume the object's opening brace. Then create a
  *       while loop that assigns values to local variables based on their name.
  *       This loop should terminate when {@link #hasNext} is false. Finally,
- *       read the object's closing brace by calling {@link #endObject}.
+ *       read the object's closing brace by calling {@link #endBlock}.
  * </ul>
  * <p>When a nested object or array is encountered, delegate to the
  * corresponding handler method.</p>
@@ -204,7 +204,7 @@ public class JsonReader implements Closeable {
      * An object with no name/value pairs requires no separators or newlines
      * before it is closed.
      */
-    private static final int EMPTY_OBJECT = 3;
+    private static final int EMPTY_BLOCK = 3;
 
     /**
      * An object whose most recent element is a key. The next element must
@@ -216,7 +216,7 @@ public class JsonReader implements Closeable {
      * An object with at least one name/value pair requires a comma and
      * newline before the next element.
      */
-    private static final int NONEMPTY_OBJECT = 5;
+    private static final int NONEMPTY_BLOCK = 5;
 
     /**
      * No object or array has been started.
@@ -238,8 +238,8 @@ public class JsonReader implements Closeable {
     private static final long MIN_INCOMPLETE_INTEGER = Long.MIN_VALUE / 10;
 
     private static final int PEEKED_NONE = 0;
-    private static final int PEEKED_BEGIN_OBJECT = 1;
-    private static final int PEEKED_END_OBJECT = 2;
+    private static final int PEEKED_BEGIN_BLOCK = 1;
+    private static final int PEEKED_END_BLOCK = 2;
     private static final int PEEKED_BEGIN_ARRAY = 3;
     private static final int PEEKED_END_ARRAY = 4;
     private static final int PEEKED_TRUE = 5;
@@ -319,7 +319,7 @@ public class JsonReader implements Closeable {
 
     /*
      * The path members. It corresponds directly to stack: At indices where the
-     * stack contains an object (EMPTY_OBJECT, DANGLING_NAME or NONEMPTY_OBJECT),
+     * stack contains an object (EMPTY_BLOCK, DANGLING_NAME or NONEMPTY_BLOCK),
      * pathNames contains the name at this scope. Where it contains an array
      * (EMPTY_ARRAY, NONEMPTY_ARRAY) pathIndices contains the current index in
      * that array. Otherwise the value is undefined, and we take advantage of that
@@ -416,37 +416,37 @@ public class JsonReader implements Closeable {
 
     /**
      * Consumes the next token from the JSON stream and asserts that it is the
-     * beginning of a new object.
+     * beginning of a new block.
      */
-    public void beginObject() throws IOException {
+    public void beginBlock() throws IOException {
         int p = peeked;
         if (p == PEEKED_NONE) {
             p = doPeek();
         }
-        if (p == PEEKED_BEGIN_OBJECT) {
-            push(EMPTY_OBJECT);
+        if (p == PEEKED_BEGIN_BLOCK) {
+            push(EMPTY_BLOCK);
             peeked = PEEKED_NONE;
         } else {
-            throw new IllegalStateException("Expected BEGIN_OBJECT but was " + peek() + locationString());
+            throw new IllegalStateException("Expected BEGIN_BLOCK but was " + peek() + locationString());
         }
     }
 
     /**
      * Consumes the next token from the JSON stream and asserts that it is the
-     * end of the current object.
+     * end of the current block.
      */
-    public void endObject() throws IOException {
+    public void endBlock() throws IOException {
         int p = peeked;
         if (p == PEEKED_NONE) {
             p = doPeek();
         }
-        if (p == PEEKED_END_OBJECT) {
+        if (p == PEEKED_END_BLOCK) {
             stackSize--;
             pathNames[stackSize] = null; // Free the last path name so that it can be garbage collected!
             pathIndices[stackSize - 1]++;
             peeked = PEEKED_NONE;
         } else {
-            throw new IllegalStateException("Expected END_OBJECT but was " + peek() + locationString());
+            throw new IllegalStateException("Expected END_BLOCK but was " + peek() + locationString());
         }
     }
 
@@ -458,7 +458,7 @@ public class JsonReader implements Closeable {
         if (p == PEEKED_NONE) {
             p = doPeek();
         }
-        return (p != PEEKED_END_OBJECT && p != PEEKED_END_ARRAY);
+        return (p != PEEKED_END_BLOCK && p != PEEKED_END_ARRAY);
     }
 
     /**
@@ -471,10 +471,10 @@ public class JsonReader implements Closeable {
         }
 
         switch (p) {
-            case PEEKED_BEGIN_OBJECT:
-                return JsonToken.BEGIN_OBJECT;
-            case PEEKED_END_OBJECT:
-                return JsonToken.END_OBJECT;
+            case PEEKED_BEGIN_BLOCK:
+                return JsonToken.BEGIN_BLOCK;
+            case PEEKED_END_BLOCK:
+                return JsonToken.END_BLOCK;
             case PEEKED_BEGIN_ARRAY:
                 return JsonToken.BEGIN_ARRAY;
             case PEEKED_END_ARRAY:
@@ -520,20 +520,20 @@ public class JsonReader implements Closeable {
                 default:
                     throw syntaxError("Unterminated array");
             }
-        } else if (peekStack == EMPTY_OBJECT || peekStack == NONEMPTY_OBJECT) {
+        } else if (peekStack == EMPTY_BLOCK || peekStack == NONEMPTY_BLOCK) {
             stack[stackSize - 1] = DANGLING_NAME;
             // Look for a comma before the next element.
-            if (peekStack == NONEMPTY_OBJECT) {
+            if (peekStack == NONEMPTY_BLOCK) {
                 int c = nextNonWhitespace(true);
                 switch (c) {
                     case '}':
-                        return peeked = PEEKED_END_OBJECT;
+                        return peeked = PEEKED_END_BLOCK;
                     case ';':
                         checkLenient(); // fall-through
                     case ',':
                         break;
                     default:
-                        throw syntaxError("Unterminated object");
+                        throw syntaxError("Unterminated block");
                 }
             }
             int c = nextNonWhitespace(true);
@@ -544,8 +544,8 @@ public class JsonReader implements Closeable {
                     checkLenient();
                     return peeked = PEEKED_SINGLE_QUOTED_NAME;
                 case '}':
-                    if (peekStack != NONEMPTY_OBJECT) {
-                        return peeked = PEEKED_END_OBJECT;
+                    if (peekStack != NONEMPTY_BLOCK) {
+                        return peeked = PEEKED_END_BLOCK;
                     } else {
                         throw syntaxError("Expected name");
                     }
@@ -559,7 +559,7 @@ public class JsonReader implements Closeable {
                     }
             }
         } else if (peekStack == DANGLING_NAME) {
-            stack[stackSize - 1] = NONEMPTY_OBJECT;
+            stack[stackSize - 1] = NONEMPTY_BLOCK;
             // Look for a colon before the value.
             int c = nextNonWhitespace(true);
             switch (c) {
@@ -616,7 +616,7 @@ public class JsonReader implements Closeable {
             case '[':
                 return peeked = PEEKED_BEGIN_ARRAY;
             case '{':
-                return peeked = PEEKED_BEGIN_OBJECT;
+                return peeked = PEEKED_BEGIN_BLOCK;
             default:
                 pos--; // Don't consume the first character in a literal value.
         }
@@ -1265,7 +1265,7 @@ public class JsonReader implements Closeable {
     }
 
     /**
-     * Skips the next value recursively. If it is an object or array, all nested
+     * Skips the next value recursively. If it is an block or array, all nested
      * elements are skipped. This method is intended for use when the JSON token
      * stream contains unrecognized or unhandled values.
      */
@@ -1280,13 +1280,13 @@ public class JsonReader implements Closeable {
             if (p == PEEKED_BEGIN_ARRAY) {
                 push(EMPTY_ARRAY);
                 count++;
-            } else if (p == PEEKED_BEGIN_OBJECT) {
-                push(EMPTY_OBJECT);
+            } else if (p == PEEKED_BEGIN_BLOCK) {
+                push(EMPTY_BLOCK);
                 count++;
             } else if (p == PEEKED_END_ARRAY) {
                 stackSize--;
                 count--;
-            } else if (p == PEEKED_END_OBJECT) {
+            } else if (p == PEEKED_END_BLOCK) {
                 stackSize--;
                 count--;
             } else if (p == PEEKED_UNQUOTED_NAME || p == PEEKED_UNQUOTED) {
@@ -1514,9 +1514,9 @@ public class JsonReader implements Closeable {
                     result.append('[').append(pathIndices[i]).append(']');
                     break;
 
-                case EMPTY_OBJECT:
+                case EMPTY_BLOCK:
                 case DANGLING_NAME:
-                case NONEMPTY_OBJECT:
+                case NONEMPTY_BLOCK:
                     result.append('.');
                     if (pathNames[i] != null) {
                         result.append(pathNames[i]);

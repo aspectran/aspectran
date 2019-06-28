@@ -17,11 +17,11 @@ package com.aspectran.core.context.config;
 
 import com.aspectran.core.util.SystemUtils;
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.AponParseException;
 import com.aspectran.core.util.apon.AponReader;
 import com.aspectran.core.util.apon.ParameterDefinition;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.Reader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -63,17 +63,17 @@ public class AspectranConfig extends AbstractParameters {
         super(parameterDefinitions);
     }
 
-    public AspectranConfig(String text) throws AponParseException {
+    public AspectranConfig(String text) throws IOException {
         this();
         readFrom(text);
     }
 
-    public AspectranConfig(File configFile) throws AponParseException {
+    public AspectranConfig(File configFile) throws IOException {
         this();
         AponReader.parse(configFile, this);
     }
 
-    public AspectranConfig(Reader reader) throws AponParseException {
+    public AspectranConfig(Reader reader) throws IOException {
         this();
         AponReader.parse(reader, this);
     }

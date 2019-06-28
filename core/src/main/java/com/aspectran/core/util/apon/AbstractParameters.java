@@ -18,6 +18,7 @@ package com.aspectran.core.util.apon;
 import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.ToStringBuilder;
 
+import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -600,7 +601,7 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
-    public void readFrom(String text) throws AponParseException {
+    public void readFrom(String text) throws IOException {
         if (text != null) {
             AponReader.parse(text, this);
         }

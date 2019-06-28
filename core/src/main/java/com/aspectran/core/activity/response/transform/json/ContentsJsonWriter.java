@@ -80,7 +80,7 @@ public class ContentsJsonWriter extends JsonWriter {
     public void write(ProcessResult processResult) throws IOException {
         Assert.notNull(processResult, "'processResult' must not be null");
         if (processResult.getName() != null) {
-            openCurlyBracket();
+            beginBlock();
             writeName(processResult.getName());
         }
         if (processResult.isEmpty()) {
@@ -89,7 +89,7 @@ public class ContentsJsonWriter extends JsonWriter {
             ContentResult contentResult = processResult.get(0);
             write(contentResult);
         } else {
-            openSquareBracket();
+            beginArray();
             Iterator<ContentResult> it = processResult.iterator();
             while (it.hasNext()) {
                 ContentResult contentResult = it.next();
@@ -98,10 +98,10 @@ public class ContentsJsonWriter extends JsonWriter {
                     writeComma();
                 }
             }
-            closeSquareBracket();
+            endArray();
         }
         if (processResult.getName() != null) {
-            closeCurlyBracket();
+            endBlock();
         }
     }
 
@@ -113,7 +113,7 @@ public class ContentsJsonWriter extends JsonWriter {
      */
     private void write(ContentResult contentResult) throws IOException {
         if (contentResult.getName() != null) {
-            openCurlyBracket();
+            beginBlock();
             writeName(contentResult.getName());
         }
         if (contentResult.isEmpty()) {
@@ -121,15 +121,15 @@ public class ContentsJsonWriter extends JsonWriter {
         } else if (contentResult.size() == 1) {
             ActionResult actionResult = contentResult.get(0);
             if (actionResult.getActionId() != null) {
-                openCurlyBracket();
+                beginBlock();
                 writeName(actionResult.getActionId());
                 write(actionResult.getResultValue());
-                closeCurlyBracket();
+                endBlock();
             } else {
                 write(actionResult.getResultValue());
             }
         } else {
-            openCurlyBracket();
+            beginBlock();
             int cnt = 0;
             for (String actionId : contentResult.getActionIds()) {
                 if (cnt++ > 0) {
@@ -139,10 +139,10 @@ public class ContentsJsonWriter extends JsonWriter {
                 writeName(actionResult.getActionId());
                 write(actionResult.getResultValue());
             }
-            closeCurlyBracket();
+            endBlock();
         }
         if (contentResult.getName() != null) {
-            closeCurlyBracket();
+            endBlock();
         }
     }
 

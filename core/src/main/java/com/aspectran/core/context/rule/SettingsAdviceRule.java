@@ -17,10 +17,10 @@ package com.aspectran.core.context.rule;
 
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.ToStringBuilder;
-import com.aspectran.core.util.apon.AponParseException;
 import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.apon.VariableParameters;
 
+import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
@@ -74,7 +74,7 @@ public class SettingsAdviceRule {
     }
 
     public static SettingsAdviceRule newInstance(AspectRule aspectRule, String text)
-            throws AponParseException {
+            throws IOException {
         if (StringUtils.hasText(text)) {
             Parameters settingsParameters = new VariableParameters(text);
             return newInstance(aspectRule, settingsParameters);
@@ -94,7 +94,7 @@ public class SettingsAdviceRule {
             Parameters settingsParameters;
             try {
                 settingsParameters = new VariableParameters(text);
-            } catch (AponParseException e) {
+            } catch (IOException e) {
                 throw new IllegalRuleException("Settings parameter can not be parsed", e);
             }
             updateSettingsAdviceRule(sar, settingsParameters);

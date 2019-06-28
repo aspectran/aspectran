@@ -45,14 +45,14 @@ public interface Parameter {
      *
      * @return the parameter value type
      */
-    ParameterValueType getParameterValueType();
+    ParameterValueType getValueType();
 
     /**
      * Sets the parameter value type.
      *
      * @param parameterValueType the parameter value type
      */
-    void setParameterValueType(ParameterValueType parameterValueType);
+    void setValueType(ParameterValueType parameterValueType);
 
     /**
      * Returns whether the value type is hinted.

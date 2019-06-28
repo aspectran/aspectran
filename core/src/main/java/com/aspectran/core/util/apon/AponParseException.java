@@ -15,10 +15,12 @@
  */
 package com.aspectran.core.util.apon;
 
+import java.io.IOException;
+
 /**
  * Base for Exceptions thrown during parsing of a APON-formatted document.
  */
-public class AponParseException extends Exception {
+public class AponParseException extends IOException {
 
     /** @serial */
     private static final long serialVersionUID = -8511680666286307705L;

@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.util.apon;
 
+import java.io.IOException;
 import java.io.Serializable;
 
 /**
@@ -29,7 +30,7 @@ public class VariableParameters extends AbstractParameters implements Serializab
         super(null);
     }
 
-    public VariableParameters(String text) throws AponParseException {
+    public VariableParameters(String text) throws IOException {
         this(null, text);
     }
 
@@ -37,7 +38,7 @@ public class VariableParameters extends AbstractParameters implements Serializab
         super(parameterDefinitions);
     }
 
-    public VariableParameters(ParameterDefinition[] parameterDefinitions, String text) throws AponParseException {
+    public VariableParameters(ParameterDefinition[] parameterDefinitions, String text) throws IOException {
         super(parameterDefinitions);
         readFrom(text);
     }
