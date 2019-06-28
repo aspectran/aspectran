@@ -24,7 +24,7 @@ public class ParameterDefinition {
 
     private final String name;
 
-    private final ParameterValueType parameterValueType;
+    private final ParameterValueType valueType;
 
     private final Class<? extends AbstractParameters> parametersClass;
 
@@ -32,20 +32,20 @@ public class ParameterDefinition {
 
     private final boolean noBracket;
 
-    public ParameterDefinition(String name, ParameterValueType parameterValueType) {
-        this(name, parameterValueType, false);
+    public ParameterDefinition(String name, ParameterValueType valueType) {
+        this(name, valueType, false);
     }
 
-    public ParameterDefinition(String name, ParameterValueType parameterValueType, boolean array) {
-        this(name, parameterValueType, array, false);
+    public ParameterDefinition(String name, ParameterValueType valueType, boolean array) {
+        this(name, valueType, array, false);
     }
 
-    public ParameterDefinition(String name, ParameterValueType parameterValueType, boolean array, boolean noBracket) {
+    public ParameterDefinition(String name, ParameterValueType valueType, boolean array, boolean noBracket) {
         this.name = name;
-        this.parameterValueType = parameterValueType;
+        this.valueType = valueType;
         this.parametersClass = null;
         this.array = array;
-        this.noBracket = (array && parameterValueType == ParameterValueType.PARAMETERS && noBracket);
+        this.noBracket = (array && valueType == ParameterValueType.PARAMETERS && noBracket);
     }
 
     public ParameterDefinition(String name, Class<? extends AbstractParameters> parametersClass) {
@@ -58,7 +58,7 @@ public class ParameterDefinition {
 
     public ParameterDefinition(String name, Class<? extends AbstractParameters> parametersClass, boolean array, boolean noBracket) {
         this.name = name;
-        this.parameterValueType = ParameterValueType.PARAMETERS;
+        this.valueType = ParameterValueType.PARAMETERS;
         this.parametersClass = parametersClass;
         this.array = array;
         this.noBracket = (array && noBracket);
@@ -68,8 +68,8 @@ public class ParameterDefinition {
         return name;
     }
 
-    public ParameterValueType getParameterValueType() {
-        return parameterValueType;
+    public ParameterValueType getValueType() {
+        return valueType;
     }
 
     public boolean isArray() {
@@ -82,10 +82,10 @@ public class ParameterDefinition {
 
     public ParameterValue newParameterValue() {
         ParameterValue parameterValue;
-        if (parameterValueType == ParameterValueType.PARAMETERS && parametersClass != null) {
+        if (valueType == ParameterValueType.PARAMETERS && parametersClass != null) {
             parameterValue = new ParameterValue(name, parametersClass, array, noBracket, true);
         } else {
-            parameterValue = new ParameterValue(name, parameterValueType, array, noBracket, true);
+            parameterValue = new ParameterValue(name, valueType, array, noBracket, true);
         }
         return parameterValue;
     }
@@ -94,8 +94,8 @@ public class ParameterDefinition {
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.append("name", name);
-        tsb.append("parameterValueType", parameterValueType);
-        tsb.append("parametersClass", parametersClass);
+        tsb.append("valueType", valueType);
+        tsb.append("class", parametersClass);
         tsb.append("array", array);
         return tsb.toString();
     }

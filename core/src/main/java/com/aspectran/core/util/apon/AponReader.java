@@ -18,6 +18,7 @@ package com.aspectran.core.util.apon;
 import com.aspectran.core.util.StringUtils;
 
 import java.io.BufferedReader;
+import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
@@ -31,11 +32,11 @@ import java.util.Objects;
 /**
  * Converts a string in APON format to a Parameters object.
  */
-public class AponReader extends AponFormat {
+public class AponReader extends AponFormat implements Closeable {
 
     private final BufferedReader in;
 
-    private boolean addable;
+    private boolean predefined;
 
     private int lineNumber;
 
@@ -87,7 +88,7 @@ public class AponReader extends AponFormat {
         if (parameters == null) {
             throw new IllegalArgumentException("parameters must not be null");
         }
-        addable = parameters.isAddable();
+        predefined = parameters.isPredefined();
         try {
             read(parameters, NO_CONTROL_CHAR, null, null, null, false);
         } catch (AponParseException e) {
@@ -101,18 +102,18 @@ public class AponReader extends AponFormat {
     /**
      * Creates a {@link Parameters} object by parsing the content of the specified character stream as APON.
      *
-     * @param parameters the Parameters object
+     * @param container the Parameters object
      * @param openedBracket the opened bracket character
      * @param name the parameter name
      * @param parameterValue the parameter value
-     * @param parameterValueType the value type of the parameter
+     * @param valueType the value type of the parameter
      * @param valueTypeHinted whether a value type hinted
      * @throws IOException if an invalid parameter is detected or I/O error occurs
      */
-    private void read(Parameters parameters, char openedBracket, String name, ParameterValue parameterValue,
-                      ParameterValueType parameterValueType, boolean valueTypeHinted)
+    private void read(Parameters container, char openedBracket, String name, ParameterValue parameterValue,
+                      ParameterValueType valueType, boolean valueTypeHinted)
             throws IOException {
-        Map<String, ParameterValue> parameterValueMap = parameters.getParameterValueMap();
+        Map<String, ParameterValue> parameterValueMap = container.getParameterValueMap();
 
         String line;
         String value;
@@ -162,77 +163,77 @@ public class AponReader extends AponFormat {
                 parameterValue = parameterValueMap.get(name);
 
                 if (parameterValue != null) {
-                    parameterValueType = parameterValue.getValueType();
+                    valueType = parameterValue.getValueType();
                 } else {
-                    if (!addable) {
+                    if (predefined) {
                         throw new MalformedAponException(lineNumber, line, tline, "Parameter '" +
                                 name + "' is not predefined; Note that only predefined parameters are allowed");
                     }
-                    parameterValueType = ParameterValueType.resolveByHint(name);
-                    if (parameterValueType != null) {
+                    valueType = ParameterValueType.resolveByHint(name);
+                    if (valueType != null) {
                         valueTypeHinted = true;
                         name = ParameterValueType.stripValueTypeHint(name);
                         parameterValue = parameterValueMap.get(name);
                         if (parameterValue != null) {
-                            parameterValueType = parameterValue.getValueType();
+                            valueType = parameterValue.getValueType();
                         }
                     } else {
                         valueTypeHinted = false;
                     }
                 }
 
-                if (parameterValueType == ParameterValueType.VARIABLE) {
-                    parameterValueType = null;
+                if (valueType == ParameterValueType.VARIABLE) {
+                    valueType = null;
                 }
-                if (parameterValueType != null) {
+                if (valueType != null) {
                     if (parameterValue != null && !parameterValue.isArray() && SQUARE_BRACKET_OPEN == cchar) {
                         throw new MalformedAponException(lineNumber, line, tline,
                                 "Parameter value is not an array type");
                     }
-                    if (parameterValueType != ParameterValueType.PARAMETERS && CURLY_BRACKET_OPEN == cchar) {
-                        throw new MalformedAponException(lineNumber, line, tline, parameterValue, parameterValueType);
+                    if (valueType != ParameterValueType.PARAMETERS && CURLY_BRACKET_OPEN == cchar) {
+                        throw new MalformedAponException(lineNumber, line, tline, parameterValue, valueType);
                     }
-                    if (parameterValueType != ParameterValueType.TEXT && ROUND_BRACKET_OPEN == cchar) {
-                        throw new MalformedAponException(lineNumber, line, tline, parameterValue, parameterValueType);
+                    if (valueType != ParameterValueType.TEXT && ROUND_BRACKET_OPEN == cchar) {
+                        throw new MalformedAponException(lineNumber, line, tline, parameterValue, valueType);
                     }
                 }
             }
 
             if (parameterValue != null && !parameterValue.isArray()) {
-                if (parameterValueType == ParameterValueType.PARAMETERS && CURLY_BRACKET_OPEN != cchar) {
-                    throw new MalformedAponException(lineNumber, line, tline, parameterValue, parameterValueType);
+                if (valueType == ParameterValueType.PARAMETERS && CURLY_BRACKET_OPEN != cchar) {
+                    throw new MalformedAponException(lineNumber, line, tline, parameterValue, valueType);
                 }
-                if (parameterValueType == ParameterValueType.TEXT && !NULL.equals(value) && ROUND_BRACKET_OPEN != cchar) {
-                    throw new MalformedAponException(lineNumber, line, tline, parameterValue, parameterValueType);
+                if (valueType == ParameterValueType.TEXT && !NULL.equals(value) && ROUND_BRACKET_OPEN != cchar) {
+                    throw new MalformedAponException(lineNumber, line, tline, parameterValue, valueType);
                 }
             }
 
-            if (parameterValue == null || parameterValue.isArray() || parameterValueType == null) {
+            if (parameterValue == null || parameterValue.isArray() || valueType == null) {
                 if (SQUARE_BRACKET_OPEN == cchar) {
-                    read(parameters, SQUARE_BRACKET_OPEN, name, parameterValue, parameterValueType, valueTypeHinted);
+                    read(container, SQUARE_BRACKET_OPEN, name, parameterValue, valueType, valueTypeHinted);
                     continue;
                 }
             }
-            if (parameterValueType == null) {
+            if (valueType == null) {
                 if (CURLY_BRACKET_OPEN == cchar) {
-                    parameterValueType = ParameterValueType.PARAMETERS;
+                    valueType = ParameterValueType.PARAMETERS;
                 } else if (ROUND_BRACKET_OPEN == cchar) {
-                    parameterValueType = ParameterValueType.TEXT;
+                    valueType = ParameterValueType.TEXT;
                 }
             }
 
-            if (parameterValueType == ParameterValueType.PARAMETERS) {
+            if (valueType == ParameterValueType.PARAMETERS) {
                 if (parameterValue == null) {
-                    parameterValue = parameters.newParameterValue(name, parameterValueType,
+                    parameterValue = container.newParameterValue(name, valueType,
                             (openedBracket == SQUARE_BRACKET_OPEN));
                     parameterValue.setValueTypeHinted(valueTypeHinted);
                 }
-                Parameters parameters2 = parameters.newParameters(parameterValue.getName());
-                addable = parameters2.isAddable();
+                Parameters parameters2 = container.newParameters(parameterValue.getName());
+                predefined = parameters2.isPredefined();
                 read(parameters2, CURLY_BRACKET_OPEN, null, null, null, valueTypeHinted);
-            } else if (parameterValueType == ParameterValueType.TEXT) {
+            } else if (valueType == ParameterValueType.TEXT) {
                 if (parameterValue == null) {
-                    parameterValue = parameters.newParameterValue(name, parameterValueType, 
+                    parameterValue = container.newParameterValue(name, valueType,
                             (openedBracket == SQUARE_BRACKET_OPEN));
                     parameterValue.setValueTypeHinted(valueTypeHinted);
                 }
@@ -246,45 +247,45 @@ public class AponReader extends AponFormat {
             } else {
                 if (vlen == 0) {
                     value = null;
-                    if (parameterValueType == null) {
-                        parameterValueType = ParameterValueType.STRING;
+                    if (valueType == null) {
+                        valueType = ParameterValueType.STRING;
                     }
-                } else if (parameterValueType == null) {
+                } else if (valueType == null) {
                     if (NULL.equals(value)) {
                         value = null;
-                        parameterValueType = ParameterValueType.STRING;
+                        valueType = ParameterValueType.STRING;
                     } else if (TRUE.equals(value) || FALSE.equals(value)) {
-                        parameterValueType = ParameterValueType.BOOLEAN;
+                        valueType = ParameterValueType.BOOLEAN;
                     } else if (value.charAt(0) == DOUBLE_QUOTE_CHAR) {
                         if (vlen == 1 || value.charAt(vlen - 1) != DOUBLE_QUOTE_CHAR) {
                             throw new MalformedAponException(lineNumber, line, tline,
                                     "Unclosed quotation mark after the character string " + value);
                         }
-                        parameterValueType = ParameterValueType.STRING;
+                        valueType = ParameterValueType.STRING;
                     } else if (value.charAt(0) == SINGLE_QUOTE_CHAR) {
                         if (vlen == 1 || value.charAt(vlen - 1) != SINGLE_QUOTE_CHAR) {
                             throw new MalformedAponException(lineNumber, line, tline,
                                     "Unclosed quotation mark after the character string " + value);
                         }
-                        parameterValueType = ParameterValueType.STRING;
+                        valueType = ParameterValueType.STRING;
                     } else {
                         try {
                             Integer.parseInt(value);
-                            parameterValueType = ParameterValueType.INT;
+                            valueType = ParameterValueType.INT;
                         } catch (NumberFormatException e1) {
                             try {
                                 Long.parseLong(value);
-                                parameterValueType = ParameterValueType.LONG;
+                                valueType = ParameterValueType.LONG;
                             } catch (NumberFormatException e2) {
                                 try {
                                     Float.parseFloat(value);
-                                    parameterValueType = ParameterValueType.FLOAT;
+                                    valueType = ParameterValueType.FLOAT;
                                 } catch (NumberFormatException e3) {
                                     try {
                                         Double.parseDouble(value);
-                                        parameterValueType = ParameterValueType.DOUBLE;
+                                        valueType = ParameterValueType.DOUBLE;
                                     } catch (NumberFormatException e4) {
-                                        parameterValueType = ParameterValueType.STRING;
+                                        valueType = ParameterValueType.STRING;
                                     }
                                 }
                             }
@@ -295,13 +296,13 @@ public class AponReader extends AponFormat {
                 }
 
                 if (parameterValue == null) {
-                    parameterValue = parameters.newParameterValue(name, parameterValueType,
+                    parameterValue = container.newParameterValue(name, valueType,
                             (openedBracket == SQUARE_BRACKET_OPEN));
                     parameterValue.setValueTypeHinted(valueTypeHinted);
                 } else {
                     if (parameterValue.getValueType() == ParameterValueType.VARIABLE) {
-                        parameterValue.setValueType(parameterValueType);
-                    } else if (parameterValue.getValueType() != parameterValueType) {
+                        parameterValue.setValueType(valueType);
+                    } else if (parameterValue.getValueType() != valueType) {
                         throw new MalformedAponException(lineNumber, line, tline, parameterValue,
                                 parameterValue.getValueType());
                     }
@@ -310,20 +311,20 @@ public class AponReader extends AponFormat {
                 if (value == null) {
                     parameterValue.putValue(null);
                 } else {
-                    if (parameterValueType == ParameterValueType.STRING) {
+                    if (valueType == ParameterValueType.STRING) {
                         if (value.charAt(0) == DOUBLE_QUOTE_CHAR || value.charAt(0) == SINGLE_QUOTE_CHAR) {
                             value = unescape(value.substring(1, vlen - 1), lineNumber, line, tline);
                         }
                         parameterValue.putValue(value);
-                    } else if (parameterValueType == ParameterValueType.BOOLEAN) {
+                    } else if (valueType == ParameterValueType.BOOLEAN) {
                         parameterValue.putValue(Boolean.valueOf(value));
-                    } else if (parameterValueType == ParameterValueType.INT) {
+                    } else if (valueType == ParameterValueType.INT) {
                         parameterValue.putValue(Integer.valueOf(value));
-                    } else if (parameterValueType == ParameterValueType.LONG) {
+                    } else if (valueType == ParameterValueType.LONG) {
                         parameterValue.putValue(Long.valueOf(value));
-                    } else if (parameterValueType == ParameterValueType.FLOAT) {
+                    } else if (valueType == ParameterValueType.FLOAT) {
                         parameterValue.putValue(Float.valueOf(value));
-                    } else if (parameterValueType == ParameterValueType.DOUBLE) {
+                    } else if (valueType == ParameterValueType.DOUBLE) {
                         parameterValue.putValue(Double.valueOf(value));
                     }
                 }
@@ -394,11 +395,7 @@ public class AponReader extends AponFormat {
         return s;
     }
 
-    /**
-     * Closes the reader.
-     *
-     * @throws IOException if an I/O error occurs
-     */
+    @Override
     public void close() throws IOException {
         if (in != null) {
             in.close();

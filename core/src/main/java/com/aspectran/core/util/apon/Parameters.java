@@ -25,14 +25,13 @@ import java.util.Set;
  */
 public interface Parameters {
 
-    void updateContainer(Parameters parameters);
-
     /**
-     * Returns a map of the {@code ParameterValue}s.
+     * Returns whether the parameter can be added after the parameters instance is created.
      *
-     * @return a map of the {@code ParameterValue}s
+     * @return {@code true} if the parameter can be added after the parameters instance is created,
+     *      otherwise {@code false}
      */
-    Map<String, ParameterValue> getParameterValueMap();
+    boolean isPredefined();
 
     /**
      * Specifies the identifier {@code Parameter}.
@@ -64,6 +63,15 @@ public interface Parameters {
      * @return a {@code Parameter}
      */
     Parameter getParent();
+
+    void updateContainer(Parameters parameters);
+
+    /**
+     * Returns a map of the {@code ParameterValue}s.
+     *
+     * @return a map of the {@code ParameterValue}s
+     */
+    Map<String, ParameterValue> getParameterValueMap();
 
     /**
      * Returns all the parameter names associated with this Parameters.
@@ -708,9 +716,9 @@ public interface Parameters {
      */
     <T extends Parameters> List<T> getParametersList(ParameterDefinition parameterDefinition);
 
-    ParameterValue newParameterValue(String name, ParameterValueType parameterValueType);
+    ParameterValue newParameterValue(String name, ParameterValueType valueType);
 
-    ParameterValue newParameterValue(String name, ParameterValueType parameterValueType, boolean array);
+    ParameterValue newParameterValue(String name, ParameterValueType valueType, boolean array);
 
     <T extends Parameters> T newParameters(String name);
 
@@ -719,14 +727,6 @@ public interface Parameters {
     <T extends Parameters> T touchParameters(String name);
 
     <T extends Parameters> T touchParameters(ParameterDefinition parameterDefinition);
-
-    /**
-     * Returns whether the parameter can be added after the parameters instance is created.
-     *
-     * @return {@code true} if the parameter can be added after the parameters instance is created,
-     *      otherwise {@code false}
-     */
-    boolean isAddable();
 
     String describe();
 

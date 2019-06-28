@@ -71,9 +71,9 @@ public class AponConverter {
                 name = parameters.getParent().getName();
             } else if (JsonToken.BEGIN_ARRAY == nextToken) {
                 if (container == null) {
-                    container = new VariableParameters();
+                    container = new ArrayParameters();
                     stack.push(container);
-                    name = "noname";
+                    name = ArrayParameters.noname.getName();
                 }
             } else if(JsonToken.NAME == nextToken) {
                 name = reader.nextName();

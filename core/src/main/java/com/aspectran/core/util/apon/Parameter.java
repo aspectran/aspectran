@@ -50,9 +50,16 @@ public interface Parameter {
     /**
      * Sets the parameter value type.
      *
-     * @param parameterValueType the parameter value type
+     * @param valueType the parameter value type
      */
-    void setValueType(ParameterValueType parameterValueType);
+    void setValueType(ParameterValueType valueType);
+
+    /**
+     * Returns whether this is a predefined parameter.
+     *
+     * @return {@code true} if this is a predefined parameter, otherwise {@code false}
+     */
+    boolean isValueTypeFixed();
 
     /**
      * Returns whether the value type is hinted.
@@ -82,13 +89,6 @@ public interface Parameter {
      *      otherwise {@code false}
      */
     boolean isBracketed();
-
-    /**
-     * Returns whether this is a predefined parameter.
-     *
-     * @return {@code true} if this is a predefined parameter, otherwise {@code false}
-     */
-    boolean isPredefined();
 
     /**
      * Returns whether a parameter has been assigned a value.

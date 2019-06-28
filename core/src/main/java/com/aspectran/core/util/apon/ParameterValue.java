@@ -29,7 +29,9 @@ public class ParameterValue implements Parameter {
 
     private final ParameterValueType originParameterValueType;
 
-    private ParameterValueType parameterValueType;
+    private ParameterValueType valueType;
+
+    private final boolean valueTypeFixed;
 
     private boolean valueTypeHinted;
 
@@ -39,34 +41,32 @@ public class ParameterValue implements Parameter {
 
     private boolean bracketed;
 
-    private final boolean predefined;
-
     private volatile Object value;
 
     private List<Object> list;
 
     private boolean assigned;
 
-    public ParameterValue(String name, ParameterValueType parameterValueType) {
-        this(name, parameterValueType, false);
+    public ParameterValue(String name, ParameterValueType valueType) {
+        this(name, valueType, false);
     }
 
-    public ParameterValue(String name, ParameterValueType parameterValueType, boolean array) {
-        this(name, parameterValueType, array, false);
+    public ParameterValue(String name, ParameterValueType valueType, boolean array) {
+        this(name, valueType, array, false);
     }
 
-    public ParameterValue(String name, ParameterValueType parameterValueType, boolean array,
+    public ParameterValue(String name, ParameterValueType valueType, boolean array,
                           boolean noBracket) {
-        this(name, parameterValueType, array, noBracket, false);
+        this(name, valueType, array, noBracket, false);
     }
 
-    protected ParameterValue(String name, ParameterValueType parameterValueType, boolean array,
-                             boolean noBracket, boolean predefined) {
+    protected ParameterValue(String name, ParameterValueType valueType, boolean array,
+                             boolean noBracket, boolean valueTypeFixed) {
         this.name = name;
-        this.parameterValueType = parameterValueType;
-        this.originParameterValueType = parameterValueType;
+        this.valueType = valueType;
+        this.originParameterValueType = valueType;
         this.array = array;
-        this.predefined = (predefined && parameterValueType != ParameterValueType.VARIABLE);
+        this.valueTypeFixed = (valueTypeFixed && valueType != ParameterValueType.VARIABLE);
         if (this.array && !noBracket) {
             this.bracketed = true;
         }
@@ -87,13 +87,13 @@ public class ParameterValue implements Parameter {
     }
 
     protected ParameterValue(String name, Class<? extends AbstractParameters> parametersClass,
-                             boolean array, boolean noBracket, boolean predefined) {
+                             boolean array, boolean noBracket, boolean valueTypeFixed) {
         this.name = name;
-        this.parameterValueType = ParameterValueType.PARAMETERS;
-        this.originParameterValueType = parameterValueType;
+        this.valueType = ParameterValueType.PARAMETERS;
+        this.originParameterValueType = valueType;
         this.parametersClass = parametersClass;
         this.array = array;
-        this.predefined = predefined;
+        this.valueTypeFixed = valueTypeFixed;
         if (this.array && !noBracket) {
             this.bracketed = true;
         }
@@ -127,12 +127,17 @@ public class ParameterValue implements Parameter {
 
     @Override
     public ParameterValueType getValueType() {
-        return parameterValueType;
+        return valueType;
     }
 
     @Override
-    public void setValueType(ParameterValueType parameterValueType) {
-        this.parameterValueType = parameterValueType;
+    public void setValueType(ParameterValueType valueType) {
+        this.valueType = valueType;
+    }
+
+    @Override
+    public boolean isValueTypeFixed() {
+        return valueTypeFixed;
     }
 
     @Override
@@ -157,11 +162,6 @@ public class ParameterValue implements Parameter {
 
     public void setBracketed(boolean bracketed) {
         this.bracketed = bracketed;
-    }
-
-    @Override
-    public boolean isPredefined() {
-        return predefined;
     }
 
     @Override
@@ -201,13 +201,13 @@ public class ParameterValue implements Parameter {
     @Override
     public void putValue(Object value) {
         if (value != null) {
-            if (predefined) {
+            if (valueTypeFixed) {
                 value = fitValue(value);
             } else {
                 determineValueType(value);
             }
         }
-        if (!predefined && !array && this.value != null) {
+        if (!valueTypeFixed && !array && this.value != null) {
             addValue(this.value);
             addValue(value);
             this.value = null;
@@ -236,7 +236,7 @@ public class ParameterValue implements Parameter {
         value = null;
         list = null;
         assigned = false;
-        if (!predefined) {
+        if (!valueTypeFixed) {
             array = false;
             bracketed = false;
         }
@@ -249,7 +249,7 @@ public class ParameterValue implements Parameter {
 
     @Override
     public List<?> getValueList() {
-        if (!predefined && value != null && list == null &&
+        if (!valueTypeFixed && value != null && list == null &&
                 originParameterValueType == ParameterValueType.VARIABLE) {
             addValue(value);
         }
@@ -292,7 +292,7 @@ public class ParameterValue implements Parameter {
     @Override
     @SuppressWarnings("unchecked")
     public List<String> getValueAsStringList() {
-        if (parameterValueType == ParameterValueType.STRING) {
+        if (valueType == ParameterValueType.STRING) {
             return (List<String>)getValueList();
         } else {
             List<?> list1 = getValueList();
@@ -418,7 +418,7 @@ public class ParameterValue implements Parameter {
     @Override
     @SuppressWarnings("unchecked")
     public List<Parameters> getValueAsParametersList() {
-        if (parameterValueType != ParameterValueType.PARAMETERS) {
+        if (valueType != ParameterValueType.PARAMETERS) {
             throw new IncompatibleParameterValueTypeException(this, ParameterValueType.PARAMETERS);
         }
         return (List<Parameters>)getValueList();
@@ -427,8 +427,8 @@ public class ParameterValue implements Parameter {
     @Override
     @SuppressWarnings("unchecked")
     public <T extends Parameters> T newParameters(Parameter identifier) {
-        if (parameterValueType == ParameterValueType.VARIABLE) {
-            parameterValueType = ParameterValueType.PARAMETERS;
+        if (valueType == ParameterValueType.VARIABLE) {
+            valueType = ParameterValueType.PARAMETERS;
             parametersClass = VariableParameters.class;
         } else {
             checkValueType(ParameterValueType.PARAMETERS);
@@ -446,32 +446,32 @@ public class ParameterValue implements Parameter {
         }
     }
 
-    private void checkValueType(ParameterValueType parameterValueType) {
-        if (this.parameterValueType != ParameterValueType.VARIABLE && this.parameterValueType != parameterValueType) {
-            throw new IncompatibleParameterValueTypeException(this, parameterValueType);
+    private void checkValueType(ParameterValueType valueType) {
+        if (this.valueType != ParameterValueType.VARIABLE && this.valueType != valueType) {
+            throw new IncompatibleParameterValueTypeException(this, valueType);
         }
     }
 
     private void determineValueType(Object value) {
-        if (parameterValueType == ParameterValueType.STRING) {
+        if (valueType == ParameterValueType.STRING) {
             if (value.toString().indexOf(AponFormat.NEW_LINE_CHAR) != -1) {
-                parameterValueType = ParameterValueType.TEXT;
+                valueType = ParameterValueType.TEXT;
             }
-        } else if (parameterValueType == ParameterValueType.VARIABLE && value instanceof String) {
+        } else if (valueType == ParameterValueType.VARIABLE && value instanceof String) {
             if (value.toString().indexOf(AponFormat.NEW_LINE_CHAR) != -1) {
-                parameterValueType = ParameterValueType.TEXT;
+                valueType = ParameterValueType.TEXT;
             } else {
-                parameterValueType = ParameterValueType.STRING;
+                valueType = ParameterValueType.STRING;
             }
         }
     }
 
     private Object fitValue(Object value) {
-        if (parameterValueType == ParameterValueType.BOOLEAN) {
+        if (valueType == ParameterValueType.BOOLEAN) {
             if (!(value instanceof Boolean)) {
                 return Boolean.valueOf(value.toString());
             }
-        } else if (parameterValueType == ParameterValueType.INT) {
+        } else if (valueType == ParameterValueType.INT) {
             if (!(value instanceof Integer)) {
                 try {
                     return Integer.valueOf(value.toString());
@@ -479,7 +479,7 @@ public class ParameterValue implements Parameter {
                     throw new ParameterValueTypeMismatchException(value.getClass(), Integer.class, e);
                 }
             }
-        } else if (parameterValueType == ParameterValueType.LONG) {
+        } else if (valueType == ParameterValueType.LONG) {
             if (!(value instanceof Long)) {
                 try {
                     return Long.valueOf(value.toString());
@@ -487,7 +487,7 @@ public class ParameterValue implements Parameter {
                     throw new ParameterValueTypeMismatchException(value.getClass(), Long.class, e);
                 }
             }
-        } else if (parameterValueType == ParameterValueType.FLOAT) {
+        } else if (valueType == ParameterValueType.FLOAT) {
             if (!(value instanceof Float)) {
                 try {
                     return Float.valueOf(value.toString());
@@ -495,7 +495,7 @@ public class ParameterValue implements Parameter {
                     throw new ParameterValueTypeMismatchException(value.getClass(), Float.class, e);
                 }
             }
-        } else if (parameterValueType == ParameterValueType.DOUBLE) {
+        } else if (valueType == ParameterValueType.DOUBLE) {
             if (!(value instanceof Double)) {
                 try {
                     return Double.valueOf(value.toString());
@@ -511,16 +511,16 @@ public class ParameterValue implements Parameter {
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.append("name", name);
-        tsb.append("parameterValueType", parameterValueType);
-        if (parameterValueType == ParameterValueType.PARAMETERS) {
-            tsb.append("parametersClass", parametersClass);
-        }
+        tsb.append("valueType", valueType);
         tsb.append("array", array);
-        tsb.append("bracketed", bracketed);
         if (array) {
             tsb.append("arraySize", getArraySize());
         }
+        tsb.append("bracketed", bracketed);
         tsb.append("qualifiedName", getQualifiedName());
+        if (valueType == ParameterValueType.PARAMETERS) {
+            tsb.append("class", parametersClass);
+        }
         return tsb.toString();
     }
 

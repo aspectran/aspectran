@@ -24,8 +24,8 @@ public class IncompatibleParameterValueTypeException extends InvalidParameterVal
     private static final long serialVersionUID = 1557599183505068164L;
 
     public IncompatibleParameterValueTypeException(ParameterValue parameterValue,
-                                                   ParameterValueType expectedParameterValueType) {
-        super("Incompatible value type with expected value type '" + expectedParameterValueType +
+                                                   ParameterValueType expectedValueType) {
+        super("Incompatible value type with expected value type '" + expectedValueType +
                 "' for the specified parameter " + parameterValue);
     }
 

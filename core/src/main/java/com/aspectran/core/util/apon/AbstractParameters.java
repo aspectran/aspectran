@@ -28,7 +28,7 @@ public abstract class AbstractParameters implements Parameters {
 
     private final Map<String, ParameterValue> parameterValueMap = new LinkedHashMap<>();
 
-    private final boolean addable;
+    private final boolean predefined;
 
     private Parameter identifier;
 
@@ -39,12 +39,17 @@ public abstract class AbstractParameters implements Parameters {
             for (ParameterDefinition pd : parameterDefinitions) {
                 ParameterValue pv = pd.newParameterValue();
                 pv.setContainer(this);
-                parameterValueMap.put(pd.getName(), pv);
+                this.parameterValueMap.put(pd.getName(), pv);
             }
-            addable = false;
+            this.predefined = true;
         } else {
-            addable = true;
+            this.predefined = false;
         }
+    }
+
+    @Override
+    public boolean isPredefined() {
+        return predefined;
     }
 
     @Override
@@ -135,7 +140,7 @@ public abstract class AbstractParameters implements Parameters {
     @Override
     public Parameter getParameter(String name) {
         Parameter p = parameterValueMap.get(name);
-        if (!addable && p == null) {
+        if (predefined && p == null) {
             throw new UnknownParameterException(name, this);
         }
         return p;
@@ -198,13 +203,13 @@ public abstract class AbstractParameters implements Parameters {
 
     @Override
     public void clearValue(String name) {
-        if (addable) {
-            parameterValueMap.remove(name);
-        } else {
+        if (predefined) {
             Parameter p = getParameter(name);
             if (p != null) {
                 p.clearValue();
             }
+        } else {
+            parameterValueMap.remove(name);
         }
     }
 
@@ -531,13 +536,13 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
-    public ParameterValue newParameterValue(String name, ParameterValueType parameterValueType) {
-        return newParameterValue(name, parameterValueType, false);
+    public ParameterValue newParameterValue(String name, ParameterValueType valueType) {
+        return newParameterValue(name, valueType, false);
     }
 
     @Override
-    public ParameterValue newParameterValue(String name, ParameterValueType parameterValueType, boolean array) {
-        ParameterValue pv = new ParameterValue(name, parameterValueType, array);
+    public ParameterValue newParameterValue(String name, ParameterValueType valueType, boolean array) {
+        ParameterValue pv = new ParameterValue(name, valueType, array);
         pv.setContainer(this);
         parameterValueMap.put(name, pv);
         return pv;
@@ -550,7 +555,7 @@ public abstract class AbstractParameters implements Parameters {
             throw new UnknownParameterException(name, this);
         }
         return p.newParameters(p);
-}
+    }
 
     @Override
     public <T extends Parameters> T newParameters(ParameterDefinition parameterDefinition) {
@@ -570,11 +575,6 @@ public abstract class AbstractParameters implements Parameters {
     @Override
     public <T extends Parameters> T touchParameters(ParameterDefinition parameterDefinition) {
         return touchParameters(parameterDefinition.getName());
-    }
-
-    @Override
-    public boolean isAddable() {
-        return addable;
     }
 
     @Override
