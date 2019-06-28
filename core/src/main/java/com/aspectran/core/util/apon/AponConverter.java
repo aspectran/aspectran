@@ -73,7 +73,7 @@ public class AponConverter {
                 if (container == null) {
                     container = new ArrayParameters();
                     stack.push(container);
-                    name = ArrayParameters.noname.getName();
+                    name = ArrayParameters.NONAME;
                 }
             } else if(JsonToken.NAME == nextToken) {
                 name = reader.nextName();

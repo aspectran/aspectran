@@ -16,10 +16,10 @@
 package com.aspectran.core.util.apon;
 
 import com.aspectran.core.util.ClassUtils;
+import com.aspectran.core.util.StringUtils;
 
+import java.io.IOException;
 import java.io.Serializable;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -35,36 +35,43 @@ public class ArrayParameters<T extends AbstractParameters> extends AbstractParam
     /** @serial */
     private static final long serialVersionUID = 2058392199376865356L;
 
-    public static final ParameterDefinition noname;
+    public static final String NONAME = "noname";
 
-    private static final ParameterDefinition[] parameterDefinitions;
-
-    static {
-        noname = new ParameterDefinition("noname", ParameterValueType.PARAMETERS, true);
-
-        parameterDefinitions = new ParameterDefinition[] {
-            noname,
-        };
-    }
-
-    private final Class<?> parametersClass;
+    private final Class<? extends AbstractParameters> elementClass;
 
     public ArrayParameters() {
-        super(parameterDefinitions);
-        this.parametersClass = resolveParametersClass(this.getClass());
+        this(VariableParameters.class);
     }
 
-    public T[] getParametersArray() {
-        return getParametersArray(noname);
+    public ArrayParameters(String text) throws IOException {
+        this(VariableParameters.class, text);
+    }
+
+    public ArrayParameters(Class<? extends AbstractParameters> elementClass) {
+        super(createParameterDefinitions(elementClass));
+        this.elementClass = elementClass;
+    }
+
+    public ArrayParameters(Class<? extends AbstractParameters> elementClass, String text) throws IOException {
+        this(elementClass);
+        readFrom(NONAME + ": [\n" + StringUtils.trimWhitespace(text) + "\n]");
     }
 
     public void addParameters(T parameters) {
-        putValue(noname, parameters);
+        putValue(NONAME, parameters);
+    }
+
+    public T[] getParametersArray() {
+        return getParametersArray(NONAME);
+    }
+
+    public List<T> getParametersList() {
+        return getParametersList(NONAME);
     }
 
     @Override
     public Iterator<T> iterator() {
-        List<T> list = getParametersList(noname);
+        List<T> list = getParametersList(NONAME);
         if (list != null) {
             return list.iterator();
         } else {
@@ -80,26 +87,18 @@ public class ArrayParameters<T extends AbstractParameters> extends AbstractParam
             throw new UnknownParameterException(name, this);
         }
         try {
-            T sub = (T)ClassUtils.createInstance(parametersClass);
+            T sub = (T)ClassUtils.createInstance(elementClass);
             sub.setIdentifier(p);
             p.putValue(sub);
             return sub;
         } catch (Exception e) {
-            throw new InvalidParameterValueException("Failed to instantiate " + parametersClass, e);
+            throw new InvalidParameterValueException("Failed to instantiate " + elementClass, e);
         }
     }
 
-    private static Class<?> resolveParametersClass(Class<?> clazz) {
-        Class<?> parametersClass = null;
-        Type[] types = ((ParameterizedType)clazz.getGenericSuperclass()).getActualTypeArguments();
-        if (types.length > 0) {
-            parametersClass = (Class)types[0];
-        }
-        if (parametersClass == null) {
-            return VariableParameters.class;
-        } else {
-            return parametersClass;
-        }
+    private static ParameterDefinition[] createParameterDefinitions(Class<? extends AbstractParameters> elementClass) {
+        ParameterDefinition pd = new ParameterDefinition(NONAME, elementClass, true);
+        return new ParameterDefinition[] { pd };
     }
 
 }
