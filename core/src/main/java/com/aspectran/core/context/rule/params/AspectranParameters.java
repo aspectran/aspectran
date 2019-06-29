@@ -25,8 +25,8 @@ import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.converter.RuleToParamsConverter;
 import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterDefinition;
-import com.aspectran.core.util.apon.ValueType;
 import com.aspectran.core.util.apon.Parameters;
+import com.aspectran.core.util.apon.ValueType;
 import com.aspectran.core.util.apon.VariableParameters;
 
 public class AspectranParameters extends AbstractParameters {
