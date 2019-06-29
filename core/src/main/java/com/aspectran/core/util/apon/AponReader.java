@@ -122,7 +122,7 @@ public class AponReader extends AponFormat implements Closeable {
             vlen = value.length();
             cchar = (vlen == 1 ? value.charAt(0) : NO_CONTROL_CHAR);
             if (cchar != CURLY_BRACKET_OPEN) {
-                throw new MalformedAponException(lineNumber, line, tline, "Expected to open curly brackets, " +
+                throw syntaxError(line, tline, "Expected to open curly brackets, " +
                         "but encounter string: " + value);
             }
             Parameters ps = container.newParameters(ArrayParameters.NONAME);
@@ -187,10 +187,10 @@ public class AponReader extends AponFormat implements Closeable {
 
                 int index = tline.indexOf(NAME_VALUE_SEPARATOR);
                 if (index == -1) {
-                    throw new MalformedAponException(lineNumber, line, tline, "Failed to break up string of name/value pairs");
+                    throw syntaxError(line, tline, "Failed to break up string of name/value pairs");
                 }
                 if (index == 0) {
-                    throw new MalformedAponException(lineNumber, line, tline, "Unrecognized parameter name");
+                    throw syntaxError(line, tline, "Unrecognized parameter name");
                 }
 
                 name = tline.substring(0, index).trim();
@@ -204,7 +204,7 @@ public class AponReader extends AponFormat implements Closeable {
                     valueType = parameterValue.getValueType();
                 } else {
                     if (container.isPredefined()) {
-                        throw new MalformedAponException(lineNumber, line, tline, "Parameter '" +
+                        throw syntaxError(line, tline, "Parameter '" +
                                 name + "' is not predefined; Note that only predefined parameters are allowed");
                     }
                     valueType = ValueType.resolveByHint(name);
@@ -225,24 +225,24 @@ public class AponReader extends AponFormat implements Closeable {
                 }
                 if (valueType != null) {
                     if (parameterValue != null && !parameterValue.isArray() && SQUARE_BRACKET_OPEN == cchar) {
-                        throw new MalformedAponException(lineNumber, line, tline,
+                        throw syntaxError(line, tline,
                                 "Parameter value is not an array type");
                     }
                     if (valueType != ValueType.PARAMETERS && CURLY_BRACKET_OPEN == cchar) {
-                        throw new MalformedAponException(lineNumber, line, tline, parameterValue, valueType);
+                        throw syntaxError(line, tline, parameterValue, valueType);
                     }
                     if (valueType != ValueType.TEXT && ROUND_BRACKET_OPEN == cchar) {
-                        throw new MalformedAponException(lineNumber, line, tline, parameterValue, valueType);
+                        throw syntaxError(line, tline, parameterValue, valueType);
                     }
                 }
             }
 
             if (parameterValue != null && !parameterValue.isArray()) {
                 if (valueType == ValueType.PARAMETERS && CURLY_BRACKET_OPEN != cchar) {
-                    throw new MalformedAponException(lineNumber, line, tline, parameterValue, valueType);
+                    throw syntaxError(line, tline, parameterValue, valueType);
                 }
                 if (valueType == ValueType.TEXT && !NULL.equals(value) && ROUND_BRACKET_OPEN != cchar) {
-                    throw new MalformedAponException(lineNumber, line, tline, parameterValue, valueType);
+                    throw syntaxError(line, tline, parameterValue, valueType);
                 }
             }
 
@@ -293,13 +293,13 @@ public class AponReader extends AponFormat implements Closeable {
                         valueType = ValueType.BOOLEAN;
                     } else if (value.charAt(0) == DOUBLE_QUOTE_CHAR) {
                         if (vlen == 1 || value.charAt(vlen - 1) != DOUBLE_QUOTE_CHAR) {
-                            throw new MalformedAponException(lineNumber, line, tline,
+                            throw syntaxError(line, tline,
                                     "Unclosed quotation mark after the character string " + value);
                         }
                         valueType = ValueType.STRING;
                     } else if (value.charAt(0) == SINGLE_QUOTE_CHAR) {
                         if (vlen == 1 || value.charAt(vlen - 1) != SINGLE_QUOTE_CHAR) {
-                            throw new MalformedAponException(lineNumber, line, tline,
+                            throw syntaxError(line, tline,
                                     "Unclosed quotation mark after the character string " + value);
                         }
                         valueType = ValueType.STRING;
@@ -337,8 +337,7 @@ public class AponReader extends AponFormat implements Closeable {
                     if (parameterValue.getValueType() == ValueType.VARIABLE) {
                         parameterValue.setValueType(valueType);
                     } else if (parameterValue.getValueType() != valueType) {
-                        throw new MalformedAponException(lineNumber, line, tline, parameterValue,
-                                parameterValue.getValueType());
+                        throw syntaxError(line, tline, parameterValue, parameterValue.getValueType());
                     }
                 }
 
@@ -408,12 +407,12 @@ public class AponReader extends AponFormat implements Closeable {
                     sb.append(str);
                 }
             } else if (tlen > 0) {
-                throw new MalformedAponException(lineNumber, line, tline,
+                throw syntaxError(line, tline,
                         "The closing round bracket was missing or Each text line is must start with a '|'");
             }
         }
 
-        throw new MalformedAponException(lineNumber, "", tline,
+        throw syntaxError("", tline,
                 "The end of the text line was reached with no closing round bracket found");
     }
 
@@ -423,7 +422,7 @@ public class AponReader extends AponFormat implements Closeable {
             return value;
         }
         if (s == null) {
-            throw new MalformedAponException(lineNumber, line, ltrim,
+            throw syntaxError(line, ltrim,
                     "Invalid escape sequence (valid ones are  \\b  \\t  \\n  \\f  \\r  \\\"  \\\\ )");
         }
         return s;
@@ -434,6 +433,15 @@ public class AponReader extends AponFormat implements Closeable {
         if (in != null) {
             in.close();
         }
+    }
+
+    private IOException syntaxError(String line,  String tline, String message) throws IOException {
+        throw new MalformedAponException(lineNumber, line, tline, message);
+    }
+
+    private IOException syntaxError(String line,  String tline, ParameterValue parameterValue,
+                                    ValueType expectedValueType) throws IOException {
+        throw new MalformedAponException(lineNumber, line, tline, parameterValue, expectedValueType);
     }
 
     /**

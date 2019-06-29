@@ -26,7 +26,7 @@ import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.ScheduleRule;
 import com.aspectran.core.context.rule.ScheduledJobRule;
 import com.aspectran.core.context.rule.TransletRule;
-import com.aspectran.core.context.rule.converter.RuleToParamsConverter;
+import com.aspectran.core.context.rule.converter.RulesToParameters;
 import com.aspectran.core.context.rule.params.ScheduleParameters;
 import com.aspectran.core.context.rule.params.SchedulerParameters;
 import com.aspectran.core.context.rule.params.TriggerParameters;
@@ -190,7 +190,7 @@ public class ComponentCommand extends AbstractCommand {
         int count = 0;
         StringWriter writer = new StringWriter();
         for (AspectRule aspectRule : aspectRules) {
-            Parameters aspectParameters = RuleToParamsConverter.toAspectParameters(aspectRule);
+            Parameters aspectParameters = RulesToParameters.toAspectParameters(aspectRule);
 
             if (count > 0) {
                 writer.write("----------------------------------------------------------------------------");
@@ -317,7 +317,7 @@ public class ComponentCommand extends AbstractCommand {
                 continue;
             }
 
-            Parameters transletParameters = RuleToParamsConverter.toTransletParameters(transletRule);
+            Parameters transletParameters = RulesToParameters.toTransletParameters(transletRule);
 
             if (count > 0) {
                 writer.write("----------------------------------------------------------------------------");
@@ -376,7 +376,7 @@ public class ComponentCommand extends AbstractCommand {
             Writer writer = new StringWriter();
             int count = 0;
             for (ScheduleRule scheduleRule : scheduleRuleRegistry.getScheduleRules()) {
-                Parameters scheduleParameters = RuleToParamsConverter.toScheduleParameters(scheduleRule);
+                Parameters scheduleParameters = RulesToParameters.toScheduleParameters(scheduleRule);
                 if (count > 0) {
                     writer.write("----------------------------------------------------------------------------");
                     writer.write(AponFormat.NEW_LINE);
@@ -420,7 +420,7 @@ public class ComponentCommand extends AbstractCommand {
                                 triggerParameters.putValueNonNull(TriggerParameters.type, scheduleRule.getTriggerType().toString());
                                 schedulerParameters.putValue(SchedulerParameters.trigger, scheduleRule.getTriggerParameters());
                             }
-                            scheduleParameters.putValue(ScheduleParameters.job, RuleToParamsConverter.toScheduledJobParameters(jobRule));
+                            scheduleParameters.putValue(ScheduleParameters.job, RulesToParameters.toScheduledJobParameters(jobRule));
                             if (count > 0) {
                                 writer.write("----------------------------------------------------------------------------");
                                 writer.write(AponFormat.NEW_LINE);

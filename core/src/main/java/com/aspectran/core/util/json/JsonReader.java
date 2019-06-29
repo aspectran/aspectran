@@ -1409,7 +1409,6 @@ public class JsonReader implements Closeable {
                         p = pos + 2;
                         l = limit;
                         continue;
-
                     case '/':
                         // skip a // end-of-line comment
                         pos++;
@@ -1417,7 +1416,6 @@ public class JsonReader implements Closeable {
                         p = pos;
                         l = limit;
                         continue;
-
                     default:
                         return c;
                 }
@@ -1513,7 +1511,6 @@ public class JsonReader implements Closeable {
                 case NONEMPTY_ARRAY:
                     result.append('[').append(pathIndices[i]).append(']');
                     break;
-
                 case EMPTY_BLOCK:
                 case DANGLING_NAME:
                 case NONEMPTY_BLOCK:
@@ -1522,7 +1519,6 @@ public class JsonReader implements Closeable {
                         result.append(pathNames[i]);
                     }
                     break;
-
                 case NONEMPTY_DOCUMENT:
                 case EMPTY_DOCUMENT:
                 case CLOSED:
@@ -1569,27 +1565,20 @@ public class JsonReader implements Closeable {
                 }
                 pos += 4;
                 return result;
-
             case 't':
                 return '\t';
-
             case 'b':
                 return '\b';
-
             case 'n':
                 return '\n';
-
             case 'r':
                 return '\r';
-
             case 'f':
                 return '\f';
-
             case '\n':
                 lineNumber++;
                 lineStart = pos;
                 // fall-through
-
             case '\'':
             case '"':
             case '\\':

@@ -16,17 +16,16 @@
 package com.aspectran.core.util.apon;
 
 import com.aspectran.core.lang.Nullable;
-import com.aspectran.core.util.ArrayStack;
 import com.aspectran.core.util.json.JsonReader;
-import com.aspectran.core.util.json.JsonToken;
 
 import java.io.IOException;
+import java.io.Reader;
 import java.io.StringReader;
 
 /**
  * Converts JSON to APON.
- * 
- * <p>Created: 2015. 03. 16 PM 11:14:29</p>
+ *
+ * @since 6.2.0
  */
 public class JsonToApon {
 
@@ -38,55 +37,76 @@ public class JsonToApon {
         if (json == null) {
             throw new IllegalArgumentException("json must not be null");
         }
-        ArrayStack<Parameters> stack = new ArrayStack<>();
-        JsonReader reader = new JsonReader(new StringReader(json));
+        return from(new StringReader(json), container);
+    }
+
+    public static Parameters from(Reader in, @Nullable Parameters container) throws IOException {
+        if (in == null) {
+            throw new IllegalArgumentException("in must not be null");
+        }
+
+        JsonReader reader = new JsonReader(in);
         String name = null;
-        while (reader.hasNext()) {
-            JsonToken nextToken = reader.peek();
-            if (JsonToken.BEGIN_BLOCK == nextToken) {
+
+        if (container != null) {
+            if (container instanceof ArrayParameters) {
+                name = ArrayParameters.NONAME;
+            }
+        } else {
+            container = new VariableParameters();
+        }
+
+        read(reader, container, name);
+
+        return container;
+    }
+
+    private static void read(JsonReader reader, Parameters container, String name) throws IOException {
+        switch (reader.peek()) {
+            case BEGIN_BLOCK:
                 reader.beginBlock();
-                if (container == null) {
-                    container = new VariableParameters();
-                    stack.push(container);
-                }
                 if (name != null) {
-                    Parameters parameters = stack.peek();
-                    Parameters subParameters = parameters.newParameters(name);
-                    stack.push(subParameters);
+                    container = container.newParameters(name);
                 }
-            } else if (JsonToken.END_BLOCK == nextToken) {
-                Parameters parameters = stack.pop();
-                name = parameters.getParent().getName();
-            } else if (JsonToken.BEGIN_ARRAY == nextToken) {
-                if (container == null) {
-                    container = new ArrayParameters();
-                    stack.push(container);
-                    name = ArrayParameters.NONAME;
+                while (reader.hasNext()) {
+                    read(reader, container, reader.nextName());
                 }
-            } else if(JsonToken.NAME == nextToken) {
-                name = reader.nextName();
-            } else if(JsonToken.STRING == nextToken) {
-                String value =  reader.nextString();
-                stack.peek().putValue(name, value);
-            } else if(JsonToken.BOOLEAN == nextToken) {
-                boolean value =  reader.nextBoolean();
-                stack.peek().putValue(name, value);
-            } else if(JsonToken.NUMBER == nextToken) {
+                reader.endBlock();
+                return;
+            case BEGIN_ARRAY:
+                reader.beginArray();
+                while (reader.hasNext()) {
+                    read(reader, container, name);
+                }
+                reader.endArray();
+                return;
+            case STRING:
+                container.putValue(name, reader.nextString());
+                return;
+            case BOOLEAN:
+                container.putValue(name, reader.nextBoolean());
+                return;
+            case NUMBER:
                 try {
-                    int value = reader.nextInt();
-                    stack.peek().putValue(name, value);
+                    container.putValue(name, reader.nextInt());
                 } catch (NumberFormatException e0) {
                     try {
-                        long value = reader.nextLong();
-                        stack.peek().putValue(name, value);
+                        container.putValue(name, reader.nextLong());
                     } catch (NumberFormatException e1) {
-                        double value = reader.nextDouble();
-                        stack.peek().putValue(name, value);
+                        container.putValue(name, reader.nextDouble());
                     }
                 }
-            }
+                return;
+            case NULL:
+                reader.nextNull();
+                Parameter parameter = container.getParameter(name);
+                if (parameter == null || parameter.getValueType() != ValueType.PARAMETERS) {
+                    container.putValue(name, null);
+                }
+                return;
+            default:
+                throw new IllegalStateException();
         }
-        return container;
     }
 
 }

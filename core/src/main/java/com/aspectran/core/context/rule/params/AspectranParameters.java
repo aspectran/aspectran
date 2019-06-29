@@ -22,7 +22,7 @@ import com.aspectran.core.context.rule.EnvironmentRule;
 import com.aspectran.core.context.rule.ScheduleRule;
 import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.TransletRule;
-import com.aspectran.core.context.rule.converter.RuleToParamsConverter;
+import com.aspectran.core.context.rule.converter.RulesToParameters;
 import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterDefinition;
 import com.aspectran.core.util.apon.Parameters;
@@ -128,7 +128,7 @@ public class AspectranParameters extends AbstractParameters {
     }
 
     public AspectranParameters addRule(EnvironmentRule environmentRule) {
-        putValue(environment, RuleToParamsConverter.toEnvironmentParameters(environmentRule));
+        putValue(environment, RulesToParameters.toEnvironmentParameters(environmentRule));
         return this;
     }
 
@@ -139,7 +139,7 @@ public class AspectranParameters extends AbstractParameters {
     }
 
     public AspectranParameters addRule(AspectRule aspectRule) {
-        putValue(aspect, RuleToParamsConverter.toAspectParameters(aspectRule));
+        putValue(aspect, RulesToParameters.toAspectParameters(aspectRule));
         return this;
     }
 
@@ -150,7 +150,7 @@ public class AspectranParameters extends AbstractParameters {
     }
 
     public AspectranParameters addRule(BeanRule beanRule) {
-        putValue(bean, RuleToParamsConverter.toBeanParameters(beanRule));
+        putValue(bean, RulesToParameters.toBeanParameters(beanRule));
         return this;
     }
 
@@ -161,7 +161,7 @@ public class AspectranParameters extends AbstractParameters {
     }
 
     public AspectranParameters addRule(ScheduleRule scheduleRule) {
-        putValue(schedule, RuleToParamsConverter.toScheduleParameters(scheduleRule));
+        putValue(schedule, RulesToParameters.toScheduleParameters(scheduleRule));
         return this;
     }
 
@@ -172,7 +172,7 @@ public class AspectranParameters extends AbstractParameters {
     }
 
     public AspectranParameters addRule(TransletRule transletRule) {
-        putValue(translet, RuleToParamsConverter.toTransletParameters(transletRule));
+        putValue(translet, RulesToParameters.toTransletParameters(transletRule));
         return this;
     }
 
@@ -183,7 +183,7 @@ public class AspectranParameters extends AbstractParameters {
     }
 
     public AspectranParameters addRule(TemplateRule templateRule) {
-        putValue(template, RuleToParamsConverter.toTemplateParameters(templateRule));
+        putValue(template, RulesToParameters.toTemplateParameters(templateRule));
         return this;
     }
 
@@ -194,7 +194,7 @@ public class AspectranParameters extends AbstractParameters {
     }
 
     public AspectranParameters addRule(AppendRule appendRule) {
-        putValue(append, RuleToParamsConverter.toAppendParameters(appendRule));
+        putValue(append, RulesToParameters.toAppendParameters(appendRule));
         return this;
     }
 

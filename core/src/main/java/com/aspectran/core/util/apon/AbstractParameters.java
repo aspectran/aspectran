@@ -553,8 +553,14 @@ public abstract class AbstractParameters implements Parameters {
     @Override
     public <T extends Parameters> T newParameters(String name) {
         Parameter p = getParameter(name);
-        if (p == null) {
-            throw new UnknownParameterException(name, this);
+        if (predefined) {
+            if (p == null) {
+                throw new UnknownParameterException(name, this);
+            }
+        } else {
+            if (p == null) {
+                p = newParameterValue(name, ValueType.PARAMETERS);
+            }
         }
         return p.newParameters(p);
     }

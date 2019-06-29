@@ -110,11 +110,11 @@ import java.util.Map;
  *
  * <p>Created: 2017. 5. 5.</p>
  */
-public class RuleToParamsConverter {
+public class RulesToParameters {
 
     private final ContextRuleAssistant assistant;
 
-    public RuleToParamsConverter(ContextRuleAssistant assistant) {
+    public RulesToParameters(ContextRuleAssistant assistant) {
         this.assistant = assistant;
     }
 

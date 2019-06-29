@@ -18,8 +18,8 @@ package com.aspectran.core.context.rule.appender;
 import com.aspectran.core.context.rule.assistant.AssistantLocal;
 import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;
 import com.aspectran.core.context.rule.assistant.ShallowContextRuleAssistant;
-import com.aspectran.core.context.rule.converter.ParamsToRuleConverter;
-import com.aspectran.core.context.rule.converter.RuleToParamsConverter;
+import com.aspectran.core.context.rule.converter.ParametersToRules;
+import com.aspectran.core.context.rule.converter.RulesToParameters;
 import com.aspectran.core.context.rule.params.AspectranParameters;
 import com.aspectran.core.context.rule.params.RootParameters;
 import com.aspectran.core.context.rule.parser.xml.AspectranNodeParser;
@@ -46,7 +46,7 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
 
     private AspectranNodeParser aspectranNodeParser;
 
-    private ParamsToRuleConverter ruleConverter;
+    private ParametersToRules ruleConverter;
 
     public HybridRuleAppendHandler(ContextRuleAssistant assistant, String encoding, boolean hybridLoad) {
         super(assistant);
@@ -66,10 +66,10 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
             if (appender.getAppenderType() == AppenderType.PARAMETERS) {
                 AspectranParameters aspectranParameters = appender.getAppendRule().getAspectranParameters();
                 RootParameters rootParameters = new RootParameters(aspectranParameters);
-                getRuleConverter().convertAsRule(rootParameters);
+                getRuleConverter().asRules(rootParameters);
             } else if (appender.getAppendedFileFormatType() == AppendedFileFormatType.APON) {
                 RootParameters rootParameters = AponReader.parse(appender.getReader(encoding), new RootParameters());
-                getRuleConverter().convertAsRule(rootParameters);
+                getRuleConverter().asRules(rootParameters);
             } else {
                 if (hybridLoad && appender.getAppenderType() == AppenderType.FILE) {
                     File aponFile = makeAponFile((FileRuleAppender)appender);
@@ -82,7 +82,7 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
                         hybridon = true;
 
                         RootParameters rootParameters = AponReader.parse(aponFile, encoding, new RootParameters());
-                        getRuleConverter().convertAsRule(rootParameters);
+                        getRuleConverter().asRules(rootParameters);
                     }
                 }
 
@@ -113,9 +113,9 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
         }
     }
 
-    private ParamsToRuleConverter getRuleConverter() {
+    private ParametersToRules getRuleConverter() {
         if (ruleConverter == null) {
-            ruleConverter = new ParamsToRuleConverter(getContextRuleAssistant());
+            ruleConverter = new ParametersToRules(getContextRuleAssistant());
         }
         return ruleConverter;
     }
@@ -144,7 +144,7 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
                 AspectranNodeParser parser = new AspectranNodeParser(assistant, false, false);
                 parser.parse(fileRuleAppender);
 
-                RuleToParamsConverter paramsConverter = new RuleToParamsConverter(assistant);
+                RulesToParameters paramsConverter = new RulesToParameters(assistant);
                 RootParameters rootParameters = paramsConverter.toRootParameters();
 
                 aponWriter.comment(aponFile.getAbsolutePath());

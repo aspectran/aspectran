@@ -29,8 +29,8 @@ import java.util.List;
  *
  * @since 6.2.0
  */
-public class ArrayParameters<T extends AbstractParameters> extends AbstractParameters
-        implements Iterable<T>, Serializable {
+public class ArrayParameters extends AbstractParameters
+        implements Iterable<Parameters>, Serializable {
 
     /** @serial */
     private static final long serialVersionUID = 2058392199376865356L;
@@ -54,25 +54,24 @@ public class ArrayParameters<T extends AbstractParameters> extends AbstractParam
 
     public ArrayParameters(Class<? extends AbstractParameters> elementClass, String text) throws IOException {
         this(elementClass);
-        //readFrom(NONAME + ": [\n" + StringUtils.trimWhitespace(text) + "\n]");
         readFrom(StringUtils.trimWhitespace(text));
     }
 
-    public void addParameters(T parameters) {
+    public void addParameters(Parameters parameters) {
         putValue(NONAME, parameters);
     }
 
-    public T[] getParametersArray() {
+    public <T extends Parameters> T[] getParametersArray() {
         return getParametersArray(NONAME);
     }
 
-    public List<T> getParametersList() {
+    public <T extends Parameters> List<T> getParametersList() {
         return getParametersList(NONAME);
     }
 
     @Override
-    public Iterator<T> iterator() {
-        List<T> list = getParametersList(NONAME);
+    public Iterator<Parameters> iterator() {
+        List<Parameters> list = getParametersList(NONAME);
         if (list != null) {
             return list.iterator();
         } else {
@@ -82,7 +81,7 @@ public class ArrayParameters<T extends AbstractParameters> extends AbstractParam
 
     @Override
     @SuppressWarnings("unchecked")
-    public T newParameters(String name) {
+    public <T extends Parameters> T newParameters(String name) {
         Parameter p = getParameter(name);
         if (p == null) {
             throw new UnknownParameterException(name, this);

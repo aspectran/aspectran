@@ -18,7 +18,7 @@ package com.aspectran.core.context.rule.parser;
 import com.aspectran.core.context.rule.appender.HybridRuleAppendHandler;
 import com.aspectran.core.context.rule.appender.RuleAppendHandler;
 import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;
-import com.aspectran.core.context.rule.converter.ParamsToRuleConverter;
+import com.aspectran.core.context.rule.converter.ParametersToRules;
 import com.aspectran.core.context.rule.params.AspectranParameters;
 
 /**
@@ -57,8 +57,8 @@ public class HybridActivityContextParser extends AbstractActivityContextParser {
 
             RuleAppendHandler appendHandler = createRuleAppendHandler();
 
-            ParamsToRuleConverter ruleConverter = new ParamsToRuleConverter(getContextRuleAssistant());
-            ruleConverter.convertAsRule(aspectranParameters);
+            ParametersToRules ruleConverter = new ParametersToRules(getContextRuleAssistant());
+            ruleConverter.asRules(aspectranParameters);
 
             appendHandler.handle(null);
 

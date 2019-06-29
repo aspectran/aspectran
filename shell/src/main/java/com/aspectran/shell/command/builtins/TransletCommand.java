@@ -18,7 +18,7 @@ package com.aspectran.shell.command.builtins;
 import com.aspectran.core.activity.TransletNotFoundException;
 import com.aspectran.core.component.translet.TransletRuleRegistry;
 import com.aspectran.core.context.rule.TransletRule;
-import com.aspectran.core.context.rule.converter.RuleToParamsConverter;
+import com.aspectran.core.context.rule.converter.RulesToParameters;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.apon.AponWriter;
@@ -231,7 +231,7 @@ public class TransletCommand extends AbstractCommand {
                 continue;
             }
 
-            Parameters transletParameters = RuleToParamsConverter.toTransletParameters(transletRule);
+            Parameters transletParameters = RulesToParameters.toTransletParameters(transletRule);
 
             if (count == 0) {
                 console.writeLine("----------------------------------------------------------------------------");

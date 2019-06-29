@@ -27,7 +27,7 @@ class ArrayParametersTest {
         String s1 = arrayParameters.toString();
 
         AponReader aponReader = new AponReader(sb.toString());
-        String s2 = aponReader.read(new ArrayParameters<>()).toString();
+        String s2 = aponReader.read(new ArrayParameters()).toString();
 
         assertEquals(s1, s2);
     }

@@ -17,7 +17,7 @@ package com.aspectran.shell.command.builtins;
 
 import com.aspectran.core.component.aspect.AspectRuleRegistry;
 import com.aspectran.core.context.rule.AspectRule;
-import com.aspectran.core.context.rule.converter.RuleToParamsConverter;
+import com.aspectran.core.context.rule.converter.RulesToParameters;
 import com.aspectran.core.util.apon.AponWriter;
 import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.shell.command.AbstractCommand;
@@ -170,7 +170,7 @@ public class AspectCommand extends AbstractCommand {
         }
         int count = 0;
         for (AspectRule aspectRule : aspectRules) {
-            Parameters aspectParameters = RuleToParamsConverter.toAspectParameters(aspectRule);
+            Parameters aspectParameters = RulesToParameters.toAspectParameters(aspectRule);
 
             if (count == 0) {
                 console.writeLine("----------------------------------------------------------------------------");

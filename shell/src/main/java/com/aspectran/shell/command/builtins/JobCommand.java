@@ -18,7 +18,7 @@ package com.aspectran.shell.command.builtins;
 import com.aspectran.core.component.schedule.ScheduleRuleRegistry;
 import com.aspectran.core.context.rule.ScheduleRule;
 import com.aspectran.core.context.rule.ScheduledJobRule;
-import com.aspectran.core.context.rule.converter.RuleToParamsConverter;
+import com.aspectran.core.context.rule.converter.RulesToParameters;
 import com.aspectran.core.context.rule.params.ScheduleParameters;
 import com.aspectran.core.context.rule.params.SchedulerParameters;
 import com.aspectran.core.context.rule.params.TriggerParameters;
@@ -158,7 +158,7 @@ public class JobCommand extends AbstractCommand {
                     triggerParameters.putValueNonNull(TriggerParameters.type, scheduleRule.getTriggerType().toString());
                     schedulerParameters.putValue(SchedulerParameters.trigger, scheduleRule.getTriggerParameters());
                 }
-                scheduleParameters.putValue(ScheduleParameters.job, RuleToParamsConverter.toScheduledJobParameters(jobRule));
+                scheduleParameters.putValue(ScheduleParameters.job, RulesToParameters.toScheduledJobParameters(jobRule));
 
                 if (count == 0) {
                     console.writeLine("----------------------------------------------------------------------------");
@@ -174,7 +174,7 @@ public class JobCommand extends AbstractCommand {
         } else {
             int count = 0;
             for (ScheduleRule scheduleRule : scheduleRuleRegistry.getScheduleRules()) {
-                Parameters scheduleParameters = RuleToParamsConverter.toScheduleParameters(scheduleRule);
+                Parameters scheduleParameters = RulesToParameters.toScheduleParameters(scheduleRule);
 
                 if (count == 0) {
                     console.writeLine("----------------------------------------------------------------------------");

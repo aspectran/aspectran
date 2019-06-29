@@ -113,7 +113,7 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
             throw new IllegalArgumentException("parameters must not be null");
         }
         if (parameters instanceof ArrayParameters) {
-            for (Parameters ps : parameters.getParametersList(ArrayParameters.NONAME)) {
+            for (Parameters ps : ((ArrayParameters)parameters).getParametersList()) {
                 beginBlock();
                 for (Parameter pv : ps.getParameterValueMap().values()) {
                     if (nullWritable || pv.isAssigned()) {
@@ -546,17 +546,17 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
      */
     public static String stringify(Parameters parameters, String indentString) {
         if (parameters == null) {
-            return null;
+            return StringUtils.EMPTY;
         }
         try {
-            Writer writer = new StringWriter();
-            AponWriter aponWriter = new AponWriter(writer);
-            aponWriter.setIndentString(indentString);
-            aponWriter.write(parameters);
-            aponWriter.close();
-            return writer.toString();
-        } catch (IOException e) {
-            return null;
+            Writer out = new StringWriter();
+            AponWriter writer = new AponWriter(out);
+            writer.setIndentString(indentString);
+            writer.write(parameters);
+            writer.close();
+            return out.toString();
+        } catch (Exception e) {
+            return StringUtils.EMPTY;
         }
     }
 
