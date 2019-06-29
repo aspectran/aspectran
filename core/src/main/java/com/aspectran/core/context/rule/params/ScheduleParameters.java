@@ -17,7 +17,7 @@ package com.aspectran.core.context.rule.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterDefinition;
-import com.aspectran.core.util.apon.ParameterValueType;
+import com.aspectran.core.util.apon.ValueType;
 
 public class ScheduleParameters extends AbstractParameters {
 
@@ -29,8 +29,8 @@ public class ScheduleParameters extends AbstractParameters {
     private static final ParameterDefinition[] parameterDefinitions;
 
     static {
-        description = new ParameterDefinition("description", ParameterValueType.TEXT);
-        id = new ParameterDefinition("id", ParameterValueType.STRING);
+        description = new ParameterDefinition("description", ValueType.TEXT);
+        id = new ParameterDefinition("id", ValueType.STRING);
         scheduler = new ParameterDefinition("scheduler", SchedulerParameters.class);
         job = new ParameterDefinition("job", ScheduledJobParameters.class, true, true);
 

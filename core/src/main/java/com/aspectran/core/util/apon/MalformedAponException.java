@@ -56,7 +56,7 @@ public class MalformedAponException extends AponParseException {
      * @param expectedParameterValueType the expected value type
      */
     public MalformedAponException(int lineNumber, String line, String tline, ParameterValue parameterValue,
-                                  ParameterValueType expectedParameterValueType) {
+                                  ValueType expectedParameterValueType) {
         super(makeMessage(lineNumber, line, tline, parameterValue, expectedParameterValueType));
     }
 
@@ -95,7 +95,7 @@ public class MalformedAponException extends AponParseException {
     }
 
     private static String makeMessage(int lineNumber, String line, String tline, ParameterValue parameterValue,
-                                        ParameterValueType expectedParameterValueType) {
+                                        ValueType expectedParameterValueType) {
         StringBuilder sb = new StringBuilder();
         sb.append("Incompatible value type with expected value type '");
         sb.append(expectedParameterValueType).append("'");

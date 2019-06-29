@@ -17,7 +17,7 @@ package com.aspectran.core.context.rule.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterDefinition;
-import com.aspectran.core.util.apon.ParameterValueType;
+import com.aspectran.core.util.apon.ValueType;
 
 public class BeanParameters extends AbstractParameters {
 
@@ -41,19 +41,19 @@ public class BeanParameters extends AbstractParameters {
     private static final ParameterDefinition[] parameterDefinitions;
 
     static {
-        description = new ParameterDefinition("description", ParameterValueType.TEXT);
-        id = new ParameterDefinition("id", ParameterValueType.STRING);
-        className = new ParameterDefinition("class", ParameterValueType.STRING);
-        scan = new ParameterDefinition("scan", ParameterValueType.STRING);
-        mask = new ParameterDefinition("mask", ParameterValueType.STRING);
-        scope = new ParameterDefinition("scope", ParameterValueType.STRING);
-        singleton = new ParameterDefinition("singleton", ParameterValueType.BOOLEAN);
-        factoryBean = new ParameterDefinition("factoryBean", ParameterValueType.STRING);
-        factoryMethod = new ParameterDefinition("factoryMethod", ParameterValueType.STRING);
-        initMethod = new ParameterDefinition("initMethod", ParameterValueType.STRING);
-        destroyMethod = new ParameterDefinition("destroyMethod", ParameterValueType.STRING);
-        lazyInit = new ParameterDefinition("lazyInit", ParameterValueType.BOOLEAN);
-        important = new ParameterDefinition("important", ParameterValueType.BOOLEAN);
+        description = new ParameterDefinition("description", ValueType.TEXT);
+        id = new ParameterDefinition("id", ValueType.STRING);
+        className = new ParameterDefinition("class", ValueType.STRING);
+        scan = new ParameterDefinition("scan", ValueType.STRING);
+        mask = new ParameterDefinition("mask", ValueType.STRING);
+        scope = new ParameterDefinition("scope", ValueType.STRING);
+        singleton = new ParameterDefinition("singleton", ValueType.BOOLEAN);
+        factoryBean = new ParameterDefinition("factoryBean", ValueType.STRING);
+        factoryMethod = new ParameterDefinition("factoryMethod", ValueType.STRING);
+        initMethod = new ParameterDefinition("initMethod", ValueType.STRING);
+        destroyMethod = new ParameterDefinition("destroyMethod", ValueType.STRING);
+        lazyInit = new ParameterDefinition("lazyInit", ValueType.BOOLEAN);
+        important = new ParameterDefinition("important", ValueType.BOOLEAN);
         constructor = new ParameterDefinition("constructor", ConstructorParameters.class);
         properties = new ParameterDefinition("properties", ItemHolderParameters.class, true, true);
         filter = new ParameterDefinition("filter", FilterParameters.class);

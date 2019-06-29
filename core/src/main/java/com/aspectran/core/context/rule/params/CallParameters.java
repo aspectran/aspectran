@@ -17,7 +17,7 @@ package com.aspectran.core.context.rule.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterDefinition;
-import com.aspectran.core.util.apon.ParameterValueType;
+import com.aspectran.core.util.apon.ValueType;
 
 public class CallParameters extends AbstractParameters {
 
@@ -30,11 +30,11 @@ public class CallParameters extends AbstractParameters {
     private static final ParameterDefinition[] parameterDefinitions;
 
     static {
-        bean = new ParameterDefinition("bean", ParameterValueType.STRING);
-        template = new ParameterDefinition("template", ParameterValueType.STRING);
-        parameter = new ParameterDefinition("parameter", ParameterValueType.STRING);
-        attribute = new ParameterDefinition("attribute", ParameterValueType.STRING);
-        property = new ParameterDefinition("property", ParameterValueType.STRING);
+        bean = new ParameterDefinition("bean", ValueType.STRING);
+        template = new ParameterDefinition("template", ValueType.STRING);
+        parameter = new ParameterDefinition("parameter", ValueType.STRING);
+        attribute = new ParameterDefinition("attribute", ValueType.STRING);
+        property = new ParameterDefinition("property", ValueType.STRING);
 
         parameterDefinitions = new ParameterDefinition[] {
                 bean,

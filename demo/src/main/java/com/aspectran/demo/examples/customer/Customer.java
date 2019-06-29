@@ -17,7 +17,7 @@ package com.aspectran.demo.examples.customer;
 
 import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterDefinition;
-import com.aspectran.core.util.apon.ParameterValueType;
+import com.aspectran.core.util.apon.ValueType;
 
 /**
  * Defines an APON object that contains the customer's information.
@@ -32,10 +32,10 @@ public class Customer extends AbstractParameters {
     private static final ParameterDefinition[] parameterDefinitions;
     
     static {
-        id = new ParameterDefinition("id", ParameterValueType.INT);
-        name = new ParameterDefinition("name", ParameterValueType.STRING);
-        age = new ParameterDefinition("age", ParameterValueType.INT);
-        approved = new ParameterDefinition("approved", ParameterValueType.BOOLEAN);
+        id = new ParameterDefinition("id", ValueType.INT);
+        name = new ParameterDefinition("name", ValueType.STRING);
+        age = new ParameterDefinition("age", ValueType.INT);
+        approved = new ParameterDefinition("approved", ValueType.BOOLEAN);
         
         parameterDefinitions = new ParameterDefinition[] {
             id,

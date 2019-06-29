@@ -16,17 +16,17 @@
 package com.aspectran.core.util.apon;
 
 /**
- * The Class IncompatibleParameterValueTypeException.
+ * This exception will be thrown when the value type of the parameter does not match.
+ *
+ * <p>Created: 2019. 06. 15</p>
  */
-public class IncompatibleParameterValueTypeException extends InvalidParameterValueException {
+public class ValueTypeMismatchException extends InvalidParameterValueException {
 
-    /** @serial */
-    private static final long serialVersionUID = 1557599183505068164L;
+    private static final long serialVersionUID = 3022910656886563259L;
 
-    public IncompatibleParameterValueTypeException(ParameterValue parameterValue,
-                                                   ParameterValueType expectedValueType) {
-        super("Incompatible value type with expected value type '" + expectedValueType +
-                "' for the specified parameter " + parameterValue);
+    public ValueTypeMismatchException(Class<?> valueType, Class<?> requiredType, Throwable cause) {
+        super("Failed to convert value of type [" + valueType.getName() + "] " +
+                "to required type [" + requiredType.getName() + "]; nested exception is " + cause, cause);
     }
 
 }

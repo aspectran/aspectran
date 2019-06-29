@@ -72,14 +72,16 @@ public abstract class AbstractParameters implements Parameters {
 
     @Override
     public Parameter getParent() {
-        if (identifier != null) {
-            if (identifier.getContainer() != null) {
-                if (identifier.getContainer().getIdentifier() != null) {
-                    return identifier.getContainer().getIdentifier();
-                }
-            }
+        if (identifier != null && identifier.getContainer() != null) {
+            return identifier.getContainer().getIdentifier();
+        } else {
+            return null;
         }
-        return null;
+    }
+
+    @Override
+    public boolean isRoot() {
+        return (getParent() == null);
     }
 
     @Override
@@ -106,7 +108,7 @@ public abstract class AbstractParameters implements Parameters {
 
     @Override
     public boolean hasParameter(String name) {
-        return (parameterValueMap.get(name) != null);
+        return parameterValueMap.containsKey(name);
     }
 
     @Override
@@ -174,7 +176,7 @@ public abstract class AbstractParameters implements Parameters {
     public void putValue(String name, Object value) {
         Parameter p = getParameter(name);
         if (p == null) {
-            p = newParameterValue(name, ParameterValueType.determineValueType(value));
+            p = newParameterValue(name, ValueType.determineValueType(value));
         }
         p.putValue(value);
         if (value instanceof Parameters) {
@@ -536,12 +538,12 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
-    public ParameterValue newParameterValue(String name, ParameterValueType valueType) {
+    public ParameterValue newParameterValue(String name, ValueType valueType) {
         return newParameterValue(name, valueType, false);
     }
 
     @Override
-    public ParameterValue newParameterValue(String name, ParameterValueType valueType, boolean array) {
+    public ParameterValue newParameterValue(String name, ValueType valueType, boolean array) {
         ParameterValue pv = new ParameterValue(name, valueType, array);
         pv.setContainer(this);
         parameterValueMap.put(name, pv);

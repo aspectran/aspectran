@@ -17,7 +17,7 @@ package com.aspectran.core.context.rule.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterDefinition;
-import com.aspectran.core.util.apon.ParameterValueType;
+import com.aspectran.core.util.apon.ValueType;
 
 public class PointcutQualifierParameters extends AbstractParameters {
 
@@ -28,9 +28,9 @@ public class PointcutQualifierParameters extends AbstractParameters {
     private static final ParameterDefinition[] parameterDefinitions;
 
     static {
-        translet = new ParameterDefinition("translet", ParameterValueType.STRING);
-        bean = new ParameterDefinition("bean", ParameterValueType.STRING);
-        method = new ParameterDefinition("method", ParameterValueType.STRING);
+        translet = new ParameterDefinition("translet", ValueType.STRING);
+        bean = new ParameterDefinition("bean", ValueType.STRING);
+        method = new ParameterDefinition("method", ValueType.STRING);
 
         parameterDefinitions = new ParameterDefinition[] {
                 translet,

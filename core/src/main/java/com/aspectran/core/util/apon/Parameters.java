@@ -64,6 +64,8 @@ public interface Parameters {
      */
     Parameter getParent();
 
+    boolean isRoot();
+
     void updateContainer(Parameters parameters);
 
     /**
@@ -716,9 +718,9 @@ public interface Parameters {
      */
     <T extends Parameters> List<T> getParametersList(ParameterDefinition parameterDefinition);
 
-    ParameterValue newParameterValue(String name, ParameterValueType valueType);
+    ParameterValue newParameterValue(String name, ValueType valueType);
 
-    ParameterValue newParameterValue(String name, ParameterValueType valueType, boolean array);
+    ParameterValue newParameterValue(String name, ValueType valueType, boolean array);
 
     <T extends Parameters> T newParameters(String name);
 

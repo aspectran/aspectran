@@ -17,7 +17,7 @@ package com.aspectran.core.context.config;
 
 import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterDefinition;
-import com.aspectran.core.util.apon.ParameterValueType;
+import com.aspectran.core.util.apon.ValueType;
 
 /**
  * <p>Created: 2017. 12. 12.</p>
@@ -33,7 +33,7 @@ public class DaemonConfig extends AbstractParameters {
     private static final ParameterDefinition[] parameterDefinitions;
 
     static {
-        commands = new ParameterDefinition("commands", ParameterValueType.STRING, true);
+        commands = new ParameterDefinition("commands", ValueType.STRING, true);
         poller = new ParameterDefinition("poller", DaemonPollerConfig.class);
         exposals = new ParameterDefinition("exposals", ExposalsConfig.class);
 

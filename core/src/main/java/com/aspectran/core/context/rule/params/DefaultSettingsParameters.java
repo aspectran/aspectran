@@ -18,7 +18,7 @@ package com.aspectran.core.context.rule.params;
 import com.aspectran.core.context.rule.type.DefaultSettingType;
 import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterDefinition;
-import com.aspectran.core.util.apon.ParameterValueType;
+import com.aspectran.core.util.apon.ValueType;
 
 public class DefaultSettingsParameters extends AbstractParameters {
 
@@ -33,13 +33,13 @@ public class DefaultSettingsParameters extends AbstractParameters {
     private static final ParameterDefinition[] parameterDefinitions;
 
     static {
-        transletNamePattern = new ParameterDefinition(DefaultSettingType.TRANSLET_NAME_PATTERN.toString(), ParameterValueType.STRING);
-        transletNamePrefix = new ParameterDefinition(DefaultSettingType.TRANSLET_NAME_PREFIX.toString(), ParameterValueType.STRING);
-        transletNameSuffix = new ParameterDefinition(DefaultSettingType.TRANSLET_NAME_SUFFIX.toString(), ParameterValueType.STRING);
-        beanProxifier = new ParameterDefinition(DefaultSettingType.BEAN_PROXIFIER.toString(), ParameterValueType.STRING);
-        pointcutPatternVerifiable = new ParameterDefinition(DefaultSettingType.POINTCUT_PATTERN_VERIFIABLE.toString(), ParameterValueType.BOOLEAN);
-        defaultTemplateEngineBean = new ParameterDefinition(DefaultSettingType.DEFAULT_TEMPLATE_ENGINE_BEAN.toString(), ParameterValueType.STRING);
-        defaultSchedulerBean = new ParameterDefinition(DefaultSettingType.DEFAULT_SCHEDULER_BEAN.toString(), ParameterValueType.STRING);
+        transletNamePattern = new ParameterDefinition(DefaultSettingType.TRANSLET_NAME_PATTERN.toString(), ValueType.STRING);
+        transletNamePrefix = new ParameterDefinition(DefaultSettingType.TRANSLET_NAME_PREFIX.toString(), ValueType.STRING);
+        transletNameSuffix = new ParameterDefinition(DefaultSettingType.TRANSLET_NAME_SUFFIX.toString(), ValueType.STRING);
+        beanProxifier = new ParameterDefinition(DefaultSettingType.BEAN_PROXIFIER.toString(), ValueType.STRING);
+        pointcutPatternVerifiable = new ParameterDefinition(DefaultSettingType.POINTCUT_PATTERN_VERIFIABLE.toString(), ValueType.BOOLEAN);
+        defaultTemplateEngineBean = new ParameterDefinition(DefaultSettingType.DEFAULT_TEMPLATE_ENGINE_BEAN.toString(), ValueType.STRING);
+        defaultSchedulerBean = new ParameterDefinition(DefaultSettingType.DEFAULT_SCHEDULER_BEAN.toString(), ValueType.STRING);
 
         parameterDefinitions = new ParameterDefinition[] {
                 transletNamePattern,

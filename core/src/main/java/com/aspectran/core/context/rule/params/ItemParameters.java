@@ -17,7 +17,7 @@ package com.aspectran.core.context.rule.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterDefinition;
-import com.aspectran.core.util.apon.ParameterValueType;
+import com.aspectran.core.util.apon.ValueType;
 
 public class ItemParameters extends AbstractParameters {
 
@@ -33,13 +33,13 @@ public class ItemParameters extends AbstractParameters {
     private static final ParameterDefinition[] parameterDefinitions;
 
     static {
-        type = new ParameterDefinition("type", ParameterValueType.STRING);
-        name = new ParameterDefinition("name", ParameterValueType.STRING);
-        value = new ParameterDefinition("value", ParameterValueType.VARIABLE);
-        valueType = new ParameterDefinition("valueType", ParameterValueType.STRING);
-        tokenize = new ParameterDefinition("tokenize", ParameterValueType.BOOLEAN);
-        mandatory = new ParameterDefinition("mandatory", ParameterValueType.BOOLEAN);
-        secret = new ParameterDefinition("secret", ParameterValueType.BOOLEAN);
+        type = new ParameterDefinition("type", ValueType.STRING);
+        name = new ParameterDefinition("name", ValueType.STRING);
+        value = new ParameterDefinition("value", ValueType.VARIABLE);
+        valueType = new ParameterDefinition("valueType", ValueType.STRING);
+        tokenize = new ParameterDefinition("tokenize", ValueType.BOOLEAN);
+        mandatory = new ParameterDefinition("mandatory", ValueType.BOOLEAN);
+        secret = new ParameterDefinition("secret", ValueType.BOOLEAN);
         call = new ParameterDefinition("call", CallParameters.class);
 
         parameterDefinitions = new ParameterDefinition[] {

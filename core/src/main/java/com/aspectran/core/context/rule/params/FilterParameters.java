@@ -17,7 +17,7 @@ package com.aspectran.core.context.rule.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterDefinition;
-import com.aspectran.core.util.apon.ParameterValueType;
+import com.aspectran.core.util.apon.ValueType;
 
 public class FilterParameters extends AbstractParameters {
 
@@ -27,8 +27,8 @@ public class FilterParameters extends AbstractParameters {
     private static final ParameterDefinition[] parameterDefinitions;
 
     static {
-        filterClass = new ParameterDefinition("class", ParameterValueType.STRING);
-        exclude = new ParameterDefinition("exclude", ParameterValueType.STRING, true);
+        filterClass = new ParameterDefinition("class", ValueType.STRING);
+        exclude = new ParameterDefinition("exclude", ValueType.STRING, true);
 
         parameterDefinitions = new ParameterDefinition[] {
                 filterClass,

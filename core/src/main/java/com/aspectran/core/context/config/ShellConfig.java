@@ -17,7 +17,7 @@ package com.aspectran.core.context.config;
 
 import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterDefinition;
-import com.aspectran.core.util.apon.ParameterValueType;
+import com.aspectran.core.util.apon.ValueType;
 
 public class ShellConfig extends AbstractParameters {
 
@@ -32,12 +32,12 @@ public class ShellConfig extends AbstractParameters {
     private static final ParameterDefinition[] parameterDefinitions;
 
     static {
-        prompt = new ParameterDefinition("prompt", ParameterValueType.STRING);
-        commands = new ParameterDefinition("commands", ParameterValueType.STRING, true);
-        greetings = new ParameterDefinition("greetings", ParameterValueType.TEXT);
-        workingDir = new ParameterDefinition("workingDir", ParameterValueType.STRING);
-        historyFile = new ParameterDefinition("historyFile", ParameterValueType.STRING);
-        verbose = new ParameterDefinition("verbose", ParameterValueType.BOOLEAN);
+        prompt = new ParameterDefinition("prompt", ValueType.STRING);
+        commands = new ParameterDefinition("commands", ValueType.STRING, true);
+        greetings = new ParameterDefinition("greetings", ValueType.TEXT);
+        workingDir = new ParameterDefinition("workingDir", ValueType.STRING);
+        historyFile = new ParameterDefinition("historyFile", ValueType.STRING);
+        verbose = new ParameterDefinition("verbose", ValueType.BOOLEAN);
         exposals = new ParameterDefinition("exposals", ExposalsConfig.class);
 
         parameterDefinitions = new ParameterDefinition[] {

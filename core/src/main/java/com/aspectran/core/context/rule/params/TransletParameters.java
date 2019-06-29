@@ -17,7 +17,7 @@ package com.aspectran.core.context.rule.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterDefinition;
-import com.aspectran.core.util.apon.ParameterValueType;
+import com.aspectran.core.util.apon.ValueType;
 
 public class TransletParameters extends AbstractParameters {
 
@@ -43,11 +43,11 @@ public class TransletParameters extends AbstractParameters {
     private static final ParameterDefinition[] parameterDefinitions;
 
     static {
-        description = new ParameterDefinition("description", ParameterValueType.TEXT);
-        name = new ParameterDefinition("name", ParameterValueType.STRING);
-        scan = new ParameterDefinition("scan", ParameterValueType.STRING);
-        mask = new ParameterDefinition("mask", ParameterValueType.STRING);
-        method = new ParameterDefinition("method", ParameterValueType.STRING);
+        description = new ParameterDefinition("description", ValueType.TEXT);
+        name = new ParameterDefinition("name", ValueType.STRING);
+        scan = new ParameterDefinition("scan", ValueType.STRING);
+        mask = new ParameterDefinition("mask", ValueType.STRING);
+        method = new ParameterDefinition("method", ValueType.STRING);
         request = new ParameterDefinition("request", RequestParameters.class);
         parameters = new ParameterDefinition("parameters", ItemHolderParameters.class, true, true);
         attributes = new ParameterDefinition("attributes", ItemHolderParameters.class, true, true);

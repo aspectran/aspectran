@@ -17,7 +17,7 @@ package com.aspectran.core.context.config;
 
 import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterDefinition;
-import com.aspectran.core.util.apon.ParameterValueType;
+import com.aspectran.core.util.apon.ValueType;
 
 public class ExposalsConfig extends AbstractParameters {
 
@@ -27,8 +27,8 @@ public class ExposalsConfig extends AbstractParameters {
     private static final ParameterDefinition[] parameterDefinitions;
 
     static {
-        plus = new ParameterDefinition("+", ParameterValueType.STRING, true, true);
-        minus = new ParameterDefinition("-", ParameterValueType.STRING, true, true);
+        plus = new ParameterDefinition("+", ValueType.STRING, true, true);
+        minus = new ParameterDefinition("-", ValueType.STRING, true, true);
 
         parameterDefinitions = new ParameterDefinition[] {
                 plus,

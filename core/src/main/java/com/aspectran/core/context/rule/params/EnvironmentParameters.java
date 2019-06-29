@@ -17,7 +17,7 @@ package com.aspectran.core.context.rule.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterDefinition;
-import com.aspectran.core.util.apon.ParameterValueType;
+import com.aspectran.core.util.apon.ValueType;
 
 public class EnvironmentParameters extends AbstractParameters {
 
@@ -30,8 +30,8 @@ public class EnvironmentParameters extends AbstractParameters {
     private static final ParameterDefinition[] parameterDefinitions;
 
     static {
-        description = new ParameterDefinition("description", ParameterValueType.TEXT);
-        profile = new ParameterDefinition("profile", ParameterValueType.STRING);
+        description = new ParameterDefinition("description", ValueType.TEXT);
+        profile = new ParameterDefinition("profile", ValueType.STRING);
         properties = new ParameterDefinition("properties", ItemHolderParameters.class, true, true);
 
         parameterDefinitions = new ParameterDefinition[] {

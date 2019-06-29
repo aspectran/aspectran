@@ -17,7 +17,7 @@ package com.aspectran.core.context.rule.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterDefinition;
-import com.aspectran.core.util.apon.ParameterValueType;
+import com.aspectran.core.util.apon.ValueType;
 
 public class DispatchParameters extends AbstractParameters {
 
@@ -32,11 +32,11 @@ public class DispatchParameters extends AbstractParameters {
 
     static {
         action = new ParameterDefinition("action", ActionParameters.class, true, true);
-        name = new ParameterDefinition("name", ParameterValueType.STRING);
-        dispatcher = new ParameterDefinition("dispatcher", ParameterValueType.STRING);
-        contentType = new ParameterDefinition("contentType", ParameterValueType.STRING);
-        encoding = new ParameterDefinition("encoding", ParameterValueType.STRING);
-        defaultResponse = new ParameterDefinition("default", ParameterValueType.BOOLEAN);
+        name = new ParameterDefinition("name", ValueType.STRING);
+        dispatcher = new ParameterDefinition("dispatcher", ValueType.STRING);
+        contentType = new ParameterDefinition("contentType", ValueType.STRING);
+        encoding = new ParameterDefinition("encoding", ValueType.STRING);
+        defaultResponse = new ParameterDefinition("default", ValueType.BOOLEAN);
 
         parameterDefinitions = new ParameterDefinition[] {
                 action,

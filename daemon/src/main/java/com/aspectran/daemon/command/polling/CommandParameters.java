@@ -23,7 +23,7 @@ import com.aspectran.core.context.rule.params.ItemHolderParameters;
 import com.aspectran.core.context.rule.params.ItemParameters;
 import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterDefinition;
-import com.aspectran.core.util.apon.ParameterValueType;
+import com.aspectran.core.util.apon.ValueType;
 
 import java.util.List;
 
@@ -45,15 +45,15 @@ public class CommandParameters extends AbstractParameters {
     private static final ParameterDefinition[] parameterDefinitions;
 
     static {
-        command = new ParameterDefinition("command", ParameterValueType.STRING);
-        translet = new ParameterDefinition("translet", ParameterValueType.STRING);
-        bean = new ParameterDefinition("bean", ParameterValueType.STRING);
-        method = new ParameterDefinition("method", ParameterValueType.STRING);
+        command = new ParameterDefinition("command", ValueType.STRING);
+        translet = new ParameterDefinition("translet", ValueType.STRING);
+        bean = new ParameterDefinition("bean", ValueType.STRING);
+        method = new ParameterDefinition("method", ValueType.STRING);
         arguments = new ParameterDefinition("arguments", ItemHolderParameters.class);
         properties = new ParameterDefinition("properties", ItemHolderParameters.class);
         parameters = new ParameterDefinition("parameters", ItemHolderParameters.class);
         attributes = new ParameterDefinition("attributes", ItemHolderParameters.class);
-        output = new ParameterDefinition("output", ParameterValueType.TEXT);
+        output = new ParameterDefinition("output", ValueType.TEXT);
 
         parameterDefinitions = new ParameterDefinition[] {
                 command,

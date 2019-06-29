@@ -17,7 +17,7 @@ package com.aspectran.core.context.rule.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterDefinition;
-import com.aspectran.core.util.apon.ParameterValueType;
+import com.aspectran.core.util.apon.ValueType;
 
 public class SchedulerParameters extends AbstractParameters {
 
@@ -27,7 +27,7 @@ public class SchedulerParameters extends AbstractParameters {
     private static final ParameterDefinition[] parameterDefinitions;
 
     static {
-        bean = new ParameterDefinition("bean", ParameterValueType.STRING);
+        bean = new ParameterDefinition("bean", ValueType.STRING);
         trigger = new ParameterDefinition("trigger", TriggerParameters.class);
 
         parameterDefinitions = new ParameterDefinition[] {

@@ -17,7 +17,7 @@ package com.aspectran.core.context.rule.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterDefinition;
-import com.aspectran.core.util.apon.ParameterValueType;
+import com.aspectran.core.util.apon.ValueType;
 
 public class TemplateParameters extends AbstractParameters {
 
@@ -35,16 +35,16 @@ public class TemplateParameters extends AbstractParameters {
     private static final ParameterDefinition[] parameterDefinitions;
 
     static {
-        id = new ParameterDefinition("id", ParameterValueType.STRING);
-        engine = new ParameterDefinition("engine", ParameterValueType.STRING);
-        name = new ParameterDefinition("name", ParameterValueType.STRING);
-        file = new ParameterDefinition("file", ParameterValueType.STRING);
-        resource = new ParameterDefinition("resource", ParameterValueType.STRING);
-        url = new ParameterDefinition("url", ParameterValueType.STRING);
-        content = new ParameterDefinition("content", ParameterValueType.TEXT);
-        style = new ParameterDefinition("style", ParameterValueType.STRING);
-        encoding = new ParameterDefinition("encoding", ParameterValueType.STRING);
-        noCache = new ParameterDefinition("noCache", ParameterValueType.BOOLEAN);
+        id = new ParameterDefinition("id", ValueType.STRING);
+        engine = new ParameterDefinition("engine", ValueType.STRING);
+        name = new ParameterDefinition("name", ValueType.STRING);
+        file = new ParameterDefinition("file", ValueType.STRING);
+        resource = new ParameterDefinition("resource", ValueType.STRING);
+        url = new ParameterDefinition("url", ValueType.STRING);
+        content = new ParameterDefinition("content", ValueType.TEXT);
+        style = new ParameterDefinition("style", ValueType.STRING);
+        encoding = new ParameterDefinition("encoding", ValueType.STRING);
+        noCache = new ParameterDefinition("noCache", ValueType.BOOLEAN);
 
         parameterDefinitions = new ParameterDefinition[] {
                 id,

@@ -17,7 +17,7 @@ package com.aspectran.core.context.config;
 
 import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterDefinition;
-import com.aspectran.core.util.apon.ParameterValueType;
+import com.aspectran.core.util.apon.ValueType;
 
 public class ContextProfilesConfig extends AbstractParameters {
 
@@ -27,8 +27,8 @@ public class ContextProfilesConfig extends AbstractParameters {
     private static final ParameterDefinition[] parameterDefinitions;
 
     static {
-        activeProfiles = new ParameterDefinition("active", ParameterValueType.STRING, true);
-        defaultProfiles = new ParameterDefinition("default", ParameterValueType.STRING, true);
+        activeProfiles = new ParameterDefinition("active", ValueType.STRING, true);
+        defaultProfiles = new ParameterDefinition("default", ValueType.STRING, true);
 
         parameterDefinitions = new ParameterDefinition[] {
                 activeProfiles,

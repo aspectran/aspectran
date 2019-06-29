@@ -17,7 +17,7 @@ package com.aspectran.core.context.rule.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterDefinition;
-import com.aspectran.core.util.apon.ParameterValueType;
+import com.aspectran.core.util.apon.ValueType;
 
 import java.io.IOException;
 import java.util.List;
@@ -30,7 +30,7 @@ public class ItemHolderParameters extends AbstractParameters {
     private static final ParameterDefinition[] parameterDefinitions;
 
     static {
-        profile = new ParameterDefinition("profile", ParameterValueType.STRING);
+        profile = new ParameterDefinition("profile", ValueType.STRING);
         item = new ParameterDefinition("item", ItemParameters.class, true, true);
 
         parameterDefinitions = new ParameterDefinition[] {

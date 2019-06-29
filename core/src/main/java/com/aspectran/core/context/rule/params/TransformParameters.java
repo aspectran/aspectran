@@ -17,7 +17,7 @@ package com.aspectran.core.context.rule.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterDefinition;
-import com.aspectran.core.util.apon.ParameterValueType;
+import com.aspectran.core.util.apon.ValueType;
 
 public class TransformParameters extends AbstractParameters {
 
@@ -34,11 +34,11 @@ public class TransformParameters extends AbstractParameters {
 
     static {
         action = new ParameterDefinition("action", ActionParameters.class, true, true);
-        type = new ParameterDefinition("type", ParameterValueType.STRING);
-        contentType = new ParameterDefinition("contentType", ParameterValueType.STRING);
-        encoding = new ParameterDefinition("encoding", ParameterValueType.STRING);
-        defaultResponse = new ParameterDefinition("default", ParameterValueType.BOOLEAN);
-        pretty = new ParameterDefinition("pretty", ParameterValueType.BOOLEAN);
+        type = new ParameterDefinition("type", ValueType.STRING);
+        contentType = new ParameterDefinition("contentType", ValueType.STRING);
+        encoding = new ParameterDefinition("encoding", ValueType.STRING);
+        defaultResponse = new ParameterDefinition("default", ValueType.BOOLEAN);
+        pretty = new ParameterDefinition("pretty", ValueType.BOOLEAN);
         template = new ParameterDefinition("template", TemplateParameters.class);
         call = new ParameterDefinition("call", CallParameters.class);
 

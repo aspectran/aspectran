@@ -17,7 +17,7 @@ package com.aspectran.core.context.rule.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterDefinition;
-import com.aspectran.core.util.apon.ParameterValueType;
+import com.aspectran.core.util.apon.ValueType;
 
 public class PointcutParameters extends AbstractParameters {
 
@@ -30,9 +30,9 @@ public class PointcutParameters extends AbstractParameters {
     private static final ParameterDefinition[] parameterDefinitions;
 
     static {
-        type = new ParameterDefinition("type", ParameterValueType.STRING);
-        plus = new ParameterDefinition("+", ParameterValueType.STRING, true, true);
-        minus = new ParameterDefinition("-", ParameterValueType.STRING, true, true);
+        type = new ParameterDefinition("type", ValueType.STRING);
+        plus = new ParameterDefinition("+", ValueType.STRING, true, true);
+        minus = new ParameterDefinition("-", ValueType.STRING, true, true);
         include = new ParameterDefinition("include", PointcutQualifierParameters.class, true, true);
         exclude = new ParameterDefinition("exclude", PointcutQualifierParameters.class, true, true);
 

@@ -17,7 +17,7 @@ package com.aspectran.core.context.config;
 
 import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterDefinition;
-import com.aspectran.core.util.apon.ParameterValueType;
+import com.aspectran.core.util.apon.ValueType;
 
 public class SchedulerConfig extends AbstractParameters {
 
@@ -29,9 +29,9 @@ public class SchedulerConfig extends AbstractParameters {
     private static final ParameterDefinition[] parameterDefinitions;
 
     static {
-        startDelaySeconds = new ParameterDefinition("startDelaySeconds", ParameterValueType.INT);
-        waitOnShutdown = new ParameterDefinition("waitOnShutdown", ParameterValueType.BOOLEAN);
-        startup = new ParameterDefinition("startup", ParameterValueType.BOOLEAN);
+        startDelaySeconds = new ParameterDefinition("startDelaySeconds", ValueType.INT);
+        waitOnShutdown = new ParameterDefinition("waitOnShutdown", ValueType.BOOLEAN);
+        startup = new ParameterDefinition("startup", ValueType.BOOLEAN);
         exposals = new ParameterDefinition("exposals", ExposalsConfig.class);
 
         parameterDefinitions = new ParameterDefinition[] {

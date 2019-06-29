@@ -17,7 +17,7 @@ package com.aspectran.core.context.rule.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterDefinition;
-import com.aspectran.core.util.apon.ParameterValueType;
+import com.aspectran.core.util.apon.ValueType;
 
 public class ResponseParameters extends AbstractParameters {
 
@@ -31,8 +31,8 @@ public class ResponseParameters extends AbstractParameters {
     private static final ParameterDefinition[] parameterDefinitions;
 
     static {
-        name = new ParameterDefinition("name", ParameterValueType.STRING);
-        encoding = new ParameterDefinition("encoding", ParameterValueType.STRING);
+        name = new ParameterDefinition("name", ValueType.STRING);
+        encoding = new ParameterDefinition("encoding", ValueType.STRING);
         transform = new ParameterDefinition("transform", TransformParameters.class);
         dispatch = new ParameterDefinition("dispatch", DispatchParameters.class);
         forward = new ParameterDefinition("forward", ForwardParameters.class);

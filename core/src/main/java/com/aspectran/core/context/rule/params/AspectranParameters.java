@@ -25,7 +25,7 @@ import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.converter.RuleToParamsConverter;
 import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterDefinition;
-import com.aspectran.core.util.apon.ParameterValueType;
+import com.aspectran.core.util.apon.ValueType;
 import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.apon.VariableParameters;
 
@@ -45,7 +45,7 @@ public class AspectranParameters extends AbstractParameters {
     private static final ParameterDefinition[] parameterDefinitions;
 
     static {
-        description = new ParameterDefinition("description", ParameterValueType.TEXT);
+        description = new ParameterDefinition("description", ValueType.TEXT);
         settings = new ParameterDefinition("settings", DefaultSettingsParameters.class);
         typeAlias = new ParameterDefinition("typeAlias", VariableParameters.class);
         environment = new ParameterDefinition("environment", EnvironmentParameters.class, true, true);

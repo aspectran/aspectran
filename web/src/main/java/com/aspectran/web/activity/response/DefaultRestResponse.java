@@ -21,7 +21,7 @@ import com.aspectran.core.activity.response.transform.XmlTransformResponse;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.util.Assert;
-import com.aspectran.core.util.apon.AponConverter;
+import com.aspectran.core.util.apon.ObjectToApon;
 import com.aspectran.core.util.apon.AponWriter;
 import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.apon.VariableParameters;
@@ -158,7 +158,7 @@ public class DefaultRestResponse extends AbstractRestResponse {
 
         if (getName() != null || getData() != null) {
             Parameters parameters = new VariableParameters();
-            AponConverter.putValue(parameters, getName(), getData());
+            ObjectToApon.putValue(parameters, getName(), getData());
 
             AponWriter aponWriter = new AponWriter(writer);
             if (isPrettyPrint()) {

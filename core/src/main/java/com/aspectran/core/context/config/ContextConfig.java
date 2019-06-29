@@ -18,7 +18,7 @@ package com.aspectran.core.context.config;
 import com.aspectran.core.context.rule.params.AspectranParameters;
 import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterDefinition;
-import com.aspectran.core.util.apon.ParameterValueType;
+import com.aspectran.core.util.apon.ValueType;
 
 public class ContextConfig extends AbstractParameters {
 
@@ -36,15 +36,15 @@ public class ContextConfig extends AbstractParameters {
     private static final ParameterDefinition[] parameterDefinitions;
 
     static {
-        base = new ParameterDefinition("base", ParameterValueType.STRING);
-        root = new ParameterDefinition("root", ParameterValueType.STRING);
-        encoding = new ParameterDefinition("encoding", ParameterValueType.STRING);
-        resources = new ParameterDefinition("resources", ParameterValueType.STRING, true);
-        scan = new ParameterDefinition("scan", ParameterValueType.STRING, true);
+        base = new ParameterDefinition("base", ValueType.STRING);
+        root = new ParameterDefinition("root", ValueType.STRING);
+        encoding = new ParameterDefinition("encoding", ValueType.STRING);
+        resources = new ParameterDefinition("resources", ValueType.STRING, true);
+        scan = new ParameterDefinition("scan", ValueType.STRING, true);
         profiles = new ParameterDefinition("profiles", ContextProfilesConfig.class);
-        hybridLoad = new ParameterDefinition("hybridLoad", ParameterValueType.BOOLEAN);
+        hybridLoad = new ParameterDefinition("hybridLoad", ValueType.BOOLEAN);
         autoReload = new ParameterDefinition("autoReload", ContextAutoReloadConfig.class);
-        singleton = new ParameterDefinition("singleton", ParameterValueType.BOOLEAN);
+        singleton = new ParameterDefinition("singleton", ValueType.BOOLEAN);
         parameters = new ParameterDefinition("parameters", AspectranParameters.class);
 
         parameterDefinitions = new ParameterDefinition[] {

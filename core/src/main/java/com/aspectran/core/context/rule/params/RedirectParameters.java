@@ -17,7 +17,7 @@ package com.aspectran.core.context.rule.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterDefinition;
-import com.aspectran.core.util.apon.ParameterValueType;
+import com.aspectran.core.util.apon.ValueType;
 
 public class RedirectParameters extends AbstractParameters {
 
@@ -34,12 +34,12 @@ public class RedirectParameters extends AbstractParameters {
 
     static {
         action = new ParameterDefinition("action", ActionParameters.class, true, true);
-        contentType = new ParameterDefinition("contentType", ParameterValueType.STRING);
-        path = new ParameterDefinition("path", ParameterValueType.STRING);
-        encoding = new ParameterDefinition("encoding", ParameterValueType.STRING);
-        excludeNullParameters = new ParameterDefinition("excludeNullParameters", ParameterValueType.BOOLEAN);
-        excludeEmptyParameters = new ParameterDefinition("excludeEmptyParameters", ParameterValueType.BOOLEAN);
-        defaultResponse = new ParameterDefinition("default", ParameterValueType.BOOLEAN);
+        contentType = new ParameterDefinition("contentType", ValueType.STRING);
+        path = new ParameterDefinition("path", ValueType.STRING);
+        encoding = new ParameterDefinition("encoding", ValueType.STRING);
+        excludeNullParameters = new ParameterDefinition("excludeNullParameters", ValueType.BOOLEAN);
+        excludeEmptyParameters = new ParameterDefinition("excludeEmptyParameters", ValueType.BOOLEAN);
+        defaultResponse = new ParameterDefinition("default", ValueType.BOOLEAN);
         parameters = new ParameterDefinition("parameters", ItemHolderParameters.class, true, true);
 
         parameterDefinitions = new ParameterDefinition[] {

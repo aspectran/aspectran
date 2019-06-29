@@ -36,8 +36,6 @@ public class AponReader extends AponFormat implements Closeable {
 
     private final BufferedReader in;
 
-    private boolean predefined;
-
     private int lineNumber;
 
     /**
@@ -88,15 +86,48 @@ public class AponReader extends AponFormat implements Closeable {
         if (parameters == null) {
             throw new IllegalArgumentException("parameters must not be null");
         }
-        predefined = parameters.isPredefined();
         try {
-            read(parameters, NO_CONTROL_CHAR, null, null, null, false);
+            if (parameters instanceof ArrayParameters) {
+                readArray(parameters);
+            } else {
+                read(parameters, NO_CONTROL_CHAR, null, null, null, false);
+            }
         } catch (AponParseException e) {
             throw e;
         } catch (Exception e) {
-            throw new AponParseException("Could not read an APON formatted document into a Parameters object", e);
+            throw new AponParseException("Failed to read APON document into given Parameters " +
+                    parameters.getClass().getName(), e);
         }
         return parameters;
+    }
+
+    private void readArray(Parameters container) throws IOException {
+        String line;
+        String value;
+        String tline;
+        int tlen;
+        int vlen;
+        char cchar;
+
+        while ((line = in.readLine()) != null) {
+            lineNumber++;
+            tline = line.trim();
+            tlen = tline.length();
+
+            if (tlen == 0 || (tline.charAt(0) == COMMENT_LINE_START)) {
+                continue;
+            }
+
+            value = tline;
+            vlen = value.length();
+            cchar = (vlen == 1 ? value.charAt(0) : NO_CONTROL_CHAR);
+            if (cchar != CURLY_BRACKET_OPEN) {
+                throw new MalformedAponException(lineNumber, line, tline, "Expected to open curly brackets, " +
+                        "but encounter string: " + value);
+            }
+            Parameters ps = container.newParameters(ArrayParameters.NONAME);
+            read(ps, CURLY_BRACKET_OPEN, null, null, null, false);
+        }
     }
 
     /**
@@ -107,11 +138,11 @@ public class AponReader extends AponFormat implements Closeable {
      * @param name the parameter name
      * @param parameterValue the parameter value
      * @param valueType the value type of the parameter
-     * @param valueTypeHinted whether a value type hinted
+     * @param valueTypeHinted whether the value type is hinted
      * @throws IOException if an invalid parameter is detected or I/O error occurs
      */
     private void read(Parameters container, char openedBracket, String name, ParameterValue parameterValue,
-                      ParameterValueType valueType, boolean valueTypeHinted)
+                      ValueType valueType, boolean valueTypeHinted)
             throws IOException {
         Map<String, ParameterValue> parameterValueMap = container.getParameterValueMap();
 
@@ -140,19 +171,26 @@ public class AponReader extends AponFormat implements Closeable {
                 }
             } else {
                 if (tlen == 1) {
-                    if (openedBracket == CURLY_BRACKET_OPEN && CURLY_BRACKET_CLOSE == tline.charAt(0)) {
+                    cchar = tline.charAt(0);
+                    if (openedBracket == CURLY_BRACKET_OPEN && CURLY_BRACKET_CLOSE == cchar) {
                         return;
+                    }
+                    if (CURLY_BRACKET_OPEN == cchar) {
+                        if (!container.hasParameter(ArrayParameters.NONAME)) {
+                            container.newParameterValue(ArrayParameters.NONAME, ValueType.PARAMETERS, true);
+                        }
+                        Parameters ps = container.newParameters(ArrayParameters.NONAME);
+                        read(ps, CURLY_BRACKET_OPEN, null, null, null, false);
+                        continue;
                     }
                 }
 
                 int index = tline.indexOf(NAME_VALUE_SEPARATOR);
                 if (index == -1) {
-                    throw new MalformedAponException(lineNumber, line, tline,
-                            "Failed to break up string of name/value pairs");
+                    throw new MalformedAponException(lineNumber, line, tline, "Failed to break up string of name/value pairs");
                 }
                 if (index == 0) {
-                    throw new MalformedAponException(lineNumber, line, tline,
-                            "Unrecognized parameter name");
+                    throw new MalformedAponException(lineNumber, line, tline, "Unrecognized parameter name");
                 }
 
                 name = tline.substring(0, index).trim();
@@ -165,14 +203,14 @@ public class AponReader extends AponFormat implements Closeable {
                 if (parameterValue != null) {
                     valueType = parameterValue.getValueType();
                 } else {
-                    if (predefined) {
+                    if (container.isPredefined()) {
                         throw new MalformedAponException(lineNumber, line, tline, "Parameter '" +
                                 name + "' is not predefined; Note that only predefined parameters are allowed");
                     }
-                    valueType = ParameterValueType.resolveByHint(name);
+                    valueType = ValueType.resolveByHint(name);
                     if (valueType != null) {
                         valueTypeHinted = true;
-                        name = ParameterValueType.stripValueTypeHint(name);
+                        name = ValueType.stripValueTypeHint(name);
                         parameterValue = parameterValueMap.get(name);
                         if (parameterValue != null) {
                             valueType = parameterValue.getValueType();
@@ -182,7 +220,7 @@ public class AponReader extends AponFormat implements Closeable {
                     }
                 }
 
-                if (valueType == ParameterValueType.VARIABLE) {
+                if (valueType == ValueType.VARIABLE) {
                     valueType = null;
                 }
                 if (valueType != null) {
@@ -190,20 +228,20 @@ public class AponReader extends AponFormat implements Closeable {
                         throw new MalformedAponException(lineNumber, line, tline,
                                 "Parameter value is not an array type");
                     }
-                    if (valueType != ParameterValueType.PARAMETERS && CURLY_BRACKET_OPEN == cchar) {
+                    if (valueType != ValueType.PARAMETERS && CURLY_BRACKET_OPEN == cchar) {
                         throw new MalformedAponException(lineNumber, line, tline, parameterValue, valueType);
                     }
-                    if (valueType != ParameterValueType.TEXT && ROUND_BRACKET_OPEN == cchar) {
+                    if (valueType != ValueType.TEXT && ROUND_BRACKET_OPEN == cchar) {
                         throw new MalformedAponException(lineNumber, line, tline, parameterValue, valueType);
                     }
                 }
             }
 
             if (parameterValue != null && !parameterValue.isArray()) {
-                if (valueType == ParameterValueType.PARAMETERS && CURLY_BRACKET_OPEN != cchar) {
+                if (valueType == ValueType.PARAMETERS && CURLY_BRACKET_OPEN != cchar) {
                     throw new MalformedAponException(lineNumber, line, tline, parameterValue, valueType);
                 }
-                if (valueType == ParameterValueType.TEXT && !NULL.equals(value) && ROUND_BRACKET_OPEN != cchar) {
+                if (valueType == ValueType.TEXT && !NULL.equals(value) && ROUND_BRACKET_OPEN != cchar) {
                     throw new MalformedAponException(lineNumber, line, tline, parameterValue, valueType);
                 }
             }
@@ -216,25 +254,22 @@ public class AponReader extends AponFormat implements Closeable {
             }
             if (valueType == null) {
                 if (CURLY_BRACKET_OPEN == cchar) {
-                    valueType = ParameterValueType.PARAMETERS;
+                    valueType = ValueType.PARAMETERS;
                 } else if (ROUND_BRACKET_OPEN == cchar) {
-                    valueType = ParameterValueType.TEXT;
+                    valueType = ValueType.TEXT;
                 }
             }
 
-            if (valueType == ParameterValueType.PARAMETERS) {
+            if (valueType == ValueType.PARAMETERS) {
                 if (parameterValue == null) {
-                    parameterValue = container.newParameterValue(name, valueType,
-                            (openedBracket == SQUARE_BRACKET_OPEN));
+                    parameterValue = container.newParameterValue(name, valueType, (openedBracket == SQUARE_BRACKET_OPEN));
                     parameterValue.setValueTypeHinted(valueTypeHinted);
                 }
-                Parameters parameters2 = container.newParameters(parameterValue.getName());
-                predefined = parameters2.isPredefined();
-                read(parameters2, CURLY_BRACKET_OPEN, null, null, null, valueTypeHinted);
-            } else if (valueType == ParameterValueType.TEXT) {
+                Parameters ps = container.newParameters(name);
+                read(ps, CURLY_BRACKET_OPEN, null, null, null, valueTypeHinted);
+            } else if (valueType == ValueType.TEXT) {
                 if (parameterValue == null) {
-                    parameterValue = container.newParameterValue(name, valueType,
-                            (openedBracket == SQUARE_BRACKET_OPEN));
+                    parameterValue = container.newParameterValue(name, valueType, (openedBracket == SQUARE_BRACKET_OPEN));
                     parameterValue.setValueTypeHinted(valueTypeHinted);
                 }
                 if (ROUND_BRACKET_OPEN == cchar) {
@@ -248,44 +283,44 @@ public class AponReader extends AponFormat implements Closeable {
                 if (vlen == 0) {
                     value = null;
                     if (valueType == null) {
-                        valueType = ParameterValueType.STRING;
+                        valueType = ValueType.STRING;
                     }
                 } else if (valueType == null) {
                     if (NULL.equals(value)) {
                         value = null;
-                        valueType = ParameterValueType.STRING;
+                        valueType = ValueType.STRING;
                     } else if (TRUE.equals(value) || FALSE.equals(value)) {
-                        valueType = ParameterValueType.BOOLEAN;
+                        valueType = ValueType.BOOLEAN;
                     } else if (value.charAt(0) == DOUBLE_QUOTE_CHAR) {
                         if (vlen == 1 || value.charAt(vlen - 1) != DOUBLE_QUOTE_CHAR) {
                             throw new MalformedAponException(lineNumber, line, tline,
                                     "Unclosed quotation mark after the character string " + value);
                         }
-                        valueType = ParameterValueType.STRING;
+                        valueType = ValueType.STRING;
                     } else if (value.charAt(0) == SINGLE_QUOTE_CHAR) {
                         if (vlen == 1 || value.charAt(vlen - 1) != SINGLE_QUOTE_CHAR) {
                             throw new MalformedAponException(lineNumber, line, tline,
                                     "Unclosed quotation mark after the character string " + value);
                         }
-                        valueType = ParameterValueType.STRING;
+                        valueType = ValueType.STRING;
                     } else {
                         try {
                             Integer.parseInt(value);
-                            valueType = ParameterValueType.INT;
+                            valueType = ValueType.INT;
                         } catch (NumberFormatException e1) {
                             try {
                                 Long.parseLong(value);
-                                valueType = ParameterValueType.LONG;
+                                valueType = ValueType.LONG;
                             } catch (NumberFormatException e2) {
                                 try {
                                     Float.parseFloat(value);
-                                    valueType = ParameterValueType.FLOAT;
+                                    valueType = ValueType.FLOAT;
                                 } catch (NumberFormatException e3) {
                                     try {
                                         Double.parseDouble(value);
-                                        valueType = ParameterValueType.DOUBLE;
+                                        valueType = ValueType.DOUBLE;
                                     } catch (NumberFormatException e4) {
-                                        valueType = ParameterValueType.STRING;
+                                        valueType = ValueType.STRING;
                                     }
                                 }
                             }
@@ -296,11 +331,10 @@ public class AponReader extends AponFormat implements Closeable {
                 }
 
                 if (parameterValue == null) {
-                    parameterValue = container.newParameterValue(name, valueType,
-                            (openedBracket == SQUARE_BRACKET_OPEN));
+                    parameterValue = container.newParameterValue(name, valueType, (openedBracket == SQUARE_BRACKET_OPEN));
                     parameterValue.setValueTypeHinted(valueTypeHinted);
                 } else {
-                    if (parameterValue.getValueType() == ParameterValueType.VARIABLE) {
+                    if (parameterValue.getValueType() == ValueType.VARIABLE) {
                         parameterValue.setValueType(valueType);
                     } else if (parameterValue.getValueType() != valueType) {
                         throw new MalformedAponException(lineNumber, line, tline, parameterValue,
@@ -311,20 +345,20 @@ public class AponReader extends AponFormat implements Closeable {
                 if (value == null) {
                     parameterValue.putValue(null);
                 } else {
-                    if (valueType == ParameterValueType.STRING) {
+                    if (valueType == ValueType.STRING) {
                         if (value.charAt(0) == DOUBLE_QUOTE_CHAR || value.charAt(0) == SINGLE_QUOTE_CHAR) {
                             value = unescape(value.substring(1, vlen - 1), lineNumber, line, tline);
                         }
                         parameterValue.putValue(value);
-                    } else if (valueType == ParameterValueType.BOOLEAN) {
+                    } else if (valueType == ValueType.BOOLEAN) {
                         parameterValue.putValue(Boolean.valueOf(value));
-                    } else if (valueType == ParameterValueType.INT) {
+                    } else if (valueType == ValueType.INT) {
                         parameterValue.putValue(Integer.valueOf(value));
-                    } else if (valueType == ParameterValueType.LONG) {
+                    } else if (valueType == ValueType.LONG) {
                         parameterValue.putValue(Long.valueOf(value));
-                    } else if (valueType == ParameterValueType.FLOAT) {
+                    } else if (valueType == ValueType.FLOAT) {
                         parameterValue.putValue(Float.valueOf(value));
-                    } else if (valueType == ParameterValueType.DOUBLE) {
+                    } else if (valueType == ValueType.DOUBLE) {
                         parameterValue.putValue(Double.valueOf(value));
                     }
                 }

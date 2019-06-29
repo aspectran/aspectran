@@ -17,7 +17,7 @@ package com.aspectran.core.context.rule.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterDefinition;
-import com.aspectran.core.util.apon.ParameterValueType;
+import com.aspectran.core.util.apon.ValueType;
 
 public class ChooseParameters extends AbstractParameters {
 
@@ -28,7 +28,7 @@ public class ChooseParameters extends AbstractParameters {
     private static final ParameterDefinition[] parameterDefinitions;
 
     static {
-        caseNo = new ParameterDefinition("caseNo", ParameterValueType.INT);
+        caseNo = new ParameterDefinition("caseNo", ValueType.INT);
         when = new ParameterDefinition("when", ChooseWhenParameters.class, true, true);
         otherwise = new ParameterDefinition("otherwise", ChooseWhenParameters.class);
 

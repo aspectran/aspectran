@@ -17,7 +17,7 @@ package com.aspectran.core.context.rule.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterDefinition;
-import com.aspectran.core.util.apon.ParameterValueType;
+import com.aspectran.core.util.apon.ValueType;
 
 public class ForwardParameters extends AbstractParameters {
 
@@ -32,10 +32,10 @@ public class ForwardParameters extends AbstractParameters {
 
     static {
         action = new ParameterDefinition("action", ActionParameters.class, true, true);
-        contentType = new ParameterDefinition("contentType", ParameterValueType.STRING);
-        translet = new ParameterDefinition("translet", ParameterValueType.STRING);
-        method = new ParameterDefinition("method", ParameterValueType.STRING);
-        defaultResponse = new ParameterDefinition("default", ParameterValueType.BOOLEAN);
+        contentType = new ParameterDefinition("contentType", ValueType.STRING);
+        translet = new ParameterDefinition("translet", ValueType.STRING);
+        method = new ParameterDefinition("method", ValueType.STRING);
+        defaultResponse = new ParameterDefinition("default", ValueType.BOOLEAN);
         attributes = new ParameterDefinition("attributes", ItemHolderParameters.class, true, true);
 
         parameterDefinitions = new ParameterDefinition[] {

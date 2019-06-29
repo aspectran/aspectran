@@ -35,7 +35,7 @@ public class ArrayParameters<T extends AbstractParameters> extends AbstractParam
     /** @serial */
     private static final long serialVersionUID = 2058392199376865356L;
 
-    public static final String NONAME = "noname";
+    public static final String NONAME = "<noname>";
 
     private final Class<? extends AbstractParameters> elementClass;
 
@@ -54,7 +54,8 @@ public class ArrayParameters<T extends AbstractParameters> extends AbstractParam
 
     public ArrayParameters(Class<? extends AbstractParameters> elementClass, String text) throws IOException {
         this(elementClass);
-        readFrom(NONAME + ": [\n" + StringUtils.trimWhitespace(text) + "\n]");
+        //readFrom(NONAME + ": [\n" + StringUtils.trimWhitespace(text) + "\n]");
+        readFrom(StringUtils.trimWhitespace(text));
     }
 
     public void addParameters(T parameters) {

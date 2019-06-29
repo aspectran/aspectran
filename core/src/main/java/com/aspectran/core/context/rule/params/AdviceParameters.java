@@ -17,7 +17,7 @@ package com.aspectran.core.context.rule.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterDefinition;
-import com.aspectran.core.util.apon.ParameterValueType;
+import com.aspectran.core.util.apon.ValueType;
 
 public class AdviceParameters extends AbstractParameters {
 
@@ -30,7 +30,7 @@ public class AdviceParameters extends AbstractParameters {
     private static final ParameterDefinition[] parameterDefinitions;
 
     static {
-        bean = new ParameterDefinition("bean", ParameterValueType.STRING);
+        bean = new ParameterDefinition("bean", ValueType.STRING);
         beforeAdvice = new ParameterDefinition("before", AdviceActionParameters.class);
         afterAdvice = new ParameterDefinition("after", AdviceActionParameters.class);
         aroundAdvice = new ParameterDefinition("around", AdviceActionParameters.class);

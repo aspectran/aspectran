@@ -17,7 +17,7 @@ package com.aspectran.core.context.config;
 
 import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterDefinition;
-import com.aspectran.core.util.apon.ParameterValueType;
+import com.aspectran.core.util.apon.ValueType;
 
 /**
  * <p>Created: 2017. 12. 12.</p>
@@ -34,10 +34,10 @@ public class DaemonPollerConfig extends AbstractParameters {
     private static final ParameterDefinition[] parameterDefinitions;
 
     static {
-        pollingInterval = new ParameterDefinition("pollingInterval", ParameterValueType.LONG);
-        maxThreads = new ParameterDefinition("maxThreads", ParameterValueType.INT);
-        inbound = new ParameterDefinition("inbound", ParameterValueType.STRING);
-        requeue = new ParameterDefinition("requeue", ParameterValueType.BOOLEAN);
+        pollingInterval = new ParameterDefinition("pollingInterval", ValueType.LONG);
+        maxThreads = new ParameterDefinition("maxThreads", ValueType.INT);
+        inbound = new ParameterDefinition("inbound", ValueType.STRING);
+        requeue = new ParameterDefinition("requeue", ValueType.BOOLEAN);
 
         parameterDefinitions = new ParameterDefinition[] {
                 pollingInterval,

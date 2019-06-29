@@ -24,7 +24,7 @@ public class ParameterDefinition {
 
     private final String name;
 
-    private final ParameterValueType valueType;
+    private final ValueType valueType;
 
     private final Class<? extends AbstractParameters> parametersClass;
 
@@ -32,20 +32,20 @@ public class ParameterDefinition {
 
     private final boolean noBracket;
 
-    public ParameterDefinition(String name, ParameterValueType valueType) {
+    public ParameterDefinition(String name, ValueType valueType) {
         this(name, valueType, false);
     }
 
-    public ParameterDefinition(String name, ParameterValueType valueType, boolean array) {
+    public ParameterDefinition(String name, ValueType valueType, boolean array) {
         this(name, valueType, array, false);
     }
 
-    public ParameterDefinition(String name, ParameterValueType valueType, boolean array, boolean noBracket) {
+    public ParameterDefinition(String name, ValueType valueType, boolean array, boolean noBracket) {
         this.name = name;
         this.valueType = valueType;
         this.parametersClass = null;
         this.array = array;
-        this.noBracket = (array && valueType == ParameterValueType.PARAMETERS && noBracket);
+        this.noBracket = (array && valueType == ValueType.PARAMETERS && noBracket);
     }
 
     public ParameterDefinition(String name, Class<? extends AbstractParameters> parametersClass) {
@@ -58,7 +58,7 @@ public class ParameterDefinition {
 
     public ParameterDefinition(String name, Class<? extends AbstractParameters> parametersClass, boolean array, boolean noBracket) {
         this.name = name;
-        this.valueType = ParameterValueType.PARAMETERS;
+        this.valueType = ValueType.PARAMETERS;
         this.parametersClass = parametersClass;
         this.array = array;
         this.noBracket = (array && noBracket);
@@ -68,7 +68,7 @@ public class ParameterDefinition {
         return name;
     }
 
-    public ParameterValueType getValueType() {
+    public ValueType getValueType() {
         return valueType;
     }
 
@@ -82,7 +82,7 @@ public class ParameterDefinition {
 
     public ParameterValue newParameterValue() {
         ParameterValue parameterValue;
-        if (valueType == ParameterValueType.PARAMETERS && parametersClass != null) {
+        if (valueType == ValueType.PARAMETERS && parametersClass != null) {
             parameterValue = new ParameterValue(name, parametersClass, array, noBracket, true);
         } else {
             parameterValue = new ParameterValue(name, valueType, array, noBracket, true);

@@ -27,9 +27,9 @@ public class ParameterValue implements Parameter {
 
     private final String name;
 
-    private final ParameterValueType originParameterValueType;
+    private final ValueType originParameterValueType;
 
-    private ParameterValueType valueType;
+    private ValueType valueType;
 
     private final boolean valueTypeFixed;
 
@@ -47,26 +47,26 @@ public class ParameterValue implements Parameter {
 
     private boolean assigned;
 
-    public ParameterValue(String name, ParameterValueType valueType) {
+    public ParameterValue(String name, ValueType valueType) {
         this(name, valueType, false);
     }
 
-    public ParameterValue(String name, ParameterValueType valueType, boolean array) {
+    public ParameterValue(String name, ValueType valueType, boolean array) {
         this(name, valueType, array, false);
     }
 
-    public ParameterValue(String name, ParameterValueType valueType, boolean array,
+    public ParameterValue(String name, ValueType valueType, boolean array,
                           boolean noBracket) {
         this(name, valueType, array, noBracket, false);
     }
 
-    protected ParameterValue(String name, ParameterValueType valueType, boolean array,
+    protected ParameterValue(String name, ValueType valueType, boolean array,
                              boolean noBracket, boolean valueTypeFixed) {
         this.name = name;
         this.valueType = valueType;
         this.originParameterValueType = valueType;
         this.array = array;
-        this.valueTypeFixed = (valueTypeFixed && valueType != ParameterValueType.VARIABLE);
+        this.valueTypeFixed = (valueTypeFixed && valueType != ValueType.VARIABLE);
         if (this.array && !noBracket) {
             this.bracketed = true;
         }
@@ -89,7 +89,7 @@ public class ParameterValue implements Parameter {
     protected ParameterValue(String name, Class<? extends AbstractParameters> parametersClass,
                              boolean array, boolean noBracket, boolean valueTypeFixed) {
         this.name = name;
-        this.valueType = ParameterValueType.PARAMETERS;
+        this.valueType = ValueType.PARAMETERS;
         this.originParameterValueType = valueType;
         this.parametersClass = parametersClass;
         this.array = array;
@@ -126,12 +126,12 @@ public class ParameterValue implements Parameter {
     }
 
     @Override
-    public ParameterValueType getValueType() {
+    public ValueType getValueType() {
         return valueType;
     }
 
     @Override
-    public void setValueType(ParameterValueType valueType) {
+    public void setValueType(ValueType valueType) {
         this.valueType = valueType;
     }
 
@@ -250,7 +250,7 @@ public class ParameterValue implements Parameter {
     @Override
     public List<?> getValueList() {
         if (!valueTypeFixed && value != null && list == null &&
-                originParameterValueType == ParameterValueType.VARIABLE) {
+                originParameterValueType == ValueType.VARIABLE) {
             addValue(value);
         }
         return list;
@@ -292,7 +292,7 @@ public class ParameterValue implements Parameter {
     @Override
     @SuppressWarnings("unchecked")
     public List<String> getValueAsStringList() {
-        if (valueType == ParameterValueType.STRING) {
+        if (valueType == ValueType.STRING) {
             return (List<String>)getValueList();
         } else {
             List<?> list1 = getValueList();
@@ -310,7 +310,7 @@ public class ParameterValue implements Parameter {
 
     @Override
     public Integer getValueAsInt() {
-        checkValueType(ParameterValueType.INT);
+        checkValueType(ValueType.INT);
         return (Integer)value;
     }
 
@@ -323,13 +323,13 @@ public class ParameterValue implements Parameter {
     @Override
     @SuppressWarnings("unchecked")
     public List<Integer> getValueAsIntList() {
-        checkValueType(ParameterValueType.INT);
+        checkValueType(ValueType.INT);
         return (List<Integer>)getValueList();
     }
 
     @Override
     public Long getValueAsLong() {
-        checkValueType(ParameterValueType.LONG);
+        checkValueType(ValueType.LONG);
         return (Long)value;
     }
 
@@ -342,13 +342,13 @@ public class ParameterValue implements Parameter {
     @Override
     @SuppressWarnings("unchecked")
     public List<Long> getValueAsLongList() {
-        checkValueType(ParameterValueType.LONG);
+        checkValueType(ValueType.LONG);
         return (List<Long>)getValueList();
     }
 
     @Override
     public Float getValueAsFloat() {
-        checkValueType(ParameterValueType.FLOAT);
+        checkValueType(ValueType.FLOAT);
         return (Float)value;
     }
 
@@ -361,13 +361,13 @@ public class ParameterValue implements Parameter {
     @Override
     @SuppressWarnings("unchecked")
     public List<Float> getValueAsFloatList() {
-        checkValueType(ParameterValueType.FLOAT);
+        checkValueType(ValueType.FLOAT);
         return (List<Float>)getValueList();
     }
 
     @Override
     public Double getValueAsDouble() {
-        checkValueType(ParameterValueType.DOUBLE);
+        checkValueType(ValueType.DOUBLE);
         return (Double)value;
     }
 
@@ -380,13 +380,13 @@ public class ParameterValue implements Parameter {
     @Override
     @SuppressWarnings("unchecked")
     public List<Double> getValueAsDoubleList() {
-        checkValueType(ParameterValueType.DOUBLE);
+        checkValueType(ValueType.DOUBLE);
         return (List<Double>)getValueList();
     }
 
     @Override
     public Boolean getValueAsBoolean() {
-        checkValueType(ParameterValueType.BOOLEAN);
+        checkValueType(ValueType.BOOLEAN);
         return (Boolean)value;
     }
 
@@ -399,13 +399,13 @@ public class ParameterValue implements Parameter {
     @Override
     @SuppressWarnings("unchecked")
     public List<Boolean> getValueAsBooleanList() {
-        checkValueType(ParameterValueType.BOOLEAN);
+        checkValueType(ValueType.BOOLEAN);
         return (List<Boolean>)getValueList();
     }
 
     @Override
     public Parameters getValueAsParameters() {
-        checkValueType(ParameterValueType.PARAMETERS);
+        checkValueType(ValueType.PARAMETERS);
         return (Parameters)value;
     }
 
@@ -418,8 +418,8 @@ public class ParameterValue implements Parameter {
     @Override
     @SuppressWarnings("unchecked")
     public List<Parameters> getValueAsParametersList() {
-        if (valueType != ParameterValueType.PARAMETERS) {
-            throw new IncompatibleParameterValueTypeException(this, ParameterValueType.PARAMETERS);
+        if (valueType != ValueType.PARAMETERS) {
+            throw new IncompatibleValueTypeException(this, ValueType.PARAMETERS);
         }
         return (List<Parameters>)getValueList();
     }
@@ -427,11 +427,11 @@ public class ParameterValue implements Parameter {
     @Override
     @SuppressWarnings("unchecked")
     public <T extends Parameters> T newParameters(Parameter identifier) {
-        if (valueType == ParameterValueType.VARIABLE) {
-            valueType = ParameterValueType.PARAMETERS;
+        if (valueType == ValueType.VARIABLE) {
+            valueType = ValueType.PARAMETERS;
             parametersClass = VariableParameters.class;
         } else {
-            checkValueType(ParameterValueType.PARAMETERS);
+            checkValueType(ValueType.PARAMETERS);
             if (parametersClass == null) {
                 parametersClass = VariableParameters.class;
             }
@@ -446,61 +446,61 @@ public class ParameterValue implements Parameter {
         }
     }
 
-    private void checkValueType(ParameterValueType valueType) {
-        if (this.valueType != ParameterValueType.VARIABLE && this.valueType != valueType) {
-            throw new IncompatibleParameterValueTypeException(this, valueType);
+    private void checkValueType(ValueType valueType) {
+        if (this.valueType != ValueType.VARIABLE && this.valueType != valueType) {
+            throw new IncompatibleValueTypeException(this, valueType);
         }
     }
 
     private void determineValueType(Object value) {
-        if (valueType == ParameterValueType.STRING) {
+        if (valueType == ValueType.STRING) {
             if (value.toString().indexOf(AponFormat.NEW_LINE_CHAR) != -1) {
-                valueType = ParameterValueType.TEXT;
+                valueType = ValueType.TEXT;
             }
-        } else if (valueType == ParameterValueType.VARIABLE && value instanceof String) {
+        } else if (valueType == ValueType.VARIABLE && value instanceof String) {
             if (value.toString().indexOf(AponFormat.NEW_LINE_CHAR) != -1) {
-                valueType = ParameterValueType.TEXT;
+                valueType = ValueType.TEXT;
             } else {
-                valueType = ParameterValueType.STRING;
+                valueType = ValueType.STRING;
             }
         }
     }
 
     private Object fitValue(Object value) {
-        if (valueType == ParameterValueType.BOOLEAN) {
+        if (valueType == ValueType.BOOLEAN) {
             if (!(value instanceof Boolean)) {
                 return Boolean.valueOf(value.toString());
             }
-        } else if (valueType == ParameterValueType.INT) {
+        } else if (valueType == ValueType.INT) {
             if (!(value instanceof Integer)) {
                 try {
                     return Integer.valueOf(value.toString());
                 } catch (NumberFormatException e) {
-                    throw new ParameterValueTypeMismatchException(value.getClass(), Integer.class, e);
+                    throw new ValueTypeMismatchException(value.getClass(), Integer.class, e);
                 }
             }
-        } else if (valueType == ParameterValueType.LONG) {
+        } else if (valueType == ValueType.LONG) {
             if (!(value instanceof Long)) {
                 try {
                     return Long.valueOf(value.toString());
                 } catch (NumberFormatException e) {
-                    throw new ParameterValueTypeMismatchException(value.getClass(), Long.class, e);
+                    throw new ValueTypeMismatchException(value.getClass(), Long.class, e);
                 }
             }
-        } else if (valueType == ParameterValueType.FLOAT) {
+        } else if (valueType == ValueType.FLOAT) {
             if (!(value instanceof Float)) {
                 try {
                     return Float.valueOf(value.toString());
                 } catch (NumberFormatException e) {
-                    throw new ParameterValueTypeMismatchException(value.getClass(), Float.class, e);
+                    throw new ValueTypeMismatchException(value.getClass(), Float.class, e);
                 }
             }
-        } else if (valueType == ParameterValueType.DOUBLE) {
+        } else if (valueType == ValueType.DOUBLE) {
             if (!(value instanceof Double)) {
                 try {
                     return Double.valueOf(value.toString());
                 } catch (NumberFormatException e) {
-                    throw new ParameterValueTypeMismatchException(value.getClass(), Double.class, e);
+                    throw new ValueTypeMismatchException(value.getClass(), Double.class, e);
                 }
             }
         }
@@ -518,7 +518,7 @@ public class ParameterValue implements Parameter {
         }
         tsb.append("bracketed", bracketed);
         tsb.append("qualifiedName", getQualifiedName());
-        if (valueType == ParameterValueType.PARAMETERS) {
+        if (valueType == ValueType.PARAMETERS) {
             tsb.append("class", parametersClass);
         }
         return tsb.toString();

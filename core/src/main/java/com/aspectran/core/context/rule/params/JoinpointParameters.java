@@ -17,7 +17,7 @@ package com.aspectran.core.context.rule.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterDefinition;
-import com.aspectran.core.util.apon.ParameterValueType;
+import com.aspectran.core.util.apon.ValueType;
 
 import java.io.IOException;
 
@@ -31,9 +31,9 @@ public class JoinpointParameters extends AbstractParameters {
     private static final ParameterDefinition[] parameterDefinitions;
 
     static {
-        target = new ParameterDefinition("target", ParameterValueType.STRING);
-        methods = new ParameterDefinition("methods", ParameterValueType.STRING, true);
-        headers = new ParameterDefinition("headers", ParameterValueType.STRING, true);
+        target = new ParameterDefinition("target", ValueType.STRING);
+        methods = new ParameterDefinition("methods", ValueType.STRING, true);
+        headers = new ParameterDefinition("headers", ValueType.STRING, true);
         pointcut = new ParameterDefinition("pointcut", PointcutParameters.class);
 
         parameterDefinitions = new ParameterDefinition[] {

@@ -31,7 +31,7 @@ import java.util.Arrays;
  * depth-first order, the same order that they appear in the JSON document.
  * Within JSON objects, name/value pairs are represented by a single token.
  *
- * <h3>Parsing JSON</h3>
+ * <p><strong>- Parsing JSON </p></strong>
  * To create a recursive descent parser for your own JSON streams, first create
  * an entry point method that creates a {@code JsonReader}.
  *
@@ -60,7 +60,7 @@ import java.util.Arrays;
  * Null literals can be consumed using either {@link #nextNull()} or {@link
  * #skipValue()}.</p>
  *
- * <h3>Example</h3>
+ * <p><strong>- Example -</strong></p>
  * Suppose we'd like to parse a stream of messages such as the following: <pre> {@code
  * [
  *   {
@@ -81,9 +81,9 @@ import java.util.Arrays;
  *       "followers_count": 2
  *     }
  *   }
- * ]}</pre>
- * This code implements the parser for the above structure: <pre>   {@code
- *
+ * ]}
+ * </pre>
+ * This code implements the parser for the above structure: <pre>{@code
  *   public List<Message> readJsonStream(InputStream in) throws IOException {
  *     JsonReader reader = new JsonReader(new InputStreamReader(in, "UTF-8"));
  *     try {
@@ -157,9 +157,9 @@ import java.util.Arrays;
  *     }
  *     reader.endObject();
  *     return new User(username, followersCount);
- *   }}</pre>
- *
- * <h3>Number Handling</h3>
+ *   }}
+ * </pre>
+ * <p><strong>- Number Handling -</strong></p>
  * This reader permits numeric values to be read as strings and string values to
  * be read as numbers. For example, both elements of the JSON array {@code
  * [1, "1"]} may be read using either {@link #nextInt} or {@link #nextString}.
@@ -169,7 +169,7 @@ import java.util.Arrays;
  * precision loss, extremely large values should be written and read as strings
  * in JSON.
  *
- * <h3 id="nonexecuteprefix">Non-Execute Prefix</h3>
+ * <p><strong id="nonexecuteprefix">- Non-Execute Prefix -</strong></p>
  * Web servers that serve private data using JSON may be vulnerable to <a
  * href="http://en.wikipedia.org/wiki/JSON#Cross-site_request_forgery">Cross-site
  * request forgery</a> attacks. In such an attack, a malicious site gains access

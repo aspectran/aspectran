@@ -20,7 +20,7 @@ package com.aspectran.core.util.apon;
  * 
  * <p>Created: 2008. 03. 29 PM 3:47:00</p>
  */
-public enum ParameterValueType {
+public enum ValueType {
 
     STRING("string"),
     TEXT("text"),
@@ -34,7 +34,7 @@ public enum ParameterValueType {
 
     private final String alias;
 
-    ParameterValueType(String alias) {
+    ValueType(String alias) {
         this.alias = alias;
     }
 
@@ -49,8 +49,8 @@ public enum ParameterValueType {
      * @param alias the specified String
      * @return the parameter value type
      */
-    public static ParameterValueType resolve(String alias) {
-        for (ParameterValueType type : values()) {
+    public static ValueType resolve(String alias) {
+        for (ValueType type : values()) {
             if (type.alias.equals(alias)) {
                 return type;
             }
@@ -58,7 +58,7 @@ public enum ParameterValueType {
         return null;
     }
 
-    public static ParameterValueType resolveByHint(String name) {
+    public static ValueType resolveByHint(String name) {
         int hintStartIndex = name.indexOf(AponFormat.ROUND_BRACKET_OPEN);
         if (hintStartIndex > 0) {
             int hintEndIndex = name.indexOf(AponFormat.ROUND_BRACKET_CLOSE);
@@ -78,28 +78,28 @@ public enum ParameterValueType {
         return name;
     }
 
-    public static ParameterValueType determineValueType(Object value) {
-        ParameterValueType type;
+    public static ValueType determineValueType(Object value) {
+        ValueType type;
         if (value instanceof String) {
             if (value.toString().indexOf(AponFormat.NEW_LINE_CHAR) == -1) {
-                type = ParameterValueType.STRING;
+                type = ValueType.STRING;
             } else {
-                type = ParameterValueType.TEXT;
+                type = ValueType.TEXT;
             }
         } else if (value instanceof Integer) {
-            type = ParameterValueType.INT;
+            type = ValueType.INT;
         } else if (value instanceof Long) {
-            type = ParameterValueType.LONG;
+            type = ValueType.LONG;
         } else if (value instanceof Float) {
-            type = ParameterValueType.FLOAT;
+            type = ValueType.FLOAT;
         } else if (value instanceof Double) {
-            type = ParameterValueType.DOUBLE;
+            type = ValueType.DOUBLE;
         } else if (value instanceof Boolean) {
-            type = ParameterValueType.BOOLEAN;
+            type = ValueType.BOOLEAN;
         } else if (value instanceof Parameters) {
-            type = ParameterValueType.PARAMETERS;
+            type = ValueType.PARAMETERS;
         } else {
-            type = ParameterValueType.STRING;
+            type = ValueType.STRING;
         }
         return type;
     }

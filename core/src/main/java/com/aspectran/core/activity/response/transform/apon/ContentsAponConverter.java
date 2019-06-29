@@ -19,7 +19,7 @@ import com.aspectran.core.activity.process.result.ActionResult;
 import com.aspectran.core.activity.process.result.ContentResult;
 import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.util.Assert;
-import com.aspectran.core.util.apon.AponConverter;
+import com.aspectran.core.util.apon.ObjectToApon;
 import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.apon.VariableParameters;
 
@@ -60,7 +60,7 @@ public class ContentsAponConverter {
             container = p;
         }
         for (ActionResult actionResult : contentResult) {
-            AponConverter.putValue(container, actionResult.getActionId(), actionResult.getResultValue());
+            ObjectToApon.putValue(container, actionResult.getActionId(), actionResult.getResultValue());
         }
     }
 

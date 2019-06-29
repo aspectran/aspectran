@@ -15,7 +15,6 @@
  */
 package com.aspectran.core.util.apon;
 
-import com.aspectran.core.util.Assert;
 import com.aspectran.core.util.StringUtils;
 
 import java.io.Closeable;
@@ -110,7 +109,20 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
      * @throws IOException if an I/O error occurs
      */
     public void write(Parameters parameters) throws IOException {
-        if (parameters != null) {
+        if (parameters == null) {
+            throw new IllegalArgumentException("parameters must not be null");
+        }
+        if (parameters instanceof ArrayParameters) {
+            for (Parameters ps : parameters.getParametersList(ArrayParameters.NONAME)) {
+                beginBlock();
+                for (Parameter pv : ps.getParameterValueMap().values()) {
+                    if (nullWritable || pv.isAssigned()) {
+                        write(pv);
+                    }
+                }
+                endBlock();
+            }
+        } else {
             for (Parameter pv : parameters.getParameterValueMap().values()) {
                 if (nullWritable || pv.isAssigned()) {
                     write(pv);
@@ -126,8 +138,10 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
      * @throws IOException if an I/O error occurs
      */
     public void write(Parameter parameter) throws IOException {
-        Assert.notNull(parameter, "parameter must not be null");
-        if (parameter.getValueType() == ParameterValueType.PARAMETERS) {
+        if (parameter == null) {
+            throw new IllegalArgumentException("parameter must not be null");
+        }
+        if (parameter.getValueType() == ValueType.PARAMETERS) {
             if (parameter.isArray()) {
                 List<Parameters> list = parameter.getValueAsParametersList();
                 if (list != null) {
@@ -137,7 +151,9 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
                         for (Parameters p : list) {
                             indent();
                             beginBlock();
-                            write(p);
+                            if (p != null) {
+                                write(p);
+                            }
                             endBlock();
                         }
                         endArray();
@@ -145,20 +161,25 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
                         for (Parameters p : list) {
                             writeName(parameter);
                             beginBlock();
-                            write(p);
+                            if (p != null) {
+                                write(p);
+                            }
                             endBlock();
                         }
                     }
                 }
             } else {
-                if (nullWritable || parameter.getValueAsParameters() != null) {
+                Parameters ps = parameter.getValueAsParameters();
+                if (nullWritable || ps != null) {
                     writeName(parameter);
                     beginBlock();
-                    write(parameter.getValueAsParameters());
+                    if (ps != null) {
+                        write(ps);
+                    }
                     endBlock();
                 }
             }
-        } else if (parameter.getValueType() == ParameterValueType.VARIABLE) {
+        } else if (parameter.getValueType() == ValueType.VARIABLE) {
             if (parameter.isArray()) {
                 List<?> list = parameter.getValueList();
                 if (list != null) {
@@ -204,7 +225,7 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
                     endBlock();
                 }
             }
-        } else if (parameter.getValueType() == ParameterValueType.STRING) {
+        } else if (parameter.getValueType() == ValueType.STRING) {
             if (parameter.isArray()) {
                 List<String> list = parameter.getValueAsStringList();
                 if (list != null) {
@@ -230,7 +251,7 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
                     writeString(s);
                 }
             }
-        } else if (parameter.getValueType() == ParameterValueType.TEXT) {
+        } else if (parameter.getValueType() == ValueType.TEXT) {
             if (parameter.isArray()) {
                 List<String> list = parameter.getValueAsStringList();
                 if (list != null) {

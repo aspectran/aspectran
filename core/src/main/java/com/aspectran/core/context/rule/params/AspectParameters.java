@@ -17,7 +17,7 @@ package com.aspectran.core.context.rule.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterDefinition;
-import com.aspectran.core.util.apon.ParameterValueType;
+import com.aspectran.core.util.apon.ValueType;
 import com.aspectran.core.util.apon.VariableParameters;
 
 public class AspectParameters extends AbstractParameters {
@@ -35,11 +35,11 @@ public class AspectParameters extends AbstractParameters {
     private static final ParameterDefinition[] parameterDefinitions;
 
     static {
-        description = new ParameterDefinition("description", ParameterValueType.TEXT);
-        id = new ParameterDefinition("id", ParameterValueType.STRING);
-        order = new ParameterDefinition("order", ParameterValueType.INT);
-        isolated = new ParameterDefinition("isolated", ParameterValueType.BOOLEAN);
-        disabled = new ParameterDefinition("disabled", ParameterValueType.BOOLEAN);
+        description = new ParameterDefinition("description", ValueType.TEXT);
+        id = new ParameterDefinition("id", ValueType.STRING);
+        order = new ParameterDefinition("order", ValueType.INT);
+        isolated = new ParameterDefinition("isolated", ValueType.BOOLEAN);
+        disabled = new ParameterDefinition("disabled", ValueType.BOOLEAN);
         joinpoint = new ParameterDefinition("joinpoint", JoinpointParameters.class);
         settings = new ParameterDefinition("settings", VariableParameters.class);
         advice = new ParameterDefinition("advice", AdviceParameters.class);

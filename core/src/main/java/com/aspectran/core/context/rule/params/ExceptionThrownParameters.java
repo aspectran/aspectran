@@ -17,7 +17,7 @@ package com.aspectran.core.context.rule.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterDefinition;
-import com.aspectran.core.util.apon.ParameterValueType;
+import com.aspectran.core.util.apon.ValueType;
 
 public class ExceptionThrownParameters extends AbstractParameters {
 
@@ -30,7 +30,7 @@ public class ExceptionThrownParameters extends AbstractParameters {
     private static final ParameterDefinition[] parameterDefinitions;
 
     static {
-        type = new ParameterDefinition("type", ParameterValueType.STRING, true);
+        type = new ParameterDefinition("type", ValueType.STRING, true);
         action = new ParameterDefinition("action", ActionParameters.class);
         transform = new ParameterDefinition("transform", TransformParameters.class, true, true);
         dispatch = new ParameterDefinition("dispatch", DispatchParameters.class, true, true);

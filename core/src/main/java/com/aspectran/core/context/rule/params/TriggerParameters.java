@@ -17,7 +17,7 @@ package com.aspectran.core.context.rule.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterDefinition;
-import com.aspectran.core.util.apon.ParameterValueType;
+import com.aspectran.core.util.apon.ValueType;
 
 import java.io.IOException;
 
@@ -36,15 +36,15 @@ public class TriggerParameters extends AbstractParameters {
     private static final ParameterDefinition[] parameterDefinitions;
 
     static {
-        type = new ParameterDefinition("type", ParameterValueType.STRING);
-        expression = new ParameterDefinition("expression", ParameterValueType.STRING);
-        startDelaySeconds = new ParameterDefinition("startDelaySeconds", ParameterValueType.INT);
-        intervalInMilliseconds = new ParameterDefinition("intervalInMilliseconds", ParameterValueType.LONG);
-        intervalInMinutes = new ParameterDefinition("intervalInMinutes", ParameterValueType.INT);
-        intervalInSeconds = new ParameterDefinition("intervalInSeconds", ParameterValueType.INT);
-        intervalInHours = new ParameterDefinition("intervalInHours", ParameterValueType.INT);
-        repeatCount = new ParameterDefinition("repeatCount", ParameterValueType.INT);
-        repeatForever = new ParameterDefinition("repeatForever", ParameterValueType.BOOLEAN);
+        type = new ParameterDefinition("type", ValueType.STRING);
+        expression = new ParameterDefinition("expression", ValueType.STRING);
+        startDelaySeconds = new ParameterDefinition("startDelaySeconds", ValueType.INT);
+        intervalInMilliseconds = new ParameterDefinition("intervalInMilliseconds", ValueType.LONG);
+        intervalInMinutes = new ParameterDefinition("intervalInMinutes", ValueType.INT);
+        intervalInSeconds = new ParameterDefinition("intervalInSeconds", ValueType.INT);
+        intervalInHours = new ParameterDefinition("intervalInHours", ValueType.INT);
+        repeatCount = new ParameterDefinition("repeatCount", ValueType.INT);
+        repeatForever = new ParameterDefinition("repeatForever", ValueType.BOOLEAN);
 
         parameterDefinitions = new ParameterDefinition[] {
                 type,

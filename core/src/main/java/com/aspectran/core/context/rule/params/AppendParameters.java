@@ -17,7 +17,7 @@ package com.aspectran.core.context.rule.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterDefinition;
-import com.aspectran.core.util.apon.ParameterValueType;
+import com.aspectran.core.util.apon.ValueType;
 
 public class AppendParameters extends AbstractParameters {
 
@@ -31,11 +31,11 @@ public class AppendParameters extends AbstractParameters {
     private static final ParameterDefinition[] parameterDefinitions;
 
     static {
-        file = new ParameterDefinition("file", ParameterValueType.STRING);
-        resource = new ParameterDefinition("resource", ParameterValueType.STRING);
-        url = new ParameterDefinition("url", ParameterValueType.STRING);
-        format = new ParameterDefinition("format", ParameterValueType.STRING);
-        profile = new ParameterDefinition("profile", ParameterValueType.STRING);
+        file = new ParameterDefinition("file", ValueType.STRING);
+        resource = new ParameterDefinition("resource", ValueType.STRING);
+        url = new ParameterDefinition("url", ValueType.STRING);
+        format = new ParameterDefinition("format", ValueType.STRING);
+        profile = new ParameterDefinition("profile", ValueType.STRING);
         aspectran = new ParameterDefinition("aspectran", AspectranParameters.class);
 
         parameterDefinitions = new ParameterDefinition[] {

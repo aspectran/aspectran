@@ -17,7 +17,7 @@ package com.aspectran.core.context.rule.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterDefinition;
-import com.aspectran.core.util.apon.ParameterValueType;
+import com.aspectran.core.util.apon.ValueType;
 
 public class ContentParameters extends AbstractParameters {
 
@@ -28,7 +28,7 @@ public class ContentParameters extends AbstractParameters {
     private static final ParameterDefinition[] parameterDefinitions;
 
     static {
-        name = new ParameterDefinition("name", ParameterValueType.STRING);
+        name = new ParameterDefinition("name", ValueType.STRING);
         choose = new ParameterDefinition("choose", ChooseParameters.class, true, true);
         action = new ParameterDefinition("action", ActionParameters.class, true, true);
 

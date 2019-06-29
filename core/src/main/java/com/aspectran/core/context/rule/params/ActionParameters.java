@@ -17,7 +17,7 @@ package com.aspectran.core.context.rule.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterDefinition;
-import com.aspectran.core.util.apon.ParameterValueType;
+import com.aspectran.core.util.apon.ValueType;
 
 public class ActionParameters extends AbstractParameters {
 
@@ -43,14 +43,14 @@ public class ActionParameters extends AbstractParameters {
     private static final ParameterDefinition[] parameterDefinitions;
 
     static {
-        caseNo = new ParameterDefinition("caseNo", ParameterValueType.INT);
-        id = new ParameterDefinition("id", ParameterValueType.STRING);
-        bean = new ParameterDefinition("bean", ParameterValueType.STRING);
-        method = new ParameterDefinition("method", ParameterValueType.STRING);
-        hidden = new ParameterDefinition("hidden", ParameterValueType.BOOLEAN);
+        caseNo = new ParameterDefinition("caseNo", ValueType.INT);
+        id = new ParameterDefinition("id", ValueType.STRING);
+        bean = new ParameterDefinition("bean", ValueType.STRING);
+        method = new ParameterDefinition("method", ValueType.STRING);
+        hidden = new ParameterDefinition("hidden", ValueType.BOOLEAN);
         arguments = new ParameterDefinition("arguments", ItemHolderParameters.class, true, true);
         properties = new ParameterDefinition("properties", ItemHolderParameters.class, true, true);
-        include = new ParameterDefinition("include", ParameterValueType.STRING);
+        include = new ParameterDefinition("include", ValueType.STRING);
         parameters = new ParameterDefinition("parameters", ItemHolderParameters.class, true, true);
         attributes = new ParameterDefinition("attributes", ItemHolderParameters.class, true, true);
         echo = new ParameterDefinition("echo", ItemHolderParameters.class);

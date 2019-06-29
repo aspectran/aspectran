@@ -17,7 +17,7 @@ package com.aspectran.core.util.apon.test;
 
 import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterDefinition;
-import com.aspectran.core.util.apon.ParameterValueType;
+import com.aspectran.core.util.apon.ValueType;
 import com.aspectran.core.util.apon.Parameters;
 
 public class Customer extends AbstractParameters implements Parameters {
@@ -31,11 +31,11 @@ public class Customer extends AbstractParameters implements Parameters {
     private static final ParameterDefinition[] parameterDefinitions;
 
     static {
-        id = new ParameterDefinition("id", ParameterValueType.STRING);
-        name = new ParameterDefinition("name", ParameterValueType.STRING);
-        age = new ParameterDefinition("age", ParameterValueType.INT);
-        episode = new ParameterDefinition("episode", ParameterValueType.TEXT);
-        approved = new ParameterDefinition("approved", ParameterValueType.BOOLEAN);
+        id = new ParameterDefinition("id", ValueType.STRING);
+        name = new ParameterDefinition("name", ValueType.STRING);
+        age = new ParameterDefinition("age", ValueType.INT);
+        episode = new ParameterDefinition("episode", ValueType.TEXT);
+        approved = new ParameterDefinition("approved", ValueType.BOOLEAN);
 
         parameterDefinitions = new ParameterDefinition[] {
                 id,

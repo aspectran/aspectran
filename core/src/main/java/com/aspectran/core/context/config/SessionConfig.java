@@ -18,7 +18,7 @@ package com.aspectran.core.context.config;
 import com.aspectran.core.context.rule.type.SessionStoreType;
 import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterDefinition;
-import com.aspectran.core.util.apon.ParameterValueType;
+import com.aspectran.core.util.apon.ValueType;
 
 public class SessionConfig extends AbstractParameters {
 
@@ -33,12 +33,12 @@ public class SessionConfig extends AbstractParameters {
     private static final ParameterDefinition[] parameterDefinitions;
 
     static {
-        timeout = new ParameterDefinition("timeout", ParameterValueType.INT);
-        evictionPolicy = new ParameterDefinition("evictionPolicy", ParameterValueType.INT);
-        saveOnCreate = new ParameterDefinition("saveOnCreate", ParameterValueType.BOOLEAN);
-        saveOnInactiveEviction = new ParameterDefinition("saveOnInactiveEviction", ParameterValueType.BOOLEAN);
-        removeUnloadableSessions = new ParameterDefinition("removeUnloadableSessions", ParameterValueType.BOOLEAN);
-        storeType = new ParameterDefinition("storeType", ParameterValueType.STRING);
+        timeout = new ParameterDefinition("timeout", ValueType.INT);
+        evictionPolicy = new ParameterDefinition("evictionPolicy", ValueType.INT);
+        saveOnCreate = new ParameterDefinition("saveOnCreate", ValueType.BOOLEAN);
+        saveOnInactiveEviction = new ParameterDefinition("saveOnInactiveEviction", ValueType.BOOLEAN);
+        removeUnloadableSessions = new ParameterDefinition("removeUnloadableSessions", ValueType.BOOLEAN);
+        storeType = new ParameterDefinition("storeType", ValueType.STRING);
         fileStore = new ParameterDefinition("fileStore", SessionFileStoreConfig.class);
 
         parameterDefinitions = new ParameterDefinition[] {
