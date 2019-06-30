@@ -18,9 +18,8 @@ package com.aspectran.core.util.apon.test;
 import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterDefinition;
 import com.aspectran.core.util.apon.ValueType;
-import com.aspectran.core.util.apon.Parameters;
 
-public class Customer extends AbstractParameters implements Parameters {
+public class Customer extends AbstractParameters {
 
     public static final ParameterDefinition id;
     public static final ParameterDefinition name;
@@ -38,11 +37,11 @@ public class Customer extends AbstractParameters implements Parameters {
         approved = new ParameterDefinition("approved", ValueType.BOOLEAN);
 
         parameterDefinitions = new ParameterDefinition[] {
-                id,
-                name,
-                age,
-                episode,
-                approved
+            id,
+            name,
+            age,
+            episode,
+            approved
         };
     }
 
