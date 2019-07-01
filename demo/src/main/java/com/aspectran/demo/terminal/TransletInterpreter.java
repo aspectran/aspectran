@@ -47,7 +47,7 @@ import java.util.Map;
 import java.util.Set;
 
 @Component(namespace = "/terminal")
-@Bean ("transletInterpreter")
+@Bean("transletInterpreter")
 public class TransletInterpreter implements ActivityContextAware {
 
     private final Log log = LogFactory.getLog(TransletInterpreter.class);

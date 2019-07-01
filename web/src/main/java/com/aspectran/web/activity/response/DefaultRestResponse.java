@@ -21,6 +21,7 @@ import com.aspectran.core.activity.response.transform.XmlTransformResponse;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.util.Assert;
+import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.apon.ObjectToApon;
 import com.aspectran.core.util.apon.AponWriter;
 import com.aspectran.core.util.apon.Parameters;
@@ -100,7 +101,7 @@ public class DefaultRestResponse extends AbstractRestResponse {
 
         responseAdapter.setContentType(contentType.toString());
 
-        transformByContentType(contentType, activity);
+        transformByContentType(activity, contentType);
 
         if (getStatus() > 0) {
             responseAdapter.setStatus(getStatus());
@@ -110,17 +111,17 @@ public class DefaultRestResponse extends AbstractRestResponse {
         }
     }
 
-    protected void transformByContentType(MediaType contentType, Activity activity) throws Exception {
-        if (MediaType.APPLICATION_JSON.equals(contentType)) {
-            toJSON(activity);
-        } else if (MediaType.APPLICATION_APON.equals(contentType)) {
-            toAPON(activity);
-        } else if (MediaType.APPLICATION_XML.equals(contentType)) {
+    protected void transformByContentType(Activity activity, MediaType contentType) throws Exception {
+        if (MediaType.APPLICATION_JSON.equalsTypeAndSubtype(contentType)) {
+            toJSON(activity, parseIndent(contentType));
+        } else if (MediaType.APPLICATION_APON.equalsTypeAndSubtype(contentType)) {
+            toAPON(activity, parseIndent(contentType));
+        } else if (MediaType.APPLICATION_XML.equalsTypeAndSubtype(contentType)) {
             toXML(activity);
         }
     }
 
-    private void toJSON(Activity activity) throws IOException {
+    private void toJSON(Activity activity, int indent) throws IOException {
         RequestAdapter requestAdapter = activity.getRequestAdapter();
         ResponseAdapter responseAdapter = activity.getResponseAdapter();
         Writer writer = responseAdapter.getWriter();
@@ -133,7 +134,12 @@ public class DefaultRestResponse extends AbstractRestResponse {
         if (getName() != null || getData() != null) {
             JsonWriter jsonWriter;
             if (isPrettyPrint()) {
-                String indentString = activity.getSetting("indentString");
+                String indentString;
+                if (indent > -1) {
+                    indentString = StringUtils.repeat(' ', indent);
+                } else {
+                    indentString = activity.getSetting("indentString");
+                }
                 jsonWriter = new JsonWriter(writer, indentString);
             } else {
                 jsonWriter = new JsonWriter(writer, false);
@@ -152,7 +158,7 @@ public class DefaultRestResponse extends AbstractRestResponse {
         }
     }
 
-    private void toAPON(Activity activity) throws IOException {
+    private void toAPON(Activity activity, int indent) throws IOException {
         ResponseAdapter responseAdapter = activity.getResponseAdapter();
         Writer writer = responseAdapter.getWriter();
 
@@ -162,7 +168,12 @@ public class DefaultRestResponse extends AbstractRestResponse {
 
             AponWriter aponWriter = new AponWriter(writer);
             if (isPrettyPrint()) {
-                String indentString = activity.getSetting("indentString");
+                String indentString;
+                if (indent > -1) {
+                    indentString = StringUtils.repeat(' ', indent);
+                } else {
+                    indentString = activity.getSetting("indentString");
+                }
                 if (indentString != null) {
                     aponWriter.setIndentString(indentString);
                 }
@@ -185,6 +196,17 @@ public class DefaultRestResponse extends AbstractRestResponse {
                 XmlTransformResponse.toXML(getData(), writer, null, isPrettyPrint());
             }
         }
+    }
+
+    private int parseIndent(MediaType contentType) {
+        int depth;
+        try {
+            String indent = contentType.getParameter("indent");
+            depth = (indent != null ? Integer.parseInt(indent) : -1);
+        } catch (NumberFormatException e) {
+            depth = -1;
+        }
+        return depth;
     }
 
 }

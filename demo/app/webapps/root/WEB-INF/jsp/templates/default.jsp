@@ -323,10 +323,9 @@
         $(".lazy-sticky").each(function() {
             var $win = $(window);
             var $this = $(this);
-            var topNavHeight = 60;
             var upToTopHeight = $("#up-to-top").height() + 30 + 60;
             var footerHeight = $("#footer-content").height() + upToTopHeight;
-            var baseOffsetTop = $this.offset().top - topNavHeight;
+            var baseOffsetTop = $this.offset().top;
             var offsetTop = 0;
             var thisHeight = $this.height();
             var winHeight = $win.height();
@@ -340,7 +339,7 @@
                         var offset = $("#" + anchor).offset();
                         if(offset) {
                             immediate = true;
-                            $win.scrollTop(offset.top - topNavHeight);
+                            $win.scrollTop(offset.top - $("#navigation.fixed .top-bar").height()||0);
                         }
                     }, 100);
                 }
@@ -364,7 +363,9 @@
                         immediate = false;
                     }, immediate ? 250 : 500);
                 } else {
-                    if(immediate || (scrollTop > baseOffsetTop + offsetTop + thisHeight - 20) || (scrollTop < baseOffsetTop + offsetTop)) {
+                    var topBarHeight = $("#navigation.fixed .top-bar").height()||0;
+                    if(immediate || (scrollTop > baseOffsetTop + topBarHeight + offsetTop + thisHeight - 20) ||
+                            (scrollTop < baseOffsetTop + topBarHeight + offsetTop)) {
                         var tocOffsetLeftBase = $this.offset().left;
                         if(tocOffsetLeftBase > 100) {
                             if(scrollTimer) {
@@ -372,14 +373,15 @@
                                 scrollTimer = null;
                             }
                             scrollTimer = setInterval(function() {
+                                topBarHeight = $("#navigation.fixed .top-bar").height()||0;
                                 scrollTop = $win.scrollTop();
-                                if(scrollTop < baseOffsetTop) {
+                                if(scrollTop < baseOffsetTop + topBarHeight) {
                                     scrollTop = 0;
                                 } else {
-                                    scrollTop = scrollTop - baseOffsetTop + 10;
+                                    scrollTop = scrollTop - baseOffsetTop + topBarHeight + 10;
                                 }
-                                if(scrollTop > $(document).height() - footerHeight - thisHeight - baseOffsetTop - topNavHeight) {
-                                    scrollTop = $(document).height() - footerHeight - thisHeight - baseOffsetTop - topNavHeight;
+                                if(scrollTop > $(document).height() - footerHeight - thisHeight - baseOffsetTop + topBarHeight) {
+                                    scrollTop = $(document).height() - footerHeight - thisHeight - baseOffsetTop + topBarHeight;
                                 }
                                 offsetTop = scrollTop;
                                 $this.css({

@@ -1,6 +1,5 @@
 package com.aspectran.web.support.http;
 
-import com.aspectran.core.lang.Nullable;
 import com.aspectran.core.util.Assert;
 import com.aspectran.core.util.StringUtils;
 
@@ -13,7 +12,6 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -28,15 +26,8 @@ import java.util.stream.Collectors;
  * @author Rossen Stoyanchev
  * @author Dimitrios Liapis
  * @author Brian Clozel
- * @since 4.0
  */
 public abstract class MediaTypeUtils {
-
-    private static final byte[] BOUNDARY_CHARS =
-        new byte[]{'-', '_', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', 'a', 'b', 'c', 'd', 'e', 'f', 'g',
-            'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A',
-            'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U',
-            'V', 'W', 'X', 'Y', 'Z'};
 
     /**
      * Comparator used by {@link #sortBySpecificity(List)}.
@@ -146,9 +137,6 @@ public abstract class MediaTypeUtils {
 
     private static final ConcurrentLruCache<String, MediaType> cachedMediaTypes =
         new ConcurrentLruCache<>(64, MediaTypeUtils::parseMediaTypeInternal);
-
-    @Nullable
-    private static volatile Random random;
 
     static {
         // Not using "parseMediaType" to avoid static init cost
@@ -266,7 +254,6 @@ public abstract class MediaTypeUtils {
      *
      * @param mediaTypes the string to tokenize
      * @return the list of tokens
-     * @since 5.1.3
      */
     public static List<String> tokenize(String mediaTypes) {
         if (!StringUtils.hasLength(mediaTypes)) {
