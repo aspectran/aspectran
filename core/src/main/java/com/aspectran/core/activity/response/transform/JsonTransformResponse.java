@@ -76,12 +76,13 @@ public class JsonTransformResponse extends TransformResponse {
         try {
             if (this.encoding != null) {
                 responseAdapter.setEncoding(this.encoding);
-            } else {
-                String encoding = activity.getTranslet().getResponseEncoding();
+            } else if (responseAdapter.getEncoding() == null) {
+                String encoding = activity.getTranslet().getIntendedResponseEncoding();
                 if (encoding != null) {
                     responseAdapter.setEncoding(encoding);
                 }
             }
+
             if (contentType != null) {
                 responseAdapter.setContentType(contentType);
             }

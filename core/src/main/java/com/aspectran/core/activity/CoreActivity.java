@@ -374,11 +374,11 @@ public class CoreActivity extends AdviceActivity {
     }
 
     /**
-     * Determines the request encoding.
+     * Determines the default request encoding.
      *
-     * @return the request encoding
+     * @return the default request encoding
      */
-    protected String resolveRequestEncoding() {
+    protected String getIntendedRequestEncoding() {
         String encoding = getRequestRule().getEncoding();
         if (encoding == null) {
             encoding = getSetting(RequestRule.CHARACTER_ENCODING_SETTING_NAME);
@@ -387,14 +387,14 @@ public class CoreActivity extends AdviceActivity {
     }
 
     /**
-     * Determines the response encoding.
+     * Determines the default response encoding.
      *
-     * @return the response encoding
+     * @return the default response encoding
      */
-    protected String resolveResponseEncoding() {
-        String encoding = getRequestRule().getEncoding();
+    protected String getIntendedResponseEncoding() {
+        String encoding = getResponseRule().getEncoding();
         if (encoding == null) {
-            encoding = resolveRequestEncoding();
+            encoding = getIntendedRequestEncoding();
         }
         return encoding;
     }

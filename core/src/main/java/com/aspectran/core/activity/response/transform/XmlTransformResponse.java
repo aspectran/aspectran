@@ -87,11 +87,15 @@ public class XmlTransformResponse extends TransformResponse {
             if (this.encoding != null) {
                 encoding = this.encoding;
             } else {
-                encoding = activity.getTranslet().getResponseEncoding();
+                encoding = responseAdapter.getEncoding();
+                if (encoding == null) {
+                    encoding = activity.getTranslet().getIntendedResponseEncoding();
+                }
             }
             if (encoding != null) {
                 responseAdapter.setEncoding(encoding);
             }
+
             if (contentType != null) {
                 responseAdapter.setContentType(contentType);
             }

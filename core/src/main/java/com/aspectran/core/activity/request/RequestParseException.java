@@ -16,7 +16,7 @@
 package com.aspectran.core.activity.request;
 
 /**
- * Exception thrown when request parse fails.
+ * Exception thrown when request could not be parsed.
  */
 public class RequestParseException extends RequestException {
 

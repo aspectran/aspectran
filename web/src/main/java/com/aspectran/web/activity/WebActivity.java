@@ -20,8 +20,8 @@ import com.aspectran.core.activity.ActivityTerminatedException;
 import com.aspectran.core.activity.AdapterException;
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.TransletNotFoundException;
-import com.aspectran.core.activity.request.RequestException;
 import com.aspectran.core.activity.request.RequestMethodNotAllowedException;
+import com.aspectran.core.activity.request.RequestParseException;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
@@ -127,12 +127,12 @@ public class WebActivity extends CoreActivity {
 
     @Override
     protected void parseRequest() {
-        String encoding = resolveRequestEncoding();
+        String encoding = getIntendedRequestEncoding();
         if (encoding != null) {
             try {
                 getRequestAdapter().setEncoding(encoding);
             } catch (UnsupportedEncodingException e) {
-                throw new RequestException("Unable to set request encoding to " + encoding, e);
+                throw new RequestParseException("Unable to set request encoding to " + encoding, e);
             }
         }
 

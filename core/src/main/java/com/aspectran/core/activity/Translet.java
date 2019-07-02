@@ -131,18 +131,18 @@ public interface Translet {
     <T> T getResponseAdaptee();
 
     /**
-     * Returns the request encoding.
+     * Returns the intended request encoding.
      *
-     * @return the request encoding
+     * @return the intended request encoding
      */
-    String getRequestEncoding();
+    String getIntendedRequestEncoding();
 
     /**
-     * Returns the response encoding.
+     * Returns the intended response encoding.
      *
-     * @return the response encoding
+     * @return the intended response encoding
      */
-    String getResponseEncoding();
+    String getIntendedResponseEncoding();
 
     /**
      * Returns the process result.

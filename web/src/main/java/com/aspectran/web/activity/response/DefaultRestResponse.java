@@ -91,6 +91,11 @@ public class DefaultRestResponse extends AbstractRestResponse {
         Assert.notNull(activity, "'activity' must not be null");
         ResponseAdapter responseAdapter = activity.getResponseAdapter();
 
+        String encoding = determineEncoding(activity);
+        if (encoding != null) {
+            responseAdapter.setEncoding(encoding);
+        }
+
         MediaType contentType;
         try {
             contentType = determineContentType(activity);
@@ -98,7 +103,6 @@ public class DefaultRestResponse extends AbstractRestResponse {
             responseAdapter.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
             return;
         }
-
         responseAdapter.setContentType(contentType.toString());
 
         transformByContentType(activity, contentType);
