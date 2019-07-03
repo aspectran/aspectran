@@ -36,7 +36,7 @@ import javax.xml.transform.stream.StreamResult;
 import java.io.Writer;
 
 /**
- * The Class XmlTransformResponse.
+ * Response to transform into XML.
  * 
  * Created: 2008. 03. 22 PM 5:51:58
  */

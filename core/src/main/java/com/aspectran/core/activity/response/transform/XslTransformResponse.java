@@ -47,7 +47,7 @@ import java.util.Objects;
 import java.util.Properties;
 
 /**
- * The Class XslTransformResponse.
+ * Response to transform into XSL.
  * 
  * Created: 2008. 03. 22 PM 5:51:58
  */

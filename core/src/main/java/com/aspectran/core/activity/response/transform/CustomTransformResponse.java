@@ -30,7 +30,7 @@ import com.aspectran.core.util.logging.LogFactory;
 import java.util.ListIterator;
 
 /**
- * The Class CustomTransformResponse.
+ * Responding with user-implemented {@link CustomTransformer}.
  * 
  * Created: 2019. 06. 15
  */

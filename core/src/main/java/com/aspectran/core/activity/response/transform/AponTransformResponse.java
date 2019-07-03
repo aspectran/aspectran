@@ -30,7 +30,7 @@ import com.aspectran.core.util.logging.LogFactory;
 import java.io.Writer;
 
 /**
- * The Class AponTransformResponse.
+ * Response to transform into APON.
  * 
  * Created: 2008. 03. 22 PM 5:51:58
  */
