@@ -79,6 +79,16 @@ public class MediaType implements Comparable<MediaType>, Serializable {
     public static final String APPLICATION_FORM_URLENCODED_VALUE = "application/x-www-form-urlencoded";
 
     /**
+     * Public constant media type for {@code application/graphql}.
+     */
+    public static final MediaType APPLICATION_GRAPHQL;
+
+    /**
+     * A String equivalent of {@link MediaType#APPLICATION_GRAPHQL}.
+     */
+    public static final String APPLICATION_GRAPHQL_VALUE = "application/graphql";
+
+    /**
      * Public constant media type for {@code application/json}.
      */
     public static final MediaType APPLICATION_JSON;
@@ -323,6 +333,7 @@ public class MediaType implements Comparable<MediaType>, Serializable {
         APPLICATION_ATOM_XML = new MediaType("application", "atom+xml");
         APPLICATION_CBOR = new MediaType("application", "cbor");
         APPLICATION_FORM_URLENCODED = new MediaType("application", "x-www-form-urlencoded");
+        APPLICATION_GRAPHQL = new MediaType("application", "graphql");
         APPLICATION_JSON = new MediaType("application", "json");
         APPLICATION_APON = new MediaType("application", "apon");
         APPLICATION_OCTET_STREAM = new MediaType("application", "octet-stream");
