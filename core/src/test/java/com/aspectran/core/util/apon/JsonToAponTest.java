@@ -1,5 +1,6 @@
 package com.aspectran.core.util.apon;
 
+import com.aspectran.core.util.StringUtils;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -29,7 +30,11 @@ class JsonToAponTest {
         String apon = "{\n" + "  param1: 111\n" + "  param2: 222\n" + "}\n" + "{\n" + "  param3: 333\n" + "  param4: 444\n" + "}";
 
         Parameters ps = JsonToApon.from(sb.toString(), new ArrayParameters());
-        assertEquals(apon, ps.toString().trim());
+
+        String s1 = StringUtils.replace(apon, "\r", "").trim();
+        String s2 = StringUtils.replace(ps.toString(), "\r", "").trim();
+
+        assertEquals(s1, s2);
     }
 
     @Test
@@ -38,6 +43,11 @@ class JsonToAponTest {
         String apon = "glossary: {\n" + "  title: example glossary\n" + "  GlossDiv: {\n" + "    title: S\n" + "    GlossList: {\n" + "      GlossEntry: {\n" + "        ID: SGML\n" + "        SortAs: SGML\n" + "        GlossTerm: Standard Generalized Markup Language\n" + "        Acronym: SGML\n" + "        Abbrev: ISO 8879:1986\n" + "        GlossDef: {\n" + "          para: A meta-markup language, used to create markup languages such as DocBook.\n" + "          GlossSeeAlso: [\n" + "            GML\n" + "            XML\n" + "          ]\n" + "        }\n" + "        GlossSee: markup\n" + "      }\n" + "    }\n" + "  }\n" + "}";
 
         Parameters ps = JsonToApon.from(json);
-        assertEquals(apon, ps.toString().trim());
+
+        String s1 = StringUtils.replace(apon, "\r", "").trim();
+        String s2 = StringUtils.replace(ps.toString(), "\r", "").trim();
+
+        assertEquals(s1, s2);
     }
+
 }
