@@ -52,9 +52,8 @@ public abstract class ClassUtils {
         try {
             return ctor.newInstance();
         } catch (Exception e) {
-            ExceptionUtils.unwrapAndThrowAsIAE(e, "Unable to instantiate class " +
+            throw ExceptionUtils.unwrapAndThrowAsIAE(e, "Unable to instantiate class " +
                     cls.getName() + ": " + e.getMessage());
-            throw new IllegalArgumentException(e);
         }
     }
 
@@ -102,9 +101,8 @@ public abstract class ClassUtils {
         try {
             return ctor.newInstance(args);
         } catch (Exception e) {
-            ExceptionUtils.unwrapAndThrowAsIAE(e, "Unable to instantiate class " + cls.getName()
+            throw ExceptionUtils.unwrapAndThrowAsIAE(e, "Unable to instantiate class " + cls.getName()
                     + ", problem: " + e.getMessage());
-            throw new IllegalArgumentException(e);
         }
     }
 

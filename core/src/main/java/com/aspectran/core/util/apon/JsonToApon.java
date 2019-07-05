@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.util.apon;
 
-import com.aspectran.core.lang.Nullable;
+import com.aspectran.core.util.ClassUtils;
 import com.aspectran.core.util.json.JsonReader;
 
 import java.io.IOException;
@@ -30,32 +30,32 @@ import java.io.StringReader;
 public class JsonToApon {
 
     public static Parameters from(String json) throws IOException {
-        return from(json, null);
+        return from(json, new VariableParameters());
     }
 
-    public static Parameters from(String json, @Nullable Parameters container) throws IOException {
+    public static <T extends Parameters> T from(String json, Class<T> requiredType) throws IOException {
+        T container = ClassUtils.createInstance(requiredType);
+        from(json, container);
+        return container;
+    }
+
+    public static <T extends Parameters> T from(String json, T container) throws IOException {
         if (json == null) {
             throw new IllegalArgumentException("json must not be null");
         }
         return from(new StringReader(json), container);
     }
 
-    public static Parameters from(Reader in, @Nullable Parameters container) throws IOException {
+    public static <T extends Parameters> T from(Reader in, T container) throws IOException {
         if (in == null) {
             throw new IllegalArgumentException("in must not be null");
         }
-
-        JsonReader reader = new JsonReader(in);
-        String name = null;
-
-        if (container != null) {
-            if (container instanceof ArrayParameters) {
-                name = ArrayParameters.NONAME;
-            }
-        } else {
-            container = new VariableParameters();
+        if (container == null) {
+            throw new IllegalArgumentException("container must not be null");
         }
 
+        JsonReader reader = new JsonReader(in);
+        String name = (container instanceof ArrayParameters ? ArrayParameters.NONAME : null);
         read(reader, container, name);
 
         return container;

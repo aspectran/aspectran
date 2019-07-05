@@ -19,7 +19,6 @@ import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.util.ClassUtils;
 import com.aspectran.core.util.LinkedCaseInsensitiveMultiValueMap;
 import com.aspectran.core.util.MultiValueMap;
-import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.apon.VariableParameters;
 
@@ -38,8 +37,6 @@ import java.util.TimeZone;
  */
 public abstract class AbstractRequest {
 
-    private MethodType requestMethod;
-
     private MultiValueMap<String, String> headers;
 
     private ParameterMap parameterMap;
@@ -47,6 +44,8 @@ public abstract class AbstractRequest {
     private FileParameterMap fileParameterMap;
 
     private Map<String, Object> attributes;
+
+    private MethodType requestMethod;
 
     private String encoding;
 
@@ -59,14 +58,6 @@ public abstract class AbstractRequest {
     private String body;
 
     public AbstractRequest() {
-    }
-
-    public MethodType getRequestMethod() {
-        return requestMethod;
-    }
-
-    protected void setRequestMethod(MethodType requestMethod) {
-        this.requestMethod = requestMethod;
     }
 
     /**
@@ -334,6 +325,14 @@ public abstract class AbstractRequest {
         return (attributes != null && !attributes.isEmpty());
     }
 
+    public MethodType getRequestMethod() {
+        return requestMethod;
+    }
+
+    protected void setRequestMethod(MethodType requestMethod) {
+        this.requestMethod = requestMethod;
+    }
+
     public String getEncoding() {
         return encoding;
     }
@@ -404,17 +403,7 @@ public abstract class AbstractRequest {
     }
 
     public <T extends Parameters> T getBodyAsParameters(Class<T> requiredType) {
-        if (StringUtils.isEmpty(getBody())) {
-            return null;
-        }
-        try {
-            T parameters = ClassUtils.createInstance(requiredType);
-            parameters.readFrom(getBody());
-            return parameters;
-        } catch (Exception e) {
-            throw new RequestParseException("Failed to parse request body to required type [" +
-                    requiredType.getName() + "]");
-        }
+        return RequestBodyParser.parseBodyAsParameters(getBody(), requiredType);
     }
 
     public Parameters getParameters() {

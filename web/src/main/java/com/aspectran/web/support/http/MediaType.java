@@ -687,7 +687,8 @@ public class MediaType implements Comparable<MediaType>, Serializable {
         if (other == null) {
             return false;
         }
-        return (this.type.equalsIgnoreCase(other.type) && this.subtype.equalsIgnoreCase(other.subtype));
+        return this.type.equalsIgnoreCase(other.type) &&
+            this.subtype.equalsIgnoreCase(other.subtype);
     }
 
     /**
@@ -1041,7 +1042,7 @@ public class MediaType implements Comparable<MediaType>, Serializable {
 
     /**
      * Parse the given String value into a {@code MediaType} object,
-     * with this method name following the 'valueOf' naming convention
+     * with this method name following the 'valueOf' naming convention.
      *
      * @param value the string to parse
      * @return the media type

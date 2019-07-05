@@ -34,11 +34,12 @@ import com.aspectran.core.util.StringUtils;
 import com.aspectran.web.activity.request.ActivityRequestWrapper;
 import com.aspectran.web.activity.request.MultipartFormDataParser;
 import com.aspectran.web.activity.request.MultipartRequestParseException;
-import com.aspectran.web.activity.request.RequestBodyParser;
+import com.aspectran.web.activity.request.WebRequestBodyParser;
 import com.aspectran.web.adapter.HttpServletRequestAdapter;
 import com.aspectran.web.adapter.HttpServletResponseAdapter;
 import com.aspectran.web.adapter.HttpSessionAdapter;
 import com.aspectran.web.support.http.HttpHeaders;
+import com.aspectran.web.support.http.MediaType;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -121,12 +122,18 @@ public class WebActivity extends CoreActivity {
 
             super.adapt();
         } catch (Exception e) {
-            throw new AdapterException("Failed to specify adapter for web service activity", e);
+            throw new AdapterException("Failed to adapt for Web Activity", e);
         }
     }
 
     @Override
     protected void parseRequest() {
+        MethodType requestMethod = getRequestAdapter().getRequestMethod();
+        MethodType allowedMethod = getRequestRule().getAllowedMethod();
+        if (allowedMethod != null && !allowedMethod.equals(requestMethod)) {
+            throw new RequestMethodNotAllowedException(allowedMethod);
+        }
+
         String encoding = getIntendedRequestEncoding();
         if (encoding != null) {
             try {
@@ -136,17 +143,11 @@ public class WebActivity extends CoreActivity {
             }
         }
 
-        MethodType requestMethod = getRequestAdapter().getRequestMethod();
-        MethodType allowedMethod = getRequestRule().getAllowedMethod();
-        if (allowedMethod != null && !allowedMethod.equals(requestMethod)) {
-            throw new RequestMethodNotAllowedException(allowedMethod);
-        }
-
-        String contentType = request.getContentType();
-        if (contentType != null) {
-            if (RequestBodyParser.isMultipartForm(requestMethod, contentType)) {
+        MediaType mediaType = ((HttpServletRequestAdapter)getRequestAdapter()).getMediaType();
+        if (mediaType != null) {
+            if (WebRequestBodyParser.isMultipartForm(requestMethod, mediaType)) {
                 parseMultipartFormData();
-            } else if (RequestBodyParser.isURLEncodedForm(contentType)) {
+            } else if (WebRequestBodyParser.isURLEncodedForm(mediaType)) {
                 parseURLEncodedFormData();
             }
         }
@@ -176,7 +177,7 @@ public class WebActivity extends CoreActivity {
      * Parse the URL-encoded Form Data to get the request parameters.
      */
     private void parseURLEncodedFormData() {
-        RequestBodyParser.parseURLEncoded(getRequestAdapter());
+        WebRequestBodyParser.parseURLEncoded((HttpServletRequestAdapter)getRequestAdapter());
     }
 
     @Override

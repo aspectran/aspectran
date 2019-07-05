@@ -46,6 +46,8 @@ import java.util.Map;
  */
 public class DefaultRestResponse extends AbstractRestResponse {
 
+    private static final int MAX_INDENT = 8;
+
     private static final List<MediaType> supportedContentTypes;
     static {
         List<MediaType> contentTypes = new ArrayList<>();
@@ -203,14 +205,21 @@ public class DefaultRestResponse extends AbstractRestResponse {
     }
 
     private int parseIndent(MediaType contentType) {
-        int depth;
         try {
             String indent = contentType.getParameter("indent");
-            depth = (indent != null ? Integer.parseInt(indent) : -1);
+            if (indent != null) {
+                int depth = Integer.parseInt(indent);
+                if (depth >= 0) {
+                    if (depth > MAX_INDENT) {
+                        depth = MAX_INDENT;
+                    }
+                    return depth;
+                }
+            }
         } catch (NumberFormatException e) {
-            depth = -1;
+            // ignore
         }
-        return depth;
+        return -1;
     }
 
 }

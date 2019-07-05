@@ -21,7 +21,8 @@ import com.aspectran.core.util.MultiValueMap;
 import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.web.activity.request.ActivityRequestWrapper;
 import com.aspectran.web.activity.request.RequestAttributeMap;
-import com.aspectran.web.activity.request.RequestBodyParser;
+import com.aspectran.web.activity.request.WebRequestBodyParser;
+import com.aspectran.web.support.http.MediaType;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
@@ -34,6 +35,8 @@ import java.util.Map;
  * @since 2011. 3. 13.
  */
 public class HttpServletRequestAdapter extends AbstractRequestAdapter {
+
+    private MediaType mediaType;
 
     private volatile boolean headersHeld;
 
@@ -81,19 +84,25 @@ public class HttpServletRequestAdapter extends AbstractRequestAdapter {
     @Override
     public String getBody() {
         if (super.getBody() == null) {
-            RequestBodyParser.parseBody(this);
+            WebRequestBodyParser.parseBody(this);
         }
         return super.getBody();
     }
 
     @Override
     public <T extends Parameters> T getBodyAsParameters(Class<T> requiredType) {
-        String contentType = ((HttpServletRequest)getAdaptee()).getContentType();
-        if (RequestBodyParser.isURLEncodedForm(contentType)) {
-            return RequestBodyParser.parseURLEncoded(this, requiredType);
-        } else {
-            return super.getBodyAsParameters(requiredType);
-        }
+        return WebRequestBodyParser.parseBodyAsParameters(this, requiredType);
+    }
+
+    /**
+     * Gets the media type value included in the Content-Type header.
+     */
+    public MediaType getMediaType() {
+        return mediaType;
+    }
+
+    private void setMediaType(MediaType mediaType) {
+        this.mediaType = mediaType;
     }
 
     private HttpServletRequest getHttpServletRequest() {
@@ -105,14 +114,16 @@ public class HttpServletRequestAdapter extends AbstractRequestAdapter {
     }
 
     private void preparse(HttpServletRequest request) {
-        setRequestMethod(MethodType.resolve(request.getMethod()));
         setAttributeMap(new RequestAttributeMap(request));
-        setLocale(request.getLocale());
-
         Map<String, String[]> parameters = request.getParameterMap();
         if (!parameters.isEmpty()) {
             getParameterMap().putAll(parameters);
         }
+        setRequestMethod(MethodType.resolve(request.getMethod()));
+        if (request.getContentType() != null) {
+            setMediaType(MediaType.parseMediaType(request.getContentType()));
+        }
+        setLocale(request.getLocale());
     }
 
 }

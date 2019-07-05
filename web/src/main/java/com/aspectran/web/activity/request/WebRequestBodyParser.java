@@ -15,14 +15,16 @@
  */
 package com.aspectran.web.activity.request;
 
+import com.aspectran.core.activity.request.RequestBodyParser;
 import com.aspectran.core.activity.request.RequestParseException;
-import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.util.ClassUtils;
 import com.aspectran.core.util.LinkedMultiValueMap;
 import com.aspectran.core.util.MultiValueMap;
 import com.aspectran.core.util.StringUtils;
+import com.aspectran.core.util.apon.JsonToApon;
 import com.aspectran.core.util.apon.Parameters;
+import com.aspectran.web.adapter.HttpServletRequestAdapter;
 import com.aspectran.web.support.http.MediaType;
 
 import javax.servlet.http.HttpServletRequest;
@@ -39,16 +41,16 @@ import java.util.Map;
  *
  * @since 6.2.0
  */
-public class RequestBodyParser {
+public class WebRequestBodyParser {
 
     private static final String DEFAULT_ENCODING = "iso-8859-1";
 
     private static final int BUFFER_SIZE = 1024;
 
-    private RequestBodyParser() {
+    private WebRequestBodyParser() {
     }
 
-    public static void parseBody(RequestAdapter requestAdapter) {
+    public static void parseBody(HttpServletRequestAdapter requestAdapter) {
         try {
             StringBuilder sb = new StringBuilder();
             String encoding = requestAdapter.getEncoding();
@@ -68,7 +70,7 @@ public class RequestBodyParser {
         }
     }
 
-    public static void parseURLEncoded(RequestAdapter requestAdapter) {
+    public static void parseURLEncoded(HttpServletRequestAdapter requestAdapter) {
         try {
             String body = requestAdapter.getBody();
             String encoding = requestAdapter.getEncoding();
@@ -82,32 +84,8 @@ public class RequestBodyParser {
         }
     }
 
-    public static <T extends Parameters> T parseURLEncoded(RequestAdapter requestAdapter, Class<T> requiredType) {
-        try {
-            String encoding = requestAdapter.getEncoding();
-            if (encoding == null) {
-                encoding = DEFAULT_ENCODING;
-            }
-            MultiValueMap<String, String> parameterMap = parseURLEncoded(requestAdapter.getBody(), encoding);
-            if (parameterMap != null && !parameterMap.isEmpty()) {
-                T parameters = ClassUtils.createInstance(requiredType);
-                for (Map.Entry<String, List<String>> entry : parameterMap.entrySet()) {
-                    String name = entry.getKey();
-                    for (String value : entry.getValue()) {
-                        parameters.putValue(name, value);
-                    }
-                }
-                return parameters;
-            }
-        } catch (Exception e) {
-            throw new RequestParseException("Failed to parse request body to required type [" +
-                    requiredType.getName() + "]");
-        }
-        return null;
-    }
-
     public static MultiValueMap<String, String> parseURLEncoded(String body, String encoding)
-            throws UnsupportedEncodingException {
+        throws UnsupportedEncodingException {
         if (body != null && !body.isEmpty()) {
             MultiValueMap<String, String> parameterMap = new LinkedMultiValueMap<>();
             String[] pairs = StringUtils.tokenize(body, "&");
@@ -128,12 +106,59 @@ public class RequestBodyParser {
         }
     }
 
-    public static boolean isMultipartForm(MethodType requestMethod, String contentType) {
-        return MethodType.POST.equals(requestMethod) && contentType.startsWith(MediaType.MULTIPART_FORM_DATA_VALUE);
+    public static <T extends Parameters> T parseURLEncoded(HttpServletRequestAdapter requestAdapter, Class<T> requiredType) {
+        try {
+            String encoding = requestAdapter.getEncoding();
+            if (encoding == null) {
+                encoding = DEFAULT_ENCODING;
+            }
+            MultiValueMap<String, String> parameterMap = parseURLEncoded(requestAdapter.getBody(), encoding);
+            if (parameterMap != null && !parameterMap.isEmpty()) {
+                T parameters = ClassUtils.createInstance(requiredType);
+                for (Map.Entry<String, List<String>> entry : parameterMap.entrySet()) {
+                    String name = entry.getKey();
+                    for (String value : entry.getValue()) {
+                        parameters.putValue(name, value);
+                    }
+                }
+                return parameters;
+            }
+        } catch (Exception e) {
+            throw new RequestParseException("Failed to parse URL-encoded form request body to required type [" +
+                    requiredType.getName() + "]", e);
+        }
+        return null;
     }
 
-    public static boolean isURLEncodedForm(String contentType) {
-        return contentType.startsWith(MediaType.APPLICATION_FORM_URLENCODED_VALUE);
+    public static <T extends Parameters> T parseBodyAsParameters(HttpServletRequestAdapter requestAdapter,
+                                                                 Class<T> requiredType) {
+        MediaType mediaType = requestAdapter.getMediaType();
+        if (mediaType != null) {
+            if (isURLEncodedForm(mediaType)) {
+                return parseURLEncoded(requestAdapter, requiredType);
+            } else if (MediaType.APPLICATION_JSON.equalsTypeAndSubtype(mediaType)) {
+                try {
+                    return JsonToApon.from(requestAdapter.getBody(), requiredType);
+                } catch (IOException e) {
+                    throw new RequestParseException("Failed to parse request body of JSON format to required type [" +
+                        requiredType.getName() + "]", e);
+                }
+            } else if (MediaType.APPLICATION_APON.equalsTypeAndSubtype(mediaType)) {
+                return RequestBodyParser.parseBodyAsParameters(requestAdapter.getBody(), requiredType);
+            } else if (MediaType.APPLICATION_XML.equalsTypeAndSubtype(mediaType)) {
+                // TODO
+            }
+        }
+        return null;
+    }
+    
+    public static boolean isMultipartForm(MethodType requestMethod, MediaType mediaType) {
+        return MethodType.POST.equals(requestMethod) &&
+            MediaType.MULTIPART_FORM_DATA.equalsTypeAndSubtype(mediaType);
+    }
+
+    public static boolean isURLEncodedForm(MediaType mediaType) {
+        return MediaType.APPLICATION_FORM_URLENCODED.equalsTypeAndSubtype(mediaType);
     }
 
 }

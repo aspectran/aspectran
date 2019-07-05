@@ -42,14 +42,14 @@ public class CustomerAction {
     }
 
     @RequestToGet("/customers")
-    @Description("Returns a list of all customers in JSON format.")
+    @Description("Returns list of all customers in JSON format.")
     public RestResponse getCustomerList() {
         List<Customer> list = repository.getCustomerList();
         return new DefaultRestResponse("customers", list).ok();
     }
 
     @RequestToGet("/customers/${id:guest}")
-    @Description("Retrieve customer info by a given id parameter.")
+    @Description("Retrieves a customer by ID.")
     public RestResponse getCustomer(@Required Integer id) {
         Customer customer = repository.getCustomer(id);
         RestResponse response = new DefaultRestResponse();
@@ -62,8 +62,8 @@ public class CustomerAction {
     }
 
     @RequestToPost("/customers")
-    @Description("Register a new customer.")
-    public RestResponse insertCustomer(Translet translet, Customer customer) {
+    @Description("Add a new customer to the repository.")
+    public RestResponse addCustomer(Translet translet, @Required Customer customer) {
         int id = repository.insertCustomer(customer);
         String resourceUri = translet.getRequestName() + "/" + id;
         return new DefaultRestResponse(customer)
@@ -71,8 +71,8 @@ public class CustomerAction {
     }
 
     @RequestToPut("/customers/${id}")
-    @Description("Update customer info with a given ID.")
-    public RestResponse updateCustomer(Customer customer) {
+    @Description("Updates an existing customer in the repository with form data.")
+    public RestResponse updateCustomer(@Required Customer customer) {
         boolean updated = repository.updateCustomer(customer);
         RestResponse response = new DefaultRestResponse();
         if(!updated) {
@@ -84,7 +84,7 @@ public class CustomerAction {
     }
 
     @RequestToDelete("/customers/${id}")
-    @Description("Delete customer info by a given id parameter.")
+    @Description("Deletes a customer by ID.")
     public RestResponse deleteCustomer(@Required Integer id) {
         boolean deleted = repository.deleteCustomer(id);
         RestResponse response = new DefaultRestResponse();
@@ -97,7 +97,7 @@ public class CustomerAction {
     }
 
     @RequestToPut("/customers/${id}/attributes")
-    @Description("Update customer's attributes by a given id parameter.")
+    @Description("Updates an existing customer's attributes.")
     public RestResponse updateAttributes(@Required Integer id, @Required Boolean approved) {
         boolean updated = repository.approve(id, approved);
         RestResponse response = new DefaultRestResponse();

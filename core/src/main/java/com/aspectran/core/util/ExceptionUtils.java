@@ -93,7 +93,7 @@ public class ExceptionUtils {
      */
     public static Throwable throwIfRTE(Throwable t) {
         if (t instanceof RuntimeException) {
-            throw (RuntimeException) t;
+            throw (RuntimeException)t;
         }
         return t;
     }
@@ -131,8 +131,8 @@ public class ExceptionUtils {
      *
      * @param t the Throwable to possibly propagate
      */
-    public static void throwAsIAE(Throwable t) {
-        throwAsIAE(t, t.getMessage());
+    public static IllegalArgumentException throwAsIAE(Throwable t) {
+        return throwAsIAE(t, t.getMessage());
     }
 
     /**
@@ -143,7 +143,7 @@ public class ExceptionUtils {
      * @param t the Throwable to possibly propagate
      * @param msg the detail message
      */
-    public static void throwAsIAE(Throwable t, String msg) {
+    public static IllegalArgumentException throwAsIAE(Throwable t, String msg) {
         throwIfRTE(t);
         throwIfError(t);
         throw new IllegalArgumentException(msg, t);
@@ -156,8 +156,8 @@ public class ExceptionUtils {
      *
      * @param t the Throwable to possibly propagate
      */
-    public static void unwrapAndThrowAsIAE(Throwable t) {
-        throwAsIAE(getRootCause(t));
+    public static IllegalArgumentException unwrapAndThrowAsIAE(Throwable t) {
+        return throwAsIAE(getRootCause(t));
     }
 
     /**
@@ -168,8 +168,8 @@ public class ExceptionUtils {
      * @param t the Throwable to possibly propagate
      * @param msg the detail msg
      */
-    public static void unwrapAndThrowAsIAE(Throwable t, String msg) {
-        throwAsIAE(getRootCause(t), msg);
+    public static IllegalArgumentException unwrapAndThrowAsIAE(Throwable t, String msg) {
+        throw throwAsIAE(getRootCause(t), msg);
     }
 
 }

@@ -344,7 +344,7 @@ public abstract class AbstractRestResponse implements RestResponse {
                 }
                 for (MediaType supportedContentType : getSupportedContentTypes()) {
                     if (mediaType.includes(supportedContentType)) {
-                        return supportedContentType;
+                        return mediaType;
                     }
                 }
             }

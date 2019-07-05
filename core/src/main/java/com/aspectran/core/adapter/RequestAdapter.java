@@ -60,13 +60,6 @@ public interface RequestAdapter {
     RequestScope getRequestScope(boolean create);
 
     /**
-     * Returns the method used for the request.
-     *
-     * @return a {@code MethodType} object
-     */
-    MethodType getRequestMethod();
-
-    /**
      * Returns the value of the response header with the given name.
      *
      * <p>If a response header with the given name exists and contains
@@ -381,6 +374,13 @@ public interface RequestAdapter {
      * @return true if attributes exists, false otherwise
      */
     boolean hasAttributes();
+
+    /**
+     * Returns the method used for the request.
+     *
+     * @return a {@code MethodType} object
+     */
+    MethodType getRequestMethod();
 
     /**
      * Returns the name of the character encoding used in the body of this request.

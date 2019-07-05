@@ -35,11 +35,11 @@ public class HttpSessionAdapter extends AbstractSessionAdapter {
 
     private static final String SESSION_SCOPE_ATTRIBUTE_NAME = HttpSessionScope.class.getName() + ".SESSION_SCOPE";
 
-    private Locker locker = new Locker();
+    private final Locker locker = new Locker();
+
+    private final ActivityContext context;
 
     private volatile SessionScope sessionScope;
-
-    private ActivityContext context;
 
     /**
      * Instantiates a new HttpSessionAdapter.

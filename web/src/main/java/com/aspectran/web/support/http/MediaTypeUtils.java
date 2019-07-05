@@ -134,7 +134,6 @@ public abstract class MediaTypeUtils {
      */
     public static final String TEXT_XML_VALUE = "text/xml";
 
-
     private static final ConcurrentLruCache<String, MediaType> cachedMediaTypes =
         new ConcurrentLruCache<>(64, MediaTypeUtils::parseMediaTypeInternal);
 

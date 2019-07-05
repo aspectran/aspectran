@@ -1276,7 +1276,6 @@ public class JsonReader implements Closeable {
             if (p == PEEKED_NONE) {
                 p = doPeek();
             }
-
             if (p == PEEKED_BEGIN_ARRAY) {
                 push(EMPTY_ARRAY);
                 count++;
