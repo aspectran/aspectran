@@ -163,7 +163,7 @@ public class JobCommand extends AbstractCommand {
                 if (count == 0) {
                     console.writeLine("----------------------------------------------------------------------------");
                 }
-                AponWriter aponWriter = new AponWriter(console.getWriter(), false);
+                AponWriter aponWriter = new AponWriter(console.getWriter()).nullWritable(false);
                 aponWriter.write(scheduleParameters);
                 console.writeLine("----------------------------------------------------------------------------");
                 count++;
@@ -179,7 +179,7 @@ public class JobCommand extends AbstractCommand {
                 if (count == 0) {
                     console.writeLine("----------------------------------------------------------------------------");
                 }
-                AponWriter aponWriter = new AponWriter(console.getWriter(), false);
+                AponWriter aponWriter = new AponWriter(console.getWriter()).nullWritable(false);
                 aponWriter.write(scheduleParameters);
                 console.writeLine("----------------------------------------------------------------------------");
                 count++;

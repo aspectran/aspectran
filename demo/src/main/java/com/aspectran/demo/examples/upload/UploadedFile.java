@@ -118,7 +118,7 @@ public class UploadedFile {
         uploadedFile.setFileType("jpg");
 
         try {
-            System.out.println(JsonWriter.stringify(uploadedFile));
+            System.out.println(new JsonWriter().nullWritable(false).write(uploadedFile));
         } catch (IOException e) {
             e.printStackTrace();
         }

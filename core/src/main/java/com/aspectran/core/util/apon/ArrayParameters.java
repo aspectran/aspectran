@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.util.apon;
 
+import com.aspectran.core.lang.NonNull;
 import com.aspectran.core.util.ClassUtils;
 import com.aspectran.core.util.StringUtils;
 
@@ -70,6 +71,7 @@ public class ArrayParameters extends AbstractParameters
     }
 
     @Override
+    @NonNull
     public Iterator<Parameters> iterator() {
         List<Parameters> list = getParametersList(NONAME);
         if (list != null) {

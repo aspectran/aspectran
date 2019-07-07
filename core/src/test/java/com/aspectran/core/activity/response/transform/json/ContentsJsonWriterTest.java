@@ -49,7 +49,7 @@ class ContentsJsonWriterTest {
         contentResult.addActionResult(actionResult3);
 
         StringWriter writer = new StringWriter();
-        ContentsJsonWriter jsonWriter = new ContentsJsonWriter(writer, false);
+        ContentsJsonWriter jsonWriter = new ContentsJsonWriter(writer).prettyPrint(false);
         jsonWriter.write(processResult);
 
         //System.out.println(writer.toString());

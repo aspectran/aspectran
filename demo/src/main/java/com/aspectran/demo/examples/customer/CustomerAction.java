@@ -75,7 +75,7 @@ public class CustomerAction {
     public RestResponse updateCustomer(@Required Customer customer) {
         boolean updated = repository.updateCustomer(customer);
         RestResponse response = new DefaultRestResponse();
-        if(!updated) {
+        if(updated) {
             response.setData("customer", customer);
         } else {
             response.notFound();

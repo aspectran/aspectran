@@ -730,12 +730,10 @@ public interface Parameters {
 
     <T extends Parameters> T touchParameters(ParameterDefinition parameterDefinition);
 
+    void readFrom(String text) throws IOException;
+
     String describe();
 
     String describe(boolean details);
-
-    void setIndentString(String indentString);
-
-    void readFrom(String text) throws IOException;
 
 }

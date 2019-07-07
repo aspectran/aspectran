@@ -46,7 +46,6 @@ class AponWriterTest {
             aponWriter.setTypeHintWritable(false);
             aponWriter.write(aspectranConfig);
             aponWriter.close();
-
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -35,53 +35,45 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
 
     private final Writer out;
 
-    private final boolean nullWritable;
-
     private boolean typeHintWritable;
 
-    private String indentString = DEFAULT_INDENT_STRING;
+    private String indentString;
+
+    private boolean skipNull;
 
     private int indentDepth;
 
     /**
      * Instantiates a new AponWriter.
+     * Pretty printing is enabled by default, and the indent string is
+     * set to "  " (two spaces).
+     */
+    public AponWriter() {
+        this(new StringWriter());
+    }
+
+    /**
+     * Instantiates a new AponWriter.
+     * Pretty printing is enabled by default, and the indent string is
+     * set to "  " (two spaces).
      *
      * @param out the character-output stream
      */
     public AponWriter(Writer out) {
-        this(out, true);
-    }
-
-    /**
-     * Instantiates a new AponWriter.
-     *
-     * @param out the character-output stream
-     * @param nullWritable whether to write a null parameter
-     */
-    public AponWriter(Writer out, boolean nullWritable) {
         this.out = out;
-        this.nullWritable = nullWritable;
+        setIndentString(DEFAULT_INDENT_STRING);
     }
 
     /**
      * Instantiates a new AponWriter.
+     * Pretty printing is enabled by default, and the indent string is
+     * set to "  " (two spaces).
      *
      * @param file a File object to write to
      * @throws IOException if an I/O error occurs
      */
     public AponWriter(File file) throws IOException {
         this(new FileWriter(file));
-    }
-
-    /**
-     * Instantiates a new AponWriter.
-     *
-     * @param file a File object to write to
-     * @param nullWritable whether to write a null parameter
-     * @throws IOException if an I/O error occurs
-     */
-    public AponWriter(File file, boolean nullWritable) throws IOException {
-        this(new FileWriter(file), nullWritable);
     }
 
     /**
@@ -102,13 +94,40 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
         this.indentString = indentString;
     }
 
+    public void setSkipNull(boolean skipNull) {
+        this.skipNull = skipNull;
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T extends AponWriter> T prettyPrint(boolean prettyPrint) {
+        if (prettyPrint) {
+            setIndentString(DEFAULT_INDENT_STRING);
+        } else {
+            setIndentString(null);
+        }
+        return (T)this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T extends AponWriter> T indentString(String indentString) {
+        setIndentString(indentString);
+        return (T)this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T extends AponWriter> T nullWritable(boolean nullWritable) {
+        setSkipNull(!nullWritable);
+        return (T)this;
+    }
+
     /**
      * Write a Parameters object to the character-output stream.
      *
      * @param parameters the Parameters object to be converted
      * @throws IOException if an I/O error occurs
      */
-    public void write(Parameters parameters) throws IOException {
+    @SuppressWarnings("unchecked")
+    public <T extends AponWriter> T write(Parameters parameters) throws IOException {
         if (parameters == null) {
             throw new IllegalArgumentException("parameters must not be null");
         }
@@ -116,7 +135,7 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
             for (Parameters ps : ((ArrayParameters)parameters).getParametersList()) {
                 beginBlock();
                 for (Parameter pv : ps.getParameterValueMap().values()) {
-                    if (nullWritable || pv.isAssigned()) {
+                    if (!skipNull || pv.isAssigned()) {
                         write(pv);
                     }
                 }
@@ -124,11 +143,12 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
             }
         } else {
             for (Parameter pv : parameters.getParameterValueMap().values()) {
-                if (nullWritable || pv.isAssigned()) {
+                if (!skipNull || pv.isAssigned()) {
                     write(pv);
                 }
             }
         }
+        return (T)this;
     }
 
     /**
@@ -137,7 +157,8 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
      * @param parameter the Parameter object to be converted
      * @throws IOException if an I/O error occurs
      */
-    public void write(Parameter parameter) throws IOException {
+    @SuppressWarnings("unchecked")
+    public <T extends AponWriter> T write(Parameter parameter) throws IOException {
         if (parameter == null) {
             throw new IllegalArgumentException("parameter must not be null");
         }
@@ -148,21 +169,21 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
                     if (parameter.isBracketed()) {
                         writeName(parameter);
                         beginArray();
-                        for (Parameters p : list) {
+                        for (Parameters ps : list) {
                             indent();
                             beginBlock();
-                            if (p != null) {
-                                write(p);
+                            if (ps != null) {
+                                write(ps);
                             }
                             endBlock();
                         }
                         endArray();
                     } else {
-                        for (Parameters p : list) {
+                        for (Parameters ps : list) {
                             writeName(parameter);
                             beginBlock();
-                            if (p != null) {
-                                write(p);
+                            if (ps != null) {
+                                write(ps);
                             }
                             endBlock();
                         }
@@ -170,7 +191,7 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
                 }
             } else {
                 Parameters ps = parameter.getValueAsParameters();
-                if (nullWritable || ps != null) {
+                if (!skipNull || ps != null) {
                     writeName(parameter);
                     beginBlock();
                     if (ps != null) {
@@ -212,7 +233,7 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
                 }
             } else {
                 Object value = parameter.getValue();
-                if (nullWritable || value != null) {
+                if (!skipNull || value != null) {
                     writeName(parameter);
                     beginBlock();
                     if (value instanceof Parameters) {
@@ -246,7 +267,7 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
                 }
             } else {
                 String s = parameter.getValueAsString();
-                if (nullWritable || s != null) {
+                if (!skipNull || s != null) {
                     writeName(parameter);
                     writeString(s);
                 }
@@ -281,7 +302,7 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
                     beginText();
                     writeText(text);
                     endText();
-                } else if (nullWritable) {
+                } else if (!skipNull) {
                     writeName(parameter);
                     writeNull();
                 }
@@ -306,12 +327,13 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
                     }
                 }
             } else {
-                if (nullWritable || parameter.getValue() != null) {
+                if (!skipNull || parameter.getValue() != null) {
                     writeName(parameter);
                     write(parameter.getValue());
                 }
             }
         }
+        return (T)this;
     }
 
     /**
@@ -320,7 +342,8 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
      * @param message the comment to write to a character-output stream
      * @throws IOException if an I/O error occurs
      */
-    public void comment(String message) throws IOException {
+    @SuppressWarnings("unchecked")
+    public <T extends AponWriter> T comment(String message) throws IOException {
         if (message != null) {
             if (message.indexOf(NEW_LINE_CHAR) != -1) {
                 String line;
@@ -348,6 +371,7 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
                 newLine();
             }
         }
+        return (T)this;
     }
 
     private void writeName(Parameter parameter) throws IOException {
@@ -527,37 +551,9 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
         }
     }
 
-    /**
-     * Converts a Parameters object to an APON formatted string.
-     *
-     * @param parameters the Parameters object to be converted
-     * @return a string that contains the APON text
-     */
-    public static String stringify(Parameters parameters) {
-        return stringify(parameters, DEFAULT_INDENT_STRING);
-    }
-
-    /**
-     * Converts a Parameters object to an APON formatted string.
-     *
-     * @param parameters the Parameters object to be converted
-     * @param indentString the indentation string
-     * @return a string that contains the APON text
-     */
-    public static String stringify(Parameters parameters, String indentString) {
-        if (parameters == null) {
-            return StringUtils.EMPTY;
-        }
-        try {
-            Writer out = new StringWriter();
-            AponWriter writer = new AponWriter(out);
-            writer.setIndentString(indentString);
-            writer.write(parameters);
-            writer.close();
-            return out.toString();
-        } catch (Exception e) {
-            return StringUtils.EMPTY;
-        }
+    @Override
+    public String toString() {
+        return out.toString();
     }
 
 }

@@ -29,12 +29,12 @@ public class AponReaderTest2 {
             customer.putValue(Customer.episode, "His individual skills are outstanding.\nI don't know as how he is handsome");
             customer.putValue(Customer.approved, false);
 
-            String text = AponWriter.stringify(customer);
+            String text = new AponWriter().write(customer).toString();
 
             Customer customer2 = new Customer();
             customer2 = AponReader.parse(text, customer2);
 
-            String text2 = AponWriter.stringify(customer2);
+            String text2 = new AponWriter().write(customer2).toString();
 
             System.out.println("---------------------------------------------------");
             System.out.print(text);

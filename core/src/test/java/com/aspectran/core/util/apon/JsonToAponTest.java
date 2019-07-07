@@ -1,6 +1,5 @@
 package com.aspectran.core.util.apon;
 
-import com.aspectran.core.util.StringUtils;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -31,8 +30,8 @@ class JsonToAponTest {
 
         Parameters ps = JsonToApon.from(sb.toString(), new ArrayParameters());
 
-        String s1 = StringUtils.replace(apon, "\r", "").trim();
-        String s2 = StringUtils.replace(ps.toString(), "\r", "").trim();
+        String s1 = apon.replace("\n", AponFormat.NEW_LINE);
+        String s2 = ps.toString().trim();
 
         assertEquals(s1, s2);
     }
@@ -44,8 +43,8 @@ class JsonToAponTest {
 
         Parameters ps = JsonToApon.from(json);
 
-        String s1 = StringUtils.replace(apon, "\r", "").trim();
-        String s2 = StringUtils.replace(ps.toString(), "\r", "").trim();
+        String s1 = apon.replace("\n", AponFormat.NEW_LINE);
+        String s2 = ps.toString().trim();
 
         assertEquals(s1, s2);
     }

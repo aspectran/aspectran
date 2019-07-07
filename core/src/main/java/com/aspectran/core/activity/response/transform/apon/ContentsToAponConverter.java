@@ -18,7 +18,7 @@ package com.aspectran.core.activity.response.transform.apon;
 import com.aspectran.core.activity.process.result.ActionResult;
 import com.aspectran.core.activity.process.result.ContentResult;
 import com.aspectran.core.activity.process.result.ProcessResult;
-import com.aspectran.core.util.apon.ObjectToApon;
+import com.aspectran.core.util.apon.ObjectToAponConverter;
 import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.apon.VariableParameters;
 
@@ -27,9 +27,13 @@ import com.aspectran.core.util.apon.VariableParameters;
  * 
  * <p>Created: 2015. 03. 16 PM 11:14:29</p>
  */
-public class ContentsToApon {
+public class ContentsToAponConverter extends ObjectToAponConverter {
 
-    public static Parameters from(ProcessResult processResult) {
+    public ContentsToAponConverter() {
+        super();
+    }
+
+    public Parameters toParameters(ProcessResult processResult) {
         if (processResult == null) {
             throw new IllegalArgumentException("processResult must not be null");
         }
@@ -49,19 +53,24 @@ public class ContentsToApon {
 
         Parameters container = new VariableParameters();
         for (ContentResult contentResult : processResult) {
-            read(contentResult, container);
+            putValue(container, contentResult);
         }
         return container;
     }
 
-    private static void read(ContentResult contentResult, Parameters container) {
+    private void putValue(Parameters container, ContentResult contentResult) {
         if (contentResult.getName() != null) {
             Parameters p = new VariableParameters();
             container.putValue(contentResult.getName(), p);
             container = p;
         }
         for (ActionResult actionResult : contentResult) {
-            ObjectToApon.putValue(container, actionResult.getActionId(), actionResult.getResultValue());
+            String name = actionResult.getActionId();
+            Object value = actionResult.getResultValue();
+            if (container.hasParameter(name)) {
+                container.clearValue(name);
+            }
+            putValue(container, name, value);
         }
     }
 

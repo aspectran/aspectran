@@ -16,6 +16,7 @@
 package com.aspectran.core.util.apon;
 
 import com.aspectran.core.util.BooleanUtils;
+import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.ToStringBuilder;
 
 import java.io.IOException;
@@ -31,8 +32,6 @@ public abstract class AbstractParameters implements Parameters {
     private final boolean predefined;
 
     private Parameter identifier;
-
-    private String indentString;
 
     protected AbstractParameters(ParameterDefinition[] parameterDefinitions) {
         if (parameterDefinitions != null) {
@@ -586,6 +585,13 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
+    public void readFrom(String text) throws IOException {
+        if (text != null) {
+            AponReader.parse(text, this);
+        }
+    }
+
+    @Override
     public String describe() {
         return describe(false);
     }
@@ -604,23 +610,11 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
-    public void setIndentString(String indentString) {
-        this.indentString = indentString;
-    }
-
-    @Override
-    public void readFrom(String text) throws IOException {
-        if (text != null) {
-            AponReader.parse(text, this);
-        }
-    }
-
-    @Override
     public String toString() {
-        if (indentString != null) {
-            return AponWriter.stringify(this, indentString);
-        } else {
-            return AponWriter.stringify(this);
+        try {
+            return new AponWriter().write(this).toString();
+        } catch (IOException e) {
+            return StringUtils.EMPTY;
         }
     }
 

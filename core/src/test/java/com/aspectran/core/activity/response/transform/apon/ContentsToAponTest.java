@@ -42,12 +42,12 @@ class ContentsToAponTest {
         actionResult2.setResultValue("action1.result2", "value2");
         contentResult.addActionResult(actionResult2);
 
-        Parameters parameters = ContentsToApon.from(processResult);
+        Parameters ps = new ContentsToAponConverter().toParameters(processResult);
 
-        //System.out.println(parameters);
+        String s1 = "action1: {\n  result1: value1\n  result2: value2\n}".replace("\n", AponFormat.NEW_LINE);
+        String s2 = ps.toString().trim();
 
-        String result = "action1: {\n  result1: value1\n  result2: value2\n}\n".replace("\n", AponFormat.NEW_LINE);
-        assertEquals(result.trim(), parameters.toString().trim());
+        assertEquals(s1, s2);
     }
 
     @Test
@@ -55,28 +55,28 @@ class ContentsToAponTest {
         ProcessResult processResult = new ProcessResult();
         ContentResult contentResult = new ContentResult(processResult, 4);
 
-        ActionResult actionResult0 = new ActionResult();
-        actionResult0.setResultValue("action0", "value0");
-        contentResult.addActionResult(actionResult0);
+        ActionResult r0 = new ActionResult();
+        r0.setResultValue("action0", "value0");
+        contentResult.addActionResult(r0);
 
-        ActionResult actionResult1 = new ActionResult();
-        actionResult1.setResultValue("action1.result1", "value1");
-        contentResult.addActionResult(actionResult1);
+        ActionResult r1 = new ActionResult();
+        r1.setResultValue("action1.result1", "value1");
+        contentResult.addActionResult(r1);
 
-        ActionResult actionResult2 = new ActionResult();
-        actionResult2.setResultValue("action1.result2", "value2");
-        contentResult.addActionResult(actionResult2);
+        ActionResult r2 = new ActionResult();
+        r2.setResultValue("action1.result2", "value2");
+        contentResult.addActionResult(r2);
 
-        ActionResult actionResult3 = new ActionResult();
-        actionResult3.setResultValue("action1", "value3");
-        contentResult.addActionResult(actionResult3);
+        ActionResult r3 = new ActionResult();
+        r3.setResultValue("action1", "value3");
+        contentResult.addActionResult(r3);
 
-        Parameters parameters = ContentsToApon.from(processResult);
+        Parameters ps = new ContentsToAponConverter().toParameters(processResult);
 
-        //System.out.println(parameters);
+        String s1 = "action0: value0\naction1: value3".replace("\n", AponFormat.NEW_LINE);
+        String s2 = ps.toString().trim();
 
-        String result = "action0: value0\naction1: value3".replace("\n", AponFormat.NEW_LINE);
-        assertEquals(result.trim(), parameters.toString().trim());
+        assertEquals(s1, s2);
     }
 
     @Test
@@ -101,9 +101,12 @@ class ContentsToAponTest {
         actionResult3.setResultValue("action3", "value3");
         contentResult.addActionResult(actionResult3);
 
-        Parameters parameters = ContentsToApon.from(processResult);
+        Parameters ps = new ContentsToAponConverter().toParameters(processResult);
 
-        System.out.println(parameters);
+        String s1 = "content1: {\n" + "  action0: value0\n" + "  action1: {\n" + "    result1: value1\n" + "    result2: value2\n" + "  }\n" + "  action3: value3\n" + "}";
+        String s2 = ps.toString().trim();
+
+        assertEquals(s1, s2);
     }
 
     @Test
@@ -112,44 +115,47 @@ class ContentsToAponTest {
         ContentResult contentResult = new ContentResult(processResult, 4);
         contentResult.setName("content1");
 
-        ActionResult actionResult0 = new ActionResult();
-        actionResult0.setResultValue("action0", "value0");
-        contentResult.addActionResult(actionResult0);
+        ActionResult r0 = new ActionResult();
+        r0.setResultValue("action0", "value0");
+        contentResult.addActionResult(r0);
 
-        ActionResult actionResult1 = new ActionResult();
-        actionResult1.setResultValue("action1.result1", "value1");
-        contentResult.addActionResult(actionResult1);
+        ActionResult r1 = new ActionResult();
+        r1.setResultValue("action1.result1", "value1");
+        contentResult.addActionResult(r1);
 
-        ActionResult actionResult2 = new ActionResult();
-        actionResult2.setResultValue("action1.result2", "value2");
-        contentResult.addActionResult(actionResult2);
+        ActionResult r2 = new ActionResult();
+        r2.setResultValue("action1.result2", "value2");
+        contentResult.addActionResult(r2);
 
-        ActionResult actionResult3 = new ActionResult();
-        actionResult3.setResultValue("action3", "value3");
-        contentResult.addActionResult(actionResult3);
+        ActionResult r3 = new ActionResult();
+        r3.setResultValue("action3", "value3");
+        contentResult.addActionResult(r3);
 
         ContentResult contentResult2 = new ContentResult(processResult, 4);
         contentResult2.setName("content2");
 
-        ActionResult actionResult20 = new ActionResult();
-        actionResult20.setResultValue("action0", "value0");
-        contentResult2.addActionResult(actionResult20);
+        ActionResult r10 = new ActionResult();
+        r10.setResultValue("action0", "value0");
+        contentResult2.addActionResult(r10);
 
-        ActionResult actionResult21 = new ActionResult();
-        actionResult21.setResultValue("action1.result1", "value1");
-        contentResult2.addActionResult(actionResult21);
+        ActionResult r11 = new ActionResult();
+        r11.setResultValue("action1.result1", "value1");
+        contentResult2.addActionResult(r11);
 
-        ActionResult actionResult22 = new ActionResult();
-        actionResult22.setResultValue("action1.result2", "value2");
-        contentResult2.addActionResult(actionResult22);
+        ActionResult r12 = new ActionResult();
+        r12.setResultValue("action1.result2", "value2");
+        contentResult2.addActionResult(r12);
 
-        ActionResult actionResult23 = new ActionResult();
-        actionResult23.setResultValue("action3", "value3");
-        contentResult2.addActionResult(actionResult23);
+        ActionResult r13 = new ActionResult();
+        r13.setResultValue("action3", "value3");
+        contentResult2.addActionResult(r13);
 
-        Parameters parameters = ContentsToApon.from(processResult);
+        Parameters ps = new ContentsToAponConverter().toParameters(processResult);
 
-        System.out.println(parameters);
+        String s1 = "content1: {\n" + "  action0: value0\n" + "  action1: {\n" + "    result1: value1\n" + "    result2: value2\n" + "  }\n" + "  action3: value3\n" + "}\n" + "content2: {\n" + "  action0: value0\n" + "  action1: {\n" + "    result1: value1\n" + "    result2: value2\n" + "  }\n" + "  action3: value3\n" + "}";
+        String s2 = ps.toString().trim();
+
+        assertEquals(s1, s2);
     }
 
     @Test
@@ -167,9 +173,12 @@ class ContentsToAponTest {
         actionResult1.setResultValue(null, map);
         contentResult.addActionResult(actionResult1);
 
-        Parameters parameters = ContentsToApon.from(processResult);
+        Parameters ps = new ContentsToAponConverter().toParameters(processResult);
 
-        System.out.println(parameters);
+        String s1 = "key1: value1\n" + "key2: value2\n" + "key3: value3";
+        String s2 = ps.toString().trim();
+
+        assertEquals(s1, s2);
     }
 
     @Test
@@ -196,9 +205,12 @@ class ContentsToAponTest {
         actionResult3.setResultValue("action2", "value3");
         contentResult.addActionResult(actionResult3);
 
-        Parameters parameters = ContentsToApon.from(processResult);
+        Parameters ps = new ContentsToAponConverter().toParameters(processResult);
 
-        System.out.println(parameters);
+        String s1 = "content1: {\n" + "  key1: value1\n" + "  key2: value2\n" + "  key3: value3\n" + "  action1: {\n" + "    result2: value2\n" + "  }\n" + "  action2: value3\n" + "}";
+        String s2 = ps.toString().trim();
+
+        assertEquals(s1, s2);
     }
 
 }

@@ -175,7 +175,7 @@ public class AspectCommand extends AbstractCommand {
             if (count == 0) {
                 console.writeLine("----------------------------------------------------------------------------");
             }
-            AponWriter aponWriter = new AponWriter(console.getWriter(), false);
+            AponWriter aponWriter = new AponWriter(console.getWriter()).nullWritable(false);
             aponWriter.write(aspectParameters);
             console.writeLine("----------------------------------------------------------------------------");
             count++;

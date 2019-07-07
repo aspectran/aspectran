@@ -79,9 +79,11 @@ public class TransletInterpreter implements ActivityContextAware {
             JsonWriter jsonWriter = new JsonWriter(translet.getResponseAdapter().getWriter());
             jsonWriter.beginBlock();
             jsonWriter.writeName("translet");
-            jsonWriter.writeNull().writeComma();
+            jsonWriter.writeNull();
+            jsonWriter.writeComma();
             jsonWriter.writeName("request");
-            jsonWriter.writeNull().writeComma();
+            jsonWriter.writeNull();
+            jsonWriter.writeComma();
             jsonWriter.writeName("response");
             jsonWriter.writeNull();
             jsonWriter.endBlock();

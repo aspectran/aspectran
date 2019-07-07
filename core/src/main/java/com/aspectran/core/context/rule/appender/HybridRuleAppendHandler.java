@@ -132,9 +132,9 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
             AponWriter aponWriter;
             if (encoding != null) {
                 OutputStream outputStream = new FileOutputStream(aponFile);
-                aponWriter = new AponWriter(new OutputStreamWriter(outputStream, encoding), false);
+                aponWriter = new AponWriter(new OutputStreamWriter(outputStream, encoding)).nullWritable(false);
             } else {
-                aponWriter = new AponWriter(new FileWriter(aponFile), false);
+                aponWriter = new AponWriter(new FileWriter(aponFile)).nullWritable(false);
             }
 
             try {

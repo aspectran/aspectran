@@ -16,10 +16,11 @@
 package com.aspectran.core.activity.response.transform;
 
 import com.aspectran.core.activity.Activity;
+import com.aspectran.core.activity.FormattingContext;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.activity.response.Response;
-import com.aspectran.core.activity.response.transform.apon.ContentsToApon;
+import com.aspectran.core.activity.response.transform.apon.ContentsToAponConverter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.util.apon.AponWriter;
@@ -84,14 +85,25 @@ public class AponTransformResponse extends TransformResponse {
             Writer writer = responseAdapter.getWriter();
             ProcessResult processResult = activity.getProcessResult();
             if (processResult != null && !processResult.isEmpty()) {
-                Parameters parameters = ContentsToApon.from(processResult);
+                FormattingContext formattingContext = FormattingContext.parse(activity);
+                ContentsToAponConverter aponConverter = new ContentsToAponConverter();
+                if (formattingContext.getDateFormat() != null) {
+                    aponConverter.setDateFormat(formattingContext.getDateFormat());
+                }
+                if (formattingContext.getDateTimeFormat() != null) {
+                    aponConverter.setDateTimeFormat(formattingContext.getDateTimeFormat());
+                }
+                Parameters parameters = aponConverter.toParameters(processResult);
+
                 AponWriter aponWriter = new AponWriter(writer);
                 if (pretty == Boolean.FALSE) {
-                    aponWriter.setIndentString(null);
+                    aponWriter.prettyPrint(false);
                 } else {
-                    String indentString = activity.getSetting("indentString");
-                    if (indentString != null) {
-                        aponWriter.setIndentString(indentString);
+                    if (formattingContext.getIndentString() != null) {
+                        aponWriter.setIndentString(formattingContext.getIndentString());
+                    }
+                    if (formattingContext.getNullWritable() != null) {
+                        aponWriter.setSkipNull(!formattingContext.getNullWritable());
                     }
                 }
                 aponWriter.write(parameters);

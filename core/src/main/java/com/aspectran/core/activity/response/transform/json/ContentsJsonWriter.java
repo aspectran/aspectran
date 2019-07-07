@@ -38,37 +38,18 @@ public class ContentsJsonWriter extends JsonWriter {
      * @param writer a {@code Writer} object that can send character text
      */
     public ContentsJsonWriter(Writer writer) {
-        this(writer, false);
-    }
-
-    /**
-     * Instantiates a new ContentsJsonWriter.
-     *
-     * @param writer a {@code Writer} object that can send character text
-     * @param prettyPrint enables or disables pretty-printing
-     */
-    public ContentsJsonWriter(Writer writer, boolean prettyPrint) {
-        super(writer, prettyPrint);
-    }
-
-    /**
-     * Instantiates a new ContentsJsonWriter.
-     *
-     * @param writer a {@code Writer} object that can send character text
-     * @param indentString the string that should be used for indentation when pretty-printing is enabled
-     */
-    public ContentsJsonWriter(Writer writer, String indentString) {
-        super(writer, indentString);
+        super(writer);
     }
 
     @Override
-    public ContentsJsonWriter write(Object object) throws IOException {
+    @SuppressWarnings("unchecked")
+    public <T extends JsonWriter> T write(Object object) throws IOException {
         if (object instanceof ProcessResult) {
             write((ProcessResult)object);
         } else {
             super.write(object);
         }
-        return this;
+        return (T)this;
     }
 
     /**
@@ -84,7 +65,7 @@ public class ContentsJsonWriter extends JsonWriter {
             writeName(processResult.getName());
         }
         if (processResult.isEmpty()) {
-            writeNull();
+            writeNull(processResult.getName() == null);
         } else if (processResult.size() == 1) {
             ContentResult contentResult = processResult.get(0);
             write(contentResult);

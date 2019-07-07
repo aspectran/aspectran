@@ -16,16 +16,16 @@
 package com.aspectran.web.activity.response;
 
 import com.aspectran.core.activity.Activity;
+import com.aspectran.core.activity.FormattingContext;
 import com.aspectran.core.activity.response.transform.JsonTransformResponse;
 import com.aspectran.core.activity.response.transform.XmlTransformResponse;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.util.Assert;
 import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.apon.ObjectToApon;
 import com.aspectran.core.util.apon.AponWriter;
+import com.aspectran.core.util.apon.ObjectToAponConverter;
 import com.aspectran.core.util.apon.Parameters;
-import com.aspectran.core.util.apon.VariableParameters;
 import com.aspectran.core.util.json.JsonWriter;
 import com.aspectran.web.support.http.HttpHeaders;
 import com.aspectran.web.support.http.HttpMediaTypeNotAcceptableException;
@@ -138,17 +138,25 @@ public class DefaultRestResponse extends AbstractRestResponse {
             writer.write(callback + JsonTransformResponse.ROUND_BRACKET_OPEN);
         }
         if (getName() != null || getData() != null) {
-            JsonWriter jsonWriter;
+            JsonWriter jsonWriter = new JsonWriter(writer);
             if (isPrettyPrint()) {
-                String indentString;
+                FormattingContext formattingContext = FormattingContext.parse(activity);
                 if (indent > -1) {
-                    indentString = StringUtils.repeat(' ', indent);
-                } else {
-                    indentString = activity.getSetting("indentString");
+                    jsonWriter.setIndentString(StringUtils.repeat(' ', indent));
+                } else if (formattingContext.getIndentString() != null) {
+                    jsonWriter.setIndentString(formattingContext.getIndentString());
                 }
-                jsonWriter = new JsonWriter(writer, indentString);
+                if (formattingContext.getDateFormat() != null) {
+                    jsonWriter.setDateFormat(formattingContext.getDateFormat());
+                }
+                if (formattingContext.getDateTimeFormat() != null) {
+                    jsonWriter.setDateTimeFormat(formattingContext.getDateTimeFormat());
+                }
+                if (formattingContext.getNullWritable() != null) {
+                    jsonWriter.setSkipNull(!formattingContext.getNullWritable());
+                }
             } else {
-                jsonWriter = new JsonWriter(writer, false);
+                jsonWriter.prettyPrint(false);
             }
             if (getName() != null) {
                 jsonWriter.beginBlock();
@@ -169,22 +177,28 @@ public class DefaultRestResponse extends AbstractRestResponse {
         Writer writer = responseAdapter.getWriter();
 
         if (getName() != null || getData() != null) {
-            Parameters parameters = new VariableParameters();
-            ObjectToApon.putValue(parameters, getName(), getData());
+            FormattingContext formattingContext = FormattingContext.parse(activity);
+            ObjectToAponConverter aponConverter = new ObjectToAponConverter();
+            if (formattingContext.getDateFormat() != null) {
+                aponConverter.setDateFormat(formattingContext.getDateFormat());
+            }
+            if (formattingContext.getDateTimeFormat() != null) {
+                aponConverter.setDateTimeFormat(formattingContext.getDateTimeFormat());
+            }
+            Parameters parameters = aponConverter.toParameters(getName(), getData());
 
             AponWriter aponWriter = new AponWriter(writer);
-            if (isPrettyPrint()) {
-                String indentString;
-                if (indent > -1) {
-                    indentString = StringUtils.repeat(' ', indent);
-                } else {
-                    indentString = activity.getSetting("indentString");
-                }
-                if (indentString != null) {
-                    aponWriter.setIndentString(indentString);
-                }
+            if (!isPrettyPrint()) {
+                aponWriter.prettyPrint(false);
             } else {
-                aponWriter.setIndentString(null);
+                if (indent > -1) {
+                    aponWriter.setIndentString(StringUtils.repeat(' ', indent));
+                } else if (formattingContext.getIndentString() != null) {
+                    aponWriter.setIndentString(formattingContext.getIndentString());
+                }
+                if (formattingContext.getNullWritable() != null) {
+                    aponWriter.setSkipNull(!formattingContext.getNullWritable());
+                }
             }
             aponWriter.write(parameters);
         }

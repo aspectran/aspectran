@@ -27,6 +27,10 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
@@ -43,7 +47,7 @@ import java.util.Map;
  */
 public class JsonWriter implements Flushable, Closeable {
 
-    private static final String DEFAULT_INDENT_STRING = "\t";
+    private static final String DEFAULT_INDENT_STRING = "  ";
 
     private final Writer out;
 
@@ -51,45 +55,90 @@ public class JsonWriter implements Flushable, Closeable {
 
     private String indentString;
 
+    private String dateFormat;
+
+    private String dateTimeFormat;
+
+    private boolean skipNull;
+
     private int indentDepth;
 
-    private boolean willWriteValue;
+    private String pendedName;
+
+    private boolean writeSkipped;
+
+    private int writtenCount;
 
     /**
      * Instantiates a new JsonWriter.
-     * Pretty-printing is disabled by default.
+     * Pretty printing is enabled by default, and the indent string is
+     * set to "  " (two spaces).
+     */
+    public JsonWriter() {
+        this(new StringWriter());
+    }
+
+    /**
+     * Instantiates a new JsonWriter.
+     * Pretty printing is enabled by default, and the indent string is
+     * set to "  " (two spaces).
      *
      * @param out the character-output stream
      */
     public JsonWriter(Writer out) {
-        this(out, false);
+        this.out = out;
+        setIndentString(DEFAULT_INDENT_STRING);
     }
 
-    /**
-     * Instantiates a new JsonWriter.
-     * If pretty-printing is enabled, includes spaces, tabs and new-lines to make the format more readable.
-     * The default indentation string is a tab character.
-     *
-     * @param out the character-output stream
-     * @param prettyPrint enables or disables pretty-printing
-     */
-    public JsonWriter(Writer out, boolean prettyPrint) {
-        this.out = out;
-        this.prettyPrint = prettyPrint;
-        this.indentString = (prettyPrint ? DEFAULT_INDENT_STRING : null);
-    }
-
-    /**
-     * Instantiates a new JsonWriter.
-     * If pretty-printing is enabled, includes spaces, tabs and new-lines to make the format more readable.
-     *
-     * @param out the character-output stream
-     * @param indentString the string that should be used for indentation when pretty-printing is enabled
-     */
-    public JsonWriter(Writer out, String indentString) {
-        this.out = out;
+    public void setIndentString(String indentString) {
         this.prettyPrint = (indentString != null);
         this.indentString = indentString;
+    }
+
+    public void setDateFormat(String dateFormat) {
+        this.dateFormat = dateFormat;
+    }
+
+    public void setDateTimeFormat(String dateTimeFormat) {
+        this.dateTimeFormat = dateTimeFormat;
+    }
+
+    public void setSkipNull(boolean skipNull) {
+        this.skipNull = skipNull;
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T extends JsonWriter> T prettyPrint(boolean prettyPrint) {
+        if (prettyPrint) {
+            setIndentString(DEFAULT_INDENT_STRING);
+        } else {
+            setIndentString(null);
+        }
+        return (T)this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T extends JsonWriter> T indentString(String indentString) {
+        setIndentString(indentString);
+        return (T)this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T extends JsonWriter> T dateFormat(String dateFormat) {
+        setDateFormat(dateFormat);
+        return (T)this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T extends JsonWriter> T dateTimeFormat(String dateTimeFormat) {
+        setDateTimeFormat(dateTimeFormat);
+        return (T)this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T extends JsonWriter> T nullWritable(boolean nullWritable) {
+        setSkipNull(!nullWritable);
+        return (T)this;
     }
 
     /**
@@ -98,17 +147,21 @@ public class JsonWriter implements Flushable, Closeable {
      * @param object the object to write to a character-output stream.
      * @throws IOException if an I/O error has occurred.
      */
-    public JsonWriter write(Object object) throws IOException {
+    @SuppressWarnings("unchecked")
+    public <T extends JsonWriter> T write(Object object) throws IOException {
         if (object == null) {
             writeNull();
-        } else if (object instanceof String
-                || object instanceof Date) {
+        } else if (object instanceof String) {
             writeValue(object.toString());
+        } else if (object instanceof Character) {
+            writeValue(String.valueOf(((char)object)));
         } else if (object instanceof Boolean) {
             writeValue((Boolean)object);
         } else if (object instanceof Number) {
             writeValue((Number)object);
         } else if (object instanceof Parameters) {
+            int oldWrittenCount = writtenCount;
+            writtenCount = 0;
             beginBlock();
 
             Map<String, ParameterValue> params = ((Parameters)object).getParameterValueMap();
@@ -127,7 +180,10 @@ public class JsonWriter implements Flushable, Closeable {
             }
 
             endBlock();
+            writtenCount = oldWrittenCount + 1;
         } else if (object instanceof Map<?, ?>) {
+            int oldWrittenCount = writtenCount;
+            writtenCount = 0;
             beginBlock();
 
             @SuppressWarnings("unchecked")
@@ -146,7 +202,10 @@ public class JsonWriter implements Flushable, Closeable {
             }
 
             endBlock();
+            writtenCount = oldWrittenCount + 1;
         } else if (object instanceof Collection<?>) {
+            int oldWrittenCount = writtenCount;
+            writtenCount = 0;
             beginArray();
 
             @SuppressWarnings("unchecked")
@@ -162,7 +221,10 @@ public class JsonWriter implements Flushable, Closeable {
             }
 
             endArray();
+            writtenCount = oldWrittenCount + 1;
         } else if (object.getClass().isArray()) {
+            int oldWrittenCount = writtenCount;
+            writtenCount = 0;
             beginArray();
 
             int len = Array.getLength(object);
@@ -177,6 +239,28 @@ public class JsonWriter implements Flushable, Closeable {
             }
 
             endArray();
+            writtenCount = oldWrittenCount + 1;
+        } else if (object instanceof Date) {
+            if (dateTimeFormat != null) {
+                SimpleDateFormat dt = new SimpleDateFormat(dateTimeFormat);
+                writeValue(dt.format((Date)object));
+            } else {
+                writeValue(object.toString());
+            }
+        } else if (object instanceof LocalDate) {
+            if (dateFormat != null) {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateFormat);
+                writeValue(((LocalDate)object).format(formatter));
+            } else {
+                writeValue(object.toString());
+            }
+        } else if (object instanceof LocalDateTime) {
+            if (dateTimeFormat != null) {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateTimeFormat);
+                writeValue(((LocalDateTime)object).format(formatter));
+            } else {
+                writeValue(object.toString());
+            }
         } else {
             String[] readablePropertyNames = BeanUtils.getReadablePropertyNamesWithoutNonSerializable(object);
             if (readablePropertyNames != null && readablePropertyNames.length > 0) {
@@ -203,25 +287,30 @@ public class JsonWriter implements Flushable, Closeable {
                 writeValue(object.toString());
             }
         }
-        return this;
+        return (T)this;
     }
 
     /**
      * Writes a key name to a character stream.
      *
      * @param name the string to write to a character-output stream
-     * @return this JsonWriter
-     * @throws IOException if an I/O error has occurred
      */
-    public JsonWriter writeName(String name) throws IOException {
-        indent();
-        out.write(escape(name));
-        out.write(":");
-        if (prettyPrint) {
-            out.write(" ");
+    public void writeName(String name) {
+        pendedName = name;
+    }
+
+    private void writePendedName() throws IOException {
+        if (pendedName != null) {
+            indent();
+            out.write(escape(pendedName));
+            out.write(":");
+            if (prettyPrint) {
+                out.write(" ");
+            }
+            pendedName = null;
+        } else {
+            indent();
         }
-        willWriteValue = true;
-        return this;
     }
 
     /**
@@ -229,135 +318,137 @@ public class JsonWriter implements Flushable, Closeable {
      * If {@code value} is null, write a null string ("").
      *
      * @param value the string to write to a character-output stream
-     * @return this JsonWriter
      * @throws IOException if an I/O error has occurred
      */
-    public JsonWriter writeValue(String value) throws IOException {
-        if (!willWriteValue) {
-            indent();
+    public void writeValue(String value) throws IOException {
+        if (!skipNull || value != null) {
+            writePendedName();
+            out.write(escape(value));
+            writtenCount++;
+            writeSkipped = false;
+        } else {
+            writeSkipped = true;
         }
-        out.write(escape(value));
-        willWriteValue = false;
-        return this;
     }
 
     /**
      *  Writes a {@code Boolean} object to a character stream.
      *
      * @param value a {@code Boolean} object to write to a character-output stream
-     * @return this JsonWriter
      * @throws IOException if an I/O error has occurred
      */
-    public JsonWriter writeValue(Boolean value) throws IOException {
-        if (!willWriteValue) {
-            indent();
+    public void writeValue(Boolean value) throws IOException {
+        if (!skipNull || value != null) {
+            writePendedName();
+            out.write(value.toString());
+            writtenCount++;
+            writeSkipped = false;
+        } else {
+            writeSkipped = true;
         }
-        out.write(value.toString());
-        willWriteValue = false;
-        return this;
     }
 
     /**
      *  Writes a {@code Number} object to a character stream.
      *
      * @param value a {@code Number} object to write to a character-output stream
-     * @return this JsonWriter
      * @throws IOException if an I/O error has occurred
      */
-    public JsonWriter writeValue(Number value) throws IOException {
-        if (!willWriteValue) {
-            indent();
+    public void writeValue(Number value) throws IOException {
+        if (!skipNull || value != null) {
+            writePendedName();
+            out.write(value.toString());
+            writtenCount++;
+            writeSkipped = false;
+        } else {
+            writeSkipped = true;
         }
-        out.write(value.toString());
-        willWriteValue = false;
-        return this;
     }
 
     /**
      * Write a string "null" to a character stream.
      *
-     * @return this JsonWriter
      * @throws IOException if an I/O error has occurred
      */
-    public JsonWriter writeNull() throws IOException {
-        out.write("null");
-        return this;
+    public void writeNull() throws IOException {
+        writeNull(false);
+    }
+
+    public void writeNull(boolean force) throws IOException {
+        if (!skipNull || force) {
+            writePendedName();
+            out.write("null");
+            writtenCount++;
+            writeSkipped = false;
+        } else {
+            writeSkipped = true;
+        }
     }
 
     /**
      * Write a comma character to a character stream.
      *
-     * @return this JsonWriter
      * @throws IOException if an I/O error has occurred
      */
-    public JsonWriter writeComma() throws IOException {
-        out.write(",");
-        if (prettyPrint) {
-            out.write(" ");
+    public void writeComma() throws IOException {
+        if (!writeSkipped) {
+            out.write(",");
+            nextLine();
         }
-        nextLine();
-        return this;
     }
 
     /**
      * Open a single curly bracket.
      *
-     * @return this JsonWriter
      * @throws IOException if an I/O error has occurred
      */
-    public JsonWriter beginBlock() throws IOException {
-        if (!willWriteValue) {
-            indent();
-        }
+    public void beginBlock() throws IOException {
+        writePendedName();
         out.write("{");
         nextLine();
         indentDepth++;
-        return this;
     }
 
     /**
      * Close the open curly bracket.
      *
-     * @return this JsonWriter
      * @throws IOException if an I/O error has occurred
      */
-    public JsonWriter endBlock() throws IOException {
+    public void endBlock() throws IOException {
         indentDepth--;
-        nextLine();
+        if (writtenCount > 0) {
+            nextLine();
+        }
         indent();
         out.write("}");
-        return this;
+        writeSkipped = false;
     }
 
     /**
      * Open a single square bracket.
      *
-     * @return this JsonWriter
      * @throws IOException if an I/O error has occurred
      */
-    public JsonWriter beginArray() throws IOException {
-        if (!willWriteValue) {
-            indent();
-        }
+    public void beginArray() throws IOException {
+        writePendedName();
         out.write("[");
         nextLine();
         indentDepth++;
-        willWriteValue = false;
-        return this;
     }
 
     /**
      * Close the open square bracket.
      *
-     * @return this JsonWriter
      * @throws IOException if an I/O error has occurred
      */
-    public JsonWriter endArray() throws IOException {
+    public void endArray() throws IOException {
         indentDepth--;
-        nextLine();
+        if (writtenCount > 0) {
+            nextLine();
+        }
         indent();
         out.write("]");
-        return this;
+        writeSkipped = false;
     }
 
     /**
@@ -394,6 +485,11 @@ public class JsonWriter implements Flushable, Closeable {
         if (out != null) {
             out.close();
         }
+    }
+
+    @Override
+    public String toString() {
+        return out.toString();
     }
 
     private void checkCircularReference(Object wrapper, Object member) throws IOException {
@@ -466,56 +562,6 @@ public class JsonWriter implements Flushable, Closeable {
         }
         sb.append('"');
         return sb.toString();
-    }
-
-    /**
-     * Converts an object to a JSON formatted string.
-     * Pretty-printing is disabled by default.
-     *
-     * @param object an object to convert to a JSON formatted string
-     * @return the JSON formatted string
-     * @throws IOException if an I/O error has occurred
-     */
-    public static String stringify(Object object) throws IOException {
-        return stringify(object, null);
-    }
-
-    /**
-     * Converts an object to a JSON formatted string.
-     * If pretty-printing is enabled, includes spaces, tabs and new-lines to make the format more readable.
-     * The default indentation string is a tab character.
-     *
-     * @param object an object to convert to a JSON formatted string
-     * @param prettyPrint enables or disables pretty-printing
-     * @return the JSON formatted string
-     * @throws IOException if an I/O error has occurred
-     */
-    public static String stringify(Object object, boolean prettyPrint) throws IOException {
-        if (prettyPrint) {
-            return stringify(object, DEFAULT_INDENT_STRING);
-        } else {
-            return stringify(object, null);
-        }
-    }
-
-    /**
-     * Converts an object to a JSON formatted string.
-     * If pretty-printing is enabled, includes spaces, tabs and new-lines to make the format more readable.
-     *
-     * @param object an object to convert to a JSON formatted string
-     * @param indentString the string that should be used for indentation when pretty-printing is enabled
-     * @return the JSON formatted string
-     * @throws IOException if an I/O error has occurred
-     */
-    public static String stringify(Object object, String indentString) throws IOException {
-        if (object == null) {
-            return null;
-        }
-        Writer out = new StringWriter();
-        JsonWriter jsonWriter = new JsonWriter(out, indentString);
-        jsonWriter.write(object);
-        jsonWriter.close();
-        return out.toString();
     }
 
 }

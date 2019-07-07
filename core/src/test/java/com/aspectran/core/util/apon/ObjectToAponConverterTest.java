@@ -1,19 +1,4 @@
-/*
- * Copyright (c) 2008-2019 The Aspectran Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-package com.aspectran.core.util.json;
+package com.aspectran.core.util.apon;
 
 import com.aspectran.core.util.apon.test.Customer;
 
@@ -25,7 +10,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public class JsonWriterTest {
+/**
+ * <p>Created: 2019-07-07</p>
+ */
+class ObjectToAponConverterTest {
 
     public static void main(String[] args) {
         try {
@@ -55,11 +43,14 @@ public class JsonWriterTest {
 
             map.put("customers", customerList);
 
-            String result = new JsonWriter()
-                    .nullWritable(false)
+            Parameters parameters = new ObjectToAponConverter()
                     .dateFormat("yyyy-MM-dd")
                     .dateTimeFormat("yyyy-MM-dd HH:mm:ss")
-                    .write(map)
+                    .toParameters(map);
+
+            String result = new AponWriter()
+                    .nullWritable(false)
+                    .write(parameters)
                     .toString();
 
             System.out.println(result);

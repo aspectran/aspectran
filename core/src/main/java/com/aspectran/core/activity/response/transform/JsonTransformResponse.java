@@ -16,6 +16,7 @@
 package com.aspectran.core.activity.response.transform;
 
 import com.aspectran.core.activity.Activity;
+import com.aspectran.core.activity.FormattingContext;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.activity.response.Response;
@@ -96,15 +97,22 @@ public class JsonTransformResponse extends TransformResponse {
                 writer.write(callback + ROUND_BRACKET_OPEN);
             }
 
-            JsonWriter jsonWriter;
+            JsonWriter jsonWriter = new ContentsJsonWriter(writer);
             if (pretty == Boolean.FALSE) {
-                jsonWriter = new ContentsJsonWriter(writer, false);
+                jsonWriter.prettyPrint(false);
             } else {
-                String indentString = activity.getSetting("indentString");
-                if (indentString != null) {
-                    jsonWriter = new ContentsJsonWriter(writer, indentString);
-                } else {
-                    jsonWriter = new ContentsJsonWriter(writer, (pretty != null));
+                FormattingContext formattingContext = FormattingContext.parse(activity);
+                if (formattingContext.getIndentString() != null) {
+                    jsonWriter.setIndentString(formattingContext.getIndentString());
+                }
+                if (formattingContext.getDateFormat() != null) {
+                    jsonWriter.setDateFormat(formattingContext.getDateFormat());
+                }
+                if (formattingContext.getDateTimeFormat() != null) {
+                    jsonWriter.setDateTimeFormat(formattingContext.getDateTimeFormat());
+                }
+                if (formattingContext.getNullWritable() != null) {
+                    jsonWriter.setSkipNull(!formattingContext.getNullWritable());
                 }
             }
             jsonWriter.write(processResult);
