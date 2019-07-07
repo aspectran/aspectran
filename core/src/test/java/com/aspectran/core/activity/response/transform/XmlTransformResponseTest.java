@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.activity.response.transform;
 
+import com.aspectran.core.activity.FormattingContext;
 import com.aspectran.core.activity.process.result.ActionResult;
 import com.aspectran.core.activity.process.result.ContentResult;
 import com.aspectran.core.activity.process.result.ProcessResult;
@@ -22,6 +23,8 @@ import org.junit.jupiter.api.Test;
 
 import javax.xml.transform.TransformerException;
 import java.io.StringWriter;
+import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
  * <p>Created: 2019-01-12</p>
@@ -38,25 +41,35 @@ class XmlTransformResponseTest {
         contentResult.setName("subwrap");
         contentResult.setExplicit(true);
 
-        ActionResult actionResult0 = new ActionResult();
-        actionResult0.setResultValue("action0", "value0");
-        contentResult.addActionResult(actionResult0);
+        ActionResult r0 = new ActionResult();
+        r0.setResultValue("action0", "value0");
+        contentResult.addActionResult(r0);
 
-        ActionResult actionResult1 = new ActionResult();
-        actionResult1.setResultValue("action1.result1", "value1");
-        contentResult.addActionResult(actionResult1);
+        ActionResult r1 = new ActionResult();
+        r1.setResultValue("action1.result1", "value1");
+        contentResult.addActionResult(r1);
 
-        ActionResult actionResult2 = new ActionResult();
-        actionResult2.setResultValue("action1.result2", "value2");
-        contentResult.addActionResult(actionResult2);
+        ActionResult r2 = new ActionResult();
+        r2.setResultValue("action1.result2", "value2");
+        contentResult.addActionResult(r2);
 
-        ActionResult actionResult3 = new ActionResult();
-        actionResult3.setResultValue("action1", "value3");
-        actionResult3.setResultValue(null, "value4");
-        contentResult.addActionResult(actionResult3);
+        ActionResult r3 = new ActionResult();
+        r3.setResultValue("action1", "value3");
+//        r3.setResultValue(null, "value4");
+        contentResult.addActionResult(r3);
+
+        ActionResult r4 = new ActionResult();
+        r4.setResultValue("action4", new Object[] {new Date(), LocalDateTime.now()});
+        contentResult.addActionResult(r4);
 
         StringWriter writer = new StringWriter();
-        XmlTransformResponse.toXML(processResult, writer, null, true);
+        XmlTransformResponse.transform(processResult, writer, null, null);
+
+        FormattingContext formattingContext = new FormattingContext();
+        formattingContext.setDateFormat("yyyy-MM-dd");
+        formattingContext.setDateTimeFormat("yyyy-MM-dd HH:mm:ss");
+
+        XmlTransformResponse.transform(processResult, writer, null, formattingContext);
 
         System.out.println(writer.toString());
     }

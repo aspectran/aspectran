@@ -36,6 +36,10 @@ import org.xml.sax.helpers.AttributesImpl;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
@@ -59,10 +63,22 @@ public class ContentsXMLReader implements XMLReader {
 
     private ContentHandler handler;
 
+    private String dateFormat;
+
+    private String dateTimeFormat;
+
     /**
      * Instantiates a new ContentsXMLReader.
      */
     public ContentsXMLReader() {
+    }
+
+    public void setDateFormat(String dateFormat) {
+        this.dateFormat = dateFormat;
+    }
+
+    public void setDateTimeFormat(String dateTimeFormat) {
+        this.dateTimeFormat = dateTimeFormat;
     }
 
     @Override
@@ -199,8 +215,7 @@ public class ContentsXMLReader implements XMLReader {
             parseProcessResult((ProcessResult)object);
         } else if (object instanceof String
                 || object instanceof Number
-                || object instanceof Boolean
-                || object instanceof Date) {
+                || object instanceof Boolean) {
             parseString(object.toString());
         } else if (object instanceof Parameters) {
             Map<String, ParameterValue> params = ((Parameters)object).getParameterValueMap();
@@ -241,6 +256,27 @@ public class ContentsXMLReader implements XMLReader {
                 handler.endElement(StringUtils.EMPTY, ROW_TAG, ROW_TAG);
             }
             handler.endElement(StringUtils.EMPTY, ROWS_TAG, ROWS_TAG);
+        } else if (object instanceof Date) {
+            if (dateTimeFormat != null) {
+                SimpleDateFormat dt = new SimpleDateFormat(dateTimeFormat);
+                parseString(dt.format((Date)object));
+            } else {
+                parseString(object.toString());
+            }
+        } else if (object instanceof LocalDate) {
+            if (dateFormat != null) {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateFormat);
+                parseString(((LocalDate)object).format(formatter));
+            } else {
+                parseString(object.toString());
+            }
+        } else if (object instanceof LocalDateTime) {
+            if (dateTimeFormat != null) {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateTimeFormat);
+                parseString(((LocalDateTime)object).format(formatter));
+            } else {
+                parseString(object.toString());
+            }
         } else {
             String[] readablePropertyNames = BeanUtils.getReadablePropertyNamesWithoutNonSerializable(object);
             if (readablePropertyNames != null && readablePropertyNames.length > 0) {

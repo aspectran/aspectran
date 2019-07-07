@@ -16,6 +16,7 @@
 package com.aspectran.core.activity.response.transform;
 
 import com.aspectran.core.activity.Activity;
+import com.aspectran.core.activity.FormattingContext;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.activity.response.Response;
@@ -108,6 +109,14 @@ public class XslTransformResponse extends TransformResponse {
             ProcessResult processResult = activity.getProcessResult();
 
             ContentsXMLReader xmlReader = new ContentsXMLReader();
+            FormattingContext formattingContext = FormattingContext.parse(activity);
+            if (formattingContext.getDateFormat() != null) {
+                xmlReader.setDateFormat(formattingContext.getDateFormat());
+            }
+            if (formattingContext.getDateTimeFormat() != null) {
+                xmlReader.setDateTimeFormat(formattingContext.getDateTimeFormat());
+            }
+
             ContentsInputSource inputSource = new ContentsInputSource(processResult);
             Source source = new SAXSource(xmlReader, inputSource);
 

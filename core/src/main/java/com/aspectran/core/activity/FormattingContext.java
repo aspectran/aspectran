@@ -14,7 +14,7 @@ public class FormattingContext {
 
     private static final int MAX_INDENT_SIZE = 8;
 
-    private static final String FORMAT_INDENT_STYLE = "format.indentStyle";
+    private static final String FORMAT_INDENT_TAB = "format.indentTab";
 
     private static final String FORMAT_INDENT_SIZE = "format.indentSize";
 
@@ -24,7 +24,11 @@ public class FormattingContext {
 
     private static final String FORMAT_NULL_WRITABLE = "format.nullWritable";
 
-    private String indentString;
+    private boolean pretty;
+
+    private int indentSize;
+
+    private boolean indentTab;
 
     private String dateFormat;
 
@@ -32,22 +36,47 @@ public class FormattingContext {
 
     private Boolean nullWritable;
 
-    private FormattingContext() {
+    public FormattingContext() {
     }
 
-    public String getIndentString() {
-        return indentString;
+    public boolean isPretty() {
+        return pretty;
     }
 
-    private void setIndentString(String indentString) {
-        this.indentString = indentString;
+    public void setPretty(boolean pretty) {
+        this.pretty = pretty;
+    }
+
+    public int getIndentSize() {
+        return indentSize;
+    }
+
+    public void setIndentSize(int indentSize) {
+        this.indentSize = indentSize;
+    }
+
+    public void setIndentTab(boolean indentTab) {
+        this.indentTab = indentTab;
+    }
+
+    public String makeIndentString() {
+        if (pretty) {
+            if (indentTab) {
+                return "\t";
+            } else if (indentSize > 0) {
+                return StringUtils.repeat(' ', indentSize);
+            } else {
+                return StringUtils.EMPTY;
+            }
+        }
+        return null;
     }
 
     public String getDateFormat() {
         return dateFormat;
     }
 
-    private void setDateFormat(String dateFormat) {
+    public void setDateFormat(String dateFormat) {
         this.dateFormat = dateFormat;
     }
 
@@ -55,7 +84,7 @@ public class FormattingContext {
         return dateTimeFormat;
     }
 
-    private void setDateTimeFormat(String dateTimeFormat) {
+    public void setDateTimeFormat(String dateTimeFormat) {
         this.dateTimeFormat = dateTimeFormat;
     }
 
@@ -63,22 +92,27 @@ public class FormattingContext {
         return nullWritable;
     }
 
-    private void setNullWritable(Boolean nullWritable) {
+    public void setNullWritable(Boolean nullWritable) {
         this.nullWritable = nullWritable;
     }
 
     public static FormattingContext parse(Activity activity) {
-        String indentStyle = activity.getSetting(FORMAT_INDENT_STYLE);
+        String indentStyle = activity.getSetting(FORMAT_INDENT_TAB);
         String indentSize = activity.getSetting(FORMAT_INDENT_SIZE);
         String dateFormat = activity.getSetting(FORMAT_DATE_FORMAT);
         String dateTimeFormat = activity.getSetting(FORMAT_DATETIME_FORMAT);
         Boolean nullWritable = BooleanUtils.toNullableBooleanObject(activity.getSetting(FORMAT_NULL_WRITABLE));
 
-        String indentString = parseIndentString(indentStyle, indentSize);
-
         FormattingContext formattingContext = new FormattingContext();
-        if (indentString != null) {
-            formattingContext.setIndentString(indentString);
+        if ("tab".equalsIgnoreCase(indentStyle)) {
+            formattingContext.setPretty(true);
+            formattingContext.setIndentTab(true);
+        } else {
+            int size = parseIndentSize(indentSize);
+            if (size > 0) {
+                formattingContext.setPretty(true);
+                formattingContext.setIndentSize(size);
+            }
         }
         if (!StringUtils.isEmpty(dateFormat)) {
             formattingContext.setDateFormat(dateFormat);
@@ -89,27 +123,23 @@ public class FormattingContext {
         if (nullWritable != null) {
             formattingContext.setNullWritable(nullWritable);
         }
-
         return formattingContext;
     }
 
-    private static String parseIndentString(String indentStyle, String indentSize) {
+    private static int parseIndentSize(String indentSize) {
         try {
-            char ch = ("tab".equalsIgnoreCase(indentStyle) ? '\t' : ' ');
-            int repeat = Integer.parseInt(indentSize);
-            if (repeat > MAX_INDENT_SIZE) {
+            int size = Integer.parseInt(indentSize);
+            if (size > MAX_INDENT_SIZE) {
                 if (log.isDebugEnabled()) {
                     log.debug("Indent size should be less than " + MAX_INDENT_SIZE);
                 }
-                repeat = MAX_INDENT_SIZE;
+                size = MAX_INDENT_SIZE;
             }
-            if (repeat > 0) {
-                return StringUtils.repeat(ch, repeat);
-            }
+            return size;
         } catch (NumberFormatException e) {
             // ignore
         }
-        return null;
+        return 0;
     }
 
 }

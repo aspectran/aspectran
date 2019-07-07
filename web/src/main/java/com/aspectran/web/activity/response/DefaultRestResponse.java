@@ -17,13 +17,12 @@ package com.aspectran.web.activity.response;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.FormattingContext;
+import com.aspectran.core.activity.response.transform.AponTransformResponse;
 import com.aspectran.core.activity.response.transform.JsonTransformResponse;
 import com.aspectran.core.activity.response.transform.XmlTransformResponse;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.util.Assert;
-import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.apon.AponWriter;
 import com.aspectran.core.util.apon.ObjectToAponConverter;
 import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.json.JsonWriter;
@@ -107,7 +106,7 @@ public class DefaultRestResponse extends AbstractRestResponse {
         }
         responseAdapter.setContentType(contentType.toString());
 
-        transformByContentType(activity, contentType);
+        transformByContentType(activity, encoding, contentType);
 
         if (getStatus() > 0) {
             responseAdapter.setStatus(getStatus());
@@ -117,13 +116,13 @@ public class DefaultRestResponse extends AbstractRestResponse {
         }
     }
 
-    protected void transformByContentType(Activity activity, MediaType contentType) throws Exception {
+    protected void transformByContentType(Activity activity, String encoding, MediaType contentType) throws Exception {
         if (MediaType.APPLICATION_JSON.equalsTypeAndSubtype(contentType)) {
             toJSON(activity, parseIndent(contentType));
         } else if (MediaType.APPLICATION_APON.equalsTypeAndSubtype(contentType)) {
             toAPON(activity, parseIndent(contentType));
         } else if (MediaType.APPLICATION_XML.equalsTypeAndSubtype(contentType)) {
-            toXML(activity);
+            toXML(activity, encoding, parseIndent(contentType));
         }
     }
 
@@ -138,22 +137,28 @@ public class DefaultRestResponse extends AbstractRestResponse {
             writer.write(callback + JsonTransformResponse.ROUND_BRACKET_OPEN);
         }
         if (getName() != null || getData() != null) {
+            FormattingContext formattingContext = FormattingContext.parse(activity);
+            formattingContext.setPretty(isPrettyPrint());
+            if (isPrettyPrint() && indent > -1) {
+                formattingContext.setIndentSize(indent);
+            }
+
             JsonWriter jsonWriter = new JsonWriter(writer);
-            if (isPrettyPrint()) {
-                FormattingContext formattingContext = FormattingContext.parse(activity);
-                if (indent > -1) {
-                    jsonWriter.setIndentString(StringUtils.repeat(' ', indent));
-                } else if (formattingContext.getIndentString() != null) {
-                    jsonWriter.setIndentString(formattingContext.getIndentString());
-                }
-                if (formattingContext.getDateFormat() != null) {
-                    jsonWriter.setDateFormat(formattingContext.getDateFormat());
-                }
-                if (formattingContext.getDateTimeFormat() != null) {
-                    jsonWriter.setDateTimeFormat(formattingContext.getDateTimeFormat());
-                }
-                if (formattingContext.getNullWritable() != null) {
-                    jsonWriter.setSkipNull(!formattingContext.getNullWritable());
+            if (formattingContext.getDateFormat() != null) {
+                jsonWriter.setDateFormat(formattingContext.getDateFormat());
+            }
+            if (formattingContext.getDateTimeFormat() != null) {
+                jsonWriter.setDateTimeFormat(formattingContext.getDateTimeFormat());
+            }
+            if (formattingContext.getNullWritable() != null) {
+                jsonWriter.setSkipNull(!formattingContext.getNullWritable());
+            }
+            if (formattingContext.isPretty()) {
+                String indentString = formattingContext.makeIndentString();
+                if (indentString != null) {
+                    jsonWriter.indentString(indentString);
+                } else {
+                    jsonWriter.prettyPrint(true);
                 }
             } else {
                 jsonWriter.prettyPrint(false);
@@ -173,11 +178,16 @@ public class DefaultRestResponse extends AbstractRestResponse {
     }
 
     private void toAPON(Activity activity, int indent) throws IOException {
-        ResponseAdapter responseAdapter = activity.getResponseAdapter();
-        Writer writer = responseAdapter.getWriter();
-
         if (getName() != null || getData() != null) {
+            ResponseAdapter responseAdapter = activity.getResponseAdapter();
+            Writer writer = responseAdapter.getWriter();
+
             FormattingContext formattingContext = FormattingContext.parse(activity);
+            formattingContext.setPretty(isPrettyPrint());
+            if (isPrettyPrint() && indent > -1) {
+                formattingContext.setIndentSize(indent);
+            }
+
             ObjectToAponConverter aponConverter = new ObjectToAponConverter();
             if (formattingContext.getDateFormat() != null) {
                 aponConverter.setDateFormat(formattingContext.getDateFormat());
@@ -187,33 +197,26 @@ public class DefaultRestResponse extends AbstractRestResponse {
             }
             Parameters parameters = aponConverter.toParameters(getName(), getData());
 
-            AponWriter aponWriter = new AponWriter(writer);
-            if (!isPrettyPrint()) {
-                aponWriter.prettyPrint(false);
-            } else {
-                if (indent > -1) {
-                    aponWriter.setIndentString(StringUtils.repeat(' ', indent));
-                } else if (formattingContext.getIndentString() != null) {
-                    aponWriter.setIndentString(formattingContext.getIndentString());
-                }
-                if (formattingContext.getNullWritable() != null) {
-                    aponWriter.setSkipNull(!formattingContext.getNullWritable());
-                }
-            }
-            aponWriter.write(parameters);
+            AponTransformResponse.transform(parameters, writer, formattingContext);
         }
     }
 
-    private void toXML(Activity activity) throws IOException, TransformerException {
-        ResponseAdapter responseAdapter = activity.getResponseAdapter();
-        Writer writer = responseAdapter.getWriter();
+    private void toXML(Activity activity, String encoding, int indent) throws IOException, TransformerException {
+        if (getName() != null || getData() != null) {
+            ResponseAdapter responseAdapter = activity.getResponseAdapter();
+            Writer writer = responseAdapter.getWriter();
 
-        if (getData() != null) {
+            FormattingContext formattingContext = FormattingContext.parse(activity);
+            formattingContext.setPretty(isPrettyPrint());
+            if (isPrettyPrint() && indent > -1) {
+                formattingContext.setIndentSize(indent);
+            }
+
             if (getName() != null) {
-                XmlTransformResponse.toXML(Collections.singletonMap(getName(), getData()),
-                        writer, null, isPrettyPrint());
+                XmlTransformResponse.transform(Collections.singletonMap(getName(), getData()),
+                        writer, encoding, formattingContext);
             } else {
-                XmlTransformResponse.toXML(getData(), writer, null, isPrettyPrint());
+                XmlTransformResponse.transform(getData(), writer, encoding, formattingContext);
             }
         }
     }

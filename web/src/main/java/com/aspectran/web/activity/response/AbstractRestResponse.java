@@ -314,7 +314,6 @@ public abstract class AbstractRestResponse implements RestResponse {
     abstract protected MediaType getContentTypeByPathExtension(String extension);
 
     protected String determineEncoding(Activity activity) {
-        // TODO Accept-Encoding
         return activity.getTranslet().getIntendedResponseEncoding();
     }
 

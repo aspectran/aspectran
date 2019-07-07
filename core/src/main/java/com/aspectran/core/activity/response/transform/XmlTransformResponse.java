@@ -16,6 +16,7 @@
 package com.aspectran.core.activity.response.transform;
 
 import com.aspectran.core.activity.Activity;
+import com.aspectran.core.activity.FormattingContext;
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.activity.response.Response;
@@ -46,7 +47,7 @@ public class XmlTransformResponse extends TransformResponse {
 
     private static final String INDENT_NUMBER_KEY = "indent-number";
 
-    private static final Integer INDENT_NUMBER_VAL = 2;
+    private static final Integer DEFAULT_INDENT_SIZE = 2;
 
     private static final String YES = "yes";
 
@@ -56,7 +57,7 @@ public class XmlTransformResponse extends TransformResponse {
 
     private final String encoding;
 
-    private final boolean pretty;
+    private final Boolean pretty;
 
     /**
      * Instantiates a new XmlTransformResponse.
@@ -68,7 +69,7 @@ public class XmlTransformResponse extends TransformResponse {
 
         this.contentType = transformRule.getContentType();
         this.encoding = transformRule.getEncoding();
-        this.pretty = transformRule.isPretty();
+        this.pretty = transformRule.getPretty();
     }
 
     @Override
@@ -102,7 +103,13 @@ public class XmlTransformResponse extends TransformResponse {
 
             ProcessResult processResult = activity.getProcessResult();
             Writer writer = responseAdapter.getWriter();
-            toXML(processResult, writer, encoding, pretty);
+
+            FormattingContext formattingContext = FormattingContext.parse(activity);
+            if (pretty != null) {
+                formattingContext.setPretty(pretty);
+            }
+
+            transform(processResult, writer, encoding, formattingContext);
         } catch (Exception e) {
             throw new TransformResponseException(getTransformRule(), e);
         }
@@ -118,11 +125,19 @@ public class XmlTransformResponse extends TransformResponse {
         return new XmlTransformResponse(getTransformRule().replicate());
     }
 
-    public static void toXML(Object object, Writer writer, String encoding, boolean pretty)
+    public static void transform(Object object, Writer writer, String encoding, FormattingContext formattingContext)
             throws TransformerException {
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
-        if (pretty) {
-            transformerFactory.setAttribute(INDENT_NUMBER_KEY, INDENT_NUMBER_VAL);
+        if (formattingContext != null) {
+            if (formattingContext.isPretty()) {
+                if (formattingContext.getIndentSize() > 0) {
+                    transformerFactory.setAttribute(INDENT_NUMBER_KEY, formattingContext.getIndentSize());
+                } else {
+                    transformerFactory.setAttribute(INDENT_NUMBER_KEY, DEFAULT_INDENT_SIZE);
+                }
+            }
+        } else {
+            transformerFactory.setAttribute(INDENT_NUMBER_KEY, DEFAULT_INDENT_SIZE);
         }
 
         Transformer transformer = transformerFactory.newTransformer();
@@ -130,12 +145,21 @@ public class XmlTransformResponse extends TransformResponse {
         if (encoding != null) {
             transformer.setOutputProperty(OutputKeys.ENCODING, encoding);
         }
-        if (pretty) {
+        if (formattingContext == null || formattingContext.isPretty()) {
             transformer.setOutputProperty(OutputKeys.INDENT, YES);
             transformer.setOutputProperty(OutputKeys.DOCTYPE_PUBLIC, YES);
         }
 
         ContentsXMLReader xmlReader = new ContentsXMLReader();
+        if (formattingContext != null) {
+            if (formattingContext.getDateFormat() != null) {
+                xmlReader.setDateFormat(formattingContext.getDateFormat());
+            }
+            if (formattingContext.getDateTimeFormat() != null) {
+                xmlReader.setDateTimeFormat(formattingContext.getDateTimeFormat());
+            }
+        }
+
         ContentsInputSource inputSource = new ContentsInputSource(object);
         Source source = new SAXSource(xmlReader, inputSource);
         transformer.transform(source, new StreamResult(writer));

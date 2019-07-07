@@ -23,10 +23,10 @@ import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.activity.response.transform.json.ContentsJsonWriter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.rule.TransformRule;
-import com.aspectran.core.util.json.JsonWriter;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
+import java.io.IOException;
 import java.io.Writer;
 
 /**
@@ -91,34 +91,15 @@ public class JsonTransformResponse extends TransformResponse {
             Writer writer = responseAdapter.getWriter();
             ProcessResult processResult = activity.getProcessResult();
 
-            // support for jsonp
-            String callback = activity.getTranslet().getParameter(CALLBACK_PARAM_NAME);
-            if (callback != null) {
-                writer.write(callback + ROUND_BRACKET_OPEN);
+            FormattingContext formattingContext = FormattingContext.parse(activity);
+            if (pretty != null) {
+                formattingContext.setPretty(pretty);
             }
 
-            JsonWriter jsonWriter = new ContentsJsonWriter(writer);
-            if (pretty == Boolean.FALSE) {
-                jsonWriter.prettyPrint(false);
-            } else {
-                FormattingContext formattingContext = FormattingContext.parse(activity);
-                if (formattingContext.getIndentString() != null) {
-                    jsonWriter.setIndentString(formattingContext.getIndentString());
-                }
-                if (formattingContext.getDateFormat() != null) {
-                    jsonWriter.setDateFormat(formattingContext.getDateFormat());
-                }
-                if (formattingContext.getDateTimeFormat() != null) {
-                    jsonWriter.setDateTimeFormat(formattingContext.getDateTimeFormat());
-                }
-                if (formattingContext.getNullWritable() != null) {
-                    jsonWriter.setSkipNull(!formattingContext.getNullWritable());
-                }
-            }
-            jsonWriter.write(processResult);
-            if (callback != null) {
-                writer.write(ROUND_BRACKET_CLOSE);
-            }
+            // support for jsonp
+            String callback = activity.getTranslet().getParameter(CALLBACK_PARAM_NAME);
+
+            transform(processResult, callback, writer, formattingContext);
         } catch (Exception e) {
             throw new TransformResponseException(getTransformRule(), e);
         }
@@ -132,6 +113,41 @@ public class JsonTransformResponse extends TransformResponse {
     @Override
     public Response replicate() {
         return new JsonTransformResponse(getTransformRule().replicate());
+    }
+
+    private void transform(ProcessResult processResult, String callback, Writer writer, FormattingContext formattingContext)
+            throws IOException {
+        if (callback != null) {
+            writer.write(callback + ROUND_BRACKET_OPEN);
+        }
+
+        ContentsJsonWriter jsonWriter = new ContentsJsonWriter(writer);
+        if (formattingContext != null) {
+            if (formattingContext.getDateFormat() != null) {
+                jsonWriter.setDateFormat(formattingContext.getDateFormat());
+            }
+            if (formattingContext.getDateTimeFormat() != null) {
+                jsonWriter.setDateTimeFormat(formattingContext.getDateTimeFormat());
+            }
+            if (formattingContext.getNullWritable() != null) {
+                jsonWriter.setSkipNull(!formattingContext.getNullWritable());
+            }
+            if (formattingContext.isPretty()) {
+                String indentString = formattingContext.makeIndentString();
+                if (indentString != null) {
+                    jsonWriter.indentString(indentString);
+                } else {
+                    jsonWriter.prettyPrint(true);
+                }
+            } else {
+                jsonWriter.prettyPrint(false);
+            }
+        }
+        jsonWriter.write(processResult);
+
+        if (callback != null) {
+            writer.write(ROUND_BRACKET_CLOSE);
+        }
     }
 
 }

@@ -28,6 +28,7 @@ import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
+import java.io.IOException;
 import java.io.Writer;
 
 /**
@@ -82,31 +83,15 @@ public class AponTransformResponse extends TransformResponse {
                 responseAdapter.setContentType(contentType);
             }
 
-            Writer writer = responseAdapter.getWriter();
             ProcessResult processResult = activity.getProcessResult();
             if (processResult != null && !processResult.isEmpty()) {
                 FormattingContext formattingContext = FormattingContext.parse(activity);
-                ContentsToAponConverter aponConverter = new ContentsToAponConverter();
-                if (formattingContext.getDateFormat() != null) {
-                    aponConverter.setDateFormat(formattingContext.getDateFormat());
+                if (pretty != null) {
+                    formattingContext.setPretty(pretty);
                 }
-                if (formattingContext.getDateTimeFormat() != null) {
-                    aponConverter.setDateTimeFormat(formattingContext.getDateTimeFormat());
-                }
-                Parameters parameters = aponConverter.toParameters(processResult);
 
-                AponWriter aponWriter = new AponWriter(writer);
-                if (pretty == Boolean.FALSE) {
-                    aponWriter.prettyPrint(false);
-                } else {
-                    if (formattingContext.getIndentString() != null) {
-                        aponWriter.setIndentString(formattingContext.getIndentString());
-                    }
-                    if (formattingContext.getNullWritable() != null) {
-                        aponWriter.setSkipNull(!formattingContext.getNullWritable());
-                    }
-                }
-                aponWriter.write(parameters);
+                Writer writer = responseAdapter.getWriter();
+                transform(processResult, writer, formattingContext);
             }
         } catch (Exception e) {
             throw new TransformResponseException(getTransformRule(), e);
@@ -122,6 +107,42 @@ public class AponTransformResponse extends TransformResponse {
     public Response replicate() {
         TransformRule transformRule = getTransformRule().replicate();
         return new AponTransformResponse(transformRule);
+    }
+
+    private static void transform(ProcessResult processResult, Writer writer, FormattingContext formattingContext)
+            throws IOException {
+        ContentsToAponConverter aponConverter = new ContentsToAponConverter();
+        if (formattingContext != null) {
+            if (formattingContext.getDateFormat() != null) {
+                aponConverter.setDateFormat(formattingContext.getDateFormat());
+            }
+            if (formattingContext.getDateTimeFormat() != null) {
+                aponConverter.setDateTimeFormat(formattingContext.getDateTimeFormat());
+            }
+        }
+        Parameters parameters = aponConverter.toParameters(processResult);
+        transform(parameters, writer, formattingContext);
+    }
+
+    public static void transform(Parameters parameters, Writer writer, FormattingContext formattingContext)
+            throws IOException {
+        AponWriter aponWriter = new AponWriter(writer);
+        if (formattingContext != null) {
+            if (formattingContext.getNullWritable() != null) {
+                aponWriter.setSkipNull(!formattingContext.getNullWritable());
+            }
+            if (formattingContext.isPretty()) {
+                String indentString = formattingContext.makeIndentString();
+                if (indentString != null) {
+                    aponWriter.indentString(indentString);
+                } else {
+                    aponWriter.prettyPrint(true);
+                }
+            } else {
+                aponWriter.prettyPrint(false);
+            }
+        }
+        aponWriter.write(parameters);
     }
 
 }

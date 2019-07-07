@@ -61,7 +61,6 @@
         <settings>
             <setting name="characterEncoding" value="utf-8"/>
             <setting name="viewDispatcher" value="jspViewDispatcher"/>
-            <setting name="format.indentStyle" value="space"/>
             <setting name="format.indentSize" value="2"/>
             <setting name="format.dateFormat" value="yyyy-MM-dd"/>
             <setting name="format.dateTimeFormat" value="yyyy-MM-dd HH:mm:ss"/>
