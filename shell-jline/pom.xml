@@ -27,7 +27,7 @@
     <packaging>jar</packaging>
 
     <name>Aspectran Shell using JLine</name>
-    <description>Aspectran Shell for providing a rich command line using JLine</description>
+    <description>Easily build interactive shell applications with Aspectran and JLine 3</description>
 
     <licenses>
         <license>
@@ -39,7 +39,7 @@
 
     <properties>
         <main.basedir>${project.parent.basedir}</main.basedir>
-        <jline.version>3.11.0</jline.version>
+        <jline.version>3.12.1</jline.version>
     </properties>
 
     <dependencies>

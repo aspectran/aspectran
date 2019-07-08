@@ -27,7 +27,7 @@
     <packaging>jar</packaging>
 
     <name>Aspectran Shell</name>
-    <description>Aspectran with Command Line Interface</description>
+    <description>Easily build interactive shell applications with Aspectran</description>
 
     <licenses>
         <license>
