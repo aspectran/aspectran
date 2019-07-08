@@ -46,6 +46,16 @@ public class JsonToApon {
         return from(new StringReader(json), container);
     }
 
+    public static Parameters from(Reader in) throws IOException {
+        return from(in, new VariableParameters());
+    }
+
+    public static <T extends Parameters> T from(Reader in, Class<T> requiredType) throws IOException {
+        T container = ClassUtils.createInstance(requiredType);
+        from(in, container);
+        return container;
+    }
+
     public static <T extends Parameters> T from(Reader in, T container) throws IOException {
         if (in == null) {
             throw new IllegalArgumentException("in must not be null");

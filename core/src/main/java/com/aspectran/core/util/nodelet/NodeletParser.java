@@ -308,7 +308,7 @@ public class NodeletParser {
                 }
 
                 @Override
-                public void characters(char ch[], int start, int length) throws SAXException {
+                public void characters(char[] ch, int start, int length) throws SAXException {
                     textBuffer.append(ch, start, length);
                 }
 
