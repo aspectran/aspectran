@@ -68,18 +68,6 @@ public class ArrayStack<T> extends ArrayList<T> {
     }
 
     /**
-     * Return <code>true</code> if this stack is currently empty.
-     * <p>
-     * This method exists for compatibility with <code>java.util.Stack</code>.
-     * New users of this class should use <code>isEmpty</code> instead.
-     *
-     * @return true if the stack is currently empty
-     */
-    public boolean empty() {
-        return isEmpty();
-    }
-
-    /**
      * Returns the top item off of this stack without removing it.
      *
      * @return the top item on the stack

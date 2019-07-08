@@ -24,6 +24,7 @@ import com.aspectran.core.util.MultiValueMap;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.apon.JsonToApon;
 import com.aspectran.core.util.apon.Parameters;
+import com.aspectran.core.util.apon.XmlToApon;
 import com.aspectran.web.adapter.HttpServletRequestAdapter;
 import com.aspectran.web.support.http.MediaType;
 
@@ -146,7 +147,12 @@ public class WebRequestBodyParser {
             } else if (MediaType.APPLICATION_APON.equalsTypeAndSubtype(mediaType)) {
                 return RequestBodyParser.parseBodyAsParameters(requestAdapter.getBody(), requiredType);
             } else if (MediaType.APPLICATION_XML.equalsTypeAndSubtype(mediaType)) {
-                // TODO
+                try {
+                    return XmlToApon.from(requestAdapter.getBody(), requiredType);
+                } catch (IOException e) {
+                    throw new RequestParseException("Failed to parse request body of XML format to required type [" +
+                            requiredType.getName() + "]", e);
+                }
             }
         }
         return null;

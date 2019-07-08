@@ -47,8 +47,12 @@ public class XmlToApon {
     }
 
     public static <T extends Parameters> T from(Reader in, T container) throws IOException {
-        if (in == null) {
-            throw new IllegalArgumentException("in must not be null");
+        return from(new InputSource(in), container);
+    }
+
+    public static <T extends Parameters> T from(InputSource is, T container) throws IOException {
+        if (is == null) {
+            throw new IllegalArgumentException("InputSource must not be null");
         }
         if (container == null) {
             throw new IllegalArgumentException("container must not be null");
@@ -57,9 +61,9 @@ public class XmlToApon {
         try {
             SAXParserFactory factory = SAXParserFactory.newInstance();
             SAXParser parser = factory.newSAXParser();
-            parser.parse(new InputSource(in), new ParameterValueHandler(container));
+            parser.parse(is, new ParameterValueHandler(container));
         } catch (Exception e) {
-            throw new IOException(e);
+            throw new IOException("Failed to convert XML to APON", e);
         }
 
         return container;
@@ -67,35 +71,53 @@ public class XmlToApon {
 
     private static class ParameterValueHandler extends DefaultHandler {
 
-        private final Parameters container;
+        private final StringBuilder buffer = new StringBuilder();
+
+        private Parameters parameters;
+
+        private String name;
+
+        private boolean open;
 
         public ParameterValueHandler(Parameters container) {
-            this.container = container;
-        }
-
-        @Override
-        public void startDocument() throws SAXException {
-            // TODO
-        }
-
-        @Override
-        public void endDocument() throws SAXException {
-            // TODO
+            this.parameters = container;
         }
 
         @Override
         public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
-            // TODO
+            if (name != null) {
+                parameters = parameters.newParameters(name);
+            }
+
+            name = qName;
+            open = true;
+
+            if (buffer.length() > 0) {
+                buffer.delete(0, buffer.length());
+            }
         }
 
         @Override
         public void endElement (String uri, String localName, String qName) throws SAXException {
-            // TODO
+            if (open) {
+                String text = null;
+                if (buffer.length() > 0) {
+                    text = buffer.toString();
+                    buffer.delete(0, buffer.length());
+                }
+
+                parameters.putValue(qName, text);
+
+                name = null;
+                open = false;
+            } else {
+                parameters = parameters.getIdentifier().getContainer();
+            }
         }
 
         @Override
         public void characters(char[] ch, int start, int length) throws SAXException {
-            // TODO
+            buffer.append(ch, start, length);
         }
 
     }

@@ -64,14 +64,18 @@ public class JsonToApon {
             throw new IllegalArgumentException("container must not be null");
         }
 
-        JsonReader reader = new JsonReader(in);
-        String name = (container instanceof ArrayParameters ? ArrayParameters.NONAME : null);
-        read(reader, container, name);
+        try {
+            JsonReader reader = new JsonReader(in);
+            String name = (container instanceof ArrayParameters ? ArrayParameters.NONAME : null);
+            convert(reader, container, name);
+        } catch (Exception e) {
+            throw new IOException("Failed to convert XML to JSON", e);
+        }
 
         return container;
     }
 
-    private static void read(JsonReader reader, Parameters container, String name) throws IOException {
+    private static void convert(JsonReader reader, Parameters container, String name) throws IOException {
         switch (reader.peek()) {
             case BEGIN_BLOCK:
                 reader.beginBlock();
@@ -79,14 +83,14 @@ public class JsonToApon {
                     container = container.newParameters(name);
                 }
                 while (reader.hasNext()) {
-                    read(reader, container, reader.nextName());
+                    convert(reader, container, reader.nextName());
                 }
                 reader.endBlock();
                 return;
             case BEGIN_ARRAY:
                 reader.beginArray();
                 while (reader.hasNext()) {
-                    read(reader, container, name);
+                    convert(reader, container, name);
                 }
                 reader.endArray();
                 return;

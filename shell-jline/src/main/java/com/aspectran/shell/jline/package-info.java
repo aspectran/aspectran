@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 /**
- * Provides an interactive shell to use or control Aspectran directly
- * from the command line implemented by the feature-rich JLine.
+ * Provides the ability to easily build interactive shell
+ * applications using feature-rich JLine 3.
  */
 package com.aspectran.shell.jline;

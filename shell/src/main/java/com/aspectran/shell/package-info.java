@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 /**
- * Provides an interactive shell that lets you use or
- * control Aspectran directly from the command line.
+ * Provides the ability to easily build interactive
+ * shell applications.
  */
 package com.aspectran.shell;
