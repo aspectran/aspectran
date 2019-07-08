@@ -44,7 +44,9 @@ class ContentsToAponTest {
 
         Parameters ps = new ContentsToAponConverter().toParameters(processResult);
 
-        String s1 = "action1: {\n  result1: value1\n  result2: value2\n}".replace("\n", AponFormat.NEW_LINE);
+        String apon = "action1: {\n  result1: value1\n  result2: value2\n}";
+
+        String s1 = apon.replace("\n", AponFormat.NEW_LINE);
         String s2 = ps.toString().trim();
 
         assertEquals(s1, s2);
@@ -73,7 +75,9 @@ class ContentsToAponTest {
 
         Parameters ps = new ContentsToAponConverter().toParameters(processResult);
 
-        String s1 = "action0: value0\naction1: value3".replace("\n", AponFormat.NEW_LINE);
+        String apon = "action0: value0\naction1: value3";
+
+        String s1 = apon.replace("\n", AponFormat.NEW_LINE);
         String s2 = ps.toString().trim();
 
         assertEquals(s1, s2);
@@ -103,7 +107,9 @@ class ContentsToAponTest {
 
         Parameters ps = new ContentsToAponConverter().toParameters(processResult);
 
-        String s1 = "content1: {\n" + "  action0: value0\n" + "  action1: {\n" + "    result1: value1\n" + "    result2: value2\n" + "  }\n" + "  action3: value3\n" + "}";
+        String apon = "content1: {\n  action0: value0\n" + "  action1: {\n" + "    result1: value1\n" + "    result2: value2\n" + "  }\n" + "  action3: value3\n" + "}";
+
+        String s1 = apon.replace("\n", AponFormat.NEW_LINE);
         String s2 = ps.toString().trim();
 
         assertEquals(s1, s2);
@@ -152,7 +158,9 @@ class ContentsToAponTest {
 
         Parameters ps = new ContentsToAponConverter().toParameters(processResult);
 
-        String s1 = "content1: {\n" + "  action0: value0\n" + "  action1: {\n" + "    result1: value1\n" + "    result2: value2\n" + "  }\n" + "  action3: value3\n" + "}\n" + "content2: {\n" + "  action0: value0\n" + "  action1: {\n" + "    result1: value1\n" + "    result2: value2\n" + "  }\n" + "  action3: value3\n" + "}";
+        String apon = "content1: {\n  action0: value0\n" + "  action1: {\n" + "    result1: value1\n" + "    result2: value2\n" + "  }\n" + "  action3: value3\n" + "}\n" + "content2: {\n" + "  action0: value0\n" + "  action1: {\n" + "    result1: value1\n" + "    result2: value2\n" + "  }\n" + "  action3: value3\n" + "}";
+
+        String s1 = apon.replace("\n", AponFormat.NEW_LINE);
         String s2 = ps.toString().trim();
 
         assertEquals(s1, s2);
@@ -175,7 +183,9 @@ class ContentsToAponTest {
 
         Parameters ps = new ContentsToAponConverter().toParameters(processResult);
 
-        String s1 = "key1: value1\n" + "key2: value2\n" + "key3: value3";
+        String apon = "key1: value1\nkey2: value2\n" + "key3: value3";
+
+        String s1 = apon.replace("\n", AponFormat.NEW_LINE);
         String s2 = ps.toString().trim();
 
         assertEquals(s1, s2);
@@ -207,7 +217,9 @@ class ContentsToAponTest {
 
         Parameters ps = new ContentsToAponConverter().toParameters(processResult);
 
-        String s1 = "content1: {\n" + "  key1: value1\n" + "  key2: value2\n" + "  key3: value3\n" + "  action1: {\n" + "    result2: value2\n" + "  }\n" + "  action2: value3\n" + "}";
+        String apon = "content1: {\n  key1: value1\n  key2: value2\n  key3: value3\n  action1: {\n    result2: value2\n  }\n  action2: value3\n}";
+
+        String s1 = apon.replace("\n", AponFormat.NEW_LINE);
         String s2 = ps.toString().trim();
 
         assertEquals(s1, s2);
