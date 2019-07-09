@@ -85,8 +85,6 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
 
     private ItemRuleMap propertyItemRuleMap;
 
-    private boolean hybridLoad;
-
     private boolean hardReload;
 
     private boolean autoReloadStartup;
@@ -98,6 +96,8 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
     private ServiceController serviceController;
 
     private AspectranClassLoader aspectranClassLoader;
+
+    private boolean debugMode;
 
     public AbstractActivityContextBuilder(ApplicationAdapter applicationAdapter) {
         if (applicationAdapter == null) {
@@ -220,16 +220,6 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
     }
 
     @Override
-    public boolean isHybridLoad() {
-        return hybridLoad;
-    }
-
-    @Override
-    public void setHybridLoad(boolean hybridLoad) {
-        this.hybridLoad = hybridLoad;
-    }
-
-    @Override
     public boolean isHardReload() {
         return hardReload;
     }
@@ -286,8 +276,6 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
             setDefaultProfiles(profilesConfig.getDefaultProfiles());
         }
 
-        this.hybridLoad = contextConfig.isHybridLoad();
-
         ContextAutoReloadConfig autoReloadConfig = contextConfig.getAutoReloadConfig();
         if (autoReloadConfig != null) {
             String reloadMode = autoReloadConfig.getReloadMode();
@@ -308,6 +296,16 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
                 }
             }
         }
+    }
+
+    @Override
+    public boolean isDebugMode() {
+        return debugMode;
+    }
+
+    @Override
+    public void setDebugMode(boolean debugMode) {
+        this.debugMode = debugMode;
     }
 
     protected ContextEnvironment createContextEnvironment() throws InvalidResourceException {

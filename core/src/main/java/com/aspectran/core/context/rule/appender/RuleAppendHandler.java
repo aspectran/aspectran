@@ -37,4 +37,8 @@ public interface RuleAppendHandler {
 
     void setCurrentRuleAppender(RuleAppender currentRuleAppender);
 
+    boolean isDebugMode();
+
+    void setDebugMode(boolean debugMode);
+
 }

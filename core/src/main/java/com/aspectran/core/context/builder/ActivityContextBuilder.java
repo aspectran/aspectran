@@ -81,10 +81,6 @@ public interface ActivityContextBuilder {
 
     void addPropertyItemRule(ItemRuleMap propertyItemRuleMap);
 
-    boolean isHybridLoad();
-
-    void setHybridLoad(boolean hybridLoad);
-
     boolean isHardReload();
 
     void setHardReload(boolean hardReload);
@@ -106,5 +102,9 @@ public interface ActivityContextBuilder {
     void destroy();
 
     boolean isActive();
+
+    boolean isDebugMode();
+
+    void setDebugMode(boolean debugMode);
 
 }

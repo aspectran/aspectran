@@ -63,6 +63,7 @@ public class FileRuleAppender extends AbstractRuleAppender {
         }
     }
 
+    @Override
     public String getQualifiedName() {
         try {
             return getFile().getCanonicalPath();

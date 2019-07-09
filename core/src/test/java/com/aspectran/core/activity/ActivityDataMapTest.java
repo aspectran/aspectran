@@ -37,6 +37,7 @@ class ActivityDataMapTest {
     @Test
     void testEvaluateAsString() throws ActivityContextBuilderException {
         ActivityContextBuilder builder = new HybridActivityContextBuilder();
+        builder.setDebugMode(true);
         ActivityContext context = builder.build();
 
         ParameterMap parameterMap = new ParameterMap();

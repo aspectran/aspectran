@@ -40,6 +40,8 @@ abstract class AbstractAppendHandler implements RuleAppendHandler {
 
     private RuleAppender currentRuleAppender;
 
+    private boolean debugMode;
+
     AbstractAppendHandler(ContextRuleAssistant assistant) {
         this.assistant = assistant;
         this.environment = assistant.getContextEnvironment();
@@ -117,6 +119,16 @@ abstract class AbstractAppendHandler implements RuleAppendHandler {
     @Override
     public void setCurrentRuleAppender(RuleAppender currentRuleAppender) {
         this.currentRuleAppender = currentRuleAppender;
+    }
+
+    @Override
+    public boolean isDebugMode() {
+        return debugMode;
+    }
+
+    @Override
+    public void setDebugMode(boolean debugMode) {
+        this.debugMode = debugMode;
     }
 
 }

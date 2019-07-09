@@ -2,7 +2,6 @@ context: {
     root: classpath:config/shell/shell-test-root-config.xml
     resources: [
     ]
-    hybridLoad: false
     autoReload: {
         reloadMode: soft
         scanIntervalSeconds: 5

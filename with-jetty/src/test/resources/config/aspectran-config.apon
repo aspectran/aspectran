@@ -4,7 +4,6 @@ context: {
     ]
     profiles: {
     }
-    hybridLoad: false
     autoReload: {
         reloadMode: soft
         scanIntervalSeconds: 5

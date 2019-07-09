@@ -32,7 +32,7 @@ import java.io.Reader;
  */
 abstract class AbstractRuleAppender implements RuleAppender {
 
-    private AppenderType appenderType;
+    private final AppenderType appenderType;
 
     private AppendRule appendRule;
 

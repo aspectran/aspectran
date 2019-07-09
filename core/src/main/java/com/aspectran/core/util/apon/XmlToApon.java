@@ -117,12 +117,12 @@ public class XmlToApon {
                 leaf = false;
             }
             if (attributes != null && attributes.getLength() > 0) {
-                name = null;
                 parameters = parameters.newParameters(qName);
-                leaf = false;
                 for (int i = 0; i < attributes.getLength(); i++) {
                     parameters.putValue(attributes.getQName(i), attributes.getValue(i));
                 }
+                name = null;
+                leaf = false;
             } else {
                 name = qName;
                 leaf = true;

@@ -37,7 +37,7 @@ public abstract class AbstractActivityContextParser implements ActivityContextPa
 
     private String encoding;
 
-    private boolean hybridLoad;
+    private boolean debugMode;
 
     public AbstractActivityContextParser(ContextRuleAssistant assistant) {
         this.assistant = assistant;
@@ -57,13 +57,13 @@ public abstract class AbstractActivityContextParser implements ActivityContextPa
         this.encoding = encoding;
     }
 
-    public boolean isHybridLoad() {
-        return hybridLoad;
+    public boolean isDebugMode() {
+        return debugMode;
     }
 
     @Override
-    public void setHybridLoad(boolean hybridLoad) {
-        this.hybridLoad = hybridLoad;
+    public void setDebugMode(boolean debugMode) {
+        this.debugMode = debugMode;
     }
 
     protected RuleAppender resolveAppender(String configFile) {

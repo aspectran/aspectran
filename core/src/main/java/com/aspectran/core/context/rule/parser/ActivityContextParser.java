@@ -29,7 +29,7 @@ public interface ActivityContextParser {
 
     void setEncoding(String encoding);
 
-    void setHybridLoad(boolean hybridLoad);
+    void setDebugMode(boolean debugMode);
 
     ContextRuleAssistant parse(String rootFile) throws ActivityContextParserException;
 

@@ -69,7 +69,8 @@ public class HybridActivityContextParser extends AbstractActivityContextParser {
     }
 
     private RuleAppendHandler createRuleAppendHandler() {
-        RuleAppendHandler appendHandler = new HybridRuleAppendHandler(getContextRuleAssistant(), getEncoding(), isHybridLoad());
+        RuleAppendHandler appendHandler = new HybridRuleAppendHandler(getContextRuleAssistant(), getEncoding());
+        appendHandler.setDebugMode(isDebugMode());
         getContextRuleAssistant().setRuleAppendHandler(appendHandler);
         return appendHandler;
     }

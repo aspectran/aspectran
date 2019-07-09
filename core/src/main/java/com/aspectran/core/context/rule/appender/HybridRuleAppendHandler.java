@@ -42,17 +42,14 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
 
     private final String encoding;
 
-    private final boolean hybridLoad;
-
     private AspectranNodeParser aspectranNodeParser;
 
     private ParametersToRules ruleConverter;
 
-    public HybridRuleAppendHandler(ContextRuleAssistant assistant, String encoding, boolean hybridLoad) {
+    public HybridRuleAppendHandler(ContextRuleAssistant assistant, String encoding) {
         super(assistant);
 
         this.encoding = encoding;
-        this.hybridLoad = hybridLoad;
     }
 
     @Override
@@ -60,7 +57,6 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
         setCurrentRuleAppender(appender);
 
         AssistantLocal assistantLocal = getContextRuleAssistant().backupAssistantLocal();
-        boolean hybridon = false;
 
         if (appender != null) {
             if (appender.getAppenderType() == AppenderType.PARAMETERS) {
@@ -71,27 +67,10 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
                 RootParameters rootParameters = AponReader.parse(appender.getReader(encoding), new RootParameters());
                 getRuleConverter().asRules(rootParameters);
             } else {
-                if (hybridLoad && appender.getAppenderType() == AppenderType.FILE) {
-                    File aponFile = makeAponFile((FileRuleAppender)appender);
-
-                    if (appender.getLastModified() == aponFile.lastModified()) {
-                        if (log.isDebugEnabled()) {
-                            log.debug("Rapid configuration loading with an APON file: " + aponFile);
-                        }
-
-                        hybridon = true;
-
-                        RootParameters rootParameters = AponReader.parse(aponFile, encoding, new RootParameters());
-                        getRuleConverter().asRules(rootParameters);
-                    }
+                if (aspectranNodeParser == null) {
+                    aspectranNodeParser = new AspectranNodeParser(getContextRuleAssistant());
                 }
-
-                if (!hybridon) {
-                    if (aspectranNodeParser == null) {
-                        aspectranNodeParser = new AspectranNodeParser(getContextRuleAssistant());
-                    }
-                    aspectranNodeParser.parse(appender);
-                }
+                aspectranNodeParser.parse(appender);
             }
         }
 
@@ -102,13 +81,10 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
             getContextRuleAssistant().restoreAssistantLocal(assistantLocal);
         }
 
-        if (appender != null) {
-            if (!hybridon && hybridLoad) {
-                if (appender.getAppenderType() == AppenderType.FILE
-                        && appender.getAppendedFileFormatType() == AppendedFileFormatType.XML) {
-                    //appender.setProfiles(null);
-                    saveAsAponFile((FileRuleAppender)appender);
-                }
+        if (appender != null && isDebugMode()) {
+            if (appender.getAppenderType() == AppenderType.FILE
+                    && appender.getAppendedFileFormatType() == AppendedFileFormatType.XML) {
+                saveAsAponFile((FileRuleAppender)appender);
             }
         }
     }
@@ -120,7 +96,7 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
         return ruleConverter;
     }
 
-    private void saveAsAponFile(FileRuleAppender fileRuleAppender) {
+    private void saveAsAponFile(FileRuleAppender fileRuleAppender) throws IOException {
         if (log.isDebugEnabled()) {
             log.debug("Save as APON file: " + fileRuleAppender);
         }
@@ -158,10 +134,8 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
                     log.error("Exception during closing file " + aponFile, e);
                 }
             }
-
-            aponFile.setLastModified(fileRuleAppender.getLastModified());
         } catch (Exception e) {
-            log.error("Failed to save file converted to APON format: " + aponFile, e);
+            throw new IOException("Failed to save as APON file: " + aponFile, e);
         }
     }
 

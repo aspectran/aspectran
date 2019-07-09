@@ -28,7 +28,6 @@ public class ContextConfig extends AbstractParameters {
     private static final ParameterDefinition resources;
     private static final ParameterDefinition scan;
     private static final ParameterDefinition profiles;
-    private static final ParameterDefinition hybridLoad;
     private static final ParameterDefinition autoReload;
     private static final ParameterDefinition singleton;
     private static final ParameterDefinition parameters;
@@ -42,7 +41,6 @@ public class ContextConfig extends AbstractParameters {
         resources = new ParameterDefinition("resources", ValueType.STRING, true);
         scan = new ParameterDefinition("scan", ValueType.STRING, true);
         profiles = new ParameterDefinition("profiles", ContextProfilesConfig.class);
-        hybridLoad = new ParameterDefinition("hybridLoad", ValueType.BOOLEAN);
         autoReload = new ParameterDefinition("autoReload", ContextAutoReloadConfig.class);
         singleton = new ParameterDefinition("singleton", ValueType.BOOLEAN);
         parameters = new ParameterDefinition("parameters", AspectranParameters.class);
@@ -54,7 +52,6 @@ public class ContextConfig extends AbstractParameters {
                 resources,
                 scan,
                 profiles,
-                hybridLoad,
                 autoReload,
                 singleton,
                 parameters
@@ -124,15 +121,6 @@ public class ContextConfig extends AbstractParameters {
 
     public boolean hasProfilesConfig() {
         return hasValue(profiles);
-    }
-
-    public boolean isHybridLoad() {
-        return getBoolean(hybridLoad, false);
-    }
-
-    public ContextConfig setHybridLoad(boolean hybridLoad) {
-        putValue(ContextConfig.hybridLoad, hybridLoad);
-        return this;
     }
 
     public ContextAutoReloadConfig getAutoReloadConfig() {

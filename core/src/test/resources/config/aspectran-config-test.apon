@@ -13,7 +13,6 @@ context: {
     profiles: {
         active: dev, stage, prod
     }
-    hybridLoad: false
     autoReload: {
         reloadMode: hard
         scanIntervalSeconds: 5

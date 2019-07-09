@@ -122,7 +122,7 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
             if (rootFile != null || aspectranParameters != null) {
                 ActivityContextParser parser = new HybridActivityContextParser(assistant);
                 parser.setEncoding(getEncoding());
-                parser.setHybridLoad(isHybridLoad());
+                parser.setDebugMode(isDebugMode());
                 if (rootFile != null) {
                     parser.parse(rootFile);
                 } else {

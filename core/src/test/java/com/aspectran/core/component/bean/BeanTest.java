@@ -51,7 +51,7 @@ class BeanTest {
 
         builder = new HybridActivityContextBuilder();
         builder.setBasePath(baseDir.getCanonicalPath());
-        builder.setHybridLoad(false);
+        builder.setDebugMode(true);
         builder.setActiveProfiles("dev", "local");
         builder.setBasePackages("com.aspectran.core.component.bean");
         context = builder.build("/config/bean/bean-test-config.xml");

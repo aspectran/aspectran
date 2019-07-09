@@ -35,20 +35,18 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ActivityContextBuilderTest {
 
-    private File baseDir;
-
     private ActivityContextBuilder builder;
 
     @BeforeAll
     void ready() throws IOException {
-        baseDir = ResourceUtils.getResourceAsFile(".");
+        File baseDir = ResourceUtils.getResourceAsFile(".");
 
         System.out.println(baseDir.getCanonicalPath());
         System.out.println(" --- Test case for building ActivityContext --- ");
 
         builder = new HybridActivityContextBuilder();
         builder.setBasePath(baseDir.getCanonicalPath());
-        builder.setHybridLoad(true);
+        builder.setDebugMode(true);
     }
 
     @AfterAll
@@ -58,13 +56,6 @@ class ActivityContextBuilderTest {
 
     @Test
     void testHybridLoading() throws ActivityContextBuilderException {
-        File apon1 = new File(baseDir, "config/sample/test-config.xml.apon");
-        File apon2 = new File(baseDir, "config/sample/scheduler-config.xml.apon");
-        File apon3 = new File(baseDir, "config/sample/environment-config.xml.apon");
-        apon1.delete();
-        apon2.delete();
-        apon3.delete();
-
         System.out.println("================ load ===============");
 
         builder.setActiveProfiles("dev", "debug");
@@ -83,7 +74,7 @@ class ActivityContextBuilderTest {
         System.out.println("=============== reload ==============");
 
         builder.setActiveProfiles("local");
-        ActivityContext context2 = builder.build();
+        ActivityContext context2 = builder.build("/config/sample/test-config.xml.apon");
         String result2 = context2.getTemplateRenderer().render("echo2");
         //System.out.println(result2);
         assertEquals("ECHO-2", result2);
