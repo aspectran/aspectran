@@ -1,8 +1,10 @@
 package com.aspectran.core.util.apon;
 
 import com.aspectran.core.util.ClassUtils;
+import com.aspectran.core.util.StringUtils;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
+import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
@@ -58,12 +60,27 @@ public class XmlToApon {
             throw new IllegalArgumentException("container must not be null");
         }
 
+        ParameterValueHandler valueHandler = null;
         try {
+            valueHandler = new ParameterValueHandler(container);
             SAXParserFactory factory = SAXParserFactory.newInstance();
             SAXParser parser = factory.newSAXParser();
-            parser.parse(is, new ParameterValueHandler(container));
+            parser.parse(is, valueHandler);
         } catch (Exception e) {
-            throw new IOException("Failed to convert XML to APON", e);
+            String location;
+            if (valueHandler != null && valueHandler.getLocator() != null) {
+                Locator locator = valueHandler.getLocator();
+                location = "Line Number " + locator.getLineNumber() +
+                    ", Column " + locator.getColumnNumber();
+                if (locator.getSystemId() != null) {
+                    location = "; " + locator.getSystemId() + " " + location;
+                } else {
+                    location = "; " + location;
+                }
+            } else {
+                location = StringUtils.EMPTY;
+            }
+            throw new IOException("Failed to convert XML to APON" + location + "; " + e.getMessage(), e);
         }
 
         return container;
@@ -79,19 +96,38 @@ public class XmlToApon {
 
         private boolean open;
 
+        private boolean leaf;
+
+        private Locator locator;
+
         public ParameterValueHandler(Parameters container) {
             this.parameters = container;
+        }
+
+        @Override
+        public void setDocumentLocator(Locator locator) {
+            // Save the locator, so that it can be used later for line tracking when traversing nodes.
+            this.locator = locator;
         }
 
         @Override
         public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
             if (name != null) {
                 parameters = parameters.newParameters(name);
+                leaf = false;
             }
-
-            name = qName;
+            if (attributes != null && attributes.getLength() > 0) {
+                name = null;
+                parameters = parameters.newParameters(qName);
+                leaf = false;
+                for (int i = 0; i < attributes.getLength(); i++) {
+                    parameters.putValue(attributes.getQName(i), attributes.getValue(i));
+                }
+            } else {
+                name = qName;
+                leaf = true;
+            }
             open = true;
-
             if (buffer.length() > 0) {
                 buffer.delete(0, buffer.length());
             }
@@ -105,19 +141,24 @@ public class XmlToApon {
                     text = buffer.toString();
                     buffer.delete(0, buffer.length());
                 }
-
                 parameters.putValue(qName, text);
-
                 name = null;
                 open = false;
-            } else {
+            }
+            if (!leaf) {
                 parameters = parameters.getIdentifier().getContainer();
+            } else {
+                leaf = false;
             }
         }
 
         @Override
         public void characters(char[] ch, int start, int length) throws SAXException {
             buffer.append(ch, start, length);
+        }
+
+        public Locator getLocator() {
+            return locator;
         }
 
     }
