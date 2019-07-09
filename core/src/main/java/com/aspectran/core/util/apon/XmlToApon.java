@@ -10,7 +10,9 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
 
@@ -50,6 +52,34 @@ public class XmlToApon {
 
     public static <T extends Parameters> T from(Reader in, T container) throws IOException {
         return from(new InputSource(in), container);
+    }
+
+    public static Parameters from(InputStream in) throws IOException {
+        return from(in, new VariableParameters());
+    }
+
+    public static <T extends Parameters> T from(InputStream in, Class<T> requiredType) throws IOException {
+        T container = ClassUtils.createInstance(requiredType);
+        from(in, container);
+        return container;
+    }
+
+    public static <T extends Parameters> T from(InputStream in, T container) throws IOException {
+        return from(new InputSource(in), container);
+    }
+
+    public static Parameters from(File file) throws IOException {
+        return from(new InputSource(file.toURI().toASCIIString()), new VariableParameters());
+    }
+
+    public static <T extends Parameters> T from(File file, Class<T> requiredType) throws IOException {
+        T container = ClassUtils.createInstance(requiredType);
+        from(file, container);
+        return container;
+    }
+
+    public static <T extends Parameters> T from(File file, T container) throws IOException {
+        return from(new InputSource(file.toURI().toASCIIString()), container);
     }
 
     public static <T extends Parameters> T from(InputSource is, T container) throws IOException {
@@ -141,7 +171,9 @@ public class XmlToApon {
                     text = buffer.toString();
                     buffer.delete(0, buffer.length());
                 }
-                parameters.putValue(qName, text);
+                if (text != null) {
+                    parameters.putValue(qName, text);
+                }
                 name = null;
                 open = false;
             }

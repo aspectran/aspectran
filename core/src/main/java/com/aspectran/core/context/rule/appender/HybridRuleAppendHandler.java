@@ -67,6 +67,17 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
                 RootParameters rootParameters = AponReader.parse(appender.getReader(encoding), new RootParameters());
                 getRuleConverter().asRules(rootParameters);
             } else {
+                /* TODO Using APON to load XML configuration
+                RootParameters rootParameters;
+                if (appender.getAppenderType() == AppenderType.FILE) {
+                    FileRuleAppender fileRuleAppender = (FileRuleAppender)appender;
+                    rootParameters = XmlToApon.from(fileRuleAppender.getFile(), RootParameters.class);
+                } else {
+                    rootParameters = XmlToApon.from(appender.getReader(encoding), RootParameters.class);
+                }
+                getRuleConverter().asRules(rootParameters);
+                */
+
                 if (aspectranNodeParser == null) {
                     aspectranNodeParser = new AspectranNodeParser(getContextRuleAssistant());
                 }
