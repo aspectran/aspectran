@@ -16,28 +16,28 @@
 package com.aspectran.core.context.rule.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.ParameterDefinition;
+import com.aspectran.core.util.apon.ParameterKey;
 import com.aspectran.core.util.apon.ValueType;
 
 public class SchedulerParameters extends AbstractParameters {
 
-    public static final ParameterDefinition bean;
-    public static final ParameterDefinition trigger;
+    public static final ParameterKey bean;
+    public static final ParameterKey trigger;
 
-    private static final ParameterDefinition[] parameterDefinitions;
+    private static final ParameterKey[] parameterKeys;
 
     static {
-        bean = new ParameterDefinition("bean", ValueType.STRING);
-        trigger = new ParameterDefinition("trigger", TriggerParameters.class);
+        bean = new ParameterKey("bean", ValueType.STRING);
+        trigger = new ParameterKey("trigger", TriggerParameters.class);
 
-        parameterDefinitions = new ParameterDefinition[] {
+        parameterKeys = new ParameterKey[] {
                 bean,
                 trigger
         };
     }
 
     public SchedulerParameters() {
-        super(parameterDefinitions);
+        super(parameterKeys);
     }
 
 }

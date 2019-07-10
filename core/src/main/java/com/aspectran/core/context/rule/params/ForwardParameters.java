@@ -16,29 +16,29 @@
 package com.aspectran.core.context.rule.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.ParameterDefinition;
+import com.aspectran.core.util.apon.ParameterKey;
 import com.aspectran.core.util.apon.ValueType;
 
 public class ForwardParameters extends AbstractParameters {
 
-    public static final ParameterDefinition action;
-    public static final ParameterDefinition contentType;
-    public static final ParameterDefinition translet;
-    public static final ParameterDefinition method;
-    public static final ParameterDefinition defaultResponse;
-    public static final ParameterDefinition attributes;
+    public static final ParameterKey action;
+    public static final ParameterKey contentType;
+    public static final ParameterKey translet;
+    public static final ParameterKey method;
+    public static final ParameterKey defaultResponse;
+    public static final ParameterKey attributes;
 
-    private static final ParameterDefinition[] parameterDefinitions;
+    private static final ParameterKey[] parameterKeys;
 
     static {
-        action = new ParameterDefinition("action", ActionParameters.class, true, true);
-        contentType = new ParameterDefinition("contentType", ValueType.STRING);
-        translet = new ParameterDefinition("translet", ValueType.STRING);
-        method = new ParameterDefinition("method", ValueType.STRING);
-        defaultResponse = new ParameterDefinition("default", ValueType.BOOLEAN);
-        attributes = new ParameterDefinition("attributes", ItemHolderParameters.class, true, true);
+        action = new ParameterKey("action", ActionParameters.class, true, true);
+        contentType = new ParameterKey("contentType", ValueType.STRING);
+        translet = new ParameterKey("translet", ValueType.STRING);
+        method = new ParameterKey("method", ValueType.STRING);
+        defaultResponse = new ParameterKey("default", ValueType.BOOLEAN);
+        attributes = new ParameterKey("attributes", ItemHolderParameters.class, true, true);
 
-        parameterDefinitions = new ParameterDefinition[] {
+        parameterKeys = new ParameterKey[] {
                 action,
                 contentType,
                 translet,
@@ -49,7 +49,7 @@ public class ForwardParameters extends AbstractParameters {
     }
 
     public ForwardParameters() {
-        super(parameterDefinitions);
+        super(parameterKeys);
     }
 
 }

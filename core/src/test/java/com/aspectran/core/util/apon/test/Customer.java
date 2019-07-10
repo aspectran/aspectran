@@ -16,27 +16,27 @@
 package com.aspectran.core.util.apon.test;
 
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.ParameterDefinition;
+import com.aspectran.core.util.apon.ParameterKey;
 import com.aspectran.core.util.apon.ValueType;
 
 public class Customer extends AbstractParameters {
 
-    public static final ParameterDefinition id;
-    public static final ParameterDefinition name;
-    public static final ParameterDefinition age;
-    public static final ParameterDefinition episode;
-    public static final ParameterDefinition approved;
+    public static final ParameterKey id;
+    public static final ParameterKey name;
+    public static final ParameterKey age;
+    public static final ParameterKey episode;
+    public static final ParameterKey approved;
 
-    private static final ParameterDefinition[] parameterDefinitions;
+    private static final ParameterKey[] parameterKeys;
 
     static {
-        id = new ParameterDefinition("id", ValueType.STRING);
-        name = new ParameterDefinition("name", ValueType.STRING);
-        age = new ParameterDefinition("age", ValueType.INT);
-        episode = new ParameterDefinition("episode", ValueType.TEXT);
-        approved = new ParameterDefinition("approved", ValueType.BOOLEAN);
+        id = new ParameterKey("id", ValueType.STRING);
+        name = new ParameterKey("name", ValueType.STRING);
+        age = new ParameterKey("age", ValueType.INT);
+        episode = new ParameterKey("episode", ValueType.TEXT);
+        approved = new ParameterKey("approved", ValueType.BOOLEAN);
 
-        parameterDefinitions = new ParameterDefinition[] {
+        parameterKeys = new ParameterKey[] {
             id,
             name,
             age,
@@ -49,7 +49,7 @@ public class Customer extends AbstractParameters {
      * Instantiates a new customer.
      */
     public Customer() {
-        super(parameterDefinitions);
+        super(parameterKeys);
     }
 
 }

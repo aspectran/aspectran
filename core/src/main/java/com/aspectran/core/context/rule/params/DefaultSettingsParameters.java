@@ -17,31 +17,31 @@ package com.aspectran.core.context.rule.params;
 
 import com.aspectran.core.context.rule.type.DefaultSettingType;
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.ParameterDefinition;
+import com.aspectran.core.util.apon.ParameterKey;
 import com.aspectran.core.util.apon.ValueType;
 
 public class DefaultSettingsParameters extends AbstractParameters {
 
-    public static final ParameterDefinition transletNamePattern;
-    public static final ParameterDefinition transletNamePrefix;
-    public static final ParameterDefinition transletNameSuffix;
-    public static final ParameterDefinition beanProxifier;
-    public static final ParameterDefinition pointcutPatternVerifiable;
-    public static final ParameterDefinition defaultTemplateEngineBean;
-    public static final ParameterDefinition defaultSchedulerBean;
+    public static final ParameterKey transletNamePattern;
+    public static final ParameterKey transletNamePrefix;
+    public static final ParameterKey transletNameSuffix;
+    public static final ParameterKey beanProxifier;
+    public static final ParameterKey pointcutPatternVerifiable;
+    public static final ParameterKey defaultTemplateEngineBean;
+    public static final ParameterKey defaultSchedulerBean;
 
-    private static final ParameterDefinition[] parameterDefinitions;
+    private static final ParameterKey[] parameterKeys;
 
     static {
-        transletNamePattern = new ParameterDefinition(DefaultSettingType.TRANSLET_NAME_PATTERN.toString(), ValueType.STRING);
-        transletNamePrefix = new ParameterDefinition(DefaultSettingType.TRANSLET_NAME_PREFIX.toString(), ValueType.STRING);
-        transletNameSuffix = new ParameterDefinition(DefaultSettingType.TRANSLET_NAME_SUFFIX.toString(), ValueType.STRING);
-        beanProxifier = new ParameterDefinition(DefaultSettingType.BEAN_PROXIFIER.toString(), ValueType.STRING);
-        pointcutPatternVerifiable = new ParameterDefinition(DefaultSettingType.POINTCUT_PATTERN_VERIFIABLE.toString(), ValueType.BOOLEAN);
-        defaultTemplateEngineBean = new ParameterDefinition(DefaultSettingType.DEFAULT_TEMPLATE_ENGINE_BEAN.toString(), ValueType.STRING);
-        defaultSchedulerBean = new ParameterDefinition(DefaultSettingType.DEFAULT_SCHEDULER_BEAN.toString(), ValueType.STRING);
+        transletNamePattern = new ParameterKey(DefaultSettingType.TRANSLET_NAME_PATTERN.toString(), ValueType.STRING);
+        transletNamePrefix = new ParameterKey(DefaultSettingType.TRANSLET_NAME_PREFIX.toString(), ValueType.STRING);
+        transletNameSuffix = new ParameterKey(DefaultSettingType.TRANSLET_NAME_SUFFIX.toString(), ValueType.STRING);
+        beanProxifier = new ParameterKey(DefaultSettingType.BEAN_PROXIFIER.toString(), ValueType.STRING);
+        pointcutPatternVerifiable = new ParameterKey(DefaultSettingType.POINTCUT_PATTERN_VERIFIABLE.toString(), ValueType.BOOLEAN);
+        defaultTemplateEngineBean = new ParameterKey(DefaultSettingType.DEFAULT_TEMPLATE_ENGINE_BEAN.toString(), ValueType.STRING);
+        defaultSchedulerBean = new ParameterKey(DefaultSettingType.DEFAULT_SCHEDULER_BEAN.toString(), ValueType.STRING);
 
-        parameterDefinitions = new ParameterDefinition[] {
+        parameterKeys = new ParameterKey[] {
                 transletNamePattern,
                 transletNamePrefix,
                 transletNameSuffix,
@@ -53,7 +53,7 @@ public class DefaultSettingsParameters extends AbstractParameters {
     }
 
     public DefaultSettingsParameters() {
-        super(parameterDefinitions);
+        super(parameterKeys);
     }
 
 }

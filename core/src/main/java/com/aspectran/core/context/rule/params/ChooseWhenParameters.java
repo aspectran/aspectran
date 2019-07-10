@@ -16,29 +16,29 @@
 package com.aspectran.core.context.rule.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.ParameterDefinition;
+import com.aspectran.core.util.apon.ParameterKey;
 import com.aspectran.core.util.apon.ValueType;
 
 public class ChooseWhenParameters extends AbstractParameters {
 
-    public static final ParameterDefinition caseNo;
-    public static final ParameterDefinition test;
-    public static final ParameterDefinition transform;
-    public static final ParameterDefinition dispatch;
-    public static final ParameterDefinition redirect;
-    public static final ParameterDefinition forward;
+    public static final ParameterKey caseNo;
+    public static final ParameterKey test;
+    public static final ParameterKey transform;
+    public static final ParameterKey dispatch;
+    public static final ParameterKey redirect;
+    public static final ParameterKey forward;
 
-    private static final ParameterDefinition[] parameterDefinitions;
+    private static final ParameterKey[] parameterKeys;
 
     static {
-        caseNo = new ParameterDefinition("caseNo", ValueType.INT);
-        test = new ParameterDefinition("test", ValueType.STRING);
-        transform = new ParameterDefinition("transform", TransformParameters.class);
-        dispatch = new ParameterDefinition("dispatch", DispatchParameters.class);
-        redirect = new ParameterDefinition("redirect", RedirectParameters.class);
-        forward = new ParameterDefinition("forward", ForwardParameters.class);
+        caseNo = new ParameterKey("caseNo", ValueType.INT);
+        test = new ParameterKey("test", ValueType.STRING);
+        transform = new ParameterKey("transform", TransformParameters.class);
+        dispatch = new ParameterKey("dispatch", DispatchParameters.class);
+        redirect = new ParameterKey("redirect", RedirectParameters.class);
+        forward = new ParameterKey("forward", ForwardParameters.class);
 
-        parameterDefinitions = new ParameterDefinition[] {
+        parameterKeys = new ParameterKey[] {
                 caseNo,
                 test,
                 transform,
@@ -49,7 +49,7 @@ public class ChooseWhenParameters extends AbstractParameters {
     }
 
     public ChooseWhenParameters() {
-        super(parameterDefinitions);
+        super(parameterKeys);
     }
 
 }

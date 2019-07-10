@@ -16,37 +16,37 @@
 package com.aspectran.core.context.rule.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.ParameterDefinition;
+import com.aspectran.core.util.apon.ParameterKey;
 import com.aspectran.core.util.apon.ValueType;
 
 public class TemplateParameters extends AbstractParameters {
 
-    public static final ParameterDefinition id;
-    public static final ParameterDefinition engine;
-    public static final ParameterDefinition name;
-    public static final ParameterDefinition file;
-    public static final ParameterDefinition resource;
-    public static final ParameterDefinition url;
-    public static final ParameterDefinition content;
-    public static final ParameterDefinition style;
-    public static final ParameterDefinition encoding;
-    public static final ParameterDefinition noCache;
+    public static final ParameterKey id;
+    public static final ParameterKey engine;
+    public static final ParameterKey name;
+    public static final ParameterKey file;
+    public static final ParameterKey resource;
+    public static final ParameterKey url;
+    public static final ParameterKey content;
+    public static final ParameterKey style;
+    public static final ParameterKey encoding;
+    public static final ParameterKey noCache;
 
-    private static final ParameterDefinition[] parameterDefinitions;
+    private static final ParameterKey[] parameterKeys;
 
     static {
-        id = new ParameterDefinition("id", ValueType.STRING);
-        engine = new ParameterDefinition("engine", ValueType.STRING);
-        name = new ParameterDefinition("name", ValueType.STRING);
-        file = new ParameterDefinition("file", ValueType.STRING);
-        resource = new ParameterDefinition("resource", ValueType.STRING);
-        url = new ParameterDefinition("url", ValueType.STRING);
-        content = new ParameterDefinition("content", ValueType.TEXT);
-        style = new ParameterDefinition("style", ValueType.STRING);
-        encoding = new ParameterDefinition("encoding", ValueType.STRING);
-        noCache = new ParameterDefinition("noCache", ValueType.BOOLEAN);
+        id = new ParameterKey("id", ValueType.STRING);
+        engine = new ParameterKey("engine", ValueType.STRING);
+        name = new ParameterKey("name", ValueType.STRING);
+        file = new ParameterKey("file", ValueType.STRING);
+        resource = new ParameterKey("resource", ValueType.STRING);
+        url = new ParameterKey("url", ValueType.STRING);
+        content = new ParameterKey("content", ValueType.TEXT);
+        style = new ParameterKey("style", ValueType.STRING);
+        encoding = new ParameterKey("encoding", ValueType.STRING);
+        noCache = new ParameterKey("noCache", ValueType.BOOLEAN);
 
-        parameterDefinitions = new ParameterDefinition[] {
+        parameterKeys = new ParameterKey[] {
                 id,
                 engine,
                 name,
@@ -61,7 +61,7 @@ public class TemplateParameters extends AbstractParameters {
     }
 
     public TemplateParameters() {
-        super(parameterDefinitions);
+        super(parameterKeys);
     }
 
 }

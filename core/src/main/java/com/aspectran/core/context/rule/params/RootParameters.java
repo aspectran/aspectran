@@ -16,24 +16,24 @@
 package com.aspectran.core.context.rule.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.ParameterDefinition;
+import com.aspectran.core.util.apon.ParameterKey;
 
 public class RootParameters extends AbstractParameters {
 
-    public static final ParameterDefinition aspectran;
+    public static final ParameterKey aspectran;
 
-    private static final ParameterDefinition[] parameterDefinitions;
+    private static final ParameterKey[] parameterKeys;
 
     static {
-        aspectran = new ParameterDefinition("aspectran", AspectranParameters.class);
+        aspectran = new ParameterKey("aspectran", AspectranParameters.class);
 
-        parameterDefinitions = new ParameterDefinition[] {
+        parameterKeys = new ParameterKey[] {
                 aspectran
         };
     }
 
     public RootParameters() {
-        super(parameterDefinitions);
+        super(parameterKeys);
     }
 
     public RootParameters(AspectranParameters aspectranParameters) {

@@ -16,23 +16,23 @@
 package com.aspectran.core.context.config;
 
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.ParameterDefinition;
+import com.aspectran.core.util.apon.ParameterKey;
 import com.aspectran.core.util.apon.ValueType;
 
 public class WebConfig extends AbstractParameters {
 
-    private static final ParameterDefinition uriDecoding;
-    private static final ParameterDefinition defaultServletName;
-    private static final ParameterDefinition exposals;
+    private static final ParameterKey uriDecoding;
+    private static final ParameterKey defaultServletName;
+    private static final ParameterKey exposals;
 
-    private static final ParameterDefinition[] parameterDefinitions;
+    private static final ParameterKey[] parameterKeys;
 
     static {
-        uriDecoding = new ParameterDefinition("uriDecoding", ValueType.STRING);
-        defaultServletName = new ParameterDefinition("defaultServletName", ValueType.STRING);
-        exposals = new ParameterDefinition("exposals", ExposalsConfig.class);
+        uriDecoding = new ParameterKey("uriDecoding", ValueType.STRING);
+        defaultServletName = new ParameterKey("defaultServletName", ValueType.STRING);
+        exposals = new ParameterKey("exposals", ExposalsConfig.class);
 
-        parameterDefinitions = new ParameterDefinition[] {
+        parameterKeys = new ParameterKey[] {
                 uriDecoding,
                 defaultServletName,
                 exposals
@@ -40,7 +40,7 @@ public class WebConfig extends AbstractParameters {
     }
 
     public WebConfig() {
-        super(parameterDefinitions);
+        super(parameterKeys);
     }
 
     public String getUriDecoding() {

@@ -16,33 +16,33 @@
 package com.aspectran.core.context.rule.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.ParameterDefinition;
+import com.aspectran.core.util.apon.ParameterKey;
 import com.aspectran.core.util.apon.ValueType;
 
 public class TransformParameters extends AbstractParameters {
 
-    public static final ParameterDefinition action;
-    public static final ParameterDefinition type;
-    public static final ParameterDefinition contentType;
-    public static final ParameterDefinition encoding;
-    public static final ParameterDefinition defaultResponse;
-    public static final ParameterDefinition pretty;
-    public static final ParameterDefinition template;
-    public static final ParameterDefinition call;
+    public static final ParameterKey action;
+    public static final ParameterKey type;
+    public static final ParameterKey contentType;
+    public static final ParameterKey encoding;
+    public static final ParameterKey defaultResponse;
+    public static final ParameterKey pretty;
+    public static final ParameterKey template;
+    public static final ParameterKey call;
 
-    private static final ParameterDefinition[] parameterDefinitions;
+    private static final ParameterKey[] parameterKeys;
 
     static {
-        action = new ParameterDefinition("action", ActionParameters.class, true, true);
-        type = new ParameterDefinition("type", ValueType.STRING);
-        contentType = new ParameterDefinition("contentType", ValueType.STRING);
-        encoding = new ParameterDefinition("encoding", ValueType.STRING);
-        defaultResponse = new ParameterDefinition("default", ValueType.BOOLEAN);
-        pretty = new ParameterDefinition("pretty", ValueType.BOOLEAN);
-        template = new ParameterDefinition("template", TemplateParameters.class);
-        call = new ParameterDefinition("call", CallParameters.class);
+        action = new ParameterKey("action", ActionParameters.class, true, true);
+        type = new ParameterKey("type", ValueType.STRING);
+        contentType = new ParameterKey("contentType", ValueType.STRING);
+        encoding = new ParameterKey("encoding", ValueType.STRING);
+        defaultResponse = new ParameterKey("default", ValueType.BOOLEAN);
+        pretty = new ParameterKey("pretty", ValueType.BOOLEAN);
+        template = new ParameterKey("template", TemplateParameters.class);
+        call = new ParameterKey("call", CallParameters.class);
 
-        parameterDefinitions = new ParameterDefinition[] {
+        parameterKeys = new ParameterKey[] {
                 action,
                 type,
                 contentType,
@@ -55,7 +55,7 @@ public class TransformParameters extends AbstractParameters {
     }
 
     public TransformParameters() {
-        super(parameterDefinitions);
+        super(parameterKeys);
     }
 
 }

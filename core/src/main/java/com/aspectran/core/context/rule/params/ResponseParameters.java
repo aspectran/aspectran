@@ -16,29 +16,29 @@
 package com.aspectran.core.context.rule.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.ParameterDefinition;
+import com.aspectran.core.util.apon.ParameterKey;
 import com.aspectran.core.util.apon.ValueType;
 
 public class ResponseParameters extends AbstractParameters {
 
-    public static final ParameterDefinition name;
-    public static final ParameterDefinition encoding;
-    public static final ParameterDefinition transform;
-    public static final ParameterDefinition dispatch;
-    public static final ParameterDefinition forward;
-    public static final ParameterDefinition redirect;
+    public static final ParameterKey name;
+    public static final ParameterKey encoding;
+    public static final ParameterKey transform;
+    public static final ParameterKey dispatch;
+    public static final ParameterKey forward;
+    public static final ParameterKey redirect;
 
-    private static final ParameterDefinition[] parameterDefinitions;
+    private static final ParameterKey[] parameterKeys;
 
     static {
-        name = new ParameterDefinition("name", ValueType.STRING);
-        encoding = new ParameterDefinition("encoding", ValueType.STRING);
-        transform = new ParameterDefinition("transform", TransformParameters.class);
-        dispatch = new ParameterDefinition("dispatch", DispatchParameters.class);
-        forward = new ParameterDefinition("forward", ForwardParameters.class);
-        redirect = new ParameterDefinition("redirect", RedirectParameters.class);
+        name = new ParameterKey("name", ValueType.STRING);
+        encoding = new ParameterKey("encoding", ValueType.STRING);
+        transform = new ParameterKey("transform", TransformParameters.class);
+        dispatch = new ParameterKey("dispatch", DispatchParameters.class);
+        forward = new ParameterKey("forward", ForwardParameters.class);
+        redirect = new ParameterKey("redirect", RedirectParameters.class);
 
-        parameterDefinitions = new ParameterDefinition[] {
+        parameterKeys = new ParameterKey[] {
                 name,
                 encoding,
                 transform,
@@ -49,7 +49,7 @@ public class ResponseParameters extends AbstractParameters {
     }
 
     public ResponseParameters() {
-        super(parameterDefinitions);
+        super(parameterKeys);
     }
 
 }

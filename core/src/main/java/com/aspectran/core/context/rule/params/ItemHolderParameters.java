@@ -16,7 +16,7 @@
 package com.aspectran.core.context.rule.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.ParameterDefinition;
+import com.aspectran.core.util.apon.ParameterKey;
 import com.aspectran.core.util.apon.ValueType;
 
 import java.io.IOException;
@@ -24,23 +24,23 @@ import java.util.List;
 
 public class ItemHolderParameters extends AbstractParameters {
 
-    private static final ParameterDefinition profile;
-    private static final ParameterDefinition item;
+    private static final ParameterKey profile;
+    private static final ParameterKey item;
 
-    private static final ParameterDefinition[] parameterDefinitions;
+    private static final ParameterKey[] parameterKeys;
 
     static {
-        profile = new ParameterDefinition("profile", ValueType.STRING);
-        item = new ParameterDefinition("item", ItemParameters.class, true, true);
+        profile = new ParameterKey("profile", ValueType.STRING);
+        item = new ParameterKey("item", ItemParameters.class, true, true);
 
-        parameterDefinitions = new ParameterDefinition[] {
+        parameterKeys = new ParameterKey[] {
                 profile,
                 item
         };
     }
 
     public ItemHolderParameters() {
-        super(parameterDefinitions);
+        super(parameterKeys);
     }
 
     public ItemHolderParameters(String text) throws IOException {

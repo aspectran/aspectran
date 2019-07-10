@@ -16,27 +16,27 @@
 package com.aspectran.core.context.rule.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.ParameterDefinition;
+import com.aspectran.core.util.apon.ParameterKey;
 import com.aspectran.core.util.apon.ValueType;
 
 public class PointcutParameters extends AbstractParameters {
 
-    public static final ParameterDefinition type;
-    public static final ParameterDefinition plus;
-    public static final ParameterDefinition minus;
-    public static final ParameterDefinition include;
-    public static final ParameterDefinition exclude;
+    public static final ParameterKey type;
+    public static final ParameterKey plus;
+    public static final ParameterKey minus;
+    public static final ParameterKey include;
+    public static final ParameterKey exclude;
 
-    private static final ParameterDefinition[] parameterDefinitions;
+    private static final ParameterKey[] parameterKeys;
 
     static {
-        type = new ParameterDefinition("type", ValueType.STRING);
-        plus = new ParameterDefinition("+", ValueType.STRING, true, true);
-        minus = new ParameterDefinition("-", ValueType.STRING, true, true);
-        include = new ParameterDefinition("include", PointcutQualifierParameters.class, true, true);
-        exclude = new ParameterDefinition("exclude", PointcutQualifierParameters.class, true, true);
+        type = new ParameterKey("type", ValueType.STRING);
+        plus = new ParameterKey("+", ValueType.STRING, true, true);
+        minus = new ParameterKey("-", ValueType.STRING, true, true);
+        include = new ParameterKey("include", PointcutQualifierParameters.class, true, true);
+        exclude = new ParameterKey("exclude", PointcutQualifierParameters.class, true, true);
 
-        parameterDefinitions = new ParameterDefinition[] {
+        parameterKeys = new ParameterKey[] {
                 type,
                 plus,
                 minus,
@@ -46,7 +46,7 @@ public class PointcutParameters extends AbstractParameters {
     }
 
     public PointcutParameters() {
-        super(parameterDefinitions);
+        super(parameterKeys);
     }
 
     public void addIncludePattern(String pattern) {

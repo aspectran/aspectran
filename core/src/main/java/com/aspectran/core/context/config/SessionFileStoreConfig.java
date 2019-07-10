@@ -16,28 +16,28 @@
 package com.aspectran.core.context.config;
 
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.ParameterDefinition;
+import com.aspectran.core.util.apon.ParameterKey;
 import com.aspectran.core.util.apon.ValueType;
 
 public class SessionFileStoreConfig extends AbstractParameters {
 
-    private static final ParameterDefinition path;
-    private static final ParameterDefinition deleteUnrestorableFiles;
+    private static final ParameterKey path;
+    private static final ParameterKey deleteUnrestorableFiles;
 
-    private static final ParameterDefinition[] parameterDefinitions;
+    private static final ParameterKey[] parameterKeys;
 
     static {
-        path = new ParameterDefinition("path", ValueType.STRING);
-        deleteUnrestorableFiles = new ParameterDefinition("deleteUnrestorableFiles", ValueType.BOOLEAN);
+        path = new ParameterKey("path", ValueType.STRING);
+        deleteUnrestorableFiles = new ParameterKey("deleteUnrestorableFiles", ValueType.BOOLEAN);
 
-        parameterDefinitions = new ParameterDefinition[] {
+        parameterKeys = new ParameterKey[] {
                 path,
                 deleteUnrestorableFiles
         };
     }
 
     public SessionFileStoreConfig() {
-        super(parameterDefinitions);
+        super(parameterKeys);
     }
 
     public String getPath() {

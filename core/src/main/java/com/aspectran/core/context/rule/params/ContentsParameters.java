@@ -16,28 +16,28 @@
 package com.aspectran.core.context.rule.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.ParameterDefinition;
+import com.aspectran.core.util.apon.ParameterKey;
 import com.aspectran.core.util.apon.ValueType;
 
 public class ContentsParameters extends AbstractParameters {
 
-    public static final ParameterDefinition name;
-    public static final ParameterDefinition content;
+    public static final ParameterKey name;
+    public static final ParameterKey content;
 
-    private static final ParameterDefinition[] parameterDefinitions;
+    private static final ParameterKey[] parameterKeys;
 
     static {
-        name = new ParameterDefinition("name", ValueType.STRING);
-        content = new ParameterDefinition("content", ContentParameters.class, true, true);
+        name = new ParameterKey("name", ValueType.STRING);
+        content = new ParameterKey("content", ContentParameters.class, true, true);
 
-        parameterDefinitions = new ParameterDefinition[] {
+        parameterKeys = new ParameterKey[] {
                 name,
                 content
         };
     }
 
     public ContentsParameters() {
-        super(parameterDefinitions);
+        super(parameterKeys);
     }
 
 }

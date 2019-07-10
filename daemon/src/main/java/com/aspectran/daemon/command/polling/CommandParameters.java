@@ -22,7 +22,7 @@ import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.params.ItemHolderParameters;
 import com.aspectran.core.context.rule.params.ItemParameters;
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.ParameterDefinition;
+import com.aspectran.core.util.apon.ParameterKey;
 import com.aspectran.core.util.apon.ValueType;
 
 import java.util.List;
@@ -32,30 +32,30 @@ import java.util.List;
  */
 public class CommandParameters extends AbstractParameters {
 
-    private static final ParameterDefinition command;
-    private static final ParameterDefinition translet;
-    private static final ParameterDefinition bean;
-    private static final ParameterDefinition method;
-    private static final ParameterDefinition arguments;
-    private static final ParameterDefinition properties;
-    private static final ParameterDefinition parameters;
-    private static final ParameterDefinition attributes;
-    private static final ParameterDefinition output;
+    private static final ParameterKey command;
+    private static final ParameterKey translet;
+    private static final ParameterKey bean;
+    private static final ParameterKey method;
+    private static final ParameterKey arguments;
+    private static final ParameterKey properties;
+    private static final ParameterKey parameters;
+    private static final ParameterKey attributes;
+    private static final ParameterKey output;
 
-    private static final ParameterDefinition[] parameterDefinitions;
+    private static final ParameterKey[] parameterKeys;
 
     static {
-        command = new ParameterDefinition("command", ValueType.STRING);
-        translet = new ParameterDefinition("translet", ValueType.STRING);
-        bean = new ParameterDefinition("bean", ValueType.STRING);
-        method = new ParameterDefinition("method", ValueType.STRING);
-        arguments = new ParameterDefinition("arguments", ItemHolderParameters.class);
-        properties = new ParameterDefinition("properties", ItemHolderParameters.class);
-        parameters = new ParameterDefinition("parameters", ItemHolderParameters.class);
-        attributes = new ParameterDefinition("attributes", ItemHolderParameters.class);
-        output = new ParameterDefinition("output", ValueType.TEXT);
+        command = new ParameterKey("command", ValueType.STRING);
+        translet = new ParameterKey("translet", ValueType.STRING);
+        bean = new ParameterKey("bean", ValueType.STRING);
+        method = new ParameterKey("method", ValueType.STRING);
+        arguments = new ParameterKey("arguments", ItemHolderParameters.class);
+        properties = new ParameterKey("properties", ItemHolderParameters.class);
+        parameters = new ParameterKey("parameters", ItemHolderParameters.class);
+        attributes = new ParameterKey("attributes", ItemHolderParameters.class);
+        output = new ParameterKey("output", ValueType.TEXT);
 
-        parameterDefinitions = new ParameterDefinition[] {
+        parameterKeys = new ParameterKey[] {
                 command,
                 translet,
                 bean,
@@ -69,7 +69,7 @@ public class CommandParameters extends AbstractParameters {
     }
 
     public CommandParameters() {
-        super(parameterDefinitions);
+        super(parameterKeys);
     }
 
     public String getCommandName() {

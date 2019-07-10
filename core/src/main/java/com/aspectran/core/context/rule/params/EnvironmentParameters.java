@@ -16,25 +16,25 @@
 package com.aspectran.core.context.rule.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.ParameterDefinition;
+import com.aspectran.core.util.apon.ParameterKey;
 import com.aspectran.core.util.apon.ValueType;
 
 public class EnvironmentParameters extends AbstractParameters {
 
-    public static final ParameterDefinition description;
+    public static final ParameterKey description;
 
-    public static final ParameterDefinition profile;
+    public static final ParameterKey profile;
 
-    public static final ParameterDefinition properties;
+    public static final ParameterKey properties;
 
-    private static final ParameterDefinition[] parameterDefinitions;
+    private static final ParameterKey[] parameterKeys;
 
     static {
-        description = new ParameterDefinition("description", ValueType.TEXT);
-        profile = new ParameterDefinition("profile", ValueType.STRING);
-        properties = new ParameterDefinition("properties", ItemHolderParameters.class, true, true);
+        description = new ParameterKey("description", ValueType.TEXT);
+        profile = new ParameterKey("profile", ValueType.STRING);
+        properties = new ParameterKey("properties", ItemHolderParameters.class, true, true);
 
-        parameterDefinitions = new ParameterDefinition[] {
+        parameterKeys = new ParameterKey[] {
                 description,
                 profile,
                 properties
@@ -42,7 +42,7 @@ public class EnvironmentParameters extends AbstractParameters {
     }
 
     public EnvironmentParameters() {
-        super(parameterDefinitions);
+        super(parameterKeys);
     }
 
 }

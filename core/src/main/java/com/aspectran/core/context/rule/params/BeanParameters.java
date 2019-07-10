@@ -16,49 +16,49 @@
 package com.aspectran.core.context.rule.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.ParameterDefinition;
+import com.aspectran.core.util.apon.ParameterKey;
 import com.aspectran.core.util.apon.ValueType;
 
 public class BeanParameters extends AbstractParameters {
 
-    public static final ParameterDefinition description;
-    public static final ParameterDefinition id;
-    public static final ParameterDefinition className;
-    public static final ParameterDefinition scan;
-    public static final ParameterDefinition mask;
-    public static final ParameterDefinition scope;
-    public static final ParameterDefinition singleton;
-    public static final ParameterDefinition factoryBean;
-    public static final ParameterDefinition factoryMethod;
-    public static final ParameterDefinition initMethod;
-    public static final ParameterDefinition destroyMethod;
-    public static final ParameterDefinition lazyInit;
-    public static final ParameterDefinition important;
-    public static final ParameterDefinition constructor;
-    public static final ParameterDefinition properties;
-    public static final ParameterDefinition filter;
+    public static final ParameterKey description;
+    public static final ParameterKey id;
+    public static final ParameterKey className;
+    public static final ParameterKey scan;
+    public static final ParameterKey mask;
+    public static final ParameterKey scope;
+    public static final ParameterKey singleton;
+    public static final ParameterKey factoryBean;
+    public static final ParameterKey factoryMethod;
+    public static final ParameterKey initMethod;
+    public static final ParameterKey destroyMethod;
+    public static final ParameterKey lazyInit;
+    public static final ParameterKey important;
+    public static final ParameterKey constructor;
+    public static final ParameterKey properties;
+    public static final ParameterKey filter;
 
-    private static final ParameterDefinition[] parameterDefinitions;
+    private static final ParameterKey[] parameterKeys;
 
     static {
-        description = new ParameterDefinition("description", ValueType.TEXT);
-        id = new ParameterDefinition("id", ValueType.STRING);
-        className = new ParameterDefinition("class", ValueType.STRING);
-        scan = new ParameterDefinition("scan", ValueType.STRING);
-        mask = new ParameterDefinition("mask", ValueType.STRING);
-        scope = new ParameterDefinition("scope", ValueType.STRING);
-        singleton = new ParameterDefinition("singleton", ValueType.BOOLEAN);
-        factoryBean = new ParameterDefinition("factoryBean", ValueType.STRING);
-        factoryMethod = new ParameterDefinition("factoryMethod", ValueType.STRING);
-        initMethod = new ParameterDefinition("initMethod", ValueType.STRING);
-        destroyMethod = new ParameterDefinition("destroyMethod", ValueType.STRING);
-        lazyInit = new ParameterDefinition("lazyInit", ValueType.BOOLEAN);
-        important = new ParameterDefinition("important", ValueType.BOOLEAN);
-        constructor = new ParameterDefinition("constructor", ConstructorParameters.class);
-        properties = new ParameterDefinition("properties", ItemHolderParameters.class, true, true);
-        filter = new ParameterDefinition("filter", FilterParameters.class);
+        description = new ParameterKey("description", ValueType.TEXT);
+        id = new ParameterKey("id", ValueType.STRING);
+        className = new ParameterKey("class", ValueType.STRING);
+        scan = new ParameterKey("scan", ValueType.STRING);
+        mask = new ParameterKey("mask", ValueType.STRING);
+        scope = new ParameterKey("scope", ValueType.STRING);
+        singleton = new ParameterKey("singleton", ValueType.BOOLEAN);
+        factoryBean = new ParameterKey("factoryBean", ValueType.STRING);
+        factoryMethod = new ParameterKey("factoryMethod", ValueType.STRING);
+        initMethod = new ParameterKey("initMethod", ValueType.STRING);
+        destroyMethod = new ParameterKey("destroyMethod", ValueType.STRING);
+        lazyInit = new ParameterKey("lazyInit", ValueType.BOOLEAN);
+        important = new ParameterKey("important", ValueType.BOOLEAN);
+        constructor = new ParameterKey("constructor", ConstructorParameters.class);
+        properties = new ParameterKey("properties", ItemHolderParameters.class, true, true);
+        filter = new ParameterKey("filter", FilterParameters.class);
 
-        parameterDefinitions = new ParameterDefinition[] {
+        parameterKeys = new ParameterKey[] {
                 description,
                 id,
                 className,
@@ -79,7 +79,7 @@ public class BeanParameters extends AbstractParameters {
     }
 
     public BeanParameters() {
-        super(parameterDefinitions);
+        super(parameterKeys);
     }
 
 }

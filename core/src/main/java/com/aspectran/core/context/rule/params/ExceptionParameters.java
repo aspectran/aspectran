@@ -16,28 +16,28 @@
 package com.aspectran.core.context.rule.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.ParameterDefinition;
+import com.aspectran.core.util.apon.ParameterKey;
 import com.aspectran.core.util.apon.ValueType;
 
 public class ExceptionParameters extends AbstractParameters {
 
-    public static final ParameterDefinition description;
-    public static final ParameterDefinition thrown;
+    public static final ParameterKey description;
+    public static final ParameterKey thrown;
 
-    private static final ParameterDefinition[] parameterDefinitions;
+    private static final ParameterKey[] parameterKeys;
 
     static {
-        description = new ParameterDefinition("description", ValueType.TEXT);
-        thrown = new ParameterDefinition("thrown", ExceptionThrownParameters.class, true, true);
+        description = new ParameterKey("description", ValueType.TEXT);
+        thrown = new ParameterKey("thrown", ExceptionThrownParameters.class, true, true);
 
-        parameterDefinitions = new ParameterDefinition[] {
+        parameterKeys = new ParameterKey[] {
                 description,
                 thrown
         };
     }
 
     public ExceptionParameters() {
-        super(parameterDefinitions);
+        super(parameterKeys);
     }
 
 }

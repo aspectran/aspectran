@@ -16,28 +16,28 @@
 package com.aspectran.core.context.config;
 
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.ParameterDefinition;
+import com.aspectran.core.util.apon.ParameterKey;
 import com.aspectran.core.util.apon.ValueType;
 
 public class ExposalsConfig extends AbstractParameters {
 
-    private static final ParameterDefinition plus;
-    private static final ParameterDefinition minus;
+    private static final ParameterKey plus;
+    private static final ParameterKey minus;
 
-    private static final ParameterDefinition[] parameterDefinitions;
+    private static final ParameterKey[] parameterKeys;
 
     static {
-        plus = new ParameterDefinition("+", ValueType.STRING, true, true);
-        minus = new ParameterDefinition("-", ValueType.STRING, true, true);
+        plus = new ParameterKey("+", ValueType.STRING, true, true);
+        minus = new ParameterKey("-", ValueType.STRING, true, true);
 
-        parameterDefinitions = new ParameterDefinition[] {
+        parameterKeys = new ParameterKey[] {
                 plus,
                 minus
         };
     }
 
     public ExposalsConfig() {
-        super(parameterDefinitions);
+        super(parameterKeys);
     }
 
     public String[] getIncludePatterns() {

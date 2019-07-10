@@ -16,7 +16,7 @@
 package com.aspectran.core.context.config;
 
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.ParameterDefinition;
+import com.aspectran.core.util.apon.ParameterKey;
 import com.aspectran.core.util.apon.ValueType;
 
 /**
@@ -26,20 +26,20 @@ import com.aspectran.core.util.apon.ValueType;
  */
 public class DaemonPollerConfig extends AbstractParameters {
 
-    private static final ParameterDefinition pollingInterval;
-    private static final ParameterDefinition maxThreads;
-    private static final ParameterDefinition inbound;
-    private static final ParameterDefinition requeue;
+    private static final ParameterKey pollingInterval;
+    private static final ParameterKey maxThreads;
+    private static final ParameterKey inbound;
+    private static final ParameterKey requeue;
 
-    private static final ParameterDefinition[] parameterDefinitions;
+    private static final ParameterKey[] parameterKeys;
 
     static {
-        pollingInterval = new ParameterDefinition("pollingInterval", ValueType.LONG);
-        maxThreads = new ParameterDefinition("maxThreads", ValueType.INT);
-        inbound = new ParameterDefinition("inbound", ValueType.STRING);
-        requeue = new ParameterDefinition("requeue", ValueType.BOOLEAN);
+        pollingInterval = new ParameterKey("pollingInterval", ValueType.LONG);
+        maxThreads = new ParameterKey("maxThreads", ValueType.INT);
+        inbound = new ParameterKey("inbound", ValueType.STRING);
+        requeue = new ParameterKey("requeue", ValueType.BOOLEAN);
 
-        parameterDefinitions = new ParameterDefinition[] {
+        parameterKeys = new ParameterKey[] {
                 pollingInterval,
                 maxThreads,
                 inbound,
@@ -48,7 +48,7 @@ public class DaemonPollerConfig extends AbstractParameters {
     }
 
     public DaemonPollerConfig() {
-        super(parameterDefinitions);
+        super(parameterKeys);
     }
 
     public long getPollingInterval(long defaultPollingInterval) {

@@ -17,35 +17,35 @@ package com.aspectran.core.context.config;
 
 import com.aspectran.core.context.rule.params.AspectranParameters;
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.ParameterDefinition;
+import com.aspectran.core.util.apon.ParameterKey;
 import com.aspectran.core.util.apon.ValueType;
 
 public class ContextConfig extends AbstractParameters {
 
-    private static final ParameterDefinition base;
-    private static final ParameterDefinition root;
-    private static final ParameterDefinition encoding;
-    private static final ParameterDefinition resources;
-    private static final ParameterDefinition scan;
-    private static final ParameterDefinition profiles;
-    private static final ParameterDefinition autoReload;
-    private static final ParameterDefinition singleton;
-    private static final ParameterDefinition parameters;
+    private static final ParameterKey base;
+    private static final ParameterKey root;
+    private static final ParameterKey encoding;
+    private static final ParameterKey resources;
+    private static final ParameterKey scan;
+    private static final ParameterKey profiles;
+    private static final ParameterKey autoReload;
+    private static final ParameterKey singleton;
+    private static final ParameterKey parameters;
 
-    private static final ParameterDefinition[] parameterDefinitions;
+    private static final ParameterKey[] parameterKeys;
 
     static {
-        base = new ParameterDefinition("base", ValueType.STRING);
-        root = new ParameterDefinition("root", ValueType.STRING);
-        encoding = new ParameterDefinition("encoding", ValueType.STRING);
-        resources = new ParameterDefinition("resources", ValueType.STRING, true);
-        scan = new ParameterDefinition("scan", ValueType.STRING, true);
-        profiles = new ParameterDefinition("profiles", ContextProfilesConfig.class);
-        autoReload = new ParameterDefinition("autoReload", ContextAutoReloadConfig.class);
-        singleton = new ParameterDefinition("singleton", ValueType.BOOLEAN);
-        parameters = new ParameterDefinition("parameters", AspectranParameters.class);
+        base = new ParameterKey("base", ValueType.STRING);
+        root = new ParameterKey("root", ValueType.STRING);
+        encoding = new ParameterKey("encoding", ValueType.STRING);
+        resources = new ParameterKey("resources", ValueType.STRING, true);
+        scan = new ParameterKey("scan", ValueType.STRING, true);
+        profiles = new ParameterKey("profiles", ContextProfilesConfig.class);
+        autoReload = new ParameterKey("autoReload", ContextAutoReloadConfig.class);
+        singleton = new ParameterKey("singleton", ValueType.BOOLEAN);
+        parameters = new ParameterKey("parameters", AspectranParameters.class);
 
-        parameterDefinitions = new ParameterDefinition[] {
+        parameterKeys = new ParameterKey[] {
                 base,
                 root,
                 encoding,
@@ -59,7 +59,7 @@ public class ContextConfig extends AbstractParameters {
     }
 
     public ContextConfig() {
-        super(parameterDefinitions);
+        super(parameterKeys);
     }
 
     public String getBasePath() {

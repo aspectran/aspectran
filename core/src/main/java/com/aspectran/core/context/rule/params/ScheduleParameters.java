@@ -16,25 +16,25 @@
 package com.aspectran.core.context.rule.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.ParameterDefinition;
+import com.aspectran.core.util.apon.ParameterKey;
 import com.aspectran.core.util.apon.ValueType;
 
 public class ScheduleParameters extends AbstractParameters {
 
-    public static final ParameterDefinition description;
-    public static final ParameterDefinition id;
-    public static final ParameterDefinition scheduler;
-    public static final ParameterDefinition job;
+    public static final ParameterKey description;
+    public static final ParameterKey id;
+    public static final ParameterKey scheduler;
+    public static final ParameterKey job;
 
-    private static final ParameterDefinition[] parameterDefinitions;
+    private static final ParameterKey[] parameterKeys;
 
     static {
-        description = new ParameterDefinition("description", ValueType.TEXT);
-        id = new ParameterDefinition("id", ValueType.STRING);
-        scheduler = new ParameterDefinition("scheduler", SchedulerParameters.class);
-        job = new ParameterDefinition("job", ScheduledJobParameters.class, true, true);
+        description = new ParameterKey("description", ValueType.TEXT);
+        id = new ParameterKey("id", ValueType.STRING);
+        scheduler = new ParameterKey("scheduler", SchedulerParameters.class);
+        job = new ParameterKey("job", ScheduledJobParameters.class, true, true);
 
-        parameterDefinitions = new ParameterDefinition[] {
+        parameterKeys = new ParameterKey[] {
                 description,
                 id,
                 scheduler,
@@ -43,7 +43,7 @@ public class ScheduleParameters extends AbstractParameters {
     }
 
     public ScheduleParameters() {
-        super(parameterDefinitions);
+        super(parameterKeys);
     }
 
 }

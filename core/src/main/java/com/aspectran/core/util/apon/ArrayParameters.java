@@ -98,9 +98,9 @@ public class ArrayParameters extends AbstractParameters
         }
     }
 
-    private static ParameterDefinition[] createParameterDefinitions(Class<? extends AbstractParameters> elementClass) {
-        ParameterDefinition pd = new ParameterDefinition(NONAME, elementClass, true);
-        return new ParameterDefinition[] { pd };
+    private static ParameterKey[] createParameterDefinitions(Class<? extends AbstractParameters> elementClass) {
+        ParameterKey pk = new ParameterKey(NONAME, elementClass, true);
+        return new ParameterKey[] { pk };
     }
 
 }

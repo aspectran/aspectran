@@ -16,28 +16,28 @@
 package com.aspectran.core.context.config;
 
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.ParameterDefinition;
+import com.aspectran.core.util.apon.ParameterKey;
 import com.aspectran.core.util.apon.ValueType;
 
 public class ContextProfilesConfig extends AbstractParameters {
 
-    private static final ParameterDefinition activeProfiles;
-    private static final ParameterDefinition defaultProfiles;
+    private static final ParameterKey activeProfiles;
+    private static final ParameterKey defaultProfiles;
 
-    private static final ParameterDefinition[] parameterDefinitions;
+    private static final ParameterKey[] parameterKeys;
 
     static {
-        activeProfiles = new ParameterDefinition("active", ValueType.STRING, true);
-        defaultProfiles = new ParameterDefinition("default", ValueType.STRING, true);
+        activeProfiles = new ParameterKey("active", ValueType.STRING, true);
+        defaultProfiles = new ParameterKey("default", ValueType.STRING, true);
 
-        parameterDefinitions = new ParameterDefinition[] {
+        parameterKeys = new ParameterKey[] {
                 activeProfiles,
                 defaultProfiles
         };
     }
 
     public ContextProfilesConfig() {
-        super(parameterDefinitions);
+        super(parameterKeys);
     }
 
     public String[] getActiveProfiles() {

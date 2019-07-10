@@ -16,23 +16,23 @@
 package com.aspectran.core.context.rule.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.ParameterDefinition;
+import com.aspectran.core.util.apon.ParameterKey;
 import com.aspectran.core.util.apon.ValueType;
 
 public class PointcutQualifierParameters extends AbstractParameters {
 
-    public static final ParameterDefinition translet;
-    public static final ParameterDefinition bean;
-    public static final ParameterDefinition method;
+    public static final ParameterKey translet;
+    public static final ParameterKey bean;
+    public static final ParameterKey method;
 
-    private static final ParameterDefinition[] parameterDefinitions;
+    private static final ParameterKey[] parameterKeys;
 
     static {
-        translet = new ParameterDefinition("translet", ValueType.STRING);
-        bean = new ParameterDefinition("bean", ValueType.STRING);
-        method = new ParameterDefinition("method", ValueType.STRING);
+        translet = new ParameterKey("translet", ValueType.STRING);
+        bean = new ParameterKey("bean", ValueType.STRING);
+        method = new ParameterKey("method", ValueType.STRING);
 
-        parameterDefinitions = new ParameterDefinition[] {
+        parameterKeys = new ParameterKey[] {
                 translet,
                 bean,
                 method
@@ -40,7 +40,7 @@ public class PointcutQualifierParameters extends AbstractParameters {
     }
 
     public PointcutQualifierParameters() {
-        super(parameterDefinitions);
+        super(parameterKeys);
     }
 
 }

@@ -16,53 +16,53 @@
 package com.aspectran.core.context.rule.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.ParameterDefinition;
+import com.aspectran.core.util.apon.ParameterKey;
 import com.aspectran.core.util.apon.ValueType;
 
 public class TransletParameters extends AbstractParameters {
 
-    public static final ParameterDefinition description;
-    public static final ParameterDefinition name;
-    public static final ParameterDefinition scan;
-    public static final ParameterDefinition mask;
-    public static final ParameterDefinition method;
-    public static final ParameterDefinition request;
-    public static final ParameterDefinition parameters;
-    public static final ParameterDefinition attributes;
-    public static final ParameterDefinition choose;
-    public static final ParameterDefinition contents;
-    public static final ParameterDefinition content;
-    public static final ParameterDefinition action;
-    public static final ParameterDefinition response;
-    public static final ParameterDefinition transform;
-    public static final ParameterDefinition dispatch;
-    public static final ParameterDefinition forward;
-    public static final ParameterDefinition redirect;
-    public static final ParameterDefinition exception;
+    public static final ParameterKey description;
+    public static final ParameterKey name;
+    public static final ParameterKey scan;
+    public static final ParameterKey mask;
+    public static final ParameterKey method;
+    public static final ParameterKey request;
+    public static final ParameterKey parameters;
+    public static final ParameterKey attributes;
+    public static final ParameterKey choose;
+    public static final ParameterKey contents;
+    public static final ParameterKey content;
+    public static final ParameterKey action;
+    public static final ParameterKey response;
+    public static final ParameterKey transform;
+    public static final ParameterKey dispatch;
+    public static final ParameterKey forward;
+    public static final ParameterKey redirect;
+    public static final ParameterKey exception;
 
-    private static final ParameterDefinition[] parameterDefinitions;
+    private static final ParameterKey[] parameterKeys;
 
     static {
-        description = new ParameterDefinition("description", ValueType.TEXT);
-        name = new ParameterDefinition("name", ValueType.STRING);
-        scan = new ParameterDefinition("scan", ValueType.STRING);
-        mask = new ParameterDefinition("mask", ValueType.STRING);
-        method = new ParameterDefinition("method", ValueType.STRING);
-        request = new ParameterDefinition("request", RequestParameters.class);
-        parameters = new ParameterDefinition("parameters", ItemHolderParameters.class, true, true);
-        attributes = new ParameterDefinition("attributes", ItemHolderParameters.class, true, true);
-        choose = new ParameterDefinition("choose", ChooseParameters.class, true, true);
-        contents = new ParameterDefinition("contents", ContentsParameters.class);
-        content = new ParameterDefinition("content", ContentParameters.class, true, true);
-        action = new ParameterDefinition("action", ActionParameters.class, true, true);
-        response = new ParameterDefinition("response", ResponseParameters.class, true, true);
-        transform = new ParameterDefinition("transform", TransformParameters.class);
-        dispatch = new ParameterDefinition("dispatch", DispatchParameters.class);
-        forward = new ParameterDefinition("forward", ForwardParameters.class);
-        redirect = new ParameterDefinition("redirect", RedirectParameters.class);
-        exception = new ParameterDefinition("exception", ExceptionParameters.class);
+        description = new ParameterKey("description", ValueType.TEXT);
+        name = new ParameterKey("name", ValueType.STRING);
+        scan = new ParameterKey("scan", ValueType.STRING);
+        mask = new ParameterKey("mask", ValueType.STRING);
+        method = new ParameterKey("method", ValueType.STRING);
+        request = new ParameterKey("request", RequestParameters.class);
+        parameters = new ParameterKey("parameters", ItemHolderParameters.class, true, true);
+        attributes = new ParameterKey("attributes", ItemHolderParameters.class, true, true);
+        choose = new ParameterKey("choose", ChooseParameters.class, true, true);
+        contents = new ParameterKey("contents", ContentsParameters.class);
+        content = new ParameterKey("content", ContentParameters.class, true, true);
+        action = new ParameterKey("action", ActionParameters.class, true, true);
+        response = new ParameterKey("response", ResponseParameters.class, true, true);
+        transform = new ParameterKey("transform", TransformParameters.class);
+        dispatch = new ParameterKey("dispatch", DispatchParameters.class);
+        forward = new ParameterKey("forward", ForwardParameters.class);
+        redirect = new ParameterKey("redirect", RedirectParameters.class);
+        exception = new ParameterKey("exception", ExceptionParameters.class);
 
-        parameterDefinitions = new ParameterDefinition[] {
+        parameterKeys = new ParameterKey[] {
                 description,
                 name,
                 scan,
@@ -85,7 +85,7 @@ public class TransletParameters extends AbstractParameters {
     }
 
     public TransletParameters() {
-        super(parameterDefinitions);
+        super(parameterKeys);
     }
 
 }

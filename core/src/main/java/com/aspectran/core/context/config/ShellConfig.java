@@ -16,31 +16,31 @@
 package com.aspectran.core.context.config;
 
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.ParameterDefinition;
+import com.aspectran.core.util.apon.ParameterKey;
 import com.aspectran.core.util.apon.ValueType;
 
 public class ShellConfig extends AbstractParameters {
 
-    private static final ParameterDefinition prompt;
-    private static final ParameterDefinition commands;
-    private static final ParameterDefinition greetings;
-    private static final ParameterDefinition workingDir;
-    private static final ParameterDefinition historyFile;
-    private static final ParameterDefinition verbose;
-    private static final ParameterDefinition exposals;
+    private static final ParameterKey prompt;
+    private static final ParameterKey commands;
+    private static final ParameterKey greetings;
+    private static final ParameterKey workingDir;
+    private static final ParameterKey historyFile;
+    private static final ParameterKey verbose;
+    private static final ParameterKey exposals;
 
-    private static final ParameterDefinition[] parameterDefinitions;
+    private static final ParameterKey[] parameterKeys;
 
     static {
-        prompt = new ParameterDefinition("prompt", ValueType.STRING);
-        commands = new ParameterDefinition("commands", ValueType.STRING, true);
-        greetings = new ParameterDefinition("greetings", ValueType.TEXT);
-        workingDir = new ParameterDefinition("workingDir", ValueType.STRING);
-        historyFile = new ParameterDefinition("historyFile", ValueType.STRING);
-        verbose = new ParameterDefinition("verbose", ValueType.BOOLEAN);
-        exposals = new ParameterDefinition("exposals", ExposalsConfig.class);
+        prompt = new ParameterKey("prompt", ValueType.STRING);
+        commands = new ParameterKey("commands", ValueType.STRING, true);
+        greetings = new ParameterKey("greetings", ValueType.TEXT);
+        workingDir = new ParameterKey("workingDir", ValueType.STRING);
+        historyFile = new ParameterKey("historyFile", ValueType.STRING);
+        verbose = new ParameterKey("verbose", ValueType.BOOLEAN);
+        exposals = new ParameterKey("exposals", ExposalsConfig.class);
 
-        parameterDefinitions = new ParameterDefinition[] {
+        parameterKeys = new ParameterKey[] {
                 prompt,
                 commands,
                 greetings,
@@ -52,7 +52,7 @@ public class ShellConfig extends AbstractParameters {
     }
 
     public ShellConfig() {
-        super(parameterDefinitions);
+        super(parameterKeys);
     }
 
     public String getPrompt() {

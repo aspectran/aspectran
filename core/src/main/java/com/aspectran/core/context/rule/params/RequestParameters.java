@@ -16,25 +16,25 @@
 package com.aspectran.core.context.rule.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.ParameterDefinition;
+import com.aspectran.core.util.apon.ParameterKey;
 import com.aspectran.core.util.apon.ValueType;
 
 public class RequestParameters extends AbstractParameters {
 
-    public static final ParameterDefinition method;
-    public static final ParameterDefinition encoding;
-    public static final ParameterDefinition parameters;
-    public static final ParameterDefinition attributes;
+    public static final ParameterKey method;
+    public static final ParameterKey encoding;
+    public static final ParameterKey parameters;
+    public static final ParameterKey attributes;
 
-    private static final ParameterDefinition[] parameterDefinitions;
+    private static final ParameterKey[] parameterKeys;
 
     static {
-        method = new ParameterDefinition("method", ValueType.STRING);
-        encoding = new ParameterDefinition("encoding", ValueType.STRING);
-        parameters = new ParameterDefinition("parameters", ItemHolderParameters.class, true, true);
-        attributes = new ParameterDefinition("attributes", ItemHolderParameters.class, true, true);
+        method = new ParameterKey("method", ValueType.STRING);
+        encoding = new ParameterKey("encoding", ValueType.STRING);
+        parameters = new ParameterKey("parameters", ItemHolderParameters.class, true, true);
+        attributes = new ParameterKey("attributes", ItemHolderParameters.class, true, true);
 
-        parameterDefinitions = new ParameterDefinition[] {
+        parameterKeys = new ParameterKey[] {
                 method,
                 encoding,
                 parameters,
@@ -43,7 +43,7 @@ public class RequestParameters extends AbstractParameters {
     }
 
     public RequestParameters() {
-        super(parameterDefinitions);
+        super(parameterKeys);
     }
 
 }

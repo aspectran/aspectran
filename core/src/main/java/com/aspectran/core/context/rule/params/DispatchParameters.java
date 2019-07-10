@@ -16,29 +16,29 @@
 package com.aspectran.core.context.rule.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.ParameterDefinition;
+import com.aspectran.core.util.apon.ParameterKey;
 import com.aspectran.core.util.apon.ValueType;
 
 public class DispatchParameters extends AbstractParameters {
 
-    public static final ParameterDefinition action;
-    public static final ParameterDefinition name;
-    public static final ParameterDefinition dispatcher;
-    public static final ParameterDefinition contentType;
-    public static final ParameterDefinition encoding;
-    public static final ParameterDefinition defaultResponse;
+    public static final ParameterKey action;
+    public static final ParameterKey name;
+    public static final ParameterKey dispatcher;
+    public static final ParameterKey contentType;
+    public static final ParameterKey encoding;
+    public static final ParameterKey defaultResponse;
 
-    private static final ParameterDefinition[] parameterDefinitions;
+    private static final ParameterKey[] parameterKeys;
 
     static {
-        action = new ParameterDefinition("action", ActionParameters.class, true, true);
-        name = new ParameterDefinition("name", ValueType.STRING);
-        dispatcher = new ParameterDefinition("dispatcher", ValueType.STRING);
-        contentType = new ParameterDefinition("contentType", ValueType.STRING);
-        encoding = new ParameterDefinition("encoding", ValueType.STRING);
-        defaultResponse = new ParameterDefinition("default", ValueType.BOOLEAN);
+        action = new ParameterKey("action", ActionParameters.class, true, true);
+        name = new ParameterKey("name", ValueType.STRING);
+        dispatcher = new ParameterKey("dispatcher", ValueType.STRING);
+        contentType = new ParameterKey("contentType", ValueType.STRING);
+        encoding = new ParameterKey("encoding", ValueType.STRING);
+        defaultResponse = new ParameterKey("default", ValueType.BOOLEAN);
 
-        parameterDefinitions = new ParameterDefinition[] {
+        parameterKeys = new ParameterKey[] {
                 action,
                 name,
                 dispatcher,
@@ -49,7 +49,7 @@ public class DispatchParameters extends AbstractParameters {
     }
 
     public DispatchParameters() {
-        super(parameterDefinitions);
+        super(parameterKeys);
     }
 
 }

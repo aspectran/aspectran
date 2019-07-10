@@ -17,7 +17,7 @@ package com.aspectran.core.context.config;
 
 import com.aspectran.core.context.rule.type.AutoReloadType;
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.ParameterDefinition;
+import com.aspectran.core.util.apon.ParameterKey;
 import com.aspectran.core.util.apon.ValueType;
 
 public class ContextAutoReloadConfig extends AbstractParameters {
@@ -25,27 +25,27 @@ public class ContextAutoReloadConfig extends AbstractParameters {
     /**
      * The reload mode, which is either "hard" or "soft".
      */
-    private static final ParameterDefinition reloadMode;
+    private static final ParameterKey reloadMode;
 
     /**
      * The interval in seconds between scanning the specified resources for file changes.
      * If file changes are detected, the activity context is reloaded.
      */
-    private static final ParameterDefinition scanIntervalSeconds;
+    private static final ParameterKey scanIntervalSeconds;
 
     /**
      *  Defaults to {@code false}, which disables automatic reloading.
      */
-    private static final ParameterDefinition startup;
+    private static final ParameterKey startup;
 
-    private static final ParameterDefinition[] parameterDefinitions;
+    private static final ParameterKey[] parameterKeys;
 
     static {
-        reloadMode = new ParameterDefinition("reloadMode", ValueType.STRING);
-        scanIntervalSeconds = new ParameterDefinition("scanIntervalSeconds", ValueType.INT);
-        startup = new ParameterDefinition("startup", ValueType.BOOLEAN);
+        reloadMode = new ParameterKey("reloadMode", ValueType.STRING);
+        scanIntervalSeconds = new ParameterKey("scanIntervalSeconds", ValueType.INT);
+        startup = new ParameterKey("startup", ValueType.BOOLEAN);
 
-        parameterDefinitions = new ParameterDefinition[] {
+        parameterKeys = new ParameterKey[] {
                 reloadMode,
                 scanIntervalSeconds,
                 startup
@@ -53,7 +53,7 @@ public class ContextAutoReloadConfig extends AbstractParameters {
     }
 
     public ContextAutoReloadConfig() {
-        super(parameterDefinitions);
+        super(parameterKeys);
     }
 
     public String getReloadMode() {

@@ -16,33 +16,33 @@
 package com.aspectran.core.context.rule.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.ParameterDefinition;
+import com.aspectran.core.util.apon.ParameterKey;
 import com.aspectran.core.util.apon.ValueType;
 
 public class RedirectParameters extends AbstractParameters {
 
-    public static final ParameterDefinition action;
-    public static final ParameterDefinition contentType;
-    public static final ParameterDefinition path;
-    public static final ParameterDefinition encoding;
-    public static final ParameterDefinition excludeNullParameters;
-    public static final ParameterDefinition excludeEmptyParameters;
-    public static final ParameterDefinition defaultResponse;
-    public static final ParameterDefinition parameters;
+    public static final ParameterKey action;
+    public static final ParameterKey contentType;
+    public static final ParameterKey path;
+    public static final ParameterKey encoding;
+    public static final ParameterKey excludeNullParameters;
+    public static final ParameterKey excludeEmptyParameters;
+    public static final ParameterKey defaultResponse;
+    public static final ParameterKey parameters;
 
-    private static final ParameterDefinition[] parameterDefinitions;
+    private static final ParameterKey[] parameterKeys;
 
     static {
-        action = new ParameterDefinition("action", ActionParameters.class, true, true);
-        contentType = new ParameterDefinition("contentType", ValueType.STRING);
-        path = new ParameterDefinition("path", ValueType.STRING);
-        encoding = new ParameterDefinition("encoding", ValueType.STRING);
-        excludeNullParameters = new ParameterDefinition("excludeNullParameters", ValueType.BOOLEAN);
-        excludeEmptyParameters = new ParameterDefinition("excludeEmptyParameters", ValueType.BOOLEAN);
-        defaultResponse = new ParameterDefinition("default", ValueType.BOOLEAN);
-        parameters = new ParameterDefinition("parameters", ItemHolderParameters.class, true, true);
+        action = new ParameterKey("action", ActionParameters.class, true, true);
+        contentType = new ParameterKey("contentType", ValueType.STRING);
+        path = new ParameterKey("path", ValueType.STRING);
+        encoding = new ParameterKey("encoding", ValueType.STRING);
+        excludeNullParameters = new ParameterKey("excludeNullParameters", ValueType.BOOLEAN);
+        excludeEmptyParameters = new ParameterKey("excludeEmptyParameters", ValueType.BOOLEAN);
+        defaultResponse = new ParameterKey("default", ValueType.BOOLEAN);
+        parameters = new ParameterKey("parameters", ItemHolderParameters.class, true, true);
 
-        parameterDefinitions = new ParameterDefinition[] {
+        parameterKeys = new ParameterKey[] {
                 action,
                 contentType,
                 path,
@@ -53,7 +53,7 @@ public class RedirectParameters extends AbstractParameters {
     }
 
     public RedirectParameters() {
-        super(parameterDefinitions);
+        super(parameterKeys);
     }
 
 }

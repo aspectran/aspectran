@@ -16,27 +16,27 @@
 package com.aspectran.core.context.rule.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.ParameterDefinition;
+import com.aspectran.core.util.apon.ParameterKey;
 import com.aspectran.core.util.apon.ValueType;
 
 import java.io.IOException;
 
 public class JoinpointParameters extends AbstractParameters {
 
-    public static final ParameterDefinition target;
-    public static final ParameterDefinition methods;
-    public static final ParameterDefinition headers;
-    public static final ParameterDefinition pointcut;
+    public static final ParameterKey target;
+    public static final ParameterKey methods;
+    public static final ParameterKey headers;
+    public static final ParameterKey pointcut;
 
-    private static final ParameterDefinition[] parameterDefinitions;
+    private static final ParameterKey[] parameterKeys;
 
     static {
-        target = new ParameterDefinition("target", ValueType.STRING);
-        methods = new ParameterDefinition("methods", ValueType.STRING, true);
-        headers = new ParameterDefinition("headers", ValueType.STRING, true);
-        pointcut = new ParameterDefinition("pointcut", PointcutParameters.class);
+        target = new ParameterKey("target", ValueType.STRING);
+        methods = new ParameterKey("methods", ValueType.STRING, true);
+        headers = new ParameterKey("headers", ValueType.STRING, true);
+        pointcut = new ParameterKey("pointcut", PointcutParameters.class);
 
-        parameterDefinitions = new ParameterDefinition[] {
+        parameterKeys = new ParameterKey[] {
                 target,
                 methods,
                 headers,
@@ -45,7 +45,7 @@ public class JoinpointParameters extends AbstractParameters {
     }
 
     public JoinpointParameters() {
-        super(parameterDefinitions);
+        super(parameterKeys);
     }
 
     public JoinpointParameters(String text) throws IOException {

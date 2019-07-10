@@ -16,7 +16,7 @@
 package com.aspectran.core.context.config;
 
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.ParameterDefinition;
+import com.aspectran.core.util.apon.ParameterKey;
 import com.aspectran.core.util.apon.ValueType;
 
 /**
@@ -26,18 +26,18 @@ import com.aspectran.core.util.apon.ValueType;
  */
 public class DaemonConfig extends AbstractParameters {
 
-    private static final ParameterDefinition commands;
-    private static final ParameterDefinition poller;
-    private static final ParameterDefinition exposals;
+    private static final ParameterKey commands;
+    private static final ParameterKey poller;
+    private static final ParameterKey exposals;
 
-    private static final ParameterDefinition[] parameterDefinitions;
+    private static final ParameterKey[] parameterKeys;
 
     static {
-        commands = new ParameterDefinition("commands", ValueType.STRING, true);
-        poller = new ParameterDefinition("poller", DaemonPollerConfig.class);
-        exposals = new ParameterDefinition("exposals", ExposalsConfig.class);
+        commands = new ParameterKey("commands", ValueType.STRING, true);
+        poller = new ParameterKey("poller", DaemonPollerConfig.class);
+        exposals = new ParameterKey("exposals", ExposalsConfig.class);
 
-        parameterDefinitions = new ParameterDefinition[] {
+        parameterKeys = new ParameterKey[] {
                 commands,
                 poller,
                 exposals
@@ -45,7 +45,7 @@ public class DaemonConfig extends AbstractParameters {
     }
 
     public DaemonConfig() {
-        super(parameterDefinitions);
+        super(parameterKeys);
     }
 
     public String[] getCommands() {

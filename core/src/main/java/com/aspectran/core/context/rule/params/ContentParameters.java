@@ -16,23 +16,23 @@
 package com.aspectran.core.context.rule.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.ParameterDefinition;
+import com.aspectran.core.util.apon.ParameterKey;
 import com.aspectran.core.util.apon.ValueType;
 
 public class ContentParameters extends AbstractParameters {
 
-    public static final ParameterDefinition name;
-    public static final ParameterDefinition choose;
-    public static final ParameterDefinition action;
+    public static final ParameterKey name;
+    public static final ParameterKey choose;
+    public static final ParameterKey action;
 
-    private static final ParameterDefinition[] parameterDefinitions;
+    private static final ParameterKey[] parameterKeys;
 
     static {
-        name = new ParameterDefinition("name", ValueType.STRING);
-        choose = new ParameterDefinition("choose", ChooseParameters.class, true, true);
-        action = new ParameterDefinition("action", ActionParameters.class, true, true);
+        name = new ParameterKey("name", ValueType.STRING);
+        choose = new ParameterKey("choose", ChooseParameters.class, true, true);
+        action = new ParameterKey("action", ActionParameters.class, true, true);
 
-        parameterDefinitions = new ParameterDefinition[] {
+        parameterKeys = new ParameterKey[] {
                 name,
                 choose,
                 action
@@ -40,7 +40,7 @@ public class ContentParameters extends AbstractParameters {
     }
 
     public ContentParameters() {
-        super(parameterDefinitions);
+        super(parameterKeys);
     }
 
 }

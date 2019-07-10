@@ -16,27 +16,27 @@
 package com.aspectran.core.context.rule.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.ParameterDefinition;
+import com.aspectran.core.util.apon.ParameterKey;
 import com.aspectran.core.util.apon.ValueType;
 
 public class ExceptionThrownParameters extends AbstractParameters {
 
-    public static final ParameterDefinition type;
-    public static final ParameterDefinition action;
-    public static final ParameterDefinition transform;
-    public static final ParameterDefinition dispatch;
-    public static final ParameterDefinition redirect;
+    public static final ParameterKey type;
+    public static final ParameterKey action;
+    public static final ParameterKey transform;
+    public static final ParameterKey dispatch;
+    public static final ParameterKey redirect;
 
-    private static final ParameterDefinition[] parameterDefinitions;
+    private static final ParameterKey[] parameterKeys;
 
     static {
-        type = new ParameterDefinition("type", ValueType.STRING, true);
-        action = new ParameterDefinition("action", ActionParameters.class);
-        transform = new ParameterDefinition("transform", TransformParameters.class, true, true);
-        dispatch = new ParameterDefinition("dispatch", DispatchParameters.class, true, true);
-        redirect = new ParameterDefinition("redirect", RedirectParameters.class, true, true);
+        type = new ParameterKey("type", ValueType.STRING, true);
+        action = new ParameterKey("action", ActionParameters.class);
+        transform = new ParameterKey("transform", TransformParameters.class, true, true);
+        dispatch = new ParameterKey("dispatch", DispatchParameters.class, true, true);
+        redirect = new ParameterKey("redirect", RedirectParameters.class, true, true);
 
-        parameterDefinitions = new ParameterDefinition[] {
+        parameterKeys = new ParameterKey[] {
                 type,
                 action,
                 transform,
@@ -46,7 +46,7 @@ public class ExceptionThrownParameters extends AbstractParameters {
     }
 
     public ExceptionThrownParameters() {
-        super(parameterDefinitions);
+        super(parameterKeys);
     }
 
 }

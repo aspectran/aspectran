@@ -16,23 +16,23 @@
 package com.aspectran.core.context.rule.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.ParameterDefinition;
+import com.aspectran.core.util.apon.ParameterKey;
 import com.aspectran.core.util.apon.ValueType;
 
 public class ChooseParameters extends AbstractParameters {
 
-    public static final ParameterDefinition caseNo;
-    public static final ParameterDefinition when;
-    public static final ParameterDefinition otherwise;
+    public static final ParameterKey caseNo;
+    public static final ParameterKey when;
+    public static final ParameterKey otherwise;
 
-    private static final ParameterDefinition[] parameterDefinitions;
+    private static final ParameterKey[] parameterKeys;
 
     static {
-        caseNo = new ParameterDefinition("caseNo", ValueType.INT);
-        when = new ParameterDefinition("when", ChooseWhenParameters.class, true, true);
-        otherwise = new ParameterDefinition("otherwise", ChooseWhenParameters.class);
+        caseNo = new ParameterKey("caseNo", ValueType.INT);
+        when = new ParameterKey("when", ChooseWhenParameters.class, true, true);
+        otherwise = new ParameterKey("otherwise", ChooseWhenParameters.class);
 
-        parameterDefinitions = new ParameterDefinition[] {
+        parameterKeys = new ParameterKey[] {
                 caseNo,
                 when,
                 otherwise
@@ -40,7 +40,7 @@ public class ChooseParameters extends AbstractParameters {
     }
 
     public ChooseParameters() {
-        super(parameterDefinitions);
+        super(parameterKeys);
     }
 
 }

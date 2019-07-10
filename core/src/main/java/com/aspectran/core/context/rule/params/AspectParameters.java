@@ -16,36 +16,36 @@
 package com.aspectran.core.context.rule.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.ParameterDefinition;
+import com.aspectran.core.util.apon.ParameterKey;
 import com.aspectran.core.util.apon.ValueType;
 import com.aspectran.core.util.apon.VariableParameters;
 
 public class AspectParameters extends AbstractParameters {
 
-    public static final ParameterDefinition description;
-    public static final ParameterDefinition id;
-    public static final ParameterDefinition order;
-    public static final ParameterDefinition isolated;
-    public static final ParameterDefinition disabled;
-    public static final ParameterDefinition joinpoint;
-    public static final ParameterDefinition settings;
-    public static final ParameterDefinition advice;
-    public static final ParameterDefinition exception;
+    public static final ParameterKey description;
+    public static final ParameterKey id;
+    public static final ParameterKey order;
+    public static final ParameterKey isolated;
+    public static final ParameterKey disabled;
+    public static final ParameterKey joinpoint;
+    public static final ParameterKey settings;
+    public static final ParameterKey advice;
+    public static final ParameterKey exception;
 
-    private static final ParameterDefinition[] parameterDefinitions;
+    private static final ParameterKey[] parameterKeys;
 
     static {
-        description = new ParameterDefinition("description", ValueType.TEXT);
-        id = new ParameterDefinition("id", ValueType.STRING);
-        order = new ParameterDefinition("order", ValueType.INT);
-        isolated = new ParameterDefinition("isolated", ValueType.BOOLEAN);
-        disabled = new ParameterDefinition("disabled", ValueType.BOOLEAN);
-        joinpoint = new ParameterDefinition("joinpoint", JoinpointParameters.class);
-        settings = new ParameterDefinition("settings", VariableParameters.class);
-        advice = new ParameterDefinition("advice", AdviceParameters.class);
-        exception = new ParameterDefinition("exception", ExceptionParameters.class);
+        description = new ParameterKey("description", ValueType.TEXT);
+        id = new ParameterKey("id", ValueType.STRING);
+        order = new ParameterKey("order", ValueType.INT);
+        isolated = new ParameterKey("isolated", ValueType.BOOLEAN);
+        disabled = new ParameterKey("disabled", ValueType.BOOLEAN);
+        joinpoint = new ParameterKey("joinpoint", JoinpointParameters.class);
+        settings = new ParameterKey("settings", VariableParameters.class);
+        advice = new ParameterKey("advice", AdviceParameters.class);
+        exception = new ParameterKey("exception", ExceptionParameters.class);
 
-        parameterDefinitions = new ParameterDefinition[] {
+        parameterKeys = new ParameterKey[] {
                 description,
                 id,
                 order,
@@ -59,7 +59,7 @@ public class AspectParameters extends AbstractParameters {
     }
 
     public AspectParameters() {
-        super(parameterDefinitions);
+        super(parameterKeys);
     }
 
 }

@@ -97,7 +97,7 @@ import com.aspectran.core.context.rule.type.ScopeType;
 import com.aspectran.core.context.rule.type.TextStyleType;
 import com.aspectran.core.util.TextStyler;
 import com.aspectran.core.util.apon.Parameter;
-import com.aspectran.core.util.apon.ParameterDefinition;
+import com.aspectran.core.util.apon.ParameterKey;
 import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.apon.VariableParameters;
 
@@ -735,7 +735,7 @@ public class RulesToParameters {
         return templateParameters;
     }
 
-    private static void applyActionParameters(ActionList actionList, Parameters parameters, ParameterDefinition actionParam) {
+    private static void applyActionParameters(ActionList actionList, Parameters parameters, ParameterKey actionParam) {
         for (Executable action : actionList) {
             ActionParameters actionParameters = null;
             if (action.getActionType() == ActionType.BEAN_METHOD) {
@@ -888,7 +888,7 @@ public class RulesToParameters {
         return itemHolderParameters;
     }
 
-    private static void toItemHolderParameters(ItemRuleMap itemRuleMap, Parameters parameters, ParameterDefinition parameterDefinition) {
+    private static void toItemHolderParameters(ItemRuleMap itemRuleMap, Parameters parameters, ParameterKey parameterDefinition) {
         if (itemRuleMap.getCandidates() != null) {
             for (ItemRuleMap irm : itemRuleMap.getCandidates()) {
                 parameters.putValue(parameterDefinition, toItemHolderParameters(irm));

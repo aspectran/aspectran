@@ -16,29 +16,29 @@
 package com.aspectran.core.context.rule.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.ParameterDefinition;
+import com.aspectran.core.util.apon.ParameterKey;
 import com.aspectran.core.util.apon.ValueType;
 
 public class AppendParameters extends AbstractParameters {
 
-    public static final ParameterDefinition file;
-    public static final ParameterDefinition resource;
-    public static final ParameterDefinition url;
-    public static final ParameterDefinition format;
-    public static final ParameterDefinition profile;
-    public static final ParameterDefinition aspectran;
+    public static final ParameterKey file;
+    public static final ParameterKey resource;
+    public static final ParameterKey url;
+    public static final ParameterKey format;
+    public static final ParameterKey profile;
+    public static final ParameterKey aspectran;
 
-    private static final ParameterDefinition[] parameterDefinitions;
+    private static final ParameterKey[] parameterKeys;
 
     static {
-        file = new ParameterDefinition("file", ValueType.STRING);
-        resource = new ParameterDefinition("resource", ValueType.STRING);
-        url = new ParameterDefinition("url", ValueType.STRING);
-        format = new ParameterDefinition("format", ValueType.STRING);
-        profile = new ParameterDefinition("profile", ValueType.STRING);
-        aspectran = new ParameterDefinition("aspectran", AspectranParameters.class);
+        file = new ParameterKey("file", ValueType.STRING);
+        resource = new ParameterKey("resource", ValueType.STRING);
+        url = new ParameterKey("url", ValueType.STRING);
+        format = new ParameterKey("format", ValueType.STRING);
+        profile = new ParameterKey("profile", ValueType.STRING);
+        aspectran = new ParameterKey("aspectran", AspectranParameters.class);
 
-        parameterDefinitions = new ParameterDefinition[] {
+        parameterKeys = new ParameterKey[] {
                 file,
                 resource,
                 url,
@@ -49,7 +49,7 @@ public class AppendParameters extends AbstractParameters {
     }
 
     public AppendParameters() {
-        super(parameterDefinitions);
+        super(parameterKeys);
     }
 
 }

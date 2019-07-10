@@ -16,33 +16,33 @@
 package com.aspectran.core.context.rule.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.ParameterDefinition;
+import com.aspectran.core.util.apon.ParameterKey;
 import com.aspectran.core.util.apon.ValueType;
 
 public class ItemParameters extends AbstractParameters {
 
-    public static final ParameterDefinition type;
-    public static final ParameterDefinition name;
-    public static final ParameterDefinition value;
-    public static final ParameterDefinition valueType;
-    public static final ParameterDefinition tokenize;
-    public static final ParameterDefinition mandatory;
-    public static final ParameterDefinition secret;
-    public static final ParameterDefinition call;
+    public static final ParameterKey type;
+    public static final ParameterKey name;
+    public static final ParameterKey value;
+    public static final ParameterKey valueType;
+    public static final ParameterKey tokenize;
+    public static final ParameterKey mandatory;
+    public static final ParameterKey secret;
+    public static final ParameterKey call;
 
-    private static final ParameterDefinition[] parameterDefinitions;
+    private static final ParameterKey[] parameterKeys;
 
     static {
-        type = new ParameterDefinition("type", ValueType.STRING);
-        name = new ParameterDefinition("name", ValueType.STRING);
-        value = new ParameterDefinition("value", ValueType.VARIABLE);
-        valueType = new ParameterDefinition("valueType", ValueType.STRING);
-        tokenize = new ParameterDefinition("tokenize", ValueType.BOOLEAN);
-        mandatory = new ParameterDefinition("mandatory", ValueType.BOOLEAN);
-        secret = new ParameterDefinition("secret", ValueType.BOOLEAN);
-        call = new ParameterDefinition("call", CallParameters.class);
+        type = new ParameterKey("type", ValueType.STRING);
+        name = new ParameterKey("name", ValueType.STRING);
+        value = new ParameterKey("value", ValueType.VARIABLE);
+        valueType = new ParameterKey("valueType", ValueType.STRING);
+        tokenize = new ParameterKey("tokenize", ValueType.BOOLEAN);
+        mandatory = new ParameterKey("mandatory", ValueType.BOOLEAN);
+        secret = new ParameterKey("secret", ValueType.BOOLEAN);
+        call = new ParameterKey("call", CallParameters.class);
 
-        parameterDefinitions = new ParameterDefinition[] {
+        parameterKeys = new ParameterKey[] {
                 type,
                 name,
                 value,
@@ -55,7 +55,7 @@ public class ItemParameters extends AbstractParameters {
     }
 
     public ItemParameters() {
-        super(parameterDefinitions);
+        super(parameterKeys);
     }
 
 }

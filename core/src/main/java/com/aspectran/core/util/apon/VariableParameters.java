@@ -34,12 +34,12 @@ public class VariableParameters extends AbstractParameters implements Serializab
         this(null, text);
     }
 
-    public VariableParameters(ParameterDefinition[] parameterDefinitions) {
-        super(parameterDefinitions);
+    public VariableParameters(ParameterKey[] parameterKeys) {
+        super(parameterKeys);
     }
 
-    public VariableParameters(ParameterDefinition[] parameterDefinitions, String text) throws IOException {
-        super(parameterDefinitions);
+    public VariableParameters(ParameterKey[] parameterKeys, String text) throws IOException {
+        super(parameterKeys);
         readFrom(text);
     }
 

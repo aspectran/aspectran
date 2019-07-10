@@ -16,28 +16,28 @@
 package com.aspectran.core.context.rule.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.ParameterDefinition;
+import com.aspectran.core.util.apon.ParameterKey;
 import com.aspectran.core.util.apon.ValueType;
 
 public class ScheduledJobParameters extends AbstractParameters {
 
-    public static final ParameterDefinition translet;
-    public static final ParameterDefinition disabled;
+    public static final ParameterKey translet;
+    public static final ParameterKey disabled;
 
-    private static final ParameterDefinition[] parameterDefinitions;
+    private static final ParameterKey[] parameterKeys;
 
     static {
-        translet = new ParameterDefinition("translet", ValueType.STRING);
-        disabled = new ParameterDefinition("disabled", ValueType.BOOLEAN);
+        translet = new ParameterKey("translet", ValueType.STRING);
+        disabled = new ParameterKey("disabled", ValueType.BOOLEAN);
 
-        parameterDefinitions = new ParameterDefinition[] {
+        parameterKeys = new ParameterKey[] {
                 translet,
                 disabled
         };
     }
 
     public ScheduledJobParameters() {
-        super(parameterDefinitions);
+        super(parameterKeys);
     }
 
 }

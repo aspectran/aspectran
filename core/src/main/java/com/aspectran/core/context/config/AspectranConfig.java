@@ -18,7 +18,7 @@ package com.aspectran.core.context.config;
 import com.aspectran.core.util.SystemUtils;
 import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.AponReader;
-import com.aspectran.core.util.apon.ParameterDefinition;
+import com.aspectran.core.util.apon.ParameterKey;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,24 +32,24 @@ public class AspectranConfig extends AbstractParameters {
     public static final String DEFAULT_ASPECTRAN_CONFIG_FILE = "aspectran-config.apon";
     public static final String DEFAULT_APP_CONFIG_ROOT_FILE = "classpath:app-config.xml";
 
-    private static final ParameterDefinition context;
-    private static final ParameterDefinition session;
-    private static final ParameterDefinition scheduler;
-    private static final ParameterDefinition daemon;
-    private static final ParameterDefinition shell;
-    private static final ParameterDefinition web;
+    private static final ParameterKey context;
+    private static final ParameterKey session;
+    private static final ParameterKey scheduler;
+    private static final ParameterKey daemon;
+    private static final ParameterKey shell;
+    private static final ParameterKey web;
 
-    private static final ParameterDefinition[] parameterDefinitions;
+    private static final ParameterKey[] parameterKeys;
 
     static {
-        context = new ParameterDefinition("context", ContextConfig.class);
-        session = new ParameterDefinition("session", SessionConfig.class);
-        scheduler = new ParameterDefinition("scheduler", SchedulerConfig.class);
-        daemon = new ParameterDefinition("daemon", DaemonConfig.class);
-        shell = new ParameterDefinition("shell", ShellConfig.class);
-        web = new ParameterDefinition("web", WebConfig.class);
+        context = new ParameterKey("context", ContextConfig.class);
+        session = new ParameterKey("session", SessionConfig.class);
+        scheduler = new ParameterKey("scheduler", SchedulerConfig.class);
+        daemon = new ParameterKey("daemon", DaemonConfig.class);
+        shell = new ParameterKey("shell", ShellConfig.class);
+        web = new ParameterKey("web", WebConfig.class);
 
-        parameterDefinitions = new ParameterDefinition[] {
+        parameterKeys = new ParameterKey[] {
                 context,
                 session,
                 scheduler,
@@ -60,7 +60,7 @@ public class AspectranConfig extends AbstractParameters {
     }
 
     public AspectranConfig() {
-        super(parameterDefinitions);
+        super(parameterKeys);
     }
 
     public AspectranConfig(String text) throws IOException {

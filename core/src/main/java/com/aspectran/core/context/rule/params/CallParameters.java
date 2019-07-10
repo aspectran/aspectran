@@ -16,27 +16,27 @@
 package com.aspectran.core.context.rule.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.ParameterDefinition;
+import com.aspectran.core.util.apon.ParameterKey;
 import com.aspectran.core.util.apon.ValueType;
 
 public class CallParameters extends AbstractParameters {
 
-    public static final ParameterDefinition bean;
-    public static final ParameterDefinition template;
-    public static final ParameterDefinition parameter;
-    public static final ParameterDefinition attribute;
-    public static final ParameterDefinition property;
+    public static final ParameterKey bean;
+    public static final ParameterKey template;
+    public static final ParameterKey parameter;
+    public static final ParameterKey attribute;
+    public static final ParameterKey property;
 
-    private static final ParameterDefinition[] parameterDefinitions;
+    private static final ParameterKey[] parameterKeys;
 
     static {
-        bean = new ParameterDefinition("bean", ValueType.STRING);
-        template = new ParameterDefinition("template", ValueType.STRING);
-        parameter = new ParameterDefinition("parameter", ValueType.STRING);
-        attribute = new ParameterDefinition("attribute", ValueType.STRING);
-        property = new ParameterDefinition("property", ValueType.STRING);
+        bean = new ParameterKey("bean", ValueType.STRING);
+        template = new ParameterKey("template", ValueType.STRING);
+        parameter = new ParameterKey("parameter", ValueType.STRING);
+        attribute = new ParameterKey("attribute", ValueType.STRING);
+        property = new ParameterKey("property", ValueType.STRING);
 
-        parameterDefinitions = new ParameterDefinition[] {
+        parameterKeys = new ParameterKey[] {
                 bean,
                 template,
                 parameter,
@@ -46,7 +46,7 @@ public class CallParameters extends AbstractParameters {
     }
 
     public CallParameters() {
-        super(parameterDefinitions);
+        super(parameterKeys);
     }
 
 }

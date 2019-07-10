@@ -17,31 +17,31 @@ package com.aspectran.core.context.config;
 
 import com.aspectran.core.context.rule.type.SessionStoreType;
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.ParameterDefinition;
+import com.aspectran.core.util.apon.ParameterKey;
 import com.aspectran.core.util.apon.ValueType;
 
 public class SessionConfig extends AbstractParameters {
 
-    private static final ParameterDefinition timeout;
-    private static final ParameterDefinition evictionPolicy;
-    private static final ParameterDefinition saveOnCreate;
-    private static final ParameterDefinition saveOnInactiveEviction;
-    private static final ParameterDefinition removeUnloadableSessions;
-    private static final ParameterDefinition storeType;
-    private static final ParameterDefinition fileStore;
+    private static final ParameterKey timeout;
+    private static final ParameterKey evictionPolicy;
+    private static final ParameterKey saveOnCreate;
+    private static final ParameterKey saveOnInactiveEviction;
+    private static final ParameterKey removeUnloadableSessions;
+    private static final ParameterKey storeType;
+    private static final ParameterKey fileStore;
 
-    private static final ParameterDefinition[] parameterDefinitions;
+    private static final ParameterKey[] parameterKeys;
 
     static {
-        timeout = new ParameterDefinition("timeout", ValueType.INT);
-        evictionPolicy = new ParameterDefinition("evictionPolicy", ValueType.INT);
-        saveOnCreate = new ParameterDefinition("saveOnCreate", ValueType.BOOLEAN);
-        saveOnInactiveEviction = new ParameterDefinition("saveOnInactiveEviction", ValueType.BOOLEAN);
-        removeUnloadableSessions = new ParameterDefinition("removeUnloadableSessions", ValueType.BOOLEAN);
-        storeType = new ParameterDefinition("storeType", ValueType.STRING);
-        fileStore = new ParameterDefinition("fileStore", SessionFileStoreConfig.class);
+        timeout = new ParameterKey("timeout", ValueType.INT);
+        evictionPolicy = new ParameterKey("evictionPolicy", ValueType.INT);
+        saveOnCreate = new ParameterKey("saveOnCreate", ValueType.BOOLEAN);
+        saveOnInactiveEviction = new ParameterKey("saveOnInactiveEviction", ValueType.BOOLEAN);
+        removeUnloadableSessions = new ParameterKey("removeUnloadableSessions", ValueType.BOOLEAN);
+        storeType = new ParameterKey("storeType", ValueType.STRING);
+        fileStore = new ParameterKey("fileStore", SessionFileStoreConfig.class);
 
-        parameterDefinitions = new ParameterDefinition[] {
+        parameterKeys = new ParameterKey[] {
                 timeout,
                 evictionPolicy,
                 saveOnCreate,
@@ -53,7 +53,7 @@ public class SessionConfig extends AbstractParameters {
     }
 
     public SessionConfig() {
-        super(parameterDefinitions);
+        super(parameterKeys);
     }
 
     public int getTimeout() {

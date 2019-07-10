@@ -20,7 +20,7 @@ import com.aspectran.core.util.ToStringBuilder;
 /**
  * A class for defining parameter attributes.
  */
-public class ParameterDefinition {
+public class ParameterKey {
 
     private final String name;
 
@@ -32,15 +32,15 @@ public class ParameterDefinition {
 
     private final boolean noBracket;
 
-    public ParameterDefinition(String name, ValueType valueType) {
+    public ParameterKey(String name, ValueType valueType) {
         this(name, valueType, false);
     }
 
-    public ParameterDefinition(String name, ValueType valueType, boolean array) {
+    public ParameterKey(String name, ValueType valueType, boolean array) {
         this(name, valueType, array, false);
     }
 
-    public ParameterDefinition(String name, ValueType valueType, boolean array, boolean noBracket) {
+    public ParameterKey(String name, ValueType valueType, boolean array, boolean noBracket) {
         this.name = name;
         this.valueType = valueType;
         this.parametersClass = null;
@@ -48,15 +48,15 @@ public class ParameterDefinition {
         this.noBracket = (array && valueType == ValueType.PARAMETERS && noBracket);
     }
 
-    public ParameterDefinition(String name, Class<? extends AbstractParameters> parametersClass) {
+    public ParameterKey(String name, Class<? extends AbstractParameters> parametersClass) {
         this(name, parametersClass, false);
     }
 
-    public ParameterDefinition(String name, Class<? extends AbstractParameters> parametersClass, boolean array) {
+    public ParameterKey(String name, Class<? extends AbstractParameters> parametersClass, boolean array) {
         this(name, parametersClass, array, false);
     }
 
-    public ParameterDefinition(String name, Class<? extends AbstractParameters> parametersClass, boolean array, boolean noBracket) {
+    public ParameterKey(String name, Class<? extends AbstractParameters> parametersClass, boolean array, boolean noBracket) {
         this.name = name;
         this.valueType = ValueType.PARAMETERS;
         this.parametersClass = parametersClass;

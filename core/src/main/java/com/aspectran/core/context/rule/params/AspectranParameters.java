@@ -24,39 +24,39 @@ import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.converter.RulesToParameters;
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.ParameterDefinition;
+import com.aspectran.core.util.apon.ParameterKey;
 import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.apon.ValueType;
 import com.aspectran.core.util.apon.VariableParameters;
 
 public class AspectranParameters extends AbstractParameters {
 
-    public static final ParameterDefinition description;
-    public static final ParameterDefinition settings;
-    public static final ParameterDefinition environment;
-    public static final ParameterDefinition typeAlias;
-    public static final ParameterDefinition aspect;
-    public static final ParameterDefinition bean;
-    public static final ParameterDefinition schedule;
-    public static final ParameterDefinition translet;
-    public static final ParameterDefinition template;
-    public static final ParameterDefinition append;
+    public static final ParameterKey description;
+    public static final ParameterKey settings;
+    public static final ParameterKey environment;
+    public static final ParameterKey typeAlias;
+    public static final ParameterKey aspect;
+    public static final ParameterKey bean;
+    public static final ParameterKey schedule;
+    public static final ParameterKey translet;
+    public static final ParameterKey template;
+    public static final ParameterKey append;
 
-    private static final ParameterDefinition[] parameterDefinitions;
+    private static final ParameterKey[] parameterKeys;
 
     static {
-        description = new ParameterDefinition("description", ValueType.TEXT);
-        settings = new ParameterDefinition("settings", DefaultSettingsParameters.class);
-        typeAlias = new ParameterDefinition("typeAlias", VariableParameters.class);
-        environment = new ParameterDefinition("environment", EnvironmentParameters.class, true, true);
-        aspect = new ParameterDefinition("aspect", AspectParameters.class, true, true);
-        bean = new ParameterDefinition("bean", BeanParameters.class, true, true);
-        schedule = new ParameterDefinition("schedule", ScheduleParameters.class, true, true);
-        translet = new ParameterDefinition("translet", TransletParameters.class, true, true);
-        template = new ParameterDefinition("template", TemplateParameters.class, true, true);
-        append = new ParameterDefinition("append", AppendParameters.class, true, true);
+        description = new ParameterKey("description", ValueType.TEXT);
+        settings = new ParameterKey("settings", DefaultSettingsParameters.class);
+        typeAlias = new ParameterKey("typeAlias", VariableParameters.class);
+        environment = new ParameterKey("environment", EnvironmentParameters.class, true, true);
+        aspect = new ParameterKey("aspect", AspectParameters.class, true, true);
+        bean = new ParameterKey("bean", BeanParameters.class, true, true);
+        schedule = new ParameterKey("schedule", ScheduleParameters.class, true, true);
+        translet = new ParameterKey("translet", TransletParameters.class, true, true);
+        template = new ParameterKey("template", TemplateParameters.class, true, true);
+        append = new ParameterKey("append", AppendParameters.class, true, true);
 
-        parameterDefinitions = new ParameterDefinition[] {
+        parameterKeys = new ParameterKey[] {
                 description,
                 settings,
                 typeAlias,
@@ -71,7 +71,7 @@ public class AspectranParameters extends AbstractParameters {
     }
 
     public AspectranParameters() {
-        super(parameterDefinitions);
+        super(parameterKeys);
     }
 
     public AspectranParameters setDescription(String desc) {

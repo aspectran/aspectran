@@ -16,28 +16,28 @@
 package com.aspectran.core.context.rule.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.ParameterDefinition;
+import com.aspectran.core.util.apon.ParameterKey;
 import com.aspectran.core.util.apon.ValueType;
 
 public class FilterParameters extends AbstractParameters {
 
-    public static final ParameterDefinition filterClass;
-    public static final ParameterDefinition exclude;
+    public static final ParameterKey filterClass;
+    public static final ParameterKey exclude;
 
-    private static final ParameterDefinition[] parameterDefinitions;
+    private static final ParameterKey[] parameterKeys;
 
     static {
-        filterClass = new ParameterDefinition("class", ValueType.STRING);
-        exclude = new ParameterDefinition("exclude", ValueType.STRING, true);
+        filterClass = new ParameterKey("class", ValueType.STRING);
+        exclude = new ParameterKey("exclude", ValueType.STRING, true);
 
-        parameterDefinitions = new ParameterDefinition[] {
+        parameterKeys = new ParameterKey[] {
                 filterClass,
                 exclude
         };
     }
 
     public FilterParameters() {
-        super(parameterDefinitions);
+        super(parameterKeys);
     }
 
     public String getFilterClass() {

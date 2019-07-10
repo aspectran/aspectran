@@ -16,27 +16,27 @@
 package com.aspectran.core.context.rule.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.ParameterDefinition;
+import com.aspectran.core.util.apon.ParameterKey;
 import com.aspectran.core.util.apon.ValueType;
 
 public class AdviceParameters extends AbstractParameters {
 
-    public static final ParameterDefinition bean;
-    public static final ParameterDefinition beforeAdvice;
-    public static final ParameterDefinition afterAdvice;
-    public static final ParameterDefinition aroundAdvice;
-    public static final ParameterDefinition finallyAdvice;
+    public static final ParameterKey bean;
+    public static final ParameterKey beforeAdvice;
+    public static final ParameterKey afterAdvice;
+    public static final ParameterKey aroundAdvice;
+    public static final ParameterKey finallyAdvice;
 
-    private static final ParameterDefinition[] parameterDefinitions;
+    private static final ParameterKey[] parameterKeys;
 
     static {
-        bean = new ParameterDefinition("bean", ValueType.STRING);
-        beforeAdvice = new ParameterDefinition("before", AdviceActionParameters.class);
-        afterAdvice = new ParameterDefinition("after", AdviceActionParameters.class);
-        aroundAdvice = new ParameterDefinition("around", AdviceActionParameters.class);
-        finallyAdvice = new ParameterDefinition("finally", AdviceActionParameters.class);
+        bean = new ParameterKey("bean", ValueType.STRING);
+        beforeAdvice = new ParameterKey("before", AdviceActionParameters.class);
+        afterAdvice = new ParameterKey("after", AdviceActionParameters.class);
+        aroundAdvice = new ParameterKey("around", AdviceActionParameters.class);
+        finallyAdvice = new ParameterKey("finally", AdviceActionParameters.class);
 
-        parameterDefinitions = new ParameterDefinition[] {
+        parameterKeys = new ParameterKey[] {
                 bean,
                 beforeAdvice,
                 afterAdvice,
@@ -46,7 +46,7 @@ public class AdviceParameters extends AbstractParameters {
     }
 
     public AdviceParameters() {
-        super(parameterDefinitions);
+        super(parameterKeys);
     }
 
 }

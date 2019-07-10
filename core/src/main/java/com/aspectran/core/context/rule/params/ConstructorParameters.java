@@ -16,24 +16,24 @@
 package com.aspectran.core.context.rule.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.ParameterDefinition;
+import com.aspectran.core.util.apon.ParameterKey;
 
 public class ConstructorParameters extends AbstractParameters {
 
-    public static final ParameterDefinition arguments;
+    public static final ParameterKey arguments;
 
-    private static final ParameterDefinition[] parameterDefinitions;
+    private static final ParameterKey[] parameterKeys;
 
     static {
-        arguments = new ParameterDefinition("arguments", ItemHolderParameters.class, true, true);
+        arguments = new ParameterKey("arguments", ItemHolderParameters.class, true, true);
 
-        parameterDefinitions = new ParameterDefinition[] {
+        parameterKeys = new ParameterKey[] {
                 arguments
         };
     }
 
     public ConstructorParameters() {
-        super(parameterDefinitions);
+        super(parameterKeys);
     }
 
 }

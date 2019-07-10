@@ -16,25 +16,25 @@
 package com.aspectran.core.context.config;
 
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.ParameterDefinition;
+import com.aspectran.core.util.apon.ParameterKey;
 import com.aspectran.core.util.apon.ValueType;
 
 public class SchedulerConfig extends AbstractParameters {
 
-    private static final ParameterDefinition startDelaySeconds;
-    private static final ParameterDefinition waitOnShutdown;
-    private static final ParameterDefinition startup;
-    private static final ParameterDefinition exposals;
+    private static final ParameterKey startDelaySeconds;
+    private static final ParameterKey waitOnShutdown;
+    private static final ParameterKey startup;
+    private static final ParameterKey exposals;
 
-    private static final ParameterDefinition[] parameterDefinitions;
+    private static final ParameterKey[] parameterKeys;
 
     static {
-        startDelaySeconds = new ParameterDefinition("startDelaySeconds", ValueType.INT);
-        waitOnShutdown = new ParameterDefinition("waitOnShutdown", ValueType.BOOLEAN);
-        startup = new ParameterDefinition("startup", ValueType.BOOLEAN);
-        exposals = new ParameterDefinition("exposals", ExposalsConfig.class);
+        startDelaySeconds = new ParameterKey("startDelaySeconds", ValueType.INT);
+        waitOnShutdown = new ParameterKey("waitOnShutdown", ValueType.BOOLEAN);
+        startup = new ParameterKey("startup", ValueType.BOOLEAN);
+        exposals = new ParameterKey("exposals", ExposalsConfig.class);
 
-        parameterDefinitions = new ParameterDefinition[] {
+        parameterKeys = new ParameterKey[] {
                 startDelaySeconds,
                 waitOnShutdown,
                 startup,
@@ -43,7 +43,7 @@ public class SchedulerConfig extends AbstractParameters {
     }
 
     public SchedulerConfig() {
-        super(parameterDefinitions);
+        super(parameterKeys);
     }
 
     public int getStartDelaySeconds() {
