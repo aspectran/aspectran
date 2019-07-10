@@ -50,11 +50,11 @@ public class ActionParameters extends AbstractParameters {
         hidden = new ParameterKey("hidden", ValueType.BOOLEAN);
         arguments = new ParameterKey("arguments", ItemHolderParameters.class, true, true);
         properties = new ParameterKey("properties", ItemHolderParameters.class, true, true);
+        echo = new ParameterKey("echo", ItemHolderParameters.class);
+        headers = new ParameterKey("headers", ItemHolderParameters.class);
         include = new ParameterKey("include", ValueType.STRING);
         parameters = new ParameterKey("parameters", ItemHolderParameters.class, true, true);
         attributes = new ParameterKey("attributes", ItemHolderParameters.class, true, true);
-        echo = new ParameterKey("echo", ItemHolderParameters.class);
-        headers = new ParameterKey("headers", ItemHolderParameters.class);
 
         parameterKeys = new ParameterKey[] {
                 caseNo,
@@ -64,11 +64,11 @@ public class ActionParameters extends AbstractParameters {
                 hidden,
                 arguments,
                 properties,
+                echo,
+                headers,
                 include,
                 parameters,
-                attributes,
-                echo,
-                headers
+                attributes
         };
     }
 

@@ -21,6 +21,7 @@ import com.aspectran.core.context.rule.ScheduledJobRule;
 import com.aspectran.core.context.rule.converter.RulesToParameters;
 import com.aspectran.core.context.rule.params.ScheduleParameters;
 import com.aspectran.core.context.rule.params.SchedulerParameters;
+import com.aspectran.core.context.rule.params.TriggerExpressionParameters;
 import com.aspectran.core.context.rule.params.TriggerParameters;
 import com.aspectran.core.util.apon.AponWriter;
 import com.aspectran.core.util.apon.Parameters;
@@ -153,10 +154,11 @@ public class JobCommand extends AbstractCommand {
                 scheduleParameters.putValueNonNull(ScheduleParameters.id, scheduleRule.getId());
                 SchedulerParameters schedulerParameters = scheduleParameters.newParameters(ScheduleParameters.scheduler);
                 schedulerParameters.putValueNonNull(SchedulerParameters.bean, scheduleRule.getSchedulerBeanId());
-                TriggerParameters triggerParameters = scheduleRule.getTriggerParameters();
-                if (triggerParameters != null && scheduleRule.getTriggerType() != null) {
-                    triggerParameters.putValueNonNull(TriggerParameters.type, scheduleRule.getTriggerType().toString());
-                    schedulerParameters.putValue(SchedulerParameters.trigger, scheduleRule.getTriggerParameters());
+                TriggerExpressionParameters expressionParameters = scheduleRule.getTriggerExpressionParameters();
+                if (expressionParameters != null && scheduleRule.getTriggerType() != null) {
+                    TriggerParameters triggerParameters = schedulerParameters.newParameters(SchedulerParameters.trigger);
+                    triggerParameters.putValue(TriggerParameters.type, scheduleRule.getTriggerType().toString());
+                    triggerParameters.putValue(TriggerParameters.expression, expressionParameters);
                 }
                 scheduleParameters.putValue(ScheduleParameters.job, RulesToParameters.toScheduledJobParameters(jobRule));
 

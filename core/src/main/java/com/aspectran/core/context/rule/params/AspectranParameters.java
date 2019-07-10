@@ -45,7 +45,7 @@ public class AspectranParameters extends AbstractParameters {
     private static final ParameterKey[] parameterKeys;
 
     static {
-        description = new ParameterKey("description", ValueType.TEXT);
+        description = new ParameterKey("description", ValueType.VARIABLE);
         settings = new ParameterKey("settings", SettingsParameters.class);
         typeAliases = new ParameterKey("typeAliases", TypeAliasesParameters.class);
         environment = new ParameterKey("environment", EnvironmentParameters.class, true, true);

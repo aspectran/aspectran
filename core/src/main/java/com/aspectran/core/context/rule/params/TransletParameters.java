@@ -43,7 +43,7 @@ public class TransletParameters extends AbstractParameters {
     private static final ParameterKey[] parameterKeys;
 
     static {
-        description = new ParameterKey("description", ValueType.TEXT);
+        description = new ParameterKey("description", ValueType.VARIABLE);
         name = new ParameterKey("name", ValueType.STRING);
         scan = new ParameterKey("scan", ValueType.STRING);
         mask = new ParameterKey("mask", ValueType.STRING);
@@ -54,7 +54,7 @@ public class TransletParameters extends AbstractParameters {
         choose = new ParameterKey("choose", ChooseParameters.class, true, true);
         contents = new ParameterKey("contents", ContentsParameters.class);
         content = new ParameterKey("content", ContentParameters.class, true, true);
-        action = new ParameterKey("action", ActionParameters.class, true, true);
+        action = new ParameterKey("action", new String[] {"echo", "headers", "include"}, ActionParameters.class, true, true);
         response = new ParameterKey("response", ResponseParameters.class, true, true);
         transform = new ParameterKey("transform", TransformParameters.class);
         dispatch = new ParameterKey("dispatch", DispatchParameters.class);

@@ -82,11 +82,11 @@ import com.aspectran.core.context.rule.params.RootParameters;
 import com.aspectran.core.context.rule.params.ScheduleParameters;
 import com.aspectran.core.context.rule.params.ScheduledJobParameters;
 import com.aspectran.core.context.rule.params.SchedulerParameters;
-import com.aspectran.core.context.rule.params.SettingParameters;
 import com.aspectran.core.context.rule.params.SettingsParameters;
 import com.aspectran.core.context.rule.params.TemplateParameters;
 import com.aspectran.core.context.rule.params.TransformParameters;
 import com.aspectran.core.context.rule.params.TransletParameters;
+import com.aspectran.core.context.rule.params.TriggerExpressionParameters;
 import com.aspectran.core.context.rule.params.TriggerParameters;
 import com.aspectran.core.context.rule.params.TypeAliasesParameters;
 import com.aspectran.core.context.rule.type.ActionType;
@@ -133,43 +133,29 @@ public class RulesToParameters {
         AssistantLocal assistantLocal = assistant.getAssistantLocal();
         aspectranParameters.putValueNonNull(AspectranParameters.description, assistantLocal.getDescription());
 
-        DefaultSettings defaultSettings = assistantLocal.getDefaultSettings();
-        if (defaultSettings != null) {
+        DefaultSettings settings = assistantLocal.getDefaultSettings();
+        if (settings != null) {
             SettingsParameters settingsParameters = aspectranParameters.newParameters(AspectranParameters.settings);
-            if (defaultSettings.getTransletNamePattern() != null) {
-                SettingParameters settingParameters = settingsParameters.newParameters(SettingsParameters.setting);
-                settingParameters.putValue(SettingParameters.name, DefaultSettingType.TRANSLET_NAME_PATTERN.toString());
-                settingParameters.putValue(SettingParameters.value, defaultSettings.getTransletNamePattern());
+            if (settings.getTransletNamePattern() != null) {
+                settingsParameters.putSetting(DefaultSettingType.TRANSLET_NAME_PATTERN, settings.getTransletNamePattern());
             }
-            if (defaultSettings.getTransletNamePrefix() != null) {
-                SettingParameters settingParameters = settingsParameters.newParameters(SettingsParameters.setting);
-                settingParameters.putValue(SettingParameters.name, DefaultSettingType.TRANSLET_NAME_PREFIX.toString());
-                settingParameters.putValue(SettingParameters.value, defaultSettings.getTransletNamePrefix());
+            if (settings.getTransletNamePrefix() != null) {
+                settingsParameters.putSetting(DefaultSettingType.TRANSLET_NAME_PREFIX, settings.getTransletNamePrefix());
             }
-            if (defaultSettings.getTransletNameSuffix() != null) {
-                SettingParameters settingParameters = settingsParameters.newParameters(SettingsParameters.setting);
-                settingParameters.putValue(SettingParameters.name, DefaultSettingType.TRANSLET_NAME_SUFFIX.toString());
-                settingParameters.putValue(SettingParameters.value, defaultSettings.getTransletNameSuffix());
+            if (settings.getTransletNameSuffix() != null) {
+                settingsParameters.putSetting(DefaultSettingType.TRANSLET_NAME_SUFFIX, settings.getTransletNameSuffix());
             }
-            if (defaultSettings.getBeanProxifier() != null) {
-                SettingParameters settingParameters = settingsParameters.newParameters(SettingsParameters.setting);
-                settingParameters.putValue(SettingParameters.name, DefaultSettingType.BEAN_PROXIFIER.toString());
-                settingParameters.putValue(SettingParameters.value, defaultSettings.getBeanProxifier());
+            if (settings.getBeanProxifier() != null) {
+                settingsParameters.putSetting(DefaultSettingType.BEAN_PROXIFIER, settings.getBeanProxifier());
             }
-            if (defaultSettings.getPointcutPatternVerifiable() != null) {
-                SettingParameters settingParameters = settingsParameters.newParameters(SettingsParameters.setting);
-                settingParameters.putValue(SettingParameters.name, DefaultSettingType.POINTCUT_PATTERN_VERIFIABLE.toString());
-                settingParameters.putValue(SettingParameters.value, defaultSettings.getPointcutPatternVerifiable());
+            if (settings.getPointcutPatternVerifiable() != null) {
+                settingsParameters.putSetting(DefaultSettingType.POINTCUT_PATTERN_VERIFIABLE, settings.getPointcutPatternVerifiable());
             }
-            if (defaultSettings.getDefaultTemplateEngineBean() != null) {
-                SettingParameters settingParameters = settingsParameters.newParameters(SettingsParameters.setting);
-                settingParameters.putValue(SettingParameters.name, DefaultSettingType.DEFAULT_TEMPLATE_ENGINE_BEAN.toString());
-                settingParameters.putValue(SettingParameters.value, defaultSettings.getDefaultTemplateEngineBean());
+            if (settings.getDefaultTemplateEngineBean() != null) {
+                settingsParameters.putSetting(DefaultSettingType.DEFAULT_TEMPLATE_ENGINE_BEAN, settings.getDefaultTemplateEngineBean());
             }
-            if (defaultSettings.getDefaultSchedulerBean() != null) {
-                SettingParameters settingParameters = settingsParameters.newParameters(SettingsParameters.setting);
-                settingParameters.putValue(SettingParameters.name, DefaultSettingType.DEFAULT_SCHEDULER_BEAN.toString());
-                settingParameters.putValue(SettingParameters.value, defaultSettings.getDefaultSchedulerBean());
+            if (settings.getDefaultSchedulerBean() != null) {
+                settingsParameters.putSetting(DefaultSettingType.DEFAULT_SCHEDULER_BEAN, settings.getDefaultSchedulerBean());
             }
         }
 
@@ -382,10 +368,11 @@ public class RulesToParameters {
         SchedulerParameters schedulerParameters = scheduleParameters.newParameters(ScheduleParameters.scheduler);
         schedulerParameters.putValueNonNull(SchedulerParameters.bean, scheduleRule.getSchedulerBeanId());
 
-        TriggerParameters triggerParameters = scheduleRule.getTriggerParameters();
-        if (triggerParameters != null && scheduleRule.getTriggerType() != null) {
-            triggerParameters.putValueNonNull(TriggerParameters.type, scheduleRule.getTriggerType().toString());
-            schedulerParameters.putValue(SchedulerParameters.trigger, scheduleRule.getTriggerParameters());
+        TriggerExpressionParameters expressionParameters = scheduleRule.getTriggerExpressionParameters();
+        if (expressionParameters != null && scheduleRule.getTriggerType() != null) {
+            TriggerParameters triggerParameters = schedulerParameters.newParameters(SchedulerParameters.trigger);
+            triggerParameters.putValue(TriggerParameters.type, scheduleRule.getTriggerType().toString());
+            triggerParameters.putValue(TriggerParameters.expression, expressionParameters);
         }
 
         List<ScheduledJobRule> scheduledJobRuleList = scheduleRule.getScheduledJobRuleList();

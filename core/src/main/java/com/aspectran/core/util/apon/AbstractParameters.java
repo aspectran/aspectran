@@ -31,7 +31,7 @@ public abstract class AbstractParameters implements Parameters {
 
     private final Map<String, ParameterValue> parameterValueMap;
 
-    private final Map<String, ParameterValue> alternateParameterValueMap;
+    private final Map<String, ParameterValue> altParameterValueMap;
 
     private final boolean structureFixed;
 
@@ -40,22 +40,24 @@ public abstract class AbstractParameters implements Parameters {
     protected AbstractParameters(ParameterKey[] parameterKeys) {
         Map<String, ParameterValue> valueMap = new LinkedHashMap<>();
         if (parameterKeys != null) {
-            Map<String, ParameterValue> alternateValueMap = new HashMap<>();
+            Map<String, ParameterValue> altValueMap = new HashMap<>();
             for (ParameterKey pk : parameterKeys) {
                 ParameterValue pv = pk.newParameterValue();
                 pv.setContainer(this);
                 valueMap.put(pk.getName(), pv);
-                if (pk.getAlternateName() != null) {
-                    alternateValueMap.put(pk.getAlternateName(), pv);
+                if (pk.getAltNames() != null) {
+                    for (String altName : pk.getAltNames()) {
+                        altValueMap.put(altName, pv);
+                    }
                 }
             }
             this.parameterValueMap = Collections.unmodifiableMap(valueMap);
-            this.alternateParameterValueMap = (alternateValueMap.isEmpty() ?
-                Collections.emptyMap() : Collections.unmodifiableMap(alternateValueMap));
+            this.altParameterValueMap = (altValueMap.isEmpty() ?
+                Collections.emptyMap() : Collections.unmodifiableMap(altValueMap));
             this.structureFixed = true;
         } else {
             this.parameterValueMap = valueMap;
-            this.alternateParameterValueMap = Collections.emptyMap();
+            this.altParameterValueMap = Collections.emptyMap();
             this.structureFixed = false;
         }
     }
@@ -110,8 +112,8 @@ public abstract class AbstractParameters implements Parameters {
         if (pv != null) {
             return pv;
         }
-        if (alternateParameterValueMap != null) {
-            return alternateParameterValueMap.get(name);
+        if (altParameterValueMap != null) {
+            return altParameterValueMap.get(name);
         }
         return null;
     }
@@ -134,7 +136,7 @@ public abstract class AbstractParameters implements Parameters {
     @Override
     public boolean hasParameter(String name) {
         return (parameterValueMap.containsKey(name) ||
-            alternateParameterValueMap != null && alternateParameterValueMap.containsKey(name));
+            altParameterValueMap != null && altParameterValueMap.containsKey(name));
     }
 
     @Override

@@ -28,7 +28,7 @@ public class TypeAliasParameters extends AbstractParameters {
 
     static {
         alias = new ParameterKey("alias", ValueType.STRING);
-        type = new ParameterKey("type", "typeAlias", ValueType.STRING);
+        type = new ParameterKey("type", new String[] {"typeAlias"}, ValueType.STRING);
 
         parameterKeys = new ParameterKey[] {
                 alias,

@@ -16,15 +16,16 @@
 package com.aspectran.core.context.rule;
 
 import com.aspectran.core.context.rule.ability.BeanReferenceable;
+import com.aspectran.core.context.rule.params.TriggerExpressionParameters;
 import com.aspectran.core.context.rule.params.TriggerParameters;
 import com.aspectran.core.context.rule.type.BeanRefererType;
 import com.aspectran.core.context.rule.type.TriggerType;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.ToStringBuilder;
-import com.aspectran.core.util.apon.AponReader;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -53,7 +54,7 @@ public class ScheduleRule implements BeanReferenceable {
 
     private TriggerType triggerType;
 
-    private TriggerParameters triggerParameters;
+    private TriggerExpressionParameters triggerExpressionParameters;
 
     private String schedulerBeanId;
 
@@ -79,12 +80,12 @@ public class ScheduleRule implements BeanReferenceable {
         this.triggerType = triggerType;
     }
 
-    public TriggerParameters getTriggerParameters() {
-        return triggerParameters;
+    public TriggerExpressionParameters getTriggerExpressionParameters() {
+        return triggerExpressionParameters;
     }
 
-    public void setTriggerParameters(TriggerParameters triggerParameters) {
-        this.triggerParameters = triggerParameters;
+    public void setTriggerExpressionParameters(TriggerExpressionParameters triggerExpressionParameters) {
+        this.triggerExpressionParameters = triggerExpressionParameters;
     }
 
     public String getSchedulerBeanId() {
@@ -143,7 +144,7 @@ public class ScheduleRule implements BeanReferenceable {
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.append("id", id);
         tsb.append("scheduler", schedulerBeanId);
-        tsb.append("trigger", triggerParameters);
+        tsb.append("trigger", triggerExpressionParameters);
         tsb.append("jobs", scheduledJobRuleList);
         return tsb.toString();
     }
@@ -158,58 +159,19 @@ public class ScheduleRule implements BeanReferenceable {
         return scheduleRule;
     }
 
-    public static void updateTrigger(ScheduleRule scheduleRule, String type, String text) throws IllegalRuleException {
+    public static void updateTrigger(ScheduleRule scheduleRule, TriggerParameters triggerParameters) throws IllegalRuleException {
+        updateTriggerType(scheduleRule, triggerParameters.getString(TriggerParameters.type));
+        TriggerExpressionParameters expressionParameters = triggerParameters.getParameters(TriggerParameters.expression);
+        if (expressionParameters == null) {
+            throw new IllegalRuleException("Be sure to specify trigger expression parameters " +
+                    Arrays.toString(TriggerExpressionParameters.parameterKeys));
+        }
+        updateTriggerExpression(scheduleRule, expressionParameters);
+    }
+
+    public static void updateTrigger(ScheduleRule scheduleRule, String type, String expression) throws IllegalRuleException {
         updateTriggerType(scheduleRule, type);
-        updateTrigger(scheduleRule, text);
-    }
-
-    public static void updateTrigger(ScheduleRule scheduleRule, String text) throws IllegalRuleException {
-        if (StringUtils.hasText(text)) {
-            TriggerParameters triggerParameters;
-            try {
-                triggerParameters = new TriggerParameters(text);
-            } catch (IOException e) {
-                throw new IllegalRuleException("Trigger parameter can not be parsed", e);
-            }
-            updateTrigger(scheduleRule, triggerParameters);
-        }
-    }
-
-    public static void updateTrigger(ScheduleRule scheduleRule, TriggerParameters triggerParameters) {
-        if (scheduleRule.getTriggerType() == null) {
-            String type = triggerParameters.getString(TriggerParameters.type);
-            updateTriggerType(scheduleRule, type);
-        }
-        if (scheduleRule.getTriggerType() == TriggerType.SIMPLE) {
-            String expression = triggerParameters.getString(TriggerParameters.expression);
-            if (!StringUtils.isEmpty(expression)) {
-                try {
-                    AponReader.parse(expression, triggerParameters);
-                    triggerParameters.clearValue(TriggerParameters.expression);
-                } catch (IOException e) {
-                    // ignore
-                }
-            }
-
-            Long intervalInMilliseconds = triggerParameters.getLong(TriggerParameters.intervalInMilliseconds);
-            Integer intervalInSeconds = triggerParameters.getInt(TriggerParameters.intervalInSeconds);
-            Integer intervalInMinutes = triggerParameters.getInt(TriggerParameters.intervalInMinutes);
-            Integer intervalInHours = triggerParameters.getInt(TriggerParameters.intervalInHours);
-            if (intervalInMilliseconds == null && intervalInSeconds == null && intervalInMinutes == null && intervalInHours == null) {
-                throw new IllegalArgumentException("Must specify the interval between execution times for simple trigger. (" +
-                        "Specifiable time interval types: intervalInMilliseconds, intervalInSeconds, intervalInMinutes, intervalInHours)");
-            }
-            scheduleRule.setTriggerParameters(triggerParameters);
-        } else {
-            String expression = triggerParameters.getString(TriggerParameters.expression);
-
-            String[] fields = StringUtils.tokenize(expression, " ");
-            if (fields.length != 6) {
-                throw new IllegalArgumentException(String.format("Cron expression must consist of 6 fields (found %d in %s)", fields.length, expression));
-            }
-            triggerParameters.putValue(TriggerParameters.expression, StringUtils.toDelimitedString(fields, " "));
-            scheduleRule.setTriggerParameters(triggerParameters);
-        }
+        updateTriggerExpression(scheduleRule, expression);
     }
 
     public static void updateTriggerType(ScheduleRule scheduleRule, String type) {
@@ -223,6 +185,39 @@ public class ScheduleRule implements BeanReferenceable {
             triggerType = TriggerType.CRON;
         }
         scheduleRule.setTriggerType(triggerType);
+    }
+
+    public static void updateTriggerExpression(ScheduleRule scheduleRule, String expression) throws IllegalRuleException {
+        if (StringUtils.hasText(expression)) {
+            TriggerExpressionParameters expressionParameters;
+            try {
+                expressionParameters = new TriggerExpressionParameters(expression);
+            } catch (IOException e) {
+                throw new IllegalRuleException("Trigger expression parameters can not be parsed", e);
+            }
+            updateTriggerExpression(scheduleRule, expressionParameters);
+        }
+    }
+
+    public static void updateTriggerExpression(ScheduleRule scheduleRule, TriggerExpressionParameters expressionParameters) {
+        if (scheduleRule.getTriggerType() == TriggerType.SIMPLE) {
+            Long intervalInMilliseconds = expressionParameters.getLong(TriggerExpressionParameters.intervalInMilliseconds);
+            Integer intervalInSeconds = expressionParameters.getInt(TriggerExpressionParameters.intervalInSeconds);
+            Integer intervalInMinutes = expressionParameters.getInt(TriggerExpressionParameters.intervalInMinutes);
+            Integer intervalInHours = expressionParameters.getInt(TriggerExpressionParameters.intervalInHours);
+            if (intervalInMilliseconds == null && intervalInSeconds == null && intervalInMinutes == null && intervalInHours == null) {
+                throw new IllegalArgumentException("Must specify the interval between execution times for simple trigger. (" +
+                        "Specifiable time interval types: intervalInMilliseconds, intervalInSeconds, intervalInMinutes, intervalInHours)");
+            }
+        } else {
+            String expression = expressionParameters.getString(TriggerExpressionParameters.expression);
+            String[] fields = StringUtils.tokenize(expression, " ");
+            if (fields.length != 6) {
+                throw new IllegalArgumentException(String.format("Cron expression must consist of 6 fields (found %d in %s)", fields.length, expression));
+            }
+            expressionParameters.putValue(TriggerParameters.expression, StringUtils.toDelimitedString(fields, " "));
+        }
+        scheduleRule.setTriggerExpressionParameters(expressionParameters);
     }
 
 }

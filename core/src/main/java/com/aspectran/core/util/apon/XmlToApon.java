@@ -146,13 +146,7 @@ public class XmlToApon {
                 parameters = parameters.newParameters(name);
                 leaf = false;
             }
-//            if ("template".equals(qName)) {
-//                System.out.println(name);
-//            }
             Parameter p = parameters.getParameter(qName);
-//            if (p != null && p.getValueType() == ValueType.PARAMETERS) {
-//                System.out.println(p);
-//            }
             if (attributes != null && attributes.getLength() > 0 ||
                     p != null && p.getValueType() == ValueType.PARAMETERS) {
                 parameters = parameters.newParameters(qName);

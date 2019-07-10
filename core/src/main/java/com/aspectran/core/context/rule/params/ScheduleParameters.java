@@ -29,7 +29,7 @@ public class ScheduleParameters extends AbstractParameters {
     private static final ParameterKey[] parameterKeys;
 
     static {
-        description = new ParameterKey("description", ValueType.TEXT);
+        description = new ParameterKey("description", ValueType.VARIABLE);
         id = new ParameterKey("id", ValueType.STRING);
         scheduler = new ParameterKey("scheduler", SchedulerParameters.class);
         job = new ParameterKey("job", ScheduledJobParameters.class, true, true);

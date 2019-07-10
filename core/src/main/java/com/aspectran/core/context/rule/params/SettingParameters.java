@@ -28,7 +28,7 @@ public class SettingParameters extends AbstractParameters {
 
     static {
         name = new ParameterKey("name", ValueType.STRING);
-        value = new ParameterKey("value", "setting", ValueType.STRING);
+        value = new ParameterKey("value", new String[] {"setting"}, ValueType.VARIABLE);
 
         parameterKeys = new ParameterKey[] {
                 name,

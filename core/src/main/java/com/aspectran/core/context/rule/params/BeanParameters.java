@@ -41,7 +41,7 @@ public class BeanParameters extends AbstractParameters {
     private static final ParameterKey[] parameterKeys;
 
     static {
-        description = new ParameterKey("description", ValueType.TEXT);
+        description = new ParameterKey("description", ValueType.VARIABLE);
         id = new ParameterKey("id", ValueType.STRING);
         className = new ParameterKey("class", ValueType.STRING);
         scan = new ParameterKey("scan", ValueType.STRING);

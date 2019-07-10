@@ -19,53 +19,25 @@ import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterKey;
 import com.aspectran.core.util.apon.ValueType;
 
-import java.io.IOException;
-
 public class TriggerParameters extends AbstractParameters {
 
     public static final ParameterKey type;
-    public static final ParameterKey startDelaySeconds;
-    public static final ParameterKey intervalInMilliseconds;
-    public static final ParameterKey intervalInMinutes;
-    public static final ParameterKey intervalInSeconds;
-    public static final ParameterKey intervalInHours;
-    public static final ParameterKey repeatCount;
-    public static final ParameterKey repeatForever;
     public static final ParameterKey expression;
 
     private static final ParameterKey[] parameterKeys;
 
     static {
         type = new ParameterKey("type", ValueType.STRING);
-        startDelaySeconds = new ParameterKey("startDelaySeconds", ValueType.INT);
-        intervalInMilliseconds = new ParameterKey("intervalInMilliseconds", ValueType.LONG);
-        intervalInMinutes = new ParameterKey("intervalInMinutes", ValueType.INT);
-        intervalInSeconds = new ParameterKey("intervalInSeconds", ValueType.INT);
-        intervalInHours = new ParameterKey("intervalInHours", ValueType.INT);
-        repeatCount = new ParameterKey("repeatCount", ValueType.INT);
-        repeatForever = new ParameterKey("repeatForever", ValueType.BOOLEAN);
-        expression = new ParameterKey("expression", "trigger", ValueType.STRING);
+        expression = new ParameterKey("expression", new String[] {"trigger"}, TriggerExpressionParameters.class);
 
         parameterKeys = new ParameterKey[] {
                 type,
-                startDelaySeconds,
-                intervalInMilliseconds,
-                intervalInMinutes,
-                intervalInSeconds,
-                intervalInHours,
-                repeatCount,
-                repeatForever,
                 expression
         };
     }
 
     public TriggerParameters() {
         super(parameterKeys);
-    }
-
-    public TriggerParameters(String text) throws IOException {
-        this();
-        readFrom(text);
     }
 
 }

@@ -90,6 +90,8 @@ import com.aspectran.core.context.rule.params.TypeAliasParameters;
 import com.aspectran.core.context.rule.params.TypeAliasesParameters;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
 import com.aspectran.core.util.StringUtils;
+import com.aspectran.core.util.TextStyler;
+import com.aspectran.core.util.apon.Parameter;
 import com.aspectran.core.util.apon.Parameters;
 
 import java.util.List;
@@ -121,7 +123,7 @@ public class ParametersToRules {
             throw new IllegalArgumentException("aspectranParameters must not be null");
         }
 
-        String description = aspectranParameters.getString(AspectranParameters.description);
+        String description = asDescription(aspectranParameters);
         if (description != null) {
             assistant.getAssistantLocal().setDescription(description);
         }
@@ -234,7 +236,7 @@ public class ParametersToRules {
 
     private void asEnvironmentRule(EnvironmentParameters environmentParameters) throws IllegalRuleException {
         if (environmentParameters != null) {
-            String description = environmentParameters.getString(EnvironmentParameters.description);
+            String description = asDescription(environmentParameters);
             String profile = StringUtils.emptyToNull(environmentParameters.getString(EnvironmentParameters.profile));
 
             EnvironmentRule environmentRule = EnvironmentRule.newInstance(profile);
@@ -254,7 +256,7 @@ public class ParametersToRules {
     }
 
     private void asAspectRule(AspectParameters aspectParameters) throws IllegalRuleException {
-        String description = aspectParameters.getString(AspectParameters.description);
+        String description = asDescription(aspectParameters);
         String id = StringUtils.emptyToNull(aspectParameters.getString(AspectParameters.id));
         String order = aspectParameters.getString(AspectParameters.order);
         Boolean isolated = aspectParameters.getBoolean(AspectParameters.isolated);
@@ -329,7 +331,7 @@ public class ParametersToRules {
         ExceptionParameters exceptionParameters = aspectParameters.getParameters(AspectParameters.exception);
         if (exceptionParameters != null) {
             ExceptionRule exceptionRule = new ExceptionRule();
-            exceptionRule.setDescription(exceptionParameters.getString(ExceptionParameters.description));
+            exceptionRule.setDescription(asDescription(exceptionParameters));
             List<ExceptionThrownParameters> etParametersList = exceptionParameters.getParametersList(ExceptionParameters.thrown);
             if (etParametersList != null) {
                 for (ExceptionThrownParameters etParameters : etParametersList) {
@@ -345,7 +347,7 @@ public class ParametersToRules {
     }
 
     private void asBeanRule(BeanParameters beanParameters) throws IllegalRuleException {
-        String description = beanParameters.getString(BeanParameters.description);
+        String description = asDescription(beanParameters);
         String id = StringUtils.emptyToNull(beanParameters.getString(BeanParameters.id));
         String className = StringUtils.emptyToNull(assistant.resolveAliasType(beanParameters.getString(BeanParameters.className)));
         String scan = beanParameters.getString(BeanParameters.scan);
@@ -397,7 +399,7 @@ public class ParametersToRules {
     }
 
     private void asScheduleRule(ScheduleParameters scheduleParameters) throws IllegalRuleException {
-        String description = scheduleParameters.getString(AspectParameters.description);
+        String description = asDescription(scheduleParameters);
         String id = StringUtils.emptyToNull(scheduleParameters.getString(AspectParameters.id));
 
         ScheduleRule scheduleRule = ScheduleRule.newInstance(id);
@@ -434,7 +436,7 @@ public class ParametersToRules {
     }
 
     private void asTransletRule(TransletParameters transletParameters) throws IllegalRuleException {
-        String description = transletParameters.getString(TransletParameters.description);
+        String description = asDescription(transletParameters);
         String name = StringUtils.emptyToNull(transletParameters.getString(TransletParameters.name));
         String scan = transletParameters.getString(TransletParameters.scan);
         String mask = transletParameters.getString(TransletParameters.mask);
@@ -499,7 +501,7 @@ public class ParametersToRules {
         ExceptionParameters exceptionParameters = transletParameters.getParameters(TransletParameters.exception);
         if (exceptionParameters != null) {
             ExceptionRule exceptionRule = new ExceptionRule();
-            exceptionRule.setDescription(exceptionParameters.getString(ExceptionParameters.description));
+            exceptionRule.setDescription(asDescription(exceptionParameters));
             List<ExceptionThrownParameters> etParametersList = exceptionParameters.getParametersList(ExceptionParameters.thrown);
             if (etParametersList != null) {
                 for (ExceptionThrownParameters etParameters : etParametersList) {
@@ -1024,6 +1026,19 @@ public class ParametersToRules {
 
         TemplateRule templateRule = TemplateRule.newInstance(id, engine, name, file, resource, url, content, style, encoding, noCache);
         assistant.addTemplateRule(templateRule);
+    }
+
+    private String asDescription(Parameters parameters) {
+        Parameter parameter = parameters.getParameter("description");
+        if (parameter != null) {
+            Object value = parameter.getValue();
+            if (value instanceof Parameters) {
+                String text = ((Parameters)value).getString("description");
+                String style = ((Parameters)value).getString("style");
+                return TextStyler.styling(text, style);
+            }
+        }
+        return null;
     }
     
 }

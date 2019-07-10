@@ -61,8 +61,10 @@ class ActivityContextBuilderTest {
         builder.setActiveProfiles("dev", "debug");
         ActivityContext context1 = builder.build("/config/sample/test-config.xml");
         String result = context1.getTemplateRenderer().render("echo1");
-        //System.out.println(result);
         assertEquals("ECHO-1", result);
+
+        String result2 = context1.getTemplateRenderer().render("echo2");
+        assertEquals("ECHO-2", result2);
 
         String devProp1 = context1.getEnvironment().getProperty("prop-1", context1.getDefaultActivity());
         String devProp2 = context1.getEnvironment().getProperty("prop-2", context1.getDefaultActivity());

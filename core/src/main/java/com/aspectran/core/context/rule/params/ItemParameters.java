@@ -35,7 +35,7 @@ public class ItemParameters extends AbstractParameters {
     static {
         type = new ParameterKey("type", ValueType.STRING);
         name = new ParameterKey("name", ValueType.STRING);
-        value = new ParameterKey("value", "item", ValueType.VARIABLE);
+        value = new ParameterKey("value", new String[] {"item"}, ValueType.VARIABLE);
         valueType = new ParameterKey("valueType", ValueType.STRING);
         tokenize = new ParameterKey("tokenize", ValueType.BOOLEAN);
         mandatory = new ParameterKey("mandatory", ValueType.BOOLEAN);

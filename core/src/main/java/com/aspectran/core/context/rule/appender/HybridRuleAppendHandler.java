@@ -20,7 +20,6 @@ import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;
 import com.aspectran.core.context.rule.converter.ParametersToRules;
 import com.aspectran.core.context.rule.params.AspectranParameters;
 import com.aspectran.core.context.rule.params.RootParameters;
-import com.aspectran.core.context.rule.parser.xml.AspectranNodeParser;
 import com.aspectran.core.context.rule.type.AppendedFileFormatType;
 import com.aspectran.core.context.rule.type.AppenderType;
 import com.aspectran.core.util.apon.AponReader;
@@ -40,8 +39,6 @@ import java.io.OutputStreamWriter;
 public class HybridRuleAppendHandler extends AbstractAppendHandler {
 
     private final String encoding;
-
-    private AspectranNodeParser aspectranNodeParser;
 
     private ParametersToRules ruleConverter;
 
@@ -78,11 +75,6 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
                     rootParameters = XmlToApon.from(appender.getReader(encoding), RootParameters.class);
                 }
                 getRuleConverter().asRules(rootParameters);
-
-//                if (aspectranNodeParser == null) {
-//                    aspectranNodeParser = new AspectranNodeParser(getContextRuleAssistant());
-//                }
-//                aspectranNodeParser.parse(appender);
             }
         }
 

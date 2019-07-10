@@ -19,11 +19,10 @@ import com.aspectran.core.component.schedule.ScheduleRuleRegistry;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.ScheduleRule;
 import com.aspectran.core.context.rule.ScheduledJobRule;
-import com.aspectran.core.context.rule.params.TriggerParameters;
+import com.aspectran.core.context.rule.params.TriggerExpressionParameters;
 import com.aspectran.core.context.rule.type.TriggerType;
 import com.aspectran.core.service.AbstractServiceController;
 import com.aspectran.core.service.CoreService;
-import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.core.util.wildcard.PluralWildcardPattern;
@@ -286,34 +285,33 @@ public class QuartzSchedulerService extends AbstractServiceController implements
     }
 
     private Trigger buildTrigger(String name, String group, ScheduleRule scheduleRule) {
-        Parameters triggerParameters = scheduleRule.getTriggerParameters();
-        Integer triggerStartDelaySeconds = triggerParameters.getInt(TriggerParameters.startDelaySeconds);
-        int intTriggerStartDelaySeconds = (triggerStartDelaySeconds != null ? triggerStartDelaySeconds : 0);
+        TriggerExpressionParameters expressionParameters = scheduleRule.getTriggerExpressionParameters();
+        Integer triggerStartDelaySeconds = expressionParameters.getStartDelaySeconds();
 
         Date firstFireTime;
         if (startDelaySeconds > 0 || (triggerStartDelaySeconds != null && triggerStartDelaySeconds > 0)) {
-            firstFireTime = new Date(System.currentTimeMillis() + ((startDelaySeconds + intTriggerStartDelaySeconds) * 1000L));
+            firstFireTime = new Date(System.currentTimeMillis() + ((startDelaySeconds + triggerStartDelaySeconds) * 1000L));
         } else {
             firstFireTime = new Date();
         }
 
         if (scheduleRule.getTriggerType() == TriggerType.SIMPLE) {
-            Long intervalInMilliseconds = triggerParameters.getLong(TriggerParameters.intervalInMilliseconds);
-            Integer intervalInSeconds = triggerParameters.getInt(TriggerParameters.intervalInSeconds);
-            Integer intervalInMinutes = triggerParameters.getInt(TriggerParameters.intervalInMinutes);
-            Integer intervalInHours = triggerParameters.getInt(TriggerParameters.intervalInHours);
-            Integer repeatCount = triggerParameters.getInt(TriggerParameters.repeatCount);
-            Boolean repeatForever = triggerParameters.getBoolean(TriggerParameters.repeatForever);
+            Long intervalInMilliseconds = expressionParameters.getIntervalInMilliseconds();
+            Integer intervalInSeconds = expressionParameters.getIntervalInSeconds();
+            Integer intervalInMinutes = expressionParameters.getIntervalInMinutes();
+            Integer intervalInHours = expressionParameters.getIntervalInHours();
+            Integer repeatCount = expressionParameters.getRepeatCount();
+            Boolean repeatForever = expressionParameters.getRepeatForever();
 
             SimpleScheduleBuilder builder = SimpleScheduleBuilder.simpleSchedule();
             if (intervalInMilliseconds != null) {
                 builder.withIntervalInMilliseconds(intervalInMilliseconds);
             }
-            if (intervalInMinutes != null) {
-                builder.withIntervalInMinutes(intervalInMinutes);
-            }
             if (intervalInSeconds != null) {
                 builder.withIntervalInSeconds(intervalInSeconds);
+            }
+            if (intervalInMinutes != null) {
+                builder.withIntervalInMinutes(intervalInMinutes);
             }
             if (intervalInHours != null) {
                 builder.withIntervalInHours(intervalInHours);
@@ -331,7 +329,7 @@ public class QuartzSchedulerService extends AbstractServiceController implements
                     .withSchedule(builder)
                     .build();
         } else {
-            String expression = triggerParameters.getString(TriggerParameters.expression);
+            String expression = expressionParameters.getExpression();
             CronScheduleBuilder cronSchedule = CronScheduleBuilder.cronSchedule(expression);
 
             return TriggerBuilder.newTrigger()
