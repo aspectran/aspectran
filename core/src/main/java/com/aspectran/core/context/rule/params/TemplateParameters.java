@@ -41,7 +41,7 @@ public class TemplateParameters extends AbstractParameters {
         file = new ParameterKey("file", ValueType.STRING);
         resource = new ParameterKey("resource", ValueType.STRING);
         url = new ParameterKey("url", ValueType.STRING);
-        content = new ParameterKey("content", ValueType.TEXT);
+        content = new ParameterKey("content", "template", ValueType.TEXT);
         style = new ParameterKey("style", ValueType.STRING);
         encoding = new ParameterKey("encoding", ValueType.STRING);
         noCache = new ParameterKey("noCache", ValueType.BOOLEAN);

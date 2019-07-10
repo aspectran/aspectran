@@ -20,6 +20,8 @@ import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.ToStringBuilder;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,28 +29,40 @@ import java.util.Set;
 
 public abstract class AbstractParameters implements Parameters {
 
-    private final Map<String, ParameterValue> parameterValueMap = new LinkedHashMap<>();
+    private final Map<String, ParameterValue> parameterValueMap;
 
-    private final boolean predefined;
+    private final Map<String, ParameterValue> alternateParameterValueMap;
+
+    private final boolean structureFixed;
 
     private Parameter identifier;
 
     protected AbstractParameters(ParameterKey[] parameterKeys) {
+        Map<String, ParameterValue> valueMap = new LinkedHashMap<>();
         if (parameterKeys != null) {
+            Map<String, ParameterValue> alternateValueMap = new HashMap<>();
             for (ParameterKey pk : parameterKeys) {
                 ParameterValue pv = pk.newParameterValue();
                 pv.setContainer(this);
-                this.parameterValueMap.put(pk.getName(), pv);
+                valueMap.put(pk.getName(), pv);
+                if (pk.getAlternateName() != null) {
+                    alternateValueMap.put(pk.getAlternateName(), pv);
+                }
             }
-            this.predefined = true;
+            this.parameterValueMap = Collections.unmodifiableMap(valueMap);
+            this.alternateParameterValueMap = (alternateValueMap.isEmpty() ?
+                Collections.emptyMap() : Collections.unmodifiableMap(alternateValueMap));
+            this.structureFixed = true;
         } else {
-            this.predefined = false;
+            this.parameterValueMap = valueMap;
+            this.alternateParameterValueMap = Collections.emptyMap();
+            this.structureFixed = false;
         }
     }
 
     @Override
-    public boolean isPredefined() {
-        return predefined;
+    public boolean isStructureFixed() {
+        return structureFixed;
     }
 
     @Override
@@ -91,6 +105,18 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
+    public ParameterValue getParameterValue(String name) {
+        ParameterValue pv = parameterValueMap.get(name);
+        if (pv != null) {
+            return pv;
+        }
+        if (alternateParameterValueMap != null) {
+            return alternateParameterValueMap.get(name);
+        }
+        return null;
+    }
+
+    @Override
     public Map<String, ParameterValue> getParameterValueMap() {
         return parameterValueMap;
     }
@@ -107,49 +133,50 @@ public abstract class AbstractParameters implements Parameters {
 
     @Override
     public boolean hasParameter(String name) {
-        return parameterValueMap.containsKey(name);
+        return (parameterValueMap.containsKey(name) ||
+            alternateParameterValueMap != null && alternateParameterValueMap.containsKey(name));
     }
 
     @Override
-    public boolean hasParameter(ParameterKey parameterDefinition) {
-        return hasParameter(parameterDefinition.getName());
+    public boolean hasParameter(ParameterKey parameterKey) {
+        return hasParameter(parameterKey.getName());
     }
 
     @Override
     public boolean isAssigned(String name) {
-        Parameter p = parameterValueMap.get(name);
+        Parameter p = getParameterValue(name);
         return (p != null && p.isAssigned());
     }
 
     @Override
-    public boolean isAssigned(ParameterKey parameterDefinition) {
-        return isAssigned(parameterDefinition.getName());
+    public boolean isAssigned(ParameterKey parameterKey) {
+        return isAssigned(parameterKey.getName());
     }
 
     @Override
     public boolean hasValue(String name) {
-        Parameter p = parameterValueMap.get(name);
+        Parameter p = getParameterValue(name);
         return (p != null && p.hasValue());
     }
 
     @Override
-    public boolean hasValue(ParameterKey parameterDefinition) {
-        Parameter p = parameterValueMap.get(parameterDefinition.getName());
+    public boolean hasValue(ParameterKey parameterKey) {
+        Parameter p = getParameterValue(parameterKey.getName());
         return (p != null && p.hasValue());
     }
 
     @Override
     public Parameter getParameter(String name) {
-        Parameter p = parameterValueMap.get(name);
-        if (predefined && p == null) {
+        Parameter p = getParameterValue(name);
+        if (structureFixed && p == null) {
             throw new UnknownParameterException(name, this);
         }
         return p;
     }
 
     @Override
-    public Parameter getParameter(ParameterKey parameterDefinition) {
-        return getParameter(parameterDefinition.getName());
+    public Parameter getParameter(ParameterKey parameterKey) {
+        return getParameter(parameterKey.getName());
     }
 
     @Override
@@ -159,12 +186,15 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
-    public Object getValue(ParameterKey parameterDefinition) {
-        return getValue(parameterDefinition.getName());
+    public Object getValue(ParameterKey parameterKey) {
+        return getValue(parameterKey.getName());
     }
 
     @Override
     public void putAll(Parameters parameters) {
+        if (structureFixed) {
+            throw new IllegalStateException();
+        }
         for (ParameterValue parameterValue : parameters.getParameterValueMap().values()) {
             parameterValue.setContainer(this);
         }
@@ -184,8 +214,8 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
-    public void putValue(ParameterKey parameterDefinition, Object value) {
-        putValue(parameterDefinition.getName(), value);
+    public void putValue(ParameterKey parameterKey, Object value) {
+        putValue(parameterKey.getName(), value);
     }
 
     @Override
@@ -196,15 +226,15 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
-    public void putValueNonNull(ParameterKey parameterDefinition, Object value) {
+    public void putValueNonNull(ParameterKey parameterKey, Object value) {
         if (value != null) {
-            putValue(parameterDefinition.getName(), value);
+            putValue(parameterKey.getName(), value);
         }
     }
 
     @Override
     public void clearValue(String name) {
-        if (predefined) {
+        if (structureFixed) {
             Parameter p = getParameter(name);
             if (p != null) {
                 p.clearValue();
@@ -215,8 +245,8 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
-    public void clearValue(ParameterKey parameterDefinition) {
-        clearValue(parameterDefinition.getName());
+    public void clearValue(ParameterKey parameterKey) {
+        clearValue(parameterKey.getName());
     }
 
     @Override
@@ -232,13 +262,13 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
-    public String getString(ParameterKey parameterDefinition) {
-        return getString(parameterDefinition.getName());
+    public String getString(ParameterKey parameterKey) {
+        return getString(parameterKey.getName());
     }
 
     @Override
-    public String getString(ParameterKey parameterDefinition, String defaultValue) {
-        return getString(parameterDefinition.getName(), defaultValue);
+    public String getString(ParameterKey parameterKey, String defaultValue) {
+        return getString(parameterKey.getName(), defaultValue);
     }
 
     @Override
@@ -248,8 +278,8 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
-    public String[] getStringArray(ParameterKey parameterDefinition) {
-        return getStringArray(parameterDefinition.getName());
+    public String[] getStringArray(ParameterKey parameterKey) {
+        return getStringArray(parameterKey.getName());
     }
 
     @Override
@@ -259,8 +289,8 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
-    public List<String> getStringList(ParameterKey parameterDefinition) {
-        return getStringList(parameterDefinition.getName());
+    public List<String> getStringList(ParameterKey parameterKey) {
+        return getStringList(parameterKey.getName());
     }
 
     @Override
@@ -286,18 +316,18 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
-    public Integer getInt(ParameterKey parameterDefinition) {
-        return getInt(parameterDefinition.getName());
+    public Integer getInt(ParameterKey parameterKey) {
+        return getInt(parameterKey.getName());
     }
 
     @Override
-    public int getInt(ParameterKey parameterDefinition, int defaultValue) {
-        return getInt(parameterDefinition.getName(), defaultValue);
+    public int getInt(ParameterKey parameterKey, int defaultValue) {
+        return getInt(parameterKey.getName(), defaultValue);
     }
 
     @Override
-    public Integer[] getIntArray(ParameterKey parameterDefinition) {
-        return getIntArray(parameterDefinition.getName());
+    public Integer[] getIntArray(ParameterKey parameterKey) {
+        return getIntArray(parameterKey.getName());
     }
 
     @Override
@@ -307,8 +337,8 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
-    public List<Integer> getIntList(ParameterKey parameterDefinition) {
-        return getIntList(parameterDefinition.getName());
+    public List<Integer> getIntList(ParameterKey parameterKey) {
+        return getIntList(parameterKey.getName());
     }
 
     @Override
@@ -328,13 +358,13 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
-    public Long getLong(ParameterKey parameterDefinition) {
-        return getLong(parameterDefinition.getName());
+    public Long getLong(ParameterKey parameterKey) {
+        return getLong(parameterKey.getName());
     }
 
     @Override
-    public long getLong(ParameterKey parameterDefinition, long defaultValue) {
-        return getLong(parameterDefinition.getName(), defaultValue);
+    public long getLong(ParameterKey parameterKey, long defaultValue) {
+        return getLong(parameterKey.getName(), defaultValue);
     }
 
     @Override
@@ -344,8 +374,8 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
-    public Long[] getLongArray(ParameterKey parameterDefinition) {
-        return getLongArray(parameterDefinition.getName());
+    public Long[] getLongArray(ParameterKey parameterKey) {
+        return getLongArray(parameterKey.getName());
     }
 
     @Override
@@ -355,8 +385,8 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
-    public List<Long> getLongList(ParameterKey parameterDefinition) {
-        return getLongList(parameterDefinition.getName());
+    public List<Long> getLongList(ParameterKey parameterKey) {
+        return getLongList(parameterKey.getName());
     }
 
     @Override
@@ -376,13 +406,13 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
-    public Float getFloat(ParameterKey parameterDefinition) {
-        return getFloat(parameterDefinition.getName());
+    public Float getFloat(ParameterKey parameterKey) {
+        return getFloat(parameterKey.getName());
     }
 
     @Override
-    public float getFloat(ParameterKey parameterDefinition, float defaultValue) {
-        return getFloat(parameterDefinition.getName(), defaultValue);
+    public float getFloat(ParameterKey parameterKey, float defaultValue) {
+        return getFloat(parameterKey.getName(), defaultValue);
     }
 
     @Override
@@ -392,8 +422,8 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
-    public Float[] getFloatArray(ParameterKey parameterDefinition) {
-        return getFloatArray(parameterDefinition.getName());
+    public Float[] getFloatArray(ParameterKey parameterKey) {
+        return getFloatArray(parameterKey.getName());
     }
 
     @Override
@@ -403,8 +433,8 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
-    public List<Float> getFloatList(ParameterKey parameterDefinition) {
-        return getFloatList(parameterDefinition.getName());
+    public List<Float> getFloatList(ParameterKey parameterKey) {
+        return getFloatList(parameterKey.getName());
     }
 
     @Override
@@ -424,13 +454,13 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
-    public Double getDouble(ParameterKey parameterDefinition) {
-        return getDouble(parameterDefinition.getName());
+    public Double getDouble(ParameterKey parameterKey) {
+        return getDouble(parameterKey.getName());
     }
 
     @Override
-    public double getDouble(ParameterKey parameterDefinition, double defaultValue) {
-        return getDouble(parameterDefinition.getName(), defaultValue);
+    public double getDouble(ParameterKey parameterKey, double defaultValue) {
+        return getDouble(parameterKey.getName(), defaultValue);
     }
 
     @Override
@@ -440,8 +470,8 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
-    public Double[] getDoubleArray(ParameterKey parameterDefinition) {
-        return getDoubleArray(parameterDefinition.getName());
+    public Double[] getDoubleArray(ParameterKey parameterKey) {
+        return getDoubleArray(parameterKey.getName());
     }
 
     @Override
@@ -451,8 +481,8 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
-    public List<Double> getDoubleList(ParameterKey parameterDefinition) {
-        return getDoubleList(parameterDefinition.getName());
+    public List<Double> getDoubleList(ParameterKey parameterKey) {
+        return getDoubleList(parameterKey.getName());
     }
 
     @Override
@@ -468,13 +498,13 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
-    public Boolean getBoolean(ParameterKey parameterDefinition) {
-        return getBoolean(parameterDefinition.getName());
+    public Boolean getBoolean(ParameterKey parameterKey) {
+        return getBoolean(parameterKey.getName());
     }
 
     @Override
-    public boolean getBoolean(ParameterKey parameterDefinition, boolean defaultValue) {
-        return getBoolean(parameterDefinition.getName(), defaultValue);
+    public boolean getBoolean(ParameterKey parameterKey, boolean defaultValue) {
+        return getBoolean(parameterKey.getName(), defaultValue);
     }
 
     @Override
@@ -484,8 +514,8 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
-    public Boolean[] getBooleanArray(ParameterKey parameterDefinition) {
-        return getBooleanArray(parameterDefinition.getName());
+    public Boolean[] getBooleanArray(ParameterKey parameterKey) {
+        return getBooleanArray(parameterKey.getName());
     }
 
     @Override
@@ -495,8 +525,8 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
-    public List<Boolean> getBooleanList(ParameterKey parameterDefinition) {
-        return getBooleanList(parameterDefinition.getName());
+    public List<Boolean> getBooleanList(ParameterKey parameterKey) {
+        return getBooleanList(parameterKey.getName());
     }
 
     @Override
@@ -508,8 +538,8 @@ public abstract class AbstractParameters implements Parameters {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T extends Parameters> T getParameters(ParameterKey parameterDefinition) {
-        return (T)getParameters(parameterDefinition.getName());
+    public <T extends Parameters> T getParameters(ParameterKey parameterKey) {
+        return (T)getParameters(parameterKey.getName());
     }
 
     @Override
@@ -520,8 +550,8 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
-    public <T extends Parameters> T[] getParametersArray(ParameterKey parameterDefinition) {
-        return getParametersArray(parameterDefinition.getName());
+    public <T extends Parameters> T[] getParametersArray(ParameterKey parameterKey) {
+        return getParametersArray(parameterKey.getName());
     }
 
     @Override
@@ -532,8 +562,8 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
-    public <T extends Parameters> List<T> getParametersList(ParameterKey parameterDefinition) {
-        return getParametersList(parameterDefinition.getName());
+    public <T extends Parameters> List<T> getParametersList(ParameterKey parameterKey) {
+        return getParametersList(parameterKey.getName());
     }
 
     @Override
@@ -543,6 +573,9 @@ public abstract class AbstractParameters implements Parameters {
 
     @Override
     public ParameterValue newParameterValue(String name, ValueType valueType, boolean array) {
+        if (structureFixed) {
+            throw new IllegalStateException();
+        }
         ParameterValue pv = new ParameterValue(name, valueType, array);
         pv.setContainer(this);
         parameterValueMap.put(name, pv);
@@ -552,7 +585,7 @@ public abstract class AbstractParameters implements Parameters {
     @Override
     public <T extends Parameters> T newParameters(String name) {
         Parameter p = getParameter(name);
-        if (predefined) {
+        if (structureFixed) {
             if (p == null) {
                 throw new UnknownParameterException(name, this);
             }
@@ -565,8 +598,8 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
-    public <T extends Parameters> T newParameters(ParameterKey parameterDefinition) {
-        return newParameters(parameterDefinition.getName());
+    public <T extends Parameters> T newParameters(ParameterKey parameterKey) {
+        return newParameters(parameterKey.getName());
     }
 
     @Override
@@ -580,8 +613,8 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
-    public <T extends Parameters> T touchParameters(ParameterKey parameterDefinition) {
-        return touchParameters(parameterDefinition.getName());
+    public <T extends Parameters> T touchParameters(ParameterKey parameterKey) {
+        return touchParameters(parameterKey.getName());
     }
 
     @Override
@@ -605,6 +638,7 @@ public abstract class AbstractParameters implements Parameters {
         } else {
             tsb.append("parameters", getParameterNames());
         }
+        tsb.append("class", getClass().getName());
         tsb.append("parent", getParent());
         return tsb.toString();
     }
@@ -612,7 +646,7 @@ public abstract class AbstractParameters implements Parameters {
     @Override
     public String toString() {
         try {
-            return new AponWriter().write(this).toString();
+            return new AponWriter().nullWritable(false).write(this).toString();
         } catch (IOException e) {
             return StringUtils.EMPTY;
         }

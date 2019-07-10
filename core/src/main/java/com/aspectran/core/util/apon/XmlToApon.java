@@ -146,10 +146,20 @@ public class XmlToApon {
                 parameters = parameters.newParameters(name);
                 leaf = false;
             }
-            if (attributes != null && attributes.getLength() > 0) {
+//            if ("template".equals(qName)) {
+//                System.out.println(name);
+//            }
+            Parameter p = parameters.getParameter(qName);
+//            if (p != null && p.getValueType() == ValueType.PARAMETERS) {
+//                System.out.println(p);
+//            }
+            if (attributes != null && attributes.getLength() > 0 ||
+                    p != null && p.getValueType() == ValueType.PARAMETERS) {
                 parameters = parameters.newParameters(qName);
-                for (int i = 0; i < attributes.getLength(); i++) {
-                    parameters.putValue(attributes.getQName(i), attributes.getValue(i));
+                if (attributes != null) {
+                    for (int i = 0; i < attributes.getLength(); i++) {
+                        parameters.putValue(attributes.getQName(i), attributes.getValue(i));
+                    }
                 }
                 name = null;
                 leaf = false;

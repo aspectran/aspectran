@@ -19,42 +19,24 @@ import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterKey;
 import com.aspectran.core.util.apon.ValueType;
 
-public class ItemParameters extends AbstractParameters {
+public class SettingParameters extends AbstractParameters {
 
-    public static final ParameterKey type;
     public static final ParameterKey name;
     public static final ParameterKey value;
-    public static final ParameterKey valueType;
-    public static final ParameterKey tokenize;
-    public static final ParameterKey mandatory;
-    public static final ParameterKey secret;
-    public static final ParameterKey call;
 
     private static final ParameterKey[] parameterKeys;
 
     static {
-        type = new ParameterKey("type", ValueType.STRING);
         name = new ParameterKey("name", ValueType.STRING);
-        value = new ParameterKey("value", "item", ValueType.VARIABLE);
-        valueType = new ParameterKey("valueType", ValueType.STRING);
-        tokenize = new ParameterKey("tokenize", ValueType.BOOLEAN);
-        mandatory = new ParameterKey("mandatory", ValueType.BOOLEAN);
-        secret = new ParameterKey("secret", ValueType.BOOLEAN);
-        call = new ParameterKey("call", CallParameters.class);
+        value = new ParameterKey("value", "setting", ValueType.STRING);
 
         parameterKeys = new ParameterKey[] {
-                type,
                 name,
-                value,
-                valueType,
-                tokenize,
-                mandatory,
-                secret,
-                call
+                value
         };
     }
 
-    public ItemParameters() {
+    public SettingParameters() {
         super(parameterKeys);
     }
 

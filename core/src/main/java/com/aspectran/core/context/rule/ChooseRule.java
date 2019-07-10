@@ -44,12 +44,12 @@ public class ChooseRule {
     }
 
     public ChooseWhenRule newChooseWhenRule(int caseNo) {
-        ChooseWhenRule choosehenRule = new ChooseWhenRule(caseNo);
+        ChooseWhenRule chooseWhenRule = new ChooseWhenRule(caseNo);
         if (chooseWhenRuleMap == null) {
             chooseWhenRuleMap = new LinkedHashMap<>();
         }
-        chooseWhenRuleMap.put(caseNo, choosehenRule);
-        return choosehenRule;
+        chooseWhenRuleMap.put(caseNo, chooseWhenRule);
+        return chooseWhenRule;
     }
 
     public ChooseWhenRule getChooseWhenRule(int caseNo) {

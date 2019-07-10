@@ -34,11 +34,7 @@ public class UnknownParameterException extends RuntimeException {
     }
 
     private static String describe(Parameters parameters) {
-        if (parameters.getIdentifier() != null) {
-            return "'" + parameters.getIdentifier().getQualifiedName() + "' " + parameters.describe();
-        } else {
-            return parameters.describe();
-        }
+        return parameters.describe();
     }
 
 }

@@ -21,6 +21,7 @@ import com.aspectran.core.context.rule.type.BeanRefererType;
 import com.aspectran.core.context.rule.type.TriggerType;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.ToStringBuilder;
+import com.aspectran.core.util.apon.AponReader;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -180,6 +181,16 @@ public class ScheduleRule implements BeanReferenceable {
             updateTriggerType(scheduleRule, type);
         }
         if (scheduleRule.getTriggerType() == TriggerType.SIMPLE) {
+            String expression = triggerParameters.getString(TriggerParameters.expression);
+            if (!StringUtils.isEmpty(expression)) {
+                try {
+                    AponReader.parse(expression, triggerParameters);
+                    triggerParameters.clearValue(TriggerParameters.expression);
+                } catch (IOException e) {
+                    // ignore
+                }
+            }
+
             Long intervalInMilliseconds = triggerParameters.getLong(TriggerParameters.intervalInMilliseconds);
             Integer intervalInSeconds = triggerParameters.getInt(TriggerParameters.intervalInSeconds);
             Integer intervalInMinutes = triggerParameters.getInt(TriggerParameters.intervalInMinutes);

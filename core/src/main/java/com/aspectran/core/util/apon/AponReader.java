@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.util.apon;
 
+import com.aspectran.core.util.ClassUtils;
 import com.aspectran.core.util.StringUtils;
 
 import java.io.BufferedReader;
@@ -26,7 +27,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
-import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -142,10 +142,7 @@ public class AponReader extends AponFormat implements Closeable {
      * @throws IOException if an invalid parameter is detected or I/O error occurs
      */
     private void read(Parameters container, char openedBracket, String name, ParameterValue parameterValue,
-                      ValueType valueType, boolean valueTypeHinted)
-            throws IOException {
-        Map<String, ParameterValue> parameterValueMap = container.getParameterValueMap();
-
+                      ValueType valueType, boolean valueTypeHinted) throws IOException {
         String line;
         String value;
         String tline;
@@ -198,20 +195,20 @@ public class AponReader extends AponFormat implements Closeable {
                 vlen = value.length();
                 cchar = (vlen == 1 ? value.charAt(0) : NO_CONTROL_CHAR);
 
-                parameterValue = parameterValueMap.get(name);
+                parameterValue = container.getParameterValueMap().get(name);
 
                 if (parameterValue != null) {
                     valueType = parameterValue.getValueType();
                 } else {
-                    if (container.isPredefined()) {
+                    if (container.isStructureFixed()) {
                         throw syntaxError(line, tline, "Parameter '" +
-                                name + "' is not predefined; Note that only predefined parameters are allowed");
+                                name + "' is not defined; " + container);
                     }
                     valueType = ValueType.resolveByHint(name);
                     if (valueType != null) {
                         valueTypeHinted = true;
                         name = ValueType.stripValueTypeHint(name);
-                        parameterValue = parameterValueMap.get(name);
+                        parameterValue = container.getParameterValueMap().get(name);
                         if (parameterValue != null) {
                             valueType = parameterValue.getValueType();
                         }
@@ -453,6 +450,11 @@ public class AponReader extends AponFormat implements Closeable {
      */
     public static Parameters parse(String text) throws IOException {
         Parameters parameters = new VariableParameters();
+        return parse(text, parameters);
+    }
+
+    public static <T extends Parameters> T parse(String text, Class<T> requiredType) throws IOException {
+        T parameters = ClassUtils.createInstance(requiredType);
         return parse(text, parameters);
     }
 

@@ -27,6 +27,7 @@ public class JoinpointParameters extends AbstractParameters {
     public static final ParameterKey methods;
     public static final ParameterKey headers;
     public static final ParameterKey pointcut;
+    public static final ParameterKey expression;
 
     private static final ParameterKey[] parameterKeys;
 
@@ -35,12 +36,14 @@ public class JoinpointParameters extends AbstractParameters {
         methods = new ParameterKey("methods", ValueType.STRING, true);
         headers = new ParameterKey("headers", ValueType.STRING, true);
         pointcut = new ParameterKey("pointcut", PointcutParameters.class);
+        expression = new ParameterKey("expression", "joinpoint", ValueType.STRING);
 
         parameterKeys = new ParameterKey[] {
                 target,
                 methods,
                 headers,
-                pointcut
+                pointcut,
+                expression
         };
     }
 

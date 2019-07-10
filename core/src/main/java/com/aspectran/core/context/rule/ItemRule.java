@@ -854,14 +854,24 @@ public class ItemRule {
                     }
                 }
             } else if (itemRule.isMappableType()) {
-                Parameters parameters = itemParameters.getParameters(ItemParameters.value);
-                if (parameters != null) {
-                    Set<String> parametersNames = parameters.getParameterNameSet();
-                    if (parametersNames != null) {
-                        for (String valueName : parametersNames) {
-                            String text = parameters.getString(valueName);
-                            itemRule.putValue(valueName, text);
+                com.aspectran.core.util.apon.Parameter p = itemParameters.getParameter(ItemParameters.value);
+                if (p.isArray()) {
+                    List<Parameters> parametersList = itemParameters.getParametersList(ItemParameters.value);
+                    if (parametersList != null) {
+                        for (Parameters parameters : parametersList) {
+                            if (parameters != null) {
+                                String valueName = parameters.getString("name");
+                                String text = parameters.getString("value");
+                                itemRule.putValue(valueName, text);
+                            }
                         }
+                    }
+                } else {
+                    Parameters parameters = itemParameters.getParameters(ItemParameters.value);
+                    if (parameters != null) {
+                        String valueName = parameters.getString("name");
+                        String text = parameters.getString("value");
+                        itemRule.putValue(valueName, text);
                     }
                 }
             } else {

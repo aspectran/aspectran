@@ -18,6 +18,7 @@ package com.aspectran.core.util.apon;
 import com.aspectran.core.util.ClassUtils;
 import com.aspectran.core.util.ToStringBuilder;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -501,6 +502,14 @@ public class ParameterValue implements Parameter {
                     return Double.valueOf(value.toString());
                 } catch (NumberFormatException e) {
                     throw new ValueTypeMismatchException(value.getClass(), Double.class, e);
+                }
+            }
+        } else if (valueType == ValueType.PARAMETERS) {
+            if (!(value instanceof Parameters)) {
+                try {
+                    value = AponReader.parse(value.toString(), parametersClass);
+                } catch (IOException e) {
+                    throw new ValueTypeMismatchException(value.getClass(), parametersClass, e);
                 }
             }
         }

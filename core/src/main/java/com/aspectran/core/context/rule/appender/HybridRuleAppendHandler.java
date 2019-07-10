@@ -17,9 +17,7 @@ package com.aspectran.core.context.rule.appender;
 
 import com.aspectran.core.context.rule.assistant.AssistantLocal;
 import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;
-import com.aspectran.core.context.rule.assistant.ShallowContextRuleAssistant;
 import com.aspectran.core.context.rule.converter.ParametersToRules;
-import com.aspectran.core.context.rule.converter.RulesToParameters;
 import com.aspectran.core.context.rule.params.AspectranParameters;
 import com.aspectran.core.context.rule.params.RootParameters;
 import com.aspectran.core.context.rule.parser.xml.AspectranNodeParser;
@@ -27,6 +25,7 @@ import com.aspectran.core.context.rule.type.AppendedFileFormatType;
 import com.aspectran.core.context.rule.type.AppenderType;
 import com.aspectran.core.util.apon.AponReader;
 import com.aspectran.core.util.apon.AponWriter;
+import com.aspectran.core.util.apon.XmlToApon;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -67,21 +66,23 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
                 RootParameters rootParameters = AponReader.parse(appender.getReader(encoding), new RootParameters());
                 getRuleConverter().asRules(rootParameters);
             } else {
-                /* TODO Using APON to load XML configuration
+                /* TODO Using APON to load XML configuration */
                 RootParameters rootParameters;
                 if (appender.getAppenderType() == AppenderType.FILE) {
                     FileRuleAppender fileRuleAppender = (FileRuleAppender)appender;
                     rootParameters = XmlToApon.from(fileRuleAppender.getFile(), RootParameters.class);
+                    if (isDebugMode()) {
+                        saveAsAponFile(fileRuleAppender, rootParameters);
+                    }
                 } else {
                     rootParameters = XmlToApon.from(appender.getReader(encoding), RootParameters.class);
                 }
                 getRuleConverter().asRules(rootParameters);
-                */
 
-                if (aspectranNodeParser == null) {
-                    aspectranNodeParser = new AspectranNodeParser(getContextRuleAssistant());
-                }
-                aspectranNodeParser.parse(appender);
+//                if (aspectranNodeParser == null) {
+//                    aspectranNodeParser = new AspectranNodeParser(getContextRuleAssistant());
+//                }
+//                aspectranNodeParser.parse(appender);
             }
         }
 
@@ -90,13 +91,6 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
         // The first default settings will remain after all configuration settings have been completed.
         if (assistantLocal.getReplicatedCount() > 0) {
             getContextRuleAssistant().restoreAssistantLocal(assistantLocal);
-        }
-
-        if (appender != null && isDebugMode()) {
-            if (appender.getAppenderType() == AppenderType.FILE
-                    && appender.getAppendedFileFormatType() == AppendedFileFormatType.XML) {
-                saveAsAponFile((FileRuleAppender)appender);
-            }
         }
     }
 
@@ -107,7 +101,7 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
         return ruleConverter;
     }
 
-    private void saveAsAponFile(FileRuleAppender fileRuleAppender) throws IOException {
+    private void saveAsAponFile(FileRuleAppender fileRuleAppender, RootParameters rootParameters) throws IOException {
         if (log.isDebugEnabled()) {
             log.debug("Save as APON file: " + fileRuleAppender);
         }
@@ -125,19 +119,8 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
             }
 
             try {
-                ContextRuleAssistant assistant = new ShallowContextRuleAssistant();
-                assistant.ready();
-
-                AspectranNodeParser parser = new AspectranNodeParser(assistant, false, false);
-                parser.parse(fileRuleAppender);
-
-                RulesToParameters paramsConverter = new RulesToParameters(assistant);
-                RootParameters rootParameters = paramsConverter.toRootParameters();
-
                 aponWriter.comment(aponFile.getAbsolutePath());
                 aponWriter.write(rootParameters);
-
-                assistant.release();
             } finally {
                 try {
                     aponWriter.close();

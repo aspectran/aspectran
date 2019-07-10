@@ -24,7 +24,6 @@ import java.io.IOException;
 public class TriggerParameters extends AbstractParameters {
 
     public static final ParameterKey type;
-    public static final ParameterKey expression;
     public static final ParameterKey startDelaySeconds;
     public static final ParameterKey intervalInMilliseconds;
     public static final ParameterKey intervalInMinutes;
@@ -32,12 +31,12 @@ public class TriggerParameters extends AbstractParameters {
     public static final ParameterKey intervalInHours;
     public static final ParameterKey repeatCount;
     public static final ParameterKey repeatForever;
+    public static final ParameterKey expression;
 
     private static final ParameterKey[] parameterKeys;
 
     static {
         type = new ParameterKey("type", ValueType.STRING);
-        expression = new ParameterKey("expression", ValueType.STRING);
         startDelaySeconds = new ParameterKey("startDelaySeconds", ValueType.INT);
         intervalInMilliseconds = new ParameterKey("intervalInMilliseconds", ValueType.LONG);
         intervalInMinutes = new ParameterKey("intervalInMinutes", ValueType.INT);
@@ -45,17 +44,18 @@ public class TriggerParameters extends AbstractParameters {
         intervalInHours = new ParameterKey("intervalInHours", ValueType.INT);
         repeatCount = new ParameterKey("repeatCount", ValueType.INT);
         repeatForever = new ParameterKey("repeatForever", ValueType.BOOLEAN);
+        expression = new ParameterKey("expression", "trigger", ValueType.STRING);
 
         parameterKeys = new ParameterKey[] {
                 type,
-                expression,
                 startDelaySeconds,
                 intervalInMilliseconds,
                 intervalInMinutes,
                 intervalInSeconds,
                 intervalInHours,
                 repeatCount,
-                repeatForever
+                repeatForever,
+                expression
         };
     }
 

@@ -198,7 +198,7 @@ public class ContextRuleAssistant {
      */
     public void putSetting(String name, String value) throws IllegalRuleException {
         if (StringUtils.isEmpty(name)) {
-            throw new IllegalRuleException("Default setting name can not be null");
+            throw new IllegalRuleException("Default setting name must not be null or empty");
         }
         DefaultSettingType settingType = DefaultSettingType.resolve(name);
         if (settingType == null) {

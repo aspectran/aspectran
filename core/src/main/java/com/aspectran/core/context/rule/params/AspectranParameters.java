@@ -23,18 +23,18 @@ import com.aspectran.core.context.rule.ScheduleRule;
 import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.converter.RulesToParameters;
+import com.aspectran.core.context.rule.type.DefaultSettingType;
 import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterKey;
 import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.apon.ValueType;
-import com.aspectran.core.util.apon.VariableParameters;
 
 public class AspectranParameters extends AbstractParameters {
 
     public static final ParameterKey description;
     public static final ParameterKey settings;
     public static final ParameterKey environment;
-    public static final ParameterKey typeAlias;
+    public static final ParameterKey typeAliases;
     public static final ParameterKey aspect;
     public static final ParameterKey bean;
     public static final ParameterKey schedule;
@@ -46,8 +46,8 @@ public class AspectranParameters extends AbstractParameters {
 
     static {
         description = new ParameterKey("description", ValueType.TEXT);
-        settings = new ParameterKey("settings", DefaultSettingsParameters.class);
-        typeAlias = new ParameterKey("typeAlias", VariableParameters.class);
+        settings = new ParameterKey("settings", SettingsParameters.class);
+        typeAliases = new ParameterKey("typeAliases", TypeAliasesParameters.class);
         environment = new ParameterKey("environment", EnvironmentParameters.class, true, true);
         aspect = new ParameterKey("aspect", AspectParameters.class, true, true);
         bean = new ParameterKey("bean", BeanParameters.class, true, true);
@@ -59,7 +59,7 @@ public class AspectranParameters extends AbstractParameters {
         parameterKeys = new ParameterKey[] {
                 description,
                 settings,
-                typeAlias,
+                typeAliases,
                 environment,
                 aspect,
                 bean,
@@ -80,50 +80,66 @@ public class AspectranParameters extends AbstractParameters {
     }
 
     public AspectranParameters setTransletNamePattern(String namePattern) {
-        DefaultSettingsParameters settingsParameters = touchParameters(settings);
-        settingsParameters.putValue(DefaultSettingsParameters.transletNamePattern, namePattern);
+        SettingsParameters settingsParameters = touchParameters(settings);
+        Parameters parameters = settingsParameters.touchParameters(SettingsParameters.setting);
+        parameters.clearValue(DefaultSettingType.TRANSLET_NAME_PATTERN.toString());
+        parameters.putValue(DefaultSettingType.TRANSLET_NAME_PATTERN.toString(), namePattern);
         return this;
     }
 
     public AspectranParameters setTransletNamePrefix(String prefixPattern) {
-        DefaultSettingsParameters settingsParameters = touchParameters(settings);
-        settingsParameters.putValue(DefaultSettingsParameters.transletNamePrefix, prefixPattern);
+        SettingsParameters settingsParameters = touchParameters(settings);
+        Parameters parameters = settingsParameters.touchParameters(SettingsParameters.setting);
+        parameters.clearValue(DefaultSettingType.TRANSLET_NAME_PREFIX.toString());
+        parameters.putValue(DefaultSettingType.TRANSLET_NAME_PREFIX.toString(), prefixPattern);
         return this;
     }
 
     public AspectranParameters setTransletNameSuffix(String suffixPattern) {
-        DefaultSettingsParameters settingsParameters = touchParameters(settings);
-        settingsParameters.putValue(DefaultSettingsParameters.transletNameSuffix, suffixPattern);
+        SettingsParameters settingsParameters = touchParameters(settings);
+        Parameters parameters = settingsParameters.touchParameters(SettingsParameters.setting);
+        parameters.clearValue(DefaultSettingType.TRANSLET_NAME_SUFFIX.toString());
+        parameters.putValue(DefaultSettingType.TRANSLET_NAME_SUFFIX.toString(), suffixPattern);
         return this;
     }
 
     public AspectranParameters setBeanProxifier(String proxifierName) {
-        DefaultSettingsParameters settingsParameters = touchParameters(settings);
-        settingsParameters.putValue(DefaultSettingsParameters.beanProxifier, proxifierName);
+        SettingsParameters settingsParameters = touchParameters(settings);
+        Parameters parameters = settingsParameters.touchParameters(SettingsParameters.setting);
+        parameters.clearValue(DefaultSettingType.BEAN_PROXIFIER.toString());
+        parameters.putValue(DefaultSettingType.BEAN_PROXIFIER.toString(), proxifierName);
         return this;
     }
 
     public AspectranParameters setPointcutPatternVerifiable(boolean verifiable) {
-        DefaultSettingsParameters settingsParameters = touchParameters(settings);
-        settingsParameters.putValue(DefaultSettingsParameters.pointcutPatternVerifiable, verifiable);
+        SettingsParameters settingsParameters = touchParameters(settings);
+        Parameters parameters = settingsParameters.touchParameters(SettingsParameters.setting);
+        parameters.clearValue(DefaultSettingType.POINTCUT_PATTERN_VERIFIABLE.toString());
+        parameters.putValue(DefaultSettingType.POINTCUT_PATTERN_VERIFIABLE.toString(), verifiable);
         return this;
     }
 
     public AspectranParameters setDefaultTemplateEngineBean(String beanName) {
-        DefaultSettingsParameters settingsParameters = touchParameters(settings);
-        settingsParameters.putValue(DefaultSettingsParameters.defaultTemplateEngineBean, beanName);
+        SettingsParameters settingsParameters = touchParameters(settings);
+        Parameters parameters = settingsParameters.touchParameters(SettingsParameters.setting);
+        parameters.clearValue(DefaultSettingType.DEFAULT_TEMPLATE_ENGINE_BEAN.toString());
+        parameters.putValue(DefaultSettingType.DEFAULT_TEMPLATE_ENGINE_BEAN.toString(), beanName);
         return this;
     }
 
     public AspectranParameters setDefaultSchedulerBean(String beanName) {
-        DefaultSettingsParameters settingsParameters = touchParameters(settings);
-        settingsParameters.putValue(DefaultSettingsParameters.defaultSchedulerBean, beanName);
+        SettingsParameters settingsParameters = touchParameters(settings);
+        Parameters parameters = settingsParameters.touchParameters(SettingsParameters.setting);
+        parameters.clearValue(DefaultSettingType.DEFAULT_SCHEDULER_BEAN.toString());
+        parameters.putValue(DefaultSettingType.DEFAULT_SCHEDULER_BEAN.toString(), beanName);
         return this;
     }
 
     public AspectranParameters addTypeAlias(String alias, String type) {
-        Parameters typeAliasParameters = touchParameters(typeAlias);
-        typeAliasParameters.putValue(alias, type);
+        TypeAliasesParameters typeAliasesParameters = touchParameters(typeAliases);
+        Parameters parameters = typeAliasesParameters.touchParameters(TypeAliasesParameters.typeAlias);
+        parameters.clearValue(alias);
+        parameters.putValue(alias, type);
         return this;
     }
 

@@ -5,6 +5,7 @@
 
     <settings>
         <setting name="transletNamePattern" value="*.job"/>
+        <setting name="beanProxifier" value="cglib"/>
     </settings>
 
     <bean id="defaultScheduler1" class="com.aspectran.scheduler.support.QuartzSchedulerFactoryBean">

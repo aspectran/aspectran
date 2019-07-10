@@ -64,7 +64,6 @@ import com.aspectran.core.context.rule.params.ChooseWhenParameters;
 import com.aspectran.core.context.rule.params.ConstructorParameters;
 import com.aspectran.core.context.rule.params.ContentParameters;
 import com.aspectran.core.context.rule.params.ContentsParameters;
-import com.aspectran.core.context.rule.params.DefaultSettingsParameters;
 import com.aspectran.core.context.rule.params.DispatchParameters;
 import com.aspectran.core.context.rule.params.EnvironmentParameters;
 import com.aspectran.core.context.rule.params.ExceptionParameters;
@@ -81,10 +80,14 @@ import com.aspectran.core.context.rule.params.RootParameters;
 import com.aspectran.core.context.rule.params.ScheduleParameters;
 import com.aspectran.core.context.rule.params.ScheduledJobParameters;
 import com.aspectran.core.context.rule.params.SchedulerParameters;
+import com.aspectran.core.context.rule.params.SettingParameters;
+import com.aspectran.core.context.rule.params.SettingsParameters;
 import com.aspectran.core.context.rule.params.TemplateParameters;
 import com.aspectran.core.context.rule.params.TransformParameters;
 import com.aspectran.core.context.rule.params.TransletParameters;
 import com.aspectran.core.context.rule.params.TriggerParameters;
+import com.aspectran.core.context.rule.params.TypeAliasParameters;
+import com.aspectran.core.context.rule.params.TypeAliasesParameters;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.apon.Parameters;
@@ -123,14 +126,14 @@ public class ParametersToRules {
             assistant.getAssistantLocal().setDescription(description);
         }
 
-        DefaultSettingsParameters defaultSettingsParameters = aspectranParameters.getParameters(AspectranParameters.settings);
-        if (defaultSettingsParameters != null) {
-            asDefaultSettings(defaultSettingsParameters);
+        SettingsParameters settingsParameters = aspectranParameters.getParameters(AspectranParameters.settings);
+        if (settingsParameters != null) {
+            asDefaultSettings(settingsParameters);
         }
 
-        Parameters typeAliasParameters = aspectranParameters.getParameters(AspectranParameters.typeAlias);
-        if (typeAliasParameters != null) {
-            asTypeAliasRule(typeAliasParameters);
+        TypeAliasesParameters typeAliasesParameters = aspectranParameters.getParameters(AspectranParameters.typeAliases);
+        if (typeAliasesParameters != null) {
+            asTypeAliasesRule(typeAliasesParameters);
         }
 
         List<EnvironmentParameters> environmentParametersList = aspectranParameters.getParametersList(AspectranParameters.environment);
@@ -202,27 +205,43 @@ public class ParametersToRules {
         }
     }
 
-    private void asDefaultSettings(DefaultSettingsParameters defaultSettingsParameters) throws IllegalRuleException {
-        if (defaultSettingsParameters == null) {
-            return;
+    private void asDefaultSettings(SettingsParameters settingsParameters) throws IllegalRuleException {
+        if (settingsParameters != null) {
+            List<SettingParameters> settingParametersList = settingsParameters.getParametersList(SettingsParameters.setting);
+            if (settingParametersList != null) {
+                for (SettingParameters settingParameters : settingParametersList) {
+                    String name = settingParameters.getString(SettingParameters.name);
+                    String value = settingParameters.getString(SettingParameters.value);
+                    assistant.putSetting(name, value);
+                }
+                assistant.applySettings();
+            }
         }
-        for (String name : defaultSettingsParameters.getParameterNameSet()) {
-            assistant.putSetting(name, defaultSettingsParameters.getString(name));
+    }
+
+    private void asTypeAliasesRule(TypeAliasesParameters typeAliasesParameters) {
+        if (typeAliasesParameters != null) {
+            List<TypeAliasParameters> typeAliasParametersList = typeAliasesParameters.getParametersList(TypeAliasesParameters.typeAlias);
+            if (typeAliasParametersList != null) {
+                for (TypeAliasParameters typeAliasParameters : typeAliasParametersList) {
+                    String alias = typeAliasParameters.getString(TypeAliasParameters.alias);
+                    String type = typeAliasParameters.getString(TypeAliasParameters.type);
+                    assistant.addTypeAlias(alias, type);
+                }
+            }
         }
-        assistant.applySettings();
     }
 
     private void asEnvironmentRule(EnvironmentParameters environmentParameters) throws IllegalRuleException {
         if (environmentParameters != null) {
             String description = environmentParameters.getString(EnvironmentParameters.description);
             String profile = StringUtils.emptyToNull(environmentParameters.getString(EnvironmentParameters.profile));
-            List<ItemHolderParameters> propertyItemHolderParametersList = environmentParameters.getParametersList(EnvironmentParameters.properties);
 
             EnvironmentRule environmentRule = EnvironmentRule.newInstance(profile);
             if (description != null) {
                 environmentRule.setDescription(description);
             }
-
+            List<ItemHolderParameters> propertyItemHolderParametersList = environmentParameters.getParametersList(EnvironmentParameters.properties);
             if (propertyItemHolderParametersList != null) {
                 for (ItemHolderParameters itemHolderParameters : propertyItemHolderParametersList) {
                     ItemRuleMap propertyItemRuleMap = asItemRuleMap(itemHolderParameters);
@@ -231,14 +250,6 @@ public class ParametersToRules {
             }
 
             assistant.addEnvironmentRule(environmentRule);
-        }
-    }
-
-    private void asTypeAliasRule(Parameters parameters) {
-        if (parameters != null) {
-            for (String alias : parameters.getParameterNameSet()) {
-                assistant.addTypeAlias(alias, parameters.getString(alias));
-            }
         }
     }
 
@@ -347,9 +358,6 @@ public class ParametersToRules {
         String destroyMethod = StringUtils.emptyToNull(beanParameters.getString(BeanParameters.destroyMethod));
         Boolean lazyInit = beanParameters.getBoolean(BeanParameters.lazyInit);
         Boolean important = beanParameters.getBoolean(BeanParameters.important);
-        ConstructorParameters constructorParameters = beanParameters.getParameters(BeanParameters.constructor);
-        List<ItemHolderParameters> propertyItemHolderParametersList = beanParameters.getParametersList(BeanParameters.properties);
-        FilterParameters filterParameters = beanParameters.getParameters(BeanParameters.filter);
 
         BeanRule beanRule;
         if (className == null && scan == null && factoryBean != null) {
@@ -360,9 +368,11 @@ public class ParametersToRules {
         if (description != null) {
             beanRule.setDescription(description);
         }
+        FilterParameters filterParameters = beanParameters.getParameters(BeanParameters.filter);
         if (filterParameters != null) {
             beanRule.setFilterParameters(filterParameters);
         }
+        ConstructorParameters constructorParameters = beanParameters.getParameters(BeanParameters.constructor);
         if (constructorParameters != null) {
             List<ItemHolderParameters> argumentItemHolderParametersList = constructorParameters.getParametersList(ConstructorParameters.arguments);
             if (argumentItemHolderParametersList != null) {
@@ -373,6 +383,7 @@ public class ParametersToRules {
                 }
             }
         }
+        List<ItemHolderParameters> propertyItemHolderParametersList = beanParameters.getParametersList(BeanParameters.properties);
         if (propertyItemHolderParametersList != null) {
             for (ItemHolderParameters itemHolderParameters : propertyItemHolderParametersList) {
                 ItemRuleMap irm = asItemRuleMap(itemHolderParameters);
@@ -500,7 +511,7 @@ public class ParametersToRules {
         }
 
         List<ActionParameters> actionParametersList = transletParameters.getParametersList(TransletParameters.action);
-        if (actionParametersList != null) {
+        if (actionParametersList != null && !actionParametersList.isEmpty()) {
             ContentList contentList = new ContentList(false);
             ActionList actionList = new ActionList(false);
             contentList.addActionList(actionList);
@@ -535,16 +546,35 @@ public class ParametersToRules {
         }
 
         List<ChooseParameters> chooseParametersList = transletParameters.getParametersList(TransletParameters.choose);
-        if (chooseParametersList != null) {
+        if (chooseParametersList != null && !chooseParametersList.isEmpty()) {
             ChooseRuleMap chooseRuleMap = transletRule.touchChooseRuleMap();
             for (ChooseParameters chooseParameters : chooseParametersList) {
-                int caseNo = chooseParameters.getInt(ChooseParameters.caseNo);
-                ChooseRule chooseRule = chooseRuleMap.newChooseRule(caseNo);
+                ChooseRule chooseRule;
+                if (chooseParameters.hasValue(ChooseParameters.caseNo)) {
+                    int caseNo = chooseParameters.getInt(ChooseParameters.caseNo);
+                    chooseRule = chooseRuleMap.newChooseRule(caseNo);
+                } else {
+                    chooseRule = chooseRuleMap.newChooseRule();
+                }
+
                 List<ChooseWhenParameters> chooseWhenParametersList = chooseParameters.getParametersList(ChooseParameters.when);
                 for (ChooseWhenParameters chooseWhenParameters : chooseWhenParametersList) {
-                    caseNo = chooseWhenParameters.getInt(ChooseWhenParameters.caseNo);
-                    ChooseWhenRule chooseWhenRule = chooseRule.newChooseWhenRule(caseNo);
+                    ChooseWhenRule chooseWhenRule;
+                    if (chooseWhenParameters.hasValue(ChooseWhenParameters.caseNo)) {
+                        int caseNo = chooseWhenParameters.getInt(ChooseWhenParameters.caseNo);
+                        chooseWhenRule = chooseRule.newChooseWhenRule(caseNo);
+                    } else {
+                        chooseWhenRule = chooseRule.newChooseWhenRule();
+                    }
+
                     chooseWhenRule.setExpression(chooseWhenParameters.getString(ChooseWhenParameters.test));
+
+                    List<ActionParameters> whenActionParametersList = chooseWhenParameters.getParametersList(ChooseWhenParameters.action);
+                    if (whenActionParametersList != null && !whenActionParametersList.isEmpty()) {
+                        for (ActionParameters actionParameters : whenActionParametersList) {
+                            asActionRule(actionParameters, chooseWhenRule);
+                        }
+                    }
 
                     transformParameters = chooseWhenParameters.getParameters(ChooseWhenParameters.transform);
                     if (transformParameters != null) {
@@ -571,29 +601,35 @@ public class ParametersToRules {
                     }
                 }
 
-                ChooseWhenParameters caseOtherwiseParameters = chooseParameters.getParameters(ChooseParameters.otherwise);
-                if (caseOtherwiseParameters != null) {
-                    caseNo = caseOtherwiseParameters.getInt(ChooseWhenParameters.caseNo);
-                    ChooseWhenRule chooseWhenRule = chooseRule.newChooseWhenRule(caseNo);
-                    transformParameters = caseOtherwiseParameters.getParameters(ChooseWhenParameters.transform);
+                ChooseWhenParameters chooseOtherwiseParameters = chooseParameters.getParameters(ChooseParameters.otherwise);
+                if (chooseOtherwiseParameters != null) {
+                    ChooseWhenRule chooseWhenRule;
+                    if (chooseOtherwiseParameters.hasValue(ChooseWhenParameters.caseNo)) {
+                        int caseNo = chooseOtherwiseParameters.getInt(ChooseWhenParameters.caseNo);
+                        chooseWhenRule = chooseRule.newChooseWhenRule(caseNo);
+                    } else {
+                        chooseWhenRule = chooseRule.newChooseWhenRule();
+                    }
+
+                    transformParameters = chooseOtherwiseParameters.getParameters(ChooseWhenParameters.transform);
                     if (transformParameters != null) {
                         TransformRule transformRule = asTransformRule(transformParameters);
                         chooseWhenRule.applyResponseRule(transformRule);
                     }
 
-                    dispatchParameters = caseOtherwiseParameters.getParameters(ChooseWhenParameters.dispatch);
+                    dispatchParameters = chooseOtherwiseParameters.getParameters(ChooseWhenParameters.dispatch);
                     if (dispatchParameters != null) {
                         DispatchRule dispatchRule = asDispatchRule(dispatchParameters);
                         chooseWhenRule.applyResponseRule(dispatchRule);
                     }
 
-                    forwardParameters = caseOtherwiseParameters.getParameters(ChooseWhenParameters.forward);
+                    forwardParameters = chooseOtherwiseParameters.getParameters(ChooseWhenParameters.forward);
                     if (forwardParameters != null) {
                         ForwardRule forwardRule = asForwardRule(forwardParameters);
                         chooseWhenRule.applyResponseRule(forwardRule);
                     }
 
-                    redirectParameters = caseOtherwiseParameters.getParameters(ChooseWhenParameters.redirect);
+                    redirectParameters = chooseOtherwiseParameters.getParameters(ChooseWhenParameters.redirect);
                     if (redirectParameters != null) {
                         RedirectRule redirectRule = asRedirectRule(redirectParameters);
                         chooseWhenRule.applyResponseRule(redirectRule);
@@ -644,10 +680,9 @@ public class ParametersToRules {
     private RequestRule asRequestRule(RequestParameters requestParameters) throws IllegalRuleException {
         String allowedMethod = requestParameters.getString(RequestParameters.method);
         String encoding = requestParameters.getString(RequestParameters.encoding);
-        List<ItemHolderParameters> parameterItemHolderParametersList = requestParameters.getParametersList(RequestParameters.parameters);
-        List<ItemHolderParameters> attributeItemHolderParametersList = requestParameters.getParametersList(RequestParameters.attributes);
 
         RequestRule requestRule = RequestRule.newInstance(allowedMethod, encoding);
+        List<ItemHolderParameters> parameterItemHolderParametersList = requestParameters.getParametersList(RequestParameters.parameters);
         if (parameterItemHolderParametersList != null) {
             for (ItemHolderParameters itemHolderParameters : parameterItemHolderParametersList) {
                 ItemRuleMap irm = asItemRuleMap(itemHolderParameters);
@@ -655,6 +690,7 @@ public class ParametersToRules {
                 requestRule.setParameterItemRuleMap(irm);
             }
         }
+        List<ItemHolderParameters> attributeItemHolderParametersList = requestParameters.getParametersList(RequestParameters.attributes);
         if (attributeItemHolderParametersList != null) {
             for (ItemHolderParameters itemHolderParameters : attributeItemHolderParametersList) {
                 ItemRuleMap irm = asItemRuleMap(itemHolderParameters);
@@ -696,9 +732,9 @@ public class ParametersToRules {
 
     private ContentList asContentList(ContentsParameters contentsParameters) throws IllegalRuleException {
         String name = contentsParameters.getString(ContentsParameters.name);
-        List<ContentParameters> contentParametersList = contentsParameters.getParametersList(ContentsParameters.content);
 
         ContentList contentList = ContentList.newInstance(name);
+        List<ContentParameters> contentParametersList = contentsParameters.getParametersList(ContentsParameters.content);
         if (contentParametersList != null) {
             for (ContentParameters contentParameters : contentParametersList) {
                 ActionList actionList = asActionList(contentParameters);
@@ -710,9 +746,8 @@ public class ParametersToRules {
 
     private ActionList asActionList(ContentParameters contentParameters) throws IllegalRuleException {
         String name = contentParameters.getString(ContentParameters.name);
-        List<ActionParameters> actionParametersList = contentParameters.getParametersList(ContentParameters.action);
-
         ActionList actionList = ActionList.newInstance(name);
+        List<ActionParameters> actionParametersList = contentParameters.getParametersList(ContentParameters.action);
         if (actionParametersList != null) {
             for (ActionParameters actionParameters : actionParametersList) {
                 asActionRule(actionParameters, actionList);
@@ -830,13 +865,12 @@ public class ParametersToRules {
         String transformType = transformParameters.getString(TransformParameters.type);
         String contentType = transformParameters.getString(TransformParameters.contentType);
         String encoding = transformParameters.getString(TransformParameters.encoding);
-        List<ActionParameters> actionParametersList = transformParameters.getParametersList(TransformParameters.action);
         Boolean defaultResponse = transformParameters.getBoolean(TransformParameters.defaultResponse);
         Boolean pretty = transformParameters.getBoolean(TransformParameters.pretty);
-        TemplateParameters templateParameters = transformParameters.getParameters(TransformParameters.template);
-        CallParameters callParameters = transformParameters.getParameters(TransformParameters.call);
 
         TransformRule transformRule = TransformRule.newInstance(transformType, contentType, encoding, defaultResponse, pretty);
+
+        List<ActionParameters> actionParametersList = transformParameters.getParametersList(TransformParameters.action);
         if (actionParametersList != null && !actionParametersList.isEmpty()) {
             ActionList actionList = new ActionList(false);
             for (ActionParameters actionParameters : actionParametersList) {
@@ -844,12 +878,16 @@ public class ParametersToRules {
             }
             transformRule.setActionList(actionList);
         }
+
+        CallParameters callParameters = transformParameters.getParameters(TransformParameters.call);
         if (callParameters != null) {
             String templateId = StringUtils.emptyToNull(callParameters.getString(CallParameters.template));
             if (templateId !=null) {
                 TransformRule.updateTemplateId(transformRule, templateId);
             }
         }
+
+        TemplateParameters templateParameters = transformParameters.getParameters(TransformParameters.template);
         if (templateParameters != null) {
             String engine = templateParameters.getString(TemplateParameters.engine);
             String name = templateParameters.getString(TemplateParameters.name);
@@ -881,10 +919,10 @@ public class ParametersToRules {
         String dispatcherName = dispatchParameters.getString(DispatchParameters.dispatcher);
         String contentType = dispatchParameters.getString(DispatchParameters.contentType);
         String encoding = dispatchParameters.getString(DispatchParameters.encoding);
-        List<ActionParameters> actionParametersList = dispatchParameters.getParametersList(DispatchParameters.action);
         Boolean defaultResponse = dispatchParameters.getBoolean(DispatchParameters.defaultResponse);
 
         DispatchRule dispatchRule = DispatchRule.newInstance(name, dispatcherName, contentType, encoding, defaultResponse);
+        List<ActionParameters> actionParametersList = dispatchParameters.getParametersList(DispatchParameters.action);
         if (actionParametersList != null && !actionParametersList.isEmpty()) {
             ActionList actionList = new ActionList(false);
             for (ActionParameters actionParameters : actionParametersList) {
@@ -899,13 +937,12 @@ public class ParametersToRules {
         String contentType = forwardParameters.getString(ForwardParameters.contentType);
         String translet = StringUtils.emptyToNull(forwardParameters.getString(ForwardParameters.translet));
         String method = StringUtils.emptyToNull(forwardParameters.getString(ForwardParameters.method));
-        List<ItemHolderParameters> attributeItemHolderParametersList = forwardParameters.getParameters(ForwardParameters.attributes);
-        List<ActionParameters> actionParametersList = forwardParameters.getParametersList(ForwardParameters.action);
         Boolean defaultResponse = forwardParameters.getBoolean(ForwardParameters.defaultResponse);
 
         translet = assistant.applyTransletNamePattern(translet);
 
         ForwardRule forwardRule = ForwardRule.newInstance(contentType, translet, method, defaultResponse);
+        List<ItemHolderParameters> attributeItemHolderParametersList = forwardParameters.getParameters(ForwardParameters.attributes);
         if (attributeItemHolderParametersList != null) {
             for (ItemHolderParameters itemHolderParameters : attributeItemHolderParametersList) {
                 ItemRuleMap irm = asItemRuleMap(itemHolderParameters);
@@ -913,6 +950,7 @@ public class ParametersToRules {
                 forwardRule.setAttributeItemRuleMap(irm);
             }
         }
+        List<ActionParameters> actionParametersList = forwardParameters.getParametersList(ForwardParameters.action);
         if (actionParametersList != null && !actionParametersList.isEmpty()) {
             ActionList actionList = new ActionList(false);
             for (ActionParameters actionParameters : actionParametersList) {
@@ -934,14 +972,13 @@ public class ParametersToRules {
     private RedirectRule asRedirectRule(RedirectParameters redirectParameters) throws IllegalRuleException {
         String contentType = redirectParameters.getString(RedirectParameters.contentType);
         String path = redirectParameters.getString(RedirectParameters.path);
-        List<ItemHolderParameters> parameterItemHolderParametersList = redirectParameters.getParametersList(RedirectParameters.parameters);
         String encoding = redirectParameters.getString(RedirectParameters.encoding);
         Boolean excludeNullParameters = redirectParameters.getBoolean(RedirectParameters.excludeNullParameters);
         Boolean excludeEmptyParameters = redirectParameters.getBoolean(RedirectParameters.excludeEmptyParameters);
         Boolean defaultResponse = redirectParameters.getBoolean(RedirectParameters.defaultResponse);
-        List<ActionParameters> actionParametersList = redirectParameters.getParametersList(RedirectParameters.action);
 
         RedirectRule redirectRule = RedirectRule.newInstance(contentType, path, encoding, excludeNullParameters, excludeEmptyParameters, defaultResponse);
+        List<ItemHolderParameters> parameterItemHolderParametersList = redirectParameters.getParametersList(RedirectParameters.parameters);
         if (parameterItemHolderParametersList != null) {
             for (ItemHolderParameters itemHolderParameters : parameterItemHolderParametersList) {
                 ItemRuleMap irm = asItemRuleMap(itemHolderParameters);
@@ -949,6 +986,7 @@ public class ParametersToRules {
                 redirectRule.setParameterItemRuleMap(irm);
             }
         }
+        List<ActionParameters> actionParametersList = redirectParameters.getParametersList(RedirectParameters.action);
         if (actionParametersList != null && !actionParametersList.isEmpty()) {
             ActionList actionList = new ActionList(false);
             for (ActionParameters actionParameters : actionParametersList) {

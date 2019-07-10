@@ -67,7 +67,6 @@ import com.aspectran.core.context.rule.params.ChooseWhenParameters;
 import com.aspectran.core.context.rule.params.ConstructorParameters;
 import com.aspectran.core.context.rule.params.ContentParameters;
 import com.aspectran.core.context.rule.params.ContentsParameters;
-import com.aspectran.core.context.rule.params.DefaultSettingsParameters;
 import com.aspectran.core.context.rule.params.DispatchParameters;
 import com.aspectran.core.context.rule.params.EnvironmentParameters;
 import com.aspectran.core.context.rule.params.ExceptionParameters;
@@ -83,12 +82,16 @@ import com.aspectran.core.context.rule.params.RootParameters;
 import com.aspectran.core.context.rule.params.ScheduleParameters;
 import com.aspectran.core.context.rule.params.ScheduledJobParameters;
 import com.aspectran.core.context.rule.params.SchedulerParameters;
+import com.aspectran.core.context.rule.params.SettingParameters;
+import com.aspectran.core.context.rule.params.SettingsParameters;
 import com.aspectran.core.context.rule.params.TemplateParameters;
 import com.aspectran.core.context.rule.params.TransformParameters;
 import com.aspectran.core.context.rule.params.TransletParameters;
 import com.aspectran.core.context.rule.params.TriggerParameters;
+import com.aspectran.core.context.rule.params.TypeAliasesParameters;
 import com.aspectran.core.context.rule.type.ActionType;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
+import com.aspectran.core.context.rule.type.DefaultSettingType;
 import com.aspectran.core.context.rule.type.ItemType;
 import com.aspectran.core.context.rule.type.ItemValueType;
 import com.aspectran.core.context.rule.type.MethodType;
@@ -132,17 +135,51 @@ public class RulesToParameters {
 
         DefaultSettings defaultSettings = assistantLocal.getDefaultSettings();
         if (defaultSettings != null) {
-            DefaultSettingsParameters settingParameters = aspectranParameters.newParameters(AspectranParameters.settings);
+            SettingsParameters settingsParameters = aspectranParameters.newParameters(AspectranParameters.settings);
             if (defaultSettings.getTransletNamePattern() != null) {
-                settingParameters.putValue(DefaultSettingsParameters.transletNamePattern, defaultSettings.getTransletNamePattern());
-            } else {
-                settingParameters.putValueNonNull(DefaultSettingsParameters.transletNamePrefix, defaultSettings.getTransletNamePrefix());
-                settingParameters.putValueNonNull(DefaultSettingsParameters.transletNameSuffix, defaultSettings.getTransletNameSuffix());
+                SettingParameters settingParameters = settingsParameters.newParameters(SettingsParameters.setting);
+                settingParameters.putValue(SettingParameters.name, DefaultSettingType.TRANSLET_NAME_PATTERN.toString());
+                settingParameters.putValue(SettingParameters.value, defaultSettings.getTransletNamePattern());
             }
-            settingParameters.putValueNonNull(DefaultSettingsParameters.beanProxifier, defaultSettings.getBeanProxifier());
-            settingParameters.putValueNonNull(DefaultSettingsParameters.pointcutPatternVerifiable, defaultSettings.getPointcutPatternVerifiable());
-            settingParameters.putValueNonNull(DefaultSettingsParameters.defaultTemplateEngineBean, defaultSettings.getDefaultTemplateEngineBean());
-            settingParameters.putValueNonNull(DefaultSettingsParameters.defaultSchedulerBean, defaultSettings.getDefaultSchedulerBean());
+            if (defaultSettings.getTransletNamePrefix() != null) {
+                SettingParameters settingParameters = settingsParameters.newParameters(SettingsParameters.setting);
+                settingParameters.putValue(SettingParameters.name, DefaultSettingType.TRANSLET_NAME_PREFIX.toString());
+                settingParameters.putValue(SettingParameters.value, defaultSettings.getTransletNamePrefix());
+            }
+            if (defaultSettings.getTransletNameSuffix() != null) {
+                SettingParameters settingParameters = settingsParameters.newParameters(SettingsParameters.setting);
+                settingParameters.putValue(SettingParameters.name, DefaultSettingType.TRANSLET_NAME_SUFFIX.toString());
+                settingParameters.putValue(SettingParameters.value, defaultSettings.getTransletNameSuffix());
+            }
+            if (defaultSettings.getBeanProxifier() != null) {
+                SettingParameters settingParameters = settingsParameters.newParameters(SettingsParameters.setting);
+                settingParameters.putValue(SettingParameters.name, DefaultSettingType.BEAN_PROXIFIER.toString());
+                settingParameters.putValue(SettingParameters.value, defaultSettings.getBeanProxifier());
+            }
+            if (defaultSettings.getPointcutPatternVerifiable() != null) {
+                SettingParameters settingParameters = settingsParameters.newParameters(SettingsParameters.setting);
+                settingParameters.putValue(SettingParameters.name, DefaultSettingType.POINTCUT_PATTERN_VERIFIABLE.toString());
+                settingParameters.putValue(SettingParameters.value, defaultSettings.getPointcutPatternVerifiable());
+            }
+            if (defaultSettings.getDefaultTemplateEngineBean() != null) {
+                SettingParameters settingParameters = settingsParameters.newParameters(SettingsParameters.setting);
+                settingParameters.putValue(SettingParameters.name, DefaultSettingType.DEFAULT_TEMPLATE_ENGINE_BEAN.toString());
+                settingParameters.putValue(SettingParameters.value, defaultSettings.getDefaultTemplateEngineBean());
+            }
+            if (defaultSettings.getDefaultSchedulerBean() != null) {
+                SettingParameters settingParameters = settingsParameters.newParameters(SettingsParameters.setting);
+                settingParameters.putValue(SettingParameters.name, DefaultSettingType.DEFAULT_SCHEDULER_BEAN.toString());
+                settingParameters.putValue(SettingParameters.value, defaultSettings.getDefaultSchedulerBean());
+            }
+        }
+
+        Map<String, String> typeAliases = assistant.getTypeAliases();
+        if (!typeAliases.isEmpty()) {
+            TypeAliasesParameters typeAliasesParameters = aspectranParameters.newParameters(AspectranParameters.typeAliases);
+            Parameters parameters = typeAliasesParameters.newParameters(TypeAliasesParameters.typeAlias);
+            for (Map.Entry<String, String> entry : typeAliases.entrySet()) {
+                parameters.putValue(entry.getKey(), entry.getValue());
+            }
         }
 
         List<EnvironmentRule> environmentRules = assistant.getEnvironmentRules();
@@ -150,14 +187,6 @@ public class RulesToParameters {
             for (EnvironmentRule environmentRule : environmentRules) {
                 EnvironmentParameters p = toEnvironmentParameters(environmentRule);
                 aspectranParameters.putValue(AspectranParameters.environment, p);
-            }
-        }
-
-        Map<String, String> typeAliases = assistant.getTypeAliases();
-        if (!typeAliases.isEmpty()) {
-            Parameters typeAliasParameters = aspectranParameters.newParameters(AspectranParameters.typeAlias);
-            for (Map.Entry<String, String> entry : typeAliases.entrySet()) {
-                typeAliasParameters.putValue(entry.getKey(), entry.getValue());
             }
         }
 
@@ -888,13 +917,13 @@ public class RulesToParameters {
         return itemHolderParameters;
     }
 
-    private static void toItemHolderParameters(ItemRuleMap itemRuleMap, Parameters parameters, ParameterKey parameterDefinition) {
+    private static void toItemHolderParameters(ItemRuleMap itemRuleMap, Parameters parameters, ParameterKey parameterKey) {
         if (itemRuleMap.getCandidates() != null) {
             for (ItemRuleMap irm : itemRuleMap.getCandidates()) {
-                parameters.putValue(parameterDefinition, toItemHolderParameters(irm));
+                parameters.putValue(parameterKey, toItemHolderParameters(irm));
             }
         } else {
-            parameters.putValue(parameterDefinition, toItemHolderParameters(itemRuleMap));
+            parameters.putValue(parameterKey, toItemHolderParameters(itemRuleMap));
         }
     }
 

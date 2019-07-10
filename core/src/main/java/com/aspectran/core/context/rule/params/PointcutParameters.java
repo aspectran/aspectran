@@ -19,6 +19,8 @@ import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterKey;
 import com.aspectran.core.util.apon.ValueType;
 
+import java.io.IOException;
+
 public class PointcutParameters extends AbstractParameters {
 
     public static final ParameterKey type;
@@ -47,6 +49,11 @@ public class PointcutParameters extends AbstractParameters {
 
     public PointcutParameters() {
         super(parameterKeys);
+    }
+
+    public PointcutParameters(String text) throws IOException {
+        this();
+        readFrom(text);
     }
 
     public void addIncludePattern(String pattern) {

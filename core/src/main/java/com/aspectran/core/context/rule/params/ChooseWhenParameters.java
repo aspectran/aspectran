@@ -23,6 +23,7 @@ public class ChooseWhenParameters extends AbstractParameters {
 
     public static final ParameterKey caseNo;
     public static final ParameterKey test;
+    public static final ParameterKey action;
     public static final ParameterKey transform;
     public static final ParameterKey dispatch;
     public static final ParameterKey redirect;
@@ -33,6 +34,7 @@ public class ChooseWhenParameters extends AbstractParameters {
     static {
         caseNo = new ParameterKey("caseNo", ValueType.INT);
         test = new ParameterKey("test", ValueType.STRING);
+        action = new ParameterKey("action", ActionParameters.class, true, true);
         transform = new ParameterKey("transform", TransformParameters.class);
         dispatch = new ParameterKey("dispatch", DispatchParameters.class);
         redirect = new ParameterKey("redirect", RedirectParameters.class);
@@ -41,6 +43,7 @@ public class ChooseWhenParameters extends AbstractParameters {
         parameterKeys = new ParameterKey[] {
                 caseNo,
                 test,
+                action,
                 transform,
                 dispatch,
                 redirect,

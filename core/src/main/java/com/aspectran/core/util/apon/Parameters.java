@@ -31,7 +31,7 @@ public interface Parameters {
      * @return {@code true} if the parameter can be added after the parameters instance is created,
      *      otherwise {@code false}
      */
-    boolean isPredefined();
+    boolean isStructureFixed();
 
     /**
      * Specifies the identifier {@code Parameter}.
@@ -68,6 +68,8 @@ public interface Parameters {
 
     void updateContainer(Parameters parameters);
 
+    ParameterValue getParameterValue(String name);
+
     /**
      * Returns a map of the {@code ParameterValue}s.
      *
@@ -100,10 +102,10 @@ public interface Parameters {
     /**
      * Returns whether the specified parameter exists.
      *
-     * @param parameterDefinition the parameter definition
+     * @param parameterKey the parameter definition
      * @return {@code true} if the specified parameter exists; {@code false} otherwise
      */
-    boolean hasParameter(ParameterKey parameterDefinition);
+    boolean hasParameter(ParameterKey parameterKey);
 
     /**
      * Returns whether a value is assigned to the specified parameter.
@@ -118,10 +120,10 @@ public interface Parameters {
      * Returns whether a value is assigned to the specified parameter.
      * Even if a null is assigned, it is valid.
      *
-     * @param parameterDefinition the parameter definition
+     * @param parameterKey the parameter definition
      * @return {@code true} if a parameter is assigned a value; {@code false} otherwise
      */
-    boolean isAssigned(ParameterKey parameterDefinition);
+    boolean isAssigned(ParameterKey parameterKey);
 
     /**
      * Returns whether a non-null value is assigned to the specified parameter.
@@ -134,10 +136,10 @@ public interface Parameters {
     /**
      * Returns whether a non-null value is assigned to the specified parameter.
      *
-     * @param parameterDefinition the parameter definition
+     * @param parameterKey the parameter definition
      * @return {@code true} if a non-null value is assigned a value; {@code false} otherwise
      */
-    boolean hasValue(ParameterKey parameterDefinition);
+    boolean hasValue(ParameterKey parameterKey);
 
     /**
      * Returns the Parameter with the specified name.
@@ -150,11 +152,11 @@ public interface Parameters {
     /**
      * Returns the Parameter corresponding to the specified parameter definition.
      *
-     * @param parameterDefinition the parameter definition
+     * @param parameterKey the parameter definition
      * @return the Parameter corresponding to the specified parameter definition,
      *      or {@code null} if it does not exist
      */
-    Parameter getParameter(ParameterKey parameterDefinition);
+    Parameter getParameter(ParameterKey parameterKey);
 
     /**
      * Return the value for the specified parameter,
@@ -169,10 +171,10 @@ public interface Parameters {
      * Return the value for the specified parameter,
      * or {@code null} if the parameter does not exist.
      *
-     * @param parameterDefinition the parameter definition
+     * @param parameterKey the parameter definition
      * @return the value for the specified parameter, or {@code null}
      */
-    Object getValue(ParameterKey parameterDefinition);
+    Object getValue(ParameterKey parameterKey);
 
     void putAll(Parameters parameters);
 
@@ -187,10 +189,10 @@ public interface Parameters {
     /**
      * Put a value into the Parameter with the specified parameter definition.
      *
-     * @param parameterDefinition the parameter definition
+     * @param parameterKey the parameter definition
      * @param value the value of parameter
      */
-    void putValue(ParameterKey parameterDefinition, Object value);
+    void putValue(ParameterKey parameterKey, Object value);
 
     /**
      * Put a value of the parameter corresponding to the given name.
@@ -205,14 +207,14 @@ public interface Parameters {
      * Put a value of the parameter corresponding to the given parameter definition.
      * If the value is null, ignore it.
      *
-     * @param parameterDefinition the parameter definition
+     * @param parameterKey the parameter definition
      * @param value the value of parameter
      */
-    void putValueNonNull(ParameterKey parameterDefinition, Object value);
+    void putValueNonNull(ParameterKey parameterKey, Object value);
 
     void clearValue(String name);
 
-    void clearValue(ParameterKey parameterDefinition);
+    void clearValue(ParameterKey parameterKey);
 
     /**
      * Return the value for the specified parameter,
@@ -246,29 +248,29 @@ public interface Parameters {
      * Return the value for the specified parameter,
      * or {@code null} if the parameter does not exist.
      *
-     * @param parameterDefinition the parameter definition
+     * @param parameterKey the parameter definition
      * @return the value for the specified parameter, or {@code null}
      */
-    String getString(ParameterKey parameterDefinition);
+    String getString(ParameterKey parameterKey);
 
     /**
      * Return the value for the specified parameter,
      * or {@code defaultValue} if the parameter does not exist.
      *
-     * @param parameterDefinition the parameter definition
+     * @param parameterKey the parameter definition
      * @param defaultValue the default value to return if no value is found
      * @return the value for the specified parameter, or {@code defaultValue}
      */
-    String getString(ParameterKey parameterDefinition, String defaultValue);
+    String getString(ParameterKey parameterKey, String defaultValue);
 
     /**
      * Return the value for the specified parameter,
      * or {@code null} if the parameter does not exist.
      *
-     * @param parameterDefinition the parameter definition
+     * @param parameterKey the parameter definition
      * @return the value for the specified parameter, or {@code null}
      */
-    String[] getStringArray(ParameterKey parameterDefinition);
+    String[] getStringArray(ParameterKey parameterKey);
 
     /**
      * Return the value for the specified parameter,
@@ -283,10 +285,10 @@ public interface Parameters {
      * Return the value for the specified parameter,
      * or {@code null} if the parameter does not exist.
      *
-     * @param parameterDefinition the parameter definition
+     * @param parameterKey the parameter definition
      * @return the value for the specified parameter, or {@code null}
      */
-    List<String> getStringList(ParameterKey parameterDefinition);
+    List<String> getStringList(ParameterKey parameterKey);
 
     /**
      * Return the value for the specified parameter,
@@ -320,29 +322,29 @@ public interface Parameters {
      * Return the value for the specified parameter,
      * or {@code null} if the parameter does not exist.
      *
-     * @param parameterDefinition the parameter definition
+     * @param parameterKey the parameter definition
      * @return the value for the specified parameter, or {@code null}
      */
-    Integer getInt(ParameterKey parameterDefinition);
+    Integer getInt(ParameterKey parameterKey);
 
     /**
      * Return the value for the specified parameter,
      * or {@code defaultValue} if the parameter does not exist.
      *
-     * @param parameterDefinition the parameter definition
+     * @param parameterKey the parameter definition
      * @param defaultValue the default value to return if no value is found
      * @return the value for the specified parameter, or {@code defaultValue}
      */
-    int getInt(ParameterKey parameterDefinition, int defaultValue);
+    int getInt(ParameterKey parameterKey, int defaultValue);
 
     /**
      * Return the value for the specified parameter,
      * or {@code null} if the parameter does not exist.
      *
-     * @param parameterDefinition the parameter definition
+     * @param parameterKey the parameter definition
      * @return the value for the specified parameter, or {@code null}
      */
-    Integer[] getIntArray(ParameterKey parameterDefinition);
+    Integer[] getIntArray(ParameterKey parameterKey);
 
     /**
      * Return the value for the specified parameter,
@@ -357,10 +359,10 @@ public interface Parameters {
      * Return the value for the specified parameter,
      * or {@code null} if the parameter does not exist.
      *
-     * @param parameterDefinition the parameter definition
+     * @param parameterKey the parameter definition
      * @return the value for the specified parameter, or {@code null}
      */
-    List<Integer> getIntList(ParameterKey parameterDefinition);
+    List<Integer> getIntList(ParameterKey parameterKey);
 
     /**
      * Return the value for the specified parameter,
@@ -394,29 +396,29 @@ public interface Parameters {
      * Return the value for the specified parameter,
      * or {@code null} if the parameter does not exist.
      *
-     * @param parameterDefinition the parameter definition
+     * @param parameterKey the parameter definition
      * @return the value for the specified parameter, or {@code null}
      */
-    Long getLong(ParameterKey parameterDefinition);
+    Long getLong(ParameterKey parameterKey);
 
     /**
      * Return the value for the specified parameter,
      * or {@code defaultValue} if the parameter does not exist.
      *
-     * @param parameterDefinition the parameter definition
+     * @param parameterKey the parameter definition
      * @param defaultValue the default value to return if no value is found
      * @return the value for the specified parameter, or {@code defaultValue}
      */
-    long getLong(ParameterKey parameterDefinition, long defaultValue);
+    long getLong(ParameterKey parameterKey, long defaultValue);
 
     /**
      * Return the value for the specified parameter,
      * or {@code null} if the parameter does not exist.
      *
-     * @param parameterDefinition the parameter definition
+     * @param parameterKey the parameter definition
      * @return the value for the specified parameter, or {@code null}
      */
-    Long[] getLongArray(ParameterKey parameterDefinition);
+    Long[] getLongArray(ParameterKey parameterKey);
 
     /**
      * Return the value for the specified parameter,
@@ -431,10 +433,10 @@ public interface Parameters {
      * Return the value for the specified parameter,
      * or {@code null} if the parameter does not exist.
      *
-     * @param parameterDefinition the parameter definition
+     * @param parameterKey the parameter definition
      * @return the value for the specified parameter, or {@code null}
      */
-    List<Long> getLongList(ParameterKey parameterDefinition);
+    List<Long> getLongList(ParameterKey parameterKey);
 
     /**
      * Return the value for the specified parameter,
@@ -468,29 +470,29 @@ public interface Parameters {
      * Return the value for the specified parameter,
      * or {@code null} if the parameter does not exist.
      *
-     * @param parameterDefinition the parameter definition
+     * @param parameterKey the parameter definition
      * @return the value for the specified parameter, or {@code null}
      */
-    Float getFloat(ParameterKey parameterDefinition);
+    Float getFloat(ParameterKey parameterKey);
 
     /**
      * Return the value for the specified parameter,
      * or {@code defaultValue} if the parameter does not exist.
      *
-     * @param parameterDefinition the parameter definition
+     * @param parameterKey the parameter definition
      * @param defaultValue the default value to return if no value is found
      * @return the value for the specified parameter, or {@code defaultValue}
      */
-    float getFloat(ParameterKey parameterDefinition, float defaultValue);
+    float getFloat(ParameterKey parameterKey, float defaultValue);
 
     /**
      * Return the value for the specified parameter,
      * or {@code null} if the parameter does not exist.
      *
-     * @param parameterDefinition the parameter definition
+     * @param parameterKey the parameter definition
      * @return the value for the specified parameter, or {@code null}
      */
-    Float[] getFloatArray(ParameterKey parameterDefinition);
+    Float[] getFloatArray(ParameterKey parameterKey);
 
     /**
      * Return the value for the specified parameter,
@@ -505,10 +507,10 @@ public interface Parameters {
      * Return the value for the specified parameter,
      * or {@code null} if the parameter does not exist.
      *
-     * @param parameterDefinition the parameter definition
+     * @param parameterKey the parameter definition
      * @return the value for the specified parameter, or {@code null}
      */
-    List<Float> getFloatList(ParameterKey parameterDefinition);
+    List<Float> getFloatList(ParameterKey parameterKey);
 
     /**
      * Return the value for the specified parameter,
@@ -542,29 +544,29 @@ public interface Parameters {
      * Return the value for the specified parameter,
      * or {@code null} if the parameter does not exist.
      *
-     * @param parameterDefinition the parameter definition
+     * @param parameterKey the parameter definition
      * @return the value for the specified parameter, or {@code null}
      */
-    Double getDouble(ParameterKey parameterDefinition);
+    Double getDouble(ParameterKey parameterKey);
 
     /**
      * Return the value for the specified parameter,
      * or {@code defaultValue} if the parameter does not exist.
      *
-     * @param parameterDefinition the parameter definition
+     * @param parameterKey the parameter definition
      * @param defaultValue the default value to return if no value is found
      * @return the value for the specified parameter, or {@code defaultValue}
      */
-    double getDouble(ParameterKey parameterDefinition, double defaultValue);
+    double getDouble(ParameterKey parameterKey, double defaultValue);
 
     /**
      * Return the value for the specified parameter,
      * or {@code null} if the parameter does not exist.
      *
-     * @param parameterDefinition the parameter definition
+     * @param parameterKey the parameter definition
      * @return the value for the specified parameter, or {@code null}
      */
-    Double[] getDoubleArray(ParameterKey parameterDefinition);
+    Double[] getDoubleArray(ParameterKey parameterKey);
 
     /**
      * Return the value for the specified parameter,
@@ -579,10 +581,10 @@ public interface Parameters {
      * Return the value for the specified parameter,
      * or {@code null} if the parameter does not exist.
      *
-     * @param parameterDefinition the parameter definition
+     * @param parameterKey the parameter definition
      * @return the value for the specified parameter, or {@code null}
      */
-    List<Double> getDoubleList(ParameterKey parameterDefinition);
+    List<Double> getDoubleList(ParameterKey parameterKey);
 
     /**
      * Return the value for the specified parameter,
@@ -616,29 +618,29 @@ public interface Parameters {
      * Return the value for the specified parameter,
      * or {@code null} if the parameter does not exist.
      *
-     * @param parameterDefinition the parameter definition
+     * @param parameterKey the parameter definition
      * @return the value for the specified parameter, or {@code null}
      */
-    Boolean getBoolean(ParameterKey parameterDefinition);
+    Boolean getBoolean(ParameterKey parameterKey);
 
     /**
      * Return the value for the specified parameter,
      * or {@code defaultValue} if the parameter does not exist.
      *
-     * @param parameterDefinition the parameter definition
+     * @param parameterKey the parameter definition
      * @param defaultValue the default value to return if no value is found
      * @return the value for the specified parameter, or {@code defaultValue}
      */
-    boolean getBoolean(ParameterKey parameterDefinition, boolean defaultValue);
+    boolean getBoolean(ParameterKey parameterKey, boolean defaultValue);
 
     /**
      * Return the value for the specified parameter,
      * or {@code null} if the parameter does not exist.
      *
-     * @param parameterDefinition the parameter definition
+     * @param parameterKey the parameter definition
      * @return the value for the specified parameter, or {@code null}
      */
-    Boolean[] getBooleanArray(ParameterKey parameterDefinition);
+    Boolean[] getBooleanArray(ParameterKey parameterKey);
 
     /**
      * Return the value for the specified parameter,
@@ -653,10 +655,10 @@ public interface Parameters {
      * Return the value for the specified parameter,
      * or {@code null} if the parameter does not exist.
      *
-     * @param parameterDefinition the parameter definition
+     * @param parameterKey the parameter definition
      * @return the value for the specified parameter, or {@code null}
      */
-    List<Boolean> getBooleanList(ParameterKey parameterDefinition);
+    List<Boolean> getBooleanList(ParameterKey parameterKey);
 
     /**
      * Return the value for the specified parameter,
@@ -683,20 +685,20 @@ public interface Parameters {
      * or {@code null} if the parameter does not exist.
      *
      * @param <T> the type parameter
-     * @param parameterDefinition the parameter definition
+     * @param parameterKey the parameter definition
      * @return the value for the specified parameter, or {@code null}
      */
-    <T extends Parameters> T getParameters(ParameterKey parameterDefinition);
+    <T extends Parameters> T getParameters(ParameterKey parameterKey);
 
     /**
      * Return the value for the specified parameter,
      * or {@code null} if the parameter does not exist.
      *
      * @param <T> the type parameter
-     * @param parameterDefinition the parameter definition
+     * @param parameterKey the parameter definition
      * @return the value for the specified parameter, or {@code null}
      */
-    <T extends Parameters> T[] getParametersArray(ParameterKey parameterDefinition);
+    <T extends Parameters> T[] getParametersArray(ParameterKey parameterKey);
 
     /**
      * Return the value for the specified parameter,
@@ -713,10 +715,10 @@ public interface Parameters {
      * or {@code null} if the parameter does not exist.
      *
      * @param <T> the type parameter
-     * @param parameterDefinition the parameter definition
+     * @param parameterKey the parameter definition
      * @return the value for the specified parameter, or {@code null}
      */
-    <T extends Parameters> List<T> getParametersList(ParameterKey parameterDefinition);
+    <T extends Parameters> List<T> getParametersList(ParameterKey parameterKey);
 
     ParameterValue newParameterValue(String name, ValueType valueType);
 
@@ -724,11 +726,11 @@ public interface Parameters {
 
     <T extends Parameters> T newParameters(String name);
 
-    <T extends Parameters> T newParameters(ParameterKey parameterDefinition);
+    <T extends Parameters> T newParameters(ParameterKey parameterKey);
 
     <T extends Parameters> T touchParameters(String name);
 
-    <T extends Parameters> T touchParameters(ParameterKey parameterDefinition);
+    <T extends Parameters> T touchParameters(ParameterKey parameterKey);
 
     void readFrom(String text) throws IOException;
 
