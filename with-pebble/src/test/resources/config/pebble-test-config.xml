@@ -16,7 +16,7 @@
     <bean id="pebble" class="com.aspectran.pebble.PebbleTemplateEngine">
         <constructor>
             <arguments>
-                <item><call bean="pebbleConfigurationFactory"/></item>
+                <item>#{pebbleConfigurationFactory}</item>
             </arguments>
         </constructor>
     </bean>
@@ -37,7 +37,7 @@
 
     <translet name="translet-1">
         <transform type="transform/text">
-            <call template="template-1"/>
+            <template>~{template-1}</template>
         </transform>
     </translet>
 

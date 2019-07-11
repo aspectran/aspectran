@@ -38,6 +38,14 @@
         </transform>
     </translet>
 
+    <translet name="include">
+        <include translet="other-translet">
+            <attributes>
+                <item name="attr1">value1</item>
+            </attributes>
+        </include>
+    </translet>
+
     <bean id="*" scan="com.aspectran.core.sample.**.*Advice" mask="com.aspectran.core.sample.**.*"/>
     <bean id="*" scan="com.aspectran.core.sample.**.*Action" mask="com.aspectran.core.sample.**.*"/>
 

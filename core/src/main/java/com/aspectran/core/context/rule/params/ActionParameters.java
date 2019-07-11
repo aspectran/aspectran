@@ -30,7 +30,7 @@ public class ActionParameters extends AbstractParameters {
     public static final ParameterKey arguments;
     public static final ParameterKey properties;
 
-    public static final ParameterKey include;
+    public static final ParameterKey translet;
     public static final ParameterKey parameters;
     public static final ParameterKey attributes;
 
@@ -48,7 +48,7 @@ public class ActionParameters extends AbstractParameters {
         method = new ParameterKey("method", ValueType.STRING);
         arguments = new ParameterKey("arguments", ItemHolderParameters.class, true, true);
         properties = new ParameterKey("properties", ItemHolderParameters.class, true, true);
-        include = new ParameterKey("include", ValueType.STRING);
+        translet = new ParameterKey("translet", ValueType.STRING);
         parameters = new ParameterKey("parameters", ItemHolderParameters.class, true, true);
         attributes = new ParameterKey("attributes", ItemHolderParameters.class, true, true);
         profile = new ParameterKey("profile", ValueType.STRING);
@@ -61,8 +61,7 @@ public class ActionParameters extends AbstractParameters {
                 bean,
                 method,
                 arguments,
-                properties,
-                include,
+                properties, translet,
                 parameters,
                 attributes,
                 profile,

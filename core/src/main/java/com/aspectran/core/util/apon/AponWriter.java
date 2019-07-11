@@ -35,7 +35,7 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
 
     private final Writer out;
 
-    private boolean typeHintWritable;
+    private boolean valueTypeHintable;
 
     private String indentString;
 
@@ -79,10 +79,14 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
     /**
      * Sets whether write a type hint for values.
      *
-     * @param typeHintWritable true, write a type hint for values
+     * @param valueTypeHintable true, write a type hint for values
      */
-    public void setTypeHintWritable(boolean typeHintWritable) {
-        this.typeHintWritable = typeHintWritable;
+    public void setValueTypeHintable(boolean valueTypeHintable) {
+        this.valueTypeHintable = valueTypeHintable;
+    }
+
+    public void setSkipNull(boolean skipNull) {
+        this.skipNull = skipNull;
     }
 
     /**
@@ -94,17 +98,15 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
         this.indentString = indentString;
     }
 
-    public void setSkipNull(boolean skipNull) {
-        this.skipNull = skipNull;
+    @SuppressWarnings("unchecked")
+    public <T extends AponWriter> T valueTypeHintable(boolean valueTypeHintable) {
+        setValueTypeHintable(valueTypeHintable);
+        return (T)this;
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends AponWriter> T prettyPrint(boolean prettyPrint) {
-        if (prettyPrint) {
-            setIndentString(DEFAULT_INDENT_STRING);
-        } else {
-            setIndentString(null);
-        }
+    public <T extends AponWriter> T nullWritable(boolean nullWritable) {
+        setSkipNull(!nullWritable);
         return (T)this;
     }
 
@@ -115,8 +117,12 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends AponWriter> T nullWritable(boolean nullWritable) {
-        setSkipNull(!nullWritable);
+    public <T extends AponWriter> T prettyPrint(boolean prettyPrint) {
+        if (prettyPrint) {
+            setIndentString(DEFAULT_INDENT_STRING);
+        } else {
+            setIndentString(null);
+        }
         return (T)this;
     }
 
@@ -180,19 +186,19 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
                         endArray();
                     } else {
                         for (Parameters ps : list) {
-                            writeName(parameter);
-                            beginBlock();
                             if (ps != null) {
+                                writeName(parameter, ps.getActualName());
+                                beginBlock();
                                 write(ps);
+                                endBlock();
                             }
-                            endBlock();
                         }
                     }
                 }
             } else {
                 Parameters ps = parameter.getValueAsParameters();
                 if (!skipNull || ps != null) {
-                    writeName(parameter);
+                    writeName(parameter, (ps != null ? ps.getActualName() : null));
                     beginBlock();
                     if (ps != null) {
                         write(ps);
@@ -266,10 +272,10 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
                     }
                 }
             } else {
-                String s = parameter.getValueAsString();
-                if (!skipNull || s != null) {
+                String value = parameter.getValueAsString();
+                if (!skipNull || value != null) {
                     writeName(parameter);
-                    writeString(s);
+                    writeString(value);
                 }
             }
         } else if (parameter.getValueType() == ValueType.TEXT) {
@@ -375,9 +381,13 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
     }
 
     private void writeName(Parameter parameter) throws IOException {
+        writeName(parameter, null);
+    }
+
+    private void writeName(Parameter parameter, String actualName) throws IOException {
         indent();
-        out.write(parameter.getName());
-        if (typeHintWritable || parameter.isValueTypeHinted()) {
+        out.write(actualName != null ? actualName : parameter.getName());
+        if (valueTypeHintable || parameter.isValueTypeHinted()) {
             out.write(ROUND_BRACKET_OPEN);
             out.write(parameter.getValueType().toString());
             out.write(ROUND_BRACKET_CLOSE);

@@ -49,6 +49,8 @@ public interface Parameters {
 
     String getActualName();
 
+    void setActualName(String actualName);
+
     /**
      * Returns the qualified name.
      *

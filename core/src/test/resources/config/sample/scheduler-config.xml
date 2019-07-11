@@ -5,7 +5,7 @@
 
     <settings>
         <setting name="transletNamePattern" value="*.job"/>
-        <setting name="beanProxifier" value="cglib"/>
+        <setting name="beanProxifier" value="javassist"/>
     </settings>
 
     <bean id="defaultScheduler1" class="com.aspectran.scheduler.support.QuartzSchedulerFactoryBean">
@@ -81,6 +81,17 @@
     </translet>
 
     <translet name="job2">
+        <echo id="echo1">
+            <item name="e1" value="v1"/>
+            <item name="e2">v2</item>
+            <item name="e3" type="array">
+                <value>
+                    l1
+                    l2
+                </value>
+                <value>a2</value>
+            </item>
+        </echo>
         <action bean="scheduleAction" method="delay">
             <arguments>
                 <item valueType="long">2</item>

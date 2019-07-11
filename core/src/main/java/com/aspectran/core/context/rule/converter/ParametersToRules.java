@@ -811,10 +811,10 @@ public class ParametersToRules {
                 break;
             }
             case "include": {
-                String include = actionParameters.getString(ActionParameters.include);
-                include = assistant.applyTransletNamePattern(include);
+                String translet = actionParameters.getString(ActionParameters.translet);
+                translet = assistant.applyTransletNamePattern(translet);
                 String method = StringUtils.emptyToNull(actionParameters.getString(ActionParameters.method));
-                IncludeActionRule includeActionRule = IncludeActionRule.newInstance(id, include, method, hidden);
+                IncludeActionRule includeActionRule = IncludeActionRule.newInstance(id, translet, method, hidden);
                 List<ItemHolderParameters> parameterItemHolderParametersList = actionParameters.getParametersList(ActionParameters.parameters);
                 if (parameterItemHolderParametersList != null) {
                     for (ItemHolderParameters itemHolderParameters : parameterItemHolderParametersList) {
@@ -906,12 +906,12 @@ public class ParametersToRules {
             String file = templateParameters.getString(TemplateParameters.file);
             String resource = templateParameters.getString(TemplateParameters.resource);
             String url = templateParameters.getString(TemplateParameters.url);
-            String content = templateParameters.getString(TemplateParameters.content);
             String style = templateParameters.getString(TemplateParameters.style);
+            String content = templateParameters.getString(TemplateParameters.content);
             String encoding2 = templateParameters.getString(TemplateParameters.encoding);
             Boolean noCache = templateParameters.getBoolean(TemplateParameters.noCache);
 
-            TemplateRule templateRule = TemplateRule.newInstanceForBuiltin(engine, name, file, resource, url, content, style, encoding2, noCache);
+            TemplateRule templateRule = TemplateRule.newInstanceForBuiltin(engine, name, file, resource, url, style, content, encoding2, noCache);
             transformRule.setTemplateRule(templateRule);
             assistant.resolveBeanClass(templateRule.getTemplateTokens());
         }

@@ -14,7 +14,7 @@
     <bean id="freemarker" class="com.aspectran.freemarker.FreeMarkerTemplateEngine">
         <constructor>
             <arguments>
-                <item><call bean="freemarkerConfigurationFactory"/></item>
+                <item>#{freemarkerConfigurationFactory}</item>
             </arguments>
         </constructor>
     </bean>

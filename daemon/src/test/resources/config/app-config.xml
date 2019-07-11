@@ -31,9 +31,7 @@
         <advice>
             <before>
                 <echo>
-                    <item name="data">
-                        <call bean="currentActivityData"/>
-                    </item>
+                    <item name="data">#{currentActivityData}</item>
                 </echo>
             </before>
         </advice>

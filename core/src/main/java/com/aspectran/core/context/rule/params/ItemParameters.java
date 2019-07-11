@@ -35,7 +35,7 @@ public class ItemParameters extends AbstractParameters {
     static {
         type = new ParameterKey("type", ValueType.STRING);
         name = new ParameterKey("name", ValueType.STRING);
-        value = new ParameterKey("value", new String[] {"item"}, ValueType.STRING, true, true);
+        value = new ParameterKey("value", new String[] {"item"}, ValueType.VARIABLE);
         entry = new ParameterKey("entry", EntryParameters.class, true, true);
         valueType = new ParameterKey("valueType", ValueType.STRING);
         tokenize = new ParameterKey("tokenize", ValueType.BOOLEAN);

@@ -26,19 +26,15 @@
     <bean id="jetty.server" class="com.aspectran.jetty.JettyServer">
         <constructor>
             <arguments>
-                <item name="threadPool">
-                    <call bean="jetty.threadPool"/>
-                </item>
+                <item name="threadPool">#{jetty.threadPool}</item>
             </arguments>
         </constructor>
         <properties>
-            <item name="autoStart" value="%{jetty.startup}"/>
+            <item name="autoStart">%{jetty.startup}</item>
             <item name="connectors" type="array">
-                <value><call bean="jetty.connector"/></value>
+                <value>#{jetty.connector}</value>
             </item>
-            <item name="handler">
-                <call bean="jetty.mainHandler"/>
-            </item>
+            <item name="handler">#{jetty.mainHandler}</item>
         </properties>
     </bean>
 
@@ -52,25 +48,25 @@
     <bean id="jetty.connector" class="org.eclipse.jetty.server.ServerConnector" scope="prototype">
         <constructor>
             <arguments>
-                <item><call bean="jetty.server"/></item>
+                <item>#{jetty.server}</item>
             </arguments>
         </constructor>
         <properties>
-            <item name="port" value="%{jetty.server.port}"/>
+            <item name="port">%{jetty.server.port}</item>
         </properties>
     </bean>
 
     <bean id="jetty.mainHandler" class="org.eclipse.jetty.server.handler.HandlerCollection" scope="prototype">
         <properties profile="dev">
             <item name="handlers" type="array">
-                <value><call bean="jetty.gzipHandler"/></value>
-                <value><call bean="jetty.requestLog"/></value>
+                <value>#{jetty.gzipHandler}</value>
+                <value>#{jetty.requestLog}</value>
             </item>
         </properties>
         <properties profile="!dev">
             <item name="handlers" type="array">
-                <value><call bean="jetty.gzipHandler"/></value>
-                <value><call bean="jetty.requestLog"/></value>
+                <value>#{jetty.gzipHandler}</value>
+                <value>#{jetty.requestLog}</value>
             </item>
         </properties>
     </bean>
@@ -83,15 +79,15 @@
             <item name="syncFlush" valueType="boolean">%{jetty.gzip.syncFlush}</item>
             <item name="includedMethodList">%{jetty.gzip.includedMethodList}</item>
             <item name="excludedMethodList">%{jetty.gzip.excludedMethodList}</item>
-            <item name="handler"><call bean="jetty.handlerCollection"/></item>
+            <item name="handler">#{jetty.handlerCollection}</item>
         </properties>
     </bean>
 
     <bean id="jetty.handlerCollection" class="org.eclipse.jetty.server.handler.HandlerCollection" scope="prototype">
         <properties>
             <item name="handlers" type="array">
-                <value><call bean="jetty.contexts"/></value>
-                <value><call bean="jetty.defaultHandler"/></value>
+                <value>#{jetty.contexts}</value>
+                <value>#{jetty.defaultHandler}</value>
             </item>
         </properties>
     </bean>
@@ -99,24 +95,24 @@
     <bean id="jetty.contexts" class="org.eclipse.jetty.server.handler.ContextHandlerCollection" scope="prototype">
         <properties>
             <item name="handlers" type="array">
-                <value><call bean="jetty.contexts.root"/></value>
+                <value>#{jetty.contexts.root}</value>
             </item>
         </properties>
     </bean>
 
     <bean id="jetty.contexts.root" class="com.aspectran.jetty.JettyWebAppContext" scope="prototype">
         <properties>
-            <item name="contextPath" value="/"/>
-            <item name="war" value="#{basePath}/webapps/root"/>
-            <item name="persistTempDirectory" value="true" valueType="boolean"/>
-            <item name="defaultsDescriptor" value="#{basePath}/config/jetty/webdefault.xml"/>
-            <item name="sessionHandler"><call bean="jetty.sessionHandler"/></item>
+            <item name="contextPath">/</item>
+            <item name="war">#{basePath}/webapps/root</item>
+            <item name="persistTempDirectory" valueType="boolean">true</item>
+            <item name="defaultsDescriptor">#{basePath}/config/jetty/webdefault.xml</item>
+            <item name="sessionHandler">#{jetty.sessionHandler}</item>
         </properties>
     </bean>
 
     <bean id="jetty.sessionHandler" class="com.aspectran.jetty.JettySessionHandler" scope="prototype">
         <properties>
-            <item name="sessionDataStore"><call bean="jetty.sessionDataStoreFactory"/></item>
+            <item name="sessionDataStore">#{jetty.sessionDataStoreFactory}</item>
         </properties>
     </bean>
 

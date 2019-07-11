@@ -848,7 +848,7 @@ public class ItemRule {
             }
         } else {
             List<String> stringList = itemParameters.getStringList(ItemParameters.value);
-            if (!stringList.isEmpty()) {
+            if (stringList != null && !stringList.isEmpty()) {
                 itemRule.setValue(stringList.get(0));
             }
         }

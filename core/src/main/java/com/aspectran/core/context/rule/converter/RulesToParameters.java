@@ -831,7 +831,7 @@ public class RulesToParameters {
 
         ActionParameters actionParameters = new ActionParameters();
         actionParameters.putValueNonNull(ActionParameters.id, includeActionRule.getActionId());
-        actionParameters.putValueNonNull(ActionParameters.include, includeActionRule.getTransletName());
+        actionParameters.putValueNonNull(ActionParameters.translet, includeActionRule.getTransletName());
         actionParameters.putValueNonNull(ActionParameters.method, includeActionRule.getMethodType());
         actionParameters.putValueNonNull(ActionParameters.hidden, includeActionRule.getHidden());
 

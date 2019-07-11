@@ -85,23 +85,23 @@ public class Token implements BeanReferenceable, Replicable<Token> {
 
     private static final BeanRefererType BEAN_REFERER_TYPE = BeanRefererType.TOKEN;
 
-    static final char BEAN_SYMBOL = '#';
+    public static final char BEAN_SYMBOL = '#';
 
-    static final char TEMPLATE_SYMBOL = '~';
+    public static final char TEMPLATE_SYMBOL = '~';
 
     public static final char PARAMETER_SYMBOL = '$';
 
-    static final char ATTRIBUTE_SYMBOL = '@';
+    public static final char ATTRIBUTE_SYMBOL = '@';
 
-    static final char PROPERTY_SYMBOL = '%';
+    public static final char PROPERTY_SYMBOL = '%';
 
     public static final char BRACKET_OPEN = '{';
 
     public static final char BRACKET_CLOSE = '}';
 
-    static final char VALUE_SEPARATOR = ':';
+    public static final char VALUE_SEPARATOR = ':';
 
-    static final char GETTER_SEPARATOR = '^';
+    public static final char GETTER_SEPARATOR = '^';
 
     private final TokenType type;
 

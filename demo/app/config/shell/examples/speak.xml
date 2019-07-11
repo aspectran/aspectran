@@ -10,7 +10,7 @@
     <bean id="speaker" class="com.aspectran.demo.tts.TextToSpeechBean">
         <properties>
             <item name="properties" type="properties">
-                <entry name="freetts.voices">com.sun.speech.freetts.en.us.cmu_us_kal.KevinVoiceDirectory</value>
+                <entry name="freetts.voices">com.sun.speech.freetts.en.us.cmu_us_kal.KevinVoiceDirectory</entry>
             </item>
             <item name="voiceName">kevin16</item>
         </properties>

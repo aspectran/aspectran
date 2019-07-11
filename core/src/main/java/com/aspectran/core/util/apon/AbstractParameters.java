@@ -37,6 +37,8 @@ public abstract class AbstractParameters implements Parameters {
 
     private Parameter identifier;
 
+    private String actualName;
+
     protected AbstractParameters(ParameterKey[] parameterKeys) {
         Map<String, ParameterValue> valueMap = new LinkedHashMap<>();
         if (parameterKeys != null) {
@@ -79,7 +81,19 @@ public abstract class AbstractParameters implements Parameters {
 
     @Override
     public String getActualName() {
-        return (identifier != null ? identifier.getActualName() : null);
+        if (identifier == null) {
+            return actualName;
+        }
+        return (actualName != null ? actualName : identifier.getName());
+    }
+
+    @Override
+    public void setActualName(String actualName) {
+        if (actualName != null && !actualName.equals(identifier.getName())) {
+            this.actualName = actualName;
+        } else {
+            this.actualName = null;
+        }
     }
 
     @Override
@@ -601,8 +615,9 @@ public abstract class AbstractParameters implements Parameters {
                 p = newParameterValue(name, ValueType.PARAMETERS);
             }
         }
-        p.setActualName(name);
-        return p.newParameters(p);
+        T ps = p.newParameters(p);
+        ps.setActualName(name);
+        return ps;
     }
 
     @Override

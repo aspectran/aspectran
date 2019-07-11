@@ -43,7 +43,7 @@
     <bean id="freemarker" class="com.aspectran.freemarker.FreeMarkerTemplateEngine">
         <constructor>
             <arguments>
-                <item><call bean="freemarkerConfiguration"/></item>
+                <item>#{freemarkerConfiguration}</item>
             </arguments>
         </constructor>
     </bean>
@@ -108,7 +108,7 @@
             </attributes>
         </request>
         <transform type="transform/text">
-            <call template="select-template"/>
+            <template>~{select-template}</template>
         </transform>
     </translet>
 
@@ -120,7 +120,7 @@
             </attributes>
         </request>
         <transform type="transform/text">
-            <call template="update-template"/>
+            <template>~{update-template}</template>
         </transform>
     </translet>
 

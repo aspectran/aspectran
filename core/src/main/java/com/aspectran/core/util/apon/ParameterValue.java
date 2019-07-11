@@ -28,8 +28,6 @@ public class ParameterValue implements Parameter {
 
     private final String name;
 
-    private String actualName;
-
     private final ValueType originParameterValueType;
 
     private ValueType valueType;
@@ -114,20 +112,6 @@ public class ParameterValue implements Parameter {
     @Override
     public String getName() {
         return name;
-    }
-
-    @Override
-    public String getActualName() {
-        return (actualName != null ? actualName : name);
-    }
-
-    @Override
-    public void setActualName(String actualName) {
-        if (actualName != null && !actualName.equals(name)) {
-            this.actualName = actualName;
-        } else {
-            this.actualName = null;
-        }
     }
 
     @Override

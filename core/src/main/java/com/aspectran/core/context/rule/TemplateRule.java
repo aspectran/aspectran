@@ -59,9 +59,9 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceable
 
     private String encoding;
 
-    private String content;
-
     private TextStyleType contentStyle;
+
+    private String content;
 
     private Boolean noCache;
 
@@ -136,20 +136,20 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceable
         this.encoding = encoding;
     }
 
-    public String getContent() {
-        return content;
-    }
-
-    protected void setContent(String content) {
-        this.content = content;
-    }
-
     public TextStyleType getContentStyle() {
         return contentStyle;
     }
 
+    public String getContent() {
+        return content;
+    }
+
     protected void setContentStyle(TextStyleType contentStyle) {
         this.contentStyle = contentStyle;
+    }
+
+    protected void setContent(String content) {
+        this.content = content;
     }
 
     public Boolean getNoCache() {
@@ -407,7 +407,7 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceable
     }
 
     public static TemplateRule newInstanceForBuiltin(String engine, String name, String file,
-            String resource, String url, String content, String style, String encoding, Boolean noCache)
+            String resource, String url, String style, String content, String encoding, Boolean noCache)
             throws IllegalRuleException {
 
         TextStyleType textStyleType = TextStyleType.resolve(style);
