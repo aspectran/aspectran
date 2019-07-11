@@ -7,9 +7,9 @@
         <constructor>
             <arguments>
                 <item type="map">
-                    <value name="property1">This is a Property-1</value>
-                    <value name="property2">This is a Property-2</value>
-                    <value name="property3">This is a Property-3</value>
+                    <entry name="property1">This is a Property-1</entry>
+                    <entry name="property2">This is a Property-2</entry>
+                    <entry name="property3">This is a Property-3</entry>
                 </item>
             </arguments>
         </constructor>

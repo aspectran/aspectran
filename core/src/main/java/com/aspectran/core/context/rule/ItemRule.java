@@ -20,7 +20,7 @@ import com.aspectran.core.component.bean.annotation.Attribute;
 import com.aspectran.core.component.bean.annotation.Parameter;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.expr.token.TokenParser;
-import com.aspectran.core.context.rule.params.CallParameters;
+import com.aspectran.core.context.rule.params.EntryParameters;
 import com.aspectran.core.context.rule.params.ItemParameters;
 import com.aspectran.core.context.rule.type.ItemType;
 import com.aspectran.core.context.rule.type.ItemValueType;
@@ -825,58 +825,31 @@ public class ItemRule {
         Boolean tokenize = itemParameters.getBoolean(ItemParameters.tokenize);
         Boolean mandatory = itemParameters.getBoolean(ItemParameters.mandatory);
         Boolean secret = itemParameters.getBoolean(ItemParameters.secret);
-        Parameters callParameters = itemParameters.getParameters(ItemParameters.call);
 
         ItemRule itemRule = ItemRule.newInstance(type, name, valueType, tokenize, mandatory, secret);
 
-        if (callParameters != null) {
-            String bean = StringUtils.emptyToNull(callParameters.getString(CallParameters.bean));
-            String template = StringUtils.emptyToNull(callParameters.getString(CallParameters.template));
-            String parameter = StringUtils.emptyToNull(callParameters.getString(CallParameters.parameter));
-            String attribute = StringUtils.emptyToNull(callParameters.getString(CallParameters.attribute));
-            String property = StringUtils.emptyToNull(callParameters.getString(CallParameters.property));
-
-            Token t = ItemRule.makeReferenceToken(bean, template, parameter, attribute, property);
-            if (t != null) {
-                Token[] tokens = new Token[] { t };
-                if (itemRule.isListableType()) {
-                    itemRule.addValue(tokens);
-                } else {
-                    itemRule.setValue(tokens);
+        if (itemRule.isListableType()) {
+            List<String> stringList = itemParameters.getStringList(ItemParameters.value);
+            if (stringList != null) {
+                for (String value : stringList) {
+                    itemRule.addValue(value);
+                }
+            }
+        } else if (itemRule.isMappableType()) {
+            List<EntryParameters> parametersList = itemParameters.getParametersList(ItemParameters.entry);
+            if (parametersList != null) {
+                for (Parameters parameters : parametersList) {
+                    if (parameters != null) {
+                        String entryName = parameters.getString(EntryParameters.name);
+                        String entryValue = parameters.getString(EntryParameters.value);
+                        itemRule.putValue(entryName, entryValue);
+                    }
                 }
             }
         } else {
-            if (itemRule.isListableType()) {
-                List<String> stringList = itemParameters.getStringList(ItemParameters.value);
-                if (stringList != null) {
-                    for (String text : stringList) {
-                        itemRule.addValue(text);
-                    }
-                }
-            } else if (itemRule.isMappableType()) {
-                com.aspectran.core.util.apon.Parameter p = itemParameters.getParameter(ItemParameters.value);
-                if (p.isArray()) {
-                    List<Parameters> parametersList = itemParameters.getParametersList(ItemParameters.value);
-                    if (parametersList != null) {
-                        for (Parameters parameters : parametersList) {
-                            if (parameters != null) {
-                                String valueName = parameters.getString("name");
-                                String text = parameters.getString("value");
-                                itemRule.putValue(valueName, text);
-                            }
-                        }
-                    }
-                } else {
-                    Parameters parameters = itemParameters.getParameters(ItemParameters.value);
-                    if (parameters != null) {
-                        String valueName = parameters.getString("name");
-                        String text = parameters.getString("value");
-                        itemRule.putValue(valueName, text);
-                    }
-                }
-            } else {
-                String text = itemParameters.getString(ItemParameters.value);
-                itemRule.setValue(text);
+            List<String> stringList = itemParameters.getStringList(ItemParameters.value);
+            if (!stringList.isEmpty()) {
+                itemRule.setValue(stringList.get(0));
             }
         }
 

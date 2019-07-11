@@ -58,7 +58,6 @@ import com.aspectran.core.context.rule.params.AppendParameters;
 import com.aspectran.core.context.rule.params.AspectParameters;
 import com.aspectran.core.context.rule.params.AspectranParameters;
 import com.aspectran.core.context.rule.params.BeanParameters;
-import com.aspectran.core.context.rule.params.CallParameters;
 import com.aspectran.core.context.rule.params.ChooseParameters;
 import com.aspectran.core.context.rule.params.ChooseWhenParameters;
 import com.aspectran.core.context.rule.params.ConstructorParameters;
@@ -363,15 +362,18 @@ public class ParametersToRules {
 
         BeanRule beanRule;
         if (className == null && scan == null && factoryBean != null) {
-            beanRule = BeanRule.newOfferedFactoryBeanInstance(id, factoryBean, factoryMethod, initMethod, destroyMethod, scope, singleton, lazyInit, important);
+            beanRule = BeanRule.newOfferedFactoryBeanInstance(id, factoryBean, factoryMethod,
+                initMethod, destroyMethod, scope, singleton, lazyInit, important);
         } else {
-            beanRule = BeanRule.newInstance(id, className, scan, mask, initMethod, destroyMethod, factoryMethod, scope, singleton, lazyInit, important);
+            beanRule = BeanRule.newInstance(id, className, scan, mask, initMethod, destroyMethod,
+                factoryMethod, scope, singleton, lazyInit, important);
         }
         if (description != null) {
             beanRule.setDescription(description);
         }
         FilterParameters filterParameters = beanParameters.getParameters(BeanParameters.filter);
-        if (filterParameters != null) {
+        if (filterParameters != null && (filterParameters.hasValue(FilterParameters.filterClass) ||
+            filterParameters.hasValue(FilterParameters.exclude))) {
             beanRule.setFilterParameters(filterParameters);
         }
         ConstructorParameters constructorParameters = beanParameters.getParameters(BeanParameters.constructor);
@@ -423,9 +425,6 @@ public class ParametersToRules {
                 for (ScheduledJobParameters jobParameters : jobParametersList) {
                     String translet = StringUtils.emptyToNull(jobParameters.getString(ScheduledJobParameters.translet));
                     Boolean disabled = jobParameters.getBoolean(ScheduledJobParameters.disabled);
-
-                    translet = assistant.applyTransletNamePattern(translet);
-
                     ScheduledJobRule scheduledJobRule = ScheduledJobRule.newInstance(scheduleRule, translet, disabled);
                     scheduleRule.addScheduledJobRule(scheduledJobRule);
                 }
@@ -734,7 +733,6 @@ public class ParametersToRules {
 
     private ContentList asContentList(ContentsParameters contentsParameters) throws IllegalRuleException {
         String name = contentsParameters.getString(ContentsParameters.name);
-
         ContentList contentList = ContentList.newInstance(name);
         List<ContentParameters> contentParametersList = contentsParameters.getParametersList(ContentsParameters.content);
         if (contentParametersList != null) {
@@ -899,14 +897,6 @@ public class ParametersToRules {
                 asActionRule(actionParameters, actionList);
             }
             transformRule.setActionList(actionList);
-        }
-
-        CallParameters callParameters = transformParameters.getParameters(TransformParameters.call);
-        if (callParameters != null) {
-            String templateId = StringUtils.emptyToNull(callParameters.getString(CallParameters.template));
-            if (templateId !=null) {
-                TransformRule.updateTemplateId(transformRule, templateId);
-            }
         }
 
         TemplateParameters templateParameters = transformParameters.getParameters(TransformParameters.template);

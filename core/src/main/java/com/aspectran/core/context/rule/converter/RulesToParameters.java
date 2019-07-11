@@ -61,7 +61,6 @@ import com.aspectran.core.context.rule.params.AppendParameters;
 import com.aspectran.core.context.rule.params.AspectParameters;
 import com.aspectran.core.context.rule.params.AspectranParameters;
 import com.aspectran.core.context.rule.params.BeanParameters;
-import com.aspectran.core.context.rule.params.CallParameters;
 import com.aspectran.core.context.rule.params.ChooseParameters;
 import com.aspectran.core.context.rule.params.ChooseWhenParameters;
 import com.aspectran.core.context.rule.params.ConstructorParameters;
@@ -631,12 +630,6 @@ public class RulesToParameters {
         ActionList actionList = transformRule.getActionList();
         if (actionList != null) {
             applyActionParameters(actionList, transformParameters, TransformParameters.action);
-        }
-
-        if (transformRule.getTemplateId() != null) {
-            CallParameters callParameters = transformParameters.newParameters(TransformParameters.call);
-            callParameters.putValue(CallParameters.template, transformRule.getTemplateId());
-            transformParameters.putValue(TransformParameters.call, callParameters);
         }
         if (transformRule.getTemplateRule() != null) {
             transformParameters.putValue(TransformParameters.template, toTemplateParameters(transformRule.getTemplateRule()));

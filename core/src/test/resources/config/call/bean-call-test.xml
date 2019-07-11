@@ -14,9 +14,9 @@
     <bean id="totalBean" class="com.aspectran.core.sample.call.TotalBean">
         <properties>
             <item name="numerics" type="array">
-                <value><call bean="firstBean"/></value>
-                <value><call bean="secondBean"/></value>
-                <value><call bean="thirdBean"/></value>
+                <value>#{firstBean}</value>
+                <value>#{secondBean}</value>
+                <value>#{thirdBean}</value>
             </item>
         </properties>
     </bean>

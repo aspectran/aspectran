@@ -24,33 +24,33 @@ public class ItemParameters extends AbstractParameters {
     public static final ParameterKey type;
     public static final ParameterKey name;
     public static final ParameterKey value;
+    public static final ParameterKey entry;
     public static final ParameterKey valueType;
     public static final ParameterKey tokenize;
     public static final ParameterKey mandatory;
     public static final ParameterKey secret;
-    public static final ParameterKey call;
 
     private static final ParameterKey[] parameterKeys;
 
     static {
         type = new ParameterKey("type", ValueType.STRING);
         name = new ParameterKey("name", ValueType.STRING);
-        value = new ParameterKey("value", new String[] {"item"}, ValueType.VARIABLE);
+        value = new ParameterKey("value", new String[] {"item"}, ValueType.STRING, true, true);
+        entry = new ParameterKey("entry", EntryParameters.class, true, true);
         valueType = new ParameterKey("valueType", ValueType.STRING);
         tokenize = new ParameterKey("tokenize", ValueType.BOOLEAN);
         mandatory = new ParameterKey("mandatory", ValueType.BOOLEAN);
         secret = new ParameterKey("secret", ValueType.BOOLEAN);
-        call = new ParameterKey("call", CallParameters.class);
 
         parameterKeys = new ParameterKey[] {
                 type,
                 name,
                 value,
+                entry,
                 valueType,
                 tokenize,
                 mandatory,
-                secret,
-                call
+                secret
         };
     }
 

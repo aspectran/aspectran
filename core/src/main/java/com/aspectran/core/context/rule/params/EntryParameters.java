@@ -19,33 +19,27 @@ import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterKey;
 import com.aspectran.core.util.apon.ValueType;
 
-public class CallParameters extends AbstractParameters {
+public class EntryParameters extends AbstractParameters {
 
-    public static final ParameterKey bean;
-    public static final ParameterKey template;
-    public static final ParameterKey parameter;
-    public static final ParameterKey attribute;
-    public static final ParameterKey property;
+    public static final ParameterKey name;
+    public static final ParameterKey value;
+    public static final ParameterKey tokenize;
 
     private static final ParameterKey[] parameterKeys;
 
     static {
-        bean = new ParameterKey("bean", ValueType.STRING);
-        template = new ParameterKey("template", ValueType.STRING);
-        parameter = new ParameterKey("parameter", ValueType.STRING);
-        attribute = new ParameterKey("attribute", ValueType.STRING);
-        property = new ParameterKey("property", ValueType.STRING);
+        name = new ParameterKey("name", ValueType.STRING);
+        value = new ParameterKey("value", new String[] {"entry"}, ValueType.STRING);
+        tokenize = new ParameterKey("tokenize", ValueType.BOOLEAN);
 
         parameterKeys = new ParameterKey[] {
-                bean,
-                template,
-                parameter,
-                attribute,
-                property
+                name,
+                value,
+                tokenize
         };
     }
 
-    public CallParameters() {
+    public EntryParameters() {
         super(parameterKeys);
     }
 

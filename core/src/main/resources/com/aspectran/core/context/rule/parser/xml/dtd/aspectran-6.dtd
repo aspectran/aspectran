@@ -192,7 +192,7 @@
   encoding CDATA #IMPLIED
 >
 
-<!ELEMENT transform ((choose? | headers? | echo? | action? | include?)*, (template? | call?))>
+<!ELEMENT transform ((choose? | headers? | echo? | action? | include?)*, (template?))>
 <!ATTLIST transform
   type        CDATA #IMPLIED
   contentType CDATA #IMPLIED
@@ -248,7 +248,7 @@
   profile CDATA #IMPLIED
 >
 
-<!ELEMENT item (#PCDATA | value | call | null)*>
+<!ELEMENT item (#PCDATA | value | entry)*>
 <!ATTLIST item
   type         (single | array | list | map | set | properties) #IMPLIED
   name         CDATA #IMPLIED
@@ -259,22 +259,13 @@
   secret       (true | false) #IMPLIED
 >
 
-<!ELEMENT value (#PCDATA | call | null)*>
-<!ATTLIST value
+<!ELEMENT value (#PCDATA)>
+
+<!ELEMENT entry (#PCDATA)>
+<!ATTLIST entry
   name     CDATA #IMPLIED
   tokenize (true | false) #IMPLIED
 >
-
-<!ELEMENT call EMPTY>
-<!ATTLIST call
-  bean      CDATA #IMPLIED
-  template  CDATA #IMPLIED
-  parameter CDATA #IMPLIED
-  attribute CDATA #IMPLIED
-  property  CDATA #IMPLIED
->
-
-<!ELEMENT null EMPTY>
 
 <!ELEMENT template (#PCDATA)>
 <!ATTLIST template

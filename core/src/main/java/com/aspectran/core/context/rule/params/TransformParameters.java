@@ -28,7 +28,6 @@ public class TransformParameters extends AbstractParameters {
     public static final ParameterKey defaultResponse;
     public static final ParameterKey pretty;
     public static final ParameterKey template;
-    public static final ParameterKey call;
 
     private static final ParameterKey[] parameterKeys;
 
@@ -40,7 +39,6 @@ public class TransformParameters extends AbstractParameters {
         defaultResponse = new ParameterKey("default", ValueType.BOOLEAN);
         pretty = new ParameterKey("pretty", ValueType.BOOLEAN);
         template = new ParameterKey("template", TemplateParameters.class);
-        call = new ParameterKey("call", CallParameters.class);
 
         parameterKeys = new ParameterKey[] {
                 action,
@@ -49,8 +47,7 @@ public class TransformParameters extends AbstractParameters {
                 encoding,
                 defaultResponse,
                 pretty,
-                template,
-                call
+                template
         };
     }
 
