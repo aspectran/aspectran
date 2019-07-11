@@ -47,6 +47,8 @@ public interface Parameters {
      */
     Parameter getIdentifier();
 
+    String getActualName();
+
     /**
      * Returns the qualified name.
      *

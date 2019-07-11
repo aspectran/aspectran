@@ -30,7 +30,7 @@ public class ContentParameters extends AbstractParameters {
     static {
         name = new ParameterKey("name", ValueType.STRING);
         choose = new ParameterKey("choose", ChooseParameters.class, true, true);
-        action = new ParameterKey("action", ActionParameters.class, true, true);
+        action = new ParameterKey("action", new String[] {"echo", "headers", "include"}, ActionParameters.class, true, true);
 
         parameterKeys = new ParameterKey[] {
                 name,

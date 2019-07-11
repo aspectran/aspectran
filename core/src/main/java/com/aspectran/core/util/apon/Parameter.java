@@ -33,6 +33,10 @@ public interface Parameter {
      */
     String getName();
 
+    String getActualName();
+
+    void setActualName(String actualName);
+
     /**
      * Returns the fully qualified parameter name.
      *

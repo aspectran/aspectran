@@ -33,7 +33,7 @@ public class TransformParameters extends AbstractParameters {
     private static final ParameterKey[] parameterKeys;
 
     static {
-        action = new ParameterKey("action", ActionParameters.class, true, true);
+        action = new ParameterKey("action", new String[] {"echo", "headers", "include"}, ActionParameters.class, true, true);
         type = new ParameterKey("type", ValueType.STRING);
         contentType = new ParameterKey("contentType", ValueType.STRING);
         encoding = new ParameterKey("encoding", ValueType.STRING);

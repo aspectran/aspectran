@@ -78,6 +78,11 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
+    public String getActualName() {
+        return (identifier != null ? identifier.getActualName() : null);
+    }
+
+    @Override
     public String getQualifiedName() {
         if (identifier != null) {
             return identifier.getQualifiedName();
@@ -596,6 +601,7 @@ public abstract class AbstractParameters implements Parameters {
                 p = newParameterValue(name, ValueType.PARAMETERS);
             }
         }
+        p.setActualName(name);
         return p.newParameters(p);
     }
 

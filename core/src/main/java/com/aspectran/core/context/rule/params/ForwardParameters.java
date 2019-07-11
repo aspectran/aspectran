@@ -31,7 +31,7 @@ public class ForwardParameters extends AbstractParameters {
     private static final ParameterKey[] parameterKeys;
 
     static {
-        action = new ParameterKey("action", ActionParameters.class, true, true);
+        action = new ParameterKey("action", new String[] {"echo", "headers", "include"}, ActionParameters.class, true, true);
         contentType = new ParameterKey("contentType", ValueType.STRING);
         translet = new ParameterKey("translet", ValueType.STRING);
         method = new ParameterKey("method", ValueType.STRING);

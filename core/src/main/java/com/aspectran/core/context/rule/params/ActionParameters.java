@@ -27,8 +27,6 @@ public class ActionParameters extends AbstractParameters {
 
     public static final ParameterKey bean;
     public static final ParameterKey method;
-    public static final ParameterKey hidden;
-
     public static final ParameterKey arguments;
     public static final ParameterKey properties;
 
@@ -36,9 +34,10 @@ public class ActionParameters extends AbstractParameters {
     public static final ParameterKey parameters;
     public static final ParameterKey attributes;
 
-    public static final ParameterKey echo;
+    public static final ParameterKey profile;
+    public static final ParameterKey item;
 
-    public static final ParameterKey headers;
+    public static final ParameterKey hidden;
 
     private static final ParameterKey[] parameterKeys;
 
@@ -47,28 +46,28 @@ public class ActionParameters extends AbstractParameters {
         id = new ParameterKey("id", ValueType.STRING);
         bean = new ParameterKey("bean", ValueType.STRING);
         method = new ParameterKey("method", ValueType.STRING);
-        hidden = new ParameterKey("hidden", ValueType.BOOLEAN);
         arguments = new ParameterKey("arguments", ItemHolderParameters.class, true, true);
         properties = new ParameterKey("properties", ItemHolderParameters.class, true, true);
-        echo = new ParameterKey("echo", ItemHolderParameters.class);
-        headers = new ParameterKey("headers", ItemHolderParameters.class);
         include = new ParameterKey("include", ValueType.STRING);
         parameters = new ParameterKey("parameters", ItemHolderParameters.class, true, true);
         attributes = new ParameterKey("attributes", ItemHolderParameters.class, true, true);
+        profile = new ParameterKey("profile", ValueType.STRING);
+        item = new ParameterKey("item", ItemParameters.class, true, true);
+        hidden = new ParameterKey("hidden", ValueType.BOOLEAN);
 
         parameterKeys = new ParameterKey[] {
                 caseNo,
                 id,
                 bean,
                 method,
-                hidden,
                 arguments,
                 properties,
-                echo,
-                headers,
                 include,
                 parameters,
-                attributes
+                attributes,
+                profile,
+                item,
+                hidden
         };
     }
 

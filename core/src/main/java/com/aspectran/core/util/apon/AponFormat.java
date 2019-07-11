@@ -136,28 +136,28 @@ public class AponFormat {
                 }
 
                 switch (c) {
-                case ESCAPE_CHAR:
-                case DOUBLE_QUOTE_CHAR:
-                case SINGLE_QUOTE_CHAR:
-                    sb.append(c);
-                    break;
-                case 'b':
-                    sb.append('\b');
-                    break;
-                case 't':
-                    sb.append('\t');
-                    break;
-                case 'n':
-                    sb.append('\n');
-                    break;
-                case 'f':
-                    sb.append('\f');
-                    break;
-                case 'r':
-                    sb.append('\r');
-                    break;
-                default:
-                    return null;
+                    case ESCAPE_CHAR:
+                    case DOUBLE_QUOTE_CHAR:
+                    case SINGLE_QUOTE_CHAR:
+                        sb.append(c);
+                        break;
+                    case 'b':
+                        sb.append('\b');
+                        break;
+                    case 't':
+                        sb.append('\t');
+                        break;
+                    case 'n':
+                        sb.append('\n');
+                        break;
+                    case 'f':
+                        sb.append('\f');
+                        break;
+                    case 'r':
+                        sb.append('\r');
+                        break;
+                    default:
+                        return null;
                 }
             } else {
                 sb.append(c);

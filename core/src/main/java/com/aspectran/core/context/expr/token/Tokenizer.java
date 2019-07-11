@@ -77,71 +77,71 @@ public class Tokenizer {
             c = input.charAt(i);
 
             switch (status) {
-            case AT_TEXT:
-                textBuf.append(c);
-                if (Token.isTokenSymbol(c)) {
-                    symbol = c;
-                    status = AT_TOKEN_SYMBOL;
-                    // abc$ --> tokenStartOffset: 3
-                    tokenStartOffset = textBuf.length() - 1;
-                }
-                break;
-            case AT_TOKEN_SYMBOL:
-                textBuf.append(c);
-                if (c == Token.BRACKET_OPEN) {
-                    status = AT_TOKEN_NAME;
-                } else {
+                case AT_TEXT:
+                    textBuf.append(c);
                     if (Token.isTokenSymbol(c)) {
                         symbol = c;
                         status = AT_TOKEN_SYMBOL;
                         // abc$ --> tokenStartOffset: 3
                         tokenStartOffset = textBuf.length() - 1;
+                    }
+                    break;
+                case AT_TOKEN_SYMBOL:
+                    textBuf.append(c);
+                    if (c == Token.BRACKET_OPEN) {
+                        status = AT_TOKEN_NAME;
                     } else {
-                        status = AT_TEXT;
+                        if (Token.isTokenSymbol(c)) {
+                            symbol = c;
+                            status = AT_TOKEN_SYMBOL;
+                            // abc$ --> tokenStartOffset: 3
+                            tokenStartOffset = textBuf.length() - 1;
+                        } else {
+                            status = AT_TEXT;
+                        }
                     }
-                }
-                break;
-            case AT_TOKEN_NAME:
-            case AT_TOKEN_VALUE:
-                textBuf.append(c);
-                if (status == AT_TOKEN_NAME) {
-                    if (c == Token.VALUE_SEPARATOR) {
-                        status = AT_TOKEN_VALUE;
-                        break;
+                    break;
+                case AT_TOKEN_NAME:
+                case AT_TOKEN_VALUE:
+                    textBuf.append(c);
+                    if (status == AT_TOKEN_NAME) {
+                        if (c == Token.VALUE_SEPARATOR) {
+                            status = AT_TOKEN_VALUE;
+                            break;
+                        }
                     }
-                }
-                if (c == Token.BRACKET_CLOSE) {
-                    if (nameBuf.length() > 0 || valueBuf.length() > 0) {
-                        // save previous non-token string
-                        if (tokenStartOffset > 0) {
-                            String text = trimBuffer(textBuf, tokenStartOffset, textTrim);
-                            Token token = new Token(text);
+                    if (c == Token.BRACKET_CLOSE) {
+                        if (nameBuf.length() > 0 || valueBuf.length() > 0) {
+                            // save previous non-token string
+                            if (tokenStartOffset > 0) {
+                                String text = trimBuffer(textBuf, tokenStartOffset, textTrim);
+                                Token token = new Token(text);
+                                tokens.add(token);
+                            }
+
+                            // save token name and default value
+                            Token token = createToken(symbol, nameBuf, valueBuf);
                             tokens.add(token);
+
+                            status = AT_TEXT;
+                            textBuf.setLength(0);
+                            break;
                         }
 
-                        // save token name and default value
-                        Token token = createToken(symbol, nameBuf, valueBuf);
-                        tokens.add(token);
-
                         status = AT_TEXT;
-                        textBuf.setLength(0);
                         break;
                     }
-
-                    status = AT_TEXT;
+                    if (status == AT_TOKEN_NAME) {
+                        if (nameBuf.length() > MAX_TOKEN_NAME_LENGTH) {
+                            status = AT_TEXT;
+                            nameBuf.setLength(0);
+                        }
+                        nameBuf.append(c);
+                    } else {
+                        valueBuf.append(c);
+                    }
                     break;
                 }
-                if (status == AT_TOKEN_NAME) {
-                    if (nameBuf.length() > MAX_TOKEN_NAME_LENGTH) {
-                        status = AT_TEXT;
-                        nameBuf.setLength(0);
-                    }
-                    nameBuf.append(c);
-                } else {
-                    valueBuf.append(c);
-                }
-                break;
-            }
         }
 
         if (textBuf.length() > 0) {

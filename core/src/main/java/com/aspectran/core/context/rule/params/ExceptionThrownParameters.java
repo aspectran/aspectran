@@ -31,7 +31,7 @@ public class ExceptionThrownParameters extends AbstractParameters {
 
     static {
         type = new ParameterKey("type", ValueType.STRING, true);
-        action = new ParameterKey("action", ActionParameters.class);
+        action = new ParameterKey("action", new String[] {"echo", "headers"}, ActionParameters.class);
         transform = new ParameterKey("transform", TransformParameters.class, true, true);
         dispatch = new ParameterKey("dispatch", DispatchParameters.class, true, true);
         redirect = new ParameterKey("redirect", RedirectParameters.class, true, true);

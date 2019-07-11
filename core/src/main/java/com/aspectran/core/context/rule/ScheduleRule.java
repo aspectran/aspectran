@@ -164,7 +164,7 @@ public class ScheduleRule implements BeanReferenceable {
         TriggerExpressionParameters expressionParameters = triggerParameters.getParameters(TriggerParameters.expression);
         if (expressionParameters == null) {
             throw new IllegalRuleException("Be sure to specify trigger expression parameters " +
-                    Arrays.toString(TriggerExpressionParameters.parameterKeys));
+                    Arrays.toString(TriggerExpressionParameters.getParameterKeys()));
         }
         updateTriggerExpression(scheduleRule, expressionParameters);
     }

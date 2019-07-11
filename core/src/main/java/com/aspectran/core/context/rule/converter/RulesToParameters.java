@@ -866,7 +866,7 @@ public class RulesToParameters {
 
         ItemRuleMap attributeItemRuleMap = echoActionRule.getAttributeItemRuleMap();
         if (attributeItemRuleMap != null) {
-            actionParameters.putValue(ActionParameters.echo, toItemHolderParameters(attributeItemRuleMap));
+            applyItemRuleMap(actionParameters, attributeItemRuleMap);
         }
 
         return actionParameters;
@@ -883,10 +883,20 @@ public class RulesToParameters {
 
         ItemRuleMap headerItemRuleMap = headerActionRule.getHeaderItemRuleMap();
         if (headerItemRuleMap != null) {
-            actionParameters.putValue(ActionParameters.headers, toItemHolderParameters(headerItemRuleMap));
+            applyItemRuleMap(actionParameters, headerItemRuleMap);
         }
 
         return actionParameters;
+    }
+
+    private static void applyItemRuleMap(ActionParameters actionParameters, ItemRuleMap itemRuleMap) {
+        if (itemRuleMap == null) {
+            throw new IllegalArgumentException("itemRuleMap must not be null");
+        }
+        actionParameters.putValueNonNull(ActionParameters.profile, itemRuleMap.getProfile());
+        for (ItemRule itemRule : itemRuleMap.values()) {
+            actionParameters.putValue(ActionParameters.item, itemRule);
+        }
     }
 
     public static ItemHolderParameters toItemHolderParameters(ItemRuleMap itemRuleMap) {

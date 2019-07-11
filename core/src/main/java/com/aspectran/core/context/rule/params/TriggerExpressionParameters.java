@@ -20,6 +20,7 @@ import com.aspectran.core.util.apon.ParameterKey;
 import com.aspectran.core.util.apon.ValueType;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 public class TriggerExpressionParameters extends AbstractParameters {
 
@@ -95,6 +96,10 @@ public class TriggerExpressionParameters extends AbstractParameters {
 
     public String getExpression() {
         return getString(expression);
+    }
+
+    public static ParameterKey[] getParameterKeys() {
+        return Arrays.copyOf(parameterKeys, parameterKeys.length);
     }
 
 }
