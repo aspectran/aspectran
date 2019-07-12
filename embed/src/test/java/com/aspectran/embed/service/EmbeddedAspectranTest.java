@@ -27,6 +27,9 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
+import java.io.IOException;
+import java.util.Map;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
@@ -38,10 +41,10 @@ class EmbeddedAspectranTest {
     private EmbeddedAspectran aspectran;
 
     @BeforeAll
-    void ready() {
-        String rootFile = "classpath:config/embedded/embedded-aspectran-config.xml";
+    void ready() throws IOException {
+        //String rootFile = "classpath:config/embedded/embedded-aspectran-config.xml";
         AspectranConfig aspectranConfig = new AspectranConfig();
-        aspectranConfig.newContextConfig().setRootFile(rootFile);
+        aspectranConfig.newContextConfig().setRootFile("./target/test-classes/config/embedded/embedded-aspectran-config.xml");
         System.setProperty(ActivityContextBuilder.DEBUG_MODE_PROPERTY_NAME, "true");
         aspectran = EmbeddedAspectran.run(aspectranConfig);
     }
@@ -110,7 +113,7 @@ class EmbeddedAspectranTest {
         params.setParameter("mode", mode);
 
         Translet translet = aspectran.translate("chooseWhenTest", params);
-        ActivityDataMap dataMap = translet.getActivityDataMap();
+        Map dataMap = translet.getActivityDataMap();
         String response = translet.toString();
 
         System.out.println("Mode: " + mode);
