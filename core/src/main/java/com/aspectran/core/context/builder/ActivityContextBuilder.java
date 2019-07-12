@@ -29,6 +29,8 @@ import com.aspectran.core.service.ServiceController;
  */
 public interface ActivityContextBuilder {
 
+    String DEBUG_MODE_PROPERTY_NAME = "com.aspectran.core.context.builder.debugMode";
+
     ApplicationAdapter getApplicationAdapter();
 
     ContextConfig getContextConfig();

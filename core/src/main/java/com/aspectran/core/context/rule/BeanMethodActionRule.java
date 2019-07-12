@@ -274,7 +274,7 @@ public class BeanMethodActionRule implements BeanReferenceable {
     public static BeanMethodActionRule newInstance(String id, String beanId, String methodName, Boolean hidden)
             throws IllegalRuleException {
         if (methodName == null) {
-            throw new IllegalRuleException("The 'action' element requires an 'method' attribute");
+            throw new IllegalRuleException("The 'action' element requires a 'method' attribute");
         }
 
         BeanMethodActionRule beanMethodActionRule = new BeanMethodActionRule();

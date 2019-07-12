@@ -22,7 +22,6 @@ import com.aspectran.core.context.rule.params.AspectranParameters;
 import com.aspectran.core.context.rule.params.RootParameters;
 import com.aspectran.core.context.rule.type.AppendedFileFormatType;
 import com.aspectran.core.context.rule.type.AppenderType;
-import com.aspectran.core.util.apon.AponReader;
 import com.aspectran.core.util.apon.AponWriter;
 import com.aspectran.core.util.apon.XmlToApon;
 
@@ -32,6 +31,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.Reader;
 
 /**
  * The Class HybridRuleAppendHandler.
@@ -51,7 +51,6 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
     @Override
     public void handle(RuleAppender appender) throws Exception {
         setCurrentRuleAppender(appender);
-
         AssistantLocal assistantLocal = getContextRuleAssistant().backupAssistantLocal();
 
         if (appender != null) {
@@ -60,8 +59,10 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
                 RootParameters rootParameters = new RootParameters(aspectranParameters);
                 getRuleConverter().asRules(rootParameters);
             } else if (appender.getAppendedFileFormatType() == AppendedFileFormatType.APON) {
-                RootParameters rootParameters = AponReader.parse(appender.getReader(encoding), new RootParameters());
-                getRuleConverter().asRules(rootParameters);
+                try (Reader reader = appender.getReader(encoding)) {
+                    RootParameters rootParameters = new RootParameters(reader);
+                    getRuleConverter().asRules(rootParameters);
+                }
             } else {
                 /* TODO Using APON to load XML configuration */
                 RootParameters rootParameters;
@@ -72,7 +73,9 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
                         saveAsAponFile(fileRuleAppender, rootParameters);
                     }
                 } else {
-                    rootParameters = XmlToApon.from(appender.getReader(encoding), RootParameters.class);
+                    try (Reader reader = appender.getReader(encoding)) {
+                        rootParameters = XmlToApon.from(reader, RootParameters.class);
+                    }
                 }
                 getRuleConverter().asRules(rootParameters);
             }

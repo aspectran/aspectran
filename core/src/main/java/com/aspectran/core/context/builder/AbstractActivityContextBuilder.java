@@ -54,6 +54,7 @@ import com.aspectran.core.context.rule.type.DefaultSettingType;
 import com.aspectran.core.context.rule.type.JoinpointTargetType;
 import com.aspectran.core.service.ServiceController;
 import com.aspectran.core.util.StringUtils;
+import com.aspectran.core.util.SystemUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
@@ -104,6 +105,7 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
             throw new IllegalArgumentException("applicationAdapter must not be null");
         }
         this.applicationAdapter = applicationAdapter;
+        this.debugMode = Boolean.parseBoolean(SystemUtils.getProperty(DEBUG_MODE_PROPERTY_NAME));
     }
 
     @Override

@@ -49,7 +49,7 @@ public class NodeletParser {
 
     private static final Log log = LogFactory.getLog(NodeletParser.class);
 
-    private static final Map<String, String> EMPTY_ATTRIBUTES = Collections.unmodifiableMap(new HashMap<>(0));
+    private static final Map<String, String> EMPTY_ATTRIBUTES = Collections.emptyMap();
 
     private final Map<String, Nodelet> nodeletMap = new HashMap<>(2048);
 
@@ -205,16 +205,12 @@ public class NodeletParser {
         try {
             SAXParserFactory factory = SAXParserFactory.newInstance();
             factory.setValidating(validating);
-
             SAXParser parser = factory.newSAXParser();
-
             XMLReader reader = parser.getXMLReader();
             reader.setEntityResolver(entityResolver);
             reader.setContentHandler(new DefaultHandler() {
                 private Locator locator;
-
                 private Path path = new Path(getNodeTracker());
-
                 private StringBuilder textBuffer = new StringBuilder();
 
                 @Override

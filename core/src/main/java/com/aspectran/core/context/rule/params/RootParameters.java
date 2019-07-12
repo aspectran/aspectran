@@ -16,7 +16,11 @@
 package com.aspectran.core.context.rule.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
+import com.aspectran.core.util.apon.AponReader;
 import com.aspectran.core.util.apon.ParameterKey;
+
+import java.io.IOException;
+import java.io.Reader;
 
 public class RootParameters extends AbstractParameters {
 
@@ -39,6 +43,11 @@ public class RootParameters extends AbstractParameters {
     public RootParameters(AspectranParameters aspectranParameters) {
         this();
         putValue(aspectran, aspectranParameters);
+    }
+
+    public RootParameters(Reader reader) throws IOException {
+        this();
+        AponReader.parse(reader, this);
     }
 
 }
