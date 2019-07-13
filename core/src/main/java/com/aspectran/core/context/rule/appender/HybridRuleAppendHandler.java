@@ -19,6 +19,7 @@ import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.context.rule.assistant.AssistantLocal;
 import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;
 import com.aspectran.core.context.rule.converter.ParametersToRules;
+import com.aspectran.core.context.rule.converter.RulesToParameters;
 import com.aspectran.core.context.rule.params.AspectranParameters;
 import com.aspectran.core.context.rule.params.RootParameters;
 import com.aspectran.core.context.rule.parser.xml.AspectranNodeParser;
@@ -82,6 +83,11 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
             } else {
                 // Using Nodelet to load XML configuration: It is much faster than APON
                 getAspectranNodeParser().parse(appender);
+                if (isDebugMode() && appender.getAppenderType() == AppenderType.FILE) {
+                    FileRuleAppender fileRuleAppender = (FileRuleAppender)appender;
+                    RootParameters rootParameters = RulesToParameters.toRootParameters(getContextRuleAssistant());
+                    saveAsAponFile(fileRuleAppender, rootParameters);
+                }
             }
         }
 

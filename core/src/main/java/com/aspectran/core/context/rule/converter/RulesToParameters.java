@@ -66,6 +66,7 @@ import com.aspectran.core.context.rule.params.ConstructorParameters;
 import com.aspectran.core.context.rule.params.ContentParameters;
 import com.aspectran.core.context.rule.params.ContentsParameters;
 import com.aspectran.core.context.rule.params.DispatchParameters;
+import com.aspectran.core.context.rule.params.EntryParameters;
 import com.aspectran.core.context.rule.params.EnvironmentParameters;
 import com.aspectran.core.context.rule.params.ExceptionParameters;
 import com.aspectran.core.context.rule.params.ExceptionThrownParameters;
@@ -113,19 +114,16 @@ import java.util.Map;
  */
 public class RulesToParameters {
 
-    private final ContextRuleAssistant assistant;
-
-    public RulesToParameters(ContextRuleAssistant assistant) {
-        this.assistant = assistant;
+    private RulesToParameters() {
     }
 
-    public RootParameters toRootParameters() {
+    public static RootParameters toRootParameters(ContextRuleAssistant assistant) {
         RootParameters rootParameters = new RootParameters();
-        rootParameters.putValue(RootParameters.aspectran, toAspectranParameters());
+        rootParameters.putValue(RootParameters.aspectran, toAspectranParameters(assistant));
         return rootParameters;
     }
 
-    private AspectranParameters toAspectranParameters() {
+    private static AspectranParameters toAspectranParameters(ContextRuleAssistant assistant) {
         AspectranParameters aspectranParameters = new AspectranParameters();
 
         AssistantLocal assistantLocal = assistant.getAssistantLocal();
@@ -209,7 +207,7 @@ public class RulesToParameters {
         return aspectranParameters;
     }
 
-    private AppendParameters toAppendParameters(RuleAppender appender) {
+    private static AppendParameters toAppendParameters(RuleAppender appender) {
         AppendRule appendRule = appender.getAppendRule();
         if (appendRule == null) {
             throw new IllegalArgumentException("Every appender except Root Appender requires an AppendRule");
@@ -242,8 +240,7 @@ public class RulesToParameters {
         environmentParameters.putValueNonNull(EnvironmentParameters.profile, environmentRule.getProfile());
         if (environmentRule.getPropertyItemRuleMapList() != null) {
             for (ItemRuleMap propertyItemRuleMap : environmentRule.getPropertyItemRuleMapList()) {
-                ItemHolderParameters itemHolderParameters = toItemHolderParameters(propertyItemRuleMap);
-                environmentParameters.putValue(EnvironmentParameters.properties, itemHolderParameters);
+                toItemHolderParameters(propertyItemRuleMap, environmentParameters, EnvironmentParameters.properties);
             }
         }
         return environmentParameters;
@@ -274,9 +271,9 @@ public class RulesToParameters {
         if (aspectRule.getSettingsAdviceRule() != null) {
             Map<String, Object> settings = aspectRule.getSettingsAdviceRule().getSettings();
             if (settings != null) {
-                Parameters settingsParameters = aspectParameters.newParameters(AspectParameters.settings);
+                SettingsParameters settingsParameters = aspectParameters.newParameters(AspectParameters.settings);
                 for (Map.Entry<String, Object> entry : settings.entrySet()) {
-                    settingsParameters.putValue(entry.getKey(), entry.getValue());
+                    settingsParameters.putSetting(entry.getKey(), entry.getValue());
                 }
             }
         }
@@ -764,7 +761,7 @@ public class RulesToParameters {
 
         ItemRuleMap headerItemRuleMap = headerActionRule.getHeaderItemRuleMap();
         if (headerItemRuleMap != null) {
-            toItemRuleMap(actionParameters, headerItemRuleMap);
+            toItemRuleMap(headerItemRuleMap, actionParameters);
         }
 
         return actionParameters;
@@ -781,7 +778,7 @@ public class RulesToParameters {
 
         ItemRuleMap attributeItemRuleMap = echoActionRule.getAttributeItemRuleMap();
         if (attributeItemRuleMap != null) {
-            toItemRuleMap(actionParameters, attributeItemRuleMap);
+            toItemRuleMap(attributeItemRuleMap, actionParameters);
         }
 
         return actionParameters;
@@ -887,13 +884,13 @@ public class RulesToParameters {
         return actionParameters;
     }
 
-    private static void toItemRuleMap(ActionParameters actionParameters, ItemRuleMap itemRuleMap) {
+    private static void toItemRuleMap(ItemRuleMap itemRuleMap, ActionParameters actionParameters) {
         if (itemRuleMap == null) {
             throw new IllegalArgumentException("itemRuleMap must not be null");
         }
         actionParameters.putValueNonNull(ActionParameters.profile, itemRuleMap.getProfile());
         for (ItemRule itemRule : itemRuleMap.values()) {
-            actionParameters.putValue(ActionParameters.item, itemRule);
+            actionParameters.putValue(ActionParameters.item, toItemParameters(itemRule));
         }
     }
 
@@ -958,10 +955,11 @@ public class RulesToParameters {
         } else if (itemRule.isMappableType()) {
             Map<String, String> valueMap = itemRule.getValueMap();
             if (valueMap != null) {
-                Parameters p = itemParameters.newParameters(ItemParameters.value);
                 for (Map.Entry<String, String> entry : valueMap.entrySet()) {
+                    EntryParameters p = itemParameters.newParameters(ItemParameters.entry);
                     Object o = determineItemValue(itemRule.getValueType(), entry.getValue());
-                    p.putValue(entry.getKey(), o);
+                    p.putValue(EntryParameters.name, entry.getKey());
+                    p.putValue(EntryParameters.value, o);
                 }
             }
         }
