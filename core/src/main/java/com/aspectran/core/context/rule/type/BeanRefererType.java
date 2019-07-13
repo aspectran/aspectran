@@ -24,7 +24,7 @@ public enum BeanRefererType {
 
     ASPECT_RULE("aspectRule"),
     AUTOWIRE_RULE("autowireRule"),
-    BEAN_METHOD_ACTION_RULE("beanMethodActionRule"),
+    BEAN_METHOD_ACTION_RULE("invokeActionRule"),
     BEAN_RULE("beanRule"),
     SCHEDULE_RULE("scheduleRule"),
     TEMPLATE_RULE("templateRule"),

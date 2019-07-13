@@ -26,7 +26,7 @@ import java.lang.reflect.Method;
  * 
  * @since 2.0.0
  */
-public class AnnotatedMethodActionRule {
+public class AnnotatedActionRule {
 
     private String actionId;
 

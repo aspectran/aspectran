@@ -305,7 +305,7 @@ public abstract class AdviceActivity extends AbstractActivity {
             AspectAdviceRule oldAspectAdviceRule = currentAspectAdviceRule;
             currentAspectAdviceRule = aspectAdviceRule;
             try {
-                if (action.getActionType() == ActionType.BEAN_METHOD) {
+                if (action.getActionType() == ActionType.ACTION) {
                     // If Aspect Advice Bean ID is specified
                     if (aspectAdviceRule.getAdviceBeanId() != null) {
                         Object adviceBean = getAspectAdviceBean(aspectAdviceRule.getAspectId());
@@ -318,7 +318,7 @@ public abstract class AdviceActivity extends AbstractActivity {
                             putAspectAdviceBean(aspectAdviceRule.getAspectId(), adviceBean);
                         }
                     }
-                } else if (action.getActionType() == ActionType.ANNOTATED_METHOD) {
+                } else if (action.getActionType() == ActionType.ACTION_ANNOTATED) {
                     // If Annotated Aspect
                     Object adviceBean = getAspectAdviceBean(aspectAdviceRule.getAspectId());
                     if (adviceBean == null) {

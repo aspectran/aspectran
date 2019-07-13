@@ -15,17 +15,15 @@
  */
 package com.aspectran.core.context.rule;
 
-import com.aspectran.core.activity.process.action.AnnotatedMethodAction;
-import com.aspectran.core.activity.process.action.BeanMethodAction;
+import com.aspectran.core.activity.process.action.AnnotatedAction;
 import com.aspectran.core.activity.process.action.EchoAction;
 import com.aspectran.core.activity.process.action.Executable;
 import com.aspectran.core.activity.process.action.HeaderAction;
+import com.aspectran.core.activity.process.action.InvokeAction;
 import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
 import com.aspectran.core.context.rule.type.ActionType;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
 import com.aspectran.core.util.ToStringBuilder;
-
-import java.util.Collection;
 
 /**
  * Advices are actions taken for a particular join point.
@@ -82,26 +80,10 @@ public class AspectAdviceRule implements ActionRuleApplicable {
     }
 
     @Override
-    public Executable applyActionRule(BeanMethodActionRule beanMethodActionRule) {
-        BeanMethodAction action = new BeanMethodAction(beanMethodActionRule);
-        if (beanMethodActionRule.getBeanId() == null) {
-            action.setAspectAdviceRule(this);
-        }
+    public Executable applyActionRule(HeaderActionRule headerActionRule) {
+        Executable action = new HeaderAction(headerActionRule);
         this.action = action;
         return action;
-    }
-
-    @Override
-    public Executable applyActionRule(AnnotatedMethodActionRule annotatedMethodActionRule) {
-        throw new UnsupportedOperationException(
-                "Cannot apply the annotated method action Rule to the Aspect Advice Rule");
-    }
-
-    @Override
-    public Executable applyActionRule(IncludeActionRule includeActionRule) {
-        throw new UnsupportedOperationException(
-                "Cannot apply the include action rule to the Aspect Advice Rule; " +
-                "AspectAdvice is not support IncludeAction");
     }
 
     @Override
@@ -112,19 +94,32 @@ public class AspectAdviceRule implements ActionRuleApplicable {
     }
 
     @Override
-    public Executable applyActionRule(HeaderActionRule headerActionRule) {
-        Executable action = new HeaderAction(headerActionRule);
+    public Executable applyActionRule(InvokeActionRule invokeActionRule) {
+        InvokeAction action = new InvokeAction(invokeActionRule);
+        if (invokeActionRule.getBeanId() == null) {
+            action.setAspectAdviceRule(this);
+        }
         this.action = action;
         return action;
     }
 
     @Override
-    public void applyActionRule(Executable action) {
-        this.action = action;
+    public Executable applyActionRule(AnnotatedActionRule annotatedActionRule) {
+        throw new UnsupportedOperationException("No support applying annotatedActionRule to AspectAdviceRule");
     }
 
     @Override
-    public void applyActionRule(Collection<Executable> actionList) {
+    public Executable applyActionRule(IncludeActionRule includeActionRule) {
+        throw new UnsupportedOperationException("No support applying includeActionRule to AspectAdviceRule");
+    }
+
+    @Override
+    public Executable applyActionRule(ChooseRule chooseRule) {
+        throw new UnsupportedOperationException("No support applying ChooseRule to AspectAdviceRule");
+    }
+
+    @Override
+    public void applyActionRule(Executable action) {
         throw new UnsupportedOperationException();
     }
 
@@ -132,7 +127,7 @@ public class AspectAdviceRule implements ActionRuleApplicable {
         return action;
     }
 
-    public void setExecutableAction(AnnotatedMethodAction action) {
+    public void setExecutableAction(AnnotatedAction action) {
         this.action = action;
     }
 

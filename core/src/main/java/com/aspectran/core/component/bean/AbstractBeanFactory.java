@@ -16,7 +16,7 @@
 package com.aspectran.core.component.bean;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.activity.process.action.AnnotatedMethodAction;
+import com.aspectran.core.activity.process.action.AnnotatedAction;
 import com.aspectran.core.component.AbstractComponent;
 import com.aspectran.core.component.bean.ablility.DisposableBean;
 import com.aspectran.core.component.bean.ablility.FactoryBean;
@@ -375,7 +375,7 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
         try {
             Method initMethod = beanRule.getInitMethod();
             ParameterBindingRule[] parameterBindingRules = beanRule.getInitMethodParameterBindingRules();
-            AnnotatedMethodAction.invokeMethod(activity, bean, initMethod, parameterBindingRules);
+            AnnotatedAction.invokeMethod(activity, bean, initMethod, parameterBindingRules);
         } catch (Exception e) {
             throw new BeanCreationException("An exception occurred while executing an initialization method of bean",
                     beanRule, e);
@@ -386,7 +386,7 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
         try {
             Method factoryMethod = beanRule.getFactoryMethod();
             ParameterBindingRule[] parameterBindingRules = beanRule.getFactoryMethodParameterBindingRules();
-            return AnnotatedMethodAction.invokeMethod(activity, bean, factoryMethod, parameterBindingRules);
+            return AnnotatedAction.invokeMethod(activity, bean, factoryMethod, parameterBindingRules);
         } catch (Exception e) {
             throw new BeanCreationException("An exception occurred while executing a factory method of bean",
                     beanRule, e);

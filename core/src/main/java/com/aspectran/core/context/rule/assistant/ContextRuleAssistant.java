@@ -25,10 +25,10 @@ import com.aspectran.core.context.env.ContextEnvironment;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.AutowireRule;
-import com.aspectran.core.context.rule.BeanMethodActionRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.EnvironmentRule;
 import com.aspectran.core.context.rule.IllegalRuleException;
+import com.aspectran.core.context.rule.InvokeActionRule;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.ScheduleRule;
@@ -362,18 +362,18 @@ public class ContextRuleAssistant {
     /**
      * Resolve bean class for bean method action rule.
      *
-     * @param beanMethodActionRule the bean method action rule
+     * @param invokeActionRule the invoke action rule
      * @throws IllegalRuleException if an illegal rule is found
      */
-    public void resolveActionBeanClass(BeanMethodActionRule beanMethodActionRule) throws IllegalRuleException {
-        String beanIdOrClass = beanMethodActionRule.getBeanId();
+    public void resolveActionBeanClass(InvokeActionRule invokeActionRule) throws IllegalRuleException {
+        String beanIdOrClass = invokeActionRule.getBeanId();
         if (beanIdOrClass != null) {
-            Class<?> beanClass = resolveBeanClass(beanIdOrClass, beanMethodActionRule);
+            Class<?> beanClass = resolveBeanClass(beanIdOrClass, invokeActionRule);
             if (beanClass != null) {
-                beanMethodActionRule.setBeanClass(beanClass);
-                reserveBeanReference(beanClass, beanMethodActionRule);
+                invokeActionRule.setBeanClass(beanClass);
+                reserveBeanReference(beanClass, invokeActionRule);
             } else {
-                reserveBeanReference(beanIdOrClass, beanMethodActionRule);
+                reserveBeanReference(beanIdOrClass, invokeActionRule);
             }
         }
     }

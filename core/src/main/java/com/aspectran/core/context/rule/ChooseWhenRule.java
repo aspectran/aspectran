@@ -27,18 +27,12 @@ import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
 import com.aspectran.core.context.rule.ability.ResponseRuleApplicable;
 import com.aspectran.core.util.StringUtils;
 
-import java.util.Collection;
-
-import static com.aspectran.core.context.rule.ChooseRule.checkCaseNo;
-
 /**
  * <p>Created: 2019-01-06</p>
  *
  * @since 6.0.0
  */
 public class ChooseWhenRule implements ActionRuleApplicable, ResponseRuleApplicable {
-
-    private final int caseNo;
 
     private String expression;
 
@@ -48,13 +42,7 @@ public class ChooseWhenRule implements ActionRuleApplicable, ResponseRuleApplica
 
     private Response response;
 
-    public ChooseWhenRule(int caseNo) {
-        checkCaseNo(caseNo);
-        this.caseNo = caseNo;
-    }
-
-    public int getCaseNo() {
-        return caseNo;
+    public ChooseWhenRule() {
     }
 
     public String getExpression() {
@@ -78,17 +66,6 @@ public class ChooseWhenRule implements ActionRuleApplicable, ResponseRuleApplica
         this.actionList = actionList;
     }
 
-    public void join(ActionRuleApplicable applicable) {
-        if (actionList != null && !actionList.isEmpty()) {
-            for (Executable action : actionList) {
-                action.setLastInChooseWhen(false);
-            }
-            actionList.get(actionList.size() - 1).setLastInChooseWhen(true);
-            applicable.applyActionRule(actionList);
-            actionList = null;
-        }
-    }
-
     public Response getResponse() {
         return response;
     }
@@ -98,48 +75,38 @@ public class ChooseWhenRule implements ActionRuleApplicable, ResponseRuleApplica
     }
 
     @Override
-    public Executable applyActionRule(BeanMethodActionRule beanMethodActionRule) {
-        Executable action = touchActionList().applyActionRule(beanMethodActionRule);
-        action.setCaseNo(caseNo);
-        return action;
-    }
-
-    @Override
-    public Executable applyActionRule(AnnotatedMethodActionRule annotatedMethodActionRule) {
-        Executable action = touchActionList().applyActionRule(annotatedMethodActionRule);
-        action.setCaseNo(caseNo);
-        return action;
-    }
-
-    @Override
-    public Executable applyActionRule(IncludeActionRule includeActionRule) {
-        Executable action = touchActionList().applyActionRule(includeActionRule);
-        action.setCaseNo(caseNo);
-        return action;
+    public Executable applyActionRule(HeaderActionRule headerActionRule) {
+        return touchActionList().applyActionRule(headerActionRule);
     }
 
     @Override
     public Executable applyActionRule(EchoActionRule echoActionRule) {
-        Executable action = touchActionList().applyActionRule(echoActionRule);
-        action.setCaseNo(caseNo);
-        return action;
+        return touchActionList().applyActionRule(echoActionRule);
     }
 
     @Override
-    public Executable applyActionRule(HeaderActionRule headerActionRule) {
-        Executable action = touchActionList().applyActionRule(headerActionRule);
-        action.setCaseNo(caseNo);
-        return action;
+    public Executable applyActionRule(InvokeActionRule invokeActionRule) {
+        return touchActionList().applyActionRule(invokeActionRule);
+    }
+
+    @Override
+    public Executable applyActionRule(AnnotatedActionRule annotatedActionRule) {
+        return touchActionList().applyActionRule(annotatedActionRule);
+    }
+
+    @Override
+    public Executable applyActionRule(IncludeActionRule includeActionRule) {
+        return touchActionList().applyActionRule(includeActionRule);
+    }
+
+    @Override
+    public Executable applyActionRule(ChooseRule chooseRule) {
+        return touchActionList().applyActionRule(chooseRule);
     }
 
     @Override
     public void applyActionRule(Executable action) {
         touchActionList().applyActionRule(action);
-    }
-
-    @Override
-    public void applyActionRule(Collection<Executable> actionList) {
-        touchActionList().addAll(actionList);
     }
 
     /**

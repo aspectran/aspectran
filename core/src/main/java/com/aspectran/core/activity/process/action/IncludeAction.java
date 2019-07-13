@@ -30,7 +30,7 @@ import java.util.Map;
  * 
  * <p>Created: 2008. 06. 05 PM 9:22:05</p>
  */
-public class IncludeAction extends AbstractAction {
+public class IncludeAction implements Executable {
 
     private final IncludeActionRule includeActionRule;
 

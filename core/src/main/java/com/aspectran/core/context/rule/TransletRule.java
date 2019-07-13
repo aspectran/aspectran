@@ -32,7 +32,6 @@ import com.aspectran.core.util.ToStringBuilder;
 import com.aspectran.core.util.wildcard.WildcardPattern;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -65,8 +64,6 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
     private List<ResponseRule> responseRuleList;
 
     private ExceptionRule exceptionRule;
-
-    private ChooseRuleMap chooseRuleMap;
 
     private AspectAdviceRuleRegistry aspectAdviceRuleRegistry;
 
@@ -259,18 +256,8 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
     }
 
     @Override
-    public Executable applyActionRule(BeanMethodActionRule beanMethodActionRule) {
-        return touchActionList().applyActionRule(beanMethodActionRule);
-    }
-
-    @Override
-    public Executable applyActionRule(AnnotatedMethodActionRule annotatedMethodActionRule) {
-        return touchActionList().applyActionRule(annotatedMethodActionRule);
-    }
-
-    @Override
-    public Executable applyActionRule(IncludeActionRule includeActionRule) {
-        return touchActionList().applyActionRule(includeActionRule);
+    public Executable applyActionRule(HeaderActionRule headerActionRule) {
+        return touchActionList().applyActionRule(headerActionRule);
     }
 
     @Override
@@ -279,18 +266,28 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
     }
 
     @Override
-    public Executable applyActionRule(HeaderActionRule headerActionRule) {
-        return touchActionList().applyActionRule(headerActionRule);
+    public Executable applyActionRule(InvokeActionRule invokeActionRule) {
+        return touchActionList().applyActionRule(invokeActionRule);
+    }
+
+    @Override
+    public Executable applyActionRule(AnnotatedActionRule annotatedActionRule) {
+        return touchActionList().applyActionRule(annotatedActionRule);
+    }
+
+    @Override
+    public Executable applyActionRule(IncludeActionRule includeActionRule) {
+        return touchActionList().applyActionRule(includeActionRule);
+    }
+
+    @Override
+    public Executable applyActionRule(ChooseRule chooseRule) {
+        return touchActionList().applyActionRule(chooseRule);
     }
 
     @Override
     public void applyActionRule(Executable action) {
         touchActionList().applyActionRule(action);
-    }
-
-    @Override
-    public void applyActionRule(Collection<Executable> actionList) {
-        touchActionList().addAll(actionList);
     }
 
     /**
@@ -406,21 +403,6 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
         this.exceptionRule = exceptionRule;
     }
 
-    public ChooseRuleMap getChooseRuleMap() {
-        return chooseRuleMap;
-    }
-
-    public void setChooseRuleMap(ChooseRuleMap chooseRuleMap) {
-        this.chooseRuleMap = chooseRuleMap;
-    }
-
-    public ChooseRuleMap touchChooseRuleMap() {
-        if (chooseRuleMap == null) {
-            chooseRuleMap = new ChooseRuleMap();
-        }
-        return chooseRuleMap;
-    }
-
     public AspectAdviceRuleRegistry getAspectAdviceRuleRegistry() {
         return aspectAdviceRuleRegistry;
     }
@@ -523,7 +505,6 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
         }
         tr.setResponseRule(transletRule.getResponseRule());
         tr.setExceptionRule(transletRule.getExceptionRule());
-        tr.setChooseRuleMap(transletRule.getChooseRuleMap());
         tr.setDescription(transletRule.getDescription());
         return tr;
     }
@@ -534,7 +515,6 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
         tr.setAllowedMethods(transletRule.getAllowedMethods());
         tr.setRequestRule(transletRule.getRequestRule());
         tr.setExceptionRule(transletRule.getExceptionRule());
-        tr.setChooseRuleMap(transletRule.getChooseRuleMap());
         tr.setDescription(transletRule.getDescription());
         if (transletRule.getResponseRule() != null) {
             ResponseRule responseRule = transletRule.getResponseRule();

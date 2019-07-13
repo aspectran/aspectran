@@ -129,7 +129,7 @@ public class AponTransformResponse extends TransformResponse {
         AponWriter aponWriter = new AponWriter(writer);
         if (formattingContext != null) {
             if (formattingContext.getNullWritable() != null) {
-                aponWriter.setSkipNull(!formattingContext.getNullWritable());
+                aponWriter.nullWritable(formattingContext.getNullWritable());
             }
             if (formattingContext.isPretty()) {
                 String indentString = formattingContext.makeIndentString();

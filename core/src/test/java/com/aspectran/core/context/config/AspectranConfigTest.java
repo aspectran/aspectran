@@ -37,6 +37,7 @@ class AspectranConfigTest {
         File outputFile = new File("./target/test-classes/config/aspectran-config-test-output.apon");
 
         try (AponWriter aponWriter = new AponWriter(outputFile)) {
+            aponWriter.nullWritable(false);
             aponWriter.write(aspectranConfig);
         }
     }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 6.0//EN"
-        "aspectran-6-test.dtd">
+        "http://aspectran.github.io/dtd/aspectran-6.dtd">
 <aspectran>
 
     <description>
@@ -14,10 +14,10 @@
     <bean id="freemarkerConfiguration" class="com.aspectran.freemarker.FreeMarkerConfigurationFactoryBean">
         <properties>
             <item name="freemarkerSettings" type="properties">
-                <entry name="incompatible_improvements">2.3.23</value>
-                <entry name="template_exception_handler">rethrow</value>
-                <entry name="default_encoding">UTF-8</value>
-                <entry name="number_format">0.####</value>
+                <entry name="incompatible_improvements">2.3.23</entry>
+                <entry name="template_exception_handler">rethrow</entry>
+                <entry name="default_encoding">UTF-8</entry>
+                <entry name="number_format">0.####</entry>
             </item>
             <item name="trimDirectives" valueType="parameters">
                 directive: {

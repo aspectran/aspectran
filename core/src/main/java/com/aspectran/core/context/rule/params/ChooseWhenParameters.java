@@ -21,7 +21,6 @@ import com.aspectran.core.util.apon.ValueType;
 
 public class ChooseWhenParameters extends AbstractParameters {
 
-    public static final ParameterKey caseNo;
     public static final ParameterKey test;
     public static final ParameterKey action;
     public static final ParameterKey transform;
@@ -32,7 +31,6 @@ public class ChooseWhenParameters extends AbstractParameters {
     private static final ParameterKey[] parameterKeys;
 
     static {
-        caseNo = new ParameterKey("caseNo", ValueType.INT);
         test = new ParameterKey("test", ValueType.STRING);
         action = new ParameterKey("action", new String[] {"echo", "headers", "include", "choose"},
                 ActionParameters.class, true, true);
@@ -42,7 +40,6 @@ public class ChooseWhenParameters extends AbstractParameters {
         forward = new ParameterKey("forward", ForwardParameters.class);
 
         parameterKeys = new ParameterKey[] {
-                caseNo,
                 test,
                 action,
                 transform,

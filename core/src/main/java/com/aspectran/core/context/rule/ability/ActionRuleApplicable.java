@@ -16,13 +16,12 @@
 package com.aspectran.core.context.rule.ability;
 
 import com.aspectran.core.activity.process.action.Executable;
-import com.aspectran.core.context.rule.AnnotatedMethodActionRule;
-import com.aspectran.core.context.rule.BeanMethodActionRule;
+import com.aspectran.core.context.rule.AnnotatedActionRule;
+import com.aspectran.core.context.rule.ChooseRule;
 import com.aspectran.core.context.rule.EchoActionRule;
 import com.aspectran.core.context.rule.HeaderActionRule;
 import com.aspectran.core.context.rule.IncludeActionRule;
-
-import java.util.Collection;
+import com.aspectran.core.context.rule.InvokeActionRule;
 
 /**
  * The Interface ActionRuleApplicable.
@@ -30,38 +29,6 @@ import java.util.Collection;
  * @since 2011. 2. 21.
  */
 public interface ActionRuleApplicable {
-
-    /**
-     * Adds the bean method action rule.
-     *
-     * @param beanMethodActionRule the bean method action rule
-     * @return an instance of the executable action
-     */
-    Executable applyActionRule(BeanMethodActionRule beanMethodActionRule);
-
-    /**
-     * Adds the annotated method action rule.
-     *
-     * @param annotatedMethodActionRule the annotated method action rule
-     * @return an instance of the executable action
-     */
-    Executable applyActionRule(AnnotatedMethodActionRule annotatedMethodActionRule);
-
-    /**
-     * Adds the include action rule.
-     *
-     * @param includeActionRule the include action rule
-     * @return an instance of the executable action
-     */
-    Executable applyActionRule(IncludeActionRule includeActionRule);
-
-    /**
-     * Adds the echo action rule.
-     *
-     * @param echoActionRule the echo action rule
-     * @return an instance of the executable action
-     */
-    Executable applyActionRule(EchoActionRule echoActionRule);
 
     /**
      * Adds the header action rule.
@@ -72,17 +39,50 @@ public interface ActionRuleApplicable {
     Executable applyActionRule(HeaderActionRule headerActionRule);
 
     /**
+     * Adds the echo action rule.
+     *
+     * @param echoActionRule the echo action rule
+     * @return an instance of the executable action
+     */
+    Executable applyActionRule(EchoActionRule echoActionRule);
+
+    /**
+     * Adds the invoke action rule.
+     *
+     * @param invokeActionRule the invoke action rule
+     * @return an instance of the executable action
+     */
+    Executable applyActionRule(InvokeActionRule invokeActionRule);
+
+    /**
+     * Adds the annotated method action rule.
+     *
+     * @param annotatedActionRule the annotated method action rule
+     * @return an instance of the executable action
+     */
+    Executable applyActionRule(AnnotatedActionRule annotatedActionRule);
+
+    /**
+     * Adds the include action rule.
+     *
+     * @param includeActionRule the include action rule
+     * @return an instance of the executable action
+     */
+    Executable applyActionRule(IncludeActionRule includeActionRule);
+
+    /**
+     * Adds a list of action instances that can be executed.
+     *
+     * @param chooseRule the choose rule
+     * @return an instance of the executable action
+     */
+    Executable applyActionRule(ChooseRule chooseRule);
+
+    /**
      * Adds an executable action instance.
      *
      * @param action an executable action instance
      */
     void applyActionRule(Executable action);
-
-    /**
-     * Adds a list of action instances that can be executed.
-     *
-     * @param actionList a list of action instances
-     */
-    void applyActionRule(Collection<Executable> actionList);
 
 }

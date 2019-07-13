@@ -18,8 +18,8 @@ package com.aspectran.core.context.rule.assistant;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.AutowireRule;
-import com.aspectran.core.context.rule.BeanMethodActionRule;
 import com.aspectran.core.context.rule.BeanRule;
+import com.aspectran.core.context.rule.InvokeActionRule;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ScheduleRule;
 import com.aspectran.core.context.rule.TemplateRule;
@@ -142,7 +142,7 @@ public class ShallowContextRuleAssistant extends ContextRuleAssistant {
     }
 
     @Override
-    public void resolveActionBeanClass(BeanMethodActionRule beanMethodActionRule) {
+    public void resolveActionBeanClass(InvokeActionRule invokeActionRule) {
         // Do Nothing
     }
 

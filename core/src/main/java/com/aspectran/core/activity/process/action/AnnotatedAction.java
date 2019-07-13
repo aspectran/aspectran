@@ -23,7 +23,7 @@ import com.aspectran.core.component.bean.annotation.Component;
 import com.aspectran.core.component.bean.annotation.Format;
 import com.aspectran.core.component.bean.annotation.Qualifier;
 import com.aspectran.core.component.bean.annotation.Required;
-import com.aspectran.core.context.rule.AnnotatedMethodActionRule;
+import com.aspectran.core.context.rule.AnnotatedActionRule;
 import com.aspectran.core.context.rule.ParameterBindingRule;
 import com.aspectran.core.context.rule.type.ActionType;
 import com.aspectran.core.util.BeanDescriptor;
@@ -61,32 +61,32 @@ import java.util.Map;
  *
  * @since 2.0.0
  */
-public class AnnotatedMethodAction extends AbstractAction {
+public class AnnotatedAction implements Executable {
 
-    private static final Log log = LogFactory.getLog(AnnotatedMethodAction.class);
+    private static final Log log = LogFactory.getLog(AnnotatedAction.class);
 
     private static final Object UNKNOWN_VALUE_TYPE = new Object();
 
-    private final AnnotatedMethodActionRule annotatedMethodActionRule;
+    private final AnnotatedActionRule annotatedActionRule;
 
     /**
      * Instantiates a new AnnotatedMethodAction.
      *
-     * @param annotatedMethodActionRule the annotated method action rule
+     * @param annotatedActionRule the annotated method action rule
      */
-    public AnnotatedMethodAction(AnnotatedMethodActionRule annotatedMethodActionRule) {
-        this.annotatedMethodActionRule = annotatedMethodActionRule;
+    public AnnotatedAction(AnnotatedActionRule annotatedActionRule) {
+        this.annotatedActionRule = annotatedActionRule;
     }
 
     @Override
     public Object execute(Activity activity) throws Exception {
         Object bean = null;
         try {
-            if (!Modifier.isInterface(annotatedMethodActionRule.getBeanClass().getModifiers())) {
-                bean = activity.getBeanForConfig(annotatedMethodActionRule.getBeanClass());
+            if (!Modifier.isInterface(annotatedActionRule.getBeanClass().getModifiers())) {
+                bean = activity.getBeanForConfig(annotatedActionRule.getBeanClass());
             }
-            Method method = annotatedMethodActionRule.getMethod();
-            ParameterBindingRule[] parameterBindingRules = annotatedMethodActionRule.getParameterBindingRules();
+            Method method = annotatedActionRule.getMethod();
+            ParameterBindingRule[] parameterBindingRules = annotatedActionRule.getParameterBindingRules();
             return invokeMethod(activity, bean, method, parameterBindingRules);
         } catch (Exception e) {
             throw new ActionExecutionException("Failed to execute annotated bean method action " +
@@ -99,13 +99,13 @@ public class AnnotatedMethodAction extends AbstractAction {
      *
      * @return the annotated bean method action rule
      */
-    public AnnotatedMethodActionRule getAnnotatedMethodActionRule() {
-        return annotatedMethodActionRule;
+    public AnnotatedActionRule getAnnotatedActionRule() {
+        return annotatedActionRule;
     }
 
     @Override
     public String getActionId() {
-        return annotatedMethodActionRule.getActionId();
+        return annotatedActionRule.getActionId();
     }
 
     @Override
@@ -115,20 +115,20 @@ public class AnnotatedMethodAction extends AbstractAction {
 
     @Override
     public ActionType getActionType() {
-        return ActionType.ANNOTATED_METHOD;
+        return ActionType.ACTION_ANNOTATED;
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <T> T getActionRule() {
-        return (T)getAnnotatedMethodActionRule();
+        return (T)getAnnotatedActionRule();
     }
 
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.append("actionType", getActionType());
-        tsb.append("annotatedMethodActionRule", annotatedMethodActionRule);
+        tsb.append("annotatedActionRule", annotatedActionRule);
         return tsb.toString();
     }
 

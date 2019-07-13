@@ -20,8 +20,6 @@ import com.aspectran.core.activity.process.action.Executable;
 import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
 import com.aspectran.core.util.BooleanUtils;
 
-import java.util.Collection;
-
 public abstract class AbstractResponseRule implements ActionRuleApplicable {
 
     private Boolean defaultResponse;
@@ -64,18 +62,8 @@ public abstract class AbstractResponseRule implements ActionRuleApplicable {
     }
 
     @Override
-    public Executable applyActionRule(BeanMethodActionRule beanMethodActionRule) {
-        return touchActionList().applyActionRule(beanMethodActionRule);
-    }
-
-    @Override
-    public Executable applyActionRule(AnnotatedMethodActionRule annotatedMethodActionRule) {
-        return touchActionList().applyActionRule(annotatedMethodActionRule);
-    }
-
-    @Override
-    public Executable applyActionRule(IncludeActionRule includeActionRule) {
-        return touchActionList().applyActionRule(includeActionRule);
+    public Executable applyActionRule(HeaderActionRule headerActionRule) {
+        return touchActionList().applyActionRule(headerActionRule);
     }
 
     @Override
@@ -84,18 +72,28 @@ public abstract class AbstractResponseRule implements ActionRuleApplicable {
     }
 
     @Override
-    public Executable applyActionRule(HeaderActionRule headerActionRule) {
-        return touchActionList().applyActionRule(headerActionRule);
+    public Executable applyActionRule(InvokeActionRule invokeActionRule) {
+        return touchActionList().applyActionRule(invokeActionRule);
+    }
+
+    @Override
+    public Executable applyActionRule(AnnotatedActionRule annotatedActionRule) {
+        return touchActionList().applyActionRule(annotatedActionRule);
+    }
+
+    @Override
+    public Executable applyActionRule(IncludeActionRule includeActionRule) {
+        return touchActionList().applyActionRule(includeActionRule);
+    }
+
+    @Override
+    public Executable applyActionRule(ChooseRule chooseRule) {
+        return touchActionList().applyActionRule(chooseRule);
     }
 
     @Override
     public void applyActionRule(Executable action) {
         touchActionList().applyActionRule(action);
-    }
-
-    @Override
-    public void applyActionRule(Collection<Executable> actionList) {
-        touchActionList().addAll(actionList);
     }
 
     /**

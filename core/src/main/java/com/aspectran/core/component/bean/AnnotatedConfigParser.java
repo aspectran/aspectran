@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.component.bean;
 
-import com.aspectran.core.activity.process.action.AnnotatedMethodAction;
+import com.aspectran.core.activity.process.action.AnnotatedAction;
 import com.aspectran.core.activity.process.action.Executable;
 import com.aspectran.core.activity.response.transform.CustomTransformResponse;
 import com.aspectran.core.activity.response.transform.CustomTransformer;
@@ -54,7 +54,7 @@ import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.env.Environment;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.expr.token.TokenParser;
-import com.aspectran.core.context.rule.AnnotatedMethodActionRule;
+import com.aspectran.core.context.rule.AnnotatedActionRule;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.AutowireRule;
@@ -370,7 +370,7 @@ public class AnnotatedConfigParser {
             } else if (method.isAnnotationPresent(ExceptionThrown.class)) {
                 ExceptionThrown exceptionThrownAnno = method.getAnnotation(ExceptionThrown.class);
                 Class<? extends Throwable>[] types = exceptionThrownAnno.value();
-                AnnotatedMethodAction action = createAnnotatedMethodAction(null, beanClass, method);
+                AnnotatedAction action = createAnnotatedMethodAction(null, beanClass, method);
                 ExceptionThrownRule exceptionThrownRule = ExceptionThrownRule.newInstance(types, action);
                 aspectRule.putExceptionThrownRule(exceptionThrownRule);
                 if (method.isAnnotationPresent(Transform.class)) {
@@ -570,8 +570,8 @@ public class AnnotatedConfigParser {
             }
         }
 
-        Executable annotatedMethodAction = createAnnotatedMethodAction(actionId, beanClass, method);
-        transletRule.applyActionRule(annotatedMethodAction);
+        Executable annotatedAction = createAnnotatedMethodAction(actionId, beanClass, method);
+        transletRule.applyActionRule(annotatedAction);
 
         Class<?> returnType = method.getReturnType();
         if (CustomTransformer.class.isAssignableFrom(returnType)) {
@@ -750,13 +750,13 @@ public class AnnotatedConfigParser {
         return autowireRule;
     }
 
-    private AnnotatedMethodAction createAnnotatedMethodAction(String actionId, Class<?> beanClass, Method method) {
-        AnnotatedMethodActionRule annotatedMethodActionRule = new AnnotatedMethodActionRule();
-        annotatedMethodActionRule.setActionId(actionId);
-        annotatedMethodActionRule.setBeanClass(beanClass);
-        annotatedMethodActionRule.setMethod(method);
-        annotatedMethodActionRule.setParameterBindingRules(createParameterBindingRules(method));
-        return new AnnotatedMethodAction(annotatedMethodActionRule);
+    private AnnotatedAction createAnnotatedMethodAction(String actionId, Class<?> beanClass, Method method) {
+        AnnotatedActionRule annotatedActionRule = new AnnotatedActionRule();
+        annotatedActionRule.setActionId(actionId);
+        annotatedActionRule.setBeanClass(beanClass);
+        annotatedActionRule.setMethod(method);
+        annotatedActionRule.setParameterBindingRules(createParameterBindingRules(method));
+        return new AnnotatedAction(annotatedActionRule);
     }
 
     static ParameterBindingRule[] createParameterBindingRules(Method method) {

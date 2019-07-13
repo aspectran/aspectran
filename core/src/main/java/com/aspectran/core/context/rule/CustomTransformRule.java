@@ -31,7 +31,7 @@ public class CustomTransformRule extends AbstractResponseRule {
 
     private static final ResponseType RESPONSE_TYPE = ResponseType.TRANSFORM;
 
-    private static final TransformType transformType = TransformType.CUSTOM;
+    private static final TransformType TRANSFORM_TYPE = TransformType.CUSTOM;
 
     private final CustomTransformer transformer;
 
@@ -49,7 +49,7 @@ public class CustomTransformRule extends AbstractResponseRule {
      * @return the transform type
      */
     public TransformType getTransformType() {
-        return transformType;
+        return TRANSFORM_TYPE;
     }
 
     public CustomTransformer getTransformer() {
@@ -60,7 +60,7 @@ public class CustomTransformRule extends AbstractResponseRule {
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.appendForce("responseType", RESPONSE_TYPE);
-        tsb.appendForce("transformType", transformType);
+        tsb.appendForce("transformType", TRANSFORM_TYPE);
         tsb.append("transformer", transformer);
         return tsb.toString();
     }

@@ -77,19 +77,6 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
     }
 
     /**
-     * Sets whether write a type hint for values.
-     *
-     * @param valueTypeHintable true, write a type hint for values
-     */
-    public void setValueTypeHintable(boolean valueTypeHintable) {
-        this.valueTypeHintable = valueTypeHintable;
-    }
-
-    public void setSkipNull(boolean skipNull) {
-        this.skipNull = skipNull;
-    }
-
-    /**
      * Specifies the indent string.
      *
      * @param indentString the indentation string, by default "  " (two blanks).
@@ -98,15 +85,20 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
         this.indentString = indentString;
     }
 
+    /**
+     * Sets whether write a type hint for values.
+     *
+     * @param valueTypeHintable true, write a type hint for values
+     */
     @SuppressWarnings("unchecked")
     public <T extends AponWriter> T valueTypeHintable(boolean valueTypeHintable) {
-        setValueTypeHintable(valueTypeHintable);
+        this.valueTypeHintable = valueTypeHintable;
         return (T)this;
     }
 
     @SuppressWarnings("unchecked")
     public <T extends AponWriter> T nullWritable(boolean nullWritable) {
-        setSkipNull(!nullWritable);
+        this.skipNull = !nullWritable;
         return (T)this;
     }
 
@@ -241,7 +233,6 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
                 Object value = parameter.getValue();
                 if (!skipNull || value != null) {
                     writeName(parameter);
-                    beginBlock();
                     if (value instanceof Parameters) {
                         write((Parameters)value);
                     } else if (value != null) {
@@ -249,7 +240,6 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
                     } else {
                         writeNull();
                     }
-                    endBlock();
                 }
             }
         } else if (parameter.getValueType() == ValueType.STRING) {
@@ -266,8 +256,10 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
                         endArray();
                     } else {
                         for (String value : list) {
-                            writeName(parameter);
-                            writeString(value);
+                            if (!skipNull || value != null) {
+                                writeName(parameter);
+                                writeString(value);
+                            }
                         }
                     }
                 }
@@ -294,10 +286,12 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
                         endArray();
                     } else {
                         for (String text : list) {
-                            writeName(parameter);
-                            beginText();
-                            writeText(text);
-                            endText();
+                            if (!skipNull || text != null) {
+                                writeName(parameter);
+                                beginText();
+                                writeText(text);
+                                endText();
+                            }
                         }
                     }
                 }
@@ -327,8 +321,10 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
                         endArray();
                     } else {
                         for (Object value : list) {
-                            writeName(parameter);
-                            write(value);
+                            if (!skipNull || value != null) {
+                                writeName(parameter);
+                                write(value);
+                            }
                         }
                     }
                 }

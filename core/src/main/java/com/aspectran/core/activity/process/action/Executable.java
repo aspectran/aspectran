@@ -63,12 +63,4 @@ public interface Executable {
      */
     <T> T getActionRule();
 
-    int getCaseNo();
-
-    void setCaseNo(int caseNo);
-
-    boolean isLastInChooseWhen();
-
-    void setLastInChooseWhen(boolean lastInChooseWhen);
-
 }

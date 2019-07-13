@@ -145,13 +145,13 @@ public class DefaultRestResponse extends AbstractRestResponse {
 
             JsonWriter jsonWriter = new JsonWriter(writer);
             if (formattingContext.getDateFormat() != null) {
-                jsonWriter.setDateFormat(formattingContext.getDateFormat());
+                jsonWriter.dateFormat(formattingContext.getDateFormat());
             }
             if (formattingContext.getDateTimeFormat() != null) {
-                jsonWriter.setDateTimeFormat(formattingContext.getDateTimeFormat());
+                jsonWriter.dateTimeFormat(formattingContext.getDateTimeFormat());
             }
             if (formattingContext.getNullWritable() != null) {
-                jsonWriter.setSkipNull(!formattingContext.getNullWritable());
+                jsonWriter.nullWritable(formattingContext.getNullWritable());
             }
             if (formattingContext.isPretty()) {
                 String indentString = formattingContext.makeIndentString();

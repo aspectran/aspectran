@@ -36,11 +36,11 @@ class ChooseWhenNodeletAdder implements NodeletAdder {
 
         parser.setXpath(xpath + "/when");
         parser.addNodelet(attrs -> {
-            String test = StringUtils.emptyToNull(attrs.get("test"));
+            String expression = StringUtils.emptyToNull(attrs.get("test"));
 
             ChooseRule chooseRule = parser.peekObject();
             ChooseWhenRule chooseWhenRule = chooseRule.newChooseWhenRule();
-            chooseWhenRule.setExpression(test);
+            chooseWhenRule.setExpression(expression);
             parser.pushObject(chooseWhenRule);
         });
         parser.addNodelet(actionNodeletAdder);

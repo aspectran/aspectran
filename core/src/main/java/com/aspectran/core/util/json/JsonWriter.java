@@ -90,21 +90,9 @@ public class JsonWriter implements Flushable, Closeable {
         setIndentString(DEFAULT_INDENT_STRING);
     }
 
-    public void setIndentString(String indentString) {
+    private void setIndentString(String indentString) {
         this.prettyPrint = (indentString != null);
         this.indentString = indentString;
-    }
-
-    public void setDateFormat(String dateFormat) {
-        this.dateFormat = dateFormat;
-    }
-
-    public void setDateTimeFormat(String dateTimeFormat) {
-        this.dateTimeFormat = dateTimeFormat;
-    }
-
-    public void setSkipNull(boolean skipNull) {
-        this.skipNull = skipNull;
     }
 
     @SuppressWarnings("unchecked")
@@ -125,19 +113,19 @@ public class JsonWriter implements Flushable, Closeable {
 
     @SuppressWarnings("unchecked")
     public <T extends JsonWriter> T dateFormat(String dateFormat) {
-        setDateFormat(dateFormat);
+        this.dateFormat = dateFormat;
         return (T)this;
     }
 
     @SuppressWarnings("unchecked")
     public <T extends JsonWriter> T dateTimeFormat(String dateTimeFormat) {
-        setDateTimeFormat(dateTimeFormat);
+        this.dateTimeFormat = dateTimeFormat;
         return (T)this;
     }
 
     @SuppressWarnings("unchecked")
     public <T extends JsonWriter> T nullWritable(boolean nullWritable) {
-        setSkipNull(!nullWritable);
+        this.skipNull = !nullWritable;
         return (T)this;
     }
 

@@ -23,11 +23,11 @@ import com.aspectran.core.util.ToStringBuilder;
 import java.lang.reflect.Method;
 
 /**
- * The Class BeanMethodActionRule.
+ * The Class InvokeActionRule.
  * 
  * <p>Created: 2008. 03. 22 PM 5:50:35</p>
  */
-public class BeanMethodActionRule implements BeanReferenceable {
+public class InvokeActionRule implements BeanReferenceable {
 
     private static final BeanRefererType BEAN_REFERER_TYPE = BeanRefererType.BEAN_METHOD_ACTION_RULE;
 
@@ -268,21 +268,21 @@ public class BeanMethodActionRule implements BeanReferenceable {
      * @param beanId the bean id
      * @param methodName the method name
      * @param hidden true if hiding the result of the action; false otherwise
-     * @return the bean method action rule
+     * @return the invoke action rule
      * @throws IllegalRuleException if an illegal rule is found
      */
-    public static BeanMethodActionRule newInstance(String id, String beanId, String methodName, Boolean hidden)
+    public static InvokeActionRule newInstance(String id, String beanId, String methodName, Boolean hidden)
             throws IllegalRuleException {
         if (methodName == null) {
             throw new IllegalRuleException("The 'action' element requires a 'method' attribute");
         }
 
-        BeanMethodActionRule beanMethodActionRule = new BeanMethodActionRule();
-        beanMethodActionRule.setActionId(id);
-        beanMethodActionRule.setBeanId(beanId);
-        beanMethodActionRule.setMethodName(methodName);
-        beanMethodActionRule.setHidden(hidden);
-        return beanMethodActionRule;
+        InvokeActionRule invokeActionRule = new InvokeActionRule();
+        invokeActionRule.setActionId(id);
+        invokeActionRule.setBeanId(beanId);
+        invokeActionRule.setMethodName(methodName);
+        invokeActionRule.setHidden(hidden);
+        return invokeActionRule;
     }
 
 }

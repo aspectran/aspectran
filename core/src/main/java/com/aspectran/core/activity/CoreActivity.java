@@ -31,23 +31,20 @@ import com.aspectran.core.adapter.BasicSessionAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.component.bean.scope.Scope;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.expr.BooleanExpression;
 import com.aspectran.core.context.expr.ItemEvaluator;
 import com.aspectran.core.context.expr.ItemExpression;
 import com.aspectran.core.context.expr.token.Token;
-import com.aspectran.core.context.rule.ChooseRule;
-import com.aspectran.core.context.rule.ChooseRuleMap;
 import com.aspectran.core.context.rule.ChooseWhenRule;
 import com.aspectran.core.context.rule.ExceptionRule;
 import com.aspectran.core.context.rule.ExceptionThrownRule;
 import com.aspectran.core.context.rule.ForwardRule;
-import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleList;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.RequestRule;
 import com.aspectran.core.context.rule.ResponseRule;
 import com.aspectran.core.context.rule.TransletRule;
+import com.aspectran.core.context.rule.type.ActionType;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.context.rule.type.ResponseType;
@@ -56,7 +53,6 @@ import com.aspectran.core.support.i18n.locale.LocaleResolver;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
-import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -352,7 +348,6 @@ public class CoreActivity extends AdviceActivity {
 
     protected void reserveResponse(Response response) {
         this.reservedResponse = response;
-
         if (response != null && !isExceptionRaised()) {
             this.desiredResponse = response;
         }
@@ -521,37 +516,34 @@ public class CoreActivity extends AdviceActivity {
         if (targetResponse != null) {
             // Clear produced results. No reflection to ProcessResult.
             translet.setProcessResult(null);
-
             ActionList actionList = targetResponse.getActionList();
             if (actionList != null) {
                 execute(actionList);
             }
-
             reserveResponse(targetResponse);
         }
     }
 
-    /**
-     * Execute actions.
-     *
-     * @param actionList the action list
-     */
     protected void execute(ActionList actionList) {
-        ProcessResult processResult = translet.getProcessResult();
-        if (processResult == null) {
-            processResult = new ProcessResult(1);
-            translet.setProcessResult(processResult);
-        }
+        execute(actionList, null);
+    }
 
-        ContentResult contentResult = processResult.getContentResult(actionList.getName(), actionList.isExplicit());
+    protected void execute(ActionList actionList, ContentResult contentResult) {
         if (contentResult == null) {
-            contentResult = new ContentResult(processResult, actionList.size());
-            contentResult.setName(actionList.getName());
-            if (!processResult.isExplicit()) {
-                contentResult.setExplicit(actionList.isExplicit());
+            ProcessResult processResult = translet.getProcessResult();
+            if (processResult == null) {
+                processResult = new ProcessResult(1);
+                translet.setProcessResult(processResult);
+            }
+            contentResult = processResult.getContentResult(actionList.getName(), actionList.isExplicit());
+            if (contentResult == null) {
+                contentResult = new ContentResult(processResult, actionList.size());
+                contentResult.setName(actionList.getName());
+                if (!processResult.isExplicit()) {
+                    contentResult.setExplicit(actionList.isExplicit());
+                }
             }
         }
-
         for (Executable action : actionList) {
             execute(action, contentResult);
             if (isResponseReserved()) {
@@ -561,60 +553,36 @@ public class CoreActivity extends AdviceActivity {
     }
 
     /**
-     * Execute action.
+     * Execute an action.
      *
      * @param action the executable action
      * @param contentResult the content result
      */
     private void execute(Executable action, ContentResult contentResult) {
         try {
-            ChooseWhenRule chooseWhenRule = null;
-            if (action.getCaseNo() > 0) {
-                ChooseRuleMap chooseRuleMap = getTransletRule().getChooseRuleMap();
-                if (chooseRuleMap == null || chooseRuleMap.isEmpty()) {
-                    throw new IllegalRuleException("No defined choose rules");
-                }
-                ChooseRule chooseRule = chooseRuleMap.getChooseRule(action.getCaseNo());
-                if (chooseRule == null) {
-                    throw new IllegalRuleException("No choose rule with case number: " +
-                            ChooseRule.toCaseGroupNo(action.getCaseNo()));
-                }
-                chooseWhenRule = chooseRule.getChooseWhenRule(action.getCaseNo());
-                if (chooseWhenRule == null) {
-                    throw new IllegalRuleException("No choose rule with case number: " + action.getCaseNo());
-                }
-                if (processedChooses != null && processedChooses.contains(chooseRule.getCaseNo())) {
-                    return;
-                }
-                if (processedChooses == null || !processedChooses.contains(chooseWhenRule.getCaseNo())) {
-                    BooleanExpression expression = new BooleanExpression(this);
-                    if (expression.evaluate(chooseWhenRule)) {
-                        if (processedChooses == null) {
-                            processedChooses = new HashSet<>();
-                        }
-                        processedChooses.add(chooseRule.getCaseNo());
-                        processedChooses.add(chooseWhenRule.getCaseNo());
-                    } else {
-                        return;
-                    }
-                }
-            }
-
             if (log.isDebugEnabled()) {
                 log.debug("Action " + action);
             }
 
-            Object resultValue = action.execute(this);
-            if (!action.isHidden() && contentResult != null && resultValue != ActionResult.NO_RESULT) {
-                if (resultValue instanceof ProcessResult) {
-                    contentResult.addActionResult(action, (ProcessResult)resultValue);
-                } else {
-                    contentResult.addActionResult(action, resultValue);
+            if (action.getActionType() == ActionType.CHOOSE) {
+                Object resultValue = action.execute(this);
+                if (resultValue != ActionResult.NO_RESULT) {
+                    ChooseWhenRule chooseWhenRule = (ChooseWhenRule)resultValue;
+                    ActionList actionList = chooseWhenRule.getActionList();
+                    execute(actionList, contentResult);
+                    if (chooseWhenRule.getResponse() != null) {
+                        reserveResponse(chooseWhenRule.getResponse());
+                    }
                 }
-            }
-
-            if (action.isLastInChooseWhen() && chooseWhenRule != null && chooseWhenRule.getResponse() != null) {
-                reserveResponse(chooseWhenRule.getResponse());
+            } else {
+                Object resultValue = action.execute(this);
+                if (!action.isHidden() && contentResult != null && resultValue != ActionResult.NO_RESULT) {
+                    if (resultValue instanceof ProcessResult) {
+                        contentResult.addActionResult(action, (ProcessResult)resultValue);
+                    } else {
+                        contentResult.addActionResult(action, resultValue);
+                    }
+                }
             }
         } catch (ActionExecutionException e) {
             log.error("Failed to execute action " + action, e);

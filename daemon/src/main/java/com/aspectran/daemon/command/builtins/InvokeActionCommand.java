@@ -17,9 +17,9 @@ package com.aspectran.daemon.command.builtins;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.InstantActivity;
-import com.aspectran.core.activity.process.action.BeanMethodAction;
-import com.aspectran.core.context.rule.BeanMethodActionRule;
+import com.aspectran.core.activity.process.action.InvokeAction;
 import com.aspectran.core.context.rule.BeanRule;
+import com.aspectran.core.context.rule.InvokeActionRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.daemon.command.AbstractCommand;
 import com.aspectran.daemon.command.CommandRegistry;
@@ -27,15 +27,15 @@ import com.aspectran.daemon.command.CommandResult;
 import com.aspectran.daemon.command.polling.CommandParameters;
 import com.aspectran.daemon.service.DaemonService;
 
-public class BeanMethodActionCommand extends AbstractCommand {
+public class InvokeActionCommand extends AbstractCommand {
 
     private static final String NAMESPACE = "builtins";
 
-    private static final String COMMAND_NAME = "beanMethodAction";
+    private static final String COMMAND_NAME = "invokeAction";
 
     private final CommandDescriptor descriptor = new CommandDescriptor();
 
-    public BeanMethodActionCommand(CommandRegistry registry) {
+    public InvokeActionCommand(CommandRegistry registry) {
         super(registry);
     }
 
@@ -56,21 +56,21 @@ public class BeanMethodActionCommand extends AbstractCommand {
                 return failed(error("'method' parameter is not specified"));
             }
 
-            BeanMethodActionRule beanMethodActionRule = new BeanMethodActionRule();
-            beanMethodActionRule.setBeanId(beanName);
-            beanMethodActionRule.setMethodName(methodName);
-            beanMethodActionRule.setArgumentItemRuleMap(argumentItemRuleMap);
-            beanMethodActionRule.setPropertyItemRuleMap(propertyItemRuleMap);
+            InvokeActionRule invokeActionRule = new InvokeActionRule();
+            invokeActionRule.setBeanId(beanName);
+            invokeActionRule.setMethodName(methodName);
+            invokeActionRule.setArgumentItemRuleMap(argumentItemRuleMap);
+            invokeActionRule.setPropertyItemRuleMap(propertyItemRuleMap);
 
             if (beanName.startsWith(BeanRule.CLASS_DIRECTIVE_PREFIX)) {
                 String className = beanName.substring(BeanRule.CLASS_DIRECTIVE_PREFIX.length());
                 Class<?> beanClass = service.getAspectranClassLoader().loadClass(className);
-                beanMethodActionRule.setBeanClass(beanClass);
+                invokeActionRule.setBeanClass(beanClass);
             }
 
             Activity activity = new InstantActivity(service.getActivityContext());
-            BeanMethodAction beanMethodAction = new BeanMethodAction(beanMethodActionRule);
-            Object result = beanMethodAction.execute(activity);
+            InvokeAction invokeAction = new InvokeAction(invokeActionRule);
+            Object result = invokeAction.execute(activity);
             return success(result != null ? result.toString() : null);
         } catch (Exception e) {
             return failed(e);

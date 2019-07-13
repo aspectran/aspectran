@@ -35,7 +35,7 @@ import java.util.Map;
  * 
  * @since 3.0.0
  */
-public class HeaderAction extends AbstractAction {
+public class HeaderAction implements Executable {
 
     private final HeaderActionRule headerActionRule;
 

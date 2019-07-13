@@ -15,22 +15,23 @@
  */
 package com.aspectran.core.activity.process;
 
-import com.aspectran.core.activity.process.action.AnnotatedMethodAction;
-import com.aspectran.core.activity.process.action.BeanMethodAction;
+import com.aspectran.core.activity.process.action.AnnotatedAction;
+import com.aspectran.core.activity.process.action.ChooseAction;
 import com.aspectran.core.activity.process.action.EchoAction;
 import com.aspectran.core.activity.process.action.Executable;
 import com.aspectran.core.activity.process.action.HeaderAction;
 import com.aspectran.core.activity.process.action.IncludeAction;
-import com.aspectran.core.context.rule.AnnotatedMethodActionRule;
-import com.aspectran.core.context.rule.BeanMethodActionRule;
+import com.aspectran.core.activity.process.action.InvokeAction;
+import com.aspectran.core.context.rule.AnnotatedActionRule;
+import com.aspectran.core.context.rule.ChooseRule;
 import com.aspectran.core.context.rule.EchoActionRule;
 import com.aspectran.core.context.rule.HeaderActionRule;
 import com.aspectran.core.context.rule.IncludeActionRule;
+import com.aspectran.core.context.rule.InvokeActionRule;
 import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
 import com.aspectran.core.util.ToStringBuilder;
 
 import java.util.ArrayList;
-import java.util.Collection;
 
 /**
  * The set of actions is called a Content or ActionList.
@@ -65,22 +66,8 @@ public class ActionList extends ArrayList<Executable> implements ActionRuleAppli
     }
 
     @Override
-    public Executable applyActionRule(BeanMethodActionRule beanMethodActionRule) {
-        Executable action = new BeanMethodAction(beanMethodActionRule);
-        add(action);
-        return action;
-    }
-
-    @Override
-    public Executable applyActionRule(AnnotatedMethodActionRule annotatedMethodActionRule) {
-        Executable action = new AnnotatedMethodAction(annotatedMethodActionRule);
-        add(action);
-        return action;
-    }
-
-    @Override
-    public Executable applyActionRule(IncludeActionRule includeActionRule) {
-        Executable action = new IncludeAction(includeActionRule);
+    public Executable applyActionRule(HeaderActionRule headerActionRule) {
+        Executable action = new HeaderAction(headerActionRule);
         add(action);
         return action;
     }
@@ -93,8 +80,29 @@ public class ActionList extends ArrayList<Executable> implements ActionRuleAppli
     }
 
     @Override
-    public Executable applyActionRule(HeaderActionRule headerActionRule) {
-        Executable action = new HeaderAction(headerActionRule);
+    public Executable applyActionRule(InvokeActionRule invokeActionRule) {
+        Executable action = new InvokeAction(invokeActionRule);
+        add(action);
+        return action;
+    }
+
+    @Override
+    public Executable applyActionRule(AnnotatedActionRule annotatedActionRule) {
+        Executable action = new AnnotatedAction(annotatedActionRule);
+        add(action);
+        return action;
+    }
+
+    @Override
+    public Executable applyActionRule(IncludeActionRule includeActionRule) {
+        Executable action = new IncludeAction(includeActionRule);
+        add(action);
+        return action;
+    }
+
+    @Override
+    public Executable applyActionRule(ChooseRule chooseRule) {
+        Executable action = new ChooseAction(chooseRule);
         add(action);
         return action;
     }
@@ -102,11 +110,6 @@ public class ActionList extends ArrayList<Executable> implements ActionRuleAppli
     @Override
     public void applyActionRule(Executable action) {
         add(action);
-    }
-
-    @Override
-    public void applyActionRule(Collection<Executable> actionList) {
-        addAll(actionList);
     }
 
     @Override

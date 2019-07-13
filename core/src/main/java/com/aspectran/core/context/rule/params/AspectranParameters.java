@@ -80,58 +80,38 @@ public class AspectranParameters extends AbstractParameters {
     }
 
     public AspectranParameters setTransletNamePattern(String namePattern) {
-        SettingsParameters settingsParameters = touchParameters(settings);
-        Parameters parameters = settingsParameters.touchParameters(SettingsParameters.setting);
-        parameters.clearValue(DefaultSettingType.TRANSLET_NAME_PATTERN.toString());
-        parameters.putValue(DefaultSettingType.TRANSLET_NAME_PATTERN.toString(), namePattern);
-        return this;
+        return setSetting(DefaultSettingType.TRANSLET_NAME_PATTERN, namePattern);
     }
 
     public AspectranParameters setTransletNamePrefix(String prefixPattern) {
-        SettingsParameters settingsParameters = touchParameters(settings);
-        Parameters parameters = settingsParameters.touchParameters(SettingsParameters.setting);
-        parameters.clearValue(DefaultSettingType.TRANSLET_NAME_PREFIX.toString());
-        parameters.putValue(DefaultSettingType.TRANSLET_NAME_PREFIX.toString(), prefixPattern);
-        return this;
+        return setSetting(DefaultSettingType.TRANSLET_NAME_PREFIX, prefixPattern);
     }
 
     public AspectranParameters setTransletNameSuffix(String suffixPattern) {
-        SettingsParameters settingsParameters = touchParameters(settings);
-        Parameters parameters = settingsParameters.touchParameters(SettingsParameters.setting);
-        parameters.clearValue(DefaultSettingType.TRANSLET_NAME_SUFFIX.toString());
-        parameters.putValue(DefaultSettingType.TRANSLET_NAME_SUFFIX.toString(), suffixPattern);
-        return this;
+        return setSetting(DefaultSettingType.TRANSLET_NAME_SUFFIX, suffixPattern);
     }
 
     public AspectranParameters setBeanProxifier(String proxifierName) {
-        SettingsParameters settingsParameters = touchParameters(settings);
-        Parameters parameters = settingsParameters.touchParameters(SettingsParameters.setting);
-        parameters.clearValue(DefaultSettingType.BEAN_PROXIFIER.toString());
-        parameters.putValue(DefaultSettingType.BEAN_PROXIFIER.toString(), proxifierName);
-        return this;
+        return setSetting(DefaultSettingType.BEAN_PROXIFIER, proxifierName);
     }
 
     public AspectranParameters setPointcutPatternVerifiable(boolean verifiable) {
-        SettingsParameters settingsParameters = touchParameters(settings);
-        Parameters parameters = settingsParameters.touchParameters(SettingsParameters.setting);
-        parameters.clearValue(DefaultSettingType.POINTCUT_PATTERN_VERIFIABLE.toString());
-        parameters.putValue(DefaultSettingType.POINTCUT_PATTERN_VERIFIABLE.toString(), verifiable);
-        return this;
+        return setSetting(DefaultSettingType.POINTCUT_PATTERN_VERIFIABLE, verifiable);
     }
 
     public AspectranParameters setDefaultTemplateEngineBean(String beanName) {
-        SettingsParameters settingsParameters = touchParameters(settings);
-        Parameters parameters = settingsParameters.touchParameters(SettingsParameters.setting);
-        parameters.clearValue(DefaultSettingType.DEFAULT_TEMPLATE_ENGINE_BEAN.toString());
-        parameters.putValue(DefaultSettingType.DEFAULT_TEMPLATE_ENGINE_BEAN.toString(), beanName);
-        return this;
+        return setSetting(DefaultSettingType.DEFAULT_TEMPLATE_ENGINE_BEAN, beanName);
     }
 
     public AspectranParameters setDefaultSchedulerBean(String beanName) {
+        return setSetting(DefaultSettingType.DEFAULT_SCHEDULER_BEAN, beanName);
+    }
+
+    public AspectranParameters setSetting(DefaultSettingType defaultSettingType, Object value) {
         SettingsParameters settingsParameters = touchParameters(settings);
-        Parameters parameters = settingsParameters.touchParameters(SettingsParameters.setting);
-        parameters.clearValue(DefaultSettingType.DEFAULT_SCHEDULER_BEAN.toString());
-        parameters.putValue(DefaultSettingType.DEFAULT_SCHEDULER_BEAN.toString(), beanName);
+        SettingParameters settingParameters = settingsParameters.touchParameters(SettingsParameters.setting);
+        settingParameters.putValue(SettingParameters.name, defaultSettingType.toString());
+        settingParameters.putValue(SettingParameters.value, value);
         return this;
     }
 

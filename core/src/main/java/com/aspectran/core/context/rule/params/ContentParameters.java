@@ -22,20 +22,17 @@ import com.aspectran.core.util.apon.ValueType;
 public class ContentParameters extends AbstractParameters {
 
     public static final ParameterKey name;
-    public static final ParameterKey choose;
     public static final ParameterKey action;
 
     private static final ParameterKey[] parameterKeys;
 
     static {
         name = new ParameterKey("name", ValueType.STRING);
-        choose = new ParameterKey("choose", ChooseParameters.class, true, true);
         action = new ParameterKey("action", new String[] {"echo", "headers", "include", "choose"},
                 ActionParameters.class, true, true);
 
         parameterKeys = new ParameterKey[] {
                 name,
-                choose,
                 action
         };
     }

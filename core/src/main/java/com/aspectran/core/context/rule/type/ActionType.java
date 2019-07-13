@@ -22,11 +22,12 @@ package com.aspectran.core.context.rule.type;
  */
 public enum ActionType {
 
-    BEAN_METHOD("beanMethod"),
-    ANNOTATED_METHOD("annotatedMethod"),
-    INCLUDE("include"),
+    HEADER("header"),
     ECHO("echo"),
-    HEADER("header");
+    ACTION("action"),
+    ACTION_ANNOTATED("annotatedAction"),
+    INCLUDE("include"),
+    CHOOSE("choose");
 
     private final String alias;
 

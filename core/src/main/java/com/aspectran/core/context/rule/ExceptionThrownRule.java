@@ -15,11 +15,11 @@
  */
 package com.aspectran.core.context.rule;
 
-import com.aspectran.core.activity.process.action.AnnotatedMethodAction;
-import com.aspectran.core.activity.process.action.BeanMethodAction;
+import com.aspectran.core.activity.process.action.AnnotatedAction;
 import com.aspectran.core.activity.process.action.EchoAction;
 import com.aspectran.core.activity.process.action.Executable;
 import com.aspectran.core.activity.process.action.HeaderAction;
+import com.aspectran.core.activity.process.action.InvokeAction;
 import com.aspectran.core.activity.response.RedirectResponse;
 import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.activity.response.ResponseMap;
@@ -28,8 +28,6 @@ import com.aspectran.core.activity.response.transform.TransformResponseFactory;
 import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
 import com.aspectran.core.context.rule.ability.ResponseRuleApplicable;
 import com.aspectran.core.context.rule.type.ActionType;
-
-import java.util.Collection;
 
 /**
  * The Class ExceptionThrownRule.
@@ -77,7 +75,7 @@ public class ExceptionThrownRule implements ActionRuleApplicable, ResponseRuleAp
         return action;
     }
 
-    public void setAction(AnnotatedMethodAction action) {
+    public void setAction(AnnotatedAction action) {
         this.action = action;
     }
 
@@ -125,25 +123,10 @@ public class ExceptionThrownRule implements ActionRuleApplicable, ResponseRuleAp
     }
 
     @Override
-    public Executable applyActionRule(BeanMethodActionRule beanMethodActionRule) {
-        BeanMethodAction action = new BeanMethodAction(beanMethodActionRule);
-        if (aspectAdviceRule != null && beanMethodActionRule.getBeanId() == null) {
-            action.setAspectAdviceRule(aspectAdviceRule);
-        }
+    public Executable applyActionRule(HeaderActionRule headerActionRule) {
+        Executable action = new HeaderAction(headerActionRule);
         this.action = action;
         return action;
-    }
-
-    @Override
-    public Executable applyActionRule(AnnotatedMethodActionRule annotatedMethodActionRule) {
-        throw new UnsupportedOperationException(
-                "Cannot apply the annotated method action rule to the exception thrown rule");
-    }
-
-    @Override
-    public Executable applyActionRule(IncludeActionRule includeActionRule) {
-        throw new UnsupportedOperationException(
-                "Cannot apply the include action rule to the exception thrown rule");
     }
 
     @Override
@@ -154,20 +137,33 @@ public class ExceptionThrownRule implements ActionRuleApplicable, ResponseRuleAp
     }
 
     @Override
-    public Executable applyActionRule(HeaderActionRule headerActionRule) {
-        Executable action = new HeaderAction(headerActionRule);
+    public Executable applyActionRule(InvokeActionRule invokeActionRule) {
+        InvokeAction action = new InvokeAction(invokeActionRule);
+        if (aspectAdviceRule != null && invokeActionRule.getBeanId() == null) {
+            action.setAspectAdviceRule(aspectAdviceRule);
+        }
         this.action = action;
         return action;
     }
 
     @Override
-    public void applyActionRule(Executable action) {
-        this.action = action;
+    public Executable applyActionRule(AnnotatedActionRule annotatedActionRule) {
+        throw new UnsupportedOperationException("No support applying annotatedActionRule to AspectAdviceRule");
     }
 
     @Override
-    public void applyActionRule(Collection<Executable> actionList) {
-        throw new UnsupportedOperationException("Only one action allowed");
+    public Executable applyActionRule(IncludeActionRule includeActionRule) {
+        throw new UnsupportedOperationException("No support applying includeActionRule to AspectAdviceRule");
+    }
+
+    @Override
+    public Executable applyActionRule(ChooseRule chooseRule) {
+        throw new UnsupportedOperationException("No support applying ChooseRule to AspectAdviceRule");
+    }
+
+    @Override
+    public void applyActionRule(Executable action) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -215,7 +211,7 @@ public class ExceptionThrownRule implements ActionRuleApplicable, ResponseRuleAp
         return response;
     }
 
-    public static ExceptionThrownRule newInstance(Class<? extends Throwable>[] types, AnnotatedMethodAction action) {
+    public static ExceptionThrownRule newInstance(Class<? extends Throwable>[] types, AnnotatedAction action) {
         ExceptionThrownRule exceptionThrownRule = new ExceptionThrownRule();
         if (types != null && types.length > 0) {
             String[] exceptionTypes = new String[types.length];

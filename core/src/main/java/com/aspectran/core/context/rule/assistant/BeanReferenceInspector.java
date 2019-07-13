@@ -20,8 +20,8 @@ import com.aspectran.core.component.bean.BeanRuleException;
 import com.aspectran.core.component.bean.BeanRuleRegistry;
 import com.aspectran.core.component.bean.NoUniqueBeanException;
 import com.aspectran.core.context.expr.token.Token;
-import com.aspectran.core.context.rule.BeanMethodActionRule;
 import com.aspectran.core.context.rule.BeanRule;
+import com.aspectran.core.context.rule.InvokeActionRule;
 import com.aspectran.core.context.rule.ability.BeanReferenceable;
 import com.aspectran.core.context.rule.appender.RuleAppender;
 import com.aspectran.core.context.rule.type.BeanRefererType;
@@ -145,7 +145,7 @@ public class BeanReferenceInspector {
             } else {
                 for (RefererInfo refererInfo : refererInfoSet) {
                     if (refererInfo.getBeanRefererType() == BeanRefererType.BEAN_METHOD_ACTION_RULE) {
-                        checkTransletActionParameter((BeanMethodActionRule)refererInfo.getReferenceable(),
+                        checkTransletActionParameter((InvokeActionRule)refererInfo.getReferenceable(),
                                 beanRule, refererInfo);
                     }
                 }
@@ -167,23 +167,23 @@ public class BeanReferenceInspector {
         return false;
     }
 
-    private void checkTransletActionParameter(BeanMethodActionRule beanMethodActionRule, BeanRule beanRule, RefererInfo refererInfo)
+    private void checkTransletActionParameter(InvokeActionRule invokeActionRule, BeanRule beanRule, RefererInfo refererInfo)
             throws BeanRuleException {
-        if (beanMethodActionRule.getArgumentItemRuleMap() == null) {
+        if (invokeActionRule.getArgumentItemRuleMap() == null) {
             Class<?> beanClass = beanRule.getTargetBeanClass();
-            String methodName = beanMethodActionRule.getMethodName();
+            String methodName = invokeActionRule.getMethodName();
             Method m1 = MethodUtils.getAccessibleMethod(beanClass, methodName, BeanRuleAnalyzer.TRANSLET_ACTION_PARAMETER_TYPES);
             if (m1 != null) {
-                beanMethodActionRule.setMethod(m1);
-                beanMethodActionRule.setRequiresTranslet(true);
+                invokeActionRule.setMethod(m1);
+                invokeActionRule.setRequiresTranslet(true);
             } else {
                 Method m2 = MethodUtils.getAccessibleMethod(beanClass, methodName);
                 if (m2 == null) {
                     throw new BeanRuleException("No such bean method " + methodName + "() on bean " + beanClass +
                             " in " + refererInfo, beanRule);
                 }
-                beanMethodActionRule.setMethod(m2);
-                beanMethodActionRule.setRequiresTranslet(false);
+                invokeActionRule.setMethod(m2);
+                invokeActionRule.setRequiresTranslet(false);
             }
         }
     }

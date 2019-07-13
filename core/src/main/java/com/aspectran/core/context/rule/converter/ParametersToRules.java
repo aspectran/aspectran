@@ -20,10 +20,8 @@ import com.aspectran.core.activity.process.ContentList;
 import com.aspectran.core.context.rule.AppendRule;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
-import com.aspectran.core.context.rule.BeanMethodActionRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.ChooseRule;
-import com.aspectran.core.context.rule.ChooseRuleMap;
 import com.aspectran.core.context.rule.ChooseWhenRule;
 import com.aspectran.core.context.rule.DispatchRule;
 import com.aspectran.core.context.rule.EchoActionRule;
@@ -34,6 +32,7 @@ import com.aspectran.core.context.rule.ForwardRule;
 import com.aspectran.core.context.rule.HeaderActionRule;
 import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.context.rule.IncludeActionRule;
+import com.aspectran.core.context.rule.InvokeActionRule;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.RedirectRule;
@@ -100,10 +99,6 @@ import java.util.List;
 public class ParametersToRules {
 
     private final ContextRuleAssistant assistant;
-
-    private TransletRule currentTransletRule;
-
-    private boolean chooseInside;
 
     public ParametersToRules(ContextRuleAssistant assistant) {
         this.assistant = assistant;
@@ -442,7 +437,6 @@ public class ParametersToRules {
         String method = transletParameters.getString(TransletParameters.method);
 
         TransletRule transletRule = TransletRule.newInstance(name, mask, scan, method);
-        currentTransletRule = transletRule;
 
         if (description != null) {
             transletRule.setDescription(description);
@@ -541,7 +535,6 @@ public class ParametersToRules {
             transletRule.setExceptionRule(exceptionRule);
         }
 
-        currentTransletRule = null;
         assistant.addTransletRule(transletRule);
     }
 
@@ -639,25 +632,25 @@ public class ParametersToRules {
             case "action": {
                 String beanIdOrClass = StringUtils.emptyToNull(actionParameters.getString(ActionParameters.bean));
                 String method = StringUtils.emptyToNull(actionParameters.getString(ActionParameters.method));
-                BeanMethodActionRule beanMethodActionRule = BeanMethodActionRule.newInstance(id, beanIdOrClass, method, hidden);
+                InvokeActionRule invokeActionRule = InvokeActionRule.newInstance(id, beanIdOrClass, method, hidden);
                 List<ItemHolderParameters> argumentItemHolderParametersList = actionParameters.getParametersList(ActionParameters.arguments);
                 if (argumentItemHolderParametersList != null) {
                     for (ItemHolderParameters itemHolderParameters : argumentItemHolderParametersList) {
                         ItemRuleMap irm = asItemRuleMap(itemHolderParameters);
-                        irm = assistant.profiling(irm, beanMethodActionRule.getArgumentItemRuleMap());
-                        beanMethodActionRule.setArgumentItemRuleMap(irm);
+                        irm = assistant.profiling(irm, invokeActionRule.getArgumentItemRuleMap());
+                        invokeActionRule.setArgumentItemRuleMap(irm);
                     }
                 }
                 List<ItemHolderParameters> propertyItemHolderParametersList = actionParameters.getParametersList(ActionParameters.properties);
                 if (propertyItemHolderParametersList != null) {
                     for (ItemHolderParameters itemHolderParameters : propertyItemHolderParametersList) {
                         ItemRuleMap irm = asItemRuleMap(itemHolderParameters);
-                        irm = assistant.profiling(irm, beanMethodActionRule.getPropertyItemRuleMap());
-                        beanMethodActionRule.setPropertyItemRuleMap(irm);
+                        irm = assistant.profiling(irm, invokeActionRule.getPropertyItemRuleMap());
+                        invokeActionRule.setPropertyItemRuleMap(irm);
                     }
                 }
-                assistant.resolveActionBeanClass(beanMethodActionRule);
-                actionRuleApplicable.applyActionRule(beanMethodActionRule);
+                assistant.resolveActionBeanClass(invokeActionRule);
+                actionRuleApplicable.applyActionRule(invokeActionRule);
                 break;
             }
             case "echo": {
@@ -711,34 +704,23 @@ public class ParametersToRules {
     }
 
     private void asChooseRule(ActionParameters actionParameters, ActionRuleApplicable actionRuleApplicable) throws IllegalRuleException {
-        if (chooseInside) {
-            throw new IllegalRuleException("The 'choose' element can not be nested within each other");
-        }
-        if (currentTransletRule == null) {
-            throw new IllegalRuleException("currentTransletRule must not be null");
-        }
-
         List<ChooseWhenParameters> chooseWhenParametersList = actionParameters.getParametersList(ActionParameters.when);
         ChooseWhenParameters chooseOtherwiseParameters = actionParameters.getParameters(ActionParameters.otherwise);
 
         if (chooseWhenParametersList != null && !chooseWhenParametersList.isEmpty() ||
                 chooseOtherwiseParameters != null) {
-            chooseInside = true;
-            ChooseRuleMap chooseRuleMap = currentTransletRule.touchChooseRuleMap();
-            ChooseRule chooseRule = chooseRuleMap.newChooseRule();
+            ChooseRule chooseRule = ChooseRule.newInstance();
             if (chooseWhenParametersList != null) {
                 for (ChooseWhenParameters chooseWhenParameters : chooseWhenParametersList) {
                     ChooseWhenRule chooseWhenRule = chooseRule.newChooseWhenRule();
                     asChooseWhenRule(chooseWhenParameters, chooseWhenRule);
-                    chooseWhenRule.join(actionRuleApplicable);
                 }
             }
             if (chooseOtherwiseParameters != null) {
                 ChooseWhenRule chooseWhenRule = chooseRule.newChooseWhenRule();
                 asChooseWhenRule(chooseOtherwiseParameters, chooseWhenRule);
-                chooseWhenRule.join(actionRuleApplicable);
             }
-            chooseInside = false;
+            actionRuleApplicable.applyActionRule(chooseRule);
         }
     }
 

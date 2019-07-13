@@ -28,7 +28,7 @@ import com.aspectran.core.util.ToStringBuilder;
  * 
  * <p>Created: 2008. 03. 22 PM 5:50:44</p>
  */
-public class EchoAction extends AbstractAction {
+public class EchoAction implements Executable {
 
     private final EchoActionRule echoActionRule;
 

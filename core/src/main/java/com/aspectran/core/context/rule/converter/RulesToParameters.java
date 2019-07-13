@@ -24,11 +24,10 @@ import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.activity.response.ResponseMap;
 import com.aspectran.core.activity.response.dispatch.DispatchResponse;
 import com.aspectran.core.activity.response.transform.TransformResponse;
-import com.aspectran.core.context.rule.AnnotatedMethodActionRule;
+import com.aspectran.core.context.rule.AnnotatedActionRule;
 import com.aspectran.core.context.rule.AppendRule;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
-import com.aspectran.core.context.rule.BeanMethodActionRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.ChooseRule;
 import com.aspectran.core.context.rule.ChooseWhenRule;
@@ -40,6 +39,7 @@ import com.aspectran.core.context.rule.ExceptionThrownRule;
 import com.aspectran.core.context.rule.ForwardRule;
 import com.aspectran.core.context.rule.HeaderActionRule;
 import com.aspectran.core.context.rule.IncludeActionRule;
+import com.aspectran.core.context.rule.InvokeActionRule;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.RedirectRule;
@@ -61,7 +61,6 @@ import com.aspectran.core.context.rule.params.AppendParameters;
 import com.aspectran.core.context.rule.params.AspectParameters;
 import com.aspectran.core.context.rule.params.AspectranParameters;
 import com.aspectran.core.context.rule.params.BeanParameters;
-import com.aspectran.core.context.rule.params.ChooseParameters;
 import com.aspectran.core.context.rule.params.ChooseWhenParameters;
 import com.aspectran.core.context.rule.params.ConstructorParameters;
 import com.aspectran.core.context.rule.params.ContentParameters;
@@ -439,41 +438,6 @@ public class RulesToParameters {
             }
         }
 
-        if (transletRule.getChooseRuleMap() != null) {
-            for (ChooseRule chooseRule : transletRule.getChooseRuleMap().values()) {
-                ChooseParameters chooseParameters = transletParameters.newParameters(TransletParameters.choose);
-                chooseParameters.putValue(ChooseParameters.caseNo, chooseRule.getCaseNo());
-                if (chooseRule.getChooseWhenRuleMap() != null) {
-                    for (ChooseWhenRule chooseWhenRule : chooseRule.getChooseWhenRuleMap().values()) {
-                        ChooseWhenParameters chooseWhenParameters;
-                        if (chooseWhenRule.getExpression() != null) {
-                            chooseWhenParameters = chooseParameters.newParameters(ChooseParameters.when);
-                        } else {
-                            chooseWhenParameters = chooseParameters.newParameters(ChooseParameters.otherwise);
-                        }
-                        chooseWhenParameters.putValue(ChooseWhenParameters.caseNo, chooseWhenRule.getCaseNo());
-                        chooseWhenParameters.putValueNonNull(ChooseWhenParameters.test, chooseWhenRule.getExpression());
-                        if (chooseWhenRule.getResponse() != null) {
-                            Response response = chooseWhenRule.getResponse();
-                            if (response.getResponseType() == ResponseType.TRANSFORM) {
-                                TransformResponse transformResponse = (TransformResponse)response;
-                                chooseWhenParameters.putValue(ChooseWhenParameters.transform, toTransformParameters(transformResponse.getTransformRule()));
-                            } else if (response.getResponseType() == ResponseType.DISPATCH) {
-                                DispatchResponse dispatchResponse = (DispatchResponse)response;
-                                chooseWhenParameters.putValue(ChooseWhenParameters.dispatch, toDispatchParameters(dispatchResponse.getDispatchRule()));
-                            } else if (response.getResponseType() == ResponseType.FORWARD) {
-                                ForwardResponse forwardResponse = (ForwardResponse)response;
-                                chooseWhenParameters.putValue(ChooseWhenParameters.forward, toForwardParameters(forwardResponse.getForwardRule()));
-                            } else if (response.getResponseType() == ResponseType.REDIRECT) {
-                                RedirectResponse redirectResponse = (RedirectResponse)response;
-                                chooseWhenParameters.putValue(ChooseWhenParameters.redirect, toRedirectParameters(redirectResponse.getRedirectRule()));
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
         ContentList contentList = transletRule.getContentList();
         if (contentList != null) {
             if (contentList.isExplicit()) {
@@ -554,9 +518,9 @@ public class RulesToParameters {
             }
         }
 
-        if (exceptionThrownRule.getActionType() == ActionType.BEAN_METHOD) {
-            BeanMethodActionRule beanMethodActionRule = exceptionThrownRule.getAction().getActionRule();
-            etParameters.putValue(ExceptionThrownParameters.action, toActionParameters(beanMethodActionRule));
+        if (exceptionThrownRule.getActionType() == ActionType.ACTION) {
+            InvokeActionRule invokeActionRule = exceptionThrownRule.getAction().getActionRule();
+            etParameters.putValue(ExceptionThrownParameters.action, toActionParameters(invokeActionRule));
         } else if (exceptionThrownRule.getActionType() == ActionType.ECHO) {
             EchoActionRule echoActionRule = exceptionThrownRule.getAction().getActionRule();
             etParameters.putValue(ExceptionThrownParameters.action, toActionParameters(echoActionRule));
@@ -748,12 +712,12 @@ public class RulesToParameters {
     private static void toActionParameters(ActionList actionList, Parameters parameters, ParameterKey actionParam) {
         for (Executable action : actionList) {
             ActionParameters actionParameters = null;
-            if (action.getActionType() == ActionType.BEAN_METHOD) {
-                BeanMethodActionRule beanMethodActionRule = action.getActionRule();
-                actionParameters = toActionParameters(beanMethodActionRule);
-            } else if (action.getActionType() == ActionType.ANNOTATED_METHOD) {
-                AnnotatedMethodActionRule annotatedMethodActionRule = action.getActionRule();
-                actionParameters = toActionParameters(annotatedMethodActionRule);
+            if (action.getActionType() == ActionType.ACTION) {
+                InvokeActionRule invokeActionRule = action.getActionRule();
+                actionParameters = toActionParameters(invokeActionRule);
+            } else if (action.getActionType() == ActionType.ACTION_ANNOTATED) {
+                AnnotatedActionRule annotatedActionRule = action.getActionRule();
+                actionParameters = toActionParameters(annotatedActionRule);
             } else if (action.getActionType() == ActionType.INCLUDE) {
                 IncludeActionRule includeActionRule = action.getActionRule();
                 actionParameters = toActionParameters(includeActionRule);
@@ -763,23 +727,23 @@ public class RulesToParameters {
             } else if (action.getActionType() == ActionType.HEADER) {
                 HeaderActionRule headerActionRule = action.getActionRule();
                 actionParameters = toActionParameters(headerActionRule);
+            } else if (action.getActionType() == ActionType.CHOOSE) {
+                ChooseRule chooseRule = action.getActionRule();
+                actionParameters = toActionParameters(chooseRule);
             }
             if (actionParameters != null) {
-                if (action.getCaseNo() > 0) {
-                    actionParameters.putValue(ActionParameters.caseNo, action.getCaseNo());
-                }
                 parameters.putValue(actionParam, actionParameters);
             }
         }
     }
 
     private static void toAdviceActionParameters(AspectAdviceRule aspectAdviceRule, AdviceActionParameters adviceActionParameters) {
-        if (aspectAdviceRule.getActionType() == ActionType.BEAN_METHOD) {
-            BeanMethodActionRule beanMethodActionRule = aspectAdviceRule.getExecutableAction().getActionRule();
-            adviceActionParameters.putValue(AdviceActionParameters.action, toActionParameters(beanMethodActionRule));
-        } else if (aspectAdviceRule.getActionType() == ActionType.ANNOTATED_METHOD) {
-            AnnotatedMethodActionRule annotatedMethodActionRule = aspectAdviceRule.getExecutableAction().getActionRule();
-            adviceActionParameters.putValue(AdviceActionParameters.action, toActionParameters(annotatedMethodActionRule));
+        if (aspectAdviceRule.getActionType() == ActionType.ACTION) {
+            InvokeActionRule invokeActionRule = aspectAdviceRule.getExecutableAction().getActionRule();
+            adviceActionParameters.putValue(AdviceActionParameters.action, toActionParameters(invokeActionRule));
+        } else if (aspectAdviceRule.getActionType() == ActionType.ACTION_ANNOTATED) {
+            AnnotatedActionRule annotatedActionRule = aspectAdviceRule.getExecutableAction().getActionRule();
+            adviceActionParameters.putValue(AdviceActionParameters.action, toActionParameters(annotatedActionRule));
         } else if (aspectAdviceRule.getActionType() == ActionType.ECHO) {
             EchoActionRule echoActionRule = aspectAdviceRule.getExecutableAction().getActionRule();
             adviceActionParameters.putValue(AdviceActionParameters.action, toActionParameters(echoActionRule));
@@ -789,23 +753,57 @@ public class RulesToParameters {
         }
     }
 
-    public static ActionParameters toActionParameters(BeanMethodActionRule beanMethodActionRule) {
-        if (beanMethodActionRule == null) {
-            throw new IllegalArgumentException("beanMethodActionRule must not be null");
+    public static ActionParameters toActionParameters(HeaderActionRule headerActionRule) {
+        if (headerActionRule == null) {
+            throw new IllegalArgumentException("headerActionRule must not be null");
         }
 
         ActionParameters actionParameters = new ActionParameters();
-        actionParameters.putValueNonNull(ActionParameters.id, beanMethodActionRule.getActionId());
-        actionParameters.putValueNonNull(ActionParameters.bean, beanMethodActionRule.getBeanId());
-        actionParameters.putValueNonNull(ActionParameters.method, beanMethodActionRule.getMethodName());
-        actionParameters.putValueNonNull(ActionParameters.hidden, beanMethodActionRule.getHidden());
+        actionParameters.putValueNonNull(ActionParameters.id, headerActionRule.getActionId());
+        actionParameters.putValueNonNull(ActionParameters.hidden, headerActionRule.getHidden());
 
-        ItemRuleMap propertyItemRuleMap = beanMethodActionRule.getPropertyItemRuleMap();
+        ItemRuleMap headerItemRuleMap = headerActionRule.getHeaderItemRuleMap();
+        if (headerItemRuleMap != null) {
+            toItemRuleMap(actionParameters, headerItemRuleMap);
+        }
+
+        return actionParameters;
+    }
+
+    public static ActionParameters toActionParameters(EchoActionRule echoActionRule) {
+        if (echoActionRule == null) {
+            throw new IllegalArgumentException("echoActionRule must not be null");
+        }
+
+        ActionParameters actionParameters = new ActionParameters();
+        actionParameters.putValueNonNull(ActionParameters.id, echoActionRule.getActionId());
+        actionParameters.putValueNonNull(ActionParameters.hidden, echoActionRule.getHidden());
+
+        ItemRuleMap attributeItemRuleMap = echoActionRule.getAttributeItemRuleMap();
+        if (attributeItemRuleMap != null) {
+            toItemRuleMap(actionParameters, attributeItemRuleMap);
+        }
+
+        return actionParameters;
+    }
+
+    public static ActionParameters toActionParameters(InvokeActionRule invokeActionRule) {
+        if (invokeActionRule == null) {
+            throw new IllegalArgumentException("invokeActionRule must not be null");
+        }
+
+        ActionParameters actionParameters = new ActionParameters();
+        actionParameters.putValueNonNull(ActionParameters.id, invokeActionRule.getActionId());
+        actionParameters.putValueNonNull(ActionParameters.bean, invokeActionRule.getBeanId());
+        actionParameters.putValueNonNull(ActionParameters.method, invokeActionRule.getMethodName());
+        actionParameters.putValueNonNull(ActionParameters.hidden, invokeActionRule.getHidden());
+
+        ItemRuleMap propertyItemRuleMap = invokeActionRule.getPropertyItemRuleMap();
         if (propertyItemRuleMap != null) {
             toItemHolderParameters(propertyItemRuleMap, actionParameters, ActionParameters.properties);
         }
 
-        ItemRuleMap argumentItemRuleMap = beanMethodActionRule.getArgumentItemRuleMap();
+        ItemRuleMap argumentItemRuleMap = invokeActionRule.getArgumentItemRuleMap();
         if (argumentItemRuleMap != null) {
             toItemHolderParameters(argumentItemRuleMap, actionParameters, ActionParameters.arguments);
         }
@@ -813,15 +811,15 @@ public class RulesToParameters {
         return actionParameters;
     }
 
-    public static ActionParameters toActionParameters(AnnotatedMethodActionRule annotatedMethodActionRule) {
-        if (annotatedMethodActionRule == null) {
-            throw new IllegalArgumentException("annotatedMethodActionRule must not be null");
+    public static ActionParameters toActionParameters(AnnotatedActionRule annotatedActionRule) {
+        if (annotatedActionRule == null) {
+            throw new IllegalArgumentException("annotatedActionRule must not be null");
         }
 
         ActionParameters actionParameters = new ActionParameters();
-        actionParameters.putValueNonNull(ActionParameters.id, annotatedMethodActionRule.getActionId());
-        actionParameters.putValueNonNull(ActionParameters.bean, annotatedMethodActionRule.getBeanClass().toString());
-        actionParameters.putValueNonNull(ActionParameters.method, annotatedMethodActionRule.getMethod().toString());
+        actionParameters.putValueNonNull(ActionParameters.id, annotatedActionRule.getActionId());
+        actionParameters.putValueNonNull(ActionParameters.bean, annotatedActionRule.getBeanClass().toString());
+        actionParameters.putValueNonNull(ActionParameters.method, annotatedActionRule.getMethod().toString());
         return actionParameters;
     }
 
@@ -849,37 +847,43 @@ public class RulesToParameters {
         return actionParameters;
     }
 
-    public static ActionParameters toActionParameters(EchoActionRule echoActionRule) {
-        if (echoActionRule == null) {
-            throw new IllegalArgumentException("echoActionRule must not be null");
+    private static ActionParameters toActionParameters(ChooseRule chooseRule) {
+        if (chooseRule == null) {
+            throw new IllegalArgumentException("chooseRule must not be null");
         }
 
         ActionParameters actionParameters = new ActionParameters();
-        actionParameters.putValueNonNull(ActionParameters.id, echoActionRule.getActionId());
-        actionParameters.putValueNonNull(ActionParameters.hidden, echoActionRule.getHidden());
-
-        ItemRuleMap attributeItemRuleMap = echoActionRule.getAttributeItemRuleMap();
-        if (attributeItemRuleMap != null) {
-            toItemRuleMap(actionParameters, attributeItemRuleMap);
+        if (chooseRule.getChooseWhenRules() != null) {
+            for (ChooseWhenRule chooseWhenRule : chooseRule.getChooseWhenRules()) {
+                ChooseWhenParameters chooseWhenParameters;
+                if (chooseWhenRule.getExpression() != null) {
+                    chooseWhenParameters = actionParameters.newParameters(ActionParameters.when);
+                } else {
+                    chooseWhenParameters = actionParameters.newParameters(ActionParameters.otherwise);
+                }
+                chooseWhenParameters.putValueNonNull(ChooseWhenParameters.test, chooseWhenRule.getExpression());
+                if (chooseWhenRule.getResponse() != null) {
+                    Response response = chooseWhenRule.getResponse();
+                    if (response.getResponseType() == ResponseType.TRANSFORM) {
+                        TransformResponse transformResponse = (TransformResponse)response;
+                        TransformParameters transformParameters = toTransformParameters(transformResponse.getTransformRule());
+                        chooseWhenParameters.putValue(ChooseWhenParameters.transform, transformParameters);
+                    } else if (response.getResponseType() == ResponseType.DISPATCH) {
+                        DispatchResponse dispatchResponse = (DispatchResponse)response;
+                        DispatchParameters dispatchParameters = toDispatchParameters(dispatchResponse.getDispatchRule());
+                        chooseWhenParameters.putValue(ChooseWhenParameters.dispatch, dispatchParameters);
+                    } else if (response.getResponseType() == ResponseType.FORWARD) {
+                        ForwardResponse forwardResponse = (ForwardResponse)response;
+                        ForwardParameters forwardParameters = toForwardParameters(forwardResponse.getForwardRule());
+                        chooseWhenParameters.putValue(ChooseWhenParameters.forward, forwardParameters);
+                    } else if (response.getResponseType() == ResponseType.REDIRECT) {
+                        RedirectResponse redirectResponse = (RedirectResponse)response;
+                        RedirectParameters redirectParameters = toRedirectParameters(redirectResponse.getRedirectRule());
+                        chooseWhenParameters.putValue(ChooseWhenParameters.redirect, redirectParameters);
+                    }
+                }
+            }
         }
-
-        return actionParameters;
-    }
-
-    public static ActionParameters toActionParameters(HeaderActionRule headerActionRule) {
-        if (headerActionRule == null) {
-            throw new IllegalArgumentException("headerActionRule must not be null");
-        }
-
-        ActionParameters actionParameters = new ActionParameters();
-        actionParameters.putValueNonNull(ActionParameters.id, headerActionRule.getActionId());
-        actionParameters.putValueNonNull(ActionParameters.hidden, headerActionRule.getHidden());
-
-        ItemRuleMap headerItemRuleMap = headerActionRule.getHeaderItemRuleMap();
-        if (headerItemRuleMap != null) {
-            toItemRuleMap(actionParameters, headerItemRuleMap);
-        }
-
         return actionParameters;
     }
 
