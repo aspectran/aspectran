@@ -38,7 +38,7 @@
             |   the console? If so, try running the "hello2" command.
             |
         </description>
-        <transform type="transform/text">
+        <transform type="text">
             <action id="helloWorld" bean="helloAction" method="helloWorld"/>
         </transform>
     </translet>
@@ -53,7 +53,7 @@
             |
         </description>
         <action id="helloWorld" bean="helloAction" method="helloWorld"/>
-        <transform type="transform/text">
+        <transform type="text">
             <template style="apon">
                 |
                 |   {{bg:green}}                         {{reset}}

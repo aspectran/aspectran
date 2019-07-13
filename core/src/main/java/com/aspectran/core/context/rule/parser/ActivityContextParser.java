@@ -29,6 +29,8 @@ public interface ActivityContextParser {
 
     void setEncoding(String encoding);
 
+    void setUseXmlToApon(boolean useXmlToApon);
+
     void setDebugMode(boolean debugMode);
 
     ContextRuleAssistant parse(String rootFile) throws ActivityContextParserException;

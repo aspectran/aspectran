@@ -37,7 +37,7 @@ public interface RuleAppendHandler {
 
     void setCurrentRuleAppender(RuleAppender currentRuleAppender);
 
-    boolean isDebugMode();
+    void setUseAponToLoadXml(boolean useAponToLoadXml);
 
     void setDebugMode(boolean debugMode);
 

@@ -39,7 +39,6 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
     public void add(String xpath, NodeletParser parser) {
         AspectranNodeParser nodeParser = parser.getNodeParser();
         ActionNodeletAdder actionNodeletAdder = nodeParser.getActionNodeletAdder();
-        ChooseWhenNodeletAdder chooseWhenNodeletAdder = nodeParser.getChooseWhenNodeletAdder();
         ItemNodeletAdder itemNodeletAdder = nodeParser.getItemNodeletAdder();
         ContextRuleAssistant assistant = nodeParser.getAssistant();
 

@@ -24,7 +24,6 @@ import com.aspectran.core.context.rule.params.EntryParameters;
 import com.aspectran.core.context.rule.params.ItemParameters;
 import com.aspectran.core.context.rule.type.ItemType;
 import com.aspectran.core.context.rule.type.ItemValueType;
-import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.ToStringBuilder;
 import com.aspectran.core.util.apon.Parameters;
@@ -685,35 +684,6 @@ public class ItemRule {
         }
 
         return itemRule;
-    }
-
-    /**
-     * Returns a made reference token.
-     *
-     * @param bean the bean id
-     * @param template the template id
-     * @param parameter the parameter name
-     * @param attribute the attribute name
-     * @param property the property name
-     * @return the token
-     */
-    public static Token makeReferenceToken(String bean, String template, String parameter,
-                                           String attribute, String property) {
-        Token token;
-        if (bean != null) {
-            token = new Token(TokenType.BEAN, bean);
-        } else if (template != null) {
-            token = new Token(TokenType.TEMPLATE, template);
-        } else if (parameter != null) {
-            token = new Token(TokenType.PARAMETER, parameter);
-        } else if (attribute != null) {
-            token = new Token(TokenType.ATTRIBUTE, attribute);
-        } else if (property != null) {
-            token = new Token(TokenType.PROPERTY, property);
-        } else {
-            token = null;
-        }
-        return token;
     }
 
     /**

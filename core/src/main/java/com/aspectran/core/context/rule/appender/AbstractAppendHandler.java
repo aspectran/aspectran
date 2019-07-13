@@ -40,6 +40,8 @@ abstract class AbstractAppendHandler implements RuleAppendHandler {
 
     private RuleAppender currentRuleAppender;
 
+    private boolean useAponToLoadXml;
+
     private boolean debugMode;
 
     AbstractAppendHandler(ContextRuleAssistant assistant) {
@@ -121,8 +123,16 @@ abstract class AbstractAppendHandler implements RuleAppendHandler {
         this.currentRuleAppender = currentRuleAppender;
     }
 
+    protected boolean isUseAponToLoadXml() {
+        return useAponToLoadXml;
+    }
+
     @Override
-    public boolean isDebugMode() {
+    public void setUseAponToLoadXml(boolean useAponToLoadXml) {
+        this.useAponToLoadXml = useAponToLoadXml;
+    }
+
+    protected boolean isDebugMode() {
         return debugMode;
     }
 

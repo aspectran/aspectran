@@ -28,8 +28,12 @@ import com.aspectran.core.util.nodelet.NodeletParser;
  */
 class ChooseWhenNodeletAdder implements NodeletAdder {
 
+    private int nestedCount;
+
     @Override
     public void add(String xpath, NodeletParser parser) {
+        nestedCount++;
+
         AspectranNodeParser nodeParser = parser.getNodeParser();
         ActionNodeletAdder actionNodeletAdder = nodeParser.getActionNodeletAdder();
         ResponseInnerNodeletAdder responseInnerNodeletAdder = nodeParser.getResponseInnerNodeletAdder();
@@ -59,6 +63,10 @@ class ChooseWhenNodeletAdder implements NodeletAdder {
         parser.addNodeEndlet(text -> {
             parser.popObject();
         });
+    }
+
+    public int getNestedCount() {
+        return nestedCount;
     }
 
 }

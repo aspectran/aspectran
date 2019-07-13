@@ -16,7 +16,7 @@
             <item name="param1" mandatory="false">${param1:hello}</item>
             <item name="param2" mandatory="true"/>
         </parameters>
-        <transform type="transform/text">
+        <transform type="text">
             <template engine="token" style="apon">
                 |----------------------------------------------------------
                 |The parameters you entered are:
@@ -38,7 +38,7 @@
             <item name="param2">${prefix} - 2</item>
             <item name="param3">${prefix} - 3</item>
         </parameters>
-        <transform type="transform/text">
+        <transform type="text">
             <template engine="token" style="apon">
                 |----------------------------------------------------------
                 |The parameters you entered are:
@@ -64,7 +64,7 @@
         <attributes>
             <item name="attr1">fourth ${param4:blank}</item>
         </attributes>
-        <transform type="transform/text">
+        <transform type="text">
             <template engine="token" style="apon">
                 |----------------------------------------------------------
                 |The input parameters and attributes are as follows:
@@ -89,7 +89,7 @@
             <item name="attr2" mandatory="true" secret="true">${password}</item>
             <item name="attr3" mandatory="true">${attr3}</item>
         </attributes>
-        <transform type="transform/text">
+        <transform type="text">
             <template style="apon">
                 |-------------------------------------------------------------------------
                 |You have entered the following parameters:
@@ -111,7 +111,7 @@
             <item name="attr2" mandatory="true"/>
             <item name="attr3" mandatory="true" secret="true"/>
         </attributes>
-        <transform type="transform/text">
+        <transform type="text">
             <template style="apon">
                 |-------------------------------------------------------------------------
                 |You have entered the following attributes:
@@ -133,7 +133,7 @@
             <item name="attr2" mandatory="true">${param2}:${param1}</item>
             <item name="attr3"/>
         </attributes>
-        <transform type="transform/text">
+        <transform type="text">
             <template style="apon">
                 |-------------------------------------------------------------------------
                 |You have entered the following parameters:
@@ -158,7 +158,7 @@
             <item name="attr2" mandatory="true">${param2}:${param1}</item>
             <item name="attr3"/>
         </attributes>
-        <transform type="transform/text">
+        <transform type="text">
             <template style="apon">
                 |-------------------------------------------------------------------------
                 |You have entered the following parameters:

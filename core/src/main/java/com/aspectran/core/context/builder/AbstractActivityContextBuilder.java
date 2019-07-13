@@ -98,6 +98,8 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
 
     private AspectranClassLoader aspectranClassLoader;
 
+    private boolean useAponToLoadXml;
+
     private boolean debugMode;
 
     public AbstractActivityContextBuilder(ApplicationAdapter applicationAdapter) {
@@ -105,6 +107,7 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
             throw new IllegalArgumentException("applicationAdapter must not be null");
         }
         this.applicationAdapter = applicationAdapter;
+        this.useAponToLoadXml = Boolean.parseBoolean(SystemUtils.getProperty(USE_APON_TO_LOAD_XML_PROPERTY_NAME));
         this.debugMode = Boolean.parseBoolean(SystemUtils.getProperty(DEBUG_MODE_PROPERTY_NAME));
     }
 
@@ -300,7 +303,15 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
         }
     }
 
+    protected boolean isUseAponToLoadXml() {
+        return useAponToLoadXml;
+    }
+
     @Override
+    public void setUseAponToLoadXml(boolean useAponToLoadXml) {
+        this.useAponToLoadXml = useAponToLoadXml;
+    }
+
     public boolean isDebugMode() {
         return debugMode;
     }

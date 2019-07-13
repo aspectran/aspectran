@@ -31,6 +31,8 @@ public interface ActivityContextBuilder {
 
     String DEBUG_MODE_PROPERTY_NAME = "com.aspectran.core.context.builder.debugMode";
 
+    String USE_APON_TO_LOAD_XML_PROPERTY_NAME = "com.aspectran.core.context.builder.useAponToLoadXml";
+
     ApplicationAdapter getApplicationAdapter();
 
     ContextConfig getContextConfig();
@@ -105,7 +107,7 @@ public interface ActivityContextBuilder {
 
     boolean isActive();
 
-    boolean isDebugMode();
+    void setUseAponToLoadXml(boolean useAponToLoadXml);
 
     void setDebugMode(boolean debugMode);
 

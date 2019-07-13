@@ -15,11 +15,13 @@
  */
 package com.aspectran.core.context.rule.appender;
 
+import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.context.rule.assistant.AssistantLocal;
 import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;
 import com.aspectran.core.context.rule.converter.ParametersToRules;
 import com.aspectran.core.context.rule.params.AspectranParameters;
 import com.aspectran.core.context.rule.params.RootParameters;
+import com.aspectran.core.context.rule.parser.xml.AspectranNodeParser;
 import com.aspectran.core.context.rule.type.AppendedFileFormatType;
 import com.aspectran.core.context.rule.type.AppenderType;
 import com.aspectran.core.util.apon.AponWriter;
@@ -40,11 +42,10 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
 
     private final String encoding;
 
-    private ParametersToRules ruleConverter;
+    private AspectranNodeParser aspectranNodeParser;
 
     public HybridRuleAppendHandler(ContextRuleAssistant assistant, String encoding) {
         super(assistant);
-
         this.encoding = encoding;
     }
 
@@ -57,14 +58,14 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
             if (appender.getAppenderType() == AppenderType.PARAMETERS) {
                 AspectranParameters aspectranParameters = appender.getAppendRule().getAspectranParameters();
                 RootParameters rootParameters = new RootParameters(aspectranParameters);
-                getRuleConverter().asRules(rootParameters);
+                convertAsRules(rootParameters);
             } else if (appender.getAppendedFileFormatType() == AppendedFileFormatType.APON) {
                 try (Reader reader = appender.getReader(encoding)) {
                     RootParameters rootParameters = new RootParameters(reader);
-                    getRuleConverter().asRules(rootParameters);
+                    convertAsRules(rootParameters);
                 }
-            } else {
-                /* TODO Using APON to load XML configuration */
+            } else if (isUseAponToLoadXml()) {
+                // Using APON to load XML configuration
                 RootParameters rootParameters;
                 if (appender.getAppenderType() == AppenderType.FILE) {
                     FileRuleAppender fileRuleAppender = (FileRuleAppender)appender;
@@ -77,7 +78,10 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
                         rootParameters = XmlToApon.from(reader, RootParameters.class);
                     }
                 }
-                getRuleConverter().asRules(rootParameters);
+                convertAsRules(rootParameters);
+            } else {
+                // Using Nodelet to load XML configuration: It is much faster than APON
+                getAspectranNodeParser().parse(appender);
             }
         }
 
@@ -89,22 +93,25 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
         }
     }
 
-    private ParametersToRules getRuleConverter() {
-        if (ruleConverter == null) {
-            ruleConverter = new ParametersToRules(getContextRuleAssistant());
+    private AspectranNodeParser getAspectranNodeParser() {
+        if (aspectranNodeParser == null) {
+            aspectranNodeParser = new AspectranNodeParser(getContextRuleAssistant());
         }
-        return ruleConverter;
+        return aspectranNodeParser;
+    }
+
+    private void convertAsRules(RootParameters rootParameters) throws IllegalRuleException {
+        new ParametersToRules(getContextRuleAssistant()).asRules(rootParameters);
     }
 
     private void saveAsAponFile(FileRuleAppender fileRuleAppender, RootParameters rootParameters) throws IOException {
+        File aponFile = makeAponFile(fileRuleAppender);
+
         if (log.isDebugEnabled()) {
-            log.debug("Save as APON file: " + fileRuleAppender);
+            log.debug("Save as APON file: " + aponFile);
         }
 
-        File aponFile = null;
         try {
-            aponFile = makeAponFile(fileRuleAppender);
-
             AponWriter aponWriter;
             if (encoding != null) {
                 OutputStream outputStream = new FileOutputStream(aponFile);

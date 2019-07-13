@@ -18,7 +18,7 @@
             <item name="email" mandatory="true">${id}@${domain}</item>
             <item name="password" secret="true" value="${password:(none)}"/>
         </parameters>
-        <transform type="transform/text">
+        <transform type="text">
             <template style="apon">
                 |-------------------------------------------------------------------------
                 |You have entered the following parameters for login:
@@ -41,7 +41,7 @@
             <item name="password" secret="true"/>
             <item name="confirmPassword" secret="true"/>
         </parameters>
-        <transform type="transform/text">
+        <transform type="text">
             <template style="apon">
                 |------------------------------------------------------------------------------------
                 |You have entered the following parameters for changing the password:

@@ -37,6 +37,8 @@ public abstract class AbstractActivityContextParser implements ActivityContextPa
 
     private String encoding;
 
+    private boolean useXmlToApon;
+
     private boolean debugMode;
 
     public AbstractActivityContextParser(ContextRuleAssistant assistant) {
@@ -57,7 +59,16 @@ public abstract class AbstractActivityContextParser implements ActivityContextPa
         this.encoding = encoding;
     }
 
-    public boolean isDebugMode() {
+    protected boolean isUseXmlToApon() {
+        return useXmlToApon;
+    }
+
+    @Override
+    public void setUseXmlToApon(boolean useXmlToApon) {
+        this.useXmlToApon = useXmlToApon;
+    }
+
+    protected boolean isDebugMode() {
         return debugMode;
     }
 

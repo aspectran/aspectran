@@ -67,75 +67,42 @@ class ItemNodeletAdder implements NodeletAdder {
             itemRuleMap.putItemRule(itemRule);
         });
         parser.setXpath(xpath + "/item/value");
-        parser.addNodelet(attrs -> {
-            ItemRule itemRule = parser.peekObject();
-
-            String name = attrs.get("name");
-            boolean tokenize = BooleanUtils.toBoolean(BooleanUtils.toNullableBooleanObject(attrs.get("tokenize")),
-                    itemRule.isTokenize());
-
-            parser.pushObject(name);
-            parser.pushObject(tokenize);
-            parser.pushObject(null); // tokens
-        });
-        parser.setXpath(xpath + "/item/value/call");
-        parser.addNodelet(attrs -> {
-            String bean= attrs.get("bean");
-            String template= attrs.get("template");
-            String parameter = attrs.get("parameter");
-            String attribute = attrs.get("attribute");
-            String property = attrs.get("property");
-
-            Token t = ItemRule.makeReferenceToken(bean, template, parameter, attribute, property);
-            if (t != null) {
-                Token[] tokens = new Token[] { t };
-
-                parser.popObject();
-                parser.pushObject(tokens);
-            }
-        });
-        parser.setXpath(xpath + "/item/value/null");
-        parser.addNodelet(attrs -> {
-            parser.popObject();
-            parser.pushObject(null);
-        });
-        parser.setXpath(xpath + "/item/value");
         parser.addNodeEndlet(text -> {
-            Token[] tokens = parser.popObject();
-            boolean tokenize = parser.popObject();
-            String name = parser.popObject();
-            ItemRule itemRule = parser.peekObject();
-
-            if (tokens == null && StringUtils.hasText(text)) {
-                tokens = TokenParser.makeTokens(text, tokenize);
-            }
-
-            if (itemRule.isListableType()) {
-                itemRule.addValue(tokens);
-            } else if (itemRule.isMappableType()) {
-                itemRule.putValue(name, tokens);
-            } else {
-                itemRule.setValue(tokens);
+            if (StringUtils.hasText(text)) {
+                ItemRule itemRule = parser.peekObject();
+                if (itemRule.isListableType()) {
+                    itemRule.addValue(TokenParser.makeTokens(text, itemRule.isTokenize()));
+                } else if (itemRule.getType() == ItemType.SINGLE) {
+                    itemRule.setValue(TokenParser.makeTokens(text, itemRule.isTokenize()));
+                }
             }
         });
-        parser.setXpath(xpath + "/item/call");
+        parser.setXpath(xpath + "/item/entry");
         parser.addNodelet(attrs -> {
-            String bean = StringUtils.emptyToNull(attrs.get("bean"));
-            String template = StringUtils.emptyToNull(attrs.get("template"));
-            String parameter = StringUtils.emptyToNull(attrs.get("parameter"));
-            String attribute = StringUtils.emptyToNull(attrs.get("attribute"));
-            String property = StringUtils.emptyToNull(attrs.get("property"));
+            String name = attrs.get("name");
+            String value = attrs.get("value");
+            String tokenize = attrs.get("tokenize");
 
+            parser.pushObject(tokenize);
+            parser.pushObject(value);
+            parser.pushObject(name);
+        });
+        parser.addNodeEndlet(text -> {
+            String name = parser.popObject();
+            String value = parser.popObject();
+            String tokenize = parser.popObject();
             ItemRule itemRule = parser.peekObject();
 
-            Token t = ItemRule.makeReferenceToken(bean, template, parameter, attribute, property);
-            if (t != null) {
-                Token[] tokens = new Token[] { t };
-                if (itemRule.isListableType()) {
-                    itemRule.addValue(tokens);
-                } else {
-                    itemRule.setValue(tokens);
+            if (itemRule.isMappableType()) {
+                boolean isTokenize = BooleanUtils.toBoolean(BooleanUtils.toNullableBooleanObject(tokenize),
+                        itemRule.isTokenize());
+                Token[] tokens = null;
+                if (StringUtils.hasText(value)) {
+                    tokens = TokenParser.makeTokens(value, isTokenize);
+                } else if (StringUtils.hasText(text)) {
+                    tokens = TokenParser.makeTokens(text, isTokenize);
                 }
+                itemRule.putValue(name, tokens);
             }
         });
     }

@@ -171,15 +171,17 @@ class ActionNodeletAdder implements NodeletAdder {
             irm = assistant.profiling(irm, includeActionRule.getAttributeItemRuleMap());
             includeActionRule.setAttributeItemRuleMap(irm);
         });
-        parser.setXpath(xpath + "/choose");
-        parser.addNodelet(attrs -> {
-            ChooseRule chooseRule = ChooseRule.newInstance();
-            parser.pushObject(chooseRule);
-        });
-        parser.addNodelet(chooseWhenNodeletAdder);
-        parser.addNodeEndlet(text -> {
-            parser.popObject();
-        });
+        if (chooseWhenNodeletAdder.getNestedCount() < 5) {
+            parser.setXpath(xpath + "/choose");
+            parser.addNodelet(attrs -> {
+                ChooseRule chooseRule = ChooseRule.newInstance();
+                parser.pushObject(chooseRule);
+            });
+            parser.addNodelet(chooseWhenNodeletAdder);
+            parser.addNodeEndlet(text -> {
+                parser.popObject();
+            });
+        }
     }
 
 }

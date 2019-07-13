@@ -22,13 +22,13 @@ package com.aspectran.core.context.rule.type;
  */
 public enum TransformType {
 
-    NONE("transform/none"),
-    CUSTOM("transform/custom"),
-    TEXT("transform/text"),
-    APON("transform/apon"),
-    JSON("transform/json"),
-    XML("transform/xml"),
-    XSL("transform/xsl");
+    NONE("none"),
+    CUSTOM("custom"),
+    TEXT("text"),
+    APON("apon"),
+    JSON("json"),
+    XML("xml"),
+    XSL("xsl");
 
     private final String alias;
 
