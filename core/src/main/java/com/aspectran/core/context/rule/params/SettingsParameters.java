@@ -15,7 +15,6 @@
  */
 package com.aspectran.core.context.rule.params;
 
-import com.aspectran.core.context.rule.type.DefaultSettingType;
 import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterKey;
 
@@ -37,9 +36,9 @@ public class SettingsParameters extends AbstractParameters {
         super(parameterKeys);
     }
 
-    public void putSetting(DefaultSettingType defaultSettingType, Object value) {
+    public void putSetting(String name, Object value) {
         SettingParameters settingParameters = newParameters(setting);
-        settingParameters.putValue(SettingParameters.name, defaultSettingType.toString());
+        settingParameters.putValue(SettingParameters.name, name);
         settingParameters.putValue(SettingParameters.value, value);
     }
 

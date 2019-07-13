@@ -40,4 +40,16 @@ public class SettingParameters extends AbstractParameters {
         super(parameterKeys);
     }
 
+    public String getName() {
+        return getString(name);
+    }
+
+    public Object getValue() {
+        return getValue(value);
+    }
+
+    public String getValueAsString() {
+        return getString(value);
+    }
+
 }

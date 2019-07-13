@@ -207,9 +207,7 @@ public class ParametersToRules {
             List<SettingParameters> settingParametersList = settingsParameters.getParametersList(SettingsParameters.setting);
             if (settingParametersList != null) {
                 for (SettingParameters settingParameters : settingParametersList) {
-                    String name = settingParameters.getString(SettingParameters.name);
-                    String value = settingParameters.getString(SettingParameters.value);
-                    assistant.putSetting(name, value);
+                    assistant.putSetting(settingParameters.getName(), settingParameters.getValueAsString());
                 }
                 assistant.applySettings();
             }
@@ -267,7 +265,7 @@ public class ParametersToRules {
             AspectRule.updateJoinpoint(aspectRule, joinpointParameters);
         }
 
-        Parameters settingsParameters = aspectParameters.getParameters(AspectParameters.settings);
+        SettingsParameters settingsParameters = aspectParameters.getParameters(AspectParameters.settings);
         if (settingsParameters != null) {
             SettingsAdviceRule settingsAdviceRule = SettingsAdviceRule.newInstance(aspectRule, settingsParameters);
             aspectRule.setSettingsAdviceRule(settingsAdviceRule);

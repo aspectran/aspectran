@@ -107,11 +107,9 @@ public class AspectranParameters extends AbstractParameters {
         return setSetting(DefaultSettingType.DEFAULT_SCHEDULER_BEAN, beanName);
     }
 
-    public AspectranParameters setSetting(DefaultSettingType defaultSettingType, Object value) {
+    private AspectranParameters setSetting(DefaultSettingType defaultSettingType, Object value) {
         SettingsParameters settingsParameters = touchParameters(settings);
-        SettingParameters settingParameters = settingsParameters.touchParameters(SettingsParameters.setting);
-        settingParameters.putValue(SettingParameters.name, defaultSettingType.toString());
-        settingParameters.putValue(SettingParameters.value, value);
+        settingsParameters.putSetting(defaultSettingType.toString(), value);
         return this;
     }
 

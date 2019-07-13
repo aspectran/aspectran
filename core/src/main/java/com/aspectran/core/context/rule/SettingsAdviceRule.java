@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.context.rule;
 
+import com.aspectran.core.context.rule.params.SettingParameters;
+import com.aspectran.core.context.rule.params.SettingsParameters;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.ToStringBuilder;
 import com.aspectran.core.util.apon.Parameters;
@@ -22,8 +24,8 @@ import com.aspectran.core.util.apon.VariableParameters;
 
 import java.io.IOException;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * The Class SettingsAdviceRule.
@@ -73,27 +75,20 @@ public class SettingsAdviceRule {
         return new SettingsAdviceRule(aspectRule);
     }
 
-    public static SettingsAdviceRule newInstance(AspectRule aspectRule, String text)
-            throws IOException {
-        if (StringUtils.hasText(text)) {
-            Parameters settingsParameters = new VariableParameters(text);
-            return newInstance(aspectRule, settingsParameters);
-        } else {
-            return newInstance(aspectRule, (Parameters)null);
-        }
-    }
-
-    public static SettingsAdviceRule newInstance(AspectRule aspectRule, Parameters settingsParameters) {
+    public static SettingsAdviceRule newInstance(AspectRule aspectRule, SettingsParameters settingsParameters) {
         SettingsAdviceRule sar = new SettingsAdviceRule(aspectRule);
         updateSettingsAdviceRule(sar, settingsParameters);
         return sar;
     }
 
-    public static void updateSettingsAdviceRule(SettingsAdviceRule sar, String text) throws IllegalRuleException {
-        if (StringUtils.hasText(text)) {
-            Parameters settingsParameters;
+    public static void updateSettingsAdviceRule(SettingsAdviceRule sar, String apon) throws IllegalRuleException {
+        if (StringUtils.hasText(apon)) {
+            SettingsParameters settingsParameters = new SettingsParameters();
             try {
-                settingsParameters = new VariableParameters(text);
+                Parameters parameters = new VariableParameters(apon);
+                for (String name : parameters.getParameterNameSet()) {
+                    settingsParameters.putSetting(name, parameters.getValue(name));
+                }
             } catch (IOException e) {
                 throw new IllegalRuleException("Settings parameter can not be parsed", e);
             }
@@ -101,12 +96,12 @@ public class SettingsAdviceRule {
         }
     }
 
-    public static void updateSettingsAdviceRule(SettingsAdviceRule sar, Parameters settingsParameters) {
+    private static void updateSettingsAdviceRule(SettingsAdviceRule sar, SettingsParameters settingsParameters) {
         if (settingsParameters != null) {
-            Set<String> parametersNames = settingsParameters.getParameterNameSet();
-            if (parametersNames != null) {
-                for (String name : parametersNames) {
-                    sar.putSetting(name, settingsParameters.getString(name));
+            List<SettingParameters> settingParametersList = settingsParameters.getParametersList(SettingsParameters.setting);
+            if (settingParametersList != null) {
+                for (SettingParameters settingParameters : settingParametersList) {
+                    sar.putSetting(settingParameters.getName(), settingParameters.getValue());
                 }
             }
         }

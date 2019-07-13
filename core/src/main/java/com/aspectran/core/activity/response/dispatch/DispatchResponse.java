@@ -128,9 +128,9 @@ public class DispatchResponse implements Response {
             } else {
                 dispatcherName = activity.getSetting(ViewDispatcher.VIEW_DISPATCHER_SETTING_NAME);
                 if (dispatcherName == null) {
-                    throw new IllegalArgumentException("The settings name '" +
+                    throw new IllegalArgumentException("Could not find the '" +
                             ViewDispatcher.VIEW_DISPATCHER_SETTING_NAME +
-                            "' has not been specified in the default response rule");
+                            "' setting in the translet");
                 }
             }
 

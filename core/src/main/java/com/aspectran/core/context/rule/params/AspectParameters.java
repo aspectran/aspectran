@@ -18,7 +18,6 @@ package com.aspectran.core.context.rule.params;
 import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterKey;
 import com.aspectran.core.util.apon.ValueType;
-import com.aspectran.core.util.apon.VariableParameters;
 
 public class AspectParameters extends AbstractParameters {
 
@@ -41,7 +40,7 @@ public class AspectParameters extends AbstractParameters {
         isolated = new ParameterKey("isolated", ValueType.BOOLEAN);
         disabled = new ParameterKey("disabled", ValueType.BOOLEAN);
         joinpoint = new ParameterKey("joinpoint", JoinpointParameters.class);
-        settings = new ParameterKey("settings", VariableParameters.class);
+        settings = new ParameterKey("settings", SettingsParameters.class);
         advice = new ParameterKey("advice", AdviceParameters.class);
         exception = new ParameterKey("exception", ExceptionParameters.class);
 

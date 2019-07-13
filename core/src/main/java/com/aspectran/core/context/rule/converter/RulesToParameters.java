@@ -135,25 +135,25 @@ public class RulesToParameters {
         if (settings != null) {
             SettingsParameters settingsParameters = aspectranParameters.newParameters(AspectranParameters.settings);
             if (settings.getTransletNamePattern() != null) {
-                settingsParameters.putSetting(DefaultSettingType.TRANSLET_NAME_PATTERN, settings.getTransletNamePattern());
+                settingsParameters.putSetting(DefaultSettingType.TRANSLET_NAME_PATTERN.toString(), settings.getTransletNamePattern());
             }
             if (settings.getTransletNamePrefix() != null) {
-                settingsParameters.putSetting(DefaultSettingType.TRANSLET_NAME_PREFIX, settings.getTransletNamePrefix());
+                settingsParameters.putSetting(DefaultSettingType.TRANSLET_NAME_PREFIX.toString(), settings.getTransletNamePrefix());
             }
             if (settings.getTransletNameSuffix() != null) {
-                settingsParameters.putSetting(DefaultSettingType.TRANSLET_NAME_SUFFIX, settings.getTransletNameSuffix());
+                settingsParameters.putSetting(DefaultSettingType.TRANSLET_NAME_SUFFIX.toString(), settings.getTransletNameSuffix());
             }
             if (settings.getBeanProxifier() != null) {
-                settingsParameters.putSetting(DefaultSettingType.BEAN_PROXIFIER, settings.getBeanProxifier());
+                settingsParameters.putSetting(DefaultSettingType.BEAN_PROXIFIER.toString(), settings.getBeanProxifier());
             }
             if (settings.getPointcutPatternVerifiable() != null) {
-                settingsParameters.putSetting(DefaultSettingType.POINTCUT_PATTERN_VERIFIABLE, settings.getPointcutPatternVerifiable());
+                settingsParameters.putSetting(DefaultSettingType.POINTCUT_PATTERN_VERIFIABLE.toString(), settings.getPointcutPatternVerifiable());
             }
             if (settings.getDefaultTemplateEngineBean() != null) {
-                settingsParameters.putSetting(DefaultSettingType.DEFAULT_TEMPLATE_ENGINE_BEAN, settings.getDefaultTemplateEngineBean());
+                settingsParameters.putSetting(DefaultSettingType.DEFAULT_TEMPLATE_ENGINE_BEAN.toString(), settings.getDefaultTemplateEngineBean());
             }
             if (settings.getDefaultSchedulerBean() != null) {
-                settingsParameters.putSetting(DefaultSettingType.DEFAULT_SCHEDULER_BEAN, settings.getDefaultSchedulerBean());
+                settingsParameters.putSetting(DefaultSettingType.DEFAULT_SCHEDULER_BEAN.toString(), settings.getDefaultSchedulerBean());
             }
         }
 

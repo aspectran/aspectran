@@ -1,2 +1,3 @@
 app/.lock
 app/jsvc_daemon.pid
+app/**/*.xml.apon
