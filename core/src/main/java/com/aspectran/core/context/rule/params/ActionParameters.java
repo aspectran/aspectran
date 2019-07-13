@@ -21,8 +21,6 @@ import com.aspectran.core.util.apon.ValueType;
 
 public class ActionParameters extends AbstractParameters {
 
-    public static final ParameterKey caseNo;
-
     public static final ParameterKey id;
 
     public static final ParameterKey bean;
@@ -39,10 +37,12 @@ public class ActionParameters extends AbstractParameters {
 
     public static final ParameterKey hidden;
 
+    public static final ParameterKey when;
+    public static final ParameterKey otherwise;
+
     private static final ParameterKey[] parameterKeys;
 
     static {
-        caseNo = new ParameterKey("caseNo", ValueType.INT);
         id = new ParameterKey("id", ValueType.STRING);
         bean = new ParameterKey("bean", ValueType.STRING);
         method = new ParameterKey("method", ValueType.STRING);
@@ -54,19 +54,23 @@ public class ActionParameters extends AbstractParameters {
         profile = new ParameterKey("profile", ValueType.STRING);
         item = new ParameterKey("item", ItemParameters.class, true, true);
         hidden = new ParameterKey("hidden", ValueType.BOOLEAN);
+        when = new ParameterKey("when", ChooseWhenParameters.class, true, true);
+        otherwise = new ParameterKey("otherwise", ChooseWhenParameters.class);
 
         parameterKeys = new ParameterKey[] {
-                caseNo,
                 id,
                 bean,
                 method,
                 arguments,
-                properties, translet,
+                properties,
+                translet,
                 parameters,
                 attributes,
                 profile,
                 item,
-                hidden
+                hidden,
+                when,
+                otherwise
         };
     }
 

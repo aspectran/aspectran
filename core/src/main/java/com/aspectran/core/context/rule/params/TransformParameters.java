@@ -34,7 +34,8 @@ public class TransformParameters extends AbstractParameters {
 
     static {
         choose = new ParameterKey("choose", ChooseParameters.class, true, true);
-        action = new ParameterKey("action", new String[] {"echo", "headers", "include"}, ActionParameters.class, true, true);
+        action = new ParameterKey("action", new String[] {"echo", "headers", "include", "choose"},
+                ActionParameters.class, true, true);
         type = new ParameterKey("type", ValueType.STRING);
         contentType = new ParameterKey("contentType", ValueType.STRING);
         encoding = new ParameterKey("encoding", ValueType.STRING);

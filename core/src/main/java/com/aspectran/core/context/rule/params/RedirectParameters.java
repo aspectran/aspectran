@@ -33,7 +33,8 @@ public class RedirectParameters extends AbstractParameters {
     private static final ParameterKey[] parameterKeys;
 
     static {
-        action = new ParameterKey("action", new String[] {"echo", "headers", "include"}, ActionParameters.class, true, true);
+        action = new ParameterKey("action", new String[] {"echo", "headers", "include", "choose"},
+                ActionParameters.class, true, true);
         contentType = new ParameterKey("contentType", ValueType.STRING);
         path = new ParameterKey("path", ValueType.STRING);
         encoding = new ParameterKey("encoding", ValueType.STRING);

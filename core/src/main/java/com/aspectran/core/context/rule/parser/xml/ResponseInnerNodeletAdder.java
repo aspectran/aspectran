@@ -42,7 +42,7 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
     public void add(String xpath, NodeletParser parser) {
         AspectranNodeParser nodeParser = parser.getNodeParser();
         ActionNodeletAdder actionNodeletAdder = nodeParser.getActionNodeletAdder();
-        ChooseWhenNodeletAdder chooseWhenNoResponseNodeletAdder = nodeParser.getChooseWhenNoResponseNodeletAdder();
+        ChooseWhenNodeletAdder chooseWhenNodeletAdder = nodeParser.getChooseWhenNodeletAdder();
         ItemNodeletAdder itemNodeletAdder = nodeParser.getItemNodeletAdder();
         ContextRuleAssistant assistant = nodeParser.getAssistant();
 
@@ -72,7 +72,7 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
 
             parser.pushObject(chooseRule);
         });
-        parser.addNodelet(chooseWhenNoResponseNodeletAdder);
+        parser.addNodelet(chooseWhenNodeletAdder);
         parser.addNodeEndlet(text -> {
             ChooseRule chooseRule = parser.popObject();
             TransformRule transformRule = parser.peekObject();
@@ -135,7 +135,7 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
 
             parser.pushObject(chooseRule);
         });
-        parser.addNodelet(chooseWhenNoResponseNodeletAdder);
+        parser.addNodelet(chooseWhenNodeletAdder);
         parser.addNodeEndlet(text -> {
             ChooseRule chooseRule = parser.popObject();
             DispatchRule dispatchRule = parser.peekObject();
@@ -168,7 +168,7 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
 
             parser.pushObject(chooseRule);
         });
-        parser.addNodelet(chooseWhenNoResponseNodeletAdder);
+        parser.addNodelet(chooseWhenNodeletAdder);
         parser.addNodeEndlet(text -> {
             ChooseRule chooseRule = parser.popObject();
             ForwardRule forwardRule = parser.peekObject();
@@ -222,7 +222,7 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
 
             parser.pushObject(chooseRule);
         });
-        parser.addNodelet(chooseWhenNoResponseNodeletAdder);
+        parser.addNodelet(chooseWhenNodeletAdder);
         parser.addNodeEndlet(text -> {
             ChooseRule chooseRule = parser.popObject();
             RedirectRule redirectRule = parser.peekObject();

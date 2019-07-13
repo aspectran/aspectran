@@ -57,6 +57,8 @@ public class NodeletParser {
 
     private final ArrayStack<Object> objectStack = new ArrayStack<>();
 
+    private final Object nodeParser;
+
     private boolean validating;
 
     private EntityResolver entityResolver;
@@ -64,8 +66,6 @@ public class NodeletParser {
     private NodeTracker nodeTracker;
 
     private String xpath;
-
-    private final Object nodeParser;
 
     public NodeletParser(Object nodeParser) {
         this.nodeParser = nodeParser;

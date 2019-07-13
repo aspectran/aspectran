@@ -31,7 +31,8 @@ public class DispatchParameters extends AbstractParameters {
     private static final ParameterKey[] parameterKeys;
 
     static {
-        action = new ParameterKey("action", new String[] {"echo", "headers", "include"}, ActionParameters.class, true, true);
+        action = new ParameterKey("action", new String[] {"echo", "headers", "include", "choose"},
+                ActionParameters.class, true, true);
         name = new ParameterKey("name", ValueType.STRING);
         dispatcher = new ParameterKey("dispatcher", ValueType.STRING);
         contentType = new ParameterKey("contentType", ValueType.STRING);

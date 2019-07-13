@@ -148,19 +148,6 @@ class ActionNodeletAdder implements NodeletAdder {
             ActionRuleApplicable applicable = parser.peekObject();
             applicable.applyActionRule(echoActionRule);
         });
-        parser.setXpath(xpath + "/echo/attributes");
-        parser.addNodelet(attrs -> {
-            ItemRuleMap irm = new ItemRuleMap();
-            irm.setProfile(StringUtils.emptyToNull(attrs.get("profile")));
-            parser.pushObject(irm);
-        });
-        parser.addNodelet(itemNodeletAdder);
-        parser.addNodeEndlet(text -> {
-            ItemRuleMap irm = parser.popObject();
-            EchoActionRule echoActionRule = parser.peekObject(1);
-            irm = assistant.profiling(irm, echoActionRule.getAttributeItemRuleMap());
-            echoActionRule.setAttributeItemRuleMap(irm);
-        });
         parser.setXpath(xpath + "/headers");
         parser.addNodelet(attrs -> {
             String id = StringUtils.emptyToNull(attrs.get("id"));

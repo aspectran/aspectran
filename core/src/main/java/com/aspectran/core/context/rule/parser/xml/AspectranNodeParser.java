@@ -62,8 +62,6 @@ public class AspectranNodeParser {
 
     private final ChooseWhenNodeletAdder chooseWhenNodeletAdder;
 
-    private final ChooseWhenNodeletAdder chooseWhenNoResponseNodeletAdder;
-
     private final NodeletParser parser;
 
     /**
@@ -97,8 +95,7 @@ public class AspectranNodeParser {
         this.scheduleNodeletAdder = new ScheduleNodeletAdder();
         this.templateNodeletAdder = new TemplateNodeletAdder();
         this.transletNodeletAdder = new TransletNodeletAdder();
-        this.chooseWhenNodeletAdder = new ChooseWhenNodeletAdder(true);
-        this.chooseWhenNoResponseNodeletAdder = new ChooseWhenNodeletAdder(false);
+        this.chooseWhenNodeletAdder = new ChooseWhenNodeletAdder();
 
         this.parser = new NodeletParser(this);
         this.parser.setValidating(validating);
@@ -169,10 +166,6 @@ public class AspectranNodeParser {
 
     public ChooseWhenNodeletAdder getChooseWhenNodeletAdder() {
         return chooseWhenNodeletAdder;
-    }
-
-    public ChooseWhenNodeletAdder getChooseWhenNoResponseNodeletAdder() {
-        return chooseWhenNoResponseNodeletAdder;
     }
 
     /**

@@ -29,7 +29,6 @@ public class TransletParameters extends AbstractParameters {
     public static final ParameterKey request;
     public static final ParameterKey parameters;
     public static final ParameterKey attributes;
-    public static final ParameterKey choose;
     public static final ParameterKey contents;
     public static final ParameterKey content;
     public static final ParameterKey action;
@@ -51,10 +50,10 @@ public class TransletParameters extends AbstractParameters {
         request = new ParameterKey("request", RequestParameters.class);
         parameters = new ParameterKey("parameters", ItemHolderParameters.class, true, true);
         attributes = new ParameterKey("attributes", ItemHolderParameters.class, true, true);
-        choose = new ParameterKey("choose", ChooseParameters.class, true, true);
         contents = new ParameterKey("contents", ContentsParameters.class);
         content = new ParameterKey("content", ContentParameters.class, true, true);
-        action = new ParameterKey("action", new String[] {"echo", "headers", "include"}, ActionParameters.class, true, true);
+        action = new ParameterKey("action", new String[] {"echo", "headers", "include", "choose"},
+                ActionParameters.class, true, true);
         response = new ParameterKey("response", ResponseParameters.class, true, true);
         transform = new ParameterKey("transform", TransformParameters.class);
         dispatch = new ParameterKey("dispatch", DispatchParameters.class);
@@ -71,7 +70,6 @@ public class TransletParameters extends AbstractParameters {
                 request,
                 parameters,
                 attributes,
-                choose,
                 contents,
                 content,
                 action,

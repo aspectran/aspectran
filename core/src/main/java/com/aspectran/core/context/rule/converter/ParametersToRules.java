@@ -17,8 +17,6 @@ package com.aspectran.core.context.rule.converter;
 
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.ContentList;
-import com.aspectran.core.activity.process.action.Executable;
-import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.context.rule.AppendRule;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
@@ -58,7 +56,6 @@ import com.aspectran.core.context.rule.params.AppendParameters;
 import com.aspectran.core.context.rule.params.AspectParameters;
 import com.aspectran.core.context.rule.params.AspectranParameters;
 import com.aspectran.core.context.rule.params.BeanParameters;
-import com.aspectran.core.context.rule.params.ChooseParameters;
 import com.aspectran.core.context.rule.params.ChooseWhenParameters;
 import com.aspectran.core.context.rule.params.ConstructorParameters;
 import com.aspectran.core.context.rule.params.ContentParameters;
@@ -103,6 +100,10 @@ import java.util.List;
 public class ParametersToRules {
 
     private final ContextRuleAssistant assistant;
+
+    private TransletRule currentTransletRule;
+
+    private boolean chooseInside;
 
     public ParametersToRules(ContextRuleAssistant assistant) {
         this.assistant = assistant;
@@ -318,7 +319,6 @@ public class ParametersToRules {
                 if (actionParameters != null) {
                     asActionRule(actionParameters, aspectAdviceRule);
                 }
-                // for thrown
                 ExceptionThrownParameters etParameters = finallyAdviceParameters.getParameters(AdviceActionParameters.thrown);
                 if (etParameters != null) {
                     ExceptionThrownRule etr = asExceptionThrownRule(etParameters, aspectAdviceRule);
@@ -442,6 +442,7 @@ public class ParametersToRules {
         String method = transletParameters.getString(TransletParameters.method);
 
         TransletRule transletRule = TransletRule.newInstance(name, mask, scan, method);
+        currentTransletRule = transletRule;
 
         if (description != null) {
             transletRule.setDescription(description);
@@ -449,8 +450,7 @@ public class ParametersToRules {
 
         RequestParameters requestParameters = transletParameters.getParameters(TransletParameters.request);
         if (requestParameters != null) {
-            RequestRule requestRule = asRequestRule(requestParameters);
-            transletRule.setRequestRule(requestRule);
+            asRequestRule(requestParameters, transletRule);
         }
 
         List<ItemHolderParameters> parameterItemHolderParametersList = transletParameters.getParametersList(TransletParameters.parameters);
@@ -471,6 +471,37 @@ public class ParametersToRules {
                 irm = assistant.profiling(irm, requestRule.getAttributeItemRuleMap());
                 requestRule.setAttributeItemRuleMap(irm);
             }
+        }
+
+        List<ActionParameters> actionParametersList = transletParameters.getParametersList(TransletParameters.action);
+        if (actionParametersList != null && !actionParametersList.isEmpty()) {
+            ContentList contentList = new ContentList(false);
+            ActionList actionList = new ActionList(false);
+            contentList.addActionList(actionList);
+            for (ActionParameters actionParameters : actionParametersList) {
+                asActionRule(actionParameters, actionList);
+            }
+            transletRule.setContentList(contentList);
+        }
+
+        TransformParameters transformParameters = transletParameters.getParameters(TransletParameters.transform);
+        if (transformParameters != null) {
+            asTransformRule(transformParameters, transletRule);
+        }
+
+        DispatchParameters dispatchParameters = transletParameters.getParameters(TransletParameters.dispatch);
+        if (dispatchParameters != null) {
+            asDispatchRule(dispatchParameters, transletRule);
+        }
+
+        ForwardParameters forwardParameters = transletParameters.getParameters(TransletParameters.forward);
+        if (forwardParameters != null) {
+            asForwardRule(forwardParameters, transletRule);
+        }
+
+        RedirectParameters redirectParameters = transletParameters.getParameters(TransletParameters.redirect);
+        if (redirectParameters != null) {
+            asRedirectRule(redirectParameters, transletRule);
         }
 
         ContentsParameters contentsParameters = transletParameters.getParameters(TransletParameters.contents);
@@ -510,178 +541,16 @@ public class ParametersToRules {
             transletRule.setExceptionRule(exceptionRule);
         }
 
-        List<ActionParameters> actionParametersList = transletParameters.getParametersList(TransletParameters.action);
-        if (actionParametersList != null && !actionParametersList.isEmpty()) {
-            ContentList contentList = new ContentList(false);
-            ActionList actionList = new ActionList(false);
-            contentList.addActionList(actionList);
-            for (ActionParameters actionParameters : actionParametersList) {
-                asActionRule(actionParameters, actionList);
-            }
-            transletRule.setContentList(contentList);
-        }
-
-        TransformParameters transformParameters = transletParameters.getParameters(TransletParameters.transform);
-        if (transformParameters != null) {
-            asTransformRule(transformParameters, transletRule);
-        }
-
-        DispatchParameters dispatchParameters = transletParameters.getParameters(TransletParameters.dispatch);
-        if (dispatchParameters != null) {
-            DispatchRule dispatchRule = asDispatchRule(dispatchParameters);
-            transletRule.applyResponseRule(dispatchRule);
-        }
-
-        ForwardParameters forwardParameters = transletParameters.getParameters(TransletParameters.forward);
-        if (forwardParameters != null) {
-            ForwardRule forwardRule = asForwardRule(forwardParameters);
-            transletRule.applyResponseRule(forwardRule);
-        }
-
-        RedirectParameters redirectParameters = transletParameters.getParameters(TransletParameters.redirect);
-        if (redirectParameters != null) {
-            RedirectRule redirectRule = asRedirectRule(redirectParameters);
-            transletRule.applyResponseRule(redirectRule);
-        }
-
-        List<ChooseParameters> chooseParametersList = transletParameters.getParametersList(TransletParameters.choose);
-        if (chooseParametersList != null && !chooseParametersList.isEmpty()) {
-            ChooseRuleMap chooseRuleMap = transletRule.touchChooseRuleMap();
-            asChooseWhenRule(chooseParametersList, chooseRuleMap);
-            for (ChooseRule chooseRule : chooseRuleMap.values()) {
-                if (chooseRule.getChooseWhenRuleMap() != null) {
-                   for (ChooseWhenRule chooseWhenRule : chooseRule.getChooseWhenRuleMap().values()) {
-                       if (transletRule.getContentList() != null) {
-                           for (ActionList actionList : transletRule.getContentList()) {
-                               checkActionList(chooseRule, chooseWhenRule, actionList);
-                           }
-                       }
-                       if (transletRule.getResponseRule() != null) {
-                           Response response = transletRule.getResponseRule().getResponse();
-                           if (response != null && response.getActionList() != null) {
-                               checkActionList(chooseRule, chooseWhenRule, response.getActionList());
-                           }
-                       }
-                   }
-                }
-            }
-        }
-
+        currentTransletRule = null;
         assistant.addTransletRule(transletRule);
     }
 
-    private void asChooseWhenRule(List<ChooseParameters> chooseParametersList, ChooseRuleMap chooseRuleMap) throws IllegalRuleException {
-        for (ChooseParameters chooseParameters : chooseParametersList) {
-            ChooseRule chooseRule;
-            if (chooseParameters.hasValue(ChooseParameters.caseNo)) {
-                int caseNo = chooseParameters.getInt(ChooseParameters.caseNo);
-                chooseRule = chooseRuleMap.newChooseRule(caseNo);
-            } else {
-                chooseRule = chooseRuleMap.newChooseRule();
-            }
-
-            List<ChooseWhenParameters> chooseWhenParametersList = chooseParameters.getParametersList(ChooseParameters.when);
-            for (ChooseWhenParameters chooseWhenParameters : chooseWhenParametersList) {
-                ChooseWhenRule chooseWhenRule;
-                if (chooseWhenParameters.hasValue(ChooseWhenParameters.caseNo)) {
-                    int caseNo = chooseWhenParameters.getInt(ChooseWhenParameters.caseNo);
-                    chooseWhenRule = chooseRule.newChooseWhenRule(caseNo);
-                } else {
-                    chooseWhenRule = chooseRule.newChooseWhenRule();
-                }
-
-                chooseWhenRule.setExpression(chooseWhenParameters.getString(ChooseWhenParameters.test));
-
-                List<ActionParameters> whenActionParametersList = chooseWhenParameters.getParametersList(ChooseWhenParameters.action);
-                if (whenActionParametersList != null && !whenActionParametersList.isEmpty()) {
-                    for (ActionParameters actionParameters : whenActionParametersList) {
-                        asActionRule(actionParameters, chooseWhenRule);
-                    }
-                }
-
-                TransformParameters transformParameters = chooseWhenParameters.getParameters(ChooseWhenParameters.transform);
-                if (transformParameters != null) {
-                    asTransformRule(transformParameters, chooseWhenRule);
-                }
-
-                DispatchParameters dispatchParameters = chooseWhenParameters.getParameters(ChooseWhenParameters.dispatch);
-                if (dispatchParameters != null) {
-                    DispatchRule dispatchRule = asDispatchRule(dispatchParameters);
-                    chooseWhenRule.applyResponseRule(dispatchRule);
-                }
-
-                RedirectParameters redirectParameters = chooseWhenParameters.getParameters(ChooseWhenParameters.redirect);
-                if (redirectParameters != null) {
-                    RedirectRule redirectRule = asRedirectRule(redirectParameters);
-                    chooseWhenRule.applyResponseRule(redirectRule);
-                }
-
-                ForwardParameters forwardParameters = chooseWhenParameters.getParameters(ChooseWhenParameters.forward);
-                if (forwardParameters != null) {
-                    ForwardRule forwardRule = asForwardRule(forwardParameters);
-                    chooseWhenRule.applyResponseRule(forwardRule);
-                }
-            }
-
-            ChooseWhenParameters chooseOtherwiseParameters = chooseParameters.getParameters(ChooseParameters.otherwise);
-            if (chooseOtherwiseParameters != null) {
-                ChooseWhenRule chooseWhenRule;
-                if (chooseOtherwiseParameters.hasValue(ChooseWhenParameters.caseNo)) {
-                    int caseNo = chooseOtherwiseParameters.getInt(ChooseWhenParameters.caseNo);
-                    chooseWhenRule = chooseRule.newChooseWhenRule(caseNo);
-                } else {
-                    chooseWhenRule = chooseRule.newChooseWhenRule();
-                }
-
-                TransformParameters transformParameters = chooseOtherwiseParameters.getParameters(ChooseWhenParameters.transform);
-                if (transformParameters != null) {
-                    asTransformRule(transformParameters, chooseWhenRule);
-                }
-
-                DispatchParameters dispatchParameters = chooseOtherwiseParameters.getParameters(ChooseWhenParameters.dispatch);
-                if (dispatchParameters != null) {
-                    DispatchRule dispatchRule = asDispatchRule(dispatchParameters);
-                    chooseWhenRule.applyResponseRule(dispatchRule);
-                }
-
-                ForwardParameters forwardParameters = chooseOtherwiseParameters.getParameters(ChooseWhenParameters.forward);
-                if (forwardParameters != null) {
-                    ForwardRule forwardRule = asForwardRule(forwardParameters);
-                    chooseWhenRule.applyResponseRule(forwardRule);
-                }
-
-                RedirectParameters redirectParameters = chooseOtherwiseParameters.getParameters(ChooseWhenParameters.redirect);
-                if (redirectParameters != null) {
-                    RedirectRule redirectRule = asRedirectRule(redirectParameters);
-                    chooseWhenRule.applyResponseRule(redirectRule);
-                }
-            }
-        }
-    }
-
-    private void checkActionList(ChooseRule chooseRule, ChooseWhenRule chooseWhenRule, ActionList actionList) throws IllegalRuleException {
-        Executable prev = null;
-        for (Executable action : actionList) {
-            if (action.getCaseNo() == chooseWhenRule.getCaseNo()) {
-                if (prev != null) {
-                    prev.setLastInChooseWhen(false);
-                }
-                action.setLastInChooseWhen(true);
-                prev = action;
-            } else {
-                prev = null;
-                if (action.getCaseNo() > 0 && chooseRule.getChooseWhenRule(action.getCaseNo()) == null) {
-                    throw new IllegalRuleException("No matching case number: " + action.getCaseNo());
-                }
-            }
-        }
-    }
-
-    private RequestRule asRequestRule(RequestParameters requestParameters) throws IllegalRuleException {
-        String allowedMethod = requestParameters.getString(RequestParameters.method);
+    private void asRequestRule(RequestParameters requestParameters, TransletRule transletRule) throws IllegalRuleException {
+        String method = requestParameters.getString(RequestParameters.method);
         String encoding = requestParameters.getString(RequestParameters.encoding);
 
-        RequestRule requestRule = RequestRule.newInstance(allowedMethod, encoding);
+        RequestRule requestRule = RequestRule.newInstance(method, encoding);
+
         List<ItemHolderParameters> parameterItemHolderParametersList = requestParameters.getParametersList(RequestParameters.parameters);
         if (parameterItemHolderParametersList != null) {
             for (ItemHolderParameters itemHolderParameters : parameterItemHolderParametersList) {
@@ -690,6 +559,7 @@ public class ParametersToRules {
                 requestRule.setParameterItemRuleMap(irm);
             }
         }
+
         List<ItemHolderParameters> attributeItemHolderParametersList = requestParameters.getParametersList(RequestParameters.attributes);
         if (attributeItemHolderParametersList != null) {
             for (ItemHolderParameters itemHolderParameters : attributeItemHolderParametersList) {
@@ -698,7 +568,8 @@ public class ParametersToRules {
                 requestRule.setAttributeItemRuleMap(irm);
             }
         }
-        return requestRule;
+
+        transletRule.setRequestRule(requestRule);
     }
 
     private void asResponseRule(ResponseParameters responseParameters, TransletRule transletRule) throws IllegalRuleException {
@@ -714,17 +585,17 @@ public class ParametersToRules {
 
         DispatchParameters dispatchParameters = responseParameters.getParameters(ResponseParameters.dispatch);
         if (dispatchParameters != null) {
-            responseRule.applyResponseRule(asDispatchRule(dispatchParameters));
+            asDispatchRule(dispatchParameters, responseRule);
         }
 
         ForwardParameters forwardParameters = responseParameters.getParameters(ResponseParameters.forward);
         if (forwardParameters != null) {
-            responseRule.applyResponseRule(asForwardRule(forwardParameters));
+            asForwardRule(forwardParameters, responseRule);
         }
 
         RedirectParameters redirectParameters = responseParameters.getParameters(ResponseParameters.redirect);
         if (redirectParameters != null) {
-            responseRule.applyResponseRule(asRedirectRule(redirectParameters));
+            asRedirectRule(redirectParameters, responseRule);
         }
 
         transletRule.addResponseRule(responseRule);
@@ -756,10 +627,8 @@ public class ParametersToRules {
     }
 
     private void asActionRule(ActionParameters actionParameters, ActionRuleApplicable actionRuleApplicable) throws IllegalRuleException {
-        Integer caseNo = actionParameters.getInt(ActionParameters.caseNo);
         String id = StringUtils.emptyToNull(actionParameters.getString(ActionParameters.id));
         Boolean hidden = actionParameters.getBoolean(ActionParameters.hidden);
-        Executable action;
 
         String actualName = actionParameters.getActualName();
         if (actualName == null) {
@@ -788,16 +657,15 @@ public class ParametersToRules {
                     }
                 }
                 assistant.resolveActionBeanClass(beanMethodActionRule);
-                action = actionRuleApplicable.applyActionRule(beanMethodActionRule);
+                actionRuleApplicable.applyActionRule(beanMethodActionRule);
                 break;
             }
             case "echo": {
-                String profile = actionParameters.getString(ActionParameters.profile);
                 List<ItemParameters> itemParametersList = actionParameters.getParametersList(ActionParameters.item);
                 EchoActionRule echoActionRule = EchoActionRule.newInstance(id, hidden);
-                ItemRuleMap attributeItemRuleMap = asItemRuleMap(profile, itemParametersList);
+                ItemRuleMap attributeItemRuleMap = asItemRuleMap(null, itemParametersList);
                 echoActionRule.setAttributeItemRuleMap(attributeItemRuleMap);
-                action = actionRuleApplicable.applyActionRule(echoActionRule);
+                actionRuleApplicable.applyActionRule(echoActionRule);
                 break;
             }
             case "headers": {
@@ -806,7 +674,7 @@ public class ParametersToRules {
                 HeaderActionRule headerActionRule = HeaderActionRule.newInstance(id, hidden);
                 ItemRuleMap headerItemRuleMap = asItemRuleMap(profile, itemParametersList);
                 headerActionRule.setHeaderItemRuleMap(headerItemRuleMap);
-                action = actionRuleApplicable.applyActionRule(headerActionRule);
+                actionRuleApplicable.applyActionRule(headerActionRule);
                 break;
             }
             case "include": {
@@ -830,15 +698,79 @@ public class ParametersToRules {
                         includeActionRule.setAttributeItemRuleMap(irm);
                     }
                 }
-                action = actionRuleApplicable.applyActionRule(includeActionRule);
+                actionRuleApplicable.applyActionRule(includeActionRule);
+                break;
+            }
+            case "choose": {
+                asChooseRule(actionParameters, actionRuleApplicable);
                 break;
             }
             default:
                 throw new IllegalRuleException("Illegal actual name: " + actualName);
         }
+    }
 
-        if (action != null && caseNo != null) {
-            action.setCaseNo(caseNo);
+    private void asChooseRule(ActionParameters actionParameters, ActionRuleApplicable actionRuleApplicable) throws IllegalRuleException {
+        if (chooseInside) {
+            throw new IllegalRuleException("The 'choose' element can not be nested within each other");
+        }
+        if (currentTransletRule == null) {
+            throw new IllegalRuleException("currentTransletRule must not be null");
+        }
+
+        List<ChooseWhenParameters> chooseWhenParametersList = actionParameters.getParametersList(ActionParameters.when);
+        ChooseWhenParameters chooseOtherwiseParameters = actionParameters.getParameters(ActionParameters.otherwise);
+
+        if (chooseWhenParametersList != null && !chooseWhenParametersList.isEmpty() ||
+                chooseOtherwiseParameters != null) {
+            chooseInside = true;
+            ChooseRuleMap chooseRuleMap = currentTransletRule.touchChooseRuleMap();
+            ChooseRule chooseRule = chooseRuleMap.newChooseRule();
+            if (chooseWhenParametersList != null) {
+                for (ChooseWhenParameters chooseWhenParameters : chooseWhenParametersList) {
+                    ChooseWhenRule chooseWhenRule = chooseRule.newChooseWhenRule();
+                    asChooseWhenRule(chooseWhenParameters, chooseWhenRule);
+                    chooseWhenRule.join(actionRuleApplicable);
+                }
+            }
+            if (chooseOtherwiseParameters != null) {
+                ChooseWhenRule chooseWhenRule = chooseRule.newChooseWhenRule();
+                asChooseWhenRule(chooseOtherwiseParameters, chooseWhenRule);
+                chooseWhenRule.join(actionRuleApplicable);
+            }
+            chooseInside = false;
+        }
+    }
+
+    private void asChooseWhenRule(ChooseWhenParameters chooseWhenParameters, ChooseWhenRule chooseWhenRule) throws IllegalRuleException {
+        String expression = StringUtils.emptyToNull(chooseWhenParameters.getString(ChooseWhenParameters.test));
+        chooseWhenRule.setExpression(expression);
+
+        List<ActionParameters> whenActionParametersList = chooseWhenParameters.getParametersList(ChooseWhenParameters.action);
+        if (whenActionParametersList != null && !whenActionParametersList.isEmpty()) {
+            for (ActionParameters actionParameters : whenActionParametersList) {
+                asActionRule(actionParameters, chooseWhenRule);
+            }
+        }
+
+        TransformParameters transformParameters = chooseWhenParameters.getParameters(ChooseWhenParameters.transform);
+        if (transformParameters != null) {
+            asTransformRule(transformParameters, chooseWhenRule);
+        }
+
+        DispatchParameters dispatchParameters = chooseWhenParameters.getParameters(ChooseWhenParameters.dispatch);
+        if (dispatchParameters != null) {
+            asDispatchRule(dispatchParameters, chooseWhenRule);
+        }
+
+        ForwardParameters forwardParameters = chooseWhenParameters.getParameters(ChooseWhenParameters.forward);
+        if (forwardParameters != null) {
+            asForwardRule(forwardParameters, chooseWhenRule);
+        }
+
+        RedirectParameters redirectParameters = chooseWhenParameters.getParameters(ChooseWhenParameters.redirect);
+        if (redirectParameters != null) {
+            asRedirectRule(redirectParameters, chooseWhenRule);
         }
     }
 
@@ -897,21 +829,6 @@ public class ParametersToRules {
             transformRule.setActionList(actionList);
         }
 
-        if (responseRuleApplicable instanceof TransletRule) {
-            List<ChooseParameters> chooseParametersList = transformParameters.getParametersList(TransformParameters.choose);
-            if (chooseParametersList != null && !chooseParametersList.isEmpty()) {
-                ChooseRuleMap chooseRuleMap = ((TransletRule)responseRuleApplicable).touchChooseRuleMap();
-                asChooseWhenRule(chooseParametersList, chooseRuleMap);
-                for (ChooseRule chooseRule : chooseRuleMap.values()) {
-                    if (chooseRule.getChooseWhenRuleMap() != null) {
-                        for (ChooseWhenRule chooseWhenRule : chooseRule.getChooseWhenRuleMap().values()) {
-                            checkActionList(chooseRule, chooseWhenRule, transformRule.getActionList());
-                        }
-                    }
-                }
-            }
-        }
-
         TemplateParameters templateParameters = transformParameters.getParameters(TransformParameters.template);
         if (templateParameters != null) {
             String engine = templateParameters.getString(TemplateParameters.engine);
@@ -935,19 +852,19 @@ public class ParametersToRules {
     private void asDispatchRule(List<DispatchParameters> dispatchParametersList, ResponseRuleApplicable responseRuleApplicable)
             throws IllegalRuleException {
         for (DispatchParameters dispatchParameters : dispatchParametersList) {
-            DispatchRule dispatchRule = asDispatchRule(dispatchParameters);
-            responseRuleApplicable.applyResponseRule(dispatchRule);
+            asDispatchRule(dispatchParameters, responseRuleApplicable);
         }
     }
 
-    private DispatchRule asDispatchRule(DispatchParameters dispatchParameters) throws IllegalRuleException {
+    private void asDispatchRule(DispatchParameters dispatchParameters, ResponseRuleApplicable responseRuleApplicable) throws IllegalRuleException {
         String name = dispatchParameters.getString(DispatchParameters.name);
-        String dispatcherName = dispatchParameters.getString(DispatchParameters.dispatcher);
+        String dispatcher = dispatchParameters.getString(DispatchParameters.dispatcher);
         String contentType = dispatchParameters.getString(DispatchParameters.contentType);
         String encoding = dispatchParameters.getString(DispatchParameters.encoding);
         Boolean defaultResponse = dispatchParameters.getBoolean(DispatchParameters.defaultResponse);
 
-        DispatchRule dispatchRule = DispatchRule.newInstance(name, dispatcherName, contentType, encoding, defaultResponse);
+        DispatchRule dispatchRule = DispatchRule.newInstance(name, dispatcher, contentType, encoding, defaultResponse);
+
         List<ActionParameters> actionParametersList = dispatchParameters.getParametersList(DispatchParameters.action);
         if (actionParametersList != null && !actionParametersList.isEmpty()) {
             ActionList actionList = new ActionList(false);
@@ -956,10 +873,11 @@ public class ParametersToRules {
             }
             dispatchRule.setActionList(actionList);
         }
-        return dispatchRule;
+
+        responseRuleApplicable.applyResponseRule(dispatchRule);
     }
 
-    private ForwardRule asForwardRule(ForwardParameters forwardParameters) throws IllegalRuleException {
+    private void asForwardRule(ForwardParameters forwardParameters, ResponseRuleApplicable responseRuleApplicable) throws IllegalRuleException {
         String contentType = forwardParameters.getString(ForwardParameters.contentType);
         String translet = StringUtils.emptyToNull(forwardParameters.getString(ForwardParameters.translet));
         String method = StringUtils.emptyToNull(forwardParameters.getString(ForwardParameters.method));
@@ -968,6 +886,7 @@ public class ParametersToRules {
         translet = assistant.applyTransletNamePattern(translet);
 
         ForwardRule forwardRule = ForwardRule.newInstance(contentType, translet, method, defaultResponse);
+
         List<ItemHolderParameters> attributeItemHolderParametersList = forwardParameters.getParameters(ForwardParameters.attributes);
         if (attributeItemHolderParametersList != null) {
             for (ItemHolderParameters itemHolderParameters : attributeItemHolderParametersList) {
@@ -976,6 +895,7 @@ public class ParametersToRules {
                 forwardRule.setAttributeItemRuleMap(irm);
             }
         }
+
         List<ActionParameters> actionParametersList = forwardParameters.getParametersList(ForwardParameters.action);
         if (actionParametersList != null && !actionParametersList.isEmpty()) {
             ActionList actionList = new ActionList(false);
@@ -984,18 +904,18 @@ public class ParametersToRules {
             }
             forwardRule.setActionList(actionList);
         }
-        return forwardRule;
+
+        responseRuleApplicable.applyResponseRule(forwardRule);
     }
 
     private void asRedirectRule(List<RedirectParameters> redirectParametersList, ResponseRuleApplicable responseRuleApplicable)
             throws IllegalRuleException {
         for (RedirectParameters redirectParameters : redirectParametersList) {
-            RedirectRule redirectRule = asRedirectRule(redirectParameters);
-            responseRuleApplicable.applyResponseRule(redirectRule);
+            asRedirectRule(redirectParameters, responseRuleApplicable);
         }
     }
 
-    private RedirectRule asRedirectRule(RedirectParameters redirectParameters) throws IllegalRuleException {
+    private void asRedirectRule(RedirectParameters redirectParameters, ResponseRuleApplicable responseRuleApplicable) throws IllegalRuleException {
         String contentType = redirectParameters.getString(RedirectParameters.contentType);
         String path = redirectParameters.getString(RedirectParameters.path);
         String encoding = redirectParameters.getString(RedirectParameters.encoding);
@@ -1004,6 +924,7 @@ public class ParametersToRules {
         Boolean defaultResponse = redirectParameters.getBoolean(RedirectParameters.defaultResponse);
 
         RedirectRule redirectRule = RedirectRule.newInstance(contentType, path, encoding, excludeNullParameters, excludeEmptyParameters, defaultResponse);
+
         List<ItemHolderParameters> parameterItemHolderParametersList = redirectParameters.getParametersList(RedirectParameters.parameters);
         if (parameterItemHolderParametersList != null) {
             for (ItemHolderParameters itemHolderParameters : parameterItemHolderParametersList) {
@@ -1012,6 +933,7 @@ public class ParametersToRules {
                 redirectRule.setParameterItemRuleMap(irm);
             }
         }
+
         List<ActionParameters> actionParametersList = redirectParameters.getParametersList(RedirectParameters.action);
         if (actionParametersList != null && !actionParametersList.isEmpty()) {
             ActionList actionList = new ActionList(false);
@@ -1020,7 +942,8 @@ public class ParametersToRules {
             }
             redirectRule.setActionList(actionList);
         }
-        return redirectRule;
+
+        responseRuleApplicable.applyResponseRule(redirectRule);
     }
 
     private ItemRuleMap asItemRuleMap(ItemHolderParameters itemHolderParameters) throws IllegalRuleException {

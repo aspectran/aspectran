@@ -34,7 +34,8 @@ public class ChooseWhenParameters extends AbstractParameters {
     static {
         caseNo = new ParameterKey("caseNo", ValueType.INT);
         test = new ParameterKey("test", ValueType.STRING);
-        action = new ParameterKey("action", new String[] {"echo", "headers", "include"}, ActionParameters.class, true, true);
+        action = new ParameterKey("action", new String[] {"echo", "headers", "include", "choose"},
+                ActionParameters.class, true, true);
         transform = new ParameterKey("transform", TransformParameters.class);
         dispatch = new ParameterKey("dispatch", DispatchParameters.class);
         redirect = new ParameterKey("redirect", RedirectParameters.class);
