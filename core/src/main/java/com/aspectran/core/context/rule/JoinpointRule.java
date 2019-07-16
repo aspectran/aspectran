@@ -148,12 +148,12 @@ public class JoinpointRule {
         return new JoinpointRule();
     }
 
-    public static void updateJoinpoint(JoinpointRule joinpointRule, String text)
+    public static void updateJoinpoint(JoinpointRule joinpointRule, String apon)
             throws IllegalRuleException {
-        if (StringUtils.hasText(text)) {
+        if (StringUtils.hasText(apon)) {
             JoinpointParameters joinpointParameters;
             try {
-                joinpointParameters = new JoinpointParameters(text);
+                joinpointParameters = new JoinpointParameters(apon);
             } catch (IOException e) {
                 throw new IllegalRuleException("Joinpoint parameter can not be parsed", e);
             }
@@ -164,8 +164,8 @@ public class JoinpointRule {
     public static void updateJoinpoint(JoinpointRule joinpointRule, JoinpointParameters joinpointParameters)
             throws IllegalRuleException {
         if (joinpointRule.getJoinpointTargetType() == null) {
-            String type = joinpointParameters.getString(JoinpointParameters.target);
-            updateJoinpointTargetType(joinpointRule, type);
+            String target = joinpointParameters.getString(JoinpointParameters.target);
+            updateJoinpointTargetType(joinpointRule, target);
         }
         updateMethods(joinpointRule, joinpointParameters.getStringArray(JoinpointParameters.methods));
         updateHeaders(joinpointRule, joinpointParameters.getStringArray(JoinpointParameters.headers));
@@ -173,12 +173,12 @@ public class JoinpointRule {
         joinpointRule.setJoinpointParameters(joinpointParameters);
     }
 
-    public static void updateJoinpointTargetType(JoinpointRule joinpointRule, String type) {
+    public static void updateJoinpointTargetType(JoinpointRule joinpointRule, String target) {
         JoinpointTargetType joinpointTargetType;
-        if (type != null) {
-            joinpointTargetType = JoinpointTargetType.resolve(type);
+        if (target != null) {
+            joinpointTargetType = JoinpointTargetType.resolve(target);
             if (joinpointTargetType == null) {
-                throw new IllegalArgumentException("No joinpoint target type for '" + type + "'");
+                throw new IllegalArgumentException("No joinpoint target type for '" + target + "'");
             }
         } else {
             joinpointTargetType = JoinpointTargetType.TRANSLET;

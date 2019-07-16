@@ -179,7 +179,9 @@ class ActionNodeletAdder implements NodeletAdder {
             });
             parser.addNodelet(chooseWhenNodeletAdder);
             parser.addNodeEndlet(text -> {
-                parser.popObject();
+                ChooseRule chooseRule = parser.popObject();
+                ActionRuleApplicable applicable = parser.peekObject();
+                applicable.applyActionRule(chooseRule);
             });
         }
     }

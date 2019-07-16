@@ -15,6 +15,6 @@
  */
 /**
  * Aspectran Scheduler provides low-level job scheduling capabilities.
- * It is enables  the automated execution of tasks that applications can perform in the background.
+ * It is enables the automated execution of tasks that applications can perform in the background.
  */
 package com.aspectran.scheduler;

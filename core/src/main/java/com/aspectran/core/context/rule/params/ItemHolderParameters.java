@@ -24,8 +24,8 @@ import java.util.List;
 
 public class ItemHolderParameters extends AbstractParameters {
 
-    private static final ParameterKey profile;
-    private static final ParameterKey item;
+    public static final ParameterKey profile;
+    public static final ParameterKey item;
 
     private static final ParameterKey[] parameterKeys;
 

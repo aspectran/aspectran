@@ -40,4 +40,12 @@ public class TypeAliasParameters extends AbstractParameters {
         super(parameterKeys);
     }
 
+    public String getAlias() {
+        return getString(alias);
+    }
+
+    public Object getType() {
+        return getValue(type);
+    }
+
 }

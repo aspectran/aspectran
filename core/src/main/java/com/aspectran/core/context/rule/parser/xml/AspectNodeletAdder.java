@@ -70,13 +70,13 @@ class AspectNodeletAdder implements NodeletAdder {
         });
         parser.setXpath(xpath + "/aspect/joinpoint");
         parser.addNodelet(attrs -> {
-            String type = StringUtils.emptyToNull(attrs.get("type"));
-            parser.pushObject(type);
+            String target = StringUtils.emptyToNull(attrs.get("target"));
+            parser.pushObject(target);
         });
         parser.addNodeEndlet(text -> {
-            String type = parser.popObject();
+            String target = parser.popObject();
             AspectRule aspectRule = parser.peekObject();
-            AspectRule.updateJoinpoint(aspectRule, type, text);
+            AspectRule.updateJoinpoint(aspectRule, target, text);
         });
         parser.setXpath(xpath + "/aspect/settings");
         parser.addNodelet(attrs -> {

@@ -25,7 +25,7 @@ public class TypeAliasesParameters extends AbstractParameters {
     private static final ParameterKey[] parameterKeys;
 
     static {
-        typeAlias = new ParameterKey("typeAlias", TypeAliasParameters.class, true);
+        typeAlias = new ParameterKey("typeAlias", TypeAliasParameters.class, true, true);
 
         parameterKeys = new ParameterKey[] {
                 typeAlias
@@ -34,6 +34,12 @@ public class TypeAliasesParameters extends AbstractParameters {
 
     public TypeAliasesParameters() {
         super(parameterKeys);
+    }
+
+    public void putTypeAlias(String alias, Object type) {
+        TypeAliasParameters typeAliasParameters = newParameters(typeAlias);
+        typeAliasParameters.putValue(TypeAliasParameters.alias, alias);
+        typeAliasParameters.putValue(TypeAliasParameters.type, type);
     }
 
 }

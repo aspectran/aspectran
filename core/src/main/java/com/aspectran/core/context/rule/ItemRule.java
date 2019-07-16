@@ -192,7 +192,7 @@ public class ItemRule {
         if (tokensMap.isEmpty()) {
             return new LinkedHashMap<>();
         } else {
-            Map<String, String> map = new LinkedHashMap<>(tokensMap.size());
+            Map<String, String> map = new LinkedHashMap<>();
             for (Map.Entry<String, Token[]> entry : tokensMap.entrySet()) {
                 map.put(entry.getKey(), TokenParser.toString(entry.getValue()));
             }

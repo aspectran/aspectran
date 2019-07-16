@@ -17,7 +17,6 @@ package com.aspectran.core.context.rule.assistant;
 
 import com.aspectran.core.context.rule.type.DefaultSettingType;
 import com.aspectran.core.util.BooleanUtils;
-import com.aspectran.core.util.PrefixSuffixPattern;
 
 import java.util.Map;
 
@@ -28,10 +27,10 @@ import java.util.Map;
  */
 public class DefaultSettings {
 
-    private String transletNamePattern;
-
+    /** Prefix to append to each translet name */
     private String transletNamePrefix;
 
+    /** Suffix to append to each translet name */
     private String transletNameSuffix;
 
     private String beanProxifier;
@@ -46,7 +45,6 @@ public class DefaultSettings {
     }
 
     public DefaultSettings(DefaultSettings ds) {
-        this.transletNamePattern = ds.getTransletNamePattern();
         this.transletNamePrefix = ds.getTransletNamePrefix();
         this.transletNameSuffix = ds.getTransletNameSuffix();
         this.beanProxifier = ds.getBeanProxifier();
@@ -55,44 +53,12 @@ public class DefaultSettings {
         this.defaultSchedulerBean = ds.getDefaultSchedulerBean();
     }
 
-    public String getTransletNamePattern() {
-        return transletNamePattern;
-    }
-
-    public void setTransletNamePattern(String transletNamePattern) {
-        this.transletNamePattern = transletNamePattern;
-
-        if (transletNamePattern != null) {
-            PrefixSuffixPattern prefixSuffixPattern = new PrefixSuffixPattern();
-
-            if (prefixSuffixPattern.split(transletNamePattern)) {
-                transletNamePrefix = prefixSuffixPattern.getPrefix();
-                transletNameSuffix = prefixSuffixPattern.getSuffix();
-            }
-        }
-    }
-
-    public void setTransletNamePattern(String transletNamePrefix, String transletNameSuffix) {
-        this.transletNamePattern = transletNamePrefix + PrefixSuffixPattern.PREFIX_SUFFIX_PATTERN_SEPARATOR +
-                transletNameSuffix;
-        this.transletNamePrefix = transletNamePrefix;
-        this.transletNameSuffix = transletNameSuffix;
-    }
-
     public void setTransletNamePrefix(String transletNamePrefix) {
-        if (transletNameSuffix != null) {
-            setTransletNamePattern(transletNamePrefix, transletNameSuffix);
-        } else {
-            this.transletNamePrefix = transletNamePrefix;
-        }
+        this.transletNamePrefix = transletNamePrefix;
     }
 
     public void setTransletNameSuffix(String transletNameSuffix) {
-        if (transletNamePrefix != null) {
-            setTransletNamePattern(transletNamePrefix, transletNameSuffix);
-        } else {
-            this.transletNameSuffix = transletNameSuffix;
-        }
+        this.transletNameSuffix = transletNameSuffix;
     }
 
     public String getTransletNamePrefix() {
@@ -140,9 +106,6 @@ public class DefaultSettings {
     }
 
     public void apply(Map<DefaultSettingType, String> settings) {
-        if (settings.get(DefaultSettingType.TRANSLET_NAME_PATTERN) != null) {
-            setTransletNamePattern(settings.get(DefaultSettingType.TRANSLET_NAME_PATTERN));
-        }
         if (settings.get(DefaultSettingType.TRANSLET_NAME_PREFIX) != null) {
             setTransletNamePrefix(settings.get(DefaultSettingType.TRANSLET_NAME_PREFIX));
         }

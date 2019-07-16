@@ -469,7 +469,11 @@ public class ParameterValue implements Parameter {
     }
 
     private Object fitValue(Object value) {
-        if (valueType == ValueType.BOOLEAN) {
+        if (valueType == ValueType.STRING) {
+            if (!(value instanceof String)) {
+                return value.toString();
+            }
+        } else if (valueType == ValueType.BOOLEAN) {
             if (!(value instanceof Boolean)) {
                 return Boolean.valueOf(value.toString());
             }

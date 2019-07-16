@@ -327,11 +327,11 @@ public class AspectRule implements BeanReferenceable {
         return aspectRule;
     }
 
-    public static void updateJoinpoint(AspectRule aspectRule, String type, String text)
+    public static void updateJoinpoint(AspectRule aspectRule, String target, String apon)
             throws IllegalRuleException {
         JoinpointRule joinpointRule = JoinpointRule.newInstance();
-        JoinpointRule.updateJoinpointTargetType(joinpointRule, type);
-        JoinpointRule.updateJoinpoint(joinpointRule, text);
+        JoinpointRule.updateJoinpointTargetType(joinpointRule, target);
+        JoinpointRule.updateJoinpoint(joinpointRule, apon);
         aspectRule.setJoinpointRule(joinpointRule);
     }
 

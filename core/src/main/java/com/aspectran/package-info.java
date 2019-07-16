@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 /**
- * Packages that contain the core functionality of Aspectran
- * and are the basis of other implementations.
+ * Provides core interfaces and classes for the Aspectran infrastructure.
  */
 package com.aspectran;

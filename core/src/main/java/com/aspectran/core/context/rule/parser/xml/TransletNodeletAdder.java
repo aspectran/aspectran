@@ -54,8 +54,6 @@ class TransletNodeletAdder implements NodeletAdder {
             TransletRule transletRule = TransletRule.newInstance(name, scan, mask, method);
             parser.pushObject(transletRule);
         });
-        parser.addNodelet(actionNodeletAdder);
-        parser.addNodelet(responseInnerNodeletAdder);
         parser.addNodeEndlet(text -> {
             TransletRule transletRule = parser.popObject();
             assistant.addTransletRule(transletRule);
@@ -142,6 +140,8 @@ class TransletNodeletAdder implements NodeletAdder {
             irm = assistant.profiling(irm, requestRule.getAttributeItemRuleMap());
             requestRule.setAttributeItemRuleMap(irm);
         });
+        parser.setXpath(xpath + "/translet");
+        parser.addNodelet(actionNodeletAdder);
         parser.setXpath(xpath + "/translet/contents");
         parser.addNodelet(attrs -> {
             String name = attrs.get("name");
@@ -189,6 +189,8 @@ class TransletNodeletAdder implements NodeletAdder {
                 transletRule.setContentList(contentList);
             }
         });
+        parser.setXpath(xpath + "/translet");
+        parser.addNodelet(responseInnerNodeletAdder);
         parser.setXpath(xpath + "/translet/response");
         parser.addNodelet(attrs -> {
             String name = attrs.get("name");
