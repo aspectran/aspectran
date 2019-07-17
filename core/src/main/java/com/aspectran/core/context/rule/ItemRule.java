@@ -130,7 +130,11 @@ public class ItemRule {
      * @return the value of the item
      */
     public String getValue() {
-        return TokenParser.toString(tokens);
+        return toValue(tokens);
+    }
+
+    private String toValue(Token[] tokens) {
+        return (tokens != null ? TokenParser.toString(tokens) : null);
     }
 
     /**
@@ -165,7 +169,7 @@ public class ItemRule {
         } else {
             List<String> list = new ArrayList<>(tokensList.size());
             for (Token[] tokens : tokensList) {
-                list.add(TokenParser.toString(tokens));
+                list.add(toValue(tokens));
             }
             return list;
         }
@@ -194,7 +198,7 @@ public class ItemRule {
         } else {
             Map<String, String> map = new LinkedHashMap<>();
             for (Map.Entry<String, Token[]> entry : tokensMap.entrySet()) {
-                map.put(entry.getKey(), TokenParser.toString(entry.getValue()));
+                map.put(entry.getKey(), toValue(entry.getValue()));
             }
             return map;
         }

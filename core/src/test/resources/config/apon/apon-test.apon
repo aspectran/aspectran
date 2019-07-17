@@ -1,7 +1,7 @@
 # APON Sample Document
 aspectran: {
     settings: {
-        transletNamePattern: *.job
+        transletNameSuffix: .job
     }
     bean: {
         id: *

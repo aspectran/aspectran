@@ -20,7 +20,6 @@ package com.aspectran.core.context.rule.type;
  */
 public enum DefaultSettingType {
 
-    TRANSLET_NAME_PATTERN("transletNamePattern"),
     TRANSLET_NAME_PREFIX("transletNamePrefix"),
     TRANSLET_NAME_SUFFIX("transletNameSuffix"),
     BEAN_PROXIFIER("beanProxifier"),

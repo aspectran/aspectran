@@ -79,10 +79,6 @@ public class AspectranParameters extends AbstractParameters {
         return this;
     }
 
-    public AspectranParameters setTransletNamePattern(String namePattern) {
-        return setSetting(DefaultSettingType.TRANSLET_NAME_PATTERN, namePattern);
-    }
-
     public AspectranParameters setTransletNamePrefix(String prefixPattern) {
         return setSetting(DefaultSettingType.TRANSLET_NAME_PREFIX, prefixPattern);
     }

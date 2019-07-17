@@ -4,7 +4,7 @@
 <aspectran>
 
     <settings>
-        <setting name="transletNamePattern" value="*.job"/>
+        <setting name="transletNameSuffix" value=".job"/>
     </settings>
 
     <bean id="*" scan="com.aspectran.embed.**.*Advice" mask="com.aspectran.embed.**.*"/>

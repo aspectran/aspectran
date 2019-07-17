@@ -40,8 +40,8 @@
 
     <bean id="jetty.threadPool" class="org.eclipse.jetty.util.thread.QueuedThreadPool" scope="prototype">
         <properties>
-            <item name="minThreads" value="%{jetty.server.minThreads}"/>
-            <item name="maxThreads" value="%{jetty.server.maxThreads}"/>
+            <item name="minThreads">%{jetty.server.minThreads}</item>
+            <item name="maxThreads">%{jetty.server.maxThreads}</item>
         </properties>
     </bean>
 

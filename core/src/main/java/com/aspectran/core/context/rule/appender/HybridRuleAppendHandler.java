@@ -18,6 +18,7 @@ package com.aspectran.core.context.rule.appender;
 import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.context.rule.assistant.AssistantLocal;
 import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;
+import com.aspectran.core.context.rule.assistant.ShallowContextRuleAssistant;
 import com.aspectran.core.context.rule.converter.ParametersToRules;
 import com.aspectran.core.context.rule.converter.RulesToParameters;
 import com.aspectran.core.context.rule.params.AspectranParameters;
@@ -85,8 +86,7 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
                 getAspectranNodeParser().parse(appender);
                 if (isDebugMode() && appender.getAppenderType() == AppenderType.FILE) {
                     FileRuleAppender fileRuleAppender = (FileRuleAppender)appender;
-                    RootParameters rootParameters = RulesToParameters.toRootParameters(getContextRuleAssistant());
-                    saveAsAponFile(fileRuleAppender, rootParameters);
+                    saveAsAponFile(fileRuleAppender);
                 }
             }
         }
@@ -108,6 +108,28 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
 
     private void convertAsRules(RootParameters rootParameters) throws IllegalRuleException {
         new ParametersToRules(getContextRuleAssistant()).asRules(rootParameters);
+    }
+
+    private void saveAsAponFile(FileRuleAppender fileRuleAppender) throws IOException {
+        ContextRuleAssistant assistant = null;
+        RootParameters rootParameters;
+        try {
+            assistant = new ShallowContextRuleAssistant();
+            assistant.ready();
+
+            AspectranNodeParser parser = new AspectranNodeParser(assistant, false, false);
+            parser.parse(fileRuleAppender);
+
+            rootParameters = RulesToParameters.toRootParameters(assistant);
+        } catch (Exception e) {
+            throw new IOException("Failed to convert as Root Parameters: " + fileRuleAppender, e);
+        } finally {
+            if (assistant != null) {
+                assistant.release();
+            }
+        }
+
+        saveAsAponFile(fileRuleAppender, rootParameters);
     }
 
     private void saveAsAponFile(FileRuleAppender fileRuleAppender, RootParameters rootParameters) throws IOException {

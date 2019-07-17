@@ -306,10 +306,6 @@ public class AspectranNodeParser {
         parser.addNodelet(aspectAdviceInnerNodeletAdder);
     }
 
-    public ActionNodeletAdder getActionNodeletAdder() {
-        return actionNodeletAdder;
-    }
-
     public void addExceptionInnerNodelets() {
         parser.addNodelet(exceptionInnerNodeletAdder);
     }
