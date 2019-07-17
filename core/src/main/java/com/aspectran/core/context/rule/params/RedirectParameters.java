@@ -21,7 +21,6 @@ import com.aspectran.core.util.apon.ValueType;
 
 public class RedirectParameters extends AbstractParameters {
 
-    public static final ParameterKey action;
     public static final ParameterKey contentType;
     public static final ParameterKey path;
     public static final ParameterKey encoding;
@@ -33,8 +32,6 @@ public class RedirectParameters extends AbstractParameters {
     private static final ParameterKey[] parameterKeys;
 
     static {
-        action = new ParameterKey("action", new String[] {"echo", "headers", "include", "choose"},
-                ActionParameters.class, true, true);
         contentType = new ParameterKey("contentType", ValueType.STRING);
         path = new ParameterKey("path", ValueType.STRING);
         encoding = new ParameterKey("encoding", ValueType.STRING);
@@ -44,10 +41,11 @@ public class RedirectParameters extends AbstractParameters {
         parameters = new ParameterKey("parameters", ItemHolderParameters.class, true, true);
 
         parameterKeys = new ParameterKey[] {
-                action,
                 contentType,
                 path,
-                encoding, excludeNullParameters, excludeEmptyParameters,
+                encoding,
+                excludeNullParameters,
+                excludeEmptyParameters,
                 defaultResponse,
                 parameters
         };

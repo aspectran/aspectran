@@ -25,7 +25,7 @@ import com.aspectran.core.util.ToStringBuilder;
  * 
  * <p>Created: 2019. 06. 16</p>
  */
-public class CustomTransformRule extends AbstractResponseRule {
+public class CustomTransformRule {
 
     public static final CustomTransformRule DEFAULT = CustomTransformRule.newInstance();
 

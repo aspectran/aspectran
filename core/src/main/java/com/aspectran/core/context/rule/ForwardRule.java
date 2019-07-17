@@ -18,6 +18,7 @@ package com.aspectran.core.context.rule;
 import com.aspectran.core.context.rule.ability.Replicable;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.context.rule.type.ResponseType;
+import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.ToStringBuilder;
 
 /**
@@ -25,7 +26,7 @@ import com.aspectran.core.util.ToStringBuilder;
  * 
  * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */
-public class ForwardRule extends AbstractResponseRule implements Replicable<ForwardRule> {
+public class ForwardRule implements Replicable<ForwardRule> {
 
     public static final ResponseType RESPONSE_TYPE = ResponseType.FORWARD;
 
@@ -36,6 +37,8 @@ public class ForwardRule extends AbstractResponseRule implements Replicable<Forw
     private MethodType requestMethod;
 
     private ItemRuleMap attributeItemRuleMap;
+
+    private Boolean defaultResponse;
 
     /**
      * Gets the content type.
@@ -124,6 +127,33 @@ public class ForwardRule extends AbstractResponseRule implements Replicable<Forw
         attributeItemRuleMap.putItemRule(itemRule);
     }
 
+    /**
+     * Returns whether the default response.
+     *
+     * @return whether the default response
+     */
+    public Boolean getDefaultResponse() {
+        return defaultResponse;
+    }
+
+    /**
+     * Returns whether the default response.
+     *
+     * @return true, if is default response
+     */
+    public boolean isDefaultResponse() {
+        return BooleanUtils.toBoolean(defaultResponse);
+    }
+
+    /**
+     * Sets whether the default response.
+     *
+     * @param defaultResponse whether the default response
+     */
+    public void setDefaultResponse(Boolean defaultResponse) {
+        this.defaultResponse = defaultResponse;
+    }
+
     @Override
     public ForwardRule replicate() {
         return replicate(this);
@@ -195,7 +225,6 @@ public class ForwardRule extends AbstractResponseRule implements Replicable<Forw
         fr.setTransletName(forwardRule.getTransletName());
         fr.setAttributeItemRuleMap(forwardRule.getAttributeItemRuleMap());
         fr.setDefaultResponse(forwardRule.getDefaultResponse());
-        fr.setActionList(forwardRule.getActionList());
         return fr;
     }
 

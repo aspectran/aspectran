@@ -562,6 +562,11 @@ public class RulesToParameters {
         responseParameters.putValueNonNull(ResponseParameters.name, responseRule.getName());
         responseParameters.putValueNonNull(ResponseParameters.encoding, responseRule.getEncoding());
 
+        ActionList actionList = responseRule.getActionList();
+        if (actionList != null) {
+            toActionParameters(actionList, responseParameters);
+        }
+
         if (responseRule.getResponse() != null) {
             if (responseRule.getResponseType() == ResponseType.TRANSFORM) {
                 TransformResponse transformResponse = (TransformResponse)responseRule.getResponse();
@@ -592,15 +597,9 @@ public class RulesToParameters {
         transformParameters.putValueNonNull(TransformParameters.encoding, transformRule.getEncoding());
         transformParameters.putValueNonNull(TransformParameters.defaultResponse, transformRule.getDefaultResponse());
         transformParameters.putValueNonNull(TransformParameters.pretty, transformRule.getPretty());
-
-        ActionList actionList = transformRule.getActionList();
-        if (actionList != null) {
-            toActionParameters(actionList, transformParameters);
-        }
         if (transformRule.getTemplateRule() != null) {
             transformParameters.putValue(TransformParameters.template, toTemplateParameters(transformRule.getTemplateRule()));
         }
-
         return transformParameters;
     }
 
@@ -615,12 +614,6 @@ public class RulesToParameters {
         dispatchParameters.putValueNonNull(DispatchParameters.contentType, dispatchRule.getContentType());
         dispatchParameters.putValueNonNull(DispatchParameters.encoding, dispatchRule.getEncoding());
         dispatchParameters.putValueNonNull(DispatchParameters.defaultResponse, dispatchRule.getDefaultResponse());
-
-        ActionList actionList = dispatchRule.getActionList();
-        if (actionList != null) {
-            toActionParameters(actionList, dispatchParameters);
-        }
-
         return dispatchParameters;
     }
 
@@ -637,11 +630,6 @@ public class RulesToParameters {
         ItemRuleMap attributeItemRuleMap = forwardRule.getAttributeItemRuleMap();
         if (attributeItemRuleMap != null) {
             toItemHolderParameters(attributeItemRuleMap, forwardParameters, ForwardParameters.attributes);
-        }
-
-        ActionList actionList = forwardRule.getActionList();
-        if (actionList != null) {
-            toActionParameters(actionList, forwardParameters);
         }
 
         return forwardParameters;
@@ -663,11 +651,6 @@ public class RulesToParameters {
         ItemRuleMap parameterItemRuleMap = redirectRule.getParameterItemRuleMap();
         if (parameterItemRuleMap != null) {
             toItemHolderParameters(parameterItemRuleMap, redirectParameters, RedirectParameters.parameters);
-        }
-
-        ActionList actionList = redirectRule.getActionList();
-        if (actionList != null) {
-            toActionParameters(actionList, redirectParameters);
         }
 
         return redirectParameters;

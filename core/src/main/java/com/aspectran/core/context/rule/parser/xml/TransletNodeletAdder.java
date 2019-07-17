@@ -38,10 +38,6 @@ class TransletNodeletAdder implements NodeletAdder {
     @Override
     public void add(String xpath, NodeletParser parser) {
         AspectranNodeParser nodeParser = parser.getNodeParser();
-        ActionNodeletAdder actionNodeletAdder = nodeParser.getActionNodeletAdder();
-        ExceptionInnerNodeletAdder exceptionInnerNodeletAdder = nodeParser.getExceptionInnerNodeletAdder();
-        ItemNodeletAdder itemNodeletAdder = nodeParser.getItemNodeletAdder();
-        ResponseInnerNodeletAdder responseInnerNodeletAdder = nodeParser.getResponseInnerNodeletAdder();
         ContextRuleAssistant assistant = nodeParser.getAssistant();
 
         parser.setXpath(xpath + "/translet");
@@ -79,7 +75,7 @@ class TransletNodeletAdder implements NodeletAdder {
             irm.setProfile(StringUtils.emptyToNull(attrs.get("profile")));
             parser.pushObject(irm);
         });
-        parser.addNodelet(itemNodeletAdder);
+        nodeParser.addItemNodelets();
         parser.addNodeEndlet(text -> {
             ItemRuleMap irm = parser.popObject();
             TransletRule transletRule = parser.peekObject();
@@ -93,7 +89,7 @@ class TransletNodeletAdder implements NodeletAdder {
             irm.setProfile(StringUtils.emptyToNull(attrs.get("profile")));
             parser.pushObject(irm);
         });
-        parser.addNodelet(itemNodeletAdder);
+        nodeParser.addItemNodelets();
         parser.addNodeEndlet(text -> {
             ItemRuleMap irm = parser.popObject();
             TransletRule transletRule = parser.peekObject();
@@ -120,7 +116,7 @@ class TransletNodeletAdder implements NodeletAdder {
             irm.setProfile(StringUtils.emptyToNull(attrs.get("profile")));
             parser.pushObject(irm);
         });
-        parser.addNodelet(itemNodeletAdder);
+        nodeParser.addItemNodelets();
         parser.addNodeEndlet(text -> {
             ItemRuleMap irm = parser.popObject();
             RequestRule requestRule = parser.peekObject();
@@ -133,7 +129,7 @@ class TransletNodeletAdder implements NodeletAdder {
             irm.setProfile(StringUtils.emptyToNull(attrs.get("profile")));
             parser.pushObject(irm);
         });
-        parser.addNodelet(itemNodeletAdder);
+        nodeParser.addItemNodelets();
         parser.addNodeEndlet(text -> {
             ItemRuleMap irm = parser.popObject();
             RequestRule requestRule = parser.peekObject();
@@ -141,7 +137,7 @@ class TransletNodeletAdder implements NodeletAdder {
             requestRule.setAttributeItemRuleMap(irm);
         });
         parser.setXpath(xpath + "/translet");
-        parser.addNodelet(actionNodeletAdder);
+        nodeParser.addNestedActionNodelets();
         parser.setXpath(xpath + "/translet/contents");
         parser.addNodelet(attrs -> {
             String name = attrs.get("name");
@@ -163,7 +159,7 @@ class TransletNodeletAdder implements NodeletAdder {
             ActionList actionList = ActionList.newInstance(name);
             parser.pushObject(actionList);
         });
-        parser.addNodelet(actionNodeletAdder);
+        nodeParser.addNestedActionNodelets();
         parser.addNodeEndlet(text -> {
             ActionList actionList = parser.popObject();
             if (!actionList.isEmpty()) {
@@ -178,7 +174,7 @@ class TransletNodeletAdder implements NodeletAdder {
             ActionList actionList = ActionList.newInstance(name);
             parser.pushObject(actionList);
         });
-        parser.addNodelet(actionNodeletAdder);
+        nodeParser.addNestedActionNodelets();
         parser.addNodeEndlet(text -> {
             ActionList actionList = parser.popObject();
             if (!actionList.isEmpty()) {
@@ -190,7 +186,7 @@ class TransletNodeletAdder implements NodeletAdder {
             }
         });
         parser.setXpath(xpath + "/translet");
-        parser.addNodelet(responseInnerNodeletAdder);
+        nodeParser.addResponseInnerNodelets();
         parser.setXpath(xpath + "/translet/response");
         parser.addNodelet(attrs -> {
             String name = attrs.get("name");
@@ -199,7 +195,8 @@ class TransletNodeletAdder implements NodeletAdder {
             ResponseRule responseRule = ResponseRule.newInstance(name, encoding);
             parser.pushObject(responseRule);
         });
-        parser.addNodelet(responseInnerNodeletAdder);
+        nodeParser.addNestedActionNodelets();
+        nodeParser.addResponseInnerNodelets();
         parser.addNodeEndlet(text -> {
             ResponseRule responseRule = parser.popObject();
             TransletRule transletRule = parser.peekObject();
@@ -210,7 +207,7 @@ class TransletNodeletAdder implements NodeletAdder {
             ExceptionRule exceptionRule = new ExceptionRule();
             parser.pushObject(exceptionRule);
         });
-        parser.addNodelet(exceptionInnerNodeletAdder);
+        nodeParser.addResponseInnerNodelets();
         parser.addNodeEndlet(text -> {
             ExceptionRule exceptionRule = parser.popObject();
             TransletRule transletRule = parser.peekObject();

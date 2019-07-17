@@ -34,7 +34,7 @@ import java.util.Map;
  * 
  * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */
-public class RedirectRule extends AbstractResponseRule implements Replicable<RedirectRule> {
+public class RedirectRule implements Replicable<RedirectRule> {
 
     public static final ResponseType RESPONSE_TYPE = ResponseType.REDIRECT;
 
@@ -51,6 +51,8 @@ public class RedirectRule extends AbstractResponseRule implements Replicable<Red
     private Boolean excludeEmptyParameters;
 
     private ItemRuleMap parameterItemRuleMap;
+
+    private Boolean defaultResponse;
 
     /**
      * Gets the content type.
@@ -266,6 +268,33 @@ public class RedirectRule extends AbstractResponseRule implements Replicable<Red
         }
     }
 
+    /**
+     * Returns whether the default response.
+     *
+     * @return whether the default response
+     */
+    public Boolean getDefaultResponse() {
+        return defaultResponse;
+    }
+
+    /**
+     * Returns whether the default response.
+     *
+     * @return true, if is default response
+     */
+    public boolean isDefaultResponse() {
+        return BooleanUtils.toBoolean(defaultResponse);
+    }
+
+    /**
+     * Sets whether the default response.
+     *
+     * @param defaultResponse whether the default response
+     */
+    public void setDefaultResponse(Boolean defaultResponse) {
+        this.defaultResponse = defaultResponse;
+    }
+
     @Override
     public RedirectRule replicate() {
         return replicate(this);
@@ -318,7 +347,6 @@ public class RedirectRule extends AbstractResponseRule implements Replicable<Red
         rr.setExcludeEmptyParameters(redirectRule.getExcludeEmptyParameters());
         rr.setParameterItemRuleMap(redirectRule.getParameterItemRuleMap());
         rr.setDefaultResponse(redirectRule.getDefaultResponse());
-        rr.setActionList(redirectRule.getActionList());
         return rr;
     }
 

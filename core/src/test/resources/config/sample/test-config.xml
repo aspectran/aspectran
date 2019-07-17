@@ -13,21 +13,19 @@
         <description>
             두 개의 입력 값과 Aspectran 내장 템플릿 엔진을 사용해서 텍스트 형식으로 출력합니다.
         </description>
-        <request>
-            <parameters>
-                <item name="input-1">${input-1:12345}</item>
-                <item name="input-2">${input-2:67890}</item>
-            </parameters>
-            <attributes>
-                <item name="array1" type="array">
-                    <value>a</value>
-                    <value>b</value>
-                </item>
-                <item name="array2" type="array">
-                    <value>c</value>
-                </item>
-            </attributes>
-        </request>
+        <parameters>
+            <item name="input-1">${input-1:12345}</item>
+            <item name="input-2">${input-2:67890}</item>
+        </parameters>
+        <attributes>
+            <item name="array1" type="array">
+                <value>a</value>
+                <value>b</value>
+            </item>
+            <item name="array2" type="array">
+                <value>c</value>
+            </item>
+        </attributes>
         <transform type="transform/text" contentType="text/plain">
             <template engine="token" style="apon">
                 |Using Builtin Token Template Engine
@@ -75,9 +73,8 @@
             simplestAction 빈에서 helloWorld 메쏘드를 실행합니다.
             helloWorld 메쏘드가 반환하는 "Hello, World." 문자열을 텍스트 형식의 컨텐츠로 응답합니다.
         </description>
-        <transform type="transform/text">
-            <action id="helloData" bean="TestAction" method="helloWorld"/>
-        </transform>
+        <action id="helloData" bean="TestAction" method="helloWorld"/>
+        <transform type="transform/text"/>
     </translet>
 
     <template id="echo1" style="apon">
@@ -91,12 +88,10 @@
     <append file="/config/sample/scheduler-config.xml"/>
 
     <translet name="caseTest">
-        <request>
-            <attributes>
-                <item name="input_1">${input_1:12345}</item>
-                <item name="input_2">${input_2:67890}</item>
-            </attributes>
-        </request>
+        <attributes>
+            <item name="input_1">${input_1:12345}</item>
+            <item name="input_2">${input_2:67890}</item>
+        </attributes>
         <action id="case0" method="case0" bean="SampleAction"/>
         <choose>
             <when test="case1">
@@ -106,9 +101,9 @@
                 <action id="case2" method="case2" bean="SampleAction"/>
             </otherwise>
         </choose>
+        <action id="case3" method="case2" bean="SampleAction"/>
+        <action id="case4" method="case2" bean="SampleAction"/>
         <transform type="transform/text">
-            <action id="case3" method="case2" bean="SampleAction"/>
-            <action id="case4" method="case2" bean="SampleAction"/>
             <template style="apon">
                 |@{case0}
                 |@{case1}
@@ -117,16 +112,14 @@
     </translet>
 
     <translet name="caseTest2">
-        <request>
-            <parameters>
-                <item name="input_1">${input_1:12345}</item>
-                <item name="input_2">${input_2:67890}</item>
-            </parameters>
-            <attributes>
-                <item name="input_1">${input_1:12345}</item>
-                <item name="input_2">${input_2:67890}</item>
-            </attributes>
-        </request>
+        <parameters>
+            <item name="input_1">${input_1:12345}</item>
+            <item name="input_2">${input_2:67890}</item>
+        </parameters>
+        <attributes>
+            <item name="input_1">${input_1:12345}</item>
+            <item name="input_2">${input_2:67890}</item>
+        </attributes>
         <contents name="contents-1">
             <content name="content-11">
                 <action id="case0" method="case0" bean="SampleAction"/>
@@ -152,9 +145,9 @@
             </content>
         </contents>
         <response name="name2">
+            <action id="case3" method="case2" bean="SampleAction"/>
+            <action id="case4" method="case2" bean="SampleAction"/>
             <transform type="transform/text">
-                <action id="case3" method="case2" bean="SampleAction"/>
-                <action id="case4" method="case2" bean="SampleAction"/>
                 <template style="apon">
                     |@{case0}
                     |@{case1}
@@ -164,16 +157,14 @@
     </translet>
 
     <translet name="thrownTest">
-        <request>
-            <parameters>
-                <item name="input_1">${input_1:12345}</item>
-                <item name="input_2">${input_2:67890}</item>
-            </parameters>
-            <attributes>
-                <item name="input_1">${input_1:12345}</item>
-                <item name="input_2">${input_2:67890}</item>
-            </attributes>
-        </request>
+        <parameters>
+            <item name="input_1">${input_1:12345}</item>
+            <item name="input_2">${input_2:67890}</item>
+        </parameters>
+        <attributes>
+            <item name="input_1">${input_1:12345}</item>
+            <item name="input_2">${input_2:67890}</item>
+        </attributes>
         <contents name="contents-1">
             <content name="content-11">
                 <action id="case0" method="case0" bean="SampleAction"/>
@@ -199,9 +190,9 @@
             </content>
         </contents>
         <response name="name2">
+            <action id="case3" method="case2" bean="SampleAction"/>
+            <action id="case4" method="case2" bean="SampleAction"/>
             <transform type="transform/text">
-                <action id="case3" method="case2" bean="SampleAction"/>
-                <action id="case4" method="case2" bean="SampleAction"/>
                 <template style="apon">
                     |@{case0}
                     |@{case1}

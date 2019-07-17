@@ -16,7 +16,6 @@
 package com.aspectran.core.activity.response;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.rule.RedirectRule;
 import com.aspectran.core.context.rule.type.ResponseType;
@@ -89,11 +88,6 @@ public class RedirectResponse implements Response {
     @Override
     public String getContentType(Activity activity) {
         return getContentType();
-    }
-
-    @Override
-    public ActionList getActionList() {
-        return redirectRule.getActionList();
     }
 
     @Override

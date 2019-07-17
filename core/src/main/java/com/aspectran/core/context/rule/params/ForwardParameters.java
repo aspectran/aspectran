@@ -21,7 +21,6 @@ import com.aspectran.core.util.apon.ValueType;
 
 public class ForwardParameters extends AbstractParameters {
 
-    public static final ParameterKey action;
     public static final ParameterKey contentType;
     public static final ParameterKey translet;
     public static final ParameterKey method;
@@ -31,8 +30,6 @@ public class ForwardParameters extends AbstractParameters {
     private static final ParameterKey[] parameterKeys;
 
     static {
-        action = new ParameterKey("action", new String[] {"echo", "headers", "include", "choose"},
-                ActionParameters.class, true, true);
         contentType = new ParameterKey("contentType", ValueType.STRING);
         translet = new ParameterKey("translet", ValueType.STRING);
         method = new ParameterKey("method", ValueType.STRING);
@@ -40,7 +37,6 @@ public class ForwardParameters extends AbstractParameters {
         attributes = new ParameterKey("attributes", ItemHolderParameters.class, true, true);
 
         parameterKeys = new ParameterKey[] {
-                action,
                 contentType,
                 translet,
                 method,

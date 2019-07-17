@@ -13,9 +13,8 @@
         <parameters>
             <item name="resourceName" mandatory="true">${resourceName:sample_resource.txt}</item>
         </parameters>
-        <transform type="text">
-            <action id="sampleResourceFile" bean="sampleResources" method="getResourceFile"/>
-        </transform>
+        <action id="sampleResourceFile" bean="sampleResources" method="getResourceFile"/>
+        <transform type="text"/>
     </translet>
 
     <translet name="print-resource!">

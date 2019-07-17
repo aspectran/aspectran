@@ -17,28 +17,33 @@ package com.aspectran.core.context.rule.parser.xml;
 
 import com.aspectran.core.context.rule.ChooseRule;
 import com.aspectran.core.context.rule.ChooseWhenRule;
+import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.nodelet.NodeletAdder;
 import com.aspectran.core.util.nodelet.NodeletParser;
 
 /**
- * The Class ChooseWhenNodeletAdder.
+ * The Class ChooseNodeletAdder.
  *
- * @since 2011. 1. 9.
+ * @since 6.0.0
  */
-class ChooseWhenNodeletAdder implements NodeletAdder {
-
-    private int nestedCount;
+class ChooseNodeletAdder implements NodeletAdder {
 
     @Override
     public void add(String xpath, NodeletParser parser) {
-        nestedCount++;
-
         AspectranNodeParser nodeParser = parser.getNodeParser();
-        ActionNodeletAdder actionNodeletAdder = nodeParser.getActionNodeletAdder();
-        ResponseInnerNodeletAdder responseInnerNodeletAdder = nodeParser.getResponseInnerNodeletAdder();
 
-        parser.setXpath(xpath + "/when");
+        parser.setXpath(xpath + "/choose");
+        parser.addNodelet(attrs -> {
+            ChooseRule chooseRule = ChooseRule.newInstance();
+            parser.pushObject(chooseRule);
+        });
+        parser.addNodeEndlet(text -> {
+            ChooseRule chooseRule = parser.popObject();
+            ActionRuleApplicable applicable = parser.peekObject();
+            applicable.applyActionRule(chooseRule);
+        });
+        parser.setXpath(xpath + "/choose/when");
         parser.addNodelet(attrs -> {
             String expression = StringUtils.emptyToNull(attrs.get("test"));
 
@@ -47,26 +52,22 @@ class ChooseWhenNodeletAdder implements NodeletAdder {
             chooseWhenRule.setExpression(expression);
             parser.pushObject(chooseWhenRule);
         });
-        parser.addNodelet(actionNodeletAdder);
-        parser.addNodelet(responseInnerNodeletAdder);
+        nodeParser.addActionNodelets();
+        nodeParser.addResponseInnerNodelets();
         parser.addNodeEndlet(text -> {
             parser.popObject();
         });
-        parser.setXpath(xpath + "/otherwise");
+        parser.setXpath(xpath + "/choose/otherwise");
         parser.addNodelet(attrs -> {
             ChooseRule chooseRule = parser.peekObject();
             ChooseWhenRule chooseWhenRule = chooseRule.newChooseWhenRule();
             parser.pushObject(chooseWhenRule);
         });
-        parser.addNodelet(actionNodeletAdder);
-        parser.addNodelet(responseInnerNodeletAdder);
+        nodeParser.addActionNodelets();
+        nodeParser.addResponseInnerNodelets();
         parser.addNodeEndlet(text -> {
             parser.popObject();
         });
-    }
-
-    public int getNestedCount() {
-        return nestedCount;
     }
 
 }

@@ -53,20 +53,20 @@ public class DefaultSettings {
         this.defaultSchedulerBean = ds.getDefaultSchedulerBean();
     }
 
-    public void setTransletNamePrefix(String transletNamePrefix) {
-        this.transletNamePrefix = transletNamePrefix;
-    }
-
-    public void setTransletNameSuffix(String transletNameSuffix) {
-        this.transletNameSuffix = transletNameSuffix;
-    }
-
     public String getTransletNamePrefix() {
         return transletNamePrefix;
     }
 
+    public void setTransletNamePrefix(String transletNamePrefix) {
+        this.transletNamePrefix = transletNamePrefix;
+    }
+
     public String getTransletNameSuffix() {
         return transletNameSuffix;
+    }
+
+    public void setTransletNameSuffix(String transletNameSuffix) {
+        this.transletNameSuffix = transletNameSuffix;
     }
 
     public String getBeanProxifier() {

@@ -428,15 +428,15 @@ public class TransletRuleRegistry extends AbstractComponent {
         if (defaultSettings == null) {
             return transletName;
         }
+        if (defaultSettings.getTransletNamePrefix() == null
+            && defaultSettings.getTransletNameSuffix() == null) {
+            return transletName;
+        }
         if (StringUtils.startsWith(transletName, ActivityContext.NAME_SEPARATOR_CHAR)) {
             if (absolutely) {
                 return transletName;
             }
             transletName = transletName.substring(1);
-        }
-        if (defaultSettings.getTransletNamePrefix() == null
-                && defaultSettings.getTransletNameSuffix() == null) {
-            return transletName;
         }
 
         StringBuilder sb = new StringBuilder();

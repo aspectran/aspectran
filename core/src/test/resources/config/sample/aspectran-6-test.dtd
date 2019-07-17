@@ -186,13 +186,13 @@
   hidden  (true | false) #IMPLIED
 >
 
-<!ELEMENT response (transform? | dispatch? | forward? | redirect?)>
+<!ELEMENT response ((choose? | headers? | echo? | action? | include?)*, (transform | dispatch | forward | redirect)?)>
 <!ATTLIST response
   name     CDATA #IMPLIED
   encoding CDATA #IMPLIED
 >
 
-<!ELEMENT transform ((choose? | headers? | echo? | action? | include?)*, (template?))>
+<!ELEMENT transform (template?)>
 <!ATTLIST transform
   type        CDATA #IMPLIED
   contentType CDATA #IMPLIED
@@ -201,7 +201,7 @@
   pretty      (true | false) #IMPLIED
 >
 
-<!ELEMENT dispatch (choose? | headers? | echo? | action? | include?)*>
+<!ELEMENT dispatch EMPTY>
 <!ATTLIST dispatch
   name        CDATA #REQUIRED
   dispatcher  CDATA #IMPLIED
@@ -210,7 +210,15 @@
   default     (true | false) #IMPLIED
 >
 
-<!ELEMENT redirect ((choose? | headers? | echo? | action? | include?)*, parameters*)>
+<!ELEMENT forward (attributes*)>
+<!ATTLIST forward
+  contentType CDATA #IMPLIED
+  translet    CDATA #REQUIRED
+  method      CDATA #IMPLIED
+  default     (true | false) #IMPLIED
+>
+
+<!ELEMENT redirect (parameters*)>
 <!ATTLIST redirect
   contentType            CDATA #IMPLIED
   path                   CDATA #REQUIRED
@@ -218,14 +226,6 @@
   excludeNullParameters  (true | false) #IMPLIED
   excludeEmptyParameters (true | false) #IMPLIED
   default                (true | false) #IMPLIED
->
-
-<!ELEMENT forward ((choose? | headers? | echo? | action? | include?)*, attributes*)>
-<!ATTLIST forward
-  contentType CDATA #IMPLIED
-  translet    CDATA #REQUIRED
-  method      CDATA #IMPLIED
-  default     (true | false) #IMPLIED
 >
 
 <!ELEMENT parameters (item*)>

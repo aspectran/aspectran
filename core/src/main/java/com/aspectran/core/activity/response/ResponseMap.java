@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.activity.response;
 
+import com.aspectran.core.lang.NonNull;
+
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 
@@ -37,6 +39,7 @@ public class ResponseMap extends LinkedHashMap<String, Response> implements Iter
     }
 
     @Override
+    @NonNull
     public Iterator<Response> iterator() {
         return this.values().iterator();
     }

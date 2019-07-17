@@ -27,7 +27,7 @@ import com.aspectran.core.util.ToStringBuilder;
  * 
  * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */
-public class TransformRule extends AbstractResponseRule implements Replicable<TransformRule> {
+public class TransformRule implements Replicable<TransformRule> {
 
     public static final ResponseType RESPONSE_TYPE = ResponseType.TRANSFORM;
 
@@ -42,6 +42,8 @@ public class TransformRule extends AbstractResponseRule implements Replicable<Tr
     private String templateId;
 
     private TemplateRule templateRule;
+
+    private Boolean defaultResponse;
 
     /**
      * Instantiates a new TransformRule.
@@ -194,6 +196,33 @@ public class TransformRule extends AbstractResponseRule implements Replicable<Tr
         }
     }
 
+    /**
+     * Returns whether the default response.
+     *
+     * @return whether the default response
+     */
+    public Boolean getDefaultResponse() {
+        return defaultResponse;
+    }
+
+    /**
+     * Returns whether the default response.
+     *
+     * @return true, if is default response
+     */
+    public boolean isDefaultResponse() {
+        return BooleanUtils.toBoolean(defaultResponse);
+    }
+
+    /**
+     * Sets whether the default response.
+     *
+     * @param defaultResponse whether the default response
+     */
+    public void setDefaultResponse(Boolean defaultResponse) {
+        this.defaultResponse = defaultResponse;
+    }
+
     @Override
     public TransformRule replicate() {
         return replicate(this);
@@ -240,13 +269,6 @@ public class TransformRule extends AbstractResponseRule implements Replicable<Tr
         return tr;
     }
 
-    public static void updateTemplateId(TransformRule transformRule, String templateId) throws IllegalRuleException {
-        if (templateId == null) {
-            throw new IllegalRuleException("The 'call' element of 'transform' must have a 'template' attribute");
-        }
-        transformRule.setTemplateId(templateId);
-    }
-
     public static TransformRule replicate(TransformRule transformRule) {
         TransformRule tr = new TransformRule();
         tr.setTransformType(transformRule.getTransformType());
@@ -254,7 +276,6 @@ public class TransformRule extends AbstractResponseRule implements Replicable<Tr
         tr.setEncoding(transformRule.getEncoding());
         tr.setDefaultResponse(transformRule.getDefaultResponse());
         tr.setPretty(transformRule.getPretty());
-        tr.setActionList(transformRule.getActionList());
         TemplateRule templateRule = transformRule.getTemplateRule();
         if (templateRule != null) {
             tr.setTemplateRule(templateRule.replicate());

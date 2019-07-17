@@ -266,12 +266,9 @@ public class CoreActivity extends AdviceActivity {
             }
         }
 
-        Response res = getResponse();
-        if (res != null) {
-            ActionList actionList = res.getActionList();
-            if (actionList != null) {
-                execute(actionList);
-            }
+        ActionList actionList = getResponseRule().getActionList();
+        if (actionList != null) {
+            execute(actionList);
         }
     }
 
@@ -504,23 +501,13 @@ public class CoreActivity extends AdviceActivity {
                 executeAdvice(action);
             }
             if (!isResponseReserved() && translet != null) {
-                handleException(exceptionThrownRule);
+                Response response = getDesiredResponse();
+                String contentType = (response != null ? response.getContentType() : null);
+                Response targetResponse = exceptionThrownRule.getResponse(contentType);
+                if (targetResponse != null) {
+                    reserveResponse(targetResponse);
+                }
             }
-        }
-    }
-
-    private void handleException(ExceptionThrownRule exceptionThrownRule) {
-        Response response = getDesiredResponse();
-        String contentType = (response != null ? response.getContentType() : null);
-        Response targetResponse = exceptionThrownRule.getResponse(contentType);
-        if (targetResponse != null) {
-            // Clear produced results. No reflection to ProcessResult.
-            translet.setProcessResult(null);
-            ActionList actionList = targetResponse.getActionList();
-            if (actionList != null) {
-                execute(actionList);
-            }
-            reserveResponse(targetResponse);
         }
     }
 

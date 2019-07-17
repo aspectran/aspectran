@@ -16,7 +16,6 @@
 package com.aspectran.core.activity.response;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.context.expr.ItemEvaluator;
 import com.aspectran.core.context.expr.ItemExpression;
@@ -84,11 +83,6 @@ public class ForwardResponse implements Response {
     @Override
     public String getContentType(Activity activity) {
         return getContentType();
-    }
-
-    @Override
-    public ActionList getActionList() {
-        return forwardRule.getActionList();
     }
 
     @Override

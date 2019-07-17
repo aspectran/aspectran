@@ -16,7 +16,6 @@
 package com.aspectran.core.activity.response;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.context.rule.ability.Replicable;
 import com.aspectran.core.context.rule.type.ResponseType;
 
@@ -57,13 +56,6 @@ public interface Response extends Replicable<Response> {
      * @return the content type
      */
     String getContentType(Activity activity);
-
-    /**
-     * Gets the action list.
-     *
-     * @return the action list
-     */
-    ActionList getActionList();
 
     /**
      * Replicates and returns this response.

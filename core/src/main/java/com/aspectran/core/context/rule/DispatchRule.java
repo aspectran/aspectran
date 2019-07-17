@@ -24,6 +24,7 @@ import com.aspectran.core.context.expr.token.Tokenizer;
 import com.aspectran.core.context.rule.ability.Replicable;
 import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.core.context.rule.type.TokenType;
+import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.ToStringBuilder;
 
 import java.util.List;
@@ -33,7 +34,7 @@ import java.util.List;
  * 
  * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */
-public class DispatchRule extends AbstractResponseRule implements Replicable<DispatchRule> {
+public class DispatchRule implements Replicable<DispatchRule> {
 
     public static final ResponseType RESPONSE_TYPE = ResponseType.DISPATCH;
 
@@ -48,6 +49,8 @@ public class DispatchRule extends AbstractResponseRule implements Replicable<Dis
     private String encoding;
 
     private ViewDispatcher viewDispatcher;
+
+    private Boolean defaultResponse;
 
     /**
      * Gets the dispatch name.
@@ -182,6 +185,33 @@ public class DispatchRule extends AbstractResponseRule implements Replicable<Dis
         this.viewDispatcher = viewDispatcher;
     }
 
+    /**
+     * Returns whether the default response.
+     *
+     * @return whether the default response
+     */
+    public Boolean getDefaultResponse() {
+        return defaultResponse;
+    }
+
+    /**
+     * Returns whether the default response.
+     *
+     * @return true, if is default response
+     */
+    public boolean isDefaultResponse() {
+        return BooleanUtils.toBoolean(defaultResponse);
+    }
+
+    /**
+     * Sets whether the default response.
+     *
+     * @param defaultResponse whether the default response
+     */
+    public void setDefaultResponse(Boolean defaultResponse) {
+        this.defaultResponse = defaultResponse;
+    }
+
     @Override
     public DispatchRule replicate() {
         return replicate(this);
@@ -279,7 +309,6 @@ public class DispatchRule extends AbstractResponseRule implements Replicable<Dis
         dr.setContentType(dispatchRule.getContentType());
         dr.setEncoding(dispatchRule.getEncoding());
         dr.setDefaultResponse(dispatchRule.getDefaultResponse());
-        dr.setActionList(dispatchRule.getActionList());
         return dr;
     }
 

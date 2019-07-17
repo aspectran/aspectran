@@ -16,7 +16,6 @@
 package com.aspectran.core.activity.response.dispatch;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.result.ActionResult;
 import com.aspectran.core.activity.process.result.ContentResult;
 import com.aspectran.core.activity.process.result.ProcessResult;
@@ -98,11 +97,6 @@ public class DispatchResponse implements Response {
                 throw new DispatchResponseException(dispatchRule, e);
             }
         }
-    }
-
-    @Override
-    public ActionList getActionList() {
-        return dispatchRule.getActionList();
     }
 
     @Override

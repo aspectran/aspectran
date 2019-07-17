@@ -38,8 +38,6 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
     @Override
     public void add(String xpath, NodeletParser parser) {
         AspectranNodeParser nodeParser = parser.getNodeParser();
-        ActionNodeletAdder actionNodeletAdder = nodeParser.getActionNodeletAdder();
-        ItemNodeletAdder itemNodeletAdder = nodeParser.getItemNodeletAdder();
         ContextRuleAssistant assistant = nodeParser.getAssistant();
 
         parser.setXpath(xpath + "/transform");
@@ -58,7 +56,6 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
             ResponseRuleApplicable applicable = parser.peekObject();
             applicable.applyResponseRule(transformRule);
         });
-        parser.addNodelet(actionNodeletAdder);
         parser.setXpath(xpath + "/transform/template");
         parser.addNodelet(attrs -> {
             String engine = attrs.get("engine");
@@ -71,7 +68,7 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
             Boolean noCache = BooleanUtils.toNullableBooleanObject(attrs.get("noCache"));
 
             TemplateRule templateRule = TemplateRule.newInstanceForBuiltin(engine, name, file, resource, url,
-                    null, style, encoding, noCache);
+                    style, null, encoding, noCache);
             parser.pushObject(templateRule);
         });
         parser.addNodeEndlet(text -> {
@@ -82,13 +79,6 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
             transformRule.setTemplateRule(templateRule);
 
             assistant.resolveBeanClass(templateRule);
-        });
-        parser.setXpath(xpath + "/transform/call");
-        parser.addNodelet(attrs -> {
-            String template = StringUtils.emptyToNull(attrs.get("template"));
-
-            TransformRule transformRule = parser.peekObject();
-            TransformRule.updateTemplateId(transformRule, template);
         });
         parser.setXpath(xpath + "/dispatch");
         parser.addNodelet(attrs -> {
@@ -106,7 +96,6 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
             ResponseRuleApplicable applicable = parser.peekObject();
             applicable.applyResponseRule(dispatchRule);
         });
-        parser.addNodelet(actionNodeletAdder);
         parser.setXpath(xpath + "/forward");
         parser.addNodelet(attrs -> {
             String contentType = attrs.get("contentType");
@@ -124,14 +113,13 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
             ResponseRuleApplicable applicable = parser.peekObject();
             applicable.applyResponseRule(forwardRule);
         });
-        parser.addNodelet(actionNodeletAdder);
         parser.setXpath(xpath + "/forward/attributes");
         parser.addNodelet(attrs -> {
             ItemRuleMap irm = new ItemRuleMap();
             irm.setProfile(StringUtils.emptyToNull(attrs.get("profile")));
             parser.pushObject(irm);
         });
-        parser.addNodelet(itemNodeletAdder);
+        nodeParser.addItemNodelets();
         parser.addNodeEndlet(text -> {
             ItemRuleMap irm = parser.popObject();
             ForwardRule forwardRule = parser.peekObject();
@@ -163,14 +151,13 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
 
             assistant.resolveBeanClass(redirectRule.getPathTokens());
         });
-        parser.addNodelet(actionNodeletAdder);
         parser.setXpath(xpath + "/redirect/parameters");
         parser.addNodelet(attrs -> {
             ItemRuleMap irm = new ItemRuleMap();
             irm.setProfile(StringUtils.emptyToNull(attrs.get("profile")));
             parser.pushObject(irm);
         });
-        parser.addNodelet(itemNodeletAdder);
+        nodeParser.addItemNodelets();
         parser.addNodeEndlet(text -> {
             ItemRuleMap irm = parser.popObject();
             RedirectRule redirectRule = parser.peekObject();

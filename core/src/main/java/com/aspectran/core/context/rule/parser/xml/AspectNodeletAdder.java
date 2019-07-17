@@ -35,8 +35,6 @@ class AspectNodeletAdder implements NodeletAdder {
     @Override
     public void add(String xpath, NodeletParser parser) {
         AspectranNodeParser nodeParser = parser.getNodeParser();
-        AspectAdviceInnerNodeletAdder aspectAdviceInnerNodeletAdder = nodeParser.getAspectAdviceInnerNodeletAdder();
-        ExceptionInnerNodeletAdder exceptionInnerNodeletAdder = nodeParser.getExceptionInnerNodeletAdder();
         ContextRuleAssistant assistant = nodeParser.getAssistant();
 
         parser.setXpath(xpath + "/aspect");
@@ -115,13 +113,13 @@ class AspectNodeletAdder implements NodeletAdder {
                 assistant.resolveAdviceBeanClass(aspectRule);
             }
         });
-        parser.addNodelet(aspectAdviceInnerNodeletAdder);
+        nodeParser.addAspectAdviceInnerNodelets();
         parser.setXpath(xpath + "/aspect/exception");
         parser.addNodelet(attrs -> {
             ExceptionRule exceptionRule = new ExceptionRule();
             parser.pushObject(exceptionRule);
         });
-        parser.addNodelet(exceptionInnerNodeletAdder);
+        nodeParser.addExceptionInnerNodelets();
         parser.addNodeEndlet(text -> {
             ExceptionRule exceptionRule = parser.popObject();
             AspectRule aspectRule = parser.peekObject();

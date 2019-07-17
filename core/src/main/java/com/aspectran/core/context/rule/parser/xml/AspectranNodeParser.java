@@ -46,6 +46,8 @@ public class AspectranNodeParser {
 
     private final BeanNodeletAdder beanNodeletAdder;
 
+    private final ChooseNodeletAdder chooseNodeletAdder;
+
     private final EnvironmentNodeletAdder environmentNodeletAdder;
 
     private final ExceptionInnerNodeletAdder exceptionInnerNodeletAdder;
@@ -59,8 +61,6 @@ public class AspectranNodeParser {
     private final TemplateNodeletAdder templateNodeletAdder;
 
     private final TransletNodeletAdder transletNodeletAdder;
-
-    private final ChooseWhenNodeletAdder chooseWhenNodeletAdder;
 
     private final NodeletParser parser;
 
@@ -88,6 +88,7 @@ public class AspectranNodeParser {
         this.aspectAdviceInnerNodeletAdder = new AspectAdviceInnerNodeletAdder();
         this.aspectNodeletAdder = new AspectNodeletAdder();
         this.beanNodeletAdder = new BeanNodeletAdder();
+        this.chooseNodeletAdder = new ChooseNodeletAdder();
         this.environmentNodeletAdder = new EnvironmentNodeletAdder();
         this.exceptionInnerNodeletAdder = new ExceptionInnerNodeletAdder();
         this.itemNodeletAdder = new ItemNodeletAdder();
@@ -95,7 +96,6 @@ public class AspectranNodeParser {
         this.scheduleNodeletAdder = new ScheduleNodeletAdder();
         this.templateNodeletAdder = new TemplateNodeletAdder();
         this.transletNodeletAdder = new TransletNodeletAdder();
-        this.chooseWhenNodeletAdder = new ChooseWhenNodeletAdder();
 
         this.parser = new NodeletParser(this);
         this.parser.setValidating(validating);
@@ -118,54 +118,6 @@ public class AspectranNodeParser {
 
     public ContextRuleAssistant getAssistant() {
         return assistant;
-    }
-
-    public ActionNodeletAdder getActionNodeletAdder() {
-        return actionNodeletAdder;
-    }
-
-    public AspectAdviceInnerNodeletAdder getAspectAdviceInnerNodeletAdder() {
-        return aspectAdviceInnerNodeletAdder;
-    }
-
-    public AspectNodeletAdder getAspectNodeletAdder() {
-        return aspectNodeletAdder;
-    }
-
-    public BeanNodeletAdder getBeanNodeletAdder() {
-        return beanNodeletAdder;
-    }
-
-    public EnvironmentNodeletAdder getEnvironmentNodeletAdder() {
-        return environmentNodeletAdder;
-    }
-
-    public ExceptionInnerNodeletAdder getExceptionInnerNodeletAdder() {
-        return exceptionInnerNodeletAdder;
-    }
-
-    public ItemNodeletAdder getItemNodeletAdder() {
-        return itemNodeletAdder;
-    }
-
-    public ResponseInnerNodeletAdder getResponseInnerNodeletAdder() {
-        return responseInnerNodeletAdder;
-    }
-
-    public ScheduleNodeletAdder getScheduleNodeletAdder() {
-        return scheduleNodeletAdder;
-    }
-
-    public TemplateNodeletAdder getTemplateNodeletAdder() {
-        return templateNodeletAdder;
-    }
-
-    public TransletNodeletAdder getTransletNodeletAdder() {
-        return transletNodeletAdder;
-    }
-
-    public ChooseWhenNodeletAdder getChooseWhenNodeletAdder() {
-        return chooseWhenNodeletAdder;
     }
 
     /**
@@ -266,42 +218,42 @@ public class AspectranNodeParser {
      * Adds the environment nodelets.
      */
     private void addEnvironmentNodelets() {
-        parser.addNodelet("/aspectran", getEnvironmentNodeletAdder());
+        parser.addNodelet("/aspectran", environmentNodeletAdder);
     }
 
     /**
      * Adds the aspect rule nodelets.
      */
     private void addAspectNodelets() {
-        parser.addNodelet("/aspectran", getAspectNodeletAdder());
+        parser.addNodelet("/aspectran", aspectNodeletAdder);
     }
 
     /**
      * Adds the bean nodelets.
      */
     private void addBeanNodelets() {
-        parser.addNodelet("/aspectran", getBeanNodeletAdder());
+        parser.addNodelet("/aspectran", beanNodeletAdder);
     }
 
     /**
      * Adds the schedule rule nodelets.
      */
     private void addScheduleNodelets() {
-        parser.addNodelet("/aspectran", getScheduleNodeletAdder());
+        parser.addNodelet("/aspectran", scheduleNodeletAdder);
     }
 
     /**
      * Adds the template nodelets.
      */
     private void addTemplateNodelets() {
-        parser.addNodelet("/aspectran", getTemplateNodeletAdder());
+        parser.addNodelet("/aspectran", templateNodeletAdder);
     }
 
     /**
      * Adds the translet nodelets.
      */
     private void addTransletNodelets() {
-        parser.addNodelet("/aspectran", getTransletNodeletAdder());
+        parser.addNodelet("/aspectran", transletNodeletAdder);
     }
 
     /**
@@ -322,6 +274,48 @@ public class AspectranNodeParser {
                 appendHandler.pending(appendRule);
             }
         });
+    }
+
+    public void addActionNodelets() {
+        parser.addNodelet(actionNodeletAdder);
+    }
+    public void addNestedActionNodelets() {
+        String xpath = parser.getXpath();
+        parser.addNodelet(actionNodeletAdder);
+        parser.addNodelet(chooseNodeletAdder);
+        parser.setXpath(xpath + "/choose/when");
+        parser.addNodelet(chooseNodeletAdder);
+        parser.setXpath(xpath + "/choose/otherwise");
+        parser.addNodelet(chooseNodeletAdder);
+        parser.setXpath(xpath + "/choose/when/choose/when");
+        parser.addNodelet(chooseNodeletAdder);
+        parser.setXpath(xpath + "/choose/when/choose/otherwise");
+        parser.addNodelet(chooseNodeletAdder);
+        parser.setXpath(xpath + "/choose/otherwise/choose/when");
+        parser.addNodelet(chooseNodeletAdder);
+        parser.setXpath(xpath + "/choose/otherwise/choose/otherwise");
+        parser.addNodelet(chooseNodeletAdder);
+        parser.setXpath(xpath);
+    }
+
+    public void addResponseInnerNodelets() {
+        parser.addNodelet(responseInnerNodeletAdder);
+    }
+
+    public void addAspectAdviceInnerNodelets() {
+        parser.addNodelet(aspectAdviceInnerNodeletAdder);
+    }
+
+    public ActionNodeletAdder getActionNodeletAdder() {
+        return actionNodeletAdder;
+    }
+
+    public void addExceptionInnerNodelets() {
+        parser.addNodelet(exceptionInnerNodeletAdder);
+    }
+
+    public void addItemNodelets() {
+        parser.addNodelet(itemNodeletAdder);
     }
 
 }

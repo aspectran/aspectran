@@ -15,7 +15,6 @@
  */
 package com.aspectran.core.context.rule.parser.xml;
 
-import com.aspectran.core.context.rule.ChooseRule;
 import com.aspectran.core.context.rule.EchoActionRule;
 import com.aspectran.core.context.rule.HeaderActionRule;
 import com.aspectran.core.context.rule.IncludeActionRule;
@@ -38,8 +37,6 @@ class ActionNodeletAdder implements NodeletAdder {
     @Override
     public void add(String xpath, NodeletParser parser) {
         AspectranNodeParser nodeParser = parser.getNodeParser();
-        ItemNodeletAdder itemNodeletAdder = nodeParser.getItemNodeletAdder();
-        ChooseWhenNodeletAdder chooseWhenNodeletAdder = nodeParser.getChooseWhenNodeletAdder();
         ContextRuleAssistant assistant = nodeParser.getAssistant();
 
         parser.setXpath(xpath + "/headers");
@@ -53,7 +50,7 @@ class ActionNodeletAdder implements NodeletAdder {
             ItemRuleMap irm = new ItemRuleMap();
             parser.pushObject(irm);
         });
-        parser.addNodelet(itemNodeletAdder);
+        nodeParser.addItemNodelets();
         parser.addNodeEndlet(text -> {
             ItemRuleMap irm = parser.popObject();
             HeaderActionRule headersActionRule = parser.popObject();
@@ -74,7 +71,7 @@ class ActionNodeletAdder implements NodeletAdder {
             ItemRuleMap irm = new ItemRuleMap();
             parser.pushObject(irm);
         });
-        parser.addNodelet(itemNodeletAdder);
+        nodeParser.addItemNodelets();
         parser.addNodeEndlet(text -> {
             ItemRuleMap irm = parser.popObject();
             EchoActionRule echoActionRule = parser.popObject();
@@ -108,7 +105,7 @@ class ActionNodeletAdder implements NodeletAdder {
             irm.setProfile(StringUtils.emptyToNull(attrs.get("profile")));
             parser.pushObject(irm);
         });
-        parser.addNodelet(itemNodeletAdder);
+        nodeParser.addItemNodelets();
         parser.addNodeEndlet(text -> {
             ItemRuleMap irm = parser.popObject();
             InvokeActionRule invokeActionRule = parser.peekObject();
@@ -121,7 +118,7 @@ class ActionNodeletAdder implements NodeletAdder {
             irm.setProfile(StringUtils.emptyToNull(attrs.get("profile")));
             parser.pushObject(irm);
         });
-        parser.addNodelet(itemNodeletAdder);
+        nodeParser.addItemNodelets();
         parser.addNodeEndlet(text -> {
             ItemRuleMap irm = parser.popObject();
             InvokeActionRule invokeActionRule = parser.peekObject();
@@ -151,7 +148,7 @@ class ActionNodeletAdder implements NodeletAdder {
             irm.setProfile(StringUtils.emptyToNull(attrs.get("profile")));
             parser.pushObject(irm);
         });
-        parser.addNodelet(itemNodeletAdder);
+        nodeParser.addItemNodelets();
         parser.addNodeEndlet(text -> {
             ItemRuleMap irm = parser.popObject();
             IncludeActionRule includeActionRule = parser.peekObject();
@@ -164,26 +161,13 @@ class ActionNodeletAdder implements NodeletAdder {
             irm.setProfile(StringUtils.emptyToNull(attrs.get("profile")));
             parser.pushObject(irm);
         });
-        parser.addNodelet(itemNodeletAdder);
+        nodeParser.addItemNodelets();
         parser.addNodeEndlet(text -> {
             ItemRuleMap irm = parser.popObject();
             IncludeActionRule includeActionRule = parser.peekObject();
             irm = assistant.profiling(irm, includeActionRule.getAttributeItemRuleMap());
             includeActionRule.setAttributeItemRuleMap(irm);
         });
-        if (chooseWhenNodeletAdder.getNestedCount() < 5) {
-            parser.setXpath(xpath + "/choose");
-            parser.addNodelet(attrs -> {
-                ChooseRule chooseRule = ChooseRule.newInstance();
-                parser.pushObject(chooseRule);
-            });
-            parser.addNodelet(chooseWhenNodeletAdder);
-            parser.addNodeEndlet(text -> {
-                ChooseRule chooseRule = parser.popObject();
-                ActionRuleApplicable applicable = parser.peekObject();
-                applicable.applyActionRule(chooseRule);
-            });
-        }
     }
 
 }

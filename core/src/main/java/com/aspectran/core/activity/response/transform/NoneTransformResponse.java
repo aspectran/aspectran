@@ -16,7 +16,6 @@
 package com.aspectran.core.activity.response.transform;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.rule.TransformRule;
@@ -55,11 +54,6 @@ public class NoneTransformResponse extends TransformResponse {
         if (getContentType() != null) {
             responseAdapter.setContentType(getContentType());
         }
-    }
-
-    @Override
-    public ActionList getActionList() {
-        return getTransformRule().getActionList();
     }
 
     @Override

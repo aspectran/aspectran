@@ -21,7 +21,6 @@ import com.aspectran.core.util.apon.ValueType;
 
 public class TransformParameters extends AbstractParameters {
 
-    public static final ParameterKey action;
     public static final ParameterKey type;
     public static final ParameterKey contentType;
     public static final ParameterKey encoding;
@@ -32,8 +31,6 @@ public class TransformParameters extends AbstractParameters {
     private static final ParameterKey[] parameterKeys;
 
     static {
-        action = new ParameterKey("action", new String[] {"echo", "headers", "include", "choose"},
-                ActionParameters.class, true, true);
         type = new ParameterKey("type", ValueType.STRING);
         contentType = new ParameterKey("contentType", ValueType.STRING);
         encoding = new ParameterKey("encoding", ValueType.STRING);
@@ -42,7 +39,6 @@ public class TransformParameters extends AbstractParameters {
         template = new ParameterKey("template", TemplateParameters.class);
 
         parameterKeys = new ParameterKey[] {
-                action,
                 type,
                 contentType,
                 encoding,

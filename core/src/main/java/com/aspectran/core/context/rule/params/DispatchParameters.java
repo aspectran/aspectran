@@ -21,7 +21,6 @@ import com.aspectran.core.util.apon.ValueType;
 
 public class DispatchParameters extends AbstractParameters {
 
-    public static final ParameterKey action;
     public static final ParameterKey name;
     public static final ParameterKey dispatcher;
     public static final ParameterKey contentType;
@@ -31,8 +30,6 @@ public class DispatchParameters extends AbstractParameters {
     private static final ParameterKey[] parameterKeys;
 
     static {
-        action = new ParameterKey("action", new String[] {"echo", "headers", "include", "choose"},
-                ActionParameters.class, true, true);
         name = new ParameterKey("name", ValueType.STRING);
         dispatcher = new ParameterKey("dispatcher", ValueType.STRING);
         contentType = new ParameterKey("contentType", ValueType.STRING);
@@ -40,7 +37,6 @@ public class DispatchParameters extends AbstractParameters {
         defaultResponse = new ParameterKey("default", ValueType.BOOLEAN);
 
         parameterKeys = new ParameterKey[] {
-                action,
                 name,
                 dispatcher,
                 contentType,

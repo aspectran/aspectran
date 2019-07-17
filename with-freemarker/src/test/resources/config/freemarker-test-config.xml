@@ -49,12 +49,10 @@
     </bean>
 
     <translet name="echo-1">
-        <request>
-            <parameters>
-                <item name="input_1">${input_1:12345}</item>
-                <item name="input_2">${input_2:67890}</item>
-            </parameters>
-        </request>
+        <parameters>
+            <item name="input_1">${input_1:12345}</item>
+            <item name="input_2">${input_2:67890}</item>
+        </parameters>
         <transform type="transform/text">
             <template engine="freemarker" style="apon">
                 |${input_1}${input_2}
@@ -101,24 +99,20 @@
     </template>
 
     <translet name="select-translet">
-        <request>
-            <attributes>
-                <item name="name">${name:Jane}</item>
-                <item name="email">${email:jane@mail.com}</item>
-            </attributes>
-        </request>
+        <attributes>
+            <item name="name">${name:Jane}</item>
+            <item name="email">${email:jane@mail.com}</item>
+        </attributes>
         <transform type="transform/text">
             <template>~{select-template}</template>
         </transform>
     </translet>
 
     <translet name="update-translet">
-        <request>
-            <attributes>
-                <item name="name">${name:Jane}</item>
-                <item name="email">${email:jane@mail.com}</item>
-            </attributes>
-        </request>
+        <attributes>
+            <item name="name">${name:Jane}</item>
+            <item name="email">${email:jane@mail.com}</item>
+        </attributes>
         <transform type="transform/text">
             <template>~{update-template}</template>
         </transform>

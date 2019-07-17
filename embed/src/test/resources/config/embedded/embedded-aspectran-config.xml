@@ -75,15 +75,15 @@
     </template>
 
     <translet name="include-test">
+        <include id="inc" translet="include-target">
+            <attributes>
+                <item name="attr-1" value="1"/>
+                <item name="attr-2" value="2"/>
+                <item name="attr-3" value="3"/>
+            </attributes>
+        </include>
+        <action id="action1" bean="SecondBean" method="getMessage"/>
         <transform type="text" contentType="text/plain">
-            <include id="inc" translet="include-target">
-                <attributes>
-                    <item name="attr-1" value="1"/>
-                    <item name="attr-2" value="2"/>
-                    <item name="attr-3" value="3"/>
-                </attributes>
-            </include>
-            <action id="action1" bean="SecondBean" method="getMessage"/>
             <template> :: @{action1}</template>
         </transform>
     </translet>
@@ -99,13 +99,11 @@
     </translet>
 
     <translet name="attr-test">
-        <request>
-            <attributes>
-                <item name="attr-1" value="1"/>
-                <item name="attr-2" value="2"/>
-                <item name="attr-3" value="3"/>
-            </attributes>
-        </request>
+        <attributes>
+            <item name="attr-1" value="1"/>
+            <item name="attr-2" value="2"/>
+            <item name="attr-3" value="3"/>
+        </attributes>
         <transform type="text" contentType="text/plain">
             <template>abc@{attr-1}@{attr-2}@{attr-3}</template>
         </transform>
@@ -147,12 +145,12 @@
             </when>
             <when test="mode == 'case2-2'">
                 <action id="case2-2" bean="action.TestAction" method="case2"/>
+                <choose>
+                    <when test="mode == 'case2-2'">
+                        <action id="case2-4" bean="action.TestAction" method="case4"/>
+                    </when>
+                </choose>
                 <transform type="text">
-                    <choose>
-                        <when test="mode == 'case2-2'">
-                            <action id="case2-4" bean="action.TestAction" method="case4"/>
-                        </when>
-                    </choose>
                     <template style="apon">
                         |Case 2-2: @{case2-2}
                         |Case 2-4: @{case2-4}

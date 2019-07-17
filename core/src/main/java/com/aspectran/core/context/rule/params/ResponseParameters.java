@@ -23,6 +23,7 @@ public class ResponseParameters extends AbstractParameters {
 
     public static final ParameterKey name;
     public static final ParameterKey encoding;
+    public static final ParameterKey action;
     public static final ParameterKey transform;
     public static final ParameterKey dispatch;
     public static final ParameterKey forward;
@@ -33,6 +34,8 @@ public class ResponseParameters extends AbstractParameters {
     static {
         name = new ParameterKey("name", ValueType.STRING);
         encoding = new ParameterKey("encoding", ValueType.STRING);
+        action = new ParameterKey("action", new String[] {"echo", "headers", "include", "choose"},
+                ActionParameters.class, true, true);
         transform = new ParameterKey("transform", TransformParameters.class);
         dispatch = new ParameterKey("dispatch", DispatchParameters.class);
         forward = new ParameterKey("forward", ForwardParameters.class);
@@ -41,6 +44,7 @@ public class ResponseParameters extends AbstractParameters {
         parameterKeys = new ParameterKey[] {
                 name,
                 encoding,
+                action,
                 transform,
                 dispatch,
                 forward,

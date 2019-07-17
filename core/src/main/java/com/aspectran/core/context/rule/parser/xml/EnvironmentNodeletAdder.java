@@ -33,7 +33,6 @@ class EnvironmentNodeletAdder implements NodeletAdder {
     @Override
     public void add(String xpath, NodeletParser parser) {
         AspectranNodeParser nodeParser = parser.getNodeParser();
-        ItemNodeletAdder itemNodeletAdder = nodeParser.getItemNodeletAdder();
         ContextRuleAssistant assistant = nodeParser.getAssistant();
 
         parser.setXpath(xpath + "/environment");
@@ -68,7 +67,7 @@ class EnvironmentNodeletAdder implements NodeletAdder {
             irm.setProfile(StringUtils.emptyToNull(attrs.get("profile")));
             parser.pushObject(irm);
         });
-        parser.addNodelet(itemNodeletAdder);
+        nodeParser.addItemNodelets();
         parser.addNodeEndlet(text -> {
             ItemRuleMap irm = parser.popObject();
             EnvironmentRule environmentRule = parser.peekObject();

@@ -32,8 +32,6 @@ class ExceptionInnerNodeletAdder implements NodeletAdder {
     @Override
     public void add(String xpath, NodeletParser parser) {
         AspectranNodeParser nodeParser = parser.getNodeParser();
-        ActionNodeletAdder actionNodeletAdder = nodeParser.getActionNodeletAdder();
-        ResponseInnerNodeletAdder responseInnerNodeletAdder = nodeParser.getResponseInnerNodeletAdder();
 
         parser.setXpath(xpath + "/description");
         parser.addNodelet(attrs -> {
@@ -51,7 +49,7 @@ class ExceptionInnerNodeletAdder implements NodeletAdder {
             }
         });
         parser.setXpath(xpath);
-        parser.addNodelet(actionNodeletAdder);
+        nodeParser.addNestedActionNodelets();
         parser.setXpath(xpath + "/thrown");
         parser.addNodelet(attrs -> {
             String exceptionType = attrs.get("type");
@@ -64,8 +62,8 @@ class ExceptionInnerNodeletAdder implements NodeletAdder {
 
             parser.pushObject(etr);
         });
-        parser.addNodelet(actionNodeletAdder);
-        parser.addNodelet(responseInnerNodeletAdder);
+        nodeParser.addNestedActionNodelets();
+        nodeParser.addResponseInnerNodelets();
         parser.addNodeEndlet(text -> {
             ExceptionThrownRule etr = parser.popObject();
             ExceptionRule exceptionRule = parser.peekObject();

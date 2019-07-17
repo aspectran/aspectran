@@ -16,7 +16,6 @@
 package com.aspectran.core.activity.response.transform;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.result.ActionResult;
 import com.aspectran.core.activity.process.result.ContentResult;
 import com.aspectran.core.activity.process.result.ProcessResult;
@@ -96,11 +95,6 @@ public class CustomTransformResponse implements Response {
 
     @Override
     public String getContentType(Activity activity) {
-        return null;
-    }
-
-    @Override
-    public ActionList getActionList() {
         return null;
     }
 

@@ -569,6 +569,15 @@ public class ParametersToRules {
 
         ResponseRule responseRule = ResponseRule.newInstance(name, encoding);
 
+        List<ActionParameters> actionParametersList = responseParameters.getParametersList(ResponseParameters.action);
+        if (actionParametersList != null && !actionParametersList.isEmpty()) {
+            ActionList actionList = new ActionList(false);
+            for (ActionParameters actionParameters : actionParametersList) {
+                asActionRule(actionParameters, actionList);
+            }
+            responseRule.setActionList(actionList);
+        }
+
         TransformParameters transformParameters = responseParameters.getParameters(ResponseParameters.transform);
         if (transformParameters != null) {
             asTransformRule(transformParameters, responseRule);
@@ -800,15 +809,6 @@ public class ParametersToRules {
 
         TransformRule transformRule = TransformRule.newInstance(transformType, contentType, encoding, defaultResponse, pretty);
 
-        List<ActionParameters> actionParametersList = transformParameters.getParametersList(TransformParameters.action);
-        if (actionParametersList != null && !actionParametersList.isEmpty()) {
-            ActionList actionList = new ActionList(false);
-            for (ActionParameters actionParameters : actionParametersList) {
-                asActionRule(actionParameters, actionList);
-            }
-            transformRule.setActionList(actionList);
-        }
-
         TemplateParameters templateParameters = transformParameters.getParameters(TransformParameters.template);
         if (templateParameters != null) {
             String engine = templateParameters.getString(TemplateParameters.engine);
@@ -844,16 +844,6 @@ public class ParametersToRules {
         Boolean defaultResponse = dispatchParameters.getBoolean(DispatchParameters.defaultResponse);
 
         DispatchRule dispatchRule = DispatchRule.newInstance(name, dispatcher, contentType, encoding, defaultResponse);
-
-        List<ActionParameters> actionParametersList = dispatchParameters.getParametersList(DispatchParameters.action);
-        if (actionParametersList != null && !actionParametersList.isEmpty()) {
-            ActionList actionList = new ActionList(false);
-            for (ActionParameters actionParameters : actionParametersList) {
-                asActionRule(actionParameters, actionList);
-            }
-            dispatchRule.setActionList(actionList);
-        }
-
         responseRuleApplicable.applyResponseRule(dispatchRule);
     }
 
@@ -874,15 +864,6 @@ public class ParametersToRules {
                 irm = assistant.profiling(irm, forwardRule.getAttributeItemRuleMap());
                 forwardRule.setAttributeItemRuleMap(irm);
             }
-        }
-
-        List<ActionParameters> actionParametersList = forwardParameters.getParametersList(ForwardParameters.action);
-        if (actionParametersList != null && !actionParametersList.isEmpty()) {
-            ActionList actionList = new ActionList(false);
-            for (ActionParameters actionParameters : actionParametersList) {
-                asActionRule(actionParameters, actionList);
-            }
-            forwardRule.setActionList(actionList);
         }
 
         responseRuleApplicable.applyResponseRule(forwardRule);
@@ -912,15 +893,6 @@ public class ParametersToRules {
                 irm = assistant.profiling(irm, redirectRule.getParameterItemRuleMap());
                 redirectRule.setParameterItemRuleMap(irm);
             }
-        }
-
-        List<ActionParameters> actionParametersList = redirectParameters.getParametersList(RedirectParameters.action);
-        if (actionParametersList != null && !actionParametersList.isEmpty()) {
-            ActionList actionList = new ActionList(false);
-            for (ActionParameters actionParameters : actionParametersList) {
-                asActionRule(actionParameters, actionList);
-            }
-            redirectRule.setActionList(actionList);
         }
 
         responseRuleApplicable.applyResponseRule(redirectRule);
