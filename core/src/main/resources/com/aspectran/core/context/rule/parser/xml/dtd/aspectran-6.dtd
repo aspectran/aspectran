@@ -34,8 +34,7 @@
   value   CDATA #REQUIRED
 >
 
-<!ELEMENT typeAliases (typeAlias*)>
-
+<!ELEMENT typeAliases (typeAlias+)>
 <!ELEMENT typeAlias EMPTY>
 <!ATTLIST typeAlias
   alias   CDATA #REQUIRED
