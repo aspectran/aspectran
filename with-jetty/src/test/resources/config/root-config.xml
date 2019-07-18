@@ -28,7 +28,7 @@
         <joinpoint target="translet"/>
         <exception>
             <thrown>
-                <transform type="transform/text">
+                <transform type="text">
                     <template style="apon">
                         |
                         |   {{RED}}An Error Occurred!{{reset}}
@@ -70,7 +70,7 @@
     <append resource="config/jetty/jetty-controller.xml"/>
 
     <translet name="/hello">
-        <transform type="transform/text">
+        <transform type="text">
             <template style="apon">
                 |world
             </template>

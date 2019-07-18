@@ -14,7 +14,7 @@
             <item name="attr3" mandatory="true">${attr3}</item>
             <item name="attr4" mandatory="true">${attr4}</item>
         </attributes>
-        <transform type="transform/text">
+        <transform type="text">
             <template style="apon">
                 |------------------------------------------------
                 |The parameters you entered are:

@@ -26,7 +26,7 @@
                 <value>c</value>
             </item>
         </attributes>
-        <transform type="transform/text" contentType="text/plain">
+        <transform type="text" contentType="text/plain">
             <template engine="token" style="apon">
                 |Using Builtin Token Template Engine
                 |-------------------------------------
@@ -74,7 +74,7 @@
             helloWorld 메쏘드가 반환하는 "Hello, World." 문자열을 텍스트 형식의 컨텐츠로 응답합니다.
         </description>
         <action id="helloData" bean="TestAction" method="helloWorld"/>
-        <transform type="transform/text"/>
+        <transform type="text"/>
     </translet>
 
     <template id="echo1" style="apon">
@@ -103,7 +103,7 @@
         </choose>
         <action id="case3" method="case2" bean="SampleAction"/>
         <action id="case4" method="case2" bean="SampleAction"/>
-        <transform type="transform/text">
+        <transform type="text">
             <template style="apon">
                 |@{case0}
                 |@{case1}
@@ -147,7 +147,7 @@
         <response name="name2">
             <action id="case3" method="case2" bean="SampleAction"/>
             <action id="case4" method="case2" bean="SampleAction"/>
-            <transform type="transform/text">
+            <transform type="text">
                 <template style="apon">
                     |@{case0}
                     |@{case1}
@@ -192,7 +192,7 @@
         <response name="name2">
             <action id="case3" method="case2" bean="SampleAction"/>
             <action id="case4" method="case2" bean="SampleAction"/>
-            <transform type="transform/text">
+            <transform type="text">
                 <template style="apon">
                     |@{case0}
                     |@{case1}

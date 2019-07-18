@@ -59,7 +59,7 @@
             |   If so, try running the "hello2" command.
             |---------------------------------------------------------------------------------------------------------
         </description>
-        <transform type="transform/text">
+        <transform type="text">
             <action id="helloData" bean="sampleAction" method="helloWorld"/>
         </transform>
     </translet>
@@ -72,7 +72,7 @@
             <item name="param1" mandatory="false"/>
             <item name="param2" mandatory="true"/>
         </parameters>
-        <transform type="transform/text">
+        <transform type="text">
             <template engine="token" style="apon">
                 |----------------------------------------------------------
                 |The parameters you entered are:
@@ -94,7 +94,7 @@
             <item name="param2">${prefix} - 2</item>
             <item name="param3">${prefix} - 3</item>
         </parameters>
-        <transform type="transform/text">
+        <transform type="text">
             <template engine="token" style="apon">
                 |----------------------------------------------------------
                 |The parameters you entered are:
@@ -120,7 +120,7 @@
         <attributes>
             <item name="attr1">fourth ${param4}</item>
         </attributes>
-        <transform type="transform/text">
+        <transform type="text">
             <template engine="token" style="apon">
                 |----------------------------------------------------------
                 |The input parameters and attributes are as follows:
@@ -134,7 +134,7 @@
     </translet>
 
     <translet name="echo ${text}">
-        <transform type="transform/text">
+        <transform type="text">
             <template engine="token" style="apon">
                 |----------------------------------------------------------
                 |${text}
@@ -154,7 +154,7 @@
             <item name="email" mandatory="true">${id}@${domain}</item>
             <item name="password" secret="true" value="(none)"/>
         </parameters>
-        <transform type="transform/text">
+        <transform type="text">
             <template style="apon">
                 |-------------------------------------------------------------------------
                 |You have entered the following parameters for login:
@@ -176,7 +176,7 @@
             <item name="password" secret="true"/>
             <item name="confirmPassword" secret="true"/>
         </parameters>
-        <transform type="transform/text">
+        <transform type="text">
             <template style="apon">
                 |------------------------------------------------------------------------------------
                 |You have entered the following parameters for changing the password:

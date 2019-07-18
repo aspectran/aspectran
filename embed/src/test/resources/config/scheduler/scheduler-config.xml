@@ -75,7 +75,7 @@
                 <item valueType="long">1</item>
             </arguments>
         </action>
-        <transform type="transform/text" contentType="text/plain">
+        <transform type="text" contentType="text/plain">
             <template>(1) Hello, World!</template>
         </transform>
     </translet>
@@ -86,7 +86,7 @@
                 <item valueType="long">2</item>
             </arguments>
         </action>
-        <transform type="transform/text" contentType="text/plain">
+        <transform type="text" contentType="text/plain">
             <template>(2) Hello, World!</template>
         </transform>
     </translet>

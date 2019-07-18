@@ -49,7 +49,7 @@ public class ArrayParameters extends AbstractParameters
     }
 
     public ArrayParameters(Class<? extends AbstractParameters> elementClass) {
-        super(createParameterDefinitions(elementClass));
+        super(createParameterKeys(elementClass));
         this.elementClass = elementClass;
     }
 
@@ -98,7 +98,7 @@ public class ArrayParameters extends AbstractParameters
         }
     }
 
-    private static ParameterKey[] createParameterDefinitions(Class<? extends AbstractParameters> elementClass) {
+    private static ParameterKey[] createParameterKeys(Class<? extends AbstractParameters> elementClass) {
         ParameterKey pk = new ParameterKey(NONAME, elementClass, true);
         return new ParameterKey[] { pk };
     }
