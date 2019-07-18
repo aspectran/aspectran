@@ -376,7 +376,7 @@ public abstract class AdviceActivity extends AbstractActivity {
         }
     }
 
-    protected void handleException(ExceptionRule exceptionRule) {
+    protected ExceptionThrownRule handleException(ExceptionRule exceptionRule) {
         if (exceptionRule != null) {
             ExceptionThrownRule exceptionThrownRule = exceptionRule.getExceptionThrownRule(getRaisedException());
             if (exceptionThrownRule != null) {
@@ -384,8 +384,10 @@ public abstract class AdviceActivity extends AbstractActivity {
                 if (action != null) {
                     executeAdvice(action);
                 }
+                return exceptionThrownRule;
             }
         }
+        return null;
     }
 
     protected AspectAdviceRuleRegistry touchAspectAdviceRuleRegistry() {

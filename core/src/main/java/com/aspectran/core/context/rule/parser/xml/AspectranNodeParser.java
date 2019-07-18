@@ -21,8 +21,6 @@ import com.aspectran.core.context.rule.appender.RuleAppender;
 import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.TextStyler;
-import com.aspectran.core.util.apon.Parameters;
-import com.aspectran.core.util.apon.VariableParameters;
 import com.aspectran.core.util.nodelet.NodeletParser;
 import org.xml.sax.InputSource;
 
@@ -180,13 +178,15 @@ public class AspectranNodeParser {
         parser.addNodelet(attrs -> {
             String name = attrs.get("name");
             String value = attrs.get("value");
-
-            assistant.putSetting(name, value);
+            parser.pushObject(value);
             parser.pushObject(name);
         });
         parser.addNodeEndlet(text -> {
             String name = parser.popObject();
-            if (text != null) {
+            String value = parser.popObject();
+            if (value != null) {
+                assistant.putSetting(name, value);
+            } else if (text != null) {
                 assistant.putSetting(name, text);
             }
         });
@@ -196,21 +196,21 @@ public class AspectranNodeParser {
      * Adds the type alias nodelets.
      */
     private void addTypeAliasNodelets() {
-        parser.setXpath("/aspectran/typeAliases");
-        parser.addNodeEndlet(text -> {
-            if (StringUtils.hasLength(text)) {
-                Parameters parameters = new VariableParameters(text);
-                for (String alias : parameters.getParameterNameSet()) {
-                    assistant.addTypeAlias(alias, parameters.getString(alias));
-                }
-            }
-        });
         parser.setXpath("/aspectran/typeAliases/typeAlias");
         parser.addNodelet(attrs -> {
             String alias = attrs.get("alias");
             String type = attrs.get("type");
-
-            assistant.addTypeAlias(alias, type);
+            parser.pushObject(type);
+            parser.pushObject(alias);
+        });
+        parser.addNodeEndlet(text -> {
+            String alias = parser.popObject();
+            String type = parser.popObject();
+            if (type != null) {
+                assistant.addTypeAlias(alias, type);
+            } else if (text != null) {
+                assistant.addTypeAlias(alias, text);
+            }
         });
     }
 

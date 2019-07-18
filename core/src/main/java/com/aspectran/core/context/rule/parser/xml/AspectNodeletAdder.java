@@ -91,16 +91,16 @@ class AspectNodeletAdder implements NodeletAdder {
         parser.addNodelet(attrs -> {
             String name = attrs.get("name");
             String value = attrs.get("value");
-
-            SettingsAdviceRule sar = parser.peekObject();
-            sar.putSetting(name, value);
-
+            parser.pushObject(value);
             parser.pushObject(name);
         });
         parser.addNodeEndlet(text -> {
             String name = parser.popObject();
-            if (text != null) {
-                SettingsAdviceRule sar = parser.peekObject();
+            String value = parser.popObject();
+            SettingsAdviceRule sar = parser.peekObject();
+            if (value != null) {
+                sar.putSetting(name, value);
+            } else if (text != null) {
                 sar.putSetting(name, text);
             }
         });

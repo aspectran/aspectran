@@ -19,7 +19,6 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.context.expr.ItemEvaluator;
 import com.aspectran.core.context.expr.ItemExpression;
-import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.InvokeActionRule;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
@@ -45,8 +44,6 @@ public class InvokeAction implements Executable {
 
     private final InvokeActionRule invokeActionRule;
 
-    private AspectAdviceRule aspectAdviceRule;
-
     private Boolean requiresTranslet;
 
     /**
@@ -58,44 +55,22 @@ public class InvokeAction implements Executable {
         this.invokeActionRule = invokeActionRule;
     }
 
-    /**
-     * Gets the aspect advice rule.
-     *
-     * @return the aspect advice rule
-     */
-    public AspectAdviceRule getAspectAdviceRule() {
-        return aspectAdviceRule;
-    }
-
-    /**
-     * Sets the aspect advice rule.
-     *
-     * @param aspectAdviceRule the new aspect advice rule
-     */
-    public void setAspectAdviceRule(AspectAdviceRule aspectAdviceRule) {
-        this.aspectAdviceRule = aspectAdviceRule;
-    }
-
     @Override
     public Object execute(Activity activity) throws Exception {
         Object bean = null;
-        try {
-            if (aspectAdviceRule != null) {
-                bean = activity.getAspectAdviceBean(aspectAdviceRule.getAspectId());
-                if (bean == null) {
-                    throw new ActionExecutionException("No such bean; Invalid AspectAdviceRule" + aspectAdviceRule);
-                }
-            } else {
-                if (invokeActionRule.getBeanClass() != null) {
-                    bean = activity.getBean(invokeActionRule.getBeanClass());
-                } else if (invokeActionRule.getBeanId() != null) {
-                    bean = activity.getBean(invokeActionRule.getBeanId());
-                }
-                if (bean == null) {
-                    throw new ActionExecutionException("No such bean; Invalid InvokeActionRule " + invokeActionRule);
-                }
-            }
+        if (invokeActionRule.getBeanClass() != null) {
+            bean = activity.getBean(invokeActionRule.getBeanClass());
+        } else if (invokeActionRule.getBeanId() != null) {
+            bean = activity.getBean(invokeActionRule.getBeanId());
+        }
+        if (bean == null) {
+            throw new ActionExecutionException("No such bean; Invalid InvokeActionRule " + invokeActionRule);
+        }
+        return execute(activity, bean);
+    }
 
+    protected Object execute(Activity activity, Object bean) throws Exception {
+        try {
             ItemRuleMap propertyItemRuleMap = invokeActionRule.getPropertyItemRuleMap();
             ItemRuleMap argumentItemRuleMap = invokeActionRule.getArgumentItemRuleMap();
             ItemEvaluator evaluator = null;
@@ -183,9 +158,6 @@ public class InvokeAction implements Executable {
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.append("actionType", getActionType());
         tsb.append("invokeActionRule", invokeActionRule);
-        if (aspectAdviceRule != null) {
-            tsb.append("aspectAdviceRule", aspectAdviceRule.toString(true));
-        }
         return tsb.toString();
     }
 

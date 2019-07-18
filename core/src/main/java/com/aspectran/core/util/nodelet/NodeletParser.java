@@ -390,8 +390,7 @@ public class NodeletParser {
             }
             StringBuilder sb = new StringBuilder(128);
             for (String name : nodeList) {
-                sb.append("/");
-                sb.append(name);
+                sb.append("/").append(name);
             }
             path = sb.toString();
             return path;

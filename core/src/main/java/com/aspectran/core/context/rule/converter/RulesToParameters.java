@@ -535,18 +535,20 @@ public class RulesToParameters {
         }
 
         ResponseMap responseMap = exceptionThrownRule.getResponseMap();
-        for (Response response : responseMap) {
-            if (response.getResponseType() == ResponseType.TRANSFORM) {
-                TransformResponse transformResponse = (TransformResponse)response;
-                exceptionThrownParameters.putValue(ExceptionThrownParameters.transform, toTransformParameters(transformResponse.getTransformRule()));
-            } else if (response.getResponseType() == ResponseType.DISPATCH) {
-                DispatchResponse dispatchResponse = (DispatchResponse)response;
-                exceptionThrownParameters.putValue(ExceptionThrownParameters.dispatch, toDispatchParameters(dispatchResponse.getDispatchRule()));
-            } else if (response.getResponseType() == ResponseType.REDIRECT) {
-                RedirectResponse redirectResponse = (RedirectResponse)response;
-                exceptionThrownParameters.putValue(ExceptionThrownParameters.redirect, toRedirectParameters(redirectResponse.getRedirectRule()));
-            } else if (response.getResponseType() == ResponseType.FORWARD) {
-                throw new IllegalArgumentException("Cannot apply the forward response rule to the exception thrown rule");
+        if (responseMap != null) {
+            for (Response response : responseMap) {
+                if (response.getResponseType() == ResponseType.TRANSFORM) {
+                    TransformResponse transformResponse = (TransformResponse) response;
+                    exceptionThrownParameters.putValue(ExceptionThrownParameters.transform, toTransformParameters(transformResponse.getTransformRule()));
+                } else if (response.getResponseType() == ResponseType.DISPATCH) {
+                    DispatchResponse dispatchResponse = (DispatchResponse) response;
+                    exceptionThrownParameters.putValue(ExceptionThrownParameters.dispatch, toDispatchParameters(dispatchResponse.getDispatchRule()));
+                } else if (response.getResponseType() == ResponseType.REDIRECT) {
+                    RedirectResponse redirectResponse = (RedirectResponse) response;
+                    exceptionThrownParameters.putValue(ExceptionThrownParameters.redirect, toRedirectParameters(redirectResponse.getRedirectRule()));
+                } else if (response.getResponseType() == ResponseType.FORWARD) {
+                    throw new IllegalArgumentException("Cannot apply the forward response rule to the exception thrown rule");
+                }
             }
         }
 

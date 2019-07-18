@@ -18,7 +18,8 @@
 
 <!ELEMENT aspectran (
   description?,
-  (settings? | typeAliases* | environment* | aspect* | bean* | template* | schedule* | translet* | append*)*
+  settings?,
+  (typeAliases | environment | aspect | bean | template | schedule | translet | append)*
 )>
 
 <!ELEMENT description (#PCDATA)>
@@ -71,7 +72,7 @@
 
 <!ELEMENT exception (description?, thrown+)>
 
-<!ELEMENT thrown ((headers | echo | action)? | transform? | dispatch? | redirect?)*>
+<!ELEMENT thrown ((headers | echo | action)?, (transform | dispatch | redirect)*)>
 <!ATTLIST thrown
   type    CDATA #IMPLIED
 >
@@ -122,9 +123,10 @@
 
 <!ELEMENT translet (
   description?,
-  (request? | (parameters*, attributes*)?)?,
-  ((contents? | content?)? | (choose? | headers? | echo? | action? | include?)*)?,
-  (response* | (transform | dispatch | forward | redirect)?)?, exception?
+  (request? | (parameters*, attributes*)),
+  ((contents | content)? | (choose | headers | echo | action | include)*),
+  (response* | (transform | dispatch | forward | redirect)?),
+  exception?
 )>
 <!ATTLIST translet
   name    CDATA #REQUIRED
@@ -144,19 +146,19 @@
   name      CDATA #IMPLIED
 >
 
-<!ELEMENT content (choose? | headers? | echo? | action? | include?)*>
+<!ELEMENT content (choose | headers | echo | action | include)*>
 <!ATTLIST content
   name      CDATA #IMPLIED
 >
 
 <!ELEMENT choose (when*, otherwise?)>
 
-<!ELEMENT when ((headers? | echo? | action? | include? | choose?)*, (transform | dispatch | forward | redirect)?)>
+<!ELEMENT when ((headers | echo | action | include | choose)*, (transform | dispatch | forward | redirect)?)>
 <!ATTLIST when
   test    CDATA #IMPLIED
 >
 
-<!ELEMENT otherwise ((headers? | echo? | action? | include? | choose?)*, (transform | dispatch | forward | redirect)?)>
+<!ELEMENT otherwise ((headers | echo | action | include | choose)*, (transform | dispatch | forward | redirect)?)>
 
 <!ELEMENT action (arguments*, properties*)>
 <!ATTLIST action
@@ -186,7 +188,7 @@
   hidden  (true | false) #IMPLIED
 >
 
-<!ELEMENT response ((choose? | headers? | echo? | action? | include?)*, (transform | dispatch | forward | redirect)?)>
+<!ELEMENT response ((choose | headers | echo | action | include)*, (transform | dispatch | forward | redirect)?)>
 <!ATTLIST response
   name     CDATA #IMPLIED
   encoding CDATA #IMPLIED

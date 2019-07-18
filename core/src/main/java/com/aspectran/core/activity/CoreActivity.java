@@ -493,22 +493,17 @@ public class CoreActivity extends AdviceActivity {
     }
 
     @Override
-    public void handleException(ExceptionRule exceptionRule) {
-        ExceptionThrownRule exceptionThrownRule = exceptionRule.getExceptionThrownRule(getRaisedException());
-        if (exceptionThrownRule != null) {
-            Executable action = exceptionThrownRule.getAction();
-            if (action != null) {
-                executeAdvice(action);
-            }
-            if (!isResponseReserved() && translet != null) {
-                Response response = getDesiredResponse();
-                String contentType = (response != null ? response.getContentType() : null);
-                Response targetResponse = exceptionThrownRule.getResponse(contentType);
-                if (targetResponse != null) {
-                    reserveResponse(targetResponse);
-                }
+    public ExceptionThrownRule handleException(ExceptionRule exceptionRule) {
+        ExceptionThrownRule exceptionThrownRule = super.handleException(exceptionRule);
+        if (exceptionThrownRule != null && !isResponseReserved() && translet != null) {
+            Response response = getDesiredResponse();
+            String contentType = (response != null ? response.getContentType() : null);
+            Response targetResponse = exceptionThrownRule.getResponse(contentType);
+            if (targetResponse != null) {
+                reserveResponse(targetResponse);
             }
         }
+        return exceptionThrownRule;
     }
 
     protected void execute(ActionList actionList) {

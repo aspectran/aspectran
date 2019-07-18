@@ -22,6 +22,7 @@ public class AdviceActionParameters extends AbstractParameters {
 
     public static final ParameterKey thrown;
     public static final ParameterKey action;
+
     private static final ParameterKey[] parameterKeys;
 
     static {

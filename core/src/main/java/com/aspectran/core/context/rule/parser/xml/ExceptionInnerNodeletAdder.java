@@ -48,8 +48,6 @@ class ExceptionInnerNodeletAdder implements NodeletAdder {
                 exceptionRule.setDescription(text);
             }
         });
-        parser.setXpath(xpath);
-        nodeParser.addNestedActionNodelets();
         parser.setXpath(xpath + "/thrown");
         parser.addNodelet(attrs -> {
             String exceptionType = attrs.get("type");
@@ -62,7 +60,7 @@ class ExceptionInnerNodeletAdder implements NodeletAdder {
 
             parser.pushObject(etr);
         });
-        nodeParser.addNestedActionNodelets();
+        nodeParser.addActionNodelets();
         nodeParser.addResponseInnerNodelets();
         parser.addNodeEndlet(text -> {
             ExceptionThrownRule etr = parser.popObject();

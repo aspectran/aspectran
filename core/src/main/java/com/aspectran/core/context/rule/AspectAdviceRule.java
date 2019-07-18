@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.context.rule;
 
+import com.aspectran.core.activity.process.action.AdviceAction;
 import com.aspectran.core.activity.process.action.AnnotatedAction;
 import com.aspectran.core.activity.process.action.EchoAction;
 import com.aspectran.core.activity.process.action.Executable;
@@ -95,10 +96,7 @@ public class AspectAdviceRule implements ActionRuleApplicable {
 
     @Override
     public Executable applyActionRule(InvokeActionRule invokeActionRule) {
-        InvokeAction action = new InvokeAction(invokeActionRule);
-        if (invokeActionRule.getBeanId() == null) {
-            action.setAspectAdviceRule(this);
-        }
+        InvokeAction action = new AdviceAction(invokeActionRule, this);
         this.action = action;
         return action;
     }

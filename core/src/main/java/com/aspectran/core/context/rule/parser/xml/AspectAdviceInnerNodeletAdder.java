@@ -40,7 +40,7 @@ class AspectAdviceInnerNodeletAdder implements NodeletAdder {
             AspectAdviceRule aspectAdviceRule = aspectRule.touchAspectAdviceRule(AspectAdviceType.BEFORE);
             parser.pushObject(aspectAdviceRule);
         });
-        nodeParser.addNestedActionNodelets();
+        nodeParser.addActionNodelets();
         parser.addNodeEndlet(text -> parser.popObject());
         parser.setXpath(xpath + "/after");
         parser.addNodelet(attrs -> {
@@ -48,7 +48,7 @@ class AspectAdviceInnerNodeletAdder implements NodeletAdder {
             AspectAdviceRule aspectAdviceRule = aspectRule.touchAspectAdviceRule(AspectAdviceType.AFTER);
             parser.pushObject(aspectAdviceRule);
         });
-        nodeParser.addNestedActionNodelets();
+        nodeParser.addActionNodelets();
         parser.addNodeEndlet(text -> parser.popObject());
         parser.setXpath(xpath + "/around");
         parser.addNodelet(attrs -> {
@@ -56,7 +56,7 @@ class AspectAdviceInnerNodeletAdder implements NodeletAdder {
             AspectAdviceRule aspectAdviceRule = aspectRule.touchAspectAdviceRule(AspectAdviceType.AROUND);
             parser.pushObject(aspectAdviceRule);
         });
-        nodeParser.addNestedActionNodelets();
+        nodeParser.addActionNodelets();
         parser.addNodeEndlet(text -> parser.popObject());
         parser.setXpath(xpath + "/finally");
         parser.addNodelet(attrs -> {
@@ -64,7 +64,7 @@ class AspectAdviceInnerNodeletAdder implements NodeletAdder {
             AspectAdviceRule aspectAdviceRule = aspectRule.touchAspectAdviceRule(AspectAdviceType.FINALLY);
             parser.pushObject(aspectAdviceRule);
         });
-        nodeParser.addNestedActionNodelets();
+        nodeParser.addActionNodelets();
         parser.addNodeEndlet(text -> parser.popObject());
         parser.setXpath(xpath + "/finally/thrown");
         parser.addNodelet(attrs -> {
@@ -78,7 +78,7 @@ class AspectAdviceInnerNodeletAdder implements NodeletAdder {
             }
             parser.pushObject(etr);
         });
-        nodeParser.addNestedActionNodelets();
+        nodeParser.addActionNodelets();
         nodeParser.addResponseInnerNodelets();
         parser.addNodeEndlet(text -> {
             ExceptionThrownRule etr = parser.popObject();
