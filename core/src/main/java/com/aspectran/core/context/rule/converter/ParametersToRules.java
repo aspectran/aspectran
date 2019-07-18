@@ -627,9 +627,6 @@ public class ParametersToRules {
     }
 
     private void asActionRule(ActionParameters actionParameters, ActionRuleApplicable actionRuleApplicable) throws IllegalRuleException {
-        String id = StringUtils.emptyToNull(actionParameters.getString(ActionParameters.id));
-        Boolean hidden = actionParameters.getBoolean(ActionParameters.hidden);
-
         String actualName = actionParameters.getActualName();
         if (actualName == null) {
             throw new IllegalRuleException("No actual name");
@@ -637,8 +634,10 @@ public class ParametersToRules {
 
         switch (actualName) {
             case "action": {
+                String id = StringUtils.emptyToNull(actionParameters.getString(ActionParameters.id));
                 String beanIdOrClass = StringUtils.emptyToNull(actionParameters.getString(ActionParameters.bean));
                 String method = StringUtils.emptyToNull(actionParameters.getString(ActionParameters.method));
+                Boolean hidden = actionParameters.getBoolean(ActionParameters.hidden);
                 InvokeActionRule invokeActionRule = InvokeActionRule.newInstance(id, beanIdOrClass, method, hidden);
                 List<ItemHolderParameters> argumentItemHolderParametersList = actionParameters.getParametersList(ActionParameters.arguments);
                 if (argumentItemHolderParametersList != null) {
@@ -660,27 +659,56 @@ public class ParametersToRules {
                 actionRuleApplicable.applyActionRule(invokeActionRule);
                 break;
             }
+            case "invoke": {
+                String method = StringUtils.emptyToNull(actionParameters.getString(ActionParameters.method));
+                Boolean hidden = actionParameters.getBoolean(ActionParameters.hidden);
+                InvokeActionRule invokeActionRule = InvokeActionRule.newInstance(method, hidden);
+                List<ItemHolderParameters> argumentItemHolderParametersList = actionParameters.getParametersList(ActionParameters.arguments);
+                if (argumentItemHolderParametersList != null) {
+                    for (ItemHolderParameters itemHolderParameters : argumentItemHolderParametersList) {
+                        ItemRuleMap irm = asItemRuleMap(itemHolderParameters);
+                        irm = assistant.profiling(irm, invokeActionRule.getArgumentItemRuleMap());
+                        invokeActionRule.setArgumentItemRuleMap(irm);
+                    }
+                }
+                List<ItemHolderParameters> propertyItemHolderParametersList = actionParameters.getParametersList(ActionParameters.properties);
+                if (propertyItemHolderParametersList != null) {
+                    for (ItemHolderParameters itemHolderParameters : propertyItemHolderParametersList) {
+                        ItemRuleMap irm = asItemRuleMap(itemHolderParameters);
+                        irm = assistant.profiling(irm, invokeActionRule.getPropertyItemRuleMap());
+                        invokeActionRule.setPropertyItemRuleMap(irm);
+                    }
+                }
+                assistant.resolveActionBeanClass(invokeActionRule);
+                actionRuleApplicable.applyActionRule(invokeActionRule);
+                break;
+            }
             case "echo": {
+                String id = StringUtils.emptyToNull(actionParameters.getString(ActionParameters.id));
+                Boolean hidden = actionParameters.getBoolean(ActionParameters.hidden);
                 List<ItemParameters> itemParametersList = actionParameters.getParametersList(ActionParameters.item);
                 EchoActionRule echoActionRule = EchoActionRule.newInstance(id, hidden);
                 ItemRuleMap attributeItemRuleMap = asItemRuleMap(null, itemParametersList);
-                echoActionRule.setAttributeItemRuleMap(attributeItemRuleMap);
+                echoActionRule.setEchoItemRuleMap(attributeItemRuleMap);
                 actionRuleApplicable.applyActionRule(echoActionRule);
                 break;
             }
             case "headers": {
-                String profile = actionParameters.getString(ActionParameters.profile);
+                String id = StringUtils.emptyToNull(actionParameters.getString(ActionParameters.id));
+                Boolean hidden = actionParameters.getBoolean(ActionParameters.hidden);
                 List<ItemParameters> itemParametersList = actionParameters.getParametersList(ActionParameters.item);
                 HeaderActionRule headerActionRule = HeaderActionRule.newInstance(id, hidden);
-                ItemRuleMap headerItemRuleMap = asItemRuleMap(profile, itemParametersList);
+                ItemRuleMap headerItemRuleMap = asItemRuleMap(null, itemParametersList);
                 headerActionRule.setHeaderItemRuleMap(headerItemRuleMap);
                 actionRuleApplicable.applyActionRule(headerActionRule);
                 break;
             }
             case "include": {
+                String id = StringUtils.emptyToNull(actionParameters.getString(ActionParameters.id));
                 String translet = actionParameters.getString(ActionParameters.translet);
                 translet = assistant.applyTransletNamePattern(translet);
                 String method = StringUtils.emptyToNull(actionParameters.getString(ActionParameters.method));
+                Boolean hidden = actionParameters.getBoolean(ActionParameters.hidden);
                 IncludeActionRule includeActionRule = IncludeActionRule.newInstance(id, translet, method, hidden);
                 List<ItemHolderParameters> parameterItemHolderParametersList = actionParameters.getParametersList(ActionParameters.parameters);
                 if (parameterItemHolderParametersList != null) {

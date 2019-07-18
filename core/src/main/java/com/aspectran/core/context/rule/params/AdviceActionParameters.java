@@ -27,7 +27,7 @@ public class AdviceActionParameters extends AbstractParameters {
 
     static {
         thrown = new ParameterKey("thrown", ExceptionThrownParameters.class);
-        action = new ParameterKey("action", new String[] {"echo", "headers"}, ActionParameters.class);
+        action = new ParameterKey("action", new String[] {"echo", "headers", "invoke"}, ActionParameters.class);
 
         parameterKeys = new ParameterKey[] {
                 thrown,

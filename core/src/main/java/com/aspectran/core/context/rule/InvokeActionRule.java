@@ -273,6 +273,9 @@ public class InvokeActionRule implements BeanReferenceable {
      */
     public static InvokeActionRule newInstance(String id, String beanId, String methodName, Boolean hidden)
             throws IllegalRuleException {
+        if (beanId == null) {
+            throw new IllegalRuleException("The 'action' element requires a 'bean' attribute");
+        }
         if (methodName == null) {
             throw new IllegalRuleException("The 'action' element requires a 'method' attribute");
         }
@@ -280,6 +283,26 @@ public class InvokeActionRule implements BeanReferenceable {
         InvokeActionRule invokeActionRule = new InvokeActionRule();
         invokeActionRule.setActionId(id);
         invokeActionRule.setBeanId(beanId);
+        invokeActionRule.setMethodName(methodName);
+        invokeActionRule.setHidden(hidden);
+        return invokeActionRule;
+    }
+
+    /**
+     * Returns a new instance of BeanActionRule.
+     *
+     * @param methodName the method name
+     * @param hidden true if hiding the result of the action; false otherwise
+     * @return the invoke action rule
+     * @throws IllegalRuleException if an illegal rule is found
+     */
+    public static InvokeActionRule newInstance(String methodName, Boolean hidden)
+            throws IllegalRuleException {
+        if (methodName == null) {
+            throw new IllegalRuleException("The 'action' element requires a 'method' attribute");
+        }
+
+        InvokeActionRule invokeActionRule = new InvokeActionRule();
         invokeActionRule.setMethodName(methodName);
         invokeActionRule.setHidden(hidden);
         return invokeActionRule;

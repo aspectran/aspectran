@@ -32,7 +32,6 @@ public class ActionParameters extends AbstractParameters {
     public static final ParameterKey parameters;
     public static final ParameterKey attributes;
 
-    public static final ParameterKey profile;
     public static final ParameterKey item;
 
     public static final ParameterKey hidden;
@@ -51,7 +50,6 @@ public class ActionParameters extends AbstractParameters {
         translet = new ParameterKey("translet", ValueType.STRING);
         parameters = new ParameterKey("parameters", ItemHolderParameters.class, true, true);
         attributes = new ParameterKey("attributes", ItemHolderParameters.class, true, true);
-        profile = new ParameterKey("profile", ValueType.STRING);
         item = new ParameterKey("item", ItemParameters.class, true, true);
         hidden = new ParameterKey("hidden", ValueType.BOOLEAN);
         when = new ParameterKey("when", ChooseWhenParameters.class, true, true);
@@ -66,7 +64,6 @@ public class ActionParameters extends AbstractParameters {
                 translet,
                 parameters,
                 attributes,
-                profile,
                 item,
                 hidden,
                 when,

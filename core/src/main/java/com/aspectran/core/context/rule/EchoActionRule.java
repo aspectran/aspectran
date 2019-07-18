@@ -27,7 +27,7 @@ public class EchoActionRule {
 
     private String actionId;
 
-    private ItemRuleMap attributeItemRuleMap;
+    private ItemRuleMap echoItemRuleMap;
 
     private Boolean hidden;
 
@@ -50,46 +50,46 @@ public class EchoActionRule {
     }
 
     /**
-     * Gets the attribute item rule map.
+     * Gets the echo item rule map.
      *
-     * @return the attribute item rule map
+     * @return the echo item rule map
      */
-    public ItemRuleMap getAttributeItemRuleMap() {
-        return attributeItemRuleMap;
+    public ItemRuleMap getEchoItemRuleMap() {
+        return echoItemRuleMap;
     }
 
     /**
-     * Sets the attribute rule map.
+     * Sets the echo item rule map.
      *
-     * @param attributeItemRuleMap the new attribute item rule map
+     * @param echoItemRuleMap the new echo item rule map
      */
-    public void setAttributeItemRuleMap(ItemRuleMap attributeItemRuleMap) {
-        this.attributeItemRuleMap = attributeItemRuleMap;
+    public void setEchoItemRuleMap(ItemRuleMap echoItemRuleMap) {
+        this.echoItemRuleMap = echoItemRuleMap;
     }
 
     /**
-     * Adds a new attribute rule with the specified name and returns it.
+     * Adds a new echo item rule with the specified name and returns it.
      *
-     * @param attributeName the attribute name
-     * @return the attribute item rule
+     * @param echoName the echo name
+     * @return the echo item rule
      */
-    public ItemRule newAttributeItemRule(String attributeName) {
+    public ItemRule newEchoItemRule(String echoName) {
         ItemRule itemRule = new ItemRule();
-        itemRule.setName(attributeName);
-        addAttributeItemRule(itemRule);
+        itemRule.setName(echoName);
+        addEchoItemRule(itemRule);
         return itemRule;
     }
 
     /**
-     * Adds the attribute item rule.
+     * Adds the echo item rule.
      *
-     * @param itemRule the attribute item rule
+     * @param itemRule the echo item rule
      */
-    public void addAttributeItemRule(ItemRule itemRule) {
-        if (attributeItemRuleMap == null) {
-            attributeItemRuleMap = new ItemRuleMap();
+    public void addEchoItemRule(ItemRule itemRule) {
+        if (echoItemRuleMap == null) {
+            echoItemRuleMap = new ItemRuleMap();
         }
-        attributeItemRuleMap.putItemRule(itemRule);
+        echoItemRuleMap.putItemRule(itemRule);
     }
 
     /**
@@ -123,8 +123,8 @@ public class EchoActionRule {
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.append("id", actionId);
-        if (attributeItemRuleMap != null) {
-            tsb.append("attributes", attributeItemRuleMap.keySet());
+        if (echoItemRuleMap != null) {
+            tsb.append("attributes", echoItemRuleMap.keySet());
         }
         tsb.append("hidden", hidden);
         return tsb.toString();

@@ -41,10 +41,10 @@
         </joinpoint>
         <advice bean="sampleAdvice">
             <before>
-                <action method="welcome"/>
+                <invoke method="welcome"/>
             </before>
             <after>
-                <action method="goodbye"/>
+                <invoke method="goodbye"/>
             </after>
         </advice>
     </aspect>

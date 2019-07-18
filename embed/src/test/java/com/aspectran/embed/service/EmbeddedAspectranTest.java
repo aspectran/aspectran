@@ -22,6 +22,7 @@ import com.aspectran.core.component.bean.BeanRegistry;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.builder.ActivityContextBuilder;
 import com.aspectran.core.context.config.AspectranConfig;
+import com.aspectran.core.util.StringUtils;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -101,7 +102,7 @@ class EmbeddedAspectranTest {
     @Test
     void testEcho123() {
         Translet translet = aspectran.translate("echo123");
-        System.out.println(translet);
+        assertEquals("123==123", translet.toString().trim());
     }
 
     @Test
@@ -120,6 +121,7 @@ class EmbeddedAspectranTest {
         System.out.println("Response: " + response);
 
         assertEquals(mode, dataMap.get(mode));
+        assertEquals("Case 2-2: case2-2, Case 2-4: case2-2".trim(), response.trim());
     }
 
     @Test
@@ -133,7 +135,6 @@ class EmbeddedAspectranTest {
         String response = translet.toString();
 
         assertEquals("thrown1 - thrown NullPointerException", response);
-        System.out.println(response);
     }
 
     @Test
@@ -147,7 +148,6 @@ class EmbeddedAspectranTest {
         String response = translet.toString();
 
         assertEquals("thrown2 - thrown IllegalArgumentException", response);
-        System.out.println(response);
     }
 
     @Test
@@ -161,13 +161,12 @@ class EmbeddedAspectranTest {
         String response = translet.toString();
 
         assertEquals("thrown3 - thrown UnsupportedOperationException", response);
-        System.out.println(response);
     }
 
     @Test
     void fieldCallTest() {
         String message = aspectran.render("fieldCallTest");
-        System.out.println(message);
+        assertEquals("staticfieldstaticfieldstaticfield", StringUtils.trimAllWhitespace(message));
     }
 
 }

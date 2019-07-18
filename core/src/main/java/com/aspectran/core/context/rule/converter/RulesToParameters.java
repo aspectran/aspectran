@@ -704,7 +704,11 @@ public class RulesToParameters {
     private static void toActionParameters(Executable action, Parameters parameters) {
         if (action.getActionType() == ActionType.ACTION) {
             InvokeActionRule invokeActionRule = action.getActionRule();
-            parameters.putValue("action", toActionParameters(invokeActionRule));
+            if (invokeActionRule.getBeanId() != null) {
+                parameters.putValue("action", toActionParameters(invokeActionRule));
+            } else {
+                parameters.putValue("invoke", toActionParameters(invokeActionRule));
+            }
         } else if (action.getActionType() == ActionType.ACTION_ANNOTATED) {
             AnnotatedActionRule annotatedActionRule = action.getActionRule();
             parameters.putValue("action", toActionParameters(annotatedActionRule));
@@ -749,7 +753,7 @@ public class RulesToParameters {
         actionParameters.putValueNonNull(ActionParameters.id, echoActionRule.getActionId());
         actionParameters.putValueNonNull(ActionParameters.hidden, echoActionRule.getHidden());
 
-        ItemRuleMap attributeItemRuleMap = echoActionRule.getAttributeItemRuleMap();
+        ItemRuleMap attributeItemRuleMap = echoActionRule.getEchoItemRuleMap();
         if (attributeItemRuleMap != null) {
             toItemRuleMap(attributeItemRuleMap, actionParameters);
         }
@@ -861,7 +865,6 @@ public class RulesToParameters {
         if (itemRuleMap == null) {
             throw new IllegalArgumentException("itemRuleMap must not be null");
         }
-        actionParameters.putValueNonNull(ActionParameters.profile, itemRuleMap.getProfile());
         for (ItemRule itemRule : itemRuleMap.values()) {
             actionParameters.putValue(ActionParameters.item, toItemParameters(itemRule));
         }

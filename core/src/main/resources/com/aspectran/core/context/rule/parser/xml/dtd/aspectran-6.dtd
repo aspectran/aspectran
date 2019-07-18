@@ -65,14 +65,14 @@
   bean    CDATA #IMPLIED
 >
 
-<!ELEMENT before  (headers | echo | action)>
-<!ELEMENT after   (headers | echo | action)>
-<!ELEMENT around  (action)>
-<!ELEMENT finally (thrown?, (headers | echo | action))>
+<!ELEMENT before  (headers | echo | (action | invoke))>
+<!ELEMENT after   (headers | echo | (action | invoke))>
+<!ELEMENT around  (action | invoke)>
+<!ELEMENT finally (thrown?, (headers | echo | (action | invoke)))>
 
 <!ELEMENT exception (description?, thrown+)>
 
-<!ELEMENT thrown ((headers | echo | action)?, (transform | dispatch | redirect)*)>
+<!ELEMENT thrown ((headers | echo | (action | invoke)?)?, (transform | dispatch | redirect)*)>
 <!ATTLIST thrown
   type    CDATA #IMPLIED
 >
@@ -160,10 +160,28 @@
 
 <!ELEMENT otherwise ((headers | echo | action | include | choose)*, (transform | dispatch | forward | redirect)?)>
 
+<!ELEMENT headers (item*)>
+<!ATTLIST headers
+  id      CDATA #IMPLIED
+  hidden  (true | false) #IMPLIED
+>
+
+<!ELEMENT echo (item*)>
+<!ATTLIST echo
+  id      CDATA #IMPLIED
+  hidden  (true | false) #IMPLIED
+>
+
 <!ELEMENT action (arguments*, properties*)>
 <!ATTLIST action
   id      CDATA #IMPLIED
-  bean    CDATA #IMPLIED
+  bean    CDATA #REQUIRED
+  method  CDATA #REQUIRED
+  hidden  (true | false) #IMPLIED
+>
+
+<!ELEMENT invoke (arguments*, properties*)>
+<!ATTLIST invoke
   method  CDATA #REQUIRED
   hidden  (true | false) #IMPLIED
 >
@@ -174,18 +192,6 @@
   translet CDATA #REQUIRED
   method   CDATA #IMPLIED
   hidden   (true | false) #IMPLIED
->
-
-<!ELEMENT echo (item*)>
-<!ATTLIST echo
-  id      CDATA #IMPLIED
-  hidden  (true | false) #IMPLIED
->
-
-<!ELEMENT headers (item*)>
-<!ATTLIST headers
-  id      CDATA #IMPLIED
-  hidden  (true | false) #IMPLIED
 >
 
 <!ELEMENT response ((choose | headers | echo | action | include)*, (transform | dispatch | forward | redirect)?)>

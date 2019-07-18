@@ -43,7 +43,7 @@ public class EchoAction implements Executable {
 
     @Override
     public Object execute(Activity activity) throws Exception {
-        ItemRuleMap itemRuleMap = echoActionRule.getAttributeItemRuleMap();
+        ItemRuleMap itemRuleMap = echoActionRule.getEchoItemRuleMap();
         if (itemRuleMap == null || itemRuleMap.isEmpty()) {
             return null;
         }

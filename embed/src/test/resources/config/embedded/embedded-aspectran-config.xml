@@ -39,10 +39,7 @@
         </parameters>
         <transform type="text" contentType="text/plain">
             <template engine="token" style="apon">
-                |------------------------------------------------
-                |${input-1}${input-2}${input-3}
-                |@{data^input-1}@{data^input-2}@{data^input-3}
-                |------------------------------------------------
+                |${input-1}${input-2}${input-3}==@{data^input-1}@{data^input-2}@{data^input-3}
             </template>
         </transform>
     </translet>
@@ -152,8 +149,7 @@
                 </choose>
                 <transform type="text">
                     <template style="apon">
-                        |Case 2-2: @{case2-2}
-                        |Case 2-4: @{case2-4}
+                        |Case 2-2: @{case2-2}, Case 2-4: @{case2-4}
                     </template>
                 </transform>
             </when>

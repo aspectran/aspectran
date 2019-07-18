@@ -21,16 +21,16 @@
         </joinpoint>
         <advice bean="simpleAopTestAdvice">
             <before>
-                <action method="begin"/>
+                <invoke method="begin"/>
             </before>
             <after>
-                <action method="end"/>
+                <invoke method="end"/>
             </after>
             <finally>
                 <thrown>
-                    <action method="thrown"/>
+                    <invoke method="thrown"/>
                 </thrown>
-                <action method="close"/>
+                <invoke method="close"/>
             </finally>
         </advice>
         <exception>

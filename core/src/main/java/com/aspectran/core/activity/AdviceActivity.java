@@ -328,7 +328,7 @@ public abstract class AdviceActivity extends AbstractActivity {
                 }
 
                 Object result = action.execute(this);
-                if (result != null && result != ActionResult.NO_RESULT) {
+                if (!action.isHidden() && result != null && result != ActionResult.NO_RESULT) {
                     putAdviceResult(aspectAdviceRule, result);
                     if (action.getActionType() == ActionType.ECHO) {
                         if (action.getActionId() != null) {
