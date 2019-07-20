@@ -86,7 +86,7 @@ public class AspectCommand extends AbstractCommand {
             listAspects(service, console, keywords);
         } else if (options.hasOption("detail")) {
             String[] aspectIds = options.getValues("detail");
-            detailAspectRule(service, console, aspectIds);
+            describeAspectRule(service, console, aspectIds);
         } else if (options.hasOption("enable")) {
             String[] aspectIds = options.getValues("enable");
             changeAspectActiveState(service, console, aspectIds, false);
@@ -144,7 +144,7 @@ public class AspectCommand extends AbstractCommand {
                 "--------", "--------");
     }
 
-    private void detailAspectRule(ShellService service, Console console, String[] aspectIds) throws IOException {
+    private void describeAspectRule(ShellService service, Console console, String[] aspectIds) throws IOException {
         AspectRuleRegistry aspectRuleRegistry = service.getActivityContext().getAspectRuleRegistry();
         Collection<AspectRule> aspectRules;
         if (aspectIds == null || aspectIds.length == 0) {

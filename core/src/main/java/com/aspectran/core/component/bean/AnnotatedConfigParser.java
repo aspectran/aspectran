@@ -193,7 +193,7 @@ public class AnnotatedConfigParser {
                     return;
                 }
             }
-            String[] nameArray = splitNamespace(componentAnno.namespace());
+            String[] nameArray = explodeNamespace(componentAnno.value());
             if (beanClass.isAnnotationPresent(Aspect.class)) {
                 parseAspectRule(beanClass, nameArray);
             }
@@ -792,7 +792,7 @@ public class AnnotatedConfigParser {
         return bindingRules;
     }
 
-    private String[] splitNamespace(String namespace) {
+    private String[] explodeNamespace(String namespace) {
         if (StringUtils.isEmpty(namespace)) {
             return null;
         }

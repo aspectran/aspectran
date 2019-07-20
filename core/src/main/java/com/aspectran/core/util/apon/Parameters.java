@@ -26,29 +26,51 @@ import java.util.Set;
 public interface Parameters {
 
     /**
-     * Returns whether the parameter can be added after the parameters instance is created.
+     * Returns whether the parameter can be added after the parameters instance
+     * is created.
      *
-     * @return {@code true} if the parameter can be added after the parameters instance is created,
-     *      otherwise {@code false}
+     * @return {@code true} if the parameter can be added after the parameters
+     *      instance is created, otherwise {@code false}
      */
     boolean isStructureFixed();
 
     /**
-     * Specifies the identifier {@code Parameter}.
+     * Returns the owner of this Parameters.
      *
-     * @param identifier the identifier {@code Parameter}
+     * @return the owner of this Parameters
      */
-    void setIdentifier(Parameter identifier);
+    Parameter getProprietor();
 
     /**
-     * Returns the identifier {@code Parameter}.
+     * Specifies the owner of this Parameters.
      *
-     * @return the identifier {@code Parameter}
+     * @param proprietor the owner of this Parameters
      */
-    Parameter getIdentifier();
+    void setProprietor(Parameter proprietor);
 
+    /**
+     * Returns the parent of the proprietor of this Parameters.
+     * <pre>
+     * proprietor --&gt; container --&gt; proprietor == parent
+     * </pre>
+     *
+     * @return a {@code Parameter}
+     */
+    Parameter getParent();
+
+    /**
+     * Returns its real name.
+     * If no name is given, it returns the name given by the owner.
+     *
+     * @return the actual name of this Parameters
+     */
     String getActualName();
 
+    /**
+     * Specifies the actual name of this Parameters.
+     *
+     * @param actualName the actual name of this Parameters
+     */
     void setActualName(String actualName);
 
     /**
@@ -57,20 +79,6 @@ public interface Parameters {
      * @return the qualified name
      */
     String getQualifiedName();
-
-    /**
-     * Returns the parent {@code Parameter} of the identifier {@code Parameter}.
-     * <pre>
-     *     parent = identifier --&gt; container --&gt; identifier
-     * </pre>
-     *
-     * @return a {@code Parameter}
-     */
-    Parameter getParent();
-
-    boolean isRoot();
-
-    void updateContainer(Parameters parameters);
 
     ParameterValue getParameterValue(String name);
 
@@ -735,6 +743,11 @@ public interface Parameters {
     <T extends Parameters> T touchParameters(String name);
 
     <T extends Parameters> T touchParameters(ParameterKey parameterKey);
+
+    /**
+     * Updates the holder of the subparameters belonging to this parameter.
+     */
+    void updateContainer(Parameters container);
 
     void readFrom(String text) throws IOException;
 

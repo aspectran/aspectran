@@ -90,7 +90,7 @@ public class ArrayParameters extends AbstractParameters
         }
         try {
             T sub = (T)ClassUtils.createInstance(elementClass);
-            sub.setIdentifier(p);
+            sub.setProprietor(p);
             p.putValue(sub);
             return sub;
         } catch (Exception e) {

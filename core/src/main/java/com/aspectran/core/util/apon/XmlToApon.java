@@ -182,7 +182,7 @@ public class XmlToApon {
                 open = false;
             }
             if (!leaf) {
-                parameters = parameters.getIdentifier().getContainer();
+                parameters = parameters.getProprietor().getContainer();
             } else {
                 leaf = false;
             }

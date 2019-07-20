@@ -98,7 +98,7 @@ public class ComponentCommand extends AbstractCommand {
                         case "list":
                             return listAspects(service, targets);
                         case "detail":
-                            return detailAspectRule(service, targets);
+                            return describeAspectRule(service, targets);
                         case "enable":
                             return changeAspectActiveState(service, targets, false);
                         case "disable":
@@ -112,9 +112,9 @@ public class ComponentCommand extends AbstractCommand {
                         case "list-all":
                             return listTranslets(service, targets, true);
                         case "detail":
-                            return detailTransletRule(service, targets, false);
+                            return describeTransletRule(service, targets, false);
                         case "detail-all":
-                            return detailTransletRule(service, targets, true);
+                            return describeTransletRule(service, targets, true);
                     }
                     break;
                 }
@@ -123,7 +123,7 @@ public class ComponentCommand extends AbstractCommand {
                         case "list":
                             return listScheduledJobs(service, targets);
                         case "detail":
-                            return detailScheduledJobRule(service, targets);
+                            return describeScheduledJobRule(service, targets);
                         case "enable":
                             return changeJobActiveState(service, targets, false);
                         case "disable":
@@ -173,7 +173,7 @@ public class ComponentCommand extends AbstractCommand {
         return success(formatter.toString());
     }
 
-    private CommandResult detailAspectRule(DaemonService service, String[] targets) throws IOException {
+    private CommandResult describeAspectRule(DaemonService service, String[] targets) throws IOException {
         AspectRuleRegistry aspectRuleRegistry = service.getActivityContext().getAspectRuleRegistry();
         Collection<AspectRule> aspectRules;
         if (targets == null || targets.length == 0) {
@@ -283,7 +283,7 @@ public class ComponentCommand extends AbstractCommand {
         return success(formatter.toString());
     }
 
-    private CommandResult detailTransletRule(DaemonService service, String[] targets, boolean all) throws IOException {
+    private CommandResult describeTransletRule(DaemonService service, String[] targets, boolean all) throws IOException {
         TransletRuleRegistry transletRuleRegistry = service.getActivityContext().getTransletRuleRegistry();
         Collection<TransletRule> transletRules;
         if (targets == null || targets.length == 0) {
@@ -370,7 +370,7 @@ public class ComponentCommand extends AbstractCommand {
         return success(formatter.toString());
     }
 
-    private CommandResult detailScheduledJobRule(DaemonService service, String[] targets)
+    private CommandResult describeScheduledJobRule(DaemonService service, String[] targets)
             throws IOException {
         ScheduleRuleRegistry scheduleRuleRegistry = service.getActivityContext().getScheduleRuleRegistry();
         if (targets == null || targets.length == 0) {

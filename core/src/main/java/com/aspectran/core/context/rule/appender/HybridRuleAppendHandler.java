@@ -133,6 +133,7 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
     }
 
     private void saveAsAponFile(FileRuleAppender fileRuleAppender, RootParameters rootParameters) throws IOException {
+        File xmlFile = makeFile(fileRuleAppender);
         File aponFile = makeAponFile(fileRuleAppender);
 
         if (log.isDebugEnabled()) {
@@ -149,7 +150,7 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
             }
 
             try {
-                aponWriter.comment(aponFile.getAbsolutePath());
+                aponWriter.comment(xmlFile.getAbsolutePath());
                 aponWriter.write(rootParameters);
             } finally {
                 try {
@@ -161,6 +162,12 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
         } catch (Exception e) {
             throw new IOException("Failed to save as APON file: " + aponFile, e);
         }
+    }
+
+    private File makeFile(FileRuleAppender fileRuleAppender) {
+        String basePath = fileRuleAppender.getBasePath();
+        String filePath = fileRuleAppender.getFilePath();
+        return new File(basePath, filePath);
     }
 
     private File makeAponFile(FileRuleAppender fileRuleAppender) {

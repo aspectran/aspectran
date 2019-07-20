@@ -30,7 +30,7 @@ import com.aspectran.web.activity.response.RestResponse;
 
 import java.util.List;
 
-@Component(namespace = "/examples/gs-rest-service")
+@Component("/examples/gs-rest-service")
 @Bean
 public class CustomerAction {
 

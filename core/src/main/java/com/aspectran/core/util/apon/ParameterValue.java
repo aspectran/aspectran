@@ -119,7 +119,7 @@ public class ParameterValue implements Parameter {
         if (container == null) {
             return name;
         }
-        Parameter prototype = container.getIdentifier();
+        Parameter prototype = container.getProprietor();
         if (prototype != null) {
             return prototype.getQualifiedName() + "." + name;
         }
@@ -440,7 +440,7 @@ public class ParameterValue implements Parameter {
         }
         try {
             T p = (T)ClassUtils.createInstance(parametersClass);
-            p.setIdentifier(identifier);
+            p.setProprietor(identifier);
             putValue(p);
             return p;
         } catch (Exception e) {

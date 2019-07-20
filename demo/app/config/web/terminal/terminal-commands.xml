@@ -11,8 +11,6 @@
         <attributes>
             <item name="attr1" mandatory="true">${id}@${domain}</item>
             <item name="attr2" mandatory="true" secret="true">${password}</item>
-            <item name="attr3" mandatory="true">${attr3}</item>
-            <item name="attr4" mandatory="true">${attr4}</item>
         </attributes>
         <transform type="text">
             <template style="apon">
@@ -20,11 +18,9 @@
                 |The parameters you entered are:
                 |   email: ${email}
                 |   password: ${password}
-                |The attributes you entered are:
+                |The internally generated attributes are:
                 |   attr1: @{attr1}
                 |   attr2: @{attr2}
-                |   attr3: @{attr3}
-                |   attr4: @{attr4}
                 |------------------------------------------------
             </template>
         </transform>

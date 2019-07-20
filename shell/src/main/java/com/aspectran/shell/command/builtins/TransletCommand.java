@@ -116,7 +116,7 @@ public class TransletCommand extends AbstractCommand {
                 console.writeError("No request method type for '" + method + "'");
                 return;
             }
-            detailTransletRule(service, console, transletNames, requestMethod, false);
+            describeTransletRule(service, console, transletNames, requestMethod, false);
         } else if (options.hasOption("detail-all")) {
             String[] transletNames = options.getValues("detail-all");
             String method = options.getValue("method");
@@ -125,7 +125,7 @@ public class TransletCommand extends AbstractCommand {
                 console.writeError("No request method type for '" + method + "'");
                 return;
             }
-            detailTransletRule(service, console, transletNames, requestMethod, true);
+            describeTransletRule(service, console, transletNames, requestMethod, true);
         } else if (options.hasArgs()) {
             CommandLineParser lineParser = new CommandLineParser(options.getFirstArg());
             TransletCommandLine transletCommandLine = new TransletCommandLine(lineParser);
@@ -180,7 +180,7 @@ public class TransletCommand extends AbstractCommand {
         console.writeLine("-%4s-+-%-67s-", "----", "-------------------------------------------------------------------");
     }
 
-    private void detailTransletRule(ShellService service, Console console, String[] transletNames, MethodType requestMethod, boolean all)
+    private void describeTransletRule(ShellService service, Console console, String[] transletNames, MethodType requestMethod, boolean all)
             throws IOException {
         TransletRuleRegistry transletRuleRegistry = service.getActivityContext().getTransletRuleRegistry();
         Collection<TransletRule> transletRules;

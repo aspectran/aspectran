@@ -58,26 +58,6 @@
                                     prev = item;
                                 }
                             }
-                            var attrs = request.attributes;
-                            if (attrs && attrs.tokens) {
-                                for (var i = 0; i < attrs.tokens.length; i++) {
-                                    var token = attrs.tokens[i];
-                                    var item = {
-                                        command: command,
-                                        contentType: response.contentType,
-                                        group: 'attributes',
-                                        prev: prev,
-                                        next: null,
-                                        token: token,
-                                        items: attrs.items
-                                    };
-                                    prompts.push(item);
-                                    if (prev) {
-                                        prev.next = item;
-                                    }
-                                    prev = item;
-                                }
-                            }
                         }
                         if (prompts.length > 0) {
                             prompts[prompts.length - 1].terminator = true;

@@ -35,7 +35,7 @@ public abstract class AbstractParameters implements Parameters {
 
     private final boolean structureFixed;
 
-    private Parameter identifier;
+    private Parameter proprietor;
 
     private String actualName;
 
@@ -70,59 +70,43 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
-    public Parameter getIdentifier() {
-        return identifier;
+    public Parameter getProprietor() {
+        return proprietor;
     }
 
     @Override
-    public void setIdentifier(Parameter identifier) {
-        this.identifier = identifier;
-    }
-
-    @Override
-    public String getActualName() {
-        if (identifier == null) {
-            return actualName;
-        }
-        return (actualName != null ? actualName : identifier.getName());
-    }
-
-    @Override
-    public void setActualName(String actualName) {
-        if (actualName != null && !actualName.equals(identifier.getName())) {
-            this.actualName = actualName;
-        } else {
-            this.actualName = null;
-        }
-    }
-
-    @Override
-    public String getQualifiedName() {
-        if (identifier != null) {
-            return identifier.getQualifiedName();
-        }
-        return this.getClass().getName();
+    public void setProprietor(Parameter proprietor) {
+        this.proprietor = proprietor;
     }
 
     @Override
     public Parameter getParent() {
-        if (identifier != null && identifier.getContainer() != null) {
-            return identifier.getContainer().getIdentifier();
+        if (proprietor != null && proprietor.getContainer() != null) {
+            return proprietor.getContainer().getProprietor();
         } else {
             return null;
         }
     }
 
     @Override
-    public boolean isRoot() {
-        return (getParent() == null);
+    public String getActualName() {
+        if (proprietor == null) {
+            return actualName;
+        }
+        return (actualName != null ? actualName : proprietor.getName());
     }
 
     @Override
-    public void updateContainer(Parameters parameters) {
-        for (ParameterValue parameterValue : parameters.getParameterValueMap().values()) {
-            parameterValue.setContainer(parameters);
+    public void setActualName(String actualName) {
+        this.actualName = actualName;
+    }
+
+    @Override
+    public String getQualifiedName() {
+        if (proprietor != null) {
+            return proprietor.getQualifiedName();
         }
+        return this.getClass().getName();
     }
 
     @Override
@@ -230,6 +214,7 @@ public abstract class AbstractParameters implements Parameters {
         }
         p.putValue(value);
         if (value instanceof Parameters) {
+            ((Parameters)value).setActualName(name);
             ((Parameters)value).updateContainer(this);
         }
     }
@@ -638,6 +623,13 @@ public abstract class AbstractParameters implements Parameters {
     @Override
     public <T extends Parameters> T touchParameters(ParameterKey parameterKey) {
         return touchParameters(parameterKey.getName());
+    }
+
+    @Override
+    public void updateContainer(Parameters container) {
+        for (ParameterValue parameterValue : container.getParameterValueMap().values()) {
+            parameterValue.setContainer(container);
+        }
     }
 
     @Override

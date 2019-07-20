@@ -223,7 +223,7 @@
     <div id="subfooter">
         <nav class="row b30">
             <section id="subfooter-left" class="medium-6 columns credits">
-                <p>© 2008–2018 The Aspectran Project. All rights reserved.</p>
+                <p>© 2008–2019 The Aspectran Project. All rights reserved.</p>
             </section>
             <section id="subfooter-right" class="medium-6 columns social-icons">
                 <ul>
@@ -341,7 +341,7 @@
                             immediate = true;
                             $win.scrollTop(offset.top - $("#navigation.fixed .top-bar").height()||0);
                         }
-                    }, 100);
+                    }, 300);
                 }
             });
             $win.scroll(function() {
@@ -365,7 +365,7 @@
                 } else {
                     var topBarHeight = $("#navigation.fixed .top-bar").height()||0;
                     if(immediate || (scrollTop > baseOffsetTop + topBarHeight + offsetTop + thisHeight - 20) ||
-                            (scrollTop < baseOffsetTop + topBarHeight + offsetTop)) {
+                        (scrollTop < baseOffsetTop + topBarHeight + offsetTop)) {
                         var tocOffsetLeftBase = $this.offset().left;
                         if(tocOffsetLeftBase > 100) {
                             if(scrollTimer) {

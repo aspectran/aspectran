@@ -87,7 +87,7 @@ public class JobCommand extends AbstractCommand {
             listScheduledJobs(service, console, keywords);
         } else if (options.hasOption("detail")) {
             String[] transletNames = options.getValues("detail");
-            detailScheduledJobRule(service, console, transletNames);
+            describeScheduledJobRule(service, console, transletNames);
         } else if (options.hasOption("enable")) {
             String[] transletNames = options.getValues("enable");
             changeJobActiveState(service, console, transletNames, false);
@@ -137,7 +137,7 @@ public class JobCommand extends AbstractCommand {
                 "---------------------------------", "--------");
     }
 
-    private void detailScheduledJobRule(ShellService service, Console console, String[] transletNames)
+    private void describeScheduledJobRule(ShellService service, Console console, String[] transletNames)
             throws IOException {
         ScheduleRuleRegistry scheduleRuleRegistry = service.getActivityContext().getScheduleRuleRegistry();
         if (transletNames != null && transletNames.length > 0) {
