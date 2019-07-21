@@ -286,11 +286,14 @@ public class QuartzSchedulerService extends AbstractServiceController implements
 
     private Trigger buildTrigger(String name, String group, ScheduleRule scheduleRule) {
         TriggerExpressionParameters expressionParameters = scheduleRule.getTriggerExpressionParameters();
-        Integer triggerStartDelaySeconds = expressionParameters.getStartDelaySeconds();
+        int startDelaySeconds = this.startDelaySeconds;
+        if (expressionParameters.getStartDelaySeconds() != null) {
+            startDelaySeconds += expressionParameters.getStartDelaySeconds();
+        }
 
         Date firstFireTime;
-        if (startDelaySeconds > 0 || (triggerStartDelaySeconds != null && triggerStartDelaySeconds > 0)) {
-            firstFireTime = new Date(System.currentTimeMillis() + ((startDelaySeconds + triggerStartDelaySeconds) * 1000L));
+        if (startDelaySeconds > 0) {
+            firstFireTime = new Date(System.currentTimeMillis() + (startDelaySeconds * 1000L));
         } else {
             firstFireTime = new Date();
         }
