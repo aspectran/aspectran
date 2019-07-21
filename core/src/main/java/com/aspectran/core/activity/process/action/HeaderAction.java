@@ -106,7 +106,7 @@ public class HeaderAction implements Executable {
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
-        tsb.append("actionType", getActionType());
+        tsb.append("type", getActionType());
         tsb.append("headerActionRule", headerActionRule);
         return tsb.toString();
     }

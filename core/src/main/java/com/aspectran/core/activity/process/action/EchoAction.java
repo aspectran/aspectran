@@ -88,7 +88,7 @@ public class EchoAction implements Executable {
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
-        tsb.append("actionType", getActionType());
+        tsb.append("type", getActionType());
         tsb.append("echoActionRule", echoActionRule);
         return tsb.toString();
     }

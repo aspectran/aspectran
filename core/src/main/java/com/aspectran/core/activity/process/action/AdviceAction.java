@@ -65,7 +65,7 @@ public class AdviceAction extends InvokeAction {
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
-        tsb.append("actionType", getActionType());
+        tsb.append("type", getActionType());
         tsb.append("invokeActionRule", getInvokeActionRule());
         if (aspectAdviceRule != null) {
             tsb.append("aspectAdviceRule", aspectAdviceRule.toString(true));
