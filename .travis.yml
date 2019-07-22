@@ -13,7 +13,6 @@ jdk:
   - openjdk8
   - openjdk11
   - openjdk12
-  - openjdk-ea
   - oraclejdk8
 
 branches:
