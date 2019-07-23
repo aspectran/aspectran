@@ -18,6 +18,7 @@ package com.aspectran.daemon;
 import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.config.DaemonConfig;
 import com.aspectran.core.context.config.DaemonPollerConfig;
+import com.aspectran.core.util.Aspectran;
 import com.aspectran.core.util.apon.AponReader;
 import com.aspectran.daemon.command.CommandRegistry;
 import com.aspectran.daemon.command.DaemonCommandRegistry;
@@ -114,6 +115,8 @@ public class AbstractDaemon implements Daemon {
     }
 
     protected void init(DaemonConfig daemonConfig) throws Exception {
+        Aspectran.printPrettyAboutMe(System.out);
+
         try {
             DaemonPollerConfig pollerConfig = daemonConfig.touchPollerConfig();
             this.commandPoller = new FileCommandPoller(this, pollerConfig);
