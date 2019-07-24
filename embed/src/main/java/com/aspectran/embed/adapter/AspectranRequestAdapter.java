@@ -16,9 +16,10 @@
 package com.aspectran.embed.adapter;
 
 import com.aspectran.core.adapter.BasicRequestAdapter;
+import com.aspectran.core.adapter.RequestAdapter;
 
 /**
- * Adapt Aspectran Request to Core {@link com.aspectran.core.adapter.RequestAdapter}.
+ * Adapt Aspectran Request to Core {@link RequestAdapter}.
  */
 public class AspectranRequestAdapter extends BasicRequestAdapter {
 

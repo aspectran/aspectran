@@ -19,6 +19,7 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.activity.response.transform.TransformResponse;
 import com.aspectran.core.adapter.AbstractResponseAdapter;
+import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.expr.ItemEvaluator;
 import com.aspectran.core.context.expr.ItemExpression;
 import com.aspectran.core.context.rule.ItemRuleMap;
@@ -35,7 +36,7 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- * Adapt {@link HttpServletResponse} to Core {@link com.aspectran.core.adapter.ResponseAdapter}.
+ * Adapt {@link HttpServletResponse} to Core {@link ResponseAdapter}.
  * 
  * @since 2011. 3. 13.
  */

@@ -17,6 +17,7 @@ package com.aspectran.web.adapter;
 
 import com.aspectran.core.activity.aspect.SessionScopeAdvisor;
 import com.aspectran.core.adapter.AbstractSessionAdapter;
+import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.component.bean.scope.SessionScope;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.util.thread.Locker;
@@ -27,7 +28,7 @@ import javax.servlet.http.HttpSession;
 import java.util.Enumeration;
 
 /**
- * Adapt {@link HttpSession} to Core {@link com.aspectran.core.adapter.SessionAdapter}.
+ * Adapt {@link HttpSession} to Core {@link SessionAdapter}.
  * 
  * @since 2011. 3. 13.
  */

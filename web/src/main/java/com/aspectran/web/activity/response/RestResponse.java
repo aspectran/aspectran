@@ -4,6 +4,11 @@ import com.aspectran.core.activity.response.transform.CustomTransformer;
 import com.aspectran.web.support.http.HttpStatus;
 import com.aspectran.web.support.http.MediaType;
 
+/**
+ * Base class that represents an HTTP response for a REST resource.
+ *
+ * @since 6.2.0
+ */
 public interface RestResponse extends CustomTransformer {
 
     String getName();

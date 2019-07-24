@@ -28,7 +28,7 @@ import java.io.Writer;
 import java.util.Map;
 
 /**
- * The Class DaemonActivity.
+ * An activity that processes a daemon command.
  */
 public class DaemonActivity extends CoreActivity {
 

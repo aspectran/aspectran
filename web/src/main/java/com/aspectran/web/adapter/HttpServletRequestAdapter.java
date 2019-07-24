@@ -16,6 +16,7 @@
 package com.aspectran.web.adapter;
 
 import com.aspectran.core.adapter.AbstractRequestAdapter;
+import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.util.MultiValueMap;
 import com.aspectran.core.util.apon.Parameters;
@@ -30,7 +31,7 @@ import java.util.Enumeration;
 import java.util.Map;
 
 /**
- * Adapt {@link HttpServletRequest} to Core {@link com.aspectran.core.adapter.RequestAdapter}.
+ * Adapt {@link HttpServletRequest} to Core {@link RequestAdapter}.
  * 
  * @since 2011. 3. 13.
  */

@@ -15,10 +15,11 @@
  */
 package com.aspectran.shell.adapter;
 
+import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.adapter.BasicApplicationAdapter;
 
 /**
- * Adapt Shell Application to Core {@link com.aspectran.core.adapter.ApplicationAdapter}.
+ * Adapt Shell Application to Core {@link ApplicationAdapter}.
  */
 public class ShellApplicationAdapter extends BasicApplicationAdapter {
 

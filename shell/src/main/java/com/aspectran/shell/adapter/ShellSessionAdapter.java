@@ -16,10 +16,11 @@
 package com.aspectran.shell.adapter;
 
 import com.aspectran.core.adapter.BasicSessionAdapter;
+import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.component.session.SessionAgent;
 
 /**
- * Adapt Shell Session to Core {@link com.aspectran.core.adapter.SessionAdapter}.
+ * Adapt Shell Session to Core {@link SessionAdapter}.
  */
 public class ShellSessionAdapter extends BasicSessionAdapter {
 

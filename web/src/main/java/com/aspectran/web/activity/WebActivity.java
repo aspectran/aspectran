@@ -46,7 +46,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.UnsupportedEncodingException;
 
 /**
- * The Class WebActivity.
+ * An activity that processes a web request.
  *
  * @since 2008. 4. 28.
  */

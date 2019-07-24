@@ -15,10 +15,11 @@
  */
 package com.aspectran.daemon.adapter;
 
+import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.adapter.BasicApplicationAdapter;
 
 /**
- * Adapt Daemon Application to Core {@link com.aspectran.core.adapter.ApplicationAdapter}.
+ * Adapt Daemon Application to Core {@link ApplicationAdapter}.
  */
 public class DaemonApplicationAdapter extends BasicApplicationAdapter {
 
