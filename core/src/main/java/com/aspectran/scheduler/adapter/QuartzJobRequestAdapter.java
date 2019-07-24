@@ -19,7 +19,7 @@ import com.aspectran.core.adapter.BasicRequestAdapter;
 import org.quartz.JobExecutionContext;
 
 /**
- * The Class QuartzJobRequestAdapter.
+ * Adapt Quartz Job Request to Core {@link com.aspectran.core.adapter.RequestAdapter}.
  * 
  * @since 2013. 11. 20.
  */

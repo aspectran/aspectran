@@ -19,7 +19,7 @@ import com.aspectran.core.adapter.BasicSessionAdapter;
 import com.aspectran.core.component.session.SessionAgent;
 
 /**
- * The Class DaemonSessionAdapter.
+ * Adapt Daemon Session to Core {@link com.aspectran.core.adapter.SessionAdapter}.
  */
 public class DaemonSessionAdapter extends BasicSessionAdapter {
 

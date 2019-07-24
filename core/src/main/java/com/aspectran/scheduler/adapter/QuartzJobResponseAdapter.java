@@ -20,7 +20,7 @@ import com.aspectran.core.context.rule.type.ContentType;
 import com.aspectran.core.util.StringOutputWriter;
 
 /**
- * The Class QuartzJobResponseAdapter.
+ * Adapt Quartz Job Response to Core {@link com.aspectran.core.adapter.ResponseAdapter}.
  * 
  * @since 2013. 11. 20.
  */

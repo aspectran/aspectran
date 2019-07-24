@@ -30,7 +30,7 @@ import java.util.Enumeration;
 import java.util.Map;
 
 /**
- * The Class HttpServletRequestAdapter.
+ * Adapt {@link HttpServletRequest} to Core {@link com.aspectran.core.adapter.RequestAdapter}.
  * 
  * @since 2011. 3. 13.
  */

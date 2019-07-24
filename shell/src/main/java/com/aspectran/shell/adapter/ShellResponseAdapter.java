@@ -20,9 +20,7 @@ import com.aspectran.core.adapter.BasicResponseAdapter;
 import java.io.Writer;
 
 /**
- * The Class ShellResponseAdapter.
- * 
- * @since 2016. 1. 18.
+ * Adapt Shell Response to Core {@link com.aspectran.core.adapter.ResponseAdapter}.
  */
 public class ShellResponseAdapter extends BasicResponseAdapter {
 

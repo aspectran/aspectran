@@ -18,7 +18,7 @@ package com.aspectran.daemon.adapter;
 import com.aspectran.core.adapter.BasicRequestAdapter;
 
 /**
- * The Class DaemonRequestAdapter.
+ * Adapt Daemon Request to Core {@link com.aspectran.core.adapter.RequestAdapter}.
  */
 public class DaemonRequestAdapter extends BasicRequestAdapter {
 

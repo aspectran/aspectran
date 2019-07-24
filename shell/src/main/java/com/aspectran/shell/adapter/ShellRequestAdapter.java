@@ -18,9 +18,7 @@ package com.aspectran.shell.adapter;
 import com.aspectran.core.adapter.BasicRequestAdapter;
 
 /**
- * The Class ShellRequestAdapter.
- * 
- * @since 2016. 1. 18.
+ * Adapt Shell Request to Core {@link com.aspectran.core.adapter.RequestAdapter}.
  */
 public class ShellRequestAdapter extends BasicRequestAdapter {
 

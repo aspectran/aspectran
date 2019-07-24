@@ -21,7 +21,7 @@ import com.aspectran.core.context.rule.type.ContentType;
 import java.io.Writer;
 
 /**
- * The Class AspectranResponseAdapter.
+ * Adapt Aspectran Response to Core {@link com.aspectran.core.adapter.ResponseAdapter}.
  */
 public class AspectranResponseAdapter extends BasicResponseAdapter {
 

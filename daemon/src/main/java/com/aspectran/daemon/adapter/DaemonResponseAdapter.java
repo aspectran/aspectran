@@ -21,7 +21,7 @@ import com.aspectran.core.context.rule.type.ContentType;
 import java.io.Writer;
 
 /**
- * The Class DaemonResponseAdapter.
+ * Adapt Daemon Response to Core {@link com.aspectran.core.adapter.ResponseAdapter}.
  */
 public class DaemonResponseAdapter extends BasicResponseAdapter {
 

@@ -22,7 +22,7 @@ import javax.servlet.http.HttpSession;
 import java.util.Enumeration;
 
 /**
- * The Class AdviceHttpSessionAdapter.
+ * Adapt {@link HttpSession} for AOP Advice to Core {@link com.aspectran.core.adapter.SessionAdapter}.
  *
  * <p>Created: 2017. 6. 24.</p>
  */

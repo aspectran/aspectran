@@ -21,7 +21,7 @@ import javax.servlet.ServletContext;
 import java.util.Enumeration;
 
 /**
- * The Class WebApplicationAdapter.
+ * Adapt {@link ServletContext} to Core {@link com.aspectran.core.adapter.ApplicationAdapter}.
  * 
  * @since 2011. 3. 13.
  */

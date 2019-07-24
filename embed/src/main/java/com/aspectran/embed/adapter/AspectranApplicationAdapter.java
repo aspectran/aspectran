@@ -18,7 +18,7 @@ package com.aspectran.embed.adapter;
 import com.aspectran.core.adapter.BasicApplicationAdapter;
 
 /**
- * The Class AspectranApplicationAdapter.
+ * Adapt Aspectran Application to Core {@link com.aspectran.core.adapter.ApplicationAdapter}.
  */
 public class AspectranApplicationAdapter extends BasicApplicationAdapter {
 

@@ -35,7 +35,7 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- * The Class HttpServletResponseAdapter.
+ * Adapt {@link HttpServletResponse} to Core {@link com.aspectran.core.adapter.ResponseAdapter}.
  * 
  * @since 2011. 3. 13.
  */

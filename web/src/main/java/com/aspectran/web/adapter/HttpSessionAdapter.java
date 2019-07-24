@@ -27,7 +27,7 @@ import javax.servlet.http.HttpSession;
 import java.util.Enumeration;
 
 /**
- * The Class HttpSessionAdapter.
+ * Adapt {@link HttpSession} to Core {@link com.aspectran.core.adapter.SessionAdapter}.
  * 
  * @since 2011. 3. 13.
  */

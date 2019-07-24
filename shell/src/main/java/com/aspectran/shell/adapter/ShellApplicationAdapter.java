@@ -18,9 +18,7 @@ package com.aspectran.shell.adapter;
 import com.aspectran.core.adapter.BasicApplicationAdapter;
 
 /**
- * The Class ShellApplicationAdapter.
- * 
- * @since 2016. 1. 18.
+ * Adapt Shell Application to Core {@link com.aspectran.core.adapter.ApplicationAdapter}.
  */
 public class ShellApplicationAdapter extends BasicApplicationAdapter {
 
