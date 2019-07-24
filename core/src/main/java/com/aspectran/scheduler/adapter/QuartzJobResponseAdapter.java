@@ -16,6 +16,7 @@
 package com.aspectran.scheduler.adapter;
 
 import com.aspectran.core.adapter.BasicResponseAdapter;
+import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.rule.type.ContentType;
 import com.aspectran.core.util.StringOutputWriter;
 
