@@ -16,12 +16,13 @@
 package com.aspectran.web.adapter;
 
 import com.aspectran.core.adapter.AbstractApplicationAdapter;
+import com.aspectran.core.adapter.ApplicationAdapter;
 
 import javax.servlet.ServletContext;
 import java.util.Enumeration;
 
 /**
- * Adapt {@link ServletContext} to Core {@link com.aspectran.core.adapter.ApplicationAdapter}.
+ * Adapt {@link ServletContext} to Core {@link ApplicationAdapter}.
  * 
  * @since 2011. 3. 13.
  */

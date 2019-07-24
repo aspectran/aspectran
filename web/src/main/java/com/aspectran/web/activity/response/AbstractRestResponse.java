@@ -29,6 +29,8 @@ import java.util.List;
 import java.util.Locale;
 
 /**
+ * Abstract class shared by RestResponse.
+ *
  * <p>Created: 2019-06-16</p>
  */
 public abstract class AbstractRestResponse implements RestResponse {

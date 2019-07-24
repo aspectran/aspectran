@@ -16,10 +16,11 @@
 package com.aspectran.scheduler.adapter;
 
 import com.aspectran.core.adapter.BasicRequestAdapter;
+import com.aspectran.core.adapter.RequestAdapter;
 import org.quartz.JobExecutionContext;
 
 /**
- * Adapt Quartz Job Request to Core {@link com.aspectran.core.adapter.RequestAdapter}.
+ * Adapt Quartz Job Request to Core {@link RequestAdapter}.
  * 
  * @since 2013. 11. 20.
  */

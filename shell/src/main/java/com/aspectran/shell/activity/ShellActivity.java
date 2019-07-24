@@ -46,7 +46,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * The Class ShellActivity.
+ * An activity that processes a shell command.
  *
  * @since 2016. 1. 18.
  */

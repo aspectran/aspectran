@@ -16,12 +16,13 @@
 package com.aspectran.embed.adapter;
 
 import com.aspectran.core.adapter.BasicResponseAdapter;
+import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.rule.type.ContentType;
 
 import java.io.Writer;
 
 /**
- * Adapt Aspectran Response to Core {@link com.aspectran.core.adapter.ResponseAdapter}.
+ * Adapt Aspectran Response to Core {@link ResponseAdapter}.
  */
 public class AspectranResponseAdapter extends BasicResponseAdapter {
 

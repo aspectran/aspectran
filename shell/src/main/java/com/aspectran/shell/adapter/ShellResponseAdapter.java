@@ -16,11 +16,12 @@
 package com.aspectran.shell.adapter;
 
 import com.aspectran.core.adapter.BasicResponseAdapter;
+import com.aspectran.core.adapter.ResponseAdapter;
 
 import java.io.Writer;
 
 /**
- * Adapt Shell Response to Core {@link com.aspectran.core.adapter.ResponseAdapter}.
+ * Adapt Shell Response to Core {@link ResponseAdapter}.
  */
 public class ShellResponseAdapter extends BasicResponseAdapter {
 

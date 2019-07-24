@@ -16,13 +16,14 @@
 package com.aspectran.web.adapter;
 
 import com.aspectran.core.adapter.AbstractSessionAdapter;
+import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.component.bean.scope.SessionScope;
 
 import javax.servlet.http.HttpSession;
 import java.util.Enumeration;
 
 /**
- * Adapt {@link HttpSession} for AOP Advice to Core {@link com.aspectran.core.adapter.SessionAdapter}.
+ * Adapt {@link HttpSession} for AOP Advice to Core {@link SessionAdapter}.
  *
  * <p>Created: 2017. 6. 24.</p>
  */

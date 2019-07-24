@@ -16,10 +16,11 @@
 package com.aspectran.daemon.adapter;
 
 import com.aspectran.core.adapter.BasicSessionAdapter;
+import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.component.session.SessionAgent;
 
 /**
- * Adapt Daemon Session to Core {@link com.aspectran.core.adapter.SessionAdapter}.
+ * Adapt Daemon Session to Core {@link SessionAdapter}.
  */
 public class DaemonSessionAdapter extends BasicSessionAdapter {
 

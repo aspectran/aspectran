@@ -41,6 +41,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * The default RestResponse supports APON, JSON, and XML data types.
+ *
  * <p>Created: 2019-06-16</p>
  */
 public class DefaultRestResponse extends AbstractRestResponse {
