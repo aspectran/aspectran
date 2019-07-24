@@ -20,7 +20,7 @@
     <parent>
         <artifactId>aspectran</artifactId>
         <groupId>com.aspectran</groupId>
-        <version>6.2.0-RC3-SNAPSHOT</version>
+        <version>6.3.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>aspectran-all</artifactId>
@@ -105,6 +105,18 @@
         <dependency>
             <groupId>com.aspectran</groupId>
             <artifactId>aspectran-with-pebble</artifactId>
+            <scope>compile</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.aspectran</groupId>
+            <artifactId>aspectran-with-undertow</artifactId>
+            <scope>compile</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.aspectran</groupId>
+            <artifactId>aspectran-with-velocity</artifactId>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
@@ -368,12 +380,28 @@
                             <packages>com.aspectran.web*</packages>
                         </group>
                         <group>
+                            <title>Aspectran with Freemarker</title>
+                            <packages>com.aspectran.freemarker*</packages>
+                        </group>
+                        <group>
                             <title>Aspectran with Jetty</title>
                             <packages>com.aspectran.jetty*</packages>
                         </group>
                         <group>
                             <title>Aspectran with MyBatis</title>
                             <packages>com.aspectran.mybatis*</packages>
+                        </group>
+                        <group>
+                            <title>Aspectran with Pebble</title>
+                            <packages>com.aspectran.pebble*</packages>
+                        </group>
+                        <group>
+                            <title>Aspectran with Undertow</title>
+                            <packages>com.aspectran.undertow*</packages>
+                        </group>
+                        <group>
+                            <title>Aspectran with Velocity</title>
+                            <packages>com.aspectran.velocity*</packages>
                         </group>
                     </groups>
                     <stylesheetfile>${project.basedir}/src/main/javadoc/stylesheet.css</stylesheetfile>

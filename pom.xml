@@ -19,7 +19,7 @@
 
     <groupId>com.aspectran</groupId>
     <artifactId>aspectran</artifactId>
-    <version>6.2.0-RC3-SNAPSHOT</version>
+    <version>6.3.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Aspectran</name>
@@ -94,6 +94,8 @@
         <module>with-jetty</module>
         <module>with-mybatis</module>
         <module>with-pebble</module>
+        <module>with-undertow</module>
+        <module>with-velocity</module>
         <module>demo</module>
     </modules>
 
@@ -176,6 +178,16 @@
             <dependency>
                 <groupId>com.aspectran</groupId>
                 <artifactId>aspectran-with-pebble</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.aspectran</groupId>
+                <artifactId>aspectran-with-undertow</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.aspectran</groupId>
+                <artifactId>aspectran-with-velocity</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
