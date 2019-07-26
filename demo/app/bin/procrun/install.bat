@@ -123,6 +123,10 @@ goto end
 
 :installed
 echo Service %SERVICE_NAME% created.
+if not exist "%SystemRoot%\System32\choice.exe" goto end
+%SystemRoot%\System32\choice.exe /C YN /N /M "Do you want to run Service Manager now [Y/N]? "
+if errorlevel 2 goto end
+start %SERVICE_NAME%.exe
 goto end
 
 :help
