@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.TreeSet;
 
 /**
- * <p>(This class is a member of the Spring Framework.)</p>
+ * <p>This class is a clone of org.springframework.http.MediaType</p>
  *
  * Represents an Internet Media Type, as defined in the HTTP specification.
  * <p>This class contain support for the q-parameters used in HTTP content negotiation.</p>

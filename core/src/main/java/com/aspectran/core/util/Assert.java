@@ -22,8 +22,8 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 /**
- * <p>(This class is a member of the Spring Framework.)</p>
- * <p>
+ * <p>This class is a clone of org.springframework.util.Assert</p>
+ *
  * Assertion utility class that assists in validating arguments.
  *
  * <p>Useful for identifying programmer errors early and clearly at runtime.</p>

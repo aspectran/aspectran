@@ -20,7 +20,7 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 /**
- * <p>(This class is a member of the Spring Framework.)</p>
+ * <p>This class is a clone of org.springframework.context.support.MessageSourceResourceBundle</p>
  *
  * Helper class that allows for accessing an Aspectran
  * {@link MessageSource} as a {@link ResourceBundle}.

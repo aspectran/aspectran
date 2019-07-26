@@ -20,8 +20,8 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * <p>(This class is a member of the Spring Framework.)</p>
- * <p>
+ * <p>This class is a clone of org.springframework.web.HttpMediaTypeException</p>
+ *
  * Abstract base for exceptions related to media types.
  * Adds a list of supported {@link MediaType MediaTypes}.
  *

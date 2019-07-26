@@ -24,7 +24,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * <p>(This class is a member of the Spring Framework.)</p>
+ * <p>This class is a clone of org.springframework.lang.NonNull</p>
  *
  * A common Aspectran annotation to declare that annotated elements cannot be {@code null}.
  *

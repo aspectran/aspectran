@@ -18,7 +18,7 @@ package com.aspectran.core.util;
 import java.util.Arrays;
 
 /**
- * <p>(This class is a member of the Spring Framework.)</p>
+ * <p>This class is a clone of org.springframework.util.ObjectUtils</p>
  *
  * Miscellaneous object utility methods.
  */

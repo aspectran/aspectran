@@ -18,7 +18,7 @@ package com.aspectran.web.support.http;
 import java.util.List;
 
 /**
- * <p>(This class is a member of the Spring Framework.)</p>
+ * <p>This class is a clone of org.springframework.web.HttpMediaTypeNotAcceptableException</p>
  *
  * Exception thrown when the request handler cannot generate a response that is acceptable by the client.
  *

@@ -22,7 +22,7 @@ import java.io.Reader;
 import java.util.Arrays;
 
 /**
- * <p>(This class is a member of Google's Gson Library.)</p>
+ * <p>This class is a clone of com.google.gson.stream.JsonReader</p>
  *
  * Reads a JSON (<a href="http://www.ietf.org/rfc/rfc7159.txt">RFC 7159</a>)
  * encoded value as a stream of tokens. This stream includes both literal

@@ -39,7 +39,7 @@ import java.util.ResourceBundle;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * <p>(This class is a member of the Spring Framework.)</p>
+ * <p>This class is a clone of org.springframework.context.support.ResourceBundleMessageSource</p>
  *
  * {@link MessageSource} implementation that
  * accesses resource bundles using specified basenames. This class relies
