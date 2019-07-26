@@ -17,6 +17,7 @@ package com.aspectran.freemarker;
 
 import com.aspectran.core.component.bean.aware.EnvironmentAware;
 import com.aspectran.core.context.env.Environment;
+import com.aspectran.core.util.PropertiesLoaderUtils;
 import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.logging.Log;
@@ -53,6 +54,8 @@ public class FreeMarkerConfigurationFactory implements EnvironmentAware {
 
     private Environment environment;
 
+    private String configLocation;
+
     private Properties freemarkerSettings;
 
     private Map<String, Object> freemarkerVariables;
@@ -68,6 +71,14 @@ public class FreeMarkerConfigurationFactory implements EnvironmentAware {
     @Override
     public void setEnvironment(Environment environment) {
         this.environment = environment;
+    }
+
+    /**
+     * Set the location of the Freemarker settings file.
+     * Alternatively, you can specify all properties locally.
+     */
+    public void setConfigLocation(String configLocation) {
+        this.configLocation = configLocation;
     }
 
     /**
@@ -220,6 +231,12 @@ public class FreeMarkerConfigurationFactory implements EnvironmentAware {
         Configuration config = newConfiguration();
         Properties props = new Properties();
 
+        // Load config file if set.
+        if (this.configLocation != null) {
+            log.info("Loading Freemarker settings from [" + this.configLocation + "]");
+            props.putAll(PropertiesLoaderUtils.loadProperties(this.configLocation));
+        }
+
         // Merge local properties if specified.
         if (this.freemarkerSettings != null) {
             props.putAll(this.freemarkerSettings);
@@ -231,7 +248,7 @@ public class FreeMarkerConfigurationFactory implements EnvironmentAware {
             config.setSettings(props);
         }
 
-        if (this.freemarkerVariables != null && freemarkerVariables.size() > 0) {
+        if (this.freemarkerVariables != null && !freemarkerVariables.isEmpty()) {
             config.setAllSharedVariables(new SimpleHash(this.freemarkerVariables, config.getObjectWrapper()));
         }
 

@@ -10,10 +10,10 @@
     <bean id="freemarkerConfigurationFactory" class="com.aspectran.freemarker.FreeMarkerConfigurationFactoryBean">
         <properties>
             <item name="freemarkerSettings" type="properties">
-                <entry name="incompatible_improvements">2.3.23</value>
-                <entry name="template_exception_handler">rethrow</value>
-                <entry name="default_encoding">UTF-8</value>
-                <entry name="number_format">0.####</value>
+                <entry name="incompatible_improvements">2.3.23</entry>
+                <entry name="template_exception_handler">rethrow</entry>
+                <entry name="default_encoding">UTF-8</entry>
+                <entry name="number_format">0.####</entry>
             </item>
             <item name="trimDirectives" valueType="parameters">
                 directive: {
