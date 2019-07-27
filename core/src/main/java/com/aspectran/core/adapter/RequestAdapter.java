@@ -428,19 +428,9 @@ public interface RequestAdapter {
      */
     void setTimeZone(TimeZone timeZone);
 
-    /**
-     * Returns whether request header has exceed the maximum length.
-     *
-     * @return true, if max length exceeded
-     */
-    boolean isMaxLengthExceeded();
+    long getMaxRequestSize();
 
-    /**
-     * Sets whether request header has exceed the maximum length.
-     *
-     * @param maxLengthExceeded whether the max length exceeded
-     */
-    void setMaxLengthExceeded(boolean maxLengthExceeded);
+    void setMaxRequestSize(long maxRequestSize);
 
     String getBody();
 

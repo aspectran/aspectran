@@ -98,12 +98,12 @@ public class AspectranShellService extends AbstractShellService {
             activity.prepare(transletName, requestMethod);
             activity.perform();
             translet = activity.getTranslet();
+        } catch (TransletNotFoundException e) {
+            throw e;
         } catch (ActivityTerminatedException e) {
             if (log.isDebugEnabled()) {
                 log.debug("Activity terminated: " + e.getMessage());
             }
-        } catch (TransletNotFoundException e) {
-            throw e;
         } catch (Exception e) {
             throw new AspectranServiceException("An error occurred while processing translet: " + transletName, e);
         } finally {

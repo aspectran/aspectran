@@ -16,6 +16,7 @@
 package com.aspectran.web.support.multipart.inmemory;
 
 import com.aspectran.core.activity.request.FileParameter;
+import com.aspectran.core.activity.request.SizeLimitExceededException;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.util.FilenameUtils;
 import com.aspectran.core.util.LinkedMultiValueMap;
@@ -27,8 +28,7 @@ import com.aspectran.web.activity.request.MultipartFormDataParser;
 import com.aspectran.web.activity.request.MultipartRequestParseException;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUpload;
-import org.apache.commons.fileupload.FileUploadBase.FileSizeLimitExceededException;
-import org.apache.commons.fileupload.FileUploadBase.SizeLimitExceededException;
+import org.apache.commons.fileupload.FileUploadBase;
 import org.apache.commons.fileupload.RequestContext;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
@@ -127,14 +127,14 @@ public class MemoryMultipartFormDataParser implements MultipartFormDataParser {
             try {
                 RequestContext requestContext = createRequestContext(requestAdapter.getAdaptee());
                 fileItemListMap = upload.parseParameterMap(requestContext);
-            } catch (SizeLimitExceededException e) {
-                log.warn("Maximum request length exceeded; multipart.maxRequestSize: " + maxRequestSize);
-                requestAdapter.setMaxLengthExceeded(true);
-                return;
-            } catch (FileSizeLimitExceededException e) {
-                log.warn("Maximum file length exceeded; multipart.maxFileSize: " + maxFileSize);
-                requestAdapter.setMaxLengthExceeded(true);
-                return;
+            } catch (FileUploadBase.SizeLimitExceededException e) {
+                throw new SizeLimitExceededException("Maximum request length exceeded; actual: " +
+                        e.getActualSize() + "; permitted: " + e.getPermittedSize(),
+                        e.getActualSize(), e.getPermittedSize());
+            } catch (FileUploadBase.FileSizeLimitExceededException e) {
+                throw new SizeLimitExceededException("Maximum file length exceeded; actual: " +
+                        e.getActualSize() + "; permitted: " + e.getPermittedSize(),
+                        e.getActualSize(), e.getPermittedSize());
             }
             parseMultipartParameters(fileItemListMap, requestAdapter);
         } catch (Exception e) {

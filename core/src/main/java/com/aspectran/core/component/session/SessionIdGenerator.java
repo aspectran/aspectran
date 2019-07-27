@@ -36,13 +36,13 @@ public class SessionIdGenerator {
 
     private final String groupName;
 
-    private Random random;
+    private final Random random;
 
     private boolean weakRandom;
 
     public SessionIdGenerator(String groupName) {
         this.groupName = groupName;
-        initRandom();
+        this.random = initRandom();
     }
 
     /**
@@ -89,13 +89,13 @@ public class SessionIdGenerator {
      *
      * By preference, use a SecureRandom but allow to be injected.
      */
-    private void initRandom() {
+    private Random initRandom() {
         try {
-            random = new SecureRandom();
+            return new SecureRandom();
         } catch (Exception e) {
             log.warn("Could not generate SecureRandom for session-id randomness", e);
-            random = new Random();
             weakRandom = true;
+            return new Random();
         }
     }
 

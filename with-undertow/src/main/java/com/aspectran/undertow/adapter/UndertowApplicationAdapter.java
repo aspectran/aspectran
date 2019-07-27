@@ -13,7 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.aspectran.undertow.adapter;
+
+import com.aspectran.core.adapter.ApplicationAdapter;
+import com.aspectran.core.adapter.BasicApplicationAdapter;
+
+import javax.servlet.ServletContext;
+
 /**
- * Add-on package for integrating Undertow.
+ * Adapt {@link ServletContext} to Core {@link ApplicationAdapter}.
+ * 
+ * @since 2011. 3. 13.
  */
-package com.aspectran.undertow;
+public class UndertowApplicationAdapter extends BasicApplicationAdapter {
+
+    /**
+     * Instantiates a new UndertowApplicationAdapter.
+     */
+    public UndertowApplicationAdapter() {
+        super(null);
+    }
+
+}

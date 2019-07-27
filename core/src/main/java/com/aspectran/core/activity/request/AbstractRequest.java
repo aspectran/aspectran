@@ -53,7 +53,7 @@ public abstract class AbstractRequest {
 
     private TimeZone timeZone;
 
-    private boolean maxLengthExceeded;
+    private long maxRequestSize;
 
     private String body;
 
@@ -172,7 +172,7 @@ public abstract class AbstractRequest {
     }
 
     /**
-     * Returns a map of the request parameters that can be modified.
+     * Returns all parameters as a mutable {@code Map<String, Object>}.
      *
      * @return an {@code Map<String, Object>} object, must not be {@code null}
      */
@@ -372,22 +372,12 @@ public abstract class AbstractRequest {
         this.timeZone = timeZone;
     }
 
-    /**
-     * Sets whether the maximum request length has been exceeded.
-     *
-     * @param maxLengthExceeded whether the maximum request length has been exceeded
-     */
-    public void setMaxLengthExceeded(boolean maxLengthExceeded) {
-        this.maxLengthExceeded = maxLengthExceeded;
+    public long getMaxRequestSize() {
+        return maxRequestSize;
     }
 
-    /**
-     * Returns whether the maximum request length has been exceeded.
-     *
-     * @return true if the maximum request length has been exceeded, otherwise false
-     */
-    public boolean isMaxLengthExceeded() {
-        return maxLengthExceeded;
+    public void setMaxRequestSize(long maxRequestSize) {
+        this.maxRequestSize = maxRequestSize;
     }
 
     public String getBody() {

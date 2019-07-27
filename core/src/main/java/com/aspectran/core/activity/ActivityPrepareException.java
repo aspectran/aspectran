@@ -27,31 +27,6 @@ public class ActivityPrepareException extends ActivityException {
 
     /**
      * Instantiates a new ActivityPrepareException.
-     */
-    public ActivityPrepareException() {
-        super();
-    }
-
-    /**
-     * Instantiates a new ActivityPrepareException.
-     *
-     * @param msg a message to associate with the exception
-     */
-    public ActivityPrepareException(String msg) {
-        super(msg);
-    }
-
-    /**
-     * Instantiates a new ActivityPrepareException.
-     *
-     * @param cause the real cause of the exception
-     */
-    public ActivityPrepareException(Throwable cause) {
-        super(cause);
-    }
-
-    /**
-     * Instantiates a new ActivityPrepareException.
      *
      * @param msg the message
      * @param cause the real cause of the exception

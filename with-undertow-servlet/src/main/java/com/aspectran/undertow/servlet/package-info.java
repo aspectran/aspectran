@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * Add-on package for integrating Undertow.
+ * Add-on package for integrating Undertow Servelt.
  */
-package com.aspectran.undertow;
+package com.aspectran.undertow.servlet;

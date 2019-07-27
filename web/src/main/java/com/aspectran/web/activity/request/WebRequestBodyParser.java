@@ -17,6 +17,8 @@ package com.aspectran.web.activity.request;
 
 import com.aspectran.core.activity.request.RequestBodyParser;
 import com.aspectran.core.activity.request.RequestParseException;
+import com.aspectran.core.activity.request.SizeLimitExceededException;
+import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.util.ClassUtils;
 import com.aspectran.core.util.LinkedMultiValueMap;
@@ -25,10 +27,8 @@ import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.apon.JsonToApon;
 import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.apon.XmlToApon;
-import com.aspectran.web.adapter.HttpServletRequestAdapter;
 import com.aspectran.web.support.http.MediaType;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -51,27 +51,34 @@ public class WebRequestBodyParser {
     private WebRequestBodyParser() {
     }
 
-    public static void parseBody(HttpServletRequestAdapter requestAdapter) {
-        try {
-            StringBuilder sb = new StringBuilder();
-            String encoding = requestAdapter.getEncoding();
-            if (encoding == null) {
-                encoding = DEFAULT_ENCODING;
-            }
-            InputStream is = ((HttpServletRequest)requestAdapter.getAdaptee()).getInputStream();
-            InputStreamReader reader = new InputStreamReader(is, encoding);
-            char[] buffer = new char[BUFFER_SIZE];
-            int bytesRead;
-            while ((bytesRead = reader.read(buffer)) != -1) {
-                sb.append(buffer, 0, bytesRead);
-            }
-            requestAdapter.setBody(sb.toString());
-        } catch (IOException e) {
-            requestAdapter.setBody(null);
-        }
+    public static String parseBody(InputStream inputStream, String encoding) throws IOException {
+        return parseBody(inputStream, encoding, 0L);
     }
 
-    public static void parseURLEncoded(HttpServletRequestAdapter requestAdapter) {
+    public static String parseBody(InputStream inputStream, String encoding, long maxSize) throws IOException {
+        StringBuilder sb = new StringBuilder();
+        if (encoding == null) {
+            encoding = DEFAULT_ENCODING;
+        }
+        InputStreamReader reader = new InputStreamReader(inputStream, encoding);
+        char[] buffer = new char[BUFFER_SIZE];
+        int bytesRead;
+        long bytesTotal = 0L;
+        while ((bytesRead = reader.read(buffer)) != -1) {
+            if (maxSize > 0L) {
+                bytesTotal += bytesRead;
+                if (bytesTotal > maxSize) {
+                    throw new SizeLimitExceededException("Maximum request size exceeded; actual: " +
+                            bytesTotal + "; permitted: " + maxSize,
+                            bytesTotal, maxSize);
+                }
+            }
+            sb.append(buffer, 0, bytesRead);
+        }
+        return sb.toString();
+    }
+
+    public static void parseURLEncoded(RequestAdapter requestAdapter) {
         try {
             String body = requestAdapter.getBody();
             String encoding = requestAdapter.getEncoding();
@@ -107,7 +114,7 @@ public class WebRequestBodyParser {
         }
     }
 
-    public static <T extends Parameters> T parseURLEncoded(HttpServletRequestAdapter requestAdapter, Class<T> requiredType) {
+    public static <T extends Parameters> T parseURLEncoded(RequestAdapter requestAdapter, Class<T> requiredType) {
         try {
             String encoding = requestAdapter.getEncoding();
             if (encoding == null) {
@@ -131,31 +138,29 @@ public class WebRequestBodyParser {
         return null;
     }
 
-    public static <T extends Parameters> T parseBodyAsParameters(HttpServletRequestAdapter requestAdapter,
+    public static <T extends Parameters> T parseBodyAsParameters(RequestAdapter requestAdapter, MediaType mediaType,
                                                                  Class<T> requiredType) {
-        MediaType mediaType = requestAdapter.getMediaType();
-        if (mediaType != null) {
-            if (isURLEncodedForm(mediaType)) {
-                return parseURLEncoded(requestAdapter, requiredType);
-            } else if (MediaType.APPLICATION_JSON.equalsTypeAndSubtype(mediaType)) {
-                try {
-                    return JsonToApon.from(requestAdapter.getBody(), requiredType);
-                } catch (IOException e) {
-                    throw new RequestParseException("Failed to parse request body of JSON format to required type [" +
-                        requiredType.getName() + "]", e);
-                }
-            } else if (MediaType.APPLICATION_APON.equalsTypeAndSubtype(mediaType)) {
-                return RequestBodyParser.parseBodyAsParameters(requestAdapter.getBody(), requiredType);
-            } else if (MediaType.APPLICATION_XML.equalsTypeAndSubtype(mediaType)) {
-                try {
-                    return XmlToApon.from(requestAdapter.getBody(), requiredType);
-                } catch (IOException e) {
-                    throw new RequestParseException("Failed to parse request body of XML format to required type [" +
-                            requiredType.getName() + "]", e);
-                }
+        if (isURLEncodedForm(mediaType)) {
+            return parseURLEncoded(requestAdapter, requiredType);
+        } else if (MediaType.APPLICATION_JSON.equalsTypeAndSubtype(mediaType)) {
+            try {
+                return JsonToApon.from(requestAdapter.getBody(), requiredType);
+            } catch (IOException e) {
+                throw new RequestParseException("Failed to parse request body of JSON format to required type [" +
+                    requiredType.getName() + "]", e);
             }
+        } else if (MediaType.APPLICATION_APON.equalsTypeAndSubtype(mediaType)) {
+            return RequestBodyParser.parseBodyAsParameters(requestAdapter.getBody(), requiredType);
+        } else if (MediaType.APPLICATION_XML.equalsTypeAndSubtype(mediaType)) {
+            try {
+                return XmlToApon.from(requestAdapter.getBody(), requiredType);
+            } catch (IOException e) {
+                throw new RequestParseException("Failed to parse request body of XML format to required type [" +
+                        requiredType.getName() + "]", e);
+            }
+        } else {
+            return null;
         }
-        return null;
     }
     
     public static boolean isMultipartForm(MethodType requestMethod, MediaType mediaType) {

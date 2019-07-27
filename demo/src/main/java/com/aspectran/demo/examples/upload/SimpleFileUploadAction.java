@@ -88,31 +88,30 @@ public class SimpleFileUploadAction {
     @Transform(TransformType.JSON)
     @Action("files")
     public Collection<UploadedFile> upload(Translet translet) throws IOException {
-        if (!translet.getRequestAdapter().isMaxLengthExceeded()) {
-            FileParameter fileParameter = translet.getFileParameter("file");
-            if (fileParameter != null) {
-                String key = UUID.randomUUID().toString();
-                String ext = FilenameUtils.getExtension(fileParameter.getFileName());
-                if (StringUtils.hasLength(ext)) {
-                    key += "." + ext.toLowerCase();
-                }
-                UploadedFile uploadedFile = new UploadedFile();
-                uploadedFile.setKey(key);
-                uploadedFile.setFileName(fileParameter.getFileName());
-                uploadedFile.setFileSize(fileParameter.getFileSize());
-                uploadedFile.setHumanFileSize(StringUtils.convertToHumanFriendlyByteSize(fileParameter.getFileSize()));
-                uploadedFile.setFileType((fileParameter.getContentType()));
-                uploadedFile.setUrl("/examples/file-upload/files/" + key);
-                uploadedFile.setBytes(fileParameter.getBytes());
-
-                addUploadedFile(uploadedFile);
-
-                List<UploadedFile> files = new ArrayList<>();
-                files.add(uploadedFile);
-                return files;
+        FileParameter fileParameter = translet.getFileParameter("file");
+        if (fileParameter != null) {
+            String key = UUID.randomUUID().toString();
+            String ext = FilenameUtils.getExtension(fileParameter.getFileName());
+            if (StringUtils.hasLength(ext)) {
+                key += "." + ext.toLowerCase();
             }
+            UploadedFile uploadedFile = new UploadedFile();
+            uploadedFile.setKey(key);
+            uploadedFile.setFileName(fileParameter.getFileName());
+            uploadedFile.setFileSize(fileParameter.getFileSize());
+            uploadedFile.setHumanFileSize(StringUtils.convertToHumanFriendlyByteSize(fileParameter.getFileSize()));
+            uploadedFile.setFileType((fileParameter.getContentType()));
+            uploadedFile.setUrl("/examples/file-upload/files/" + key);
+            uploadedFile.setBytes(fileParameter.getBytes());
+
+            addUploadedFile(uploadedFile);
+
+            List<UploadedFile> files = new ArrayList<>();
+            files.add(uploadedFile);
+            return files;
+        } else {
+            return null;
         }
-        return null;
     }
 
     @RequestToGet("/files/${key}")

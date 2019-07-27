@@ -53,8 +53,6 @@ import com.aspectran.core.support.i18n.locale.LocaleResolver;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
-import java.util.Set;
-
 /**
  * Core activity that handles all external requests.
  *
@@ -74,8 +72,6 @@ public class CoreActivity extends AdviceActivity {
     private Response desiredResponse;
 
     private boolean committed;
-
-    private Set<Integer> processedChooses;
 
     /**
      * Instantiates a new CoreActivity.

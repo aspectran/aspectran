@@ -28,27 +28,11 @@ public class ProcessException extends ActivityException {
     private static final long serialVersionUID = 7290974002627109441L;
 
     /**
-     * Simple constructor.
-     */
-    public ProcessException() {
-        super();
-    }
-
-    /**
      * Constructor to create exception with a message.
      * @param msg a message to associate with the exception
      */
     public ProcessException(String msg) {
         super(msg);
-    }
-
-    /**
-     * Constructor to create exception to wrap another exception.
-     *
-     * @param cause the real cause of the exception
-     */
-    public ProcessException(Throwable cause) {
-        super(cause);
     }
 
     /**

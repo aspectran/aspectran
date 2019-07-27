@@ -27,31 +27,6 @@ public class ActivityPerformException extends ActivityException {
 
     /**
      * Instantiates a new ActivityPerformException.
-     */
-    public ActivityPerformException() {
-        super();
-    }
-
-    /**
-     * Instantiates a new ActivityPerformException.
-     *
-     * @param msg a message to associate with the exception
-     */
-    public ActivityPerformException(String msg) {
-        super(msg);
-    }
-
-    /**
-     * Instantiates a new ActivityPerformException.
-     *
-     * @param cause the real cause of the exception
-     */
-    public ActivityPerformException(Throwable cause) {
-        super(cause);
-    }
-
-    /**
-     * Instantiates a new ActivityPerformException.
      *
      * @param msg the message
      * @param cause the real cause of the exception

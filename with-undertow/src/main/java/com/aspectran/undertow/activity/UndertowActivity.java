@@ -1,19 +1,4 @@
-/*
- * Copyright (c) 2008-2019 The Aspectran Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-package com.aspectran.web.activity;
+package com.aspectran.undertow.activity;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.ActivityTerminatedException;
@@ -24,61 +9,52 @@ import com.aspectran.core.activity.request.RequestMethodNotAllowedException;
 import com.aspectran.core.activity.request.RequestParseException;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
-import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.RequestRule;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.support.i18n.locale.LocaleChangeInterceptor;
 import com.aspectran.core.support.i18n.locale.LocaleResolver;
 import com.aspectran.core.util.StringUtils;
-import com.aspectran.web.activity.request.ActivityRequestWrapper;
+import com.aspectran.undertow.adapter.UndertowRequestAdapter;
+import com.aspectran.undertow.adapter.UndertowResponseAdapter;
 import com.aspectran.web.activity.request.MultipartFormDataParser;
 import com.aspectran.web.activity.request.MultipartRequestParseException;
 import com.aspectran.web.activity.request.WebRequestBodyParser;
 import com.aspectran.web.adapter.HttpServletRequestAdapter;
-import com.aspectran.web.adapter.HttpServletResponseAdapter;
-import com.aspectran.web.adapter.HttpSessionAdapter;
 import com.aspectran.web.support.http.HttpHeaders;
 import com.aspectran.web.support.http.HttpStatus;
 import com.aspectran.web.support.http.MediaType;
+import io.undertow.server.HttpServerExchange;
+import io.undertow.util.Headers;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.UnsupportedEncodingException;
 
 /**
- * An activity that processes a web request.
- *
- * @since 2008. 4. 28.
+ * <p>Created: 2019-07-27</p>
  */
-public class WebActivity extends CoreActivity {
+public class UndertowActivity extends CoreActivity {
 
     private static final String MULTIPART_FORM_DATA_PARSER_SETTING_NAME = "multipartFormDataParser";
 
     private static final String MAX_REQUEST_SIZE_SETTING_NAME = "maxRequestSize";
 
-    private final HttpServletRequest request;
-
-    private final HttpServletResponse response;
+    private final HttpServerExchange exchange;
 
     /**
-     * Instantiates a new WebActivity.
+     * Instantiates a new UndertowActivity.
      *
-     * @param context the current ActivityContext
-     * @param request the HTTP request
-     * @param response the HTTP response
+     * @param context the activity context
      */
-    public WebActivity(ActivityContext context, HttpServletRequest request, HttpServletResponse response) {
+    public UndertowActivity(ActivityContext context, HttpServerExchange exchange) {
         super(context);
-        this.request = request;
-        this.response = response;
+        this.exchange = exchange;
     }
 
     @Override
     public void prepare(String transletName, MethodType requestMethod) {
         // Check for HTTP POST with the X-HTTP-Method-Override header
         if (requestMethod == MethodType.POST) {
-            String method = request.getHeader(HttpHeaders.X_METHOD_OVERRIDE);
+            String method = exchange.getRequestHeaders().getFirst(HttpHeaders.X_METHOD_OVERRIDE);
             if (method != null) {
                 // Check if the header value is in our methods list
                 MethodType hiddenRequestMethod = MethodType.resolve(method);
@@ -96,9 +72,9 @@ public class WebActivity extends CoreActivity {
                     !StringUtils.endsWith(transletName, ActivityContext.NAME_SEPARATOR_CHAR)) {
                 String transletName2 = transletName + ActivityContext.NAME_SEPARATOR_CHAR;
                 if (getActivityContext().getTransletRuleRegistry().contains(transletName2, requestMethod)) {
-                    response.setStatus(HttpStatus.MOVED_PERMANENTLY.value());
-                    response.setHeader(HttpHeaders.LOCATION, transletName2);
-                    response.setHeader(HttpHeaders.CONNECTION, "close");
+                    exchange.setStatusCode(HttpStatus.MOVED_PERMANENTLY.value());
+                    exchange.getResponseHeaders().put(Headers.LOCATION, transletName2);
+                    exchange.getResponseHeaders().put(Headers.CONNECTION, "close");
                     throw new ActivityTerminatedException("Provides for \"trailing slash\" redirects and " +
                             "serving directory index files");
                 }
@@ -110,18 +86,14 @@ public class WebActivity extends CoreActivity {
     @Override
     protected void adapt() throws AdapterException {
         try {
-            SessionAdapter sessionAdapter = new HttpSessionAdapter(request, getActivityContext());
-            setSessionAdapter(sessionAdapter);
+//            SessionAdapter sessionAdapter = new UndertowSessionAdapter(exchange, getActivityContext());
+//            setSessionAdapter(sessionAdapter);
 
-            RequestAdapter requestAdapter = new HttpServletRequestAdapter(request);
+            RequestAdapter requestAdapter = new UndertowRequestAdapter(exchange);
             setRequestAdapter(requestAdapter);
 
-            ResponseAdapter responseAdapter = new HttpServletResponseAdapter(response, this);
+            ResponseAdapter responseAdapter = new UndertowResponseAdapter(exchange, this);
             setResponseAdapter(responseAdapter);
-
-            if (request instanceof ActivityRequestWrapper) {
-                ((ActivityRequestWrapper)request).setWebActivity(this);
-            }
 
             super.adapt();
         } catch (Exception e) {
@@ -208,7 +180,7 @@ public class WebActivity extends CoreActivity {
     @Override
     @SuppressWarnings("unchecked")
     public <T extends Activity> T newActivity() {
-        WebActivity activity = new WebActivity(getActivityContext(), request, response);
+        UndertowActivity activity = new UndertowActivity(getActivityContext(), exchange);
         activity.setIncluded(true);
         return (T)activity;
     }

@@ -16,9 +16,11 @@
 package com.aspectran.web.service;
 
 import com.aspectran.core.activity.Activity;
+import com.aspectran.core.activity.ActivityException;
 import com.aspectran.core.activity.ActivityTerminatedException;
 import com.aspectran.core.activity.TransletNotFoundException;
 import com.aspectran.core.activity.request.RequestMethodNotAllowedException;
+import com.aspectran.core.activity.request.SizeLimitExceededException;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.config.ContextConfig;
@@ -127,17 +129,25 @@ public class AspectranWebService extends AspectranCoreService implements WebServ
                     response.sendError(HttpServletResponse.SC_NOT_FOUND);
                 }
             } catch (Exception e2) {
+                log.error(e2.getMessage(), e2);
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-                log.error(e.getMessage(), e2);
             }
-        } catch (RequestMethodNotAllowedException e) {
-            if (log.isDebugEnabled()) {
-                log.debug(e.getMessage());
-            }
-            response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
         } catch (ActivityTerminatedException e) {
             if (log.isDebugEnabled()) {
                 log.debug("Activity terminated: " + e.getMessage());
+            }
+        } catch (ActivityException e) {
+            if (e.getCause() != null) {
+                log.error(e.getCause().getMessage(), e.getCause());
+            } else {
+                log.error(e.getMessage(), e);
+            }
+            if (e.getCause() instanceof RequestMethodNotAllowedException) {
+                response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+            } else if (e.getCause() instanceof SizeLimitExceededException) {
+                response.sendError(HttpServletResponse.SC_REQUEST_ENTITY_TOO_LARGE);
+            } else {
+                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             }
         } catch (Exception e) {
             log.error("An error occurred while processing request: " + requestUri, e);

@@ -46,7 +46,7 @@ public class RedirectResponse implements Response {
     }
 
     @Override
-    public void commit(Activity activity) throws ResponseException {
+    public void commit(Activity activity) {
         ResponseAdapter responseAdapter = activity.getResponseAdapter();
         if (responseAdapter == null) {
             return;

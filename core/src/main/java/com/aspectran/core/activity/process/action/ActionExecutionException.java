@@ -30,28 +30,12 @@ public class ActionExecutionException extends ProcessException {
     private Executable action;
 
     /**
-     * Simple constructor.
-     */
-    public ActionExecutionException() {
-        super();
-    }
-
-    /**
      * Constructor to create exception with a message.
      *
      * @param msg a message to associate with the exception
      */
     public ActionExecutionException(String msg) {
         super(msg);
-    }
-
-    /**
-     * Constructor to create exception to wrap another exception.
-     *
-     * @param cause the real cause of the exception
-     */
-    public ActionExecutionException(Throwable cause) {
-        super(cause);
     }
 
     /**

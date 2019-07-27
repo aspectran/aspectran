@@ -16,6 +16,7 @@
 package com.aspectran.web.support.multipart.commons;
 
 import com.aspectran.core.activity.request.FileParameter;
+import com.aspectran.core.activity.request.SizeLimitExceededException;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.util.FilenameUtils;
 import com.aspectran.core.util.LinkedMultiValueMap;
@@ -132,20 +133,18 @@ public class CommonsMultipartFormDataParser implements MultipartFormDataParser {
             }
 
             Map<String, List<FileItem>> fileItemListMap;
-
             try {
                 RequestContext requestContext = createRequestContext(requestAdapter.getAdaptee());
                 fileItemListMap = upload.parseParameterMap(requestContext);
             } catch (FileUploadBase.SizeLimitExceededException e) {
-                log.warn("Maximum request length exceeded; multipart.maxRequestSize: " + maxRequestSize);
-                requestAdapter.setMaxLengthExceeded(true);
-                return;
+                throw new SizeLimitExceededException("Maximum request length exceeded; actual: " +
+                        e.getActualSize() + "; permitted: " + e.getPermittedSize(),
+                        e.getActualSize(), e.getPermittedSize());
             } catch (FileUploadBase.FileSizeLimitExceededException e) {
-                log.warn("Maximum file length exceeded; multipart.maxFileSize: " + maxFileSize);
-                requestAdapter.setMaxLengthExceeded(true);
-                return;
+                throw new SizeLimitExceededException("Maximum file length exceeded; actual: " +
+                        e.getActualSize() + "; permitted: " + e.getPermittedSize(),
+                        e.getActualSize(), e.getPermittedSize());
             }
-
             parseMultipartParameters(fileItemListMap, requestAdapter);
         } catch (Exception e) {
             throw new MultipartRequestParseException("Could not parse multipart servlet request", e);

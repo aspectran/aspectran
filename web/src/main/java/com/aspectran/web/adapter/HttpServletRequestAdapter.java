@@ -26,6 +26,7 @@ import com.aspectran.web.activity.request.WebRequestBodyParser;
 import com.aspectran.web.support.http.MediaType;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Enumeration;
 import java.util.Map;
@@ -37,9 +38,11 @@ import java.util.Map;
  */
 public class HttpServletRequestAdapter extends AbstractRequestAdapter {
 
-    private MediaType mediaType;
+    private volatile boolean headersObtained;
 
-    private volatile boolean headersHeld;
+    private volatile boolean bodyObtained;
+
+    private MediaType mediaType;
 
     /**
      * Instantiates a new HttpServletRequestAdapter.
@@ -54,8 +57,8 @@ public class HttpServletRequestAdapter extends AbstractRequestAdapter {
 
     @Override
     public MultiValueMap<String, String> getHeaderMap() {
-        if (!headersHeld) {
-            headersHeld = true;
+        if (!headersObtained) {
+            headersObtained = true;
             Enumeration<String> headerNames = getHttpServletRequest().getHeaderNames();
             if (headerNames.hasMoreElements()) {
                 MultiValueMap<String, String> headers = super.getHeaderMap();
@@ -84,15 +87,25 @@ public class HttpServletRequestAdapter extends AbstractRequestAdapter {
 
     @Override
     public String getBody() {
-        if (super.getBody() == null) {
-            WebRequestBodyParser.parseBody(this);
+        if (!bodyObtained) {
+            bodyObtained = true;
+            try {
+                WebRequestBodyParser.parseBody(((HttpServletRequest)getAdaptee()).getInputStream(), getEncoding(),
+                        getMaxRequestSize());
+            } catch (IOException e) {
+                setBody(null);
+            }
         }
         return super.getBody();
     }
 
     @Override
     public <T extends Parameters> T getBodyAsParameters(Class<T> requiredType) {
-        return WebRequestBodyParser.parseBodyAsParameters(this, requiredType);
+        if (getMediaType() != null) {
+            return WebRequestBodyParser.parseBodyAsParameters(this, getMediaType(), requiredType);
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -116,14 +129,18 @@ public class HttpServletRequestAdapter extends AbstractRequestAdapter {
 
     private void preparse(HttpServletRequest request) {
         setAttributeMap(new RequestAttributeMap(request));
+
         Map<String, String[]> parameters = request.getParameterMap();
         if (!parameters.isEmpty()) {
             getParameterMap().putAll(parameters);
         }
+
         setRequestMethod(MethodType.resolve(request.getMethod()));
+
         if (request.getContentType() != null) {
             setMediaType(MediaType.parseMediaType(request.getContentType()));
         }
+
         setLocale(request.getLocale());
     }
 

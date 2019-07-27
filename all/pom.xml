@@ -116,7 +116,7 @@
         </dependency>
         <dependency>
             <groupId>com.aspectran</groupId>
-            <artifactId>aspectran-with-velocity</artifactId>
+            <artifactId>aspectran-with-undertow-servlet</artifactId>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
@@ -400,8 +400,8 @@
                             <packages>com.aspectran.undertow*</packages>
                         </group>
                         <group>
-                            <title>Aspectran with Velocity</title>
-                            <packages>com.aspectran.velocity*</packages>
+                            <title>Aspectran with Undertow Servlet</title>
+                            <packages>com.aspectran.undertow.servlet*</packages>
                         </group>
                     </groups>
                     <stylesheetfile>${project.basedir}/src/main/javadoc/stylesheet.css</stylesheetfile>

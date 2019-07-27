@@ -262,6 +262,7 @@ public class TransletRuleRegistry extends AbstractComponent {
             transletRule.setResponseRule(responseRuleList.get(0));
             saveTransletRule(transletRule);
         } else {
+            // Grouped translets
             ResponseRule defaultResponseRule = null;
             for (ResponseRule responseRule : responseRuleList) {
                 String responseName = responseRule.getName();
@@ -473,7 +474,7 @@ public class TransletRuleRegistry extends AbstractComponent {
         etcTransletRuleSet.clear();
     }
 
-    class WeightComparator implements Comparator<TransletRule> {
+    static class WeightComparator implements Comparator<TransletRule> {
 
         @Override
         public int compare(TransletRule tr1, TransletRule tr2) {

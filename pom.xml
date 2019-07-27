@@ -95,7 +95,7 @@
         <module>with-mybatis</module>
         <module>with-pebble</module>
         <module>with-undertow</module>
-        <module>with-velocity</module>
+        <module>with-undertow-servlet</module>
         <module>demo</module>
     </modules>
 
@@ -187,7 +187,7 @@
             </dependency>
             <dependency>
                 <groupId>com.aspectran</groupId>
-                <artifactId>aspectran-with-velocity</artifactId>
+                <artifactId>aspectran-with-undertow-servlet</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
