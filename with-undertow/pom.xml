@@ -40,7 +40,6 @@
     <properties>
         <main.basedir>${project.parent.basedir}</main.basedir>
         <undertow.version>2.0.22.Final</undertow.version>
-        <jastow.version>2.1.0.Final</jastow.version>
     </properties>
 
     <dependencies>
@@ -54,16 +53,6 @@
             <artifactId>undertow-core</artifactId>
             <version>${undertow.version}</version>
         </dependency>
-        <dependency>
-            <groupId>io.undertow</groupId>
-            <artifactId>undertow-servlet</artifactId>
-            <version>${undertow.version}</version>
-        </dependency>
-		<dependency>
-			<groupId>io.undertow.jastow</groupId>
-			<artifactId>jastow</artifactId>
-			<version>${jastow.version}</version>
-		</dependency>
         <!-- Test dependencies -->
         <dependency>
             <groupId>com.aspectran</groupId>
@@ -94,12 +83,6 @@
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
             <version>4.5.9</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>2.6</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

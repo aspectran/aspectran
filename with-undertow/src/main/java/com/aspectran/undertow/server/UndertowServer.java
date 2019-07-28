@@ -8,7 +8,7 @@ import io.undertow.Undertow;
 import io.undertow.server.HttpHandler;
 
 /**
- *  * The Undertow Server managed by Aspectran.
+ * The Undertow Server managed by Aspectran.
  *
  * @since 6.3.0
  */

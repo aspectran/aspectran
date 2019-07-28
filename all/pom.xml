@@ -114,21 +114,10 @@
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
-        <dependency>
-            <groupId>com.aspectran</groupId>
-            <artifactId>aspectran-with-undertow-servlet</artifactId>
-            <scope>compile</scope>
-            <optional>true</optional>
-        </dependency>
         <!-- Add optional dependencies explicitly for aspectran-web -->
         <dependency>
             <groupId>commons-fileupload</groupId>
             <artifactId>commons-fileupload</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
             <optional>true</optional>
         </dependency>
         <dependency>
@@ -193,7 +182,6 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.awaitility</groupId>
@@ -398,10 +386,6 @@
                         <group>
                             <title>Aspectran with Undertow</title>
                             <packages>com.aspectran.undertow*</packages>
-                        </group>
-                        <group>
-                            <title>Aspectran with Undertow Servlet</title>
-                            <packages>com.aspectran.undertow.servlet*</packages>
                         </group>
                     </groups>
                     <stylesheetfile>${project.basedir}/src/main/javadoc/stylesheet.css</stylesheetfile>

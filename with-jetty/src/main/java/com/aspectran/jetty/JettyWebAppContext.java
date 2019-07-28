@@ -19,6 +19,7 @@ import com.aspectran.core.component.bean.ablility.InitializableBean;
 import com.aspectran.core.component.bean.aware.ActivityContextAware;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.service.CoreService;
+import com.aspectran.core.util.Assert;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.web.service.AspectranWebService;
@@ -75,8 +76,12 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
 
     @Override
     public void initialize() throws Exception {
-        if (context == null) {
-            throw new IllegalStateException();
+        Assert.notNull(context, "context must not be null");
+
+        if (!standalone) {
+            CoreService rootService = context.getRootService();
+            WebService webService = AspectranWebService.create(getServletContext(), rootService);
+            setAttribute(WebService.ROOT_WEB_SERVICE_ATTRIBUTE, webService);
         }
 
         ClassLoader parent = context.getEnvironment().getClassLoader();
@@ -91,12 +96,6 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
         setAttribute("org.eclipse.jetty.containerInitializers", jspInitializers());
         setAttribute(InstanceManager.class.getName(), new SimpleInstanceManager());
         addBean(new ServletContainerInitializersStarter(this), true);
-
-        if (!standalone) {
-            CoreService rootService = context.getRootService();
-            WebService webService = AspectranWebService.create(getServletContext(), rootService);
-            setAttribute(WebService.ROOT_WEB_SERVICE_ATTRIBUTE, webService);
-        }
     }
 
     private List<ContainerInitializer> jspInitializers() {

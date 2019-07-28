@@ -95,7 +95,6 @@
         <module>with-mybatis</module>
         <module>with-pebble</module>
         <module>with-undertow</module>
-        <module>with-undertow-servlet</module>
         <module>demo</module>
     </modules>
 
@@ -186,11 +185,6 @@
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.aspectran</groupId>
-                <artifactId>aspectran-with-undertow-servlet</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>org.javassist</groupId>
                 <artifactId>javassist</artifactId>
                 <version>3.25.0-GA</version>
@@ -219,11 +213,6 @@
                 <groupId>commons-fileupload</groupId>
                 <artifactId>commons-fileupload</artifactId>
                 <version>1.4</version>
-            </dependency>
-            <dependency>
-                <groupId>commons-io</groupId>
-                <artifactId>commons-io</artifactId>
-                <version>2.6</version>
             </dependency>
             <dependency>
                 <groupId>javax.servlet</groupId>

@@ -15,14 +15,9 @@
  */
 package com.aspectran.undertow.adapter;
 
-import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.adapter.BasicApplicationAdapter;
 
-import javax.servlet.ServletContext;
-
 /**
- * Adapt {@link ServletContext} to Core {@link ApplicationAdapter}.
- * 
  * @since 2011. 3. 13.
  */
 public class UndertowApplicationAdapter extends BasicApplicationAdapter {
