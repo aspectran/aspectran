@@ -18,7 +18,7 @@ package com.aspectran.core.util.json;
 import java.io.IOException;
 
 /**
- * <p>(This class is a member of Google's Gson Library.)</p>
+ * <p>This class is a clone of com.google.gson.stream.MalformedJsonException</p>
  *
  * Thrown when a reader encounters malformed JSON. Some syntax errors can be
  * ignored by calling {@link JsonReader#setLenient(boolean)}.

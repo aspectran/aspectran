@@ -24,7 +24,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * <p>(This class is a member of the Spring Framework.)</p>
+ * <p>This class is a clone of org.springframework.lang.NonNullFields</p>
  *
  * A common Aspectran annotation to declare that fields are to be considered as
  * non-nullable by default for a given package.

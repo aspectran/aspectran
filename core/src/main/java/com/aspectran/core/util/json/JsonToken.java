@@ -16,7 +16,7 @@
 package com.aspectran.core.util.json;
 
 /**
- * <p>(This class is a member of Google's Gson Library.)</p>
+ * <p>This class is a clone of com.google.gson.stream.JsonToken</p>
  *
  * A structure, name or value type in a JSON-encoded string.
  *

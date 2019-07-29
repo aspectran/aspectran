@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 /**
- * <p>(This class is a member of the Spring Framework.)</p>
+ * <p>This class is a clone of org.springframework.lang.package-info</p>
  *
  * Common annotations with language-level semantics: nullability as well as JDK API indications.
  * These annotations sit at the lowest level of Aspectran's package dependency arrangement, even

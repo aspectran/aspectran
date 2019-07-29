@@ -338,21 +338,21 @@ public class FreeMarkerConfigurationFactory implements EnvironmentAware {
             String basePackagePath = templateLoaderPath.substring(ResourceUtils.CLASSPATH_URL_PREFIX.length());
             if (log.isDebugEnabled()) {
                 log.debug("Template loader path [" + templateLoaderPath +
-                        "] resolved to class path [" + basePackagePath + "]");
+                    "] resolved to class path [" + basePackagePath + "]");
             }
             return new ClassTemplateLoader(environment.getClassLoader(), basePackagePath);
         } else if (templateLoaderPath.startsWith(ResourceUtils.FILE_URL_PREFIX)) {
             File file = new File(templateLoaderPath.substring(ResourceUtils.FILE_URL_PREFIX.length()));
             if (log.isDebugEnabled()) {
                 log.debug("Template loader path [" + templateLoaderPath +
-                        "] resolved to file path [" + file.getAbsolutePath() + "]");
+                    "] resolved to file path [" + file.getAbsolutePath() + "]");
             }
             return new FileTemplateLoader(file);
         } else {
             File file = new File(environment.getBasePath(), templateLoaderPath);
             if (log.isDebugEnabled()) {
                 log.debug("Template loader path [" + templateLoaderPath +
-                        "] resolved to file path [" + file.getAbsolutePath() + "]");
+                    "] resolved to file path [" + file.getAbsolutePath() + "]");
             }
             return new FileTemplateLoader(file);
         }

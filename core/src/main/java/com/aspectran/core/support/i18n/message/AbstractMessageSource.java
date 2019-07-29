@@ -20,7 +20,7 @@ import java.util.Locale;
 import java.util.Properties;
 
 /**
- * <p>(This class is a member of the Spring Framework.)</p>
+ * <p>This class is a clone of org.springframework.context.support.AbstractMessageSource</p>
  *
  * Abstract implementation of the {@link HierarchicalMessageSource} interface,
  * implementing common handling of message variants, making it easy

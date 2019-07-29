@@ -17,6 +17,7 @@ package com.aspectran.jetty;
 
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.context.config.AspectranConfig;
+import com.aspectran.core.util.FileCopyUtils;
 import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.embed.service.EmbeddedAspectran;
 import org.apache.http.HttpResponse;

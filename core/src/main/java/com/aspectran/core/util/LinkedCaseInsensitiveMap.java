@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * <p>(This class is a member of the Spring Framework.)</p>
+ * <p>This class is a clone of org.springframework.util.LinkedCaseInsensitiveMap</p>
  *
  * {@link LinkedHashMap} variant that stores String keys in a case-insensitive
  * manner, for example for key-based access in a results table.
