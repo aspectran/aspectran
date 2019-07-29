@@ -17,9 +17,9 @@ package com.aspectran.jetty;
 
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.context.config.AspectranConfig;
+import com.aspectran.core.util.FileCopyUtils;
 import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.embed.service.EmbeddedAspectran;
-import org.apache.commons.io.FileUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -46,7 +46,7 @@ class JettyServerTest {
         String basePath = new File("target").getCanonicalPath();
         File configFile = ResourceUtils.getResourceAsFile("config/aspectran-config.apon");
 
-        FileUtils.copyDirectory(ResourceUtils.getResourceAsFile("webapps"), new File(basePath, "webapps"));
+        FileCopyUtils.copyDirectory(ResourceUtils.getResourceAsFile("webapps"), new File(basePath, "webapps"));
 
         AspectranConfig aspectranConfig = new AspectranConfig(configFile);
         aspectranConfig.touchContextConfig()
