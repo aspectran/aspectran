@@ -123,6 +123,9 @@ public class BasicResponseAdapter extends AbstractResponseAdapter {
      */
     @Override
     public void setHeader(String name, String value) {
+        if (name == null) {
+            throw new IllegalArgumentException("Header name must not be null");
+        }
         touchHeaders().set(name, value);
     }
 
@@ -135,6 +138,9 @@ public class BasicResponseAdapter extends AbstractResponseAdapter {
      */
     @Override
     public void addHeader(String name, String value) {
+        if (name == null) {
+            throw new IllegalArgumentException("Header name must not be null");
+        }
         touchHeaders().add(name, value);
     }
 

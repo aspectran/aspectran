@@ -22,11 +22,11 @@ import java.util.Map;
  */
 public class UndertowRequestAdapter extends AbstractRequestAdapter {
 
-    private volatile boolean headersObtained;
+    private boolean headersObtained;
 
-    private volatile boolean encodingObtained;
+    private boolean encodingObtained;
 
-    private volatile boolean bodyObtained;
+    private boolean bodyObtained;
 
     private MediaType mediaType;
 
