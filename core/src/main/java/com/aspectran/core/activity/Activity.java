@@ -34,7 +34,7 @@ import java.util.List;
 
 /**
  * The Interface Activity.
- * 
+ *
  * <p>Created: 2008. 03. 22 PM 5:48:09</p>
  */
 public interface Activity {
@@ -285,6 +285,8 @@ public interface Activity {
      * @return the activity object
      */
     <T extends Activity> T newActivity();
+
+    <T extends Activity> T getOuterActivity();
 
     /**
      * Return an instance of the bean that matches the given id.

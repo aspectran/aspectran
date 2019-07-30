@@ -52,6 +52,8 @@ public class DefaultEmbeddedAspectran extends AspectranCoreService implements Em
 
     private SessionManager sessionManager;
 
+    private SessionAgent sessionAgent;
+
     private volatile long pauseTimeout = -1L;
 
     public DefaultEmbeddedAspectran() {
@@ -63,14 +65,13 @@ public class DefaultEmbeddedAspectran extends AspectranCoreService implements Em
     @Override
     public void afterContextLoaded() throws Exception {
         sessionManager = new DefaultSessionManager(getActivityContext());
-        sessionManager.setGroupName("EM");
-
+        sessionManager.setWorkerName("EM" + this.hashCode() + "_");
         SessionConfig sessionConfig = getAspectranConfig().getSessionConfig();
         if (sessionConfig != null) {
             sessionManager.setSessionConfig(sessionConfig);
         }
-
         sessionManager.initialize();
+        sessionAgent = sessionManager.newSessionAgent();
     }
 
     @Override
@@ -81,8 +82,7 @@ public class DefaultEmbeddedAspectran extends AspectranCoreService implements Em
 
     @Override
     public SessionAdapter newSessionAdapter() {
-        SessionAgent agent = sessionManager.newSessionAgent();
-        return new AspectranSessionAdapter(agent);
+        return new AspectranSessionAdapter(sessionAgent);
     }
 
     @Override

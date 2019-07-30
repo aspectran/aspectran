@@ -18,6 +18,13 @@ context: {
     }
     singleton: true
 }
+session: {
+    storeType: file
+    fileStore: {
+        storeDir: /temp/sessions
+        deleteUnrestorableFiles: true
+    }
+}
 scheduler: {
     startDelaySeconds: 3
     waitOnShutdown: true

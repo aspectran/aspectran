@@ -21,17 +21,17 @@ import com.aspectran.core.util.apon.ValueType;
 
 public class SessionFileStoreConfig extends AbstractParameters {
 
-    private static final ParameterKey path;
+    private static final ParameterKey storeDir;
     private static final ParameterKey deleteUnrestorableFiles;
 
     private static final ParameterKey[] parameterKeys;
 
     static {
-        path = new ParameterKey("path", ValueType.STRING);
+        storeDir = new ParameterKey("storeDir", ValueType.STRING);
         deleteUnrestorableFiles = new ParameterKey("deleteUnrestorableFiles", ValueType.BOOLEAN);
 
         parameterKeys = new ParameterKey[] {
-                path,
+                storeDir,
                 deleteUnrestorableFiles
         };
     }
@@ -40,12 +40,12 @@ public class SessionFileStoreConfig extends AbstractParameters {
         super(parameterKeys);
     }
 
-    public String getPath() {
-        return getString(path);
+    public String getStoreDir() {
+        return getString(storeDir);
     }
 
-    public SessionFileStoreConfig setPath(String path) {
-        putValue(SessionFileStoreConfig.path, path);
+    public SessionFileStoreConfig setStoreDir(String storeDir) {
+        putValue(SessionFileStoreConfig.storeDir, storeDir);
         return this;
     }
 

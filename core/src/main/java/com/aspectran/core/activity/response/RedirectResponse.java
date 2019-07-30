@@ -24,7 +24,7 @@ import com.aspectran.core.util.logging.LogFactory;
 
 /**
  * The Class RedirectResponse.
- * 
+ *
  * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */
 public class RedirectResponse implements Response {
@@ -33,8 +33,6 @@ public class RedirectResponse implements Response {
 
     private final RedirectRule redirectRule;
 
-    private final String encoding;
-
     /**
      * Instantiates a new RedirectResponse.
      *
@@ -42,7 +40,6 @@ public class RedirectResponse implements Response {
      */
     public RedirectResponse(RedirectRule redirectRule) {
         this.redirectRule = redirectRule;
-        this.encoding = redirectRule.getEncoding();
     }
 
     @Override
@@ -57,15 +54,17 @@ public class RedirectResponse implements Response {
         }
 
         try {
-            if (this.encoding != null) {
-                responseAdapter.setEncoding(this.encoding);
+            RedirectRule newRedirectRule = redirectRule.replicate();
+            if (redirectRule.getEncoding() != null) {
+                responseAdapter.setEncoding(redirectRule.getEncoding());
             } else if (responseAdapter.getEncoding() == null) {
                 String encoding = activity.getTranslet().getIntendedResponseEncoding();
                 if (encoding != null) {
                     responseAdapter.setEncoding(encoding);
+                    newRedirectRule.setEncoding(encoding);
                 }
             }
-            responseAdapter.redirect(redirectRule);
+            responseAdapter.redirect(newRedirectRule);
         } catch (Exception e) {
             throw new ResponseException("Failed to respond with redirect rule " + redirectRule, e);
         }

@@ -33,7 +33,7 @@ public class DefaultSessionManager extends AbstractSessionHandler implements Ses
 
     private final ActivityContext context;
 
-    private String groupName;
+    private String workerName;
 
     private SessionConfig sessionConfig;
 
@@ -48,13 +48,13 @@ public class DefaultSessionManager extends AbstractSessionHandler implements Ses
     }
 
     @Override
-    public String getGroupName() {
-        return groupName;
+    public String getWorkerName() {
+        return workerName;
     }
 
     @Override
-    public void setGroupName(String groupName) {
-        this.groupName = groupName;
+    public void setWorkerName(String workerName) {
+        this.workerName = workerName;
     }
 
     @Override
@@ -90,7 +90,7 @@ public class DefaultSessionManager extends AbstractSessionHandler implements Ses
     @Override
     protected void doInitialize() throws Exception {
         if (getSessionIdGenerator() == null) {
-            SessionIdGenerator sessionIdGenerator = new SessionIdGenerator(groupName);
+            SessionIdGenerator sessionIdGenerator = new SessionIdGenerator(workerName);
             setSessionIdGenerator(sessionIdGenerator);
         }
 
@@ -109,16 +109,24 @@ public class DefaultSessionManager extends AbstractSessionHandler implements Ses
                 setDefaultMaxIdleSecs(timeout);
             }
 
-            if (getSessionCache().getSessionDataStore() != null) {
+            if (getSessionCache().getSessionDataStore() == null) {
                 String storeType = sessionConfig.getStoreType();
                 SessionStoreType sessionStoreType = SessionStoreType.resolve(storeType);
+                if (storeType != null && sessionStoreType == null) {
+                    throw new IllegalArgumentException("Unknown session store type: " + storeType);
+                }
                 if (sessionStoreType == SessionStoreType.FILE) {
                     FileSessionDataStore fileSessionDataStore = new FileSessionDataStore();
                     SessionFileStoreConfig fileStoreConfig = sessionConfig.getFileStoreConfig();
 
-                    String path = fileStoreConfig.getPath();
-                    if (StringUtils.hasText(path)) {
-                        fileSessionDataStore.setStoreDir(new File(path));
+                    String storeDir = fileStoreConfig.getStoreDir();
+                    if (StringUtils.hasText(storeDir)) {
+                        if (context != null) {
+                            String basePath = context.getEnvironment().getBasePath();
+                            fileSessionDataStore.setStoreDir(new File(basePath, storeDir));
+                        } else {
+                            fileSessionDataStore.setStoreDir(new File(storeDir));
+                        }
                     }
 
                     boolean deleteUnrestorableFiles = fileStoreConfig.isDeleteUnrestorableFiles();
@@ -127,7 +135,6 @@ public class DefaultSessionManager extends AbstractSessionHandler implements Ses
                     }
 
                     fileSessionDataStore.initialize();
-
                     getSessionCache().setSessionDataStore(fileSessionDataStore);
                 }
             }

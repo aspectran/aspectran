@@ -53,6 +53,8 @@ public class AspectranDaemonService extends AspectranCoreService implements Daem
 
     private SessionManager sessionManager;
 
+    private SessionAgent sessionAgent;
+
     private volatile long pauseTimeout = -1L;
 
     public AspectranDaemonService() {
@@ -64,14 +66,13 @@ public class AspectranDaemonService extends AspectranCoreService implements Daem
     @Override
     public void afterContextLoaded() throws Exception {
         sessionManager = new DefaultSessionManager(getActivityContext());
-        sessionManager.setGroupName("DM");
-
+        sessionManager.setWorkerName("DM" + this.hashCode() + "_");
         SessionConfig sessionConfig = getAspectranConfig().getSessionConfig();
         if (sessionConfig != null) {
             sessionManager.setSessionConfig(sessionConfig);
         }
-
         sessionManager.initialize();
+        sessionAgent = sessionManager.newSessionAgent();
     }
 
     @Override
@@ -82,8 +83,7 @@ public class AspectranDaemonService extends AspectranCoreService implements Daem
 
     @Override
     public SessionAdapter newSessionAdapter() {
-        SessionAgent agent = sessionManager.newSessionAgent();
-        return new DaemonSessionAdapter(agent);
+        return new DaemonSessionAdapter(sessionAgent);
     }
 
     @Override

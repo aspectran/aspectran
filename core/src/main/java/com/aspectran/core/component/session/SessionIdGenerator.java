@@ -15,7 +15,6 @@
  */
 package com.aspectran.core.component.session;
 
-import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
@@ -32,16 +31,23 @@ public class SessionIdGenerator {
 
     private static final Log log = LogFactory.getLog(SessionIdGenerator.class);
 
-    private static final AtomicLong counter = new AtomicLong();
+    private static final AtomicLong COUNTER = new AtomicLong();
 
-    private final String groupName;
+    private final String workerName;
 
     private final Random random;
 
     private boolean weakRandom;
 
-    public SessionIdGenerator(String groupName) {
-        this.groupName = groupName;
+    public SessionIdGenerator() {
+        this(null);
+    }
+
+    public SessionIdGenerator(String workerName) {
+        if (workerName != null && workerName.contains(".")) {
+            throw new IllegalArgumentException("Worker name cannot contain '.'");
+        }
+        this.workerName = workerName;
         this.random = initRandom();
     }
 
@@ -74,12 +80,12 @@ public class SessionIdGenerator {
             }
 
             StringBuilder id = new StringBuilder();
-            if (!StringUtils.isEmpty(groupName)) {
-                id.append(groupName);
+            if (workerName != null) {
+                id.append(workerName);
             }
             id.append(Long.toString(r0,36));
             id.append(Long.toString(r1,36));
-            id.append(counter.getAndIncrement());
+            id.append(COUNTER.getAndIncrement());
             return id.toString();
         }
     }

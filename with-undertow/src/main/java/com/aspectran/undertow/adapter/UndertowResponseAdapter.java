@@ -2,12 +2,10 @@ package com.aspectran.undertow.adapter;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.adapter.AbstractResponseAdapter;
-import com.aspectran.core.context.expr.ItemEvaluator;
-import com.aspectran.core.context.expr.ItemExpression;
-import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.RedirectRule;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.web.adapter.HttpServletResponseAdapter;
 import com.aspectran.web.support.http.HttpStatus;
 import com.aspectran.web.support.http.MediaType;
 import io.undertow.server.HttpServerExchange;
@@ -21,10 +19,8 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
-import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -33,12 +29,6 @@ import java.util.stream.Collectors;
 public class UndertowResponseAdapter extends AbstractResponseAdapter {
 
     private static final Log log = LogFactory.getLog(UndertowResponseAdapter.class);
-
-    private static final char QUESTION_CHAR = '?';
-
-    private static final char AMPERSAND_CHAR = '&';
-
-    private static final char EQUAL_CHAR = '=';
 
     private final Activity activity;
 
@@ -83,13 +73,10 @@ public class UndertowResponseAdapter extends AbstractResponseAdapter {
 
     @Override
     public void setHeader(String name, String value) {
-        if (name == null) {
-            throw new IllegalArgumentException("Header name must not be null");
-        }
         setHeader(HttpString.tryFromString(name), value);
     }
 
-    public void setHeader(HttpString name, String value) {
+    private void setHeader(HttpString name, String value) {
         if (name == null) {
             throw new IllegalArgumentException("Header name must not be null");
         }
@@ -105,7 +92,7 @@ public class UndertowResponseAdapter extends AbstractResponseAdapter {
         addHeader(HttpString.tryFromString(name), value);
     }
 
-    public void addHeader(final HttpString name, final String value) {
+    private void addHeader(final HttpString name, final String value) {
         if (name == null) {
             throw new IllegalArgumentException("Header name must not be null");
         }
@@ -170,6 +157,9 @@ public class UndertowResponseAdapter extends AbstractResponseAdapter {
 
     @Override
     public OutputStream getOutputStream() throws IOException {
+        if (activity.getOuterActivity() != null) {
+            return activity.getResponseAdapter().getOutputStream();
+        }
         if (responseState == ResponseState.WRITER) {
             throw new IllegalStateException("Cannot call getOutputStream(), getWriter() already called");
         }
@@ -180,11 +170,15 @@ public class UndertowResponseAdapter extends AbstractResponseAdapter {
     @Override
     public Writer getWriter() throws IOException {
         if (writer == null) {
-            if (responseState == ResponseState.STREAM) {
-                throw new IllegalStateException("Cannot call getWriter(), getOutputStream() already called");
+            if (activity.getOuterActivity() != null) {
+                writer = activity.getResponseAdapter().getWriter();
+            } else {
+                if (responseState == ResponseState.STREAM) {
+                    throw new IllegalStateException("Cannot call getWriter(), getOutputStream() already called");
+                }
+                responseState = ResponseState.WRITER;
+                writer = new OutputStreamWriter(getHttpServerExchange().getOutputStream(), getEncoding());
             }
-            responseState = ResponseState.WRITER;
-            writer = new OutputStreamWriter(getHttpServerExchange().getOutputStream(), getEncoding());
         }
         return writer;
     }
@@ -213,60 +207,12 @@ public class UndertowResponseAdapter extends AbstractResponseAdapter {
             String url = getHttpServerExchange().getRequestScheme() + "://" + getHttpServerExchange().getHostAndPort() + realPath;
             getHttpServerExchange().getResponseHeaders().put(Headers.LOCATION, url);
         }
-        responseDone();
+//        responseDone();
     }
 
     @Override
     public String redirect(RedirectRule redirectRule) throws IOException {
-        if (redirectRule == null) {
-            throw new IllegalArgumentException("redirectRule must not be null");
-        }
-
-        String path = redirectRule.getPath(activity);
-        int questionPos = -1;
-
-        StringBuilder sb = new StringBuilder(256);
-        if (path != null) {
-            sb.append(path);
-            questionPos = path.indexOf(QUESTION_CHAR);
-        }
-
-        ItemRuleMap parameterItemRuleMap = redirectRule.getParameterItemRuleMap();
-        if (parameterItemRuleMap != null && !parameterItemRuleMap.isEmpty()) {
-            ItemEvaluator evaluator = new ItemExpression(activity);
-            Map<String, Object> valueMap = evaluator.evaluate(parameterItemRuleMap);
-            if (valueMap != null && !valueMap.isEmpty()) {
-                if (questionPos == -1) {
-                    sb.append(QUESTION_CHAR);
-                }
-
-                String name = null;
-                Object value;
-                for (Map.Entry<String, Object> entry : valueMap.entrySet()) {
-                    if (name != null) {
-                        sb.append(AMPERSAND_CHAR);
-                    }
-
-                    name = entry.getKey();
-                    value = entry.getValue();
-                    String stringValue = (value != null ? value.toString() : null);
-                    if (redirectRule.isExcludeEmptyParameters() &&
-                            stringValue != null && !stringValue.isEmpty()) {
-                        sb.append(name).append(EQUAL_CHAR);
-                    } else if (redirectRule.isExcludeNullParameters() && stringValue != null) {
-                        sb.append(name).append(EQUAL_CHAR);
-                    } else {
-                        sb.append(name).append(EQUAL_CHAR);
-                    }
-                    if (stringValue != null) {
-                        stringValue = URLEncoder.encode(stringValue, getEncoding());
-                        sb.append(stringValue);
-                    }
-                }
-            }
-        }
-
-        path = sb.toString();
+        String path = HttpServletResponseAdapter.makeRedirectPath(redirectRule, activity);
         redirect(path);
         return path;
     }
@@ -281,25 +227,26 @@ public class UndertowResponseAdapter extends AbstractResponseAdapter {
         getHttpServerExchange().setStatusCode(status);
     }
 
-    public void responseDone() {
-        if (responseDone) {
-            return;
-        }
-        responseDone = true;
-        try {
-            closeStreamAndWriter();
-        } catch (IOException e) {
-            log.debug("An IOException occurred", e);
-        }
-    }
-
-    public void closeStreamAndWriter() throws IOException {
-        if (writer != null) {
-            writer.close();
-        } else {
-            getHttpServerExchange().getOutputStream().close();
-        }
-    }
+//    public void responseDone() {
+//        if (!responseDone) {
+//            responseDone = true;
+//            try {
+//                closeStreamAndWriter();
+//            } catch (IOException e) {
+//                log.debug("An IOException occurred", e);
+//            }
+//        }
+//    }
+//
+//    public void closeStreamAndWriter() throws IOException {
+//        if (writer != null) {
+//            writer.close();
+//        } else {
+//            getHttpServerExchange().getOutputStream().close();
+//        }
+//
+//        getHttpServerExchange().endExchange();
+//    }
 
     private HttpServerExchange getHttpServerExchange() {
         return (HttpServerExchange)getAdaptee();

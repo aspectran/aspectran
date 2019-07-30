@@ -37,7 +37,7 @@ class SessionManagerTest {
     @Test
     void testShortLifecycle() throws Exception {
         SessionManager sessionManager = new DefaultSessionManager();
-        sessionManager.setGroupName("TEST1-");
+        sessionManager.setWorkerName("TEST1-");
         sessionManager.initialize();
 
         SessionAgent agent = sessionManager.newSessionAgent();
@@ -61,7 +61,7 @@ class SessionManagerTest {
     @Test
     void testInactivityTimer() throws Exception {
         SessionManager sessionManager = new DefaultSessionManager();
-        sessionManager.setGroupName("TEST2-");
+        sessionManager.setWorkerName("TEST2-");
         sessionManager.initialize();
 
         SessionHandler sessionHandler = sessionManager.getSessionHandler();
@@ -77,7 +77,7 @@ class SessionManagerTest {
     @Test
     void testFileSessionStore() throws Exception {
         SessionManager sessionManager = new DefaultSessionManager();
-        sessionManager.setGroupName("TEST3-");
+        sessionManager.setWorkerName("TEST3-");
 
         SessionHandler sessionHandler = sessionManager.getSessionHandler();
         sessionHandler.setDefaultMaxIdleSecs(3);

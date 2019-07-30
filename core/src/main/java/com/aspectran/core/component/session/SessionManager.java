@@ -24,9 +24,9 @@ import com.aspectran.core.context.config.SessionConfig;
  */
 public interface SessionManager extends Component {
 
-    String getGroupName();
+    String getWorkerName();
 
-    void setGroupName(String groupName);
+    void setWorkerName(String workerName);
 
     SessionConfig getSessionConfig();
 

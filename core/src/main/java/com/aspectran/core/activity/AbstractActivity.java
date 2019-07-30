@@ -25,7 +25,7 @@ import com.aspectran.core.util.ExceptionUtils;
 
 /**
  * The Class AbstractActivity.
- * 
+ *
  * <p>Created: 2008. 03. 22 PM 5:48:09</p>
  */
 public abstract class AbstractActivity implements Activity {
@@ -95,6 +95,12 @@ public abstract class AbstractActivity implements Activity {
         } else {
             context.removeCurrentActivity();
         }
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T extends Activity> T getOuterActivity() {
+        return (T)outerActivity;
     }
 
     @Override

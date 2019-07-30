@@ -45,6 +45,8 @@ public abstract class AbstractShellService extends AspectranCoreService implemen
 
     private SessionManager sessionManager;
 
+    private SessionAgent sessionAgent;
+
     /** If verbose mode is on, a detailed description is printed each time the command is executed. */
     private boolean verbose;
 
@@ -66,12 +68,13 @@ public abstract class AbstractShellService extends AspectranCoreService implemen
     @Override
     public void afterContextLoaded() throws Exception {
         sessionManager = new DefaultSessionManager(getActivityContext());
-        sessionManager.setGroupName("SH");
+        sessionManager.setWorkerName("SH" + this.hashCode() + "_");
         SessionConfig sessionConfig = getAspectranConfig().getSessionConfig();
         if (sessionConfig != null) {
             sessionManager.setSessionConfig(sessionConfig);
         }
         sessionManager.initialize();
+        sessionAgent = sessionManager.newSessionAgent();
 
         parseGreetings();
     }
@@ -84,8 +87,7 @@ public abstract class AbstractShellService extends AspectranCoreService implemen
 
     @Override
     public SessionAdapter newSessionAdapter() {
-        SessionAgent agent = sessionManager.newSessionAgent();
-        return new ShellSessionAdapter(agent);
+        return new ShellSessionAdapter(sessionAgent);
     }
 
     @Override

@@ -37,7 +37,7 @@ import java.util.Map;
 
 /**
  * Adapt {@link HttpServletResponse} to Core {@link ResponseAdapter}.
- * 
+ *
  * @since 2011. 3. 13.
  */
 public class HttpServletResponseAdapter extends AbstractResponseAdapter {
@@ -49,6 +49,8 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
     private static final char EQUAL_CHAR = '=';
 
     private final Activity activity;
+
+    private boolean precommitDone;
 
     /**
      * Instantiates a new HttpServletResponseAdapter.
@@ -135,6 +137,35 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
 
     @Override
     public String redirect(RedirectRule redirectRule) throws IOException {
+        String path = makeRedirectPath(redirectRule, activity);
+        redirect(path);
+        return path;
+    }
+
+    @Override
+    public int getStatus() {
+        return ((HttpServletResponse)getAdaptee()).getStatus();
+    }
+
+    @Override
+    public void setStatus(int status) {
+        ((HttpServletResponse)getAdaptee()).setStatus(status);
+    }
+
+    private void precommit() {
+        if (!precommitDone) {
+            precommitDone = true;
+            Response response = activity.getDeclaredResponse();
+            if (response instanceof TransformResponse) {
+                TransformType transformType = ((TransformResponse)response).getTransformType();
+                if (transformType == null) {
+                    response.commit(activity);
+                }
+            }
+        }
+    }
+
+    public static String makeRedirectPath(RedirectRule redirectRule, Activity activity) throws IOException {
         if (redirectRule == null) {
             throw new IllegalArgumentException("redirectRule must not be null");
         }
@@ -168,7 +199,7 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
                     value = entry.getValue();
                     String stringValue = (value != null ? value.toString() : null);
                     if (redirectRule.isExcludeEmptyParameters() &&
-                            stringValue != null && !stringValue.isEmpty()) {
+                        stringValue != null && !stringValue.isEmpty()) {
                         sb.append(name).append(EQUAL_CHAR);
                     } else if (redirectRule.isExcludeNullParameters() && stringValue != null) {
                         sb.append(name).append(EQUAL_CHAR);
@@ -176,36 +207,14 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
                         sb.append(name).append(EQUAL_CHAR);
                     }
                     if (stringValue != null) {
-                        stringValue = URLEncoder.encode(stringValue, getEncoding());
+                        stringValue = URLEncoder.encode(stringValue, redirectRule.getEncoding());
                         sb.append(stringValue);
                     }
                 }
             }
         }
 
-        path = sb.toString();
-        redirect(path);
-        return path;
-    }
-
-    @Override
-    public int getStatus() {
-        return ((HttpServletResponse)getAdaptee()).getStatus();
-    }
-
-    @Override
-    public void setStatus(int status) {
-        ((HttpServletResponse)getAdaptee()).setStatus(status);
-    }
-
-    private void precommit() {
-        Response response = activity.getDeclaredResponse();
-        if (response instanceof TransformResponse) {
-            TransformType transformType = ((TransformResponse)response).getTransformType();
-            if (transformType == null) {
-                response.commit(activity);
-            }
-        }
+        return sb.toString();
     }
 
 }

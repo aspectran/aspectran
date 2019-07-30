@@ -434,6 +434,17 @@ public class Token implements BeanReferenceable, Replicable<Token> {
         return token;
     }
 
+    public Token[] replicate(Token[] tokens) {
+        if (tokens == null) {
+            return null;
+        }
+        Token[] newTokens = new Token[tokens.length];
+        for (int i = 0; i < tokens.length; i++) {
+            newTokens[i] = tokens[i].replicate();
+        }
+        return newTokens;
+    }
+
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
