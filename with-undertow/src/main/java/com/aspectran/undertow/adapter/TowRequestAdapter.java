@@ -20,7 +20,7 @@ import java.util.Map;
 /**
  * <p>Created: 2019-07-27</p>
  */
-public class UndertowRequestAdapter extends AbstractRequestAdapter {
+public class TowRequestAdapter extends AbstractRequestAdapter {
 
     private boolean headersObtained;
 
@@ -35,7 +35,7 @@ public class UndertowRequestAdapter extends AbstractRequestAdapter {
      *
      * @param exchange the adaptee object
      */
-    public UndertowRequestAdapter(HttpServerExchange exchange) {
+    public TowRequestAdapter(HttpServerExchange exchange) {
         super(exchange);
         preparse(exchange);
     }

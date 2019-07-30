@@ -3,13 +3,12 @@ package com.aspectran.undertow.adapter;
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.adapter.AbstractResponseAdapter;
 import com.aspectran.core.context.rule.RedirectRule;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.web.adapter.HttpServletResponseAdapter;
 import com.aspectran.web.support.http.HttpStatus;
 import com.aspectran.web.support.http.MediaType;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.CanonicalPathUtils;
+import io.undertow.util.HeaderMap;
 import io.undertow.util.Headers;
 import io.undertow.util.HttpString;
 import io.undertow.util.URLUtils;
@@ -26,9 +25,9 @@ import java.util.stream.Collectors;
 /**
  * <p>Created: 2019-07-27</p>
  */
-public class UndertowResponseAdapter extends AbstractResponseAdapter {
+public class TowResponseAdapter extends AbstractResponseAdapter {
 
-    private static final Log log = LogFactory.getLog(UndertowResponseAdapter.class);
+//    private static final Log log = LogFactory.getLog(UndertowResponseAdapter.class);
 
     private final Activity activity;
 
@@ -42,7 +41,7 @@ public class UndertowResponseAdapter extends AbstractResponseAdapter {
 
     private boolean responseDone;
 
-    public UndertowResponseAdapter(HttpServerExchange exchange, Activity activity) {
+    public TowResponseAdapter(HttpServerExchange exchange, Activity activity) {
         super(exchange);
         this.activity = activity;
     }
@@ -164,6 +163,7 @@ public class UndertowResponseAdapter extends AbstractResponseAdapter {
             throw new IllegalStateException("Cannot call getOutputStream(), getWriter() already called");
         }
         responseState = ResponseState.STREAM;
+        ifStartBlocking();
         return getHttpServerExchange().getOutputStream();
     }
 
@@ -177,6 +177,7 @@ public class UndertowResponseAdapter extends AbstractResponseAdapter {
                     throw new IllegalStateException("Cannot call getWriter(), getOutputStream() already called");
                 }
                 responseState = ResponseState.WRITER;
+                ifStartBlocking();
                 writer = new OutputStreamWriter(getHttpServerExchange().getOutputStream(), getEncoding());
             }
         }
@@ -225,6 +226,19 @@ public class UndertowResponseAdapter extends AbstractResponseAdapter {
     @Override
     public void setStatus(int status) {
         getHttpServerExchange().setStatusCode(status);
+    }
+
+    private void ifSetChunked() {
+        HeaderMap responseHeaders = getHttpServerExchange().getResponseHeaders();
+        if (!responseHeaders.contains(Headers.CONTENT_LENGTH)) {
+            getHttpServerExchange().getResponseHeaders().put(Headers.TRANSFER_ENCODING, Headers.CHUNKED.toString());
+        }
+    }
+
+    private void ifStartBlocking() {
+        if (!getHttpServerExchange().isBlocking()) {
+            getHttpServerExchange().startBlocking();
+        }
     }
 
 //    public void responseDone() {

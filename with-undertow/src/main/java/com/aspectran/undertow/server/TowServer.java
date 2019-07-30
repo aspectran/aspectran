@@ -12,9 +12,9 @@ import io.undertow.server.HttpHandler;
  *
  * @since 6.3.0
  */
-public class UndertowServer implements InitializableBean, DisposableBean {
+public class TowServer implements InitializableBean, DisposableBean {
 
-    private static final Log log = LogFactory.getLog(UndertowServer.class);
+    private static final Log log = LogFactory.getLog(TowServer.class);
 
     private final Object monitor = new Object();
 

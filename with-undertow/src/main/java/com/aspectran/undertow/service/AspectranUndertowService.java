@@ -18,8 +18,8 @@ import com.aspectran.core.service.ServiceStateListener;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
-import com.aspectran.undertow.activity.UndertowActivity;
-import com.aspectran.undertow.adapter.UndertowApplicationAdapter;
+import com.aspectran.undertow.activity.TowActivity;
+import com.aspectran.undertow.adapter.TowApplicationAdapter;
 import com.aspectran.web.support.http.HttpStatus;
 import io.undertow.server.HttpServerExchange;
 
@@ -83,7 +83,7 @@ public class AspectranUndertowService extends AspectranCoreService implements Un
 
         Activity activity = null;
         try {
-            activity = new UndertowActivity(getActivityContext(), exchange);
+            activity = new TowActivity(getActivityContext(), exchange);
             activity.prepare(requestUri, exchange.getRequestMethod().toString());
             activity.perform();
         } catch (TransletNotFoundException e) {
@@ -176,7 +176,7 @@ public class AspectranUndertowService extends AspectranCoreService implements Un
     public static AspectranUndertowService create(AspectranConfig aspectranConfig) {
         ContextConfig contextConfig = aspectranConfig.touchContextConfig();
 
-        ApplicationAdapter applicationAdapter = new UndertowApplicationAdapter();
+        ApplicationAdapter applicationAdapter = new TowApplicationAdapter();
         AspectranUndertowService service = new AspectranUndertowService(applicationAdapter);
         service.prepare(aspectranConfig);
 

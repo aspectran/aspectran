@@ -16,7 +16,12 @@ public class AspectranHttpHandler implements HttpHandler, ActivityContextAware {
 
     @Override
     public void handleRequest(HttpServerExchange exchange) throws Exception {
-        undertowService.execute(exchange);
+        exchange.startBlocking();
+        if (exchange.isInIoThread()) {
+            exchange.dispatch(this);
+        } else {
+            undertowService.execute(exchange);
+        }
     }
 
     @Override

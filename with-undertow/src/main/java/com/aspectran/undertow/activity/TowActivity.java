@@ -15,12 +15,11 @@ import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.support.i18n.locale.LocaleChangeInterceptor;
 import com.aspectran.core.support.i18n.locale.LocaleResolver;
 import com.aspectran.core.util.StringUtils;
-import com.aspectran.undertow.adapter.UndertowRequestAdapter;
-import com.aspectran.undertow.adapter.UndertowResponseAdapter;
+import com.aspectran.undertow.adapter.TowRequestAdapter;
+import com.aspectran.undertow.adapter.TowResponseAdapter;
 import com.aspectran.web.activity.request.MultipartFormDataParser;
 import com.aspectran.web.activity.request.MultipartRequestParseException;
 import com.aspectran.web.activity.request.WebRequestBodyParser;
-import com.aspectran.web.adapter.HttpServletRequestAdapter;
 import com.aspectran.web.support.http.HttpHeaders;
 import com.aspectran.web.support.http.HttpStatus;
 import com.aspectran.web.support.http.MediaType;
@@ -32,7 +31,7 @@ import java.io.UnsupportedEncodingException;
 /**
  * <p>Created: 2019-07-27</p>
  */
-public class UndertowActivity extends CoreActivity {
+public class TowActivity extends CoreActivity {
 
     private static final String MULTIPART_FORM_DATA_PARSER_SETTING_NAME = "multipartFormDataParser";
 
@@ -45,7 +44,7 @@ public class UndertowActivity extends CoreActivity {
      *
      * @param context the activity context
      */
-    public UndertowActivity(ActivityContext context, HttpServerExchange exchange) {
+    public TowActivity(ActivityContext context, HttpServerExchange exchange) {
         super(context);
         this.exchange = exchange;
     }
@@ -89,10 +88,10 @@ public class UndertowActivity extends CoreActivity {
 //            SessionAdapter sessionAdapter = new UndertowSessionAdapter(exchange, getActivityContext());
 //            setSessionAdapter(sessionAdapter);
 
-            RequestAdapter requestAdapter = new UndertowRequestAdapter(exchange);
+            RequestAdapter requestAdapter = new TowRequestAdapter(exchange);
             setRequestAdapter(requestAdapter);
 
-            ResponseAdapter responseAdapter = new UndertowResponseAdapter(exchange, this);
+            ResponseAdapter responseAdapter = new TowResponseAdapter(exchange, this);
             setResponseAdapter(responseAdapter);
 
             super.adapt();
@@ -126,7 +125,7 @@ public class UndertowActivity extends CoreActivity {
             }
         }
 
-        MediaType mediaType = ((HttpServletRequestAdapter)getRequestAdapter()).getMediaType();
+        MediaType mediaType = ((TowRequestAdapter)getRequestAdapter()).getMediaType();
         if (mediaType != null) {
             if (WebRequestBodyParser.isMultipartForm(requestMethod, mediaType)) {
                 parseMultipartFormData();
@@ -180,7 +179,7 @@ public class UndertowActivity extends CoreActivity {
     @Override
     @SuppressWarnings("unchecked")
     public <T extends Activity> T newActivity() {
-        UndertowActivity activity = new UndertowActivity(getActivityContext(), exchange);
+        TowActivity activity = new TowActivity(getActivityContext(), exchange);
         activity.setIncluded(true);
         return (T)activity;
     }

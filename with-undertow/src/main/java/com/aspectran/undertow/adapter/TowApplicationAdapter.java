@@ -20,12 +20,12 @@ import com.aspectran.core.adapter.BasicApplicationAdapter;
 /**
  * @since 2011. 3. 13.
  */
-public class UndertowApplicationAdapter extends BasicApplicationAdapter {
+public class TowApplicationAdapter extends BasicApplicationAdapter {
 
     /**
      * Instantiates a new UndertowApplicationAdapter.
      */
-    public UndertowApplicationAdapter() {
+    public TowApplicationAdapter() {
         super(null);
     }
 
