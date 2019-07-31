@@ -17,13 +17,9 @@ package com.aspectran.scheduler.service;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.ActivityException;
-import com.aspectran.core.adapter.RequestAdapter;
-import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.ScheduledJobRule;
 import com.aspectran.scheduler.activity.JobActivity;
-import com.aspectran.scheduler.adapter.QuartzJobRequestAdapter;
-import com.aspectran.scheduler.adapter.QuartzJobResponseAdapter;
 import org.quartz.Job;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
@@ -55,12 +51,9 @@ public class ActivityLauncherJob implements Job {
 
     private Activity runActivity(ActivityContext context, JobExecutionContext jobExecutionContext, String transletName)
             throws ActivityException {
-        RequestAdapter requestAdapter = new QuartzJobRequestAdapter(jobExecutionContext);
-        ResponseAdapter responseAdapter = new QuartzJobResponseAdapter();
-
         Activity activity = null;
         try {
-            activity = new JobActivity(context, requestAdapter, responseAdapter);
+            activity = new JobActivity(context, jobExecutionContext);
             activity.prepare(transletName);
             activity.perform();
         } finally {

@@ -171,7 +171,7 @@ public class TowResponseAdapter extends AbstractResponseAdapter {
     public Writer getWriter() throws IOException {
         if (writer == null) {
             if (activity.getOuterActivity() != null) {
-                writer = activity.getResponseAdapter().getWriter();
+                writer = activity.getOuterActivity().getResponseAdapter().getWriter();
             } else {
                 if (responseState == ResponseState.STREAM) {
                     throw new IllegalStateException("Cannot call getWriter(), getOutputStream() already called");

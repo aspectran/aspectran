@@ -69,7 +69,7 @@ public class InstantActivity extends DefaultActivity {
     }
 
     private void adapt(ParameterMap parameterMap, Map<String, Object> attributeMap) {
-        BasicRequestAdapter requestAdapter = new BasicRequestAdapter(null);
+        BasicRequestAdapter requestAdapter = new BasicRequestAdapter(null, null);
         setRequestAdapter(requestAdapter);
 
         Writer writer = new StringOutputWriter();

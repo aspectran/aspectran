@@ -96,11 +96,13 @@ public class ShellActivity extends CoreActivity {
         try {
             setSessionAdapter(service.newSessionAdapter());
 
-            ShellRequestAdapter requestAdapter = new ShellRequestAdapter();
-            if (parameterMap != null) {
-                requestAdapter.setParameterMap(parameterMap);
-            }
+            ShellRequestAdapter requestAdapter = new ShellRequestAdapter(getTranslet().getRequestMethod());
             requestAdapter.setEncoding(console.getEncoding());
+            if (isIncluded()) {
+                requestAdapter.preparse(getOuterActivity().getRequestAdapter());
+            } else {
+                requestAdapter.preparse(null, parameterMap);
+            }
             setRequestAdapter(requestAdapter);
 
             if (outputWriter == null) {

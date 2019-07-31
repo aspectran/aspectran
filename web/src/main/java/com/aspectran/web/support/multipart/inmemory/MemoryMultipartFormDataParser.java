@@ -26,15 +26,13 @@ import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.web.activity.request.MultipartFormDataParser;
 import com.aspectran.web.activity.request.MultipartRequestParseException;
+import com.aspectran.web.support.multipart.commons.CommonsRequestContext;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUpload;
 import org.apache.commons.fileupload.FileUploadBase;
 import org.apache.commons.fileupload.RequestContext;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Map;
@@ -125,7 +123,7 @@ public class MemoryMultipartFormDataParser implements MultipartFormDataParser {
 
             Map<String, List<FileItem>> fileItemListMap;
             try {
-                RequestContext requestContext = createRequestContext(requestAdapter.getAdaptee());
+                RequestContext requestContext = new CommonsRequestContext(requestAdapter);
                 fileItemListMap = upload.parseParameterMap(requestContext);
             } catch (FileUploadBase.SizeLimitExceededException e) {
                 throw new SizeLimitExceededException("Maximum request length exceeded; actual: " +
@@ -206,37 +204,6 @@ public class MemoryMultipartFormDataParser implements MultipartFormDataParser {
             value = fileItem.getString();
         }
         return value;
-    }
-
-    /**
-     * Creates a RequestContext needed by Jakarta Commons Upload.
-     *
-     * @param req the HTTP request
-     * @return a new request context
-     */
-    private RequestContext createRequestContext(final HttpServletRequest req) {
-        return new RequestContext() {
-            @Override
-            public String getCharacterEncoding() {
-                return req.getCharacterEncoding();
-            }
-
-            @Override
-            public String getContentType() {
-                return req.getContentType();
-            }
-
-            @Override
-            @Deprecated
-            public int getContentLength() {
-                return req.getContentLength();
-            }
-
-            @Override
-            public InputStream getInputStream() throws IOException {
-                return req.getInputStream();
-            }
-        };
     }
 
 }

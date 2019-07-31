@@ -22,6 +22,8 @@ import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.util.MultiValueMap;
 import com.aspectran.core.util.apon.Parameters;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Collection;
 import java.util.Locale;
@@ -431,6 +433,8 @@ public interface RequestAdapter {
     long getMaxRequestSize();
 
     void setMaxRequestSize(long maxRequestSize);
+
+    InputStream getInputStream() throws IOException;
 
     String getBody();
 

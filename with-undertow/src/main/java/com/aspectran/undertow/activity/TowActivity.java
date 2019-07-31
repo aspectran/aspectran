@@ -7,7 +7,6 @@ import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.TransletNotFoundException;
 import com.aspectran.core.activity.request.RequestMethodNotAllowedException;
 import com.aspectran.core.activity.request.RequestParseException;
-import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.RequestRule;
@@ -88,7 +87,12 @@ public class TowActivity extends CoreActivity {
 //            SessionAdapter sessionAdapter = new UndertowSessionAdapter(exchange, getActivityContext());
 //            setSessionAdapter(sessionAdapter);
 
-            RequestAdapter requestAdapter = new TowRequestAdapter(exchange);
+            TowRequestAdapter requestAdapter = new TowRequestAdapter(getTranslet().getRequestMethod(), exchange);
+            if (isIncluded()) {
+                requestAdapter.preparse((TowRequestAdapter)getOuterActivity().getRequestAdapter());
+            } else {
+                requestAdapter.preparse();
+            }
             setRequestAdapter(requestAdapter);
 
             ResponseAdapter responseAdapter = new TowResponseAdapter(exchange, this);
@@ -122,6 +126,7 @@ public class TowActivity extends CoreActivity {
             long maxRequestSize = Long.parseLong(maxRequestSizeSetting);
             if (maxRequestSize >= 0L) {
                 getRequestAdapter().setMaxRequestSize(maxRequestSize);
+                exchange.setMaxEntitySize(maxRequestSize);
             }
         }
 

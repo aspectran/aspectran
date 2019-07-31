@@ -68,7 +68,12 @@ public class DaemonActivity extends CoreActivity {
         try {
             setSessionAdapter(service.newSessionAdapter());
 
-            DaemonRequestAdapter requestAdapter = new DaemonRequestAdapter();
+            DaemonRequestAdapter requestAdapter = new DaemonRequestAdapter(getTranslet().getRequestMethod());
+            if (isIncluded()) {
+                requestAdapter.preparse(getOuterActivity().getRequestAdapter());
+            } else {
+                requestAdapter.preparse(attributeMap, parameterMap);
+            }
             setRequestAdapter(requestAdapter);
 
             if (outputWriter == null) {
@@ -76,13 +81,6 @@ public class DaemonActivity extends CoreActivity {
             }
             DaemonResponseAdapter responseAdapter = new DaemonResponseAdapter(outputWriter);
             setResponseAdapter(responseAdapter);
-
-            if (parameterMap != null) {
-                requestAdapter.setParameterMap(parameterMap);
-            }
-            if (attributeMap != null) {
-                requestAdapter.setAttributeMap(attributeMap);
-            }
 
             super.adapt();
         } catch (Exception e) {

@@ -16,10 +16,14 @@
 package com.aspectran.scheduler.activity;
 
 import com.aspectran.core.activity.Activity;
+import com.aspectran.core.activity.AdapterException;
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.ActivityContext;
+import com.aspectran.scheduler.adapter.QuartzJobRequestAdapter;
+import com.aspectran.scheduler.adapter.QuartzJobResponseAdapter;
+import org.quartz.JobExecutionContext;
 
 /**
  * The Class JobActivity.
@@ -28,24 +32,38 @@ import com.aspectran.core.context.ActivityContext;
  */
 public class JobActivity extends CoreActivity {
 
+    private final JobExecutionContext jobExecutionContext;
+
     /**
      * Instantiates a new job activity.
      *
      * @param context the current ActivityContext
-     * @param requestAdapter the request adapter
-     * @param responseAdapter the response adapter
+     * @param jobExecutionContext the job execution context
      */
-    public JobActivity(ActivityContext context, RequestAdapter requestAdapter, ResponseAdapter responseAdapter) {
+    public JobActivity(ActivityContext context, JobExecutionContext jobExecutionContext) {
         super(context);
+        this.jobExecutionContext = jobExecutionContext;
+    }
 
-        setRequestAdapter(requestAdapter);
-        setResponseAdapter(responseAdapter);
+    @Override
+    protected void adapt() throws AdapterException {
+        try {
+            RequestAdapter requestAdapter = new QuartzJobRequestAdapter(getTranslet().getRequestMethod(), jobExecutionContext);
+            setRequestAdapter(requestAdapter);
+
+            ResponseAdapter responseAdapter = new QuartzJobResponseAdapter();
+            setResponseAdapter(responseAdapter);
+
+            super.adapt();
+        } catch (Exception e) {
+            throw new AdapterException("Failed to adapt for Job Activity", e);
+        }
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <T extends Activity> T newActivity() {
-        JobActivity activity = new JobActivity(getActivityContext(), getRequestAdapter(), getResponseAdapter());
+        JobActivity activity = new JobActivity(getActivityContext(), jobExecutionContext);
         activity.setIncluded(true);
         return (T)activity;
     }

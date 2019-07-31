@@ -27,6 +27,7 @@ import com.aspectran.web.support.http.MediaType;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Enumeration;
 import java.util.Map;
@@ -47,12 +48,11 @@ public class HttpServletRequestAdapter extends AbstractRequestAdapter {
     /**
      * Instantiates a new HttpServletRequestAdapter.
      *
+     * @param requestMethod the request method
      * @param request the activity request wrapper
      */
-    public HttpServletRequestAdapter(HttpServletRequest request) {
-        super(request);
-
-        preparse(getHttpServletRequest());
+    public HttpServletRequestAdapter(MethodType requestMethod, HttpServletRequest request) {
+        super(requestMethod, request);
     }
 
     @Override
@@ -86,12 +86,17 @@ public class HttpServletRequestAdapter extends AbstractRequestAdapter {
     }
 
     @Override
+    public InputStream getInputStream() throws IOException {
+        return ((HttpServletRequest)getAdaptee()).getInputStream();
+    }
+
+    @Override
     public String getBody() {
         if (!bodyObtained) {
             bodyObtained = true;
             try {
-                WebRequestBodyParser.parseBody(((HttpServletRequest)getAdaptee()).getInputStream(), getEncoding(),
-                        getMaxRequestSize());
+                String body = WebRequestBodyParser.parseBody(getInputStream(), getEncoding(), getMaxRequestSize());
+                setBody(body);
             } catch (IOException e) {
                 setBody(null);
             }
@@ -127,7 +132,9 @@ public class HttpServletRequestAdapter extends AbstractRequestAdapter {
         }
     }
 
-    private void preparse(HttpServletRequest request) {
+    public void preparse() {
+        HttpServletRequest request = getHttpServletRequest();
+
         setAttributeMap(new RequestAttributeMap(request));
 
         Map<String, String[]> parameters = request.getParameterMap();
@@ -135,13 +142,18 @@ public class HttpServletRequestAdapter extends AbstractRequestAdapter {
             getParameterMap().putAll(parameters);
         }
 
-        setRequestMethod(MethodType.resolve(request.getMethod()));
-
         if (request.getContentType() != null) {
             setMediaType(MediaType.parseMediaType(request.getContentType()));
         }
 
         setLocale(request.getLocale());
+    }
+
+    public void preparse(HttpServletRequestAdapter requestAdapter) {
+        setAttributeMap(requestAdapter.getAttributeMap());
+        getParameterMap().putAll(requestAdapter.getParameterMap());
+        setMediaType(requestAdapter.getMediaType());
+        setLocale(requestAdapter.getLocale());
     }
 
 }

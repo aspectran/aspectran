@@ -29,19 +29,19 @@ import java.net.URLDecoder;
 /**
  * <p>Created: 2019-07-27</p>
  */
-public class AspectranUndertowService extends AspectranCoreService implements UndertowService {
+public class AspectranTowService extends AspectranCoreService implements TowService {
 
-    private static final Log log = LogFactory.getLog(AspectranUndertowService.class);
+    private static final Log log = LogFactory.getLog(AspectranTowService.class);
 
     private String uriDecoding;
 
     private long pauseTimeout = -2L;
 
-    public AspectranUndertowService(ApplicationAdapter applicationAdapter) {
+    public AspectranTowService(ApplicationAdapter applicationAdapter) {
         super(applicationAdapter);
     }
 
-    public AspectranUndertowService(CoreService rootService) {
+    public AspectranTowService(CoreService rootService) {
         super(rootService);
     }
 
@@ -50,14 +50,13 @@ public class AspectranUndertowService extends AspectranCoreService implements Un
     }
 
     @Override
-    public void execute(HttpServerExchange exchange) throws IOException {
+    public boolean execute(HttpServerExchange exchange) throws IOException {
         String requestUri = exchange.getRequestURI();
         if (uriDecoding != null) {
             requestUri = URLDecoder.decode(requestUri, uriDecoding);
         }
         if (!isExposable(requestUri)) {
-            exchange.setStatusCode(HttpStatus.NOT_FOUND.value());
-            return;
+            return false;
         }
 
         if (log.isDebugEnabled()) {
@@ -71,11 +70,11 @@ public class AspectranUndertowService extends AspectranCoreService implements Un
                             requestUri + "\"");
                 }
                 exchange.setStatusCode(HttpStatus.SERVICE_UNAVAILABLE.value());
-                return;
+                return true;
             } else if (pauseTimeout == -2L) {
                 log.error("AspectranWebService is not yet started");
                 exchange.setStatusCode(HttpStatus.SERVICE_UNAVAILABLE.value());
-                return;
+                return true;
             } else {
                 pauseTimeout = 0L;
             }
@@ -90,15 +89,7 @@ public class AspectranUndertowService extends AspectranCoreService implements Un
             if (log.isDebugEnabled()) {
                 log.debug("No translet mapped to the request URI [" + requestUri + "]");
             }
-            exchange.setStatusCode(HttpStatus.NOT_FOUND.value());
-//            try {
-//                if (!defaultServletHttpRequestHandler.handle(request, response)) {
-//                    response.sendError(HttpServletResponse.SC_NOT_FOUND);
-//                }
-//            } catch (Exception e2) {
-//                log.error(e2.getMessage(), e2);
-//                exchange.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
-//            }
+            return false;
         } catch (ActivityTerminatedException e) {
             if (log.isDebugEnabled()) {
                 log.debug("Activity terminated: " + e.getMessage());
@@ -124,6 +115,7 @@ public class AspectranUndertowService extends AspectranCoreService implements Un
                 activity.finish();
             }
         }
+        return true;
     }
 
     private String getRequestInfo(HttpServerExchange exchange) {
@@ -147,8 +139,8 @@ public class AspectranUndertowService extends AspectranCoreService implements Un
      * @param rootService the root service
      * @return the instance of {@code AspectranUndertowService}
      */
-    public static AspectranUndertowService create(CoreService rootService) {
-        AspectranUndertowService service = new AspectranUndertowService(rootService);
+    public static AspectranTowService create(CoreService rootService) {
+        AspectranTowService service = new AspectranTowService(rootService);
         AspectranConfig aspectranConfig = rootService.getAspectranConfig();
         if (aspectranConfig != null) {
             WebConfig webConfig = aspectranConfig.getWebConfig();
@@ -173,11 +165,11 @@ public class AspectranUndertowService extends AspectranCoreService implements Un
      * @param aspectranConfig the aspectran configuration
      * @return the instance of {@code AspectranUndertowService}
      */
-    public static AspectranUndertowService create(AspectranConfig aspectranConfig) {
+    public static AspectranTowService create(AspectranConfig aspectranConfig) {
         ContextConfig contextConfig = aspectranConfig.touchContextConfig();
 
         ApplicationAdapter applicationAdapter = new TowApplicationAdapter();
-        AspectranUndertowService service = new AspectranUndertowService(applicationAdapter);
+        AspectranTowService service = new AspectranTowService(applicationAdapter);
         service.prepare(aspectranConfig);
 
         WebConfig webConfig = aspectranConfig.getWebConfig();
@@ -189,7 +181,7 @@ public class AspectranUndertowService extends AspectranCoreService implements Un
         return service;
     }
 
-    private static void applyWebConfig(AspectranUndertowService service, WebConfig webConfig) {
+    private static void applyWebConfig(AspectranTowService service, WebConfig webConfig) {
         service.setUriDecoding(webConfig.getUriDecoding());
         ExposalsConfig exposalsConfig = webConfig.getExposalsConfig();
         if (exposalsConfig != null) {
@@ -199,7 +191,7 @@ public class AspectranUndertowService extends AspectranCoreService implements Un
         }
     }
 
-    private static void setServiceStateListener(final AspectranUndertowService service) {
+    private static void setServiceStateListener(final AspectranTowService service) {
         service.setServiceStateListener(new ServiceStateListener() {
             @Override
             public void started() {

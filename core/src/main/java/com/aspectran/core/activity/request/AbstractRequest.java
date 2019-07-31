@@ -22,6 +22,9 @@ import com.aspectran.core.util.MultiValueMap;
 import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.apon.VariableParameters;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Collection;
 import java.util.HashMap;
@@ -37,6 +40,8 @@ import java.util.TimeZone;
  */
 public abstract class AbstractRequest {
 
+    private final MethodType requestMethod;
+
     private MultiValueMap<String, String> headers;
 
     private ParameterMap parameterMap;
@@ -44,8 +49,6 @@ public abstract class AbstractRequest {
     private FileParameterMap fileParameterMap;
 
     private Map<String, Object> attributes;
-
-    private MethodType requestMethod;
 
     private String encoding;
 
@@ -57,7 +60,12 @@ public abstract class AbstractRequest {
 
     private String body;
 
-    public AbstractRequest() {
+    public AbstractRequest(MethodType requestMethod) {
+        this.requestMethod = requestMethod;
+    }
+
+    public MethodType getRequestMethod() {
+        return requestMethod;
     }
 
     /**
@@ -325,14 +333,6 @@ public abstract class AbstractRequest {
         return (attributes != null && !attributes.isEmpty());
     }
 
-    public MethodType getRequestMethod() {
-        return requestMethod;
-    }
-
-    protected void setRequestMethod(MethodType requestMethod) {
-        this.requestMethod = requestMethod;
-    }
-
     public String getEncoding() {
         return encoding;
     }
@@ -378,6 +378,14 @@ public abstract class AbstractRequest {
 
     public void setMaxRequestSize(long maxRequestSize) {
         this.maxRequestSize = maxRequestSize;
+    }
+
+    public InputStream getInputStream() throws IOException {
+        if (getBody() != null) {
+            return new ByteArrayInputStream(getBody().getBytes());
+        } else {
+            return null;
+        }
     }
 
     public String getBody() {

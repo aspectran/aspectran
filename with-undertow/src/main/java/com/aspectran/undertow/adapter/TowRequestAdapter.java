@@ -12,6 +12,7 @@ import io.undertow.util.Headers;
 import io.undertow.util.LocaleUtils;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Deque;
 import java.util.List;
 import java.util.Locale;
@@ -33,11 +34,11 @@ public class TowRequestAdapter extends AbstractRequestAdapter {
     /**
      * Instantiates a new UndertowRequestAdapter.
      *
+     * @param requestMethod the request method
      * @param exchange the adaptee object
      */
-    public TowRequestAdapter(HttpServerExchange exchange) {
-        super(exchange);
-        preparse(exchange);
+    public TowRequestAdapter(MethodType requestMethod, HttpServerExchange exchange) {
+        super(requestMethod, exchange);
     }
 
     @Override
@@ -71,11 +72,17 @@ public class TowRequestAdapter extends AbstractRequestAdapter {
     }
 
     @Override
+    public InputStream getInputStream() throws IOException {
+        return getHttpServerExchange().getInputStream();
+    }
+
+    @Override
     public String getBody() {
         if (!bodyObtained) {
             bodyObtained = true;
             try {
-                WebRequestBodyParser.parseBody(getHttpServerExchange().getInputStream(), getEncoding(), getMaxRequestSize());
+                String body = WebRequestBodyParser.parseBody(getInputStream(), getEncoding(), getMaxRequestSize());
+                setBody(body);
             } catch (IOException e) {
                 setBody(null);
             }
@@ -107,14 +114,14 @@ public class TowRequestAdapter extends AbstractRequestAdapter {
         return (HttpServerExchange)getAdaptee();
     }
 
-    private void preparse(HttpServerExchange exchange) {
+    public void preparse() {
+        HttpServerExchange exchange = getAdaptee();
+
         for (Map.Entry<String, Deque<String>> entry : exchange.getQueryParameters().entrySet()) {
             String name = entry.getKey();
             String[] values = entry.getValue().toArray(new String[0]);
             getParameterMap().put(name, values);
         }
-
-        setRequestMethod(MethodType.resolve(exchange.getRequestMethod().toString()));
 
         String contentType = exchange.getRequestHeaders().getFirst(Headers.CONTENT_TYPE);
         if (contentType != null) {
@@ -126,6 +133,13 @@ public class TowRequestAdapter extends AbstractRequestAdapter {
         if (!locales.isEmpty()) {
             setLocale(locales.get(0));
         }
+    }
+
+    public void preparse(TowRequestAdapter requestAdapter) {
+        setAttributeMap(requestAdapter.getAttributeMap());
+        getParameterMap().putAll(requestAdapter.getParameterMap());
+        setMediaType(requestAdapter.getMediaType());
+        setLocale(requestAdapter.getLocale());
     }
 
 }

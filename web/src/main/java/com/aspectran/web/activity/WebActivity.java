@@ -22,7 +22,6 @@ import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.TransletNotFoundException;
 import com.aspectran.core.activity.request.RequestMethodNotAllowedException;
 import com.aspectran.core.activity.request.RequestParseException;
-import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.ActivityContext;
@@ -113,7 +112,12 @@ public class WebActivity extends CoreActivity {
             SessionAdapter sessionAdapter = new HttpSessionAdapter(request, getActivityContext());
             setSessionAdapter(sessionAdapter);
 
-            RequestAdapter requestAdapter = new HttpServletRequestAdapter(request);
+            HttpServletRequestAdapter requestAdapter = new HttpServletRequestAdapter(getTranslet().getRequestMethod(), request);
+            if (isIncluded()) {
+                requestAdapter.preparse((HttpServletRequestAdapter)getOuterActivity().getRequestAdapter());
+            } else {
+                requestAdapter.preparse();
+            }
             setRequestAdapter(requestAdapter);
 
             ResponseAdapter responseAdapter = new HttpServletResponseAdapter(response, this);

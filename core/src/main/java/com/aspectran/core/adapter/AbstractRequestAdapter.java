@@ -17,6 +17,7 @@ package com.aspectran.core.adapter;
 
 import com.aspectran.core.activity.request.AbstractRequest;
 import com.aspectran.core.component.bean.scope.RequestScope;
+import com.aspectran.core.context.rule.type.MethodType;
 
 /**
  * The Class AbstractRequestAdapter.
@@ -32,10 +33,11 @@ public abstract class AbstractRequestAdapter extends AbstractRequest implements 
     /**
      * Instantiates a new AbstractRequestAdapter.
      *
+     * @param adaptee the request method
      * @param adaptee the adaptee object
      */
-    public AbstractRequestAdapter(Object adaptee) {
-        super();
+    public AbstractRequestAdapter(MethodType requestMethod, Object adaptee) {
+        super(requestMethod);
         this.adaptee = adaptee;
     }
 
