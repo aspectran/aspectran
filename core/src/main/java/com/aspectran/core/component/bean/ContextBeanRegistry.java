@@ -60,7 +60,11 @@ public class ContextBeanRegistry extends AbstractBeanRegistry {
         throw new BeanCreationException(beanRule);
     }
 
-    private Object getPrototypeScopeBean(BeanRule beanRule) {
+    @Override
+    public Object getPrototypeScopeBean(BeanRule beanRule) {
+        if (beanRule == null) {
+            throw new IllegalArgumentException("beanRule must not be null");
+        }
         Object bean = createBean(beanRule);
         if (bean != null && beanRule.isFactoryProductionRequired()) {
             bean = getFactoryProducedObject(beanRule, bean);

@@ -18,7 +18,8 @@
 
 <!ELEMENT aspectran (
   description?,
-  (settings? | typeAliases* | environment* | aspect* | bean* | template* | schedule* | translet* | append*)*
+  settings?,
+  (typeAliases | environment | aspect | bean | template | schedule | translet | append)*
 )>
 
 <!ELEMENT description (#PCDATA)>
@@ -33,8 +34,7 @@
   value   CDATA #REQUIRED
 >
 
-<!ELEMENT typeAliases (typeAlias*)>
-
+<!ELEMENT typeAliases (typeAlias+)>
 <!ELEMENT typeAlias EMPTY>
 <!ATTLIST typeAlias
   alias   CDATA #REQUIRED
@@ -64,14 +64,14 @@
   bean    CDATA #IMPLIED
 >
 
-<!ELEMENT before  (headers | echo | action)>
-<!ELEMENT after   (headers | echo | action)>
-<!ELEMENT around  (action)>
-<!ELEMENT finally (thrown?, (headers | echo | action))>
+<!ELEMENT before  (headers | echo | (action | invoke))>
+<!ELEMENT after   (headers | echo | (action | invoke))>
+<!ELEMENT around  (action | invoke)>
+<!ELEMENT finally (thrown?, (headers | echo | (action | invoke)))>
 
 <!ELEMENT exception (description?, thrown+)>
 
-<!ELEMENT thrown ((headers | echo | action)? | transform? | dispatch? | redirect?)*>
+<!ELEMENT thrown ((headers | echo | (action | invoke)?)?, (transform | dispatch | redirect)*)>
 <!ATTLIST thrown
   type    CDATA #IMPLIED
 >
@@ -122,9 +122,10 @@
 
 <!ELEMENT translet (
   description?,
-  (request? | (parameters*, attributes*)?)?,
-  ((contents? | content?)? | (choose? | headers? | echo? | action? | include?)*)?,
-  (response* | (transform | dispatch | forward | redirect)?)?, exception?
+  (request? | (parameters*, attributes*)),
+  ((contents | content)? | (choose | headers | echo | action | include)*),
+  (response* | (transform | dispatch | forward | redirect)?),
+  exception?
 )>
 <!ATTLIST translet
   name    CDATA #REQUIRED
@@ -144,24 +145,42 @@
   name      CDATA #IMPLIED
 >
 
-<!ELEMENT content (choose? | headers? | echo? | action? | include?)*>
+<!ELEMENT content (choose | headers | echo | action | include)*>
 <!ATTLIST content
   name      CDATA #IMPLIED
 >
 
 <!ELEMENT choose (when*, otherwise?)>
 
-<!ELEMENT when ((headers? | echo? | action? | include? | choose?)*, (transform | dispatch | forward | redirect)?)>
+<!ELEMENT when ((headers | echo | action | include | choose)*, (transform | dispatch | forward | redirect)?)>
 <!ATTLIST when
   test    CDATA #IMPLIED
 >
 
-<!ELEMENT otherwise ((headers? | echo? | action? | include? | choose?)*, (transform | dispatch | forward | redirect)?)>
+<!ELEMENT otherwise ((headers | echo | action | include | choose)*, (transform | dispatch | forward | redirect)?)>
+
+<!ELEMENT headers (item*)>
+<!ATTLIST headers
+  id      CDATA #IMPLIED
+  hidden  (true | false) #IMPLIED
+>
+
+<!ELEMENT echo (item*)>
+<!ATTLIST echo
+  id      CDATA #IMPLIED
+  hidden  (true | false) #IMPLIED
+>
 
 <!ELEMENT action (arguments*, properties*)>
 <!ATTLIST action
   id      CDATA #IMPLIED
-  bean    CDATA #IMPLIED
+  bean    CDATA #REQUIRED
+  method  CDATA #REQUIRED
+  hidden  (true | false) #IMPLIED
+>
+
+<!ELEMENT invoke (arguments*, properties*)>
+<!ATTLIST invoke
   method  CDATA #REQUIRED
   hidden  (true | false) #IMPLIED
 >
@@ -174,19 +193,7 @@
   hidden   (true | false) #IMPLIED
 >
 
-<!ELEMENT echo (item*)>
-<!ATTLIST echo
-  id      CDATA #IMPLIED
-  hidden  (true | false) #IMPLIED
->
-
-<!ELEMENT headers (item*)>
-<!ATTLIST headers
-  id      CDATA #IMPLIED
-  hidden  (true | false) #IMPLIED
->
-
-<!ELEMENT response ((choose? | headers? | echo? | action? | include?)*, (transform | dispatch | forward | redirect)?)>
+<!ELEMENT response ((choose | headers | echo | action | include)*, (transform | dispatch | forward | redirect)?)>
 <!ATTLIST response
   name     CDATA #IMPLIED
   encoding CDATA #IMPLIED
@@ -248,7 +255,7 @@
   profile CDATA #IMPLIED
 >
 
-<!ELEMENT item (#PCDATA | value | entry)*>
+<!ELEMENT item (#PCDATA | value | entry | bean)*>
 <!ATTLIST item
   type         (single | array | list | map | set | properties) #IMPLIED
   name         CDATA #IMPLIED
@@ -259,9 +266,9 @@
   secret       (true | false) #IMPLIED
 >
 
-<!ELEMENT value (#PCDATA)>
+<!ELEMENT value (#PCDATA | bean)*>
 
-<!ELEMENT entry (#PCDATA)>
+<!ELEMENT entry (#PCDATA | bean)*>
 <!ATTLIST entry
   name     CDATA #IMPLIED
   tokenize (true | false) #IMPLIED

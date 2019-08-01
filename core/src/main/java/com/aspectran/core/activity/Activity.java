@@ -25,6 +25,7 @@ import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.env.Environment;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
+import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.ExceptionRule;
 import com.aspectran.core.context.rule.SettingsAdviceRule;
 import com.aspectran.core.context.rule.TransletRule;
@@ -361,5 +362,7 @@ public interface Activity {
      * @return whether a bean with the specified type is present
      */
     boolean containsBean(Class<?> requiredType);
+
+    Object getPrototypeScopeBean(BeanRule beanRule);
 
 }

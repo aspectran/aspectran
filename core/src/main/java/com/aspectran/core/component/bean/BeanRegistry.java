@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.component.bean;
 
+import com.aspectran.core.context.rule.BeanRule;
+
 /**
  * The Interface BeanRegistry.
  *
@@ -93,5 +95,7 @@ public interface BeanRegistry {
      * @return whether a bean with the specified type is present
      */
     boolean containsBean(Class<?> requiredType);
+
+    Object getPrototypeScopeBean(BeanRule beanRule);
 
 }

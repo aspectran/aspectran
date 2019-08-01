@@ -21,6 +21,7 @@ import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;
 import com.aspectran.core.context.rule.type.ItemType;
+import com.aspectran.core.context.rule.type.ItemValueType;
 import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.nodelet.NodeletAdder;
@@ -32,6 +33,12 @@ import com.aspectran.core.util.nodelet.NodeletParser;
  * <p>Created: 2008. 06. 14 AM 6:56:29</p>
  */
 class ItemNodeletAdder implements NodeletAdder {
+
+    private boolean hasBeans;
+
+    public ItemNodeletAdder(boolean hasBeans) {
+        this.hasBeans = hasBeans;
+    }
 
     @Override
     public void add(String xpath, NodeletParser parser) {
@@ -55,6 +62,9 @@ class ItemNodeletAdder implements NodeletAdder {
 
             parser.pushObject(itemRule);
         });
+        if (hasBeans) {
+            nodeParser.addNestedBeanNodelets();
+        }
         parser.addNodeEndlet(text -> {
             ItemRule itemRule = parser.popObject();
             ItemRuleMap itemRuleMap = parser.peekObject();
@@ -67,13 +77,18 @@ class ItemNodeletAdder implements NodeletAdder {
             itemRuleMap.putItemRule(itemRule);
         });
         parser.setXpath(xpath + "/item/value");
+        if (hasBeans) {
+            nodeParser.addNestedBeanNodelets();
+        }
         parser.addNodeEndlet(text -> {
             if (StringUtils.hasText(text)) {
                 ItemRule itemRule = parser.peekObject();
-                if (itemRule.isListableType()) {
-                    itemRule.addValue(TokenParser.makeTokens(text, itemRule.isTokenize()));
-                } else if (itemRule.getType() == ItemType.SINGLE) {
-                    itemRule.setValue(TokenParser.makeTokens(text, itemRule.isTokenize()));
+                if (itemRule.getValueType() != ItemValueType.BEAN) {
+                    if (itemRule.isListableType()) {
+                        itemRule.addValue(TokenParser.makeTokens(text, itemRule.isTokenize()));
+                    } else if (itemRule.getType() == ItemType.SINGLE) {
+                        itemRule.setValue(TokenParser.makeTokens(text, itemRule.isTokenize()));
+                    }
                 }
             }
         });
@@ -87,13 +102,16 @@ class ItemNodeletAdder implements NodeletAdder {
             parser.pushObject(value);
             parser.pushObject(name);
         });
+        if (hasBeans) {
+            nodeParser.addNestedBeanNodelets();
+        }
         parser.addNodeEndlet(text -> {
             String name = parser.popObject();
             String value = parser.popObject();
             String tokenize = parser.popObject();
             ItemRule itemRule = parser.peekObject();
 
-            if (itemRule.isMappableType()) {
+            if (itemRule.isMappableType() && itemRule.getValueType() != ItemValueType.BEAN) {
                 boolean isTokenize = BooleanUtils.toBoolean(BooleanUtils.toNullableBooleanObject(tokenize),
                         itemRule.isTokenize());
                 Token[] tokens = null;

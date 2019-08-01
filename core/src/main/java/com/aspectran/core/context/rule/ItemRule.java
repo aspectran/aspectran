@@ -71,6 +71,12 @@ public class ItemRule {
 
     private boolean autoNamed;
 
+    private BeanRule beanRule;
+
+    private List<BeanRule> beanRuleList;
+
+    private Map<String, BeanRule> beanRuleMap;
+
     /**
      * Instantiates a new ItemRule.
      */
@@ -552,6 +558,68 @@ public class ItemRule {
         return false;
     }
 
+    public BeanRule getBeanRule() {
+        if (type != ItemType.SINGLE) {
+            throw new IllegalStateException("The type of this item must be 'single'");
+        }
+        return beanRule;
+    }
+
+    public void setBeanRule(BeanRule beanRule) {
+        if (type == null) {
+            type = ItemType.SINGLE;
+        } else if (type != ItemType.SINGLE) {
+            throw new IllegalStateException("The type of this item must be 'single'");
+        }
+        if (valueType == null) {
+            valueType = ItemValueType.BEAN;
+        }
+        this.beanRule = beanRule;
+    }
+
+    public List<BeanRule> getBeanRuleList() {
+        if (!isListableType()) {
+            throw new IllegalStateException("The type of this item must be 'array' or 'list'");
+        }
+        return beanRuleList;
+    }
+
+    public void addBeanRule(BeanRule beanRule) {
+        if (beanRule == null) {
+            throw new IllegalArgumentException("beanRule must not be null");
+        }
+        if (valueType == null) {
+            valueType = ItemValueType.BEAN;
+        }
+        if (beanRuleList == null) {
+            beanRuleList = new ArrayList<>();
+        }
+        beanRuleList.add(beanRule);
+    }
+
+    public Map<String, BeanRule> getBeanRuleMap() {
+        if (!isMappableType()) {
+            throw new IllegalStateException("The type of this item must be 'map' or 'properties'");
+        }
+        return beanRuleMap;
+    }
+
+    public void putBeanRule(String name, BeanRule beanRule) {
+        if (name == null) {
+            throw new IllegalArgumentException("name must not be null");
+        }
+        if (beanRule == null) {
+            throw new IllegalArgumentException("beanRule must not be null");
+        }
+        if (valueType == null) {
+            valueType = ItemValueType.BEAN;
+        }
+        if (beanRuleMap == null) {
+            beanRuleMap = new LinkedHashMap<>();
+        }
+        beanRuleMap.put(name, beanRule);
+    }
+
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
@@ -559,11 +627,23 @@ public class ItemRule {
         tsb.append("name", name);
         tsb.append("valueType", valueType);
         if (type == ItemType.SINGLE) {
-            tsb.append("value", tokens);
+            if (valueType == ItemValueType.BEAN) {
+                tsb.append("value", beanRule);
+            } else {
+                tsb.append("value", tokens);
+            }
         } else if (isListableType()) {
-            tsb.append("value", tokensList);
+            if (valueType == ItemValueType.BEAN) {
+                tsb.append("value", beanRuleList);
+            } else {
+                tsb.append("value", tokensList);
+            }
         } else if (isMappableType()) {
-            tsb.append("value", tokensMap);
+            if (valueType == ItemValueType.BEAN) {
+                tsb.append("value", beanRuleMap);
+            } else {
+                tsb.append("value", tokensMap);
+            }
         }
         tsb.append("tokenize", tokenize);
         tsb.append("mandatory", mandatory);

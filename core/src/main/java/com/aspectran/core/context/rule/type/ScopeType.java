@@ -47,9 +47,11 @@ public enum ScopeType {
      * @return a {@code ScopeType}, may be {@code null}
      */
     public static ScopeType resolve(String alias) {
-        for (ScopeType type : values()) {
-            if (type.alias.equals(alias)) {
-                return type;
+        if (alias != null) {
+            for (ScopeType type : values()) {
+                if (type.alias.equals(alias)) {
+                    return type;
+                }
             }
         }
         return null;

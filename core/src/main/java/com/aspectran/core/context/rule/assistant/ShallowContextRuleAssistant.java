@@ -137,17 +137,22 @@ public class ShallowContextRuleAssistant extends ContextRuleAssistant {
     }
 
     @Override
+    public void resolveBeanClass(BeanRule beanRule) {
+        // Do Nothing
+    }
+
+    @Override
+    public void resolveFactoryBeanClass(BeanRule beanRule) {
+        // Do Nothing
+    }
+
+    @Override
     public void resolveAdviceBeanClass(AspectRule aspectRule) {
         // Do Nothing
     }
 
     @Override
     public void resolveActionBeanClass(InvokeActionRule invokeActionRule) {
-        // Do Nothing
-    }
-
-    @Override
-    public void resolveFactoryBeanClass(BeanRule beanRule) {
         // Do Nothing
     }
 

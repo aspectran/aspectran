@@ -207,11 +207,11 @@ public class BeanRuleRegistry {
      * @throws IllegalRuleException if an error occurs while adding a bean rule
      */
     public void addBeanRule(final BeanRule beanRule) throws IllegalRuleException {
-        PrefixSuffixPattern prefixSuffixPattern = PrefixSuffixPattern.parse(beanRule.getId());
         String scanPattern = beanRule.getScanPattern();
         if (scanPattern != null) {
-            BeanClassScanner scanner = createBeanClassScanner(beanRule);
+            PrefixSuffixPattern prefixSuffixPattern = PrefixSuffixPattern.parse(beanRule.getId());
             List<BeanRule> beanRules = new ArrayList<>();
+            BeanClassScanner scanner = createBeanClassScanner(beanRule);
             scanner.scan(scanPattern, (resourceName, targetClass) -> {
                 BeanRule beanRule2 = beanRule.replicate();
                 if (prefixSuffixPattern != null) {
@@ -230,19 +230,6 @@ public class BeanRuleRegistry {
                 dissectBeanRule(beanRule2);
             }
         } else {
-            if (!beanRule.isFactoryOffered()) {
-                String className = beanRule.getClassName();
-                if (prefixSuffixPattern != null) {
-                    beanRule.setId(prefixSuffixPattern.join(className));
-                }
-                Class<?> beanClass;
-                try {
-                    beanClass = classLoader.loadClass(className);
-                } catch (ClassNotFoundException e) {
-                    throw new BeanRuleException("Failed to load bean class", beanRule, e);
-                }
-                beanRule.setBeanClass(beanClass);
-            }
             dissectBeanRule(beanRule);
         }
     }

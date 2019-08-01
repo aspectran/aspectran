@@ -340,6 +340,31 @@ public class ContextRuleAssistant {
         return (defaultSettings != null && defaultSettings.isPointcutPatternVerifiable());
     }
 
+    public void resolveBeanClass(BeanRule beanRule) throws IllegalRuleException {
+        if (!beanRule.isFactoryOffered() && beanRule.getClassName() != null) {
+            Class<?> beanClass = loadClass(beanRule.getClassName(), beanRule);
+            beanRule.setBeanClass(beanClass);
+        }
+    }
+
+    /**
+     * Resolve bean class for factory bean rule.
+     *
+     * @param beanRule the bean rule
+     * @throws IllegalRuleException if an illegal rule is found
+     */
+    public void resolveFactoryBeanClass(BeanRule beanRule) throws IllegalRuleException {
+        if (beanRule.isFactoryOffered() && beanRule.getFactoryBeanId() != null) {
+            Class<?> beanClass = resolveDirectiveBeanClass(beanRule.getFactoryBeanId(), beanRule);
+            if (beanClass != null) {
+                beanRule.setFactoryBeanClass(beanClass);
+                reserveBeanReference(beanClass, beanRule);
+            } else {
+                reserveBeanReference(beanRule.getFactoryBeanId(), beanRule);
+            }
+        }
+    }
+
     /**
      * Resolve bean class for the aspect rule.
      *
@@ -349,7 +374,7 @@ public class ContextRuleAssistant {
     public void resolveAdviceBeanClass(AspectRule aspectRule) throws IllegalRuleException {
         String beanIdOrClass = aspectRule.getAdviceBeanId();
         if (beanIdOrClass != null) {
-            Class<?> beanClass = resolveBeanClass(beanIdOrClass, aspectRule);
+            Class<?> beanClass = resolveDirectiveBeanClass(beanIdOrClass, aspectRule);
             if (beanClass != null) {
                 aspectRule.setAdviceBeanClass(beanClass);
                 reserveBeanReference(beanClass, aspectRule);
@@ -368,31 +393,12 @@ public class ContextRuleAssistant {
     public void resolveActionBeanClass(InvokeActionRule invokeActionRule) throws IllegalRuleException {
         String beanIdOrClass = invokeActionRule.getBeanId();
         if (beanIdOrClass != null) {
-            Class<?> beanClass = resolveBeanClass(beanIdOrClass, invokeActionRule);
+            Class<?> beanClass = resolveDirectiveBeanClass(beanIdOrClass, invokeActionRule);
             if (beanClass != null) {
                 invokeActionRule.setBeanClass(beanClass);
                 reserveBeanReference(beanClass, invokeActionRule);
             } else {
                 reserveBeanReference(beanIdOrClass, invokeActionRule);
-            }
-        }
-    }
-
-    /**
-     * Resolve bean class for factory bean rule.
-     *
-     * @param beanRule the bean rule
-     * @throws IllegalRuleException if an illegal rule is found
-     */
-    public void resolveFactoryBeanClass(BeanRule beanRule) throws IllegalRuleException {
-        String beanIdOrClass = beanRule.getFactoryBeanId();
-        if (beanRule.isFactoryOffered() && beanIdOrClass != null) {
-            Class<?> beanClass = resolveBeanClass(beanIdOrClass, beanRule);
-            if (beanClass != null) {
-                beanRule.setFactoryBeanClass(beanClass);
-                reserveBeanReference(beanClass, beanRule);
-            } else {
-                reserveBeanReference(beanIdOrClass, beanRule);
             }
         }
     }
@@ -520,7 +526,7 @@ public class ContextRuleAssistant {
     public void resolveBeanClass(ScheduleRule scheduleRule) throws IllegalRuleException {
         String beanId = scheduleRule.getSchedulerBeanId();
         if (beanId != null) {
-            Class<?> beanClass = resolveBeanClass(beanId, scheduleRule);
+            Class<?> beanClass = resolveDirectiveBeanClass(beanId, scheduleRule);
             if (beanClass != null) {
                 scheduleRule.setSchedulerBeanClass(beanClass);
                 reserveBeanReference(beanClass, scheduleRule);
@@ -539,7 +545,7 @@ public class ContextRuleAssistant {
     public void resolveBeanClass(TemplateRule templateRule) throws IllegalRuleException {
         String beanId = templateRule.getEngineBeanId();
         if (beanId != null) {
-            Class<?> beanClass = resolveBeanClass(beanId, templateRule);
+            Class<?> beanClass = resolveDirectiveBeanClass(beanId, templateRule);
             if (beanClass != null) {
                 templateRule.setEngineBeanClass(beanClass);
                 reserveBeanReference(beanClass, templateRule);
@@ -551,7 +557,7 @@ public class ContextRuleAssistant {
         }
     }
 
-    private Class<?> resolveBeanClass(String beanIdOrClass, Object referer) throws IllegalRuleException {
+    private Class<?> resolveDirectiveBeanClass(String beanIdOrClass, Object referer) throws IllegalRuleException {
         if (beanIdOrClass != null && beanIdOrClass.startsWith(BeanRule.CLASS_DIRECTIVE_PREFIX)) {
             String className = beanIdOrClass.substring(BeanRule.CLASS_DIRECTIVE_PREFIX.length());
             return loadClass(className, referer);

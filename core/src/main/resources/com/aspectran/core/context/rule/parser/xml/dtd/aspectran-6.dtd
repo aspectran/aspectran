@@ -255,7 +255,7 @@
   profile CDATA #IMPLIED
 >
 
-<!ELEMENT item (#PCDATA | value | entry)*>
+<!ELEMENT item (#PCDATA | value | entry | bean)*>
 <!ATTLIST item
   type         (single | array | list | map | set | properties) #IMPLIED
   name         CDATA #IMPLIED
@@ -266,9 +266,9 @@
   secret       (true | false) #IMPLIED
 >
 
-<!ELEMENT value (#PCDATA)>
+<!ELEMENT value (#PCDATA | bean)*>
 
-<!ELEMENT entry (#PCDATA)>
+<!ELEMENT entry (#PCDATA | bean)*>
 <!ATTLIST entry
   name     CDATA #IMPLIED
   tokenize (true | false) #IMPLIED

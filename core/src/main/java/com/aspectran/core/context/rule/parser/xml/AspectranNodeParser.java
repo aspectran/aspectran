@@ -52,6 +52,10 @@ public class AspectranNodeParser {
 
     private final ItemNodeletAdder itemNodeletAdder;
 
+    private final ItemNodeletAdder deeplyItemNodeletAdder;
+
+    private final NestedBeanNodeletAdder nestedBeanNodeletAdder;
+
     private final ResponseInnerNodeletAdder responseInnerNodeletAdder;
 
     private final ScheduleNodeletAdder scheduleNodeletAdder;
@@ -89,7 +93,9 @@ public class AspectranNodeParser {
         this.chooseNodeletAdder = new ChooseNodeletAdder();
         this.environmentNodeletAdder = new EnvironmentNodeletAdder();
         this.exceptionInnerNodeletAdder = new ExceptionInnerNodeletAdder();
-        this.itemNodeletAdder = new ItemNodeletAdder();
+        this.itemNodeletAdder = new ItemNodeletAdder(true);
+        this.deeplyItemNodeletAdder = new ItemNodeletAdder(false);
+        this.nestedBeanNodeletAdder = new NestedBeanNodeletAdder();
         this.responseInnerNodeletAdder = new ResponseInnerNodeletAdder();
         this.scheduleNodeletAdder = new ScheduleNodeletAdder();
         this.templateNodeletAdder = new TemplateNodeletAdder();
@@ -312,6 +318,14 @@ public class AspectranNodeParser {
 
     public void addItemNodelets() {
         parser.addNodelet(itemNodeletAdder);
+    }
+
+    public void addDeeplyItemNodelets() {
+        parser.addNodelet(deeplyItemNodeletAdder);
+    }
+
+    public void addNestedBeanNodelets() {
+        parser.addNodelet(nestedBeanNodeletAdder);
     }
 
 }

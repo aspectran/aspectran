@@ -21,6 +21,7 @@ import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.env.Environment;
+import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.util.ExceptionUtils;
 
 /**
@@ -225,6 +226,11 @@ public abstract class AbstractActivity implements Activity {
     @Override
     public boolean containsBean(Class<?> requiredType) {
         return context.getBeanRegistry().containsBean(requiredType);
+    }
+
+    @Override
+    public Object getPrototypeScopeBean(BeanRule beanRule) {
+        return context.getBeanRegistry().getPrototypeScopeBean(beanRule);
     }
 
     @Override

@@ -19,6 +19,7 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.request.FileParameter;
 import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.context.expr.token.Token;
+import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.type.ItemType;
@@ -32,8 +33,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -77,17 +78,41 @@ public class ItemExpression extends TokenExpression implements ItemEvaluator {
             ItemValueType valueType = itemRule.getValueType();
             Object value = null;
             if (itemType == ItemType.SINGLE) {
-                value = evaluate(itemRule.getTokens(), valueType);
+                if (valueType == ItemValueType.BEAN) {
+                    value = evaluateBean(itemRule.getBeanRule());
+                } else {
+                    value = evaluate(itemRule.getTokens(), valueType);
+                }
             } else if (itemType == ItemType.ARRAY) {
-                value = evaluateAsArray(itemRule.getTokensList(), valueType);
+                if (valueType == ItemValueType.BEAN) {
+                    value = evaluateBeanAsArray(itemRule.getBeanRuleList());
+                } else {
+                    value = evaluateAsArray(itemRule.getTokensList(), valueType);
+                }
             } else if (itemType == ItemType.LIST) {
-                value = evaluateAsList(itemRule.getTokensList(), valueType);
+                if (valueType == ItemValueType.BEAN) {
+                    value = evaluateBeanAsMap(itemRule.getBeanRuleMap());
+                } else {
+                    value = evaluateAsList(itemRule.getTokensList(), valueType);
+                }
             } else if (itemType == ItemType.SET) {
-                value = evaluateAsSet(itemRule.getTokensList(), valueType);
+                if (valueType == ItemValueType.BEAN) {
+                    value = evaluateBeanAsSet(itemRule.getBeanRuleList());
+                } else {
+                    value = evaluateAsSet(itemRule.getTokensList(), valueType);
+                }
             } else if (itemType == ItemType.MAP) {
-                value = evaluateAsMap(itemRule.getTokensMap(), valueType);
+                if (valueType == ItemValueType.BEAN) {
+                    value = evaluateBeanAsMap(itemRule.getBeanRuleMap());
+                } else {
+                    value = evaluateAsMap(itemRule.getTokensMap(), valueType);
+                }
             } else if (itemType == ItemType.PROPERTIES) {
-                value = evaluateAsProperties(itemRule.getTokensMap(), valueType);
+                if (valueType == ItemValueType.BEAN) {
+                    value = evaluateBeanAsProperties(itemRule.getBeanRuleMap());
+                } else {
+                    value = evaluateAsProperties(itemRule.getTokensMap(), valueType);
+                }
             }
             return (T)value;
         } catch (Exception e) {
@@ -232,7 +257,7 @@ public class ItemExpression extends TokenExpression implements ItemEvaluator {
         if (tokensList == null || tokensList.isEmpty()) {
             return null;
         }
-        Set<Object> valueSet = new HashSet<>();
+        Set<Object> valueSet = new LinkedHashSet<>();
         for (Token[] tokens : tokensList) {
             Object value = evaluate(tokens);
             if (value != null && valueType != null) {
@@ -299,6 +324,64 @@ public class ItemExpression extends TokenExpression implements ItemEvaluator {
         } else {
             return value;
         }
+    }
+
+    private Object evaluateBean(BeanRule beanRule) {
+        return activity.getPrototypeScopeBean(beanRule);
+    }
+
+    private Object[] evaluateBeanAsArray(List<BeanRule> beanRuleList) {
+        List<Object> valueList = evaluateBeanAsList(beanRuleList);
+        return (valueList != null ? valueList.toArray(new Object[0]) : null);
+    }
+
+    private List<Object> evaluateBeanAsList(List<BeanRule> beanRuleList) {
+        if (beanRuleList == null || beanRuleList.isEmpty()) {
+            return null;
+        }
+        List<Object> valueList = new ArrayList<>(beanRuleList.size());
+        for (BeanRule beanRule : beanRuleList) {
+            valueList.add(evaluateBean(beanRule));
+        }
+        return valueList;
+    }
+
+    private Set<Object> evaluateBeanAsSet(List<BeanRule> beanRuleList) {
+        if (beanRuleList == null || beanRuleList.isEmpty()) {
+            return null;
+        }
+        Set<Object> valueSet = new LinkedHashSet<>();
+        for (BeanRule beanRule : beanRuleList) {
+            Object value = evaluateBean(beanRule);
+            valueSet.add(value);
+        }
+        return valueSet;
+    }
+
+    private Map<String, Object> evaluateBeanAsMap(Map<String, BeanRule> beanRuleMap) {
+        if (beanRuleMap == null || beanRuleMap.isEmpty()) {
+            return null;
+        }
+        Map<String, Object> valueMap = new LinkedHashMap<>();
+        for (Map.Entry<String, BeanRule> entry : beanRuleMap.entrySet()) {
+            Object value = evaluateBean(entry.getValue());
+            valueMap.put(entry.getKey(), value);
+        }
+        return valueMap;
+    }
+
+    private Properties evaluateBeanAsProperties(Map<String, BeanRule> beanRuleMap) {
+        if (beanRuleMap == null || beanRuleMap.isEmpty()) {
+            return null;
+        }
+        Properties prop = new Properties();
+        for (Map.Entry<String, BeanRule> entry : beanRuleMap.entrySet()) {
+            Object value = evaluateBean(entry.getValue());
+            if (value != null) {
+                prop.put(entry.getKey(), value);
+            }
+        }
+        return prop;
     }
 
 }
