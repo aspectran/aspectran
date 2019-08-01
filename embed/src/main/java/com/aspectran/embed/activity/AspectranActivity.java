@@ -81,7 +81,15 @@ public class AspectranActivity extends CoreActivity {
         try {
             setSessionAdapter(aspectran.newSessionAdapter());
 
-            AspectranRequestAdapter requestAdapter = new AspectranRequestAdapter();
+            AspectranRequestAdapter requestAdapter = new AspectranRequestAdapter(getTranslet().getRequestMethod());
+            if (getOuterActivity() != null) {
+                requestAdapter.preparse(getOuterActivity().getRequestAdapter());
+            } else {
+                requestAdapter.preparse(attributeMap, parameterMap);
+            }
+            if (body != null) {
+                requestAdapter.setBody(body);
+            }
             setRequestAdapter(requestAdapter);
 
             if (outputWriter == null) {
@@ -89,16 +97,6 @@ public class AspectranActivity extends CoreActivity {
             }
             AspectranResponseAdapter responseAdapter = new AspectranResponseAdapter(outputWriter);
             setResponseAdapter(responseAdapter);
-
-            if (parameterMap != null) {
-                requestAdapter.setParameterMap(parameterMap);
-            }
-            if (attributeMap != null) {
-                requestAdapter.setAttributeMap(attributeMap);
-            }
-            if (body != null) {
-                requestAdapter.setBody(body);
-            }
 
             super.adapt();
         } catch (Exception e) {

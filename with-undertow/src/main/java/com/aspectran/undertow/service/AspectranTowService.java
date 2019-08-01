@@ -45,6 +45,10 @@ public class AspectranTowService extends AspectranCoreService implements TowServ
         super(rootService);
     }
 
+    public String getUriDecoding() {
+        return uriDecoding;
+    }
+
     protected void setUriDecoding(String uriDecoding) {
         this.uriDecoding = uriDecoding;
     }

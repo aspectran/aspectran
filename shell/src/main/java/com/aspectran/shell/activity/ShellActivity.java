@@ -98,7 +98,7 @@ public class ShellActivity extends CoreActivity {
 
             ShellRequestAdapter requestAdapter = new ShellRequestAdapter(getTranslet().getRequestMethod());
             requestAdapter.setEncoding(console.getEncoding());
-            if (isIncluded()) {
+            if (getOuterActivity() != null) {
                 requestAdapter.preparse(getOuterActivity().getRequestAdapter());
             } else {
                 requestAdapter.preparse(null, parameterMap);

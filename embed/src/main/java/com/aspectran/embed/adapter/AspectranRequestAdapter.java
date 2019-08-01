@@ -17,6 +17,7 @@ package com.aspectran.embed.adapter;
 
 import com.aspectran.core.adapter.BasicRequestAdapter;
 import com.aspectran.core.adapter.RequestAdapter;
+import com.aspectran.core.context.rule.type.MethodType;
 
 /**
  * Adapt Aspectran Request to Core {@link RequestAdapter}.
@@ -25,9 +26,11 @@ public class AspectranRequestAdapter extends BasicRequestAdapter {
 
     /**
      * Instantiates a new AspectranRequestAdapter.
+     *
+     * @param requestMethod the request method
      */
-    public AspectranRequestAdapter() {
-        super(null);
+    public AspectranRequestAdapter(MethodType requestMethod) {
+        super(requestMethod, null);
     }
 
 }

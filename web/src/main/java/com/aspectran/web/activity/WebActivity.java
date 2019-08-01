@@ -113,7 +113,7 @@ public class WebActivity extends CoreActivity {
             setSessionAdapter(sessionAdapter);
 
             HttpServletRequestAdapter requestAdapter = new HttpServletRequestAdapter(getTranslet().getRequestMethod(), request);
-            if (isIncluded()) {
+            if (getOuterActivity() != null) {
                 requestAdapter.preparse((HttpServletRequestAdapter)getOuterActivity().getRequestAdapter());
             } else {
                 requestAdapter.preparse();

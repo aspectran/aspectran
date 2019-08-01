@@ -84,11 +84,15 @@ public class TowActivity extends CoreActivity {
     @Override
     protected void adapt() throws AdapterException {
         try {
+            if (!exchange.isBlocking()) {
+                exchange.startBlocking();
+            }
+
 //            SessionAdapter sessionAdapter = new UndertowSessionAdapter(exchange, getActivityContext());
 //            setSessionAdapter(sessionAdapter);
 
             TowRequestAdapter requestAdapter = new TowRequestAdapter(getTranslet().getRequestMethod(), exchange);
-            if (isIncluded()) {
+            if (getOuterActivity() != null) {
                 requestAdapter.preparse((TowRequestAdapter)getOuterActivity().getRequestAdapter());
             } else {
                 requestAdapter.preparse();

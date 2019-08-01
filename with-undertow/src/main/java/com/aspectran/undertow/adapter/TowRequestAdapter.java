@@ -32,7 +32,7 @@ public class TowRequestAdapter extends AbstractRequestAdapter {
     private MediaType mediaType;
 
     /**
-     * Instantiates a new UndertowRequestAdapter.
+     * Instantiates a new TowRequestAdapter.
      *
      * @param requestMethod the request method
      * @param exchange the adaptee object

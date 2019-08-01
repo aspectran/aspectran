@@ -1,4 +1,4 @@
-package com.aspectran.undertow.server.handler;
+package com.aspectran.undertow.server.handlers.http;
 
 import com.aspectran.core.component.bean.aware.ActivityContextAware;
 import com.aspectran.core.context.ActivityContext;
@@ -18,7 +18,7 @@ import java.io.IOException;
 /**
  * <p>Created: 2019-07-31</p>
  */
-public abstract class AbstractAspectranHttpHandler implements HttpHandler, ActivityContextAware {
+public abstract class AbstractHttpHandler implements HttpHandler, ActivityContextAware {
 
     private ActivityContext context;
 
@@ -38,7 +38,6 @@ public abstract class AbstractAspectranHttpHandler implements HttpHandler, Activ
 
     @Override
     public void handleRequest(HttpServerExchange exchange) throws Exception {
-        exchange.startBlocking();
         if (exchange.isInIoThread()) {
             exchange.dispatch(this);
         } else {

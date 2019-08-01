@@ -23,7 +23,7 @@ import com.aspectran.core.adapter.BasicApplicationAdapter;
 public class TowApplicationAdapter extends BasicApplicationAdapter {
 
     /**
-     * Instantiates a new UndertowApplicationAdapter.
+     * Instantiates a new TowApplicationAdapter.
      */
     public TowApplicationAdapter() {
         super(null);

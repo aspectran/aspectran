@@ -9,7 +9,7 @@ import com.aspectran.core.component.session.SessionAgent;
 public class TowSessionAdapter extends BasicSessionAdapter {
 
     /**
-     * Instantiates a new UndertowSessionAdapter.
+     * Instantiates a new TowSessionAdapter.
      *
      * @param agent the session agent
      */

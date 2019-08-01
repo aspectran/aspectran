@@ -1,4 +1,4 @@
-package com.aspectran.undertow.server.handler;
+package com.aspectran.undertow.server.handlers.http;
 
 import com.aspectran.core.component.bean.ablility.DisposableBean;
 import com.aspectran.core.component.bean.ablility.InitializableBean;
@@ -11,14 +11,14 @@ import io.undertow.server.HttpServerExchange;
 /**
  * <p>Created: 2019-07-27</p>
  */
-public class StandaloneAspectranHttpHandler extends AbstractAspectranHttpHandler
+public class StandaloneHttpHandler extends AbstractHttpHandler
         implements InitializableBean, DisposableBean {
 
     private final AspectranConfig aspectranConfig;
 
     private AspectranTowService towService;
 
-    public StandaloneAspectranHttpHandler(AspectranConfig aspectranConfig) {
+    public StandaloneHttpHandler(AspectranConfig aspectranConfig) {
         this.aspectranConfig = aspectranConfig;
     }
 

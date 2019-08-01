@@ -1,4 +1,4 @@
-package com.aspectran.undertow.server.handler;
+package com.aspectran.undertow.server.handlers.http;
 
 import com.aspectran.core.component.bean.ablility.InitializableBean;
 import com.aspectran.undertow.service.AspectranTowService;
@@ -6,7 +6,7 @@ import com.aspectran.undertow.service.AspectranTowService;
 /**
  * <p>Created: 2019-07-27</p>
  */
-public class DefaultAspectranHttpHandler extends AbstractAspectranHttpHandler implements InitializableBean {
+public class DefaultHttpHandler extends AbstractHttpHandler implements InitializableBean {
 
     private AspectranTowService towService;
 

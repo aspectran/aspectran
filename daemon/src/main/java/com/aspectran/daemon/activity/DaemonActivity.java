@@ -69,7 +69,7 @@ public class DaemonActivity extends CoreActivity {
             setSessionAdapter(service.newSessionAdapter());
 
             DaemonRequestAdapter requestAdapter = new DaemonRequestAdapter(getTranslet().getRequestMethod());
-            if (isIncluded()) {
+            if (getOuterActivity() != null) {
                 requestAdapter.preparse(getOuterActivity().getRequestAdapter());
             } else {
                 requestAdapter.preparse(attributeMap, parameterMap);
