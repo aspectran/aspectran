@@ -42,6 +42,7 @@ import com.aspectran.core.context.rule.AutowireRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
+import com.aspectran.core.context.rule.ItemRuleUtils;
 import com.aspectran.core.context.rule.ParameterBindingRule;
 import com.aspectran.core.context.rule.type.AutowireTargetType;
 import com.aspectran.core.context.rule.type.BeanProxifierType;
@@ -61,7 +62,7 @@ import java.util.Set;
 
 /**
  * The Class AbstractBeanFactory.
- * 
+ *
  * <p>Created: 2009. 03. 09 PM 23:48:09</p>
  */
 public abstract class AbstractBeanFactory extends AbstractComponent {
@@ -131,7 +132,7 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
                 for (Map.Entry<String, ItemRule> entry : constructorArgumentItemRuleMap.entrySet()) {
                     Object value = valueMap.get(entry.getKey());
                     args[i] = value;
-                    argTypes[i] = ItemRule.getPrototypeClass(entry.getValue(), value);
+                    argTypes[i] = ItemRuleUtils.getPrototypeClass(entry.getValue(), value);
                     i++;
                 }
             } else {

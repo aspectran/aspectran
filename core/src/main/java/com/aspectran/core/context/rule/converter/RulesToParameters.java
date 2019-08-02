@@ -905,32 +905,62 @@ public class RulesToParameters {
         if (!itemRule.isAutoNamed()) {
             itemParameters.putValue(ItemParameters.name, itemRule.getName());
         }
-        itemParameters.putValueNonNull(ItemParameters.valueType, itemRule.getValueType());
+        if (itemRule.getValueType() != ItemValueType.STRING && itemRule.getValueType() != ItemValueType.BEAN) {
+            itemParameters.putValueNonNull(ItemParameters.valueType, itemRule.getValueType());
+        }
         itemParameters.putValueNonNull(ItemParameters.tokenize, itemRule.getTokenize());
         itemParameters.putValueNonNull(ItemParameters.mandatory, itemRule.getMandatory());
         itemParameters.putValueNonNull(ItemParameters.secret, itemRule.getSecret());
 
         if (itemRule.getType() == ItemType.SINGLE) {
-            Object o = determineItemValue(itemRule.getValueType(), itemRule.getValue());
-            itemParameters.putValueNonNull(ItemParameters.value, o);
+            if (itemRule.getValueType() == ItemValueType.BEAN) {
+                BeanRule beanRule = itemRule.getBeanRule();
+                BeanParameters beanParameters = toBeanParameters(beanRule);
+                itemParameters.putValueNonNull(ItemParameters.bean, beanParameters);
+            } else {
+                Object o = determineItemValue(itemRule.getValue(), itemRule.getValueType());
+                itemParameters.putValueNonNull(ItemParameters.value, o);
+            }
         } else if (itemRule.isListableType()) {
-            List<String> valueList = itemRule.getValueList();
-            if (valueList != null && !valueList.isEmpty()) {
-                Parameter p = itemParameters.getParameter(ItemParameters.value);
-                p.arraylize();
-                for (String value : valueList) {
-                    Object o = determineItemValue(itemRule.getValueType(), value);
-                    p.putValue(o);
+            if (itemRule.getValueType() == ItemValueType.BEAN) {
+                List<BeanRule> beanRuleList = itemRule.getBeanRuleList();
+                if (beanRuleList != null) {
+                    for (BeanRule beanRule : beanRuleList) {
+                        BeanParameters beanParameters = toBeanParameters(beanRule);
+                        itemParameters.putValueNonNull(ItemParameters.bean, beanParameters);
+                    }
+                }
+            } else {
+                List<String> valueList = itemRule.getValueList();
+                if (valueList != null && !valueList.isEmpty()) {
+                    Parameter p = itemParameters.getParameter(ItemParameters.value);
+                    p.arraylize();
+                    for (String value : valueList) {
+                        Object o = determineItemValue(value, itemRule.getValueType());
+                        p.putValue(o);
+                    }
                 }
             }
         } else if (itemRule.isMappableType()) {
-            Map<String, String> valueMap = itemRule.getValueMap();
-            if (valueMap != null) {
-                for (Map.Entry<String, String> entry : valueMap.entrySet()) {
-                    EntryParameters ps = itemParameters.newParameters(ItemParameters.entry);
-                    Object o = determineItemValue(itemRule.getValueType(), entry.getValue());
-                    ps.putValue(EntryParameters.name, entry.getKey());
-                    ps.putValue(EntryParameters.value, o);
+            if (itemRule.getValueType() == ItemValueType.BEAN) {
+                Map<String, BeanRule> beanRuleMap = itemRule.getBeanRuleMap();
+                if (beanRuleMap != null) {
+                    for (Map.Entry<String, BeanRule> entry : beanRuleMap.entrySet()) {
+                        EntryParameters ps = itemParameters.newParameters(ItemParameters.entry);
+                        BeanParameters beanParameters = toBeanParameters(entry.getValue());
+                        ps.putValue(EntryParameters.name, entry.getKey());
+                        ps.putValue(EntryParameters.bean, beanParameters);
+                    }
+                }
+            } else {
+                Map<String, String> valueMap = itemRule.getValueMap();
+                if (valueMap != null) {
+                    for (Map.Entry<String, String> entry : valueMap.entrySet()) {
+                        EntryParameters ps = itemParameters.newParameters(ItemParameters.entry);
+                        Object o = determineItemValue(entry.getValue(), itemRule.getValueType());
+                        ps.putValue(EntryParameters.name, entry.getKey());
+                        ps.putValue(EntryParameters.value, o);
+                    }
                 }
             }
         }
@@ -938,7 +968,7 @@ public class RulesToParameters {
         return itemParameters;
     }
 
-    private static Object determineItemValue(ItemValueType valueType, String value) {
+    private static Object determineItemValue(String value, ItemValueType valueType) {
         if (value == null) {
             return null;
         }

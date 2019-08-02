@@ -113,6 +113,7 @@ public class AspectCommand extends AbstractCommand {
                 for (String keyw : keywords) {
                     if (aspectRule.getId().toLowerCase().contains(keyw.toLowerCase())) {
                         exists = true;
+                        break;
                     }
                 }
                 if (!exists) {

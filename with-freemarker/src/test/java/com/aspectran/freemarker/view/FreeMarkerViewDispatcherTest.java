@@ -36,7 +36,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -53,7 +52,7 @@ class FreeMarkerViewDispatcherTest {
     private EmbeddedAspectran aspectran;
 
     @BeforeAll
-    void ready() throws IOException {
+    void ready() {
         AspectranConfig aspectranConfig = new AspectranConfig();
         AspectranParameters parameters = aspectranConfig.newContextConfig().newAspectranParameters();
         parameters.setDefaultTemplateEngineBean("freemarker");

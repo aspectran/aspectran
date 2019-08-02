@@ -16,9 +16,9 @@
 package com.aspectran.daemon.command.polling;
 
 import com.aspectran.core.context.rule.IllegalRuleException;
-import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleList;
 import com.aspectran.core.context.rule.ItemRuleMap;
+import com.aspectran.core.context.rule.ItemRuleUtils;
 import com.aspectran.core.context.rule.params.ItemHolderParameters;
 import com.aspectran.core.context.rule.params.ItemParameters;
 import com.aspectran.core.util.apon.AbstractParameters;
@@ -108,7 +108,7 @@ public class CommandParameters extends AbstractParameters {
         ItemHolderParameters itemHolderParameters = getParameters(arguments);
         if (itemHolderParameters != null) {
             List<ItemParameters> itemParametersList = itemHolderParameters.getItemParametersList();
-            return ItemRule.toItemRuleList(itemParametersList);
+            return ItemRuleUtils.toItemRuleList(itemParametersList);
         } else {
             return null;
         }
@@ -118,7 +118,7 @@ public class CommandParameters extends AbstractParameters {
         ItemHolderParameters itemHolderParameters = getParameters(arguments);
         if (itemHolderParameters != null) {
             List<ItemParameters> itemParametersList = itemHolderParameters.getItemParametersList();
-            return ItemRule.toItemRuleMap(itemParametersList);
+            return ItemRuleUtils.toItemRuleMap(itemParametersList);
         } else {
             return null;
         }
@@ -128,7 +128,7 @@ public class CommandParameters extends AbstractParameters {
         ItemHolderParameters itemHolderParameters = getParameters(properties);
         if (itemHolderParameters != null) {
             List<ItemParameters> itemParametersList = itemHolderParameters.getItemParametersList();
-            return ItemRule.toItemRuleMap(itemParametersList);
+            return ItemRuleUtils.toItemRuleMap(itemParametersList);
         } else {
             return null;
         }
@@ -138,7 +138,7 @@ public class CommandParameters extends AbstractParameters {
         ItemHolderParameters itemHolderParameters = getParameters(parameters);
         if (itemHolderParameters != null) {
             List<ItemParameters> itemParametersList = itemHolderParameters.getItemParametersList();
-            return ItemRule.toItemRuleMap(itemParametersList);
+            return ItemRuleUtils.toItemRuleMap(itemParametersList);
         } else {
             return null;
         }
@@ -148,7 +148,7 @@ public class CommandParameters extends AbstractParameters {
         ItemHolderParameters itemHolderParameters = getParameters(attributes);
         if (itemHolderParameters != null) {
             List<ItemParameters> itemParametersList = itemHolderParameters.getItemParametersList();
-            return ItemRule.toItemRuleMap(itemParametersList);
+            return ItemRuleUtils.toItemRuleMap(itemParametersList);
         } else {
             return null;
         }

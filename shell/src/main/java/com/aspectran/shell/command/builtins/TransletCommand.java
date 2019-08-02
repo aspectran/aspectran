@@ -162,6 +162,7 @@ public class TransletCommand extends AbstractCommand {
                 for (String keyw : keywords) {
                     if (transletName.toLowerCase().contains(keyw.toLowerCase())) {
                         exists = true;
+                        break;
                     }
                 }
                 if (!exists) {

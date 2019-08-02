@@ -33,7 +33,7 @@ public abstract class AbstractRequestAdapter extends AbstractRequest implements 
     /**
      * Instantiates a new AbstractRequestAdapter.
      *
-     * @param adaptee the request method
+     * @param requestMethod the request method
      * @param adaptee the adaptee object
      */
     public AbstractRequestAdapter(MethodType requestMethod, Object adaptee) {

@@ -25,6 +25,7 @@ public class ItemParameters extends AbstractParameters {
     public static final ParameterKey name;
     public static final ParameterKey value;
     public static final ParameterKey entry;
+    public static final ParameterKey bean;
     public static final ParameterKey valueType;
     public static final ParameterKey tokenize;
     public static final ParameterKey mandatory;
@@ -37,6 +38,7 @@ public class ItemParameters extends AbstractParameters {
         name = new ParameterKey("name", ValueType.STRING);
         value = new ParameterKey("value", new String[] {"item"}, ValueType.VARIABLE);
         entry = new ParameterKey("entry", EntryParameters.class, true, true);
+        bean = new ParameterKey("bean", BeanParameters.class, true, true);
         valueType = new ParameterKey("valueType", ValueType.STRING);
         tokenize = new ParameterKey("tokenize", ValueType.BOOLEAN);
         mandatory = new ParameterKey("mandatory", ValueType.BOOLEAN);
@@ -47,6 +49,7 @@ public class ItemParameters extends AbstractParameters {
                 name,
                 value,
                 entry,
+                bean,
                 valueType,
                 tokenize,
                 mandatory,

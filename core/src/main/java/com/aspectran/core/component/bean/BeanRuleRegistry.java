@@ -207,6 +207,9 @@ public class BeanRuleRegistry {
      * @throws IllegalRuleException if an error occurs while adding a bean rule
      */
     public void addBeanRule(final BeanRule beanRule) throws IllegalRuleException {
+        if (beanRule == null) {
+            throw new IllegalArgumentException("beanRule must not be null");
+        }
         String scanPattern = beanRule.getScanPattern();
         if (scanPattern != null) {
             PrefixSuffixPattern prefixSuffixPattern = PrefixSuffixPattern.parse(beanRule.getId());

@@ -22,6 +22,7 @@ import com.aspectran.core.context.expr.ItemExpression;
 import com.aspectran.core.context.rule.InvokeActionRule;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
+import com.aspectran.core.context.rule.ItemRuleUtils;
 import com.aspectran.core.context.rule.type.ActionType;
 import com.aspectran.core.util.BeanUtils;
 import com.aspectran.core.util.MethodUtils;
@@ -35,7 +36,7 @@ import java.util.Map;
 
 /**
  * {@code InvokeAction} that invokes a method of the bean instance.
- * 
+ *
  * <p>Created: 2008. 03. 22 PM 5:50:35</p>
  */
 public class InvokeAction implements Executable {
@@ -214,7 +215,7 @@ public class InvokeAction implements Executable {
 
             for (ItemRule ir : argumentItemRuleMap.values()) {
                 Object o = valueMap.get(ir.getName());
-                argsTypes[argIndex] = ItemRule.getPrototypeClass(ir, o);
+                argsTypes[argIndex] = ItemRuleUtils.getPrototypeClass(ir, o);
                 argsObjects[argIndex] = o;
                 argIndex++;
             }

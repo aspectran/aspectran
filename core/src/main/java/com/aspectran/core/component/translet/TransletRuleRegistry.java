@@ -202,6 +202,9 @@ public class TransletRuleRegistry extends AbstractComponent {
     }
 
     public void addTransletRule(final TransletRule transletRule) throws IllegalRuleException {
+        if (transletRule == null) {
+            throw new IllegalArgumentException("transletRule must not be null");
+        }
         String scanPath = transletRule.getScanPath();
         if (scanPath != null) {
             TransletScanner scanner = createTransletScanner(transletRule);

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 6.0//EN"
+        "http://aspectran.github.io/dtd/aspectran-6.dtd">
+<aspectran>
+
+    <bean id="nestedInnerStringBean" class="java.lang.String" scope="prototype">
+        <constructor>
+            <arguments>
+                <item>
+                    <bean class="java.lang.String">
+                        <constructor>
+                            <arguments>
+                                <item>
+                                    <bean class="java.lang.String">
+                                        <constructor>
+                                            <arguments>
+                                                <item>Nested Inner String Bean</item>
+                                            </arguments>
+                                        </constructor>
+                                    </bean>
+                                </item>
+                            </arguments>
+                        </constructor>
+                    </bean>
+                </item>
+            </arguments>
+        </constructor>
+    </bean>
+
+</aspectran>

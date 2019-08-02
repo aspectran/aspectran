@@ -19,7 +19,6 @@ import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;
-import com.aspectran.core.context.rule.type.ItemValueType;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.TextStyler;
 import com.aspectran.core.util.nodelet.NodeletAdder;
@@ -27,10 +26,10 @@ import com.aspectran.core.util.nodelet.NodeletParser;
 
 /**
  * The Class BeanInnerNodeletAdder.
- * 
+ *
  * <p>Created: 2008. 06. 14 AM 6:56:29</p>
  */
-class NestedBeanNodeletAdder implements NodeletAdder {
+class InnerBeanNodeletAdder implements NodeletAdder {
 
     @Override
     public void add(String xpath, NodeletParser parser) {
@@ -62,15 +61,13 @@ class NestedBeanNodeletAdder implements NodeletAdder {
             assistant.resolveFactoryBeanClass(beanRule);
 
             ItemRule itemRule = parser.peekObject();
-            if (itemRule.getValueType() == ItemValueType.BEAN) {
-                if (itemRule.isListableType()) {
-                    itemRule.addBeanRule(beanRule);
-                } else if (itemRule.isMappableType()) {
-                    String name = parser.peekObject();
-                    itemRule.putBeanRule(name, beanRule);
-                } else {
-                    itemRule.setBeanRule(beanRule);
-                }
+            if (itemRule.isListableType()) {
+                itemRule.addBeanRule(beanRule);
+            } else if (itemRule.isMappableType()) {
+                String name = parser.peekObject();
+                itemRule.putBeanRule(name, beanRule);
+            } else {
+                itemRule.setBeanRule(beanRule);
             }
         });
         parser.setXpath(xpath + "/bean/description");

@@ -156,6 +156,7 @@ public class ComponentCommand extends AbstractCommand {
                 for (String keyw : keywords) {
                     if (aspectRule.getId().toLowerCase().contains(keyw.toLowerCase())) {
                         exists = true;
+                        break;
                     }
                 }
                 if (!exists) {
@@ -264,6 +265,7 @@ public class ComponentCommand extends AbstractCommand {
                 for (String keyw : keywords) {
                     if (transletName.toLowerCase().contains(keyw.toLowerCase())) {
                         exists = true;
+                        break;
                     }
                 }
                 if (!exists) {
@@ -352,6 +354,7 @@ public class ComponentCommand extends AbstractCommand {
                     for (String keyw : keywords) {
                         if (jobRule.getTransletName().toLowerCase().contains(keyw.toLowerCase())) {
                             exists = true;
+                            break;
                         }
                     }
                     if (!exists) {

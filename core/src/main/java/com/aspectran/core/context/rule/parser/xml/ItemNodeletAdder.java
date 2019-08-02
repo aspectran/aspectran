@@ -17,6 +17,7 @@ package com.aspectran.core.context.rule.parser.xml;
 
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.expr.token.TokenParser;
+import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;
@@ -29,15 +30,15 @@ import com.aspectran.core.util.nodelet.NodeletParser;
 
 /**
  * The Class ItemNodeletAdder.
- * 
+ *
  * <p>Created: 2008. 06. 14 AM 6:56:29</p>
  */
 class ItemNodeletAdder implements NodeletAdder {
 
-    private boolean hasBeans;
+    private boolean hasInnerBeans;
 
-    public ItemNodeletAdder(boolean hasBeans) {
-        this.hasBeans = hasBeans;
+    ItemNodeletAdder(boolean hasInnerBeans) {
+        this.hasInnerBeans = hasInnerBeans;
     }
 
     @Override
@@ -59,11 +60,16 @@ class ItemNodeletAdder implements NodeletAdder {
             if (value != null && itemRule.getType() == ItemType.SINGLE) {
                 itemRule.setValue(value);
             }
-
             parser.pushObject(itemRule);
         });
-        if (hasBeans) {
-            nodeParser.addNestedBeanNodelets();
+        if (hasInnerBeans) {
+            nodeParser.addInnerBeanNodelets();
+        } else {
+            parser.setXpath(xpath + "/item/bean");
+            parser.addNodelet(attrs -> {
+                throw new IllegalRuleException("Inner beans can not be nested");
+            });
+            parser.setXpath(xpath + "/item");
         }
         parser.addNodeEndlet(text -> {
             ItemRule itemRule = parser.popObject();
@@ -77,8 +83,14 @@ class ItemNodeletAdder implements NodeletAdder {
             itemRuleMap.putItemRule(itemRule);
         });
         parser.setXpath(xpath + "/item/value");
-        if (hasBeans) {
-            nodeParser.addNestedBeanNodelets();
+        if (hasInnerBeans) {
+            nodeParser.addInnerBeanNodelets();
+        } else {
+            parser.setXpath(xpath + "/item/value/bean");
+            parser.addNodelet(attrs -> {
+                throw new IllegalRuleException("Inner beans can not be nested");
+            });
+            parser.setXpath(xpath + "/item/value");
         }
         parser.addNodeEndlet(text -> {
             if (StringUtils.hasText(text)) {
@@ -102,8 +114,14 @@ class ItemNodeletAdder implements NodeletAdder {
             parser.pushObject(value);
             parser.pushObject(name);
         });
-        if (hasBeans) {
-            nodeParser.addNestedBeanNodelets();
+        if (hasInnerBeans) {
+            nodeParser.addInnerBeanNodelets();
+        } else {
+            parser.setXpath(xpath + "/item/entry/bean");
+            parser.addNodelet(attrs -> {
+                throw new IllegalRuleException("Inner beans can not be nested");
+            });
+            parser.setXpath(xpath + "/item/entry");
         }
         parser.addNodeEndlet(text -> {
             String name = parser.popObject();

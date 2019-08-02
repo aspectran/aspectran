@@ -63,7 +63,7 @@ import com.aspectran.core.context.rule.DispatchRule;
 import com.aspectran.core.context.rule.ExceptionThrownRule;
 import com.aspectran.core.context.rule.ForwardRule;
 import com.aspectran.core.context.rule.IllegalRuleException;
-import com.aspectran.core.context.rule.ItemRule;
+import com.aspectran.core.context.rule.ItemRuleUtils;
 import com.aspectran.core.context.rule.JoinpointRule;
 import com.aspectran.core.context.rule.ParameterBindingRule;
 import com.aspectran.core.context.rule.PointcutRule;
@@ -555,10 +555,12 @@ public class AnnotatedConfigParser {
         TransletRule transletRule = TransletRule.newInstance(transletName, allowedMethods);
 
         if (parameters != null) {
-            transletRule.touchRequestRule(false).setParameterItemRuleMap(ItemRule.toItemRuleMap(parameters));
+            transletRule.touchRequestRule(false)
+                .setParameterItemRuleMap(ItemRuleUtils.toItemRuleMap(parameters));
         }
         if (attributes != null) {
-            transletRule.touchRequestRule(false).setAttributeItemRuleMap(ItemRule.toItemRuleMap(attributes));
+            transletRule.touchRequestRule(false)
+                .setAttributeItemRuleMap(ItemRuleUtils.toItemRuleMap(attributes));
         }
 
         Action actionAnno = method.getAnnotation(Action.class);
@@ -638,7 +640,7 @@ public class AnnotatedConfigParser {
         ForwardRule forwardRule = ForwardRule.newInstance(translet);
         Attribute[] attributes = forwardAnno.attributes();
         if (attributes.length > 0) {
-            forwardRule.setAttributeItemRuleMap(ItemRule.toItemRuleMap(attributes));
+            forwardRule.setAttributeItemRuleMap(ItemRuleUtils.toItemRuleMap(attributes));
         }
         return forwardRule;
     }
@@ -651,7 +653,7 @@ public class AnnotatedConfigParser {
         RedirectRule redirectRule = RedirectRule.newInstance(path);
         Parameter[] parameters = redirectAnno.parameters();
         if (parameters.length > 0) {
-            redirectRule.setParameterItemRuleMap(ItemRule.toItemRuleMap(parameters));
+            redirectRule.setParameterItemRuleMap(ItemRuleUtils.toItemRuleMap(parameters));
         }
         return redirectRule;
     }

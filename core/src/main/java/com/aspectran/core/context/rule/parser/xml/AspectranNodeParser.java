@@ -16,11 +16,15 @@
 package com.aspectran.core.context.rule.parser.xml;
 
 import com.aspectran.core.context.rule.AppendRule;
+import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.context.rule.appender.RuleAppendHandler;
 import com.aspectran.core.context.rule.appender.RuleAppender;
 import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;
+import com.aspectran.core.util.ExceptionUtils;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.TextStyler;
+import com.aspectran.core.util.logging.Log;
+import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.core.util.nodelet.NodeletParser;
 import org.xml.sax.InputSource;
 
@@ -29,10 +33,12 @@ import java.io.InputStream;
 
 /**
  * The Class AspectranNodeParser.
- * 
+ *
  * <p>Created: 2008. 06. 14 AM 4:39:24</p>
  */
 public class AspectranNodeParser {
+
+    private static final Log log = LogFactory.getLog(AspectranNodeParser.class);
 
     private final ContextRuleAssistant assistant;
 
@@ -50,11 +56,11 @@ public class AspectranNodeParser {
 
     private final ExceptionInnerNodeletAdder exceptionInnerNodeletAdder;
 
+    private final InnerBeanNodeletAdder innerBeanNodeletAdder;
+
     private final ItemNodeletAdder itemNodeletAdder;
 
     private final ItemNodeletAdder deeplyItemNodeletAdder;
-
-    private final NestedBeanNodeletAdder nestedBeanNodeletAdder;
 
     private final ResponseInnerNodeletAdder responseInnerNodeletAdder;
 
@@ -93,9 +99,9 @@ public class AspectranNodeParser {
         this.chooseNodeletAdder = new ChooseNodeletAdder();
         this.environmentNodeletAdder = new EnvironmentNodeletAdder();
         this.exceptionInnerNodeletAdder = new ExceptionInnerNodeletAdder();
+        this.innerBeanNodeletAdder = new InnerBeanNodeletAdder();
         this.itemNodeletAdder = new ItemNodeletAdder(true);
         this.deeplyItemNodeletAdder = new ItemNodeletAdder(false);
-        this.nestedBeanNodeletAdder = new NestedBeanNodeletAdder();
         this.responseInnerNodeletAdder = new ResponseInnerNodeletAdder();
         this.scheduleNodeletAdder = new ScheduleNodeletAdder();
         this.templateNodeletAdder = new TemplateNodeletAdder();
@@ -140,7 +146,12 @@ public class AspectranNodeParser {
             inputSource.setSystemId(ruleAppender.getQualifiedName());
             parser.parse(inputSource);
         } catch (Exception e) {
-            throw new Exception("Error parsing aspectran configuration", e);
+            Throwable cause = ExceptionUtils.getRootCause(e);
+            if (cause instanceof IllegalRuleException) {
+                parsingFailed(cause.getMessage(), cause);
+            } else {
+                parsingFailed("Error parsing aspectran configuration", cause);
+            }
         } finally {
             if (inputStream != null) {
                 try {
@@ -150,6 +161,14 @@ public class AspectranNodeParser {
                 }
             }
         }
+    }
+
+    public void parsingFailed(String message, Throwable cause) throws Exception {
+        String detail = message + ": " +
+            assistant.getRuleAppendHandler().getCurrentRuleAppender().getNodeTracker() + " on " +
+            assistant.getRuleAppendHandler().getCurrentRuleAppender().getQualifiedName();
+        log.error(detail);
+        throw new Exception(detail, cause);
     }
 
     /**
@@ -293,19 +312,23 @@ public class AspectranNodeParser {
         parser.addNodelet(chooseNodeletAdder);
         parser.setXpath(xpath + "/choose/otherwise");
         parser.addNodelet(chooseNodeletAdder);
-        parser.setXpath(xpath + "/choose/when/choose/when");
-        parser.addNodelet(chooseNodeletAdder);
-        parser.setXpath(xpath + "/choose/when/choose/otherwise");
-        parser.addNodelet(chooseNodeletAdder);
-        parser.setXpath(xpath + "/choose/otherwise/choose/when");
-        parser.addNodelet(chooseNodeletAdder);
-        parser.setXpath(xpath + "/choose/otherwise/choose/otherwise");
-        parser.addNodelet(chooseNodeletAdder);
+        parser.setXpath(xpath + "/choose/when/choose/when/choose");
+        parser.addNodelet(attrs -> {
+            throw new IllegalRuleException("The <choose> element can only be nested up to 2 times");
+        });
+        parser.setXpath(xpath + "/choose/when/choose/otherwise/choose");
+        parser.addNodelet(attrs -> {
+            throw new IllegalRuleException("The <choose> element can only be nested up to 2 times");
+        });
+        parser.setXpath(xpath + "/choose/otherwise/choose/when/choose");
+        parser.addNodelet(attrs -> {
+            throw new IllegalRuleException("The <choose> element can only be nested up to 2 times");
+        });
+        parser.setXpath(xpath + "/choose/otherwise/choose/otherwise/choose");
+        parser.addNodelet(attrs -> {
+            throw new IllegalRuleException("The <choose> element can only be nested up to 2 times");
+        });
         parser.setXpath(xpath);
-    }
-
-    public void addResponseInnerNodelets() {
-        parser.addNodelet(responseInnerNodeletAdder);
     }
 
     public void addAspectAdviceInnerNodelets() {
@@ -316,6 +339,10 @@ public class AspectranNodeParser {
         parser.addNodelet(exceptionInnerNodeletAdder);
     }
 
+    public void addInnerBeanNodelets() {
+        parser.addNodelet(innerBeanNodeletAdder);
+    }
+
     public void addItemNodelets() {
         parser.addNodelet(itemNodeletAdder);
     }
@@ -324,8 +351,8 @@ public class AspectranNodeParser {
         parser.addNodelet(deeplyItemNodeletAdder);
     }
 
-    public void addNestedBeanNodelets() {
-        parser.addNodelet(nestedBeanNodeletAdder);
+    public void addResponseInnerNodelets() {
+        parser.addNodelet(responseInnerNodeletAdder);
     }
 
 }

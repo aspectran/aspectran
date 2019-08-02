@@ -61,6 +61,9 @@ public class ScheduleRuleRegistry extends AbstractComponent {
     }
 
     public void addScheduleRule(ScheduleRule scheduleRule) throws IllegalRuleException {
+        if (scheduleRule == null) {
+            throw new IllegalArgumentException("scheduleRule must not be null");
+        }
         if (scheduleRule.getSchedulerBeanId() == null && assistantLocal != null) {
             DefaultSettings defaultSettings = assistantLocal.getDefaultSettings();
             if (defaultSettings != null && defaultSettings.getDefaultSchedulerBean() != null) {
@@ -80,11 +83,13 @@ public class ScheduleRuleRegistry extends AbstractComponent {
 
     public Set<ScheduledJobRule> getScheduledJobRules(String[] transletNames) {
         Set<ScheduledJobRule> scheduledJobRules = new LinkedHashSet<>();
-        for (ScheduleRule scheduleRule : getScheduleRules()) {
-            for (ScheduledJobRule jobRule : scheduleRule.getScheduledJobRuleList()) {
-                for (String transletName : transletNames) {
-                    if (jobRule.getTransletName().equals(transletName)) {
-                        scheduledJobRules.add(jobRule);
+        if (transletNames != null) {
+            for (ScheduleRule scheduleRule : getScheduleRules()) {
+                for (ScheduledJobRule jobRule : scheduleRule.getScheduledJobRuleList()) {
+                    for (String transletName : transletNames) {
+                        if (jobRule.getTransletName().equals(transletName)) {
+                            scheduledJobRules.add(jobRule);
+                        }
                     }
                 }
             }
@@ -101,5 +106,5 @@ public class ScheduleRuleRegistry extends AbstractComponent {
     protected void doDestroy() {
         scheduleRuleMap.clear();
     }
-    
+
 }

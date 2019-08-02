@@ -39,7 +39,7 @@ public class TemplateRuleRegistry extends AbstractComponent {
     private final Map<String, TemplateRule> templateRuleMap = new LinkedHashMap<>();
 
     private AssistantLocal assistantLocal;
-    
+
     public TemplateRuleRegistry() {
     }
 
@@ -60,6 +60,9 @@ public class TemplateRuleRegistry extends AbstractComponent {
     }
 
     public void addTemplateRule(TemplateRule templateRule) throws IllegalRuleException {
+        if (templateRule == null) {
+            throw new IllegalArgumentException("templateRule must not be null");
+        }
         if (templateRule.getEngine() == null && assistantLocal != null) {
             DefaultSettings defaultSettings = assistantLocal.getDefaultSettings();
             if (defaultSettings != null && defaultSettings.getDefaultTemplateEngineBean() != null) {

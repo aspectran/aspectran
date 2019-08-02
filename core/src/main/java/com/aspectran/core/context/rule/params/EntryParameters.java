@@ -23,6 +23,7 @@ public class EntryParameters extends AbstractParameters {
 
     public static final ParameterKey name;
     public static final ParameterKey value;
+    public static final ParameterKey bean;
     public static final ParameterKey tokenize;
 
     private static final ParameterKey[] parameterKeys;
@@ -31,11 +32,13 @@ public class EntryParameters extends AbstractParameters {
         name = new ParameterKey("name", ValueType.STRING);
         value = new ParameterKey("value", new String[] {"entry"}, ValueType.STRING);
         tokenize = new ParameterKey("tokenize", ValueType.BOOLEAN);
+        bean = new ParameterKey("bean", BeanParameters.class);
 
         parameterKeys = new ParameterKey[] {
                 name,
                 value,
-                tokenize
+                tokenize,
+                bean
         };
     }
 

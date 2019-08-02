@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 6.0//EN"
+        "http://aspectran.github.io/dtd/aspectran-6.dtd">
+<aspectran>
+
+    <translet name="chooseWhenTest">
+        <choose>
+            <when test="mode == 'cond1'">
+                <choose>
+                    <when test="mode == 'cond2'">
+                        <choose>
+                            <when test="mode == 'cond3'">
+                                <echo>
+                                    <item name="aa">bb</item>
+                                </echo>
+                            </when>
+                        </choose>
+                    </when>
+                </choose>
+            </when>
+        </choose>
+    </translet>
+
+</aspectran>

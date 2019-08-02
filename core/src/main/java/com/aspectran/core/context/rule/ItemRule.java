@@ -15,20 +15,13 @@
  */
 package com.aspectran.core.context.rule;
 
-import com.aspectran.core.activity.request.FileParameter;
-import com.aspectran.core.component.bean.annotation.Attribute;
-import com.aspectran.core.component.bean.annotation.Parameter;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.expr.token.TokenParser;
-import com.aspectran.core.context.rule.params.EntryParameters;
-import com.aspectran.core.context.rule.params.ItemParameters;
 import com.aspectran.core.context.rule.type.ItemType;
 import com.aspectran.core.context.rule.type.ItemValueType;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.ToStringBuilder;
-import com.aspectran.core.util.apon.Parameters;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -40,7 +33,7 @@ import java.util.Set;
 
 /**
  * The Class ItemRule.
- * 
+ *
  * <p>Created: 2008. 03. 27 PM 3:57:48</p>
  */
 public class ItemRule {
@@ -230,9 +223,7 @@ public class ItemRule {
         if (type == null) {
             type = ItemType.SINGLE;
         }
-        if (type != ItemType.SINGLE) {
-            throw new IllegalArgumentException("The type of this item must be 'single'");
-        }
+        checkSingleType();
         this.tokens = tokens;
     }
 
@@ -258,9 +249,7 @@ public class ItemRule {
         if (type == null) {
             type = ItemType.MAP;
         }
-        if (!isMappableType()) {
-            throw new IllegalArgumentException("The type of this item must be 'map' or 'properties'");
-        }
+        checkMappableType();
         if (tokensMap == null) {
             tokensMap = new LinkedHashMap<>();
         }
@@ -276,9 +265,7 @@ public class ItemRule {
         if (type == null) {
             type = ItemType.MAP;
         }
-        if (!isMappableType()) {
-            throw new IllegalArgumentException("The type of this item must be 'map' or 'properties'");
-        }
+        checkMappableType();
         this.tokensMap = tokensMap;
     }
 
@@ -294,9 +281,7 @@ public class ItemRule {
         if (type == null) {
             type = ItemType.PROPERTIES;
         }
-        if (!isMappableType()) {
-            throw new IllegalArgumentException("The type of this item must be 'properties' or 'map'");
-        }
+        checkMappableType();
         tokensMap = new LinkedHashMap<>();
         for (String key : properties.stringPropertyNames()) {
             Object o = properties.get(key);
@@ -332,9 +317,7 @@ public class ItemRule {
         if (type == null) {
             type = ItemType.LIST;
         }
-        if (!isListableType()) {
-            throw new IllegalArgumentException("The type of this item must be 'array', 'list' or 'set'");
-        }
+        checkListType();;
         if (tokensList == null) {
             tokensList = new ArrayList<>();
         }
@@ -350,9 +333,7 @@ public class ItemRule {
         if (type == null) {
             type = ItemType.LIST;
         }
-        if (!isListableType()) {
-            throw new IllegalArgumentException("The item type must be 'array', 'list' or 'set' for this item " + this);
-        }
+        checkListType();;
         this.tokensList = tokensList;
     }
 
@@ -368,9 +349,7 @@ public class ItemRule {
         if (type == null) {
             type = ItemType.SET;
         }
-        if (!isListableType()) {
-            throw new IllegalArgumentException("The type of this item must be 'set', 'array' or 'list'");
-        }
+        checkListType();;
         tokensList = new ArrayList<>(tokensSet);
     }
 
@@ -559,18 +538,15 @@ public class ItemRule {
     }
 
     public BeanRule getBeanRule() {
-        if (type != ItemType.SINGLE) {
-            throw new IllegalStateException("The type of this item must be 'single'");
-        }
+        checkSingleType();
         return beanRule;
     }
 
     public void setBeanRule(BeanRule beanRule) {
         if (type == null) {
             type = ItemType.SINGLE;
-        } else if (type != ItemType.SINGLE) {
-            throw new IllegalStateException("The type of this item must be 'single'");
         }
+        checkSingleType();
         if (valueType == null) {
             valueType = ItemValueType.BEAN;
         }
@@ -578,16 +554,12 @@ public class ItemRule {
     }
 
     public List<BeanRule> getBeanRuleList() {
-        if (!isListableType()) {
-            throw new IllegalStateException("The type of this item must be 'array' or 'list'");
-        }
+        checkListType();
         return beanRuleList;
     }
 
     public void addBeanRule(BeanRule beanRule) {
-        if (beanRule == null) {
-            throw new IllegalArgumentException("beanRule must not be null");
-        }
+        checkListType();
         if (valueType == null) {
             valueType = ItemValueType.BEAN;
         }
@@ -598,9 +570,7 @@ public class ItemRule {
     }
 
     public Map<String, BeanRule> getBeanRuleMap() {
-        if (!isMappableType()) {
-            throw new IllegalStateException("The type of this item must be 'map' or 'properties'");
-        }
+        checkMappableType();
         return beanRuleMap;
     }
 
@@ -608,9 +578,7 @@ public class ItemRule {
         if (name == null) {
             throw new IllegalArgumentException("name must not be null");
         }
-        if (beanRule == null) {
-            throw new IllegalArgumentException("beanRule must not be null");
-        }
+        checkMappableType();
         if (valueType == null) {
             valueType = ItemValueType.BEAN;
         }
@@ -618,6 +586,24 @@ public class ItemRule {
             beanRuleMap = new LinkedHashMap<>();
         }
         beanRuleMap.put(name, beanRule);
+    }
+
+    private void checkSingleType() {
+        if (type != ItemType.SINGLE) {
+            throw new IllegalStateException("The type of this item must be 'single'");
+        }
+    }
+
+    private void checkListType() {
+        if (!isListableType()) {
+            throw new IllegalArgumentException("The type of this item must be 'array', 'list' or 'set'");
+        }
+    }
+
+    private void checkMappableType() {
+        if (!isMappableType()) {
+            throw new IllegalStateException("The type of this item must be 'map' or 'properties'");
+        }
     }
 
     @Override
@@ -649,70 +635,6 @@ public class ItemRule {
         tsb.append("mandatory", mandatory);
         tsb.append("secret", secret);
         return tsb.toString();
-    }
-
-    /**
-     * Gets the class of value.
-     *
-     * @param ir the item rule
-     * @param value the value
-     * @return the class of value
-     */
-    public static Class<?> getPrototypeClass(ItemRule ir, Object value) {
-        ItemValueType valueType = ir.getValueType();
-        if (ir.getType() == ItemType.ARRAY) {
-            if (valueType == ItemValueType.STRING) {
-                return String[].class;
-            } else if (valueType == ItemValueType.INT) {
-                return Integer[].class;
-            } else if (valueType == ItemValueType.LONG) {
-                return Long[].class;
-            } else if (valueType == ItemValueType.FLOAT) {
-                return Float[].class;
-            } else if (valueType == ItemValueType.DOUBLE) {
-                return Double[].class;
-            } else if (valueType == ItemValueType.BOOLEAN) {
-                return Boolean[].class;
-            } else if (valueType == ItemValueType.PARAMETERS) {
-                return Parameters[].class;
-            } else if (valueType == ItemValueType.FILE) {
-                return File[].class;
-            } else if (valueType == ItemValueType.MULTIPART_FILE) {
-                return FileParameter[].class;
-            } else {
-                return (value != null ? value.getClass() : String[].class);
-            }
-        } else if (ir.getType() == ItemType.LIST) {
-            return (value != null ? value.getClass() : List.class);
-        } else if (ir.getType() == ItemType.MAP) {
-            return (value != null ? value.getClass() : Map.class);
-        } else if (ir.getType() == ItemType.SET) {
-            return (value != null ? value.getClass() : Set.class);
-        } else if (ir.getType() == ItemType.PROPERTIES) {
-            return (value != null ? value.getClass() : Properties.class);
-        } else {
-            if (valueType == ItemValueType.STRING) {
-                return String.class;
-            } else if (valueType == ItemValueType.INT) {
-                return Integer.class;
-            } else if (valueType == ItemValueType.LONG) {
-                return Long.class;
-            } else if (valueType == ItemValueType.FLOAT) {
-                return Float.class;
-            } else if (valueType == ItemValueType.DOUBLE) {
-                return Double.class;
-            } else if (valueType == ItemValueType.BOOLEAN) {
-                return Boolean.class;
-            } else if (valueType == ItemValueType.PARAMETERS) {
-                return Parameters.class;
-            } else if (valueType == ItemValueType.FILE) {
-                return File.class;
-            } else if (valueType == ItemValueType.MULTIPART_FILE) {
-                return FileParameter.class;
-            } else {
-                return (value != null ? value.getClass() : String.class);
-            }
-        }
     }
 
     /**
@@ -767,194 +689,6 @@ public class ItemRule {
             itemRule.setSecret(secret);
         }
 
-        return itemRule;
-    }
-
-    /**
-     * Returns a {@code Token} iterator.
-     *
-     * @param itemRule the item rule
-     * @return the iterator for tokens
-     */
-    public static Iterator<Token[]> tokenIterator(ItemRule itemRule) {
-        Iterator<Token[]> it = null;
-        if (itemRule.isListableType()) {
-            List<Token[]> list = itemRule.getTokensList();
-            if (list != null) {
-                it = list.iterator();
-            }
-        } else if (itemRule.isMappableType()) {
-            Map<String, Token[]> map = itemRule.getTokensMap();
-            if (map != null) {
-                it = map.values().iterator();
-            }
-        } else {
-            return new Iterator<Token[]>() {
-                private int count = 0;
-                @Override
-                public boolean hasNext() {
-                    return (count++ < 1);
-                }
-                @Override
-                public Token[] next() {
-                    return itemRule.getTokens();
-                }
-                @Override
-                public void remove() {
-                    throw new UnsupportedOperationException("Cannot remove an element of an array");
-                }
-            };
-        }
-        return it;
-    }
-
-    /**
-     * Convert the given item parameters list into an {@code ItemRuleMap}.
-     *
-     * @param itemParametersList the item parameters list to convert
-     * @return the item rule map
-     * @throws IllegalRuleException if an illegal rule is found
-     */
-    public static ItemRuleMap toItemRuleMap(List<ItemParameters> itemParametersList) throws IllegalRuleException {
-        if (itemParametersList == null || itemParametersList.isEmpty()) {
-            return null;
-        }
-        ItemRuleMap itemRuleMap = new ItemRuleMap();
-        for (ItemParameters parameters : itemParametersList) {
-            itemRuleMap.putItemRule(toItemRule(parameters));
-        }
-        return itemRuleMap;
-    }
-
-    /**
-     * Convert the given item parameters list into an {@code ItemRuleList}.
-     *
-     * @param itemParametersList the item parameters list to convert
-     * @return the item rule list
-     * @throws IllegalRuleException if an illegal rule is found
-     */
-    public static ItemRuleList toItemRuleList(List<ItemParameters> itemParametersList) throws IllegalRuleException {
-        ItemRuleList itemRuleList = new ItemRuleList();
-        for (ItemParameters parameters : itemParametersList) {
-            itemRuleList.add(ItemRule.toItemRule(parameters));
-        }
-        return itemRuleList;
-    }
-
-    /**
-     * Convert the given item parameters into an {@code ItemRule}.
-     * <pre>
-     * [
-     *   {
-     *     type: "map"
-     *     name: "property1"
-     *     value: {
-     *       code1: "value1"
-     *       code2: "value2"
-     *     }
-     *     valueType: "java.lang.String"
-     *     tokenize: true
-     *   }
-     *   {
-     *     name: "property2"
-     *     value(int): 123
-     *   }
-     *   {
-     *     name: "property2"
-     *     reference: {
-     *       bean: "a.bean"
-     *     }
-     *   }
-     * ]
-     * </pre>
-     *
-     * @param itemParameters the item parameters
-     * @return an instance of {@code ItemRule}
-     * @throws IllegalRuleException if an illegal rule is found
-     */
-    public static ItemRule toItemRule(ItemParameters itemParameters) throws IllegalRuleException {
-        String type = itemParameters.getString(ItemParameters.type);
-        String name = itemParameters.getString(ItemParameters.name);
-        String valueType = itemParameters.getString(ItemParameters.valueType);
-        Boolean tokenize = itemParameters.getBoolean(ItemParameters.tokenize);
-        Boolean mandatory = itemParameters.getBoolean(ItemParameters.mandatory);
-        Boolean secret = itemParameters.getBoolean(ItemParameters.secret);
-
-        ItemRule itemRule = ItemRule.newInstance(type, name, valueType, tokenize, mandatory, secret);
-
-        if (itemRule.isListableType()) {
-            List<String> stringList = itemParameters.getStringList(ItemParameters.value);
-            if (stringList != null) {
-                for (String value : stringList) {
-                    itemRule.addValue(value);
-                }
-            }
-        } else if (itemRule.isMappableType()) {
-            List<EntryParameters> parametersList = itemParameters.getParametersList(ItemParameters.entry);
-            if (parametersList != null) {
-                for (Parameters parameters : parametersList) {
-                    if (parameters != null) {
-                        String entryName = parameters.getString(EntryParameters.name);
-                        String entryValue = parameters.getString(EntryParameters.value);
-                        itemRule.putValue(entryName, entryValue);
-                    }
-                }
-            }
-        } else {
-            List<String> stringList = itemParameters.getStringList(ItemParameters.value);
-            if (stringList != null && !stringList.isEmpty()) {
-                itemRule.setValue(stringList.get(0));
-            }
-        }
-
-        return itemRule;
-    }
-
-    public static ItemRuleMap toItemRuleMap(Parameter[] parameters) throws IllegalRuleException {
-        if (parameters == null || parameters.length == 0) {
-            return null;
-        }
-        ItemRuleMap itemRuleMap = new ItemRuleMap();
-        for (Parameter parameter : parameters) {
-            itemRuleMap.putItemRule(toItemRule(parameter));
-        }
-        return itemRuleMap;
-    }
-
-    public static ItemRule toItemRule(Parameter parameter) throws IllegalRuleException {
-        String name = parameter.name();
-        String value = parameter.value();
-        boolean tokenize = parameter.tokenize();
-        boolean mandatory = parameter.mandatory();
-        boolean secret = parameter.secret();
-
-        ItemRule itemRule = ItemRule.newInstance(null, name, null,
-                tokenize, mandatory, secret);
-        itemRule.setValue(value);
-        return itemRule;
-    }
-
-    public static ItemRuleMap toItemRuleMap(Attribute[] attributes) throws IllegalRuleException {
-        if (attributes == null || attributes.length == 0) {
-            return null;
-        }
-        ItemRuleMap itemRuleMap = new ItemRuleMap();
-        for (Attribute attribute : attributes) {
-            itemRuleMap.putItemRule(toItemRule(attribute));
-        }
-        return itemRuleMap;
-    }
-
-    public static ItemRule toItemRule(Attribute attribute) throws IllegalRuleException {
-        String name = attribute.name();
-        String value = attribute.value();
-        boolean tokenize = attribute.tokenize();
-        boolean mandatory = attribute.mandatory();
-        boolean secret = attribute.secret();
-
-        ItemRule itemRule = ItemRule.newInstance(null, name, null,
-                tokenize, mandatory, secret);
-        itemRule.setValue(value);
         return itemRule;
     }
 

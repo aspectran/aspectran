@@ -17,6 +17,7 @@ package com.aspectran.core.context.rule.parser.xml;
 
 import com.aspectran.core.context.rule.DispatchRule;
 import com.aspectran.core.context.rule.ForwardRule;
+import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.RedirectRule;
 import com.aspectran.core.context.rule.TemplateRule;
@@ -30,7 +31,7 @@ import com.aspectran.core.util.nodelet.NodeletParser;
 
 /**
  * The Class ResponseInnerNodeletAdder.
- * 
+ *
  * <p>Created: 2008. 06. 14 AM 6:56:29</p>
  */
 class ResponseInnerNodeletAdder implements NodeletAdder {
@@ -143,7 +144,7 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
             RedirectRule redirectRule = parser.popObject();
 
             if (redirectRule.getPath() == null) {
-                throw new IllegalArgumentException("The <redirect> element requires a 'path' attribute");
+                throw new IllegalRuleException("The <redirect> element requires a 'path' attribute");
             }
 
             ResponseRuleApplicable applicable = parser.peekObject();

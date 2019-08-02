@@ -193,7 +193,7 @@ public class ParameterValue implements Parameter {
     public void arraylize() {
         if (assigned) {
             throw new IllegalStateException(
-                    "This parameter can not be converted to an array type: it already has a value assigned to it");
+                    "This parameter can not be converted to an array type; it already has a value assigned to it");
         }
         array = true;
         bracketed = true;

@@ -22,6 +22,8 @@ import com.aspectran.core.context.builder.ActivityContextBuilderException;
 import com.aspectran.core.context.builder.HybridActivityContextBuilder;
 import com.aspectran.core.sample.call.NumericBean;
 import com.aspectran.core.sample.call.TotalBean;
+import com.aspectran.core.util.Aspectran;
+import com.aspectran.core.util.apon.AponFormat;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -67,42 +69,30 @@ class CallTest {
         int count = 1;
         for (NumericBean o : totalBean.getNumerics()) {
             assertEquals(count++, o.getNumber());
-            //System.out.println(o.getNumber() + " : " + o);
         }
     }
 
     @Test
     void testTemplateCall() {
         TemplateRenderer templateRenderer = context.getTemplateRenderer();
+
         String result1 = templateRenderer.render("template-2");
-
-        //System.out.println("-------------------------------");
-        //System.out.println(" Test cases for template calls");
-        //System.out.println("-------------------------------");
-
         assertEquals("TEMPLATE-1", result1);
-        //System.out.println(result1);
 
         String result2 = templateRenderer.render("template-4");
-
         assertEquals("TEMPLATE-3", result2);
-        //System.out.println(result2);
 
         String result4 = templateRenderer.render("aponStyle");
-        //System.out.println("=== aponStyle ===");
-        //System.out.println(result4);
+        assertEquals("line-1\nline-2\nline-3".replace("\n", AponFormat.NEW_LINE), result4);
 
         String result5 = templateRenderer.render("compactStyle");
-        //System.out.println("=== compactStyle ===");
-        //System.out.println(result5);
+        assertEquals("line-1\nline-2\nline-3".replace("\n", AponFormat.NEW_LINE), result5);
 
         String result6 = templateRenderer.render("compressedStyle");
-        //System.out.println("=== compressedStyle ===");
-        //System.out.println(result6);
+        assertEquals("line-1line-2line-3", result6);
 
         String result7 = templateRenderer.render("aspectranVersion");
-        //System.out.println("=== static method call ===");
-        //System.out.println(result7);
+        assertEquals(Aspectran.getVersion(), result7);
     }
 
 }

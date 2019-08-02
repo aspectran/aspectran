@@ -60,6 +60,7 @@ import com.aspectran.core.context.rule.params.ConstructorParameters;
 import com.aspectran.core.context.rule.params.ContentParameters;
 import com.aspectran.core.context.rule.params.ContentsParameters;
 import com.aspectran.core.context.rule.params.DispatchParameters;
+import com.aspectran.core.context.rule.params.EntryParameters;
 import com.aspectran.core.context.rule.params.EnvironmentParameters;
 import com.aspectran.core.context.rule.params.ExceptionParameters;
 import com.aspectran.core.context.rule.params.ExceptionThrownParameters;
@@ -84,6 +85,7 @@ import com.aspectran.core.context.rule.params.TriggerParameters;
 import com.aspectran.core.context.rule.params.TypeAliasParameters;
 import com.aspectran.core.context.rule.params.TypeAliasesParameters;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
+import com.aspectran.core.context.rule.type.ItemValueType;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.TextStyler;
 import com.aspectran.core.util.apon.Parameter;
@@ -181,6 +183,19 @@ public class ParametersToRules {
                 asAppendRule(appendParameters);
             }
         }
+    }
+
+    private String asDescription(Parameters parameters) {
+        Parameter parameter = parameters.getParameter("description");
+        if (parameter != null) {
+            Object value = parameter.getValue();
+            if (value instanceof Parameters) {
+                String text = ((Parameters)value).getString("description");
+                String style = ((Parameters)value).getString("style");
+                return TextStyler.styling(text, style);
+            }
+        }
+        return null;
     }
 
     private void asAppendRule(AppendParameters appendParameters) throws IllegalRuleException {
@@ -389,8 +404,54 @@ public class ParametersToRules {
             }
         }
 
+        assistant.resolveBeanClass(beanRule);
         assistant.resolveFactoryBeanClass(beanRule);
         assistant.addBeanRule(beanRule);
+    }
+
+    private BeanRule toNestedBeanRule(BeanParameters beanParameters) throws IllegalRuleException {
+        String description = asDescription(beanParameters);
+        String className = StringUtils.emptyToNull(assistant.resolveAliasType(beanParameters.getString(BeanParameters.className)));
+        String factoryBean = StringUtils.emptyToNull(beanParameters.getString(BeanParameters.factoryBean));
+        String factoryMethod = StringUtils.emptyToNull(beanParameters.getString(BeanParameters.factoryMethod));
+        String initMethod = StringUtils.emptyToNull(beanParameters.getString(BeanParameters.initMethod));
+        String destroyMethod = StringUtils.emptyToNull(beanParameters.getString(BeanParameters.destroyMethod));
+
+        BeanRule beanRule;
+        if (className == null && factoryBean != null) {
+            beanRule = BeanRule.newOfferedFactoryBeanInstance(null, factoryBean, factoryMethod,
+                initMethod, destroyMethod, null, false, null, null);
+        } else {
+            beanRule = BeanRule.newInstance(null, className, null, null, initMethod, destroyMethod,
+                factoryMethod, null, false, null, null);
+        }
+        if (description != null) {
+            beanRule.setDescription(description);
+        }
+        ConstructorParameters constructorParameters = beanParameters.getParameters(BeanParameters.constructor);
+        if (constructorParameters != null) {
+            List<ItemHolderParameters> argumentItemHolderParametersList = constructorParameters.getParametersList(ConstructorParameters.arguments);
+            if (argumentItemHolderParametersList != null) {
+                for (ItemHolderParameters itemHolderParameters : argumentItemHolderParametersList) {
+                    ItemRuleMap irm = asItemRuleMap(itemHolderParameters);
+                    irm = assistant.profiling(irm, beanRule.getConstructorArgumentItemRuleMap());
+                    beanRule.setConstructorArgumentItemRuleMap(irm);
+                }
+            }
+        }
+        List<ItemHolderParameters> propertyItemHolderParametersList = beanParameters.getParametersList(BeanParameters.properties);
+        if (propertyItemHolderParametersList != null) {
+            for (ItemHolderParameters itemHolderParameters : propertyItemHolderParametersList) {
+                ItemRuleMap irm = asItemRuleMap(itemHolderParameters);
+                irm = assistant.profiling(irm, beanRule.getPropertyItemRuleMap());
+                beanRule.setPropertyItemRuleMap(irm);
+            }
+        }
+
+        assistant.resolveBeanClass(beanRule);
+        assistant.resolveFactoryBeanClass(beanRule);
+
+        return beanRule;
     }
 
     private void asScheduleRule(ScheduleParameters scheduleParameters) throws IllegalRuleException {
@@ -926,23 +987,6 @@ public class ParametersToRules {
         responseRuleApplicable.applyResponseRule(redirectRule);
     }
 
-    private ItemRuleMap asItemRuleMap(ItemHolderParameters itemHolderParameters) throws IllegalRuleException {
-        String profile = itemHolderParameters.getProfile();
-        List<ItemParameters> itemParametersList = itemHolderParameters.getItemParametersList();
-        return asItemRuleMap(profile, itemParametersList);
-    }
-
-    private ItemRuleMap asItemRuleMap(String profile, List<ItemParameters> itemParametersList) throws IllegalRuleException {
-        ItemRuleMap itemRuleMap = ItemRule.toItemRuleMap(itemParametersList);
-        if (itemRuleMap != null) {
-            itemRuleMap.setProfile(profile);
-            for (ItemRule itemRule : itemRuleMap.values()) {
-                assistant.resolveBeanClass(itemRule);
-            }
-        }
-        return itemRuleMap;
-    }
-
     private void asTemplateRule(TemplateParameters templateParameters) throws IllegalRuleException {
         String id = StringUtils.emptyToNull(templateParameters.getString(TemplateParameters.id));
         String engine = StringUtils.emptyToNull(templateParameters.getString(TemplateParameters.engine));
@@ -959,17 +1003,103 @@ public class ParametersToRules {
         assistant.addTemplateRule(templateRule);
     }
 
-    private String asDescription(Parameters parameters) {
-        Parameter parameter = parameters.getParameter("description");
-        if (parameter != null) {
-            Object value = parameter.getValue();
-            if (value instanceof Parameters) {
-                String text = ((Parameters)value).getString("description");
-                String style = ((Parameters)value).getString("style");
-                return TextStyler.styling(text, style);
+    private ItemRuleMap asItemRuleMap(ItemHolderParameters itemHolderParameters) throws IllegalRuleException {
+        String profile = itemHolderParameters.getProfile();
+        List<ItemParameters> itemParametersList = itemHolderParameters.getItemParametersList();
+        return asItemRuleMap(profile, itemParametersList);
+    }
+
+    private ItemRuleMap asItemRuleMap(String profile, List<ItemParameters> itemParametersList) throws IllegalRuleException {
+        ItemRuleMap itemRuleMap = toItemRuleMap(itemParametersList);
+        if (itemRuleMap != null) {
+            itemRuleMap.setProfile(profile);
+            for (ItemRule itemRule : itemRuleMap.values()) {
+                assistant.resolveBeanClass(itemRule);
             }
         }
-        return null;
+        return itemRuleMap;
     }
-    
+
+    private ItemRuleMap toItemRuleMap(List<ItemParameters> itemParametersList) throws IllegalRuleException {
+        if (itemParametersList == null || itemParametersList.isEmpty()) {
+            return null;
+        }
+        ItemRuleMap itemRuleMap = new ItemRuleMap();
+        for (ItemParameters parameters : itemParametersList) {
+            itemRuleMap.putItemRule(toItemRule(parameters));
+        }
+        return itemRuleMap;
+    }
+
+    private ItemRule toItemRule(ItemParameters itemParameters) throws IllegalRuleException {
+        String type = itemParameters.getString(ItemParameters.type);
+        String name = itemParameters.getString(ItemParameters.name);
+        String valueType = itemParameters.getString(ItemParameters.valueType);
+        Boolean tokenize = itemParameters.getBoolean(ItemParameters.tokenize);
+        Boolean mandatory = itemParameters.getBoolean(ItemParameters.mandatory);
+        Boolean secret = itemParameters.getBoolean(ItemParameters.secret);
+
+        ItemRule itemRule = ItemRule.newInstance(type, name, valueType, tokenize, mandatory, secret);
+
+        if (itemRule.isListableType()) {
+            if (itemRule.getValueType() == ItemValueType.BEAN) {
+                List<BeanParameters> beanParametersList = itemParameters.getParametersList(ItemParameters.bean);
+                if (beanParametersList != null) {
+                    for (BeanParameters beanParameters : beanParametersList) {
+                        BeanRule beanRule = toNestedBeanRule(beanParameters);
+                        itemRule.addBeanRule(beanRule);
+                    }
+                }
+            } else {
+                List<String> stringList = itemParameters.getStringList(ItemParameters.value);
+                if (stringList != null) {
+                    for (String value : stringList) {
+                        itemRule.addValue(value);
+                    }
+                }
+            }
+        } else if (itemRule.isMappableType()) {
+            List<EntryParameters> entryParametersList = itemParameters.getParametersList(ItemParameters.entry);
+            if (entryParametersList != null) {
+                if (itemRule.getValueType() == ItemValueType.BEAN) {
+                    for (EntryParameters parameters : entryParametersList) {
+                        if (parameters != null) {
+                            String entryName = parameters.getString(EntryParameters.name);
+                            BeanParameters beanParameters = parameters.getParameters(EntryParameters.bean);
+                            if (beanParameters != null) {
+                                BeanRule beanRule = toNestedBeanRule(beanParameters);
+                                itemRule.putBeanRule(entryName, beanRule);
+                            } else {
+                                itemRule.putBeanRule(entryName, null);
+                            }
+                        }
+                    }
+                } else {
+                    for (EntryParameters parameters : entryParametersList) {
+                        if (parameters != null) {
+                            String entryName = parameters.getString(EntryParameters.name);
+                            String entryValue = parameters.getString(EntryParameters.value);
+                            itemRule.putValue(entryName, entryValue);
+                        }
+                    }
+                }
+            }
+        } else {
+            if (itemRule.getValueType() == ItemValueType.BEAN) {
+                BeanParameters beanParameters = itemParameters.getParameters(ItemParameters.bean);
+                if (beanParameters != null) {
+                    BeanRule beanRule = toNestedBeanRule(beanParameters);
+                    itemRule.setBeanRule(beanRule);
+                }
+            } else {
+                List<String> stringList = itemParameters.getStringList(ItemParameters.value);
+                if (stringList != null && !stringList.isEmpty()) {
+                    itemRule.setValue(stringList.get(0));
+                }
+            }
+        }
+
+        return itemRule;
+    }
+
 }

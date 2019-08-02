@@ -13,9 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.context.builder;
+package com.aspectran.core.component.bean;
 
 import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.context.builder.ActivityContextBuilder;
+import com.aspectran.core.context.builder.ActivityContextBuilderException;
+import com.aspectran.core.context.builder.HybridActivityContextBuilder;
+import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.util.ResourceUtils;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -24,8 +28,11 @@ import org.junit.jupiter.api.TestInstance;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Test case for building ActivityContext.
@@ -33,7 +40,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * <p>Created: 2016. 3. 26.</p>
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class ActivityContextBuilderTest {
+class BasicTest {
 
     private ActivityContextBuilder builder;
 
@@ -47,7 +54,7 @@ class ActivityContextBuilderTest {
         builder.setBasePath(baseDir.getCanonicalPath());
         builder.setDebugMode(true);
         builder.setActiveProfiles("dev", "debug");
-        context = builder.build("/config/sample/builder-test-config.xml");
+        context = builder.build("/config/bean/basic-test-config.xml");
     }
 
     @AfterAll
@@ -58,17 +65,26 @@ class ActivityContextBuilderTest {
     }
 
     @Test
-    void testHybridLoading() {
-        String result = context.getTemplateRenderer().render("echo1");
-        assertEquals("ECHO-1", result);
+    void test1() {
+        assertEquals("String Bean", context.getBeanRegistry().getBean("stringBean"));
 
-        String result2 = context.getTemplateRenderer().render("echo2");
-        assertEquals("ECHO-2", result2);
+        Map map = context.getBeanRegistry().getBean("mapBean");
+        assertEquals("{item2=value2, item1=value1}", map.toString());
 
-        String devProp1 = context.getEnvironment().getProperty("prop-1", context.getDefaultActivity());
-        String devProp2 = context.getEnvironment().getProperty("prop-2", context.getDefaultActivity());
-        assertEquals("dev-debug-1", devProp1);
-        assertEquals("dev-debug-2", devProp2);
+        List list = context.getBeanRegistry().getBean("listBean");
+        assertEquals("[value1, value2]", list.toString());
+    }
+
+    @Test
+    void test2() {
+        assertEquals("Nested String Bean", context.getBeanRegistry().getBean("nestedStringBean"));
+    }
+
+    @Test
+    void test3() {
+        assertThrows(IllegalRuleException.class, () -> {
+//            context.getBeanRegistry().getBean("nestedInnerStringBean");
+        });
     }
 
 }

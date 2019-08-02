@@ -173,7 +173,7 @@ public abstract class AbstractParameters implements Parameters {
     @Override
     public Parameter getParameter(String name) {
         Parameter p = getParameterValue(name);
-        if (structureFixed && p == null) {
+        if (p == null && structureFixed) {
             throw new UnknownParameterException(name, this);
         }
         return p;
