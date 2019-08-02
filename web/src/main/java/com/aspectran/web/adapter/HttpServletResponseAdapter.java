@@ -32,6 +32,7 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Map;
 
@@ -168,6 +169,10 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
     public static String makeRedirectPath(RedirectRule redirectRule, Activity activity) throws IOException {
         if (redirectRule == null) {
             throw new IllegalArgumentException("redirectRule must not be null");
+        }
+
+        if (redirectRule.getEncoding() == null) {
+            redirectRule.setEncoding(StandardCharsets.ISO_8859_1.name());
         }
 
         String path = redirectRule.getPath(activity);

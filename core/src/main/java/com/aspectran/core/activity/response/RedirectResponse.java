@@ -49,24 +49,27 @@ public class RedirectResponse implements Response {
             return;
         }
 
+        RedirectRule newRedirectRule = redirectRule.replicate();
+
         if (log.isDebugEnabled()) {
-            log.debug("Response " + redirectRule);
+            log.debug("Response " + newRedirectRule);
         }
 
         try {
-            RedirectRule newRedirectRule = redirectRule.replicate();
-            if (redirectRule.getEncoding() != null) {
-                responseAdapter.setEncoding(redirectRule.getEncoding());
-            } else if (responseAdapter.getEncoding() == null) {
+            if (newRedirectRule.getEncoding() != null) {
+                responseAdapter.setEncoding(newRedirectRule.getEncoding());
+            } else {
                 String encoding = activity.getTranslet().getIntendedResponseEncoding();
                 if (encoding != null) {
                     responseAdapter.setEncoding(encoding);
                     newRedirectRule.setEncoding(encoding);
+                } else {
+                    newRedirectRule.setEncoding(responseAdapter.getEncoding());
                 }
             }
             responseAdapter.redirect(newRedirectRule);
         } catch (Exception e) {
-            throw new ResponseException("Failed to respond with redirect rule " + redirectRule, e);
+            throw new ResponseException("Failed to respond with redirect rule " + newRedirectRule, e);
         }
     }
 
