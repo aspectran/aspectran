@@ -41,11 +41,9 @@
     </bean>
 
     <bean id="freemarker" class="com.aspectran.freemarker.FreeMarkerTemplateEngine">
-        <constructor>
-            <arguments>
-                <item>#{freemarkerConfiguration}</item>
-            </arguments>
-        </constructor>
+        <arguments>
+            <item>#{freemarkerConfiguration}</item>
+        </arguments>
     </bean>
 
     <translet name="echo-1">

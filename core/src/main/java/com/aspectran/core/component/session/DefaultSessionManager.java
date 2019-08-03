@@ -21,8 +21,10 @@ import com.aspectran.core.context.config.SessionConfig;
 import com.aspectran.core.context.config.SessionFileStoreConfig;
 import com.aspectran.core.context.rule.type.SessionStoreType;
 import com.aspectran.core.util.StringUtils;
+import com.aspectran.core.util.apon.VariableParameters;
 
 import java.io.File;
+import java.io.IOException;
 
 /**
  * Implementation of SessionManager.
@@ -65,6 +67,16 @@ public class DefaultSessionManager extends AbstractSessionHandler implements Ses
     @Override
     public void setSessionConfig(SessionConfig sessionConfig) {
         this.sessionConfig = sessionConfig;
+    }
+
+    public void setSessionConfig(VariableParameters parameters) {
+        SessionConfig sessionConfig = new SessionConfig();
+        try {
+            sessionConfig.readFrom(parameters.toString());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        setSessionConfig(sessionConfig);
     }
 
     @Override
@@ -164,6 +176,15 @@ public class DefaultSessionManager extends AbstractSessionHandler implements Ses
     protected void doDestroy() throws Exception {
         getSessionCache().clear();
         super.doDestroy();
+    }
+
+    public static DefaultSessionManager create(ActivityContext context, SessionConfig sessionConfig, String workerName) {
+        DefaultSessionManager sessionManager = new DefaultSessionManager(context);
+        sessionManager.setWorkerName(workerName);
+        if (sessionConfig != null) {
+            sessionManager.setSessionConfig(sessionConfig);
+        }
+        return sessionManager;
     }
 
 }

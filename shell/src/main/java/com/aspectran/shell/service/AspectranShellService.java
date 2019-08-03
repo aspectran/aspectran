@@ -65,7 +65,7 @@ public class AspectranShellService extends AbstractShellService {
             throw new IllegalArgumentException("console must not be null");
         }
         if (!isExposable(transletCommandLine.getRequestName())) {
-            console.writeError("Unexposable translet: " + transletCommandLine.getRequestName());
+            console.writeError("Unavailable translet: " + transletCommandLine.getRequestName());
             return null;
         }
         if (checkPaused(console)) {
@@ -188,6 +188,7 @@ public class AspectranShellService extends AbstractShellService {
         service.setServiceStateListener(new ServiceStateListener() {
             @Override
             public void started() {
+                service.initSessionManager();
                 service.pauseTimeout = 0;
                 service.printGreetings();
                 service.printHelp();
@@ -200,11 +201,12 @@ public class AspectranShellService extends AbstractShellService {
 
             @Override
             public void paused(long millis) {
-                if (millis < 0L) {
-                    throw new IllegalArgumentException("Pause timeout in milliseconds needs to be " +
-                            "set to a value of greater than 0");
+                if (millis > 0L) {
+                    service.pauseTimeout = System.currentTimeMillis() + millis;
+                } else {
+                    log.warn("Pause timeout in milliseconds needs to be set " +
+                            "to a value of greater than 0");
                 }
-                service.pauseTimeout = System.currentTimeMillis() + millis;
             }
 
             @Override
@@ -220,6 +222,7 @@ public class AspectranShellService extends AbstractShellService {
             @Override
             public void stopped() {
                 paused();
+                service.destroySessionManager();
             }
         });
     }

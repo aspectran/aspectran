@@ -105,7 +105,7 @@ class BeanNodeletAdder implements NodeletAdder {
                 beanRule.setFilterParameters(filterParameters);
             }
         });
-        parser.setXpath(xpath + "/bean/constructor/arguments");
+        parser.setXpath(xpath + "/bean/arguments");
         parser.addNodelet(attrs -> {
             ItemRuleMap irm = new ItemRuleMap();
             irm.setProfile(StringUtils.emptyToNull(attrs.get("profile")));

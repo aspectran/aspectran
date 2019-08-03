@@ -19,7 +19,6 @@ import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.builder.ActivityContextBuilder;
 import com.aspectran.core.context.builder.ActivityContextBuilderException;
 import com.aspectran.core.context.builder.HybridActivityContextBuilder;
-import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.util.ResourceUtils;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -32,7 +31,6 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Test case for building ActivityContext.
@@ -78,13 +76,6 @@ class BasicTest {
     @Test
     void test2() {
         assertEquals("Nested String Bean", context.getBeanRegistry().getBean("nestedStringBean"));
-    }
-
-    @Test
-    void test3() {
-        assertThrows(IllegalRuleException.class, () -> {
-//            context.getBeanRegistry().getBean("nestedInnerStringBean");
-        });
     }
 
 }

@@ -24,33 +24,30 @@ session: {
         storeDir: /temp/sessions
         deleteUnrestorableFiles: true
     }
+    startup: false
 }
 scheduler: {
     startDelaySeconds: 3
     waitOnShutdown: true
     startup: false
 }
-daemon: {
-    commands: [
-        com.aspectran.daemon.command.builtins.JettyCommand
-        com.aspectran.daemon.command.builtins.InvokeActionCommand
-        com.aspectran.daemon.command.builtins.TransletCommand
-        com.aspectran.daemon.command.builtins.ComponentCommand
-        com.aspectran.daemon.command.builtins.PollingIntervalCommand
-        com.aspectran.daemon.command.builtins.RestartCommand
-        com.aspectran.daemon.command.builtins.QuitCommand
-    ]
-    poller: {
-        pollingInterval: 5000
-        maxThreads: 5
-        inbound: /inbound
-        requeue: true
-    }
-    exposals: {
-        -: /**
-    }
-}
 shell: {
+    greetings: (
+        |
+        |{{YELLOW}}     ___                         __                      ____  __         ____
+        |{{YELLOW}}    /   |  ___  ____  ___  ___  / /____   ___  ____     / ___|/ /_  ___  / / /
+        |{{GREEN }}   / /| | / __|/ __ |/ _ |/ __|/ __/ __|/ __ |/ __ |   (___  / __ |/ _ |/ / /
+        |{{GREEN }}  / ___ |(__  ) /_/ /  __/ /  / / / /  / /_/ / / / /   ___/ / / / /  __/ / /
+        |{{CYAN  }} /_/  |_|____/ .___/|___/|___/|__/_/   |__(_(_/ /_/   /____/_/ /_/|___/_/_/
+        |{{CYAN  }}=========== /_/ ==========================================================
+        |{{reset }}
+        |{{RED   }}Welcome To Aspectran Shell #{class:com.aspectran.core.util.Aspectran^version}{{reset}}
+        |
+        |If you want a list of all supported built-in commands, type '{{GREEN}}help{{reset}}'.
+        |To get help on a specific command, type '{{GREEN}}command_name -h{{reset}}'.
+        |If you want a list of all available translets, type '{{GREEN}}translet -l{{reset}}'.
+        |To run a translet, type '{{GREEN}}translet <translet_name>{{reset}}' or '{{GREEN}}translet_name{{reset}}'.
+    )
     prompt: "{{green}}aspectran-demo>{{reset}} "
     commands: [
         com.aspectran.shell.command.builtins.JettyCommand
@@ -68,25 +65,29 @@ shell: {
         com.aspectran.shell.command.builtins.RestartCommand
         com.aspectran.shell.command.builtins.QuitCommand
     ]
-    greetings: (
-        |
-        |{{YELLOW}}     ___                         __                      ____  __         ____
-        |{{YELLOW}}    /   |  ___  ____  ___  ___  / /____   ___  ____     / ___|/ /_  ___  / / /
-        |{{GREEN }}   / /| | / __|/ __ |/ _ |/ __|/ __/ __|/ __ |/ __ |   (___  / __ |/ _ |/ / /
-        |{{GREEN }}  / ___ |(__  ) /_/ /  __/ /  / / / /  / /_/ / / / /   ___/ / / / /  __/ / /
-        |{{CYAN  }} /_/  |_|____/ .___/|___/|___/|__/_/   |__(_(_/ /_/   /____/_/ /_/|___/_/_/
-        |{{CYAN  }}=========== /_/ ==========================================================
-        |{{reset }}
-        |{{RED   }}Welcome To Aspectran Shell #{class:com.aspectran.core.util.Aspectran^version}{{reset}}
-        |
-        |If you want a list of all supported built-in commands, type '{{GREEN}}help{{reset}}'.
-        |To get help on a specific command, type '{{GREEN}}command_name -h{{reset}}'.
-        |If you want a list of all available translets, type '{{GREEN}}translet -l{{reset}}'.
-        |To run a translet, type '{{GREEN}}translet <translet_name>{{reset}}' or '{{GREEN}}translet_name{{reset}}'.
-    )
     workingDir: /work
     historyFile: /logs/history.log
     verbose: true
+    exposals: {
+        -: /**
+    }
+}
+daemon: {
+    poller: {
+        pollingInterval: 5000
+        maxThreads: 5
+        inbound: /inbound
+        requeue: true
+    }
+    commands: [
+        com.aspectran.daemon.command.builtins.JettyCommand
+        com.aspectran.daemon.command.builtins.InvokeActionCommand
+        com.aspectran.daemon.command.builtins.TransletCommand
+        com.aspectran.daemon.command.builtins.ComponentCommand
+        com.aspectran.daemon.command.builtins.PollingIntervalCommand
+        com.aspectran.daemon.command.builtins.RestartCommand
+        com.aspectran.daemon.command.builtins.QuitCommand
+    ]
     exposals: {
         -: /**
     }

@@ -8,10 +8,8 @@ import com.aspectran.core.activity.request.RequestMethodNotAllowedException;
 import com.aspectran.core.activity.request.SizeLimitExceededException;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.config.AspectranConfig;
-import com.aspectran.core.context.config.ContextConfig;
 import com.aspectran.core.context.config.ExposalsConfig;
 import com.aspectran.core.context.config.WebConfig;
-import com.aspectran.core.service.AspectranCoreService;
 import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.CoreService;
 import com.aspectran.core.service.ServiceStateListener;
@@ -29,11 +27,9 @@ import java.net.URLDecoder;
 /**
  * <p>Created: 2019-07-27</p>
  */
-public class AspectranTowService extends AspectranCoreService implements TowService {
+public class AspectranTowService extends AbstractTowService {
 
     private static final Log log = LogFactory.getLog(AspectranTowService.class);
-
-    private String uriDecoding;
 
     private long pauseTimeout = -2L;
 
@@ -45,19 +41,11 @@ public class AspectranTowService extends AspectranCoreService implements TowServ
         super(rootService);
     }
 
-    public String getUriDecoding() {
-        return uriDecoding;
-    }
-
-    protected void setUriDecoding(String uriDecoding) {
-        this.uriDecoding = uriDecoding;
-    }
-
     @Override
     public boolean execute(HttpServerExchange exchange) throws IOException {
         String requestUri = exchange.getRequestURI();
-        if (uriDecoding != null) {
-            requestUri = URLDecoder.decode(requestUri, uriDecoding);
+        if (getUriDecoding() != null) {
+            requestUri = URLDecoder.decode(requestUri, getUriDecoding());
         }
         if (!isExposable(requestUri)) {
             return false;
@@ -70,13 +58,13 @@ public class AspectranTowService extends AspectranCoreService implements TowServ
         if (pauseTimeout != 0L) {
             if (pauseTimeout == -1L || pauseTimeout >= System.currentTimeMillis()) {
                 if (log.isDebugEnabled()) {
-                    log.debug("AspectranWebService has been paused, so did not respond to the request URI \"" +
+                    log.debug("AspectranTowService has been paused, so did not respond to the request URI \"" +
                             requestUri + "\"");
                 }
                 exchange.setStatusCode(HttpStatus.SERVICE_UNAVAILABLE.value());
                 return true;
             } else if (pauseTimeout == -2L) {
-                log.error("AspectranWebService is not yet started");
+                log.error("AspectranTowService is not yet started");
                 exchange.setStatusCode(HttpStatus.SERVICE_UNAVAILABLE.value());
                 return true;
             } else {
@@ -86,7 +74,7 @@ public class AspectranTowService extends AspectranCoreService implements TowServ
 
         Activity activity = null;
         try {
-            activity = new TowActivity(getActivityContext(), exchange);
+            activity = new TowActivity(this, exchange);
             activity.prepare(requestUri, exchange.getRequestMethod().toString());
             activity.perform();
         } catch (TransletNotFoundException e) {
@@ -136,7 +124,6 @@ public class AspectranTowService extends AspectranCoreService implements TowServ
         return sb.toString();
     }
 
-
     /**
      * Returns a new instance of {@code AspectranUndertowService}.
      *
@@ -170,8 +157,6 @@ public class AspectranTowService extends AspectranCoreService implements TowServ
      * @return the instance of {@code AspectranUndertowService}
      */
     public static AspectranTowService create(AspectranConfig aspectranConfig) {
-        ContextConfig contextConfig = aspectranConfig.touchContextConfig();
-
         ApplicationAdapter applicationAdapter = new TowApplicationAdapter();
         AspectranTowService service = new AspectranTowService(applicationAdapter);
         service.prepare(aspectranConfig);
@@ -199,6 +184,7 @@ public class AspectranTowService extends AspectranCoreService implements TowServ
         service.setServiceStateListener(new ServiceStateListener() {
             @Override
             public void started() {
+                service.initSessionManager();
                 service.pauseTimeout = 0L;
             }
 
@@ -209,11 +195,12 @@ public class AspectranTowService extends AspectranCoreService implements TowServ
 
             @Override
             public void paused(long millis) {
-                if (millis < 0L) {
-                    throw new IllegalArgumentException("Pause timeout in milliseconds " +
-                            "needs to be set to a value of greater than 0");
+                if (millis > 0L) {
+                    service.pauseTimeout = System.currentTimeMillis() + millis;
+                } else {
+                    log.warn("Pause timeout in milliseconds needs to be set " +
+                            "to a value of greater than 0");
                 }
-                service.pauseTimeout = System.currentTimeMillis() + millis;
             }
 
             @Override
@@ -229,6 +216,7 @@ public class AspectranTowService extends AspectranCoreService implements TowServ
             @Override
             public void stopped() {
                 paused();
+                service.destroySessionManager();
             }
         });
     }

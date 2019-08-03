@@ -4,73 +4,39 @@
 <aspectran>
 
     <bean id="stringBean" class="java.lang.String" scope="prototype">
-        <constructor>
-            <arguments>
-                <item>String Bean</item>
-            </arguments>
-        </constructor>
+        <arguments>
+            <item>String Bean</item>
+        </arguments>
     </bean>
 
     <bean id="mapBean" class="java.util.HashMap" scope="prototype">
-        <constructor>
-            <arguments>
-                <item type="map">
-                    <entry name="item1">value1</entry>
-                    <entry name="item2">value2</entry>
-                </item>
-            </arguments>
-        </constructor>
+        <arguments>
+            <item type="map">
+                <entry name="item1">value1</entry>
+                <entry name="item2">value2</entry>
+            </item>
+        </arguments>
     </bean>
 
     <bean id="listBean" class="java.util.LinkedList" scope="prototype">
-        <constructor>
-            <arguments>
-                <item type="list">
-                    <value>value1</value>
-                    <value>value2</value>
-                </item>
-            </arguments>
-        </constructor>
+        <arguments>
+            <item type="list">
+                <value>value1</value>
+                <value>value2</value>
+            </item>
+        </arguments>
     </bean>
 
     <bean id="nestedStringBean" class="java.lang.String" scope="prototype">
-        <constructor>
-            <arguments>
-                <item>
-                    <bean class="java.lang.String">
-                        <constructor>
-                            <arguments>
-                                <item>Nested String Bean</item>
-                            </arguments>
-                        </constructor>
-                    </bean>
-                </item>
-            </arguments>
-        </constructor>
-    </bean>
-
-    <bean id="nestedInnerStringBean" class="java.lang.String" scope="prototype">
-        <constructor>
-            <arguments>
-                <item>
-                    <bean class="java.lang.String">
-                        <constructor>
-                            <arguments>
-                                <item>
-                                    <bean class="java.lang.String">
-                                        <constructor>
-                                            <arguments>
-                                                <item>Nested Inner String Bean</item>
-                                            </arguments>
-                                        </constructor>
-                                    </bean>
-                                </item>
-                            </arguments>
-                        </constructor>
-                    </bean>
-                </item>
-            </arguments>
-        </constructor>
+        <arguments>
+            <item>
+                <bean class="java.lang.String">
+                    <arguments>
+                        <item>Nested String Bean</item>
+                    </arguments>
+                </bean>
+            </item>
+        </arguments>
     </bean>
 
 </aspectran>

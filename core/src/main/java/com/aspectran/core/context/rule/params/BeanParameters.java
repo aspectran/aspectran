@@ -34,7 +34,7 @@ public class BeanParameters extends AbstractParameters {
     public static final ParameterKey destroyMethod;
     public static final ParameterKey lazyInit;
     public static final ParameterKey important;
-    public static final ParameterKey constructor;
+    public static final ParameterKey arguments;
     public static final ParameterKey properties;
     public static final ParameterKey filter;
 
@@ -54,7 +54,7 @@ public class BeanParameters extends AbstractParameters {
         destroyMethod = new ParameterKey("destroyMethod", ValueType.STRING);
         lazyInit = new ParameterKey("lazyInit", ValueType.BOOLEAN);
         important = new ParameterKey("important", ValueType.BOOLEAN);
-        constructor = new ParameterKey("constructor", ConstructorParameters.class);
+        arguments = new ParameterKey("arguments", ItemHolderParameters.class, true, true);
         properties = new ParameterKey("properties", ItemHolderParameters.class, true, true);
         filter = new ParameterKey("filter", FilterParameters.class);
 
@@ -72,7 +72,7 @@ public class BeanParameters extends AbstractParameters {
                 destroyMethod,
                 lazyInit,
                 important,
-                constructor,
+                arguments,
                 properties,
                 filter
         };

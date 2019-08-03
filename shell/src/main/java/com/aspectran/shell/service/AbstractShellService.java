@@ -20,11 +20,13 @@ import com.aspectran.core.component.session.DefaultSessionManager;
 import com.aspectran.core.component.session.SessionAgent;
 import com.aspectran.core.component.session.SessionManager;
 import com.aspectran.core.context.config.SessionConfig;
+import com.aspectran.core.context.config.ShellConfig;
 import com.aspectran.core.context.expr.TokenEvaluator;
 import com.aspectran.core.context.expr.TokenExpression;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.expr.token.TokenParser;
 import com.aspectran.core.service.AspectranCoreService;
+import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -67,32 +69,7 @@ public abstract class AbstractShellService extends AspectranCoreService implemen
 
     @Override
     public void afterContextLoaded() throws Exception {
-        sessionManager = new DefaultSessionManager(getActivityContext());
-        sessionManager.setWorkerName("SH" + this.hashCode() + "_");
-        SessionConfig sessionConfig = getAspectranConfig().getSessionConfig();
-        if (sessionConfig != null) {
-            sessionManager.setSessionConfig(sessionConfig);
-        }
-        sessionManager.initialize();
-        sessionAgent = sessionManager.newSessionAgent();
-
         parseGreetings();
-    }
-
-    @Override
-    public void beforeContextDestroy() {
-        sessionManager.destroy();
-        sessionManager = null;
-    }
-
-    @Override
-    public SessionAdapter newSessionAdapter() {
-        return new ShellSessionAdapter(sessionAgent);
-    }
-
-    @Override
-    public boolean isExposable(String transletName) {
-        return super.isExposable(transletName);
     }
 
     /**
@@ -173,6 +150,48 @@ public abstract class AbstractShellService extends AspectranCoreService implemen
     @Override
     public boolean isBusy() {
         return console.isBusy();
+    }
+
+    @Override
+    public boolean isExposable(String transletName) {
+        return super.isExposable(transletName);
+    }
+
+    @Override
+    public SessionAdapter newSessionAdapter() {
+        if (sessionAgent != null) {
+            return new ShellSessionAdapter(sessionAgent);
+        } else {
+            return null;
+        }
+    }
+
+    protected void initSessionManager() {
+        ShellConfig shellConfig = getAspectranConfig().getShellConfig();
+        if (shellConfig != null) {
+            SessionConfig sessionConfig = shellConfig.getSessionConfig();
+            if (sessionConfig != null && sessionConfig.isStartup()) {
+                try {
+                    String workerName = this.hashCode() + "_";
+                    sessionManager = DefaultSessionManager.create(getActivityContext(), sessionConfig, workerName);
+                    sessionManager.initialize();
+                    sessionAgent = sessionManager.newSessionAgent();
+                } catch (Exception e) {
+                    throw new AspectranServiceException("Failed to initialize session manager", e);
+                }
+            }
+        }
+    }
+
+    protected void destroySessionManager() {
+        if (sessionAgent != null) {
+            sessionAgent.invalidate();
+            sessionAgent = null;
+        }
+        if (sessionManager != null) {
+            sessionManager.destroy();
+            sessionManager = null;
+        }
     }
 
 }

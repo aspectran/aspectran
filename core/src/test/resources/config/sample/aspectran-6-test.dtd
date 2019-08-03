@@ -76,7 +76,7 @@
   type    CDATA #IMPLIED
 >
 
-<!ELEMENT bean (description?, filter?, constructor?, properties*)>
+<!ELEMENT bean (description?, filter?, arguments*, properties*)>
 <!ATTLIST bean
   id            CDATA #IMPLIED
   class         CDATA #IMPLIED
@@ -96,8 +96,6 @@
 <!ATTLIST filter
   class   CDATA #IMPLIED
 >
-
-<!ELEMENT constructor (arguments*)>
 
 <!ELEMENT schedule (description?, scheduler, job*)>
 <!ATTLIST schedule
@@ -260,7 +258,7 @@
   type         (single | array | list | map | set | properties) #IMPLIED
   name         CDATA #IMPLIED
   value        CDATA #IMPLIED
-  valueType    (string | int | long | float | double | boolean | parameters | file | multipart-file) #IMPLIED
+  valueType    (string | int | long | float | double | boolean | parameters | file | multipart-file | bean) #IMPLIED
   tokenize     (true | false) #IMPLIED
   mandatory    (true | false) #IMPLIED
   secret       (true | false) #IMPLIED

@@ -19,6 +19,7 @@ import com.aspectran.core.util.SystemUtils;
 import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.AponReader;
 import com.aspectran.core.util.apon.ParameterKey;
+import com.aspectran.core.util.apon.VariableParameters;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,28 +34,28 @@ public class AspectranConfig extends AbstractParameters {
     public static final String DEFAULT_APP_CONFIG_ROOT_FILE = "classpath:app-config.xml";
 
     private static final ParameterKey context;
-    private static final ParameterKey session;
     private static final ParameterKey scheduler;
-    private static final ParameterKey daemon;
+    private static final ParameterKey embed;
     private static final ParameterKey shell;
+    private static final ParameterKey daemon;
     private static final ParameterKey web;
 
     private static final ParameterKey[] parameterKeys;
 
     static {
         context = new ParameterKey("context", ContextConfig.class);
-        session = new ParameterKey("session", SessionConfig.class);
         scheduler = new ParameterKey("scheduler", SchedulerConfig.class);
-        daemon = new ParameterKey("daemon", DaemonConfig.class);
+        embed = new ParameterKey("embed", EmbedConfig.class);
         shell = new ParameterKey("shell", ShellConfig.class);
+        daemon = new ParameterKey("daemon", DaemonConfig.class);
         web = new ParameterKey("web", WebConfig.class);
 
         parameterKeys = new ParameterKey[] {
                 context,
-                session,
                 scheduler,
-                daemon,
+                embed,
                 shell,
+                daemon,
                 web
         };
     }
@@ -63,9 +64,13 @@ public class AspectranConfig extends AbstractParameters {
         super(parameterKeys);
     }
 
-    public AspectranConfig(String text) throws IOException {
+    public AspectranConfig(String apon) throws IOException {
         this();
-        readFrom(text);
+        readFrom(apon);
+    }
+
+    public AspectranConfig(VariableParameters parameters) throws IOException {
+        this(parameters.toString());
     }
 
     public AspectranConfig(File configFile) throws IOException {
@@ -94,18 +99,6 @@ public class AspectranConfig extends AbstractParameters {
         return hasValue(context);
     }
 
-    public SessionConfig getSessionConfig() {
-        return getParameters(session);
-    }
-
-    public SessionConfig newSessionConfig() {
-        return newParameters(session);
-    }
-
-    public SessionConfig touchSessionConfig() {
-        return touchParameters(session);
-    }
-
     public SchedulerConfig getSchedulerConfig() {
         return getParameters(scheduler);
     }
@@ -118,16 +111,16 @@ public class AspectranConfig extends AbstractParameters {
         return touchParameters(scheduler);
     }
 
-    public DaemonConfig getDaemonConfig() {
-        return getParameters(daemon);
+    public EmbedConfig getEmbedConfig() {
+        return getParameters(embed);
     }
 
-    public DaemonConfig newDaemonConfig() {
-        return newParameters(daemon);
+    public EmbedConfig newEmbedConfig() {
+        return newParameters(embed);
     }
 
-    public DaemonConfig touchDaemonConfig() {
-        return touchParameters(daemon);
+    public EmbedConfig touchEmbedConfig() {
+        return touchParameters(embed);
     }
 
     public ShellConfig getShellConfig() {
@@ -140,6 +133,18 @@ public class AspectranConfig extends AbstractParameters {
 
     public ShellConfig touchShellConfig() {
         return touchParameters(shell);
+    }
+
+    public DaemonConfig getDaemonConfig() {
+        return getParameters(daemon);
+    }
+
+    public DaemonConfig newDaemonConfig() {
+        return newParameters(daemon);
+    }
+
+    public DaemonConfig touchDaemonConfig() {
+        return touchParameters(daemon);
     }
 
     public WebConfig getWebConfig() {

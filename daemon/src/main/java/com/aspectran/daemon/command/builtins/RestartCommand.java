@@ -51,7 +51,7 @@ public class RestartCommand extends AbstractCommand {
         return descriptor;
     }
 
-    private class CommandDescriptor implements Descriptor {
+    private static class CommandDescriptor implements Descriptor {
 
         @Override
         public String getNamespace() {

@@ -60,7 +60,7 @@ public class DefaultSessionCache extends AbstractSessionCache {
         if (s != null && !(s instanceof PlaceHolderSession)) {
             statistic.decrement();
         }
-        return  s;
+        return s;
     }
 
     @Override

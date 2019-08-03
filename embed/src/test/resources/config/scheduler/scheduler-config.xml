@@ -28,22 +28,20 @@
     </bean>
 
     <bean id="schedulerFactory" class="org.quartz.impl.StdSchedulerFactory" lazyInit="true">
-        <constructor>
-            <arguments>
-                <item type="properties">
-                    <entry name="org.quartz.scheduler.instanceName">AspectranQuartzScheduler-2</entry>
-                    <entry name="org.quartz.scheduler.rmi.export">false</entry>
-                    <entry name="org.quartz.scheduler.rmi.proxy">false</entry>
-                    <entry name="org.quartz.scheduler.wrapJobExecutionInUserTransaction">false</entry>
-                    <entry name="org.quartz.threadPool.class">org.quartz.simpl.SimpleThreadPool</entry>
-                    <entry name="org.quartz.threadPool.threadCount">10</entry>
-                    <entry name="org.quartz.threadPool.threadPriority">5</entry>
-                    <entry name="org.quartz.threadPool.threadsInheritContextClassLoaderOfInitializingThread">true</entry>
-                    <entry name="org.quartz.jobStore.misfireThreshold">60000</entry>
-                    <entry name="org.quartz.jobStore.class">org.quartz.simpl.RAMJobStore</entry>
-                </item>
-            </arguments>
-        </constructor>
+        <arguments>
+            <item type="properties">
+                <entry name="org.quartz.scheduler.instanceName">AspectranQuartzScheduler-2</entry>
+                <entry name="org.quartz.scheduler.rmi.export">false</entry>
+                <entry name="org.quartz.scheduler.rmi.proxy">false</entry>
+                <entry name="org.quartz.scheduler.wrapJobExecutionInUserTransaction">false</entry>
+                <entry name="org.quartz.threadPool.class">org.quartz.simpl.SimpleThreadPool</entry>
+                <entry name="org.quartz.threadPool.threadCount">10</entry>
+                <entry name="org.quartz.threadPool.threadPriority">5</entry>
+                <entry name="org.quartz.threadPool.threadsInheritContextClassLoaderOfInitializingThread">true</entry>
+                <entry name="org.quartz.jobStore.misfireThreshold">60000</entry>
+                <entry name="org.quartz.jobStore.class">org.quartz.simpl.RAMJobStore</entry>
+            </item>
+        </arguments>
     </bean>
 
     <bean id="defaultScheduler2" factoryBean="schedulerFactory" factoryMethod="getScheduler" lazyInit="true"/>

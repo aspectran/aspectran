@@ -1,14 +1,4 @@
 shell: {
-    prompt: "default-shell-test> "
-    commands: [
-        com.aspectran.shell.command.builtins.SysInfoCommand
-        com.aspectran.shell.command.builtins.PBEncryptCommand
-        com.aspectran.shell.command.builtins.PBDecryptCommand
-        com.aspectran.shell.command.builtins.EchoCommand
-        com.aspectran.shell.command.builtins.HelpCommand
-        com.aspectran.shell.command.builtins.ClearCommand
-        com.aspectran.shell.command.builtins.QuitCommand
-    ]
     greetings: (
         |
         |{{YELLOW}}     ___                         __                      ____  __         ____
@@ -26,4 +16,14 @@ shell: {
         |To run a translet, type '{{GREEN}}translet <translet_name>{{reset}}' or '{{GREEN}}translet_name{{reset}}'.
     )
     verbose: true
+    prompt: "default-shell-test> "
+    commands: [
+        com.aspectran.shell.command.builtins.SysInfoCommand
+        com.aspectran.shell.command.builtins.PBEncryptCommand
+        com.aspectran.shell.command.builtins.PBDecryptCommand
+        com.aspectran.shell.command.builtins.EchoCommand
+        com.aspectran.shell.command.builtins.HelpCommand
+        com.aspectran.shell.command.builtins.ClearCommand
+        com.aspectran.shell.command.builtins.QuitCommand
+    ]
 }

@@ -62,7 +62,6 @@ import com.aspectran.core.context.rule.params.AspectParameters;
 import com.aspectran.core.context.rule.params.AspectranParameters;
 import com.aspectran.core.context.rule.params.BeanParameters;
 import com.aspectran.core.context.rule.params.ChooseWhenParameters;
-import com.aspectran.core.context.rule.params.ConstructorParameters;
 import com.aspectran.core.context.rule.params.ContentParameters;
 import com.aspectran.core.context.rule.params.ContentsParameters;
 import com.aspectran.core.context.rule.params.DispatchParameters;
@@ -355,8 +354,7 @@ public class RulesToParameters {
 
         ItemRuleMap constructorArgumentItemRuleMap = beanRule.getConstructorArgumentItemRuleMap();
         if (constructorArgumentItemRuleMap != null) {
-            ConstructorParameters constructorParameters = beanParameters.newParameters(BeanParameters.constructor);
-            toItemHolderParameters(constructorArgumentItemRuleMap, constructorParameters, ConstructorParameters.arguments);
+            toItemHolderParameters(constructorArgumentItemRuleMap, beanParameters, BeanParameters.arguments);
         }
 
         ItemRuleMap propertyItemRuleMap = beanRule.getPropertyItemRuleMap();

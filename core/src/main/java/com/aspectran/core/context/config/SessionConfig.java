@@ -16,9 +16,13 @@
 package com.aspectran.core.context.config;
 
 import com.aspectran.core.context.rule.type.SessionStoreType;
+import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterKey;
 import com.aspectran.core.util.apon.ValueType;
+import com.aspectran.core.util.apon.VariableParameters;
+
+import java.io.IOException;
 
 public class SessionConfig extends AbstractParameters {
 
@@ -29,6 +33,7 @@ public class SessionConfig extends AbstractParameters {
     private static final ParameterKey removeUnloadableSessions;
     private static final ParameterKey storeType;
     private static final ParameterKey fileStore;
+    private static final ParameterKey startup;
 
     private static final ParameterKey[] parameterKeys;
 
@@ -40,6 +45,7 @@ public class SessionConfig extends AbstractParameters {
         removeUnloadableSessions = new ParameterKey("removeUnloadableSessions", ValueType.BOOLEAN);
         storeType = new ParameterKey("storeType", ValueType.STRING);
         fileStore = new ParameterKey("fileStore", SessionFileStoreConfig.class);
+        startup = new ParameterKey("startup", ValueType.BOOLEAN);
 
         parameterKeys = new ParameterKey[] {
                 timeout,
@@ -48,12 +54,30 @@ public class SessionConfig extends AbstractParameters {
                 saveOnInactiveEviction,
                 removeUnloadableSessions,
                 storeType,
-                fileStore
+                fileStore,
+                startup
         };
     }
 
     public SessionConfig() {
         super(parameterKeys);
+    }
+
+    public SessionConfig(String apon) throws IOException {
+        super(parameterKeys);
+        readFrom(apon);
+    }
+
+    public SessionConfig(VariableParameters parameters) throws IOException {
+        this(parameters.toString());
+    }
+
+    public boolean isStartup() {
+        return BooleanUtils.toBoolean(getBoolean(startup));
+    }
+
+    public void setStartup(boolean startup) {
+        putValue(SessionConfig.startup, startup);
     }
 
     public int getTimeout() {

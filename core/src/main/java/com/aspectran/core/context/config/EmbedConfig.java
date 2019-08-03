@@ -17,57 +17,29 @@ package com.aspectran.core.context.config;
 
 import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterKey;
-import com.aspectran.core.util.apon.ValueType;
 
 /**
- * @since 5.1.0
+ * @since 6.3.0
  */
-public class DaemonConfig extends AbstractParameters {
+public class EmbedConfig extends AbstractParameters {
 
-    private static final ParameterKey poller;
-    private static final ParameterKey commands;
     private static final ParameterKey session;
     private static final ParameterKey exposals;
 
     private static final ParameterKey[] parameterKeys;
 
     static {
-        poller = new ParameterKey("poller", DaemonPollerConfig.class);
-        commands = new ParameterKey("commands", ValueType.STRING, true);
         session = new ParameterKey("session", SessionConfig.class);
         exposals = new ParameterKey("exposals", ExposalsConfig.class);
 
         parameterKeys = new ParameterKey[] {
-                poller,
-                commands,
                 session,
                 exposals
         };
     }
 
-    public DaemonConfig() {
+    public EmbedConfig() {
         super(parameterKeys);
-    }
-
-    public DaemonPollerConfig getPollerConfig() {
-        return getParameters(poller);
-    }
-
-    public DaemonPollerConfig newPollerConfig() {
-        return newParameters(poller);
-    }
-
-    public DaemonPollerConfig touchPollerConfig() {
-        return touchParameters(poller);
-    }
-
-    public String[] getCommands() {
-        return getStringArray(commands);
-    }
-
-    public DaemonConfig addCommand(String command) {
-        putValue(DaemonConfig.commands, command);
-        return this;
     }
 
     public SessionConfig getSessionConfig() {

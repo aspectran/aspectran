@@ -1,14 +1,4 @@
 shell: {
-    prompt: "jline-shell-test> "
-    commands: [
-        com.aspectran.shell.command.builtins.SysInfoCommand
-        com.aspectran.shell.command.builtins.PBEncryptCommand
-        com.aspectran.shell.command.builtins.PBDecryptCommand
-        com.aspectran.shell.command.builtins.EchoCommand
-        com.aspectran.shell.command.builtins.HelpCommand
-        com.aspectran.shell.command.builtins.ClearCommand
-        com.aspectran.shell.command.builtins.QuitCommand
-    ]
     greetings: (
         |
         |{{YELLOW}}     ___                         __                      ____  __         ____
@@ -25,5 +15,15 @@ shell: {
         |If you want a list of all available translets, type '{{GREEN}}translet -l{{reset}}'.
         |To run a translet, type '{{GREEN}}translet <translet_name>{{reset}}' or '{{GREEN}}translet_name{{reset}}'.
     )
+    prompt: "jline-shell-test> "
+    commands: [
+        com.aspectran.shell.command.builtins.SysInfoCommand
+        com.aspectran.shell.command.builtins.PBEncryptCommand
+        com.aspectran.shell.command.builtins.PBDecryptCommand
+        com.aspectran.shell.command.builtins.EchoCommand
+        com.aspectran.shell.command.builtins.HelpCommand
+        com.aspectran.shell.command.builtins.ClearCommand
+        com.aspectran.shell.command.builtins.QuitCommand
+    ]
     verbose: true
 }

@@ -8,6 +8,8 @@ import com.aspectran.core.activity.TransletNotFoundException;
 import com.aspectran.core.activity.request.RequestMethodNotAllowedException;
 import com.aspectran.core.activity.request.RequestParseException;
 import com.aspectran.core.adapter.ResponseAdapter;
+import com.aspectran.core.adapter.SessionAdapter;
+import com.aspectran.core.component.session.SessionAgent;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.RequestRule;
 import com.aspectran.core.context.rule.type.MethodType;
@@ -16,6 +18,8 @@ import com.aspectran.core.support.i18n.locale.LocaleResolver;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.undertow.adapter.TowRequestAdapter;
 import com.aspectran.undertow.adapter.TowResponseAdapter;
+import com.aspectran.undertow.adapter.TowSessionAdapter;
+import com.aspectran.undertow.service.TowService;
 import com.aspectran.web.activity.request.MultipartFormDataParser;
 import com.aspectran.web.activity.request.MultipartRequestParseException;
 import com.aspectran.web.activity.request.WebRequestBodyParser;
@@ -36,15 +40,18 @@ public class TowActivity extends CoreActivity {
 
     private static final String MAX_REQUEST_SIZE_SETTING_NAME = "maxRequestSize";
 
+    private final TowService service;
+
     private final HttpServerExchange exchange;
 
     /**
-     * Instantiates a new UndertowActivity.
+     * Instantiates a new tow service
      *
-     * @param context the activity context
+     * @param service the tow service
      */
-    public TowActivity(ActivityContext context, HttpServerExchange exchange) {
-        super(context);
+    public TowActivity(TowService service, HttpServerExchange exchange) {
+        super(service.getActivityContext());
+        this.service = service;
         this.exchange = exchange;
     }
 
@@ -88,8 +95,11 @@ public class TowActivity extends CoreActivity {
                 exchange.startBlocking();
             }
 
-//            SessionAdapter sessionAdapter = new UndertowSessionAdapter(exchange, getActivityContext());
-//            setSessionAdapter(sessionAdapter);
+            if (service.getSessionManager() != null) {
+                SessionAgent sessionAgent = service.getSessionManager().newSessionAgent();
+                SessionAdapter sessionAdapter = new TowSessionAdapter(sessionAgent);
+                setSessionAdapter(sessionAdapter);
+            }
 
             TowRequestAdapter requestAdapter = new TowRequestAdapter(getTranslet().getRequestMethod(), exchange);
             if (getOuterActivity() != null) {
@@ -104,7 +114,7 @@ public class TowActivity extends CoreActivity {
 
             super.adapt();
         } catch (Exception e) {
-            throw new AdapterException("Failed to adapt for Web Activity", e);
+            throw new AdapterException("Failed to adapt for Tow Activity", e);
         }
     }
 
@@ -188,7 +198,7 @@ public class TowActivity extends CoreActivity {
     @Override
     @SuppressWarnings("unchecked")
     public <T extends Activity> T newActivity() {
-        TowActivity activity = new TowActivity(getActivityContext(), exchange);
+        TowActivity activity = new TowActivity(service, exchange);
         activity.setIncluded(true);
         return (T)activity;
     }

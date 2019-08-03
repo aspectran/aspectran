@@ -24,11 +24,9 @@
     </environment>
 
     <bean id="jetty.server" class="com.aspectran.jetty.JettyServer">
-        <constructor>
-            <arguments>
-                <item name="threadPool">#{jetty.threadPool}</item>
-            </arguments>
-        </constructor>
+        <arguments>
+            <item name="threadPool">#{jetty.threadPool}</item>
+        </arguments>
         <properties>
             <item name="autoStart">%{jetty.startup}</item>
             <item name="connectors" type="array">
@@ -46,11 +44,9 @@
     </bean>
 
     <bean id="jetty.connector" class="org.eclipse.jetty.server.ServerConnector" scope="prototype">
-        <constructor>
-            <arguments>
-                <item>#{jetty.server}</item>
-            </arguments>
-        </constructor>
+        <arguments>
+            <item>#{jetty.server}</item>
+        </arguments>
         <properties>
             <item name="port">%{jetty.server.port}</item>
         </properties>
@@ -132,20 +128,16 @@
     </bean>
 
     <bean id="jetty.customRequestLog" class="org.eclipse.jetty.server.CustomRequestLog" scope="prototype">
-        <constructor>
-            <arguments>
-                <item>#{jetty.asyncRequestLogWriter}</item>
-                <item>#{field:org.eclipse.jetty.server.CustomRequestLog^EXTENDED_NCSA_FORMAT}</item>
-            </arguments>
-        </constructor>
+        <arguments>
+            <item>#{jetty.asyncRequestLogWriter}</item>
+            <item>#{field:org.eclipse.jetty.server.CustomRequestLog^EXTENDED_NCSA_FORMAT}</item>
+        </arguments>
     </bean>
 
     <bean id="jetty.asyncRequestLogWriter" class="org.eclipse.jetty.server.AsyncRequestLogWriter" scope="prototype">
-        <constructor>
-            <arguments>
-                <item>#{basePath}/logs/jetty-yyyy_mm_dd.request.log</item>
-            </arguments>
-        </constructor>
+        <arguments>
+            <item>#{basePath}/logs/jetty-yyyy_mm_dd.request.log</item>
+        </arguments>
         <properties>
             <item name="filenameDateFormat">yyyy_MM_dd</item>
             <item name="retainDays" valueType="int">90</item>

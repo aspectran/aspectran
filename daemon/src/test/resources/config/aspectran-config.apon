@@ -19,6 +19,12 @@ scheduler: {
     startup: false
 }
 daemon: {
+    poller: {
+        pollingInterval: 5000
+        maxThreads: 5
+        inbound: /inbound
+        requeue: false
+    }
     commands: [
         com.aspectran.daemon.command.builtins.JettyCommand
         com.aspectran.daemon.command.builtins.InvokeActionCommand
@@ -27,12 +33,6 @@ daemon: {
         com.aspectran.daemon.command.builtins.RestartCommand
         com.aspectran.daemon.command.builtins.QuitCommand
     ]
-    poller: {
-        pollingInterval: 5000
-        maxThreads: 5
-        inbound: /inbound
-        requeue: false
-    }
     exposals: {
         -: /**
     }

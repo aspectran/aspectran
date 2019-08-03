@@ -29,13 +29,6 @@ import com.aspectran.shell.console.Console;
 public interface ShellService extends CoreService {
 
     /**
-     * Create and return a new session adapter from the shell service.
-     *
-     * @return the session adapter
-     */
-    SessionAdapter newSessionAdapter();
-
-    /**
      * Tests if the verbose mode is enabled.
      * If verbose mode is on, a detailed description is printed each time the command is executed.
      * Returns a flag indicating whether to show the description or not.
@@ -84,6 +77,13 @@ public interface ShellService extends CoreService {
      * @return true if the translet can be exposed; false otherwise
      */
     boolean isExposable(String transletName);
+
+    /**
+     * Create and return a new session adapter from the shell service.
+     *
+     * @return the session adapter
+     */
+    SessionAdapter newSessionAdapter();
 
     /**
      * Executes translet.

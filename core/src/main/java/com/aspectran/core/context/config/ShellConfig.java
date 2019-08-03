@@ -21,9 +21,10 @@ import com.aspectran.core.util.apon.ValueType;
 
 public class ShellConfig extends AbstractParameters {
 
+    private static final ParameterKey greetings;
     private static final ParameterKey prompt;
     private static final ParameterKey commands;
-    private static final ParameterKey greetings;
+    private static final ParameterKey session;
     private static final ParameterKey workingDir;
     private static final ParameterKey historyFile;
     private static final ParameterKey verbose;
@@ -32,18 +33,21 @@ public class ShellConfig extends AbstractParameters {
     private static final ParameterKey[] parameterKeys;
 
     static {
+        greetings = new ParameterKey("greetings", ValueType.TEXT);
         prompt = new ParameterKey("prompt", ValueType.STRING);
         commands = new ParameterKey("commands", ValueType.STRING, true);
-        greetings = new ParameterKey("greetings", ValueType.TEXT);
+        session = new ParameterKey("session", SessionConfig.class);
         workingDir = new ParameterKey("workingDir", ValueType.STRING);
         historyFile = new ParameterKey("historyFile", ValueType.STRING);
         verbose = new ParameterKey("verbose", ValueType.BOOLEAN);
         exposals = new ParameterKey("exposals", ExposalsConfig.class);
 
+
         parameterKeys = new ParameterKey[] {
+                greetings,
                 prompt,
                 commands,
-                greetings,
+                session,
                 workingDir,
                 historyFile,
                 verbose,
@@ -53,6 +57,15 @@ public class ShellConfig extends AbstractParameters {
 
     public ShellConfig() {
         super(parameterKeys);
+    }
+
+    public String getGreetings() {
+        return getString(greetings);
+    }
+
+    public ShellConfig setGreetings(String greetings) {
+        putValue(ShellConfig.greetings, greetings);
+        return this;
     }
 
     public String getPrompt() {
@@ -73,13 +86,16 @@ public class ShellConfig extends AbstractParameters {
         return this;
     }
 
-    public String getGreetings() {
-        return getString(greetings);
+    public SessionConfig getSessionConfig() {
+        return getParameters(session);
     }
 
-    public ShellConfig setGreetings(String greetings) {
-        putValue(ShellConfig.greetings, greetings);
-        return this;
+    public SessionConfig newSessionConfig() {
+        return newParameters(session);
+    }
+
+    public SessionConfig touchSessionConfig() {
+        return touchParameters(session);
     }
 
     public String getWorkingDir() {

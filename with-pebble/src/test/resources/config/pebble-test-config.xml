@@ -14,11 +14,9 @@
     <bean id="pebbleConfigurationFactory" class="com.aspectran.pebble.PebbleEngineFactoryBean"/>
 
     <bean id="pebble" class="com.aspectran.pebble.PebbleTemplateEngine">
-        <constructor>
-            <arguments>
-                <item>#{pebbleConfigurationFactory}</item>
-            </arguments>
-        </constructor>
+        <arguments>
+            <item>#{pebbleConfigurationFactory}</item>
+        </arguments>
     </bean>
 
     <translet name="echo-1">

@@ -348,11 +348,12 @@ public class AspectranWebService extends AspectranCoreService implements WebServ
 
             @Override
             public void paused(long millis) {
-                if (millis < 0L) {
-                    throw new IllegalArgumentException("Pause timeout in milliseconds " +
-                            "needs to be set to a value of greater than 0");
+                if (millis > 0L) {
+                    service.pauseTimeout = System.currentTimeMillis() + millis;
+                } else {
+                    log.warn("Pause timeout in milliseconds needs to be set " +
+                            "to a value of greater than 0");
                 }
-                service.pauseTimeout = System.currentTimeMillis() + millis;
             }
 
             @Override

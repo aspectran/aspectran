@@ -4,27 +4,21 @@
 <aspectran>
 
     <bean id="nestedInnerStringBean" class="java.lang.String" scope="prototype">
-        <constructor>
-            <arguments>
-                <item>
-                    <bean class="java.lang.String">
-                        <constructor>
-                            <arguments>
-                                <item>
-                                    <bean class="java.lang.String">
-                                        <constructor>
-                                            <arguments>
-                                                <item>Nested Inner String Bean</item>
-                                            </arguments>
-                                        </constructor>
-                                    </bean>
-                                </item>
-                            </arguments>
-                        </constructor>
-                    </bean>
-                </item>
-            </arguments>
-        </constructor>
+        <arguments>
+            <item>
+                <bean class="java.lang.String">
+                    <arguments>
+                        <item>
+                            <bean class="java.lang.String">
+                                <arguments>
+                                    <item>Nested Inner String Bean</item>
+                                </arguments>
+                            </bean>
+                        </item>
+                    </arguments>
+                </bean>
+            </item>
+        </arguments>
     </bean>
 
 </aspectran>

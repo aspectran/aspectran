@@ -45,6 +45,7 @@ class EmbeddedAspectranTest {
         //String rootFile = "classpath:config/embedded/embedded-aspectran-config.xml";
         AspectranConfig aspectranConfig = new AspectranConfig();
         aspectranConfig.newContextConfig().setRootFile("./target/test-classes/config/embedded/embedded-aspectran-config.xml");
+        aspectranConfig.newEmbedConfig().newSessionConfig().setStartup(true);
         System.setProperty(ActivityContextBuilder.DEBUG_MODE_PROPERTY_NAME, "true");
         aspectran = EmbeddedAspectran.run(aspectranConfig);
     }

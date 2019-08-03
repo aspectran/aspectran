@@ -71,7 +71,6 @@ public class QuartzSchedulerService extends AbstractServiceController implements
 
     public QuartzSchedulerService(CoreService coreService) {
         super(false);
-
         this.coreService = coreService;
     }
 
@@ -263,7 +262,7 @@ public class QuartzSchedulerService extends AbstractServiceController implements
                     scheduler.scheduleJob(jobDetail, trigger);
                 }
             } else {
-                log.warn("Unexposable translet [" + jobRule.getTransletName() + "] in ScheduleRule " + scheduleRule);
+                log.warn("Unavailable translet [" + jobRule.getTransletName() + "] in ScheduleRule " + scheduleRule);
             }
         }
 

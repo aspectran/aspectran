@@ -19,23 +19,15 @@ import com.aspectran.core.activity.ActivityTerminatedException;
 import com.aspectran.core.activity.InstantActivity;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.request.ParameterMap;
-import com.aspectran.core.adapter.SessionAdapter;
-import com.aspectran.core.component.session.DefaultSessionManager;
-import com.aspectran.core.component.session.SessionAgent;
-import com.aspectran.core.component.session.SessionManager;
 import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.config.ContextConfig;
-import com.aspectran.core.context.config.SessionConfig;
 import com.aspectran.core.context.rule.type.MethodType;
-import com.aspectran.core.service.AspectranCoreService;
 import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.ServiceStateListener;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.embed.activity.AspectranActivity;
-import com.aspectran.embed.adapter.AspectranApplicationAdapter;
-import com.aspectran.embed.adapter.AspectranSessionAdapter;
 
 import java.util.Map;
 
@@ -46,43 +38,14 @@ import static com.aspectran.core.context.config.AspectranConfig.DEFAULT_APP_CONF
  *
  * @since 3.0.0
  */
-public class DefaultEmbeddedAspectran extends AspectranCoreService implements EmbeddedAspectran {
+public class DefaultEmbeddedAspectran extends AbstractEmbeddedAspectran {
 
     private static final Log log = LogFactory.getLog(DefaultEmbeddedAspectran.class);
-
-    private SessionManager sessionManager;
-
-    private SessionAgent sessionAgent;
 
     private volatile long pauseTimeout = -1L;
 
     public DefaultEmbeddedAspectran() {
-        super(new AspectranApplicationAdapter());
-
-        determineBasePath();
-    }
-
-    @Override
-    public void afterContextLoaded() throws Exception {
-        sessionManager = new DefaultSessionManager(getActivityContext());
-        sessionManager.setWorkerName("EM" + this.hashCode() + "_");
-        SessionConfig sessionConfig = getAspectranConfig().getSessionConfig();
-        if (sessionConfig != null) {
-            sessionManager.setSessionConfig(sessionConfig);
-        }
-        sessionManager.initialize();
-        sessionAgent = sessionManager.newSessionAgent();
-    }
-
-    @Override
-    public void beforeContextDestroy() {
-        sessionManager.destroy();
-        sessionManager = null;
-    }
-
-    @Override
-    public SessionAdapter newSessionAdapter() {
-        return new AspectranSessionAdapter(sessionAgent);
+        super();
     }
 
     @Override
@@ -129,6 +92,10 @@ public class DefaultEmbeddedAspectran extends AspectranCoreService implements Em
     public Translet translate(String name, MethodType method, ParameterMap parameterMap, Map<String, Object> attributeMap, String body) {
         if (name == null) {
             throw new IllegalArgumentException("name must not be null");
+        }
+        if (!isExposable(name)) {
+            log.error("Unavailable translet: " + name);
+            return null;
         }
         if (pauseTimeout != 0L) {
             if (pauseTimeout == -1L || pauseTimeout >= System.currentTimeMillis()) {
@@ -205,11 +172,6 @@ public class DefaultEmbeddedAspectran extends AspectranCoreService implements Em
         }
     }
 
-    @Override
-    public void release() {
-        stop();
-    }
-
     /**
      * Returns a new instance of {@code DefaultEmbeddedAspectran}.
      *
@@ -233,6 +195,7 @@ public class DefaultEmbeddedAspectran extends AspectranCoreService implements Em
         aspectran.setServiceStateListener(new ServiceStateListener() {
             @Override
             public void started() {
+                aspectran.initSessionManager();
                 aspectran.pauseTimeout = 0;
             }
 
@@ -243,11 +206,12 @@ public class DefaultEmbeddedAspectran extends AspectranCoreService implements Em
 
             @Override
             public void paused(long millis) {
-                if (millis < 0L) {
-                    throw new IllegalArgumentException("Pause timeout in milliseconds needs to be " +
-                            "set to a value of greater than 0");
+                if (millis > 0L) {
+                    aspectran.pauseTimeout = System.currentTimeMillis() + millis;
+                } else {
+                    log.warn("Pause timeout in milliseconds needs to be set " +
+                            "to a value of greater than 0");
                 }
-                aspectran.pauseTimeout = System.currentTimeMillis() + millis;
             }
 
             @Override
@@ -262,6 +226,7 @@ public class DefaultEmbeddedAspectran extends AspectranCoreService implements Em
 
             @Override
             public void stopped() {
+                aspectran.destroySessionManager();
                 paused();
             }
         });

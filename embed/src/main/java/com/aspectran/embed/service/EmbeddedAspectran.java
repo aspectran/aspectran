@@ -38,6 +38,14 @@ import java.util.Map;
 public interface EmbeddedAspectran extends CoreService {
 
     /**
+     * Returns whether or not the translet can be exposed to the daemon service.
+     *
+     * @param transletName the name of the translet to check
+     * @return true if the translet can be exposed; false otherwise
+     */
+    boolean isExposable(String transletName);
+
+    /**
      * Create and return a new session adapter from the embedded aspectran.
      *
      * @return the session adapter

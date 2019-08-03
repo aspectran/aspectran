@@ -56,7 +56,6 @@ import com.aspectran.core.context.rule.params.AspectParameters;
 import com.aspectran.core.context.rule.params.AspectranParameters;
 import com.aspectran.core.context.rule.params.BeanParameters;
 import com.aspectran.core.context.rule.params.ChooseWhenParameters;
-import com.aspectran.core.context.rule.params.ConstructorParameters;
 import com.aspectran.core.context.rule.params.ContentParameters;
 import com.aspectran.core.context.rule.params.ContentsParameters;
 import com.aspectran.core.context.rule.params.DispatchParameters;
@@ -384,15 +383,12 @@ public class ParametersToRules {
             filterParameters.hasValue(FilterParameters.exclude))) {
             beanRule.setFilterParameters(filterParameters);
         }
-        ConstructorParameters constructorParameters = beanParameters.getParameters(BeanParameters.constructor);
-        if (constructorParameters != null) {
-            List<ItemHolderParameters> argumentItemHolderParametersList = constructorParameters.getParametersList(ConstructorParameters.arguments);
-            if (argumentItemHolderParametersList != null) {
-                for (ItemHolderParameters itemHolderParameters : argumentItemHolderParametersList) {
-                    ItemRuleMap irm = asItemRuleMap(itemHolderParameters);
-                    irm = assistant.profiling(irm, beanRule.getConstructorArgumentItemRuleMap());
-                    beanRule.setConstructorArgumentItemRuleMap(irm);
-                }
+        List<ItemHolderParameters> argumentItemHolderParametersList = beanParameters.getParametersList(BeanParameters.arguments);
+        if (argumentItemHolderParametersList != null) {
+            for (ItemHolderParameters itemHolderParameters : argumentItemHolderParametersList) {
+                ItemRuleMap irm = asItemRuleMap(itemHolderParameters);
+                irm = assistant.profiling(irm, beanRule.getConstructorArgumentItemRuleMap());
+                beanRule.setConstructorArgumentItemRuleMap(irm);
             }
         }
         List<ItemHolderParameters> propertyItemHolderParametersList = beanParameters.getParametersList(BeanParameters.properties);
@@ -428,15 +424,12 @@ public class ParametersToRules {
         if (description != null) {
             beanRule.setDescription(description);
         }
-        ConstructorParameters constructorParameters = beanParameters.getParameters(BeanParameters.constructor);
-        if (constructorParameters != null) {
-            List<ItemHolderParameters> argumentItemHolderParametersList = constructorParameters.getParametersList(ConstructorParameters.arguments);
-            if (argumentItemHolderParametersList != null) {
-                for (ItemHolderParameters itemHolderParameters : argumentItemHolderParametersList) {
-                    ItemRuleMap irm = asItemRuleMap(itemHolderParameters);
-                    irm = assistant.profiling(irm, beanRule.getConstructorArgumentItemRuleMap());
-                    beanRule.setConstructorArgumentItemRuleMap(irm);
-                }
+        List<ItemHolderParameters> argumentItemHolderParametersList = beanParameters.getParametersList(BeanParameters.arguments);
+        if (argumentItemHolderParametersList != null) {
+            for (ItemHolderParameters itemHolderParameters : argumentItemHolderParametersList) {
+                ItemRuleMap irm = asItemRuleMap(itemHolderParameters);
+                irm = assistant.profiling(irm, beanRule.getConstructorArgumentItemRuleMap());
+                beanRule.setConstructorArgumentItemRuleMap(irm);
             }
         }
         List<ItemHolderParameters> propertyItemHolderParametersList = beanParameters.getParametersList(BeanParameters.properties);

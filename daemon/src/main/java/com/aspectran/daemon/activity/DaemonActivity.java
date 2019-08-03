@@ -47,7 +47,6 @@ public class DaemonActivity extends CoreActivity {
      */
     public DaemonActivity(DaemonService service) {
         super(service.getActivityContext());
-
         this.service = service;
     }
 

@@ -127,11 +127,10 @@ public class SessionAgent {
 
     public Session getSession(boolean create) {
         if (session != null) {
-            if (!session.isValid()) {
-                session = null;
-            } else {
+            if (session.isValid()) {
                 return session;
             }
+            session = null;
         }
         if (!create) {
             return null;
