@@ -34,9 +34,9 @@ public class SessionAgent {
     
     private Session session;
 
-    public SessionAgent(SessionHandler sessionHandler) {
+    public SessionAgent(SessionHandler sessionHandler, String id) {
         this.sessionHandler = sessionHandler;
-        this.id = sessionHandler.newSessionId(hashCode());
+        this.id = id;
     }
 
     public String getId() {

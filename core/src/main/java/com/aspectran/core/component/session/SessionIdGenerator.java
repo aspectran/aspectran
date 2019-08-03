@@ -57,7 +57,7 @@ public class SessionIdGenerator {
      * @param seedTerm the seed for RNG
      * @return a new unique session id
      */
-    public String newSessionId(long seedTerm) {
+    public String createSessionId(long seedTerm) {
         synchronized (random) {
             long r0;
             if (weakRandom) {

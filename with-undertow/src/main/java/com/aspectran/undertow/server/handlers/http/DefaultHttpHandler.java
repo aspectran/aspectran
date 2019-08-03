@@ -17,8 +17,8 @@ public class DefaultHttpHandler extends AbstractHttpHandler implements Initializ
     @Override
     public void initialize() throws Exception {
         towService = AspectranTowService.create(getActivityContext().getRootService());
-        if (getSessionManager() != null) {
-            towService.setSessionManager(getSessionManager());
+        if (getTowSessionManager() != null) {
+            towService.setTowSessionManager(getTowSessionManager());
         }
     }
 

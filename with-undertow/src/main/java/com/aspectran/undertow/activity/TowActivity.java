@@ -95,8 +95,8 @@ public class TowActivity extends CoreActivity {
                 exchange.startBlocking();
             }
 
-            if (service.getSessionManager() != null) {
-                SessionAgent sessionAgent = service.getSessionManager().newSessionAgent();
+            if (service.getTowSessionManager() != null) {
+                SessionAgent sessionAgent = service.getTowSessionManager().newSessionAgent(exchange);
                 SessionAdapter sessionAdapter = new TowSessionAdapter(sessionAgent);
                 setSessionAdapter(sessionAdapter);
             }

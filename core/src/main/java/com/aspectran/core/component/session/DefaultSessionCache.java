@@ -33,8 +33,18 @@ public class DefaultSessionCache extends AbstractSessionCache {
 
     private final CounterStatistic statistic = new CounterStatistic();
 
+    private int maxSessions;
+
     public DefaultSessionCache(SessionHandler sessionHandler) {
         super(sessionHandler);
+    }
+
+    public int getMaxSessions() {
+        return maxSessions;
+    }
+
+    public void setMaxSessions(int maxSessions) {
+        this.maxSessions = maxSessions;
     }
 
     @Override
@@ -47,6 +57,7 @@ public class DefaultSessionCache extends AbstractSessionCache {
 
     @Override
     public Session doPutIfAbsent(String id, Session session) {
+        checkMaxSessions();
         Session s = sessions.putIfAbsent(id, session);
         if (s == null && !(session instanceof PlaceHolderSession)) {
             statistic.increment();
@@ -65,8 +76,9 @@ public class DefaultSessionCache extends AbstractSessionCache {
 
     @Override
     public boolean doReplace(String id, Session oldValue, Session newValue) {
+        checkMaxSessions();
         boolean result = sessions.replace(id, oldValue, newValue);
-        if (result && (oldValue instanceof PlaceHolderSession)) {
+        if (result && oldValue instanceof PlaceHolderSession) {
             statistic.increment();
         }
         return result;
@@ -124,6 +136,13 @@ public class DefaultSessionCache extends AbstractSessionCache {
                     }
                 }
             }
+        }
+    }
+
+    private void checkMaxSessions() {
+        if (maxSessions > 0 && statistic.getCurrent() > maxSessions) {
+            throw new IllegalStateException("Session was rejected as the maximum number of sessions " +
+                    maxSessions + " has been hit");
         }
     }
 

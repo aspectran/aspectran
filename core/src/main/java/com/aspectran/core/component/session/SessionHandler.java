@@ -77,7 +77,7 @@ public interface SessionHandler extends Component {
      */
     void invalidate(String id);
 
-    String newSessionId(long seedTerm);
+    String createSessionId(long seedTerm);
 
     /**
      * Adds an event listener for session-related events.

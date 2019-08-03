@@ -134,11 +134,9 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
         try {
             sessionCache.put(id, session);
             sessionsCreatedStats.increment();
-
             for (SessionListener listener : sessionListeners) {
                 listener.sessionCreated(session);
             }
-
             return session;
         } catch (Exception e) {
             log.warn("Failed to create a new session", e);
@@ -205,8 +203,8 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
 
 
     @Override
-    public String newSessionId(long seedTerm) {
-        return sessionIdGenerator.newSessionId(seedTerm);
+    public String createSessionId(long seedTerm) {
+        return sessionIdGenerator.createSessionId(seedTerm);
     }
 
     /**

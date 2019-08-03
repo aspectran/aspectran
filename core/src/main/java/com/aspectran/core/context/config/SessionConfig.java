@@ -27,6 +27,7 @@ import java.io.IOException;
 public class SessionConfig extends AbstractParameters {
 
     private static final ParameterKey timeout;
+    private static final ParameterKey maxSessions;
     private static final ParameterKey evictionPolicy;
     private static final ParameterKey saveOnCreate;
     private static final ParameterKey saveOnInactiveEviction;
@@ -39,6 +40,7 @@ public class SessionConfig extends AbstractParameters {
 
     static {
         timeout = new ParameterKey("timeout", ValueType.INT);
+        maxSessions = new ParameterKey("maxSessions", ValueType.INT);
         evictionPolicy = new ParameterKey("evictionPolicy", ValueType.INT);
         saveOnCreate = new ParameterKey("saveOnCreate", ValueType.BOOLEAN);
         saveOnInactiveEviction = new ParameterKey("saveOnInactiveEviction", ValueType.BOOLEAN);
@@ -49,6 +51,7 @@ public class SessionConfig extends AbstractParameters {
 
         parameterKeys = new ParameterKey[] {
                 timeout,
+                maxSessions,
                 evictionPolicy,
                 saveOnCreate,
                 saveOnInactiveEviction,
@@ -86,6 +89,15 @@ public class SessionConfig extends AbstractParameters {
 
     public SessionConfig setTimeout(int timeout) {
         putValue(SessionConfig.timeout, timeout);
+        return this;
+    }
+
+    public int getMaxSessions() {
+        return getInt(maxSessions, 0);
+    }
+
+    public SessionConfig setMaxSessions(int maxSessions) {
+        putValue(SessionConfig.maxSessions, maxSessions);
         return this;
     }
 

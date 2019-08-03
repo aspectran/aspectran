@@ -1,10 +1,10 @@
 package com.aspectran.undertow.service;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
-import com.aspectran.core.component.session.SessionManager;
 import com.aspectran.core.service.AspectranCoreService;
 import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.CoreService;
+import com.aspectran.undertow.server.session.TowSessionManager;
 
 /**
  * <p>Created: 2019-07-27</p>
@@ -13,7 +13,7 @@ public abstract class AbstractTowService extends AspectranCoreService implements
 
     private String uriDecoding;
 
-    private SessionManager sessionManager;
+    private TowSessionManager towSessionManager;
 
     public AbstractTowService(ApplicationAdapter applicationAdapter) {
         super(applicationAdapter);
@@ -32,21 +32,21 @@ public abstract class AbstractTowService extends AspectranCoreService implements
     }
 
     @Override
-    public SessionManager getSessionManager() {
-        return sessionManager;
+    public TowSessionManager getTowSessionManager() {
+        return towSessionManager;
     }
 
-    public void setSessionManager(SessionManager sessionManager) {
-        if (this.sessionManager != null) {
-            throw new IllegalStateException("Session manager already exists");
+    public void setTowSessionManager(TowSessionManager towSessionManager) {
+        if (this.towSessionManager != null) {
+            throw new IllegalStateException("Tow session manager already exists");
         }
-        this.sessionManager = sessionManager;
+        this.towSessionManager = towSessionManager;
     }
 
     protected void initSessionManager() {
-        if (sessionManager != null) {
+        if (towSessionManager != null) {
             try {
-                sessionManager.initialize();
+                towSessionManager.initialize();
             } catch (Exception e) {
                 throw new AspectranServiceException("Failed to initialize session manager", e);
             }
@@ -54,9 +54,9 @@ public abstract class AbstractTowService extends AspectranCoreService implements
     }
 
     protected void destroySessionManager() {
-        if (sessionManager != null) {
-            sessionManager.destroy();
-            sessionManager = null;
+        if (towSessionManager != null) {
+            towSessionManager.destroy();
+            towSessionManager = null;
         }
     }
 

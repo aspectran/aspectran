@@ -40,4 +40,6 @@ public interface SessionManager extends Component {
 
     SessionAgent newSessionAgent();
 
+    SessionAgent newSessionAgent(String id);
+
 }

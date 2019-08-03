@@ -96,7 +96,16 @@ public class DefaultSessionManager extends AbstractSessionHandler implements Ses
 
     @Override
     public SessionAgent newSessionAgent() {
-        return new SessionAgent(this);
+        String id = getSessionHandler().createSessionId(hashCode());
+        return new SessionAgent(this, id);
+    }
+
+    @Override
+    public SessionAgent newSessionAgent(String id) {
+        if (!StringUtils.hasText(id)) {
+            id = getSessionHandler().createSessionId(hashCode());
+        }
+        return new SessionAgent(this, id);
     }
 
     @Override
@@ -107,7 +116,8 @@ public class DefaultSessionManager extends AbstractSessionHandler implements Ses
         }
 
         if (getSessionCache() == null) {
-            SessionCache sessionCache = new DefaultSessionCache(this);
+            DefaultSessionCache sessionCache = new DefaultSessionCache(this);
+            sessionCache.setMaxSessions(sessionConfig.getMaxSessions());
             setSessionCache(sessionCache);
         }
 

@@ -162,7 +162,7 @@ public abstract class AbstractSessionCache implements SessionCache {
                 }
 
                 // didn't get a session, try and create one and put in a placeholder for it
-                PlaceHolderSession phs = new PlaceHolderSession (new SessionData(id, 0, 0, 0, 0));
+                PlaceHolderSession phs = new PlaceHolderSession(new SessionData(id, 0, 0, 0, 0));
                 Lock phsLock = phs.lock();
                 Session s = doPutIfAbsent(id, phs);
                 if (s == null) {
@@ -179,20 +179,18 @@ public abstract class AbstractSessionCache implements SessionCache {
                         try (Lock ignored = session.lock()) {
                             // swap it in instead of the placeholder
                             boolean success = doReplace(id, phs, session);
-                            if (!success) {
+                            if (success) {
+                                // successfully swapped in the session
+                                session.setResident(true);
+                                session.updateInactivityTimer();
+                            } else {
                                 // something has gone wrong, it should have been our placeholder
                                 doDelete(id);
                                 session = null;
                                 log.warn("Replacement of placeholder for session " + id + " failed");
-                                phsLock.close();
-                                break;
-                            } else {
-                                // successfully swapped in the session
-                                session.setResident(true);
-                                session.updateInactivityTimer();
-                                phsLock.close();
-                                break;
                             }
+                            phsLock.close();
+                            break;
                         }
                     } catch (Exception e) {
                         ex = e; // remember a problem happened loading the session
@@ -296,7 +294,7 @@ public abstract class AbstractSessionCache implements SessionCache {
             }
 
             // don't do anything with the session until the last request for it has finished
-            if ((session.getRequests() <= 0)) {
+            if (session.getRequests() <= 0) {
                 // save the session
                 if (!sessionDataStore.isPassivating()) {
                     // if our backing datastore isn't the passivating kind, just save the session
@@ -310,7 +308,7 @@ public abstract class AbstractSessionCache implements SessionCache {
                         session.setResident(false);
                     } else {
                         session.setResident(true);
-                        if (doPutIfAbsent(id,session) == null) { // ensure it is in our map
+                        if (doPutIfAbsent(id, session) == null) { // ensure it is in our map
                             session.updateInactivityTimer();
                         }
                         if (log.isDebugEnabled()) {
@@ -548,7 +546,7 @@ public abstract class AbstractSessionCache implements SessionCache {
     /**
      * PlaceHolder
      */
-    protected class PlaceHolderSession extends Session {
+    protected static class PlaceHolderSession extends Session {
 
         /**
          * @param data the session data
