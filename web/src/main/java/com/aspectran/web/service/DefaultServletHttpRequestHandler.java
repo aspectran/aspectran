@@ -56,7 +56,6 @@ public class DefaultServletHttpRequestHandler {
 
     public DefaultServletHttpRequestHandler(ServletContext servletContext) {
         this.servletContext = servletContext;
-
         lookupDefaultServletName(servletContext);
     }
 

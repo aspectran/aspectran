@@ -2,7 +2,9 @@ package com.aspectran.undertow.server.handlers.servlet;
 
 import com.aspectran.core.component.bean.aware.EnvironmentAware;
 import com.aspectran.core.context.env.Environment;
+import com.aspectran.core.util.Assert;
 import com.aspectran.core.util.ResourceUtils;
+import com.aspectran.web.service.WebService;
 import io.undertow.server.handlers.resource.ClassPathResourceManager;
 import io.undertow.server.handlers.resource.FileResourceManager;
 import io.undertow.server.handlers.resource.ResourceManager;
@@ -25,6 +27,7 @@ public class TowServletContext extends DeploymentInfo implements EnvironmentAwar
     }
 
     public void setResourceBase(String resourceBase) throws IOException {
+        Assert.notNull(environment, "environment must not be null");
         ResourceManager resourceManager;
         if (resourceBase.startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {
             String basePackage = resourceBase.substring(ResourceUtils.CLASSPATH_URL_PREFIX.length());
@@ -65,6 +68,14 @@ public class TowServletContext extends DeploymentInfo implements EnvironmentAwar
             for (TowFilterServletMapping filterServletMapping : towFilterServletMappings) {
                 addFilterServletNameMapping(filterServletMapping.getFilterName(), filterServletMapping.getMapping(), filterServletMapping.getDispatcher());
             }
+        }
+    }
+
+    public void setEnableRootWebService(boolean enableRootWebService) {
+        if (enableRootWebService) {
+            getServletContextAttributes().put(WebService.ROOT_WEB_SERVICE_ATTRIBUTE, "enabled");
+        } else {
+            getServletContextAttributes().remove(WebService.ROOT_WEB_SERVICE_ATTRIBUTE);
         }
     }
 

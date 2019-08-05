@@ -66,10 +66,12 @@ public class AspectranWebService extends AspectranCoreService implements WebServ
     private AspectranWebService(ServletContext servletContext) {
         super(new WebApplicationAdapter(servletContext));
         setBasePath(servletContext.getRealPath("/"));
+        setDefaultServletHttpRequestHandler(servletContext);
     }
 
-    private AspectranWebService(CoreService rootService) {
-        super(rootService);
+    private AspectranWebService(ServletContext servletContext, CoreService rootService) {
+        super(new WebApplicationAdapter(servletContext), rootService);
+        setDefaultServletHttpRequestHandler(servletContext);
     }
 
     protected void setUriDecoding(String uriDecoding) {
@@ -212,8 +214,7 @@ public class AspectranWebService extends AspectranCoreService implements WebServ
      * @return the instance of {@code AspectranWebService}
      */
     public static AspectranWebService create(ServletContext servletContext, CoreService rootService) {
-        AspectranWebService service = new AspectranWebService(rootService);
-        service.setDefaultServletHttpRequestHandler(servletContext);
+        AspectranWebService service = new AspectranWebService(servletContext, rootService);
         AspectranConfig aspectranConfig = rootService.getAspectranConfig();
         if (aspectranConfig != null) {
             WebConfig webConfig = aspectranConfig.getWebConfig();
@@ -307,7 +308,6 @@ public class AspectranWebService extends AspectranCoreService implements WebServ
 
         AspectranWebService service = new AspectranWebService(servletContext);
         service.prepare(aspectranConfig);
-        service.setDefaultServletHttpRequestHandler(servletContext);
 
         WebConfig webConfig = aspectranConfig.getWebConfig();
         if (webConfig != null) {

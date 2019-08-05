@@ -75,13 +75,17 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
             throw new IllegalArgumentException("applicationAdapter must not be null");
         }
 
-        this.rootService = null;
         this.applicationAdapter = applicationAdapter;
+        this.rootService = null;
         this.lateStart = false;
     }
 
-    public AbstractCoreService(CoreService rootService) {
+    public AbstractCoreService(ApplicationAdapter applicationAdapter, CoreService rootService) {
         super(true);
+
+        if (applicationAdapter == null) {
+            throw new IllegalArgumentException("applicationAdapter must not be null");
+        }
 
         if (rootService == null) {
             throw new IllegalArgumentException("rootService must not be null");
@@ -91,12 +95,12 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
         }
 
         rootService.joinDerivedService(this);
-        this.lateStart = rootService.getServiceController().isActive();
 
+        this.applicationAdapter = applicationAdapter;
         this.rootService = rootService;
-        this.applicationAdapter = rootService.getApplicationAdapter();
         this.activityContext = rootService.getActivityContext();
         this.aspectranConfig = rootService.getAspectranConfig();
+        this.lateStart = rootService.getServiceController().isActive();
     }
 
     @Override

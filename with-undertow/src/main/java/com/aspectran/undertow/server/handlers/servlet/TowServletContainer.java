@@ -7,7 +7,14 @@ import io.undertow.servlet.core.ServletContainerImpl;
  */
 public class TowServletContainer extends ServletContainerImpl {
 
-    public void setTowServletContexts(TowServletContext... towServletContexts) {
+    private TowServletContext[] towServletContexts;
+
+    public TowServletContext[] getTowServletContexts() {
+        return towServletContexts;
+    }
+
+    public void setTowServletContexts(TowServletContext[] towServletContexts) {
+        this.towServletContexts = towServletContexts;
         if (towServletContexts != null) {
             for (TowServletContext towServletContext : towServletContexts) {
                 addDeployment(towServletContext);

@@ -54,14 +54,14 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
     public void init() throws ServletException {
         try {
             ServletContext servletContext = getServletContext();
-            Object object = servletContext.getAttribute(WebService.ROOT_WEB_SERVICE_ATTRIBUTE);
+            Object attr = servletContext.getAttribute(WebService.ROOT_WEB_SERVICE_ATTRIBUTE);
             AspectranWebService rootService = null;
-            if (object != null) {
-                if (!(object instanceof AspectranWebService)) {
-                    throw new IllegalStateException("Context attribute [" + object + "] is not of type [" +
+            if (attr != null) {
+                if (!(attr instanceof AspectranWebService)) {
+                    throw new IllegalStateException("Context attribute [" + attr + "] is not of type [" +
                             AspectranWebService.class.getName() + "]");
                 }
-                rootService = (AspectranWebService)object;
+                rootService = (AspectranWebService)attr;
                 webService = AspectranWebService.create(this, rootService);
             } else {
                 webService = AspectranWebService.create(this);

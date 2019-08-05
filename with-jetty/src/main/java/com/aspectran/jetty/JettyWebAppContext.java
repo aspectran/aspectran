@@ -48,11 +48,15 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
 
     private ActivityContext context;
 
-    private boolean standalone;
+    private boolean enableRootWebService;
 
     @Override
     public void setActivityContext(ActivityContext context) {
         this.context = context;
+    }
+
+    public void setEnableRootWebService(boolean enableRootWebService) {
+        this.enableRootWebService = enableRootWebService;
     }
 
     public void setTempDirectory(String tempDirectory) {
@@ -70,15 +74,11 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
         }
     }
 
-    public void setStandalone(boolean standalone) {
-        this.standalone = standalone;
-    }
-
     @Override
     public void initialize() throws Exception {
         Assert.notNull(context, "context must not be null");
 
-        if (!standalone) {
+        if (enableRootWebService) {
             CoreService rootService = context.getRootService();
             WebService webService = AspectranWebService.create(getServletContext(), rootService);
             setAttribute(WebService.ROOT_WEB_SERVICE_ATTRIBUTE, webService);

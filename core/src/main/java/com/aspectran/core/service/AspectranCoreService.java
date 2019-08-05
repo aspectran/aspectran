@@ -39,8 +39,8 @@ public class AspectranCoreService extends AbstractCoreService {
         super(applicationAdapter);
     }
 
-    public AspectranCoreService(CoreService rootService) {
-        super(rootService);
+    public AspectranCoreService(ApplicationAdapter applicationAdapter, CoreService rootService) {
+        super(applicationAdapter, rootService);
     }
 
     /**
