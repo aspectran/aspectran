@@ -36,4 +36,36 @@ public class TowServletContext extends DeploymentInfo implements EnvironmentAwar
         setResourceManager(resourceManager);
     }
 
+    public void setServlets(TowServlet[] towServlets) {
+        if (towServlets != null) {
+            for (TowServlet towServlet : towServlets) {
+                addServlet(towServlet);
+            }
+        }
+    }
+
+    public void setFilters(TowFilter[] towFilters) {
+        if (towFilters != null) {
+            for (TowFilter towFilter : towFilters) {
+                addFilter(towFilter);
+            }
+        }
+    }
+
+    public void setFilterUrlMappings(TowFilterUrlMapping[] towFilterUrlMappings) {
+        if (towFilterUrlMappings != null) {
+            for (TowFilterUrlMapping filterUrlMapping : towFilterUrlMappings) {
+                addFilterUrlMapping(filterUrlMapping.getFilterName(), filterUrlMapping.getMapping(), filterUrlMapping.getDispatcher());
+            }
+        }
+    }
+
+    public void setFilterServletMappings(TowFilterServletMapping[] towFilterServletMappings) {
+        if (towFilterServletMappings != null) {
+            for (TowFilterServletMapping filterServletMapping : towFilterServletMappings) {
+                addFilterServletNameMapping(filterServletMapping.getFilterName(), filterServletMapping.getMapping(), filterServletMapping.getDispatcher());
+            }
+        }
+    }
+
 }

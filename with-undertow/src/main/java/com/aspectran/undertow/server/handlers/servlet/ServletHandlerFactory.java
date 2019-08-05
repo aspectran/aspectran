@@ -11,25 +11,27 @@ import java.util.Collection;
  */
 public class ServletHandlerFactory {
 
-    private TowServletContainer servletContainer;
+    private TowServletContainer towServletContainer;
 
-    public TowServletContainer getServletContainer() {
-        return servletContainer;
+    public TowServletContainer getTowServletContainer() {
+        return towServletContainer;
     }
 
-    public void setServletContainer(TowServletContainer servletContainer) {
-        this.servletContainer = servletContainer;
+    public void setTowServletContainer(TowServletContainer towServletContainer) {
+        this.towServletContainer = towServletContainer;
     }
 
     public HttpHandler createServletHandler() throws Exception {
-        if (servletContainer != null) {
+        if (towServletContainer != null) {
+            //PathHandler pathHandler = new PathHandler(Handlers.redirect("/"));
             PathHandler pathHandler = new PathHandler();
-            Collection<String> deploymentNames = servletContainer.listDeployments();
+            Collection<String> deploymentNames = towServletContainer.listDeployments();
             for (String deploymentName : deploymentNames) {
-                DeploymentManager manager = servletContainer.getDeployment(deploymentName);
+                DeploymentManager manager = towServletContainer.getDeployment(deploymentName);
                 manager.deploy();
                 HttpHandler handler = manager.start();
-                pathHandler.addPrefixPath(manager.getDeployment().getDeploymentInfo().getContextPath(), handler);
+                String contextPath = manager.getDeployment().getDeploymentInfo().getContextPath();
+                pathHandler.addPrefixPath(contextPath, handler);
             }
             return pathHandler;
         } else {
