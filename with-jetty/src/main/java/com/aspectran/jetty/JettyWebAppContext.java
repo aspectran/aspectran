@@ -84,7 +84,7 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
             setAttribute(WebService.ROOT_WEB_SERVICE_ATTRIBUTE, webService);
         }
 
-        ClassLoader parent = context.getEnvironment().getClassLoader();
+        ClassLoader parent = context.getApplicationAdapter().getClassLoader();
         WebAppClassLoader webAppClassLoader = new WebAppClassLoader(parent, this);
         setClassLoader(webAppClassLoader);
 

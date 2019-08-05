@@ -21,8 +21,8 @@ import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.activity.response.transform.xml.ContentsInputSource;
 import com.aspectran.core.activity.response.transform.xml.ContentsXMLReader;
+import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
-import com.aspectran.core.context.env.Environment;
 import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.context.rule.type.ContentType;
@@ -95,7 +95,7 @@ public class XslTransformResponse extends TransformResponse {
         }
 
         try {
-            loadTemplate(activity.getActivityContext().getEnvironment());
+            loadTemplate(activity.getActivityContext().getApplicationAdapter());
 
             if (outputEncoding != null) {
                 responseAdapter.setEncoding(outputEncoding);
@@ -131,7 +131,7 @@ public class XslTransformResponse extends TransformResponse {
         return new XslTransformResponse(getTransformRule().replicate());
     }
 
-    private void loadTemplate(Environment environment) throws TransformerConfigurationException, IOException {
+    private void loadTemplate(ApplicationAdapter applicationAdapter) throws TransformerConfigurationException, IOException {
         String templateFile = templateRule.getFile();
         String templateResource = templateRule.getResource();
         String templateUrl = templateRule.getUrl();
@@ -139,11 +139,11 @@ public class XslTransformResponse extends TransformResponse {
 
         if (templateFile != null) {
             if (noCache) {
-                File file = environment.toRealPathAsFile(templateFile);
+                File file = applicationAdapter.toRealPathAsFile(templateFile);
                 this.templates = createTemplates(file);
                 determineOutputStyle();
             } else {
-                File file = environment.toRealPathAsFile(templateFile);
+                File file = applicationAdapter.toRealPathAsFile(templateFile);
                 long lastModifiedTime = file.lastModified();
                 if (lastModifiedTime > this.templateLastModifiedTime) {
                     synchronized (this) {
@@ -158,14 +158,14 @@ public class XslTransformResponse extends TransformResponse {
             }
         } else if (templateResource != null) {
             if (noCache) {
-                ClassLoader classLoader = environment.getClassLoader();
+                ClassLoader classLoader = applicationAdapter.getClassLoader();
                 this.templates = createTemplates(Objects.requireNonNull(classLoader.getResource(templateResource)));
                 determineOutputStyle();
             } else {
                 if (!this.templateLoaded) {
                     synchronized (this) {
                         if (!this.templateLoaded) {
-                            ClassLoader classLoader = environment.getClassLoader();
+                            ClassLoader classLoader = applicationAdapter.getClassLoader();
                             this.templates = createTemplates(Objects.requireNonNull(classLoader.getResource(templateResource)));
                             determineOutputStyle();
                             this.templateLoaded = true;

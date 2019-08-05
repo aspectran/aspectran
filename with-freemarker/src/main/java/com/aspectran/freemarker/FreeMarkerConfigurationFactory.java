@@ -15,8 +15,8 @@
  */
 package com.aspectran.freemarker;
 
-import com.aspectran.core.component.bean.aware.EnvironmentAware;
-import com.aspectran.core.context.env.Environment;
+import com.aspectran.core.adapter.ApplicationAdapter;
+import com.aspectran.core.component.bean.aware.ApplicationAdapterAware;
 import com.aspectran.core.util.PropertiesLoaderUtils;
 import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.core.util.apon.Parameters;
@@ -46,13 +46,13 @@ import java.util.Properties;
  *
  * <p>Created: 2016. 1. 9.</p>
  */
-public class FreeMarkerConfigurationFactory implements EnvironmentAware {
+public class FreeMarkerConfigurationFactory implements ApplicationAdapterAware {
 
     private static final Log log = LogFactory.getLog(FreeMarkerConfigurationFactory.class);
 
     private static final String DIRECTIVE_NAME_PARAM_NAME = "name";
 
-    private Environment environment;
+    private ApplicationAdapter applicationAdapter;
 
     private String configLocation;
 
@@ -69,8 +69,8 @@ public class FreeMarkerConfigurationFactory implements EnvironmentAware {
     private TrimDirective[] trimDirectives;
 
     @Override
-    public void setEnvironment(Environment environment) {
-        this.environment = environment;
+    public void setApplicationAdapter(ApplicationAdapter applicationAdapter) {
+        this.applicationAdapter = applicationAdapter;
     }
 
     /**
@@ -340,7 +340,7 @@ public class FreeMarkerConfigurationFactory implements EnvironmentAware {
                 log.debug("Template loader path [" + templateLoaderPath +
                     "] resolved to class path [" + basePackagePath + "]");
             }
-            return new ClassTemplateLoader(environment.getClassLoader(), basePackagePath);
+            return new ClassTemplateLoader(applicationAdapter.getClassLoader(), basePackagePath);
         } else if (templateLoaderPath.startsWith(ResourceUtils.FILE_URL_PREFIX)) {
             File file = new File(templateLoaderPath.substring(ResourceUtils.FILE_URL_PREFIX.length()));
             if (log.isDebugEnabled()) {
@@ -349,7 +349,7 @@ public class FreeMarkerConfigurationFactory implements EnvironmentAware {
             }
             return new FileTemplateLoader(file);
         } else {
-            File file = new File(environment.getBasePath(), templateLoaderPath);
+            File file = new File(applicationAdapter.getBasePath(), templateLoaderPath);
             if (log.isDebugEnabled()) {
                 log.debug("Template loader path [" + templateLoaderPath +
                     "] resolved to file path [" + file.getAbsolutePath() + "]");

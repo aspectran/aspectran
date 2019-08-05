@@ -16,6 +16,7 @@
 package com.aspectran.core.context;
 
 import com.aspectran.core.activity.Activity;
+import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.component.aspect.AspectRuleRegistry;
 import com.aspectran.core.component.bean.BeanRegistry;
 import com.aspectran.core.component.schedule.ScheduleRuleRegistry;
@@ -43,11 +44,11 @@ public interface ActivityContext {
     String MESSAGE_SOURCE_BEAN_ID = "messageSource";
 
     /**
-     * Gets the description of this ActivityContext.
+     * Returns the class loader used by the current application.
      *
-     * @return the description of this ActivityContext
+     * @return the class loader
      */
-    String getDescription();
+    ApplicationAdapter getApplicationAdapter();
 
     /**
      * Gets the context environment.
@@ -55,6 +56,13 @@ public interface ActivityContext {
      * @return the context environment
      */
     Environment getEnvironment();
+
+    /**
+     * Gets the description of this ActivityContext.
+     *
+     * @return the description of this ActivityContext
+     */
+    String getDescription();
 
     /**
      * Returns the Aspectran Service that created the current ActivityContext.

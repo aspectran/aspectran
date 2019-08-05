@@ -165,7 +165,7 @@ public class AspectranNodeParser {
 
     public void parsingFailed(String message, Throwable cause) throws Exception {
         String detail;
-        if (assistant.getRuleAppendHandler().getCurrentRuleAppender().getNodeTracker() != null) {
+        if (assistant.getRuleAppendHandler().getCurrentRuleAppender().getNodeTracker().getName() != null) {
             detail = message + ": " +
                 assistant.getRuleAppendHandler().getCurrentRuleAppender().getNodeTracker() + " on " +
                 assistant.getRuleAppendHandler().getCurrentRuleAppender().getQualifiedName();

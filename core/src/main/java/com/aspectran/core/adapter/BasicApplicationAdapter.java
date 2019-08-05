@@ -32,17 +32,8 @@ public class BasicApplicationAdapter extends AbstractApplicationAdapter {
     /**
      * Instantiates a new BasicApplicationAdapter.
      */
-    public BasicApplicationAdapter() {
-        super(null);
-    }
-
-    /**
-     * Instantiates a new BasicApplicationAdapter.
-     *
-     * @param adaptee the adaptee object
-     */
-    public BasicApplicationAdapter(Object adaptee) {
-        super(adaptee);
+    public BasicApplicationAdapter(String basePath, ClassLoader classLoader) {
+        super(basePath, classLoader);
     }
 
     @Override

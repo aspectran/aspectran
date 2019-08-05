@@ -16,10 +16,6 @@
 package com.aspectran.core.context.env;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.adapter.ApplicationAdapter;
-
-import java.io.File;
-import java.io.IOException;
 
 /**
  * Interface representing the environment in which the current application is running.
@@ -80,44 +76,5 @@ public interface Environment {
      * @return the value of the property on environment
      */
     <T> T getProperty(String name, Activity activity);
-
-    /**
-     * Returns the application adapter.
-     *
-     * @return the application adapter
-     */
-    ApplicationAdapter getApplicationAdapter();
-
-    /**
-     * Returns the class loader used by the current application.
-     *
-     * @return the class loader
-     */
-    ClassLoader getClassLoader();
-
-    /**
-     * Returns the base path that the current application is mapped to.
-     *
-     * @return the application base path
-     */
-    String getBasePath();
-
-    /**
-     * Returns to convert the given file path with the real file path.
-     *
-     * @param filePath the specified file path
-     * @return the real file path
-     * @throws IOException if an I/O error has occurred
-     */
-    String toRealPath(String filePath) throws IOException;
-
-    /**
-     * Returns to convert the given file path with the real file path.
-     *
-     * @param filePath the specified file path
-     * @return the real file path
-     * @throws IOException if an I/O error has occurred
-     */
-    File toRealPathAsFile(String filePath) throws IOException;
 
 }

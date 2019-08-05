@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.context.builder;
 
-import com.aspectran.core.adapter.BasicApplicationAdapter;
+import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.component.Component;
 import com.aspectran.core.component.bean.BeanRuleRegistry;
 import com.aspectran.core.context.ActivityContext;
@@ -50,12 +50,12 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
     private ShutdownHooks.Task shutdownTask;
 
     public HybridActivityContextBuilder() {
-        super(new BasicApplicationAdapter());
+        super();
         this.coreService = null;
     }
 
     public HybridActivityContextBuilder(AbstractCoreService coreService) {
-        super(coreService.getApplicationAdapter());
+        super();
         this.coreService = coreService;
         setServiceController(coreService);
     }
@@ -110,8 +110,9 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
 
             long startTime = System.currentTimeMillis();
 
+            ApplicationAdapter applicationAdapter = createApplicationAdapter();
             ContextEnvironment contextEnvironment = createContextEnvironment();
-            ContextRuleAssistant assistant = new ContextRuleAssistant(contextEnvironment);
+            ContextRuleAssistant assistant = new ContextRuleAssistant(applicationAdapter, contextEnvironment);
             assistant.ready();
 
             if (getBasePackages() != null) {
@@ -174,7 +175,6 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
     private void doDestroy() {
         if (this.active.get()) {
             stopReloadingTimer();
-            getApplicationAdapter().getApplicationScope().destroy();
             if (activityContext != null) {
                 ((Component)activityContext).destroy();
                 activityContext = null;

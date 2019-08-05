@@ -15,11 +15,11 @@
  */
 package com.aspectran.core.component.translet;
 
+import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.component.AbstractComponent;
 import com.aspectran.core.component.translet.scan.TransletScanFilter;
 import com.aspectran.core.component.translet.scan.TransletScanner;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.env.Environment;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.expr.token.Tokenizer;
 import com.aspectran.core.context.rule.IllegalRuleException;
@@ -86,9 +86,9 @@ public class TransletRuleRegistry extends AbstractComponent {
 
     private AssistantLocal assistantLocal;
 
-    public TransletRuleRegistry(Environment environment) {
-        this.basePath = environment.getBasePath();
-        this.classLoader = environment.getClassLoader();
+    public TransletRuleRegistry(ApplicationAdapter applicationAdapter) {
+        this.basePath = applicationAdapter.getBasePath();
+        this.classLoader = applicationAdapter.getClassLoader();
     }
 
     public void setAssistantLocal(AssistantLocal assistantLocal) {

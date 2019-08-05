@@ -16,7 +16,6 @@
 package com.aspectran.core.service;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.InsufficientEnvironmentException;
 import com.aspectran.core.context.builder.ActivityContextBuilder;
@@ -50,8 +49,6 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
 
     private final CoreService rootService;
 
-    private final ApplicationAdapter applicationAdapter;
-
     private final boolean lateStart;
 
     private String basePath;
@@ -68,44 +65,28 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
 
     private FileLocker fileLocker;
 
-    public AbstractCoreService(ApplicationAdapter applicationAdapter) {
-        super(true);
-
-        if (applicationAdapter == null) {
-            throw new IllegalArgumentException("applicationAdapter must not be null");
-        }
-
-        this.applicationAdapter = applicationAdapter;
-        this.rootService = null;
-        this.lateStart = false;
+    public AbstractCoreService() {
+        this(null);
     }
 
-    public AbstractCoreService(ApplicationAdapter applicationAdapter, CoreService rootService) {
+    public AbstractCoreService(CoreService rootService) {
         super(true);
 
-        if (applicationAdapter == null) {
-            throw new IllegalArgumentException("applicationAdapter must not be null");
+        if (rootService != null) {
+            if (rootService.getActivityContext() == null) {
+                throw new IllegalStateException("Oops! ActivityContext is not yet created");
+            }
+
+            rootService.joinDerivedService(this);
+
+            this.rootService = rootService;
+            this.activityContext = rootService.getActivityContext();
+            this.aspectranConfig = rootService.getAspectranConfig();
+            this.lateStart = rootService.getServiceController().isActive();
+        } else {
+            this.rootService = null;
+            this.lateStart = false;
         }
-
-        if (rootService == null) {
-            throw new IllegalArgumentException("rootService must not be null");
-        }
-        if (rootService.getActivityContext() == null) {
-            throw new IllegalStateException("Oops! ActivityContext is not yet created");
-        }
-
-        rootService.joinDerivedService(this);
-
-        this.applicationAdapter = applicationAdapter;
-        this.rootService = rootService;
-        this.activityContext = rootService.getActivityContext();
-        this.aspectranConfig = rootService.getAspectranConfig();
-        this.lateStart = rootService.getServiceController().isActive();
-    }
-
-    @Override
-    public ApplicationAdapter getApplicationAdapter() {
-        return applicationAdapter;
     }
 
     @Override
@@ -260,7 +241,7 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
         if (startDelaySeconds == -1) {
             startDelaySeconds = 5;
             if (log.isDebugEnabled()) {
-                log.debug("Scheduler option 'startDelaySeconds' not specified, defaulting to 5 seconds");
+                log.debug("Scheduler option 'startDelaySeconds' is not specified, defaulting to 5 seconds");
             }
         }
 

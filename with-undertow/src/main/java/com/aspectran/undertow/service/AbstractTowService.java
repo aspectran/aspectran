@@ -1,6 +1,5 @@
 package com.aspectran.undertow.service;
 
-import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.service.AspectranCoreService;
 import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.CoreService;
@@ -15,8 +14,8 @@ public abstract class AbstractTowService extends AspectranCoreService implements
 
     private TowSessionManager towSessionManager;
 
-    public AbstractTowService(ApplicationAdapter applicationAdapter) {
-        super(applicationAdapter);
+    public AbstractTowService() {
+        super();
     }
 
     public AbstractTowService(CoreService rootService) {

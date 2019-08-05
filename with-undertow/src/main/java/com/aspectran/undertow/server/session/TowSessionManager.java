@@ -41,7 +41,7 @@ public class TowSessionManager extends DefaultSessionManager {
     @Override
     protected void doInitialize() throws Exception {
         if (sessionCookieConfig == null) {
-            throw new IllegalStateException("Session cookie config not specified");
+            throw new IllegalStateException("Session cookie config is not specified");
         }
         super.doInitialize();
     }

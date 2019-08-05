@@ -79,7 +79,7 @@ public class CoreTranslet extends AbstractTranslet {
 
     @Override
     public ApplicationAdapter getApplicationAdapter() {
-        return getEnvironment().getApplicationAdapter();
+        return activity.getApplicationAdapter();
     }
 
     @Override
@@ -95,11 +95,6 @@ public class CoreTranslet extends AbstractTranslet {
     @Override
     public ResponseAdapter getResponseAdapter() {
         return activity.getResponseAdapter();
-    }
-
-    @Override
-    public <T> T getApplicationAdaptee() {
-        return getApplicationAdapter().getAdaptee();
     }
 
     @Override

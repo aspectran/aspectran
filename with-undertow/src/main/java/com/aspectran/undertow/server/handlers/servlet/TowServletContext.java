@@ -1,10 +1,9 @@
 package com.aspectran.undertow.server.handlers.servlet;
 
-import com.aspectran.core.component.bean.aware.EnvironmentAware;
-import com.aspectran.core.context.env.Environment;
+import com.aspectran.core.adapter.ApplicationAdapter;
+import com.aspectran.core.component.bean.aware.ApplicationAdapterAware;
 import com.aspectran.core.util.Assert;
 import com.aspectran.core.util.ResourceUtils;
-import com.aspectran.web.service.WebService;
 import io.undertow.server.handlers.resource.ClassPathResourceManager;
 import io.undertow.server.handlers.resource.FileResourceManager;
 import io.undertow.server.handlers.resource.ResourceManager;
@@ -16,24 +15,26 @@ import java.io.IOException;
 /**
  * <p>Created: 2019-08-05</p>
  */
-public class TowServletContext extends DeploymentInfo implements EnvironmentAware {
+public class TowServletContext extends DeploymentInfo implements ApplicationAdapterAware {
 
-    private Environment environment;
+    public static final String INHERIT_ROOT_WEB_SERVICE_ATTRIBUTE = TowServletContext.class.getName() + ".INHERIT_ROOT_WEB_SERVICE";
+
+    private ApplicationAdapter applicationAdapter;
 
     @Override
-    public void setEnvironment(Environment environment) {
-        this.environment = environment;
-        setClassLoader(environment.getClassLoader());
+    public void setApplicationAdapter(ApplicationAdapter applicationAdapter) {
+        this.applicationAdapter = applicationAdapter;
+        setClassLoader(applicationAdapter.getClassLoader());
     }
 
     public void setResourceBase(String resourceBase) throws IOException {
-        Assert.notNull(environment, "environment must not be null");
+        Assert.notNull(applicationAdapter, "applicationAdapter must not be null");
         ResourceManager resourceManager;
         if (resourceBase.startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {
             String basePackage = resourceBase.substring(ResourceUtils.CLASSPATH_URL_PREFIX.length());
-            resourceManager = new ClassPathResourceManager(environment.getClassLoader(), basePackage);
+            resourceManager = new ClassPathResourceManager(applicationAdapter.getClassLoader(), basePackage);
         } else {
-            File basePath = environment.toRealPathAsFile(resourceBase);
+            File basePath = applicationAdapter.toRealPathAsFile(resourceBase);
             resourceManager = new FileResourceManager(basePath);
         }
         setResourceManager(resourceManager);
@@ -73,9 +74,9 @@ public class TowServletContext extends DeploymentInfo implements EnvironmentAwar
 
     public void setEnableRootWebService(boolean enableRootWebService) {
         if (enableRootWebService) {
-            getServletContextAttributes().put(WebService.ROOT_WEB_SERVICE_ATTRIBUTE, "enabled");
+            getServletContextAttributes().put(INHERIT_ROOT_WEB_SERVICE_ATTRIBUTE, "enabled");
         } else {
-            getServletContextAttributes().remove(WebService.ROOT_WEB_SERVICE_ATTRIBUTE);
+            getServletContextAttributes().remove(INHERIT_ROOT_WEB_SERVICE_ATTRIBUTE);
         }
     }
 

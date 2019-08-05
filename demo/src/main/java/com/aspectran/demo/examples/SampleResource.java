@@ -23,7 +23,7 @@ public class SampleResource {
 
     public String getResourceFile(Translet translet) {
         String resourceName = translet.getParameter("resourceName");
-        ClassLoader classLoader = translet.getEnvironment().getClassLoader();
+        ClassLoader classLoader = translet.getApplicationAdapter().getClassLoader();
         URL url = classLoader.getResource(resourceName);
         if (url == null) {
             return null;

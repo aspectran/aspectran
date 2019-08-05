@@ -117,7 +117,9 @@ public class DefaultSessionManager extends AbstractSessionHandler implements Ses
 
         if (getSessionCache() == null) {
             DefaultSessionCache sessionCache = new DefaultSessionCache(this);
-            sessionCache.setMaxSessions(sessionConfig.getMaxSessions());
+            if (sessionConfig != null) {
+                sessionCache.setMaxSessions(sessionConfig.getMaxSessions());
+            }
             setSessionCache(sessionCache);
         }
 
@@ -144,7 +146,7 @@ public class DefaultSessionManager extends AbstractSessionHandler implements Ses
                     String storeDir = fileStoreConfig.getStoreDir();
                     if (StringUtils.hasText(storeDir)) {
                         if (context != null) {
-                            String basePath = context.getEnvironment().getBasePath();
+                            String basePath = context.getApplicationAdapter().getBasePath();
                             fileSessionDataStore.setStoreDir(new File(basePath, storeDir));
                         } else {
                             fileSessionDataStore.setStoreDir(new File(storeDir));

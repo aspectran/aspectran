@@ -63,13 +63,13 @@ import java.util.Set;
  */
 public class ContextRuleAssistant {
 
-    private final ContextEnvironment contextEnvironment;
-
     private final ApplicationAdapter applicationAdapter;
 
     private final String basePath;
 
     private final ClassLoader classLoader;
+
+    private final ContextEnvironment contextEnvironment;
 
     private Map<DefaultSettingType, String> settings;
 
@@ -94,20 +94,20 @@ public class ContextRuleAssistant {
     private RuleAppendHandler ruleAppendHandler;
 
     protected ContextRuleAssistant() {
-        this(null);
+        this(null, null);
     }
 
-    public ContextRuleAssistant(ContextEnvironment contextEnvironment) {
-        if (contextEnvironment != null) {
+    public ContextRuleAssistant(ApplicationAdapter applicationAdapter, ContextEnvironment contextEnvironment) {
+        if (applicationAdapter != null) {
+            this.applicationAdapter = applicationAdapter;
+            this.basePath = applicationAdapter.getBasePath();
+            this.classLoader = applicationAdapter.getClassLoader();
             this.contextEnvironment = contextEnvironment;
-            this.applicationAdapter = contextEnvironment.getApplicationAdapter();
-            this.basePath = contextEnvironment.getBasePath();
-            this.classLoader = contextEnvironment.getClassLoader();
         } else {
-            this.contextEnvironment = null;
             this.applicationAdapter = null;
             this.basePath = null;
             this.classLoader = null;
+            this.contextEnvironment = null;
         }
     }
 
@@ -117,12 +117,12 @@ public class ContextRuleAssistant {
         typeAliases = new HashMap<>();
         assistantLocal = new AssistantLocal(this);
 
-        if (contextEnvironment != null) {
+        if (applicationAdapter != null) {
             aspectRuleRegistry = new AspectRuleRegistry();
 
             beanRuleRegistry = new BeanRuleRegistry(classLoader);
 
-            transletRuleRegistry = new TransletRuleRegistry(contextEnvironment);
+            transletRuleRegistry = new TransletRuleRegistry(applicationAdapter);
             transletRuleRegistry.setAssistantLocal(assistantLocal);
 
             scheduleRuleRegistry = new ScheduleRuleRegistry();
@@ -141,7 +141,7 @@ public class ContextRuleAssistant {
         typeAliases = null;
         assistantLocal = null;
 
-        if (contextEnvironment != null) {
+        if (applicationAdapter != null) {
             scheduleRuleRegistry.setAssistantLocal(null);
             transletRuleRegistry.setAssistantLocal(null);
             templateRuleRegistry.setAssistantLocal(null);
@@ -156,10 +156,6 @@ public class ContextRuleAssistant {
         }
     }
 
-    public ContextEnvironment getContextEnvironment() {
-        return contextEnvironment;
-    }
-
     public ApplicationAdapter getApplicationAdapter() {
         return applicationAdapter;
     }
@@ -170,6 +166,10 @@ public class ContextRuleAssistant {
 
     public ClassLoader getClassLoader() {
         return classLoader;
+    }
+
+    public ContextEnvironment getContextEnvironment() {
+        return contextEnvironment;
     }
 
     /**

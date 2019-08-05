@@ -16,7 +16,6 @@
 package com.aspectran.core.service;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.resource.AspectranClassLoader;
@@ -32,13 +31,6 @@ public interface CoreService {
      * @return the base path for the root application
      */
     String getBasePath();
-
-    /**
-     * Returns the application adapter.
-     *
-     * @return the application adapter
-     */
-    ApplicationAdapter getApplicationAdapter();
 
     /**
      * Returns whether the service should be started separately

@@ -15,11 +15,11 @@
  */
 package com.aspectran.mybatis;
 
+import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.component.bean.ablility.FactoryBean;
 import com.aspectran.core.component.bean.ablility.InitializableBean;
 import com.aspectran.core.component.bean.annotation.AvoidAdvice;
-import com.aspectran.core.component.bean.aware.ActivityContextAware;
-import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.component.bean.aware.ApplicationAdapterAware;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 
@@ -33,10 +33,10 @@ import java.util.Properties;
  * using default MyBatis Configuration.
  */
 @AvoidAdvice
-public class SqlSessionFactoryBean implements ActivityContextAware, InitializableBean,
+public class SqlSessionFactoryBean implements ApplicationAdapterAware, InitializableBean,
         FactoryBean<SqlSessionFactory> {
 
-    private ActivityContext context;
+    private ApplicationAdapter applicationAdapter;
 
     private String configLocation;
 
@@ -71,7 +71,7 @@ public class SqlSessionFactoryBean implements ActivityContextAware, Initializabl
     protected SqlSessionFactory buildSqlSessionFactory(File configFile) {
         ClassLoader originalClassLoader = Thread.currentThread().getContextClassLoader();
         try (Reader reader = new FileReader(configFile)) {
-            Thread.currentThread().setContextClassLoader(context.getEnvironment().getClassLoader());
+            Thread.currentThread().setContextClassLoader(applicationAdapter.getClassLoader());
             SqlSessionFactoryBuilder sqlSessionFactoryBuilder = new SqlSessionFactoryBuilder();
             return sqlSessionFactoryBuilder.build(reader, environment, properties);
         } catch(Exception ex) {
@@ -83,20 +83,20 @@ public class SqlSessionFactoryBean implements ActivityContextAware, Initializabl
     }
 
     @Override
-    public void setActivityContext(ActivityContext context) {
-        this.context = context;
+    public void setApplicationAdapter(ApplicationAdapter applicationAdapter) {
+        this.applicationAdapter = applicationAdapter;
     }
 
     @Override
     public void initialize() throws Exception {
-        if (context == null) {
-            throw new IllegalStateException("ActivityContext is not specified");
+        if (applicationAdapter == null) {
+            throw new IllegalStateException("applicationAdapter is not specified");
         }
         if(sqlSessionFactory == null) {
             if(configLocation == null) {
                 throw new IllegalArgumentException("Property 'configLocation' is required");
             }
-            File configFile = context.getEnvironment().toRealPathAsFile(configLocation);
+            File configFile = applicationAdapter.toRealPathAsFile(configLocation);
             sqlSessionFactory = buildSqlSessionFactory(configFile);
         }
     }

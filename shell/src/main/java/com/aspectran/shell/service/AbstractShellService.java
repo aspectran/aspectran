@@ -30,7 +30,6 @@ import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
-import com.aspectran.shell.adapter.ShellApplicationAdapter;
 import com.aspectran.shell.adapter.ShellSessionAdapter;
 import com.aspectran.shell.console.Console;
 
@@ -57,7 +56,7 @@ public abstract class AbstractShellService extends AspectranCoreService implemen
     private Token[] greetingsTokens;
 
     protected AbstractShellService(Console console) {
-        super(new ShellApplicationAdapter());
+        super();
 
         if (console == null) {
             throw new IllegalArgumentException("console must not be null");

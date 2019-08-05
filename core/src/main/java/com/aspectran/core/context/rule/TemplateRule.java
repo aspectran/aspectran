@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.context.rule;
 
-import com.aspectran.core.context.env.Environment;
+import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.expr.token.Tokenizer;
 import com.aspectran.core.context.rule.ability.BeanReferenceable;
@@ -223,12 +223,12 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceable
         return templateSource;
     }
 
-    public String getTemplateSource(Environment environment) throws IOException {
+    public String getTemplateSource(ApplicationAdapter applicationAdapter) throws IOException {
         if (this.file != null || this.resource != null || this.url != null) {
             if (isNoCache()) {
-                return loadTemplateSource(environment);
+                return loadTemplateSource(applicationAdapter);
             } else {
-                loadCachedTemplateSource(environment);
+                loadCachedTemplateSource(applicationAdapter);
                 return this.templateSource;
             }
         } else {
@@ -252,16 +252,16 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceable
         return this.templateTokens;
     }
 
-    public Token[] getTemplateTokens(Environment environment) throws IOException {
+    public Token[] getTemplateTokens(ApplicationAdapter applicationAdapter) throws IOException {
         if (isExternalEngine()) {
             throw new UnsupportedOperationException();
         }
         if (this.file != null || this.resource != null || this.url != null) {
             if (isNoCache()) {
-                String source = loadTemplateSource(environment);
+                String source = loadTemplateSource(applicationAdapter);
                 return parseContentTokens(source);
             } else {
-                loadCachedTemplateSource(environment);
+                loadCachedTemplateSource(applicationAdapter);
                 return this.templateTokens;
             }
         } else {
@@ -281,13 +281,13 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceable
         }
     }
 
-    private String loadTemplateSource(Environment environment) throws IOException {
+    private String loadTemplateSource(ApplicationAdapter applicationAdapter) throws IOException {
         String templateSource = null;
         if (this.file != null) {
-            File file = environment.toRealPathAsFile(this.file);
+            File file = applicationAdapter.toRealPathAsFile(this.file);
             templateSource = ResourceUtils.read(file, this.encoding);
         } else if (this.resource != null) {
-            ClassLoader classLoader = environment.getClassLoader();
+            ClassLoader classLoader = applicationAdapter.getClassLoader();
             URL url = classLoader.getResource(this.resource);
             templateSource = ResourceUtils.read(url, this.encoding);
         } else if (this.url != null) {
@@ -297,9 +297,9 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceable
         return templateSource;
     }
 
-    private void loadCachedTemplateSource(Environment environment) throws IOException {
+    private void loadCachedTemplateSource(ApplicationAdapter applicationAdapter) throws IOException {
         if (this.file != null) {
-            File file = environment.toRealPathAsFile(this.file);
+            File file = applicationAdapter.toRealPathAsFile(this.file);
             long time1 = this.lastModifiedTime;
             long time2 = file.lastModified();
             if (time2 > time1) {
@@ -319,8 +319,7 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceable
                 synchronized (this) {
                     loaded = this.loaded;
                     if (!loaded) {
-                        ClassLoader classLoader = environment.getClassLoader();
-                        URL url = classLoader.getResource(this.resource);
+                        URL url = applicationAdapter.getClassLoader().getResource(this.resource);
                         String template = ResourceUtils.read(url, this.encoding);
                         setTemplateSource(template);
                         this.loaded = true;

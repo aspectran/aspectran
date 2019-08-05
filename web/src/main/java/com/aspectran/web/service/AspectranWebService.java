@@ -34,7 +34,6 @@ import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.web.activity.WebActivity;
-import com.aspectran.web.adapter.WebApplicationAdapter;
 import com.aspectran.web.startup.servlet.WebActivityServlet;
 
 import javax.servlet.ServletConfig;
@@ -64,13 +63,13 @@ public class AspectranWebService extends AspectranCoreService implements WebServ
     private long pauseTimeout = -2L;
 
     private AspectranWebService(ServletContext servletContext) {
-        super(new WebApplicationAdapter(servletContext));
+        super();
         setBasePath(servletContext.getRealPath("/"));
         setDefaultServletHttpRequestHandler(servletContext);
     }
 
     private AspectranWebService(ServletContext servletContext, CoreService rootService) {
-        super(new WebApplicationAdapter(servletContext), rootService);
+        super(rootService);
         setDefaultServletHttpRequestHandler(servletContext);
     }
 

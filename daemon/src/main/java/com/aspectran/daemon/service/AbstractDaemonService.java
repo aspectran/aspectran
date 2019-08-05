@@ -23,7 +23,6 @@ import com.aspectran.core.context.config.DaemonConfig;
 import com.aspectran.core.context.config.SessionConfig;
 import com.aspectran.core.service.AspectranCoreService;
 import com.aspectran.core.service.AspectranServiceException;
-import com.aspectran.daemon.adapter.DaemonApplicationAdapter;
 import com.aspectran.daemon.adapter.DaemonSessionAdapter;
 
 /**
@@ -38,7 +37,7 @@ public abstract class AbstractDaemonService extends AspectranCoreService impleme
     private SessionAgent sessionAgent;
 
     public AbstractDaemonService() {
-        super(new DaemonApplicationAdapter());
+        super();
         determineBasePath();
     }
 

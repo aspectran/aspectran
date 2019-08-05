@@ -120,7 +120,7 @@ public abstract class AbstractActivity implements Activity {
 
     @Override
     public ApplicationAdapter getApplicationAdapter() {
-        return getEnvironment().getApplicationAdapter();
+        return context.getApplicationAdapter();
     }
 
     @Override

@@ -50,7 +50,7 @@ public class JettyCommand extends AbstractCommand {
         DaemonService service = getService();
 
         try {
-            ClassLoader classLoader = service.getActivityContext().getEnvironment().getClassLoader();
+            ClassLoader classLoader = service.getActivityContext().getApplicationAdapter().getClassLoader();
             classLoader.loadClass("com.aspectran.jetty.JettyServer");
         } catch (ClassNotFoundException e) {
             return failed("Unable to load class com.aspectran.jetty.JettyServer " +
@@ -82,7 +82,7 @@ public class JettyCommand extends AbstractCommand {
             }
 
             if (mode == null) {
-                return failed("'mode' parameter not specified");
+                return failed("'mode' parameter is not specified");
             }
 
             switch (mode) {

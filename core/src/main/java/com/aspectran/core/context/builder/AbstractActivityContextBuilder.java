@@ -16,6 +16,7 @@
 package com.aspectran.core.context.builder;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
+import com.aspectran.core.adapter.BasicApplicationAdapter;
 import com.aspectran.core.component.aspect.AspectAdviceRulePostRegister;
 import com.aspectran.core.component.aspect.AspectAdviceRulePreRegister;
 import com.aspectran.core.component.aspect.AspectAdviceRuleRegistry;
@@ -64,8 +65,6 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
 
     private static final Log log = LogFactory.getLog(AbstractActivityContextBuilder.class);
 
-    private final ApplicationAdapter applicationAdapter;
-
     private ContextConfig contextConfig;
 
     private AspectranParameters aspectranParameters;
@@ -102,18 +101,9 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
 
     private boolean debugMode;
 
-    public AbstractActivityContextBuilder(ApplicationAdapter applicationAdapter) {
-        if (applicationAdapter == null) {
-            throw new IllegalArgumentException("applicationAdapter must not be null");
-        }
-        this.applicationAdapter = applicationAdapter;
+    public AbstractActivityContextBuilder() {
         this.useAponToLoadXml = Boolean.parseBoolean(SystemUtils.getProperty(USE_APON_TO_LOAD_XML_PROPERTY_NAME));
         this.debugMode = Boolean.parseBoolean(SystemUtils.getProperty(DEBUG_MODE_PROPERTY_NAME));
-    }
-
-    @Override
-    public ApplicationAdapter getApplicationAdapter() {
-        return applicationAdapter;
     }
 
     @Override
@@ -321,13 +311,13 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
         this.debugMode = debugMode;
     }
 
-    protected ContextEnvironment createContextEnvironment() throws InvalidResourceException {
+    protected ApplicationAdapter createApplicationAdapter() throws InvalidResourceException {
         AspectranClassLoader acl = newAspectranClassLoader();
-        ContextEnvironment environment = new ContextEnvironment(getApplicationAdapter());
-        environment.setClassLoader(acl);
-        if (basePath != null) {
-            environment.setBasePath(basePath);
-        }
+        return new BasicApplicationAdapter(basePath, acl);
+    }
+
+    protected ContextEnvironment createContextEnvironment() {
+        ContextEnvironment environment = new ContextEnvironment();
         if (activeProfiles != null) {
             environment.setActiveProfiles(activeProfiles);
         }
@@ -352,7 +342,7 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
             throws BeanReferenceException, IllegalRuleException {
         initContextEnvironment(assistant);
 
-        AspectranActivityContext activityContext = new AspectranActivityContext(assistant.getContextEnvironment());
+        AspectranActivityContext activityContext = new AspectranActivityContext(assistant.getApplicationAdapter(), assistant.getContextEnvironment());
 
         AspectRuleRegistry aspectRuleRegistry = assistant.getAspectRuleRegistry();
 

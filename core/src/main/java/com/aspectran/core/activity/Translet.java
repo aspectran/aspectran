@@ -99,14 +99,6 @@ public interface Translet {
     ResponseAdapter getResponseAdapter();
 
     /**
-     * Returns the adaptee object to provide application information.
-     *
-     * @param <T> the type of the application adaptee
-     * @return the application adaptee object
-     */
-    <T> T getApplicationAdaptee();
-
-    /**
      * Returns the adaptee object to provide session information.
      *
      * @param <T> the type of the session adaptee

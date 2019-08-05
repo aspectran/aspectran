@@ -15,10 +15,10 @@
  */
 package com.aspectran.core.support;
 
+import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.component.bean.ablility.FactoryBean;
 import com.aspectran.core.component.bean.annotation.AvoidAdvice;
-import com.aspectran.core.component.bean.aware.EnvironmentAware;
-import com.aspectran.core.context.env.Environment;
+import com.aspectran.core.component.bean.aware.ApplicationAdapterAware;
 
 /**
  * {@code BasePathFactoryBean} that returns the base path where the root application is running.
@@ -28,13 +28,13 @@ import com.aspectran.core.context.env.Environment;
  * <p>Created: 2017. 1. 29.</p>
  */
 @AvoidAdvice
-public class BasePathFactoryBean implements EnvironmentAware, FactoryBean<String> {
+public class BasePathFactoryBean implements ApplicationAdapterAware, FactoryBean<String> {
 
     private String basePath;
 
     @Override
-    public void setEnvironment(Environment environment) {
-        this.basePath = environment.getBasePath();
+    public void setApplicationAdapter(ApplicationAdapter applicationAdapter) {
+        this.basePath = applicationAdapter.getBasePath();
     }
 
     @Override

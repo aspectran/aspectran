@@ -39,9 +39,9 @@ public abstract class AbstractHttpHandler implements HttpHandler, ActivityContex
         ResourceManager resourceManager;
         if (resourceBase.startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {
             String basePackage = resourceBase.substring(ResourceUtils.CLASSPATH_URL_PREFIX.length());
-            resourceManager = new ClassPathResourceManager(context.getEnvironment().getClassLoader(), basePackage);
+            resourceManager = new ClassPathResourceManager(context.getApplicationAdapter().getClassLoader(), basePackage);
         } else {
-            File basePath = context.getEnvironment().toRealPathAsFile(resourceBase);
+            File basePath = context.getApplicationAdapter().toRealPathAsFile(resourceBase);
             resourceManager = new FileResourceManager(basePath);
         }
         resourceHandler = new ResourceHandler(resourceManager, ResponseCodeHandler.HANDLE_404);

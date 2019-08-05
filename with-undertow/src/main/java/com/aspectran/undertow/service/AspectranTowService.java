@@ -6,7 +6,6 @@ import com.aspectran.core.activity.ActivityTerminatedException;
 import com.aspectran.core.activity.TransletNotFoundException;
 import com.aspectran.core.activity.request.RequestMethodNotAllowedException;
 import com.aspectran.core.activity.request.SizeLimitExceededException;
-import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.config.ExposalsConfig;
 import com.aspectran.core.context.config.WebConfig;
@@ -17,7 +16,6 @@ import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.undertow.activity.TowActivity;
-import com.aspectran.undertow.adapter.TowApplicationAdapter;
 import com.aspectran.web.support.http.HttpStatus;
 import io.undertow.server.HttpServerExchange;
 
@@ -33,8 +31,8 @@ public class AspectranTowService extends AbstractTowService {
 
     private long pauseTimeout = -2L;
 
-    public AspectranTowService(ApplicationAdapter applicationAdapter) {
-        super(applicationAdapter);
+    public AspectranTowService() {
+        super();
     }
 
     public AspectranTowService(CoreService rootService) {
@@ -157,8 +155,7 @@ public class AspectranTowService extends AbstractTowService {
      * @return the instance of {@code AspectranUndertowService}
      */
     public static AspectranTowService create(AspectranConfig aspectranConfig) {
-        ApplicationAdapter applicationAdapter = new TowApplicationAdapter();
-        AspectranTowService service = new AspectranTowService(applicationAdapter);
+        AspectranTowService service = new AspectranTowService();
         service.prepare(aspectranConfig);
 
         WebConfig webConfig = aspectranConfig.getWebConfig();

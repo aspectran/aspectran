@@ -17,6 +17,7 @@ package com.aspectran.core.context;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.DefaultActivity;
+import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.component.AbstractComponent;
 import com.aspectran.core.component.aspect.AspectRuleRegistry;
 import com.aspectran.core.component.bean.BeanRegistry;
@@ -44,6 +45,8 @@ public class AspectranActivityContext extends AbstractComponent implements Activ
 
     private final ThreadLocal<Activity> currentActivityHolder = new ThreadLocal<>();
 
+    private final ApplicationAdapter applicationAdapter;
+
     private final ContextEnvironment contextEnvironment;
 
     private final Activity defaultActivity;
@@ -67,11 +70,23 @@ public class AspectranActivityContext extends AbstractComponent implements Activ
     /**
      * Instantiates a new AspectranActivityContext.
      *
+     * @param applicationAdapter the application adapter
      * @param contextEnvironment the context environment
      */
-    public AspectranActivityContext(ContextEnvironment contextEnvironment) {
+    public AspectranActivityContext(ApplicationAdapter applicationAdapter, ContextEnvironment contextEnvironment) {
+        this.applicationAdapter = applicationAdapter;
         this.contextEnvironment = contextEnvironment;
         this.defaultActivity = new DefaultActivity(this);
+    }
+
+    @Override
+    public ApplicationAdapter getApplicationAdapter() {
+        return applicationAdapter;
+    }
+
+    @Override
+    public Environment getEnvironment() {
+        return contextEnvironment;
     }
 
     @Override
@@ -81,11 +96,6 @@ public class AspectranActivityContext extends AbstractComponent implements Activ
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    @Override
-    public Environment getEnvironment() {
-        return contextEnvironment;
     }
 
     @Override
@@ -234,6 +244,8 @@ public class AspectranActivityContext extends AbstractComponent implements Activ
 
     @Override
     protected void doDestroy() {
+        applicationAdapter.getApplicationScope().destroy();
+
         if (transletRuleRegistry != null) {
             transletRuleRegistry.destroy();
             transletRuleRegistry = null;

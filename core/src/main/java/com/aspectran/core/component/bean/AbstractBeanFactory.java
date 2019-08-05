@@ -82,7 +82,7 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
         this.beanProxifierType = (beanProxifierType != null ? beanProxifierType : BeanProxifierType.JAVASSIST);
     }
 
-    protected ActivityContext getContext() {
+    protected ActivityContext getActivityContext() {
         return context;
     }
 
@@ -349,10 +349,10 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
                 ((ActivityContextAware)bean).setActivityContext(context);
             }
             if (bean instanceof ApplicationAdapterAware) {
-                ((ApplicationAdapterAware)bean).setApplicationAdapter(context.getEnvironment().getApplicationAdapter());
+                ((ApplicationAdapterAware)bean).setApplicationAdapter(context.getApplicationAdapter());
             }
             if (bean instanceof ClassLoaderAware) {
-                ((ClassLoaderAware)bean).setClassLoader(context.getEnvironment().getClassLoader());
+                ((ClassLoaderAware)bean).setClassLoader(context.getApplicationAdapter().getClassLoader());
             }
             if (bean instanceof EnvironmentAware) {
                 ((EnvironmentAware)bean).setEnvironment(context.getEnvironment());

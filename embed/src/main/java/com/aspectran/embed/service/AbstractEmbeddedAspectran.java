@@ -23,7 +23,6 @@ import com.aspectran.core.context.config.EmbedConfig;
 import com.aspectran.core.context.config.SessionConfig;
 import com.aspectran.core.service.AspectranCoreService;
 import com.aspectran.core.service.AspectranServiceException;
-import com.aspectran.embed.adapter.AspectranApplicationAdapter;
 import com.aspectran.embed.adapter.AspectranSessionAdapter;
 
 /**
@@ -38,7 +37,7 @@ public abstract class AbstractEmbeddedAspectran extends AspectranCoreService imp
     private SessionAgent sessionAgent;
 
     public AbstractEmbeddedAspectran() {
-        super(new AspectranApplicationAdapter());
+        super();
         determineBasePath();
     }
 

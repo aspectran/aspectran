@@ -16,7 +16,12 @@
 package com.aspectran.core.adapter;
 
 import com.aspectran.core.component.bean.scope.ApplicationScope;
-import com.aspectran.core.util.ToStringBuilder;
+import com.aspectran.core.util.ResourceUtils;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URL;
 
 /**
  * The Class AbstractApplicationAdapter.
@@ -25,24 +30,18 @@ import com.aspectran.core.util.ToStringBuilder;
 */
 public abstract class AbstractApplicationAdapter implements ApplicationAdapter {
 
-    protected final Object adaptee;
+    private final ApplicationScope scope = new ApplicationScope();
 
-    protected final ApplicationScope scope;
+    private final String basePath;
+
+    private final ClassLoader classLoader;
 
     /**
      * Instantiates a new AbstractApplicationAdapter.
-     *
-     * @param adaptee the adaptee object
      */
-    public AbstractApplicationAdapter(Object adaptee) {
-        this.adaptee = adaptee;
-        this.scope = new ApplicationScope();
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public <T> T getAdaptee() {
-        return (T)adaptee;
+    public AbstractApplicationAdapter(String basePath, ClassLoader classLoader) {
+        this.basePath = basePath;
+        this.classLoader = classLoader;
     }
 
     @Override
@@ -50,11 +49,42 @@ public abstract class AbstractApplicationAdapter implements ApplicationAdapter {
         return scope;
     }
 
+    public String getBasePath() {
+        return basePath;
+    }
+
+    public ClassLoader getClassLoader() {
+        return classLoader;
+    }
+
     @Override
-    public String toString() {
-        ToStringBuilder tsb = new ToStringBuilder();
-        tsb.append("adaptee", adaptee);
-        return tsb.toString();
+    public String toRealPath(String filePath) throws IOException {
+        File file = toRealPathAsFile(filePath);
+        return file.getCanonicalPath();
+    }
+
+    @Override
+    public File toRealPathAsFile(String filePath) throws IOException {
+        File file;
+        if (filePath.startsWith(ResourceUtils.FILE_URL_PREFIX)) {
+            // Using url fully qualified paths
+            URI uri = URI.create(filePath);
+            file = new File(uri);
+        } else if (filePath.startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {
+            // Using classpath relative resources
+            URL url = getClassLoader().getResource(filePath);
+            if (url == null) {
+                throw new IOException("Could not find the resource with the given name: " + filePath);
+            }
+            file = new File(url.getFile());
+        } else {
+            if (basePath != null) {
+                file = new File(basePath, filePath);
+            } else {
+                file = new File(filePath);
+            }
+        }
+        return file;
     }
 
 }

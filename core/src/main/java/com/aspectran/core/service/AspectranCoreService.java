@@ -15,7 +15,6 @@
  */
 package com.aspectran.core.service;
 
-import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.core.util.thread.ShutdownHooks;
@@ -32,15 +31,13 @@ public class AspectranCoreService extends AbstractCoreService {
 
     /**
      * Instantiates a new AspectranCoreService.
-     *
-     * @param applicationAdapter the application adapter
      */
-    public AspectranCoreService(ApplicationAdapter applicationAdapter) {
-        super(applicationAdapter);
+    public AspectranCoreService() {
+        super();
     }
 
-    public AspectranCoreService(ApplicationAdapter applicationAdapter, CoreService rootService) {
-        super(applicationAdapter, rootService);
+    public AspectranCoreService(CoreService rootService) {
+        super(rootService);
     }
 
     /**

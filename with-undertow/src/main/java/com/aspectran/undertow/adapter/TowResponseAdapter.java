@@ -27,8 +27,6 @@ import java.util.stream.Collectors;
  */
 public class TowResponseAdapter extends AbstractResponseAdapter {
 
-//    private static final Log log = LogFactory.getLog(UndertowResponseAdapter.class);
-
     private final Activity activity;
 
     private String contentType;
@@ -38,8 +36,6 @@ public class TowResponseAdapter extends AbstractResponseAdapter {
     private Writer writer;
 
     private ResponseState responseState = ResponseState.NONE;
-
-    private boolean responseDone;
 
     public TowResponseAdapter(HttpServerExchange exchange, Activity activity) {
         super(exchange);
@@ -240,27 +236,6 @@ public class TowResponseAdapter extends AbstractResponseAdapter {
             getHttpServerExchange().startBlocking();
         }
     }
-
-//    public void responseDone() {
-//        if (!responseDone) {
-//            responseDone = true;
-//            try {
-//                closeStreamAndWriter();
-//            } catch (IOException e) {
-//                log.debug("An IOException occurred", e);
-//            }
-//        }
-//    }
-//
-//    public void closeStreamAndWriter() throws IOException {
-//        if (writer != null) {
-//            writer.close();
-//        } else {
-//            getHttpServerExchange().getOutputStream().close();
-//        }
-//
-//        getHttpServerExchange().endExchange();
-//    }
 
     private HttpServerExchange getHttpServerExchange() {
         return (HttpServerExchange)getAdaptee();

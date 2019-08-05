@@ -124,7 +124,7 @@ public class CglibDynamicBeanProxy extends AbstractDynamicBeanProxy implements M
      */
     public static Object newInstance(ActivityContext context, BeanRule beanRule, Object[] args, Class<?>[] argTypes) {
         Enhancer enhancer = new Enhancer();
-        enhancer.setClassLoader(context.getEnvironment().getClassLoader());
+        enhancer.setClassLoader(context.getApplicationAdapter().getClassLoader());
         enhancer.setSuperclass(beanRule.getBeanClass());
         enhancer.setCallback(new CglibDynamicBeanProxy(context, beanRule));
         return enhancer.create(argTypes, args);

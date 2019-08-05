@@ -12,6 +12,9 @@ import io.undertow.servlet.api.DeploymentManager;
 import javax.servlet.ServletContext;
 import java.util.Collection;
 
+import static com.aspectran.undertow.server.handlers.servlet.TowServletContext.INHERIT_ROOT_WEB_SERVICE_ATTRIBUTE;
+import static com.aspectran.web.service.WebService.ROOT_WEB_SERVICE_ATTRIBUTE;
+
 /**
  * <p>Created: 2019-08-04</p>
  */
@@ -42,17 +45,19 @@ public class ServletHandlerFactory implements ActivityContextAware {
             for (String deploymentName : deploymentNames) {
                 DeploymentManager manager = towServletContainer.getDeployment(deploymentName);
                 manager.deploy();
-                HttpHandler handler = manager.start();
-                String contextPath = manager.getDeployment().getDeploymentInfo().getContextPath();
-                pathHandler.addPrefixPath(contextPath, handler);
 
                 ServletContext servletContext = manager.getDeployment().getServletContext();
-                Object attr = servletContext.getAttribute(WebService.ROOT_WEB_SERVICE_ATTRIBUTE);
+                Object attr = servletContext.getAttribute(INHERIT_ROOT_WEB_SERVICE_ATTRIBUTE);
+                servletContext.removeAttribute(INHERIT_ROOT_WEB_SERVICE_ATTRIBUTE);
                 if ("enabled".equals(attr)) {
                     CoreService rootService = context.getRootService();
                     WebService webService = AspectranWebService.create(servletContext, rootService);
-                    servletContext.setAttribute(WebService.ROOT_WEB_SERVICE_ATTRIBUTE, webService);
+                    servletContext.setAttribute(ROOT_WEB_SERVICE_ATTRIBUTE, webService);
                 }
+
+                HttpHandler handler = manager.start();
+                String contextPath = manager.getDeployment().getDeploymentInfo().getContextPath();
+                pathHandler.addPrefixPath(contextPath, handler);
             }
             return pathHandler;
         } else {
