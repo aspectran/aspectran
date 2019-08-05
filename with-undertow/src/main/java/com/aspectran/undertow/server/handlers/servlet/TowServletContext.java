@@ -72,8 +72,8 @@ public class TowServletContext extends DeploymentInfo implements ApplicationAdap
         }
     }
 
-    public void setEnableRootWebService(boolean enableRootWebService) {
-        if (enableRootWebService) {
+    public void setInheritRootWebService(boolean inheritRootWebService) {
+        if (inheritRootWebService) {
             getServletContextAttributes().put(INHERIT_ROOT_WEB_SERVICE_ATTRIBUTE, "enabled");
         } else {
             getServletContextAttributes().remove(INHERIT_ROOT_WEB_SERVICE_ATTRIBUTE);
