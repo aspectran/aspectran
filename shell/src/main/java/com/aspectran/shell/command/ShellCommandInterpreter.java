@@ -18,6 +18,7 @@ package com.aspectran.shell.command;
 import com.aspectran.core.activity.TransletNotFoundException;
 import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.config.ShellConfig;
+import com.aspectran.core.lang.NonNull;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.apon.AponReader;
 import com.aspectran.core.util.logging.Log;
@@ -280,7 +281,7 @@ public class ShellCommandInterpreter implements CommandInterpreter {
         }
 
         @Override
-        public void write(byte[] buf, int off, int len) {
+        public void write(@NonNull byte[] buf, int off, int len) {
             if (service.isActive()) {
                 console.clearLine();
             }

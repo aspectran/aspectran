@@ -55,21 +55,21 @@ public class AspectranWebService extends AspectranCoreService implements WebServ
 
     private static final String DEFAULT_APP_CONFIG_ROOT_FILE = "/WEB-INF/aspectran/app-config.xml";
 
-    private String uriDecoding;
+    private final DefaultServletHttpRequestHandler defaultServletHttpRequestHandler;
 
-    private DefaultServletHttpRequestHandler defaultServletHttpRequestHandler;
+    private String uriDecoding;
 
     private long pauseTimeout = -2L;
 
     private AspectranWebService(ServletContext servletContext) {
         super();
+        this.defaultServletHttpRequestHandler = new DefaultServletHttpRequestHandler(servletContext);
         setBasePath(servletContext.getRealPath("/"));
-        setDefaultServletHttpRequestHandler(servletContext);
     }
 
     private AspectranWebService(ServletContext servletContext, CoreService rootService) {
         super(rootService);
-        setDefaultServletHttpRequestHandler(servletContext);
+        this.defaultServletHttpRequestHandler = new DefaultServletHttpRequestHandler(servletContext);
     }
 
     protected void setUriDecoding(String uriDecoding) {
@@ -168,10 +168,6 @@ public class AspectranWebService extends AspectranCoreService implements WebServ
 
     private DefaultServletHttpRequestHandler getDefaultServletHttpRequestHandler() {
         return defaultServletHttpRequestHandler;
-    }
-
-    private void setDefaultServletHttpRequestHandler(ServletContext servletContext) {
-        defaultServletHttpRequestHandler = new DefaultServletHttpRequestHandler(servletContext);
     }
 
     /**

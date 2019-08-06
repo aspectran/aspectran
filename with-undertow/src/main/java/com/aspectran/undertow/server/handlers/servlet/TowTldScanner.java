@@ -1,17 +1,28 @@
 package com.aspectran.undertow.server.handlers.servlet;
 
+import com.aspectran.core.util.logging.Log;
+import com.aspectran.core.util.logging.LogFactory;
 import org.apache.jasper.servlet.TldScanner;
+import org.apache.tomcat.Jar;
+import org.apache.tomcat.util.descriptor.tld.TldResourcePath;
+import org.apache.tomcat.util.scan.JarFactory;
 import org.xml.sax.SAXException;
 
 import javax.servlet.ServletContext;
+import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 
 /**
  * Scans for and loads Tag Library Descriptors contained in a web application.
  */
 public class TowTldScanner extends TldScanner {
 
-    private String tldResourcePath;
+    private final Log log = LogFactory.getLog(TowTldScanner.class);
+
+    private ServletContext context;
+
+    private String[] jarsToScan;
 
     /**
      * Initialise with the application's ServletContext.
@@ -26,31 +37,57 @@ public class TowTldScanner extends TldScanner {
      */
     public TowTldScanner(ServletContext context, boolean namespaceAware, boolean validation, boolean blockExternal) {
         super(context, namespaceAware, validation, blockExternal);
+        this.context = context;
     }
 
-    public void setTldResourcePath(String tldResourcePath) {
-        this.tldResourcePath = tldResourcePath;
+    public void setJarsToScan(String[] jarsToScan) {
+        this.jarsToScan = jarsToScan;
     }
 
-    /**
-     * Scan for TLDs in all places defined by the specification:
-     * <ol>
-     * <li>Tag libraries defined by the platform</li>
-     * <li>Entries from &lt;jsp-config&gt; in web.xml</li>
-     * <li>A resources under /WEB-INF</li>
-     * <li>In jar files from /WEB-INF/lib</li>
-     * <li>Additional entries from the container</li>
-     * </ol>
-     *
-     * @throws IOException  if there was a problem scanning for or loading a TLD
-     * @throws SAXException if there was a problem parsing a TLD
-     */
     @Override
     public void scan() throws IOException, SAXException {
-        if (tldResourcePath != null) {
-            scanResourcePaths(tldResourcePath);
+        if (jarsToScan != null) {
+            for (String file : jarsToScan) {
+                URL url = new File(context.getRealPath(file)).toURI().toURL();
+                Jar jar = JarFactory.newInstance(url);
+                scanJar(jar, file);
+            }
+            scanPlatform();
+            scanJspConfig();
+            scanResourcePaths("/WEB-INF/");
         } else {
             super.scan();
+        }
+    }
+
+    protected void scanJar(Jar jar, String webappPath) throws IOException {
+        boolean found = false;
+        URL jarFileUrl = jar.getJarFileURL();
+        jar.nextEntry();
+        for (String entryName = jar.getEntryName();
+             entryName != null;
+             jar.nextEntry(), entryName = jar.getEntryName()) {
+            if (!(entryName.startsWith("META-INF/") &&
+                    entryName.endsWith(".tld"))) {
+                continue;
+            }
+            found = true;
+            TldResourcePath tldResourcePath =
+                    new TldResourcePath(jarFileUrl, webappPath, entryName);
+            try {
+                parseTld(tldResourcePath);
+            } catch (SAXException e) {
+                throw new IOException(e);
+            }
+        }
+        if (found) {
+            if (log.isDebugEnabled()) {
+                log.debug("TLD files were found in JAR [" + jarFileUrl + "]");
+            }
+        } else {
+            if (log.isDebugEnabled()) {
+                log.debug("No TLD files were found in [" + jarFileUrl + "]");
+            }
         }
     }
 

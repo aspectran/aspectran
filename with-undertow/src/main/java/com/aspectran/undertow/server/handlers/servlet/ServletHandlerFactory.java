@@ -39,7 +39,6 @@ public class ServletHandlerFactory implements ActivityContextAware {
 
     public HttpHandler createServletHandler() throws Exception {
         if (towServletContainer != null) {
-            //PathHandler pathHandler = new PathHandler(Handlers.redirect("/"));
             PathHandler pathHandler = new PathHandler();
             Collection<String> deploymentNames = towServletContainer.listDeployments();
             for (String deploymentName : deploymentNames) {

@@ -27,9 +27,9 @@ import com.aspectran.core.activity.request.MissingMandatoryParametersException;
 import com.aspectran.core.activity.request.PathVariableMap;
 import com.aspectran.core.activity.response.ForwardResponse;
 import com.aspectran.core.activity.response.Response;
-import com.aspectran.core.adapter.BasicSessionAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.component.bean.scope.Scope;
+import com.aspectran.core.component.session.SessionAgent;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.expr.ItemEvaluator;
 import com.aspectran.core.context.expr.ItemExpression;
@@ -169,19 +169,15 @@ public class CoreActivity extends AdviceActivity {
 
     protected void adapt() throws AdapterException {
         SessionAdapter sessionAdapter = getSessionAdapter();
-        if (sessionAdapter != null) {
-            if (sessionAdapter instanceof BasicSessionAdapter) {
-                ((BasicSessionAdapter)sessionAdapter).sessionAccess();
-            }
+        if (sessionAdapter != null && sessionAdapter.getAdaptee() instanceof SessionAgent) {
+            ((SessionAgent)sessionAdapter.getAdaptee()).access();
         }
     }
 
     protected void release() {
         SessionAdapter sessionAdapter = getSessionAdapter();
-        if (sessionAdapter != null) {
-            if (sessionAdapter instanceof BasicSessionAdapter) {
-                ((BasicSessionAdapter)sessionAdapter).sessionComplete();
-            }
+        if (sessionAdapter != null && sessionAdapter.getAdaptee() instanceof SessionAgent) {
+            ((SessionAgent)sessionAdapter.getAdaptee()).complete();
         }
     }
 

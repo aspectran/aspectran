@@ -290,9 +290,7 @@ public abstract class AbstractServiceController implements ServiceController {
 
     @Override
     public boolean isActive() {
-        synchronized (lock) {
-            return active;
-        }
+        return active;
     }
 
     @Override

@@ -48,6 +48,10 @@ public class TowServletContext extends DeploymentInfo implements ApplicationAdap
         setResourceManager(resourceManager);
     }
 
+    public void setScratchDir(String scratchDir) throws IOException {
+        setTempDir(applicationAdapter.toRealPathAsFile(scratchDir));
+    }
+
     public void setServlets(TowServlet[] towServlets) {
         if (towServlets != null) {
             for (TowServlet towServlet : towServlets) {

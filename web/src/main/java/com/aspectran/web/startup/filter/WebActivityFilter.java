@@ -52,19 +52,22 @@ public class WebActivityFilter implements Filter {
     public void init(FilterConfig filterConfig) {
         this.filterConfig = filterConfig;
 
-        String[] bypasses = StringUtils.tokenize(filterConfig.getInitParameter("bypasses"), ",;\t\r\n\f");
-        if (bypasses.length > 0) {
-            List<WildcardPattern> bypassPatterns = new ArrayList<>(bypasses.length);
-            for (String path : bypasses) {
-                bypassPatterns.add(WildcardPattern.compile(path.trim(), ActivityContext.NAME_SEPARATOR_CHAR));
-            }
-            this.bypassPatterns = bypassPatterns;
-            this.defaultServletHttpRequestHandler = new DefaultServletHttpRequestHandler(filterConfig.getServletContext());
+        String bypassesParam = filterConfig.getInitParameter("bypasses");
+        if (bypassesParam != null) {
+            String[] bypasses = StringUtils.tokenize(bypassesParam.trim(), ",;\t\r\n\f");
+            if (bypasses.length > 0) {
+                List<WildcardPattern> bypassPatterns = new ArrayList<>(bypasses.length);
+                for (String path : bypasses) {
+                    bypassPatterns.add(WildcardPattern.compile(path.trim(), ActivityContext.NAME_SEPARATOR_CHAR));
+                }
+                this.bypassPatterns = bypassPatterns;
+                this.defaultServletHttpRequestHandler = new DefaultServletHttpRequestHandler(filterConfig.getServletContext());
 
-            if (log.isDebugEnabled()) {
-                for (WildcardPattern pattern : bypassPatterns) {
-                    log.debug("URI [" + pattern + "] is bypassed by " + getMyName() + " to servlet [" +
-                            this.defaultServletHttpRequestHandler.getDefaultServletName() + "]");
+                if (log.isDebugEnabled()) {
+                    for (WildcardPattern pattern : bypassPatterns) {
+                        log.debug("URI [" + pattern + "] is bypassed by " + getMyName() + " to servlet [" +
+                                this.defaultServletHttpRequestHandler.getDefaultServletName() + "]");
+                    }
                 }
             }
         }

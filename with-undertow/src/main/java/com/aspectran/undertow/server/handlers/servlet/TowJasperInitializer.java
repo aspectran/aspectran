@@ -10,21 +10,21 @@ import javax.servlet.ServletContext;
  */
 public class TowJasperInitializer extends JasperInitializer {
 
-    private String tldResourcePath;
+    private String[] jarsToScan;
 
     public TowJasperInitializer() {
     }
 
-    public void setTldResourcePath(String tldResourcePath) {
-        this.tldResourcePath = tldResourcePath;
+    public void setJarsToScan(String[] jarsToScan) {
+        this.jarsToScan = jarsToScan;
     }
 
     @Override
     protected TldScanner newTldScanner(ServletContext context, boolean namespaceAware,
                                        boolean validate, boolean blockExternal) {
         TowTldScanner tldScanner = new TowTldScanner(context, namespaceAware, validate, blockExternal);
-        if (tldResourcePath != null) {
-            tldScanner.setTldResourcePath(tldResourcePath);
+        if (jarsToScan != null) {
+            tldScanner.setJarsToScan(jarsToScan);
         }
         return tldScanner;
     }

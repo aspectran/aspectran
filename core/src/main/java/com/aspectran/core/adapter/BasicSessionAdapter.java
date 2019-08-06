@@ -105,12 +105,4 @@ public class BasicSessionAdapter extends AbstractSessionAdapter {
         return super.getAdaptee();
     }
 
-    public void sessionAccess() {
-        getSessionAgent().access();
-    }
-
-    public void sessionComplete() {
-        getSessionAgent().complete();
-    }
-
 }
