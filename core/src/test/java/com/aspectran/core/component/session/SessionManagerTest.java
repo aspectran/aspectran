@@ -36,7 +36,7 @@ class SessionManagerTest {
 
     @Test
     void testShortLifecycle() throws Exception {
-        SessionManager sessionManager = new DefaultSessionManager();
+        DefaultSessionManager sessionManager = new DefaultSessionManager();
         sessionManager.setWorkerName("TEST1-");
         sessionManager.initialize();
 
@@ -60,7 +60,7 @@ class SessionManagerTest {
 
     @Test
     void testInactivityTimer() throws Exception {
-        SessionManager sessionManager = new DefaultSessionManager();
+        DefaultSessionManager sessionManager = new DefaultSessionManager();
         sessionManager.setWorkerName("TEST2-");
         sessionManager.initialize();
 
@@ -76,7 +76,7 @@ class SessionManagerTest {
 
     @Test
     void testFileSessionStore() throws Exception {
-        SessionManager sessionManager = new DefaultSessionManager();
+        DefaultSessionManager sessionManager = new DefaultSessionManager();
         sessionManager.setWorkerName("TEST3-");
 
         SessionHandler sessionHandler = sessionManager.getSessionHandler();

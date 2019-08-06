@@ -40,6 +40,7 @@
     <properties>
         <main.basedir>${project.parent.basedir}</main.basedir>
         <undertow.version>2.0.23.Final</undertow.version>
+        <taglibs.version>1.2.5</taglibs.version>
     </properties>
 
     <dependencies>
@@ -57,6 +58,44 @@
             <groupId>io.undertow</groupId>
             <artifactId>undertow-servlet</artifactId>
             <version>${undertow.version}</version>
+        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>io.undertow.jastow</groupId>-->
+<!--            <artifactId>jastow</artifactId>-->
+<!--            <version>${jastow.version}</version>-->
+<!--        </dependency>-->
+        <dependency>
+            <groupId>org.mortbay.jasper</groupId>
+            <artifactId>apache-jsp</artifactId>
+            <version>9.0.19</version>
+        </dependency>
+        <!-- JSTL Api -->
+        <dependency>
+            <groupId>org.apache.taglibs</groupId>
+            <artifactId>taglibs-standard-spec</artifactId>
+            <version>${taglibs.version}</version>
+        </dependency>
+        <!-- JSTL Impl -->
+        <dependency>
+            <groupId>org.apache.taglibs</groupId>
+            <artifactId>taglibs-standard-impl</artifactId>
+            <version>${taglibs.version}</version>
+        </dependency>
+        <!-- JSTL EL Support -->
+        <dependency>
+            <groupId>org.apache.taglibs</groupId>
+            <artifactId>taglibs-standard-jstlel</artifactId>
+            <version>${taglibs.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>xalan</groupId>
+            <artifactId>xalan</artifactId>
+            <version>2.7.2</version>
+        </dependency>
+        <dependency>
+            <groupId>xalan</groupId>
+            <artifactId>serializer</artifactId>
+            <version>2.7.2</version>
         </dependency>
         <!-- Test dependencies -->
         <dependency>

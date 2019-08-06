@@ -33,7 +33,7 @@ import java.io.IOException;
  */
 public class DefaultSessionManager extends AbstractSessionHandler implements SessionManager {
 
-    private final ActivityContext context;
+    private ActivityContext context;
 
     private String workerName;
 
@@ -42,10 +42,9 @@ public class DefaultSessionManager extends AbstractSessionHandler implements Ses
     private SessionDataStore sessionDataStore;
 
     public DefaultSessionManager() {
-        this(null);
     }
 
-    public DefaultSessionManager(ActivityContext context) {
+    public void setActivityContext(ActivityContext context) {
         this.context = context;
     }
 
@@ -54,7 +53,6 @@ public class DefaultSessionManager extends AbstractSessionHandler implements Ses
         return workerName;
     }
 
-    @Override
     public void setWorkerName(String workerName) {
         this.workerName = workerName;
     }
@@ -64,7 +62,6 @@ public class DefaultSessionManager extends AbstractSessionHandler implements Ses
         return sessionConfig;
     }
 
-    @Override
     public void setSessionConfig(SessionConfig sessionConfig) {
         this.sessionConfig = sessionConfig;
     }
@@ -84,7 +81,6 @@ public class DefaultSessionManager extends AbstractSessionHandler implements Ses
         return sessionDataStore;
     }
 
-    @Override
     public void setSessionDataStore(SessionDataStore sessionDataStore) {
         this.sessionDataStore = sessionDataStore;
     }
@@ -191,7 +187,8 @@ public class DefaultSessionManager extends AbstractSessionHandler implements Ses
     }
 
     public static DefaultSessionManager create(ActivityContext context, SessionConfig sessionConfig, String workerName) {
-        DefaultSessionManager sessionManager = new DefaultSessionManager(context);
+        DefaultSessionManager sessionManager = new DefaultSessionManager();
+        sessionManager.setActivityContext(context);
         sessionManager.setWorkerName(workerName);
         if (sessionConfig != null) {
             sessionManager.setSessionConfig(sessionConfig);

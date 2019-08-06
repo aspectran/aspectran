@@ -1,6 +1,7 @@
 package com.aspectran.undertow.server.handlers.http;
 
 import com.aspectran.core.component.bean.ablility.InitializableBean;
+import com.aspectran.core.util.Assert;
 import com.aspectran.undertow.service.AspectranTowService;
 
 /**
@@ -14,11 +15,13 @@ public class DefaultHttpHandler extends AbstractHttpHandler implements Initializ
     private AspectranTowService towService;
 
     public AspectranTowService getTowService() {
+        Assert.state(towService != null, "No AspectranTowService configured");
         return towService;
     }
 
     @Override
     public void initialize() throws Exception {
+        Assert.state(towService == null, "Cannot reconfigure AspectranTowService");
         towService = AspectranTowService.create(getActivityContext().getRootService());
         if (getTowSessionManager() != null) {
             towService.setTowSessionManager(getTowSessionManager());

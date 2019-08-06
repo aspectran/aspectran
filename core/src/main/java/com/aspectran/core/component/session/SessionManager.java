@@ -26,15 +26,9 @@ public interface SessionManager extends Component {
 
     String getWorkerName();
 
-    void setWorkerName(String workerName);
-
     SessionConfig getSessionConfig();
 
-    void setSessionConfig(SessionConfig sessionConfig);
-
     SessionDataStore getSessionDataStore();
-
-    void setSessionDataStore(SessionDataStore sessionDataStore);
 
     SessionHandler getSessionHandler();
 

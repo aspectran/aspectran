@@ -1,5 +1,6 @@
 package com.aspectran.undertow.server.session;
 
+import com.aspectran.core.component.bean.aware.ActivityContextAware;
 import com.aspectran.core.component.session.DefaultSessionManager;
 import com.aspectran.core.component.session.SessionAgent;
 import io.undertow.server.HttpServerExchange;
@@ -7,7 +8,7 @@ import io.undertow.server.HttpServerExchange;
 /**
  * <p>Created: 2019-08-03</p>
  */
-public class TowSessionManager extends DefaultSessionManager {
+public class TowSessionManager extends DefaultSessionManager implements ActivityContextAware {
 
     private SessionCookieConfig sessionCookieConfig;
 

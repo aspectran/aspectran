@@ -16,7 +16,6 @@
 package com.aspectran.web.service;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.activity.ActivityException;
 import com.aspectran.core.activity.ActivityTerminatedException;
 import com.aspectran.core.activity.TransletNotFoundException;
 import com.aspectran.core.activity.request.RequestMethodNotAllowedException;
@@ -137,12 +136,8 @@ public class AspectranWebService extends AspectranCoreService implements WebServ
             if (log.isDebugEnabled()) {
                 log.debug("Activity terminated: " + e.getMessage());
             }
-        } catch (ActivityException e) {
-            if (e.getCause() != null) {
-                log.error(e.getCause().getMessage(), e.getCause());
-            } else {
-                log.error(e.getMessage(), e);
-            }
+        } catch (Exception e) {
+            log.error("An error occurred while processing request: " + requestUri, e);
             if (e.getCause() instanceof RequestMethodNotAllowedException) {
                 response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
             } else if (e.getCause() instanceof SizeLimitExceededException) {
@@ -150,9 +145,6 @@ public class AspectranWebService extends AspectranCoreService implements WebServ
             } else {
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             }
-        } catch (Exception e) {
-            log.error("An error occurred while processing request: " + requestUri, e);
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         } finally {
             if (activity != null) {
                 activity.finish();

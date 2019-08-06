@@ -29,12 +29,13 @@ public class StandaloneHttpHandler extends AbstractHttpHandler
 
     @Override
     public TowService getTowService() {
+        Assert.state(towService != null, "No AspectranTowService configured");
         return towService;
     }
 
     @Override
     public void initialize() throws Exception {
-        Assert.notNull(towService, "undertowService already initialized");
+        Assert.state(towService == null, "Cannot reconfigure AspectranTowService");
         Assert.notNull(aspectranConfig, "aspectranConfig must not be null");
         towService = AspectranTowService.create(aspectranConfig);
     }

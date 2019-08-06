@@ -8,9 +8,15 @@ import io.undertow.server.handlers.resource.ClassPathResourceManager;
 import io.undertow.server.handlers.resource.FileResourceManager;
 import io.undertow.server.handlers.resource.ResourceManager;
 import io.undertow.servlet.api.DeploymentInfo;
+import io.undertow.servlet.api.InstanceFactory;
+import io.undertow.servlet.api.ServletContainerInitializerInfo;
+import io.undertow.servlet.util.ImmediateInstanceFactory;
 
+import javax.servlet.ServletContainerInitializer;
 import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.Set;
 
 /**
  * <p>Created: 2019-08-05</p>
@@ -18,6 +24,8 @@ import java.io.IOException;
 public class TowServletContext extends DeploymentInfo implements ApplicationAdapterAware {
 
     public static final String INHERIT_ROOT_WEB_SERVICE_ATTRIBUTE = TowServletContext.class.getName() + ".INHERIT_ROOT_WEB_SERVICE";
+
+    private static final Set<Class<?>> NO_CLASSES = Collections.emptySet();
 
     private ApplicationAdapter applicationAdapter;
 
@@ -27,14 +35,14 @@ public class TowServletContext extends DeploymentInfo implements ApplicationAdap
         setClassLoader(applicationAdapter.getClassLoader());
     }
 
-    public void setResourceBase(String resourceBase) throws IOException {
+    public void setResourceBasePath(String resourceBasePath) throws IOException {
         Assert.notNull(applicationAdapter, "applicationAdapter must not be null");
         ResourceManager resourceManager;
-        if (resourceBase.startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {
-            String basePackage = resourceBase.substring(ResourceUtils.CLASSPATH_URL_PREFIX.length());
+        if (resourceBasePath.startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {
+            String basePackage = resourceBasePath.substring(ResourceUtils.CLASSPATH_URL_PREFIX.length());
             resourceManager = new ClassPathResourceManager(applicationAdapter.getClassLoader(), basePackage);
         } else {
-            File basePath = applicationAdapter.toRealPathAsFile(resourceBase);
+            File basePath = applicationAdapter.toRealPathAsFile(resourceBasePath);
             resourceManager = new FileResourceManager(basePath);
         }
         setResourceManager(resourceManager);
@@ -74,9 +82,18 @@ public class TowServletContext extends DeploymentInfo implements ApplicationAdap
 
     public void setInheritRootWebService(boolean inheritRootWebService) {
         if (inheritRootWebService) {
-            getServletContextAttributes().put(INHERIT_ROOT_WEB_SERVICE_ATTRIBUTE, "enabled");
+            getServletContextAttributes().put(INHERIT_ROOT_WEB_SERVICE_ATTRIBUTE, "true");
         } else {
             getServletContextAttributes().remove(INHERIT_ROOT_WEB_SERVICE_ATTRIBUTE);
+        }
+    }
+
+    public void setServletContainerInitializers(ServletContainerInitializer[] servletContainerInitializers) {
+        for (ServletContainerInitializer initializer : servletContainerInitializers) {
+            Class<? extends ServletContainerInitializer> servletContainerInitializerClass = initializer.getClass();
+            InstanceFactory<? extends ServletContainerInitializer> instanceFactory = new ImmediateInstanceFactory<>(initializer);
+            ServletContainerInitializerInfo sciInfo = new ServletContainerInitializerInfo(servletContainerInitializerClass, instanceFactory, NO_CLASSES);
+            addServletContainerInitializer(sciInfo);
         }
     }
 

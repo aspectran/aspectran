@@ -49,7 +49,7 @@ public class ServletHandlerFactory implements ActivityContextAware {
                 ServletContext servletContext = manager.getDeployment().getServletContext();
                 Object attr = servletContext.getAttribute(INHERIT_ROOT_WEB_SERVICE_ATTRIBUTE);
                 servletContext.removeAttribute(INHERIT_ROOT_WEB_SERVICE_ATTRIBUTE);
-                if ("enabled".equals(attr)) {
+                if ("true".equals(attr)) {
                     CoreService rootService = context.getRootService();
                     WebService webService = AspectranWebService.create(servletContext, rootService);
                     servletContext.setAttribute(ROOT_WEB_SERVICE_ATTRIBUTE, webService);
