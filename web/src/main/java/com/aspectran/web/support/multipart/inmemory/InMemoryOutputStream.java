@@ -24,7 +24,7 @@ import java.io.OutputStream;
 /**
  * An output stream which will retain data in memory (always).
  */
-public class MemoryOutputStream extends ThresholdingOutputStream {
+public class InMemoryOutputStream extends ThresholdingOutputStream {
 
     /**
      * The output stream to which data will be written prior to the threshold being reached.
@@ -42,7 +42,7 @@ public class MemoryOutputStream extends ThresholdingOutputStream {
      *
      * @param threshold the number of bytes at which to trigger an event
      */
-    public MemoryOutputStream(long threshold) {
+    public InMemoryOutputStream(long threshold) {
         super((int)threshold);
         outputStream = new ByteArrayOutputStream();
     }
@@ -111,7 +111,6 @@ public class MemoryOutputStream extends ThresholdingOutputStream {
         if (!closed) {
             throw new IOException("Stream not closed");
         }
-
         outputStream.writeTo(out);
     }
 

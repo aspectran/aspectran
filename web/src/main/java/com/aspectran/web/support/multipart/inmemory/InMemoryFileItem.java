@@ -36,7 +36,7 @@ import java.util.Map;
  * that removed file-related codes to support environments such as GAE
  * where the file system is not available.
  */
-public class MemoryFileItem implements FileItem, FileItemHeadersSupport {
+public class InMemoryFileItem implements FileItem, FileItemHeadersSupport {
 
     /**
      * Default content charset to be used when no explicit charset parameter is provided by the sender. Media subtypes
@@ -72,7 +72,7 @@ public class MemoryFileItem implements FileItem, FileItemHeadersSupport {
     /**
      * Output stream for this item.
      */
-    private transient MemoryOutputStream mos;
+    private transient InMemoryOutputStream mos;
 
     /**
      * The threshold above which uploads will be stored on disk.
@@ -94,7 +94,7 @@ public class MemoryFileItem implements FileItem, FileItemHeadersSupport {
      * @param sizeThreshold the threshold, in bytes, below which items will be retained in memory.
      *                      (sizeThreshold will always be equal to file upload limit)
      */
-    public MemoryFileItem(String fieldName, String contentType, boolean isFormField, String fileName, int sizeThreshold) {
+    public InMemoryFileItem(String fieldName, String contentType, boolean isFormField, String fileName, int sizeThreshold) {
         this.fieldName = fieldName;
         this.contentType = contentType;
         this.isFormField = isFormField;
@@ -295,7 +295,7 @@ public class MemoryFileItem implements FileItem, FileItemHeadersSupport {
      */
     public OutputStream getOutputStream() throws IOException {
         if (mos == null) {
-            mos = new MemoryOutputStream(sizeThreshold);
+            mos = new InMemoryOutputStream(sizeThreshold);
         }
         return mos;
     }

@@ -24,7 +24,7 @@
         </settings>
     </aspect>
 
-    <bean id="imageFileUploader" class="com.aspectran.web.support.multipart.inmemory.MemoryMultipartFormDataParserFactoryBean">
+    <bean id="imageFileUploader" class="com.aspectran.web.support.multipart.inmemory.InMemoryMultipartFormDataParserFactoryBean">
         <description>
             Required to handle multi-part form data.
         </description>

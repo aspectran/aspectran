@@ -21,13 +21,13 @@ import org.apache.commons.fileupload.FileItemFactory;
 /**
  * The class is an implementation of the {@link org.apache.commons.fileupload.FileItemFactory} interface.
  */
-public class MemoryFileItemFactory implements FileItemFactory {
+public class InMemoryFileItemFactory implements FileItemFactory {
 
     /** Threshold file size in Memory is set to max file upload size (default is max integer value). */
     private int sizeThreshold = Integer.MAX_VALUE;
 
     /**
-     * Create a new {@link MemoryFileItem} instance from the supplied parameters
+     * Create a new {@link InMemoryFileItem} instance from the supplied parameters
      * and the local factory configuration.
      *
      * @param fieldName the name of the form field
@@ -37,12 +37,12 @@ public class MemoryFileItemFactory implements FileItemFactory {
      * @return the newly created file item
      */
     public FileItem createItem(String fieldName, String contentType, boolean isFormField, String fileName) {
-        return new MemoryFileItem(fieldName, contentType, isFormField, fileName, sizeThreshold);
+        return new InMemoryFileItem(fieldName, contentType, isFormField, fileName, sizeThreshold);
     }
 
     /**
      * Sets the size threshold for storing data in memory.
-     * If this value is exceeded, the {@link MemoryFileItem} will throw an error.
+     * If this value is exceeded, the {@link InMemoryFileItem} will throw an error.
      *
      * @param sizeThreshold the size threshold, in bytes
      * @see #getSizeThreshold()

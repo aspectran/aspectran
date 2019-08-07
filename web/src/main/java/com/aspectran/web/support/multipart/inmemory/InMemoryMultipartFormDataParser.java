@@ -43,9 +43,9 @@ import java.util.Map;
  * <p>It is designed to store uploaded data items in memory, such as GAE,
  * where the file system is not available.</p>
  */
-public class MemoryMultipartFormDataParser implements MultipartFormDataParser {
+public class InMemoryMultipartFormDataParser implements MultipartFormDataParser {
 
-    private static final Log log = LogFactory.getLog(MemoryMultipartFormDataParser.class);
+    private static final Log log = LogFactory.getLog(InMemoryMultipartFormDataParser.class);
 
     private long maxRequestSize = -1L;
 
@@ -58,9 +58,9 @@ public class MemoryMultipartFormDataParser implements MultipartFormDataParser {
     private String deniedFileExtensions;
 
     /**
-     * Instantiates a new MemoryMultipartFormDataParser.
+     * Instantiates a new InMemoryMultipartFormDataParser.
      */
-    public MemoryMultipartFormDataParser() {
+    public InMemoryMultipartFormDataParser() {
     }
 
     @Override
@@ -107,7 +107,7 @@ public class MemoryMultipartFormDataParser implements MultipartFormDataParser {
     @Override
     public void parse(RequestAdapter requestAdapter) {
         try {
-            MemoryFileItemFactory factory = new MemoryFileItemFactory();
+            InMemoryFileItemFactory factory = new InMemoryFileItemFactory();
             if (maxInMemorySize > -1) {
                 factory.setSizeThreshold(maxInMemorySize);
             }
@@ -173,7 +173,7 @@ public class MemoryMultipartFormDataParser implements MultipartFormDataParser {
                             continue;
                         }
 
-                        MemoryMultipartFileParameter fileParameter = new MemoryMultipartFileParameter(fileItem);
+                        InMemoryMultipartFileParameter fileParameter = new InMemoryMultipartFileParameter(fileItem);
                         fileParameterMap.add(fieldName, fileParameter);
 
                         if (log.isDebugEnabled()) {

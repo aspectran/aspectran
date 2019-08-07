@@ -19,12 +19,12 @@ import com.aspectran.core.component.bean.ablility.FactoryBean;
 import com.aspectran.web.activity.request.MultipartFormDataParser;
 
 /**
- * The Class MemoryMultipartFormDataParserFactoryBean.
+ * The Class InMemoryMultipartFormDataParserFactoryBean.
  *
  * @since 5.1.0
  */
-public class MemoryMultipartFormDataParserFactoryBean
-        extends MemoryMultipartFormDataParserFactory
+public class InMemoryMultipartFormDataParserFactoryBean
+        extends InMemoryMultipartFormDataParserFactory
         implements FactoryBean<MultipartFormDataParser> {
 
     @Override

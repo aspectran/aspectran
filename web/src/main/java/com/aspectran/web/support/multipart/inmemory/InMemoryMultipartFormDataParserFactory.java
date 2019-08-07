@@ -19,11 +19,11 @@ import com.aspectran.core.util.StringUtils;
 import com.aspectran.web.activity.request.MultipartFormDataParser;
 
 /**
- * The Class MemoryMultipartFormDataParserFactory.
+ * The Class InMemoryMultipartFormDataParserFactory.
  *
  * @since 5.1.0
  */
-public class MemoryMultipartFormDataParserFactory {
+public class InMemoryMultipartFormDataParserFactory {
 
     private long maxRequestSize = -1L;
 
@@ -36,7 +36,7 @@ public class MemoryMultipartFormDataParserFactory {
     /**
      * Instantiates a new Multipart request wrapper resolver.
      */
-    public MemoryMultipartFormDataParserFactory() {
+    public InMemoryMultipartFormDataParserFactory() {
     }
 
     /**
@@ -126,7 +126,7 @@ public class MemoryMultipartFormDataParserFactory {
      * @return the multipart form data parser
      */
     public MultipartFormDataParser createMultipartFormDataParser() {
-        MultipartFormDataParser parser = new MemoryMultipartFormDataParser();
+        MultipartFormDataParser parser = new InMemoryMultipartFormDataParser();
         if (maxRequestSize > -1L) {
             parser.setMaxRequestSize(maxRequestSize);
         }

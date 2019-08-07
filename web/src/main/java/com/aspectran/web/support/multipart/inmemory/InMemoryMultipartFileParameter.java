@@ -28,7 +28,7 @@ import java.io.InputStream;
 /**
  * This class represents a file item that was received within a multipart/form-data POST request.
  */
-public class MemoryMultipartFileParameter extends FileParameter {
+public class InMemoryMultipartFileParameter extends FileParameter {
 
     private FileItem fileItem;
 
@@ -37,7 +37,7 @@ public class MemoryMultipartFileParameter extends FileParameter {
      *
      * @param fileItem the FileItem to wrap
      */
-    public MemoryMultipartFileParameter(FileItem fileItem) {
+    public InMemoryMultipartFileParameter(FileItem fileItem) {
         this.fileItem = fileItem;
     }
 
