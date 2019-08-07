@@ -1,4 +1,4 @@
-package com.aspectran.undertow.server.handlers.servlet;
+package com.aspectran.undertow.server.servlet;
 
 import com.aspectran.core.component.bean.aware.ActivityContextAware;
 import com.aspectran.core.context.ActivityContext;
@@ -12,7 +12,6 @@ import io.undertow.servlet.api.DeploymentManager;
 import javax.servlet.ServletContext;
 import java.util.Collection;
 
-import static com.aspectran.undertow.server.handlers.servlet.TowServletContext.INHERIT_ROOT_WEB_SERVICE_ATTRIBUTE;
 import static com.aspectran.web.service.WebService.ROOT_WEB_SERVICE_ATTRIBUTE;
 
 /**
@@ -46,8 +45,8 @@ public class ServletHandlerFactory implements ActivityContextAware {
                 manager.deploy();
 
                 ServletContext servletContext = manager.getDeployment().getServletContext();
-                Object attr = servletContext.getAttribute(INHERIT_ROOT_WEB_SERVICE_ATTRIBUTE);
-                servletContext.removeAttribute(INHERIT_ROOT_WEB_SERVICE_ATTRIBUTE);
+                Object attr = servletContext.getAttribute(TowServletContext.INHERIT_ROOT_WEB_SERVICE_ATTRIBUTE);
+                servletContext.removeAttribute(TowServletContext.INHERIT_ROOT_WEB_SERVICE_ATTRIBUTE);
                 if ("true".equals(attr)) {
                     CoreService rootService = context.getRootService();
                     WebService webService = AspectranWebService.create(servletContext, rootService);

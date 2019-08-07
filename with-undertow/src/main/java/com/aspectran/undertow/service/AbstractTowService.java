@@ -3,7 +3,7 @@ package com.aspectran.undertow.service;
 import com.aspectran.core.service.AspectranCoreService;
 import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.CoreService;
-import com.aspectran.undertow.server.session.TowSessionManager;
+import com.aspectran.undertow.server.http.session.HttpSessionManager;
 
 /**
  * <p>Created: 2019-07-27</p>
@@ -12,7 +12,7 @@ public abstract class AbstractTowService extends AspectranCoreService implements
 
     private String uriDecoding;
 
-    private TowSessionManager towSessionManager;
+    private HttpSessionManager towSessionManager;
 
     public AbstractTowService() {
         super();
@@ -31,11 +31,11 @@ public abstract class AbstractTowService extends AspectranCoreService implements
     }
 
     @Override
-    public TowSessionManager getTowSessionManager() {
+    public HttpSessionManager getTowSessionManager() {
         return towSessionManager;
     }
 
-    public void setTowSessionManager(TowSessionManager towSessionManager) {
+    public void setTowSessionManager(HttpSessionManager towSessionManager) {
         if (this.towSessionManager != null) {
             throw new IllegalStateException("Tow session manager already exists");
         }

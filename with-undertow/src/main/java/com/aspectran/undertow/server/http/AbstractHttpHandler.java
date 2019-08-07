@@ -1,9 +1,9 @@
-package com.aspectran.undertow.server.handlers.http;
+package com.aspectran.undertow.server.http;
 
 import com.aspectran.core.component.bean.aware.ActivityContextAware;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.util.ResourceUtils;
-import com.aspectran.undertow.server.session.TowSessionManager;
+import com.aspectran.undertow.server.http.session.HttpSessionManager;
 import com.aspectran.undertow.service.TowService;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
@@ -23,15 +23,15 @@ public abstract class AbstractHttpHandler implements HttpHandler, ActivityContex
 
     private ActivityContext context;
 
-    private TowSessionManager towSessionManager;
+    private HttpSessionManager towSessionManager;
 
     private ResourceHandler resourceHandler;
 
-    public TowSessionManager getTowSessionManager() {
+    public HttpSessionManager getTowSessionManager() {
         return towSessionManager;
     }
 
-    public void setTowSessionManager(TowSessionManager towSessionManager) {
+    public void setTowSessionManager(HttpSessionManager towSessionManager) {
         this.towSessionManager = towSessionManager;
     }
 

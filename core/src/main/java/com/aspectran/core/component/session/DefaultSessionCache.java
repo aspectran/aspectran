@@ -22,6 +22,8 @@ import com.aspectran.core.util.statistic.CounterStatistic;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
+ * Implementation of {@code SessionCache}.
+ *
  * <p>Created: 2017. 6. 24.</p>
  */
 public class DefaultSessionCache extends AbstractSessionCache {
@@ -85,7 +87,7 @@ public class DefaultSessionCache extends AbstractSessionCache {
     }
 
     @Override
-    public Session newSession(SessionData data) {
+    public Session createSession(SessionData data) {
         return new Session(getSessionHandler(), data);
     }
 

@@ -33,8 +33,6 @@ import java.io.IOException;
  */
 public class DefaultSessionManager extends AbstractSessionHandler implements SessionManager {
 
-    private ActivityContext context;
-
     private String workerName;
 
     private SessionConfig sessionConfig;
@@ -42,10 +40,6 @@ public class DefaultSessionManager extends AbstractSessionHandler implements Ses
     private SessionDataStore sessionDataStore;
 
     public DefaultSessionManager() {
-    }
-
-    public void setActivityContext(ActivityContext context) {
-        this.context = context;
     }
 
     @Override
@@ -128,7 +122,6 @@ public class DefaultSessionManager extends AbstractSessionHandler implements Ses
                 int timeout = sessionConfig.getTimeout();
                 setDefaultMaxIdleSecs(timeout);
             }
-
             if (getSessionCache().getSessionDataStore() == null) {
                 String storeType = sessionConfig.getStoreType();
                 SessionStoreType sessionStoreType = SessionStoreType.resolve(storeType);
@@ -138,42 +131,19 @@ public class DefaultSessionManager extends AbstractSessionHandler implements Ses
                 if (sessionStoreType == SessionStoreType.FILE) {
                     FileSessionDataStore fileSessionDataStore = new FileSessionDataStore();
                     SessionFileStoreConfig fileStoreConfig = sessionConfig.getFileStoreConfig();
-
-                    String storeDir = fileStoreConfig.getStoreDir();
-                    if (StringUtils.hasText(storeDir)) {
-                        if (context != null) {
-                            String basePath = context.getApplicationAdapter().getBasePath();
-                            fileSessionDataStore.setStoreDir(new File(basePath, storeDir));
-                        } else {
+                    if (fileStoreConfig != null) {
+                        String storeDir = fileStoreConfig.getStoreDir();
+                        if (StringUtils.hasText(storeDir)) {
                             fileSessionDataStore.setStoreDir(new File(storeDir));
                         }
+                        boolean deleteUnrestorableFiles = fileStoreConfig.isDeleteUnrestorableFiles();
+                        if (deleteUnrestorableFiles) {
+                            fileSessionDataStore.setDeleteUnrestorableFiles(true);
+                        }
                     }
-
-                    boolean deleteUnrestorableFiles = fileStoreConfig.isDeleteUnrestorableFiles();
-                    if (deleteUnrestorableFiles) {
-                        fileSessionDataStore.setDeleteUnrestorableFiles(true);
-                    }
-
                     fileSessionDataStore.initialize();
                     getSessionCache().setSessionDataStore(fileSessionDataStore);
                 }
-            }
-        }
-
-        if (context != null) {
-            final SessionScopeAdvisor sessionScopeAdvisor = SessionScopeAdvisor.create(context);
-            if (sessionScopeAdvisor != null) {
-                addEventListener(new SessionListener() {
-                    @Override
-                    public void sessionCreated(Session session) {
-                        sessionScopeAdvisor.executeBeforeAdvice();
-                    }
-
-                    @Override
-                    public void sessionDestroyed(Session session) {
-                        sessionScopeAdvisor.executeAfterAdvice();
-                    }
-                });
             }
         }
 
@@ -186,12 +156,42 @@ public class DefaultSessionManager extends AbstractSessionHandler implements Ses
         super.doDestroy();
     }
 
-    public static DefaultSessionManager create(ActivityContext context, SessionConfig sessionConfig, String workerName) {
+    public static DefaultSessionManager create(ActivityContext context, SessionConfig sessionConfig, String workerName) throws IOException {
+        if (context == null) {
+            throw new IllegalArgumentException("context must not be null");
+        }
+
         DefaultSessionManager sessionManager = new DefaultSessionManager();
-        sessionManager.setActivityContext(context);
         sessionManager.setWorkerName(workerName);
         if (sessionConfig != null) {
             sessionManager.setSessionConfig(sessionConfig);
+            String storeType = sessionConfig.getStoreType();
+            SessionStoreType sessionStoreType = SessionStoreType.resolve(storeType);
+            if (sessionStoreType == SessionStoreType.FILE) {
+                SessionFileStoreConfig fileStoreConfig = sessionConfig.getFileStoreConfig();
+                if (fileStoreConfig != null) {
+                    String storeDir = fileStoreConfig.getStoreDir();
+                    if (StringUtils.hasText(storeDir)) {
+                        String basePath = context.getApplicationAdapter().getBasePath();
+                        String canonPath = new File(basePath, storeDir).getCanonicalPath();
+                        fileStoreConfig.setStoreDir(canonPath);
+                    }
+                }
+            }
+        }
+        final SessionScopeAdvisor sessionScopeAdvisor = SessionScopeAdvisor.create(context);
+        if (sessionScopeAdvisor != null) {
+            sessionManager.addEventListener(new SessionListener() {
+                @Override
+                public void sessionCreated(Session session) {
+                    sessionScopeAdvisor.executeBeforeAdvice();
+                }
+
+                @Override
+                public void sessionDestroyed(Session session) {
+                    sessionScopeAdvisor.executeAfterAdvice();
+                }
+            });
         }
         return sessionManager;
     }

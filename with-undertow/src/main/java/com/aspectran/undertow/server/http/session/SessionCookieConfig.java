@@ -1,4 +1,4 @@
-package com.aspectran.undertow.server.session;
+package com.aspectran.undertow.server.http.session;
 
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;

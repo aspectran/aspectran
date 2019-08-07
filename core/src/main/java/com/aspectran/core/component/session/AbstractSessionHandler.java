@@ -52,7 +52,8 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
 
     private SessionCache sessionCache;
 
-    private int defaultMaxIdleSecs = -1;
+    /** 30 minute default */
+    private volatile int defaultMaxIdleSecs = 30 * 60;
 
     @Override
     public SessionIdGenerator getSessionIdGenerator() {
@@ -130,7 +131,8 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
     @Override
     public Session newSession(String id) {
         long created = System.currentTimeMillis();
-        Session session = sessionCache.newSession(id, created, (defaultMaxIdleSecs > 0 ? defaultMaxIdleSecs * 1000L : -1));
+        long maxIdleSecs = (defaultMaxIdleSecs > 0 ? defaultMaxIdleSecs * 1000L : -1);
+        Session session = sessionCache.createSession(id, created, maxIdleSecs);
         try {
             sessionCache.put(id, session);
             sessionsCreatedStats.increment();

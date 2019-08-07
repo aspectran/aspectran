@@ -248,7 +248,7 @@ public abstract class AbstractSessionCache implements SessionCache {
             if (data == null) { // session doesn't exist
                 return null;
             }
-            return newSession(data);
+            return createSession(data);
         } catch (UnreadableSessionDataException e) {
             // can't load the session, delete it
             if (isRemoveUnloadableSessions()) {
@@ -484,12 +484,12 @@ public abstract class AbstractSessionCache implements SessionCache {
     }
 
     @Override
-    public Session newSession(String id, long time, long maxInactiveIntervalMS) {
+    public Session createSession(String id, long time, long maxInactiveIntervalMS) {
         if (log.isDebugEnabled()) {
             log.debug("Creating new session id=" + id);
         }
         SessionData sessionData = new SessionData(id, time, time, time, maxInactiveIntervalMS);
-        Session session = newSession(sessionData);
+        Session session = createSession(sessionData);
         try {
             if (isSaveOnCreate() && sessionDataStore != null) {
                 sessionDataStore.store(id, sessionData);
@@ -506,7 +506,7 @@ public abstract class AbstractSessionCache implements SessionCache {
      * @param data the session data
      * @return a new Session object
      */
-    public abstract Session newSession(SessionData data);
+    public abstract Session createSession(SessionData data);
 
     /**
      * Get the session matching the key.
@@ -548,9 +548,6 @@ public abstract class AbstractSessionCache implements SessionCache {
      */
     protected static class PlaceHolderSession extends Session {
 
-        /**
-         * @param data the session data
-         */
         public PlaceHolderSession(SessionData data) {
             super(null, data);
         }

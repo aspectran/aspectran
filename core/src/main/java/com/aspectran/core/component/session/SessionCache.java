@@ -160,7 +160,7 @@ public interface SessionCache {
      */
     void checkInactiveSession(Session session);
 
-    Session newSession(String id, long time, long maxInactiveIntervalMS);
+    Session createSession(String id, long time, long maxInactiveIntervalMS);
 
     /**
      * Re-materialize a Session that has previously existed.
@@ -168,7 +168,7 @@ public interface SessionCache {
      * @param data the session data
      * @return a Session object for the data supplied
      */
-    Session newSession(SessionData data);
+    Session createSession(SessionData data);
 
     /**
      * @return the number of sessions in the cache

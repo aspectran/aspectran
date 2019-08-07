@@ -1,4 +1,4 @@
-package com.aspectran.undertow.server.handlers.servlet;
+package com.aspectran.undertow.server.servlet;
 
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;

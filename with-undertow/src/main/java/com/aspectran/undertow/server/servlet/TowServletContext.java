@@ -1,4 +1,4 @@
-package com.aspectran.undertow.server.handlers.servlet;
+package com.aspectran.undertow.server.servlet;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.component.bean.aware.ApplicationAdapterAware;
