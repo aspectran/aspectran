@@ -77,12 +77,13 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
                 throw new IllegalStateException("Oops! No ActivityContext configured");
             }
 
-            rootService.joinDerivedService(this);
-
             this.rootService = rootService;
             this.activityContext = rootService.getActivityContext();
             this.aspectranConfig = rootService.getAspectranConfig();
             this.lateStart = rootService.getServiceController().isActive();
+
+            setBasePath(rootService.getBasePath());
+            rootService.joinDerivedService(this);
         } else {
             this.rootService = null;
             this.lateStart = false;

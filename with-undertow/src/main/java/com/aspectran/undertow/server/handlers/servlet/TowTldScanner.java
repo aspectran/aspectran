@@ -10,6 +10,7 @@ import org.xml.sax.SAXException;
 
 import javax.servlet.ServletContext;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 
@@ -47,14 +48,18 @@ public class TowTldScanner extends TldScanner {
     @Override
     public void scan() throws IOException, SAXException {
         if (jarsToScan != null) {
-            for (String file : jarsToScan) {
-                URL url = new File(context.getRealPath(file)).toURI().toURL();
-                Jar jar = JarFactory.newInstance(url);
-                scanJar(jar, file);
-            }
             scanPlatform();
             scanJspConfig();
             scanResourcePaths("/WEB-INF/");
+            for (String file : jarsToScan) {
+                String realPath = context.getRealPath(file);
+                if (realPath == null) {
+                    throw new FileNotFoundException("In TLD scanning, the supplied resource '" + file + "' does not exist");
+                }
+                URL url = new File(realPath).toURI().toURL();
+                Jar jar = JarFactory.newInstance(url);
+                scanJar(jar, file);
+            }
         } else {
             super.scan();
         }
