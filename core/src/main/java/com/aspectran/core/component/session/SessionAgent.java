@@ -16,6 +16,7 @@
 package com.aspectran.core.component.session;
 
 import com.aspectran.core.activity.CoreActivity;
+import com.aspectran.core.activity.aspect.SessionScopeAdvisor;
 import com.aspectran.core.component.bean.scope.SessionScope;
 
 import java.util.Collections;
@@ -28,11 +29,15 @@ import java.util.Enumeration;
  */
 public class SessionAgent {
 
+    private static final String SESSION_SCOPE_ATTRIBUTE_NAME = SessionAgent.class.getName() + ".SESSION_SCOPE";
+
     private final SessionHandler sessionHandler;
 
     private final String id;
 
     private Session session;
+
+    private SessionScope sessionScope;
 
     private boolean requestStarted;
 
@@ -93,7 +98,13 @@ public class SessionAgent {
     }
 
     public SessionScope getSessionScope() {
-        return getSession(true).getSessionScope();
+        if (this.sessionScope == null) {
+            this.sessionScope = getAttribute(SESSION_SCOPE_ATTRIBUTE_NAME);
+            if (this.sessionScope == null) {
+                newSessionScope();
+            }
+        }
+        return this.sessionScope;
     }
 
     public Session getSession(boolean create) {
@@ -134,6 +145,15 @@ public class SessionAgent {
         if (session != null) {
             sessionHandler.complete(session);
         }
+    }
+
+    /**
+     * Creates a new HTTP session scope.
+     */
+    private void newSessionScope() {
+        SessionScopeAdvisor advisor = SessionScopeAdvisor.create(context);
+        this.sessionScope = new DefaultSessionScope(advisor);
+        setAttribute(SESSION_SCOPE_ATTRIBUTE_NAME, this.sessionScope);
     }
 
 }

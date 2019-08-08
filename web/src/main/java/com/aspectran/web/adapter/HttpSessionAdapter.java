@@ -20,8 +20,6 @@ import com.aspectran.core.adapter.AbstractSessionAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.component.bean.scope.SessionScope;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.util.thread.Locker;
-import com.aspectran.core.util.thread.Locker.Lock;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -35,8 +33,6 @@ import java.util.Enumeration;
 public class HttpSessionAdapter extends AbstractSessionAdapter {
 
     private static final String SESSION_SCOPE_ATTRIBUTE_NAME = HttpSessionScope.class.getName() + ".SESSION_SCOPE";
-
-    private final Locker locker = new Locker();
 
     private final ActivityContext context;
 
@@ -62,11 +58,9 @@ public class HttpSessionAdapter extends AbstractSessionAdapter {
     @Override
     public SessionScope getSessionScope() {
         if (this.sessionScope == null) {
-            try (Lock ignored = locker.lockIfNotHeld()) {
-                this.sessionScope = getAttribute(SESSION_SCOPE_ATTRIBUTE_NAME);
-                if (this.sessionScope == null) {
-                    newHttpSessionScope();
-                }
+            this.sessionScope = getAttribute(SESSION_SCOPE_ATTRIBUTE_NAME);
+            if (this.sessionScope == null) {
+                newHttpSessionScope();
             }
         }
         return this.sessionScope;

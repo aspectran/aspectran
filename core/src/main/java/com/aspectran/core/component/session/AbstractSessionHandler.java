@@ -23,8 +23,10 @@ import com.aspectran.core.util.statistic.SampleStatistic;
 import com.aspectran.core.util.thread.ScheduledExecutorScheduler;
 import com.aspectran.core.util.thread.Scheduler;
 
+import java.util.ArrayList;
 import java.util.EventListener;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import static java.lang.Math.round;
@@ -43,8 +45,6 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
     protected final CounterStatistic sessionsCreatedStats = new CounterStatistic();
 
     private final List<SessionListener> sessionListeners = new CopyOnWriteArrayList<>();
-
-    private final List<SessionAttributeListener> sessionAttributeListeners = new CopyOnWriteArrayList<>();
 
     private final Scheduler scheduler = new ScheduledExecutorScheduler();
 
@@ -196,8 +196,11 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
             Session session = sessionCache.delete(id);
             if (session != null) {
                 session.beginInvalidate();
-                for (int i = sessionListeners.size() - 1; i >= 0; i--) {
-                    sessionListeners.get(i).sessionDestroyed(session);
+                // We need to create our own snapshot to safely iterate over a concurrent list in reverse
+                List<SessionListener> listeners = new ArrayList<>(sessionListeners);
+                ListIterator<SessionListener> iterator = listeners.listIterator(listeners.size());
+                while (iterator.hasPrevious()) {
+                    iterator.previous().sessionDestroyed(session);
                 }
             }
             return session;
@@ -207,10 +210,23 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
         }
     }
 
-
     @Override
     public String createSessionId(long seedTerm) {
         return sessionIdGenerator.createSessionId(seedTerm);
+    }
+
+    @Override
+    public String renewSessionId(String oldId, String newId) {
+        try {
+            Session session = sessionCache.renewSessionId(oldId, newId);
+            for (SessionListener listener : sessionListeners) {
+                listener.sessionIdChanged(session, oldId);
+            }
+            return session.getId();
+        } catch (Exception e) {
+            log.warn("Failed to renew session", e);
+        }
+        return null;
     }
 
     /**
@@ -223,9 +239,6 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
     public void addEventListener(EventListener listener) {
         if (listener instanceof SessionListener) {
             sessionListeners.add((SessionListener)listener);
-        }
-        if (listener instanceof SessionAttributeListener) {
-            sessionAttributeListeners.add((SessionAttributeListener)listener);
         }
     }
 
@@ -240,9 +253,6 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
         if (listener instanceof SessionListener) {
             sessionListeners.remove(listener);
         }
-        if (listener instanceof SessionAttributeListener) {
-            sessionAttributeListeners.remove(listener);
-        }
     }
 
     /**
@@ -253,11 +263,10 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
     @Override
     public void clearEventListeners() {
         sessionListeners.clear();
-        sessionAttributeListeners.clear();
     }
 
     @Override
-    public void sessionAttributeChanged(Session session, String name, Object oldValue, Object newValue) {
+    public void attributeChanged(Session session, String name, Object oldValue, Object newValue) {
         if (newValue == null || !newValue.equals(oldValue)) {
             if (oldValue != null) {
                 unbindValue(session, name, oldValue);
@@ -266,15 +275,13 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
                 bindValue(session, name, newValue);
             }
         }
-        if (!sessionAttributeListeners.isEmpty()) {
-            for (SessionAttributeListener listener : sessionAttributeListeners) {
-                if (oldValue == null) {
-                    listener.attributeAdded(session, name, newValue);
-                } else if (newValue == null) {
-                    listener.attributeRemoved(session, name, oldValue);
-                } else {
-                    listener.attributeReplaced(session, name, oldValue);
-                }
+        for (SessionListener listener : sessionListeners) {
+            if (oldValue == null) {
+                listener.attributeAdded(session, name, newValue);
+            } else if (newValue == null) {
+                listener.attributeRemoved(session, name, oldValue);
+            } else {
+                listener.attributeUpdated(session, name, newValue, oldValue);
             }
         }
     }

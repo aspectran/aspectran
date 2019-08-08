@@ -188,7 +188,7 @@ public class DefaultSessionManager extends AbstractSessionHandler implements Ses
                 }
 
                 @Override
-                public void sessionDestroyed(Session session) {
+                public void sessionDestroyed(Session session, SessionDestroyedReasonType reasonType) {
                     sessionScopeAdvisor.executeAfterAdvice();
                 }
             });

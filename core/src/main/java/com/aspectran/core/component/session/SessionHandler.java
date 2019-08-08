@@ -77,7 +77,22 @@ public interface SessionHandler extends Component {
      */
     void invalidate(String id);
 
+    /**
+     * Create a new Session ID.
+     *
+     * @param seedTerm the seed for RNG
+     * @return the new session id
+     */
     String createSessionId(long seedTerm);
+
+    /**
+     * Change the id of a Session.
+     *
+     * @param oldId the current session id
+     * @param newId the new session id
+     * @return the Session after changing its id
+     */
+    String renewSessionId(String oldId, String newId);
 
     /**
      * Adds an event listener for session-related events.
@@ -111,7 +126,7 @@ public interface SessionHandler extends Component {
      * @param oldValue previous value of the attribute
      * @param newValue  new value of the attribute
      */
-    void sessionAttributeChanged(Session session, String name, Object oldValue, Object newValue);
+    void attributeChanged(Session session, String name, Object oldValue, Object newValue);
 
     /**
      * Call the activation listeners.

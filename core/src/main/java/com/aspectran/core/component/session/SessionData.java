@@ -15,7 +15,6 @@
  */
 package com.aspectran.core.component.session;
 
-import com.aspectran.core.component.bean.scope.SessionScope;
 import com.aspectran.core.util.ToStringBuilder;
 
 import java.io.Serializable;
@@ -33,11 +32,9 @@ public class SessionData implements Serializable {
 
     private static final long serialVersionUID = -6253355753257200708L;
 
-    private final String id;
+    private String id;
 
     private final Map<String, Object> attributes;
-
-    private final SessionScope sessionScope;
 
     private final long creationTime;
 
@@ -66,15 +63,14 @@ public class SessionData implements Serializable {
         this.maxInactiveIntervalMS = maxInactiveIntervalMS;
         calcAndSetExpiryTime(creationTime);
         this.attributes = new ConcurrentHashMap<>();
-        this.sessionScope = new SessionScope();
     }
 
     public String getId() {
         return id;
     }
 
-    public SessionScope getSessionScope() {
-        return sessionScope;
+    public void setId(String id) {
+        this.id = id;
     }
 
     @SuppressWarnings("unchecked")

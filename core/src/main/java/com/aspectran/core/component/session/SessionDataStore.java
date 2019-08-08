@@ -20,6 +20,8 @@ import com.aspectran.core.component.Component;
 import java.util.Set;
 
 /**
+ * A SessionDataStore is a mechanism for (persistently) storing data associated with sessions.
+ *
  * <p>Created: 2017. 6. 15.</p>
  */
 public interface SessionDataStore extends Component {
@@ -70,7 +72,7 @@ public interface SessionDataStore extends Component {
      * @param maxInactiveIntervalMS the max inactive time in milliseconds
      * @return a new SessionData object
      */
-    SessionData newSessionData (String id, long createdTime, long accessedTime, long lastAccessedTime, long maxInactiveIntervalMS);
+    SessionData createSessionData(String id, long createdTime, long accessedTime, long lastAccessedTime, long maxInactiveIntervalMS);
 
     /**
      * Called periodically, this method should search the data store

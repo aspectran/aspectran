@@ -370,7 +370,7 @@ public class FileSessionDataStore extends AbstractSessionDataStore {
             long expiry = di.readLong();
             long maxIdle = di.readLong();
 
-            SessionData data = newSessionData(id, created, accessed, lastAccessed, maxIdle);
+            SessionData data = createSessionData(id, created, accessed, lastAccessed, maxIdle);
             data.setExpiryTime(expiry);
             data.setMaxInactiveInterval(maxIdle);
 

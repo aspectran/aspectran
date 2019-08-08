@@ -15,7 +15,6 @@
  */
 package com.aspectran.core.component.session;
 
-import com.aspectran.core.component.bean.scope.SessionScope;
 import com.aspectran.core.util.ToStringBuilder;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -38,9 +37,7 @@ public class Session {
 
     private final SessionHandler sessionHandler;
 
-    private final String id;
-
-    private SessionData sessionData;
+    private final SessionData sessionData;
 
     private SessionInactivityTimer sessionInactivityTimer;
 
@@ -67,7 +64,6 @@ public class Session {
 
     protected Session(SessionHandler sessionHandler, SessionData sessionData, boolean newSession) {
         this.sessionHandler = sessionHandler;
-        this.id = sessionData.getId();
         this.sessionData = sessionData;
         this.newSession = newSession;
         if (newSession) {
@@ -77,18 +73,13 @@ public class Session {
     }
 
     public String getId() {
-        return id;
+        try (Lock ignored = locker.lock()) {
+            return sessionData.getId();
+        }
     }
 
     public SessionData getSessionData() {
         return sessionData;
-    }
-
-    protected SessionScope getSessionScope() {
-        try (Lock ignored = locker.lockIfNotHeld()) {
-            checkValidForRead();
-            return sessionData.getSessionScope();
-        }
     }
 
     public <T> T getAttribute(String name) {
@@ -108,7 +99,7 @@ public class Session {
         if (value == null && old == null) {
             return null; //if same as remove attribute but attribute was already removed, no change
         }
-        sessionHandler.sessionAttributeChanged(this, name, old, value);
+        sessionHandler.attributeChanged(this, name, old, value);
         return old;
     }
 
@@ -154,9 +145,9 @@ public class Session {
             updateInactivityTimer();
             if (log.isDebugEnabled()) {
                 if (secs <= 0) {
-                    log.debug("Session " + id + " is now immortal (maxInactiveInterval=" + secs + ")");
+                    log.debug("Session " + sessionData.getId() + " is now immortal (maxInactiveInterval=" + secs + ")");
                 } else {
-                    log.debug("Session " + id + " maxInactiveInterval=" + secs);
+                    log.debug("Session " + sessionData.getId() + " maxInactiveInterval=" + secs);
                 }
             }
         }
@@ -244,7 +235,7 @@ public class Session {
      * expiring session.
      */
     public void invalidate() {
-        sessionHandler.invalidate(id);
+        sessionHandler.invalidate(sessionData.getId());
     }
 
     protected boolean beginInvalidate() {
@@ -261,7 +252,7 @@ public class Session {
                     break;
                 default:
                     if (log.isDebugEnabled()) {
-                        log.debug("Session " + id + " already being invalidated");
+                        log.debug("Session " + sessionData.getId() + " already being invalidated");
                     }
             }
         }
@@ -275,16 +266,13 @@ public class Session {
                     log.debug("Invalidate session " + this);
                 }
                 if (state == State.VALID || state == State.INVALIDATING) {
-                    SessionScope sessionScope = sessionData.getSessionScope();
-                    sessionScope.destroy();
-
                     Set<String> keys;
                     do {
                         keys = sessionData.getKeys();
                         for (String key : keys) {
                             Object old = sessionData.setAttribute(key, null);
                             if (old != null) {
-                                sessionHandler.sessionAttributeChanged(this, key, old, null);
+                                sessionHandler.attributeChanged(this, key, old, null);
                             }
                         }
                     } while (!keys.isEmpty());
@@ -350,7 +338,6 @@ public class Session {
      */
     protected void checkValidForWrite() throws IllegalStateException {
         checkLocked();
-
         if (state == State.INVALID) {
             throw new IllegalStateException("Not valid for write: session " + this);
         }
@@ -369,7 +356,6 @@ public class Session {
      */
     protected void checkValidForRead() throws IllegalStateException {
         checkLocked();
-
         if (state == State.INVALID) {
             throw new IllegalStateException("Invalid for read: session " + this);
         }

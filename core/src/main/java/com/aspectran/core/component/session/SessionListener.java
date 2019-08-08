@@ -28,15 +28,51 @@ public interface SessionListener extends EventListener {
     /**
      * Receives notification that a session has been created.
      *
-     * @param session the basic session
+     * @param session the new session
      */
-    void sessionCreated(Session session);
+    default void sessionCreated(Session session) {
+    }
 
     /**
      * Receives notification that a session is about to be invalidated.
      *
-     * @param session the basic session
+     * @param session the session
      */
-    void sessionDestroyed(Session session);
+    default void sessionDestroyed(Session session) {
+    }
+
+    /**
+     * Receives notification that an attribute has been added to a session.
+     *
+     * @param session the session to which the object is bound or unbound
+     * @param name the name with which the object is bound or unbound
+     * @param value the new value of the attribute that has been added
+     */
+    default void attributeAdded(final Session session, final String name, final Object value) {
+    }
+
+    /**
+     * Receives notification that an attribute has been replaced in a session.
+     *
+     * @param session the session to which the object is bound or unbound
+     * @param name the name with which the object is bound or unbound
+     * @param newValue the new value of the attribute that has been added
+     * @param oldValue the old value of the attribute that has been removed
+     */
+    default void attributeUpdated(final Session session, final String name, final Object newValue, final Object oldValue) {
+    }
+
+    /**
+     * Receives notification that an attribute has been removed from a session.
+     *
+     * @param session the session to which the object is bound or unbound
+     * @param name the name with which the object is bound or unbound
+     * @param oldValue the old value of the attribute that has been removed
+     */
+    default void attributeRemoved(final Session session, final String name, final Object oldValue) {
+    }
+
+    default void sessionIdChanged(final Session session, final String oldSessionId) {
+    }
 
 }

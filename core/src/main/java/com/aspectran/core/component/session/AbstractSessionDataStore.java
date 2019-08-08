@@ -100,8 +100,8 @@ public abstract class AbstractSessionDataStore extends AbstractComponent impleme
     }
 
     @Override
-    public SessionData newSessionData(String id, long createdTime, long accessedTime, long lastAccessedTime,
-                                      long maxInactiveIntervalMS) {
+    public SessionData createSessionData(String id, long createdTime, long accessedTime, long lastAccessedTime,
+                                         long maxInactiveIntervalMS) {
         return new SessionData(id, createdTime, accessedTime, lastAccessedTime, maxInactiveIntervalMS);
     }
 

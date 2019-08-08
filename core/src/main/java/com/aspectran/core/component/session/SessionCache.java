@@ -18,7 +18,7 @@ package com.aspectran.core.component.session;
 import java.util.Set;
 
 /**
- * The Interface SessionCache.
+ * An interface for managing a set of Session objects pertaining to a context in memory.
  *
  * <p>Created: 2017. 6. 24.</p>
  */
@@ -169,6 +169,16 @@ public interface SessionCache {
      * @return a Session object for the data supplied
      */
     Session createSession(SessionData data);
+
+    /**
+     * Change the id of a Session.
+     *
+     * @param oldId the current session id
+     * @param newId the new session id
+     * @return the Session after changing its id
+     * @throws Exception if any error occurred
+     */
+    Session renewSessionId(String oldId, String newId) throws Exception;
 
     /**
      * @return the number of sessions in the cache

@@ -1,6 +1,7 @@
-package com.aspectran.undertow.server.servlet.session;
+package com.aspectran.undertow.server.session;
 
 import com.aspectran.core.component.session.DefaultSessionManager;
+import com.aspectran.core.component.session.SessionHandler;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.server.session.Session;
 import io.undertow.server.session.SessionConfig;
@@ -14,27 +15,31 @@ import java.util.Set;
 /**
  * <p>Created: 2019-08-07</p>
  */
-public class ServletSessionManager implements SessionManager {
+public class TowSessionManager implements SessionManager {
 
-    private final AttachmentKey<ServletSession> NEW_SESSION = AttachmentKey.create(ServletSession.class);
+    private final AttachmentKey<TowSession> NEW_SESSION = AttachmentKey.create(TowSession.class);
 
-    private final DefaultSessionManager defaultSessionManager;
+    private final DefaultSessionManager sessionManager;
 
-    public ServletSessionManager(String deploymentName) {
+    public TowSessionManager(String deploymentName) {
         DefaultSessionManager defaultSessionManager = new DefaultSessionManager();
         defaultSessionManager.setWorkerName(deploymentName);
-        this.defaultSessionManager = defaultSessionManager;
+        this.sessionManager = defaultSessionManager;
+    }
+
+    public SessionHandler getSessionHandler() {
+        return sessionManager.getSessionHandler();
     }
 
     @Override
     public String getDeploymentName() {
-        return defaultSessionManager.getWorkerName();
+        return sessionManager.getWorkerName();
     }
 
     @Override
     public void start() {
         try {
-            defaultSessionManager.initialize();
+            sessionManager.initialize();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -43,7 +48,7 @@ public class ServletSessionManager implements SessionManager {
     @Override
     public void stop() {
         try {
-            defaultSessionManager.destroy();
+            sessionManager.destroy();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -53,10 +58,10 @@ public class ServletSessionManager implements SessionManager {
     public Session createSession(HttpServerExchange serverExchange, SessionConfig sessionConfig) {
         String sessionId = sessionConfig.findSessionId(serverExchange);
         if (sessionId == null) {
-            sessionId = defaultSessionManager.createSessionId(hashCode());
+            sessionId = sessionManager.createSessionId(hashCode());
         }
-        com.aspectran.core.component.session.Session session = defaultSessionManager.createSession(sessionId);
-        ServletSession servletSession = new ServletSession(session, defaultSessionManager);
+        com.aspectran.core.component.session.Session session = sessionManager.createSession(sessionId);
+        TowSession servletSession = new TowSession(session, this);
         sessionConfig.setSessionId(serverExchange, session.getId());
         serverExchange.putAttachment(NEW_SESSION, servletSession);
         return servletSession;
@@ -65,13 +70,13 @@ public class ServletSessionManager implements SessionManager {
     @Override
     public Session getSession(HttpServerExchange serverExchange, SessionConfig sessionConfig) {
         if (serverExchange != null) {
-            ServletSession newSession = serverExchange.getAttachment(NEW_SESSION);
+            TowSession newSession = serverExchange.getAttachment(NEW_SESSION);
             if(newSession != null) {
                 return newSession;
             }
         }
         String sessionId = sessionConfig.findSessionId(serverExchange);
-        ServletSession servletSession = (ServletSession)getSession(sessionId);
+        TowSession servletSession = (TowSession)getSession(sessionId);
         if(servletSession != null && serverExchange != null) {
             servletSession.requestStarted(serverExchange);
         }
@@ -83,9 +88,9 @@ public class ServletSessionManager implements SessionManager {
         if (sessionId == null) {
             return null;
         }
-        com.aspectran.core.component.session.Session session = defaultSessionManager.getSession(sessionId);
+        com.aspectran.core.component.session.Session session = sessionManager.getSession(sessionId);
         if (session != null) {
-            return new ServletSession(session, defaultSessionManager);
+            return new TowSession(session, this);
         } else {
             return null;
         }
@@ -103,7 +108,7 @@ public class ServletSessionManager implements SessionManager {
 
     @Override
     public void setDefaultSessionTimeout(int timeout) {
-        defaultSessionManager.setDefaultMaxIdleSecs(timeout);
+        sessionManager.setDefaultMaxIdleSecs(timeout);
     }
 
     @Override

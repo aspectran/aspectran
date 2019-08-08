@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.component.session;
 
+import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
@@ -24,6 +25,9 @@ import java.util.Set;
 import static com.aspectran.core.util.thread.Locker.Lock;
 
 /**
+ * A base implementation of the {@link SessionCache} interface for managing a set of
+ * Session objects pertaining to a context in memory.
+ *
  * <p>Created: 2017. 6. 24.</p>
  */
 public abstract class AbstractSessionCache implements SessionCache {
@@ -412,6 +416,41 @@ public abstract class AbstractSessionCache implements SessionCache {
         return doDelete(id);
     }
 
+    /**
+     * Get the session matching the key.
+     *
+     * @param id the session id
+     * @return the Session object matching the id
+     */
+    public abstract Session doGet(String id);
+
+    /**
+     * Put the session into the map if it wasn't already there.
+     *
+     * @param id the identity of the session
+     * @param session the session object
+     * @return null if the session wasn't already in the map, or the existing entry otherwise
+     */
+    public abstract Session doPutIfAbsent(String id, Session session);
+
+    /**
+     * Replace the mapping from id to oldValue with newValue.
+     *
+     * @param id the session id
+     * @param oldValue the old value
+     * @param newValue the new value
+     * @return true if replacement was done
+     */
+    public abstract boolean doReplace(String id, Session oldValue, Session newValue);
+
+    /**
+     * Remove the session with this identity from the store.
+     *
+     * @param id the session id
+     * @return true if removed; false otherwise
+     */
+    public abstract Session doDelete(String id);
+
     @Override
     public Set<String> checkExpiration(Set<String> candidates) {
         if (log.isDebugEnabled()) {
@@ -448,6 +487,7 @@ public abstract class AbstractSessionCache implements SessionCache {
      *
      * @param session session to check
      */
+    @Override
     public void checkInactiveSession(Session session) {
         if (session == null) {
             return;
@@ -508,40 +548,49 @@ public abstract class AbstractSessionCache implements SessionCache {
      */
     public abstract Session createSession(SessionData data);
 
-    /**
-     * Get the session matching the key.
-     *
-     * @param id the session id
-     * @return the Session object matching the id
-     */
-    public abstract Session doGet(String id);
+    @Override
+    public Session renewSessionId(String oldId, String newId) throws Exception {
+        if (!StringUtils.hasText(oldId)) {
+            throw new IllegalArgumentException("Old session id is null");
+        }
+        if (!StringUtils.hasText(oldId)) {
+            throw new IllegalArgumentException("New session id is null");
+        }
+        Session session = get(oldId);
+        renewSessionId(session, newId);
+        return session;
+    }
 
     /**
-     * Put the session into the map if it wasn't already there.
+     * Swap the id on a session.
      *
-     * @param id the identity of the session
-     * @param session the session object
-     * @return null if the session wasn't already in the map, or the existing entry otherwise
+     * @param session the session for which to do the swap
+     * @param newId the new id
+     * @throws Exception if there was a failure saving the change
      */
-    public abstract Session doPutIfAbsent(String id, Session session);
+    protected void renewSessionId (Session session, String newId) throws Exception {
+        if (session == null) {
+            return;
+        }
+        try (Lock ignored = session.lock()) {
+            String oldId = session.getId();
+            session.checkValidForWrite(); //can't change id on invalid session
+            session.getSessionData().setId(newId);
+            session.getSessionData().setLastSaved(0); //pretend that the session has never been saved before to get a full save
+            session.getSessionData().setDirty(true);  //ensure we will try to write the session out
 
-    /**
-     * Replace the mapping from id to oldValue with newValue.
-     *
-     * @param id the session id
-     * @param oldValue the old value
-     * @param newValue the new value
-     * @return true if replacement was done
-     */
-    public abstract boolean doReplace(String id, Session oldValue, Session newValue);
+            doPutIfAbsent(newId, session); //put the new id into our map
+            doDelete(oldId); //take old out of map
 
-    /**
-     * Remove the session with this identity from the store.
-     *
-     * @param id the session id
-     * @return true if removed; false otherwise
-     */
-    public abstract Session doDelete(String id);
+            if (sessionDataStore != null) {
+                sessionDataStore.delete(oldId);  //delete the session data with the old id
+                sessionDataStore.store(newId, session.getSessionData()); //save the session data with the new id
+            }
+            if (log.isDebugEnabled()) {
+                log.debug("Session id " + oldId + " swapped for new id " + newId);
+            }
+        }
+    }
 
     /**
      * PlaceHolder
