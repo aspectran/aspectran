@@ -44,7 +44,7 @@ public interface SessionHandler extends Component {
      * @param session the session object
      * @see #complete(Session)
      */
-    void access(Session session);
+    boolean access(Session session);
 
     /**
      * Called by the {@link SessionHandler} when a session is last accessed by a request.
@@ -60,7 +60,7 @@ public interface SessionHandler extends Component {
      * @param id the session id
      * @return the new session object
      */
-    Session newSession(String id);
+    Session createSession(String id);
 
     /**
      * Get a known existing session.

@@ -168,10 +168,6 @@ public class CoreActivity extends AdviceActivity {
     }
 
     protected void adapt() throws AdapterException {
-        SessionAdapter sessionAdapter = getSessionAdapter();
-        if (sessionAdapter != null && sessionAdapter.getAdaptee() instanceof SessionAgent) {
-            ((SessionAgent)sessionAdapter.getAdaptee()).access();
-        }
     }
 
     protected void release() {

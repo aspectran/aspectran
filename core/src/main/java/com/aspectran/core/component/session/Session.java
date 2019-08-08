@@ -22,7 +22,6 @@ import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.core.util.thread.Locker;
 import com.aspectran.core.util.thread.Locker.Lock;
 
-import java.util.Collection;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -34,13 +33,13 @@ import java.util.concurrent.TimeUnit;
 public class Session {
 
     private static final Log log = LogFactory.getLog(Session.class);
-    
+
     private final Locker locker = new Locker();
 
     private final SessionHandler sessionHandler;
 
     private final String id;
-    
+
     private SessionData sessionData;
 
     private SessionInactivityTimer sessionInactivityTimer;
@@ -99,7 +98,7 @@ public class Session {
         }
     }
 
-    public void setAttribute(String name, Object value) {
+    public Object setAttribute(String name, Object value) {
         Object old;
         try (Lock ignored = locker.lockIfNotHeld()) {
             //if session is not valid, don't accept the set
@@ -107,20 +106,21 @@ public class Session {
             old = sessionData.setAttribute(name, value);
         }
         if (value == null && old == null) {
-            return; //if same as remove attribute but attribute was already removed, no change
+            return null; //if same as remove attribute but attribute was already removed, no change
         }
         sessionHandler.sessionAttributeChanged(this, name, old, value);
+        return old;
     }
 
-    public Collection<String> getAttributeNames() {
+    public Set<String> getAttributeNames() {
         try (Lock ignored = locker.lockIfNotHeld()) {
             checkValidForRead();
             return sessionData.getAttributeNames();
         }
     }
 
-    public void removeAttribute(String name) {
-        setAttribute(name, null);
+    public Object removeAttribute(String name) {
+        return setAttribute(name, null);
     }
 
     public long getCreationTime() {

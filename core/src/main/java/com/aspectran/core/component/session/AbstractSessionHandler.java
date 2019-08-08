@@ -102,9 +102,13 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
      * @param session the session object
      * @see #complete(Session)
      */
-    public void access(Session session) {
-        long now = System.currentTimeMillis();
-        session.access(now);
+    public boolean access(Session session) {
+        if (session != null) {
+            long now = System.currentTimeMillis();
+            return session.access(now);
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -129,7 +133,7 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
      * @return the new session object
      */
     @Override
-    public Session newSession(String id) {
+    public Session createSession(String id) {
         long created = System.currentTimeMillis();
         long maxIdleSecs = (defaultMaxIdleSecs > 0 ? defaultMaxIdleSecs * 1000L : -1);
         Session session = sessionCache.createSession(id, created, maxIdleSecs);

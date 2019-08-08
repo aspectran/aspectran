@@ -19,7 +19,6 @@ import com.aspectran.core.component.bean.scope.SessionScope;
 import com.aspectran.core.util.ToStringBuilder;
 
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
@@ -100,7 +99,7 @@ public class SessionData implements Serializable {
         return old;
     }
 
-    public Collection<String> getAttributeNames() {
+    public Set<String> getAttributeNames() {
         return attributes.keySet();
     }
 

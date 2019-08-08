@@ -31,8 +31,10 @@ public class SessionAgent {
     private final SessionHandler sessionHandler;
 
     private final String id;
-    
+
     private Session session;
+
+    private boolean requestStarted;
 
     public SessionAgent(SessionHandler sessionHandler, String id) {
         this.sessionHandler = sessionHandler;
@@ -90,42 +92,19 @@ public class SessionAgent {
         }
     }
 
-    public void invalidate() {
-        Session session = getSession(false);
-        if (session != null) {
-            session.invalidate();
-        }
-    }
-
     public SessionScope getSessionScope() {
         return getSession(true).getSessionScope();
     }
 
-    /**
-     * Called by the {@link CoreActivity}
-     * when a session is first accessed by a request.
-     */
-    public void access() {
-        Session session = getSession(false);
-        if (session == null) {
-            return;
-        }
-        sessionHandler.access(session);
-    }
-
-    /**
-     * Called by the {@link CoreActivity}
-     * when a session is last accessed by a request.
-     */
-    public void complete() {
-        Session session = getSession(false);
-        if (session == null) {
-            return;
-        }
-        sessionHandler.complete(session);
-    }
-
     public Session getSession(boolean create) {
+        if (!requestStarted) {
+            requestStarted = true;
+            if (session != null) {
+                if (!sessionHandler.access(session)) {
+                    return null;
+                }
+            }
+        }
         if (session != null) {
             if (session.isValid()) {
                 return session;
@@ -135,8 +114,26 @@ public class SessionAgent {
         if (!create) {
             return null;
         }
-        session = sessionHandler.newSession(id);
+        session = sessionHandler.createSession(id);
         return session;
+    }
+
+    public void invalidate() {
+        Session session = getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
+    }
+
+    /**
+     * Called by the {@link CoreActivity}
+     * when a session is last accessed by a request.
+     */
+    public void complete() {
+        Session session = getSession(false);
+        if (session != null) {
+            sessionHandler.complete(session);
+        }
     }
 
 }
