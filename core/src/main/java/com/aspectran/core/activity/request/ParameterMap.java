@@ -15,14 +15,14 @@
  */
 package com.aspectran.core.activity.request;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * The Class ParameterMap.
- * 
+ *
  * <p>Created: 2008. 06. 11 PM 8:55:13</p>
  */
 public class ParameterMap extends LinkedHashMap<String, String[]> {
@@ -113,7 +113,7 @@ public class ParameterMap extends LinkedHashMap<String, String[]> {
      *             containing the name of a parameter;
      *             or an empty {@code Collection} if no parameters
      */
-    public Collection<String> getParameterNames() {
+    public Set<String> getParameterNames() {
         return keySet();
     }
 

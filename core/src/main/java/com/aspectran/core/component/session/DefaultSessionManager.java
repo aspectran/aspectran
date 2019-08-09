@@ -15,7 +15,6 @@
  */
 package com.aspectran.core.component.session;
 
-import com.aspectran.core.activity.aspect.SessionScopeAdvisor;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.config.SessionConfig;
 import com.aspectran.core.context.config.SessionFileStoreConfig;
@@ -156,7 +155,8 @@ public class DefaultSessionManager extends AbstractSessionHandler implements Ses
         super.doDestroy();
     }
 
-    public static DefaultSessionManager create(ActivityContext context, SessionConfig sessionConfig, String workerName) throws IOException {
+    public static DefaultSessionManager create(ActivityContext context, SessionConfig sessionConfig, String workerName)
+        throws IOException {
         if (context == null) {
             throw new IllegalArgumentException("context must not be null");
         }
@@ -178,20 +178,6 @@ public class DefaultSessionManager extends AbstractSessionHandler implements Ses
                     }
                 }
             }
-        }
-        final SessionScopeAdvisor sessionScopeAdvisor = SessionScopeAdvisor.create(context);
-        if (sessionScopeAdvisor != null) {
-            sessionManager.addEventListener(new SessionListener() {
-                @Override
-                public void sessionCreated(Session session) {
-                    sessionScopeAdvisor.executeBeforeAdvice();
-                }
-
-                @Override
-                public void sessionDestroyed(Session session, SessionDestroyedReasonType reasonType) {
-                    sessionScopeAdvisor.executeAfterAdvice();
-                }
-            });
         }
         return sessionManager;
     }

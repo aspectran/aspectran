@@ -16,6 +16,7 @@
 package com.aspectran.web.adapter;
 
 import com.aspectran.core.activity.aspect.SessionScopeAdvisor;
+import com.aspectran.core.activity.aspect.SessionScopeAdvisorFactory;
 import com.aspectran.core.adapter.AbstractSessionAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.component.bean.scope.SessionScope;
@@ -23,16 +24,16 @@ import com.aspectran.core.context.ActivityContext;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.Enumeration;
+import java.util.Set;
 
 /**
  * Adapt {@link HttpSession} to Core {@link SessionAdapter}.
- * 
+ *
  * @since 2011. 3. 13.
  */
 public class HttpSessionAdapter extends AbstractSessionAdapter {
 
-    private static final String SESSION_SCOPE_ATTRIBUTE_NAME = HttpSessionScope.class.getName() + ".SESSION_SCOPE";
+    private static final String SESSION_SCOPE_ATTRIBUTE_NAME = HttpSessionAdapter.class.getName() + ".SESSION_SCOPE";
 
     private final ActivityContext context;
 
@@ -66,6 +67,16 @@ public class HttpSessionAdapter extends AbstractSessionAdapter {
         return this.sessionScope;
     }
 
+    /**
+     * Creates a new HTTP session scope.
+     */
+    private void newHttpSessionScope() {
+        SessionScopeAdvisor advisor = SessionScopeAdvisorFactory.create(context);
+        this.sessionScope = new HttpSessionScope(advisor);
+        setAttribute(SESSION_SCOPE_ATTRIBUTE_NAME, this.sessionScope);
+    }
+
+
     @Override
     public String getId() {
         return getSession(true).getId();
@@ -96,7 +107,7 @@ public class HttpSessionAdapter extends AbstractSessionAdapter {
     }
 
     @Override
-    public Enumeration<String> getAttributeNames() {
+    public Set<String> getAttributeNames() {
         HttpSession session = getSession(false);
         if (session != null) {
             return session.getAttributeNames();
@@ -143,15 +154,6 @@ public class HttpSessionAdapter extends AbstractSessionAdapter {
         if (session != null) {
             session.invalidate();
         }
-    }
-
-    /**
-     * Creates a new HTTP session scope.
-     */
-    private void newHttpSessionScope() {
-        SessionScopeAdvisor advisor = SessionScopeAdvisor.create(context);
-        this.sessionScope = new HttpSessionScope(advisor);
-        setAttribute(SESSION_SCOPE_ATTRIBUTE_NAME, this.sessionScope);
     }
 
     protected HttpSession getSession(boolean create) {

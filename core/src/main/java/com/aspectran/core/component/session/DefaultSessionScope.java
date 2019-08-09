@@ -15,7 +15,10 @@
  */
 package com.aspectran.core.component.session;
 
+import com.aspectran.core.activity.SessionScopeActivity;
 import com.aspectran.core.activity.aspect.SessionScopeAdvisor;
+import com.aspectran.core.adapter.AdviceBasicSessionAdapter;
+import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.component.bean.scope.SessionScope;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -26,6 +29,8 @@ import java.io.Serializable;
  * The Class DefaultSessionScope.
  */
 public class DefaultSessionScope extends SessionScope implements SessionBindingListener, Serializable {
+
+    private static final long serialVersionUID = 937698459900960084L;
 
     private static final Log log = LogFactory.getLog(DefaultSessionScope.class);
 
@@ -58,9 +63,9 @@ public class DefaultSessionScope extends SessionScope implements SessionBindingL
         }
 
         if (advisor != null) {
-//            SessionAdapter sessionAdapter = new AdviceHttpSessionAdapter(event.getSession());
-//            SessionScopeActivity activity = advisor.getSessionScopeActivity();
-//            activity.setSessionAdapter(sessionAdapter);
+            SessionAdapter sessionAdapter = new AdviceBasicSessionAdapter(session);
+            SessionScopeActivity activity = advisor.getSessionScopeActivity();
+            activity.setSessionAdapter(sessionAdapter);
             advisor.executeAfterAdvice();
             advisor = null;
         }

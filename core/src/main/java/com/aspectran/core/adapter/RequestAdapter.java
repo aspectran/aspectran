@@ -26,8 +26,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Collection;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.TimeZone;
 
 /**
@@ -81,7 +83,7 @@ public interface RequestAdapter {
      * @return a (possibly empty) {@code Collection} of the values
      *         of the response header with the given name
      */
-    Collection<String> getHeaderValues(String name);
+    List<String> getHeaderValues(String name);
 
     /**
      * Returns the names of the headers of this response.
@@ -89,7 +91,7 @@ public interface RequestAdapter {
      * @return a (possibly empty) {@code Collection} of the names
      *         of the headers of this response
      */
-    Collection<String> getHeaderNames();
+    Set<String> getHeaderNames();
 
     /**
      * Returns a boolean indicating whether the named response header
@@ -267,7 +269,7 @@ public interface RequestAdapter {
      *         containing the name of a file parameter;
      *         or an empty {@code Collection} if the request has no file parameters
      */
-    Collection<String> getFileParameterNames();
+    Set<String> getFileParameterNames();
 
     /**
      * Sets the {@code FileParameter} object to the file parameter with the given name.
@@ -338,7 +340,7 @@ public interface RequestAdapter {
      *
      * @return the attribute names
      */
-    Collection<String> getAttributeNames();
+    Set<String> getAttributeNames();
 
     /**
      * Removes an attribute from this request.

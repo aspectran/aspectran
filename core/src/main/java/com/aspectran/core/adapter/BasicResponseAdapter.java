@@ -22,11 +22,12 @@ import com.aspectran.core.util.MultiValueMap;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Writer;
-import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
 /**
  * The Class BasicResponseAdapter.
- * 
+ *
  * @since 2016. 2. 13.
  */
 public class BasicResponseAdapter extends AbstractResponseAdapter {
@@ -87,7 +88,7 @@ public class BasicResponseAdapter extends AbstractResponseAdapter {
      *         of the response header with the given name
      */
     @Override
-    public Collection<String> getHeaders(String name) {
+    public List<String> getHeaders(String name) {
         return (headers != null ? headers.get(name) : null);
     }
 
@@ -98,7 +99,7 @@ public class BasicResponseAdapter extends AbstractResponseAdapter {
      *         of the headers of this response
      */
     @Override
-    public Collection<String> getHeaderNames() {
+    public Set<String> getHeaderNames() {
         return (headers != null ? headers.keySet() : null);
     }
 

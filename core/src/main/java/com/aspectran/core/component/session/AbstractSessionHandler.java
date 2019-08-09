@@ -102,6 +102,7 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
      * @param session the session object
      * @see #complete(Session)
      */
+    @Override
     public boolean access(Session session) {
         if (session != null) {
             long now = System.currentTimeMillis();
@@ -117,6 +118,7 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
      * @param session the session object
      * @see #access(Session)
      */
+    @Override
     public void complete(Session session) {
         try {
             session.complete();
@@ -167,11 +169,8 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
                 }
             }
             return session;
-        } catch (UnreadableSessionDataException e) {
+        } catch (Exception e) {
             log.warn(e.getMessage(), e);
-            return null;
-        } catch (Exception other) {
-            log.warn(other.getMessage(), other);
             return null;
         }
     }
@@ -370,6 +369,7 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
     /**
      * Resets the session usage statistics.
      */
+    @Override
     public void statsReset() {
         sessionsCreatedStats.reset();
         sessionTimeStats.reset();

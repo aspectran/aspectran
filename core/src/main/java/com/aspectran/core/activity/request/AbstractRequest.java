@@ -26,11 +26,11 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.TimeZone;
 
 /**
@@ -90,7 +90,7 @@ public abstract class AbstractRequest {
      * @return a (possibly empty) {@code Collection} of the values
      *         of the response header with the given name
      */
-    public Collection<String> getHeaderValues(String name) {
+    public List<String> getHeaderValues(String name) {
         return getHeaderMap().get(name);
     }
 
@@ -100,7 +100,7 @@ public abstract class AbstractRequest {
      * @return a (possibly empty) {@code Collection} of the names
      *         of the headers of this response
      */
-    public Collection<String> getHeaderNames() {
+    public Set<String> getHeaderNames() {
         return getHeaderMap().keySet();
     }
 
@@ -167,7 +167,7 @@ public abstract class AbstractRequest {
         return getParameterMap().getParameterValues(name);
     }
 
-    public Collection<String> getParameterNames() {
+    public Set<String> getParameterNames() {
         return getParameterMap().getParameterNames();
     }
 
@@ -238,7 +238,7 @@ public abstract class AbstractRequest {
         return getFileParameterMap().getFileParameterValues(name);
     }
 
-    public Collection<String> getFileParameterNames() {
+    public Set<String> getFileParameterNames() {
         return getFileParameterMap().keySet();
     }
 
@@ -291,7 +291,7 @@ public abstract class AbstractRequest {
         }
     }
 
-    public Collection<String> getAttributeNames() {
+    public Set<String> getAttributeNames() {
         return getAttributeMap().keySet();
     }
 
