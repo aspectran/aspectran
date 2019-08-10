@@ -23,6 +23,8 @@ import java.util.Collection;
 import java.util.stream.Collectors;
 
 /**
+ * The Class TowResponseAdapter.
+ *
  * <p>Created: 2019-07-27</p>
  */
 public class TowResponseAdapter extends AbstractResponseAdapter {

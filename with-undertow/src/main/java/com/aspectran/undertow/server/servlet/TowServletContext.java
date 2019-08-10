@@ -7,6 +7,7 @@ import com.aspectran.core.util.ResourceUtils;
 import io.undertow.server.handlers.resource.ClassPathResourceManager;
 import io.undertow.server.handlers.resource.FileResourceManager;
 import io.undertow.server.handlers.resource.ResourceManager;
+import io.undertow.server.session.SessionManager;
 import io.undertow.servlet.api.DeploymentInfo;
 import io.undertow.servlet.api.InstanceFactory;
 import io.undertow.servlet.api.ServletContainerInitializerInfo;
@@ -29,6 +30,8 @@ public class TowServletContext extends DeploymentInfo implements ApplicationAdap
 
     private ApplicationAdapter applicationAdapter;
 
+    private volatile SessionManager sessionManager;
+
     @Override
     public void setApplicationAdapter(ApplicationAdapter applicationAdapter) {
         this.applicationAdapter = applicationAdapter;
@@ -50,6 +53,15 @@ public class TowServletContext extends DeploymentInfo implements ApplicationAdap
 
     public void setScratchDir(String scratchDir) throws IOException {
         setTempDir(applicationAdapter.toRealPathAsFile(scratchDir));
+    }
+
+    public SessionManager getSessionManager() {
+        return sessionManager;
+    }
+
+    public void setSessionManager(SessionManager sessionManager) {
+        setSessionManagerFactory(deployment -> sessionManager);
+        this.sessionManager = sessionManager;
     }
 
     public void setServlets(TowServlet[] towServlets) {

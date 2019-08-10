@@ -16,7 +16,7 @@ public class StandaloneHttpHandler extends AbstractHttpHandler
 
     private final AspectranConfig aspectranConfig;
 
-    private AspectranTowService towService;
+    private volatile AspectranTowService towService;
 
     public StandaloneHttpHandler(AspectranConfig aspectranConfig) {
         this.aspectranConfig = aspectranConfig;
@@ -37,6 +37,9 @@ public class StandaloneHttpHandler extends AbstractHttpHandler
     public void initialize() throws Exception {
         Assert.state(towService == null, "Cannot reconfigure AspectranTowService");
         Assert.notNull(aspectranConfig, "aspectranConfig must not be null");
+        if (getSessionManager() != null) {
+            getSessionManager().start();
+        }
         towService = AspectranTowService.create(aspectranConfig);
     }
 
@@ -45,6 +48,9 @@ public class StandaloneHttpHandler extends AbstractHttpHandler
         if (towService != null) {
             towService.stop();
             towService = null;
+        }
+        if (getSessionManager() != null) {
+            getSessionManager().stop();
         }
     }
 

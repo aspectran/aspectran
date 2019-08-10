@@ -24,7 +24,7 @@ import com.aspectran.core.util.apon.VariableParameters;
 
 import java.io.IOException;
 
-public class SessionConfig extends AbstractParameters {
+public class SessionManagerConfig extends AbstractParameters {
 
     private static final ParameterKey timeout;
     private static final ParameterKey maxSessions;
@@ -62,16 +62,16 @@ public class SessionConfig extends AbstractParameters {
         };
     }
 
-    public SessionConfig() {
+    public SessionManagerConfig() {
         super(parameterKeys);
     }
 
-    public SessionConfig(String apon) throws IOException {
+    public SessionManagerConfig(String apon) throws IOException {
         super(parameterKeys);
         readFrom(apon);
     }
 
-    public SessionConfig(VariableParameters parameters) throws IOException {
+    public SessionManagerConfig(VariableParameters parameters) throws IOException {
         this(parameters.toString());
     }
 
@@ -80,15 +80,15 @@ public class SessionConfig extends AbstractParameters {
     }
 
     public void setStartup(boolean startup) {
-        putValue(SessionConfig.startup, startup);
+        putValue(SessionManagerConfig.startup, startup);
     }
 
     public int getTimeout() {
         return getInt(timeout, -1);
     }
 
-    public SessionConfig setTimeout(int timeout) {
-        putValue(SessionConfig.timeout, timeout);
+    public SessionManagerConfig setTimeout(int timeout) {
+        putValue(SessionManagerConfig.timeout, timeout);
         return this;
     }
 
@@ -96,8 +96,8 @@ public class SessionConfig extends AbstractParameters {
         return getInt(maxSessions, 0);
     }
 
-    public SessionConfig setMaxSessions(int maxSessions) {
-        putValue(SessionConfig.maxSessions, maxSessions);
+    public SessionManagerConfig setMaxSessions(int maxSessions) {
+        putValue(SessionManagerConfig.maxSessions, maxSessions);
         return this;
     }
 
@@ -109,7 +109,7 @@ public class SessionConfig extends AbstractParameters {
         return getString(storeType);
     }
 
-    public SessionConfig setStoreType(SessionStoreType sessionStoreType) {
+    public SessionManagerConfig setStoreType(SessionStoreType sessionStoreType) {
         putValue(storeType, sessionStoreType.toString());
         return this;
     }

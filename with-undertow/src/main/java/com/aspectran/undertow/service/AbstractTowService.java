@@ -1,9 +1,7 @@
 package com.aspectran.undertow.service;
 
 import com.aspectran.core.service.AspectranCoreService;
-import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.CoreService;
-import com.aspectran.undertow.server.http.session.HttpSessionManager;
 
 /**
  * <p>Created: 2019-07-27</p>
@@ -11,8 +9,6 @@ import com.aspectran.undertow.server.http.session.HttpSessionManager;
 public abstract class AbstractTowService extends AspectranCoreService implements TowService {
 
     private String uriDecoding;
-
-    private HttpSessionManager towSessionManager;
 
     public AbstractTowService() {
         super();
@@ -28,35 +24,6 @@ public abstract class AbstractTowService extends AspectranCoreService implements
 
     protected void setUriDecoding(String uriDecoding) {
         this.uriDecoding = uriDecoding;
-    }
-
-    @Override
-    public HttpSessionManager getTowSessionManager() {
-        return towSessionManager;
-    }
-
-    public void setTowSessionManager(HttpSessionManager towSessionManager) {
-        if (this.towSessionManager != null) {
-            throw new IllegalStateException("Tow session manager already exists");
-        }
-        this.towSessionManager = towSessionManager;
-    }
-
-    protected void initSessionManager() {
-        if (towSessionManager != null) {
-            try {
-                towSessionManager.initialize();
-            } catch (Exception e) {
-                throw new AspectranServiceException("Failed to initialize session manager", e);
-            }
-        }
-    }
-
-    protected void destroySessionManager() {
-        if (towSessionManager != null) {
-            towSessionManager.destroy();
-            towSessionManager = null;
-        }
     }
 
 }

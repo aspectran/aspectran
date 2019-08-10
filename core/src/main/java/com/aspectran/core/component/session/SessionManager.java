@@ -16,7 +16,7 @@
 package com.aspectran.core.component.session;
 
 import com.aspectran.core.component.Component;
-import com.aspectran.core.context.config.SessionConfig;
+import com.aspectran.core.context.config.SessionManagerConfig;
 
 /**
  * The session manager initializes and destroys the session
@@ -26,14 +26,8 @@ public interface SessionManager extends Component {
 
     String getWorkerName();
 
-    SessionConfig getSessionConfig();
-
-    SessionDataStore getSessionDataStore();
+    SessionManagerConfig getSessionManagerConfig();
 
     SessionHandler getSessionHandler();
-
-    SessionAgent newSessionAgent();
-
-    SessionAgent newSessionAgent(String id);
 
 }

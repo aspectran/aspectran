@@ -29,7 +29,7 @@ public class EmbedConfig extends AbstractParameters {
     private static final ParameterKey[] parameterKeys;
 
     static {
-        session = new ParameterKey("session", SessionConfig.class);
+        session = new ParameterKey("session", SessionManagerConfig.class);
         exposals = new ParameterKey("exposals", ExposalsConfig.class);
 
         parameterKeys = new ParameterKey[] {
@@ -42,15 +42,15 @@ public class EmbedConfig extends AbstractParameters {
         super(parameterKeys);
     }
 
-    public SessionConfig getSessionConfig() {
+    public SessionManagerConfig getSessionManagerConfig() {
         return getParameters(session);
     }
 
-    public SessionConfig newSessionConfig() {
+    public SessionManagerConfig newSessionManagerConfig() {
         return newParameters(session);
     }
 
-    public SessionConfig touchSessionConfig() {
+    public SessionManagerConfig touchSessionManagerConfig() {
         return touchParameters(session);
     }
 

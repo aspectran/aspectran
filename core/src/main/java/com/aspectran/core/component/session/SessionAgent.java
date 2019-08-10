@@ -29,23 +29,14 @@ public class SessionAgent {
 
     private final SessionHandler sessionHandler;
 
-    private final String id;
+    private volatile Session session;
 
-    private Session session;
-
-    private boolean requestStarted;
-
-    public SessionAgent(SessionHandler sessionHandler, String id) {
+    public SessionAgent(SessionHandler sessionHandler) {
         this.sessionHandler = sessionHandler;
-        this.id = id;
     }
 
     public String getId() {
-        return id;
-    }
-
-    public boolean isNew() {
-        return getSession(true).isNew();
+        return getSession(true).getId();
     }
 
     public long getCreationTime() {
@@ -92,14 +83,6 @@ public class SessionAgent {
     }
 
     public Session getSession(boolean create) {
-        if (!requestStarted) {
-            requestStarted = true;
-            if (session != null) {
-                if (!sessionHandler.access(session)) {
-                    return null;
-                }
-            }
-        }
         if (session != null) {
             if (session.isValid()) {
                 return session;
@@ -109,6 +92,7 @@ public class SessionAgent {
         if (!create) {
             return null;
         }
+        String id = sessionHandler.createSessionId(hashCode());
         session = sessionHandler.createSession(id);
         return session;
     }
@@ -118,6 +102,14 @@ public class SessionAgent {
         if (session != null) {
             session.invalidate();
         }
+    }
+
+    public boolean isNew() {
+        Session session = getSession(false);
+        if (session == null) {
+            return true;
+        }
+        return session.isNew();
     }
 
     /**

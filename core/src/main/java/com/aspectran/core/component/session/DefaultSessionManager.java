@@ -16,7 +16,7 @@
 package com.aspectran.core.component.session;
 
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.config.SessionConfig;
+import com.aspectran.core.context.config.SessionManagerConfig;
 import com.aspectran.core.context.config.SessionFileStoreConfig;
 import com.aspectran.core.context.rule.type.SessionStoreType;
 import com.aspectran.core.util.StringUtils;
@@ -34,9 +34,7 @@ public class DefaultSessionManager extends AbstractSessionHandler implements Ses
 
     private String workerName;
 
-    private SessionConfig sessionConfig;
-
-    private SessionDataStore sessionDataStore;
+    private SessionManagerConfig sessionManagerConfig;
 
     public DefaultSessionManager() {
     }
@@ -51,50 +49,30 @@ public class DefaultSessionManager extends AbstractSessionHandler implements Ses
     }
 
     @Override
-    public SessionConfig getSessionConfig() {
-        return sessionConfig;
+    public SessionManagerConfig getSessionManagerConfig() {
+        return sessionManagerConfig;
     }
 
-    public void setSessionConfig(SessionConfig sessionConfig) {
-        this.sessionConfig = sessionConfig;
+    public void setSessionManagerConfig(SessionManagerConfig sessionManagerConfig) {
+        this.sessionManagerConfig = sessionManagerConfig;
     }
 
-    public void setSessionConfig(VariableParameters parameters) {
-        SessionConfig sessionConfig = new SessionConfig();
+    public void setSessionManagerConfig(VariableParameters parameters) {
+        SessionManagerConfig sessionManagerConfig = new SessionManagerConfig();
         try {
-            sessionConfig.readFrom(parameters.toString());
+            sessionManagerConfig.readFrom(parameters.toString());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        setSessionConfig(sessionConfig);
-    }
-
-    @Override
-    public SessionDataStore getSessionDataStore() {
-        return sessionDataStore;
-    }
-
-    public void setSessionDataStore(SessionDataStore sessionDataStore) {
-        this.sessionDataStore = sessionDataStore;
+        setSessionManagerConfig(sessionManagerConfig);
     }
 
     @Override
     public SessionHandler getSessionHandler() {
-        return this;
-    }
-
-    @Override
-    public SessionAgent newSessionAgent() {
-        String id = getSessionHandler().createSessionId(hashCode());
-        return new SessionAgent(this, id);
-    }
-
-    @Override
-    public SessionAgent newSessionAgent(String id) {
-        if (!StringUtils.hasText(id)) {
-            id = getSessionHandler().createSessionId(hashCode());
+        if (!isInitialized()) {
+            throw new IllegalStateException("DefaultSessionManager is not yet initialized");
         }
-        return new SessionAgent(this, id);
+        return this;
     }
 
     @Override
@@ -106,30 +84,26 @@ public class DefaultSessionManager extends AbstractSessionHandler implements Ses
 
         if (getSessionCache() == null) {
             DefaultSessionCache sessionCache = new DefaultSessionCache(this);
-            if (sessionConfig != null) {
-                sessionCache.setMaxSessions(sessionConfig.getMaxSessions());
+            if (sessionManagerConfig != null) {
+                sessionCache.setMaxSessions(sessionManagerConfig.getMaxSessions());
             }
             setSessionCache(sessionCache);
         }
 
-        if (sessionDataStore != null) {
-            getSessionCache().setSessionDataStore(sessionDataStore);
-        }
-
-        if (sessionConfig != null) {
-            if (sessionConfig.hasTimeout()) {
-                int timeout = sessionConfig.getTimeout();
+        if (sessionManagerConfig != null) {
+            if (sessionManagerConfig.hasTimeout()) {
+                int timeout = sessionManagerConfig.getTimeout();
                 setDefaultMaxIdleSecs(timeout);
             }
             if (getSessionCache().getSessionDataStore() == null) {
-                String storeType = sessionConfig.getStoreType();
+                String storeType = sessionManagerConfig.getStoreType();
                 SessionStoreType sessionStoreType = SessionStoreType.resolve(storeType);
                 if (storeType != null && sessionStoreType == null) {
                     throw new IllegalArgumentException("Unknown session store type: " + storeType);
                 }
                 if (sessionStoreType == SessionStoreType.FILE) {
                     FileSessionDataStore fileSessionDataStore = new FileSessionDataStore();
-                    SessionFileStoreConfig fileStoreConfig = sessionConfig.getFileStoreConfig();
+                    SessionFileStoreConfig fileStoreConfig = sessionManagerConfig.getFileStoreConfig();
                     if (fileStoreConfig != null) {
                         String storeDir = fileStoreConfig.getStoreDir();
                         if (StringUtils.hasText(storeDir)) {
@@ -155,7 +129,8 @@ public class DefaultSessionManager extends AbstractSessionHandler implements Ses
         super.doDestroy();
     }
 
-    public static DefaultSessionManager create(ActivityContext context, SessionConfig sessionConfig, String workerName)
+    public static DefaultSessionManager create(ActivityContext context, SessionManagerConfig sessionManagerConfig,
+                                               String workerName)
         throws IOException {
         if (context == null) {
             throw new IllegalArgumentException("context must not be null");
@@ -163,12 +138,12 @@ public class DefaultSessionManager extends AbstractSessionHandler implements Ses
 
         DefaultSessionManager sessionManager = new DefaultSessionManager();
         sessionManager.setWorkerName(workerName);
-        if (sessionConfig != null) {
-            sessionManager.setSessionConfig(sessionConfig);
-            String storeType = sessionConfig.getStoreType();
+        if (sessionManagerConfig != null) {
+            sessionManager.setSessionManagerConfig(sessionManagerConfig);
+            String storeType = sessionManagerConfig.getStoreType();
             SessionStoreType sessionStoreType = SessionStoreType.resolve(storeType);
             if (sessionStoreType == SessionStoreType.FILE) {
-                SessionFileStoreConfig fileStoreConfig = sessionConfig.getFileStoreConfig();
+                SessionFileStoreConfig fileStoreConfig = sessionManagerConfig.getFileStoreConfig();
                 if (fileStoreConfig != null) {
                     String storeDir = fileStoreConfig.getStoreDir();
                     if (StringUtils.hasText(storeDir)) {

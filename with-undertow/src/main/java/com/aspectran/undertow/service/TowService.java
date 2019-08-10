@@ -1,7 +1,6 @@
 package com.aspectran.undertow.service;
 
 import com.aspectran.core.service.CoreService;
-import com.aspectran.undertow.server.http.session.HttpSessionManager;
 import io.undertow.server.HttpServerExchange;
 
 import java.io.IOException;
@@ -10,8 +9,6 @@ import java.io.IOException;
  * <p>Created: 2019-07-27</p>
  */
 public interface TowService extends CoreService {
-
-    HttpSessionManager getTowSessionManager();
 
     /**
      * Executes web activity.

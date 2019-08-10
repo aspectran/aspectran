@@ -8,8 +8,6 @@ import com.aspectran.core.activity.TransletNotFoundException;
 import com.aspectran.core.activity.request.RequestMethodNotAllowedException;
 import com.aspectran.core.activity.request.RequestParseException;
 import com.aspectran.core.adapter.ResponseAdapter;
-import com.aspectran.core.adapter.SessionAdapter;
-import com.aspectran.core.component.session.SessionAgent;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.RequestRule;
 import com.aspectran.core.context.rule.type.MethodType;
@@ -27,6 +25,8 @@ import com.aspectran.web.support.http.HttpHeaders;
 import com.aspectran.web.support.http.HttpStatus;
 import com.aspectran.web.support.http.MediaType;
 import io.undertow.server.HttpServerExchange;
+import io.undertow.server.session.SessionConfig;
+import io.undertow.server.session.SessionManager;
 import io.undertow.util.Headers;
 
 import java.io.UnsupportedEncodingException;
@@ -95,10 +95,14 @@ public class TowActivity extends CoreActivity {
                 exchange.startBlocking();
             }
 
-            if (service.getTowSessionManager() != null) {
-                SessionAgent sessionAgent = service.getTowSessionManager().newSessionAgent(exchange);
-                SessionAdapter sessionAdapter = new TowSessionAdapter(sessionAgent);
-                setSessionAdapter(sessionAdapter);
+            if (getOuterActivity() != null) {
+                setSessionAdapter(getOuterActivity().getSessionAdapter());
+            } else {
+                SessionManager sessionManager = exchange.getAttachment(SessionManager.ATTACHMENT_KEY);
+                SessionConfig sessionConfig = exchange.getAttachment(SessionConfig.ATTACHMENT_KEY);
+                if (sessionManager != null && sessionConfig != null) {
+                    setSessionAdapter(new TowSessionAdapter(exchange));
+                }
             }
 
             TowRequestAdapter requestAdapter = new TowRequestAdapter(getTranslet().getRequestMethod(), exchange);

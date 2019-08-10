@@ -21,7 +21,7 @@ public class ServletHandlerFactory implements ActivityContextAware {
 
     private ActivityContext context;
 
-    private TowServletContainer towServletContainer;
+    private volatile TowServletContainer towServletContainer;
 
     @Override
     public void setActivityContext(ActivityContext context) {

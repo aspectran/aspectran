@@ -20,7 +20,7 @@ import com.aspectran.core.component.session.DefaultSessionManager;
 import com.aspectran.core.component.session.SessionAgent;
 import com.aspectran.core.component.session.SessionManager;
 import com.aspectran.core.context.config.DaemonConfig;
-import com.aspectran.core.context.config.SessionConfig;
+import com.aspectran.core.context.config.SessionManagerConfig;
 import com.aspectran.core.service.AspectranCoreService;
 import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.daemon.adapter.DaemonSessionAdapter;
@@ -58,13 +58,13 @@ public abstract class AbstractDaemonService extends AspectranCoreService impleme
     protected void initSessionManager() {
         DaemonConfig daemonConfig = getAspectranConfig().getDaemonConfig();
         if (daemonConfig != null) {
-            SessionConfig sessionConfig = daemonConfig.getSessionConfig();
-            if (sessionConfig != null && sessionConfig.isStartup()) {
+            SessionManagerConfig sessionManagerConfig = daemonConfig.getSessionManagerConfig();
+            if (sessionManagerConfig != null && sessionManagerConfig.isStartup()) {
                 try {
                     String workerName = this.hashCode() + "_";
-                    sessionManager = DefaultSessionManager.create(getActivityContext(), sessionConfig, workerName);
+                    sessionManager = DefaultSessionManager.create(getActivityContext(), sessionManagerConfig, workerName);
                     sessionManager.initialize();
-                    sessionAgent = sessionManager.newSessionAgent();
+                    sessionAgent = new SessionAgent(sessionManager.getSessionHandler());
                 } catch (Exception e) {
                     throw new AspectranServiceException("Failed to initialize session manager", e);
                 }

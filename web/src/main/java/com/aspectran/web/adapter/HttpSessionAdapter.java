@@ -15,39 +15,27 @@
  */
 package com.aspectran.web.adapter;
 
-import com.aspectran.core.activity.aspect.SessionScopeAdvisor;
-import com.aspectran.core.activity.aspect.SessionScopeAdvisorFactory;
 import com.aspectran.core.adapter.AbstractSessionAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
-import com.aspectran.core.component.bean.scope.SessionScope;
-import com.aspectran.core.context.ActivityContext;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.Set;
+import java.util.Enumeration;
 
 /**
- * Adapt {@link HttpSession} to Core {@link SessionAdapter}.
+ * Adapt {@link HttpServletRequest} to Core {@link SessionAdapter}.
  *
  * @since 2011. 3. 13.
  */
 public class HttpSessionAdapter extends AbstractSessionAdapter {
 
-    private static final String SESSION_SCOPE_ATTRIBUTE_NAME = HttpSessionAdapter.class.getName() + ".SESSION_SCOPE";
-
-    private final ActivityContext context;
-
-    private volatile SessionScope sessionScope;
-
     /**
      * Instantiates a new HttpSessionAdapter.
      *
      * @param request the HTTP request
-     * @param context the current activity context
      */
-    public HttpSessionAdapter(HttpServletRequest request, ActivityContext context) {
+    public HttpSessionAdapter(HttpServletRequest request) {
         super(request);
-        this.context = context;
     }
 
     @Override
@@ -57,34 +45,8 @@ public class HttpSessionAdapter extends AbstractSessionAdapter {
     }
 
     @Override
-    public SessionScope getSessionScope() {
-        if (this.sessionScope == null) {
-            this.sessionScope = getAttribute(SESSION_SCOPE_ATTRIBUTE_NAME);
-            if (this.sessionScope == null) {
-                newHttpSessionScope();
-            }
-        }
-        return this.sessionScope;
-    }
-
-    /**
-     * Creates a new HTTP session scope.
-     */
-    private void newHttpSessionScope() {
-        SessionScopeAdvisor advisor = SessionScopeAdvisorFactory.create(context);
-        this.sessionScope = new HttpSessionScope(advisor);
-        setAttribute(SESSION_SCOPE_ATTRIBUTE_NAME, this.sessionScope);
-    }
-
-
-    @Override
     public String getId() {
         return getSession(true).getId();
-    }
-
-    @Override
-    public boolean isNew() {
-        return getSession(true).isNew();
     }
 
     @Override
@@ -107,7 +69,7 @@ public class HttpSessionAdapter extends AbstractSessionAdapter {
     }
 
     @Override
-    public Set<String> getAttributeNames() {
+    public Enumeration<String> getAttributeNames() {
         HttpSession session = getSession(false);
         if (session != null) {
             return session.getAttributeNames();
@@ -156,10 +118,16 @@ public class HttpSessionAdapter extends AbstractSessionAdapter {
         }
     }
 
-    protected HttpSession getSession(boolean create) {
-        if (super.getAdaptee() == null) {
-            throw new IllegalStateException("Session has been expired or not yet initialized");
+    @Override
+    public boolean isNew() {
+        HttpSession session = getSession(false);
+        if (session == null) {
+            return true;
         }
+        return session.isNew();
+    }
+
+    public HttpSession getSession(boolean create) {
         return ((HttpServletRequest)super.getAdaptee()).getSession(create);
     }
 

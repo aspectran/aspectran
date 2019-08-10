@@ -181,7 +181,6 @@ public class AspectranTowService extends AbstractTowService {
         service.setServiceStateListener(new ServiceStateListener() {
             @Override
             public void started() {
-                service.initSessionManager();
                 service.pauseTimeout = 0L;
             }
 
@@ -213,7 +212,6 @@ public class AspectranTowService extends AbstractTowService {
             @Override
             public void stopped() {
                 paused();
-                service.destroySessionManager();
             }
         });
     }

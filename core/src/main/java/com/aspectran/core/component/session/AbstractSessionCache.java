@@ -288,7 +288,7 @@ public abstract class AbstractSessionCache implements SessionCache {
 
             if (sessionDataStore == null) {
                 if (log.isDebugEnabled()) {
-                    log.debug("No SessionDataStore, putting into SessionCache only id=" + id);
+                    log.debug("Putting into SessionCache only id=" + id);
                 }
                 session.setResident(true);
                 if (doPutIfAbsent(id, session) == null) { // ensure it is in our map

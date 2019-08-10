@@ -15,6 +15,9 @@
  */
 package com.aspectran.core.component.session;
 
+import com.aspectran.core.context.config.SessionManagerConfig;
+import com.aspectran.core.context.config.SessionFileStoreConfig;
+import com.aspectran.core.context.rule.type.SessionStoreType;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import org.junit.jupiter.api.Test;
@@ -40,7 +43,7 @@ class SessionManagerTest {
         sessionManager.setWorkerName("TEST1-");
         sessionManager.initialize();
 
-        SessionAgent agent = sessionManager.newSessionAgent();
+        SessionAgent agent = new SessionAgent(sessionManager);
 
         log.info("Created Session " + agent.getSession(true));
 
@@ -67,7 +70,7 @@ class SessionManagerTest {
         SessionHandler sessionHandler = sessionManager.getSessionHandler();
         sessionHandler.setDefaultMaxIdleSecs(1);
 
-        SessionAgent agent = sessionManager.newSessionAgent();
+        SessionAgent agent = new SessionAgent(sessionManager);
 
         log.info("Created Session " + agent.getSession(true));
 
@@ -85,15 +88,15 @@ class SessionManagerTest {
         File storeDir = new File("./target/sessions");
         storeDir.mkdir();
 
-        FileSessionDataStore sessionDataStore = new FileSessionDataStore();
-        sessionDataStore.setStoreDir(storeDir);
-        sessionDataStore.initialize();
+        SessionManagerConfig sessionManagerConfig = new SessionManagerConfig();
+        sessionManagerConfig.setStoreType(SessionStoreType.FILE);
+        SessionFileStoreConfig fileStoreConfig = sessionManagerConfig.newFileStoreConfig();
+        fileStoreConfig.setStoreDir(storeDir.getCanonicalPath());
 
-        sessionManager.setSessionDataStore(sessionDataStore);
         sessionManager.initialize();
 
         for (int i = 0; i < 10; i++) {
-            SessionAgent agent = sessionManager.newSessionAgent();
+            SessionAgent agent = new SessionAgent(sessionManager);
 
             log.info("=================================================");
             log.info("Created Session: " + agent.getSession(true));

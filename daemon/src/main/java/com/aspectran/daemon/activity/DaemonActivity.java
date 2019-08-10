@@ -19,6 +19,7 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.AdapterException;
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.request.ParameterMap;
+import com.aspectran.core.adapter.BasicSessionAdapter;
 import com.aspectran.core.util.StringOutputWriter;
 import com.aspectran.daemon.adapter.DaemonRequestAdapter;
 import com.aspectran.daemon.adapter.DaemonResponseAdapter;
@@ -65,7 +66,11 @@ public class DaemonActivity extends CoreActivity {
     @Override
     protected void adapt() throws AdapterException {
         try {
-            setSessionAdapter(service.newSessionAdapter());
+            if (getOuterActivity() != null) {
+                setSessionAdapter(getOuterActivity().getSessionAdapter());
+            } else {
+                setSessionAdapter(service.newSessionAdapter());
+            }
 
             DaemonRequestAdapter requestAdapter = new DaemonRequestAdapter(getTranslet().getRequestMethod());
             if (getOuterActivity() != null) {
@@ -85,6 +90,14 @@ public class DaemonActivity extends CoreActivity {
         } catch (Exception e) {
             throw new AdapterException("Failed to adapt for Daemon Activity", e);
         }
+    }
+
+    @Override
+    protected void release() {
+        if (getOuterActivity() == null) {
+            ((BasicSessionAdapter)getSessionAdapter()).getSessionAgent().complete();
+        }
+        super.release();
     }
 
     @Override

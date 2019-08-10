@@ -36,7 +36,7 @@ public class ShellConfig extends AbstractParameters {
         greetings = new ParameterKey("greetings", ValueType.TEXT);
         prompt = new ParameterKey("prompt", ValueType.STRING);
         commands = new ParameterKey("commands", ValueType.STRING, true);
-        session = new ParameterKey("session", SessionConfig.class);
+        session = new ParameterKey("session", SessionManagerConfig.class);
         workingDir = new ParameterKey("workingDir", ValueType.STRING);
         historyFile = new ParameterKey("historyFile", ValueType.STRING);
         verbose = new ParameterKey("verbose", ValueType.BOOLEAN);
@@ -86,15 +86,15 @@ public class ShellConfig extends AbstractParameters {
         return this;
     }
 
-    public SessionConfig getSessionConfig() {
+    public SessionManagerConfig getSessionManagerConfig() {
         return getParameters(session);
     }
 
-    public SessionConfig newSessionConfig() {
+    public SessionManagerConfig newSessionManagerConfig() {
         return newParameters(session);
     }
 
-    public SessionConfig touchSessionConfig() {
+    public SessionManagerConfig touchSessionManagerConfig() {
         return touchParameters(session);
     }
 

@@ -34,7 +34,7 @@ public class DaemonConfig extends AbstractParameters {
     static {
         poller = new ParameterKey("poller", DaemonPollerConfig.class);
         commands = new ParameterKey("commands", ValueType.STRING, true);
-        session = new ParameterKey("session", SessionConfig.class);
+        session = new ParameterKey("session", SessionManagerConfig.class);
         exposals = new ParameterKey("exposals", ExposalsConfig.class);
 
         parameterKeys = new ParameterKey[] {
@@ -70,15 +70,15 @@ public class DaemonConfig extends AbstractParameters {
         return this;
     }
 
-    public SessionConfig getSessionConfig() {
+    public SessionManagerConfig getSessionManagerConfig() {
         return getParameters(session);
     }
 
-    public SessionConfig newSessionConfig() {
+    public SessionManagerConfig newSessionManagerConfig() {
         return newParameters(session);
     }
 
-    public SessionConfig touchSessionConfig() {
+    public SessionManagerConfig touchSessionManagerConfig() {
         return touchParameters(session);
     }
 

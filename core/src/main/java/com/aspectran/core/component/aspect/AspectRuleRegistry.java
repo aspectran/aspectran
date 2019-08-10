@@ -34,8 +34,6 @@ public class AspectRuleRegistry extends AbstractComponent {
 
     private final Map<String, AspectRule> aspectRuleMap = new LinkedHashMap<>(32);
 
-    private AspectAdviceRuleRegistry sessionAspectAdviceRuleRegistry;
-
     public AspectRuleRegistry() {
     }
 
@@ -64,14 +62,6 @@ public class AspectRuleRegistry extends AbstractComponent {
         if (log.isTraceEnabled()) {
             log.trace("add AspectRule " + aspectRule);
         }
-    }
-
-    public AspectAdviceRuleRegistry getSessionAspectAdviceRuleRegistry() {
-        return sessionAspectAdviceRuleRegistry;
-    }
-
-    public void setSessionAspectAdviceRuleRegistry(AspectAdviceRuleRegistry sessionAspectAdviceRuleRegistry) {
-        this.sessionAspectAdviceRuleRegistry = sessionAspectAdviceRuleRegistry;
     }
 
     @Override

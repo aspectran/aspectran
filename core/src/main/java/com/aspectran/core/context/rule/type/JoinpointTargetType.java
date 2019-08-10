@@ -20,7 +20,6 @@ package com.aspectran.core.context.rule.type;
  */
 public enum JoinpointTargetType {
 
-    SESSION("session"),
     TRANSLET("translet"),
     METHOD("method");
 

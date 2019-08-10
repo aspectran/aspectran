@@ -15,73 +15,29 @@
  */
 package com.aspectran.core.adapter;
 
-import com.aspectran.core.activity.aspect.SessionScopeAdvisor;
-import com.aspectran.core.activity.aspect.SessionScopeAdvisorFactory;
-import com.aspectran.core.component.bean.scope.SessionScope;
-import com.aspectran.core.component.session.DefaultSessionScope;
 import com.aspectran.core.component.session.SessionAgent;
-import com.aspectran.core.context.ActivityContext;
 
 import java.util.Enumeration;
 
 /**
- * The Class BasicSessionAdapter.
+ * Adapt {@link SessionAgent} to Core {@link SessionAdapter}.
  *
  * @since 2.3.0
  */
 public class BasicSessionAdapter extends AbstractSessionAdapter {
 
-    private static final String SESSION_SCOPE_ATTRIBUTE_NAME = BasicSessionAdapter.class.getName() + ".SESSION_SCOPE";
-
-    private final ActivityContext context;
-
-    private volatile SessionScope sessionScope;
-
     /**
      * Instantiates a new BasicSessionAdapter.
      *
      * @param agent the session agent
-     * @param context the current activity context
      */
-    public BasicSessionAdapter(SessionAgent agent, ActivityContext context) {
+    public BasicSessionAdapter(SessionAgent agent) {
         super(agent);
-        this.context = context;
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public <T> T getAdaptee() {
-        return (T)getSessionAgent().getSession(true);
-    }
-
-    @Override
-    public SessionScope getSessionScope() {
-        if (this.sessionScope == null) {
-            this.sessionScope = getAttribute(SESSION_SCOPE_ATTRIBUTE_NAME);
-            if (this.sessionScope == null) {
-                newDefaultSessionScope();
-            }
-        }
-        return this.sessionScope;
-    }
-
-    /**
-     * Creates a new default session scope.
-     */
-    private void newDefaultSessionScope() {
-        SessionScopeAdvisor advisor = SessionScopeAdvisorFactory.create(context);
-        this.sessionScope = new DefaultSessionScope(advisor);
-        setAttribute(SESSION_SCOPE_ATTRIBUTE_NAME, this.sessionScope);
     }
 
     @Override
     public String getId() {
         return getSessionAgent().getId();
-    }
-
-    @Override
-    public boolean isNew() {
-        return getSessionAgent().isNew();
     }
 
     @Override
@@ -128,7 +84,12 @@ public class BasicSessionAdapter extends AbstractSessionAdapter {
         getSessionAgent().invalidate();
     }
 
-    protected SessionAgent getSessionAgent() {
+    @Override
+    public boolean isNew() {
+        return getSessionAgent().isNew();
+    }
+
+    public SessionAgent getSessionAgent() {
         return super.getAdaptee();
     }
 

@@ -1,20 +1,134 @@
 package com.aspectran.undertow.adapter;
 
-import com.aspectran.core.adapter.BasicSessionAdapter;
-import com.aspectran.core.component.session.SessionAgent;
+import com.aspectran.core.adapter.AbstractSessionAdapter;
+import com.aspectran.core.adapter.SessionAdapter;
+import io.undertow.server.HttpServerExchange;
+import io.undertow.server.session.Session;
+import io.undertow.server.session.SessionConfig;
+import io.undertow.server.session.SessionManager;
+
+import java.util.Collections;
+import java.util.Enumeration;
 
 /**
- * <p>Created: 2019-07-27</p>
+ * Adapt {@link HttpServerExchange} to Core {@link SessionAdapter}.
+ *
+ * @since 2011. 3. 13.
  */
-public class TowSessionAdapter extends BasicSessionAdapter {
+public class TowSessionAdapter extends AbstractSessionAdapter {
+
+    private boolean newSession;
 
     /**
      * Instantiates a new TowSessionAdapter.
-     *
-     * @param agent the session agent
      */
-    public TowSessionAdapter(SessionAgent agent) {
-        super(agent);
+    public TowSessionAdapter(HttpServerExchange exchange) {
+        super(exchange);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T> T getAdaptee() {
+        return (T)getSession(true);
+    }
+
+    @Override
+    public String getId() {
+        return getSession(true).getId();
+    }
+
+    @Override
+    public long getCreationTime() {
+        return getSession(true).getCreationTime();
+    }
+
+    @Override
+    public long getLastAccessedTime() {
+        return getSession(true).getLastAccessedTime();
+    }
+
+    @Override
+    public int getMaxInactiveInterval() {
+        return getSession(true).getMaxInactiveInterval();
+    }
+
+    public void setMaxInactiveInterval(int interval) {
+        getSession(true).setMaxInactiveInterval(interval);
+    }
+
+    @Override
+    public Enumeration<String> getAttributeNames() {
+        Session session = getSession(false);
+        if (session != null) {
+            return Collections.enumeration(session.getAttributeNames());
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T> T getAttribute(String name) {
+        Session session = getSession(false);
+        if (session != null) {
+            return (T)session.getAttribute(name);
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public void setAttribute(String name, Object value) {
+        if (value != null) {
+            Session session = getSession(true);
+            session.setAttribute(name, value);
+        } else {
+            Session session = getSession(false);
+            if (session != null) {
+                session.removeAttribute(name);
+            }
+        }
+    }
+
+    @Override
+    public void removeAttribute(String name) {
+        Session session = getSession(false);
+        if (session != null) {
+            session.removeAttribute(name);
+        }
+    }
+
+    @Override
+    public void invalidate() {
+        Session session = getSession(false);
+        if (session != null) {
+            session.invalidate(getAdaptee());
+        }
+    }
+
+    @Override
+    public boolean isNew() {
+        Session session = getSession(false);
+        if (session == null) {
+            return true;
+        }
+        return newSession;
+    }
+
+    public Session getSession(boolean create) {
+        HttpServerExchange exchange = super.getAdaptee();
+        SessionManager sm = exchange.getAttachment(SessionManager.ATTACHMENT_KEY);
+        SessionConfig sc = exchange.getAttachment(SessionConfig.ATTACHMENT_KEY);
+        if (sc == null || sm == null) {
+            return null;
+        }
+
+        Session session = sm.getSession(exchange, sc);
+        if (session == null && create) {
+            newSession = true;
+            return sm.createSession(exchange, sc);
+        }
+        return session;
     }
 
 }

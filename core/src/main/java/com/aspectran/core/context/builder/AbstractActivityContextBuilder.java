@@ -17,9 +17,7 @@ package com.aspectran.core.context.builder;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.adapter.BasicApplicationAdapter;
-import com.aspectran.core.component.aspect.AspectAdviceRulePostRegister;
 import com.aspectran.core.component.aspect.AspectAdviceRulePreRegister;
-import com.aspectran.core.component.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.component.aspect.AspectRuleRegistry;
 import com.aspectran.core.component.aspect.InvalidPointcutPatternException;
 import com.aspectran.core.component.aspect.pointcut.Pointcut;
@@ -52,7 +50,6 @@ import com.aspectran.core.context.rule.params.AspectranParameters;
 import com.aspectran.core.context.rule.type.AutoReloadType;
 import com.aspectran.core.context.rule.type.BeanProxifierType;
 import com.aspectran.core.context.rule.type.DefaultSettingType;
-import com.aspectran.core.context.rule.type.JoinpointTargetType;
 import com.aspectran.core.service.ServiceController;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.SystemUtils;
@@ -426,15 +423,11 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
         BeanRuleRegistry beanRuleRegistry = assistant.getBeanRuleRegistry();
         TransletRuleRegistry transletRuleRegistry = assistant.getTransletRuleRegistry();
 
-        AspectAdviceRulePostRegister sessionScopeAspectAdviceRulePostRegister = new AspectAdviceRulePostRegister();
         for (AspectRule aspectRule : aspectRuleRegistry.getAspectRules()) {
             PointcutRule pointcutRule = aspectRule.getPointcutRule();
             if (pointcutRule != null) {
                 Pointcut pointcut = PointcutFactory.createPointcut(pointcutRule);
                 aspectRule.setPointcut(pointcut);
-            }
-            if (aspectRule.getJoinpointTargetType() == JoinpointTargetType.SESSION) {
-                sessionScopeAspectAdviceRulePostRegister.register(aspectRule);
             }
         }
 
@@ -496,11 +489,6 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
                     log.debug(msg);
                 }
             }
-        }
-
-        AspectAdviceRuleRegistry sessionScopeAarr = sessionScopeAspectAdviceRulePostRegister.getAspectAdviceRuleRegistry();
-        if (sessionScopeAarr != null) {
-            aspectRuleRegistry.setSessionAspectAdviceRuleRegistry(sessionScopeAarr);
         }
     }
 

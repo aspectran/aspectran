@@ -19,6 +19,8 @@ import java.util.Locale;
 import java.util.Map;
 
 /**
+ * The Class TowRequestAdapter.
+ *
  * <p>Created: 2019-07-27</p>
  */
 public class TowRequestAdapter extends AbstractRequestAdapter {

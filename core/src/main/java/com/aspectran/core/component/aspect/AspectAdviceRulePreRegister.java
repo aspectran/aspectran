@@ -48,8 +48,6 @@ public class AspectAdviceRulePreRegister {
             JoinpointTargetType joinpointTargetType = aspectRule.getJoinpointTargetType();
             if (joinpointTargetType == JoinpointTargetType.METHOD) {
                 aspectRule.setBeanRelevant(true);
-            } else if (joinpointTargetType == JoinpointTargetType.SESSION) {
-                aspectRule.setBeanRelevant(false);
             } else {
                 Pointcut pointcut = aspectRule.getPointcut();
                 if (pointcut == null) {
@@ -140,9 +138,8 @@ public class AspectAdviceRulePreRegister {
 
     private void register(TransletRule transletRule) {
         for (AspectRule aspectRule : aspectRuleRegistry.getAspectRules()) {
-            JoinpointTargetType joinpointTargetType = aspectRule.getJoinpointTargetType();
             Pointcut pointcut = aspectRule.getPointcut();
-            if (!aspectRule.isBeanRelevant() && joinpointTargetType != JoinpointTargetType.SESSION) {
+            if (!aspectRule.isBeanRelevant()) {
                 if (pointcut == null || pointcut.matches(transletRule.getName())) {
                     // register to the translet scope
                     transletRule.touchAspectAdviceRuleRegistry().register(aspectRule);

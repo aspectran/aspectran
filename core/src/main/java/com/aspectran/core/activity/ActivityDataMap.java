@@ -23,6 +23,7 @@ import com.aspectran.core.adapter.SessionAdapter;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -53,7 +54,6 @@ public class ActivityDataMap extends HashMap<String, Object> {
     public ActivityDataMap(Activity activity) {
         super();
         this.activity = activity;
-
         refresh();
     }
 
@@ -217,10 +217,14 @@ public class ActivityDataMap extends HashMap<String, Object> {
             }
         }
         if (activity.getSessionAdapter() != null) {
-            for (String name : activity.getSessionAdapter().getAttributeNames()) {
-                Object value = activity.getSessionAdapter().getAttribute(name);
-                if (this != value) {
-                    preempt(name);
+            Enumeration<String> e = activity.getSessionAdapter().getAttributeNames();
+            if (e != null) {
+                while (e.hasMoreElements()) {
+                    String name = e.nextElement();
+                    Object value = activity.getSessionAdapter().getAttribute(name);
+                    if (this != value) {
+                        preempt(name);
+                    }
                 }
             }
         }

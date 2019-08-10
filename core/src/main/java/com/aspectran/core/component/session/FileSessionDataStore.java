@@ -316,12 +316,19 @@ public class FileSessionDataStore extends AbstractSessionDataStore {
         if (p == null) {
             return;
         }
-        long expiry = getExpiryFromFilename(p.getFileName().toString());
-        // files with 0 expiry never expire
-        if (expiry > 0 && ((now - expiry) >= (5 * TimeUnit.SECONDS.toMillis(gracePeriodSec)))) {
-            Files.deleteIfExists(p);
-            if (log.isDebugEnabled()) {
-                log.debug("Sweep deleted " + p.getFileName());
+        String filename = p.getFileName().toString();
+        try {
+            long expiry = getExpiryFromFilename(filename);
+            // files with 0 expiry never expire
+            if (expiry > 0 && ((now - expiry) >= (5 * TimeUnit.SECONDS.toMillis(gracePeriodSec)))) {
+                Files.deleteIfExists(p);
+                if (log.isDebugEnabled()) {
+                    log.debug("Sweep deleted " + p.getFileName());
+                }
+            }
+        } catch (NumberFormatException e) {
+            if (!filename.startsWith(".")) {
+                log.warn("Not valid session filename " + filename, e);
             }
         }
     }

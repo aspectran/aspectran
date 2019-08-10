@@ -17,12 +17,14 @@ package com.aspectran.core.component.bean.scope;
 
 import com.aspectran.core.context.rule.type.ScopeType;
 
+import java.io.Serializable;
+
 /**
  * The Class SessionScope.
  *
  * @since 2011. 3. 12.
  */
-public class SessionScope extends AbstractScope {
+public class SessionScope extends AbstractScope implements Serializable {
 
     /**
      * Instantiates a new Session scope.

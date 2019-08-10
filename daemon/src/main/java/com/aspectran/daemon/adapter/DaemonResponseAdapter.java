@@ -33,7 +33,6 @@ public class DaemonResponseAdapter extends BasicResponseAdapter {
      */
     public DaemonResponseAdapter(Writer outputWriter) {
         super(null, outputWriter);
-
         setContentType(ContentType.TEXT_PLAIN.toString());
     }
 

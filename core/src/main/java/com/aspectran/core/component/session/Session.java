@@ -72,14 +72,14 @@ public class Session {
         }
     }
 
+    public SessionData getSessionData() {
+        return sessionData;
+    }
+
     public String getId() {
         try (Lock ignored = locker.lock()) {
             return sessionData.getId();
         }
-    }
-
-    public SessionData getSessionData() {
-        return sessionData;
     }
 
     public <T> T getAttribute(String name) {
@@ -433,7 +433,6 @@ public class Session {
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
-        tsb.append("id", getId());
         tsb.append("state", state);
         tsb.append("requests", requests);
         tsb.append("resident", resident);

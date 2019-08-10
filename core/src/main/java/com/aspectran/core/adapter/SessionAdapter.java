@@ -26,6 +26,8 @@ import java.util.Enumeration;
  */
 public interface SessionAdapter {
 
+    String SESSION_SCOPE_ATTRIBUTE_NAME = SessionAdapter.class.getName() + ".SESSION_SCOPE";
+
     /**
      * Returns the adaptee object to provide session information.
      *
@@ -49,8 +51,6 @@ public interface SessionAdapter {
      * @since 1.5.0
      */
     String getId();
-
-    boolean isNew();
 
     /**
      * Returns the time when this session was created, measured
@@ -133,5 +133,13 @@ public interface SessionAdapter {
      * Invalidates this session then unbinds any objects bound to it.
      */
     void invalidate();
+
+    /**
+     * Returns true if a new session was created for this request.
+     *
+     * @return true if the server has created a session,
+     *      but the client has not yet joined
+     */
+    boolean isNew();
 
 }
