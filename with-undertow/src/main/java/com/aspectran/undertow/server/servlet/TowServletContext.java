@@ -83,7 +83,8 @@ public class TowServletContext extends DeploymentInfo implements ApplicationAdap
     public void setFilterUrlMappings(TowFilterUrlMapping[] towFilterUrlMappings) {
         if (towFilterUrlMappings != null) {
             for (TowFilterUrlMapping filterUrlMapping : towFilterUrlMappings) {
-                addFilterUrlMapping(filterUrlMapping.getFilterName(), filterUrlMapping.getMapping(), filterUrlMapping.getDispatcher());
+                addFilterUrlMapping(filterUrlMapping.getFilterName(), filterUrlMapping.getMapping(),
+                        filterUrlMapping.getDispatcher());
             }
         }
     }
@@ -91,7 +92,8 @@ public class TowServletContext extends DeploymentInfo implements ApplicationAdap
     public void setFilterServletMappings(TowFilterServletMapping[] towFilterServletMappings) {
         if (towFilterServletMappings != null) {
             for (TowFilterServletMapping filterServletMapping : towFilterServletMappings) {
-                addFilterServletNameMapping(filterServletMapping.getFilterName(), filterServletMapping.getMapping(), filterServletMapping.getDispatcher());
+                addFilterServletNameMapping(filterServletMapping.getFilterName(), filterServletMapping.getMapping(),
+                        filterServletMapping.getDispatcher());
             }
         }
     }

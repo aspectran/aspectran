@@ -32,9 +32,9 @@ public class SessionInactivityTimer extends IdleTimeout {
 
     private static final Log log = LogFactory.getLog(SessionInactivityTimer.class);
 
-    private final Session session;
+    private final BasicSession session;
 
-    public SessionInactivityTimer(Scheduler scheduler, Session session) {
+    public SessionInactivityTimer(Scheduler scheduler, BasicSession session) {
         super(scheduler);
         this.session = session;
     }

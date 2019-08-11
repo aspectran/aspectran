@@ -29,7 +29,7 @@ public class SessionAgent {
 
     private final SessionHandler sessionHandler;
 
-    private volatile Session session;
+    private volatile BasicSession session;
 
     public SessionAgent(SessionHandler sessionHandler) {
         this.sessionHandler = sessionHandler;
@@ -82,7 +82,7 @@ public class SessionAgent {
         }
     }
 
-    public Session getSession(boolean create) {
+    public BasicSession getSession(boolean create) {
         if (session != null) {
             if (session.isValid()) {
                 return session;
@@ -117,7 +117,7 @@ public class SessionAgent {
      * when a session is last accessed by a request.
      */
     public void complete() {
-        Session session = getSession(false);
+        BasicSession session = getSession(false);
         if (session != null) {
             sessionHandler.complete(session);
         }

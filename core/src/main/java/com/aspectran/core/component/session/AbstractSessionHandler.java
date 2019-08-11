@@ -24,7 +24,6 @@ import com.aspectran.core.util.thread.ScheduledExecutorScheduler;
 import com.aspectran.core.util.thread.Scheduler;
 
 import java.util.ArrayList;
-import java.util.EventListener;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -100,10 +99,10 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
      * Called by the {@link SessionHandler} when a session is first accessed by a request.
      *
      * @param session the session object
-     * @see #complete(Session)
+     * @see #complete(BasicSession)
      */
     @Override
-    public boolean access(Session session) {
+    public boolean access(BasicSession session) {
         if (session != null) {
             long now = System.currentTimeMillis();
             return session.access(now);
@@ -116,10 +115,10 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
      * Called by the {@link SessionHandler} when a session is last accessed by a request.
      *
      * @param session the session object
-     * @see #access(Session)
+     * @see #access(BasicSession)
      */
     @Override
-    public void complete(Session session) {
+    public void complete(BasicSession session) {
         try {
             session.complete();
             sessionCache.put(session.getId(), session);
@@ -135,10 +134,10 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
      * @return the new session object
      */
     @Override
-    public Session createSession(String id) {
+    public BasicSession createSession(String id) {
         long created = System.currentTimeMillis();
         long maxIdleSecs = (defaultMaxIdleSecs > 0 ? defaultMaxIdleSecs * 1000L : -1);
-        Session session = sessionCache.createSession(id, created, maxIdleSecs);
+        BasicSession session = sessionCache.createSession(id, created, maxIdleSecs);
         try {
             sessionCache.put(id, session);
             sessionsCreatedStats.increment();
@@ -153,9 +152,9 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
     }
 
     @Override
-    public Session getSession(String id) {
+    public BasicSession getSession(String id) {
         try {
-            Session session = sessionCache.get(id);
+            BasicSession session = sessionCache.get(id);
             if (session != null) {
                 // if the session we got back has expired
                 if (session.isExpiredAt(System.currentTimeMillis())) {
@@ -177,7 +176,7 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
 
     @Override
     public void invalidate(String id) {
-        Session session = removeSession(id);
+        BasicSession session = removeSession(id);
         if (session != null) {
             sessionTimeStats.set(round((System.currentTimeMillis() - session.getSessionData().getCreationTime()) / 1000.0));
             session.finishInvalidate();
@@ -190,9 +189,9 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
      * @param id the session to remove
      * @return if the session was removed
      */
-    private Session removeSession(String id) {
+    private BasicSession removeSession(String id) {
         try {
-            Session session = sessionCache.delete(id);
+            BasicSession session = sessionCache.delete(id);
             if (session != null) {
                 session.beginInvalidate();
                 // We need to create our own snapshot to safely iterate over a concurrent list in reverse
@@ -217,7 +216,7 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
     @Override
     public String renewSessionId(String oldId, String newId) {
         try {
-            Session session = sessionCache.renewSessionId(oldId, newId);
+            BasicSession session = sessionCache.renewSessionId(oldId, newId);
             for (SessionListener listener : sessionListeners) {
                 listener.sessionIdChanged(session, oldId);
             }
@@ -231,41 +230,43 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
     /**
      * Adds an event listener for session-related events.
      *
-     * @param listener the session event listener
-     * @see #removeEventListener(EventListener)
+     * @param listener the session listener
+     * @see #removeSessionListener(SessionListener)
      */
     @Override
-    public void addEventListener(EventListener listener) {
-        if (listener instanceof SessionListener) {
-            sessionListeners.add((SessionListener)listener);
+    public void addSessionListener(SessionListener listener) {
+        if (log.isDebugEnabled()) {
+            log.debug("Registered session listener " + listener);
         }
+        sessionListeners.add((SessionListener)listener);
     }
 
     /**
      * Removes an event listener for for session-related events.
      *
      * @param listener the session event listener to remove
-     * @see #addEventListener(EventListener)
+     * @see #addSessionListener(SessionListener)
      */
     @Override
-    public void removeEventListener(EventListener listener) {
-        if (listener instanceof SessionListener) {
-            sessionListeners.remove(listener);
+    public void removeSessionListener(SessionListener listener) {
+        if (log.isDebugEnabled()) {
+            log.debug("Removed session listener " + listener);
         }
+        sessionListeners.remove(listener);
     }
 
     /**
      * Removes all event listeners for session-related events.
      *
-     * @see #removeEventListener(EventListener)
+     * @see #removeSessionListener(SessionListener)
      */
     @Override
-    public void clearEventListeners() {
+    public void clearSessionListeners() {
         sessionListeners.clear();
     }
 
     @Override
-    public void attributeChanged(Session session, String name, Object oldValue, Object newValue) {
+    public void attributeChanged(BasicSession session, String name, Object oldValue, Object newValue) {
         if (newValue == null || !newValue.equals(oldValue)) {
             if (oldValue != null) {
                 unbindValue(session, name, oldValue);
@@ -287,13 +288,13 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
 
     /**
      * Unbind value if value implements {@link SessionBindingListener}
-     * (calls {@link SessionBindingListener#valueUnbound(Session, String, Object)})
+     * (calls {@link SessionBindingListener#valueUnbound(BasicSession, String, Object)})
      *
      * @param session the basic session
      * @param name the name with which the object is bound or unbound
      * @param value the bound value
      */
-    private void unbindValue(Session session, String name, Object value) {
+    private void unbindValue(BasicSession session, String name, Object value) {
         if (value instanceof SessionBindingListener) {
             ((SessionBindingListener)value).valueUnbound(session, name, value);
         }
@@ -301,20 +302,20 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
 
     /**
      * Bind value if value implements {@link SessionBindingListener}
-     * (calls {@link SessionBindingListener#valueBound(Session, String, Object)})
+     * (calls {@link SessionBindingListener#valueBound(BasicSession, String, Object)})
      *
      * @param session the basic session
      * @param name the name with which the object is bound or unbound
      * @param value the bound value
      */
-    private void bindValue(Session session, String name, Object value) {
+    private void bindValue(BasicSession session, String name, Object value) {
         if (value instanceof SessionBindingListener) {
             ((SessionBindingListener)value).valueBound(session, name, value);
         }
     }
 
     @Override
-    public void didActivate(Session session) {
+    public void didActivate(BasicSession session) {
         SessionData sessionData = session.getSessionData();
         if (sessionData != null) {
             for (String key : sessionData.getKeys()) {
@@ -328,7 +329,7 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
     }
 
     @Override
-    public void willPassivate(Session session) {
+    public void willPassivate(BasicSession session) {
         SessionData sessionData = session.getSessionData();
         if (sessionData != null) {
             for (String key : sessionData.getKeys()) {

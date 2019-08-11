@@ -16,11 +16,10 @@
 package com.aspectran.core.component.session;
 
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.config.SessionManagerConfig;
 import com.aspectran.core.context.config.SessionFileStoreConfig;
+import com.aspectran.core.context.config.SessionManagerConfig;
 import com.aspectran.core.context.rule.type.SessionStoreType;
 import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.apon.VariableParameters;
 
 import java.io.File;
 import java.io.IOException;
@@ -57,10 +56,10 @@ public class DefaultSessionManager extends AbstractSessionHandler implements Ses
         this.sessionManagerConfig = sessionManagerConfig;
     }
 
-    public void setSessionManagerConfig(VariableParameters parameters) {
+    public void setSessionManagerConfigWithApon(String apon) {
         SessionManagerConfig sessionManagerConfig = new SessionManagerConfig();
         try {
-            sessionManagerConfig.readFrom(parameters.toString());
+            sessionManagerConfig.readFrom(apon);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -130,8 +129,7 @@ public class DefaultSessionManager extends AbstractSessionHandler implements Ses
     }
 
     public static DefaultSessionManager create(ActivityContext context, SessionManagerConfig sessionManagerConfig,
-                                               String workerName)
-        throws IOException {
+                                               String workerName) throws IOException {
         if (context == null) {
             throw new IllegalArgumentException("context must not be null");
         }

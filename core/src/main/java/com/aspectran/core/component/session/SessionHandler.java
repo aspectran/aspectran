@@ -18,8 +18,6 @@ package com.aspectran.core.component.session;
 import com.aspectran.core.component.Component;
 import com.aspectran.core.util.thread.Scheduler;
 
-import java.util.EventListener;
-
 /**
  * The session handler is responsible for session start, session exists, session write,
  * time to live and session destroy.
@@ -42,17 +40,17 @@ public interface SessionHandler extends Component {
      * Called by the {@link SessionHandler} when a session is first accessed by a request.
      *
      * @param session the session object
-     * @see #complete(Session)
+     * @see #complete(BasicSession)
      */
-    boolean access(Session session);
+    boolean access(BasicSession session);
 
     /**
      * Called by the {@link SessionHandler} when a session is last accessed by a request.
      *
      * @param session the session object
-     * @see #access(Session)
+     * @see #access(BasicSession)
      */
-    void complete(Session session);
+    void complete(BasicSession session);
 
     /**
      * Creates a new {@link Session}.
@@ -60,7 +58,7 @@ public interface SessionHandler extends Component {
      * @param id the session id
      * @return the new session object
      */
-    Session createSession(String id);
+    BasicSession createSession(String id);
 
     /**
      * Get a known existing session.
@@ -68,7 +66,7 @@ public interface SessionHandler extends Component {
      * @param id the session id
      * @return a Session or null if none exists
      */
-    Session getSession(String id);
+    BasicSession getSession(String id);
 
     /**
      * Called when a session has expired.
@@ -97,25 +95,25 @@ public interface SessionHandler extends Component {
     /**
      * Adds an event listener for session-related events.
      *
-     * @param listener the session event listener
-     * @see #removeEventListener(EventListener)
+     * @param listener the session listener
+     * @see #removeSessionListener(SessionListener)
      */
-    void addEventListener(EventListener listener);
+    void addSessionListener(SessionListener listener);
 
     /**
      * Removes an event listener for for session-related events.
      *
-     * @param listener the session event listener to remove
-     * @see #addEventListener(EventListener)
+     * @param listener the session listener to remove
+     * @see #addSessionListener(SessionListener)
      */
-    void removeEventListener(EventListener listener);
+    void removeSessionListener(SessionListener listener);
 
     /**
      * Removes all event listeners for session-related events.
      *
-     * @see #removeEventListener(EventListener)
+     * @see #removeSessionListener(SessionListener)
      */
-    void clearEventListeners();
+    void clearSessionListeners();
 
     /**
      * Call binding and attribute listeners based on the new and old
@@ -126,7 +124,7 @@ public interface SessionHandler extends Component {
      * @param oldValue previous value of the attribute
      * @param newValue  new value of the attribute
      */
-    void attributeChanged(Session session, String name, Object oldValue, Object newValue);
+    void attributeChanged(BasicSession session, String name, Object oldValue, Object newValue);
 
     /**
      * Call the activation listeners.
@@ -134,7 +132,7 @@ public interface SessionHandler extends Component {
      *
      * @param session the session
      */
-    void didActivate(Session session);
+    void didActivate(BasicSession session);
 
     /**
      * Call the passivation listeners.
@@ -142,7 +140,7 @@ public interface SessionHandler extends Component {
      *
      * @param session the session
      */
-    void willPassivate(Session session);
+    void willPassivate(BasicSession session);
 
     /**
      * Returns the maximum time the session is valid.

@@ -31,7 +31,7 @@ public class DefaultSessionCache extends AbstractSessionCache {
     private static final Log log = LogFactory.getLog(DefaultSessionCache.class);
 
     /** the cache of sessions in a HashMap */
-    private final ConcurrentHashMap<String, Session> sessions = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, BasicSession> sessions = new ConcurrentHashMap<>();
 
     private final CounterStatistic statistic = new CounterStatistic();
 
@@ -50,7 +50,7 @@ public class DefaultSessionCache extends AbstractSessionCache {
     }
 
     @Override
-    public Session doGet(String id) {
+    public BasicSession doGet(String id) {
         if (id == null) {
             return null;
         }
@@ -58,9 +58,9 @@ public class DefaultSessionCache extends AbstractSessionCache {
     }
 
     @Override
-    public Session doPutIfAbsent(String id, Session session) {
+    public BasicSession doPutIfAbsent(String id, BasicSession session) {
         checkMaxSessions();
-        Session s = sessions.putIfAbsent(id, session);
+        BasicSession s = sessions.putIfAbsent(id, session);
         if (s == null && !(session instanceof PlaceHolderSession)) {
             statistic.increment();
         }
@@ -68,8 +68,8 @@ public class DefaultSessionCache extends AbstractSessionCache {
     }
 
     @Override
-    public Session doDelete(String id) {
-        Session s = sessions.remove(id);
+    public BasicSession doDelete(String id) {
+        BasicSession s = sessions.remove(id);
         if (s != null && !(s instanceof PlaceHolderSession)) {
             statistic.decrement();
         }
@@ -77,7 +77,7 @@ public class DefaultSessionCache extends AbstractSessionCache {
     }
 
     @Override
-    public boolean doReplace(String id, Session oldValue, Session newValue) {
+    public boolean doReplace(String id, BasicSession oldValue, BasicSession newValue) {
         checkMaxSessions();
         boolean result = sessions.replace(id, oldValue, newValue);
         if (result && oldValue instanceof PlaceHolderSession) {
@@ -87,8 +87,8 @@ public class DefaultSessionCache extends AbstractSessionCache {
     }
 
     @Override
-    public Session createSession(SessionData data) {
-        return new Session(getSessionHandler(), data);
+    public BasicSession createSession(SessionData data) {
+        return new BasicSession(data, getSessionHandler());
     }
 
     @Override
@@ -117,7 +117,7 @@ public class DefaultSessionCache extends AbstractSessionCache {
         // added while we're running
         int loop = 100;
         while (!sessions.isEmpty() && loop-- >= 0) {
-            for (Session session : sessions.values()) {
+            for (BasicSession session : sessions.values()) {
                 // if we have a backing store so give the session to it to write out if necessary
                 if (sessionDataStore != null) {
                     sessionHandler.willPassivate(session);

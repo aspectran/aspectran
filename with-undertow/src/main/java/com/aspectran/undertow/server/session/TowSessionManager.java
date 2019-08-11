@@ -2,6 +2,7 @@ package com.aspectran.undertow.server.session;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.component.bean.aware.ApplicationAdapterAware;
+import com.aspectran.core.component.session.BasicSession;
 import com.aspectran.core.component.session.DefaultSessionManager;
 import com.aspectran.core.component.session.SessionHandler;
 import com.aspectran.core.context.config.SessionFileStoreConfig;
@@ -18,14 +19,20 @@ import io.undertow.util.AttachmentKey;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * <p>Created: 2019-08-07</p>
  */
 public class TowSessionManager implements SessionManager, ApplicationAdapterAware {
 
-    private final AttachmentKey<TowSession> NEW_SESSION = AttachmentKey.create(TowSession.class);
+    private final AttachmentKey<SessionWrapper> NEW_SESSION = AttachmentKey.create(SessionWrapper.class);
+
+    private final ThreadLocal<HttpServerExchange> currentExchangeHolder = new ThreadLocal<>();
+
+    private final Map<SessionListener, SessionListenerWrapper> sessionListenerMappings = new ConcurrentHashMap<>();
 
     private final DefaultSessionManager sessionManager;
 
@@ -76,15 +83,15 @@ public class TowSessionManager implements SessionManager, ApplicationAdapterAwar
         }
     }
 
-//    public void setSessionManagerConfig(String apon) {
-//        SessionManagerConfig sessionManagerConfig = new SessionManagerConfig();
-//        try {
-//            sessionManagerConfig.readFrom(apon);
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
-//        setSessionManagerConfig(sessionManagerConfig);
-//    }
+    public void setSessionManagerConfigWithApon(String apon) throws IOException {
+        SessionManagerConfig sessionManagerConfig = new SessionManagerConfig();
+        try {
+            sessionManagerConfig.readFrom(apon);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        setSessionManagerConfig(sessionManagerConfig);
+    }
 
     @Override
     public void start() {
@@ -106,31 +113,33 @@ public class TowSessionManager implements SessionManager, ApplicationAdapterAwar
 
     @Override
     public Session createSession(HttpServerExchange serverExchange, SessionConfig sessionConfig) {
+        currentExchangeHolder.set(serverExchange);
         String sessionId = sessionConfig.findSessionId(serverExchange);
         if (sessionId == null) {
             sessionId = sessionManager.createSessionId(hashCode());
         }
-        com.aspectran.core.component.session.Session session = sessionManager.createSession(sessionId);
-        TowSession towSession = new TowSession(session, this);
+        BasicSession session = sessionManager.createSession(sessionId);
+        SessionWrapper sessionWrapper = newSessionWrapper(session);
         sessionConfig.setSessionId(serverExchange, session.getId());
-        serverExchange.putAttachment(NEW_SESSION, towSession);
-        return towSession;
+        serverExchange.putAttachment(NEW_SESSION, sessionWrapper);
+        return sessionWrapper;
     }
 
     @Override
     public Session getSession(HttpServerExchange serverExchange, SessionConfig sessionConfig) {
+        currentExchangeHolder.set(serverExchange);
         if (serverExchange != null) {
-            TowSession newSession = serverExchange.getAttachment(NEW_SESSION);
+            SessionWrapper newSession = serverExchange.getAttachment(NEW_SESSION);
             if(newSession != null) {
                 return newSession;
             }
         }
         String sessionId = sessionConfig.findSessionId(serverExchange);
-        TowSession towSession = (TowSession)getSession(sessionId);
-        if(towSession != null && serverExchange != null) {
-            towSession.requestStarted(serverExchange);
+        SessionWrapper sessionWrapper = (SessionWrapper)getSession(sessionId);
+        if(sessionWrapper != null && serverExchange != null) {
+            sessionWrapper.requestStarted(serverExchange);
         }
-        return towSession;
+        return sessionWrapper;
     }
 
     @Override
@@ -138,9 +147,9 @@ public class TowSessionManager implements SessionManager, ApplicationAdapterAwar
         if (sessionId == null) {
             return null;
         }
-        com.aspectran.core.component.session.Session session = sessionManager.getSession(sessionId);
+        BasicSession session = sessionManager.getSession(sessionId);
         if (session != null) {
-            return new TowSession(session, this);
+            return newSessionWrapper(session);
         } else {
             return null;
         }
@@ -148,12 +157,17 @@ public class TowSessionManager implements SessionManager, ApplicationAdapterAwar
 
     @Override
     public void registerSessionListener(SessionListener listener) {
-
+        SessionListenerWrapper listenerWrapper = new SessionListenerWrapper(listener, this);
+        sessionListenerMappings.put(listener, listenerWrapper);
+        sessionManager.addSessionListener(listenerWrapper);
     }
 
     @Override
     public void removeSessionListener(SessionListener listener) {
-
+        SessionListenerWrapper listenerWrapper = sessionListenerMappings.get(listener);
+        if (listenerWrapper != null) {
+            sessionManager.removeSessionListener(listenerWrapper);
+        }
     }
 
     @Override
@@ -179,6 +193,14 @@ public class TowSessionManager implements SessionManager, ApplicationAdapterAwar
     @Override
     public SessionManagerStatistics getStatistics() {
         return null;
+    }
+
+    SessionWrapper newSessionWrapper(BasicSession session) {
+        return new SessionWrapper(session, this);
+    }
+
+    HttpServerExchange getCurrentExchange() {
+        return currentExchangeHolder.get();
     }
 
 }

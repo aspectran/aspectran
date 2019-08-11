@@ -82,9 +82,6 @@ class SessionManagerTest {
         DefaultSessionManager sessionManager = new DefaultSessionManager();
         sessionManager.setWorkerName("TEST3-");
 
-        SessionHandler sessionHandler = sessionManager.getSessionHandler();
-        sessionHandler.setDefaultMaxIdleSecs(3);
-
         File storeDir = new File("./target/sessions");
         storeDir.mkdir();
 
@@ -94,6 +91,9 @@ class SessionManagerTest {
         fileStoreConfig.setStoreDir(storeDir.getCanonicalPath());
 
         sessionManager.initialize();
+
+        SessionHandler sessionHandler = sessionManager.getSessionHandler();
+        sessionHandler.setDefaultMaxIdleSecs(3);
 
         for (int i = 0; i < 10; i++) {
             SessionAgent agent = new SessionAgent(sessionManager);

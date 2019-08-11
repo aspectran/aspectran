@@ -149,8 +149,8 @@ public abstract class AbstractSessionCache implements SessionCache {
      * @param id the session id
      */
     @Override
-    public Session get(String id) throws Exception {
-        Session session;
+    public BasicSession get(String id) throws Exception {
+        BasicSession session;
         Exception ex = null;
 
         while (true) {
@@ -168,7 +168,7 @@ public abstract class AbstractSessionCache implements SessionCache {
                 // didn't get a session, try and create one and put in a placeholder for it
                 PlaceHolderSession phs = new PlaceHolderSession(new SessionData(id, 0, 0, 0, 0));
                 Lock phsLock = phs.lock();
-                Session s = doPutIfAbsent(id, phs);
+                BasicSession s = doPutIfAbsent(id, phs);
                 if (s == null) {
                     // My placeholder won, go ahead and load the full session data
                     try {
@@ -243,7 +243,7 @@ public abstract class AbstractSessionCache implements SessionCache {
      * @return a Session object filled with data or null if the session doesn't exist
      * @throws Exception if the session can not be loaded
      */
-    private Session loadSession(String id) throws Exception {
+    private BasicSession loadSession(String id) throws Exception {
         if (sessionDataStore == null) {
             return null; // can't load it
         }
@@ -276,7 +276,7 @@ public abstract class AbstractSessionCache implements SessionCache {
      * the session, we evict it from the cache.</p>
      */
     @Override
-    public void put(String id, Session session) throws Exception {
+    public void put(String id, BasicSession session) throws Exception {
         if (id == null || session == null) {
             throw new IllegalArgumentException("Put key=" + id + " session=" + (session == null ? "null" : session.getId()));
         }
@@ -326,7 +326,6 @@ public abstract class AbstractSessionCache implements SessionCache {
                         log.debug("Session passivating id=" + id);
                     }
                     sessionDataStore.store(id, session.getSessionData());
-
                     if (getEvictionPolicy() == EVICT_ON_SESSION_EXIT) {
                         // throw out the passivated session object from the map
                         doDelete(id);
@@ -370,7 +369,7 @@ public abstract class AbstractSessionCache implements SessionCache {
     @Override
     public boolean exists(String id) throws Exception {
         // try the object store first
-        Session s = doGet(id);
+        BasicSession s = doGet(id);
         if (s != null) {
             try (Lock ignored = s.lock()) {
                 // wait for the lock and check the validity of the session
@@ -395,9 +394,9 @@ public abstract class AbstractSessionCache implements SessionCache {
      * Remove a session object from this store and from any backing store.
      */
     @Override
-    public Session delete(String id) throws Exception {
+    public BasicSession delete(String id) throws Exception {
         // get the session, if its not in memory, this will load it
-        Session session = get(id);
+        BasicSession session = get(id);
 
         // Always delete it from the backing data store
         if (sessionDataStore != null) {
@@ -422,7 +421,7 @@ public abstract class AbstractSessionCache implements SessionCache {
      * @param id the session id
      * @return the Session object matching the id
      */
-    public abstract Session doGet(String id);
+    public abstract BasicSession doGet(String id);
 
     /**
      * Put the session into the map if it wasn't already there.
@@ -431,7 +430,7 @@ public abstract class AbstractSessionCache implements SessionCache {
      * @param session the session object
      * @return null if the session wasn't already in the map, or the existing entry otherwise
      */
-    public abstract Session doPutIfAbsent(String id, Session session);
+    public abstract BasicSession doPutIfAbsent(String id, BasicSession session);
 
     /**
      * Replace the mapping from id to oldValue with newValue.
@@ -441,7 +440,7 @@ public abstract class AbstractSessionCache implements SessionCache {
      * @param newValue the new value
      * @return true if replacement was done
      */
-    public abstract boolean doReplace(String id, Session oldValue, Session newValue);
+    public abstract boolean doReplace(String id, BasicSession oldValue, BasicSession newValue);
 
     /**
      * Remove the session with this identity from the store.
@@ -449,7 +448,7 @@ public abstract class AbstractSessionCache implements SessionCache {
      * @param id the session id
      * @return true if removed; false otherwise
      */
-    public abstract Session doDelete(String id);
+    public abstract BasicSession doDelete(String id);
 
     @Override
     public Set<String> checkExpiration(Set<String> candidates) {
@@ -463,7 +462,7 @@ public abstract class AbstractSessionCache implements SessionCache {
         Set<String> sessionsInUse = new HashSet<>();
         if (allCandidates != null) {
             for (String c : allCandidates) {
-                Session s = doGet(c);
+                BasicSession s = doGet(c);
                 if (s != null && s.getRequests() > 0) {
                     // if the session is in my cache, check its not in use first
                     sessionsInUse.add(c);
@@ -488,7 +487,7 @@ public abstract class AbstractSessionCache implements SessionCache {
      * @param session session to check
      */
     @Override
-    public void checkInactiveSession(Session session) {
+    public void checkInactiveSession(BasicSession session) {
         if (session == null) {
             return;
         }
@@ -524,12 +523,12 @@ public abstract class AbstractSessionCache implements SessionCache {
     }
 
     @Override
-    public Session createSession(String id, long time, long maxInactiveIntervalMS) {
+    public BasicSession createSession(String id, long time, long maxInactiveIntervalMS) {
         if (log.isDebugEnabled()) {
             log.debug("Creating new session id=" + id);
         }
         SessionData sessionData = new SessionData(id, time, time, time, maxInactiveIntervalMS);
-        Session session = createSession(sessionData);
+        BasicSession session = createSession(sessionData);
         try {
             if (isSaveOnCreate() && sessionDataStore != null) {
                 sessionDataStore.store(id, sessionData);
@@ -546,17 +545,17 @@ public abstract class AbstractSessionCache implements SessionCache {
      * @param data the session data
      * @return a new Session object
      */
-    public abstract Session createSession(SessionData data);
+    public abstract BasicSession createSession(SessionData data);
 
     @Override
-    public Session renewSessionId(String oldId, String newId) throws Exception {
+    public BasicSession renewSessionId(String oldId, String newId) throws Exception {
         if (!StringUtils.hasText(oldId)) {
             throw new IllegalArgumentException("Old session id is null");
         }
         if (!StringUtils.hasText(oldId)) {
             throw new IllegalArgumentException("New session id is null");
         }
-        Session session = get(oldId);
+        BasicSession session = get(oldId);
         renewSessionId(session, newId);
         return session;
     }
@@ -568,7 +567,7 @@ public abstract class AbstractSessionCache implements SessionCache {
      * @param newId the new id
      * @throws Exception if there was a failure saving the change
      */
-    protected void renewSessionId (Session session, String newId) throws Exception {
+    protected void renewSessionId(BasicSession session, String newId) throws Exception {
         if (session == null) {
             return;
         }
@@ -595,10 +594,10 @@ public abstract class AbstractSessionCache implements SessionCache {
     /**
      * PlaceHolder
      */
-    protected static class PlaceHolderSession extends Session {
+    static class PlaceHolderSession extends BasicSession {
 
-        public PlaceHolderSession(SessionData data) {
-            super(null, data);
+        PlaceHolderSession(SessionData data) {
+            super(data, null);
         }
 
     }

@@ -1,5 +1,6 @@
 package com.aspectran.undertow.server.session;
 
+import com.aspectran.core.component.session.BasicSession;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.server.session.Session;
 import io.undertow.server.session.SessionConfig;
@@ -8,21 +9,17 @@ import io.undertow.util.AttachmentKey;
 
 import java.util.Set;
 
-public class TowSession implements Session {
+public class SessionWrapper implements Session {
 
     private final AttachmentKey<Long> FIRST_REQUEST_ACCESS = AttachmentKey.create(Long.class);
 
-    private final com.aspectran.core.component.session.Session session;
+    private final BasicSession session;
 
     private final TowSessionManager sessionManager;
 
-    public TowSession(com.aspectran.core.component.session.Session session, TowSessionManager sessionManager) {
+    public SessionWrapper(BasicSession session, TowSessionManager sessionManager) {
         this.session = session;
         this.sessionManager = sessionManager;
-    }
-
-    public com.aspectran.core.component.session.Session getSession() {
-        return session;
     }
 
     @Override
@@ -98,7 +95,7 @@ public class TowSession implements Session {
 
     @Override
     public String changeSessionId(HttpServerExchange exchange, SessionConfig config) {
-        final String oldId = session.getId();
+        String oldId = session.getId();
         String newId = sessionManager.getSessionHandler().createSessionId(hashCode());
         String sessionId = sessionManager.getSessionHandler().renewSessionId(oldId, newId);
         if (sessionId != null) {

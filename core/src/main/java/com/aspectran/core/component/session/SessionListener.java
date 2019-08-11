@@ -15,22 +15,20 @@
  */
 package com.aspectran.core.component.session;
 
-import java.util.EventListener;
-
 /**
  * Interface for receiving notification events about BasicSession
  * lifecycle changes.
  *
  * <p>Created: 2017. 6. 25.</p>
  */
-public interface SessionListener extends EventListener {
+public interface SessionListener {
 
     /**
      * Receives notification that a session has been created.
      *
      * @param session the new session
      */
-    default void sessionCreated(Session session) {
+    default void sessionCreated(BasicSession session) {
     }
 
     /**
@@ -38,7 +36,7 @@ public interface SessionListener extends EventListener {
      *
      * @param session the session
      */
-    default void sessionDestroyed(Session session) {
+    default void sessionDestroyed(BasicSession session) {
     }
 
     /**
@@ -48,7 +46,7 @@ public interface SessionListener extends EventListener {
      * @param name the name with which the object is bound or unbound
      * @param value the new value of the attribute that has been added
      */
-    default void attributeAdded(final Session session, final String name, final Object value) {
+    default void attributeAdded(BasicSession session, String name, Object value) {
     }
 
     /**
@@ -59,7 +57,7 @@ public interface SessionListener extends EventListener {
      * @param newValue the new value of the attribute that has been added
      * @param oldValue the old value of the attribute that has been removed
      */
-    default void attributeUpdated(final Session session, final String name, final Object newValue, final Object oldValue) {
+    default void attributeUpdated(BasicSession session, String name, Object newValue, Object oldValue) {
     }
 
     /**
@@ -69,10 +67,10 @@ public interface SessionListener extends EventListener {
      * @param name the name with which the object is bound or unbound
      * @param oldValue the old value of the attribute that has been removed
      */
-    default void attributeRemoved(final Session session, final String name, final Object oldValue) {
+    default void attributeRemoved(BasicSession session, String name, Object oldValue) {
     }
 
-    default void sessionIdChanged(final Session session, final String oldSessionId) {
+    default void sessionIdChanged(BasicSession session, String oldSessionId) {
     }
 
 }

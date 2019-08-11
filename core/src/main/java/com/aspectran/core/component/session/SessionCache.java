@@ -95,7 +95,7 @@ public interface SessionCache {
      * @return the Session if one exists, null otherwise
      * @throws Exception if an error occurs
      */
-    Session get(String id) throws Exception;
+    BasicSession get(String id) throws Exception;
 
     /**
      * Finish using a Session. This is called by the SessionHandler
@@ -107,7 +107,7 @@ public interface SessionCache {
      * @param session the session object
      * @throws Exception if an error occurs
      */
-    void put(String id, Session session) throws Exception;
+    void put(String id, BasicSession session) throws Exception;
 
     /**
      * Check to see if a session exists: WILL consult the
@@ -138,7 +138,7 @@ public interface SessionCache {
      * @return the Session that was removed, null otherwise
      * @throws Exception if an error occurs when deleting a session
      */
-    Session delete(String id) throws Exception;
+    BasicSession delete(String id) throws Exception;
 
     /**
      * Check a list of session ids that belong to potentially expired
@@ -158,9 +158,9 @@ public interface SessionCache {
      *
      * @param session the session object
      */
-    void checkInactiveSession(Session session);
+    void checkInactiveSession(BasicSession session);
 
-    Session createSession(String id, long time, long maxInactiveIntervalMS);
+    BasicSession createSession(String id, long time, long maxInactiveIntervalMS);
 
     /**
      * Re-materialize a Session that has previously existed.
@@ -168,7 +168,7 @@ public interface SessionCache {
      * @param data the session data
      * @return a Session object for the data supplied
      */
-    Session createSession(SessionData data);
+    BasicSession createSession(SessionData data);
 
     /**
      * Change the id of a Session.
@@ -178,7 +178,7 @@ public interface SessionCache {
      * @return the Session after changing its id
      * @throws Exception if any error occurred
      */
-    Session renewSessionId(String oldId, String newId) throws Exception;
+    BasicSession renewSessionId(String oldId, String newId) throws Exception;
 
     /**
      * @return the number of sessions in the cache
