@@ -37,22 +37,6 @@ public interface SessionHandler extends Component {
     void setDefaultMaxIdleSecs(int defaultMaxIdleSecs);
 
     /**
-     * Called by the {@link SessionHandler} when a session is first accessed by a request.
-     *
-     * @param session the session object
-     * @see #complete(BasicSession)
-     */
-    boolean access(BasicSession session);
-
-    /**
-     * Called by the {@link SessionHandler} when a session is last accessed by a request.
-     *
-     * @param session the session object
-     * @see #access(BasicSession)
-     */
-    void complete(BasicSession session);
-
-    /**
      * Creates a new {@link Session}.
      *
      * @param id the session id
@@ -67,6 +51,8 @@ public interface SessionHandler extends Component {
      * @return a Session or null if none exists
      */
     BasicSession getSession(String id);
+
+    void saveSession(BasicSession session);
 
     /**
      * Called when a session has expired.
@@ -130,7 +116,7 @@ public interface SessionHandler extends Component {
      * Call the activation listeners.
      * This must be called holding the lock.
      *
-     * @param session the session
+     * @param session the basic session
      */
     void didActivate(BasicSession session);
 
@@ -138,44 +124,29 @@ public interface SessionHandler extends Component {
      * Call the passivation listeners.
      * This must be called holding the lock.
      *
-     * @param session the session
+     * @param session the basic session
      */
     void willPassivate(BasicSession session);
 
     /**
-     * Returns the maximum time the session is valid.
-     *
      * @return the maximum amount of time session remained valid
      */
     long getSessionTimeMax();
 
     /**
-     * Returns the total amount of time all sessions remained valid.
-     *
      * @return the total amount of time all sessions remained valid
      */
     long getSessionTimeTotal();
 
     /**
-     * Returns the mean amount of time session remained valid.
-     *
      * @return the mean amount of time session remained valid
      */
-    double getSessionTimeMean();
+    long getSessionTimeMean();
 
     /**
-     * Returns the standard deviation of amount of time session remained valid.
-     *
      * @return the standard deviation of amount of time session remained valid
      */
     double getSessionTimeStdDev();
-
-    /**
-     * Returns the total number of sessions created by this manager.
-     *
-     * @return the total number of sessions created by this manager
-     */
-    int getSessionsCreated();
 
     /**
      * Resets the session usage statistics.

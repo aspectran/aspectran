@@ -78,7 +78,7 @@ public class BasicSession implements Session {
 
     @Override
     public String getId() {
-        try (Lock ignored = locker.lock()) {
+        try (Lock ignored = locker.lockIfNotHeld()) {
             return sessionData.getId();
         }
     }
@@ -151,7 +151,6 @@ public class BasicSession implements Session {
             sessionData.setMaxInactiveInterval((long)secs * 1000L);
             sessionData.calcAndSetExpiryTime();
             sessionData.setDirty(true);
-            updateInactivityTimer();
             if (log.isDebugEnabled()) {
                 if (secs <= 0) {
                     log.debug("Session " + sessionData.getId() + " is now immortal (maxInactiveInterval=" + secs + ")");
@@ -162,64 +161,142 @@ public class BasicSession implements Session {
         }
     }
 
-    /**
-     * Set the inactivity timer to the smaller of the session maxInactivity
-     * (ie session-timeout from web.xml), or the inactive eviction time.
-     */
     @Override
-    public void updateInactivityTimer() {
-        try (Lock ignored = locker.lockIfNotHeld()) {
-            if (log.isTraceEnabled()) {
-                log.trace("updateInactivityTimer");
+    public boolean access() {
+        try (Lock ignored = locker.lock()) {
+            if (!isValid()) {
+                return false;
+            }
+            newSession = false;
+            long now = System.currentTimeMillis();
+            sessionData.setAccessedTime(now);
+            sessionData.calcAndSetExpiryTime(now);
+            if (isExpiredAt(now)) {
+                invalidate();
+                return false;
+            }
+            requests++;
+            cancelInactivityTimer();
+            return true;
+        }
+    }
+
+    @Override
+    public void complete() {
+        try (Lock ignored = locker.lock()) {
+            requests--;
+
+            if (log.isDebugEnabled()) {
+                log.debug("Session " + getId() + " complete, active requests=" + requests);
             }
 
-            long maxInactive =  sessionData.getMaxInactiveInterval();
-            int evictionPolicy = sessionHandler.getSessionCache().getEvictionPolicy();
-            if (maxInactive <= 0) {
-                // sessions are immortal, they never expire
-                if (evictionPolicy < SessionCache.EVICT_ON_INACTIVITY) {
-                    // we do not want to evict inactive sessions
-                    setInactivityTimer(-1L);
-                    if (log.isDebugEnabled()) {
-                        log.debug("Session is immortal && no inactivity eviction: timer cancelled");
-                    }
-                } else {
-                    // sessions are immortal but we want to evict after inactivity
-                    setInactivityTimer(TimeUnit.SECONDS.toMillis(evictionPolicy));
-                    if (log.isDebugEnabled()) {
-                        log.debug("Session is immortal; evict after " + evictionPolicy + " sec inactivity");
-                    }
-                }
-            } else {
-                // sessions are not immortal
-                if (evictionPolicy < SessionCache.EVICT_ON_INACTIVITY) {
-                    // don't want to evict inactive sessions, set the timer for the session's maxInactive setting
-                    setInactivityTimer(sessionData.getMaxInactiveInterval());
-                    if (log.isDebugEnabled()) {
-                        log.debug("No inactive session eviction");
-                    }
-                } else {
-                    // set the time to the lesser of the session's maxInactive and eviction timeout
-                    setInactivityTimer(Math.min(maxInactive, TimeUnit.SECONDS.toMillis(evictionPolicy)));
-                    if (log.isDebugEnabled()) {
-                        log.debug("Inactivity timer set to lesser of maxInactive=" + maxInactive +
-                                " and inactivityEvict=" + evictionPolicy);
-                    }
-                }
+            // start the inactivity timer if necessary
+            if (requests == 0) {
+                // update the expiry time to take account of the time all requests spent inside of the session
+                long now = System.currentTimeMillis();
+                sessionData.calcAndSetExpiryTime(now);
+                scheduleInactivityTimer(calculateInactivityTimeout(now));
+                sessionData.setLastAccessedTime(sessionData.getAccessedTime());
+                sessionHandler.saveSession(this);
             }
         }
     }
 
     /**
-     * Set the session inactivity timer.
+     * Returns the current number of requests that are active in the Session.
      *
-     * @param ms value in millisec, -1 disables it
+     * @return the number of active requests for this session
      */
-    private void setInactivityTimer(long ms) {
-        if (sessionInactivityTimer == null) {
-            sessionInactivityTimer = new SessionInactivityTimer(sessionHandler.getScheduler(), this);
+    protected long getRequests() {
+        try (Lock ignored = locker.lockIfNotHeld()) {
+            return requests;
         }
-        sessionInactivityTimer.setIdleTimeout(ms);
+    }
+
+    /**
+     * Calculate what the session timer setting should be based on:
+     * the time remaining before the session expires
+     * and any idle eviction time configured.
+     * The timer value will be the lesser of the above.
+     *
+     * @param now the time at which to calculate remaining expiry
+     * @return the time remaining before expiry or inactivity timeout
+     */
+    private long calculateInactivityTimeout(long now) {
+        long time;
+        try (Lock ignored = locker.lock()) {
+            long remaining = sessionData.getExpiryTime() - now;
+            long maxInactive = sessionData.getMaxInactiveInterval();
+            int evictionPolicy = sessionHandler.getSessionCache().getEvictionPolicy();
+            if (maxInactive <= 0) {
+                // sessions are immortal, they never expire
+                if (evictionPolicy < SessionCache.EVICT_ON_INACTIVITY) {
+                    // we do not want to evict inactive sessions
+                    time = -1;
+                    if (log.isDebugEnabled()) {
+                        log.debug("Session " + getId() + " is immortal && no inactivity eviction");
+                    }
+                } else {
+                    // sessions are immortal but we want to evict after inactivity
+                    time = TimeUnit.SECONDS.toMillis(evictionPolicy);
+                    if (log.isDebugEnabled()) {
+                        log.debug("Session " + getId() + " is immortal; evict after " + evictionPolicy + " sec inactivity");
+                    }
+                }
+            } else {
+                // sessions are not immortal
+                if (evictionPolicy == SessionCache.NEVER_EVICT) {
+                    // timeout is the time remaining until its expiry
+                    time = (remaining > 0 ? remaining : 0);
+                    if (log.isDebugEnabled()) {
+                        log.debug("Session " + getId() + " no eviction");
+                    }
+                } else if (evictionPolicy == SessionCache.EVICT_ON_SESSION_EXIT) {
+                    // session will not remain in the cache, so no timeout
+                    time = -1;
+                    if (log.isDebugEnabled()) {
+                        log.debug("Session " + getId() + " evict on exit");
+                    }
+                } else {
+                    // want to evict on idle: timer is lesser of the session's
+                    // expiration remaining and the time to evict
+                    time = (remaining > 0 ? (Math.min(maxInactive, TimeUnit.SECONDS.toMillis(evictionPolicy))) : 0);
+                    if (log.isDebugEnabled()) {
+                        log.debug("Session " + getId() + " timer set to lesser of maxInactive=" + maxInactive +
+                                " and inactivityEvict=" + evictionPolicy);
+                    }
+                }
+            }
+        }
+        return time;
+    }
+
+    /**
+     * Set the inactivity timer to the smaller of the session maxInactivity
+     * (ie session-timeout from web.xml), or the inactive eviction time.
+     */
+    private void scheduleInactivityTimer(long time) {
+        if (sessionInactivityTimer == null) {
+            if (log.isDebugEnabled()) {
+                log.debug("Starting timer for session " + getId() + " at " + time + "ms");
+            }
+            sessionInactivityTimer = new SessionInactivityTimer(sessionHandler.getScheduler(), this);
+            sessionInactivityTimer.setIdleTimeout(time);
+        } else {
+            if (log.isDebugEnabled()) {
+                log.debug("Restarting timer for session " + getId() + " at " + time + "ms");
+            }
+            sessionInactivityTimer.setIdleTimeout(time);
+        }
+    }
+
+    private void cancelInactivityTimer() {
+        if (sessionInactivityTimer != null) {
+            sessionInactivityTimer.setIdleTimeout(-1L);
+            if (log.isDebugEnabled()) {
+                log.debug("Cancelled timer for session " + getId());
+            }
+        }
     }
 
     /**
@@ -401,45 +478,6 @@ public class BasicSession implements Session {
      */
     protected Lock lockIfNotHeld() {
         return locker.lockIfNotHeld();
-    }
-
-    protected boolean access(long time) {
-        try (Lock ignored = locker.lockIfNotHeld()) {
-            if (!isValid()) {
-                return false;
-            }
-            newSession = false;
-            long lastAccessedTime = sessionData.getAccessedTime();
-            if (sessionInactivityTimer != null) {
-                sessionInactivityTimer.notIdle();
-            }
-            sessionData.setAccessedTime(time);
-            sessionData.setLastAccessedTime(lastAccessedTime);
-            sessionData.calcAndSetExpiryTime(time);
-            if (isExpiredAt(time)) {
-                invalidate();
-                return false;
-            }
-            requests++;
-            return true;
-        }
-    }
-
-    protected void complete() {
-        try (Lock ignored = locker.lockIfNotHeld()) {
-            requests--;
-        }
-    }
-
-    /**
-     * Returns the current number of requests that are active in the Session.
-     *
-     * @return the number of active requests for this session
-     */
-    protected long getRequests() {
-        try (Lock ignored = locker.lockIfNotHeld()) {
-            return requests;
-        }
     }
 
     @Override

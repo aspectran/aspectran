@@ -18,7 +18,6 @@ package com.aspectran.core.component.session;
 import com.aspectran.core.component.AbstractComponent;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
-import com.aspectran.core.util.statistic.CounterStatistic;
 import com.aspectran.core.util.statistic.SampleStatistic;
 import com.aspectran.core.util.thread.ScheduledExecutorScheduler;
 import com.aspectran.core.util.thread.Scheduler;
@@ -39,9 +38,7 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
 
     private static final Log log = LogFactory.getLog(AbstractSessionHandler.class);
 
-    protected final SampleStatistic sessionTimeStats = new SampleStatistic();
-
-    protected final CounterStatistic sessionsCreatedStats = new CounterStatistic();
+    private final SampleStatistic sessionTimeStats = new SampleStatistic();
 
     private final List<SessionListener> sessionListeners = new CopyOnWriteArrayList<>();
 
@@ -96,38 +93,6 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
     }
 
     /**
-     * Called by the {@link SessionHandler} when a session is first accessed by a request.
-     *
-     * @param session the session object
-     * @see #complete(BasicSession)
-     */
-    @Override
-    public boolean access(BasicSession session) {
-        if (session != null) {
-            long now = System.currentTimeMillis();
-            return session.access(now);
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * Called by the {@link SessionHandler} when a session is last accessed by a request.
-     *
-     * @param session the session object
-     * @see #access(BasicSession)
-     */
-    @Override
-    public void complete(BasicSession session) {
-        try {
-            session.complete();
-            sessionCache.put(session.getId(), session);
-        } catch (Exception e) {
-            log.warn("Session failed to complete", e);
-        }
-    }
-
-    /**
      * Create an entirely new Session.
      *
      * @param id identity of session to create
@@ -140,7 +105,6 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
         BasicSession session = sessionCache.createSession(id, created, maxIdleSecs);
         try {
             sessionCache.put(id, session);
-            sessionsCreatedStats.increment();
             for (SessionListener listener : sessionListeners) {
                 listener.sessionCreated(session);
             }
@@ -171,6 +135,15 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
         } catch (Exception e) {
             log.warn(e.getMessage(), e);
             return null;
+        }
+    }
+
+    @Override
+    public void saveSession(BasicSession session) {
+        try {
+            sessionCache.put(session.getId(), session);
+        } catch (Exception e) {
+            log.warn("Session failed to save", e);
         }
     }
 
@@ -238,7 +211,7 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
         if (log.isDebugEnabled()) {
             log.debug("Registered session listener " + listener);
         }
-        sessionListeners.add((SessionListener)listener);
+        sessionListeners.add(listener);
     }
 
     /**
@@ -288,7 +261,7 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
 
     /**
      * Unbind value if value implements {@link SessionBindingListener}
-     * (calls {@link SessionBindingListener#valueUnbound(BasicSession, String, Object)})
+     * (calls {@link SessionBindingListener#valueUnbound(Session, String, Object)})
      *
      * @param session the basic session
      * @param name the name with which the object is bound or unbound
@@ -302,7 +275,7 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
 
     /**
      * Bind value if value implements {@link SessionBindingListener}
-     * (calls {@link SessionBindingListener#valueBound(BasicSession, String, Object)})
+     * (calls {@link SessionBindingListener#valueBound(Session, String, Object)})
      *
      * @param session the basic session
      * @param name the name with which the object is bound or unbound
@@ -353,8 +326,8 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
     }
 
     @Override
-    public double getSessionTimeMean() {
-        return sessionTimeStats.getMean();
+    public long getSessionTimeMean() {
+        return Math.round(sessionTimeStats.getMean());
     }
 
     @Override
@@ -362,17 +335,11 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
         return sessionTimeStats.getStdDev();
     }
 
-    @Override
-    public int getSessionsCreated() {
-        return (int)sessionsCreatedStats.getCurrent();
-    }
-
     /**
      * Resets the session usage statistics.
      */
     @Override
     public void statsReset() {
-        sessionsCreatedStats.reset();
         sessionTimeStats.reset();
     }
 

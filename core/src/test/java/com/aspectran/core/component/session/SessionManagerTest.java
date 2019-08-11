@@ -15,8 +15,8 @@
  */
 package com.aspectran.core.component.session;
 
-import com.aspectran.core.context.config.SessionManagerConfig;
 import com.aspectran.core.context.config.SessionFileStoreConfig;
+import com.aspectran.core.context.config.SessionManagerConfig;
 import com.aspectran.core.context.rule.type.SessionStoreType;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -74,7 +74,7 @@ class SessionManagerTest {
 
         log.info("Created Session " + agent.getSession(true));
 
-        await().atMost(2, TimeUnit.SECONDS).until(() -> sessionHandler.getSessionCache().getSessionsCurrent() == 0);
+        await().atMost(2, TimeUnit.SECONDS).until(() -> sessionHandler.getSessionCache().getActiveSessionCount() == 0);
     }
 
     @Test
@@ -95,8 +95,10 @@ class SessionManagerTest {
         SessionHandler sessionHandler = sessionManager.getSessionHandler();
         sessionHandler.setDefaultMaxIdleSecs(3);
 
+        SessionAgent agent = new SessionAgent(sessionManager);
+        agent.complete();
+
         for (int i = 0; i < 10; i++) {
-            SessionAgent agent = new SessionAgent(sessionManager);
 
             log.info("=================================================");
             log.info("Created Session: " + agent.getSession(true));
@@ -112,12 +114,10 @@ class SessionManagerTest {
             }
 
             TimeUnit.MILLISECONDS.sleep(30);
-
-            agent.complete();
             //agent.invalidate();
         }
 
-        await().atMost(15, TimeUnit.SECONDS).until(() -> sessionHandler.getSessionCache().getSessionsCurrent() == 0);
+        await().atMost(15, TimeUnit.SECONDS).until(() -> sessionHandler.getSessionCache().getActiveSessionCount() == 0);
     }
 
 }

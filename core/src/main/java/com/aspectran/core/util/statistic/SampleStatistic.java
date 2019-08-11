@@ -73,13 +73,11 @@ public class SampleStatistic {
     public void set(final long sample) {
         long total = this.total.addAndGet(sample);
         long count = this.count.incrementAndGet();
-
         if (count > 1) {
             long mean10 = total * 10 / count;
             long delta10 = sample * 10 - mean10;
             totalVariance100.add(delta10*delta10);
         }
-
         max.accumulate(sample);
     }
 
@@ -102,7 +100,6 @@ public class SampleStatistic {
     public double getVariance() {
         final long variance100 = totalVariance100.sum();
         final long count = this.count.get();
-
         return (count > 1 ? ((double)variance100) / 100.0 / (count - 1) : 0.0);
     }
 

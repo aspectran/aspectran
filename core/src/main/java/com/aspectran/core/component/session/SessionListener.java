@@ -28,7 +28,7 @@ public interface SessionListener {
      *
      * @param session the new session
      */
-    default void sessionCreated(BasicSession session) {
+    default void sessionCreated(Session session) {
     }
 
     /**
@@ -36,7 +36,7 @@ public interface SessionListener {
      *
      * @param session the session
      */
-    default void sessionDestroyed(BasicSession session) {
+    default void sessionDestroyed(Session session) {
     }
 
     /**
@@ -46,7 +46,7 @@ public interface SessionListener {
      * @param name the name with which the object is bound or unbound
      * @param value the new value of the attribute that has been added
      */
-    default void attributeAdded(BasicSession session, String name, Object value) {
+    default void attributeAdded(Session session, String name, Object value) {
     }
 
     /**
@@ -57,7 +57,7 @@ public interface SessionListener {
      * @param newValue the new value of the attribute that has been added
      * @param oldValue the old value of the attribute that has been removed
      */
-    default void attributeUpdated(BasicSession session, String name, Object newValue, Object oldValue) {
+    default void attributeUpdated(Session session, String name, Object newValue, Object oldValue) {
     }
 
     /**
@@ -67,10 +67,10 @@ public interface SessionListener {
      * @param name the name with which the object is bound or unbound
      * @param oldValue the old value of the attribute that has been removed
      */
-    default void attributeRemoved(BasicSession session, String name, Object oldValue) {
+    default void attributeRemoved(Session session, String name, Object oldValue) {
     }
 
-    default void sessionIdChanged(BasicSession session, String oldSessionId) {
+    default void sessionIdChanged(Session session, String oldSessionId) {
     }
 
 }

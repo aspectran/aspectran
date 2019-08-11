@@ -19,6 +19,7 @@ import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.core.util.statistic.CounterStatistic;
 
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -41,6 +42,7 @@ public class DefaultSessionCache extends AbstractSessionCache {
         super(sessionHandler);
     }
 
+    @Override
     public int getMaxSessions() {
         return maxSessions;
     }
@@ -92,17 +94,22 @@ public class DefaultSessionCache extends AbstractSessionCache {
     }
 
     @Override
-    public long getSessionsCurrent() {
+    public Set<String> getAllSessions() {
+        return sessions.keySet();
+    }
+
+    @Override
+    public long getActiveSessionCount() {
         return statistic.getCurrent();
     }
 
     @Override
-    public long getSessionsMax() {
+    public long getHighestSessionCount() {
         return statistic.getMax();
     }
 
     @Override
-    public long getSessionsTotal() {
+    public long getCreatedSessionCount() {
         return statistic.getTotal();
     }
 
@@ -119,10 +126,10 @@ public class DefaultSessionCache extends AbstractSessionCache {
         while (!sessions.isEmpty() && loop-- >= 0) {
             for (BasicSession session : sessions.values()) {
                 // if we have a backing store so give the session to it to write out if necessary
-                if (sessionDataStore != null) {
-                    sessionHandler.willPassivate(session);
+                if (getSessionDataStore() != null) {
+                    getSessionHandler().willPassivate(session);
                     try {
-                        sessionDataStore.store(session.getId(), session.getSessionData());
+                        getSessionDataStore().store(session.getId(), session.getSessionData());
                     } catch (Exception e) {
                         log.warn("Failed to save session data", e);
                     }

@@ -162,6 +162,8 @@ public interface SessionCache {
 
     BasicSession createSession(String id, long time, long maxInactiveIntervalMS);
 
+    int getMaxSessions();
+
     /**
      * Re-materialize a Session that has previously existed.
      *
@@ -180,22 +182,22 @@ public interface SessionCache {
      */
     BasicSession renewSessionId(String oldId, String newId) throws Exception;
 
+    Set<String> getAllSessions();
+
     /**
      * @return the number of sessions in the cache
      */
-    long getSessionsCurrent();
+    long getActiveSessionCount();
 
     /**
      * @return the max number of sessions in the cache
      */
-    long getSessionsMax();
+    long getHighestSessionCount();
 
     /**
-     * Returns a running total of sessions in the cache.
-     *
      * @return a running total of sessions in the cache
      */
-    long getSessionsTotal();
+    long getCreatedSessionCount();
 
     /**
      * Resets the running total session count in the cache.

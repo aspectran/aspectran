@@ -58,14 +58,14 @@ public abstract class IdleTimeout {
         long old = this.idleTimeout;
         this.idleTimeout = idleTimeout;
 
-        if(old > 0L) {
+        if (old > 0L) {
             if(old <= idleTimeout) {
                 return;
             }
             deactivate();
         }
 
-        if(isValid()) {
+        if (isValid()) {
             activate();
         }
     }

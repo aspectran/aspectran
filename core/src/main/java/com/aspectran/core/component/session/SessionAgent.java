@@ -15,8 +15,6 @@
  */
 package com.aspectran.core.component.session;
 
-import com.aspectran.core.activity.CoreActivity;
-
 import java.util.Collections;
 import java.util.Enumeration;
 
@@ -29,7 +27,7 @@ public class SessionAgent {
 
     private final SessionHandler sessionHandler;
 
-    private volatile BasicSession session;
+    private volatile Session session;
 
     public SessionAgent(SessionHandler sessionHandler) {
         this.sessionHandler = sessionHandler;
@@ -82,7 +80,7 @@ public class SessionAgent {
         }
     }
 
-    public BasicSession getSession(boolean create) {
+    public Session getSession(boolean create) {
         if (session != null) {
             if (session.isValid()) {
                 return session;
@@ -113,13 +111,22 @@ public class SessionAgent {
     }
 
     /**
-     * Called by the {@link CoreActivity}
-     * when a session is last accessed by a request.
+     * Called when a session is first accessed by an {@code Activity}.
+     */
+    public void access() {
+        Session session = getSession(false);
+        if (session != null) {
+            session.access();
+        }
+    }
+
+    /**
+     * Called when a session is last accessed by an {@code Activity}.
      */
     public void complete() {
-        BasicSession session = getSession(false);
+        Session session = getSession(false);
         if (session != null) {
-            sessionHandler.complete(session);
+            session.complete();
         }
     }
 

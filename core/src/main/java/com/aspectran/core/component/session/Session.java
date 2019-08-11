@@ -43,12 +43,6 @@ public interface Session {
     void setMaxInactiveInterval(int secs);
 
     /**
-     * Set the inactivity timer to the smaller of the session maxInactivity
-     * (ie session-timeout from web.xml), or the inactive eviction time.
-     */
-    void updateInactivityTimer();
-
-    /**
      * Called by users to invalidate a session, or called by the
      * access method as a request enters the session if the session
      * has expired, or called by manager as a result of scavenger
@@ -59,5 +53,15 @@ public interface Session {
     boolean isNew();
 
     boolean isValid();
+
+    /**
+     * Called when a session is first accessed by a request.
+     */
+    boolean access();
+
+    /**
+     * Called when a session is last accessed by a request.
+     */
+    void complete();
 
 }

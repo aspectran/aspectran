@@ -20,7 +20,7 @@ import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.component.session.SessionAgent;
 
 /**
- * Adapt Aspectran Session to Core {@link SessionAdapter}.
+ * Adapt {@link SessionAgent} to Core {@link SessionAdapter}.
  */
 public class AspectranSessionAdapter extends BasicSessionAdapter {
 

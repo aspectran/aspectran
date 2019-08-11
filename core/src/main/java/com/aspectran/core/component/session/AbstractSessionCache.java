@@ -34,9 +34,9 @@ public abstract class AbstractSessionCache implements SessionCache {
 
     private static final Log log = LogFactory.getLog(AbstractSessionCache.class);
 
-    protected final SessionHandler sessionHandler;
+    private final SessionHandler sessionHandler;
 
-    protected SessionDataStore sessionDataStore;
+    private SessionDataStore sessionDataStore;
 
     /**
      * When, if ever, to evict sessions: never; only when the last request for
@@ -166,7 +166,7 @@ public abstract class AbstractSessionCache implements SessionCache {
                 }
 
                 // didn't get a session, try and create one and put in a placeholder for it
-                PlaceHolderSession phs = new PlaceHolderSession(new SessionData(id, 0, 0, 0, 0));
+                PlaceHolderSession phs = new PlaceHolderSession(id);
                 Lock phsLock = phs.lock();
                 BasicSession s = doPutIfAbsent(id, phs);
                 if (s == null) {
@@ -186,7 +186,6 @@ public abstract class AbstractSessionCache implements SessionCache {
                             if (success) {
                                 // successfully swapped in the session
                                 session.setResident(true);
-                                session.updateInactivityTimer();
                             } else {
                                 // something has gone wrong, it should have been our placeholder
                                 doDelete(id);
@@ -281,7 +280,7 @@ public abstract class AbstractSessionCache implements SessionCache {
             throw new IllegalArgumentException("Put key=" + id + " session=" + (session == null ? "null" : session.getId()));
         }
 
-        try (Lock ignored = session.lock()) {
+        try (Lock ignored = session.lockIfNotHeld()) {
             if (!session.isValid()) {
                 return;
             }
@@ -291,9 +290,7 @@ public abstract class AbstractSessionCache implements SessionCache {
                     log.debug("Putting into SessionCache only id=" + id);
                 }
                 session.setResident(true);
-                if (doPutIfAbsent(id, session) == null) { // ensure it is in our map
-                    session.updateInactivityTimer();
-                }
+                doPutIfAbsent(id, session); // ensure it is in our map
                 return;
             }
 
@@ -312,9 +309,7 @@ public abstract class AbstractSessionCache implements SessionCache {
                         session.setResident(false);
                     } else {
                         session.setResident(true);
-                        if (doPutIfAbsent(id, session) == null) { // ensure it is in our map
-                            session.updateInactivityTimer();
-                        }
+                        doPutIfAbsent(id, session); // ensure it is in our map
                         if (log.isDebugEnabled()) {
                             log.debug("Non passivating SessionDataStore, session in SessionCache only id=" + id);
                         }
@@ -337,8 +332,7 @@ public abstract class AbstractSessionCache implements SessionCache {
                         // reactivate the session
                         sessionHandler.didActivate(session);
                         session.setResident(true);
-                        if (doPutIfAbsent(id,session) == null) // ensure it is in our map
-                            session.updateInactivityTimer();
+                        doPutIfAbsent(id,session); // ensure it is in our map
                         if (log.isDebugEnabled()) {
                             log.debug("Session reactivated id=" + id);
                         }
@@ -349,10 +343,7 @@ public abstract class AbstractSessionCache implements SessionCache {
                     log.debug("Req count=" + session.getRequests() + " for id=" + id);
                 }
                 session.setResident(true);
-                if (doPutIfAbsent(id, session) == null) {
-                    // ensure it is the map, but don't save it to the backing store until the last request exists
-                    session.updateInactivityTimer();
-                }
+                doPutIfAbsent(id, session); // ensure it is the map, but don't save it to the backing store until the last request exists
             }
         }
     }
@@ -516,7 +507,6 @@ public abstract class AbstractSessionCache implements SessionCache {
                     session.setResident(false);
                 } catch (Exception e) {
                     log.warn("Passivation of idle session" + session.getId() + " failed", e);
-                    session.updateInactivityTimer();
                 }
             }
         }
@@ -596,8 +586,8 @@ public abstract class AbstractSessionCache implements SessionCache {
      */
     static class PlaceHolderSession extends BasicSession {
 
-        PlaceHolderSession(SessionData data) {
-            super(data, null);
+        PlaceHolderSession(String id) {
+            super(new SessionData(id, 0, 0, 0, 0), null);
         }
 
     }

@@ -1,23 +1,22 @@
 package com.aspectran.undertow.server.session;
 
-import com.aspectran.core.component.session.BasicSession;
+import com.aspectran.core.component.session.Session;
 import io.undertow.server.HttpServerExchange;
-import io.undertow.server.session.Session;
 import io.undertow.server.session.SessionConfig;
 import io.undertow.server.session.SessionManager;
 import io.undertow.util.AttachmentKey;
 
 import java.util.Set;
 
-public class SessionWrapper implements Session {
+public class SessionWrapper implements io.undertow.server.session.Session {
 
-    private final AttachmentKey<Long> FIRST_REQUEST_ACCESS = AttachmentKey.create(Long.class);
+    private final AttachmentKey<Boolean> FIRST_REQUEST_ACCESSED = AttachmentKey.create(Boolean.class);
 
-    private final BasicSession session;
+    private final Session session;
 
     private final TowSessionManager sessionManager;
 
-    public SessionWrapper(BasicSession session, TowSessionManager sessionManager) {
+    public SessionWrapper(Session session, TowSessionManager sessionManager) {
         this.session = session;
         this.sessionManager = sessionManager;
     }
@@ -28,19 +27,18 @@ public class SessionWrapper implements Session {
     }
 
     void requestStarted(HttpServerExchange serverExchange) {
-        Long existing = serverExchange.getAttachment(FIRST_REQUEST_ACCESS);
-        if (existing == null && sessionManager.getSessionHandler().access(session)) {
-            serverExchange.putAttachment(FIRST_REQUEST_ACCESS, System.currentTimeMillis());
+        Boolean existing = serverExchange.getAttachment(FIRST_REQUEST_ACCESSED);
+        if (Boolean.TRUE.equals(existing) && session.access()) {
+            serverExchange.putAttachment(FIRST_REQUEST_ACCESSED, true);
         }
     }
 
     @Override
     public void requestDone(HttpServerExchange serverExchange) {
-        Long existing = serverExchange.getAttachment(FIRST_REQUEST_ACCESS);
-        if (existing != null) {
-            session.getSessionData().setLastAccessedTime(existing);
+        Boolean existing = serverExchange.getAttachment(FIRST_REQUEST_ACCESSED);
+        if (Boolean.TRUE.equals(existing)) {
+            session.complete();
         }
-        sessionManager.getSessionHandler().complete(session);
     }
 
     @Override

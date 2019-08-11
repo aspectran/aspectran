@@ -19,6 +19,7 @@ import io.undertow.util.AttachmentKey;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -37,6 +38,8 @@ public class TowSessionManager implements SessionManager, ApplicationAdapterAwar
     private final DefaultSessionManager sessionManager;
 
     private ApplicationAdapter applicationAdapter;
+
+    private volatile long startTime;
 
     public TowSessionManager() {
         this(null);
@@ -97,6 +100,7 @@ public class TowSessionManager implements SessionManager, ApplicationAdapterAwar
     public void start() {
         try {
             sessionManager.initialize();
+            startTime = System.currentTimeMillis();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -177,25 +181,70 @@ public class TowSessionManager implements SessionManager, ApplicationAdapterAwar
 
     @Override
     public Set<String> getTransientSessions() {
-        return null;
+        return getAllSessions();
     }
 
     @Override
     public Set<String> getActiveSessions() {
-        return null;
+        return getAllSessions();
     }
 
     @Override
     public Set<String> getAllSessions() {
-        return null;
+        return new HashSet<>(sessionManager.getSessionCache().getAllSessions());
     }
 
     @Override
     public SessionManagerStatistics getStatistics() {
-        return null;
+        return new SessionManagerStatistics() {
+            @Override
+            public long getCreatedSessionCount() {
+                return sessionManager.getSessionCache().getCreatedSessionCount();
+            }
+
+            @Override
+            public long getMaxActiveSessions() {
+                return sessionManager.getSessionCache().getMaxSessions();
+            }
+
+            @Override
+            public long getHighestSessionCount() {
+                return sessionManager.getSessionCache().getHighestSessionCount();
+            }
+
+            @Override
+            public long getActiveSessionCount() {
+                return sessionManager.getSessionCache().getActiveSessionCount();
+            }
+
+            @Override
+            public long getExpiredSessionCount() {
+                return 0;
+            }
+
+            @Override
+            public long getRejectedSessions() {
+                return 0;
+            }
+
+            @Override
+            public long getMaxSessionAliveTime() {
+                return sessionManager.getSessionHandler().getSessionTimeMax();
+            }
+
+            @Override
+            public long getAverageSessionAliveTime() {
+                return sessionManager.getSessionHandler().getSessionTimeMean();
+            }
+
+            @Override
+            public long getStartTime() {
+                return startTime;
+            }
+        };
     }
 
-    SessionWrapper newSessionWrapper(BasicSession session) {
+    SessionWrapper newSessionWrapper(com.aspectran.core.component.session.Session session) {
         return new SessionWrapper(session, this);
     }
 
