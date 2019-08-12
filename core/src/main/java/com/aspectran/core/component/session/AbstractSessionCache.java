@@ -18,11 +18,10 @@ package com.aspectran.core.component.session;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.thread.Locker.Lock;
 
 import java.util.HashSet;
 import java.util.Set;
-
-import static com.aspectran.core.util.thread.Locker.Lock;
 
 /**
  * A base implementation of the {@link SessionCache} interface for managing a set of
@@ -42,25 +41,25 @@ public abstract class AbstractSessionCache implements SessionCache {
      * When, if ever, to evict sessions: never; only when the last request for
      * them finishes; after inactivity time (expressed as secs)
      */
-    protected int evictionPolicy = SessionCache.NEVER_EVICT;
+    private int evictionPolicy = SessionCache.NEVER_EVICT;
 
     /**
      * If true, as soon as a new session is created, it will be persisted to
      * the SessionDataStore
      */
-    protected boolean saveOnCreate;
+    private boolean saveOnCreate;
 
     /**
      * If true, a session that will be evicted from the cache because it has been
      * inactive too long will be saved before being evicted.
      */
-    protected boolean saveOnInactiveEviction;
+    private boolean saveOnInactiveEviction;
 
     /**
      * If true, a Session whose data cannot be read will be
      * deleted from the SessionDataStore.
      */
-    protected boolean removeUnloadableSessions;
+    private boolean removeUnloadableSessions;
 
     public AbstractSessionCache(SessionHandler sessionHandler) {
         this.sessionHandler = sessionHandler;
@@ -92,7 +91,7 @@ public abstract class AbstractSessionCache implements SessionCache {
      */
     @Override
     public void setEvictionPolicy(int evictionTimeout) {
-        evictionPolicy = evictionTimeout;
+        this.evictionPolicy = evictionTimeout;
     }
 
     @Override
@@ -168,8 +167,8 @@ public abstract class AbstractSessionCache implements SessionCache {
                 // didn't get a session, try and create one and put in a placeholder for it
                 PlaceHolderSession phs = new PlaceHolderSession(id);
                 Lock phsLock = phs.lock();
-                BasicSession s = doPutIfAbsent(id, phs);
-                if (s == null) {
+                BasicSession bs = doPutIfAbsent(id, phs);
+                if (bs == null) {
                     // My placeholder won, go ahead and load the full session data
                     try {
                         session = loadSession(id);
@@ -205,12 +204,12 @@ public abstract class AbstractSessionCache implements SessionCache {
                 } else {
                     // my placeholder didn't win, check the session returned
                     phsLock.close();
-                    try (Lock ignored = s.lock()) {
+                    try (Lock ignored = bs.lock()) {
                         // is it a placeholder? or is a non-resident session? In both cases, chuck it away and start again
-                        if (!s.isResident() || s instanceof PlaceHolderSession) {
+                        if (!bs.isResident() || bs instanceof PlaceHolderSession) {
                             continue;
                         }
-                        session = s;
+                        session = bs;
                         break;
                     }
                 }
@@ -280,7 +279,7 @@ public abstract class AbstractSessionCache implements SessionCache {
             throw new IllegalArgumentException("Put key=" + id + " session=" + (session == null ? "null" : session.getId()));
         }
 
-        try (Lock ignored = session.lockIfNotHeld()) {
+        try (Lock ignored = session.lock()) {
             if (!session.isValid()) {
                 return;
             }
@@ -393,13 +392,12 @@ public abstract class AbstractSessionCache implements SessionCache {
         if (sessionDataStore != null) {
             boolean deleted = sessionDataStore.delete(id);
             if (log.isDebugEnabled()) {
-                log.debug("Session " + id + " deleted in db: " + deleted);
+                log.debug("Session " + id + " deleted in session data store: " + deleted);
             }
         }
 
         // delete it from the session object store
         if (session != null) {
-            session.stopInactivityTimer();
             session.setResident(false);
         }
 

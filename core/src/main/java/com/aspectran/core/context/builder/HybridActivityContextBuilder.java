@@ -146,7 +146,7 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
 
             long elapsedTime = System.currentTimeMillis() - startTime;
 
-            log.info("ActivityContext build completed in " + elapsedTime + " ms");
+            log.info("ActivityContext build completed in " + elapsedTime + "ms");
 
             if (coreService == null) {
                 // If it is driven by a builder without a service

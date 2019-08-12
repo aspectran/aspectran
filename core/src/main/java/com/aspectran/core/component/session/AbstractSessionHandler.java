@@ -19,6 +19,7 @@ import com.aspectran.core.component.AbstractComponent;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.core.util.statistic.SampleStatistic;
+import com.aspectran.core.util.thread.Locker;
 import com.aspectran.core.util.thread.ScheduledExecutorScheduler;
 import com.aspectran.core.util.thread.Scheduler;
 
@@ -147,15 +148,6 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
         }
     }
 
-    @Override
-    public void invalidate(String id) {
-        BasicSession session = removeSession(id);
-        if (session != null) {
-            sessionTimeStats.set(round((System.currentTimeMillis() - session.getSessionData().getCreationTime()) / 1000.0));
-            session.finishInvalidate();
-        }
-    }
-
     /**
      * Remove session from manager.
      *
@@ -198,6 +190,62 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
             log.warn("Failed to renew session", e);
         }
         return null;
+    }
+
+    @Override
+    public void invalidate(String id) {
+        BasicSession session = removeSession(id);
+        if (session != null) {
+            sessionTimeStats.set(round((System.currentTimeMillis() - session.getSessionData().getCreationTime()) / 1000.0));
+            session.finishInvalidate();
+        }
+    }
+
+    /**
+     * Each session has a timer that is configured to go off
+     * when either the session has not been accessed for a
+     * configurable amount of time, or the session itself
+     * has passed its expiry.
+     *
+     * If it has passed its expiry, then we will mark it for
+     * scavenging by next run of the HouseKeeper; if it has
+     * been idle longer than the configured eviction period,
+     * we evict from the cache.
+     *
+     * If none of the above are true, then the System timer
+     * is inconsistent and the caller of this method will
+     * need to reset the timer.
+     *
+     * @param session the basic session
+     * @param now the time at which to check for expiry
+     */
+    @Override
+    public void sessionInactivityTimerExpired(BasicSession session, long now) {
+        if (session == null) {
+            return;
+        }
+
+        // check if the session is:
+        // 1. valid
+        // 2. expired
+        // 3. idle
+        try (Locker.Lock ignored = session.lock()) {
+            if (session.getRequests() > 0) {
+                return; // session can't expire or be idle if there is a request in it
+            }
+            if (log.isDebugEnabled()) {
+                log.debug("Inspecting session " + session.getId() + ", valid=" + session.isValid());
+            }
+            if (!session.isValid()) {
+                return; // do nothing, session is no longer valid
+            }
+            if (session.isExpiredAt(now)) {
+                invalidate(session.getId());
+            } else {
+                //possibly evict the session
+                sessionCache.checkInactiveSession(session);
+            }
+        }
     }
 
     /**

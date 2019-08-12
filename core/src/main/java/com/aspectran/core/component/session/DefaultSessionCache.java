@@ -90,7 +90,7 @@ public class DefaultSessionCache extends AbstractSessionCache {
 
     @Override
     public BasicSession createSession(SessionData data) {
-        return new BasicSession(data, getSessionHandler());
+        return new BasicSession(data, getSessionHandler(), true);
     }
 
     @Override

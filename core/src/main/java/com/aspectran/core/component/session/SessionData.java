@@ -50,7 +50,7 @@ public class SessionData implements Serializable {
 
     private boolean dirty;
 
-    private long lastSaved; //time in msec since last save
+    private long lastSaved; // time in msec since last save
 
     public SessionData(String id, long creationTime, long accessedTime, long lastAccessedTime, long maxInactiveIntervalMS) {
         if (id == null) {

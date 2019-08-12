@@ -20,6 +20,7 @@ import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.core.util.thread.Locker;
 import com.aspectran.core.util.thread.Locker.Lock;
+import com.aspectran.core.util.timer.CyclicTimeout;
 
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -39,7 +40,7 @@ public class BasicSession implements Session {
 
     private final SessionHandler sessionHandler;
 
-    private SessionInactivityTimer sessionInactivityTimer;
+    private final SessionInactivityTimer sessionInactivityTimer;
 
     private boolean newSession;
 
@@ -70,22 +71,27 @@ public class BasicSession implements Session {
             this.sessionData.setDirty(true);
             this.requests = 1;
         }
+        this.sessionInactivityTimer = new SessionInactivityTimer();
     }
 
     public SessionData getSessionData() {
         return sessionData;
     }
 
+    public SessionHandler getSessionHandler() {
+        return sessionHandler;
+    }
+
     @Override
     public String getId() {
-        try (Lock ignored = locker.lockIfNotHeld()) {
+        try (Lock ignored = locker.lock()) {
             return sessionData.getId();
         }
     }
 
     @Override
     public <T> T getAttribute(String name) {
-        try (Lock ignored = locker.lockIfNotHeld()) {
+        try (Lock ignored = locker.lock()) {
             checkValidForRead();
             return sessionData.getAttribute(name);
         }
@@ -94,7 +100,7 @@ public class BasicSession implements Session {
     @Override
     public Object setAttribute(String name, Object value) {
         Object old;
-        try (Lock ignored = locker.lockIfNotHeld()) {
+        try (Lock ignored = locker.lock()) {
             // if session is not valid, don't accept the set
             checkValidForWrite();
             old = sessionData.setAttribute(name, value);
@@ -108,7 +114,7 @@ public class BasicSession implements Session {
 
     @Override
     public Set<String> getAttributeNames() {
-        try (Lock ignored = locker.lockIfNotHeld()) {
+        try (Lock ignored = locker.lock()) {
             checkValidForRead();
             return sessionData.getAttributeNames();
         }
@@ -121,7 +127,7 @@ public class BasicSession implements Session {
 
     @Override
     public long getCreationTime() {
-        try (Lock ignored = locker.lockIfNotHeld()) {
+        try (Lock ignored = locker.lock()) {
             checkValidForRead();
             return sessionData.getCreationTime();
         }
@@ -129,14 +135,14 @@ public class BasicSession implements Session {
 
     @Override
     public long getLastAccessedTime() {
-        try (Lock ignored = locker.lockIfNotHeld()) {
+        try (Lock ignored = locker.lock()) {
             return sessionData.getLastAccessedTime();
         }
     }
 
     @Override
     public int getMaxInactiveInterval() {
-        try (Lock ignored = locker.lockIfNotHeld()) {
+        try (Lock ignored = locker.lock()) {
             if (sessionData.getMaxInactiveInterval() > 0L) {
                 return (int)(sessionData.getMaxInactiveInterval() / 1000L);
             } else {
@@ -147,7 +153,7 @@ public class BasicSession implements Session {
 
     @Override
     public void setMaxInactiveInterval(int secs) {
-        try (Lock ignored = locker.lockIfNotHeld()) {
+        try (Lock ignored = locker.lock()) {
             sessionData.setMaxInactiveInterval((long)secs * 1000L);
             sessionData.calcAndSetExpiryTime();
             sessionData.setDirty(true);
@@ -167,7 +173,9 @@ public class BasicSession implements Session {
             if (!isValid()) {
                 return false;
             }
+
             newSession = false;
+
             long now = System.currentTimeMillis();
             sessionData.setAccessedTime(now);
             sessionData.calcAndSetExpiryTime(now);
@@ -175,8 +183,15 @@ public class BasicSession implements Session {
                 invalidate();
                 return false;
             }
+
             requests++;
-            cancelInactivityTimer();
+
+            // temporarily stop the idle timer
+            if (log.isDebugEnabled()) {
+                log.debug("Session " + getId() + " accessed, stopping timer, active requests=" + requests);
+            }
+            sessionInactivityTimer.cancel();
+
             return true;
         }
     }
@@ -195,7 +210,7 @@ public class BasicSession implements Session {
                 // update the expiry time to take account of the time all requests spent inside of the session
                 long now = System.currentTimeMillis();
                 sessionData.calcAndSetExpiryTime(now);
-                scheduleInactivityTimer(calculateInactivityTimeout(now));
+                sessionInactivityTimer.schedule(calculateInactivityTimeout(now));
                 sessionData.setLastAccessedTime(sessionData.getAccessedTime());
                 sessionHandler.saveSession(this);
             }
@@ -208,7 +223,7 @@ public class BasicSession implements Session {
      * @return the number of active requests for this session
      */
     protected long getRequests() {
-        try (Lock ignored = locker.lockIfNotHeld()) {
+        try (Lock ignored = locker.lock()) {
             return requests;
         }
     }
@@ -272,49 +287,6 @@ public class BasicSession implements Session {
     }
 
     /**
-     * Set the inactivity timer to the smaller of the session maxInactivity
-     * (ie session-timeout from web.xml), or the inactive eviction time.
-     */
-    private void scheduleInactivityTimer(long time) {
-        if (sessionInactivityTimer == null) {
-            if (log.isDebugEnabled()) {
-                log.debug("Starting timer for session " + getId() + " at " + time + "ms");
-            }
-            sessionInactivityTimer = new SessionInactivityTimer(sessionHandler.getScheduler(), this);
-            sessionInactivityTimer.setIdleTimeout(time);
-        } else {
-            if (log.isDebugEnabled()) {
-                log.debug("Restarting timer for session " + getId() + " at " + time + "ms");
-            }
-            sessionInactivityTimer.setIdleTimeout(time);
-        }
-    }
-
-    private void cancelInactivityTimer() {
-        if (sessionInactivityTimer != null) {
-            sessionInactivityTimer.setIdleTimeout(-1L);
-            if (log.isDebugEnabled()) {
-                log.debug("Cancelled timer for session " + getId());
-            }
-        }
-    }
-
-    /**
-     * Stop the session inactivity timer.
-     */
-    protected void stopInactivityTimer() {
-        try (Lock ignored = locker.lockIfNotHeld()) {
-            if (sessionInactivityTimer != null) {
-                sessionInactivityTimer.setIdleTimeout(-1);
-                sessionInactivityTimer = null;
-                if (log.isDebugEnabled()) {
-                    log.debug("Session inactivity timer stopped");
-                }
-            }
-        }
-    }
-
-    /**
      * Called by users to invalidate a session, or called by the
      * access method as a request enters the session if the session
      * has expired, or called by manager as a result of scavenger
@@ -327,7 +299,7 @@ public class BasicSession implements Session {
 
     protected boolean beginInvalidate() {
         boolean result = false;
-        try (Lock ignored = locker.lockIfNotHeld()) {
+        try (Lock ignored = locker.lock()) {
             switch (state) {
                 case INVALID:
                     // spec does not allow invalidate of already invalid session
@@ -347,7 +319,7 @@ public class BasicSession implements Session {
     }
 
     protected void finishInvalidate() {
-        try (Lock ignored = locker.lockIfNotHeld()) {
+        try (Lock ignored = locker.lock()) {
             try {
                 if (log.isDebugEnabled()) {
                     log.debug("Invalidate session " + this);
@@ -373,7 +345,7 @@ public class BasicSession implements Session {
 
     @Override
     public boolean isNew() {
-        try (Lock ignored = locker.lockIfNotHeld()) {
+        try (Lock ignored = locker.lock()) {
             checkValidForRead();
             return newSession;
         }
@@ -381,7 +353,7 @@ public class BasicSession implements Session {
 
     @Override
     public boolean isValid() {
-        try (Lock ignored = locker.lockIfNotHeld()) {
+        try (Lock ignored = locker.lock()) {
             return (state == State.VALID);
         }
     }
@@ -392,6 +364,9 @@ public class BasicSession implements Session {
 
     protected void setResident(boolean resident) {
         this.resident = resident;
+        if (!resident) {
+            sessionInactivityTimer.destroy();
+        }
     }
 
     /**
@@ -401,7 +376,7 @@ public class BasicSession implements Session {
      * @return true if expired
      */
     protected boolean isExpiredAt(long time) {
-        try (Lock ignored = locker.lockIfNotHeld()) {
+        try (Lock ignored = locker.lock()) {
             checkValidForRead();
             return sessionData.isExpiredAt(time);
         }
@@ -415,7 +390,7 @@ public class BasicSession implements Session {
      */
     protected boolean isIdleLongerThan (int sec) {
         long now = System.currentTimeMillis();
-        try (Lock ignored = locker.lockIfNotHeld()) {
+        try (Lock ignored = locker.lock()) {
             return ((sessionData.getAccessedTime() + (sec * 1000)) <= now);
         }
     }
@@ -471,24 +446,80 @@ public class BasicSession implements Session {
         return locker.lock();
     }
 
-    /**
-     * Grab the lock on the session if it isn't locked already.
-     *
-     * @return the lock
-     */
-    protected Lock lockIfNotHeld() {
-        return locker.lockIfNotHeld();
-    }
-
     @Override
     public String toString() {
-        ToStringBuilder tsb = new ToStringBuilder();
-        tsb.append("state", state);
-        tsb.append("requests", requests);
-        tsb.append("resident", resident);
-        tsb.append("newSession", newSession);
-        tsb.append("sessionData", sessionData);
-        return tsb.toString();
+        try (Lock ignored = locker.lock()) {
+            ToStringBuilder tsb = new ToStringBuilder(getClass().getSimpleName() + "@" + hashCode());
+            tsb.append("id", sessionData.getId());
+            tsb.append("state", state);
+            tsb.append("requests", requests);
+            tsb.append("resident", resident);
+            return tsb.toString();
+        }
+    }
+
+    /**
+     * The Class SessionInactivityTimer.
+     * Each Session has a timer associated with it that fires whenever it has
+     * been idle (ie not accessed by a request) for a configurable amount of
+     * time, or the Session expires.
+     */
+    public class SessionInactivityTimer {
+
+        protected final CyclicTimeout timer;
+
+        SessionInactivityTimer() {
+            timer = new CyclicTimeout((getSessionHandler().getScheduler())) {
+                @Override
+                public void onTimeoutExpired() {
+                    if (log.isDebugEnabled()) {
+                        log.debug("Timer expired for session " + getId());
+                    }
+                    long now = System.currentTimeMillis();
+                    //handle what to do with the session after the timer expired
+                    getSessionHandler().sessionInactivityTimerExpired(BasicSession.this, now);
+                    try (Lock ignored = BasicSession.this.lock()) {
+                        //grab the lock and check what happened to the session: if it didn't get evicted and
+                        //it hasn't expired, we need to reset the timer
+                        if (BasicSession.this.isResident() && BasicSession.this.getRequests() <= 0 &&
+                            BasicSession.this.isValid() && !BasicSession.this.isExpiredAt(now)) {
+                            //session wasn't expired or evicted, we need to reset the timer
+                            SessionInactivityTimer.this.schedule(BasicSession.this.calculateInactivityTimeout(now));
+                        }
+                    }
+                }
+            };
+        }
+
+        /**
+         * @param time the timeout to set; -1 means that the timer will not be scheduled
+         */
+        public void schedule (long time) {
+            if (time >= 0) {
+                if (log.isDebugEnabled()) {
+                    log.debug("(Re)starting timer for session " + getId() + " at " + time + "ms");
+                }
+                timer.schedule(time, TimeUnit.MILLISECONDS);
+            } else {
+                if (log.isDebugEnabled()) {
+                    log.debug("Not starting timer for session " + getId());
+                }
+            }
+        }
+
+        public void cancel() {
+            timer.cancel();
+            if (log.isDebugEnabled()) {
+                log.debug("Cancelled timer for session " + getId());
+            }
+        }
+
+        public void destroy() {
+            timer.destroy();
+            if (log.isDebugEnabled()) {
+                log.debug("Destroyed timer for session " + getId());
+            }
+        }
     }
 
 }

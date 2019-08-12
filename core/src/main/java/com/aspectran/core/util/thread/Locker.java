@@ -30,48 +30,38 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class Locker {
 
-    private static final Lock LOCKED = new Lock();
-
     private final ReentrantLock lock = new ReentrantLock();
 
-    private final Lock unlock = new UnLock();
+    private final Lock unlock = new Lock();
 
-    public Locker() {
-    }
-
+    /**
+     * Acquires the lock.
+     *
+     * @return the lock to unlock
+     */
     public Lock lock() {
-        if (lock.isHeldByCurrentThread()) {
-            throw new IllegalStateException("Locker is not reentrant");
-        }
         lock.lock();
         return unlock;
     }
 
-    public Lock lockIfNotHeld (){
-        if (lock.isHeldByCurrentThread()) {
-            return LOCKED;
-        }
-        lock.lock();
-        return unlock;
-    }
-
+    /**
+     * @return whether this lock has been acquired
+     */
     public boolean isLocked() {
         return lock.isLocked();
     }
 
+    /**
+     * @return a {@link Condition} associated with this lock
+     */
     public Condition newCondition() {
         return lock.newCondition();
     }
 
-    public static class Lock implements AutoCloseable {
-
-        @Override
-        public void close() {
-        }
-
-    }
-
-    public class UnLock extends Lock {
+    /**
+     * The unlocker object that unlocks when it is closed.
+     */
+    public class Lock implements AutoCloseable {
 
         @Override
         public void close() {

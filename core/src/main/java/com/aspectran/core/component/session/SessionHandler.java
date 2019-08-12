@@ -78,6 +78,8 @@ public interface SessionHandler extends Component {
      */
     String renewSessionId(String oldId, String newId);
 
+    void sessionInactivityTimerExpired(BasicSession session, long now);
+
     /**
      * Adds an event listener for session-related events.
      *

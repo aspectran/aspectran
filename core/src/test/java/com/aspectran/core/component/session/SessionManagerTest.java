@@ -74,6 +74,8 @@ class SessionManagerTest {
 
         log.info("Created Session " + agent.getSession(true));
 
+        agent.complete();
+
         await().atMost(2, TimeUnit.SECONDS).until(() -> sessionHandler.getSessionCache().getActiveSessionCount() == 0);
     }
 
@@ -93,18 +95,14 @@ class SessionManagerTest {
         sessionManager.initialize();
 
         SessionHandler sessionHandler = sessionManager.getSessionHandler();
-        sessionHandler.setDefaultMaxIdleSecs(3);
+        sessionHandler.setDefaultMaxIdleSecs(1);
 
         SessionAgent agent = new SessionAgent(sessionManager);
-        agent.complete();
+        log.info("Created Session: " + agent.getSession(true));
 
         for (int i = 0; i < 10; i++) {
-
-            log.info("=================================================");
-            log.info("Created Session: " + agent.getSession(true));
-
             for (int j = 0; j <= i; j++) {
-                agent.setAttribute("attr" + j, "val-" + j);
+                agent.setAttribute("attr-" + j, "val-" + j);
             }
 
             Enumeration<String> enumeration = agent.getAttributeNames();
@@ -114,10 +112,10 @@ class SessionManagerTest {
             }
 
             TimeUnit.MILLISECONDS.sleep(30);
-            //agent.invalidate();
         }
+        agent.complete();
 
-        await().atMost(15, TimeUnit.SECONDS).until(() -> sessionHandler.getSessionCache().getActiveSessionCount() == 0);
+        await().atMost(3, TimeUnit.SECONDS).until(() -> sessionHandler.getSessionCache().getActiveSessionCount() == 0);
     }
 
 }
