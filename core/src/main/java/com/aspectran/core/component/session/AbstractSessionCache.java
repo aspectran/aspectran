@@ -515,7 +515,7 @@ public abstract class AbstractSessionCache implements SessionCache {
             log.debug("Creating new session id=" + id);
         }
         SessionData sessionData = new SessionData(id, time, time, time, maxInactiveIntervalMS);
-        BasicSession session = createSession(sessionData);
+        BasicSession session = new BasicSession(sessionData, getSessionHandler(), true);
         try {
             if (isSaveOnCreate() && sessionDataStore != null) {
                 sessionDataStore.store(id, sessionData);
@@ -532,7 +532,10 @@ public abstract class AbstractSessionCache implements SessionCache {
      * @param data the session data
      * @return a new Session object
      */
-    public abstract BasicSession createSession(SessionData data);
+    @Override
+    public BasicSession createSession(SessionData data) {
+        return new BasicSession(data, getSessionHandler(), false);
+    }
 
     @Override
     public BasicSession renewSessionId(String oldId, String newId) throws Exception {
@@ -584,7 +587,7 @@ public abstract class AbstractSessionCache implements SessionCache {
     static class PlaceHolderSession extends BasicSession {
 
         PlaceHolderSession(String id, SessionHandler sessionHandler) {
-            super(new SessionData(id, 0, 0, 0, 0), sessionHandler);
+            super(new SessionData(id, 0, 0, 0, 0), sessionHandler, false);
         }
 
     }

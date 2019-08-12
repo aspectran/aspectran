@@ -28,8 +28,9 @@ public class SessionWrapper implements io.undertow.server.session.Session {
 
     void requestStarted(HttpServerExchange serverExchange) {
         Boolean existing = serverExchange.getAttachment(FIRST_REQUEST_ACCESSED);
-        if (existing == null && session.access()) {
+        if (existing == null) {
             serverExchange.putAttachment(FIRST_REQUEST_ACCESSED, true);
+            session.access();
         }
     }
 

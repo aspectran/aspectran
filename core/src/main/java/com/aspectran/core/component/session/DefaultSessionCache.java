@@ -89,11 +89,6 @@ public class DefaultSessionCache extends AbstractSessionCache {
     }
 
     @Override
-    public BasicSession createSession(SessionData data) {
-        return new BasicSession(data, getSessionHandler(), true);
-    }
-
-    @Override
     public Set<String> getAllSessions() {
         return sessions.keySet();
     }

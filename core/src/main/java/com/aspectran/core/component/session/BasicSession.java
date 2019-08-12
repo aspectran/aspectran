@@ -59,10 +59,6 @@ public class BasicSession implements Session {
         INVALIDATING
     }
 
-    protected BasicSession(SessionData sessionData, SessionHandler sessionHandler) {
-        this(sessionData, sessionHandler, false);
-    }
-
     protected BasicSession(SessionData sessionData, SessionHandler sessionHandler, boolean newSession) {
         this.sessionData = sessionData;
         this.sessionHandler = sessionHandler;
