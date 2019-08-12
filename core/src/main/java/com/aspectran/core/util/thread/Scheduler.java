@@ -19,16 +19,14 @@ import java.util.concurrent.TimeUnit;
 
 public interface Scheduler {
 
-    interface Task {
-        boolean cancel();
-    }
+    Task schedule(Runnable task, long delay, TimeUnit units);
 
     void start();
 
     void stop();
 
-    boolean isActive();
-
-    Task schedule(Runnable task, long delay, TimeUnit unit);
+    interface Task {
+        boolean cancel();
+    }
 
 }

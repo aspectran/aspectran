@@ -36,6 +36,7 @@ public class DefaultSessionManager extends AbstractSessionHandler implements Ses
     private SessionManagerConfig sessionManagerConfig;
 
     public DefaultSessionManager() {
+        super();
     }
 
     @Override

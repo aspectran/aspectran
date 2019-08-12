@@ -66,9 +66,9 @@ public abstract class CyclicTimeout implements Destroyable {
      */
     public boolean schedule(long delay, TimeUnit units) {
         long now = System.nanoTime();
-        long new_timeout_at = now + units.toNanos(delay);
+        long newTimeoutAt = now + units.toNanos(delay);
 
-        Wakeup new_wakeup = null;
+        Wakeup newWakeup = null;
         boolean result;
         while (true) {
             Timeout timeout = this.timeout.get();
@@ -76,12 +76,12 @@ public abstract class CyclicTimeout implements Destroyable {
 
             // Is the current wakeup good to use? ie before our timeout time?
             Wakeup wakeup = timeout.wakeup;
-            if (wakeup == null || wakeup.at > new_timeout_at) {
+            if (wakeup == null || wakeup.at > newTimeoutAt) {
                 // No, we need an earlier wakeup.
-                wakeup = new_wakeup = new Wakeup(new_timeout_at, wakeup);
+                wakeup = newWakeup = new Wakeup(newTimeoutAt, wakeup);
             }
 
-            if (this.timeout.compareAndSet(timeout, new Timeout(new_timeout_at, wakeup))) {
+            if (this.timeout.compareAndSet(timeout, new Timeout(newTimeoutAt, wakeup))) {
                 if (log.isDebugEnabled()) {
                     log.debug("Installed timeout in " + units.toMillis(delay) + " ms, waking up in " +
                         TimeUnit.NANOSECONDS.toMillis(wakeup.at - now) + " ms");
@@ -93,8 +93,8 @@ public abstract class CyclicTimeout implements Destroyable {
         // If we created a new wakeup, we need to actually schedule it.
         // Any wakeup that is created and discarded by the failed CAS will not be
         // in the wakeup chain, will not have a scheduler task set and will be GC'd.
-        if (new_wakeup != null) {
-            new_wakeup.schedule(now);
+        if (newWakeup != null) {
+            newWakeup.schedule(now);
         }
 
         return result;
@@ -148,7 +148,7 @@ public abstract class CyclicTimeout implements Destroyable {
         private final Wakeup wakeup;
 
         private Timeout(long timeoutAt, Wakeup wakeup) {
-            at = timeoutAt;
+            this.at = timeoutAt;
             this.wakeup = wakeup;
         }
 
@@ -171,7 +171,7 @@ public abstract class CyclicTimeout implements Destroyable {
         private final Wakeup next;
 
         private Wakeup(long wakeupAt, Wakeup next) {
-            at = wakeupAt;
+            this.at = wakeupAt;
             this.next = next;
         }
 
@@ -189,8 +189,8 @@ public abstract class CyclicTimeout implements Destroyable {
         @Override
         public void run() {
             long now = System.nanoTime();
-            Wakeup new_wakeup = null;
-            boolean has_expired = false;
+            Wakeup newWakeup = null;
+            boolean hasExpired = false;
             while (true) {
                 Timeout timeout = CyclicTimeout.this.timeout.get();
 
@@ -218,37 +218,37 @@ public abstract class CyclicTimeout implements Destroyable {
                 // Remove ourselves (and any prior Wakeup) from the wakeup list.
                 wakeup = wakeup.next;
 
-                Timeout new_timeout;
+                Timeout newTimeout;
                 if (timeout.at <= now) {
                     // We have timed out!
-                    has_expired = true;
-                    new_timeout = wakeup == null ? NOT_SET : new Timeout(MAX_VALUE, wakeup);
+                    hasExpired = true;
+                    newTimeout = wakeup == null ? NOT_SET : new Timeout(MAX_VALUE, wakeup);
                 } else if (timeout.at != MAX_VALUE) {
                     // We have not timed out, but we are set to!
                     // Is the current wakeup good to use? ie before our timeout time?
                     if (wakeup == null || wakeup.at >= timeout.at) {
                         // No, we need an earlier wakeup.
-                        wakeup = new_wakeup = new Wakeup(timeout.at, wakeup);
+                        wakeup = newWakeup = new Wakeup(timeout.at, wakeup);
                     }
-                    new_timeout = new Timeout(timeout.at, wakeup);
+                    newTimeout = new Timeout(timeout.at, wakeup);
                 } else {
                     // We don't timeout, preserve scheduled chain.
-                    new_timeout = wakeup == null ? NOT_SET : new Timeout(MAX_VALUE, wakeup);
+                    newTimeout = (wakeup == null ? NOT_SET : new Timeout(MAX_VALUE, wakeup));
                 }
 
                 // Loop until we succeed in changing state or we are a noop!
-                if (CyclicTimeout.this.timeout.compareAndSet(timeout, new_timeout)) {
+                if (CyclicTimeout.this.timeout.compareAndSet(timeout, newTimeout)) {
                     break;
                 }
             }
 
             // If we created a new wakeup, we need to actually schedule it.
-            if (new_wakeup != null) {
-                new_wakeup.schedule(now);
+            if (newWakeup != null) {
+                newWakeup.schedule(now);
             }
 
             // If we expired, then do the callback.
-            if (has_expired) {
+            if (hasExpired) {
                 onTimeoutExpired();
             }
         }
@@ -261,5 +261,7 @@ public abstract class CyclicTimeout implements Destroyable {
                 at == MAX_VALUE ? at : TimeUnit.NANOSECONDS.toMillis(at - System.nanoTime()),
                 next);
         }
+
     }
+
 }

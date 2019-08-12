@@ -26,11 +26,11 @@ import com.aspectran.core.util.thread.Scheduler;
  */
 public interface SessionHandler extends Component {
 
+    Scheduler getScheduler();
+
     SessionIdGenerator getSessionIdGenerator();
 
     SessionCache getSessionCache();
-
-    Scheduler getScheduler();
 
     int getDefaultMaxIdleSecs();
 

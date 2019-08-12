@@ -165,7 +165,7 @@ public abstract class AbstractSessionCache implements SessionCache {
                 }
 
                 // didn't get a session, try and create one and put in a placeholder for it
-                PlaceHolderSession phs = new PlaceHolderSession(id);
+                PlaceHolderSession phs = new PlaceHolderSession(id, sessionHandler);
                 Lock phsLock = phs.lock();
                 BasicSession bs = doPutIfAbsent(id, phs);
                 if (bs == null) {
@@ -220,7 +220,6 @@ public abstract class AbstractSessionCache implements SessionCache {
                     if (!session.isResident() || session instanceof PlaceHolderSession) {
                         continue;
                     }
-
                     // got the session
                     break;
                 }
@@ -584,8 +583,8 @@ public abstract class AbstractSessionCache implements SessionCache {
      */
     static class PlaceHolderSession extends BasicSession {
 
-        PlaceHolderSession(String id) {
-            super(new SessionData(id, 0, 0, 0, 0), null);
+        PlaceHolderSession(String id, SessionHandler sessionHandler) {
+            super(new SessionData(id, 0, 0, 0, 0), sessionHandler);
         }
 
     }

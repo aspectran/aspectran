@@ -168,7 +168,7 @@ public class TowSessionManager implements SessionManager, ApplicationAdapterAwar
 
     @Override
     public void removeSessionListener(SessionListener listener) {
-        SessionListenerWrapper listenerWrapper = sessionListenerMappings.get(listener);
+        SessionListenerWrapper listenerWrapper = sessionListenerMappings.remove(listener);
         if (listenerWrapper != null) {
             sessionManager.removeSessionListener(listenerWrapper);
         }

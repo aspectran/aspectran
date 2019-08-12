@@ -111,7 +111,7 @@ public class AspectranActivity extends CoreActivity {
 
     @Override
     public void perform() {
-        if (getOuterActivity() == null) {
+        if (getOuterActivity() == null && getSessionAdapter() != null) {
             ((BasicSessionAdapter)getSessionAdapter()).getSessionAgent().access();
         }
         super.perform();
@@ -119,7 +119,7 @@ public class AspectranActivity extends CoreActivity {
 
     @Override
     protected void release() {
-        if (getOuterActivity() == null) {
+        if (getOuterActivity() == null && getSessionAdapter() != null) {
             ((BasicSessionAdapter)getSessionAdapter()).getSessionAgent().complete();
         }
         super.release();

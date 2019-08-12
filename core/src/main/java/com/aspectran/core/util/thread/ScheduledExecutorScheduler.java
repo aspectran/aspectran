@@ -15,66 +15,75 @@
  */
 package com.aspectran.core.util.thread;
 
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
-
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * <p>Created: 2017. 6. 25.</p>
+ * Implementation of {@link Scheduler} based on JDK's {@link ScheduledThreadPoolExecutor}.
+ * <p>
+ * While use of {@link ScheduledThreadPoolExecutor} creates futures that will not be used,
+ * it has the advantage of allowing to set a property to remove cancelled tasks from its
+ * queue even if the task did not fire, which provides a huge benefit in the performance
+ * of garbage collection in young generation.</p>
  */
 public class ScheduledExecutorScheduler implements Scheduler {
 
-    private static final Log log = LogFactory.getLog(ScheduledExecutorScheduler.class);
+    private final String name;
 
-    private final AtomicBoolean active = new AtomicBoolean();
+    private final boolean daemon;
 
-    private volatile ScheduledThreadPoolExecutor executor;
+    private final ClassLoader classloader;
 
-    @Override
-    public void start() {
-        if (this.active.compareAndSet(false, true)) {
-            if (log.isDebugEnabled()) {
-                log.debug("Starting " + this);
-            }
+    private final ThreadGroup threadGroup;
 
-            executor = new ScheduledThreadPoolExecutor(1);
-            executor.setRemoveOnCancelPolicy(true);
-        } else {
-            if (log.isDebugEnabled()) {
-                log.warn("Already Started " + this);
-            }
-        }
+    private volatile ScheduledThreadPoolExecutor scheduler;
+
+    public ScheduledExecutorScheduler() {
+        this(null, false);
     }
 
-    @Override
-    public void stop() {
-        if (this.active.compareAndSet(true, false)) {
-            if (log.isDebugEnabled()) {
-                log.debug("Stopping " + this);
-            }
-
-            executor.shutdownNow();
-            executor = null;
-        }
+    public ScheduledExecutorScheduler(String name, boolean daemon) {
+        this(name, daemon, Thread.currentThread().getContextClassLoader());
     }
 
-    @Override
-    public boolean isActive() {
-        return active.get();
+    public ScheduledExecutorScheduler(String name, boolean daemon, ClassLoader threadFactoryClassLoader) {
+        this(name, daemon, threadFactoryClassLoader, null);
+    }
+
+    public ScheduledExecutorScheduler(String name, boolean daemon, ClassLoader threadFactoryClassLoader, ThreadGroup threadGroup) {
+        this.name = (name == null ? "scheduler-" + hashCode() : name);
+        this.daemon = daemon;
+        this.classloader = threadFactoryClassLoader == null ? Thread.currentThread().getContextClassLoader() : threadFactoryClassLoader;
+        this.threadGroup = threadGroup;
     }
 
     @Override
     public Task schedule(Runnable task, long delay, TimeUnit unit) {
-        ScheduledThreadPoolExecutor executor = this.executor;
-        if (executor == null) {
+        ScheduledThreadPoolExecutor s = scheduler;
+        if (s == null)
             return () -> false;
-        } else {
-            ScheduledFuture<?> result = executor.schedule(task, delay, unit);
-            return new ScheduledFutureTask(result);
+        ScheduledFuture<?> result = s.schedule(task, delay, unit);
+        return new ScheduledFutureTask(result);
+    }
+
+    public void start() {
+        if (scheduler != null) {
+            throw new IllegalStateException("Scheduler " + name + " is already running");
+        }
+        scheduler = new ScheduledThreadPoolExecutor(1, r -> {
+            Thread thread = new Thread(threadGroup, r, name);
+            thread.setDaemon(daemon);
+            thread.setContextClassLoader(classloader);
+            return thread;
+        });
+        scheduler.setRemoveOnCancelPolicy(true);
+    }
+
+    public void stop() {
+        if (scheduler != null) {
+            scheduler.shutdownNow();
+            scheduler = null;
         }
     }
 

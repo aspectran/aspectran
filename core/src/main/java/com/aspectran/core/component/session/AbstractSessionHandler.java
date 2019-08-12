@@ -43,7 +43,7 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
 
     private final List<SessionListener> sessionListeners = new CopyOnWriteArrayList<>();
 
-    private final Scheduler scheduler = new ScheduledExecutorScheduler();
+    private final Scheduler scheduler;
 
     private SessionIdGenerator sessionIdGenerator;
 
@@ -51,6 +51,15 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
 
     /** 30 minute default */
     private volatile int defaultMaxIdleSecs = 30 * 60;
+
+    public AbstractSessionHandler() {
+        scheduler = new ScheduledExecutorScheduler(String.format("session-scheduler-%x", hashCode()), false);
+    }
+
+    @Override
+    public Scheduler getScheduler() {
+        return scheduler;
+    }
 
     @Override
     public SessionIdGenerator getSessionIdGenerator() {
@@ -68,11 +77,6 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
 
     protected void setSessionCache(SessionCache sessionCache) {
         this.sessionCache = sessionCache;
-    }
-
-    @Override
-    public Scheduler getScheduler() {
-        return scheduler;
     }
 
     @Override

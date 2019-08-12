@@ -476,14 +476,14 @@ public class BasicSession implements Session {
                         log.debug("Timer expired for session " + getId());
                     }
                     long now = System.currentTimeMillis();
-                    //handle what to do with the session after the timer expired
+                    // handle what to do with the session after the timer expired
                     getSessionHandler().sessionInactivityTimerExpired(BasicSession.this, now);
                     try (Lock ignored = BasicSession.this.lock()) {
-                        //grab the lock and check what happened to the session: if it didn't get evicted and
-                        //it hasn't expired, we need to reset the timer
+                        // grab the lock and check what happened to the session: if it didn't get evicted and
+                        // it hasn't expired, we need to reset the timer
                         if (BasicSession.this.isResident() && BasicSession.this.getRequests() <= 0 &&
                             BasicSession.this.isValid() && !BasicSession.this.isExpiredAt(now)) {
-                            //session wasn't expired or evicted, we need to reset the timer
+                            // session wasn't expired or evicted, we need to reset the timer
                             SessionInactivityTimer.this.schedule(BasicSession.this.calculateInactivityTimeout(now));
                         }
                     }
