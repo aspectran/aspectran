@@ -7,7 +7,8 @@ import io.undertow.server.HttpHandler;
 /**
  * <p>Created: 2019-08-04</p>
  */
-public class ServletHandlerFactoryBean extends ServletHandlerFactory implements InitializableBean, FactoryBean<HttpHandler> {
+public class ServletHandlerFactoryBean extends ServletHandlerFactory
+        implements InitializableBean, FactoryBean<HttpHandler> {
 
     private HttpHandler servletHandler;
 

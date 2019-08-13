@@ -29,11 +29,9 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class TowSessionManager implements SessionManager, ApplicationAdapterAware {
 
-    private final AttachmentKey<SessionWrapper> NEW_SESSION = AttachmentKey.create(SessionWrapper.class);
+    private final AttachmentKey<TowSessionBridge> NEW_SESSION = AttachmentKey.create(TowSessionBridge.class);
 
-    private final ThreadLocal<HttpServerExchange> currentExchangeHolder = new ThreadLocal<>();
-
-    private final Map<SessionListener, SessionListenerWrapper> sessionListenerMappings = new ConcurrentHashMap<>();
+    private final Map<SessionListener, TowSessionListenerBridge> sessionListenerMappings = new ConcurrentHashMap<>();
 
     private final DefaultSessionManager sessionManager;
 
@@ -117,13 +115,12 @@ public class TowSessionManager implements SessionManager, ApplicationAdapterAwar
 
     @Override
     public Session createSession(HttpServerExchange serverExchange, SessionConfig sessionConfig) {
-        currentExchangeHolder.set(serverExchange);
         String sessionId = sessionConfig.findSessionId(serverExchange);
         if (sessionId == null) {
             sessionId = sessionManager.createSessionId(hashCode());
         }
         BasicSession session = sessionManager.createSession(sessionId);
-        SessionWrapper sessionWrapper = newSessionWrapper(session);
+        TowSessionBridge sessionWrapper = newTowSessionBridge(session);
         sessionConfig.setSessionId(serverExchange, session.getId());
         serverExchange.putAttachment(NEW_SESSION, sessionWrapper);
         return sessionWrapper;
@@ -131,16 +128,15 @@ public class TowSessionManager implements SessionManager, ApplicationAdapterAwar
 
     @Override
     public Session getSession(HttpServerExchange serverExchange, SessionConfig sessionConfig) {
-        currentExchangeHolder.set(serverExchange);
         if (serverExchange != null) {
-            SessionWrapper newSession = serverExchange.getAttachment(NEW_SESSION);
-            if(newSession != null) {
+            TowSessionBridge newSession = serverExchange.getAttachment(NEW_SESSION);
+            if (newSession != null) {
                 return newSession;
             }
         }
         String sessionId = sessionConfig.findSessionId(serverExchange);
-        SessionWrapper sessionWrapper = (SessionWrapper)getSession(sessionId);
-        if(sessionWrapper != null && serverExchange != null) {
+        TowSessionBridge sessionWrapper = (TowSessionBridge)getSession(sessionId);
+        if (sessionWrapper != null && serverExchange != null) {
             sessionWrapper.requestStarted(serverExchange);
         }
         return sessionWrapper;
@@ -153,7 +149,7 @@ public class TowSessionManager implements SessionManager, ApplicationAdapterAwar
         }
         BasicSession session = sessionManager.getSession(sessionId);
         if (session != null) {
-            return newSessionWrapper(session);
+            return newTowSessionBridge(session);
         } else {
             return null;
         }
@@ -161,16 +157,16 @@ public class TowSessionManager implements SessionManager, ApplicationAdapterAwar
 
     @Override
     public void registerSessionListener(SessionListener listener) {
-        SessionListenerWrapper listenerWrapper = new SessionListenerWrapper(listener, this);
-        sessionListenerMappings.put(listener, listenerWrapper);
-        sessionManager.addSessionListener(listenerWrapper);
+        TowSessionListenerBridge sessionListenerBridge = new TowSessionListenerBridge(listener, this);
+        sessionListenerMappings.put(listener, sessionListenerBridge);
+        sessionManager.addSessionListener(sessionListenerBridge);
     }
 
     @Override
     public void removeSessionListener(SessionListener listener) {
-        SessionListenerWrapper listenerWrapper = sessionListenerMappings.remove(listener);
-        if (listenerWrapper != null) {
-            sessionManager.removeSessionListener(listenerWrapper);
+        TowSessionListenerBridge sessionListenerBridge = sessionListenerMappings.remove(listener);
+        if (sessionListenerBridge != null) {
+            sessionManager.removeSessionListener(sessionListenerBridge);
         }
     }
 
@@ -244,12 +240,8 @@ public class TowSessionManager implements SessionManager, ApplicationAdapterAwar
         };
     }
 
-    SessionWrapper newSessionWrapper(com.aspectran.core.component.session.Session session) {
-        return new SessionWrapper(session, this);
-    }
-
-    HttpServerExchange getCurrentExchange() {
-        return currentExchangeHolder.get();
+    TowSessionBridge newTowSessionBridge(com.aspectran.core.component.session.Session session) {
+        return new TowSessionBridge(session, this);
     }
 
 }

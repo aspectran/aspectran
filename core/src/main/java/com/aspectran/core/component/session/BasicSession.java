@@ -208,9 +208,9 @@ public class BasicSession implements Session {
                 // update the expiry time to take account of the time all requests spent inside of the session
                 long now = System.currentTimeMillis();
                 sessionData.calcAndSetExpiryTime(now);
-                sessionInactivityTimer.schedule(calculateInactivityTimeout(now));
                 sessionData.setLastAccessedTime(sessionData.getAccessedTime());
                 sessionHandler.saveSession(this);
+                sessionInactivityTimer.schedule(calculateInactivityTimeout(now));
             }
         }
     }

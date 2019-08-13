@@ -94,15 +94,15 @@ public abstract class AbstractHttpHandler implements HttpHandler, ActivityContex
 
         private final SessionManager sessionManager;
 
-        private UpdateLastAccessTimeListener(final SessionConfig sessionConfig, final SessionManager sessionManager) {
+        private UpdateLastAccessTimeListener(SessionConfig sessionConfig, SessionManager sessionManager) {
             this.sessionConfig = sessionConfig;
             this.sessionManager = sessionManager;
         }
 
         @Override
-        public void exchangeEvent(final HttpServerExchange exchange, final NextListener next) {
+        public void exchangeEvent(HttpServerExchange exchange, NextListener next) {
             try {
-                final Session session = sessionManager.getSession(exchange, sessionConfig);
+                Session session = sessionManager.getSession(exchange, sessionConfig);
                 if (session != null) {
                     session.requestDone(exchange);
                 }

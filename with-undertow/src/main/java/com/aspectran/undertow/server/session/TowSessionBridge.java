@@ -8,7 +8,12 @@ import io.undertow.util.AttachmentKey;
 
 import java.util.Set;
 
-public class SessionWrapper implements io.undertow.server.session.Session {
+/**
+ * Class that bridges between Aspectran native session and Undertow ones.
+ *
+ * <p>Created: 2019-08-11</p>
+ */
+public class TowSessionBridge implements io.undertow.server.session.Session {
 
     private final AttachmentKey<Boolean> FIRST_REQUEST_ACCESSED = AttachmentKey.create(Boolean.class);
 
@@ -16,7 +21,7 @@ public class SessionWrapper implements io.undertow.server.session.Session {
 
     private final TowSessionManager sessionManager;
 
-    public SessionWrapper(Session session, TowSessionManager sessionManager) {
+    public TowSessionBridge(Session session, TowSessionManager sessionManager) {
         this.session = session;
         this.sessionManager = sessionManager;
     }
