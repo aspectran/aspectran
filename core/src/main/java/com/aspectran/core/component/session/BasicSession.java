@@ -53,11 +53,13 @@ public class BasicSession implements Session {
     /**
      * state of the session: valid, invalid or being invalidated
      */
-    public enum State {
+    private enum State {
         VALID,
         INVALID,
         INVALIDATING
     }
+
+    private Session.DestroyedReason destroyedReason;
 
     protected BasicSession(SessionData sessionData, SessionHandler sessionHandler, boolean newSession) {
         this.sessionData = sessionData;
@@ -104,7 +106,7 @@ public class BasicSession implements Session {
         if (value == null && old == null) {
             return null; // if same as remove attribute but attribute was already removed, no change
         }
-        sessionHandler.attributeChanged(this, name, old, value);
+        fireSessionAttributeListeners(name, old, value);
         return old;
     }
 
@@ -290,7 +292,23 @@ public class BasicSession implements Session {
      */
     @Override
     public void invalidate() {
-        sessionHandler.invalidate(sessionData.getId());
+        boolean result = beginInvalidate();
+        if (result) {
+            setDestroyedReason(DestroyedReason.INVALIDATED);
+            try {
+                try {
+                    // do the invalidation
+                    sessionHandler.fireSessionDestroyedListeners(this);
+                } finally {
+                    // call the attribute removed listeners and finally mark it
+                    // as invalid
+                    finishInvalidate();
+                }
+                sessionHandler.removeSession(sessionData.getId(), false);
+            } catch (Exception e) {
+                log.warn("Failed to invalidate session", e);
+            }
+        }
     }
 
     protected boolean beginInvalidate() {
@@ -300,15 +318,18 @@ public class BasicSession implements Session {
                 case INVALID:
                     // spec does not allow invalidate of already invalid session
                     throw new IllegalStateException();
+                case INVALIDATING:
+                    if (log.isDebugEnabled()) {
+                        log.debug("Session " + sessionData.getId() + " already being invalidated");
+                    }
+                    break;
                 case VALID:
                     // only first change from valid to invalidating should be actionable
                     state = State.INVALIDATING;
                     result = true;
                     break;
                 default:
-                    if (log.isDebugEnabled()) {
-                        log.debug("Session " + sessionData.getId() + " already being invalidated");
-                    }
+                    throw new IllegalStateException();
             }
         }
         return result;
@@ -318,7 +339,7 @@ public class BasicSession implements Session {
         try (Lock ignored = locker.lock()) {
             try {
                 if (log.isDebugEnabled()) {
-                    log.debug("Invalidate session " + this);
+                    log.debug("Invalidate session " + sessionData.getId());
                 }
                 if (state == State.VALID || state == State.INVALIDATING) {
                     Set<String> keys;
@@ -327,7 +348,7 @@ public class BasicSession implements Session {
                         for (String key : keys) {
                             Object old = sessionData.setAttribute(key, null);
                             if (old != null) {
-                                sessionHandler.attributeChanged(this, key, old, null);
+                                fireSessionAttributeListeners(key, old, null);
                             }
                         }
                     } while (!keys.isEmpty());
@@ -335,8 +356,18 @@ public class BasicSession implements Session {
             } finally {
                 // mark as invalid
                 state = State.INVALID;
+                sessionHandler.recordSessionTime(this);
             }
         }
+    }
+
+    @Override
+    public DestroyedReason getDestroyedReason() {
+        return destroyedReason;
+    }
+
+    protected void setDestroyedReason(DestroyedReason destroyedReason) {
+        this.destroyedReason = destroyedReason;
     }
 
     @Override
@@ -388,6 +419,79 @@ public class BasicSession implements Session {
         long now = System.currentTimeMillis();
         try (Lock ignored = locker.lock()) {
             return ((sessionData.getAccessedTime() + (sec * 1000)) <= now);
+        }
+    }
+
+    /**
+     * Call binding and attribute listeners based on the new and old values of
+     * the attribute.
+     *
+     * @param name name of the attribute
+     * @param newValue new value of the attribute
+     * @param oldValue previous value of the attribute
+     * @throws IllegalStateException if no session manager can be find
+     */
+    protected void fireSessionAttributeListeners(String name, Object oldValue, Object newValue) {
+        if (newValue == null || !newValue.equals(oldValue)) {
+            if (oldValue != null) {
+                unbindValue(name, oldValue);
+            }
+            if (newValue != null) {
+                bindValue(name, newValue);
+            }
+        }
+        sessionHandler.fireSessionAttributeListeners(this, name, oldValue, newValue);
+    }
+
+    /**
+     * Unbind value if value implements {@link SessionBindingListener}
+     * (calls {@link SessionBindingListener#valueUnbound(Session, String, Object)})
+     *
+     * @param name the name with which the object is bound or unbound
+     * @param value the bound value
+     */
+    protected void unbindValue(String name, Object value) {
+        if (value instanceof SessionBindingListener) {
+            ((SessionBindingListener)value).valueUnbound(this, name, value);
+        }
+    }
+
+    /**
+     * Bind value if value implements {@link SessionBindingListener}
+     * (calls {@link SessionBindingListener#valueBound(Session, String, Object)})
+     *
+     * @param name the name with which the object is bound or unbound
+     * @param value the bound value
+     */
+    protected void bindValue(String name, Object value) {
+        if (value instanceof SessionBindingListener) {
+            ((SessionBindingListener)value).valueBound(this, name, value);
+        }
+    }
+
+    /**
+     * Call the activation listeners. This must be called holding the lock.
+     */
+    protected void didActivate() {
+        for (String key : sessionData.getKeys()) {
+            Object value = sessionData.getAttribute(key);
+            if (value instanceof SessionActivationListener) {
+                SessionActivationListener listener = (SessionActivationListener)value;
+                listener.sessionDidActivate(this);
+            }
+        }
+    }
+
+    /**
+     * Call the passivation listeners. This must be called holding the lock
+     */
+    protected void willPassivate() {
+        for (String key : sessionData.getKeys()) {
+            Object value = sessionData.getAttribute(key);
+            if (value instanceof SessionActivationListener) {
+                SessionActivationListener listener = (SessionActivationListener)value;
+                listener.sessionWillPassivate(this);
+            }
         }
     }
 

@@ -314,7 +314,7 @@ public abstract class AbstractSessionCache implements SessionCache {
                     }
                 } else {
                     // backing store supports passivation, call the listeners
-                    sessionHandler.willPassivate(session);
+                    session.willPassivate();
                     if (log.isDebugEnabled()) {
                         log.debug("Session passivating id=" + id);
                     }
@@ -328,9 +328,9 @@ public abstract class AbstractSessionCache implements SessionCache {
                         }
                     } else {
                         // reactivate the session
-                        sessionHandler.didActivate(session);
+                        session.didActivate();
                         session.setResident(true);
-                        doPutIfAbsent(id,session); // ensure it is in our map
+                        doPutIfAbsent(id, session); // ensure it is in our map
                         if (log.isDebugEnabled()) {
                             log.debug("Session reactivated id=" + id);
                         }
@@ -495,7 +495,7 @@ public abstract class AbstractSessionCache implements SessionCache {
                     // save before evicting
                     if (isSaveOnInactiveEviction() && sessionDataStore != null) {
                         if (sessionDataStore.isPassivating()) {
-                            sessionHandler.willPassivate(session);
+                            session.willPassivate();
                         }
                         sessionDataStore.store(session.getId(), session.getSessionData());
                     }
@@ -563,13 +563,13 @@ public abstract class AbstractSessionCache implements SessionCache {
         }
         try (Lock ignored = session.lock()) {
             String oldId = session.getId();
-            session.checkValidForWrite(); //can't change id on invalid session
+            session.checkValidForWrite(); // can't change id on invalid session
             session.getSessionData().setId(newId);
-            session.getSessionData().setLastSaved(0); //pretend that the session has never been saved before to get a full save
-            session.getSessionData().setDirty(true);  //ensure we will try to write the session out
+            session.getSessionData().setLastSaved(0); // pretend that the session has never been saved before to get a full save
+            session.getSessionData().setDirty(true);  // ensure we will try to write the session out
 
-            doPutIfAbsent(newId, session); //put the new id into our map
-            doDelete(oldId); //take old out of map
+            doPutIfAbsent(newId, session); // put the new id into our map
+            doDelete(oldId); // take old out of map
 
             if (sessionDataStore != null) {
                 sessionDataStore.delete(oldId);  //delete the session data with the old id

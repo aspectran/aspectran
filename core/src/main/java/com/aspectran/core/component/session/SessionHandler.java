@@ -37,14 +37,6 @@ public interface SessionHandler extends Component {
     void setDefaultMaxIdleSecs(int defaultMaxIdleSecs);
 
     /**
-     * Creates a new {@link Session}.
-     *
-     * @param id the session id
-     * @return the new session object
-     */
-    BasicSession createSession(String id);
-
-    /**
      * Get a known existing session.
      *
      * @param id the session id
@@ -52,14 +44,15 @@ public interface SessionHandler extends Component {
      */
     BasicSession getSession(String id);
 
-    void saveSession(BasicSession session);
-
     /**
-     * Called when a session has expired.
+     * Create an entirely new Session.
      *
-     * @param id the id to invalidate
+     * @param id identity of session to create
+     * @return the new session object
      */
-    void invalidate(String id);
+    BasicSession createSession(String id);
+
+    void saveSession(BasicSession session);
 
     /**
      * Create a new Session ID.
@@ -78,6 +71,40 @@ public interface SessionHandler extends Component {
      */
     String renewSessionId(String oldId, String newId);
 
+    /**
+     * Remove session from manager.
+     *
+     * @param id the session to remove
+     * @param invalidate if false, only remove from cache
+     * @return if the session was removed
+     */
+    BasicSession removeSession(String id, boolean invalidate);
+
+    /**
+     * Called when a session has expired.
+     *
+     * @param id the id to invalidate
+     */
+    void invalidate(String id);
+
+    /**
+     * Each session has a timer that is configured to go off
+     * when either the session has not been accessed for a
+     * configurable amount of time, or the session itself
+     * has passed its expiry.
+     *
+     * If it has passed its expiry, then we will mark it for
+     * scavenging by next run of the HouseKeeper; if it has
+     * been idle longer than the configured eviction period,
+     * we evict from the cache.
+     *
+     * If none of the above are true, then the System timer
+     * is inconsistent and the caller of this method will
+     * need to reset the timer.
+     *
+     * @param session the basic session
+     * @param now the time at which to check for expiry
+     */
     void sessionInactivityTimerExpired(BasicSession session, long now);
 
     /**
@@ -104,31 +131,30 @@ public interface SessionHandler extends Component {
     void clearSessionListeners();
 
     /**
-     * Call binding and attribute listeners based on the new and old
-     * values of the attribute.
+     * Call binding and attribute listeners based on the new and old values of
+     * the attribute.
      *
-     * @param session the basic session
      * @param name name of the attribute
+     * @param newValue new value of the attribute
      * @param oldValue previous value of the attribute
-     * @param newValue  new value of the attribute
+     * @throws IllegalStateException if no session manager can be find
      */
-    void attributeChanged(BasicSession session, String name, Object oldValue, Object newValue);
+    void fireSessionAttributeListeners(Session session, String name, Object oldValue, Object newValue);
 
     /**
-     * Call the activation listeners.
-     * This must be called holding the lock.
+     * Call the session lifecycle listeners.
      *
-     * @param session the basic session
+     * @param session the session on which to call the lifecycle listeners
      */
-    void didActivate(BasicSession session);
+    void fireSessionDestroyedListeners(Session session);
 
     /**
-     * Call the passivation listeners.
-     * This must be called holding the lock.
+     * Record length of time session has been active. Called when the
+     * session is about to be invalidated.
      *
-     * @param session the basic session
+     * @param session the session whose time to record
      */
-    void willPassivate(BasicSession session);
+    void recordSessionTime(BasicSession session);
 
     /**
      * @return the maximum amount of time session remained valid

@@ -21,6 +21,7 @@ import com.aspectran.core.util.statistic.CounterStatistic;
 
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Implementation of {@code SessionCache}.
@@ -34,9 +35,13 @@ public class DefaultSessionCache extends AbstractSessionCache {
     /** the cache of sessions in a HashMap */
     private final ConcurrentHashMap<String, BasicSession> sessions = new ConcurrentHashMap<>();
 
-    private final CounterStatistic statistic = new CounterStatistic();
+    private final CounterStatistic statistics = new CounterStatistic();
 
-    private int maxSessions;
+    private final AtomicLong expiredSessionCount = new AtomicLong();
+
+    private final AtomicLong rejectedSessionCount = new AtomicLong();
+
+    private volatile int maxSessions;
 
     public DefaultSessionCache(SessionHandler sessionHandler) {
         super(sessionHandler);
@@ -64,7 +69,7 @@ public class DefaultSessionCache extends AbstractSessionCache {
         checkMaxSessions();
         BasicSession s = sessions.putIfAbsent(id, session);
         if (s == null && !(session instanceof PlaceHolderSession)) {
-            statistic.increment();
+            statistics.increment();
         }
         return s;
     }
@@ -73,7 +78,8 @@ public class DefaultSessionCache extends AbstractSessionCache {
     public BasicSession doDelete(String id) {
         BasicSession s = sessions.remove(id);
         if (s != null && !(s instanceof PlaceHolderSession)) {
-            statistic.decrement();
+            statistics.decrement();
+            expiredSessionCount.incrementAndGet();
         }
         return s;
     }
@@ -83,7 +89,7 @@ public class DefaultSessionCache extends AbstractSessionCache {
         checkMaxSessions();
         boolean result = sessions.replace(id, oldValue, newValue);
         if (result && oldValue instanceof PlaceHolderSession) {
-            statistic.increment();
+            statistics.increment();
         }
         return result;
     }
@@ -95,22 +101,34 @@ public class DefaultSessionCache extends AbstractSessionCache {
 
     @Override
     public long getActiveSessionCount() {
-        return statistic.getCurrent();
+        return statistics.getCurrent();
     }
 
     @Override
     public long getHighestSessionCount() {
-        return statistic.getMax();
+        return statistics.getMax();
     }
 
     @Override
     public long getCreatedSessionCount() {
-        return statistic.getTotal();
+        return statistics.getTotal();
     }
 
     @Override
-    public void resetStats() {
-        statistic.reset();
+    public long getExpiredSessionCount() {
+        return expiredSessionCount.get();
+    }
+
+    @Override
+    public long getRejectedSessionCount() {
+        return rejectedSessionCount.get();
+    }
+
+    @Override
+    public void resetStatistics() {
+        statistics.reset();
+        expiredSessionCount.set(0L);
+        rejectedSessionCount.set(0L);
     }
 
     @Override
@@ -122,7 +140,7 @@ public class DefaultSessionCache extends AbstractSessionCache {
             for (BasicSession session : sessions.values()) {
                 // if we have a backing store so give the session to it to write out if necessary
                 if (getSessionDataStore() != null) {
-                    getSessionHandler().willPassivate(session);
+                    session.willPassivate();
                     try {
                         getSessionDataStore().store(session.getId(), session.getSessionData());
                     } catch (Exception e) {
@@ -133,6 +151,7 @@ public class DefaultSessionCache extends AbstractSessionCache {
                     // not preserving sessions on exit
                     try {
                         session.invalidate();
+                        session.setDestroyedReason(Session.DestroyedReason.UNDEPLOY);
                     } catch (Exception e) {
                         if (log.isDebugEnabled()) {
                             log.debug("Session invalidation failed, but ignored", e);
@@ -144,7 +163,8 @@ public class DefaultSessionCache extends AbstractSessionCache {
     }
 
     private void checkMaxSessions() {
-        if (maxSessions > 0 && statistic.getCurrent() > maxSessions) {
+        if (maxSessions > 0 && statistics.getCurrent() > maxSessions) {
+            rejectedSessionCount.incrementAndGet();
             throw new IllegalStateException("Session was rejected as the maximum number of sessions " +
                     maxSessions + " has been hit");
         }

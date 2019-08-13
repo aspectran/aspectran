@@ -4,8 +4,6 @@ import com.aspectran.core.component.session.Session;
 import com.aspectran.core.component.session.SessionListener;
 import io.undertow.server.HttpServerExchange;
 
-import static io.undertow.server.session.SessionListener.SessionDestroyedReason.INVALIDATED;
-
 /**
  * <p>Created: 2019-08-11</p>
  */
@@ -32,7 +30,19 @@ public class SessionListenerWrapper implements SessionListener {
     @Override
     public void sessionDestroyed(Session session) {
         HttpServerExchange exchange = towSessionManager.getCurrentExchange();
-        listener.sessionDestroyed(newTowSession(session), exchange, INVALIDATED);
+        io.undertow.server.session.SessionListener.SessionDestroyedReason reason = null;
+        switch (session.getDestroyedReason()) {
+            case INVALIDATED:
+                reason = io.undertow.server.session.SessionListener.SessionDestroyedReason.INVALIDATED;
+                break;
+            case TIMEOUT:
+                reason = io.undertow.server.session.SessionListener.SessionDestroyedReason.TIMEOUT;
+                break;
+            case UNDEPLOY:
+                reason = io.undertow.server.session.SessionListener.SessionDestroyedReason.UNDEPLOY;
+                break;
+        }
+        listener.sessionDestroyed(newTowSession(session), exchange, reason);
     }
 
     @Override

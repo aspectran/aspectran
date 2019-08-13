@@ -50,6 +50,8 @@ public interface Session {
      */
     void invalidate();
 
+    DestroyedReason getDestroyedReason();
+
     boolean isNew();
 
     boolean isValid();
@@ -63,5 +65,11 @@ public interface Session {
      * Called when a session is last accessed by a request.
      */
     void complete();
+
+    enum DestroyedReason {
+        INVALIDATED,
+        TIMEOUT,
+        UNDEPLOY
+    }
 
 }

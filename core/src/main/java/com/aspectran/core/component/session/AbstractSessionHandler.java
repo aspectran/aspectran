@@ -16,6 +16,7 @@
 package com.aspectran.core.component.session;
 
 import com.aspectran.core.component.AbstractComponent;
+import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.core.util.statistic.SampleStatistic;
@@ -97,29 +98,6 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
         }
     }
 
-    /**
-     * Create an entirely new Session.
-     *
-     * @param id identity of session to create
-     * @return the new session object
-     */
-    @Override
-    public BasicSession createSession(String id) {
-        long created = System.currentTimeMillis();
-        long maxIdleSecs = (defaultMaxIdleSecs > 0 ? defaultMaxIdleSecs * 1000L : -1);
-        BasicSession session = sessionCache.createSession(id, created, maxIdleSecs);
-        try {
-            sessionCache.put(id, session);
-            for (SessionListener listener : sessionListeners) {
-                listener.sessionCreated(session);
-            }
-            return session;
-        } catch (Exception e) {
-            log.warn("Failed to create a new session", e);
-            return null;
-        }
-    }
-
     @Override
     public BasicSession getSession(String id) {
         try {
@@ -130,6 +108,7 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
                     // expire the session
                     try {
                         session.invalidate();
+                        session.setDestroyedReason(Session.DestroyedReason.TIMEOUT);
                     } catch (Exception e) {
                         log.warn("Invalidating session " + id + " found to be expired when requested", e);
                     }
@@ -144,36 +123,26 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
     }
 
     @Override
+    public BasicSession createSession(String id) {
+        long created = System.currentTimeMillis();
+        long maxIdleSecs = (defaultMaxIdleSecs > 0 ? defaultMaxIdleSecs * 1000L : -1L);
+        BasicSession session = sessionCache.createSession(id, created, maxIdleSecs);
+        try {
+            sessionCache.put(id, session);
+            fireSessionCreatedListeners(session);
+            return session;
+        } catch (Exception e) {
+            log.warn("Failed to create a new session", e);
+            return null;
+        }
+    }
+
+    @Override
     public void saveSession(BasicSession session) {
         try {
             sessionCache.put(session.getId(), session);
         } catch (Exception e) {
             log.warn("Session failed to save", e);
-        }
-    }
-
-    /**
-     * Remove session from manager.
-     *
-     * @param id the session to remove
-     * @return if the session was removed
-     */
-    private BasicSession removeSession(String id) {
-        try {
-            BasicSession session = sessionCache.delete(id);
-            if (session != null) {
-                session.beginInvalidate();
-                // We need to create our own snapshot to safely iterate over a concurrent list in reverse
-                List<SessionListener> listeners = new ArrayList<>(sessionListeners);
-                ListIterator<SessionListener> iterator = listeners.listIterator(listeners.size());
-                while (iterator.hasPrevious()) {
-                    iterator.previous().sessionDestroyed(session);
-                }
-            }
-            return session;
-        } catch (Exception e) {
-            log.warn("Failed to delete session", e);
-            return null;
         }
     }
 
@@ -197,32 +166,42 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
     }
 
     @Override
-    public void invalidate(String id) {
-        BasicSession session = removeSession(id);
-        if (session != null) {
-            sessionTimeStats.set(round((System.currentTimeMillis() - session.getSessionData().getCreationTime()) / 1000.0));
-            session.finishInvalidate();
+    public BasicSession removeSession(String id, boolean invalidate) {
+        if (!StringUtils.hasText(id)) {
+            return null;
+        }
+        try {
+            BasicSession session = sessionCache.delete(id);
+            if (invalidate && session != null) {
+                // start invalidating if it is not already begun, and call the listeners
+                try {
+                    if (session.beginInvalidate()) {
+                        try {
+                            fireSessionDestroyedListeners(session);
+                        } catch (Exception e) {
+                            log.warn("Session listener threw exception", e);
+                        }
+                        // call the attribute removed listeners and finally mark it as invalid
+                        session.finishInvalidate();
+                    }
+                } catch (IllegalStateException e) {
+                    if (log.isDebugEnabled()) {
+                        log.debug("Session " + session + " already invalid");
+                    }
+                }
+            }
+            return session;
+        } catch (Exception e) {
+            log.warn("Failed to invalidate session", e);
+            return null;
         }
     }
 
-    /**
-     * Each session has a timer that is configured to go off
-     * when either the session has not been accessed for a
-     * configurable amount of time, or the session itself
-     * has passed its expiry.
-     *
-     * If it has passed its expiry, then we will mark it for
-     * scavenging by next run of the HouseKeeper; if it has
-     * been idle longer than the configured eviction period,
-     * we evict from the cache.
-     *
-     * If none of the above are true, then the System timer
-     * is inconsistent and the caller of this method will
-     * need to reset the timer.
-     *
-     * @param session the basic session
-     * @param now the time at which to check for expiry
-     */
+    @Override
+    public void invalidate(String id) {
+        removeSession(id, true);
+    }
+
     @Override
     public void sessionInactivityTimerExpired(BasicSession session, long now) {
         if (session == null) {
@@ -252,12 +231,6 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
         }
     }
 
-    /**
-     * Adds an event listener for session-related events.
-     *
-     * @param listener the session listener
-     * @see #removeSessionListener(SessionListener)
-     */
     @Override
     public void addSessionListener(SessionListener listener) {
         if (log.isDebugEnabled()) {
@@ -266,12 +239,6 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
         sessionListeners.add(listener);
     }
 
-    /**
-     * Removes an event listener for for session-related events.
-     *
-     * @param listener the session event listener to remove
-     * @see #addSessionListener(SessionListener)
-     */
     @Override
     public void removeSessionListener(SessionListener listener) {
         if (log.isDebugEnabled()) {
@@ -280,25 +247,15 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
         sessionListeners.remove(listener);
     }
 
-    /**
-     * Removes all event listeners for session-related events.
-     *
-     * @see #removeSessionListener(SessionListener)
-     */
     @Override
     public void clearSessionListeners() {
         sessionListeners.clear();
     }
 
     @Override
-    public void attributeChanged(BasicSession session, String name, Object oldValue, Object newValue) {
-        if (newValue == null || !newValue.equals(oldValue)) {
-            if (oldValue != null) {
-                unbindValue(session, name, oldValue);
-            }
-            if (newValue != null) {
-                bindValue(session, name, newValue);
-            }
+    public void fireSessionAttributeListeners(Session session, String name, Object oldValue, Object newValue) {
+        if (session == null) {
+            return;
         }
         for (SessionListener listener : sessionListeners) {
             if (oldValue == null) {
@@ -311,60 +268,38 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
         }
     }
 
-    /**
-     * Unbind value if value implements {@link SessionBindingListener}
-     * (calls {@link SessionBindingListener#valueUnbound(Session, String, Object)})
-     *
-     * @param session the basic session
-     * @param name the name with which the object is bound or unbound
-     * @param value the bound value
-     */
-    private void unbindValue(BasicSession session, String name, Object value) {
-        if (value instanceof SessionBindingListener) {
-            ((SessionBindingListener)value).valueUnbound(session, name, value);
-        }
-    }
-
-    /**
-     * Bind value if value implements {@link SessionBindingListener}
-     * (calls {@link SessionBindingListener#valueBound(Session, String, Object)})
-     *
-     * @param session the basic session
-     * @param name the name with which the object is bound or unbound
-     * @param value the bound value
-     */
-    private void bindValue(BasicSession session, String name, Object value) {
-        if (value instanceof SessionBindingListener) {
-            ((SessionBindingListener)value).valueBound(session, name, value);
-        }
-    }
-
     @Override
-    public void didActivate(BasicSession session) {
-        SessionData sessionData = session.getSessionData();
-        if (sessionData != null) {
-            for (String key : sessionData.getKeys()) {
-                Object value = sessionData.getAttribute(key);
-                if (value instanceof SessionActivationListener) {
-                    SessionActivationListener listener = (SessionActivationListener)value;
-                    listener.sessionDidActivate(session);
-                }
+    public void fireSessionDestroyedListeners(Session session) {
+        if (session == null) {
+            return;
+        }
+        if (!sessionListeners.isEmpty()) {
+            // We need to create our own snapshot to safely iterate over a concurrent list in reverse
+            List<SessionListener> listeners = new ArrayList<>(sessionListeners);
+            ListIterator<SessionListener> iterator = listeners.listIterator(listeners.size());
+            while (iterator.hasPrevious()) {
+                iterator.previous().sessionDestroyed(session);
             }
         }
     }
 
-    @Override
-    public void willPassivate(BasicSession session) {
-        SessionData sessionData = session.getSessionData();
-        if (sessionData != null) {
-            for (String key : sessionData.getKeys()) {
-                Object value = sessionData.getAttribute(key);
-                if (value instanceof SessionActivationListener) {
-                    SessionActivationListener listener = (SessionActivationListener)value;
-                    listener.sessionWillPassivate(session);
-                }
-            }
+    /**
+     * Call the session lifecycle listeners.
+     *
+     * @param session the session on which to call the lifecycle listeners
+     */
+    private void fireSessionCreatedListeners(Session session) {
+        if (session == null) {
+            return;
         }
+        for (SessionListener listener : sessionListeners) {
+            listener.sessionCreated(session);
+        }
+    }
+
+    @Override
+    public void recordSessionTime(BasicSession session) {
+        sessionTimeStats.record(round((System.currentTimeMillis() - session.getSessionData().getCreationTime()) / 1000.0));
     }
 
     @Override
@@ -387,9 +322,6 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
         return sessionTimeStats.getStdDev();
     }
 
-    /**
-     * Resets the session usage statistics.
-     */
     @Override
     public void statsReset() {
         sessionTimeStats.reset();

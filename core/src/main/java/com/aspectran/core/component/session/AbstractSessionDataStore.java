@@ -30,11 +30,11 @@ public abstract class AbstractSessionDataStore extends AbstractComponent impleme
 
     private static final Log log = LogFactory.getLog(AbstractSessionDataStore.class);
 
-    protected int gracePeriodSec = 60 * 60; // default of 1hr
+    private int gracePeriodSec = 60 * 60; // default of 1hr
 
-    protected long lastExpiryCheckTime = 0; // last time in ms that getExpired was called
+    private long lastExpiryCheckTime = 0; // last time in ms that getExpired was called
 
-    protected int savePeriodSec = 0; // time in sec between saves
+    private int savePeriodSec = 0; // time in sec between saves
 
     /**
      * Store the session data persistently.

@@ -219,12 +219,12 @@ public class TowSessionManager implements SessionManager, ApplicationAdapterAwar
 
             @Override
             public long getExpiredSessionCount() {
-                return 0;
+                return sessionManager.getSessionCache().getExpiredSessionCount();
             }
 
             @Override
             public long getRejectedSessions() {
-                return 0;
+                return sessionManager.getSessionCache().getRejectedSessionCount();
             }
 
             @Override

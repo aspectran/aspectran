@@ -39,19 +39,14 @@ import java.util.concurrent.atomic.LongAccumulator;
 import java.util.concurrent.atomic.LongAdder;
 
 /**
- * SampledStatistics
- *
+ * <p>Statistics on a sampled value.</p>
  * <p>Provides max, total, mean, count, variance, and standard deviation of continuous sequence of samples.</p>
- *
  * <p>Calculates estimates of mean, variance, and standard deviation characteristics of a sample using a non synchronized
  * approximation of the on-line algorithm presented in <cite>Donald Knuth's Art of Computer Programming, Volume 2,
- * Semi numerical Algorithms, 3rd edition, page 232, Boston: Addison-Wesley</cite>. that cites a 1962 paper by B.P. Welford that
- * can be found by following <a href="http://www.jstor.org/pss/1266577">Note on a Method for Calculating Corrected Sums
- * of Squares and Products</a></p>
- *
- * <p>This algorithm is also described in Wikipedia at <a href=
- * "http://en.wikipedia.org/w/index.php?title=Algorithms_for_calculating_variance&amp;section=4#On-line_algorithm">
- * Algorithms for calculating variance </a></p>
+ * Semi numerical Algorithms, 3rd edition, page 232, Boston: Addison-Wesley</cite>. That cites a 1962 paper by B.P. Welford:
+ * <a href="http://www.jstor.org/pss/1266577">Note on a Method for Calculating Corrected Sums of Squares and Products</a></p>
+ * <p>This algorithm is also described in Wikipedia in the section "Online algorithm":
+ * <a href="https://en.wikipedia.org/wiki/Algorithms_for_calculating_variance">Algorithms for calculating variance</a>.</p>
  */
 public class SampleStatistic {
 
@@ -63,6 +58,9 @@ public class SampleStatistic {
 
     protected final LongAdder totalVariance100 = new LongAdder();
 
+    /**
+     * Resets the statistics.
+     */
     public void reset() {
         max.reset();
         total.set(0);
@@ -70,39 +68,64 @@ public class SampleStatistic {
         totalVariance100.reset();
     }
 
-    public void set(final long sample) {
+    /**
+     * Records a sample value.
+     *
+     * @param sample the value to record.
+     */
+
+    public void record(long sample) {
         long total = this.total.addAndGet(sample);
         long count = this.count.incrementAndGet();
         if (count > 1) {
             long mean10 = total * 10 / count;
             long delta10 = sample * 10 - mean10;
-            totalVariance100.add(delta10*delta10);
+            totalVariance100.add(delta10 * delta10);
         }
         max.accumulate(sample);
     }
 
+    /**
+     * @return the max value of the recorded samples
+     */
     public long getMax() {
         return max.get();
     }
 
+    /**
+     * @return the sum of all the recorded samples
+     */
     public long getTotal() {
         return total.get();
     }
 
+    /**
+     * @return the number of samples recorded
+     */
     public long getCount() {
         return count.get();
     }
 
+    /**
+     * @return the average value of the samples recorded, or zero if there are no samples
+     */
     public double getMean() {
-        return ((double)total.get() / count.get());
+        long count = getCount();
+        return (count > 0 ? (double)this.total.get() / this.count.get() : 0.0D);
     }
 
+    /**
+     * @return the variance of the samples recorded, or zero if there are less than 2 samples
+     */
     public double getVariance() {
-        final long variance100 = totalVariance100.sum();
-        final long count = this.count.get();
-        return (count > 1 ? ((double)variance100) / 100.0 / (count - 1) : 0.0);
+        long variance100 = totalVariance100.sum();
+        long count = getCount();
+        return (count > 1 ? variance100 / 100.0D / (count - 1) : 0.0D);
     }
 
+    /**
+     * @return the standard deviation of the samples recorded
+     */
     public double getStdDev() {
         return Math.sqrt(getVariance());
     }
@@ -110,10 +133,10 @@ public class SampleStatistic {
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder(String.format("%s@%x", getClass().getSimpleName(), hashCode()));
-        tsb.append("count", count.get());
-        tsb.append("max", max.get());
-        tsb.append("total", total.get());
-        tsb.append("totalVariance100", totalVariance100.sum());
+        tsb.append("count", getCount());
+        tsb.append("max", getMax());
+        tsb.append("total", getTotal());
+        tsb.append("stddev", getStdDev());
         return tsb.toString();
     }
 

@@ -115,8 +115,8 @@ public class FileSessionDataStore extends AbstractSessionDataStore {
      *      that are not currently loaded into the SessionCache
      */
     @Override
-    public Set<String> doGetExpired(final Set<String> candidates) {
-        final long now = System.currentTimeMillis();
+    public Set<String> doGetExpired(Set<String> candidates) {
+        long now = System.currentTimeMillis();
         Set<String> expired = new HashSet<>();
 
         // iterate over the files and work out which have expired
@@ -146,9 +146,9 @@ public class FileSessionDataStore extends AbstractSessionDataStore {
         // Infrequently iterate over all files in the store, and delete those
         // that expired a long time ago.
         // If the graceperiod is disabled, don't do the sweep!
-        if (gracePeriodSec > 0 &&
+        if (getGracePeriodSec() > 0 &&
                 (lastSweepTime == 0L ||
-                        ((now - lastSweepTime) >= (5 * TimeUnit.SECONDS.toMillis(gracePeriodSec))))) {
+                        ((now - lastSweepTime) >= (5 * TimeUnit.SECONDS.toMillis(getGracePeriodSec()))))) {
             lastSweepTime = now;
             sweepDisk();
         }
@@ -318,7 +318,7 @@ public class FileSessionDataStore extends AbstractSessionDataStore {
             try {
                 long expiry = getExpiryFromFilename(filename);
                 // files with 0 expiry never expire
-                if (expiry > 0 && ((now - expiry) >= (5 * TimeUnit.SECONDS.toMillis(gracePeriodSec)))) {
+                if (expiry > 0 && ((now - expiry) >= (5 * TimeUnit.SECONDS.toMillis(getGracePeriodSec())))) {
                     Files.deleteIfExists(p);
                     if (log.isDebugEnabled()) {
                         log.debug("Sweep deleted " + p.getFileName());

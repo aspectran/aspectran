@@ -199,10 +199,14 @@ public interface SessionCache {
      */
     long getCreatedSessionCount();
 
+    long getExpiredSessionCount();
+
+    long getRejectedSessionCount();
+
     /**
      * Resets the running total session count in the cache.
      */
-    void resetStats();
+    void resetStatistics();
 
     void clear();
 
