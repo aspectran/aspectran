@@ -123,10 +123,10 @@ public class AspectranTowService extends AbstractTowService {
     }
 
     /**
-     * Returns a new instance of {@code AspectranUndertowService}.
+     * Returns a new instance of {@code AspectranTowService}.
      *
      * @param rootService the root service
-     * @return the instance of {@code AspectranUndertowService}
+     * @return the instance of {@code AspectranTowService}
      */
     public static AspectranTowService create(CoreService rootService) {
         AspectranTowService service = new AspectranTowService(rootService);
@@ -142,17 +142,17 @@ public class AspectranTowService extends AbstractTowService {
             try {
                 service.getServiceController().start();
             } catch (Exception e) {
-                throw new AspectranServiceException("Failed to start AspectranUndertowService");
+                throw new AspectranServiceException("Failed to start AspectranTowService");
             }
         }
         return service;
     }
 
     /**
-     * Returns a new instance of {@code AspectranUndertowService}.
+     * Returns a new instance of {@code AspectranTowService}.
      *
      * @param aspectranConfig the aspectran configuration
-     * @return the instance of {@code AspectranUndertowService}
+     * @return the instance of {@code AspectranTowService}
      */
     public static AspectranTowService create(AspectranConfig aspectranConfig) {
         AspectranTowService service = new AspectranTowService();

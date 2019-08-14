@@ -26,6 +26,8 @@ import com.aspectran.core.context.env.Environment;
 import com.aspectran.core.service.CoreService;
 import com.aspectran.core.support.i18n.message.MessageSource;
 
+import java.nio.charset.StandardCharsets;
+
 /**
  * Central interface to provide configuration for performing various activities.
  *
@@ -39,7 +41,7 @@ public interface ActivityContext {
 
     char NAME_SEPARATOR_CHAR = '/';
 
-    String DEFAULT_ENCODING = "UTF-8";
+    String DEFAULT_ENCODING = StandardCharsets.UTF_8.name();
 
     String MESSAGE_SOURCE_BEAN_ID = "messageSource";
 

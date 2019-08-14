@@ -3,6 +3,7 @@ package com.aspectran.undertow.server.servlet;
 import com.aspectran.core.component.bean.aware.ActivityContextAware;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.service.CoreService;
+import com.aspectran.undertow.server.resource.StaticResourceHandler;
 import com.aspectran.web.service.AspectranWebService;
 import com.aspectran.web.service.WebService;
 import io.undertow.server.HttpHandler;
@@ -21,7 +22,9 @@ public class ServletHandlerFactory implements ActivityContextAware {
 
     private ActivityContext context;
 
-    private volatile TowServletContainer towServletContainer;
+    private TowServletContainer towServletContainer;
+
+    private StaticResourceHandler staticResourceHandler;
 
     @Override
     public void setActivityContext(ActivityContext context) {
@@ -34,6 +37,14 @@ public class ServletHandlerFactory implements ActivityContextAware {
 
     public void setTowServletContainer(TowServletContainer towServletContainer) {
         this.towServletContainer = towServletContainer;
+    }
+
+    public StaticResourceHandler getStaticResourceHandler() {
+        return staticResourceHandler;
+    }
+
+    public void setStaticResourceHandler(StaticResourceHandler staticResourceHandler) {
+        this.staticResourceHandler = staticResourceHandler;
     }
 
     public HttpHandler createServletHandler() throws Exception {
@@ -57,7 +68,19 @@ public class ServletHandlerFactory implements ActivityContextAware {
                 String contextPath = manager.getDeployment().getDeploymentInfo().getContextPath();
                 pathHandler.addPrefixPath(contextPath, handler);
             }
-            return pathHandler;
+            if (staticResourceHandler != null && staticResourceHandler.hasPatterns()) {
+                return exchange -> {
+                    if (staticResourceHandler != null) {
+                        staticResourceHandler.handleRequest(exchange);
+                        if (!exchange.isComplete()) {
+                            pathHandler.handleRequest(exchange);
+                        }
+                    }
+
+                };
+            } else {
+                return pathHandler;
+            }
         } else {
             return null;
         }

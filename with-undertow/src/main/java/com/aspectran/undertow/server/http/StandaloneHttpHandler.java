@@ -3,22 +3,45 @@ package com.aspectran.undertow.server.http;
 import com.aspectran.core.component.bean.ablility.DisposableBean;
 import com.aspectran.core.component.bean.ablility.InitializableBean;
 import com.aspectran.core.context.config.AspectranConfig;
+import com.aspectran.core.context.config.ContextConfig;
 import com.aspectran.core.util.Assert;
 import com.aspectran.undertow.service.AspectranTowService;
 import com.aspectran.undertow.service.TowService;
+import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
+import io.undertow.server.handlers.resource.ResourceManager;
+import io.undertow.server.handlers.resource.ResourceSupplier;
 
 /**
  * <p>Created: 2019-07-27</p>
  */
-public class StandaloneHttpHandler extends AbstractHttpHandler
-        implements InitializableBean, DisposableBean {
+public class StandaloneHttpHandler extends AbstractHttpHandler implements InitializableBean, DisposableBean {
 
-    private final AspectranConfig aspectranConfig;
+    private AspectranConfig aspectranConfig;
 
     private volatile AspectranTowService towService;
 
-    public StandaloneHttpHandler(AspectranConfig aspectranConfig) {
+    public StandaloneHttpHandler(ResourceManager resourceManager) {
+        super(resourceManager);
+    }
+
+    public StandaloneHttpHandler(ResourceManager resourceManager, HttpHandler next) {
+        super(resourceManager, next);
+    }
+
+    public StandaloneHttpHandler(ResourceSupplier resourceSupplier) {
+        super(resourceSupplier);
+    }
+
+    public StandaloneHttpHandler(ResourceSupplier resourceSupplier, HttpHandler next) {
+        super(resourceSupplier, next);
+    }
+
+    public AspectranConfig getAspectranConfig() {
+        return aspectranConfig;
+    }
+
+    public void setAspectranConfig(AspectranConfig aspectranConfig) {
         this.aspectranConfig = aspectranConfig;
     }
 
@@ -39,6 +62,13 @@ public class StandaloneHttpHandler extends AbstractHttpHandler
         Assert.notNull(aspectranConfig, "aspectranConfig must not be null");
         if (getSessionManager() != null) {
             getSessionManager().start();
+        }
+        ContextConfig contextConfig = aspectranConfig.getContextConfig();
+        if (contextConfig != null) {
+            String basePath = contextConfig.getBasePath();
+            if (basePath == null) {
+                contextConfig.setBasePath(getActivityContext().getApplicationAdapter().getBasePath());
+            }
         }
         towService = AspectranTowService.create(aspectranConfig);
     }

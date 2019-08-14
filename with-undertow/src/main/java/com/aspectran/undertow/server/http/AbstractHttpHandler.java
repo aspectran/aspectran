@@ -2,46 +2,53 @@ package com.aspectran.undertow.server.http;
 
 import com.aspectran.core.component.bean.aware.ActivityContextAware;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.util.ResourceUtils;
+import com.aspectran.undertow.server.resource.StaticResourceHandler;
 import com.aspectran.undertow.service.TowService;
 import io.undertow.server.ExchangeCompletionListener;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
-import io.undertow.server.handlers.ResponseCodeHandler;
-import io.undertow.server.handlers.resource.ClassPathResourceManager;
-import io.undertow.server.handlers.resource.FileResourceManager;
 import io.undertow.server.handlers.resource.ResourceHandler;
 import io.undertow.server.handlers.resource.ResourceManager;
+import io.undertow.server.handlers.resource.ResourceSupplier;
 import io.undertow.server.session.Session;
 import io.undertow.server.session.SessionConfig;
 import io.undertow.server.session.SessionManager;
 
-import java.io.File;
-import java.io.IOException;
-
 /**
  * <p>Created: 2019-07-31</p>
  */
-public abstract class AbstractHttpHandler implements HttpHandler, ActivityContextAware {
+public abstract class AbstractHttpHandler extends ResourceHandler implements ActivityContextAware {
 
     private ActivityContext context;
 
-    private ResourceHandler resourceHandler;
+    private StaticResourceHandler staticResourceHandler;
 
     private volatile SessionManager sessionManager;
 
     private volatile SessionConfig sessionConfig;
 
-    public void setResourceBase(String resourceBase) throws IOException {
-        ResourceManager resourceManager;
-        if (resourceBase.startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {
-            String basePackage = resourceBase.substring(ResourceUtils.CLASSPATH_URL_PREFIX.length());
-            resourceManager = new ClassPathResourceManager(context.getApplicationAdapter().getClassLoader(), basePackage);
-        } else {
-            File basePath = context.getApplicationAdapter().toRealPathAsFile(resourceBase);
-            resourceManager = new FileResourceManager(basePath);
-        }
-        resourceHandler = new ResourceHandler(resourceManager, ResponseCodeHandler.HANDLE_404);
+    public AbstractHttpHandler(ResourceManager resourceManager) {
+        super(resourceManager);
+    }
+
+    public AbstractHttpHandler(ResourceManager resourceManager, HttpHandler next) {
+        super(resourceManager, next);
+    }
+
+    public AbstractHttpHandler(ResourceSupplier resourceSupplier) {
+        super(resourceSupplier);
+    }
+
+    public AbstractHttpHandler(ResourceSupplier resourceSupplier, HttpHandler next) {
+        super(resourceSupplier, next);
+    }
+
+    public StaticResourceHandler getStaticResourceHandler() {
+        return staticResourceHandler;
+    }
+
+    public void setStaticResourceHandler(StaticResourceHandler staticResourceHandler) {
+        this.staticResourceHandler = staticResourceHandler;
     }
 
     public SessionManager getSessionManager() {
@@ -65,14 +72,21 @@ public abstract class AbstractHttpHandler implements HttpHandler, ActivityContex
         if (exchange.isInIoThread()) {
             exchange.dispatch(this);
         } else {
+            if (staticResourceHandler != null && staticResourceHandler.hasPatterns()) {
+                staticResourceHandler.handleRequest(exchange);
+                if (exchange.isComplete()) {
+                    return;
+                }
+            }
+
             exchange.putAttachment(SessionManager.ATTACHMENT_KEY, sessionManager);
             exchange.putAttachment(SessionConfig.ATTACHMENT_KEY, sessionConfig);
             UpdateLastAccessTimeListener listener = new UpdateLastAccessTimeListener(sessionConfig, sessionManager);
             exchange.addExchangeCompleteListener(listener);
 
             boolean processed = getTowService().execute(exchange);
-            if (!processed && resourceHandler != null) {
-                resourceHandler.handleRequest(exchange);
+            if (!processed) {
+                super.handleRequest(exchange);
             }
         }
     }

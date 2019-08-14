@@ -2,11 +2,6 @@ package com.aspectran.undertow.server.servlet;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.component.bean.aware.ApplicationAdapterAware;
-import com.aspectran.core.util.Assert;
-import com.aspectran.core.util.ResourceUtils;
-import io.undertow.server.handlers.resource.ClassPathResourceManager;
-import io.undertow.server.handlers.resource.FileResourceManager;
-import io.undertow.server.handlers.resource.ResourceManager;
 import io.undertow.server.session.SessionManager;
 import io.undertow.servlet.api.DeploymentInfo;
 import io.undertow.servlet.api.InstanceFactory;
@@ -14,7 +9,6 @@ import io.undertow.servlet.api.ServletContainerInitializerInfo;
 import io.undertow.servlet.util.ImmediateInstanceFactory;
 
 import javax.servlet.ServletContainerInitializer;
-import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Set;
@@ -30,25 +24,12 @@ public class TowServletContext extends DeploymentInfo implements ApplicationAdap
 
     private ApplicationAdapter applicationAdapter;
 
-    private volatile SessionManager sessionManager;
+    private SessionManager sessionManager;
 
     @Override
     public void setApplicationAdapter(ApplicationAdapter applicationAdapter) {
         this.applicationAdapter = applicationAdapter;
         setClassLoader(applicationAdapter.getClassLoader());
-    }
-
-    public void setResourceBasePath(String resourceBasePath) throws IOException {
-        Assert.notNull(applicationAdapter, "applicationAdapter must not be null");
-        ResourceManager resourceManager;
-        if (resourceBasePath.startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {
-            String basePackage = resourceBasePath.substring(ResourceUtils.CLASSPATH_URL_PREFIX.length());
-            resourceManager = new ClassPathResourceManager(applicationAdapter.getClassLoader(), basePackage);
-        } else {
-            File basePath = applicationAdapter.toRealPathAsFile(resourceBasePath);
-            resourceManager = new FileResourceManager(basePath);
-        }
-        setResourceManager(resourceManager);
     }
 
     public void setScratchDir(String scratchDir) throws IOException {
@@ -60,8 +41,8 @@ public class TowServletContext extends DeploymentInfo implements ApplicationAdap
     }
 
     public void setSessionManager(SessionManager sessionManager) {
-        setSessionManagerFactory(deployment -> sessionManager);
         this.sessionManager = sessionManager;
+        setSessionManagerFactory(deployment -> sessionManager);
     }
 
     public void setServlets(TowServlet[] towServlets) {

@@ -4,6 +4,9 @@ import com.aspectran.core.component.bean.ablility.DisposableBean;
 import com.aspectran.core.component.bean.ablility.InitializableBean;
 import com.aspectran.core.util.Assert;
 import com.aspectran.undertow.service.AspectranTowService;
+import io.undertow.server.HttpHandler;
+import io.undertow.server.handlers.resource.ResourceManager;
+import io.undertow.server.handlers.resource.ResourceSupplier;
 
 /**
  * Implementation of Undertow {@link io.undertow.server.HttpHandler} to handle HTTP
@@ -14,6 +17,22 @@ import com.aspectran.undertow.service.AspectranTowService;
 public class DefaultHttpHandler extends AbstractHttpHandler implements InitializableBean, DisposableBean {
 
     private volatile AspectranTowService towService;
+
+    public DefaultHttpHandler(ResourceManager resourceManager) {
+        super(resourceManager);
+    }
+
+    public DefaultHttpHandler(ResourceManager resourceManager, HttpHandler next) {
+        super(resourceManager, next);
+    }
+
+    public DefaultHttpHandler(ResourceSupplier resourceSupplier) {
+        super(resourceSupplier);
+    }
+
+    public DefaultHttpHandler(ResourceSupplier resourceSupplier, HttpHandler next) {
+        super(resourceSupplier, next);
+    }
 
     public AspectranTowService getTowService() {
         Assert.state(towService != null, "No AspectranTowService configured");
