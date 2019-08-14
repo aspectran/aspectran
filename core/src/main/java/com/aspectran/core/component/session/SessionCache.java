@@ -35,9 +35,9 @@ public interface SessionCache {
     /**
      * A SessionDataStore that is the authoritative source
      * of session information.
-     * @param sds the session data store
+     * @param sessionDataStore the session data store
      */
-    void setSessionDataStore(SessionDataStore sds);
+    void setSessionDataStore(SessionDataStore sessionDataStore);
 
     int getEvictionPolicy();
 

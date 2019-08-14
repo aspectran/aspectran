@@ -72,7 +72,7 @@ public class ServletHandlerFactory implements ActivityContextAware {
                 return exchange -> {
                     if (staticResourceHandler != null) {
                         staticResourceHandler.handleRequest(exchange);
-                        if (!exchange.isComplete()) {
+                        if (!exchange.isDispatched() && !exchange.isComplete()) {
                             pathHandler.handleRequest(exchange);
                         }
                     }

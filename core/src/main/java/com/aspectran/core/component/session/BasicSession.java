@@ -415,7 +415,7 @@ public class BasicSession implements Session {
      * @param sec the number of seconds
      * @return true if the session has been idle longer than the interval
      */
-    protected boolean isIdleLongerThan (int sec) {
+    protected boolean isIdleLongerThan(int sec) {
         long now = System.currentTimeMillis();
         try (Lock ignored = locker.lock()) {
             return ((sessionData.getAccessedTime() + (sec * 1000)) <= now);

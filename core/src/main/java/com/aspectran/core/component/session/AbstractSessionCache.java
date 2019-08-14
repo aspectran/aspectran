@@ -295,7 +295,30 @@ public abstract class AbstractSessionCache implements SessionCache {
             // don't do anything with the session until the last request for it has finished
             if (session.getRequests() <= 0) {
                 // save the session
-                if (!sessionDataStore.isPassivating()) {
+                if (sessionDataStore.isPassivating()) {
+                    // backing store supports passivation, call the listeners
+                    session.willPassivate();
+                    if (log.isDebugEnabled()) {
+                        log.debug("Session passivating id=" + id);
+                    }
+                    sessionDataStore.store(id, session.getSessionData());
+                    if (getEvictionPolicy() == EVICT_ON_SESSION_EXIT) {
+                        // throw out the passivated session object from the map
+                        if (log.isDebugEnabled()) {
+                            log.debug("Evicted on request exit id=" + id);
+                        }
+                        doDelete(id);
+                        session.setResident(false);
+                    } else {
+                        // reactivate the session
+                        session.didActivate();
+                        session.setResident(true);
+                        doPutIfAbsent(id, session); // ensure it is in our map
+                        if (log.isDebugEnabled()) {
+                            log.debug("Session reactivated id=" + id);
+                        }
+                    }
+                } else {
                     // if our backing datastore isn't the passivating kind, just save the session
                     sessionDataStore.store(id, session.getSessionData());
                     // if we evict on session exit, boot it from the cache
@@ -310,29 +333,6 @@ public abstract class AbstractSessionCache implements SessionCache {
                         doPutIfAbsent(id, session); // ensure it is in our map
                         if (log.isDebugEnabled()) {
                             log.debug("Non passivating SessionDataStore, session in SessionCache only id=" + id);
-                        }
-                    }
-                } else {
-                    // backing store supports passivation, call the listeners
-                    session.willPassivate();
-                    if (log.isDebugEnabled()) {
-                        log.debug("Session passivating id=" + id);
-                    }
-                    sessionDataStore.store(id, session.getSessionData());
-                    if (getEvictionPolicy() == EVICT_ON_SESSION_EXIT) {
-                        // throw out the passivated session object from the map
-                        doDelete(id);
-                        session.setResident(false);
-                        if (log.isDebugEnabled()) {
-                            log.debug("Evicted on request exit id=" + id);
-                        }
-                    } else {
-                        // reactivate the session
-                        session.didActivate();
-                        session.setResident(true);
-                        doPutIfAbsent(id, session); // ensure it is in our map
-                        if (log.isDebugEnabled()) {
-                            log.debug("Session reactivated id=" + id);
                         }
                     }
                 }
@@ -386,7 +386,6 @@ public abstract class AbstractSessionCache implements SessionCache {
     public BasicSession delete(String id) throws Exception {
         // get the session, if its not in memory, this will load it
         BasicSession session = get(id);
-
         // Always delete it from the backing data store
         if (sessionDataStore != null) {
             boolean deleted = sessionDataStore.delete(id);
@@ -394,12 +393,10 @@ public abstract class AbstractSessionCache implements SessionCache {
                 log.debug("Session " + id + " deleted in session data store: " + deleted);
             }
         }
-
         // delete it from the session object store
         if (session != null) {
             session.setResident(false);
         }
-
         return doDelete(id);
     }
 
