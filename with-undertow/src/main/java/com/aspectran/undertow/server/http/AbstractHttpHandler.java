@@ -1,3 +1,18 @@
+/*
+ * Copyright (c) 2008-2019 The Aspectran Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.aspectran.undertow.server.http;
 
 import com.aspectran.core.component.bean.aware.ActivityContextAware;
@@ -23,9 +38,9 @@ public abstract class AbstractHttpHandler extends ResourceHandler implements Act
 
     private StaticResourceHandler staticResourceHandler;
 
-    private volatile SessionManager sessionManager;
+    private SessionManager sessionManager;
 
-    private volatile SessionConfig sessionConfig;
+    private SessionConfig sessionConfig;
 
     public AbstractHttpHandler(ResourceManager resourceManager) {
         super(resourceManager);
@@ -79,10 +94,12 @@ public abstract class AbstractHttpHandler extends ResourceHandler implements Act
                 }
             }
 
-            exchange.putAttachment(SessionManager.ATTACHMENT_KEY, sessionManager);
-            exchange.putAttachment(SessionConfig.ATTACHMENT_KEY, sessionConfig);
-            UpdateLastAccessTimeListener listener = new UpdateLastAccessTimeListener(sessionManager, sessionConfig);
-            exchange.addExchangeCompleteListener(listener);
+            if (sessionManager != null) {
+                exchange.putAttachment(SessionManager.ATTACHMENT_KEY, sessionManager);
+                exchange.putAttachment(SessionConfig.ATTACHMENT_KEY, sessionConfig);
+                UpdateLastAccessTimeListener listener = new UpdateLastAccessTimeListener(sessionManager, sessionConfig);
+                exchange.addExchangeCompleteListener(listener);
+            }
 
             boolean processed = getTowService().execute(exchange);
             if (!processed) {
@@ -105,7 +122,6 @@ public abstract class AbstractHttpHandler extends ResourceHandler implements Act
     private static class UpdateLastAccessTimeListener implements ExchangeCompletionListener {
 
         private final SessionManager sessionManager;
-
         private final SessionConfig sessionConfig;
 
         private UpdateLastAccessTimeListener(SessionManager sessionManager, SessionConfig sessionConfig) {
