@@ -19,7 +19,7 @@ import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
 /**
- * The Abstract Component.
+ * Abstract Implementation of {@link Component}.
  *
  * <p>Created: 2017. 7. 4.</p>
  */
@@ -30,6 +30,8 @@ public abstract class AbstractComponent implements Component {
     private final Object lock = new Object();
 
     private volatile boolean initialized;
+
+    private volatile boolean destroying;
 
     private volatile boolean destroyed;
 
@@ -49,7 +51,7 @@ public abstract class AbstractComponent implements Component {
 
             doInitialize();
 
-            log.info("Initialized " + getComponentName());
+            log.debug("Initialized " + getComponentName());
 
             initialized = true;
         }
@@ -61,15 +63,18 @@ public abstract class AbstractComponent implements Component {
             if (!initialized) {
                 throw new IllegalStateException("Not yet initialized " + getComponentName());
             }
-            if (destroyed) {
+            if (destroying || destroyed) {
                 throw new IllegalStateException("Already destroyed " + getComponentName());
             }
 
             try {
+                destroying = true;
                 doDestroy();
-                log.info("Destroyed " + getComponentName());
+                log.debug("Destroyed " + getComponentName());
             } catch (Exception e) {
                 log.warn("Failed to destroy " + getComponentName(), e);
+            } finally {
+                destroying = false;
             }
 
             destroyed = true;
@@ -78,23 +83,22 @@ public abstract class AbstractComponent implements Component {
 
     @Override
     public boolean isAvailable() {
-        synchronized (lock) {
-            return (initialized && !destroyed);
-        }
+        return (initialized && !destroying && !destroyed);
     }
 
     @Override
     public boolean isInitialized() {
-        synchronized (lock) {
-            return initialized;
-        }
+        return initialized;
+    }
+
+    @Override
+    public boolean isDestroying() {
+        return destroying;
     }
 
     @Override
     public boolean isDestroyed() {
-        synchronized (lock) {
-            return destroyed;
-        }
+        return destroyed;
     }
 
     @Override

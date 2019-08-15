@@ -11,6 +11,7 @@ import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.server.handlers.resource.ResourceManager;
 import io.undertow.server.handlers.resource.ResourceSupplier;
+import io.undertow.server.session.SessionCookieConfig;
 
 /**
  * <p>Created: 2019-07-27</p>
@@ -61,6 +62,9 @@ public class StandaloneHttpHandler extends AbstractHttpHandler implements Initia
         Assert.state(towService == null, "Cannot reconfigure AspectranTowService");
         Assert.notNull(aspectranConfig, "aspectranConfig must not be null");
         if (getSessionManager() != null) {
+            if (getSessionConfig() == null) {
+                setSessionConfig(new SessionCookieConfig());
+            }
             getSessionManager().start();
         }
         ContextConfig contextConfig = aspectranConfig.getContextConfig();

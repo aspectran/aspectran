@@ -86,11 +86,4 @@ public interface SessionDataStore extends Component {
      */
     Set<String> getExpired (Set<String> candidates);
 
-    /**
-     * True if this type of datastore will passivate session objects.
-     *
-     * @return true if this store can passivate sessions; false otherwise
-     */
-    boolean isPassivating ();
-
 }

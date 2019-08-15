@@ -25,6 +25,8 @@ public interface Scheduler {
 
     void stop();
 
+    boolean isRunning();
+
     interface Task {
         boolean cancel();
     }

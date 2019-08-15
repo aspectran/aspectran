@@ -15,7 +15,6 @@
  */
 package com.aspectran.core.util;
 
-import com.aspectran.core.context.resource.AspectranClassLoader;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -30,7 +29,7 @@ class ClassScannerTest {
 
     @Test
     void testScanClass() throws IOException {
-        ClassScanner scanner = new ClassScanner(AspectranClassLoader.getDefaultClassLoader());
+        ClassScanner scanner = new ClassScanner(ClassUtils.getDefaultClassLoader());
         Map<String, Class<?>> map = scanner.scan("com.aspectran.**.util.*Test");
         for (Map.Entry<String, Class<?>> entry : map.entrySet()) {
             //System.out.println(entry.getKey() + " - " + entry.getValue().getName());

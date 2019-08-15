@@ -30,11 +30,48 @@ public abstract class AbstractSessionDataStore extends AbstractComponent impleme
 
     private static final Log log = LogFactory.getLog(AbstractSessionDataStore.class);
 
-    private int gracePeriodSec = 60 * 60; // default of 1hr
+    private int gracePeriodSecs = 60 * 60; // default of 1hr
 
     private long lastExpiryCheckTime = 0; // last time in ms that getExpired was called
 
-    private int savePeriodSec = 0; // time in sec between saves
+    private int savePeriodSecs = 0; // time in sec between saves
+
+    public int getGracePeriodSecs() {
+        return gracePeriodSecs;
+    }
+
+    /**
+     * Sets the interval in secs to prevent too eager session scavenging.
+     *
+     * @param gracePeriodSecs interval in secs to prevent too eager session scavenging
+     */
+    public void setGracePeriodSecs(int gracePeriodSecs) {
+        this.gracePeriodSecs = gracePeriodSecs;
+    }
+
+    public int getSavePeriodSecs() {
+        return savePeriodSecs;
+    }
+
+    /**
+     * The minimum time in seconds between save operations.
+     * Saves normally occur every time the last request
+     * exits as session. If nothing changes on the session
+     * except for the access time and the persistence technology
+     * is slow, this can cause delays.
+     *
+     * <p>By default the value is 0, which means we save
+     * after the last request exists. A non zero value
+     * means that we will skip doing the save if the
+     * session isn't dirty if the elapsed time since
+     * the session was last saved does not exceed this
+     * value.</p>
+     *
+     * @param savePeriodSecs the savePeriodSecs to set
+     */
+    public void setSavePeriodSecs(int savePeriodSecs) {
+        this.savePeriodSecs = savePeriodSecs;
+    }
 
     /**
      * Store the session data persistently.
@@ -62,10 +99,10 @@ public abstract class AbstractSessionDataStore extends AbstractComponent impleme
         }
 
         long lastSave = data.getLastSaved();
-        long savePeriodMs = (savePeriodSec <= 0 ? 0 : TimeUnit.SECONDS.toMillis(savePeriodSec));
+        long savePeriodMs = (savePeriodSecs <= 0 ? 0 : TimeUnit.SECONDS.toMillis(savePeriodSecs));
 
         if (log.isDebugEnabled()) {
-            ToStringBuilder tsb = new ToStringBuilder("Store");
+            ToStringBuilder tsb = new ToStringBuilder("Store session");
             tsb.append("id", id);
             tsb.append("dirty", data.isDirty());
             tsb.append("lastSaved", data.getLastSaved());
@@ -75,7 +112,7 @@ public abstract class AbstractSessionDataStore extends AbstractComponent impleme
         }
 
         // save session if attribute changed or never been saved or time between saves exceeds threshold
-        if (data.isDirty() || (lastSave <= 0) || ((System.currentTimeMillis() - lastSave) > savePeriodMs)) {
+        if (data.isDirty() || lastSave <= 0 || (System.currentTimeMillis() - lastSave) > savePeriodMs) {
             // set the last saved time to now
             data.setLastSaved(System.currentTimeMillis());
             try {
@@ -105,43 +142,6 @@ public abstract class AbstractSessionDataStore extends AbstractComponent impleme
         return new SessionData(id, createdTime, accessedTime, lastAccessedTime, maxInactiveIntervalMS);
     }
 
-    public int getGracePeriodSec() {
-        return gracePeriodSec;
-    }
-
-    /**
-     * Sets the interval in secs to prevent too eager session scavenging.
-     *
-     * @param sec interval in secs to prevent too eager session scavenging
-     */
-    public void setGracePeriodSec(int sec) {
-        gracePeriodSec = sec;
-    }
-
-    public int getSavePeriodSec() {
-        return savePeriodSec;
-    }
-
-    /**
-     * The minimum time in seconds between save operations.
-     * Saves normally occur every time the last request
-     * exits as session. If nothing changes on the session
-     * except for the access time and the persistence technology
-     * is slow, this can cause delays.
-     *
-     * <p>By default the value is 0, which means we save
-     * after the last request exists. A non zero value
-     * means that we will skip doing the save if the
-     * session isn't dirty if the elapsed time since
-     * the session was last saved does not exceed this
-     * value.</p>
-     *
-     * @param savePeriodSec the savePeriodSec to set
-     */
-    public void setSavePeriodSec(int savePeriodSec) {
-        this.savePeriodSec = savePeriodSec;
-    }
-
     @Override
     protected void doInitialize() throws Exception {
     }
@@ -150,7 +150,7 @@ public abstract class AbstractSessionDataStore extends AbstractComponent impleme
     protected void doDestroy() {
     }
 
-    protected void checkInitialized() throws IllegalStateException {
+    protected void checkAlreadyInitialized() throws IllegalStateException {
         if (isInitialized()) {
             throw new IllegalStateException("Already initialized");
         }

@@ -107,7 +107,7 @@ public class WebActivityFilter implements Filter {
     private String getMyName() {
         return getClass().getSimpleName() + '@' +
                 Integer.toString(hashCode(), 16) +
-                " [" + filterConfig.getFilterName() + "]";
+                "(" + filterConfig.getFilterName() + ")";
     }
 
 }

@@ -35,11 +35,24 @@ public interface SessionCache {
     /**
      * A SessionDataStore that is the authoritative source
      * of session information.
+     *
      * @param sessionDataStore the session data store
      */
     void setSessionDataStore(SessionDataStore sessionDataStore);
 
-    int getEvictionPolicy();
+    int getMaxSessions();
+
+    /**
+     * Sets the maximum number of active sessions allowed in this session cache.
+     * The number of active sessions exceeds this limit, attempts to create new sessions
+     * will be rejected.
+     * If set to 0 (the default), there is no limit.
+     *
+     * @param maxSessions the maximum number of active sessions allowed in this session cache
+     */
+    void setMaxSessions(int maxSessions);
+
+    int getEvictionIdleSecs();
 
     /**
      * Sessions in this cache can be:
@@ -53,20 +66,9 @@ public interface SessionCache {
      *      value is the time in seconds that a session can be idle before it can
      *      be evicted.
      */
-    void setEvictionPolicy(int policy);
+    void setEvictionIdleSecs(int policy);
 
     boolean isSaveOnCreate();
-
-    boolean isRemoveUnloadableSessions();
-
-    /**
-     * If the data for a session exists but is unreadable,
-     * the SessionCache can instruct the SessionDataStore to delete it.
-     *
-     * @param removeUnloadableSessions whether or not SessionCache will delete
-     *      session data that can not be loaded from the SessionDataStore
-     */
-    void setRemoveUnloadableSessions(boolean removeUnloadableSessions);
 
     /**
      * Whether or not a session that is newly created should be
@@ -86,6 +88,17 @@ public interface SessionCache {
      * @param saveOnEvict if true, save the session before eviction
      */
     void setSaveOnInactiveEviction(boolean saveOnEvict);
+
+    boolean isRemoveUnloadableSessions();
+
+    /**
+     * If the data for a session exists but is unreadable,
+     * the SessionCache can instruct the SessionDataStore to delete it.
+     *
+     * @param removeUnloadableSessions whether or not SessionCache will delete
+     *      session data that can not be loaded from the SessionDataStore
+     */
+    void setRemoveUnloadableSessions(boolean removeUnloadableSessions);
 
     /**
      * Get an existing Session. If necessary, the cache will load the data for
@@ -161,8 +174,6 @@ public interface SessionCache {
     void checkInactiveSession(BasicSession session);
 
     BasicSession createSession(String id, long time, long maxInactiveIntervalMS);
-
-    int getMaxSessions();
 
     /**
      * Re-materialize a Session that has previously existed.

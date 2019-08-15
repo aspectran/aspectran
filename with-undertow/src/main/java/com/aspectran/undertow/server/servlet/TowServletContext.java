@@ -9,6 +9,7 @@ import io.undertow.servlet.api.ServletContainerInitializerInfo;
 import io.undertow.servlet.util.ImmediateInstanceFactory;
 
 import javax.servlet.ServletContainerInitializer;
+import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Set;
@@ -33,6 +34,10 @@ public class TowServletContext extends DeploymentInfo implements ApplicationAdap
     }
 
     public void setScratchDir(String scratchDir) throws IOException {
+        File dir = applicationAdapter.toRealPathAsFile(scratchDir);
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
         setTempDir(applicationAdapter.toRealPathAsFile(scratchDir));
     }
 

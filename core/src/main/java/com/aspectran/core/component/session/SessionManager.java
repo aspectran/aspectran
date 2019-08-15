@@ -24,8 +24,6 @@ import com.aspectran.core.context.config.SessionManagerConfig;
  */
 public interface SessionManager extends Component {
 
-    String getWorkerName();
-
     SessionManagerConfig getSessionManagerConfig();
 
     SessionHandler getSessionHandler();

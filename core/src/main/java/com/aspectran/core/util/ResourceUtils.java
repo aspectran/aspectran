@@ -214,7 +214,7 @@ public class ResourceUtils {
      * @throws IOException if the resource cannot be found or read
      */
     public static URL getResource(String resource) throws IOException {
-        return getResource(resource, AspectranClassLoader.getDefaultClassLoader());
+        return getResource(resource, ClassUtils.getDefaultClassLoader());
     }
 
     /**
@@ -257,7 +257,7 @@ public class ResourceUtils {
      * @throws IOException if the resource cannot be found or read
      */
     public static InputStream getResourceAsStream(String resource) throws IOException {
-        return getResourceAsStream(resource, AspectranClassLoader.getDefaultClassLoader());
+        return getResourceAsStream(resource, ClassUtils.getDefaultClassLoader());
     }
 
     /**

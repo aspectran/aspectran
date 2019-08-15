@@ -41,7 +41,7 @@ public class CustomObjectInputStream extends ObjectInputStream {
     public Class<?> resolveClass(java.io.ObjectStreamClass cl)
             throws IOException, ClassNotFoundException {
         try {
-            return Class.forName(cl.getName(), false, AspectranClassLoader.getDefaultClassLoader());
+            return Class.forName(cl.getName(), false, ClassUtils.getDefaultClassLoader());
         } catch (ClassNotFoundException e) {
             return super.resolveClass(cl);
         }
@@ -50,7 +50,7 @@ public class CustomObjectInputStream extends ObjectInputStream {
     @Override
     protected Class<?> resolveProxyClass(String[] interfaces)
             throws ClassNotFoundException {
-        ClassLoader loader = AspectranClassLoader.getDefaultClassLoader();
+        ClassLoader loader = ClassUtils.getDefaultClassLoader();
         ClassLoader nonPublicLoader = null;
         boolean hasNonPublicInterface = false;
 

@@ -31,21 +31,10 @@ import java.io.IOException;
  */
 public class DefaultSessionManager extends AbstractSessionHandler implements SessionManager {
 
-    private String workerName;
-
     private SessionManagerConfig sessionManagerConfig;
 
     public DefaultSessionManager() {
         super();
-    }
-
-    @Override
-    public String getWorkerName() {
-        return workerName;
-    }
-
-    public void setWorkerName(String workerName) {
-        this.workerName = workerName;
     }
 
     @Override
@@ -77,46 +66,81 @@ public class DefaultSessionManager extends AbstractSessionHandler implements Ses
 
     @Override
     protected void doInitialize() throws Exception {
+        if (sessionManagerConfig != null) {
+            if (sessionManagerConfig.hasWorkerName()) {
+                setWorkerName(sessionManagerConfig.getWorkerName());
+            } else {
+                setWorkerName("node0");
+            }
+            if (sessionManagerConfig.hasMaxIdleSeconds()) {
+                int secs = sessionManagerConfig.getMaxIdleSeconds();
+                setDefaultMaxIdleSecs(secs);
+            }
+            if (sessionManagerConfig.hasScavengingIntervalSeconds()) {
+                int secs = sessionManagerConfig.getScavengingIntervalSeconds();
+                if (secs > 0) {
+                    HouseKeeper houseKeeper = new HouseKeeper(this);
+                    houseKeeper.setScavengingInterval(secs);
+                    setHouseKeeper(houseKeeper);
+                }
+            } else {
+                setHouseKeeper(new HouseKeeper(this));
+            }
+        }
+
         if (getSessionIdGenerator() == null) {
-            SessionIdGenerator sessionIdGenerator = new SessionIdGenerator(workerName);
+            SessionIdGenerator sessionIdGenerator = new SessionIdGenerator(getWorkerName());
             setSessionIdGenerator(sessionIdGenerator);
         }
 
         if (getSessionCache() == null) {
-            DefaultSessionCache sessionCache = new DefaultSessionCache(this);
-            if (sessionManagerConfig != null) {
-                sessionCache.setMaxSessions(sessionManagerConfig.getMaxSessions());
-            }
+            SessionCache sessionCache = new DefaultSessionCache(this);
             setSessionCache(sessionCache);
+            if (sessionManagerConfig != null) {
+                if (sessionManagerConfig.hasMaxSessions()) {
+                    int maxSessions = sessionManagerConfig.getMaxSessions();
+                    sessionCache.setMaxSessions(maxSessions);
+                }
+                if (sessionManagerConfig.hasEvictionIdleSeconds()) {
+                    int secs = sessionManagerConfig.getEvictionIdleSeconds();
+                    sessionCache.setEvictionIdleSecs(secs);
+                }
+                if (sessionManagerConfig.hasSaveOnCreate()) {
+                    boolean saveOnCreate = sessionManagerConfig.getSaveOnCreate();
+                    sessionCache.setSaveOnCreate(saveOnCreate);
+                }
+                if (sessionManagerConfig.hasSaveOnInactiveEviction()) {
+                    boolean saveOnInactiveEviction = sessionManagerConfig.getSaveOnInactiveEviction();
+                    sessionCache.setSaveOnInactiveEviction(saveOnInactiveEviction);
+                }
+                if (sessionManagerConfig.hasRemoveUnloadableSessions()) {
+                    boolean removeUnloadableSessions = sessionManagerConfig.getRemoveUnloadableSessions();
+                    sessionCache.setRemoveUnloadableSessions(removeUnloadableSessions);
+                }
+            }
         }
 
-        if (sessionManagerConfig != null) {
-            if (sessionManagerConfig.hasTimeout()) {
-                int timeout = sessionManagerConfig.getTimeout();
-                setDefaultMaxIdleSecs(timeout);
+        if (getSessionCache().getSessionDataStore() == null && sessionManagerConfig != null) {
+            String storeType = sessionManagerConfig.getStoreType();
+            SessionStoreType sessionStoreType = SessionStoreType.resolve(storeType);
+            if (storeType != null && sessionStoreType == null) {
+                throw new IllegalArgumentException("Unknown session store type: " + storeType);
             }
-            if (getSessionCache().getSessionDataStore() == null) {
-                String storeType = sessionManagerConfig.getStoreType();
-                SessionStoreType sessionStoreType = SessionStoreType.resolve(storeType);
-                if (storeType != null && sessionStoreType == null) {
-                    throw new IllegalArgumentException("Unknown session store type: " + storeType);
-                }
-                if (sessionStoreType == SessionStoreType.FILE) {
-                    FileSessionDataStore fileSessionDataStore = new FileSessionDataStore();
-                    SessionFileStoreConfig fileStoreConfig = sessionManagerConfig.getFileStoreConfig();
-                    if (fileStoreConfig != null) {
-                        String storeDir = fileStoreConfig.getStoreDir();
-                        if (StringUtils.hasText(storeDir)) {
-                            fileSessionDataStore.setStoreDir(new File(storeDir));
-                        }
-                        boolean deleteUnrestorableFiles = fileStoreConfig.isDeleteUnrestorableFiles();
-                        if (deleteUnrestorableFiles) {
-                            fileSessionDataStore.setDeleteUnrestorableFiles(true);
-                        }
+            if (sessionStoreType == SessionStoreType.FILE) {
+                FileSessionDataStore fileSessionDataStore = new FileSessionDataStore();
+                SessionFileStoreConfig fileStoreConfig = sessionManagerConfig.getFileStoreConfig();
+                if (fileStoreConfig != null) {
+                    String storeDir = fileStoreConfig.getStoreDir();
+                    if (StringUtils.hasText(storeDir)) {
+                        fileSessionDataStore.setStoreDir(new File(storeDir));
                     }
-                    fileSessionDataStore.initialize();
-                    getSessionCache().setSessionDataStore(fileSessionDataStore);
+                    boolean deleteUnrestorableFiles = fileStoreConfig.isDeleteUnrestorableFiles();
+                    if (deleteUnrestorableFiles) {
+                        fileSessionDataStore.setDeleteUnrestorableFiles(true);
+                    }
                 }
+                fileSessionDataStore.initialize();
+                getSessionCache().setSessionDataStore(fileSessionDataStore);
             }
         }
 
@@ -129,14 +153,13 @@ public class DefaultSessionManager extends AbstractSessionHandler implements Ses
         super.doDestroy();
     }
 
-    public static DefaultSessionManager create(ActivityContext context, SessionManagerConfig sessionManagerConfig,
-                                               String workerName) throws IOException {
+    public static DefaultSessionManager create(ActivityContext context, SessionManagerConfig sessionManagerConfig)
+            throws IOException {
         if (context == null) {
             throw new IllegalArgumentException("context must not be null");
         }
 
         DefaultSessionManager sessionManager = new DefaultSessionManager();
-        sessionManager.setWorkerName(workerName);
         if (sessionManagerConfig != null) {
             sessionManager.setSessionManagerConfig(sessionManagerConfig);
             String storeType = sessionManagerConfig.getStoreType();

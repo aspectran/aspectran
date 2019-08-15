@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.context.resource;
 
+import com.aspectran.core.util.ClassUtils;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.ToStringBuilder;
 
@@ -26,9 +27,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.security.AccessControlException;
-import java.security.AccessController;
 import java.security.Policy;
-import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -70,7 +69,7 @@ public class AspectranClassLoader extends ClassLoader {
     private Set<String> excludePackageNames;
 
     public AspectranClassLoader() {
-        this(getDefaultClassLoader());
+        this(ClassUtils.getDefaultClassLoader());
     }
 
     public AspectranClassLoader(ClassLoader parent) {
@@ -84,7 +83,7 @@ public class AspectranClassLoader extends ClassLoader {
     }
 
     public AspectranClassLoader(String resourceLocation) throws InvalidResourceException {
-        this(resourceLocation, getDefaultClassLoader());
+        this(resourceLocation, ClassUtils.getDefaultClassLoader());
     }
 
     public AspectranClassLoader(String resourceLocation, ClassLoader parent) throws InvalidResourceException {
@@ -98,7 +97,7 @@ public class AspectranClassLoader extends ClassLoader {
     }
 
     public AspectranClassLoader(String[] resourceLocations) throws InvalidResourceException {
-        this(resourceLocations, getDefaultClassLoader());
+        this(resourceLocations, ClassUtils.getDefaultClassLoader());
     }
 
     public AspectranClassLoader(String[] resourceLocations, ClassLoader parent) throws InvalidResourceException {
@@ -516,7 +515,6 @@ public class AspectranClassLoader extends ClassLoader {
             private AspectranClassLoader next = root;
             private Iterator<AspectranClassLoader> children = root.getChildren().iterator();
             private AspectranClassLoader firstChild;
-            private AspectranClassLoader current;
 
             @Override
             public boolean hasNext() {
@@ -529,7 +527,7 @@ public class AspectranClassLoader extends ClassLoader {
                     throw new NoSuchElementException();
                 }
 
-                current = next;
+                AspectranClassLoader current = next;
                 if (children.hasNext()) {
                     next = children.next();
                     if (firstChild == null) {
@@ -558,40 +556,6 @@ public class AspectranClassLoader extends ClassLoader {
         };
     }
 
-    public static ClassLoader getDefaultClassLoader() {
-        if (System.getSecurityManager() == null) {
-            ClassLoader cl = null;
-            try {
-                cl = Thread.currentThread().getContextClassLoader();
-            } catch (Throwable ex) {
-                // ignore
-            }
-            if (cl == null) {
-                cl = AspectranClassLoader.class.getClassLoader();
-            }
-            if (cl == null) {
-                cl = ClassLoader.getSystemClassLoader();
-            }
-            return cl;
-        } else {
-            return AccessController.doPrivileged((PrivilegedAction<ClassLoader>)() -> {
-                ClassLoader cl = null;
-                try {
-                    cl = Thread.currentThread().getContextClassLoader();
-                } catch (Throwable ex) {
-                    // ignore
-                }
-                if (cl == null) {
-                    cl = AspectranClassLoader.class.getClassLoader();
-                }
-                if (cl == null) {
-                    cl = ClassLoader.getSystemClassLoader();
-                }
-                return cl;
-            });
-        }
-    }
-
     public static String resourceNameToClassName(String resourceName) {
         String className = resourceName.substring(0, resourceName.length() - CLASS_FILE_SUFFIX.length());
         className = className.replace(REGULAR_FILE_SEPARATOR_CHAR, PACKAGE_SEPARATOR_CHAR);
@@ -617,10 +581,11 @@ public class AspectranClassLoader extends ClassLoader {
             return null;
         }
 
+        ClassLoader classLoader = ClassUtils.getDefaultClassLoader();
         for (int i = 0; i < resourceLocations.length; i++) {
             if (resourceLocations[i].startsWith(CLASSPATH_URL_PREFIX)) {
                 String path = resourceLocations[i].substring(CLASSPATH_URL_PREFIX.length());
-                URL url = getDefaultClassLoader().getResource(path);
+                URL url = classLoader.getResource(path);
                 if (url == null) {
                     throw new InvalidResourceException("Class path resource [" + resourceLocations[i] +
                             "] cannot be resolved to URL because it does not exist");

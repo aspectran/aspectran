@@ -44,7 +44,7 @@ public class SessionData implements Serializable {
     /** the time of the last access excluding this one */
     private long lastAccessedTime;
 
-    private long maxInactiveIntervalMS;
+    private long maxInactiveInterval;
 
     private long expiryTime;
 
@@ -52,7 +52,7 @@ public class SessionData implements Serializable {
 
     private long lastSaved; // time in msec since last save
 
-    public SessionData(String id, long creationTime, long accessedTime, long lastAccessedTime, long maxInactiveIntervalMS) {
+    public SessionData(String id, long creationTime, long accessedTime, long lastAccessedTime, long maxInactiveInterval) {
         if (id == null) {
             throw new IllegalArgumentException("id must not be null");
         }
@@ -60,7 +60,7 @@ public class SessionData implements Serializable {
         this.creationTime = creationTime;
         this.accessedTime = accessedTime;
         this.lastAccessedTime = lastAccessedTime;
-        this.maxInactiveIntervalMS = maxInactiveIntervalMS;
+        this.maxInactiveInterval = maxInactiveInterval;
         calcAndSetExpiryTime(creationTime);
         this.attributes = new ConcurrentHashMap<>();
     }
@@ -153,11 +153,11 @@ public class SessionData implements Serializable {
     }
 
     public long getMaxInactiveInterval() {
-        return maxInactiveIntervalMS;
+        return maxInactiveInterval;
     }
 
     public void setMaxInactiveInterval(long maxInactiveInterval) {
-        this.maxInactiveIntervalMS = maxInactiveInterval;
+        this.maxInactiveInterval = maxInactiveInterval;
     }
 
     public long getExpiryTime() {
@@ -173,7 +173,7 @@ public class SessionData implements Serializable {
     }
 
     public long calcExpiryTime(long time) {
-        return (maxInactiveIntervalMS <= 0L ? 0L : (time + maxInactiveIntervalMS));
+        return (maxInactiveInterval <= 0L ? 0L : (time + maxInactiveInterval));
     }
 
     public void calcAndSetExpiryTime() {
@@ -185,7 +185,7 @@ public class SessionData implements Serializable {
     }
 
     public boolean isExpiredAt(long time) {
-        if (maxInactiveIntervalMS <= 0L) {
+        if (maxInactiveInterval <= 0L) {
             return false; // never expires
         }
         return (expiryTime <= time);

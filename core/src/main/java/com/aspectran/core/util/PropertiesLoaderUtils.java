@@ -49,7 +49,7 @@ public class PropertiesLoaderUtils {
      * @throws IOException if loading failed
      */
     public static Properties loadProperties(String resourceName) throws IOException {
-        return loadProperties(resourceName, AspectranClassLoader.getDefaultClassLoader());
+        return loadProperties(resourceName, ClassUtils.getDefaultClassLoader());
     }
 
     /**
@@ -87,7 +87,7 @@ public class PropertiesLoaderUtils {
      */
     public static void fillProperties(Properties props, String resourceName)
             throws IOException {
-        fillProperties(props, resourceName, AspectranClassLoader.getDefaultClassLoader());
+        fillProperties(props, resourceName, ClassUtils.getDefaultClassLoader());
     }
 
     /**

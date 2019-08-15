@@ -26,6 +26,8 @@ import com.aspectran.core.util.thread.Scheduler;
  */
 public interface SessionHandler extends Component {
 
+    String getWorkerName();
+
     Scheduler getScheduler();
 
     SessionIdGenerator getSessionIdGenerator();
@@ -106,6 +108,8 @@ public interface SessionHandler extends Component {
      * @param now the time at which to check for expiry
      */
     void sessionInactivityTimerExpired(BasicSession session, long now);
+
+    void scavenge();
 
     /**
      * Adds an event listener for session-related events.

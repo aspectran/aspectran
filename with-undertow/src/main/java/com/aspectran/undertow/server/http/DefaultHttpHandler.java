@@ -7,6 +7,7 @@ import com.aspectran.undertow.service.AspectranTowService;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.handlers.resource.ResourceManager;
 import io.undertow.server.handlers.resource.ResourceSupplier;
+import io.undertow.server.session.SessionCookieConfig;
 
 /**
  * Implementation of Undertow {@link io.undertow.server.HttpHandler} to handle HTTP
@@ -43,6 +44,9 @@ public class DefaultHttpHandler extends AbstractHttpHandler implements Initializ
     public void initialize() throws Exception {
         Assert.state(towService == null, "Cannot reconfigure AspectranTowService");
         if (getSessionManager() != null) {
+            if (getSessionConfig() == null) {
+                setSessionConfig(new SessionCookieConfig());
+            }
             getSessionManager().start();
         }
         towService = AspectranTowService.create(getActivityContext().getRootService());

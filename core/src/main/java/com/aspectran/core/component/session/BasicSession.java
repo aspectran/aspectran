@@ -240,10 +240,10 @@ public class BasicSession implements Session {
         try (Lock ignored = locker.lock()) {
             long remaining = sessionData.getExpiryTime() - now;
             long maxInactive = sessionData.getMaxInactiveInterval();
-            int evictionPolicy = sessionHandler.getSessionCache().getEvictionPolicy();
+            int evictionIdleSecs = sessionHandler.getSessionCache().getEvictionIdleSecs();
             if (maxInactive <= 0) {
                 // sessions are immortal, they never expire
-                if (evictionPolicy < SessionCache.EVICT_ON_INACTIVITY) {
+                if (evictionIdleSecs < SessionCache.EVICT_ON_INACTIVITY) {
                     // we do not want to evict inactive sessions
                     time = -1;
                     if (log.isDebugEnabled()) {
@@ -251,20 +251,21 @@ public class BasicSession implements Session {
                     }
                 } else {
                     // sessions are immortal but we want to evict after inactivity
-                    time = TimeUnit.SECONDS.toMillis(evictionPolicy);
+                    time = TimeUnit.SECONDS.toMillis(evictionIdleSecs);
                     if (log.isDebugEnabled()) {
-                        log.debug("Session " + getId() + " is immortal; evict after " + evictionPolicy + " sec inactivity");
+                        log.debug("Session " + getId() + " is immortal; evict after " + evictionIdleSecs +
+                                " sec inactivity");
                     }
                 }
             } else {
                 // sessions are not immortal
-                if (evictionPolicy == SessionCache.NEVER_EVICT) {
+                if (evictionIdleSecs == SessionCache.NEVER_EVICT) {
                     // timeout is the time remaining until its expiry
                     time = (remaining > 0 ? remaining : 0);
-                    if (log.isDebugEnabled()) {
-                        log.debug("Session " + getId() + " no eviction");
+                    if (log.isTraceEnabled()) {
+                        log.trace("Session " + getId() + " no eviction");
                     }
-                } else if (evictionPolicy == SessionCache.EVICT_ON_SESSION_EXIT) {
+                } else if (evictionIdleSecs == SessionCache.EVICT_ON_SESSION_EXIT) {
                     // session will not remain in the cache, so no timeout
                     time = -1;
                     if (log.isDebugEnabled()) {
@@ -273,10 +274,10 @@ public class BasicSession implements Session {
                 } else {
                     // want to evict on idle: timer is lesser of the session's
                     // expiration remaining and the time to evict
-                    time = (remaining > 0 ? (Math.min(maxInactive, TimeUnit.SECONDS.toMillis(evictionPolicy))) : 0);
+                    time = (remaining > 0 ? Math.min(maxInactive, TimeUnit.SECONDS.toMillis(evictionIdleSecs)) : 0);
                     if (log.isDebugEnabled()) {
                         log.debug("Session " + getId() + " timer set to lesser of maxInactive=" + maxInactive +
-                                " and inactivityEvict=" + evictionPolicy);
+                                " and inactivityEvict=" + evictionIdleSecs);
                     }
                 }
             }
@@ -470,6 +471,21 @@ public class BasicSession implements Session {
     }
 
     /**
+     * Called when a session is about to be passivated.
+     * Call the passivation listeners. This must be called holding the lock.
+     */
+    protected void willPassivate() {
+        for (String key : sessionData.getKeys()) {
+            Object value = sessionData.getAttribute(key);
+            if (value instanceof SessionActivationListener) {
+                SessionActivationListener listener = (SessionActivationListener)value;
+                listener.sessionWillPassivate(this);
+            }
+        }
+    }
+
+    /**
+     * Called when a session has just been activated.
      * Call the activation listeners. This must be called holding the lock.
      */
     protected void didActivate() {
@@ -478,19 +494,6 @@ public class BasicSession implements Session {
             if (value instanceof SessionActivationListener) {
                 SessionActivationListener listener = (SessionActivationListener)value;
                 listener.sessionDidActivate(this);
-            }
-        }
-    }
-
-    /**
-     * Call the passivation listeners. This must be called holding the lock
-     */
-    protected void willPassivate() {
-        for (String key : sessionData.getKeys()) {
-            Object value = sessionData.getAttribute(key);
-            if (value instanceof SessionActivationListener) {
-                SessionActivationListener listener = (SessionActivationListener)value;
-                listener.sessionWillPassivate(this);
             }
         }
     }
@@ -577,6 +580,7 @@ public class BasicSession implements Session {
                     }
                     long now = System.currentTimeMillis();
                     // handle what to do with the session after the timer expired
+                    setDestroyedReason(DestroyedReason.TIMEOUT);
                     getSessionHandler().sessionInactivityTimerExpired(BasicSession.this, now);
                     try (Lock ignored = BasicSession.this.lock()) {
                         // grab the lock and check what happened to the session: if it didn't get evicted and

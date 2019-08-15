@@ -53,7 +53,7 @@ public class PollingIntervalCommand extends AbstractCommand {
             if (pollingInterval > 0L) {
                 getCommandRegistry().getDaemon().getCommandPoller().setPollingInterval(pollingInterval);
                 return success(info("The polling interval is changed from " + oldPollingInterval +
-                        "ms to " + pollingInterval + "ms"));
+                        "ms to " + pollingInterval + " ms"));
             } else if (pollingInterval < 0L) {
                 return failed(error("The polling interval can not be negative: " + pollingInterval));
             } else {

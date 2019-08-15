@@ -81,7 +81,7 @@ public abstract class AbstractHttpHandler extends ResourceHandler implements Act
 
             exchange.putAttachment(SessionManager.ATTACHMENT_KEY, sessionManager);
             exchange.putAttachment(SessionConfig.ATTACHMENT_KEY, sessionConfig);
-            UpdateLastAccessTimeListener listener = new UpdateLastAccessTimeListener(sessionConfig, sessionManager);
+            UpdateLastAccessTimeListener listener = new UpdateLastAccessTimeListener(sessionManager, sessionConfig);
             exchange.addExchangeCompleteListener(listener);
 
             boolean processed = getTowService().execute(exchange);
@@ -104,13 +104,13 @@ public abstract class AbstractHttpHandler extends ResourceHandler implements Act
 
     private static class UpdateLastAccessTimeListener implements ExchangeCompletionListener {
 
-        private final SessionConfig sessionConfig;
-
         private final SessionManager sessionManager;
 
-        private UpdateLastAccessTimeListener(SessionConfig sessionConfig, SessionManager sessionManager) {
-            this.sessionConfig = sessionConfig;
+        private final SessionConfig sessionConfig;
+
+        private UpdateLastAccessTimeListener(SessionManager sessionManager, SessionConfig sessionConfig) {
             this.sessionManager = sessionManager;
+            this.sessionConfig = sessionConfig;
         }
 
         @Override

@@ -15,7 +15,6 @@
  */
 package com.aspectran.core.component.translet.scan;
 
-import com.aspectran.core.context.resource.AspectranClassLoader;
 import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.params.FilterParameters;
@@ -71,7 +70,7 @@ class TransletScannerTest {
             if (transletScanFilterClassName != null) {
                 TransletScanFilter transletScanFilter;
                 try {
-                    Class<?> filterClass = AspectranClassLoader.getDefaultClassLoader().loadClass(transletScanFilterClassName);
+                    Class<?> filterClass = ClassUtils.getDefaultClassLoader().loadClass(transletScanFilterClassName);
                     transletScanFilter = (TransletScanFilter)ClassUtils.createInstance(filterClass);
                 } catch (Exception e) {
                     throw new IllegalRuleException("Failed to instantiate TransletScanFilter [" +

@@ -25,8 +25,12 @@ import com.aspectran.core.util.thread.ScheduledExecutorScheduler;
 import com.aspectran.core.util.thread.Scheduler;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import static java.lang.Math.round;
@@ -44,17 +48,35 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
 
     private final List<SessionListener> sessionListeners = new CopyOnWriteArrayList<>();
 
+    private final Set<String> candidateSessionIdsForExpiry = ConcurrentHashMap.newKeySet();
+
     private final Scheduler scheduler;
+
+    private String workerName;
 
     private SessionIdGenerator sessionIdGenerator;
 
     private SessionCache sessionCache;
+
+    private HouseKeeper houseKeeper;
 
     /** 30 minute default */
     private volatile int defaultMaxIdleSecs = 30 * 60;
 
     public AbstractSessionHandler() {
         scheduler = new ScheduledExecutorScheduler(String.format("session-scheduler-%x", hashCode()), false);
+    }
+
+    @Override
+    public String getWorkerName() {
+        return workerName;
+    }
+
+    public void setWorkerName(String workerName) {
+        if (workerName != null && workerName.contains(".")) {
+            throw new IllegalArgumentException("Worker name cannot contain '.'");
+        }
+        this.workerName = workerName;
     }
 
     @Override
@@ -78,6 +100,14 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
 
     protected void setSessionCache(SessionCache sessionCache) {
         this.sessionCache = sessionCache;
+    }
+
+    public HouseKeeper getHouseKeeper() {
+        return houseKeeper;
+    }
+
+    public void setHouseKeeper(HouseKeeper houseKeeper) {
+        this.houseKeeper = houseKeeper;
     }
 
     @Override
@@ -223,11 +253,62 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
                 return; // do nothing, session is no longer valid
             }
             if (session.isExpiredAt(now)) {
-                invalidate(session.getId());
+                // instead of expiring the session directly here, accumulate a list of
+                // session ids that need to be expired. This is an efficiency measure: as
+                // the expiration involves the SessionDataStore doing a delete, it is
+                // most efficient if it can be done as a bulk operation to eg reduce
+                // roundtrips to the persistent store. Only do this if the HouseKeeper that
+                // does the scavenging is configured to actually scavenge
+                if (getHouseKeeper() != null && getHouseKeeper().isScavengable()) {
+                    candidateSessionIdsForExpiry.add(session.getId());
+                    if (log.isDebugEnabled()) {
+                        log.debug("Session " + session.getId() + " is candidate for expiry");
+                    }
+                } else {
+                    invalidate(session.getId());
+                }
             } else {
-                //possibly evict the session
+                // possibly evict the session
                 sessionCache.checkInactiveSession(session);
             }
+        }
+    }
+
+    /**
+     * Called periodically by the HouseKeeper to handle the list of
+     * sessions that have expired since the last call to scavenge.
+     */
+    @Override
+    public void scavenge() {
+        // don't attempt to scavenge if we are shutting down
+        if (isDestroying() || isDestroyed()) {
+            return;
+        }
+        if (log.isDebugEnabled()) {
+            log.debug(this + " scavenging sessions");
+        }
+        //Get a snapshot of the candidates as they are now. Others that
+        //arrive during this processing will be dealt with on
+        //subsequent call to scavenge
+        String[] ss = candidateSessionIdsForExpiry.toArray(new String[0]);
+        Set<String> candidates = new HashSet<>(Arrays.asList(ss));
+        candidateSessionIdsForExpiry.removeAll(candidates);
+        if (log.isDebugEnabled()) {
+            log.debug(getComponentName() + " scavenging session ids " + candidates);
+        }
+        try {
+            candidates = sessionCache.checkExpiration(candidates);
+            if (candidates != null) {
+                for (String id : candidates) {
+                    try {
+                        invalidate(id);
+                    } catch (Exception e) {
+                        log.warn(e.getMessage(), e);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            log.warn(e.getMessage(), e);
         }
     }
 
@@ -330,12 +411,27 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
     @Override
     protected void doInitialize() throws Exception {
         scheduler.start();
+        if (houseKeeper != null) {
+            houseKeeper.startScavenging();
+        }
     }
 
     @Override
     protected void doDestroy() throws Exception {
+        if (houseKeeper != null) {
+            houseKeeper.stopScavenging();
+        }
         scheduler.stop();
         sessionCache.clear();
+    }
+
+    @Override
+    public String getComponentName() {
+        if (workerName != null) {
+            return super.getComponentName() + "(" + workerName + ")";
+        } else {
+            return super.getComponentName();
+        }
     }
 
 }

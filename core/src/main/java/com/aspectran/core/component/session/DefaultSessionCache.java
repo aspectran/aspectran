@@ -41,6 +41,7 @@ public class DefaultSessionCache extends AbstractSessionCache {
 
     private final AtomicLong rejectedSessionCount = new AtomicLong();
 
+    /** Determines the maximum number of active sessions allowed. */
     private volatile int maxSessions;
 
     public DefaultSessionCache(SessionHandler sessionHandler) {
@@ -52,6 +53,7 @@ public class DefaultSessionCache extends AbstractSessionCache {
         return maxSessions;
     }
 
+    @Override
     public void setMaxSessions(int maxSessions) {
         this.maxSessions = maxSessions;
     }
@@ -67,21 +69,21 @@ public class DefaultSessionCache extends AbstractSessionCache {
     @Override
     public BasicSession doPutIfAbsent(String id, BasicSession session) {
         checkMaxSessions();
-        BasicSession s = sessions.putIfAbsent(id, session);
-        if (s == null && !(session instanceof PlaceHolderSession)) {
+        BasicSession bs = sessions.putIfAbsent(id, session);
+        if (bs == null && !(session instanceof PlaceHolderSession)) {
             statistics.increment();
         }
-        return s;
+        return bs;
     }
 
     @Override
     public BasicSession doDelete(String id) {
-        BasicSession s = sessions.remove(id);
-        if (s != null && !(s instanceof PlaceHolderSession)) {
+        BasicSession bs = sessions.remove(id);
+        if (bs != null && !(bs instanceof PlaceHolderSession)) {
             statistics.decrement();
             expiredSessionCount.incrementAndGet();
         }
-        return s;
+        return bs;
     }
 
     @Override

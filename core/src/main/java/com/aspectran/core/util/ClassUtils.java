@@ -15,8 +15,12 @@
  */
 package com.aspectran.core.util;
 
+import com.aspectran.core.lang.Nullable;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 
 /**
  * Miscellaneous class utility methods.
@@ -174,6 +178,99 @@ public abstract class ClassUtils {
         } catch (ClassNotFoundException ex) {
             // No corresponding class found at all
             return false;
+        }
+    }
+
+    /**
+     * Returns the default class loader within the current context.
+     * If there is a context classloader it is returned, otherwise the classloader
+     * which loaded the ClassUtils Class is returned.
+     *
+     * @return the appropriate default classloader which is guaranteed to be non-null
+     */
+    public static ClassLoader getDefaultClassLoader() {
+        if (System.getSecurityManager() == null) {
+            ClassLoader cl = null;
+            try {
+                cl = Thread.currentThread().getContextClassLoader();
+            } catch (Throwable ex) {
+                // ignore
+            }
+            if (cl == null) {
+                cl = ClassUtils.class.getClassLoader();
+            }
+            if (cl == null) {
+                cl = ClassLoader.getSystemClassLoader();
+            }
+            return cl;
+        } else {
+            return AccessController.doPrivileged((PrivilegedAction<ClassLoader>)() -> {
+                ClassLoader cl = null;
+                try {
+                    cl = Thread.currentThread().getContextClassLoader();
+                } catch (Throwable ex) {
+                    // ignore
+                }
+                if (cl == null) {
+                    cl = ClassUtils.class.getClassLoader();
+                }
+                if (cl == null) {
+                    cl = ClassLoader.getSystemClassLoader();
+                }
+                return cl;
+            });
+        }
+    }
+
+    /**
+     * Override the thread context ClassLoader with the environment's bean ClassLoader
+     * if necessary, i.e. if the bean ClassLoader is not equivalent to the thread
+     * context ClassLoader already.
+     *
+     * @param classLoaderToUse the actual ClassLoader to use for the thread context
+     * @return the original thread context ClassLoader, or {@code null} if not overridden
+     */
+    @Nullable
+    public static ClassLoader overrideThreadContextClassLoader(@Nullable ClassLoader classLoaderToUse) {
+        if (System.getSecurityManager() == null) {
+            Thread currentThread = Thread.currentThread();
+            ClassLoader threadContextClassLoader = currentThread.getContextClassLoader();
+            if (classLoaderToUse != null && !classLoaderToUse.equals(threadContextClassLoader)) {
+                currentThread.setContextClassLoader(classLoaderToUse);
+                return threadContextClassLoader;
+            } else {
+                return null;
+            }
+        } else {
+            return AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+                @Override
+                public ClassLoader run() {
+                    Thread currentThread = Thread.currentThread();
+                    ClassLoader threadContextClassLoader = currentThread.getContextClassLoader();
+                    if (classLoaderToUse != null && !classLoaderToUse.equals(threadContextClassLoader)) {
+                        currentThread.setContextClassLoader(classLoaderToUse);
+                        return threadContextClassLoader;
+                    } else {
+                        return null;
+                    }
+                }
+            });
+        }
+    }
+
+    public static void restoreThreadContextClassLoader(@Nullable ClassLoader classLoader) {
+        if (classLoader != null) {
+            if (System.getSecurityManager() == null) {
+                Thread.currentThread().setContextClassLoader(classLoader);
+            } else {
+                AccessController.doPrivileged(new PrivilegedAction<Void>() {
+                    @Override
+                    public Void run() {
+                        Thread.currentThread().setContextClassLoader(classLoader);
+                        return null;
+                    }
+                });
+            }
         }
     }
 

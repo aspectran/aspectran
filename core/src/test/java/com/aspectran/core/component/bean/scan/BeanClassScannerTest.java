@@ -15,7 +15,6 @@
  */
 package com.aspectran.core.component.bean.scan;
 
-import com.aspectran.core.context.resource.AspectranClassLoader;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.context.rule.params.FilterParameters;
@@ -69,7 +68,7 @@ class BeanClassScannerTest {
     }
 
     private BeanClassScanner createBeanClassScanner(BeanRule beanRule) throws IllegalRuleException {
-        ClassLoader classLoader = AspectranClassLoader.getDefaultClassLoader();
+        ClassLoader classLoader = ClassUtils.getDefaultClassLoader();
         BeanClassScanner scanner = new BeanClassScanner(classLoader);
         if (beanRule.getFilterParameters() != null) {
             FilterParameters filterParameters = beanRule.getFilterParameters();

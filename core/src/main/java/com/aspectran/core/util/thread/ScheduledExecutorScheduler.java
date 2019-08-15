@@ -37,54 +37,64 @@ public class ScheduledExecutorScheduler implements Scheduler {
 
     private final ThreadGroup threadGroup;
 
-    private volatile ScheduledThreadPoolExecutor scheduler;
+    private volatile ScheduledThreadPoolExecutor executor;
 
     public ScheduledExecutorScheduler() {
         this(null, false);
     }
 
     public ScheduledExecutorScheduler(String name, boolean daemon) {
-        this(name, daemon, Thread.currentThread().getContextClassLoader());
+        this(name, daemon, null);
     }
 
-    public ScheduledExecutorScheduler(String name, boolean daemon, ClassLoader threadFactoryClassLoader) {
-        this(name, daemon, threadFactoryClassLoader, null);
+    public ScheduledExecutorScheduler(String name, boolean daemon, ClassLoader classLoader) {
+        this(name, daemon, classLoader, null);
     }
 
-    public ScheduledExecutorScheduler(String name, boolean daemon, ClassLoader threadFactoryClassLoader, ThreadGroup threadGroup) {
+    public ScheduledExecutorScheduler(String name, boolean daemon, ClassLoader classLoader, ThreadGroup threadGroup) {
         this.name = (name == null ? "scheduler-" + hashCode() : name);
         this.daemon = daemon;
-        this.classloader = threadFactoryClassLoader == null ? Thread.currentThread().getContextClassLoader() : threadFactoryClassLoader;
+        this.classloader = classLoader;
         this.threadGroup = threadGroup;
     }
 
     @Override
     public Task schedule(Runnable task, long delay, TimeUnit unit) {
-        ScheduledThreadPoolExecutor s = scheduler;
-        if (s == null)
+        ScheduledThreadPoolExecutor executor = this.executor;
+        if (executor == null) {
             return () -> false;
-        ScheduledFuture<?> result = s.schedule(task, delay, unit);
+        }
+        ScheduledFuture<?> result = executor.schedule(task, delay, unit);
         return new ScheduledFutureTask(result);
     }
 
-    public void start() {
-        if (scheduler != null) {
+    @Override
+    public synchronized void start() {
+        if (executor != null) {
             throw new IllegalStateException("Scheduler " + name + " is already running");
         }
-        scheduler = new ScheduledThreadPoolExecutor(1, r -> {
+        executor = new ScheduledThreadPoolExecutor(1, r -> {
             Thread thread = new Thread(threadGroup, r, name);
             thread.setDaemon(daemon);
-            thread.setContextClassLoader(classloader);
+            if (classloader != null) {
+                thread.setContextClassLoader(classloader);
+            }
             return thread;
         });
-        scheduler.setRemoveOnCancelPolicy(true);
+        executor.setRemoveOnCancelPolicy(true);
     }
 
-    public void stop() {
-        if (scheduler != null) {
-            scheduler.shutdownNow();
-            scheduler = null;
+    @Override
+    public synchronized void stop() {
+        if (executor != null) {
+            executor.shutdownNow();
+            executor = null;
         }
+    }
+
+    @Override
+    public boolean isRunning() {
+        return (executor != null);
     }
 
     private static class ScheduledFutureTask implements Task {

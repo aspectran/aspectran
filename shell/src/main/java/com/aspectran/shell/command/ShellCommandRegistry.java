@@ -15,7 +15,6 @@
  */
 package com.aspectran.shell.command;
 
-import com.aspectran.core.context.resource.AspectranClassLoader;
 import com.aspectran.core.util.ClassUtils;
 
 import java.util.Collection;
@@ -66,7 +65,7 @@ public class ShellCommandRegistry implements CommandRegistry {
         if (classNames != null) {
             for (String className : classNames) {
                 try {
-                    ClassLoader classLoader = AspectranClassLoader.getDefaultClassLoader();
+                    ClassLoader classLoader = ClassUtils.getDefaultClassLoader();
                     @SuppressWarnings("unchecked")
                     Class<? extends Command> commandClass = (Class<? extends Command>)classLoader.loadClass(className);
                     addCommand(commandClass);

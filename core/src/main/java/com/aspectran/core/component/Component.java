@@ -16,7 +16,7 @@
 package com.aspectran.core.component;
 
 /**
- * The lifecycle interface for generic components.
+ * The interface for the lifecycle of the component.
  *
  * <p>Created: 2017. 7. 4.</p>
  */
@@ -37,21 +37,28 @@ public interface Component {
     /**
      * Returns whether the component is currently available.
      *
-     * @return if true, the component is currently available
+     * @return true if the component is currently available
      */
     boolean isAvailable();
 
     /**
      * Returns whether or not the component has been initialized.
      *
-     * @return if true, the component has been initialized
+     * @return true if the component has been initialized
      */
     boolean isInitialized();
 
     /**
+     * Returns whether the component is being destroyed.
+     *
+     * @return true if the component is being destroyed
+     */
+    boolean isDestroying();
+
+    /**
      * Returns whether or not the component has been destroyed.
      *
-     * @return ㅑf true, the component has been destroyed
+     * @return true if the component has been destroyed
      */
     boolean isDestroyed();
 

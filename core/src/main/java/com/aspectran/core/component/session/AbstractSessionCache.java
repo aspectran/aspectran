@@ -41,7 +41,7 @@ public abstract class AbstractSessionCache implements SessionCache {
      * When, if ever, to evict sessions: never; only when the last request for
      * them finishes; after inactivity time (expressed as secs)
      */
-    private int evictionPolicy = SessionCache.NEVER_EVICT;
+    private int evictionIdleSecs = NEVER_EVICT;
 
     /**
      * If true, as soon as a new session is created, it will be persisted to
@@ -80,8 +80,8 @@ public abstract class AbstractSessionCache implements SessionCache {
     }
 
     @Override
-    public int getEvictionPolicy() {
-        return evictionPolicy;
+    public int getEvictionIdleSecs() {
+        return evictionIdleSecs;
     }
 
     /**
@@ -90,8 +90,8 @@ public abstract class AbstractSessionCache implements SessionCache {
      * &gt;0 is the number of seconds after which we evict inactive sessions from the cache
      */
     @Override
-    public void setEvictionPolicy(int evictionTimeout) {
-        this.evictionPolicy = evictionTimeout;
+    public void setEvictionIdleSecs(int evictionTimeout) {
+        this.evictionIdleSecs = evictionTimeout;
     }
 
     @Override
@@ -102,6 +102,22 @@ public abstract class AbstractSessionCache implements SessionCache {
     @Override
     public void setSaveOnCreate(boolean saveOnCreate) {
         this.saveOnCreate = saveOnCreate;
+    }
+
+    /**
+     * Whether we should save a session that has been inactive before
+     * we boot it from the cache.
+     *
+     * @return true if an inactive session will be saved before being evicted
+     */
+    @Override
+    public boolean isSaveOnInactiveEviction() {
+        return saveOnInactiveEviction;
+    }
+
+    @Override
+    public void setSaveOnInactiveEviction(boolean saveOnEvict) {
+        this.saveOnInactiveEviction = saveOnEvict;
     }
 
     /**
@@ -121,22 +137,6 @@ public abstract class AbstractSessionCache implements SessionCache {
     @Override
     public void setRemoveUnloadableSessions(boolean removeUnloadableSessions) {
         this.removeUnloadableSessions = removeUnloadableSessions;
-    }
-
-    /**
-     * Whether we should save a session that has been inactive before
-     * we boot it from the cache.
-     *
-     * @return true if an inactive session will be saved before being evicted
-     */
-    @Override
-    public boolean isSaveOnInactiveEviction() {
-        return saveOnInactiveEviction;
-    }
-
-    @Override
-    public void setSaveOnInactiveEviction(boolean saveOnEvict) {
-        this.saveOnInactiveEviction = saveOnEvict;
     }
 
     /**
@@ -160,8 +160,8 @@ public abstract class AbstractSessionCache implements SessionCache {
             }
 
             if (session == null) {
-                if (log.isDebugEnabled()) {
-                    log.debug("Session " + id + " not found locally, attempting to load");
+                if (log.isTraceEnabled()) {
+                    log.trace("Session " + id + " not found locally, attempting to load");
                 }
 
                 // didn't get a session, try and create one and put in a placeholder for it
@@ -295,50 +295,21 @@ public abstract class AbstractSessionCache implements SessionCache {
             // don't do anything with the session until the last request for it has finished
             if (session.getRequests() <= 0) {
                 // save the session
-                if (sessionDataStore.isPassivating()) {
-                    // backing store supports passivation, call the listeners
-                    session.willPassivate();
+                sessionDataStore.store(id, session.getSessionData());
+                // if we evict on session exit, boot it from the cache
+                if (getEvictionIdleSecs() == EVICT_ON_SESSION_EXIT) {
                     if (log.isDebugEnabled()) {
-                        log.debug("Session passivating id=" + id);
+                        log.debug("Eviction on request exit id=" + id);
                     }
-                    sessionDataStore.store(id, session.getSessionData());
-                    if (getEvictionPolicy() == EVICT_ON_SESSION_EXIT) {
-                        // throw out the passivated session object from the map
-                        if (log.isDebugEnabled()) {
-                            log.debug("Evicted on request exit id=" + id);
-                        }
-                        doDelete(id);
-                        session.setResident(false);
-                    } else {
-                        // reactivate the session
-                        session.didActivate();
-                        session.setResident(true);
-                        doPutIfAbsent(id, session); // ensure it is in our map
-                        if (log.isDebugEnabled()) {
-                            log.debug("Session reactivated id=" + id);
-                        }
-                    }
+                    doDelete(session.getId());
+                    session.setResident(false);
                 } else {
-                    // if our backing datastore isn't the passivating kind, just save the session
-                    sessionDataStore.store(id, session.getSessionData());
-                    // if we evict on session exit, boot it from the cache
-                    if (getEvictionPolicy() == EVICT_ON_SESSION_EXIT) {
-                        if (log.isDebugEnabled()) {
-                            log.debug("Eviction on request exit id=" + id);
-                        }
-                        doDelete(session.getId());
-                        session.setResident(false);
-                    } else {
-                        session.setResident(true);
-                        doPutIfAbsent(id, session); // ensure it is in our map
-                        if (log.isDebugEnabled()) {
-                            log.debug("Non passivating SessionDataStore, session in SessionCache only id=" + id);
-                        }
-                    }
+                    session.setResident(true);
+                    doPutIfAbsent(id, session); // ensure it is in our map
                 }
             } else {
                 if (log.isDebugEnabled()) {
-                    log.debug("Req count=" + session.getRequests() + " for id=" + id);
+                    log.debug("Session " + id + " request=" + session.getRequests());
                 }
                 session.setResident(true);
                 doPutIfAbsent(id, session); // ensure it is the map, but don't save it to the backing store until the last request exists
@@ -447,8 +418,8 @@ public abstract class AbstractSessionCache implements SessionCache {
         Set<String> sessionsInUse = new HashSet<>();
         if (allCandidates != null) {
             for (String c : allCandidates) {
-                BasicSession s = doGet(c);
-                if (s != null && s.getRequests() > 0) {
+                BasicSession bs = doGet(c);
+                if (bs != null && bs.getRequests() > 0) {
                     // if the session is in my cache, check its not in use first
                     sessionsInUse.add(c);
                 }
@@ -469,7 +440,7 @@ public abstract class AbstractSessionCache implements SessionCache {
      * thus being able to be evicted, if eviction
      * is enabled.
      *
-     * @param session session to check
+     * @param session the session to check
      */
     @Override
     public void checkInactiveSession(BasicSession session) {
@@ -480,7 +451,7 @@ public abstract class AbstractSessionCache implements SessionCache {
             log.debug("Checking for idle " +  session.getId());
         }
         try (Lock ignored = session.lock()) {
-            if (getEvictionPolicy() > 0 && session.isIdleLongerThan(getEvictionPolicy()) &&
+            if (getEvictionIdleSecs() > 0 && session.isIdleLongerThan(getEvictionIdleSecs()) &&
                     session.isValid() && session.isResident() && session.getRequests() <= 0) {
                 // Be careful with saveOnInactiveEviction - you may be able to re-animate a session that was
                 // being managed on another node and has expired.
@@ -488,15 +459,10 @@ public abstract class AbstractSessionCache implements SessionCache {
                     if (log.isDebugEnabled()) {
                         log.debug("Evicting idle session " + session.getId());
                     }
-
                     // save before evicting
                     if (isSaveOnInactiveEviction() && sessionDataStore != null) {
-                        if (sessionDataStore.isPassivating()) {
-                            session.willPassivate();
-                        }
                         sessionDataStore.store(session.getId(), session.getSessionData());
                     }
-
                     doDelete(session.getId()); // detach from this cache
                     session.setResident(false);
                 } catch (Exception e) {
