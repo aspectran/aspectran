@@ -78,4 +78,25 @@ class BasicTest {
         assertEquals("Nested String Bean", context.getBeanRegistry().getBean("nestedStringBean"));
     }
 
+    @Test
+    void nestedStringBean_1() {
+        String result = context.getBeanRegistry().getBean("nestedStringBean-1");
+//        System.out.println(result);
+        assertEquals("Nested String Bean", result);
+    }
+
+    @Test
+    void nestedStringBean_2() {
+        String result = context.getBeanRegistry().getBean("nestedStringBean-2");
+//        System.out.println(result);
+        assertEquals("Nested String Bean", result);
+    }
+
+//    @Test
+//    void overNestedStringBean() {
+//        String result = context.getBeanRegistry().getBean("overNestedStringBean");
+//        System.out.println(result);
+//        assertEquals("Nested String Bean", result);
+//    }
+
 }

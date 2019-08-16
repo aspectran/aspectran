@@ -471,34 +471,6 @@ public class BasicSession implements Session {
     }
 
     /**
-     * Called when a session is about to be passivated.
-     * Call the passivation listeners. This must be called holding the lock.
-     */
-    protected void willPassivate() {
-        for (String key : sessionData.getKeys()) {
-            Object value = sessionData.getAttribute(key);
-            if (value instanceof SessionActivationListener) {
-                SessionActivationListener listener = (SessionActivationListener)value;
-                listener.sessionWillPassivate(this);
-            }
-        }
-    }
-
-    /**
-     * Called when a session has just been activated.
-     * Call the activation listeners. This must be called holding the lock.
-     */
-    protected void didActivate() {
-        for (String key : sessionData.getKeys()) {
-            Object value = sessionData.getAttribute(key);
-            if (value instanceof SessionActivationListener) {
-                SessionActivationListener listener = (SessionActivationListener)value;
-                listener.sessionDidActivate(this);
-            }
-        }
-    }
-
-    /**
      * Check that the session can be modified.
      *
      * @throws IllegalStateException if the session is invalid

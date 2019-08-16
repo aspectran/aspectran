@@ -242,17 +242,14 @@ public abstract class ClassUtils {
                 return null;
             }
         } else {
-            return AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
-                @Override
-                public ClassLoader run() {
-                    Thread currentThread = Thread.currentThread();
-                    ClassLoader threadContextClassLoader = currentThread.getContextClassLoader();
-                    if (classLoaderToUse != null && !classLoaderToUse.equals(threadContextClassLoader)) {
-                        currentThread.setContextClassLoader(classLoaderToUse);
-                        return threadContextClassLoader;
-                    } else {
-                        return null;
-                    }
+            return AccessController.doPrivileged((PrivilegedAction<ClassLoader>)() -> {
+                Thread currentThread = Thread.currentThread();
+                ClassLoader threadContextClassLoader = currentThread.getContextClassLoader();
+                if (classLoaderToUse != null && !classLoaderToUse.equals(threadContextClassLoader)) {
+                    currentThread.setContextClassLoader(classLoaderToUse);
+                    return threadContextClassLoader;
+                } else {
+                    return null;
                 }
             });
         }
@@ -263,12 +260,9 @@ public abstract class ClassUtils {
             if (System.getSecurityManager() == null) {
                 Thread.currentThread().setContextClassLoader(classLoader);
             } else {
-                AccessController.doPrivileged(new PrivilegedAction<Void>() {
-                    @Override
-                    public Void run() {
-                        Thread.currentThread().setContextClassLoader(classLoader);
-                        return null;
-                    }
+                AccessController.doPrivileged((PrivilegedAction<Void>)() -> {
+                    Thread.currentThread().setContextClassLoader(classLoader);
+                    return null;
                 });
             }
         }

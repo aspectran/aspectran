@@ -31,6 +31,12 @@ import com.aspectran.core.util.nodelet.NodeletParser;
  */
 class InnerBeanNodeletAdder implements NodeletAdder {
 
+    private final int depth;
+
+    InnerBeanNodeletAdder(int depth) {
+        this.depth = depth;
+    }
+
     @Override
     public void add(String xpath, NodeletParser parser) {
         AspectranNodeParser nodeParser = parser.getNodeParser();
@@ -91,7 +97,7 @@ class InnerBeanNodeletAdder implements NodeletAdder {
             irm.setProfile(StringUtils.emptyToNull(attrs.get("profile")));
             parser.pushObject(irm);
         });
-        nodeParser.addDeeplyItemNodelets();
+        nodeParser.addItemNodelets(depth);
         parser.addNodeEndlet(text -> {
             ItemRuleMap irm = parser.popObject();
             BeanRule beanRule = parser.peekObject();
@@ -104,7 +110,7 @@ class InnerBeanNodeletAdder implements NodeletAdder {
             irm.setProfile(StringUtils.emptyToNull(attrs.get("profile")));
             parser.pushObject(irm);
         });
-        nodeParser.addDeeplyItemNodelets();
+        nodeParser.addItemNodelets(depth);
         parser.addNodeEndlet(text -> {
             ItemRuleMap irm = parser.popObject();
             BeanRule beanRule = parser.peekObject();

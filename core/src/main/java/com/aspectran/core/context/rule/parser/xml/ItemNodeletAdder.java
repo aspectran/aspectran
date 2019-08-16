@@ -35,10 +35,10 @@ import com.aspectran.core.util.nodelet.NodeletParser;
  */
 class ItemNodeletAdder implements NodeletAdder {
 
-    private boolean hasInnerBeans;
+    private final int depth;
 
-    ItemNodeletAdder(boolean hasInnerBeans) {
-        this.hasInnerBeans = hasInnerBeans;
+    ItemNodeletAdder(int depth) {
+        this.depth = depth;
     }
 
     @Override
@@ -62,12 +62,12 @@ class ItemNodeletAdder implements NodeletAdder {
             }
             parser.pushObject(itemRule);
         });
-        if (hasInnerBeans) {
-            nodeParser.addInnerBeanNodelets();
+        if (depth < nodeParser.getMaxInnerBeans()) {
+            nodeParser.addInnerBeanNodelets(depth);
         } else {
             parser.setXpath(xpath + "/item/bean");
             parser.addNodelet(attrs -> {
-                throw new IllegalRuleException("Inner beans can not be nested");
+                throw new IllegalRuleException("Inner beans can only be nested up to " + nodeParser.getMaxInnerBeans() + " times");
             });
             parser.setXpath(xpath + "/item");
         }
@@ -83,12 +83,12 @@ class ItemNodeletAdder implements NodeletAdder {
             itemRuleMap.putItemRule(itemRule);
         });
         parser.setXpath(xpath + "/item/value");
-        if (hasInnerBeans) {
-            nodeParser.addInnerBeanNodelets();
+        if (depth < nodeParser.getMaxInnerBeans()) {
+            nodeParser.addInnerBeanNodelets(depth);
         } else {
             parser.setXpath(xpath + "/item/value/bean");
             parser.addNodelet(attrs -> {
-                throw new IllegalRuleException("Inner beans can not be nested");
+                throw new IllegalRuleException("Inner beans can only be nested up to " + nodeParser.getMaxInnerBeans() + " times");
             });
             parser.setXpath(xpath + "/item/value");
         }
@@ -114,12 +114,12 @@ class ItemNodeletAdder implements NodeletAdder {
             parser.pushObject(value);
             parser.pushObject(name);
         });
-        if (hasInnerBeans) {
-            nodeParser.addInnerBeanNodelets();
+        if (depth < nodeParser.getMaxInnerBeans()) {
+            nodeParser.addInnerBeanNodelets(depth);
         } else {
             parser.setXpath(xpath + "/item/entry/bean");
             parser.addNodelet(attrs -> {
-                throw new IllegalRuleException("Inner beans can not be nested");
+                throw new IllegalRuleException("Inner beans can only be nested up to " + nodeParser.getMaxInnerBeans() + " times");
             });
             parser.setXpath(xpath + "/item/entry");
         }

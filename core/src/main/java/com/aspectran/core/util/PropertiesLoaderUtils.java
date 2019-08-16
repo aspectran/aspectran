@@ -15,7 +15,6 @@
  */
 package com.aspectran.core.util;
 
-import com.aspectran.core.context.resource.AspectranClassLoader;
 import org.jasypt.properties.PropertyValueEncryptionUtils;
 
 import java.io.IOException;

@@ -56,11 +56,9 @@ public class AspectranNodeParser {
 
     private final ExceptionInnerNodeletAdder exceptionInnerNodeletAdder;
 
-    private final InnerBeanNodeletAdder innerBeanNodeletAdder;
+    private final ItemNodeletAdder[] itemNodeletAdders;
 
-    private final ItemNodeletAdder itemNodeletAdder;
-
-    private final ItemNodeletAdder deeplyItemNodeletAdder;
+    private final InnerBeanNodeletAdder[] innerBeanNodeletAdders;
 
     private final ResponseInnerNodeletAdder responseInnerNodeletAdder;
 
@@ -99,13 +97,20 @@ public class AspectranNodeParser {
         this.chooseNodeletAdder = new ChooseNodeletAdder();
         this.environmentNodeletAdder = new EnvironmentNodeletAdder();
         this.exceptionInnerNodeletAdder = new ExceptionInnerNodeletAdder();
-        this.innerBeanNodeletAdder = new InnerBeanNodeletAdder();
-        this.itemNodeletAdder = new ItemNodeletAdder(true);
-        this.deeplyItemNodeletAdder = new ItemNodeletAdder(false);
         this.responseInnerNodeletAdder = new ResponseInnerNodeletAdder();
         this.scheduleNodeletAdder = new ScheduleNodeletAdder();
         this.templateNodeletAdder = new TemplateNodeletAdder();
         this.transletNodeletAdder = new TransletNodeletAdder();
+        this.itemNodeletAdders = new ItemNodeletAdder[] {
+                new ItemNodeletAdder(0),
+                new ItemNodeletAdder(1),
+                new ItemNodeletAdder(2)
+        };
+        this.innerBeanNodeletAdders = new InnerBeanNodeletAdder[] {
+                null,
+                new InnerBeanNodeletAdder(1),
+                new InnerBeanNodeletAdder(2)
+        };
 
         this.parser = new NodeletParser(this);
         this.parser.setValidating(validating);
@@ -307,10 +312,11 @@ public class AspectranNodeParser {
         });
     }
 
-    public void addActionNodelets() {
+    void addActionNodelets() {
         parser.addNodelet(actionNodeletAdder);
     }
-    public void addNestedActionNodelets() {
+
+    void addNestedActionNodelets() {
         String xpath = parser.getXpath();
         parser.addNodelet(actionNodeletAdder);
         parser.addNodelet(chooseNodeletAdder);
@@ -337,28 +343,34 @@ public class AspectranNodeParser {
         parser.setXpath(xpath);
     }
 
-    public void addAspectAdviceInnerNodelets() {
+    void addAspectAdviceInnerNodelets() {
         parser.addNodelet(aspectAdviceInnerNodeletAdder);
     }
 
-    public void addExceptionInnerNodelets() {
+    void addExceptionInnerNodelets() {
         parser.addNodelet(exceptionInnerNodeletAdder);
     }
 
-    public void addInnerBeanNodelets() {
-        parser.addNodelet(innerBeanNodeletAdder);
-    }
-
-    public void addItemNodelets() {
-        parser.addNodelet(itemNodeletAdder);
-    }
-
-    public void addDeeplyItemNodelets() {
-        parser.addNodelet(deeplyItemNodeletAdder);
-    }
-
-    public void addResponseInnerNodelets() {
+    void addResponseInnerNodelets() {
         parser.addNodelet(responseInnerNodeletAdder);
+    }
+
+    void addItemNodelets() {
+        addItemNodelets(0);
+    }
+
+    void addItemNodelets(int depth) {
+        parser.addNodelet(itemNodeletAdders[depth]);
+    }
+
+    void addInnerBeanNodelets(int depth) {
+        if (depth < innerBeanNodeletAdders.length - 1) {
+            parser.addNodelet(innerBeanNodeletAdders[depth + 1]);
+        }
+    }
+
+    int getMaxInnerBeans() {
+        return (innerBeanNodeletAdders.length - 1);
     }
 
 }

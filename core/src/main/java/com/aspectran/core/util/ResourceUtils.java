@@ -15,8 +15,6 @@
  */
 package com.aspectran.core.util;
 
-import com.aspectran.core.context.resource.AspectranClassLoader;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;

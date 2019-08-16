@@ -34,11 +34,9 @@ import java.util.Set;
  * manner, for example for key-based access in a results table.
  *
  * <p>Preserves the original order as well as the original casing of keys,
- * while allowing for contains, get and remove calls with any case of key.
+ * while allowing for contains, get and remove calls with any case of key.</p>
  *
- * <p>Does <i>not</i> support {@code null} keys.
- *
- * @since 3.0.0
+ * <p>Does <i>not</i> support {@code null} keys.</p>
  */
 public class LinkedCaseInsensitiveMultiValueMap<V> implements MultiValueMap<String, V>, Serializable {
 

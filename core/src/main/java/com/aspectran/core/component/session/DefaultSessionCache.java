@@ -142,7 +142,6 @@ public class DefaultSessionCache extends AbstractSessionCache {
             for (BasicSession session : sessions.values()) {
                 // if we have a backing store so give the session to it to write out if necessary
                 if (getSessionDataStore() != null) {
-                    session.willPassivate();
                     try {
                         getSessionDataStore().store(session.getId(), session.getSessionData());
                     } catch (Exception e) {

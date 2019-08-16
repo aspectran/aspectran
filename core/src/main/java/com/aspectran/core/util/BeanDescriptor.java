@@ -62,7 +62,6 @@ public class BeanDescriptor {
 
         Set<String> nonSerializableReadPropertyNames = addGetterMethods(methods);
         this.readablePropertyNames = getterMethods.keySet().toArray(new String[0]);
-
         if (!nonSerializableReadPropertyNames.isEmpty()) {
             String[] serializableReadablePropertyNames =
                     new String[readablePropertyNames.length - nonSerializableReadPropertyNames.size()];
@@ -117,14 +116,14 @@ public class BeanDescriptor {
                 String name = method.getName();
                 if (name.startsWith("set") && name.length() > 3) {
                     name = dropCase(name);
-                    addSetterConflict(conflictingSetters, name, method);
+                    addConflictingSetter(conflictingSetters, name, method);
                 }
             }
         }
         resolveSetterConflicts(conflictingSetters);
     }
 
-    private void addSetterConflict(Map<String, List<Method>> conflictingSetters, String name, Method method) {
+    private void addConflictingSetter(Map<String, List<Method>> conflictingSetters, String name, Method method) {
         List<Method> list = conflictingSetters.computeIfAbsent(name, k -> new ArrayList<>());
         list.add(method);
     }
