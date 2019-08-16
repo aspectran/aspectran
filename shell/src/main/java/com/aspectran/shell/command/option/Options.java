@@ -189,14 +189,14 @@ public class Options implements Serializable {
 
     /**
      * Returns the options with a long name starting with the name specified.
-     * 
+     *
      * @param name the partial name of the option
      * @return the options matching the partial name specified, or an empty list if none matches
      */
     public List<String> getMatchingOptions(String name) {
         List<String> matchingOpts = new ArrayList<>();
         // for a perfect match return the single option only
-        if (longOpts.keySet().contains(name)) {
+        if (longOpts.containsKey(name)) {
             return Collections.singletonList(name);
         }
         for (String longOpt : longOpts.keySet()) {

@@ -284,8 +284,8 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
         if (isDestroying() || isDestroyed()) {
             return;
         }
-        if (log.isDebugEnabled()) {
-            log.debug(this + " scavenging sessions");
+        if (log.isTraceEnabled()) {
+            log.trace(getComponentName() + " scavenging sessions");
         }
         //Get a snapshot of the candidates as they are now. Others that
         //arrive during this processing will be dealt with on
@@ -293,8 +293,8 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
         String[] ss = candidateSessionIdsForExpiry.toArray(new String[0]);
         Set<String> candidates = new HashSet<>(Arrays.asList(ss));
         candidateSessionIdsForExpiry.removeAll(candidates);
-        if (log.isDebugEnabled()) {
-            log.debug(getComponentName() + " scavenging session ids " + candidates);
+        if (log.isTraceEnabled()) {
+            log.trace(getComponentName() + " scavenging session ids " + candidates);
         }
         try {
             candidates = sessionCache.checkExpiration(candidates);

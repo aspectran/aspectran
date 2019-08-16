@@ -66,17 +66,17 @@ public class DaemonActivity extends CoreActivity {
     @Override
     protected void adapt() throws AdapterException {
         try {
-            if (getOuterActivity() != null) {
-                setSessionAdapter(getOuterActivity().getSessionAdapter());
-            } else {
+            if (getOuterActivity() == null) {
                 setSessionAdapter(service.newSessionAdapter());
+            } else {
+                setSessionAdapter(getOuterActivity().getSessionAdapter());
             }
 
             DaemonRequestAdapter requestAdapter = new DaemonRequestAdapter(getTranslet().getRequestMethod());
-            if (getOuterActivity() != null) {
-                requestAdapter.preparse(getOuterActivity().getRequestAdapter());
-            } else {
+            if (getOuterActivity() == null) {
                 requestAdapter.preparse(attributeMap, parameterMap);
+            } else {
+                requestAdapter.preparse(getOuterActivity().getRequestAdapter());
             }
             setRequestAdapter(requestAdapter);
 

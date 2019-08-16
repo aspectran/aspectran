@@ -30,7 +30,7 @@ import java.io.Writer;
 
 /**
  * Response to transform into JSON.
- * 
+ *
  * Created: 2008. 03. 22 PM 5:51:58
  */
 public class JsonTransformResponse extends TransformResponse {

@@ -17,33 +17,34 @@ package com.aspectran.undertow.server.resource;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.component.bean.aware.ApplicationAdapterAware;
-import io.undertow.server.handlers.resource.FileResourceManager;
+import com.aspectran.core.util.StringUtils;
+import io.undertow.server.handlers.resource.PathResourceManager;
 
 import java.io.File;
 import java.io.IOException;
 
-public class TowResourceManager extends FileResourceManager implements ApplicationAdapterAware {
+public class TowResourceManager extends PathResourceManager implements ApplicationAdapterAware {
 
     private ApplicationAdapter applicationAdapter;
 
     public TowResourceManager() {
-        super(1024, true, false, (String[])null);
+        this(1024, true, false, (String[])null);
     }
 
     public TowResourceManager(File base) {
-        super(base);
+        this(base, 1024, true, false, (String[])null);
     }
 
     public TowResourceManager(File base, long transferMinSize) {
-        super(base, transferMinSize);
+        this(base, transferMinSize, true, false, (String[])null);
     }
 
     public TowResourceManager(File base, long transferMinSize, boolean caseSensitive) {
-        super(base, transferMinSize, caseSensitive);
+        this(base, transferMinSize, caseSensitive, false, (String[])null);
     }
 
     public TowResourceManager(File base, long transferMinSize, boolean followLinks, String... safePaths) {
-        super(base, transferMinSize, followLinks, safePaths);
+        this(base, transferMinSize, true, followLinks, safePaths);
     }
 
     protected TowResourceManager(long transferMinSize, boolean caseSensitive, boolean followLinks, String... safePaths) {
@@ -51,10 +52,22 @@ public class TowResourceManager extends FileResourceManager implements Applicati
     }
 
     public TowResourceManager(File base, long transferMinSize, boolean caseSensitive, boolean followLinks, String... safePaths) {
-        super(base, transferMinSize, caseSensitive, followLinks, safePaths);
+        super(base.toPath(), transferMinSize, caseSensitive, followLinks, safePaths);
+    }
+
+    @Override
+    public void setApplicationAdapter(ApplicationAdapter applicationAdapter) {
+        this.applicationAdapter = applicationAdapter;
+    }
+
+    public String getBase() {
+        return super.getBasePath().toString();
     }
 
     public void setBase(String base) throws IOException {
+        if (!StringUtils.hasText(base)) {
+            throw new IllegalArgumentException("'base' must not be null or empty");
+        }
         if (applicationAdapter != null) {
             setBase(applicationAdapter.toRealPathAsFile(base));
         } else {
@@ -63,8 +76,15 @@ public class TowResourceManager extends FileResourceManager implements Applicati
     }
 
     @Override
-    public void setApplicationAdapter(ApplicationAdapter applicationAdapter) {
-        this.applicationAdapter = applicationAdapter;
+    public TowResourceManager setBase(File base) {
+        if (base == null) {
+            throw new IllegalArgumentException("'base' must not be null");
+        }
+        if (!base.isDirectory()) {
+            throw new IllegalArgumentException("Resource base directory '" + base + "' does not exist");
+        }
+        super.setBase(base);
+        return this;
     }
 
 }

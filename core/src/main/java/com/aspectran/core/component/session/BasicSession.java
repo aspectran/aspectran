@@ -600,28 +600,28 @@ public class BasicSession implements Session {
          */
         public void schedule (long time) {
             if (time >= 0) {
-                if (log.isDebugEnabled()) {
-                    log.debug("(Re)starting timer for session " + getId() + " at " + time + "ms");
+                if (log.isTraceEnabled()) {
+                    log.trace("(Re)starting timer for session " + getId() + " at " + time + "ms");
                 }
                 timer.schedule(time, TimeUnit.MILLISECONDS);
             } else {
-                if (log.isDebugEnabled()) {
-                    log.debug("Not starting timer for session " + getId());
+                if (log.isTraceEnabled()) {
+                    log.trace("Not starting timer for session " + getId());
                 }
             }
         }
 
         public void cancel() {
             timer.cancel();
-            if (log.isDebugEnabled()) {
-                log.debug("Cancelled timer for session " + getId());
+            if (log.isTraceEnabled()) {
+                log.trace("Cancelled timer for session " + getId());
             }
         }
 
         public void destroy() {
             timer.destroy();
-            if (log.isDebugEnabled()) {
-                log.debug("Destroyed timer for session " + getId());
+            if (log.isTraceEnabled()) {
+                log.trace("Destroyed timer for session " + getId());
             }
         }
     }

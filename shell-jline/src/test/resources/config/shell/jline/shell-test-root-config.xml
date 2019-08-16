@@ -58,9 +58,8 @@
             |   If so, try running the "hello2" command.
             |---------------------------------------------------------------------------------------------------------
         </description>
-        <transform type="text">
-            <action id="helloData" bean="sampleAction" method="helloWorld"/>
-        </transform>
+        <action id="helloData" bean="sampleAction" method="helloWorld"/>
+        <transform type="text"/>
     </translet>
 
     <translet name="echo1">

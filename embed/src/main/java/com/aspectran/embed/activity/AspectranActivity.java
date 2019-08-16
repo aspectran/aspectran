@@ -80,17 +80,17 @@ public class AspectranActivity extends CoreActivity {
     @Override
     protected void adapt() throws AdapterException {
         try {
-            if (getOuterActivity() != null) {
-                setSessionAdapter(getOuterActivity().getSessionAdapter());
-            } else {
+            if (getOuterActivity() == null) {
                 setSessionAdapter(aspectran.newSessionAdapter());
+            } else {
+                setSessionAdapter(getOuterActivity().getSessionAdapter());
             }
 
             AspectranRequestAdapter requestAdapter = new AspectranRequestAdapter(getTranslet().getRequestMethod());
-            if (getOuterActivity() != null) {
-                requestAdapter.preparse(getOuterActivity().getRequestAdapter());
-            } else {
+            if (getOuterActivity() == null) {
                 requestAdapter.preparse(attributeMap, parameterMap);
+            } else {
+                requestAdapter.preparse(getOuterActivity().getRequestAdapter());
             }
             if (body != null) {
                 requestAdapter.setBody(body);

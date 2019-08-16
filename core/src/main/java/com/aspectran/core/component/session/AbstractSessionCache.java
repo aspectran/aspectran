@@ -408,8 +408,8 @@ public abstract class AbstractSessionCache implements SessionCache {
 
     @Override
     public Set<String> checkExpiration(Set<String> candidates) {
-        if (log.isDebugEnabled()) {
-            log.debug("SessionDataStore checking expiration on " + candidates);
+        if (log.isTraceEnabled()) {
+            log.trace("SessionDataStore checking expiration on " + candidates);
         }
         if (sessionDataStore == null) {
             return null;

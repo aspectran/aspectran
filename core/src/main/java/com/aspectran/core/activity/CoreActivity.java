@@ -140,6 +140,7 @@ public class CoreActivity extends AdviceActivity {
             }
 
             newTranslet(requestMethod, requestName, transletRule, parentTranslet);
+            prepareAspectAdviceRule(transletRule, (parentTranslet != null));
 
             if (parentTranslet == null) {
                 if (isIncluded()) {
@@ -151,7 +152,6 @@ public class CoreActivity extends AdviceActivity {
                 adapt();
             }
 
-            prepareAspectAdviceRule(transletRule, (parentTranslet != null));
             parseRequest();
             parsePathVariables();
 

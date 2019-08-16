@@ -369,7 +369,7 @@ public class BeanDescriptor {
      * @return true if the object has a writable property by the name
      */
     public boolean hasWritableProperty(String propertyName) {
-        return setterMethods.keySet().contains(propertyName);
+        return setterMethods.containsKey(propertyName);
     }
 
     /**
@@ -379,7 +379,7 @@ public class BeanDescriptor {
      * @return true if the object has a readable property by the name
      */
     public boolean hasReadableProperty(String propertyName) {
-        return getterMethods.keySet().contains(propertyName);
+        return getterMethods.containsKey(propertyName);
     }
 
     /**

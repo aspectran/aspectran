@@ -109,22 +109,36 @@ public class WebActivity extends CoreActivity {
     @Override
     protected void adapt() throws AdapterException {
         try {
-            if (getOuterActivity() != null) {
-                setSessionAdapter(getOuterActivity().getSessionAdapter());
-            } else {
+            if (getOuterActivity() == null) {
                 SessionAdapter sessionAdapter = new HttpSessionAdapter(request);
                 setSessionAdapter(sessionAdapter);
+            } else {
+                setSessionAdapter(getOuterActivity().getSessionAdapter());
             }
 
             HttpServletRequestAdapter requestAdapter = new HttpServletRequestAdapter(getTranslet().getRequestMethod(), request);
-            if (getOuterActivity() != null) {
-                requestAdapter.preparse((HttpServletRequestAdapter)getOuterActivity().getRequestAdapter());
-            } else {
+            if (getOuterActivity() == null) {
+                String requestEncoding = getIntendedRequestEncoding();
+                if (requestEncoding != null) {
+                    try {
+                        requestAdapter.setEncoding(requestEncoding);
+                    } catch (UnsupportedEncodingException e) {
+                        throw new RequestParseException("Unable to set request encoding to " + requestEncoding, e);
+                    }
+                }
                 requestAdapter.preparse();
+            } else {
+                requestAdapter.preparse((HttpServletRequestAdapter)getOuterActivity().getRequestAdapter());
             }
             setRequestAdapter(requestAdapter);
 
             ResponseAdapter responseAdapter = new HttpServletResponseAdapter(response, this);
+            if (getOuterActivity() == null) {
+                String responseEncoding = getIntendedResponseEncoding();
+                if (responseEncoding != null) {
+                    responseAdapter.setEncoding(responseEncoding);
+                }
+            }
             setResponseAdapter(responseAdapter);
 
             if (request instanceof ActivityRequestWrapper) {
@@ -143,15 +157,6 @@ public class WebActivity extends CoreActivity {
         MethodType allowedMethod = getRequestRule().getAllowedMethod();
         if (allowedMethod != null && !allowedMethod.equals(requestMethod)) {
             throw new RequestMethodNotAllowedException(allowedMethod);
-        }
-
-        String encoding = getIntendedRequestEncoding();
-        if (encoding != null) {
-            try {
-                getRequestAdapter().setEncoding(encoding);
-            } catch (UnsupportedEncodingException e) {
-                throw new RequestParseException("Unable to set request encoding to " + encoding, e);
-            }
         }
 
         String maxRequestSizeSetting = getSetting(MAX_REQUEST_SIZE_SETTING_NAME);

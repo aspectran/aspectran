@@ -276,8 +276,8 @@ public class FileSessionDataStore extends AbstractSessionDataStore {
     public void sweepDisk() {
         //iterate over the files in the store dir and check expiry times
         long now = System.currentTimeMillis();
-        if (log.isDebugEnabled()) {
-            log.debug("Sweeping " + storeDir + " for old session files");
+        if (log.isTraceEnabled()) {
+            log.trace("Sweeping " + storeDir + " for old session files");
         }
         try {
             Files.walk(storeDir.toPath(), 1, FileVisitOption.FOLLOW_LINKS)

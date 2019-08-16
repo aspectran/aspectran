@@ -95,18 +95,18 @@ public class ShellActivity extends CoreActivity {
     @Override
     protected void adapt() throws AdapterException {
         try {
-            if (getOuterActivity() != null) {
-                setSessionAdapter(getOuterActivity().getSessionAdapter());
-            } else {
+            if (getOuterActivity() == null) {
                 setSessionAdapter(service.newSessionAdapter());
+            } else {
+                setSessionAdapter(getOuterActivity().getSessionAdapter());
             }
 
             ShellRequestAdapter requestAdapter = new ShellRequestAdapter(getTranslet().getRequestMethod());
             requestAdapter.setEncoding(console.getEncoding());
-            if (getOuterActivity() != null) {
-                requestAdapter.preparse(getOuterActivity().getRequestAdapter());
-            } else {
+            if (getOuterActivity() == null) {
                 requestAdapter.preparse(null, parameterMap);
+            } else {
+                requestAdapter.preparse(getOuterActivity().getRequestAdapter());
             }
             setRequestAdapter(requestAdapter);
 
