@@ -35,7 +35,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class RuleViolationTest {
 
     @Test
-    void test1() {
+    void overNestedInnerBeans() {
         Throwable cause;
         try {
             File baseDir = ResourceUtils.getResourceAsFile(".");
@@ -50,11 +50,11 @@ class RuleViolationTest {
         assertThrows(IllegalRuleException.class, () -> {
             throw cause;
         });
-        assertEquals("Inner beans can not be nested", cause.getMessage());
+        assertEquals("Inner beans can only be nested up to 2 times", cause.getMessage());
     }
 
     @Test
-    void test2() {
+    void overChoose() {
         Throwable cause;
         try {
             File baseDir = ResourceUtils.getResourceAsFile(".");
