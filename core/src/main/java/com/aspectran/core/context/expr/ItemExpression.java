@@ -91,7 +91,7 @@ public class ItemExpression extends TokenExpression implements ItemEvaluator {
                 }
             } else if (itemType == ItemType.LIST) {
                 if (valueType == ItemValueType.BEAN) {
-                    value = evaluateBeanAsMap(itemRule.getBeanRuleMap());
+                    value = evaluateBeanAsList(itemRule.getBeanRuleList());
                 } else {
                     value = evaluateAsList(itemRule.getTokensList(), valueType);
                 }
