@@ -52,11 +52,9 @@ class InnerBeanNodeletAdder implements NodeletAdder {
 
             BeanRule beanRule;
             if (className == null && factoryBean != null) {
-                beanRule = BeanRule.newOfferedFactoryBeanInstance(null, factoryBean, factoryMethod,
-                        initMethod, destroyMethod, null, false, null, null);
+                beanRule = BeanRule.newInnerOfferedFactoryBeanRule(factoryBean, factoryMethod, initMethod, destroyMethod);
             } else {
-                beanRule = BeanRule.newInstance(null, className, null, null, initMethod, destroyMethod,
-                        factoryMethod, null, false, null, null);
+                beanRule = BeanRule.newInnerBeanRule(className, initMethod, destroyMethod, factoryMethod);
             }
 
             parser.pushObject(beanRule);
@@ -65,6 +63,7 @@ class InnerBeanNodeletAdder implements NodeletAdder {
             BeanRule beanRule = parser.popObject();
             assistant.resolveBeanClass(beanRule);
             assistant.resolveFactoryBeanClass(beanRule);
+            assistant.addInnerBeanRule(beanRule);
 
             ItemRule itemRule = parser.peekObject();
             if (itemRule.isListableType()) {

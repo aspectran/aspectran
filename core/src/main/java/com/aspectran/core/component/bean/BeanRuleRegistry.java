@@ -213,24 +213,24 @@ public class BeanRuleRegistry {
         String scanPattern = beanRule.getScanPattern();
         if (scanPattern != null) {
             PrefixSuffixPattern prefixSuffixPattern = PrefixSuffixPattern.parse(beanRule.getId());
-            List<BeanRule> beanRules = new ArrayList<>();
+            List<BeanRule> scannedBeanRules = new ArrayList<>();
             BeanClassScanner scanner = createBeanClassScanner(beanRule);
             scanner.scan(scanPattern, (resourceName, targetClass) -> {
-                BeanRule beanRule2 = beanRule.replicate();
+                BeanRule replicated = beanRule.replicate();
                 if (prefixSuffixPattern != null) {
-                    beanRule2.setId(prefixSuffixPattern.join(resourceName));
+                    replicated.setId(prefixSuffixPattern.join(resourceName));
                 } else {
                     if (beanRule.getId() != null) {
-                        beanRule2.setId(beanRule.getId() + resourceName);
+                        replicated.setId(beanRule.getId() + resourceName);
                     } else if (beanRule.getMaskPattern() != null) {
-                        beanRule2.setId(resourceName);
+                        replicated.setId(resourceName);
                     }
                 }
-                beanRule2.setBeanClass(targetClass);
-                beanRules.add(beanRule2);
+                replicated.setBeanClass(targetClass);
+                scannedBeanRules.add(replicated);
             });
-            for (BeanRule beanRule2 : beanRules) {
-                dissectBeanRule(beanRule2);
+            for (BeanRule scannedBeanRule : scannedBeanRules) {
+                dissectBeanRule(scannedBeanRule);
             }
         } else {
             dissectBeanRule(beanRule);
@@ -341,10 +341,23 @@ public class BeanRuleRegistry {
         configurableBeanRuleMap.put(beanRule.getBeanClass(), beanRule);
     }
 
+    public void addInnerBeanRule(BeanRule beanRule) throws BeanRuleException {
+        if (beanRule == null) {
+            throw new IllegalArgumentException("beanRule must not be null");
+        }
+        if (!beanRule.isInnerBean()) {
+            throw new BeanRuleException("Not an inner bean", beanRule);
+        }
+        Class<?> targetBeanClass = BeanRuleAnalyzer.determineBeanClass(beanRule);
+        if (targetBeanClass == null) {
+            postProcessBeanRuleMap.add(beanRule);
+        }
+    }
+
     public void postProcess(ContextRuleAssistant assistant) throws IllegalRuleException {
         if (!postProcessBeanRuleMap.isEmpty()) {
             for (BeanRule beanRule : postProcessBeanRuleMap) {
-                if (beanRule.getId() != null) {
+                if (!beanRule.isInnerBean() && beanRule.getId() != null) {
                     saveBeanRule(beanRule.getId(), beanRule);
                 }
                 if (beanRule.isFactoryOffered()) {
@@ -352,13 +365,15 @@ public class BeanRuleRegistry {
                     Class<?> targetBeanClass = BeanRuleAnalyzer.determineFactoryMethodTargetBeanClass(
                             offeredFactoryBeanClass, beanRule);
                     if (beanRule.getInitMethodName() != null) {
-                        BeanRuleAnalyzer.checkInitMethod(targetBeanClass, beanRule);
+                        BeanRuleAnalyzer.determineInitMethod(targetBeanClass, beanRule);
                     }
                     if (beanRule.getDestroyMethodName() != null) {
-                        BeanRuleAnalyzer.checkDestroyMethod(targetBeanClass, beanRule);
+                        BeanRuleAnalyzer.determineDestroyMethod(targetBeanClass, beanRule);
                     }
-                    saveBeanRule(targetBeanClass, beanRule);
-                    saveBeanRuleWithInterfaces(targetBeanClass, beanRule);
+                    if (!beanRule.isInnerBean()) {
+                        saveBeanRule(targetBeanClass, beanRule);
+                        saveBeanRuleWithInterfaces(targetBeanClass, beanRule);
+                    }
                 }
             }
             postProcessBeanRuleMap.clear();

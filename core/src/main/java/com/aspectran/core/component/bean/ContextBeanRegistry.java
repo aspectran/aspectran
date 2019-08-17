@@ -61,7 +61,8 @@ public class ContextBeanRegistry extends AbstractBeanRegistry {
     }
 
     @Override
-    public Object getPrototypeScopeBean(BeanRule beanRule) {
+    @SuppressWarnings("unchecked")
+    public <T> T getPrototypeScopeBean(BeanRule beanRule) {
         if (beanRule == null) {
             throw new IllegalArgumentException("beanRule must not be null");
         }
@@ -69,10 +70,13 @@ public class ContextBeanRegistry extends AbstractBeanRegistry {
         if (bean != null && beanRule.isFactoryProductionRequired()) {
             bean = getFactoryProducedObject(beanRule, bean);
         }
-        return bean;
+        return (T)bean;
     }
 
     private Object getSingletonScopeBean(BeanRule beanRule) {
+        if (beanRule == null) {
+            throw new IllegalArgumentException("beanRule must not be null");
+        }
         boolean readLocked = true;
         singletonScopeLock.readLock().lock();
         Object bean;
@@ -118,6 +122,9 @@ public class ContextBeanRegistry extends AbstractBeanRegistry {
     }
 
     private Object getRequestScopeBean(BeanRule beanRule) {
+        if (beanRule == null) {
+            throw new IllegalArgumentException("beanRule must not be null");
+        }
         Scope scope = getRequestScope();
         if (scope == null) {
             throw new UnsupportedBeanScopeException(ScopeType.REQUEST, beanRule);
@@ -126,6 +133,9 @@ public class ContextBeanRegistry extends AbstractBeanRegistry {
     }
 
     private Object getSessionScopeBean(BeanRule beanRule) {
+        if (beanRule == null) {
+            throw new IllegalArgumentException("beanRule must not be null");
+        }
         Scope scope = getSessionScope();
         if (scope == null) {
             throw new UnsupportedBeanScopeException(ScopeType.SESSION, beanRule);
@@ -134,6 +144,9 @@ public class ContextBeanRegistry extends AbstractBeanRegistry {
     }
 
     private Object getApplicationScopeBean(BeanRule beanRule) {
+        if (beanRule == null) {
+            throw new IllegalArgumentException("beanRule must not be null");
+        }
         Scope scope = getApplicationScope();
         if (scope == null) {
             throw new UnsupportedBeanScopeException(ScopeType.APPLICATION, beanRule);

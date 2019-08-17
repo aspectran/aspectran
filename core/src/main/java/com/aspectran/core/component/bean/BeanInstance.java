@@ -22,7 +22,7 @@ package com.aspectran.core.component.bean;
  *
  * @since 3.2.0
  */
-public class BeanInstance {
+public final class BeanInstance {
 
     private final Object bean;
 

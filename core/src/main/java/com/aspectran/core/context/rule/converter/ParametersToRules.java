@@ -405,7 +405,7 @@ public class ParametersToRules {
         assistant.addBeanRule(beanRule);
     }
 
-    private BeanRule toNestedBeanRule(BeanParameters beanParameters) throws IllegalRuleException {
+    private BeanRule toInnerBeanRule(BeanParameters beanParameters) throws IllegalRuleException {
         String description = asDescription(beanParameters);
         String className = StringUtils.emptyToNull(assistant.resolveAliasType(beanParameters.getString(BeanParameters.className)));
         String factoryBean = StringUtils.emptyToNull(beanParameters.getString(BeanParameters.factoryBean));
@@ -415,11 +415,9 @@ public class ParametersToRules {
 
         BeanRule beanRule;
         if (className == null && factoryBean != null) {
-            beanRule = BeanRule.newOfferedFactoryBeanInstance(null, factoryBean, factoryMethod,
-                initMethod, destroyMethod, null, false, null, null);
+            beanRule = BeanRule.newInnerOfferedFactoryBeanRule(factoryBean, factoryMethod, initMethod, destroyMethod);
         } else {
-            beanRule = BeanRule.newInstance(null, className, null, null, initMethod, destroyMethod,
-                factoryMethod, null, false, null, null);
+            beanRule = BeanRule.newInnerBeanRule(className, initMethod, destroyMethod, factoryMethod);
         }
         if (description != null) {
             beanRule.setDescription(description);
@@ -443,6 +441,7 @@ public class ParametersToRules {
 
         assistant.resolveBeanClass(beanRule);
         assistant.resolveFactoryBeanClass(beanRule);
+        assistant.addInnerBeanRule(beanRule);
 
         return beanRule;
     }
@@ -1039,7 +1038,7 @@ public class ParametersToRules {
                 List<BeanParameters> beanParametersList = itemParameters.getParametersList(ItemParameters.bean);
                 if (beanParametersList != null) {
                     for (BeanParameters beanParameters : beanParametersList) {
-                        BeanRule beanRule = toNestedBeanRule(beanParameters);
+                        BeanRule beanRule = toInnerBeanRule(beanParameters);
                         itemRule.addBeanRule(beanRule);
                     }
                 }
@@ -1060,7 +1059,7 @@ public class ParametersToRules {
                             String entryName = parameters.getString(EntryParameters.name);
                             BeanParameters beanParameters = parameters.getParameters(EntryParameters.bean);
                             if (beanParameters != null) {
-                                BeanRule beanRule = toNestedBeanRule(beanParameters);
+                                BeanRule beanRule = toInnerBeanRule(beanParameters);
                                 itemRule.putBeanRule(entryName, beanRule);
                             } else {
                                 itemRule.putBeanRule(entryName, null);
@@ -1081,7 +1080,7 @@ public class ParametersToRules {
             if (itemRule.getValueType() == ItemValueType.BEAN) {
                 BeanParameters beanParameters = itemParameters.getParameters(ItemParameters.bean);
                 if (beanParameters != null) {
-                    BeanRule beanRule = toNestedBeanRule(beanParameters);
+                    BeanRule beanRule = toInnerBeanRule(beanParameters);
                     itemRule.setBeanRule(beanRule);
                 }
             } else {

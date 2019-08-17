@@ -97,6 +97,11 @@ public class ShallowContextRuleAssistant extends ContextRuleAssistant {
     }
 
     @Override
+    public void addInnerBeanRule(BeanRule beanRule) {
+        // swallow
+    }
+
+    @Override
     public void addScheduleRule(ScheduleRule scheduleRule) {
         scheduleRules.add(scheduleRule);
     }

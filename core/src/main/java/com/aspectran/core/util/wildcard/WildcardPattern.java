@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.util.wildcard;
 
+import java.util.Objects;
+
 /**
  * The Class WildcardPattern.
  * <p>
@@ -208,6 +210,23 @@ public class WildcardPattern {
      */
     public String mask(String nakedString) {
         return WildcardMasker.mask(this, nakedString);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        WildcardPattern wp = (WildcardPattern)obj;
+        return (Objects.equals(wp.toString(), patternString) &&
+                Objects.equals(wp.getSeparator(), getSeparator()));
+    }
+
+    @Override
+    public int hashCode() {
+        int result = this.patternString.hashCode();
+        result = 31 * result + separator;
+        return result;
     }
 
     @Override

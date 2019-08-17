@@ -219,6 +219,11 @@ public abstract class AbstractActivity implements Activity {
     }
 
     @Override
+    public <T> T getPrototypeScopeBean(BeanRule beanRule) {
+        return context.getBeanRegistry().getPrototypeScopeBean(beanRule);
+    }
+
+    @Override
     public boolean containsBean(String id) {
         return context.getBeanRegistry().containsBean(id);
     }
@@ -226,11 +231,6 @@ public abstract class AbstractActivity implements Activity {
     @Override
     public boolean containsBean(Class<?> requiredType) {
         return context.getBeanRegistry().containsBean(requiredType);
-    }
-
-    @Override
-    public Object getPrototypeScopeBean(BeanRule beanRule) {
-        return context.getBeanRegistry().getPrototypeScopeBean(beanRule);
     }
 
     @Override

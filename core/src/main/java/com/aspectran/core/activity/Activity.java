@@ -347,6 +347,8 @@ public interface Activity {
      */
     <T> T getBeanForConfig(Class<T> requiredType);
 
+    <T> T getPrototypeScopeBean(BeanRule beanRule);
+
     /**
      * Return whether a bean with the specified id is present.
      *
@@ -362,7 +364,5 @@ public interface Activity {
      * @return whether a bean with the specified type is present
      */
     boolean containsBean(Class<?> requiredType);
-
-    Object getPrototypeScopeBean(BeanRule beanRule);
 
 }

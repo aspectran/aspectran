@@ -36,11 +36,11 @@ public abstract class AbstractHttpHandler extends ResourceHandler implements Act
 
     private ActivityContext context;
 
-    private StaticResourceHandler staticResourceHandler;
+    private volatile StaticResourceHandler staticResourceHandler;
 
-    private SessionManager sessionManager;
+    private volatile SessionManager sessionManager;
 
-    private SessionConfig sessionConfig;
+    private volatile SessionConfig sessionConfig;
 
     public AbstractHttpHandler(ResourceManager resourceManager) {
         super(resourceManager);
@@ -89,7 +89,7 @@ public abstract class AbstractHttpHandler extends ResourceHandler implements Act
         } else {
             if (staticResourceHandler != null && staticResourceHandler.hasPatterns()) {
                 staticResourceHandler.handleRequest(exchange);
-                if (exchange.isComplete()) {
+                if (exchange.isDispatched() || exchange.isComplete()) {
                     return;
                 }
             }

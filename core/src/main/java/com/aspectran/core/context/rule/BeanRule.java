@@ -26,6 +26,7 @@ import com.aspectran.core.context.rule.params.FilterParameters;
 import com.aspectran.core.context.rule.type.BeanRefererType;
 import com.aspectran.core.context.rule.type.ScopeType;
 import com.aspectran.core.util.BooleanUtils;
+import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.ToStringBuilder;
 
 import java.lang.reflect.Method;
@@ -98,6 +99,8 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
     private boolean initializableBean;
 
     private boolean initializableTransletBean;
+
+    private boolean innerBean;
 
     private boolean replicated;
 
@@ -626,6 +629,14 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
         return initializableTransletBean;
     }
 
+    public boolean isInnerBean() {
+        return innerBean;
+    }
+
+    public void setInnerBean(boolean innerBean) {
+        this.innerBean = innerBean;
+    }
+
     /**
      * Returns whether this bean has been replicated.
      *
@@ -808,17 +819,15 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
             String scope,
             Boolean singleton,
             Boolean lazyInit,
-            Boolean important) {
+            Boolean important) throws IllegalRuleException {
         if (className == null && scanPattern == null) {
-            throw new IllegalArgumentException("The 'bean' element requires a 'class' attribute");
+            throw new IllegalRuleException("The 'bean' element requires a 'class' attribute");
         }
 
         ScopeType scopeType = ScopeType.resolve(scope);
-
         if (scope != null && scopeType == null) {
-            throw new IllegalArgumentException("No scope type for '" + scope + "'");
+            throw new IllegalRuleException("No scope type for '" + scope + "'");
         }
-
         if (scopeType == null) {
             scopeType = (singleton == null || singleton == Boolean.TRUE) ? ScopeType.SINGLETON : ScopeType.PROTOTYPE;
         }
@@ -850,18 +859,15 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
             String scope,
             Boolean singleton,
             Boolean lazyInit,
-            Boolean important) {
-
+            Boolean important) throws IllegalRuleException {
         if (factoryBeanId == null || factoryMethodName == null) {
-            throw new IllegalArgumentException("The 'bean' element requires both 'factoryBean' attribute and 'factoryMethod' attribute");
+            throw new IllegalRuleException("The 'bean' element requires both 'factoryBean' attribute and 'factoryMethod' attribute");
         }
 
         ScopeType scopeType = ScopeType.resolve(scope);
-
         if (scope != null && scopeType == null) {
-            throw new IllegalArgumentException("No scope type for '" + scope + "'");
+            throw new IllegalRuleException("No scope type for '" + scope + "'");
         }
-
         if (scopeType == null) {
             scopeType = (singleton == null || singleton == Boolean.TRUE) ? ScopeType.SINGLETON : ScopeType.PROTOTYPE;
         }
@@ -880,25 +886,55 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
         return beanRule;
     }
 
-    public static BeanRule replicate(BeanRule beanRule) {
-        BeanRule br = new BeanRule();
-        br.setId(beanRule.getId());
-        if (beanRule.getScanPattern() == null) {
-            br.setBeanClass(beanRule.getBeanClass());
+    public static BeanRule newInnerBeanRule(
+            String className,
+            String initMethodName,
+            String destroyMethodName,
+            String factoryMethodName) throws IllegalRuleException {
+        if (StringUtils.hasText(destroyMethodName)) {
+            throw new IllegalRuleException("Inner beans does not support destroy methods");
         }
-        br.setScopeType(beanRule.getScopeType());
-        br.setSingleton(beanRule.getSingleton());
-        br.setFactoryBeanId(beanRule.getFactoryBeanId());
-        br.setFactoryMethodName(beanRule.getFactoryMethodName());
-        br.setInitMethodName(beanRule.getInitMethodName());
-        br.setDestroyMethodName(beanRule.getDestroyMethodName());
-        br.setConstructorArgumentItemRuleMap(beanRule.getConstructorArgumentItemRuleMap());
-        br.setPropertyItemRuleMap(beanRule.getPropertyItemRuleMap());
-        br.setLazyInit(beanRule.getLazyInit());
-        br.setImportant(beanRule.getImportant());
-        br.setDescription(beanRule.getDescription());
-        br.setReplicated(true);
-        return br;
+        BeanRule beanRule = BeanRule.newInstance(null, className, null, null,
+                initMethodName, destroyMethodName, factoryMethodName,
+                null, false, null, null);
+        beanRule.setInnerBean(true);
+        return beanRule;
+    }
+
+    public static BeanRule newInnerOfferedFactoryBeanRule(
+            String factoryBeanId,
+            String factoryMethodName,
+            String initMethodName,
+            String destroyMethodName) throws IllegalRuleException {
+        if (StringUtils.hasText(destroyMethodName)) {
+            throw new IllegalRuleException("Inner beans does not support destroy methods");
+        }
+        BeanRule beanRule = BeanRule.newOfferedFactoryBeanInstance(null, factoryBeanId, factoryMethodName,
+                initMethodName, destroyMethodName, null, false, null, null);
+        beanRule.setInnerBean(true);
+        return beanRule;
+    }
+
+    public static BeanRule replicate(BeanRule beanRule) {
+        BeanRule newBeanRule = new BeanRule();
+        newBeanRule.setId(beanRule.getId());
+        if (beanRule.getScanPattern() == null) {
+            newBeanRule.setBeanClass(beanRule.getBeanClass());
+        }
+        newBeanRule.setScopeType(beanRule.getScopeType());
+        newBeanRule.setSingleton(beanRule.getSingleton());
+        newBeanRule.setFactoryBeanId(beanRule.getFactoryBeanId());
+        newBeanRule.setFactoryMethodName(beanRule.getFactoryMethodName());
+        newBeanRule.setInitMethodName(beanRule.getInitMethodName());
+        newBeanRule.setDestroyMethodName(beanRule.getDestroyMethodName());
+        newBeanRule.setConstructorArgumentItemRuleMap(beanRule.getConstructorArgumentItemRuleMap());
+        newBeanRule.setPropertyItemRuleMap(beanRule.getPropertyItemRuleMap());
+        newBeanRule.setLazyInit(beanRule.getLazyInit());
+        newBeanRule.setImportant(beanRule.getImportant());
+        newBeanRule.setDescription(beanRule.getDescription());
+        newBeanRule.setInnerBean(beanRule.isInnerBean());
+        newBeanRule.setReplicated(true);
+        return newBeanRule;
     }
 
 }

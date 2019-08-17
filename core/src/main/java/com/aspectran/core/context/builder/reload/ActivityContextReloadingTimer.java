@@ -34,7 +34,7 @@ public class ActivityContextReloadingTimer {
 
     private Enumeration<URL> resources;
 
-    private Timer timer;
+    private volatile Timer timer;
 
     private ActivityContextReloadingTimerTask timerTask;
 

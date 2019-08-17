@@ -47,10 +47,10 @@ public class BeanRuleAnalyzer {
             throw new BeanRuleException(beanRule);
         }
         if (beanRule.getInitMethodName() != null) {
-            checkInitMethod(targetBeanClass, beanRule);
+            determineInitMethod(targetBeanClass, beanRule);
         }
         if (beanRule.getDestroyMethodName() != null) {
-            checkDestroyMethod(targetBeanClass, beanRule);
+            determineDestroyMethod(targetBeanClass, beanRule);
         }
         if (!beanRule.isFactoryOffered()) {
             if (beanRule.isFactoryBean()) {
@@ -102,7 +102,7 @@ public class BeanRuleAnalyzer {
         }
     }
 
-    static void checkInitMethod(Class<?> beanClass, BeanRule beanRule) throws BeanRuleException {
+    static void determineInitMethod(Class<?> beanClass, BeanRule beanRule) throws BeanRuleException {
         if (beanRule.isInitializableBean()) {
             throw new BeanRuleException("Bean initialization method is duplicated; " +
                     "Already implemented the InitializableBean", beanRule);
@@ -128,7 +128,7 @@ public class BeanRuleAnalyzer {
         }
     }
 
-    static void checkDestroyMethod(Class<?> beanClass, BeanRule beanRule) throws BeanRuleException {
+    static void determineDestroyMethod(Class<?> beanClass, BeanRule beanRule) throws BeanRuleException {
         if (beanRule.isDisposableBean()) {
             throw new BeanRuleException("Bean destroy method is duplicated; " +
                     "Already implemented the DisposableBean", beanRule);

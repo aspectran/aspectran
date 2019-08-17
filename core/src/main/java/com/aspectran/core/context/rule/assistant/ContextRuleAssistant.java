@@ -644,6 +644,10 @@ public class ContextRuleAssistant {
         beanRuleRegistry.addBeanRule(beanRule);
     }
 
+    public void addInnerBeanRule(BeanRule beanRule) throws IllegalRuleException {
+        beanRuleRegistry.addInnerBeanRule(beanRule);
+    }
+
     /**
      * Adds the schedule rule.
      *
