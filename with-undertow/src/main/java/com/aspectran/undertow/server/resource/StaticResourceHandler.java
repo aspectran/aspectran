@@ -56,14 +56,6 @@ public class StaticResourceHandler extends ResourceHandler {
         super(resourceSupplier, next);
     }
 
-    public void setResourcePathPatterns(String... resourcePathPatterns) {
-        if (resourcePathPatterns != null && resourcePathPatterns.length > 0) {
-            this.resourcePathPatterns = new PluralWildcardPattern(resourcePathPatterns, null, '/');
-        } else {
-            this.resourcePathPatterns = null;
-        }
-    }
-
     public void setResourcePathPatterns(ResourcePathPatterns resourcePathPatterns) {
         String[] includePatterns = resourcePathPatterns.getIncludePatterns();
         String[] excludePatterns = resourcePathPatterns.getExcludePatterns();
