@@ -32,6 +32,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 public class StaticResourceHandler extends ResourceHandler {
@@ -73,7 +74,7 @@ public class StaticResourceHandler extends ResourceHandler {
                     }
                 }
             }
-            Set<WildcardPattern> patterns = new HashSet<>();
+            Set<WildcardPattern> patterns = new LinkedHashSet<>();
             if (resourcePathPatterns != null && resourcePathPatterns.hasIncludePatterns()) {
                 for (WildcardPattern pattern : resourcePathPatterns.getIncludePatterns()) {
                     boolean exists = false;
