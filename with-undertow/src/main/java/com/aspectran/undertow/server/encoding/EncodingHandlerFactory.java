@@ -85,17 +85,16 @@ public class EncodingHandlerFactory {
         if (contentEncodingProviderNames != null && contentEncodingProviderNames.length != 0) {
             Set<String> names = new LinkedHashSet<>(Arrays.asList(contentEncodingProviderNames));
             Predicate predicate = Predicates.and(getCompressionPredicates());
-            int priority = 1000;
+            int priority = 100;
             for (String name : names) {
                 if (GZIP.equalsIgnoreCase(name)) {
-                    priority /= 10;
                     contentEncodingRepository.addEncodingHandler(GZIP, new GzipEncodingProvider(), priority, predicate);
                 } else if (DEFLATE.equalsIgnoreCase(name)) {
-                    priority /= 10;
                     contentEncodingRepository.addEncodingHandler(DEFLATE, new DeflateEncodingProvider(), priority, predicate);
                 } else {
                     throw new IllegalArgumentException("Unknown content encoding provider '" + name + "'");
                 }
+                priority /= 10;
             }
         }
         return new EncodingHandler(handler, contentEncodingRepository);
