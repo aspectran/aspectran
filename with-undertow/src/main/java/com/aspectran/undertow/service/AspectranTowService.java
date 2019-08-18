@@ -56,11 +56,11 @@ public class AspectranTowService extends AbstractTowService {
 
     @Override
     public boolean execute(HttpServerExchange exchange) throws IOException {
-        String requestUri = exchange.getRequestURI();
+        String requestPath = exchange.getRequestPath();
         if (getUriDecoding() != null) {
-            requestUri = URLDecoder.decode(requestUri, getUriDecoding());
+            requestPath = URLDecoder.decode(requestPath, getUriDecoding());
         }
-        if (!isExposable(requestUri)) {
+        if (!isExposable(requestPath)) {
             return false;
         }
 
@@ -72,7 +72,7 @@ public class AspectranTowService extends AbstractTowService {
             if (pauseTimeout == -1L || pauseTimeout >= System.currentTimeMillis()) {
                 if (log.isDebugEnabled()) {
                     log.debug("AspectranTowService has been paused, so did not respond to the request URI \"" +
-                            requestUri + "\"");
+                            requestPath + "\"");
                 }
                 exchange.setStatusCode(HttpStatus.SERVICE_UNAVAILABLE.value());
                 return true;
@@ -88,11 +88,11 @@ public class AspectranTowService extends AbstractTowService {
         Activity activity = null;
         try {
             activity = new TowActivity(this, exchange);
-            activity.prepare(requestUri, exchange.getRequestMethod().toString());
+            activity.prepare(requestPath, exchange.getRequestMethod().toString());
             activity.perform();
         } catch (TransletNotFoundException e) {
             if (log.isDebugEnabled()) {
-                log.debug("No translet mapped to the request URI [" + requestUri + "]");
+                log.debug("No translet mapped to the request URI [" + requestPath + "]");
             }
             return false;
         } catch (ActivityTerminatedException e) {
@@ -113,7 +113,7 @@ public class AspectranTowService extends AbstractTowService {
                 exchange.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
             }
         } catch (Exception e) {
-            log.error("An error occurred while processing request: " + requestUri, e);
+            log.error("An error occurred while processing request: " + requestPath, e);
             exchange.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
         } finally {
             if (activity != null) {

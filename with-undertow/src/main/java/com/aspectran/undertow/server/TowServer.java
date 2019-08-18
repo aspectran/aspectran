@@ -21,6 +21,8 @@ import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import io.undertow.Undertow;
 import io.undertow.server.HttpHandler;
+import org.xnio.Option;
+import org.xnio.OptionMap;
 
 /**
  * The Undertow Server managed by Aspectran.
@@ -39,22 +41,63 @@ public class TowServer implements InitializableBean, DisposableBean {
 
     private boolean autoStart;
 
-    public void setListeners(Undertow.ListenerBuilder[] listenerBuilders) {
+    public Undertow.Builder setAutoStart(boolean autoStart) {
+        this.autoStart = autoStart;
+        return builder;
+    }
+
+    public Undertow.Builder setSystemProperty(String key, String value) {
+        System.setProperty(key, value);
+        return builder;
+    }
+
+    public Undertow.Builder setListeners(Undertow.ListenerBuilder[] listenerBuilders) {
         for (Undertow.ListenerBuilder listenerBuilder : listenerBuilders) {
             builder.addListener(listenerBuilder);
         }
+        return builder;
     }
 
-    public void setHandler(HttpHandler handler) {
-        builder.setHandler(handler);
+    public Undertow.Builder setHandler(HttpHandler handler) {
+        return builder.setHandler(handler);
     }
 
-    public void setAutoStart(boolean autoStart) {
-        this.autoStart = autoStart;
+    public Undertow.Builder setBufferSize(int bufferSize) {
+        return builder.setBufferSize(bufferSize);
     }
 
-    public void setSystemProperty(String key, String value) {
-        System.setProperty(key, value);
+    public Undertow.Builder setIoThreads(int ioThreads) {
+        return builder.setIoThreads(ioThreads);
+    }
+
+    public Undertow.Builder setWorkerThreads(int workerThreads) {
+        return builder.setWorkerThreads(workerThreads);
+    }
+
+    public Undertow.Builder setDirectBuffers(final boolean directBuffers) {
+        return builder.setDirectBuffers(directBuffers);
+    }
+
+    public <T> Undertow.Builder setServerOption(final Option<T> option, final T value) {
+        return builder.setServerOption(option, value);
+    }
+
+    public <T> Undertow.Builder setSocketOption(final Option<T> option, final T value) {
+        return builder.setSocketOption(option, value);
+    }
+
+    public <T> Undertow.Builder setWorkerOption(final Option<T> option, final T value) {
+        return builder.setWorkerOption(option, value);
+    }
+
+    @SuppressWarnings("unchecked")
+    public void setServerOptions(TowServerOptions options) {
+        if (options != null) {
+            OptionMap optionMap = options.getOptionMap();
+            for (Option option : optionMap) {
+                builder.setServerOption(option, optionMap.get(option));
+            }
+        }
     }
 
     public void start() throws Exception {
