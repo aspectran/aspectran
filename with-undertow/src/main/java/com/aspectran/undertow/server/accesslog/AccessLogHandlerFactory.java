@@ -13,15 +13,19 @@ public class AccessLogHandlerFactory implements ClassLoaderAware {
 
     private ClassLoader classLoader;
 
-    private String category;
+    private HttpHandler handler;
 
     private String formatString;
 
-    private HttpHandler handler;
+    private String category;
 
     @Override
     public void setClassLoader(ClassLoader classLoader) {
         this.classLoader = classLoader;
+    }
+
+    public void setHandler(HttpHandler handler) {
+        this.handler = handler;
     }
 
     public void setFormatString(String formatString) {
@@ -30,10 +34,6 @@ public class AccessLogHandlerFactory implements ClassLoaderAware {
 
     public void setCategory(String category) {
         this.category = category;
-    }
-
-    public void setHandler(HttpHandler handler) {
-        this.handler = handler;
     }
 
     public AccessLogHandler createAccessLogHandler() {
