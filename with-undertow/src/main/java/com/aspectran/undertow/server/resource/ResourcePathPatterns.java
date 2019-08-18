@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.context.rule.params;
+package com.aspectran.undertow.server.resource;
 
 import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterKey;
@@ -21,47 +21,48 @@ import com.aspectran.core.util.apon.ValueType;
 
 import java.io.IOException;
 
-public class PointcutParameters extends AbstractParameters {
+public class ResourcePathPatterns extends AbstractParameters {
 
-    public static final ParameterKey type;
-    public static final ParameterKey plus;
-    public static final ParameterKey minus;
-    public static final ParameterKey include;
-    public static final ParameterKey exclude;
+    private static final ParameterKey plus;
+    private static final ParameterKey minus;
 
     private static final ParameterKey[] parameterKeys;
 
     static {
-        type = new ParameterKey("type", ValueType.STRING);
         plus = new ParameterKey("+", ValueType.STRING, true, true);
         minus = new ParameterKey("-", ValueType.STRING, true, true);
-        include = new ParameterKey("include", PointcutQualifierParameters.class, true, true);
-        exclude = new ParameterKey("exclude", PointcutQualifierParameters.class, true, true);
 
         parameterKeys = new ParameterKey[] {
-                type,
                 plus,
-                minus,
-                include,
-                exclude
+                minus
         };
     }
 
-    public PointcutParameters() {
+    public ResourcePathPatterns() {
         super(parameterKeys);
     }
 
-    public PointcutParameters(String apon) throws IOException {
+    public ResourcePathPatterns(String apon) throws IOException {
         this();
         readFrom(apon);
     }
 
-    public void addIncludePattern(String pattern) {
+    public String[] getIncludePatterns() {
+        return getStringArray(plus);
+    }
+
+    public ResourcePathPatterns addIncludePattern(String pattern) {
         putValue(plus, pattern);
+        return this;
     }
 
-    public void addExcludePattern(String pattern) {
+    public String[] getExcludePatterns() {
+        return getStringArray(minus);
+    }
+
+    public ResourcePathPatterns addExcludePattern(String pattern) {
         putValue(minus, pattern);
+        return this;
     }
-
+    
 }

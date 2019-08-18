@@ -276,8 +276,8 @@ public class BasicSession implements Session {
                     // expiration remaining and the time to evict
                     time = (remaining > 0 ? Math.min(maxInactive, TimeUnit.SECONDS.toMillis(evictionIdleSecs)) : 0);
                     if (log.isDebugEnabled()) {
-                        log.debug("Session " + getId() + " timer set to lesser of maxInactive=" + maxInactive +
-                                " and inactivityEvict=" + evictionIdleSecs);
+                        log.debug("Session " + getId() + " timer set to lesser of maxIdleSeconds=" +
+                                (maxInactive / 1000L) + " and evictionIdleSeconds=" + evictionIdleSecs);
                     }
                 }
             }

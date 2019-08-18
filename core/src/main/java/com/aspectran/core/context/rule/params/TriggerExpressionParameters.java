@@ -61,9 +61,9 @@ public class TriggerExpressionParameters extends AbstractParameters {
         super(parameterKeys);
     }
 
-    public TriggerExpressionParameters(String text) throws IOException {
+    public TriggerExpressionParameters(String apon) throws IOException {
         this();
-        readFrom(text);
+        readFrom(apon);
     }
 
     public Integer getStartDelaySeconds() {

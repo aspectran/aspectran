@@ -43,9 +43,9 @@ public class ItemHolderParameters extends AbstractParameters {
         super(parameterKeys);
     }
 
-    public ItemHolderParameters(String text) throws IOException {
+    public ItemHolderParameters(String apon) throws IOException {
         this();
-        readFrom(text);
+        readFrom(apon);
     }
 
     public String getProfile() {

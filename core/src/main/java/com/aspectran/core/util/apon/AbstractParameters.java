@@ -633,9 +633,9 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
-    public void readFrom(String text) throws IOException {
-        if (text != null) {
-            AponReader.parse(text, this);
+    public void readFrom(String apon) throws IOException {
+        if (apon != null) {
+            AponReader.parse(apon, this);
         }
     }
 

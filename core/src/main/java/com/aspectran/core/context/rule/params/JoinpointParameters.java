@@ -51,9 +51,9 @@ public class JoinpointParameters extends AbstractParameters {
         super(parameterKeys);
     }
 
-    public JoinpointParameters(String text) throws IOException {
+    public JoinpointParameters(String apon) throws IOException {
         this();
-        readFrom(text);
+        readFrom(apon);
     }
 
     public void setJoinpointTargetType(String joinpointTargetType) {

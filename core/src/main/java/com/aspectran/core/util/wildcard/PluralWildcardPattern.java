@@ -49,6 +49,22 @@ public class PluralWildcardPattern {
         this.excludePatterns = compile(excludePatterns, separator);
     }
 
+    public WildcardPattern[] getIncludePatterns() {
+        return includePatterns;
+    }
+
+    public boolean hasIncludePatterns() {
+        return (includePatterns != null && includePatterns.length > 0);
+    }
+
+    public WildcardPattern[] getExcludePatterns() {
+        return excludePatterns;
+    }
+
+    public boolean hasExcludePatterns() {
+        return (excludePatterns != null && excludePatterns.length > 0);
+    }
+
     public boolean matches(String compareString) {
         boolean result = false;
         if (includePatterns != null) {

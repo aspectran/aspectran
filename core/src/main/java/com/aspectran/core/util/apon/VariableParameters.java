@@ -38,9 +38,9 @@ public class VariableParameters extends AbstractParameters implements Serializab
         super(parameterKeys);
     }
 
-    public VariableParameters(ParameterKey[] parameterKeys, String text) throws IOException {
+    public VariableParameters(ParameterKey[] parameterKeys, String apon) throws IOException {
         super(parameterKeys);
-        readFrom(text);
+        readFrom(apon);
     }
 
     @Override

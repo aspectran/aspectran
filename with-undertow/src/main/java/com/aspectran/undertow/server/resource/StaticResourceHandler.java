@@ -15,7 +15,9 @@
  */
 package com.aspectran.undertow.server.resource;
 
-import com.aspectran.core.util.StringUtils;
+import com.aspectran.core.util.logging.Log;
+import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.wildcard.PluralWildcardPattern;
 import com.aspectran.core.util.wildcard.WildcardPattern;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
@@ -28,14 +30,15 @@ import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class StaticResourceHandler extends ResourceHandler {
 
-    private volatile WildcardPattern[] resourcePathPatterns;
+    private static final Log log = LogFactory.getLog(StaticResourceHandler.class);
+
+    private volatile PluralWildcardPattern resourcePathPatterns;
 
     public StaticResourceHandler(ResourceManager resourceManager) {
         super(resourceManager);
@@ -53,20 +56,18 @@ public class StaticResourceHandler extends ResourceHandler {
         super(resourceSupplier, next);
     }
 
-    public void setResourceLocations(String... resourceLocations) {
-        List<WildcardPattern> patterns = new ArrayList<>();
-        if (resourceLocations != null) {
-            for (String path : resourceLocations) {
-                if (StringUtils.hasText(path)) {
-                    patterns.add(WildcardPattern.compile(path.trim(), '/'));
-                }
-            }
-        }
-        if (!patterns.isEmpty()) {
-            this.resourcePathPatterns = patterns.toArray(new WildcardPattern[0]);
+    public void setResourcePathPatterns(String... resourcePathPatterns) {
+        if (resourcePathPatterns != null && resourcePathPatterns.length > 0) {
+            this.resourcePathPatterns = new PluralWildcardPattern(resourcePathPatterns, null, '/');
         } else {
             this.resourcePathPatterns = null;
         }
+    }
+
+    public void setResourcePathPatterns(ResourcePathPatterns resourcePathPatterns) {
+        String[] includePatterns = resourcePathPatterns.getIncludePatterns();
+        String[] excludePatterns = resourcePathPatterns.getExcludePatterns();
+        this.resourcePathPatterns = new PluralWildcardPattern(includePatterns, excludePatterns, '/');
     }
 
     public void autoDetect() throws IOException {
@@ -81,8 +82,8 @@ public class StaticResourceHandler extends ResourceHandler {
                 }
             }
             Set<WildcardPattern> patterns = new HashSet<>();
-            if (resourcePathPatterns != null && resourcePathPatterns.length > 0) {
-                for (WildcardPattern pattern : resourcePathPatterns) {
+            if (resourcePathPatterns != null && resourcePathPatterns.hasIncludePatterns()) {
+                for (WildcardPattern pattern : resourcePathPatterns.getIncludePatterns()) {
                     boolean exists = false;
                     for (String prefix : dirs) {
                         if (pattern.toString().startsWith(prefix)) {
@@ -101,7 +102,16 @@ public class StaticResourceHandler extends ResourceHandler {
             if (patterns.isEmpty()) {
                 resourcePathPatterns = null;
             } else {
-                resourcePathPatterns = patterns.toArray(new WildcardPattern[0]);
+                WildcardPattern[] includePatterns = patterns.toArray(new WildcardPattern[0]);
+                WildcardPattern[] excludePatterns = (resourcePathPatterns != null ? resourcePathPatterns.getExcludePatterns() : null);
+                resourcePathPatterns = new PluralWildcardPattern(includePatterns, excludePatterns);
+
+                if (log.isDebugEnabled()) {
+                    log.debug("StaticResourceHandler includePatterns=" + Arrays.toString(includePatterns));
+                    if (excludePatterns != null) {
+                        log.debug("StaticResourceHandler excludePatterns=" + Arrays.toString(excludePatterns));
+                    }
+                }
             }
         }
     }
@@ -112,13 +122,10 @@ public class StaticResourceHandler extends ResourceHandler {
 
     @Override
     public void handleRequest(HttpServerExchange exchange) throws Exception {
-        String requestUri = exchange.getRequestURI();
+        String requestPath = exchange.getRequestPath();
         if (resourcePathPatterns != null) {
-            for (WildcardPattern pattern : resourcePathPatterns) {
-                if (pattern.matches(requestUri)) {
-                    super.handleRequest(exchange);
-                    break;
-                }
+            if (resourcePathPatterns.matches(requestPath)) {
+                super.handleRequest(exchange);
             }
         }
     }
