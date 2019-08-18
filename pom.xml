@@ -19,7 +19,7 @@
 
     <groupId>com.aspectran</groupId>
     <artifactId>aspectran</artifactId>
-    <version>6.3.0-M3-SNAPSHOT</version>
+    <version>6.3.0-M2-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Aspectran</name>
