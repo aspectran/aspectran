@@ -51,7 +51,7 @@ public class EncodingHandlerFactory {
 
     private String[] contentEncodingProviderNames;
 
-    private long maxContentSize;
+    private long maxContentSize = 2048L;
 
     private String[] mediaTypes;
 
