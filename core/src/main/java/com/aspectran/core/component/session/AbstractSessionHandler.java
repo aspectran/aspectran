@@ -155,10 +155,9 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
     @Override
     public BasicSession createSession(String id) {
         long created = System.currentTimeMillis();
-        long maxIdleSecs = (defaultMaxIdleSecs > 0 ? defaultMaxIdleSecs * 1000L : -1L);
-        BasicSession session = sessionCache.createSession(id, created, maxIdleSecs);
+        long maxInactiveInterval = (defaultMaxIdleSecs > 0 ? defaultMaxIdleSecs * 1000L : -1L);
         try {
-            sessionCache.add(id, session);
+            BasicSession session = sessionCache.add(id, created, maxInactiveInterval);
             fireSessionCreatedListeners(session);
             return session;
         } catch (Exception e) {

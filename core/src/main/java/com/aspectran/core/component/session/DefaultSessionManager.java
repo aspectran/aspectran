@@ -129,6 +129,7 @@ public class DefaultSessionManager extends AbstractSessionHandler implements Ses
                     sessionCache.setRemoveUnloadableSessions(removeUnloadableSessions);
                 }
             }
+            sessionCache.initialize();
             setSessionCache(sessionCache);
         }
 

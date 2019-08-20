@@ -69,10 +69,10 @@ public interface SessionDataStore extends Component {
      * @param createdTime the timestamp when created
      * @param accessedTime the timestamp when accessed
      * @param lastAccessedTime the timestamp when last accessed
-     * @param maxInactiveIntervalMS the max inactive time in milliseconds
+     * @param maxInactiveInterval the max inactive time in milliseconds
      * @return a new SessionData object
      */
-    SessionData createSessionData(String id, long createdTime, long accessedTime, long lastAccessedTime, long maxInactiveIntervalMS);
+    SessionData createSessionData(String id, long createdTime, long accessedTime, long lastAccessedTime, long maxInactiveInterval);
 
     /**
      * Called periodically, this method should search the data store
