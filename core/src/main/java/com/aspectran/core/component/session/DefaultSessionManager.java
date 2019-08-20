@@ -94,8 +94,19 @@ public class DefaultSessionManager extends AbstractSessionHandler implements Ses
         }
 
         if (getSessionCache() == null) {
-            SessionCache sessionCache = new DefaultSessionCache(this);
-            setSessionCache(sessionCache);
+            SessionDataStore sessionDataStore = null;
+            if (sessionManagerConfig != null) {
+                String storeType = sessionManagerConfig.getStoreType();
+                SessionStoreType sessionStoreType = SessionStoreType.resolve(storeType);
+                if (storeType != null && sessionStoreType == null) {
+                    throw new IllegalArgumentException("Unknown session store type: " + storeType);
+                }
+                if (sessionStoreType == SessionStoreType.FILE) {
+                    sessionDataStore = SessionDataStoreFactory.createFileSessionDataStore(sessionManagerConfig.getFileStoreConfig());
+                }
+            }
+
+            DefaultSessionCache sessionCache = new DefaultSessionCache(this, sessionDataStore);
             if (sessionManagerConfig != null) {
                 if (sessionManagerConfig.hasMaxSessions()) {
                     int maxSessions = sessionManagerConfig.getMaxSessions();
@@ -118,39 +129,10 @@ public class DefaultSessionManager extends AbstractSessionHandler implements Ses
                     sessionCache.setRemoveUnloadableSessions(removeUnloadableSessions);
                 }
             }
-        }
-
-        if (getSessionCache().getSessionDataStore() == null && sessionManagerConfig != null) {
-            String storeType = sessionManagerConfig.getStoreType();
-            SessionStoreType sessionStoreType = SessionStoreType.resolve(storeType);
-            if (storeType != null && sessionStoreType == null) {
-                throw new IllegalArgumentException("Unknown session store type: " + storeType);
-            }
-            if (sessionStoreType == SessionStoreType.FILE) {
-                FileSessionDataStore fileSessionDataStore = new FileSessionDataStore();
-                SessionFileStoreConfig fileStoreConfig = sessionManagerConfig.getFileStoreConfig();
-                if (fileStoreConfig != null) {
-                    String storeDir = fileStoreConfig.getStoreDir();
-                    if (StringUtils.hasText(storeDir)) {
-                        fileSessionDataStore.setStoreDir(new File(storeDir));
-                    }
-                    boolean deleteUnrestorableFiles = fileStoreConfig.isDeleteUnrestorableFiles();
-                    if (deleteUnrestorableFiles) {
-                        fileSessionDataStore.setDeleteUnrestorableFiles(true);
-                    }
-                }
-                fileSessionDataStore.initialize();
-                getSessionCache().setSessionDataStore(fileSessionDataStore);
-            }
+            setSessionCache(sessionCache);
         }
 
         super.doInitialize();
-    }
-
-    @Override
-    protected void doDestroy() throws Exception {
-        getSessionCache().clear();
-        super.doDestroy();
     }
 
     public static DefaultSessionManager create(ActivityContext context, SessionManagerConfig sessionManagerConfig)

@@ -106,7 +106,7 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
         return houseKeeper;
     }
 
-    public void setHouseKeeper(HouseKeeper houseKeeper) {
+    protected void setHouseKeeper(HouseKeeper houseKeeper) {
         this.houseKeeper = houseKeeper;
     }
 
@@ -158,7 +158,7 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
         long maxIdleSecs = (defaultMaxIdleSecs > 0 ? defaultMaxIdleSecs * 1000L : -1L);
         BasicSession session = sessionCache.createSession(id, created, maxIdleSecs);
         try {
-            sessionCache.put(id, session);
+            sessionCache.add(id, session);
             fireSessionCreatedListeners(session);
             return session;
         } catch (Exception e) {
@@ -168,9 +168,9 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
     }
 
     @Override
-    public void saveSession(BasicSession session) {
+    public void releaseSession(BasicSession session) {
         try {
-            sessionCache.put(session.getId(), session);
+            sessionCache.release(session.getId(), session);
         } catch (Exception e) {
             log.warn("Session failed to save", e);
         }
@@ -422,7 +422,7 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
             houseKeeper.stopScavenging();
         }
         scheduler.stop();
-        sessionCache.clear();
+        sessionCache.destroy();
     }
 
     @Override

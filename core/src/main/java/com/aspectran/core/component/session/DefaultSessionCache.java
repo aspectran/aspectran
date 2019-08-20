@@ -19,6 +19,7 @@ import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.core.util.statistic.CounterStatistic;
 
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
@@ -33,7 +34,7 @@ public class DefaultSessionCache extends AbstractSessionCache {
     private static final Log log = LogFactory.getLog(DefaultSessionCache.class);
 
     /** the cache of sessions in a HashMap */
-    private final ConcurrentHashMap<String, BasicSession> sessions = new ConcurrentHashMap<>();
+    private final Map<String, BasicSession> sessions = new ConcurrentHashMap<>();
 
     private final CounterStatistic statistics = new CounterStatistic();
 
@@ -44,8 +45,8 @@ public class DefaultSessionCache extends AbstractSessionCache {
     /** Determines the maximum number of active sessions allowed. */
     private volatile int maxSessions;
 
-    public DefaultSessionCache(SessionHandler sessionHandler) {
-        super(sessionHandler);
+    public DefaultSessionCache(SessionHandler sessionHandler, SessionDataStore sessionDataStore) {
+        super(sessionHandler, sessionDataStore);
     }
 
     @Override
@@ -133,8 +134,23 @@ public class DefaultSessionCache extends AbstractSessionCache {
         rejectedSessionCount.set(0L);
     }
 
+    private void checkMaxSessions() {
+        if (maxSessions > 0 && statistics.getCurrent() > maxSessions) {
+            rejectedSessionCount.incrementAndGet();
+            throw new IllegalStateException("Session was rejected as the maximum number of sessions " +
+                    maxSessions + " has been hit");
+        }
+    }
+
     @Override
-    public void clear() {
+    protected void doInitialize() throws Exception {
+        if (getSessionDataStore() != null) {
+            getSessionDataStore().initialize();
+        }
+    }
+
+    @Override
+    protected void doDestroy() throws Exception {
         // loop over all the sessions in memory (a few times if necessary to catch sessions that have been
         // added while we're running
         int loop = 100;
@@ -161,13 +177,8 @@ public class DefaultSessionCache extends AbstractSessionCache {
                 }
             }
         }
-    }
-
-    private void checkMaxSessions() {
-        if (maxSessions > 0 && statistics.getCurrent() > maxSessions) {
-            rejectedSessionCount.incrementAndGet();
-            throw new IllegalStateException("Session was rejected as the maximum number of sessions " +
-                    maxSessions + " has been hit");
+        if (getSessionDataStore() != null) {
+            getSessionDataStore().destroy();
         }
     }
 

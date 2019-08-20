@@ -407,7 +407,6 @@ public class FileSessionDataStore extends AbstractSessionDataStore {
 
     @Override
     protected void doInitialize() throws Exception {
-        super.doInitialize();
         initializeStore();
     }
 
@@ -415,7 +414,6 @@ public class FileSessionDataStore extends AbstractSessionDataStore {
     protected void doDestroy() {
         sessionFileMap.clear();
         lastSweepTime = 0L;
-        super.doDestroy();
     }
 
     private void initializeStore() throws Exception {

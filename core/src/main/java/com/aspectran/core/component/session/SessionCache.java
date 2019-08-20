@@ -30,16 +30,6 @@ public interface SessionCache {
 
     int EVICT_ON_INACTIVITY = 1; // any number equal or greater is time in seconds
 
-    SessionDataStore getSessionDataStore();
-
-    /**
-     * A SessionDataStore that is the authoritative source
-     * of session information.
-     *
-     * @param sessionDataStore the session data store
-     */
-    void setSessionDataStore(SessionDataStore sessionDataStore);
-
     int getMaxSessions();
 
     /**
@@ -100,6 +90,46 @@ public interface SessionCache {
      */
     void setRemoveUnloadableSessions(boolean removeUnloadableSessions);
 
+    BasicSession createSession(String id, long time, long maxInactiveIntervalMS);
+
+    /**
+     * Re-materialize a Session that has previously existed.
+     *
+     * @param data the session data
+     * @return a Session object for the data supplied
+     */
+    BasicSession createSession(SessionData data);
+
+    /**
+     * Change the id of a Session.
+     *
+     * @param oldId the current session id
+     * @param newId the new session id
+     * @return the Session after changing its id
+     * @throws Exception if any error occurred
+     */
+    BasicSession renewSessionId(String oldId, String newId) throws Exception;
+
+    /**
+     * Check a list of session ids that belong to potentially expired
+     * sessions. The Session in the cache should be checked,
+     * but also the SessionDataStore, as that is the authoritative
+     * source of all session information.
+     *
+     * @param candidates the session ids to check
+     * @return the set of session ids that have actually expired: this can
+     *      be a superset of the original candidate list.
+     */
+    Set<String> checkExpiration(Set<String> candidates);
+
+    /**
+     * Check a Session to see if it might be appropriate to
+     * evict or expire.
+     *
+     * @param session the session object
+     */
+    void checkInactiveSession(BasicSession session);
+
     /**
      * Get an existing Session. If necessary, the cache will load the data for
      * the session from the configured SessionDataStore.
@@ -111,6 +141,14 @@ public interface SessionCache {
     BasicSession get(String id) throws Exception;
 
     /**
+     * Add an entirely new session to the cache.
+     *
+     * @param id the session id
+     * @param session the session object
+     */
+    void add(String id, BasicSession session) throws Exception;
+
+    /**
      * Finish using a Session. This is called by the SessionHandler
      * once a request is finished with a Session. SessionCache
      * implementations may want to delay writing out Session contents
@@ -120,7 +158,7 @@ public interface SessionCache {
      * @param session the session object
      * @throws Exception if an error occurs
      */
-    void put(String id, BasicSession session) throws Exception;
+    void release(String id, BasicSession session) throws Exception;
 
     /**
      * Check to see if a session exists: WILL consult the
@@ -153,46 +191,6 @@ public interface SessionCache {
      */
     BasicSession delete(String id) throws Exception;
 
-    /**
-     * Check a list of session ids that belong to potentially expired
-     * sessions. The Session in the cache should be checked,
-     * but also the SessionDataStore, as that is the authoritative
-     * source of all session information.
-     *
-     * @param candidates the session ids to check
-     * @return the set of session ids that have actually expired: this can
-     *      be a superset of the original candidate list.
-     */
-    Set<String> checkExpiration(Set<String> candidates);
-
-    /**
-     * Check a Session to see if it might be appropriate to
-     * evict or expire.
-     *
-     * @param session the session object
-     */
-    void checkInactiveSession(BasicSession session);
-
-    BasicSession createSession(String id, long time, long maxInactiveIntervalMS);
-
-    /**
-     * Re-materialize a Session that has previously existed.
-     *
-     * @param data the session data
-     * @return a Session object for the data supplied
-     */
-    BasicSession createSession(SessionData data);
-
-    /**
-     * Change the id of a Session.
-     *
-     * @param oldId the current session id
-     * @param newId the new session id
-     * @return the Session after changing its id
-     * @throws Exception if any error occurred
-     */
-    BasicSession renewSessionId(String oldId, String newId) throws Exception;
-
     Set<String> getAllSessions();
 
     /**
@@ -219,6 +217,6 @@ public interface SessionCache {
      */
     void resetStatistics();
 
-    void clear();
+    void destroy();
 
 }

@@ -209,7 +209,7 @@ public class BasicSession implements Session {
                 long now = System.currentTimeMillis();
                 sessionData.calcAndSetExpiryTime(now);
                 sessionData.setLastAccessedTime(sessionData.getAccessedTime());
-                sessionHandler.saveSession(this);
+                sessionHandler.releaseSession(this);
                 sessionInactivityTimer.schedule(calculateInactivityTimeout(now));
             }
         }

@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.component.session;
 
+import com.aspectran.core.component.AbstractComponent;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -29,13 +30,19 @@ import java.util.Set;
  *
  * <p>Created: 2017. 6. 24.</p>
  */
-public abstract class AbstractSessionCache implements SessionCache {
+public abstract class AbstractSessionCache extends AbstractComponent implements SessionCache {
 
     private static final Log log = LogFactory.getLog(AbstractSessionCache.class);
 
+    /**
+     * The SessionHandler related to this SessionCache
+     */
     private final SessionHandler sessionHandler;
 
-    private SessionDataStore sessionDataStore;
+    /**
+     * The authoritative source of session data
+     */
+    private final SessionDataStore sessionDataStore;
 
     /**
      * When, if ever, to evict sessions: never; only when the last request for
@@ -61,22 +68,17 @@ public abstract class AbstractSessionCache implements SessionCache {
      */
     private boolean removeUnloadableSessions;
 
-    public AbstractSessionCache(SessionHandler sessionHandler) {
+    public AbstractSessionCache(SessionHandler sessionHandler, SessionDataStore sessionDataStore) {
         this.sessionHandler = sessionHandler;
+        this.sessionDataStore = sessionDataStore;
     }
 
     protected SessionHandler getSessionHandler() {
         return sessionHandler;
     }
 
-    @Override
-    public SessionDataStore getSessionDataStore() {
+    protected SessionDataStore getSessionDataStore() {
         return sessionDataStore;
-    }
-
-    @Override
-    public void setSessionDataStore(SessionDataStore sessionDataStore) {
-        this.sessionDataStore = sessionDataStore;
     }
 
     @Override
@@ -139,14 +141,144 @@ public abstract class AbstractSessionCache implements SessionCache {
         this.removeUnloadableSessions = removeUnloadableSessions;
     }
 
+    @Override
+    public BasicSession createSession(String id, long time, long maxInactiveIntervalMS) {
+        if (log.isDebugEnabled()) {
+            log.debug("Creating new session id=" + id);
+        }
+        SessionData sessionData = new SessionData(id, time, time, time, maxInactiveIntervalMS);
+        BasicSession session = new BasicSession(sessionData, sessionHandler, true);
+        try {
+            if (isSaveOnCreate() && sessionDataStore != null) {
+                sessionDataStore.store(id, sessionData);
+            }
+        } catch (Exception e) {
+            log.warn("Save of new session " + id + " failed", e);
+        }
+        return session;
+    }
+
     /**
-     * Get a session object.
-     * If the session object is not in this session store, try getting
-     * the data for it from a SessionDataStore associated with the
-     * session manager.
+     * Create a new Session object from pre-existing session data.
      *
-     * @param id the session id
+     * @param data the session data
+     * @return a new Session object
      */
+    @Override
+    public BasicSession createSession(SessionData data) {
+        return new BasicSession(data, sessionHandler, false);
+    }
+
+    @Override
+    public BasicSession renewSessionId(String oldId, String newId) throws Exception {
+        if (!StringUtils.hasText(oldId)) {
+            throw new IllegalArgumentException("Old session id is null");
+        }
+        if (!StringUtils.hasText(oldId)) {
+            throw new IllegalArgumentException("New session id is null");
+        }
+        BasicSession session = get(oldId);
+        renewSessionId(session, newId);
+        return session;
+    }
+
+    /**
+     * Swap the id on a session.
+     *
+     * @param session the session for which to do the swap
+     * @param newId the new id
+     * @throws Exception if there was a failure saving the change
+     */
+    protected void renewSessionId(BasicSession session, String newId) throws Exception {
+        if (session == null) {
+            return;
+        }
+        try (Lock ignored = session.lock()) {
+            String oldId = session.getId();
+            session.checkValidForWrite(); // can't change id on invalid session
+            session.getSessionData().setId(newId);
+            session.getSessionData().setLastSaved(0); // pretend that the session has never been saved before to get a full save
+            session.getSessionData().setDirty(true);  // ensure we will try to write the session out
+
+            doPutIfAbsent(newId, session); // put the new id into our map
+            doDelete(oldId); // take old out of map
+
+            if (sessionDataStore != null) {
+                sessionDataStore.delete(oldId);  //delete the session data with the old id
+                sessionDataStore.store(newId, session.getSessionData()); //save the session data with the new id
+            }
+            if (log.isDebugEnabled()) {
+                log.debug("Session id " + oldId + " swapped for new id " + newId);
+            }
+        }
+    }
+
+    @Override
+    public Set<String> checkExpiration(Set<String> candidates) {
+        if (log.isTraceEnabled()) {
+            log.trace("SessionDataStore checking expiration on " + candidates);
+        }
+        if (sessionDataStore == null) {
+            return null;
+        }
+        Set<String> allCandidates = sessionDataStore.getExpired(candidates);
+        Set<String> sessionsInUse = new HashSet<>();
+        if (allCandidates != null) {
+            for (String c : allCandidates) {
+                BasicSession bs = doGet(c);
+                if (bs != null && bs.getRequests() > 0) {
+                    // if the session is in my cache, check its not in use first
+                    sessionsInUse.add(c);
+                }
+            }
+            try {
+                allCandidates.removeAll(sessionsInUse);
+            } catch (UnsupportedOperationException e) {
+                Set<String> tmp = new HashSet<>(allCandidates);
+                tmp.removeAll(sessionsInUse);
+                allCandidates = tmp;
+            }
+        }
+        return allCandidates;
+    }
+
+    /**
+     * Check a session for being inactive and
+     * thus being able to be evicted, if eviction
+     * is enabled.
+     *
+     * @param session the session to check
+     */
+    @Override
+    public void checkInactiveSession(BasicSession session) {
+        if (session == null) {
+            return;
+        }
+        if (log.isDebugEnabled()) {
+            log.debug("Checking for idle " +  session.getId());
+        }
+        try (Lock ignored = session.lock()) {
+            if (getEvictionIdleSecs() > 0 && session.isIdleLongerThan(getEvictionIdleSecs()) &&
+                session.isValid() && session.isResident() && session.getRequests() <= 0) {
+                // Be careful with saveOnInactiveEviction - you may be able to re-animate a session that was
+                // being managed on another node and has expired.
+                try {
+                    if (log.isDebugEnabled()) {
+                        log.debug("Evicting idle session " + session.getId());
+                    }
+                    // save before evicting
+                    if (isSaveOnInactiveEviction() && sessionDataStore != null) {
+                        sessionDataStore.store(session.getId(), session.getSessionData());
+                    }
+                    doDelete(session.getId()); // detach from this cache
+                    session.setResident(false);
+                } catch (Exception e) {
+                    log.warn("Passivation of idle session" + session.getId() + " failed", e);
+                }
+            }
+        }
+    }
+
     @Override
     public BasicSession get(String id) throws Exception {
         BasicSession session;
@@ -259,21 +391,25 @@ public abstract class AbstractSessionCache implements SessionCache {
         }
     }
 
-    /**
-     * Put the Session object back into the session store.
-     *
-     * <p>This should be called when a request exists the session. Only when the last
-     * simultaneous request exists the session will any action be taken.</p>
-     *
-     * <p>If there is a SessionDataStore write the session data through to it.</p>
-     *
-     * <p>If the SessionDataStore supports passivation, call the passivate/active listeners.</p>
-     *
-     * <p>If the evictionPolicy == SessionCache.EVICT_ON_SESSION_EXIT then after we have saved
-     * the session, we evict it from the cache.</p>
-     */
     @Override
-    public void put(String id, BasicSession session) throws Exception {
+    public void add(String id, BasicSession session) throws Exception {
+        if (id == null || session == null) {
+            throw new IllegalArgumentException("Add key=" + id + " session=" + (session == null ? "null" : session.getId()));
+        }
+        try (Lock ignored = session.lock()) {
+            if (!session.isValid()) {
+                throw new IllegalStateException("Session " + id + " is not valid");
+            }
+            if (doPutIfAbsent(id, session) == null) {
+                session.setResident(true); //its in the cache
+            } else {
+                throw new IllegalStateException("Session " + id + " already in cache");
+            }
+        }
+    }
+
+    @Override
+    public void release(String id, BasicSession session) throws Exception {
         if (id == null || session == null) {
             throw new IllegalArgumentException("Put key=" + id + " session=" + (session == null ? "null" : session.getId()));
         }
@@ -317,42 +453,26 @@ public abstract class AbstractSessionCache implements SessionCache {
         }
     }
 
-    /**
-     * Check to see if a session corresponding to the id exists.
-     *
-     * This method will first check with the object store. If it
-     * doesn't exist in the object store (might be passivated etc),
-     * it will check with the data store.
-     *
-     * @throws Exception the Exception
-     */
     @Override
     public boolean exists(String id) throws Exception {
         // try the object store first
-        BasicSession s = doGet(id);
-        if (s != null) {
-            try (Lock ignored = s.lock()) {
+        BasicSession bs = doGet(id);
+        if (bs != null) {
+            try (Lock ignored = bs.lock()) {
                 // wait for the lock and check the validity of the session
-                return s.isValid();
+                return bs.isValid();
             }
         }
         // not there, so find out if session data exists for it
         return (sessionDataStore != null && sessionDataStore.exists(id));
     }
 
-    /**
-     * Check to see if this cache contains an entry for the session
-     * corresponding to the session id.
-     */
     @Override
     public boolean contains(String id) throws Exception {
         // just ask our object cache, not the store
         return (doGet(id) != null);
     }
 
-    /**
-     * Remove a session object from this store and from any backing store.
-     */
     @Override
     public BasicSession delete(String id) throws Exception {
         // get the session, if its not in memory, this will load it
@@ -405,144 +525,6 @@ public abstract class AbstractSessionCache implements SessionCache {
      * @return true if removed; false otherwise
      */
     public abstract BasicSession doDelete(String id);
-
-    @Override
-    public Set<String> checkExpiration(Set<String> candidates) {
-        if (log.isTraceEnabled()) {
-            log.trace("SessionDataStore checking expiration on " + candidates);
-        }
-        if (sessionDataStore == null) {
-            return null;
-        }
-        Set<String> allCandidates = sessionDataStore.getExpired(candidates);
-        Set<String> sessionsInUse = new HashSet<>();
-        if (allCandidates != null) {
-            for (String c : allCandidates) {
-                BasicSession bs = doGet(c);
-                if (bs != null && bs.getRequests() > 0) {
-                    // if the session is in my cache, check its not in use first
-                    sessionsInUse.add(c);
-                }
-            }
-            try {
-                allCandidates.removeAll(sessionsInUse);
-            } catch (UnsupportedOperationException e) {
-                Set<String> tmp = new HashSet<>(allCandidates);
-                tmp.removeAll(sessionsInUse);
-                allCandidates = tmp;
-            }
-        }
-        return allCandidates;
-    }
-
-    /**
-     * Check a session for being inactive and
-     * thus being able to be evicted, if eviction
-     * is enabled.
-     *
-     * @param session the session to check
-     */
-    @Override
-    public void checkInactiveSession(BasicSession session) {
-        if (session == null) {
-            return;
-        }
-        if (log.isDebugEnabled()) {
-            log.debug("Checking for idle " +  session.getId());
-        }
-        try (Lock ignored = session.lock()) {
-            if (getEvictionIdleSecs() > 0 && session.isIdleLongerThan(getEvictionIdleSecs()) &&
-                    session.isValid() && session.isResident() && session.getRequests() <= 0) {
-                // Be careful with saveOnInactiveEviction - you may be able to re-animate a session that was
-                // being managed on another node and has expired.
-                try {
-                    if (log.isDebugEnabled()) {
-                        log.debug("Evicting idle session " + session.getId());
-                    }
-                    // save before evicting
-                    if (isSaveOnInactiveEviction() && sessionDataStore != null) {
-                        sessionDataStore.store(session.getId(), session.getSessionData());
-                    }
-                    doDelete(session.getId()); // detach from this cache
-                    session.setResident(false);
-                } catch (Exception e) {
-                    log.warn("Passivation of idle session" + session.getId() + " failed", e);
-                }
-            }
-        }
-    }
-
-    @Override
-    public BasicSession createSession(String id, long time, long maxInactiveIntervalMS) {
-        if (log.isDebugEnabled()) {
-            log.debug("Creating new session id=" + id);
-        }
-        SessionData sessionData = new SessionData(id, time, time, time, maxInactiveIntervalMS);
-        BasicSession session = new BasicSession(sessionData, getSessionHandler(), true);
-        try {
-            if (isSaveOnCreate() && sessionDataStore != null) {
-                sessionDataStore.store(id, sessionData);
-            }
-        } catch (Exception e) {
-            log.warn("Save of new session " + id + " failed", e);
-        }
-        return session;
-    }
-
-    /**
-     * Create a new Session object from pre-existing session data.
-     *
-     * @param data the session data
-     * @return a new Session object
-     */
-    @Override
-    public BasicSession createSession(SessionData data) {
-        return new BasicSession(data, getSessionHandler(), false);
-    }
-
-    @Override
-    public BasicSession renewSessionId(String oldId, String newId) throws Exception {
-        if (!StringUtils.hasText(oldId)) {
-            throw new IllegalArgumentException("Old session id is null");
-        }
-        if (!StringUtils.hasText(oldId)) {
-            throw new IllegalArgumentException("New session id is null");
-        }
-        BasicSession session = get(oldId);
-        renewSessionId(session, newId);
-        return session;
-    }
-
-    /**
-     * Swap the id on a session.
-     *
-     * @param session the session for which to do the swap
-     * @param newId the new id
-     * @throws Exception if there was a failure saving the change
-     */
-    protected void renewSessionId(BasicSession session, String newId) throws Exception {
-        if (session == null) {
-            return;
-        }
-        try (Lock ignored = session.lock()) {
-            String oldId = session.getId();
-            session.checkValidForWrite(); // can't change id on invalid session
-            session.getSessionData().setId(newId);
-            session.getSessionData().setLastSaved(0); // pretend that the session has never been saved before to get a full save
-            session.getSessionData().setDirty(true);  // ensure we will try to write the session out
-
-            doPutIfAbsent(newId, session); // put the new id into our map
-            doDelete(oldId); // take old out of map
-
-            if (sessionDataStore != null) {
-                sessionDataStore.delete(oldId);  //delete the session data with the old id
-                sessionDataStore.store(newId, session.getSessionData()); //save the session data with the new id
-            }
-            if (log.isDebugEnabled()) {
-                log.debug("Session id " + oldId + " swapped for new id " + newId);
-            }
-        }
-    }
 
     /**
      * PlaceHolder

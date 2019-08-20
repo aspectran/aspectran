@@ -142,14 +142,6 @@ public abstract class AbstractSessionDataStore extends AbstractComponent impleme
         return new SessionData(id, createdTime, accessedTime, lastAccessedTime, maxInactiveIntervalMS);
     }
 
-    @Override
-    protected void doInitialize() throws Exception {
-    }
-
-    @Override
-    protected void doDestroy() {
-    }
-
     protected void checkAlreadyInitialized() throws IllegalStateException {
         if (isInitialized()) {
             throw new IllegalStateException("Already initialized");

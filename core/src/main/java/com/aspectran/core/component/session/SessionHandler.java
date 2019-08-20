@@ -54,7 +54,7 @@ public interface SessionHandler extends Component {
      */
     BasicSession createSession(String id);
 
-    void saveSession(BasicSession session);
+    void releaseSession(BasicSession session);
 
     /**
      * Create a new Session ID.
