@@ -20,11 +20,17 @@ import io.undertow.Undertow;
 
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLEngine;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
+import javax.net.ssl.X509ExtendedKeyManager;
 import java.io.IOException;
+import java.net.Socket;
 import java.net.URL;
 import java.security.KeyStore;
+import java.security.Principal;
+import java.security.PrivateKey;
+import java.security.cert.X509Certificate;
 
 /**
  * <p>Created: 2019-08-21</p>
@@ -35,11 +41,13 @@ public class HttpsListenerConfig {
 
     private String host;
 
+    private String keyAlias;
+
     private String keyStoreType;
 
     private String keyStoreProvider;
 
-    private String keyStoreName;
+    private String keyStorePath;
 
     private String keyStorePassword;
 
@@ -47,7 +55,7 @@ public class HttpsListenerConfig {
 
     private String trustStoreProvider;
 
-    private String trustStoreName;
+    private String trustStorePath;
 
     private String trustStorePassword;
 
@@ -67,6 +75,14 @@ public class HttpsListenerConfig {
         this.host = host;
     }
 
+    public String getKeyAlias() {
+        return keyAlias;
+    }
+
+    public void setKeyAlias(String keyAlias) {
+        this.keyAlias = keyAlias;
+    }
+
     public String getKeyStoreType() {
         return keyStoreType;
     }
@@ -83,12 +99,12 @@ public class HttpsListenerConfig {
         this.keyStoreProvider = keyStoreProvider;
     }
 
-    public String getKeyStoreName() {
-        return keyStoreName;
+    public String getKeyStorePath() {
+        return keyStorePath;
     }
 
-    public void setKeyStoreName(String keyStoreName) {
-        this.keyStoreName = keyStoreName;
+    public void setKeyStorePath(String keyStorePath) {
+        this.keyStorePath = keyStorePath;
     }
 
     public String getKeyStorePassword() {
@@ -115,12 +131,12 @@ public class HttpsListenerConfig {
         this.trustStoreProvider = trustStoreProvider;
     }
 
-    public String getTrustStoreName() {
-        return trustStoreName;
+    public String getTrustStorePath() {
+        return trustStorePath;
     }
 
-    public void setTrustStoreName(String trustStoreName) {
-        this.trustStoreName = trustStoreName;
+    public void setTrustStorePath(String trustStorePath) {
+        this.trustStorePath = trustStorePath;
     }
 
     public String getTrustStorePassword() {
@@ -146,19 +162,32 @@ public class HttpsListenerConfig {
 
     private KeyManager[] getKeyManagers() throws IOException {
         try {
-            KeyStore keyStore = loadKeyStore(keyStoreType, keyStoreProvider, keyStoreName, keyStorePassword);
+            KeyStore keyStore = loadKeyStore(keyStoreType, keyStoreProvider, keyStorePath, keyStorePassword);
             KeyManagerFactory keyManagerFactory = KeyManagerFactory
                     .getInstance(KeyManagerFactory.getDefaultAlgorithm());
             keyManagerFactory.init(keyStore, keyStorePassword.toCharArray());
-            return keyManagerFactory.getKeyManagers();
+            if (keyAlias != null) {
+                return getConfigurableAliasKeyManagers(keyAlias, keyManagerFactory.getKeyManagers());
+            } else {
+                return keyManagerFactory.getKeyManagers();
+            }
         } catch (Exception e) {
             throw new IOException("Unable to initialise KeyManager[]", e);
         }
     }
 
+    private KeyManager[] getConfigurableAliasKeyManagers(String keyAlias, KeyManager[] keyManagers) {
+        for (int i = 0; i < keyManagers.length; i++) {
+            if (keyManagers[i] instanceof X509ExtendedKeyManager) {
+                keyManagers[i] = new ConfigurableAliasKeyManager((X509ExtendedKeyManager) keyManagers[i], keyAlias);
+            }
+        }
+        return keyManagers;
+    }
+
     private TrustManager[] getTrustManagers() throws IOException {
         try {
-            KeyStore store = loadTrustStore(trustStoreType, trustStoreProvider, trustStoreName, trustStorePassword);
+            KeyStore store = loadTrustStore(trustStoreType, trustStoreProvider, trustStorePath, trustStorePassword);
             TrustManagerFactory trustManagerFactory = TrustManagerFactory
                     .getInstance(TrustManagerFactory.getDefaultAlgorithm());
             trustManagerFactory.init(store);
@@ -189,6 +218,65 @@ public class HttpsListenerConfig {
         } catch (Exception e) {
             throw new IOException("Could not load key store '" + resource + "'", e);
         }
+    }
+
+    /**
+     * {@link X509ExtendedKeyManager} that supports custom alias configuration.
+     */
+    private static class ConfigurableAliasKeyManager extends X509ExtendedKeyManager {
+
+        private final X509ExtendedKeyManager keyManager;
+
+        private final String alias;
+
+        ConfigurableAliasKeyManager(X509ExtendedKeyManager keyManager, String alias) {
+            this.keyManager = keyManager;
+            this.alias = alias;
+        }
+
+        @Override
+        public String chooseEngineClientAlias(String[] strings, Principal[] principals, SSLEngine sslEngine) {
+            return this.keyManager.chooseEngineClientAlias(strings, principals, sslEngine);
+        }
+
+        @Override
+        public String chooseEngineServerAlias(String s, Principal[] principals, SSLEngine sslEngine) {
+            if (this.alias == null) {
+                return this.keyManager.chooseEngineServerAlias(s, principals, sslEngine);
+            }
+            return this.alias;
+        }
+
+        @Override
+        public String chooseClientAlias(String[] keyType, Principal[] issuers, Socket socket) {
+            return this.keyManager.chooseClientAlias(keyType, issuers, socket);
+        }
+
+        @Override
+        public String chooseServerAlias(String keyType, Principal[] issuers, Socket socket) {
+            return this.keyManager.chooseServerAlias(keyType, issuers, socket);
+        }
+
+        @Override
+        public X509Certificate[] getCertificateChain(String alias) {
+            return this.keyManager.getCertificateChain(alias);
+        }
+
+        @Override
+        public String[] getClientAliases(String keyType, Principal[] issuers) {
+            return this.keyManager.getClientAliases(keyType, issuers);
+        }
+
+        @Override
+        public PrivateKey getPrivateKey(String alias) {
+            return this.keyManager.getPrivateKey(alias);
+        }
+
+        @Override
+        public String[] getServerAliases(String keyType, Principal[] issuers) {
+            return this.keyManager.getServerAliases(keyType, issuers);
+        }
+
     }
 
 }
