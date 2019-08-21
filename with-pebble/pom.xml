@@ -39,7 +39,7 @@
 
     <properties>
         <main.basedir>${project.parent.basedir}</main.basedir>
-        <pebble.version>3.0.10</pebble.version>
+        <pebble.version>3.1.0</pebble.version>
     </properties>
 
     <dependencies>
