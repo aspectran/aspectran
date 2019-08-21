@@ -79,9 +79,16 @@ public class ResourceUtils {
         }
     }
 
+    public static URL getURL(String resourceLocation) throws FileNotFoundException {
+        return getURL(resourceLocation, ClassUtils.getDefaultClassLoader());
+    }
+
     public static URL getURL(String resourceLocation, ClassLoader classLoader) throws FileNotFoundException {
         if (resourceLocation == null) {
             throw new IllegalArgumentException("resourceLocation must not be null");
+        }
+        if (classLoader == null) {
+            throw new IllegalArgumentException("classLoader must not be null");
         }
         if (resourceLocation.startsWith(CLASSPATH_URL_PREFIX)) {
             String path = resourceLocation.substring(CLASSPATH_URL_PREFIX.length());
@@ -106,9 +113,16 @@ public class ResourceUtils {
         }
     }
 
+    public static File getFile(String resourceLocation) throws FileNotFoundException {
+        return getFile(resourceLocation, ClassUtils.getDefaultClassLoader());
+    }
+
     public static File getFile(String resourceLocation, ClassLoader classLoader) throws FileNotFoundException {
         if (resourceLocation == null) {
             throw new IllegalArgumentException("resourceLocation must not be null");
+        }
+        if (classLoader == null) {
+            throw new IllegalArgumentException("classLoader must not be null");
         }
         if (resourceLocation.startsWith(CLASSPATH_URL_PREFIX)) {
             String path = resourceLocation.substring(CLASSPATH_URL_PREFIX.length());

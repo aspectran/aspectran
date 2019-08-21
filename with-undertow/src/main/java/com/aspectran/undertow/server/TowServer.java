@@ -24,6 +24,8 @@ import io.undertow.server.HttpHandler;
 import org.xnio.Option;
 import org.xnio.OptionMap;
 
+import java.io.IOException;
+
 /**
  * The Undertow Server managed by Aspectran.
  *
@@ -51,9 +53,32 @@ public class TowServer implements InitializableBean, DisposableBean {
         return builder;
     }
 
-    public Undertow.Builder setListeners(Undertow.ListenerBuilder[] listenerBuilders) {
-        for (Undertow.ListenerBuilder listenerBuilder : listenerBuilders) {
-            builder.addListener(listenerBuilder);
+    public Undertow.Builder setHttpListeners(HttpListenerConfig... httpListenerConfigs) {
+        if (httpListenerConfigs == null) {
+            throw new IllegalArgumentException("httpListenerConfigs must not be null");
+        }
+        for (HttpListenerConfig listenerConfig : httpListenerConfigs) {
+            builder.addListener(listenerConfig.getListenerBuilder());
+        }
+        return builder;
+    }
+
+    public Undertow.Builder setHttpsListeners(HttpsListenerConfig... httpsListenerConfigs) throws IOException {
+        if (httpsListenerConfigs == null) {
+            throw new IllegalArgumentException("httpsListenerConfigs must not be null");
+        }
+        for (HttpsListenerConfig listenerConfig : httpsListenerConfigs) {
+            builder.addListener(listenerConfig.getListenerBuilder());
+        }
+        return builder;
+    }
+
+    public Undertow.Builder setAjpListeners(AjpListenerConfig... ajpListenerConfigs) {
+        if (ajpListenerConfigs == null) {
+            throw new IllegalArgumentException("ajpListenerConfigs must not be null");
+        }
+        for (AjpListenerConfig listenerConfig : ajpListenerConfigs) {
+            builder.addListener(listenerConfig.getListenerBuilder());
         }
         return builder;
     }
@@ -102,23 +127,38 @@ public class TowServer implements InitializableBean, DisposableBean {
 
     public void start() throws Exception {
         synchronized (monitor) {
-            log.info("Starting embedded Undertow server");
-            server = builder.build();
-            server.start();
-            log.info("Undertow server started");
+            if (server != null) {
+                return;
+            }
+            log.info("Starting Undertow server");
+            try {
+                server = builder.build();
+                server.start();
+                log.info("Undertow server started");
+            } catch (Exception e) {
+                try {
+                    if (server != null) {
+                        server.stop();
+                        server = null;
+                    }
+                } catch (Exception ex) {
+                    // ignore
+                }
+                throw new Exception("Unable to start Undertow server", e);
+            }
         }
     }
 
     public void stop() {
         synchronized (monitor) {
-            log.info("Stopping embedded Undertow server");
+            log.info("Stopping undertow server");
             try {
                 if (server != null) {
                     server.stop();
                     server = null;
                 }
             } catch (Exception e) {
-                log.error("Unable to stop embedded Undertow server", e);
+                log.error("Unable to stop Undertow server", e);
             }
         }
     }
