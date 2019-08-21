@@ -114,7 +114,7 @@ public class JettyCommand extends AbstractCommand {
                         jettyServer.stop();
                         return success(info(getStatus(jettyServer)));
                     } catch (Exception e) {
-                        return failed("Jetty Server Stop Failed", e);
+                        return failed("Jetty server stop failed", e);
                     }
                 case "status":
                     return success(getStatus(jettyServer));

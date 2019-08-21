@@ -16,7 +16,6 @@
 package com.aspectran.shell.command.builtins;
 
 import com.aspectran.core.component.bean.BeanRegistry;
-import com.aspectran.jetty.JettyServer;
 import com.aspectran.shell.command.AbstractCommand;
 import com.aspectran.shell.command.CommandRegistry;
 import com.aspectran.shell.command.option.Arguments;
@@ -24,27 +23,29 @@ import com.aspectran.shell.command.option.Option;
 import com.aspectran.shell.command.option.ParsedOptions;
 import com.aspectran.shell.console.Console;
 import com.aspectran.shell.service.ShellService;
+import com.aspectran.undertow.server.TowServer;
+import io.undertow.Version;
 
 import java.net.BindException;
 
 /**
- * Use the command 'jetty' to control the Jetty Server.
+ * Use the command 'undertow' to control the Undertow Server.
  */
-public class JettyCommand extends AbstractCommand {
+public class UndertowCommand extends AbstractCommand {
 
     private static final String NAMESPACE = "builtins";
 
-    private static final String COMMAND_NAME = "jetty";
+    private static final String COMMAND_NAME = "undertow";
 
     private final CommandDescriptor descriptor = new CommandDescriptor();
 
-    public JettyCommand(CommandRegistry registry) {
+    public UndertowCommand(CommandRegistry registry) {
         super(registry);
 
         addOption(Option.builder("server")
                 .valueName("name")
                 .withEqualSign()
-                .desc("ID of bean that defined Jetty server")
+                .desc("ID of bean that defined Undertow server")
                 .build());
         addOption(Option.builder("h")
                 .longName("help")
@@ -53,9 +54,9 @@ public class JettyCommand extends AbstractCommand {
 
         Arguments arguments = touchArguments();
         arguments.setTitle("Commands:");
-        arguments.put("start", "Start Jetty server");
-        arguments.put("stop", "Stop Jetty server");
-        arguments.put("restart", "Restart Jetty server");
+        arguments.put("start", "Start Undertow server");
+        arguments.put("stop", "Stop Undertow server");
+        arguments.put("restart", "Restart Undertow server");
         arguments.put("status", "Display a brief status report");
         arguments.setRequired(true);
     }
@@ -73,52 +74,52 @@ public class JettyCommand extends AbstractCommand {
 
         ShellService service = getService();
 
-        String serverName = options.getValue("server", "jetty.server");
+        String serverName = options.getValue("server", "tow.server");
         BeanRegistry beanRegistry = service.getActivityContext().getBeanRegistry();
-        JettyServer jettyServer;
+        TowServer towServer;
         try {
-            jettyServer = beanRegistry.getBean(JettyServer.class, serverName);
+            towServer = beanRegistry.getBean(TowServer.class, serverName);
         } catch (Exception e) {
-            console.writeError("Jetty server is not available. Cause: " + e.getMessage());
+            console.writeError("Undertow server is not available. Cause: " + e.getMessage());
             return;
         }
 
         if (options.hasArgs()) {
             String command = options.getFirstArg();
             if ("start".equals(command)) {
-                if (jettyServer.isRunning()) {
-                    console.writeError("Jetty server is already running");
+                if (towServer.isStarted()) {
+                    console.writeError("Undertow server is already running");
                     return;
                 }
                 try {
-                    jettyServer.start();
-                    printStatus(jettyServer, console);
+                    towServer.start();
+                    printStatus(towServer, console);
                 } catch (BindException e) {
-                    console.writeError("Jetty Server Error - Port already in use");
+                    console.writeError("Undertow Server Error - Port already in use");
                 }
             } else if ("stop".equals(command)) {
-                if (!jettyServer.isRunning()) {
-                    console.writeError("Jetty server is not running");
+                if (!towServer.isStarted()) {
+                    console.writeError("Undertow server is not running");
                     return;
                 }
                 try {
-                    jettyServer.stop();
-                    printStatus(jettyServer, console);
+                    towServer.stop();
+                    printStatus(towServer, console);
                 } catch (Exception e) {
-                    console.writeError("Jetty Server Error - " + e.getMessage());
+                    console.writeError("Undertow Server Error - " + e.getMessage());
                 }
             } else if ("restart".equals(command)) {
                 try {
-                    if (jettyServer.isRunning()) {
-                        jettyServer.stop();
+                    if (towServer.isStarted()) {
+                        towServer.stop();
                     }
-                    jettyServer.start();
-                    printStatus(jettyServer, console);
+                    towServer.start();
+                    printStatus(towServer, console);
                 } catch (BindException e) {
-                    console.writeError("Jetty Server Error - Port already in use");
+                    console.writeError("Undertow Server Error - Port already in use");
                 }
             } else if ("status".equals(command)) {
-                printStatus(jettyServer, console);
+                printStatus(towServer, console);
             } else {
                 console.writeError("Unknown command '" + String.join(" ", options.getArgs()) + "'");
                 printQuickHelp(console);
@@ -128,12 +129,12 @@ public class JettyCommand extends AbstractCommand {
         }
     }
 
-    private void printStatus(JettyServer jettyServer, Console console) {
+    private void printStatus(TowServer towServer, Console console) {
         console.writeLine("----------------------------------------------------------------------------");
         console.setStyle("YELLOW");
-        console.write(jettyServer.getState());
+        console.write(towServer.isStarted() ? "STARTED" : "STOPPED");
         console.styleOff();
-        console.writeLine(" - Jetty " + JettyServer.getVersion());
+        console.writeLine(" - Undertow " + Version.getVersionString());
         console.writeLine("----------------------------------------------------------------------------");
     }
 
@@ -156,7 +157,7 @@ public class JettyCommand extends AbstractCommand {
 
         @Override
         public String getDescription() {
-            return "Use the command 'jetty' to control the Jetty server";
+            return "Use the command 'undertow' to control the Undertow server";
         }
 
         @Override

@@ -43,6 +43,8 @@ public class TowServer implements InitializableBean, DisposableBean {
 
     private boolean autoStart;
 
+    private volatile boolean started = false;
+
     public Undertow.Builder setAutoStart(boolean autoStart) {
         this.autoStart = autoStart;
         return builder;
@@ -127,13 +129,13 @@ public class TowServer implements InitializableBean, DisposableBean {
 
     public void start() throws Exception {
         synchronized (monitor) {
-            if (server != null) {
+            if (started) {
                 return;
             }
-            log.info("Starting Undertow server");
             try {
                 server = builder.build();
                 server.start();
+                started = true;
                 log.info("Undertow server started");
             } catch (Exception e) {
                 try {
@@ -151,16 +153,24 @@ public class TowServer implements InitializableBean, DisposableBean {
 
     public void stop() {
         synchronized (monitor) {
-            log.info("Stopping undertow server");
+            if (!started) {
+                return;
+            }
+            started = false;
             try {
                 if (server != null) {
                     server.stop();
                     server = null;
+                    log.info("Stopped Undertow server");
                 }
             } catch (Exception e) {
                 log.error("Unable to stop Undertow server", e);
             }
         }
+    }
+
+    public boolean isStarted() {
+        return started;
     }
 
     @Override

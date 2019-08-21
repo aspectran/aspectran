@@ -51,6 +51,11 @@
             <artifactId>aspectran-with-jetty</artifactId>
             <optional>true</optional>
         </dependency>
+        <dependency>
+            <groupId>com.aspectran</groupId>
+            <artifactId>aspectran-with-undertow</artifactId>
+            <optional>true</optional>
+        </dependency>
         <!-- Test dependencies -->
         <dependency>
             <groupId>com.aspectran</groupId>
