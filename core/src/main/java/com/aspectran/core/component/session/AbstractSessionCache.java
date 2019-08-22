@@ -194,7 +194,8 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
                     // my placeholder didn't win, check the session returned
                     phsLock.close();
                     try (Lock ignored = bs.lock()) {
-                        // is it a placeholder? or is a non-resident session? In both cases, chuck it away and start again
+                        // is it a placeholder? or is a non-resident session?
+                        // In both cases, chuck it away and start again
                         if (!bs.isResident() || bs instanceof PlaceHolderSession) {
                             continue;
                         }
@@ -270,15 +271,16 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
     @Override
     public void release(String id, BasicSession session) throws Exception {
         if (id == null || session == null) {
-            throw new IllegalArgumentException("Put key=" + id + " session=" + (session == null ? "null" : session.getId()));
+            throw new IllegalArgumentException("Put key=" + id + " session=" +
+                (session == null ? "null" : session.getId()));
         }
         try (Lock ignored = session.lock()) {
             if (!session.isValid()) {
                 return;
             }
             if (sessionDataStore == null) {
-                if (log.isDebugEnabled()) {
-                    log.debug("Putting into SessionCache only id=" + id);
+                if (log.isTraceEnabled()) {
+                    log.trace("Putting into SessionCache only id=" + id);
                 }
                 session.setResident(true);
                 doPutIfAbsent(id, session); // ensure it is in our map
@@ -304,7 +306,8 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
                     log.debug("Session " + id + " request=" + session.getRequests());
                 }
                 session.setResident(true);
-                doPutIfAbsent(id, session); // ensure it is the map, but don't save it to the backing store until the last request exists
+                doPutIfAbsent(id, session); // ensure it is the map,
+                // but don't save it to the backing store until the last request exists
             }
         }
     }

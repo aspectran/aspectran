@@ -137,8 +137,8 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
                 if (session.isExpiredAt(System.currentTimeMillis())) {
                     // expire the session
                     try {
-                        session.invalidate();
                         session.setDestroyedReason(Session.DestroyedReason.TIMEOUT);
+                        session.invalidate();
                     } catch (Exception e) {
                         log.warn("Invalidating session " + id + " found to be expired when requested", e);
                     }
@@ -196,6 +196,11 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
 
     @Override
     public BasicSession removeSession(String id, boolean invalidate) {
+        return removeSession(id, invalidate, null);
+    }
+
+    @Override
+    public BasicSession removeSession(String id, boolean invalidate, Session.DestroyedReason reason) {
         if (!StringUtils.hasText(id)) {
             return null;
         }
@@ -205,6 +210,9 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
                 // start invalidating if it is not already begun, and call the listeners
                 try {
                     if (session.beginInvalidate()) {
+                        if (reason != null) {
+                            session.setDestroyedReason(reason);
+                        }
                         try {
                             fireSessionDestroyedListeners(session);
                         } catch (Exception e) {
@@ -229,6 +237,11 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
     @Override
     public void invalidate(String id) {
         removeSession(id, true);
+    }
+
+    @Override
+    public void invalidate(String id, Session.DestroyedReason reason) {
+        removeSession(id, true, reason);
     }
 
     @Override
@@ -264,7 +277,7 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
                         log.debug("Session " + session.getId() + " is candidate for expiry");
                     }
                 } else {
-                    invalidate(session.getId());
+                    invalidate(session.getId(), Session.DestroyedReason.TIMEOUT);
                 }
             } else {
                 // possibly evict the session
@@ -273,10 +286,6 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
         }
     }
 
-    /**
-     * Called periodically by the HouseKeeper to handle the list of
-     * sessions that have expired since the last call to scavenge.
-     */
     @Override
     public void scavenge() {
         // don't attempt to scavenge if we are shutting down
@@ -300,7 +309,7 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
             if (candidates != null) {
                 for (String id : candidates) {
                     try {
-                        invalidate(id);
+                        invalidate(id, Session.DestroyedReason.TIMEOUT);
                     } catch (Exception e) {
                         log.warn(e.getMessage(), e);
                     }

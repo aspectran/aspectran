@@ -23,13 +23,13 @@ import com.aspectran.core.component.session.SessionListener;
  *
  * <p>Created: 2019-08-11</p>
  */
-public class TowSessionListenerBridge implements SessionListener {
+final class TowSessionListenerBridge implements SessionListener {
 
     private final io.undertow.server.session.SessionListener listener;
 
     private final TowSessionManager towSessionManager;
 
-    public TowSessionListenerBridge(io.undertow.server.session.SessionListener listener, TowSessionManager towSessionManager) {
+    TowSessionListenerBridge(io.undertow.server.session.SessionListener listener, TowSessionManager towSessionManager) {
         this.listener = listener;
         this.towSessionManager = towSessionManager;
     }
@@ -42,16 +42,18 @@ public class TowSessionListenerBridge implements SessionListener {
     @Override
     public void sessionDestroyed(Session session) {
         io.undertow.server.session.SessionListener.SessionDestroyedReason reason = null;
-        switch (session.getDestroyedReason()) {
-            case INVALIDATED:
-                reason = io.undertow.server.session.SessionListener.SessionDestroyedReason.INVALIDATED;
-                break;
-            case TIMEOUT:
-                reason = io.undertow.server.session.SessionListener.SessionDestroyedReason.TIMEOUT;
-                break;
-            case UNDEPLOY:
-                reason = io.undertow.server.session.SessionListener.SessionDestroyedReason.UNDEPLOY;
-                break;
+        if (session != null && session.getDestroyedReason() != null) {
+            switch (session.getDestroyedReason()) {
+                case INVALIDATED:
+                    reason = io.undertow.server.session.SessionListener.SessionDestroyedReason.INVALIDATED;
+                    break;
+                case TIMEOUT:
+                    reason = io.undertow.server.session.SessionListener.SessionDestroyedReason.TIMEOUT;
+                    break;
+                case UNDEPLOY:
+                    reason = io.undertow.server.session.SessionListener.SessionDestroyedReason.UNDEPLOY;
+                    break;
+            }
         }
         listener.sessionDestroyed(wrapSession(session), null, reason);
     }

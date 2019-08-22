@@ -28,7 +28,7 @@ import java.util.Set;
  *
  * <p>Created: 2019-08-11</p>
  */
-public class TowSessionBridge implements io.undertow.server.session.Session {
+final class TowSessionBridge implements io.undertow.server.session.Session {
 
     private final AttachmentKey<Boolean> FIRST_REQUEST_ACCESSED = AttachmentKey.create(Boolean.class);
 
@@ -36,7 +36,7 @@ public class TowSessionBridge implements io.undertow.server.session.Session {
 
     private final TowSessionManager sessionManager;
 
-    public TowSessionBridge(Session session, TowSessionManager sessionManager) {
+    TowSessionBridge(Session session, TowSessionManager sessionManager) {
         this.session = session;
         this.sessionManager = sessionManager;
     }

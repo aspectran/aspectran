@@ -295,7 +295,9 @@ public class BasicSession implements Session {
     public void invalidate() {
         boolean result = beginInvalidate();
         if (result) {
-            setDestroyedReason(DestroyedReason.INVALIDATED);
+            if (getDestroyedReason() == null) {
+                setDestroyedReason(DestroyedReason.INVALIDATED);
+            }
             try {
                 try {
                     // do the invalidation
@@ -552,7 +554,6 @@ public class BasicSession implements Session {
                     }
                     long now = System.currentTimeMillis();
                     // handle what to do with the session after the timer expired
-                    setDestroyedReason(DestroyedReason.TIMEOUT);
                     getSessionHandler().sessionInactivityTimerExpired(BasicSession.this, now);
                     try (Lock ignored = BasicSession.this.lock()) {
                         // grab the lock and check what happened to the session: if it didn't get evicted and

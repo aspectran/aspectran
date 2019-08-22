@@ -82,12 +82,16 @@ public interface SessionHandler extends Component {
      */
     BasicSession removeSession(String id, boolean invalidate);
 
+    BasicSession removeSession(String id, boolean invalidate, Session.DestroyedReason reason);
+
     /**
      * Called when a session has expired.
      *
      * @param id the id to invalidate
      */
     void invalidate(String id);
+
+    void invalidate(String id, Session.DestroyedReason reason);
 
     /**
      * Each session has a timer that is configured to go off
@@ -109,6 +113,10 @@ public interface SessionHandler extends Component {
      */
     void sessionInactivityTimerExpired(BasicSession session, long now);
 
+    /**
+     * Called periodically by the HouseKeeper to handle the list of
+     * sessions that have expired since the last call to scavenge.
+     */
     void scavenge();
 
     /**

@@ -172,6 +172,9 @@ public class TowSessionManager implements SessionManager, ApplicationAdapterAwar
 
     @Override
     public void registerSessionListener(SessionListener listener) {
+        if (listener == null) {
+            throw new IllegalArgumentException("listener must not be null");
+        }
         TowSessionListenerBridge sessionListenerBridge = new TowSessionListenerBridge(listener, this);
         sessionListenerMappings.put(listener, sessionListenerBridge);
         sessionManager.addSessionListener(sessionListenerBridge);
@@ -179,6 +182,9 @@ public class TowSessionManager implements SessionManager, ApplicationAdapterAwar
 
     @Override
     public void removeSessionListener(SessionListener listener) {
+        if (listener == null) {
+            throw new IllegalArgumentException("listener must not be null");
+        }
         TowSessionListenerBridge sessionListenerBridge = sessionListenerMappings.remove(listener);
         if (sessionListenerBridge != null) {
             sessionManager.removeSessionListener(sessionListenerBridge);
@@ -256,6 +262,9 @@ public class TowSessionManager implements SessionManager, ApplicationAdapterAwar
     }
 
     TowSessionBridge newTowSessionBridge(com.aspectran.core.component.session.Session session) {
+        if (session == null) {
+            throw new IllegalArgumentException("session must not be null");
+        }
         return new TowSessionBridge(session, this);
     }
 

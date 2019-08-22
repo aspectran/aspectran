@@ -34,9 +34,9 @@ public class HouseKeeper {
 
     private final Scheduler scheduler;
 
-    protected Scheduler.Task task; // scavenge task
+    private Scheduler.Task task; // scavenge task
 
-    protected Runner runner;
+    private Runner runner;
 
     /** 10 minute default */
     private long scavengingInterval = 1000L * 60 * 10;
