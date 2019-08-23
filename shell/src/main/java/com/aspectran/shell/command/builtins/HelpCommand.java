@@ -49,7 +49,7 @@ public class HelpCommand extends AbstractCommand {
                 .build());
 
         Arguments arguments = touchArguments();
-        arguments.put("<commands>", "Commands to display help");
+        arguments.put("<commands>", "Target commands to display help");
         arguments.setRequired(false);
     }
 
@@ -177,7 +177,7 @@ public class HelpCommand extends AbstractCommand {
 
         @Override
         public String getDescription() {
-            return "Display helpful information about builtin commands";
+            return "Display helpful information or command specific help";
         }
 
         @Override

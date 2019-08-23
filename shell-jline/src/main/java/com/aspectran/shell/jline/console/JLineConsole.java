@@ -27,6 +27,7 @@ import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
 import org.jline.utils.AttributedString;
 import org.jline.utils.AttributedStyle;
+import org.jline.utils.InfoCmp;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -56,6 +57,8 @@ public class JLineConsole extends AbstractConsole {
     private final History commandHistory;
 
     private final boolean dumb;
+
+    private final boolean dumbColor;
 
     private AttributedStyle attributedStyle;
 
@@ -91,6 +94,7 @@ public class JLineConsole extends AbstractConsole {
         this.commandReader.unsetOpt(LineReader.Option.INSERT_TAB);
 
         this.dumb = Terminal.TYPE_DUMB.equals(terminal.getType());
+        this.dumbColor = Terminal.TYPE_DUMB_COLOR.equals(terminal.getType());
     }
 
     @Override
@@ -248,6 +252,9 @@ public class JLineConsole extends AbstractConsole {
                 reader.callWidget(LineReader.CLEAR_SCREEN);
                 reader.callWidget(LineReader.REDRAW_LINE);
                 reader.callWidget(LineReader.REDISPLAY);
+            } else {
+                terminal.puts(InfoCmp.Capability.clear_screen);
+                terminal.flush();
             }
         }
     }
@@ -255,10 +262,15 @@ public class JLineConsole extends AbstractConsole {
     @Override
     public void clearLine() {
         if (!dumb) {
-            if (commandReader.isReading()) {
-                commandReader.callWidget(LineReader.CLEAR);
-            } else if (reader.isReading()) {
-                reader.callWidget(LineReader.CLEAR);
+            if (!dumbColor) {
+                if (commandReader.isReading()) {
+                    commandReader.callWidget(LineReader.CLEAR);
+                } else if (reader.isReading()) {
+                    reader.callWidget(LineReader.CLEAR);
+                }
+            } else {
+                getWriter().print("\r");
+                getWriter().flush();
             }
         }
     }
@@ -324,10 +336,17 @@ public class JLineConsole extends AbstractConsole {
             return false;
         }
         if (message != null) {
-            String message2 = toAnsi("{{YELLOW}}" + message + "{{reset}}");
-            reader.printAbove(message2);
+            if (!dumb && !dumbColor) {
+                String message2 = toAnsi("{{YELLOW}}" + message + "{{reset}}");
+                reader.printAbove(message2);
+            } else {
+                reader.printAbove(message);
+            }
         }
-        String confirm = toAnsi("{{YELLOW}}Would you like to restart this shell [Y/n]?{{reset}} ");
+        String confirm = "Would you like to restart this shell [Y/n]?";
+        if (!dumb && !dumbColor) {
+            confirm = toAnsi("{{YELLOW}}" + confirm + "{{reset}} ");
+        }
         String yn = readLine(confirm);
         return (yn.isEmpty() || yn.equalsIgnoreCase("Y"));
     }
