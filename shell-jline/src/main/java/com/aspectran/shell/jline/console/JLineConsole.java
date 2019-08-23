@@ -27,7 +27,6 @@ import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
 import org.jline.utils.AttributedString;
 import org.jline.utils.AttributedStyle;
-import org.jline.utils.InfoCmp;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -91,8 +90,7 @@ public class JLineConsole extends AbstractConsole {
         this.commandReader.setOpt(LineReader.Option.DISABLE_EVENT_EXPANSION);
         this.commandReader.unsetOpt(LineReader.Option.INSERT_TAB);
 
-        this.dumb = (Terminal.TYPE_DUMB.equals(terminal.getType()) ||
-                Terminal.TYPE_DUMB_COLOR.equals(terminal.getType()));
+        this.dumb = Terminal.TYPE_DUMB.equals(terminal.getType());
     }
 
     @Override
@@ -241,41 +239,40 @@ public class JLineConsole extends AbstractConsole {
 
     @Override
     public void clearScreen() {
-        if (commandReader.isReading()) {
-            commandReader.callWidget(LineReader.CLEAR_SCREEN);
-            commandReader.callWidget(LineReader.REDRAW_LINE);
-            commandReader.callWidget(LineReader.REDISPLAY);
-        } else if (reader.isReading()) {
-            reader.callWidget(LineReader.CLEAR_SCREEN);
-            reader.callWidget(LineReader.REDRAW_LINE);
-            reader.callWidget(LineReader.REDISPLAY);
-        } else {
-            terminal.puts(InfoCmp.Capability.clear_screen);
-            terminal.flush();
+        if (!dumb) {
+            if (commandReader.isReading()) {
+                commandReader.callWidget(LineReader.CLEAR_SCREEN);
+                commandReader.callWidget(LineReader.REDRAW_LINE);
+                commandReader.callWidget(LineReader.REDISPLAY);
+            } else if (reader.isReading()) {
+                reader.callWidget(LineReader.CLEAR_SCREEN);
+                reader.callWidget(LineReader.REDRAW_LINE);
+                reader.callWidget(LineReader.REDISPLAY);
+            }
         }
     }
 
     @Override
     public void clearLine() {
-        if (commandReader.isReading()) {
-            commandReader.callWidget(LineReader.CLEAR);
-        } else if (reader.isReading()) {
-            reader.callWidget(LineReader.CLEAR);
-        }
-        if (dumb) {
-            getWriter().print("\r");
-            getWriter().flush();
+        if (!dumb) {
+            if (commandReader.isReading()) {
+                commandReader.callWidget(LineReader.CLEAR);
+            } else if (reader.isReading()) {
+                reader.callWidget(LineReader.CLEAR);
+            }
         }
     }
 
     @Override
     public void redrawLine() {
-        if (commandReader.isReading()) {
-            commandReader.callWidget(LineReader.REDRAW_LINE);
-            commandReader.callWidget(LineReader.REDISPLAY);
-        } else if (reader.isReading()) {
-            reader.callWidget(LineReader.REDRAW_LINE);
-            reader.callWidget(LineReader.REDISPLAY);
+        if (!dumb) {
+            if (commandReader.isReading()) {
+                commandReader.callWidget(LineReader.REDRAW_LINE);
+                commandReader.callWidget(LineReader.REDISPLAY);
+            } else if (reader.isReading()) {
+                reader.callWidget(LineReader.REDRAW_LINE);
+                reader.callWidget(LineReader.REDISPLAY);
+            }
         }
     }
 
