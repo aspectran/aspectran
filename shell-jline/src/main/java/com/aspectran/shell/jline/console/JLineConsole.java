@@ -339,21 +339,28 @@ public class JLineConsole extends AbstractConsole {
             return false;
         }
         if (message != null) {
-            setStyle("YELLOW");
-            reader.printAbove(message);
-            styleOff();
+            if (!dumb) {
+                String message2 = toAnsi("{{YELLOW}}" + message + "{{reset}}");
+                reader.printAbove(message2);
+            } else {
+                reader.printAbove(message);
+            }
         }
-        setStyle("YELLOW");
-        String yn = readLine("Would you like to restart this shell [Y/n]? ");
-        styleOff();
+        String confirm = "Would you like to restart this shell [Y/n]? ";
+        if (!dumb) {
+            confirm = toAnsi("{{YELLOW}}" + confirm + "{{reset}}");
+        }
+        String yn = readLine(confirm);
         return (yn.isEmpty() || yn.equalsIgnoreCase("Y"));
     }
 
     @Override
     public boolean confirmQuit() {
-        setStyle("YELLOW");
-        String yn = readLine("Are you sure you want to quit [Y/n]? ");
-        styleOff();;
+        String confirm = "Are you sure you want to quit [Y/n]? ";
+        if (!dumb) {
+            confirm = toAnsi("{{YELLOW}}" + confirm + "{{reset}}");
+        }
+        String yn = readLine(confirm);
         return (yn.isEmpty() || yn.equalsIgnoreCase("Y"));
     }
 
