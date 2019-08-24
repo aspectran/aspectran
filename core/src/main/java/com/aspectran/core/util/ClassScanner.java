@@ -146,21 +146,22 @@ public class ClassScanner {
         target.listFiles(file -> {
             String fileName = file.getName();
             if (file.isDirectory()) {
-                String relativePackageName2;
-                if (relativePackageName == null) {
-                    relativePackageName2 = fileName + ResourceUtils.REGULAR_FILE_SEPARATOR;
+                String subPackageName;
+                if (relativePackageName != null) {
+                    subPackageName = relativePackageName + fileName + ResourceUtils.REGULAR_FILE_SEPARATOR;
                 } else {
-                    relativePackageName2 = relativePackageName + fileName + ResourceUtils.REGULAR_FILE_SEPARATOR;
+                    subPackageName = fileName + ResourceUtils.REGULAR_FILE_SEPARATOR;
                 }
 
                 String basePath2 = targetPath + fileName + ResourceUtils.REGULAR_FILE_SEPARATOR;
-                scan(basePath2, basePackageName, relativePackageName2, matcher, saveHandler);
+                scan(basePath2, basePackageName, subPackageName, matcher, saveHandler);
             } else if (fileName.endsWith(ClassUtils.CLASS_FILE_SUFFIX)) {
+                String fn = fileName.substring(0, fileName.length() - ClassUtils.CLASS_FILE_SUFFIX.length());
                 String className;
                 if (relativePackageName != null) {
-                    className = basePackageName + relativePackageName + fileName.substring(0, fileName.length() - ClassUtils.CLASS_FILE_SUFFIX.length());
+                    className = basePackageName + relativePackageName + fn;
                 } else {
-                    className = basePackageName + fileName.substring(0, fileName.length() - ClassUtils.CLASS_FILE_SUFFIX.length());
+                    className = basePackageName + fn;
                 }
 
                 String relativePath = className.substring(basePackageName.length());
@@ -220,7 +221,8 @@ public class ClassScanner {
                 JarEntry entry = entries.nextElement();
                 String entryName = entry.getName();
                 if (entryName.startsWith(entryNamePrefix) && entryName.endsWith(ClassUtils.CLASS_FILE_SUFFIX)) {
-                    String entryNameSuffix = entryName.substring(entryNamePrefix.length(), entryName.length() - ClassUtils.CLASS_FILE_SUFFIX.length());
+                    String entryNameSuffix = entryName.substring(entryNamePrefix.length(), entryName.length() -
+                            ClassUtils.CLASS_FILE_SUFFIX.length());
 
                     if (matcher.matches(entryNameSuffix)) {
                         String resourceName = jarFileUrl + ResourceUtils.JAR_URL_SEPARATOR + entryName;

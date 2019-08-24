@@ -71,7 +71,10 @@ public class JLineConsole extends AbstractConsole {
     public JLineConsole(String encoding) throws IOException {
         super(encoding);
 
-        this.terminal = TerminalBuilder.builder().encoding(getEncoding()).build();
+        this.terminal = TerminalBuilder.builder()
+                .encoding(getEncoding())
+                .build();
+
         this.commandCompleter = new CommandCompleter(this);
         this.commandHighlighter = new CommandHighlighter(this);
         this.commandHistory = new DefaultHistory();
@@ -336,25 +339,21 @@ public class JLineConsole extends AbstractConsole {
             return false;
         }
         if (message != null) {
-            if (!dumb && !dumbColor) {
-                String message2 = toAnsi("{{YELLOW}}" + message + "{{reset}}");
-                reader.printAbove(message2);
-            } else {
-                reader.printAbove(message);
-            }
+            setStyle("YELLOW");
+            reader.printAbove(message);
+            styleOff();
         }
-        String confirm = "Would you like to restart this shell [Y/n]?";
-        if (!dumb && !dumbColor) {
-            confirm = toAnsi("{{YELLOW}}" + confirm + "{{reset}} ");
-        }
-        String yn = readLine(confirm);
+        setStyle("YELLOW");
+        String yn = readLine("Would you like to restart this shell [Y/n]? ");
+        styleOff();
         return (yn.isEmpty() || yn.equalsIgnoreCase("Y"));
     }
 
     @Override
     public boolean confirmQuit() {
-        String confirm = toAnsi("{{YELLOW}}Are you sure you want to quit [Y/n]?{{reset}} ");
-        String yn = readLine(confirm);
+        setStyle("YELLOW");
+        String yn = readLine("Are you sure you want to quit [Y/n]? ");
+        styleOff();;
         return (yn.isEmpty() || yn.equalsIgnoreCase("Y"));
     }
 
