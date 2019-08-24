@@ -1,0 +1,12 @@
+# Stop the Undertow server
+command: undertow
+parameters: {
+    item: {
+        name: mode
+        value: stop
+    }
+    item: {
+        name: server
+        value: tow.server
+    }
+}

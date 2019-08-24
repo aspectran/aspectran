@@ -39,8 +39,6 @@ public class JettyServer extends Server implements InitializableBean, Disposable
 
     private static final Log log = LogFactory.getLog(JettyServer.class);
 
-    private final Object monitor = new Object();
-
     private boolean autoStart;
 
     public JettyServer() {
@@ -79,27 +77,23 @@ public class JettyServer extends Server implements InitializableBean, Disposable
 
     @Override
     public void doStart() throws Exception {
-        synchronized (monitor) {
-            if (autoStart) {
-                log.info("Starting embedded Jetty server");
-                super.doStart();
-                log.info("Jetty started on port(s) " + getActualPortsDescription()
-                        + " with context path '" + getContextPath() + "'");
-            }
+        if (autoStart) {
+            log.info("Starting embedded Jetty server");
+            super.doStart();
+            log.info("Jetty started on port(s) " + getActualPortsDescription()
+                    + " with context path '" + getContextPath() + "'");
         }
     }
 
     @Override
     public void doStop() {
-        synchronized (monitor) {
-            log.info("Stopping embedded Jetty server");
-            try {
-                super.doStop();
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            } catch (Exception e) {
-                log.error("Unable to stop embedded Jetty server", e);
-            }
+        log.info("Stopping embedded Jetty server");
+        try {
+            super.doStop();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        } catch (Exception e) {
+            log.error("Unable to stop embedded Jetty server", e);
         }
     }
 

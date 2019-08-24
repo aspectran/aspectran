@@ -17,6 +17,7 @@ package com.aspectran.undertow.server;
 
 import com.aspectran.core.component.bean.ablility.DisposableBean;
 import com.aspectran.core.component.bean.ablility.InitializableBean;
+import com.aspectran.core.util.lifecycle.AbstractLifeCycle;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import io.undertow.Undertow;
@@ -31,19 +32,15 @@ import java.io.IOException;
  *
  * @since 6.3.0
  */
-public class TowServer implements InitializableBean, DisposableBean {
+public class TowServer extends AbstractLifeCycle implements InitializableBean, DisposableBean {
 
     private static final Log log = LogFactory.getLog(TowServer.class);
-
-    private final Object monitor = new Object();
 
     private final Undertow.Builder builder = Undertow.builder();
 
     private Undertow server;
 
     private boolean autoStart;
-
-    private volatile boolean started = false;
 
     public Undertow.Builder setAutoStart(boolean autoStart) {
         this.autoStart = autoStart;
@@ -127,50 +124,34 @@ public class TowServer implements InitializableBean, DisposableBean {
         }
     }
 
-    public void start() throws Exception {
-        synchronized (monitor) {
-            if (started) {
-                return;
-            }
-            try {
-                server = builder.build();
-                server.start();
-                started = true;
-                log.info("Undertow server started");
-            } catch (Exception e) {
-                try {
-                    if (server != null) {
-                        server.stop();
-                        server = null;
-                    }
-                } catch (Exception ex) {
-                    // ignore
-                }
-                throw new Exception("Unable to start Undertow server", e);
-            }
-        }
-    }
-
-    public void stop() {
-        synchronized (monitor) {
-            if (!started) {
-                return;
-            }
-            started = false;
+    public void doStart() throws Exception {
+        try {
+            server = builder.build();
+            server.start();
+            log.info("Undertow server started");
+        } catch (Exception e) {
             try {
                 if (server != null) {
                     server.stop();
                     server = null;
-                    log.info("Stopped Undertow server");
                 }
-            } catch (Exception e) {
-                log.error("Unable to stop Undertow server", e);
+            } catch (Exception ex) {
+                // ignore
             }
+            throw new Exception("Unable to start Undertow server", e);
         }
     }
 
-    public boolean isStarted() {
-        return started;
+    public void doStop() {
+        try {
+            if (server != null) {
+                server.stop();
+                server = null;
+                log.info("Stopped Undertow server");
+            }
+        } catch (Exception e) {
+            log.error("Unable to stop Undertow server", e);
+        }
     }
 
     @Override

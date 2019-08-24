@@ -1,0 +1,12 @@
+# Start the Undertow server
+command: undertow
+parameters: {
+    item: {
+        name: mode
+        value: start
+    }
+    item: {
+        name: server
+        value: tow.server
+    }
+}

@@ -87,7 +87,7 @@ public class UndertowCommand extends AbstractCommand {
         if (options.hasArgs()) {
             String command = options.getFirstArg();
             if ("start".equals(command)) {
-                if (towServer.isStarted()) {
+                if (towServer.isRunning()) {
                     console.writeError("Undertow server is already running");
                     return;
                 }
@@ -98,7 +98,7 @@ public class UndertowCommand extends AbstractCommand {
                     console.writeError("Undertow Server Error - Port already in use");
                 }
             } else if ("stop".equals(command)) {
-                if (!towServer.isStarted()) {
+                if (!towServer.isRunning()) {
                     console.writeError("Undertow server is not running");
                     return;
                 }
@@ -110,7 +110,7 @@ public class UndertowCommand extends AbstractCommand {
                 }
             } else if ("restart".equals(command)) {
                 try {
-                    if (towServer.isStarted()) {
+                    if (towServer.isRunning()) {
                         towServer.stop();
                     }
                     towServer.start();
@@ -132,7 +132,7 @@ public class UndertowCommand extends AbstractCommand {
     private void printStatus(TowServer towServer, Console console) {
         console.writeLine("----------------------------------------------------------------------------");
         console.setStyle("YELLOW");
-        console.write(towServer.isStarted() ? "STARTED" : "STOPPED");
+        console.write(towServer.getState());
         console.styleOff();
         console.writeLine(" - Undertow " + Version.getVersionString());
         console.writeLine("----------------------------------------------------------------------------");

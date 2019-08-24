@@ -52,6 +52,11 @@
             <optional>true</optional>
         </dependency>
         <dependency>
+            <groupId>com.aspectran</groupId>
+            <artifactId>aspectran-with-undertow</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
             <groupId>commons-daemon</groupId>
             <artifactId>commons-daemon</artifactId>
             <version>1.2.0</version>

@@ -1,0 +1,12 @@
+# Restart the Undertow server
+command: undertow
+parameters: {
+    item: {
+        name: mode
+        value: restart
+    }
+    item: {
+        name: server
+        value: tow.server
+    }
+}
