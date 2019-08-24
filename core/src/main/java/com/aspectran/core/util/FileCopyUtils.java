@@ -332,13 +332,13 @@ public class FileCopyUtils {
      * it is not guaranteed that those operations will succeed.
      * If the modification operation fails, no indication is provided.
      * </p>
-     * <h3>Example: Copy directories only</h3>
+     * <strong>Example: Copy directories only</strong>
      * <pre>
      *  // only copy the directory structure
      *  FileUtils.copyDirectory(srcDir, destDir, DirectoryFileFilter.DIRECTORY);
-     *  </pre>
+     * </pre>
      *
-     * <h3>Example: Copy directories and txt files</h3>
+     * <strong>Example: Copy directories and txt files</strong>
      * <pre>
      *  // Create a filter for ".txt" files
      *  IOFileFilter txtSuffixFilter = FileFilterUtils.suffixFileFilter(".txt");
@@ -349,13 +349,12 @@ public class FileCopyUtils {
      *
      *  // Copy using the filter
      *  FileCopyUtils.copyDirectory(srcDir, destDir, filter);
-     *  </pre>
+     * </pre>
      *
      * @param srcDir  an existing directory to copy, must not be {@code null}
      * @param destDir the new directory, must not be {@code null}
      * @param filter  the filter to apply, null means copy all directories and files
      *                should be the same as the original
-     *
      * @throws NullPointerException if source or destination is {@code null}
      * @throws IOException          if source or destination is invalid
      * @throws IOException          if an IO error occurs during copying
@@ -444,8 +443,8 @@ public class FileCopyUtils {
      * @param destDir          the validated destination directory, must not be {@code null}
      * @param filter           the filter to apply, null means copy all directories and files
      * @param preserveFileDate whether to preserve the file date
-     * @param exclusionList    List of files and directories to exclude from the copy, may be null
-     * @throws IOException if an error occurs
+     * @param exclusionList    list of files and directories to exclude from the copy, may be null
+     * @throws IOException     if an error occurs
      */
     private static void doCopyDirectory(final File srcDir, final File destDir, final FileFilter filter,
                                         final boolean preserveFileDate, final List<String> exclusionList)
