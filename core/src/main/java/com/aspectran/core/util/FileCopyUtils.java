@@ -246,7 +246,6 @@ public class FileCopyUtils {
         if (destFile.exists() && destFile.isDirectory()) {
             throw new IOException("Destination '" + destFile + "' exists but is a directory");
         }
-
         Path srcPath = srcFile.toPath();
         Path destPath = destFile.toPath();
         final long newLastModified = preserveFileDate ? srcFile.lastModified() : destFile.lastModified();
@@ -401,7 +400,6 @@ public class FileCopyUtils {
         if (srcDir.getCanonicalPath().equals(destDir.getCanonicalPath())) {
             throw new IOException("Source '" + srcDir + "' and destination '" + destDir + "' are the same");
         }
-
         // Cater for destination being directory within the source directory (see IO-141)
         List<String> exclusionList = null;
         if (destDir.getCanonicalPath().startsWith(srcDir.getCanonicalPath())) {
@@ -450,7 +448,7 @@ public class FileCopyUtils {
                                         final boolean preserveFileDate, final List<String> exclusionList)
         throws IOException {
         // recurse
-        final File[] srcFiles = filter == null ? srcDir.listFiles() : srcDir.listFiles(filter);
+        final File[] srcFiles = (filter == null ? srcDir.listFiles() : srcDir.listFiles(filter));
         if (srcFiles == null) {  // null if abstract pathname does not denote a directory, or if an I/O error occurs
             throw new IOException("Failed to list contents of " + srcDir);
         }
