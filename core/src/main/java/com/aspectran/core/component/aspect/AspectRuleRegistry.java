@@ -32,7 +32,7 @@ public class AspectRuleRegistry extends AbstractComponent {
 
     private static final Log log = LogFactory.getLog(AspectRuleRegistry.class);
 
-    private final Map<String, AspectRule> aspectRuleMap = new LinkedHashMap<>(32);
+    private final Map<String, AspectRule> aspectRuleMap = new LinkedHashMap<>();
 
     public AspectRuleRegistry() {
     }

@@ -58,11 +58,11 @@ public class BeanRuleRegistry {
 
     private static final Log log = LogFactory.getLog(BeanRuleRegistry.class);
 
-    private final Map<String, BeanRule> idBasedBeanRuleMap = new LinkedHashMap<>(256);
+    private final Map<String, BeanRule> idBasedBeanRuleMap = new LinkedHashMap<>();
 
-    private final Map<Class<?>, Set<BeanRule>> typeBasedBeanRuleMap = new LinkedHashMap<>(256);
+    private final Map<Class<?>, Set<BeanRule>> typeBasedBeanRuleMap = new LinkedHashMap<>();
 
-    private final Map<Class<?>, BeanRule> configurableBeanRuleMap = new LinkedHashMap<>(256);
+    private final Map<Class<?>, BeanRule> configurableBeanRuleMap = new LinkedHashMap<>();
 
     private final Set<Class<?>> ignoredDependencyInterfaces = new HashSet<>();
 

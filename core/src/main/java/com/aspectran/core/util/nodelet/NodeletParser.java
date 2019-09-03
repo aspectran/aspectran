@@ -51,9 +51,9 @@ public class NodeletParser {
 
     private static final Map<String, String> EMPTY_ATTRIBUTES = Collections.emptyMap();
 
-    private final Map<String, Nodelet> nodeletMap = new HashMap<>(1024);
+    private final Map<String, Nodelet> nodeletMap = new HashMap<>();
 
-    private final Map<String, NodeEndlet> endletMap = new HashMap<>(1024);
+    private final Map<String, NodeEndlet> endletMap = new HashMap<>();
 
     private final ArrayStack<Object> objectStack = new ArrayStack<>();
 

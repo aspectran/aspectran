@@ -54,9 +54,9 @@ public class TransletRuleRegistry extends AbstractComponent {
 
     private static final Log log = LogFactory.getLog(TransletRuleRegistry.class);
 
-    private final Map<String, TransletRule> transletRuleMap = new LinkedHashMap<>(256);
+    private final Map<String, TransletRule> transletRuleMap = new LinkedHashMap<>();
 
-    private final Map<String, TransletRule> getTransletRuleMap = new HashMap<>(256);
+    private final Map<String, TransletRule> getTransletRuleMap = new HashMap<>();
 
     private final Map<String, TransletRule> postTransletRuleMap = new HashMap<>();
 
