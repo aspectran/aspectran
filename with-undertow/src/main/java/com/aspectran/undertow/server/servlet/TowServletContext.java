@@ -34,7 +34,7 @@ import java.util.Set;
  */
 public class TowServletContext extends DeploymentInfo implements ApplicationAdapterAware {
 
-    public static final String INHERIT_ROOT_WEB_SERVICE_ATTRIBUTE = TowServletContext.class.getName() + ".INHERIT_ROOT_WEB_SERVICE";
+    public static final String DERIVED_WEB_SERVICE_ATTRIBUTE = TowServletContext.class.getName() + ".DERIVED_WEB_SERVICE";
 
     private static final Set<Class<?>> NO_CLASSES = Collections.emptySet();
 
@@ -99,11 +99,14 @@ public class TowServletContext extends DeploymentInfo implements ApplicationAdap
         }
     }
 
-    public void setInheritRootWebService(boolean inheritRootWebService) {
-        if (inheritRootWebService) {
-            getServletContextAttributes().put(INHERIT_ROOT_WEB_SERVICE_ATTRIBUTE, "true");
+    /**
+     * Specifies whether this is a derived web service that inherits the root web service.
+     */
+    public void setDerived(boolean derived) {
+        if (derived) {
+            getServletContextAttributes().put(DERIVED_WEB_SERVICE_ATTRIBUTE, "true");
         } else {
-            getServletContextAttributes().remove(INHERIT_ROOT_WEB_SERVICE_ATTRIBUTE);
+            getServletContextAttributes().remove(DERIVED_WEB_SERVICE_ATTRIBUTE);
         }
     }
 
@@ -111,7 +114,8 @@ public class TowServletContext extends DeploymentInfo implements ApplicationAdap
         for (ServletContainerInitializer initializer : servletContainerInitializers) {
             Class<? extends ServletContainerInitializer> servletContainerInitializerClass = initializer.getClass();
             InstanceFactory<? extends ServletContainerInitializer> instanceFactory = new ImmediateInstanceFactory<>(initializer);
-            ServletContainerInitializerInfo sciInfo = new ServletContainerInitializerInfo(servletContainerInitializerClass, instanceFactory, NO_CLASSES);
+            ServletContainerInitializerInfo sciInfo = new ServletContainerInitializerInfo(servletContainerInitializerClass,
+                    instanceFactory, NO_CLASSES);
             addServletContainerInitializer(sciInfo);
         }
     }

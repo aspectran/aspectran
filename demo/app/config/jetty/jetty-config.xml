@@ -103,7 +103,7 @@
             <item name="persistTempDirectory" valueType="boolean">true</item>
             <item name="defaultsDescriptor">#{basePath}/config/jetty/webdefault.xml</item>
             <item name="sessionHandler">#{jetty.sessionHandler}</item>
-            <item name="inheritRootWebService" valueType="boolean">true</item>
+            <item name="derived" valueType="boolean">true</item>
         </properties>
     </bean>
 

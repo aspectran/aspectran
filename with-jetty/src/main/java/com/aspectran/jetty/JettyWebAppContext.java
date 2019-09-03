@@ -48,15 +48,18 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
 
     private ActivityContext context;
 
-    private boolean inheritRootWebService;
+    private boolean derived;
 
     @Override
     public void setActivityContext(ActivityContext context) {
         this.context = context;
     }
 
-    public void setInheritRootWebService(boolean inheritRootWebService) {
-        this.inheritRootWebService = inheritRootWebService;
+    /**
+     * Specifies whether this is a derived web service that inherits the root web service.
+     */
+    public void setDerived(boolean derived) {
+        this.derived = derived;
     }
 
     public void setTempDirectory(String tempDirectory) {
@@ -78,7 +81,7 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
     public void initialize() throws Exception {
         Assert.notNull(context, "context must not be null");
 
-        if (inheritRootWebService) {
+        if (derived) {
             CoreService rootService = context.getRootService();
             WebService webService = AspectranWebService.create(getServletContext(), rootService);
             setAttribute(WebService.ROOT_WEB_SERVICE_ATTRIBUTE, webService);
