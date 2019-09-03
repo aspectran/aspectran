@@ -48,17 +48,13 @@
             <groupId>com.aspectran</groupId>
             <artifactId>aspectran-web</artifactId>
         </dependency>
-        <!-- undertow dependencies -->
-        <dependency>
-            <groupId>io.undertow</groupId>
-            <artifactId>undertow-core</artifactId>
-            <version>${undertow.version}</version>
-        </dependency>
+        <!-- Undertow dependencies -->
         <dependency>
             <groupId>io.undertow</groupId>
             <artifactId>undertow-servlet</artifactId>
             <version>${undertow.version}</version>
         </dependency>
+        <!-- Apache JSP dependencies -->
         <dependency>
             <groupId>org.mortbay.jasper</groupId>
             <artifactId>apache-jsp</artifactId>

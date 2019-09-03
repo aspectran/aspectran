@@ -21,7 +21,7 @@ import org.xnio.OptionMap;
 /**
  * <p>Created: 2019-08-18</p>
  */
-public class TowServerOptions {
+public class TowOptions {
 
     private final OptionMap.Builder options = OptionMap.builder();
 
@@ -62,7 +62,7 @@ public class TowServerOptions {
     }
 
     public void setMaxHeaders(int maxHeaders) {
-        options.set(UndertowOptions.MAX_PARAMETERS, maxHeaders);
+        options.set(UndertowOptions.MAX_HEADERS, maxHeaders);
     }
 
     public void setMaxCookies(int maxCookies) {

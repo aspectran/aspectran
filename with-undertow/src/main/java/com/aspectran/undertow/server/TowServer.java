@@ -30,6 +30,7 @@ import java.io.IOException;
 /**
  * The Undertow Server managed by Aspectran.
  *
+ * @see <a href="http://undertow.io">Undertow</a>
  * @since 6.3.0
  */
 public class TowServer extends AbstractLifeCycle implements InitializableBean, DisposableBean {
@@ -115,7 +116,7 @@ public class TowServer extends AbstractLifeCycle implements InitializableBean, D
     }
 
     @SuppressWarnings("unchecked")
-    public void setServerOptions(TowServerOptions options) {
+    public void setServerOptions(TowOptions options) {
         if (options != null) {
             OptionMap optionMap = options.getOptionMap();
             for (Option option : optionMap) {
