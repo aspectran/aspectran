@@ -16,7 +16,9 @@
 package com.aspectran.undertow.server;
 
 import io.undertow.UndertowOptions;
+import org.xnio.CompressionType;
 import org.xnio.OptionMap;
+import org.xnio.Options;
 
 /**
  * <p>Created: 2019-08-18</p>
@@ -183,6 +185,262 @@ public class TowOptions {
 
     public void setEndpointIdentificationAlgorithm(String endpointIdentificationAlgorithm) {
         options.set(UndertowOptions.ENDPOINT_IDENTIFICATION_ALGORITHM, endpointIdentificationAlgorithm);
+    }
+
+    public void setAllowBlocking(boolean allowBlocking) {
+        options.set(Options.ALLOW_BLOCKING, allowBlocking);
+    }
+
+    public void setMulticast(boolean multicast) {
+        options.set(Options.MULTICAST, multicast);
+    }
+
+    public void setBroadcast(boolean broadcast) {
+        options.set(Options.BROADCAST, broadcast);
+    }
+
+    public void setCloseAbort(boolean closeAbort) {
+        options.set(Options.CLOSE_ABORT, closeAbort);
+    }
+
+    public void setReceiveBuffer(int receiveBuffer) {
+        options.set(Options.RECEIVE_BUFFER, receiveBuffer);
+    }
+
+    public void setReuseAddresses(boolean reuseAddresses) {
+        options.set(Options.REUSE_ADDRESSES, reuseAddresses);
+    }
+
+    public void setSendBuffer(int sendBuffer) {
+        options.set(Options.SEND_BUFFER, sendBuffer);
+    }
+
+    public void setTcpNodelay(boolean tcpNodelay) {
+        options.set(Options.TCP_NODELAY, tcpNodelay);
+    }
+
+    public void setMulticastTtl(int multicastTtl) {
+        options.set(Options.MULTICAST_TTL, multicastTtl);
+    }
+
+    public void setIpTrafficClass(int ipTrafficClass) {
+        options.set(Options.IP_TRAFFIC_CLASS, ipTrafficClass);
+    }
+
+    public void setTcpOobInline(boolean tcpOobInline) {
+        options.set(Options.TCP_OOB_INLINE, tcpOobInline);
+    }
+
+    public void setKeepAlive(boolean keepAlive) {
+        options.set(Options.KEEP_ALIVE, keepAlive);
+    }
+
+    public void setBacklog(int backlog) {
+        options.set(Options.BACKLOG, backlog);
+    }
+
+    public void setReadTimeout(int readTimeout) {
+        options.set(Options.READ_TIMEOUT, readTimeout);
+    }
+
+    public void setWriteTimeout(int writeTimeout) {
+        options.set(Options.WRITE_TIMEOUT, writeTimeout);
+    }
+
+    public void setMaxInboundMessageSize(int maxInboundMessageSize) {
+        options.set(Options.MAX_INBOUND_MESSAGE_SIZE, maxInboundMessageSize);
+    }
+
+    public void setMaxOutboundMessageSize(int maxOutboundMessageSize) {
+        options.set(Options.MAX_OUTBOUND_MESSAGE_SIZE, maxOutboundMessageSize);
+    }
+
+    public void setSslEnabled(boolean sslEnabled) {
+        options.set(Options.SSL_ENABLED, sslEnabled);
+    }
+
+    public void setSslProvider(String sslProvider) {
+        options.set(Options.SSL_PROVIDER, sslProvider);
+    }
+
+    public void setProtocol(String protocol) {
+        options.set(Options.SSL_PROTOCOL, protocol);
+    }
+
+    public void setSslEnableSessionCreation(boolean sslEnableSessionCreation) {
+        options.set(Options.SSL_ENABLE_SESSION_CREATION, sslEnableSessionCreation);
+    }
+
+    public void setSslUseClientMode(boolean sslUseClientMode) {
+        options.set(Options.SSL_USE_CLIENT_MODE, sslUseClientMode);
+    }
+
+    public void setSslClientSessionCacheSize(int sslClientSessionCacheSize) {
+        options.set(Options.SSL_CLIENT_SESSION_CACHE_SIZE, sslClientSessionCacheSize);
+    }
+
+    public void setSslClientSessionTimeout(int sslClientSessionTimeout) {
+        options.set(Options.SSL_CLIENT_SESSION_TIMEOUT, sslClientSessionTimeout);
+    }
+
+    public void setSslServerSessionCacheSize(int sslServerSessionCacheSize) {
+        options.set(Options.SSL_SERVER_SESSION_CACHE_SIZE, sslServerSessionCacheSize);
+    }
+
+    public void setSslServerSessionTimeout(int sslServerSessionTimeout) {
+        options.set(Options.SSL_SERVER_SESSION_TIMEOUT, sslServerSessionTimeout);
+    }
+
+    public void setSslPacketBufferSize(int sslPacketBufferSize) {
+        options.set(Options.SSL_PACKET_BUFFER_SIZE, sslPacketBufferSize);
+    }
+
+    public void setSslPacketRegionSize(int sslPacketRegionSize) {
+        options.set(Options.SSL_PACKET_BUFFER_REGION_SIZE, sslPacketRegionSize);
+    }
+
+    public void setSslApplicationBufferRegionSize(int sslApplicationBufferRegionSize) {
+        options.set(Options.SSL_APPLICATION_BUFFER_REGION_SIZE, sslApplicationBufferRegionSize);
+    }
+
+    public void setSslStartTls(boolean sslStartTls) {
+        options.set(Options.SSL_STARTTLS, sslStartTls);
+    }
+
+    public void setSslPeerHostName(String sslPeerHostName) {
+        options.set(Options.SSL_PEER_HOST_NAME, sslPeerHostName);
+    }
+
+    public void setSslPeerPort(int sslPeerPort) {
+        options.set(Options.SSL_PEER_PORT, sslPeerPort);
+    }
+
+    public void setSslNonBlockingKeyManager(boolean sslNonBlockingKeyManager) {
+        options.set(Options.SSL_NON_BLOCKING_KEY_MANAGER, sslNonBlockingKeyManager);
+    }
+
+    public void setSslNonBlockingTrustManager(boolean sslNonBlockingTrustManager) {
+        options.set(Options.SSL_NON_BLOCKING_TRUST_MANAGER, sslNonBlockingTrustManager);
+    }
+
+    public void setUseDirectBuffers(boolean useDirectBuffers) {
+        options.set(Options.USE_DIRECT_BUFFERS, useDirectBuffers);
+    }
+
+    public void setSecure(boolean secure) {
+        options.set(Options.SECURE, secure);
+    }
+
+    public void setSaslPolicyForwardSecrecy(boolean saslPolicyForwardSecrecy) {
+        options.set(Options.SASL_POLICY_FORWARD_SECRECY, saslPolicyForwardSecrecy);
+    }
+
+    public void setSaslPolicyNoactive(boolean saslPolicyNoactive) {
+        options.set(Options.SASL_POLICY_NOACTIVE, saslPolicyNoactive);
+    }
+
+    public void setSaslPolicyNoanonymous(boolean saslPolicyNoanonymous) {
+        options.set(Options.SASL_POLICY_NOANONYMOUS, saslPolicyNoanonymous);
+    }
+
+    public void setSaslPolicyNodictionary(boolean saslPolicyNodictionary) {
+        options.set(Options.SASL_POLICY_NODICTIONARY, saslPolicyNodictionary);
+    }
+
+    public void setSaslPolicyNoplaintext(boolean saslPolicyNoplaintext) {
+        options.set(Options.SASL_POLICY_NOPLAINTEXT, saslPolicyNoplaintext);
+    }
+
+    public void setSaslPolicyPassCredentials(boolean saslPolicyPassCredentials) {
+        options.set(Options.SASL_POLICY_PASS_CREDENTIALS, saslPolicyPassCredentials);
+    }
+
+    public void setSaslServerAuth(boolean saslServerAuth) {
+        options.set(Options.SASL_SERVER_AUTH, saslServerAuth);
+    }
+
+    public void setSaslReuse(boolean saslReuse) {
+        options.set(Options.SASL_REUSE, saslReuse);
+    }
+
+    public void setFileAppend(boolean fileAppend) {
+        options.set(Options.FILE_APPEND, fileAppend);
+    }
+
+    public void setFileCreate(boolean fileCreate) {
+        options.set(Options.FILE_CREATE, fileCreate);
+    }
+
+    public void setStackSize(long stackSize) {
+        options.set(Options.STACK_SIZE, stackSize);
+    }
+
+    public void setWorkerName(String workerName) {
+        options.set(Options.WORKER_NAME, workerName);
+    }
+
+    public void setThreadPriority(int threadPriority) {
+        options.set(Options.THREAD_PRIORITY, threadPriority);
+    }
+
+    public void setThreadDaemon(boolean threadDaemon) {
+        options.set(Options.THREAD_DAEMON, threadDaemon);
+    }
+
+    public void setWorkerIoThreads(int workerIoThreads) {
+        options.set(Options.WORKER_IO_THREADS, workerIoThreads);
+    }
+
+    public void setWorkerEstablishWriting(boolean workerEstablishWriting) {
+        options.set(Options.WORKER_ESTABLISH_WRITING, workerEstablishWriting);
+    }
+
+    public void setWorkerTaskCoreThreads(int workerTaskCoreThreads) {
+        options.set(Options.WORKER_TASK_CORE_THREADS, workerTaskCoreThreads);
+    }
+
+    public void setWorkerTaskMaxThreads(int workerTaskMaxThreads) {
+        options.set(Options.WORKER_TASK_MAX_THREADS, workerTaskMaxThreads);
+    }
+
+    public void setWorkerTaskKeepalive(int workerTaskKeepalive) {
+        options.set(Options.WORKER_TASK_KEEPALIVE, workerTaskKeepalive);
+    }
+
+    public void setWorkerTaskLimit(int workerTaskLimit) {
+        options.set(Options.WORKER_TASK_LIMIT, workerTaskLimit);
+    }
+
+    public void setCork(boolean cork) {
+        options.set(Options.CORK, cork);
+    }
+
+    public void setConnectionHighWater(int connectionHighWater) {
+        options.set(Options.CONNECTION_HIGH_WATER, connectionHighWater);
+    }
+
+    public void setConnectionLowWater(int connectionLowWater) {
+        options.set(Options.CONNECTION_LOW_WATER, connectionLowWater);
+    }
+
+    public void setCompressionLevel(int compressionLevel) {
+        options.set(Options.COMPRESSION_LEVEL, compressionLevel);
+    }
+
+    public void setCompressionType(CompressionType compressionType) {
+        options.set(Options.COMPRESSION_TYPE, compressionType);
+    }
+
+    public void setBalancingTokens(int balancingTokens) {
+        options.set(Options.BALANCING_TOKENS, balancingTokens);
+    }
+
+    public void setBalancingConnections(int balancingConnections) {
+        options.set(Options.BALANCING_CONNECTIONS, balancingConnections);
+    }
+
+    public void setWatcherPollInterval(int watcherPollInterval) {
+        options.set(Options.WATCHER_POLL_INTERVAL, watcherPollInterval);
     }
 
 }

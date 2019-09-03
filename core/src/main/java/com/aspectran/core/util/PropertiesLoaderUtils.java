@@ -35,7 +35,7 @@ public class PropertiesLoaderUtils {
 
     private static final String ENCRYPTED_RESOURCE_NAME_SUFFIX = "encrypted.properties";
 
-    private static final Map<String, Properties> cache = new ConcurrentReferenceHashMap<>(32);
+    private static final Map<String, Properties> cache = new ConcurrentReferenceHashMap<>();
 
     /**
      * Load all properties from the specified class path resource

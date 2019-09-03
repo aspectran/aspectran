@@ -125,6 +125,26 @@ public class TowServer extends AbstractLifeCycle implements InitializableBean, D
         }
     }
 
+    @SuppressWarnings("unchecked")
+    public void setSocketOptions(TowOptions options) {
+        if (options != null) {
+            OptionMap optionMap = options.getOptionMap();
+            for (Option option : optionMap) {
+                builder.setSocketOption(option, optionMap.get(option));
+            }
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public void setWorkerOptions(TowOptions options) {
+        if (options != null) {
+            OptionMap optionMap = options.getOptionMap();
+            for (Option option : optionMap) {
+                builder.setWorkerOption(option, optionMap.get(option));
+            }
+        }
+    }
+
     public void doStart() throws Exception {
         try {
             server = builder.build();

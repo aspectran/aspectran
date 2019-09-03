@@ -167,7 +167,7 @@ public class HttpsListenerConfig {
                     .getInstance(KeyManagerFactory.getDefaultAlgorithm());
             keyManagerFactory.init(keyStore, keyStorePassword.toCharArray());
             if (keyAlias != null) {
-                return getConfigurableAliasKeyManagers(keyAlias, keyManagerFactory.getKeyManagers());
+                return getAliasedX509ExtendedKeyManager(keyAlias, keyManagerFactory.getKeyManagers());
             } else {
                 return keyManagerFactory.getKeyManagers();
             }
@@ -176,10 +176,10 @@ public class HttpsListenerConfig {
         }
     }
 
-    private KeyManager[] getConfigurableAliasKeyManagers(String keyAlias, KeyManager[] keyManagers) {
+    private KeyManager[] getAliasedX509ExtendedKeyManager(String keyAlias, KeyManager[] keyManagers) {
         for (int i = 0; i < keyManagers.length; i++) {
             if (keyManagers[i] instanceof X509ExtendedKeyManager) {
-                keyManagers[i] = new ConfigurableAliasKeyManager((X509ExtendedKeyManager) keyManagers[i], keyAlias);
+                keyManagers[i] = new AliasedX509ExtendedKeyManager((X509ExtendedKeyManager) keyManagers[i], keyAlias);
             }
         }
         return keyManagers;
@@ -210,7 +210,7 @@ public class HttpsListenerConfig {
 
     private KeyStore loadStore(String type, String provider, String resource, String password) throws Exception {
         type = (type != null ? type : "JKS");
-        KeyStore store = (provider != null) ? KeyStore.getInstance(type, provider) : KeyStore.getInstance(type);
+        KeyStore store = (provider != null ? KeyStore.getInstance(type, provider) : KeyStore.getInstance(type));
         try {
             URL url = ResourceUtils.getURL(resource);
             store.load(url.openStream(), (password != null ? password.toCharArray() : null));
@@ -221,15 +221,16 @@ public class HttpsListenerConfig {
     }
 
     /**
-     * {@link X509ExtendedKeyManager} that supports custom alias configuration.
+     * An X509ExtendedKeyManager that select a key with desired alias,
+     * delegating other processing to a nested X509ExtendedKeyManager.
      */
-    private static class ConfigurableAliasKeyManager extends X509ExtendedKeyManager {
+    private static class AliasedX509ExtendedKeyManager extends X509ExtendedKeyManager {
 
         private final X509ExtendedKeyManager keyManager;
 
         private final String alias;
 
-        ConfigurableAliasKeyManager(X509ExtendedKeyManager keyManager, String alias) {
+        AliasedX509ExtendedKeyManager(X509ExtendedKeyManager keyManager, String alias) {
             this.keyManager = keyManager;
             this.alias = alias;
         }
