@@ -114,7 +114,7 @@ public class BasicSession implements Session {
     public Set<String> getAttributeNames() {
         try (Lock ignored = locker.lock()) {
             checkValidForRead();
-            return sessionData.getAttributeNames();
+            return sessionData.getKeys();
         }
     }
 

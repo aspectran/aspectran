@@ -179,7 +179,7 @@ public class HttpsListenerConfig {
     private KeyManager[] getAliasedX509ExtendedKeyManager(String keyAlias, KeyManager[] keyManagers) {
         for (int i = 0; i < keyManagers.length; i++) {
             if (keyManagers[i] instanceof X509ExtendedKeyManager) {
-                keyManagers[i] = new AliasedX509ExtendedKeyManager((X509ExtendedKeyManager) keyManagers[i], keyAlias);
+                keyManagers[i] = new AliasedX509ExtendedKeyManager((X509ExtendedKeyManager)keyManagers[i], keyAlias);
             }
         }
         return keyManagers;

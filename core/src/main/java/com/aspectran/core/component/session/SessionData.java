@@ -19,6 +19,7 @@ import com.aspectran.core.util.ToStringBuilder;
 
 import java.io.Serializable;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -82,29 +83,22 @@ public class SessionData implements Serializable {
     public <T> T setAttribute(String name, Object value) {
         T old;
         if (value == null) {
-            // noinspection unchecked
             old = (T)attributes.remove(name);
         } else {
-            // noinspection unchecked
             old = (T)attributes.put(name, value);
         }
         if (value == null && old == null) {
             return null;
         }
-        dirty = true;
+        setDirty(true);
         return old;
     }
 
-    public Set<String> getAttributeNames() {
-        return attributes.keySet();
-    }
-
+    /**
+     * @return a Set of attribute names
+     */
     public Set<String> getKeys() {
-        return attributes.keySet();
-    }
-
-    public void removeAttribute(String name) {
-        attributes.remove(name);
+        return Collections.unmodifiableSet(new HashSet<>(attributes.keySet()));
     }
 
     /**
@@ -112,7 +106,7 @@ public class SessionData implements Serializable {
      *
      * @return an unmodifiable map of the attributes
      */
-    public Map<String,Object> getAllAttributes() {
+    public Map<String, Object> getAllAttributes() {
         return Collections.unmodifiableMap(attributes);
     }
 
@@ -191,6 +185,9 @@ public class SessionData implements Serializable {
         return (expiryTime <= time);
     }
 
+    /**
+     * @return true if a session needs to be written out
+     */
     public boolean isDirty() {
         return dirty;
     }
