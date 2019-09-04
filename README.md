@@ -127,7 +127,7 @@ Check out and build:
 ```sh
 git clone git://github.com/aspectran/aspectran.git
 cd aspectran
-./build rebuild
+./build.sh rebuild
 ```
 
 ## Running the demo
@@ -135,7 +135,7 @@ cd aspectran
 To run the demo, simply use the following command after having build `Aspectran`
 
 ```sh
-./build demo
+./build.sh demo
 ```
 
 ## Continuous Integration
