@@ -27,7 +27,7 @@ import java.util.Map;
 
 /**
  * {@code IncludeAction} to get the execution result of another translet.
- * 
+ *
  * <p>Created: 2008. 06. 05 PM 9:22:05</p>
  */
 public class IncludeAction implements Executable {
@@ -70,7 +70,7 @@ public class IncludeAction implements Executable {
             innerActivity.perform();
             return innerActivity.getProcessResult();
         } catch (Exception e) {
-            throw new ActionExecutionException("Failed to execute include action " + this, e);
+            throw new ActionExecutionException("Failed to execute action " + this, e);
         } finally {
             if (innerActivity != null) {
                 innerActivity.finish();
@@ -111,7 +111,6 @@ public class IncludeAction implements Executable {
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
-        tsb.append("type", getActionType());
         tsb.append("includeActionRule", includeActionRule);
         return tsb.toString();
     }

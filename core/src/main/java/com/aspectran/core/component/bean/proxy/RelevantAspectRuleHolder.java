@@ -19,6 +19,7 @@ import com.aspectran.core.component.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.util.ToStringBuilder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -66,11 +67,23 @@ public class RelevantAspectRuleHolder {
         this.dynamicAspectRuleList = dynamicAspectRuleList;
     }
 
+    private List<String> getDynamicAspectIds() {
+        if (dynamicAspectRuleList != null && !dynamicAspectRuleList.isEmpty()) {
+            List<String> aspectIds = new ArrayList<>(dynamicAspectRuleList.size());
+            for (AspectRule aspectRule : dynamicAspectRuleList) {
+                aspectIds.add(aspectRule.getId());
+            }
+            return aspectIds;
+        } else {
+            return null;
+        }
+    }
+
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.append("aspectAdviceRuleRegistry", aspectAdviceRuleRegistry);
-        tsb.append("dynamicAspectRules", dynamicAspectRuleList);
+        tsb.append("dynamicAspectRules", getDynamicAspectIds());
         return tsb.toString();
     }
 

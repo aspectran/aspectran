@@ -30,9 +30,9 @@ import java.util.Map;
 
 /**
  * {@code HeaderAction} to set response headers.
- * 
+ *
  * <p>Created: 2016. 08. 23.</p>
- * 
+ *
  * @since 3.0.0
  */
 public class HeaderAction implements Executable {
@@ -69,7 +69,7 @@ public class HeaderAction implements Executable {
             }
             return valueMap;
         } catch (Exception e) {
-            throw new ActionExecutionException("Failed to execute header action " + this, e);
+            throw new ActionExecutionException("Failed to execute action " + this, e);
         }
     }
 
@@ -106,7 +106,6 @@ public class HeaderAction implements Executable {
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
-        tsb.append("type", getActionType());
         tsb.append("headerActionRule", headerActionRule);
         return tsb.toString();
     }

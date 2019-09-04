@@ -76,7 +76,6 @@ public class ChooseAction implements Executable {
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
-        tsb.append("type", getActionType());
         tsb.append("chooseRule", chooseRule);
         return tsb.toString();
     }

@@ -25,7 +25,7 @@ import com.aspectran.core.util.ToStringBuilder;
 
 /**
  * {@code EchoAction} to produce attributes.
- * 
+ *
  * <p>Created: 2008. 03. 22 PM 5:50:44</p>
  */
 public class EchoAction implements Executable {
@@ -51,7 +51,7 @@ public class EchoAction implements Executable {
             ItemEvaluator evaluator = new ItemExpression(activity);
             return evaluator.evaluate(itemRuleMap);
         } catch (Exception e) {
-            throw new ActionExecutionException("Failed to execute echo action " + this, e);
+            throw new ActionExecutionException("Failed to execute action " + this, e);
         }
     }
 
@@ -88,7 +88,6 @@ public class EchoAction implements Executable {
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
-        tsb.append("type", getActionType());
         tsb.append("echoActionRule", echoActionRule);
         return tsb.toString();
     }

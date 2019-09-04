@@ -35,7 +35,7 @@ import java.util.List;
  * An aspect is a class that implements enterprise application concerns that
  * cut across multiple classes, such as transaction management. Aspects can be
  * a bean configured through Aspectran configuration.
- * 
+ *
  * <pre>
  * &lt;aspect id="sampleAspect" order="0" isolated="true"&gt;
  *   &lt;joinpoint target="translet"&gt;
@@ -110,7 +110,7 @@ public class AspectRule implements BeanReferenceable {
 
     private ExceptionRule exceptionRule;
 
-    private boolean beanRelevant;
+    private boolean beanRelevanted;
 
     private String description;
 
@@ -256,12 +256,12 @@ public class AspectRule implements BeanReferenceable {
         exceptionRule.putExceptionThrownRule(exceptionThrownRule);
     }
 
-    public boolean isBeanRelevant() {
-        return beanRelevant;
+    public boolean isBeanRelevanted() {
+        return beanRelevanted;
     }
 
-    public void setBeanRelevant(boolean beanRelevant) {
-        this.beanRelevant = beanRelevant;
+    public void setBeanRelevanted(boolean beanRelevanted) {
+        this.beanRelevanted = beanRelevanted;
     }
 
     /**
@@ -301,7 +301,7 @@ public class AspectRule implements BeanReferenceable {
         tsb.append("settingsAdvice", settingsAdviceRule);
         tsb.append("aspectAdvices", aspectAdviceRuleList);
         tsb.append("exception", exceptionRule);
-        tsb.appendForce("beanRelevant", beanRelevant);
+        tsb.appendForce("beanRelevanted", beanRelevanted);
         return tsb.toString();
     }
 

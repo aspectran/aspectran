@@ -56,7 +56,7 @@ import java.util.Map;
 /**
  * {@code AnnotatedMethodAction} that invokes a method of the bean instance
  * specified by the annotation.
- * 
+ *
  * <p>Created: 2016. 2. 9.</p>
  *
  * @since 2.0.0
@@ -89,8 +89,7 @@ public class AnnotatedAction implements Executable {
             ParameterBindingRule[] parameterBindingRules = annotatedActionRule.getParameterBindingRules();
             return invokeMethod(activity, bean, method, parameterBindingRules);
         } catch (Exception e) {
-            throw new ActionExecutionException("Failed to execute annotated bean method action " +
-                    this + " in bean " + bean, e);
+            throw new ActionExecutionException("Failed to execute action " + this + " in bean " + bean, e);
         }
     }
 
@@ -127,7 +126,6 @@ public class AnnotatedAction implements Executable {
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
-        tsb.append("type", getActionType());
         tsb.append("annotatedActionRule", annotatedActionRule);
         return tsb.toString();
     }
@@ -487,7 +485,7 @@ public class AnnotatedAction implements Executable {
                 if (values != null) {
                     boolean[] arr = new boolean[values.length];
                     for (int i = 0; i < values.length; i++) {
-                        arr[i] = Boolean.valueOf(values[i]);
+                        arr[i] = Boolean.parseBoolean(values[i]);
                     }
                     result = arr;
                 } else {

@@ -16,6 +16,7 @@
 package com.aspectran.core.context.rule;
 
 import com.aspectran.core.context.rule.type.PointcutType;
+import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.ToStringBuilder;
 
 import java.util.List;
@@ -226,10 +227,10 @@ public class PointcutPatternRule {
 
     public static PointcutPatternRule newInstance(String translet, String bean, String method) {
         PointcutPatternRule ppr = new PointcutPatternRule();
-        if (translet != null && !translet.isEmpty()) {
+        if (!StringUtils.isEmpty(translet)) {
             ppr.setTransletNamePattern(translet);
         }
-        if (bean != null && !bean.isEmpty()) {
+        if (!StringUtils.isEmpty(bean)) {
             if (bean.startsWith(BeanRule.CLASS_DIRECTIVE_PREFIX)) {
                 String className = bean.substring(BeanRule.CLASS_DIRECTIVE_PREFIX.length());
                 if (!className.isEmpty()) {
@@ -239,7 +240,7 @@ public class PointcutPatternRule {
                 ppr.setBeanIdPattern(bean);
             }
         }
-        if (method != null && !method.isEmpty()) {
+        if (!StringUtils.isEmpty(method)) {
             ppr.setMethodNamePattern(method);
         }
         return ppr;

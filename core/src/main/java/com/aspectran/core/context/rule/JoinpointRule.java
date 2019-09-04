@@ -31,7 +31,7 @@ import java.util.List;
  * A join point is the specific point in the application such as method execution,
  * exception handling, injecting settings values etc. In Aspectran AOP a join points
  * is always the execution of a method.
- * 
+ *
  * <pre>
  * &lt;aspect id="sampleAspect" order="0" isolated="true"&gt;
  *   &lt;joinpoint target="translet"&gt;
@@ -187,7 +187,6 @@ public class JoinpointRule {
     }
 
     public static void updateMethods(JoinpointRule joinpointRule, String[] methods) {
-        MethodType[] methods2 = null;
         if (methods != null && methods.length > 0) {
             List<MethodType> methodTypes = new ArrayList<>(methods.length);
             for (String method : methods) {
@@ -197,13 +196,13 @@ public class JoinpointRule {
                 }
                 methodTypes.add(methodType);
             }
-            methods2 = methodTypes.toArray(new MethodType[0]);
+            if (!methodTypes.isEmpty()) {
+                joinpointRule.setMethods(methodTypes.toArray(new MethodType[0]));
+            }
         }
-        joinpointRule.setMethods(methods2);
     }
 
     public static void updateHeaders(JoinpointRule joinpointRule, String[] headers) {
-        String[] headers2 = null;
         if (headers != null && headers.length > 0) {
             List<String> headerList = new ArrayList<>(headers.length);
             for (String header : headers) {
@@ -211,63 +210,64 @@ public class JoinpointRule {
                     headerList.add(header);
                 }
             }
-            headers2 = headerList.toArray(new String[0]);
+            if (!headerList.isEmpty()) {
+                joinpointRule.setHeaders(headerList.toArray(new String[0]));
+            }
         }
-        joinpointRule.setHeaders(headers2);
     }
 
     public static void updatePointcutRule(JoinpointRule joinpointRule, PointcutParameters pointcutParameters)
             throws IllegalRuleException {
-        PointcutRule pointcutRule = null;
-
-        if (pointcutParameters != null) {
-            List<String> plusPatternStringList = pointcutParameters.getStringList(PointcutParameters.plus);
-            List<String> minusPatternStringList = pointcutParameters.getStringList(PointcutParameters.minus);
-            List<PointcutQualifierParameters> includeQualifierParametersList = pointcutParameters.getParametersList(PointcutParameters.include);
-            List<PointcutQualifierParameters> excludeQualifierParametersList = pointcutParameters.getParametersList(PointcutParameters.exclude);
-
-            int patternStringSize = (plusPatternStringList != null ? plusPatternStringList.size() : 0);
-            int qualifierParametersSize = (includeQualifierParametersList != null ? includeQualifierParametersList.size() : 0);
-
-            if (patternStringSize > 0 || qualifierParametersSize > 0) {
-                pointcutRule = PointcutRule.newInstance(pointcutParameters.getString(PointcutParameters.type));
-                pointcutRule.newPointcutPatternRuleList(patternStringSize + qualifierParametersSize);
-
-                if (patternStringSize > 0) {
-                    List<PointcutPatternRule> minusPointcutPatternRuleList = null;
-                    if (minusPatternStringList != null && !minusPatternStringList.isEmpty()) {
-                        minusPointcutPatternRuleList = new ArrayList<>(minusPatternStringList.size());
-                        for (String patternString : minusPatternStringList) {
-                            PointcutPatternRule pointcutPatternRule = PointcutPatternRule.parsePattern(patternString);
-                            minusPointcutPatternRuleList.add(pointcutPatternRule);
-                        }
-                    }
-                    for (String patternString : plusPatternStringList) {
-                        PointcutPatternRule pointcutPatternRule = PointcutPatternRule.parsePattern(patternString);
-                        pointcutRule.addPointcutPatternRule(pointcutPatternRule, minusPointcutPatternRuleList);
-                    }
-                }
-
-                if (qualifierParametersSize > 0) {
-                    List<PointcutPatternRule> excludePointcutPatternRuleList = null;
-                    if (excludeQualifierParametersList != null && !excludeQualifierParametersList.isEmpty()) {
-                        excludePointcutPatternRuleList = new ArrayList<>(excludeQualifierParametersList.size());
-                        for (PointcutQualifierParameters excludeTargetParameters : excludeQualifierParametersList) {
-                            PointcutPatternRule pointcutPatternRule = createPointcutPatternRule(excludeTargetParameters);
-                            if (pointcutPatternRule != null) {
-                                excludePointcutPatternRuleList.add(pointcutPatternRule);
-                            }
-                        }
-                    }
-                    for (PointcutQualifierParameters includeTargetParameters : includeQualifierParametersList) {
-                        PointcutPatternRule pointcutPatternRule = createPointcutPatternRule(includeTargetParameters);
-                        pointcutRule.addPointcutPatternRule(pointcutPatternRule, excludePointcutPatternRuleList);
-                    }
-                }
-            }
+        if (pointcutParameters == null) {
+            return;
         }
 
+        List<String> plusPatternStringList = pointcutParameters.getStringList(PointcutParameters.plus);
+        List<String> minusPatternStringList = pointcutParameters.getStringList(PointcutParameters.minus);
+        List<PointcutQualifierParameters> includeQualifierParametersList = pointcutParameters.getParametersList(PointcutParameters.include);
+        List<PointcutQualifierParameters> excludeQualifierParametersList = pointcutParameters.getParametersList(PointcutParameters.exclude);
+
+        List<PointcutPatternRule> pointcutPatternRuleList = mergePointcutPatternRules(plusPatternStringList, includeQualifierParametersList);
+        List<PointcutPatternRule> excludePointcutPatternRuleList = mergePointcutPatternRules(minusPatternStringList, excludeQualifierParametersList);
+        if (pointcutPatternRuleList == null && excludePointcutPatternRuleList == null) {
+            return;
+        }
+
+        PointcutRule pointcutRule = PointcutRule.newInstance(pointcutParameters.getString(PointcutParameters.type));
+        if (pointcutPatternRuleList != null) {
+            for (PointcutPatternRule pointcutPatternRule : pointcutPatternRuleList) {
+                pointcutPatternRule.setExcludePointcutPatternRuleList(excludePointcutPatternRuleList);
+                pointcutRule.addPointcutPatternRule(pointcutPatternRule);
+            }
+        } else {
+            PointcutPatternRule pointcutPatternRule = new PointcutPatternRule();
+            pointcutPatternRule.setExcludePointcutPatternRuleList(excludePointcutPatternRuleList);
+            pointcutRule.addPointcutPatternRule(pointcutPatternRule);
+        }
         joinpointRule.setPointcutRule(pointcutRule);
+    }
+
+    private static List<PointcutPatternRule> mergePointcutPatternRules(List<String> patternStringList,
+                                                                       List<PointcutQualifierParameters> qualifierParametersList) {
+        int patternStringSize = (patternStringList != null ? patternStringList.size() : 0);
+        int qualifierParametersSize = (qualifierParametersList != null ? qualifierParametersList.size() : 0);
+        if (patternStringSize == 0 && qualifierParametersSize == 0) {
+            return null;
+        }
+        List<PointcutPatternRule> pointcutPatternRuleList = new ArrayList<>(patternStringSize + qualifierParametersSize);
+        if (patternStringSize > 0) {
+            for (String patternString : patternStringList) {
+                PointcutPatternRule pointcutPatternRule = PointcutPatternRule.parsePattern(patternString);
+                pointcutPatternRuleList.add(pointcutPatternRule);
+            }
+        }
+        if (qualifierParametersSize > 0) {
+            for (PointcutQualifierParameters includeQualifierParameters : qualifierParametersList) {
+                PointcutPatternRule pointcutPatternRule = createPointcutPatternRule(includeQualifierParameters);
+                pointcutPatternRuleList.add(pointcutPatternRule);
+            }
+        }
+        return pointcutPatternRuleList;
     }
 
     private static PointcutPatternRule createPointcutPatternRule(PointcutQualifierParameters pointcutQualifierParameters) {

@@ -120,7 +120,7 @@ public class InvokeAction implements Executable {
         } catch (ActionExecutionException e) {
             throw e;
         } catch (Exception e) {
-            throw new ActionExecutionException("Failed to execute bean method action " + this + " in bean " + bean, e);
+            throw new ActionExecutionException("Failed to execute action " + this + " in bean " + bean, e);
         }
     }
 
@@ -157,7 +157,6 @@ public class InvokeAction implements Executable {
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
-        tsb.append("type", getActionType());
         tsb.append("invokeActionRule", invokeActionRule);
         return tsb.toString();
     }

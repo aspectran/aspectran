@@ -49,28 +49,26 @@ public class PointcutRule {
         this.pointcutPatternRuleList = pointcutPatternRuleList;
     }
 
-    public void addPointcutPatternRule(PointcutPatternRule pointcutPatternRule,
-                                       List<PointcutPatternRule> excludePointcutPatternRuleList) {
+    public void addPointcutPatternRule(PointcutPatternRule pointcutPatternRule) {
         pointcutPatternRule.setPointcutType(pointcutType);
-        if (excludePointcutPatternRuleList != null) {
-            pointcutPatternRule.setExcludePointcutPatternRuleList(excludePointcutPatternRuleList);
-        }
         touchPointcutPatternRuleList().add(pointcutPatternRule);
     }
 
     public List<PointcutPatternRule> touchPointcutPatternRuleList() {
         if (pointcutPatternRuleList == null) {
-            pointcutPatternRuleList = newPointcutPatternRuleList();
+            newPointcutPatternRuleList();
         }
         return pointcutPatternRuleList;
     }
 
     public List<PointcutPatternRule> newPointcutPatternRuleList() {
-        return new ArrayList<>();
+        pointcutPatternRuleList = new ArrayList<>();
+        return pointcutPatternRuleList;
     }
 
     public List<PointcutPatternRule> newPointcutPatternRuleList(int initialCapacity) {
-        return new ArrayList<>(initialCapacity);
+        pointcutPatternRuleList = new ArrayList<>(initialCapacity);
+        return pointcutPatternRuleList;
     }
 
     @Override

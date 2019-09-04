@@ -22,7 +22,7 @@ import com.aspectran.core.util.ToStringBuilder;
 
 /**
  * {@code AdviceAction} that invokes a method for Aspect Advice.
- * 
+ *
  * <p>Created: 2019. 07. 18</p>
  */
 public class AdviceAction extends InvokeAction {
@@ -65,11 +65,7 @@ public class AdviceAction extends InvokeAction {
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
-        tsb.append("type", getActionType());
-        tsb.append("invokeActionRule", getInvokeActionRule());
-        if (aspectAdviceRule != null) {
-            tsb.append("aspectAdviceRule", aspectAdviceRule.toString(true));
-        }
+        tsb.append("advice", getInvokeActionRule());
         return tsb.toString();
     }
 

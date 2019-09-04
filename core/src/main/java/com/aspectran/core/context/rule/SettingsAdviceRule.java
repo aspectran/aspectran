@@ -110,10 +110,9 @@ public class SettingsAdviceRule {
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
-        if (aspectRule != null) {
-            tsb.append("aspectId", aspectRule.getId());
+        if (settings != null) {
+            tsb.append("settings", settings.keySet());
         }
-        tsb.append("settings", settings);
         return tsb.toString();
     }
 

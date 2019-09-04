@@ -80,7 +80,7 @@ public abstract class AdviceActivity extends AbstractActivity {
             AspectAdviceRulePostRegister postRegister = new AspectAdviceRulePostRegister();
             for (AspectRule aspectRule : getActivityContext().getAspectRuleRegistry().getAspectRules()) {
                 JoinpointTargetType joinpointTargetType = aspectRule.getJoinpointTargetType();
-                if (!aspectRule.isBeanRelevant() && joinpointTargetType == JoinpointTargetType.TRANSLET) {
+                if (!aspectRule.isBeanRelevanted() && joinpointTargetType == JoinpointTargetType.TRANSLET) {
                     if (isAcceptable(aspectRule)) {
                         Pointcut pointcut = aspectRule.getPointcut();
                         if (pointcut == null || pointcut.matches(transletRule.getName())) {
