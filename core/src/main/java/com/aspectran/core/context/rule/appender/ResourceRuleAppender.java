@@ -23,7 +23,7 @@ import java.io.InputStream;
 
 /**
  * The Class ResourceRuleAppender.
- * 
+ *
  * <p>Created: 2008. 04. 24 AM 11:23:36</p>
  */
 public class ResourceRuleAppender extends AbstractRuleAppender {
@@ -72,7 +72,6 @@ public class ResourceRuleAppender extends AbstractRuleAppender {
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
-        tsb.append("type", getAppenderType());
         tsb.append("resource", resource);
         tsb.append("format", getAppendedFileFormatType());
         tsb.append("profile", getProfiles());

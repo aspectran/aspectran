@@ -25,7 +25,7 @@ import java.net.URLConnection;
 
 /**
  * The Class UrlRuleAppender.
- * 
+ *
  * <p>Created: 2008. 04. 24 AM 11:23:36</p>
  */
 public class UrlRuleAppender extends AbstractRuleAppender {
@@ -60,7 +60,6 @@ public class UrlRuleAppender extends AbstractRuleAppender {
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
-        tsb.append("type", getAppenderType());
         tsb.append("url", ruleUrl);
         tsb.append("format", getAppendedFileFormatType());
         tsb.append("profile", getProfiles());
