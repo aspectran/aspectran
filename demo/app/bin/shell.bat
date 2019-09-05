@@ -12,11 +12,11 @@ if not defined LOGGING_CONFIG (
 )
 
 "%JAVA_HOME%\bin\java.exe" ^
-    "%JAVA_OPTS%" ^
+    %JAVA_OPTS% ^
     -classpath "%BASE_DIR%\lib\*" ^
     -Dlogback.configurationFile="%LOGGING_CONFIG%" ^
     -Daspectran.basePath="%BASE_DIR%" ^
-    "%ASPECTRAN_OPTS%" ^
+    %ASPECTRAN_OPTS% ^
     com.aspectran.shell.jline.JLineAspectranShell ^
     "%BASE_DIR%\config\aspectran-config.apon"
 goto end
