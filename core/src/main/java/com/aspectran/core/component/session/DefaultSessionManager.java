@@ -15,13 +15,10 @@
  */
 package com.aspectran.core.component.session;
 
-import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.config.SessionFileStoreConfig;
+import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.config.SessionManagerConfig;
 import com.aspectran.core.context.rule.type.SessionStoreType;
-import com.aspectran.core.util.StringUtils;
 
-import java.io.File;
 import java.io.IOException;
 
 /**
@@ -31,10 +28,20 @@ import java.io.IOException;
  */
 public class DefaultSessionManager extends AbstractSessionHandler implements SessionManager {
 
+    private ApplicationAdapter applicationAdapter;
+
     private SessionManagerConfig sessionManagerConfig;
 
     public DefaultSessionManager() {
         super();
+    }
+
+    public ApplicationAdapter getApplicationAdapter() {
+        return applicationAdapter;
+    }
+
+    public void setApplicationAdapter(ApplicationAdapter applicationAdapter) {
+        this.applicationAdapter = applicationAdapter;
     }
 
     @Override
@@ -102,7 +109,8 @@ public class DefaultSessionManager extends AbstractSessionHandler implements Ses
                     throw new IllegalArgumentException("Unknown session store type: " + storeType);
                 }
                 if (sessionStoreType == SessionStoreType.FILE) {
-                    sessionDataStore = SessionDataStoreFactory.createFileSessionDataStore(sessionManagerConfig.getFileStoreConfig());
+                    sessionDataStore = SessionDataStoreFactory.createFileSessionDataStore(
+                        sessionManagerConfig.getFileStoreConfig(), getApplicationAdapter());
                 }
             }
 
@@ -134,32 +142,6 @@ public class DefaultSessionManager extends AbstractSessionHandler implements Ses
         }
 
         super.doInitialize();
-    }
-
-    public static DefaultSessionManager create(ActivityContext context, SessionManagerConfig sessionManagerConfig)
-            throws IOException {
-        if (context == null) {
-            throw new IllegalArgumentException("context must not be null");
-        }
-
-        DefaultSessionManager sessionManager = new DefaultSessionManager();
-        if (sessionManagerConfig != null) {
-            sessionManager.setSessionManagerConfig(sessionManagerConfig);
-            String storeType = sessionManagerConfig.getStoreType();
-            SessionStoreType sessionStoreType = SessionStoreType.resolve(storeType);
-            if (sessionStoreType == SessionStoreType.FILE) {
-                SessionFileStoreConfig fileStoreConfig = sessionManagerConfig.getFileStoreConfig();
-                if (fileStoreConfig != null) {
-                    String storeDir = fileStoreConfig.getStoreDir();
-                    if (StringUtils.hasText(storeDir)) {
-                        String basePath = context.getApplicationAdapter().getBasePath();
-                        String canonPath = new File(basePath, storeDir).getCanonicalPath();
-                        fileStoreConfig.setStoreDir(canonPath);
-                    }
-                }
-            }
-        }
-        return sessionManager;
     }
 
 }

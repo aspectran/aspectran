@@ -27,6 +27,8 @@ public class SystemUtils {
 
     private static final Log log = LogFactory.getLog(SystemUtils.class);
 
+    private static final String JAVA_IO_TMPDIR_PROPERTY = "java.io.tmpdir";
+
     /**
      * <p>Gets a System property, defaulting to <code>null</code> if the property
      * cannot be read.</p>
@@ -53,6 +55,10 @@ public class SystemUtils {
     public static String getProperty(String name, String defVal) {
         String val = getProperty(name);
         return (val != null ? val : defVal);
+    }
+
+    public static String getJavaIoTmpDir() {
+        return getProperty(JAVA_IO_TMPDIR_PROPERTY);
     }
 
 }

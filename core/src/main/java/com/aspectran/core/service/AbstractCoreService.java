@@ -266,7 +266,7 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
         try {
             String basePath = getBasePath();
             if (basePath == null) {
-                basePath = SystemUtils.getProperty("java.io.tmpdir");
+                basePath = SystemUtils.getJavaIoTmpDir();
             }
             if (basePath != null) {
                 fileLocker = new FileLocker(new File(basePath, ".lock"));

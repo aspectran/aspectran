@@ -15,19 +15,29 @@
  */
 package com.aspectran.core.component.session;
 
+import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.config.SessionFileStoreConfig;
 import com.aspectran.core.util.StringUtils;
+import com.aspectran.core.util.SystemUtils;
 
 import java.io.File;
 
 public class SessionDataStoreFactory {
 
-    public static FileSessionDataStore createFileSessionDataStore(SessionFileStoreConfig fileStoreConfig) {
+    public static FileSessionDataStore createFileSessionDataStore(SessionFileStoreConfig fileStoreConfig,
+                                                                  ApplicationAdapter applicationAdapter) {
         FileSessionDataStore fileSessionDataStore = new FileSessionDataStore();
         if (fileStoreConfig != null) {
             String storeDir = fileStoreConfig.getStoreDir();
             if (StringUtils.hasText(storeDir)) {
-                fileSessionDataStore.setStoreDir(new File(storeDir));
+                if (applicationAdapter != null) {
+                    String basePath = applicationAdapter.getBasePath();
+                    fileSessionDataStore.setStoreDir(new File(basePath, storeDir));
+                } else {
+                    fileSessionDataStore.setStoreDir(new File(storeDir));
+                }
+            } else {
+                fileSessionDataStore.setStoreDir(new File(SystemUtils.getJavaIoTmpDir()));
             }
             boolean deleteUnrestorableFiles = fileStoreConfig.isDeleteUnrestorableFiles();
             if (deleteUnrestorableFiles) {

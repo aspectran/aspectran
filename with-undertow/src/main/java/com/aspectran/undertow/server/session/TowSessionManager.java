@@ -20,10 +20,7 @@ import com.aspectran.core.component.bean.aware.ApplicationAdapterAware;
 import com.aspectran.core.component.session.BasicSession;
 import com.aspectran.core.component.session.DefaultSessionManager;
 import com.aspectran.core.component.session.SessionHandler;
-import com.aspectran.core.context.config.SessionFileStoreConfig;
 import com.aspectran.core.context.config.SessionManagerConfig;
-import com.aspectran.core.context.rule.type.SessionStoreType;
-import com.aspectran.core.util.StringUtils;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.server.session.Session;
 import io.undertow.server.session.SessionConfig;
@@ -32,7 +29,6 @@ import io.undertow.server.session.SessionManager;
 import io.undertow.server.session.SessionManagerStatistics;
 import io.undertow.util.AttachmentKey;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Map;
@@ -48,9 +44,7 @@ public class TowSessionManager implements SessionManager, ApplicationAdapterAwar
 
     private final Map<SessionListener, TowSessionListenerBridge> sessionListenerMappings = new ConcurrentHashMap<>();
 
-    private final DefaultSessionManager sessionManager;
-
-    private ApplicationAdapter applicationAdapter;
+    private final DefaultSessionManager sessionManager = new DefaultSessionManager();
 
     private volatile long startTime;
 
@@ -59,14 +53,12 @@ public class TowSessionManager implements SessionManager, ApplicationAdapterAwar
     }
 
     public TowSessionManager(String deploymentName) {
-        DefaultSessionManager defaultSessionManager = new DefaultSessionManager();
-        defaultSessionManager.setWorkerName(deploymentName);
-        this.sessionManager = defaultSessionManager;
+        sessionManager.setWorkerName(deploymentName);
     }
 
     @Override
     public void setApplicationAdapter(ApplicationAdapter applicationAdapter) {
-        this.applicationAdapter = applicationAdapter;
+        sessionManager.setApplicationAdapter(applicationAdapter);
     }
 
     public SessionHandler getSessionHandler() {
@@ -78,28 +70,11 @@ public class TowSessionManager implements SessionManager, ApplicationAdapterAwar
         return sessionManager.getWorkerName();
     }
 
-    public void setSessionManagerConfig(SessionManagerConfig sessionManagerConfig) throws IOException {
-        if (sessionManagerConfig != null) {
-            if (applicationAdapter != null) {
-                String storeType = sessionManagerConfig.getStoreType();
-                SessionStoreType sessionStoreType = SessionStoreType.resolve(storeType);
-                if (sessionStoreType == SessionStoreType.FILE) {
-                    SessionFileStoreConfig fileStoreConfig = sessionManagerConfig.getFileStoreConfig();
-                    if (fileStoreConfig != null) {
-                        String storeDir = fileStoreConfig.getStoreDir();
-                        if (StringUtils.hasText(storeDir)) {
-                            String basePath = applicationAdapter.getBasePath();
-                            String canonPath = new File(basePath, storeDir).getCanonicalPath();
-                            fileStoreConfig.setStoreDir(canonPath);
-                        }
-                    }
-                }
-            }
-            sessionManager.setSessionManagerConfig(sessionManagerConfig);
-        }
+    public void setSessionManagerConfig(SessionManagerConfig sessionManagerConfig) {
+        sessionManager.setSessionManagerConfig(sessionManagerConfig);
     }
 
-    public void setSessionManagerConfigWithApon(String apon) throws IOException {
+    public void setSessionManagerConfigWithApon(String apon) {
         SessionManagerConfig sessionManagerConfig = new SessionManagerConfig();
         try {
             sessionManagerConfig.readFrom(apon);

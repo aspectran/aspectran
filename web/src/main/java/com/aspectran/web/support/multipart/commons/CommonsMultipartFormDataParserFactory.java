@@ -180,7 +180,7 @@ public class CommonsMultipartFormDataParserFactory {
         if (tempDirectoryPath != null) {
             parser.setTempDirectoryPath(tempDirectoryPath);
         } else {
-            parser.setTempDirectoryPath(SystemUtils.getProperty("java.io.tmpdir"));
+            parser.setTempDirectoryPath(SystemUtils.getJavaIoTmpDir());
         }
         if (maxRequestSize > -1L) {
             parser.setMaxRequestSize(maxRequestSize);
