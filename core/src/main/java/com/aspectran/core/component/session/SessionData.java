@@ -19,7 +19,6 @@ import com.aspectran.core.util.ToStringBuilder;
 
 import java.io.Serializable;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -35,7 +34,7 @@ public class SessionData implements Serializable {
 
     private String id;
 
-    private final Map<String, Object> attributes;
+    private final Map<String, Object> attributes = new ConcurrentHashMap<>();
 
     private final long creationTime;
 
@@ -47,11 +46,13 @@ public class SessionData implements Serializable {
 
     private long maxInactiveInterval;
 
+    /** precalculated time of expiry in ms since epoch */
     private long expiryTime;
 
     private boolean dirty;
 
-    private long lastSaved; // time in msec since last save
+    /** time in ms since last save */
+    private long lastSaved;
 
     public SessionData(String id, long creationTime, long accessedTime, long lastAccessedTime, long maxInactiveInterval) {
         if (id == null) {
@@ -63,7 +64,6 @@ public class SessionData implements Serializable {
         this.lastAccessedTime = lastAccessedTime;
         this.maxInactiveInterval = maxInactiveInterval;
         calcAndSetExpiryTime(creationTime);
-        this.attributes = new ConcurrentHashMap<>();
     }
 
     public String getId() {
@@ -98,7 +98,7 @@ public class SessionData implements Serializable {
      * @return a Set of attribute names
      */
     public Set<String> getKeys() {
-        return Collections.unmodifiableSet(new HashSet<>(attributes.keySet()));
+        return attributes.keySet();
     }
 
     /**

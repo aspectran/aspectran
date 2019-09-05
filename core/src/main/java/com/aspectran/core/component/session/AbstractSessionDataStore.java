@@ -136,6 +136,10 @@ public abstract class AbstractSessionDataStore extends AbstractComponent impleme
         }
     }
 
+    public long getLastExpiryCheckTime() {
+        return lastExpiryCheckTime;
+    }
+
     @Override
     public SessionData createSessionData(String id, long createdTime, long accessedTime, long lastAccessedTime,
                                          long maxInactiveInterval) {
