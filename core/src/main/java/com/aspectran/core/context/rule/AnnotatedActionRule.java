@@ -75,9 +75,7 @@ public class AnnotatedActionRule {
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
-        if (beanClass != null) {
-            tsb.append("class", beanClass.getName());
-        }
+        tsb.append("id", actionId);
         tsb.append("method", method);
         tsb.append("parameterBindingRules", parameterBindingRules);
         return tsb.toString();
