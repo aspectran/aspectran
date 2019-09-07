@@ -122,7 +122,7 @@ public class DefaultActivity extends AbstractActivity {
     }
 
     @Override
-    public void registerAspectRule(AspectRule aspectRule) {
+    public void registerAspectAdviceRule(AspectRule aspectRule) {
         throw new UnsupportedOperationException();
     }
 

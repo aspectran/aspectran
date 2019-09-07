@@ -73,11 +73,6 @@ public class DaemonActivity extends CoreActivity {
             }
 
             DaemonRequestAdapter requestAdapter = new DaemonRequestAdapter(getTranslet().getRequestMethod());
-            if (getOuterActivity() == null) {
-                requestAdapter.preparse(attributeMap, parameterMap);
-            } else {
-                requestAdapter.preparse(getOuterActivity().getRequestAdapter());
-            }
             setRequestAdapter(requestAdapter);
 
             if (outputWriter == null) {
@@ -85,11 +80,22 @@ public class DaemonActivity extends CoreActivity {
             }
             DaemonResponseAdapter responseAdapter = new DaemonResponseAdapter(outputWriter);
             setResponseAdapter(responseAdapter);
-
-            super.adapt();
         } catch (Exception e) {
             throw new AdapterException("Failed to adapt for Daemon Activity", e);
         }
+
+        super.adapt();
+    }
+
+    @Override
+    protected void parseRequest() {
+        if (getOuterActivity() == null) {
+            ((DaemonRequestAdapter)getRequestAdapter()).preparse(attributeMap, parameterMap);
+        } else {
+            ((DaemonRequestAdapter)getRequestAdapter()).preparse(getOuterActivity().getRequestAdapter());
+        }
+
+        super.parseRequest();
     }
 
     @Override

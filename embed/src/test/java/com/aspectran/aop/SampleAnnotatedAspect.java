@@ -26,6 +26,7 @@ import com.aspectran.core.component.bean.annotation.Finally;
 import com.aspectran.core.component.bean.annotation.Joinpoint;
 import com.aspectran.core.component.bean.annotation.Settings;
 import com.aspectran.core.context.rule.type.JoinpointTargetType;
+import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
@@ -39,6 +40,9 @@ import com.aspectran.core.util.logging.LogFactory;
         pointcut = {
                 "+: aop/test/*",
                 "-: aop/foo/*"
+        },
+        methods = {
+                MethodType.GET
         }
 )
 @Settings({

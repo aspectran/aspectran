@@ -103,11 +103,6 @@ public class ShellActivity extends CoreActivity {
 
             ShellRequestAdapter requestAdapter = new ShellRequestAdapter(getTranslet().getRequestMethod());
             requestAdapter.setEncoding(console.getEncoding());
-            if (getOuterActivity() == null) {
-                requestAdapter.preparse(null, parameterMap);
-            } else {
-                requestAdapter.preparse(getOuterActivity().getRequestAdapter());
-            }
             setRequestAdapter(requestAdapter);
 
             if (outputWriter == null) {
@@ -117,31 +112,21 @@ public class ShellActivity extends CoreActivity {
             ShellResponseAdapter responseAdapter = new ShellResponseAdapter(outputWriter);
             responseAdapter.setEncoding(console.getEncoding());
             setResponseAdapter(responseAdapter);
-
-            super.adapt();
         } catch (Exception e) {
             throw new AdapterException("Failed to adapt for Shell Activity", e);
         }
-    }
 
-    @Override
-    public void perform() {
-        if (getOuterActivity() == null && getSessionAdapter() != null) {
-            ((BasicSessionAdapter)getSessionAdapter()).getSessionAgent().access();
-        }
-        super.perform();
-    }
-
-    @Override
-    protected void release() {
-        if (getOuterActivity() == null && getSessionAdapter() != null) {
-            ((BasicSessionAdapter)getSessionAdapter()).getSessionAgent().complete();
-        }
-        super.release();
+        super.adapt();
     }
 
     @Override
     protected void parseRequest() {
+        if (getOuterActivity() == null) {
+            ((ShellRequestAdapter)getRequestAdapter()).preparse(null, parameterMap);
+        } else {
+            ((ShellRequestAdapter)getRequestAdapter()).preparse(getOuterActivity().getRequestAdapter());
+        }
+
         if (procedural) {
             showDescription();
         }
@@ -185,6 +170,24 @@ public class ShellActivity extends CoreActivity {
             }
             terminate("Required attributes are missing");
         }
+
+        super.parseRequest();
+    }
+
+    @Override
+    public void perform() {
+        if (getOuterActivity() == null && getSessionAdapter() != null) {
+            ((BasicSessionAdapter)getSessionAdapter()).getSessionAgent().access();
+        }
+        super.perform();
+    }
+
+    @Override
+    protected void release() {
+        if (getOuterActivity() == null && getSessionAdapter() != null) {
+            ((BasicSessionAdapter)getSessionAdapter()).getSessionAgent().complete();
+        }
+        super.release();
     }
 
     /**

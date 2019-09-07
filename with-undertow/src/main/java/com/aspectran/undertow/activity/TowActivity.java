@@ -20,7 +20,6 @@ import com.aspectran.core.activity.ActivityTerminatedException;
 import com.aspectran.core.activity.AdapterException;
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.TransletNotFoundException;
-import com.aspectran.core.activity.request.RequestMethodNotAllowedException;
 import com.aspectran.core.activity.request.RequestParseException;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.ActivityContext;
@@ -122,6 +121,14 @@ public class TowActivity extends CoreActivity {
 
             TowRequestAdapter requestAdapter = new TowRequestAdapter(getTranslet().getRequestMethod(), exchange);
             if (getOuterActivity() == null) {
+                String maxRequestSizeSetting = getSetting(MAX_REQUEST_SIZE_SETTING_NAME);
+                if (!StringUtils.isEmpty(maxRequestSizeSetting)) {
+                    long maxRequestSize = Long.parseLong(maxRequestSizeSetting);
+                    if (maxRequestSize >= 0L) {
+                        requestAdapter.setMaxRequestSize(maxRequestSize);
+                        exchange.setMaxEntitySize(maxRequestSize);
+                    }
+                }
                 String requestEncoding = getIntendedRequestEncoding();
                 if (requestEncoding != null) {
                     try {
@@ -130,9 +137,6 @@ public class TowActivity extends CoreActivity {
                         throw new RequestParseException("Unable to set request encoding to " + requestEncoding, e);
                     }
                 }
-                requestAdapter.preparse();
-            } else {
-                requestAdapter.preparse((TowRequestAdapter)getOuterActivity().getRequestAdapter());
             }
             setRequestAdapter(requestAdapter);
 
@@ -144,33 +148,25 @@ public class TowActivity extends CoreActivity {
                 }
             }
             setResponseAdapter(responseAdapter);
-
-            super.adapt();
         } catch (Exception e) {
             throw new AdapterException("Failed to adapt for Tow Activity", e);
         }
+
+        super.adapt();
     }
 
     @Override
     protected void parseRequest() {
-        MethodType requestMethod = getRequestAdapter().getRequestMethod();
-        MethodType allowedMethod = getRequestRule().getAllowedMethod();
-        if (allowedMethod != null && !allowedMethod.equals(requestMethod)) {
-            throw new RequestMethodNotAllowedException(allowedMethod);
-        }
-
-        String maxRequestSizeSetting = getSetting(MAX_REQUEST_SIZE_SETTING_NAME);
-        if (!StringUtils.isEmpty(maxRequestSizeSetting)) {
-            long maxRequestSize = Long.parseLong(maxRequestSizeSetting);
-            if (maxRequestSize >= 0L) {
-                getRequestAdapter().setMaxRequestSize(maxRequestSize);
-                exchange.setMaxEntitySize(maxRequestSize);
-            }
+        if (getOuterActivity() == null) {
+            ((TowRequestAdapter)getRequestAdapter()).preparse();
+        } else {
+            ((TowRequestAdapter)getRequestAdapter()).preparse(
+                    (TowRequestAdapter)getOuterActivity().getRequestAdapter());
         }
 
         MediaType mediaType = ((TowRequestAdapter)getRequestAdapter()).getMediaType();
         if (mediaType != null) {
-            if (WebRequestBodyParser.isMultipartForm(requestMethod, mediaType)) {
+            if (WebRequestBodyParser.isMultipartForm(getRequestAdapter().getRequestMethod(), mediaType)) {
                 parseMultipartFormData();
             } else if (WebRequestBodyParser.isURLEncodedForm(mediaType)) {
                 parseURLEncodedFormData();

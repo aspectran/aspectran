@@ -187,7 +187,7 @@ public interface Activity {
      *
      * @param aspectRule the aspect rule
      */
-    void registerAspectRule(AspectRule aspectRule);
+    void registerAspectAdviceRule(AspectRule aspectRule);
 
     /**
      * Register a settings advice rule dynamically.

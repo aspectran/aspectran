@@ -25,6 +25,7 @@ import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.activity.request.MissingMandatoryAttributesException;
 import com.aspectran.core.activity.request.MissingMandatoryParametersException;
 import com.aspectran.core.activity.request.PathVariableMap;
+import com.aspectran.core.activity.request.RequestMethodNotAllowedException;
 import com.aspectran.core.activity.response.ForwardResponse;
 import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.component.bean.scope.Scope;
@@ -139,8 +140,19 @@ public class CoreActivity extends AdviceActivity {
                 log.debug("Translet " + transletRule);
             }
 
-            newTranslet(requestMethod, requestName, transletRule, parentTranslet);
-            prepareAspectAdviceRule(transletRule, (parentTranslet != null));
+            translet = new CoreTranslet(transletRule, this);
+            translet.setRequestName(requestName);
+            translet.setRequestMethod(requestMethod);
+            if (parentTranslet != null) {
+                translet.setProcessResult(parentTranslet.getProcessResult());
+            }
+
+            MethodType allowedMethod = getRequestRule().getAllowedMethod();
+            if (allowedMethod != null && !allowedMethod.equals(requestMethod)) {
+                throw new RequestMethodNotAllowedException(allowedMethod);
+            }
+
+            prepareAspectAdviceRule(transletRule);
 
             if (parentTranslet == null) {
                 if (isIncluded()) {
@@ -150,9 +162,11 @@ public class CoreActivity extends AdviceActivity {
                     saveCurrentActivity();
                 }
                 adapt();
+                parseRequest();
             }
 
-            parseRequest();
+            parseDeclaredParameters();
+            parseDeclaredAttributes();
             parsePathVariables();
 
             if (parentTranslet == null) {
@@ -166,6 +180,20 @@ public class CoreActivity extends AdviceActivity {
     }
 
     protected void adapt() throws AdapterException {
+    }
+
+    protected void parseRequest() {
+    }
+
+    protected LocaleResolver resolveLocale() {
+        LocaleResolver localeResolver = null;
+        String localeResolverBeanId = getSetting(RequestRule.LOCALE_RESOLVER_SETTING_NAME);
+        if (localeResolverBeanId != null) {
+            localeResolver = getBean(localeResolverBeanId, LocaleResolver.class);
+            localeResolver.resolveLocale(getTranslet());
+            localeResolver.resolveTimeZone(getTranslet());
+        }
+        return localeResolver;
     }
 
     @Override
@@ -251,6 +279,75 @@ public class CoreActivity extends AdviceActivity {
         }
     }
 
+    protected void execute(ActionList actionList) {
+        execute(actionList, null);
+    }
+
+    protected void execute(ActionList actionList, ContentResult contentResult) {
+        if (contentResult == null) {
+            ProcessResult processResult = translet.getProcessResult();
+            if (processResult == null) {
+                processResult = new ProcessResult(1);
+                translet.setProcessResult(processResult);
+            }
+            contentResult = processResult.getContentResult(actionList.getName(), actionList.isExplicit());
+            if (contentResult == null) {
+                contentResult = new ContentResult(processResult, actionList.size());
+                contentResult.setName(actionList.getName());
+                if (!processResult.isExplicit()) {
+                    contentResult.setExplicit(actionList.isExplicit());
+                }
+            }
+        }
+        for (Executable action : actionList) {
+            execute(action, contentResult);
+            if (isResponseReserved()) {
+                break;
+            }
+        }
+    }
+
+    /**
+     * Execute an action.
+     *
+     * @param action the executable action
+     * @param contentResult the content result
+     */
+    private void execute(Executable action, ContentResult contentResult) {
+        try {
+            if (log.isDebugEnabled()) {
+                log.debug("Action " + action);
+            }
+
+            if (action.getActionType() == ActionType.CHOOSE) {
+                Object resultValue = action.execute(this);
+                if (resultValue != ActionResult.NO_RESULT) {
+                    ChooseWhenRule chooseWhenRule = (ChooseWhenRule)resultValue;
+                    ActionList actionList = chooseWhenRule.getActionList();
+                    execute(actionList, contentResult);
+                    if (chooseWhenRule.getResponse() != null) {
+                        reserveResponse(chooseWhenRule.getResponse());
+                    }
+                }
+            } else {
+                Object resultValue = action.execute(this);
+                if (!action.isHidden() && contentResult != null && resultValue != ActionResult.NO_RESULT) {
+                    if (resultValue instanceof ProcessResult) {
+                        contentResult.addActionResult(action, (ProcessResult)resultValue);
+                    } else {
+                        contentResult.addActionResult(action, resultValue);
+                    }
+                }
+            }
+        } catch (ActionExecutionException e) {
+            log.error("Failed to execute action " + action, e);
+            throw e;
+        } catch (Exception e) {
+            setRaisedException(e);
+            throw new ActionExecutionException("Failed to execute action " + action, e);
+        }
+    }
+
     private ForwardRule response() {
         if (!committed) {
             committed = true;
@@ -297,6 +394,20 @@ public class CoreActivity extends AdviceActivity {
         if (getExceptionRuleList() != null) {
             handleException(getExceptionRuleList());
         }
+    }
+
+    @Override
+    public ExceptionThrownRule handleException(ExceptionRule exceptionRule) {
+        ExceptionThrownRule exceptionThrownRule = super.handleException(exceptionRule);
+        if (exceptionThrownRule != null && !isResponseReserved() && translet != null) {
+            Response response = getDesiredResponse();
+            String contentType = (response != null ? response.getContentType() : null);
+            Response targetResponse = exceptionThrownRule.getResponse(contentType);
+            if (targetResponse != null) {
+                reserveResponse(targetResponse);
+            }
+        }
+        return exceptionThrownRule;
     }
 
     protected void release() {
@@ -347,6 +458,57 @@ public class CoreActivity extends AdviceActivity {
         return (this.desiredResponse != null ? this.desiredResponse : getDeclaredResponse());
     }
 
+    @Override
+    public Translet getTranslet() {
+        return translet;
+    }
+
+    @Override
+    public ProcessResult getProcessResult() {
+        return translet.getProcessResult();
+    }
+
+    @Override
+    public Object getProcessResult(String actionId) {
+        return translet.getProcessResult().getResultValue(actionId);
+    }
+
+    private TransletRule getTransletRule(String transletName, MethodType requestMethod) {
+        return getActivityContext().getTransletRuleRegistry().getTransletRule(transletName, requestMethod);
+    }
+
+    /**
+     * Returns the translet rule.
+     *
+     * @return the translet rule
+     */
+    protected TransletRule getTransletRule() {
+        return translet.getTransletRule();
+    }
+
+    /**
+     * Returns the request rule.
+     *
+     * @return the request rule
+     */
+    protected RequestRule getRequestRule() {
+        return translet.getRequestRule();
+    }
+
+    /**
+     * Returns the response rule.
+     *
+     * @return the response rule
+     */
+    protected ResponseRule getResponseRule() {
+        return translet.getResponseRule();
+    }
+
+    @Override
+    public Response getDeclaredResponse() {
+        return (getResponseRule() != null ? getResponseRule().getResponse() : null);
+    }
+
     /**
      * Determines the default request encoding.
      *
@@ -371,30 +533,6 @@ public class CoreActivity extends AdviceActivity {
             encoding = getIntendedRequestEncoding();
         }
         return encoding;
-    }
-
-    /**
-     * Resolve the current locale.
-     *
-     * @return the current locale
-     */
-    protected LocaleResolver resolveLocale() {
-        LocaleResolver localeResolver = null;
-        String localeResolverBeanId = getSetting(RequestRule.LOCALE_RESOLVER_SETTING_NAME);
-        if (localeResolverBeanId != null) {
-            localeResolver = getBean(localeResolverBeanId, LocaleResolver.class);
-            localeResolver.resolveLocale(getTranslet());
-            localeResolver.resolveTimeZone(getTranslet());
-        }
-        return localeResolver;
-    }
-
-    /**
-     * Parses the declared parameters and attributes.
-     */
-    protected void parseRequest() {
-        parseDeclaredParameters();
-        parseDeclaredAttributes();
     }
 
     /**
@@ -475,160 +613,8 @@ public class CoreActivity extends AdviceActivity {
     }
 
     @Override
-    public ExceptionThrownRule handleException(ExceptionRule exceptionRule) {
-        ExceptionThrownRule exceptionThrownRule = super.handleException(exceptionRule);
-        if (exceptionThrownRule != null && !isResponseReserved() && translet != null) {
-            Response response = getDesiredResponse();
-            String contentType = (response != null ? response.getContentType() : null);
-            Response targetResponse = exceptionThrownRule.getResponse(contentType);
-            if (targetResponse != null) {
-                reserveResponse(targetResponse);
-            }
-        }
-        return exceptionThrownRule;
-    }
-
-    protected void execute(ActionList actionList) {
-        execute(actionList, null);
-    }
-
-    protected void execute(ActionList actionList, ContentResult contentResult) {
-        if (contentResult == null) {
-            ProcessResult processResult = translet.getProcessResult();
-            if (processResult == null) {
-                processResult = new ProcessResult(1);
-                translet.setProcessResult(processResult);
-            }
-            contentResult = processResult.getContentResult(actionList.getName(), actionList.isExplicit());
-            if (contentResult == null) {
-                contentResult = new ContentResult(processResult, actionList.size());
-                contentResult.setName(actionList.getName());
-                if (!processResult.isExplicit()) {
-                    contentResult.setExplicit(actionList.isExplicit());
-                }
-            }
-        }
-        for (Executable action : actionList) {
-            execute(action, contentResult);
-            if (isResponseReserved()) {
-                break;
-            }
-        }
-    }
-
-    /**
-     * Execute an action.
-     *
-     * @param action the executable action
-     * @param contentResult the content result
-     */
-    private void execute(Executable action, ContentResult contentResult) {
-        try {
-            if (log.isDebugEnabled()) {
-                log.debug("Action " + action);
-            }
-
-            if (action.getActionType() == ActionType.CHOOSE) {
-                Object resultValue = action.execute(this);
-                if (resultValue != ActionResult.NO_RESULT) {
-                    ChooseWhenRule chooseWhenRule = (ChooseWhenRule)resultValue;
-                    ActionList actionList = chooseWhenRule.getActionList();
-                    execute(actionList, contentResult);
-                    if (chooseWhenRule.getResponse() != null) {
-                        reserveResponse(chooseWhenRule.getResponse());
-                    }
-                }
-            } else {
-                Object resultValue = action.execute(this);
-                if (!action.isHidden() && contentResult != null && resultValue != ActionResult.NO_RESULT) {
-                    if (resultValue instanceof ProcessResult) {
-                        contentResult.addActionResult(action, (ProcessResult)resultValue);
-                    } else {
-                        contentResult.addActionResult(action, resultValue);
-                    }
-                }
-            }
-        } catch (ActionExecutionException e) {
-            log.error("Failed to execute action " + action, e);
-            throw e;
-        } catch (Exception e) {
-            setRaisedException(e);
-            throw new ActionExecutionException("Failed to execute action " + action, e);
-        }
-    }
-
-    @Override
     public <T extends Activity> T newActivity() {
         throw new UnsupportedOperationException("newActivity");
-    }
-
-    /**
-     * Create a new {@code CoreTranslet} instance.
-     *
-     * @param requestMethod the request method
-     * @param requestName the request name
-     * @param transletRule the translet rule
-     * @param parentTranslet the process result that was created earlier
-     */
-    private void newTranslet(MethodType requestMethod, String requestName, TransletRule transletRule,
-                             Translet parentTranslet) {
-        translet = new CoreTranslet(transletRule, this);
-        translet.setRequestName(requestName);
-        translet.setRequestMethod(requestMethod);
-        if (parentTranslet != null) {
-            translet.setProcessResult(parentTranslet.getProcessResult());
-        }
-    }
-
-    @Override
-    public Translet getTranslet() {
-        return translet;
-    }
-
-    @Override
-    public ProcessResult getProcessResult() {
-        return translet.getProcessResult();
-    }
-
-    @Override
-    public Object getProcessResult(String actionId) {
-        return translet.getProcessResult().getResultValue(actionId);
-    }
-
-    private TransletRule getTransletRule(String transletName, MethodType requestMethod) {
-        return getActivityContext().getTransletRuleRegistry().getTransletRule(transletName, requestMethod);
-    }
-
-    /**
-     * Returns the translet rule.
-     *
-     * @return the translet rule
-     */
-    protected TransletRule getTransletRule() {
-        return translet.getTransletRule();
-    }
-
-    /**
-     * Returns the request rule.
-     *
-     * @return the request rule
-     */
-    protected RequestRule getRequestRule() {
-        return translet.getRequestRule();
-    }
-
-    /**
-     * Returns the response rule.
-     *
-     * @return the response rule
-     */
-    protected ResponseRule getResponseRule() {
-        return translet.getResponseRule();
-    }
-
-    @Override
-    public Response getDeclaredResponse() {
-        return (getResponseRule() != null ? getResponseRule().getResponse() : null);
     }
 
 }

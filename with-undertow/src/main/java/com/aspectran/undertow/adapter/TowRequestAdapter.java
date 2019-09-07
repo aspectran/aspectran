@@ -133,18 +133,15 @@ public class TowRequestAdapter extends AbstractRequestAdapter {
 
     public void preparse() {
         HttpServerExchange exchange = getAdaptee();
-
         for (Map.Entry<String, Deque<String>> entry : exchange.getQueryParameters().entrySet()) {
             String name = entry.getKey();
             String[] values = entry.getValue().toArray(new String[0]);
             getParameterMap().put(name, values);
         }
-
         String contentType = exchange.getRequestHeaders().getFirst(Headers.CONTENT_TYPE);
         if (contentType != null) {
             setMediaType(MediaType.parseMediaType(contentType));
         }
-
         String acceptLanguage = exchange.getRequestHeaders().getFirst(Headers.ACCEPT_LANGUAGE);
         List<Locale> locales = LocaleUtils.getLocalesFromHeader(acceptLanguage);
         if (!locales.isEmpty()) {

@@ -134,18 +134,14 @@ public class HttpServletRequestAdapter extends AbstractRequestAdapter {
 
     public void preparse() {
         HttpServletRequest request = getHttpServletRequest();
-
         setAttributeMap(new RequestAttributeMap(request));
-
         Map<String, String[]> parameters = request.getParameterMap();
         if (!parameters.isEmpty()) {
             getParameterMap().putAll(parameters);
         }
-
         if (request.getContentType() != null) {
             setMediaType(MediaType.parseMediaType(request.getContentType()));
         }
-
         setLocale(request.getLocale());
     }
 

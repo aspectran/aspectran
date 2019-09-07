@@ -201,7 +201,7 @@ public class TransletRuleRegistry extends AbstractComponent {
         return (getTransletRule(transletName, requestMethod) != null);
     }
 
-    public void addTransletRule(final TransletRule transletRule) throws IllegalRuleException {
+    public void addTransletRule(TransletRule transletRule) throws IllegalRuleException {
         if (transletRule == null) {
             throw new IllegalArgumentException("transletRule must not be null");
         }

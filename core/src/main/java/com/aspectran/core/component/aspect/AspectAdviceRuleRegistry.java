@@ -24,17 +24,13 @@ import com.aspectran.core.context.rule.type.AspectAdviceType;
 import com.aspectran.core.util.ToStringBuilder;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * The Class AspectAdviceRuleRegistry.
  */
 public class AspectAdviceRuleRegistry implements Replicable<AspectAdviceRuleRegistry> {
-
-    private Map<String, Object> settings;
 
     private List<SettingsAdviceRule> settingsAdviceRuleList;
 
@@ -111,30 +107,12 @@ public class AspectAdviceRuleRegistry implements Replicable<AspectAdviceRuleRegi
         return aarr;
     }
 
-    @SuppressWarnings("unchecked")
-    public <T> T getSetting(String settingName) {
-        return (settings != null ? (T)settings.get(settingName) : null);
-    }
-
-    private void addSettings(Map<String, Object> settings) {
-        if (settings != null) {
-            if (this.settings == null) {
-                this.settings = new HashMap<>(settings);
-            } else {
-                this.settings.putAll(settings);
-            }
-        }
-    }
-
     public List<SettingsAdviceRule> getSettingsAdviceRuleList() {
         return settingsAdviceRuleList;
     }
 
     private void setSettingsAdviceRuleList(List<SettingsAdviceRule> settingsAdviceRuleList) {
         this.settingsAdviceRuleList = settingsAdviceRuleList;
-        for (SettingsAdviceRule settingsAdviceRule : settingsAdviceRuleList) {
-            addSettings(settingsAdviceRule.getSettings());
-        }
     }
 
     public List<AspectAdviceRule> getBeforeAdviceRuleList() {
@@ -165,8 +143,7 @@ public class AspectAdviceRuleRegistry implements Replicable<AspectAdviceRuleRegi
         if (settingsAdviceRuleList == null) {
             settingsAdviceRuleList = new ArrayList<>();
         }
-        settingsAdviceRuleList.add(settingsAdviceRule);
-        addSettings(settingsAdviceRule.getSettings());
+        settingsAdviceRuleList.add(0, settingsAdviceRule);
     }
 
     public void addAspectAdviceRule(AspectAdviceRule aspectAdviceRule) {
@@ -252,8 +229,8 @@ public class AspectAdviceRuleRegistry implements Replicable<AspectAdviceRuleRegi
 
     @Override
     public String toString() {
-        ToStringBuilder tsb = new ToStringBuilder(94);
-        tsb.append("settings", settings);
+        ToStringBuilder tsb = new ToStringBuilder();
+        tsb.append("settingsAdvices", settingsAdviceRuleList);
         tsb.append("beforeAdvices", beforeAdviceRuleList);
         tsb.append("afterAdvices", afterAdviceRuleList);
         tsb.append("finallyAdvices", finallyAdviceRuleList);

@@ -87,11 +87,6 @@ public class AspectranActivity extends CoreActivity {
             }
 
             AspectranRequestAdapter requestAdapter = new AspectranRequestAdapter(getTranslet().getRequestMethod());
-            if (getOuterActivity() == null) {
-                requestAdapter.preparse(attributeMap, parameterMap);
-            } else {
-                requestAdapter.preparse(getOuterActivity().getRequestAdapter());
-            }
             if (body != null) {
                 requestAdapter.setBody(body);
             }
@@ -102,11 +97,22 @@ public class AspectranActivity extends CoreActivity {
             }
             AspectranResponseAdapter responseAdapter = new AspectranResponseAdapter(outputWriter);
             setResponseAdapter(responseAdapter);
-
-            super.adapt();
         } catch (Exception e) {
             throw new AdapterException("Failed to adapt for Aspectran Activity", e);
         }
+
+        super.adapt();
+    }
+
+    @Override
+    protected void parseRequest() {
+        if (getOuterActivity() == null) {
+            ((AspectranRequestAdapter)getRequestAdapter()).preparse(attributeMap, parameterMap);
+        } else {
+            ((AspectranRequestAdapter)getRequestAdapter()).preparse(getOuterActivity().getRequestAdapter());
+        }
+
+        super.parseRequest();
     }
 
     @Override

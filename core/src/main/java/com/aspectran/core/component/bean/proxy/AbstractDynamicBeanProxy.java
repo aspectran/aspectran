@@ -71,7 +71,7 @@ public abstract class AbstractDynamicBeanProxy {
         if (holder.getDynamicAspectRuleList() != null) {
             for (AspectRule aspectRule : holder.getDynamicAspectRuleList()) {
                 // register dynamically
-                activity.registerAspectRule(aspectRule);
+                activity.registerAspectAdviceRule(aspectRule);
             }
         }
         return aarr;
@@ -88,7 +88,7 @@ public abstract class AbstractDynamicBeanProxy {
                 holder = existing;
             } else {
                 if (log.isDebugEnabled()) {
-                    log.debug("Caching [" + pattern + "] for Aspects " + holder);
+                    log.debug("Caching " + pattern + " " + holder);
                 }
             }
         }
@@ -112,10 +112,10 @@ public abstract class AbstractDynamicBeanProxy {
             }
         }
 
-        AspectAdviceRuleRegistry registry = postRegister.getAspectAdviceRuleRegistry();
-        if (!dynamicAspectRuleList.isEmpty() || registry != null) {
+        AspectAdviceRuleRegistry aarr = postRegister.getAspectAdviceRuleRegistry();
+        if (!dynamicAspectRuleList.isEmpty() || aarr != null) {
             RelevantAspectRuleHolder holder = new RelevantAspectRuleHolder();
-            holder.setAspectAdviceRuleRegistry(registry);
+            holder.setAspectAdviceRuleRegistry(aarr);
             if (!dynamicAspectRuleList.isEmpty()) {
                 holder.setDynamicAspectRuleList(dynamicAspectRuleList);
             }

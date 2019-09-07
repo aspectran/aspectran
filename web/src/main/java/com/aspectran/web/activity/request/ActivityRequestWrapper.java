@@ -36,79 +36,76 @@ public class ActivityRequestWrapper extends HttpServletRequestWrapper {
 
     private WebActivity activity;
 
-    private RequestAdapter requestAdapter;
-
     public ActivityRequestWrapper(HttpServletRequest request) {
         super(request);
     }
 
     public void setWebActivity(WebActivity activity) {
         this.activity = activity;
-        this.requestAdapter = activity.getRequestAdapter();
     }
 
     @Override
     public String getHeader(String name) {
-        if (requestAdapter == null) {
+        if (getRequestAdapter() == null) {
             return super.getHeader(name);
         }
-        return requestAdapter.getHeader(name);
+        return getRequestAdapter().getHeader(name);
     }
 
     @Override
     public Enumeration<String> getHeaders(String name) {
-        if (requestAdapter == null) {
+        if (getRequestAdapter() == null) {
             return super.getHeaders(name);
         }
-        return Collections.enumeration(requestAdapter.getHeaderValues(name));
+        return Collections.enumeration(getRequestAdapter().getHeaderValues(name));
     }
 
     @Override
     public Enumeration<String> getHeaderNames() {
-        if (requestAdapter == null) {
+        if (getRequestAdapter() == null) {
             return super.getHeaderNames();
         }
-        return Collections.enumeration(requestAdapter.getHeaderNames());
+        return Collections.enumeration(getRequestAdapter().getHeaderNames());
     }
 
     @Override
     public String getParameter(String name) {
-        if (requestAdapter == null) {
+        if (getRequestAdapter() == null) {
             return super.getParameter(name);
         }
-        return requestAdapter.getParameter(name);
+        return getRequestAdapter().getParameter(name);
     }
 
     @Override
     public Map<String, String[]> getParameterMap() {
-        if (requestAdapter == null) {
+        if (getRequestAdapter() == null) {
             return super.getParameterMap();
         }
-        return requestAdapter.getParameterMap();
+        return getRequestAdapter().getParameterMap();
     }
 
     @Override
     public Enumeration<String> getParameterNames() {
-        if (requestAdapter == null) {
+        if (getRequestAdapter() == null) {
             return super.getParameterNames();
         }
-        return Collections.enumeration(requestAdapter.getParameterNames());
+        return Collections.enumeration(getRequestAdapter().getParameterNames());
     }
 
     @Override
     public String[] getParameterValues(String name) {
-        if (requestAdapter == null) {
+        if (getRequestAdapter() == null) {
             return super.getParameterValues(name);
         }
-        return requestAdapter.getParameterValues(name);
+        return getRequestAdapter().getParameterValues(name);
     }
 
     @Override
     public Object getAttribute(String name) {
-        if (requestAdapter == null) {
+        if (getRequestAdapter() == null) {
             return super.getAttribute(name);
         }
-        Object value = requestAdapter.getAttribute(name);
+        Object value = getRequestAdapter().getAttribute(name);
         if (value != null) {
             return value;
         }
@@ -120,50 +117,54 @@ public class ActivityRequestWrapper extends HttpServletRequestWrapper {
 
     @Override
     public Enumeration<String> getAttributeNames() {
-        if (activity == null) {
+        if (getRequestAdapter() == null) {
             return super.getAttributeNames();
         }
-        return Collections.enumeration(requestAdapter.getAttributeNames());
+        return Collections.enumeration(getRequestAdapter().getAttributeNames());
     }
 
     @Override
     public void setAttribute(String name, Object o) {
-        if (activity == null) {
+        if (getRequestAdapter() == null) {
             super.setAttribute(name, o);
             return;
         }
-        requestAdapter.setAttribute(name, o);
+        getRequestAdapter().setAttribute(name, o);
     }
 
     @Override
     public void removeAttribute(String name) {
-        if (activity == null) {
+        if (getRequestAdapter() == null) {
             super.removeAttribute(name);
             return;
         }
-        requestAdapter.removeAttribute(name);
+        getRequestAdapter().removeAttribute(name);
     }
 
     @Override
     public Locale getLocale() {
-        if (activity == null) {
+        if (getRequestAdapter() == null) {
             return super.getLocale();
         }
-        return requestAdapter.getLocale();
+        return getRequestAdapter().getLocale();
     }
 
     @Override
     public Enumeration<Locale> getLocales() {
-        if (activity == null || requestAdapter.getLocale() == null) {
+        if (getRequestAdapter() == null || getRequestAdapter().getLocale() == null) {
             return super.getLocales();
         }
         List<Locale> list = new ArrayList<>();
-        list.add(requestAdapter.getLocale());
+        list.add(getRequestAdapter().getLocale());
         Enumeration<Locale> locales = super.getLocales();
         while (locales.hasMoreElements()) {
             list.add(locales.nextElement());
         }
         return Collections.enumeration(list);
+    }
+
+    private RequestAdapter getRequestAdapter() {
+        return (activity != null ? activity.getRequestAdapter() : null);
     }
 
 }

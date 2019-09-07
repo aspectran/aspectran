@@ -53,11 +53,11 @@ public class JobActivity extends CoreActivity {
 
             ResponseAdapter responseAdapter = new QuartzJobResponseAdapter();
             setResponseAdapter(responseAdapter);
-
-            super.adapt();
         } catch (Exception e) {
             throw new AdapterException("Failed to adapt for Job Activity", e);
         }
+
+        super.adapt();
     }
 
     @Override
