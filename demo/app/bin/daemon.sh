@@ -72,13 +72,13 @@ if [ -z "$JAVA_HOME" ]; then
 else
   JAVA_BIN="$JAVA_HOME/bin/java"
 fi
-TMP_DIR="$BASE_DIR/temp"
-CLASSPATH="$BASE_DIR/lib/*"
-LOGGING_CONFIG="$BASE_DIR/config/logback.xml"
-ASPECTRAN_CONFIG="$BASE_DIR/config/aspectran-config.apon"
+DAEMON_OUT="$BASE_DIR/logs/daemon.out"
 DAEMON_MAIN="com.aspectran.daemon.DefaultDaemon"
 LOCK_FILE="$BASE_DIR/.lock"
-DAEMON_OUT="$BASE_DIR/logs/daemon.out"
+CLASSPATH="$BASE_DIR/lib/*"
+TMP_DIR="$BASE_DIR/temp"
+LOGGING_CONFIG="$BASE_DIR/config/logback.xml"
+ASPECTRAN_CONFIG="$BASE_DIR/config/aspectran-config.apon"
 
 do_start() {
   sleep 0.5

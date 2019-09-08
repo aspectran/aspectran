@@ -105,14 +105,15 @@ test ".$SERVICE_START_WAIT_TIME" = . && SERVICE_START_WAIT_TIME=10
 # Set -pidfile
 test ".$DAEMON_PID" = . && DAEMON_PID="$BASE_DIR/jsvc_daemon.pid"
 DAEMON_OUT="$BASE_DIR/logs/jsvc_daemon.out"
+DAEMON_ERR="$BASE_DIR/logs/jsvc_daemon.err"
+DAEMON_MAIN="com.aspectran.daemon.JsvcDaemon"
 CLASSPATH="$BASE_DIR/lib/*"
 TMP_DIR="$BASE_DIR/temp"
 LOGGING_CONFIG="$BASE_DIR/config/logback.xml"
 ASPECTRAN_CONFIG="$BASE_DIR/config/aspectran-config.apon"
-DAEMON_MAIN="com.aspectran.daemon.JsvcDaemon"
 
 do_start() {
-  >"$DAEMON_OUT"
+  : >"$DAEMON_OUT"
   "$JSVC" \
     ${JAVA_OPTS} \
     $DAEMON_USER \
@@ -121,7 +122,7 @@ do_start() {
     -pidfile "$DAEMON_PID" \
     -wait "$SERVICE_START_WAIT_TIME" \
     -outfile "$DAEMON_OUT" \
-    -errfile "$DAEMON_OUT" \
+    -errfile "$DAEMON_ERR" \
     -classpath "$CLASSPATH" \
     -Djava.io.tmpdir="$TMP_DIR" \
     -Dlogback.configurationFile="$LOGGING_CONFIG" \
@@ -136,7 +137,7 @@ do_start() {
 }
 
 do_stop() {
-  >"$DAEMON_OUT"
+  : >"$DAEMON_OUT"
   "$JSVC" \
     ${JAVA_OPTS} \
     -stop \
