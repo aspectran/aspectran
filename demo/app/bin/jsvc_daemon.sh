@@ -104,8 +104,8 @@ fi
 test ".$SERVICE_START_WAIT_TIME" = . && SERVICE_START_WAIT_TIME=10
 # Set -pidfile
 test ".$DAEMON_PID" = . && DAEMON_PID="$BASE_DIR/jsvc_daemon.pid"
-DAEMON_OUT="$BASE_DIR/logs/jsvc_daemon.out"
-DAEMON_ERR="$BASE_DIR/logs/jsvc_daemon.err"
+DAEMON_OUT="$BASE_DIR/logs/daemon.out"
+DAEMON_ERR="$BASE_DIR/logs/daemon.err"
 DAEMON_MAIN="com.aspectran.daemon.JsvcDaemon"
 CLASSPATH="$BASE_DIR/lib/*"
 TMP_DIR="$BASE_DIR/temp"
