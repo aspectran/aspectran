@@ -8,10 +8,16 @@
     <logger name="com.aspectran" level="debug" additivity="false">
         <appender-ref ref="STDOUT"/>
     </logger>
+    <logger name="com.aspectran.scheduler.service.JobActivityReport" level="debug" additivity="false">
+        <appender-ref ref="STDOUT"/>
+    </logger>
+    <logger name="com.aspectran.core.component.session" level="debug" additivity="false">
+        <appender-ref ref="STDOUT"/>
+    </logger>
     <logger name="org.quartz" level="info" additivity="false">
         <appender-ref ref="STDOUT"/>
     </logger>
-    <logger name="org.eclipse.jetty" level="error" additivity="false">
+    <logger name="org.apache.ibatis" level="error" additivity="false">
         <appender-ref ref="STDOUT"/>
     </logger>
     <root level="info">
