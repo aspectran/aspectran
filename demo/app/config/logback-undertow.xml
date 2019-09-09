@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<included>
+    <!-- Undertow Access Logging -->
+    <appender name="UNDERTOW-ACCESS-LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${aspectran.basePath}/logs/undertow-access.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${aspectran.basePath}/logs/archived/undertow-access.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>10MB</maxFileSize>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>1GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%msg%n</pattern>
+        </encoder>
+    </appender>
+    <logger name="io.undertow.accesslog" level="info" additivity="false">
+        <appender-ref ref="UNDERTOW-ACCESS-LOG"/>
+    </logger>
+</included>

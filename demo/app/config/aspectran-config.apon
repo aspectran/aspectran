@@ -42,6 +42,7 @@ shell: {
     )
     prompt: "{{green}}aspectran-demo>{{reset}} "
     commands: [
+        com.aspectran.shell.command.builtins.UndertowCommand
         com.aspectran.shell.command.builtins.JettyCommand
         com.aspectran.shell.command.builtins.TransletCommand
         com.aspectran.shell.command.builtins.AspectCommand

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 6.0//EN"
+        "http://aspectran.github.io/dtd/aspectran-6.dtd">
+<aspectran>
+
+    <append file="/config/server/undertow/tow-config.xml" profile="!jetty"/>
+    <append file="/config/server/jetty/jetty-config.xml" profile="jetty"/>
+
+</aspectran>

@@ -25,4 +25,5 @@
         <appender-ref ref="APP-OUT"/>
     </root>
     <include optional="true" file="${aspectran.basePath}/config/logback-scheduler.xml"/>
+    <include optional="true" file="${aspectran.basePath}/config/logback-undertow.xml"/>
 </configuration>

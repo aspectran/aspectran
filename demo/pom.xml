@@ -128,11 +128,15 @@
         </dependency>
         <dependency>
             <groupId>com.aspectran</groupId>
-            <artifactId>aspectran-with-jetty</artifactId>
+            <artifactId>aspectran-daemon</artifactId>
         </dependency>
         <dependency>
             <groupId>com.aspectran</groupId>
-            <artifactId>aspectran-daemon</artifactId>
+            <artifactId>aspectran-with-undertow</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.aspectran</groupId>
+            <artifactId>aspectran-with-jetty</artifactId>
         </dependency>
         <dependency>
             <groupId>commons-fileupload</groupId>

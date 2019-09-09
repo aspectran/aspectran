@@ -38,7 +38,7 @@
         </exception>
     </aspect>
 
-    <append file="/config/jetty/jetty-config.xml"/>
+    <append file="/config/server/server-config.xml"/>
     <append file="/config/shell/shell-config.xml" profile="!daemon"/>
     <append file="/config/web/web-config.xml"/>
 
