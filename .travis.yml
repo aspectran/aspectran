@@ -7,7 +7,7 @@ jdk:
   - openjdk11
   - openjdk12
   - openjdk13
-  - oraclejdk8
+  - openjdk14
 
 services:
   - docker
