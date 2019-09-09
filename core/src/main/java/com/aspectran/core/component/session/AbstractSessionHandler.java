@@ -258,10 +258,13 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
             if (session.getRequests() > 0) {
                 return; // session can't expire or be idle if there is a request in it
             }
-            if (log.isDebugEnabled()) {
-                log.debug("Inspecting session " + session.getId() + ", valid=" + session.isValid());
+            if (log.isTraceEnabled()) {
+                log.trace("Inspecting session " + session.getId() + ", valid=" + session.isValid());
             }
             if (!session.isValid()) {
+                if (log.isTraceEnabled()) {
+                    log.trace("Session " + session.getId() + " is no longer valid");
+                }
                 return; // do nothing, session is no longer valid
             }
             if (session.isExpiredAt(now)) {

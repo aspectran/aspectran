@@ -470,8 +470,8 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
         if (session == null) {
             return;
         }
-        if (log.isDebugEnabled()) {
-            log.debug("Checking for idle " +  session.getId());
+        if (log.isTraceEnabled()) {
+            log.trace("Checking for idle " +  session.getId());
         }
         try (Lock ignored = session.lock()) {
             if (getEvictionIdleSecs() > 0 && session.isIdleLongerThan(getEvictionIdleSecs()) &&
