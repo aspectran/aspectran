@@ -205,35 +205,6 @@
                 </executions>
             </plugin>
 
-            <!-- Disable all plugin executions configured by jar packaging -->
-            <plugin>
-                <artifactId>maven-resources-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>default-resources</id>
-                        <phase>none</phase>
-                    </execution>
-                    <execution>
-                        <id>default-testResources</id>
-                        <phase>none</phase>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>default-compile</id>
-                        <phase>none</phase>
-                    </execution>
-                    <execution>
-                        <id>default-testCompile</id>
-                        <phase>none</phase>
-                    </execution>
-                </executions>
-            </plugin>
-
             <plugin>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <executions>
@@ -276,26 +247,6 @@
                             <includeScope>runtime</includeScope>
                             <includeGroupIds>${project.groupId}</includeGroupIds>
                             <outputDirectory>${project.build.outputDirectory}</outputDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <executions>
-                    <!-- Clean everything once finished so that IDE doesn't find the unpacked files. -->
-                    <execution>
-                        <id>clean-source-directory</id>
-                        <phase>install</phase>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                        <configuration>
-                            <target>
-                                <delete dir="${generatedSourceDir}" quiet="true" />
-                                <delete dir="${project.build.outputDirectory}" quiet="true" />
-                            </target>
                         </configuration>
                     </execution>
                 </executions>
@@ -380,6 +331,26 @@
                 </executions>
             </plugin>
 
+            <!-- Clean everything once finished so that IDE doesn't find the unpacked files. -->
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>clean-source-directory</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <delete dir="${generatedSourceDir}" quiet="true" />
+                                <delete dir="${project.build.outputDirectory}" quiet="true" />
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
             <!-- Disable animal sniffer -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -392,6 +363,33 @@
                 </executions>
             </plugin>
 
+            <!-- Disable all plugin executions configured by jar packaging -->
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>default-resources</id>
+                        <phase>none</phase>
+                    </execution>
+                    <execution>
+                        <id>default-testResources</id>
+                        <phase>none</phase>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>default-compile</id>
+                        <phase>none</phase>
+                    </execution>
+                    <execution>
+                        <id>default-testCompile</id>
+                        <phase>none</phase>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <executions>
