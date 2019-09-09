@@ -12,7 +12,7 @@
             <pattern>%-5level %d{yyyy-MM-dd HH:mm:ss} [%thread] %msg%n</pattern>
         </encoder>
     </appender>
-    <logger name="com.aspectran" level="info" additivity="false">
+    <logger name="com.aspectran" level="debug" additivity="false">
         <appender-ref ref="APP-OUT"/>
     </logger>
     <logger name="org.quartz" level="info" additivity="false">
