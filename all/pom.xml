@@ -287,7 +287,7 @@
                     <!-- Clean everything once finished so that IDE doesn't find the unpacked files. -->
                     <execution>
                         <id>clean-source-directory</id>
-                        <phase>package</phase>
+                        <phase>install</phase>
                         <goals>
                             <goal>run</goal>
                         </goals>
@@ -317,27 +317,6 @@
                                 <source>${generatedSourceDir}</source>
                             </sources>
                         </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <!-- Generate Xref -->
-            <plugin>
-                <artifactId>maven-jxr-plugin</artifactId>
-                <configuration>
-                    <linkJavadoc>true</linkJavadoc>
-                    <destDir>${project.build.directory}/xref</destDir>
-                    <javadocDir>${project.build.directory}/apidocs</javadocDir>
-                    <docTitle>Aspectran Source Xref (${project.version})</docTitle>
-                    <windowTitle>Aspectran Source Xref (${project.version})</windowTitle>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>generate-xref</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>jxr</goal>
-                        </goals>
                     </execution>
                 </executions>
             </plugin>
