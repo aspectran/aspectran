@@ -11,10 +11,9 @@
         |   {{CYAN}}echo1{{fg:reset}}      It accepts parameters and print as is
         |   --- for more examples, type '{{GREEN}}translet -l{{reset}}' ---
         |
-        |{{bold}}The Jetty Server is currently running.{{bold:off}}
-        |Use the command '{{GREEN}}jetty{{reset}}' to control the Jetty Server.
-        |When your Jetty Server is running, point your web browser to:
-        |   {{81}}http://localhost:8088/{{fg:reset}}
+        |Use the command '{{GREEN}}undertow{{reset}}' to control the Undertow Server.
+        |Since Undertow Server is running, have your web browser point to:
+        |   {{81}}http://localhost:8080/{{fg:reset}}
         |
     </description>
 
