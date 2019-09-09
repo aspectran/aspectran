@@ -124,9 +124,11 @@ do_start() {
     -outfile "$DAEMON_OUT" \
     -errfile "$DAEMON_ERR" \
     -classpath "$CLASSPATH" \
+    -Djava.awt.headless=true \
+    -Djava.net.preferIPv4Stack=true \
     -Djava.io.tmpdir="$TMP_DIR" \
-    -Dlogback.configurationFile="$LOGGING_CONFIG" \
     -Daspectran.basePath="$BASE_DIR" \
+    -Dlogback.configurationFile="$LOGGING_CONFIG" \
     ${ASPECTRAN_OPTS} \
     $DAEMON_MAIN \
     "$ASPECTRAN_CONFIG"
@@ -144,6 +146,8 @@ do_stop() {
     -jvm server \
     -pidfile "$DAEMON_PID" \
     -classpath "$CLASSPATH" \
+    -Djava.awt.headless=true \
+    -Djava.net.preferIPv4Stack=true \
     -Djava.io.tmpdir="$TMP_DIR" \
     $DAEMON_MAIN
   sleep 0.2

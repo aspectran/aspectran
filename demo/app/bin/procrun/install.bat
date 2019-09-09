@@ -72,7 +72,12 @@ rem JVM configuration
 set PR_JVMMS=128
 set PR_JVMMX=512
 set PR_JVMSS=4096
-set PR_JVMOPTIONS=-Duser.language=en;-Duser.region=US;-Dlogback.configurationFile=%BASE_DIR%\config\logback.xml;-Daspectran.basePath=%BASE_DIR%
+set PR_JVMOPTIONS=-Duser.language=en;-Duser.region=US;^
+-Djava.awt.headless=true;^
+-Djava.net.preferIPv4Stack=true;^
+-Djava.io.tmpdir=%BASE_DIR%\temp;^
+-Daspectran.basePath=%BASE_DIR%;^
+-Dlogback.configurationFile=%BASE_DIR%\config\logback.xml
 
 echo Creating Service...
 %PR_INSTALL% //IS/%SERVICE_NAME% ^

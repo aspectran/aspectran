@@ -90,9 +90,11 @@ do_start() {
     nohup "$JAVA_BIN" \
       ${JAVA_OPTS} \
       -classpath "$CLASSPATH" \
+      -Djava.awt.headless=true \
+      -Djava.net.preferIPv4Stack=true \
       -Djava.io.tmpdir="$TMP_DIR" \
-      -Dlogback.configurationFile="$LOGGING_CONFIG" \
       -Daspectran.basePath="$BASE_DIR" \
+      -Dlogback.configurationFile="$LOGGING_CONFIG" \
       ${ASPECTRAN_OPTS} \
       $DAEMON_MAIN \
       "$ASPECTRAN_CONFIG" \
