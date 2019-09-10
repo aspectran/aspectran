@@ -36,7 +36,7 @@ import java.io.FileNotFoundException;
  * JSP or other web resource integration.
  * Sends the model produced by Aspectran's internal activity
  * to the JSP to render the final view page.
- * 
+ *
  * <p>Created: 2019. 02. 18</p>
  */
 public class JspTemplateViewDispatcher implements ViewDispatcher {
@@ -112,8 +112,8 @@ public class JspTemplateViewDispatcher implements ViewDispatcher {
             HttpServletRequest request = requestAdapter.getAdaptee();
             HttpServletResponse response = responseAdapter.getAdaptee();
 
-            if (log.isDebugEnabled()) {
-                log.debug("Dispatching to JSP Template [" + template + "] with page [" + dispatchName + "]");
+            if (log.isTraceEnabled()) {
+                log.trace("Dispatching to JSP Template [" + template + "] with page [" + dispatchName + "]");
             }
 
             RequestDispatcher requestDispatcher = request.getRequestDispatcher(template);

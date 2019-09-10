@@ -65,7 +65,7 @@ public class InvokeAction implements Executable {
             bean = activity.getBean(invokeActionRule.getBeanId());
         }
         if (bean == null) {
-            throw new ActionExecutionException("No such bean; Invalid InvokeActionRule " + invokeActionRule);
+            throw new ActionExecutionException("No bean found for " + invokeActionRule);
         }
         return execute(activity, bean);
     }
@@ -157,7 +157,7 @@ public class InvokeAction implements Executable {
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
-        tsb.append("invokeActionRule", invokeActionRule);
+        tsb.append("invoke", invokeActionRule);
         return tsb.toString();
     }
 

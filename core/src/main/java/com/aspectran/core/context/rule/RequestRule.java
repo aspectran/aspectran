@@ -22,7 +22,7 @@ import java.nio.charset.Charset;
 
 /**
  * The Class RequestRule.
- * 
+ *
  * <p>Created: 2008. 03. 22 PM 5:48:09</p>
  */
 public class RequestRule {
@@ -35,13 +35,13 @@ public class RequestRule {
 
     private final boolean explicit;
 
+    private MethodType allowedMethod;
+
     /**
      * The request encoding is the character encoding in which parameters
      * in an incoming request are interpreted.
      */
     private String encoding;
-
-    private MethodType allowedMethod;
 
     private ItemRuleMap parameterItemRuleMap;
 
@@ -66,24 +66,6 @@ public class RequestRule {
     }
 
     /**
-     * Gets the request encoding.
-     *
-     * @return the request encoding
-     */
-    public String getEncoding() {
-        return encoding;
-    }
-
-    /**
-     * Sets the request encoding.
-     *
-     * @param encoding the new request encoding
-     */
-    public void setEncoding(String encoding) {
-        this.encoding = encoding;
-    }
-
-    /**
      * Returns the method allowed on the requested resource.
      *
      * @return the allowed method
@@ -99,6 +81,24 @@ public class RequestRule {
      */
     public void setAllowedMethod(MethodType allowedMethod) {
         this.allowedMethod = allowedMethod;
+    }
+
+    /**
+     * Gets the request encoding.
+     *
+     * @return the request encoding
+     */
+    public String getEncoding() {
+        return encoding;
+    }
+
+    /**
+     * Sets the request encoding.
+     *
+     * @param encoding the new request encoding
+     */
+    public void setEncoding(String encoding) {
+        this.encoding = encoding;
     }
 
     /**

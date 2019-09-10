@@ -111,7 +111,7 @@ public class IncludeAction implements Executable {
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
-        tsb.append("includeActionRule", includeActionRule);
+        tsb.append("include", includeActionRule);
         return tsb.toString();
     }
 

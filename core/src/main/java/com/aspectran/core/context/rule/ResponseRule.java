@@ -33,7 +33,7 @@ import java.nio.charset.Charset;
 
 /**
  * The Class ResponseRule.
- * 
+ *
  * <p>Created: 2008. 03. 22 PM 5:48:09</p>
  */
 public class ResponseRule implements ActionRuleApplicable, ResponseRuleApplicable, Replicable<ResponseRule> {
@@ -41,7 +41,6 @@ public class ResponseRule implements ActionRuleApplicable, ResponseRuleApplicabl
     private final boolean explicit;
 
     private String name;
-
 
     /**
      * The response encoding is the character encoding of the textual response.

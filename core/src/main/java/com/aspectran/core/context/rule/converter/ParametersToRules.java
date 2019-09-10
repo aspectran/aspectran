@@ -296,7 +296,7 @@ public class ParametersToRules {
             if (beforeAdviceParameters != null) {
                 ActionParameters actionParameters = beforeAdviceParameters.getParameters(AdviceActionParameters.action);
                 if (actionParameters != null) {
-                    AspectAdviceRule aspectAdviceRule = aspectRule.touchAspectAdviceRule(AspectAdviceType.BEFORE);
+                    AspectAdviceRule aspectAdviceRule = aspectRule.newAspectAdviceRule(AspectAdviceType.BEFORE);
                     asActionRule(actionParameters, aspectAdviceRule);
                 }
             }
@@ -305,7 +305,7 @@ public class ParametersToRules {
             if (afterAdviceParameters != null) {
                 ActionParameters actionParameters = afterAdviceParameters.getParameters(AdviceActionParameters.action);
                 if (actionParameters != null) {
-                    AspectAdviceRule aspectAdviceRule = aspectRule.touchAspectAdviceRule(AspectAdviceType.AFTER);
+                    AspectAdviceRule aspectAdviceRule = aspectRule.newAspectAdviceRule(AspectAdviceType.AFTER);
                     asActionRule(actionParameters, aspectAdviceRule);
                 }
             }
@@ -314,14 +314,14 @@ public class ParametersToRules {
             if (aroundAdviceParameters != null) {
                 ActionParameters actionParameters = aroundAdviceParameters.getParameters(AdviceActionParameters.action);
                 if (actionParameters != null) {
-                    AspectAdviceRule aspectAdviceRule = aspectRule.touchAspectAdviceRule(AspectAdviceType.AROUND);
+                    AspectAdviceRule aspectAdviceRule = aspectRule.newAspectAdviceRule(AspectAdviceType.AROUND);
                     asActionRule(actionParameters, aspectAdviceRule);
                 }
             }
 
             AdviceActionParameters finallyAdviceParameters = adviceParameters.getParameters(AdviceParameters.finallyAdvice);
             if (finallyAdviceParameters != null) {
-                AspectAdviceRule aspectAdviceRule = aspectRule.touchAspectAdviceRule(AspectAdviceType.FINALLY);
+                AspectAdviceRule aspectAdviceRule = aspectRule.newAspectAdviceRule(AspectAdviceType.FINALLY);
                 ActionParameters actionParameters = finallyAdviceParameters.getParameters(AdviceActionParameters.action);
                 if (actionParameters != null) {
                     asActionRule(actionParameters, aspectAdviceRule);

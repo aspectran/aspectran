@@ -24,7 +24,7 @@ import java.lang.reflect.Method;
 
 /**
  * The Class InvokeActionRule.
- * 
+ *
  * <p>Created: 2008. 03. 22 PM 5:50:35</p>
  */
 public class InvokeActionRule implements BeanReferenceable {
@@ -250,7 +250,11 @@ public class InvokeActionRule implements BeanReferenceable {
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.append("id", actionId);
         tsb.append("bean", beanId);
-        tsb.append("method", methodName);
+        if (method != null) {
+            tsb.append("method", method);
+        } else {
+            tsb.append("method", methodName);
+        }
         if (argumentItemRuleMap != null) {
             tsb.append("arguments", argumentItemRuleMap.keySet());
         }

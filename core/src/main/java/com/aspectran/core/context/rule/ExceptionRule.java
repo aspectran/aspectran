@@ -22,7 +22,7 @@ import java.util.Map;
 
 /**
  * The Class ExceptionRule.
- * 
+ *
  * <p>Created: 2009. 03. 09 PM 23:48:09</p>
  */
 public class ExceptionRule {
@@ -59,9 +59,7 @@ public class ExceptionRule {
         if (exceptionTypes != null) {
             for (String exceptionType : exceptionTypes) {
                 if (exceptionType != null) {
-                    if (!exceptionThrownRuleMap.containsKey(exceptionType)) {
-                        exceptionThrownRuleMap.put(exceptionType, exceptionThrownRule);
-                    }
+                    exceptionThrownRuleMap.putIfAbsent(exceptionType, exceptionThrownRule);
                 }
             }
         } else {

@@ -359,13 +359,13 @@ public class AnnotatedConfigParser {
 
         for (Method method : beanClass.getMethods()) {
             if (method.isAnnotationPresent(Before.class)) {
-                AspectAdviceRule aspectAdviceRule = aspectRule.touchAspectAdviceRule(AspectAdviceType.BEFORE);
+                AspectAdviceRule aspectAdviceRule = aspectRule.newAspectAdviceRule(AspectAdviceType.BEFORE);
                 aspectAdviceRule.setExecutableAction(createAnnotatedMethodAction(null, beanClass, method));
             } else if (method.isAnnotationPresent(After.class)) {
-                AspectAdviceRule aspectAdviceRule = aspectRule.touchAspectAdviceRule(AspectAdviceType.AFTER);
+                AspectAdviceRule aspectAdviceRule = aspectRule.newAspectAdviceRule(AspectAdviceType.AFTER);
                 aspectAdviceRule.setExecutableAction(createAnnotatedMethodAction(null, beanClass, method));
             } else if (method.isAnnotationPresent(Around.class)) {
-                AspectAdviceRule aspectAdviceRule = aspectRule.touchAspectAdviceRule(AspectAdviceType.AROUND);
+                AspectAdviceRule aspectAdviceRule = aspectRule.newAspectAdviceRule(AspectAdviceType.AROUND);
                 aspectAdviceRule.setExecutableAction(createAnnotatedMethodAction(null, beanClass, method));
             } else if (method.isAnnotationPresent(ExceptionThrown.class)) {
                 ExceptionThrown exceptionThrownAnno = method.getAnnotation(ExceptionThrown.class);

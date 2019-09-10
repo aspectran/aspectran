@@ -37,7 +37,7 @@ class AspectAdviceInnerNodeletAdder implements NodeletAdder {
         parser.setXpath(xpath + "/before");
         parser.addNodelet(attrs -> {
             AspectRule aspectRule = parser.peekObject();
-            AspectAdviceRule aspectAdviceRule = aspectRule.touchAspectAdviceRule(AspectAdviceType.BEFORE);
+            AspectAdviceRule aspectAdviceRule = aspectRule.newAspectAdviceRule(AspectAdviceType.BEFORE);
             parser.pushObject(aspectAdviceRule);
         });
         nodeParser.addActionNodelets();
@@ -45,7 +45,7 @@ class AspectAdviceInnerNodeletAdder implements NodeletAdder {
         parser.setXpath(xpath + "/after");
         parser.addNodelet(attrs -> {
             AspectRule aspectRule = parser.peekObject();
-            AspectAdviceRule aspectAdviceRule = aspectRule.touchAspectAdviceRule(AspectAdviceType.AFTER);
+            AspectAdviceRule aspectAdviceRule = aspectRule.newAspectAdviceRule(AspectAdviceType.AFTER);
             parser.pushObject(aspectAdviceRule);
         });
         nodeParser.addActionNodelets();
@@ -53,7 +53,7 @@ class AspectAdviceInnerNodeletAdder implements NodeletAdder {
         parser.setXpath(xpath + "/around");
         parser.addNodelet(attrs -> {
             AspectRule aspectRule = parser.peekObject();
-            AspectAdviceRule aspectAdviceRule = aspectRule.touchAspectAdviceRule(AspectAdviceType.AROUND);
+            AspectAdviceRule aspectAdviceRule = aspectRule.newAspectAdviceRule(AspectAdviceType.AROUND);
             parser.pushObject(aspectAdviceRule);
         });
         nodeParser.addActionNodelets();
@@ -61,7 +61,7 @@ class AspectAdviceInnerNodeletAdder implements NodeletAdder {
         parser.setXpath(xpath + "/finally");
         parser.addNodelet(attrs -> {
             AspectRule aspectRule = parser.peekObject();
-            AspectAdviceRule aspectAdviceRule = aspectRule.touchAspectAdviceRule(AspectAdviceType.FINALLY);
+            AspectAdviceRule aspectAdviceRule = aspectRule.newAspectAdviceRule(AspectAdviceType.FINALLY);
             parser.pushObject(aspectAdviceRule);
         });
         nodeParser.addActionNodelets();

@@ -96,6 +96,10 @@ public class AspectAdviceRule implements ActionRuleApplicable {
 
     @Override
     public Executable applyActionRule(InvokeActionRule invokeActionRule) {
+        if (adviceBeanId == null && adviceBeanClass == null &&
+            invokeActionRule.getBeanId() == null && invokeActionRule.getBeanClass() == null) {
+            throw new IllegalStateException("Unknown advice bean for " + invokeActionRule + " in " + this);
+        }
         InvokeAction action = new AdviceAction(invokeActionRule, this);
         this.action = action;
         return action;
@@ -151,17 +155,11 @@ public class AspectAdviceRule implements ActionRuleApplicable {
 
     @Override
     public String toString() {
-        return toString(false);
-    }
-
-    public String toString(boolean preventRecursive) {
         ToStringBuilder tsb = new ToStringBuilder();
-        tsb.append("adviceBeanId", adviceBeanId);
-        tsb.append("adviceBeanClass", adviceBeanClass);
-        tsb.append("aspectAdviceType", aspectAdviceType);
-        if (!preventRecursive) {
-            tsb.append("action", action);
-        }
+        tsb.append("type", aspectAdviceType);
+        tsb.append("bean", adviceBeanId);
+        tsb.append("bean", adviceBeanClass);
+        tsb.append("action", action);
         return tsb.toString();
     }
 

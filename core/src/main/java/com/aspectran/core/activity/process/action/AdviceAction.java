@@ -37,7 +37,7 @@ public class AdviceAction extends InvokeAction {
      */
     public AdviceAction(InvokeActionRule invokeActionRule, AspectAdviceRule aspectAdviceRule) {
         super(invokeActionRule);
-        this.aspectAdviceRule = (invokeActionRule.getBeanId() == null ? aspectAdviceRule : null);
+        this.aspectAdviceRule = aspectAdviceRule;
     }
 
     /**
@@ -51,21 +51,29 @@ public class AdviceAction extends InvokeAction {
 
     @Override
     public Object execute(Activity activity) throws Exception {
-        if (aspectAdviceRule != null) {
+        if (getInvokeActionRule().getBeanId() != null) {
+            return super.execute(activity);
+        }  else {
             Object bean = activity.getAspectAdviceBean(aspectAdviceRule.getAspectId());
             if (bean == null) {
-                throw new ActionExecutionException("No such bean; Invalid AspectAdviceRule " + aspectAdviceRule);
+                throw new ActionExecutionException("No advice bean found for " + aspectAdviceRule);
             }
             return execute(activity, bean);
-        } else {
-            return super.execute(activity);
         }
     }
 
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
-        tsb.append("advice", getInvokeActionRule());
+        tsb.append("type", aspectAdviceRule.getAspectAdviceType());
+        tsb.append("bean", aspectAdviceRule.getAdviceBeanId());
+        tsb.append("bean", aspectAdviceRule.getAdviceBeanClass());
+        if (getInvokeActionRule().getMethod() != null) {
+            tsb.append("method", getInvokeActionRule().getMethod());
+        } else {
+            tsb.append("method", getInvokeActionRule().getMethodName());
+        }
+        tsb.append("order", aspectAdviceRule.getAspectRule().getOrder());
         return tsb.toString();
     }
 

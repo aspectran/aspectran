@@ -243,6 +243,10 @@ public abstract class AdviceActivity extends AbstractActivity {
 
         Executable action = aspectAdviceRule.getExecutableAction();
         if (action != null) {
+            if (log.isDebugEnabled()) {
+                log.debug("Advice " + action);
+            }
+
             AspectAdviceRule oldAspectAdviceRule = currentAspectAdviceRule;
             currentAspectAdviceRule = aspectAdviceRule;
             try {
@@ -335,7 +339,7 @@ public abstract class AdviceActivity extends AbstractActivity {
                 Executable action = exceptionThrownRule.getAction();
                 if (action != null) {
                     if (log.isDebugEnabled()) {
-                        log.debug("Action " + action);
+                        log.debug("Advice " + action);
                     }
                     try {
                         action.execute(this);

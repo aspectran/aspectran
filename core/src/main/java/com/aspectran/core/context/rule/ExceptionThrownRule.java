@@ -32,7 +32,7 @@ import com.aspectran.core.context.rule.type.ActionType;
 
 /**
  * The Class ExceptionThrownRule.
- * 
+ *
  * <p>Created: 2008. 04. 01 PM 11:19:28</p>
  */
 public class ExceptionThrownRule implements ActionRuleApplicable, ResponseRuleApplicable {
@@ -141,8 +141,15 @@ public class ExceptionThrownRule implements ActionRuleApplicable, ResponseRuleAp
     public Executable applyActionRule(InvokeActionRule invokeActionRule) {
         InvokeAction action;
         if (aspectAdviceRule != null) {
+            if (aspectAdviceRule.getAdviceBeanId() == null && aspectAdviceRule.getAdviceBeanClass() == null &&
+                invokeActionRule.getBeanId() == null && invokeActionRule.getBeanClass() == null) {
+                throw new IllegalStateException("Unknown advice bean for " + invokeActionRule + " in " + this);
+            }
             action = new AdviceAction(invokeActionRule, aspectAdviceRule);
         } else {
+            if (invokeActionRule.getBeanId() == null && invokeActionRule.getBeanClass() == null) {
+                throw new IllegalStateException("Unknown action bean for " + invokeActionRule);
+            }
             action = new InvokeAction(invokeActionRule);
         }
         this.action = action;

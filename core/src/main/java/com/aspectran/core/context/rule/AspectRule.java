@@ -225,7 +225,7 @@ public class AspectRule implements BeanReferenceable {
         this.aspectAdviceRuleList = aspectAdviceRuleList;
     }
 
-    public AspectAdviceRule touchAspectAdviceRule(AspectAdviceType aspectAdviceType) {
+    public AspectAdviceRule newAspectAdviceRule(AspectAdviceType aspectAdviceType) {
         if (aspectAdviceType == null) {
             throw new IllegalArgumentException("aspectAdviceType must not be null");
         }

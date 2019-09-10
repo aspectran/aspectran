@@ -126,7 +126,7 @@ public class AnnotatedAction implements Executable {
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
-        tsb.append("annotatedActionRule", annotatedActionRule);
+        tsb.append("annotated", annotatedActionRule);
         return tsb.toString();
     }
 

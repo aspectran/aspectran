@@ -188,7 +188,7 @@ public class BeanReferenceInspector {
         }
     }
 
-    private class RefererKey {
+    private static class RefererKey {
 
         private final Class<?> type;
 

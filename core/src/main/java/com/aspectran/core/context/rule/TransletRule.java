@@ -451,8 +451,15 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
         tsb.append("name", name);
         tsb.append("method", allowedMethods);
         tsb.append("namePattern", namePattern);
-        tsb.append("requestRule", requestRule);
-        tsb.append("responseRule", responseRule);
+        if (requestRule != null &&
+            (requestRule.getAllowedMethod() != null || requestRule.getEncoding() != null ||
+            requestRule.getParameterItemRuleMap() != null || requestRule.getAttributeItemRuleMap() != null)) {
+            tsb.append("requestRule", requestRule);
+        }
+        if (responseRule != null &&
+            (responseRule.getEncoding() != null || responseRule.getResponse() != null)) {
+            tsb.append("responseRule", responseRule);
+        }
         tsb.append("exceptionRule", exceptionRule);
         return tsb.toString();
     }
