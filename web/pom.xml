@@ -27,7 +27,7 @@
     <packaging>jar</packaging>
 
     <name>Aspectran Web</name>
-    <description>Aspectran Web Integration</description>
+    <description>Build Web Applications Using J2EE</description>
 
     <licenses>
         <license>

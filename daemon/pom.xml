@@ -27,7 +27,7 @@
     <packaging>jar</packaging>
 
     <name>Aspectran Daemon</name>
-    <description>Aspectran Application as a Service</description>
+    <description>Aspectran running in the background</description>
 
     <licenses>
         <license>

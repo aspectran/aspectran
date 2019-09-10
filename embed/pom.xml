@@ -27,7 +27,7 @@
     <packaging>jar</packaging>
 
     <name>Aspectran Embed</name>
-    <description>Provides an interface for embedding Aspectran in Java applications</description>
+    <description>Build Java applications with Aspectran</description>
 
     <licenses>
         <license>
