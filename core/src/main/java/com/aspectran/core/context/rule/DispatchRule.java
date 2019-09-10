@@ -31,7 +31,7 @@ import java.util.List;
 
 /**
  * The Class DispatchRule.
- * 
+ *
  * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */
 public class DispatchRule implements Replicable<DispatchRule> {
@@ -231,7 +231,7 @@ public class DispatchRule implements Replicable<DispatchRule> {
      */
     public String toString(ViewDispatcher viewDispatcher, String targetName) {
         ToStringBuilder tsb = new ToStringBuilder();
-        tsb.appendForce("responseType", RESPONSE_TYPE);
+        tsb.appendForce("type", RESPONSE_TYPE);
         tsb.appendForce("name", name);
         tsb.append("contentType", contentType);
         tsb.append("encoding", encoding);

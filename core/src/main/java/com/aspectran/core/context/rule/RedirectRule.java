@@ -31,7 +31,7 @@ import java.util.Map;
 
 /**
  * The Class RedirectRule.
- * 
+ *
  * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */
 public class RedirectRule implements Replicable<RedirectRule> {
@@ -303,7 +303,7 @@ public class RedirectRule implements Replicable<RedirectRule> {
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
-        tsb.appendForce("responseType", RESPONSE_TYPE);
+        tsb.appendForce("type", RESPONSE_TYPE);
         tsb.append("contentType", contentType);
         tsb.append("path", path);
         tsb.append("parameters", parameterItemRuleMap);

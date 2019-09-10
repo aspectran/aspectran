@@ -24,7 +24,7 @@ import com.aspectran.core.util.ToStringBuilder;
 
 /**
  * The Class TransformRule.
- * 
+ *
  * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */
 public class TransformRule implements Replicable<TransformRule> {
@@ -231,8 +231,8 @@ public class TransformRule implements Replicable<TransformRule> {
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
-        tsb.appendForce("responseType", RESPONSE_TYPE);
-        tsb.appendForce("transformType", transformType);
+        tsb.appendForce("type", RESPONSE_TYPE);
+        tsb.appendForce("transform", transformType);
         tsb.append("contentType", contentType);
         tsb.append("encoding", encoding);
         tsb.append("default", getDefaultResponse());

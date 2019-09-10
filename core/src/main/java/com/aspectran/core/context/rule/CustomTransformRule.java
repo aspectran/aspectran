@@ -22,7 +22,7 @@ import com.aspectran.core.util.ToStringBuilder;
 
 /**
  * The Class CustomTransformRule.
- * 
+ *
  * <p>Created: 2019. 06. 16</p>
  */
 public class CustomTransformRule {
@@ -59,8 +59,8 @@ public class CustomTransformRule {
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
-        tsb.appendForce("responseType", RESPONSE_TYPE);
-        tsb.appendForce("transformType", TRANSFORM_TYPE);
+        tsb.appendForce("type", RESPONSE_TYPE);
+        tsb.appendForce("transform", TRANSFORM_TYPE);
         tsb.append("transformer", transformer);
         return tsb.toString();
     }

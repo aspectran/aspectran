@@ -23,7 +23,7 @@ import com.aspectran.core.util.ToStringBuilder;
 
 /**
  * The Class ForwardRule.
- * 
+ *
  * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */
 public class ForwardRule implements Replicable<ForwardRule> {
@@ -162,7 +162,7 @@ public class ForwardRule implements Replicable<ForwardRule> {
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
-        tsb.appendForce("responseType", RESPONSE_TYPE);
+        tsb.appendForce("type", RESPONSE_TYPE);
         tsb.append("translet", transletName);
         tsb.append("method", requestMethod);
         tsb.append("contentType", contentType);
