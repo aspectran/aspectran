@@ -723,15 +723,6 @@
         </profile>
 
         <profile>
-            <id>fastest</id>
-            <properties>
-                <maven.test.skip>true</maven.test.skip>
-                <maven.javadoc.skip>true</maven.javadoc.skip>
-                <maven.source.skip>true</maven.source.skip>
-            </properties>
-        </profile>
-
-        <profile>
             <id>skip-test</id>
             <properties>
                 <maven.test.skip>true</maven.test.skip>
