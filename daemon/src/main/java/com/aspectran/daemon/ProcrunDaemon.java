@@ -31,31 +31,33 @@ public class ProcrunDaemon {
 
     private static DefaultDaemon defaultDaemon;
 
-    public static void start(String[] args) {
+    public static void start(String[] params) {
         if (defaultDaemon == null) {
             try {
-                String basePath = AspectranConfig.determineBasePath(args);
-                File aspectranConfigFile = AspectranConfig.determineAspectranConfigFile(args);
+                String basePath = AspectranConfig.determineBasePath(params);
+                File aspectranConfigFile = AspectranConfig.determineAspectranConfigFile(params);
 
                 defaultDaemon = new DefaultDaemon();
                 defaultDaemon.init(basePath, aspectranConfigFile);
-                defaultDaemon.start();
+                defaultDaemon.start(true);
             } catch (Exception e) {
                 defaultDaemon = null;
                 e.printStackTrace(System.err);
-                System.exit(1);
             }
         }
     }
 
     public static void stop(String[] args) {
+        stop();
+    }
+
+    public static void stop() {
         if (defaultDaemon != null) {
             try {
                 defaultDaemon.destroy();
                 defaultDaemon = null;
             } catch (Exception e) {
                 e.printStackTrace(System.err);
-                System.exit(1);
             }
         }
     }
@@ -63,10 +65,10 @@ public class ProcrunDaemon {
     public static void main(String[] args) {
         if (args.length > 0) {
             if ("start".equals(args[0])) {
-                String[] args2 = Arrays.copyOfRange(args, 1, args.length);
-                start(args2);
+                String[] params = Arrays.copyOfRange(args, 1, args.length);
+                start(params);
             } else if ("stop".equals(args[0])) {
-                stop(null);
+                stop();
             }
         }
     }

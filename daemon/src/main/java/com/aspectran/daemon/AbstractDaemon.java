@@ -49,7 +49,7 @@ public class AbstractDaemon implements Daemon {
 
     private boolean wait;
 
-    private Thread pollingThread;
+    private Thread thread;
 
     private volatile boolean active;
 
@@ -166,10 +166,10 @@ public class AbstractDaemon implements Daemon {
                 }
             };
 
-            pollingThread = new Thread(runnable, name);
-            pollingThread.start();
+            thread = new Thread(runnable, name);
+            thread.start();
             if (wait >= 0L) {
-                pollingThread.join(wait);
+                thread.join(wait);
             }
         }
     }
@@ -178,11 +178,11 @@ public class AbstractDaemon implements Daemon {
     public void stop() {
         if (active) {
             active = false;
-            if (pollingThread != null) {
-                if (pollingThread.getState() == Thread.State.TIMED_WAITING) {
-                    pollingThread.interrupt();
+            if (thread != null) {
+                if (thread.getState() == Thread.State.TIMED_WAITING) {
+                    thread.interrupt();
                 }
-                pollingThread = null;
+                thread = null;
             }
         }
     }

@@ -134,7 +134,7 @@ start_aspectran() {
     echo "Aspectran daemon started."
   else
     echo "Can't start aspectran."
-    cat "$DAEMON_OUT"
+    echo "Refer to log in $DAEMON_OUT"
     exit 1
   fi
   sleep 0.5
