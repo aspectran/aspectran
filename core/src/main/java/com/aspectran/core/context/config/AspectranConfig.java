@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.context.config;
 
+import com.aspectran.core.lang.NonNull;
+import com.aspectran.core.lang.Nullable;
 import com.aspectran.core.util.SystemUtils;
 import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.AponReader;
@@ -69,7 +71,7 @@ public class AspectranConfig extends AbstractParameters {
         readFrom(apon);
     }
 
-    public AspectranConfig(VariableParameters parameters) throws IOException {
+    public AspectranConfig(@NonNull VariableParameters parameters) throws IOException {
         this(parameters.toString());
     }
 
@@ -159,15 +161,24 @@ public class AspectranConfig extends AbstractParameters {
         return touchParameters(web);
     }
 
-    public static String determineBasePath(String[] args) {
+    public static String determineBasePath(@Nullable String[] args) {
+        String basePath;
         if (args == null || args.length < 2) {
-            return SystemUtils.getProperty(BASE_PATH_PROPERTY_NAME);
+            basePath = SystemUtils.getProperty(BASE_PATH_PROPERTY_NAME);
         } else {
-            return args[0];
+            basePath = args[0];
         }
+        if (basePath != null) {
+            try {
+                basePath = new File(basePath).getCanonicalPath();
+            } catch (IOException e) {
+                throw new IllegalArgumentException("Unable to determine the base path", e);
+            }
+        }
+        return basePath;
     }
 
-    public static File determineAspectranConfigFile(String[] args) {
+    public static File determineAspectranConfigFile(@Nullable String[] args) {
         File file;
         if (args == null || args.length == 0) {
             String baseDir = SystemUtils.getProperty(BASE_PATH_PROPERTY_NAME);
@@ -192,7 +203,11 @@ public class AspectranConfig extends AbstractParameters {
         } else {
             file = new File(args[0], args[1]);
         }
-        return file;
+        try {
+            return file.getCanonicalFile();
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Unable to determine the base path", e);
+        }
     }
 
 }

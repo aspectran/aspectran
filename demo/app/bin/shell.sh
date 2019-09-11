@@ -54,13 +54,17 @@ CLASSPATH="$BASE_DIR/lib/*"
 if [ -z "$LOGGING_CONFIG" ] || [ ! -f "$LOGGING_CONFIG" ]; then
   LOGGING_CONFIG="$BASE_DIR/config/logback.xml"
 fi
+TMP_DIR="$BASE_DIR/temp"
 ASPECTRAN_CONFIG="$BASE_DIR/config/aspectran-config.apon"
 
 "$JAVA_BIN" \
-  ${JAVA_OPTS} \
+  $JAVA_OPTS \
   -classpath "$CLASSPATH" \
+  -Djava.io.tmpdir="$TMP_DIR" \
+  -Djava.awt.headless=true \
+  -Djava.net.preferIPv4Stack=true \
   -Dlogback.configurationFile="$LOGGING_CONFIG" \
   -Daspectran.basePath="$BASE_DIR" \
-  ${ASPECTRAN_OPTS} \
+  $ASPECTRAN_OPTS \
   com.aspectran.shell.jline.JLineAspectranShell \
   "$ASPECTRAN_CONFIG"

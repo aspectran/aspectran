@@ -17,8 +17,6 @@ rem Detect JAVA_HOME environment variable
 if not defined JAVA_HOME goto java-not-set
 
 rem Detect x86 or x64
-if PROCESSOR_ARCHITECTURE EQU "ia64" goto is-ia64
-if PROCESSOR_ARCHITEW6432 EQU "ia64" goto is-ia64
 if PROCESSOR_ARCHITECTURE EQU "amd64" goto is-amd64
 if PROCESSOR_ARCHITEW6432 EQU "amd64" goto is-amd64
 if defined ProgramFiles(x86) goto is-amd64
@@ -28,11 +26,7 @@ set PR_INSTALL=%BASE_DIR%\bin\procrun\prunsrv.exe
 goto is-detected
 :is-amd64
 echo Current System Architecture: amd64
-set PR_INSTALL=%BASE_DIR%\bin\procrun\prunsrv_amd64.exe
-goto is-detected
-:is-ia64
-echo Current System Architecture: ia64
-set PR_INSTALL=%BASE_DIR%\bin\procrun\prunsrv_ia64.exe
+set PR_INSTALL=%BASE_DIR%\bin\procrun\amd64\prunsrv.exe
 :is-detected
 if not exist "%PR_INSTALL%" goto invalid-installer
 

@@ -26,8 +26,7 @@ set PR_INSTALL=%BASE_DIR%\bin\procrun\prunsrv.exe
 goto is-detected
 :is-amd64
 echo Current System Architecture: amd64
-set PR_INSTALL=%BASE_DIR%\bin\procrun\prunsrv_amd64.exe
-goto is-detected
+set PR_INSTALL=%BASE_DIR%\bin\procrun\amd64\prunsrv.exe
 :is-detected
 if not exist "%PR_INSTALL%" goto invalid-installer
 
@@ -35,11 +34,11 @@ echo Windows Service Name: %SERVICE_NAME%
 echo Aspectran Home: %BASE_DIR%
 
 rem Service log configuration
-set PR_LOGPREFIX=%SERVICE_NAME%
 set PR_LOGPATH=%BASE_DIR%\logs
+set PR_LOGPREFIX=%SERVICE_NAME%
+set PR_LOGLEVEL=Debug
 set PR_STDOUTPUT=%BASE_DIR%\logs\%SERVICE_NAME%.out
 set PR_STDERROR=%BASE_DIR%\logs\%SERVICE_NAME%.err
-set PR_LOGLEVEL=Debug
 
 rem Path to java installation
 set PR_JVM=%JAVA_HOME%\jre\bin\server\jvm.dll

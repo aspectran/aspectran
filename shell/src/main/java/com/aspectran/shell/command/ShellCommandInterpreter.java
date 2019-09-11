@@ -19,6 +19,7 @@ import com.aspectran.core.activity.TransletNotFoundException;
 import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.config.ShellConfig;
 import com.aspectran.core.lang.NonNull;
+import com.aspectran.core.lang.Nullable;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.apon.AponReader;
 import com.aspectran.core.util.logging.Log;
@@ -78,7 +79,7 @@ public class ShellCommandInterpreter implements CommandInterpreter {
         return service;
     }
 
-    public void init(String basePath, File aspectranConfigFile) throws Exception {
+    public void init(@Nullable String basePath, File aspectranConfigFile) throws Exception {
         AspectranConfig aspectranConfig = new AspectranConfig();
         try {
             AponReader.parse(aspectranConfigFile, aspectranConfig);
@@ -117,7 +118,11 @@ public class ShellCommandInterpreter implements CommandInterpreter {
 
         String historyFile = shellConfig.getHistoryFile();
         if (!StringUtils.isEmpty(historyFile)) {
-            historyFile = new File(basePath, historyFile).getCanonicalPath();
+            if (basePath != null) {
+                historyFile = new File(basePath, historyFile).getCanonicalPath();
+            } else {
+                historyFile = new File(historyFile).getCanonicalPath();
+            }
             console.setCommandHistoryFile(historyFile);
         }
 

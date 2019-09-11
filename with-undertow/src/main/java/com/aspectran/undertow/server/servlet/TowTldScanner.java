@@ -66,14 +66,14 @@ public class TowTldScanner extends TldScanner {
             scanPlatform();
             scanJspConfig();
             scanResourcePaths("/WEB-INF/");
-            for (String file : jarsToScan) {
-                String realPath = context.getRealPath(file);
+            for (String path : jarsToScan) {
+                String realPath = context.getRealPath(path);
                 if (realPath == null) {
-                    throw new FileNotFoundException("In TLD scanning, the supplied resource '" + file + "' does not exist");
+                    throw new FileNotFoundException("In TLD scanning, the supplied resource '" + path + "' does not exist");
                 }
                 URL url = new File(realPath).toURI().toURL();
                 Jar jar = JarFactory.newInstance(url);
-                scanJar(jar, file);
+                scanJar(jar, path);
             }
         } else {
             super.scan();

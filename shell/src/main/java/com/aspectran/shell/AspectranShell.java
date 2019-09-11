@@ -17,6 +17,7 @@ package com.aspectran.shell;
 
 import com.aspectran.core.context.InsufficientEnvironmentException;
 import com.aspectran.core.context.config.AspectranConfig;
+import com.aspectran.core.lang.Nullable;
 import com.aspectran.core.util.Aspectran;
 import com.aspectran.core.util.ExceptionUtils;
 import com.aspectran.shell.command.ShellCommandInterpreter;
@@ -46,7 +47,7 @@ public class AspectranShell {
         bootstrap(null, aspectranConfigFile, console);
     }
 
-    public static void bootstrap(String basePath, File aspectranConfigFile, Console console) {
+    public static void bootstrap(@Nullable String basePath, File aspectranConfigFile, Console console) {
         if (aspectranConfigFile == null) {
             throw new IllegalArgumentException("aspectranConfigFile must not be null");
         }
