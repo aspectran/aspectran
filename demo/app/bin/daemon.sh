@@ -18,17 +18,18 @@
 # Control Script for the Aspectran Daemon
 # -----------------------------------------------------------------------------
 
-PRG="$0"
-while [ -h "$PRG" ]; do
-  ls=$(ls -ld "$PRG")
+ARG0="$0"
+while [ -h "$ARG0" ]; do
+  ls=$(ls -ld "$ARG0")
   link=$(expr "$ls" : '.*-> \(.*\)$')
   if expr "$link" : '/.*' >/dev/null; then
-    PRG="$link"
+    ARG0="$link"
   else
-    PRG=$(dirname "$PRG")/"$link"
+    ARG0=$(dirname "$ARG0")/"$link"
   fi
 done
-PRG_DIR=$(dirname "$PRG")
+PRG=$(basename "$ARG0")
+PRG_DIR=$(dirname "$ARG0")
 BASE_DIR="$PRG_DIR/.."
 BASE_DIR="$(
   cd "$BASE_DIR" || exit
@@ -80,69 +81,133 @@ TMP_DIR="$BASE_DIR/temp"
 LOGGING_CONFIG="$BASE_DIR/config/logback.xml"
 ASPECTRAN_CONFIG="$BASE_DIR/config/aspectran-config.apon"
 
-do_start() {
+start_daemon() {
+  rm -f "$DAEMON_OUT"
+  nohup "$JAVA_BIN" \
+    $JAVA_OPTS \
+    -classpath "$CLASSPATH" \
+    -Djava.awt.headless=true \
+    -Djava.net.preferIPv4Stack=true \
+    -Djava.io.tmpdir="$TMP_DIR" \
+    -Daspectran.basePath="$BASE_DIR" \
+    -Dlogback.configurationFile="$LOGGING_CONFIG" \
+    $ASPECTRAN_OPTS \
+    $DAEMON_MAIN \
+    "$ASPECTRAN_CONFIG" \
+    >"$DAEMON_OUT" 2>&1 &
   sleep 0.5
-  if [ -f "$LOCK_FILE" ]; then
-    echo "Aspectran daemon is already running."
-    exit 1
-  else
-    rm -f "$DAEMON_OUT"
-    nohup "$JAVA_BIN" \
-      ${JAVA_OPTS} \
-      -classpath "$CLASSPATH" \
-      -Djava.awt.headless=true \
-      -Djava.net.preferIPv4Stack=true \
-      -Djava.io.tmpdir="$TMP_DIR" \
-      -Daspectran.basePath="$BASE_DIR" \
-      -Dlogback.configurationFile="$LOGGING_CONFIG" \
-      ${ASPECTRAN_OPTS} \
-      $DAEMON_MAIN \
-      "$ASPECTRAN_CONFIG" \
-      >"$DAEMON_OUT" 2>&1 &
+  line=""
+  while [ -z "$line" ]; do
     sleep 0.5
-    until cat "$DAEMON_OUT" | grep "AspectranDaemonService started\|Failed to initialize daemon" -C 600; do sleep 1; done
-  fi
-  sleep 0.5
-}
-
-do_stop() {
-  sleep 0.5
-  if [ ! -f "$LOCK_FILE" ]; then
-    echo "Aspectran daemon is not running, will do nothing."
-    exit 1
+    line=$(head -n 1 "$DAEMON_OUT")
+  done
+  # shellcheck disable=SC2039
+  if [[ "$line" == *"Failed to initialize daemon"* ]]; then
+      return 1
   else
-    echo "Stopping Aspectran daemon..."
-    echo "command: quit" >"$BASE_DIR/inbound/99-quit.apon"
-    while [ -f "$LOCK_FILE" ]; do
-      sleep 0.5
-    done
-    echo "Aspectran daemon has stopped."
+    return 0
   fi
-  sleep 0.5
 }
 
-do_version() {
+stop_daemon() {
+  echo "command: quit" >"$BASE_DIR/inbound/99-quit.apon"
+  return $?
+}
+
+version() {
   "$JAVA_BIN" \
     -classpath "$CLASSPATH" \
     -Dlogback.configurationFile="$LOGGING_CONFIG" \
     com.aspectran.core.util.Aspectran
 }
 
+start_aspectran() {
+  sleep 0.5
+  if [ -f "$LOCK_FILE" ]; then
+    echo "Aspectran daemon is already running."
+    exit 3
+  fi
+  echo "Starting Aspectran daemon..."
+  if start_daemon; then
+    sleep 2
+    version
+    echo "Aspectran daemon started."
+  else
+    echo "Can't start aspectran."
+    cat "$DAEMON_OUT"
+    exit 1
+  fi
+  sleep 0.5
+}
+
+stop_aspectran() {
+  sleep 0.5
+  if [ ! -f "$LOCK_FILE" ]; then
+    echo "Can't stop, Aspectran daemon NOT running."
+    exit 3
+  fi
+  echo "Stopping Aspectran daemon..."
+  if stop_daemon; then
+    sleep 1
+    while [ -f "$LOCK_FILE" ]; do
+      sleep 0.5
+    done
+    echo "Aspectran daemon stopped."
+  else
+    echo "Can't stop aspectran."
+    exit 1
+  fi
+  sleep 0.5
+}
+
+restart_aspectran() {
+  if stop_aspectran; then
+    start_aspectran
+  fi
+}
+
 case "$1" in
-start) do_start ;;
-stop) do_stop ;;
-restart)
-  do_stop
-  do_start
+start)
+  start_aspectran
   ;;
-version) do_version ;;
+stop)
+  stop_aspectran
+  ;;
+restart | reload | force-reload)
+  if [ -e "$LOCK_FILE" ]; then
+    restart_aspectran
+  else
+    echo "Aspectran daemon is not running. Starting!"
+    start_aspectran
+  fi
+  ;;
+try-restart)
+  if [ -e "$LOCK_FILE" ]; then
+    restart_aspectran
+  else
+    echo "Aspectran daemon is not running. Try $0 start"
+    exit 3
+  fi
+  ;;
+status)
+  if [ -f "$LOCK_FILE" ]; then
+    echo "Aspectran daemon is running."
+  else
+    echo "Aspectran daemon is NOT running."
+  fi
+  ;;
+version)
+  version
+  ;;
 *)
-  echo "Usage: daemon.sh <command>"
+  echo "Usage: $PRG <command>"
   echo "Commands:"
-  echo "  start     Start Aspectran daemon"
-  echo "  stop      Stop Aspectran daemon"
-  echo "  restart   Restart Aspectran daemon"
-  echo "  version   Display version information"
-  exit 3
+  echo "  start             Start Aspectran daemon"
+  echo "  stop              Stop Aspectran daemon"
+  echo "  status            Aspectran daemon status"
+  echo "  restart | reload | force-reload  Restart Aspectran daemon"
+  echo "  try-restart       Restart Aspectran daemon if it is running"
+  echo "  version           Display version information"
+  exit 1
   ;;
 esac

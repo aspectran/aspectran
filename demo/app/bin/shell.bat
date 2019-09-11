@@ -7,7 +7,7 @@ if not defined JAVA_OPTS (
     set JAVA_OPTS=-Xms256m -Xmx1024m
 )
 if not defined LOGGING_CONFIG (
-    set LOGGING_CONFIG=%BASE_DIR%\config\logback-debug.xml
+    set LOGGING_CONFIG=%BASE_DIR%\config\logback.xml
 )
 set TMP_DIR=%BASE_DIR%\temp
 set ASPECTRAN_CONFIG=%BASE_DIR%\config\aspectran-config.apon

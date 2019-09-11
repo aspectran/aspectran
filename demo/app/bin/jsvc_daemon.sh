@@ -202,6 +202,12 @@ pidof_aspectran() {
 }
 
 start_aspectran() {
+  PID=$(pidof_aspectran) || true
+  if [ -n "$PID" ]; then
+    echo "Aspectran daemon is already running (pid $PID)."
+    exit 3
+  fi
+  echo "Starting Aspectran daemon..."
   if start_daemon; then
     sleep 0.1
     if [ -e "$DAEMON_OUT" ]; then
@@ -215,13 +221,13 @@ start_aspectran() {
   fi
 }
 
-restart_aspectran() {
-  if stop_aspectran; then
-    start_aspectran
-  fi
-}
-
 stop_aspectran() {
+  PID=$(pidof_aspectran) || true
+  if [ -z "$PID" ]; then
+    echo "Can't stop, Aspectran daemon NOT running."
+    exit 3
+  fi
+  echo "Stopping Aspectran daemon..."
   if stop_daemon; then
     sleep 0.1
     if [ -e "$DAEMON_OUT" ]; then
@@ -234,21 +240,17 @@ stop_aspectran() {
   fi
 }
 
+restart_aspectran() {
+  if stop_aspectran; then
+    start_aspectran
+  fi
+}
+
 case "$1" in
 start)
-  PID=$(pidof_aspectran) || true
-  if [ -n "$PID" ]; then
-    echo "Aspectran daemon is already running (pid $PID)."
-    exit 3
-  fi
   start_aspectran
   ;;
 stop)
-  PID=$(pidof_aspectran) || true
-  if [ -z "$PID" ]; then
-    echo "Can't stop, Aspectran daemon NOT running."
-    exit 3
-  fi
   stop_aspectran
   ;;
 restart | reload | force-reload)
@@ -256,7 +258,7 @@ restart | reload | force-reload)
   if [ -n "$PID" ]; then
     restart_aspectran
   else
-    log_warning_msg "Aspectran daemon is not running. Starting!"
+    echo "Aspectran daemon is not running. Starting!"
     start_aspectran
   fi
   ;;

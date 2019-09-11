@@ -1,16 +1,16 @@
 #!/bin/sh
 
-PRG="$0"
-while [ -h "$PRG" ]; do
-  ls=$(ls -ld "$PRG")
+ARG0="$0"
+while [ -h "$ARG0" ]; do
+  ls=$(ls -ld "$ARG0")
   link=$(expr "$ls" : '.*-> \(.*\)$')
   if expr "$link" : '/.*' >/dev/null; then
-    PRG="$link"
+    ARG0="$link"
   else
-    PRG=$(dirname "$PRG")/"$link"
+    ARG0=$(dirname "$ARG0")/"$link"
   fi
 done
-PRG_DIR=$(dirname "$PRG")
+PRG_DIR=$(dirname "$ARG0")
 BASE_DIR="$PRG_DIR/.."
 BASE_DIR="$(
   cd "$BASE_DIR" || exit

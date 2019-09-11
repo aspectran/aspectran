@@ -180,7 +180,14 @@
                 </bean>
             </item>
             <item name="servletContainerInitializers" type="array">
-                <bean class="com.aspectran.undertow.server.servlet.TowJasperInitializer"/>
+                <bean class="com.aspectran.undertow.server.servlet.TowJasperInitializer">
+                    <properties>
+                        <item name="jarsToScan" type="array">
+                            <value>/WEB-INF/lib/taglibs-standard-impl-1.2.5.jar</value>
+                            <value>/WEB-INF/lib/taglibs-standard-jstlel-1.2.5.jar</value>
+                        </item>
+                    </properties>
+                </bean>
             </item>
             <item name="derived" valueType="boolean">true</item>
         </properties>
