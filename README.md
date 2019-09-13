@@ -2,11 +2,11 @@
 
 [![Build Status](https://travis-ci.org/aspectran/aspectran.svg?branch=master)](https://travis-ci.org/aspectran/aspectran)
 [![Coverage Status](https://coveralls.io/repos/github/aspectran/aspectran/badge.svg?branch=master)](https://coveralls.io/github/aspectran/aspectran?branch=master)
-[![Maven central](https://maven-badges.herokuapp.com/maven-central/com.aspectran/aspectran/badge.svg#v6.3.1)](https://maven-badges.herokuapp.com/maven-central/com.aspectran/aspectran)
-[![Sonatype Nexus (Snapshots)](https://img.shields.io/nexus/s/https/oss.sonatype.org/com.aspectran/aspectran.svg)](https://oss.sonatype.org/content/repositories/snapshots/com/aspectran/aspectran)
+[![Maven central](https://maven-badges.herokuapp.com/maven-central/com.aspectran/aspectran/badge.svg#v6.3.2)](https://maven-badges.herokuapp.com/maven-central/com.aspectran/aspectran)
+[![Sonatype Nexus (Snapshots)](https://img.shields.io/nexus/s/https/oss.sonatype.org/com.aspectran/aspectran.svg)](https://oss.sonatype.org/content/repositories/snapshots/com/aspectran/aspectran/)
 [![License](https://img.shields.io/:license-apache-brightgreen.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
-[![asciicast](https://asciinema.org/a/237909.png)](https://asciinema.org/a/237909)
+[![asciicast](https://asciinema.org/a/267955.png)](https://asciinema.org/a/267955)
 
 Aspectran is a concise, easy-to-use Java application framework.
 Widely used Java application frameworks are becoming more and more complex with more functionality as they mature.
@@ -53,7 +53,7 @@ Use the following definition to use Aspectran in your maven project:
 <dependency>
   <groupId>com.aspectran</groupId>
   <artifactId>aspectran-all</artifactId>
-  <version>6.3.1</version>
+  <version>6.3.2</version>
 </dependency>
 ```
 
@@ -63,7 +63,7 @@ Aspectran can also be used with more low-level jars:
 <dependency>
   <groupId>com.aspectran</groupId>
   <artifactId>aspectran-daemon</artifactId>
-  <version>6.3.1</version>
+  <version>6.3.2</version>
 </dependency>
 ```
 ```xml
@@ -71,7 +71,7 @@ Aspectran can also be used with more low-level jars:
 <dependency>
   <groupId>com.aspectran</groupId>
   <artifactId>aspectran-shell</artifactId>
-  <version>6.3.1</version>
+  <version>6.3.2</version>
 </dependency>
 ```
 ```xml
@@ -79,7 +79,7 @@ Aspectran can also be used with more low-level jars:
 <dependency>
   <groupId>com.aspectran</groupId>
   <artifactId>aspectran-shell-jline</artifactId>
-  <version>6.3.1</version>
+  <version>6.3.2</version>
 </dependency>
 ```
 ```xml
@@ -87,7 +87,7 @@ Aspectran can also be used with more low-level jars:
 <dependency>
   <groupId>com.aspectran</groupId>
   <artifactId>aspectran-web</artifactId>
-  <version>6.3.1</version>
+  <version>6.3.2</version>
 </dependency>
 ```
 ```xml
@@ -95,7 +95,7 @@ Aspectran can also be used with more low-level jars:
 <dependency>
   <groupId>com.aspectran</groupId>
   <artifactId>aspectran-embed</artifactId>
-  <version>6.3.1</version>
+  <version>6.3.2</version>
 </dependency>
 ```
 ```xml
@@ -103,7 +103,7 @@ Aspectran can also be used with more low-level jars:
 <dependency>
   <groupId>com.aspectran</groupId>
   <artifactId>aspectran-with-jetty</artifactId>
-  <version>6.3.1</version>
+  <version>6.3.2</version>
 </dependency>
 ```
 ```xml
@@ -111,7 +111,7 @@ Aspectran can also be used with more low-level jars:
 <dependency>
   <groupId>com.aspectran</groupId>
   <artifactId>aspectran-with-mybatis</artifactId>
-  <version>6.3.1</version>
+  <version>6.3.2</version>
 </dependency>
 ```
 ```xml
@@ -119,7 +119,7 @@ Aspectran can also be used with more low-level jars:
 <dependency>
   <groupId>com.aspectran</groupId>
   <artifactId>aspectran-with-undertow</artifactId>
-  <version>6.3.1</version>
+  <version>6.3.2</version>
 </dependency>
 ```
 
