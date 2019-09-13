@@ -4,22 +4,24 @@
 <aspectran>
 
     <description>
-        An Aspectran configuration that defines translets to print
+        Aspectran configuration that defines translets that prints
         request parameters and attributes directly to the console.
     </description>
 
     <translet name="echo1">
         <description style="apon">
-            |It accepts parameters and print them to the console.
+            |
+            |   The value of each parameter you enter is immediately output to the console.
+            |
         </description>
         <parameters>
-            <item name="param1" mandatory="false">${param1:hello}</item>
+            <item name="param1">${param1:hello}</item>
             <item name="param2" mandatory="true"/>
         </parameters>
         <transform type="text">
             <template engine="token" style="apon">
                 |----------------------------------------------------------
-                |The parameters you entered are:
+                |The parameters entered are as follows:
                 |   param1: ${param1}
                 |   param2: ${param2}
                 |----------------------------------------------------------
@@ -30,7 +32,7 @@
     <translet name="echo2">
         <description style="apon">
             |
-            |   It accepts parameters and print them to the console.
+            |   The value of each parameter you enter is immediately output to the console.
             |
         </description>
         <parameters>
@@ -41,7 +43,7 @@
         <transform type="text">
             <template engine="token" style="apon">
                 |----------------------------------------------------------
-                |The parameters you entered are:
+                |The parameters entered are as follows:
                 |   param1: ${param1}
                 |   param2: ${param2}
                 |   param3: ${param3}
@@ -51,26 +53,22 @@
     </translet>
 
     <translet name="echo3">
-        <description style="apon">
-            |
-            |   It accepts parameters and print them to the console.
-            |
-        </description>
         <parameters>
-            <item name="param1">first ${param1:12345}</item>
-            <item name="param2">second ${param2:67890}</item>
-            <item name="param3" mandatory="true">third ${param3-1} and ${param3-2}</item>
+            <item name="param1">first ${first:12345}</item>
+            <item name="param2">second ${second:67890}</item>
+            <item name="param3" mandatory="true">third ${third-1} and ${third-2}</item>
         </parameters>
         <attributes>
-            <item name="attr1">fourth ${param4:blank}</item>
+            <item name="attr1">fourth - ${fourth:No input}</item>
         </attributes>
         <transform type="text">
             <template engine="token" style="apon">
                 |----------------------------------------------------------
-                |The input parameters and attributes are as follows:
+                |The parameters and attributes entered are as follows:
                 |   param1: ${param1}
                 |   param2: ${param2}
                 |   param3: ${param3}
+                |The attributes entered are as follows:
                 |   attr1: @{attr1}
                 |----------------------------------------------------------
             </template>
@@ -81,94 +79,48 @@
         <parameters>
             <item name="id" mandatory="true"/>
             <item name="email" mandatory="true">${id}@${domain}</item>
-            <item name="password" secret="true" value="${password:(none)}"/>
-            <item name="attr3"/>
+            <item name="password" secret="true" value="${password:1234}"/>
         </parameters>
         <attributes>
-            <item name="attr1" mandatory="true">${id}@${domain}</item>
-            <item name="attr2" mandatory="true" secret="true">${password}</item>
-            <item name="attr3" mandatory="true">${attr3}</item>
+            <item name="attr1">${id}</item>
+            <item name="attr2">${email}</item>
+            <item name="attr3">${password}</item>
         </attributes>
         <transform type="text">
             <template style="apon">
-                |-------------------------------------------------------------------------
-                |You have entered the following parameters:
+                |----------------------------------------------------------
+                |The parameters entered are as follows:
+                |   id: ${id}
                 |   email: ${email}
                 |   password: ${password}
-                |   attr3: ${attr3}
-                |These are the attributes to which the input parameters are assigned:
+                |The attributes entered are as follows:
                 |   attr1: @{attr1}
                 |   attr2: @{attr2}
                 |   attr3: @{attr3}
-                |-------------------------------------------------------------------------
+                |----------------------------------------------------------
             </template>
         </transform>
     </translet>
 
     <translet name="echo5">
-        <attributes>
-            <item name="attr1" mandatory="true"/>
-            <item name="attr2" mandatory="true"/>
-            <item name="attr3" mandatory="true" secret="true"/>
-        </attributes>
-        <transform type="text">
-            <template style="apon">
-                |-------------------------------------------------------------------------
-                |You have entered the following attributes:
-                |   attr1: @{attr1}
-                |   attr2: @{attr2}
-                |   attr3: @{attr3}
-                |-------------------------------------------------------------------------
-            </template>
-        </transform>
-    </translet>
-
-    <translet name="echo6">
         <parameters>
             <item name="param1" mandatory="true"/>
             <item name="param2" mandatory="true"/>
         </parameters>
         <attributes>
-            <item name="attr1" mandatory="true">${param1}:${param2}</item>
-            <item name="attr2" mandatory="true">${param2}:${param1}</item>
-            <item name="attr3"/>
+            <item name="attr1">${param1}:${param2}</item>
+            <item name="attr2">${param2}:${param1}</item>
         </attributes>
         <transform type="text">
             <template style="apon">
-                |-------------------------------------------------------------------------
-                |You have entered the following parameters:
+                |----------------------------------------------------------
+                |The parameters entered are as follows:
                 |   param1: ${param1}
                 |   param2: ${param2}
-                |These are the attributes to which the input parameters are assigned:
+                |The attributes entered are as follows:
                 |   attr1: @{attr1}
                 |   attr2: @{attr2}
-                |   attr3: @{attr3}
-                |-------------------------------------------------------------------------
-            </template>
-        </transform>
-    </translet>
-
-    <translet name="echo7">
-        <parameters>
-            <item name="param1" mandatory="true"/>
-            <item name="param2" mandatory="true">${param1}:${param2}</item>
-        </parameters>
-        <attributes>
-            <item name="attr1" mandatory="true">${param1}:${param2}</item>
-            <item name="attr2" mandatory="true">${param2}:${param1}</item>
-            <item name="attr3"/>
-        </attributes>
-        <transform type="text">
-            <template style="apon">
-                |-------------------------------------------------------------------------
-                |You have entered the following parameters:
-                |   param1: ${param1}
-                |   param2: ${param2}
-                |These are the attributes to which the input parameters are assigned:
-                |   attr1: @{attr1}
-                |   attr2: @{attr2}
-                |   attr3: @{attr3}
-                |-------------------------------------------------------------------------
+                |----------------------------------------------------------
             </template>
         </transform>
     </translet>
