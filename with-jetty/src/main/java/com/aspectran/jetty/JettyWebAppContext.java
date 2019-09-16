@@ -22,7 +22,7 @@ import com.aspectran.core.service.CoreService;
 import com.aspectran.core.util.Assert;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
-import com.aspectran.web.service.AspectranWebService;
+import com.aspectran.web.service.DefaultWebService;
 import com.aspectran.web.service.WebService;
 import org.apache.tomcat.InstanceManager;
 import org.apache.tomcat.SimpleInstanceManager;
@@ -83,7 +83,7 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
 
         if (derived) {
             CoreService rootService = context.getRootService();
-            WebService webService = AspectranWebService.create(getServletContext(), rootService);
+            WebService webService = DefaultWebService.create(getServletContext(), rootService);
             setAttribute(WebService.ROOT_WEB_SERVICE_ATTRIBUTE, webService);
         }
 

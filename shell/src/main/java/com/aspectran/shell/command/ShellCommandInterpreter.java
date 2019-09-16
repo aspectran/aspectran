@@ -29,7 +29,7 @@ import com.aspectran.shell.command.option.OptionParserException;
 import com.aspectran.shell.command.option.ParsedOptions;
 import com.aspectran.shell.console.Console;
 import com.aspectran.shell.console.ConsoleWrapper;
-import com.aspectran.shell.service.AspectranShellService;
+import com.aspectran.shell.service.DefaultShellService;
 import com.aspectran.shell.service.ShellService;
 
 import java.io.File;
@@ -51,7 +51,7 @@ public class ShellCommandInterpreter implements CommandInterpreter {
 
     private ShellCommandRegistry commandRegistry;
 
-    private AspectranShellService service;
+    private DefaultShellService service;
 
     private PrintStream originalSystemOut;
 
@@ -98,7 +98,7 @@ public class ShellCommandInterpreter implements CommandInterpreter {
         }
 
         if (aspectranConfig.hasContextConfig()) {
-            service = AspectranShellService.create(aspectranConfig, console);
+            service = DefaultShellService.create(aspectranConfig, console);
             service.start();
         } else {
             String greetings = shellConfig.getGreetings();

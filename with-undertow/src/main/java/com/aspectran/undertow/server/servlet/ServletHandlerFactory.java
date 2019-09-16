@@ -19,7 +19,7 @@ import com.aspectran.core.component.bean.aware.ActivityContextAware;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.service.CoreService;
 import com.aspectran.undertow.server.resource.StaticResourceHandler;
-import com.aspectran.web.service.AspectranWebService;
+import com.aspectran.web.service.DefaultWebService;
 import com.aspectran.web.service.WebService;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.handlers.PathHandler;
@@ -75,7 +75,7 @@ public class ServletHandlerFactory implements ActivityContextAware {
                 servletContext.removeAttribute(TowServletContext.DERIVED_WEB_SERVICE_ATTRIBUTE);
                 if ("true".equals(attr)) {
                     CoreService rootService = context.getRootService();
-                    WebService webService = AspectranWebService.create(servletContext, rootService);
+                    WebService webService = DefaultWebService.create(servletContext, rootService);
                     servletContext.setAttribute(ROOT_WEB_SERVICE_ATTRIBUTE, webService);
                 }
 

@@ -26,7 +26,7 @@ import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.daemon.adapter.DaemonSessionAdapter;
 
 /**
- * The Class AspectranDaemonService.
+ * The Class DefaultDaemonService.
  *
  * @since 5.1.0
  */

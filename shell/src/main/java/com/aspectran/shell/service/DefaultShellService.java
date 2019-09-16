@@ -44,15 +44,15 @@ import java.util.List;
  *
  * @since 2016. 1. 18.
  */
-public class AspectranShellService extends AbstractShellService {
+public class DefaultShellService extends AbstractShellService {
 
-    private static final Log log = LogFactory.getLog(AspectranShellService.class);
+    private static final Log log = LogFactory.getLog(DefaultShellService.class);
 
     private static final String DEFAULT_APP_CONFIG_ROOT_FILE = "/config/app-config.xml";
 
     private long pauseTimeout = -1L;
 
-    private AspectranShellService(Console console) {
+    private DefaultShellService(Console console) {
         super(console);
     }
 
@@ -150,20 +150,20 @@ public class AspectranShellService extends AbstractShellService {
     }
 
     /**
-     * Returns a new instance of {@code AspectranShellService}.
+     * Returns a new instance of {@code DefaultShellService}.
      *
      * @param aspectranConfig the aspectran configuration
      * @param console the {@code Console} instance
-     * @return the instance of {@code AspectranShellService}
+     * @return the instance of {@code DefaultShellService}
      */
-    public static AspectranShellService create(AspectranConfig aspectranConfig, Console console) {
+    public static DefaultShellService create(AspectranConfig aspectranConfig, Console console) {
         ContextConfig contextConfig = aspectranConfig.touchContextConfig();
         String rootFile = contextConfig.getRootFile();
         if (!StringUtils.hasText(rootFile) && !contextConfig.hasAspectranParameters()) {
             contextConfig.setRootFile(DEFAULT_APP_CONFIG_ROOT_FILE);
         }
 
-        AspectranShellService service = new AspectranShellService(console);
+        DefaultShellService service = new DefaultShellService(console);
         ShellConfig shellConfig = aspectranConfig.getShellConfig();
         if (shellConfig != null) {
             applyShellConfig(service, shellConfig);
@@ -173,7 +173,7 @@ public class AspectranShellService extends AbstractShellService {
         return service;
     }
 
-    private static void applyShellConfig(AspectranShellService service, ShellConfig shellConfig) {
+    private static void applyShellConfig(DefaultShellService service, ShellConfig shellConfig) {
         service.setVerbose(shellConfig.isVerbose());
         service.setGreetings(shellConfig.getGreetings());
         ExposalsConfig exposalsConfig = shellConfig.getExposalsConfig();
@@ -184,7 +184,7 @@ public class AspectranShellService extends AbstractShellService {
         }
     }
 
-    private static void setServiceStateListener(final AspectranShellService service) {
+    private static void setServiceStateListener(final DefaultShellService service) {
         service.setServiceStateListener(new ServiceStateListener() {
             @Override
             public void started() {

@@ -17,7 +17,7 @@ package com.aspectran.web.startup.listener;
 
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
-import com.aspectran.web.service.AspectranWebService;
+import com.aspectran.web.service.DefaultWebService;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -29,14 +29,14 @@ public class AspectranServiceListener implements ServletContextListener {
 
     private static final Log log = LogFactory.getLog(AspectranServiceListener.class);
 
-    private AspectranWebService webService;
+    private DefaultWebService webService;
 
     @Override
     public void contextInitialized(ServletContextEvent event) {
         log.info("Initializing AspectranServiceListener...");
 
         try {
-            webService = AspectranWebService.create(event.getServletContext());
+            webService = DefaultWebService.create(event.getServletContext());
             webService.start();
         } catch (Exception e) {
             log.error("AspectranServiceListener initialization failed", e);

@@ -35,17 +35,17 @@ import java.util.Map;
 import static com.aspectran.core.context.config.AspectranConfig.DEFAULT_APP_CONFIG_ROOT_FILE;
 
 /**
- * The Class AspectranDaemonService.
+ * The Class DefaultDaemonService.
  *
  * @since 5.1.0
  */
-public class AspectranDaemonService extends AbstractDaemonService {
+public class DefaultDaemonService extends AbstractDaemonService {
 
-    private static final Log log = LogFactory.getLog(AspectranDaemonService.class);
+    private static final Log log = LogFactory.getLog(DefaultDaemonService.class);
 
     private volatile long pauseTimeout = -1L;
 
-    public AspectranDaemonService() {
+    public DefaultDaemonService() {
         super();
     }
 
@@ -108,12 +108,12 @@ public class AspectranDaemonService extends AbstractDaemonService {
     }
 
     /**
-     * Returns a new instance of {@code AspectranDaemonService}.
+     * Returns a new instance of {@code DefaultDaemonService}.
      *
      * @param aspectranConfig the parameters for aspectran configuration
-     * @return the instance of {@code AspectranDaemonService}
+     * @return the instance of {@code DefaultDaemonService}
      */
-    public static AspectranDaemonService create(AspectranConfig aspectranConfig) {
+    public static DefaultDaemonService create(AspectranConfig aspectranConfig) {
         ContextConfig contextConfig = aspectranConfig.touchContextConfig();
         String rootFile = contextConfig.getRootFile();
         if (!StringUtils.hasText(rootFile)) {
@@ -122,7 +122,7 @@ public class AspectranDaemonService extends AbstractDaemonService {
             }
         }
 
-        AspectranDaemonService service = new AspectranDaemonService();
+        DefaultDaemonService service = new DefaultDaemonService();
         service.prepare(aspectranConfig);
         DaemonConfig daemonConfig = aspectranConfig.getDaemonConfig();
         if (daemonConfig != null) {
@@ -132,7 +132,7 @@ public class AspectranDaemonService extends AbstractDaemonService {
         return service;
     }
 
-    private static void applyDaemonConfig(AspectranDaemonService service, DaemonConfig daemonConfig) {
+    private static void applyDaemonConfig(DefaultDaemonService service, DaemonConfig daemonConfig) {
         ExposalsConfig exposalsConfig = daemonConfig.getExposalsConfig();
         if (exposalsConfig != null) {
             String[] includePatterns = exposalsConfig.getIncludePatterns();
@@ -141,7 +141,7 @@ public class AspectranDaemonService extends AbstractDaemonService {
         }
     }
 
-    private static void setServiceStateListener(final AspectranDaemonService service) {
+    private static void setServiceStateListener(final DefaultDaemonService service) {
         service.setServiceStateListener(new ServiceStateListener() {
             @Override
             public void started() {

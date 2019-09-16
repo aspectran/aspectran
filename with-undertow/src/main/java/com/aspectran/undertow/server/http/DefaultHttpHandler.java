@@ -18,7 +18,7 @@ package com.aspectran.undertow.server.http;
 import com.aspectran.core.component.bean.ablility.DisposableBean;
 import com.aspectran.core.component.bean.ablility.InitializableBean;
 import com.aspectran.core.util.Assert;
-import com.aspectran.undertow.service.AspectranTowService;
+import com.aspectran.undertow.service.DefaultTowService;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.handlers.resource.ResourceManager;
 import io.undertow.server.handlers.resource.ResourceSupplier;
@@ -32,7 +32,7 @@ import io.undertow.server.session.SessionCookieConfig;
  */
 public class DefaultHttpHandler extends AbstractHttpHandler implements InitializableBean, DisposableBean {
 
-    private volatile AspectranTowService towService;
+    private volatile DefaultTowService towService;
 
     public DefaultHttpHandler(ResourceManager resourceManager) {
         super(resourceManager);
@@ -50,21 +50,21 @@ public class DefaultHttpHandler extends AbstractHttpHandler implements Initializ
         super(resourceSupplier, next);
     }
 
-    public AspectranTowService getTowService() {
-        Assert.state(towService != null, "No AspectranTowService configured");
+    public DefaultTowService getTowService() {
+        Assert.state(towService != null, "No DefaultTowService configured");
         return towService;
     }
 
     @Override
     public void initialize() throws Exception {
-        Assert.state(towService == null, "Cannot reconfigure AspectranTowService");
+        Assert.state(towService == null, "Cannot reconfigure DefaultTowService");
         if (getSessionManager() != null) {
             if (getSessionConfig() == null) {
                 setSessionConfig(new SessionCookieConfig());
             }
             getSessionManager().start();
         }
-        towService = AspectranTowService.create(getActivityContext().getRootService());
+        towService = DefaultTowService.create(getActivityContext().getRootService());
     }
 
     @Override

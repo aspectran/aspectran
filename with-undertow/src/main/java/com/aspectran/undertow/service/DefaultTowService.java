@@ -40,17 +40,17 @@ import java.net.URLDecoder;
 /**
  * <p>Created: 2019-07-27</p>
  */
-public class AspectranTowService extends AbstractTowService {
+public class DefaultTowService extends AbstractTowService {
 
-    private static final Log log = LogFactory.getLog(AspectranTowService.class);
+    private static final Log log = LogFactory.getLog(DefaultTowService.class);
 
     private long pauseTimeout = -2L;
 
-    public AspectranTowService() {
+    public DefaultTowService() {
         super();
     }
 
-    public AspectranTowService(CoreService rootService) {
+    public DefaultTowService(CoreService rootService) {
         super(rootService);
     }
 
@@ -71,13 +71,13 @@ public class AspectranTowService extends AbstractTowService {
         if (pauseTimeout != 0L) {
             if (pauseTimeout == -1L || pauseTimeout >= System.currentTimeMillis()) {
                 if (log.isDebugEnabled()) {
-                    log.debug("AspectranTowService has been paused, so did not respond to the request URI \"" +
+                    log.debug(getServiceName() + " has been paused, so did not respond to the request URI \"" +
                             requestPath + "\"");
                 }
                 exchange.setStatusCode(HttpStatus.SERVICE_UNAVAILABLE.value());
                 return true;
             } else if (pauseTimeout == -2L) {
-                log.error("AspectranTowService is not yet started");
+                log.error(getServiceName() + " is not yet started");
                 exchange.setStatusCode(HttpStatus.SERVICE_UNAVAILABLE.value());
                 return true;
             } else {
@@ -138,13 +138,13 @@ public class AspectranTowService extends AbstractTowService {
     }
 
     /**
-     * Returns a new instance of {@code AspectranTowService}.
+     * Returns a new instance of {@code DefaultTowService}.
      *
      * @param rootService the root service
-     * @return the instance of {@code AspectranTowService}
+     * @return the instance of {@code DefaultTowService}
      */
-    public static AspectranTowService create(CoreService rootService) {
-        AspectranTowService service = new AspectranTowService(rootService);
+    public static DefaultTowService create(CoreService rootService) {
+        DefaultTowService service = new DefaultTowService(rootService);
         AspectranConfig aspectranConfig = rootService.getAspectranConfig();
         if (aspectranConfig != null) {
             WebConfig webConfig = aspectranConfig.getWebConfig();
@@ -157,20 +157,20 @@ public class AspectranTowService extends AbstractTowService {
             try {
                 service.getServiceController().start();
             } catch (Exception e) {
-                throw new AspectranServiceException("Failed to start AspectranTowService");
+                throw new AspectranServiceException("Failed to start DefaultTowService");
             }
         }
         return service;
     }
 
     /**
-     * Returns a new instance of {@code AspectranTowService}.
+     * Returns a new instance of {@code DefaultTowService}.
      *
      * @param aspectranConfig the aspectran configuration
-     * @return the instance of {@code AspectranTowService}
+     * @return the instance of {@code DefaultTowService}
      */
-    public static AspectranTowService create(AspectranConfig aspectranConfig) {
-        AspectranTowService service = new AspectranTowService();
+    public static DefaultTowService create(AspectranConfig aspectranConfig) {
+        DefaultTowService service = new DefaultTowService();
         service.prepare(aspectranConfig);
 
         WebConfig webConfig = aspectranConfig.getWebConfig();
@@ -182,7 +182,7 @@ public class AspectranTowService extends AbstractTowService {
         return service;
     }
 
-    private static void applyWebConfig(AspectranTowService service, WebConfig webConfig) {
+    private static void applyWebConfig(DefaultTowService service, WebConfig webConfig) {
         service.setUriDecoding(webConfig.getUriDecoding());
         ExposalsConfig exposalsConfig = webConfig.getExposalsConfig();
         if (exposalsConfig != null) {
@@ -192,7 +192,7 @@ public class AspectranTowService extends AbstractTowService {
         }
     }
 
-    private static void setServiceStateListener(final AspectranTowService service) {
+    private static void setServiceStateListener(final DefaultTowService service) {
         service.setServiceStateListener(new ServiceStateListener() {
             @Override
             public void started() {

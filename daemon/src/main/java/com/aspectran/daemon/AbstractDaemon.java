@@ -25,8 +25,8 @@ import com.aspectran.daemon.command.DaemonCommandRegistry;
 import com.aspectran.daemon.command.builtins.QuitCommand;
 import com.aspectran.daemon.command.polling.CommandPoller;
 import com.aspectran.daemon.command.polling.FileCommandPoller;
-import com.aspectran.daemon.service.AspectranDaemonService;
 import com.aspectran.daemon.service.DaemonService;
+import com.aspectran.daemon.service.DefaultDaemonService;
 
 import java.io.File;
 
@@ -41,7 +41,7 @@ public class AbstractDaemon implements Daemon {
 
     private String name;
 
-    private AspectranDaemonService service;
+    private DefaultDaemonService service;
 
     private CommandPoller commandPoller;
 
@@ -105,7 +105,7 @@ public class AbstractDaemon implements Daemon {
 
     protected void init(AspectranConfig aspectranConfig) throws Exception {
         try {
-            this.service = AspectranDaemonService.create(aspectranConfig);
+            this.service = DefaultDaemonService.create(aspectranConfig);
             this.service.start();
         } catch (Exception e) {
             throw new Exception("Failed to initialize daemon", e);

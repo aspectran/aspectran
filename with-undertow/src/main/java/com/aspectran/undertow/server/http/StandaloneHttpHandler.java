@@ -20,7 +20,7 @@ import com.aspectran.core.component.bean.ablility.InitializableBean;
 import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.config.ContextConfig;
 import com.aspectran.core.util.Assert;
-import com.aspectran.undertow.service.AspectranTowService;
+import com.aspectran.undertow.service.DefaultTowService;
 import com.aspectran.undertow.service.TowService;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
@@ -35,7 +35,7 @@ public class StandaloneHttpHandler extends AbstractHttpHandler implements Initia
 
     private AspectranConfig aspectranConfig;
 
-    private volatile AspectranTowService towService;
+    private volatile DefaultTowService towService;
 
     public StandaloneHttpHandler(ResourceManager resourceManager) {
         super(resourceManager);
@@ -68,13 +68,13 @@ public class StandaloneHttpHandler extends AbstractHttpHandler implements Initia
 
     @Override
     public TowService getTowService() {
-        Assert.state(towService != null, "No AspectranTowService configured");
+        Assert.state(towService != null, "No DefaultTowService configured");
         return towService;
     }
 
     @Override
     public void initialize() throws Exception {
-        Assert.state(towService == null, "Cannot reconfigure AspectranTowService");
+        Assert.state(towService == null, "Cannot reconfigure DefaultTowService");
         Assert.notNull(aspectranConfig, "aspectranConfig must not be null");
         if (getSessionManager() != null) {
             if (getSessionConfig() == null) {
@@ -89,7 +89,7 @@ public class StandaloneHttpHandler extends AbstractHttpHandler implements Initia
                 contextConfig.setBasePath(getActivityContext().getApplicationAdapter().getBasePath());
             }
         }
-        towService = AspectranTowService.create(aspectranConfig);
+        towService = DefaultTowService.create(aspectranConfig);
     }
 
     @Override
