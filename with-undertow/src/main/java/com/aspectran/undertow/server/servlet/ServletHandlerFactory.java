@@ -91,7 +91,6 @@ public class ServletHandlerFactory implements ActivityContextAware {
                             pathHandler.handleRequest(exchange);
                         }
                     }
-
                 };
             } else {
                 return pathHandler;

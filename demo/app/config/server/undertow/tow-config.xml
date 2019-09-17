@@ -89,7 +89,7 @@
                     </properties>
                 </bean>
             </item>
-            <item name="staticResourceHandler">#{tow.staticResourceManager}</item>
+            <item name="staticResourceHandler">#{tow.staticResourceHandler}</item>
         </properties>
     </bean>
 
@@ -99,7 +99,7 @@
         </properties>
     </bean>
 
-    <bean id="tow.staticResourceManager" class="com.aspectran.undertow.server.resource.StaticResourceHandler"
+    <bean id="tow.staticResourceHandler" class="com.aspectran.undertow.server.resource.StaticResourceHandler"
           initMethod="autoDetect" scope="prototype">
         <arguments>
             <item>#{tow.resourceManager}</item>

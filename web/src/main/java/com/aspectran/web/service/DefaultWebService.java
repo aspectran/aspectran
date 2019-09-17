@@ -122,7 +122,7 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
             activity.perform();
         } catch (TransletNotFoundException e) {
             if (log.isDebugEnabled()) {
-                log.debug("No translet mapped to the request URI [" + requestUri + "]");
+                log.debug("No translet mapped for request URI [" + requestUri + "]");
             }
             try {
                 if (!defaultServletHttpRequestHandler.handle(request, response)) {

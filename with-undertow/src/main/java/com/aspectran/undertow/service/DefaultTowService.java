@@ -92,7 +92,7 @@ public class DefaultTowService extends AbstractTowService {
             activity.perform();
         } catch (TransletNotFoundException e) {
             if (log.isDebugEnabled()) {
-                log.debug("No translet mapped to the request URI [" + requestPath + "]");
+                log.debug("No translet mapped for request URI [" + requestPath + "]");
             }
             return false;
         } catch (ActivityTerminatedException e) {
