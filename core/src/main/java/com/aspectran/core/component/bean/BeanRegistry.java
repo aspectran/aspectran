@@ -17,6 +17,9 @@ package com.aspectran.core.component.bean;
 
 import com.aspectran.core.context.rule.BeanRule;
 
+import java.lang.annotation.Annotation;
+import java.util.Collection;
+
 /**
  * The Interface BeanRegistry.
  *
@@ -67,6 +70,8 @@ public interface BeanRegistry {
      */
     <T> T getBean(Class<T> requiredType, String id);
 
+    <T> T[] getBeansOfType(Class<T> requiredType);
+
     /**
      * Returns the bean instance used for the annotated configuration that matches
      * the specified object type.
@@ -97,5 +102,7 @@ public interface BeanRegistry {
      * @return whether a bean with the specified type is present
      */
     boolean containsBean(Class<?> requiredType);
+
+    Collection<Class<?>> findConfigBeanClassesWithAnnotation(Class<? extends Annotation> annotationType);
 
 }

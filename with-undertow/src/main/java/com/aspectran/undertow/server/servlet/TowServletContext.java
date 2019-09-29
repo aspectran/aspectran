@@ -17,11 +17,14 @@ package com.aspectran.undertow.server.servlet;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.component.bean.aware.ApplicationAdapterAware;
+import io.undertow.server.DefaultByteBufferPool;
 import io.undertow.server.session.SessionManager;
 import io.undertow.servlet.api.DeploymentInfo;
+import io.undertow.servlet.api.ErrorPage;
 import io.undertow.servlet.api.InstanceFactory;
 import io.undertow.servlet.api.ServletContainerInitializerInfo;
 import io.undertow.servlet.util.ImmediateInstanceFactory;
+import io.undertow.websockets.jsr.WebSocketDeploymentInfo;
 
 import javax.servlet.ServletContainerInitializer;
 import java.io.File;
@@ -99,6 +102,34 @@ public class TowServletContext extends DeploymentInfo implements ApplicationAdap
         }
     }
 
+    public void setServletContainerInitializers(ServletContainerInitializer[] servletContainerInitializers) {
+        for (ServletContainerInitializer initializer : servletContainerInitializers) {
+            Class<? extends ServletContainerInitializer> servletContainerInitializerClass = initializer.getClass();
+            InstanceFactory<? extends ServletContainerInitializer> instanceFactory = new ImmediateInstanceFactory<>(initializer);
+            ServletContainerInitializerInfo sciInfo = new ServletContainerInitializerInfo(servletContainerInitializerClass,
+                    instanceFactory, NO_CLASSES);
+            addServletContainerInitializer(sciInfo);
+        }
+    }
+
+    public void setWelcomePages(String[] welcomePages) {
+        addWelcomePages(welcomePages);
+    }
+
+    public void setErrorPages(ErrorPage[] errorPages) {
+        addErrorPages(errorPages);
+    }
+
+    public void setWebSocketEnabled(boolean webSocketEnabled) {
+        if (webSocketEnabled) {
+            addServletContextAttribute(WebSocketDeploymentInfo.ATTRIBUTE_NAME,
+                    new WebSocketDeploymentInfo()
+                            .setBuffers(new DefaultByteBufferPool(true, 100)));
+        } else {
+            getServletContextAttributes().remove(DERIVED_WEB_SERVICE_ATTRIBUTE);
+        }
+    }
+
     /**
      * Specifies whether this is a derived web service that inherits the root web service.
      */
@@ -107,16 +138,6 @@ public class TowServletContext extends DeploymentInfo implements ApplicationAdap
             getServletContextAttributes().put(DERIVED_WEB_SERVICE_ATTRIBUTE, "true");
         } else {
             getServletContextAttributes().remove(DERIVED_WEB_SERVICE_ATTRIBUTE);
-        }
-    }
-
-    public void setServletContainerInitializers(ServletContainerInitializer[] servletContainerInitializers) {
-        for (ServletContainerInitializer initializer : servletContainerInitializers) {
-            Class<? extends ServletContainerInitializer> servletContainerInitializerClass = initializer.getClass();
-            InstanceFactory<? extends ServletContainerInitializer> instanceFactory = new ImmediateInstanceFactory<>(initializer);
-            ServletContainerInitializerInfo sciInfo = new ServletContainerInitializerInfo(servletContainerInitializerClass,
-                    instanceFactory, NO_CLASSES);
-            addServletContainerInitializer(sciInfo);
         }
     }
 

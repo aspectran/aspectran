@@ -189,6 +189,7 @@
                     </properties>
                 </bean>
             </item>
+            <item name="webSocketEnabled" valueType="boolean">true</item>
             <item name="derived" valueType="boolean">true</item>
         </properties>
     </bean>

@@ -41,6 +41,7 @@ import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -168,6 +169,17 @@ public class BeanRuleRegistry {
 
     public Collection<BeanRule> getConfigurableBeanRules() {
         return configurableBeanRuleMap.values();
+    }
+
+    public Collection<Class<?>> findConfigBeanClassesWithAnnotation(Class<? extends Annotation> annotationType) {
+        List<Class<?>> result = new ArrayList<>();
+        for (BeanRule beanRule : configurableBeanRuleMap.values()) {
+            Class<?> targetBeanClass = beanRule.getTargetBeanClass();
+            if (targetBeanClass.isAnnotationPresent(annotationType)) {
+                result.add(targetBeanClass);
+            }
+        }
+        return result;
     }
 
     /**

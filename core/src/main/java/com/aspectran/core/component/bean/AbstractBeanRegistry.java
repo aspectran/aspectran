@@ -19,6 +19,10 @@ import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.type.BeanProxifierType;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Array;
+import java.util.Collection;
+
 /**
  * The Class AbstractBeanRegistry.
  * 
@@ -88,6 +92,22 @@ public abstract class AbstractBeanRegistry extends AbstractBeanFactory implement
     }
 
     @Override
+    @SuppressWarnings("unchecked")
+    public <T> T[] getBeansOfType(Class<T> requiredType) {
+        BeanRule[] beanRules = getBeanRuleRegistry().getBeanRules(requiredType);
+        if (beanRules != null) {
+            Object arr = Array.newInstance(requiredType, beanRules.length);
+            for (int i = 0; i < beanRules.length; i++) {
+                Object bean = getBean(beanRules[i]);
+                Array.set(arr, i, bean);
+            }
+            return (T[])arr;
+        } else {
+            return null;
+        }
+    }
+
+    @Override
     public <T> T getBeanForConfig(Class<T> requiredType) {
         BeanRule beanRule = getBeanRuleRegistry().getBeanRuleForConfig(requiredType);
         if (beanRule == null) {
@@ -107,5 +127,10 @@ public abstract class AbstractBeanRegistry extends AbstractBeanFactory implement
     }
 
     abstract protected <T> T getBean(BeanRule beanRule);
+
+    @Override
+    public Collection<Class<?>> findConfigBeanClassesWithAnnotation(Class<? extends Annotation> annotationType) {
+        return getBeanRuleRegistry().findConfigBeanClassesWithAnnotation(annotationType);
+    }
 
 }

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 6.0//EN"
+        "http://aspectran.github.io/dtd/aspectran-6.dtd">
+<aspectran>
+
+    <settings>
+        <setting name="transletNamePrefix" value="/chat/"/>
+    </settings>
+
+    <translet name="/">
+        <echo id="page">
+            <item name="headline">Example of chat application with WebSockets</item>
+            <item name="teaser"></item>
+            <item name="include">chat/chat</item>
+        </echo>
+        <dispatch name="templates/default"/>
+    </translet>
+
+</aspectran>

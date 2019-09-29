@@ -21,11 +21,13 @@ import com.aspectran.core.service.CoreService;
 import com.aspectran.undertow.server.resource.StaticResourceHandler;
 import com.aspectran.web.service.DefaultWebService;
 import com.aspectran.web.service.WebService;
+import com.aspectran.web.socket.config.ServerEndpointExporter;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.handlers.PathHandler;
 import io.undertow.servlet.api.DeploymentManager;
 
 import javax.servlet.ServletContext;
+import javax.websocket.server.ServerContainer;
 import java.util.Collection;
 
 import static com.aspectran.web.service.WebService.ROOT_WEB_SERVICE_ATTRIBUTE;
@@ -77,6 +79,14 @@ public class ServletHandlerFactory implements ActivityContextAware {
                     CoreService rootService = context.getRootService();
                     WebService webService = DefaultWebService.create(servletContext, rootService);
                     servletContext.setAttribute(ROOT_WEB_SERVICE_ATTRIBUTE, webService);
+                }
+
+                ServerContainer serverContainer =
+                        (ServerContainer)servletContext.getAttribute(ServerContainer.class.getName());
+                if (serverContainer != null) {
+                    ServerEndpointExporter serverEndpointExporter = new ServerEndpointExporter(context);
+                    serverEndpointExporter.initServletContext(servletContext);
+                    serverEndpointExporter.registerEndpoints();
                 }
 
                 HttpHandler handler = manager.start();

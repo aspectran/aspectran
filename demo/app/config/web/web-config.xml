@@ -39,5 +39,6 @@
     <append file="/config/web/examples/gs-rest-service.xml" profile="!daemon"/>
     <append file="/config/web/examples/file-upload.xml" profile="!daemon"/>
     <append file="/config/web/terminal/translet-interpreter.xml" profile="!daemon"/>
+    <append file="/config/web/chat/chat.xml" profile="!daemon"/>
 
 </aspectran>
