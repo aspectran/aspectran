@@ -1,4 +1,4 @@
-package com.aspectran.web.socket;
+package com.aspectran.web.socket.jsr356;
 
 import com.aspectran.core.component.bean.aware.ActivityContextAware;
 import com.aspectran.core.context.ActivityContext;
@@ -6,7 +6,7 @@ import com.aspectran.core.context.ActivityContext;
 /**
  * <p>Created: 29/09/2019</p>
  */
-public class AbstractEndpoint implements ActivityContextAware {
+public abstract class ActivityContextAwareEndpoint implements ActivityContextAware {
 
     private static ActivityContext context;
 
@@ -16,7 +16,7 @@ public class AbstractEndpoint implements ActivityContextAware {
 
     @Override
     public void setActivityContext(ActivityContext context) {
-        AbstractEndpoint.context = context;
+        ActivityContextAwareEndpoint.context = context;
     }
 
 }

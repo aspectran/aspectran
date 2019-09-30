@@ -205,6 +205,9 @@
                             maxIdleSeconds: 1800
                             evictionIdleSeconds: 900
                             scavengingIntervalSeconds: 600
+                            excludeAttrsFromSerialization: [
+                                io.undertow.websocket.current-connections
+                            ]
                             storeType: file
                             fileStore: {
                                 storeDir: /temp/sessions/tow

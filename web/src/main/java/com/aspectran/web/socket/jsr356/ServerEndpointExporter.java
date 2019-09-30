@@ -1,4 +1,4 @@
-package com.aspectran.web.socket.config;
+package com.aspectran.web.socket.jsr356;
 
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.lang.Nullable;

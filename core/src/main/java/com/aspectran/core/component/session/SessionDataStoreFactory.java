@@ -17,6 +17,7 @@ package com.aspectran.core.component.session;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.context.config.SessionFileStoreConfig;
+import com.aspectran.core.context.config.SessionManagerConfig;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.SystemUtils;
 
@@ -24,9 +25,13 @@ import java.io.File;
 
 public class SessionDataStoreFactory {
 
-    public static FileSessionDataStore createFileSessionDataStore(SessionFileStoreConfig fileStoreConfig,
+    public static FileSessionDataStore createFileSessionDataStore(SessionManagerConfig sessionManagerConfig,
                                                                   ApplicationAdapter applicationAdapter) {
         FileSessionDataStore fileSessionDataStore = new FileSessionDataStore();
+        if (sessionManagerConfig.hasExcludeAttrsFromSerialization()) {
+            fileSessionDataStore.setExcludeAttrsFromSerialization(sessionManagerConfig.getExcludeAttrsFromSerialization());
+        }
+        SessionFileStoreConfig fileStoreConfig = sessionManagerConfig.getFileStoreConfig();
         if (fileStoreConfig != null) {
             String storeDir = fileStoreConfig.getStoreDir();
             if (StringUtils.hasText(storeDir)) {

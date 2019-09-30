@@ -35,6 +35,7 @@ public class SessionManagerConfig extends AbstractParameters {
     private static final ParameterKey saveOnCreate;
     private static final ParameterKey saveOnInactiveEviction;
     private static final ParameterKey removeUnloadableSessions;
+    private static final ParameterKey excludeAttrsFromSerialization;
     private static final ParameterKey storeType;
     private static final ParameterKey fileStore;
     private static final ParameterKey startup;
@@ -50,6 +51,7 @@ public class SessionManagerConfig extends AbstractParameters {
         saveOnCreate = new ParameterKey("saveOnCreate", ValueType.BOOLEAN);
         saveOnInactiveEviction = new ParameterKey("saveOnInactiveEviction", ValueType.BOOLEAN);
         removeUnloadableSessions = new ParameterKey("removeUnloadableSessions", ValueType.BOOLEAN);
+        excludeAttrsFromSerialization = new ParameterKey("excludeAttrsFromSerialization", ValueType.STRING, true);
         storeType = new ParameterKey("storeType", ValueType.STRING);
         fileStore = new ParameterKey("fileStore", SessionFileStoreConfig.class);
         startup = new ParameterKey("startup", ValueType.BOOLEAN);
@@ -63,6 +65,7 @@ public class SessionManagerConfig extends AbstractParameters {
                 saveOnCreate,
                 saveOnInactiveEviction,
                 removeUnloadableSessions,
+                excludeAttrsFromSerialization,
                 storeType,
                 fileStore,
                 startup
@@ -193,6 +196,24 @@ public class SessionManagerConfig extends AbstractParameters {
 
     public boolean hasRemoveUnloadableSessions() {
         return hasValue(removeUnloadableSessions);
+    }
+
+    public String[] getExcludeAttrsFromSerialization() {
+        return getStringArray(excludeAttrsFromSerialization);
+    }
+
+    public SessionManagerConfig setExcludeAttrsFromSerialization(String[] excludeAttrsFromSerialization) {
+        putValue(SessionManagerConfig.excludeAttrsFromSerialization, excludeAttrsFromSerialization);
+        return this;
+    }
+
+    public SessionManagerConfig addExcludeAttrsFromSerialization(String attrToExcludeFromSerialization) {
+        putValue(SessionManagerConfig.excludeAttrsFromSerialization, attrToExcludeFromSerialization);
+        return this;
+    }
+
+    public boolean hasExcludeAttrsFromSerialization() {
+        return hasValue(excludeAttrsFromSerialization);
     }
 
     public String getStoreType() {

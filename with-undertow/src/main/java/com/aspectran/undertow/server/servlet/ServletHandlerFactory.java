@@ -21,7 +21,7 @@ import com.aspectran.core.service.CoreService;
 import com.aspectran.undertow.server.resource.StaticResourceHandler;
 import com.aspectran.web.service.DefaultWebService;
 import com.aspectran.web.service.WebService;
-import com.aspectran.web.socket.config.ServerEndpointExporter;
+import com.aspectran.web.socket.jsr356.ServerEndpointExporter;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.handlers.PathHandler;
 import io.undertow.servlet.api.DeploymentManager;

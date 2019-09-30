@@ -344,6 +344,9 @@ public class FileSessionDataStore extends AbstractSessionDataStore {
         out.writeLong(data.getMaxInactiveInterval());
 
         List<String> keys = new ArrayList<>(data.getKeys());
+        if (getExcludeAttrsFromSerialization() != null) {
+            keys.removeAll(getExcludeAttrsFromSerialization());
+        }
         out.writeInt(keys.size());
         ObjectOutputStream oos = new ObjectOutputStream(out);
         for (String name : keys) {
@@ -362,20 +365,20 @@ public class FileSessionDataStore extends AbstractSessionDataStore {
      */
     private SessionData loadSessionData(InputStream is, String expectedId) throws Exception {
         try {
-            DataInputStream di = new DataInputStream(is);
-            String id = di.readUTF(); // the actual id from inside the file
-            long created = di.readLong();
-            long accessed = di.readLong();
-            long lastAccessed = di.readLong();
-            long expiry = di.readLong();
-            long maxIdle = di.readLong();
+            DataInputStream dis = new DataInputStream(is);
+            String id = dis.readUTF(); // the actual id from inside the file
+            long created = dis.readLong();
+            long accessed = dis.readLong();
+            long lastAccessed = dis.readLong();
+            long expiry = dis.readLong();
+            long maxIdle = dis.readLong();
 
             SessionData data = createSessionData(id, created, accessed, lastAccessed, maxIdle);
             data.setExpiryTime(expiry);
             data.setMaxInactiveInterval(maxIdle);
 
             //  Attributes
-            restoreAttributes(di, di.readInt(), data);
+            restoreAttributes(dis, dis.readInt(), data);
 
             return data;
         } catch (Exception e) {

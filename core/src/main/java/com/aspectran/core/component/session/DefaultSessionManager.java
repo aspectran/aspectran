@@ -110,7 +110,7 @@ public class DefaultSessionManager extends AbstractSessionHandler implements Ses
                 }
                 if (sessionStoreType == SessionStoreType.FILE) {
                     sessionDataStore = SessionDataStoreFactory.createFileSessionDataStore(
-                        sessionManagerConfig.getFileStoreConfig(), getApplicationAdapter());
+                        sessionManagerConfig, getApplicationAdapter());
                 }
             }
 

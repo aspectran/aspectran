@@ -20,6 +20,8 @@ import com.aspectran.core.util.ToStringBuilder;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -35,6 +37,8 @@ public abstract class AbstractSessionDataStore extends AbstractComponent impleme
     private long lastExpiryCheckTime = 0; // last time in ms that getExpired was called
 
     private int savePeriodSecs = 0; // time in sec between saves
+
+    private Set<String> excludeAttrsFromSerialization;
 
     public int getGracePeriodSecs() {
         return gracePeriodSecs;
@@ -71,6 +75,28 @@ public abstract class AbstractSessionDataStore extends AbstractComponent impleme
      */
     public void setSavePeriodSecs(int savePeriodSecs) {
         this.savePeriodSecs = savePeriodSecs;
+    }
+
+    public Set<String> getExcludeAttrsFromSerialization() {
+        return excludeAttrsFromSerialization;
+    }
+
+    public void setExcludeAttrsFromSerialization(String... excludeAttrsFromSerialization) {
+        if (excludeAttrsFromSerialization != null && excludeAttrsFromSerialization.length > 0) {
+            Set<String> attrNames = new HashSet<>();
+            Collections.addAll(attrNames, excludeAttrsFromSerialization);
+            this.excludeAttrsFromSerialization = Collections.unmodifiableSet(attrNames);
+        } else {
+            this.excludeAttrsFromSerialization = null;
+        }
+    }
+
+    public boolean isAttrToExcludeFromSerialization(String attrName) {
+        if (excludeAttrsFromSerialization != null) {
+            return excludeAttrsFromSerialization.contains(attrName);
+        } else {
+            return false;
+        }
     }
 
     /**

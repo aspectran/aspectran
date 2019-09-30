@@ -3,7 +3,7 @@ package com.aspectran.demo.chat;
 import com.aspectran.core.component.bean.annotation.Component;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
-import com.aspectran.web.socket.AbstractEndpoint;
+import com.aspectran.web.socket.jsr356.ActivityContextAwareEndpoint;
 
 import javax.websocket.CloseReason;
 import javax.websocket.EndpointConfig;
@@ -12,34 +12,28 @@ import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
-import javax.websocket.server.ServerEndpointConfig;
+import java.io.IOException;
 
 /**
  * <p>Created: 29/09/2019</p>
  */
 @Component
 @ServerEndpoint(value = "/chat")
-public class ChatEndpoint extends AbstractEndpoint {
+public class ChatServerEndpoint extends ActivityContextAwareEndpoint {
 
-    private static final Log log = LogFactory.getLog(ChatEndpoint.class);
+    private static final Log log = LogFactory.getLog(ChatServerEndpoint.class);
 
     @OnOpen
-    public void onOpen(Session session, EndpointConfig config) {
-        ServerEndpointConfig endpointConfig;
+    public void onOpen(Session session, EndpointConfig config) throws IOException {
+        log.debug(session.getId() + ": Connected");
 
-        log.debug(
-                session.getId()
-                        + ": Connected"
-        );
+        session.getBasicRemote().sendText(session.getId() + ": Connected");
     }
 
     @OnMessage
     public void onMessage(Session session, String message) {
-        log.debug(
-                session.getId()
-                        + ": "
-                        + message
-        );
+        log.debug(session.getId() + ": " + message);
+
         for (Session s : session.getOpenSessions()) {
             s.getAsyncRemote().sendText(message);
         }
@@ -47,11 +41,7 @@ public class ChatEndpoint extends AbstractEndpoint {
 
     @OnClose
     public void onClose(Session session, CloseReason reason) {
-        log.debug(
-                session.getId()
-                        + ": Disconnected: "
-                        + Integer.toString(reason.getCloseCode().getCode())
-        );
+        log.debug(session.getId() + ": Disconnected: " + reason.getCloseCode().getCode());
     }
 
 }
