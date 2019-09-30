@@ -126,7 +126,7 @@
             <item name="contextPath">/</item>
             <item name="resourceManager">#{tow.resourceManager}</item>
             <item name="scratchDir">/temp/_root</item>
-            <item name="sessionManager">#{tow.sessionManger}</item>
+            <item name="sessionManager">#{tow.sessionManager}</item>
             <item name="servletSessionConfig">
                 <bean class="io.undertow.servlet.api.ServletSessionConfig"/>
             </item>
@@ -194,7 +194,7 @@
         </properties>
     </bean>
 
-    <bean id="tow.sessionManger" class="com.aspectran.undertow.server.session.TowSessionManager">
+    <bean id="tow.sessionManager" class="com.aspectran.undertow.server.session.TowSessionManager">
         <properties>
             <item name="sessionManagerConfig">
                 <bean class="com.aspectran.core.context.config.SessionManagerConfig">

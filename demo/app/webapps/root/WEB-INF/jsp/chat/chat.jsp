@@ -1,66 +1,47 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
     <style>
-
         /* Common */
-
-        * {
-            margin: 0;
-            padding: 0;
-            font-family: sans-serif;
-            font-size: 13px;
-            outline: 0;
+        @media print, screen and (min-width: 64em) {
+            section > .row {
+                background-color: #f5f5f5;
+                border-radius: 0 0 10px 10px;
+            }
         }
-
+        @media print, screen and (min-width: 64em) {
+            section > .row > .columns {
+                padding: 0;
+            }
+        }
+        #chat-wrap {
+            background-color: #f5f5f5;
+            overflow: auto;
+        }
         .error {
             color: #F04823;
             font-size: 12px;
         }
 
-        input[type="text"],
-        input[type="password"] {
-            border-radius: 20px;
-            padding: 10px;
-            border: 2px solid gainsboro;
-        }
-
-        button {
-            border-radius: 20px;
-            padding: 10px;
-            background-color: #0084FF;
-            color: #fff;
-            width: 6em;
-            border: 2px solid #0084FF;
-        }
-
-        button:hover,
-        button:focus {
-            background-color: #0966ff;
-            border-color: #0966ff;
-            cursor: pointer;
-        }
-
         /* Authentication */
-
         #authentication {
-            margin-top: 100px;
+            margin: 100px 0;
         }
-
         #authentication * {
             display: block;
             margin-left: auto;
             margin-right: auto;
             margin-bottom: 10px;
         }
-
         #authentication .error {
             text-align: center;
         }
+        #authentication input {
+            max-width: 200px;
+        }
 
         /* Title Bar */
-
         #title {
-            background-color: #0084FF;
+            background-color: #35505B;
             font-size: 20px;
             padding: 10px 20px 10px 20px;
             color: #fff;
@@ -70,11 +51,11 @@
 
         #contacts {
             float: left;
-            width: 120px;
+            width: 180px;
             padding: 20px;
-            background-color: aliceblue;
-            min-height: calc(100vh - 85px);
-            max-height: calc(100vh - 85px);
+            background-color: #bbedfe;
+            height: 580px;
+            border-radius: 0 0 0 10px;
             display: none;
         }
 
@@ -96,13 +77,12 @@
 
         #chat {
             float: right;
-            width: calc(100% - 160px);
+            width: calc(100% - 180px);
             display: none;
         }
 
         #messages {
-            min-height: calc(100vh - 130px);
-            max-height: calc(100vh - 130px);
+            height: 500px;
             padding: 20px 20px 0 20px;
             overflow-y: auto;
         }
@@ -172,7 +152,9 @@
         }
 
         #chat-controls input[type="text"] {
-            width: calc(100% - 9em);
+            width: calc(100% - 5em);
+            float: left;
+            overflow: auto;
         }
 
         #messages .message.sent.same-sender-previous-message .sender,
@@ -189,6 +171,7 @@
 </head>
 <body>
 
+<div id="chat-wrap">
 <div id="title">Chat</div>
 
 <form id="authentication" onsubmit="return false;">
@@ -206,6 +189,7 @@
         <input type="text" id="message" placeholder="Enter a message"/>
         <button class="button" onclick="sendMessage()">Send</button>
     </form>
+</div>
 </div>
 
 <script>
