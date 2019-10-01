@@ -166,6 +166,9 @@ public abstract class AbstractShellService extends AspectranCoreService implemen
     }
 
     protected void initSessionManager() {
+        if (this.sessionManager != null) {
+            throw new IllegalStateException("SessionManager already initialized");
+        }
         ShellConfig shellConfig = getAspectranConfig().getShellConfig();
         if (shellConfig != null) {
             SessionManagerConfig sessionManagerConfig = shellConfig.getSessionManagerConfig();

@@ -344,14 +344,17 @@ public class FileSessionDataStore extends AbstractSessionDataStore {
         out.writeLong(data.getMaxInactiveInterval());
 
         List<String> keys = new ArrayList<>(data.getKeys());
-        if (getExcludeAttrsFromSerialization() != null) {
+        // remove attributes excluded from serialization
+        if (!keys.isEmpty() && getExcludeAttrsFromSerialization() != null) {
             keys.removeAll(getExcludeAttrsFromSerialization());
         }
         out.writeInt(keys.size());
-        ObjectOutputStream oos = new ObjectOutputStream(out);
-        for (String name : keys) {
-            oos.writeUTF(name);
-            oos.writeObject(data.getAttribute(name));
+        if (!keys.isEmpty()) {
+            ObjectOutputStream oos = new ObjectOutputStream(out);
+            for (String name : keys) {
+                oos.writeUTF(name);
+                oos.writeObject(data.getAttribute(name));
+            }
         }
     }
 

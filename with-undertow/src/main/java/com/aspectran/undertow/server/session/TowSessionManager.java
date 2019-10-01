@@ -16,6 +16,7 @@
 package com.aspectran.undertow.server.session;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
+import com.aspectran.core.component.bean.ablility.DisposableBean;
 import com.aspectran.core.component.bean.aware.ApplicationAdapterAware;
 import com.aspectran.core.component.session.BasicSession;
 import com.aspectran.core.component.session.DefaultSessionManager;
@@ -38,7 +39,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * <p>Created: 2019-08-07</p>
  */
-public class TowSessionManager implements SessionManager, ApplicationAdapterAware {
+public class TowSessionManager implements SessionManager, ApplicationAdapterAware, DisposableBean {
 
     private final AttachmentKey<TowSessionBridge> NEW_SESSION = AttachmentKey.create(TowSessionBridge.class);
 
@@ -101,6 +102,11 @@ public class TowSessionManager implements SessionManager, ApplicationAdapterAwar
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public void destroy() throws Exception {
+        stop();
     }
 
     @Override

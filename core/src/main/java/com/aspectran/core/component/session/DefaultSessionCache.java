@@ -158,6 +158,12 @@ public class DefaultSessionCache extends AbstractSessionCache {
             for (BasicSession session : sessions.values()) {
                 // if we have a backing store so give the session to it to write out if necessary
                 if (getSessionDataStore() != null) {
+                    // remove attributes excluded from serialization
+                    if (getSessionDataStore().getExcludeAttrsFromSerialization() != null) {
+                        for (String attrName : getSessionDataStore().getExcludeAttrsFromSerialization()) {
+                            session.removeAttribute(attrName);
+                        }
+                    }
                     try {
                         getSessionDataStore().store(session.getId(), session.getSessionData());
                     } catch (Exception e) {

@@ -77,10 +77,16 @@ public abstract class AbstractSessionDataStore extends AbstractComponent impleme
         this.savePeriodSecs = savePeriodSecs;
     }
 
+    @Override
     public Set<String> getExcludeAttrsFromSerialization() {
         return excludeAttrsFromSerialization;
     }
 
+    /**
+     * Specifies attributes that should be excluded from serialization.
+     *
+     * @param excludeAttrsFromSerialization the attribute names to exclude from serialization
+     */
     public void setExcludeAttrsFromSerialization(String... excludeAttrsFromSerialization) {
         if (excludeAttrsFromSerialization != null && excludeAttrsFromSerialization.length > 0) {
             Set<String> attrNames = new HashSet<>();

@@ -24,7 +24,12 @@ import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -40,7 +45,7 @@ public class AbstractScope implements Scope {
 
     private final ReadWriteLock scopeLock = new ReentrantReadWriteLock();
 
-    private final Map<BeanRule, BeanInstance> scopedBeanMap = new HashMap<>();
+    private final Map<BeanRule, BeanInstance> scopedBeanInstanceMap = new LinkedHashMap<>();
 
     private final ScopeType scopeType;
 
@@ -55,32 +60,33 @@ public class AbstractScope implements Scope {
 
     @Override
     public BeanInstance getBeanInstance(BeanRule beanRule) {
-        return scopedBeanMap.get(beanRule);
+        return scopedBeanInstanceMap.get(beanRule);
     }
 
     @Override
     public void putBeanInstance(BeanRule beanRule, BeanInstance beanInstance) {
-        scopedBeanMap.put(beanRule, beanInstance);
+        scopedBeanInstanceMap.put(beanRule, beanInstance);
     }
 
     @Override
     public void destroy() {
         if (log.isDebugEnabled()) {
-            if (!scopedBeanMap.isEmpty()) {
+            if (!scopedBeanInstanceMap.isEmpty()) {
                 log.debug("Destroy " + scopeType + " scoped beans from " + this);
             }
         }
 
-        for (Map.Entry<BeanRule, BeanInstance> entry : scopedBeanMap.entrySet()) {
-            BeanRule beanRule = entry.getKey();
-            BeanInstance instantiatedBean = entry.getValue();
-            Object bean = instantiatedBean.getBean();
+        List<BeanRule> beanRules = new ArrayList<>(scopedBeanInstanceMap.keySet());
+        ListIterator<BeanRule> iterator = beanRules.listIterator(beanRules.size());
+        while (iterator.hasPrevious()) {
+            BeanRule beanRule = iterator.previous();
+            BeanInstance instance = scopedBeanInstanceMap.get(beanRule);
+            Object bean = instance.getBean();
             if (bean != null) {
                 doDestroy(beanRule, bean);
             }
         }
-
-        scopedBeanMap.clear();
+        scopedBeanInstanceMap.clear();
     }
 
     private void doDestroy(BeanRule beanRule, Object bean) {

@@ -56,6 +56,9 @@ public abstract class AbstractDaemonService extends AspectranCoreService impleme
     }
 
     protected void initSessionManager() {
+        if (this.sessionManager != null) {
+            throw new IllegalStateException("SessionManager already initialized");
+        }
         DaemonConfig daemonConfig = getAspectranConfig().getDaemonConfig();
         if (daemonConfig != null) {
             SessionManagerConfig sessionManagerConfig = daemonConfig.getSessionManagerConfig();

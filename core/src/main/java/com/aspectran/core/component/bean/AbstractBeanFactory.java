@@ -32,6 +32,7 @@ import com.aspectran.core.component.bean.aware.EnvironmentAware;
 import com.aspectran.core.component.bean.proxy.CglibDynamicBeanProxy;
 import com.aspectran.core.component.bean.proxy.JavassistDynamicBeanProxy;
 import com.aspectran.core.component.bean.proxy.JdkDynamicBeanProxy;
+import com.aspectran.core.component.session.SessionListener;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.expr.ItemEvaluator;
 import com.aspectran.core.context.expr.ItemExpression;
@@ -57,6 +58,12 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -68,6 +75,8 @@ import java.util.Set;
 public abstract class AbstractBeanFactory extends AbstractComponent {
 
     private static final Log log = LogFactory.getLog(AbstractBeanFactory.class);
+
+    private final Set<BeanRule> singletonBeanRules = new LinkedHashSet<>();
 
     private final ActivityContext context;
 
@@ -165,6 +174,7 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
 
             if (beanRule.isSingleton()) {
                 beanRule.setBeanInstance(new BeanInstance(bean));
+                singletonBeanRules.add(beanRule);
             }
 
             invokeAwareMethods(bean);
@@ -226,6 +236,7 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
 
         if (beanRule.isSingleton()) {
             beanRule.setBeanInstance(new BeanInstance(bean));
+            singletonBeanRules.add(beanRule);
         }
 
         try {
@@ -449,17 +460,14 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
         }
 
         int failedDestroyes = 0;
-        for (BeanRule beanRule : beanRuleRegistry.getIdBasedBeanRules()) {
-            failedDestroyes += doDestroySingleton(beanRule);
+
+        List<BeanRule> beanRules = new ArrayList<>(singletonBeanRules);
+        ListIterator<BeanRule> iterator = beanRules.listIterator(beanRules.size());
+        while (iterator.hasPrevious()) {
+            failedDestroyes += doDestroySingleton(iterator.previous());
         }
-        for (Set<BeanRule> beanRuleSet : beanRuleRegistry.getTypeBasedBeanRules()) {
-            for (BeanRule beanRule : beanRuleSet) {
-                failedDestroyes += doDestroySingleton(beanRule);
-            }
-        }
-        for (BeanRule beanRule : beanRuleRegistry.getConfigurableBeanRules()) {
-            failedDestroyes += doDestroySingleton(beanRule);
-        }
+        singletonBeanRules.clear();
+
         if (failedDestroyes > 0) {
             log.warn("Singletons has not been destroyed cleanly (Failure Count: " + failedDestroyes + ")");
         } else {
@@ -471,8 +479,8 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
         int failedCount = 0;
         if (beanRule.getBeanInstance() != null && beanRule.isSingleton()) {
             try {
-                BeanInstance instantiatedBean = beanRule.getBeanInstance();
-                Object bean = instantiatedBean.getBean();
+                BeanInstance instance = beanRule.getBeanInstance();
+                Object bean = instance.getBean();
                 if (bean != null) {
                     if (beanRule.isDisposableBean()) {
                         ((DisposableBean)bean).destroy();

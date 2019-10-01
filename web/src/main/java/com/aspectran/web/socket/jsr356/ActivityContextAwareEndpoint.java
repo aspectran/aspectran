@@ -1,5 +1,6 @@
 package com.aspectran.web.socket.jsr356;
 
+import com.aspectran.core.component.bean.ablility.DisposableBean;
 import com.aspectran.core.component.bean.aware.ActivityContextAware;
 import com.aspectran.core.context.ActivityContext;
 

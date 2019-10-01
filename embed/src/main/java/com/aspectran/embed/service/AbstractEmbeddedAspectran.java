@@ -61,6 +61,9 @@ public abstract class AbstractEmbeddedAspectran extends AspectranCoreService imp
     }
 
     protected void initSessionManager() {
+        if (this.sessionManager != null) {
+            throw new IllegalStateException("SessionManager already initialized");
+        }
         EmbedConfig embedConfig = getAspectranConfig().getEmbedConfig();
         if (embedConfig != null) {
             SessionManagerConfig sessionManagerConfig = embedConfig.getSessionManagerConfig();

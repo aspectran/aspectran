@@ -116,7 +116,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
 
     private boolean methodAutowireParsed;
 
-    private BeanInstance beanInstance; // only for singleton
+    private volatile BeanInstance beanInstance; // only for singleton
 
     private String description;
 

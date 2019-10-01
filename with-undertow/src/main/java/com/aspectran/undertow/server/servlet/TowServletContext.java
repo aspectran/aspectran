@@ -18,18 +18,26 @@ package com.aspectran.undertow.server.servlet;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.component.bean.aware.ApplicationAdapterAware;
 import io.undertow.server.DefaultByteBufferPool;
+import io.undertow.server.session.Session;
+import io.undertow.server.session.SessionListener;
 import io.undertow.server.session.SessionManager;
 import io.undertow.servlet.api.DeploymentInfo;
 import io.undertow.servlet.api.ErrorPage;
 import io.undertow.servlet.api.InstanceFactory;
 import io.undertow.servlet.api.ServletContainerInitializerInfo;
 import io.undertow.servlet.util.ImmediateInstanceFactory;
+import io.undertow.websockets.core.WebSocketChannel;
+import io.undertow.websockets.core.WebSockets;
 import io.undertow.websockets.jsr.WebSocketDeploymentInfo;
 
 import javax.servlet.ServletContainerInitializer;
+import javax.websocket.CloseReason;
+
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -125,8 +133,18 @@ public class TowServletContext extends DeploymentInfo implements ApplicationAdap
             addServletContextAttribute(WebSocketDeploymentInfo.ATTRIBUTE_NAME,
                     new WebSocketDeploymentInfo()
                             .setBuffers(new DefaultByteBufferPool(true, 100)));
+            addSessionListener(new WebSocketConnectionsUnboundListener());
         } else {
-            getServletContextAttributes().remove(DERIVED_WEB_SERVICE_ATTRIBUTE);
+            getServletContextAttributes().remove(WebSocketDeploymentInfo.ATTRIBUTE_NAME);
+            List<SessionListener> list = new ArrayList<>();
+            for (SessionListener sessionListener : getSessionListeners()) {
+                if (sessionListener instanceof WebSocketConnectionsUnboundListener) {
+                    list.add(sessionListener);
+                }
+            }
+            if (!list.isEmpty()) {
+                getSessionListeners().removeAll(list);
+            }
         }
     }
 
@@ -134,11 +152,28 @@ public class TowServletContext extends DeploymentInfo implements ApplicationAdap
      * Specifies whether this is a derived web service that inherits the root web service.
      */
     public void setDerived(boolean derived) {
+        setWebSocketEnabled(false);
         if (derived) {
-            getServletContextAttributes().put(DERIVED_WEB_SERVICE_ATTRIBUTE, "true");
+            addServletContextAttribute(DERIVED_WEB_SERVICE_ATTRIBUTE, "true");
         } else {
             getServletContextAttributes().remove(DERIVED_WEB_SERVICE_ATTRIBUTE);
         }
+    }
+
+    public static class WebSocketConnectionsUnboundListener implements SessionListener {
+
+        public void attributeRemoved(Session session, String name, Object oldValue) {
+            if ("io.undertow.websocket.current-connections".equals(name)) {
+                @SuppressWarnings("unchecked")
+                List<WebSocketChannel> connections = (List<WebSocketChannel>)oldValue;
+                if(connections != null) {
+                    for (WebSocketChannel c : new ArrayList<>(connections)) {
+                        WebSockets.sendClose(CloseReason.CloseCodes.VIOLATED_POLICY.getCode(), "", c, null);
+                    }
+                }
+            }
+        }
+
     }
 
 }

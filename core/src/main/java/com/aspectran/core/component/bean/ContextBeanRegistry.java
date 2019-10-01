@@ -81,17 +81,17 @@ public class ContextBeanRegistry extends AbstractBeanRegistry {
         singletonScopeLock.readLock().lock();
         Object bean;
         try {
-            BeanInstance instantiatedBean = beanRule.getBeanInstance();
-            if (instantiatedBean == null) {
+            BeanInstance instance = beanRule.getBeanInstance();
+            if (instance == null) {
                 readLocked = false;
                 singletonScopeLock.readLock().unlock();
                 singletonScopeLock.writeLock().lock();
                 try {
-                    instantiatedBean = beanRule.getBeanInstance();
-                    if (instantiatedBean == null) {
+                    instance = beanRule.getBeanInstance();
+                    if (instance == null) {
                         bean = createBean(beanRule);
                     } else {
-                        bean = instantiatedBean.getBean();
+                        bean = instance.getBean();
                     }
                     if (bean != null && beanRule.isFactoryProductionRequired()) {
                         bean = getFactoryProducedObject(beanRule, bean);
@@ -100,8 +100,8 @@ public class ContextBeanRegistry extends AbstractBeanRegistry {
                     singletonScopeLock.writeLock().unlock();
                 }
             } else {
-                instantiatedBean = beanRule.getBeanInstance();
-                bean = instantiatedBean.getBean();
+                instance = beanRule.getBeanInstance();
+                bean = instance.getBean();
                 if (bean != null && beanRule.isFactoryProductionRequired()) {
                     readLocked = false;
                     singletonScopeLock.readLock().unlock();
@@ -160,18 +160,18 @@ public class ContextBeanRegistry extends AbstractBeanRegistry {
         scopeLock.readLock().lock();
         Object bean;
         try {
-            BeanInstance instantiatedBean = scope.getBeanInstance(beanRule);
-            if (instantiatedBean == null) {
+            BeanInstance instance = scope.getBeanInstance(beanRule);
+            if (instance == null) {
                 readLocked = false;
                 scopeLock.readLock().unlock();
                 scopeLock.writeLock().lock();
                 try {
-                    instantiatedBean = scope.getBeanInstance(beanRule);
-                    if (instantiatedBean == null) {
+                    instance = scope.getBeanInstance(beanRule);
+                    if (instance == null) {
                         bean = createBean(beanRule);
                         scope.putBeanInstance(beanRule, new BeanInstance(bean));
                     } else {
-                        bean = instantiatedBean.getBean();
+                        bean = instance.getBean();
                     }
                     if (beanRule.isFactoryProductionRequired()) {
                         bean = getFactoryProducedObject(beanRule, bean);
@@ -180,7 +180,7 @@ public class ContextBeanRegistry extends AbstractBeanRegistry {
                     scopeLock.writeLock().unlock();
                 }
             } else {
-                bean = instantiatedBean.getBean();
+                bean = instance.getBean();
                 if (bean != null && beanRule.isFactoryProductionRequired()) {
                     readLocked = false;
                     scopeLock.readLock().unlock();

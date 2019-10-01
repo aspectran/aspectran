@@ -16,6 +16,7 @@
 package com.aspectran.core.component.session;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
+import com.aspectran.core.component.bean.ablility.DisposableBean;
 import com.aspectran.core.context.config.SessionManagerConfig;
 import com.aspectran.core.context.rule.type.SessionStoreType;
 

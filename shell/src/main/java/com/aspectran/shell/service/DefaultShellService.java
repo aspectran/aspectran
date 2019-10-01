@@ -196,7 +196,11 @@ public class DefaultShellService extends AbstractShellService {
 
             @Override
             public void restarted() {
-                started();
+                service.destroySessionManager();
+                service.initSessionManager();
+                service.pauseTimeout = 0;
+                service.printGreetings();
+                service.printHelp();
             }
 
             @Override

@@ -63,6 +63,18 @@ public interface SessionDataStore extends Component {
     boolean exists(String id) throws Exception;
 
     /**
+     * Called periodically, this method should search the data store
+     * for sessions that have been expired for a 'reasonable' amount
+     * of time.
+     *
+     * @param candidates if provided, these are keys of sessions that
+     *      the SessionDataStore thinks has expired and should be verified by the
+     *      SessionDataStore
+     * @return set of session ids
+     */
+    Set<String> getExpired (Set<String> candidates);
+
+    /**
      * Create a new SessionData.
      *
      * @param id the id
@@ -75,15 +87,10 @@ public interface SessionDataStore extends Component {
     SessionData createSessionData(String id, long createdTime, long accessedTime, long lastAccessedTime, long maxInactiveInterval);
 
     /**
-     * Called periodically, this method should search the data store
-     * for sessions that have been expired for a 'reasonable' amount
-     * of time.
+     * Returns the names of the attributes that should be excluded from serialization.
      *
-     * @param candidates if provided, these are keys of sessions that
-     *      the SessionDataStore thinks has expired and should be verified by the
-     *      SessionDataStore
-     * @return set of session ids
+     * @return the attribute names to be excluded from serialization
      */
-    Set<String> getExpired (Set<String> candidates);
+    Set<String> getExcludeAttrsFromSerialization();
 
 }
