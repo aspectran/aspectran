@@ -23,6 +23,7 @@ import com.aspectran.web.service.DefaultWebService;
 import com.aspectran.web.service.WebService;
 import com.aspectran.web.socket.jsr356.ServerEndpointExporter;
 import io.undertow.server.HttpHandler;
+import io.undertow.server.handlers.GracefulShutdownHandler;
 import io.undertow.server.handlers.PathHandler;
 import io.undertow.servlet.api.DeploymentManager;
 
@@ -65,48 +66,48 @@ public class ServletHandlerFactory implements ActivityContextAware {
     }
 
     public HttpHandler createServletHandler() throws Exception {
-        if (towServletContainer != null) {
-            PathHandler pathHandler = new PathHandler();
-            Collection<String> deploymentNames = towServletContainer.listDeployments();
-            for (String deploymentName : deploymentNames) {
-                DeploymentManager manager = towServletContainer.getDeployment(deploymentName);
-                manager.deploy();
-
-                ServletContext servletContext = manager.getDeployment().getServletContext();
-                Object attr = servletContext.getAttribute(TowServletContext.DERIVED_WEB_SERVICE_ATTRIBUTE);
-                servletContext.removeAttribute(TowServletContext.DERIVED_WEB_SERVICE_ATTRIBUTE);
-                if ("true".equals(attr)) {
-                    CoreService rootService = context.getRootService();
-                    WebService webService = DefaultWebService.create(servletContext, rootService);
-                    servletContext.setAttribute(ROOT_WEB_SERVICE_ATTRIBUTE, webService);
-                }
-
-                ServerContainer serverContainer =
-                        (ServerContainer)servletContext.getAttribute(ServerContainer.class.getName());
-                if (serverContainer != null) {
-                    ServerEndpointExporter serverEndpointExporter = new ServerEndpointExporter(context);
-                    serverEndpointExporter.initServletContext(servletContext);
-                    serverEndpointExporter.registerEndpoints();
-                }
-
-                HttpHandler handler = manager.start();
-                String contextPath = manager.getDeployment().getDeploymentInfo().getContextPath();
-                pathHandler.addPrefixPath(contextPath, handler);
-            }
-            if (staticResourceHandler != null && staticResourceHandler.hasPatterns()) {
-                return exchange -> {
-                    if (staticResourceHandler != null) {
-                        staticResourceHandler.handleRequest(exchange);
-                        if (!exchange.isDispatched() && !exchange.isComplete()) {
-                            pathHandler.handleRequest(exchange);
-                        }
-                    }
-                };
-            } else {
-                return pathHandler;
-            }
-        } else {
+        if (towServletContainer == null) {
             return null;
+        }
+        PathHandler pathHandler = new PathHandler();
+        Collection<String> deploymentNames = towServletContainer.listDeployments();
+        for (String deploymentName : deploymentNames) {
+            DeploymentManager manager = towServletContainer.getDeployment(deploymentName);
+            manager.deploy();
+
+            ServletContext servletContext = manager.getDeployment().getServletContext();
+            Object attr = servletContext.getAttribute(TowServletContext.DERIVED_WEB_SERVICE_ATTRIBUTE);
+            servletContext.removeAttribute(TowServletContext.DERIVED_WEB_SERVICE_ATTRIBUTE);
+            if ("true".equals(attr)) {
+                CoreService rootService = context.getRootService();
+                WebService webService = DefaultWebService.create(servletContext, rootService);
+                servletContext.setAttribute(ROOT_WEB_SERVICE_ATTRIBUTE, webService);
+            }
+
+            ServerContainer serverContainer =
+                    (ServerContainer)servletContext.getAttribute(ServerContainer.class.getName());
+            if (serverContainer != null) {
+                ServerEndpointExporter serverEndpointExporter = new ServerEndpointExporter(context);
+                serverEndpointExporter.initServletContext(servletContext);
+                serverEndpointExporter.registerEndpoints();
+            }
+
+            HttpHandler handler = manager.start();
+            String contextPath = manager.getDeployment().getDeploymentInfo().getContextPath();
+            pathHandler.addPrefixPath(contextPath, handler);
+        }
+        HttpHandler rootHandler = new GracefulShutdownHandler(pathHandler);
+        if (staticResourceHandler != null && staticResourceHandler.hasPatterns()) {
+            return exchange -> {
+                if (staticResourceHandler != null) {
+                    staticResourceHandler.handleRequest(exchange);
+                    if (!exchange.isDispatched() && !exchange.isComplete()) {
+                        rootHandler.handleRequest(exchange);
+                    }
+                }
+            };
+        } else {
+            return rootHandler;
         }
     }
 

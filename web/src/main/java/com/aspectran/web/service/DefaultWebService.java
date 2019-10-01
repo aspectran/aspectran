@@ -20,7 +20,6 @@ import com.aspectran.core.activity.ActivityTerminatedException;
 import com.aspectran.core.activity.TransletNotFoundException;
 import com.aspectran.core.activity.request.RequestMethodNotAllowedException;
 import com.aspectran.core.activity.request.SizeLimitExceededException;
-import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.config.ContextConfig;
 import com.aspectran.core.context.config.ExposalsConfig;
@@ -37,7 +36,6 @@ import com.aspectran.web.startup.servlet.WebActivityServlet;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -190,6 +188,7 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
                     ROOT_WEB_SERVICE_ATTRIBUTE + ": " + service);
         }
 
+        WebServiceHolder.putWebService(service);
         return service;
     }
 
@@ -209,7 +208,9 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
                 applyWebConfig(service, webConfig);
             }
         }
+
         setServiceStateListener(service);
+
         if (service.isLateStart()) {
             try {
                 service.getServiceController().start();
@@ -217,6 +218,8 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
                 throw new AspectranServiceException("Failed to start DefaultWebService");
             }
         }
+
+        WebServiceHolder.putWebService(service);
         return service;
     }
 
@@ -243,6 +246,7 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
                     attrName + ": " + service);
         }
 
+        WebServiceHolder.putWebService(service);
         return service;
     }
 
@@ -267,8 +271,10 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
                     attrName + ": " + service);
             }
 
+            WebServiceHolder.putWebService(service);
             return service;
         } else {
+            WebServiceHolder.putWebService(rootService);
             return rootService;
         }
     }
@@ -364,57 +370,6 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
                 paused();
             }
         });
-    }
-
-    /**
-     * Find the root ActivityContext for this web aspectran service.
-     *
-     * @param servletContext ServletContext to find the web aspectran service for
-     * @return the ActivityContext for this web aspectran service
-     */
-    public static ActivityContext getActivityContext(ServletContext servletContext) {
-        ActivityContext activityContext = getActivityContext(servletContext, ROOT_WEB_SERVICE_ATTRIBUTE);
-        if (activityContext == null) {
-            throw new IllegalStateException("No Root DefaultWebService found; " +
-                    "No AspectranServiceListener registered?");
-        }
-        return activityContext;
-    }
-
-    /**
-     * Find the standalone ActivityContext for this web aspectran service.
-     *
-     * @param servlet the servlet
-     * @return the ActivityContext for this web aspectran service
-     */
-    public static ActivityContext getActivityContext(HttpServlet servlet) {
-        ServletContext servletContext = servlet.getServletContext();
-        String attrName = STANDALONE_WEB_SERVICE_ATTRIBUTE_PREFIX + servlet.getServletName();
-        ActivityContext activityContext = getActivityContext(servletContext, attrName);
-        if (activityContext != null) {
-            return activityContext;
-        } else {
-            return getActivityContext(servletContext);
-        }
-    }
-
-    /**
-     * Find the ActivityContext for this web aspectran service.
-     *
-     * @param servletContext ServletContext to find the web aspectran service for
-     * @param attrName the name of the ServletContext attribute to look for
-     * @return the ActivityContext for this web aspectran service
-     */
-    private static ActivityContext getActivityContext(ServletContext servletContext, String attrName) {
-        Object attr = servletContext.getAttribute(attrName);
-        if (attr == null) {
-            return null;
-        }
-        if (!(attr instanceof DefaultWebService)) {
-            throw new IllegalStateException("Context attribute [" + attr + "] is not of type [" +
-                    DefaultWebService.class.getName() + "]");
-        }
-        return ((CoreService)attr).getActivityContext();
     }
 
 }

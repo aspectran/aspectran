@@ -32,7 +32,6 @@ import io.undertow.websockets.jsr.WebSocketDeploymentInfo;
 
 import javax.servlet.ServletContainerInitializer;
 import javax.websocket.CloseReason;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -152,7 +151,6 @@ public class TowServletContext extends DeploymentInfo implements ApplicationAdap
      * Specifies whether this is a derived web service that inherits the root web service.
      */
     public void setDerived(boolean derived) {
-        setWebSocketEnabled(false);
         if (derived) {
             addServletContextAttribute(DERIVED_WEB_SERVICE_ATTRIBUTE, "true");
         } else {

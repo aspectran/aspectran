@@ -18,6 +18,7 @@
     <bean id="tow.server" class="com.aspectran.undertow.server.TowServer">
         <properties>
             <item name="autoStart">%{tow.server.startup}</item>
+            <item name="shutdownDelay" valueType="int">1000</item>
             <item name="httpListeners" type="array">
                 <bean class="com.aspectran.undertow.server.HttpListenerConfig">
                     <properties>

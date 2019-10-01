@@ -43,76 +43,81 @@ public class TowServer extends AbstractLifeCycle implements InitializableBean, D
 
     private boolean autoStart;
 
-    public Undertow.Builder setAutoStart(boolean autoStart) {
+    private int shutdownDelay;
+
+    public void setAutoStart(boolean autoStart) {
         this.autoStart = autoStart;
-        return builder;
     }
 
-    public Undertow.Builder setSystemProperty(String key, String value) {
+    public void setShutdownDelay(int shutdownDelay) {
+        this.shutdownDelay = shutdownDelay;
+    }
+
+    public void setSystemProperty(String key, String value) {
         System.setProperty(key, value);
-        return builder;
     }
 
-    public Undertow.Builder setHttpListeners(HttpListenerConfig... httpListenerConfigs) {
+    public void setHttpListeners(HttpListenerConfig... httpListenerConfigs) {
         if (httpListenerConfigs == null) {
             throw new IllegalArgumentException("httpListenerConfigs must not be null");
         }
         for (HttpListenerConfig listenerConfig : httpListenerConfigs) {
             builder.addListener(listenerConfig.getListenerBuilder());
         }
-        return builder;
     }
 
-    public Undertow.Builder setHttpsListeners(HttpsListenerConfig... httpsListenerConfigs) throws IOException {
+    public void setHttpsListeners(HttpsListenerConfig... httpsListenerConfigs) throws IOException {
         if (httpsListenerConfigs == null) {
             throw new IllegalArgumentException("httpsListenerConfigs must not be null");
         }
         for (HttpsListenerConfig listenerConfig : httpsListenerConfigs) {
             builder.addListener(listenerConfig.getListenerBuilder());
         }
-        return builder;
     }
 
-    public Undertow.Builder setAjpListeners(AjpListenerConfig... ajpListenerConfigs) {
+    public void setAjpListeners(AjpListenerConfig... ajpListenerConfigs) {
         if (ajpListenerConfigs == null) {
             throw new IllegalArgumentException("ajpListenerConfigs must not be null");
         }
         for (AjpListenerConfig listenerConfig : ajpListenerConfigs) {
             builder.addListener(listenerConfig.getListenerBuilder());
         }
+    }
+
+    public void setHandler(HttpHandler handler) {
+        builder.setHandler(handler);
+    }
+
+    public void setBufferSize(int bufferSize) {
+        builder.setBufferSize(bufferSize);
+    }
+
+    public void setIoThreads(int ioThreads) {
+        builder.setIoThreads(ioThreads);
+    }
+
+    public void setWorkerThreads(int workerThreads) {
+        builder.setWorkerThreads(workerThreads);
+    }
+
+    public void setDirectBuffers(final boolean directBuffers) {
+        builder.setDirectBuffers(directBuffers);
+    }
+
+    public <T> void setServerOption(final Option<T> option, final T value) {
+        builder.setServerOption(option, value);
+    }
+
+    public <T> void setSocketOption(final Option<T> option, final T value) {
+        builder.setSocketOption(option, value);
+    }
+
+    public <T> void setWorkerOption(final Option<T> option, final T value) {
+        builder.setWorkerOption(option, value);
+    }
+
+    public Undertow.Builder getBuilder() {
         return builder;
-    }
-
-    public Undertow.Builder setHandler(HttpHandler handler) {
-        return builder.setHandler(handler);
-    }
-
-    public Undertow.Builder setBufferSize(int bufferSize) {
-        return builder.setBufferSize(bufferSize);
-    }
-
-    public Undertow.Builder setIoThreads(int ioThreads) {
-        return builder.setIoThreads(ioThreads);
-    }
-
-    public Undertow.Builder setWorkerThreads(int workerThreads) {
-        return builder.setWorkerThreads(workerThreads);
-    }
-
-    public Undertow.Builder setDirectBuffers(final boolean directBuffers) {
-        return builder.setDirectBuffers(directBuffers);
-    }
-
-    public <T> Undertow.Builder setServerOption(final Option<T> option, final T value) {
-        return builder.setServerOption(option, value);
-    }
-
-    public <T> Undertow.Builder setSocketOption(final Option<T> option, final T value) {
-        return builder.setSocketOption(option, value);
-    }
-
-    public <T> Undertow.Builder setWorkerOption(final Option<T> option, final T value) {
-        return builder.setWorkerOption(option, value);
     }
 
     @SuppressWarnings("unchecked")
@@ -185,6 +190,9 @@ public class TowServer extends AbstractLifeCycle implements InitializableBean, D
     @Override
     public void destroy() {
         try {
+            if (shutdownDelay > 0) {
+                Thread.sleep(shutdownDelay);
+            }
             stop();
         } catch (Exception e) {
             log.error("Error while stopping Undertow server: " + e.getMessage(), e);
