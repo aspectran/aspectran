@@ -18,17 +18,17 @@ package com.aspectran.core.component.bean.scope;
 import com.aspectran.core.context.rule.type.ScopeType;
 
 /**
- * The Class ApplicationScope.
+ * The Class SingletonScope.
  *
  * @since 2011. 3. 12.
  */
-public class ApplicationScope extends AbstractScope {
+public final class SingletonScope extends AbstractScope {
 
     /**
-     * Instantiates a new Application scope.
+     * Instantiates a new Singleton scope.
      */
-    public ApplicationScope() {
-        super(ScopeType.APPLICATION);
+    public SingletonScope() {
+        super(ScopeType.SINGLETON);
     }
 
 }

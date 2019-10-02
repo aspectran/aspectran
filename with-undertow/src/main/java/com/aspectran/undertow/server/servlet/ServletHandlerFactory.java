@@ -84,6 +84,7 @@ public class ServletHandlerFactory implements ActivityContextAware {
                 servletContext.setAttribute(ROOT_WEB_SERVICE_ATTRIBUTE, webService);
             }
 
+            // Required for any websocket support in undertow
             ServerContainer serverContainer =
                     (ServerContainer)servletContext.getAttribute(ServerContainer.class.getName());
             if (serverContainer != null) {

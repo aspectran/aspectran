@@ -37,7 +37,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  *
  * @since 2011. 3. 12.
  */
-public class AbstractScope implements Scope {
+public abstract class AbstractScope implements Scope {
 
     private static final Log log = LogFactory.getLog(AbstractScope.class);
 
@@ -67,6 +67,33 @@ public class AbstractScope implements Scope {
     }
 
     @Override
+    public BeanRule getBeanRule(Object bean) {
+        if (bean == null) {
+            throw new IllegalArgumentException("bean must not be null");
+        }
+        for (Map.Entry<BeanRule, BeanInstance> entry : scopedBeanInstanceMap.entrySet()) {
+            if (entry.getValue() == bean) {
+                return entry.getKey();
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public boolean containsBeanRule(BeanRule beanRule) {
+        return scopedBeanInstanceMap.containsKey(beanRule);
+    }
+
+    @Override
+    public void destroy(Object bean) throws Exception {
+        BeanRule beanRule = getBeanRule(bean);
+        if (beanRule != null) {
+            doDestroy(beanRule, bean);
+            scopedBeanInstanceMap.remove(beanRule);
+        }
+    }
+
+    @Override
     public void destroy() {
         if (log.isDebugEnabled()) {
             if (!scopedBeanInstanceMap.isEmpty()) {
@@ -81,23 +108,24 @@ public class AbstractScope implements Scope {
             BeanInstance instance = scopedBeanInstanceMap.get(beanRule);
             Object bean = instance.getBean();
             if (bean != null) {
-                doDestroy(beanRule, bean);
+                try {
+                    doDestroy(beanRule, bean);
+                } catch (Exception e) {
+                    log.error("Could not destroy " + scopeType + " scoped bean " + beanRule, e);
+                }
+
             }
         }
         scopedBeanInstanceMap.clear();
     }
 
-    private void doDestroy(BeanRule beanRule, Object bean) {
+    private void doDestroy(BeanRule beanRule, Object bean) throws Exception {
         if (bean != null) {
-            try {
-                if (beanRule.isDisposableBean()) {
-                    ((DisposableBean)bean).destroy();
-                } else if (beanRule.getDestroyMethodName() != null) {
-                    Method destroyMethod = beanRule.getDestroyMethod();
-                    destroyMethod.invoke(bean, MethodUtils.EMPTY_OBJECT_ARRAY);
-                }
-            } catch (Exception e) {
-                log.error("Could not destroy " + scopeType + " scoped bean " + beanRule, e);
+            if (beanRule.isDisposableBean()) {
+                ((DisposableBean)bean).destroy();
+            } else if (beanRule.getDestroyMethodName() != null) {
+                Method destroyMethod = beanRule.getDestroyMethod();
+                destroyMethod.invoke(bean, MethodUtils.EMPTY_OBJECT_ARRAY);
             }
         }
     }

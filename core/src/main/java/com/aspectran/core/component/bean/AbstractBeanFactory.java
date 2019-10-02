@@ -32,6 +32,7 @@ import com.aspectran.core.component.bean.aware.EnvironmentAware;
 import com.aspectran.core.component.bean.proxy.CglibDynamicBeanProxy;
 import com.aspectran.core.component.bean.proxy.JavassistDynamicBeanProxy;
 import com.aspectran.core.component.bean.proxy.JdkDynamicBeanProxy;
+import com.aspectran.core.component.bean.scope.Scope;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.expr.ItemEvaluator;
 import com.aspectran.core.context.expr.ItemExpression;
@@ -69,22 +70,16 @@ import java.util.Set;
  *
  * <p>Created: 2009. 03. 09 PM 23:48:09</p>
  */
-public abstract class AbstractBeanFactory extends AbstractComponent {
+abstract class AbstractBeanFactory extends AbstractComponent {
 
     private static final Log log = LogFactory.getLog(AbstractBeanFactory.class);
 
-    private final Set<BeanRule> singletonBeanRules = new LinkedHashSet<>();
-
     private final ActivityContext context;
-
-    private final BeanRuleRegistry beanRuleRegistry;
 
     private final BeanProxifierType beanProxifierType;
 
-    public AbstractBeanFactory(ActivityContext context, BeanRuleRegistry beanRuleRegistry,
-                               BeanProxifierType beanProxifierType) {
+    AbstractBeanFactory(ActivityContext context, BeanProxifierType beanProxifierType) {
         this.context = context;
-        this.beanRuleRegistry = beanRuleRegistry;
         this.beanProxifierType = (beanProxifierType != null ? beanProxifierType : BeanProxifierType.JAVASSIST);
     }
 
@@ -92,13 +87,14 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
         return context;
     }
 
-    protected BeanRuleRegistry getBeanRuleRegistry() {
-        return beanRuleRegistry;
-    }
-
     protected Object createBean(BeanRule beanRule) {
         Activity activity = context.getCurrentActivity();
-        return createBean(beanRule, activity);
+        return createBean(beanRule, null, activity);
+    }
+
+    protected Object createBean(BeanRule beanRule, Scope scope) {
+        Activity activity = context.getCurrentActivity();
+        return createBean(beanRule, scope, activity);
     }
 
     protected Object getFactoryProducedObject(BeanRule beanRule, Object bean) {
@@ -112,17 +108,17 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
         }
     }
 
-    private Object createBean(BeanRule beanRule, Activity activity) {
+    protected Object createBean(BeanRule beanRule, Scope scope, Activity activity) {
         Object bean;
         if (beanRule.isFactoryOffered()) {
-            bean = createOfferedFactoryBean(beanRule, activity);
+            bean = createOfferedFactoryBean(beanRule, scope, activity);
         } else {
-            bean = createNormalBean(beanRule, activity);
+            bean = createNormalBean(beanRule, scope, activity);
         }
         return bean;
     }
 
-    private Object createNormalBean(BeanRule beanRule, Activity activity) {
+    private Object createNormalBean(BeanRule beanRule, Scope scope, Activity activity) {
         try {
             Object[] args;
             Class<?>[] argTypes;
@@ -167,11 +163,10 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
                 }
             }
 
-            Object bean = createBeanInstance(beanRule, args, argTypes);
+            Object bean = instantiateBean(beanRule, args, argTypes);
 
-            if (beanRule.isSingleton()) {
-                beanRule.setBeanInstance(new BeanInstance(bean));
-                singletonBeanRules.add(beanRule);
+            if (scope != null) {
+                scope.putBeanInstance(beanRule, new BeanInstance(bean));
             }
 
             invokeAwareMethods(bean);
@@ -202,7 +197,7 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
         }
     }
 
-    private Object createOfferedFactoryBean(BeanRule beanRule, Activity activity) {
+    private Object createOfferedFactoryBean(BeanRule beanRule, Scope scope, Activity activity) {
         String factoryBeanId = beanRule.getFactoryBeanId();
         Class<?> factoryBeanClass = beanRule.getFactoryBeanClass();
         Object bean;
@@ -231,9 +226,8 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
                     beanRule, e);
         }
 
-        if (beanRule.isSingleton()) {
-            beanRule.setBeanInstance(new BeanInstance(bean));
-            singletonBeanRules.add(beanRule);
+        if (scope != null) {
+            scope.putBeanInstance(beanRule, new BeanInstance(bean));
         }
 
         try {
@@ -256,10 +250,10 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
         }
     }
 
-    private Object createBeanInstance(BeanRule beanRule, Object[] args, Class<?>[] argTypes) {
+    private Object instantiateBean(BeanRule beanRule, Object[] args, Class<?>[] argTypes) {
         Object bean;
         if (beanRule.isProxied()) {
-            bean = createDynamicBeanProxy(beanRule, args, argTypes);
+            bean = instantiateDynamicBeanProxy(beanRule, args, argTypes);
         } else if (args != null) {
             bean = newInstance(beanRule.getBeanClass(), args, argTypes);
         } else {
@@ -268,7 +262,7 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
         return bean;
     }
 
-    private Object createDynamicBeanProxy(BeanRule beanRule, Object[] args, Class<?>[] argTypes) {
+    private Object instantiateDynamicBeanProxy(BeanRule beanRule, Object[] args, Class<?>[] argTypes) {
         Object bean;
         if (beanProxifierType == BeanProxifierType.JAVASSIST) {
             if (log.isTraceEnabled()) {
@@ -418,83 +412,6 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
         return resultBean;
     }
 
-    /**
-     * Instantiate all singletons(non-lazy-init).
-     */
-    private void instantiateSingletons() {
-        if (log.isDebugEnabled()) {
-            log.debug("Initializing singletons in " + this);
-        }
-
-        Activity activity = context.getDefaultActivity();
-        for (BeanRule beanRule : beanRuleRegistry.getIdBasedBeanRules()) {
-            instantiateSingleton(beanRule, activity);
-        }
-        for (Set<BeanRule> beanRuleSet : beanRuleRegistry.getTypeBasedBeanRules()) {
-            for (BeanRule beanRule : beanRuleSet) {
-                instantiateSingleton(beanRule, activity);
-            }
-        }
-        for (BeanRule beanRule : beanRuleRegistry.getConfigurableBeanRules()) {
-            instantiateSingleton(beanRule, activity);
-        }
-    }
-
-    private void instantiateSingleton(BeanRule beanRule, Activity activity) {
-        if (beanRule.isSingleton()
-                && beanRule.getBeanInstance() == null
-                && !beanRule.isLazyInit()) {
-            createBean(beanRule, activity);
-        }
-    }
-
-    /**
-     * Destroy all cached singletons.
-     */
-    private void destroySingletons() {
-        if (log.isDebugEnabled()) {
-            log.debug("Destroying singletons in " + this);
-        }
-
-        int failedDestroyes = 0;
-
-        List<BeanRule> beanRules = new ArrayList<>(singletonBeanRules);
-        ListIterator<BeanRule> iterator = beanRules.listIterator(beanRules.size());
-        while (iterator.hasPrevious()) {
-            failedDestroyes += doDestroySingleton(iterator.previous());
-        }
-        singletonBeanRules.clear();
-
-        if (failedDestroyes > 0) {
-            log.warn("Singletons has not been destroyed cleanly (Failure Count: " + failedDestroyes + ")");
-        } else {
-            log.debug("Destroyed all cached singletons in " + this);
-        }
-    }
-
-    private int doDestroySingleton(BeanRule beanRule) {
-        int failedCount = 0;
-        if (beanRule.getBeanInstance() != null && beanRule.isSingleton()) {
-            try {
-                BeanInstance instance = beanRule.getBeanInstance();
-                Object bean = instance.getBean();
-                if (bean != null) {
-                    if (beanRule.isDisposableBean()) {
-                        ((DisposableBean)bean).destroy();
-                    } else if (beanRule.getDestroyMethod() != null) {
-                        Method destroyMethod = beanRule.getDestroyMethod();
-                        destroyMethod.invoke(bean, MethodUtils.EMPTY_OBJECT_ARRAY);
-                    }
-                }
-            } catch (Exception e) {
-                failedCount++;
-                log.error("Could not destroy singleton bean " + beanRule, e);
-            }
-            beanRule.setBeanInstance(null);
-        }
-        return failedCount;
-    }
-
     private static Object newInstance(Class<?> beanClass, Object[] args, Class<?>[] argTypes) {
         if (beanClass.isInterface()) {
             throw new BeanInstantiationException(beanClass, "Specified class is an interface");
@@ -546,16 +463,6 @@ public abstract class AbstractBeanFactory extends AbstractComponent {
             }
         }
         return constructorToUse;
-    }
-
-    @Override
-    protected void doInitialize() throws Exception {
-        instantiateSingletons();
-    }
-
-    @Override
-    protected void doDestroy() throws Exception {
-        destroySingletons();
     }
 
 }

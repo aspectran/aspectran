@@ -24,7 +24,7 @@ import java.io.Serializable;
  *
  * @since 2011. 3. 12.
  */
-public class SessionScope extends AbstractScope implements Serializable {
+public final class SessionScope extends AbstractScope implements Serializable {
 
     /**
      * Instantiates a new Session scope.

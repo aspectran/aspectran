@@ -244,8 +244,6 @@ public class AspectranActivityContext extends AbstractComponent implements Activ
 
     @Override
     protected void doDestroy() {
-        applicationAdapter.getApplicationScope().destroy();
-
         if (transletRuleRegistry != null) {
             transletRuleRegistry.destroy();
             transletRuleRegistry = null;

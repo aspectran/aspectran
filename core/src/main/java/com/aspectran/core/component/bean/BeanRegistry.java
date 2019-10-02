@@ -105,4 +105,6 @@ public interface BeanRegistry {
 
     Collection<Class<?>> findConfigBeanClassesWithAnnotation(Class<? extends Annotation> annotationType);
 
+    void destroySingleton(Object bean) throws Exception;
+
 }

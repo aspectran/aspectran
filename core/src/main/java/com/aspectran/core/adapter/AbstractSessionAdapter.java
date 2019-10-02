@@ -56,14 +56,6 @@ public abstract class AbstractSessionAdapter implements SessionAdapter {
         return this.sessionScope;
     }
 
-    /**
-     * Creates a new session scope.
-     */
-    private void newSessionScope() {
-        this.sessionScope = new SessionScope();
-        setAttribute(SESSION_SCOPE_ATTRIBUTE_NAME, this.sessionScope);
-    }
-
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();

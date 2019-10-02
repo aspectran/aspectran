@@ -15,8 +15,6 @@
  */
 package com.aspectran.core.adapter;
 
-import com.aspectran.core.component.bean.scope.ApplicationScope;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.Enumeration;
@@ -27,13 +25,6 @@ import java.util.Enumeration;
  * @since 2011. 3. 13.
  */
 public interface ApplicationAdapter {
-
-    /**
-     * Gets the application scope.
-     *
-     * @return the scope
-     */
-    ApplicationScope getApplicationScope();
 
     /**
      * Returns the class loader used by the current application.

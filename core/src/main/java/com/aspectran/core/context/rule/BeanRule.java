@@ -116,8 +116,6 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
 
     private boolean methodAutowireParsed;
 
-    private volatile BeanInstance beanInstance; // only for singleton
-
     private String description;
 
     /**
@@ -723,24 +721,6 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
 
     public void setMethodAutowireParsed(boolean methodAutowireParsed) {
         this.methodAutowireParsed = methodAutowireParsed;
-    }
-
-    /**
-     * Returns the instantiated object of this bean.
-     *
-     * @return the instantiated object of this bean
-     */
-    public BeanInstance getBeanInstance() {
-        return beanInstance;
-    }
-
-    /**
-     * Sets the instantiated object of this bean.
-     *
-     * @param beanInstance the instantiated object of this bean
-     */
-    public void setBeanInstance(BeanInstance beanInstance) {
-        this.beanInstance = beanInstance;
     }
 
     /**

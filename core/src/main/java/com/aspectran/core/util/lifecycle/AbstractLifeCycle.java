@@ -200,8 +200,9 @@ public abstract class AbstractLifeCycle implements LifeCycle {
 
     private void setFailed(Throwable th) {
         state = STATE_FAILED;
-        if (log.isDebugEnabled())
+        if (log.isDebugEnabled()) {
             log.warn(FAILED + " " + this + ": " + th, th);
+        }
         for (Listener listener : listeners) {
             listener.lifeCycleFailure(this, th);
         }
@@ -213,30 +214,6 @@ public abstract class AbstractLifeCycle implements LifeCycle {
 
     public void setStopTimeout(long stopTimeout) {
         this.stopTimeout = stopTimeout;
-    }
-
-    public abstract static class AbstractLifeCycleListener implements LifeCycle.Listener {
-
-        @Override
-        public void lifeCycleFailure(LifeCycle event, Throwable cause) {
-        }
-
-        @Override
-        public void lifeCycleStarted(LifeCycle event) {
-        }
-
-        @Override
-        public void lifeCycleStarting(LifeCycle event) {
-        }
-
-        @Override
-        public void lifeCycleStopped(LifeCycle event) {
-        }
-
-        @Override
-        public void lifeCycleStopping(LifeCycle event) {
-        }
-
     }
 
     @Override

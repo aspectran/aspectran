@@ -25,8 +25,7 @@ public enum ScopeType {
     SINGLETON("singleton"),
     PROTOTYPE("prototype"),
     REQUEST("request"),
-    SESSION("session"),
-    APPLICATION("application");
+    SESSION("session");
 
     private final String alias;
 

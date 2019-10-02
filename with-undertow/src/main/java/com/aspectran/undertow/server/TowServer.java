@@ -18,6 +18,7 @@ package com.aspectran.undertow.server;
 import com.aspectran.core.component.bean.ablility.DisposableBean;
 import com.aspectran.core.component.bean.ablility.InitializableBean;
 import com.aspectran.core.util.lifecycle.AbstractLifeCycle;
+import com.aspectran.core.util.lifecycle.LifeCycle;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import io.undertow.Undertow;
@@ -41,16 +42,31 @@ public class TowServer extends AbstractLifeCycle implements InitializableBean, D
 
     private Undertow server;
 
-    private boolean autoStart;
+    private boolean autoStartup;
 
-    private int shutdownDelay;
+    private int stopDelayTime;
 
-    public void setAutoStart(boolean autoStart) {
-        this.autoStart = autoStart;
+    private Listener stoppingListener = new Listener() {
+        @Override
+        public void lifeCycleStopping(LifeCycle event) {
+            try {
+                Thread.sleep(stopDelayTime);
+            } catch (InterruptedException e) {
+                // ignore
+            }
+        }
+    };
+
+    public void setAutoStartup(boolean autoStartup) {
+        this.autoStartup = autoStartup;
     }
 
-    public void setShutdownDelay(int shutdownDelay) {
-        this.shutdownDelay = shutdownDelay;
+    public void setStopDelayTime(int stopDelayTime) {
+        this.stopDelayTime = stopDelayTime;
+        removeLifeCycleListener(stoppingListener);
+        if (stopDelayTime > 0) {
+            addLifeCycleListener(stoppingListener);
+        }
     }
 
     public void setSystemProperty(String key, String value) {
@@ -182,7 +198,7 @@ public class TowServer extends AbstractLifeCycle implements InitializableBean, D
 
     @Override
     public void initialize() throws Exception {
-        if (autoStart) {
+        if (autoStartup) {
             start();
         }
     }
@@ -190,9 +206,6 @@ public class TowServer extends AbstractLifeCycle implements InitializableBean, D
     @Override
     public void destroy() {
         try {
-            if (shutdownDelay > 0) {
-                Thread.sleep(shutdownDelay);
-            }
             stop();
         } catch (Exception e) {
             log.error("Error while stopping Undertow server: " + e.getMessage(), e);

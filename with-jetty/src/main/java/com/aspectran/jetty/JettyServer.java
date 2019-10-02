@@ -39,7 +39,7 @@ public class JettyServer extends Server implements InitializableBean, Disposable
 
     private static final Log log = LogFactory.getLog(JettyServer.class);
 
-    private boolean autoStart;
+    private boolean autoStartup;
 
     public JettyServer() {
         super();
@@ -53,8 +53,8 @@ public class JettyServer extends Server implements InitializableBean, Disposable
         super(pool);
     }
 
-    public void setAutoStart(boolean autoStart) {
-        this.autoStart = autoStart;
+    public void setAutoStartup(boolean autoStartup) {
+        this.autoStartup = autoStartup;
     }
 
     public void setSystemProperty(String key, String value) {
@@ -77,7 +77,7 @@ public class JettyServer extends Server implements InitializableBean, Disposable
 
     @Override
     public void doStart() throws Exception {
-        if (autoStart) {
+        if (autoStartup) {
             log.info("Starting embedded Jetty server");
             super.doStart();
             log.info("Jetty started on port(s) " + getActualPortsDescription()

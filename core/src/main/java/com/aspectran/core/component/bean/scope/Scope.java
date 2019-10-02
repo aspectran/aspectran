@@ -50,6 +50,12 @@ public interface Scope {
      */
     void putBeanInstance(BeanRule beanRule, BeanInstance beanInstance);
 
+    BeanRule getBeanRule(Object bean);
+
+    boolean containsBeanRule(BeanRule beanRule);
+
+    void destroy(Object bean) throws Exception;
+
     /**
      * Destroy all scoped beans in this scope.
      */

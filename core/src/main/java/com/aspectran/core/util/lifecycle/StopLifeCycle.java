@@ -33,28 +33,12 @@ public class StopLifeCycle extends AbstractLifeCycle implements LifeCycle.Listen
     }
 
     @Override
-    public void lifeCycleStarting(LifeCycle lifecycle) {
-    }
-
-    @Override
     public void lifeCycleStarted(LifeCycle lifecycle) {
         try {
             this.lifecycle.stop();
         } catch (Exception e) {
             log.warn(e.getMessage(), e);
         }
-    }
-
-    @Override
-    public void lifeCycleFailure(LifeCycle lifecycle, Throwable cause) {
-    }
-
-    @Override
-    public void lifeCycleStopping(LifeCycle lifecycle) {
-    }
-
-    @Override
-    public void lifeCycleStopped(LifeCycle lifecycle) {
     }
 
 }
