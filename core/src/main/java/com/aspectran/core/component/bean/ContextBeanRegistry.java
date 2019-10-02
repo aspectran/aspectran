@@ -15,13 +15,13 @@
  */
 package com.aspectran.core.component.bean;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Array;
-import java.util.Collection;
-
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.type.BeanProxifierType;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Array;
+import java.util.Collection;
 
 /**
  * The Class ContextBeanRegistry.

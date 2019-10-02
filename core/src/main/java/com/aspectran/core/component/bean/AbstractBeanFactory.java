@@ -18,7 +18,6 @@ package com.aspectran.core.component.bean;
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.process.action.AnnotatedAction;
 import com.aspectran.core.component.AbstractComponent;
-import com.aspectran.core.component.bean.ablility.DisposableBean;
 import com.aspectran.core.component.bean.ablility.FactoryBean;
 import com.aspectran.core.component.bean.ablility.InitializableBean;
 import com.aspectran.core.component.bean.ablility.InitializableTransletBean;
@@ -58,12 +57,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * The Class AbstractBeanFactory.

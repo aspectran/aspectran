@@ -18,7 +18,6 @@ package com.aspectran.core.component.bean;
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
-import com.aspectran.core.component.bean.ablility.DisposableBean;
 import com.aspectran.core.component.bean.scope.RequestScope;
 import com.aspectran.core.component.bean.scope.Scope;
 import com.aspectran.core.component.bean.scope.SessionScope;
@@ -27,17 +26,9 @@ import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.type.BeanProxifierType;
 import com.aspectran.core.context.rule.type.ScopeType;
-import com.aspectran.core.util.MethodUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Array;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.ListIterator;
 import java.util.Set;
 import java.util.concurrent.locks.ReadWriteLock;
 
@@ -124,47 +115,61 @@ abstract class AbstractBeanRegistry extends AbstractBeanFactory implements BeanR
 
     private Object getScopedBean(Scope scope, BeanRule beanRule) {
         ReadWriteLock scopeLock = scope.getScopeLock();
-        boolean readLocked = true;
-        scopeLock.readLock().lock();
-        Object bean;
-        try {
+        if (scopeLock == null) {
+            Object bean;
             BeanInstance instance = scope.getBeanInstance(beanRule);
             if (instance == null) {
-                readLocked = false;
-                scopeLock.readLock().unlock();
-                scopeLock.writeLock().lock();
-                try {
-                    instance = scope.getBeanInstance(beanRule);
-                    if (instance == null) {
-                        bean = createBean(beanRule, scope);
-                    } else {
-                        bean = instance.getBean();
-                    }
-                    if (bean != null && beanRule.isFactoryProductionRequired()) {
-                        bean = getFactoryProducedObject(beanRule, bean);
-                    }
-                } finally {
-                    scopeLock.writeLock().unlock();
-                }
+                bean = createBean(beanRule, scope);
             } else {
                 bean = instance.getBean();
-                if (bean != null && beanRule.isFactoryProductionRequired()) {
+            }
+            if (bean != null && beanRule.isFactoryProductionRequired()) {
+                bean = getFactoryProducedObject(beanRule, bean);
+            }
+            return bean;
+        } else {
+            boolean readLocked = true;
+            scopeLock.readLock().lock();
+            Object bean;
+            try {
+                BeanInstance instance = scope.getBeanInstance(beanRule);
+                if (instance == null) {
                     readLocked = false;
                     scopeLock.readLock().unlock();
                     scopeLock.writeLock().lock();
                     try {
-                        bean = getFactoryProducedObject(beanRule, bean);
+                        instance = scope.getBeanInstance(beanRule);
+                        if (instance == null) {
+                            bean = createBean(beanRule, scope);
+                        } else {
+                            bean = instance.getBean();
+                        }
+                        if (bean != null && beanRule.isFactoryProductionRequired()) {
+                            bean = getFactoryProducedObject(beanRule, bean);
+                        }
                     } finally {
                         scopeLock.writeLock().unlock();
                     }
+                } else {
+                    bean = instance.getBean();
+                    if (bean != null && beanRule.isFactoryProductionRequired()) {
+                        readLocked = false;
+                        scopeLock.readLock().unlock();
+                        scopeLock.writeLock().lock();
+                        try {
+                            bean = getFactoryProducedObject(beanRule, bean);
+                        } finally {
+                            scopeLock.writeLock().unlock();
+                        }
+                    }
+                }
+            } finally {
+                if (readLocked) {
+                    scopeLock.readLock().unlock();
                 }
             }
-        } finally {
-            if (readLocked) {
-                scopeLock.readLock().unlock();
-            }
+            return bean;
         }
-        return bean;
     }
 
     private RequestScope getRequestScope() {

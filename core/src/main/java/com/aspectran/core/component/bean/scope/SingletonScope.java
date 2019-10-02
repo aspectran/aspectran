@@ -28,7 +28,7 @@ public final class SingletonScope extends AbstractScope {
      * Instantiates a new Singleton scope.
      */
     public SingletonScope() {
-        super(ScopeType.SINGLETON);
+        super(ScopeType.SINGLETON, true);
     }
 
 }

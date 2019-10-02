@@ -41,14 +41,19 @@ public abstract class AbstractScope implements Scope {
 
     private static final Log log = LogFactory.getLog(AbstractScope.class);
 
-    private final ReadWriteLock scopeLock = new ReentrantReadWriteLock();
-
     private final Map<BeanRule, BeanInstance> scopedBeanInstanceMap = new LinkedHashMap<>();
 
     private final ScopeType scopeType;
 
-    AbstractScope(ScopeType scopeType) {
+    private final ReadWriteLock scopeLock;
+
+    AbstractScope(ScopeType scopeType, boolean needLock) {
         this.scopeType = scopeType;
+        if (needLock) {
+            this.scopeLock = new ReentrantReadWriteLock();
+        } else {
+            this.scopeLock = null;
+        }
     }
 
     @Override

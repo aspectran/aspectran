@@ -30,7 +30,7 @@ public final class SessionScope extends AbstractScope implements Serializable {
      * Instantiates a new Session scope.
      */
     public SessionScope() {
-        super(ScopeType.SESSION);
+        super(ScopeType.SESSION, true);
     }
 
 }

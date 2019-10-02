@@ -15,7 +15,6 @@
  */
 package com.aspectran.core.context.rule;
 
-import com.aspectran.core.component.bean.BeanInstance;
 import com.aspectran.core.component.bean.ablility.DisposableBean;
 import com.aspectran.core.component.bean.ablility.FactoryBean;
 import com.aspectran.core.component.bean.ablility.InitializableBean;

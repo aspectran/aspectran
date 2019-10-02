@@ -28,7 +28,7 @@ public final class RequestScope extends AbstractScope {
      * Instantiates a new Request scope.
      */
     public RequestScope() {
-        super(ScopeType.REQUEST);
+        super(ScopeType.REQUEST, false);
     }
 
 }
