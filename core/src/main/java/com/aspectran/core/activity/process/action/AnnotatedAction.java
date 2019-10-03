@@ -83,7 +83,7 @@ public class AnnotatedAction implements Executable {
         Object bean = null;
         try {
             if (!Modifier.isInterface(annotatedActionRule.getBeanClass().getModifiers())) {
-                bean = activity.getBeanForConfig(annotatedActionRule.getBeanClass());
+                bean = activity.getBean(annotatedActionRule.getBeanClass());
             }
             Method method = annotatedActionRule.getMethod();
             ParameterBindingRule[] parameterBindingRules = annotatedActionRule.getParameterBindingRules();

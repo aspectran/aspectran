@@ -15,26 +15,47 @@
  */
 package com.aspectran.undertow.server.servlet;
 
+import io.undertow.servlet.api.DeploymentInfo;
+import io.undertow.servlet.api.DeploymentManager;
 import io.undertow.servlet.core.ServletContainerImpl;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * <p>Created: 2019-08-05</p>
  */
 public class TowServletContainer extends ServletContainerImpl {
 
-    private TowServletContext[] towServletContexts;
+    private Map<String, DeploymentManager> deploymentManagers = new LinkedHashMap<>();
 
-    public TowServletContext[] getTowServletContexts() {
-        return towServletContexts;
+    public DeploymentManager[] getDeploymentManagers() {
+        if (deploymentManagers.isEmpty()) {
+            return null;
+        } else {
+            return deploymentManagers.values().toArray(new DeploymentManager[0]);
+        }
     }
 
-    public void setTowServletContexts(TowServletContext[] towServletContexts) {
-        this.towServletContexts = towServletContexts;
+    public void setTowServletContexts(TowServletContext... towServletContexts) {
         if (towServletContexts != null) {
-            for (TowServletContext towServletContext : towServletContexts) {
-                addDeployment(towServletContext);
+            for (DeploymentInfo deploymentInfo : towServletContexts) {
+                addDeployment(deploymentInfo);
             }
         }
+    }
+
+    @Override
+    public DeploymentManager addDeployment(DeploymentInfo deploymentInfo) {
+        DeploymentManager manager = super.addDeployment(deploymentInfo);
+        deploymentManagers.put(deploymentInfo.getDeploymentName(), manager);
+        return manager;
+    }
+
+    @Override
+    public void removeDeployment(DeploymentInfo deploymentInfo) {
+        super.removeDeployment(deploymentInfo);
+        deploymentManagers.remove(deploymentInfo.getDeploymentName());
     }
 
 }

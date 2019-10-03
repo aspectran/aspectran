@@ -75,6 +75,14 @@ public class UndertowCommand extends AbstractCommand {
             }
 
             BeanRegistry beanRegistry = service.getActivityContext().getBeanRegistry();
+
+            boolean justCreated = !beanRegistry.hasSingleton(TowServer.class, serverName);
+            if (justCreated) {
+                if ("stop".equals(mode) || "restart".equals(mode)) {
+                    return failed("Undertow server is not running");
+                }
+            }
+
             TowServer towServer;
             try {
                 towServer = beanRegistry.getBean(TowServer.class, serverName);
@@ -88,24 +96,16 @@ public class UndertowCommand extends AbstractCommand {
 
             switch (mode) {
                 case "start":
-                    if (towServer.isRunning()) {
+                    if (!justCreated && towServer.isRunning()) {
                         return failed(warn("Undertow server is already running"));
                     }
                     try {
-                        towServer.start();
+                        if (!towServer.isAutoStartup()) {
+                            towServer.start();
+                        }
                         return success(info(getStatus(towServer)));
                     } catch (BindException e) {
                         return failed("Undertow Server Error - Port already in use", e);
-                    }
-                case "restart":
-                    try {
-                        if (towServer.isRunning()) {
-                            towServer.stop();
-                        }
-                        towServer.start();
-                        return success(info(getStatus(towServer)));
-                    } catch (BindException e) {
-                        return failed("Undertow Server Error - Port already in use");
                     }
                 case "stop":
                     if (!towServer.isRunning()) {
@@ -113,9 +113,24 @@ public class UndertowCommand extends AbstractCommand {
                     }
                     try {
                         towServer.stop();
+                        beanRegistry.destroySingleton(towServer);
                         return success(info(getStatus(towServer)));
                     } catch (Exception e) {
                         return failed("Undertow server stop failed", e);
+                    }
+                case "restart":
+                    try {
+                        if (towServer.isRunning()) {
+                            towServer.stop();
+                            beanRegistry.destroySingleton(towServer);
+                            towServer = beanRegistry.getBean(TowServer.class, serverName);
+                        }
+                        if (!towServer.isAutoStartup()) {
+                            towServer.start();
+                        }
+                        return success(info(getStatus(towServer)));
+                    } catch (BindException e) {
+                        return failed("Undertow Server Error - Port already in use");
                     }
                 case "status":
                     return success(getStatus(towServer));

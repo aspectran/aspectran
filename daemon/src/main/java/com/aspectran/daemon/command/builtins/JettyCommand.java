@@ -74,6 +74,14 @@ public class JettyCommand extends AbstractCommand {
             }
 
             BeanRegistry beanRegistry = service.getActivityContext().getBeanRegistry();
+
+            boolean justCreated = !beanRegistry.hasSingleton(JettyServer.class, serverName);
+            if (justCreated) {
+                if ("stop".equals(mode) || "restart".equals(mode)) {
+                    return failed("Jetty server is not running");
+                }
+            }
+
             JettyServer jettyServer;
             try {
                 jettyServer = beanRegistry.getBean(JettyServer.class, serverName);
@@ -87,7 +95,7 @@ public class JettyCommand extends AbstractCommand {
 
             switch (mode) {
                 case "start":
-                    if (jettyServer.isRunning()) {
+                    if (!justCreated && jettyServer.isRunning()) {
                         return failed(warn("Jetty server is already running"));
                     }
                     try {

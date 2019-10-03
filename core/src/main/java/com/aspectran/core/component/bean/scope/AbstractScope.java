@@ -77,7 +77,7 @@ public abstract class AbstractScope implements Scope {
             throw new IllegalArgumentException("bean must not be null");
         }
         for (Map.Entry<BeanRule, BeanInstance> entry : scopedBeanInstanceMap.entrySet()) {
-            if (entry.getValue() == bean) {
+            if (entry.getValue().getBean() == bean) {
                 return entry.getKey();
             }
         }

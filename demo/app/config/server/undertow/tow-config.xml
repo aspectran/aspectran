@@ -43,6 +43,7 @@
                     </properties>
                 </bean>
             </item>
+            <item name="towServletContainer">#{tow.servletContainer}</item>
             <item name="handler">#{tow.accessLogHandler}</item>
         </properties>
     </bean>
@@ -82,15 +83,7 @@
     <bean id="tow.servletHandler" class="com.aspectran.undertow.server.servlet.ServletHandlerFactoryBean"
           scope="prototype">
         <properties>
-            <item name="towServletContainer">
-                <bean class="com.aspectran.undertow.server.servlet.TowServletContainer">
-                    <properties>
-                        <item name="towServletContexts" type="array">
-                            <value>#{tow.defaultServletContext}</value>
-                        </item>
-                    </properties>
-                </bean>
-            </item>
+            <item name="towServletContainer">#{tow.server^towServletContainer}</item>
             <item name="staticResourceHandler">#{tow.staticResourceHandler}</item>
         </properties>
     </bean>
@@ -117,6 +110,14 @@
                         </item>
                     </arguments>
                 </bean>
+            </item>
+        </properties>
+    </bean>
+
+    <bean id="tow.servletContainer" class="com.aspectran.undertow.server.servlet.TowServletContainer" scope="prototype">
+        <properties>
+            <item name="towServletContexts" type="array">
+                <value>#{tow.defaultServletContext}</value>
             </item>
         </properties>
     </bean>
@@ -196,7 +197,7 @@
         </properties>
     </bean>
 
-    <bean id="tow.sessionManager" class="com.aspectran.undertow.server.session.TowSessionManager">
+    <bean id="tow.sessionManager" class="com.aspectran.undertow.server.session.TowSessionManager" scope="prototype">
         <properties>
             <item name="sessionManagerConfig">
                 <bean class="com.aspectran.core.context.config.SessionManagerConfig">

@@ -23,9 +23,9 @@ import com.aspectran.core.component.aspect.InvalidPointcutPatternException;
 import com.aspectran.core.component.aspect.pointcut.Pointcut;
 import com.aspectran.core.component.aspect.pointcut.PointcutFactory;
 import com.aspectran.core.component.bean.BeanRuleRegistry;
-import com.aspectran.core.component.bean.ContextBeanRegistry;
+import com.aspectran.core.component.bean.ContextualBeanRegistry;
 import com.aspectran.core.component.schedule.ScheduleRuleRegistry;
-import com.aspectran.core.component.template.ContextTemplateRenderer;
+import com.aspectran.core.component.template.ContextualTemplateRenderer;
 import com.aspectran.core.component.template.TemplateRuleRegistry;
 import com.aspectran.core.component.translet.TransletRuleRegistry;
 import com.aspectran.core.context.ActivityContext;
@@ -352,18 +352,18 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
         initAspectRuleRegistry(assistant);
 
         BeanProxifierType beanProxifierType = BeanProxifierType.resolve((String)assistant.getSetting(DefaultSettingType.BEAN_PROXIFIER));
-        ContextBeanRegistry contextBeanRegistry = new ContextBeanRegistry(activityContext, beanRuleRegistry, beanProxifierType);
+        ContextualBeanRegistry contextualBeanRegistry = new ContextualBeanRegistry(activityContext, beanRuleRegistry, beanProxifierType);
 
         TemplateRuleRegistry templateRuleRegistry = assistant.getTemplateRuleRegistry();
-        ContextTemplateRenderer contextTemplateRenderer = new ContextTemplateRenderer(activityContext, templateRuleRegistry);
+        ContextualTemplateRenderer contextualTemplateRenderer = new ContextualTemplateRenderer(activityContext, templateRuleRegistry);
 
         ScheduleRuleRegistry scheduleRuleRegistry = assistant.getScheduleRuleRegistry();
         TransletRuleRegistry transletRuleRegistry = assistant.getTransletRuleRegistry();
 
         activityContext.setAspectRuleRegistry(aspectRuleRegistry);
-        activityContext.setContextBeanRegistry(contextBeanRegistry);
+        activityContext.setContextualBeanRegistry(contextualBeanRegistry);
         activityContext.setScheduleRuleRegistry(scheduleRuleRegistry);
-        activityContext.setContextTemplateRenderer(contextTemplateRenderer);
+        activityContext.setContextualTemplateRenderer(contextualTemplateRenderer);
         activityContext.setTransletRuleRegistry(transletRuleRegistry);
         activityContext.setDescription(assistant.getAssistantLocal().getDescription());
 

@@ -26,6 +26,8 @@ import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.type.BeanProxifierType;
 import com.aspectran.core.context.rule.type.ScopeType;
+import com.aspectran.core.lang.NonNull;
+import com.aspectran.core.lang.Nullable;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
@@ -194,6 +196,92 @@ abstract class AbstractBeanRegistry extends AbstractBeanFactory implements BeanR
         return null;
     }
 
+    @Override
+    public boolean hasSingleton(Object bean) {
+        ReadWriteLock scopeLock = singletonScope.getScopeLock();
+        scopeLock.readLock().lock();
+        try {
+            return (singletonScope.getBeanRule(bean) != null);
+        } finally {
+            scopeLock.readLock().unlock();
+        }
+    }
+
+    @Override
+    public boolean hasSingleton(@NonNull Class<?> type) {
+        return hasSingleton(type, null);
+    }
+
+    @Override
+    public boolean hasSingleton(@NonNull Class<?> type, @Nullable String id) {
+        ReadWriteLock scopeLock = singletonScope.getScopeLock();
+        scopeLock.readLock().lock();
+        try {
+            BeanRule[] beanRules = getBeanRuleRegistry().getBeanRules(type);
+            if (beanRules == null) {
+                BeanRule beanRule = getBeanRuleRegistry().getBeanRuleForConfig(type);
+                if (beanRule != null) {
+                    return singletonScope.containsBeanRule(beanRule);
+                } else {
+                    return false;
+                }
+            }
+            if (beanRules.length == 1) {
+                if (id != null) {
+                    if (id.equals(beanRules[0].getId())) {
+                        return singletonScope.containsBeanRule(beanRules[0]);
+                    } else {
+                        return false;
+                    }
+                } else {
+                    return singletonScope.containsBeanRule(beanRules[0]);
+                }
+            } else {
+                if (id != null) {
+                    for (BeanRule beanRule : beanRules) {
+                        if (id.equals(beanRule.getId())) {
+                            return singletonScope.containsBeanRule(beanRule);
+                        }
+                    }
+                    return false;
+                } else {
+                    for (BeanRule beanRule : beanRules) {
+                        if (singletonScope.containsBeanRule(beanRule)) {
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+            }
+        } finally {
+            scopeLock.readLock().unlock();
+        }
+    }
+
+    @Override
+    public void destroySingleton(Object bean) throws Exception {
+        ReadWriteLock scopeLock = singletonScope.getScopeLock();
+        boolean readLocked = true;
+        scopeLock.readLock().lock();
+        try {
+            BeanRule beanRule = singletonScope.getBeanRule(bean);
+            if (beanRule != null) {
+                readLocked = false;
+                scopeLock.readLock().unlock();
+                scopeLock.writeLock().lock();
+                try {
+                    singletonScope.destroy(bean);
+                } finally {
+                    scopeLock.writeLock().unlock();
+                }
+            }
+        } finally {
+            if (readLocked) {
+                scopeLock.readLock().unlock();
+            }
+        }
+    }
+
     /**
      * Instantiate all singletons(non-lazy-init).
      */
@@ -232,30 +320,6 @@ abstract class AbstractBeanRegistry extends AbstractBeanFactory implements BeanR
         }
 
         singletonScope.destroy();
-    }
-
-    @Override
-    public void destroySingleton(Object bean) throws Exception {
-        ReadWriteLock scopeLock = singletonScope.getScopeLock();
-        boolean readLocked = true;
-        scopeLock.readLock().lock();
-        try {
-            BeanRule beanRule = singletonScope.getBeanRule(bean);
-            if (beanRule != null) {
-                readLocked = false;
-                scopeLock.readLock().unlock();
-                scopeLock.writeLock().lock();
-                try {
-                    singletonScope.destroy(bean);
-                } finally {
-                    scopeLock.writeLock().unlock();
-                }
-            }
-        } finally {
-            if (readLocked) {
-                scopeLock.readLock().unlock();
-            }
-        }
     }
 
     @Override

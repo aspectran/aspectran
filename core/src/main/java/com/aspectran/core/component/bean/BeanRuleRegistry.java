@@ -93,21 +93,21 @@ public class BeanRuleRegistry {
         ignoreDependencyInterface(java.io.Closeable.class);
     }
 
-    public BeanRule getBeanRule(Object idOrRequiredType) {
-        if (idOrRequiredType == null) {
-            throw new IllegalArgumentException("idOrRequiredType must not be null");
+    public BeanRule getBeanRule(Object idOrType) {
+        if (idOrType == null) {
+            throw new IllegalArgumentException("idOrType must not be null");
         }
-        if (idOrRequiredType instanceof Class<?>) {
-            BeanRule[] beanRules = getBeanRules((Class<?>)idOrRequiredType);
+        if (idOrType instanceof Class<?>) {
+            BeanRule[] beanRules = getBeanRules((Class<?>)idOrType);
             if (beanRules == null) {
                 return null;
             }
             if (beanRules.length > 1) {
-                throw new NoUniqueBeanException((Class<?>)idOrRequiredType, beanRules);
+                throw new NoUniqueBeanException((Class<?>)idOrType, beanRules);
             }
             return beanRules[0];
         } else {
-            return getBeanRule(idOrRequiredType.toString());
+            return getBeanRule(idOrType.toString());
         }
     }
 
@@ -115,8 +115,8 @@ public class BeanRuleRegistry {
         return idBasedBeanRuleMap.get(id);
     }
 
-    public BeanRule[] getBeanRules(Class<?> requiredType) {
-        Set<BeanRule> list = typeBasedBeanRuleMap.get(requiredType);
+    public BeanRule[] getBeanRules(Class<?> type) {
+        Set<BeanRule> list = typeBasedBeanRuleMap.get(type);
         if (list != null && !list.isEmpty()) {
             return list.toArray(new BeanRule[0]);
         } else {
@@ -124,18 +124,18 @@ public class BeanRuleRegistry {
         }
     }
 
-    public BeanRule getBeanRuleForConfig(Class<?> requiredType) {
-        return configurableBeanRuleMap.get(requiredType);
+    public BeanRule getBeanRuleForConfig(Class<?> type) {
+        return configurableBeanRuleMap.get(type);
     }
 
-    public boolean containsBeanRule(Object idOrRequiredType) {
-        if (idOrRequiredType == null) {
-            throw new IllegalArgumentException("idOrRequiredType must not be null");
+    public boolean containsBeanRule(Object idOrType) {
+        if (idOrType == null) {
+            throw new IllegalArgumentException("idOrType must not be null");
         }
-        if (idOrRequiredType instanceof Class<?>) {
-            return containsBeanRule((Class<?>)idOrRequiredType);
+        if (idOrType instanceof Class<?>) {
+            return containsBeanRule((Class<?>)idOrType);
         } else {
-            return containsBeanRule(idOrRequiredType.toString());
+            return containsBeanRule(idOrType.toString());
         }
     }
 
@@ -143,8 +143,8 @@ public class BeanRuleRegistry {
         return idBasedBeanRuleMap.containsKey(id);
     }
 
-    public boolean containsBeanRule(Class<?> requiredType) {
-        return typeBasedBeanRuleMap.containsKey(requiredType);
+    public boolean containsBeanRule(Class<?> type) {
+        return typeBasedBeanRuleMap.containsKey(type);
     }
 
     public Map<String, BeanRule> getIdBasedBeanRuleMap() {
@@ -437,13 +437,13 @@ public class BeanRuleRegistry {
         } else {
             BeanRule[] beanRules = getBeanRules(beanRule.getFactoryBeanClass());
             if (beanRules == null || beanRules.length == 0) {
-                throw new BeanRuleException("No matching factory bean of type [" +
-                        beanRule.getFactoryBeanClass().getName() + "] found", beanRule);
+                throw new BeanRuleException("No matching factory bean of type '" +
+                        beanRule.getFactoryBeanClass().getName() + "' found", beanRule);
             }
             if (beanRules.length > 1) {
-                throw new BeanRuleException("No unique factory bean of type [" +
-                        beanRule.getFactoryBeanClass().getName() + "] is defined: expected single matching bean but found " +
-                        beanRules.length + ": [" + NoUniqueBeanException.getBeanDescriptions(beanRules) + "]; Caller bean ",
+                throw new BeanRuleException("No unique factory bean of type '" +
+                        beanRule.getFactoryBeanClass().getName() + "' is defined: expected single matching bean but found " +
+                        beanRules.length + ": (" + NoUniqueBeanException.getBeanDescriptions(beanRules) + "); Caller bean ",
                         beanRule);
             }
             offeredFactoryBeanRule = beanRules[0];

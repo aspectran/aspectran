@@ -17,8 +17,8 @@ package com.aspectran.core.context.expr;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.request.FileParameter;
+import com.aspectran.core.component.bean.NoSuchBeanException;
 import com.aspectran.core.component.bean.NoUniqueBeanException;
-import com.aspectran.core.component.bean.RequiredTypeBeanNotFoundException;
 import com.aspectran.core.component.template.TemplateRenderer;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.rule.type.TokenDirectiveType;
@@ -311,7 +311,7 @@ public class TokenExpression implements TokenEvaluator {
                 Class<?> cls = (Class<?>)token.getAlternativeValue();
                 try {
                     value = activity.getBean(cls);
-                } catch (RequiredTypeBeanNotFoundException | NoUniqueBeanException e) {
+                } catch (NoSuchBeanException | NoUniqueBeanException e) {
                     if (token.getGetterName() != null) {
                         try {
                             value = BeanUtils.getProperty(cls, token.getGetterName());
@@ -344,14 +344,14 @@ public class TokenExpression implements TokenEvaluator {
     /**
      * Invoke bean's property.
      *
-     * @param object the object
+     * @param bean the bean object
      * @param propertyName the property name
      * @return the object
      */
-    protected Object getBeanProperty(final Object object, String propertyName) {
+    protected Object getBeanProperty(Object bean, String propertyName) {
         Object value;
         try {
-            value = BeanUtils.getProperty(object, propertyName);
+            value = BeanUtils.getProperty(bean, propertyName);
         } catch (InvocationTargetException e) {
             value = null;
         }

@@ -25,11 +25,11 @@ import com.aspectran.web.socket.jsr356.ServerEndpointExporter;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.handlers.GracefulShutdownHandler;
 import io.undertow.server.handlers.PathHandler;
+import io.undertow.server.handlers.ResponseCodeHandler;
 import io.undertow.servlet.api.DeploymentManager;
 
 import javax.servlet.ServletContext;
 import javax.websocket.server.ServerContainer;
-import java.util.Collection;
 
 import static com.aspectran.web.service.WebService.ROOT_WEB_SERVICE_ATTRIBUTE;
 
@@ -66,38 +66,37 @@ public class ServletHandlerFactory implements ActivityContextAware {
     }
 
     public HttpHandler createServletHandler() throws Exception {
-        if (towServletContainer == null) {
-            return null;
-        }
-        PathHandler pathHandler = new PathHandler();
-        Collection<String> deploymentNames = towServletContainer.listDeployments();
-        for (String deploymentName : deploymentNames) {
-            DeploymentManager manager = towServletContainer.getDeployment(deploymentName);
-            manager.deploy();
+        HttpHandler rootHandler;
+        if (towServletContainer != null && towServletContainer.getDeploymentManagers() != null) {
+            PathHandler pathHandler = new PathHandler();
+            for (DeploymentManager manager : towServletContainer.getDeploymentManagers()) {
+                manager.deploy();
 
-            ServletContext servletContext = manager.getDeployment().getServletContext();
-            Object attr = servletContext.getAttribute(TowServletContext.DERIVED_WEB_SERVICE_ATTRIBUTE);
-            servletContext.removeAttribute(TowServletContext.DERIVED_WEB_SERVICE_ATTRIBUTE);
-            if ("true".equals(attr)) {
-                CoreService rootService = context.getRootService();
-                WebService webService = DefaultWebService.create(servletContext, rootService);
-                servletContext.setAttribute(ROOT_WEB_SERVICE_ATTRIBUTE, webService);
+                ServletContext servletContext = manager.getDeployment().getServletContext();
+                Object attr = servletContext.getAttribute(TowServletContext.DERIVED_WEB_SERVICE_ATTRIBUTE);
+                servletContext.removeAttribute(TowServletContext.DERIVED_WEB_SERVICE_ATTRIBUTE);
+                if ("true".equals(attr)) {
+                    CoreService rootService = context.getRootService();
+                    WebService webService = DefaultWebService.create(servletContext, rootService);
+                    servletContext.setAttribute(ROOT_WEB_SERVICE_ATTRIBUTE, webService);
+                }
+
+                // Required for any websocket support in undertow
+                ServerContainer serverContainer = (ServerContainer)servletContext.getAttribute(ServerContainer.class.getName());
+                if (serverContainer != null) {
+                    ServerEndpointExporter serverEndpointExporter = new ServerEndpointExporter(context);
+                    serverEndpointExporter.initServletContext(servletContext);
+                    serverEndpointExporter.registerEndpoints();
+                }
+
+                HttpHandler handler = manager.start();
+                String contextPath = manager.getDeployment().getDeploymentInfo().getContextPath();
+                pathHandler.addPrefixPath(contextPath, handler);
             }
-
-            // Required for any websocket support in undertow
-            ServerContainer serverContainer =
-                    (ServerContainer)servletContext.getAttribute(ServerContainer.class.getName());
-            if (serverContainer != null) {
-                ServerEndpointExporter serverEndpointExporter = new ServerEndpointExporter(context);
-                serverEndpointExporter.initServletContext(servletContext);
-                serverEndpointExporter.registerEndpoints();
-            }
-
-            HttpHandler handler = manager.start();
-            String contextPath = manager.getDeployment().getDeploymentInfo().getContextPath();
-            pathHandler.addPrefixPath(contextPath, handler);
+            rootHandler = new GracefulShutdownHandler(pathHandler);
+        } else {
+            rootHandler = ResponseCodeHandler.HANDLE_404;
         }
-        HttpHandler rootHandler = new GracefulShutdownHandler(pathHandler);
         if (staticResourceHandler != null && staticResourceHandler.hasPatterns()) {
             return exchange -> {
                 if (staticResourceHandler != null) {

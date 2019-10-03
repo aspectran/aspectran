@@ -21,9 +21,9 @@ import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.component.AbstractComponent;
 import com.aspectran.core.component.aspect.AspectRuleRegistry;
 import com.aspectran.core.component.bean.BeanRegistry;
-import com.aspectran.core.component.bean.ContextBeanRegistry;
+import com.aspectran.core.component.bean.ContextualBeanRegistry;
 import com.aspectran.core.component.schedule.ScheduleRuleRegistry;
-import com.aspectran.core.component.template.ContextTemplateRenderer;
+import com.aspectran.core.component.template.ContextualTemplateRenderer;
 import com.aspectran.core.component.template.TemplateRenderer;
 import com.aspectran.core.component.translet.TransletRuleRegistry;
 import com.aspectran.core.context.env.ContextEnvironment;
@@ -57,9 +57,9 @@ public class AspectranActivityContext extends AbstractComponent implements Activ
 
     private AspectRuleRegistry aspectRuleRegistry;
 
-    private ContextBeanRegistry contextBeanRegistry;
+    private ContextualBeanRegistry contextualBeanRegistry;
 
-    private ContextTemplateRenderer contextTemplateRenderer;
+    private ContextualTemplateRenderer contextualTemplateRenderer;
 
     private ScheduleRuleRegistry scheduleRuleRegistry;
 
@@ -106,7 +106,7 @@ public class AspectranActivityContext extends AbstractComponent implements Activ
     @Override
     public void setRootService(CoreService rootService) {
         if (isInitialized()) {
-            throw new IllegalStateException("ActivityContext is already initialized");
+            throw new IllegalStateException("ActivityContext is already specified");
         }
         this.rootService = rootService;
     }
@@ -122,30 +122,30 @@ public class AspectranActivityContext extends AbstractComponent implements Activ
 
     @Override
     public BeanRegistry getBeanRegistry() {
-        return contextBeanRegistry;
+        return contextualBeanRegistry;
     }
 
     /**
      * Sets the context bean registry.
      *
-     * @param contextBeanRegistry the new context bean registry
+     * @param contextualBeanRegistry the new context bean registry
      */
-    public void setContextBeanRegistry(ContextBeanRegistry contextBeanRegistry) {
-        this.contextBeanRegistry = contextBeanRegistry;
+    public void setContextualBeanRegistry(ContextualBeanRegistry contextualBeanRegistry) {
+        this.contextualBeanRegistry = contextualBeanRegistry;
     }
 
     @Override
     public TemplateRenderer getTemplateRenderer() {
-        return contextTemplateRenderer;
+        return contextualTemplateRenderer;
     }
 
     /**
      * Sets the template processor.
      *
-     * @param contextTemplateRenderer the new template processor
+     * @param contextualTemplateRenderer the new template processor
      */
-    public void setContextTemplateRenderer(ContextTemplateRenderer contextTemplateRenderer) {
-        this.contextTemplateRenderer = contextTemplateRenderer;
+    public void setContextualTemplateRenderer(ContextualTemplateRenderer contextualTemplateRenderer) {
+        this.contextualTemplateRenderer = contextualTemplateRenderer;
     }
 
     @Override
@@ -174,7 +174,7 @@ public class AspectranActivityContext extends AbstractComponent implements Activ
     @Override
     public MessageSource getMessageSource() {
         if (this.messageSource == null) {
-            throw new IllegalStateException("MessageSource not initialized");
+            throw new IllegalStateException("No MessageSource configured");
         }
         return messageSource;
     }
@@ -205,12 +205,13 @@ public class AspectranActivityContext extends AbstractComponent implements Activ
      * Use parent's if none defined in this context.
      */
     private void initMessageSource() {
-        if (contextBeanRegistry.containsBean(MESSAGE_SOURCE_BEAN_ID)) {
-            messageSource = contextBeanRegistry.getBean(MESSAGE_SOURCE_BEAN_ID, MessageSource.class);
+        if (contextualBeanRegistry.containsBean(MessageSource.class, MESSAGE_SOURCE_BEAN_ID)) {
+            messageSource = contextualBeanRegistry.getBean(MessageSource.class, MESSAGE_SOURCE_BEAN_ID);
             if (log.isDebugEnabled()) {
                 log.debug("Using MessageSource [" + messageSource + "]");
             }
-        } else {
+        }
+        if (messageSource == null) {
             // Use empty MessageSource to be able to accept getMessage calls.
             messageSource = new DelegatingMessageSource();
             if (log.isDebugEnabled()) {
@@ -225,11 +226,11 @@ public class AspectranActivityContext extends AbstractComponent implements Activ
         if (aspectRuleRegistry != null) {
             aspectRuleRegistry.initialize();
         }
-        if (contextBeanRegistry != null) {
-            contextBeanRegistry.initialize();
+        if (contextualBeanRegistry != null) {
+            contextualBeanRegistry.initialize();
         }
-        if (contextTemplateRenderer != null) {
-            contextTemplateRenderer.initialize();
+        if (contextualTemplateRenderer != null) {
+            contextualTemplateRenderer.initialize();
         }
         if (scheduleRuleRegistry != null) {
             scheduleRuleRegistry.initialize();
@@ -237,7 +238,7 @@ public class AspectranActivityContext extends AbstractComponent implements Activ
         if (transletRuleRegistry != null) {
             transletRuleRegistry.initialize();
         }
-        if (contextBeanRegistry != null) {
+        if (contextualBeanRegistry != null) {
             initMessageSource();
         }
     }
@@ -252,13 +253,13 @@ public class AspectranActivityContext extends AbstractComponent implements Activ
             scheduleRuleRegistry.destroy();
             scheduleRuleRegistry = null;
         }
-        if (contextTemplateRenderer != null) {
-            contextTemplateRenderer.destroy();
-            contextTemplateRenderer = null;
+        if (contextualTemplateRenderer != null) {
+            contextualTemplateRenderer.destroy();
+            contextualTemplateRenderer = null;
         }
-        if (contextBeanRegistry != null) {
-            contextBeanRegistry.destroy();
-            contextBeanRegistry = null;
+        if (contextualBeanRegistry != null) {
+            contextualBeanRegistry.destroy();
+            contextualBeanRegistry = null;
         }
         if (aspectRuleRegistry != null) {
             aspectRuleRegistry.destroy();

@@ -16,6 +16,7 @@
 package com.aspectran.core.component.bean;
 
 import com.aspectran.core.context.rule.BeanRule;
+import com.aspectran.core.lang.NonNull;
 
 import java.lang.annotation.Annotation;
 import java.util.Collection;
@@ -40,50 +41,25 @@ public interface BeanRegistry {
      * Returns the bean instance that uniquely matches the given object type.
      *
      * @param <T> the generic type
-     * @param requiredType the type the bean must match; can be an interface or superclass
+     * @param type the type the bean must match; can be an interface or superclass
      * @return an instance of the bean
      * @since 1.3.1
      */
-    <T> T getBean(Class<T> requiredType);
-
-    /**
-     * Returns an instance of the bean that matches the given id.
-     * If the bean is not of the required type then throw a {@code BeanNotOfRequiredTypeException}.
-     *
-     * @param <T> the generic type
-     * @param id the id of the bean to retrieve
-     * @param requiredType type the bean must match; can be an interface or superclass
-     * @return an instance of the bean
-     * @since 1.3.1
-     */
-    <T> T getBean(String id, Class<T> requiredType);
+    <T> T getBean(Class<T> type);
 
     /**
      * Returns an instance of the bean that matches the given object type.
      * If more than one matching bean is found, we pick a bean that matches the given id.
      *
      * @param <T> the generic type
-     * @param requiredType type the bean must match; can be an interface or superclass
+     * @param type type the bean must match; can be an interface or superclass
      * @param id the id of the bean to retrieve
      * @return an instance of the bean
      * @since 2.0.0
      */
-    <T> T getBean(Class<T> requiredType, String id);
+    <T> T getBean(Class<T> type, String id);
 
-    <T> T[] getBeansOfType(Class<T> requiredType);
-
-    /**
-     * Returns the bean instance used for the annotated configuration that matches
-     * the specified object type.
-     * If the configurable bean is not of the required type then throw
-     * a {@code RequiredTypeBeanNotFoundException}.
-     *
-     * @param <T> the generic type
-     * @param requiredType type the bean must match; can be an interface or superclass
-     * @return an instance of the bean
-     * @since 2.0.0
-     */
-    <T> T getBeanForConfig(Class<T> requiredType);
+    <T> T[] getBeansOfType(Class<T> type);
 
     <T> T getPrototypeScopeBean(BeanRule beanRule);
 
@@ -98,12 +74,20 @@ public interface BeanRegistry {
     /**
      * Return whether a bean with the specified object type is present.
      *
-     * @param requiredType the object type of the bean to query
+     * @param type the object type of the bean to query
      * @return whether a bean with the specified type is present
      */
-    boolean containsBean(Class<?> requiredType);
+    boolean containsBean(Class<?> type);
+
+    boolean containsBean(Class<?> type, String id);
 
     Collection<Class<?>> findConfigBeanClassesWithAnnotation(Class<? extends Annotation> annotationType);
+
+    boolean hasSingleton(Object bean);
+
+    boolean hasSingleton(@NonNull Class<?> type);
+
+    boolean hasSingleton(Class<?> type, String id);
 
     void destroySingleton(Object bean) throws Exception;
 

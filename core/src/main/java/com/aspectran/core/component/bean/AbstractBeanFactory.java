@@ -21,7 +21,6 @@ import com.aspectran.core.component.AbstractComponent;
 import com.aspectran.core.component.bean.ablility.FactoryBean;
 import com.aspectran.core.component.bean.ablility.InitializableBean;
 import com.aspectran.core.component.bean.ablility.InitializableTransletBean;
-import com.aspectran.core.component.bean.annotation.Component;
 import com.aspectran.core.component.bean.aware.ActivityContextAware;
 import com.aspectran.core.component.bean.aware.ApplicationAdapterAware;
 import com.aspectran.core.component.bean.aware.Aware;
@@ -140,11 +139,16 @@ abstract class AbstractBeanFactory extends AbstractComponent {
                     argTypes = new Class<?>[types.length];
                     for (int i = 0; i < types.length; i++) {
                         if (ctorAutowireRule.isRequired()) {
-                            args[i] = activity.getBean(types[i], qualifiers[i]);
+                            try {
+                                args[i] = activity.getBean(types[i], qualifiers[i]);
+                            } catch (NoSuchBeanException | NoUniqueBeanException e) {
+                                throw new BeanCreationException("Could not autowire constructor: " +
+                                        ctorAutowireRule, beanRule);
+                            }
                         } else {
                             try {
                                 args[i] = activity.getBean(types[i], qualifiers[i]);
-                            } catch (BeanNotFoundException | NoUniqueBeanException e) {
+                            } catch (NoSuchBeanException | NoUniqueBeanException e) {
                                 args[i] = null;
                                 log.warn(e.getMessage());
                             }
@@ -171,9 +175,9 @@ abstract class AbstractBeanFactory extends AbstractComponent {
                 if (evaluator == null) {
                     evaluator = new ItemExpression(activity);
                 }
-                Map<String, Object> valueMap = evaluator.evaluate(propertyItemRuleMap);
-                for (Map.Entry<String, Object> entry : valueMap.entrySet()) {
-                    MethodUtils.invokeSetter(bean, entry.getKey(), entry.getValue());
+                for (Map.Entry<String, ItemRule> entry : propertyItemRuleMap.entrySet()) {
+                    Object value = evaluator.evaluate(entry.getValue());
+                    MethodUtils.invokeSetter(bean, entry.getKey(), value);
                 }
             }
 
@@ -200,8 +204,6 @@ abstract class AbstractBeanFactory extends AbstractComponent {
             if (factoryBeanClass != null) {
                 if (Modifier.isInterface(factoryBeanClass.getModifiers())) {
                     bean = null;
-                } else if (factoryBeanClass.isAnnotationPresent(Component.class)) {
-                    bean = activity.getBeanForConfig(factoryBeanClass);
                 } else {
                     bean = activity.getBean(factoryBeanClass);
                 }
@@ -228,9 +230,9 @@ abstract class AbstractBeanFactory extends AbstractComponent {
             ItemRuleMap propertyItemRuleMap = beanRule.getPropertyItemRuleMap();
             if (propertyItemRuleMap != null && !propertyItemRuleMap.isEmpty()) {
                 ItemEvaluator evaluator = new ItemExpression(activity);
-                Map<String, Object> valueMap = evaluator.evaluate(propertyItemRuleMap);
-                for (Map.Entry<String, Object> entry : valueMap.entrySet()) {
-                    MethodUtils.invokeSetter(bean, entry.getKey(), entry.getValue());
+                for (Map.Entry<String, ItemRule> entry : propertyItemRuleMap.entrySet()) {
+                    Object value = evaluator.evaluate(entry.getValue());
+                    MethodUtils.invokeSetter(bean, entry.getKey(), value);
                 }
             }
             if (beanRule.getInitMethod() != null) {
@@ -292,11 +294,16 @@ abstract class AbstractBeanFactory extends AbstractComponent {
 
                     Object value;
                     if (autowireRule.isRequired()) {
-                        value = activity.getBean(types[0], qualifiers[0]);
+                        try {
+                            value = activity.getBean(types[0], qualifiers[0]);
+                        } catch (NoSuchBeanException | NoUniqueBeanException e) {
+                            throw new BeanCreationException("Could not autowire field: " +
+                                    autowireRule, beanRule);
+                        }
                     } else {
                         try {
                             value = activity.getBean(types[0], qualifiers[0]);
-                        } catch (BeanNotFoundException | NoUniqueBeanException e) {
+                        } catch (NoSuchBeanException | NoUniqueBeanException e) {
                             value = null;
                             log.warn(e.getMessage());
                         }
@@ -319,11 +326,16 @@ abstract class AbstractBeanFactory extends AbstractComponent {
                     Object[] args = new Object[types.length];
                     for (int i = 0; i < types.length; i++) {
                         if (autowireRule.isRequired()) {
-                            args[i] = activity.getBean(types[i], qualifiers[i]);
+                            try {
+                                args[i] = activity.getBean(types[i], qualifiers[i]);
+                            } catch (NoSuchBeanException | NoUniqueBeanException e) {
+                                throw new BeanCreationException("Could not autowire method: " +
+                                        autowireRule, beanRule);
+                            }
                         } else {
                             try {
                                 args[i] = activity.getBean(types[i], qualifiers[i]);
-                            } catch (BeanNotFoundException | NoUniqueBeanException e) {
+                            } catch (NoSuchBeanException | NoUniqueBeanException e) {
                                 args[i] = null;
                                 log.warn(e.getMessage());
                             }

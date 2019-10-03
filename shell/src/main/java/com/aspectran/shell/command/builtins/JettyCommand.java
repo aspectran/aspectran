@@ -71,10 +71,24 @@ public class JettyCommand extends AbstractCommand {
             return;
         }
 
+        String command = null;
+        if (options.hasArgs()) {
+            command = options.getFirstArg();
+        }
+
         ShellService service = getService();
 
         String serverName = options.getValue("server", "jetty.server");
         BeanRegistry beanRegistry = service.getActivityContext().getBeanRegistry();
+
+        boolean justCreated = !beanRegistry.hasSingleton(JettyServer.class, serverName);
+        if (justCreated) {
+            if ("stop".equals(command) || "restart".equals(command)) {
+                console.writeError("Jetty server is not running");
+                return;
+            }
+        }
+
         JettyServer jettyServer;
         try {
             jettyServer = beanRegistry.getBean(JettyServer.class, serverName);
@@ -83,45 +97,50 @@ public class JettyCommand extends AbstractCommand {
             return;
         }
 
-        if (options.hasArgs()) {
-            String command = options.getFirstArg();
-            if ("start".equals(command)) {
-                if (jettyServer.isRunning()) {
-                    console.writeError("Jetty server is already running");
-                    return;
-                }
-                try {
-                    jettyServer.start();
-                    printStatus(jettyServer, console);
-                } catch (BindException e) {
-                    console.writeError("Jetty Server Error - Port already in use");
-                }
-            } else if ("stop".equals(command)) {
-                if (!jettyServer.isRunning()) {
-                    console.writeError("Jetty server is not running");
-                    return;
-                }
-                try {
-                    jettyServer.stop();
-                    printStatus(jettyServer, console);
-                } catch (Exception e) {
-                    console.writeError("Jetty Server Error - " + e.getMessage());
-                }
-            } else if ("restart".equals(command)) {
-                try {
-                    if (jettyServer.isRunning()) {
-                        jettyServer.stop();
+        if (command != null) {
+            switch (command) {
+                case "start":
+                    if (!justCreated && jettyServer.isRunning()) {
+                        console.writeError("Jetty server is already running");
+                        return;
                     }
-                    jettyServer.start();
+                    try {
+                        jettyServer.start();
+                        printStatus(jettyServer, console);
+                    } catch (BindException e) {
+                        console.writeError("Jetty Server Error - Port already in use");
+                    }
+                    break;
+                case "stop":
+                    if (!jettyServer.isRunning()) {
+                        console.writeError("Jetty server is not running");
+                        return;
+                    }
+                    try {
+                        jettyServer.stop();
+                        printStatus(jettyServer, console);
+                    } catch (Exception e) {
+                        console.writeError("Jetty Server Error - " + e.getMessage());
+                    }
+                    break;
+                case "restart":
+                    try {
+                        if (jettyServer.isRunning()) {
+                            jettyServer.stop();
+                        }
+                        jettyServer.start();
+                        printStatus(jettyServer, console);
+                    } catch (BindException e) {
+                        console.writeError("Jetty Server Error - Port already in use");
+                    }
+                    break;
+                case "status":
                     printStatus(jettyServer, console);
-                } catch (BindException e) {
-                    console.writeError("Jetty Server Error - Port already in use");
-                }
-            } else if ("status".equals(command)) {
-                printStatus(jettyServer, console);
-            } else {
-                console.writeError("Unknown command '" + String.join(" ", options.getArgs()) + "'");
-                printQuickHelp(console);
+                    break;
+                default:
+                    console.writeError("Unknown command '" + String.join(" ", options.getArgs()) + "'");
+                    printQuickHelp(console);
+                    break;
             }
         } else {
             printQuickHelp(console);

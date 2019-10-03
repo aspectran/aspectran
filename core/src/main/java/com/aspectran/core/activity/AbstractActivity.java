@@ -199,23 +199,13 @@ public abstract class AbstractActivity implements Activity {
     }
 
     @Override
-    public <T> T getBean(Class<T> requiredType) {
-        return context.getBeanRegistry().getBean(requiredType);
+    public <T> T getBean(Class<T> type) {
+        return context.getBeanRegistry().getBean(type);
     }
 
     @Override
-    public <T> T getBean(String id, Class<T> requiredType) {
-        return context.getBeanRegistry().getBean(id, requiredType);
-    }
-
-    @Override
-    public <T> T getBean(Class<T> requiredType, String id) {
-        return context.getBeanRegistry().getBean(requiredType, id);
-    }
-
-    @Override
-    public <T> T getBeanForConfig(Class<T> requiredType) {
-        return context.getBeanRegistry().getBeanForConfig(requiredType);
+    public <T> T getBean(Class<T> type, String id) {
+        return context.getBeanRegistry().getBean(type, id);
     }
 
     @Override
@@ -229,8 +219,13 @@ public abstract class AbstractActivity implements Activity {
     }
 
     @Override
-    public boolean containsBean(Class<?> requiredType) {
-        return context.getBeanRegistry().containsBean(requiredType);
+    public boolean containsBean(Class<?> type) {
+        return context.getBeanRegistry().containsBean(type);
+    }
+
+    @Override
+    public boolean containsBean(Class<?> type, String id) {
+        return context.getBeanRegistry().containsBean(type, id);
     }
 
     @Override

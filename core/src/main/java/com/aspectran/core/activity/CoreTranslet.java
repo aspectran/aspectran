@@ -416,23 +416,13 @@ public class CoreTranslet extends AbstractTranslet {
     }
 
     @Override
-    public <T> T getBean(Class<T> requiredType) {
-        return activity.getBean(requiredType);
+    public <T> T getBean(Class<T> type) {
+        return activity.getBean(type);
     }
 
     @Override
-    public <T> T getBean(String id, Class<T> requiredType) {
-        return activity.getBean(id, requiredType);
-    }
-
-    @Override
-    public <T> T getBean(Class<T> requiredType, String id) {
-        return activity.getBean(requiredType, id);
-    }
-
-    @Override
-    public <T> T getBeanForConfig(Class<T> classType) {
-        return activity.getBeanForConfig(classType);
+    public <T> T getBean(Class<T> type, String id) {
+        return activity.getBean(type, id);
     }
 
     @Override
@@ -441,8 +431,13 @@ public class CoreTranslet extends AbstractTranslet {
     }
 
     @Override
-    public boolean containsBean(Class<?> requiredType) {
-        return activity.containsBean(requiredType);
+    public boolean containsBean(Class<?> type) {
+        return activity.containsBean(type);
+    }
+
+    @Override
+    public boolean containsBean(Class<?> type, String id) {
+        return activity.containsBean(type, id);
     }
 
     //---------------------------------------------------------------------

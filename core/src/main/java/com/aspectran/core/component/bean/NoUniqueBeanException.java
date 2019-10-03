@@ -26,30 +26,30 @@ public class NoUniqueBeanException extends BeanException {
     /** @serial */
     private static final long serialVersionUID = 8350428939010030065L;
 
-    private final Class<?> requiredType;
+    private final Class<?> type;
 
     private final BeanRule[] beanRules;
 
     /**
      * Instantiates a new NoUniqueBeanException.
      *
-     * @param requiredType the required type
+     * @param type the required type of the missing bean
      * @param beanRules the bean rules
      */
-    public NoUniqueBeanException(Class<?> requiredType, BeanRule[] beanRules) {
-        super("No unique bean of type [" + requiredType + "] is defined: expected single matching bean but found " +
+    public NoUniqueBeanException(Class<?> type, BeanRule[] beanRules) {
+        super("No qualifying bean of type '" + type + "' is defined: expected single matching bean but found " +
                 beanRules.length + ": [" + getBeanDescriptions(beanRules) + "]");
-        this.requiredType = requiredType;
+        this.type = type;
         this.beanRules = beanRules;
     }
 
     /**
-     * Gets the required type.
+     * Returns the type required type of the missing bean.
      *
      * @return the required type
      */
-    public Class<?> getRequiredType() {
-        return requiredType;
+    public Class<?> getType() {
+        return type;
     }
 
     /**

@@ -18,11 +18,12 @@ package com.aspectran.undertow.server;
 import com.aspectran.core.component.bean.ablility.DisposableBean;
 import com.aspectran.core.component.bean.ablility.InitializableBean;
 import com.aspectran.core.util.lifecycle.AbstractLifeCycle;
-import com.aspectran.core.util.lifecycle.LifeCycle;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.undertow.server.servlet.TowServletContainer;
 import io.undertow.Undertow;
 import io.undertow.server.HttpHandler;
+import io.undertow.servlet.api.DeploymentManager;
 import org.xnio.Option;
 import org.xnio.OptionMap;
 
@@ -46,27 +47,22 @@ public class TowServer extends AbstractLifeCycle implements InitializableBean, D
 
     private int stopDelayTime;
 
-    private Listener stoppingListener = new Listener() {
-        @Override
-        public void lifeCycleStopping(LifeCycle event) {
-            try {
-                Thread.sleep(stopDelayTime);
-            } catch (InterruptedException e) {
-                // ignore
-            }
-        }
-    };
+    private TowServletContainer towServletContainer;
+
+    public boolean isAutoStartup() {
+        return autoStartup;
+    }
 
     public void setAutoStartup(boolean autoStartup) {
         this.autoStartup = autoStartup;
     }
 
+    public int getStopDelayTime() {
+        return stopDelayTime;
+    }
+
     public void setStopDelayTime(int stopDelayTime) {
         this.stopDelayTime = stopDelayTime;
-        removeLifeCycleListener(stoppingListener);
-        if (stopDelayTime > 0) {
-            addLifeCycleListener(stoppingListener);
-        }
     }
 
     public void setSystemProperty(String key, String value) {
@@ -166,6 +162,14 @@ public class TowServer extends AbstractLifeCycle implements InitializableBean, D
         }
     }
 
+    public TowServletContainer getTowServletContainer() {
+        return towServletContainer;
+    }
+
+    public void setTowServletContainer(TowServletContainer towServletContainer) {
+        this.towServletContainer = towServletContainer;
+    }
+
     public void doStart() throws Exception {
         try {
             server = builder.build();
@@ -187,6 +191,16 @@ public class TowServer extends AbstractLifeCycle implements InitializableBean, D
     public void doStop() {
         try {
             if (server != null) {
+                if (towServletContainer != null && towServletContainer.getDeploymentManagers() != null) {
+                    for (DeploymentManager manager : towServletContainer.getDeploymentManagers()) {
+                        manager.stop();
+                    }
+                }
+                try {
+                    Thread.sleep(stopDelayTime);
+                } catch (InterruptedException e) {
+                    // ignore
+                }
                 server.stop();
                 server = null;
                 log.info("Stopped Undertow server");

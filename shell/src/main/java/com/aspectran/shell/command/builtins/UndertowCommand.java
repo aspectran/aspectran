@@ -72,10 +72,24 @@ public class UndertowCommand extends AbstractCommand {
             return;
         }
 
+        String command = null;
+        if (options.hasArgs()) {
+            command = options.getFirstArg();
+        }
+
         ShellService service = getService();
 
         String serverName = options.getValue("server", "tow.server");
         BeanRegistry beanRegistry = service.getActivityContext().getBeanRegistry();
+
+        boolean justCreated = !beanRegistry.hasSingleton(TowServer.class, serverName);
+        if (justCreated) {
+            if ("stop".equals(command) || "restart".equals(command)) {
+                console.writeError("Undertow server is not running");
+                return;
+            }
+        }
+
         TowServer towServer;
         try {
             towServer = beanRegistry.getBean(TowServer.class, serverName);
@@ -84,45 +98,57 @@ public class UndertowCommand extends AbstractCommand {
             return;
         }
 
-        if (options.hasArgs()) {
-            String command = options.getFirstArg();
-            if ("start".equals(command)) {
-                if (towServer.isRunning()) {
-                    console.writeError("Undertow server is already running");
-                    return;
-                }
-                try {
-                    towServer.start();
-                    printStatus(towServer, console);
-                } catch (BindException e) {
-                    console.writeError("Undertow Server Error - Port already in use");
-                }
-            } else if ("stop".equals(command)) {
-                if (!towServer.isRunning()) {
-                    console.writeError("Undertow server is not running");
-                    return;
-                }
-                try {
-                    towServer.stop();
-                    printStatus(towServer, console);
-                } catch (Exception e) {
-                    console.writeError("Undertow Server Error - " + e.getMessage());
-                }
-            } else if ("restart".equals(command)) {
-                try {
-                    if (towServer.isRunning()) {
-                        towServer.stop();
+        if (command != null) {
+            switch (command) {
+                case "start":
+                    if (!justCreated && towServer.isRunning()) {
+                        console.writeError("Undertow server is already running");
+                        return;
                     }
-                    towServer.start();
+                    try {
+                        if (!towServer.isAutoStartup()) {
+                            towServer.start();
+                        }
+                        printStatus(towServer, console);
+                    } catch (BindException e) {
+                        console.writeError("Undertow Server Error - Port already in use");
+                    }
+                    break;
+                case "stop":
+                    if (!towServer.isRunning()) {
+                        console.writeError("Undertow server is not running");
+                        return;
+                    }
+                    try {
+                        towServer.stop();
+                        printStatus(towServer, console);
+                        beanRegistry.destroySingleton(towServer);
+                    } catch (Exception e) {
+                        console.writeError("Undertow Server Error - " + e.getMessage());
+                    }
+                    break;
+                case "restart":
+                    try {
+                        if (towServer.isRunning()) {
+                            towServer.stop();
+                            beanRegistry.destroySingleton(towServer);
+                            towServer = beanRegistry.getBean(TowServer.class, serverName);
+                        }
+                        if (!towServer.isAutoStartup()) {
+                            towServer.start();
+                        }
+                        printStatus(towServer, console);
+                    } catch (BindException e) {
+                        console.writeError("Undertow Server Error - Port already in use");
+                    }
+                    break;
+                case "status":
                     printStatus(towServer, console);
-                } catch (BindException e) {
-                    console.writeError("Undertow Server Error - Port already in use");
-                }
-            } else if ("status".equals(command)) {
-                printStatus(towServer, console);
-            } else {
-                console.writeError("Unknown command '" + String.join(" ", options.getArgs()) + "'");
-                printQuickHelp(console);
+                    break;
+                default:
+                    console.writeError("Unknown command '" + String.join(" ", options.getArgs()) + "'");
+                    printQuickHelp(console);
+                    break;
             }
         } else {
             printQuickHelp(console);

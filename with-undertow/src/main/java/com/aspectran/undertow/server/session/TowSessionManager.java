@@ -91,7 +91,8 @@ public class TowSessionManager implements SessionManager, ApplicationAdapterAwar
             sessionManager.initialize();
             startTime = System.currentTimeMillis();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            //throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 

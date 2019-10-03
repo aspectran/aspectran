@@ -189,7 +189,7 @@ public class CoreActivity extends AdviceActivity {
         LocaleResolver localeResolver = null;
         String localeResolverBeanId = getSetting(RequestRule.LOCALE_RESOLVER_SETTING_NAME);
         if (localeResolverBeanId != null) {
-            localeResolver = getBean(localeResolverBeanId, LocaleResolver.class);
+            localeResolver = getBean(LocaleResolver.class, localeResolverBeanId);
             localeResolver.resolveLocale(getTranslet());
             localeResolver.resolveTimeZone(getTranslet());
         }

@@ -206,8 +206,8 @@ public class WebActivity extends CoreActivity {
         if (localeResolver != null) {
             String localeChangeInterceptorId = getSetting(RequestRule.LOCALE_CHANGE_INTERCEPTOR_SETTING_NAME);
             if (localeChangeInterceptorId != null) {
-                LocaleChangeInterceptor localeChangeInterceptor = getBean(localeChangeInterceptorId,
-                        LocaleChangeInterceptor.class);
+                LocaleChangeInterceptor localeChangeInterceptor = getBean(LocaleChangeInterceptor.class,
+                        localeChangeInterceptorId);
                 localeChangeInterceptor.handle(getTranslet(), localeResolver);
             }
         }

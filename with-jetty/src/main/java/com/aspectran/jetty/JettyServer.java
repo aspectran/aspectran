@@ -53,6 +53,10 @@ public class JettyServer extends Server implements InitializableBean, Disposable
         super(pool);
     }
 
+    public boolean isAutoStartup() {
+        return autoStartup;
+    }
+
     public void setAutoStartup(boolean autoStartup) {
         this.autoStartup = autoStartup;
     }
