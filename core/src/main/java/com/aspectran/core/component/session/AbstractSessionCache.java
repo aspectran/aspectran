@@ -431,11 +431,14 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
 
     @Override
     public Set<String> checkExpiration(Set<String> candidates) {
-        if (log.isTraceEnabled()) {
-            log.trace("SessionDataStore checking expiration on " + candidates);
+        if (!isInitialized()) {
+            return null;
         }
         if (sessionDataStore == null) {
-            return null;
+            return candidates;
+        }
+        if (log.isTraceEnabled()) {
+            log.trace("SessionDataStore checking expiration on " + candidates);
         }
         Set<String> allCandidates = sessionDataStore.getExpired(candidates);
         Set<String> sessionsInUse = new HashSet<>();

@@ -160,7 +160,19 @@ public class TowServletContext extends DeploymentInfo implements ApplicationAdap
 
     public static class WebSocketConnectionsUnboundListener implements SessionListener {
 
+        @Override
         public void attributeRemoved(Session session, String name, Object oldValue) {
+            closeWebSockets(name, oldValue);
+        }
+
+        @Override
+        public void attributeUpdated(Session session, String name, Object newValue, Object oldValue) {
+            if (oldValue != null && !oldValue.equals(newValue)) {
+                closeWebSockets(name, oldValue);
+            }
+        }
+
+        private void closeWebSockets(String name, Object oldValue) {
             if ("io.undertow.websocket.current-connections".equals(name)) {
                 @SuppressWarnings("unchecked")
                 List<WebSocketChannel> connections = (List<WebSocketChannel>)oldValue;

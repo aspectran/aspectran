@@ -18,11 +18,12 @@ package com.aspectran.demo.examples.hello;
 import com.aspectran.core.component.bean.annotation.Bean;
 import com.aspectran.core.component.bean.annotation.Component;
 import com.aspectran.core.component.bean.annotation.Description;
+import com.aspectran.core.context.rule.type.ScopeType;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
 @Component
-@Bean("helloAction")
+@Bean(id = "helloAction", scope = ScopeType.SESSION)
 @Description("Defines a Hello Action Bean that contains the helloWorld() method.")
 public class HelloAction {
 

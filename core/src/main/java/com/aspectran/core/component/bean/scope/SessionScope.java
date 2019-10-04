@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.component.bean.scope;
 
+import com.aspectran.core.component.session.Session;
+import com.aspectran.core.component.session.SessionBindingListener;
 import com.aspectran.core.context.rule.type.ScopeType;
 
 import java.io.Serializable;
@@ -24,13 +26,20 @@ import java.io.Serializable;
  *
  * @since 2011. 3. 12.
  */
-public final class SessionScope extends AbstractScope implements Serializable {
+public class SessionScope extends AbstractScope implements SessionBindingListener, Serializable {
+
+    private static final long serialVersionUID = -6385922726768971308L;
 
     /**
      * Instantiates a new Session scope.
      */
     public SessionScope() {
         super(ScopeType.SESSION, true);
+    }
+
+    @Override
+    public void valueUnbound(Session session, String name, Object value) {
+        destroy();
     }
 
 }

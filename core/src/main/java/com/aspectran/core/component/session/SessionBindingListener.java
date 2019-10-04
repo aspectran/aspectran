@@ -33,7 +33,8 @@ public interface SessionBindingListener extends EventListener {
      * @param value the value of the attribute that has been added, removed or replaced.
      * @see #valueUnbound
      */
-    void valueBound(Session session, String name, Object value);
+    default void valueBound(Session session, String name, Object value) {
+    }
 
     /**
      * Notifies the object that it is being unbound
@@ -44,6 +45,7 @@ public interface SessionBindingListener extends EventListener {
      * @param value the value of the attribute that has been added, removed or replaced.
      * @see #valueBound
      */
-    void valueUnbound(Session session, String name, Object value);
+    default void valueUnbound(Session session, String name, Object value) {
+    }
 
 }

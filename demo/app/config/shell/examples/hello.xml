@@ -16,6 +16,7 @@
         <joinpoint target="translet">
             pointcut: {
                 +: hello*@helloAction^helloWorld
+                +: /examples/hello-world@helloAction^helloWorld
             }
         </joinpoint>
         <advice bean="helloAdvice">

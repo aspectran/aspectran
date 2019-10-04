@@ -27,8 +27,6 @@ public abstract class AbstractSessionAdapter implements SessionAdapter {
 
     private final Object adaptee;
 
-    private volatile SessionScope sessionScope;
-
     /**
      * Instantiates a new AbstractSessionAdapter.
      *
@@ -46,15 +44,15 @@ public abstract class AbstractSessionAdapter implements SessionAdapter {
 
     @Override
     public SessionScope getSessionScope() {
-        if (this.sessionScope == null) {
-            this.sessionScope = getAttribute(SESSION_SCOPE_ATTRIBUTE_NAME);
-            if (this.sessionScope == null) {
-                this.sessionScope = new SessionScope();
-                setAttribute(SESSION_SCOPE_ATTRIBUTE_NAME, this.sessionScope);
-            }
+        SessionScope sessionScope = getAttribute(SESSION_SCOPE_ATTRIBUTE_NAME);
+        if (sessionScope == null) {
+            sessionScope = newSessionScope();
+            setAttribute(SESSION_SCOPE_ATTRIBUTE_NAME, sessionScope);
         }
-        return this.sessionScope;
+        return sessionScope;
     }
+
+    protected abstract SessionScope newSessionScope();
 
     @Override
     public String toString() {

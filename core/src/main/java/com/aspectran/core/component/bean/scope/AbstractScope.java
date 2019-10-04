@@ -47,7 +47,7 @@ public abstract class AbstractScope implements Scope {
 
     private final ReadWriteLock scopeLock;
 
-    AbstractScope(ScopeType scopeType, boolean needLock) {
+    public AbstractScope(ScopeType scopeType, boolean needLock) {
         this.scopeType = scopeType;
         if (needLock) {
             this.scopeLock = new ReentrantReadWriteLock();

@@ -18,7 +18,6 @@ package com.aspectran.demo.chat;
 import com.aspectran.core.component.bean.annotation.Component;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
-import com.aspectran.demo.examples.hello.HelloAction;
 import com.aspectran.web.socket.jsr356.ActivityContextAwareEndpoint;
 import com.aspectran.web.socket.jsr356.AspectranConfigurator;
 
@@ -44,9 +43,9 @@ public class ChatServerEndpoint extends ActivityContextAwareEndpoint {
     public void onOpen(Session session, EndpointConfig config) throws IOException {
         log.debug(session.getId() + ": Connected");
 
-        HelloAction helloAction = getBeanRegistry().getBean("helloAction");
+//        HelloAction helloAction = getBeanRegistry().getBean("helloAction");
 
-        log.debug(helloAction.helloWorld());
+//        log.debug(helloAction.helloWorld());
 
         session.getBasicRemote().sendText(session.getId() + ": Connected");
     }

@@ -9,7 +9,6 @@ context: {
     profiles: {
         default: [
             dev
-            jetty
         ]
     }
     autoReload: {

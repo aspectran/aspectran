@@ -12,6 +12,7 @@
             </item>
             <item name="include">examples/hello-world</item>
         </echo>
+        <action id="helloWorld" bean="helloAction" method="helloWorld"/>
         <dispatch name="templates/default"/>
     </translet>
 

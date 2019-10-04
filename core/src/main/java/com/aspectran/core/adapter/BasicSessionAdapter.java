@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.adapter;
 
+import com.aspectran.core.component.bean.scope.SessionScope;
 import com.aspectran.core.component.session.SessionAgent;
 
 import java.util.Enumeration;
@@ -33,6 +34,11 @@ public class BasicSessionAdapter extends AbstractSessionAdapter {
      */
     public BasicSessionAdapter(SessionAgent agent) {
         super(agent);
+    }
+
+    @Override
+    protected SessionScope newSessionScope() {
+        return new SessionScope();
     }
 
     @Override

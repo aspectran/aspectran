@@ -198,8 +198,8 @@ public class TowServer extends AbstractLifeCycle implements InitializableBean, D
                 }
                 try {
                     Thread.sleep(stopDelayTime);
-                } catch (InterruptedException e) {
-                    // ignore
+                } catch (InterruptedException ex) {
+                    Thread.currentThread().interrupt();
                 }
                 server.stop();
                 server = null;

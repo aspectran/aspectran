@@ -298,9 +298,9 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
         if (log.isTraceEnabled()) {
             log.trace(getComponentName() + " scavenging sessions");
         }
-        //Get a snapshot of the candidates as they are now. Others that
-        //arrive during this processing will be dealt with on
-        //subsequent call to scavenge
+        // Get a snapshot of the candidates as they are now. Others that
+        // arrive during this processing will be dealt with on
+        // subsequent call to scavenge
         String[] ss = candidateSessionIdsForExpiry.toArray(new String[0]);
         Set<String> candidates = new HashSet<>(Arrays.asList(ss));
         candidateSessionIdsForExpiry.removeAll(candidates);

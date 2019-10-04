@@ -170,7 +170,7 @@ public abstract class AbstractLifeCycle implements LifeCycle {
 
     private void setStarting() {
         if (log.isDebugEnabled()) {
-            log.debug("starting " + this);
+            log.debug("Starting " + this);
         }
         state = STATE_STARTING;
         for (Listener listener : listeners) {
@@ -180,7 +180,7 @@ public abstract class AbstractLifeCycle implements LifeCycle {
 
     private void setStopping() {
         if (log.isDebugEnabled()) {
-            log.debug("stopping " + this);
+            log.debug("Stopping " + this);
         }
         state = STATE_STOPPING;
         for (Listener listener : listeners) {
