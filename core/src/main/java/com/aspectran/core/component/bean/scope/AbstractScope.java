@@ -107,9 +107,8 @@ public abstract class AbstractScope implements Scope {
         }
 
         List<BeanRule> beanRules = new ArrayList<>(scopedBeanInstanceMap.keySet());
-        ListIterator<BeanRule> iterator = beanRules.listIterator(beanRules.size());
-        while (iterator.hasPrevious()) {
-            BeanRule beanRule = iterator.previous();
+        for (ListIterator<BeanRule> iter = beanRules.listIterator(beanRules.size()); iter.hasPrevious();) {
+            BeanRule beanRule = iter.previous();
             BeanInstance instance = scopedBeanInstanceMap.get(beanRule);
             Object bean = instance.getBean();
             if (bean != null) {

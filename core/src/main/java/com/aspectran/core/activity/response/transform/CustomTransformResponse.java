@@ -105,12 +105,12 @@ public class CustomTransformResponse implements Response {
 
     private CustomTransformer findTransformer(ProcessResult processResult) {
         if (processResult != null) {
-            for (ListIterator<ContentResult> iterator1 = processResult.listIterator(processResult.size());
-                 iterator1.hasPrevious(); ) {
-                ContentResult contentResult = iterator1.previous();
-                for (ListIterator<ActionResult> iterator2 = contentResult.listIterator(contentResult.size());
-                     iterator2.hasPrevious(); ) {
-                    ActionResult actionResult = iterator2.previous();
+            for (ListIterator<ContentResult> iter1 = processResult.listIterator(processResult.size());
+                 iter1.hasPrevious(); ) {
+                ContentResult contentResult = iter1.previous();
+                for (ListIterator<ActionResult> iter2 = contentResult.listIterator(contentResult.size());
+                     iter2.hasPrevious(); ) {
+                    ActionResult actionResult = iter2.previous();
                     if (actionResult != null && actionResult.getResultValue() instanceof CustomTransformer) {
                         return (CustomTransformer)actionResult.getResultValue();
                     }

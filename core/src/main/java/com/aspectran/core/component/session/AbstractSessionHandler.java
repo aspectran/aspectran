@@ -368,9 +368,8 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
         if (!sessionListeners.isEmpty()) {
             // We need to create our own snapshot to safely iterate over a concurrent list in reverse
             List<SessionListener> listeners = new ArrayList<>(sessionListeners);
-            ListIterator<SessionListener> iterator = listeners.listIterator(listeners.size());
-            while (iterator.hasPrevious()) {
-                iterator.previous().sessionDestroyed(session);
+            for (ListIterator<SessionListener> iter = listeners.listIterator(listeners.size()); iter.hasPrevious();) {
+                iter.previous().sessionDestroyed(session);
             }
         }
     }

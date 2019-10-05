@@ -78,8 +78,8 @@ public class ContentResult extends ArrayList<ActionResult> {
         if (actionId == null) {
             return null;
         }
-        for (ListIterator<ActionResult> iterator = listIterator(size()); iterator.hasPrevious();) {
-            ActionResult actionResult = iterator.previous();
+        for (ListIterator<ActionResult> iter = listIterator(size()); iter.hasPrevious();) {
+            ActionResult actionResult = iter.previous();
             if (actionId.equals(actionResult.getActionId())) {
                 return actionResult;
             }

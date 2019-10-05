@@ -19,8 +19,8 @@ import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.ListIterator;
 
 /**
  * Manages the shutdown-hook thread and tasks to execute on shutdown.
@@ -114,9 +114,8 @@ public class ShutdownHooks {
             log.debug("Running all shutdown-hook tasks");
         }
 
-        // Iterate through copy of tasks list
-        Collections.reverse(tasks);
-        for (Task task : tasks.toArray(new Task[0])) {
+        for (ListIterator<Task> iter = tasks.listIterator(tasks.size()); iter.hasPrevious();) {
+            Task task = iter.previous();
             if (log.isDebugEnabled()) {
                 log.debug("Running task: " + task);
             }

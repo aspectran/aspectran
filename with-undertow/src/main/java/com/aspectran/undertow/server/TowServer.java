@@ -214,18 +214,17 @@ public class TowServer extends AbstractLifeCycle implements InitializableBean, D
                         log.error("Unable to gracefully stop undertow");
                     }
                 }
-
                 if (towServletContainer != null && towServletContainer.getDeploymentManagers() != null) {
                     for (DeploymentManager manager : towServletContainer.getDeploymentManagers()) {
                         manager.stop();
                         manager.undeploy();
                     }
                 }
-//                try {
-//                    Thread.sleep(stopDelayTime);
-//                } catch (InterruptedException ex) {
-//                    Thread.currentThread().interrupt();
-//                }
+                try {
+                    Thread.sleep(stopDelayTime);
+                } catch (InterruptedException ex) {
+                    Thread.currentThread().interrupt();
+                }
                 server.stop();
                 server = null;
                 log.info("Undertow " + Version.getVersionString() + " stopped");

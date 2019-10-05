@@ -98,8 +98,8 @@ public class ProcessResult extends ArrayList<ContentResult> {
         if (actionId == null) {
             return null;
         }
-        for (ListIterator<ContentResult> iterator = listIterator(size()); iterator.hasPrevious();) {
-            ContentResult contentResult = iterator.previous();
+        for (ListIterator<ContentResult> iter = listIterator(size()); iter.hasPrevious();) {
+            ContentResult contentResult = iter.previous();
             ActionResult actionResult = contentResult.getActionResult(actionId);
             if (actionResult != null) {
                 return actionResult;
