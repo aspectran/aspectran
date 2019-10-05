@@ -100,7 +100,7 @@ public class UndertowCommand extends AbstractCommand {
                         return failed(warn("Undertow server is already running"));
                     }
                     try {
-                        if (!towServer.isAutoStartup()) {
+                        if (!towServer.isAutoStart()) {
                             towServer.start();
                         }
                         return success(info(getStatus(towServer)));
@@ -125,7 +125,7 @@ public class UndertowCommand extends AbstractCommand {
                             beanRegistry.destroySingleton(towServer);
                             towServer = beanRegistry.getBean(TowServer.class, serverName);
                         }
-                        if (!towServer.isAutoStartup()) {
+                        if (!towServer.isAutoStart()) {
                             towServer.start();
                         }
                         return success(info(getStatus(towServer)));

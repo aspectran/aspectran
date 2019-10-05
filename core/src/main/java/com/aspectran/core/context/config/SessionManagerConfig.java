@@ -35,7 +35,7 @@ public class SessionManagerConfig extends AbstractParameters {
     private static final ParameterKey saveOnCreate;
     private static final ParameterKey saveOnInactiveEviction;
     private static final ParameterKey removeUnloadableSessions;
-    private static final ParameterKey excludeAttrsFromSerialization;
+    private static final ParameterKey nonPersistentAttributes;
     private static final ParameterKey storeType;
     private static final ParameterKey fileStore;
     private static final ParameterKey startup;
@@ -51,7 +51,7 @@ public class SessionManagerConfig extends AbstractParameters {
         saveOnCreate = new ParameterKey("saveOnCreate", ValueType.BOOLEAN);
         saveOnInactiveEviction = new ParameterKey("saveOnInactiveEviction", ValueType.BOOLEAN);
         removeUnloadableSessions = new ParameterKey("removeUnloadableSessions", ValueType.BOOLEAN);
-        excludeAttrsFromSerialization = new ParameterKey("excludeAttrsFromSerialization", ValueType.STRING, true);
+        nonPersistentAttributes = new ParameterKey("nonPersistentAttributes", ValueType.STRING, true);
         storeType = new ParameterKey("storeType", ValueType.STRING);
         fileStore = new ParameterKey("fileStore", SessionFileStoreConfig.class);
         startup = new ParameterKey("startup", ValueType.BOOLEAN);
@@ -65,7 +65,7 @@ public class SessionManagerConfig extends AbstractParameters {
                 saveOnCreate,
                 saveOnInactiveEviction,
                 removeUnloadableSessions,
-                excludeAttrsFromSerialization,
+                nonPersistentAttributes,
                 storeType,
                 fileStore,
                 startup
@@ -198,22 +198,22 @@ public class SessionManagerConfig extends AbstractParameters {
         return hasValue(removeUnloadableSessions);
     }
 
-    public String[] getExcludeAttrsFromSerialization() {
-        return getStringArray(excludeAttrsFromSerialization);
+    public String[] getNonPersistentAttributes() {
+        return getStringArray(nonPersistentAttributes);
     }
 
-    public SessionManagerConfig setExcludeAttrsFromSerialization(String[] excludeAttrsFromSerialization) {
-        putValue(SessionManagerConfig.excludeAttrsFromSerialization, excludeAttrsFromSerialization);
+    public SessionManagerConfig setNonPersistentAttributes(String[] nonPersistentAttributes) {
+        putValue(SessionManagerConfig.nonPersistentAttributes, nonPersistentAttributes);
         return this;
     }
 
-    public SessionManagerConfig addExcludeAttrsFromSerialization(String attrToExcludeFromSerialization) {
-        putValue(SessionManagerConfig.excludeAttrsFromSerialization, attrToExcludeFromSerialization);
+    public SessionManagerConfig addNonPersistentAttributes(String nonPersistentAttribute) {
+        putValue(SessionManagerConfig.nonPersistentAttributes, nonPersistentAttribute);
         return this;
     }
 
-    public boolean hasExcludeAttrsFromSerialization() {
-        return hasValue(excludeAttrsFromSerialization);
+    public boolean hasNonPersistentAttributes() {
+        return hasValue(nonPersistentAttributes);
     }
 
     public String getStoreType() {

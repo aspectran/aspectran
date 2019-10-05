@@ -91,6 +91,6 @@ public interface SessionDataStore extends Component {
      *
      * @return the attribute names to be excluded from serialization
      */
-    Set<String> getExcludeAttrsFromSerialization();
+    Set<String> getNonPersistentAttributes();
 
 }

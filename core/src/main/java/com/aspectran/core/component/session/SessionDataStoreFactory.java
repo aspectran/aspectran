@@ -28,8 +28,8 @@ public class SessionDataStoreFactory {
     public static FileSessionDataStore createFileSessionDataStore(SessionManagerConfig sessionManagerConfig,
                                                                   ApplicationAdapter applicationAdapter) {
         FileSessionDataStore fileSessionDataStore = new FileSessionDataStore();
-        if (sessionManagerConfig.hasExcludeAttrsFromSerialization()) {
-            fileSessionDataStore.setExcludeAttrsFromSerialization(sessionManagerConfig.getExcludeAttrsFromSerialization());
+        if (sessionManagerConfig.hasNonPersistentAttributes()) {
+            fileSessionDataStore.setNonPersistentAttributes(sessionManagerConfig.getNonPersistentAttributes());
         }
         SessionFileStoreConfig fileStoreConfig = sessionManagerConfig.getFileStoreConfig();
         if (fileStoreConfig != null) {

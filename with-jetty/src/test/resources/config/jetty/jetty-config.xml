@@ -27,7 +27,7 @@
             <item name="threadPool">#{jetty.threadPool}</item>
         </arguments>
         <properties>
-            <item name="autoStartup">%{jetty.startup}</item>
+            <item name="autoStart">%{jetty.startup}</item>
             <item name="connectors" type="array">
                 <value>#{jetty.connector}</value>
             </item>

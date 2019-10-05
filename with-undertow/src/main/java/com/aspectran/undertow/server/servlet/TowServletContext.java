@@ -18,6 +18,7 @@ package com.aspectran.undertow.server.servlet;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.component.bean.aware.ApplicationAdapterAware;
 import io.undertow.server.DefaultByteBufferPool;
+import io.undertow.server.HandlerWrapper;
 import io.undertow.server.session.Session;
 import io.undertow.server.session.SessionListener;
 import io.undertow.server.session.SessionManager;
@@ -125,6 +126,18 @@ public class TowServletContext extends DeploymentInfo implements ApplicationAdap
 
     public void setErrorPages(ErrorPage[] errorPages) {
         addErrorPages(errorPages);
+    }
+
+    public void setInnerHandlerChainWrappers(HandlerWrapper[] wrappers) {
+        for (HandlerWrapper wrapper : wrappers) {
+            addInnerHandlerChainWrapper(wrapper);
+        }
+    }
+
+    public void setOuterHandlerChainWrappers(HandlerWrapper[] wrappers) {
+        for (HandlerWrapper wrapper : wrappers) {
+            addOuterHandlerChainWrapper(wrapper);
+        }
     }
 
     public void setWebSocketEnabled(boolean webSocketEnabled) {

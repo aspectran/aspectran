@@ -9,7 +9,7 @@
 
     <environment>
         <properties>
-            <item name="tow.server.autoStartup" valueType="boolean">true</item>
+            <item name="tow.server.startup" valueType="boolean">true</item>
             <item name="tow.server.stopDelayTime" valueType="int">1000</item>
             <item name="tow.server.listener.http.port" valueType="int">8080</item>
             <item name="tow.server.listener.http.host">0.0.0.0</item>
@@ -18,7 +18,7 @@
 
     <bean id="tow.server" class="com.aspectran.undertow.server.TowServer">
         <properties>
-            <item name="autoStartup">%{tow.server.autoStartup}</item>
+            <item name="autoStart">%{tow.server.startup}</item>
             <item name="stopDelayTime" valueType="int">%{tow.server.stopDelayTime}</item>
             <item name="httpListeners" type="array">
                 <bean class="com.aspectran.undertow.server.HttpListenerConfig">
@@ -44,70 +44,10 @@
                 </bean>
             </item>
             <item name="towServletContainer">#{tow.servletContainer}</item>
-            <item name="handler">#{tow.accessLogHandler}</item>
-        </properties>
-    </bean>
-
-    <bean id="tow.accessLogHandler" class="com.aspectran.undertow.server.accesslog.AccessLogHandlerFactoryBean"
-          scope="prototype">
-        <properties>
-            <item name="handler">#{tow.encodingHandler}</item>
-            <item name="formatString">combined</item>
-            <item name="category">io.undertow.accesslog</item>
-        </properties>
-    </bean>
-
-    <bean id="tow.encodingHandler" class="com.aspectran.undertow.server.encoding.EncodingHandlerFactoryBean"
-          scope="prototype">
-        <properties>
-            <item name="handler">#{tow.servletHandler}</item>
-            <item name="contentEncodingProviders" type="array">
-                <value>gzip</value>
-                <value>deflate</value>
-            </item>
-            <item name="maxContentSize" valueType="long">2048</item>
-            <item name="mediaTypes" type="array">
-                <value>text/html</value>
-                <value>text/xml</value>
-                <value>text/plain</value>
-                <value>text/css</value>
-                <value>text/javascript</value>
-                <value>application/javascript</value>
-                <value>application/json</value>
-                <value>application/xml</value>
-                <value>application/apon</value>
-            </item>
-        </properties>
-    </bean>
-
-    <bean id="tow.servletHandler" class="com.aspectran.undertow.server.servlet.ServletHandlerFactoryBean"
-          scope="prototype">
-        <properties>
-            <item name="towServletContainer">#{tow.server^towServletContainer}</item>
-            <item name="staticResourceHandler">#{tow.staticResourceHandler}</item>
-        </properties>
-    </bean>
-
-    <bean id="tow.resourceManager" class="com.aspectran.undertow.server.resource.TowResourceManager" scope="prototype">
-        <properties>
-            <item name="base">/webapps/root</item>
-        </properties>
-    </bean>
-
-    <bean id="tow.staticResourceHandler" class="com.aspectran.undertow.server.resource.StaticResourceHandler"
-          initMethod="autoDetect" scope="prototype">
-        <arguments>
-            <item>#{tow.resourceManager}</item>
-        </arguments>
-        <properties>
-            <item name="resourcePathPatterns">
-                <bean class="com.aspectran.undertow.server.resource.ResourcePathPatterns">
+            <item name="handler">
+                <bean class="io.undertow.server.handlers.GracefulShutdownHandler">
                     <arguments>
-                        <item>
-                            +: /favicon.ico
-                            +: /robots.txt
-                            +: /ads.txt
-                        </item>
+                        <item>#{tow.hybridHandler}</item>
                     </arguments>
                 </bean>
             </item>
@@ -208,7 +148,7 @@
                             maxIdleSeconds: 1800
                             evictionIdleSeconds: 900
                             scavengingIntervalSeconds: 600
-                            excludeAttrsFromSerialization: [
+                            nonPersistentAttributes: [
                                 io.undertow.websocket.current-connections
                             ]
                             storeType: file
@@ -221,6 +161,74 @@
                     </arguments>
                 </bean>
             </item>
+        </properties>
+    </bean>
+
+    <bean id="tow.resourceManager" class="com.aspectran.undertow.server.resource.TowResourceManager" scope="prototype">
+        <properties>
+            <item name="base">/webapps/root</item>
+        </properties>
+    </bean>
+
+    <bean id="tow.hybridHandler" class="com.aspectran.undertow.server.servlet.HybridHandlerFactoryBean"
+          scope="prototype">
+        <properties>
+            <item name="towServletContainer">#{tow.server^towServletContainer}</item>
+            <item name="staticResourceHandler">#{tow.staticResourceHandler}</item>
+            <item name="outerHandlerChainWrappers" type="array">
+                <value>#{tow.encodingHandlerWrapper}</value>
+                <value>#{tow.accessLogHandlerWrapper}</value>
+            </item>
+        </properties>
+    </bean>
+
+    <bean id="tow.staticResourceHandler" class="com.aspectran.undertow.server.resource.StaticResourceHandler"
+          initMethod="autoDetect" scope="prototype">
+        <arguments>
+            <item>#{tow.resourceManager}</item>
+        </arguments>
+        <properties>
+            <item name="resourcePathPatterns">
+                <bean class="com.aspectran.undertow.server.resource.ResourcePathPatterns">
+                    <arguments>
+                        <item>
+                            +: /favicon.ico
+                            +: /robots.txt
+                            +: /ads.txt
+                        </item>
+                    </arguments>
+                </bean>
+            </item>
+        </properties>
+    </bean>
+
+    <bean id="tow.encodingHandlerWrapper" class="com.aspectran.undertow.server.encoding.EncodingHandlerWrapper"
+          scope="prototype">
+        <properties>
+            <item name="contentEncodingProviders" type="array">
+                <value>gzip</value>
+                <value>deflate</value>
+            </item>
+            <item name="maxContentSize" valueType="long">32</item>
+            <item name="mediaTypes" type="array">
+                <value>text/html</value>
+                <value>text/xml</value>
+                <value>text/plain</value>
+                <value>text/css</value>
+                <value>text/javascript</value>
+                <value>application/javascript</value>
+                <value>application/json</value>
+                <value>application/xml</value>
+                <value>application/apon</value>
+            </item>
+        </properties>
+    </bean>
+
+    <bean id="tow.accessLogHandlerWrapper" class="com.aspectran.undertow.server.accesslog.AccessLogHandlerWrapper"
+          scope="prototype">
+        <properties>
+            <item name="formatString">combined</item>
+            <item name="category">io.undertow.accesslog</item>
         </properties>
     </bean>
 

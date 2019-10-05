@@ -35,7 +35,7 @@
             </item>
         </arguments>
         <properties>
-            <item name="autoStartup">%{jetty.startup}</item>
+            <item name="autoStart">%{jetty.startup}</item>
             <item name="connectors" type="array">
                 <bean class="org.eclipse.jetty.server.ServerConnector">
                     <arguments>

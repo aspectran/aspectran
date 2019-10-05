@@ -21,6 +21,7 @@ import com.aspectran.web.support.http.MediaTypeUtils;
 import io.undertow.attribute.RequestHeaderAttribute;
 import io.undertow.predicate.Predicate;
 import io.undertow.predicate.Predicates;
+import io.undertow.server.HandlerWrapper;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.server.handlers.encoding.ContentEncodingRepository;
@@ -41,13 +42,11 @@ import java.util.Set;
  *
  * <p>Created: 2019-08-18</p>
  */
-public class EncodingHandlerFactory {
+public class EncodingHandlerWrapper implements HandlerWrapper {
 
     private static final String GZIP = "gzip";
 
     private static final String DEFLATE = "deflate";
-
-    private HttpHandler handler;
 
     private String[] contentEncodingProviderNames;
 
@@ -56,10 +55,6 @@ public class EncodingHandlerFactory {
     private String[] mediaTypes;
 
     private String[] excludedUserAgents;
-
-    public void setHandler(HttpHandler handler) {
-        this.handler = handler;
-    }
 
     public void setContentEncodingProviders(String... contentEncodingProviderNames) {
         this.contentEncodingProviderNames = contentEncodingProviderNames;
@@ -77,10 +72,8 @@ public class EncodingHandlerFactory {
         this.excludedUserAgents = excludedUserAgents;
     }
 
-    public EncodingHandler createEncodingHandler() {
-        if (handler == null) {
-            throw new IllegalStateException("The next handler is not specified");
-        }
+    @Override
+    public HttpHandler wrap(HttpHandler handler) {
         ContentEncodingRepository contentEncodingRepository = new ContentEncodingRepository();
         if (contentEncodingProviderNames != null && contentEncodingProviderNames.length != 0) {
             Set<String> names = new LinkedHashSet<>(Arrays.asList(contentEncodingProviderNames));

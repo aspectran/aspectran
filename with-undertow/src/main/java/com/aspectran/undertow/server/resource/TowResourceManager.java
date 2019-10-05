@@ -18,14 +18,18 @@ package com.aspectran.undertow.server.resource;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.component.bean.aware.ApplicationAdapterAware;
 import com.aspectran.core.util.StringUtils;
+import io.undertow.server.HandlerWrapper;
 import io.undertow.server.handlers.resource.PathResourceManager;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 public class TowResourceManager extends PathResourceManager implements ApplicationAdapterAware {
 
     private ApplicationAdapter applicationAdapter;
+
+    private List<HandlerWrapper> outerHandlerChainWrappers;
 
     public TowResourceManager() {
         this(1024, true, false, (String[])null);

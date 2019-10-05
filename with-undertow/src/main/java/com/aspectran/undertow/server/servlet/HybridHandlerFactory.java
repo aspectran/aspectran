@@ -22,27 +22,31 @@ import com.aspectran.undertow.server.resource.StaticResourceHandler;
 import com.aspectran.web.service.DefaultWebService;
 import com.aspectran.web.service.WebService;
 import com.aspectran.web.socket.jsr356.ServerEndpointExporter;
+import io.undertow.server.HandlerWrapper;
 import io.undertow.server.HttpHandler;
-import io.undertow.server.handlers.GracefulShutdownHandler;
 import io.undertow.server.handlers.PathHandler;
 import io.undertow.server.handlers.ResponseCodeHandler;
 import io.undertow.servlet.api.DeploymentManager;
 
 import javax.servlet.ServletContext;
 import javax.websocket.server.ServerContainer;
+import java.util.Arrays;
+import java.util.List;
 
 import static com.aspectran.web.service.WebService.ROOT_WEB_SERVICE_ATTRIBUTE;
 
 /**
  * <p>Created: 2019-08-04</p>
  */
-public class ServletHandlerFactory implements ActivityContextAware {
+public class HybridHandlerFactory implements ActivityContextAware {
 
     private ActivityContext context;
 
     private TowServletContainer towServletContainer;
 
     private StaticResourceHandler staticResourceHandler;
+
+    private List<HandlerWrapper> outerHandlerChainWrappers;
 
     @Override
     public void setActivityContext(ActivityContext context) {
@@ -65,7 +69,15 @@ public class ServletHandlerFactory implements ActivityContextAware {
         this.staticResourceHandler = staticResourceHandler;
     }
 
-    public HttpHandler createServletHandler() throws Exception {
+    public void setOuterHandlerChainWrappers(HandlerWrapper[] wrappers) {
+        if (wrappers != null && wrappers.length > 0) {
+            this.outerHandlerChainWrappers = Arrays.asList(wrappers);
+        } else {
+            this.outerHandlerChainWrappers = null;
+        }
+    }
+
+    public HttpHandler createHandler() throws Exception {
         HttpHandler rootHandler;
         if (towServletContainer != null && towServletContainer.getDeploymentManagers() != null) {
             PathHandler pathHandler = new PathHandler();
@@ -93,22 +105,25 @@ public class ServletHandlerFactory implements ActivityContextAware {
                 String contextPath = manager.getDeployment().getDeploymentInfo().getContextPath();
                 pathHandler.addPrefixPath(contextPath, handler);
             }
-            rootHandler = new GracefulShutdownHandler(pathHandler);
+            rootHandler = pathHandler;
         } else {
             rootHandler = ResponseCodeHandler.HANDLE_404;
         }
         if (staticResourceHandler != null && staticResourceHandler.hasPatterns()) {
-            return exchange -> {
-                if (staticResourceHandler != null) {
-                    staticResourceHandler.handleRequest(exchange);
-                    if (!exchange.isDispatched() && !exchange.isComplete()) {
-                        rootHandler.handleRequest(exchange);
-                    }
-                }
-            };
-        } else {
-            return rootHandler;
+            rootHandler = new HybridHandler(rootHandler, staticResourceHandler);
         }
+        if (outerHandlerChainWrappers != null) {
+            rootHandler = wrapHandlers(rootHandler, outerHandlerChainWrappers);
+        }
+        return rootHandler;
+    }
+
+    private static HttpHandler wrapHandlers(HttpHandler wrapee, List<HandlerWrapper> wrappers) {
+        HttpHandler current = wrapee;
+        for (HandlerWrapper wrapper : wrappers) {
+            current = wrapper.wrap(current);
+        }
+        return current;
     }
 
 }

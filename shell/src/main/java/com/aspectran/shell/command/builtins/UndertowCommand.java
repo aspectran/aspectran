@@ -106,7 +106,7 @@ public class UndertowCommand extends AbstractCommand {
                         return;
                     }
                     try {
-                        if (!towServer.isAutoStartup()) {
+                        if (!towServer.isAutoStart()) {
                             towServer.start();
                         }
                         printStatus(towServer, console);
@@ -134,7 +134,7 @@ public class UndertowCommand extends AbstractCommand {
                             beanRegistry.destroySingleton(towServer);
                             towServer = beanRegistry.getBean(TowServer.class, serverName);
                         }
-                        if (!towServer.isAutoStartup()) {
+                        if (!towServer.isAutoStart()) {
                             towServer.start();
                         }
                         printStatus(towServer, console);

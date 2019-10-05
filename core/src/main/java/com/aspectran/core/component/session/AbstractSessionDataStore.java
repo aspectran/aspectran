@@ -38,7 +38,7 @@ public abstract class AbstractSessionDataStore extends AbstractComponent impleme
 
     private int savePeriodSecs = 0; // time in sec between saves
 
-    private Set<String> excludeAttrsFromSerialization;
+    private Set<String> nonPersistentAttributes;
 
     public int getGracePeriodSecs() {
         return gracePeriodSecs;
@@ -78,28 +78,28 @@ public abstract class AbstractSessionDataStore extends AbstractComponent impleme
     }
 
     @Override
-    public Set<String> getExcludeAttrsFromSerialization() {
-        return excludeAttrsFromSerialization;
+    public Set<String> getNonPersistentAttributes() {
+        return nonPersistentAttributes;
     }
 
     /**
      * Specifies attributes that should be excluded from serialization.
      *
-     * @param excludeAttrsFromSerialization the attribute names to exclude from serialization
+     * @param nonPersistentAttributes the attribute names to exclude from serialization
      */
-    public void setExcludeAttrsFromSerialization(String... excludeAttrsFromSerialization) {
-        if (excludeAttrsFromSerialization != null && excludeAttrsFromSerialization.length > 0) {
+    public void setNonPersistentAttributes(String... nonPersistentAttributes) {
+        if (nonPersistentAttributes != null && nonPersistentAttributes.length > 0) {
             Set<String> attrNames = new HashSet<>();
-            Collections.addAll(attrNames, excludeAttrsFromSerialization);
-            this.excludeAttrsFromSerialization = Collections.unmodifiableSet(attrNames);
+            Collections.addAll(attrNames, nonPersistentAttributes);
+            this.nonPersistentAttributes = Collections.unmodifiableSet(attrNames);
         } else {
-            this.excludeAttrsFromSerialization = null;
+            this.nonPersistentAttributes = null;
         }
     }
 
-    public boolean isAttrToExcludeFromSerialization(String attrName) {
-        if (excludeAttrsFromSerialization != null) {
-            return excludeAttrsFromSerialization.contains(attrName);
+    public boolean isNonPersistentAttributes(String attrName) {
+        if (nonPersistentAttributes != null) {
+            return nonPersistentAttributes.contains(attrName);
         } else {
             return false;
         }

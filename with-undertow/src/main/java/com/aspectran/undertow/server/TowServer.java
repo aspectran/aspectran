@@ -22,7 +22,9 @@ import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.undertow.server.servlet.TowServletContainer;
 import io.undertow.Undertow;
+import io.undertow.Version;
 import io.undertow.server.HttpHandler;
+import io.undertow.server.handlers.GracefulShutdownHandler;
 import io.undertow.servlet.api.DeploymentManager;
 import org.xnio.Option;
 import org.xnio.OptionMap;
@@ -41,20 +43,32 @@ public class TowServer extends AbstractLifeCycle implements InitializableBean, D
 
     private final Undertow.Builder builder = Undertow.builder();
 
-    private Undertow server;
-
-    private boolean autoStartup;
+    private boolean autoStart;
 
     private int stopDelayTime;
 
     private TowServletContainer towServletContainer;
 
-    public boolean isAutoStartup() {
-        return autoStartup;
+    private HttpHandler handler;
+
+    private Undertow server;
+
+    /**
+     * Returns whether the server starts automatically.
+     *
+     * @return true if the server should be started
+     */
+    public boolean isAutoStart() {
+        return autoStart;
     }
 
-    public void setAutoStartup(boolean autoStartup) {
-        this.autoStartup = autoStartup;
+    /**
+     * Specifies whether the server should start automatically.
+     *
+     * @param autoStart if the server should be started
+     */
+    public void setAutoStart(boolean autoStart) {
+        this.autoStart = autoStart;
     }
 
     public int getStopDelayTime() {
@@ -97,6 +111,7 @@ public class TowServer extends AbstractLifeCycle implements InitializableBean, D
     }
 
     public void setHandler(HttpHandler handler) {
+        this.handler = handler;
         builder.setHandler(handler);
     }
 
@@ -174,7 +189,7 @@ public class TowServer extends AbstractLifeCycle implements InitializableBean, D
         try {
             server = builder.build();
             server.start();
-            log.info("Undertow server started");
+            log.info("Undertow " + Version.getVersionString() + " started");
         } catch (Exception e) {
             try {
                 if (server != null) {
@@ -191,19 +206,29 @@ public class TowServer extends AbstractLifeCycle implements InitializableBean, D
     public void doStop() {
         try {
             if (server != null) {
+                if (handler instanceof GracefulShutdownHandler) {
+                    ((GracefulShutdownHandler)handler).shutdown();
+                    try {
+                        ((GracefulShutdownHandler)handler).awaitShutdown();
+                    } catch (Exception ex) {
+                        log.error("Unable to gracefully stop undertow");
+                    }
+                }
+
                 if (towServletContainer != null && towServletContainer.getDeploymentManagers() != null) {
                     for (DeploymentManager manager : towServletContainer.getDeploymentManagers()) {
                         manager.stop();
+                        manager.undeploy();
                     }
                 }
-                try {
-                    Thread.sleep(stopDelayTime);
-                } catch (InterruptedException ex) {
-                    Thread.currentThread().interrupt();
-                }
+//                try {
+//                    Thread.sleep(stopDelayTime);
+//                } catch (InterruptedException ex) {
+//                    Thread.currentThread().interrupt();
+//                }
                 server.stop();
                 server = null;
-                log.info("Stopped Undertow server");
+                log.info("Undertow " + Version.getVersionString() + " stopped");
             }
         } catch (Exception e) {
             log.error("Unable to stop Undertow server", e);
@@ -212,7 +237,7 @@ public class TowServer extends AbstractLifeCycle implements InitializableBean, D
 
     @Override
     public void initialize() throws Exception {
-        if (autoStartup) {
+        if (autoStart) {
             start();
         }
     }

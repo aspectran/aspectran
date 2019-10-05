@@ -17,6 +17,7 @@ package com.aspectran.undertow.server.accesslog;
 
 import com.aspectran.core.component.bean.aware.ClassLoaderAware;
 import com.aspectran.core.util.StringUtils;
+import io.undertow.server.HandlerWrapper;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.handlers.accesslog.AccessLogHandler;
 import io.undertow.server.handlers.accesslog.AccessLogReceiver;
@@ -24,11 +25,9 @@ import io.undertow.server.handlers.accesslog.AccessLogReceiver;
 /**
  * <p>Created: 2019-08-18</p>
  */
-public class AccessLogHandlerFactory implements ClassLoaderAware {
+public class AccessLogHandlerWrapper implements ClassLoaderAware, HandlerWrapper {
 
     private ClassLoader classLoader;
-
-    private HttpHandler handler;
 
     private String formatString;
 
@@ -39,10 +38,6 @@ public class AccessLogHandlerFactory implements ClassLoaderAware {
         this.classLoader = classLoader;
     }
 
-    public void setHandler(HttpHandler handler) {
-        this.handler = handler;
-    }
-
     public void setFormatString(String formatString) {
         this.formatString = formatString;
     }
@@ -51,7 +46,8 @@ public class AccessLogHandlerFactory implements ClassLoaderAware {
         this.category = category;
     }
 
-    public AccessLogHandler createAccessLogHandler() {
+    @Override
+    public HttpHandler wrap(HttpHandler handler) {
         if (handler == null) {
             throw new IllegalStateException("The next handler is not specified");
         }

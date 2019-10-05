@@ -345,8 +345,8 @@ public class FileSessionDataStore extends AbstractSessionDataStore {
 
         List<String> keys = new ArrayList<>(data.getKeys());
         // remove attributes excluded from serialization
-        if (!keys.isEmpty() && getExcludeAttrsFromSerialization() != null) {
-            keys.removeAll(getExcludeAttrsFromSerialization());
+        if (!keys.isEmpty() && getNonPersistentAttributes() != null) {
+            keys.removeAll(getNonPersistentAttributes());
         }
         out.writeInt(keys.size());
         if (!keys.isEmpty()) {
