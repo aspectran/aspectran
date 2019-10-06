@@ -153,6 +153,28 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
     }
 
     @Override
+    public void withdrawDerivedService(CoreService coreService) {
+        if (!coreService.isDerived()) {
+            throw new IllegalArgumentException("Not derived service: " + coreService);
+        }
+        if (coreService.getServiceController().isActive()) {
+            throw new IllegalArgumentException("Not stopped service: " + coreService);
+        }
+        super.withdrawDerivedService(coreService.getServiceController());
+    }
+
+    @Override
+    public void leaveFromRootService() {
+        if (!isDerived()) {
+            throw new IllegalArgumentException("Not derived service: " + this);
+        }
+        if (isActive()) {
+            throw new IllegalArgumentException("Not stopped service: " + this);
+        }
+        rootService.withdrawDerivedService(this);
+    }
+
+    @Override
     public boolean isDerived() {
         return (rootService != null);
     }

@@ -38,7 +38,7 @@ import static com.aspectran.web.service.WebService.ROOT_WEB_SERVICE_ATTRIBUTE;
 /**
  * <p>Created: 2019-08-04</p>
  */
-public class HybridHandlerFactory implements ActivityContextAware {
+public class HybridServletHandlerFactory implements ActivityContextAware {
 
     private ActivityContext context;
 
@@ -110,7 +110,7 @@ public class HybridHandlerFactory implements ActivityContextAware {
             rootHandler = ResponseCodeHandler.HANDLE_404;
         }
         if (staticResourceHandler != null && staticResourceHandler.hasPatterns()) {
-            rootHandler = new HybridHandler(rootHandler, staticResourceHandler);
+            rootHandler = new HybridServletHandler(rootHandler, staticResourceHandler);
         }
         if (outerHandlerChainWrappers != null) {
             rootHandler = wrapHandlers(rootHandler, outerHandlerChainWrappers);

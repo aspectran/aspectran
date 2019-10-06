@@ -114,7 +114,8 @@ public class ShutdownHooks {
             log.debug("Running all shutdown-hook tasks");
         }
 
-        for (ListIterator<Task> iter = tasks.listIterator(tasks.size()); iter.hasPrevious();) {
+        List<Task> list = new ArrayList<>(tasks);
+        for (ListIterator<Task> iter = list.listIterator(list.size()); iter.hasPrevious();) {
             Task task = iter.previous();
             if (log.isDebugEnabled()) {
                 log.debug("Running task: " + task);

@@ -39,7 +39,7 @@ public abstract class AbstractServiceController implements ServiceController {
 
     public AbstractServiceController(boolean derivable) {
         if (derivable) {
-            derivedServices = new ArrayList<>(5);
+            derivedServices = new ArrayList<>();
         } else {
             derivedServices = null;
         }
@@ -57,9 +57,16 @@ public abstract class AbstractServiceController implements ServiceController {
 
     protected void joinDerivedService(ServiceController serviceController) {
         if (derivedServices == null) {
-            throw new UnsupportedOperationException("Derived service control not supported");
+            throw new UnsupportedOperationException("No support for derived service controls");
         }
         derivedServices.add(serviceController);
+    }
+
+    protected void withdrawDerivedService(ServiceController serviceController) {
+        if (derivedServices == null) {
+            throw new UnsupportedOperationException("No support for derived service controls");
+        }
+        derivedServices.remove(serviceController);
     }
 
     protected void clearDerivedService() {

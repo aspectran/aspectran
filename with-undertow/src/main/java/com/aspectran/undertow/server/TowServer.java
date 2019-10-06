@@ -220,11 +220,6 @@ public class TowServer extends AbstractLifeCycle implements InitializableBean, D
                         manager.undeploy();
                     }
                 }
-                try {
-                    Thread.sleep(stopDelayTime);
-                } catch (InterruptedException ex) {
-                    Thread.currentThread().interrupt();
-                }
                 server.stop();
                 server = null;
                 log.info("Undertow " + Version.getVersionString() + " stopped");

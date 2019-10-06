@@ -15,8 +15,6 @@
  */
 package com.aspectran.undertow.server.http;
 
-import com.aspectran.core.component.bean.aware.ActivityContextAware;
-import com.aspectran.core.context.ActivityContext;
 import com.aspectran.undertow.server.resource.StaticResourceHandler;
 import com.aspectran.undertow.service.TowService;
 import io.undertow.server.ExchangeCompletionListener;
@@ -32,9 +30,7 @@ import io.undertow.server.session.SessionManager;
 /**
  * <p>Created: 2019-07-31</p>
  */
-public abstract class AbstractHttpHandler extends ResourceHandler implements ActivityContextAware {
-
-    private ActivityContext context;
+public class HybridHttpHandler extends ResourceHandler {
 
     private volatile StaticResourceHandler staticResourceHandler;
 
@@ -42,19 +38,21 @@ public abstract class AbstractHttpHandler extends ResourceHandler implements Act
 
     private volatile SessionConfig sessionConfig;
 
-    public AbstractHttpHandler(ResourceManager resourceManager) {
+    private volatile TowService towService;
+
+    public HybridHttpHandler(ResourceManager resourceManager) {
         super(resourceManager);
     }
 
-    public AbstractHttpHandler(ResourceManager resourceManager, HttpHandler next) {
+    public HybridHttpHandler(ResourceManager resourceManager, HttpHandler next) {
         super(resourceManager, next);
     }
 
-    public AbstractHttpHandler(ResourceSupplier resourceSupplier) {
+    public HybridHttpHandler(ResourceSupplier resourceSupplier) {
         super(resourceSupplier);
     }
 
-    public AbstractHttpHandler(ResourceSupplier resourceSupplier, HttpHandler next) {
+    public HybridHttpHandler(ResourceSupplier resourceSupplier, HttpHandler next) {
         super(resourceSupplier, next);
     }
 
@@ -63,23 +61,23 @@ public abstract class AbstractHttpHandler extends ResourceHandler implements Act
     }
 
     public void setStaticResourceHandler(StaticResourceHandler staticResourceHandler) {
-        this.staticResourceHandler = staticResourceHandler;
-    }
-
-    public SessionManager getSessionManager() {
-        return sessionManager;
+        if (staticResourceHandler != null && staticResourceHandler.hasPatterns()) {
+            this.staticResourceHandler = staticResourceHandler;
+        } else {
+            this.staticResourceHandler = null;
+        }
     }
 
     public void setSessionManager(SessionManager sessionManager) {
         this.sessionManager = sessionManager;
     }
 
-    public SessionConfig getSessionConfig() {
-        return sessionConfig;
-    }
-
     public void setSessionConfig(SessionConfig sessionConfig) {
         this.sessionConfig = sessionConfig;
+    }
+
+    public void setTowService(TowService towService) {
+        this.towService = towService;
     }
 
     @Override
@@ -87,7 +85,7 @@ public abstract class AbstractHttpHandler extends ResourceHandler implements Act
         if (exchange.isInIoThread()) {
             exchange.dispatch(this);
         } else {
-            if (staticResourceHandler != null && staticResourceHandler.hasPatterns()) {
+            if (staticResourceHandler != null) {
                 staticResourceHandler.handleRequest(exchange);
                 if (exchange.isDispatched() || exchange.isComplete()) {
                     return;
@@ -101,22 +99,11 @@ public abstract class AbstractHttpHandler extends ResourceHandler implements Act
                 exchange.addExchangeCompleteListener(listener);
             }
 
-            boolean processed = getTowService().execute(exchange);
+            boolean processed = towService.execute(exchange);
             if (!processed) {
                 super.handleRequest(exchange);
             }
         }
-    }
-
-    public abstract TowService getTowService();
-
-    public ActivityContext getActivityContext() {
-        return context;
-    }
-
-    @Override
-    public void setActivityContext(ActivityContext context) {
-        this.context = context;
     }
 
     private static class UpdateLastAccessTimeListener implements ExchangeCompletionListener {

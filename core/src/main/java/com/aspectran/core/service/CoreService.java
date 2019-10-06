@@ -93,4 +93,10 @@ public interface CoreService {
      */
     void joinDerivedService(CoreService coreService);
 
+    void withdrawDerivedService(CoreService coreService);
+
+    void leaveFromRootService();
+
+    boolean isDerived();
+
 }

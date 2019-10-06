@@ -47,7 +47,7 @@
             <item name="handler">
                 <bean class="io.undertow.server.handlers.GracefulShutdownHandler">
                     <arguments>
-                        <item>#{tow.hybridHandler}</item>
+                        <item>#{tow.hybridServletHandler}</item>
                     </arguments>
                 </bean>
             </item>
@@ -170,7 +170,7 @@
         </properties>
     </bean>
 
-    <bean id="tow.hybridHandler" class="com.aspectran.undertow.server.servlet.HybridHandlerFactoryBean"
+    <bean id="tow.hybridServletHandler" class="com.aspectran.undertow.server.servlet.HybridServletHandlerFactoryBean"
           scope="prototype">
         <properties>
             <item name="towServletContainer">#{tow.server^towServletContainer}</item>

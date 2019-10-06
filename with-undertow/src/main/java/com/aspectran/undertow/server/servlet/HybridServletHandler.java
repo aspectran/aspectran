@@ -7,17 +7,17 @@ import io.undertow.server.HttpServerExchange;
 /**
  * <p>Created: 05/10/2019</p>
  */
-public class HybridHandler implements HttpHandler {
+public class HybridServletHandler implements HttpHandler {
 
     private final HttpHandler defaultHandler;
 
     private final HttpHandler staticResourceHandler;
 
-    public HybridHandler(HttpHandler defaultHandler) {
+    public HybridServletHandler(HttpHandler defaultHandler) {
         this(defaultHandler, null);
     }
 
-    public HybridHandler(HttpHandler defaultHandler, HttpHandler staticResourceHandler) {
+    public HybridServletHandler(HttpHandler defaultHandler, HttpHandler staticResourceHandler) {
         Assert.notNull(defaultHandler, "defaultHandler must not be null");
         this.defaultHandler = defaultHandler;
         this.staticResourceHandler = staticResourceHandler;
