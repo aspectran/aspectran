@@ -45,6 +45,8 @@ public class TowServer extends AbstractLifeCycle implements InitializableBean, D
 
     private boolean autoStart;
 
+    private int shutdownTimeout = 30;
+
     private int stopDelayTime;
 
     private TowServletContainer towServletContainer;
@@ -69,6 +71,14 @@ public class TowServer extends AbstractLifeCycle implements InitializableBean, D
      */
     public void setAutoStart(boolean autoStart) {
         this.autoStart = autoStart;
+    }
+
+    public int getShutdownTimeout() {
+        return shutdownTimeout;
+    }
+
+    public void setShutdownTimeout(int shutdownTimeout) {
+        this.shutdownTimeout = shutdownTimeout;
     }
 
     public int getStopDelayTime() {
@@ -209,9 +219,18 @@ public class TowServer extends AbstractLifeCycle implements InitializableBean, D
                 if (handler instanceof GracefulShutdownHandler) {
                     ((GracefulShutdownHandler)handler).shutdown();
                     try {
-                        ((GracefulShutdownHandler)handler).awaitShutdown();
+                        if (shutdownTimeout > 0) {
+                            // Wait "30" seconds before make a force shutdown
+                            boolean result = ((GracefulShutdownHandler)handler).awaitShutdown(shutdownTimeout * 1000);
+                            if (!result) {
+                                log.warn("Undertow server did not shut down gracefully within " +
+                                        shutdownTimeout + " seconds. Proceeding with forceful shutdown");
+                            }
+                        } else {
+                            ((GracefulShutdownHandler)handler).awaitShutdown();
+                        }
                     } catch (Exception ex) {
-                        log.error("Unable to gracefully stop undertow");
+                        log.error("Unable to gracefully stop Undertow server");
                     }
                 }
                 if (towServletContainer != null && towServletContainer.getDeploymentManagers() != null) {
