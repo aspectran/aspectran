@@ -43,8 +43,6 @@ public abstract class AbstractLifeCycle implements LifeCycle {
 
     private volatile int state = STATE_STOPPED;
 
-    private long stopTimeout = 30000;
-
     protected void doStart() throws Exception {
     }
 
@@ -206,14 +204,6 @@ public abstract class AbstractLifeCycle implements LifeCycle {
         for (Listener listener : listeners) {
             listener.lifeCycleFailure(this, th);
         }
-    }
-
-    public long getStopTimeout() {
-        return stopTimeout;
-    }
-
-    public void setStopTimeout(long stopTimeout) {
-        this.stopTimeout = stopTimeout;
     }
 
     @Override

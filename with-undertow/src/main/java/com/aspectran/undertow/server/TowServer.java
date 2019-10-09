@@ -45,7 +45,7 @@ public class TowServer extends AbstractLifeCycle implements InitializableBean, D
 
     private boolean autoStart;
 
-    private int shutdownTimeout = 30;
+    private int shutdownTimeout;
 
     private int stopDelayTime;
 

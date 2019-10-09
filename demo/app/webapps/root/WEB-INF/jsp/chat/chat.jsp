@@ -1,316 +1,269 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-    <style>
-        /* Common */
-        @media print, screen and (min-width: 64em) {
-            section > .row {
-                background-color: #f5f5f5;
-                border-radius: 0 0 10px 10px;
-            }
-        }
-        @media print, screen and (min-width: 64em) {
-            section > .row > .columns {
-                padding: 0;
-            }
-        }
-        #chat-wrap {
-            background-color: #f5f5f5;
-            overflow: auto;
-        }
-        .error {
-            color: #F04823;
-            font-size: 12px;
-        }
-
-        /* Authentication */
-        #authentication {
-            margin: 100px 0;
-        }
-        #authentication * {
-            display: block;
-            margin-left: auto;
-            margin-right: auto;
-            margin-bottom: 10px;
-        }
-        #authentication .error {
-            text-align: center;
-        }
-        #authentication input {
-            max-width: 200px;
-        }
-
-        /* Title Bar */
-        #title {
-            background-color: #35505B;
-            font-size: 20px;
-            padding: 10px 20px 10px 20px;
-            color: #fff;
-        }
-
-        /* Contact list */
-
-        #contacts {
-            float: left;
-            width: 180px;
-            padding: 20px;
-            background-color: #bbedfe;
-            height: 580px;
-            border-radius: 0 0 0 10px;
-            display: none;
-        }
-
-        #contacts .contact .status {
-            background-color: #13CF13;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            display: inline-block;
-            margin-right: 10px;
-        }
-
-        #contacts .contact .name {
-            line-height: 40px;
-            vertical-align: super;
-        }
-
-        /* Chat */
-
-        #chat {
-            float: right;
-            width: calc(100% - 180px);
-            display: none;
-        }
-
-        #messages {
-            height: 500px;
-            padding: 20px 20px 0 20px;
-            overflow-y: auto;
-        }
-
-        #messages .message {
-            margin-bottom: 3px;
-        }
-
-        #messages .message .content {
-            min-width: 20px;
-            max-width: 250px;
-            border-radius: 20px;
-            padding: 10px;
-            display: table;
-        }
-
-        #messages .message.event .content {
-            background-color: #FF7E29;
-            color: #fff;
-            margin-left: auto;
-            margin-right: auto;
-            font-size: 10px;
-            padding: 7px;
-        }
-
-        #messages .message.received {
-            left: 0;
-            text-align: left;
-        }
-
-        #messages .message.received .content {
-            background-color: gainsboro;
-            border-radius: 0 20px 20px;
-        }
-
-        #messages .message.received .sender {
-            color: dimgrey;
-            font-size: 10px;
-        }
-
-        #messages .message.sent {
-            right: 0;
-            text-align: right;
-        }
-
-        #messages .message.sent .content {
-            background-color: #0084FF;
-            margin-left: auto;
-            margin-right: 0;
-            color: #fff;
-            text-align: right;
-            border-radius: 20px 0 20px 20px;
-        }
-
-        #messages .message.sent .sender {
-            color: #0084FF;
-            font-size: 10px;
-        }
-
-        #chat-controls {
-            height: 40px;
-            padding: 20px 20px 0 20px;
-        }
-
-        #chat-controls button {
-            float: right;
-        }
-
-        #chat-controls input[type="text"] {
-            width: calc(100% - 5em);
-            float: left;
-            overflow: auto;
-        }
-
-        #messages .message.sent.same-sender-previous-message .sender,
-        #messages .message.received.same-sender-previous-message .sender {
-            display: none;
-        }
-
-        #messages .message:not(.same-sender-previous-message) {
-            margin-top: 10px;
-        }
-
-    </style>
-
-</head>
-<body>
-
 <div id="chat-wrap">
-<div id="title">Chat</div>
+    <div id="title">Chat</div>
 
-<form id="authentication" onsubmit="return false;">
-    <input type="text" id="username" placeholder="Username" autofocus/>
-    <input type="password" id="password" placeholder="Password"/>
-    <button class="button" onclick="signIn()">Sign In</button>
-    <span class="error" id="authentication-error"></span>
-</form>
-
-<div id="contacts"></div>
-
-<div id="chat">
-    <div id="messages"></div>
-    <form id="chat-controls" onsubmit="return false;">
-        <input type="text" id="message" placeholder="Enter a message"/>
-        <button class="button" onclick="sendMessage()">Send</button>
+    <form id="authentication" onsubmit="return false;">
+        <h3>Type your username</h3>
+        <input type="text" id="username" maxlength="50" placeholder="Username" autocomplete="off" autofocus/>
+        <button class="button" onclick="signIn()">Start Chatting</button>
+        <span class="error" id="authentication-error"></span>
     </form>
-</div>
-</div>
 
+    <div id="contacts"></div>
+
+    <div id="chat">
+        <div id="messages"></div>
+        <form id="chat-controls" onsubmit="return false;">
+            <input type="text" id="message" placeholder="Enter a message"/>
+            <button class="button" onclick="sendMessage()">Send</button>
+        </form>
+    </div>
+</div>
+<style>
+    /* Common */
+    @media print, screen and (min-width: 64em) {
+        section > .row {
+            background-color: #f5f5f5;
+            border-radius: 0 0 10px 10px;
+        }
+    }
+    @media print, screen and (min-width: 64em) {
+        section > .row > .columns {
+            padding: 0;
+        }
+    }
+    #chat-wrap {
+        background-color: #f5f5f5;
+        overflow: auto;
+        border-radius: 0 0 10px 10px;
+
+    }
+    .error {
+        color: #F04823;
+        font-size: 12px;
+    }
+
+    /* Authentication */
+    #authentication {
+        margin: 100px 0;
+    }
+    #authentication * {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        margin-bottom: 10px;
+    }
+    #authentication .error {
+        text-align: center;
+    }
+    #authentication h3 {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    #authentication input {
+        max-width: 300px;
+        margin-bottom: 20px;
+    }
+
+    /* Title Bar */
+    #title {
+        background-color: #35505B;
+        font-size: 20px;
+        padding: 10px 20px 10px 20px;
+        color: #fff;
+    }
+
+    /* Contact list */
+    #contacts {
+        float: left;
+        width: 220px;
+        padding: 15px;
+        background-color: #bbedfe;
+        height: 580px;
+        border-radius: 0 0 0 10px;
+        overflow: auto;
+        display: none;
+    }
+    #contacts .contact .status {
+        background-color: #13CF13;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        display: inline-block;
+        margin-right: 10px;
+    }
+    #contacts .contact .name {
+        line-height: 35px;
+        vertical-align: super;
+    }
+
+    /* Chat */
+    #chat {
+        float: right;
+        width: calc(100% - 220px);
+        display: none;
+    }
+    #messages {
+        height: 500px;
+        padding: 20px 20px 0 20px;
+        overflow-y: auto;
+    }
+    #messages .message {
+        margin-bottom: 3px;
+    }
+    #messages .message .content {
+        min-width: 20px;
+        max-width: 250px;
+        border-radius: 20px;
+        padding: 10px;
+        display: table;
+    }
+    #messages .message.event .content {
+        background-color: #FF7E29;
+        color: #fff;
+        margin-left: auto;
+        margin-right: auto;
+        padding: 7px 20px;
+    }
+    #messages .message.received {
+        left: 0;
+        text-align: left;
+    }
+    #messages .message.received .content {
+        background-color: gainsboro;
+        border-radius: 0 20px 20px;
+    }
+    #messages .message.received .sender {
+        color: dimgrey;
+    }
+    #messages .message.sent {
+        right: 0;
+        text-align: right;
+    }
+    #messages .message.sent .content {
+        background-color: #0084FF;
+        margin-left: auto;
+        margin-right: 0;
+        color: #fff;
+        text-align: right;
+        border-radius: 20px 0 20px 20px;
+    }
+    #messages .message.sent .sender {
+        color: #0084FF;
+    }
+    #chat-controls {
+        height: 40px;
+        padding: 20px 20px 0 20px;
+    }
+    #chat-controls button {
+        float: right;
+    }
+    #chat-controls input[type="text"] {
+        width: calc(100% - 5em);
+        float: left;
+        overflow: auto;
+    }
+
+    #messages .message.sent.same-sender-previous-message .sender,
+    #messages .message.received.same-sender-previous-message .sender {
+        display: none;
+    }
+
+    #messages .message:not(.same-sender-previous-message) {
+        margin-top: 10px;
+    }
+
+</style>
 <script>
-
     var socket;
     var currentUser;
 
     function signIn() {
-
-        var credentials = {
-            username: document.getElementById("username").value,
-            password: document.getElementById("password").value
-        };
-
-        currentUser = credentials.username;
-        openSocket('');
-
-/*
-        var request = new XMLHttpRequest();
-        request.open("POST", "http://localhost:8080/auth");
-        request.setRequestHeader("Content-Type", "application/json");
-
-        request.onreadystatechange = function () {
-
-            if (request.readyState === XMLHttpRequest.DONE) {
-
-                switch (request.status) {
-
-                    case 200:
-                        currentUser = credentials.username;
-                        var webSocketAccessToken = JSON.parse(request.responseText);
-                        openSocket(webSocketAccessToken.token);
-                        break;
-
-                    case 403:
-                        currentUser = null;
-                        document.getElementById("authentication-error").innerHTML = "Oops... These credentials are invalid.";
-                        break;
-
-                    default:
-                        document.getElementById("authentication-error").innerHTML = "Oops... Looks like something is broken.";
-                }
-            }
-        };
-
-        request.send(JSON.stringify(credentials));
-
- */
+        currentUser = $("#username").val().trim();
+        if (currentUser) {
+            openSocket();
+        }
     }
 
-    function openSocket(accessToken) {
-
+    function openSocket() {
         if (socket) {
             socket.close();
         }
+        var url = new URL('/chat', location.href);
+        url.protocol = url.protocol.replace('http', 'ws');
+        socket = new WebSocket(url.href);
 
-        socket = new WebSocket("ws://localhost:8080/chat?access-token=" + accessToken);
+        socket.onopen = function(event) {
+            $("#authentication").hide();
+            $("#contacts").show();
+            $("#chat").show();
+            $("#message").focus();
 
-        socket.onopen = function (event) {
-            document.getElementById("authentication").style.display = "none";
-            document.getElementById("contacts").style.display = "block";
-            document.getElementById("chat").style.display = "block";
-            document.getElementById("message").focus();
+            var chatMessage = {
+                sendTextMessage: {
+                    type: 'JOIN',
+                    username: currentUser
+                }
+            };
+            socket.send(JSON.stringify(chatMessage));
         };
 
         socket.onmessage = function (event) {
-            displayMessage('test', event.data);
-
-
+            //displayMessage('test', event.data);
             if (typeof event.data === "string") {
-
-                var webSocketMessage = JSON.parse(event.data);
-                switch (webSocketMessage.type) {
-
-                    case "welcomeUser":
-                        displayConnectedUserMessage(webSocketMessage.payload.username);
-                        break;
-
-                    case "broadcastTextMessage":
-                        displayMessage(webSocketMessage.payload.username, webSocketMessage.payload.content);
-                        break;
-
-                    case "broadcastConnectedUser":
-                        displayConnectedUserMessage(webSocketMessage.payload.username);
-                        break;
-
-                    case "broadcastDisconnectedUser":
-                        displayDisconnectedUserMessage(webSocketMessage.payload.username);
-                        break;
-
-                    case "broadcastAvailableUsers":
-                        cleanAvailableUsers();
-                        for (var i = 0; i < webSocketMessage.payload.usernames.length; i++) {
-                            addAvailableUsers(webSocketMessage.payload.usernames[i]);
+                var chatMessage = JSON.parse(event.data);
+                Object.getOwnPropertyNames(chatMessage).forEach(function(val, idx, array) {
+                    var payload = chatMessage[val];
+                    if (payload) {
+                        switch (val) {
+                            case "welcomeUser":
+                                displayConnectedUserMessage(payload.username);
+                                break;
+                            case "duplicatedUser":
+                                socket.close();
+                                alert("Duplicated user: " + payload.username);
+                                location.reload();
+                                break;
+                            case "broadcastTextMessage":
+                                displayMessage(payload.username, payload.content);
+                                break;
+                            case "broadcastConnectedUser":
+                                displayConnectedUserMessage(payload.username);
+                                break;
+                            case "broadcastDisconnectedUser":
+                                displayDisconnectedUserMessage(payload.username);
+                                break;
+                            case "broadcastAvailableUsers":
+                                cleanAvailableUsers();
+                                for (var i = 0; i < payload.usernames.length; i++) {
+                                    addAvailableUsers(payload.usernames[i]);
+                                }
+                                break;
                         }
-                        break;
-                }
+                    }
+                });
             }
         };
     }
 
     function sendMessage() {
+        var text = $("#message").val().trim();
+        $("#message").val('');
 
-        var text = document.getElementById("message").value;
-        document.getElementById("message").value = "";
-
-        var payload = {
-            content: text
-        };
-
-        var webSocketMessage = {
-            type: "sendTextMessage"
-        };
-
-        webSocketMessage.payload = payload;
-
-        socket.send(JSON.stringify(webSocketMessage));
+        if (text) {
+            var chatMessage = {
+                sendTextMessage: {
+                    type: 'CHAT',
+                    username: currentUser,
+                    content: text
+                }
+            };
+            socket.send(JSON.stringify(chatMessage));
+        }
     }
 
     function displayMessage(username, text) {
-
         var sentByCurrentUer = currentUser === username;
 
         var message = document.createElement("div");
@@ -338,13 +291,12 @@
     }
 
     function displayConnectedUserMessage(username) {
-
-        var sentByCurrentUer = currentUser === username;
+        var sentByCurrentUer = (currentUser === username);
 
         var message = document.createElement("div");
         message.setAttribute("class", "message event");
 
-        var text = sentByCurrentUer === true ? "Welcome " + username : username + " joined the chat";
+        var text = (sentByCurrentUer === true ? "Welcome " + username : username + " joined the chat");
         var content = document.createElement("span");
         content.setAttribute("class", "content");
         content.appendChild(document.createTextNode(text));
@@ -355,7 +307,6 @@
     }
 
     function displayDisconnectedUserMessage(username) {
-
         var message = document.createElement("div");
         message.setAttribute("class", "message event");
 
@@ -370,7 +321,6 @@
     }
 
     function addAvailableUsers(username) {
-
         var contact = document.createElement("div");
         contact.setAttribute("class", "contact");
 
@@ -393,5 +343,4 @@
             contacts.removeChild(contacts.lastChild);
         }
     }
-
 </script>

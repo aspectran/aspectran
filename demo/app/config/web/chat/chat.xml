@@ -9,8 +9,8 @@
 
     <translet name="/">
         <echo id="page">
-            <item name="headline">Example of chat application with WebSockets</item>
-            <item name="teaser"></item>
+            <item name="headline">Aspectran WebSocket Chat Demo</item>
+            <item name="teaser">Example of chat application with WebSockets</item>
             <item name="include">chat/chat</item>
         </echo>
         <dispatch name="templates/default"/>

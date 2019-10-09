@@ -24,6 +24,7 @@ import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.web.service.DefaultWebService;
 import com.aspectran.web.service.WebService;
+import com.aspectran.web.socket.jsr356.ServerEndpointExporter;
 import org.apache.tomcat.InstanceManager;
 import org.apache.tomcat.SimpleInstanceManager;
 import org.eclipse.jetty.annotations.ServletContainerInitializersStarter;
@@ -31,7 +32,9 @@ import org.eclipse.jetty.apache.jsp.JettyJasperInitializer;
 import org.eclipse.jetty.plus.annotation.ContainerInitializer;
 import org.eclipse.jetty.webapp.WebAppClassLoader;
 import org.eclipse.jetty.webapp.WebAppContext;
+import org.eclipse.jetty.websocket.jsr356.server.deploy.WebSocketServerContainerInitializer;
 
+import javax.websocket.server.ServerContainer;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
@@ -48,11 +51,17 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
 
     private ActivityContext context;
 
+    private boolean webSocketEnabled;
+
     private boolean derived;
 
     @Override
     public void setActivityContext(ActivityContext context) {
         this.context = context;
+    }
+
+    public void setWebSocketEnabled(boolean webSocketEnabled) {
+        this.webSocketEnabled = webSocketEnabled;
     }
 
     /**
@@ -99,6 +108,13 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
         setAttribute("org.eclipse.jetty.containerInitializers", jspInitializers());
         setAttribute(InstanceManager.class.getName(), new SimpleInstanceManager());
         addBean(new ServletContainerInitializersStarter(this), true);
+
+        if (webSocketEnabled) {
+            ServerContainer serverContainer = WebSocketServerContainerInitializer.initialize(this);
+            ServerEndpointExporter serverEndpointExporter = new ServerEndpointExporter(context);
+            serverEndpointExporter.setServerContainer(serverContainer);
+            serverEndpointExporter.registerEndpoints();
+        }
     }
 
     private List<ContainerInitializer> jspInitializers() {
