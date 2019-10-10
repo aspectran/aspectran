@@ -17,6 +17,7 @@ package com.aspectran.web.service;
 
 import com.aspectran.core.service.CoreService;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -37,6 +38,8 @@ public interface WebService extends CoreService {
      * The prefix of the ServletContext property name used to get the standalone WebService object.
      */
     String STANDALONE_WEB_SERVICE_ATTRIBUTE_PREFIX = WebService.class.getName() + ".STANDALONE:";
+
+    ServletContext getServletContext();
 
     /**
      * Executes web activity.

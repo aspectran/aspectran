@@ -53,6 +53,8 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
 
     private static final String DEFAULT_APP_CONFIG_ROOT_FILE = "/WEB-INF/aspectran/app-config.xml";
 
+    private final ServletContext servletContext;
+
     private final DefaultServletHttpRequestHandler defaultServletHttpRequestHandler;
 
     private String uriDecoding;
@@ -61,13 +63,20 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
 
     private DefaultWebService(ServletContext servletContext) {
         super();
+        this.servletContext = servletContext;
         this.defaultServletHttpRequestHandler = new DefaultServletHttpRequestHandler(servletContext);
         setBasePath(servletContext.getRealPath("/"));
     }
 
     private DefaultWebService(ServletContext servletContext, CoreService rootService) {
         super(rootService);
+        this.servletContext = servletContext;
         this.defaultServletHttpRequestHandler = new DefaultServletHttpRequestHandler(servletContext);
+    }
+
+    @Override
+    public ServletContext getServletContext() {
+        return servletContext;
     }
 
     protected void setUriDecoding(String uriDecoding) {
