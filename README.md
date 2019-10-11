@@ -152,7 +152,7 @@ To run the demo, simply use the following command after having build `Aspectran`
 
 ## Links
 
-* [Official Website](http://www.aspectran.com/)
+* [Official Website](https://aspectran.com/)
 * [Aspectran Demo Site](http://demo.aspectran.com/)
 * [Skylark (Online Text to Speech Web APP)](http://skylark.aspectran.com/)
 * [API Reference](http://javadoc.io/doc/com.aspectran/aspectran-all)

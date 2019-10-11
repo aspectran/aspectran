@@ -37,7 +37,7 @@ public class Aspectran {
         }
 
         POWERED_BY = "Powered by Aspectran " + VERSION;
-        POWERED_BY_LINK = "<a href=\"http://www.aspectran.com\">Powered by Aspectran " + VERSION + "</a>";
+        POWERED_BY_LINK = "<a href=\"https://aspectran.com\">Powered by Aspectran " + VERSION + "</a>";
 
         // Show warning when RC# or M# is in version string
         STABLE = !VERSION.matches("^.*\\.(RC|M)[0-9]+$");
