@@ -8,26 +8,26 @@
     <meta name="google" content="notranslate">
     <title>${empty page.title ? "Aspectran Demo Site" : page.title}</title>
     <meta name="description" content="${empty page.description ? "Welcome to Aspectran Demo" : page.description}" />
-    <link rel="stylesheet" type="text/css" href="http://www.aspectran.com/assets/css/styles_aspectran.css" />
+    <link rel="stylesheet" type="text/css" href="https://aspectran.com/assets/css/styles_aspectran.css" />
     <link href="http://fonts.googleapis.com/css?family=Raleway:500,500i,700" rel="stylesheet">
-    <script src="http://www.aspectran.com/assets/js/modernizr.js"></script>
-    <script src="http://www.aspectran.com/assets/js/jquery.js"></script>
-    <script src="http://www.aspectran.com/assets/js/fastclick.js"></script>
-    <link rel="mask-icon" href="http://www.aspectran.com/assets/img/aspectran-logo.svg" color="#4B555A" />
-    <link rel="apple-touch-icon" sizes="57x57" href="http://www.aspectran.com/assets/img/apple-icon-57x57.png" />
-    <link rel="apple-touch-icon" sizes="60x60" href="http://www.aspectran.com/assets/img/apple-icon-60x60.png" />
-    <link rel="apple-touch-icon" sizes="72x72" href="http://www.aspectran.com/assets/img/apple-icon-72x72.png" />
-    <link rel="apple-touch-icon" sizes="76x76" href="http://www.aspectran.com/assets/img/apple-icon-76x76.png" />
-    <link rel="apple-touch-icon" sizes="114x114" href="http://www.aspectran.com/assets/img/apple-icon-114x114.png" />
-    <link rel="apple-touch-icon" sizes="120x120" href="http://www.aspectran.com/assets/img/apple-icon-120x120.png" />
-    <link rel="apple-touch-icon" sizes="144x144" href="http://www.aspectran.com/assets/img/apple-icon-144x144.png" />
-    <link rel="apple-touch-icon" sizes="152x152" href="http://www.aspectran.com/assets/img/apple-icon-152x152.png" />
-    <link rel="apple-touch-icon" sizes="180x180" href="http://www.aspectran.com/assets/img/apple-icon-180x180.png" />
-    <link rel="icon" type="image/png" sizes="192x192"  href="http://www.aspectran.com/assets/img/android-icon-192x192.png" />
-    <link rel="icon" type="image/png" sizes="16x16" href="http://www.aspectran.com/assets/img/favicon-16x16.png" />
-    <link rel="icon" type="image/png" sizes="32x32" href="http://www.aspectran.com/assets/img/favicon-32x32.png" />
-    <link rel="icon" type="image/png" sizes="96x96" href="http://www.aspectran.com/assets/img/favicon-96x96.png" />
-    <meta name="msapplication-TileImage" content="http://www.aspectran.com/assets/img/ms-icon-144x144.png" />
+    <script src="https://aspectran.com/assets/js/modernizr.js"></script>
+    <script src="https://aspectran.com/assets/js/jquery.js"></script>
+    <script src="https://aspectran.com/assets/js/fastclick.js"></script>
+    <link rel="mask-icon" href="https://aspectran.com/assets/img/aspectran-logo.svg" color="#4B555A" />
+    <link rel="apple-touch-icon" sizes="57x57" href="https://aspectran.com/assets/img/apple-icon-57x57.png" />
+    <link rel="apple-touch-icon" sizes="60x60" href="https://aspectran.com/assets/img/apple-icon-60x60.png" />
+    <link rel="apple-touch-icon" sizes="72x72" href="https://aspectran.com/assets/img/apple-icon-72x72.png" />
+    <link rel="apple-touch-icon" sizes="76x76" href="https://aspectran.com/assets/img/apple-icon-76x76.png" />
+    <link rel="apple-touch-icon" sizes="114x114" href="https://aspectran.com/assets/img/apple-icon-114x114.png" />
+    <link rel="apple-touch-icon" sizes="120x120" href="https://aspectran.com/assets/img/apple-icon-120x120.png" />
+    <link rel="apple-touch-icon" sizes="144x144" href="https://aspectran.com/assets/img/apple-icon-144x144.png" />
+    <link rel="apple-touch-icon" sizes="152x152" href="https://aspectran.com/assets/img/apple-icon-152x152.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="https://aspectran.com/assets/img/apple-icon-180x180.png" />
+    <link rel="icon" type="image/png" sizes="192x192"  href="https://aspectran.com/assets/img/android-icon-192x192.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="https://aspectran.com/assets/img/favicon-16x16.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="https://aspectran.com/assets/img/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="96x96" href="https://aspectran.com/assets/img/favicon-96x96.png" />
+    <meta name="msapplication-TileImage" content="https://aspectran.com/assets/img/ms-icon-144x144.png" />
     <meta name="msapplication-TileColor" content="#4B555A" />
     <meta name="theme-color" content="#4B555A" />
     <!-- Facebook Optimization -->
@@ -35,10 +35,10 @@
     <meta property="og:type" content="website" />
     <meta property="og:title" content="Quick Start Guide" />
     <meta property="og:description" content="Aspectran is a Java framework for building Web and command-line applications." />
-    <meta property="og:url" content="http://www.aspectran.com/getting-started/quickstart/" />
+    <meta property="og:url" content="https://aspectran.com/getting-started/quickstart/" />
     <meta property="og:site_name" content="Aspectran" />
     <!-- Search Engine Optimization -->
-    <link type="text/plain" rel="author" href="http://www.aspectran.com/humans.txt" />
+    <link type="text/plain" rel="author" href="https://aspectran.com/humans.txt" />
     <script>
         (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
             (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -53,7 +53,7 @@
 <nav id="navigation" class="no-js">
     <div class="title-bar" data-responsive-toggle="gnb-menu" data-hide-for="large" style="display:none">
         <div class="title-bar-left">
-            <a class="logo" href="/" title="Aspectran"><img src="http://www.aspectran.com/assets/img/aspectran-site-logo.png" alt="Aspectran"/></a>
+            <a class="logo" href="/" title="Aspectran"><img src="https://aspectran.com/assets/img/aspectran-site-logo.png" alt="Aspectran"/></a>
         </div>
         <div class="title-bar-center">
             <a href="#top-of-page">Aspectran</a>
@@ -66,7 +66,7 @@
         <div class="row">
             <div class="top-bar-logo">
                 <div class="circle">
-                    <a class="logo" href="/" title="Aspectran"><img src="http://www.aspectran.com/assets/img/aspectran-site-logo.png" alt="Aspectran"/></a>
+                    <a class="logo" href="/" title="Aspectran"><img src="https://aspectran.com/assets/img/aspectran-site-logo.png" alt="Aspectran"/></a>
                 </div>
             </div>
             <div class="top-bar-left">
@@ -81,6 +81,9 @@
                     </li>
                     <li>
                         <a href="/terminal/">Terminal</a>
+                    </li>
+                    <li>
+                        <a href="/chat/">Chat</a>
                     </li>
                 </ul>
             </div>
@@ -115,7 +118,7 @@
             <div class="row">
                 <nav role="navigation" aria-label="You are here:">
                     <ul class="breadcrumbs" itemprop="breadcrumb">
-                        <li><a href="http://www.aspectran.com/">Aspectran</a></li>
+                        <li><a href="https://aspectran.com/">Aspectran</a></li>
                         <li><a href="/">Demo</a></li>
                     </ul>
                 </nav>
@@ -125,10 +128,6 @@
 </nav>
 <section itemscope itemtype="http://schema.org/Article">
     <div id="masthead">
-        <div id="forkme-ribbon" style="position: absolute; top: 0; right: 0; border: 0; width: 149px; height: 149px;">
-            <a href="https://github.com/aspectran/aspectran" target="_blank">
-                <img src="http://aral.github.com/fork-me-on-github-retina-ribbons/right-white@2x.png" width="149" height="149" alt="Fork me on GitHub"></a>
-        </div>
         <div class="row">
             <div class="small-12 columns">
                 <header>
@@ -152,7 +151,7 @@
             <div class="columns">
                 <nav role="navigation" aria-label="You are here:">
                     <ul class="breadcrumbs" itemprop="breadcrumb">
-                        <li><a href="http://www.aspectran.com/">Aspectran</a></li>
+                        <li><a href="https://aspectran.com/">Aspectran</a></li>
                         <li><a href="/">Demo</a></li>
                     </ul>
                 </nav>
@@ -176,28 +175,28 @@
     <div id="footer">
         <div class="row">
             <div class="medium-2 large-1 columns hide-for-small-only t5">
-                <h5><a class="logo" href="http://www.aspectran.com/info/" title="Aspectran"><img src="http://www.aspectran.com/assets/img/aspectran-logo-grey-x100.png" width="100" height="100" title="Aspectran"/></a></h5>
+                <h5><a class="logo" href="https://aspectran.com/info/" title="Aspectran"><img src="https://aspectran.com/assets/img/aspectran-logo-grey-x100.png" width="100" height="100" title="Aspectran"/></a></h5>
             </div>
             <div class="medium-4 large-4 columns">
-                <a href="http://www.aspectran.com/info/"><h5>About Aspectran</h5></a>
+                <a href="https://aspectran.com/info/"><h5>About Aspectran</h5></a>
                 <p>
-                    <a href="http://www.aspectran.com/info/">Aspectran is a Java framework for building Web and command-line applications.</a>
+                    <a href="https://aspectran.com/info/">Aspectran is a Java framework for building Web and command-line applications.</a>
                 </p>
             </div>
             <div class="small-6 medium-3 large-3 large-offset-1 columns">
                 <h5>Navigation</h5>
                 <ul class="no-bullet">
                     <li class="">
-                        <a href="http://www.aspectran.com/getting-started/" title="">Getting-Started</a>
+                        <a href="https://aspectran.com/getting-started/" title="">Getting-Started</a>
                     </li>
                     <li class="">
-                        <a href="http://www.aspectran.com/docs/" title="">Documentation</a>
+                        <a href="https://aspectran.com/docs/" title="">Documentation</a>
                     </li>
                     <li class="" >
-                        <a href="http://www.aspectran.com/guides/" title="">Guides</a>
+                        <a href="https://aspectran.com/guides/" title="">Guides</a>
                     </li>
                     <li class="" >
-                        <a href="http://www.aspectran.com/projects/" title="">Projects</a>
+                        <a href="https://aspectran.com/projects/" title="">Projects</a>
                     </li>
                 </ul>
             </div>
@@ -205,16 +204,16 @@
                 <h5>Services</h5>
                 <ul class="no-bullet">
                     <li>
-                        <a href="http://www.aspectran.com/support/" title="Aspectran Support">Support</a>
+                        <a href="https://aspectran.com/support/" title="Aspectran Support">Support</a>
                     </li>
                     <li>
-                        <a href="http://www.aspectran.com/feed.xml" title="Subscribe to RSS Feed">RSS</a>
+                        <a href="https://aspectran.com/feed.xml" title="Subscribe to RSS Feed">RSS</a>
                     </li>
                     <li>
-                        <a href="http://www.aspectran.com/atom.xml" title="Subscribe to Atom Feed">Atom</a>
+                        <a href="https://aspectran.com/atom.xml" title="Subscribe to Atom Feed">Atom</a>
                     </li>
                     <li>
-                        <a href="http://www.aspectran.com/sitemap.xml"  title="Sitemap for Google Webmaster Tools">sitemap.xml</a>
+                        <a href="https://aspectran.com/sitemap.xml"  title="Sitemap for Google Webmaster Tools">sitemap.xml</a>
                     </li>
                 </ul>
             </div>
@@ -235,7 +234,7 @@
         </nav>
     </div>
 </footer>
-<script src="http://www.aspectran.com/assets/js/foundation.min.js"></script>
+<script src="https://aspectran.com/assets/js/foundation.min.js"></script>
 <script>
     var path = location.pathname;
     var a1 = $("#gnb-menu .top-bar-left .dropdown li a[href='" + path + "']").last();

@@ -35,7 +35,7 @@
     cursor: pointer;
   }
   .files li img.blank {
-    background: #ccc url("http://www.aspectran.com/assets/img/aspectran-site-logo.png") no-repeat;
+    background: #ccc url("https://aspectran.com/assets/img/aspectran-site-logo.png") no-repeat;
     background-size: cover;
   }
   .files li div.info {

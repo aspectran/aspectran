@@ -17,7 +17,6 @@ package com.aspectran.undertow.server.servlet;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.component.bean.aware.ApplicationAdapterAware;
-import io.undertow.server.DefaultByteBufferPool;
 import io.undertow.server.HandlerWrapper;
 import io.undertow.server.session.Session;
 import io.undertow.server.session.SessionListener;
@@ -29,7 +28,6 @@ import io.undertow.servlet.api.ServletContainerInitializerInfo;
 import io.undertow.servlet.util.ImmediateInstanceFactory;
 import io.undertow.websockets.core.WebSocketChannel;
 import io.undertow.websockets.core.WebSockets;
-import io.undertow.websockets.jsr.WebSocketDeploymentInfo;
 
 import javax.servlet.ServletContainerInitializer;
 import javax.websocket.CloseReason;
@@ -140,24 +138,8 @@ public class TowServletContext extends DeploymentInfo implements ApplicationAdap
         }
     }
 
-    public void setWebSocketEnabled(boolean webSocketEnabled) {
-        if (webSocketEnabled) {
-            addServletContextAttribute(WebSocketDeploymentInfo.ATTRIBUTE_NAME,
-                    new WebSocketDeploymentInfo()
-                            .setBuffers(new DefaultByteBufferPool(true, 100)));
-            addSessionListener(new WebSocketConnectionsUnboundListener());
-        } else {
-            getServletContextAttributes().remove(WebSocketDeploymentInfo.ATTRIBUTE_NAME);
-            List<SessionListener> list = new ArrayList<>();
-            for (SessionListener sessionListener : getSessionListeners()) {
-                if (sessionListener instanceof WebSocketConnectionsUnboundListener) {
-                    list.add(sessionListener);
-                }
-            }
-            if (!list.isEmpty()) {
-                getSessionListeners().removeAll(list);
-            }
-        }
+    public void setWebSocketInitializer(TowWebSocketInitializer webSocketInitializer) {
+        webSocketInitializer.initialize(this);
     }
 
     /**

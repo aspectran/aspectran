@@ -132,7 +132,14 @@
                     </properties>
                 </bean>
             </item>
-            <item name="webSocketEnabled" valueType="boolean">true</item>
+            <item name="webSocketInitializer">
+                <bean class="com.aspectran.undertow.server.servlet.TowWebSocketInitializer">
+                    <properties>
+                        <item name="directBuffers" valueType="boolean">false</item>
+                        <item name="bufferSize" valueType="int">1024</item>
+                    </properties>
+                </bean>
+            </item>
             <item name="derived" valueType="boolean">true</item>
         </properties>
     </bean>
