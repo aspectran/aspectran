@@ -32,6 +32,11 @@ import java.util.List;
 import java.util.Set;
 
 /**
+ * Detects beans of type {@link ServerEndpointConfig} and registers with the standard
+ * Java WebSocket runtime. Also detects beans annotated with {@link ServerEndpoint} and
+ * registers them as well. Although not required, it is likely annotated endpoints should
+ * have their {@code configurator} property set to {@link AspectranConfigurator}.
+ *
  * <p>Created: 29/09/2019</p>
  */
 public class ServerEndpointExporter {

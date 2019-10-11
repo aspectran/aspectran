@@ -39,6 +39,12 @@ public interface WebService extends CoreService {
      */
     String STANDALONE_WEB_SERVICE_ATTRIBUTE_PREFIX = WebService.class.getName() + ".STANDALONE:";
 
+    /**
+     * Returns a reference to the {@link ServletContext} in which this WebService is running.
+     *
+     * @return a {@link ServletContext} object, used by this WebService to interact with
+     *      its servlet container
+     */
     ServletContext getServletContext();
 
     /**

@@ -20,9 +20,13 @@ import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.web.service.WebServiceHolder;
 
+import javax.websocket.server.ServerEndpointConfig;
 import javax.websocket.server.ServerEndpointConfig.Configurator;
 
 /**
+ * A {@link ServerEndpointConfig.Configurator} for initializing ServerEndpoint-annotated
+ * classes through Aspectran.
+ *
  * <p>Created: 01/10/2019</p>
  */
 public class AspectranConfigurator extends Configurator {
