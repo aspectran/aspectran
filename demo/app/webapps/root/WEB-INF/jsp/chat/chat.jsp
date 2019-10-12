@@ -1,89 +1,73 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<div id="chat-wrap">
-    <div id="title">Chat</div>
-
-    <form id="authentication" onsubmit="return false;">
-        <h3>Type your username</h3>
-        <input type="text" id="username" maxlength="50" placeholder="Username" autocomplete="off" autofocus/>
-        <button class="button" onclick="signIn()">Start Chatting</button>
-        <span class="error" id="authentication-error"></span>
-    </form>
-
-    <div id="contacts"></div>
-
-    <div id="chat">
+<div class="row">
+    <div id="title" class="columns small-12">
+        <h2>Chat <span id="totalPeople"></span></h2>
+        <a class="leave" onclick="leaveRoom();">Leave</a>
+    </div>
+    <div id="contacts" class="columns medium-4 large-3 hide-for-small-only"></div>
+    <div id="room" class="columns small-12 medium-8 large-9">
+        <form id="signin" onsubmit="return false;">
+            <h3>Type your username</h3>
+            <input type="text" id="username" maxlength="50" placeholder="Username" autocomplete="off" autofocus/>
+            <button class="button" onclick="signIn()">Start Chatting</button>
+        </form>
         <div id="messages"></div>
-        <form id="chat-controls" onsubmit="return false;">
-            <input type="text" id="message" placeholder="Enter a message"/>
-            <button class="button" onclick="sendMessage()">Send</button>
+        <form id="chat-controls" onsubmit="sendMessage();return false;">
+            <div class="input-group">
+                <input class="input-group-field" type="text" id="message" placeholder="Type a message..."/>
+                <div class="input-group-button">
+                    <button type="submit" class="button">Send</button>
+                </div>
+            </div>
         </form>
     </div>
 </div>
 <style>
-    /* Common */
-    @media print, screen and (min-width: 64em) {
-        section > .row {
-            background-color: #f5f5f5;
-            border-radius: 0 0 10px 10px;
-        }
-    }
-    @media print, screen and (min-width: 64em) {
-        section > .row > .columns {
-            padding: 0;
-        }
-    }
-    #chat-wrap {
-        background-color: #f5f5f5;
-        overflow: auto;
-        border-radius: 0 0 10px 10px;
-
-    }
-    .error {
-        color: #F04823;
-        font-size: 12px;
-    }
-
-    /* Authentication */
-    #authentication {
-        margin: 100px 0;
-    }
-    #authentication * {
-        display: block;
-        margin-left: auto;
-        margin-right: auto;
-        margin-bottom: 10px;
-    }
-    #authentication .error {
-        text-align: center;
-    }
-    #authentication h3 {
-        text-align: center;
-        margin-bottom: 30px;
-    }
-    #authentication input {
-        max-width: 300px;
-        margin-bottom: 20px;
-    }
-
-    /* Title Bar */
     #title {
         background-color: #35505B;
-        font-size: 20px;
         padding: 10px 20px 10px 20px;
         color: #fff;
     }
+    #title h2 {
+        float: left;
+        font-size: 28px;
+    }
+    #title a {
+        float: right;
+        line-height: 38px;
+        vertical-align: bottom;
+        display: none;
+    }
 
-    /* Contact list */
+    #room {
+        background-color: #f5f5f5;
+        height: 580px;
+    }
+    #signin {
+        padding: 180px 0 0 0;
+        background-color: #f5f5f5;
+    }
+    #signin * {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        margin-bottom: 20px;
+    }
+    #signin h3 {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    #signin input {
+        max-width: 300px;
+    }
+
     #contacts {
         float: left;
-        width: 220px;
         padding: 15px;
         background-color: #bbedfe;
         height: 580px;
-        border-radius: 0 0 0 10px;
         overflow: auto;
-        display: none;
     }
     #contacts .contact .status {
         background-color: #13CF13;
@@ -98,82 +82,74 @@
         vertical-align: super;
     }
 
-    /* Chat */
-    #chat {
-        float: right;
-        width: calc(100% - 220px);
-        display: none;
-    }
     #messages {
         height: 500px;
-        padding: 20px 20px 0 20px;
         overflow-y: auto;
+        display: none;
     }
     #messages .message {
         margin-bottom: 3px;
     }
     #messages .message .content {
-        min-width: 20px;
-        max-width: 250px;
         border-radius: 20px;
         padding: 10px;
         display: table;
     }
     #messages .message.event .content {
-        background-color: #FF7E29;
-        color: #fff;
-        margin-left: auto;
-        margin-right: auto;
+        background-color: #bbedfe;
         padding: 7px 20px;
+        border-radius: 6px;
+        width: 100%;
+        text-align: center;
+    }
+    #messages .message.event .content strong {
+        font-weight: bold;
+    }
+    #messages .message.event.error .content {
+        background-color: palevioletred;
+        color: yellow;
     }
     #messages .message.received {
         left: 0;
         text-align: left;
     }
     #messages .message.received .content {
-        background-color: gainsboro;
+        background-color: #0084FF;
+        color: #fff;
         border-radius: 0 20px 20px;
     }
     #messages .message.received .sender {
-        color: dimgrey;
+        font-weight: bold;
+        color: #0084FF;
     }
     #messages .message.sent {
         right: 0;
         text-align: right;
     }
     #messages .message.sent .content {
-        background-color: #0084FF;
+        background-color: #ccc;
         margin-left: auto;
         margin-right: 0;
-        color: #fff;
         text-align: right;
         border-radius: 20px 0 20px 20px;
     }
     #messages .message.sent .sender {
-        color: #0084FF;
+        font-weight: bold;
     }
+
     #chat-controls {
         height: 40px;
-        padding: 20px 20px 0 20px;
-    }
-    #chat-controls button {
-        float: right;
-    }
-    #chat-controls input[type="text"] {
-        width: calc(100% - 5em);
-        float: left;
-        overflow: auto;
+        padding: 20px 0;
+        display: none;
     }
 
     #messages .message.sent.same-sender-previous-message .sender,
     #messages .message.received.same-sender-previous-message .sender {
         display: none;
     }
-
     #messages .message:not(.same-sender-previous-message) {
         margin-top: 10px;
     }
-
 </style>
 <script>
     var socket;
@@ -181,7 +157,13 @@
 
     function signIn() {
         currentUser = $("#username").val().trim();
+        $("#username").val("");
         if (currentUser) {
+            $("#signin").hide();
+            $("#messages").show();
+            $("#chat-controls").show();
+            $("a.leave").show();
+            $("#message").focus();
             openSocket();
         }
     }
@@ -195,11 +177,6 @@
         socket = new WebSocket(url.href);
 
         socket.onopen = function(event) {
-            $("#authentication").hide();
-            $("#contacts").show();
-            $("#chat").show();
-            $("#message").focus();
-
             var chatMessage = {
                 sendTextMessage: {
                     type: 'JOIN',
@@ -245,6 +222,26 @@
                 });
             }
         };
+
+        socket.onclose = function (event) {
+            clearTotalPeople();
+            $("#contacts").empty();
+            $("#messages").empty().hide();
+            $("#chat-controls").hide();
+            $("a.leave").hide();
+            $("#message").val('');
+            $("#signin").show();
+            $("#username").focus();
+        };
+
+        socket.onerror = function (event) {
+            console.error("WebSocket error observed:", event);
+            displayErrorMessage('Could not connect to WebSocket server. Please refresh this page to try again!');
+        };
+    }
+
+    function leaveRoom() {
+        socket.close();
     }
 
     function sendMessage() {
@@ -264,83 +261,69 @@
     }
 
     function displayMessage(username, text) {
-        var sentByCurrentUer = currentUser === username;
+        var sentByCurrentUer = (currentUser === username);
+        var message = $("<div/>").addClass(sentByCurrentUer === true ? "message sent" : "message received");
+        message.data("sender", username);
 
-        var message = document.createElement("div");
-        message.setAttribute("class", sentByCurrentUer === true ? "message sent" : "message received");
-        message.dataset.sender = username;
+        var sender = $("<span/>").addClass("sender");
+        sender.text(sentByCurrentUer === true ? "You" : username);
+        sender.appendTo(message);
 
-        var sender = document.createElement("span");
-        sender.setAttribute("class", "sender");
-        sender.appendChild(document.createTextNode(sentByCurrentUer === true ? "You" : username));
-        message.appendChild(sender);
+        var content = $("<span/>").addClass("content").text(text);
+        content.appendTo(message);
 
-        var content = document.createElement("span");
-        content.setAttribute("class", "content");
-        content.appendChild(document.createTextNode(text));
-        message.appendChild(content);
-
-        var messages = document.getElementById("messages");
-        var lastMessage = messages.lastChild;
-        if (lastMessage && lastMessage.dataset.sender && lastMessage.dataset.sender === username) {
-            message.className += " same-sender-previous-message";
+        var lastMessage = $("#messages .message").last();
+        if (lastMessage.length && lastMessage.data("sender") === username) {
+            message.addClass("same-sender-previous-message");
         }
 
-        messages.appendChild(message);
-        messages.scrollTop = messages.scrollHeight;
+        $("#messages").append(message);
+        $("#messages").animate({scrollTop: $("#messages").prop("scrollHeight")});
     }
 
     function displayConnectedUserMessage(username) {
-        var sentByCurrentUer = (currentUser === username);
-
-        var message = document.createElement("div");
-        message.setAttribute("class", "message event");
-
-        var text = (sentByCurrentUer === true ? "Welcome " + username : username + " joined the chat");
-        var content = document.createElement("span");
-        content.setAttribute("class", "content");
-        content.appendChild(document.createTextNode(text));
-        message.appendChild(content);
-
-        var messages = document.getElementById("messages");
-        messages.appendChild(message);
+        var sentByCurrentUer = currentUser === username;
+        var text = (sentByCurrentUer === true ? "Welcome <strong>" + username : username + "</strong> joined the chat");
+        displayEventMessage(text);
     }
 
     function displayDisconnectedUserMessage(username) {
-        var message = document.createElement("div");
-        message.setAttribute("class", "message event");
-
-        var text = username + " left the chat";
-        var content = document.createElement("span");
-        content.setAttribute("class", "content");
-        content.appendChild(document.createTextNode(text));
-        message.appendChild(content);
-
-        var messages = document.getElementById("messages");
-        messages.appendChild(message);
+        var text = "<strong>" + username + "</strong> left the chat";
+        displayEventMessage(text);
     }
 
     function addAvailableUsers(username) {
-        var contact = document.createElement("div");
-        contact.setAttribute("class", "contact");
-
-        var status = document.createElement("div");
-        status.setAttribute("class", "status");
-        contact.appendChild(status);
-
-        var content = document.createElement("span");
-        content.setAttribute("class", "name");
-        content.appendChild(document.createTextNode(username));
-        contact.appendChild(content);
-
-        var contacts = document.getElementById("contacts");
-        contacts.appendChild(contact);
+        var contact = $("<div/>").addClass("contact");
+        var status = $("<div/>").addClass("status");
+        var name = $("<span/>").addClass("name").text(username);
+        contact.append(status).append(name).appendTo($("#contacts"));
+        updateTotalPeople();
     }
 
     function cleanAvailableUsers() {
-        var contacts = document.getElementById("contacts");
-        while (contacts.hasChildNodes()) {
-            contacts.removeChild(contacts.lastChild);
-        }
+        $("#contacts").empty();
+        clearTotalPeople();
+    }
+
+    function updateTotalPeople() {
+        $("#totalPeople").text("(" + $("#contacts .contact").length + ")");
+    }
+
+    function clearTotalPeople() {
+        $("#totalPeople").text("");
+    }
+
+    function displayEventMessage(text) {
+        var div = $("<div/>").addClass("message event");
+        $("<p/>").addClass("content").html(text).appendTo(div);
+        $("#messages").append(div);
+        $("#messages").animate({scrollTop: $("#messages").prop("scrollHeight")});
+    }
+
+    function displayErrorMessage(text) {
+        var div = $("<div/>").addClass("message event error");
+        $("<p/>").addClass("content").html(text).appendTo(div);
+        $("#messages").append(div);
+        $("#messages").animate({scrollTop: $("#messages").prop("scrollHeight")});
     }
 </script>

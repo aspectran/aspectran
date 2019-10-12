@@ -158,13 +158,9 @@
             </div>
         </div>
     </div>
-    <div class="row">
-        <div class="large-12 columns">
-            <c:if test="${not empty page.include}">
-                <jsp:include page="/WEB-INF/jsp/${page.include}.jsp"/>
-            </c:if>
-        </div>
-    </div>
+    <c:if test="${not empty page.include}">
+        <jsp:include page="/WEB-INF/jsp/${page.include}.jsp"/>
+    </c:if>
 </section>
 <div id="up-to-top" class="row">
     <div class="small-12 columns" style="text-align: right;">
