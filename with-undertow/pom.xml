@@ -64,6 +64,11 @@
             <artifactId>undertow-websockets-jsr</artifactId>
             <version>${undertow.version}</version>
         </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jstl</artifactId>
+            <version>1.2</version>
+        </dependency>
         <!-- Apache JSP dependencies -->
         <dependency>
             <groupId>org.mortbay.jasper</groupId>
