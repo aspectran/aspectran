@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/aspectran/aspectran.svg?branch=master)](https://travis-ci.org/aspectran/aspectran)
 [![Coverage Status](https://coveralls.io/repos/github/aspectran/aspectran/badge.svg?branch=master)](https://coveralls.io/github/aspectran/aspectran?branch=master)
-[![Maven central](https://maven-badges.herokuapp.com/maven-central/com.aspectran/aspectran/badge.svg#v6.3.2)](https://maven-badges.herokuapp.com/maven-central/com.aspectran/aspectran)
+[![Maven central](https://maven-badges.herokuapp.com/maven-central/com.aspectran/aspectran/badge.svg#v6.3.4-M2)](https://maven-badges.herokuapp.com/maven-central/com.aspectran/aspectran)
 [![Sonatype Nexus (Snapshots)](https://img.shields.io/nexus/s/https/oss.sonatype.org/com.aspectran/aspectran.svg)](https://oss.sonatype.org/content/repositories/snapshots/com/aspectran/aspectran/)
 [![License](https://img.shields.io/:license-apache-brightgreen.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
@@ -44,6 +44,7 @@ The following packages based on the `com.aspectran.core` package exist to suppor
 * `com.aspectran.web`: Provides overall functionality for building web applications within a web application container
 * `com.aspectran.jetty`: Add-on package for integrating Embedded Jetty
 * `com.aspectran.mybatis`: Add-on package for integrating MyBatis
+* `com.aspectran.undertow`: Add-on package for integrating Embedded Undertow
 
 ## Maven dependencies
 
@@ -53,73 +54,73 @@ Use the following definition to use Aspectran in your maven project:
 <dependency>
   <groupId>com.aspectran</groupId>
   <artifactId>aspectran-all</artifactId>
-  <version>6.3.2</version>
+  <version>6.3.4-M2</version>
 </dependency>
 ```
 
 Aspectran can also be used with more low-level jars:
 ```xml
-<!-- To build a daemon application that runs in the background: -->
+<!-- To build a daemon application that runs in the background -->
 <dependency>
   <groupId>com.aspectran</groupId>
   <artifactId>aspectran-daemon</artifactId>
-  <version>6.3.2</version>
+  <version>6.3.4-M2</version>
 </dependency>
 ```
 ```xml
-<!-- To build command-line based applications: -->
+<!-- To build command-line based applications -->
 <dependency>
   <groupId>com.aspectran</groupId>
   <artifactId>aspectran-shell</artifactId>
-  <version>6.3.2</version>
+  <version>6.3.4-M2</version>
 </dependency>
 ```
 ```xml
-<!-- To build command-line based applications that use the feature-rich JLine: -->
+<!-- To build command-line based applications that use the feature-rich JLine -->
 <dependency>
   <groupId>com.aspectran</groupId>
   <artifactId>aspectran-shell-jline</artifactId>
-  <version>6.3.2</version>
+  <version>6.3.4-M2</version>
 </dependency>
 ```
 ```xml
-<!-- To build a servlet-based web application: -->
+<!-- To build a servlet-based web application -->
 <dependency>
   <groupId>com.aspectran</groupId>
   <artifactId>aspectran-web</artifactId>
-  <version>6.3.2</version>
+  <version>6.3.4-M2</version>
 </dependency>
 ```
 ```xml
-<!-- To embed Aspectran in your application: -->
+<!-- To embed Aspectran in your application -->
 <dependency>
   <groupId>com.aspectran</groupId>
   <artifactId>aspectran-embed</artifactId>
-  <version>6.3.2</version>
+  <version>6.3.4-M2</version>
 </dependency>
 ```
 ```xml
-<!-- To build a web application server with embedded Jetty: -->
+<!-- To build a web application server with embedded Jetty -->
 <dependency>
   <groupId>com.aspectran</groupId>
   <artifactId>aspectran-with-jetty</artifactId>
-  <version>6.3.2</version>
+  <version>6.3.4-M2</version>
 </dependency>
 ```
 ```xml
-<!-- To build MyBatis applications on top of the Aspectran: -->
+<!-- To build MyBatis applications on top of the Aspectran -->
 <dependency>
   <groupId>com.aspectran</groupId>
   <artifactId>aspectran-with-mybatis</artifactId>
-  <version>6.3.2</version>
+  <version>6.3.4-M2</version>
 </dependency>
 ```
 ```xml
-<!-- To build a web application server with embedded Undertow: -->
+<!-- To build a web application server with embedded Undertow -->
 <dependency>
   <groupId>com.aspectran</groupId>
   <artifactId>aspectran-with-undertow</artifactId>
-  <version>6.3.2</version>
+  <version>6.3.4-M2</version>
 </dependency>
 ```
 
@@ -153,9 +154,9 @@ To run the demo, simply use the following command after having build `Aspectran`
 ## Links
 
 * [Official Website](https://aspectran.com/)
-* [Aspectran Demo Site](http://demo.aspectran.com/)
-* [Skylark (Online Text to Speech Web APP)](http://skylark.aspectran.com/)
-* [API Reference](http://javadoc.io/doc/com.aspectran/aspectran-all)
+* [Aspectran Demo Site](https://demo.aspectran.com/)
+* [Skylark (Online Text to Speech Web APP)](https://skylark.aspectran.com/)
+* [API Reference](https://javadoc.io/doc/com.aspectran/aspectran-all)
 
 ## License
 
