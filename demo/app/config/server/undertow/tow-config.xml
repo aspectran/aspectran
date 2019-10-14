@@ -126,8 +126,8 @@
                 <bean class="com.aspectran.undertow.server.servlet.TowJasperInitializer">
                     <properties>
                         <item name="jarsToScan" type="array">
+                            <value>/WEB-INF/lib/taglibs-standard-spec-1.2.5.jar</value>
                             <value>/WEB-INF/lib/taglibs-standard-impl-1.2.5.jar</value>
-                            <value>/WEB-INF/lib/taglibs-standard-jstlel-1.2.5.jar</value>
                         </item>
                     </properties>
                 </bean>

@@ -187,7 +187,6 @@
         };
 
         socket.onmessage = function (event) {
-            //displayMessage('test', event.data);
             if (typeof event.data === "string") {
                 var chatMessage = JSON.parse(event.data);
                 Object.getOwnPropertyNames(chatMessage).forEach(function(val, idx, array) {
