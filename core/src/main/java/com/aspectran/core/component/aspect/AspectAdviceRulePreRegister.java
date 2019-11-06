@@ -74,18 +74,18 @@ public class AspectAdviceRulePreRegister {
 
     public void register(BeanRuleRegistry beanRuleRegistry) {
         for (BeanRule beanRule : beanRuleRegistry.getConfigurableBeanRules()) {
-            if (beanRule.isProxiable()) {
+            if (beanRule.getProxied() == null && !beanRule.isFactoryable()) {
                 determineProxyBean(beanRule);
             }
         }
         for (BeanRule beanRule : beanRuleRegistry.getIdBasedBeanRules()) {
-            if (beanRule.isProxiable()) {
+            if (beanRule.getProxied() == null && !beanRule.isFactoryable()) {
                 determineProxyBean(beanRule);
             }
         }
-        for (Set<BeanRule> set : beanRuleRegistry.getTypeBasedBeanRules()) {
-            for (BeanRule beanRule : set) {
-                if (beanRule.isProxiable()) {
+        for (Set<BeanRule> beanRules : beanRuleRegistry.getTypeBasedBeanRules()) {
+            for (BeanRule beanRule : beanRules) {
+                if (beanRule.getProxied() == null && !beanRule.isFactoryable()) {
                     determineProxyBean(beanRule);
                 }
             }
@@ -93,6 +93,12 @@ public class AspectAdviceRulePreRegister {
     }
 
     private void determineProxyBean(BeanRule beanRule) {
+        Class<?> beanClass = beanRule.getTargetBeanClass();
+        if (beanClass.isAnnotationPresent(AvoidAdvice.class)) {
+            beanRule.setProxied(false);
+            return;
+        }
+
         for (AspectRule aspectRule : aspectRuleRegistry.getAspectRules()) {
             if (aspectRule.isBeanRelevanted()) {
                 Pointcut pointcut = aspectRule.getPointcut();
@@ -113,15 +119,6 @@ public class AspectAdviceRulePreRegister {
                             }
                             break;
                         }
-                    }
-                } else {
-                    Class<?> beanClass = beanRule.getTargetBeanClass();
-                    if (!beanClass.isAnnotationPresent(AvoidAdvice.class)) {
-                        beanRule.setProxied(true);
-                        if (log.isTraceEnabled()) {
-                            log.trace("apply AspectRule " + aspectRule + " to BeanRule " + beanRule);
-                        }
-                        break;
                     }
                 }
             }

@@ -103,7 +103,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
 
     private boolean replicated;
 
-    private boolean proxied;
+    private Boolean proxied;
 
     private List<AutowireRule> autowireRuleList;
 
@@ -658,6 +658,10 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
      * @return true if this bean is proxied; false otherwise
      */
     public boolean isProxied() {
+        return BooleanUtils.toBoolean(proxied);
+    }
+
+    public Boolean getProxied() {
         return proxied;
     }
 
@@ -675,8 +679,8 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
      *
      * @return true if this bean can be proxied; false otherwise
      */
-    public boolean isProxiable() {
-        return (!factoryOffered && !factoryBean && factoryMethod == null);
+    public boolean isFactoryable() {
+        return (factoryOffered || factoryBean || factoryMethod != null);
     }
 
     public List<AutowireRule> getAutowireRuleList() {
