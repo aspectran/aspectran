@@ -25,13 +25,14 @@ import java.io.Writer;
  */
 public class StringOutputWriter extends Writer {
 
-    private final StringBuilder buffer;
+    private StringBuilder buffer;
+
+    private int initialSize;
 
     /**
      * Create a new string writer using the default initial string-builder size.
      */
     public StringOutputWriter() {
-        this.buffer = new StringBuilder();
     }
 
     /**
@@ -41,12 +42,12 @@ public class StringOutputWriter extends Writer {
      *         before it is automatically expanded
      */
     public StringOutputWriter(int initialSize) {
-        this.buffer = new StringBuilder(initialSize);
+        this.initialSize = initialSize;
     }
 
     @Override
     public void write(int c) {
-        buffer.append((char)c);
+        touchBuffer().append((char)c);
     }
 
     @Override
@@ -57,17 +58,17 @@ public class StringOutputWriter extends Writer {
         } else if (len == 0) {
             return;
         }
-        buffer.append(cbuf, off, len);
+        touchBuffer().append(cbuf, off, len);
     }
 
     @Override
     public void write(String str) {
-        buffer.append(str);
+        touchBuffer().append(str);
     }
 
     @Override
     public void write(String str, int off, int len)  {
-        buffer.append(str, off, off + len);
+        touchBuffer().append(str, off, off + len);
     }
 
     @Override
@@ -95,7 +96,7 @@ public class StringOutputWriter extends Writer {
 
     @Override
     public String toString() {
-        return buffer.toString();
+        return (buffer != null ? touchBuffer().toString() : StringUtils.EMPTY);
     }
 
     @Override
@@ -106,6 +107,21 @@ public class StringOutputWriter extends Writer {
     @Override
     public void close() {
         // Nothing to do
+    }
+
+    public boolean isDirty() {
+        return (buffer != null);
+    }
+
+    private StringBuilder touchBuffer() {
+        if (buffer == null) {
+            if (initialSize > 0) {
+                buffer = new StringBuilder(initialSize);
+            } else {
+                buffer = new StringBuilder();
+            }
+        }
+        return buffer;
     }
 
 }

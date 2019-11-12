@@ -15,6 +15,8 @@
  */
 package com.aspectran.daemon.command;
 
+import com.aspectran.core.util.apon.AponFormat;
+import com.aspectran.core.util.apon.AponWriter;
 import com.aspectran.daemon.TestDaemon;
 import com.aspectran.daemon.command.builtins.InvokeActionCommand;
 import com.aspectran.daemon.command.polling.CommandParameters;
@@ -24,6 +26,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
 import java.io.File;
+import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -66,6 +69,38 @@ class CommandTest {
         Command command = new InvokeActionCommand(commandRegistry);
         CommandResult result = command.execute(parameters);
         assertEquals("<<command1>>", result.getMessage());
+    }
+
+    @Test
+    void testEmptyResult() throws IOException {
+        CommandParameters parameters = new CommandParameters();
+        parameters.setTransletName("emptyResult");
+        parameters.setOutput("");
+
+        AponWriter aponWriter = new AponWriter().nullWritable(false);
+        aponWriter.write(parameters);
+        aponWriter.close();
+
+        String s1 = ("translet: emptyResult\n" + "output: (\n" + "  |\n" + ")").replace("\n", AponFormat.NEW_LINE);
+        String s2 = aponWriter.toString().trim();
+
+        assertEquals(s1, s2);
+    }
+
+    @Test
+    void testNullResult() throws IOException {
+        CommandParameters parameters = new CommandParameters();
+        parameters.setTransletName("nullResult");
+        parameters.setOutput(null);
+
+        AponWriter aponWriter = new AponWriter().nullWritable(false);
+        aponWriter.write(parameters);
+        aponWriter.close();
+
+        String s1 = "translet: nullResult".replace("\n", AponFormat.NEW_LINE);
+        String s2 = aponWriter.toString().trim();
+
+        assertEquals(s1, s2);
     }
 
 }

@@ -24,4 +24,12 @@ public class CommandTestBean {
         return "<<command1>>";
     }
 
+    public String emptyResult() {
+        return "";
+    }
+
+    public String nullResult() {
+        return null;
+    }
+
 }
