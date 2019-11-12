@@ -20,12 +20,14 @@ import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.context.expr.ItemEvaluator;
 import com.aspectran.core.context.expr.ItemExpression;
 import com.aspectran.core.context.rule.ItemRuleMap;
+import com.aspectran.core.util.OutputStringWriter;
 import com.aspectran.daemon.command.AbstractCommand;
 import com.aspectran.daemon.command.CommandRegistry;
 import com.aspectran.daemon.command.CommandResult;
 import com.aspectran.daemon.command.polling.CommandParameters;
 import com.aspectran.daemon.service.DaemonService;
 
+import java.io.Writer;
 import java.util.Map;
 
 public class TransletCommand extends AbstractCommand {
@@ -65,8 +67,12 @@ public class TransletCommand extends AbstractCommand {
             }
 
             Translet translet = service.translate(transletName, parameterMap, attributeMap);
-            String result = translet.getResponseAdapter().getWriter().toString();
-            return success(result);
+            Writer writer = translet.getResponseAdapter().getWriter();
+            if (writer instanceof OutputStringWriter && !((OutputStringWriter)writer).isDirty()) {
+                return success(null);
+            } else {
+                return success(writer.toString());
+            }
         } catch (Exception e) {
             return failed(e);
         }

@@ -20,7 +20,7 @@ import com.aspectran.core.activity.AdapterException;
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.adapter.BasicSessionAdapter;
-import com.aspectran.core.util.StringOutputWriter;
+import com.aspectran.core.util.OutputStringWriter;
 import com.aspectran.embed.adapter.AspectranRequestAdapter;
 import com.aspectran.embed.adapter.AspectranResponseAdapter;
 import com.aspectran.embed.service.EmbeddedAspectran;
@@ -93,7 +93,7 @@ public class AspectranActivity extends CoreActivity {
             setRequestAdapter(requestAdapter);
 
             if (outputWriter == null) {
-                outputWriter = new StringOutputWriter();
+                outputWriter = new OutputStringWriter();
             }
             AspectranResponseAdapter responseAdapter = new AspectranResponseAdapter(outputWriter);
             setResponseAdapter(responseAdapter);

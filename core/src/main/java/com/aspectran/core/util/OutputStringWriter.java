@@ -23,7 +23,7 @@ import java.io.Writer;
  * <p>Closing a StringWriter has no effect. The methods in this class can be called
  * after the stream has been closed without generating an IOException.</p>
  */
-public class StringOutputWriter extends Writer {
+public class OutputStringWriter extends Writer {
 
     private StringBuilder buffer;
 
@@ -32,7 +32,7 @@ public class StringOutputWriter extends Writer {
     /**
      * Create a new string writer using the default initial string-builder size.
      */
-    public StringOutputWriter() {
+    public OutputStringWriter() {
     }
 
     /**
@@ -41,7 +41,7 @@ public class StringOutputWriter extends Writer {
      * @param initialSize the number of char values that will fit into this buffer
      *         before it is automatically expanded
      */
-    public StringOutputWriter(int initialSize) {
+    public OutputStringWriter(int initialSize) {
         this.initialSize = initialSize;
     }
 
@@ -72,7 +72,7 @@ public class StringOutputWriter extends Writer {
     }
 
     @Override
-    public StringOutputWriter append(CharSequence csq) {
+    public OutputStringWriter append(CharSequence csq) {
         if (csq == null) {
             write("null");
         } else {
@@ -82,14 +82,14 @@ public class StringOutputWriter extends Writer {
     }
 
     @Override
-    public StringOutputWriter append(CharSequence csq, int start, int end) {
+    public OutputStringWriter append(CharSequence csq, int start, int end) {
         CharSequence cs = (csq == null ? "null" : csq);
         write(cs.subSequence(start, end).toString());
         return this;
     }
 
     @Override
-    public StringOutputWriter append(char c) {
+    public OutputStringWriter append(char c) {
         write(c);
         return this;
     }

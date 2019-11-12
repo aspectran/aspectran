@@ -20,7 +20,7 @@ import com.aspectran.core.activity.AdapterException;
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.adapter.BasicSessionAdapter;
-import com.aspectran.core.util.StringOutputWriter;
+import com.aspectran.core.util.OutputStringWriter;
 import com.aspectran.daemon.adapter.DaemonRequestAdapter;
 import com.aspectran.daemon.adapter.DaemonResponseAdapter;
 import com.aspectran.daemon.service.DaemonService;
@@ -76,7 +76,7 @@ public class DaemonActivity extends CoreActivity {
             setRequestAdapter(requestAdapter);
 
             if (outputWriter == null) {
-                outputWriter = new StringOutputWriter();
+                outputWriter = new OutputStringWriter();
             }
             DaemonResponseAdapter responseAdapter = new DaemonResponseAdapter(outputWriter);
             setResponseAdapter(responseAdapter);

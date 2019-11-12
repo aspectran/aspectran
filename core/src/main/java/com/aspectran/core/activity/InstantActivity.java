@@ -20,7 +20,7 @@ import com.aspectran.core.adapter.BasicRequestAdapter;
 import com.aspectran.core.adapter.BasicResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.util.StringOutputWriter;
+import com.aspectran.core.util.OutputStringWriter;
 
 import java.io.Writer;
 import java.util.Map;
@@ -72,7 +72,7 @@ public class InstantActivity extends DefaultActivity {
         BasicRequestAdapter requestAdapter = new BasicRequestAdapter(null, null);
         setRequestAdapter(requestAdapter);
 
-        Writer writer = new StringOutputWriter();
+        Writer writer = new OutputStringWriter();
         BasicResponseAdapter responseAdapter = new BasicResponseAdapter(null, writer);
         setResponseAdapter(responseAdapter);
 

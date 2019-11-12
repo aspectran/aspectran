@@ -29,7 +29,7 @@ import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.type.ItemType;
 import com.aspectran.core.context.rule.type.TokenType;
-import com.aspectran.core.util.StringOutputWriter;
+import com.aspectran.core.util.OutputStringWriter;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -106,7 +106,7 @@ public class ShellActivity extends CoreActivity {
             setRequestAdapter(requestAdapter);
 
             if (outputWriter == null) {
-                outputWriter = new StringOutputWriter();
+                outputWriter = new OutputStringWriter();
             }
 
             ShellResponseAdapter responseAdapter = new ShellResponseAdapter(outputWriter);
