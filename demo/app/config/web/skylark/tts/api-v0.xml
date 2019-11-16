@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 6.0//EN"
+        "http://aspectran.github.io/dtd/aspectran-6.dtd">
+<aspectran>
+
+    <description>
+        TTS API V0
+    </description>
+
+    <settings>
+        <setting name="transletNamePrefix" value="/skylark/api/v0/"/>
+    </settings>
+
+    <translet name="/tts">
+        <request>
+            <parameters>
+                <item name="text" mandatory="true"/>
+            </parameters>
+        </request>
+        <headers>
+            <item name="Content-Type">text/plain</item>
+            <item name="Content-Transfer-Encoding">base64</item>
+        </headers>
+        <action bean="ttsApiV0" method="tts"/>
+    </translet>
+
+    <translet name="/wav">
+        <request>
+            <parameters>
+                <item name="text" mandatory="true"/>
+            </parameters>
+        </request>
+        <headers>
+            <item name="Content-Type">audio/wav</item>
+            <item name="Content-Disposition">attachment; filename="output.wav"</item>
+        </headers>
+        <action bean="ttsApiV0" method="download"/>
+    </translet>
+
+</aspectran>

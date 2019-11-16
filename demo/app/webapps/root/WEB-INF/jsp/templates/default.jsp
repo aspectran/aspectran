@@ -83,6 +83,9 @@
                         <a href="/terminal/">Terminal</a>
                     </li>
                     <li>
+                        <a href="/skylark/">Skylark</a>
+                    </li>
+                    <li>
                         <a href="/chat/">Chat</a>
                     </li>
                 </ul>
@@ -171,46 +174,28 @@
     <div id="footer">
         <div class="row">
             <div class="medium-2 large-1 columns hide-for-small-only t5">
-                <h5><a class="logo" href="https://aspectran.com/info/" title="Aspectran"><img src="https://aspectran.com/assets/img/aspectran-logo-grey-x100.png" width="100" height="100" title="Aspectran"/></a></h5>
+                <h5><a class="logo" href="https://aspectran.com/info/" title="Aspectran"><img src="https://aspectran.com/assets/img/aspectran-logo-grey-x100.png" width="100" height="100" alt="Aspectran" title="Aspectran"/></a></h5>
             </div>
             <div class="medium-4 large-4 columns">
                 <a href="https://aspectran.com/info/"><h5>About Aspectran</h5></a>
-                <p>
-                    <a href="https://aspectran.com/info/">Aspectran is a Java framework for building Web and command-line applications.</a>
-                </p>
+                <p><a href="https://aspectran.com/info/">Aspectran is a Java framework for building Web and command-line applications.</a></p>
             </div>
             <div class="small-6 medium-3 large-3 large-offset-1 columns">
                 <h5>Navigation</h5>
                 <ul class="no-bullet">
-                    <li class="">
-                        <a href="https://aspectran.com/getting-started/" title="">Getting-Started</a>
-                    </li>
-                    <li class="">
-                        <a href="https://aspectran.com/docs/" title="">Documentation</a>
-                    </li>
-                    <li class="" >
-                        <a href="https://aspectran.com/guides/" title="">Guides</a>
-                    </li>
-                    <li class="" >
-                        <a href="https://aspectran.com/projects/" title="">Projects</a>
-                    </li>
+                    <li><a href="https://aspectran.com/getting-started/" title="">Getting-Started</a></li>
+                    <li><a href="https://aspectran.com/docs/" title="">Documentation</a></li>
+                    <li><a href="https://aspectran.com/guides/" title="">Guides</a></li>
+                    <li><a href="https://aspectran.com/projects/" title="">Projects</a></li>
                 </ul>
             </div>
             <div class="small-6 medium-3 large-3 columns">
                 <h5>Services</h5>
                 <ul class="no-bullet">
-                    <li>
-                        <a href="https://aspectran.com/support/" title="Aspectran Support">Support</a>
-                    </li>
-                    <li>
-                        <a href="https://aspectran.com/feed.xml" title="Subscribe to RSS Feed">RSS</a>
-                    </li>
-                    <li>
-                        <a href="https://aspectran.com/atom.xml" title="Subscribe to Atom Feed">Atom</a>
-                    </li>
-                    <li>
-                        <a href="https://aspectran.com/sitemap.xml"  title="Sitemap for Google Webmaster Tools">sitemap.xml</a>
-                    </li>
+                    <li><a href="https://aspectran.com/support/" title="Aspectran Support">Support</a></li>
+                    <li><a href="https://aspectran.com/feed.xml" title="Subscribe to RSS Feed">RSS</a></li>
+                    <li><a href="https://aspectran.com/atom.xml" title="Subscribe to Atom Feed">Atom</a></li>
+                    <li><a href="https://aspectran.com/sitemap.xml"  title="Sitemap for Google Webmaster Tools">sitemap.xml</a></li>
                 </ul>
             </div>
         </div>
