@@ -16,6 +16,7 @@
 package com.aspectran.core.context.expr;
 
 import com.aspectran.core.activity.Activity;
+import com.aspectran.core.activity.InstantAction;
 import com.aspectran.core.activity.InstantActivity;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.builder.ActivityContextBuilder;
@@ -47,35 +48,46 @@ class ItemExpressionTest {
 
     @Test
     void testEvaluateAsMultiValueMap() {
-        Activity activity = new InstantActivity(context);
-        activity.getRequestAdapter().setParameter("param1", "Apple");
-        activity.getRequestAdapter().setAttribute("attr1", "Strawberry");
+        final Activity activity = new InstantActivity(context);
+        try {
+            activity.perform(new InstantAction() {
+                @Override
+                public Object execute() throws Exception {
+                    activity.getRequestAdapter().setParameter("param1", "Apple");
+                    activity.getRequestAdapter().setAttribute("attr1", "Strawberry");
 
-        ItemRule itemRule1 = new ItemRule();
-        itemRule1.setName("item1");
-        itemRule1.setValue("${param1}, ${param2:Tomato}, @{attr1}, @{attr2:Melon}");
+                    ItemRule itemRule1 = new ItemRule();
+                    itemRule1.setName("item1");
+                    itemRule1.setValue("${param1}, ${param2:Tomato}, @{attr1}, @{attr2:Melon}");
 
-        ItemRule itemRule2 = new ItemRule();
-        itemRule2.setType(ItemType.ARRAY);
-        itemRule2.setName("item2");
-        itemRule2.addValue("${param1}");
-        itemRule2.addValue("${param2:Tomato}");
-        itemRule2.addValue("@{attr1}");
-        itemRule2.addValue("@{attr2:Melon}");
+                    ItemRule itemRule2 = new ItemRule();
+                    itemRule2.setType(ItemType.ARRAY);
+                    itemRule2.setName("item2");
+                    itemRule2.addValue("${param1}");
+                    itemRule2.addValue("${param2:Tomato}");
+                    itemRule2.addValue("@{attr1}");
+                    itemRule2.addValue("@{attr2:Melon}");
 
-        ItemRuleMap itemRuleMap = new ItemRuleMap();
-        itemRuleMap.putItemRule(itemRule1);
-        itemRuleMap.putItemRule(itemRule2);
+                    ItemRuleMap itemRuleMap = new ItemRuleMap();
+                    itemRuleMap.putItemRule(itemRule1);
+                    itemRuleMap.putItemRule(itemRule2);
 
-        ItemEvaluator itemEvaluator = new ItemExpression(activity);
-        MultiValueMap<String, String> result = itemEvaluator.evaluateAsMultiValueMap(itemRuleMap);
+                    ItemEvaluator itemEvaluator = new ItemExpression(activity);
+                    MultiValueMap<String, String> result = itemEvaluator.evaluateAsMultiValueMap(itemRuleMap);
 
-        for (Map.Entry<String, List<String>> entry : result.entrySet()) {
-            if ("item1".equals(entry.getKey())) {
-                assertEquals("[Apple, Tomato, Strawberry, Melon]", entry.getValue().toString());
-            } else if ("item2".equals(entry.getKey())) {
-                assertEquals("[Apple, Tomato, Strawberry, Melon]", entry.getValue().toString());
-            }
+                    for (Map.Entry<String, List<String>> entry : result.entrySet()) {
+                        if ("item1".equals(entry.getKey())) {
+                            assertEquals("[Apple, Tomato, Strawberry, Melon]", entry.getValue().toString());
+                        } else if ("item2".equals(entry.getKey())) {
+                            assertEquals("[Apple, Tomato, Strawberry, Melon]", entry.getValue().toString());
+                        }
+                    }
+
+                    return null;
+                }
+            });
+        } finally {
+            activity.finish();
         }
     }
 

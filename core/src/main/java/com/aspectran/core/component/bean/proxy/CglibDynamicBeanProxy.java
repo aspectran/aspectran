@@ -21,6 +21,7 @@ import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.ExceptionRule;
+import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import net.sf.cglib.proxy.Enhancer;
@@ -55,9 +56,9 @@ public class CglibDynamicBeanProxy extends AbstractDynamicBeanProxy implements M
         }
 
         Activity activity = context.getCurrentActivity();
-        String transletName = (activity.getTranslet() != null ? activity.getTranslet().getRequestName() : null);
-        String beanId = beanRule.getId();
-        String className = beanRule.getClassName();
+        String transletName = (activity.getTranslet() != null ? activity.getTranslet().getRequestName() : StringUtils.EMPTY);
+        String beanId = StringUtils.nullToEmpty(beanRule.getId());
+        String className = StringUtils.nullToEmpty(beanRule.getClassName());
         String methodName = method.getName();
         AspectAdviceRuleRegistry aarr = retrieveAspectAdviceRuleRegistry(activity, transletName, beanId, className, methodName);
         if (aarr == null) {

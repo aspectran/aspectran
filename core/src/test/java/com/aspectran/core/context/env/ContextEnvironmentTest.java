@@ -16,6 +16,7 @@
 package com.aspectran.core.context.env;
 
 import com.aspectran.core.activity.Activity;
+import com.aspectran.core.activity.InstantAction;
 import com.aspectran.core.activity.InstantActivity;
 import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.context.ActivityContext;
@@ -63,8 +64,15 @@ class ContextEnvironmentTest {
         Map<String, Object> attributes = new HashMap<>();
         attributes.put("attr1", "Strawberry");
 
-        Activity activity = new InstantActivity(context, parameterMap, attributes);
-        assertEquals("Apple, Tomato, Strawberry, Melon", environment.getProperty("item1", activity).toString());
+        final Activity activity = new InstantActivity(context, parameterMap, attributes);
+        try {
+            activity.perform(() -> {
+                assertEquals("Apple, Tomato, Strawberry, Melon", environment.getProperty("item1", activity).toString());
+                return null;
+            });
+        } finally {
+            activity.finish();
+        }
     }
 
 }

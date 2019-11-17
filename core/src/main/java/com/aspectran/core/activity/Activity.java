@@ -83,6 +83,8 @@ public interface Activity {
      */
     void perform();
 
+    Object perform(InstantAction instantAction);
+
     /**
      * Finish the current activity.
      * It must be called to finish the activity.

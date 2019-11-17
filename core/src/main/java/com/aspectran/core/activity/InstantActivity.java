@@ -18,8 +18,12 @@ package com.aspectran.core.activity;
 import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.adapter.BasicRequestAdapter;
 import com.aspectran.core.adapter.BasicResponseAdapter;
+import com.aspectran.core.adapter.BasicSessionAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
+import com.aspectran.core.component.session.BasicSession;
 import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.context.rule.TransletRule;
+import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.util.OutputStringWriter;
 
 import java.io.Writer;
@@ -35,7 +39,7 @@ import java.util.Map;
  *
  * @since 3.0.0
  */
-public class InstantActivity extends DefaultActivity {
+public class InstantActivity extends CoreActivity {
 
     /**
      * Instantiates a new InstantActivity.
@@ -87,6 +91,61 @@ public class InstantActivity extends DefaultActivity {
     @Override
     public void setSessionAdapter(SessionAdapter sessionAdapter) {
         super.setSessionAdapter(sessionAdapter);
+    }
+
+    @Override
+    public void prepare(String transletName) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void prepare(TransletRule transletRule) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void prepare(String transletName, TransletRule transletRule) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void prepare(String transletName, String requestMethod) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void prepare(String transletName, MethodType requestMethod) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void perform() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Object perform(InstantAction instantAction) {
+        if (isIncluded()) {
+            backupCurrentActivity();
+            saveCurrentActivity();
+        } else {
+            saveCurrentActivity();
+        }
+
+        if (getOuterActivity() == null && getSessionAdapter() instanceof BasicSessionAdapter) {
+            ((BasicSessionAdapter)getSessionAdapter()).getSessionAgent().access();
+        }
+
+        return super.perform(instantAction);
+    }
+
+    @Override
+    protected void release() {
+        if (getOuterActivity() == null && getSessionAdapter() instanceof BasicSessionAdapter) {
+            ((BasicSessionAdapter)getSessionAdapter()).getSessionAgent().complete();
+        }
+
+        super.release();
     }
 
 }

@@ -48,18 +48,25 @@ class ActivityDataMapTest {
         attributes.put("attr1", "Strawberry");
         attributes.put("attr2", "Melon");
 
-        Activity activity = new InstantActivity(context, parameterMap, attributes);
+        final Activity activity = new InstantActivity(context, parameterMap, attributes);
+        try {
+            activity.perform(() -> {
+                ActivityDataMap activityDataMap = new ActivityDataMap(activity);
+                activityDataMap.put("result1", 1);
 
-        ActivityDataMap activityDataMap = new ActivityDataMap(activity);
-        activityDataMap.put("result1", 1);
+                assertEquals("Apple", activityDataMap.getParameterWithoutCache("param1"));
+                assertEquals("Apple", activityDataMap.get("param1"));
+                assertEquals("Tomato", activityDataMap.get("param2"));
+                assertEquals("Strawberry", activityDataMap.getAttributeWithoutCache("attr1"));
+                assertEquals("Strawberry", activityDataMap.get("attr1"));
+                assertEquals("Melon", activityDataMap.get("attr2"));
+                assertEquals(1, activityDataMap.get("result1"));
 
-        assertEquals("Apple", activityDataMap.getParameterWithoutCache("param1"));
-        assertEquals("Apple", activityDataMap.get("param1"));
-        assertEquals("Tomato", activityDataMap.get("param2"));
-        assertEquals("Strawberry", activityDataMap.getAttributeWithoutCache("attr1"));
-        assertEquals("Strawberry", activityDataMap.get("attr1"));
-        assertEquals("Melon", activityDataMap.get("attr2"));
-        assertEquals(1, activityDataMap.get("result1"));
+                return null;
+            });
+        } finally {
+            activity.finish();
+        }
     }
 
 }

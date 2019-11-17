@@ -196,22 +196,35 @@ public class CoreActivity extends AdviceActivity {
         return localeResolver;
     }
 
+
     @Override
     public void perform() {
+        perform(null);
+    }
+
+    @Override
+    public Object perform(InstantAction instantAction) {
         ForwardRule forwardRule = null;
+        Object result = null;
         try {
             try {
                 setCurrentAspectAdviceType(AspectAdviceType.BEFORE);
                 executeAdvice(getBeforeAdviceRuleList(), true);
 
-                if (!isResponseReserved()) {
-                    produce();
+                if (translet != null) {
+                    if (!isResponseReserved()) {
+                        produce();
+                    }
+
+                    forwardRule = response();
+                    if (forwardRule != null) {
+                        forward(forwardRule);
+                        return null;
+                    }
                 }
 
-                forwardRule = response();
-                if (forwardRule != null) {
-                    forward(forwardRule);
-                    return;
+                if (instantAction != null) {
+                    result = instantAction.execute();
                 }
 
                 setCurrentAspectAdviceType(AspectAdviceType.AFTER);
@@ -229,7 +242,10 @@ public class CoreActivity extends AdviceActivity {
                 setCurrentAspectAdviceType(AspectAdviceType.THROWN);
 
                 exception();
-                response();
+
+                if (translet != null) {
+                    response();
+                }
 
                 if (isExceptionRaised()) {
                     throw getRootCauseOfRaisedException();
@@ -249,6 +265,7 @@ public class CoreActivity extends AdviceActivity {
                 }
             }
         }
+        return result;
     }
 
     /**
@@ -388,8 +405,10 @@ public class CoreActivity extends AdviceActivity {
         reserveResponse(null);
         committed = false;
 
-        if (getTransletRule().getExceptionRule() != null) {
-            handleException(getTransletRule().getExceptionRule());
+        if (translet != null) {
+            if (getTransletRule().getExceptionRule() != null) {
+                handleException(getTransletRule().getExceptionRule());
+            }
         }
         if (getExceptionRuleList() != null) {
             handleException(getExceptionRuleList());
@@ -399,7 +418,7 @@ public class CoreActivity extends AdviceActivity {
     @Override
     public ExceptionThrownRule handleException(ExceptionRule exceptionRule) {
         ExceptionThrownRule exceptionThrownRule = super.handleException(exceptionRule);
-        if (exceptionThrownRule != null && !isResponseReserved() && translet != null) {
+        if (translet != null && exceptionThrownRule != null && !isResponseReserved()) {
             Response response = getDesiredResponse();
             String contentType = (response != null ? response.getContentType() : null);
             Response targetResponse = exceptionThrownRule.getResponse(contentType);
@@ -465,12 +484,16 @@ public class CoreActivity extends AdviceActivity {
 
     @Override
     public ProcessResult getProcessResult() {
-        return translet.getProcessResult();
+        return (translet != null ? translet.getProcessResult() : null);
     }
 
     @Override
     public Object getProcessResult(String actionId) {
-        return translet.getProcessResult().getResultValue(actionId);
+        if (translet != null) {
+            return translet.getProcessResult().getResultValue(actionId);
+        } else {
+            return null;
+        }
     }
 
     private TransletRule getTransletRule(String transletName, MethodType requestMethod) {

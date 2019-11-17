@@ -16,6 +16,7 @@
 package com.aspectran.core.context.expr;
 
 import com.aspectran.core.activity.Activity;
+import com.aspectran.core.activity.InstantAction;
 import com.aspectran.core.activity.InstantActivity;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.builder.ActivityContextBuilder;
@@ -42,16 +43,24 @@ class TokenExpressionTest {
 
     @Test
     void testEvaluateAsString() {
-        Activity activity = new InstantActivity(context);
-        activity.getRequestAdapter().setParameter("param1", "Apple");
-        activity.getRequestAdapter().setAttribute("attr1", "Strawberry");
+        final Activity activity = new InstantActivity(context);
+        try {
+            activity.perform(() -> {
+                activity.getRequestAdapter().setParameter("param1", "Apple");
+                activity.getRequestAdapter().setAttribute("attr1", "Strawberry");
 
-        Token[] tokens = TokenParser.parse("${param1}, ${param2:Tomato}, @{attr1}, @{attr2:Melon}");
+                Token[] tokens = TokenParser.parse("${param1}, ${param2:Tomato}, @{attr1}, @{attr2:Melon}");
 
-        TokenEvaluator tokenEvaluator = new TokenExpression(activity);
-        String result = tokenEvaluator.evaluateAsString(tokens);
+                TokenEvaluator tokenEvaluator = new TokenExpression(activity);
+                String result = tokenEvaluator.evaluateAsString(tokens);
 
-        assertEquals("Apple, Tomato, Strawberry, Melon", result);
+                assertEquals("Apple, Tomato, Strawberry, Melon", result);
+
+                return null;
+            });
+        } finally {
+            activity.finish();
+        }
     }
 
 }

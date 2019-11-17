@@ -15,12 +15,15 @@
  */
 package com.aspectran.web.socket.jsr356;
 
+import com.aspectran.core.activity.InstantAction;
+import com.aspectran.core.activity.InstantActivity;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.component.bean.BeanRegistry;
 import com.aspectran.core.component.bean.aware.ActivityContextAware;
 import com.aspectran.core.component.template.TemplateRenderer;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.env.Environment;
+import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.support.i18n.message.MessageSource;
 import com.aspectran.core.util.Assert;
 
@@ -30,6 +33,16 @@ import com.aspectran.core.util.Assert;
 public abstract class ActivityContextAwareEndpoint implements ActivityContextAware {
 
     private ActivityContext context;
+
+    private ActivityContext getActivityContext() {
+        Assert.state(context != null, "No ActivityContext configured");
+        return context;
+    }
+
+    @Override
+    public void setActivityContext(ActivityContext context) {
+        this.context = context;
+    }
 
     public ApplicationAdapter getApplicationAdapter() {
         return getActivityContext().getApplicationAdapter();
@@ -51,14 +64,18 @@ public abstract class ActivityContextAwareEndpoint implements ActivityContextAwa
         return getActivityContext().getMessageSource();
     }
 
-    private ActivityContext getActivityContext() {
-        Assert.state(context != null, "No ActivityContext configured");
-        return context;
-    }
-
-    @Override
-    public void setActivityContext(ActivityContext context) {
-        this.context = context;
+    public void instantActivity(InstantAction action) {
+        InstantActivity activity = null;
+        try {
+            activity = new InstantActivity(getActivityContext());
+            if (action != null) {
+                activity.perform(action);
+            }
+        } finally {
+            if (activity != null) {
+                activity.finish();
+            }
+        }
     }
 
 }

@@ -77,6 +77,11 @@ public class DefaultActivity extends AbstractActivity {
     }
 
     @Override
+    public void perform(InstantAction instantAction) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public void finish() {
         throw new UnsupportedOperationException();
     }
