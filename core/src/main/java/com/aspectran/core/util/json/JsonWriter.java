@@ -15,10 +15,12 @@
  */
 package com.aspectran.core.util.json;
 
+import com.aspectran.core.util.ArrayStack;
 import com.aspectran.core.util.BeanUtils;
 import com.aspectran.core.util.apon.Parameter;
 import com.aspectran.core.util.apon.ParameterValue;
 import com.aspectran.core.util.apon.Parameters;
+import com.aspectran.core.util.statistic.CounterStatistic;
 
 import java.io.Closeable;
 import java.io.Flushable;
@@ -35,6 +37,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Converts an object to a JSON formatted string.
@@ -65,9 +68,7 @@ public class JsonWriter implements Flushable, Closeable {
 
     private String pendedName;
 
-    private boolean writeSkipped;
-
-    private int writtenCount;
+    private final ArrayStack<AtomicInteger> countStack;
 
     /**
      * Instantiates a new JsonWriter.
@@ -87,7 +88,11 @@ public class JsonWriter implements Flushable, Closeable {
      */
     public JsonWriter(Writer out) {
         this.out = out;
+
         setIndentString(DEFAULT_INDENT_STRING);
+
+        countStack = new ArrayStack<>();
+        countStack.push(new AtomicInteger());
     }
 
     private void setIndentString(String indentString) {
@@ -148,71 +153,47 @@ public class JsonWriter implements Flushable, Closeable {
         } else if (object instanceof Number) {
             writeValue((Number)object);
         } else if (object instanceof Parameters) {
-            int oldWrittenCount = writtenCount;
-            writtenCount = 0;
             beginBlock();
 
             Map<String, ParameterValue> params = ((Parameters)object).getParameterValueMap();
-            Iterator<ParameterValue> it = params.values().iterator();
-            while (it.hasNext()) {
-                Parameter p = it.next();
+            for (Parameter p : params.values()) {
                 String name = p.getName();
                 Object value = p.getValue();
                 checkCircularReference(object, value);
 
                 writeName(name);
                 write(value);
-                if (it.hasNext()) {
-                    writeComma();
-                }
             }
 
             endBlock();
-            writtenCount = oldWrittenCount + 1;
         } else if (object instanceof Map<?, ?>) {
-            int oldWrittenCount = writtenCount;
-            writtenCount = 0;
             beginBlock();
 
-            @SuppressWarnings("unchecked")
-            Iterator<Map.Entry<Object, Object>> it = ((Map<Object, Object>)object).entrySet().iterator();
-            while (it.hasNext()) {
-                Map.Entry<Object, Object> entry = it.next();
+            for (Map.Entry<Object, Object> entry : ((Map<Object, Object>)object).entrySet()) {
                 String name = entry.getKey().toString();
                 Object value = entry.getValue();
                 checkCircularReference(object, value);
 
                 writeName(name);
                 write(value);
-                if (it.hasNext()) {
-                    writeComma();
-                }
             }
 
             endBlock();
-            writtenCount = oldWrittenCount + 1;
         } else if (object instanceof Collection<?>) {
-            int oldWrittenCount = writtenCount;
-            writtenCount = 0;
             beginArray();
 
-            @SuppressWarnings("unchecked")
-            Iterator<Object> it = ((Collection<Object>)object).iterator();
-            while (it.hasNext()) {
-                Object value = it.next();
+            for (Object value : (Collection<Object>)object) {
                 checkCircularReference(object, value);
 
-                write(value);
-                if (it.hasNext()) {
-                    writeComma();
+                if (value != null) {
+                    write(value);
+                } else {
+                    writeNull(true);
                 }
             }
 
             endArray();
-            writtenCount = oldWrittenCount + 1;
         } else if (object.getClass().isArray()) {
-            int oldWrittenCount = writtenCount;
-            writtenCount = 0;
             beginArray();
 
             int len = Array.getLength(object);
@@ -220,14 +201,14 @@ public class JsonWriter implements Flushable, Closeable {
                 Object value = Array.get(object, i);
                 checkCircularReference(object, value);
 
-                if (i > 0) {
-                    writeComma();
+                if (value != null) {
+                    write(value);
+                } else {
+                    writeNull(true);
                 }
-                write(value);
             }
 
             endArray();
-            writtenCount = oldWrittenCount + 1;
         } else if (object instanceof Date) {
             if (dateTimeFormat != null) {
                 SimpleDateFormat dt = new SimpleDateFormat(dateTimeFormat);
@@ -254,20 +235,17 @@ public class JsonWriter implements Flushable, Closeable {
             if (readablePropertyNames != null && readablePropertyNames.length > 0) {
                 beginBlock();
 
-                for (int i = 0; i < readablePropertyNames.length; i++) {
+                for (String propertyName : readablePropertyNames) {
                     Object value;
                     try {
-                        value = BeanUtils.getProperty(object, readablePropertyNames[i]);
+                        value = BeanUtils.getProperty(object, propertyName);
                     } catch (InvocationTargetException e) {
                         throw new IOException(e);
                     }
                     checkCircularReference(object, value);
 
-                    writeName(readablePropertyNames[i]);
+                    writeName(propertyName);
                     write(value);
-                    if (i < (readablePropertyNames.length - 1)) {
-                        writeComma();
-                    }
                 }
 
                 endBlock();
@@ -288,6 +266,9 @@ public class JsonWriter implements Flushable, Closeable {
     }
 
     private void writePendedName() throws IOException {
+        if (countStack.peek().get() > 0) {
+            writeComma();
+        }
         if (pendedName != null) {
             indent();
             out.write(escape(pendedName));
@@ -312,10 +293,7 @@ public class JsonWriter implements Flushable, Closeable {
         if (!skipNull || value != null) {
             writePendedName();
             out.write(escape(value));
-            writtenCount++;
-            writeSkipped = false;
-        } else {
-            writeSkipped = true;
+            countStack.peek().incrementAndGet();
         }
     }
 
@@ -329,10 +307,7 @@ public class JsonWriter implements Flushable, Closeable {
         if (!skipNull || value != null) {
             writePendedName();
             out.write(value.toString());
-            writtenCount++;
-            writeSkipped = false;
-        } else {
-            writeSkipped = true;
+            countStack.peek().incrementAndGet();
         }
     }
 
@@ -346,10 +321,7 @@ public class JsonWriter implements Flushable, Closeable {
         if (!skipNull || value != null) {
             writePendedName();
             out.write(value.toString());
-            writtenCount++;
-            writeSkipped = false;
-        } else {
-            writeSkipped = true;
+            countStack.peek().incrementAndGet();
         }
     }
 
@@ -366,10 +338,7 @@ public class JsonWriter implements Flushable, Closeable {
         if (!skipNull || force) {
             writePendedName();
             out.write("null");
-            writtenCount++;
-            writeSkipped = false;
-        } else {
-            writeSkipped = true;
+            countStack.peek().incrementAndGet();
         }
     }
 
@@ -378,11 +347,9 @@ public class JsonWriter implements Flushable, Closeable {
      *
      * @throws IOException if an I/O error has occurred
      */
-    public void writeComma() throws IOException {
-        if (!writeSkipped) {
-            out.write(",");
-            nextLine();
-        }
+    private void writeComma() throws IOException {
+        out.write(",");
+        nextLine();
     }
 
     /**
@@ -395,6 +362,7 @@ public class JsonWriter implements Flushable, Closeable {
         out.write("{");
         nextLine();
         indentDepth++;
+        countStack.push(new AtomicInteger());
     }
 
     /**
@@ -404,12 +372,12 @@ public class JsonWriter implements Flushable, Closeable {
      */
     public void endBlock() throws IOException {
         indentDepth--;
-        if (writtenCount > 0) {
+        if (countStack.pop().get() > 0) {
             nextLine();
         }
         indent();
         out.write("}");
-        writeSkipped = false;
+        countStack.peek().incrementAndGet();
     }
 
     /**
@@ -422,6 +390,7 @@ public class JsonWriter implements Flushable, Closeable {
         out.write("[");
         nextLine();
         indentDepth++;
+        countStack.push(new AtomicInteger());
     }
 
     /**
@@ -431,12 +400,12 @@ public class JsonWriter implements Flushable, Closeable {
      */
     public void endArray() throws IOException {
         indentDepth--;
-        if (writtenCount > 0) {
+        if (countStack.pop().get() > 0) {
             nextLine();
         }
         indent();
         out.write("]");
-        writeSkipped = false;
+        countStack.peek().incrementAndGet();
     }
 
     /**
@@ -444,7 +413,7 @@ public class JsonWriter implements Flushable, Closeable {
      *
      * @throws IOException if an I/O error has occurred
      */
-    protected void indent() throws IOException {
+    private void indent() throws IOException {
         if (prettyPrint) {
             for (int i = 0; i < indentDepth; i++) {
                 out.write(indentString);
@@ -457,7 +426,7 @@ public class JsonWriter implements Flushable, Closeable {
      *
      * @throws IOException if an I/O error has occurred
      */
-    protected void nextLine() throws IOException {
+    private void nextLine() throws IOException {
         if (prettyPrint) {
             out.write("\n");
         }

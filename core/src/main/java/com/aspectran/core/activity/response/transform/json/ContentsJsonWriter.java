@@ -71,13 +71,8 @@ public class ContentsJsonWriter extends JsonWriter {
             write(contentResult);
         } else {
             beginArray();
-            Iterator<ContentResult> it = processResult.iterator();
-            while (it.hasNext()) {
-                ContentResult contentResult = it.next();
+            for (ContentResult contentResult : processResult) {
                 write(contentResult);
-                if (it.hasNext()) {
-                    writeComma();
-                }
             }
             endArray();
         }
@@ -111,11 +106,7 @@ public class ContentsJsonWriter extends JsonWriter {
             }
         } else {
             beginBlock();
-            int cnt = 0;
             for (String actionId : contentResult.getActionIds()) {
-                if (cnt++ > 0) {
-                    writeComma();
-                }
                 ActionResult actionResult = contentResult.getActionResult(actionId);
                 writeName(actionResult.getActionId());
                 write(actionResult.getResultValue());

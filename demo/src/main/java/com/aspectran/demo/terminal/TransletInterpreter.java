@@ -80,10 +80,8 @@ public class TransletInterpreter implements ActivityContextAware {
             jsonWriter.beginBlock();
             jsonWriter.writeName("translet");
             jsonWriter.writeNull();
-            jsonWriter.writeComma();
             jsonWriter.writeName("request");
             jsonWriter.writeNull();
-            jsonWriter.writeComma();
             jsonWriter.writeName("response");
             jsonWriter.writeNull();
             jsonWriter.endBlock();
@@ -97,7 +95,6 @@ public class TransletInterpreter implements ActivityContextAware {
         jsonWriter.beginBlock();
         jsonWriter.writeName("translet");
         jsonWriter.write(toMap(transletRule));
-        jsonWriter.writeComma();
         jsonWriter.writeName("request");
         jsonWriter.beginBlock();
         if (parameterItemRuleMap != null) {
@@ -105,26 +102,20 @@ public class TransletInterpreter implements ActivityContextAware {
             jsonWriter.beginBlock();
             jsonWriter.writeName("items");
             jsonWriter.write(toListForItems(parameterItemRuleMap.values()));
-            jsonWriter.writeComma();
             jsonWriter.writeName("tokens");
             jsonWriter.write(toListForTokens(parameterItemRuleMap.values()));
             jsonWriter.endBlock();
         }
         if (attributeItemRuleMap != null) {
-            if (parameterItemRuleMap != null) {
-                jsonWriter.writeComma();
-            }
             jsonWriter.writeName("attributes");
             jsonWriter.beginBlock();
             jsonWriter.writeName("items");
             jsonWriter.write(toListForItems(attributeItemRuleMap.values()));
-            jsonWriter.writeComma();
             jsonWriter.writeName("tokens");
             jsonWriter.write(toListForTokens(attributeItemRuleMap.values()));
             jsonWriter.endBlock();
         }
         jsonWriter.endBlock();
-        jsonWriter.writeComma();
         jsonWriter.writeName("response");
         jsonWriter.beginBlock();
         if (transletRule.getResponseRule().getResponse() != null) {

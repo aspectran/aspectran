@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.util.json;
 
+import com.aspectran.core.util.apon.Parameters;
+import com.aspectran.core.util.apon.VariableParameters;
 import com.aspectran.core.util.apon.test.Customer;
 
 import java.time.LocalDate;
@@ -31,10 +33,10 @@ public class JsonWriterTest {
         try {
             Map<String, Object> map = new LinkedHashMap<>();
             map.put("intro", "Start Testing Now!");
+            map.put("null0", null);
             map.put("one", 1);
             map.put("two", 2);
             map.put("three", 3);
-            map.put("null", null);
             map.put("nullArray", new String[] {null, null, null});
             map.put("date", new Date());
             map.put("localDate", LocalDate.now());
@@ -47,13 +49,20 @@ public class JsonWriterTest {
                 customer.putValue(Customer.id, "guest-" + i);
                 customer.putValue(Customer.name, "Guest" + i);
                 customer.putValue(Customer.age, 20 + i);
-                customer.putValue(Customer.episode, "His individual skills are outstanding.\nI don't know as how he is handsome");
                 customer.putValue(Customer.approved, true);
+                customer.putValue(Customer.episode, null);
 
                 customerList.add(customer);
             }
 
             map.put("customers", customerList);
+
+            Map<String, Object> emptyMap = new LinkedHashMap<>();
+
+            map.put("emptyMap", emptyMap);
+
+            map.put("null", null);
+            map.put("null2", null);
 
             String result = new JsonWriter()
                     .nullWritable(false)
@@ -63,6 +72,24 @@ public class JsonWriterTest {
                     .toString();
 
             System.out.println(result);
+
+
+            Parameters parameters = new VariableParameters();
+            parameters.putValue("item1", 1);
+            parameters.putValue("item2", 2);
+            Parameters parameters2 = new VariableParameters();
+            parameters2.putValue("item11", 11);
+            parameters2.putValue("item22", 22);
+            parameters.putValue("item3", parameters2);
+
+            String result2 = new JsonWriter()
+                    .nullWritable(false)
+                    .dateFormat("yyyy-MM-dd")
+                    .dateTimeFormat("yyyy-MM-dd HH:mm:ss")
+                    .write(parameters)
+                    .toString();
+
+            System.out.println(result2);
 
         } catch (Exception e) {
             e.printStackTrace();

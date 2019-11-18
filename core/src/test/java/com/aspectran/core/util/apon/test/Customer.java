@@ -33,8 +33,8 @@ public class Customer extends AbstractParameters {
         id = new ParameterKey("id", ValueType.STRING);
         name = new ParameterKey("name", ValueType.STRING);
         age = new ParameterKey("age", ValueType.INT);
-        episode = new ParameterKey("episode", ValueType.TEXT);
         approved = new ParameterKey("approved", ValueType.BOOLEAN);
+        episode = new ParameterKey("episode", ValueType.TEXT);
 
         parameterKeys = new ParameterKey[] {
             id,
