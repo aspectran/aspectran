@@ -14,7 +14,7 @@
     <bean id="simpleAopTestAdvice" class="com.aspectran.aop.SimpleAopTestAdvice"/>
 
     <aspect id="aspect01" order="1" disabled="true">
-        <joinpoint target="translet">
+        <joinpoint>
             pointcut: {
                 +: aop/test/*
             }

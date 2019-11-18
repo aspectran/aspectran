@@ -89,7 +89,7 @@ public interface Activity {
      * Finish the current activity.
      * It must be called to finish the activity.
      */
-    void finish();
+    void close();
 
     /**
      * Throws an ActivityTerminatedException to terminate the current activity.

@@ -105,7 +105,7 @@ public abstract class AbstractDynamicBeanProxy {
                 if (pointcut == null || pointcut.matches(transletName, beanId, className, methodName)) {
                     if (aspectRule.getJoinpointTargetType() == JoinpointTargetType.METHOD) {
                         postRegister.register(aspectRule);
-                    } else if (aspectRule.getJoinpointTargetType() == JoinpointTargetType.TRANSLET) {
+                    } else {
                         dynamicAspectRuleList.add(aspectRule);
                     }
                 }

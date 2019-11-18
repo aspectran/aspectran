@@ -13,7 +13,7 @@
             executes the welcome() method of the helloAdvice bean before executing the translet,
             and executes the goodbye() method of the helloAdvice bean after executing the translet.
         </description>
-        <joinpoint target="translet">
+        <joinpoint>
             pointcut: {
                 +: hello*@helloAction^helloWorld
                 +: /examples/hello-world@helloAction^helloWorld

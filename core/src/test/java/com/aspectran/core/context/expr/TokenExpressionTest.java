@@ -15,8 +15,6 @@
  */
 package com.aspectran.core.context.expr;
 
-import com.aspectran.core.activity.Activity;
-import com.aspectran.core.activity.InstantAction;
 import com.aspectran.core.activity.InstantActivity;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.builder.ActivityContextBuilder;
@@ -43,8 +41,7 @@ class TokenExpressionTest {
 
     @Test
     void testEvaluateAsString() {
-        final Activity activity = new InstantActivity(context);
-        try {
+        try (InstantActivity activity = new InstantActivity(context)) {
             activity.perform(() -> {
                 activity.getRequestAdapter().setParameter("param1", "Apple");
                 activity.getRequestAdapter().setAttribute("attr1", "Strawberry");
@@ -58,8 +55,6 @@ class TokenExpressionTest {
 
                 return null;
             });
-        } finally {
-            activity.finish();
         }
     }
 

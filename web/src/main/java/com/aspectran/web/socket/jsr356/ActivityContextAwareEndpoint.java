@@ -23,7 +23,6 @@ import com.aspectran.core.component.bean.aware.ActivityContextAware;
 import com.aspectran.core.component.template.TemplateRenderer;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.env.Environment;
-import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.support.i18n.message.MessageSource;
 import com.aspectran.core.util.Assert;
 
@@ -65,15 +64,9 @@ public abstract class ActivityContextAwareEndpoint implements ActivityContextAwa
     }
 
     public void instantActivity(InstantAction action) {
-        InstantActivity activity = null;
-        try {
-            activity = new InstantActivity(getActivityContext());
-            if (action != null) {
+        if (action != null) {
+            try (InstantActivity activity = new InstantActivity(getActivityContext())) {
                 activity.perform(action);
-            }
-        } finally {
-            if (activity != null) {
-                activity.finish();
             }
         }
     }

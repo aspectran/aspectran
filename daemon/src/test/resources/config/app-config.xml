@@ -27,7 +27,7 @@
         <description>
             The Activity Data Map of all translets can be referenced as a "data" attribute in View Dispatching.
         </description>
-        <joinpoint target="translet"/>
+
         <advice>
             <before>
                 <echo>
@@ -41,7 +41,6 @@
         <description>
             Prints a simple error message to the console if an unexpected error occurs during processing of the Translet.
         </description>
-        <joinpoint target="translet"/>
         <exception>
             <thrown>
                 <transform type="text">

@@ -20,7 +20,7 @@ package com.aspectran.core.context.rule.type;
  */
 public enum JoinpointTargetType {
 
-    TRANSLET("translet"),
+    ACTIVITY("activity"),
     METHOD("method");
 
     private final String alias;

@@ -174,16 +174,13 @@ public class JoinpointRule {
     }
 
     public static void updateJoinpointTargetType(JoinpointRule joinpointRule, String target) {
-        JoinpointTargetType joinpointTargetType;
         if (target != null) {
-            joinpointTargetType = JoinpointTargetType.resolve(target);
+            JoinpointTargetType joinpointTargetType = JoinpointTargetType.resolve(target);
             if (joinpointTargetType == null) {
                 throw new IllegalArgumentException("No joinpoint target type for '" + target + "'");
             }
-        } else {
-            joinpointTargetType = JoinpointTargetType.TRANSLET;
+            joinpointRule.setJoinpointTargetType(joinpointTargetType);
         }
-        joinpointRule.setJoinpointTargetType(joinpointTargetType);
     }
 
     public static void updateMethods(JoinpointRule joinpointRule, String[] methods) {

@@ -22,7 +22,6 @@ import com.aspectran.core.context.rule.parser.xml.AspectranDtdResolver;
 import org.junit.jupiter.api.Test;
 import org.xml.sax.InputSource;
 
-import java.io.IOException;
 import java.io.InputStream;
 
 /**
@@ -38,7 +37,7 @@ class NodeletParserTest {
         nodeParserTest.parse(appender);
     }
 
-    class NodeParserTest {
+    static class NodeParserTest {
 
         private final NodeletParser parser;
 
@@ -52,22 +51,12 @@ class NodeletParserTest {
         }
 
         void parse(RuleAppender ruleAppender) throws Exception {
-            InputStream inputStream = null;
-            try {
-                inputStream = ruleAppender.getInputStream();
+            try (InputStream inputStream = ruleAppender.getInputStream()) {
                 InputSource inputSource = new InputSource(inputStream);
                 inputSource.setSystemId(ruleAppender.getQualifiedName());
                 parser.parse(inputSource);
             } catch (Exception e) {
                 throw new Exception("Error parsing aspectran configuration", e);
-            } finally {
-                if (inputStream != null) {
-                    try {
-                        inputStream.close();
-                    } catch (IOException e) {
-                        // ignore
-                    }
-                }
             }
         }
 

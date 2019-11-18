@@ -56,7 +56,7 @@
 
 <!ELEMENT joinpoint (#PCDATA)>
 <!ATTLIST joinpoint
-  target  (translet | method) #IMPLIED
+  target  (activity | method) #IMPLIED
 >
 
 <!ELEMENT advice (before?, after?, around?, finally?)>

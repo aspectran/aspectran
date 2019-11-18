@@ -60,7 +60,7 @@ import com.aspectran.core.util.logging.LogFactory;
  *
  * <p>Created: 2008. 03. 22 PM 5:48:09</p>
  */
-public class CoreActivity extends AdviceActivity {
+public class CoreActivity extends AdviceActivity implements AutoCloseable {
 
     private static final Log log = LogFactory.getLog(CoreActivity.class);
 
@@ -433,7 +433,7 @@ public class CoreActivity extends AdviceActivity {
     }
 
     @Override
-    public void finish() {
+    public void close() {
         try {
             release();
 

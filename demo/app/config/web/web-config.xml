@@ -23,7 +23,6 @@
         <description>
             Specifies the environment variables used during request and response processing.
         </description>
-        <joinpoint target="translet"/>
         <settings>
             <setting name="characterEncoding" value="utf-8"/>
             <setting name="viewDispatcher" value="jspViewDispatcher"/>

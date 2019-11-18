@@ -36,6 +36,7 @@ import com.aspectran.core.context.rule.type.ActionType;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
 import com.aspectran.core.context.rule.type.JoinpointTargetType;
 import com.aspectran.core.context.rule.type.MethodType;
+import com.aspectran.core.lang.NonNull;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
@@ -74,13 +75,13 @@ public abstract class AdviceActivity extends AbstractActivity {
         super(context);
     }
 
-    protected void prepareAspectAdviceRule(TransletRule transletRule) {
+    protected void prepareAspectAdviceRule(@NonNull TransletRule transletRule) {
         AspectAdviceRuleRegistry aarr;
         if (transletRule.hasPathVariables()) {
             AspectAdviceRulePostRegister postRegister = new AspectAdviceRulePostRegister();
             for (AspectRule aspectRule : getActivityContext().getAspectRuleRegistry().getAspectRules()) {
                 JoinpointTargetType joinpointTargetType = aspectRule.getJoinpointTargetType();
-                if (!aspectRule.isBeanRelevanted() && joinpointTargetType == JoinpointTargetType.TRANSLET) {
+                if (!aspectRule.isBeanRelevanted() && joinpointTargetType != JoinpointTargetType.METHOD) {
                     Pointcut pointcut = aspectRule.getPointcut();
                     if (pointcut == null || pointcut.matches(transletRule.getName())) {
                         postRegister.register(aspectRule);
@@ -307,6 +308,9 @@ public abstract class AdviceActivity extends AbstractActivity {
 
     private boolean isAcceptable(AspectRule aspectRule) {
         if (aspectRule.getMethods() != null) {
+            if (getTranslet() == null) {
+                return false;
+            }
             MethodType requestMethod = getTranslet().getRequestMethod();
             if (requestMethod == null || !requestMethod.containsTo(aspectRule.getMethods())) {
                 return false;

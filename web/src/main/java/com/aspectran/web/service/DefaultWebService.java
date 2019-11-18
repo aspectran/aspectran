@@ -154,7 +154,7 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
             }
         } finally {
             if (activity != null) {
-                activity.finish();
+                activity.close();
             }
         }
     }

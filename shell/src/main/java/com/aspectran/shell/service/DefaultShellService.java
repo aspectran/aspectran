@@ -108,7 +108,7 @@ public class DefaultShellService extends AbstractShellService {
             throw new AspectranServiceException("An error occurred while processing translet: " + transletName, e);
         } finally {
             if (activity != null) {
-                activity.finish();
+                activity.close();
             }
             if (outputWriter != null) {
                 outputWriter.close();

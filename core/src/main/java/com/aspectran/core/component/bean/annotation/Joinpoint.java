@@ -29,7 +29,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 public @interface Joinpoint {
 
-    JoinpointTargetType target() default JoinpointTargetType.TRANSLET;
+    JoinpointTargetType target() default JoinpointTargetType.ACTIVITY;
 
     MethodType[] methods() default {};
 

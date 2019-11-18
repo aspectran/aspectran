@@ -15,9 +15,7 @@
  */
 package com.aspectran.embed.service;
 
-import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.ActivityTerminatedException;
-import com.aspectran.core.activity.InstantAction;
 import com.aspectran.core.activity.InstantActivity;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.request.ParameterMap;
@@ -128,7 +126,7 @@ public class DefaultEmbeddedAspectran extends AbstractEmbeddedAspectran {
             throw new AspectranServiceException("An error occurred while processing translet: " + name, e);
         } finally {
             if (activity != null) {
-                activity.finish();
+                activity.close();
             }
         }
         return translet;
@@ -162,18 +160,12 @@ public class DefaultEmbeddedAspectran extends AbstractEmbeddedAspectran {
             }
         }
 
-        InstantActivity activity = null;
-        try {
-            activity = new InstantActivity(getActivityContext(), parameterMap, attributeMap);
+        try (InstantActivity activity = new InstantActivity(getActivityContext(), parameterMap, attributeMap)) {
             activity.setSessionAdapter(newSessionAdapter());
-            activity.perform(() -> getActivityContext().getTemplateRenderer().render(templateId));
-            return activity.getResponseAdapter().getWriter().toString();
+            Object result = activity.perform(() -> getActivityContext().getTemplateRenderer().render(templateId));
+            return result.toString();
         } catch (Exception e) {
             throw new AspectranServiceException("An error occurred while rendering template: " + templateId, e);
-        } finally {
-            if (activity != null) {
-                activity.finish();
-            }
         }
     }
 

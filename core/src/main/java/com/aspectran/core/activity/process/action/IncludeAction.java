@@ -73,7 +73,7 @@ public class IncludeAction implements Executable {
             throw new ActionExecutionException("Failed to execute action " + this, e);
         } finally {
             if (innerActivity != null) {
-                innerActivity.finish();
+                innerActivity.close();
             }
         }
     }

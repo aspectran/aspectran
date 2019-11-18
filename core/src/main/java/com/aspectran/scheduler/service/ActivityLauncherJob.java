@@ -58,7 +58,7 @@ public class ActivityLauncherJob implements Job {
             activity.perform();
         } finally {
             if (activity != null) {
-                activity.finish();
+                activity.close();
             }
         }
         return activity;

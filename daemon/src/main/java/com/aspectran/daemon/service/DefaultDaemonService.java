@@ -101,7 +101,7 @@ public class DefaultDaemonService extends AbstractDaemonService {
             throw new AspectranServiceException("An error occurred while processing translet: " + name, e);
         } finally {
             if (activity != null) {
-                activity.finish();
+                activity.close();
             }
         }
         return translet;

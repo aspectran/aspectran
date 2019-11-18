@@ -117,7 +117,7 @@ public class DefaultTowService extends AbstractTowService {
             exchange.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
         } finally {
             if (activity != null) {
-                activity.finish();
+                activity.close();
             }
         }
         return true;

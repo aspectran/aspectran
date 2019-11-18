@@ -15,7 +15,6 @@
  */
 package com.aspectran.core.context.expr;
 
-import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.InstantAction;
 import com.aspectran.core.activity.InstantActivity;
 import com.aspectran.core.context.ActivityContext;
@@ -48,8 +47,7 @@ class ItemExpressionTest {
 
     @Test
     void testEvaluateAsMultiValueMap() {
-        final Activity activity = new InstantActivity(context);
-        try {
+        try (InstantActivity activity = new InstantActivity(context)) {
             activity.perform(new InstantAction() {
                 @Override
                 public Object execute() throws Exception {
@@ -86,8 +84,6 @@ class ItemExpressionTest {
                     return null;
                 }
             });
-        } finally {
-            activity.finish();
         }
     }
 

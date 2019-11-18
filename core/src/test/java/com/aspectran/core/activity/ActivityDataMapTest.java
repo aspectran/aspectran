@@ -48,8 +48,7 @@ class ActivityDataMapTest {
         attributes.put("attr1", "Strawberry");
         attributes.put("attr2", "Melon");
 
-        final Activity activity = new InstantActivity(context, parameterMap, attributes);
-        try {
+        try (InstantActivity activity = new InstantActivity(context, parameterMap, attributes)) {
             activity.perform(() -> {
                 ActivityDataMap activityDataMap = new ActivityDataMap(activity);
                 activityDataMap.put("result1", 1);
@@ -64,8 +63,6 @@ class ActivityDataMapTest {
 
                 return null;
             });
-        } finally {
-            activity.finish();
         }
     }
 

@@ -15,8 +15,6 @@
  */
 package com.aspectran.daemon.command.builtins;
 
-import com.aspectran.core.activity.Activity;
-import com.aspectran.core.activity.InstantAction;
 import com.aspectran.core.activity.InstantActivity;
 import com.aspectran.core.activity.process.action.InvokeAction;
 import com.aspectran.core.context.rule.BeanRule;
@@ -69,15 +67,12 @@ public class InvokeActionCommand extends AbstractCommand {
                 invokeActionRule.setBeanClass(beanClass);
             }
 
-            final Activity activity = new InstantActivity(service.getActivityContext());
-            try {
+            try (InstantActivity activity = new InstantActivity(service.getActivityContext())) {
                 Object result = activity.perform(() -> {
                     InvokeAction invokeAction = new InvokeAction(invokeActionRule);
                     return invokeAction.execute(activity);
                 });
                 return success(result != null ? result.toString() : null);
-            } finally {
-                activity.finish();
             }
         } catch (Exception e) {
             return failed(e);
