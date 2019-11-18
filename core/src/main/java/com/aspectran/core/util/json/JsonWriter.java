@@ -154,7 +154,6 @@ public class JsonWriter implements Flushable, Closeable {
             writeValue((Number)object);
         } else if (object instanceof Parameters) {
             beginBlock();
-
             Map<String, ParameterValue> params = ((Parameters)object).getParameterValueMap();
             for (Parameter p : params.values()) {
                 String name = p.getName();
@@ -164,11 +163,9 @@ public class JsonWriter implements Flushable, Closeable {
                 writeName(name);
                 write(value);
             }
-
             endBlock();
         } else if (object instanceof Map<?, ?>) {
             beginBlock();
-
             for (Map.Entry<Object, Object> entry : ((Map<Object, Object>)object).entrySet()) {
                 String name = entry.getKey().toString();
                 Object value = entry.getValue();
@@ -177,11 +174,9 @@ public class JsonWriter implements Flushable, Closeable {
                 writeName(name);
                 write(value);
             }
-
             endBlock();
         } else if (object instanceof Collection<?>) {
             beginArray();
-
             for (Object value : (Collection<Object>)object) {
                 checkCircularReference(object, value);
 
@@ -191,11 +186,9 @@ public class JsonWriter implements Flushable, Closeable {
                     writeNull(true);
                 }
             }
-
             endArray();
         } else if (object.getClass().isArray()) {
             beginArray();
-
             int len = Array.getLength(object);
             for (int i = 0; i < len; i++) {
                 Object value = Array.get(object, i);
@@ -207,7 +200,6 @@ public class JsonWriter implements Flushable, Closeable {
                     writeNull(true);
                 }
             }
-
             endArray();
         } else if (object instanceof Date) {
             if (dateTimeFormat != null) {
@@ -234,7 +226,6 @@ public class JsonWriter implements Flushable, Closeable {
             String[] readablePropertyNames = BeanUtils.getReadablePropertyNamesWithoutNonSerializable(object);
             if (readablePropertyNames != null && readablePropertyNames.length > 0) {
                 beginBlock();
-
                 for (String propertyName : readablePropertyNames) {
                     Object value;
                     try {
@@ -247,7 +238,6 @@ public class JsonWriter implements Flushable, Closeable {
                     writeName(propertyName);
                     write(value);
                 }
-
                 endBlock();
             } else {
                 writeValue(object.toString());
