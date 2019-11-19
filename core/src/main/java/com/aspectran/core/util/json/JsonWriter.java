@@ -20,11 +20,12 @@ import com.aspectran.core.util.BeanUtils;
 import com.aspectran.core.util.apon.Parameter;
 import com.aspectran.core.util.apon.ParameterValue;
 import com.aspectran.core.util.apon.Parameters;
-import com.aspectran.core.util.statistic.CounterStatistic;
 
+import java.io.BufferedReader;
 import java.io.Closeable;
 import java.io.Flushable;
 import java.io.IOException;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.reflect.Array;
@@ -35,9 +36,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Converts an object to a JSON formatted string.
@@ -51,6 +50,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class JsonWriter implements Flushable, Closeable {
 
     private static final String DEFAULT_INDENT_STRING = "  ";
+
+    private final ArrayStack<Boolean> writtenFlags = new ArrayStack<>();
 
     private final Writer out;
 
@@ -67,8 +68,6 @@ public class JsonWriter implements Flushable, Closeable {
     private int indentDepth;
 
     private String pendedName;
-
-    private final ArrayStack<AtomicInteger> countStack;
 
     /**
      * Instantiates a new JsonWriter.
@@ -88,11 +87,8 @@ public class JsonWriter implements Flushable, Closeable {
      */
     public JsonWriter(Writer out) {
         this.out = out;
-
         setIndentString(DEFAULT_INDENT_STRING);
-
-        countStack = new ArrayStack<>();
-        countStack.push(new AtomicInteger());
+        writtenFlags.push(false);
     }
 
     private void setIndentString(String indentString) {
@@ -135,9 +131,9 @@ public class JsonWriter implements Flushable, Closeable {
     }
 
     /**
-     * Write an object to a character stream.
+     * Writes an object to the writer.
      *
-     * @param object the object to write to a character-output stream.
+     * @param object the object to write to the writer.
      * @throws IOException if an I/O error has occurred.
      */
     @SuppressWarnings("unchecked")
@@ -153,7 +149,7 @@ public class JsonWriter implements Flushable, Closeable {
         } else if (object instanceof Number) {
             writeValue((Number)object);
         } else if (object instanceof Parameters) {
-            beginBlock();
+            beginObject();
             Map<String, ParameterValue> params = ((Parameters)object).getParameterValueMap();
             for (Parameter p : params.values()) {
                 String name = p.getName();
@@ -163,9 +159,9 @@ public class JsonWriter implements Flushable, Closeable {
                 writeName(name);
                 write(value);
             }
-            endBlock();
+            endObject();
         } else if (object instanceof Map<?, ?>) {
-            beginBlock();
+            beginObject();
             for (Map.Entry<Object, Object> entry : ((Map<Object, Object>)object).entrySet()) {
                 String name = entry.getKey().toString();
                 Object value = entry.getValue();
@@ -174,7 +170,7 @@ public class JsonWriter implements Flushable, Closeable {
                 writeName(name);
                 write(value);
             }
-            endBlock();
+            endObject();
         } else if (object instanceof Collection<?>) {
             beginArray();
             for (Object value : (Collection<Object>)object) {
@@ -225,7 +221,7 @@ public class JsonWriter implements Flushable, Closeable {
         } else {
             String[] readablePropertyNames = BeanUtils.getReadablePropertyNamesWithoutNonSerializable(object);
             if (readablePropertyNames != null && readablePropertyNames.length > 0) {
-                beginBlock();
+                beginObject();
                 for (String propertyName : readablePropertyNames) {
                     Object value;
                     try {
@@ -238,7 +234,7 @@ public class JsonWriter implements Flushable, Closeable {
                     writeName(propertyName);
                     write(value);
                 }
-                endBlock();
+                endObject();
             } else {
                 writeValue(object.toString());
             }
@@ -247,16 +243,16 @@ public class JsonWriter implements Flushable, Closeable {
     }
 
     /**
-     * Writes a key name to a character stream.
+     * Writes a key name to the writer.
      *
-     * @param name the string to write to a character-output stream
+     * @param name the string to write to the writer
      */
     public void writeName(String name) {
         pendedName = name;
     }
 
     private void writePendedName() throws IOException {
-        if (countStack.peek().get() > 0) {
+        if (writtenFlags.peek()) {
             writeComma();
         }
         if (pendedName != null) {
@@ -273,50 +269,50 @@ public class JsonWriter implements Flushable, Closeable {
     }
 
     /**
-     * Writes a string to a character stream.
+     * Writes a string to the writer.
      * If {@code value} is null, write a null string ("").
      *
-     * @param value the string to write to a character-output stream
+     * @param value the string to write to the writer
      * @throws IOException if an I/O error has occurred
      */
     public void writeValue(String value) throws IOException {
         if (!skipNull || value != null) {
             writePendedName();
             out.write(escape(value));
-            countStack.peek().incrementAndGet();
+            writtenFlags.update(true);
         }
     }
 
     /**
-     *  Writes a {@code Boolean} object to a character stream.
+     *  Writes a {@code Boolean} object to the writer.
      *
-     * @param value a {@code Boolean} object to write to a character-output stream
+     * @param value a {@code Boolean} object to write to the writer
      * @throws IOException if an I/O error has occurred
      */
     public void writeValue(Boolean value) throws IOException {
         if (!skipNull || value != null) {
             writePendedName();
             out.write(value.toString());
-            countStack.peek().incrementAndGet();
+            writtenFlags.update(true);
         }
     }
 
     /**
-     *  Writes a {@code Number} object to a character stream.
+     *  Writes a {@code Number} object to the writer.
      *
-     * @param value a {@code Number} object to write to a character-output stream
+     * @param value a {@code Number} object to write to the writer
      * @throws IOException if an I/O error has occurred
      */
     public void writeValue(Number value) throws IOException {
         if (!skipNull || value != null) {
             writePendedName();
             out.write(value.toString());
-            countStack.peek().incrementAndGet();
+            writtenFlags.update(true);
         }
     }
 
     /**
-     * Write a string "null" to a character stream.
+     * Writes a "null" string to the writer.
      *
      * @throws IOException if an I/O error has occurred
      */
@@ -324,16 +320,47 @@ public class JsonWriter implements Flushable, Closeable {
         writeNull(false);
     }
 
+    /**
+     * Writes a "null" string to the writer.
+     *
+     * @param force true if forces should be written null value
+     * @throws IOException if an I/O error has occurred
+     */
     public void writeNull(boolean force) throws IOException {
         if (!skipNull || force) {
             writePendedName();
             out.write("null");
-            countStack.peek().incrementAndGet();
+            writtenFlags.update(true);
         }
     }
 
     /**
-     * Write a comma character to a character stream.
+     * Writes a string directly to the writer stream without
+     * quoting or escaping.
+     *
+     * @param json the string to write to the writer
+     * @throws IOException if an I/O error has occurred
+     */
+    public void writeJson(String json) throws IOException {
+        if (!skipNull || json != null) {
+            writePendedName();
+            BufferedReader reader = new BufferedReader(new StringReader(json));
+            boolean first = true;
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (!first) {
+                    nextLine();
+                    indent();
+                }
+                out.write(line);
+                first = false;
+            }
+            writtenFlags.update(true);
+        }
+    }
+
+    /**
+     * Writes a comma character to the writer.
      *
      * @throws IOException if an I/O error has occurred
      */
@@ -343,35 +370,35 @@ public class JsonWriter implements Flushable, Closeable {
     }
 
     /**
-     * Open a single curly bracket.
+     * Begins encoding a new object.
      *
      * @throws IOException if an I/O error has occurred
      */
-    public void beginBlock() throws IOException {
+    public void beginObject() throws IOException {
         writePendedName();
         out.write("{");
         nextLine();
         indentDepth++;
-        countStack.push(new AtomicInteger());
+        writtenFlags.push(false);
     }
 
     /**
-     * Close the open curly bracket.
+     * Ends encoding the current object.
      *
      * @throws IOException if an I/O error has occurred
      */
-    public void endBlock() throws IOException {
+    public void endObject() throws IOException {
         indentDepth--;
-        if (countStack.pop().get() > 0) {
+        if (writtenFlags.pop()) {
             nextLine();
         }
         indent();
         out.write("}");
-        countStack.peek().incrementAndGet();
+        writtenFlags.update(true);
     }
 
     /**
-     * Open a single square bracket.
+     * Begins encoding a new array.
      *
      * @throws IOException if an I/O error has occurred
      */
@@ -380,26 +407,26 @@ public class JsonWriter implements Flushable, Closeable {
         out.write("[");
         nextLine();
         indentDepth++;
-        countStack.push(new AtomicInteger());
+        writtenFlags.push(false);
     }
 
     /**
-     * Close the open square bracket.
+     * Ends encoding the current array.
      *
      * @throws IOException if an I/O error has occurred
      */
     public void endArray() throws IOException {
         indentDepth--;
-        if (countStack.pop().get() > 0) {
+        if (writtenFlags.pop()) {
             nextLine();
         }
         indent();
         out.write("]");
-        countStack.peek().incrementAndGet();
+        writtenFlags.update(true);
     }
 
     /**
-     * Write a tab character to a character stream.
+     * Writes a tab character to the writer.
      *
      * @throws IOException if an I/O error has occurred
      */
@@ -412,7 +439,7 @@ public class JsonWriter implements Flushable, Closeable {
     }
 
     /**
-     * Write a new line character to a character stream.
+     * Writes a new line character to the writer.
      *
      * @throws IOException if an I/O error has occurred
      */
@@ -422,6 +449,12 @@ public class JsonWriter implements Flushable, Closeable {
         }
     }
 
+    /**
+     * Ensures all buffered data is written to the underlying
+     * {@link Writer} and flushes that writer.
+     *
+     * @throws IOException if an I/O error has occurred
+     */
     @Override
     public void flush() throws IOException {
         out.flush();

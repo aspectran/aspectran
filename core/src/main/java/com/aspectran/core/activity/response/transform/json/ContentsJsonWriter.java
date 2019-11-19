@@ -23,7 +23,6 @@ import com.aspectran.core.util.json.JsonWriter;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.Iterator;
 
 /**
  * Converts a ProcessResult object to a JSON formatted string.
@@ -55,13 +54,13 @@ public class ContentsJsonWriter extends JsonWriter {
     /**
      * Write a {@code ProcessResult} object to the character-output stream.
      *
-     * @param processResult the {@code ProcessResult} object to write to a character-output stream
+     * @param processResult the {@code ProcessResult} object to write to the writer
      * @throws IOException if an I/O error has occurred
      */
     public void write(ProcessResult processResult) throws IOException {
         Assert.notNull(processResult, "'processResult' must not be null");
         if (processResult.getName() != null) {
-            beginBlock();
+            beginObject();
             writeName(processResult.getName());
         }
         if (processResult.isEmpty()) {
@@ -77,19 +76,19 @@ public class ContentsJsonWriter extends JsonWriter {
             endArray();
         }
         if (processResult.getName() != null) {
-            endBlock();
+            endObject();
         }
     }
 
     /**
      * Write a {@code ContentResult} object to the character-output stream.
      *
-     * @param contentResult the {@code ContentResult} object to write to a character-output stream.
+     * @param contentResult the {@code ContentResult} object to write to the writer
      * @throws IOException if an I/O error has occurred
      */
     private void write(ContentResult contentResult) throws IOException {
         if (contentResult.getName() != null) {
-            beginBlock();
+            beginObject();
             writeName(contentResult.getName());
         }
         if (contentResult.isEmpty()) {
@@ -97,24 +96,24 @@ public class ContentsJsonWriter extends JsonWriter {
         } else if (contentResult.size() == 1) {
             ActionResult actionResult = contentResult.get(0);
             if (actionResult.getActionId() != null) {
-                beginBlock();
+                beginObject();
                 writeName(actionResult.getActionId());
                 write(actionResult.getResultValue());
-                endBlock();
+                endObject();
             } else {
                 write(actionResult.getResultValue());
             }
         } else {
-            beginBlock();
+            beginObject();
             for (String actionId : contentResult.getActionIds()) {
                 ActionResult actionResult = contentResult.getActionResult(actionId);
                 writeName(actionResult.getActionId());
                 write(actionResult.getResultValue());
             }
-            endBlock();
+            endObject();
         }
         if (contentResult.getName() != null) {
-            endBlock();
+            endObject();
         }
     }
 

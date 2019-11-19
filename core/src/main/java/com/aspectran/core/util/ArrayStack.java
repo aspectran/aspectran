@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import java.util.EmptyStackException;
 
 /**
+ * <p>This class is a clone of org.apache.commons.collections4.ArrayStack</p>
+ *
  * An implementation of the {@link java.util.Stack} API that is based on an
  * <code>ArrayList</code> instead of a <code>Vector</code>, so it is not
  * synchronized to protect against multi-threaded access.  The implementation
@@ -33,18 +35,11 @@ import java.util.EmptyStackException;
  * <p>
  * Unlike <code>Stack</code>, <code>ArrayStack</code> accepts null entries.
  * <p>
- * <strong>Note:</strong> this class should be bytecode-identical to the
- * version in commons collections. This is required to allow backwards
- * compatibility with both previous versions of BeanUtils and also allow
- * coexistence with both collections 2.1 and 3.0.
  *
- * @author Craig R. McClanahan
- * @author Paul Jack
- * @author Stephen Colebourne
+ * @param <E> the type of elements in this list
  * @see java.util.Stack
- * @since Commons Collections 1.0
  */
-public class ArrayStack<T> extends ArrayList<T> {
+public class ArrayStack<E> extends ArrayList<E> {
 
     /** Ensure serialization compatibility. */
     private static final long serialVersionUID = 4952513157310856314L;
@@ -73,7 +68,7 @@ public class ArrayStack<T> extends ArrayList<T> {
      * @return the top item on the stack
      * @throws EmptyStackException if the stack is empty
      */
-    public T peek() throws EmptyStackException {
+    public E peek() throws EmptyStackException {
         int n = size();
         if (n <= 0) {
             throw new EmptyStackException();
@@ -90,7 +85,7 @@ public class ArrayStack<T> extends ArrayList<T> {
      * @throws EmptyStackException if there are not enough items on the
      *  stack to satisfy this request
      */
-    public T peek(int n) throws EmptyStackException {
+    public E peek(int n) throws EmptyStackException {
         int m = (size() - n) - 1;
         if (m < 0) {
             throw new EmptyStackException();
@@ -98,9 +93,9 @@ public class ArrayStack<T> extends ArrayList<T> {
         return get(m);
     }
 
-    public T peek(Class<?> target) throws EmptyStackException {
+    public E peek(Class<?> target) throws EmptyStackException {
         for (int i = size() - 1; i >= 0; i--) {
-            T item = get(i);
+            E item = get(i);
             if (item.getClass().equals(target)) {
                 return item;
             }
@@ -114,7 +109,7 @@ public class ArrayStack<T> extends ArrayList<T> {
      * @return the top item on the stack
      * @throws EmptyStackException if the stack is empty
      */
-    public T pop() throws EmptyStackException {
+    public E pop() throws EmptyStackException {
         int n = size();
         if (n <= 0) {
             throw new EmptyStackException();
@@ -129,9 +124,40 @@ public class ArrayStack<T> extends ArrayList<T> {
      * @param item the item to be added
      * @return the item just pushed
      */
-    public T push(T item) {
+    public E push(E item) {
         add(item);
         return item;
+    }
+
+    /**
+     * Replaces the top item of this stack with another item without removing it.
+     *
+     * @return the top item previously on the stack
+     * @throws EmptyStackException if the stack is empty
+     */
+    public E update(E item) throws EmptyStackException {
+        int n = size();
+        if (n <= 0) {
+            throw new EmptyStackException();
+        }
+        return set(n - 1, item);
+    }
+
+    /**
+     * Replaces the n'th item down (zero-relative) from the top of this
+     * stack with another item without removing it.
+     *
+     * @param n the number of items down to go
+     * @return the n'th item previously on the stack, zero relative
+     * @throws EmptyStackException if there are not enough items on the
+     *  stack to satisfy this request
+     */
+    public E update(int n, E item) throws EmptyStackException {
+        int m = (size() - n) - 1;
+        if (m < 0) {
+            throw new EmptyStackException();
+        }
+        return set(m, item);
     }
 
     /**
@@ -145,7 +171,7 @@ public class ArrayStack<T> extends ArrayList<T> {
      * @param object the object to be searched for
      * @return the 1-based depth into the stack of the object, or -1 if not found
      */
-    public int search(T object) {
+    public int search(E object) {
         int i = size() - 1; // Current index
         int n = 1; // Current distance
         while (i >= 0) {

@@ -77,14 +77,14 @@ public class TransletInterpreter implements ActivityContextAware {
             }
 
             JsonWriter jsonWriter = new JsonWriter(translet.getResponseAdapter().getWriter());
-            jsonWriter.beginBlock();
+            jsonWriter.beginObject();
             jsonWriter.writeName("translet");
             jsonWriter.writeNull();
             jsonWriter.writeName("request");
             jsonWriter.writeNull();
             jsonWriter.writeName("response");
             jsonWriter.writeNull();
-            jsonWriter.endBlock();
+            jsonWriter.endObject();
             return;
         }
 
@@ -92,38 +92,38 @@ public class TransletInterpreter implements ActivityContextAware {
         ItemRuleMap attributeItemRuleMap = transletRule.getRequestRule().getAttributeItemRuleMap();
 
         JsonWriter jsonWriter = new JsonWriter(translet.getResponseAdapter().getWriter());
-        jsonWriter.beginBlock();
+        jsonWriter.beginObject();
         jsonWriter.writeName("translet");
         jsonWriter.write(toMap(transletRule));
         jsonWriter.writeName("request");
-        jsonWriter.beginBlock();
+        jsonWriter.beginObject();
         if (parameterItemRuleMap != null) {
             jsonWriter.writeName("parameters");
-            jsonWriter.beginBlock();
+            jsonWriter.beginObject();
             jsonWriter.writeName("items");
             jsonWriter.write(toListForItems(parameterItemRuleMap.values()));
             jsonWriter.writeName("tokens");
             jsonWriter.write(toListForTokens(parameterItemRuleMap.values()));
-            jsonWriter.endBlock();
+            jsonWriter.endObject();
         }
         if (attributeItemRuleMap != null) {
             jsonWriter.writeName("attributes");
-            jsonWriter.beginBlock();
+            jsonWriter.beginObject();
             jsonWriter.writeName("items");
             jsonWriter.write(toListForItems(attributeItemRuleMap.values()));
             jsonWriter.writeName("tokens");
             jsonWriter.write(toListForTokens(attributeItemRuleMap.values()));
-            jsonWriter.endBlock();
+            jsonWriter.endObject();
         }
-        jsonWriter.endBlock();
+        jsonWriter.endObject();
         jsonWriter.writeName("response");
-        jsonWriter.beginBlock();
+        jsonWriter.beginObject();
         if (transletRule.getResponseRule().getResponse() != null) {
             jsonWriter.writeName("contentType");
             jsonWriter.writeValue(transletRule.getResponseRule().getResponse().getContentType());
         }
-        jsonWriter.endBlock();
-        jsonWriter.endBlock();
+        jsonWriter.endObject();
+        jsonWriter.endObject();
     }
 
     @RequestToPost("/exec/@{_translet_}")
