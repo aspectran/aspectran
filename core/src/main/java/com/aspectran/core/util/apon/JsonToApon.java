@@ -77,15 +77,15 @@ public class JsonToApon {
 
     private static void convert(JsonReader reader, Parameters container, String name) throws IOException {
         switch (reader.peek()) {
-            case BEGIN_BLOCK:
-                reader.beginBlock();
+            case BEGIN_OBJECT:
+                reader.beginObject();
                 if (name != null) {
                     container = container.newParameters(name);
                 }
                 while (reader.hasNext()) {
                     convert(reader, container, reader.nextName());
                 }
-                reader.endBlock();
+                reader.endObject();
                 return;
             case BEGIN_ARRAY:
                 reader.beginArray();
