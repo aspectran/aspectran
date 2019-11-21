@@ -63,11 +63,13 @@ public abstract class ActivityContextAwareEndpoint implements ActivityContextAwa
         return getActivityContext().getMessageSource();
     }
 
-    public void instantActivity(InstantAction action) {
-        if (action != null) {
-            try (InstantActivity activity = new InstantActivity(getActivityContext())) {
-                activity.perform(action);
-            }
+    @SuppressWarnings("unchecked")
+    public <T> T instantActivity(InstantAction action) {
+        if (action == null) {
+            throw new IllegalArgumentException("action must not be null");
+        }
+        try (InstantActivity activity = new InstantActivity(getActivityContext())) {
+            return (T)activity.perform(action);
         }
     }
 

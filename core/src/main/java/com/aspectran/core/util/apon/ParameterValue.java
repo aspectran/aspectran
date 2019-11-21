@@ -28,7 +28,7 @@ public class ParameterValue implements Parameter {
 
     private final String name;
 
-    private final ValueType originParameterValueType;
+    private final ValueType originValueType;
 
     private ValueType valueType;
 
@@ -65,7 +65,7 @@ public class ParameterValue implements Parameter {
                              boolean noBracket, boolean valueTypeFixed) {
         this.name = name;
         this.valueType = valueType;
-        this.originParameterValueType = valueType;
+        this.originValueType = valueType;
         this.array = array;
         this.valueTypeFixed = (valueTypeFixed && valueType != ValueType.VARIABLE);
         if (this.array && !noBracket) {
@@ -91,7 +91,7 @@ public class ParameterValue implements Parameter {
                              boolean array, boolean noBracket, boolean valueTypeFixed) {
         this.name = name;
         this.valueType = ValueType.PARAMETERS;
-        this.originParameterValueType = valueType;
+        this.originValueType = valueType;
         this.parametersClass = parametersClass;
         this.array = array;
         this.valueTypeFixed = valueTypeFixed;
@@ -251,7 +251,7 @@ public class ParameterValue implements Parameter {
     @Override
     public List<?> getValueList() {
         if (!valueTypeFixed && value != null && list == null &&
-                originParameterValueType == ValueType.VARIABLE) {
+                originValueType == ValueType.VARIABLE) {
             addValue(value);
         }
         return list;
@@ -458,10 +458,14 @@ public class ParameterValue implements Parameter {
             if (value.toString().indexOf(AponFormat.NEW_LINE_CHAR) != -1) {
                 valueType = ValueType.TEXT;
             }
-        } else if (valueType == ValueType.VARIABLE && value instanceof String) {
-            if (value.toString().indexOf(AponFormat.NEW_LINE_CHAR) != -1) {
-                valueType = ValueType.TEXT;
-            } else {
+        } else if (valueType == ValueType.VARIABLE) {
+            if (value instanceof CharSequence) {
+                if (value.toString().indexOf(AponFormat.NEW_LINE_CHAR) != -1) {
+                    valueType = ValueType.TEXT;
+                } else {
+                    valueType = ValueType.STRING;
+                }
+            } else if (value instanceof Character) {
                 valueType = ValueType.STRING;
             }
         }

@@ -29,6 +29,7 @@ public enum ValueType {
     FLOAT("float"),
     DOUBLE("double"),
     BOOLEAN("boolean"),
+    OBJECT("object"),
     VARIABLE("variable"),
     PARAMETERS("parameters");
 
@@ -44,7 +45,7 @@ public enum ValueType {
     }
 
     /**
-     * Returns a ParameterValueType with a value represented by the specified String.
+     * Returns a ValueType with a value represented by the specified String.
      *
      * @param alias the specified String
      * @return the parameter value type
@@ -80,12 +81,14 @@ public enum ValueType {
 
     public static ValueType determineValueType(Object value) {
         ValueType type;
-        if (value instanceof String) {
+        if (value instanceof CharSequence) {
             if (value.toString().indexOf(AponFormat.NEW_LINE_CHAR) == -1) {
                 type = ValueType.STRING;
             } else {
                 type = ValueType.TEXT;
             }
+        } else if (value instanceof Character) {
+            type = ValueType.STRING;
         } else if (value instanceof Integer) {
             type = ValueType.INT;
         } else if (value instanceof Long) {
@@ -99,7 +102,7 @@ public enum ValueType {
         } else if (value instanceof Parameters) {
             type = ValueType.PARAMETERS;
         } else {
-            type = ValueType.STRING;
+            type = ValueType.OBJECT;
         }
         return type;
     }

@@ -54,7 +54,8 @@ public class ParameterKey {
         this(name, null, valueType, array, noBrackets);
     }
 
-    public ParameterKey(String name, String[] altNames, ValueType valueType, boolean array, boolean noBrackets) {
+    public ParameterKey(String name, String[] altNames, ValueType valueType, boolean array,
+                        boolean noBrackets) {
         this.name = name;
         this.altNames = altNames;
         this.valueType = valueType;
@@ -75,15 +76,18 @@ public class ParameterKey {
         this(name, null, parametersClass, array);
     }
 
-    public ParameterKey(String name, String[] altNames, Class<? extends AbstractParameters> parametersClass, boolean array) {
+    public ParameterKey(String name, String[] altNames, Class<? extends AbstractParameters> parametersClass,
+                        boolean array) {
         this(name, altNames, parametersClass, array, false);
     }
 
-    public ParameterKey(String name, Class<? extends AbstractParameters> parametersClass, boolean array, boolean noBrackets) {
+    public ParameterKey(String name, Class<? extends AbstractParameters> parametersClass, boolean array,
+                        boolean noBrackets) {
         this(name, null, parametersClass, array, noBrackets);
     }
 
-    public ParameterKey(String name, String[] altNames, Class<? extends AbstractParameters> parametersClass, boolean array, boolean noBrackets) {
+    public ParameterKey(String name, String[] altNames, Class<? extends AbstractParameters> parametersClass,
+                        boolean array, boolean noBrackets) {
         this.name = name;
         this.altNames = altNames;
         this.valueType = ValueType.PARAMETERS;
