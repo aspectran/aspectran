@@ -39,7 +39,7 @@
 
     <properties>
         <main.basedir>${project.parent.basedir}</main.basedir>
-        <jetty.version>9.4.23.v20191118</jetty.version>
+        <jetty.version>9.4.24.v20191120</jetty.version>
     </properties>
 
     <dependencies>
