@@ -30,7 +30,7 @@ public class WildcardPointcut extends AbstractPointcut {
 
     private static final String OR_MATCH_DELIMITER = "|";
 
-    private final Map<String, WildcardPattern> cache = new ConcurrentReferenceHashMap<>(256);
+    private final Map<String, WildcardPattern> cache = new ConcurrentReferenceHashMap<>();
 
     public WildcardPointcut(List<PointcutPatternRule> pointcutPatternRuleList) {
         super(pointcutPatternRuleList);

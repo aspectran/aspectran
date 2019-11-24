@@ -28,7 +28,7 @@ import java.util.regex.Pattern;
  */
 public class RegexpPointcut extends AbstractPointcut {
 
-    private final Map<String, Pattern> cache = new ConcurrentReferenceHashMap<>(256);
+    private final Map<String, Pattern> cache = new ConcurrentReferenceHashMap<>();
 
     public RegexpPointcut(List<PointcutPatternRule> pointcutPatternRuleList) {
         super(pointcutPatternRuleList);
