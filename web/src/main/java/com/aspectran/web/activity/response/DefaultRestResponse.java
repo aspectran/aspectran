@@ -52,6 +52,8 @@ public class DefaultRestResponse extends AbstractRestResponse {
     private static final List<MediaType> supportedContentTypes;
     static {
         List<MediaType> contentTypes = new ArrayList<>();
+        contentTypes.add(MediaType.TEXT_PLAIN);
+        contentTypes.add(MediaType.TEXT_HTML);
         contentTypes.add(MediaType.APPLICATION_JSON);
         contentTypes.add(MediaType.APPLICATION_APON);
         contentTypes.add(MediaType.APPLICATION_XML);
@@ -64,6 +66,9 @@ public class DefaultRestResponse extends AbstractRestResponse {
         pathExtensions.put("json", MediaType.APPLICATION_JSON);
         pathExtensions.put("apon", MediaType.APPLICATION_APON);
         pathExtensions.put("xml", MediaType.APPLICATION_XML);
+        pathExtensions.put("txt", MediaType.TEXT_PLAIN);
+        pathExtensions.put("html", MediaType.TEXT_HTML);
+        pathExtensions.put("htm", MediaType.TEXT_HTML);
         supportedPathExtensions = Collections.unmodifiableMap(pathExtensions);
     }
 
@@ -125,6 +130,8 @@ public class DefaultRestResponse extends AbstractRestResponse {
             toAPON(activity, parseIndent(contentType));
         } else if (MediaType.APPLICATION_XML.equalsTypeAndSubtype(contentType)) {
             toXML(activity, encoding, parseIndent(contentType));
+        } else {
+            toText(activity);
         }
     }
 
@@ -219,6 +226,20 @@ public class DefaultRestResponse extends AbstractRestResponse {
                         writer, encoding, formattingContext);
             } else {
                 XmlTransformResponse.transform(getData(), writer, encoding, formattingContext);
+            }
+        }
+    }
+
+    private void toText(Activity activity) throws IOException {
+        if (getName() != null || getData() != null) {
+            ResponseAdapter responseAdapter = activity.getResponseAdapter();
+            Writer writer = responseAdapter.getWriter();
+            if (getName() != null) {
+                writer.write(getName());
+                writer.write(": ");
+            }
+            if (getData() != null) {
+                writer.write(getData().toString());
             }
         }
     }

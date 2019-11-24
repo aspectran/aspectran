@@ -337,15 +337,15 @@ public abstract class AbstractRestResponse implements RestResponse {
         }
         if (!isIgnoreAcceptHeader()) {
             List<MediaType> contentTypes = RequestHeaderParser.resolveAcceptContentTypes(activity.getRequestAdapter());
-            for (MediaType mediaType : contentTypes) {
-                if (mediaType.equalsTypeAndSubtype(MediaType.ALL) && getDefaultContentType() != null) {
+            for (MediaType contentType : contentTypes) {
+                if (contentType.equalsTypeAndSubtype(MediaType.ALL) && getDefaultContentType() != null) {
                     if (getSupportedContentTypes().contains(getDefaultContentType())) {
                         return getDefaultContentType();
                     }
                 }
                 for (MediaType supportedContentType : getSupportedContentTypes()) {
-                    if (mediaType.includes(supportedContentType)) {
-                        return mediaType;
+                    if (contentType.includes(supportedContentType)) {
+                        return supportedContentType;
                     }
                 }
             }
