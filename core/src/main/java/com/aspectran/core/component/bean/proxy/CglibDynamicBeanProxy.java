@@ -60,6 +60,7 @@ public class CglibDynamicBeanProxy extends AbstractDynamicBeanProxy implements M
         String beanId = StringUtils.nullToEmpty(beanRule.getId());
         String className = StringUtils.nullToEmpty(beanRule.getClassName());
         String methodName = method.getName();
+
         AspectAdviceRuleRegistry aarr = retrieveAspectAdviceRuleRegistry(activity, transletName, beanId, className, methodName);
         if (aarr == null) {
             return methodProxy.invokeSuper(proxy, args);

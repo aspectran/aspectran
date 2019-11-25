@@ -812,7 +812,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
             throw new IllegalRuleException("No scope type for '" + scope + "'");
         }
         if (scopeType == null) {
-            scopeType = (singleton == null || singleton == Boolean.TRUE) ? ScopeType.SINGLETON : ScopeType.PROTOTYPE;
+            scopeType = (singleton == null || singleton == Boolean.TRUE ? ScopeType.SINGLETON : ScopeType.PROTOTYPE);
         }
 
         BeanRule beanRule = new BeanRule();

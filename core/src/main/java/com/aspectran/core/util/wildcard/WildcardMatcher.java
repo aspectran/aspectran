@@ -22,7 +22,7 @@ import com.aspectran.core.util.StringUtils;
  */
 public class WildcardMatcher {
 
-    private WildcardPattern pattern;
+    private final WildcardPattern pattern;
 
     private CharSequence input;
 

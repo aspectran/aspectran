@@ -146,31 +146,31 @@ public class PointcutPatternRule {
 
     public static String combinePattern(String transletName, String beanId, String className, String methodName) {
         int len = 0;
-        if (transletName != null) {
+        if (transletName != null && transletName.length() > 0) {
             len += transletName.length();
         }
-        if (beanId != null) {
+        if (beanId != null && beanId.length() > 0) {
             len += beanId.length() + 1;
-        } else if (className != null) {
+        } else if (className != null && className.length() > 0) {
             len += className.length() + 7;
         }
-        if (methodName != null) {
+        if (methodName != null && methodName.length() > 0) {
             len += methodName.length() + 1;
         }
 
         StringBuilder sb = new StringBuilder(len);
-        if (transletName != null) {
+        if (transletName != null && transletName.length() > 0) {
             sb.append(transletName);
         }
-        if (beanId != null) {
+        if (beanId != null && beanId.length() > 0) {
             sb.append(POINTCUT_BEAN_CLASS_DELIMITER);
             sb.append(beanId);
-        } else if (className != null) {
+        } else if (className != null && className.length() > 0) {
             sb.append(POINTCUT_BEAN_CLASS_DELIMITER);
             sb.append(BeanRule.CLASS_DIRECTIVE_PREFIX);
             sb.append(className);
         }
-        if (methodName != null) {
+        if (methodName != null && methodName.length() > 0) {
             sb.append(POINTCUT_METHOD_NAME_DELIMITER);
             sb.append(methodName);
         }

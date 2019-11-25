@@ -28,7 +28,6 @@ import com.aspectran.core.context.rule.PointcutPatternRule;
 import com.aspectran.core.context.rule.SettingsAdviceRule;
 import com.aspectran.core.context.rule.type.JoinpointTargetType;
 import com.aspectran.core.util.ConcurrentReferenceHashMap;
-import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
@@ -80,8 +79,7 @@ public abstract class AbstractDynamicBeanProxy {
 
     private RelevantAspectRuleHolder getRelevantAspectRuleHolder(
             String transletName, String beanId, String className, String methodName) {
-        String pattern = PointcutPatternRule.combinePattern(transletName,
-                StringUtils.emptyToNull(beanId), StringUtils.emptyToNull(className), methodName);
+        String pattern = PointcutPatternRule.combinePattern(transletName, beanId, className, methodName);
         RelevantAspectRuleHolder holder = cache.get(pattern);
         if (holder == null) {
             holder = createRelevantAspectRuleHolder(transletName, beanId, className, methodName);

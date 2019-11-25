@@ -61,6 +61,7 @@ public class JavassistDynamicBeanProxy extends AbstractDynamicBeanProxy implemen
         String beanId = StringUtils.nullToEmpty(beanRule.getId());
         String className = StringUtils.nullToEmpty(beanRule.getClassName());
         String methodName = overridden.getName();
+
         AspectAdviceRuleRegistry aarr = retrieveAspectAdviceRuleRegistry(activity, transletName, beanId, className, methodName);
         if (aarr == null) {
             return proceed.invoke(self, args);
