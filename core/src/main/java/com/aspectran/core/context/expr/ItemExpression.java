@@ -203,7 +203,7 @@ public class ItemExpression extends TokenExpression implements ItemEvaluator {
 
     private Object evaluate(Token[] tokens, ItemValueType valueType) throws Exception {
         Object value = evaluate(tokens);
-        return ((value == null || valueType == null) ? value : valuelize(value, valueType));
+        return (value == null || valueType == null ? value : valuelize(value, valueType));
     }
 
     @SuppressWarnings("all")
