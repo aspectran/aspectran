@@ -79,7 +79,7 @@ class CommandTest {
 
     @Test
     void testPBEncryptCommand2() throws Exception {
-        System.setProperty(PBEncryptionUtils.ENCRYPTION_PASSWORD_KEY, "password");
+        System.setProperty(PBEncryptionUtils.ENCRYPTION_PASSWORD_KEY, "encryption-password-for-test");
 
         PBEncryptCommand command = new PBEncryptCommand(interpreter.getCommandRegistry());
         getConsole().writeLine(command.getDescriptor().getDescription());
@@ -90,7 +90,7 @@ class CommandTest {
 
     @Test
     void testPBDecryptCommand2() throws Exception {
-        System.setProperty(PBEncryptionUtils.ENCRYPTION_PASSWORD_KEY, "password");
+        System.setProperty(PBEncryptionUtils.ENCRYPTION_PASSWORD_KEY, "encryption-password-for-test");
 
         PBDecryptCommand command = new PBDecryptCommand(interpreter.getCommandRegistry());
         getConsole().writeLine(command.getDescriptor().getDescription());

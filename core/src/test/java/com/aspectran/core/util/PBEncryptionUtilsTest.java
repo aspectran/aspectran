@@ -36,7 +36,7 @@ class PBEncryptionUtilsTest {
     void saveProperties() {
         oldPassword = System.getProperty(PBEncryptionUtils.ENCRYPTION_PASSWORD_KEY);
         oldAlgorithm = System.getProperty(PBEncryptionUtils.ENCRYPTION_ALGORITHM_KEY);
-        System.setProperty(PBEncryptionUtils.ENCRYPTION_PASSWORD_KEY, "abcd1234()");
+        System.setProperty(PBEncryptionUtils.ENCRYPTION_PASSWORD_KEY, "encryption-password-for-test");
     }
 
     @AfterAll

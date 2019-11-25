@@ -13,29 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.util;
+package com.aspectran.core.util.security;
 
+import com.aspectran.core.util.PBEncryptionUtils;
+import com.aspectran.core.util.apon.Parameters;
+import com.aspectran.core.util.apon.VariableParameters;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
-import java.io.IOException;
-import java.util.Properties;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
- * <p>Created: 21/10/2018</p>
+ * <p>Created: 2019/11/25</p>
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class PropertiesLoaderUtilsTest {
+class TimeLimitedPBTokenIssuerTest {
 
     private String oldPassword;
+
+    private String oldAlgorithm;
 
     @BeforeAll
     void saveProperties() {
         oldPassword = System.getProperty(PBEncryptionUtils.ENCRYPTION_PASSWORD_KEY);
+        oldAlgorithm = System.getProperty(PBEncryptionUtils.ENCRYPTION_ALGORITHM_KEY);
+        System.setProperty(PBEncryptionUtils.ENCRYPTION_PASSWORD_KEY, "encryption-password-for-test");
     }
 
     @AfterAll
@@ -45,14 +49,24 @@ class PropertiesLoaderUtilsTest {
         } else {
             System.setProperty(PBEncryptionUtils.ENCRYPTION_PASSWORD_KEY, oldPassword);
         }
+        if (oldAlgorithm == null) {
+            System.clearProperty(PBEncryptionUtils.ENCRYPTION_ALGORITHM_KEY);
+        } else {
+            System.setProperty(PBEncryptionUtils.ENCRYPTION_ALGORITHM_KEY, oldAlgorithm);
+        }
     }
 
     @Test
-    void testLoadProperties() throws IOException {
+    void testTimeLimitedPBToken() throws InvalidPBTokenException {
         System.setProperty(PBEncryptionUtils.ENCRYPTION_PASSWORD_KEY, "encryption-password-for-test");
-        Properties props = PropertiesLoaderUtils.loadProperties("test.encrypted.properties");
-        assertEquals(props.getProperty("name"), "Aspectran");
-        assertEquals(props.getProperty("passwd"), "1234");
+
+        Parameters params = new VariableParameters();
+        params.putValue("p1", "v1");
+        params.putValue("p2", "v2");
+        params.putValue("p3", "v3");
+        String token = TimeLimitedPBTokenIssuer.getToken(params);
+        Parameters params2 = TimeLimitedPBTokenIssuer.getPayload(token);
+        assertEquals(params.toString(), params2.toString());
     }
 
 }
