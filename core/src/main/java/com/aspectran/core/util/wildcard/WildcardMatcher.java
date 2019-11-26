@@ -17,6 +17,14 @@ package com.aspectran.core.util.wildcard;
 
 import com.aspectran.core.util.StringUtils;
 
+import static com.aspectran.core.util.wildcard.WildcardPattern.EOT_TYPE;
+import static com.aspectran.core.util.wildcard.WildcardPattern.LITERAL_TYPE;
+import static com.aspectran.core.util.wildcard.WildcardPattern.PLUS_TYPE;
+import static com.aspectran.core.util.wildcard.WildcardPattern.QUESTION_TYPE;
+import static com.aspectran.core.util.wildcard.WildcardPattern.SEPARATOR_TYPE;
+import static com.aspectran.core.util.wildcard.WildcardPattern.STAR_STAR_TYPE;
+import static com.aspectran.core.util.wildcard.WildcardPattern.STAR_TYPE;
+
 /**
  * Checks whether a string matches a given wildcard pattern.
  */
@@ -54,9 +62,7 @@ public class WildcardMatcher {
 
         this.input = input;
         separatorFlags = new int[input.length()];
-
         boolean result = matches(pattern, input, separatorFlags);
-
         if (result) {
             for (int i = separatorFlags.length - 1; i >= 0; i--) {
                 if (separatorFlags[i] > 0) {
@@ -65,7 +71,6 @@ public class WildcardMatcher {
                 }
             }
         }
-
         return result;
     }
 
@@ -193,7 +198,7 @@ public class WildcardMatcher {
      * Checks whether a string matches a given wildcard pattern.
      *
      * @param pattern the pattern to match
-     * @param input the input string
+     * @param input the character sequence to be matched
      * @return {@code true} if string matches the pattern, otherwise {@code false}
      */
     public static boolean matches(WildcardPattern pattern, CharSequence input) {
@@ -204,8 +209,18 @@ public class WildcardMatcher {
         if (pattern == null) {
             throw new IllegalArgumentException("pattern must not be null");
         }
+
         if (input == null) {
-            throw new IllegalArgumentException("input must not be null");
+            char[] tokens = pattern.getTokens();
+            int[] types = pattern.getTypes();
+            for (int i = 0; i < tokens.length; i++) {
+                if (types[i] == LITERAL_TYPE
+                        || types[i] == PLUS_TYPE
+                        || types[i] == SEPARATOR_TYPE) {
+                    return false;
+                }
+            }
+            return true;
         }
 
         char[] tokens = pattern.getTokens();
@@ -232,17 +247,17 @@ public class WildcardMatcher {
         int scnt2;
 
         while (tidx < tlen && cidx < clen) {
-            if (types[tidx] == WildcardPattern.LITERAL_TYPE) {
+            if (types[tidx] == LITERAL_TYPE) {
                 if (tokens[tidx++] != input.charAt(cidx++)) {
                     return false;
                 }
-            } else if (types[tidx] == WildcardPattern.STAR_TYPE) {
+            } else if (types[tidx] == STAR_TYPE) {
                 trng1 = tidx + 1;
                 if (trng1 < tlen) {
                     trng2 = trng1;
                     for (; trng2 < tlen; trng2++) {
-                        if (types[trng2] == WildcardPattern.EOT_TYPE
-                                || types[trng2] != WildcardPattern.LITERAL_TYPE) {
+                        if (types[trng2] == EOT_TYPE
+                                || types[trng2] != LITERAL_TYPE) {
                             break;
                         }
                     }
@@ -280,17 +295,17 @@ public class WildcardMatcher {
                     }
                     tidx++;
                 }
-            } else if (types[tidx] == WildcardPattern.STAR_STAR_TYPE) {
+            } else if (types[tidx] == STAR_STAR_TYPE) {
                 if (sepa > 0) {
                     trng1 = -1;
                     trng2 = -1;
                     for (ttmp = tidx + 1; ttmp < tlen; ttmp++) {
                         if (trng1 == -1) {
-                            if (types[ttmp] == WildcardPattern.LITERAL_TYPE) {
+                            if (types[ttmp] == LITERAL_TYPE) {
                                 trng1 = ttmp;
                             }
                         } else {
-                            if (types[ttmp] != WildcardPattern.LITERAL_TYPE) {
+                            if (types[ttmp] != LITERAL_TYPE) {
                                 trng2 = ttmp - 1;
                                 break;
                             }
@@ -327,7 +342,7 @@ public class WildcardMatcher {
                         tidx++;
                         scnt1 = 0;
                         for (ttmp = tidx; ttmp < tlen; ttmp++) {
-                            if (types[ttmp] == WildcardPattern.SEPARATOR_TYPE) {
+                            if (types[ttmp] == SEPARATOR_TYPE) {
                                 scnt1++;
                             }
                         }
@@ -362,9 +377,9 @@ public class WildcardMatcher {
                     cidx = clen; //complete
                     tidx++;
                 }
-            } else if (types[tidx] == WildcardPattern.QUESTION_TYPE) {
+            } else if (types[tidx] == QUESTION_TYPE) {
                 if (tidx > tlen - 1
-                        || types[tidx + 1] != WildcardPattern.LITERAL_TYPE
+                        || types[tidx + 1] != LITERAL_TYPE
                         || tokens[tidx + 1] != input.charAt(cidx)) {
                     if (sepa > 0) {
                         if (input.charAt(cidx) != sepa) {
@@ -375,7 +390,7 @@ public class WildcardMatcher {
                     }
                 }
                 tidx++;
-            } else if (types[tidx] == WildcardPattern.PLUS_TYPE) {
+            } else if (types[tidx] == PLUS_TYPE) {
                 if (sepa > 0) {
                     if (input.charAt(cidx) == sepa) {
                         return false;
@@ -383,14 +398,14 @@ public class WildcardMatcher {
                 }
                 cidx++;
                 tidx++;
-            } else if (types[tidx] == WildcardPattern.SEPARATOR_TYPE) {
+            } else if (types[tidx] == SEPARATOR_TYPE) {
                 if (tokens[tidx++] != input.charAt(cidx++)) {
                     return false;
                 }
                 if (separatorFlags != null) {
                     separatorFlags[cidx - 1] = ++sepaCnt;
                 }
-            } else if (types[tidx] == WildcardPattern.EOT_TYPE) {
+            } else if (types[tidx] == EOT_TYPE) {
                 break;
             } else {
                 tidx++;
@@ -403,9 +418,9 @@ public class WildcardMatcher {
 
         if (tidx < tlen) {
             for (ttmp = tidx; ttmp < tlen; ttmp++) {
-                if (types[ttmp] == WildcardPattern.LITERAL_TYPE
-                        || types[ttmp] == WildcardPattern.PLUS_TYPE
-                        || types[ttmp] == WildcardPattern.SEPARATOR_TYPE) {
+                if (types[ttmp] == LITERAL_TYPE
+                        || types[ttmp] == PLUS_TYPE
+                        || types[ttmp] == SEPARATOR_TYPE) {
                     return false;
                 }
             }

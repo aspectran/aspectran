@@ -20,14 +20,12 @@ import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.apon.AponReader;
 import com.aspectran.core.util.apon.Parameters;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
-
 /**
  * Time-limited, password based token issuer.
  */
 public class TimeLimitedPBTokenIssuer extends PBTokenIssuer {
+
+    private static final String PAYLOAD_SEPARATOR = "_";
 
     private static final long DEFAULT_EXPIRATION_TIME = 1000 * 30;
 
@@ -46,7 +44,9 @@ public class TimeLimitedPBTokenIssuer extends PBTokenIssuer {
         long time = System.currentTimeMillis() + expirationTime;
         String encodedTime = encode(PBEncryptionUtils.encrypt(Long.toString(time)));
         if (payload != null) {
-            return encode(encodedTime + "_" + encode(PBEncryptionUtils.encrypt(payload.toString())));
+            String combined = encodedTime + PAYLOAD_SEPARATOR +
+                    encode(PBEncryptionUtils.encrypt(payload.toString()));
+            return encode(combined);
         } else {
             return encodedTime;
         }
@@ -66,7 +66,7 @@ public class TimeLimitedPBTokenIssuer extends PBTokenIssuer {
         long time;
         String payload;
         try {
-            String[] arr = StringUtils.split(decode(token), "_");
+            String[] arr = StringUtils.split(decode(token), PAYLOAD_SEPARATOR);
             if (arr.length == 2) {
                 time = Long.parseLong(PBEncryptionUtils.decrypt(decode(arr[0])));
                 payload = PBEncryptionUtils.decrypt(decode(arr[1]));

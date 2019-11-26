@@ -38,11 +38,13 @@ public class WildcardPointcut extends AbstractPointcut {
 
     @Override
     public boolean patternMatches(String pattern, String compareString) {
+        if (pattern == null) {
+            throw new IllegalArgumentException("pattern must not be null");
+        }
         if (pattern.contains(OR_MATCH_DELIMITER)) {
             StringTokenizer parser = new StringTokenizer(pattern, OR_MATCH_DELIMITER);
             while (parser.hasMoreTokens()) {
-                String patternToken = parser.nextToken();
-                if (wildcardPatternMatches(patternToken, compareString)) {
+                if (wildcardPatternMatches(parser.nextToken(), compareString)) {
                     return true;
                 }
             }
@@ -54,11 +56,13 @@ public class WildcardPointcut extends AbstractPointcut {
 
     @Override
     public boolean patternMatches(String pattern, String compareString, char separator) {
+        if (pattern == null) {
+            throw new IllegalArgumentException("pattern must not be null");
+        }
         if (pattern.contains(OR_MATCH_DELIMITER)) {
             StringTokenizer parser = new StringTokenizer(pattern, OR_MATCH_DELIMITER);
             while (parser.hasMoreTokens()) {
-                String patternToken = parser.nextToken();
-                if (wildcardPatternMatches(patternToken, compareString, separator)) {
+                if (wildcardPatternMatches(parser.nextToken(), compareString, separator)) {
                     return true;
                 }
             }
@@ -85,6 +89,10 @@ public class WildcardPointcut extends AbstractPointcut {
     }
 
     private boolean wildcardPatternMatches(String pattern, String compareString, char separator) {
+        if (pattern.indexOf(separator) == -1 && !WildcardPattern.hasWildcards(pattern)) {
+            return pattern.equals(compareString);
+        }
+
         String patternKey = pattern + separator;
         WildcardPattern wildcardPattern = cache.get(patternKey);
         if (wildcardPattern == null) {

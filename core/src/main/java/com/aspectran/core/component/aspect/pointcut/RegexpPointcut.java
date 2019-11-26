@@ -36,6 +36,9 @@ public class RegexpPointcut extends AbstractPointcut {
 
     @Override
     public boolean patternMatches(String regex, String compareString) {
+        if (regex == null) {
+            throw new IllegalArgumentException("regex must not be null");
+        }
         Pattern pattern = cache.get(regex);
         if (pattern == null) {
             pattern = Pattern.compile(regex);

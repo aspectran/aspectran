@@ -21,29 +21,27 @@ import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.ExceptionRule;
-import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
-import javassist.util.proxy.MethodHandler;
-import javassist.util.proxy.ProxyFactory;
+import net.sf.cglib.proxy.Enhancer;
+import net.sf.cglib.proxy.MethodInterceptor;
+import net.sf.cglib.proxy.MethodProxy;
 
 import java.lang.reflect.Method;
 import java.util.List;
 
 /**
- * The Class JavassistDynamicBeanProxy.
- *
- * @since 1.1.0
+ * Create an instance of the dynamic proxy bean using CGLIB.
  */
-public class JavassistDynamicBeanProxy extends AbstractDynamicBeanProxy implements MethodHandler  {
+public class CglibDynamicProxyBean extends AbstractDynamicProxyBean implements MethodInterceptor {
 
-    private static final Log log = LogFactory.getLog(JavassistDynamicBeanProxy.class);
+    private static final Log log = LogFactory.getLog(CglibDynamicProxyBean.class);
 
     private final ActivityContext context;
 
     private final BeanRule beanRule;
 
-    private JavassistDynamicBeanProxy(ActivityContext context, BeanRule beanRule) {
+    private CglibDynamicProxyBean(ActivityContext context, BeanRule beanRule) {
         super(context.getAspectRuleRegistry());
 
         this.context = context;
@@ -51,20 +49,20 @@ public class JavassistDynamicBeanProxy extends AbstractDynamicBeanProxy implemen
     }
 
     @Override
-    public Object invoke(Object self, Method overridden, Method proceed, Object[] args) throws Throwable {
-        if (isAvoidAdvice(overridden)) {
-            return proceed.invoke(self, args);
+    public Object intercept(Object proxy, Method method, Object[] args, MethodProxy methodProxy) throws Throwable {
+        if (isAvoidAdvice(method)) {
+            return methodProxy.invokeSuper(proxy, args);
         }
 
         Activity activity = context.getCurrentActivity();
-        String transletName = (activity.getTranslet() != null ? activity.getTranslet().getRequestName() : StringUtils.EMPTY);
-        String beanId = StringUtils.nullToEmpty(beanRule.getId());
-        String className = StringUtils.nullToEmpty(beanRule.getClassName());
-        String methodName = overridden.getName();
+        String transletName = (activity.getTranslet() != null ? activity.getTranslet().getRequestName() : null);
+        String beanId = beanRule.getId();
+        String className = beanRule.getClassName();
+        String methodName = method.getName();
 
-        AspectAdviceRuleRegistry aarr = retrieveAspectAdviceRuleRegistry(activity, transletName, beanId, className, methodName);
+        AspectAdviceRuleRegistry aarr = getAspectAdviceRuleRegistry(activity, transletName, beanId, className, methodName);
         if (aarr == null) {
-            return proceed.invoke(self, args);
+            return methodProxy.invokeSuper(proxy, args);
         }
 
         try {
@@ -81,7 +79,7 @@ public class JavassistDynamicBeanProxy extends AbstractDynamicBeanProxy implemen
                     log.debug("Invoke a proxy method " + methodName + "() on the bean " + beanRule);
                 }
 
-                Object result = proceed.invoke(self, args);
+                Object result = methodProxy.invokeSuper(proxy, args);
 
                 if (aarr.getAfterAdviceRuleList() != null) {
                     for (AspectAdviceRule aspectAdviceRule : aarr.getAfterAdviceRuleList()) {
@@ -126,14 +124,11 @@ public class JavassistDynamicBeanProxy extends AbstractDynamicBeanProxy implemen
      * @return a new proxy bean object
      */
     public static Object newInstance(ActivityContext context, BeanRule beanRule, Object[] args, Class<?>[] argTypes) {
-        try {
-            ProxyFactory proxyFactory = new ProxyFactory();
-            proxyFactory.setSuperclass(beanRule.getBeanClass());
-            MethodHandler methodHandler = new JavassistDynamicBeanProxy(context, beanRule);
-            return proxyFactory.create(argTypes, args, methodHandler);
-        } catch (Exception e) {
-            throw new ProxyBeanInstantiationException(beanRule, e);
-        }
+        Enhancer enhancer = new Enhancer();
+        enhancer.setClassLoader(context.getApplicationAdapter().getClassLoader());
+        enhancer.setSuperclass(beanRule.getBeanClass());
+        enhancer.setCallback(new CglibDynamicProxyBean(context, beanRule));
+        return enhancer.create(argTypes, args);
     }
 
 }

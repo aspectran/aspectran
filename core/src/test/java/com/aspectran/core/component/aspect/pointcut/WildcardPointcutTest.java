@@ -31,10 +31,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class WildcardPointcutTest {
 
     @Test
-    void wildcardPointcutTest() {
+    void wildcardPointcutTest1() {
         // "/translet@class:hello.Simplest^hello*World*"
         PointcutPatternRule ppr1 = PointcutPatternRule.newInstance("/translet", "class:hel*.Sim*", "hello*World*");
-
         // "/ga-annotated-config/*@class:hello.SimplestAction"
         PointcutPatternRule ppr2 = PointcutPatternRule.newInstance("/ga-annotated-config/*", "class:*.SimplestAction", null);
 
@@ -46,6 +45,45 @@ class WildcardPointcutTest {
 
         assertTrue(wildcardPointcut.matches("/ga-annotated-config/translet", null, "hello.SimplestAction", "hello World!"));
         assertTrue(wildcardPointcut.matches("/translet", null, "hello.Simplest", "hello World!"));
+    }
+
+    @Test
+    void wildcardPointcutTest2() {
+        // "/translet@classname^*"
+        PointcutPatternRule ppr1 = PointcutPatternRule.newInstance("/translet", "class:name", "*");
+
+        List<PointcutPatternRule> pprList = new ArrayList<>();
+        pprList.add(ppr1);
+
+        Pointcut wildcardPointcut = new WildcardPointcut(pprList);
+
+        assertTrue(wildcardPointcut.matches("/translet", null, "name", null));
+    }
+
+    @Test
+    void wildcardPointcutTest3() {
+        // "@classname"
+        PointcutPatternRule ppr1 = PointcutPatternRule.newInstance(null, "class:name", null);
+
+        List<PointcutPatternRule> pprList = new ArrayList<>();
+        pprList.add(ppr1);
+
+        Pointcut wildcardPointcut = new WildcardPointcut(pprList);
+
+        assertTrue(wildcardPointcut.matches("/translet", "id", "name", null));
+    }
+
+    @Test
+    void wildcardPointcutTest4() {
+        // "@classname"
+        PointcutPatternRule ppr1 = PointcutPatternRule.newInstance(null, "id", null);
+
+        List<PointcutPatternRule> pprList = new ArrayList<>();
+        pprList.add(ppr1);
+
+        Pointcut wildcardPointcut = new WildcardPointcut(pprList);
+
+        assertTrue(wildcardPointcut.matches("/translet", "id", "name", null));
     }
 
 }

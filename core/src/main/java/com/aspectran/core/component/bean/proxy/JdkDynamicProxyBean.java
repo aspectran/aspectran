@@ -21,49 +21,50 @@ import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.ExceptionRule;
-import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
-import net.sf.cglib.proxy.Enhancer;
-import net.sf.cglib.proxy.MethodInterceptor;
-import net.sf.cglib.proxy.MethodProxy;
 
+import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.List;
 
 /**
- * The Class CglibDynamicBeanProxy.
+ * Create an instance of the dynamic proxy bean using JDK.
  */
-public class CglibDynamicBeanProxy extends AbstractDynamicBeanProxy implements MethodInterceptor {
+public class JdkDynamicProxyBean extends AbstractDynamicProxyBean implements InvocationHandler {
 
-    private static final Log log = LogFactory.getLog(CglibDynamicBeanProxy.class);
+    private static final Log log = LogFactory.getLog(JdkDynamicProxyBean.class);
 
     private final ActivityContext context;
 
     private final BeanRule beanRule;
 
-    private CglibDynamicBeanProxy(ActivityContext context, BeanRule beanRule) {
+    private final Object bean;
+
+    private JdkDynamicProxyBean(ActivityContext context, BeanRule beanRule, Object bean) {
         super(context.getAspectRuleRegistry());
 
         this.context = context;
         this.beanRule = beanRule;
+        this.bean = bean;
     }
 
     @Override
-    public Object intercept(Object proxy, Method method, Object[] args, MethodProxy methodProxy) throws Throwable {
+    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         if (isAvoidAdvice(method)) {
-            return methodProxy.invokeSuper(proxy, args);
+            return method.invoke(bean, args);
         }
 
         Activity activity = context.getCurrentActivity();
-        String transletName = (activity.getTranslet() != null ? activity.getTranslet().getRequestName() : StringUtils.EMPTY);
-        String beanId = StringUtils.nullToEmpty(beanRule.getId());
-        String className = StringUtils.nullToEmpty(beanRule.getClassName());
+        String transletName = (activity.getTranslet() != null ? activity.getTranslet().getRequestName() : null);
+        String beanId = beanRule.getId();
+        String className = beanRule.getClassName();
         String methodName = method.getName();
 
-        AspectAdviceRuleRegistry aarr = retrieveAspectAdviceRuleRegistry(activity, transletName, beanId, className, methodName);
+        AspectAdviceRuleRegistry aarr = getAspectAdviceRuleRegistry(activity, transletName, beanId, className, methodName);
         if (aarr == null) {
-            return methodProxy.invokeSuper(proxy, args);
+            return method.invoke(bean, args);
         }
 
         try {
@@ -80,7 +81,7 @@ public class CglibDynamicBeanProxy extends AbstractDynamicBeanProxy implements M
                     log.debug("Invoke a proxy method " + methodName + "() on the bean " + beanRule);
                 }
 
-                Object result = methodProxy.invokeSuper(proxy, args);
+                Object result = method.invoke(bean, args);
 
                 if (aarr.getAfterAdviceRuleList() != null) {
                     for (AspectAdviceRule aspectAdviceRule : aarr.getAfterAdviceRuleList()) {
@@ -115,21 +116,9 @@ public class CglibDynamicBeanProxy extends AbstractDynamicBeanProxy implements M
         }
     }
 
-    /**
-     * Creates a proxy class of bean and returns an instance of that class.
-     *
-     * @param context the activity context
-     * @param beanRule the bean rule
-     * @param args the arguments passed to a constructor
-     * @param argTypes the parameter types for a constructor
-     * @return a new proxy bean object
-     */
-    public static Object newInstance(ActivityContext context, BeanRule beanRule, Object[] args, Class<?>[] argTypes) {
-        Enhancer enhancer = new Enhancer();
-        enhancer.setClassLoader(context.getApplicationAdapter().getClassLoader());
-        enhancer.setSuperclass(beanRule.getBeanClass());
-        enhancer.setCallback(new CglibDynamicBeanProxy(context, beanRule));
-        return enhancer.create(argTypes, args);
+    public static Object newInstance(ActivityContext context, BeanRule beanRule, Object bean) {
+        JdkDynamicProxyBean proxy = new JdkDynamicProxyBean(context, beanRule, bean);
+        return Proxy.newProxyInstance(beanRule.getBeanClass().getClassLoader(), beanRule.getBeanClass().getInterfaces(), proxy);
     }
 
 }

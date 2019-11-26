@@ -39,9 +39,9 @@ import java.util.Map;
 /**
  * The Class AbstractDynamicBeanProxy.
  */
-public abstract class AbstractDynamicBeanProxy {
+public abstract class AbstractDynamicProxyBean {
 
-    private static final Log log = LogFactory.getLog(AbstractDynamicBeanProxy.class);
+    private static final Log log = LogFactory.getLog(AbstractDynamicProxyBean.class);
 
     private static final RelevantAspectRuleHolder EMPTY_HOLDER = new RelevantAspectRuleHolder();
 
@@ -49,7 +49,7 @@ public abstract class AbstractDynamicBeanProxy {
 
     private final AspectRuleRegistry aspectRuleRegistry;
 
-    public AbstractDynamicBeanProxy(AspectRuleRegistry aspectRuleRegistry) {
+    public AbstractDynamicProxyBean(AspectRuleRegistry aspectRuleRegistry) {
         this.aspectRuleRegistry = aspectRuleRegistry;
     }
 
@@ -59,7 +59,7 @@ public abstract class AbstractDynamicBeanProxy {
                 method.isAnnotationPresent(AvoidAdvice.class));
     }
 
-    protected AspectAdviceRuleRegistry retrieveAspectAdviceRuleRegistry(Activity activity,
+    protected AspectAdviceRuleRegistry getAspectAdviceRuleRegistry(Activity activity,
             String transletName, String beanId, String className, String methodName) {
         RelevantAspectRuleHolder holder = getRelevantAspectRuleHolder(transletName, beanId, className, methodName);
         AspectAdviceRuleRegistry aarr = holder.getAspectAdviceRuleRegistry();

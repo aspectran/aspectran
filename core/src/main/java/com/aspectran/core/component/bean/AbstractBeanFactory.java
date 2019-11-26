@@ -27,9 +27,9 @@ import com.aspectran.core.component.bean.aware.Aware;
 import com.aspectran.core.component.bean.aware.ClassLoaderAware;
 import com.aspectran.core.component.bean.aware.CurrentActivityAware;
 import com.aspectran.core.component.bean.aware.EnvironmentAware;
-import com.aspectran.core.component.bean.proxy.CglibDynamicBeanProxy;
-import com.aspectran.core.component.bean.proxy.JavassistDynamicBeanProxy;
-import com.aspectran.core.component.bean.proxy.JdkDynamicBeanProxy;
+import com.aspectran.core.component.bean.proxy.CglibDynamicProxyBean;
+import com.aspectran.core.component.bean.proxy.JavassistDynamicProxyBean;
+import com.aspectran.core.component.bean.proxy.JdkDynamicProxyBean;
 import com.aspectran.core.component.bean.scope.Scope;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.expr.ItemEvaluator;
@@ -264,12 +264,12 @@ abstract class AbstractBeanFactory extends AbstractComponent {
             if (log.isTraceEnabled()) {
                 log.trace("Create a dynamic proxy bean " + beanRule + " using Javassist");
             }
-            bean = JavassistDynamicBeanProxy.newInstance(context, beanRule, args, argTypes);
+            bean = JavassistDynamicProxyBean.newInstance(context, beanRule, args, argTypes);
         } else if (beanProxifierType == BeanProxifierType.CGLIB) {
             if (log.isTraceEnabled()) {
                 log.trace("Create a dynamic proxy bean " + beanRule + " using CGLIB");
             }
-            bean = CglibDynamicBeanProxy.newInstance(context, beanRule, args, argTypes);
+            bean = CglibDynamicProxyBean.newInstance(context, beanRule, args, argTypes);
         } else {
             if (argTypes != null && args != null) {
                 bean = newInstance(beanRule.getBeanClass(), args, argTypes);
@@ -279,7 +279,7 @@ abstract class AbstractBeanFactory extends AbstractComponent {
             if (log.isTraceEnabled()) {
                 log.trace("Create a dynamic proxy bean " + beanRule + " using JDK");
             }
-            bean = JdkDynamicBeanProxy.newInstance(context, beanRule, bean);
+            bean = JdkDynamicProxyBean.newInstance(context, beanRule, bean);
         }
         return bean;
     }
