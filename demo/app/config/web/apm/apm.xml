@@ -9,7 +9,7 @@
 
     <translet name="/">
         <echo id="page">
-            <item name="headline">시스템 모니터링</item>
+            <item name="headline">Application Performance Monitoring</item>
             <item name="teaser"></item>
             <item name="include">apm/apm</item>
         </echo>

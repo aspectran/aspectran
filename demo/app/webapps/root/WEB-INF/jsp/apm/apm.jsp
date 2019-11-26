@@ -2,132 +2,82 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <link rel="stylesheet" href="/assets/css/logtail.css?20191126">
 <div class="row">
-    <div class="columns small-12">
-        <section>
-            <div class="box full">
-                <h3>접속 현황</h3>
-                <dl>
-                    <dt>현재 사용자 수</dt>
-                    <dd><span class="number activeSessionCount">0</span></dd>
-                    <dt>최대 동시 사용자 수</dt>
-                    <dd><span class="number highestSessionCount">0</span></dd>
-                    <dt>생성된 세션 수</dt>
-                    <dd><span class="number createdSessionCount">0</span></dd>
-                    <dt>파기된 세션 수</dt>
-                    <dd><span class="number expiredSessionCount">0</span></dd>
-                    <dt>거부된 세션 수</dt>
-                    <dd><span class="number rejectedSessionCount">0</span></dd>
-                </dl>
+    <div class="columns small-12 large-5 t20">
+        <h3>User Session Statistics</h3>
+        <div class="panel stats">
+            <dl>
+                <dt>Current Active Sessions</dt>
+                <dd><span class="number activeSessionCount">0</span></dd>
+                <dt>Max Active Sessions</dt>
+                <dd><span class="number highestSessionCount">0</span></dd>
+                <dt title="Number of sessions created since system bootup">Created Sessions</dt>
+                <dd><span class="number createdSessionCount">0</span></dd>
+                <dt>Expired Sessions</dt>
+                <dd><span class="number expiredSessionCount">0</span></dd>
+                <dt>Rejected Sessions</dt>
+                <dd><span class="number rejectedSessionCount">0</span></dd>
+            </dl>
+        </div>
+    </div>
+    <div class="columns small-12 large-7 t20">
+        <h3>Current Users</h3>
+        <div class="panel users-wrap">
+            <ul class="users">
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="columns small-12 t20">
+        <h3>Application Log</h3>
+        <div class="log-container">
+            <div class="log-header">
+                <ul class="tab">
+                    <li>app-log</li>
+                </ul>
+                <a class="bite-tail" title="Scroll to End of Log">
+                    <span class="tail-status"></span>
+                </a>
             </div>
-            <div class="box full">
-                <h3>현재 사용자</h3>
-                <div class="users-wrap">
-                    <ul class="users">
-                    </ul>
-                </div>
+            <div class="missile-route">
+                <div class="stack"></div>
             </div>
-        </section>
-        <section>
-            <div class="box full">
-                <h3>Application Log</h3>
-                <div class="log-container">
-                    <div class="log-header">
-                        <ul class="tab">
-                            <li>app-log</li>
-                        </ul>
-                        <a class="bite-tail" title="Scroll to End of Log">
-                            <span class="tail-status"></span>
-                        </a>
-                    </div>
-                    <div class="missile-route">
-                        <div class="stack"></div>
-                    </div>
-                    <pre id="app-log" class="log-tail"></pre>
-                </div>
-            </div>
-        </section>
+            <pre id="app-log" class="log-tail"></pre>
+        </div>
     </div>
 </div>
 <style>
-    .box {
-        width: 31%;
+    .stats {
+        height: 220px;
+    }
+    .stats dt {
         float: left;
-        padding: 10px;
-    }
-    .box21 {
-        padding-left: 0;
-        width: 48%;
-    }
-    .box22 {
-        float: right;
-        width: 48%;
-    }
-    .box.full {
-        width: 100%;
-        float: none;
+        clear: left;
         padding: 0;
-    }
-    .box dl {
-        margin: 0 10px;
-    }
-    .box dt {
-        font-size: 1em;
-        font-weight: bold;
-        color: #666;
-        float: left;
-        display: block;
-        line-height: 180%;
-        padding-top: 5px;
-    }
-    .box dd {
-        font-size: 1.6em;
-        display: block;
-        text-align: right;
-        line-height: 180%;
-    }
-
-    ul.tab {
-    }
-    ul.tab li {
-        float: left;
-        padding: 9px 20px;
         margin: 0;
-        font-size: 14px;
-        box-sizing: border-box;
-        color: #555;
-        background-color: #e0e0e0;
-        cursor: pointer;
-        transition: .3s;
+        height: 40px;
+        font-size: 1.1em;
     }
-    ul.tab li:first-child {
-        border-top-left-radius: 10px;
-        border-bottom-left-radius: 10px;
-    }
-    ul.tab li:last-child {
-        border-top-right-radius: 10px;
-        border-bottom-right-radius: 10px;
-    }
-    ul.tab li.active {
-        background-color: #ac0032;
-        color: #fff;
-    }
-    ul.tab li:hover {
-        color: #ac0032;
-        filter: brightness(107%);
-    }
-    ul.tab li.active:hover {
-        color: #fff;
+    .stats dd {
+        text-align: right;
+        font-weight: bold;
+        font-size: 1.1em;
+        padding: 0;
+        margin: 0;
+        height: 40px;
     }
 
-    /* Current Users */
     .users-wrap {
-        background-color: #f5f5f5;
-        border-radius: 5px;
-        padding: 5px;
         height: 220px;
         overflow-y: auto;
+        list-style-type: none;
     }
-    .users li { padding: 4px; }
+    .users {
+        margin-left: 0;
+    }
+    .users li {
+        list-style-type: none;
+    }
     .users .status {
         background-color: #13CF13;
         width: 12px;
