@@ -13,7 +13,7 @@
             <button class="button" onclick="signIn()">Start Chatting</button>
         </form>
         <div id="messages"></div>
-        <form id="chat-controls" onsubmit="sendMessage();return false;">
+        <form id="chat-controls">
             <div class="input-group">
                 <input class="input-group-field" type="text" id="message" placeholder="Type a message..."/>
                 <div class="input-group-button">
@@ -155,6 +155,13 @@
     var socket;
     var currentUser;
 
+    $(function() {
+        $("form#chat-controls").submit(function() {
+            sendMessage();
+            return false;
+        });
+    });
+
     function signIn() {
         currentUser = $("#username").val().trim();
         $("#username").val("");
@@ -256,6 +263,7 @@
                 }
             };
             socket.send(JSON.stringify(chatMessage));
+            $("#message").val('').focus();
         }
     }
 

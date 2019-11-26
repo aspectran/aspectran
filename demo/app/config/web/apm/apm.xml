@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 6.0//EN"
+        "http://aspectran.github.io/dtd/aspectran-6.dtd">
+<aspectran>
+
+    <settings>
+        <setting name="transletNamePrefix" value="/apm/"/>
+    </settings>
+
+    <translet name="/">
+        <echo id="page">
+            <item name="headline">시스템 모니터링</item>
+            <item name="teaser"></item>
+            <item name="include">apm/apm</item>
+        </echo>
+        <dispatch name="templates/default"/>
+    </translet>
+
+    <bean id="app-log" class="com.aspectran.demo.apm.log.LogTailer">
+        <arguments>
+            <item>#{basePath}/logs/app.log</item>
+        </arguments>
+    </bean>
+
+</aspectran>

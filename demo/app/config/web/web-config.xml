@@ -40,5 +40,6 @@
     <append file="/config/web/terminal/translet-interpreter.xml" profile="!daemon"/>
     <append file="/config/web/chat/chat.xml" profile="!daemon"/>
     <append file="/config/web/skylark/skylark.xml" profile="!daemon"/>
+    <append file="/config/web/apm/apm.xml" profile="!daemon"/>
 
 </aspectran>
