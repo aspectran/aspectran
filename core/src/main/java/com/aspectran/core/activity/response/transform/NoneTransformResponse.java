@@ -17,6 +17,7 @@ package com.aspectran.core.activity.response.transform;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.response.Response;
+import com.aspectran.core.activity.response.ResponseException;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.util.logging.Log;
@@ -41,7 +42,7 @@ public class NoneTransformResponse extends TransformResponse {
     }
 
     @Override
-    public void commit(Activity activity) {
+    public void commit(Activity activity) throws ResponseException {
         ResponseAdapter responseAdapter = activity.getResponseAdapter();
         if (responseAdapter == null) {
             return;

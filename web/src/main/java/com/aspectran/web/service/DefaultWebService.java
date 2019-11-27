@@ -20,10 +20,12 @@ import com.aspectran.core.activity.ActivityTerminatedException;
 import com.aspectran.core.activity.TransletNotFoundException;
 import com.aspectran.core.activity.request.RequestMethodNotAllowedException;
 import com.aspectran.core.activity.request.SizeLimitExceededException;
+import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.config.ContextConfig;
 import com.aspectran.core.context.config.ExposalsConfig;
 import com.aspectran.core.context.config.WebConfig;
+import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.service.AspectranCoreService;
 import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.CoreService;
@@ -33,6 +35,8 @@ import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.web.activity.WebActivity;
 import com.aspectran.web.startup.servlet.WebActivityServlet;
+import com.aspectran.web.support.http.HttpHeaders;
+import com.aspectran.web.support.http.HttpStatus;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -122,15 +126,35 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
             }
         }
 
-        Activity activity = null;
         try {
-            activity = new WebActivity(getActivityContext(), request, response);
+            Activity activity = new WebActivity(getActivityContext(), request, response);
             activity.prepare(requestUri, request.getMethod());
             activity.perform();
         } catch (TransletNotFoundException e) {
+            String transletName = e.getTransletName();
+            MethodType requestMethod = e.getRequestMethod();
+            if (requestMethod == null) {
+                requestMethod = MethodType.GET;
+            }
+            if (StringUtils.startsWith(transletName, ActivityContext.NAME_SEPARATOR_CHAR) &&
+                    !StringUtils.endsWith(transletName, ActivityContext.NAME_SEPARATOR_CHAR)) {
+                String transletName2 = transletName + ActivityContext.NAME_SEPARATOR_CHAR;
+                if (getActivityContext().getTransletRuleRegistry().contains(transletName2, requestMethod)) {
+                    response.setStatus(HttpStatus.MOVED_PERMANENTLY.value());
+                    response.setHeader(HttpHeaders.LOCATION, transletName2);
+                    response.setHeader(HttpHeaders.CONNECTION, "close");
+                    if (log.isDebugEnabled()) {
+                        log.debug("Provides for \"trailing slash\" redirects and " +
+                                "serving directory index files");
+                    }
+                    return;
+                }
+            }
+
             if (log.isDebugEnabled()) {
                 log.debug("No translet mapped for request URI [" + requestUri + "]");
             }
+
             try {
                 if (!defaultServletHttpRequestHandler.handle(request, response)) {
                     response.sendError(HttpServletResponse.SC_NOT_FOUND);
@@ -151,10 +175,6 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
                 response.sendError(HttpServletResponse.SC_REQUEST_ENTITY_TOO_LARGE);
             } else {
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            }
-        } finally {
-            if (activity != null) {
-                activity.close();
             }
         }
     }

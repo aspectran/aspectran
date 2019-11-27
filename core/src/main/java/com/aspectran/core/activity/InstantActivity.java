@@ -38,7 +38,13 @@ import java.util.Map;
  *
  * @since 3.0.0
  */
-public class InstantActivity extends CoreActivity {
+public class InstantActivity<T> extends CoreActivity {
+
+    private ParameterMap parameterMap;
+
+    private Map<String, Object> attributeMap;
+
+    private volatile boolean performed;
 
     /**
      * Instantiates a new InstantActivity.
@@ -46,45 +52,15 @@ public class InstantActivity extends CoreActivity {
      * @param context the activity context
      */
     public InstantActivity(ActivityContext context) {
-        this(context, null, null);
-    }
-
-    /**
-     * Instantiates a new InstantActivity.
-     *
-     * @param context the activity context
-     * @param parameterMap the parameter map
-     */
-    public InstantActivity(ActivityContext context, ParameterMap parameterMap) {
-        this(context, parameterMap, null);
-    }
-
-    /**
-     * Instantiates a new InstantActivity.
-     *
-     * @param context the activity context
-     * @param parameterMap the parameter map
-     * @param attributeMap the attribute map
-     */
-    public InstantActivity(ActivityContext context, ParameterMap parameterMap, Map<String, Object> attributeMap) {
         super(context);
-        adapt(parameterMap, attributeMap);
     }
 
-    private void adapt(ParameterMap parameterMap, Map<String, Object> attributeMap) {
-        BasicRequestAdapter requestAdapter = new BasicRequestAdapter(null, null);
-        setRequestAdapter(requestAdapter);
+    public void setParameterMap(ParameterMap parameterMap) {
+        this.parameterMap = parameterMap;
+    }
 
-        Writer writer = new OutputStringWriter();
-        BasicResponseAdapter responseAdapter = new BasicResponseAdapter(null, writer);
-        setResponseAdapter(responseAdapter);
-
-        if (parameterMap != null) {
-            requestAdapter.setParameterMap(parameterMap);
-        }
-        if (attributeMap != null) {
-            requestAdapter.setAttributeMap(attributeMap);
-        }
+    public void setAttributeMap(Map<String, Object> attributeMap) {
+        this.attributeMap = attributeMap;
     }
 
     @Override
@@ -118,29 +94,43 @@ public class InstantActivity extends CoreActivity {
     }
 
     @Override
-    public void perform() {
-        throw new UnsupportedOperationException();
+    protected void adapt() throws AdapterException {
+        BasicRequestAdapter requestAdapter = new BasicRequestAdapter(null, null);
+        setRequestAdapter(requestAdapter);
+
+        Writer writer = new OutputStringWriter();
+        BasicResponseAdapter responseAdapter = new BasicResponseAdapter(null, writer);
+        setResponseAdapter(responseAdapter);
+
+        if (parameterMap != null) {
+            requestAdapter.setParameterMap(parameterMap);
+        }
+        if (attributeMap != null) {
+            requestAdapter.setAttributeMap(attributeMap);
+        }
+
+        super.adapt();
     }
 
     @Override
-    public Object perform(InstantAction instantAction) {
-        if (isIncluded()) {
-            backupCurrentActivity();
-            saveCurrentActivity();
-        } else {
-            saveCurrentActivity();
+    @SuppressWarnings("unchecked")
+    public T perform(InstantAction instantAction) throws ActivityPerformException, ActivityTerminatedException {
+        if (performed) {
+            throw new ActivityPerformException("Activity has already been performed");
         }
 
-        if (getOuterActivity() == null && getSessionAdapter() instanceof BasicSessionAdapter) {
+        performed = true;
+
+        if (getParentActivity() == null && getSessionAdapter() instanceof BasicSessionAdapter) {
             ((BasicSessionAdapter)getSessionAdapter()).getSessionAgent().access();
         }
 
-        return super.perform(instantAction);
+        return (T)super.perform(instantAction);
     }
 
     @Override
     protected void release() {
-        if (getOuterActivity() == null && getSessionAdapter() instanceof BasicSessionAdapter) {
+        if (getParentActivity() == null && getSessionAdapter() instanceof BasicSessionAdapter) {
             ((BasicSessionAdapter)getSessionAdapter()).getSessionAgent().complete();
         }
 

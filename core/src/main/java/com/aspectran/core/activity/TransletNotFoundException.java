@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.activity;
 
+import com.aspectran.core.context.rule.type.MethodType;
+
 /**
  * This exception will be thrown when a translet not found.
  * 
@@ -27,18 +29,35 @@ public class TransletNotFoundException extends ActivityException {
 
     private final String transletName;
 
+    private final MethodType requestMethod;
+
     /**
      * Constructor to create exception with a message.
      *
      * @param transletName the translet name
      */
     public TransletNotFoundException(String transletName) {
+        this(transletName, null);
+    }
+
+    /**
+     * Constructor to create exception with a message.
+     *
+     * @param transletName the translet name
+     * @param requestMethod the request method
+     */
+    public TransletNotFoundException(String transletName, MethodType requestMethod) {
         super("Unknown translet: " + transletName);
         this.transletName = transletName;
+        this.requestMethod = requestMethod;
     }
 
     public String getTransletName() {
         return transletName;
+    }
+
+    public MethodType getRequestMethod() {
+        return requestMethod;
     }
 
 }

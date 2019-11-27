@@ -33,7 +33,7 @@ public interface Response extends Replicable<Response> {
      * @param activity the current Activity
      * @throws ResponseException the response exception
      */
-    void commit(Activity activity);
+    void commit(Activity activity) throws ResponseException;
 
     /**
      * Gets the response type.
@@ -48,14 +48,6 @@ public interface Response extends Replicable<Response> {
      * @return the content type
      */
     String getContentType();
-
-    /**
-     * Gets the content type.
-     *
-     * @param activity the current activity
-     * @return the content type
-     */
-    String getContentType(Activity activity);
 
     /**
      * Replicates and returns this response.

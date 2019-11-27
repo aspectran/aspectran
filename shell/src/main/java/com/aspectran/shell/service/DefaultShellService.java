@@ -57,7 +57,8 @@ public class DefaultShellService extends AbstractShellService {
     }
 
     @Override
-    public Translet translate(TransletCommandLine transletCommandLine, Console console) {
+    public Translet translate(TransletCommandLine transletCommandLine, Console console)
+            throws TransletNotFoundException {
         if (transletCommandLine == null) {
             throw new IllegalArgumentException("transletCommandLine must not be null");
         }
@@ -88,10 +89,9 @@ public class DefaultShellService extends AbstractShellService {
         String transletName = transletCommandLine.getRequestName();
         MethodType requestMethod = transletCommandLine.getRequestMethod();
 
-        ShellActivity activity = null;
         Translet translet = null;
         try {
-            activity = new ShellActivity(this, console);
+            ShellActivity activity = new ShellActivity(this, console);
             activity.setProcedural(procedural);
             activity.setParameterMap(parameterMap);
             activity.setOutputWriter(outputWriter);
@@ -107,9 +107,6 @@ public class DefaultShellService extends AbstractShellService {
         } catch (Exception e) {
             throw new AspectranServiceException("An error occurred while processing translet: " + transletName, e);
         } finally {
-            if (activity != null) {
-                activity.close();
-            }
             if (outputWriter != null) {
                 outputWriter.close();
             }

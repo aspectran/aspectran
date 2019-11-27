@@ -16,13 +16,13 @@
 package com.aspectran.undertow.activity;
 
 import com.aspectran.core.activity.Activity;
+import com.aspectran.core.activity.ActivityPrepareException;
 import com.aspectran.core.activity.ActivityTerminatedException;
 import com.aspectran.core.activity.AdapterException;
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.TransletNotFoundException;
 import com.aspectran.core.activity.request.RequestParseException;
 import com.aspectran.core.adapter.ResponseAdapter;
-import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.RequestRule;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.support.i18n.locale.LocaleChangeInterceptor;
@@ -36,12 +36,10 @@ import com.aspectran.web.activity.request.MultipartFormDataParser;
 import com.aspectran.web.activity.request.MultipartRequestParseException;
 import com.aspectran.web.activity.request.WebRequestBodyParser;
 import com.aspectran.web.support.http.HttpHeaders;
-import com.aspectran.web.support.http.HttpStatus;
 import com.aspectran.web.support.http.MediaType;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.server.session.SessionConfig;
 import io.undertow.server.session.SessionManager;
-import io.undertow.util.Headers;
 
 import java.io.UnsupportedEncodingException;
 
@@ -70,7 +68,8 @@ public class TowActivity extends CoreActivity {
     }
 
     @Override
-    public void prepare(String transletName, MethodType requestMethod) {
+    public void prepare(String transletName, MethodType requestMethod)
+            throws TransletNotFoundException, ActivityPrepareException{
         // Check for HTTP POST with the X-HTTP-Method-Override header
         if (requestMethod == MethodType.POST) {
             String method = exchange.getRequestHeaders().getFirst(HttpHeaders.X_METHOD_OVERRIDE);
@@ -84,22 +83,7 @@ public class TowActivity extends CoreActivity {
             }
         }
 
-        try {
-            super.prepare(transletName, requestMethod);
-        } catch (TransletNotFoundException e) {
-            if (StringUtils.startsWith(transletName, ActivityContext.NAME_SEPARATOR_CHAR) &&
-                    !StringUtils.endsWith(transletName, ActivityContext.NAME_SEPARATOR_CHAR)) {
-                String transletName2 = transletName + ActivityContext.NAME_SEPARATOR_CHAR;
-                if (getActivityContext().getTransletRuleRegistry().contains(transletName2, requestMethod)) {
-                    exchange.setStatusCode(HttpStatus.MOVED_PERMANENTLY.value());
-                    exchange.getResponseHeaders().put(Headers.LOCATION, transletName2);
-                    exchange.getResponseHeaders().put(Headers.CONNECTION, "close");
-                    throw new ActivityTerminatedException("Provides for \"trailing slash\" redirects and " +
-                            "serving directory index files");
-                }
-            }
-            throw e;
-        }
+        super.prepare(transletName, requestMethod);
     }
 
     @Override
@@ -109,18 +93,18 @@ public class TowActivity extends CoreActivity {
                 exchange.startBlocking();
             }
 
-            if (getOuterActivity() == null) {
+            if (getParentActivity() == null) {
                 SessionManager sessionManager = exchange.getAttachment(SessionManager.ATTACHMENT_KEY);
                 SessionConfig sessionConfig = exchange.getAttachment(SessionConfig.ATTACHMENT_KEY);
                 if (sessionManager != null && sessionConfig != null) {
                     setSessionAdapter(new TowSessionAdapter(exchange));
                 }
             } else {
-                setSessionAdapter(getOuterActivity().getSessionAdapter());
+                setSessionAdapter(getParentActivity().getSessionAdapter());
             }
 
             TowRequestAdapter requestAdapter = new TowRequestAdapter(getTranslet().getRequestMethod(), exchange);
-            if (getOuterActivity() == null) {
+            if (getParentActivity() == null) {
                 String maxRequestSizeSetting = getSetting(MAX_REQUEST_SIZE_SETTING_NAME);
                 if (!StringUtils.isEmpty(maxRequestSizeSetting)) {
                     long maxRequestSize = Long.parseLong(maxRequestSizeSetting);
@@ -141,7 +125,7 @@ public class TowActivity extends CoreActivity {
             setRequestAdapter(requestAdapter);
 
             ResponseAdapter responseAdapter = new TowResponseAdapter(exchange, this);
-            if (getOuterActivity() == null) {
+            if (getParentActivity() == null) {
                 String responseEncoding = getIntendedResponseEncoding();
                 if (responseEncoding != null) {
                     responseAdapter.setEncoding(responseEncoding);
@@ -156,12 +140,12 @@ public class TowActivity extends CoreActivity {
     }
 
     @Override
-    protected void parseRequest() {
-        if (getOuterActivity() == null) {
+    protected void parseRequest() throws ActivityTerminatedException, RequestParseException {
+        if (getParentActivity() == null) {
             ((TowRequestAdapter)getRequestAdapter()).preparse();
         } else {
             ((TowRequestAdapter)getRequestAdapter()).preparse(
-                    (TowRequestAdapter)getOuterActivity().getRequestAdapter());
+                    (TowRequestAdapter)getParentActivity().getRequestAdapter());
         }
 
         MediaType mediaType = ((TowRequestAdapter)getRequestAdapter()).getMediaType();
@@ -179,7 +163,7 @@ public class TowActivity extends CoreActivity {
     /**
      * Parse the multipart form data.
      */
-    private void parseMultipartFormData() {
+    private void parseMultipartFormData() throws MultipartRequestParseException {
         String multipartFormDataParser = getSetting(MULTIPART_FORM_DATA_PARSER_SETTING_NAME);
         if (multipartFormDataParser == null) {
             throw new MultipartRequestParseException("The setting name 'multipartFormDataParser' for multipart " +
@@ -197,7 +181,7 @@ public class TowActivity extends CoreActivity {
     /**
      * Parse the URL-encoded Form Data to get the request parameters.
      */
-    private void parseURLEncodedFormData() {
+    private void parseURLEncodedFormData() throws RequestParseException {
         WebRequestBodyParser.parseURLEncoded(getRequestAdapter());
     }
 
@@ -219,7 +203,6 @@ public class TowActivity extends CoreActivity {
     @SuppressWarnings("unchecked")
     public <T extends Activity> T newActivity() {
         TowActivity activity = new TowActivity(service, exchange);
-        activity.setIncluded(true);
         return (T)activity;
     }
 

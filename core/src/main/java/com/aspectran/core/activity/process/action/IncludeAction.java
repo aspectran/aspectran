@@ -45,9 +45,8 @@ public class IncludeAction implements Executable {
 
     @Override
     public Object execute(Activity activity) throws Exception {
-        Activity innerActivity = null;
         try {
-            innerActivity = activity.newActivity();
+            Activity innerActivity = activity.newActivity();
             innerActivity.prepare(includeActionRule.getTransletName(), includeActionRule.getMethodType());
 
             ItemRuleMap parameterItemRuleMap = includeActionRule.getParameterItemRuleMap();
@@ -71,10 +70,6 @@ public class IncludeAction implements Executable {
             return innerActivity.getProcessResult();
         } catch (Exception e) {
             throw new ActionExecutionException("Failed to execute action " + this, e);
-        } finally {
-            if (innerActivity != null) {
-                innerActivity.close();
-            }
         }
     }
 

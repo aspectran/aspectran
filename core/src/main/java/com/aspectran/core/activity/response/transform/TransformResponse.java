@@ -15,7 +15,6 @@
  */
 package com.aspectran.core.activity.response.transform;
 
-import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.context.rule.type.ResponseType;
@@ -47,11 +46,6 @@ public abstract class TransformResponse implements Response {
     @Override
     public String getContentType() {
         return transformRule.getContentType();
-    }
-
-    @Override
-    public String getContentType(Activity activity) {
-        return getContentType();
     }
 
     /**

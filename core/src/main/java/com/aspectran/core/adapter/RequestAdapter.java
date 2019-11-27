@@ -17,6 +17,7 @@ package com.aspectran.core.adapter;
 
 import com.aspectran.core.activity.request.FileParameter;
 import com.aspectran.core.activity.request.ParameterMap;
+import com.aspectran.core.activity.request.RequestParseException;
 import com.aspectran.core.component.bean.scope.RequestScope;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.util.MultiValueMap;
@@ -442,9 +443,9 @@ public interface RequestAdapter {
 
     void setBody(String body);
 
-    Parameters getBodyAsParameters();
+    Parameters getBodyAsParameters() throws RequestParseException;
 
-    <T extends Parameters> T getBodyAsParameters(Class<T> requiredType);
+    <T extends Parameters> T getBodyAsParameters(Class<T> requiredType) throws RequestParseException;
 
     Parameters getParameters();
 

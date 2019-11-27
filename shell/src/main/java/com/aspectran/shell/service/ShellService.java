@@ -16,6 +16,7 @@
 package com.aspectran.shell.service;
 
 import com.aspectran.core.activity.Translet;
+import com.aspectran.core.activity.TransletNotFoundException;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.service.CoreService;
 import com.aspectran.shell.command.TransletCommandLine;
@@ -92,6 +93,6 @@ public interface ShellService extends CoreService {
      * @param console the {@code Console} instance
      * @return the {@code Translet} instance
      */
-    Translet translate(TransletCommandLine transletCommandLine, Console console);
+    Translet translate(TransletCommandLine transletCommandLine, Console console) throws TransletNotFoundException;
 
 }

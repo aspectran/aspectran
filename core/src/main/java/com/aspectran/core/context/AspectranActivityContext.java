@@ -200,6 +200,11 @@ public class AspectranActivityContext extends AbstractComponent implements Activ
         currentActivityHolder.remove();
     }
 
+    @Override
+    public boolean hasCurrentActivity() {
+        return (currentActivityHolder.get() != null);
+    }
+
     /**
      * Initialize the MessageSource.
      * Use parent's if none defined in this context.

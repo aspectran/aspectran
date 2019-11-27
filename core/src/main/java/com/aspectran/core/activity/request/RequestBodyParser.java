@@ -29,7 +29,8 @@ public class RequestBodyParser {
     private RequestBodyParser() {
     }
 
-    public static <T extends Parameters> T parseBodyAsParameters(String body, Class<T> requiredType) {
+    public static <T extends Parameters> T parseBodyAsParameters(String body, Class<T> requiredType)
+            throws RequestParseException {
         if (StringUtils.isEmpty(body)) {
             return null;
         }

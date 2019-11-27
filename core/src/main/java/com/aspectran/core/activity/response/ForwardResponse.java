@@ -81,11 +81,6 @@ public class ForwardResponse implements Response {
     }
 
     @Override
-    public String getContentType(Activity activity) {
-        return getContentType();
-    }
-
-    @Override
     public Response replicate() {
         return new ForwardResponse(this.forwardRule.replicate());
     }

@@ -18,6 +18,7 @@ package com.aspectran.core.activity.process.action;
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.request.ParameterMap;
+import com.aspectran.core.activity.request.RequestParseException;
 import com.aspectran.core.component.bean.NoUniqueBeanException;
 import com.aspectran.core.component.bean.annotation.Component;
 import com.aspectran.core.component.bean.annotation.Format;
@@ -193,7 +194,8 @@ public class AnnotatedAction implements Executable {
         }
     }
 
-    private static Object parseArgument(Translet translet, Class<?> type, String name, String format) {
+    private static Object parseArgument(Translet translet, Class<?> type, String name, String format)
+            throws MethodArgumentTypeMismatchException, RequestParseException {
         Object result = null;
         if (translet != null) {
             if (type == Translet.class) {
@@ -312,7 +314,8 @@ public class AnnotatedAction implements Executable {
         return model;
     }
 
-    private static Object parseValue(Class<?> type, String value, String format) {
+    private static Object parseValue(Class<?> type, String value, String format)
+            throws MethodArgumentTypeMismatchException {
         try {
             Object result = null;
             if (type == String.class) {
@@ -424,7 +427,8 @@ public class AnnotatedAction implements Executable {
         }
     }
 
-    private static Object parseArrayValues(Class<?> type, String[] values, String format) {
+    private static Object parseArrayValues(Class<?> type, String[] values, String format)
+            throws MethodArgumentTypeMismatchException {
         try {
             Object result = null;
             if (type == String.class) {

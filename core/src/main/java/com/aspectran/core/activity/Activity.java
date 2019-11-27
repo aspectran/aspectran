@@ -15,6 +15,9 @@
  */
 package com.aspectran.core.activity;
 
+import com.aspectran.core.activity.aspect.AdviceConstraintViolationException;
+import com.aspectran.core.activity.aspect.AspectAdviceException;
+import com.aspectran.core.activity.process.action.ActionExecutionException;
 import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.adapter.ApplicationAdapter;
@@ -45,14 +48,14 @@ public interface Activity {
      *
      * @param transletName the translet name
      */
-    void prepare(String transletName);
+    void prepare(String transletName) throws TransletNotFoundException, ActivityPrepareException;
 
     /**
      * Prepare for the activity.
      *
      * @param transletRule the translet rule
      */
-    void prepare(TransletRule transletRule);
+    void prepare(TransletRule transletRule) throws ActivityPrepareException;
 
     /**
      * Prepare for the activity.
@@ -60,7 +63,7 @@ public interface Activity {
      * @param transletName the translet name
      * @param transletRule the translet rule
      */
-    void prepare(String transletName, TransletRule transletRule);
+    void prepare(String transletName, TransletRule transletRule) throws ActivityPrepareException;
 
     /**
      * Prepare for the activity.
@@ -68,7 +71,8 @@ public interface Activity {
      * @param transletName the translet name
      * @param requestMethod the request method
      */
-    void prepare(String transletName, String requestMethod);
+    void prepare(String transletName, String requestMethod)
+            throws TransletNotFoundException, ActivityPrepareException;
 
     /**
      * Prepare for the activity.
@@ -76,27 +80,22 @@ public interface Activity {
      * @param transletName the translet name
      * @param requestMethod the request method
      */
-    void prepare(String transletName, MethodType requestMethod);
+    void prepare(String transletName, MethodType requestMethod)
+            throws TransletNotFoundException, ActivityPrepareException;
 
     /**
      * Performs the prepared activity.
      */
-    void perform();
+    void perform() throws ActivityPerformException, ActivityTerminatedException;
 
-    Object perform(InstantAction instantAction);
-
-    /**
-     * Finish the current activity.
-     * It must be called to finish the activity.
-     */
-    void close();
+    Object perform(InstantAction instantAction) throws ActivityPerformException, ActivityTerminatedException;
 
     /**
      * Throws an ActivityTerminatedException to terminate the current activity.
      *
      * @throws ActivityTerminatedException if an activity terminated without completion
      */
-    void terminate();
+    void terminate() throws ActivityTerminatedException;
 
     /**
      * Throws an ActivityTerminatedException with the reason for terminating the current activity.
@@ -104,7 +103,7 @@ public interface Activity {
      * @param cause the termination cause
      * @throws ActivityTerminatedException the exception to terminate activity
      */
-    void terminate(String cause);
+    void terminate(String cause) throws ActivityTerminatedException;
 
     /**
      * Returns an instance of the current translet.
@@ -145,13 +144,6 @@ public interface Activity {
     boolean isResponseReserved();
 
     /**
-     * Returns whether or not contained in other activity.
-     *
-     * @return true, if this activity is included in the other activity
-     */
-    boolean isIncluded();
-
-    /**
      * Returns whether the exception was thrown.
      *
      * @return true, if is exception raised
@@ -189,7 +181,8 @@ public interface Activity {
      *
      * @param aspectRule the aspect rule
      */
-    void registerAspectAdviceRule(AspectRule aspectRule);
+    void registerAspectAdviceRule(AspectRule aspectRule)
+            throws AdviceConstraintViolationException, AspectAdviceException;
 
     /**
      * Register a settings advice rule dynamically.
@@ -204,7 +197,7 @@ public interface Activity {
      * @param aspectAdviceRuleList the aspect advice rules
      * @param throwable whether to raise an exception
      */
-    void executeAdvice(List<AspectAdviceRule> aspectAdviceRuleList, boolean throwable);
+    void executeAdvice(List<AspectAdviceRule> aspectAdviceRuleList, boolean throwable) throws AspectAdviceException;
 
     /**
      * Executes an aspect advice with a given rule.
@@ -212,14 +205,14 @@ public interface Activity {
      * @param aspectAdviceRule the aspect advice rule
      * @param throwable whether to raise an exception
      */
-    void executeAdvice(AspectAdviceRule aspectAdviceRule, boolean throwable);
+    void executeAdvice(AspectAdviceRule aspectAdviceRule, boolean throwable) throws AspectAdviceException;
 
     /**
      * Exception handling.
      *
      * @param exceptionRuleList the exception rule list
      */
-    void handleException(List<ExceptionRule> exceptionRuleList);
+    void handleException(List<ExceptionRule> exceptionRuleList) throws ActionExecutionException;
 
     /**
      * Gets the setting value in the translet scope.
@@ -289,7 +282,7 @@ public interface Activity {
      */
     <T extends Activity> T newActivity();
 
-    <T extends Activity> T getOuterActivity();
+    <T extends Activity> T getParentActivity();
 
     /**
      * Return an instance of the bean that matches the given id.

@@ -20,6 +20,7 @@ import com.aspectran.core.activity.process.result.ActionResult;
 import com.aspectran.core.activity.process.result.ContentResult;
 import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.activity.response.Response;
+import com.aspectran.core.activity.response.ResponseException;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.DispatchRule;
@@ -53,7 +54,7 @@ public class DispatchResponse implements Response {
     }
 
     @Override
-    public void commit(Activity activity) {
+    public void commit(Activity activity)throws ResponseException {
         try {
             if (log.isDebugEnabled()) {
                 log.debug("Response " + dispatchRule);
@@ -83,20 +84,6 @@ public class DispatchResponse implements Response {
     @Override
     public String getContentType() {
         return dispatchRule.getContentType();
-    }
-
-    @Override
-    public String getContentType(Activity activity) {
-        if (dispatchRule.getContentType() != null) {
-            return dispatchRule.getContentType();
-        } else {
-            try {
-                ViewDispatcher viewDispatcher = getViewDispatcher(activity);
-                return viewDispatcher.getContentType();
-            } catch (ViewDispatcherException e) {
-                throw new DispatchResponseException(dispatchRule, e);
-            }
-        }
     }
 
     @Override

@@ -396,11 +396,11 @@ public abstract class AbstractRequest {
         this.body = body;
     }
 
-    public Parameters getBodyAsParameters() {
+    public Parameters getBodyAsParameters() throws RequestParseException {
         return getBodyAsParameters(VariableParameters.class);
     }
 
-    public <T extends Parameters> T getBodyAsParameters(Class<T> requiredType) {
+    public <T extends Parameters> T getBodyAsParameters(Class<T> requiredType) throws RequestParseException {
         return RequestBodyParser.parseBodyAsParameters(getBody(), requiredType);
     }
 

@@ -104,7 +104,7 @@ public class CommonsMultipartFormDataParser implements MultipartFormDataParser {
     }
 
     @Override
-    public void parse(RequestAdapter requestAdapter) {
+    public void parse(RequestAdapter requestAdapter) throws MultipartRequestParseException {
         try {
             DiskFileItemFactory factory = new DiskFileItemFactory();
             if (maxInMemorySize > -1) {

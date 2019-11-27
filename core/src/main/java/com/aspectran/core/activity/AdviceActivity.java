@@ -111,7 +111,8 @@ public abstract class AdviceActivity extends AbstractActivity {
     }
 
     @Override
-    public void registerAspectAdviceRule(AspectRule aspectRule) {
+    public void registerAspectAdviceRule(AspectRule aspectRule)
+            throws AdviceConstraintViolationException, AspectAdviceException {
         if (currentAspectAdviceType == null) {
             AdviceConstraintViolationException ex = new AdviceConstraintViolationException();
             String msg = "Advice can not be registered at an UNKNOWN activity phase";
@@ -193,7 +194,8 @@ public abstract class AdviceActivity extends AbstractActivity {
     }
 
     @Override
-    public void executeAdvice(List<AspectAdviceRule> aspectAdviceRuleList, boolean throwable) {
+    public void executeAdvice(List<AspectAdviceRule> aspectAdviceRuleList, boolean throwable)
+            throws AspectAdviceException {
         if (aspectAdviceRuleList != null && !aspectAdviceRuleList.isEmpty()) {
             while (true) {
                 AspectAdviceRule target = null;
@@ -217,7 +219,7 @@ public abstract class AdviceActivity extends AbstractActivity {
     }
 
     @Override
-    public void executeAdvice(AspectAdviceRule aspectAdviceRule, boolean throwable) {
+    public void executeAdvice(AspectAdviceRule aspectAdviceRule, boolean throwable) throws AspectAdviceException {
         if (!isAcceptable(aspectAdviceRule.getAspectRule()) || aspectAdviceRule.getAspectRule().isDisabled()) {
             touchExecutedAspectAdviceRules().add(aspectAdviceRule);
             return;
@@ -328,7 +330,7 @@ public abstract class AdviceActivity extends AbstractActivity {
     }
 
     @Override
-    public void handleException(List<ExceptionRule> exceptionRuleList) {
+    public void handleException(List<ExceptionRule> exceptionRuleList) throws ActionExecutionException {
         if (exceptionRuleList != null) {
             for (ExceptionRule exceptionRule : exceptionRuleList) {
                 handleException(exceptionRule);
@@ -336,7 +338,7 @@ public abstract class AdviceActivity extends AbstractActivity {
         }
     }
 
-    protected ExceptionThrownRule handleException(ExceptionRule exceptionRule) {
+    protected ExceptionThrownRule handleException(ExceptionRule exceptionRule) throws ActionExecutionException {
         if (exceptionRule != null) {
             ExceptionThrownRule exceptionThrownRule = exceptionRule.getExceptionThrownRule(getRaisedException());
             if (exceptionThrownRule != null) {

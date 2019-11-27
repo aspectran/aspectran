@@ -20,7 +20,7 @@ package com.aspectran.core.activity;
  * 
  * <p>Created: 2016. 2. 14.</p>
  */
-public class AdapterException extends Exception {
+public class AdapterException extends ActivityException {
 
     /** @serial */
     private static final long serialVersionUID = -4222246026009174749L;

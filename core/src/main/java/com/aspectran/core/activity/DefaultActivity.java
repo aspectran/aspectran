@@ -82,11 +82,6 @@ public class DefaultActivity extends AbstractActivity {
     }
 
     @Override
-    public void close() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
     public Translet getTranslet() {
         return null;
     }

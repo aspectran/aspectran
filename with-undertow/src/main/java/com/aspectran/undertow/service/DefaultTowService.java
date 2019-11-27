@@ -21,9 +21,11 @@ import com.aspectran.core.activity.ActivityTerminatedException;
 import com.aspectran.core.activity.TransletNotFoundException;
 import com.aspectran.core.activity.request.RequestMethodNotAllowedException;
 import com.aspectran.core.activity.request.SizeLimitExceededException;
+import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.config.ExposalsConfig;
 import com.aspectran.core.context.config.WebConfig;
+import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.CoreService;
 import com.aspectran.core.service.ServiceStateListener;
@@ -33,6 +35,7 @@ import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.undertow.activity.TowActivity;
 import com.aspectran.web.support.http.HttpStatus;
 import io.undertow.server.HttpServerExchange;
+import io.undertow.util.Headers;
 
 import java.io.IOException;
 import java.net.URLDecoder;
@@ -85,12 +88,31 @@ public class DefaultTowService extends AbstractTowService {
             }
         }
 
-        Activity activity = null;
         try {
-            activity = new TowActivity(this, exchange);
+            Activity activity = new TowActivity(this, exchange);
             activity.prepare(requestPath, exchange.getRequestMethod().toString());
             activity.perform();
         } catch (TransletNotFoundException e) {
+            String transletName = e.getTransletName();
+            MethodType requestMethod = e.getRequestMethod();
+            if (requestMethod == null) {
+                requestMethod = MethodType.GET;
+            }
+            if (StringUtils.startsWith(transletName, ActivityContext.NAME_SEPARATOR_CHAR) &&
+                    !StringUtils.endsWith(transletName, ActivityContext.NAME_SEPARATOR_CHAR)) {
+                String transletName2 = transletName + ActivityContext.NAME_SEPARATOR_CHAR;
+                if (getActivityContext().getTransletRuleRegistry().contains(transletName2, requestMethod)) {
+                    exchange.setStatusCode(HttpStatus.MOVED_PERMANENTLY.value());
+                    exchange.getResponseHeaders().put(Headers.LOCATION, transletName2);
+                    exchange.getResponseHeaders().put(Headers.CONNECTION, "close");
+                    if (log.isDebugEnabled()) {
+                        log.debug("Provides for \"trailing slash\" redirects and " +
+                                "serving directory index files");
+                    }
+                    return true;
+                }
+            }
+
             if (log.isDebugEnabled()) {
                 log.debug("No translet mapped for request URI [" + requestPath + "]");
             }
@@ -115,11 +137,8 @@ public class DefaultTowService extends AbstractTowService {
         } catch (Exception e) {
             log.error("An error occurred while processing request: " + requestPath, e);
             exchange.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
-        } finally {
-            if (activity != null) {
-                activity.close();
-            }
         }
+
         return true;
     }
 

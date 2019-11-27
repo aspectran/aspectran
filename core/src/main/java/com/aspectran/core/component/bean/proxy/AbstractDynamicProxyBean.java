@@ -16,6 +16,8 @@
 package com.aspectran.core.component.bean.proxy;
 
 import com.aspectran.core.activity.Activity;
+import com.aspectran.core.activity.aspect.AdviceConstraintViolationException;
+import com.aspectran.core.activity.aspect.AspectAdviceException;
 import com.aspectran.core.component.aspect.AspectAdviceRulePostRegister;
 import com.aspectran.core.component.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.component.aspect.AspectRuleRegistry;
@@ -60,7 +62,8 @@ public abstract class AbstractDynamicProxyBean {
     }
 
     protected AspectAdviceRuleRegistry getAspectAdviceRuleRegistry(Activity activity,
-            String transletName, String beanId, String className, String methodName) {
+            String transletName, String beanId, String className, String methodName)
+            throws AdviceConstraintViolationException, AspectAdviceException {
         RelevantAspectRuleHolder holder = getRelevantAspectRuleHolder(transletName, beanId, className, methodName);
         AspectAdviceRuleRegistry aarr = holder.getAspectAdviceRuleRegistry();
         if (aarr != null && aarr.getSettingsAdviceRuleList() != null) {

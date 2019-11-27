@@ -20,7 +20,7 @@ package com.aspectran.core.activity;
  * 
  * <p>Created: 2008. 01. 07 AM 3:35:55</p>
  */
-public class ActivityException extends RuntimeException {
+public class ActivityException extends Exception {
 
     /** @serial */
     private static final long serialVersionUID = -4400747654771758521L;

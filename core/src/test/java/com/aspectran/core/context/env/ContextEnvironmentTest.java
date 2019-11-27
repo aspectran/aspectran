@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.context.env;
 
+import com.aspectran.core.activity.ActivityPerformException;
 import com.aspectran.core.activity.InstantActivity;
 import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.context.ActivityContext;
@@ -38,7 +39,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class ContextEnvironmentTest {
 
     @Test
-    void testEvaluateAsString() throws ActivityContextBuilderException {
+    void testEvaluateAsString() throws ActivityContextBuilderException, ActivityPerformException {
         ItemRule itemRule1 = new ItemRule();
         itemRule1.setName("item1");
         itemRule1.setValue("${param1}, ${param2:Tomato}, @{attr1}, @{attr2:Melon}");
@@ -62,13 +63,14 @@ class ContextEnvironmentTest {
         Map<String, Object> attributes = new HashMap<>();
         attributes.put("attr1", "Strawberry");
 
-        try (InstantActivity activity = new InstantActivity(context, parameterMap, attributes)) {
-            activity.perform(() -> {
-                assertEquals("Apple, Tomato, Strawberry, Melon",
-                        environment.getProperty("item1", activity).toString());
-                return null;
-            });
-        }
+        InstantActivity activity = new InstantActivity(context);
+        activity.setParameterMap(parameterMap);
+        activity.setAttributeMap(attributes);
+        activity.perform(() -> {
+            assertEquals("Apple, Tomato, Strawberry, Melon",
+                    environment.getProperty("item1", activity).toString());
+            return null;
+        });
     }
 
 }

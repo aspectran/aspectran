@@ -15,11 +15,14 @@
  */
 package com.aspectran.web.adapter;
 
+import com.aspectran.core.activity.request.RequestParseException;
 import com.aspectran.core.adapter.AbstractRequestAdapter;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.util.MultiValueMap;
 import com.aspectran.core.util.apon.Parameters;
+import com.aspectran.core.util.logging.Log;
+import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.web.activity.request.ActivityRequestWrapper;
 import com.aspectran.web.activity.request.RequestAttributeMap;
 import com.aspectran.web.activity.request.WebRequestBodyParser;
@@ -38,6 +41,8 @@ import java.util.Map;
  * @since 2011. 3. 13.
  */
 public class HttpServletRequestAdapter extends AbstractRequestAdapter {
+
+    private static final Log log = LogFactory.getLog(HttpServletRequestAdapter.class);
 
     private boolean headersObtained;
 
@@ -97,7 +102,10 @@ public class HttpServletRequestAdapter extends AbstractRequestAdapter {
             try {
                 String body = WebRequestBodyParser.parseBody(getInputStream(), getEncoding(), getMaxRequestSize());
                 setBody(body);
-            } catch (IOException e) {
+            } catch (Exception e) {
+                if (log.isDebugEnabled()) {
+                    log.debug("Failed to parse request body", e);
+                }
                 setBody(null);
             }
         }
@@ -105,7 +113,7 @@ public class HttpServletRequestAdapter extends AbstractRequestAdapter {
     }
 
     @Override
-    public <T extends Parameters> T getBodyAsParameters(Class<T> requiredType) {
+    public <T extends Parameters> T getBodyAsParameters(Class<T> requiredType) throws RequestParseException {
         if (getMediaType() != null) {
             return WebRequestBodyParser.parseBodyAsParameters(this, getMediaType(), requiredType);
         } else {

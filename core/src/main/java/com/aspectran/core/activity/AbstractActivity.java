@@ -35,7 +35,7 @@ public abstract class AbstractActivity implements Activity {
 
     private boolean included;
 
-    private Activity outerActivity;
+    private Activity parentActivity;
 
     private SessionAdapter sessionAdapter;
 
@@ -77,22 +77,20 @@ public abstract class AbstractActivity implements Activity {
      * Saves the current activity.
      */
     protected void saveCurrentActivity() {
-        context.setCurrentActivity(this);
-    }
-
-    /**
-     * Backups the current activity.
-     */
-    protected void backupCurrentActivity() {
-        outerActivity = getCurrentActivity();
+        if (context.hasCurrentActivity()) {
+            parentActivity = getCurrentActivity();
+            context.setCurrentActivity(this);
+        } else {
+            context.setCurrentActivity(this);
+        }
     }
 
     /**
      * Removes the current activity.
      */
     protected void removeCurrentActivity() {
-        if (outerActivity != null) {
-            context.setCurrentActivity(outerActivity);
+        if (parentActivity != null) {
+            context.setCurrentActivity(parentActivity);
         } else {
             context.removeCurrentActivity();
         }
@@ -100,22 +98,8 @@ public abstract class AbstractActivity implements Activity {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T extends Activity> T getOuterActivity() {
-        return (T)outerActivity;
-    }
-
-    @Override
-    public boolean isIncluded() {
-        return included;
-    }
-
-    /**
-     * Sets whether this activity is included in other activity.
-     *
-     * @param included whether or not included in other activity
-     */
-    protected void setIncluded(boolean included) {
-        this.included = included;
+    public <T extends Activity> T getParentActivity() {
+        return (T)parentActivity;
     }
 
     @Override
@@ -175,7 +159,6 @@ public abstract class AbstractActivity implements Activity {
         return raisedException;
     }
 
-
     @Override
     public Throwable getRootCauseOfRaisedException() {
         return ExceptionUtils.getRootCause(raisedException);
@@ -229,12 +212,12 @@ public abstract class AbstractActivity implements Activity {
     }
 
     @Override
-    public void terminate() {
+    public void terminate() throws ActivityTerminatedException {
         terminate("Terminated by user code");
     }
 
     @Override
-    public void terminate(String cause) {
+    public void terminate(String cause) throws ActivityTerminatedException {
         throw new ActivityTerminatedException(cause);
     }
 

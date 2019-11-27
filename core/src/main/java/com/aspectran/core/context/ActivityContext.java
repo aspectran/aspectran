@@ -149,4 +149,6 @@ public interface ActivityContext {
      */
     void removeCurrentActivity();
 
+    boolean hasCurrentActivity();
+
 }

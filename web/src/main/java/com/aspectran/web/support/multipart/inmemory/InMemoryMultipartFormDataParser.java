@@ -105,7 +105,7 @@ public class InMemoryMultipartFormDataParser implements MultipartFormDataParser 
     }
 
     @Override
-    public void parse(RequestAdapter requestAdapter) {
+    public void parse(RequestAdapter requestAdapter) throws MultipartRequestParseException {
         try {
             InMemoryFileItemFactory factory = new InMemoryFileItemFactory();
             if (maxInMemorySize > -1) {

@@ -67,13 +67,12 @@ public class InvokeActionCommand extends AbstractCommand {
                 invokeActionRule.setBeanClass(beanClass);
             }
 
-            try (InstantActivity activity = new InstantActivity(service.getActivityContext())) {
-                Object result = activity.perform(() -> {
-                    InvokeAction invokeAction = new InvokeAction(invokeActionRule);
-                    return invokeAction.execute(activity);
-                });
-                return success(result != null ? result.toString() : null);
-            }
+            InstantActivity activity = new InstantActivity(service.getActivityContext());
+            Object result = activity.perform(() -> {
+                InvokeAction invokeAction = new InvokeAction(invokeActionRule);
+                return invokeAction.execute(activity);
+            });
+            return success(result != null ? result.toString() : null);
         } catch (Exception e) {
             return failed(e);
         }

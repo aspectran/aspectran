@@ -85,6 +85,6 @@ public interface MultipartFormDataParser {
      * @param requestAdapter the request adapter
      * @throws MultipartRequestParseException if multipart resolution failed
      */
-    void parse(RequestAdapter requestAdapter);
+    void parse(RequestAdapter requestAdapter) throws MultipartRequestParseException;
 
 }

@@ -18,7 +18,7 @@ package com.aspectran.core.activity;
 /**
  * Exception thrown when an activity is terminated during preparation or execution.
  */
-public class ActivityTerminatedException extends ActivityException {
+public class ActivityTerminatedException extends ActivityPerformException {
 
     /** @serial */
     private static final long serialVersionUID = 6615572357964634821L;

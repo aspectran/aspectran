@@ -16,11 +16,14 @@
 package com.aspectran.shell.activity;
 
 import com.aspectran.core.activity.Activity;
+import com.aspectran.core.activity.ActivityPerformException;
+import com.aspectran.core.activity.ActivityTerminatedException;
 import com.aspectran.core.activity.AdapterException;
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.request.MissingMandatoryAttributesException;
 import com.aspectran.core.activity.request.MissingMandatoryParametersException;
 import com.aspectran.core.activity.request.ParameterMap;
+import com.aspectran.core.activity.request.RequestParseException;
 import com.aspectran.core.adapter.BasicSessionAdapter;
 import com.aspectran.core.context.expr.ItemEvaluator;
 import com.aspectran.core.context.expr.ItemExpression;
@@ -95,10 +98,10 @@ public class ShellActivity extends CoreActivity {
     @Override
     protected void adapt() throws AdapterException {
         try {
-            if (getOuterActivity() == null) {
+            if (getParentActivity() == null) {
                 setSessionAdapter(service.newSessionAdapter());
             } else {
-                setSessionAdapter(getOuterActivity().getSessionAdapter());
+                setSessionAdapter(getParentActivity().getSessionAdapter());
             }
 
             ShellRequestAdapter requestAdapter = new ShellRequestAdapter(getTranslet().getRequestMethod());
@@ -120,11 +123,11 @@ public class ShellActivity extends CoreActivity {
     }
 
     @Override
-    protected void parseRequest() {
-        if (getOuterActivity() == null) {
+    protected void parseRequest() throws ActivityTerminatedException, RequestParseException {
+        if (getParentActivity() == null) {
             ((ShellRequestAdapter)getRequestAdapter()).preparse(null, parameterMap);
         } else {
-            ((ShellRequestAdapter)getRequestAdapter()).preparse(getOuterActivity().getRequestAdapter());
+            ((ShellRequestAdapter)getRequestAdapter()).preparse(getParentActivity().getRequestAdapter());
         }
 
         if (procedural) {
@@ -175,18 +178,20 @@ public class ShellActivity extends CoreActivity {
     }
 
     @Override
-    public void perform() {
-        if (getOuterActivity() == null && getSessionAdapter() != null) {
+    public void perform() throws ActivityPerformException, ActivityTerminatedException {
+        if (getParentActivity() == null && getSessionAdapter() != null) {
             ((BasicSessionAdapter)getSessionAdapter()).getSessionAgent().access();
         }
+
         super.perform();
     }
 
     @Override
     protected void release() {
-        if (getOuterActivity() == null && getSessionAdapter() != null) {
+        if (getParentActivity() == null && getSessionAdapter() != null) {
             ((BasicSessionAdapter)getSessionAdapter()).getSessionAgent().complete();
         }
+
         super.release();
     }
 
@@ -263,7 +268,7 @@ public class ShellActivity extends CoreActivity {
         }
     }
 
-    private void readRequiredParameters() {
+    private void readRequiredParameters() throws MissingMandatoryParametersException, ActivityTerminatedException {
         Collection<ItemRule> itemRules;
         ItemRuleMap parameterItemRuleMap = getRequestRule().getParameterItemRuleMap();
         if (parameterItemRuleMap != null && !parameterItemRuleMap.isEmpty()) {
@@ -300,7 +305,8 @@ public class ShellActivity extends CoreActivity {
         }
     }
 
-    private Collection<ItemRule> readEachParameter(Collection<ItemRule> itemRules) {
+    private Collection<ItemRule> readEachParameter(Collection<ItemRule> itemRules)
+            throws ActivityTerminatedException {
         Set<ItemRule> missingItemRules = new LinkedHashSet<>();
         try {
             for (ItemRule ir : itemRules) {
@@ -347,7 +353,7 @@ public class ShellActivity extends CoreActivity {
         }
     }
 
-    private Collection<ItemRule> readEachToken(Collection<ItemRule> itemRules) {
+    private Collection<ItemRule> readEachToken(Collection<ItemRule> itemRules) throws ActivityTerminatedException {
         console.setStyle("GREEN");
         console.writeLine("Enter a value for each token:");
         console.styleOff();
@@ -506,7 +512,6 @@ public class ShellActivity extends CoreActivity {
     public <T extends Activity> T newActivity() {
         ShellActivity activity = new ShellActivity(service, console);
         activity.setOutputWriter(outputWriter);
-        activity.setIncluded(true);
         return (T)activity;
     }
 

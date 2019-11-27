@@ -40,7 +40,7 @@ public class ActivityLauncherJob implements Job {
             if (!jobRule.isDisabled()) {
                 SchedulerService service = (SchedulerService)jobDataMap.get(QuartzSchedulerService.SERVICE_DATA_KEY);
                 if (service.isActive()) {
-                    Activity activity = runActivity(service.getActivityContext(), jobExecutionContext, jobRule.getTransletName());
+                    Activity activity = performActivity(service.getActivityContext(), jobExecutionContext, jobRule.getTransletName());
                     jobExecutionContext.setResult(activity);
                 }
             }
@@ -49,18 +49,11 @@ public class ActivityLauncherJob implements Job {
         }
     }
 
-    private Activity runActivity(ActivityContext context, JobExecutionContext jobExecutionContext, String transletName)
+    private Activity performActivity(ActivityContext context, JobExecutionContext jobExecutionContext, String transletName)
             throws ActivityException {
-        Activity activity = null;
-        try {
-            activity = new JobActivity(context, jobExecutionContext);
-            activity.prepare(transletName);
-            activity.perform();
-        } finally {
-            if (activity != null) {
-                activity.close();
-            }
-        }
+        Activity activity = new JobActivity(context, jobExecutionContext);
+        activity.prepare(transletName);
+        activity.perform();
         return activity;
     }
 

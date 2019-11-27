@@ -20,6 +20,7 @@ import com.aspectran.core.activity.process.result.ActionResult;
 import com.aspectran.core.activity.process.result.ContentResult;
 import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.activity.response.Response;
+import com.aspectran.core.activity.response.ResponseException;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.rule.CustomTransformRule;
 import com.aspectran.core.context.rule.type.ResponseType;
@@ -58,7 +59,7 @@ public class CustomTransformResponse implements Response {
     }
 
     @Override
-    public void commit(Activity activity) {
+    public void commit(Activity activity) throws ResponseException {
         ResponseAdapter responseAdapter = activity.getResponseAdapter();
         if (responseAdapter == null) {
             return;
@@ -90,11 +91,6 @@ public class CustomTransformResponse implements Response {
 
     @Override
     public String getContentType() {
-        return null;
-    }
-
-    @Override
-    public String getContentType(Activity activity) {
         return null;
     }
 

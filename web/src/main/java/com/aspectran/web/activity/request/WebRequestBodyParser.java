@@ -51,11 +51,13 @@ public class WebRequestBodyParser {
     private WebRequestBodyParser() {
     }
 
-    public static String parseBody(InputStream inputStream, String encoding) throws IOException {
+    public static String parseBody(InputStream inputStream, String encoding)
+            throws IOException, SizeLimitExceededException {
         return parseBody(inputStream, encoding, 0L);
     }
 
-    public static String parseBody(InputStream inputStream, String encoding, long maxSize) throws IOException {
+    public static String parseBody(InputStream inputStream, String encoding, long maxSize)
+            throws IOException, SizeLimitExceededException {
         StringBuilder sb = new StringBuilder();
         if (encoding == null) {
             encoding = DEFAULT_ENCODING;
@@ -78,7 +80,7 @@ public class WebRequestBodyParser {
         return sb.toString();
     }
 
-    public static void parseURLEncoded(RequestAdapter requestAdapter) {
+    public static void parseURLEncoded(RequestAdapter requestAdapter) throws RequestParseException {
         try {
             String body = requestAdapter.getBody();
             String encoding = requestAdapter.getEncoding();
@@ -114,7 +116,8 @@ public class WebRequestBodyParser {
         }
     }
 
-    public static <T extends Parameters> T parseURLEncoded(RequestAdapter requestAdapter, Class<T> requiredType) {
+    public static <T extends Parameters> T parseURLEncoded(RequestAdapter requestAdapter, Class<T> requiredType)
+            throws RequestParseException {
         try {
             String encoding = requestAdapter.getEncoding();
             if (encoding == null) {
@@ -139,7 +142,7 @@ public class WebRequestBodyParser {
     }
 
     public static <T extends Parameters> T parseBodyAsParameters(RequestAdapter requestAdapter, MediaType mediaType,
-                                                                 Class<T> requiredType) {
+                                                                 Class<T> requiredType) throws RequestParseException {
         if (isURLEncodedForm(mediaType)) {
             return parseURLEncoded(requestAdapter, requiredType);
         } else if (MediaType.APPLICATION_JSON.equalsTypeAndSubtype(mediaType)) {

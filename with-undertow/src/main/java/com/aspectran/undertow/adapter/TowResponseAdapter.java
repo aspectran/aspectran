@@ -169,7 +169,7 @@ public class TowResponseAdapter extends AbstractResponseAdapter {
 
     @Override
     public OutputStream getOutputStream() throws IOException {
-        if (activity.getOuterActivity() != null) {
+        if (activity.getParentActivity() != null) {
             return activity.getResponseAdapter().getOutputStream();
         }
         if (responseState == ResponseState.WRITER) {
@@ -183,8 +183,8 @@ public class TowResponseAdapter extends AbstractResponseAdapter {
     @Override
     public Writer getWriter() throws IOException {
         if (writer == null) {
-            if (activity.getOuterActivity() != null) {
-                writer = activity.getOuterActivity().getResponseAdapter().getWriter();
+            if (activity.getParentActivity() != null) {
+                writer = activity.getParentActivity().getResponseAdapter().getWriter();
             } else {
                 if (responseState == ResponseState.STREAM) {
                     throw new IllegalStateException("Cannot call getWriter(), getOutputStream() already called");

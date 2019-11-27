@@ -17,6 +17,7 @@ package com.aspectran.web.adapter;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.response.Response;
+import com.aspectran.core.activity.response.ResponseException;
 import com.aspectran.core.activity.response.transform.TransformResponse;
 import com.aspectran.core.adapter.AbstractResponseAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
@@ -153,14 +154,18 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
         ((HttpServletResponse)getAdaptee()).setStatus(status);
     }
 
-    private void precommit() {
+    private void precommit() throws IOException {
         if (!precommitDone) {
             precommitDone = true;
             Response response = activity.getDeclaredResponse();
             if (response instanceof TransformResponse) {
                 TransformType transformType = ((TransformResponse)response).getTransformType();
                 if (transformType == null) {
-                    response.commit(activity);
+                    try {
+                        response.commit(activity);
+                    } catch (ResponseException e) {
+                        throw new IOException("Error during precommit", e);
+                    }
                 }
             }
         }

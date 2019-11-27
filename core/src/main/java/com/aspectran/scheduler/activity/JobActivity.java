@@ -64,7 +64,6 @@ public class JobActivity extends CoreActivity {
     @SuppressWarnings("unchecked")
     public <T extends Activity> T newActivity() {
         JobActivity activity = new JobActivity(getActivityContext(), jobExecutionContext);
-        activity.setIncluded(true);
         return (T)activity;
     }
 

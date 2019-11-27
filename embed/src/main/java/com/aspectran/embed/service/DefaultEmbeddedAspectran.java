@@ -108,10 +108,9 @@ public class DefaultEmbeddedAspectran extends AbstractEmbeddedAspectran {
             }
         }
 
-        AspectranActivity activity = null;
         Translet translet = null;
         try {
-            activity = new AspectranActivity(this);
+            AspectranActivity activity = new AspectranActivity(this);
             activity.setParameterMap(parameterMap);
             activity.setAttributeMap(attributeMap);
             activity.setBody(body);
@@ -124,10 +123,6 @@ public class DefaultEmbeddedAspectran extends AbstractEmbeddedAspectran {
             }
         } catch (Exception e) {
             throw new AspectranServiceException("An error occurred while processing translet: " + name, e);
-        } finally {
-            if (activity != null) {
-                activity.close();
-            }
         }
         return translet;
     }
@@ -160,7 +155,10 @@ public class DefaultEmbeddedAspectran extends AbstractEmbeddedAspectran {
             }
         }
 
-        try (InstantActivity activity = new InstantActivity(getActivityContext(), parameterMap, attributeMap)) {
+        try {
+            InstantActivity activity = new InstantActivity(getActivityContext());
+            activity.setParameterMap(parameterMap);
+            activity.setAttributeMap(attributeMap);
             activity.setSessionAdapter(newSessionAdapter());
             Object result = activity.perform(() -> getActivityContext().getTemplateRenderer().render(templateId));
             return result.toString();

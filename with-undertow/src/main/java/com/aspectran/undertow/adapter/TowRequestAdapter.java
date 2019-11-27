@@ -15,10 +15,13 @@
  */
 package com.aspectran.undertow.adapter;
 
+import com.aspectran.core.activity.request.RequestParseException;
 import com.aspectran.core.adapter.AbstractRequestAdapter;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.util.MultiValueMap;
 import com.aspectran.core.util.apon.Parameters;
+import com.aspectran.core.util.logging.Log;
+import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.web.activity.request.WebRequestBodyParser;
 import com.aspectran.web.support.http.MediaType;
 import io.undertow.server.HttpServerExchange;
@@ -39,6 +42,8 @@ import java.util.Map;
  * <p>Created: 2019-07-27</p>
  */
 public class TowRequestAdapter extends AbstractRequestAdapter {
+
+    private static final Log log = LogFactory.getLog(TowRequestAdapter.class);
 
     private boolean headersObtained;
 
@@ -100,7 +105,10 @@ public class TowRequestAdapter extends AbstractRequestAdapter {
             try {
                 String body = WebRequestBodyParser.parseBody(getInputStream(), getEncoding(), getMaxRequestSize());
                 setBody(body);
-            } catch (IOException e) {
+            } catch (Exception e) {
+                if (log.isDebugEnabled()) {
+                    log.debug("Failed to parse request body", e);
+                }
                 setBody(null);
             }
         }
@@ -108,7 +116,7 @@ public class TowRequestAdapter extends AbstractRequestAdapter {
     }
 
     @Override
-    public <T extends Parameters> T getBodyAsParameters(Class<T> requiredType) {
+    public <T extends Parameters> T getBodyAsParameters(Class<T> requiredType) throws RequestParseException {
         if (getMediaType() != null) {
             return WebRequestBodyParser.parseBodyAsParameters(this, getMediaType(), requiredType);
         } else {

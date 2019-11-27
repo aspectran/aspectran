@@ -19,6 +19,7 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.FormattingContext;
 import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.activity.response.Response;
+import com.aspectran.core.activity.response.ResponseException;
 import com.aspectran.core.activity.response.transform.xml.ContentsInputSource;
 import com.aspectran.core.activity.response.transform.xml.ContentsXMLReader;
 import com.aspectran.core.adapter.ApplicationAdapter;
@@ -84,7 +85,7 @@ public class XslTransformResponse extends TransformResponse {
     }
 
     @Override
-    public void commit(Activity activity) {
+    public void commit(Activity activity) throws ResponseException {
         ResponseAdapter responseAdapter = activity.getResponseAdapter();
         if (responseAdapter == null) {
             return;
@@ -131,7 +132,8 @@ public class XslTransformResponse extends TransformResponse {
         return new XslTransformResponse(getTransformRule().replicate());
     }
 
-    private void loadTemplate(ApplicationAdapter applicationAdapter) throws TransformerConfigurationException, IOException {
+    private void loadTemplate(ApplicationAdapter applicationAdapter)
+            throws TransformerConfigurationException, IOException {
         String templateFile = templateRule.getFile();
         String templateResource = templateRule.getResource();
         String templateUrl = templateRule.getUrl();

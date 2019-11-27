@@ -65,7 +65,8 @@ public class DefaultDaemonService extends AbstractDaemonService {
     }
 
     @Override
-    public Translet translate(String name, MethodType method, ParameterMap parameterMap, Map<String, Object> attributeMap) {
+    public Translet translate(String name, MethodType method,
+                              ParameterMap parameterMap, Map<String, Object> attributeMap) {
         if (name == null) {
             throw new IllegalArgumentException("name must not be null");
         }
@@ -84,10 +85,9 @@ public class DefaultDaemonService extends AbstractDaemonService {
             }
         }
 
-        DaemonActivity activity = null;
         Translet translet = null;
         try {
-            activity = new DaemonActivity(this);
+            DaemonActivity activity = new DaemonActivity(this);
             activity.setParameterMap(parameterMap);
             activity.setAttributeMap(attributeMap);
             activity.prepare(name, method);
@@ -99,10 +99,6 @@ public class DefaultDaemonService extends AbstractDaemonService {
             }
         } catch (Exception e) {
             throw new AspectranServiceException("An error occurred while processing translet: " + name, e);
-        } finally {
-            if (activity != null) {
-                activity.close();
-            }
         }
         return translet;
     }

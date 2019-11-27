@@ -16,9 +16,12 @@
 package com.aspectran.embed.activity;
 
 import com.aspectran.core.activity.Activity;
+import com.aspectran.core.activity.ActivityPerformException;
+import com.aspectran.core.activity.ActivityTerminatedException;
 import com.aspectran.core.activity.AdapterException;
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.request.ParameterMap;
+import com.aspectran.core.activity.request.RequestParseException;
 import com.aspectran.core.adapter.BasicSessionAdapter;
 import com.aspectran.core.util.OutputStringWriter;
 import com.aspectran.embed.adapter.AspectranRequestAdapter;
@@ -80,10 +83,10 @@ public class AspectranActivity extends CoreActivity {
     @Override
     protected void adapt() throws AdapterException {
         try {
-            if (getOuterActivity() == null) {
+            if (getParentActivity() == null) {
                 setSessionAdapter(aspectran.newSessionAdapter());
             } else {
-                setSessionAdapter(getOuterActivity().getSessionAdapter());
+                setSessionAdapter(getParentActivity().getSessionAdapter());
             }
 
             AspectranRequestAdapter requestAdapter = new AspectranRequestAdapter(getTranslet().getRequestMethod());
@@ -105,29 +108,31 @@ public class AspectranActivity extends CoreActivity {
     }
 
     @Override
-    protected void parseRequest() {
-        if (getOuterActivity() == null) {
+    protected void parseRequest() throws ActivityTerminatedException, RequestParseException {
+        if (getParentActivity() == null) {
             ((AspectranRequestAdapter)getRequestAdapter()).preparse(attributeMap, parameterMap);
         } else {
-            ((AspectranRequestAdapter)getRequestAdapter()).preparse(getOuterActivity().getRequestAdapter());
+            ((AspectranRequestAdapter)getRequestAdapter()).preparse(getParentActivity().getRequestAdapter());
         }
 
         super.parseRequest();
     }
 
     @Override
-    public void perform() {
-        if (getOuterActivity() == null && getSessionAdapter() != null) {
+    public void perform() throws ActivityTerminatedException, ActivityPerformException {
+        if (getParentActivity() == null && getSessionAdapter() != null) {
             ((BasicSessionAdapter)getSessionAdapter()).getSessionAgent().access();
         }
+
         super.perform();
     }
 
     @Override
     protected void release() {
-        if (getOuterActivity() == null && getSessionAdapter() != null) {
+        if (getParentActivity() == null && getSessionAdapter() != null) {
             ((BasicSessionAdapter)getSessionAdapter()).getSessionAgent().complete();
         }
+
         super.release();
     }
 
@@ -135,7 +140,6 @@ public class AspectranActivity extends CoreActivity {
     @SuppressWarnings("unchecked")
     public <T extends Activity> T newActivity() {
         AspectranActivity activity = new AspectranActivity(aspectran, outputWriter);
-        activity.setIncluded(true);
         return (T)activity;
     }
 

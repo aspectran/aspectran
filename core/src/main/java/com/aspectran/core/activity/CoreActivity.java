@@ -26,8 +26,10 @@ import com.aspectran.core.activity.request.MissingMandatoryAttributesException;
 import com.aspectran.core.activity.request.MissingMandatoryParametersException;
 import com.aspectran.core.activity.request.PathVariableMap;
 import com.aspectran.core.activity.request.RequestMethodNotAllowedException;
+import com.aspectran.core.activity.request.RequestParseException;
 import com.aspectran.core.activity.response.ForwardResponse;
 import com.aspectran.core.activity.response.Response;
+import com.aspectran.core.activity.response.ResponseException;
 import com.aspectran.core.component.bean.scope.Scope;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.expr.ItemEvaluator;
@@ -60,7 +62,7 @@ import com.aspectran.core.util.logging.LogFactory;
  *
  * <p>Created: 2008. 03. 22 PM 5:48:09</p>
  */
-public class CoreActivity extends AdviceActivity implements AutoCloseable {
+public class CoreActivity extends AdviceActivity {
 
     private static final Log log = LogFactory.getLog(CoreActivity.class);
 
@@ -82,36 +84,35 @@ public class CoreActivity extends AdviceActivity implements AutoCloseable {
     }
 
     @Override
-    public void prepare(String requestName) {
+    public void prepare(String requestName)
+            throws TransletNotFoundException, ActivityPrepareException {
         TransletRule transletRule = getTransletRule(requestName, MethodType.GET);
         if (transletRule == null) {
             throw new TransletNotFoundException(requestName);
         }
 
-        prepare(requestName, MethodType.GET, transletRule, null);
+        prepare(requestName, MethodType.GET, transletRule);
     }
 
     @Override
-    public void prepare(TransletRule transletRule) {
+    public void prepare(TransletRule transletRule) throws ActivityPrepareException {
         prepare(transletRule.getName(), transletRule);
     }
 
     @Override
-    public void prepare(String requestName, TransletRule transletRule) {
-        prepare(requestName, MethodType.GET, transletRule, null);
+    public void prepare(String requestName, TransletRule transletRule) throws ActivityPrepareException {
+        prepare(requestName, MethodType.GET, transletRule);
     }
 
     @Override
-    public void prepare(String requestName, String requestMethod) {
+    public void prepare(String requestName, String requestMethod)
+            throws TransletNotFoundException, ActivityPrepareException {
         prepare(requestName, MethodType.resolve(requestMethod));
     }
 
     @Override
-    public void prepare(String requestName, MethodType requestMethod) {
-        prepare(requestName, requestMethod, null);
-    }
-
-    private void prepare(String requestName, MethodType requestMethod, Translet parentTranslet) {
+    public void prepare(String requestName, MethodType requestMethod)
+            throws TransletNotFoundException, ActivityPrepareException {
         if (requestMethod == null) {
             requestMethod = MethodType.GET;
         }
@@ -121,7 +122,7 @@ public class CoreActivity extends AdviceActivity implements AutoCloseable {
             throw new TransletNotFoundException(requestName);
         }
 
-        prepare(requestName, requestMethod, transletRule, parentTranslet);
+        prepare(requestName, requestMethod, transletRule);
     }
 
     /**
@@ -131,10 +132,10 @@ public class CoreActivity extends AdviceActivity implements AutoCloseable {
      * @param requestName the request name
      * @param requestMethod the request method
      * @param transletRule the translet rule
-     * @param parentTranslet the process result that was created earlier
      */
-    private void prepare(String requestName, MethodType requestMethod, TransletRule transletRule,
-                         Translet parentTranslet) {
+    private void prepare(String requestName, MethodType requestMethod, TransletRule transletRule)
+            throws ActivityPrepareException {
+        Translet parentTranslet = translet;
         try {
             if (log.isDebugEnabled()) {
                 log.debug("Translet " + transletRule);
@@ -144,7 +145,7 @@ public class CoreActivity extends AdviceActivity implements AutoCloseable {
             translet.setRequestName(requestName);
             translet.setRequestMethod(requestMethod);
             if (parentTranslet != null) {
-                translet.setProcessResult(parentTranslet.getProcessResult());
+                translet.setParentTranslet(parentTranslet);
             }
 
             MethodType allowedMethod = getRequestRule().getAllowedMethod();
@@ -153,27 +154,6 @@ public class CoreActivity extends AdviceActivity implements AutoCloseable {
             }
 
             prepareAspectAdviceRule(transletRule);
-
-            if (parentTranslet == null) {
-                if (isIncluded()) {
-                    backupCurrentActivity();
-                    saveCurrentActivity();
-                } else {
-                    saveCurrentActivity();
-                }
-                adapt();
-                parseRequest();
-            }
-
-            parseDeclaredParameters();
-            parseDeclaredAttributes();
-            parsePathVariables();
-
-            if (parentTranslet == null) {
-                resolveLocale();
-            }
-        } catch (ActivityTerminatedException e) {
-            throw e;
         } catch (Exception e) {
             throw new ActivityPrepareException("Failed to prepare activity for translet " + transletRule, e);
         }
@@ -182,7 +162,7 @@ public class CoreActivity extends AdviceActivity implements AutoCloseable {
     protected void adapt() throws AdapterException {
     }
 
-    protected void parseRequest() {
+    protected void parseRequest() throws ActivityTerminatedException, RequestParseException {
     }
 
     protected LocaleResolver resolveLocale() {
@@ -196,17 +176,31 @@ public class CoreActivity extends AdviceActivity implements AutoCloseable {
         return localeResolver;
     }
 
-
     @Override
-    public void perform() {
+    public void perform() throws ActivityPerformException {
         perform(null);
     }
 
     @Override
-    public Object perform(InstantAction instantAction) {
-        ForwardRule forwardRule = null;
+    public Object perform(InstantAction instantAction) throws ActivityPerformException {
         Object result = null;
+        ForwardRule forwardRule = null;
         try {
+            if (translet == null || !translet.hasParentTranslet()) {
+                saveCurrentActivity();
+                adapt();
+                parseRequest();
+            }
+
+            if (translet != null) {
+                parseDeclaredParameters();
+                parseDeclaredAttributes();
+                parsePathVariables();
+                if (!translet.hasParentTranslet()) {
+                    resolveLocale();
+                }
+            }
+
             try {
                 setCurrentAspectAdviceType(AspectAdviceType.BEFORE);
                 executeAdvice(getBeforeAdviceRuleList(), true);
@@ -240,13 +234,10 @@ public class CoreActivity extends AdviceActivity implements AutoCloseable {
 
             if (isExceptionRaised()) {
                 setCurrentAspectAdviceType(AspectAdviceType.THROWN);
-
                 exception();
-
                 if (translet != null) {
                     response();
                 }
-
                 if (isExceptionRaised()) {
                     throw getRootCauseOfRaisedException();
                 }
@@ -259,10 +250,7 @@ public class CoreActivity extends AdviceActivity implements AutoCloseable {
             throw new ActivityPerformException("Failed to perform the activity", e);
         } finally {
             if (forwardRule == null) {
-                Scope requestScope = getRequestAdapter().getRequestScope(false);
-                if (requestScope != null) {
-                    requestScope.destroy();
-                }
+                finish();
             }
         }
         return result;
@@ -271,7 +259,7 @@ public class CoreActivity extends AdviceActivity implements AutoCloseable {
     /**
      * Produce the result of the content and its subordinate actions.
      */
-    private void produce() {
+    private void produce() throws ActionExecutionException {
         ContentList contentList = getTransletRule().getContentList();
         if (contentList != null) {
             ProcessResult processResult = translet.getProcessResult();
@@ -296,11 +284,85 @@ public class CoreActivity extends AdviceActivity implements AutoCloseable {
         }
     }
 
-    protected void execute(ActionList actionList) {
+    private ForwardRule response() throws ResponseException {
+        if (!committed) {
+            committed = true;
+        } else {
+            return null;
+        }
+
+        Response res = getResponse();
+        if (res != null) {
+            res.commit(this);
+
+            if (isExceptionRaised()) {
+                clearRaisedException();
+            }
+
+            if (res.getResponseType() == ResponseType.FORWARD) {
+                ForwardResponse forwardResponse = (ForwardResponse)res;
+                return forwardResponse.getForwardRule();
+            }
+        }
+        return null;
+    }
+
+    private void forward(ForwardRule forwardRule)
+            throws ActivityPrepareException, TransletNotFoundException,
+            ActivityTerminatedException, ActivityPerformException {
+        if (log.isDebugEnabled()) {
+            log.debug("Forwarding from [" + translet.getRequestName() + "] to [" +
+                    forwardRule.getTransletName() + "]");
+        }
+
+        reserveResponse(null);
+        committed = false;
+
+        prepare(forwardRule.getTransletName(), forwardRule.getRequestMethod());
+        perform();
+    }
+
+    private void exception() throws ActionExecutionException {
+        reserveResponse(null);
+        committed = false;
+
+        if (translet != null) {
+            if (getTransletRule().getExceptionRule() != null) {
+                handleException(getTransletRule().getExceptionRule());
+            }
+        }
+        if (getExceptionRuleList() != null) {
+            handleException(getExceptionRuleList());
+        }
+    }
+
+    protected void release() {
+    }
+
+    private void finish() {
+        try {
+            Scope requestScope = getRequestAdapter().getRequestScope(false);
+            if (requestScope != null) {
+                requestScope.destroy();
+            }
+
+            release();
+
+            if (getResponseAdapter() != null) {
+                getResponseAdapter().flush();
+            }
+        } catch (Exception e) {
+            log.error("An error was detected while finishing an activity", e);
+        } finally {
+            removeCurrentActivity();
+        }
+    }
+
+    protected void execute(ActionList actionList) throws ActionExecutionException {
         execute(actionList, null);
     }
 
-    protected void execute(ActionList actionList, ContentResult contentResult) {
+    protected void execute(ActionList actionList, ContentResult contentResult) throws ActionExecutionException {
         if (contentResult == null) {
             ProcessResult processResult = translet.getProcessResult();
             if (processResult == null) {
@@ -330,7 +392,7 @@ public class CoreActivity extends AdviceActivity implements AutoCloseable {
      * @param action the executable action
      * @param contentResult the content result
      */
-    private void execute(Executable action, ContentResult contentResult) {
+    private void execute(Executable action, ContentResult contentResult) throws ActionExecutionException {
         try {
             if (log.isDebugEnabled()) {
                 log.debug("Action " + action);
@@ -365,58 +427,8 @@ public class CoreActivity extends AdviceActivity implements AutoCloseable {
         }
     }
 
-    private ForwardRule response() {
-        if (!committed) {
-            committed = true;
-        } else {
-            return null;
-        }
-
-        Response res = getResponse();
-        if (res != null) {
-            res.commit(this);
-
-            if (isExceptionRaised()) {
-                clearRaisedException();
-            }
-
-            if (res.getResponseType() == ResponseType.FORWARD) {
-                ForwardResponse forwardResponse = (ForwardResponse)res;
-                return forwardResponse.getForwardRule();
-            }
-        }
-        return null;
-    }
-
-    private void forward(ForwardRule forwardRule) {
-        if (log.isDebugEnabled()) {
-            log.debug("Forwarding from [" + translet.getRequestName() + "] to [" +
-                    forwardRule.getTransletName() + "]");
-        }
-
-        reserveResponse(null);
-        committed = false;
-
-        prepare(forwardRule.getTransletName(), forwardRule.getRequestMethod(), translet);
-        perform();
-    }
-
-    private void exception() {
-        reserveResponse(null);
-        committed = false;
-
-        if (translet != null) {
-            if (getTransletRule().getExceptionRule() != null) {
-                handleException(getTransletRule().getExceptionRule());
-            }
-        }
-        if (getExceptionRuleList() != null) {
-            handleException(getExceptionRuleList());
-        }
-    }
-
     @Override
-    public ExceptionThrownRule handleException(ExceptionRule exceptionRule) {
+    public ExceptionThrownRule handleException(ExceptionRule exceptionRule) throws ActionExecutionException {
         ExceptionThrownRule exceptionThrownRule = super.handleException(exceptionRule);
         if (translet != null && exceptionThrownRule != null && !isResponseReserved()) {
             Response response = getDesiredResponse();
@@ -427,24 +439,6 @@ public class CoreActivity extends AdviceActivity implements AutoCloseable {
             }
         }
         return exceptionThrownRule;
-    }
-
-    protected void release() {
-    }
-
-    @Override
-    public void close() {
-        try {
-            release();
-
-            if (getResponseAdapter() != null) {
-                getResponseAdapter().flush();
-            }
-        } catch (Exception e) {
-            log.error("An error was detected while finishing an activity", e);
-        } finally {
-            removeCurrentActivity();
-        }
     }
 
     private Response getResponse() {
@@ -561,7 +555,7 @@ public class CoreActivity extends AdviceActivity implements AutoCloseable {
     /**
      * Parses the declared parameters.
      */
-    protected void parseDeclaredParameters() {
+    protected void parseDeclaredParameters() throws MissingMandatoryParametersException {
         ItemRuleMap itemRuleMap = getRequestRule().getParameterItemRuleMap();
         if (itemRuleMap != null && !itemRuleMap.isEmpty()) {
             ItemEvaluator evaluator = null;
@@ -596,7 +590,7 @@ public class CoreActivity extends AdviceActivity implements AutoCloseable {
     /**
      * Parses the declared attributes.
      */
-    protected void parseDeclaredAttributes() {
+    protected void parseDeclaredAttributes() throws MissingMandatoryAttributesException {
         ItemRuleMap itemRuleMap = getRequestRule().getAttributeItemRuleMap();
         if (itemRuleMap != null && !itemRuleMap.isEmpty()) {
             ItemEvaluator evaluator = new ItemExpression(this);

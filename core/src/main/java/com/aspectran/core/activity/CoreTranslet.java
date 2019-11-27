@@ -396,7 +396,7 @@ public class CoreTranslet extends AbstractTranslet {
 
     @Override
     public String toString() {
-        if (getResponseAdapter().getAdaptee() == null) {
+        if (getResponseAdapter() != null && getResponseAdapter().getAdaptee() == null) {
             try {
                 return getResponseAdapter().getWriter().toString();
             } catch (IOException e) {

@@ -35,7 +35,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class ActivityDataMapTest {
 
     @Test
-    void testEvaluateAsString() throws ActivityContextBuilderException {
+    void testEvaluateAsString() throws ActivityContextBuilderException, ActivityPerformException {
         ActivityContextBuilder builder = new HybridActivityContextBuilder();
         builder.setDebugMode(true);
         ActivityContext context = builder.build();
@@ -48,22 +48,21 @@ class ActivityDataMapTest {
         attributes.put("attr1", "Strawberry");
         attributes.put("attr2", "Melon");
 
-        try (InstantActivity activity = new InstantActivity(context, parameterMap, attributes)) {
-            activity.perform(() -> {
-                ActivityDataMap activityDataMap = new ActivityDataMap(activity);
-                activityDataMap.put("result1", 1);
-
-                assertEquals("Apple", activityDataMap.getParameterWithoutCache("param1"));
-                assertEquals("Apple", activityDataMap.get("param1"));
-                assertEquals("Tomato", activityDataMap.get("param2"));
-                assertEquals("Strawberry", activityDataMap.getAttributeWithoutCache("attr1"));
-                assertEquals("Strawberry", activityDataMap.get("attr1"));
-                assertEquals("Melon", activityDataMap.get("attr2"));
-                assertEquals(1, activityDataMap.get("result1"));
-
-                return null;
-            });
-        }
+        InstantActivity<ActivityDataMap> activity = new InstantActivity<>(context);
+        activity.setParameterMap(parameterMap);
+        activity.setAttributeMap(attributes);
+        ActivityDataMap activityDataMap = activity.perform(() -> {
+            ActivityDataMap activityDataMap2 = new ActivityDataMap(activity);
+            activityDataMap2.put("result1", 1);
+            return activityDataMap2;
+        });
+        assertEquals("Apple", activityDataMap.getParameterWithoutCache("param1"));
+        assertEquals("Apple", activityDataMap.get("param1"));
+        assertEquals("Tomato", activityDataMap.get("param2"));
+        assertEquals("Strawberry", activityDataMap.getAttributeWithoutCache("attr1"));
+        assertEquals("Strawberry", activityDataMap.get("attr1"));
+        assertEquals("Melon", activityDataMap.get("attr2"));
+        assertEquals(1, activityDataMap.get("result1"));
     }
 
 }
