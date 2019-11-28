@@ -64,18 +64,18 @@ public abstract class AbstractTranslet implements Translet {
         return transletRule.getResponseRule();
     }
 
-    public Translet getParentTranslet() {
+    protected Translet getParentTranslet() {
         return parentTranslet;
     }
 
-    public void setParentTranslet(Translet parentTranslet) {
+    protected void setParentTranslet(Translet parentTranslet) {
         this.parentTranslet = parentTranslet;
         if (parentTranslet != null) {
             setProcessResult(parentTranslet.getProcessResult());
         }
     }
 
-    public boolean hasParentTranslet() {
+    protected boolean hasParentTranslet() {
         return (parentTranslet != null);
     }
 

@@ -16,7 +16,6 @@
 package com.aspectran.web.socket.jsr356;
 
 import com.aspectran.core.activity.ActivityException;
-import com.aspectran.core.activity.InstantAction;
 import com.aspectran.core.activity.InstantActivity;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.component.bean.BeanRegistry;
@@ -26,6 +25,8 @@ import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.env.Environment;
 import com.aspectran.core.support.i18n.message.MessageSource;
 import com.aspectran.core.util.Assert;
+
+import java.util.concurrent.Callable;
 
 /**
  * <p>Created: 29/09/2019</p>
@@ -64,13 +65,12 @@ public abstract class ActivityContextAwareEndpoint implements ActivityContextAwa
         return getActivityContext().getMessageSource();
     }
 
-    @SuppressWarnings("unchecked")
-    public <T> T instantActivity(InstantAction action) throws ActivityException {
-        if (action == null) {
-            throw new IllegalArgumentException("action must not be null");
+    public <V> V instantActivity(Callable<V> instantAction) throws ActivityException {
+        if (instantAction == null) {
+            throw new IllegalArgumentException("instantAction must not be null");
         }
-        InstantActivity<T> activity = new InstantActivity<>(getActivityContext());
-        return activity.perform(action);
+        InstantActivity activity = new InstantActivity(getActivityContext());
+        return activity.perform(instantAction);
     }
 
 }

@@ -54,6 +54,8 @@ import com.aspectran.core.support.i18n.locale.LocaleResolver;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
+import java.util.concurrent.Callable;
+
 /**
  * Core activity that handles all external requests.
  *
@@ -83,34 +85,65 @@ public class CoreActivity extends AdviceActivity {
         super(context);
     }
 
-    @Override
+    /**
+     * Prepare for the activity.
+     *
+     * @param requestName the request name
+     * @throws TransletNotFoundException thrown if the translet is not found
+     * @throws ActivityPrepareException thrown when an exception occurs while preparing an activity
+     */
     public void prepare(String requestName)
             throws TransletNotFoundException, ActivityPrepareException {
         TransletRule transletRule = getTransletRule(requestName, MethodType.GET);
         if (transletRule == null) {
-            throw new TransletNotFoundException(requestName);
+            throw new TransletNotFoundException(requestName, MethodType.GET);
         }
 
         prepare(requestName, MethodType.GET, transletRule);
     }
 
-    @Override
+    /**
+     * Prepare for the activity.
+     *
+     * @param transletRule the translet rule
+     * @throws ActivityPrepareException thrown when an exception occurs while preparing an activity
+     */
     public void prepare(TransletRule transletRule) throws ActivityPrepareException {
         prepare(transletRule.getName(), transletRule);
     }
 
-    @Override
+    /**
+     * Prepare for the activity.
+     *
+     * @param requestName the request name
+     * @param transletRule the translet rule
+     * @throws ActivityPrepareException thrown when an exception occurs while preparing an activity
+     */
     public void prepare(String requestName, TransletRule transletRule) throws ActivityPrepareException {
         prepare(requestName, MethodType.GET, transletRule);
     }
 
-    @Override
+    /**
+     * Prepare for the activity.
+     *
+     * @param requestName the request name
+     * @param requestMethod the request method
+     * @throws TransletNotFoundException thrown if the translet is not found
+     * @throws ActivityPrepareException thrown when an exception occurs while preparing an activity
+     */
     public void prepare(String requestName, String requestMethod)
             throws TransletNotFoundException, ActivityPrepareException {
         prepare(requestName, MethodType.resolve(requestMethod));
     }
 
-    @Override
+    /**
+     * Prepare for the activity.
+     *
+     * @param requestName the request name
+     * @param requestMethod the request method
+     * @throws TransletNotFoundException thrown if the translet is not found
+     * @throws ActivityPrepareException thrown when an exception occurs while preparing an activity
+     */
     public void prepare(String requestName, MethodType requestMethod)
             throws TransletNotFoundException, ActivityPrepareException {
         if (requestMethod == null) {
@@ -119,7 +152,7 @@ public class CoreActivity extends AdviceActivity {
 
         TransletRule transletRule = getTransletRule(requestName, requestMethod);
         if (transletRule == null) {
-            throw new TransletNotFoundException(requestName);
+            throw new TransletNotFoundException(requestName, requestMethod);
         }
 
         prepare(requestName, requestMethod, transletRule);
@@ -182,8 +215,8 @@ public class CoreActivity extends AdviceActivity {
     }
 
     @Override
-    public Object perform(InstantAction instantAction) throws ActivityPerformException {
-        Object result = null;
+    public <V> V perform(Callable<V> instantAction) throws ActivityPerformException {
+        V result = null;
         ForwardRule forwardRule = null;
         try {
             if (translet == null || !translet.hasParentTranslet()) {
@@ -212,13 +245,12 @@ public class CoreActivity extends AdviceActivity {
 
                     forwardRule = response();
                     if (forwardRule != null) {
-                        forward(forwardRule);
-                        return null;
+                        return forward(forwardRule, instantAction);
                     }
                 }
 
                 if (instantAction != null) {
-                    result = instantAction.execute();
+                    result = instantAction.call();
                 }
 
                 setCurrentAspectAdviceType(AspectAdviceType.AFTER);
@@ -307,9 +339,8 @@ public class CoreActivity extends AdviceActivity {
         return null;
     }
 
-    private void forward(ForwardRule forwardRule)
-            throws ActivityPrepareException, TransletNotFoundException,
-            ActivityTerminatedException, ActivityPerformException {
+    private <V> V forward(ForwardRule forwardRule, Callable<V> instantAction)
+            throws TransletNotFoundException, ActivityPrepareException, ActivityPerformException {
         if (log.isDebugEnabled()) {
             log.debug("Forwarding from [" + translet.getRequestName() + "] to [" +
                     forwardRule.getTransletName() + "]");
@@ -319,7 +350,7 @@ public class CoreActivity extends AdviceActivity {
         committed = false;
 
         prepare(forwardRule.getTransletName(), forwardRule.getRequestMethod());
-        perform();
+        return perform(instantAction);
     }
 
     private void exception() throws ActionExecutionException {
@@ -627,11 +658,6 @@ public class CoreActivity extends AdviceActivity {
                 pathVariableMap.applyTo(translet);
             }
         }
-    }
-
-    @Override
-    public <T extends Activity> T newActivity() {
-        throw new UnsupportedOperationException("newActivity");
     }
 
 }

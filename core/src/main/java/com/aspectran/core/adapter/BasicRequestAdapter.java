@@ -37,18 +37,18 @@ public class BasicRequestAdapter extends AbstractRequestAdapter {
         super(requestMethod, adaptee);
     }
 
-    public void preparse(Map<String, Object> attributeMap, ParameterMap parameterMap) {
-        if (attributeMap != null) {
-            setAttributeMap(attributeMap);
-        }
+    public void preparse(ParameterMap parameterMap, Map<String, Object> attributeMap) {
         if (parameterMap != null) {
             setParameterMap(parameterMap);
+        }
+        if (attributeMap != null) {
+            setAttributeMap(attributeMap);
         }
     }
 
     public void preparse(RequestAdapter requestAdapter) {
-        setAttributeMap(requestAdapter.getAttributeMap());
         getParameterMap().putAll(requestAdapter.getParameterMap());
+        setAttributeMap(requestAdapter.getAttributeMap());
         setLocale(requestAdapter.getLocale());
     }
 

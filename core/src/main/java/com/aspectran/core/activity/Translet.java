@@ -101,26 +101,26 @@ public interface Translet {
     /**
      * Returns the adaptee object to provide session information.
      *
-     * @param <T> the type of the session adaptee
+     * @param <V> the type of the session adaptee
      * @return the session adaptee object
      */
-    <T> T getSessionAdaptee();
+    <V> V getSessionAdaptee();
 
     /**
      * Returns the adaptee object to provide request information.
      *
-     * @param <T> the type of the request adaptee
+     * @param <V> the type of the request adaptee
      * @return the request adaptee object
      */
-    <T> T getRequestAdaptee();
+    <V> V getRequestAdaptee();
 
     /**
      * Returns the adaptee object to provide response information.
      *
-     * @param <T> the type of the response adaptee
+     * @param <V> the type of the response adaptee
      * @return the response adaptee object
      */
-    <T> T getResponseAdaptee();
+    <V> V getResponseAdaptee();
 
     /**
      * Returns the intended request encoding.
@@ -169,20 +169,20 @@ public interface Translet {
     /**
      * Gets the setting value in the translet scope.
      *
-     * @param <T> the type of the value
+     * @param <V> the type of the value
      * @param settingName the setting name
      * @return the setting value
      */
-    <T> T getSetting(String settingName);
+    <V> V getSetting(String settingName);
 
     /**
      * Returns the value of the property on environment.
      *
-     * @param <T> the type of the value
+     * @param <V> the type of the value
      * @param name the given property name
      * @return the value of the property on environment
      */
-    <T> T getProperty(String name);
+    <V> V getProperty(String name);
 
     /**
      * Returns the value of an activity's request parameter as a {@code String},
@@ -322,12 +322,12 @@ public interface Translet {
      * Returns the value of the named attribute as a given type,
      * or {@code null} if no attribute of the given name exists.
      *
-     * @param <T> the generic type
+     * @param <V> the generic type
      * @param name a {@code String} specifying the name of the attribute
      * @return an {@code Object} containing the value of the attribute,
      *             or {@code null} if the attribute does not exist
      */
-    <T> T getAttribute(String name);
+    <V> V getAttribute(String name);
 
     /**
      * Stores an attribute in this request.
@@ -477,47 +477,47 @@ public interface Translet {
     /**
      * Gets the aspect advice bean.
      *
-     * @param <T> the generic type
+     * @param <V> the generic type
      * @param aspectId the aspect id
      * @return the aspect advice bean
      */
-    <T> T getAspectAdviceBean(String aspectId);
+    <V> V getAspectAdviceBean(String aspectId);
 
     /**
      * Gets the before advice result.
      *
-     * @param <T> the generic type
+     * @param <V> the generic type
      * @param aspectId the aspect id
      * @return the before advice result
      */
-    <T> T getBeforeAdviceResult(String aspectId);
+    <V> V getBeforeAdviceResult(String aspectId);
 
     /**
      * Gets the after advice result.
      *
-     * @param <T> the generic type
+     * @param <V> the generic type
      * @param aspectId the aspect id
      * @return the after advice result
      */
-    <T> T getAfterAdviceResult(String aspectId);
+    <V> V getAfterAdviceResult(String aspectId);
 
     /**
      * Gets the around advice result.
      *
-     * @param <T> the generic type
+     * @param <V> the generic type
      * @param aspectId the aspect id
      * @return the around advice result
      */
-    <T> T getAroundAdviceResult(String aspectId);
+    <V> V getAroundAdviceResult(String aspectId);
 
     /**
      * Gets the finally advice result.
      *
-     * @param <T> the generic type
+     * @param <V> the generic type
      * @param aspectId the aspect id
      * @return the finally advice result
      */
-    <T> T getFinallyAdviceResult(String aspectId);
+    <V> V getFinallyAdviceResult(String aspectId);
 
     /**
      * Returns whether the translet name has tokens for extracting parameters or attributes.
@@ -529,34 +529,34 @@ public interface Translet {
     /**
      * Return an instance of the bean that matches the given id.
      *
-     * @param <T> the generic type
+     * @param <V> the generic type
      * @param id the id of the bean to retrieve
      * @return an instance of the bean
      */
-    <T> T getBean(String id);
+    <V> V getBean(String id);
 
     /**
      * Return an instance of the bean that matches the given object type.
      *
-     * @param <T> the generic type
+     * @param <V> the generic type
      * @param type the type the bean must match; can be an interface or superclass.
      *      {@code null} is disallowed.
      * @return an instance of the bean
      * @since 1.3.1
      */
-    <T> T getBean(Class<T> type);
+    <V> V getBean(Class<V> type);
 
     /**
      * Return an instance of the bean that matches the given object type.
      *
-     * @param <T> the generic type
+     * @param <V> the generic type
      * @param type type the bean must match; can be an interface or superclass.
      *      {@code null} is allowed.
      * @param id the id of the bean to retrieve
      * @return an instance of the bean
      * @since 2.0.0
      */
-    <T> T getBean(Class<T> type, String id);
+    <V> V getBean(Class<V> type, String id);
 
     /**
      * Return whether a bean with the specified id is present.

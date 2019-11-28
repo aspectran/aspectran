@@ -28,6 +28,8 @@ import org.jline.utils.AttributedString;
 import org.jline.utils.AttributedStringBuilder;
 import org.jline.utils.AttributedStyle;
 
+import java.util.regex.Pattern;
+
 /**
  * Command and option name highlighter.
  *
@@ -116,6 +118,14 @@ public class CommandHighlighter implements Highlighter {
                         AttributedStyle.DEFAULT.foreground(AttributedStyle.RED | AttributedStyle.BRIGHT));
             }
         }
+    }
+
+    @Override
+    public void setErrorPattern(Pattern pattern) {
+    }
+
+    @Override
+    public void setErrorIndex(int i) {
     }
 
     private String getMatchedCommandName(String buffer) {

@@ -15,8 +15,8 @@
  */
 package com.aspectran.demo.terminal;
 
-import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.ActivityException;
+import com.aspectran.core.activity.InstantActivity;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.TransletNotFoundException;
 import com.aspectran.core.component.bean.annotation.Bean;
@@ -31,6 +31,7 @@ import com.aspectran.core.context.expr.token.TokenParser;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.TransletRule;
+import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.context.rule.type.TransformType;
 import com.aspectran.core.util.StringUtils;
@@ -145,10 +146,13 @@ public class TransletInterpreter implements ActivityContextAware {
         String transletFullName = COMMAND_PREFIX + transletName;
         TransletRule transletRule = context.getTransletRuleRegistry().getTransletRule(transletFullName);
         if (transletRule == null) {
-            throw new TransletNotFoundException(transletName);
+            throw new TransletNotFoundException(transletName, MethodType.GET);
         }
 
-        Activity activity = context.getCurrentActivity().newActivity();
+        InstantActivity activity = new InstantActivity(context);
+        activity.setSessionAdapter(context.getCurrentActivity().getSessionAdapter());
+        activity.setRequestAdapter(context.getCurrentActivity().getRequestAdapter());
+        activity.setResponseAdapter(context.getCurrentActivity().getResponseAdapter());
         activity.prepare(transletName, transletRule);
         activity.perform();
     }

@@ -15,8 +15,6 @@
  */
 package com.aspectran.shell.activity;
 
-import com.aspectran.core.activity.Activity;
-import com.aspectran.core.activity.ActivityPerformException;
 import com.aspectran.core.activity.ActivityTerminatedException;
 import com.aspectran.core.activity.AdapterException;
 import com.aspectran.core.activity.CoreActivity;
@@ -98,11 +96,7 @@ public class ShellActivity extends CoreActivity {
     @Override
     protected void adapt() throws AdapterException {
         try {
-            if (getParentActivity() == null) {
-                setSessionAdapter(service.newSessionAdapter());
-            } else {
-                setSessionAdapter(getParentActivity().getSessionAdapter());
-            }
+            setSessionAdapter(service.newSessionAdapter());
 
             ShellRequestAdapter requestAdapter = new ShellRequestAdapter(getTranslet().getRequestMethod());
             requestAdapter.setEncoding(console.getEncoding());
@@ -111,7 +105,6 @@ public class ShellActivity extends CoreActivity {
             if (outputWriter == null) {
                 outputWriter = new OutputStringWriter();
             }
-
             ShellResponseAdapter responseAdapter = new ShellResponseAdapter(outputWriter);
             responseAdapter.setEncoding(console.getEncoding());
             setResponseAdapter(responseAdapter);
@@ -119,16 +112,16 @@ public class ShellActivity extends CoreActivity {
             throw new AdapterException("Failed to adapt for Shell Activity", e);
         }
 
+        if (getParentActivity() == null && getSessionAdapter() instanceof BasicSessionAdapter) {
+            ((BasicSessionAdapter)getSessionAdapter()).getSessionAgent().access();
+        }
+
         super.adapt();
     }
 
     @Override
     protected void parseRequest() throws ActivityTerminatedException, RequestParseException {
-        if (getParentActivity() == null) {
-            ((ShellRequestAdapter)getRequestAdapter()).preparse(null, parameterMap);
-        } else {
-            ((ShellRequestAdapter)getRequestAdapter()).preparse(getParentActivity().getRequestAdapter());
-        }
+        ((ShellRequestAdapter)getRequestAdapter()).preparse(parameterMap, null);
 
         if (procedural) {
             showDescription();
@@ -178,17 +171,8 @@ public class ShellActivity extends CoreActivity {
     }
 
     @Override
-    public void perform() throws ActivityPerformException, ActivityTerminatedException {
-        if (getParentActivity() == null && getSessionAdapter() != null) {
-            ((BasicSessionAdapter)getSessionAdapter()).getSessionAgent().access();
-        }
-
-        super.perform();
-    }
-
-    @Override
     protected void release() {
-        if (getParentActivity() == null && getSessionAdapter() != null) {
+        if (getParentActivity() == null && getSessionAdapter() instanceof BasicSessionAdapter) {
             ((BasicSessionAdapter)getSessionAdapter()).getSessionAgent().complete();
         }
 
@@ -268,7 +252,7 @@ public class ShellActivity extends CoreActivity {
         }
     }
 
-    private void readRequiredParameters() throws MissingMandatoryParametersException, ActivityTerminatedException {
+    private void readRequiredParameters() throws ActivityTerminatedException, MissingMandatoryParametersException {
         Collection<ItemRule> itemRules;
         ItemRuleMap parameterItemRuleMap = getRequestRule().getParameterItemRuleMap();
         if (parameterItemRuleMap != null && !parameterItemRuleMap.isEmpty()) {
@@ -505,14 +489,6 @@ public class ShellActivity extends CoreActivity {
             }
         }
         return (missingItemRules.isEmpty() ? null : missingItemRules);
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public <T extends Activity> T newActivity() {
-        ShellActivity activity = new ShellActivity(service, console);
-        activity.setOutputWriter(outputWriter);
-        return (T)activity;
     }
 
 }

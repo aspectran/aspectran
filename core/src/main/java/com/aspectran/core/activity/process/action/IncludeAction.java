@@ -16,6 +16,8 @@
 package com.aspectran.core.activity.process.action;
 
 import com.aspectran.core.activity.Activity;
+import com.aspectran.core.activity.InstantActivity;
+import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.context.expr.ItemEvaluator;
 import com.aspectran.core.context.expr.ItemExpression;
 import com.aspectran.core.context.rule.IncludeActionRule;
@@ -46,28 +48,24 @@ public class IncludeAction implements Executable {
     @Override
     public Object execute(Activity activity) throws Exception {
         try {
-            Activity innerActivity = activity.newActivity();
-            innerActivity.prepare(includeActionRule.getTransletName(), includeActionRule.getMethodType());
-
+            InstantActivity instantActivity = new InstantActivity(activity.getActivityContext());
             ItemRuleMap parameterItemRuleMap = includeActionRule.getParameterItemRuleMap();
             ItemRuleMap attributeItemRuleMap = includeActionRule.getAttributeItemRuleMap();
             if ((parameterItemRuleMap != null && !parameterItemRuleMap.isEmpty()) ||
                     (attributeItemRuleMap != null && !attributeItemRuleMap.isEmpty())) {
                 ItemEvaluator evaluator = new ItemExpression(activity);
-                if (parameterItemRuleMap != null) {
-                    Map<String, Object> valueMap = evaluator.evaluate(parameterItemRuleMap);
-                    for (Map.Entry<String, Object> entry : valueMap.entrySet()) {
-                        innerActivity.getRequestAdapter().setParameter(entry.getKey(), entry.getValue().toString());
-                    }
+                if (parameterItemRuleMap != null && !parameterItemRuleMap.isEmpty()) {
+                    ParameterMap parameterMap = evaluator.evaluateAsParameterMap(parameterItemRuleMap);
+                    instantActivity.setParameterMap(parameterMap);
                 }
-                if (attributeItemRuleMap != null) {
-                    Map<String, Object> valueMap = evaluator.evaluate(attributeItemRuleMap);
-                    innerActivity.getRequestAdapter().putAllAttributes(valueMap);
+                if (attributeItemRuleMap != null && !attributeItemRuleMap.isEmpty()) {
+                    Map<String, Object> attributeMap = evaluator.evaluate(attributeItemRuleMap);
+                    instantActivity.setAttributeMap(attributeMap);
                 }
             }
-
-            innerActivity.perform();
-            return innerActivity.getProcessResult();
+            instantActivity.prepare(includeActionRule.getTransletName(), includeActionRule.getMethodType());
+            instantActivity.perform();
+            return instantActivity.getProcessResult();
         } catch (Exception e) {
             throw new ActionExecutionException("Failed to execute action " + this, e);
         }

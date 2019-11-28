@@ -15,9 +15,9 @@
  */
 package com.aspectran.undertow.adapter;
 
-import com.aspectran.core.activity.Activity;
 import com.aspectran.core.adapter.AbstractResponseAdapter;
 import com.aspectran.core.context.rule.RedirectRule;
+import com.aspectran.undertow.activity.TowActivity;
 import com.aspectran.web.adapter.HttpServletResponseAdapter;
 import com.aspectran.web.support.http.HttpStatus;
 import com.aspectran.web.support.http.MediaType;
@@ -44,7 +44,7 @@ import java.util.stream.Collectors;
  */
 public class TowResponseAdapter extends AbstractResponseAdapter {
 
-    private final Activity activity;
+    private final TowActivity activity;
 
     private String contentType;
 
@@ -54,7 +54,7 @@ public class TowResponseAdapter extends AbstractResponseAdapter {
 
     private ResponseState responseState = ResponseState.NONE;
 
-    public TowResponseAdapter(HttpServerExchange exchange, Activity activity) {
+    public TowResponseAdapter(HttpServerExchange exchange, TowActivity activity) {
         super(exchange);
         this.activity = activity;
     }
@@ -169,9 +169,6 @@ public class TowResponseAdapter extends AbstractResponseAdapter {
 
     @Override
     public OutputStream getOutputStream() throws IOException {
-        if (activity.getParentActivity() != null) {
-            return activity.getResponseAdapter().getOutputStream();
-        }
         if (responseState == ResponseState.WRITER) {
             throw new IllegalStateException("Cannot call getOutputStream(), getWriter() already called");
         }
@@ -183,16 +180,12 @@ public class TowResponseAdapter extends AbstractResponseAdapter {
     @Override
     public Writer getWriter() throws IOException {
         if (writer == null) {
-            if (activity.getParentActivity() != null) {
-                writer = activity.getParentActivity().getResponseAdapter().getWriter();
-            } else {
-                if (responseState == ResponseState.STREAM) {
-                    throw new IllegalStateException("Cannot call getWriter(), getOutputStream() already called");
-                }
-                responseState = ResponseState.WRITER;
-                ifStartBlocking();
-                writer = new OutputStreamWriter(getHttpServerExchange().getOutputStream(), getEncoding());
+            if (responseState == ResponseState.STREAM) {
+                throw new IllegalStateException("Cannot call getWriter(), getOutputStream() already called");
             }
+            responseState = ResponseState.WRITER;
+            ifStartBlocking();
+            writer = new OutputStreamWriter(getHttpServerExchange().getOutputStream(), getEncoding());
         }
         return writer;
     }
@@ -221,7 +214,6 @@ public class TowResponseAdapter extends AbstractResponseAdapter {
             String url = getHttpServerExchange().getRequestScheme() + "://" + getHttpServerExchange().getHostAndPort() + realPath;
             getHttpServerExchange().getResponseHeaders().put(Headers.LOCATION, url);
         }
-//        responseDone();
     }
 
     @Override

@@ -22,10 +22,9 @@ import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.ExceptionRule;
 import com.aspectran.core.context.rule.SettingsAdviceRule;
-import com.aspectran.core.context.rule.TransletRule;
-import com.aspectran.core.context.rule.type.MethodType;
 
 import java.util.List;
+import java.util.concurrent.Callable;
 
 /**
  * Default activity to handle all internal requests.
@@ -47,37 +46,12 @@ public class DefaultActivity extends AbstractActivity {
     }
 
     @Override
-    public void prepare(String transletName) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void prepare(TransletRule transletRule) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void prepare(String transletName, TransletRule transletRule) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void prepare(String transletName, String requestMethod) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void prepare(String transletName, MethodType requestMethod) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
     public void perform() {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public Object perform(InstantAction instantAction) {
+    public <V> V perform(Callable<V> instantAction) {
         throw new UnsupportedOperationException();
     }
 
@@ -132,18 +106,13 @@ public class DefaultActivity extends AbstractActivity {
     }
 
     @Override
-    public <T> T getSetting(String settingName) {
+    public <V> V getSetting(String settingName) {
         return null;
     }
 
     @Override
-    public <T> T getAspectAdviceBean(String aspectId) {
+    public <V> V getAspectAdviceBean(String aspectId) {
         return null;
-    }
-
-    @Override
-    public <T extends Activity> T newActivity() {
-        throw new UnsupportedOperationException();
     }
 
 }

@@ -15,7 +15,6 @@
  */
 package com.aspectran.web.service;
 
-import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.ActivityTerminatedException;
 import com.aspectran.core.activity.TransletNotFoundException;
 import com.aspectran.core.activity.request.RequestMethodNotAllowedException;
@@ -127,25 +126,22 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
         }
 
         try {
-            Activity activity = new WebActivity(getActivityContext(), request, response);
+            WebActivity activity = new WebActivity(getActivityContext(), request, response);
             activity.prepare(requestUri, request.getMethod());
             activity.perform();
         } catch (TransletNotFoundException e) {
+            // Provides for "trailing slash" redirects and  serving directory index files
             String transletName = e.getTransletName();
-            MethodType requestMethod = e.getRequestMethod();
-            if (requestMethod == null) {
-                requestMethod = MethodType.GET;
-            }
             if (StringUtils.startsWith(transletName, ActivityContext.NAME_SEPARATOR_CHAR) &&
                     !StringUtils.endsWith(transletName, ActivityContext.NAME_SEPARATOR_CHAR)) {
-                String transletName2 = transletName + ActivityContext.NAME_SEPARATOR_CHAR;
-                if (getActivityContext().getTransletRuleRegistry().contains(transletName2, requestMethod)) {
+                String transletNameWithSlash = transletName + ActivityContext.NAME_SEPARATOR_CHAR;
+                MethodType requestMethod = e.getRequestMethod(MethodType.GET);
+                if (getActivityContext().getTransletRuleRegistry().contains(transletNameWithSlash, requestMethod)) {
                     response.setStatus(HttpStatus.MOVED_PERMANENTLY.value());
-                    response.setHeader(HttpHeaders.LOCATION, transletName2);
+                    response.setHeader(HttpHeaders.LOCATION, transletNameWithSlash);
                     response.setHeader(HttpHeaders.CONNECTION, "close");
                     if (log.isDebugEnabled()) {
-                        log.debug("Provides for \"trailing slash\" redirects and " +
-                                "serving directory index files");
+                        log.debug("Redirect URL with Trailing Slash: " + e.getTransletName());
                     }
                     return;
                 }

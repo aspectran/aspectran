@@ -19,14 +19,16 @@ import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.adapter.BasicRequestAdapter;
 import com.aspectran.core.adapter.BasicResponseAdapter;
 import com.aspectran.core.adapter.BasicSessionAdapter;
+import com.aspectran.core.adapter.RequestAdapter;
+import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.util.OutputStringWriter;
 
 import java.io.Writer;
 import java.util.Map;
+import java.util.concurrent.Callable;
 
 /**
  * An activity that handles the temporary request.
@@ -38,7 +40,7 @@ import java.util.Map;
  *
  * @since 3.0.0
  */
-public class InstantActivity<T> extends CoreActivity {
+public class InstantActivity extends CoreActivity {
 
     private ParameterMap parameterMap;
 
@@ -55,6 +57,21 @@ public class InstantActivity<T> extends CoreActivity {
         super(context);
     }
 
+    @Override
+    public void setSessionAdapter(SessionAdapter sessionAdapter) {
+        super.setSessionAdapter(sessionAdapter);
+    }
+
+    @Override
+    public void setRequestAdapter(RequestAdapter requestAdapter) {
+        super.setRequestAdapter(requestAdapter);
+    }
+
+    @Override
+    public void setResponseAdapter(ResponseAdapter responseAdapter) {
+        super.setResponseAdapter(responseAdapter);
+    }
+
     public void setParameterMap(ParameterMap parameterMap) {
         this.parameterMap = parameterMap;
     }
@@ -64,73 +81,51 @@ public class InstantActivity<T> extends CoreActivity {
     }
 
     @Override
-    public void setSessionAdapter(SessionAdapter sessionAdapter) {
-        super.setSessionAdapter(sessionAdapter);
-    }
-
-    @Override
-    public void prepare(String transletName) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void prepare(TransletRule transletRule) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void prepare(String transletName, TransletRule transletRule) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void prepare(String transletName, String requestMethod) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void prepare(String transletName, MethodType requestMethod) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
     protected void adapt() throws AdapterException {
-        BasicRequestAdapter requestAdapter = new BasicRequestAdapter(null, null);
-        setRequestAdapter(requestAdapter);
-
-        Writer writer = new OutputStringWriter();
-        BasicResponseAdapter responseAdapter = new BasicResponseAdapter(null, writer);
-        setResponseAdapter(responseAdapter);
-
-        if (parameterMap != null) {
-            requestAdapter.setParameterMap(parameterMap);
+        if (getSessionAdapter() == null && getParentActivity() != null) {
+            setSessionAdapter(getParentActivity().getSessionAdapter());
         }
-        if (attributeMap != null) {
-            requestAdapter.setAttributeMap(attributeMap);
+        if (getRequestAdapter() == null) {
+            MethodType requestMethod = (getTranslet() != null ? getTranslet().getRequestMethod() : null);
+            BasicRequestAdapter requestAdapter = new BasicRequestAdapter(requestMethod, null);
+            setRequestAdapter(requestAdapter);
+        }
+        if (getResponseAdapter() == null) {
+            Writer writer = new OutputStringWriter();
+            BasicResponseAdapter responseAdapter = new BasicResponseAdapter(null, writer);
+            setResponseAdapter(responseAdapter);
+        }
+
+        if (!hasParentActivity() && getSessionAdapter() instanceof BasicSessionAdapter) {
+            ((BasicSessionAdapter)getSessionAdapter()).getSessionAgent().access();
         }
 
         super.adapt();
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public T perform(InstantAction instantAction) throws ActivityPerformException, ActivityTerminatedException {
+    protected void parseRequest() {
+        if (parameterMap != null) {
+            getRequestAdapter().putAllParameters(parameterMap);
+        }
+        if (attributeMap != null) {
+            getRequestAdapter().putAllAttributes(attributeMap);
+        }
+    }
+
+    @Override
+    public <V> V perform(Callable<V> instantAction) throws ActivityPerformException {
         if (performed) {
             throw new ActivityPerformException("Activity has already been performed");
         }
-
         performed = true;
 
-        if (getParentActivity() == null && getSessionAdapter() instanceof BasicSessionAdapter) {
-            ((BasicSessionAdapter)getSessionAdapter()).getSessionAgent().access();
-        }
-
-        return (T)super.perform(instantAction);
+        return super.perform(instantAction);
     }
 
     @Override
     protected void release() {
-        if (getParentActivity() == null && getSessionAdapter() instanceof BasicSessionAdapter) {
+        if (!hasParentActivity() && getSessionAdapter() instanceof BasicSessionAdapter) {
             ((BasicSessionAdapter)getSessionAdapter()).getSessionAgent().complete();
         }
 

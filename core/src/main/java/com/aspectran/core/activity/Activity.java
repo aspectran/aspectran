@@ -31,10 +31,9 @@ import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.ExceptionRule;
 import com.aspectran.core.context.rule.SettingsAdviceRule;
-import com.aspectran.core.context.rule.TransletRule;
-import com.aspectran.core.context.rule.type.MethodType;
 
 import java.util.List;
+import java.util.concurrent.Callable;
 
 /**
  * The Interface Activity.
@@ -44,51 +43,21 @@ import java.util.List;
 public interface Activity {
 
     /**
-     * Prepare for the activity.
-     *
-     * @param transletName the translet name
-     */
-    void prepare(String transletName) throws TransletNotFoundException, ActivityPrepareException;
-
-    /**
-     * Prepare for the activity.
-     *
-     * @param transletRule the translet rule
-     */
-    void prepare(TransletRule transletRule) throws ActivityPrepareException;
-
-    /**
-     * Prepare for the activity.
-     *
-     * @param transletName the translet name
-     * @param transletRule the translet rule
-     */
-    void prepare(String transletName, TransletRule transletRule) throws ActivityPrepareException;
-
-    /**
-     * Prepare for the activity.
-     *
-     * @param transletName the translet name
-     * @param requestMethod the request method
-     */
-    void prepare(String transletName, String requestMethod)
-            throws TransletNotFoundException, ActivityPrepareException;
-
-    /**
-     * Prepare for the activity.
-     *
-     * @param transletName the translet name
-     * @param requestMethod the request method
-     */
-    void prepare(String transletName, MethodType requestMethod)
-            throws TransletNotFoundException, ActivityPrepareException;
-
-    /**
      * Performs the prepared activity.
+     *
+     * @throws ActivityPerformException thrown when an exception occurs while performing an activity
      */
-    void perform() throws ActivityPerformException, ActivityTerminatedException;
+    void perform() throws ActivityPerformException;
 
-    Object perform(InstantAction instantAction) throws ActivityPerformException, ActivityTerminatedException;
+    /**
+     * Performs the given instant activity.
+     *
+     * @param <V> the result type of the instant action
+     * @param instantAction the instant action
+     * @return An object that is the result of performing an instant activity
+     * @throws ActivityPerformException thrown when an exception occurs while performing an activity
+     */
+    <V> V perform(Callable<V> instantAction) throws ActivityPerformException;
 
     /**
      * Throws an ActivityTerminatedException to terminate the current activity.
@@ -217,20 +186,20 @@ public interface Activity {
     /**
      * Gets the setting value in the translet scope.
      *
-     * @param <T> the type of the value
+     * @param <V> the type of the value
      * @param settingName the setting name
      * @return the setting value
      */
-    <T> T getSetting(String settingName);
+    <V> V getSetting(String settingName);
 
     /**
      * Gets the aspect advice bean.
      *
-     * @param <T> the type of the bean
+     * @param <V> the type of the bean
      * @param aspectId the aspect id
      * @return the aspect advice bean object
      */
-    <T> T getAspectAdviceBean(String aspectId);
+    <V> V getAspectAdviceBean(String aspectId);
 
     /**
      * Gets the activity context.
@@ -275,51 +244,41 @@ public interface Activity {
     ResponseAdapter getResponseAdapter();
 
     /**
-     * Create a new inner activity.
+     * Returns an instance of the bean that matches the given id.
      *
-     * @param <T> the type of the activity
-     * @return the activity object
-     */
-    <T extends Activity> T newActivity();
-
-    <T extends Activity> T getParentActivity();
-
-    /**
-     * Return an instance of the bean that matches the given id.
-     *
-     * @param <T> the generic type
+     * @param <V> the generic type
      * @param id the id of the bean to retrieve
      * @return an instance of the bean
      */
-    <T> T getBean(String id);
+    <V> V getBean(String id);
 
     /**
-     * Return an instance of the bean that matches the given object type.
+     * Returns an instance of the bean that matches the given object type.
      *
-     * @param <T> the generic type
+     * @param <V> the generic type
      * @param type the type the bean must match; can be an interface or superclass.
      *      {@code null} is disallowed.
      * @return an instance of the bean
      * @since 1.3.1
      */
-    <T> T getBean(Class<T> type);
+    <V> V getBean(Class<V> type);
 
     /**
-     * Return an instance of the bean that matches the given object type.
+     * Returns an instance of the bean that matches the given object type.
      *
-     * @param <T> the generic type
+     * @param <V> the generic type
      * @param type type the bean must match; can be an interface or superclass.
      *      {@code null} is allowed.
      * @param id the id of the bean to retrieve
      * @return an instance of the bean
      * @since 2.0.0
      */
-    <T> T getBean(Class<T> type, String id);
+    <V> V getBean(Class<V> type, String id);
 
-    <T> T getPrototypeScopeBean(BeanRule beanRule);
+    <V> V getPrototypeScopeBean(BeanRule beanRule);
 
     /**
-     * Return whether a bean with the specified id is present.
+     * Returns whether a bean with the specified id is present.
      *
      * @param id the id of the bean to query
      * @return whether a bean with the specified id is present
@@ -327,13 +286,20 @@ public interface Activity {
     boolean containsBean(String id);
 
     /**
-     * Return whether a bean with the specified object type is present.
+     * Returns whether a bean with the specified object type is present.
      *
      * @param type the object type of the bean to query
      * @return whether a bean with the specified type is present
      */
     boolean containsBean(Class<?> type);
 
+    /**
+     * Returns whether the bean corresponding to the specified object type and ID exists.
+     *
+     * @param type the object type of the bean to query
+     * @param id the id of the bean to query
+     * @return whether a bean with the specified type is present
+     */
     boolean containsBean(Class<?> type, String id);
 
 }

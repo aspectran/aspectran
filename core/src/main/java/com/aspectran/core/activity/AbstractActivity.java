@@ -33,8 +33,6 @@ public abstract class AbstractActivity implements Activity {
 
     private final ActivityContext context;
 
-    private boolean included;
-
     private Activity parentActivity;
 
     private SessionAdapter sessionAdapter;
@@ -96,10 +94,13 @@ public abstract class AbstractActivity implements Activity {
         }
     }
 
-    @Override
     @SuppressWarnings("unchecked")
-    public <T extends Activity> T getParentActivity() {
-        return (T)parentActivity;
+    protected <V extends Activity> V getParentActivity() {
+        return (V)parentActivity;
+    }
+
+    protected boolean hasParentActivity() {
+        return (parentActivity != null);
     }
 
     @Override
@@ -177,22 +178,22 @@ public abstract class AbstractActivity implements Activity {
     }
 
     @Override
-    public <T> T getBean(String id) {
+    public <V> V getBean(String id) {
         return context.getBeanRegistry().getBean(id);
     }
 
     @Override
-    public <T> T getBean(Class<T> type) {
+    public <V> V getBean(Class<V> type) {
         return context.getBeanRegistry().getBean(type);
     }
 
     @Override
-    public <T> T getBean(Class<T> type, String id) {
+    public <V> V getBean(Class<V> type, String id) {
         return context.getBeanRegistry().getBean(type, id);
     }
 
     @Override
-    public <T> T getPrototypeScopeBean(BeanRule beanRule) {
+    public <V> V getPrototypeScopeBean(BeanRule beanRule) {
         return context.getBeanRegistry().getPrototypeScopeBean(beanRule);
     }
 

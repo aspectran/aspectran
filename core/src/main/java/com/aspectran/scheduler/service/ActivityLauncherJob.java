@@ -51,7 +51,7 @@ public class ActivityLauncherJob implements Job {
 
     private Activity performActivity(ActivityContext context, JobExecutionContext jobExecutionContext, String transletName)
             throws ActivityException {
-        Activity activity = new JobActivity(context, jobExecutionContext);
+        JobActivity activity = new JobActivity(context, jobExecutionContext);
         activity.prepare(transletName);
         activity.perform();
         return activity;

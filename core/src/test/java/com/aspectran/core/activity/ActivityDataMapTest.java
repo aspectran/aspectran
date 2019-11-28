@@ -48,7 +48,7 @@ class ActivityDataMapTest {
         attributes.put("attr1", "Strawberry");
         attributes.put("attr2", "Melon");
 
-        InstantActivity<ActivityDataMap> activity = new InstantActivity<>(context);
+        InstantActivity activity = new InstantActivity(context);
         activity.setParameterMap(parameterMap);
         activity.setAttributeMap(attributes);
         ActivityDataMap activityDataMap = activity.perform(() -> {

@@ -47,7 +47,7 @@ class ItemExpressionTest {
 
     @Test
     void testEvaluateAsMultiValueMap() throws ActivityPerformException {
-        InstantActivity<MultiValueMap<String, String>> activity = new InstantActivity<>(context);
+        InstantActivity activity = new InstantActivity(context);
         MultiValueMap<String, String> result = activity.perform(() -> {
             activity.getRequestAdapter().setParameter("param1", "Apple");
             activity.getRequestAdapter().setAttribute("attr1", "Strawberry");

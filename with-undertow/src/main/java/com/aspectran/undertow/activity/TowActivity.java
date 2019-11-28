@@ -15,7 +15,6 @@
  */
 package com.aspectran.undertow.activity;
 
-import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.ActivityPrepareException;
 import com.aspectran.core.activity.ActivityTerminatedException;
 import com.aspectran.core.activity.AdapterException;
@@ -52,8 +51,6 @@ public class TowActivity extends CoreActivity {
 
     private static final String MAX_REQUEST_SIZE_SETTING_NAME = "maxRequestSize";
 
-    private final TowService service;
-
     private final HttpServerExchange exchange;
 
     /**
@@ -63,7 +60,6 @@ public class TowActivity extends CoreActivity {
      */
     public TowActivity(TowService service, HttpServerExchange exchange) {
         super(service.getActivityContext());
-        this.service = service;
         this.exchange = exchange;
     }
 
@@ -197,13 +193,6 @@ public class TowActivity extends CoreActivity {
             }
         }
         return localeResolver;
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public <T extends Activity> T newActivity() {
-        TowActivity activity = new TowActivity(service, exchange);
-        return (T)activity;
     }
 
 }

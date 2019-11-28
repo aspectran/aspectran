@@ -142,11 +142,11 @@ public class HttpServletRequestAdapter extends AbstractRequestAdapter {
 
     public void preparse() {
         HttpServletRequest request = getHttpServletRequest();
-        setAttributeMap(new RequestAttributeMap(request));
         Map<String, String[]> parameters = request.getParameterMap();
         if (!parameters.isEmpty()) {
             getParameterMap().putAll(parameters);
         }
+        setAttributeMap(new RequestAttributeMap(request));
         if (request.getContentType() != null) {
             setMediaType(MediaType.parseMediaType(request.getContentType()));
         }
@@ -154,8 +154,8 @@ public class HttpServletRequestAdapter extends AbstractRequestAdapter {
     }
 
     public void preparse(HttpServletRequestAdapter requestAdapter) {
-        setAttributeMap(requestAdapter.getAttributeMap());
         getParameterMap().putAll(requestAdapter.getParameterMap());
+        setAttributeMap(requestAdapter.getAttributeMap());
         setMediaType(requestAdapter.getMediaType());
         setLocale(requestAdapter.getLocale());
     }

@@ -15,8 +15,6 @@
  */
 package com.aspectran.embed.activity;
 
-import com.aspectran.core.activity.Activity;
-import com.aspectran.core.activity.ActivityPerformException;
 import com.aspectran.core.activity.ActivityTerminatedException;
 import com.aspectran.core.activity.AdapterException;
 import com.aspectran.core.activity.CoreActivity;
@@ -82,26 +80,22 @@ public class AspectranActivity extends CoreActivity {
 
     @Override
     protected void adapt() throws AdapterException {
-        try {
-            if (getParentActivity() == null) {
-                setSessionAdapter(aspectran.newSessionAdapter());
-            } else {
-                setSessionAdapter(getParentActivity().getSessionAdapter());
-            }
+        setSessionAdapter(aspectran.newSessionAdapter());
 
-            AspectranRequestAdapter requestAdapter = new AspectranRequestAdapter(getTranslet().getRequestMethod());
-            if (body != null) {
-                requestAdapter.setBody(body);
-            }
-            setRequestAdapter(requestAdapter);
+        AspectranRequestAdapter requestAdapter = new AspectranRequestAdapter(getTranslet().getRequestMethod());
+        if (body != null) {
+            requestAdapter.setBody(body);
+        }
+        setRequestAdapter(requestAdapter);
 
-            if (outputWriter == null) {
-                outputWriter = new OutputStringWriter();
-            }
-            AspectranResponseAdapter responseAdapter = new AspectranResponseAdapter(outputWriter);
-            setResponseAdapter(responseAdapter);
-        } catch (Exception e) {
-            throw new AdapterException("Failed to adapt for Aspectran Activity", e);
+        if (outputWriter == null) {
+            outputWriter = new OutputStringWriter();
+        }
+        AspectranResponseAdapter responseAdapter = new AspectranResponseAdapter(outputWriter);
+        setResponseAdapter(responseAdapter);
+
+        if (!hasParentActivity() && getSessionAdapter() instanceof BasicSessionAdapter) {
+            ((BasicSessionAdapter)getSessionAdapter()).getSessionAgent().access();
         }
 
         super.adapt();
@@ -109,38 +103,18 @@ public class AspectranActivity extends CoreActivity {
 
     @Override
     protected void parseRequest() throws ActivityTerminatedException, RequestParseException {
-        if (getParentActivity() == null) {
-            ((AspectranRequestAdapter)getRequestAdapter()).preparse(attributeMap, parameterMap);
-        } else {
-            ((AspectranRequestAdapter)getRequestAdapter()).preparse(getParentActivity().getRequestAdapter());
-        }
+        ((AspectranRequestAdapter)getRequestAdapter()).preparse(parameterMap, attributeMap);
 
         super.parseRequest();
     }
 
     @Override
-    public void perform() throws ActivityTerminatedException, ActivityPerformException {
-        if (getParentActivity() == null && getSessionAdapter() != null) {
-            ((BasicSessionAdapter)getSessionAdapter()).getSessionAgent().access();
-        }
-
-        super.perform();
-    }
-
-    @Override
     protected void release() {
-        if (getParentActivity() == null && getSessionAdapter() != null) {
+        if (!hasParentActivity() && getSessionAdapter() instanceof BasicSessionAdapter) {
             ((BasicSessionAdapter)getSessionAdapter()).getSessionAgent().complete();
         }
 
         super.release();
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public <T extends Activity> T newActivity() {
-        AspectranActivity activity = new AspectranActivity(aspectran, outputWriter);
-        return (T)activity;
     }
 
 }

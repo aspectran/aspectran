@@ -15,8 +15,6 @@
  */
 package com.aspectran.daemon.activity;
 
-import com.aspectran.core.activity.Activity;
-import com.aspectran.core.activity.ActivityPerformException;
 import com.aspectran.core.activity.ActivityTerminatedException;
 import com.aspectran.core.activity.AdapterException;
 import com.aspectran.core.activity.CoreActivity;
@@ -68,63 +66,38 @@ public class DaemonActivity extends CoreActivity {
 
     @Override
     protected void adapt() throws AdapterException {
-        try {
-            if (getParentActivity() == null) {
-                setSessionAdapter(service.newSessionAdapter());
-            } else {
-                setSessionAdapter(getParentActivity().getSessionAdapter());
-            }
+        setSessionAdapter(service.newSessionAdapter());
 
-            DaemonRequestAdapter requestAdapter = new DaemonRequestAdapter(getTranslet().getRequestMethod());
-            setRequestAdapter(requestAdapter);
+        DaemonRequestAdapter requestAdapter = new DaemonRequestAdapter(getTranslet().getRequestMethod());
+        setRequestAdapter(requestAdapter);
 
-            if (outputWriter == null) {
-                outputWriter = new OutputStringWriter();
-            }
-            DaemonResponseAdapter responseAdapter = new DaemonResponseAdapter(outputWriter);
-            setResponseAdapter(responseAdapter);
-        } catch (Exception e) {
-            throw new AdapterException("Failed to adapt for Daemon Activity", e);
+        if (outputWriter == null) {
+            outputWriter = new OutputStringWriter();
+        }
+        DaemonResponseAdapter responseAdapter = new DaemonResponseAdapter(outputWriter);
+        setResponseAdapter(responseAdapter);
+
+        if (!hasParentActivity() && getSessionAdapter() instanceof BasicSessionAdapter) {
+            ((BasicSessionAdapter)getSessionAdapter()).getSessionAgent().access();
         }
 
         super.adapt();
     }
 
     @Override
-    protected void parseRequest() throws RequestParseException, ActivityTerminatedException {
-        if (getParentActivity() == null) {
-            ((DaemonRequestAdapter)getRequestAdapter()).preparse(attributeMap, parameterMap);
-        } else {
-            ((DaemonRequestAdapter)getRequestAdapter()).preparse(getParentActivity().getRequestAdapter());
-        }
+    protected void parseRequest() throws ActivityTerminatedException, RequestParseException {
+        ((DaemonRequestAdapter)getRequestAdapter()).preparse(parameterMap, attributeMap);
 
         super.parseRequest();
     }
 
     @Override
-    public void perform() throws ActivityTerminatedException, ActivityPerformException {
-        if (getParentActivity() == null && getSessionAdapter() != null) {
-            ((BasicSessionAdapter)getSessionAdapter()).getSessionAgent().access();
-        }
-
-        super.perform();
-    }
-
-    @Override
     protected void release() {
-        if (getParentActivity() == null && getSessionAdapter() != null) {
+        if (!hasParentActivity() && getSessionAdapter() instanceof BasicSessionAdapter) {
             ((BasicSessionAdapter)getSessionAdapter()).getSessionAgent().complete();
         }
 
         super.release();
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public <T extends Activity> T newActivity() {
-        DaemonActivity activity = new DaemonActivity(service);
-        activity.setOutputWriter(outputWriter);
-        return (T)activity;
     }
 
 }

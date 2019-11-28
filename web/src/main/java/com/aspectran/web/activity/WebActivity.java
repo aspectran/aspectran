@@ -15,7 +15,6 @@
  */
 package com.aspectran.web.activity;
 
-import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.ActivityPrepareException;
 import com.aspectran.core.activity.ActivityTerminatedException;
 import com.aspectran.core.activity.AdapterException;
@@ -98,12 +97,8 @@ public class WebActivity extends CoreActivity {
     @Override
     protected void adapt() throws AdapterException {
         try {
-            if (getParentActivity() == null) {
-                SessionAdapter sessionAdapter = new HttpSessionAdapter(request);
-                setSessionAdapter(sessionAdapter);
-            } else {
-                setSessionAdapter(getParentActivity().getSessionAdapter());
-            }
+            SessionAdapter sessionAdapter = new HttpSessionAdapter(request);
+            setSessionAdapter(sessionAdapter);
 
             HttpServletRequestAdapter requestAdapter = new HttpServletRequestAdapter(getTranslet().getRequestMethod(), request);
             if (getParentActivity() == null) {
@@ -198,13 +193,6 @@ public class WebActivity extends CoreActivity {
             }
         }
         return localeResolver;
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public <T extends Activity> T newActivity() {
-        WebActivity activity = new WebActivity(getActivityContext(), request, response);
-        return (T)activity;
     }
 
 }

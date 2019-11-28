@@ -98,18 +98,18 @@ public class CoreTranslet extends AbstractTranslet {
     }
 
     @Override
-    public <T> T getSessionAdaptee() {
+    public <V> V getSessionAdaptee() {
         SessionAdapter sessionAdapter = getSessionAdapter();
         return (sessionAdapter != null ? sessionAdapter.getAdaptee() : null);
     }
 
     @Override
-    public <T> T getRequestAdaptee() {
+    public <V> V getRequestAdaptee() {
         return getRequestAdapter().getAdaptee();
     }
 
     @Override
-    public <T> T getResponseAdaptee() {
+    public <V> V getResponseAdaptee() {
         return getResponseAdapter().getAdaptee();
     }
 
@@ -149,12 +149,12 @@ public class CoreTranslet extends AbstractTranslet {
     }
 
     @Override
-    public <T> T getSetting(String settingName) {
+    public <V> V getSetting(String settingName) {
         return activity.getSetting(settingName);
     }
 
     @Override
-    public <T> T getProperty(String name) {
+    public <V> V getProperty(String name) {
         return getEnvironment().getProperty(name, activity);
     }
 
@@ -224,7 +224,7 @@ public class CoreTranslet extends AbstractTranslet {
     }
 
     @Override
-    public <T> T getAttribute(String name) {
+    public <V> V getAttribute(String name) {
         return getRequestAdapter().getAttribute(name);
     }
 
@@ -365,27 +365,27 @@ public class CoreTranslet extends AbstractTranslet {
     }
 
     @Override
-    public <T> T getAspectAdviceBean(String aspectId) {
+    public <V> V getAspectAdviceBean(String aspectId) {
         return activity.getAspectAdviceBean(aspectId);
     }
 
     @Override
-    public <T> T getBeforeAdviceResult(String aspectId) {
+    public <V> V getBeforeAdviceResult(String aspectId) {
         return activity.getBeforeAdviceResult(aspectId);
     }
 
     @Override
-    public <T> T getAfterAdviceResult(String aspectId) {
+    public <V> V getAfterAdviceResult(String aspectId) {
         return activity.getAfterAdviceResult(aspectId);
     }
 
     @Override
-    public <T> T getAroundAdviceResult(String aspectId) {
+    public <V> V getAroundAdviceResult(String aspectId) {
         return activity.getAroundAdviceResult(aspectId);
     }
 
     @Override
-    public <T> T getFinallyAdviceResult(String aspectId) {
+    public <V> V getFinallyAdviceResult(String aspectId) {
         return activity.getFinallyAdviceResult(aspectId);
     }
 
@@ -411,17 +411,17 @@ public class CoreTranslet extends AbstractTranslet {
     //---------------------------------------------------------------------
 
     @Override
-    public <T> T getBean(String id) {
+    public <V> V getBean(String id) {
         return activity.getBean(id);
     }
 
     @Override
-    public <T> T getBean(Class<T> type) {
+    public <V> V getBean(Class<V> type) {
         return activity.getBean(type);
     }
 
     @Override
-    public <T> T getBean(Class<T> type, String id) {
+    public <V> V getBean(Class<V> type, String id) {
         return activity.getBean(type, id);
     }
 

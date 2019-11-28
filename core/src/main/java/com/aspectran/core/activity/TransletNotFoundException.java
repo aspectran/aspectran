@@ -47,17 +47,33 @@ public class TransletNotFoundException extends ActivityException {
      * @param requestMethod the request method
      */
     public TransletNotFoundException(String transletName, MethodType requestMethod) {
-        super("Unknown translet: " + transletName);
+        super("Unknown translet: " + makeTransletName(transletName, requestMethod));
         this.transletName = transletName;
         this.requestMethod = requestMethod;
     }
 
     public String getTransletName() {
-        return transletName;
+        if (requestMethod == null || requestMethod == MethodType.GET) {
+            return transletName;
+        } else {
+            return (requestMethod + " " + transletName);
+        }
     }
 
     public MethodType getRequestMethod() {
         return requestMethod;
+    }
+
+    public MethodType getRequestMethod(MethodType defaultRequestMethod) {
+        return (requestMethod != null ? requestMethod : defaultRequestMethod);
+    }
+
+    private static String makeTransletName(String transletName, MethodType requestMethod) {
+        if (requestMethod != null) {
+            return requestMethod + " " + transletName;
+        } else {
+            return transletName;
+        }
     }
 
 }

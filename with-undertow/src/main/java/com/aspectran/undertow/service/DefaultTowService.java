@@ -33,6 +33,7 @@ import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.undertow.activity.TowActivity;
+import com.aspectran.web.support.http.HttpHeaders;
 import com.aspectran.web.support.http.HttpStatus;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.Headers;
@@ -89,25 +90,22 @@ public class DefaultTowService extends AbstractTowService {
         }
 
         try {
-            Activity activity = new TowActivity(this, exchange);
+            TowActivity activity = new TowActivity(this, exchange);
             activity.prepare(requestPath, exchange.getRequestMethod().toString());
             activity.perform();
         } catch (TransletNotFoundException e) {
+            // Provides for "trailing slash" redirects and  serving directory index files
             String transletName = e.getTransletName();
-            MethodType requestMethod = e.getRequestMethod();
-            if (requestMethod == null) {
-                requestMethod = MethodType.GET;
-            }
             if (StringUtils.startsWith(transletName, ActivityContext.NAME_SEPARATOR_CHAR) &&
                     !StringUtils.endsWith(transletName, ActivityContext.NAME_SEPARATOR_CHAR)) {
-                String transletName2 = transletName + ActivityContext.NAME_SEPARATOR_CHAR;
-                if (getActivityContext().getTransletRuleRegistry().contains(transletName2, requestMethod)) {
+                String transletNameWithSlash = transletName + ActivityContext.NAME_SEPARATOR_CHAR;
+                MethodType requestMethod = e.getRequestMethod(MethodType.GET);
+                if (getActivityContext().getTransletRuleRegistry().contains(transletNameWithSlash, requestMethod)) {
                     exchange.setStatusCode(HttpStatus.MOVED_PERMANENTLY.value());
-                    exchange.getResponseHeaders().put(Headers.LOCATION, transletName2);
+                    exchange.getResponseHeaders().put(Headers.LOCATION, transletNameWithSlash);
                     exchange.getResponseHeaders().put(Headers.CONNECTION, "close");
                     if (log.isDebugEnabled()) {
-                        log.debug("Provides for \"trailing slash\" redirects and " +
-                                "serving directory index files");
+                        log.debug("Redirect URL with Trailing Slash: " + e.getTransletName());
                     }
                     return true;
                 }

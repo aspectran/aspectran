@@ -42,7 +42,7 @@ class TokenExpressionTest {
 
     @Test
     void testEvaluateAsString() throws ActivityPerformException {
-        InstantActivity<String> activity = new InstantActivity<>(context);
+        InstantActivity activity = new InstantActivity(context);
         String result = activity.perform(() -> {
             activity.getRequestAdapter().setParameter("param1", "Apple");
             activity.getRequestAdapter().setAttribute("attr1", "Strawberry");

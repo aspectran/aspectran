@@ -394,13 +394,13 @@ public abstract class AdviceActivity extends AbstractActivity {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> T getSetting(String settingName) {
+    public <V> V getSetting(String settingName) {
         if (aspectAdviceRuleRegistry != null && aspectAdviceRuleRegistry.getSettingsAdviceRuleList() != null) {
             for (SettingsAdviceRule settingsAdviceRule : aspectAdviceRuleRegistry.getSettingsAdviceRuleList()) {
                 Object value = settingsAdviceRule.getSetting(settingName);
                 if (value != null && isAcceptable(settingsAdviceRule.getAspectRule())) {
                     if (value instanceof String) {
-                        return (T)TokenEvaluator.evaluate((String)value, this);
+                        return (V)TokenEvaluator.evaluate((String)value, this);
                     }
                 }
             }
@@ -411,13 +411,13 @@ public abstract class AdviceActivity extends AbstractActivity {
     /**
      * Gets the aspect advice bean.
      *
-     * @param <T> the generic type
+     * @param <V> the generic type
      * @param aspectId the aspect id
      * @return the aspect advice bean
      */
     @SuppressWarnings("unchecked")
-    public <T> T getAspectAdviceBean(String aspectId) {
-        return (aspectAdviceResult != null ? (T)aspectAdviceResult.getAspectAdviceBean(aspectId) : null);
+    public <V> V getAspectAdviceBean(String aspectId) {
+        return (aspectAdviceResult != null ? (V)aspectAdviceResult.getAspectAdviceBean(aspectId) : null);
     }
 
     /**
