@@ -121,7 +121,9 @@ public class ShellActivity extends CoreActivity {
 
     @Override
     protected void parseRequest() throws ActivityTerminatedException, RequestParseException {
-        ((ShellRequestAdapter)getRequestAdapter()).preparse(parameterMap, null);
+        if (parameterMap != null) {
+            ((ShellRequestAdapter)getRequestAdapter()).setParameterMap(parameterMap);
+        }
 
         if (procedural) {
             showDescription();

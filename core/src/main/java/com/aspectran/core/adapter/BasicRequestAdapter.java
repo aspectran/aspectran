@@ -46,10 +46,4 @@ public class BasicRequestAdapter extends AbstractRequestAdapter {
         }
     }
 
-    public void preparse(RequestAdapter requestAdapter) {
-        getParameterMap().putAll(requestAdapter.getParameterMap());
-        setAttributeMap(requestAdapter.getAttributeMap());
-        setLocale(requestAdapter.getLocale());
-    }
-
 }

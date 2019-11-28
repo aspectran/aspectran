@@ -103,7 +103,12 @@ public class AspectranActivity extends CoreActivity {
 
     @Override
     protected void parseRequest() throws ActivityTerminatedException, RequestParseException {
-        ((AspectranRequestAdapter)getRequestAdapter()).preparse(parameterMap, attributeMap);
+        if (parameterMap != null) {
+            ((AspectranRequestAdapter)getRequestAdapter()).setParameterMap(parameterMap);
+        }
+        if (attributeMap != null) {
+            ((AspectranRequestAdapter)getRequestAdapter()).setAttributeMap(attributeMap);
+        }
 
         super.parseRequest();
     }

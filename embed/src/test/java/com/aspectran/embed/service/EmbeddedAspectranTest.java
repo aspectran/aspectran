@@ -83,12 +83,24 @@ class EmbeddedAspectranTest {
     @Test
     void test2() {
         Translet translet = aspectran.translate("attr-test");
-        System.out.println(translet);
+        assertEquals("abc123", translet.toString());
     }
 
     @Test
     void includeTest() {
         Translet translet = aspectran.translate("include-test");
+        assertEquals(" :: This is the second bean.", translet.toString());
+    }
+
+    @Test
+    void forwardTest() {
+        Translet translet = aspectran.translate("forward-test");
+        assertEquals(" :: This is the second bean.", translet.toString());
+    }
+
+    @Test
+    void forwardAndInstantActivityTest() {
+        Translet translet = aspectran.translate("forward-test");
         System.out.println(translet);
     }
 

@@ -15,8 +15,11 @@
  */
 package com.aspectran.embed.service;
 
+import com.aspectran.core.activity.ActivityException;
+import com.aspectran.core.activity.ActivityPerformException;
 import com.aspectran.core.activity.ActivityTerminatedException;
 import com.aspectran.core.activity.InstantActivity;
+import com.aspectran.core.activity.InstantActivityException;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.context.config.AspectranConfig;
@@ -30,6 +33,7 @@ import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.embed.activity.AspectranActivity;
 
 import java.util.Map;
+import java.util.concurrent.Callable;
 
 import static com.aspectran.core.context.config.AspectranConfig.DEFAULT_APP_CONFIG_ROOT_FILE;
 
@@ -46,6 +50,16 @@ public class DefaultEmbeddedAspectran extends AbstractEmbeddedAspectran {
 
     public DefaultEmbeddedAspectran() {
         super();
+    }
+
+    @Override
+    public <V> V execute(Callable<V> instantAction) {
+        try {
+            InstantActivity activity = new InstantActivity(getActivityContext());
+            return activity.perform(instantAction);
+        } catch (Exception e) {
+            throw new InstantActivityException(e);
+        }
     }
 
     @Override
@@ -89,7 +103,8 @@ public class DefaultEmbeddedAspectran extends AbstractEmbeddedAspectran {
     }
 
     @Override
-    public Translet translate(String name, MethodType method, ParameterMap parameterMap, Map<String, Object> attributeMap, String body) {
+    public Translet translate(String name, MethodType method, ParameterMap parameterMap,
+                              Map<String, Object> attributeMap, String body) {
         if (name == null) {
             throw new IllegalArgumentException("name must not be null");
         }

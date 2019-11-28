@@ -70,6 +70,10 @@
         |
     </template>
 
+    <translet name="forward-test">
+        <forward translet="include-test"/>
+    </translet>
+
     <translet name="include-test">
         <include id="inc" translet="include-target">
             <attributes>

@@ -15,7 +15,6 @@
  */
 package com.aspectran.scheduler.activity;
 
-import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.AdapterException;
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.adapter.RequestAdapter;
@@ -47,24 +46,13 @@ public class JobActivity extends CoreActivity {
 
     @Override
     protected void adapt() throws AdapterException {
-        try {
-            RequestAdapter requestAdapter = new QuartzJobRequestAdapter(getTranslet().getRequestMethod(), jobExecutionContext);
-            setRequestAdapter(requestAdapter);
+        RequestAdapter requestAdapter = new QuartzJobRequestAdapter(getTranslet().getRequestMethod(), jobExecutionContext);
+        setRequestAdapter(requestAdapter);
 
-            ResponseAdapter responseAdapter = new QuartzJobResponseAdapter();
-            setResponseAdapter(responseAdapter);
-        } catch (Exception e) {
-            throw new AdapterException("Failed to adapt for Job Activity", e);
-        }
+        ResponseAdapter responseAdapter = new QuartzJobResponseAdapter();
+        setResponseAdapter(responseAdapter);
 
         super.adapt();
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public <T extends Activity> T newActivity() {
-        JobActivity activity = new JobActivity(getActivityContext(), jobExecutionContext);
-        return (T)activity;
     }
 
 }

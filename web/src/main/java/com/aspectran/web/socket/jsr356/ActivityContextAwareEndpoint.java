@@ -15,8 +15,8 @@
  */
 package com.aspectran.web.socket.jsr356;
 
-import com.aspectran.core.activity.ActivityException;
 import com.aspectran.core.activity.InstantActivity;
+import com.aspectran.core.activity.InstantActivityException;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.component.bean.BeanRegistry;
 import com.aspectran.core.component.bean.aware.ActivityContextAware;
@@ -65,12 +65,16 @@ public abstract class ActivityContextAwareEndpoint implements ActivityContextAwa
         return getActivityContext().getMessageSource();
     }
 
-    public <V> V instantActivity(Callable<V> instantAction) throws ActivityException {
+    public <V> V instantActivity(Callable<V> instantAction) {
         if (instantAction == null) {
             throw new IllegalArgumentException("instantAction must not be null");
         }
-        InstantActivity activity = new InstantActivity(getActivityContext());
-        return activity.perform(instantAction);
+        try {
+            InstantActivity activity = new InstantActivity(getActivityContext());
+            return activity.perform(instantAction);
+        } catch (Exception e) {
+            throw new InstantActivityException(e);
+        }
     }
 
 }

@@ -15,6 +15,7 @@
  */
 package com.aspectran.embed.service;
 
+import com.aspectran.core.activity.ActivityException;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.adapter.SessionAdapter;
@@ -29,6 +30,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.Map;
+import java.util.concurrent.Callable;
 
 /**
  * The Interface EmbeddedAspectran.
@@ -53,6 +55,15 @@ public interface EmbeddedAspectran extends CoreService {
     SessionAdapter newSessionAdapter();
 
     /**
+     * Executes an instant activity.
+     *
+     * @param instantAction the instant action
+     * @return An object that is the result of performing an instant activity
+     * @since 6.5.1
+     */
+    <V> V execute(Callable<V> instantAction) throws ActivityException;
+
+    /**
      * Executes the translet.
      *
      * @param name the translet name
@@ -60,6 +71,13 @@ public interface EmbeddedAspectran extends CoreService {
      */
     Translet translate(String name);
 
+    /**
+     * Executes the translet.
+     *
+     * @param name the translet name
+     * @param body the request body
+     * @return the {@code Translet} object
+     */
     Translet translate(String name, String body);
 
     /**
