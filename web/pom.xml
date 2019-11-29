@@ -43,8 +43,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.aspectran</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>aspectran-core</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>commons-fileupload</groupId>

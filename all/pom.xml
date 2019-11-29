@@ -18,8 +18,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <artifactId>aspectran</artifactId>
         <groupId>com.aspectran</groupId>
+        <artifactId>aspectran</artifactId>
         <version>6.5.1-SNAPSHOT</version>
     </parent>
 
@@ -49,76 +49,106 @@
     <dependencies>
         <!-- All release modules -->
         <dependency>
-            <groupId>com.aspectran</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>aspectran-core</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.aspectran</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>aspectran-daemon</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.aspectran</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>aspectran-embed</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.aspectran</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>aspectran-shell</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.aspectran</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>aspectran-shell-jline</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.aspectran</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>aspectran-web</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.aspectran</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>aspectran-with-freemarker</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.aspectran</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>aspectran-with-jetty</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.aspectran</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>aspectran-with-mybatis</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.aspectran</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>aspectran-with-pebble</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.aspectran</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>aspectran-with-undertow</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- Optional dependencies -->
+        <dependency>
+            <groupId>cglib</groupId>
+            <artifactId>cglib</artifactId>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>jcl-over-slf4j</artifactId>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>log4j-over-slf4j</artifactId>
-            <scope>runtime</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>jul-to-slf4j</artifactId>
-            <scope>runtime</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-to-slf4j</artifactId>
-            <scope>runtime</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <scope>runtime</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>

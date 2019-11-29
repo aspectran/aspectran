@@ -135,20 +135,24 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.aspectran</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>aspectran-shell-jline</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.aspectran</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>aspectran-daemon</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.aspectran</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>aspectran-with-undertow</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.aspectran</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>aspectran-with-jetty</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>

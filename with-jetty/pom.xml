@@ -44,8 +44,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.aspectran</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>aspectran-web</artifactId>
+            <version>${project.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>javax.servlet</groupId>
@@ -101,8 +102,9 @@
         </dependency>
         <!-- Test dependencies -->
         <dependency>
-            <groupId>com.aspectran</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>aspectran-embed</artifactId>
+            <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>

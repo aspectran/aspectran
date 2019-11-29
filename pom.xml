@@ -82,22 +82,6 @@
         </repository>
     </distributionManagement>
 
-    <modules>
-        <module>all</module>
-        <module>core</module>
-        <module>daemon</module>
-        <module>embed</module>
-        <module>shell</module>
-        <module>shell-jline</module>
-        <module>web</module>
-        <module>with-freemarker</module>
-        <module>with-jetty</module>
-        <module>with-mybatis</module>
-        <module>with-pebble</module>
-        <module>with-undertow</module>
-        <module>demo</module>
-    </modules>
-
     <properties>
         <main.basedir>${project.basedir}</main.basedir>
         <maven.compiler.source>1.8</maven.compiler.source>
@@ -122,127 +106,102 @@
         <signature.version>1.0</signature.version>
     </properties>
 
+    <modules>
+        <module>all</module>
+        <module>core</module>
+        <module>daemon</module>
+        <module>embed</module>
+        <module>shell</module>
+        <module>shell-jline</module>
+        <module>web</module>
+        <module>with-freemarker</module>
+        <module>with-jetty</module>
+        <module>with-mybatis</module>
+        <module>with-pebble</module>
+        <module>with-undertow</module>
+        <module>demo</module>
+    </modules>
+
     <dependencyManagement>
         <dependencies>
+            <!-- All optional dependencies -->
             <dependency>
-                <groupId>com.aspectran</groupId>
-                <artifactId>aspectran-all</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.aspectran</groupId>
-                <artifactId>aspectran-core</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.aspectran</groupId>
-                <artifactId>aspectran-daemon</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.aspectran</groupId>
-                <artifactId>aspectran-embed</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.aspectran</groupId>
-                <artifactId>aspectran-shell</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.aspectran</groupId>
-                <artifactId>aspectran-shell-jline</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.aspectran</groupId>
-                <artifactId>aspectran-web</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.aspectran</groupId>
-                <artifactId>aspectran-with-freemarker</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.aspectran</groupId>
-                <artifactId>aspectran-with-jetty</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.aspectran</groupId>
-                <artifactId>aspectran-with-mybatis</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.aspectran</groupId>
-                <artifactId>aspectran-with-pebble</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.aspectran</groupId>
-                <artifactId>aspectran-with-undertow</artifactId>
-                <version>${project.version}</version>
+                <groupId>cglib</groupId>
+                <artifactId>cglib</artifactId>
+                <version>3.3.0</version>
+                <optional>true</optional>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
                 <version>1.7.29</version>
+                <optional>true</optional>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>jcl-over-slf4j</artifactId>
                 <version>1.7.29</version>
+                <optional>true</optional>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>log4j-over-slf4j</artifactId>
                 <version>1.7.29</version>
+                <optional>true</optional>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>jul-to-slf4j</artifactId>
                 <version>1.7.29</version>
+                <optional>true</optional>
             </dependency>
             <dependency>
                 <groupId>org.apache.logging.log4j</groupId>
                 <artifactId>log4j-to-slf4j</artifactId>
                 <version>2.12.1</version>
+                <optional>true</optional>
             </dependency>
             <dependency>
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-classic</artifactId>
                 <version>1.2.3</version>
+                <optional>true</optional>
             </dependency>
             <dependency>
                 <groupId>org.apache.logging.log4j</groupId>
                 <artifactId>log4j-api</artifactId>
                 <version>2.12.1</version>
+                <optional>true</optional>
             </dependency>
             <dependency>
                 <groupId>org.apache.logging.log4j</groupId>
                 <artifactId>log4j-core</artifactId>
                 <version>2.12.1</version>
+                <optional>true</optional>
             </dependency>
             <dependency>
                 <groupId>log4j</groupId>
                 <artifactId>log4j</artifactId>
                 <version>1.2.17</version>
+                <optional>true</optional>
             </dependency>
             <dependency>
                 <groupId>org.junit.jupiter</groupId>
                 <artifactId>junit-jupiter-api</artifactId>
                 <version>5.5.2</version>
+                <optional>true</optional>
             </dependency>
             <dependency>
                 <groupId>org.junit.jupiter</groupId>
                 <artifactId>junit-jupiter-engine</artifactId>
                 <version>5.5.2</version>
+                <optional>true</optional>
             </dependency>
             <dependency>
                 <groupId>org.awaitility</groupId>
                 <artifactId>awaitility</artifactId>
                 <version>4.0.1</version>
+                <optional>true</optional>
             </dependency>
         </dependencies>
     </dependencyManagement>

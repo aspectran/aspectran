@@ -17,7 +17,6 @@ package com.aspectran.shell.jline.console;
 
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.shell.console.Console;
-import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
@@ -25,12 +24,6 @@ import java.io.IOException;
  * <p>Created: 2017. 3. 5.</p>
  */
 class JLineConsoleTest {
-
-    @Test
-    void testWrite() throws IOException {
-        JLineConsole console = new JLineConsole();
-        console.writeLine("--- JLineConsoleTest ---");
-    }
 
     public static void main(String[] args) throws IOException {
         Console console = new JLineConsole();

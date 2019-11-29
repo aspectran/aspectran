@@ -44,8 +44,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.aspectran</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>aspectran-core</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <!-- Freemarker dependencies -->
         <dependency>
@@ -55,8 +56,9 @@
         </dependency>
         <!-- Test dependencies -->
         <dependency>
-            <groupId>com.aspectran</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>aspectran-embed</artifactId>
+            <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
