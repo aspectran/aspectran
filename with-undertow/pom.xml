@@ -47,6 +47,16 @@
         <dependency>
             <groupId>com.aspectran</groupId>
             <artifactId>aspectran-web</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>javax.servlet</groupId>
+                    <artifactId>javax.servlet-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>javax.websocket</groupId>
+                    <artifactId>javax.websocket-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <!-- Undertow dependencies -->
         <dependency>

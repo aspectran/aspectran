@@ -114,31 +114,9 @@
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
-        <!-- Add optional dependencies explicitly for aspectran-web -->
-        <dependency>
-            <groupId>commons-fileupload</groupId>
-            <artifactId>commons-fileupload</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <!-- Add optional dependencies explicitly to avoid Javadoc warnings and errors -->
-        <dependency>
-            <groupId>org.javassist</groupId>
-            <artifactId>javassist</artifactId>
-            <optional>true</optional>
-        </dependency>
         <dependency>
             <groupId>cglib</groupId>
             <artifactId>cglib</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.quartz-scheduler</groupId>
-            <artifactId>quartz</artifactId>
             <optional>true</optional>
         </dependency>
         <dependency>
