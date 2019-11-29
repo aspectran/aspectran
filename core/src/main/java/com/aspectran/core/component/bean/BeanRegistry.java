@@ -31,37 +31,37 @@ public interface BeanRegistry {
     /**
      * Returns an instance of the bean that matches the given id.
      *
-     * @param <T> the generic type
+     * @param <V> the result type of the bean
      * @param id the id of the bean to retrieve
      * @return an instance of the bean
      */
-    <T> T getBean(String id);
+    <V> V getBean(String id);
 
     /**
      * Returns the bean instance that uniquely matches the given object type.
      *
-     * @param <T> the generic type
+     * @param <V> the result type of the bean
      * @param type the type the bean must match; can be an interface or superclass
      * @return an instance of the bean
      * @since 1.3.1
      */
-    <T> T getBean(Class<T> type);
+    <V> V getBean(Class<V> type);
 
     /**
      * Returns an instance of the bean that matches the given object type.
      * If more than one matching bean is found, we pick a bean that matches the given id.
      *
-     * @param <T> the generic type
+     * @param <V> the result type of the bean
      * @param type type the bean must match; can be an interface or superclass
      * @param id the id of the bean to retrieve
      * @return an instance of the bean
      * @since 2.0.0
      */
-    <T> T getBean(Class<T> type, String id);
+    <V> V getBean(Class<V> type, String id);
 
-    <T> T[] getBeansOfType(Class<T> type);
+    <V> V[] getBeansOfType(Class<V> type);
 
-    <T> T getPrototypeScopeBean(BeanRule beanRule);
+    <V> V getPrototypeScopeBean(BeanRule beanRule);
 
     /**
      * Return whether a bean with the specified id is present.

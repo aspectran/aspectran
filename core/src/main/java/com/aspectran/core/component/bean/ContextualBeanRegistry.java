@@ -38,7 +38,7 @@ public class ContextualBeanRegistry extends AbstractBeanRegistry {
     }
 
     @Override
-    public <T> T getBean(@NonNull String id) {
+    public <V> V getBean(@NonNull String id) {
         BeanRule beanRule = getBeanRuleRegistry().getBeanRule(id);
         if (beanRule == null) {
             throw new NoSuchBeanException(id);
@@ -47,12 +47,12 @@ public class ContextualBeanRegistry extends AbstractBeanRegistry {
     }
 
     @Override
-    public <T> T getBean(@NonNull Class<T> type) {
+    public <V> V getBean(@NonNull Class<V> type) {
         return getBean(type, null);
     }
 
     @Override
-    public <T> T getBean(@NonNull Class<T> type, @Nullable String id) {
+    public <V> V getBean(@NonNull Class<V> type, @Nullable String id) {
         BeanRule[] beanRules = getBeanRuleRegistry().getBeanRules(type);
         if (beanRules == null) {
             BeanRule beanRule = getBeanRuleRegistry().getBeanRuleForConfig(type);
@@ -88,7 +88,7 @@ public class ContextualBeanRegistry extends AbstractBeanRegistry {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> T[] getBeansOfType(@NonNull Class<T> type) {
+    public <V> V[] getBeansOfType(@NonNull Class<V> type) {
         BeanRule[] beanRules = getBeanRuleRegistry().getBeanRules(type);
         if (beanRules != null) {
             Object arr = Array.newInstance(type, beanRules.length);
@@ -96,7 +96,7 @@ public class ContextualBeanRegistry extends AbstractBeanRegistry {
                 Object bean = getBean(beanRules[i]);
                 Array.set(arr, i, bean);
             }
-            return (T[])arr;
+            return (V[])arr;
         } else {
             return null;
         }

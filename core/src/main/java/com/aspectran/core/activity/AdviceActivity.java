@@ -411,7 +411,7 @@ public abstract class AdviceActivity extends AbstractActivity {
     /**
      * Gets the aspect advice bean.
      *
-     * @param <V> the generic type
+     * @param <V> the result type of the advice
      * @param aspectId the aspect id
      * @return the aspect advice bean
      */
@@ -436,49 +436,49 @@ public abstract class AdviceActivity extends AbstractActivity {
     /**
      * Gets the before advice result.
      *
-     * @param <T> the generic type
+     * @param <V> the result type of the before advice
      * @param aspectId the aspect id
      * @return the before advice result
      */
     @SuppressWarnings("unchecked")
-    public <T> T getBeforeAdviceResult(String aspectId) {
-        return (aspectAdviceResult != null ? (T)aspectAdviceResult.getBeforeAdviceResult(aspectId) : null);
+    public <V> V getBeforeAdviceResult(String aspectId) {
+        return (aspectAdviceResult != null ? (V)aspectAdviceResult.getBeforeAdviceResult(aspectId) : null);
     }
 
     /**
      * Gets the after advice result.
      *
-     * @param <T> the generic type
+     * @param <V> the result type of the after advice
      * @param aspectId the aspect id
      * @return the after advice result
      */
     @SuppressWarnings("unchecked")
-    public <T> T getAfterAdviceResult(String aspectId) {
-        return (aspectAdviceResult != null ? (T)aspectAdviceResult.getAfterAdviceResult(aspectId) : null);
+    public <V> V getAfterAdviceResult(String aspectId) {
+        return (aspectAdviceResult != null ? (V)aspectAdviceResult.getAfterAdviceResult(aspectId) : null);
     }
 
     /**
      * Gets the around advice result.
      *
-     * @param <T> the generic type
+     * @param <V> the result type of the around advice
      * @param aspectId the aspect id
      * @return the around advice result
      */
     @SuppressWarnings("unchecked")
-    public <T> T getAroundAdviceResult(String aspectId) {
-        return (aspectAdviceResult != null ? (T)aspectAdviceResult.getAroundAdviceResult(aspectId) : null);
+    public <V> V getAroundAdviceResult(String aspectId) {
+        return (aspectAdviceResult != null ? (V)aspectAdviceResult.getAroundAdviceResult(aspectId) : null);
     }
 
     /**
      * Gets the finally advice result.
      *
-     * @param <T> the generic type
+     * @param <V> the result type of the finally advice
      * @param aspectId the aspect id
      * @return the finally advice result
      */
     @SuppressWarnings("unchecked")
-    public <T> T getFinallyAdviceResult(String aspectId) {
-        return (aspectAdviceResult != null ? (T)aspectAdviceResult.getFinallyAdviceResult(aspectId) : null);
+    public <V> V getFinallyAdviceResult(String aspectId) {
+        return (aspectAdviceResult != null ? (V)aspectAdviceResult.getFinallyAdviceResult(aspectId) : null);
     }
 
     /**

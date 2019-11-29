@@ -322,7 +322,7 @@ public interface Translet {
      * Returns the value of the named attribute as a given type,
      * or {@code null} if no attribute of the given name exists.
      *
-     * @param <V> the generic type
+     * @param <V> the result type of the bean
      * @param name a {@code String} specifying the name of the attribute
      * @return an {@code Object} containing the value of the attribute,
      *             or {@code null} if the attribute does not exist
@@ -463,7 +463,10 @@ public interface Translet {
      */
     Throwable getRootCauseOfRaisedException();
 
-    void clearRaisedException();
+    /**
+     * Remove the raised exception.
+     */
+    void removeRaisedException();
 
     /**
      * Return whether the given profile is active.
@@ -477,7 +480,7 @@ public interface Translet {
     /**
      * Gets the aspect advice bean.
      *
-     * @param <V> the generic type
+     * @param <V> the result type of the advice
      * @param aspectId the aspect id
      * @return the aspect advice bean
      */
@@ -486,7 +489,7 @@ public interface Translet {
     /**
      * Gets the before advice result.
      *
-     * @param <V> the generic type
+     * @param <V> the result type of the before advice
      * @param aspectId the aspect id
      * @return the before advice result
      */
@@ -495,7 +498,7 @@ public interface Translet {
     /**
      * Gets the after advice result.
      *
-     * @param <V> the generic type
+     * @param <V> the result type of the after advice
      * @param aspectId the aspect id
      * @return the after advice result
      */
@@ -504,7 +507,7 @@ public interface Translet {
     /**
      * Gets the around advice result.
      *
-     * @param <V> the generic type
+     * @param <V> the result type of the around advice
      * @param aspectId the aspect id
      * @return the around advice result
      */
@@ -513,7 +516,7 @@ public interface Translet {
     /**
      * Gets the finally advice result.
      *
-     * @param <V> the generic type
+     * @param <V> the result type of the finally advice
      * @param aspectId the aspect id
      * @return the finally advice result
      */
@@ -529,7 +532,7 @@ public interface Translet {
     /**
      * Return an instance of the bean that matches the given id.
      *
-     * @param <V> the generic type
+     * @param <V> the result type of the bean
      * @param id the id of the bean to retrieve
      * @return an instance of the bean
      */
@@ -538,7 +541,7 @@ public interface Translet {
     /**
      * Return an instance of the bean that matches the given object type.
      *
-     * @param <V> the generic type
+     * @param <V> the result type of the bean
      * @param type the type the bean must match; can be an interface or superclass.
      *      {@code null} is disallowed.
      * @return an instance of the bean
@@ -549,7 +552,7 @@ public interface Translet {
     /**
      * Return an instance of the bean that matches the given object type.
      *
-     * @param <V> the generic type
+     * @param <V> the result type of the bean
      * @param type type the bean must match; can be an interface or superclass.
      *      {@code null} is allowed.
      * @param id the id of the bean to retrieve

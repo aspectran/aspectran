@@ -246,7 +246,7 @@ public interface Activity {
     /**
      * Returns an instance of the bean that matches the given id.
      *
-     * @param <V> the generic type
+     * @param <V> the result type of the bean
      * @param id the id of the bean to retrieve
      * @return an instance of the bean
      */
@@ -255,7 +255,7 @@ public interface Activity {
     /**
      * Returns an instance of the bean that matches the given object type.
      *
-     * @param <V> the generic type
+     * @param <V> the result type of the bean
      * @param type the type the bean must match; can be an interface or superclass.
      *      {@code null} is disallowed.
      * @return an instance of the bean
@@ -266,7 +266,7 @@ public interface Activity {
     /**
      * Returns an instance of the bean that matches the given object type.
      *
-     * @param <V> the generic type
+     * @param <V> the result type of the bean
      * @param type type the bean must match; can be an interface or superclass.
      *      {@code null} is allowed.
      * @param id the id of the bean to retrieve

@@ -350,7 +350,7 @@ public class CoreTranslet extends AbstractTranslet {
     }
 
     @Override
-    public void clearRaisedException() {
+    public void removeRaisedException() {
         activity.clearRaisedException();
     }
 

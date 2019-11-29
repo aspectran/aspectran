@@ -58,17 +58,17 @@ abstract class AbstractBeanRegistry extends AbstractBeanFactory implements BeanR
     }
 
     @SuppressWarnings("unchecked")
-    protected <T> T getBean(BeanRule beanRule) {
+    protected <V> V getBean(BeanRule beanRule) {
         if (beanRule.getScopeType() == ScopeType.SINGLETON) {
-            return (T)getSingletonScopeBean(beanRule);
+            return (V)getSingletonScopeBean(beanRule);
         } else if (beanRule.getScopeType() == ScopeType.PROTOTYPE) {
             // Does not manage the complete lifecycle of a prototype bean.
             // In particular, Aspectran does not manage destruction phase of prototype-scoped beans.
-            return (T)getPrototypeScopeBean(beanRule);
+            return (V)getPrototypeScopeBean(beanRule);
         } else if (beanRule.getScopeType() == ScopeType.REQUEST) {
-            return (T)getRequestScopeBean(beanRule);
+            return (V)getRequestScopeBean(beanRule);
         } else if (beanRule.getScopeType() == ScopeType.SESSION) {
-            return (T)getSessionScopeBean(beanRule);
+            return (V)getSessionScopeBean(beanRule);
         }
         throw new BeanCreationException(beanRule);
     }
@@ -82,7 +82,7 @@ abstract class AbstractBeanRegistry extends AbstractBeanFactory implements BeanR
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> T getPrototypeScopeBean(BeanRule beanRule) {
+    public <V> V getPrototypeScopeBean(BeanRule beanRule) {
         if (beanRule == null) {
             throw new IllegalArgumentException("beanRule must not be null");
         }
@@ -90,7 +90,7 @@ abstract class AbstractBeanRegistry extends AbstractBeanFactory implements BeanR
         if (bean != null && beanRule.isFactoryProductionRequired()) {
             bean = getFactoryProducedObject(beanRule, bean);
         }
-        return (T)bean;
+        return (V)bean;
     }
 
     private Object getRequestScopeBean(BeanRule beanRule) {
