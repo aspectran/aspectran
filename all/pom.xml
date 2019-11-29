@@ -51,57 +51,46 @@
         <dependency>
             <groupId>com.aspectran</groupId>
             <artifactId>aspectran-core</artifactId>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.aspectran</groupId>
             <artifactId>aspectran-daemon</artifactId>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.aspectran</groupId>
             <artifactId>aspectran-embed</artifactId>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.aspectran</groupId>
             <artifactId>aspectran-shell</artifactId>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.aspectran</groupId>
             <artifactId>aspectran-shell-jline</artifactId>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.aspectran</groupId>
             <artifactId>aspectran-web</artifactId>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.aspectran</groupId>
             <artifactId>aspectran-with-freemarker</artifactId>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.aspectran</groupId>
             <artifactId>aspectran-with-jetty</artifactId>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.aspectran</groupId>
             <artifactId>aspectran-with-mybatis</artifactId>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.aspectran</groupId>
             <artifactId>aspectran-with-pebble</artifactId>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.aspectran</groupId>
             <artifactId>aspectran-with-undertow</artifactId>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
