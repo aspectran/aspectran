@@ -99,9 +99,9 @@ class EmbeddedAspectranTest {
     }
 
     @Test
-    void forwardAndInstantActivityTest() {
-        Translet translet = aspectran.translate("forward-test");
-        System.out.println(translet);
+    void instantActivityTest() {
+        String result = aspectran.execute(() -> "hello");
+        assertEquals("hello", result);
     }
 
     @Test

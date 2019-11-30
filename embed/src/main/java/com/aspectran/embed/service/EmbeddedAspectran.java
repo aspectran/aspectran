@@ -15,7 +15,6 @@
  */
 package com.aspectran.embed.service;
 
-import com.aspectran.core.activity.ActivityException;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.adapter.SessionAdapter;
@@ -61,7 +60,7 @@ public interface EmbeddedAspectran extends CoreService {
      * @return An object that is the result of performing an instant activity
      * @since 6.5.1
      */
-    <V> V execute(Callable<V> instantAction) throws ActivityException;
+    <V> V execute(Callable<V> instantAction);
 
     /**
      * Executes the translet.

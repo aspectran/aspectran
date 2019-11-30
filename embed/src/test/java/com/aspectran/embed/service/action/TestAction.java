@@ -44,15 +44,15 @@ public class TestAction {
     }
 
     public void thrown1() {
-        throw new NullPointerException();
+        throw new NullPointerException("-- FOR TEST --");
     }
 
     public void thrown2() {
-        throw new IllegalArgumentException();
+        throw new IllegalArgumentException("-- FOR TEST --");
     }
 
     public void thrown3() {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("-- FOR TEST --");
     }
 
 }
