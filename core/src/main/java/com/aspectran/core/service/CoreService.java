@@ -19,6 +19,7 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.resource.AspectranClassLoader;
+import com.aspectran.scheduler.service.SchedulerService;
 
 /**
  * The Interface CoreService.
@@ -39,35 +40,6 @@ public interface CoreService {
      * @return true if the service should start separately late; false otherwise
      */
     boolean isLateStart();
-
-    /**
-     * Returns the activity context.
-     *
-     * @return the activity context
-     */
-    ActivityContext getActivityContext();
-
-    /**
-     * Returns the default activity.
-     *
-     * @return the default activity
-     */
-    Activity getDefaultActivity();
-
-    /**
-     * Returns the aspectran class loader.
-     *
-     * @return the aspectran class loader
-     */
-    AspectranClassLoader getAspectranClassLoader();
-
-    /**
-     * Returns the Aspectran configuration parameters used to
-     * generate the AspectranService.
-     *
-     * @return the Aspectran Configuration Parameters
-     */
-    AspectranConfig getAspectranConfig();
 
     /**
      * Returns whether to reload all Java classes, resources,
@@ -98,5 +70,36 @@ public interface CoreService {
     void leaveFromRootService();
 
     boolean isDerived();
+
+    /**
+     * Returns the activity context.
+     *
+     * @return the activity context
+     */
+    ActivityContext getActivityContext();
+
+    /**
+     * Returns the default activity.
+     *
+     * @return the default activity
+     */
+    Activity getDefaultActivity();
+
+    /**
+     * Returns the aspectran class loader.
+     *
+     * @return the aspectran class loader
+     */
+    AspectranClassLoader getAspectranClassLoader();
+
+    /**
+     * Returns the Aspectran configuration parameters used to
+     * generate the AspectranService.
+     *
+     * @return the Aspectran Configuration Parameters
+     */
+    AspectranConfig getAspectranConfig();
+
+    SchedulerService getSchedulerService();
 
 }

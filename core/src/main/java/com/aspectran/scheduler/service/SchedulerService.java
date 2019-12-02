@@ -25,13 +25,7 @@ public interface SchedulerService extends ServiceController {
 
     int getStartDelaySeconds();
 
-    void setStartDelaySeconds(int startDelaySeconds);
-
     boolean isWaitOnShutdown();
-
-    void setWaitOnShutdown(boolean waitOnShutdown);
-
-    void setExposals(String[] includePatterns, String[] excludePatterns);
 
     ActivityContext getActivityContext();
 

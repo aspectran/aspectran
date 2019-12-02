@@ -55,13 +55,13 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
 
     private AspectranConfig aspectranConfig;
 
-    private ActivityContextBuilder activityContextBuilder;
-
-    private SchedulerService schedulerService;
-
     private PluralWildcardPattern exposableTransletNamesPattern;
 
+    private ActivityContextBuilder activityContextBuilder;
+
     private ActivityContext activityContext;
+
+    private SchedulerService schedulerService;
 
     private FileLocker fileLocker;
 
@@ -102,36 +102,6 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
     @Override
     public boolean isLateStart() {
         return lateStart;
-    }
-
-    @Override
-    public ActivityContext getActivityContext() {
-        return activityContext;
-    }
-
-    public void setActivityContext(ActivityContext activityContext) {
-        this.activityContext = activityContext;
-    }
-
-    @Override
-    public Activity getDefaultActivity() {
-        if (getActivityContext() == null) {
-            throw new IllegalStateException("ActivityContext is not yet created");
-        }
-        return getActivityContext().getDefaultActivity();
-    }
-
-    @Override
-    public AspectranClassLoader getAspectranClassLoader() {
-        if (activityContextBuilder == null) {
-            throw new IllegalStateException("ActivityContextLoader is not initialized; Call prepare() method first");
-        }
-        return activityContextBuilder.getAspectranClassLoader();
-    }
-
-    @Override
-    public AspectranConfig getAspectranConfig() {
-        return aspectranConfig;
     }
 
     @Override
@@ -179,6 +149,18 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
         return (rootService != null);
     }
 
+    protected boolean isExposable(String transletName) {
+        return (exposableTransletNamesPattern == null || exposableTransletNamesPattern.matches(transletName));
+    }
+
+    protected void setExposals(String[] includePatterns, String[] excludePatterns) {
+        if ((includePatterns != null && includePatterns.length > 0) ||
+                excludePatterns != null && excludePatterns.length > 0) {
+            exposableTransletNamesPattern = new PluralWildcardPattern(includePatterns, excludePatterns,
+                    ActivityContext.NAME_SEPARATOR_CHAR);
+        }
+    }
+
     protected void prepare(AspectranConfig aspectranConfig) throws AspectranServiceException {
         if (activityContext != null) {
             throw new IllegalStateException("ActivityContext has already been loaded");
@@ -212,18 +194,6 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
         }
     }
 
-    protected void setExposals(String[] includePatterns, String[] excludePatterns) {
-        if ((includePatterns != null && includePatterns.length > 0) ||
-                excludePatterns != null && excludePatterns.length > 0) {
-            exposableTransletNamesPattern = new PluralWildcardPattern(includePatterns, excludePatterns,
-                    ActivityContext.NAME_SEPARATOR_CHAR);
-        }
-    }
-
-    protected boolean isExposable(String transletName) {
-        return (exposableTransletNamesPattern == null || exposableTransletNamesPattern.matches(transletName));
-    }
-
     protected void loadActivityContext() throws ActivityContextBuilderException {
         if (activityContextBuilder == null) {
             throw new IllegalStateException("ActivityContextLoader is not in an instantiated state; First, call the prepare() method");
@@ -244,6 +214,37 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
         activityContextBuilder.destroy();
     }
 
+    @Override
+    public ActivityContext getActivityContext() {
+        return activityContext;
+    }
+
+    public void setActivityContext(ActivityContext activityContext) {
+        this.activityContext = activityContext;
+    }
+
+    @Override
+    public Activity getDefaultActivity() {
+        if (getActivityContext() == null) {
+            throw new IllegalStateException("ActivityContext is not yet created");
+        }
+        return getActivityContext().getDefaultActivity();
+    }
+
+    @Override
+    public AspectranClassLoader getAspectranClassLoader() {
+        if (activityContextBuilder == null) {
+            throw new IllegalStateException("ActivityContextLoader is not initialized; Call prepare() method first");
+        }
+        return activityContextBuilder.getAspectranClassLoader();
+    }
+
+    @Override
+    public AspectranConfig getAspectranConfig() {
+        return aspectranConfig;
+    }
+
+    @Override
     public SchedulerService getSchedulerService() {
         return schedulerService;
     }
@@ -268,7 +269,7 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
             }
         }
 
-        SchedulerService schedulerService = new QuartzSchedulerService(this);
+        QuartzSchedulerService schedulerService = new QuartzSchedulerService(this);
         if (waitOnShutdown) {
             schedulerService.setWaitOnShutdown(true);
         }

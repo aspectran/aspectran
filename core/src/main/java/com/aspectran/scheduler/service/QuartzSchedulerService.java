@@ -79,7 +79,6 @@ public class QuartzSchedulerService extends AbstractServiceController implements
         return startDelaySeconds;
     }
 
-    @Override
     public void setStartDelaySeconds(int startDelaySeconds) {
         this.startDelaySeconds = startDelaySeconds;
     }
@@ -89,12 +88,10 @@ public class QuartzSchedulerService extends AbstractServiceController implements
         return waitOnShutdown;
     }
 
-    @Override
     public void setWaitOnShutdown(boolean waitOnShutdown) {
         this.waitOnShutdown = waitOnShutdown;
     }
 
-    @Override
     public void setExposals(String[] includePatterns, String[] excludePatterns) {
         if ((includePatterns != null && includePatterns.length > 0) ||
                 excludePatterns != null && excludePatterns.length > 0) {
