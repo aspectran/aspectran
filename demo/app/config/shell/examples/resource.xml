@@ -9,7 +9,7 @@
 
     <bean id="sampleResources" class="com.aspectran.demo.examples.SampleResource"/>
 
-    <translet name="resource-file?">
+    <translet name="resource-file">
         <parameters>
             <item name="resourceName" mandatory="true">${resourceName:sample_resource.txt}</item>
         </parameters>
@@ -17,7 +17,7 @@
         <transform type="text"/>
     </translet>
 
-    <translet name="print-resource!">
+    <translet name="print-resource">
         <description style="apon">
             |{{bg:magenta,fg:white}} Prints the contents of the resource "sample_resource.txt"                   {{reset}}
         </description>

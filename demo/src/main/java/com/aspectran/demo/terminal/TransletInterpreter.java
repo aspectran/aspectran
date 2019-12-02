@@ -71,11 +71,10 @@ public class TransletInterpreter implements ActivityContextAware {
             return;
         }
 
-        String transletFullName = COMMAND_PREFIX + transletName;
-        TransletRule transletRule = context.getTransletRuleRegistry().getTransletRule(transletFullName);
+        TransletRule transletRule = context.getTransletRuleRegistry().getTransletRule(transletName);
         if (transletRule == null) {
             if (log.isDebugEnabled()) {
-                log.debug("Translet not found: " + transletFullName);
+                log.debug("Translet not found: " + transletName);
             }
 
             JsonWriter jsonWriter = new JsonWriter(translet.getResponseAdapter().getWriter());
@@ -143,8 +142,7 @@ public class TransletInterpreter implements ActivityContextAware {
     }
 
     private void performActivity(String transletName) throws ActivityException {
-        String transletFullName = COMMAND_PREFIX + transletName;
-        TransletRule transletRule = context.getTransletRuleRegistry().getTransletRule(transletFullName);
+        TransletRule transletRule = context.getTransletRuleRegistry().getTransletRule(transletName);
         if (transletRule == null) {
             throw new TransletNotFoundException(transletName, MethodType.GET);
         }

@@ -136,6 +136,9 @@
         }
         term.push(function (value, term) {
             var token = prompt.token;
+            if (!value && token.defaultValue) {
+                value = token.defaultValue;
+            }
             var mandatory = token.mandatory;
             if (mandatory && value === '') {
                 prompt.done = false;

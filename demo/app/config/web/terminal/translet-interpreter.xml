@@ -20,6 +20,6 @@
         <dispatch name="templates/default"/>
     </translet>
 
-    <append file="/config/web/terminal/terminal-commands.xml"/>
+    <!--<append file="/config/web/terminal/terminal-commands.xml"/>-->
 
 </aspectran>
