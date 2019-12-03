@@ -37,12 +37,12 @@ import com.aspectran.core.util.logging.LogFactory;
 )
 @Joinpoint(
         target = JoinpointTargetType.METHOD,
+        methods = {
+                MethodType.GET
+        },
         pointcut = {
                 "+: aop/test/*",
                 "-: aop/foo/*"
-        },
-        methods = {
-                MethodType.GET
         }
 )
 @Settings({
@@ -57,7 +57,7 @@ public class SampleAnnotatedAspect {
 
     @Before
     public String helloWorld() {
-        String msg = "Hello, World.";
+        String msg = "Before: Hello, World.";
 
         log.info("===> aspect02: " + msg);
 
@@ -66,7 +66,7 @@ public class SampleAnnotatedAspect {
 
     @After
     public String goodbye() {
-        String msg = "Goodbye.";
+        String msg = "After: Goodbye.";
 
         log.info("===> aspect02: " + msg);
 
@@ -75,7 +75,7 @@ public class SampleAnnotatedAspect {
 
     @Finally
     public String seeYouAgain() {
-        String msg = "See you again.";
+        String msg = "Finally: See you again.";
 
         log.info("===> aspect02: " + msg);
 
@@ -84,7 +84,7 @@ public class SampleAnnotatedAspect {
 
     @Around
     public String around() {
-        String msg = "Hi~~~~~~~~~~~~~~";
+        String msg = "Around: Hi~~~~~~~~~~~~~~";
 
         log.info("===> aspect02: " + msg);
 
@@ -93,7 +93,7 @@ public class SampleAnnotatedAspect {
 
     @ExceptionThrown(SimpleAopTestException.class)
     public String oops() {
-        String msg = "Oops!!!!!!!!!!!!!!!";
+        String msg = "ExceptionThrown: Oops!!!!!!!!!!!!!!!";
 
         log.info("===> aspect02: " + msg);
 
@@ -102,7 +102,7 @@ public class SampleAnnotatedAspect {
 
     @ExceptionThrown
     public String oopsGlobal() {
-        String msg = "Global Oops!!!!!!!!!!!!!!!";
+        String msg = "ExceptionThrown: Global Oops!!!!!!!!!!!!!!!";
 
         log.info("===> aspect02: " + msg);
 
@@ -110,7 +110,7 @@ public class SampleAnnotatedAspect {
     }
 
     public String foo() {
-        return "foo";
+        return "foo (avoid)";
     }
 
 }

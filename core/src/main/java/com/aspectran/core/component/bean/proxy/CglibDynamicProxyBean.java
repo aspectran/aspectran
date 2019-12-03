@@ -18,24 +18,17 @@ package com.aspectran.core.component.bean.proxy;
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.component.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.BeanRule;
-import com.aspectran.core.context.rule.ExceptionRule;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
 
 import java.lang.reflect.Method;
-import java.util.List;
 
 /**
  * Create an instance of the dynamic proxy bean using CGLIB.
  */
 public class CglibDynamicProxyBean extends AbstractDynamicProxyBean implements MethodInterceptor {
-
-    private static final Log log = LogFactory.getLog(CglibDynamicProxyBean.class);
 
     private final ActivityContext context;
 
@@ -67,49 +60,17 @@ public class CglibDynamicProxyBean extends AbstractDynamicProxyBean implements M
 
         try {
             try {
-                if (aarr.getBeforeAdviceRuleList() != null) {
-                    for (AspectAdviceRule aspectAdviceRule : aarr.getBeforeAdviceRuleList()) {
-                        if (!isSameBean(beanRule, aspectAdviceRule)) {
-                            activity.executeAdvice(aspectAdviceRule, true);
-                        }
-                    }
-                }
-
-                if (log.isDebugEnabled()) {
-                    log.debug("Invoke a proxy method " + methodName + "() on the bean " + beanRule);
-                }
-
+                beforeAdvice(aarr.getBeforeAdviceRuleList(), beanRule, activity);
                 Object result = methodProxy.invokeSuper(proxy, args);
-
-                if (aarr.getAfterAdviceRuleList() != null) {
-                    for (AspectAdviceRule aspectAdviceRule : aarr.getAfterAdviceRuleList()) {
-                        if (!isSameBean(beanRule, aspectAdviceRule)) {
-                            activity.executeAdvice(aspectAdviceRule, true);
-                        }
-                    }
-                }
-
+                afterAdvice(aarr.getAfterAdviceRuleList(), beanRule, activity);
                 return result;
             } finally {
-                if (aarr.getFinallyAdviceRuleList() != null) {
-                    for (AspectAdviceRule aspectAdviceRule : aarr.getFinallyAdviceRuleList()) {
-                        if (!isSameBean(beanRule, aspectAdviceRule)) {
-                            activity.executeAdvice(aspectAdviceRule, false);
-                        }
-                    }
-                }
+                finallyAdvice(aarr.getFinallyAdviceRuleList(), beanRule, activity);
             }
         } catch (Exception e) {
-            activity.setRaisedException(e);
-
-            List<ExceptionRule> exceptionRuleList = aarr.getExceptionRuleList();
-            if (exceptionRuleList != null) {
-                activity.handleException(exceptionRuleList);
-                if (activity.isResponseReserved()) {
-                    return null;
-                }
+            if (exception(aarr.getExceptionRuleList(), e, activity)) {
+                return null;
             }
-
             throw e;
         }
     }

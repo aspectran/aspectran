@@ -18,6 +18,7 @@ package com.aspectran.core.component.bean.proxy;
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.aspect.AdviceConstraintViolationException;
 import com.aspectran.core.activity.aspect.AspectAdviceException;
+import com.aspectran.core.activity.process.action.ActionExecutionException;
 import com.aspectran.core.component.aspect.AspectAdviceRulePostRegister;
 import com.aspectran.core.component.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.component.aspect.AspectRuleRegistry;
@@ -26,6 +27,7 @@ import com.aspectran.core.component.bean.annotation.AvoidAdvice;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.BeanRule;
+import com.aspectran.core.context.rule.ExceptionRule;
 import com.aspectran.core.context.rule.PointcutPatternRule;
 import com.aspectran.core.context.rule.SettingsAdviceRule;
 import com.aspectran.core.context.rule.type.JoinpointTargetType;
@@ -91,7 +93,7 @@ public abstract class AbstractDynamicProxyBean {
                 holder = existing;
             } else {
                 if (log.isDebugEnabled()) {
-                    log.debug("Caching " + pattern + " " + holder);
+                    log.debug("Caching [" + pattern + "] " + holder);
                 }
             }
         }
@@ -128,7 +130,50 @@ public abstract class AbstractDynamicProxyBean {
         }
     }
 
-    protected boolean isSameBean(BeanRule beanRule, AspectAdviceRule aspectAdviceRule) {
+    protected void beforeAdvice(List<AspectAdviceRule> beforeAdviceRuleList, BeanRule beanRule, Activity activity)
+            throws AspectAdviceException {
+        if (beforeAdviceRuleList != null) {
+            for (AspectAdviceRule aspectAdviceRule : beforeAdviceRuleList) {
+                if (!isSameBean(beanRule, aspectAdviceRule)) {
+                    activity.executeAdvice(aspectAdviceRule, true);
+                }
+            }
+        }
+    }
+
+    protected void afterAdvice(List<AspectAdviceRule> afterAdviceRuleList, BeanRule beanRule, Activity activity)
+            throws AspectAdviceException {
+        if (afterAdviceRuleList != null) {
+            for (AspectAdviceRule aspectAdviceRule : afterAdviceRuleList) {
+                if (!isSameBean(beanRule, aspectAdviceRule)) {
+                    activity.executeAdvice(aspectAdviceRule, true);
+                }
+            }
+        }
+    }
+
+    protected void finallyAdvice(List<AspectAdviceRule> finallyAdviceRuleList, BeanRule beanRule, Activity activity)
+            throws AspectAdviceException {
+        if (finallyAdviceRuleList != null) {
+            for (AspectAdviceRule aspectAdviceRule : finallyAdviceRuleList) {
+                if (!isSameBean(beanRule, aspectAdviceRule)) {
+                    activity.executeAdvice(aspectAdviceRule, false);
+                }
+            }
+        }
+    }
+
+    protected boolean exception(List<ExceptionRule> exceptionRuleList, Exception e, Activity activity)
+            throws ActionExecutionException {
+        activity.setRaisedException(e);
+        if (exceptionRuleList != null) {
+            activity.handleException(exceptionRuleList);
+            return activity.isResponseReserved();
+        }
+        return false;
+    }
+
+    private boolean isSameBean(BeanRule beanRule, AspectAdviceRule aspectAdviceRule) {
         if (beanRule.getId() != null && beanRule.getId().equals(aspectAdviceRule.getAdviceBeanId())) {
             return true;
         }
