@@ -55,7 +55,7 @@ class AspectranSimpleAopTest {
     void test1() {
         Translet translet = aspectran.translate("aop/test/action1");
         SampleAnnotatedAspect sampleAnnotatedAspect = translet.getAspectAdviceBean("aspect02");
-        assertEquals(sampleAnnotatedAspect.foo(), "foo");
+        assertEquals(sampleAnnotatedAspect.foo(), "foo (avoid)");
         assertEquals(translet.getSetting("setting1"), "value1");
         assertEquals(translet.getSetting("setting2"), "value2");
         assertEquals(translet.getSetting("setting3"), "value3");
