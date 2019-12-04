@@ -21,8 +21,6 @@ import com.aspectran.core.component.bean.scope.SessionScope;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import javax.servlet.http.HttpSessionBindingEvent;
-import javax.servlet.http.HttpSessionBindingListener;
 import java.util.Enumeration;
 
 /**
@@ -137,19 +135,6 @@ public class HttpSessionAdapter extends AbstractSessionAdapter {
 
     public HttpSession getSession(boolean create) {
         return ((HttpServletRequest)super.getAdaptee()).getSession(create);
-    }
-
-    public static class HttpSessionScope extends SessionScope implements HttpSessionBindingListener {
-
-        public HttpSessionScope() {
-            super();
-        }
-
-        @Override
-        public void valueUnbound(HttpSessionBindingEvent event) {
-            destroy();
-        }
-
     }
 
 }
