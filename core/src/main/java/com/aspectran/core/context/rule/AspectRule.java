@@ -38,7 +38,7 @@ import java.util.List;
  *
  * <pre>
  * &lt;aspect id="sampleAspect" order="0" isolated="true"&gt;
- *   &lt;joinpoint target="translet"&gt;
+ *   &lt;joinpoint&gt;
  *     methods: [
  *       "GET"
  *       "POST"
