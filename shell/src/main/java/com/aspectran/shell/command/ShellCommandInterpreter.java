@@ -139,33 +139,35 @@ public class ShellCommandInterpreter implements CommandInterpreter {
     public void perform() {
         try {
             for (;;) {
-                String commandLine = console.readCommandLine();
-                if (!StringUtils.hasLength(commandLine)) {
-                    continue;
-                }
+                try {
+                    String commandLine = console.readCommandLine();
+                    if (!StringUtils.hasLength(commandLine)) {
+                        continue;
+                    }
 
-                CommandLineParser lineParser = new CommandLineParser(commandLine);
-                if (lineParser.getCommandName() == null) {
-                    continue;
-                }
+                    CommandLineParser lineParser = new CommandLineParser(commandLine);
+                    if (lineParser.getCommandName() == null) {
+                        continue;
+                    }
 
-                Command command = null;
-                if (commandRegistry != null) {
-                    command = commandRegistry.getCommand(lineParser.getCommandName());
-                }
-                if (command != null) {
-                    execute(command, lineParser);
-                } else if (service != null) {
-                    TransletCommandLine transletCommandLine = new TransletCommandLine(lineParser);
-                    execute(transletCommandLine);
-                } else {
-                    console.writeLine("No command mapped to '" + lineParser.getCommandName() + "'");
+                    Command command = null;
+                    if (commandRegistry != null) {
+                        command = commandRegistry.getCommand(lineParser.getCommandName());
+                    }
+                    if (command != null) {
+                        execute(command, lineParser);
+                    } else if (service != null) {
+                        TransletCommandLine transletCommandLine = new TransletCommandLine(lineParser);
+                        execute(transletCommandLine);
+                    } else {
+                        console.writeLine("No command mapped to '" + lineParser.getCommandName() + "'");
+                    }
+                } catch (ConsoleTerminatedException e) {
+                    break;
+                } catch (Throwable e) {
+                    log.error("Error executing shell command", e);
                 }
             }
-        } catch (ConsoleTerminatedException e) {
-            // Will be shutdown
-        } catch (Throwable e) {
-            log.error("Error executing shell command", e);
         } finally {
             if (service != null && service.getServiceController().isActive()) {
                 if (log.isDebugEnabled()) {
