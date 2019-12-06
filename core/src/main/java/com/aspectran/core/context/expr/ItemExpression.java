@@ -30,6 +30,7 @@ import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.apon.VariableParameters;
 
 import java.io.File;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -330,9 +331,31 @@ public class ItemExpression extends TokenExpression implements ItemEvaluator {
         return activity.getPrototypeScopeBean(beanRule);
     }
 
-    private Object[] evaluateBeanAsArray(List<BeanRule> beanRuleList) {
+    private Object evaluateBeanAsArray(List<BeanRule> beanRuleList) {
         List<Object> valueList = evaluateBeanAsList(beanRuleList);
-        return (valueList != null ? valueList.toArray(new Object[0]) : null);
+        if (valueList == null) {
+            return null;
+        }
+        Class<?> componentType = null;
+        for (Object value : valueList) {
+            if (value != null) {
+                if (componentType == null) {
+                    componentType = value.getClass();
+                } else if (componentType != value.getClass()) {
+                    componentType = null;
+                    break;
+                }
+            }
+        }
+        if (componentType != null) {
+            Object values = Array.newInstance(componentType, valueList.size());
+            for (int i = 0; i < valueList.size(); i++) {
+                Array.set(values, i, valueList.get(i));
+            }
+            return values;
+        } else {
+            return valueList.toArray(new Object[0]);
+        }
     }
 
     private List<Object> evaluateBeanAsList(List<BeanRule> beanRuleList) {
