@@ -15,7 +15,6 @@
  */
 package com.aspectran.demo.apm.log;
 
-import com.aspectran.core.component.bean.NoSuchBeanException;
 import com.aspectran.core.component.bean.annotation.AvoidAdvice;
 import com.aspectran.core.component.bean.annotation.Component;
 import com.aspectran.core.util.StringUtils;
@@ -25,6 +24,7 @@ import com.aspectran.web.socket.jsr356.ActivityContextAwareEndpoint;
 import com.aspectran.web.socket.jsr356.AspectranConfigurator;
 
 import javax.websocket.CloseReason;
+import javax.websocket.EndpointConfig;
 import javax.websocket.OnClose;
 import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
@@ -32,9 +32,7 @@ import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 @ServerEndpoint(
@@ -45,8 +43,6 @@ import java.util.concurrent.ConcurrentHashMap;
 public class LogtailEndpoint extends ActivityContextAwareEndpoint {
 
     private static final Log log = LogFactory.getLog(LogtailEndpoint.class);
-
-    private static final String TAILERS_PROPERTY = "tailers";
 
     private static final String COMMAND_JOIN = "JOIN:";
 
@@ -59,10 +55,14 @@ public class LogtailEndpoint extends ActivityContextAwareEndpoint {
     private static final Set<Session> sessions =
             Collections.synchronizedSet(new HashSet<>());
 
-    private static final Map<String, LogTailer> tailers = new ConcurrentHashMap<>();
+    private LogTailerManager logTailerManager;
+
+    public void setLogTailerManager(LogTailerManager logTailerManager) {
+        this.logTailerManager = logTailerManager;
+    }
 
     @OnOpen
-    public void onOpen(Session session) {
+    public void onOpen(Session session, EndpointConfig config) {
         if (log.isDebugEnabled()) {
             log.debug("WebSocket connection established with session: " + session.getId());
         }
@@ -99,77 +99,18 @@ public class LogtailEndpoint extends ActivityContextAwareEndpoint {
     private void addSession(Session session, String message) {
         if (sessions.add(session)) {
             String[] names = StringUtils.splitCommaDelimitedString(message.substring(COMMAND_JOIN.length()));
-            session.getUserProperties().put(TAILERS_PROPERTY, names);
-            buildLogTailers(names);
+            logTailerManager.join(session, names);
         }
     }
 
     private void removeSession(Session session) {
         if (sessions.remove(session)) {
-            String[] names = (String[])session.getUserProperties().get(TAILERS_PROPERTY);
-            if (names != null) {
-                clearLogTailers(names);
-            }
+            logTailerManager.release(session);
         }
     }
 
-    private void buildLogTailers(String[] names) {
-        synchronized (tailers) {
-            for (String name : names) {
-                if (!tailers.containsKey(name)) {
-                    LogTailer tailer = getLogTailer(name);
-                    if (tailer != null) {
-                        try {
-                            tailer.setTailerListener(name, this);
-                            tailer.start();
-                        } catch (Exception e) {
-                            // ignore
-                        }
-                        tailers.put(name, tailer);
-                    }
-                }
-            }
-        }
-    }
-
-    private void clearLogTailers(String[] names) {
-        synchronized (tailers) {
-            for (String name : names) {
-                if (tailers.containsKey(name) && !isBeingUsedTailer(name)) {
-                    LogTailer tailer = tailers.remove(name);
-                    if (tailer != null) {
-                        try {
-                            tailer.stop();
-                        } catch (Exception e) {
-                            // ignore
-                        }
-                    }
-                    tailers.remove(name);
-                }
-            }
-        }
-    }
-
-    private boolean isBeingUsedTailer(String name) {
-        for (Session session : sessions) {
-            String[] names = (String[])session.getUserProperties().get(TAILERS_PROPERTY);
-            if (names != null) {
-                for (String name2 : names) {
-                    if (name.equals(name2)) {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
-    private LogTailer getLogTailer(String name) {
-        try {
-            return getBeanRegistry().getBean(LogTailer.class, name);
-        } catch (NoSuchBeanException e) {
-            return null;
-        }
+    Set<Session> getSessions() {
+        return sessions;
     }
 
 }

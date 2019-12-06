@@ -10,15 +10,23 @@
     <translet name="/">
         <echo id="page">
             <item name="headline">Application Performance Monitoring</item>
-            <item name="teaser"></item>
+            <item name="teaser">Analyze application logging messages to visually express the frequency of web requests based on the user's session usage history.</item>
             <item name="include">apm/apm</item>
         </echo>
         <dispatch name="templates/default"/>
     </translet>
 
-    <bean id="app-log" class="com.aspectran.demo.apm.log.LogTailer">
+    <bean id="logTailerManager" class="com.aspectran.demo.apm.log.LogTailerManager">
         <arguments>
-            <item>#{basePath}/logs/app.log</item>
+            <item>#{class:com.aspectran.demo.apm.log.LogtailEndpoint}</item>
+            <item type="array">
+                <bean class="com.aspectran.demo.apm.log.LogTailer">
+                    <arguments>
+                        <item>app-log</item>
+                        <item>#{basePath}/logs/app.log</item>
+                    </arguments>
+                </bean>
+            </item>
         </arguments>
     </bean>
 
