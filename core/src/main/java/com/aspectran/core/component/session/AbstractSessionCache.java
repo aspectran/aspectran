@@ -42,7 +42,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
     /**
      * The authoritative source of session data
      */
-    private final SessionDataStore sessionDataStore;
+    private final SessionStore sessionStore;
 
     /**
      * When, if ever, to evict sessions: never; only when the last request for
@@ -52,7 +52,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
 
     /**
      * If true, as soon as a new session is created, it will be persisted to
-     * the SessionDataStore
+     * the SessionStore
      */
     private boolean saveOnCreate;
 
@@ -64,21 +64,21 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
 
     /**
      * If true, a Session whose data cannot be read will be
-     * deleted from the SessionDataStore.
+     * deleted from the SessionStore.
      */
     private boolean removeUnloadableSessions;
 
-    public AbstractSessionCache(SessionHandler sessionHandler, SessionDataStore sessionDataStore) {
+    public AbstractSessionCache(SessionHandler sessionHandler, SessionStore sessionStore) {
         this.sessionHandler = sessionHandler;
-        this.sessionDataStore = sessionDataStore;
+        this.sessionStore = sessionStore;
     }
 
     protected SessionHandler getSessionHandler() {
         return sessionHandler;
     }
 
-    protected SessionDataStore getSessionDataStore() {
-        return sessionDataStore;
+    protected SessionStore getSessionStore() {
+        return sessionStore;
     }
 
     @Override
@@ -147,7 +147,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
         Exception ex = null;
         while (true) {
             session = doGet(id);
-            if (sessionDataStore == null) {
+            if (sessionStore == null) {
                 break; // can't load any session data so just return null or the session object
             }
             if (session == null) {
@@ -229,11 +229,11 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
      * @throws Exception if the session can not be loaded
      */
     private BasicSession loadSession(String id) throws Exception {
-        if (sessionDataStore == null) {
+        if (sessionStore == null) {
             return null; // can't load it
         }
         try {
-            SessionData data = sessionDataStore.load(id);
+            SessionData data = sessionStore.load(id);
             if (data == null) { // session doesn't exist
                 return null;
             }
@@ -241,7 +241,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
         } catch (UnreadableSessionDataException e) {
             // can't load the session, delete it
             if (isRemoveUnloadableSessions()) {
-                sessionDataStore.delete(id);
+                sessionStore.delete(id);
             }
             throw e;
         }
@@ -259,8 +259,8 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
         BasicSession session = new BasicSession(sessionData, sessionHandler, true);
         if (doPutIfAbsent(id, session) == null) {
             session.setResident(true); // its in the cache
-            if (isSaveOnCreate() && sessionDataStore != null) {
-                sessionDataStore.store(id, sessionData);
+            if (isSaveOnCreate() && sessionStore != null) {
+                sessionStore.save(id, sessionData);
             }
             return session;
         } else {
@@ -278,7 +278,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
             if (!session.isValid()) {
                 return;
             }
-            if (sessionDataStore == null) {
+            if (sessionStore == null) {
                 if (log.isTraceEnabled()) {
                     log.trace("Putting into SessionCache only id=" + id);
                 }
@@ -289,7 +289,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
             // don't do anything with the session until the last request for it has finished
             if (session.getRequests() <= 0) {
                 // save the session
-                sessionDataStore.store(id, session.getSessionData());
+                sessionStore.save(id, session.getSessionData());
                 // if we evict on session exit, boot it from the cache
                 if (getEvictionIdleSecs() == EVICT_ON_SESSION_EXIT) {
                     if (log.isDebugEnabled()) {
@@ -323,7 +323,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
             }
         }
         // not there, so find out if session data exists for it
-        return (sessionDataStore != null && sessionDataStore.exists(id));
+        return (sessionStore != null && sessionStore.exists(id));
     }
 
     @Override
@@ -337,8 +337,8 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
         // get the session, if its not in memory, this will load it
         BasicSession session = get(id);
         // Always delete it from the backing data store
-        if (sessionDataStore != null) {
-            boolean deleted = sessionDataStore.delete(id);
+        if (sessionStore != null) {
+            boolean deleted = sessionStore.delete(id);
             if (log.isDebugEnabled()) {
                 log.debug("Session " + id + " deleted in session data store: " + deleted);
             }
@@ -419,9 +419,9 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
             doPutIfAbsent(newId, session); // put the new id into our map
             doDelete(oldId); // take old out of map
 
-            if (sessionDataStore != null) {
-                sessionDataStore.delete(oldId);  //delete the session data with the old id
-                sessionDataStore.store(newId, session.getSessionData()); //save the session data with the new id
+            if (sessionStore != null) {
+                sessionStore.delete(oldId);  //delete the session data with the old id
+                sessionStore.save(newId, session.getSessionData()); //save the session data with the new id
             }
             if (log.isDebugEnabled()) {
                 log.debug("Session id " + oldId + " swapped for new id " + newId);
@@ -434,13 +434,13 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
         if (!isInitialized()) {
             return null;
         }
-        if (sessionDataStore == null) {
+        if (sessionStore == null) {
             return candidates;
         }
         if (log.isTraceEnabled()) {
-            log.trace("SessionDataStore checking expiration on " + candidates);
+            log.trace("SessionStore checking expiration on " + candidates);
         }
-        Set<String> allCandidates = sessionDataStore.getExpired(candidates);
+        Set<String> allCandidates = sessionStore.getExpired(candidates);
         Set<String> sessionsInUse = new HashSet<>();
         if (allCandidates != null) {
             for (String c : allCandidates) {
@@ -486,8 +486,8 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
                         log.debug("Evicting idle session " + session.getId());
                     }
                     // save before evicting
-                    if (isSaveOnInactiveEviction() && sessionDataStore != null) {
-                        sessionDataStore.store(session.getId(), session.getSessionData());
+                    if (isSaveOnInactiveEviction() && sessionStore != null) {
+                        sessionStore.save(session.getId(), session.getSessionData());
                     }
                     doDelete(session.getId()); // detach from this cache
                     session.setResident(false);

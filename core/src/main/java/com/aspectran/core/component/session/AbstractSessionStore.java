@@ -28,9 +28,9 @@ import java.util.concurrent.TimeUnit;
 /**
  * <p>Created: 2017. 9. 10.</p>
  */
-public abstract class AbstractSessionDataStore extends AbstractComponent implements SessionDataStore {
+public abstract class AbstractSessionStore extends AbstractComponent implements SessionStore {
 
-    private static final Log log = LogFactory.getLog(AbstractSessionDataStore.class);
+    private static final Log log = LogFactory.getLog(AbstractSessionStore.class);
 
     private int gracePeriodSecs = 60 * 60; // default of 1hr
 
@@ -119,13 +119,13 @@ public abstract class AbstractSessionDataStore extends AbstractComponent impleme
      * Implemented by subclasses to resolve which sessions this node
      * should attempt to expire.
      *
-     * @param candidates the ids of sessions the SessionDataStore thinks has expired
+     * @param candidates the ids of sessions the SessionStore thinks has expired
      * @return the reconciled set of session ids that this node should attempt to expire
      */
     public abstract Set<String> doGetExpired (Set<String> candidates);
 
     @Override
-    public void store(String id, SessionData data) throws Exception {
+    public void save(String id, SessionData data) throws Exception {
         if (data == null) {
             return;
         }

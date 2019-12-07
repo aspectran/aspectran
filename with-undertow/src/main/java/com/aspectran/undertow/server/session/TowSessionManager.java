@@ -20,6 +20,7 @@ import com.aspectran.core.component.bean.ablility.DisposableBean;
 import com.aspectran.core.component.bean.aware.ApplicationAdapterAware;
 import com.aspectran.core.component.session.BasicSession;
 import com.aspectran.core.component.session.DefaultSessionManager;
+import com.aspectran.core.component.session.SessionStoreFactory;
 import com.aspectran.core.component.session.SessionHandler;
 import com.aspectran.core.context.config.SessionManagerConfig;
 import io.undertow.server.HttpServerExchange;
@@ -62,15 +63,6 @@ public class TowSessionManager implements SessionManager, ApplicationAdapterAwar
         sessionManager.setApplicationAdapter(applicationAdapter);
     }
 
-    public SessionHandler getSessionHandler() {
-        return sessionManager.getSessionHandler();
-    }
-
-    @Override
-    public String getDeploymentName() {
-        return sessionManager.getWorkerName();
-    }
-
     public void setSessionManagerConfig(SessionManagerConfig sessionManagerConfig) {
         sessionManager.setSessionManagerConfig(sessionManagerConfig);
     }
@@ -83,6 +75,19 @@ public class TowSessionManager implements SessionManager, ApplicationAdapterAwar
             throw new RuntimeException(e);
         }
         setSessionManagerConfig(sessionManagerConfig);
+    }
+
+    public void setSessionStoreFactory(SessionStoreFactory sessionStoreFactory) {
+        sessionManager.setSessionStoreFactory(sessionStoreFactory);
+    }
+
+    public SessionHandler getSessionHandler() {
+        return sessionManager.getSessionHandler();
+    }
+
+    @Override
+    public String getDeploymentName() {
+        return sessionManager.getWorkerName();
     }
 
     @Override

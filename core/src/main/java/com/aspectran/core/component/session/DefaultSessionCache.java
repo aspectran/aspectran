@@ -45,8 +45,8 @@ public class DefaultSessionCache extends AbstractSessionCache {
     /** Determines the maximum number of active sessions allowed. */
     private volatile int maxSessions;
 
-    public DefaultSessionCache(SessionHandler sessionHandler, SessionDataStore sessionDataStore) {
-        super(sessionHandler, sessionDataStore);
+    public DefaultSessionCache(SessionHandler sessionHandler, SessionStore sessionStore) {
+        super(sessionHandler, sessionStore);
     }
 
     @Override
@@ -144,8 +144,8 @@ public class DefaultSessionCache extends AbstractSessionCache {
 
     @Override
     protected void doInitialize() throws Exception {
-        if (getSessionDataStore() != null) {
-            getSessionDataStore().initialize();
+        if (getSessionStore() != null) {
+            getSessionStore().initialize();
         }
     }
 
@@ -157,15 +157,15 @@ public class DefaultSessionCache extends AbstractSessionCache {
         while (!sessions.isEmpty() && loop-- >= 0) {
             for (BasicSession session : sessions.values()) {
                 // if we have a backing store so give the session to it to write out if necessary
-                if (getSessionDataStore() != null) {
+                if (getSessionStore() != null) {
                     // remove attributes excluded from serialization
-                    if (getSessionDataStore().getNonPersistentAttributes() != null) {
-                        for (String attrName : getSessionDataStore().getNonPersistentAttributes()) {
+                    if (getSessionStore().getNonPersistentAttributes() != null) {
+                        for (String attrName : getSessionStore().getNonPersistentAttributes()) {
                             session.removeAttribute(attrName);
                         }
                     }
                     try {
-                        getSessionDataStore().store(session.getId(), session.getSessionData());
+                        getSessionStore().save(session.getId(), session.getSessionData());
                     } catch (Exception e) {
                         log.warn("Failed to save session data", e);
                     }
@@ -183,8 +183,8 @@ public class DefaultSessionCache extends AbstractSessionCache {
                 }
             }
         }
-        if (getSessionDataStore() != null) {
-            getSessionDataStore().destroy();
+        if (getSessionStore() != null) {
+            getSessionStore().destroy();
         }
     }
 

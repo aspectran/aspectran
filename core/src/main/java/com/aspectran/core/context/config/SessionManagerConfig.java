@@ -16,7 +16,6 @@
 package com.aspectran.core.context.config;
 
 import com.aspectran.core.component.session.SessionCache;
-import com.aspectran.core.context.rule.type.SessionStoreType;
 import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterKey;
@@ -35,8 +34,6 @@ public class SessionManagerConfig extends AbstractParameters {
     private static final ParameterKey saveOnCreate;
     private static final ParameterKey saveOnInactiveEviction;
     private static final ParameterKey removeUnloadableSessions;
-    private static final ParameterKey nonPersistentAttributes;
-    private static final ParameterKey storeType;
     private static final ParameterKey fileStore;
     private static final ParameterKey startup;
 
@@ -51,8 +48,6 @@ public class SessionManagerConfig extends AbstractParameters {
         saveOnCreate = new ParameterKey("saveOnCreate", ValueType.BOOLEAN);
         saveOnInactiveEviction = new ParameterKey("saveOnInactiveEviction", ValueType.BOOLEAN);
         removeUnloadableSessions = new ParameterKey("removeUnloadableSessions", ValueType.BOOLEAN);
-        nonPersistentAttributes = new ParameterKey("nonPersistentAttributes", ValueType.STRING, true);
-        storeType = new ParameterKey("storeType", ValueType.STRING);
         fileStore = new ParameterKey("fileStore", SessionFileStoreConfig.class);
         startup = new ParameterKey("startup", ValueType.BOOLEAN);
 
@@ -65,8 +60,6 @@ public class SessionManagerConfig extends AbstractParameters {
                 saveOnCreate,
                 saveOnInactiveEviction,
                 removeUnloadableSessions,
-                nonPersistentAttributes,
-                storeType,
                 fileStore,
                 startup
         };
@@ -83,15 +76,6 @@ public class SessionManagerConfig extends AbstractParameters {
 
     public SessionManagerConfig(VariableParameters parameters) throws IOException {
         this(parameters.toString());
-    }
-
-    public boolean isStartup() {
-        return BooleanUtils.toBoolean(getBoolean(startup));
-    }
-
-    public SessionManagerConfig setStartup(boolean startup) {
-        putValue(SessionManagerConfig.startup, startup);
-        return this;
     }
 
     public String getWorkerName() {
@@ -198,33 +182,6 @@ public class SessionManagerConfig extends AbstractParameters {
         return hasValue(removeUnloadableSessions);
     }
 
-    public String[] getNonPersistentAttributes() {
-        return getStringArray(nonPersistentAttributes);
-    }
-
-    public SessionManagerConfig setNonPersistentAttributes(String[] nonPersistentAttributes) {
-        putValue(SessionManagerConfig.nonPersistentAttributes, nonPersistentAttributes);
-        return this;
-    }
-
-    public SessionManagerConfig addNonPersistentAttributes(String nonPersistentAttribute) {
-        putValue(SessionManagerConfig.nonPersistentAttributes, nonPersistentAttribute);
-        return this;
-    }
-
-    public boolean hasNonPersistentAttributes() {
-        return hasValue(nonPersistentAttributes);
-    }
-
-    public String getStoreType() {
-        return getString(storeType);
-    }
-
-    public SessionManagerConfig setStoreType(SessionStoreType sessionStoreType) {
-        putValue(storeType, sessionStoreType.toString());
-        return this;
-    }
-
     public SessionFileStoreConfig getFileStoreConfig() {
         return getParameters(fileStore);
     }
@@ -235,6 +192,15 @@ public class SessionManagerConfig extends AbstractParameters {
 
     public SessionFileStoreConfig touchFileStoreConfig() {
         return touchParameters(fileStore);
+    }
+
+    public boolean isStartup() {
+        return BooleanUtils.toBoolean(getBoolean(startup));
+    }
+
+    public SessionManagerConfig setStartup(boolean startup) {
+        putValue(SessionManagerConfig.startup, startup);
+        return this;
     }
 
 }

@@ -92,16 +92,16 @@ public interface SessionCache {
 
     /**
      * If the data for a session exists but is unreadable,
-     * the SessionCache can instruct the SessionDataStore to delete it.
+     * the SessionCache can instruct the SessionStore to delete it.
      *
      * @param removeUnloadableSessions whether or not SessionCache will delete
-     *      session data that can not be loaded from the SessionDataStore
+     *      session data that can not be loaded from the SessionStore
      */
     void setRemoveUnloadableSessions(boolean removeUnloadableSessions);
 
     /**
      * Get an existing Session. If necessary, the cache will load the data for
-     * the session from the configured SessionDataStore.
+     * the session from the configured SessionStore.
      *
      * @param id the session id
      * @return the Session if one exists, null otherwise
@@ -132,7 +132,7 @@ public interface SessionCache {
 
     /**
      * Check to see if a session exists: WILL consult the
-     * SessionDataStore.
+     * SessionStore.
      *
      * @param id the session id
      * @return true if the session exists; false otherwise
@@ -142,7 +142,7 @@ public interface SessionCache {
 
     /**
      * Check to see if a Session is in the cache. Does NOT consult
-     * the SessionDataStore.
+     * the SessionStore.
      *
      * @param id the session id
      * @return true if a Session object matching the id is present
@@ -153,7 +153,7 @@ public interface SessionCache {
 
     /**
      * Remove a Session completely: from both this
-     * cache and the SessionDataStore.
+     * cache and the SessionStore.
      *
      * @param id the session id
      * @return the Session that was removed, null otherwise
@@ -174,7 +174,7 @@ public interface SessionCache {
     /**
      * Check a list of session ids that belong to potentially expired
      * sessions. The Session in the cache should be checked,
-     * but also the SessionDataStore, as that is the authoritative
+     * but also the SessionStore, as that is the authoritative
      * source of all session information.
      *
      * @param candidates the session ids to check

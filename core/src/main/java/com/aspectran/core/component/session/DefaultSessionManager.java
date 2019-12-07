@@ -16,8 +16,11 @@
 package com.aspectran.core.component.session;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
+import com.aspectran.core.component.bean.ablility.DisposableBean;
+import com.aspectran.core.component.bean.aware.ApplicationAdapterAware;
+import com.aspectran.core.context.config.SessionFileStoreConfig;
 import com.aspectran.core.context.config.SessionManagerConfig;
-import com.aspectran.core.context.rule.type.SessionStoreType;
+import com.aspectran.core.util.StringUtils;
 
 import java.io.IOException;
 
@@ -26,11 +29,14 @@ import java.io.IOException;
  *
  * <p>Created: 2017. 6. 12.</p>
  */
-public class DefaultSessionManager extends AbstractSessionHandler implements SessionManager {
+public class DefaultSessionManager extends AbstractSessionHandler
+        implements SessionManager, ApplicationAdapterAware, DisposableBean {
 
     private ApplicationAdapter applicationAdapter;
 
     private SessionManagerConfig sessionManagerConfig;
+
+    private SessionStoreFactory sessionStoreFactory;
 
     public DefaultSessionManager() {
         super();
@@ -40,13 +46,9 @@ public class DefaultSessionManager extends AbstractSessionHandler implements Ses
         return applicationAdapter;
     }
 
+    @Override
     public void setApplicationAdapter(ApplicationAdapter applicationAdapter) {
         this.applicationAdapter = applicationAdapter;
-    }
-
-    @Override
-    public SessionManagerConfig getSessionManagerConfig() {
-        return sessionManagerConfig;
     }
 
     public void setSessionManagerConfig(SessionManagerConfig sessionManagerConfig) {
@@ -61,6 +63,10 @@ public class DefaultSessionManager extends AbstractSessionHandler implements Ses
             throw new RuntimeException(e);
         }
         setSessionManagerConfig(sessionManagerConfig);
+    }
+
+    public void setSessionStoreFactory(SessionStoreFactory sessionStoreFactory) {
+        this.sessionStoreFactory = sessionStoreFactory;
     }
 
     @Override
@@ -101,20 +107,32 @@ public class DefaultSessionManager extends AbstractSessionHandler implements Ses
         }
 
         if (getSessionCache() == null) {
-            SessionDataStore sessionDataStore = null;
-            if (sessionManagerConfig != null) {
-                String storeType = sessionManagerConfig.getStoreType();
-                SessionStoreType sessionStoreType = SessionStoreType.resolve(storeType);
-                if (storeType != null && sessionStoreType == null) {
-                    throw new IllegalArgumentException("Unknown session store type: " + storeType);
-                }
-                if (sessionStoreType == SessionStoreType.FILE) {
-                    sessionDataStore = SessionDataStoreFactory.createFileSessionDataStore(
-                        sessionManagerConfig, getApplicationAdapter());
+            SessionStore sessionStore = null;
+            if (sessionStoreFactory != null) {
+                sessionStore = sessionStoreFactory.getSessionStore();
+            } else if (sessionManagerConfig != null) {
+                SessionFileStoreConfig fileStoreConfig = sessionManagerConfig.getFileStoreConfig();
+                if (fileStoreConfig != null) {
+                    FileSessionStoreFactory fileSessionStoreFactory = new FileSessionStoreFactory();
+                    fileSessionStoreFactory.setApplicationAdapter(applicationAdapter);
+                    String storeDir = fileStoreConfig.getStoreDir();
+                    if (StringUtils.hasText(storeDir)) {
+                        fileSessionStoreFactory.setStoreDir(storeDir);
+                    }
+                    boolean deleteUnrestorableFiles = fileStoreConfig.isDeleteUnrestorableFiles();
+                    if (deleteUnrestorableFiles) {
+                        fileSessionStoreFactory.setDeleteUnrestorableFiles(true);
+                    }
+                    String[] nonPersistentAttributes = fileStoreConfig.getNonPersistentAttributes();
+                    if (nonPersistentAttributes != null) {
+                        fileSessionStoreFactory.setNonPersistentAttributes(nonPersistentAttributes);
+                    }
+                    sessionStoreFactory = fileSessionStoreFactory;
+                    sessionStore = fileSessionStoreFactory.getSessionStore();
                 }
             }
 
-            DefaultSessionCache sessionCache = new DefaultSessionCache(this, sessionDataStore);
+            DefaultSessionCache sessionCache = new DefaultSessionCache(this, sessionStore);
             if (sessionManagerConfig != null) {
                 if (sessionManagerConfig.hasMaxSessions()) {
                     int maxSessions = sessionManagerConfig.getMaxSessions();

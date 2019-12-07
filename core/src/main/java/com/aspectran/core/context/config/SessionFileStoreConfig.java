@@ -23,16 +23,20 @@ public class SessionFileStoreConfig extends AbstractParameters {
 
     private static final ParameterKey storeDir;
     private static final ParameterKey deleteUnrestorableFiles;
+    private static final ParameterKey nonPersistentAttributes;
 
     private static final ParameterKey[] parameterKeys;
 
     static {
         storeDir = new ParameterKey("storeDir", ValueType.STRING);
         deleteUnrestorableFiles = new ParameterKey("deleteUnrestorableFiles", ValueType.BOOLEAN);
+        nonPersistentAttributes = new ParameterKey("nonPersistentAttributes", ValueType.STRING, true);
+
 
         parameterKeys = new ParameterKey[] {
                 storeDir,
-                deleteUnrestorableFiles
+                deleteUnrestorableFiles,
+                nonPersistentAttributes
         };
     }
 
@@ -56,6 +60,24 @@ public class SessionFileStoreConfig extends AbstractParameters {
     public SessionFileStoreConfig setDeleteUnrestorableFiles(boolean deleteUnrestorableFiles) {
         putValue(SessionFileStoreConfig.deleteUnrestorableFiles, deleteUnrestorableFiles);
         return this;
+    }
+
+    public String[] getNonPersistentAttributes() {
+        return getStringArray(nonPersistentAttributes);
+    }
+
+    public SessionFileStoreConfig setNonPersistentAttributes(String[] nonPersistentAttributes) {
+        putValue(SessionFileStoreConfig.nonPersistentAttributes, nonPersistentAttributes);
+        return this;
+    }
+
+    public SessionFileStoreConfig addNonPersistentAttributes(String nonPersistentAttribute) {
+        putValue(SessionFileStoreConfig.nonPersistentAttributes, nonPersistentAttribute);
+        return this;
+    }
+
+    public boolean hasNonPersistentAttributes() {
+        return hasValue(nonPersistentAttributes);
     }
 
 }

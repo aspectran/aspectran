@@ -15,14 +15,10 @@
  */
 package com.aspectran.core.component.session;
 
-import com.aspectran.core.context.config.SessionFileStoreConfig;
-import com.aspectran.core.context.config.SessionManagerConfig;
-import com.aspectran.core.context.rule.type.SessionStoreType;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
 import java.util.Enumeration;
 import java.util.concurrent.TimeUnit;
 
@@ -59,6 +55,8 @@ class SessionManagerTest {
 
         agent.complete();
         agent.invalidate();
+
+        sessionManager.destroy();
     }
 
     @Test
@@ -77,45 +75,8 @@ class SessionManagerTest {
         agent.complete();
 
         await().atMost(2, TimeUnit.SECONDS).until(() -> sessionHandler.getSessionCache().getActiveSessionCount() == 0);
-    }
 
-    @Test
-    void testFileSessionStore() throws Exception {
-        DefaultSessionManager sessionManager = new DefaultSessionManager();
-        sessionManager.setWorkerName("TEST3-");
-
-        File storeDir = new File("./target/sessions");
-        storeDir.mkdir();
-
-        SessionManagerConfig sessionManagerConfig = new SessionManagerConfig();
-        sessionManagerConfig.setStoreType(SessionStoreType.FILE);
-        SessionFileStoreConfig fileStoreConfig = sessionManagerConfig.newFileStoreConfig();
-        fileStoreConfig.setStoreDir(storeDir.getCanonicalPath());
-
-        sessionManager.initialize();
-
-        SessionHandler sessionHandler = sessionManager.getSessionHandler();
-        sessionHandler.setDefaultMaxIdleSecs(1);
-
-        SessionAgent agent = new SessionAgent(sessionManager);
-        log.info("Created Session: " + agent.getSession(true));
-
-        for (int i = 0; i < 10; i++) {
-            for (int j = 0; j <= i; j++) {
-                agent.setAttribute("attr-" + j, "val-" + j);
-            }
-
-            Enumeration<String> enumeration = agent.getAttributeNames();
-            while (enumeration.hasMoreElements()) {
-                String key = enumeration.nextElement();
-                log.info("getAttribute " + key + "=" + agent.getAttribute(key));
-            }
-
-            TimeUnit.MILLISECONDS.sleep(30);
-        }
-        agent.complete();
-
-        await().atMost(3, TimeUnit.SECONDS).until(() -> sessionHandler.getSessionCache().getActiveSessionCount() == 0);
+        sessionManager.destroy();
     }
 
 }

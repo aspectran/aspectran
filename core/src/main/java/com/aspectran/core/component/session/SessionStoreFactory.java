@@ -15,14 +15,17 @@
  */
 package com.aspectran.core.component.session;
 
-import com.aspectran.core.component.Component;
+import java.io.IOException;
 
 /**
- * The session manager initializes and destroys the session
- * handler and session cache.
+ * <p>Created: 2019/12/06</p>
  */
-public interface SessionManager extends Component {
+public interface SessionStoreFactory {
 
-    SessionHandler getSessionHandler();
+    String[] getNonPersistentAttributes();
+
+    void setNonPersistentAttributes(String[] nonPersistentAttributes);
+
+    SessionStore getSessionStore() throws IOException;
 
 }

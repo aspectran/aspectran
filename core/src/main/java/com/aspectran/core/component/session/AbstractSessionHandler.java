@@ -270,7 +270,7 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
             if (session.isExpiredAt(now)) {
                 // instead of expiring the session directly here, accumulate a list of
                 // session ids that need to be expired. This is an efficiency measure: as
-                // the expiration involves the SessionDataStore doing a delete, it is
+                // the expiration involves the SessionStore doing a delete, it is
                 // most efficient if it can be done as a bulk operation to eg reduce
                 // roundtrips to the persistent store. Only do this if the HouseKeeper that
                 // does the scavenging is configured to actually scavenge

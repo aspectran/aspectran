@@ -20,11 +20,11 @@ import com.aspectran.core.component.Component;
 import java.util.Set;
 
 /**
- * A SessionDataStore is a mechanism for (persistently) storing data associated with sessions.
+ * A SessionStore is a mechanism for (persistently) storing data associated with sessions.
  *
  * <p>Created: 2017. 6. 15.</p>
  */
-public interface SessionDataStore extends Component {
+public interface SessionStore extends Component {
 
     /**
      * Read in session data.
@@ -36,13 +36,13 @@ public interface SessionDataStore extends Component {
     SessionData load(String id) throws Exception;
 
     /**
-     * Store the session data.
+     * Save the session data.
      *
      * @param id identity of session to store
      * @param sessionData info of session to store
      * @throws Exception if unable to write session data
      */
-    void store(String id, SessionData sessionData) throws Exception;
+    void save(String id, SessionData sessionData) throws Exception;
 
     /**
      * Delete session data.
@@ -68,8 +68,8 @@ public interface SessionDataStore extends Component {
      * of time.
      *
      * @param candidates if provided, these are keys of sessions that
-     *      the SessionDataStore thinks has expired and should be verified by the
-     *      SessionDataStore
+     *      the SessionStore thinks has expired and should be verified by the
+     *      SessionStore
      * @return set of session ids
      */
     Set<String> getExpired (Set<String> candidates);
