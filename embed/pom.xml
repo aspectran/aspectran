@@ -29,14 +29,6 @@
     <name>Aspectran Embed</name>
     <description>Build Java applications with Aspectran</description>
 
-    <licenses>
-        <license>
-            <name>Apache License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
-        </license>
-    </licenses>
-    <inceptionYear>2008</inceptionYear>
-
     <properties>
         <main.basedir>${project.parent.basedir}</main.basedir>
     </properties>

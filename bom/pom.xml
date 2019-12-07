@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2008-2019 The Aspectran Project
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.sonatype.oss</groupId>
+        <artifactId>oss-parent</artifactId>
+        <version>9</version>
+        <relativePath/>
+    </parent>
+
+    <groupId>com.aspectran</groupId>
+    <artifactId>aspectran-bom</artifactId>
+    <version>6.5.3-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <name>Aspectran BOM</name>
+    <description>Aspectran (Bill of Materials)</description>
+    <url>https://aspectran.com/</url>
+
+    <organization>
+        <name>The Aspectran Project</name>
+        <url>https://aspectran.com/</url>
+    </organization>
+
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+        </license>
+    </licenses>
+    <inceptionYear>2008</inceptionYear>
+
+    <developers>
+        <developer>
+            <name>Juho Jeong</name>
+            <email>aspectran@gmail.com</email>
+            <url>https://aspectran.com/</url>
+            <organization>The Aspectran Project</organization>
+            <organizationUrl>https://aspectran.com/</organizationUrl>
+            <roles>
+                <role>Owner</role>
+                <role>Founder</role>
+                <role>Committer</role>
+            </roles>
+            <timezone>+9</timezone>
+        </developer>
+    </developers>
+
+    <scm>
+        <url>https://github.com/aspectran/aspectran</url>
+        <connection>scm:git:ssh://git@github.com/aspectran/aspectran.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/aspectran/aspectran.git</developerConnection>
+        <tag>HEAD</tag>
+    </scm>
+    <issueManagement>
+        <system>GitHub Issue Management</system>
+        <url>https://github.com/aspectran/aspectran/issues</url>
+    </issueManagement>
+    <ciManagement>
+        <system>Travis CI</system>
+        <url>https://travis-ci.org/aspectran/aspectran</url>
+    </ciManagement>
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- All release modules -->
+            <dependency>
+                <groupId>com.aspectran</groupId>
+                <artifactId>aspectran-core</artifactId>
+                <version>6.5.3-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>com.aspectran</groupId>
+                <artifactId>aspectran-daemon</artifactId>
+                <version>6.5.3-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>com.aspectran</groupId>
+                <artifactId>aspectran-embed</artifactId>
+                <version>6.5.3-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>com.aspectran</groupId>
+                <artifactId>aspectran-shell</artifactId>
+                <version>6.5.3-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>com.aspectran</groupId>
+                <artifactId>aspectran-shell-jline</artifactId>
+                <version>6.5.3-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>com.aspectran</groupId>
+                <artifactId>aspectran-web</artifactId>
+                <version>6.5.3-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>com.aspectran</groupId>
+                <artifactId>aspectran-with-freemarker</artifactId>
+                <version>6.5.3-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>com.aspectran</groupId>
+                <artifactId>aspectran-with-jetty</artifactId>
+                <version>6.5.3-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>com.aspectran</groupId>
+                <artifactId>aspectran-with-mybatis</artifactId>
+                <version>6.5.3-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>com.aspectran</groupId>
+                <artifactId>aspectran-with-pebble</artifactId>
+                <version>6.5.3-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>com.aspectran</groupId>
+                <artifactId>aspectran-with-undertow</artifactId>
+                <version>6.5.3-SNAPSHOT</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+</project>
