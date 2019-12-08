@@ -153,7 +153,7 @@ public class BasicSession implements Session {
     public void setMaxInactiveInterval(int secs) {
         try (Lock ignored = locker.lock()) {
             sessionData.setMaxInactiveInterval((long)secs * 1000L);
-            sessionData.calcAndSetExpiryTime();
+            sessionData.calcAndSetExpiry();
             sessionData.setDirty(true);
             if (log.isDebugEnabled()) {
                 if (secs <= 0) {
@@ -176,7 +176,7 @@ public class BasicSession implements Session {
 
             long now = System.currentTimeMillis();
             sessionData.setAccessedTime(now);
-            sessionData.calcAndSetExpiryTime(now);
+            sessionData.calcAndSetExpiry(now);
             if (isExpiredAt(now)) {
                 invalidate();
                 return false;
@@ -207,7 +207,7 @@ public class BasicSession implements Session {
             if (requests == 0) {
                 // update the expiry time to take account of the time all requests spent inside of the session
                 long now = System.currentTimeMillis();
-                sessionData.calcAndSetExpiryTime(now);
+                sessionData.calcAndSetExpiry(now);
                 sessionData.setLastAccessedTime(sessionData.getAccessedTime());
                 sessionHandler.releaseSession(this);
                 sessionInactivityTimer.schedule(calculateInactivityTimeout(now));
@@ -241,7 +241,7 @@ public class BasicSession implements Session {
             long remaining = sessionData.getExpiryTime() - now;
             long maxInactive = sessionData.getMaxInactiveInterval();
             int evictionIdleSecs = sessionHandler.getSessionCache().getEvictionIdleSecs();
-            if (maxInactive <= 0) {
+            if (maxInactive <= 0L) {
                 // sessions are immortal, they never expire
                 if (evictionIdleSecs < SessionCache.EVICT_ON_INACTIVITY) {
                     // we do not want to evict inactive sessions
@@ -274,7 +274,7 @@ public class BasicSession implements Session {
                 } else {
                     // want to evict on idle: timer is lesser of the session's
                     // expiration remaining and the time to evict
-                    time = (remaining > 0 ? Math.min(maxInactive, TimeUnit.SECONDS.toMillis(evictionIdleSecs)) : 0);
+                    time = (remaining > 0 ? Math.min(maxInactive, TimeUnit.SECONDS.toMillis(evictionIdleSecs)) : 0L);
                     if (log.isDebugEnabled()) {
                         log.debug("Session " + getId() + " timer set to lesser of maxIdleSeconds=" +
                                 (maxInactive / 1000L) + " and evictionIdleSeconds=" + evictionIdleSecs);

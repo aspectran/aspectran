@@ -118,6 +118,7 @@
         <module>core</module>
         <module>daemon</module>
         <module>embed</module>
+        <module>rss-lettuce</module>
         <module>shell</module>
         <module>shell-jline</module>
         <module>web</module>

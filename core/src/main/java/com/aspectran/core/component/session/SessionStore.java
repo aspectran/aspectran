@@ -75,18 +75,6 @@ public interface SessionStore extends Component {
     Set<String> getExpired (Set<String> candidates);
 
     /**
-     * Create a new SessionData.
-     *
-     * @param id the id
-     * @param createdTime the timestamp when created
-     * @param accessedTime the timestamp when accessed
-     * @param lastAccessedTime the timestamp when last accessed
-     * @param maxInactiveInterval the max inactive time in milliseconds
-     * @return a new SessionData object
-     */
-    SessionData createSessionData(String id, long createdTime, long accessedTime, long lastAccessedTime, long maxInactiveInterval);
-
-    /**
      * Returns the names of the attributes that should be excluded from serialization.
      *
      * @return the attribute names to be excluded from serialization

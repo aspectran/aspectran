@@ -15,30 +15,20 @@
  */
 package com.aspectran.core.component.session;
 
-import com.aspectran.core.util.CustomObjectInputStream;
 import com.aspectran.core.util.MultiException;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.ToStringBuilder;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
 import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -78,6 +68,42 @@ public class FileSessionStore extends AbstractSessionStore {
     }
 
     @Override
+    public SessionData load(String id) throws Exception {
+        // load session info from its file
+        String filename = sessionFileMap.get(id);
+        if (filename == null) {
+            if (log.isTraceEnabled()) {
+                log.trace("Unknown file " + id);
+            }
+            return null;
+        }
+
+        File file = new File(storeDir, filename);
+        if (!file.exists()) {
+            if (log.isDebugEnabled()) {
+                log.debug("No such file " + filename);
+            }
+            return null;
+        }
+
+        try (FileInputStream in = new FileInputStream(file)) {
+            SessionData data = SessionData.deserialize(in);
+            data.setLastSavedTime(file.lastModified());
+            return data;
+        } catch (Exception e) {
+            if (isDeleteUnrestorableFiles() && file.exists() && file.getParentFile().equals(storeDir)) {
+                try {
+                    delete(id);
+                    log.warn("Deleted unrestorable file for session " + id);
+                } catch (Exception x) {
+                    log.warn("Unable to delete unrestorable file " + filename + " for session " + id, x);
+                }
+            }
+            throw new UnreadableSessionDataException(id, e);
+        }
+    }
+
+    @Override
     public boolean delete(String id) throws Exception {
         if (storeDir != null) {
             // remove from our map
@@ -104,6 +130,38 @@ public class FileSessionStore extends AbstractSessionStore {
         }
         File file = new File(storeDir, filename);
         return Files.deleteIfExists(file.toPath());
+    }
+
+    @Override
+    public boolean exists(String id) {
+        String filename = sessionFileMap.get(id);
+        if (filename == null) {
+            return false;
+        }
+        // check the expiry
+        long expiry = getExpiryFromFilename(filename);
+        if (expiry <= 0L) {
+            return true; // never expires
+        } else {
+            return (expiry > System.currentTimeMillis()); // hasn't yet expired
+        }
+    }
+
+    @Override
+    public void doSave(String id, SessionData data, long lastSaveTime) throws Exception {
+        if (storeDir != null) {
+            delete(id);
+            // make a fresh file using the latest session expiry
+            String filename = getIdWithExpiry(data);
+            File file = new File(storeDir, filename);
+            try (FileOutputStream fos = new FileOutputStream(file,false)) {
+                SessionData.serialize(data, fos, getNonPersistentAttributes());
+                sessionFileMap.put(id, filename);
+            } catch (Exception e) {
+                file.delete(); // No point keeping the file if we didn't save the whole session
+                throw new UnwritableSessionDataException(id, e);
+            }
+        }
     }
 
     /**
@@ -153,74 +211,6 @@ public class FileSessionStore extends AbstractSessionStore {
             sweepDisk();
         }
         return expired;
-    }
-
-    @Override
-    public SessionData load(String id) throws Exception {
-        // load session info from its file
-        String filename = sessionFileMap.get(id);
-        if (filename == null) {
-            if (log.isTraceEnabled()) {
-                log.trace("Unknown file " + id);
-            }
-            return null;
-        }
-
-        File file = new File(storeDir, filename);
-        if (!file.exists()) {
-            if (log.isDebugEnabled()) {
-                log.debug("No such file " + filename);
-            }
-            return null;
-        }
-
-        try (FileInputStream in = new FileInputStream(file)) {
-            SessionData data = loadSessionData(in, id);
-            data.setLastSaved(file.lastModified());
-            return data;
-        } catch (UnreadableSessionDataException e) {
-            if (isDeleteUnrestorableFiles() && file.exists() && file.getParentFile().equals(storeDir)) {
-                try {
-                    delete(id);
-                    log.warn("Deleted unrestorable file for session " + id);
-                } catch (Exception x) {
-                    log.warn("Unable to delete unrestorable file " + filename + " for session " + id, x);
-                }
-            }
-            throw e;
-        }
-    }
-
-    @Override
-    public void doStore(String id, SessionData data, long lastSaveTime) throws Exception {
-        if (storeDir != null) {
-            delete(id);
-            // make a fresh file using the latest session expiry
-            String filename = getIdWithExpiry(data);
-            File file = new File(storeDir, filename);
-            try (FileOutputStream fos = new FileOutputStream(file,false)) {
-                saveSessionData(fos, id, data);
-                sessionFileMap.put(id, filename);
-            } catch (Exception e) {
-                file.delete(); // No point keeping the file if we didn't save the whole session
-                throw new UnwritableSessionDataException(id, e);
-            }
-        }
-    }
-
-    @Override
-    public boolean exists(String id) {
-        String filename = sessionFileMap.get(id);
-        if (filename == null) {
-            return false;
-        }
-        // check the expiry
-        long expiry = getExpiryFromFilename(filename);
-        if (expiry <= 0) {
-            return true; // never expires
-        } else {
-            return (expiry > System.currentTimeMillis()); // hasn't yet expired
-        }
     }
 
     /**
@@ -289,7 +279,6 @@ public class FileSessionStore extends AbstractSessionStore {
                         } catch (Exception e) {
                             log.warn(e.getMessage(), e);
                         }
-
                     });
         } catch (Exception e) {
             log.warn(e.getMessage(), e);
@@ -323,91 +312,6 @@ public class FileSessionStore extends AbstractSessionStore {
             } catch (NumberFormatException e) {
                 log.warn("Not valid session filename " + filename, e);
             }
-        }
-    }
-
-    /**
-     * Save the session data.
-     *
-     * @param os the output stream to save to
-     * @param id identity of the session
-     * @param data the info of the session
-     * @throws IOException if an I/O error has occurred
-     */
-    private void saveSessionData(OutputStream os, String id, SessionData data) throws IOException {
-        DataOutputStream out = new DataOutputStream(os);
-        out.writeUTF(id);
-        out.writeLong(data.getCreationTime());
-        out.writeLong(data.getAccessedTime());
-        out.writeLong(data.getLastAccessedTime());
-        out.writeLong(data.getExpiryTime());
-        out.writeLong(data.getMaxInactiveInterval());
-
-        List<String> keys = new ArrayList<>(data.getKeys());
-        // remove attributes excluded from serialization
-        if (!keys.isEmpty() && getNonPersistentAttributes() != null) {
-            keys.removeAll(getNonPersistentAttributes());
-        }
-        out.writeInt(keys.size());
-        if (!keys.isEmpty()) {
-            ObjectOutputStream oos = new ObjectOutputStream(out);
-            for (String name : keys) {
-                oos.writeUTF(name);
-                oos.writeObject(data.getAttribute(name));
-            }
-        }
-    }
-
-    /**
-     * Load session data from an input stream that contains session data.
-     *
-     * @param is the input stream containing session data
-     * @param expectedId the id we've been told to load
-     * @return the session data
-     * @throws Exception if the session data could not be read from the file
-     */
-    private SessionData loadSessionData(InputStream is, String expectedId) throws Exception {
-        try {
-            DataInputStream dis = new DataInputStream(is);
-            String id = dis.readUTF(); // the actual id from inside the file
-            long created = dis.readLong();
-            long accessed = dis.readLong();
-            long lastAccessed = dis.readLong();
-            long expiry = dis.readLong();
-            long maxIdle = dis.readLong();
-
-            SessionData data = createSessionData(id, created, accessed, lastAccessed, maxIdle);
-            data.setExpiryTime(expiry);
-            data.setMaxInactiveInterval(maxIdle);
-
-            //  Attributes
-            restoreAttributes(dis, dis.readInt(), data);
-
-            return data;
-        } catch (Exception e) {
-            throw new UnreadableSessionDataException(expectedId, e);
-        }
-    }
-
-    /**
-     * Load attributes from an input stream that contains session data.
-     *
-     * @param is the input stream containing session data
-     * @param size number of attributes
-     * @param data the data to restore to
-     * @throws Exception if the input stream is invalid or fails to read
-     */
-    private void restoreAttributes(InputStream is, int size, SessionData data) throws Exception {
-        if (size > 0) {
-            // input stream should not be closed here
-            Map<String, Object> attributes = new HashMap<>();
-            ObjectInputStream ois =  new CustomObjectInputStream(is);
-            for (int i = 0; i < size; i++) {
-                String key = ois.readUTF();
-                Object value = ois.readObject();
-                attributes.put(key, value);
-            }
-            data.putAllAttributes(attributes);
         }
     }
 

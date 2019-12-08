@@ -15,10 +15,21 @@
  */
 package com.aspectran.core.component.session;
 
+import com.aspectran.core.util.CustomObjectInputStream;
 import com.aspectran.core.util.ToStringBuilder;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -52,7 +63,7 @@ public class SessionData implements Serializable {
     private boolean dirty;
 
     /** time in ms since last save */
-    private long lastSaved;
+    private long lastSavedTime;
 
     public SessionData(String id, long creationTime, long accessedTime, long lastAccessedTime, long maxInactiveInterval) {
         if (id == null) {
@@ -63,7 +74,7 @@ public class SessionData implements Serializable {
         this.accessedTime = accessedTime;
         this.lastAccessedTime = lastAccessedTime;
         this.maxInactiveInterval = maxInactiveInterval;
-        calcAndSetExpiryTime(creationTime);
+        calcAndSetExpiry(creationTime);
     }
 
     public String getId() {
@@ -162,20 +173,20 @@ public class SessionData implements Serializable {
         this.expiryTime = expiryTime;
     }
 
-    public long calcExpiryTime() {
-        return calcExpiryTime(System.currentTimeMillis());
+    public long calcExpiry() {
+        return calcExpiry(System.currentTimeMillis());
     }
 
-    public long calcExpiryTime(long time) {
+    public long calcExpiry(long time) {
         return (maxInactiveInterval <= 0L ? 0L : (time + maxInactiveInterval));
     }
 
-    public void calcAndSetExpiryTime() {
-        setExpiryTime(calcExpiryTime());
+    public void calcAndSetExpiry() {
+        setExpiryTime(calcExpiry());
     }
 
-    public void calcAndSetExpiryTime(long time) {
-        setExpiryTime(calcExpiryTime(time));
+    public void calcAndSetExpiry(long time) {
+        setExpiryTime(calcExpiry(time));
     }
 
     public boolean isExpiredAt(long time) {
@@ -196,24 +207,105 @@ public class SessionData implements Serializable {
         this.dirty = dirty;
     }
 
-    public long getLastSaved() {
-        return lastSaved;
+    public long getLastSavedTime() {
+        return lastSavedTime;
     }
 
-    public void setLastSaved(long lastSaved) {
-        this.lastSaved = lastSaved;
+    public void setLastSavedTime(long lastSavedTime) {
+        this.lastSavedTime = lastSavedTime;
     }
 
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.append("id", getId());
-        tsb.append("createdTime", getCreationTime());
-        tsb.append("accessedTime", getLastAccessedTime());
-        tsb.append("lastAccessedTime", getLastAccessedTime());
+        tsb.append("created", getCreationTime());
+        tsb.append("accessed", getLastAccessedTime());
+        tsb.append("lastAccessed", getLastAccessedTime());
         tsb.append("maxInactiveInterval", getMaxInactiveInterval());
-        tsb.append("expiryTime", getExpiryTime());
+        tsb.append("expiry", getExpiryTime());
         return tsb.toString();
+    }
+
+    /**
+     * Save the session data.
+     *
+     * @param os the output stream to save to
+     * @param nonPersistentAttributes the attribute names to be excluded from serialization
+     * @throws IOException if an I/O error has occurred
+     */
+    public static void serialize(SessionData data,  OutputStream os,
+                                 Set<String> nonPersistentAttributes) throws IOException {
+        DataOutputStream out = new DataOutputStream(os);
+        out.writeUTF(data.getId());
+        out.writeLong(data.getCreationTime());
+        out.writeLong(data.getAccessedTime());
+        out.writeLong(data.getLastAccessedTime());
+        out.writeLong(data.getExpiryTime());
+        out.writeLong(data.getMaxInactiveInterval());
+
+        List<String> keys = new ArrayList<>(data.getKeys());
+        // remove attributes excluded from serialization
+        if (!keys.isEmpty() && nonPersistentAttributes != null) {
+            keys.removeAll(nonPersistentAttributes);
+        }
+        out.writeInt(keys.size());
+        if (!keys.isEmpty()) {
+            ObjectOutputStream oos = new ObjectOutputStream(out);
+            for (String name : keys) {
+                oos.writeUTF(name);
+                oos.writeObject(data.getAttribute(name));
+            }
+        }
+    }
+
+    /**
+     * Load session data from an input stream that contains session data.
+     *
+     * @param is the input stream containing session data
+     * @return the session data
+     * @throws Exception if the session data could not be read from the file
+     */
+    public static SessionData deserialize(InputStream is) throws Exception {
+        DataInputStream dis = new DataInputStream(is);
+        String id = dis.readUTF(); // the actual id from inside the file
+        long created = dis.readLong();
+        long accessed = dis.readLong();
+        long lastAccessed = dis.readLong();
+        long expiry = dis.readLong();
+        long maxInactive = dis.readLong();
+        int entries = dis.readInt();
+
+        SessionData data = new SessionData(id, created, accessed, lastAccessed, maxInactive);
+        data.setExpiryTime(expiry);
+        data.setMaxInactiveInterval(maxInactive);
+
+        // Attributes
+        restoreAttributes(dis, entries, data);
+
+        return data;
+    }
+
+    /**
+     * Load attributes from an input stream that contains session data.
+     *
+     * @param is the input stream containing session data
+     * @param entries number of attributes
+     * @param data the data to restore to
+     * @throws Exception if the input stream is invalid or fails to read
+     */
+    private static void restoreAttributes(InputStream is, int entries, SessionData data) throws Exception {
+        if (entries > 0) {
+            // input stream should not be closed here
+            Map<String, Object> attributes = new HashMap<>();
+            ObjectInputStream ois =  new CustomObjectInputStream(is);
+            for (int i = 0; i < entries; i++) {
+                String key = ois.readUTF();
+                Object value = ois.readObject();
+                attributes.put(key, value);
+            }
+            data.putAllAttributes(attributes);
+        }
     }
 
 }

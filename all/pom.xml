@@ -44,67 +44,61 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>aspectran-core</artifactId>
             <version>${project.version}</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>aspectran-daemon</artifactId>
             <version>${project.version}</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>aspectran-embed</artifactId>
             <version>${project.version}</version>
-            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>aspectran-rss-lettuce</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>aspectran-shell</artifactId>
             <version>${project.version}</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>aspectran-shell-jline</artifactId>
             <version>${project.version}</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>aspectran-web</artifactId>
             <version>${project.version}</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>aspectran-with-freemarker</artifactId>
             <version>${project.version}</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>aspectran-with-jetty</artifactId>
             <version>${project.version}</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>aspectran-with-mybatis</artifactId>
             <version>${project.version}</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>aspectran-with-pebble</artifactId>
             <version>${project.version}</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>aspectran-with-undertow</artifactId>
             <version>${project.version}</version>
-            <scope>provided</scope>
         </dependency>
         <!-- Optional dependencies -->
         <dependency>
@@ -284,24 +278,8 @@
                             <packages>com.aspectran.web*</packages>
                         </group>
                         <group>
-                            <title>Aspectran with Freemarker</title>
-                            <packages>com.aspectran.freemarker*</packages>
-                        </group>
-                        <group>
-                            <title>Aspectran with Jetty</title>
-                            <packages>com.aspectran.jetty*</packages>
-                        </group>
-                        <group>
-                            <title>Aspectran with MyBatis</title>
-                            <packages>com.aspectran.mybatis*</packages>
-                        </group>
-                        <group>
-                            <title>Aspectran with Pebble</title>
-                            <packages>com.aspectran.pebble*</packages>
-                        </group>
-                        <group>
-                            <title>Aspectran with Undertow</title>
-                            <packages>com.aspectran.undertow*</packages>
+                            <title>Aspectran Add-ons</title>
+                            <packages>com.aspectran.freemarker*:com.aspectran.jetty*:com.aspectran.mybatis*:com.aspectran.pebble*:com.aspectran.undertow*</packages>
                         </group>
                     </groups>
                     <stylesheetfile>${project.basedir}/src/main/javadoc/stylesheet.css</stylesheetfile>
