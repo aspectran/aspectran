@@ -234,7 +234,7 @@ public class SessionData implements Serializable {
      * @param nonPersistentAttributes the attribute names to be excluded from serialization
      * @throws IOException if an I/O error has occurred
      */
-    public static void serialize(SessionData data,  OutputStream os,
+    public static void serialize(SessionData data, OutputStream os,
                                  Set<String> nonPersistentAttributes) throws IOException {
         DataOutputStream out = new DataOutputStream(os);
         out.writeUTF(data.getId());

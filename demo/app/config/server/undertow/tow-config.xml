@@ -160,11 +160,31 @@
                     </arguments>
                 </bean>
             </item>
+        </properties>
+        <properties profile="!rss-lettuce">
             <item name="sessionStoreFactory">
                 <bean class="com.aspectran.core.component.session.FileSessionStoreFactory">
                     <properties>
                         <item name="storeDir">/temp/sessions/tow</item>
                         <item name="deleteUnrestorableFiles" valueType="boolean">true</item>
+                        <item name="nonPersistentAttributes" type="array">
+                            <value>io.undertow.websocket.current-connections</value>
+                        </item>
+                    </properties>
+                </bean>
+            </item>
+        </properties>
+        <properties profile="rss-lettuce">
+            <item name="sessionStoreFactory">
+                <bean class="com.aspectran.core.component.session.redis.lettuce.LettuceSessionStoreFactory">
+                    <properties>
+                        <item name="poolConfig">
+                            <bean class="com.aspectran.core.component.session.redis.lettuce.LettucePoolConfig">
+                                <properties>
+                                    <item name="uri">redis://localhost:6379/0</item>
+                                </properties>
+                            </bean>
+                        </item>
                         <item name="nonPersistentAttributes" type="array">
                             <value>io.undertow.websocket.current-connections</value>
                         </item>
