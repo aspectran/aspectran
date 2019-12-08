@@ -26,7 +26,7 @@
     <artifactId>aspectran-rss-lettuce</artifactId>
     <packaging>jar</packaging>
 
-    <name>Redis Session Store using Lettuce</name>
+    <name>Redis-based Session Store using Lettuce</name>
     <description>Add-on package for providing session replication via persistence to Redis using Lettuce client</description>
 
     <properties>
