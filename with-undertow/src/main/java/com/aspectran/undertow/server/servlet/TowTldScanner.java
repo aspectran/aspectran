@@ -85,28 +85,22 @@ public class TowTldScanner extends TldScanner {
         URL jarFileUrl = jar.getJarFileURL();
         jar.nextEntry();
         for (String entryName = jar.getEntryName();
-             entryName != null;
-             jar.nextEntry(), entryName = jar.getEntryName()) {
-            if (!(entryName.startsWith("META-INF/") &&
-                    entryName.endsWith(".tld"))) {
-                continue;
-            }
-            found = true;
-            TldResourcePath tldResourcePath =
-                    new TldResourcePath(jarFileUrl, webappPath, entryName);
-            try {
-                parseTld(tldResourcePath);
-            } catch (SAXException e) {
-                throw new IOException(e);
+             entryName != null; jar.nextEntry(), entryName = jar.getEntryName()) {
+            if (entryName.startsWith("META-INF/") && entryName.endsWith(".tld")) {
+                found = true;
+                TldResourcePath tldResourcePath = new TldResourcePath(jarFileUrl, webappPath, entryName);
+                try {
+                    parseTld(tldResourcePath);
+                } catch (SAXException e) {
+                    throw new IOException(e);
+                }
             }
         }
-        if (found) {
-            if (log.isDebugEnabled()) {
+        if (log.isDebugEnabled()) {
+            if (found) {
                 log.debug("TLD files were found in JAR [" + jarFileUrl + "]");
-            }
-        } else {
-            if (log.isDebugEnabled()) {
-                log.debug("No TLD files were found in [" + jarFileUrl + "]");
+            } else {
+                log.debug("No TLD files were found in JAR [" + jarFileUrl + "]");
             }
         }
     }
