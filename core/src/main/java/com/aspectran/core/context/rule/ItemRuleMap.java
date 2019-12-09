@@ -33,8 +33,6 @@ public class ItemRuleMap extends LinkedHashMap<String, ItemRule> {
 
     private List<ItemRuleMap> candidates;
 
-    private boolean dummy;
-
     public ItemRuleMap() {
         super();
     }
@@ -88,14 +86,6 @@ public class ItemRuleMap extends LinkedHashMap<String, ItemRule> {
         }
         candidates.add(itemRuleMap);
         return candidates;
-    }
-
-    public boolean isDummy() {
-        return dummy;
-    }
-
-    public void setDummy(boolean dummy) {
-        this.dummy = dummy;
     }
 
 }

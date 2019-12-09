@@ -812,51 +812,43 @@ public class ContextRuleAssistant {
         }
     }
 
-    public ItemRuleMap profiling(ItemRuleMap irm, ItemRuleMap presentIrm) {
-        if (irm.getProfile() != null && getContextEnvironment() != null) {
-            String[] profiles = StringUtils.splitCommaDelimitedString(irm.getProfile());
+    public ItemRuleMap profiling(ItemRuleMap newIrm, ItemRuleMap oldIrm) {
+        if (newIrm.getProfile() != null && getContextEnvironment() != null) {
+            String[] profiles = StringUtils.splitCommaDelimitedString(newIrm.getProfile());
             if (getContextEnvironment().acceptsProfiles(profiles)) {
-                if (presentIrm == null) {
-                    return irm;
-                }
-                if (presentIrm.getCandidates() == null) {
-                    irm.addCandidate(presentIrm);
-                    irm.addCandidate(irm);
-                    return irm;
-                } else {
-                    irm.setCandidates(presentIrm.getCandidates());
-                    if (!presentIrm.isDummy()) {
-                        presentIrm.setCandidates(null);
-                        irm.addCandidate(presentIrm);
-                    }
-                    irm.addCandidate(irm);
-                    return irm;
-                }
+                return mergeItemRuleMap(newIrm, oldIrm);
             } else {
-                if (presentIrm == null) {
-                    ItemRuleMap dummyIrm = new ItemRuleMap();
-                    dummyIrm.setDummy(true);
-                    dummyIrm.addCandidate(irm);
-                    return dummyIrm;
+                if (oldIrm == null) {
+                    ItemRuleMap irm = new ItemRuleMap();
+                    irm.addCandidate(newIrm);
+                    return irm;
                 } else {
-                    presentIrm.addCandidate(irm);
-                    return presentIrm;
+                    oldIrm.addCandidate(newIrm);
+                    return oldIrm;
                 }
             }
         } else {
-            if (presentIrm == null) {
-                return irm;
-            }
-            if (presentIrm.getCandidates() == null) {
-                irm.addCandidate(presentIrm);
-                irm.addCandidate(irm);
-                return irm;
-            } else {
-                irm.setCandidates(presentIrm.getCandidates());
-                irm.addCandidate(irm);
-                presentIrm.setCandidates(null);
-                return irm;
-            }
+            return mergeItemRuleMap(newIrm, oldIrm);
+        }
+    }
+
+    private ItemRuleMap mergeItemRuleMap(ItemRuleMap newIrm, ItemRuleMap oldIrm) {
+        if (oldIrm == null) {
+            return newIrm;
+        }
+        if (oldIrm.getCandidates() == null) {
+            ItemRuleMap irm = new ItemRuleMap(oldIrm);
+            irm.putAll(newIrm);
+            irm.addCandidate(oldIrm);
+            irm.addCandidate(newIrm);
+            return irm;
+        } else {
+            ItemRuleMap irm = new ItemRuleMap(oldIrm);
+            irm.putAll(newIrm);
+            irm.setCandidates(oldIrm.getCandidates());
+            irm.addCandidate(newIrm);
+            oldIrm.setCandidates(null);
+            return irm;
         }
     }
 

@@ -140,8 +140,10 @@ public class FileSessionStore extends AbstractSessionStore {
         }
         // check the expiry
         long expiry = getExpiryFromFilename(filename);
-        if (expiry <= 0L) {
+        if (expiry == 0L) {
             return true; // never expires
+        } else if (expiry == -1L) {
+            return false; // not valid session filename
         } else {
             return (expiry > System.currentTimeMillis()); // hasn't yet expired
         }
@@ -220,15 +222,26 @@ public class FileSessionStore extends AbstractSessionStore {
      * @return the session id plus expiry
      */
     private String getIdWithExpiry(SessionData data) {
-        return data.getId() + "_" + data.getExpiryTime();
+        if (data.getExpiryTime() > 0L) {
+            return data.getExpiryTime() + "_" + data.getId();
+        } else {
+            return data.getId();
+        }
     }
 
     private long getExpiryFromFilename(String filename) {
-        if (!StringUtils.hasText(filename) || !filename.contains("_")) {
-            throw new IllegalStateException("Invalid or missing filename");
+        int index = filename.indexOf('_');
+        if (index == -1) {
+            return 0L; // never expires
+        } else {
+            try {
+                String s = filename.substring(0, index);
+                return Long.parseLong(s);
+            } catch (NumberFormatException e) {
+                log.warn("Not valid session filename " + filename, e);
+                return -1L;
+            }
         }
-        String s = filename.substring(filename.lastIndexOf('_') + 1);
-        return Long.parseLong(s);
     }
 
     /**
@@ -238,10 +251,12 @@ public class FileSessionStore extends AbstractSessionStore {
      * @return the session id
      */
     private String getIdFromFilename(String filename) {
-        if (!StringUtils.hasText(filename) || !filename.contains("_")) {
-            return null;
+        int index = filename.indexOf('_');
+        if (index == -1) {
+            return filename;
+        } else {
+            return filename.substring(index + 1);
         }
-        return filename.substring(0, filename.lastIndexOf('_'));
     }
 
     /**
@@ -251,19 +266,14 @@ public class FileSessionStore extends AbstractSessionStore {
      * @return true if pattern matches
      */
     private boolean isSessionFilename(String filename) {
-        if (!StringUtils.hasText(filename) || filename.startsWith(".")) {
-            return false;
-        }
-        String[] parts = filename.split("_");
-        // Need at least 2 parts for a valid filename
-        return (parts.length >= 2);
+        return (StringUtils.hasText(filename) && !filename.startsWith("."));
     }
 
     /**
      * Check all session files that do not belong to this context and
      * remove any that expired long ago (ie at least 5 gracePeriods ago).
      */
-    public void sweepDisk() {
+    private void sweepDisk() {
         //iterate over the files in the store dir and check expiry times
         long now = System.currentTimeMillis();
         if (log.isTraceEnabled()) {
@@ -294,23 +304,16 @@ public class FileSessionStore extends AbstractSessionStore {
      * @param p the file to check
      * @throws Exception indicating error in sweep
      */
-    public void sweepFile(long now, Path p) throws Exception {
-        if (p == null) {
-            return;
-        }
-        String filename = p.getFileName().toString();
-        if (isSessionFilename(filename)) {
-            try {
-                long expiry = getExpiryFromFilename(filename);
-                // files with 0 expiry never expire
-                if (expiry > 0 && ((now - expiry) >= (5 * TimeUnit.SECONDS.toMillis(getGracePeriodSecs())))) {
-                    Files.deleteIfExists(p);
-                    if (log.isDebugEnabled()) {
-                        log.debug("Sweep deleted " + p.getFileName());
-                    }
+    private void sweepFile(long now, Path p) throws Exception {
+        if (p != null) {
+            String filename = p.getFileName().toString();
+            long expiry = getExpiryFromFilename(filename);
+            // files with 0 expiry never expire
+            if (expiry > 0 && ((now - expiry) >= (5 * TimeUnit.SECONDS.toMillis(getGracePeriodSecs())))) {
+                Files.deleteIfExists(p);
+                if (log.isDebugEnabled()) {
+                    log.debug("Sweep deleted " + p.getFileName());
                 }
-            } catch (NumberFormatException e) {
-                log.warn("Not valid session filename " + filename, e);
             }
         }
     }
@@ -370,11 +373,11 @@ public class FileSessionStore extends AbstractSessionStore {
                                     long existingExpiry = getExpiryFromFilename(existing);
                                     long thisExpiry = getExpiryFromFilename(filename);
                                     if (thisExpiry > existingExpiry) {
-                                        //replace with more recent file
+                                        // replace with more recent file
                                         Path existingPath = storeDir.toPath().resolve(existing);
-                                        //update the file we're keeping
+                                        // update the file we're keeping
                                         sessionFileMap.put(sessionId, filename);
-                                        //delete the old file
+                                        // delete the old file
                                         Files.delete(existingPath);
                                         if (log.isDebugEnabled()) {
                                             log.debug("Replaced " + existing + " with " + filename);
