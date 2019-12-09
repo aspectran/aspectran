@@ -255,12 +255,12 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
         if (log.isDebugEnabled()) {
             log.debug("Creating new session id=" + id);
         }
-        SessionData sessionData = new SessionData(id, time, time, time, maxInactiveInterval);
-        BasicSession session = new BasicSession(sessionData, sessionHandler, true);
+        SessionData data = new SessionData(id, time, time, time, maxInactiveInterval);
+        BasicSession session = new BasicSession(data, sessionHandler, true);
         if (doPutIfAbsent(id, session) == null) {
             session.setResident(true); // its in the cache
             if (isSaveOnCreate() && sessionStore != null) {
-                sessionStore.save(id, sessionData);
+                sessionStore.save(id, data);
             }
             return session;
         } else {

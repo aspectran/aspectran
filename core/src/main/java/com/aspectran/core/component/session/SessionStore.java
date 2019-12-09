@@ -39,10 +39,10 @@ public interface SessionStore extends Component {
      * Save the session data.
      *
      * @param id identity of session to store
-     * @param sessionData info of session to store
+     * @param data info of session to store
      * @throws Exception if unable to write session data
      */
-    void save(String id, SessionData sessionData) throws Exception;
+    void save(String id, SessionData data) throws Exception;
 
     /**
      * Delete session data.

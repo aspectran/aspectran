@@ -80,12 +80,12 @@ public class SessionIdGenerator {
             }
 
             StringBuilder id = new StringBuilder();
-            if (workerName != null) {
-                id.append(workerName);
-            }
             id.append(Long.toString(r0,36));
             id.append(Long.toString(r1,36));
             id.append(COUNTER.getAndIncrement());
+            if (workerName != null) {
+                id.append(".").append(workerName);
+            }
             return id.toString();
         }
     }
