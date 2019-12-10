@@ -339,7 +339,8 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
             throws BeanReferenceException, IllegalRuleException {
         initContextEnvironment(assistant);
 
-        AspectranActivityContext activityContext = new AspectranActivityContext(assistant.getApplicationAdapter(), assistant.getContextEnvironment());
+        AspectranActivityContext activityContext = new AspectranActivityContext(
+                assistant.getApplicationAdapter(), assistant.getContextEnvironment());
 
         AspectRuleRegistry aspectRuleRegistry = assistant.getAspectRuleRegistry();
 
@@ -351,11 +352,14 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
 
         initAspectRuleRegistry(assistant);
 
-        BeanProxifierType beanProxifierType = BeanProxifierType.resolve((String)assistant.getSetting(DefaultSettingType.BEAN_PROXIFIER));
-        ContextualBeanRegistry contextualBeanRegistry = new ContextualBeanRegistry(activityContext, beanRuleRegistry, beanProxifierType);
+        BeanProxifierType beanProxifierType = BeanProxifierType.resolve(
+                (String)assistant.getSetting(DefaultSettingType.BEAN_PROXIFIER));
+        ContextualBeanRegistry contextualBeanRegistry = new ContextualBeanRegistry(
+                activityContext, beanRuleRegistry, beanProxifierType);
 
         TemplateRuleRegistry templateRuleRegistry = assistant.getTemplateRuleRegistry();
-        ContextualTemplateRenderer contextualTemplateRenderer = new ContextualTemplateRenderer(activityContext, templateRuleRegistry);
+        ContextualTemplateRenderer contextualTemplateRenderer = new ContextualTemplateRenderer(
+                activityContext, templateRuleRegistry);
 
         ScheduleRuleRegistry scheduleRuleRegistry = assistant.getScheduleRuleRegistry();
         TransletRuleRegistry transletRuleRegistry = assistant.getTransletRuleRegistry();

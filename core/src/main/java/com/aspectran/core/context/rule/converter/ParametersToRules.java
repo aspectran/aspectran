@@ -1032,6 +1032,9 @@ public class ParametersToRules {
         Boolean secret = itemParameters.getBoolean(ItemParameters.secret);
 
         ItemRule itemRule = ItemRule.newInstance(type, name, valueType, tokenize, mandatory, secret);
+        if (itemRule.getValue() == null && itemParameters.hasValue(ItemParameters.bean)) {
+            itemRule.setValueType(ItemValueType.BEAN);
+        }
 
         if (itemRule.isListableType()) {
             if (itemRule.getValueType() == ItemValueType.BEAN) {
@@ -1057,9 +1060,9 @@ public class ParametersToRules {
                     for (EntryParameters parameters : entryParametersList) {
                         if (parameters != null) {
                             String entryName = parameters.getString(EntryParameters.name);
-                            BeanParameters beanParameters = parameters.getParameters(EntryParameters.bean);
-                            if (beanParameters != null) {
-                                BeanRule beanRule = toInnerBeanRule(beanParameters);
+                            List<BeanParameters> beanParametersList = itemParameters.getParametersList(ItemParameters.bean);
+                            if (beanParametersList != null && !beanParametersList.isEmpty()) {
+                                BeanRule beanRule = toInnerBeanRule(beanParametersList.get(0));
                                 itemRule.putBeanRule(entryName, beanRule);
                             } else {
                                 itemRule.putBeanRule(entryName, null);
@@ -1078,9 +1081,9 @@ public class ParametersToRules {
             }
         } else {
             if (itemRule.getValueType() == ItemValueType.BEAN) {
-                BeanParameters beanParameters = itemParameters.getParameters(ItemParameters.bean);
-                if (beanParameters != null) {
-                    BeanRule beanRule = toInnerBeanRule(beanParameters);
+                List<BeanParameters> beanParametersList = itemParameters.getParametersList(ItemParameters.bean);
+                if (beanParametersList != null && !beanParametersList.isEmpty()) {
+                    BeanRule beanRule = toInnerBeanRule(beanParametersList.get(0));
                     itemRule.setBeanRule(beanRule);
                 }
             } else {

@@ -18,6 +18,7 @@ package com.aspectran.core.util.apon;
 import com.aspectran.core.util.ClassUtils;
 import com.aspectran.core.util.StringUtils;
 import org.xml.sax.Attributes;
+import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
@@ -60,13 +61,21 @@ public class XmlToApon {
     }
 
     public static <T extends Parameters> T from(Reader in, Class<T> requiredType) throws IOException {
+        return from(in, requiredType, null);
+    }
+
+    public static <T extends Parameters> T from(Reader in, Class<T> requiredType, EntityResolver entityResolver) throws IOException {
         T container = ClassUtils.createInstance(requiredType);
-        from(in, container);
+        from(in, container, entityResolver);
         return container;
     }
 
     public static <T extends Parameters> T from(Reader in, T container) throws IOException {
-        return from(new InputSource(in), container);
+        return from(in, container, null);
+    }
+
+    public static <T extends Parameters> T from(Reader in, T container, EntityResolver entityResolver) throws IOException {
+        return from(new InputSource(in), container, entityResolver);
     }
 
     public static Parameters from(InputStream in) throws IOException {
@@ -74,30 +83,50 @@ public class XmlToApon {
     }
 
     public static <T extends Parameters> T from(InputStream in, Class<T> requiredType) throws IOException {
+        return from(in, requiredType, null);
+    }
+
+    public static <T extends Parameters> T from(InputStream in, Class<T> requiredType, EntityResolver entityResolver) throws IOException {
         T container = ClassUtils.createInstance(requiredType);
-        from(in, container);
+        from(in, container, entityResolver);
         return container;
     }
 
     public static <T extends Parameters> T from(InputStream in, T container) throws IOException {
-        return from(new InputSource(in), container);
+        return from(in, container, null);
+    }
+
+    public static <T extends Parameters> T from(InputStream in, T container, EntityResolver entityResolver) throws IOException {
+        return from(new InputSource(in), container, entityResolver);
     }
 
     public static Parameters from(File file) throws IOException {
-        return from(new InputSource(file.toURI().toASCIIString()), new VariableParameters());
+        return from(file, new VariableParameters());
     }
 
     public static <T extends Parameters> T from(File file, Class<T> requiredType) throws IOException {
+        return from(file, requiredType, null);
+    }
+
+    public static <T extends Parameters> T from(File file, Class<T> requiredType, EntityResolver entityResolver) throws IOException {
         T container = ClassUtils.createInstance(requiredType);
-        from(file, container);
+        from(file, container, entityResolver);
         return container;
     }
 
     public static <T extends Parameters> T from(File file, T container) throws IOException {
-        return from(new InputSource(file.toURI().toASCIIString()), container);
+        return from(file, container, null);
+    }
+
+    public static <T extends Parameters> T from(File file, T container, EntityResolver entityResolver) throws IOException {
+        return from(new InputSource(file.toURI().toASCIIString()), container, entityResolver);
     }
 
     public static <T extends Parameters> T from(InputSource is, T container) throws IOException {
+        return from(is, container, null);
+    }
+
+    public static <T extends Parameters> T from(InputSource is, T container, EntityResolver entityResolver) throws IOException {
         if (is == null) {
             throw new IllegalArgumentException("InputSource must not be null");
         }
@@ -108,6 +137,9 @@ public class XmlToApon {
         ParameterValueHandler valueHandler = null;
         try {
             valueHandler = new ParameterValueHandler(container);
+            if (entityResolver != null) {
+                valueHandler.setEntityResolver(entityResolver);
+            }
             SAXParserFactory factory = SAXParserFactory.newInstance();
             SAXParser parser = factory.newSAXParser();
             parser.parse(is, valueHandler);
@@ -137,6 +169,8 @@ public class XmlToApon {
 
         private Parameters parameters;
 
+        private EntityResolver entityResolver;
+
         private String name;
 
         private boolean open;
@@ -147,6 +181,19 @@ public class XmlToApon {
 
         public ParameterValueHandler(Parameters container) {
             this.parameters = container;
+        }
+
+        public void setEntityResolver(EntityResolver entityResolver) {
+            this.entityResolver = entityResolver;
+        }
+
+        @Override
+        public InputSource resolveEntity(String publicId, String systemId) throws IOException, SAXException {
+            if (entityResolver != null) {
+                return entityResolver.resolveEntity(publicId, systemId);
+            } else {
+                return null;
+            }
         }
 
         @Override
@@ -183,7 +230,7 @@ public class XmlToApon {
         }
 
         @Override
-        public void endElement (String uri, String localName, String qName) throws SAXException {
+        public void endElement(String uri, String localName, String qName) throws SAXException {
             if (open) {
                 String text = null;
                 if (buffer.length() > 0) {

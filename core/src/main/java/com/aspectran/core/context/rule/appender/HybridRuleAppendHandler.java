@@ -23,11 +23,13 @@ import com.aspectran.core.context.rule.converter.ParametersToRules;
 import com.aspectran.core.context.rule.converter.RulesToParameters;
 import com.aspectran.core.context.rule.params.AspectranParameters;
 import com.aspectran.core.context.rule.params.RootParameters;
+import com.aspectran.core.context.rule.parser.xml.AspectranDtdResolver;
 import com.aspectran.core.context.rule.parser.xml.AspectranNodeParser;
 import com.aspectran.core.context.rule.type.AppendedFileFormatType;
 import com.aspectran.core.context.rule.type.AppenderType;
 import com.aspectran.core.util.apon.AponWriter;
 import com.aspectran.core.util.apon.XmlToApon;
+import org.xml.sax.EntityResolver;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -45,6 +47,8 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
     private final String encoding;
 
     private AspectranNodeParser aspectranNodeParser;
+
+    private EntityResolver entityResolver;
 
     public HybridRuleAppendHandler(ContextRuleAssistant assistant, String encoding) {
         super(assistant);
@@ -71,13 +75,13 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
                 RootParameters rootParameters;
                 if (appender.getAppenderType() == AppenderType.FILE) {
                     FileRuleAppender fileRuleAppender = (FileRuleAppender)appender;
-                    rootParameters = XmlToApon.from(fileRuleAppender.getFile(), RootParameters.class);
+                    rootParameters = XmlToApon.from(fileRuleAppender.getFile(), RootParameters.class, getEntityResolver());
                     if (isDebugMode()) {
                         saveAsAponFile(fileRuleAppender, rootParameters);
                     }
                 } else {
                     try (Reader reader = appender.getReader(encoding)) {
-                        rootParameters = XmlToApon.from(reader, RootParameters.class);
+                        rootParameters = XmlToApon.from(reader, RootParameters.class, getEntityResolver());
                     }
                 }
                 convertAsRules(rootParameters);
@@ -104,6 +108,13 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
             aspectranNodeParser = new AspectranNodeParser(getContextRuleAssistant());
         }
         return aspectranNodeParser;
+    }
+
+    private EntityResolver getEntityResolver() {
+        if (entityResolver == null) {
+            entityResolver = new AspectranDtdResolver(false);
+        }
+        return entityResolver;
     }
 
     private void convertAsRules(RootParameters rootParameters) throws IllegalRuleException {
