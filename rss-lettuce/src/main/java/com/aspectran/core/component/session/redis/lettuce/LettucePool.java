@@ -10,6 +10,8 @@ import org.apache.commons.pool2.impl.GenericObjectPool;
 import java.util.Set;
 
 /**
+ * Redis connection pool using Lettuce.
+ *
  * <p>Created: 2019/12/08</p>
  */
 public class LettucePool {

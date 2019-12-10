@@ -12,6 +12,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.Set;
 
 /**
+ * {@link SessionDataCodec} encodes the session data sent to Redis,
+ * and decodes the session data in the command output.
+ *
  * <p>Created: 2019/12/08</p>
  */
 public class SessionDataCodec implements RedisCodec<String, SessionData> {

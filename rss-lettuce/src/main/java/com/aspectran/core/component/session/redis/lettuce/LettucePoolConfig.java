@@ -5,6 +5,8 @@ import io.lettuce.core.api.StatefulRedisConnection;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 
 /**
+ * Redis connection pool configuration using Lettuce.
+ *
  * <p>Created: 2019/12/07</p>
  */
 public class LettucePoolConfig extends GenericObjectPoolConfig<StatefulRedisConnection<String, SessionData>> {
