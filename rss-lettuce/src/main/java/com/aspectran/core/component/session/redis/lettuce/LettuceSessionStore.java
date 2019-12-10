@@ -29,7 +29,11 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
+ * A Redis-based session store using Lettuce as the client.
+ *
  * <p>Created: 2019/12/06</p>
+ *
+ * @since 6.6.0
  */
 public class LettuceSessionStore extends AbstractSessionStore {
 

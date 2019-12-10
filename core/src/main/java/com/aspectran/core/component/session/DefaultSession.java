@@ -26,13 +26,13 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /**
- * A basic {@link Session} implementation.
+ * A default {@link Session} implementation.
  *
  * <p>Created: 2017. 6. 13.</p>
  */
-public class BasicSession implements Session {
+public class DefaultSession implements Session {
 
-    private static final Log log = LogFactory.getLog(BasicSession.class);
+    private static final Log log = LogFactory.getLog(DefaultSession.class);
 
     private final Locker locker = new Locker();
 
@@ -61,7 +61,7 @@ public class BasicSession implements Session {
 
     private Session.DestroyedReason destroyedReason;
 
-    protected BasicSession(SessionData sessionData, SessionHandler sessionHandler, boolean newSession) {
+    protected DefaultSession(SessionData sessionData, SessionHandler sessionHandler, boolean newSession) {
         this.sessionData = sessionData;
         this.sessionHandler = sessionHandler;
         this.newSession = newSession;
@@ -554,14 +554,14 @@ public class BasicSession implements Session {
                     }
                     long now = System.currentTimeMillis();
                     // handle what to do with the session after the timer expired
-                    getSessionHandler().sessionInactivityTimerExpired(BasicSession.this, now);
-                    try (Lock ignored = BasicSession.this.lock()) {
+                    getSessionHandler().sessionInactivityTimerExpired(DefaultSession.this, now);
+                    try (Lock ignored = DefaultSession.this.lock()) {
                         // grab the lock and check what happened to the session: if it didn't get evicted and
                         // it hasn't expired, we need to reset the timer
-                        if (BasicSession.this.isResident() && BasicSession.this.getRequests() <= 0 &&
-                            BasicSession.this.isValid() && !BasicSession.this.isExpiredAt(now)) {
+                        if (DefaultSession.this.isResident() && DefaultSession.this.getRequests() <= 0 &&
+                            DefaultSession.this.isValid() && !DefaultSession.this.isExpiredAt(now)) {
                             // session wasn't expired or evicted, we need to reset the timer
-                            SessionInactivityTimer.this.schedule(BasicSession.this.calculateInactivityTimeout(now));
+                            SessionInactivityTimer.this.schedule(DefaultSession.this.calculateInactivityTimeout(now));
                         }
                     }
                 }

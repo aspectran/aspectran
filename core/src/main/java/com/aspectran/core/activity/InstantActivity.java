@@ -16,9 +16,9 @@
 package com.aspectran.core.activity;
 
 import com.aspectran.core.activity.request.ParameterMap;
-import com.aspectran.core.adapter.BasicRequestAdapter;
-import com.aspectran.core.adapter.BasicResponseAdapter;
-import com.aspectran.core.adapter.BasicSessionAdapter;
+import com.aspectran.core.adapter.DefaultRequestAdapter;
+import com.aspectran.core.adapter.DefaultResponseAdapter;
+import com.aspectran.core.adapter.DefaultSessionAdapter;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
@@ -87,17 +87,17 @@ public class InstantActivity extends CoreActivity {
         }
         if (getRequestAdapter() == null) {
             MethodType requestMethod = (getTranslet() != null ? getTranslet().getRequestMethod() : null);
-            BasicRequestAdapter requestAdapter = new BasicRequestAdapter(requestMethod, null);
+            DefaultRequestAdapter requestAdapter = new DefaultRequestAdapter(requestMethod, null);
             setRequestAdapter(requestAdapter);
         }
         if (getResponseAdapter() == null) {
             Writer writer = new OutputStringWriter();
-            BasicResponseAdapter responseAdapter = new BasicResponseAdapter(null, writer);
+            DefaultResponseAdapter responseAdapter = new DefaultResponseAdapter(null, writer);
             setResponseAdapter(responseAdapter);
         }
 
-        if (!hasParentActivity() && getSessionAdapter() instanceof BasicSessionAdapter) {
-            ((BasicSessionAdapter)getSessionAdapter()).getSessionAgent().access();
+        if (!hasParentActivity() && getSessionAdapter() instanceof DefaultSessionAdapter) {
+            ((DefaultSessionAdapter)getSessionAdapter()).getSessionAgent().access();
         }
 
         super.adapt();
@@ -125,8 +125,8 @@ public class InstantActivity extends CoreActivity {
 
     @Override
     protected void release() {
-        if (!hasParentActivity() && getSessionAdapter() instanceof BasicSessionAdapter) {
-            ((BasicSessionAdapter)getSessionAdapter()).getSessionAgent().complete();
+        if (!hasParentActivity() && getSessionAdapter() instanceof DefaultSessionAdapter) {
+            ((DefaultSessionAdapter)getSessionAdapter()).getSessionAgent().complete();
         }
 
         super.release();

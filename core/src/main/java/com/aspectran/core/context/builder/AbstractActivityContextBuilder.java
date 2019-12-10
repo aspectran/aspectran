@@ -16,7 +16,7 @@
 package com.aspectran.core.context.builder;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
-import com.aspectran.core.adapter.BasicApplicationAdapter;
+import com.aspectran.core.adapter.DefaultApplicationAdapter;
 import com.aspectran.core.component.aspect.AspectAdviceRulePreRegister;
 import com.aspectran.core.component.aspect.AspectRuleRegistry;
 import com.aspectran.core.component.aspect.InvalidPointcutPatternException;
@@ -310,7 +310,7 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
 
     protected ApplicationAdapter createApplicationAdapter() throws InvalidResourceException {
         AspectranClassLoader acl = newAspectranClassLoader();
-        return new BasicApplicationAdapter(basePath, acl);
+        return new DefaultApplicationAdapter(basePath, acl);
     }
 
     protected ContextEnvironment createContextEnvironment() {

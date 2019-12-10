@@ -21,18 +21,18 @@ import com.aspectran.core.component.session.SessionAgent;
 import java.util.Enumeration;
 
 /**
- * Adapt {@link SessionAgent} to Core {@link SessionAdapter}.
+ * Adapt {@link SessionAgent} to Default {@link SessionAdapter}.
  *
  * @since 2.3.0
  */
-public class BasicSessionAdapter extends AbstractSessionAdapter {
+public class DefaultSessionAdapter extends AbstractSessionAdapter {
 
     /**
-     * Instantiates a new BasicSessionAdapter.
+     * Instantiates a new DefaultSessionAdapter.
      *
      * @param agent the session agent
      */
-    public BasicSessionAdapter(SessionAgent agent) {
+    public DefaultSessionAdapter(SessionAgent agent) {
         super(agent);
     }
 

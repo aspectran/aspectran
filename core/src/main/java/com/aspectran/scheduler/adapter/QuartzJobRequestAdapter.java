@@ -15,7 +15,7 @@
  */
 package com.aspectran.scheduler.adapter;
 
-import com.aspectran.core.adapter.BasicRequestAdapter;
+import com.aspectran.core.adapter.DefaultRequestAdapter;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.context.rule.type.MethodType;
 import org.quartz.JobExecutionContext;
@@ -25,7 +25,7 @@ import org.quartz.JobExecutionContext;
  * 
  * @since 2013. 11. 20.
  */
-public class QuartzJobRequestAdapter extends BasicRequestAdapter {
+public class QuartzJobRequestAdapter extends DefaultRequestAdapter {
 
     /**
      * Instantiates a new QuartzJobRequestAdapter.

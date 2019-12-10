@@ -22,7 +22,7 @@ import com.aspectran.core.activity.request.MissingMandatoryAttributesException;
 import com.aspectran.core.activity.request.MissingMandatoryParametersException;
 import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.activity.request.RequestParseException;
-import com.aspectran.core.adapter.BasicSessionAdapter;
+import com.aspectran.core.adapter.DefaultSessionAdapter;
 import com.aspectran.core.context.expr.ItemEvaluator;
 import com.aspectran.core.context.expr.ItemExpression;
 import com.aspectran.core.context.expr.token.Token;
@@ -112,8 +112,8 @@ public class ShellActivity extends CoreActivity {
             throw new AdapterException("Failed to adapt for Shell Activity", e);
         }
 
-        if (getParentActivity() == null && getSessionAdapter() instanceof BasicSessionAdapter) {
-            ((BasicSessionAdapter)getSessionAdapter()).getSessionAgent().access();
+        if (getParentActivity() == null && getSessionAdapter() instanceof DefaultSessionAdapter) {
+            ((DefaultSessionAdapter)getSessionAdapter()).getSessionAgent().access();
         }
 
         super.adapt();
@@ -174,8 +174,8 @@ public class ShellActivity extends CoreActivity {
 
     @Override
     protected void release() {
-        if (getParentActivity() == null && getSessionAdapter() instanceof BasicSessionAdapter) {
-            ((BasicSessionAdapter)getSessionAdapter()).getSessionAgent().complete();
+        if (getParentActivity() == null && getSessionAdapter() instanceof DefaultSessionAdapter) {
+            ((DefaultSessionAdapter)getSessionAdapter()).getSessionAgent().complete();
         }
 
         super.release();

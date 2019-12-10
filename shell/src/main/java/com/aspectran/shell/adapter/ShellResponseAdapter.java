@@ -15,7 +15,7 @@
  */
 package com.aspectran.shell.adapter;
 
-import com.aspectran.core.adapter.BasicResponseAdapter;
+import com.aspectran.core.adapter.DefaultResponseAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 
 import java.io.Writer;
@@ -23,7 +23,7 @@ import java.io.Writer;
 /**
  * Adapt Shell Response to Core {@link ResponseAdapter}.
  */
-public class ShellResponseAdapter extends BasicResponseAdapter {
+public class ShellResponseAdapter extends DefaultResponseAdapter {
 
     /**
      * Instantiates a new ShellResponseAdapter.

@@ -21,18 +21,18 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * The Class BasicApplicationAdapter.
+ * The Class DefaultApplicationAdapter.
  * 
  * @since 2016. 3. 26.
  */
-public class BasicApplicationAdapter extends AbstractApplicationAdapter {
+public class DefaultApplicationAdapter extends AbstractApplicationAdapter {
 
     private final Map<String, Object> attributes = new ConcurrentHashMap<>();
 
     /**
-     * Instantiates a new BasicApplicationAdapter.
+     * Instantiates a new DefaultApplicationAdapter.
      */
-    public BasicApplicationAdapter(String basePath, ClassLoader classLoader) {
+    public DefaultApplicationAdapter(String basePath, ClassLoader classLoader) {
         super(basePath, classLoader);
     }
 

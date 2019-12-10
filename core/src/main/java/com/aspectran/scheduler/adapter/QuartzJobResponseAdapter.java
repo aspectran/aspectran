@@ -15,7 +15,7 @@
  */
 package com.aspectran.scheduler.adapter;
 
-import com.aspectran.core.adapter.BasicResponseAdapter;
+import com.aspectran.core.adapter.DefaultResponseAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.rule.type.ContentType;
 import com.aspectran.core.util.OutputStringWriter;
@@ -25,7 +25,7 @@ import com.aspectran.core.util.OutputStringWriter;
  * 
  * @since 2013. 11. 20.
  */
-public class QuartzJobResponseAdapter extends BasicResponseAdapter {
+public class QuartzJobResponseAdapter extends DefaultResponseAdapter {
 
     public QuartzJobResponseAdapter() {
         super(null);

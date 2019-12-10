@@ -16,7 +16,7 @@
 package com.aspectran.core.component.session;
 
 /**
- * Interface for receiving notification events about BasicSession
+ * Interface for receiving notification events about DefaultSession
  * lifecycle changes.
  *
  * <p>Created: 2017. 6. 25.</p>

@@ -15,14 +15,14 @@
  */
 package com.aspectran.daemon.adapter;
 
-import com.aspectran.core.adapter.BasicRequestAdapter;
+import com.aspectran.core.adapter.DefaultRequestAdapter;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.context.rule.type.MethodType;
 
 /**
  * Adapt Daemon Request to Core {@link RequestAdapter}.
  */
-public class DaemonRequestAdapter extends BasicRequestAdapter {
+public class DaemonRequestAdapter extends DefaultRequestAdapter {
 
     /**
      * Instantiates a new DaemonRequestAdapter.

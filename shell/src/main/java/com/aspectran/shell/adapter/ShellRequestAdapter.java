@@ -15,14 +15,14 @@
  */
 package com.aspectran.shell.adapter;
 
-import com.aspectran.core.adapter.BasicRequestAdapter;
+import com.aspectran.core.adapter.DefaultRequestAdapter;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.context.rule.type.MethodType;
 
 /**
  * Adapt Shell Request to Core {@link RequestAdapter}.
  */
-public class ShellRequestAdapter extends BasicRequestAdapter {
+public class ShellRequestAdapter extends DefaultRequestAdapter {
 
     /**
      * Instantiates a new ShellRequestAdapter.

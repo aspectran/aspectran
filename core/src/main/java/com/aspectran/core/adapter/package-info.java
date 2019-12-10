@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * A package for providing basic adapters for integration with a core activity.
+ * A package for providing adapters for integration with a core activity.
  */
 package com.aspectran.core.adapter;

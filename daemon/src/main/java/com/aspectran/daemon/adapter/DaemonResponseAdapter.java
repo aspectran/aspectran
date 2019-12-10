@@ -15,7 +15,7 @@
  */
 package com.aspectran.daemon.adapter;
 
-import com.aspectran.core.adapter.BasicResponseAdapter;
+import com.aspectran.core.adapter.DefaultResponseAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.rule.type.ContentType;
 
@@ -24,7 +24,7 @@ import java.io.Writer;
 /**
  * Adapt Daemon Response to Core {@link ResponseAdapter}.
  */
-public class DaemonResponseAdapter extends BasicResponseAdapter {
+public class DaemonResponseAdapter extends DefaultResponseAdapter {
 
     /**
      * Instantiates a new DaemonResponseAdapter.

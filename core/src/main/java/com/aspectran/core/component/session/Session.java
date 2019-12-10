@@ -18,7 +18,7 @@ package com.aspectran.core.component.session;
 import java.util.Set;
 
 /**
- * The basic Session object.
+ * The Interface Session.
  *
  * <p>Created: 2017. 6. 13.</p>
  */

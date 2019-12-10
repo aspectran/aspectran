@@ -34,7 +34,7 @@ public class DefaultSessionCache extends AbstractSessionCache {
     private static final Log log = LogFactory.getLog(DefaultSessionCache.class);
 
     /** the cache of sessions in a HashMap */
-    private final Map<String, BasicSession> sessions = new ConcurrentHashMap<>();
+    private final Map<String, DefaultSession> sessions = new ConcurrentHashMap<>();
 
     private final CounterStatistic statistics = new CounterStatistic();
 
@@ -60,7 +60,7 @@ public class DefaultSessionCache extends AbstractSessionCache {
     }
 
     @Override
-    public BasicSession doGet(String id) {
+    public DefaultSession doGet(String id) {
         if (id == null) {
             return null;
         }
@@ -68,9 +68,9 @@ public class DefaultSessionCache extends AbstractSessionCache {
     }
 
     @Override
-    public BasicSession doPutIfAbsent(String id, BasicSession session) {
+    public DefaultSession doPutIfAbsent(String id, DefaultSession session) {
         checkMaxSessions();
-        BasicSession bs = sessions.putIfAbsent(id, session);
+        DefaultSession bs = sessions.putIfAbsent(id, session);
         if (bs == null && !(session instanceof PlaceHolderSession)) {
             statistics.increment();
         }
@@ -78,8 +78,8 @@ public class DefaultSessionCache extends AbstractSessionCache {
     }
 
     @Override
-    public BasicSession doDelete(String id) {
-        BasicSession bs = sessions.remove(id);
+    public DefaultSession doDelete(String id) {
+        DefaultSession bs = sessions.remove(id);
         if (bs != null && !(bs instanceof PlaceHolderSession)) {
             statistics.decrement();
             expiredSessionCount.incrementAndGet();
@@ -88,7 +88,7 @@ public class DefaultSessionCache extends AbstractSessionCache {
     }
 
     @Override
-    public boolean doReplace(String id, BasicSession oldValue, BasicSession newValue) {
+    public boolean doReplace(String id, DefaultSession oldValue, DefaultSession newValue) {
         checkMaxSessions();
         boolean result = sessions.replace(id, oldValue, newValue);
         if (result && oldValue instanceof PlaceHolderSession) {
@@ -155,7 +155,7 @@ public class DefaultSessionCache extends AbstractSessionCache {
         // added while we're running
         int loop = 100;
         while (!sessions.isEmpty() && loop-- >= 0) {
-            for (BasicSession session : sessions.values()) {
+            for (DefaultSession session : sessions.values()) {
                 // if we have a backing store so give the session to it to write out if necessary
                 if (getSessionStore() != null) {
                     // remove attributes excluded from serialization

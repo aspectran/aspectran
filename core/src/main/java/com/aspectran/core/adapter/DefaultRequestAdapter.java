@@ -21,19 +21,19 @@ import com.aspectran.core.context.rule.type.MethodType;
 import java.util.Map;
 
 /**
- * The Class BasicRequestAdapter.
+ * The Class DefaultRequestAdapter.
   *
  * @since 2016. 2. 13.
 */
-public class BasicRequestAdapter extends AbstractRequestAdapter {
+public class DefaultRequestAdapter extends AbstractRequestAdapter {
 
     /**
-     * Instantiates a new BasicRequestAdapter.
+     * Instantiates a new DefaultRequestAdapter.
      *
      * @param requestMethod the request method
      * @param adaptee the adaptee object
      */
-    public BasicRequestAdapter(MethodType requestMethod, Object adaptee) {
+    public DefaultRequestAdapter(MethodType requestMethod, Object adaptee) {
         super(requestMethod, adaptee);
     }
 

@@ -44,7 +44,7 @@ public interface SessionHandler extends Component {
      * @param id the session id
      * @return a Session or null if none exists
      */
-    BasicSession getSession(String id);
+    DefaultSession getSession(String id);
 
     /**
      * Create an entirely new Session.
@@ -52,9 +52,9 @@ public interface SessionHandler extends Component {
      * @param id identity of session to create
      * @return the new session object
      */
-    BasicSession createSession(String id);
+    DefaultSession createSession(String id);
 
-    void releaseSession(BasicSession session);
+    void releaseSession(DefaultSession session);
 
     /**
      * Create a new Session ID.
@@ -80,9 +80,9 @@ public interface SessionHandler extends Component {
      * @param invalidate if false, only remove from cache
      * @return if the session was removed
      */
-    BasicSession removeSession(String id, boolean invalidate);
+    DefaultSession removeSession(String id, boolean invalidate);
 
-    BasicSession removeSession(String id, boolean invalidate, Session.DestroyedReason reason);
+    DefaultSession removeSession(String id, boolean invalidate, Session.DestroyedReason reason);
 
     /**
      * Called when a session has expired.
@@ -108,10 +108,10 @@ public interface SessionHandler extends Component {
      * is inconsistent and the caller of this method will
      * need to reset the timer.
      *
-     * @param session the basic session
+     * @param session the default session
      * @param now the time at which to check for expiry
      */
-    void sessionInactivityTimerExpired(BasicSession session, long now);
+    void sessionInactivityTimerExpired(DefaultSession session, long now);
 
     /**
      * Called periodically by the HouseKeeper to handle the list of
@@ -166,7 +166,7 @@ public interface SessionHandler extends Component {
      *
      * @param session the session whose time to record
      */
-    void recordSessionTime(BasicSession session);
+    void recordSessionTime(DefaultSession session);
 
     /**
      * @return the maximum amount of time session remained valid

@@ -18,7 +18,7 @@ package com.aspectran.undertow.server.session;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.component.bean.ablility.DisposableBean;
 import com.aspectran.core.component.bean.aware.ApplicationAdapterAware;
-import com.aspectran.core.component.session.BasicSession;
+import com.aspectran.core.component.session.DefaultSession;
 import com.aspectran.core.component.session.DefaultSessionManager;
 import com.aspectran.core.component.session.SessionStoreFactory;
 import com.aspectran.core.component.session.SessionHandler;
@@ -121,7 +121,7 @@ public class TowSessionManager implements SessionManager, ApplicationAdapterAwar
         if (sessionId == null) {
             sessionId = sessionManager.createSessionId(hashCode());
         }
-        BasicSession session = sessionManager.createSession(sessionId);
+        DefaultSession session = sessionManager.createSession(sessionId);
         TowSessionBridge sessionWrapper = newTowSessionBridge(session);
         sessionConfig.setSessionId(serverExchange, session.getId());
         serverExchange.putAttachment(NEW_SESSION, sessionWrapper);
@@ -149,7 +149,7 @@ public class TowSessionManager implements SessionManager, ApplicationAdapterAwar
         if (sessionId == null) {
             return null;
         }
-        BasicSession session = sessionManager.getSession(sessionId);
+        DefaultSession session = sessionManager.getSession(sessionId);
         if (session != null) {
             return newTowSessionBridge(session);
         } else {

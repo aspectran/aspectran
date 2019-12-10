@@ -19,7 +19,11 @@ import com.aspectran.core.component.session.AbstractSessionStoreFactory;
 import com.aspectran.core.component.session.SessionStore;
 
 /**
+ * Factory that creates a Redis-based session store using Lettuce as a client.
+ *
  * <p>Created: 2019/12/06</p>
+ *
+ * @since 6.6.0
  */
 public class LettuceSessionStoreFactory extends AbstractSessionStoreFactory {
 

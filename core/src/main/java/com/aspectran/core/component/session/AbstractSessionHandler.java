@@ -129,9 +129,9 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
     }
 
     @Override
-    public BasicSession getSession(String id) {
+    public DefaultSession getSession(String id) {
         try {
-            BasicSession session = sessionCache.get(id);
+            DefaultSession session = sessionCache.get(id);
             if (session != null) {
                 // if the session we got back has expired
                 if (session.isExpiredAt(System.currentTimeMillis())) {
@@ -153,11 +153,11 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
     }
 
     @Override
-    public BasicSession createSession(String id) {
+    public DefaultSession createSession(String id) {
         long created = System.currentTimeMillis();
         long maxInactiveInterval = (defaultMaxIdleSecs > 0 ? defaultMaxIdleSecs * 1000L : -1L);
         try {
-            BasicSession session = sessionCache.add(id, created, maxInactiveInterval);
+            DefaultSession session = sessionCache.add(id, created, maxInactiveInterval);
             fireSessionCreatedListeners(session);
             return session;
         } catch (Exception e) {
@@ -167,7 +167,7 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
     }
 
     @Override
-    public void releaseSession(BasicSession session) {
+    public void releaseSession(DefaultSession session) {
         try {
             sessionCache.release(session.getId(), session);
         } catch (Exception e) {
@@ -183,7 +183,7 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
     @Override
     public String renewSessionId(String oldId, String newId) {
         try {
-            BasicSession session = sessionCache.renewSessionId(oldId, newId);
+            DefaultSession session = sessionCache.renewSessionId(oldId, newId);
             for (SessionListener listener : sessionListeners) {
                 listener.sessionIdChanged(session, oldId);
             }
@@ -195,17 +195,17 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
     }
 
     @Override
-    public BasicSession removeSession(String id, boolean invalidate) {
+    public DefaultSession removeSession(String id, boolean invalidate) {
         return removeSession(id, invalidate, null);
     }
 
     @Override
-    public BasicSession removeSession(String id, boolean invalidate, Session.DestroyedReason reason) {
+    public DefaultSession removeSession(String id, boolean invalidate, Session.DestroyedReason reason) {
         if (!StringUtils.hasText(id)) {
             return null;
         }
         try {
-            BasicSession session = sessionCache.delete(id);
+            DefaultSession session = sessionCache.delete(id);
             if (invalidate && session != null) {
                 // start invalidating if it is not already begun, and call the listeners
                 try {
@@ -245,7 +245,7 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
     }
 
     @Override
-    public void sessionInactivityTimerExpired(BasicSession session, long now) {
+    public void sessionInactivityTimerExpired(DefaultSession session, long now) {
         if (session == null) {
             return;
         }
@@ -389,7 +389,7 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
     }
 
     @Override
-    public void recordSessionTime(BasicSession session) {
+    public void recordSessionTime(DefaultSession session) {
         sessionTimeStats.record(round((System.currentTimeMillis() - session.getSessionData().getCreationTime()) / 1000.0));
     }
 

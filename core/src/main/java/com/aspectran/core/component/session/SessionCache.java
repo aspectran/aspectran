@@ -107,7 +107,7 @@ public interface SessionCache {
      * @return the Session if one exists, null otherwise
      * @throws Exception if an error occurs
      */
-    BasicSession get(String id) throws Exception;
+    DefaultSession get(String id) throws Exception;
 
     /**
      * Add an entirely new session to the cache.
@@ -116,7 +116,7 @@ public interface SessionCache {
      * @param time the timestamp of the session creation
      * @param maxInactiveInterval the max inactive time in milliseconds
      */
-    BasicSession add(String id, long time, long maxInactiveInterval) throws Exception;
+    DefaultSession add(String id, long time, long maxInactiveInterval) throws Exception;
 
     /**
      * Finish using a Session. This is called by the SessionHandler
@@ -128,7 +128,7 @@ public interface SessionCache {
      * @param session the session object
      * @throws Exception if an error occurs
      */
-    void release(String id, BasicSession session) throws Exception;
+    void release(String id, DefaultSession session) throws Exception;
 
     /**
      * Check to see if a session exists: WILL consult the
@@ -159,7 +159,7 @@ public interface SessionCache {
      * @return the Session that was removed, null otherwise
      * @throws Exception if an error occurs when deleting a session
      */
-    BasicSession delete(String id) throws Exception;
+    DefaultSession delete(String id) throws Exception;
 
     /**
      * Change the id of a Session.
@@ -169,7 +169,7 @@ public interface SessionCache {
      * @return the Session after changing its id
      * @throws Exception if any error occurred
      */
-    BasicSession renewSessionId(String oldId, String newId) throws Exception;
+    DefaultSession renewSessionId(String oldId, String newId) throws Exception;
 
     /**
      * Check a list of session ids that belong to potentially expired
@@ -189,7 +189,7 @@ public interface SessionCache {
      *
      * @param session the session object
      */
-    void checkInactiveSession(BasicSession session);
+    void checkInactiveSession(DefaultSession session);
 
     Set<String> getAllSessions();
 

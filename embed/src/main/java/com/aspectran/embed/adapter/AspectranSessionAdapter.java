@@ -15,14 +15,14 @@
  */
 package com.aspectran.embed.adapter;
 
-import com.aspectran.core.adapter.BasicSessionAdapter;
+import com.aspectran.core.adapter.DefaultSessionAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.component.session.SessionAgent;
 
 /**
  * Adapt {@link SessionAgent} to Core {@link SessionAdapter}.
  */
-public class AspectranSessionAdapter extends BasicSessionAdapter {
+public class AspectranSessionAdapter extends DefaultSessionAdapter {
 
     /**
      * Instantiates a new AspectranSessionAdapter.

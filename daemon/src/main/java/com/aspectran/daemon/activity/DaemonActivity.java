@@ -20,7 +20,7 @@ import com.aspectran.core.activity.AdapterException;
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.activity.request.RequestParseException;
-import com.aspectran.core.adapter.BasicSessionAdapter;
+import com.aspectran.core.adapter.DefaultSessionAdapter;
 import com.aspectran.core.util.OutputStringWriter;
 import com.aspectran.daemon.adapter.DaemonRequestAdapter;
 import com.aspectran.daemon.adapter.DaemonResponseAdapter;
@@ -77,8 +77,8 @@ public class DaemonActivity extends CoreActivity {
         DaemonResponseAdapter responseAdapter = new DaemonResponseAdapter(outputWriter);
         setResponseAdapter(responseAdapter);
 
-        if (!hasParentActivity() && getSessionAdapter() instanceof BasicSessionAdapter) {
-            ((BasicSessionAdapter)getSessionAdapter()).getSessionAgent().access();
+        if (!hasParentActivity() && getSessionAdapter() instanceof DefaultSessionAdapter) {
+            ((DefaultSessionAdapter)getSessionAdapter()).getSessionAgent().access();
         }
 
         super.adapt();
@@ -98,8 +98,8 @@ public class DaemonActivity extends CoreActivity {
 
     @Override
     protected void release() {
-        if (!hasParentActivity() && getSessionAdapter() instanceof BasicSessionAdapter) {
-            ((BasicSessionAdapter)getSessionAdapter()).getSessionAgent().complete();
+        if (!hasParentActivity() && getSessionAdapter() instanceof DefaultSessionAdapter) {
+            ((DefaultSessionAdapter)getSessionAdapter()).getSessionAgent().complete();
         }
 
         super.release();

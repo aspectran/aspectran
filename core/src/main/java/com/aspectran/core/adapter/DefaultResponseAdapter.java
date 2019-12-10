@@ -26,11 +26,11 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * The Class BasicResponseAdapter.
+ * The Class DefaultResponseAdapter.
  *
  * @since 2016. 2. 13.
  */
-public class BasicResponseAdapter extends AbstractResponseAdapter {
+public class DefaultResponseAdapter extends AbstractResponseAdapter {
 
     private MultiValueMap<String, String> headers;
 
@@ -45,21 +45,21 @@ public class BasicResponseAdapter extends AbstractResponseAdapter {
     private int status;
 
     /**
-     * Instantiates a new Basic response adapter.
+     * Instantiates a new default response adapter.
      *
      * @param adaptee the adaptee object
      */
-    public BasicResponseAdapter(Object adaptee) {
+    public DefaultResponseAdapter(Object adaptee) {
         super(adaptee);
     }
 
     /**
-     * Instantiates a new Basic response adapter.
+     * Instantiates a new default response adapter.
      *
      * @param adaptee the adaptee object
      * @param writer the writer to output
      */
-    public BasicResponseAdapter(Object adaptee, Writer writer) {
+    public DefaultResponseAdapter(Object adaptee, Writer writer) {
         super(adaptee);
         setWriter(writer);
     }
