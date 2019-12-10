@@ -32,7 +32,7 @@ class FileSessionStoreFactoryTest {
     @Test
     void testFileSessionStore() throws Exception {
         DefaultSessionManager sessionManager = new DefaultSessionManager();
-        sessionManager.setWorkerName("TEST3-");
+        sessionManager.setWorkerName("test3");
 
         File storeDir = new File("./target/sessions");
         storeDir.mkdir();

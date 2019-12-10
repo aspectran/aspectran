@@ -50,14 +50,6 @@ public class TowSessionManager implements SessionManager, ApplicationAdapterAwar
 
     private volatile long startTime;
 
-    public TowSessionManager() {
-        this(null);
-    }
-
-    public TowSessionManager(String deploymentName) {
-        sessionManager.setWorkerName(deploymentName);
-    }
-
     @Override
     public void setApplicationAdapter(ApplicationAdapter applicationAdapter) {
         sessionManager.setApplicationAdapter(applicationAdapter);
@@ -96,8 +88,7 @@ public class TowSessionManager implements SessionManager, ApplicationAdapterAwar
             sessionManager.initialize();
             startTime = System.currentTimeMillis();
         } catch (Exception e) {
-            //throw new RuntimeException(e);
-            e.printStackTrace();
+            throw new RuntimeException("Error initializing TowSessionManager", e);
         }
     }
 
@@ -106,7 +97,7 @@ public class TowSessionManager implements SessionManager, ApplicationAdapterAwar
         try {
             sessionManager.destroy();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error destroying TowSessionManager", e);
         }
     }
 

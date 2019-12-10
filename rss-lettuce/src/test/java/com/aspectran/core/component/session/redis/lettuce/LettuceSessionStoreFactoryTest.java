@@ -17,7 +17,7 @@ class LettuceSessionStoreFactoryTest {
 
     public static void main(String args[]) throws Exception {
         DefaultSessionManager sessionManager = new DefaultSessionManager();
-        sessionManager.setWorkerName("TEST4-");
+        sessionManager.setWorkerName("lettuce");
 
         LettucePoolConfig poolConfig = new LettucePoolConfig();
         poolConfig.setUri("redis://localhost:6379/0");

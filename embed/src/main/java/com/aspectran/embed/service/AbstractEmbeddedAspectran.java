@@ -70,13 +70,14 @@ public abstract class AbstractEmbeddedAspectran extends AspectranCoreService imp
             if (sessionManagerConfig != null && sessionManagerConfig.isStartup()) {
                 try {
                     DefaultSessionManager sessionManager = new DefaultSessionManager();
+                    sessionManager.setWorkerName("emb");
                     sessionManager.setApplicationAdapter(getActivityContext().getApplicationAdapter());
                     sessionManager.setSessionManagerConfig(sessionManagerConfig);
                     sessionManager.initialize();
                     this.sessionManager = sessionManager;
                     this.sessionAgent = new SessionAgent(sessionManager.getSessionHandler());
                 } catch (Exception e) {
-                    throw new AspectranServiceException("Failed to initialize session manager", e);
+                    throw new AspectranServiceException("Failed to initialize session manager for embedded aspectran", e);
                 }
             }
         }
