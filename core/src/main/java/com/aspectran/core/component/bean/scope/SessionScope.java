@@ -20,6 +20,8 @@ import com.aspectran.core.component.session.SessionBindingListener;
 import com.aspectran.core.context.rule.type.ScopeType;
 
 import java.io.Serializable;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * The Class SessionScope.
@@ -30,11 +32,25 @@ public class SessionScope extends AbstractScope implements SessionBindingListene
 
     private static final long serialVersionUID = -6385922726768971308L;
 
+    private static final ScopeType scopeType = ScopeType.SESSION;
+
+    private final ReadWriteLock scopeLock = new ReentrantReadWriteLock();
+
     /**
      * Instantiates a new Session scope.
      */
     public SessionScope() {
-        super(ScopeType.SESSION, true);
+        super();
+    }
+
+    @Override
+    public ScopeType getScopeType() {
+        return scopeType;
+    }
+
+    @Override
+    public ReadWriteLock getScopeLock() {
+        return scopeLock;
     }
 
     @Override

@@ -44,6 +44,8 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
      */
     private final SessionStore sessionStore;
 
+    private final boolean clustered;
+
     /**
      * When, if ever, to evict sessions: never; only when the last request for
      * them finishes; after inactivity time (expressed as secs)
@@ -68,9 +70,10 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
      */
     private boolean removeUnloadableSessions;
 
-    public AbstractSessionCache(SessionHandler sessionHandler, SessionStore sessionStore) {
+    public AbstractSessionCache(SessionHandler sessionHandler, SessionStore sessionStore, boolean clustered) {
         this.sessionHandler = sessionHandler;
         this.sessionStore = sessionStore;
+        this.clustered = (clustered && sessionStore != null);
     }
 
     protected SessionHandler getSessionHandler() {
@@ -79,6 +82,11 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
 
     protected SessionStore getSessionStore() {
         return sessionStore;
+    }
+
+    @Override
+    public boolean isClustered() {
+        return clustered;
     }
 
     @Override
@@ -157,8 +165,8 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
                 // didn't get a session, try and create one and put in a placeholder for it
                 PlaceHolderSession phs = new PlaceHolderSession(id, sessionHandler);
                 Lock phsLock = phs.lock();
-                DefaultSession bs = doPutIfAbsent(id, phs);
-                if (bs == null) {
+                DefaultSession appeared = doPutIfAbsent(id, phs);
+                if (appeared == null) {
                     // My placeholder won, go ahead and load the full session data
                     try {
                         session = loadSession(id);
@@ -193,13 +201,14 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
                 } else {
                     // my placeholder didn't win, check the session returned
                     phsLock.close();
-                    try (Lock ignored = bs.lock()) {
+                    try (Lock ignored = appeared.lock()) {
                         // is it a placeholder? or is a non-resident session?
                         // In both cases, chuck it away and start again
-                        if (!bs.isResident() || bs instanceof PlaceHolderSession) {
+                        if (!appeared.isResident() || appeared instanceof PlaceHolderSession) {
                             continue;
                         }
-                        session = bs;
+                        // got the session
+                        session = appeared;
                         break;
                     }
                 }
@@ -210,7 +219,29 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
                     if (!session.isResident() || session instanceof PlaceHolderSession) {
                         continue;
                     }
-                    // got the session
+                    if (isClustered() && session.getRequests() <= 0) {
+                        DefaultSession stored = loadSession(id);
+                        if (stored != null) {
+                            // swap it in instead of the local session
+                            boolean success = doReplace(id, session, stored);
+                            if (success) {
+                                // successfully swapped with the stored session
+                                session = stored;
+                                session.setResident(true);
+                            } else {
+                                // something has gone wrong, it must be removed from the cache
+                                doDelete(id);
+                                session.setResident(false);
+                                session = null;
+                                log.warn("Replacement with stored session " + id + " failed");
+                            }
+                        } else {
+                            // is the session already destroyed? it must be removed from the cache
+                            doDelete(id);
+                            session.setResident(false);
+                            session = null;
+                        }
+                    }
                     break;
                 }
             }
@@ -222,7 +253,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
     }
 
     /**
-     * Load the info for the session from the session data store.
+     * Load the info for the session from the session store.
      *
      * @param id the session id
      * @return a Session object filled with data or null if the session doesn't exist
@@ -259,7 +290,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
         DefaultSession session = new DefaultSession(data, sessionHandler, true);
         if (doPutIfAbsent(id, session) == null) {
             session.setResident(true); // its in the cache
-            if (isSaveOnCreate() && sessionStore != null) {
+            if (sessionStore != null && (isSaveOnCreate() || isClustered())) {
                 sessionStore.save(id, data);
             }
             return session;
@@ -314,16 +345,22 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
 
     @Override
     public boolean exists(String id) throws Exception {
-        // try the object store first
-        DefaultSession bs = doGet(id);
-        if (bs != null) {
-            try (Lock ignored = bs.lock()) {
-                // wait for the lock and check the validity of the session
-                return bs.isValid();
+        if (isClustered()) {
+            DefaultSession ds = get(id);
+            if (ds != null) {
+                return ds.isValid();
+            } else {
+                return false;
             }
+        } else {
+            // try the object store first
+            DefaultSession ds = doGet(id);
+            if (ds != null) {
+                return ds.isValid();
+            }
+            // not there, so find out if session data exists for it
+            return (sessionStore != null && sessionStore.exists(id));
         }
-        // not there, so find out if session data exists for it
-        return (sessionStore != null && sessionStore.exists(id));
     }
 
     @Override
@@ -444,8 +481,8 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
         Set<String> sessionsInUse = new HashSet<>();
         if (allCandidates != null) {
             for (String c : allCandidates) {
-                DefaultSession bs = doGet(c);
-                if (bs != null && bs.getRequests() > 0) {
+                DefaultSession ds = doGet(c);
+                if (ds != null && ds.getRequests() > 0) {
                     // if the session is in my cache, check its not in use first
                     sessionsInUse.add(c);
                 }
@@ -462,9 +499,8 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
     }
 
     /**
-     * Check a session for being inactive and
-     * thus being able to be evicted, if eviction
-     * is enabled.
+     * Check a session for being inactive and thus being able to be evicted,
+     * if eviction is enabled.
      *
      * @param session the session to check
      */

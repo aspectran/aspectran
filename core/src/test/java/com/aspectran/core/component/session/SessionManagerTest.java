@@ -36,7 +36,6 @@ class SessionManagerTest {
     @Test
     void testShortLifecycle() throws Exception {
         DefaultSessionManager sessionManager = new DefaultSessionManager();
-        sessionManager.setWorkerName("test1");
         sessionManager.initialize();
 
         SessionAgent agent = new SessionAgent(sessionManager);
@@ -62,7 +61,6 @@ class SessionManagerTest {
     @Test
     void testInactivityTimer() throws Exception {
         DefaultSessionManager sessionManager = new DefaultSessionManager();
-        sessionManager.setWorkerName("test2");
         sessionManager.initialize();
 
         SessionHandler sessionHandler = sessionManager.getSessionHandler();

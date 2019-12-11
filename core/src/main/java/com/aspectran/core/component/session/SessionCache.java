@@ -30,6 +30,8 @@ public interface SessionCache {
 
     int EVICT_ON_INACTIVITY = 1; // any number equal or greater is time in seconds
 
+    boolean isClustered();
+
     int getMaxSessions();
 
     /**

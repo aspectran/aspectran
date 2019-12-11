@@ -26,9 +26,9 @@ import com.aspectran.core.util.thread.Scheduler;
  */
 public interface SessionHandler extends Component {
 
-    String getWorkerName();
-
     Scheduler getScheduler();
+
+    String getWorkerName();
 
     SessionIdGenerator getSessionIdGenerator();
 

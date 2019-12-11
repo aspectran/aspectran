@@ -68,20 +68,20 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
     }
 
     @Override
+    public Scheduler getScheduler() {
+        return scheduler;
+    }
+
+    @Override
     public String getWorkerName() {
         return workerName;
     }
 
-    public void setWorkerName(String workerName) {
+    protected void setWorkerName(String workerName) {
         if (workerName != null && workerName.contains(".")) {
             throw new IllegalArgumentException("Worker name cannot contain '.'");
         }
         this.workerName = workerName;
-    }
-
-    @Override
-    public Scheduler getScheduler() {
-        return scheduler;
     }
 
     @Override

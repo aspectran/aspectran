@@ -18,7 +18,6 @@ package com.aspectran.core.component.bean.scope;
 import com.aspectran.core.component.bean.BeanInstance;
 import com.aspectran.core.component.bean.ablility.DisposableBean;
 import com.aspectran.core.context.rule.BeanRule;
-import com.aspectran.core.context.rule.type.ScopeType;
 import com.aspectran.core.util.MethodUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -29,8 +28,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * The Class AbstractScope.
@@ -43,22 +40,7 @@ public abstract class AbstractScope implements Scope {
 
     private final Map<BeanRule, BeanInstance> scopedBeanInstanceMap = new LinkedHashMap<>();
 
-    private final ScopeType scopeType;
-
-    private final ReadWriteLock scopeLock;
-
-    public AbstractScope(ScopeType scopeType, boolean needLock) {
-        this.scopeType = scopeType;
-        if (needLock) {
-            this.scopeLock = new ReentrantReadWriteLock();
-        } else {
-            this.scopeLock = null;
-        }
-    }
-
-    @Override
-    public ReadWriteLock getScopeLock() {
-        return scopeLock;
+    public AbstractScope() {
     }
 
     @Override
@@ -102,7 +84,7 @@ public abstract class AbstractScope implements Scope {
     public void destroy() {
         if (log.isDebugEnabled()) {
             if (!scopedBeanInstanceMap.isEmpty()) {
-                log.debug("Destroy " + scopeType + " scoped beans from " + this);
+                log.debug("Destroy " + getScopeType() + " scoped beans from " + this);
             }
         }
 
@@ -115,7 +97,7 @@ public abstract class AbstractScope implements Scope {
                 try {
                     doDestroy(beanRule, bean);
                 } catch (Exception e) {
-                    log.error("Could not destroy " + scopeType + " scoped bean " + beanRule, e);
+                    log.error("Could not destroy " + getScopeType() + " scoped bean " + beanRule, e);
                 }
 
             }

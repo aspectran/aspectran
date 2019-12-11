@@ -27,12 +27,12 @@ import java.lang.reflect.Proxy;
  */
 public class CustomObjectInputStream extends ObjectInputStream {
 
-    public CustomObjectInputStream(InputStream in) throws IOException {
-        super(in);
-    }
-
     public CustomObjectInputStream() throws IOException {
         super();
+    }
+
+    public CustomObjectInputStream(InputStream in) throws IOException {
+        super(in);
     }
 
     @Override

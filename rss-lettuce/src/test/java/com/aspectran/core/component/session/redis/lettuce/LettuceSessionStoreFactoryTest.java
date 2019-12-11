@@ -16,16 +16,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class LettuceSessionStoreFactoryTest {
 
     public static void main(String args[]) throws Exception {
-        DefaultSessionManager sessionManager = new DefaultSessionManager();
-        sessionManager.setWorkerName("lettuce");
-
         LettucePoolConfig poolConfig = new LettucePoolConfig();
         poolConfig.setUri("redis://localhost:6379/0");
 
+        DefaultSessionManager sessionManager = new DefaultSessionManager();
         LettuceSessionStoreFactory sessionStoreFactory = new LettuceSessionStoreFactory();
         sessionStoreFactory.setPoolConfig(poolConfig);
         sessionManager.setSessionStoreFactory(sessionStoreFactory);
-
         sessionManager.initialize();
 
         SessionHandler sessionHandler = sessionManager.getSessionHandler();

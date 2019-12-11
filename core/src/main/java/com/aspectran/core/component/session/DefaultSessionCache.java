@@ -45,8 +45,8 @@ public class DefaultSessionCache extends AbstractSessionCache {
     /** Determines the maximum number of active sessions allowed. */
     private volatile int maxSessions;
 
-    public DefaultSessionCache(SessionHandler sessionHandler, SessionStore sessionStore) {
-        super(sessionHandler, sessionStore);
+    public DefaultSessionCache(SessionHandler sessionHandler, SessionStore sessionStore, boolean clustered) {
+        super(sessionHandler, sessionStore, clustered);
     }
 
     @Override
@@ -70,21 +70,21 @@ public class DefaultSessionCache extends AbstractSessionCache {
     @Override
     public DefaultSession doPutIfAbsent(String id, DefaultSession session) {
         checkMaxSessions();
-        DefaultSession bs = sessions.putIfAbsent(id, session);
-        if (bs == null && !(session instanceof PlaceHolderSession)) {
+        DefaultSession ds = sessions.putIfAbsent(id, session);
+        if (ds == null && !(session instanceof PlaceHolderSession)) {
             statistics.increment();
         }
-        return bs;
+        return ds;
     }
 
     @Override
     public DefaultSession doDelete(String id) {
-        DefaultSession bs = sessions.remove(id);
-        if (bs != null && !(bs instanceof PlaceHolderSession)) {
+        DefaultSession ds = sessions.remove(id);
+        if (ds != null && !(ds instanceof PlaceHolderSession)) {
             statistics.decrement();
             expiredSessionCount.incrementAndGet();
         }
-        return bs;
+        return ds;
     }
 
     @Override

@@ -31,16 +31,14 @@ class FileSessionStoreFactoryTest {
 
     @Test
     void testFileSessionStore() throws Exception {
-        DefaultSessionManager sessionManager = new DefaultSessionManager();
-        sessionManager.setWorkerName("test3");
 
         File storeDir = new File("./target/sessions");
         storeDir.mkdir();
 
+        DefaultSessionManager sessionManager = new DefaultSessionManager();
         FileSessionStoreFactory sessionStoreFactory = new FileSessionStoreFactory();
         sessionStoreFactory.setStoreDir(storeDir.getCanonicalPath());
         sessionManager.setSessionStoreFactory(sessionStoreFactory);
-
         sessionManager.initialize();
 
         SessionHandler sessionHandler = sessionManager.getSessionHandler();

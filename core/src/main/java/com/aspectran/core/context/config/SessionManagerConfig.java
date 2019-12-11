@@ -35,6 +35,7 @@ public class SessionManagerConfig extends AbstractParameters {
     private static final ParameterKey saveOnInactiveEviction;
     private static final ParameterKey removeUnloadableSessions;
     private static final ParameterKey fileStore;
+    private static final ParameterKey clustered;
     private static final ParameterKey startup;
 
     private static final ParameterKey[] parameterKeys;
@@ -49,6 +50,7 @@ public class SessionManagerConfig extends AbstractParameters {
         saveOnInactiveEviction = new ParameterKey("saveOnInactiveEviction", ValueType.BOOLEAN);
         removeUnloadableSessions = new ParameterKey("removeUnloadableSessions", ValueType.BOOLEAN);
         fileStore = new ParameterKey("fileStore", SessionFileStoreConfig.class);
+        clustered = new ParameterKey("clustered", ValueType.BOOLEAN);
         startup = new ParameterKey("startup", ValueType.BOOLEAN);
 
         parameterKeys = new ParameterKey[] {
@@ -61,6 +63,7 @@ public class SessionManagerConfig extends AbstractParameters {
                 saveOnInactiveEviction,
                 removeUnloadableSessions,
                 fileStore,
+                clustered,
                 startup
         };
     }
@@ -192,6 +195,15 @@ public class SessionManagerConfig extends AbstractParameters {
 
     public SessionFileStoreConfig touchFileStoreConfig() {
         return touchParameters(fileStore);
+    }
+
+    public boolean isClustered() {
+        return BooleanUtils.toBoolean(getBoolean(clustered));
+    }
+
+    public SessionManagerConfig setClustered(boolean clustered) {
+        putValue(SessionManagerConfig.clustered, clustered);
+        return this;
     }
 
     public boolean isStartup() {

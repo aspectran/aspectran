@@ -17,6 +17,9 @@ package com.aspectran.core.component.bean.scope;
 
 import com.aspectran.core.context.rule.type.ScopeType;
 
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+
 /**
  * The Class SingletonScope.
  *
@@ -24,11 +27,25 @@ import com.aspectran.core.context.rule.type.ScopeType;
  */
 public final class SingletonScope extends AbstractScope {
 
+    private static final ScopeType scopeType = ScopeType.SESSION;
+
+    private final ReadWriteLock scopeLock = new ReentrantReadWriteLock();
+
     /**
      * Instantiates a new Singleton scope.
      */
     public SingletonScope() {
-        super(ScopeType.SINGLETON, true);
+        super();
+    }
+
+    @Override
+    public ScopeType getScopeType() {
+        return scopeType;
+    }
+
+    @Override
+    public ReadWriteLock getScopeLock() {
+        return scopeLock;
     }
 
 }

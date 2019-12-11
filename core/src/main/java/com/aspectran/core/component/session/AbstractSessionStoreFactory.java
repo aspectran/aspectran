@@ -36,10 +36,12 @@ public abstract class AbstractSessionStoreFactory implements SessionStoreFactory
         this.applicationAdapter = applicationAdapter;
     }
 
+    @Override
     public String[] getNonPersistentAttributes() {
         return nonPersistentAttributes;
     }
 
+    @Override
     public void setNonPersistentAttributes(String[] nonPersistentAttributes) {
         this.nonPersistentAttributes = nonPersistentAttributes;
     }

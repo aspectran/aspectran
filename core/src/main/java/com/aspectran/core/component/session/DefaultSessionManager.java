@@ -42,6 +42,11 @@ public class DefaultSessionManager extends AbstractSessionHandler
         super();
     }
 
+    public DefaultSessionManager(String workerName) {
+        super();
+        setWorkerName(workerName);
+    }
+
     public ApplicationAdapter getApplicationAdapter() {
         return applicationAdapter;
     }
@@ -79,7 +84,11 @@ public class DefaultSessionManager extends AbstractSessionHandler
 
     @Override
     protected void doInitialize() throws Exception {
+        boolean clustered = false;
         if (sessionManagerConfig != null) {
+            if (sessionManagerConfig.isClustered()) {
+                clustered = true;
+            }
             if (sessionManagerConfig.hasWorkerName()) {
                 setWorkerName(sessionManagerConfig.getWorkerName());
             } else {
@@ -132,7 +141,7 @@ public class DefaultSessionManager extends AbstractSessionHandler
                 }
             }
 
-            DefaultSessionCache sessionCache = new DefaultSessionCache(this, sessionStore);
+            DefaultSessionCache sessionCache = new DefaultSessionCache(this, sessionStore, clustered);
             if (sessionManagerConfig != null) {
                 if (sessionManagerConfig.hasMaxSessions()) {
                     int maxSessions = sessionManagerConfig.getMaxSessions();

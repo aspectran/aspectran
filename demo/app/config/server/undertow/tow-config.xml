@@ -155,6 +155,8 @@
                             maxIdleSeconds: 1800
                             evictionIdleSeconds: 900
                             scavengingIntervalSeconds: 600
+                            removeUnloadableSessions: true
+                            clustered: true
                             startup: true
                         </item>
                     </arguments>
@@ -166,7 +168,6 @@
                 <bean class="com.aspectran.core.component.session.FileSessionStoreFactory">
                     <properties>
                         <item name="storeDir">/temp/sessions/tow</item>
-                        <item name="deleteUnrestorableFiles" valueType="boolean">true</item>
                         <item name="nonPersistentAttributes" type="array">
                             <value>io.undertow.websocket.current-connections</value>
                         </item>

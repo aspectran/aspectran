@@ -174,8 +174,7 @@ public abstract class AbstractShellService extends AspectranCoreService implemen
             SessionManagerConfig sessionManagerConfig = shellConfig.getSessionManagerConfig();
             if (sessionManagerConfig != null && sessionManagerConfig.isStartup()) {
                 try {
-                    DefaultSessionManager sessionManager = new DefaultSessionManager();
-                    sessionManager.setWorkerName("shl");
+                    DefaultSessionManager sessionManager = new DefaultSessionManager("shl");
                     sessionManager.setApplicationAdapter(getActivityContext().getApplicationAdapter());
                     sessionManager.setSessionManagerConfig(sessionManagerConfig);
                     sessionManager.initialize();

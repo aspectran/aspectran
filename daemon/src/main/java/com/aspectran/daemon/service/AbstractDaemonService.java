@@ -64,8 +64,7 @@ public abstract class AbstractDaemonService extends AspectranCoreService impleme
             SessionManagerConfig sessionManagerConfig = daemonConfig.getSessionManagerConfig();
             if (sessionManagerConfig != null && sessionManagerConfig.isStartup()) {
                 try {
-                    DefaultSessionManager sessionManager = new DefaultSessionManager();
-                    sessionManager.setWorkerName("dmn");
+                    DefaultSessionManager sessionManager = new DefaultSessionManager("dmn");
                     sessionManager.setApplicationAdapter(getActivityContext().getApplicationAdapter());
                     sessionManager.setSessionManagerConfig(sessionManagerConfig);
                     sessionManager.initialize();

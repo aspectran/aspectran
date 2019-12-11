@@ -17,6 +17,7 @@ package com.aspectran.core.component.bean.scope;
 
 import com.aspectran.core.component.bean.BeanInstance;
 import com.aspectran.core.context.rule.BeanRule;
+import com.aspectran.core.context.rule.type.ScopeType;
 
 import java.util.concurrent.locks.ReadWriteLock;
 
@@ -26,6 +27,13 @@ import java.util.concurrent.locks.ReadWriteLock;
  * @since 2011. 3. 12.
  */
 public interface Scope {
+
+    /**
+     * Returns the scope type.
+     *
+     * @return the scope type
+     */
+    ScopeType getScopeType();
 
     /**
      * Returns the scope lock.

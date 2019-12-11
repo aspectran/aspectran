@@ -17,6 +17,8 @@ package com.aspectran.core.component.bean.scope;
 
 import com.aspectran.core.context.rule.type.ScopeType;
 
+import java.util.concurrent.locks.ReadWriteLock;
+
 /**
  * The Class RequestScope.
  *
@@ -24,11 +26,23 @@ import com.aspectran.core.context.rule.type.ScopeType;
  */
 public final class RequestScope extends AbstractScope {
 
+    private static final ScopeType scopeType = ScopeType.SESSION;
+
     /**
      * Instantiates a new Request scope.
      */
     public RequestScope() {
-        super(ScopeType.REQUEST, false);
+        super();
+    }
+
+    @Override
+    public ScopeType getScopeType() {
+        return scopeType;
+    }
+
+    @Override
+    public ReadWriteLock getScopeLock() {
+        return null;
     }
 
 }
