@@ -46,7 +46,7 @@ public class HttpSessionAdapter extends AbstractSessionAdapter {
     }
 
     @Override
-    protected SessionScope newSessionScope() {
+    public SessionScope newSessionScope() {
         return new HttpSessionScope();
     }
 

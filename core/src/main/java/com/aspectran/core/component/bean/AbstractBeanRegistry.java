@@ -190,7 +190,7 @@ abstract class AbstractBeanRegistry extends AbstractBeanFactory implements BeanR
         if (activity != null) {
             SessionAdapter sessionAdapter = activity.getSessionAdapter();
             if (sessionAdapter != null) {
-                return sessionAdapter.getSessionScope();
+                return SessionScope.restore(sessionAdapter, getBeanRuleRegistry());
             }
         }
         return null;

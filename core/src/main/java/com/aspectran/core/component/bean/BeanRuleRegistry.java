@@ -93,26 +93,36 @@ public class BeanRuleRegistry {
         ignoreDependencyInterface(java.io.Closeable.class);
     }
 
-    public BeanRule getBeanRule(Object idOrType) {
-        if (idOrType == null) {
-            throw new IllegalArgumentException("idOrType must not be null");
-        }
-        if (idOrType instanceof Class<?>) {
-            BeanRule[] beanRules = getBeanRules((Class<?>)idOrType);
-            if (beanRules == null) {
-                return null;
-            }
-            if (beanRules.length > 1) {
-                throw new NoUniqueBeanException((Class<?>)idOrType, beanRules);
-            }
-            return beanRules[0];
-        } else {
-            return getBeanRule(idOrType.toString());
-        }
-    }
+//    public BeanRule getBeanRule(Object idOrType) {
+//        if (idOrType == null) {
+//            throw new IllegalArgumentException("idOrType must not be null");
+//        }
+//        if (idOrType instanceof Class<?>) {
+//            BeanRule[] beanRules = getBeanRules((Class<?>)idOrType);
+//            if (beanRules == null) {
+//                return null;
+//            }
+//            if (beanRules.length > 1) {
+//                throw new NoUniqueBeanException((Class<?>)idOrType, beanRules);
+//            }
+//            return beanRules[0];
+//        } else {
+//            return getBeanRule(idOrType.toString());
+//        }
+//    }
 
     public BeanRule getBeanRule(String id) {
         return idBasedBeanRuleMap.get(id);
+    }
+
+    public BeanRule[] getBeanRules(String name) throws ClassNotFoundException {
+        if (name.startsWith(BeanRule.CLASS_DIRECTIVE_PREFIX)) {
+            String className = name.substring(BeanRule.CLASS_DIRECTIVE_PREFIX.length());
+            Class<?> type = classLoader.loadClass(className);
+            return getBeanRules(type);
+        } else {
+            return new BeanRule[] { getBeanRule(name) };
+        }
     }
 
     public BeanRule[] getBeanRules(Class<?> type) {
@@ -128,16 +138,16 @@ public class BeanRuleRegistry {
         return configurableBeanRuleMap.get(type);
     }
 
-    public boolean containsBeanRule(Object idOrType) {
-        if (idOrType == null) {
-            throw new IllegalArgumentException("idOrType must not be null");
-        }
-        if (idOrType instanceof Class<?>) {
-            return containsBeanRule((Class<?>)idOrType);
-        } else {
-            return containsBeanRule(idOrType.toString());
-        }
-    }
+//    public boolean containsBeanRule(Object idOrType) {
+//        if (idOrType == null) {
+//            throw new IllegalArgumentException("idOrType must not be null");
+//        }
+//        if (idOrType instanceof Class<?>) {
+//            return containsBeanRule((Class<?>)idOrType);
+//        } else {
+//            return containsBeanRule(idOrType.toString());
+//        }
+//    }
 
     public boolean containsBeanRule(String id) {
         return idBasedBeanRuleMap.containsKey(id);

@@ -15,7 +15,6 @@
  */
 package com.aspectran.core.adapter;
 
-import com.aspectran.core.component.bean.scope.SessionScope;
 import com.aspectran.core.util.ToStringBuilder;
 
 /**
@@ -41,18 +40,6 @@ public abstract class AbstractSessionAdapter implements SessionAdapter {
     public <T> T getAdaptee() {
         return (T)adaptee;
     }
-
-    @Override
-    public SessionScope getSessionScope() {
-        SessionScope sessionScope = getAttribute(SESSION_SCOPE_ATTRIBUTE_NAME);
-        if (sessionScope == null) {
-            sessionScope = newSessionScope();
-            setAttribute(SESSION_SCOPE_ATTRIBUTE_NAME, sessionScope);
-        }
-        return sessionScope;
-    }
-
-    protected abstract SessionScope newSessionScope();
 
     @Override
     public String toString() {

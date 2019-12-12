@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.component.bean;
 
+import java.io.Serializable;
+
 /**
  * Contains an object of the instantiated bean.
  *
@@ -22,7 +24,9 @@ package com.aspectran.core.component.bean;
  *
  * @since 3.2.0
  */
-public final class BeanInstance {
+public final class BeanInstance implements Serializable {
+
+    private static final long serialVersionUID = -7507985285423966696L;
 
     private final Object bean;
 

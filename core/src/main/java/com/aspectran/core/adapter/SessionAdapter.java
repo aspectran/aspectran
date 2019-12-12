@@ -26,8 +26,6 @@ import java.util.Enumeration;
  */
 public interface SessionAdapter {
 
-    String SESSION_SCOPE_ATTRIBUTE_NAME = SessionAdapter.class.getName() + ".SESSION_SCOPE";
-
     /**
      * Returns the adaptee object to provide session information.
      *
@@ -36,12 +34,7 @@ public interface SessionAdapter {
      */
     <T> T getAdaptee();
 
-    /**
-     * Gets the session scope.
-     *
-     * @return the session scope
-     */
-    SessionScope getSessionScope();
+    SessionScope newSessionScope();
 
     /**
      * Returns a string containing the unique identifier assigned to this session.
