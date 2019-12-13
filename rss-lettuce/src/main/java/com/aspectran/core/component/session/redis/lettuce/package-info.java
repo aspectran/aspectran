@@ -13,25 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.component.bean.annotation;
-
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
-@Documented
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-public @interface RequestToPut {
-
-    String value() default "";
-
-    String translet() default "";
-
-    Parameter[] parameters() default {};
-
-    Attribute[] attributes() default {};
-
-}
+/**
+ * Add-on package for providing session clustering via persistence to
+ * Redis using Lettuce as the client
+ */
+package com.aspectran.core.component.session.redis.lettuce;

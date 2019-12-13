@@ -23,5 +23,4 @@ package com.aspectran.core.component.bean.aware;
  * @since 2.0.0
  */
 public interface Aware {
-
 }

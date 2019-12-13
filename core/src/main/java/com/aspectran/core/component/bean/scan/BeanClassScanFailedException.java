@@ -59,4 +59,5 @@ public class BeanClassScanFailedException extends BeanException {
     public BeanClassScanFailedException(String msg, Throwable cause) {
         super(msg, cause);
     }
+
 }

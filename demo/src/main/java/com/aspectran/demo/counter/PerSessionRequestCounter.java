@@ -15,7 +15,6 @@
  */
 package com.aspectran.demo.counter;
 
-import com.aspectran.core.activity.Translet;
 import com.aspectran.core.component.bean.annotation.After;
 import com.aspectran.core.component.bean.annotation.Aspect;
 import com.aspectran.core.component.bean.annotation.Bean;
@@ -43,6 +42,8 @@ public class PerSessionRequestCounter implements Serializable {
 
     private final AtomicInteger requests = new AtomicInteger();
 
+    private final long creationTime = System.currentTimeMillis();
+
     private final AtomicLong startTime = new AtomicLong();
 
     private final AtomicLong stopTime = new AtomicLong();
@@ -54,15 +55,16 @@ public class PerSessionRequestCounter implements Serializable {
     }
 
     @After
-    public void after(Translet translet) {
+    public void after(PerSessionRequestCounter perSessionRequestCounter) {
         stopTime.set(System.currentTimeMillis());
-        PerSessionRequestCounter perSessionRequestCounter = translet.getBean(PerSessionRequestCounter.class);
-        int requests = perSessionRequestCounter.getRequests();
-        ToStringBuilder tsb = new ToStringBuilder("PerSessionRequestCounter");
-        tsb.append("requests", requests);
-        tsb.append("start", perSessionRequestCounter.getStartTime());
-        tsb.append("stop", perSessionRequestCounter.getStopTime());
-        log.debug(tsb.toString());
+
+        if (log.isDebugEnabled()) {
+            ToStringBuilder tsb = new ToStringBuilder("PerSessionRequestCounter");
+            tsb.append("requests", perSessionRequestCounter.getRequests());
+            tsb.append("start", perSessionRequestCounter.getStartTime());
+            tsb.append("stop", perSessionRequestCounter.getStopTime());
+            log.debug(tsb.toString());
+        }
     }
 
     public int getRequests() {
