@@ -32,12 +32,12 @@ public interface WebService extends CoreService {
     /**
      * ServletContext attribute name used to obtain the root WebService object.
      */
-    String ROOT_WEB_SERVICE_ATTRIBUTE = WebService.class.getName() + ".ROOT";
+    String ROOT_WEB_SERVICE_ATTR_NAME = WebService.class.getName() + ".ROOT";
 
     /**
      * The prefix of the ServletContext property name used to get the standalone WebService object.
      */
-    String STANDALONE_WEB_SERVICE_ATTRIBUTE_PREFIX = WebService.class.getName() + ".STANDALONE:";
+    String STANDALONE_WEB_SERVICE_ATTR_PREFIX = WebService.class.getName() + ".STANDALONE:";
 
     /**
      * Returns a reference to the {@link ServletContext} in which this WebService is running.

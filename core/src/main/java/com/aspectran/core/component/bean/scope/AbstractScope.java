@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.component.bean.scope;
 
+import com.aspectran.core.activity.Activity;
 import com.aspectran.core.component.bean.BeanInstance;
 import com.aspectran.core.component.bean.ablility.DisposableBean;
 import com.aspectran.core.context.rule.BeanRule;
@@ -49,7 +50,16 @@ public abstract class AbstractScope implements Scope {
     }
 
     @Override
-    public void putBeanInstance(BeanRule beanRule, BeanInstance beanInstance) {
+    public void putBeanInstance(Activity activity, BeanRule beanRule, BeanInstance beanInstance) {
+        if (activity == null) {
+            throw new IllegalArgumentException("activity must not be null");
+        }
+        if (beanRule == null) {
+            throw new IllegalArgumentException("beanRule must not be null");
+        }
+        if (beanInstance == null) {
+            throw new IllegalArgumentException("beanInstance must not be null");
+        }
         scopedBeanInstanceMap.put(beanRule, beanInstance);
     }
 

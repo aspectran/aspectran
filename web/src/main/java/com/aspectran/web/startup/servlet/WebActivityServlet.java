@@ -54,7 +54,7 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
     public void init() throws ServletException {
         try {
             ServletContext servletContext = getServletContext();
-            Object attr = servletContext.getAttribute(WebService.ROOT_WEB_SERVICE_ATTRIBUTE);
+            Object attr = servletContext.getAttribute(WebService.ROOT_WEB_SERVICE_ATTR_NAME);
             DefaultWebService rootService = null;
             if (attr != null) {
                 if (!(attr instanceof DefaultWebService)) {

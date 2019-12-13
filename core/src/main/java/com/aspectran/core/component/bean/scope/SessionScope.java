@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.component.bean.scope;
 
+import com.aspectran.core.activity.Activity;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.component.bean.BeanInstance;
 import com.aspectran.core.component.bean.BeanRuleRegistry;
@@ -26,8 +27,8 @@ import com.aspectran.core.context.rule.type.ScopeType;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
-import java.io.Serializable;
-import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -36,19 +37,19 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  *
  * @since 2011. 3. 12.
  */
-public class SessionScope extends AbstractScope implements SessionBindingListener, Serializable {
+public class SessionScope extends AbstractScope implements SessionBindingListener {
 
     private static final Log log = LogFactory.getLog(SessionScope.class);
 
-    public static final String SESSION_SCOPE_ATTRIBUTE_NAME = SessionScope.class.getName();
+    private static final String SESSION_SCOPE_ATTR_NAME = SessionScope.class.getName();
 
-    public static final String SESSION_SCOPE_BEAN_ATTR_SUFFIX = "@" + SessionScope.class.getSimpleName();
-
-    private static final long serialVersionUID = -6385922726768971308L;
+    private static final String SESSION_SCOPED_BEAN_INSTANCES_ATTR_NAME = SessionScope.class.getName() + ".BEAN_INSTANCES";
 
     private static final ScopeType scopeType = ScopeType.SESSION;
 
-    private transient final ReadWriteLock scopeLock = new ReentrantReadWriteLock();
+    private final ReadWriteLock scopeLock = new ReentrantReadWriteLock();
+
+    private final Map<String, BeanInstance> sessionScopedBeanInstances = new HashMap<>();
 
     /**
      * Instantiates a new Session scope.
@@ -73,46 +74,85 @@ public class SessionScope extends AbstractScope implements SessionBindingListene
     }
 
     @Override
-    public void putBeanInstance(BeanRule beanRule, BeanInstance beanInstance) {
-        super.putBeanInstance(beanRule, beanInstance);
+    public void putBeanInstance(Activity activity, BeanRule beanRule, BeanInstance beanInstance) {
+        super.putBeanInstance(activity, beanRule, beanInstance);
+        if (beanRule.getId() != null) {
+            sessionScopedBeanInstances.put(beanRule.getId(), beanInstance);
+        } else {
+            String name = BeanRule.CLASS_DIRECTIVE_PREFIX + beanRule.getTargetBeanClassName();
+            sessionScopedBeanInstances.put(name, beanInstance);
+        }
+        SessionAdapter sessionAdapter = activity.getSessionAdapter();
+        if (sessionAdapter != null) {
+            putSessionScopedBeanInstances(sessionAdapter, sessionScopedBeanInstances);
+        }
     }
 
-    public static SessionScope restore(SessionAdapter sessionAdapter, BeanRuleRegistry beanRuleRegistry) {
-        SessionScope sessionScope = sessionAdapter.getAttribute(SESSION_SCOPE_ATTRIBUTE_NAME);
+    private Map<String, BeanInstance> getSessionScopedBeanInstances() {
+        return sessionScopedBeanInstances;
+    }
+
+    public static SessionScope restore(Activity activity, BeanRuleRegistry beanRuleRegistry) {
+        SessionAdapter sessionAdapter = activity.getSessionAdapter();
+        if (sessionAdapter == null) {
+            return null;
+        }
+        SessionScope sessionScope = getSessionScope(sessionAdapter);
         if (sessionScope == null) {
             sessionScope = sessionAdapter.newSessionScope();
             ReadWriteLock scopeLock = sessionScope.getScopeLock();
             scopeLock.writeLock().lock();
             try {
-                sessionAdapter.setAttribute(SESSION_SCOPE_ATTRIBUTE_NAME, sessionScope);
-                for (Enumeration<String> names = sessionAdapter.getAttributeNames(); names.hasMoreElements();) {
-                    String name = names.nextElement();
-                    if (name.endsWith(SessionScope.SESSION_SCOPE_BEAN_ATTR_SUFFIX)) {
-                        String beanName = name.substring(0, name.length() - SessionScope.SESSION_SCOPE_BEAN_ATTR_SUFFIX.length());
-                        BeanRule[] beanRules;
-                        try {
-                            beanRules = beanRuleRegistry.getBeanRules(beanName);
-                        } catch (ClassNotFoundException e) {
-                            log.warn("Failed to restore the bean to session scope", e);
-                            continue;
-                        }
-                        if (beanRules == null) {
-                            log.warn("No bean named '" + beanName + "' available");
-                        } else if (beanRules.length > 1) {
-                            log.warn("No qualifying bean of type '" + beanName +
-                                    "' is defined: expected single matching bean but found " +
-                                    beanRules.length +
-                                    ": [" + NoUniqueBeanException.getBeanDescriptions(beanRules) + "]");
-                        } else {
-                            sessionScope.putBeanInstance(beanRules[0], new BeanInstance(sessionAdapter.getAttribute(name)));
+                putSessionScope(sessionAdapter, sessionScope);
+                Map<String, BeanInstance> map = getSessionScopedBeanInstances(sessionAdapter);
+                if (map != null) {
+                    for (Map.Entry<String, BeanInstance> entry : map.entrySet()) {
+                        String beanName = entry.getKey();
+                        BeanInstance beanInstance = entry.getValue();
+                        if (beanInstance != null) {
+                            BeanRule[] beanRules;
+                            try {
+                                beanRules = beanRuleRegistry.getBeanRules(beanName);
+                                if (beanRules == null) {
+                                    log.warn("No bean named '" + beanName + "' available");
+                                } else if (beanRules.length > 1) {
+                                    log.warn("No qualifying bean of type '" + beanName +
+                                            "' is defined: expected single matching bean but found " +
+                                            beanRules.length +
+                                            ": [" + NoUniqueBeanException.getBeanDescriptions(beanRules) + "]");
+                                } else {
+                                    sessionScope.putBeanInstance(activity, beanRules[0], beanInstance);
+                                }
+                            } catch (Exception e) {
+                                log.warn("Failed to restore the bean to session scope", e);
+                            }
                         }
                     }
+                } else {
+                    Map<String, BeanInstance> sessionScopedBeanInstances = sessionScope.getSessionScopedBeanInstances();
+                    sessionAdapter.setAttribute(SESSION_SCOPED_BEAN_INSTANCES_ATTR_NAME, sessionScopedBeanInstances);
                 }
             } finally {
                 scopeLock.writeLock().unlock();
             }
         }
         return sessionScope;
+    }
+
+    private static SessionScope getSessionScope(SessionAdapter sessionAdapter) {
+        return sessionAdapter.getAttribute(SESSION_SCOPE_ATTR_NAME);
+    }
+
+    private static void putSessionScope(SessionAdapter sessionAdapter, SessionScope sessionScope) {
+        sessionAdapter.setAttribute(SESSION_SCOPE_ATTR_NAME, sessionScope);
+    }
+
+    private static Map<String, BeanInstance> getSessionScopedBeanInstances(SessionAdapter sessionAdapter) {
+        return sessionAdapter.getAttribute(SESSION_SCOPED_BEAN_INSTANCES_ATTR_NAME);
+    }
+
+    private static void putSessionScopedBeanInstances(SessionAdapter sessionAdapter, Map<String, BeanInstance> map) {
+        sessionAdapter.setAttribute(SESSION_SCOPED_BEAN_INSTANCES_ATTR_NAME, map);
     }
 
 }

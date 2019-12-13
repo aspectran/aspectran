@@ -93,7 +93,7 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
         if (derived) {
             CoreService rootService = context.getRootService();
             WebService webService = DefaultWebService.create(getServletContext(), rootService);
-            setAttribute(WebService.ROOT_WEB_SERVICE_ATTRIBUTE, webService);
+            setAttribute(WebService.ROOT_WEB_SERVICE_ATTR_NAME, webService);
         }
 
         ClassLoader parent = context.getApplicationAdapter().getClassLoader();

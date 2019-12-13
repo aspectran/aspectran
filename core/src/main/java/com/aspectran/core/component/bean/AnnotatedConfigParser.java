@@ -47,6 +47,7 @@ import com.aspectran.core.component.bean.annotation.RequestToPatch;
 import com.aspectran.core.component.bean.annotation.RequestToPost;
 import com.aspectran.core.component.bean.annotation.RequestToPut;
 import com.aspectran.core.component.bean.annotation.Required;
+import com.aspectran.core.component.bean.annotation.Scope;
 import com.aspectran.core.component.bean.annotation.Settings;
 import com.aspectran.core.component.bean.annotation.Transform;
 import com.aspectran.core.component.bean.annotation.Value;
@@ -410,11 +411,13 @@ public class AnnotatedConfigParser {
         if (beanId != null && nameArray != null) {
             beanId = applyNamespace(nameArray, beanId);
         }
-        ScopeType scopeType = beanAnno.scope();
         String initMethodName = StringUtils.emptyToNull(beanAnno.initMethod());
         String destroyMethodName = StringUtils.emptyToNull(beanAnno.destroyMethod());
         boolean lazyInit = beanAnno.lazyInit();
         boolean important = beanAnno.important();
+
+        Scope scopeAnno = beanClass.getAnnotation(Scope.class);
+        ScopeType scopeType = (scopeAnno != null ? scopeAnno.value() : ScopeType.SINGLETON);
 
         beanRule.setId(beanId);
         beanRule.setScopeType(scopeType);
@@ -449,11 +452,13 @@ public class AnnotatedConfigParser {
         if (nameArray != null) {
             beanId = applyNamespace(nameArray, beanId);
         }
-        ScopeType scopeType = beanAnno.scope();
         String initMethodName = StringUtils.emptyToNull(beanAnno.initMethod());
         String destroyMethodName = StringUtils.emptyToNull(beanAnno.destroyMethod());
         boolean lazyInit = beanAnno.lazyInit();
         boolean important = beanAnno.important();
+
+        Scope scopeAnno = beanClass.getAnnotation(Scope.class);
+        ScopeType scopeType = (scopeAnno != null ? scopeAnno.value() : ScopeType.SINGLETON);
 
         BeanRule beanRule = new BeanRule();
         beanRule.setId(beanId);

@@ -13,29 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.component.bean.annotation;
+package com.aspectran.core.component.session;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
-@Documented
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE, ElementType.METHOD})
-public @interface Bean {
-
-    String value() default "";
-
-    String id() default "";
-
-    String initMethod() default "";
-
-    String destroyMethod() default "";
-
-    boolean lazyInit() default false;
-    
-    boolean important() default false;
-    
+/**
+ * Implement the NoPersistent interface for non-persistent
+ * objects in session data.
+ *
+ * @since 6.6.0
+ */
+public interface NonPersistent {
 }

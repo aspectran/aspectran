@@ -244,17 +244,30 @@ public class SessionData implements Serializable {
         out.writeLong(data.getExpiryTime());
         out.writeLong(data.getMaxInactiveInterval());
 
-        List<String> keys = new ArrayList<>(data.getKeys());
-        // remove attributes excluded from serialization
-        if (!keys.isEmpty() && nonPersistentAttributes != null) {
-            keys.removeAll(nonPersistentAttributes);
+        Set<String> keys = data.getKeys();
+        if (keys.isEmpty()) {
+            out.writeInt(0);
+            return;
         }
-        out.writeInt(keys.size());
-        if (!keys.isEmpty()) {
+
+        List<String> attrKeys = new ArrayList<>(keys);
+        // remove attributes excluded from serialization
+        if (!attrKeys.isEmpty() && nonPersistentAttributes != null) {
+            attrKeys.removeAll(nonPersistentAttributes);
+        }
+        for (String name : attrKeys) {
+            Object value = data.getAttribute(name);
+            if (value instanceof NonPersistent) {
+                attrKeys.remove(name);
+            }
+        }
+        out.writeInt(attrKeys.size());
+        if (!attrKeys.isEmpty()) {
             ObjectOutputStream oos = new ObjectOutputStream(out);
-            for (String name : keys) {
+            for (String name : attrKeys) {
+                Object value = data.getAttribute(name);
                 oos.writeUTF(name);
-                oos.writeObject(data.getAttribute(name));
+                oos.writeObject(value);
             }
         }
     }

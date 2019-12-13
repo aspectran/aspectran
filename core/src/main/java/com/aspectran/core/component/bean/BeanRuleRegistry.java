@@ -93,24 +93,6 @@ public class BeanRuleRegistry {
         ignoreDependencyInterface(java.io.Closeable.class);
     }
 
-//    public BeanRule getBeanRule(Object idOrType) {
-//        if (idOrType == null) {
-//            throw new IllegalArgumentException("idOrType must not be null");
-//        }
-//        if (idOrType instanceof Class<?>) {
-//            BeanRule[] beanRules = getBeanRules((Class<?>)idOrType);
-//            if (beanRules == null) {
-//                return null;
-//            }
-//            if (beanRules.length > 1) {
-//                throw new NoUniqueBeanException((Class<?>)idOrType, beanRules);
-//            }
-//            return beanRules[0];
-//        } else {
-//            return getBeanRule(idOrType.toString());
-//        }
-//    }
-
     public BeanRule getBeanRule(String id) {
         return idBasedBeanRuleMap.get(id);
     }
@@ -121,7 +103,12 @@ public class BeanRuleRegistry {
             Class<?> type = classLoader.loadClass(className);
             return getBeanRules(type);
         } else {
-            return new BeanRule[] { getBeanRule(name) };
+            BeanRule beanRule = getBeanRule(name);
+            if (beanRule != null) {
+                return new BeanRule[] {getBeanRule(name)};
+            } else {
+                return null;
+            }
         }
     }
 
@@ -137,17 +124,6 @@ public class BeanRuleRegistry {
     public BeanRule getBeanRuleForConfig(Class<?> type) {
         return configurableBeanRuleMap.get(type);
     }
-
-//    public boolean containsBeanRule(Object idOrType) {
-//        if (idOrType == null) {
-//            throw new IllegalArgumentException("idOrType must not be null");
-//        }
-//        if (idOrType instanceof Class<?>) {
-//            return containsBeanRule((Class<?>)idOrType);
-//        } else {
-//            return containsBeanRule(idOrType.toString());
-//        }
-//    }
 
     public boolean containsBeanRule(String id) {
         return idBasedBeanRuleMap.containsKey(id);

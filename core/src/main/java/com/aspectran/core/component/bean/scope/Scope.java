@@ -15,7 +15,9 @@
  */
 package com.aspectran.core.component.bean.scope;
 
+import com.aspectran.core.activity.Activity;
 import com.aspectran.core.component.bean.BeanInstance;
+import com.aspectran.core.component.session.NonPersistent;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.type.ScopeType;
 
@@ -26,7 +28,7 @@ import java.util.concurrent.locks.ReadWriteLock;
  *
  * @since 2011. 3. 12.
  */
-public interface Scope {
+public interface Scope extends NonPersistent {
 
     /**
      * Returns the scope type.
@@ -53,10 +55,11 @@ public interface Scope {
     /**
      * Saves an instantiated bean with the given bean rule into the scope.
      *
+     * @param activity the current activity
      * @param beanRule the bean rule of the bean to save
      * @param beanInstance an instance of the bean
      */
-    void putBeanInstance(BeanRule beanRule, BeanInstance beanInstance);
+    void putBeanInstance(Activity activity, BeanRule beanRule, BeanInstance beanInstance);
 
     BeanRule getBeanRule(Object bean);
 

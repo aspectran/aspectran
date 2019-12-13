@@ -33,7 +33,7 @@ import javax.websocket.server.ServerContainer;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.aspectran.web.service.WebService.ROOT_WEB_SERVICE_ATTRIBUTE;
+import static com.aspectran.web.service.WebService.ROOT_WEB_SERVICE_ATTR_NAME;
 
 /**
  * <p>Created: 2019-08-04</p>
@@ -90,7 +90,7 @@ public class HybridServletHandlerFactory implements ActivityContextAware {
                 if ("true".equals(attr)) {
                     CoreService rootService = context.getRootService();
                     WebService webService = DefaultWebService.create(servletContext, rootService);
-                    servletContext.setAttribute(ROOT_WEB_SERVICE_ATTRIBUTE, webService);
+                    servletContext.setAttribute(ROOT_WEB_SERVICE_ATTR_NAME, webService);
                 }
 
                 // Required for any websocket support in undertow

@@ -206,11 +206,10 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
         }
 
         DefaultWebService service = create(servletContext, aspectranConfigParam);
-        servletContext.setAttribute(ROOT_WEB_SERVICE_ATTRIBUTE, service);
+        servletContext.setAttribute(ROOT_WEB_SERVICE_ATTR_NAME, service);
 
         if (log.isDebugEnabled()) {
-            log.debug("The Root WebService attribute in ServletContext has been created; " +
-                    ROOT_WEB_SERVICE_ATTRIBUTE + ": " + service);
+            log.debug("The Root WebService attribute in ServletContext has been created; " + ROOT_WEB_SERVICE_ATTR_NAME + ": " + service);
         }
 
         WebServiceHolder.putWebService(service);
@@ -263,7 +262,7 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
         }
 
         DefaultWebService service = create(servletContext, aspectranConfigParam);
-        String attrName = STANDALONE_WEB_SERVICE_ATTRIBUTE_PREFIX + servlet.getServletName();
+        String attrName = STANDALONE_WEB_SERVICE_ATTR_PREFIX + servlet.getServletName();
         servletContext.setAttribute(attrName, service);
 
         if (log.isDebugEnabled()) {
@@ -288,7 +287,7 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
         String aspectranConfigParam = servletConfig.getInitParameter(ASPECTRAN_CONFIG_PARAM);
         if (aspectranConfigParam != null) {
             DefaultWebService service = create(servletContext, aspectranConfigParam);
-            String attrName = STANDALONE_WEB_SERVICE_ATTRIBUTE_PREFIX + servlet.getServletName();
+            String attrName = STANDALONE_WEB_SERVICE_ATTR_PREFIX + servlet.getServletName();
             servletContext.setAttribute(attrName, service);
 
             if (log.isDebugEnabled()) {

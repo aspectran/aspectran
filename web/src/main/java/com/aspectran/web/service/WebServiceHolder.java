@@ -25,8 +25,8 @@ import javax.servlet.http.HttpServlet;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static com.aspectran.web.service.WebService.ROOT_WEB_SERVICE_ATTRIBUTE;
-import static com.aspectran.web.service.WebService.STANDALONE_WEB_SERVICE_ATTRIBUTE_PREFIX;
+import static com.aspectran.web.service.WebService.ROOT_WEB_SERVICE_ATTR_NAME;
+import static com.aspectran.web.service.WebService.STANDALONE_WEB_SERVICE_ATTR_PREFIX;
 
 /**
  * <p>Created: 01/10/2019</p>
@@ -80,7 +80,7 @@ public class WebServiceHolder {
      * @return the ActivityContext for this web aspectran service
      */
     public static ActivityContext getActivityContext(ServletContext servletContext) {
-        ActivityContext activityContext = getActivityContext(servletContext, ROOT_WEB_SERVICE_ATTRIBUTE);
+        ActivityContext activityContext = getActivityContext(servletContext, ROOT_WEB_SERVICE_ATTR_NAME);
         if (activityContext == null) {
             throw new IllegalStateException("No Root DefaultWebService found; " +
                     "No AspectranServiceListener registered?");
@@ -96,7 +96,7 @@ public class WebServiceHolder {
      */
     public static ActivityContext getActivityContext(HttpServlet servlet) {
         ServletContext servletContext = servlet.getServletContext();
-        String attrName = STANDALONE_WEB_SERVICE_ATTRIBUTE_PREFIX + servlet.getServletName();
+        String attrName = STANDALONE_WEB_SERVICE_ATTR_PREFIX + servlet.getServletName();
         ActivityContext activityContext = getActivityContext(servletContext, attrName);
         if (activityContext != null) {
             return activityContext;

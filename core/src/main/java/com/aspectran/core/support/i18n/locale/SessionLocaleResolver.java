@@ -36,19 +36,19 @@ public class SessionLocaleResolver extends AbstractLocaleResolver {
      * Only used internally by this implementation.
      * to retrieve the current locale in controllers or views.
      */
-    public static final String LOCALE_SESSION_ATTRIBUTE_NAME = SessionLocaleResolver.class.getName() + ".LOCALE";
+    public static final String LOCALE_SESSION_ATTR_NAME = SessionLocaleResolver.class.getName() + ".LOCALE";
 
     /**
      * Name of the session attribute that holds the TimeZone.
      * Only used internally by this implementation.
      */
-    public static final String TIME_ZONE_SESSION_ATTRIBUTE_NAME = SessionLocaleResolver.class.getName() + ".TIME_ZONE";
+    public static final String TIME_ZONE_SESSION_ATTR_NAME = SessionLocaleResolver.class.getName() + ".TIME_ZONE";
 
     @Override
     public Locale resolveLocale(Translet translet) {
         SessionAdapter sessionAdapter = translet.getSessionAdapter();
         if (sessionAdapter != null) {
-            Locale locale = sessionAdapter.getAttribute(LOCALE_SESSION_ATTRIBUTE_NAME);
+            Locale locale = sessionAdapter.getAttribute(LOCALE_SESSION_ATTR_NAME);
             if (locale != null) {
                 super.setLocale(translet, locale);
                 return locale;
@@ -61,7 +61,7 @@ public class SessionLocaleResolver extends AbstractLocaleResolver {
     public TimeZone resolveTimeZone(Translet translet) {
         SessionAdapter sessionAdapter = translet.getSessionAdapter();
         if (sessionAdapter != null) {
-            TimeZone timeZone = sessionAdapter.getAttribute(TIME_ZONE_SESSION_ATTRIBUTE_NAME);
+            TimeZone timeZone = sessionAdapter.getAttribute(TIME_ZONE_SESSION_ATTR_NAME);
             if (timeZone != null) {
                 super.setTimeZone(translet, timeZone);
                 return timeZone;
@@ -75,7 +75,7 @@ public class SessionLocaleResolver extends AbstractLocaleResolver {
         super.setLocale(translet, locale);
         SessionAdapter sessionAdapter = translet.getSessionAdapter();
         if (sessionAdapter != null) {
-            sessionAdapter.setAttribute(LOCALE_SESSION_ATTRIBUTE_NAME, locale);
+            sessionAdapter.setAttribute(LOCALE_SESSION_ATTR_NAME, locale);
         }
     }
 
@@ -84,7 +84,7 @@ public class SessionLocaleResolver extends AbstractLocaleResolver {
         super.setTimeZone(translet, timeZone);
         SessionAdapter sessionAdapter = translet.getSessionAdapter();
         if (sessionAdapter != null) {
-            sessionAdapter.setAttribute(TIME_ZONE_SESSION_ATTRIBUTE_NAME, timeZone);
+            sessionAdapter.setAttribute(TIME_ZONE_SESSION_ATTR_NAME, timeZone);
         }
     }
 
