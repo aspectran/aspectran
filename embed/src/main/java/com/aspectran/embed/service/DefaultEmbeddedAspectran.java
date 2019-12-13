@@ -15,8 +15,6 @@
  */
 package com.aspectran.embed.service;
 
-import com.aspectran.core.activity.ActivityException;
-import com.aspectran.core.activity.ActivityPerformException;
 import com.aspectran.core.activity.ActivityTerminatedException;
 import com.aspectran.core.activity.InstantActivity;
 import com.aspectran.core.activity.InstantActivityException;

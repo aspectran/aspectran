@@ -18,7 +18,6 @@ package com.aspectran.embed.sample.anno;
 import com.aspectran.core.component.bean.annotation.Autowired;
 import com.aspectran.core.component.bean.annotation.Bean;
 import com.aspectran.core.component.bean.annotation.Component;
-import com.aspectran.core.context.rule.type.ScopeType;
 
 @Component
 public class TestConfiguration {
@@ -26,7 +25,7 @@ public class TestConfiguration {
     @Autowired
     public FirstBean firstBean;
 
-    @Bean(id = "thirdResult", scope = ScopeType.SINGLETON, lazyInit = true)
+    @Bean(id = "thirdResult", lazyInit = true)
     public ThirdResult getThirdResult() {
         return new ThirdResult(firstBean);
     }
