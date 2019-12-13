@@ -18,7 +18,7 @@ package com.aspectran.core.activity.process.action;
 import com.aspectran.core.activity.process.ProcessException;
 
 /**
- * This exception will be thrown when a action execution is failed.
+ * Thrown when an error occurs while executing an action.
  * 
  * <p>Created: 2008. 01. 07 AM 3:35:55</p>
  */

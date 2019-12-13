@@ -149,6 +149,8 @@ public interface Activity {
      * Register an aspect rule dynamically.
      *
      * @param aspectRule the aspect rule
+     * @throws AdviceConstraintViolationException thrown when an Advice Constraint Violation occurs
+     * @throws AspectAdviceException thrown when an error occurs while running advice
      */
     void registerAspectAdviceRule(AspectRule aspectRule)
             throws AdviceConstraintViolationException, AspectAdviceException;
@@ -165,6 +167,7 @@ public interface Activity {
      *
      * @param aspectAdviceRuleList the aspect advice rules
      * @param throwable whether to raise an exception
+     * @throws AspectAdviceException thrown when an error occurs while running advice
      */
     void executeAdvice(List<AspectAdviceRule> aspectAdviceRuleList, boolean throwable) throws AspectAdviceException;
 
@@ -173,6 +176,7 @@ public interface Activity {
      *
      * @param aspectAdviceRule the aspect advice rule
      * @param throwable whether to raise an exception
+     * @throws AspectAdviceException thrown when an error occurs while running advice
      */
     void executeAdvice(AspectAdviceRule aspectAdviceRule, boolean throwable) throws AspectAdviceException;
 
@@ -180,6 +184,7 @@ public interface Activity {
      * Exception handling.
      *
      * @param exceptionRuleList the exception rule list
+     * @throws ActionExecutionException thrown when an error occurs while executing an action
      */
     void handleException(List<ExceptionRule> exceptionRuleList) throws ActionExecutionException;
 

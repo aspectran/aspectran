@@ -620,6 +620,8 @@ public class CoreActivity extends AdviceActivity {
 
     /**
      * Parses the declared attributes.
+     *
+     * @throws MissingMandatoryAttributesException thrown if a required attribute is missing from the request
      */
     protected void parseDeclaredAttributes() throws MissingMandatoryAttributesException {
         ItemRuleMap itemRuleMap = getRequestRule().getAttributeItemRuleMap();
