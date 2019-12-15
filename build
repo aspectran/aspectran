@@ -64,12 +64,14 @@ ci-deploy)
 
 # prepare release
 release-prepare)
-  mvn release:clean release:prepare
+  stty -echo && printf "GPG password: " && read gpgPwd && printf '\n' && stty echo
+  mvn release:clean release:prepare -Darguments="-Dgpg.passphrase=$gpgPwd"
   ;;
 
 # perform release
 release-perform)
-  mvn release:perform
+  stty -echo && printf "GPG password: " && read gpgPwd && printf '\n' && stty echo
+  mvn release:perform -Darguments="-Dgpg.passphrase=$gpgPwd"
   ;;
 
 # clean release
