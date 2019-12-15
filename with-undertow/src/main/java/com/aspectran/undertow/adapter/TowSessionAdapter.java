@@ -35,9 +35,6 @@ public class TowSessionAdapter extends AbstractSessionAdapter {
 
     private boolean newSession;
 
-    /**
-     * Instantiates a new TowSessionAdapter.
-     */
     public TowSessionAdapter(HttpServerExchange exchange) {
         super(exchange);
     }

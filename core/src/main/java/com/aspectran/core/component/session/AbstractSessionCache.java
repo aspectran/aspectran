@@ -44,6 +44,9 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
      */
     private final SessionStore sessionStore;
 
+    /**
+     * Whether or not to support session clustering
+     */
     private final boolean clustered;
 
     /**

@@ -15,7 +15,5 @@
  */
 /**
  * Logger using Log4J feature.
- *
- * @deprecated Since 6.0.0 - This class will remove future.
  */
 package com.aspectran.core.util.logging.log4j;
