@@ -221,205 +221,87 @@
                     <groupId>com.mycila</groupId>
                     <artifactId>license-maven-plugin</artifactId>
                     <version>3.0</version>
-                    <configuration>
-                        <header>${main.basedir}/license.txt</header>
-                        <failIfMissing>true</failIfMissing>
-                        <aggregate>true</aggregate>
-                        <strictCheck>true</strictCheck>
-                        <properties>
-                            <copyright-range>${project.inceptionYear}-2019</copyright-range>
-                        </properties>
-                        <mapping>
-                            <java>SLASHSTAR_STYLE</java>
-                        </mapping>
-                        <includes>
-                            <include>**/*.java</include>
-                        </includes>
-                        <excludes>
-                            <exclude>core/src/main/java/com/aspectran/core/util/logging/**</exclude>
-                            <exclude>core/src/main/java/com/aspectran/core/util/statistic/**</exclude>
-                            <exclude>core/src/main/java/com/aspectran/core/util/xml/**</exclude>
-                            <exclude>.mvn/wrapper/**</exclude>
-                        </excludes>
-                    </configuration>
                 </plugin>
-
                 <plugin>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>3.8.1</version>
-                    <configuration>
-                        <fork>true</fork>
-                        <debug>true</debug>
-                        <optimize>true</optimize>
-                        <showDeprecation>true</showDeprecation>
-                        <showWarnings>true</showWarnings>
-                        <compilerArgs>
-                            <arg>-Xlint:-try,-path,-options</arg>
-                            <arg>-parameters</arg>
-                        </compilerArgs>
-                        <meminitial>256m</meminitial>
-                        <maxmem>1024m</maxmem>
-                        <excludes>
-                            <exclude>**/package-info.java</exclude>
-                        </excludes>
-                    </configuration>
                 </plugin>
-
                 <plugin>
                     <artifactId>maven-jar-plugin</artifactId>
                     <version>3.2.0</version>
-                    <configuration>
-                        <archive>
-                            <manifest>
-                                <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                                <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
-                            </manifest>
-                            <manifestEntries>
-                                <Implementation-Build-Date>${maven.build.timestamp}</Implementation-Build-Date>
-                                <X-Compile-Source-JDK>${maven.compiler.source}</X-Compile-Source-JDK>
-                                <X-Compile-Target-JDK>${maven.compiler.target}</X-Compile-Target-JDK>
-                            </manifestEntries>
-                            <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
-                            <index>true</index>
-                        </archive>
-                    </configuration>
                 </plugin>
-
                 <plugin>
                     <artifactId>maven-source-plugin</artifactId>
                     <version>3.2.0</version>
-                    <configuration>
-                        <archive>
-                            <manifest>
-                                <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                            </manifest>
-                            <manifestEntries>
-                                <Implementation-Build-Date>${maven.build.timestamp}</Implementation-Build-Date>
-                                <X-Compile-Source-JDK>${maven.compiler.source}</X-Compile-Source-JDK>
-                                <X-Compile-Target-JDK>${maven.compiler.target}</X-Compile-Target-JDK>
-                            </manifestEntries>
-                        </archive>
-                    </configuration>
                 </plugin>
-
                 <plugin>
                     <artifactId>maven-jxr-plugin</artifactId>
                     <version>3.0.0</version>
                 </plugin>
-
                 <plugin>
                     <artifactId>maven-javadoc-plugin</artifactId>
                     <version>3.1.1</version>
-                    <configuration>
-                        <doctitle>${javadoc.title}</doctitle>
-                        <windowtitle>${javadoc.title}</windowtitle>
-                        <locale>${javadoc.locale}</locale>
-                        <doclint>none</doclint>
-                        <detectLinks>false</detectLinks>
-                        <detectOfflineLinks>false</detectOfflineLinks>
-                        <detectJavaApiLink>false</detectJavaApiLink>
-                        <additionalOptions>${javadoc.additionalOptions}</additionalOptions>
-                    </configuration>
                 </plugin>
-
                 <plugin>
                     <artifactId>maven-release-plugin</artifactId>
                     <version>2.5.3</version>
-                    <configuration>
-                        <releaseProfiles>release,skip-test</releaseProfiles>
-                        <autoVersionSubmodules>true</autoVersionSubmodules>
-                        <tagNameFormat>v@{project.version}</tagNameFormat>
-                    </configuration>
                 </plugin>
-
                 <plugin>
                     <artifactId>maven-antrun-plugin</artifactId>
                     <version>1.8</version>
                 </plugin>
-
                 <plugin>
                     <artifactId>maven-assembly-plugin</artifactId>
                     <version>3.2.0</version>
                 </plugin>
-
                 <plugin>
                     <artifactId>maven-clean-plugin</artifactId>
                     <version>3.1.0</version>
                 </plugin>
-
                 <plugin>
                     <artifactId>maven-resources-plugin</artifactId>
                     <version>3.1.0</version>
                 </plugin>
-
                 <plugin>
                     <artifactId>maven-dependency-plugin</artifactId>
                     <version>3.1.1</version>
                 </plugin>
-
                 <plugin>
                     <artifactId>maven-install-plugin</artifactId>
                     <version>3.0.0-M1</version>
                 </plugin>
-
-                <plugin>
-                    <artifactId>maven-site-plugin</artifactId>
-                    <version>3.8.2</version>
-                    <configuration>
-                        <skip>true</skip>
-                        <skipDeploy>true</skipDeploy>
-                    </configuration>
-                </plugin>
-
                 <plugin>
                     <artifactId>maven-deploy-plugin</artifactId>
                     <version>3.0.0-M1</version>
                 </plugin>
-
                 <plugin>
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>3.0.0-M4</version>
-                    <configuration>
-                        <includes>
-                            <include>**/*Test*.java</include>
-                            <include>**/*Benchmark*.java</include>
-                        </includes>
-                        <excludes>
-                            <exclude>**/Abstract*</exclude>
-                            <exclude>**/*TestUtil*</exclude>
-                        </excludes>
-                    </configuration>
                 </plugin>
-
                 <plugin>
                     <artifactId>maven-failsafe-plugin</artifactId>
                     <version>3.0.0-M4</version>
                 </plugin>
-
                 <plugin>
                     <groupId>org.apache.felix</groupId>
                     <artifactId>maven-bundle-plugin</artifactId>
                     <version>4.2.1</version>
                 </plugin>
-
                 <plugin>
                     <groupId>org.eluder.coveralls</groupId>
                     <artifactId>coveralls-maven-plugin</artifactId>
                     <version>4.3.0</version>
                 </plugin>
-
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>build-helper-maven-plugin</artifactId>
                     <version>3.0.0</version>
                 </plugin>
-
                 <plugin>
                     <groupId>org.jacoco</groupId>
                     <artifactId>jacoco-maven-plugin</artifactId>
                     <version>0.8.5</version>
                 </plugin>
-
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>versions-maven-plugin</artifactId>
@@ -429,6 +311,32 @@
         </pluginManagement>
 
         <plugins>
+            <plugin>
+                <groupId>com.mycila</groupId>
+                <artifactId>license-maven-plugin</artifactId>
+                <configuration>
+                    <header>${main.basedir}/license.txt</header>
+                    <failIfMissing>true</failIfMissing>
+                    <aggregate>true</aggregate>
+                    <strictCheck>true</strictCheck>
+                    <properties>
+                        <copyright-range>${project.inceptionYear}-2019</copyright-range>
+                    </properties>
+                    <mapping>
+                        <java>SLASHSTAR_STYLE</java>
+                    </mapping>
+                    <includes>
+                        <include>**/*.java</include>
+                    </includes>
+                    <excludes>
+                        <exclude>core/src/main/java/com/aspectran/core/util/logging/**</exclude>
+                        <exclude>core/src/main/java/com/aspectran/core/util/statistic/**</exclude>
+                        <exclude>core/src/main/java/com/aspectran/core/util/xml/**</exclude>
+                        <exclude>.mvn/wrapper/**</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+
             <plugin>
                 <artifactId>maven-enforcer-plugin</artifactId>
                 <version>3.0.0-M3</version>
@@ -477,6 +385,106 @@
                 </executions>
             </plugin>
 
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <fork>true</fork>
+                    <debug>true</debug>
+                    <optimize>true</optimize>
+                    <showDeprecation>true</showDeprecation>
+                    <showWarnings>true</showWarnings>
+                    <compilerArgs>
+                        <arg>-Xlint:-try,-path,-options</arg>
+                        <arg>-parameters</arg>
+                    </compilerArgs>
+                    <meminitial>256m</meminitial>
+                    <maxmem>1024m</maxmem>
+                    <excludes>
+                        <exclude>**/package-info.java</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                            <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                        </manifest>
+                        <manifestEntries>
+                            <Implementation-Build-Date>${maven.build.timestamp}</Implementation-Build-Date>
+                            <X-Compile-Source-JDK>${maven.compiler.source}</X-Compile-Source-JDK>
+                            <X-Compile-Target-JDK>${maven.compiler.target}</X-Compile-Target-JDK>
+                        </manifestEntries>
+                        <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+                        <index>true</index>
+                    </archive>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>default-jar</id>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-source-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                        </manifest>
+                        <manifestEntries>
+                            <Implementation-Build-Date>${maven.build.timestamp}</Implementation-Build-Date>
+                            <X-Compile-Source-JDK>${maven.compiler.source}</X-Compile-Source-JDK>
+                            <X-Compile-Target-JDK>${maven.compiler.target}</X-Compile-Target-JDK>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <doctitle>${javadoc.title}</doctitle>
+                    <windowtitle>${javadoc.title}</windowtitle>
+                    <locale>${javadoc.locale}</locale>
+                    <doclint>none</doclint>
+                    <failOnError>false</failOnError>
+                    <detectLinks>false</detectLinks>
+                    <detectOfflineLinks>false</detectOfflineLinks>
+                    <detectJavaApiLink>false</detectJavaApiLink>
+                    <additionalOptions>${javadoc.additionalOptions}</additionalOptions>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>javadoc</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-release-plugin</artifactId>
+                <configuration>
+                    <releaseProfiles>release,skip-test</releaseProfiles>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                    <tagNameFormat>v@{project.version}</tagNameFormat>
+                </configuration>
+            </plugin>
+
             <!-- Always produce osgi bundles -->
             <plugin>
                 <groupId>org.apache.felix</groupId>
@@ -507,36 +515,17 @@
             </plugin>
 
             <plugin>
-                <artifactId>maven-jar-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>default-jar</id>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
-                <artifactId>maven-source-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>attach-sources</id>
-                        <goals>
-                            <goal>jar-no-fork</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>javadoc</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <includes>
+                        <include>**/*Test*.java</include>
+                        <include>**/*Benchmark*.java</include>
+                    </includes>
+                    <excludes>
+                        <exclude>**/Abstract*</exclude>
+                        <exclude>**/*TestUtil*</exclude>
+                    </excludes>
+                </configuration>
             </plugin>
 
             <plugin>
