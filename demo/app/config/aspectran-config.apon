@@ -43,7 +43,6 @@ shell: {
     prompt: "{{green}}aspectran-demo>{{reset}} "
     commands: [
         com.aspectran.shell.command.builtins.UndertowCommand
-        com.aspectran.shell.command.builtins.JettyCommand
         com.aspectran.shell.command.builtins.TransletCommand
         com.aspectran.shell.command.builtins.AspectCommand
         com.aspectran.shell.command.builtins.JobCommand
@@ -77,7 +76,6 @@ daemon: {
     }
     commands: [
         com.aspectran.daemon.command.builtins.UndertowCommand
-        com.aspectran.daemon.command.builtins.JettyCommand
         com.aspectran.daemon.command.builtins.InvokeActionCommand
         com.aspectran.daemon.command.builtins.TransletCommand
         com.aspectran.daemon.command.builtins.ComponentCommand
