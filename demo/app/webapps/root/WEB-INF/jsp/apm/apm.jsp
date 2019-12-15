@@ -270,8 +270,8 @@
         var idx = line.indexOf("Session");
         if (idx !== -1) {
             line = line.substring(idx);
-            var pattern1 = /^Session (\w+) complete, active requests=(\d+)/i;
-            var pattern2 = /^Session (\w+) deleted in session data store/i;
+            var pattern1 = /^Session ([\w\.]+) complete, active requests=(\d+)/i;
+            var pattern2 = /^Session ([\w\.]+) deleted in session data store/i;
             if (pattern1.test(line) || pattern2.test(line)) {
                 sessionId = RegExp.$1;
                 requests = RegExp.$2;
@@ -293,7 +293,7 @@
                 }
                 return;
             }
-            var pattern3 = /^Session (\w+) accessed, stopping timer, active requests=(\d+)/i;
+            var pattern3 = /^Session ([\w\.]+) accessed, stopping timer, active requests=(\d+)/i;
             if (pattern3.test(line)) {
                 sessionId = RegExp.$1;
                 requests = RegExp.$2;
