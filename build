@@ -64,14 +64,12 @@ ci-deploy)
 
 # prepare release
 release-prepare)
-  stty -echo && printf "Enter GPG passphrase: " && read gpgPwd && printf '\n' && stty echo
-  mvn release:clean release:prepare -Darguments=-Dgpg.passphrase=$gpgPwd
+  mvn release:clean release:prepare
   ;;
 
 # perform release
 release-perform)
-  stty -echo && printf "Enter GPG passphrase: " && read gpgPwd && printf '\n' && stty echo
-  mvn release:perform -Darguments=-Dgpg.passphrase=$gpgPwd
+  mvn release:perform
   ;;
 
 # clean release
