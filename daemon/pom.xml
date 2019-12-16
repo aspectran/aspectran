@@ -30,6 +30,7 @@
     <description>Aspectran running in the background</description>
 
     <properties>
+        <javaModuleName>com.aspectran.daemon</javaModuleName>
         <main.basedir>${project.parent.basedir}</main.basedir>
     </properties>
 

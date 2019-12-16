@@ -13,25 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.scheduler.adapter;
+package com.aspectran.core.scheduler.service;
 
-import com.aspectran.core.adapter.DefaultResponseAdapter;
-import com.aspectran.core.adapter.ResponseAdapter;
-import com.aspectran.core.context.rule.type.ContentType;
-import com.aspectran.core.util.OutputStringWriter;
+import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.service.ServiceController;
 
 /**
- * Adapt Quartz Job Response to Core {@link ResponseAdapter}.
- * 
- * @since 2013. 11. 20.
+ * The Interface SchedulerService.
  */
-public class QuartzJobResponseAdapter extends DefaultResponseAdapter {
+public interface SchedulerService extends ServiceController {
 
-    public QuartzJobResponseAdapter() {
-        super(null);
+    int getStartDelaySeconds();
 
-        setContentType(ContentType.TEXT_PLAIN.toString());
-        setWriter(new OutputStringWriter(768));
-    }
+    boolean isWaitOnShutdown();
+
+    ActivityContext getActivityContext();
 
 }

@@ -13,20 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.scheduler.service;
-
-import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.service.ServiceController;
-
 /**
- * The Interface SchedulerService.
+ * Aspectran Scheduler provides low-level job scheduling capabilities.
+ * It is enables the automated execution of tasks that applications can
+ * perform in the background.
  */
-public interface SchedulerService extends ServiceController {
-
-    int getStartDelaySeconds();
-
-    boolean isWaitOnShutdown();
-
-    ActivityContext getActivityContext();
-
-}
+package com.aspectran.core.scheduler;

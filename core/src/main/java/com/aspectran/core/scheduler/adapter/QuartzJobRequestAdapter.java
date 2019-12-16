@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.scheduler.adapter;
+package com.aspectran.core.scheduler.adapter;
 
 import com.aspectran.core.adapter.DefaultRequestAdapter;
 import com.aspectran.core.adapter.RequestAdapter;

@@ -30,6 +30,7 @@
     <description>Add-on package for providing session clustering via persistence to Redis using Lettuce as the client</description>
 
     <properties>
+        <javaModuleName>com.aspectran.core.component.session.redis.lettuce</javaModuleName>
         <main.basedir>${project.parent.basedir}</main.basedir>
         <lettuce.version>5.2.1.RELEASE</lettuce.version>
     </properties>

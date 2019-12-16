@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * Contains a variant of the service interface for Aspectran Scheduler.
+ * Contains a variant of the activity interface for Aspectran Scheduler.
  */
-package com.aspectran.scheduler.service;
+package com.aspectran.core.scheduler.activity;

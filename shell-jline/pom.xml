@@ -30,6 +30,7 @@
     <description>Build Interactive Shell Applications with JLine 3</description>
 
     <properties>
+        <javaModuleName>com.aspectran.shell.jline</javaModuleName>
         <main.basedir>${project.parent.basedir}</main.basedir>
         <jline.version>3.13.2</jline.version>
     </properties>

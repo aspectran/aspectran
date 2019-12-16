@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.scheduler.activity;
+package com.aspectran.core.scheduler.activity;
 
 import com.aspectran.core.activity.AdapterException;
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.scheduler.adapter.QuartzJobRequestAdapter;
-import com.aspectran.scheduler.adapter.QuartzJobResponseAdapter;
+import com.aspectran.core.scheduler.adapter.QuartzJobRequestAdapter;
+import com.aspectran.core.scheduler.adapter.QuartzJobResponseAdapter;
 import org.quartz.JobExecutionContext;
 
 /**

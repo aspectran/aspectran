@@ -8,7 +8,7 @@
         <setting name="beanProxifier" value="javassist"/>
     </settings>
 
-    <bean id="defaultScheduler1" class="com.aspectran.scheduler.support.QuartzSchedulerFactoryBean">
+    <bean id="defaultScheduler1" class="com.aspectran.core.scheduler.support.QuartzSchedulerFactoryBean">
         <properties>
             <item type="properties" name="quartzProperties">
                 <entry name="org.quartz.scheduler.instanceName">AspectranQuartzScheduler-1</entry>

@@ -32,8 +32,8 @@ import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.core.util.thread.ShutdownHooks;
 import com.aspectran.core.util.wildcard.PluralWildcardPattern;
-import com.aspectran.scheduler.service.QuartzSchedulerService;
-import com.aspectran.scheduler.service.SchedulerService;
+import com.aspectran.core.scheduler.service.QuartzSchedulerService;
+import com.aspectran.core.scheduler.service.SchedulerService;
 
 import java.io.File;
 import java.io.IOException;

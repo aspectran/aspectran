@@ -10,7 +10,7 @@
     <bean id="*" scan="com.aspectran.embed.**.*Advice" mask="com.aspectran.embed.**.*"/>
     <bean id="*" scan="com.aspectran.embed.**.*Action" mask="com.aspectran.embed.**.*"/>
 
-    <bean id="defaultScheduler1" class="com.aspectran.scheduler.support.QuartzSchedulerFactoryBean" lazyInit="true">
+    <bean id="defaultScheduler1" class="com.aspectran.core.scheduler.support.QuartzSchedulerFactoryBean" lazyInit="true">
         <properties>
             <item type="properties" name="quartzProperties">
                 <entry name="org.quartz.scheduler.instanceName">AspectranQuartzScheduler-1</entry>

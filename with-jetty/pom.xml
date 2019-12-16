@@ -30,6 +30,7 @@
     <description>Add-on package for integrating Embedded Jetty</description>
 
     <properties>
+        <javaModuleName>com.aspectran.jetty</javaModuleName>
         <main.basedir>${project.parent.basedir}</main.basedir>
         <jetty.version>9.4.24.v20191120</jetty.version>
     </properties>

@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * Contains a variant of the activity interface for Aspectran Scheduler.
+ * A package to support external modules for Aspectran Scheduler.
  */
-package com.aspectran.scheduler.activity;
+package com.aspectran.core.scheduler.support;

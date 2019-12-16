@@ -30,6 +30,7 @@
     <description>Add-on package for integrating Freemarker</description>
 
     <properties>
+        <javaModuleName>com.aspectran.freemarker</javaModuleName>
         <main.basedir>${project.parent.basedir}</main.basedir>
         <freemarker.version>2.3.29</freemarker.version>
     </properties>

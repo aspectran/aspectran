@@ -30,6 +30,7 @@
     <description>Add-on package for integrating MyBatis</description>
 
     <properties>
+        <javaModuleName>com.aspectran.mybatis</javaModuleName>
         <main.basedir>${project.parent.basedir}</main.basedir>
         <mybatis.version>3.5.3</mybatis.version>
     </properties>

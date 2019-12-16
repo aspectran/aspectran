@@ -27,9 +27,9 @@
     <packaging>jar</packaging>
 
     <name>Aspectran All-in-One</name>
-    <description>A meta-dependency for all the major Aspectran modules</description>
 
     <properties>
+        <javaModuleName>com.aspectran.all</javaModuleName>
         <main.basedir>${project.parent.basedir}</main.basedir>
         <generatedSourceDir>${project.build.directory}/src</generatedSourceDir>
 
@@ -259,7 +259,7 @@
                     <groups>
                         <group>
                             <title>Aspectran Core</title>
-                            <packages>com.aspectran.core*:com.aspectran.scheduler*</packages>
+                            <packages>com.aspectran.core*</packages>
                         </group>
                         <group>
                             <title>Aspectran Daemon</title>
@@ -295,7 +295,7 @@
                 </executions>
             </plugin>
 
-            <!-- Clean everything once finished so that IDE doesn't find the unpacked files. -->
+            <!-- Clean everything once finished so that IDE doesn't find the unpacked files -->
             <plugin>
                 <artifactId>maven-antrun-plugin</artifactId>
                 <executions>
@@ -315,13 +315,35 @@
                 </executions>
             </plugin>
 
+            <!-- Disable License plugin -->
+            <plugin>
+                <groupId>com.mycila</groupId>
+                <artifactId>license-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>none</phase>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Disable Enforcer plugin -->
+            <plugin>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>enforce-java</id>
+                        <phase>none</phase>
+                    </execution>
+                </executions>
+            </plugin>
+
             <!-- Disable animal sniffer -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>animal-sniffer-maven-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>default</id>
+                        <id>check-java-1.8-compat</id>
                         <phase>none</phase>
                     </execution>
                 </executions>
@@ -359,6 +381,18 @@
                 <executions>
                     <execution>
                         <id>default-test</id>
+                        <phase>none</phase>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Disable jacoco -->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>prepare-agent</id>
                         <phase>none</phase>
                     </execution>
                 </executions>

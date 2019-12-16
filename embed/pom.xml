@@ -30,6 +30,7 @@
     <description>Build Java applications with Aspectran</description>
 
     <properties>
+        <javaModuleName>com.aspectran.embed</javaModuleName>
         <main.basedir>${project.parent.basedir}</main.basedir>
     </properties>
 

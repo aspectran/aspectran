@@ -83,12 +83,10 @@
     </distributionManagement>
 
     <properties>
+        <javaModuleName />
         <main.basedir>${project.basedir}</main.basedir>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <maven.compiler.testTarget>1.8</maven.compiler.testTarget>
-        <maven.compiler.testSource>1.8</maven.compiler.testSource>
-        <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ssZ</maven.build.timestamp.format>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.build.resourceEncoding>UTF-8</project.build.resourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -216,6 +214,15 @@
                     <version>3.0</version>
                 </plugin>
                 <plugin>
+                    <artifactId>maven-enforcer-plugin</artifactId>
+                    <version>3.0.0-M3</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>animal-sniffer-maven-plugin</artifactId>
+                    <version>1.18</version>
+                </plugin>
+                <plugin>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>3.8.1</version>
                 </plugin>
@@ -332,7 +339,6 @@
 
             <plugin>
                 <artifactId>maven-enforcer-plugin</artifactId>
-                <version>3.0.0-M3</version>
                 <executions>
                     <execution>
                         <id>enforce-java</id>
@@ -359,7 +365,6 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>animal-sniffer-maven-plugin</artifactId>
-                <version>1.18</version>
                 <configuration>
                     <signature>
                         <groupId>${signature.group}</groupId>
@@ -386,6 +391,7 @@
                     <optimize>true</optimize>
                     <showDeprecation>true</showDeprecation>
                     <showWarnings>true</showWarnings>
+                    <compilerVersion>1.8</compilerVersion>
                     <compilerArgs>
                         <arg>-Xlint:-try,-path,-options</arg>
                         <arg>-parameters</arg>
@@ -402,37 +408,28 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <configuration>
                     <archive>
+                        <index>true</index>
+                        <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
                         <manifest>
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                            <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
                         </manifest>
                         <manifestEntries>
-                            <Implementation-Build-Date>${maven.build.timestamp}</Implementation-Build-Date>
-                            <X-Compile-Source-JDK>${maven.compiler.source}</X-Compile-Source-JDK>
-                            <X-Compile-Target-JDK>${maven.compiler.target}</X-Compile-Target-JDK>
+                            <Automatic-Module-Name>${javaModuleName}</Automatic-Module-Name>
                         </manifestEntries>
-                        <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
-                        <index>true</index>
                     </archive>
                 </configuration>
-                <executions>
-                    <execution>
-                        <id>default-jar</id>
-                    </execution>
-                </executions>
             </plugin>
 
             <plugin>
                 <artifactId>maven-source-plugin</artifactId>
                 <configuration>
                     <archive>
-                        <manifest>
-                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                        </manifest>
                         <manifestEntries>
-                            <Implementation-Build-Date>${maven.build.timestamp}</Implementation-Build-Date>
-                            <X-Compile-Source-JDK>${maven.compiler.source}</X-Compile-Source-JDK>
-                            <X-Compile-Target-JDK>${maven.compiler.target}</X-Compile-Target-JDK>
+                            <Bundle-Name>${project.name}</Bundle-Name>
+                            <Bundle-SymbolicName>${project.groupId}.${project.artifactId}.source</Bundle-SymbolicName>
+                            <Bundle-Vendor>${project.organization.name}</Bundle-Vendor>
+                            <Bundle-Version>${project.version}</Bundle-Version>
+                            <Eclipse-SourceBundle>${project.groupId}.${project.artifactId};version="${project.version}";roots:="."</Eclipse-SourceBundle>
                         </manifestEntries>
                     </archive>
                 </configuration>
@@ -449,6 +446,7 @@
             <plugin>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <configuration>
+                    <source>8</source>
                     <doctitle>${javadoc.title}</doctitle>
                     <windowtitle>${javadoc.title}</windowtitle>
                     <locale>${javadoc.locale}</locale>
@@ -482,6 +480,11 @@
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
+                <configuration>
+                    <instructions>
+                        <Export-Package>*;-noimport:=true</Export-Package>
+                    </instructions>
+                </configuration>
                 <executions>
                     <execution>
                         <id>generate-manifest</id>
@@ -489,20 +492,6 @@
                         <goals>
                             <goal>manifest</goal>
                         </goals>
-                        <configuration>
-                            <excludeDependencies>true</excludeDependencies>
-                            <manifestLocation>${project.build.outputDirectory}/META-INF</manifestLocation>
-                            <supportedProjectTypes>
-                                <supportedProjectType>jar</supportedProjectType>
-                                <supportedProjectType>bundle</supportedProjectType>
-                            </supportedProjectTypes>
-                            <instructions>
-                                <_nouses>true</_nouses>
-                                <Export-Package>${project.groupId}.*;version=${project.version};-noimport:=true</Export-Package>
-                                <Import-Package>*;resolution:=optional</Import-Package>
-                                <Private-Package>!*</Private-Package>
-                            </instructions>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>
@@ -625,6 +614,16 @@
             <properties>
                 <javadoc.additionalOptions>-html5</javadoc.additionalOptions>
             </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <configuration>
+                            <release>8</release>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
 
         <profile>

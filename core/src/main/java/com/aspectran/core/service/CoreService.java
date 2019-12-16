@@ -19,7 +19,7 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.resource.AspectranClassLoader;
-import com.aspectran.scheduler.service.SchedulerService;
+import com.aspectran.core.scheduler.service.SchedulerService;
 
 /**
  * The Interface CoreService.

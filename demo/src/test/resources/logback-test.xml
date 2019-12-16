@@ -33,7 +33,7 @@
     <logger name="com.aspectran" level="debug" additivity="false">
         <appender-ref ref="STDOUT"/>
     </logger>
-    <logger name="com.aspectran.scheduler.service.JobActivityReport" level="debug" additivity="false">
+    <logger name="com.aspectran.core.scheduler.service.JobActivityReport" level="debug" additivity="false">
         <appender-ref ref="STDOUT"/>
     </logger>
     <logger name="com.aspectran.core.component.session" level="debug" additivity="false">

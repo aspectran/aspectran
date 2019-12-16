@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.scheduler.service;
+package com.aspectran.core.scheduler.service;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.ActivityException;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.ScheduledJobRule;
-import com.aspectran.scheduler.activity.JobActivity;
+import com.aspectran.core.scheduler.activity.JobActivity;
 import org.quartz.Job;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;

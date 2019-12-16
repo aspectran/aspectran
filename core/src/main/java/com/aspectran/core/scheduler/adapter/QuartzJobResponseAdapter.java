@@ -13,8 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.aspectran.core.scheduler.adapter;
+
+import com.aspectran.core.adapter.DefaultResponseAdapter;
+import com.aspectran.core.adapter.ResponseAdapter;
+import com.aspectran.core.context.rule.type.ContentType;
+import com.aspectran.core.util.OutputStringWriter;
+
 /**
- * Aspectran Scheduler provides low-level job scheduling capabilities.
- * It is enables the automated execution of tasks that applications can perform in the background.
+ * Adapt Quartz Job Response to Core {@link ResponseAdapter}.
+ * 
+ * @since 2013. 11. 20.
  */
-package com.aspectran.scheduler;
+public class QuartzJobResponseAdapter extends DefaultResponseAdapter {
+
+    public QuartzJobResponseAdapter() {
+        super(null);
+
+        setContentType(ContentType.TEXT_PLAIN.toString());
+        setWriter(new OutputStringWriter(768));
+    }
+
+}
