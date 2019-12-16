@@ -83,10 +83,11 @@
     </distributionManagement>
 
     <properties>
-        <javaModuleName />
         <main.basedir>${project.basedir}</main.basedir>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
+
+        <java.version>1.8</java.version>
+        <java.module.name />
+
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.build.resourceEncoding>UTF-8</project.build.resourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -386,16 +387,18 @@
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                    <compilerVersion>${java.version}</compilerVersion>
+                    <compilerArgs>
+                        <arg>-Xlint:-try,-path,-options</arg>
+                    </compilerArgs>
+                    <parameters>true</parameters>
                     <fork>true</fork>
                     <debug>true</debug>
                     <optimize>true</optimize>
                     <showDeprecation>true</showDeprecation>
                     <showWarnings>true</showWarnings>
-                    <compilerVersion>1.8</compilerVersion>
-                    <compilerArgs>
-                        <arg>-Xlint:-try,-path,-options</arg>
-                        <arg>-parameters</arg>
-                    </compilerArgs>
                     <meminitial>256m</meminitial>
                     <maxmem>1024m</maxmem>
                     <excludes>
@@ -414,7 +417,7 @@
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                         </manifest>
                         <manifestEntries>
-                            <Automatic-Module-Name>${javaModuleName}</Automatic-Module-Name>
+                            <Automatic-Module-Name>${java.module.name}</Automatic-Module-Name>
                         </manifestEntries>
                     </archive>
                 </configuration>
@@ -446,7 +449,7 @@
             <plugin>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <configuration>
-                    <source>8</source>
+                    <source>${java.version}</source>
                     <doctitle>${javadoc.title}</doctitle>
                     <windowtitle>${javadoc.title}</windowtitle>
                     <locale>${javadoc.locale}</locale>

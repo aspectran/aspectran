@@ -29,8 +29,8 @@
     <name>Aspectran All-in-One</name>
 
     <properties>
-        <javaModuleName>com.aspectran.all</javaModuleName>
         <main.basedir>${project.parent.basedir}</main.basedir>
+        <java.module.name>com.aspectran.all</java.module.name>
         <generatedSourceDir>${project.build.directory}/src</generatedSourceDir>
 
         <!-- plugins configuration -->

@@ -30,8 +30,8 @@
     <description>Add-on package for integrating Pebble</description>
 
     <properties>
-        <javaModuleName>com.aspectran.pebble</javaModuleName>
         <main.basedir>${project.parent.basedir}</main.basedir>
+        <java.module.name>com.aspectran.pebble</java.module.name>
         <pebble.version>3.1.2</pebble.version>
     </properties>
 

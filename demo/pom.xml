@@ -30,8 +30,8 @@
     <description>Aspectran Demo Application</description>
 
     <properties>
-        <javaModuleName>com.aspectran.demo</javaModuleName>
         <main.basedir>${project.parent.basedir}</main.basedir>
+        <java.module.name>com.aspectran.demo</java.module.name>
         <slf4j.version>1.7.29</slf4j.version>
         <logback.version>1.2.3</logback.version>
     </properties>
