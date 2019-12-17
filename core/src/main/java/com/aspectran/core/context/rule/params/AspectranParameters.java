@@ -18,6 +18,7 @@ package com.aspectran.core.context.rule.params;
 import com.aspectran.core.context.rule.AppendRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.BeanRule;
+import com.aspectran.core.context.rule.DescriptionRule;
 import com.aspectran.core.context.rule.EnvironmentRule;
 import com.aspectran.core.context.rule.ScheduleRule;
 import com.aspectran.core.context.rule.TemplateRule;
@@ -27,7 +28,6 @@ import com.aspectran.core.context.rule.type.DefaultSettingType;
 import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterKey;
 import com.aspectran.core.util.apon.Parameters;
-import com.aspectran.core.util.apon.ValueType;
 
 public class AspectranParameters extends AbstractParameters {
 
@@ -45,7 +45,7 @@ public class AspectranParameters extends AbstractParameters {
     private static final ParameterKey[] parameterKeys;
 
     static {
-        description = new ParameterKey("description", ValueType.VARIABLE);
+        description = new ParameterKey("description", DescriptionParameters.class);
         settings = new ParameterKey("settings", SettingsParameters.class);
         typeAliases = new ParameterKey("typeAliases", TypeAliasesParameters.class);
         environment = new ParameterKey("environment", EnvironmentParameters.class, true, true);
@@ -115,6 +115,17 @@ public class AspectranParameters extends AbstractParameters {
         parameters.clearValue(alias);
         parameters.putValue(alias, type);
         return this;
+    }
+
+    public AspectranParameters addRule(DescriptionRule descriptionRule) {
+        putValue(description, RulesToParameters.toEnvironmentParameters(descriptionRule));
+        return this;
+    }
+
+    public DescriptionRule newDescriptionRule() {
+        DescriptionRule descriptionRule = new DescriptionRule();
+        addRule(descriptionRule);
+        return descriptionRule;
     }
 
     public AspectranParameters addRule(EnvironmentRule environmentRule) {

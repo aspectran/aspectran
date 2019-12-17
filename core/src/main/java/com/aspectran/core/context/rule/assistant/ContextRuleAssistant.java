@@ -26,6 +26,7 @@ import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.AutowireRule;
 import com.aspectran.core.context.rule.BeanRule;
+import com.aspectran.core.context.rule.DescriptionRule;
 import com.aspectran.core.context.rule.EnvironmentRule;
 import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.context.rule.InvokeActionRule;
@@ -43,6 +44,7 @@ import com.aspectran.core.context.rule.type.ItemValueType;
 import com.aspectran.core.context.rule.type.TokenDirectiveType;
 import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.util.StringUtils;
+import com.aspectran.core.util.TextStyler;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -812,6 +814,56 @@ public class ContextRuleAssistant {
         }
     }
 
+    public DescriptionRule profiling(DescriptionRule newDescriptionRule, DescriptionRule oldDescriptionRule) {
+        if (newDescriptionRule.getProfile() != null && getContextEnvironment() != null) {
+            String[] profiles = StringUtils.splitCommaDelimitedString(newDescriptionRule.getProfile());
+            if (getContextEnvironment().acceptsProfiles(profiles)) {
+                return mergeDescriptionRule(newDescriptionRule, oldDescriptionRule);
+            } else {
+                if (oldDescriptionRule == null) {
+                    DescriptionRule dr = new DescriptionRule();
+                    dr.addCandidate(newDescriptionRule);
+                    return dr;
+                } else {
+                    oldDescriptionRule.addCandidate(newDescriptionRule);
+                    return oldDescriptionRule;
+                }
+            }
+        } else {
+            return mergeDescriptionRule(newDescriptionRule, oldDescriptionRule);
+        }
+    }
+
+    private DescriptionRule mergeDescriptionRule(DescriptionRule newDescriptionRule, DescriptionRule oldDescriptionRule) {
+        if (oldDescriptionRule == null) {
+            if (newDescriptionRule.getContent() != null) {
+                String formatted = TextStyler.styling(newDescriptionRule.getContent(), newDescriptionRule.getContentStyle());
+                newDescriptionRule.setFormattedContent(formatted);
+            }
+            return newDescriptionRule;
+        }
+        DescriptionRule dr = new DescriptionRule();
+        if (newDescriptionRule.getContent() != null) {
+            String content = TextStyler.styling(newDescriptionRule.getContent(), newDescriptionRule.getContentStyle());
+            if (oldDescriptionRule.getFormattedContent() != null) {
+                content = oldDescriptionRule.getFormattedContent() + content;
+            }
+            newDescriptionRule.setFormattedContent(content);
+        } else if (oldDescriptionRule.getFormattedContent() != null) {
+            newDescriptionRule.setFormattedContent(oldDescriptionRule.getFormattedContent());
+        }
+        if (oldDescriptionRule.getCandidates() == null) {
+            dr.addCandidate(oldDescriptionRule);
+            dr.addCandidate(newDescriptionRule);
+            return dr;
+        } else {
+            dr.setCandidates(oldDescriptionRule.getCandidates());
+            dr.addCandidate(newDescriptionRule);
+            oldDescriptionRule.setCandidates(null);
+            return dr;
+        }
+    }
+
     public ItemRuleMap profiling(ItemRuleMap newIrm, ItemRuleMap oldIrm) {
         if (newIrm.getProfile() != null && getContextEnvironment() != null) {
             String[] profiles = StringUtils.splitCommaDelimitedString(newIrm.getProfile());
@@ -836,15 +888,13 @@ public class ContextRuleAssistant {
         if (oldIrm == null) {
             return newIrm;
         }
+        ItemRuleMap irm = new ItemRuleMap(oldIrm);
+        irm.putAll(newIrm);
         if (oldIrm.getCandidates() == null) {
-            ItemRuleMap irm = new ItemRuleMap(oldIrm);
-            irm.putAll(newIrm);
             irm.addCandidate(oldIrm);
             irm.addCandidate(newIrm);
             return irm;
         } else {
-            ItemRuleMap irm = new ItemRuleMap(oldIrm);
-            irm.putAll(newIrm);
             irm.setCandidates(oldIrm.getCandidates());
             irm.addCandidate(newIrm);
             oldIrm.setCandidates(null);

@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.context.rule.assistant;
 
+import com.aspectran.core.context.rule.DescriptionRule;
 import com.aspectran.core.context.rule.ability.Replicable;
 
 /**
@@ -26,7 +27,7 @@ public class AssistantLocal implements Replicable<AssistantLocal> {
 
     private final ContextRuleAssistant assistant;
 
-    private String description;
+    private DescriptionRule descriptionRule;
 
     private DefaultSettings defaultSettings;
 
@@ -45,12 +46,12 @@ public class AssistantLocal implements Replicable<AssistantLocal> {
         return assistant;
     }
 
-    public String getDescription() {
-        return description;
+    public DescriptionRule getDescriptionRule() {
+        return descriptionRule;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setDescriptionRule(DescriptionRule descriptionRule) {
+        this.descriptionRule = descriptionRule;
     }
 
     public DefaultSettings getDefaultSettings() {
@@ -75,7 +76,7 @@ public class AssistantLocal implements Replicable<AssistantLocal> {
     @Override
     public AssistantLocal replicate() {
         AssistantLocal al = new AssistantLocal(assistant, replicatedCount + 1);
-        al.setDescription(getDescription());
+        al.setDescriptionRule(getDescriptionRule());
         DefaultSettings ds = getDefaultSettings();
         if (ds != null) {
             al.setDefaultSettings(new DefaultSettings(ds));

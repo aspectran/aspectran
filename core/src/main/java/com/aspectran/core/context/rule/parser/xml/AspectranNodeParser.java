@@ -16,13 +16,12 @@
 package com.aspectran.core.context.rule.parser.xml;
 
 import com.aspectran.core.context.rule.AppendRule;
+import com.aspectran.core.context.rule.DescriptionRule;
 import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.context.rule.appender.RuleAppendHandler;
 import com.aspectran.core.context.rule.appender.RuleAppender;
 import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;
 import com.aspectran.core.util.ExceptionUtils;
-import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.TextStyler;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.core.util.nodelet.NodeletParser;
@@ -189,16 +188,15 @@ public class AspectranNodeParser {
         parser.setXpath("/aspectran/description");
         parser.addNodelet(attrs -> {
             String style = attrs.get("style");
-            parser.pushObject(style);
+            String profile = attrs.get("profile");
+
+            DescriptionRule descriptionRule = DescriptionRule.newInstance(style, profile);
+            parser.pushObject(descriptionRule);
         });
         parser.addNodeEndlet(text -> {
-            String style = parser.popObject();
-            if (style != null) {
-                text = TextStyler.styling(text, style);
-            }
-            if (StringUtils.hasText(text)) {
-                assistant.getAssistantLocal().setDescription(text);
-            }
+            DescriptionRule descriptionRule = parser.popObject();
+            descriptionRule = assistant.profiling(descriptionRule, assistant.getAssistantLocal().getDescriptionRule());
+            assistant.getAssistantLocal().setDescriptionRule(descriptionRule);
         });
     }
 

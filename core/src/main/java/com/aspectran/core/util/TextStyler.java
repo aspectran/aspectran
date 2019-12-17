@@ -35,7 +35,7 @@ public class TextStyler {
 
     public static String styling(String text, TextStyleType textStyleType) {
         if (textStyleType == TextStyleType.APON) {
-            return TextStyler.offAponStyle(text);
+            return TextStyler.stripAponStyle(text);
         } else if (textStyleType == TextStyleType.COMPACT) {
             return TextStyler.compact(text);
         } else if (textStyleType == TextStyleType.COMPRESSED) {
@@ -45,7 +45,7 @@ public class TextStyler {
         }
     }
 
-    public static String offAponStyle(String text) {
+    public static String stripAponStyle(String text) {
         if (text == null || text.isEmpty()) {
             return text;
         }
