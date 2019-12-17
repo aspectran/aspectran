@@ -86,6 +86,7 @@
         <main.basedir>${project.basedir}</main.basedir>
 
         <java.version>1.8</java.version>
+        <java.release.version>8</java.release.version>
         <java.module.name />
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -393,9 +394,9 @@
                     <compilerArgs>
                         <arg>-Xlint:-try,-path,-options</arg>
                     </compilerArgs>
-                    <parameters>true</parameters>
-                    <fork>true</fork>
                     <debug>true</debug>
+                    <fork>true</fork>
+                    <parameters>true</parameters>
                     <optimize>true</optimize>
                     <showDeprecation>true</showDeprecation>
                     <showWarnings>true</showWarnings>
@@ -622,7 +623,7 @@
                     <plugin>
                         <artifactId>maven-compiler-plugin</artifactId>
                         <configuration>
-                            <release>8</release>
+                            <release>${java.release.version}</release>
                         </configuration>
                     </plugin>
                 </plugins>
