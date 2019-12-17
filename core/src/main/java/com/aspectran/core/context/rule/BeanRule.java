@@ -877,7 +877,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
         if (StringUtils.hasText(destroyMethodName)) {
             throw new IllegalRuleException("Inner beans does not support destroy methods");
         }
-        BeanRule beanRule = BeanRule.newInstance(null, className, null, null,
+        BeanRule beanRule = newInstance(null, className, null, null,
                 initMethodName, destroyMethodName, factoryMethodName,
                 null, false, null, null);
         beanRule.setInnerBean(true);
@@ -892,7 +892,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
         if (StringUtils.hasText(destroyMethodName)) {
             throw new IllegalRuleException("Inner beans does not support destroy methods");
         }
-        BeanRule beanRule = BeanRule.newOfferedFactoryBeanInstance(null, factoryBeanId, factoryMethodName,
+        BeanRule beanRule = newOfferedFactoryBeanInstance(null, factoryBeanId, factoryMethodName,
                 initMethodName, destroyMethodName, null, false, null, null);
         beanRule.setInnerBean(true);
         return beanRule;
