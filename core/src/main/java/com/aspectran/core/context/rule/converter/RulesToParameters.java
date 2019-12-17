@@ -718,7 +718,7 @@ public class RulesToParameters {
             parameters.putValue("echo", toActionParameters(echoActionRule));
         } else if (action.getActionType() == ActionType.HEADER) {
             HeaderActionRule headerActionRule = action.getActionRule();
-            parameters.putValue("header", toActionParameters(headerActionRule));
+            parameters.putValue("headers", toActionParameters(headerActionRule));
         } else if (action.getActionType() == ActionType.CHOOSE) {
             ChooseRule chooseRule = action.getActionRule();
             parameters.putValue("choose", toActionParameters(chooseRule));

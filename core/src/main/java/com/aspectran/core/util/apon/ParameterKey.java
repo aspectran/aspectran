@@ -130,6 +130,7 @@ public class ParameterKey {
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.append("name", name);
+        tsb.append("altNames", altNames);
         tsb.append("valueType", valueType);
         tsb.append("class", parametersClass);
         tsb.append("array", array);

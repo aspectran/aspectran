@@ -118,7 +118,7 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
     }
 
     private void convertAsRules(RootParameters rootParameters) throws IllegalRuleException {
-        new ParametersToRules(getContextRuleAssistant()).asRules(rootParameters);
+        new ParametersToRules(getContextRuleAssistant()).toRules(rootParameters);
     }
 
     private void saveAsAponFile(FileRuleAppender fileRuleAppender) throws IOException {

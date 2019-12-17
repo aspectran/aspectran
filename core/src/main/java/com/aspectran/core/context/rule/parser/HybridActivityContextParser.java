@@ -58,7 +58,7 @@ public class HybridActivityContextParser extends AbstractActivityContextParser {
             RuleAppendHandler appendHandler = createRuleAppendHandler();
 
             ParametersToRules ruleConverter = new ParametersToRules(getContextRuleAssistant());
-            ruleConverter.asRules(aspectranParameters);
+            ruleConverter.toRules(aspectranParameters);
 
             appendHandler.handle(null);
 

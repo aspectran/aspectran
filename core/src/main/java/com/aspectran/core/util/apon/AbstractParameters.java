@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -32,6 +33,8 @@ public abstract class AbstractParameters implements Parameters {
     private final Map<String, ParameterValue> parameterValueMap;
 
     private final Map<String, ParameterValue> altParameterValueMap;
+
+    private final Set<String> parameterNames;
 
     private final boolean structureFixed;
 
@@ -43,23 +46,28 @@ public abstract class AbstractParameters implements Parameters {
         Map<String, ParameterValue> valueMap = new LinkedHashMap<>();
         if (parameterKeys != null) {
             Map<String, ParameterValue> altValueMap = new HashMap<>();
+            Set<String> parameterNames = new LinkedHashSet<>();
             for (ParameterKey pk : parameterKeys) {
                 ParameterValue pv = pk.newParameterValue();
                 pv.setContainer(this);
                 valueMap.put(pk.getName(), pv);
+                parameterNames.add(pk.getName());
                 if (pk.getAltNames() != null) {
                     for (String altName : pk.getAltNames()) {
                         altValueMap.put(altName, pv);
+                        parameterNames.add(altName);
                     }
                 }
             }
             this.parameterValueMap = Collections.unmodifiableMap(valueMap);
             this.altParameterValueMap = (altValueMap.isEmpty() ?
                 Collections.emptyMap() : Collections.unmodifiableMap(altValueMap));
+            this.parameterNames = Collections.unmodifiableSet(parameterNames);
             this.structureFixed = true;
         } else {
             this.parameterValueMap = valueMap;
             this.altParameterValueMap = Collections.emptyMap();
+            this.parameterNames = null;
             this.structureFixed = false;
         }
     }
@@ -128,12 +136,16 @@ public abstract class AbstractParameters implements Parameters {
 
     @Override
     public String[] getParameterNames() {
-        return parameterValueMap.keySet().toArray(new String[0]);
+        return getParameterNameSet().toArray(new String[0]);
     }
 
     @Override
     public Set<String> getParameterNameSet() {
-        return parameterValueMap.keySet();
+        if (parameterNames != null) {
+            return parameterNames;
+        } else {
+            return parameterValueMap.keySet();
+        }
     }
 
     @Override
@@ -650,6 +662,7 @@ public abstract class AbstractParameters implements Parameters {
         tsb.append("qualifiedName", getQualifiedName());
         if (details) {
             tsb.append("parameters", parameterValueMap);
+            tsb.append("altParameters", altParameterValueMap);
         } else {
             tsb.append("parameters", getParameterNames());
         }

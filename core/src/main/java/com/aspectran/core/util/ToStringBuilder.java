@@ -142,7 +142,7 @@ public class ToStringBuilder {
         } else if (object instanceof Enumeration<?>) {
             append((Enumeration<?>)object);
         } else if (object instanceof Parameters) {
-            this.sb.append(((Parameters)object).describe(false));
+            this.sb.append(((Parameters)object).describe());
         } else if (object instanceof ToStringBuilder) {
             this.sb.append(((ToStringBuilder)object).getStringBuilder());
         } else if (object instanceof CharSequence) {
