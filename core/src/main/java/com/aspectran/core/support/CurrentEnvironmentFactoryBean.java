@@ -34,6 +34,9 @@ public class CurrentEnvironmentFactoryBean implements EnvironmentAware, FactoryB
 
     @Override
     public void setEnvironment(Environment environment) {
+        if (this.environment != null) {
+            throw new UnsupportedOperationException();
+        }
         this.environment = environment;
     }
 

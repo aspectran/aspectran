@@ -71,6 +71,9 @@ public class CurrentActivityDataFactoryBean implements CurrentActivityAware, Fac
 
     @Override
     public void setCurrentActivity(Activity activity) {
+        if (translet != null) {
+            throw new UnsupportedOperationException();
+        }
         translet = activity.getTranslet();
         if (translet != null && attributeName != null) {
             translet.setAttribute(attributeName, translet.getActivityDataMap());
