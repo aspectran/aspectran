@@ -29,7 +29,7 @@ public class EnvironmentRule {
 
     private List<ItemRuleMap> propertyItemRuleMapList;
 
-    private String description;
+    private DescriptionRule descriptionRule;
 
     public String getProfile() {
         return profile;
@@ -54,12 +54,12 @@ public class EnvironmentRule {
         propertyItemRuleMapList.add(itemRuleMap);
     }
 
-    public String getDescription() {
-        return description;
+    public DescriptionRule getDescriptionRule() {
+        return descriptionRule;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setDescriptionRule(DescriptionRule descriptionRule) {
+        this.descriptionRule = descriptionRule;
     }
 
     /**
@@ -70,7 +70,9 @@ public class EnvironmentRule {
      */
     public static EnvironmentRule newInstance(String profile) {
         EnvironmentRule environmentRule = new EnvironmentRule();
-        environmentRule.setProfile(profile);
+        if (profile != null && !profile.isEmpty()) {
+            environmentRule.setProfile(profile);
+        }
         return environmentRule;
     }
 

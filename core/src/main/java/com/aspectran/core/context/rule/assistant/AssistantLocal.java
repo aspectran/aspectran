@@ -76,11 +76,17 @@ public class AssistantLocal implements Replicable<AssistantLocal> {
     @Override
     public AssistantLocal replicate() {
         AssistantLocal al = new AssistantLocal(assistant, replicatedCount + 1);
-        al.setDescriptionRule(getDescriptionRule());
+
+        DescriptionRule dr = getDescriptionRule();
+        if (dr != null) {
+            al.setDescriptionRule(new DescriptionRule(dr));
+        }
+
         DefaultSettings ds = getDefaultSettings();
         if (ds != null) {
             al.setDefaultSettings(new DefaultSettings(ds));
         }
+
         return al;
     }
 

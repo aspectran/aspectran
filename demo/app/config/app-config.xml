@@ -16,8 +16,20 @@
         |   {{81}}http://localhost:8080/{{fg:reset}}
         |
     </description>
+    <description profile="!demo" style="apon">
+        |
+        |Current profile: #{currentEnvironment^activeProfiles}
+        |
+    </description>
+    <description profile="demo" style="apon">
+        |
+        |The "Aspectran Demo" is a reference application created to show how to
+        |develop Aspectran applications following the recommended best practices.
+        |
+    </description>
 
     <bean id="basePath" class="com.aspectran.core.support.BasePathFactoryBean"/>
+    <bean id="currentEnvironment" class="com.aspectran.core.support.CurrentEnvironmentFactoryBean"/>
     <bean id="currentTranslet" class="com.aspectran.core.support.CurrentTransletFactoryBean" scope="request"/>
 
     <append file="/config/server/server-config.xml"/>

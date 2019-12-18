@@ -27,8 +27,10 @@ import com.aspectran.core.context.rule.ScheduleRule;
 import com.aspectran.core.context.rule.ScheduledJobRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.converter.RulesToParameters;
+import com.aspectran.core.context.rule.params.AspectParameters;
 import com.aspectran.core.context.rule.params.ScheduleParameters;
 import com.aspectran.core.context.rule.params.SchedulerParameters;
+import com.aspectran.core.context.rule.params.TransletParameters;
 import com.aspectran.core.context.rule.params.TriggerExpressionParameters;
 import com.aspectran.core.context.rule.params.TriggerParameters;
 import com.aspectran.core.context.rule.type.MethodType;
@@ -41,6 +43,7 @@ import com.aspectran.daemon.command.CommandRegistry;
 import com.aspectran.daemon.command.CommandResult;
 import com.aspectran.daemon.command.polling.CommandParameters;
 import com.aspectran.daemon.service.DaemonService;
+import org.apache.tomcat.util.digester.Rule;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -192,13 +195,11 @@ public class ComponentCommand extends AbstractCommand {
         int count = 0;
         StringWriter writer = new StringWriter();
         for (AspectRule aspectRule : aspectRules) {
-            Parameters aspectParameters = RulesToParameters.toAspectParameters(aspectRule);
-
+            AspectParameters aspectParameters = RulesToParameters.toAspectParameters(aspectRule);
             if (count > 0) {
                 writer.write("----------------------------------------------------------------------------");
                 writer.write(AponFormat.NEW_LINE);
             }
-
             AponWriter aponWriter = new AponWriter(writer).nullWritable(false);
             aponWriter.write(aspectParameters);
             count++;
@@ -319,14 +320,11 @@ public class ComponentCommand extends AbstractCommand {
             if (!all && !service.isExposable(transletRule.getName())) {
                 continue;
             }
-
-            Parameters transletParameters = RulesToParameters.toTransletParameters(transletRule);
-
+            TransletParameters transletParameters = RulesToParameters.toTransletParameters(transletRule);
             if (count > 0) {
                 writer.write("----------------------------------------------------------------------------");
                 writer.write(AponFormat.NEW_LINE);
             }
-
             AponWriter aponWriter = new AponWriter(writer).nullWritable(false);
             aponWriter.write(transletParameters);
             count++;
@@ -380,7 +378,7 @@ public class ComponentCommand extends AbstractCommand {
             Writer writer = new StringWriter();
             int count = 0;
             for (ScheduleRule scheduleRule : scheduleRuleRegistry.getScheduleRules()) {
-                Parameters scheduleParameters = RulesToParameters.toScheduleParameters(scheduleRule);
+                ScheduleParameters scheduleParameters = RulesToParameters.toScheduleParameters(scheduleRule);
                 if (count > 0) {
                     writer.write("----------------------------------------------------------------------------");
                     writer.write(AponFormat.NEW_LINE);
@@ -414,18 +412,7 @@ public class ComponentCommand extends AbstractCommand {
                 for (ScheduledJobRule jobRule : scheduleRule.getScheduledJobRuleList()) {
                     for (String transletName : transletNames) {
                         if (jobRule.getTransletName().equals(transletName)) {
-                            ScheduleParameters scheduleParameters = new ScheduleParameters();
-                            scheduleParameters.putValueNonNull(ScheduleParameters.description, scheduleRule.getDescription());
-                            scheduleParameters.putValueNonNull(ScheduleParameters.id, scheduleRule.getId());
-                            SchedulerParameters schedulerParameters = scheduleParameters.newParameters(ScheduleParameters.scheduler);
-                            schedulerParameters.putValueNonNull(SchedulerParameters.bean, scheduleRule.getSchedulerBeanId());
-                            TriggerExpressionParameters expressionParameters = scheduleRule.getTriggerExpressionParameters();
-                            if (expressionParameters != null && scheduleRule.getTriggerType() != null) {
-                                TriggerParameters triggerParameters = schedulerParameters.newParameters(SchedulerParameters.trigger);
-                                triggerParameters.putValue(TriggerParameters.type, scheduleRule.getTriggerType().toString());
-                                triggerParameters.putValue(TriggerParameters.expression, expressionParameters);
-                            }
-                            scheduleParameters.putValue(ScheduleParameters.job, RulesToParameters.toScheduledJobParameters(jobRule));
+                            ScheduleParameters scheduleParameters = RulesToParameters.toScheduleParameters(jobRule.getScheduleRule(), jobRule);
                             if (count > 0) {
                                 writer.write("----------------------------------------------------------------------------");
                                 writer.write(AponFormat.NEW_LINE);

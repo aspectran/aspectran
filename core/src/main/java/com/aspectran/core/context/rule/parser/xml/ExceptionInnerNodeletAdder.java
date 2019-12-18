@@ -15,8 +15,11 @@
  */
 package com.aspectran.core.context.rule.parser.xml;
 
+import com.aspectran.core.context.rule.BeanRule;
+import com.aspectran.core.context.rule.DescriptionRule;
 import com.aspectran.core.context.rule.ExceptionRule;
 import com.aspectran.core.context.rule.ExceptionThrownRule;
+import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.TextStyler;
 import com.aspectran.core.util.nodelet.NodeletAdder;
@@ -32,21 +35,23 @@ class ExceptionInnerNodeletAdder implements NodeletAdder {
     @Override
     public void add(String xpath, NodeletParser parser) {
         AspectranNodeParser nodeParser = parser.getNodeParser();
+        ContextRuleAssistant assistant = nodeParser.getAssistant();
 
         parser.setXpath(xpath + "/description");
         parser.addNodelet(attrs -> {
+            String profile = attrs.get("profile");
             String style = attrs.get("style");
-            parser.pushObject(style);
+
+            DescriptionRule descriptionRule = DescriptionRule.newInstance(profile, style);
+            parser.pushObject(descriptionRule);
         });
         parser.addNodeEndlet(text -> {
-            String style = parser.popObject();
-            if (style != null) {
-                text = TextStyler.styling(text, style);
-            }
-            if (StringUtils.hasText(text)) {
-                ExceptionRule exceptionRule = parser.peekObject();
-                exceptionRule.setDescription(text);
-            }
+            DescriptionRule descriptionRule = parser.popObject();
+            ExceptionRule exceptionRule = parser.peekObject();
+
+            descriptionRule.setContent(text);
+            descriptionRule = assistant.profiling(descriptionRule, exceptionRule.getDescriptionRule());
+            exceptionRule.setDescriptionRule(descriptionRule);
         });
         parser.setXpath(xpath + "/thrown");
         parser.addNodelet(attrs -> {

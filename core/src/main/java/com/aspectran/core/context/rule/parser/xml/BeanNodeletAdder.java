@@ -15,7 +15,9 @@
  */
 package com.aspectran.core.context.rule.parser.xml;
 
+import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.BeanRule;
+import com.aspectran.core.context.rule.DescriptionRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;
 import com.aspectran.core.context.rule.params.FilterParameters;
@@ -71,18 +73,19 @@ class BeanNodeletAdder implements NodeletAdder {
         });
         parser.setXpath(xpath + "/bean/description");
         parser.addNodelet(attrs -> {
+            String profile = attrs.get("profile");
             String style = attrs.get("style");
-            parser.pushObject(style);
+
+            DescriptionRule descriptionRule = DescriptionRule.newInstance(profile, style);
+            parser.pushObject(descriptionRule);
         });
         parser.addNodeEndlet(text -> {
-            String style = parser.popObject();
-            if (text != null) {
-                text = TextStyler.styling(text, style);
-            }
-            if (StringUtils.hasText(text)) {
-                BeanRule beanRule = parser.peekObject();
-                beanRule.setDescription(text);
-            }
+            DescriptionRule descriptionRule = parser.popObject();
+            BeanRule beanRule = parser.peekObject();
+
+            descriptionRule.setContent(text);
+            descriptionRule = assistant.profiling(descriptionRule, beanRule.getDescriptionRule());
+            beanRule.setDescriptionRule(descriptionRule);
         });
         parser.setXpath(xpath + "/bean/filter");
         parser.addNodelet(attrs -> {

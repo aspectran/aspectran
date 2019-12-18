@@ -17,13 +17,14 @@
 -->
 
 <!ELEMENT aspectran (
-  description?,
+  description*,
   settings?,
   (typeAliases | environment | aspect | bean | template | schedule | translet | append)*
 )>
 
 <!ELEMENT description (#PCDATA)>
 <!ATTLIST description
+  profile CDATA #IMPLIED
   style   (apon | compact | compressed) #IMPLIED
 >
 
@@ -41,12 +42,12 @@
   type    CDATA #REQUIRED
 >
 
-<!ELEMENT environment (description?, properties+)>
+<!ELEMENT environment (description*, properties+)>
 <!ATTLIST environment
   profile CDATA #IMPLIED
 >
 
-<!ELEMENT aspect (description?, joinpoint?, settings?, advice?, exception?)>
+<!ELEMENT aspect (description*, joinpoint?, settings?, advice?, exception?)>
 <!ATTLIST aspect
   id       ID #IMPLIED
   order    CDATA #IMPLIED
@@ -69,14 +70,14 @@
 <!ELEMENT around  (action | invoke)>
 <!ELEMENT finally (thrown?, (headers | echo | (action | invoke)))>
 
-<!ELEMENT exception (description?, thrown+)>
+<!ELEMENT exception (description*, thrown+)>
 
 <!ELEMENT thrown ((headers | echo | (action | invoke)?)?, (transform | dispatch | redirect)*)>
 <!ATTLIST thrown
   type    CDATA #IMPLIED
 >
 
-<!ELEMENT bean (description?, filter?, arguments*, properties*)>
+<!ELEMENT bean (description*, filter?, arguments*, properties*)>
 <!ATTLIST bean
   id            CDATA #IMPLIED
   class         CDATA #IMPLIED
@@ -97,7 +98,7 @@
   class   CDATA #IMPLIED
 >
 
-<!ELEMENT schedule (description?, scheduler, job*)>
+<!ELEMENT schedule (description*, scheduler, job*)>
 <!ATTLIST schedule
   id      ID #IMPLIED
 >
@@ -119,7 +120,7 @@
 >
 
 <!ELEMENT translet (
-  description?,
+  description*,
   (request? | (parameters*, attributes*)),
   ((contents | content)? | (choose | headers | echo | action | include)*),
   (response* | (transform | dispatch | forward | redirect)?),

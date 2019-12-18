@@ -23,6 +23,7 @@ import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.ChooseRule;
 import com.aspectran.core.context.rule.ChooseWhenRule;
+import com.aspectran.core.context.rule.DescriptionRule;
 import com.aspectran.core.context.rule.DispatchRule;
 import com.aspectran.core.context.rule.EchoActionRule;
 import com.aspectran.core.context.rule.EnvironmentRule;
@@ -58,6 +59,7 @@ import com.aspectran.core.context.rule.params.BeanParameters;
 import com.aspectran.core.context.rule.params.ChooseWhenParameters;
 import com.aspectran.core.context.rule.params.ContentParameters;
 import com.aspectran.core.context.rule.params.ContentsParameters;
+import com.aspectran.core.context.rule.params.DescriptionParameters;
 import com.aspectran.core.context.rule.params.DispatchParameters;
 import com.aspectran.core.context.rule.params.EntryParameters;
 import com.aspectran.core.context.rule.params.EnvironmentParameters;
@@ -119,9 +121,13 @@ public class ParametersToRules {
             throw new IllegalArgumentException("aspectranParameters must not be null");
         }
 
-        String description = toDescription(aspectranParameters);
-        if (description != null) {
-            assistant.getAssistantLocal().setDescription(description);
+        List<DescriptionParameters> descriptionParametersList = aspectranParameters.getParametersList(AspectranParameters.description);
+        if (descriptionParametersList != null) {
+            for (DescriptionParameters descriptionParameters : descriptionParametersList) {
+                DescriptionRule descriptionRule = toDescriptionRule(descriptionParameters);
+                descriptionRule = assistant.profiling(descriptionRule, assistant.getAssistantLocal().getDescriptionRule());
+                assistant.getAssistantLocal().setDescriptionRule(descriptionRule);
+            }
         }
 
         SettingsParameters settingsParameters = aspectranParameters.getParameters(AspectranParameters.settings);
@@ -184,17 +190,13 @@ public class ParametersToRules {
         }
     }
 
-    private String toDescription(Parameters parameters) {
-        Parameter parameter = parameters.getParameter("description");
-        if (parameter != null) {
-            Object value = parameter.getValue();
-            if (value instanceof Parameters) {
-                String text = ((Parameters)value).getString("description");
-                String style = ((Parameters)value).getString("style");
-                return TextStyler.styling(text, style);
-            }
-        }
-        return null;
+    private DescriptionRule toDescriptionRule(DescriptionParameters descriptionParameters) throws IllegalRuleException {
+        String profile = descriptionParameters.getString(DescriptionParameters.profile);
+        String style = descriptionParameters.getString(DescriptionParameters.style);
+        String content = descriptionParameters.getString(DescriptionParameters.content);
+        DescriptionRule descriptionRule = DescriptionRule.newInstance(profile, style);
+        descriptionRule.setContent(content);
+        return descriptionRule;
     }
 
     private void toAppendRule(AppendParameters appendParameters) throws IllegalRuleException {
@@ -243,13 +245,19 @@ public class ParametersToRules {
 
     private void toEnvironmentRule(EnvironmentParameters environmentParameters) throws IllegalRuleException {
         if (environmentParameters != null) {
-            String description = toDescription(environmentParameters);
-            String profile = StringUtils.emptyToNull(environmentParameters.getString(EnvironmentParameters.profile));
+            String profile = environmentParameters.getString(EnvironmentParameters.profile);
 
             EnvironmentRule environmentRule = EnvironmentRule.newInstance(profile);
-            if (description != null) {
-                environmentRule.setDescription(description);
+
+            List<DescriptionParameters> descriptionParametersList = environmentParameters.getParametersList(EnvironmentParameters.description);
+            if (descriptionParametersList != null) {
+                for (DescriptionParameters descriptionParameters : descriptionParametersList) {
+                    DescriptionRule descriptionRule = toDescriptionRule(descriptionParameters);
+                    descriptionRule = assistant.profiling(descriptionRule, environmentRule.getDescriptionRule());
+                    environmentRule.setDescriptionRule(descriptionRule);
+                }
             }
+
             List<ItemHolderParameters> propertyItemHolderParametersList = environmentParameters.getParametersList(EnvironmentParameters.properties);
             if (propertyItemHolderParametersList != null) {
                 for (ItemHolderParameters itemHolderParameters : propertyItemHolderParametersList) {
@@ -263,15 +271,20 @@ public class ParametersToRules {
     }
 
     private void toAspectRule(AspectParameters aspectParameters) throws IllegalRuleException {
-        String description = toDescription(aspectParameters);
         String id = StringUtils.emptyToNull(aspectParameters.getString(AspectParameters.id));
         String order = aspectParameters.getString(AspectParameters.order);
         Boolean isolated = aspectParameters.getBoolean(AspectParameters.isolated);
         Boolean disabled = aspectParameters.getBoolean(AspectParameters.disabled);
 
         AspectRule aspectRule = AspectRule.newInstance(id, order, isolated, disabled);
-        if (description != null) {
-            aspectRule.setDescription(description);
+
+        List<DescriptionParameters> descriptionParametersList = aspectParameters.getParametersList(AspectParameters.description);
+        if (descriptionParametersList != null) {
+            for (DescriptionParameters descriptionParameters : descriptionParametersList) {
+                DescriptionRule descriptionRule = toDescriptionRule(descriptionParameters);
+                descriptionRule = assistant.profiling(descriptionRule, aspectRule.getDescriptionRule());
+                aspectRule.setDescriptionRule(descriptionRule);
+            }
         }
 
         JoinpointParameters joinpointParameters = aspectParameters.getParameters(AspectParameters.joinpoint);
@@ -337,7 +350,16 @@ public class ParametersToRules {
         ExceptionParameters exceptionParameters = aspectParameters.getParameters(AspectParameters.exception);
         if (exceptionParameters != null) {
             ExceptionRule exceptionRule = new ExceptionRule();
-            exceptionRule.setDescription(toDescription(exceptionParameters));
+
+            List<DescriptionParameters> descriptionParametersList2 = exceptionParameters.getParametersList(ExceptionParameters.description);
+            if (descriptionParametersList2 != null) {
+                for (DescriptionParameters descriptionParameters : descriptionParametersList2) {
+                    DescriptionRule descriptionRule = toDescriptionRule(descriptionParameters);
+                    descriptionRule = assistant.profiling(descriptionRule, exceptionRule.getDescriptionRule());
+                    exceptionRule.setDescriptionRule(descriptionRule);
+                }
+            }
+
             List<ExceptionThrownParameters> etParametersList = exceptionParameters.getParametersList(ExceptionParameters.thrown);
             if (etParametersList != null) {
                 for (ExceptionThrownParameters etParameters : etParametersList) {
@@ -353,12 +375,11 @@ public class ParametersToRules {
     }
 
     private void toBeanRule(BeanParameters beanParameters) throws IllegalRuleException {
-        String description = toDescription(beanParameters);
         String id = StringUtils.emptyToNull(beanParameters.getString(BeanParameters.id));
         String className = StringUtils.emptyToNull(assistant.resolveAliasType(beanParameters.getString(BeanParameters.className)));
-        String scan = beanParameters.getString(BeanParameters.scan);
-        String mask = beanParameters.getString(BeanParameters.mask);
-        String scope = beanParameters.getString(BeanParameters.scope);
+        String scan = StringUtils.emptyToNull(beanParameters.getString(BeanParameters.scan));
+        String mask = StringUtils.emptyToNull(beanParameters.getString(BeanParameters.mask));
+        String scope = StringUtils.emptyToNull(beanParameters.getString(BeanParameters.scope));
         Boolean singleton = beanParameters.getBoolean(BeanParameters.singleton);
         String factoryBean = StringUtils.emptyToNull(beanParameters.getString(BeanParameters.factoryBean));
         String factoryMethod = StringUtils.emptyToNull(beanParameters.getString(BeanParameters.factoryMethod));
@@ -375,14 +396,22 @@ public class ParametersToRules {
             beanRule = BeanRule.newInstance(id, className, scan, mask, initMethod, destroyMethod,
                 factoryMethod, scope, singleton, lazyInit, important);
         }
-        if (description != null) {
-            beanRule.setDescription(description);
+
+        List<DescriptionParameters> descriptionParametersList = beanParameters.getParametersList(BeanParameters.description);
+        if (descriptionParametersList != null) {
+            for (DescriptionParameters descriptionParameters : descriptionParametersList) {
+                DescriptionRule descriptionRule = toDescriptionRule(descriptionParameters);
+                descriptionRule = assistant.profiling(descriptionRule, beanRule.getDescriptionRule());
+                beanRule.setDescriptionRule(descriptionRule);
+            }
         }
+
         FilterParameters filterParameters = beanParameters.getParameters(BeanParameters.filter);
         if (filterParameters != null && (filterParameters.hasValue(FilterParameters.filterClass) ||
             filterParameters.hasValue(FilterParameters.exclude))) {
             beanRule.setFilterParameters(filterParameters);
         }
+
         List<ItemHolderParameters> argumentItemHolderParametersList = beanParameters.getParametersList(BeanParameters.arguments);
         if (argumentItemHolderParametersList != null) {
             for (ItemHolderParameters itemHolderParameters : argumentItemHolderParametersList) {
@@ -391,6 +420,7 @@ public class ParametersToRules {
                 beanRule.setConstructorArgumentItemRuleMap(irm);
             }
         }
+
         List<ItemHolderParameters> propertyItemHolderParametersList = beanParameters.getParametersList(BeanParameters.properties);
         if (propertyItemHolderParametersList != null) {
             for (ItemHolderParameters itemHolderParameters : propertyItemHolderParametersList) {
@@ -406,7 +436,6 @@ public class ParametersToRules {
     }
 
     private BeanRule toInnerBeanRule(BeanParameters beanParameters) throws IllegalRuleException {
-        String description = toDescription(beanParameters);
         String className = StringUtils.emptyToNull(assistant.resolveAliasType(beanParameters.getString(BeanParameters.className)));
         String factoryBean = StringUtils.emptyToNull(beanParameters.getString(BeanParameters.factoryBean));
         String factoryMethod = StringUtils.emptyToNull(beanParameters.getString(BeanParameters.factoryMethod));
@@ -419,9 +448,16 @@ public class ParametersToRules {
         } else {
             beanRule = BeanRule.newInnerBeanRule(className, initMethod, destroyMethod, factoryMethod);
         }
-        if (description != null) {
-            beanRule.setDescription(description);
+
+        List<DescriptionParameters> descriptionParametersList = beanParameters.getParametersList(BeanParameters.description);
+        if (descriptionParametersList != null) {
+            for (DescriptionParameters descriptionParameters : descriptionParametersList) {
+                DescriptionRule descriptionRule = toDescriptionRule(descriptionParameters);
+                descriptionRule = assistant.profiling(descriptionRule, beanRule.getDescriptionRule());
+                beanRule.setDescriptionRule(descriptionRule);
+            }
         }
+
         List<ItemHolderParameters> argumentItemHolderParametersList = beanParameters.getParametersList(BeanParameters.arguments);
         if (argumentItemHolderParametersList != null) {
             for (ItemHolderParameters itemHolderParameters : argumentItemHolderParametersList) {
@@ -430,6 +466,7 @@ public class ParametersToRules {
                 beanRule.setConstructorArgumentItemRuleMap(irm);
             }
         }
+
         List<ItemHolderParameters> propertyItemHolderParametersList = beanParameters.getParametersList(BeanParameters.properties);
         if (propertyItemHolderParametersList != null) {
             for (ItemHolderParameters itemHolderParameters : propertyItemHolderParametersList) {
@@ -447,12 +484,17 @@ public class ParametersToRules {
     }
 
     private void toScheduleRule(ScheduleParameters scheduleParameters) throws IllegalRuleException {
-        String description = toDescription(scheduleParameters);
         String id = StringUtils.emptyToNull(scheduleParameters.getString(AspectParameters.id));
 
         ScheduleRule scheduleRule = ScheduleRule.newInstance(id);
-        if (description != null) {
-            scheduleRule.setDescription(description);
+
+        List<DescriptionParameters> descriptionParametersList = scheduleParameters.getParametersList(ScheduleParameters.description);
+        if (descriptionParametersList != null) {
+            for (DescriptionParameters descriptionParameters : descriptionParametersList) {
+                DescriptionRule descriptionRule = toDescriptionRule(descriptionParameters);
+                descriptionRule = assistant.profiling(descriptionRule, scheduleRule.getDescriptionRule());
+                scheduleRule.setDescriptionRule(descriptionRule);
+            }
         }
 
         SchedulerParameters schedulerParameters = scheduleParameters.getParameters(ScheduleParameters.scheduler);
@@ -481,16 +523,20 @@ public class ParametersToRules {
     }
 
     private void toTransletRule(TransletParameters transletParameters) throws IllegalRuleException {
-        String description = toDescription(transletParameters);
         String name = StringUtils.emptyToNull(transletParameters.getString(TransletParameters.name));
-        String scan = transletParameters.getString(TransletParameters.scan);
-        String mask = transletParameters.getString(TransletParameters.mask);
-        String method = transletParameters.getString(TransletParameters.method);
+        String scan = StringUtils.emptyToNull(transletParameters.getString(TransletParameters.scan));
+        String mask = StringUtils.emptyToNull(transletParameters.getString(TransletParameters.mask));
+        String method = StringUtils.emptyToNull(transletParameters.getString(TransletParameters.method));
 
         TransletRule transletRule = TransletRule.newInstance(name, mask, scan, method);
 
-        if (description != null) {
-            transletRule.setDescription(description);
+        List<DescriptionParameters> descriptionParametersList = transletParameters.getParametersList(TransletParameters.description);
+        if (descriptionParametersList != null) {
+            for (DescriptionParameters descriptionParameters : descriptionParametersList) {
+                DescriptionRule descriptionRule = toDescriptionRule(descriptionParameters);
+                descriptionRule = assistant.profiling(descriptionRule, transletRule.getDescriptionRule());
+                transletRule.setDescriptionRule(descriptionRule);
+            }
         }
 
         RequestParameters requestParameters = transletParameters.getParameters(TransletParameters.request);
@@ -575,7 +621,16 @@ public class ParametersToRules {
         ExceptionParameters exceptionParameters = transletParameters.getParameters(TransletParameters.exception);
         if (exceptionParameters != null) {
             ExceptionRule exceptionRule = new ExceptionRule();
-            exceptionRule.setDescription(toDescription(exceptionParameters));
+
+            List<DescriptionParameters> descriptionParametersList2 = exceptionParameters.getParametersList(ExceptionParameters.description);
+            if (descriptionParametersList2 != null) {
+                for (DescriptionParameters descriptionParameters : descriptionParametersList2) {
+                    DescriptionRule descriptionRule = toDescriptionRule(descriptionParameters);
+                    descriptionRule = assistant.profiling(descriptionRule, exceptionRule.getDescriptionRule());
+                    exceptionRule.setDescriptionRule(descriptionRule);
+                }
+            }
+
             List<ExceptionThrownParameters> etParametersList = exceptionParameters.getParametersList(ExceptionParameters.thrown);
             if (etParametersList != null) {
                 for (ExceptionThrownParameters etParameters : etParametersList) {
@@ -583,6 +638,7 @@ public class ParametersToRules {
                     exceptionRule.putExceptionThrownRule(etr);
                 }
             }
+
             transletRule.setExceptionRule(exceptionRule);
         }
 
@@ -892,14 +948,14 @@ public class ParametersToRules {
 
         TemplateParameters templateParameters = transformParameters.getParameters(TransformParameters.template);
         if (templateParameters != null) {
-            String engine = templateParameters.getString(TemplateParameters.engine);
-            String name = templateParameters.getString(TemplateParameters.name);
-            String file = templateParameters.getString(TemplateParameters.file);
-            String resource = templateParameters.getString(TemplateParameters.resource);
-            String url = templateParameters.getString(TemplateParameters.url);
-            String style = templateParameters.getString(TemplateParameters.style);
-            String content = templateParameters.getString(TemplateParameters.content);
-            String encoding2 = templateParameters.getString(TemplateParameters.encoding);
+            String engine = StringUtils.emptyToNull(templateParameters.getString(TemplateParameters.engine));
+            String name = StringUtils.emptyToNull(templateParameters.getString(TemplateParameters.name));
+            String file = StringUtils.emptyToNull(templateParameters.getString(TemplateParameters.file));
+            String resource = StringUtils.emptyToNull(templateParameters.getString(TemplateParameters.resource));
+            String url = StringUtils.emptyToNull(templateParameters.getString(TemplateParameters.url));
+            String content = StringUtils.emptyToNull(templateParameters.getString(TemplateParameters.content));
+            String style = StringUtils.emptyToNull(templateParameters.getString(TemplateParameters.style));
+            String encoding2 = StringUtils.emptyToNull(templateParameters.getString(TemplateParameters.encoding));
             Boolean noCache = templateParameters.getBoolean(TemplateParameters.noCache);
 
             TemplateRule templateRule = TemplateRule.newInstanceForBuiltin(engine, name, file, resource, url, style, content, encoding2, noCache);
@@ -988,7 +1044,7 @@ public class ParametersToRules {
         String url = StringUtils.emptyToNull(templateParameters.getString(TemplateParameters.url));
         String content = StringUtils.emptyToNull(templateParameters.getString(TemplateParameters.content));
         String style = StringUtils.emptyToNull(templateParameters.getString(TemplateParameters.style));
-        String encoding = templateParameters.getString(TemplateParameters.encoding);
+        String encoding = StringUtils.emptyToNull(templateParameters.getString(TemplateParameters.encoding));
         Boolean noCache = templateParameters.getBoolean(TemplateParameters.noCache);
 
         TemplateRule templateRule = TemplateRule.newInstance(id, engine, name, file, resource, url, content, style, encoding, noCache);

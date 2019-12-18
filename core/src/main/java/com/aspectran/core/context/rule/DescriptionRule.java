@@ -5,6 +5,7 @@ import com.aspectran.core.context.expr.TokenEvaluator;
 import com.aspectran.core.context.expr.TokenExpression;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.expr.token.TokenParser;
+import com.aspectran.core.context.rule.ability.Replicable;
 import com.aspectran.core.context.rule.type.TextStyleType;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.ToStringBuilder;
@@ -15,7 +16,7 @@ import java.util.List;
 /**
  * <p>Created: 2019/12/17</p>
  */
-public class DescriptionRule {
+public class DescriptionRule implements Replicable<DescriptionRule> {
 
     private String profile;
 
@@ -26,6 +27,19 @@ public class DescriptionRule {
     private String formattedContent;
 
     private List<DescriptionRule> candidates;
+
+    public DescriptionRule() {
+    }
+
+    public DescriptionRule(DescriptionRule dr) {
+        if (dr != null) {
+            setProfile(dr.getProfile());
+            setContentStyle(dr.getContentStyle());
+            setContent(dr.getContent());
+            setFormattedContent(dr.getFormattedContent());
+            setCandidates(dr.getCandidates());
+        }
+    }
 
     public String getProfile() {
         return profile;
@@ -76,6 +90,15 @@ public class DescriptionRule {
     }
 
     @Override
+    public DescriptionRule replicate() {
+        DescriptionRule dr = new DescriptionRule();
+        dr.setProfile(profile);
+        dr.setContentStyle(contentStyle);
+        dr.setContent(content);
+        return dr;
+    }
+
+    @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.append("profile", profile);
@@ -85,14 +108,12 @@ public class DescriptionRule {
     }
 
     public static String render(DescriptionRule descriptionRule, Activity activity) {
-        if (!StringUtils.hasText(descriptionRule.getFormattedContent())) {
-            return null;
-        }
-        if (activity == null) {
-            return descriptionRule.getFormattedContent();
+        String content = descriptionRule.getFormattedContent();
+        if (content == null || activity == null) {
+            return content;
         }
 
-        Token[] contentTokens = TokenParser.makeTokens(descriptionRule.getFormattedContent(), true);
+        Token[] contentTokens = TokenParser.makeTokens(content, true);
         for (Token token : contentTokens) {
             Token.resolveAlternativeValue(token, activity.getActivityContext().getApplicationAdapter().getClassLoader());
         }
@@ -100,7 +121,7 @@ public class DescriptionRule {
         return evaluator.evaluateAsString(contentTokens);
     }
 
-    public static DescriptionRule newInstance(String style, String profile)
+    public static DescriptionRule newInstance(String profile, String style)
             throws IllegalRuleException {
         TextStyleType contentStyle = TextStyleType.resolve(style);
         if (style != null && contentStyle == null) {

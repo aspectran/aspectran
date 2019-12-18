@@ -42,7 +42,7 @@ public class TransletParameters extends AbstractParameters {
     private static final ParameterKey[] parameterKeys;
 
     static {
-        description = new ParameterKey("description", ValueType.VARIABLE);
+        description = new ParameterKey("description", DescriptionParameters.class, true, true);
         name = new ParameterKey("name", ValueType.STRING);
         scan = new ParameterKey("scan", ValueType.STRING);
         mask = new ParameterKey("mask", ValueType.STRING);

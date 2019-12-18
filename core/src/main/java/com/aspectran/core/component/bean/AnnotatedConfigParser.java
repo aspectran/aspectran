@@ -60,6 +60,7 @@ import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.AutowireRule;
 import com.aspectran.core.context.rule.BeanRule;
+import com.aspectran.core.context.rule.DescriptionRule;
 import com.aspectran.core.context.rule.DispatchRule;
 import com.aspectran.core.context.rule.ExceptionThrownRule;
 import com.aspectran.core.context.rule.ForwardRule;
@@ -395,7 +396,11 @@ public class AnnotatedConfigParser {
         Description descriptionAnno = beanClass.getAnnotation(Description.class);
         if (descriptionAnno != null) {
             String description = StringUtils.emptyToNull(descriptionAnno.value());
-            aspectRule.setDescription(description);
+            if (description != null) {
+                DescriptionRule descriptionRule = new DescriptionRule();
+                descriptionRule.setContent(description);
+                aspectRule.setDescriptionRule(descriptionRule);
+            }
         }
 
         relater.relay(aspectRule);
@@ -433,7 +438,11 @@ public class AnnotatedConfigParser {
         Description descriptionAnno = beanClass.getAnnotation(Description.class);
         if (descriptionAnno != null) {
             String description = StringUtils.emptyToNull(descriptionAnno.value());
-            beanRule.setDescription(description);
+            if (description != null) {
+                DescriptionRule descriptionRule = new DescriptionRule();
+                descriptionRule.setContent(description);
+                beanRule.setDescriptionRule(descriptionRule);
+            }
         }
 
         Class<?> targetBeanClass = BeanRuleAnalyzer.determineBeanClass(beanRule);
@@ -481,7 +490,11 @@ public class AnnotatedConfigParser {
         Description descriptionAnno = method.getAnnotation(Description.class);
         if (descriptionAnno != null) {
             String description = StringUtils.emptyToNull(descriptionAnno.value());
-            beanRule.setDescription(description);
+            if (description != null) {
+                DescriptionRule descriptionRule = new DescriptionRule();
+                descriptionRule.setContent(description);
+                beanRule.setDescriptionRule(descriptionRule);
+            }
         }
 
         Class<?> targetBeanClass = BeanRuleAnalyzer.determineBeanClass(beanRule);
@@ -606,7 +619,11 @@ public class AnnotatedConfigParser {
         Description descriptionAnno = method.getAnnotation(Description.class);
         if (descriptionAnno != null) {
             String description = StringUtils.emptyToNull(descriptionAnno.value());
-            transletRule.setDescription(description);
+            if (description != null) {
+                DescriptionRule descriptionRule = new DescriptionRule();
+                descriptionRule.setContent(description);
+                transletRule.setDescriptionRule(descriptionRule);
+            }
         }
 
         relater.relay(transletRule);

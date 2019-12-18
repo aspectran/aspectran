@@ -17,10 +17,12 @@ package com.aspectran.core.context.rule.parser.xml;
 
 import com.aspectran.core.activity.process.ActionList;
 import com.aspectran.core.activity.process.ContentList;
+import com.aspectran.core.context.rule.DescriptionRule;
 import com.aspectran.core.context.rule.ExceptionRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.RequestRule;
 import com.aspectran.core.context.rule.ResponseRule;
+import com.aspectran.core.context.rule.ScheduleRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;
 import com.aspectran.core.util.StringUtils;
@@ -56,18 +58,19 @@ class TransletNodeletAdder implements NodeletAdder {
         });
         parser.setXpath(xpath + "/translet/description");
         parser.addNodelet(attrs -> {
+            String profile = attrs.get("profile");
             String style = attrs.get("style");
-            parser.pushObject(style);
+
+            DescriptionRule descriptionRule = DescriptionRule.newInstance(profile, style);
+            parser.pushObject(descriptionRule);
         });
         parser.addNodeEndlet(text -> {
-            String style = parser.popObject();
-            if (style != null) {
-                text = TextStyler.styling(text, style);
-            }
-            if (StringUtils.hasText(text)) {
-                TransletRule transletRule = parser.peekObject();
-                transletRule.setDescription(text);
-            }
+            DescriptionRule descriptionRule = parser.popObject();
+            TransletRule transletRule = parser.peekObject();
+
+            descriptionRule.setContent(text);
+            descriptionRule = assistant.profiling(descriptionRule, transletRule.getDescriptionRule());
+            transletRule.setDescriptionRule(descriptionRule);
         });
         parser.setXpath(xpath + "/translet/parameters");
         parser.addNodelet(attrs -> {

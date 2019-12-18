@@ -23,6 +23,7 @@ import com.aspectran.core.component.schedule.ScheduleRuleRegistry;
 import com.aspectran.core.component.template.TemplateRenderer;
 import com.aspectran.core.component.translet.TransletRuleRegistry;
 import com.aspectran.core.context.env.Environment;
+import com.aspectran.core.context.rule.DescriptionRule;
 import com.aspectran.core.service.CoreService;
 import com.aspectran.core.support.i18n.message.MessageSource;
 

@@ -35,10 +35,12 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
 
@@ -97,7 +99,11 @@ public class TokenExpression implements TokenEvaluator {
             for (Token t : tokens) {
                 Object value = evaluate(t);
                 if (value != null) {
-                    sb.append(value.toString());
+                    if (value instanceof Object[]) {
+                        sb.append(Arrays.toString((Object[])value));
+                    } else {
+                        sb.append(value.toString());
+                    }
                 }
             }
             return sb.toString();
@@ -123,7 +129,13 @@ public class TokenExpression implements TokenEvaluator {
     @Override
     public String evaluateAsString(Token[] tokens) {
         Object value = evaluate(tokens);
-        return (value != null ? value.toString() : null);
+        if (value instanceof Object[]) {
+            return Arrays.toString((Object[])value);
+        } else if (value != null) {
+            return value.toString();
+        } else {
+            return null;
+        }
     }
 
     @Override

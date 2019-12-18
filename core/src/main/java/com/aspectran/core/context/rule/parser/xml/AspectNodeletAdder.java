@@ -16,6 +16,7 @@
 package com.aspectran.core.context.rule.parser.xml;
 
 import com.aspectran.core.context.rule.AspectRule;
+import com.aspectran.core.context.rule.DescriptionRule;
 import com.aspectran.core.context.rule.ExceptionRule;
 import com.aspectran.core.context.rule.SettingsAdviceRule;
 import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;
@@ -53,18 +54,19 @@ class AspectNodeletAdder implements NodeletAdder {
         });
         parser.setXpath(xpath + "/aspect/description");
         parser.addNodelet(attrs -> {
+            String profile = attrs.get("profile");
             String style = attrs.get("style");
-            parser.pushObject(style);
+
+            DescriptionRule descriptionRule = DescriptionRule.newInstance(profile, style);
+            parser.pushObject(descriptionRule);
         });
         parser.addNodeEndlet(text -> {
-            String style = parser.popObject();
-            if (style != null) {
-                text = TextStyler.styling(text, style);
-            }
-            if (StringUtils.hasText(text)) {
-                AspectRule aspectRule = parser.peekObject();
-                aspectRule.setDescription(text);
-            }
+            DescriptionRule descriptionRule = parser.popObject();
+            AspectRule aspectRule = parser.peekObject();
+
+            descriptionRule.setContent(text);
+            descriptionRule = assistant.profiling(descriptionRule, aspectRule.getDescriptionRule());
+            aspectRule.setDescriptionRule(descriptionRule);
         });
         parser.setXpath(xpath + "/aspect/joinpoint");
         parser.addNodelet(attrs -> {

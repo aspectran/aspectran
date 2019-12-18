@@ -45,7 +45,7 @@ public class AspectranParameters extends AbstractParameters {
     private static final ParameterKey[] parameterKeys;
 
     static {
-        description = new ParameterKey("description", DescriptionParameters.class);
+        description = new ParameterKey("description", DescriptionParameters.class, true, true);
         settings = new ParameterKey("settings", SettingsParameters.class);
         typeAliases = new ParameterKey("typeAliases", TypeAliasesParameters.class);
         environment = new ParameterKey("environment", EnvironmentParameters.class, true, true);
@@ -118,7 +118,7 @@ public class AspectranParameters extends AbstractParameters {
     }
 
     public AspectranParameters addRule(DescriptionRule descriptionRule) {
-        putValue(description, RulesToParameters.toEnvironmentParameters(descriptionRule));
+        RulesToParameters.toDescriptionParameters(descriptionRule, this, description);
         return this;
     }
 

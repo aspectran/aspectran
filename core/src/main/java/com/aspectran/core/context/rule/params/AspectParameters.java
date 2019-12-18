@@ -34,7 +34,7 @@ public class AspectParameters extends AbstractParameters {
     private static final ParameterKey[] parameterKeys;
 
     static {
-        description = new ParameterKey("description", ValueType.VARIABLE);
+        description = new ParameterKey("description", DescriptionParameters.class, true, true);
         id = new ParameterKey("id", ValueType.STRING);
         order = new ParameterKey("order", ValueType.INT);
         isolated = new ParameterKey("isolated", ValueType.BOOLEAN);

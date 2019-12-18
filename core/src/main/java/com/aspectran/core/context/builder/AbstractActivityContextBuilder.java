@@ -341,6 +341,7 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
 
         AspectranActivityContext activityContext = new AspectranActivityContext(
                 assistant.getApplicationAdapter(), assistant.getContextEnvironment());
+        activityContext.setDescriptionRule(assistant.getAssistantLocal().getDescriptionRule());
 
         AspectRuleRegistry aspectRuleRegistry = assistant.getAspectRuleRegistry();
 
@@ -369,8 +370,6 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
         activityContext.setScheduleRuleRegistry(scheduleRuleRegistry);
         activityContext.setContextualTemplateRenderer(contextualTemplateRenderer);
         activityContext.setTransletRuleRegistry(transletRuleRegistry);
-        activityContext.setDescription(assistant.getAssistantLocal().getDescription());
-
         return activityContext;
     }
 

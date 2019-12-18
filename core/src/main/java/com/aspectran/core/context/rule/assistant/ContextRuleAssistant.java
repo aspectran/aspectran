@@ -844,24 +844,23 @@ public class ContextRuleAssistant {
         }
         DescriptionRule dr = new DescriptionRule();
         if (newDescriptionRule.getContent() != null) {
-            String content = TextStyler.styling(newDescriptionRule.getContent(), newDescriptionRule.getContentStyle());
+            String formatted = TextStyler.styling(newDescriptionRule.getContent(), newDescriptionRule.getContentStyle());
             if (oldDescriptionRule.getFormattedContent() != null) {
-                content = oldDescriptionRule.getFormattedContent() + content;
+                formatted = oldDescriptionRule.getFormattedContent() + formatted;
             }
-            newDescriptionRule.setFormattedContent(content);
+            dr.setFormattedContent(formatted);
         } else if (oldDescriptionRule.getFormattedContent() != null) {
-            newDescriptionRule.setFormattedContent(oldDescriptionRule.getFormattedContent());
+            dr.setFormattedContent(oldDescriptionRule.getFormattedContent());
         }
+        oldDescriptionRule.setFormattedContent(null);
         if (oldDescriptionRule.getCandidates() == null) {
             dr.addCandidate(oldDescriptionRule);
-            dr.addCandidate(newDescriptionRule);
-            return dr;
         } else {
             dr.setCandidates(oldDescriptionRule.getCandidates());
-            dr.addCandidate(newDescriptionRule);
             oldDescriptionRule.setCandidates(null);
-            return dr;
         }
+        dr.addCandidate(newDescriptionRule);
+        return dr;
     }
 
     public ItemRuleMap profiling(ItemRuleMap newIrm, ItemRuleMap oldIrm) {
@@ -892,14 +891,13 @@ public class ContextRuleAssistant {
         irm.putAll(newIrm);
         if (oldIrm.getCandidates() == null) {
             irm.addCandidate(oldIrm);
-            irm.addCandidate(newIrm);
-            return irm;
         } else {
             irm.setCandidates(oldIrm.getCandidates());
-            irm.addCandidate(newIrm);
             oldIrm.setCandidates(null);
-            return irm;
+            oldIrm.clear();
         }
+        irm.addCandidate(newIrm);
+        return irm;
     }
 
 }

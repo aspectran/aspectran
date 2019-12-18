@@ -27,6 +27,11 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -53,6 +58,33 @@ class TokenExpressionTest {
             return tokenEvaluator.evaluateAsString(tokens);
         });
         assertEquals("Apple, Tomato, Strawberry, Melon", result);
+    }
+
+    @Test
+    void testEvaluateArray() throws ActivityPerformException {
+        InstantActivity activity = new InstantActivity(context);
+        activity.perform(() -> {
+            String[] stringArray = new String[] {"One", "Two", "Three"};
+            List<String> stringList = Arrays.asList(stringArray);
+
+            activity.getRequestAdapter().setAttribute("stringArray", stringArray);
+            activity.getRequestAdapter().setAttribute("stringList", stringList);
+
+            Token[] tokens1 = TokenParser.parse("@{stringArray}");
+            Token[] tokens2 = TokenParser.parse("@{stringList}");
+            Token[] tokens3 = TokenParser.parse("@{stringArray}@{stringList}");
+
+            TokenEvaluator tokenEvaluator = new TokenExpression(activity);
+            String result1 = tokenEvaluator.evaluateAsString(tokens1);
+            String result2 = tokenEvaluator.evaluateAsString(tokens2);
+            String result3 = tokenEvaluator.evaluateAsString(tokens3);
+
+            assertEquals("[One, Two, Three]", result1);
+            assertEquals("[One, Two, Three]", result2);
+            assertEquals("[One, Two, Three][One, Two, Three]", result3);
+
+            return null;
+        });
     }
 
 }

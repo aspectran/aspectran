@@ -33,7 +33,7 @@ public class ExceptionRule {
 
     private ExceptionThrownRule defaultExceptionThrownRule;
 
-    private String description;
+    private DescriptionRule descriptionRule;
 
     public List<ExceptionThrownRule> getExceptionThrownRuleList() {
         return exceptionThrownRuleList;
@@ -120,22 +120,12 @@ public class ExceptionRule {
         return getMatchedDepth(exceptionType, exceptionClass.getSuperclass(), depth + 1);
     }
 
-    /**
-     * Gets the description.
-     *
-     * @return the description
-     */
-    public String getDescription() {
-        return description;
+    public DescriptionRule getDescriptionRule() {
+        return descriptionRule;
     }
 
-    /**
-     * Sets the description.
-     *
-     * @param description the new description
-     */
-    public void setDescription(String description) {
-        this.description = description;
+    public void setDescriptionRule(DescriptionRule descriptionRule) {
+        this.descriptionRule = descriptionRule;
     }
 
 }

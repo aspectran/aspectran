@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.context.rule.parser.xml;
 
+import com.aspectran.core.context.rule.BeanRule;
+import com.aspectran.core.context.rule.DescriptionRule;
 import com.aspectran.core.context.rule.ScheduleRule;
 import com.aspectran.core.context.rule.ScheduledJobRule;
 import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;
@@ -50,18 +52,19 @@ class ScheduleNodeletAdder implements NodeletAdder {
         });
         parser.setXpath(xpath + "/schedule/description");
         parser.addNodelet(attrs -> {
+            String profile = attrs.get("profile");
             String style = attrs.get("style");
-            parser.pushObject(style);
+
+            DescriptionRule descriptionRule = DescriptionRule.newInstance(profile, style);
+            parser.pushObject(descriptionRule);
         });
         parser.addNodeEndlet(text -> {
-            String style = parser.popObject();
-            if (style != null) {
-                text = TextStyler.styling(text, style);
-            }
-            if (StringUtils.hasText(text)) {
-                ScheduleRule scheduleRule = parser.peekObject();
-                scheduleRule.setDescription(text);
-            }
+            DescriptionRule descriptionRule = parser.popObject();
+            ScheduleRule scheduleRule = parser.peekObject();
+
+            descriptionRule.setContent(text);
+            descriptionRule = assistant.profiling(descriptionRule, scheduleRule.getDescriptionRule());
+            scheduleRule.setDescriptionRule(descriptionRule);
         });
         parser.setXpath(xpath + "/schedule/scheduler");
         parser.addNodelet(attrs -> {

@@ -20,7 +20,9 @@ import com.aspectran.core.context.rule.ScheduleRule;
 import com.aspectran.core.context.rule.ScheduledJobRule;
 import com.aspectran.core.context.rule.converter.RulesToParameters;
 import com.aspectran.core.context.rule.params.ScheduleParameters;
+import com.aspectran.core.context.rule.params.ScheduledJobParameters;
 import com.aspectran.core.context.rule.params.SchedulerParameters;
+import com.aspectran.core.context.rule.params.TransletParameters;
 import com.aspectran.core.context.rule.params.TriggerExpressionParameters;
 import com.aspectran.core.context.rule.params.TriggerParameters;
 import com.aspectran.core.util.apon.AponWriter;
@@ -149,19 +151,7 @@ public class JobCommand extends AbstractCommand {
             }
             int count = 0;
             for (ScheduledJobRule jobRule : scheduledJobRules) {
-                ScheduleRule scheduleRule = jobRule.getScheduleRule();
-                ScheduleParameters scheduleParameters = new ScheduleParameters();
-                scheduleParameters.putValueNonNull(ScheduleParameters.description, scheduleRule.getDescription());
-                scheduleParameters.putValueNonNull(ScheduleParameters.id, scheduleRule.getId());
-                SchedulerParameters schedulerParameters = scheduleParameters.newParameters(ScheduleParameters.scheduler);
-                schedulerParameters.putValueNonNull(SchedulerParameters.bean, scheduleRule.getSchedulerBeanId());
-                TriggerExpressionParameters expressionParameters = scheduleRule.getTriggerExpressionParameters();
-                if (expressionParameters != null && scheduleRule.getTriggerType() != null) {
-                    TriggerParameters triggerParameters = schedulerParameters.newParameters(SchedulerParameters.trigger);
-                    triggerParameters.putValue(TriggerParameters.type, scheduleRule.getTriggerType().toString());
-                    triggerParameters.putValue(TriggerParameters.expression, expressionParameters);
-                }
-                scheduleParameters.putValue(ScheduleParameters.job, RulesToParameters.toScheduledJobParameters(jobRule));
+                ScheduleParameters scheduleParameters = RulesToParameters.toScheduleParameters(jobRule.getScheduleRule(), jobRule);
 
                 if (count == 0) {
                     console.writeLine("----------------------------------------------------------------------------");

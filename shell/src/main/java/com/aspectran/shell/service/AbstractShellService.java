@@ -25,6 +25,7 @@ import com.aspectran.core.context.expr.TokenEvaluator;
 import com.aspectran.core.context.expr.TokenExpression;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.expr.token.TokenParser;
+import com.aspectran.core.context.rule.DescriptionRule;
 import com.aspectran.core.service.AspectranCoreService;
 import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.util.StringUtils;
@@ -134,8 +135,11 @@ public abstract class AbstractShellService extends AspectranCoreService implemen
 
     @Override
     public void printHelp() {
-        if (isVerbose() && getActivityContext().getDescription() != null) {
-            console.writeLine(getActivityContext().getDescription());
+        if (isVerbose()) {
+            String description = getActivityContext().getDescription();
+            if (description != null) {
+                console.writeLine(description);
+            }
         }
     }
 

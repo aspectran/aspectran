@@ -28,6 +28,7 @@ import com.aspectran.core.component.template.TemplateRenderer;
 import com.aspectran.core.component.translet.TransletRuleRegistry;
 import com.aspectran.core.context.env.ContextEnvironment;
 import com.aspectran.core.context.env.Environment;
+import com.aspectran.core.context.rule.DescriptionRule;
 import com.aspectran.core.service.CoreService;
 import com.aspectran.core.support.i18n.message.DelegatingMessageSource;
 import com.aspectran.core.support.i18n.message.MessageSource;
@@ -51,7 +52,7 @@ public class AspectranActivityContext extends AbstractComponent implements Activ
 
     private final Activity defaultActivity;
 
-    private String description;
+    private DescriptionRule descriptionRule;
 
     private CoreService rootService;
 
@@ -79,6 +80,22 @@ public class AspectranActivityContext extends AbstractComponent implements Activ
         this.defaultActivity = new DefaultActivity(this);
     }
 
+    public DescriptionRule getDescriptionRule() {
+        return descriptionRule;
+    }
+
+    public void setDescriptionRule(DescriptionRule descriptionRule) {
+        this.descriptionRule = descriptionRule;
+    }
+
+    @Override
+    public String getDescription() {
+        if (descriptionRule == null) {
+            return null;
+        }
+        return DescriptionRule.render(descriptionRule, defaultActivity);
+    }
+
     @Override
     public ApplicationAdapter getApplicationAdapter() {
         return applicationAdapter;
@@ -87,15 +104,6 @@ public class AspectranActivityContext extends AbstractComponent implements Activ
     @Override
     public Environment getEnvironment() {
         return contextEnvironment;
-    }
-
-    @Override
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     @Override

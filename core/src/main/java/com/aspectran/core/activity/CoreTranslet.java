@@ -29,6 +29,7 @@ import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.env.Environment;
+import com.aspectran.core.context.rule.DescriptionRule;
 import com.aspectran.core.context.rule.DispatchRule;
 import com.aspectran.core.context.rule.ForwardRule;
 import com.aspectran.core.context.rule.RedirectRule;
@@ -69,7 +70,11 @@ public class CoreTranslet extends AbstractTranslet {
 
     @Override
     public String getDescription() {
-        return activity.getTransletRule().getDescription();
+        if (activity.getTransletRule().getDescriptionRule() == null) {
+            return null;
+        }
+        DescriptionRule descriptionRule = activity.getTransletRule().getDescriptionRule();
+        return DescriptionRule.render(descriptionRule, activity);
     }
 
     @Override

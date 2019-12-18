@@ -62,7 +62,7 @@ public class ScheduleRule implements BeanReferenceable {
 
     private List<ScheduledJobRule> scheduledJobRuleList = new ArrayList<>();
 
-    private String description;
+    private DescriptionRule descriptionRule;
 
     public String getId() {
         return id;
@@ -116,22 +116,12 @@ public class ScheduleRule implements BeanReferenceable {
         scheduledJobRuleList.add(scheduledJobRule);
     }
 
-    /**
-     * Gets the description.
-     *
-     * @return the description
-     */
-    public String getDescription() {
-        return description;
+    public DescriptionRule getDescriptionRule() {
+        return descriptionRule;
     }
 
-    /**
-     * Sets the description.
-     *
-     * @param description the new description
-     */
-    public void setDescription(String description) {
-        this.description = description;
+    public void setDescriptionRule(DescriptionRule descriptionRule) {
+        this.descriptionRule = descriptionRule;
     }
 
     @Override

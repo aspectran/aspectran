@@ -185,17 +185,15 @@ public class BeanUtils {
             Object value;
             if (name.contains("[")) {
                 value = getIndexedProperty(bean, name);
+            } else if (bean instanceof Map<?, ?>) {
+                value = ((Map<?, ?>)bean).get(name);
             } else {
-                if (bean instanceof Map<?, ?>) {
-                    value = ((Map<?, ?>)bean).get(name);
-                } else {
-                    BeanDescriptor bd = getBeanDescriptor(bean.getClass());
-                    Method method = bd.getGetter(name);
-                    try {
-                        value = method.invoke(bean, NO_ARGUMENTS);
-                    } catch (Throwable t) {
-                        throw unwrapThrowable(t);
-                    }
+                BeanDescriptor bd = getBeanDescriptor(bean.getClass());
+                Method method = bd.getGetter(name);
+                try {
+                    value = method.invoke(bean, NO_ARGUMENTS);
+                } catch (Throwable t) {
+                    throw unwrapThrowable(t);
                 }
             }
             return value;

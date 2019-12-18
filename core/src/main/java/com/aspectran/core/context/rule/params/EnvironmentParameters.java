@@ -30,7 +30,7 @@ public class EnvironmentParameters extends AbstractParameters {
     private static final ParameterKey[] parameterKeys;
 
     static {
-        description = new ParameterKey("description", ValueType.VARIABLE);
+        description = new ParameterKey("description", DescriptionParameters.class, true, true);
         profile = new ParameterKey("profile", ValueType.STRING);
         properties = new ParameterKey("properties", ItemHolderParameters.class, true, true);
 

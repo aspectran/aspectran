@@ -27,7 +27,7 @@ public class ExceptionParameters extends AbstractParameters {
     private static final ParameterKey[] parameterKeys;
 
     static {
-        description = new ParameterKey("description", ValueType.VARIABLE);
+        description = new ParameterKey("description", DescriptionParameters.class, true, true);
         thrown = new ParameterKey("thrown", ExceptionThrownParameters.class, true, true);
 
         parameterKeys = new ParameterKey[] {

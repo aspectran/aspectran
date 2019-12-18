@@ -115,7 +115,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
 
     private boolean methodAutowireParsed;
 
-    private String description;
+    private DescriptionRule descriptionRule;
 
     /**
      * Returns the bean id.
@@ -726,22 +726,12 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
         this.methodAutowireParsed = methodAutowireParsed;
     }
 
-    /**
-     * Gets the description of this bean.
-     *
-     * @return the description
-     */
-    public String getDescription() {
-        return description;
+    public DescriptionRule getDescriptionRule() {
+        return descriptionRule;
     }
 
-    /**
-     * Sets the description of this bean.
-     *
-     * @param description the new description
-     */
-    public void setDescription(String description) {
-        this.description = description;
+    public void setDescriptionRule(DescriptionRule descriptionRule) {
+        this.descriptionRule = descriptionRule;
     }
 
     @Override
@@ -914,7 +904,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
         newBeanRule.setPropertyItemRuleMap(beanRule.getPropertyItemRuleMap());
         newBeanRule.setLazyInit(beanRule.getLazyInit());
         newBeanRule.setImportant(beanRule.getImportant());
-        newBeanRule.setDescription(beanRule.getDescription());
+        newBeanRule.setDescriptionRule(beanRule.getDescriptionRule());
         newBeanRule.setInnerBean(beanRule.isInnerBean());
         newBeanRule.setReplicated(true);
         return newBeanRule;

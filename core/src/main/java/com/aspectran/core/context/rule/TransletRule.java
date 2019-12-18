@@ -67,7 +67,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 
     private AspectAdviceRuleRegistry aspectAdviceRuleRegistry;
 
-    private String description;
+    private DescriptionRule descriptionRule;
 
     /**
      * Instantiates a new TransletRule.
@@ -422,22 +422,12 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
         return (aspectAdviceRuleRegistry != null ? aspectAdviceRuleRegistry.replicate() : null);
     }
 
-    /**
-     * Gets the description.
-     *
-     * @return the description
-     */
-    public String getDescription() {
-        return description;
+    public DescriptionRule getDescriptionRule() {
+        return descriptionRule;
     }
 
-    /**
-     * Sets the description.
-     *
-     * @param description the new description
-     */
-    public void setDescription(String description) {
-        this.description = description;
+    public void setDescriptionRule(DescriptionRule descriptionRule) {
+        this.descriptionRule = descriptionRule;
     }
 
     @Override
@@ -512,7 +502,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
         }
         tr.setResponseRule(transletRule.getResponseRule());
         tr.setExceptionRule(transletRule.getExceptionRule());
-        tr.setDescription(transletRule.getDescription());
+        tr.setDescriptionRule(transletRule.getDescriptionRule());
         return tr;
     }
 
@@ -522,7 +512,7 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
         tr.setAllowedMethods(transletRule.getAllowedMethods());
         tr.setRequestRule(transletRule.getRequestRule());
         tr.setExceptionRule(transletRule.getExceptionRule());
-        tr.setDescription(transletRule.getDescription());
+        tr.setDescriptionRule(transletRule.getDescriptionRule());
         if (transletRule.getResponseRule() != null) {
             ResponseRule responseRule = transletRule.getResponseRule();
             ResponseRule rr = replicate(responseRule, newDispatchName);

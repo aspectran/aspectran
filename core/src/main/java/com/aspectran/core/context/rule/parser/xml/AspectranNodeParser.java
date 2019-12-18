@@ -187,14 +187,15 @@ public class AspectranNodeParser {
     private void addDescriptionNodelets() {
         parser.setXpath("/aspectran/description");
         parser.addNodelet(attrs -> {
-            String style = attrs.get("style");
             String profile = attrs.get("profile");
+            String style = attrs.get("style");
 
-            DescriptionRule descriptionRule = DescriptionRule.newInstance(style, profile);
+            DescriptionRule descriptionRule = DescriptionRule.newInstance(profile, style);
             parser.pushObject(descriptionRule);
         });
         parser.addNodeEndlet(text -> {
             DescriptionRule descriptionRule = parser.popObject();
+            descriptionRule.setContent(text);
             descriptionRule = assistant.profiling(descriptionRule, assistant.getAssistantLocal().getDescriptionRule());
             assistant.getAssistantLocal().setDescriptionRule(descriptionRule);
         });
