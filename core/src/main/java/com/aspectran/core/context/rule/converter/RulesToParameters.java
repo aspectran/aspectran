@@ -128,7 +128,9 @@ public class RulesToParameters {
         AspectranParameters aspectranParameters = new AspectranParameters();
 
         AssistantLocal assistantLocal = assistant.getAssistantLocal();
-        toDescriptionParameters(assistantLocal.getDescriptionRule(), aspectranParameters, AspectranParameters.description);
+        if (assistantLocal.getDescriptionRule() != null) {
+            toDescriptionParameters(assistantLocal.getDescriptionRule(), aspectranParameters, AspectranParameters.description);
+        }
 
         SettingsParameters settingsParameters = toDefaultSettings(assistantLocal);
         aspectranParameters.putValueNonNull(AspectranParameters.settings, settingsParameters);
@@ -263,7 +265,9 @@ public class RulesToParameters {
         }
 
         EnvironmentParameters environmentParameters = new EnvironmentParameters();
-        toDescriptionParameters(environmentRule.getDescriptionRule(), environmentParameters, EnvironmentParameters.description);
+        if (environmentRule.getDescriptionRule() != null) {
+            toDescriptionParameters(environmentRule.getDescriptionRule(), environmentParameters, EnvironmentParameters.description);
+        }
         environmentParameters.putValueNonNull(EnvironmentParameters.profile, environmentRule.getProfile());
         if (environmentRule.getPropertyItemRuleMapList() != null) {
             for (ItemRuleMap propertyItemRuleMap : environmentRule.getPropertyItemRuleMapList()) {
@@ -279,7 +283,9 @@ public class RulesToParameters {
         }
 
         AspectParameters aspectParameters = new AspectParameters();
-        toDescriptionParameters(aspectRule.getDescriptionRule(), aspectParameters, AspectParameters.description);
+        if (aspectRule.getDescriptionRule() != null) {
+            toDescriptionParameters(aspectRule.getDescriptionRule(), aspectParameters, AspectParameters.description);
+        }
         aspectParameters.putValueNonNull(AspectParameters.id, aspectRule.getId());
         if (aspectRule.getOrder() != Integer.MAX_VALUE) {
             aspectParameters.putValueNonNull(AspectParameters.order, aspectRule.getOrder());
@@ -343,7 +349,9 @@ public class RulesToParameters {
         ExceptionRule exceptionRule = aspectRule.getExceptionRule();
         if (exceptionRule != null) {
             ExceptionParameters exceptionParameters = aspectParameters.touchParameters(AspectParameters.exception);
-            toDescriptionParameters(exceptionRule.getDescriptionRule(), exceptionParameters, ExceptionParameters.description);
+            if (exceptionRule.getDescriptionRule() != null) {
+                toDescriptionParameters(exceptionRule.getDescriptionRule(), exceptionParameters, ExceptionParameters.description);
+            }
             for (ExceptionThrownRule etr : exceptionRule.getExceptionThrownRuleList()) {
                 exceptionParameters.putValue(ExceptionParameters.thrown, toExceptionThrownParameters(etr));
             }
@@ -358,7 +366,9 @@ public class RulesToParameters {
         }
 
         BeanParameters beanParameters = new BeanParameters();
-        toDescriptionParameters(beanRule.getDescriptionRule(), beanParameters, BeanParameters.description);
+        if (beanRule.getDescriptionRule() != null) {
+            toDescriptionParameters(beanRule.getDescriptionRule(), beanParameters, BeanParameters.description);
+        }
         beanParameters.putValueNonNull(BeanParameters.id, beanRule.getId());
         beanParameters.putValueNonNull(BeanParameters.className, beanRule.getClassName());
         beanParameters.putValueNonNull(BeanParameters.scan, beanRule.getScanPattern());
@@ -399,7 +409,9 @@ public class RulesToParameters {
         }
 
         ScheduleParameters scheduleParameters = new ScheduleParameters();
-        toDescriptionParameters(scheduleRule.getDescriptionRule(), scheduleParameters, ScheduleParameters.description);
+        if (scheduleRule.getDescriptionRule() != null) {
+            toDescriptionParameters(scheduleRule.getDescriptionRule(), scheduleParameters, ScheduleParameters.description);
+        }
         scheduleParameters.putValueNonNull(ScheduleParameters.id, scheduleRule.getId());
 
         SchedulerParameters schedulerParameters = scheduleParameters.newParameters(ScheduleParameters.scheduler);
@@ -443,7 +455,9 @@ public class RulesToParameters {
         }
 
         TransletParameters transletParameters = new TransletParameters();
-        toDescriptionParameters(transletRule.getDescriptionRule(), transletParameters, TransletParameters.description);
+        if (transletRule.getDescriptionRule() != null) {
+            toDescriptionParameters(transletRule.getDescriptionRule(), transletParameters, TransletParameters.description);
+        }
         transletParameters.putValueNonNull(TransletParameters.name, transletRule.getName());
         transletParameters.putValueNonNull(TransletParameters.scan, transletRule.getScanPath());
         transletParameters.putValueNonNull(TransletParameters.mask, transletRule.getMaskPattern());
@@ -539,7 +553,9 @@ public class RulesToParameters {
         ExceptionRule exceptionRule = transletRule.getExceptionRule();
         if (exceptionRule != null) {
             ExceptionParameters exceptionParameters = transletParameters.touchParameters(TransletParameters.exception);
-            toDescriptionParameters(exceptionRule.getDescriptionRule(), exceptionParameters, ExceptionParameters.description);
+            if (exceptionRule.getDescriptionRule() != null) {
+                toDescriptionParameters(exceptionRule.getDescriptionRule(), exceptionParameters, ExceptionParameters.description);
+            }
             for (ExceptionThrownRule etr : exceptionRule.getExceptionThrownRuleList()) {
                 exceptionParameters.putValue(ExceptionParameters.thrown, toExceptionThrownParameters(etr));
             }

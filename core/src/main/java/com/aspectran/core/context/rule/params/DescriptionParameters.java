@@ -30,7 +30,7 @@ public class DescriptionParameters extends AbstractParameters {
     static {
         profile = new ParameterKey("profile", ValueType.STRING);
         style = new ParameterKey("style", ValueType.STRING);
-        content = new ParameterKey("content", ValueType.TEXT);
+        content = new ParameterKey("content", new String[] {"description"}, ValueType.TEXT);
 
         parameterKeys = new ParameterKey[] {
                 profile,
