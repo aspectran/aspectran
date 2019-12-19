@@ -15,7 +15,6 @@
  */
 package com.aspectran.undertow.service;
 
-import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.ActivityException;
 import com.aspectran.core.activity.ActivityTerminatedException;
 import com.aspectran.core.activity.TransletNotFoundException;
@@ -33,7 +32,6 @@ import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.undertow.activity.TowActivity;
-import com.aspectran.web.support.http.HttpHeaders;
 import com.aspectran.web.support.http.HttpStatus;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.Headers;

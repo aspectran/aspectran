@@ -50,7 +50,6 @@ import com.aspectran.core.component.bean.annotation.RequestToPost;
 import com.aspectran.core.component.bean.annotation.RequestToPut;
 import com.aspectran.core.component.bean.annotation.Required;
 import com.aspectran.core.component.bean.annotation.Schedule;
-import com.aspectran.core.component.bean.annotation.Scheduler;
 import com.aspectran.core.component.bean.annotation.Scope;
 import com.aspectran.core.component.bean.annotation.Settings;
 import com.aspectran.core.component.bean.annotation.SimpleTrigger;
@@ -82,14 +81,12 @@ import com.aspectran.core.context.rule.SettingsAdviceRule;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;
-import com.aspectran.core.context.rule.params.TriggerExpressionParameters;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
 import com.aspectran.core.context.rule.type.AutowireTargetType;
 import com.aspectran.core.context.rule.type.JoinpointTargetType;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.context.rule.type.ScopeType;
 import com.aspectran.core.context.rule.type.TransformType;
-import com.aspectran.core.context.rule.type.TriggerType;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -406,13 +403,9 @@ public class AnnotatedConfigParser {
         }
 
         Description descriptionAnno = beanClass.getAnnotation(Description.class);
-        if (descriptionAnno != null) {
-            String description = StringUtils.emptyToNull(descriptionAnno.value());
-            if (description != null) {
-                DescriptionRule descriptionRule = new DescriptionRule();
-                descriptionRule.setContent(description);
-                aspectRule.setDescriptionRule(descriptionRule);
-            }
+        DescriptionRule descriptionRule = parseDescriptionRule(descriptionAnno);
+        if (descriptionRule != null) {
+            aspectRule.setDescriptionRule(descriptionRule);
         }
 
         relater.relay(aspectRule);
@@ -448,13 +441,9 @@ public class AnnotatedConfigParser {
         }
 
         Description descriptionAnno = beanClass.getAnnotation(Description.class);
-        if (descriptionAnno != null) {
-            String description = StringUtils.emptyToNull(descriptionAnno.value());
-            if (description != null) {
-                DescriptionRule descriptionRule = new DescriptionRule();
-                descriptionRule.setContent(description);
-                beanRule.setDescriptionRule(descriptionRule);
-            }
+        DescriptionRule descriptionRule = parseDescriptionRule(descriptionAnno);
+        if (descriptionRule != null) {
+            beanRule.setDescriptionRule(descriptionRule);
         }
 
         Class<?> targetBeanClass = BeanRuleAnalyzer.determineBeanClass(beanRule);
@@ -499,14 +488,10 @@ public class AnnotatedConfigParser {
             beanRule.setImportant(Boolean.TRUE);
         }
 
-        Description descriptionAnno = method.getAnnotation(Description.class);
-        if (descriptionAnno != null) {
-            String description = StringUtils.emptyToNull(descriptionAnno.value());
-            if (description != null) {
-                DescriptionRule descriptionRule = new DescriptionRule();
-                descriptionRule.setContent(description);
-                beanRule.setDescriptionRule(descriptionRule);
-            }
+        Description descriptionAnno = beanClass.getAnnotation(Description.class);
+        DescriptionRule descriptionRule = parseDescriptionRule(descriptionAnno);
+        if (descriptionRule != null) {
+            beanRule.setDescriptionRule(descriptionRule);
         }
 
         Class<?> targetBeanClass = BeanRuleAnalyzer.determineBeanClass(beanRule);
@@ -523,27 +508,17 @@ public class AnnotatedConfigParser {
 
         ScheduleRule scheduleRule = ScheduleRule.newInstance(scheduleId);
 
-        Scheduler schedulerAnno = scheduleAnno.scheduler();
-        String schedulerBeanId =  StringUtils.emptyToNull(schedulerAnno.bean());
+        String schedulerBeanId =  StringUtils.emptyToNull(scheduleAnno.scheduler());
         if (schedulerBeanId != null) {
             scheduleRule.setSchedulerBeanId(schedulerBeanId);
         }
 
-        Class<?> schedulerBeanClass = schedulerAnno.beanClass();
-        if (schedulerBeanClass != void.class) {
-            scheduleRule.setSchedulerBeanClass(schedulerBeanClass);
-            scheduleRule.setSchedulerBeanId(BeanRule.CLASS_DIRECTIVE_PREFIX + schedulerBeanClass.getName());
-        } else if (schedulerBeanId != null) {
-            scheduleRule.setSchedulerBeanId(schedulerBeanId);
-        }
-
-        CronTrigger cronTriggerAnno = schedulerAnno.cronTrigger();
+        CronTrigger cronTriggerAnno = scheduleAnno.cronTrigger();
         String expression = StringUtils.emptyToNull(cronTriggerAnno.expression());
-        TriggerExpressionParameters triggerExpressionParameters = new TriggerExpressionParameters();
         if (expression != null) {
             ScheduleRule.updateTriggerExpression(scheduleRule, cronTriggerAnno);
         } else {
-            SimpleTrigger simpleTriggerAnno = schedulerAnno.simpleTrigger();
+            SimpleTrigger simpleTriggerAnno = scheduleAnno.simpleTrigger();
             ScheduleRule.updateTriggerExpression(scheduleRule, simpleTriggerAnno);
         }
 
@@ -553,23 +528,18 @@ public class AnnotatedConfigParser {
             if (transletName == null) {
                 transletName = StringUtils.emptyToNull(job.translet());
             }
-            boolean disabled = job.disabled();
             ScheduledJobRule jobRule = new ScheduledJobRule(scheduleRule);
             jobRule.setTransletName(transletName);;
-            if (disabled) {
+            if (job.disabled()) {
                 jobRule.setDisabled(true);
             }
             scheduleRule.addScheduledJobRule(jobRule);
         }
 
         Description descriptionAnno = beanClass.getAnnotation(Description.class);
-        if (descriptionAnno != null) {
-            String description = StringUtils.emptyToNull(descriptionAnno.value());
-            if (description != null) {
-                DescriptionRule descriptionRule = new DescriptionRule();
-                descriptionRule.setContent(description);
-                scheduleRule.setDescriptionRule(descriptionRule);
-            }
+        DescriptionRule descriptionRule = parseDescriptionRule(descriptionAnno);
+        if (descriptionRule != null) {
+            scheduleRule.setDescriptionRule(descriptionRule);
         }
 
         relater.relay(scheduleRule);
@@ -690,14 +660,10 @@ public class AnnotatedConfigParser {
             }
         }
 
-        Description descriptionAnno = method.getAnnotation(Description.class);
-        if (descriptionAnno != null) {
-            String description = StringUtils.emptyToNull(descriptionAnno.value());
-            if (description != null) {
-                DescriptionRule descriptionRule = new DescriptionRule();
-                descriptionRule.setContent(description);
-                transletRule.setDescriptionRule(descriptionRule);
-            }
+        Description descriptionAnno = beanClass.getAnnotation(Description.class);
+        DescriptionRule descriptionRule = parseDescriptionRule(descriptionAnno);
+        if (descriptionRule != null) {
+            transletRule.setDescriptionRule(descriptionRule);
         }
 
         relater.relay(transletRule);
@@ -752,6 +718,18 @@ public class AnnotatedConfigParser {
             redirectRule.setParameterItemRuleMap(ItemRuleUtils.toItemRuleMap(parameters));
         }
         return redirectRule;
+    }
+
+    private DescriptionRule parseDescriptionRule(Description descriptionAnno) {
+        if (descriptionAnno != null) {
+            String description = StringUtils.emptyToNull(descriptionAnno.value());
+            if (description != null) {
+                DescriptionRule descriptionRule = new DescriptionRule();
+                descriptionRule.setContent(description);
+                return descriptionRule;
+            }
+        }
+        return null;
     }
 
     private AutowireRule createAutowireRuleForConstructor(Constructor<?> candidate) {

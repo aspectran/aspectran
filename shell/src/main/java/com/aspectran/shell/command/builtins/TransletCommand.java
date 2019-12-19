@@ -23,7 +23,6 @@ import com.aspectran.core.context.rule.params.TransletParameters;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.apon.AponWriter;
-import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.shell.command.AbstractCommand;
 import com.aspectran.shell.command.CommandLineParser;
 import com.aspectran.shell.command.CommandRegistry;

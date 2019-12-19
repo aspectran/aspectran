@@ -28,7 +28,11 @@ public @interface Schedule {
 
     String id();
 
-    Scheduler scheduler() default @Scheduler;
+    String scheduler() default "";
+
+    SimpleTrigger simpleTrigger() default @SimpleTrigger;
+
+    CronTrigger cronTrigger() default @CronTrigger(expression = "");
 
     Job[] jobs() default {};
 
