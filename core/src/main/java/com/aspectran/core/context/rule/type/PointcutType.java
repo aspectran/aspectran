@@ -21,9 +21,7 @@ package com.aspectran.core.context.rule.type;
 public enum PointcutType {
 
     WILDCARD("wildcard"),
-    REGEXP("regexp"),
-    SIMPLE_TRIGGER("simpleTrigger"),
-    CRON_TRIGGER("cronTrigger");
+    REGEXP("regexp");
 
     private final String alias;
 

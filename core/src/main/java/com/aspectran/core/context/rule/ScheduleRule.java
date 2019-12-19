@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.context.rule;
 
+import com.aspectran.core.component.bean.annotation.CronTrigger;
+import com.aspectran.core.component.bean.annotation.SimpleTrigger;
 import com.aspectran.core.context.rule.ability.BeanReferenceable;
 import com.aspectran.core.context.rule.params.TriggerExpressionParameters;
 import com.aspectran.core.context.rule.params.TriggerParameters;
@@ -153,8 +155,7 @@ public class ScheduleRule implements BeanReferenceable {
         updateTriggerType(scheduleRule, triggerParameters.getString(TriggerParameters.type));
         TriggerExpressionParameters expressionParameters = triggerParameters.getParameters(TriggerParameters.expression);
         if (expressionParameters == null) {
-            throw new IllegalRuleException("Be sure to specify trigger expression parameters " +
-                    Arrays.toString(TriggerExpressionParameters.getParameterKeys()));
+            throw new IllegalRuleException("Be sure to specify trigger expression parameters " + Arrays.toString(TriggerExpressionParameters.getParameterKeys()));
         }
         updateTriggerExpression(scheduleRule, expressionParameters);
     }
@@ -196,8 +197,7 @@ public class ScheduleRule implements BeanReferenceable {
             Integer intervalInMinutes = expressionParameters.getInt(TriggerExpressionParameters.intervalInMinutes);
             Integer intervalInHours = expressionParameters.getInt(TriggerExpressionParameters.intervalInHours);
             if (intervalInMilliseconds == null && intervalInSeconds == null && intervalInMinutes == null && intervalInHours == null) {
-                throw new IllegalArgumentException("Must specify the interval between execution times for simple trigger. (" +
-                        "Specifiable time interval types: intervalInMilliseconds, intervalInSeconds, intervalInMinutes, intervalInHours)");
+                throw new IllegalArgumentException("Must specify the interval between execution times for simple trigger. (" + "Specifiable time interval types: intervalInMilliseconds, intervalInSeconds, intervalInMinutes, intervalInHours)");
             }
         } else {
             String expression = expressionParameters.getString(TriggerExpressionParameters.expression);
@@ -208,6 +208,41 @@ public class ScheduleRule implements BeanReferenceable {
             expressionParameters.putValue(TriggerParameters.expression, StringUtils.toDelimitedString(fields, " "));
         }
         scheduleRule.setTriggerExpressionParameters(expressionParameters);
+    }
+
+    public static void updateTriggerExpression(ScheduleRule scheduleRule, SimpleTrigger simpleTriggerAnno) {
+        TriggerExpressionParameters expressionParameters = new TriggerExpressionParameters();
+        scheduleRule.setTriggerType(TriggerType.SIMPLE);
+        if (simpleTriggerAnno.startDelaySeconds() > 0) {
+            expressionParameters.setStartDelaySeconds(simpleTriggerAnno.startDelaySeconds());
+        }
+        if (simpleTriggerAnno.intervalInMilliseconds() > 0L) {
+            expressionParameters.setIntervalInMilliseconds(simpleTriggerAnno.intervalInMilliseconds());
+        }
+        if (simpleTriggerAnno.intervalInSeconds() > 0) {
+            expressionParameters.setIntervalInSeconds(simpleTriggerAnno.intervalInSeconds());
+        }
+        if (simpleTriggerAnno.intervalInMinutes() > 0) {
+            expressionParameters.setIntervalInMinutes(simpleTriggerAnno.intervalInMinutes());
+        }
+        if (simpleTriggerAnno.intervalInHours() > 0) {
+            expressionParameters.setIntervalInHours(simpleTriggerAnno.intervalInHours());
+        }
+        if (simpleTriggerAnno.repeatCount() > 0) {
+            expressionParameters.setRepeatCount(simpleTriggerAnno.repeatCount());
+        }
+        if (simpleTriggerAnno.repeatForever()) {
+            expressionParameters.setRepeatForever(true);
+        }
+        updateTriggerExpression(scheduleRule, expressionParameters);
+    }
+
+    public static void updateTriggerExpression(ScheduleRule scheduleRule, CronTrigger cronTriggerAnno) {
+        TriggerExpressionParameters expressionParameters = new TriggerExpressionParameters();
+        scheduleRule.setTriggerType(TriggerType.CRON);
+        String expression = StringUtils.emptyToNull(cronTriggerAnno.expression());
+        expressionParameters.setExpression(expression);
+        updateTriggerExpression(scheduleRule, expressionParameters);
     }
 
 }

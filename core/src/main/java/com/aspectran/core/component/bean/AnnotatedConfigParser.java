@@ -28,6 +28,7 @@ import com.aspectran.core.component.bean.annotation.Autowired;
 import com.aspectran.core.component.bean.annotation.Bean;
 import com.aspectran.core.component.bean.annotation.Before;
 import com.aspectran.core.component.bean.annotation.Component;
+import com.aspectran.core.component.bean.annotation.CronTrigger;
 import com.aspectran.core.component.bean.annotation.Description;
 import com.aspectran.core.component.bean.annotation.Destroy;
 import com.aspectran.core.component.bean.annotation.Dispatch;
@@ -35,6 +36,7 @@ import com.aspectran.core.component.bean.annotation.ExceptionThrown;
 import com.aspectran.core.component.bean.annotation.Format;
 import com.aspectran.core.component.bean.annotation.Forward;
 import com.aspectran.core.component.bean.annotation.Initialize;
+import com.aspectran.core.component.bean.annotation.Job;
 import com.aspectran.core.component.bean.annotation.Joinpoint;
 import com.aspectran.core.component.bean.annotation.Parameter;
 import com.aspectran.core.component.bean.annotation.Profile;
@@ -47,8 +49,11 @@ import com.aspectran.core.component.bean.annotation.RequestToPatch;
 import com.aspectran.core.component.bean.annotation.RequestToPost;
 import com.aspectran.core.component.bean.annotation.RequestToPut;
 import com.aspectran.core.component.bean.annotation.Required;
+import com.aspectran.core.component.bean.annotation.Schedule;
+import com.aspectran.core.component.bean.annotation.Scheduler;
 import com.aspectran.core.component.bean.annotation.Scope;
 import com.aspectran.core.component.bean.annotation.Settings;
+import com.aspectran.core.component.bean.annotation.SimpleTrigger;
 import com.aspectran.core.component.bean.annotation.Transform;
 import com.aspectran.core.component.bean.annotation.Value;
 import com.aspectran.core.context.ActivityContext;
@@ -71,16 +76,20 @@ import com.aspectran.core.context.rule.ParameterBindingRule;
 import com.aspectran.core.context.rule.PointcutRule;
 import com.aspectran.core.context.rule.RedirectRule;
 import com.aspectran.core.context.rule.ResponseRule;
+import com.aspectran.core.context.rule.ScheduleRule;
+import com.aspectran.core.context.rule.ScheduledJobRule;
 import com.aspectran.core.context.rule.SettingsAdviceRule;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;
+import com.aspectran.core.context.rule.params.TriggerExpressionParameters;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
 import com.aspectran.core.context.rule.type.AutowireTargetType;
 import com.aspectran.core.context.rule.type.JoinpointTargetType;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.context.rule.type.ScopeType;
 import com.aspectran.core.context.rule.type.TransformType;
+import com.aspectran.core.context.rule.type.TriggerType;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
@@ -201,6 +210,9 @@ public class AnnotatedConfigParser {
             }
             if (beanClass.isAnnotationPresent(Bean.class)) {
                 parseBeanRule(beanRule, nameArray);
+            }
+            if (beanClass.isAnnotationPresent(Schedule.class)) {
+                parseScheduleRule(beanRule, nameArray);
             }
             for (Method method : beanClass.getMethods()) {
                 if (method.isAnnotationPresent(Profile.class)) {
@@ -499,6 +511,68 @@ public class AnnotatedConfigParser {
 
         Class<?> targetBeanClass = BeanRuleAnalyzer.determineBeanClass(beanRule);
         relater.relay(targetBeanClass, beanRule);
+    }
+
+    private void parseScheduleRule(BeanRule beanRule, String[] nameArray) throws IllegalRuleException {
+        Class<?> beanClass = beanRule.getBeanClass();
+        Schedule scheduleAnno = beanClass.getAnnotation(Schedule.class);
+        String scheduleId = StringUtils.emptyToNull(scheduleAnno.id());
+        if (scheduleId != null && nameArray != null) {
+            scheduleId = applyNamespace(nameArray, scheduleId);
+        }
+
+        ScheduleRule scheduleRule = ScheduleRule.newInstance(scheduleId);
+
+        Scheduler schedulerAnno = scheduleAnno.scheduler();
+        String schedulerBeanId =  StringUtils.emptyToNull(schedulerAnno.bean());
+        if (schedulerBeanId != null) {
+            scheduleRule.setSchedulerBeanId(schedulerBeanId);
+        }
+
+        Class<?> schedulerBeanClass = schedulerAnno.beanClass();
+        if (schedulerBeanClass != void.class) {
+            scheduleRule.setSchedulerBeanClass(schedulerBeanClass);
+            scheduleRule.setSchedulerBeanId(BeanRule.CLASS_DIRECTIVE_PREFIX + schedulerBeanClass.getName());
+        } else if (schedulerBeanId != null) {
+            scheduleRule.setSchedulerBeanId(schedulerBeanId);
+        }
+
+        CronTrigger cronTriggerAnno = schedulerAnno.cronTrigger();
+        String expression = StringUtils.emptyToNull(cronTriggerAnno.expression());
+        TriggerExpressionParameters triggerExpressionParameters = new TriggerExpressionParameters();
+        if (expression != null) {
+            ScheduleRule.updateTriggerExpression(scheduleRule, cronTriggerAnno);
+        } else {
+            SimpleTrigger simpleTriggerAnno = schedulerAnno.simpleTrigger();
+            ScheduleRule.updateTriggerExpression(scheduleRule, simpleTriggerAnno);
+        }
+
+        Job[] jobs = scheduleAnno.jobs();
+        for (Job job : jobs) {
+            String transletName = StringUtils.emptyToNull(job.value());
+            if (transletName == null) {
+                transletName = StringUtils.emptyToNull(job.translet());
+            }
+            boolean disabled = job.disabled();
+            ScheduledJobRule jobRule = new ScheduledJobRule(scheduleRule);
+            jobRule.setTransletName(transletName);;
+            if (disabled) {
+                jobRule.setDisabled(true);
+            }
+            scheduleRule.addScheduledJobRule(jobRule);
+        }
+
+        Description descriptionAnno = beanClass.getAnnotation(Description.class);
+        if (descriptionAnno != null) {
+            String description = StringUtils.emptyToNull(descriptionAnno.value());
+            if (description != null) {
+                DescriptionRule descriptionRule = new DescriptionRule();
+                descriptionRule.setContent(description);
+                scheduleRule.setDescriptionRule(descriptionRule);
+            }
+        }
+
+        relater.relay(scheduleRule);
     }
 
     private void parseTransletRule(Class<?> beanClass, Method method, String[] nameArray) throws IllegalRuleException {

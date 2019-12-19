@@ -31,6 +31,7 @@ import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.AutowireRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.IllegalRuleException;
+import com.aspectran.core.context.rule.ScheduleRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;
 import com.aspectran.core.context.rule.params.FilterParameters;
@@ -395,6 +396,11 @@ public class BeanRuleRegistry {
             @Override
             public void relay(AspectRule aspectRule) throws IllegalRuleException {
                 assistant.addAspectRule(aspectRule);
+            }
+
+            @Override
+            public void relay(ScheduleRule scheduleRule) throws IllegalRuleException {
+                assistant.addScheduleRule(scheduleRule);
             }
 
             @Override

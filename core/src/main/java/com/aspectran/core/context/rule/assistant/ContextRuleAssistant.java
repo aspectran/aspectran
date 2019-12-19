@@ -550,7 +550,7 @@ public class ContextRuleAssistant {
      * @throws IllegalRuleException if an illegal rule is found
      */
     public void resolveBeanClass(ScheduleRule scheduleRule) throws IllegalRuleException {
-        if (scheduleRule != null) {
+        if (scheduleRule != null && scheduleRule.getSchedulerBeanClass() == null) {
             String beanId = scheduleRule.getSchedulerBeanId();
             if (beanId != null) {
                 Class<?> beanClass = resolveDirectiveBeanClass(beanId, scheduleRule);

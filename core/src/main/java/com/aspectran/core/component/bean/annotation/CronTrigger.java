@@ -15,16 +15,17 @@
  */
 package com.aspectran.core.component.bean.annotation;
 
+import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-/**
- * Marks a method (typically a JavaBean setter method) as being 'required': that is,
- * the setter method must be configured to be dependency-injected with a value.
- */
+@Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD, ElementType.PARAMETER})
-public @interface Required {
+@Target(ElementType.ANNOTATION_TYPE)
+public @interface CronTrigger {
+
+    String expression();
+
 }

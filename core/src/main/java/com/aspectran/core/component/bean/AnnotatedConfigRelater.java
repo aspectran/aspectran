@@ -19,6 +19,7 @@ import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.AutowireRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.IllegalRuleException;
+import com.aspectran.core.context.rule.ScheduleRule;
 import com.aspectran.core.context.rule.TransletRule;
 
 /**
@@ -31,6 +32,8 @@ interface AnnotatedConfigRelater {
     void relay(Class<?> targetBeanClass, BeanRule beanRule) throws IllegalRuleException;
 
     void relay(AspectRule aspectRule) throws IllegalRuleException;
+
+    void relay(ScheduleRule scheduleRule) throws IllegalRuleException;
 
     void relay(TransletRule transletRule) throws IllegalRuleException;
 

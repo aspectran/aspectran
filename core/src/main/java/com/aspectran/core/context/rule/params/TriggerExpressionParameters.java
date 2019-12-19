@@ -70,32 +70,64 @@ public class TriggerExpressionParameters extends AbstractParameters {
         return getInt(startDelaySeconds);
     }
 
+    public void setStartDelaySeconds(int startDelaySeconds) {
+        putValue(TriggerExpressionParameters.startDelaySeconds, startDelaySeconds);
+    }
+
     public Long getIntervalInMilliseconds() {
         return getLong(intervalInMilliseconds);
+    }
+
+    public void setIntervalInMilliseconds(long intervalInMilliseconds) {
+        putValue(TriggerExpressionParameters.intervalInMilliseconds, intervalInMilliseconds);
     }
 
     public Integer getIntervalInSeconds() {
         return getInt(intervalInSeconds);
     }
 
+    public void setIntervalInSeconds(int intervalInSeconds) {
+        putValue(TriggerExpressionParameters.intervalInSeconds, intervalInSeconds);
+    }
+
     public Integer getIntervalInMinutes() {
         return getInt(intervalInMinutes);
+    }
+
+    public void setIntervalInMinutes(int intervalInMinutes) {
+        putValue(TriggerExpressionParameters.intervalInMinutes, intervalInMinutes);
     }
 
     public Integer getIntervalInHours() {
         return getInt(intervalInHours);
     }
 
+    public void setIntervalInHours(int intervalInHours) {
+        putValue(TriggerExpressionParameters.intervalInHours, intervalInHours);
+    }
+
     public Integer getRepeatCount() {
         return getInt(repeatCount);
+    }
+
+    public void setRepeatCount(int repeatCount) {
+        putValue(TriggerExpressionParameters.repeatCount, repeatCount);
     }
 
     public Boolean getRepeatForever() {
         return getBoolean(repeatForever);
     }
 
+    public void setRepeatForever(boolean repeatForever) {
+        putValue(TriggerExpressionParameters.repeatForever, repeatForever);
+    }
+
     public String getExpression() {
         return getString(expression);
+    }
+
+    public void setExpression(String expression) {
+        putValue(TriggerExpressionParameters.expression, expression);
     }
 
     public static ParameterKey[] getParameterKeys() {
