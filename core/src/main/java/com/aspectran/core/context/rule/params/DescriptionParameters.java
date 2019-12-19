@@ -15,6 +15,9 @@
  */
 package com.aspectran.core.context.rule.params;
 
+import com.aspectran.core.context.rule.DescriptionRule;
+import com.aspectran.core.context.rule.type.TextStyleType;
+import com.aspectran.core.util.TextStyler;
 import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterKey;
 import com.aspectran.core.util.apon.ValueType;
@@ -41,6 +44,17 @@ public class DescriptionParameters extends AbstractParameters {
 
     public DescriptionParameters() {
         super(parameterKeys);
+    }
+
+    public DescriptionParameters(DescriptionRule descriptionRule) {
+        super(parameterKeys);
+        putValueNonNull(profile, descriptionRule.getProfile());
+        putValueNonNull(style, descriptionRule.getContentStyle());
+        if (descriptionRule.getContentStyle() == TextStyleType.APON) {
+            putValueNonNull(content, TextStyler.stripAponStyle(descriptionRule.getContent()));
+        } else {
+            putValueNonNull(content, descriptionRule.getContent());
+        }
     }
 
 }

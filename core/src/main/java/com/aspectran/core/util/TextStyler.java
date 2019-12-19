@@ -72,7 +72,22 @@ public class TextStyler {
         if (start > 0 && start < text.length()) {
             sb.append(text, start, text.length());
         }
-        return sb.toString();
+        if (sb.length() > 0) {
+            return sb.toString();
+        }
+        for (start = 0; start < text.length(); start++) {
+            if (text.charAt(start) != ' ') {
+                break;
+            }
+        }
+        int end = text.length();
+        while (end > 0) {
+            if (text.charAt(end - 1) != ' ') {
+                break;
+            }
+            end--;
+        }
+        return text.substring(start, end);
     }
 
     public static String compact(String text) {

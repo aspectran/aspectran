@@ -90,6 +90,12 @@
                                 <exclude>.gitignore</exclude>
                             </excludes>
                         </fileset>
+                        <fileset>
+                            <directory>app/config</directory>
+                            <includes>
+                                <include>**/*.xml.apon</include>
+                            </includes>
+                        </fileset>
                     </filesets>
                 </configuration>
             </plugin>

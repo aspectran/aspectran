@@ -194,17 +194,11 @@ public class RulesToParameters {
 
         if (descriptionRule.getCandidates() != null) {
             for (DescriptionRule dr : descriptionRule.getCandidates()) {
-                DescriptionParameters descriptionParameters = new DescriptionParameters();
-                descriptionParameters.putValueNonNull(DescriptionParameters.profile, dr.getProfile());
-                descriptionParameters.putValueNonNull(DescriptionParameters.style, dr.getContentStyle());
-                descriptionParameters.putValueNonNull(DescriptionParameters.content, dr.getContent());
+                DescriptionParameters descriptionParameters = new DescriptionParameters(dr);
                 parameters.putValue(parameterKey, descriptionParameters);
             }
         } else {
-            DescriptionParameters descriptionParameters = new DescriptionParameters();
-            descriptionParameters.putValueNonNull(DescriptionParameters.profile, descriptionRule.getProfile());
-            descriptionParameters.putValueNonNull(DescriptionParameters.style, descriptionRule.getContentStyle());
-            descriptionParameters.putValueNonNull(DescriptionParameters.content, descriptionRule.getContent());
+            DescriptionParameters descriptionParameters = new DescriptionParameters(descriptionRule);
             parameters.putValue(parameterKey, descriptionParameters);
         }
     }
@@ -722,18 +716,16 @@ public class RulesToParameters {
             templateParameters.putValueNonNull(TemplateParameters.name, templateRule.getName());
         } else {
             if (templateRule.getContent() != null) {
-                TextStyleType textStyleType = templateRule.getContentStyle();
-                if (textStyleType == TextStyleType.APON) {
-                    String content = TextStyler.styling(templateRule.getContent(), textStyleType);
+                if (templateRule.getContentStyle() == TextStyleType.APON) {
+                    String content = TextStyler.stripAponStyle(templateRule.getContent());
                     templateParameters.putValue(TemplateParameters.content, content);
                 } else {
                     templateParameters.putValue(TemplateParameters.content, templateRule.getContent());
-                    templateParameters.putValueNonNull(TemplateParameters.style, textStyleType);
                 }
             } else {
                 templateParameters.putValueNonNull(TemplateParameters.content, templateRule.getTemplateSource());
-                templateParameters.putValueNonNull(TemplateParameters.style, templateRule.getContentStyle());
             }
+            templateParameters.putValueNonNull(TemplateParameters.style, templateRule.getContentStyle());
         }
         templateParameters.putValueNonNull(TemplateParameters.encoding, templateRule.getEncoding());
         templateParameters.putValueNonNull(TemplateParameters.noCache, templateRule.getNoCache());
