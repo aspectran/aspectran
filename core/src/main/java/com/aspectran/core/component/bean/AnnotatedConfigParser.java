@@ -112,8 +112,6 @@ public class AnnotatedConfigParser {
 
     private static final Log log = LogFactory.getLog(AnnotatedConfigParser.class);
 
-    private final AnnotatedConfigRelater relater;
-
     private final Environment environment;
 
     private final Map<String, BeanRule> idBasedBeanRuleMap;
@@ -122,12 +120,14 @@ public class AnnotatedConfigParser {
 
     private final Map<Class<?>, BeanRule> configurableBeanRuleMap;
 
-    public AnnotatedConfigParser(ContextRuleAssistant assistant, AnnotatedConfigRelater relater) {
+    private final AnnotatedConfigRelater configRelater;
+
+    public AnnotatedConfigParser(ContextRuleAssistant assistant, AnnotatedConfigRelater configRelater) {
         this.environment = assistant.getContextEnvironment();
         this.idBasedBeanRuleMap = assistant.getBeanRuleRegistry().getIdBasedBeanRuleMap();
         this.typeBasedBeanRuleMap = assistant.getBeanRuleRegistry().getTypeBasedBeanRuleMap();
         this.configurableBeanRuleMap = assistant.getBeanRuleRegistry().getConfigurableBeanRuleMap();
-        this.relater = relater;
+        this.configRelater = configRelater;
     }
 
     public void parse() throws IllegalRuleException {
@@ -255,7 +255,7 @@ public class AnnotatedConfigParser {
             AutowireRule autowireRule = createAutowireRuleForConstructor(candidate);
             if (autowireRule != null) {
                 beanRule.setConstructorAutowireRule(autowireRule);
-                relater.relay(autowireRule);
+                configRelater.relay(autowireRule);
             }
         }
     }
@@ -272,12 +272,12 @@ public class AnnotatedConfigParser {
                 if (field.isAnnotationPresent(Autowired.class)) {
                     AutowireRule autowireRule = createAutowireRuleForField(field);
                     beanRule.addAutowireRule(autowireRule);
-                    relater.relay(autowireRule);
+                    configRelater.relay(autowireRule);
                 } else if (field.isAnnotationPresent(Value.class)) {
                     AutowireRule autowireRule = createAutowireRuleForFieldValue(field);
                     if (autowireRule != null) {
                         beanRule.addAutowireRule(autowireRule);
-                        relater.relay(autowireRule);
+                        configRelater.relay(autowireRule);
                     }
                 }
             }
@@ -297,7 +297,7 @@ public class AnnotatedConfigParser {
                 if (method.isAnnotationPresent(Autowired.class)) {
                     AutowireRule autowireRule = createAutowireRuleForMethod(method);
                     beanRule.addAutowireRule(autowireRule);
-                    relater.relay(autowireRule);
+                    configRelater.relay(autowireRule);
                 } else if (method.isAnnotationPresent(Required.class)) {
                     BeanRuleAnalyzer.checkRequiredProperty(beanRule, method);
                 } else if (method.isAnnotationPresent(Initialize.class)) {
@@ -408,7 +408,7 @@ public class AnnotatedConfigParser {
             aspectRule.setDescriptionRule(descriptionRule);
         }
 
-        relater.relay(aspectRule);
+        configRelater.relay(aspectRule);
     }
 
     private void parseBeanRule(BeanRule beanRule, String[] nameArray) throws IllegalRuleException {
@@ -447,7 +447,7 @@ public class AnnotatedConfigParser {
         }
 
         Class<?> targetBeanClass = BeanRuleAnalyzer.determineBeanClass(beanRule);
-        relater.relay(targetBeanClass, beanRule);
+        configRelater.relay(targetBeanClass, beanRule);
     }
 
     private void parseFactoryBeanRule(Class<?> beanClass, Method method, String[] nameArray) throws IllegalRuleException {
@@ -495,7 +495,7 @@ public class AnnotatedConfigParser {
         }
 
         Class<?> targetBeanClass = BeanRuleAnalyzer.determineBeanClass(beanRule);
-        relater.relay(targetBeanClass, beanRule);
+        configRelater.relay(targetBeanClass, beanRule);
     }
 
     private void parseScheduleRule(BeanRule beanRule, String[] nameArray) throws IllegalRuleException {
@@ -542,7 +542,7 @@ public class AnnotatedConfigParser {
             scheduleRule.setDescriptionRule(descriptionRule);
         }
 
-        relater.relay(scheduleRule);
+        configRelater.relay(scheduleRule);
     }
 
     private void parseTransletRule(Class<?> beanClass, Method method, String[] nameArray) throws IllegalRuleException {
@@ -666,7 +666,7 @@ public class AnnotatedConfigParser {
             transletRule.setDescriptionRule(descriptionRule);
         }
 
-        relater.relay(transletRule);
+        configRelater.relay(transletRule);
     }
 
     private TransformRule parseTransformRule(Transform transformAnno) {
