@@ -177,12 +177,30 @@
         </properties>
         <properties profile="rss-lettuce">
             <item name="sessionStoreFactory">
-                <bean class="com.aspectran.core.component.session.redis.lettuce.LettuceSessionStoreFactory">
+                <bean class="com.aspectran.core.component.session.redis.lettuce.DefaultLettuceSessionStoreFactory">
                     <properties>
                         <item name="poolConfig">
-                            <bean class="com.aspectran.core.component.session.redis.lettuce.LettucePoolConfig">
+                            <bean class="com.aspectran.core.component.session.redis.lettuce.RedisConnectionPoolConfig">
                                 <properties>
                                     <item name="uri">redis://localhost:6379/0</item>
+                                </properties>
+                            </bean>
+                        </item>
+                        <item name="nonPersistentAttributes" type="array">
+                            <value>io.undertow.websocket.current-connections</value>
+                        </item>
+                    </properties>
+                </bean>
+            </item>
+        </properties>
+        <properties profile="rss-lettuce-cluster">
+            <item name="sessionStoreFactory">
+                <bean class="com.aspectran.core.component.session.redis.lettuce.cluster.ClusterLettuceSessionStoreFactory">
+                    <properties>
+                        <item name="poolConfig">
+                            <bean class="com.aspectran.core.component.session.redis.lettuce.cluster.RedisClusterConnectionPoolConfig">
+                                <properties>
+                                    <item name="uri">redis://127.0.0.1:6379,127.0.0.1:6380,127.0.0.1:6381</item>
                                 </properties>
                             </bean>
                         </item>

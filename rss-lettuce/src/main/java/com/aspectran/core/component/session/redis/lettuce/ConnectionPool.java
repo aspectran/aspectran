@@ -15,29 +15,19 @@
  */
 package com.aspectran.core.component.session.redis.lettuce;
 
-import com.aspectran.core.component.session.SessionData;
-import io.lettuce.core.api.StatefulRedisConnection;
-import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
+import java.util.Set;
 
 /**
- * Redis connection pool configuration using Lettuce.
- *
- * <p>Created: 2019/12/07</p>
+ * <p>Created: 2019/12/23</p>
  */
-public class LettucePoolConfig extends GenericObjectPoolConfig<StatefulRedisConnection<String, SessionData>> {
+public interface ConnectionPool<T> {
 
-    private String uri;
+    void setNonPersistentAttributes(Set<String> nonPersistentAttributes);
 
-    public LettucePoolConfig() {
-        super();
-    }
+    T getConnection() throws Exception;
 
-    public String getUri() {
-        return uri;
-    }
+    void initialize();
 
-    public void setUri(String uri) {
-        this.uri = uri;
-    }
+    void destroy();
 
 }

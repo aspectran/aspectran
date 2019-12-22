@@ -17,53 +17,50 @@ package com.aspectran.core.component.session.redis.lettuce;
 
 import com.aspectran.core.component.session.SessionData;
 import io.lettuce.core.RedisClient;
-import io.lettuce.core.RedisURI;
 import io.lettuce.core.api.StatefulRedisConnection;
 import io.lettuce.core.support.ConnectionPoolSupport;
 import org.apache.commons.pool2.impl.GenericObjectPool;
-
-import java.util.Set;
 
 /**
  * Redis connection pool using Lettuce.
  *
  * <p>Created: 2019/12/08</p>
  */
-public class LettucePool {
+public class RedisConnectionPool extends AbstractConnectionPool implements ConnectionPool<StatefulRedisConnection<String, SessionData>> {
 
-    private final LettucePoolConfig poolConfig;
-
-    private Set<String> nonPersistentAttributes;
+    private final RedisConnectionPoolConfig poolConfig;
 
     private RedisClient client;
 
     private GenericObjectPool<StatefulRedisConnection<String, SessionData>> pool;
 
-    public LettucePool(LettucePoolConfig poolConfig) {
+    public RedisConnectionPool(RedisConnectionPoolConfig poolConfig) {
         this.poolConfig = poolConfig;
     }
 
-    public void setNonPersistentAttributes(Set<String> nonPersistentAttributes) {
-        this.nonPersistentAttributes = nonPersistentAttributes;
-    }
-
-    public void initialize() {
-        if (client != null) {
-            throw new IllegalStateException("LettucePool is already initialized");
-        }
-        client = RedisClient.create(RedisURI.create(poolConfig.getUri()));
-        pool = ConnectionPoolSupport
-                .createGenericObjectPool(()
-                        -> client.connect(new SessionDataCodec(nonPersistentAttributes)), poolConfig);
-    }
-
+    @Override
     public StatefulRedisConnection<String, SessionData> getConnection() throws Exception {
         if (pool == null) {
-            throw new IllegalStateException("LettucePool is not initialized");
+            throw new IllegalStateException("RedisConnectionPool is not initialized");
         }
         return pool.borrowObject();
     }
 
+    @Override
+    public void initialize() {
+        if (client != null) {
+            throw new IllegalStateException("RedisConnectionPool is already initialized");
+        }
+        client = RedisClient.create(poolConfig.getRedisURI());
+        if (poolConfig.getClientOptions() != null) {
+            client.setOptions(poolConfig.getClientOptions());
+        }
+        pool = ConnectionPoolSupport
+                .createGenericObjectPool(()
+                        -> client.connect(new SessionDataCodec(getNonPersistentAttributes())), poolConfig);
+    }
+
+    @Override
     public void destroy() {
         if (pool != null) {
             pool.close();

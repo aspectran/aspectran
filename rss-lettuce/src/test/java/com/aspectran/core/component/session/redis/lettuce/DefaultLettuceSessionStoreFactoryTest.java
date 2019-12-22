@@ -28,14 +28,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 /**
  * <p>Created: 2019/12/08</p>
  */
-class LettuceSessionStoreFactoryTest {
+class DefaultLettuceSessionStoreFactoryTest {
 
-    public static void main(String args[]) throws Exception {
-        LettucePoolConfig poolConfig = new LettucePoolConfig();
+    public static void main(String[] args) throws Exception {
+        RedisConnectionPoolConfig poolConfig = new RedisConnectionPoolConfig();
         poolConfig.setUri("redis://localhost:6379/0");
 
         DefaultSessionManager sessionManager = new DefaultSessionManager();
-        LettuceSessionStoreFactory sessionStoreFactory = new LettuceSessionStoreFactory();
+        DefaultLettuceSessionStoreFactory sessionStoreFactory = new DefaultLettuceSessionStoreFactory();
         sessionStoreFactory.setPoolConfig(poolConfig);
         sessionManager.setSessionStoreFactory(sessionStoreFactory);
         sessionManager.initialize();

@@ -26,10 +26,6 @@ public class FileSessionStoreFactory extends AbstractSessionStoreFactory {
 
     private boolean deleteUnrestorableFiles;
 
-    public FileSessionStoreFactory() {
-        super();
-    }
-
     public void setStoreDir(String storeDir) {
         this.storeDir = storeDir;
     }

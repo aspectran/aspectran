@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.component.session.redis.lettuce;
+package com.aspectran.core.component.session.redis.lettuce.cluster;
 
 import com.aspectran.core.component.session.AbstractSessionStoreFactory;
 import com.aspectran.core.component.session.SessionStore;
@@ -25,22 +25,18 @@ import com.aspectran.core.component.session.SessionStore;
  *
  * @since 6.6.0
  */
-public class LettuceSessionStoreFactory extends AbstractSessionStoreFactory {
+public class ClusterLettuceSessionStoreFactory extends AbstractSessionStoreFactory {
 
-    private LettucePoolConfig poolConfig;
+    private RedisClusterConnectionPoolConfig poolConfig;
 
-    public LettuceSessionStoreFactory() {
-        super();
-    }
-
-    public void setPoolConfig(LettucePoolConfig poolConfig) {
+    public void setPoolConfig(RedisClusterConnectionPoolConfig poolConfig) {
         this.poolConfig = poolConfig;
     }
 
     @Override
     public SessionStore getSessionStore() {
-        LettucePool pool = new LettucePool(poolConfig);
-        LettuceSessionStore sessionStore = new LettuceSessionStore(pool);
+        RedisClusterConnectionPool pool = new RedisClusterConnectionPool(poolConfig);
+        ClusterLettuceSessionStore sessionStore = new ClusterLettuceSessionStore(pool);
         if (getNonPersistentAttributes() != null) {
             sessionStore.setNonPersistentAttributes(getNonPersistentAttributes());
         }
