@@ -15,18 +15,14 @@
  */
 package com.aspectran.core.component.session.redis.lettuce;
 
-import java.util.Set;
-
 /**
  * <p>Created: 2019/12/23</p>
  */
 public interface ConnectionPool<T> {
 
-    void setNonPersistentAttributes(Set<String> nonPersistentAttributes);
-
     T getConnection() throws Exception;
 
-    void initialize();
+    void initialize(SessionDataCodec codec);
 
     void destroy();
 

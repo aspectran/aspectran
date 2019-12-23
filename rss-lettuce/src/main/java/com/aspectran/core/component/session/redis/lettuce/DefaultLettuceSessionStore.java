@@ -34,9 +34,9 @@ public class DefaultLettuceSessionStore extends AbstractLettuceSessionStore<Stat
         super(pool);
     }
 
-    <R> R sync(Function<RedisCommands<String, SessionData>, R> s) throws Exception {
-        try (StatefulRedisConnection<String, SessionData> conn = getConnection()) {
-            return s.apply(conn.sync());
+    <R> R sync(Function<RedisCommands<String, SessionData>, R> func) throws Exception {
+        try (StatefulRedisConnection<String, SessionData> conn = getConnectionPool().getConnection()) {
+            return func.apply(conn.sync());
         }
     }
 
@@ -65,8 +65,8 @@ public class DefaultLettuceSessionStore extends AbstractLettuceSessionStore<Stat
     public void doSave(String id, SessionData data, long lastSaveTime) throws Exception {
         sync(c -> {
             if (data.getMaxInactiveInterval() > 0L) {
-                int timeout = calculateTimeout(data);
-                c.setex(id, timeout, data);
+                long timeout = calculateTimeout(data);
+                c.psetex(id, timeout, data);
             } else {
                 // Never timeout
                 c.set(id, data);

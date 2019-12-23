@@ -22,11 +22,11 @@ import io.lettuce.core.support.ConnectionPoolSupport;
 import org.apache.commons.pool2.impl.GenericObjectPool;
 
 /**
- * Redis connection pool using Lettuce.
+ * Redis connection pool based on Lettuce.
  *
  * <p>Created: 2019/12/08</p>
  */
-public class RedisConnectionPool extends AbstractConnectionPool implements ConnectionPool<StatefulRedisConnection<String, SessionData>> {
+public class RedisConnectionPool implements ConnectionPool<StatefulRedisConnection<String, SessionData>> {
 
     private final RedisConnectionPoolConfig poolConfig;
 
@@ -47,7 +47,7 @@ public class RedisConnectionPool extends AbstractConnectionPool implements Conne
     }
 
     @Override
-    public void initialize() {
+    public void initialize(SessionDataCodec codec) {
         if (client != null) {
             throw new IllegalStateException("RedisConnectionPool is already initialized");
         }
@@ -57,7 +57,7 @@ public class RedisConnectionPool extends AbstractConnectionPool implements Conne
         }
         pool = ConnectionPoolSupport
                 .createGenericObjectPool(()
-                        -> client.connect(new SessionDataCodec(getNonPersistentAttributes())), poolConfig);
+                        -> client.connect(codec), poolConfig);
     }
 
     @Override

@@ -40,8 +40,8 @@ public abstract class AbstractLettuceSessionStore<T> extends AbstractSessionStor
         this.pool = pool;
     }
 
-    public T getConnection() throws Exception {
-        return pool.getConnection();
+    protected ConnectionPool<T> getConnectionPool() throws Exception {
+        return pool;
     }
 
     @Override
@@ -74,14 +74,14 @@ public abstract class AbstractLettuceSessionStore<T> extends AbstractSessionStor
         }
     }
 
-    protected int calculateTimeout(SessionData data) {
-        return (int)(data.getMaxInactiveInterval() / 900) + (getSavePeriodSecs() * 2);
+    protected long calculateTimeout(SessionData data) {
+        return (data.getMaxInactiveInterval() / 900) + (getSavePeriodSecs() * 1000 * 2);
     }
 
     @Override
     protected void doInitialize() throws Exception {
-        pool.setNonPersistentAttributes(getNonPersistentAttributes());
-        pool.initialize();
+        SessionDataCodec codec = new SessionDataCodec(getNonPersistentAttributes());
+        pool.initialize(codec);
     }
 
     @Override

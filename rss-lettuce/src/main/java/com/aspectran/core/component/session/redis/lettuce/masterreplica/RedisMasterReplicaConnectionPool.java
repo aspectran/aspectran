@@ -16,13 +16,11 @@
 package com.aspectran.core.component.session.redis.lettuce.masterreplica;
 
 import com.aspectran.core.component.session.SessionData;
-import com.aspectran.core.component.session.redis.lettuce.AbstractConnectionPool;
 import com.aspectran.core.component.session.redis.lettuce.ConnectionPool;
 import com.aspectran.core.component.session.redis.lettuce.SessionDataCodec;
 import io.lettuce.core.ReadFrom;
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.api.StatefulRedisConnection;
-import io.lettuce.core.codec.RedisCodec;
 import io.lettuce.core.masterreplica.MasterReplica;
 import io.lettuce.core.masterreplica.StatefulRedisMasterReplicaConnection;
 import io.lettuce.core.support.ConnectionPoolSupport;
@@ -31,12 +29,11 @@ import org.apache.commons.pool2.impl.GenericObjectPool;
 import java.util.Arrays;
 
 /**
- * Redis Master-Replica connection pool using Lettuce.
+ * Redis Master-Replica connection pool based on Lettuce.
  *
  * <p>Created: 2019/12/08</p>
  */
-public class RedisMasterReplicaConnectionPool extends AbstractConnectionPool
-        implements ConnectionPool<StatefulRedisConnection<String, SessionData>> {
+public class RedisMasterReplicaConnectionPool implements ConnectionPool<StatefulRedisConnection<String, SessionData>> {
 
     private final RedisMasterReplicaConnectionPoolConfig poolConfig;
 
@@ -48,6 +45,7 @@ public class RedisMasterReplicaConnectionPool extends AbstractConnectionPool
         this.poolConfig = poolConfig;
     }
 
+    @Override
     public StatefulRedisConnection<String, SessionData> getConnection() throws Exception {
         if (pool == null) {
             throw new IllegalStateException("RedisMasterReplicaConnectionPool is not initialized");
@@ -55,7 +53,8 @@ public class RedisMasterReplicaConnectionPool extends AbstractConnectionPool
         return pool.borrowObject();
     }
 
-    public void initialize() {
+    @Override
+    public void initialize(SessionDataCodec codec) {
         if (client != null) {
             throw new IllegalStateException("RedisMasterReplicaConnectionPool is already initialized");
         }
@@ -63,7 +62,6 @@ public class RedisMasterReplicaConnectionPool extends AbstractConnectionPool
         if (poolConfig.getClientOptions() != null) {
             client.setOptions(poolConfig.getClientOptions());
         }
-        RedisCodec<String, SessionData> codec = new SessionDataCodec(getNonPersistentAttributes());
         pool = ConnectionPoolSupport
                 .createGenericObjectPool(() -> {
                     StatefulRedisMasterReplicaConnection<String, SessionData> connection =
@@ -73,6 +71,7 @@ public class RedisMasterReplicaConnectionPool extends AbstractConnectionPool
                 }, poolConfig);
     }
 
+    @Override
     public void destroy() {
         if (pool != null) {
             pool.close();

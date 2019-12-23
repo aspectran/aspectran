@@ -16,7 +16,6 @@
 package com.aspectran.core.component.session.redis.lettuce.cluster;
 
 import com.aspectran.core.component.session.SessionData;
-import com.aspectran.core.component.session.redis.lettuce.AbstractConnectionPool;
 import com.aspectran.core.component.session.redis.lettuce.ConnectionPool;
 import com.aspectran.core.component.session.redis.lettuce.SessionDataCodec;
 import io.lettuce.core.cluster.RedisClusterClient;
@@ -27,12 +26,11 @@ import org.apache.commons.pool2.impl.GenericObjectPool;
 import java.util.Arrays;
 
 /**
- * Redis cluster connection pool using Lettuce.
+ * Redis cluster connection pool based on Lettuce.
  *
  * <p>Created: 2019/12/08</p>
  */
-public class RedisClusterConnectionPool extends AbstractConnectionPool
-        implements ConnectionPool<StatefulRedisClusterConnection<String, SessionData>> {
+public class RedisClusterConnectionPool implements ConnectionPool<StatefulRedisClusterConnection<String, SessionData>> {
 
     private final RedisClusterConnectionPoolConfig poolConfig;
 
@@ -44,7 +42,15 @@ public class RedisClusterConnectionPool extends AbstractConnectionPool
         this.poolConfig = poolConfig;
     }
 
-    public void initialize() {
+    public StatefulRedisClusterConnection<String, SessionData> getConnection() throws Exception {
+        if (pool == null) {
+            throw new IllegalStateException("RedisClusterConnectionPool is not initialized");
+        }
+        return pool.borrowObject();
+    }
+
+    @Override
+    public void initialize(SessionDataCodec codec) {
         if (client != null) {
             throw new IllegalStateException("RedisClusterConnectionPool is already initialized");
         }
@@ -54,16 +60,10 @@ public class RedisClusterConnectionPool extends AbstractConnectionPool
         }
         pool = ConnectionPoolSupport
                 .createGenericObjectPool(()
-                        -> client.connect(new SessionDataCodec(getNonPersistentAttributes())), poolConfig);
+                        -> client.connect(codec), poolConfig);
     }
 
-    public StatefulRedisClusterConnection<String, SessionData> getConnection() throws Exception {
-        if (pool == null) {
-            throw new IllegalStateException("RedisClusterConnectionPool is not initialized");
-        }
-        return pool.borrowObject();
-    }
-
+    @Override
     public void destroy() {
         if (pool != null) {
             pool.close();

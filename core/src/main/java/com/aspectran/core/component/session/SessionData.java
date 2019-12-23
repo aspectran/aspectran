@@ -252,7 +252,7 @@ public class SessionData implements Serializable {
 
         List<String> attrKeys = new ArrayList<>(keys);
         // remove attributes excluded from serialization
-        if (!attrKeys.isEmpty() && nonPersistentAttributes != null) {
+        if (nonPersistentAttributes != null && !attrKeys.isEmpty()) {
             attrKeys.removeAll(nonPersistentAttributes);
         }
         for (String name : attrKeys) {
