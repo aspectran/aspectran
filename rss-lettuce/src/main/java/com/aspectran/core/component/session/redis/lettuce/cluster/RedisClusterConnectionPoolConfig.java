@@ -27,7 +27,7 @@ import java.net.URI;
 import java.util.List;
 
 /**
- * Redis cluster connection pool configuration using Lettuce.
+ * Redis cluster connection pool configuration based on Lettuce.
  *
  * <p>Created: 2019/12/07</p>
  */

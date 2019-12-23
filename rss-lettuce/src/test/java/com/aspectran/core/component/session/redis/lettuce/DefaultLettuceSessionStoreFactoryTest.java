@@ -43,7 +43,7 @@ class DefaultLettuceSessionStoreFactoryTest {
         SessionHandler sessionHandler = sessionManager.getSessionHandler();
         sessionHandler.setDefaultMaxIdleSecs(1);
 
-        SessionAgent agent = new SessionAgent(sessionManager);
+        SessionAgent agent = new SessionAgent(sessionHandler);
 
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j <= i; j++) {

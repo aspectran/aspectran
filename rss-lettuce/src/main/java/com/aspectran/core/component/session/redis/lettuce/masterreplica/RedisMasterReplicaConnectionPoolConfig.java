@@ -24,7 +24,7 @@ import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import java.util.Arrays;
 
 /**
- * Redis Master-Replica connection pool configuration using Lettuce.
+ * Redis Master-Replica connection pool configuration based on Lettuce.
  *
  * <p>Created: 2019/12/07</p>
  */
