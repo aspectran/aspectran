@@ -40,7 +40,7 @@ public abstract class AbstractLettuceSessionStore<T> extends AbstractSessionStor
         this.pool = pool;
     }
 
-    protected ConnectionPool<T> getConnectionPool() throws Exception {
+    protected ConnectionPool<T> getConnectionPool() {
         return pool;
     }
 
@@ -75,7 +75,11 @@ public abstract class AbstractLettuceSessionStore<T> extends AbstractSessionStor
     }
 
     protected long calculateTimeout(SessionData data) {
-        return (data.getMaxInactiveInterval() / 900) + (getSavePeriodSecs() * 1000 * 2);
+        if (data.getMaxInactiveInterval() > 0L) {
+            return (long)(data.getMaxInactiveInterval() / 0.9) + (getSavePeriodSecs() * 1000 * 2);
+        } else {
+            return 0L;
+        }
     }
 
     @Override

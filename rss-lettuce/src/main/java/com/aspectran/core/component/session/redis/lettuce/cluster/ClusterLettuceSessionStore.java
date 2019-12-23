@@ -66,8 +66,8 @@ public class ClusterLettuceSessionStore extends AbstractLettuceSessionStore<Stat
     @Override
     public void doSave(String id, SessionData data, long lastSaveTime) throws Exception {
         sync(c -> {
-            if (data.getMaxInactiveInterval() > 0L) {
-                long timeout = calculateTimeout(data);
+            long timeout = calculateTimeout(data);
+            if (timeout > 0L) {
                 c.psetex(id, timeout, data);
             } else {
                 // Never timeout

@@ -30,40 +30,44 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 class DefaultLettuceSessionStoreFactoryTest {
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         RedisConnectionPoolConfig poolConfig = new RedisConnectionPoolConfig();
         poolConfig.setUri("redis://localhost:6379/0");
 
         DefaultSessionManager sessionManager = new DefaultSessionManager();
-        DefaultLettuceSessionStoreFactory sessionStoreFactory = new DefaultLettuceSessionStoreFactory();
-        sessionStoreFactory.setPoolConfig(poolConfig);
-        sessionManager.setSessionStoreFactory(sessionStoreFactory);
-        sessionManager.initialize();
+        try {
+            DefaultLettuceSessionStoreFactory sessionStoreFactory = new DefaultLettuceSessionStoreFactory();
+            sessionStoreFactory.setPoolConfig(poolConfig);
+            sessionManager.setSessionStoreFactory(sessionStoreFactory);
+            sessionManager.initialize();
 
-        SessionHandler sessionHandler = sessionManager.getSessionHandler();
-        sessionHandler.setDefaultMaxIdleSecs(1);
+            SessionHandler sessionHandler = sessionManager.getSessionHandler();
+            sessionHandler.setDefaultMaxIdleSecs(1);
 
-        SessionAgent agent = new SessionAgent(sessionHandler);
+            SessionAgent agent = new SessionAgent(sessionHandler);
 
-        for (int i = 0; i < 10; i++) {
-            for (int j = 0; j <= i; j++) {
-                agent.setAttribute("key-" + j, "val-" + j);
+            for (int i = 0; i < 10; i++) {
+                for (int j = 0; j <= i; j++) {
+                    agent.setAttribute("key-" + j, "val-" + j);
+                }
+
+                Enumeration<String> enumeration = agent.getAttributeNames();
+                while (enumeration.hasMoreElements()) {
+                    String key = enumeration.nextElement();
+                    String val = agent.getAttribute(key);
+                    assertEquals(key, "key" + val.substring(val.indexOf('-')));
+                }
+
+                TimeUnit.MILLISECONDS.sleep(30);
             }
+            agent.complete();
 
-            Enumeration<String> enumeration = agent.getAttributeNames();
-            while (enumeration.hasMoreElements()) {
-                String key = enumeration.nextElement();
-                String val = agent.getAttribute(key);
-                assertEquals(key, "key" + val.substring(val.indexOf('-')));
-            }
-
-            TimeUnit.MILLISECONDS.sleep(30);
+            await().atMost(3, TimeUnit.SECONDS).until(() -> sessionHandler.getSessionCache().getActiveSessionCount() == 0);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            sessionManager.destroy();
         }
-        agent.complete();
-
-        await().atMost(3, TimeUnit.SECONDS).until(() -> sessionHandler.getSessionCache().getActiveSessionCount() == 0);
-
-        sessionManager.destroy();
     }
 
 }
