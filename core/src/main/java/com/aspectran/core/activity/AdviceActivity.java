@@ -290,7 +290,7 @@ public abstract class AdviceActivity extends AbstractActivity {
                         }
                     }
                 }
-            } catch(Exception e) {
+            } catch (Exception e) {
                 if (aspectAdviceRule.getAspectRule().isIsolated()) {
                     log.error("Failed to execute an isolated advice action " + aspectAdviceRule, e);
                 } else {

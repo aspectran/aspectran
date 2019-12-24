@@ -192,10 +192,12 @@ public class TowResponseAdapter extends AbstractResponseAdapter {
 
     @Override
     public void flush() throws IOException {
-        if (writer != null) {
-            writer.flush();
-        } else {
-            getHttpServerExchange().getOutputStream().flush();
+        if (getHttpServerExchange().isResponseStarted()) {
+            if (writer != null) {
+                writer.flush();
+            } else {
+                getHttpServerExchange().getOutputStream().flush();
+            }
         }
     }
 
@@ -211,7 +213,8 @@ public class TowResponseAdapter extends AbstractResponseAdapter {
             } else {
                 realPath = CanonicalPathUtils.canonicalize(path);
             }
-            String url = getHttpServerExchange().getRequestScheme() + "://" + getHttpServerExchange().getHostAndPort() + realPath;
+            String url = getHttpServerExchange().getRequestScheme() + "://" +
+                    getHttpServerExchange().getHostAndPort() + realPath;
             getHttpServerExchange().getResponseHeaders().put(Headers.LOCATION, url);
         }
     }

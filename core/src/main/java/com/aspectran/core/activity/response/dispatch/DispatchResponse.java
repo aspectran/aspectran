@@ -139,7 +139,7 @@ public class DispatchResponse implements Response {
                 }
             }
             return viewDispatcher;
-        } catch(Exception e) {
+        } catch (Exception e) {
             throw new ViewDispatcherException("Unable to determine ViewDispatcher", e);
         }
     }

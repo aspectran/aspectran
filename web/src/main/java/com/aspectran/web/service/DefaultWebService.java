@@ -165,12 +165,14 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
             }
         } catch (Exception e) {
             log.error("An error occurred while processing request: " + requestUri, e);
-            if (e.getCause() instanceof RequestMethodNotAllowedException) {
-                response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
-            } else if (e.getCause() instanceof SizeLimitExceededException) {
-                response.sendError(HttpServletResponse.SC_REQUEST_ENTITY_TOO_LARGE);
-            } else {
-                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            if (!response.isCommitted()) {
+                if (e.getCause() instanceof RequestMethodNotAllowedException) {
+                    response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+                } else if (e.getCause() instanceof SizeLimitExceededException) {
+                    response.sendError(HttpServletResponse.SC_REQUEST_ENTITY_TOO_LARGE);
+                } else {
+                    response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                }
             }
         }
     }

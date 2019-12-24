@@ -20,6 +20,7 @@ import com.aspectran.core.component.session.redis.lettuce.ConnectionPool;
 import com.aspectran.core.component.session.redis.lettuce.SessionDataCodec;
 import io.lettuce.core.ReadFrom;
 import io.lettuce.core.RedisClient;
+import io.lettuce.core.RedisURI;
 import io.lettuce.core.api.StatefulRedisConnection;
 import io.lettuce.core.masterreplica.MasterReplica;
 import io.lettuce.core.masterreplica.StatefulRedisMasterReplicaConnection;
@@ -58,14 +59,22 @@ public class RedisMasterReplicaConnectionPool implements ConnectionPool<Stateful
         if (client != null) {
             throw new IllegalStateException("RedisMasterReplicaConnectionPool is already initialized");
         }
+        RedisURI[] redisURIs = poolConfig.getRedisURIs();
+        if (redisURIs == null || redisURIs.length == 0) {
+            throw new IllegalArgumentException("redisURIs must not be null or empty");
+        }
         client = RedisClient.create();
         if (poolConfig.getClientOptions() != null) {
             client.setOptions(poolConfig.getClientOptions());
         }
         pool = ConnectionPoolSupport
                 .createGenericObjectPool(() -> {
-                    StatefulRedisMasterReplicaConnection<String, SessionData> connection =
-                        MasterReplica.connect(client, codec, Arrays.asList(poolConfig.getRedisURIs()));
+                    StatefulRedisMasterReplicaConnection<String, SessionData> connection;
+                    if (redisURIs.length == 1) {
+                        connection = MasterReplica.connect(client, codec, redisURIs[0]);
+                    } else {
+                        connection = MasterReplica.connect(client, codec, Arrays.asList(redisURIs));
+                    }
                     connection.setReadFrom(ReadFrom.MASTER_PREFERRED);
                     return connection;
                 }, poolConfig);
@@ -75,9 +84,11 @@ public class RedisMasterReplicaConnectionPool implements ConnectionPool<Stateful
     public void destroy() {
         if (pool != null) {
             pool.close();
+            pool = null;
         }
         if (client != null) {
             client.shutdown();
+            client = null;
         }
     }
 

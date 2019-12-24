@@ -17,6 +17,8 @@ package com.aspectran.core.component.session.redis.lettuce;
 
 import com.aspectran.core.component.session.AbstractSessionStoreFactory;
 import com.aspectran.core.component.session.SessionStore;
+import com.aspectran.core.util.logging.Log;
+import com.aspectran.core.util.logging.LogFactory;
 
 /**
  * Factory that creates a Redis-based session store using Lettuce as a client.
@@ -26,6 +28,8 @@ import com.aspectran.core.component.session.SessionStore;
  * @since 6.6.0
  */
 public class DefaultLettuceSessionStoreFactory extends AbstractSessionStoreFactory {
+
+    private static final Log log = LogFactory.getLog(DefaultLettuceSessionStoreFactory.class);
 
     private RedisConnectionPoolConfig poolConfig;
 
@@ -39,6 +43,9 @@ public class DefaultLettuceSessionStoreFactory extends AbstractSessionStoreFacto
 
     @Override
     public SessionStore getSessionStore() {
+        if (log.isDebugEnabled()) {
+            log.debug("RedisMasterReplicaConnectionPoolConfig " + poolConfig);
+        }
         RedisConnectionPool pool = new RedisConnectionPool(poolConfig);
         DefaultLettuceSessionStore sessionStore = new DefaultLettuceSessionStore(pool);
         if (getNonPersistentAttributes() != null) {

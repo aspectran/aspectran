@@ -17,6 +17,7 @@ package com.aspectran.core.component.session.redis.lettuce;
 
 import com.aspectran.core.component.session.SessionData;
 import com.aspectran.core.util.StringUtils;
+import com.aspectran.core.util.ToStringBuilder;
 import io.lettuce.core.ClientOptions;
 import io.lettuce.core.RedisURI;
 import io.lettuce.core.api.StatefulRedisConnection;
@@ -61,6 +62,14 @@ public class RedisConnectionPoolConfig extends GenericObjectPoolConfig<StatefulR
 
     public void setClientOptions(ClientOptions clientOptions) {
         this.clientOptions = clientOptions;
+    }
+
+    @Override
+    public String toString() {
+        ToStringBuilder tsb = new ToStringBuilder();
+        tsb.append("redisURI", redisURI);
+        tsb.append("clientOptions", clientOptions);
+        return tsb.toString();
     }
 
 }

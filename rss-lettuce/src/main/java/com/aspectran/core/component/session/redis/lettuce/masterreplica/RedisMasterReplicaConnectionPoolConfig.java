@@ -16,6 +16,8 @@
 package com.aspectran.core.component.session.redis.lettuce.masterreplica;
 
 import com.aspectran.core.component.session.SessionData;
+import com.aspectran.core.util.StringUtils;
+import com.aspectran.core.util.ToStringBuilder;
 import io.lettuce.core.ClientOptions;
 import io.lettuce.core.RedisURI;
 import io.lettuce.core.api.StatefulRedisConnection;
@@ -56,12 +58,28 @@ public class RedisMasterReplicaConnectionPoolConfig extends GenericObjectPoolCon
         this.redisURIs = Arrays.stream(nodes).map(RedisURI::create).toArray(RedisURI[]::new);
     }
 
+    public void setUri(String uri) {
+        if (!StringUtils.hasText(uri)) {
+            throw new IllegalArgumentException("uri must not be null or empty");
+        }
+        RedisURI redisURI = RedisURI.create(uri);
+        this.redisURIs = new RedisURI[] {redisURI};
+    }
+
     public ClientOptions getClientOptions() {
         return clientOptions;
     }
 
     public void setClientOptions(ClientOptions clientOptions) {
         this.clientOptions = clientOptions;
+    }
+
+    @Override
+    public String toString() {
+        ToStringBuilder tsb = new ToStringBuilder();
+        tsb.append("redisURIs", redisURIs);
+        tsb.append("clientOptions", clientOptions);
+        return tsb.toString();
     }
 
 }

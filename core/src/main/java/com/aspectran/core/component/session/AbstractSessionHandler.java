@@ -161,8 +161,7 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
             fireSessionCreatedListeners(session);
             return session;
         } catch (Exception e) {
-            log.warn("Failed to create a new session", e);
-            return null;
+            throw new RuntimeException("Could not create a new session", e);
         }
     }
 

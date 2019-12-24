@@ -17,6 +17,7 @@ package com.aspectran.core.component.session.redis.lettuce;
 
 import com.aspectran.core.component.session.SessionData;
 import io.lettuce.core.RedisClient;
+import io.lettuce.core.RedisURI;
 import io.lettuce.core.api.StatefulRedisConnection;
 import io.lettuce.core.support.ConnectionPoolSupport;
 import org.apache.commons.pool2.impl.GenericObjectPool;
@@ -51,7 +52,11 @@ public class RedisConnectionPool implements ConnectionPool<StatefulRedisConnecti
         if (client != null) {
             throw new IllegalStateException("RedisConnectionPool is already initialized");
         }
-        client = RedisClient.create(poolConfig.getRedisURI());
+        RedisURI redisURI = poolConfig.getRedisURI();
+        if (redisURI == null) {
+            throw new IllegalArgumentException("redisURI must not be null");
+        }
+        client = RedisClient.create(redisURI);
         if (poolConfig.getClientOptions() != null) {
             client.setOptions(poolConfig.getClientOptions());
         }

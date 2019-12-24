@@ -271,7 +271,7 @@ public class CoreActivity extends AdviceActivity {
                     response();
                 }
                 if (isExceptionRaised()) {
-                    throw getRootCauseOfRaisedException();
+                    throw getRaisedException();
                 }
             }
 

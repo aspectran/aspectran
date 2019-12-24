@@ -75,7 +75,7 @@ public class SqlSessionFactoryBean implements ApplicationAdapterAware, Initializ
             originalClassLoader = ClassUtils.overrideThreadContextClassLoader(applicationAdapter.getClassLoader());
             SqlSessionFactoryBuilder sqlSessionFactoryBuilder = new SqlSessionFactoryBuilder();
             return sqlSessionFactoryBuilder.build(reader, environment, properties);
-        } catch(Exception ex) {
+        } catch (Exception ex) {
             throw new IllegalArgumentException("Failed to parse mybatis config resource: " +
                     configLocation, ex);
         } finally {

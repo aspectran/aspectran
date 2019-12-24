@@ -129,7 +129,9 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
 
     @Override
     public void flush() throws IOException {
-        ((HttpServletResponse)getAdaptee()).flushBuffer();
+        if (((HttpServletResponse)getAdaptee()).isCommitted()) {
+            ((HttpServletResponse)getAdaptee()).flushBuffer();
+        }
     }
 
     @Override

@@ -17,6 +17,7 @@ package com.aspectran.core.component.session.redis.lettuce.cluster;
 
 import com.aspectran.core.component.session.SessionData;
 import com.aspectran.core.util.StringUtils;
+import com.aspectran.core.util.ToStringBuilder;
 import io.lettuce.core.RedisURI;
 import io.lettuce.core.cluster.ClusterClientOptions;
 import io.lettuce.core.cluster.RedisClusterURIUtil;
@@ -66,6 +67,14 @@ public class RedisClusterConnectionPoolConfig extends GenericObjectPoolConfig<St
 
     public void setClusterClientOptions(ClusterClientOptions clusterClientOptions) {
         this.clusterClientOptions = clusterClientOptions;
+    }
+
+    @Override
+    public String toString() {
+        ToStringBuilder tsb = new ToStringBuilder();
+        tsb.append("redisURIs", redisURIs);
+        tsb.append("clusterClientOptions", clusterClientOptions);
+        return tsb.toString();
     }
 
 }
