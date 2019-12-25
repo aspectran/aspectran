@@ -17,6 +17,7 @@ package com.aspectran.shell.jline.console;
 
 import com.aspectran.shell.command.ConsoleTerminatedException;
 import com.aspectran.shell.console.AbstractConsole;
+import org.jline.builtins.Widgets.AutosuggestionWidgets;
 import org.jline.reader.EndOfFileException;
 import org.jline.reader.History;
 import org.jline.reader.LineReader;
@@ -75,9 +76,8 @@ public class JLineConsole extends AbstractConsole {
                 .encoding(getEncoding())
                 .build();
 
-        this.commandCompleter = new CommandCompleter(this);
-        this.commandHighlighter = new CommandHighlighter(this);
-        this.commandHistory = new DefaultHistory();
+        this.dumb = Terminal.TYPE_DUMB.equals(terminal.getType());
+        this.dumbColor = Terminal.TYPE_DUMB_COLOR.equals(terminal.getType());
 
         this.reader = LineReaderBuilder.builder()
                 .appName(APP_NAME)
@@ -85,6 +85,10 @@ public class JLineConsole extends AbstractConsole {
                 .build();
         this.reader.setOpt(LineReader.Option.DISABLE_EVENT_EXPANSION);
         this.reader.unsetOpt(LineReader.Option.INSERT_TAB);
+
+        this.commandCompleter = new CommandCompleter(this);
+        this.commandHighlighter = new CommandHighlighter(this);
+        this.commandHistory = new DefaultHistory();
 
         this.commandReader = LineReaderBuilder.builder()
                 .appName(APP_NAME)
@@ -96,8 +100,30 @@ public class JLineConsole extends AbstractConsole {
         this.commandReader.setOpt(LineReader.Option.DISABLE_EVENT_EXPANSION);
         this.commandReader.unsetOpt(LineReader.Option.INSERT_TAB);
 
-        this.dumb = Terminal.TYPE_DUMB.equals(terminal.getType());
-        this.dumbColor = Terminal.TYPE_DUMB_COLOR.equals(terminal.getType());
+        AutosuggestionWidgets autosuggestionWidgets = new AutosuggestionWidgets(commandReader);
+        autosuggestionWidgets.enable();
+    }
+
+    @Override
+    public void setCommandHistoryFile(String historyFile) {
+        commandReader.setVariable(LineReader.HISTORY_FILE, historyFile);
+        commandHistory.attach(commandReader);
+    }
+
+    @Override
+    public List<String> getCommandHistory() {
+        List<String> result = new ArrayList<>(commandHistory.size());
+        commandHistory.forEach(e -> result.add(e.line()));
+        return result;
+    }
+
+    @Override
+    public void clearCommandHistory() {
+        try {
+            commandHistory.purge();
+        } catch (IOException e) {
+            // ignore
+        }
     }
 
     @Override
@@ -362,28 +388,6 @@ public class JLineConsole extends AbstractConsole {
         }
         String yn = readLine(confirm);
         return (yn.isEmpty() || yn.equalsIgnoreCase("Y"));
-    }
-
-    @Override
-    public List<String> getCommandHistory() {
-        List<String> result = new ArrayList<>(commandHistory.size());
-        commandHistory.forEach(e -> result.add(e.line()));
-        return result;
-    }
-
-    @Override
-    public void clearCommandHistory() {
-        try {
-            commandHistory.purge();
-        } catch (IOException e) {
-            // ignore
-        }
-    }
-
-    @Override
-    public void setCommandHistoryFile(String historyFile) {
-        commandReader.setVariable(LineReader.HISTORY_FILE, historyFile);
-        commandHistory.attach(commandReader);
     }
 
 }

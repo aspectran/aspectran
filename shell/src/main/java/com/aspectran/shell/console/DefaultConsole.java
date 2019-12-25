@@ -45,6 +45,20 @@ public class DefaultConsole extends AbstractConsole {
     }
 
     @Override
+    public void setCommandHistoryFile(String historyFile) {
+    }
+
+    @Override
+    @SuppressWarnings({"unchecked"})
+    public List<String> getCommandHistory() {
+        return Collections.EMPTY_LIST;
+    }
+
+    @Override
+    public void clearCommandHistory() {
+    }
+
+    @Override
     public String readCommandLine() {
         String prompt = getCommandPrompt();
         return readCommandLine(prompt);
@@ -278,22 +292,6 @@ public class DefaultConsole extends AbstractConsole {
         String confirm = "Are you sure you want to quit [Y/n]? ";
         String yn = readLine(confirm);
         return (yn.isEmpty() || yn.equalsIgnoreCase("Y"));
-    }
-
-    @Override
-    @SuppressWarnings({"unchecked"})
-    public List<String> getCommandHistory() {
-        return Collections.EMPTY_LIST;
-    }
-
-    @Override
-    public void clearCommandHistory() {
-        // History not supported
-    }
-
-    @Override
-    public void setCommandHistoryFile(String historyFile) {
-        // History not supported
     }
 
 }

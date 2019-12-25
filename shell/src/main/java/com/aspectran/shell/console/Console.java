@@ -43,6 +43,26 @@ public interface Console {
 
     char MASK_CHAR = '*';
 
+    String getEncoding();
+
+    String getCommandPrompt();
+
+    void setCommandPrompt(String commandPrompt);
+
+    File getWorkingDir();
+
+    void setWorkingDir(File workingDir);
+
+    CommandInterpreter getInterpreter();
+
+    void setInterpreter(CommandInterpreter interpreter);
+
+    void setCommandHistoryFile(String historyFile);
+
+    List<String> getCommandHistory();
+
+    void clearCommandHistory();
+
     String readCommandLine();
 
     String readCommandLine(String prompt);
@@ -100,25 +120,5 @@ public interface Console {
     boolean confirmRestart(String message);
 
     boolean confirmQuit();
-
-    String getEncoding();
-
-    String getCommandPrompt();
-
-    void setCommandPrompt(String commandPrompt);
-
-    List<String> getCommandHistory();
-
-    void clearCommandHistory();
-
-    void setCommandHistoryFile(String historyFile);
-
-    File getWorkingDir();
-
-    void setWorkingDir(File workingDir);
-
-    CommandInterpreter getInterpreter();
-
-    void setInterpreter(CommandInterpreter interpreter);
 
 }

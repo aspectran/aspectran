@@ -33,6 +33,56 @@ public class ConsoleWrapper implements Console {
     }
 
     @Override
+    public String getEncoding() {
+        return console.getEncoding();
+    }
+
+    @Override
+    public String getCommandPrompt() {
+        return console.getCommandPrompt();
+    }
+
+    @Override
+    public void setCommandPrompt(String commandPrompt) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public File getWorkingDir() {
+        return console.getWorkingDir();
+    }
+
+    @Override
+    public void setWorkingDir(File workingDir) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public CommandInterpreter getInterpreter() {
+        return console.getInterpreter();
+    }
+
+    @Override
+    public void setInterpreter(CommandInterpreter interpreter) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void setCommandHistoryFile(String historyFile) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public List<String> getCommandHistory() {
+        return console.getCommandHistory();
+    }
+
+    @Override
+    public void clearCommandHistory() {
+        console.clearCommandHistory();
+    }
+
+    @Override
     public String readCommandLine() {
         return console.readCommandLine();
     }
@@ -195,56 +245,6 @@ public class ConsoleWrapper implements Console {
     @Override
     public boolean confirmQuit() {
         return console.confirmQuit();
-    }
-
-    @Override
-    public String getEncoding() {
-        return console.getEncoding();
-    }
-
-    @Override
-    public String getCommandPrompt() {
-        return console.getCommandPrompt();
-    }
-
-    @Override
-    public void setCommandPrompt(String commandPrompt) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public List<String> getCommandHistory() {
-        return console.getCommandHistory();
-    }
-
-    @Override
-    public void clearCommandHistory() {
-        console.clearCommandHistory();
-    }
-
-    @Override
-    public void setCommandHistoryFile(String historyFile) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public File getWorkingDir() {
-        return console.getWorkingDir();
-    }
-
-    @Override
-    public void setWorkingDir(File workingDir) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public CommandInterpreter getInterpreter() {
-        return console.getInterpreter();
-    }
-
-    @Override
-    public void setInterpreter(CommandInterpreter interpreter) {
-        throw new UnsupportedOperationException();
     }
 
 }
