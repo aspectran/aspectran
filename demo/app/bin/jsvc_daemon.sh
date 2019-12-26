@@ -116,7 +116,7 @@ fi
 # Set the default service-start wait time if necessary
 test ".$SERVICE_START_WAIT_TIME" = . && SERVICE_START_WAIT_TIME=10
 # Set -pidfile
-test ".$DAEMON_PID" = . && DAEMON_PID="$BASE_DIR/jsvc_daemon.pid"
+test ".$DAEMON_PID" = . && DAEMON_PID="$BASE_DIR/.jsvc_daemon.pid"
 DAEMON_OUT="$BASE_DIR/logs/daemon.out"
 DAEMON_ERR="$BASE_DIR/logs/daemon.err"
 DAEMON_MAIN="com.aspectran.daemon.JsvcDaemon"
