@@ -19,7 +19,7 @@
 
     <groupId>com.aspectran</groupId>
     <artifactId>aspectran</artifactId>
-    <version>6.6.0-RC3-SNAPSHOT</version>
+    <version>6.6.0-RC3</version>
     <packaging>pom</packaging>
 
     <name>Aspectran</name>
@@ -61,7 +61,7 @@
         <url>https://github.com/aspectran/aspectran</url>
         <connection>scm:git:ssh://git@github.com/aspectran/aspectran.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/aspectran/aspectran.git</developerConnection>
-        <tag>HEAD</tag>
+        <tag>v6.6.0-RC3</tag>
     </scm>
     <issueManagement>
         <system>GitHub Issue Management</system>
