@@ -58,7 +58,7 @@ class ActivityContextBuilderTest {
     }
 
     @Test
-    void testHybridLoading() {
+    void testEcho() {
         String result = context.getTemplateRenderer().render("echo1");
         assertEquals("ECHO-1", result);
 

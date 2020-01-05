@@ -82,8 +82,8 @@ public class WebServiceHolder {
     public static ActivityContext getActivityContext(ServletContext servletContext) {
         ActivityContext activityContext = getActivityContext(servletContext, ROOT_WEB_SERVICE_ATTR_NAME);
         if (activityContext == null) {
-            throw new IllegalStateException("No Root DefaultWebService found; " +
-                    "No AspectranServiceListener registered?");
+            throw new IllegalStateException("No root DefaultWebService found; " +
+                    "No WebServiceListener registered?");
         }
         return activityContext;
     }

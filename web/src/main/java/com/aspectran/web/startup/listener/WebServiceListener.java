@@ -23,23 +23,23 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
 /**
- * The listener interface for receiving AspectranService events.
+ * The Class WebServiceListener.
  */
-public class AspectranServiceListener implements ServletContextListener {
+public class WebServiceListener implements ServletContextListener {
 
-    private static final Log log = LogFactory.getLog(AspectranServiceListener.class);
+    private static final Log log = LogFactory.getLog(WebServiceListener.class);
 
     private DefaultWebService webService;
 
     @Override
     public void contextInitialized(ServletContextEvent event) {
-        log.info("Initializing AspectranServiceListener...");
+        log.info("Initializing WebServiceListener...");
 
         try {
             webService = DefaultWebService.create(event.getServletContext());
             webService.start();
         } catch (Exception e) {
-            log.error("AspectranServiceListener initialization failed", e);
+            log.error("WebServiceListener initialization failed", e);
         }
     }
 
@@ -51,7 +51,7 @@ public class AspectranServiceListener implements ServletContextListener {
             webService.stop();
             webService = null;
 
-            log.info("Successfully destroyed AspectranServiceListener: " + this);
+            log.info("Successfully destroyed WebServiceListener: " + this);
         }
     }
 
