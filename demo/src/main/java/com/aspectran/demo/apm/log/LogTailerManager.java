@@ -73,7 +73,7 @@ public class LogTailerManager {
         if (names != null) {
             for (String name : names) {
                 LogTailer tailer = tailers.get(name);
-                if (tailer != null && tailer.isRunning() && !isBeingUsedTailer(name)) {
+                if (tailer != null && tailer.isRunning() && !isUsingTailer(name)) {
                     try {
                         tailer.stop();
                     } catch (Exception e) {
@@ -84,7 +84,7 @@ public class LogTailerManager {
         }
     }
 
-    private boolean isBeingUsedTailer(String name) {
+    private boolean isUsingTailer(String name) {
         for (Session session : endpoint.getSessions()) {
             String[] names = (String[])session.getUserProperties().get(TAILERS_PROPERTY);
             if (names != null) {
