@@ -17,6 +17,9 @@ package com.aspectran.core.util.thread;
 
 import java.util.concurrent.TimeUnit;
 
+/**
+ * <p>This class is a clone of org.eclipse.jetty.util.thread.Scheduler</p>
+ */
 public interface Scheduler {
 
     Task schedule(Runnable task, long delay, TimeUnit units);

@@ -18,117 +18,174 @@ package com.aspectran.core.util.timer;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 import com.aspectran.core.util.thread.Scheduler;
-import com.aspectran.core.util.thread.Scheduler.Task;
 
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * An Abstract implementation of an Idle Timeout.
+ * <p>This class is a clone of org.eclipse.jetty.io.IdleTimeout</p>
  *
- * <p>Created: 2017. 6. 25.</p>
+ * An Abstract implementation of an Idle Timeout.
+ * <p>
+ * This implementation is optimised that timeout operations are not cancelled on
+ * every operation. Rather timeout are allowed to expire and a check is then made
+ * to see when the last operation took place.  If the idle timeout has not expired,
+ * the timeout is rescheduled for the earliest possible time a timeout could occur.</p>
  */
 public abstract class IdleTimeout {
 
     private static final Log log = LogFactory.getLog(IdleTimeout.class);
 
-    private final AtomicReference<Task> timeout = new AtomicReference<>();
-
     private final Scheduler scheduler;
+
+    private final AtomicReference<Scheduler.Task> timeout = new AtomicReference<>();
 
     private volatile long idleTimeout;
 
-    private volatile long idleTimestamp = System.currentTimeMillis();
+    private volatile long idleTimestamp = System.nanoTime();
 
-    private final Runnable idleTask = () -> {
-        long idleLeft = checkIdleTimeout();
-        if (idleLeft >= 0) {
-            scheduleIdleTimeout(idleLeft > 0 ? idleLeft : getIdleTimeout());
-        }
-    };
-
+    /**
+     * @param scheduler A scheduler used to schedule checks for the idle timeout
+     */
     public IdleTimeout(Scheduler scheduler) {
         this.scheduler = scheduler;
     }
 
+    public Scheduler getScheduler() {
+        return scheduler;
+    }
+
+    /**
+     * @return the period of time, in milliseconds, that this object was idle
+     */
+    public long getIdleFor() {
+        return TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - idleTimestamp);
+    }
+
+    /**
+     * @return the idle timeout in milliseconds
+     * @see #setIdleTimeout(long)
+     */
     public long getIdleTimeout() {
         return idleTimeout;
     }
 
+    /**
+     * <p>Sets the idle timeout in milliseconds.</p>
+     * <p>A value that is less than or zero disables the idle timeout checks.</p>
+     *
+     * @param idleTimeout the idle timeout in milliseconds
+     * @see #getIdleTimeout()
+     */
     public void setIdleTimeout(long idleTimeout) {
         long old = this.idleTimeout;
         this.idleTimeout = idleTimeout;
 
-        if (old > 0L) {
-            if(old <= idleTimeout) {
+        // Do we have an old timeout
+        if (old > 0) {
+            // if the old was less than or equal to the new timeout, then nothing more to do
+            if (old <= idleTimeout) {
                 return;
             }
+
+            // old timeout is too long, so cancel it.
             deactivate();
         }
 
-        if (isValid()) {
+        // If we have a new timeout, then check and reschedule
+        if (isOpen()) {
             activate();
         }
     }
 
+    /**
+     * This method should be called when non-idle activity has taken place.
+     */
     public void notIdle() {
-        idleTimestamp = System.currentTimeMillis();
+        idleTimestamp = System.nanoTime();
     }
 
-    private void activate() {
-        if (idleTimeout > 0) {
-            idleTask.run();
-        }
-    }
-
-    private void deactivate() {
-        Task oldTimeout = timeout.getAndSet(null);
-        if (oldTimeout != null) {
-            oldTimeout.cancel();
+    private void idleCheck() {
+        long idleLeft = checkIdleTimeout();
+        if (idleLeft >= 0) {
+            scheduleIdleTimeout(idleLeft > 0 ? idleLeft : getIdleTimeout());
         }
     }
 
     private void scheduleIdleTimeout(long delay) {
-        Task newTimeout = null;
-        if (isValid() && delay > 0L) {
-            newTimeout = scheduler.schedule(idleTask, delay, TimeUnit.MILLISECONDS);
+        Scheduler.Task newTimeout = null;
+        if (isOpen() && delay > 0 && scheduler != null) {
+            newTimeout = scheduler.schedule(this::idleCheck, delay, TimeUnit.MILLISECONDS);
         }
-
-        Task oldTimeout = timeout.getAndSet(newTimeout);
+        Scheduler.Task oldTimeout = timeout.getAndSet(newTimeout);
         if (oldTimeout != null) {
             oldTimeout.cancel();
         }
     }
 
-    private long checkIdleTimeout() {
-        if (!isValid()) {
-            return -1L;
-        }
-
-        long idleTimestamp = this.idleTimestamp;
-        long idleTimeout = this.idleTimeout;
-        long idleElapsed = System.currentTimeMillis() - idleTimestamp;
-        long idleLeft = idleTimeout - idleElapsed;
-
-        if (log.isTraceEnabled()) {
-            log.trace(this + " idle timeout check, elapsed: " + idleElapsed + " ms, remaining: " + idleLeft + " ms");
-        }
-
-        if (idleTimestamp != 0L && idleTimeout > 0L) {
-            if (idleLeft <= 0L) {
-                try {
-                    idleExpired();
-                } finally {
-                    notIdle();
-                }
-            }
-        }
-
-        return (idleLeft >= 0L ? idleLeft : 0L);
+    public void onOpen() {
+        activate();
     }
 
-    public abstract boolean isValid();
+    private void activate() {
+        if (idleTimeout > 0) {
+            idleCheck();
+        }
+    }
 
-    protected abstract void idleExpired();
+    public void onClose() {
+        deactivate();
+    }
+
+    private void deactivate() {
+        Scheduler.Task oldTimeout = timeout.getAndSet(null);
+        if (oldTimeout != null) {
+            oldTimeout.cancel();
+        }
+    }
+
+    protected long checkIdleTimeout() {
+        if (isOpen()) {
+            long idleTimestamp = this.idleTimestamp;
+            long idleElapsed = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - idleTimestamp);
+            long idleTimeout = getIdleTimeout();
+            long idleLeft = idleTimeout - idleElapsed;
+
+            if (log.isTraceEnabled()) {
+                log.trace(this + " idle timeout check, elapsed: " + idleElapsed + " ms, remaining: " + idleLeft + " ms");
+            }
+
+            if (idleTimeout > 0) {
+                if (idleLeft <= 0) {
+                    if (log.isTraceEnabled()) {
+                        log.trace(this + " idle timeout expired");
+                    }
+                    try {
+                        onIdleExpired(new TimeoutException("Idle timeout expired: " + idleElapsed + "/" + idleTimeout + " ms"));
+                    } finally {
+                        notIdle();
+                    }
+                }
+            }
+            return (idleLeft >= 0 ? idleLeft : 0);
+        }
+        return -1;
+    }
+
+    /**
+     * This abstract method is called when the idle timeout has expired.
+     *
+     * @param timeout a TimeoutException
+     */
+    protected abstract void onIdleExpired(TimeoutException timeout);
+
+    /**
+     * This abstract method should be called to check if idle timeouts
+     * should still be checked.
+     *
+     * @return true if the entity monitored should still be checked for idle timeouts
+     */
+    public abstract boolean isOpen();
 
 }

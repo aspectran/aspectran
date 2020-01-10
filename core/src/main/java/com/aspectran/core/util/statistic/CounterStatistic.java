@@ -39,6 +39,8 @@ import java.util.concurrent.atomic.LongAccumulator;
 import java.util.concurrent.atomic.LongAdder;
 
 /**
+ * <p>This class is a clone of org.eclipse.jetty.util.statistic.CounterStatistic</p>
+ *
  * Statistics on a counter value.
  *
  * <p>Keep total, current and maximum values of a counter that

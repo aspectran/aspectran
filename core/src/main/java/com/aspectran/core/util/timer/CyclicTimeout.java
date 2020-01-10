@@ -26,6 +26,8 @@ import java.util.concurrent.atomic.AtomicReference;
 import static java.lang.Long.MAX_VALUE;
 
 /**
+ * <p>This class is a clone of org.eclipse.jetty.io.CyclicTimeout</p>
+ *
  * <p>An abstract implementation of a timeout.</p>
  * <p>Subclasses should implement {@link #onTimeoutExpired()}.</p>
  * <p>This implementation is optimised assuming that the timeout
@@ -237,7 +239,7 @@ public abstract class CyclicTimeout implements Destroyable {
                 if (timeout.at <= now) {
                     // We have timed out!
                     hasExpired = true;
-                    newTimeout = wakeup == null ? NOT_SET : new Timeout(MAX_VALUE, wakeup);
+                    newTimeout = (wakeup == null ? NOT_SET : new Timeout(MAX_VALUE, wakeup));
                 } else if (timeout.at != MAX_VALUE) {
                     // We have not timed out, but we are set to!
                     // Is the current wakeup good to use? ie before our timeout time?

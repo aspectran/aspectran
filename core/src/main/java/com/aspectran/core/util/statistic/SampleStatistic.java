@@ -39,6 +39,8 @@ import java.util.concurrent.atomic.LongAccumulator;
 import java.util.concurrent.atomic.LongAdder;
 
 /**
+ * <p>This class is a clone of org.eclipse.jetty.util.statistic.SampleStatistic</p>
+ *
  * <p>Statistics on a sampled value.</p>
  * <p>Provides max, total, mean, count, variance, and standard deviation of continuous sequence of samples.</p>
  * <p>Calculates estimates of mean, variance, and standard deviation characteristics of a sample using a non synchronized

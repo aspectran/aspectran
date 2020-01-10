@@ -20,6 +20,8 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * <p>This class is a clone of org.eclipse.jetty.util.thread.ScheduledExecutorScheduler</p>
+ *
  * Implementation of {@link Scheduler} based on JDK's {@link ScheduledThreadPoolExecutor}.
  * <p>
  * While use of {@link ScheduledThreadPoolExecutor} creates futures that will not be used,
