@@ -23,6 +23,9 @@ import com.aspectran.core.util.thread.Locker.Lock;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Function;
 
 /**
  * A base implementation of the {@link SessionCache} interface for managing a set of
@@ -154,103 +157,64 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
 
     @Override
     public DefaultSession get(String id) throws Exception {
+        AtomicBoolean resident = new AtomicBoolean(true);
+        AtomicReference<Exception> thrown = new AtomicReference<>();
         DefaultSession session;
-        Exception ex = null;
-        while (true) {
-            session = doGet(id);
-            if (sessionStore == null) {
-                break; // can't load any session data so just return null or the session object
+        session = doComputeIfAbsent(id, k -> {
+            if (log.isTraceEnabled()) {
+                log.trace("Session " + id + " not found locally in " + this + ", attempting to load");
             }
-            if (session == null) {
-                if (log.isTraceEnabled()) {
-                    log.trace("Session " + id + " not found locally, attempting to load");
-                }
-                // didn't get a session, try and create one and put in a placeholder for it
-                PlaceHolderSession phs = new PlaceHolderSession(id, sessionHandler);
-                Lock phsLock = phs.lock();
-                DefaultSession appeared = doPutIfAbsent(id, phs);
-                if (appeared == null) {
-                    // My placeholder won, go ahead and load the full session data
-                    try {
-                        session = loadSession(id);
-                        if (session == null) {
-                            // session does not exist, remove the placeholder
-                            doDelete(id);
-                            phsLock.close();
-                            break;
-                        }
-                        try (Lock ignored = session.lock()) {
-                            // swap it in instead of the placeholder
-                            boolean success = doReplace(id, phs, session);
-                            if (success) {
-                                // successfully swapped in the session
-                                session.setResident(true);
-                            } else {
-                                // something has gone wrong, it should have been our placeholder
-                                doDelete(id);
-                                session = null;
-                                log.warn("Replacement of placeholder for session " + id + " failed");
-                            }
-                            phsLock.close();
-                            break;
-                        }
-                    } catch (Exception e) {
-                        ex = e; // remember a problem happened loading the session
-                        doDelete(id); // remove the placeholder
-                        phsLock.close();
-                        session = null;
-                        break;
+            try {
+                DefaultSession stored = loadSession(k);
+                if (stored != null) {
+                    try (Lock ignored = stored.lock()) {
+                        stored.setResident(true); // ensure freshly loaded session is resident
                     }
+                    resident.set(false);
                 } else {
-                    // my placeholder didn't win, check the session returned
-                    phsLock.close();
-                    try (Lock ignored = appeared.lock()) {
-                        // is it a placeholder? or is a non-resident session?
-                        // In both cases, chuck it away and start again
-                        if (!appeared.isResident() || appeared instanceof PlaceHolderSession) {
-                            continue;
-                        }
-                        // got the session
-                        session = appeared;
-                        break;
+                    if (log.isTraceEnabled()) {
+                        log.trace("Session " + id + " not loaded by store");
                     }
                 }
-            } else {
-                // check the session returned
-                try (Lock ignored = session.lock()) {
-                    // is it a placeholder? or is it passivated? In both cases, chuck it away and start again
-                    if (!session.isResident() || session instanceof PlaceHolderSession) {
-                        continue;
+                return stored;
+            } catch (Exception e) {
+                thrown.set(e);
+                return null;
+            }
+        });
+        if (thrown.get() != null) {
+            throw thrown.get();
+        }
+        if (session != null) {
+            try (Lock ignored = session.lock()) {
+                if (!session.isResident()) {
+                    // session isn't marked as resident in cache
+                    if (log.isTraceEnabled()) {
+                        log.debug("Non-resident session " + id + " in cache");
                     }
-                    if (isClustered() && session.getRequests() <= 0) {
-                        DefaultSession stored = loadSession(id);
-                        if (stored != null) {
-                            // swap it in instead of the local session
-                            boolean success = doReplace(id, session, stored);
-                            if (success) {
-                                // successfully swapped with the stored session
-                                session = stored;
-                                session.setResident(true);
-                            } else {
-                                // something has gone wrong, it must be removed from the cache
-                                doDelete(id);
-                                session.setResident(false);
-                                session = null;
-                                log.warn("Replacement with stored session " + id + " failed");
-                            }
+                    return null;
+                }
+                if (isClustered() && resident.get() && session.getRequests() <= 0) {
+                    DefaultSession stored = loadSession(id);
+                    if (stored != null) {
+                        // swap it in instead of the local session
+                        boolean success = doReplace(id, session, stored);
+                        if (success) {
+                            // successfully swapped with the stored session
+                            session = stored;
+                            session.setResident(true);
                         } else {
-                            // is the session already destroyed? it must be removed from the cache
-                            doDelete(id);
-                            session.setResident(false);
-                            session = null;
+                            // retry because it was updated by another thread
+                            return get(id);
                         }
+                    } else {
+                        // is the session already destroyed? it must be removed from the cache
+                        doDelete(id);
+                        session.setResident(false);
+                        session = null;
                     }
-                    break;
                 }
             }
-        }
-        if (ex != null) {
-            throw ex;
         }
         return session;
     }
@@ -396,7 +360,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
      * @param id the session id
      * @return the Session object matching the id
      */
-    public abstract DefaultSession doGet(String id);
+    protected abstract DefaultSession doGet(String id);
 
     /**
      * Put the session into the map if it wasn't already there.
@@ -405,7 +369,19 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
      * @param session the session object
      * @return null if the session wasn't already in the map, or the existing entry otherwise
      */
-    public abstract DefaultSession doPutIfAbsent(String id, DefaultSession session);
+    protected abstract DefaultSession doPutIfAbsent(String id, DefaultSession session);
+
+    /**
+     * Compute the mappingFunction to create a Session object if the session
+     * with the given id isn't already in the map, otherwise return the existing Session.
+     * This method is expected to have precisely the same behaviour as
+     * {@link java.util.concurrent.ConcurrentHashMap#computeIfAbsent}
+     *
+     * @param id the session id
+     * @param mappingFunction the function to load the data for the session
+     * @return an existing Session from the cache
+     */
+    protected abstract DefaultSession doComputeIfAbsent(String id, Function<String, DefaultSession> mappingFunction);
 
     /**
      * Replace the mapping from id to oldValue with newValue.
@@ -415,7 +391,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
      * @param newValue the new value
      * @return true if replacement was done
      */
-    public abstract boolean doReplace(String id, DefaultSession oldValue, DefaultSession newValue);
+    protected abstract boolean doReplace(String id, DefaultSession oldValue, DefaultSession newValue);
 
     /**
      * Remove the session with this identity from the store.
@@ -423,7 +399,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
      * @param id the session id
      * @return true if removed; false otherwise
      */
-    public abstract DefaultSession doDelete(String id);
+    protected abstract DefaultSession doDelete(String id);
 
     @Override
     public DefaultSession renewSessionId(String oldId, String newId) throws Exception {
@@ -535,17 +511,6 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
                 }
             }
         }
-    }
-
-    /**
-     * PlaceHolder
-     */
-    static class PlaceHolderSession extends DefaultSession {
-
-        PlaceHolderSession(String id, SessionHandler sessionHandler) {
-            super(new SessionData(id, 0, 0, 0, 0), sessionHandler, false);
-        }
-
     }
 
 }

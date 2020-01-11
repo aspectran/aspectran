@@ -162,7 +162,7 @@ public class TowServletContext extends DeploymentInfo implements ApplicationAdap
 
         @Override
         public void attributeUpdated(Session session, String name, Object newValue, Object oldValue) {
-            if (oldValue != null && !oldValue.equals(newValue)) {
+            if (oldValue != null && oldValue != newValue) {
                 closeWebSockets(name, oldValue);
             }
         }
@@ -171,10 +171,8 @@ public class TowServletContext extends DeploymentInfo implements ApplicationAdap
             if ("io.undertow.websocket.current-connections".equals(name)) {
                 @SuppressWarnings("unchecked")
                 List<WebSocketChannel> connections = (List<WebSocketChannel>)oldValue;
-                if(connections != null) {
-                    for (WebSocketChannel c : new ArrayList<>(connections)) {
-                        WebSockets.sendClose(CloseReason.CloseCodes.VIOLATED_POLICY.getCode(), "", c, null);
-                    }
+                for (WebSocketChannel c : new ArrayList<>(connections)) {
+                    WebSockets.sendClose(CloseReason.CloseCodes.VIOLATED_POLICY.getCode(), "", c, null);
                 }
             }
         }

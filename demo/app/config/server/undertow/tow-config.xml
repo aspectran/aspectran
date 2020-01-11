@@ -156,7 +156,7 @@
                             evictionIdleSeconds: 900
                             scavengingIntervalSeconds: 600
                             removeUnloadableSessions: true
-                            clustered: true
+                            clustered: false
                             startup: true
                         </item>
                     </arguments>

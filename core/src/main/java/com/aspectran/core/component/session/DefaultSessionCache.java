@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Function;
 
 /**
  * Implementation of {@code SessionCache}.
@@ -60,7 +61,7 @@ public class DefaultSessionCache extends AbstractSessionCache {
     }
 
     @Override
-    public DefaultSession doGet(String id) {
+    protected DefaultSession doGet(String id) {
         if (id == null) {
             return null;
         }
@@ -68,19 +69,29 @@ public class DefaultSessionCache extends AbstractSessionCache {
     }
 
     @Override
-    public DefaultSession doPutIfAbsent(String id, DefaultSession session) {
-        checkMaxSessions();
+    protected DefaultSession doPutIfAbsent(String id, DefaultSession session) {
         DefaultSession ds = sessions.putIfAbsent(id, session);
-        if (ds == null && !(session instanceof PlaceHolderSession)) {
-            statistics.increment();
+        if (ds == null) {
+            checkMaxSessions(id);
         }
         return ds;
     }
 
     @Override
-    public DefaultSession doDelete(String id) {
+    protected DefaultSession doComputeIfAbsent(String id, Function<String, DefaultSession> mappingFunction) {
+        return sessions.computeIfAbsent(id, k -> {
+            DefaultSession ds = mappingFunction.apply(k);
+            if (ds != null) {
+                checkMaxSessions(null);
+            }
+            return ds;
+        });
+    }
+
+    @Override
+    protected DefaultSession doDelete(String id) {
         DefaultSession ds = sessions.remove(id);
-        if (ds != null && !(ds instanceof PlaceHolderSession)) {
+        if (ds != null) {
             statistics.decrement();
             expiredSessionCount.incrementAndGet();
         }
@@ -88,13 +99,21 @@ public class DefaultSessionCache extends AbstractSessionCache {
     }
 
     @Override
-    public boolean doReplace(String id, DefaultSession oldValue, DefaultSession newValue) {
-        checkMaxSessions();
-        boolean result = sessions.replace(id, oldValue, newValue);
-        if (result && oldValue instanceof PlaceHolderSession) {
+    protected boolean doReplace(String id, DefaultSession oldValue, DefaultSession newValue) {
+        return sessions.replace(id, oldValue, newValue);
+    }
+
+    private void checkMaxSessions(String id) {
+        if (maxSessions > 0 && statistics.getCurrent() >= maxSessions) {
+            if (id != null) {
+                sessions.remove(id);
+            }
+            rejectedSessionCount.incrementAndGet();
+            throw new IllegalStateException("Session was rejected as the maximum number of sessions " +
+                    maxSessions + " has been hit");
+        } else {
             statistics.increment();
         }
-        return result;
     }
 
     @Override
@@ -132,14 +151,6 @@ public class DefaultSessionCache extends AbstractSessionCache {
         statistics.reset();
         expiredSessionCount.set(0L);
         rejectedSessionCount.set(0L);
-    }
-
-    private void checkMaxSessions() {
-        if (maxSessions > 0 && statistics.getCurrent() > maxSessions) {
-            rejectedSessionCount.incrementAndGet();
-            throw new IllegalStateException("Session was rejected as the maximum number of sessions " +
-                    maxSessions + " has been hit");
-        }
     }
 
     @Override

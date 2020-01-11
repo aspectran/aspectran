@@ -1,6 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<link rel="stylesheet" href="/assets/css/logtail.css?20191126">
+<link rel="stylesheet" href="/assets/css/apm.css?20200111">
 <div class="row">
     <div class="columns small-12 large-5 t20">
         <h3>User Session Statistics</h3>
@@ -46,270 +46,293 @@
         </div>
     </div>
 </div>
-<style>
-    .stats {
-        height: 220px;
-    }
-    .stats dt {
-        float: left;
-        clear: left;
-        padding: 0;
-        margin: 0;
-        height: 40px;
-        font-size: 1.1em;
-    }
-    .stats dd {
-        text-align: right;
-        font-weight: bold;
-        font-size: 1.1em;
-        padding: 0;
-        margin: 0;
-        height: 40px;
-    }
-
-    .users-wrap {
-        height: 220px;
-        overflow-y: auto;
-        list-style-type: none;
-    }
-    .users {
-        margin-left: 0;
-    }
-    .users li {
-        list-style-type: none;
-    }
-    .users .status {
-        background-color: #13CF13;
-        width: 12px;
-        height: 12px;
-        border-radius: 50%;
-        display: inline-block;
-        margin-right: 10px;
-    }
-    .users .status.logged-out {
-        background-color: #ccc;
-    }
-</style>
 <script>
     $(function() {
-        updateSessionStats();
-        $("button.refresh").click(function() {
-            $(".box21,.box22").fadeOut();
-            updateSessionStats();
-            $(".box21,.box22").fadeIn();
-        });
+        let sessionStats = new SessionStats("/apm/stats", 5);
+        try {
+            sessionStats.openSocket();
+        } catch (e) {
+            console.error("Socket connection failed to [" + sessionStats.endpoint + "]");
+        }
     });
 
-    var updateTimer;
-    function updateSessionStats() {
-        $.ajax({
-            type: 'get',
-            dataType: 'json',
-            url: '/apm/getSessionStats',
-            async: false,
-            success: function (data) {
-                // console.log(data);
-                $(".activeSessionCount").text(data.activeSessionCount);
-                $(".highestSessionCount").text(data.highestSessionCount);
-                $(".createdSessionCount").text(data.createdSessionCount);
-                $(".expiredSessionCount").text(data.expiredSessionCount);
-                $(".rejectedSessionCount").text(data.rejectedSessionCount);
-                if (data.currentUsers) {
-                    $(".users").empty();
-                    data.currentUsers.forEach(function(username) {
-                        var status = $("<div/>").addClass("status");
-                        var name = $("<span/>").addClass("name").text(username);
-                        var li = $("<li/>").append(status).append(name);
-                        $(".users").append(li);
-                    });
-                }
-                if (updateTimer) {
-                    clearTimeout(updateTimer);
-                }
-                updateTimer = setTimeout(function() {
-                    updateSessionStats();
-                }, 60000);
-            },
-            error: function (request, status, error) {
-                console.log(error);
+    class SessionStats {
+        endpoint;
+        refreshInterval;
+        socket;
+        heartbeatTimer;
+        scrollTimer;
+
+        constructor(endpoint, refreshInterval) {
+            this.endpoint = endpoint;
+            this.refreshInterval = refreshInterval;
+        }
+
+        openSocket() {
+            if (this.socket) {
+                this.socket.close();
             }
-        });
+            let url = new URL(this.endpoint, location.href);
+            url.protocol = url.protocol.replace('https:', 'wss:');
+            url.protocol = url.protocol.replace('http:', 'ws:');
+            this.socket = new WebSocket(url.href);
+            let self = this;
+            this.socket.onopen = function (event) {
+                self.socket.send("JOIN:" + self.refreshInterval);
+                self.heartbeatPing();
+            };
+            this.socket.onmessage = function (event) {
+                if (typeof event.data === "string") {
+                    if (event.data !== "--heartbeat-pong--") {
+                        let stats = JSON.parse(event.data);
+                        self.printStats(stats);
+                    }
+                }
+                self.heartbeatPing();
+            };
+            this.socket.onclose = function (event) {
+                self.closeSocket();
+            };
+            this.socket.onerror = function (event) {
+                console.error("WebSocket error observed:", event);
+                setTimeout(function () {
+                    self.openSocket();
+                }, 60000);
+            };
+        }
+
+        closeSocket() {
+            if (this.socket) {
+                this.socket.close();
+                this.socket = null;
+            }
+        }
+
+        heartbeatPing() {
+            if (this.heartbeatTimer) {
+                clearTimeout(this.heartbeatTimer);
+            }
+            let self = this;
+            this.heartbeatTimer = setTimeout(function () {
+                if (self.socket) {
+                    self.socket.send("--heartbeat-ping--");
+                    self.heartbeatTimer = null;
+                    self.heartbeatPing();
+                }
+            }, 59000);
+        }
+
+        printStats(stats) {
+            console.log(stats);
+            $(".activeSessionCount").text(stats.activeSessionCount);
+            $(".highestSessionCount").text(stats.highestSessionCount);
+            $(".createdSessionCount").text(stats.createdSessionCount);
+            $(".expiredSessionCount").text(stats.expiredSessionCount);
+            $(".rejectedSessionCount").text(stats.rejectedSessionCount);
+            if (stats.currentUsers) {
+                $(".users").empty();
+                stats.currentUsers.forEach(function(username) {
+                    let status = $("<div/>").addClass("status");
+                    if (username.indexOf("0:") === 0) {
+                        status.addClass("logged-out")
+                    }
+                    username = username.substr(2);
+                    let name = $("<span/>").addClass("name").text(username);
+                    let li = $("<li/>").append(status).append(name);
+                    $(".users").append(li);
+                });
+            }
+        }
     }
 </script>
 <script>
-    var socket;
-    var heartbeatTimer;
-
     $(function() {
+        let logTailer = new LogTailer("/apm/logtail", "app-log");
         $(".bite-tail").click(function() {
-           var logtail = $(this).closest(".log-container").find(".log-tail");
-           switchTailBite(logtail, !logtail.data("bite"));
+            let logtail = $(this).closest(".log-container").find(".log-tail");
+            logTailer.switchTailBite(logtail, !logtail.data("bite"));
         });
         try {
-            openSocket();
+            logTailer.openSocket();
         } catch (e) {
-            printErrorMessage("Socket connection failed");
+            logTailer.printErrorMessage("Socket connection failed");
         }
     });
 
-    function openSocket() {
-        if (socket) {
-            socket.close();
+    class LogTailer {
+        endpoint;
+        tailers;
+        socket;
+        heartbeatTimer;
+        scrollTimer;
+
+        pattern1 = /^Session ([\w\.]+) complete, active requests=(\d+)/i;
+        pattern2 = /^Session ([\w\.]+) deleted in session data store/i;
+        pattern3 = /^Session ([\w\.]+) accessed, stopping timer, active requests=(\d+)/i;
+
+        constructor(endpoint, tailers) {
+            this.endpoint = endpoint;
+            this.tailers = tailers;
         }
-        var url = new URL('/apm/logtail', location.href);
-        url.protocol = url.protocol.replace('https:', 'wss:');
-        url.protocol = url.protocol.replace('http:', 'ws:');
-        socket = new WebSocket(url.href);
-        socket.onopen = function (event) {
-            printEventMessage("Socket connection successful");
-            socket.send("JOIN:app-log");
-            heartbeatPing();
-            switchTailBite(false, true);
-        };
-        socket.onmessage = function (event) {
-            if (typeof event.data === "string") {
-                var msg = event.data;
-                var idx = msg.indexOf(":");
-                if (idx !== -1) {
-                    printMessage(msg.substring(0, idx), msg.substring(idx + 1));
-                }
+
+        openSocket() {
+            if (this.socket) {
+                this.socket.close();
             }
-            heartbeatPing();
-        };
-        socket.onclose = function (event) {
-            printEventMessage('Socket connection closed. Please refresh this page to try again!');
-            closeSocket();
-        };
-        socket.onerror = function (event) {
-            console.error("WebSocket error observed:", event);
-            printErrorMessage('Could not connect to WebSocket server');
-            switchTailBite(false, false);
-            setTimeout(function() {
-                openSocket();
-            }, 60000);
-        };
-    }
-
-    function closeSocket() {
-        if (socket) {
-            socket.close();
-            socket = null;
-        }
-    }
-
-    function heartbeatPing() {
-        if (heartbeatTimer) {
-            clearTimeout(heartbeatTimer);
-        }
-        heartbeatTimer = setTimeout(function () {
-            if (socket) {
-                socket.send("--heartbeat-ping--");
-                heartbeatTimer = null;
-                heartbeatPing();
-            }
-        }, 59000);
-    }
-
-    function printMessage(tailer, text) {
-        setTimeout(function () {
-            launchMissile(text);
-        }, 1);
-        var line = $("<p/>").text(text);
-        var logtail = $("#" + tailer);
-        logtail.append(line);
-        scrollToBottom(logtail);
-    }
-
-    function printEventMessage(text, tailer) {
-        var logtail = (tailer ? $("#" + tailer) : $(".log-tail"));
-        $("<p/>").addClass("event").html(text).appendTo(logtail);
-        scrollToBottom(logtail);
-    }
-
-    function printErrorMessage(text, tailer) {
-        var logtail = (tailer ? $("#" + tailer) : $(".log-tail"));
-        $("<p/>").addClass("event error").html(text).appendTo(logtail);
-        scrollToBottom(logtail);
-    }
-
-    function switchTailBite(logtail, status) {
-        if (!logtail) {
-            logtail = $(".log-tail");
-        }
-        if (status !== true && status !== false) {
-            status = !logtail.data("bite");
-        }
-        if (status) {
-            logtail.closest(".log-container").find(".tail-status").addClass("active");
-            logtail.data("bite", true);
-            scrollToBottom(logtail)
-        } else {
-            logtail.closest(".log-container").find(".tail-status").removeClass("active");
-            logtail.data("bite", false);
-        }
-    }
-
-    var scrollTimer;
-    function scrollToBottom(logtail) {
-        if (logtail.data("bite")) {
-            if (scrollTimer) {
-                clearTimeout(scrollTimer);
-            }
-            scrollTimer = setTimeout(function() {
-                logtail.scrollTop(logtail.prop("scrollHeight"));
-                if (logtail.find("p").length > 11000) {
-                    logtail.find("p:gt(10000)").remove();
-                }
-            }, 300);
-        }
-    }
-
-    function launchMissile(line) {
-        var sessionId = "";
-        var requests = 0;
-        var idx = line.indexOf("Session");
-        if (idx !== -1) {
-            line = line.substring(idx);
-            var pattern1 = /^Session ([\w\.]+) complete, active requests=(\d+)/i;
-            var pattern2 = /^Session ([\w\.]+) deleted in session data store/i;
-            if (pattern1.test(line) || pattern2.test(line)) {
-                sessionId = RegExp.$1;
-                requests = RegExp.$2;
-                if (requests > 3) {
-                    requests = 3;
-                }
-                requests++;
-                var mis = $(".missile-route").find(".missile[sessionId='" + (sessionId + requests) + "']");
-                if (mis.length > 0) {
-                    var dur = 850;
-                    if (mis.hasClass("mis-2")) {
-                        dur += 250;
-                    } else if (mis.hasClass("mis-3")) {
-                        dur += 500;
+            let url = new URL(this.endpoint, location.href);
+            url.protocol = url.protocol.replace('https:', 'wss:');
+            url.protocol = url.protocol.replace('http:', 'ws:');
+            this.socket = new WebSocket(url.href);
+            let self = this;
+            this.socket.onopen = function (event) {
+                self.printEventMessage("Socket connection successful");
+                self.socket.send("JOIN:" + self.tailers);
+                self.heartbeatPing();
+                self.switchTailBite(false, true);
+            };
+            this.socket.onmessage = function (event) {
+                if (typeof event.data === "string") {
+                    let msg = event.data;
+                    let idx = msg.indexOf(":");
+                    if (idx !== -1) {
+                        self.printMessage(msg.substring(0, idx), msg.substring(idx + 1));
                     }
-                    setTimeout(function () {
-                        mis.remove();
-                    }, dur);
                 }
-                return;
-            }
-            var pattern3 = /^Session ([\w\.]+) accessed, stopping timer, active requests=(\d+)/i;
-            if (pattern3.test(line)) {
-                sessionId = RegExp.$1;
-                requests = RegExp.$2;
-                if (requests > 3) {
-                    requests = 3;
-                }
-            }
+                self.heartbeatPing();
+            };
+            this.socket.onclose = function (event) {
+                self.printEventMessage('Socket connection closed. Please refresh this page to try again!');
+                self.closeSocket();
+            };
+            this.socket.onerror = function (event) {
+                console.error("WebSocket error observed:", event);
+                self.printErrorMessage('Could not connect to WebSocket server');
+                self.switchTailBite(false, false);
+                setTimeout(function () {
+                    self.openSocket();
+                }, 60000);
+            };
         }
-        if (requests > 0) {
-            var mis = $("<div/>").attr("sessionId", sessionId + requests);
-            mis.css("top", generateRandom(3, 90 - (requests * 2)) + "%");
-            mis.appendTo($(".missile-route")).addClass("missile mis-" + requests);
-        }
-    }
 
-    function generateRandom(min, max) {
-        return Math.floor(Math.random() * (max - min + 1)) + min;
+        closeSocket() {
+            if (this.socket) {
+                this.socket.close();
+                this.socket = null;
+            }
+        }
+
+        heartbeatPing() {
+            if (this.heartbeatTimer) {
+                clearTimeout(this.heartbeatTimer);
+            }
+            let self = this;
+            this.heartbeatTimer = setTimeout(function () {
+                if (self.socket) {
+                    self.socket.send("--heartbeat-ping--");
+                    self.heartbeatTimer = null;
+                    self.heartbeatPing();
+                }
+            }, 59000);
+        }
+
+        printMessage(tailer, text) {
+            let self = this;
+            setTimeout(function () {
+                self.launchMissile(text);
+            }, 1);
+            let line = $("<p/>").text(text);
+            let logtail = $("#" + tailer);
+            logtail.append(line);
+            this.scrollToBottom(logtail);
+        }
+
+        printEventMessage(text, tailer) {
+            let logtail = (tailer ? $("#" + tailer) : $(".log-tail"));
+            $("<p/>").addClass("event").html(text).appendTo(logtail);
+            this.scrollToBottom(logtail);
+        }
+
+        printErrorMessage(text, tailer) {
+            let logtail = (tailer ? $("#" + tailer) : $(".log-tail"));
+            $("<p/>").addClass("event error").html(text).appendTo(logtail);
+            this.scrollToBottom(logtail);
+        }
+
+        switchTailBite(logtail, status) {
+            if (!logtail) {
+                logtail = $(".log-tail");
+            }
+            if (status !== true && status !== false) {
+                status = !logtail.data("bite");
+            }
+            if (status) {
+                logtail.closest(".log-container").find(".tail-status").addClass("active");
+                logtail.data("bite", true);
+                this.scrollToBottom(logtail)
+            } else {
+                logtail.closest(".log-container").find(".tail-status").removeClass("active");
+                logtail.data("bite", false);
+            }
+        }
+
+        scrollToBottom(logtail) {
+            if (logtail.data("bite")) {
+                if (this.scrollTimer) {
+                    clearTimeout(this.scrollTimer);
+                }
+                this.scrollTimer = setTimeout(function () {
+                    logtail.scrollTop(logtail.prop("scrollHeight"));
+                    if (logtail.find("p").length > 11000) {
+                        logtail.find("p:gt(10000)").remove();
+                    }
+                }, 300);
+            }
+        }
+
+        launchMissile(line) {
+            let sessionId = "";
+            let requests = 0;
+            let idx = line.indexOf("Session");
+            if (idx !== -1) {
+                line = line.substring(idx);
+                if (this.pattern1.test(line) || this.pattern2.test(line)) {
+                    sessionId = RegExp.$1;
+                    requests = RegExp.$2;
+                    if (requests > 3) {
+                        requests = 3;
+                    }
+                    requests++;
+                    let mis = $(".missile-route").find(".missile[sessionId='" + (sessionId + requests) + "']");
+                    if (mis.length > 0) {
+                        var dur = 850;
+                        if (mis.hasClass("mis-2")) {
+                            dur += 250;
+                        } else if (mis.hasClass("mis-3")) {
+                            dur += 500;
+                        }
+                        setTimeout(function () {
+                            mis.remove();
+                        }, dur);
+                    }
+                    return;
+                }
+                if (this.pattern3.test(line)) {
+                    sessionId = RegExp.$1;
+                    requests = RegExp.$2;
+                    if (requests > 3) {
+                        requests = 3;
+                    }
+                }
+            }
+            if (requests > 0) {
+                let mis = $("<div/>").attr("sessionId", sessionId + requests);
+                mis.css("top", this.generateRandom(3, 90 - (requests * 2)) + "%");
+                mis.appendTo($(".missile-route")).addClass("missile mis-" + requests);
+            }
+        }
+
+        generateRandom(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
     }
 </script>

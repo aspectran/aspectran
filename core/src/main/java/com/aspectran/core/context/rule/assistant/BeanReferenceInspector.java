@@ -76,7 +76,7 @@ public class BeanReferenceInspector {
      * @throws BeanRuleException if an illegal bean rule is found
      */
     public void inspect(BeanRuleRegistry beanRuleRegistry) throws BeanReferenceException, BeanRuleException {
-        Set<Object> brokenReferences = new LinkedHashSet<>();
+        Set<RefererKey> brokenReferences = new LinkedHashSet<>();
 
         for (Map.Entry<RefererKey, Set<RefererInfo>> entry : refererInfoMap.entrySet()) {
             RefererKey refererKey = entry.getKey();
@@ -188,7 +188,7 @@ public class BeanReferenceInspector {
         }
     }
 
-    private static class RefererKey {
+    static class RefererKey {
 
         private final Class<?> type;
 
@@ -245,7 +245,7 @@ public class BeanReferenceInspector {
 
     }
 
-    private class RefererInfo {
+    static class RefererInfo {
 
         private final BeanReferenceable referenceable;
 

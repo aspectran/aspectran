@@ -24,12 +24,14 @@ import com.aspectran.web.socket.jsr356.ActivityContextAwareEndpoint;
 import com.aspectran.web.socket.jsr356.AspectranConfigurator;
 
 import javax.websocket.CloseReason;
-import javax.websocket.EndpointConfig;
 import javax.websocket.OnClose;
+import javax.websocket.OnError;
 import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -52,8 +54,7 @@ public class LogtailEndpoint extends ActivityContextAwareEndpoint {
 
     private static final String HEARTBEAT_PONG_MSG = "--heartbeat-pong--";
 
-    private static final Set<Session> sessions =
-            Collections.synchronizedSet(new HashSet<>());
+    private static final Set<Session> sessions = Collections.synchronizedSet(new HashSet<>());
 
     private LogTailerManager logTailerManager;
 
@@ -62,7 +63,7 @@ public class LogtailEndpoint extends ActivityContextAwareEndpoint {
     }
 
     @OnOpen
-    public void onOpen(Session session, EndpointConfig config) {
+    public void onOpen(Session session) {
         if (log.isDebugEnabled()) {
             log.debug("WebSocket connection established with session: " + session.getId());
         }
@@ -84,6 +85,17 @@ public class LogtailEndpoint extends ActivityContextAwareEndpoint {
     @OnClose
     public void onClose(Session session, CloseReason reason) {
         removeSession(session);
+    }
+
+    @OnError
+    public void onError(Session session, Throwable error) {
+        log.error("Error in websocket session: " + session.getId(), error);
+        try {
+            removeSession(session);
+            session.close(new CloseReason(CloseReason.CloseCodes.UNEXPECTED_CONDITION, null));
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
     }
 
     protected void broadcast(String message) {
