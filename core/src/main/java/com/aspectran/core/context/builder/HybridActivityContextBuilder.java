@@ -153,7 +153,7 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
                 registerDestroyTask();
             } else {
                 // Timer starts only if it is driven by a service
-                startReloadingTimer();
+                startContextReloader();
             }
 
             this.active.set(true);
@@ -174,7 +174,7 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
 
     private void doDestroy() {
         if (this.active.get()) {
-            stopReloadingTimer();
+            stopContextReloader();
             if (activityContext != null) {
                 ((Component)activityContext).destroy();
                 activityContext = null;

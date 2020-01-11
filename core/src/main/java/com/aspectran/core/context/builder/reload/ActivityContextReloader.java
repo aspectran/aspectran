@@ -26,9 +26,9 @@ import java.util.Timer;
 /**
  * Provides timer control to reload the ActivityContext.
  */
-public class ActivityContextReloadingTimer {
+public class ActivityContextReloader {
 
-    private static final Log log = LogFactory.getLog(ActivityContextReloadingTimer.class);
+    private static final Log log = LogFactory.getLog(ActivityContextReloader.class);
 
     private final ServiceController serviceController;
 
@@ -36,9 +36,9 @@ public class ActivityContextReloadingTimer {
 
     private volatile Timer timer;
 
-    private ActivityContextReloadingTimerTask timerTask;
+    private ActivityContextReloadTask reloadTask;
 
-    public ActivityContextReloadingTimer(ServiceController serviceController) {
+    public ActivityContextReloader(ServiceController serviceController) {
         this.serviceController = serviceController;
     }
 
@@ -46,39 +46,35 @@ public class ActivityContextReloadingTimer {
         this.resources = resources;
 
         if (log.isDebugEnabled()) {
-            log.debug("ActivityContextReloadingTimer is initialized");
+            log.debug("ActivityContextReloader is initialized");
         }
     }
 
-    public void start(int scanIntervalSeconds) {
+    public void start(int scanIntervalInSeconds) {
         stop();
 
         if (log.isDebugEnabled()) {
-            log.debug("Starting ActivityContextReloadingTimer...");
+            log.debug("Starting ActivityContextReloader...");
         }
 
-        timerTask = new ActivityContextReloadingTimerTask(serviceController);
-        timerTask.setResources(resources);
+        reloadTask = new ActivityContextReloadTask(serviceController);
+        reloadTask.setResources(resources);
 
-        timer = new Timer("reloading@" + timerTask.hashCode());
-        timer.schedule(timerTask, 0, scanIntervalSeconds * 1000L);
+        timer = new Timer("ContextReloadTask@" + reloadTask.hashCode());
+        timer.schedule(reloadTask, 0, scanIntervalInSeconds * 1000L);
     }
 
-    public void cancel() {
-        stop();
-    }
-
-    protected void stop() {
+    public void stop() {
         if (timer != null) {
             if (log.isDebugEnabled()) {
-                log.debug("Stopping ActivityContextReloadingTimer...");
+                log.debug("Stopping ActivityContextReloader...");
             }
 
             timer.cancel();
             timer = null;
 
-            timerTask.cancel();
-            timerTask = null;
+            reloadTask.cancel();
+            reloadTask = null;
         }
     }
 

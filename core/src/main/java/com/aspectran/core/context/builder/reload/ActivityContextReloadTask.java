@@ -31,11 +31,9 @@ import java.util.TimerTask;
 import static com.aspectran.core.util.ResourceUtils.JAR_URL_SEPARATOR;
 import static com.aspectran.core.util.ResourceUtils.URL_PROTOCOL_JAR;
 
-public class ActivityContextReloadingTimerTask extends TimerTask {
+public class ActivityContextReloadTask extends TimerTask {
 
-    private static final Log log = LogFactory.getLog(ActivityContextReloadingTimerTask.class);
-
-    private final boolean debugEnabled = log.isDebugEnabled();
+    private static final Log log = LogFactory.getLog(ActivityContextReloadTask.class);
 
     private final ServiceController serviceController;
 
@@ -43,7 +41,7 @@ public class ActivityContextReloadingTimerTask extends TimerTask {
 
     private volatile boolean modified = false;
 
-    public ActivityContextReloadingTimerTask(ServiceController serviceController) {
+    public ActivityContextReloadTask(ServiceController serviceController) {
         this.serviceController = serviceController;
     }
 
@@ -89,7 +87,7 @@ public class ActivityContextReloadingTimerTask extends TimerTask {
             if (prevLastModifiedTime != lastModifiedTime) {
                 modified = true;
                 modifiedTimeMap.put(filePath, lastModifiedTime);
-                if (debugEnabled) {
+                if (log.isDebugEnabled()) {
                     log.debug("Detected modified file: " + filePath);
                 }
             }

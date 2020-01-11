@@ -30,7 +30,7 @@ import com.aspectran.core.component.template.TemplateRuleRegistry;
 import com.aspectran.core.component.translet.TransletRuleRegistry;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.AspectranActivityContext;
-import com.aspectran.core.context.builder.reload.ActivityContextReloadingTimer;
+import com.aspectran.core.context.builder.reload.ActivityContextReloader;
 import com.aspectran.core.context.config.ContextAutoReloadConfig;
 import com.aspectran.core.context.config.ContextConfig;
 import com.aspectran.core.context.config.ContextProfilesConfig;
@@ -88,7 +88,7 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
 
     private int scanIntervalSeconds;
 
-    private ActivityContextReloadingTimer reloadingTimer;
+    private ActivityContextReloader contextReloader;
 
     private ServiceController serviceController;
 
@@ -373,18 +373,18 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
         return activityContext;
     }
 
-    protected void startReloadingTimer() {
+    protected void startContextReloader() {
         if (autoReloadStartup && aspectranClassLoader != null) {
-            reloadingTimer = new ActivityContextReloadingTimer(serviceController);
-            reloadingTimer.setResources(aspectranClassLoader.getAllResources());
-            reloadingTimer.start(scanIntervalSeconds);
+            contextReloader = new ActivityContextReloader(serviceController);
+            contextReloader.setResources(aspectranClassLoader.getAllResources());
+            contextReloader.start(scanIntervalSeconds);
         }
     }
 
-    protected void stopReloadingTimer() {
-        if (reloadingTimer != null) {
-            reloadingTimer.cancel();
-            reloadingTimer = null;
+    protected void stopContextReloader() {
+        if (contextReloader != null) {
+            contextReloader.stop();
+            contextReloader = null;
         }
     }
 
