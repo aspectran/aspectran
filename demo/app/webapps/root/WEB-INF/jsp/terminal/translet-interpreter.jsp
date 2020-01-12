@@ -17,12 +17,12 @@
     }
 </style>
 <div class="row">
-    <div class="columns large-12">
+    <div class="columns large-12" style="min-height: 500px;">
         <div id="term-demo"></div>
     </div>
 </div>
-<script src="https://cdn.rawgit.com/jcubic/jquery.terminal/master/js/jquery.terminal.min.js"></script>
-<link href="https://cdn.rawgit.com/jcubic/jquery.terminal/master/css/jquery.terminal.min.css" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/gh/jcubic/jquery.terminal@devel/js/jquery.terminal.min.js"></script>
+<link href="https://cdn.jsdelivr.net/gh/jcubic/jquery.terminal@devel/css/jquery.terminal.min.css" rel="stylesheet"/>
 <script>
     $(function() {
         $('#term-demo').terminal(function(command, term) {
@@ -82,7 +82,7 @@
                 term.echo('');
             }
         }, {
-            greetings: 'Translet Interpreter\nType "hello"',
+            greetings: 'Translet Interpreter\n====================\nType "hello"',
             name: 'transletInterpreter',
             height: 500,
             width: "100%",

@@ -1,7 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <div class="row">
-    <div class="columns small-12">
+    <div class="columns small-12" style="min-height: 500px;">
         <div id="skylark-term"></div>
     </div>
 </div>
@@ -21,8 +21,8 @@
         min-width: initial;
     }
 </style>
-<script src="https://cdn.rawgit.com/jcubic/jquery.terminal/master/js/jquery.terminal.min.js"></script>
-<link href="https://cdn.rawgit.com/jcubic/jquery.terminal/master/css/jquery.terminal.min.css" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/gh/jcubic/jquery.terminal@devel/js/jquery.terminal.min.js"></script>
+<link href="https://cdn.jsdelivr.net/gh/jcubic/jquery.terminal@devel/css/jquery.terminal.min.css" rel="stylesheet"/>
 <script>
     $(function() {
         $('#skylark-term').terminal(function(command, term) {
@@ -60,7 +60,7 @@
                 term.echo('');
             }
         }, {
-            greetings: '[Online Text-To-Speech Web Application]\nType what you want to say.',
+            greetings: 'Online Text-To-Speech Web Application\n=====================================\nType what you want to say.',
             name: 'skylark',
             height: 450,
             width: "100%",
