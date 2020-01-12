@@ -123,7 +123,6 @@
         }
 
         printStats(stats) {
-            console.log(stats);
             $(".activeSessionCount").text(stats.activeSessionCount);
             $(".highestSessionCount").text(stats.highestSessionCount);
             $(".createdSessionCount").text(stats.createdSessionCount);
