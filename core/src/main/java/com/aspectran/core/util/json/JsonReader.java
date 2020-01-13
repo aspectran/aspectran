@@ -1007,7 +1007,7 @@ public class JsonReader implements Closeable {
 
         peeked = PEEKED_BUFFERED;
         double asDouble = Double.parseDouble(peekedString); // don't catch this NumberFormatException.
-        long result = (long) asDouble;
+        long result = (long)asDouble;
         if (result != asDouble) { // Make sure no precision was lost casting to 'long'.
             throw new NumberFormatException("Expected a long but was " + peekedString + locationString());
         }
@@ -1122,7 +1122,7 @@ public class JsonReader implements Closeable {
 
             // use a StringBuilder when the value is too long. This is too long to be a number!
             if (builder == null) {
-                builder = new StringBuilder(Math.max(i,16));
+                builder = new StringBuilder(Math.max(i, 16));
             }
             builder.append(buffer, pos, i);
             pos += i;
@@ -1132,7 +1132,7 @@ public class JsonReader implements Closeable {
             }
         }
 
-        String result = (null == builder) ? new String(buffer, pos, i) : builder.append(buffer, pos, i).toString();
+        String result = (null == builder ? new String(buffer, pos, i) : builder.append(buffer, pos, i).toString());
         pos += i;
         return result;
     }
@@ -1212,7 +1212,7 @@ public class JsonReader implements Closeable {
 
         int result;
         if (p == PEEKED_LONG) {
-            result = (int) peekedLong;
+            result = (int)peekedLong;
             if (peekedLong != result) { // Make sure no precision was lost casting to 'int'.
                 throw new NumberFormatException("Expected an int but was " + peekedLong + locationString());
             }

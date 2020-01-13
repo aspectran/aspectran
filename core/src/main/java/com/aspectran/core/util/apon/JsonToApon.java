@@ -69,7 +69,7 @@ public class JsonToApon {
             String name = (container instanceof ArrayParameters ? ArrayParameters.NONAME : null);
             convert(reader, container, name);
         } catch (Exception e) {
-            throw new IOException("Failed to convert XML to JSON", e);
+            throw new IOException("Failed to convert JSON to APON", e);
         }
 
         return container;
