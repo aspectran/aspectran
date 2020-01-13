@@ -936,7 +936,7 @@ public class JsonReader implements Closeable {
         if (p == PEEKED_LONG) {
             peeked = PEEKED_NONE;
             pathIndices[stackSize - 1]++;
-            return (double) peekedLong;
+            return (double)peekedLong;
         }
 
         if (p == PEEKED_NUMBER) {
@@ -1244,7 +1244,7 @@ public class JsonReader implements Closeable {
 
         peeked = PEEKED_BUFFERED;
         double asDouble = Double.parseDouble(peekedString); // don't catch this NumberFormatException.
-        result = (int) asDouble;
+        result = (int)asDouble;
         if (result != asDouble) { // Make sure no precision was lost casting to 'int'.
             throw new NumberFormatException("Expected an int but was " + peekedString + locationString());
         }
