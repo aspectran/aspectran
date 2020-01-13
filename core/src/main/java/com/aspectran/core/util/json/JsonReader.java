@@ -1001,7 +1001,7 @@ public class JsonReader implements Closeable {
             } catch (NumberFormatException ignored) {
                 // Fall back to parse as a double below.
             }
-        } else {
+        } else if (p != PEEKED_BUFFERED) {
             throw new IllegalStateException("Expected a long but was " + peek() + locationString());
         }
 
@@ -1238,7 +1238,7 @@ public class JsonReader implements Closeable {
             } catch (NumberFormatException ignored) {
                 // Fall back to parse as a double below.
             }
-        } else {
+        } else if (p != PEEKED_BUFFERED) {
             throw new IllegalStateException("Expected an int but was " + peek() + locationString());
         }
 
