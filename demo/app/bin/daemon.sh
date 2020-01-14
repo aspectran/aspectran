@@ -54,6 +54,7 @@ while [ ".$1" != . ]; do
     ;;
   esac
 done
+
 if [ -z "$JAVA_HOME" ]; then
   JAVA_BIN="$(command -v java 2>/dev/null || type java 2>&1)"
   while [ -h "$JAVA_BIN" ]; do
@@ -73,6 +74,7 @@ if [ -z "$JAVA_HOME" ]; then
 else
   JAVA_BIN="$JAVA_HOME/bin/java"
 fi
+
 DAEMON_OUT="$BASE_DIR/logs/daemon.out"
 DAEMON_MAIN="com.aspectran.daemon.DefaultDaemon"
 LOCK_FILE="$BASE_DIR/.lock"

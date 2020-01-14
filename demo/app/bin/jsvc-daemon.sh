@@ -13,18 +13,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-### BEGIN INIT INFO
-# Provides:          aspectran
-# Required-Start:    $local_fs $remote_fs $network $syslog $named
-# Required-Stop:     $local_fs $remote_fs $network $syslog $named
-# Default-Start:     2 3 4 5
-# Default-Stop:      0 1 6
-# Short-Description: Start/stop Aspectran daemon
-# Description:       Start/stop Aspectran daemon
-### END INIT INFO
-
-NAME=aspectran
-DESC="Aspectran running in the background"
 
 # -----------------------------------------------------------------------------
 # Commons Daemon wrapper script
@@ -51,32 +39,32 @@ while [ ".$1" != . ]; do
   case "$1" in
   --base-dir)
     BASE_DIR="$2"
-    shift
-    shift
+    shift; shift;
     continue
     ;;
   --java-home)
     JAVA_HOME="$2"
-    shift
-    shift
+    shift; shift;
     continue
     ;;
-  --daemon-pid)
-    DAEMON_PID="$2"
-    shift
-    shift
+  --proc-name)
+    PROC_NAME="$2"
+    shift; shift;
     continue
     ;;
-  --daemon-user)
+  --pid-file)
+    PID_FILE="$2"
+    shift; shift;
+    continue
+    ;;
+  --user)
     DAEMON_USER="-user $2"
-    shift
-    shift
+    shift; shift;
     continue
     ;;
   --service-start-wait-time)
     SERVICE_START_WAIT_TIME="$2"
-    shift
-    shift
+    shift; shift;
     continue
     ;;
   *)
@@ -84,6 +72,7 @@ while [ ".$1" != . ]; do
     ;;
   esac
 done
+
 if [ -z "$JAVA_HOME" ]; then
   JAVA_BIN="$(command -v java 2>/dev/null || type java 2>&1)"
   while [ -h "$JAVA_BIN" ]; do
@@ -103,6 +92,7 @@ if [ -z "$JAVA_HOME" ]; then
 else
   JAVA_BIN="$JAVA_HOME/bin/java"
 fi
+
 JSVC="$BASE_DIR/bin/jsvc"
 if [ ! -e "$JSVC" ]; then
   JSVC="$(command -v jsvc 2>/dev/null || type jsvc 2>&1)"
@@ -113,10 +103,10 @@ if [ ! -x "$JSVC" ]; then
   echo "This file is needed to run this program."
   exit 3
 fi
-# Set the default service-start wait time if necessary
+
+test ".$PROC_NAME" = . && PROC_NAME="jsvc-daemon"
+test ".$PID_FILE" = . && PID_FILE="$BASE_DIR/.$PROC_NAME.pid"
 test ".$SERVICE_START_WAIT_TIME" = . && SERVICE_START_WAIT_TIME=10
-# Set -pidfile
-test ".$DAEMON_PID" = . && DAEMON_PID="$BASE_DIR/.jsvc_daemon.pid"
 DAEMON_OUT="$BASE_DIR/logs/daemon.out"
 DAEMON_ERR="$BASE_DIR/logs/daemon.err"
 DAEMON_MAIN="com.aspectran.daemon.JsvcDaemon"
@@ -133,8 +123,8 @@ start_daemon() {
     $DAEMON_USER \
     -jvm server \
     -java-home "$JAVA_HOME" \
-    -procname $NAME \
-    -pidfile "$DAEMON_PID" \
+    -procname $PROC_NAME \
+    -pidfile "$PID_FILE" \
     -wait "$SERVICE_START_WAIT_TIME" \
     -outfile "$DAEMON_OUT" \
     -errfile "$DAEMON_ERR" \
@@ -157,8 +147,8 @@ stop_daemon() {
     $JAVA_OPTS \
     -stop \
     -jvm server \
-    -procname $NAME \
-    -pidfile "$DAEMON_PID" \
+    -procname $PROC_NAME \
+    -pidfile "$PID_FILE" \
     -classpath "$CLASSPATH" \
     -Djava.io.tmpdir="$TMP_DIR" \
     -Djava.awt.headless=true \
@@ -171,7 +161,7 @@ daemon_version() {
   "$JSVC" \
     -version \
     -check \
-    -pidfile "$DAEMON_PID" \
+    -pidfile "$PID_FILE" \
     -errfile "&2" \
     -java-home "$JAVA_HOME" \
     -classpath "$CLASSPATH" \
@@ -192,9 +182,9 @@ version() {
   fi
 }
 
-pidof_aspectran() {
-  if [ -e "$DAEMON_PID" ]; then
-    if cat "$DAEMON_PID"; then
+pidof_daemon() {
+  if [ -e "$PID_FILE" ]; then
+    if cat "$PID_FILE"; then
       return 0
     fi
   fi
@@ -202,7 +192,7 @@ pidof_aspectran() {
 }
 
 start_aspectran() {
-  PID=$(pidof_aspectran) || true
+  PID=$(pidof_daemon) || true
   if [ -n "$PID" ]; then
     echo "Aspectran daemon is already running (pid $PID)."
     exit 3
@@ -213,7 +203,7 @@ start_aspectran() {
     if [ -e "$DAEMON_OUT" ]; then
       cat "$DAEMON_OUT"
     fi
-    PID=$(pidof_aspectran) || true
+    PID=$(pidof_daemon) || true
     echo "Aspectran daemon started (pid $PID)."
   else
     echo "Can't start aspectran."
@@ -222,7 +212,7 @@ start_aspectran() {
 }
 
 stop_aspectran() {
-  PID=$(pidof_aspectran) || true
+  PID=$(pidof_daemon) || true
   if [ -z "$PID" ]; then
     echo "Can't stop, Aspectran daemon NOT running."
     exit 3
@@ -254,7 +244,7 @@ stop)
   stop_aspectran
   ;;
 restart | reload | force-reload)
-  PID=$(pidof_aspectran) || true
+  PID=$(pidof_daemon) || true
   if [ -n "$PID" ]; then
     restart_aspectran
   else
@@ -263,7 +253,7 @@ restart | reload | force-reload)
   fi
   ;;
 try-restart)
-  PID=$(pidof_aspectran) || true
+  PID=$(pidof_daemon) || true
   if [ -n "$PID" ]; then
     restart_aspectran
   else
@@ -272,12 +262,12 @@ try-restart)
   fi
   ;;
 status)
-  PID=$(pidof_aspectran) || true
+  PID=$(pidof_daemon) || true
   if [ -n "$PID" ]; then
     echo "Aspectran daemon is running (pid $PID)."
   else
     echo "Aspectran daemon is NOT running."
-    if [ -e "$DAEMON_PID" ]; then
+    if [ -e "$PID_FILE" ]; then
       exit 1
     else
       exit 3
