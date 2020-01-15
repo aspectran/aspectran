@@ -303,7 +303,7 @@
                     requests++;
                     let mis = $(".missile-route").find(".missile[sessionId='" + (sessionId + requests) + "']");
                     if (mis.length > 0) {
-                        var dur = 850;
+                        let dur = 850;
                         if (mis.hasClass("mis-2")) {
                             dur += 250;
                         } else if (mis.hasClass("mis-3")) {
