@@ -168,7 +168,7 @@
         <jsp:include page="/WEB-INF/jsp/${page.include}.jsp"/>
     </c:if>
 </section>
-<div id="up-to-top" class="row">
+<div id="up-to-top" class="row ${page.style}">
     <div class="small-12 columns" style="text-align: right;">
         <a class="iconfont" href="#top-of-page">&#xf108;</a>
     </div><!-- /.small-12.columns -->
