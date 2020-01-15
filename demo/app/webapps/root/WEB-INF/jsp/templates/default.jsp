@@ -9,7 +9,7 @@
     <title>${empty page.title ? "Aspectran Demo Site" : page.title}</title>
     <meta name="description" content="${empty page.description ? "Welcome to Aspectran Demo" : page.description}" />
     <link rel="stylesheet" type="text/css" href="https://aspectran.com/assets/css/styles_aspectran.css" />
-    <link href="http://fonts.googleapis.com/css?family=Raleway:500,500i,700" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Raleway:500,500i,700" rel="stylesheet">
     <script src="https://aspectran.com/assets/js/modernizr-custom.js"></script>
     <script src="https://aspectran.com/assets/js/jquery.js"></script>
     <script src="https://aspectran.com/assets/js/fastclick.js"></script>
@@ -63,7 +63,7 @@
         </div>
     </div>
     <div class="top-bar" id="gnb-menu" style="display:none">
-        <div class="row">
+        <div class="row ${page.style}">
             <div class="top-bar-logo">
                 <div class="circle">
                     <a class="logo" href="/" title="Aspectran"><img src="https://aspectran.com/assets/img/aspectran-site-logo.png" alt="Aspectran"/></a>
@@ -134,7 +134,7 @@
 </nav>
 <section itemscope itemtype="http://schema.org/Article">
     <div id="masthead">
-        <div class="row">
+        <div class="row ${page.style}">
             <div class="small-12 columns">
                 <header>
                     <p class="subheadline" itemprop="alternativeHeadline">${page.subheadline}</p>
@@ -153,7 +153,7 @@
                 </div>
             </div>
         </div>
-        <div class="row breadcrumbs-bar">
+        <div class="row breadcrumbs-bar ${page.style}">
             <div class="columns">
                 <nav role="navigation" aria-label="You are here:">
                     <ul class="breadcrumbs" itemprop="breadcrumb">
