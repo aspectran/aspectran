@@ -88,10 +88,6 @@ function LogTailer(endpoint, tailers) {
     this.heartbeatTimer = null;
     this.scrollTimer = null;
 
-    this.pattern1 = /^Session ([\w\.]+) complete, active requests=(\d+)/i;
-    this.pattern2 = /^Session ([\w\.]+) deleted in session data store/i;
-    this.pattern3 = /^Session ([\w\.]+) accessed, stopping timer, active requests=(\d+)/i;
-
     this.openSocket = function() {
         if (this.socket) {
             this.socket.close();
@@ -209,39 +205,45 @@ function LogTailer(endpoint, tailers) {
         }
     };
 
+    this.pattern1 = /^Session ([\w\.]+) complete, active requests=(\d+)/i;
+    this.pattern2 = /^Session ([\w\.]+) deleted in session data store/i;
+    this.pattern3 = /^Session ([\w\.]+) accessed, stopping timer, active requests=(\d+)/i;
+    this.pattern4 = /^Creating new session id=([\w\.]+)/i;
+
     this.launchMissile = function(line) {
+        let idx = line.indexOf("] ");
+        if (idx !== -1) {
+            line = line.substring(idx + 2);
+        }
+
         let sessionId = "";
         let requests = 0;
-        let idx = line.indexOf("Session");
-        if (idx !== -1) {
-            line = line.substring(idx);
-            if (this.pattern1.test(line) || this.pattern2.test(line)) {
-                sessionId = RegExp.$1;
-                requests = RegExp.$2;
-                if (requests > 3) {
-                    requests = 3;
-                }
-                requests++;
-                let mis = $(".missile-route").find(".missile[sessionId='" + (sessionId + requests) + "']");
-                if (mis.length > 0) {
-                    let dur = 850;
-                    if (mis.hasClass("mis-2")) {
-                        dur += 250;
-                    } else if (mis.hasClass("mis-3")) {
-                        dur += 500;
-                    }
-                    setTimeout(function () {
-                        mis.remove();
-                    }, dur);
-                }
-                return;
+        if (this.pattern1.test(line) || this.pattern2.test(line)) {
+            sessionId = RegExp.$1;
+            requests = RegExp.$2||0;
+            if (requests > 3) {
+                requests = 3;
             }
-            if (this.pattern3.test(line)) {
-                sessionId = RegExp.$1;
-                requests = RegExp.$2;
-                if (requests > 3) {
-                    requests = 3;
+            requests++;
+            let mis = $(".missile-route").find(".missile[sessionId='" + (sessionId + requests) + "']");
+            if (mis.length > 0) {
+                let dur = 850;
+                if (mis.hasClass("mis-2")) {
+                    dur += 250;
+                } else if (mis.hasClass("mis-3")) {
+                    dur += 500;
                 }
+                setTimeout(function () {
+                    mis.remove();
+                }, dur);
+            }
+            return;
+        }
+        if (this.pattern3.test(line) || this.pattern4.test(line)) {
+            sessionId = RegExp.$1;
+            requests = RegExp.$2||1;
+            if (requests > 3) {
+                requests = 3;
             }
         }
         if (requests > 0) {
