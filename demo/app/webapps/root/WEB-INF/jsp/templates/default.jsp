@@ -121,7 +121,7 @@
             </div>
         </div>
         <div class="breadcrumbs-bar" style="display:none" data-hide-for="medium down">
-            <div class="row">
+            <div class="row ${page.style}">
                 <nav role="navigation" aria-label="You are here:">
                     <ul class="breadcrumbs" itemprop="breadcrumb">
                         <li><a href="https://aspectran.com/">Aspectran</a></li>
