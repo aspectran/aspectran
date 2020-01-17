@@ -94,9 +94,7 @@
                 </ul>
             </div>
             <div class="top-bar-right">
-                <ul class="dropdown menu" data-dropdown-menu data-close-on-click-inside="false">
-                </ul>
-                <div class="quick-search-box show-for-large">
+                <div class="quick-search-box">
                     <form name="google_quick_search">
                         <div class="input-group">
                             <input class="input-group-field" type="text" name="keyword" placeholder="Search">
@@ -106,18 +104,6 @@
                         </div>
                     </form>
                 </div>
-            </div>
-        </div>
-        <div class="row quick-search-box hide-for-large">
-            <div class="small-12 columns">
-                <form name="google_quick_search">
-                    <div class="input-group">
-                        <input class="input-group-field" type="text" name="keyword" placeholder="Search">
-                        <div class="input-group-button">
-                            <button type="submit" class="button">Search</button>
-                        </div>
-                    </div>
-                </form>
             </div>
         </div>
         <div class="breadcrumbs-bar" style="display:none" data-hide-for="medium down">
