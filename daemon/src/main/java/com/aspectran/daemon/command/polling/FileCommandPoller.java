@@ -41,17 +41,19 @@ public class FileCommandPoller extends AbstractCommandPoller {
 
     protected final Log log = LogFactory.getLog(FileCommandPoller.class);
 
-    private static final String DEFAULT_INBOUND_PATH = "/inbound";
+    private static final String COMMANDS_PATH = "/commands";
 
-    private static final String INBOUND_QUEUED_DIR = "queued";
+    private static final String QUEUED_PATH = COMMANDS_PATH + "/queued";
 
-    private static final String INBOUND_COMPLETED_DIR = "completed";
+    private static final String COMPLETED_PATH = COMMANDS_PATH + "/completed";
 
-    private static final String INBOUND_FAILED_DIR = "failed";
+    private static final String FAILED_PATH = COMMANDS_PATH + "/failed";
+
+    private static final String DEFAULT_INCOMING_PATH = COMMANDS_PATH + "/incoming";
 
     private final Object lock = new Object();
 
-    private final File inboundDir;
+    private final File incomingDir;
 
     private final File queuedDir;
 
@@ -64,37 +66,37 @@ public class FileCommandPoller extends AbstractCommandPoller {
 
         try {
             String basePath = (getDaemon().getService() != null ? getDaemon().getService().getBasePath() : null);
-            String inboundPath = pollerConfig.getInboundPath(DEFAULT_INBOUND_PATH);
-            File inboundDir;
-            if (inboundPath.startsWith(ResourceUtils.FILE_URL_PREFIX)) {
-                // Using url fully qualified paths
-                URI uri = URI.create(inboundPath);
-                inboundDir = new File(uri);
-            } else {
-                if (basePath != null) {
-                    inboundDir = new File(basePath, inboundPath);
-                } else {
-                    inboundDir = new File(inboundPath);
-                }
-            }
-            inboundDir.mkdirs();
-            this.inboundDir = inboundDir;
 
-            File queuedDir = new File(inboundDir, INBOUND_QUEUED_DIR);
-            queuedDir.mkdir();
+            File commandsDir = new File(basePath, COMMANDS_PATH);
+            commandsDir.mkdirs();
+
+            File queuedDir = new File(basePath, QUEUED_PATH);
+            queuedDir.mkdirs();
             this.queuedDir = queuedDir;
 
-            File completedDir = new File(inboundDir, INBOUND_COMPLETED_DIR);
-            completedDir.mkdir();
+            File completedDir = new File(basePath, COMPLETED_PATH);
+            completedDir.mkdirs();
             this.completedDir = completedDir;
 
-            File failedDir = new File(inboundDir, INBOUND_FAILED_DIR);
-            failedDir.mkdir();
+            File failedDir = new File(basePath, FAILED_PATH);
+            failedDir.mkdirs();
             this.failedDir = failedDir;
 
-            File[] inboundFiles = getCommandFiles(inboundDir);
-            if (inboundFiles != null) {
-                for (File file : inboundFiles) {
+            String incomingPath = pollerConfig.getIncoming(DEFAULT_INCOMING_PATH);
+            File incomingDir;
+            if (incomingPath.startsWith(ResourceUtils.FILE_URL_PREFIX)) {
+                // Using url fully qualified paths
+                URI uri = URI.create(incomingPath);
+                incomingDir = new File(uri);
+            } else {
+                incomingDir = new File(basePath, incomingPath);
+            }
+            incomingDir.mkdirs();
+            this.incomingDir = incomingDir;
+
+            File[] incomingFiles = getCommandFiles(incomingDir);
+            if (incomingFiles != null) {
+                for (File file : incomingFiles) {
                     file.delete();
                 }
             }
@@ -103,8 +105,8 @@ public class FileCommandPoller extends AbstractCommandPoller {
         }
     }
 
-    public File getInboundDir() {
-        return inboundDir;
+    public File getIncomingDir() {
+        return incomingDir;
     }
 
     public File getQueuedDir() {
@@ -123,11 +125,13 @@ public class FileCommandPoller extends AbstractCommandPoller {
     public void requeue() {
         File[] queuedFiles = getCommandFiles(queuedDir);
         if (queuedFiles != null) {
-            if (isRequeue()) {
+            if (isRequeuable()) {
                 for (File file : queuedFiles) {
                     CommandParameters parameters = readCommandFile(file);
                     if (parameters != null) {
-                        writeCommandFile(inboundDir, file.getName(), parameters);
+                        if (parameters.isRequeuable()) {
+                            writeCommandFile(incomingDir, file.getName(), parameters);
+                        }
                         removeCommandFile(queuedDir, file.getName());
                     }
                 }
@@ -141,7 +145,7 @@ public class FileCommandPoller extends AbstractCommandPoller {
 
     @Override
     public void polling() {
-        File[] files = getCommandFiles(inboundDir);
+        File[] files = getCommandFiles(incomingDir);
         if (files != null) {
             int limit = getMaxThreads() - getExecutor().getQueueSize();
             for (int i = 0; i < files.length && i < limit; i++) {
@@ -151,7 +155,7 @@ public class FileCommandPoller extends AbstractCommandPoller {
                     String inboundFileName = file.getName();
                     String queuedFileName = writeCommandFile(queuedDir, inboundFileName, parameters);
                     if (queuedFileName != null) {
-                        removeCommandFile(inboundDir, inboundFileName);
+                        removeCommandFile(incomingDir, inboundFileName);
                         executeQueuedCommand(parameters, queuedFileName);
                     }
                 }
@@ -199,7 +203,7 @@ public class FileCommandPoller extends AbstractCommandPoller {
             return parameters;
         } catch (IOException e) {
             log.error("Failed to read command file: " + file.getAbsolutePath(), e);
-            removeCommandFile(inboundDir, file.getName());
+            removeCommandFile(incomingDir, file.getName());
             return null;
         }
     }

@@ -28,22 +28,22 @@ public class DaemonPollerConfig extends AbstractParameters {
 
     private static final ParameterKey pollingInterval;
     private static final ParameterKey maxThreads;
-    private static final ParameterKey inbound;
-    private static final ParameterKey requeue;
+    private static final ParameterKey requeuable;
+    private static final ParameterKey incoming;
 
     private static final ParameterKey[] parameterKeys;
 
     static {
         pollingInterval = new ParameterKey("pollingInterval", ValueType.LONG);
         maxThreads = new ParameterKey("maxThreads", ValueType.INT);
-        inbound = new ParameterKey("inbound", ValueType.STRING);
-        requeue = new ParameterKey("requeue", ValueType.BOOLEAN);
+        requeuable = new ParameterKey("requeuable", ValueType.BOOLEAN);
+        incoming = new ParameterKey("incoming", ValueType.STRING);
 
         parameterKeys = new ParameterKey[] {
                 pollingInterval,
                 maxThreads,
-                inbound,
-                requeue
+                requeuable,
+                incoming
         };
     }
 
@@ -69,25 +69,25 @@ public class DaemonPollerConfig extends AbstractParameters {
         return this;
     }
 
-    public String getInboundPath() {
-        return getString(inbound);
+    public boolean isRequeuable() {
+        return getBoolean(requeuable, false);
     }
 
-    public String getInboundPath(String defaultInboundPath) {
-        return getString(inbound, defaultInboundPath);
-    }
-
-    public DaemonPollerConfig setInboundPath(String inboundPath) {
-        putValue(inbound, inboundPath);
+    public DaemonPollerConfig setRequeuable(boolean requeuable) {
+        putValue(DaemonPollerConfig.requeuable, requeuable);
         return this;
     }
 
-    public boolean isRequeue() {
-        return getBoolean(requeue, false);
+    public String getIncoming() {
+        return getString(incoming);
     }
 
-    public DaemonPollerConfig setRequeue(boolean requeue) {
-        putValue(DaemonPollerConfig.requeue, requeue);
+    public String getIncoming(String defaultIncoming) {
+        return getString(incoming, defaultIncoming);
+    }
+
+    public DaemonPollerConfig setIncoming(String incoming) {
+        putValue(DaemonPollerConfig.incoming, incoming);
         return this;
     }
 

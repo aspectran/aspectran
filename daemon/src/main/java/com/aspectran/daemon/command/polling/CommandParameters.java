@@ -40,6 +40,7 @@ public class CommandParameters extends AbstractParameters {
     private static final ParameterKey properties;
     private static final ParameterKey parameters;
     private static final ParameterKey attributes;
+    private static final ParameterKey requeuable;
     private static final ParameterKey output;
 
     private static final ParameterKey[] parameterKeys;
@@ -53,6 +54,7 @@ public class CommandParameters extends AbstractParameters {
         properties = new ParameterKey("properties", ItemHolderParameters.class);
         parameters = new ParameterKey("parameters", ItemHolderParameters.class);
         attributes = new ParameterKey("attributes", ItemHolderParameters.class);
+        requeuable = new ParameterKey("requeuable", ValueType.BOOLEAN);
         output = new ParameterKey("output", ValueType.TEXT);
 
         parameterKeys = new ParameterKey[] {
@@ -64,6 +66,7 @@ public class CommandParameters extends AbstractParameters {
                 properties,
                 parameters,
                 attributes,
+                requeuable,
                 output
         };
     }
@@ -76,32 +79,36 @@ public class CommandParameters extends AbstractParameters {
         return getString(command);
     }
 
-    public void setCommandName(String commandName) {
+    public CommandParameters setCommandName(String commandName) {
         putValue(command, commandName);
+        return this;
     }
 
     public String getTransletName() {
         return getString(translet);
     }
 
-    public void setTransletName(String transletName) {
+    public CommandParameters setTransletName(String transletName) {
         putValue(translet, transletName);
+        return this;
     }
 
     public String getBeanName() {
         return getString(bean);
     }
 
-    public void setBeanName(String beanName) {
+    public CommandParameters setBeanName(String beanName) {
         putValue(bean, beanName);
+        return this;
     }
 
     public String getMethodName() {
         return getString(method);
     }
 
-    public void setMethodName(String methodName) {
+    public CommandParameters setMethodName(String methodName) {
         putValue(method, methodName);
+        return this;
     }
 
     public ItemRuleList getArgumentItemRuleList() throws IllegalRuleException {
@@ -154,12 +161,26 @@ public class CommandParameters extends AbstractParameters {
         }
     }
 
+    public boolean isRequeuable() {
+        if (hasValue(requeuable)) {
+            return getBoolean(requeuable, false);
+        } else {
+            return true;
+        }
+    }
+
+    public CommandParameters setRequeuable(boolean requeuable) {
+        putValue(CommandParameters.requeuable, requeuable);
+        return this;
+    }
+
     public String getOutput() {
         return getString(output);
     }
 
-    public void setOutput(String outputText) {
+    public CommandParameters setOutput(String outputText) {
         putValue(output, outputText);
+        return this;
     }
 
 }

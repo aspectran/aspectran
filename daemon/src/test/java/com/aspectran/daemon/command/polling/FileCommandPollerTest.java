@@ -34,7 +34,7 @@ class FileCommandPollerTest {
 
         DaemonConfig daemonConfig = new DaemonConfig();
         DaemonPollerConfig pollerConfig = daemonConfig.newPollerConfig();
-        pollerConfig.setInboundPath(inboundDir.getCanonicalPath());
+        pollerConfig.setIncoming(inboundDir.getCanonicalPath());
 
         SimpleDaemon daemon = new SimpleDaemon();
         daemon.init(daemonConfig);

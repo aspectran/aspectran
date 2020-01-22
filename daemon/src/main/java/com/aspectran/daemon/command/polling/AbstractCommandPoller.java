@@ -35,7 +35,7 @@ public abstract class AbstractCommandPoller implements CommandPoller {
 
     private int maxThreads;
 
-    private boolean requeue;
+    private boolean requeuable;
 
     public AbstractCommandPoller(Daemon daemon, DaemonPollerConfig pollerConfig) {
         if (daemon == null) {
@@ -46,7 +46,7 @@ public abstract class AbstractCommandPoller implements CommandPoller {
 
         this.pollingInterval = pollerConfig.getPollingInterval(DEFAULT_POLLING_INTERVAL);
         this.maxThreads = pollerConfig.getMaxThreads(DEFAULT_MAX_THREADS);
-        this.requeue = pollerConfig.isRequeue();
+        this.requeuable = pollerConfig.isRequeuable();
 
         this.executor = new CommandExecutor(daemon, maxThreads);
     }
@@ -82,8 +82,8 @@ public abstract class AbstractCommandPoller implements CommandPoller {
     }
 
     @Override
-    public boolean isRequeue() {
-        return requeue;
+    public boolean isRequeuable() {
+        return requeuable;
     }
 
 }

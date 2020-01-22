@@ -71,8 +71,8 @@ daemon: {
     poller: {
         pollingInterval: 5000
         maxThreads: 5
-        inbound: /inbound
-        requeue: true
+        requeuable: true
+        incoming: /commands/incoming
     }
     commands: [
         com.aspectran.daemon.command.builtins.UndertowCommand

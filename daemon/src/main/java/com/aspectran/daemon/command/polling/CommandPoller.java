@@ -40,6 +40,6 @@ public interface CommandPoller {
 
     int getMaxThreads();
 
-    boolean isRequeue();
+    boolean isRequeuable();
 
 }
