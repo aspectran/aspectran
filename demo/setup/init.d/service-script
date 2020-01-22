@@ -1,0 +1,19 @@
+#!/bin/sh
+
+### BEGIN INIT INFO
+# Provides:          demo-app
+# Required-Start:    $local_fs $remote_fs $network $syslog $named
+# Required-Stop:     $local_fs $remote_fs $network $syslog $named
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Start/stop Aspectran daemons
+# Description:       Start/stop Aspectran daemons
+### END INIT INFO
+
+. /home/aspectran/demo-app/app.conf
+
+"$DEPLOY_DIR/bin/jsvc-daemon.sh" --proc-name "$PROC_NAME" --pid-file "$PID_FILE" --user "$DAEMON_USER" $1
+
+if [ -f "$PID_FILE" ]; then
+  chown "$DAEMON_USER" "$PID_FILE"
+fi
