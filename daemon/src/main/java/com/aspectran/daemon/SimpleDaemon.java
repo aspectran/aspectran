@@ -27,6 +27,17 @@ import com.aspectran.core.context.config.DaemonConfig;
  */
 public class SimpleDaemon extends AbstractDaemon {
 
+    private final String basePath;
+
+    public SimpleDaemon(String basePath) {
+        this.basePath = basePath;
+    }
+
+    @Override
+    public String getBasePath() {
+        return basePath;
+    }
+
     @Override
     public void init(DaemonConfig daemonConfig) throws Exception {
         super.init(daemonConfig);

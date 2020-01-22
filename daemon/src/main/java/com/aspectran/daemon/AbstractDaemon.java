@@ -64,6 +64,11 @@ public class AbstractDaemon implements Daemon {
     }
 
     @Override
+    public String getBasePath() {
+        return (service != null ? service.getBasePath() : null);
+    }
+
+    @Override
     public DaemonService getService() {
         return service;
     }

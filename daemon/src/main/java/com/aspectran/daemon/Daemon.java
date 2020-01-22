@@ -28,6 +28,8 @@ public interface Daemon {
 
     void setName(String name);
 
+    String getBasePath();
+
     DaemonService getService();
 
     CommandPoller getCommandPoller();

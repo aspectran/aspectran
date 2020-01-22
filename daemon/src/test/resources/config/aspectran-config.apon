@@ -22,8 +22,8 @@ daemon: {
     poller: {
         pollingInterval: 5000
         maxThreads: 5
-        inbound: /inbound
-        requeue: false
+        requeuable: false
+        incoming: /commands/incoming
     }
     commands: [
         com.aspectran.daemon.command.builtins.JettyCommand

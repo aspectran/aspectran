@@ -65,20 +65,18 @@ public class FileCommandPoller extends AbstractCommandPoller {
         super(daemon, pollerConfig);
 
         try {
-            String basePath = (getDaemon().getService() != null ? getDaemon().getService().getBasePath() : null);
-
-            File commandsDir = new File(basePath, COMMANDS_PATH);
+            File commandsDir = new File(getDaemon().getBasePath(), COMMANDS_PATH);
             commandsDir.mkdirs();
 
-            File queuedDir = new File(basePath, QUEUED_PATH);
+            File queuedDir = new File(getDaemon().getBasePath(), QUEUED_PATH);
             queuedDir.mkdirs();
             this.queuedDir = queuedDir;
 
-            File completedDir = new File(basePath, COMPLETED_PATH);
+            File completedDir = new File(getDaemon().getBasePath(), COMPLETED_PATH);
             completedDir.mkdirs();
             this.completedDir = completedDir;
 
-            File failedDir = new File(basePath, FAILED_PATH);
+            File failedDir = new File(getDaemon().getBasePath(), FAILED_PATH);
             failedDir.mkdirs();
             this.failedDir = failedDir;
 
@@ -89,7 +87,7 @@ public class FileCommandPoller extends AbstractCommandPoller {
                 URI uri = URI.create(incomingPath);
                 incomingDir = new File(uri);
             } else {
-                incomingDir = new File(basePath, incomingPath);
+                incomingDir = new File(getDaemon().getBasePath(), incomingPath);
             }
             incomingDir.mkdirs();
             this.incomingDir = incomingDir;
@@ -152,10 +150,10 @@ public class FileCommandPoller extends AbstractCommandPoller {
                 File file = files[i];
                 CommandParameters parameters = readCommandFile(file);
                 if (parameters != null) {
-                    String inboundFileName = file.getName();
-                    String queuedFileName = writeCommandFile(queuedDir, inboundFileName, parameters);
+                    String incomingFileName = file.getName();
+                    String queuedFileName = writeCommandFile(queuedDir, incomingFileName, parameters);
                     if (queuedFileName != null) {
-                        removeCommandFile(incomingDir, inboundFileName);
+                        removeCommandFile(incomingDir, incomingFileName);
                         executeQueuedCommand(parameters, queuedFileName);
                     }
                 }
