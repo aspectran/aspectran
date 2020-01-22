@@ -103,11 +103,11 @@ start_daemon() {
     sleep 0.5
     line=$(head -n 1 "$DAEMON_OUT")
   done
-  # shellcheck disable=SC2039
-  if [[ "$line" == *"Failed to initialize daemon"* ]]; then
-      return 1
-  else
+  fail_str="Failed to initialize daemon"
+  if [ "${line#*$fail_str}" != "$line" ]; then
     return 0
+  else
+    return 1
   fi
 }
 
