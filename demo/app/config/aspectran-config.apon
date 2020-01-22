@@ -71,7 +71,7 @@ daemon: {
     poller: {
         pollingInterval: 5000
         maxThreads: 5
-        requeuable: true
+        requeuable: false
         incoming: /commands/incoming
     }
     commands: [
