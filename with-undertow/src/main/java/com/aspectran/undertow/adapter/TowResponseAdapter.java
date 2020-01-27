@@ -192,12 +192,10 @@ public class TowResponseAdapter extends AbstractResponseAdapter {
 
     @Override
     public void flush() throws IOException {
-        if (getHttpServerExchange().isResponseStarted()) {
-            if (writer != null) {
-                writer.flush();
-            } else {
-                getHttpServerExchange().getOutputStream().flush();
-            }
+        if (writer != null) {
+            writer.flush();
+        } else if (getHttpServerExchange().isResponseStarted()) {
+            getHttpServerExchange().getOutputStream().flush();
         }
     }
 
