@@ -11,7 +11,7 @@
     <link rel="stylesheet" type="text/css" href="https://aspectran.com/assets/css/aspectran.css" />
     <link href="https://fonts.googleapis.com/css?family=Raleway:500,500i,700" rel="stylesheet">
     <script src="https://aspectran.com/assets/js/modernizr-custom.js"></script>
-    <script src="https://aspectran.com/assets/js/jquery.js"></script>
+    <script src="https://aspectran.com/assets/js/jquery.min.js"></script>
     <script src="https://aspectran.com/assets/js/fastclick.js"></script>
     <link rel="mask-icon" href="https://aspectran.com/assets/img/aspectran-logo.svg" color="#4B555A" />
     <link rel="apple-touch-icon" sizes="57x57" href="https://aspectran.com/assets/img/apple-icon-57x57.png" />
@@ -73,7 +73,7 @@
                 <ul class="dropdown menu" data-dropdown-menu data-close-on-click-inside="false">
                     <li>
                         <a href="/examples/hello-world">Examples</a>
-                        <ul class="menu" data-submenu data-close-on-click-inside="false">
+                        <ul class="submenu menu vertical" data-submenu data-close-on-click-inside="false">
                             <li><a href="/examples/hello-world">Hello World</a></li>
                             <li><a href="/examples/gs-rest-service/">RESTful Web Service</a></li>
                             <li><a href="/examples/file-upload/">File Upload</a></li>
@@ -206,31 +206,8 @@
 </footer>
 <script src="https://aspectran.com/assets/js/foundation.min.js"></script>
 <script>
-    const path = location.pathname;
-    const a1 = $("#gnb-menu .top-bar-left .dropdown li a[href='" + path + "']").last();
-    if (a1.size() > 0) {
-        let arr = [];
-        arr.push({'name': a1.text(), 'href': null});
-        a1.parentsUntil(".dropdown > li:eq(0)").each(function() {
-            if ($(this).hasClass("menu")) {
-                var a2 = $(this).prev();
-                if (a2.is("a")) {
-                    arr.push({'name': a2.text(), 'href': a2.attr("href")||""});
-                }
-            }
-        });
-        arr.reverse();
-        for (let i in arr) {
-            let item = arr[i];
-            if (i < arr.length - 1) {
-                $(".breadcrumbs").append("<li><a href='" + item.href + "'>" + item.name + "</a></li>");
-            } else {
-                $(".breadcrumbs").append("<li><span class='show-for-sr'>Current: </span> <span class='current'>" + item.name + "</span></li>");
-            }
-        }
-    }
     $(document).foundation();
-    $(document).ready(function() {
+    $(function() {
         let $win = $(window);
         let $nav = $("#navigation");
         let navHeight = $("#masthead").height() - $nav.height();
@@ -275,7 +252,7 @@
     });
 </script>
 <script>
-    $(document).ready(function() {
+    $(function() {
         $("#masthead h1, article h1, article h2, article h3, article h4, article h5, article h6").each(function(index, item) {
             let tagn = item.localName;
             let anchor = "top-of-page";
@@ -288,7 +265,7 @@
     });
 </script>
 <script>
-    $(document).ready(function() {
+    $(function() {
         $(".lazy-sticky").each(function() {
             const $win = $(window);
             const $this = $(this);
@@ -393,12 +370,38 @@
             && !obj.href.match(/^mailto\:/)
             && (obj.hostname !== location.hostname);
     };
-    $(function(){
+    $(function() {
         /* Add 'external' CSS class to all external links */
         $('a:external').addClass('external');
         /* turn target into target=_blank for elements w external class */
         $(".external").attr('target','_blank');
     })
+</script>
+<script>
+    $(function() {
+        let menuitem = $("#gnb-menu .dropdown li a[href='" + location.pathname + "']").last();
+        if (menuitem.length > 0) {
+            let arr = [];
+            arr.push({'name': menuitem.text(), 'href': null});
+            menuitem.parentsUntil(".dropdown > li:eq(0)").each(function() {
+                if ($(this).hasClass("menu")) {
+                    let a2 = $(this).prev();
+                    if (a2.is("a")) {
+                        arr.push({'name': a2.text(), 'href': a2.attr("href") || ""});
+                    }
+                }
+            });
+            arr.reverse();
+            for (let i in arr) {
+                let item = arr[i];
+                if (i < arr.length - 1) {
+                    $(".breadcrumbs").append("<li><a href='" + item.href + "'>" + item.name + "</a></li>");
+                } else {
+                    $(".breadcrumbs").append("<li><span class='show-for-sr'>Current: </span> <span class='current'>" + item.name + "</span></li>");
+                }
+            }
+        }
+    });
 </script>
 </body>
 </html>
