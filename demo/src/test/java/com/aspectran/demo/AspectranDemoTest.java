@@ -24,9 +24,7 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * Test for Aspectran Demo.
- *
- * <p>Created: 2017. 11. 19.</p>
+ * Main entry point for the application.
  */
 public class AspectranDemoTest {
 
