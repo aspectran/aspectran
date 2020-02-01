@@ -10,6 +10,7 @@
 [![asciicast](https://asciinema.org/a/267955.png)](https://asciinema.org/a/267955)
 
 Aspectran is an intuitive and easy to use Java application framework.
+
 Aspectan's core features and built-in web application server make it easy to build 
 high-performance REST API services and enterprise web applications. It also provides 
 a consistent shell interface for creating simple command line applications.
