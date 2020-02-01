@@ -1,60 +1,60 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<div class="row">
-  <div class="t10 large-4 columns" style="position:relative;">
-    <h2 style="margin:0;">Customer List</h2>
-    <span id="total" class="float-right warning badge" style="font-size:2em;position:absolute;top:0;right:20px;">0</span>
-    <div id="customer-list-board" style="clear:both;border-radius:3px;margin-bottom:.5em;">
-      <select name="customerList" size="12" style="height:auto;background-image:none;margin:0;">
-      </select>
+<div class="grid-x grid-padding-x">
+  <div class="cell contour">
+    <div class="grid-x grid-padding-x">
+      <div class="cell large-4 t20" style="position:relative;">
+        <h2 style="margin:0;">Customer List</h2>
+        <span id="total" class="float-right warning badge" style="font-size:2em;position:absolute;top:0;right:20px;">0</span>
+        <div id="customer-list-board" style="clear:both;border-radius:3px;margin-bottom:.5em;">
+          <select name="customerList" size="12" style="height:auto;background-image:none;margin:0;">
+          </select>
+        </div>
+        <div class="float-left">
+          <button id="refresh" type="button" class="button warning">Refresh</button>
+        </div>
+        <div class="float-right">
+          <button id="add" type="button" class="button">Add</button>
+          <button id="delete" type="button" class="button alert">Delete</button>
+        </div>
+      </div>
+      <div class="cell large-8 t20" style="position:relative;">
+        <h2 style="margin:0;">Customer Details</h2>
+        <span id="cust-no" class="float-right success badge" style="font-size:2em;position:absolute;top:0;right:0;border-radius:50% 0 0 50%;">0</span>
+        <div id="details" class="panel radius">
+          <form>
+            <label>
+              No.
+              <input type="text" name="id" disabled="disabled"/>
+            </label>
+            <label>
+              Name
+              <input type="text" name="name" maxlength="30"/>
+            </label>
+            <label>
+              Age
+              <input type="number" name="age" min="1" max="199" maxlength="3" oninput="if(this.value.length >= this.maxLength) this.value = this.value.slice(0, this.maxLength);"/>
+            </label>
+            <legend>Approval Status:
+              <input type="radio" name="approvalStatus" id="approved" value="Y" required><label for="approved">Approved</label>
+              <input type="radio" name="approvalStatus" id="denied" value="N" required><label for="denied">Denied</label>
+            </legend>
+          </form>
+        </div>
+        <div class="float-right t10">
+          <button id="save" type="button" class="success button">Save</button>
+        </div>
+      </div>
+      <div class="cell">
+        <div id="describe" class="input-group">
+          <span class="input-group-label" style="white-space:nowrap;"></span>
+          <input class="input-group-field" type="text" value="" readonly>
+        </div>
+      </div>
+      <div class="cell" style="position:relative;">
+        <span id="response-status-code" class="float-left badge" style="font-size:2em;position:absolute;top:0;right:0;border-radius:0 0 0 50%;">200</span>
+        <pre id="response-text" style="min-height:100px;max-height:300px;"></pre>
+      </div>
     </div>
-    <div class="float-left">
-      <button id="refresh" type="button" class="button warning">Refresh</button>
-    </div>
-    <div class="float-right">
-      <button id="add" type="button" class="button">Add</button>
-      <button id="delete" type="button" class="button alert">Delete</button>
-    </div>
-  </div>
-  <div class="t10 large-8 columns" style="position:relative;">
-    <h2 style="margin:0;">Customer Details</h2>
-    <span id="cust-no" class="float-right success badge" style="font-size:2em;position:absolute;top:0;right:0;">0</span>
-    <div id="details" class="panel radius">
-      <form>
-        <label>
-          No.
-          <input type="text" name="id" disabled="disabled"/>
-        </label>
-        <label>
-          Name
-          <input type="text" name="name" maxlength="30"/>
-        </label>
-        <label>
-          Age
-          <input type="number" name="age" min="1" max="199" maxlength="3" oninput="if(this.value.length >= this.maxLength) this.value = this.value.slice(0, this.maxLength);"/>
-        </label>
-        <legend>Approval Status:
-          <input type="radio" name="approvalStatus" id="approved" value="Y" required><label for="approved">Approved</label>
-          <input type="radio" name="approvalStatus" id="denied" value="N" required><label for="denied">Denied</label>
-        </legend>
-      </form>
-    </div>
-    <div class="float-right t10">
-      <button id="save" type="button" class="success button">Save</button>
-    </div>
-  </div>
-</div>
-<div class="row">
-  <div class="large-12 columns">
-    <div id="describe" class="input-group">
-      <span class="input-group-label" style="white-space:nowrap;"></span>
-      <input class="input-group-field" type="text" value="" readonly>
-    </div>
-  </div>
-</div>
-<div class="row" style="margin-top:10px;">
-  <div class="large-12 columns" style="position:relative;">
-    <span id="response-status-code" class="float-left badge" style="font-size:1.7em;position:absolute;top:0;left:0;margin-left:.32em;margin-top:-.36em;">200</span>
-    <pre id="response-text" style="padding-left:4em;min-height:100px;max-height:300px;"></pre>
   </div>
 </div>
 

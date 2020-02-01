@@ -1,8 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<link rel="stylesheet" href="/assets/css/apm.css?20200111">
-<div class="row expanded">
-    <div class="columns small-12 large-5 t20">
+<div class="grid-x grid-padding-x">
+    <div class="cell small-12 large-5 t20">
         <h3>User Session Statistics</h3>
         <div class="panel stats">
             <dl>
@@ -19,7 +18,7 @@
             </dl>
         </div>
     </div>
-    <div class="columns small-12 large-7 t20">
+    <div class="cell small-12 large-7 t20">
         <h3>Current Users</h3>
         <div class="panel users-wrap">
             <ul class="users">
@@ -27,8 +26,8 @@
         </div>
     </div>
 </div>
-<div class="row expanded">
-    <div class="columns small-12 t20">
+<div class="grid-x grid-padding-x">
+    <div class="cell t20">
         <h3>Application Log</h3>
         <div class="log-container">
             <div class="log-header">
@@ -46,6 +45,7 @@
         </div>
     </div>
 </div>
+<link rel="stylesheet" href="/assets/css/apm.css?20200111">
 <script src="/assets/js/apm.js"></script>
 <script>
     $(function() {

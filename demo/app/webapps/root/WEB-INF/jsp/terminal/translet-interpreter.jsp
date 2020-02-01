@@ -1,14 +1,16 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<div class="grid-x grid-padding-x">
+    <div class="cell contour">
+        <div id="term-demo"></div>
+    </div>
+</div>
 <style>
-    #term-demo {
-        border-radius: 0 0 10px 10px;
+    body.plate .cell.contour {
+        background-color: #000;
     }
-    @media print, screen and (min-width: 64em) {
-        section > .row {
-            background-color: #000;
-            border-radius: 0 0 10px 10px;
-        }
+    #term-demo {
+        padding: 15px 0 0 0;
     }
     .terminal-wrapper textarea {
         box-shadow: none;
@@ -16,11 +18,6 @@
         min-width: initial;
     }
 </style>
-<div class="row">
-    <div class="columns large-12" style="min-height: 500px;">
-        <div id="term-demo"></div>
-    </div>
-</div>
 <script src="https://cdn.jsdelivr.net/gh/jcubic/jquery.terminal@devel/js/jquery.terminal.min.js"></script>
 <link href="https://cdn.jsdelivr.net/gh/jcubic/jquery.terminal@devel/css/jquery.terminal.min.css" rel="stylesheet"/>
 <script>

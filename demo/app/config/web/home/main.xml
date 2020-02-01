@@ -16,6 +16,7 @@
                 the recommended best practices.
             </item>
             <item name="include">home/main</item>
+            <item name="style">plate solid</item>
         </echo>
         <dispatch name="templates/default"/>
     </translet>

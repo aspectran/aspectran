@@ -1,12 +1,12 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<div class="row">
-    <div id="title" class="columns small-12">
+<div class="grid-x grid-padding-x">
+    <div id="title" class="cell small-12">
         <h2>Chat <span id="totalPeople"></span></h2>
         <a class="leave" onclick="leaveRoom();">Leave</a>
     </div>
     <div id="contacts" class="columns medium-4 large-3 hide-for-small-only"></div>
-    <div id="room" class="columns small-12 medium-8 large-9">
+    <div id="room" class="cell small-12 medium-8 large-9">
         <form id="signin" onsubmit="return false;">
             <h3>Type your username</h3>
             <input type="text" id="username" maxlength="50" placeholder="Username" autocomplete="off" autofocus/>

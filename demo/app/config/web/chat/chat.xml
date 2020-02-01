@@ -12,6 +12,7 @@
             <item name="headline">Aspectran WebSocket Chat Demo</item>
             <item name="teaser">Example of chat application with WebSockets</item>
             <item name="include">chat/chat</item>
+            <item name="style">plate</item>
         </echo>
         <dispatch name="templates/default"/>
     </translet>

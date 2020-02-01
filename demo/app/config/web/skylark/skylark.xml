@@ -16,6 +16,7 @@
             <item name="headline">Skylark Terminal</item>
             <item name="teaser">Skylark is a text to speech program that converts any written text into spoken words.</item>
             <item name="include">skylark/skylark</item>
+            <item name="style">plate</item>
         </echo>
         <dispatch name="templates/default"/>
     </translet>
