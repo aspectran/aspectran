@@ -2,7 +2,7 @@
 <div class="row">
   <div class="t10 large-4 columns" style="position:relative;">
     <h2 style="margin:0;">Customer List</h2>
-    <span id="total" class="float-right warning badge" style="font-size:2em;position:absolute;top:0;right:0;">0</span>
+    <span id="total" class="float-right warning badge" style="font-size:2em;position:absolute;top:0;right:20px;">0</span>
     <div id="customer-list-board" style="clear:both;border-radius:3px;margin-bottom:.5em;">
       <select name="customerList" size="12" style="height:auto;background-image:none;margin:0;">
       </select>

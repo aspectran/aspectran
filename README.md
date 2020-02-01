@@ -9,13 +9,12 @@
 
 [![asciicast](https://asciinema.org/a/267955.png)](https://asciinema.org/a/267955)
 
-Aspectran is a concise, easy-to-use Java application framework.
-Widely used Java application frameworks are becoming more and more complex with more functionality as they mature.
-We may use only a subset of the many features that the framework provides, or we may add or supplement functionality
-as a result of the lack of functionality or inconvenience. One of the framework we have used is the Spring Framework.
-Aspectran is a next-generation framework with a single structure that reflects some of the key features of Spring Framework.
+Aspectran is an intuitive and easy to use Java application framework.
+Aspectan's core features and built-in web application server make it easy to build 
+high-performance REST API services and enterprise web applications. It also provides 
+a consistent shell interface for creating simple command line applications.
 
-Aspectran consists of the following core functions:
+Aspectran consists of the following key features:
 
 * **Support multiple execution environments with identical configuration settings**  
   You can share the same configuration settings in different execution environments, such as Web and CLI-based applications.
