@@ -23,7 +23,7 @@
     <packaging>pom</packaging>
 
     <name>Aspectran</name>
-    <description>Aspectran is a Java framework for building web and command-line applications.</description>
+    <description>Aspectran is a lightweight framework for building high performance Java applications.</description>
     <url>https://aspectran.com/</url>
 
     <organization>
