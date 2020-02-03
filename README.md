@@ -9,44 +9,54 @@
 
 [![asciicast](https://asciinema.org/a/267955.png)](https://asciinema.org/a/267955)
 
-Aspectran is an intuitive and easy to use Java application framework.
-
-Aspectan's core features and built-in web application server make it easy to build 
-high-performance REST API services and enterprise web applications. It also provides 
-a consistent shell interface for creating simple command line applications.
+Aspectran is a framework for developing Java applications that can be used to build simple shell applications and large enterprise web applications.
 
 Aspectran consists of the following key features:
 
-* **Support multiple execution environments with identical configuration settings**  
-  You can share the same configuration settings in different execution environments, such as Web and CLI-based applications.
 * **Support POJO (*Plain Old Java Object*) programming model**  
-  Rather than inheriting certain classes and extending functionality, you can concentrate on implementing the functionality that is actually needed.
-  The result value can be returned as the simplest Java object.
+  The complexity of the framework and the complexity of the detailed technology should not be passed on to developers.
+  Developers can implement the functionality in a simple Java class and return the resulting value in a Java base object.
 * **Support Inversion of Control (*IoC*)**  
-  The framework controls the overall flow and invokes the functionality of the module created by the developer.
-  Provides the ability to manage the creation and lifecycle of objects, allowing developers to focus on business logic.
+  The framework completes the overall functionality by directly invoking the unit functionality implemented by the developer while controlling the overall flow.
+  The framework manages the creation and lifecycle of objects so that developers can focus on business logic.
 * **Support Dependency Injection (*DI*)**  
   The framework links modules that depend on each other at runtime.
   It can maintain low coupling between modules and increase code reusability.
 * **Support Aspect-Oriented Programming (*AOP*)**  
-  You can write code by separating core functions and additional functions.
-  Once the core functionality implementation is complete, features such as transactions, logging, security, and exception handling can be combined with core functionality.
+  The framework combines additional functionality such as transactions, logging, security, and exception handling within the core logic implemented by the developer.
+  Developers will be able to code the core and add-ons separately.
 * **Support building RESTful Web Services**  
-  Aspectran is designed to be suitable for building RESTful Web Services.
+  Aspectran is designed from the ground up to be suitable for implementing REST APIs, eliminating the need for a separate framework or additional libraries.
+  Intuitive API implementation allows you to send and receive messages in a consistent format quickly.
 
-Aspectran provides the environment to build web application server and shell application easily based on the above core functions. In addition, it enables rapid execution and deployment. Java code written in POJO with Aspectran's powerful and concise configuration settings facilitates testing and maximizes code reuse when developing applications in other execution environments.
+Applications developed based on Aspectran support the following execution environments on the JVM:
 
-The following packages based on the `com.aspectran.core` package exist to support various execution environments.
+* Consistent shell interface for command line applications
+* Built-in high performance web application server (Undertow, Jetty)
+* Daemons running as background processes
 
-* `com.aspectran.daemon`: Provides a daemon that runs Aspectran as a service in the background on Unix-based or Windows operating systems
-* `com.aspectran.embed`: Provides an interface that can be used by embedding Aspectran in Java applications
-* `com.aspectran.rss-lettuce`: Add-on package for providing session clustering via persistence to Redis using Lettuce as the client
-* `com.aspectran.shell`: Provides an interactive shell that lets you use or control Aspectran directly from the command line
-* `com.aspectran.shell-jline`: Provides an interactive shell using the feature-rich JLine
-* `com.aspectran.web`: Provides overall functionality for building web applications within a web application container
-* `com.aspectran.jetty`: Add-on package for integrating Embedded Jetty
-* `com.aspectran.mybatis`: Add-on package for integrating MyBatis
-* `com.aspectran.undertow`: Add-on package for integrating Embedded Undertow
+Aspectran consists of the following major packages:
+
+* **com.aspectran.core**  
+  Package that contains implementations of Aspectran's core features and is the basis for other sub-implements
+* **com.aspectran.daemon**  
+  Provide daemon services for running Aspectran as a background process on Unix-based or Windows operating systems
+* **com.aspectran.embed**  
+  Package that provide services for embedding Aspectran instances in other Java applications
+* **com.aspectran.rss-lettuce**  
+  Add-on package for providing session clustering via persistence to Redis using Lettuce as the client
+* **com.aspectran.shell**  
+  Package to provide a consistent interactive shell interface on the command line
+* **com.aspectran.shell-jline**  
+  Package to provide interactive shell interface using feature-rich JLine
+* **com.aspectran.web**  
+  Package to provide the overall functionality for building web applications
+* **com.aspectran.jetty**  
+  Add-on package for integrating Jetty
+* **com.aspectran.mybatis**  
+  Add-on package for integrating MyBatis
+* **com.aspectran.undertow**  
+  Add-on package for integrating Undertow
 
 ## Maven dependencies
 
