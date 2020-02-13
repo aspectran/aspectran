@@ -4,9 +4,8 @@
 <aspectran>
 
     <description>
-        An Aspectran configuration for the Web Application.
-        Note that names of translets that match the request URI
-        always start with a forward slash (/).
+        An Aspectran configuration for the Web Environment.
+        Note that names of translets that match the request URI always start with a forward slash (/).
     </description>
 
     <bean id="jspViewDispatcher" class="com.aspectran.web.support.view.JspViewDispatcher">
@@ -19,17 +18,18 @@
         </properties>
     </bean>
 
-    <aspect id="transletSettings">
+    <aspect id="webTransletSettings">
         <description>
-            Specifies the environment variables used during request and response processing.
+            This aspect is for injecting default settings into translets running in the web environment.
         </description>
+        <joinpoint>
+            pointcut: {
+                +: /**
+            }
+        </joinpoint>
         <settings>
             <setting name="characterEncoding" value="utf-8"/>
             <setting name="viewDispatcher" value="jspViewDispatcher"/>
-            <setting name="format.indentSize" value="2"/>
-            <setting name="format.dateFormat" value="yyyy-MM-dd"/>
-            <setting name="format.dateTimeFormat" value="yyyy-MM-dd HH:mm:ss"/>
-            <setting name="format.nullWritable" value="true"/>
         </settings>
     </aspect>
 

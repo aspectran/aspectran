@@ -4,9 +4,7 @@
 <aspectran>
 
     <description>
-        An Aspectran configuration for the Aspectran Shell Application.
-        Note that translets with names that begin with a slash (/) are
-        only accessible in the Web environment.
+        An Aspectran configuration for the Shell Environment.
     </description>
 
     <append file="/config/shell/examples/hello.xml"/>
