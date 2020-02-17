@@ -19,6 +19,7 @@ import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.ToStringBuilder;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
@@ -648,6 +649,20 @@ public abstract class AbstractParameters implements Parameters {
     public void readFrom(String apon) throws IOException {
         if (apon != null) {
             AponReader.parse(apon, this);
+        }
+    }
+
+    @Override
+    public void readFrom(File file) throws IOException {
+        if (file != null) {
+            AponReader.parse(file, this);
+        }
+    }
+
+    @Override
+    public void readFrom(File file, String encoding) throws IOException {
+        if (file != null) {
+            AponReader.parse(file, encoding, this);
         }
     }
 

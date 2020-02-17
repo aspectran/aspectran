@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.util.apon;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -750,6 +751,10 @@ public interface Parameters {
     void updateContainer(Parameters container);
 
     void readFrom(String text) throws IOException;
+
+    void readFrom(File file) throws IOException;
+
+    void readFrom(File file, String encoding) throws IOException;
 
     String describe();
 
