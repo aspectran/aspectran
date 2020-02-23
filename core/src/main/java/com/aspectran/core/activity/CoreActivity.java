@@ -592,7 +592,7 @@ public class CoreActivity extends AdviceActivity {
             ItemEvaluator evaluator = null;
             ItemRuleList missingItemRules = null;
             for (ItemRule itemRule : itemRuleMap.values()) {
-                if (itemRule.getTokens() != null) {
+                if (itemRule.isEvaluable()) {
                     if (evaluator == null) {
                         evaluator = new ItemExpression(this);
                     }
@@ -626,10 +626,13 @@ public class CoreActivity extends AdviceActivity {
     protected void parseDeclaredAttributes() throws MissingMandatoryAttributesException {
         ItemRuleMap itemRuleMap = getRequestRule().getAttributeItemRuleMap();
         if (itemRuleMap != null && !itemRuleMap.isEmpty()) {
-            ItemEvaluator evaluator = new ItemExpression(this);
+            ItemEvaluator evaluator = null;
             ItemRuleList missingItemRules = null;
             for (ItemRule itemRule : itemRuleMap.values()) {
-                if (itemRule.getTokens() != null) {
+                if (itemRule.isEvaluable()) {
+                    if (evaluator == null) {
+                        evaluator = new ItemExpression(this);
+                    }
                     Object value = evaluator.evaluate(itemRule);
                     Object oldValue = getRequestAdapter().getAttribute(itemRule.getName());
                     if (value != oldValue) {

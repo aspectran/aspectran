@@ -156,47 +156,78 @@ public class ItemExpression extends TokenExpression implements ItemEvaluator {
         try {
             ItemType itemType = itemRule.getType();
             ItemValueType valueType = itemRule.getValueType();
+            String[] values = null;
             if (itemType == ItemType.SINGLE) {
-                Token[] tokens = itemRule.getTokens();
-                Object value = evaluate(tokens, valueType);
+                Object value;
+                if (valueType == ItemValueType.BEAN) {
+                    value = evaluateBean(itemRule.getBeanRule());
+                } else {
+                    Token[] tokens = itemRule.getTokens();
+                    value = evaluate(tokens, valueType);
+                }
                 if (value != null) {
                     if (value instanceof String[]) {
-                        return (String[])value;
+                        values = (String[])value;
                     } else {
-                        return new String[] { value.toString() };
+                        values = new String[] { value.toString() };
                     }
                 }
             } else if (itemType == ItemType.ARRAY) {
-                Object[] values = evaluateAsArray(itemRule.getTokensList(), valueType);
-                if (values != null) {
-                    if (values instanceof String[]) {
-                        return (String[])values;
+                Object[] arr;
+                if (valueType == ItemValueType.BEAN) {
+                    arr = evaluateBeanAsArray(itemRule.getBeanRuleList());
+                } else {
+                    arr = evaluateAsArray(itemRule.getTokensList(), valueType);
+                }
+                if (arr != null) {
+                    if (arr instanceof String[]) {
+                        values = (String[])arr;
                     } else {
-                        return Arrays.stream(values).map(Object::toString).toArray(String[]::new);
+                        values = Arrays.stream(arr).map(Object::toString).toArray(String[]::new);
                     }
                 }
             } else if (itemType == ItemType.LIST) {
-                List<Object> list = evaluateAsList(itemRule.getTokensList(), valueType);
+                List<Object> list;
+                if (valueType == ItemValueType.BEAN) {
+                    list = evaluateBeanAsList(itemRule.getBeanRuleList());
+                } else {
+                    list = evaluateAsList(itemRule.getTokensList(), valueType);
+                }
                 if (list != null) {
-                    return Arrays.stream(list.toArray()).map(Object::toString).toArray(String[]::new);
+                    values = Arrays.stream(list.toArray()).map(Object::toString).toArray(String[]::new);
                 }
             } else if (itemType == ItemType.SET) {
-                Set<Object> set = evaluateAsSet(itemRule.getTokensList(), valueType);
+                Set<Object> set;
+                if (valueType == ItemValueType.BEAN) {
+                    set = evaluateBeanAsSet(itemRule.getBeanRuleList());
+                } else {
+                    set = evaluateAsSet(itemRule.getTokensList(), valueType);
+                }
                 if (set != null) {
-                    return Arrays.stream(set.toArray()).map(Object::toString).toArray(String[]::new);
+                    values = Arrays.stream(set.toArray()).map(Object::toString).toArray(String[]::new);
                 }
             } else if (itemType == ItemType.MAP) {
-                Map<String, Object> map = evaluateAsMap(itemRule.getTokensMap(), valueType);
+                Map<String, Object> map;
+                if (valueType == ItemValueType.BEAN) {
+                    map = evaluateBeanAsMap(itemRule.getBeanRuleMap());
+                } else {
+                    map = evaluateAsMap(itemRule.getTokensMap(), valueType);
+                }
                 if (map != null) {
-                    return new String[] {map.toString()};
+                    values = new String[] { map.toString() };
                 }
             } else if (itemType == ItemType.PROPERTIES) {
-                Properties properties = evaluateAsProperties(itemRule.getTokensMap(), valueType);
-                if (properties != null) {
-                    return new String[] {properties.toString()};
+                Properties prop;
+                if (valueType == ItemValueType.BEAN) {
+                    prop = evaluateBeanAsProperties(itemRule.getBeanRuleMap());
+                } else {
+                    prop = evaluateAsProperties(itemRule.getTokensMap(), valueType);
+                }
+                if (prop != null) {
+                    values = new String[] { prop.toString() };
                 }
             }
-            return null;
+            return values;
         } catch (Exception e) {
             throw new ItemEvaluationException(itemRule, e);
         }
@@ -331,7 +362,7 @@ public class ItemExpression extends TokenExpression implements ItemEvaluator {
         return activity.getPrototypeScopeBean(beanRule);
     }
 
-    private Object evaluateBeanAsArray(List<BeanRule> beanRuleList) {
+    private Object[] evaluateBeanAsArray(List<BeanRule> beanRuleList) {
         List<Object> valueList = evaluateBeanAsList(beanRuleList);
         if (valueList == null) {
             return null;
@@ -352,7 +383,7 @@ public class ItemExpression extends TokenExpression implements ItemEvaluator {
             for (int i = 0; i < valueList.size(); i++) {
                 Array.set(values, i, valueList.get(i));
             }
-            return values;
+            return (Object[])values;
         } else {
             return valueList.toArray(new Object[0]);
         }

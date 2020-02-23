@@ -588,6 +588,11 @@ public class ItemRule {
         beanRuleMap.put(name, beanRule);
     }
 
+    public boolean isEvaluable() {
+        return (tokens != null || tokensList != null || tokensMap != null ||
+                beanRule != null || beanRuleList != null || beanRuleMap != null);
+    }
+
     private void checkSingleType() {
         if (type != ItemType.SINGLE) {
             throw new IllegalStateException("The type of this item must be 'single'");
