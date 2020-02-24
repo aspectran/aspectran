@@ -126,7 +126,7 @@ class EmbeddedAspectranTest {
         params.setParameter("mode", mode);
 
         Translet translet = aspectran.translate("chooseWhenTest", params);
-        Map dataMap = translet.getActivityDataMap();
+        ActivityDataMap dataMap = translet.getActivityDataMap();
         String response = translet.toString();
 
         System.out.println("Mode: " + mode);

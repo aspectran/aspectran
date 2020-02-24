@@ -23,13 +23,17 @@ import java.lang.annotation.Target;
 
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-public @interface Redirect {
+@Target(ElementType.ANNOTATION_TYPE)
+public @interface Item {
+
+    String name() default "";
 
     String value() default "";
 
-    String path() default "";
+    boolean tokenize() default true;
 
-    ParamItems[] parameters() default {};
+    boolean mandatory() default false;
+
+    boolean secret() default false;
 
 }

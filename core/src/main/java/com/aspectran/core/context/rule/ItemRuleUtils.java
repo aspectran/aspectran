@@ -16,8 +16,7 @@
 package com.aspectran.core.context.rule;
 
 import com.aspectran.core.activity.request.FileParameter;
-import com.aspectran.core.component.bean.annotation.Attribute;
-import com.aspectran.core.component.bean.annotation.Parameter;
+import com.aspectran.core.component.bean.annotation.Item;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.rule.params.EntryParameters;
 import com.aspectran.core.context.rule.params.ItemParameters;
@@ -233,47 +232,23 @@ public class ItemRuleUtils {
         return itemRule;
     }
 
-    public static ItemRuleMap toItemRuleMap(Parameter[] parameters) throws IllegalRuleException {
-        if (parameters == null || parameters.length == 0) {
+    public static ItemRuleMap toItemRuleMap(Item[] items) throws IllegalRuleException {
+        if (items == null || items.length == 0) {
             return null;
         }
         ItemRuleMap itemRuleMap = new ItemRuleMap();
-        for (Parameter parameter : parameters) {
-            itemRuleMap.putItemRule(toItemRule(parameter));
+        for (Item item : items) {
+            itemRuleMap.putItemRule(toItemRule(item));
         }
         return itemRuleMap;
     }
 
-    private static ItemRule toItemRule(Parameter parameter) throws IllegalRuleException {
-        String name = parameter.name();
-        String value = parameter.value();
-        boolean tokenize = parameter.tokenize();
-        boolean mandatory = parameter.mandatory();
-        boolean secret = parameter.secret();
-
-        ItemRule itemRule = ItemRule.newInstance(null, name, null,
-                tokenize, mandatory, secret);
-        itemRule.setValue(value);
-        return itemRule;
-    }
-
-    public static ItemRuleMap toItemRuleMap(Attribute[] attributes) throws IllegalRuleException {
-        if (attributes == null || attributes.length == 0) {
-            return null;
-        }
-        ItemRuleMap itemRuleMap = new ItemRuleMap();
-        for (Attribute attribute : attributes) {
-            itemRuleMap.putItemRule(toItemRule(attribute));
-        }
-        return itemRuleMap;
-    }
-
-    private static ItemRule toItemRule(Attribute attribute) throws IllegalRuleException {
-        String name = attribute.name();
-        String value = attribute.value();
-        boolean tokenize = attribute.tokenize();
-        boolean mandatory = attribute.mandatory();
-        boolean secret = attribute.secret();
+    private static ItemRule toItemRule(Item item) throws IllegalRuleException {
+        String name = item.name();
+        String value = item.value();
+        boolean tokenize = item.tokenize();
+        boolean mandatory = item.mandatory();
+        boolean secret = item.secret();
 
         ItemRule itemRule = ItemRule.newInstance(null, name, null,
                 tokenize, mandatory, secret);

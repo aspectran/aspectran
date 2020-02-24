@@ -192,4 +192,9 @@ class AnnotatedConfigurationTest {
         assertEquals("12", result);
     }
 
+    @Test
+    void forward() {
+        aspectran.translate("/forward");
+    }
+
 }

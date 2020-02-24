@@ -17,23 +17,28 @@ package com.aspectran.core.component.bean.annotation;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.ANNOTATION_TYPE)
-public @interface Parameter {
+@Target(ElementType.METHOD)
+@Repeatable(AttrItems.List.class)
+public @interface AttrItems {
 
-    String name() default "";
+    String profile() default "";
 
-    String value() default "";
+    Item[] value() default {};
 
-    boolean tokenize() default true;
+    @Documented
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.METHOD)
+    @interface List {
 
-    boolean mandatory() default false;
+        AttrItems[] value();
 
-    boolean secret() default false;
+    }
 
 }

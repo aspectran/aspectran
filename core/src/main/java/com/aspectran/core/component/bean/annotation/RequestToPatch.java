@@ -28,10 +28,4 @@ public @interface RequestToPatch {
 
     String value() default "";
 
-    String translet() default "";
-
-    Parameter[] parameters() default {};
-
-    Attribute[] attributes() default {};
-
 }

@@ -18,9 +18,11 @@ package com.aspectran.embed.sample.anno;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.activity.response.transform.CustomTransformer;
+import com.aspectran.core.component.bean.annotation.AttrItems;
 import com.aspectran.core.component.bean.annotation.Component;
 import com.aspectran.core.component.bean.annotation.Format;
-import com.aspectran.core.component.bean.annotation.Parameter;
+import com.aspectran.core.component.bean.annotation.Forward;
+import com.aspectran.core.component.bean.annotation.Item;
 import com.aspectran.core.component.bean.annotation.Qualifier;
 import com.aspectran.core.component.bean.annotation.Request;
 import com.aspectran.core.util.apon.Parameters;
@@ -42,13 +44,28 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 @Component
 public class AnnotatedAction {
 
-    @Request(translet = "/action-1",
-            parameters = {
-                    @Parameter(
+    @Request("/action-1")
+    @AttrItems(
+            profile = "11",
+            value = {
+                    @Item(
                             name = "param1",
                             value = "Apple"
                     ),
-                    @Parameter(
+                    @Item(
+                            name = "param2",
+                            value = "Tomato"
+                    )
+            }
+    )
+    @AttrItems(
+            profile = "22",
+            value = {
+                    @Item(
+                            name = "param1",
+                            value = "Apple"
+                    ),
+                    @Item(
                             name = "param2",
                             value = "Tomato"
                     )
@@ -60,26 +77,25 @@ public class AnnotatedAction {
         assertEquals("Tomato", param2);
     }
 
-    @Request(translet = "/action-2",
-            parameters = {
-                    @Parameter(
-                            name = "param1",
-                            value = "1234"
-                    ),
-                    @Parameter(
-                            name = "param2",
-                            value = "5678"
-                    ),
-                    @Parameter(
-                            name = "param3",
-                            value = "88888888888888888888"
-                    ),
-                    @Parameter(
-                            name = "param4",
-                            value = "99999999999999999999"
-                    )
-            }
-    )
+    @Request("/action-2")
+    @AttrItems({
+            @Item(
+                    name = "param1",
+                    value = "1234"
+            ),
+            @Item(
+                    name = "param2",
+                    value = "5678"
+            ),
+            @Item(
+                    name = "param3",
+                    value = "88888888888888888888"
+            ),
+            @Item(
+                    name = "param4",
+                    value = "99999999999999999999"
+            )
+    })
     public void action2(Integer param1, int param2, int param3, Integer param4) {
         assertEquals(1234, param1);
         assertEquals(5678, param2);
@@ -87,31 +103,29 @@ public class AnnotatedAction {
         assertNull(param4);
     }
 
-    @Request(translet = "/action-3",
-            parameters = {
-                    @Parameter(
-                            name = "param1",
-                            value = "1234"
-                    )
-            }
-    )
+    @Request("/action-3")
+    @AttrItems({
+            @Item(
+                    name = "param1",
+                    value = "1234"
+            )
+    })
     public void action3(String param1, String param2) {
         assertNotNull(param1);
         assertNull(param2);
     }
 
-    @Request(translet = "/action-4",
-            parameters = {
-                    @Parameter(
-                            name = "date1",
-                            value = "2019-02-15"
-                    ),
-                    @Parameter(
-                            name = "date2",
-                            value = "2019-02-15T01:30:50.123"
-                    )
-            }
-    )
+    @Request("/action-4")
+    @AttrItems({
+            @Item(
+                    name = "date1",
+                    value = "2019-02-15"
+            ),
+            @Item(
+                    name = "date2",
+                    value = "2019-02-15T01:30:50.123"
+            )
+    })
     public void action4(@Format("yyyy-MM-dd") Date date1,
                         @Format("yyyy-MM-dd'T'HH:mm:ss.SSS") Date date2,
                         @Qualifier("date2") @Format("yyyy-MM-dd'T'HH:mm:ss.SSS") LocalDateTime date3) {
@@ -127,30 +141,29 @@ public class AnnotatedAction {
         assertEquals("2019-02-15T01:30:50.123", dt3);
     }
 
-    @Request(translet = "/action-5",
-            parameters = {
-                    @Parameter(
-                            name = "param1",
-                            value = "1234"
-                    ),
-                    @Parameter(
-                            name = "param2",
-                            value = "5678"
-                    ),
-                    @Parameter(
-                            name = "param3",
-                            value = "33333333"
-                    ),
-                    @Parameter(
-                            name = "param4",
-                            value = "44444444"
-                    ),
-                    @Parameter(
-                            name = "param5",
-                            value = "55555555"
-                    )
-            }
-    )
+    @Request("/action-5")
+    @AttrItems({
+            @Item(
+                    name = "param1",
+                    value = "1234"
+            ),
+            @Item(
+                    name = "param2",
+                    value = "5678"
+            ),
+            @Item(
+                    name = "param3",
+                    value = "33333333"
+            ),
+            @Item(
+                    name = "param4",
+                    value = "44444444"
+            ),
+            @Item(
+                    name = "param5",
+                    value = "55555555"
+            )
+    })
     public void action5(long param1, float param2, double param3, BigInteger param4, BigDecimal param5) {
         assertEquals(Long.valueOf(1234), param1);
         assertEquals(Float.valueOf(5678), param2);
@@ -164,18 +177,17 @@ public class AnnotatedAction {
         assertArrayEquals(new String[] { "v1", "v2", "v3" }, param1);
     }
 
-    @Request(translet = "/action-7",
-            parameters = {
-                    @Parameter(
-                            name = "param1",
-                            value = "Strawberry"
-                    ),
-                    @Parameter(
-                            name = "param0",
-                            value = "Grape"
-                    )
-            }
-    )
+    @Request("/action-7")
+    @AttrItems({
+            @Item(
+                    name = "param1",
+                    value = "Strawberry"
+            ),
+            @Item(
+                    name = "param0",
+                    value = "Grape"
+            )
+    })
     public void action7(Character param1, char param2, char[] param3) {
         assertEquals('S', param1);
         assertEquals(Character.MIN_VALUE, param2);
@@ -279,6 +291,33 @@ public class AnnotatedAction {
     @Request("/action-13")
     public CustomTransformer action13() {
         return new TestCustomTransformer();
+    }
+
+    @Request("/forward")
+    @Forward(
+            translet = "/forwarded",
+            attributes = {
+                    @AttrItems({
+                            @Item(
+                                    name = "attr1",
+                                    value = "Strawberry"
+                            ),
+                            @Item(
+                                    name = "attr2",
+                                    value = "Grape"
+                            )
+                    })
+            }
+    )
+    public void forward() {
+    }
+
+    @Request("/forwarded")
+    public void forwarded(Translet translet) {
+        String attr1 = translet.getAttribute("attr1");
+        String attr2 = translet.getAttribute("attr2");
+        assertEquals("Strawberry", attr1);
+        assertEquals("Grape", attr2);
     }
 
 }

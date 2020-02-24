@@ -34,8 +34,4 @@ public @interface Request {
 
     MethodType[] method() default {};
 
-    Parameter[] parameters() default {};
-
-    Attribute[] attributes() default {};
-
 }
