@@ -23,6 +23,7 @@ import com.aspectran.core.component.bean.annotation.Component;
 import com.aspectran.core.component.bean.annotation.Format;
 import com.aspectran.core.component.bean.annotation.Forward;
 import com.aspectran.core.component.bean.annotation.Item;
+import com.aspectran.core.component.bean.annotation.ParamItems;
 import com.aspectran.core.component.bean.annotation.Qualifier;
 import com.aspectran.core.component.bean.annotation.Request;
 import com.aspectran.core.util.apon.Parameters;
@@ -45,32 +46,16 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 public class AnnotatedAction {
 
     @Request("/action-1")
-    @AttrItems(
-            profile = "11",
-            value = {
-                    @Item(
-                            name = "param1",
-                            value = "Apple"
-                    ),
-                    @Item(
-                            name = "param2",
-                            value = "Tomato"
-                    )
-            }
-    )
-    @AttrItems(
-            profile = "22",
-            value = {
-                    @Item(
-                            name = "param1",
-                            value = "Apple"
-                    ),
-                    @Item(
-                            name = "param2",
-                            value = "Tomato"
-                    )
-            }
-    )
+    @ParamItems({
+            @Item(
+                    name = "param1",
+                    value = "Apple"
+            ),
+            @Item(
+                    name = "param2",
+                    value = "Tomato"
+            )
+    })
     public void action1(Translet translet, String param1, String param2) {
         assertNotNull(translet);
         assertEquals("Apple", param1);
@@ -78,7 +63,7 @@ public class AnnotatedAction {
     }
 
     @Request("/action-2")
-    @AttrItems({
+    @ParamItems({
             @Item(
                     name = "param1",
                     value = "1234"
@@ -104,7 +89,7 @@ public class AnnotatedAction {
     }
 
     @Request("/action-3")
-    @AttrItems({
+    @ParamItems({
             @Item(
                     name = "param1",
                     value = "1234"
@@ -116,7 +101,7 @@ public class AnnotatedAction {
     }
 
     @Request("/action-4")
-    @AttrItems({
+    @ParamItems({
             @Item(
                     name = "date1",
                     value = "2019-02-15"
@@ -142,7 +127,7 @@ public class AnnotatedAction {
     }
 
     @Request("/action-5")
-    @AttrItems({
+    @ParamItems({
             @Item(
                     name = "param1",
                     value = "1234"
@@ -178,7 +163,7 @@ public class AnnotatedAction {
     }
 
     @Request("/action-7")
-    @AttrItems({
+    @ParamItems({
             @Item(
                     name = "param1",
                     value = "Strawberry"
