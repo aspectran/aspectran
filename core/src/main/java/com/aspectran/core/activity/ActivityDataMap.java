@@ -19,6 +19,7 @@ import com.aspectran.core.activity.process.result.ActionResult;
 import com.aspectran.core.activity.process.result.ContentResult;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
+import com.aspectran.core.lang.NonNull;
 
 import java.util.AbstractMap;
 import java.util.ArrayList;
@@ -104,6 +105,7 @@ public class ActivityDataMap extends HashMap<String, Object> {
     }
 
     @Override
+    @NonNull
     public Collection<Object> values() {
         List<Object> list = new ArrayList<>(size());
         for (String name : keySet()) {
@@ -113,6 +115,7 @@ public class ActivityDataMap extends HashMap<String, Object> {
     }
 
     @Override
+    @NonNull
     public Set<Map.Entry<String, Object>> entrySet() {
         Set<Map.Entry<String, Object>> set = new HashSet<>();
         for (Map.Entry<String, Object> entry : super.entrySet()) {
