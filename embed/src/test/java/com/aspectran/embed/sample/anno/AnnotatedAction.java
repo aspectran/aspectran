@@ -18,12 +18,11 @@ package com.aspectran.embed.sample.anno;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.activity.response.transform.CustomTransformer;
-import com.aspectran.core.component.bean.annotation.AttrItems;
+import com.aspectran.core.component.bean.annotation.AttrItem;
 import com.aspectran.core.component.bean.annotation.Component;
 import com.aspectran.core.component.bean.annotation.Format;
 import com.aspectran.core.component.bean.annotation.Forward;
-import com.aspectran.core.component.bean.annotation.Item;
-import com.aspectran.core.component.bean.annotation.ParamItems;
+import com.aspectran.core.component.bean.annotation.ParamItem;
 import com.aspectran.core.component.bean.annotation.Qualifier;
 import com.aspectran.core.component.bean.annotation.Request;
 import com.aspectran.core.util.apon.Parameters;
@@ -46,16 +45,14 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 public class AnnotatedAction {
 
     @Request("/action-1")
-    @ParamItems({
-            @Item(
-                    name = "param1",
-                    value = "Apple"
-            ),
-            @Item(
-                    name = "param2",
-                    value = "Tomato"
-            )
-    })
+    @ParamItem(
+            name = "param1",
+            value = "Apple"
+    )
+    @ParamItem(
+            name = "param2",
+            value = "Tomato"
+    )
     public void action1(Translet translet, String param1, String param2) {
         assertNotNull(translet);
         assertEquals("Apple", param1);
@@ -63,24 +60,22 @@ public class AnnotatedAction {
     }
 
     @Request("/action-2")
-    @ParamItems({
-            @Item(
-                    name = "param1",
-                    value = "1234"
-            ),
-            @Item(
-                    name = "param2",
-                    value = "5678"
-            ),
-            @Item(
-                    name = "param3",
-                    value = "88888888888888888888"
-            ),
-            @Item(
-                    name = "param4",
-                    value = "99999999999999999999"
-            )
-    })
+        @ParamItem(
+                name = "param1",
+                value = "1234"
+        )
+        @ParamItem(
+                name = "param2",
+                value = "5678"
+        )
+        @ParamItem(
+                name = "param3",
+                value = "88888888888888888888"
+        )
+        @ParamItem(
+                name = "param4",
+                value = "99999999999999999999"
+        )
     public void action2(Integer param1, int param2, int param3, Integer param4) {
         assertEquals(1234, param1);
         assertEquals(5678, param2);
@@ -89,28 +84,24 @@ public class AnnotatedAction {
     }
 
     @Request("/action-3")
-    @ParamItems({
-            @Item(
-                    name = "param1",
-                    value = "1234"
-            )
-    })
+        @ParamItem(
+                name = "param1",
+                value = "1234"
+        )
     public void action3(String param1, String param2) {
         assertNotNull(param1);
         assertNull(param2);
     }
 
     @Request("/action-4")
-    @ParamItems({
-            @Item(
-                    name = "date1",
-                    value = "2019-02-15"
-            ),
-            @Item(
-                    name = "date2",
-                    value = "2019-02-15T01:30:50.123"
-            )
-    })
+    @ParamItem(
+            name = "date1",
+            value = "2019-02-15"
+    )
+    @ParamItem(
+            name = "date2",
+            value = "2019-02-15T01:30:50.123"
+    )
     public void action4(@Format("yyyy-MM-dd") Date date1,
                         @Format("yyyy-MM-dd'T'HH:mm:ss.SSS") Date date2,
                         @Qualifier("date2") @Format("yyyy-MM-dd'T'HH:mm:ss.SSS") LocalDateTime date3) {
@@ -127,28 +118,26 @@ public class AnnotatedAction {
     }
 
     @Request("/action-5")
-    @ParamItems({
-            @Item(
-                    name = "param1",
-                    value = "1234"
-            ),
-            @Item(
-                    name = "param2",
-                    value = "5678"
-            ),
-            @Item(
-                    name = "param3",
-                    value = "33333333"
-            ),
-            @Item(
-                    name = "param4",
-                    value = "44444444"
-            ),
-            @Item(
-                    name = "param5",
-                    value = "55555555"
-            )
-    })
+    @ParamItem(
+            name = "param1",
+            value = "1234"
+    )
+    @ParamItem(
+            name = "param2",
+            value = "5678"
+    )
+    @ParamItem(
+            name = "param3",
+            value = "33333333"
+    )
+    @ParamItem(
+            name = "param4",
+            value = "44444444"
+    )
+    @ParamItem(
+            name = "param5",
+            value = "55555555"
+    )
     public void action5(long param1, float param2, double param3, BigInteger param4, BigDecimal param5) {
         assertEquals(Long.valueOf(1234), param1);
         assertEquals(Float.valueOf(5678), param2);
@@ -163,16 +152,14 @@ public class AnnotatedAction {
     }
 
     @Request("/action-7")
-    @ParamItems({
-            @Item(
-                    name = "param1",
-                    value = "Strawberry"
-            ),
-            @Item(
-                    name = "param0",
-                    value = "Grape"
-            )
-    })
+    @ParamItem(
+            name = "param1",
+            value = "Strawberry"
+    )
+    @ParamItem(
+            name = "param0",
+            value = "Grape"
+    )
     public void action7(Character param1, char param2, char[] param3) {
         assertEquals('S', param1);
         assertEquals(Character.MIN_VALUE, param2);
@@ -282,16 +269,14 @@ public class AnnotatedAction {
     @Forward(
             translet = "/forwarded",
             attributes = {
-                    @AttrItems({
-                            @Item(
-                                    name = "attr1",
-                                    value = "Strawberry"
-                            ),
-                            @Item(
-                                    name = "attr2",
-                                    value = "Grape"
-                            )
-                    })
+                    @AttrItem(
+                            name = "attr1",
+                            value = "Strawberry"
+                    ),
+                    @AttrItem(
+                            name = "attr2",
+                            value = "Grape"
+                    )
             }
     )
     public void forward() {

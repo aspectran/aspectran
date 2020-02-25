@@ -25,19 +25,27 @@ import java.lang.annotation.Target;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-@Repeatable(ParamItems.List.class)
-public @interface ParamItems {
+@Repeatable(AttrItem.List.class)
+public @interface AttrItem {
 
     String profile() default "";
 
-    Item[] value() default {};
+    String name() default "";
+
+    String value() default "";
+
+    boolean tokenize() default true;
+
+    boolean mandatory() default false;
+
+    boolean secret() default false;
 
     @Documented
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.METHOD)
     @interface List {
 
-        ParamItems[] value();
+        AttrItem[] value();
 
     }
 

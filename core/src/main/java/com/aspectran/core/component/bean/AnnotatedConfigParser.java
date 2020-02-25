@@ -23,7 +23,7 @@ import com.aspectran.core.component.bean.annotation.Action;
 import com.aspectran.core.component.bean.annotation.After;
 import com.aspectran.core.component.bean.annotation.Around;
 import com.aspectran.core.component.bean.annotation.Aspect;
-import com.aspectran.core.component.bean.annotation.AttrItems;
+import com.aspectran.core.component.bean.annotation.AttrItem;
 import com.aspectran.core.component.bean.annotation.Autowired;
 import com.aspectran.core.component.bean.annotation.Bean;
 import com.aspectran.core.component.bean.annotation.Before;
@@ -38,7 +38,7 @@ import com.aspectran.core.component.bean.annotation.Forward;
 import com.aspectran.core.component.bean.annotation.Initialize;
 import com.aspectran.core.component.bean.annotation.Job;
 import com.aspectran.core.component.bean.annotation.Joinpoint;
-import com.aspectran.core.component.bean.annotation.ParamItems;
+import com.aspectran.core.component.bean.annotation.ParamItem;
 import com.aspectran.core.component.bean.annotation.Profile;
 import com.aspectran.core.component.bean.annotation.Qualifier;
 import com.aspectran.core.component.bean.annotation.Redirect;
@@ -588,26 +588,28 @@ public class AnnotatedConfigParser {
 
         TransletRule transletRule = TransletRule.newInstance(transletName, allowedMethods);
 
-        ParamItems[] paramItemsAnnos = method.getAnnotationsByType(ParamItems.class);
-        for (ParamItems paramItemsAnno : paramItemsAnnos) {
-            String profile = StringUtils.emptyToNull(paramItemsAnno.profile());
-            if (profile == null || environment.acceptsProfiles(profile)) {
-                ItemRuleMap itemRuleMap = ItemRuleUtils.toItemRuleMap(paramItemsAnno.value());
-                if (itemRuleMap != null) {
-                    transletRule.touchRequestRule(false).setParameterItemRuleMap(itemRuleMap);
+        ParamItem[] paramItemAnnos = method.getAnnotationsByType(ParamItem.class);
+        if (paramItemAnnos.length > 0) {
+            ItemRuleMap itemRuleMap = new ItemRuleMap();
+            for (ParamItem paramItemAnno : paramItemAnnos) {
+                String profile = StringUtils.emptyToNull(paramItemAnno.profile());
+                if (profile == null || environment.acceptsProfiles(profile)) {
+                    itemRuleMap.putItemRule(ItemRuleUtils.toItemRule(paramItemAnno));
                 }
             }
+            transletRule.touchRequestRule(false).setParameterItemRuleMap(itemRuleMap);
         }
 
-        AttrItems[] attrItemsAnnos = method.getAnnotationsByType(AttrItems.class);
-        for (AttrItems attrItemsAnno : attrItemsAnnos) {
-            String profile = StringUtils.emptyToNull(attrItemsAnno.profile());
-            if (profile == null || environment.acceptsProfiles(profile)) {
-                ItemRuleMap itemRuleMap = ItemRuleUtils.toItemRuleMap(attrItemsAnno.value());
-                if (itemRuleMap != null) {
-                    transletRule.touchRequestRule(false).setAttributeItemRuleMap(itemRuleMap);
+        AttrItem[] attrItemAnnos = method.getAnnotationsByType(AttrItem.class);
+        if (attrItemAnnos.length > 0) {
+            ItemRuleMap itemRuleMap = new ItemRuleMap();
+            for (AttrItem attrItemAnno : attrItemAnnos) {
+                String profile = StringUtils.emptyToNull(attrItemAnno.profile());
+                if (profile == null || environment.acceptsProfiles(profile)) {
+                    itemRuleMap.putItemRule(ItemRuleUtils.toItemRule(attrItemAnno));
                 }
             }
+            transletRule.touchRequestRule(false).setAttributeItemRuleMap(itemRuleMap);
         }
 
         Action actionAnno = method.getAnnotation(Action.class);
@@ -678,13 +680,16 @@ public class AnnotatedConfigParser {
             translet = StringUtils.emptyToNull(forwardAnno.translet());
         }
         ForwardRule forwardRule = ForwardRule.newInstance(translet);
-        AttrItems[] attributes = forwardAnno.attributes();
-        for (AttrItems attrItems : attributes) {
-            String profile = StringUtils.emptyToNull(attrItems.profile());
-            if (profile == null || environment.acceptsProfiles(profile)) {
-                ItemRuleMap itemRuleMap = ItemRuleUtils.toItemRuleMap(attrItems.value());
-                forwardRule.setAttributeItemRuleMap(itemRuleMap);
+        AttrItem[] attrItemAnnos = forwardAnno.attributes();
+        if (attrItemAnnos.length > 0) {
+            ItemRuleMap itemRuleMap = new ItemRuleMap();
+            for (AttrItem attrItemAnno : attrItemAnnos) {
+                String profile = StringUtils.emptyToNull(attrItemAnno.profile());
+                if (profile == null || environment.acceptsProfiles(profile)) {
+                    itemRuleMap.putItemRule(ItemRuleUtils.toItemRule(attrItemAnno));
+                }
             }
+            forwardRule.setAttributeItemRuleMap(itemRuleMap);
         }
         return forwardRule;
     }
@@ -695,13 +700,16 @@ public class AnnotatedConfigParser {
             path = StringUtils.emptyToNull(redirectAnno.path());
         }
         RedirectRule redirectRule = RedirectRule.newInstance(path);
-        ParamItems[] parameters = redirectAnno.parameters();
-        for (ParamItems paramItems : parameters) {
-            String profile = StringUtils.emptyToNull(paramItems.profile());
-            if (profile == null || environment.acceptsProfiles(profile)) {
-                ItemRuleMap itemRuleMap = ItemRuleUtils.toItemRuleMap(paramItems.value());
-                redirectRule.setParameterItemRuleMap(itemRuleMap);
+        ParamItem[] paramItemAnnos = redirectAnno.parameters();
+        if (paramItemAnnos.length > 0) {
+            ItemRuleMap itemRuleMap = new ItemRuleMap();
+            for (ParamItem paramItemAnno : paramItemAnnos) {
+                String profile = StringUtils.emptyToNull(paramItemAnno.profile());
+                if (profile == null || environment.acceptsProfiles(profile)) {
+                    itemRuleMap.putItemRule(ItemRuleUtils.toItemRule(paramItemAnno));
+                }
             }
+            redirectRule.setParameterItemRuleMap(itemRuleMap);
         }
         return redirectRule;
     }

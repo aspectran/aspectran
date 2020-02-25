@@ -16,7 +16,8 @@
 package com.aspectran.core.context.rule;
 
 import com.aspectran.core.activity.request.FileParameter;
-import com.aspectran.core.component.bean.annotation.Item;
+import com.aspectran.core.component.bean.annotation.AttrItem;
+import com.aspectran.core.component.bean.annotation.ParamItem;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.rule.params.EntryParameters;
 import com.aspectran.core.context.rule.params.ItemParameters;
@@ -232,23 +233,27 @@ public class ItemRuleUtils {
         return itemRule;
     }
 
-    public static ItemRuleMap toItemRuleMap(Item[] items) throws IllegalRuleException {
-        if (items == null || items.length == 0) {
-            return null;
-        }
-        ItemRuleMap itemRuleMap = new ItemRuleMap();
-        for (Item item : items) {
-            itemRuleMap.putItemRule(toItemRule(item));
-        }
-        return itemRuleMap;
+    public static ItemRule toItemRule(ParamItem paramItem) throws IllegalRuleException {
+        Assert.notNull(paramItem, "paramItem must not be null");
+        String name = paramItem.name();
+        String value = paramItem.value();
+        boolean tokenize = paramItem.tokenize();
+        boolean mandatory = paramItem.mandatory();
+        boolean secret = paramItem.secret();
+
+        ItemRule itemRule = ItemRule.newInstance(null, name, null,
+                tokenize, mandatory, secret);
+        itemRule.setValue(value);
+        return itemRule;
     }
 
-    private static ItemRule toItemRule(Item item) throws IllegalRuleException {
-        String name = item.name();
-        String value = item.value();
-        boolean tokenize = item.tokenize();
-        boolean mandatory = item.mandatory();
-        boolean secret = item.secret();
+    public static ItemRule toItemRule(AttrItem attrItem) throws IllegalRuleException {
+        Assert.notNull(attrItem, "attrItem must not be null");
+        String name = attrItem.name();
+        String value = attrItem.value();
+        boolean tokenize = attrItem.tokenize();
+        boolean mandatory = attrItem.mandatory();
+        boolean secret = attrItem.secret();
 
         ItemRule itemRule = ItemRule.newInstance(null, name, null,
                 tokenize, mandatory, secret);

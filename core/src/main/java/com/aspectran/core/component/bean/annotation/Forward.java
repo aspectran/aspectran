@@ -30,6 +30,6 @@ public @interface Forward {
 
     String translet() default "";
 
-    AttrItems[] attributes() default {};
+    AttrItem[] attributes() default {};
 
 }

@@ -30,6 +30,6 @@ public @interface Redirect {
 
     String path() default "";
 
-    ParamItems[] parameters() default {};
+    ParamItem[] parameters() default {};
 
 }
