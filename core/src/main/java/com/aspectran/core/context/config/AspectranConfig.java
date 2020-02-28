@@ -35,6 +35,7 @@ public class AspectranConfig extends AbstractParameters {
     public static final String DEFAULT_ASPECTRAN_CONFIG_FILE = "aspectran-config.apon";
     public static final String DEFAULT_APP_CONFIG_ROOT_FILE = "classpath:app-config.xml";
 
+    private static final ParameterKey system;
     private static final ParameterKey context;
     private static final ParameterKey scheduler;
     private static final ParameterKey embed;
@@ -45,6 +46,7 @@ public class AspectranConfig extends AbstractParameters {
     private static final ParameterKey[] parameterKeys;
 
     static {
+        system = new ParameterKey("system", SystemConfig.class);
         context = new ParameterKey("context", ContextConfig.class);
         scheduler = new ParameterKey("scheduler", SchedulerConfig.class);
         embed = new ParameterKey("embed", EmbedConfig.class);
@@ -53,6 +55,7 @@ public class AspectranConfig extends AbstractParameters {
         web = new ParameterKey("web", WebConfig.class);
 
         parameterKeys = new ParameterKey[] {
+                system,
                 context,
                 scheduler,
                 embed,
@@ -83,6 +86,22 @@ public class AspectranConfig extends AbstractParameters {
     public AspectranConfig(Reader reader) throws IOException {
         this();
         AponReader.parse(reader, this);
+    }
+
+    public SystemConfig getSystemConfig() {
+        return getParameters(system);
+    }
+
+    public SystemConfig newSystemConfig() {
+        return newParameters(system);
+    }
+
+    public SystemConfig touchSystemConfig() {
+        return touchParameters(system);
+    }
+
+    public boolean hasSystemConfig() {
+        return hasValue(system);
     }
 
     public ContextConfig getContextConfig() {

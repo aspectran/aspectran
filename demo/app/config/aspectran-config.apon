@@ -1,3 +1,11 @@
+system: {
+    properties: {
+        aspectran.encryption.password: demo!
+        com.aspectran.core.context.builder.debugMode: false
+        com.aspectran.core.context.builder.useAponToLoadXml: true
+        java.net.preferIPv4Stack: true
+    }
+}
 context: {
     root: /config/app-config.xml
     resources: [

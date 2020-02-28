@@ -25,6 +25,7 @@ import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.config.ContextConfig;
 import com.aspectran.core.context.config.ExposalsConfig;
 import com.aspectran.core.context.config.SchedulerConfig;
+import com.aspectran.core.context.config.SystemConfig;
 import com.aspectran.core.context.resource.AspectranClassLoader;
 import com.aspectran.core.scheduler.service.QuartzSchedulerService;
 import com.aspectran.core.scheduler.service.SchedulerService;
@@ -168,6 +169,16 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
 
         try {
             this.aspectranConfig = aspectranConfig;
+
+            SystemConfig systemConfig = aspectranConfig.getSystemConfig();
+            if (systemConfig != null) {
+                for (String key : systemConfig.getPropertyKeys()) {
+                    String value = systemConfig.getProperty(key);
+                    if (value != null) {
+                        System.setProperty(key, value);
+                    }
+                }
+            }
 
             ContextConfig contextConfig = aspectranConfig.getContextConfig();
             if (contextConfig != null) {

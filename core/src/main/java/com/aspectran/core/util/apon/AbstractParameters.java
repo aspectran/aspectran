@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.util.apon;
 
+import com.aspectran.core.lang.NonNull;
 import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.ToStringBuilder;
@@ -131,16 +132,19 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
+    @NonNull
     public Map<String, ParameterValue> getParameterValueMap() {
         return parameterValueMap;
     }
 
     @Override
+    @NonNull
     public String[] getParameterNames() {
         return getParameterNameSet().toArray(new String[0]);
     }
 
     @Override
+    @NonNull
     public Set<String> getParameterNameSet() {
         if (parameterNames != null) {
             return parameterNames;
