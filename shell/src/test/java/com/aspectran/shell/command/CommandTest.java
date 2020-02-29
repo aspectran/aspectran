@@ -94,7 +94,7 @@ class CommandTest {
 
         PBDecryptCommand command = new PBDecryptCommand(interpreter.getCommandRegistry());
         getConsole().writeLine(command.getDescriptor().getDescription());
-        CommandLineParser lineParser = new CommandLineParser("encrypt KuSJkQVYRydcVTNdm5oTJg==");
+        CommandLineParser lineParser = new CommandLineParser("decrypt vh84THBPIILa6BDgP+qPaw==");
         command.execute(lineParser.parseOptions(command.getOptions()), getConsole());
     }
 
