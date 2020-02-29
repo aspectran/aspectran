@@ -406,8 +406,6 @@ public class AspectranClassLoader extends ClassLoader {
             }
         } catch (InvalidResourceException e) {
             throw new ClassNotFoundException(name, e);
-        } catch (RuntimeException e) {
-            throw e;
         }
     }
 
@@ -430,13 +428,11 @@ public class AspectranClassLoader extends ClassLoader {
             URLConnection connection = url.openConnection();
             InputStream input = connection.getInputStream();
             ByteArrayOutputStream output = new ByteArrayOutputStream();
-
-            byte[] buffer = new byte[8192];
+            byte[] buffer = new byte[4096];
             int len;
             while ((len = input.read(buffer)) >= 0) {
                 output.write(buffer, 0, len);
             }
-
             input.close();
             return output.toByteArray();
         } catch (IOException e) {

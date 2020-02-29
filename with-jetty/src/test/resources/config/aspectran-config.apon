@@ -5,7 +5,6 @@ context: {
     profiles: {
     }
     autoReload: {
-        reloadMode: soft
         scanIntervalSeconds: 5
         startup: false
     }

@@ -3,7 +3,6 @@ context: {
     resources: [
     ]
     autoReload: {
-        reloadMode: soft
         scanIntervalSeconds: 5
         startup: false
     }
