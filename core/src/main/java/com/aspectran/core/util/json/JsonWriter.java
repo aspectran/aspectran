@@ -268,6 +268,10 @@ public class JsonWriter implements Flushable, Closeable {
         }
     }
 
+    private void clearPendedName() {
+        pendedName = null;
+    }
+
     /**
      * Writes a string to the writer.
      * If {@code value} is null, write a null string ("").
@@ -280,6 +284,8 @@ public class JsonWriter implements Flushable, Closeable {
             writePendedName();
             out.write(escape(value));
             writtenFlags.update(true);
+        } else {
+            clearPendedName();
         }
     }
 
@@ -294,6 +300,8 @@ public class JsonWriter implements Flushable, Closeable {
             writePendedName();
             out.write(value.toString());
             writtenFlags.update(true);
+        } else {
+            clearPendedName();
         }
     }
 
@@ -308,6 +316,8 @@ public class JsonWriter implements Flushable, Closeable {
             writePendedName();
             out.write(value.toString());
             writtenFlags.update(true);
+        } else {
+            clearPendedName();
         }
     }
 
@@ -331,6 +341,8 @@ public class JsonWriter implements Flushable, Closeable {
             writePendedName();
             out.write("null");
             writtenFlags.update(true);
+        } else {
+            clearPendedName();
         }
     }
 
@@ -356,6 +368,8 @@ public class JsonWriter implements Flushable, Closeable {
                 first = false;
             }
             writtenFlags.update(true);
+        } else {
+            clearPendedName();
         }
     }
 
