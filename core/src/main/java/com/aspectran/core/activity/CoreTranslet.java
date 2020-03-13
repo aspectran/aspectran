@@ -345,6 +345,11 @@ public class CoreTranslet extends AbstractTranslet {
     }
 
     @Override
+    public boolean isResponseReserved() {
+        return activity.isResponseReserved();
+    }
+
+    @Override
     public boolean isExceptionRaised() {
         return activity.isExceptionRaised();
     }

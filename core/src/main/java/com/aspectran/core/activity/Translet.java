@@ -443,6 +443,13 @@ public interface Translet {
     void redirect(RedirectRule redirectRule);
 
     /**
+     * Returns whether the response is reserved.
+     *
+     * @return true, if the response is reserved
+     */
+    boolean isResponseReserved();
+
+    /**
      * Returns whether the exception was thrown.
      *
      * @return true, if is exception raised
