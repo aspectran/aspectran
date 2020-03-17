@@ -35,6 +35,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
+ * <p>This class is a clone of org.springframework.util.MimeTypeUtils</p>
+ *
  * Miscellaneous {@link MediaType} utility methods.
  *
  * @author Arjen Poutsma

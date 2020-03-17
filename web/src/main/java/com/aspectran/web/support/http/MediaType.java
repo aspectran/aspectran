@@ -250,6 +250,26 @@ public class MediaType implements Comparable<MediaType>, Serializable {
     public static final String MULTIPART_FORM_DATA_VALUE = "multipart/form-data";
 
     /**
+     * Public constant media type for {@code multipart/mixed}.
+     */
+    public static final MediaType MULTIPART_MIXED;
+
+    /**
+     * A String equivalent of {@link MediaType#MULTIPART_MIXED}.
+     */
+    public static final String MULTIPART_MIXED_VALUE = "multipart/mixed";
+
+    /**
+     * Public constant media type for {@code multipart/related}.
+     */
+    public static final MediaType MULTIPART_RELATED;
+
+    /**
+     * A String equivalent of {@link MediaType#MULTIPART_RELATED}.
+     */
+    public static final String MULTIPART_RELATED_VALUE = "multipart/related";
+
+    /**
      * Public constant media type for {@code text/event-stream}.
      *
      * @see <a href="https://www.w3.org/TR/eventsource/">Server-Sent Events W3C recommendation</a>
@@ -363,6 +383,8 @@ public class MediaType implements Comparable<MediaType>, Serializable {
         IMAGE_JPEG = new MediaType("image", "jpeg");
         IMAGE_PNG = new MediaType("image", "png");
         MULTIPART_FORM_DATA = new MediaType("multipart", "form-data");
+        MULTIPART_MIXED = new MediaType("multipart", "mixed");
+        MULTIPART_RELATED = new MediaType("multipart", "related");
         TEXT_EVENT_STREAM = new MediaType("text", "event-stream");
         TEXT_HTML = new MediaType("text", "html");
         TEXT_MARKDOWN = new MediaType("text", "markdown");
