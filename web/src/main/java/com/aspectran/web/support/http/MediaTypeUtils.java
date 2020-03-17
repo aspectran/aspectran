@@ -175,14 +175,13 @@ public abstract class MediaTypeUtils {
      * @throws InvalidMediaTypeException if the string cannot be parsed
      */
     public static MediaType parseMediaType(String mediaType) {
+        if (!StringUtils.hasLength(mediaType)) {
+            throw new InvalidMediaTypeException(mediaType, "'mediaType' must not be empty");
+        }
         return cachedMediaTypes.get(mediaType);
     }
 
     private static MediaType parseMediaTypeInternal(String mediaType) {
-        if (!StringUtils.hasLength(mediaType)) {
-            throw new InvalidMediaTypeException(mediaType, "'mediaType' must not be empty");
-        }
-
         int index = mediaType.indexOf(';');
         String fullType = (index >= 0 ? mediaType.substring(0, index) : mediaType).trim();
         if (fullType.isEmpty()) {
@@ -234,8 +233,7 @@ public abstract class MediaTypeUtils {
                 }
             }
             index = nextIndex;
-        }
-        while (index < mediaType.length());
+        } while (index < mediaType.length());
 
         try {
             return new MediaType(type, subtype, parameters);
@@ -258,7 +256,9 @@ public abstract class MediaTypeUtils {
             return Collections.emptyList();
         }
         return tokenize(mediaTypes).stream()
-            .map(MediaTypeUtils::parseMediaType).collect(Collectors.toList());
+                .filter(StringUtils::hasText)
+                .map(MediaTypeUtils::parseMediaType)
+                .collect(Collectors.toList());
     }
 
     /**
@@ -344,7 +344,7 @@ public abstract class MediaTypeUtils {
      * and Content, section 5.3.2</a>
      */
     public static void sortBySpecificity(List<MediaType> mediaTypes) {
-        Assert.notNull(mediaTypes, "'mimeTypes' must not be null");
+        Assert.notNull(mediaTypes, "'mediaTypes' must not be null");
         if (mediaTypes.size() > 1) {
             mediaTypes.sort(SPECIFICITY_COMPARATOR);
         }
@@ -383,7 +383,12 @@ public abstract class MediaTypeUtils {
         public V get(K key) {
             this.lock.readLock().lock();
             try {
-                if (this.queue.remove(key)) {
+                if (this.queue.size() < this.maxSize / 2) {
+                    V cached = this.cache.get(key);
+                    if (cached != null) {
+                        return cached;
+                    }
+                } else if (this.queue.remove(key)) {
                     this.queue.add(key);
                     return this.cache.get(key);
                 }
@@ -392,6 +397,11 @@ public abstract class MediaTypeUtils {
             }
             this.lock.writeLock().lock();
             try {
+                // retrying in case of concurrent reads on the same key
+                if (this.queue.remove(key)) {
+                    this.queue.add(key);
+                    return this.cache.get(key);
+                }
                 if (this.queue.size() == this.maxSize) {
                     K leastUsed = this.queue.poll();
                     if (leastUsed != null) {
