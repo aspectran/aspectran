@@ -405,7 +405,7 @@ public class Token implements BeanReferenceable, Replicable<Token> {
     @Override
     public int hashCode() {
         final int prime = 31;
-        int result = 11;
+        int result = 7;
         result = prime * result + type.hashCode();
         result = prime * result + (name != null ? name.hashCode() : 0);
         result = prime * result + (value != null ? value.hashCode() : 0);

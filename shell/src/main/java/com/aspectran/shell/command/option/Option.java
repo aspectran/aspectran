@@ -485,7 +485,7 @@ public class Option implements Cloneable, Serializable {
     @Override
     public int hashCode() {
         int result;
-        result = (name != null ? name.hashCode() : 0);
+        result = (name != null ? name.hashCode() : 1);
         result = 31 * result + (longName != null ? longName.hashCode() : 0);
         return result;
     }

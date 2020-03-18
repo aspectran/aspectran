@@ -35,6 +35,11 @@ public abstract class AbstractTranslet implements Translet {
     }
 
     @Override
+    public String getTransletName() {
+        return transletRule.getName();
+    }
+
+    @Override
     public String getRequestName() {
         return requestName;
     }

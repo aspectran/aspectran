@@ -104,7 +104,7 @@ public class PointcutRule {
                     } else {
                         pattern = pattern.substring(1).trim();
                     }
-                    PointcutPatternRule pointcutPatternRule = PointcutPatternRule.parsePattern(pattern);
+                    PointcutPatternRule pointcutPatternRule = PointcutPatternRule.newInstance(pattern);
                     excludePointcutPatternRuleList.add(pointcutPatternRule);
                 } else {
                     if (pattern.startsWith("+:")) {
@@ -112,7 +112,7 @@ public class PointcutRule {
                     } else if (pattern.startsWith("+")) {
                         pattern = pattern.substring(1).trim();
                     }
-                    PointcutPatternRule pointcutPatternRule = PointcutPatternRule.parsePattern(pattern);
+                    PointcutPatternRule pointcutPatternRule = PointcutPatternRule.newInstance(pattern);
                     pointcutPatternRuleList.add(pointcutPatternRule);
                 }
             }

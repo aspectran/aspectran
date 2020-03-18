@@ -973,6 +973,7 @@ public class MethodUtils {
             final int prime = 31;
             int result = hashCode;
             if (result == 0) {
+                result = 11;
                 result = prime * result + cls.hashCode();
                 result = prime * result + methodName.hashCode();
                 result = prime * result + Arrays.hashCode(paramTypes);

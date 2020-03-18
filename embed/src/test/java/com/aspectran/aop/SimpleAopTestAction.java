@@ -18,6 +18,10 @@ package com.aspectran.aop;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.component.bean.annotation.Component;
 import com.aspectran.core.component.bean.annotation.Request;
+import com.aspectran.core.util.logging.Log;
+import com.aspectran.core.util.logging.LogFactory;
+
+import java.io.IOException;
 
 /**
  * <p>Created: 2016. 11. 5.</p>
@@ -25,18 +29,28 @@ import com.aspectran.core.component.bean.annotation.Request;
 @Component
 public class SimpleAopTestAction {
 
+    private static final Log log = LogFactory.getLog(SimpleAopTestAction.class);
+
     @Request("aop/test/action1")
     public void action1(Translet translet) {
-        System.out.println("===> aspect02: [SimpleAopTestAction]=== Action Result (Action-1)");
+        log.debug("===> Action1: [SimpleAopTestAction]=== Action Result (Action-1)");
         SampleAnnotatedAspect sampleAnnotatedAspect = translet.getAspectAdviceBean("aspect02");
         sampleAnnotatedAspect.foo();
     }
 
     @Request("aop/test/action2")
     public void action2() {
-        System.out.println("===> aspect02: [SimpleAopTestAction]=== Action Result (Action-2)");
-        System.out.println("===> aspect02: [SimpleAopTestAction]=== Force Exception ==============");
+        log.debug("===> Action2: [SimpleAopTestAction]=== Action Result (Action-2)");
+        log.debug("===> Action2: [SimpleAopTestAction]=== Force Exception ==============");
         throw new SimpleAopTestException();
+    }
+
+    @Request("aop/test/action3-${param1}")
+    public String action3(Translet translet, String param1) throws IOException {
+        log.debug("===> Action3: [SimpleAopTestAction]=== Action Result (Action-3)");
+        log.debug("===> Action3: (PathVariable)param1: " + param1);
+        translet.getResponseAdapter().getWriter().write(param1);
+        return param1;
     }
 
 }

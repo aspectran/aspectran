@@ -43,6 +43,13 @@ import java.util.Map;
 public interface Translet {
 
     /**
+     * Returns the translet name.
+     *
+     * @return the translet name
+     */
+    String getTransletName();
+
+    /**
      * Returns the request name for this {@code Translet}.
      *
      * @return the request name

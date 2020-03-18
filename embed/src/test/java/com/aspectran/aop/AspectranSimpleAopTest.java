@@ -84,4 +84,11 @@ class AspectranSimpleAopTest {
         aspectran.translate("aop/test/action2");
     }
 
+    @Test
+    void test5() {
+        Translet translet = aspectran.translate("aop/test/action3-hello");
+        String param1 = translet.toString();
+        assertEquals("hello", param1);
+    }
+
 }

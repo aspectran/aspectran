@@ -209,6 +209,9 @@ public class WildcardPattern {
         if (this == obj) {
             return true;
         }
+        if (!(obj instanceof WildcardPattern)) {
+            return false;
+        }
         WildcardPattern wp = (WildcardPattern)obj;
         return (Objects.equals(wp.toString(), patternString) &&
                 Objects.equals(wp.getSeparator(), getSeparator()));

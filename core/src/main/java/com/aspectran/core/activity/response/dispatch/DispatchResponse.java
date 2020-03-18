@@ -34,7 +34,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * JSP or other web resource integration.
  * 
- * <p> Created: 2008. 03. 22 PM 5:51:58</p>
+ * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */
 public class DispatchResponse implements Response {
 

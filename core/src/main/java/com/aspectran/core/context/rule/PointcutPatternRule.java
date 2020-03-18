@@ -15,38 +15,28 @@
  */
 package com.aspectran.core.context.rule;
 
+import com.aspectran.core.component.aspect.pointcut.PointcutPattern;
 import com.aspectran.core.context.rule.type.PointcutType;
-import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.ToStringBuilder;
 
 import java.util.List;
 
 /**
- * The pattern rule for identifying pointcut targets
+ * The pattern rule for identifying pointcut targets.
  */
 public class PointcutPatternRule {
-
-    private static final char POINTCUT_BEAN_CLASS_DELIMITER = '@';
-
-    private static final char POINTCUT_METHOD_NAME_DELIMITER = '^';
 
     private PointcutType pointcutType;
 
     private String patternString;
 
-    private String transletNamePattern;
+    private PointcutPattern pointcutPattern;
 
-    private String beanIdPattern;
+    private int matchedBeanIdCount;
 
-    private String classNamePattern;
+    private int matchedClassNameCount;
 
-    private String methodNamePattern;
-
-    private int matchedBeanCount;
-
-    private int matchedClassCount;
-
-    private int matchedMethodCount;
+    private int matchedMethodNameCount;
 
     private List<PointcutPatternRule> excludePointcutPatternRuleList;
 
@@ -69,36 +59,12 @@ public class PointcutPatternRule {
         this.patternString = patternString;
     }
 
-    public String getTransletNamePattern() {
-        return transletNamePattern;
+    public PointcutPattern getPointcutPattern() {
+        return pointcutPattern;
     }
 
-    public void setTransletNamePattern(String transletNamePattern) {
-        this.transletNamePattern = StringUtils.emptyToNull(transletNamePattern);
-    }
-
-    public String getBeanIdPattern() {
-        return beanIdPattern;
-    }
-
-    public void setBeanIdPattern(String beanIdPattern) {
-        this.beanIdPattern = StringUtils.emptyToNull(beanIdPattern);
-    }
-
-    public String getClassNamePattern() {
-        return classNamePattern;
-    }
-
-    public void setClassNamePattern(String classNamePattern) {
-        this.classNamePattern = StringUtils.emptyToNull(classNamePattern);
-    }
-
-    public String getMethodNamePattern() {
-        return methodNamePattern;
-    }
-
-    public void setMethodNamePattern(String methodNamePattern) {
-        this.methodNamePattern = StringUtils.emptyToNull(methodNamePattern);
+    public void setPointcutPattern(PointcutPattern pointcutPattern) {
+        this.pointcutPattern = pointcutPattern;
     }
 
     public List<PointcutPatternRule> getExcludePointcutPatternRuleList() {
@@ -109,134 +75,69 @@ public class PointcutPatternRule {
         this.excludePointcutPatternRuleList = excludePointcutPatternRuleList;
     }
 
-    public int getMatchedBeanCount() {
-        return matchedBeanCount;
+    public int getMatchedBeanIdCount() {
+        return matchedBeanIdCount;
     }
 
-    public void increaseMatchedBeanCount() {
-        matchedBeanCount++;
+    public void increaseMatchedBeanIdCount() {
+        matchedBeanIdCount++;
     }
 
-    public int getMatchedClassCount() {
-        return matchedClassCount;
+    public int getMatchedClassNameCount() {
+        return matchedClassNameCount;
     }
 
-    public void increaseMatchedClassCount() {
-        matchedClassCount++;
+    public void increaseMatchedClassNameCount() {
+        matchedClassNameCount++;
     }
 
-    public int getMatchedMethodCount() {
-        return matchedMethodCount;
+    public int getMatchedMethodNameCount() {
+        return matchedMethodNameCount;
     }
 
-    public void increaseMatchedMethodCount() {
-        matchedMethodCount++;
+    public void increaseMatchedMethodNameCount() {
+        matchedMethodNameCount++;
     }
 
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
-        tsb.append("translet", transletNamePattern);
-        tsb.append("bean", beanIdPattern);
-        tsb.append("class", classNamePattern);
-        tsb.append("method", methodNamePattern);
+        tsb.append("pointcutType", pointcutType);
+        tsb.append("pointcutPattern", pointcutPattern);
         tsb.append("excludes", excludePointcutPatternRuleList);
         return tsb.toString();
     }
 
-    public static String combinePattern(String transletName, String beanId, String className, String methodName) {
-        int len = 0;
-        if (transletName != null && transletName.length() > 0) {
-            len += transletName.length();
-        }
-        if (beanId != null && beanId.length() > 0) {
-            len += beanId.length() + 1;
-        } else if (className != null && className.length() > 0) {
-            len += className.length() + 7;
-        }
-        if (methodName != null && methodName.length() > 0) {
-            len += methodName.length() + 1;
-        }
-
-        StringBuilder sb = new StringBuilder(len);
-        if (transletName != null && transletName.length() > 0) {
-            sb.append(transletName);
-        }
-        if (beanId != null && beanId.length() > 0) {
-            sb.append(POINTCUT_BEAN_CLASS_DELIMITER);
-            sb.append(beanId);
-        } else if (className != null && className.length() > 0) {
-            sb.append(POINTCUT_BEAN_CLASS_DELIMITER);
-            sb.append(BeanRule.CLASS_DIRECTIVE_PREFIX);
-            sb.append(className);
-        }
-        if (methodName != null && methodName.length() > 0) {
-            sb.append(POINTCUT_METHOD_NAME_DELIMITER);
-            sb.append(methodName);
-        }
-        return sb.toString();
-    }
-
-    public static PointcutPatternRule parsePattern(String patternString) {
+    public static PointcutPatternRule newInstance(String patternString) {
         PointcutPatternRule ppr = new PointcutPatternRule();
         ppr.setPatternString(patternString);
-
-        String transletNamePattern = null;
-        String beanClassPattern = null;
-        String methodNamePattern = null;
-
-        int beanClassDelimiterIndex = patternString.indexOf(POINTCUT_BEAN_CLASS_DELIMITER);
-        if (beanClassDelimiterIndex == -1) {
-            transletNamePattern = patternString;
-        } else if (beanClassDelimiterIndex == 0) {
-            beanClassPattern = patternString.substring(1);
-        } else {
-            transletNamePattern = patternString.substring(0, beanClassDelimiterIndex);
-            beanClassPattern = patternString.substring(beanClassDelimiterIndex + 1);
-        }
-        if (beanClassPattern != null) {
-            int methodNameDelimiterIndex = beanClassPattern.indexOf(POINTCUT_METHOD_NAME_DELIMITER);
-            if (methodNameDelimiterIndex == 0) {
-                methodNamePattern = beanClassPattern.substring(1);
-                beanClassPattern = null;
-            } else if (methodNameDelimiterIndex > 0) {
-                methodNamePattern = beanClassPattern.substring(methodNameDelimiterIndex + 1);
-                beanClassPattern = beanClassPattern.substring(0, methodNameDelimiterIndex);
-            }
-        }
-        if (transletNamePattern != null) {
-            ppr.setTransletNamePattern(transletNamePattern);
-        }
-        if (beanClassPattern != null) {
-            if (beanClassPattern.startsWith(BeanRule.CLASS_DIRECTIVE_PREFIX)) {
-                String className = beanClassPattern.substring(BeanRule.CLASS_DIRECTIVE_PREFIX.length());
-                ppr.setClassNamePattern(className);
-            } else {
-                ppr.setBeanIdPattern(beanClassPattern);
-            }
-        }
-        if (methodNamePattern != null) {
-            ppr.setMethodNamePattern(methodNamePattern);
-        }
+        ppr.setPointcutPattern(PointcutPattern.parsePattern(patternString));
         return ppr;
     }
 
     public static PointcutPatternRule newInstance(String translet, String bean, String method) {
-        PointcutPatternRule ppr = new PointcutPatternRule();
+        String transletNamePattern = null;
+        String beanIdPattern = null;
+        String classNamePattern = null;
+        String methodNamePattern = null;
+
         if (translet != null) {
-            ppr.setTransletNamePattern(translet);
+            transletNamePattern = translet;
         }
         if (bean != null) {
             if (bean.startsWith(BeanRule.CLASS_DIRECTIVE_PREFIX)) {
-                String className = bean.substring(BeanRule.CLASS_DIRECTIVE_PREFIX.length());
-                ppr.setClassNamePattern(className);
+                classNamePattern = bean.substring(BeanRule.CLASS_DIRECTIVE_PREFIX.length());
             } else {
-                ppr.setBeanIdPattern(bean);
+                beanIdPattern = bean;
             }
         }
         if (method != null) {
-            ppr.setMethodNamePattern(method);
+            methodNamePattern = method;
         }
+        PointcutPatternRule ppr = new PointcutPatternRule();
+        PointcutPattern pointcutPattern = new PointcutPattern(
+                transletNamePattern, beanIdPattern, classNamePattern, methodNamePattern);
+        ppr.setPointcutPattern(pointcutPattern);
         return ppr;
     }
 

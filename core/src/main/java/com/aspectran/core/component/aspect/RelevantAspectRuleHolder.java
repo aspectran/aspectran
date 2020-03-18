@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.component.bean.proxy;
+package com.aspectran.core.component.aspect;
 
-import com.aspectran.core.component.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.util.ToStringBuilder;
 

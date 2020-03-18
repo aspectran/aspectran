@@ -16,13 +16,20 @@
 package com.aspectran.core.component.aspect;
 
 import com.aspectran.core.component.AbstractComponent;
+import com.aspectran.core.component.aspect.pointcut.Pointcut;
+import com.aspectran.core.component.aspect.pointcut.PointcutPattern;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.IllegalRuleException;
+import com.aspectran.core.context.rule.type.JoinpointTargetType;
+import com.aspectran.core.util.cache.Cache;
+import com.aspectran.core.util.cache.ConcurrentReferenceCache;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -31,6 +38,14 @@ import java.util.Map;
 public class AspectRuleRegistry extends AbstractComponent {
 
     private static final Log log = LogFactory.getLog(AspectRuleRegistry.class);
+
+    private static final RelevantAspectRuleHolder EMPTY_HOLDER = new RelevantAspectRuleHolder();
+
+    private final Cache<PointcutPattern, RelevantAspectRuleHolder> literalPatternCache =
+            new ConcurrentReferenceCache<>(this::createRelevantAspectRuleHolder);
+
+    private final Cache<PointcutPattern, RelevantAspectRuleHolder> unliteralPatternCache =
+            new ConcurrentReferenceCache<>(this::createRelevantAspectRuleHolder);
 
     private final Map<String, AspectRule> aspectRuleMap = new LinkedHashMap<>();
 
@@ -72,6 +87,43 @@ public class AspectRuleRegistry extends AbstractComponent {
     @Override
     protected void doDestroy() {
         aspectRuleMap.clear();
+    }
+
+    public RelevantAspectRuleHolder getRelevantAspectRuleHolderFromLiteralPatternCache(PointcutPattern pointcutPattern) {
+        return literalPatternCache.get(pointcutPattern);
+    }
+
+    public RelevantAspectRuleHolder getRelevantAspectRuleHolderFromUnliteralPatternCache(PointcutPattern pointcutPattern) {
+        return unliteralPatternCache.get(pointcutPattern);
+    }
+
+    private RelevantAspectRuleHolder createRelevantAspectRuleHolder(PointcutPattern pointcutPattern) {
+        AspectAdviceRulePostRegister postRegister = new AspectAdviceRulePostRegister();
+        List<AspectRule> dynamicAspectRuleList = new ArrayList<>();
+        for (AspectRule aspectRule : getAspectRules()) {
+            if (aspectRule.isBeanRelevanted()) {
+                Pointcut pointcut = aspectRule.getPointcut();
+                if (pointcut == null || pointcut.matches(pointcutPattern)) {
+                    if (aspectRule.getJoinpointTargetType() == JoinpointTargetType.METHOD) {
+                        postRegister.register(aspectRule);
+                    } else {
+                        dynamicAspectRuleList.add(aspectRule);
+                    }
+                }
+            }
+        }
+
+        AspectAdviceRuleRegistry aarr = postRegister.getAspectAdviceRuleRegistry();
+        if (!dynamicAspectRuleList.isEmpty() || aarr != null) {
+            RelevantAspectRuleHolder holder = new RelevantAspectRuleHolder();
+            holder.setAspectAdviceRuleRegistry(aarr);
+            if (!dynamicAspectRuleList.isEmpty()) {
+                holder.setDynamicAspectRuleList(dynamicAspectRuleList);
+            }
+            return holder;
+        } else {
+            return EMPTY_HOLDER;
+        }
     }
 
 }

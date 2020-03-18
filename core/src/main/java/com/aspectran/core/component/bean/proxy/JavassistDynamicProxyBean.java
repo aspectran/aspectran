@@ -49,12 +49,11 @@ public class JavassistDynamicProxyBean extends AbstractDynamicProxyBean implemen
         }
 
         Activity activity = context.getCurrentActivity();
-        String transletName = (activity.getTranslet() != null ? activity.getTranslet().getRequestName() : null);
         String beanId = beanRule.getId();
         String className = beanRule.getClassName();
         String methodName = overridden.getName();
 
-        AspectAdviceRuleRegistry aarr = getAspectAdviceRuleRegistry(activity, transletName, beanId, className, methodName);
+        AspectAdviceRuleRegistry aarr = getAspectAdviceRuleRegistry(activity, beanId, className, methodName);
         if (aarr == null) {
             return proceed.invoke(self, args);
         }

@@ -214,6 +214,9 @@ public class BeanReferenceInspector {
             if (this == obj) {
                 return true;
             }
+            if (!(obj instanceof RefererKey)) {
+                return false;
+            }
             RefererKey key = (RefererKey)obj;
             return (Objects.equals(type, key.type) &&
                     Objects.equals(qualifier, key.qualifier));
@@ -224,6 +227,7 @@ public class BeanReferenceInspector {
             final int prime = 31;
             int result = hashCode;
             if (result == 0) {
+                result = 11;
                 if (type != null) {
                     result = prime * result + type.hashCode();
                 }

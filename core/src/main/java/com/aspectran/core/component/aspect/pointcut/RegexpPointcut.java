@@ -16,10 +16,10 @@
 package com.aspectran.core.component.aspect.pointcut;
 
 import com.aspectran.core.context.rule.PointcutPatternRule;
-import com.aspectran.core.util.ConcurrentReferenceHashMap;
+import com.aspectran.core.util.cache.Cache;
+import com.aspectran.core.util.cache.ConcurrentReferenceCache;
 
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -28,7 +28,8 @@ import java.util.regex.Pattern;
  */
 public class RegexpPointcut extends AbstractPointcut {
 
-    private final Map<String, Pattern> cache = new ConcurrentReferenceHashMap<>();
+    private final Cache<String, Pattern> cache =
+            new ConcurrentReferenceCache<>(Pattern::compile);
 
     public RegexpPointcut(List<PointcutPatternRule> pointcutPatternRuleList) {
         super(pointcutPatternRuleList);
@@ -40,13 +41,6 @@ public class RegexpPointcut extends AbstractPointcut {
             throw new IllegalArgumentException("regex must not be null");
         }
         Pattern pattern = cache.get(regex);
-        if (pattern == null) {
-            pattern = Pattern.compile(regex);
-            Pattern existing = cache.putIfAbsent(regex, pattern);
-            if (existing != null) {
-                pattern = existing;
-            }
-        }
         Matcher matcher = pattern.matcher(compareString);
         return matcher.matches();
     }

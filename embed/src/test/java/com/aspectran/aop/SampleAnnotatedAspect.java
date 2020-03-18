@@ -84,7 +84,7 @@ public class SampleAnnotatedAspect {
 
     @Around
     public String around() {
-        String msg = "Around: Hi~~~~~~~~~~~~~~";
+        String msg = "Around Method: Hi~~~~~~~~~~~~~~";
 
         log.info("===> aspect02: " + msg);
 

@@ -22,6 +22,7 @@ import com.aspectran.core.component.aspect.AspectRuleRegistry;
 import com.aspectran.core.component.aspect.InvalidPointcutPatternException;
 import com.aspectran.core.component.aspect.pointcut.Pointcut;
 import com.aspectran.core.component.aspect.pointcut.PointcutFactory;
+import com.aspectran.core.component.aspect.pointcut.PointcutPattern;
 import com.aspectran.core.component.bean.BeanRuleRegistry;
 import com.aspectran.core.component.bean.ContextualBeanRegistry;
 import com.aspectran.core.component.schedule.ScheduleRuleRegistry;
@@ -448,34 +449,37 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
                     List<PointcutPatternRule> pointcutPatternRuleList = pointcut.getPointcutPatternRuleList();
                     if (pointcutPatternRuleList != null) {
                         for (PointcutPatternRule ppr : pointcutPatternRuleList) {
-                            if (ppr.getBeanIdPattern() != null && ppr.getMatchedBeanCount() == 0) {
-                                invalidPointcutPatterns++;
-                                String msg = "No beans matching to '" + ppr.getBeanIdPattern() +
-                                        "'; aspectRule " + aspectRule;
-                                if (pointcutPatternVerifiable) {
-                                    log.error(msg);
-                                } else {
-                                    log.debug(msg);
+                            PointcutPattern pp = ppr.getPointcutPattern();
+                            if (pp != null) {
+                                if (pp.getBeanIdPattern() != null && ppr.getMatchedBeanIdCount() == 0) {
+                                    invalidPointcutPatterns++;
+                                    String msg = "No beans matching to '" + pp.getBeanIdPattern() +
+                                            "'; aspectRule " + aspectRule;
+                                    if (pointcutPatternVerifiable) {
+                                        log.error(msg);
+                                    } else {
+                                        log.debug(msg);
+                                    }
                                 }
-                            }
-                            if (ppr.getClassNamePattern() != null && ppr.getMatchedClassCount() == 0) {
-                                invalidPointcutPatterns++;
-                                String msg = "No beans matching to '@class:" + ppr.getClassNamePattern() +
-                                        "'; aspectRule " + aspectRule;
-                                if (pointcutPatternVerifiable) {
-                                    log.error(msg);
-                                } else {
-                                    log.debug(msg);
+                                if (pp.getClassNamePattern() != null && ppr.getMatchedClassNameCount() == 0) {
+                                    invalidPointcutPatterns++;
+                                    String msg = "No beans matching to '@class:" + pp.getClassNamePattern() +
+                                            "'; aspectRule " + aspectRule;
+                                    if (pointcutPatternVerifiable) {
+                                        log.error(msg);
+                                    } else {
+                                        log.debug(msg);
+                                    }
                                 }
-                            }
-                            if (ppr.getMethodNamePattern() != null && ppr.getMatchedMethodCount() == 0) {
-                                invalidPointcutPatterns++;
-                                String msg = "No beans have methods matching to '^" + ppr.getMethodNamePattern() +
-                                        "'; aspectRule " + aspectRule;
-                                if (pointcutPatternVerifiable) {
-                                    log.error(msg);
-                                } else {
-                                    log.debug(msg);
+                                if (pp.getMethodNamePattern() != null && ppr.getMatchedMethodNameCount() == 0) {
+                                    invalidPointcutPatterns++;
+                                    String msg = "No beans have methods matching to '^" + pp.getMethodNamePattern() +
+                                            "'; aspectRule " + aspectRule;
+                                    if (pointcutPatternVerifiable) {
+                                        log.error(msg);
+                                    } else {
+                                        log.debug(msg);
+                                    }
                                 }
                             }
                         }

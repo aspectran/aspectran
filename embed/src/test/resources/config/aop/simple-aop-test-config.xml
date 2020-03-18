@@ -13,7 +13,7 @@
 
     <bean id="simpleAopTestAdvice" class="com.aspectran.aop.SimpleAopTestAdvice"/>
 
-    <aspect id="aspect01" order="1" disabled="true">
+    <aspect id="aspect01" order="1" disabled="false">
         <joinpoint>
             pointcut: {
                 +: aop/test/*

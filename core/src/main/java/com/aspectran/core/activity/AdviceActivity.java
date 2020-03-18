@@ -34,9 +34,7 @@ import com.aspectran.core.context.rule.SettingsAdviceRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.type.ActionType;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
-import com.aspectran.core.context.rule.type.JoinpointTargetType;
 import com.aspectran.core.context.rule.type.MethodType;
-import com.aspectran.core.lang.NonNull;
 import com.aspectran.core.util.logging.Log;
 import com.aspectran.core.util.logging.LogFactory;
 
@@ -75,15 +73,14 @@ public abstract class AdviceActivity extends AbstractActivity {
         super(context);
     }
 
-    protected void prepareAspectAdviceRule(@NonNull TransletRule transletRule) {
+    protected void prepareAspectAdviceRule(TransletRule transletRule, String requestName) {
         AspectAdviceRuleRegistry aarr;
         if (transletRule.hasPathVariables()) {
             AspectAdviceRulePostRegister postRegister = new AspectAdviceRulePostRegister();
             for (AspectRule aspectRule : getActivityContext().getAspectRuleRegistry().getAspectRules()) {
-                JoinpointTargetType joinpointTargetType = aspectRule.getJoinpointTargetType();
-                if (!aspectRule.isBeanRelevanted() && joinpointTargetType != JoinpointTargetType.METHOD) {
+                if (!aspectRule.isBeanRelevanted()) {
                     Pointcut pointcut = aspectRule.getPointcut();
-                    if (pointcut == null || pointcut.matches(transletRule.getName())) {
+                    if (pointcut == null || pointcut.matches(requestName)) {
                         postRegister.register(aspectRule);
                     }
                 }

@@ -17,6 +17,8 @@ package com.aspectran.web.support.http;
 
 import com.aspectran.core.util.Assert;
 import com.aspectran.core.util.StringUtils;
+import com.aspectran.core.util.cache.Cache;
+import com.aspectran.core.util.cache.ConcurrentLruCache;
 
 import java.nio.charset.UnsupportedCharsetException;
 import java.util.ArrayList;
@@ -27,11 +29,6 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -151,7 +148,7 @@ public abstract class MediaTypeUtils {
      */
     public static final String TEXT_XML_VALUE = "text/xml";
 
-    private static final ConcurrentLruCache<String, MediaType> cachedMediaTypes =
+    private static final Cache<String, MediaType> cachedMediaTypes =
         new ConcurrentLruCache<>(64, MediaTypeUtils::parseMediaTypeInternal);
 
     static {
@@ -349,74 +346,6 @@ public abstract class MediaTypeUtils {
         Assert.notNull(mediaTypes, "'mediaTypes' must not be null");
         if (mediaTypes.size() > 1) {
             mediaTypes.sort(SPECIFICITY_COMPARATOR);
-        }
-    }
-
-
-    /**
-     * Simple Least Recently Used cache, bounded by the maximum size given
-     * to the class constructor.
-     * <p>This implementation is backed by a {@code ConcurrentHashMap} for storing
-     * the cached values and a {@code ConcurrentLinkedQueue} for ordering the keys
-     * and choosing the least recently used key when the cache is at full capacity.
-     *
-     * @param <K> the type of the key used for caching
-     * @param <V> the type of the cached values
-     */
-    private static class ConcurrentLruCache<K, V> {
-
-        private final int maxSize;
-
-        private final ConcurrentLinkedQueue<K> queue = new ConcurrentLinkedQueue<>();
-
-        private final ConcurrentHashMap<K, V> cache = new ConcurrentHashMap<>();
-
-        private final ReadWriteLock lock = new ReentrantReadWriteLock();
-
-        private final Function<K, V> generator;
-
-        public ConcurrentLruCache(int maxSize, Function<K, V> generator) {
-            Assert.isTrue(maxSize > 0, "LRU max size should be positive");
-            Assert.notNull(generator, "Generator function should not be null");
-            this.maxSize = maxSize;
-            this.generator = generator;
-        }
-
-        public V get(K key) {
-            this.lock.readLock().lock();
-            try {
-                if (this.queue.size() < this.maxSize / 2) {
-                    V cached = this.cache.get(key);
-                    if (cached != null) {
-                        return cached;
-                    }
-                } else if (this.queue.remove(key)) {
-                    this.queue.add(key);
-                    return this.cache.get(key);
-                }
-            } finally {
-                this.lock.readLock().unlock();
-            }
-            this.lock.writeLock().lock();
-            try {
-                // retrying in case of concurrent reads on the same key
-                if (this.queue.remove(key)) {
-                    this.queue.add(key);
-                    return this.cache.get(key);
-                }
-                if (this.queue.size() == this.maxSize) {
-                    K leastUsed = this.queue.poll();
-                    if (leastUsed != null) {
-                        this.cache.remove(leastUsed);
-                    }
-                }
-                V value = this.generator.apply(key);
-                this.queue.add(key);
-                this.cache.put(key, value);
-                return value;
-            } finally {
-                this.lock.writeLock().unlock();
-            }
         }
     }
 

@@ -254,7 +254,7 @@ public class JoinpointRule {
         List<PointcutPatternRule> pointcutPatternRuleList = new ArrayList<>(patternStringSize + qualifierParametersSize);
         if (patternStringSize > 0) {
             for (String patternString : patternStringList) {
-                PointcutPatternRule pointcutPatternRule = PointcutPatternRule.parsePattern(patternString);
+                PointcutPatternRule pointcutPatternRule = PointcutPatternRule.newInstance(patternString);
                 pointcutPatternRuleList.add(pointcutPatternRule);
             }
         }
