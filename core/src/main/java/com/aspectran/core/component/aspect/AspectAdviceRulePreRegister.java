@@ -42,6 +42,8 @@ public class AspectAdviceRulePreRegister {
 
     private AspectRuleRegistry aspectRuleRegistry;
 
+    private boolean pointcutPatternVerifiable;
+
     public AspectAdviceRulePreRegister(AspectRuleRegistry aspectRuleRegistry) {
         this.aspectRuleRegistry = aspectRuleRegistry;
 
@@ -73,6 +75,10 @@ public class AspectAdviceRulePreRegister {
                 log.trace("preregistered AspectRule " + aspectRule);
             }
         }
+    }
+
+    public void setPointcutPatternVerifiable(boolean pointcutPatternVerifiable) {
+        this.pointcutPatternVerifiable = pointcutPatternVerifiable;
     }
 
     public void register(BeanRuleRegistry beanRuleRegistry) {
@@ -153,18 +159,23 @@ public class AspectAdviceRulePreRegister {
     }
 
     private boolean existsMatchedBean(Pointcut pointcut, String beanId, String className) {
+        boolean exists = false;
         List<PointcutPatternRule> pointcutPatternRuleList = pointcut.getPointcutPatternRuleList();
         if (pointcutPatternRuleList != null) {
             for (PointcutPatternRule ppr : pointcutPatternRuleList) {
                 if (existsBean(pointcut, ppr, beanId, className, null)) {
-                    return true;
+                    exists = true;
+                    if (!pointcutPatternVerifiable) {
+                        break;
+                    }
                 }
             }
         }
-        return false;
+        return exists;
     }
 
     private boolean existsMatchedBean(Pointcut pointcut, BeanRule beanRule) {
+        boolean exists = false;
         List<PointcutPatternRule> pointcutPatternRuleList = pointcut.getPointcutPatternRuleList();
         if (pointcutPatternRuleList != null) {
             BeanDescriptor bd = BeanDescriptor.getInstance(beanRule.getTargetBeanClass());
@@ -175,11 +186,14 @@ public class AspectAdviceRulePreRegister {
 
             for (PointcutPatternRule ppr : pointcutPatternRuleList) {
                 if (existsBean(pointcut, ppr, beanId, className, methodNames)) {
-                    return true;
+                    exists = true;
+                    if (!pointcutPatternVerifiable) {
+                        break;
+                    }
                 }
             }
         }
-        return false;
+        return exists;
     }
 
     private boolean existsBean(Pointcut pointcut, PointcutPatternRule pointcutPatternRule,

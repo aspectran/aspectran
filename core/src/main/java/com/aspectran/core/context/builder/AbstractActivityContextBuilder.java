@@ -435,12 +435,14 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
             }
         }
 
+        boolean pointcutPatternVerifiable = assistant.isPointcutPatternVerifiable();
+
         AspectAdviceRulePreRegister preRegister = new AspectAdviceRulePreRegister(aspectRuleRegistry);
+        preRegister.setPointcutPatternVerifiable(pointcutPatternVerifiable || log.isDebugEnabled());
         preRegister.register(beanRuleRegistry);
         preRegister.register(transletRuleRegistry);
 
         // check invalid pointcut pattern
-        boolean pointcutPatternVerifiable = assistant.isPointcutPatternVerifiable();
         if (pointcutPatternVerifiable || log.isDebugEnabled()) {
             int invalidPointcutPatterns = 0;
             for (AspectRule aspectRule : aspectRuleRegistry.getAspectRules()) {
