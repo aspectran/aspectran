@@ -32,6 +32,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.aspectran.core.util.ConcurrentReferenceHashMap.*;
+
 /**
  * The Class AspectRuleRegistry.
  */
@@ -41,11 +43,11 @@ public class AspectRuleRegistry extends AbstractComponent {
 
     private static final RelevantAspectRuleHolder EMPTY_HOLDER = new RelevantAspectRuleHolder();
 
-    private final Cache<PointcutPattern, RelevantAspectRuleHolder> literalPatternCache =
-            new ConcurrentReferenceCache<>(this::createRelevantAspectRuleHolder);
+    private final Cache<PointcutPattern, RelevantAspectRuleHolder> softCache =
+            new ConcurrentReferenceCache<>(ReferenceType.SOFT, this::createRelevantAspectRuleHolder);
 
-    private final Cache<PointcutPattern, RelevantAspectRuleHolder> unliteralPatternCache =
-            new ConcurrentReferenceCache<>(this::createRelevantAspectRuleHolder);
+    private final Cache<PointcutPattern, RelevantAspectRuleHolder> weakCache =
+            new ConcurrentReferenceCache<>(ReferenceType.WEAK, this::createRelevantAspectRuleHolder);
 
     private final Map<String, AspectRule> aspectRuleMap = new LinkedHashMap<>();
 
@@ -89,12 +91,12 @@ public class AspectRuleRegistry extends AbstractComponent {
         aspectRuleMap.clear();
     }
 
-    public RelevantAspectRuleHolder getRelevantAspectRuleHolderFromLiteralPatternCache(PointcutPattern pointcutPattern) {
-        return literalPatternCache.get(pointcutPattern);
+    public RelevantAspectRuleHolder getRelevantAspectRuleHolderFromSoftCache(PointcutPattern pointcutPattern) {
+        return softCache.get(pointcutPattern);
     }
 
-    public RelevantAspectRuleHolder getRelevantAspectRuleHolderFromUnliteralPatternCache(PointcutPattern pointcutPattern) {
-        return unliteralPatternCache.get(pointcutPattern);
+    public RelevantAspectRuleHolder getRelevantAspectRuleHolderFromWeakCache(PointcutPattern pointcutPattern) {
+        return weakCache.get(pointcutPattern);
     }
 
     private RelevantAspectRuleHolder createRelevantAspectRuleHolder(PointcutPattern pointcutPattern) {
