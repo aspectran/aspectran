@@ -32,7 +32,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.aspectran.core.util.ConcurrentReferenceHashMap.*;
+import static com.aspectran.core.util.ConcurrentReferenceHashMap.ReferenceType;
 
 /**
  * The Class AspectRuleRegistry.

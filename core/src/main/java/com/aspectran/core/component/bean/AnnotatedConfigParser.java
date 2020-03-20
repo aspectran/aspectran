@@ -451,7 +451,8 @@ public class AnnotatedConfigParser {
         configRelater.relay(targetBeanClass, beanRule);
     }
 
-    private void parseFactoryBeanRule(Class<?> beanClass, Method method, String[] nameArray) throws IllegalRuleException {
+    private void parseFactoryBeanRule(Class<?> beanClass, Method method, String[] nameArray)
+            throws IllegalRuleException {
         Bean beanAnno = method.getAnnotation(Bean.class);
         String beanId = StringUtils.emptyToNull(beanAnno.value());
         if (beanId == null) {
@@ -546,7 +547,8 @@ public class AnnotatedConfigParser {
         configRelater.relay(scheduleRule);
     }
 
-    private void parseTransletRule(Class<?> beanClass, Method method, String[] nameArray) throws IllegalRuleException {
+    private void parseTransletRule(Class<?> beanClass, Method method, String[] nameArray)
+            throws IllegalRuleException {
         Request requestAnno = method.getAnnotation(Request.class);
         RequestToGet requestToGetAnno = method.getAnnotation(RequestToGet.class);
         RequestToPost requestToPostAnno = method.getAnnotation(RequestToPost.class);

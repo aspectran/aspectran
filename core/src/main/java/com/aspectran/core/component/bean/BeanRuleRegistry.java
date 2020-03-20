@@ -434,8 +434,10 @@ public class BeanRuleRegistry {
             }
             if (beanRules.length > 1) {
                 throw new BeanRuleException("No unique factory bean of type '" +
-                        beanRule.getFactoryBeanClass().getName() + "' is defined: expected single matching bean but found " +
-                        beanRules.length + ": (" + NoUniqueBeanException.getBeanDescriptions(beanRules) + "); Caller bean ",
+                        beanRule.getFactoryBeanClass().getName() +
+                        "' is defined: expected single matching bean but found " +
+                        beanRules.length + ": (" +
+                        NoUniqueBeanException.getBeanDescriptions(beanRules) + "); Caller bean ",
                         beanRule);
             }
             offeredFactoryBeanRule = beanRules[0];

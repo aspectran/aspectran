@@ -39,14 +39,14 @@ public abstract class AbstractScope implements Scope {
 
     private static final Log log = LogFactory.getLog(AbstractScope.class);
 
-    private final Map<BeanRule, BeanInstance> scopedBeanInstanceMap = new LinkedHashMap<>();
+    private final Map<BeanRule, BeanInstance> scopedBeanInstances = new LinkedHashMap<>();
 
     public AbstractScope() {
     }
 
     @Override
     public BeanInstance getBeanInstance(BeanRule beanRule) {
-        return scopedBeanInstanceMap.get(beanRule);
+        return scopedBeanInstances.get(beanRule);
     }
 
     @Override
@@ -60,7 +60,7 @@ public abstract class AbstractScope implements Scope {
         if (beanInstance == null) {
             throw new IllegalArgumentException("beanInstance must not be null");
         }
-        scopedBeanInstanceMap.put(beanRule, beanInstance);
+        scopedBeanInstances.put(beanRule, beanInstance);
     }
 
     @Override
@@ -68,7 +68,7 @@ public abstract class AbstractScope implements Scope {
         if (bean == null) {
             throw new IllegalArgumentException("bean must not be null");
         }
-        for (Map.Entry<BeanRule, BeanInstance> entry : scopedBeanInstanceMap.entrySet()) {
+        for (Map.Entry<BeanRule, BeanInstance> entry : scopedBeanInstances.entrySet()) {
             if (entry.getValue().getBean() == bean) {
                 return entry.getKey();
             }
@@ -78,7 +78,7 @@ public abstract class AbstractScope implements Scope {
 
     @Override
     public boolean containsBeanRule(BeanRule beanRule) {
-        return scopedBeanInstanceMap.containsKey(beanRule);
+        return scopedBeanInstances.containsKey(beanRule);
     }
 
     @Override
@@ -86,22 +86,22 @@ public abstract class AbstractScope implements Scope {
         BeanRule beanRule = getBeanRule(bean);
         if (beanRule != null) {
             doDestroy(beanRule, bean);
-            scopedBeanInstanceMap.remove(beanRule);
+            scopedBeanInstances.remove(beanRule);
         }
     }
 
     @Override
     public void destroy() {
         if (log.isDebugEnabled()) {
-            if (!scopedBeanInstanceMap.isEmpty()) {
+            if (!scopedBeanInstances.isEmpty()) {
                 log.debug("Destroy " + getScopeType() + " scoped beans from " + this);
             }
         }
 
-        List<BeanRule> beanRules = new ArrayList<>(scopedBeanInstanceMap.keySet());
+        List<BeanRule> beanRules = new ArrayList<>(scopedBeanInstances.keySet());
         for (ListIterator<BeanRule> iter = beanRules.listIterator(beanRules.size()); iter.hasPrevious();) {
             BeanRule beanRule = iter.previous();
-            BeanInstance instance = scopedBeanInstanceMap.get(beanRule);
+            BeanInstance instance = scopedBeanInstances.get(beanRule);
             Object bean = instance.getBean();
             if (bean != null) {
                 try {
@@ -112,7 +112,7 @@ public abstract class AbstractScope implements Scope {
 
             }
         }
-        scopedBeanInstanceMap.clear();
+        scopedBeanInstances.clear();
     }
 
     private void doDestroy(BeanRule beanRule, Object bean) throws Exception {

@@ -43,7 +43,8 @@ public class SessionScope extends AbstractScope implements SessionBindingListene
 
     private static final String SESSION_SCOPE_ATTR_NAME = SessionScope.class.getName();
 
-    private static final String SESSION_SCOPED_BEAN_INSTANCES_ATTR_NAME = SessionScope.class.getName() + ".BEAN_INSTANCES";
+    private static final String SESSION_SCOPED_BEAN_INSTANCES_ATTR_NAME =
+            SessionScope.class.getName() + ".BEAN_INSTANCES";
 
     private static final ScopeType scopeType = ScopeType.SESSION;
 

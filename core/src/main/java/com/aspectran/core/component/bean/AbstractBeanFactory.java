@@ -212,7 +212,8 @@ abstract class AbstractBeanFactory extends AbstractComponent {
             }
             bean = invokeFactoryMethod(beanRule, bean, activity);
             if (bean == null) {
-                throw new NullPointerException("Factory Method [" + beanRule.getFactoryMethod() + "] has returned null");
+                throw new NullPointerException("Factory Method [" + beanRule.getFactoryMethod() +
+                        "] has returned null");
             }
         } catch (BeanCreationException e) {
             throw e;

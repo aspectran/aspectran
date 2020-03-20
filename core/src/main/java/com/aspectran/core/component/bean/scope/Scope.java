@@ -31,14 +31,14 @@ import java.util.concurrent.locks.ReadWriteLock;
 public interface Scope extends NonPersistent {
 
     /**
-     * Returns the scope type.
+     * Returns the type of this scope.
      *
      * @return the scope type
      */
     ScopeType getScopeType();
 
     /**
-     * Returns the scope lock.
+     * Returns the lock of this scope.
      *
      * @return the scope lock
      */
@@ -61,10 +61,28 @@ public interface Scope extends NonPersistent {
      */
     void putBeanInstance(Activity activity, BeanRule beanRule, BeanInstance beanInstance);
 
+    /**
+     * Returns the bean rule corresponding to the bean object.
+     *
+     * @param bean the bean object to find
+     * @return the bean rule
+     */
     BeanRule getBeanRule(Object bean);
 
+    /**
+     * Returns whether the bean rule exists in this scope.
+     *
+     * @param beanRule the bean rule to find
+     * @return {@code true} if the bean rule exists in this scope,  {@code false} otherwise
+     */
     boolean containsBeanRule(BeanRule beanRule);
 
+    /**
+     * Destroy the bean that matches the given object in this scope.
+     *
+     * @param bean the bean object to destroy
+     * @throws Exception if the bean cannot be destroyed
+     */
     void destroy(Object bean) throws Exception;
 
     /**

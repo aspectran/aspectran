@@ -74,7 +74,8 @@ public class BeanRuleAnalyzer {
         }
     }
 
-    static Class<?> determineFactoryMethodTargetBeanClass(Class<?> beanClass, BeanRule beanRule) throws BeanRuleException {
+    static Class<?> determineFactoryMethodTargetBeanClass(Class<?> beanClass, BeanRule beanRule)
+            throws BeanRuleException {
         if (beanRule.getFactoryMethod() != null) {
             Class<?> targetBeanClass = beanRule.getFactoryMethod().getReturnType();
             beanRule.setTargetBeanClass(targetBeanClass);
