@@ -142,7 +142,7 @@ function saveCustomer() {
   if($("input[name=age]").val() == "") {
     $("input[name=age]").addClass("is-invalid-input");
   }
-  if($("input.is-invalid-input").size() > 0) {
+  if($("input.is-invalid-input").length > 0) {
     return;
   }
   var type, url;
@@ -171,7 +171,7 @@ function saveCustomer() {
         $("select[name=customerList]").val(data.id);
         $("input[name=id]").val(data.id);
         $("#cust-no").text(data.id);
-        $("#total").text($("select[name=customerList] option").size());
+        $("#total").text($("select[name=customerList] option").length);
         $("#total").fadeIn(200);
       } else {
         $("select[name=customerList] option[value=" + data.id + "]").text("#" + data.id + ". " + data.name);
@@ -231,7 +231,7 @@ function clearForm() {
   $("input[name=name]").val("");
   $("input[name=age]").val("");
   $("input[name=approvalStatus]").attr("checked", false);
-  $("#total").text($("select[name=customerList] option").size());
+  $("#total").text($("select[name=customerList] option").length);
   $("#cust-no").text("-");
   $("input.is-invalid-input").removeClass("is-invalid-input");
 }
