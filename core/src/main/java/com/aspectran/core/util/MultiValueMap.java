@@ -15,14 +15,15 @@
  */
 package com.aspectran.core.util;
 
+import com.aspectran.core.lang.Nullable;
+
 import java.util.List;
 import java.util.Map;
 
 /**
- * Extension of the {@code Map} interface that stores multiple values.
+ * <p>This class is a clone of org.springframework.util.MultiValueMap</p>
  *
- * @author Arjen Poutsma
- * @since 3.0
+ * Extension of the {@code Map} interface that stores multiple values.
  */
 public interface MultiValueMap<K, V> extends Map<K, List<V>> {
 
@@ -43,12 +44,48 @@ public interface MultiValueMap<K, V> extends Map<K, List<V>> {
     void add(K key, V value);
 
     /**
+     * Add all the values of the given list to the current list of values for the given key.
+     *
+     * @param key they key
+     * @param values the values to be added
+     */
+    void addAll(K key, List<? extends V> values);
+
+    /**
+     * Add all the values of the given {@code MultiValueMap} to the current values.
+     *
+     * @param values the values to be added
+     */
+    void addAll(MultiValueMap<K, V> values);
+
+    /**
+     * {@link #add(Object, Object) Add} the given value, only when the map does not
+     * {@link #containsKey(Object) contain} the given key.
+     *
+     * @param key the key
+     * @param value the value to be added
+     */
+    default void addIfAbsent(K key, @Nullable V value) {
+        if (!containsKey(key)) {
+            add(key, value);
+        }
+    }
+
+    /**
      * Set the given single value under the given key.
      *
      * @param key the key
      * @param value the value to set
      */
     void set(K key, V value);
+
+    /**
+     * Set the given values under the given key.
+     *
+     * @param key the key
+     * @param values the values
+     */
+    void set(K key, V[] values);
 
     /**
      * Set the given values under.
@@ -58,15 +95,7 @@ public interface MultiValueMap<K, V> extends Map<K, List<V>> {
     void setAll(Map<K, V> values);
 
     /**
-     * Set the given values under the given key.
-     *
-     * @param key the key
-     * @param values the values
-     */
-    void put(K key, V[] values);
-
-    /**
-     * Returns the first values contained in this {@code MultiValueMap}.
+     * Return a {@code Map} with the first values contained in this {@code MultiValueMap}.
      *
      * @return a single value representation of this map
      */

@@ -323,9 +323,6 @@
                         <include>**/*.java</include>
                     </includes>
                     <excludes>
-                        <exclude>core/src/main/java/com/aspectran/core/util/logging/**</exclude>
-                        <exclude>core/src/main/java/com/aspectran/core/util/statistic/**</exclude>
-                        <exclude>core/src/main/java/com/aspectran/core/util/xml/**</exclude>
                         <exclude>.mvn/wrapper/**</exclude>
                     </excludes>
                 </configuration>

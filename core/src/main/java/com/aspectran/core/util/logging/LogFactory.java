@@ -18,8 +18,7 @@ package com.aspectran.core.util.logging;
 import java.lang.reflect.Constructor;
 
 /**
- * @author Clinton Begin
- * @author Eduardo Macarron
+ * The Class LogFactory.
  */
 public final class LogFactory {
 
@@ -51,7 +50,7 @@ public final class LogFactory {
         try {
             return logConstructor.newInstance(logger);
         } catch (Throwable t) {
-            throw new LogException("Error creating logger for logger " + logger, t);
+            throw new LogException("Error creating logger for logger " + logger + ".  Cause: " + t, t);
         }
     }
 
@@ -67,7 +66,6 @@ public final class LogFactory {
         setImplementation(com.aspectran.core.util.logging.commons.JakartaCommonsLoggingImpl.class);
     }
 
-    @Deprecated
     public static synchronized void useLog4JLogging() {
         setImplementation(com.aspectran.core.util.logging.log4j.Log4jImpl.class);
     }
@@ -107,7 +105,7 @@ public final class LogFactory {
             }
             logConstructor = candidate;
         } catch (Throwable t) {
-            throw new LogException("Error setting Log implementation", t);
+            throw new LogException("Error setting Log implementation.  Cause: " + t, t);
         }
     }
 

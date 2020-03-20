@@ -17,8 +17,6 @@ package com.aspectran.core.util.logging;
 
 /**
  * This class provides a static logging interface.
- *
- * @author Clinton Begin
  */
 public interface Log {
 

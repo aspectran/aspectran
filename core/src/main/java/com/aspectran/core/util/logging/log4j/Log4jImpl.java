@@ -20,10 +20,8 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 /**
- * @author Eduardo Macarron
- * @deprecated Since 6.0.0 - This class will remove future.
+ * The Class Log4jImpl.
  */
-@Deprecated
 public class Log4jImpl implements Log {
 
     private static final String FQCN = Log4jImpl.class.getName();

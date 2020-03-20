@@ -21,7 +21,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * @author Clinton Begin
+ * The Class Jdk14LoggingImpl.
  */
 public class Jdk14LoggingImpl implements Log {
 

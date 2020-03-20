@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * Logger using SLF4J feature.
+ * Logger using standard out.
  */
 package com.aspectran.core.util.logging.stdout;

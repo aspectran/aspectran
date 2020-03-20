@@ -18,11 +18,11 @@ package com.aspectran.core.util.logging.slf4j;
 import com.aspectran.core.util.logging.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.Marker;
 import org.slf4j.spi.LocationAwareLogger;
 
 /**
- * @author Clinton Begin
- * @author Eduardo Macarron
+ * The Class Slf4jImpl.
  */
 public class Slf4jImpl implements Log {
 
@@ -30,7 +30,20 @@ public class Slf4jImpl implements Log {
 
     public Slf4jImpl(String clazz) {
         Logger logger = LoggerFactory.getLogger(clazz);
-        log = new Slf4jLocationAwareLoggerImpl((LocationAwareLogger)logger);
+
+        if (logger instanceof LocationAwareLogger) {
+            try {
+                // check for slf4j >= 1.6 method signature
+                logger.getClass().getMethod("log", Marker.class, String.class, int.class, String.class, Object[].class, Throwable.class);
+                log = new Slf4jLocationAwareLoggerImpl((LocationAwareLogger) logger);
+                return;
+            } catch (SecurityException | NoSuchMethodException e) {
+                // fail-back to Slf4jLoggerImpl
+            }
+        }
+
+        // Logger is not LocationAwareLogger or slf4j version < 1.6
+        log = new Slf4jLoggerImpl(logger);
     }
 
     @Override

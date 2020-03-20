@@ -16,6 +16,7 @@
 package com.aspectran.core.util;
 
 import com.aspectran.core.lang.NonNull;
+import com.aspectran.core.lang.Nullable;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -37,18 +38,20 @@ import java.util.Set;
  * while allowing for contains, get and remove calls with any case of key.</p>
  *
  * <p>Does <i>not</i> support {@code null} keys.</p>
+ *
+ * @param <V> the value type
  */
 public class LinkedCaseInsensitiveMultiValueMap<V> implements MultiValueMap<String, V>, Serializable {
 
     private static final long serialVersionUID = 2505523262093891621L;
 
-    private final Map<String, List<V>> values;
+    private final Map<String, List<V>> targetMap;
 
     /**
      * Constructs a new, empty instance of the {@code LinkedCaseInsensitiveMultiValueMap} object.
      */
     public LinkedCaseInsensitiveMultiValueMap() {
-        this.values = new LinkedCaseInsensitiveMap<>(Locale.ENGLISH);
+        this.targetMap = new LinkedCaseInsensitiveMap<>(Locale.ENGLISH);
     }
 
     /**
@@ -57,26 +60,48 @@ public class LinkedCaseInsensitiveMultiValueMap<V> implements MultiValueMap<Stri
      * @param initialCapacity the initial capacity
      */
     public LinkedCaseInsensitiveMultiValueMap(int initialCapacity) {
-        this.values = new LinkedCaseInsensitiveMap<>(initialCapacity, Locale.ENGLISH);
+        this.targetMap = new LinkedCaseInsensitiveMap<>(initialCapacity, Locale.ENGLISH);
     }
 
     @Override
     public V getFirst(String key) {
-        List<V> headerValues = this.values.get(key);
-        return (headerValues != null ? headerValues.get(0) : null);
+        List<V> values = this.targetMap.get(key);
+        return (values != null ? values.get(0) : null);
     }
 
     @Override
     public void add(String key, V value) {
-        List<V> headerValues = this.values.computeIfAbsent(key, k -> new LinkedList<>());
-        headerValues.add(value);
+        List<V> values = this.targetMap.computeIfAbsent(key, k -> new LinkedList<>());
+        values.add(value);
+    }
+
+    @Override
+    public void addAll(String key, List<? extends V> values) {
+        List<V> currentValues = this.targetMap.computeIfAbsent(key, k -> new LinkedList<>());
+        currentValues.addAll(values);
+    }
+
+    @Override
+    public void addAll(MultiValueMap<String, V> values) {
+        for (Entry<String, List<V>> entry : values.entrySet()) {
+            addAll(entry.getKey(), entry.getValue());
+        }
     }
 
     @Override
     public void set(String key, V value) {
-        List<V> headerValues = new LinkedList<>();
-        headerValues.add(value);
-        this.values.put(key, headerValues);
+        List<V> values = new LinkedList<>();
+        values.add(value);
+        this.targetMap.put(key, values);
+    }
+
+    @Override
+    public void set(String key, V[] values) {
+        List<V> list = new LinkedList<>();
+        if (values != null) {
+            Collections.addAll(list, values);
+        }
+        put(key, list);
     }
 
     @Override
@@ -87,18 +112,9 @@ public class LinkedCaseInsensitiveMultiValueMap<V> implements MultiValueMap<Stri
     }
 
     @Override
-    public void put(String key, V[] values) {
-        List<V> list = new LinkedList<>();
-        if (values != null) {
-            Collections.addAll(list, values);
-        }
-        put(key, list);
-    }
-
-    @Override
     public Map<String, V> toSingleValueMap() {
-        LinkedHashMap<String, V> singleValueMap = new LinkedHashMap<>(this.values.size());
-        for (Entry<String, List<V>> entry : this.values.entrySet()) {
+        LinkedHashMap<String, V> singleValueMap = new LinkedHashMap<>(this.targetMap.size());
+        for (Entry<String, List<V>> entry : this.targetMap.entrySet()) {
             singleValueMap.put(entry.getKey(), entry.getValue().get(0));
         }
         return singleValueMap;
@@ -108,69 +124,69 @@ public class LinkedCaseInsensitiveMultiValueMap<V> implements MultiValueMap<Stri
 
     @Override
     public int size() {
-        return this.values.size();
+        return this.targetMap.size();
     }
 
     @Override
     public boolean isEmpty() {
-        return this.values.isEmpty();
+        return this.targetMap.isEmpty();
     }
 
     @Override
     public boolean containsKey(Object key) {
-        return this.values.containsKey(key);
+        return this.targetMap.containsKey(key);
     }
 
     @Override
     public boolean containsValue(Object value) {
-        return this.values.containsValue(value);
+        return this.targetMap.containsValue(value);
     }
 
     @Override
     public List<V> get(Object key) {
-        return this.values.get(key);
+        return this.targetMap.get(key);
     }
 
     @Override
     public List<V> put(String key, List<V> value) {
-        return this.values.put(key, value);
+        return this.targetMap.put(key, value);
     }
 
     @Override
     public List<V> remove(Object key) {
-        return this.values.remove(key);
+        return this.targetMap.remove(key);
     }
 
     @Override
     public void putAll(@NonNull Map<? extends String, ? extends List<V>> map) {
-        this.values.putAll(map);
+        this.targetMap.putAll(map);
     }
 
     @Override
     public void clear() {
-        this.values.clear();
+        this.targetMap.clear();
     }
 
     @Override
     @NonNull
     public Set<String> keySet() {
-        return this.values.keySet();
+        return this.targetMap.keySet();
     }
 
     @Override
     @NonNull
     public Collection<List<V>> values() {
-        return this.values.values();
+        return this.targetMap.values();
     }
 
     @Override
     @NonNull
     public Set<Entry<String, List<V>>> entrySet() {
-        return this.values.entrySet();
+        return this.targetMap.entrySet();
     }
 
     @Override
-    public boolean equals(Object other) {
+    public boolean equals(@Nullable Object other) {
         if (this == other) {
             return true;
         }
@@ -178,17 +194,17 @@ public class LinkedCaseInsensitiveMultiValueMap<V> implements MultiValueMap<Stri
             return false;
         }
         LinkedCaseInsensitiveMultiValueMap<?> otherValues = (LinkedCaseInsensitiveMultiValueMap<?>)other;
-        return this.values.equals(otherValues.values);
+        return this.targetMap.equals(otherValues.targetMap);
     }
 
     @Override
     public int hashCode() {
-        return this.values.hashCode();
+        return this.targetMap.hashCode();
     }
 
     @Override
     public String toString() {
-        return this.values.toString();
+        return this.targetMap.toString();
     }
 
 }

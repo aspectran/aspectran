@@ -19,7 +19,7 @@ import com.aspectran.core.util.logging.Log;
 import org.slf4j.Logger;
 
 /**
- * @author Eduardo Macarron
+ * The Class Slf4jLoggerImpl.
  */
 class Slf4jLoggerImpl implements Log {
 

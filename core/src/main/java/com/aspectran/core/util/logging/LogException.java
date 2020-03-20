@@ -16,11 +16,10 @@
 package com.aspectran.core.util.logging;
 
 /**
- * @author Clinton Begin
+ * The Class LogException.
  */
 public class LogException extends RuntimeException {
 
-    /** @serial */
     private static final long serialVersionUID = 1007835506486086212L;
 
     public LogException() {

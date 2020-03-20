@@ -18,7 +18,7 @@ package com.aspectran.core.util.logging.nologging;
 import com.aspectran.core.util.logging.Log;
 
 /**
- * @author Clinton Begin
+ * The Class NoLoggingImpl.
  */
 public class NoLoggingImpl implements Log {
 

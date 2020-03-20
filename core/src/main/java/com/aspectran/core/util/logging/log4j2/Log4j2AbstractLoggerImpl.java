@@ -20,11 +20,13 @@ import com.aspectran.core.util.logging.LogFactory;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
+import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.spi.ExtendedLoggerWrapper;
 
 /**
- * @author Eduardo Macarron
+ * The Class Log4j2AbstractLoggerImpl.
  */
 public class Log4j2AbstractLoggerImpl implements Log {
 
@@ -50,42 +52,42 @@ public class Log4j2AbstractLoggerImpl implements Log {
 
     @Override
     public void error(String s) {
-        log.logIfEnabled(FQCN, Level.ERROR, MARKER, s);
+        log.logIfEnabled(FQCN, Level.ERROR, MARKER, (Message) new SimpleMessage(s), null);
     }
 
     @Override
     public void error(String s, Throwable e) {
-        log.logIfEnabled(FQCN, Level.ERROR, MARKER, s, e);
+        log.logIfEnabled(FQCN, Level.ERROR, MARKER, (Message) new SimpleMessage(s), e);
     }
 
     @Override
     public void debug(String s) {
-        log.logIfEnabled(FQCN, Level.DEBUG, MARKER, s);
+        log.logIfEnabled(FQCN, Level.DEBUG, MARKER, (Message) new SimpleMessage(s), null);
     }
 
     @Override
     public void debug(String s, Throwable e) {
-        log.logIfEnabled(FQCN, Level.DEBUG, MARKER, s, e);
+        log.logIfEnabled(FQCN, Level.DEBUG, MARKER, (Message) new SimpleMessage(s), e);
     }
 
     @Override
     public void info(String s) {
-        log.logIfEnabled(FQCN, Level.INFO, MARKER, s);
+        log.logIfEnabled(FQCN, Level.INFO, MARKER, (Message) new SimpleMessage(s), null);
     }
 
     @Override
     public void trace(String s) {
-        log.logIfEnabled(FQCN, Level.TRACE, MARKER, s);
+        log.logIfEnabled(FQCN, Level.TRACE, MARKER, (Message) new SimpleMessage(s), null);
     }
 
     @Override
     public void warn(String s) {
-        log.logIfEnabled(FQCN, Level.WARN, MARKER, s);
+        log.logIfEnabled(FQCN, Level.WARN, MARKER, (Message) new SimpleMessage(s), null);
     }
 
     @Override
     public void warn(String s, Throwable e) {
-        log.logIfEnabled(FQCN, Level.WARN, MARKER, s, e);
+        log.logIfEnabled(FQCN, Level.WARN, MARKER, (Message) new SimpleMessage(s), e);
     }
 
 }

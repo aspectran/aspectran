@@ -131,7 +131,7 @@ public class ItemExpression extends TokenExpression implements ItemEvaluator {
         MultiValueMap<String, String> valueMap = new LinkedMultiValueMap<>();
         for (ItemRule itemRule : itemRules) {
             String[] values = evaluateAsStringArray(itemRule);
-            valueMap.put(itemRule.getName(), values);
+            valueMap.set(itemRule.getName(), values);
         }
         return valueMap;
     }

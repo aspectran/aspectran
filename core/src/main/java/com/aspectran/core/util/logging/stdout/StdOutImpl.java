@@ -18,7 +18,7 @@ package com.aspectran.core.util.logging.stdout;
 import com.aspectran.core.util.logging.Log;
 
 /**
- * @author Clinton Begin
+ * The Class StdOutImpl.
  */
 public class StdOutImpl implements Log {
 
@@ -75,8 +75,8 @@ public class StdOutImpl implements Log {
 
     @Override
     public void warn(String s, Throwable e) {
-        System.err.println(s);
-        e.printStackTrace(System.err);
+        System.out.println(s);
+        e.printStackTrace(System.out);
     }
 
 }

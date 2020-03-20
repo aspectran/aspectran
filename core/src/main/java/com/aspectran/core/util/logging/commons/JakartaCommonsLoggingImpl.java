@@ -19,7 +19,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * @author Clinton Begin
+ * The Class JakartaCommonsLoggingImpl.
  */
 public class JakartaCommonsLoggingImpl implements com.aspectran.core.util.logging.Log {
 

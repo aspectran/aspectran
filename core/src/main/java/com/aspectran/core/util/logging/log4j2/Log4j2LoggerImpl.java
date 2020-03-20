@@ -22,7 +22,7 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 
 /**
- * @author Eduardo Macarron
+ * The Class Log4j2LoggerImpl.
  */
 public class Log4j2LoggerImpl implements Log {
 
