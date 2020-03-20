@@ -77,7 +77,8 @@ public class ReflectionUtils {
         try {
             return method.invoke(target, args);
         } catch (InvocationTargetException | IllegalAccessException e) {
-            throw new IllegalStateException("Could not access method: " + method, ExceptionUtils.getRootCause(e));
+            throw new IllegalStateException("Could not access method: " + method,
+                    ExceptionUtils.getRootCause(e));
         }
     }
 

@@ -79,7 +79,7 @@ public class StringUtils {
      *
      * @param str the {@code CharSequence} to check (may be {@code null})
      * @return {@code true} if the {@code CharSequence} is not {@code null},
-     * its length is greater than 0, and it does not contain whitespace only
+     *      its length is greater than 0, and it does not contain whitespace only
      * @see Character#isWhitespace
      */
     public static boolean hasText(CharSequence str) {
@@ -103,7 +103,7 @@ public class StringUtils {
      *
      * @param str the {@code String} to check (may be {@code null})
      * @return {@code true} if the {@code String} is not {@code null}, its
-     * length is greater than 0, and it does not contain whitespace only
+     *      length is greater than 0, and it does not contain whitespace only
      * @see #hasText(CharSequence)
      */
     public static boolean hasText(String str) {
@@ -115,7 +115,7 @@ public class StringUtils {
      *
      * @param str the {@code CharSequence} to check (may be {@code null})
      * @return {@code true} if the {@code CharSequence} is not empty and
-     * contains at least 1 whitespace character
+     *      contains at least 1 whitespace character
      * @see Character#isWhitespace
      */
     public static boolean containsWhitespace(CharSequence str) {
@@ -136,7 +136,7 @@ public class StringUtils {
      *
      * @param str the {@code String} to check (may be {@code null})
      * @return {@code true} if the {@code String} is not empty and
-     * contains at least 1 whitespace character
+     *      contains at least 1 whitespace character
      * @see #containsWhitespace(CharSequence)
      */
     public static boolean containsWhitespace(String str) {
@@ -266,7 +266,8 @@ public class StringUtils {
      *
      * @param str the {@code String} to check
      * @param prefix the prefix to look for
-     * @return {@code true} if the {@code String} starts with the prefix, case insensitive, or both {@code null}
+     * @return {@code true} if the {@code String} starts with the prefix,
+     *      case insensitive, or both {@code null}
      * @see java.lang.String#startsWith
      */
     public static boolean startsWithIgnoreCase(String str, String prefix) {
@@ -280,12 +281,14 @@ public class StringUtils {
      *
      * @param str the {@code String} to check
      * @param suffix the suffix to look for
-     * @return {@code true} if the {@code String} ends with the suffix, case insensitive, or both {@code null}
+     * @return {@code true} if the {@code String} ends with the suffix,
+     *      case insensitive, or both {@code null}
      * @see java.lang.String#endsWith
      */
     public static boolean endsWithIgnoreCase(String str, String suffix) {
         return (str != null && suffix != null && str.length() >= suffix.length() &&
-                str.regionMatches(true, str.length() - suffix.length(), suffix, 0, suffix.length()));
+                str.regionMatches(true, str.length() - suffix.length(),
+                        suffix, 0, suffix.length()));
     }
 
     /**
@@ -383,7 +386,7 @@ public class StringUtils {
             return str;
         }
         StringBuilder sb = new StringBuilder(str);
-        int loop = (search.length <= replace.length) ? search.length : replace.length;
+        int loop = Math.min(search.length, replace.length);
         int start = 0;
         int end;
         int searchLen;
@@ -757,8 +760,8 @@ public class StringUtils {
      * <p>This is the inverse operation of {@link Locale#toString Locale's toString}.
      *
      * @param localeString the locale {@code String}, following {@code Locale's}
-     * {@code toString()} format ("en", "en_UK", etc);
-     * also accepts spaces as separators, as an alternative to underscores
+     *      {@code toString()} format ("en", "en_UK", etc);
+     *      also accepts spaces as separators, as an alternative to underscores
      * @return a corresponding {@code Locale} instance
      * @throws IllegalArgumentException in case of an invalid locale specification
      */
@@ -795,6 +798,7 @@ public class StringUtils {
     /**
      * Determine the RFC 3066 compliant language tag,
      * as used for the HTTP "Accept-Language" header.
+     *
      * @param locale the Locale to transform to a language tag
      * @return the RFC 3066 compliant language tag as {@code String}
      */
@@ -804,8 +808,9 @@ public class StringUtils {
 
     /**
      * Parse the given {@code timeZoneString} value into a {@link TimeZone}.
+     *
      * @param timeZoneString the time zone {@code String}, following {@link TimeZone#getTimeZone(String)}
-     * but throwing {@link IllegalArgumentException} in case of an invalid time zone specification
+     *      but throwing {@link IllegalArgumentException} in case of an invalid time zone specification
      * @return a corresponding {@link TimeZone} instance
      * @throws IllegalArgumentException in case of an invalid time zone specification
      */
@@ -845,7 +850,7 @@ public class StringUtils {
     public static long convertToMachineFriendlyByteSize(String size) {
         double d;
         try {
-            d = Double.parseDouble(size.replaceAll("[GMK]?[B]?$", ""));
+            d = Double.parseDouble(size.replaceAll("[GMK]?[B]?$", EMPTY));
         } catch (NumberFormatException e)  {
             String msg = "Size must be specified as bytes (B), " +
                     "kilobytes (KB), megabytes (MB), gigabytes (GB). " +

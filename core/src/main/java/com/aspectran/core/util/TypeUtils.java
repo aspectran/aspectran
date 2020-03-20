@@ -129,7 +129,7 @@ public abstract class TypeUtils {
      * assuming setting by reflection. Considers primitive wrapper classes
      * as assignable to the corresponding primitive types.
      *
-     * @param type    the target type
+     * @param type the target type
      * @param value the value that should be assigned to the type
      * @return if the type is assignable from the value
      */

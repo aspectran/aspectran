@@ -16,6 +16,9 @@
 package com.aspectran.core.util;
 
 /**
+ * The ProcessLogger class is for logging the execution
+ * of external processes.
+ *
  * <p>Created: 2019/11/17</p>
  */
 public interface ProcessLogger {

@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.util;
 
+import com.aspectran.core.lang.NonNull;
+
 import java.io.Writer;
 
 /**
@@ -51,7 +53,7 @@ public class OutputStringWriter extends Writer {
     }
 
     @Override
-    public void write(char[] cbuf, int off, int len) {
+    public void write(@NonNull char[] cbuf, int off, int len) {
         if ((off < 0) || (off > cbuf.length) || (len < 0) ||
                 ((off + len) > cbuf.length) || ((off + len) < 0)) {
             throw new IndexOutOfBoundsException();
@@ -62,12 +64,12 @@ public class OutputStringWriter extends Writer {
     }
 
     @Override
-    public void write(String str) {
+    public void write(@NonNull String str) {
         touchBuffer().append(str);
     }
 
     @Override
-    public void write(String str, int off, int len)  {
+    public void write(@NonNull String str, int off, int len)  {
         touchBuffer().append(str, off, off + len);
     }
 
