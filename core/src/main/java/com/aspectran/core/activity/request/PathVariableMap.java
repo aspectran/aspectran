@@ -45,7 +45,7 @@ public class PathVariableMap extends HashMap<Token, String> {
     }
 
     public static PathVariableMap parse(Token[] nameTokens, String requestName) {
-        PathVariableMap pathVariableMap = new PathVariableMap();
+        PathVariableMap pathVariables = new PathVariableMap();
 
         /*
             /example/customers/123-567/approval
@@ -74,7 +74,7 @@ public class PathVariableMap extends HashMap<Token, String> {
                     String value = requestName.substring(beginIndex, endIndex);
                     if (prevToken != null) {
                         if (!value.isEmpty()) {
-                            pathVariableMap.put(prevToken, value);
+                            pathVariables.put(prevToken, value);
                         }
                     } else if (!term.equals(value)) {
                         return null;
@@ -82,7 +82,7 @@ public class PathVariableMap extends HashMap<Token, String> {
                     beginIndex += value.length();
                 } else if (prevToken != null && prevToken.getDefaultValue() != null) {
                     // If the last token ends with a "/" can be given a default value.
-                    pathVariableMap.put(prevToken, prevToken.getDefaultValue());
+                    pathVariables.put(prevToken, prevToken.getDefaultValue());
                 }
                 beginIndex += term.length();
             }
@@ -92,14 +92,14 @@ public class PathVariableMap extends HashMap<Token, String> {
         if (lastToken != null && prevToken == lastToken) {
             String value = requestName.substring(beginIndex);
             if (!value.isEmpty()) {
-                pathVariableMap.put(lastToken, value);
+                pathVariables.put(lastToken, value);
             } else if (lastToken.getDefaultValue() != null) {
                 // If the last token ends with a "/" can be given a default value.
-                pathVariableMap.put(lastToken, lastToken.getDefaultValue());
+                pathVariables.put(lastToken, lastToken.getDefaultValue());
             }
         }
 
-        return pathVariableMap;
+        return pathVariables;
     }
 
 }

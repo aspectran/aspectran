@@ -100,7 +100,8 @@ public class WebActivity extends CoreActivity {
             SessionAdapter sessionAdapter = new HttpSessionAdapter(request);
             setSessionAdapter(sessionAdapter);
 
-            HttpServletRequestAdapter requestAdapter = new HttpServletRequestAdapter(getTranslet().getRequestMethod(), request);
+            HttpServletRequestAdapter requestAdapter = new HttpServletRequestAdapter(
+                    getTranslet().getRequestMethod(), request);
             if (getParentActivity() == null) {
                 String maxRequestSizeSetting = getSetting(MAX_REQUEST_SIZE_SETTING_NAME);
                 if (!StringUtils.isEmpty(maxRequestSizeSetting)) {
@@ -178,7 +179,7 @@ public class WebActivity extends CoreActivity {
      * Parse the URL-encoded Form Data to get the request parameters.
      */
     private void parseURLEncodedFormData() throws RequestParseException {
-        WebRequestBodyParser.parseURLEncoded(getRequestAdapter());
+        WebRequestBodyParser.parseURLEncodedFormData(getRequestAdapter());
     }
 
     @Override

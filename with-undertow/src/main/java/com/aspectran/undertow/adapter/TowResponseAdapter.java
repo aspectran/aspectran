@@ -150,20 +150,19 @@ public class TowResponseAdapter extends AbstractResponseAdapter {
             return;
         }
 
-        MediaType mediaType = MediaType.parseMediaType(contentType);
-        String type = mediaType.getType();
-        String charset = mediaType.getParameter("charset");
+        MediaType type = MediaType.parseMediaType(contentType);
+        String charset = type.getParameter(MediaType.PARAM_CHARSET);
 
-        this.contentType = type;
+        this.contentType = type.getType() + '/' + type.getSubtype();
         if (charset != null) {
             this.charset = charset;
         }
 
         if (this.charset != null) {
-            getHttpServerExchange().getResponseHeaders().put(Headers.CONTENT_TYPE,
-                    type + "; charset=" + this.charset);
+            String fullContentType = this.contentType + "; " + MediaType.PARAM_CHARSET + "=" + this.charset;
+            getHttpServerExchange().getResponseHeaders().put(Headers.CONTENT_TYPE, fullContentType);
         } else {
-            getHttpServerExchange().getResponseHeaders().put(Headers.CONTENT_TYPE, type);
+            getHttpServerExchange().getResponseHeaders().put(Headers.CONTENT_TYPE, this.contentType);
         }
     }
 

@@ -179,7 +179,7 @@ public class TowActivity extends CoreActivity {
      * Parse the URL-encoded Form Data to get the request parameters.
      */
     private void parseURLEncodedFormData() throws RequestParseException {
-        WebRequestBodyParser.parseURLEncoded(getRequestAdapter());
+        WebRequestBodyParser.parseURLEncodedFormData(getRequestAdapter());
     }
 
     @Override

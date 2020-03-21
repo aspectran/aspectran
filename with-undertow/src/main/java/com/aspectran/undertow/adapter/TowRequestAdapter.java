@@ -68,11 +68,11 @@ public class TowRequestAdapter extends AbstractRequestAdapter {
         if (!headersObtained) {
             headersObtained = true;
             if (getHttpServerExchange().getRequestHeaders().size() > 0) {
-                MultiValueMap<String, String> headers = super.getHeaderMap();
+                MultiValueMap<String, String> multiValueMap = super.getHeaderMap();
                 for (HeaderValues headerValues : getHttpServerExchange().getRequestHeaders()) {
                     String name = headerValues.getHeaderName().toString();
                     for (String value : headerValues) {
-                        headers.add(name, value);
+                        multiValueMap.add(name, value);
                     }
                 }
             }
@@ -88,7 +88,7 @@ public class TowRequestAdapter extends AbstractRequestAdapter {
             if (contentType == null) {
                 return null;
             }
-            return Headers.extractQuotedValueFromHeader(contentType, "charset");
+            return Headers.extractQuotedValueFromHeader(contentType, MediaType.PARAM_CHARSET);
         }
         return super.getEncoding();
     }
@@ -158,8 +158,8 @@ public class TowRequestAdapter extends AbstractRequestAdapter {
     }
 
     public void preparse(TowRequestAdapter requestAdapter) {
-        setAttributeMap(requestAdapter.getAttributeMap());
         getParameterMap().putAll(requestAdapter.getParameterMap());
+        setAttributeMap(requestAdapter.getAttributeMap());
         setMediaType(requestAdapter.getMediaType());
         setLocale(requestAdapter.getLocale());
     }

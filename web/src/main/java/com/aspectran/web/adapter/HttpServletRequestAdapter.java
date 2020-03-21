@@ -66,13 +66,13 @@ public class HttpServletRequestAdapter extends AbstractRequestAdapter {
             headersObtained = true;
             Enumeration<String> headerNames = getHttpServletRequest().getHeaderNames();
             if (headerNames.hasMoreElements()) {
-                MultiValueMap<String, String> headers = super.getHeaderMap();
+                MultiValueMap<String, String> multiValueMap = super.getHeaderMap();
                 while (headerNames.hasMoreElements()) {
                     String name = headerNames.nextElement();
                     for (Enumeration<String> values = getHttpServletRequest().getHeaders(name);
-                         values.hasMoreElements();) {
+                            values.hasMoreElements();) {
                         String value = values.nextElement();
-                        headers.add(name, value);
+                        multiValueMap.add(name, value);
                     }
                 }
             }

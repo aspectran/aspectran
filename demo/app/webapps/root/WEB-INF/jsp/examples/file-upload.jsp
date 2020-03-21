@@ -195,7 +195,7 @@
       previewCrop: true
     }).on('fileuploadadd', function(e, data) {
       var ul = $('#files ul');
-      if (ul.size() == 0) {
+      if (ul.length == 0) {
         ul = $('<ul/>');
         $('#files').html(ul);
       }
@@ -211,7 +211,7 @@
           }
           node.appendTo(data.context).fadeIn();
       });
-      if (ul.find('li').size() >= ${page.maxFiles}) {
+      if (ul.find('li').length >= ${page.maxFiles}) {
           ul.find('li:eq(0)').fadeOut(400);
           setTimeout(function() {
               ul.find('li:eq(0)').remove();

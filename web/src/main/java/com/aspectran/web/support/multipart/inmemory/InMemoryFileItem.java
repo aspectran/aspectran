@@ -15,6 +15,7 @@
  */
 package com.aspectran.web.support.multipart.inmemory;
 
+import com.aspectran.web.support.http.MediaType;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemHeaders;
 import org.apache.commons.fileupload.FileItemHeadersSupport;
@@ -129,13 +130,12 @@ public class InMemoryFileItem implements FileItem, FileItemHeadersSupport {
      *
      * @return the content charset passed by the agent or {@code null} if not defined
      */
-    @SuppressWarnings("unchecked")
-    public String getCharSet() {
+    public String getCharset() {
         ParameterParser parser = new ParameterParser();
         parser.setLowerCaseNames(true);
         // Parameter parser can handle null input
         Map<String, String> params = parser.parse(getContentType(), ';');
-        return params.get("charset");
+        return params.get(MediaType.PARAM_CHARSET);
     }
 
     /**
@@ -202,7 +202,7 @@ public class InMemoryFileItem implements FileItem, FileItemHeadersSupport {
      */
     public String getString() {
         byte[] rawdata = get();
-        String charset = getCharSet();
+        String charset = getCharset();
         if (charset == null) {
             charset = DEFAULT_CHARSET;
         }

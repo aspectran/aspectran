@@ -325,7 +325,7 @@ public class MediaType implements Comparable<MediaType>, Serializable {
 
     public static final String WILDCARD_TYPE = "*";
 
-    private static final String PARAM_CHARSET = "charset";
+    public static final String PARAM_CHARSET = "charset";
 
     private static final BitSet TOKEN;
 

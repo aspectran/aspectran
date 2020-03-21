@@ -207,10 +207,10 @@ public interface RequestAdapter {
     /**
      * Copies all of the mappings from the specified parameters.
      *
-     * @param parameterMap the specified parameters
+     * @param multiValueMap the specified parameters
      * @since 6.1.2
      */
-    void putAllParameters(MultiValueMap<String, String> parameterMap);
+    void putAllParameters(MultiValueMap<String, String> multiValueMap);
 
     /**
      * Extracts all the parameters and fills in the specified map.

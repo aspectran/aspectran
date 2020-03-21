@@ -408,7 +408,7 @@ public abstract class AdviceActivity extends AbstractActivity {
     /**
      * Gets the aspect advice bean.
      *
-     * @param <V> the result type of the advice
+     * @param <V> the type of the advice bean
      * @param aspectId the aspect id
      * @return the aspect advice bean
      */

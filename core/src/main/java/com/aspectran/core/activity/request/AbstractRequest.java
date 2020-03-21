@@ -192,9 +192,9 @@ public abstract class AbstractRequest {
         getParameterMap().putAll(parameterMap);
     }
 
-    public void putAllParameters(MultiValueMap<String, String> parameterMap) {
-        if (parameterMap != null && !parameterMap.isEmpty()) {
-            for (Map.Entry<String, List<String>> entry : parameterMap.entrySet()) {
+    public void putAllParameters(MultiValueMap<String, String> multiValueMap) {
+        if (multiValueMap != null && !multiValueMap.isEmpty()) {
+            for (Map.Entry<String, List<String>> entry : multiValueMap.entrySet()) {
                 String name = entry.getKey();
                 List<String> list = entry.getValue();
                 String[] values = list.toArray(new String[0]);

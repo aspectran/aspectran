@@ -658,9 +658,9 @@ public class CoreActivity extends AdviceActivity {
     private void parsePathVariables() {
         Token[] nameTokens = getTransletRule().getNameTokens();
         if (nameTokens != null && !(nameTokens.length == 1 && nameTokens[0].getType() == TokenType.TEXT)) {
-            PathVariableMap pathVariableMap = PathVariableMap.parse(nameTokens, translet.getRequestName());
-            if (pathVariableMap != null) {
-                pathVariableMap.applyTo(translet);
+            PathVariableMap pathVariables = PathVariableMap.parse(nameTokens, translet.getRequestName());
+            if (pathVariables != null) {
+                pathVariables.applyTo(translet);
             }
         }
     }

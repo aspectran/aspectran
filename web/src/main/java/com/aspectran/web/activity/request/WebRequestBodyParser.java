@@ -20,6 +20,7 @@ import com.aspectran.core.activity.request.RequestParseException;
 import com.aspectran.core.activity.request.SizeLimitExceededException;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.context.rule.type.MethodType;
+import com.aspectran.core.lang.Nullable;
 import com.aspectran.core.util.ClassUtils;
 import com.aspectran.core.util.LinkedMultiValueMap;
 import com.aspectran.core.util.MultiValueMap;
@@ -80,53 +81,53 @@ public class WebRequestBodyParser {
         return sb.toString();
     }
 
-    public static void parseURLEncoded(RequestAdapter requestAdapter) throws RequestParseException {
+    public static MultiValueMap<String, String> parseURLEncoded(String body, String encoding)
+            throws UnsupportedEncodingException {
+        if (StringUtils.isEmpty(body)) {
+            return null;
+        }
+        MultiValueMap<String, String> multiValueMap = new LinkedMultiValueMap<>();
+        String[] pairs = StringUtils.tokenize(body, "&");
+        for (String pair : pairs) {
+            int idx = pair.indexOf('=');
+            if (idx == -1) {
+                String name = URLDecoder.decode(pair, encoding);
+                multiValueMap.add(name, null);
+            } else {
+                String name = URLDecoder.decode(pair.substring(0, idx), encoding);
+                String value = URLDecoder.decode(pair.substring(idx + 1), encoding);
+                multiValueMap.add(name, value);
+            }
+        }
+        return multiValueMap;
+    }
+
+    public static void parseURLEncodedFormData(RequestAdapter requestAdapter) throws RequestParseException {
         try {
             String body = requestAdapter.getBody();
             String encoding = requestAdapter.getEncoding();
-            MultiValueMap<String, String> parameterMap = parseURLEncoded(body, encoding);
-            if (parameterMap != null) {
-                requestAdapter.putAllParameters(parameterMap);
+            MultiValueMap<String, String> multiValueMap = parseURLEncoded(body, encoding);
+            if (multiValueMap != null) {
+                requestAdapter.putAllParameters(multiValueMap);
+                requestAdapter.setBody(null);
             }
         } catch (Exception e) {
-            throw new RequestParseException("Could not parse HTTP " +
-                    requestAdapter.getRequestMethod() + " request body", e);
+            throw new RequestParseException("Could not parse HTTP " + requestAdapter.getRequestMethod() +
+                    " request body", e);
         }
     }
 
-    public static MultiValueMap<String, String> parseURLEncoded(String body, String encoding)
-        throws UnsupportedEncodingException {
-        if (body != null && !body.isEmpty()) {
-            MultiValueMap<String, String> parameterMap = new LinkedMultiValueMap<>();
-            String[] pairs = StringUtils.tokenize(body, "&");
-            for (String pair : pairs) {
-                int idx = pair.indexOf('=');
-                if (idx == -1) {
-                    String name = URLDecoder.decode(pair, encoding);
-                    parameterMap.add(name, null);
-                } else {
-                    String name = URLDecoder.decode(pair.substring(0, idx), encoding);
-                    String value = URLDecoder.decode(pair.substring(idx + 1), encoding);
-                    parameterMap.add(name, value);
-                }
-            }
-            return parameterMap;
-        } else {
-            return null;
-        }
-    }
-
-    public static <T extends Parameters> T parseURLEncoded(RequestAdapter requestAdapter, Class<T> requiredType)
-            throws RequestParseException {
+    public static <T extends Parameters> T parseURLEncodedAsParameters(
+            RequestAdapter requestAdapter, Class<T> requiredType) throws RequestParseException {
         try {
             String encoding = requestAdapter.getEncoding();
             if (encoding == null) {
                 encoding = DEFAULT_ENCODING;
             }
-            MultiValueMap<String, String> parameterMap = parseURLEncoded(requestAdapter.getBody(), encoding);
-            if (parameterMap != null && !parameterMap.isEmpty()) {
+            MultiValueMap<String, String> multiValueMap = parseURLEncoded(requestAdapter.getBody(), encoding);
+            if (multiValueMap != null && !multiValueMap.isEmpty()) {
                 T parameters = ClassUtils.createInstance(requiredType);
-                for (Map.Entry<String, List<String>> entry : parameterMap.entrySet()) {
+                for (Map.Entry<String, List<String>> entry : multiValueMap.entrySet()) {
                     String name = entry.getKey();
                     for (String value : entry.getValue()) {
                         parameters.putValue(name, value);
@@ -141,10 +142,14 @@ public class WebRequestBodyParser {
         return null;
     }
 
-    public static <T extends Parameters> T parseBodyAsParameters(RequestAdapter requestAdapter, MediaType mediaType,
-                                                                 Class<T> requiredType) throws RequestParseException {
+    public static <T extends Parameters> T parseBodyAsParameters(
+            RequestAdapter requestAdapter, @Nullable MediaType mediaType, Class<T> requiredType)
+            throws RequestParseException {
+        if (mediaType == null) {
+            return null;
+        }
         if (isURLEncodedForm(mediaType)) {
-            return parseURLEncoded(requestAdapter, requiredType);
+            return parseURLEncodedAsParameters(requestAdapter, requiredType);
         } else if (MediaType.APPLICATION_JSON.equalsTypeAndSubtype(mediaType)) {
             try {
                 return JsonToApon.from(requestAdapter.getBody(), requiredType);
