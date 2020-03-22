@@ -169,7 +169,7 @@ To run the demo, simply use the following command after having build `Aspectran`
 
 ## Continuous Integration
 
-* [Travis](https://travis-ci.org/aspectran/aspectran)
+* [Travis](https://travis-ci.org/github/aspectran/aspectran)
 
 ## Links
 
