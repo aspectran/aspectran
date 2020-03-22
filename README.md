@@ -1,6 +1,6 @@
 # Aspectran - Java application framework
 
-[![Build Status](https://travis-ci.org/aspectran/aspectran.svg?branch=master)](https://travis-ci.com/github/aspectran/aspectran)
+[![Build Status](https://api.travis-ci.com/aspectran/aspectran.svg?branch=master)](https://travis-ci.com/github/aspectran/aspectran)
 [![Coverage Status](https://coveralls.io/repos/github/aspectran/aspectran/badge.svg?branch=master)](https://coveralls.io/github/aspectran/aspectran?branch=master)
 [![Maven central](https://maven-badges.herokuapp.com/maven-central/com.aspectran/aspectran/badge.svg#v6.6.8)](https://maven-badges.herokuapp.com/maven-central/com.aspectran/aspectran)
 [![Sonatype Nexus (Snapshots)](https://img.shields.io/nexus/s/https/oss.sonatype.org/com.aspectran/aspectran.svg)](https://oss.sonatype.org/content/repositories/snapshots/com/aspectran/aspectran/)
@@ -169,7 +169,7 @@ To run the demo, simply use the following command after having build `Aspectran`
 
 ## Continuous Integration
 
-* [Travis](https://travis-ci.org/github/aspectran/aspectran)
+* [Travis](https://travis-ci.com/github/aspectran/aspectran)
 
 ## Links
 
