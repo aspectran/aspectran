@@ -40,10 +40,7 @@
     </translet>
 
     <template id="template-1" engine="pebble" style="apon">
-        |Using Pebble Template Engine
-        |-------------------------------------
-        |Name: {{ name }}
-        |Email: {{ email }}
+        | Name: {{ name }}, Email: {{ email }}
     </template>
 
 </aspectran>
