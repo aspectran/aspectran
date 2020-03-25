@@ -177,6 +177,10 @@ public abstract class MediaTypeUtils {
         if (!StringUtils.hasLength(mediaType)) {
             throw new InvalidMediaTypeException(mediaType, "'mediaType' must not be empty");
         }
+        // do not cache multipart mime types with random boundaries
+        if (mediaType.startsWith("multipart")) {
+            return parseMediaTypeInternal(mediaType);
+        }
         return cachedMediaTypes.get(mediaType);
     }
 
