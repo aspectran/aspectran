@@ -20,7 +20,6 @@ import com.aspectran.core.util.Assert;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Function;
@@ -43,9 +42,7 @@ public class ConcurrentLruCache<K, V> implements Cache<K, V> {
 
     private final Function<K, V> generator;
 
-    private final Lock readLock;
-
-    private final Lock writeLock;
+    private final ReadWriteLock lock;
 
     private volatile int size = 0;
 
@@ -54,44 +51,36 @@ public class ConcurrentLruCache<K, V> implements Cache<K, V> {
         Assert.notNull(generator, "Generator function must not be null");
         this.capacity = capacity;
         this.generator = generator;
-
-        ReadWriteLock lock = new ReentrantReadWriteLock();
-        this.readLock = lock.readLock();
-        this.writeLock = lock.writeLock();
+        this.lock = new ReentrantReadWriteLock();
     }
 
     @Override
     public V get(K key) {
-        V cached;
-
-        if ((cached = cache.get(key)) != null) {
-            if (size < capacity / 2) {
+        V cached = cache.get(key);
+        if (cached != null) {
+            if (size < capacity) {
                 return cached;
             }
-
+            lock.readLock().lock();
             try {
-                readLock.lock();
                 queue.add(key);
                 queue.remove(key);
                 return cached;
             } finally {
-                readLock.unlock();
+                lock.readLock().unlock();
             }
         }
-
-        writeLock.lock();
-
+        lock.writeLock().lock();
         try {
             // retrying in case of concurrent reads on the same key
-            if ((cached = cache.get(key)) != null) {
-                queue.add(key);
+            cached = cache.get(key);
+            if (cached != null) {
                 queue.remove(key);
+                queue.add(key);
                 return cached;
             }
-
             // Generate value first, to prevent size inconsistency
             V value = generator.apply(key);
-
             int cacheSize = size;
             if (cacheSize == capacity) {
                 K leastUsed = queue.poll();
@@ -100,27 +89,25 @@ public class ConcurrentLruCache<K, V> implements Cache<K, V> {
                     cacheSize--;
                 }
             }
-
             queue.add(key);
             cache.put(key, value);
             size = cacheSize + 1;
-
             return value;
         } finally {
-            writeLock.unlock();
+            lock.writeLock().unlock();
         }
     }
 
     @Override
     public void remove(K key) {
         if (!isEmpty()) {
-            writeLock.lock();
+            lock.writeLock().lock();
             try {
                 queue.remove(key);
                 cache.remove(key);
                 size = cache.size();
             } finally {
-                writeLock.unlock();
+                lock.writeLock().unlock();
             }
         }
     }
@@ -128,13 +115,13 @@ public class ConcurrentLruCache<K, V> implements Cache<K, V> {
     @Override
     public void clear() {
         if (!isEmpty()) {
-            writeLock.lock();
+            lock.writeLock().lock();
             try {
                 queue.clear();
                 cache.clear();
                 size = 0;
             } finally {
-                writeLock.unlock();
+                lock.writeLock().unlock();
             }
         }
     }
