@@ -15,11 +15,9 @@
  */
 package com.aspectran.web.support.http;
 
-import com.aspectran.core.util.ConcurrentReferenceHashMap;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.cache.Cache;
 import com.aspectran.core.util.cache.ConcurrentLruCache;
-import com.aspectran.core.util.cache.ConcurrentReferenceCache;
 
 import java.nio.charset.UnsupportedCharsetException;
 import java.util.ArrayList;
@@ -42,12 +40,8 @@ import java.util.Map;
  */
 public abstract class MediaTypeUtils {
 
-    private static final Cache<String, MediaType> lruCache =
+    private static final Cache<String, MediaType> cachedMimeTypes =
         new ConcurrentLruCache<>(64, MediaTypeUtils::parseMediaTypeInternal);
-
-    private static final Cache<String, MediaType> weakCache =
-            new ConcurrentReferenceCache<>(ConcurrentReferenceHashMap.ReferenceType.WEAK,
-                    MediaTypeUtils::parseMediaTypeInternal);
 
     /**
      * Parse the given String into a single {@code MediaType}.
@@ -63,10 +57,9 @@ public abstract class MediaTypeUtils {
         }
         // do not cache multipart mime types with random boundaries
         if (mediaType.startsWith("multipart")) {
-            return weakCache.get(mediaType);
-        } else {
-            return lruCache.get(mediaType);
+            return parseMediaTypeInternal(mediaType);
         }
+        return cachedMimeTypes.get(mediaType);
     }
 
     private static MediaType parseMediaTypeInternal(String mediaType) {
@@ -155,7 +148,7 @@ public abstract class MediaTypeUtils {
                     break;
                 case ',':
                     if (!inQuotes) {
-                        tokens.add(mediaTypes.substring(startIndex, i));
+                        tokens.add(mediaTypes.substring(startIndex, i).trim());
                         startIndex = i + 1;
                     }
                     break;
@@ -165,7 +158,7 @@ public abstract class MediaTypeUtils {
             }
             i++;
         }
-        tokens.add(mediaTypes.substring(startIndex));
+        tokens.add(mediaTypes.substring(startIndex).trim());
         return tokens;
     }
 

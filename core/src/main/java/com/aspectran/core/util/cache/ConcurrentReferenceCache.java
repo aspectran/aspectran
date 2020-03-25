@@ -18,8 +18,6 @@ package com.aspectran.core.util.cache;
 import com.aspectran.core.util.Assert;
 import com.aspectran.core.util.ConcurrentReferenceHashMap;
 import com.aspectran.core.util.ConcurrentReferenceHashMap.ReferenceType;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
 
 import java.util.Map;
 import java.util.Set;
@@ -34,8 +32,6 @@ import java.util.function.Function;
  * @since 6.6.7
  */
 public class ConcurrentReferenceCache<K, V> implements Cache<K, V> {
-
-    private static final Log log = LogFactory.getLog(ConcurrentReferenceCache.class);
 
     private final Map<K, V> cache;
 
@@ -62,10 +58,6 @@ public class ConcurrentReferenceCache<K, V> implements Cache<K, V> {
             V existing = cache.putIfAbsent(key, cached);
             if (existing != null) {
                 cached = existing;
-            } else {
-                if (log.isDebugEnabled()) {
-                    log.debug("Caching [" + key + "] " + cached);
-                }
             }
         }
         return cached;
