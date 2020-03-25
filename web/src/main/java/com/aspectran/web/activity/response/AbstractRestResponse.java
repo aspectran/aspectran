@@ -167,7 +167,7 @@ public abstract class AbstractRestResponse implements RestResponse {
 
     @Override
     public void setDefaultContentType(String defaultContentType) {
-        this.defaultContentType = MediaTypeUtils.parseMediaType(defaultContentType);
+        this.defaultContentType = MediaType.parseMediaType(defaultContentType);
     }
 
     @Override

@@ -63,8 +63,8 @@ public class ConcurrentLruCache<K, V> implements Cache<K, V> {
             }
             lock.readLock().lock();
             try {
-                queue.add(key);
                 queue.remove(key);
+                queue.add(key);
                 return cached;
             } finally {
                 lock.readLock().unlock();

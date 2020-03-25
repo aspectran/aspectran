@@ -15,6 +15,7 @@
  */
 package com.aspectran.undertow.server.encoding;
 
+import com.aspectran.core.lang.NonNull;
 import com.aspectran.web.support.http.HttpHeaders;
 import com.aspectran.web.support.http.MediaType;
 import com.aspectran.web.support.http.MediaTypeUtils;
@@ -32,6 +33,7 @@ import io.undertow.util.HttpString;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -114,10 +116,14 @@ public class EncodingHandlerWrapper implements HandlerWrapper {
 
         private final List<MediaType> mediaTypes;
 
-        CompressibleMimeTypePredicate(String[] mediaTypes) {
-            this.mediaTypes = new ArrayList<>(mediaTypes.length);
-            for (String mediaTypeString : mediaTypes) {
-                this.mediaTypes.add(MediaTypeUtils.parseMediaType(mediaTypeString));
+        private CompressibleMimeTypePredicate(String[] mediaTypes) {
+            if (mediaTypes.length == 1) {
+                this.mediaTypes = Collections.singletonList(MediaType.parseMediaType(mediaTypes[0]));
+            } else {
+                this.mediaTypes = new ArrayList<>(mediaTypes.length);
+                for (String mediaType : mediaTypes) {
+                    this.mediaTypes.add(MediaType.parseMediaType(mediaType));
+                }
             }
         }
 
@@ -126,7 +132,7 @@ public class EncodingHandlerWrapper implements HandlerWrapper {
             String contentType = exchange.getResponseHeaders().getFirst(HttpHeaders.CONTENT_TYPE);
             if (contentType != null) {
                 for (MediaType mediaType : this.mediaTypes) {
-                    if (mediaType.isCompatibleWith(MediaTypeUtils.parseMediaType(contentType))) {
+                    if (mediaType.isCompatibleWith(MediaType.parseMediaType(contentType))) {
                         return true;
                     }
                 }

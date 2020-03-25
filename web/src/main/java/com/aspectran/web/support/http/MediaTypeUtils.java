@@ -15,21 +15,20 @@
  */
 package com.aspectran.web.support.http;
 
-import com.aspectran.core.util.Assert;
+import com.aspectran.core.util.ConcurrentReferenceHashMap;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.cache.Cache;
 import com.aspectran.core.util.cache.ConcurrentLruCache;
+import com.aspectran.core.util.cache.ConcurrentReferenceCache;
 
 import java.nio.charset.UnsupportedCharsetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * <p>This class is a clone of org.springframework.util.MimeTypeUtils</p>
@@ -43,127 +42,12 @@ import java.util.stream.Collectors;
  */
 public abstract class MediaTypeUtils {
 
-    /**
-     * Comparator used by {@link #sortBySpecificity(List)}.
-     */
-    public static final Comparator<MediaType> SPECIFICITY_COMPARATOR = new MediaType.SpecificityComparator<>();
-
-    /**
-     * Public constant media type that includes all media ranges (i.e. "&#42;/&#42;").
-     */
-    public static final MediaType ALL;
-
-    /**
-     * A String equivalent of {@link MediaTypeUtils#ALL}.
-     */
-    public static final String ALL_VALUE = "*/*";
-
-    /**
-     * Public constant media type for {@code application/json}.
-     */
-    public static final MediaType APPLICATION_JSON;
-
-    /**
-     * A String equivalent of {@link MediaTypeUtils#APPLICATION_JSON}.
-     */
-    public static final String APPLICATION_JSON_VALUE = "application/json";
-
-    /**
-     * Public constant media type for {@code application/octet-stream}.
-     */
-    public static final MediaType APPLICATION_OCTET_STREAM;
-
-    /**
-     * A String equivalent of {@link MediaTypeUtils#APPLICATION_OCTET_STREAM}.
-     */
-    public static final String APPLICATION_OCTET_STREAM_VALUE = "application/octet-stream";
-
-    /**
-     * Public constant media type for {@code application/xml}.
-     */
-    public static final MediaType APPLICATION_XML;
-
-    /**
-     * A String equivalent of {@link MediaTypeUtils#APPLICATION_XML}.
-     */
-    public static final String APPLICATION_XML_VALUE = "application/xml";
-
-    /**
-     * Public constant media type for {@code image/gif}.
-     */
-    public static final MediaType IMAGE_GIF;
-
-    /**
-     * A String equivalent of {@link MediaTypeUtils#IMAGE_GIF}.
-     */
-    public static final String IMAGE_GIF_VALUE = "image/gif";
-
-    /**
-     * Public constant media type for {@code image/jpeg}.
-     */
-    public static final MediaType IMAGE_JPEG;
-
-    /**
-     * A String equivalent of {@link MediaTypeUtils#IMAGE_JPEG}.
-     */
-    public static final String IMAGE_JPEG_VALUE = "image/jpeg";
-
-    /**
-     * Public constant media type for {@code image/png}.
-     */
-    public static final MediaType IMAGE_PNG;
-
-    /**
-     * A String equivalent of {@link MediaTypeUtils#IMAGE_PNG}.
-     */
-    public static final String IMAGE_PNG_VALUE = "image/png";
-
-    /**
-     * Public constant media type for {@code text/html}.
-     */
-    public static final MediaType TEXT_HTML;
-
-    /**
-     * A String equivalent of {@link MediaTypeUtils#TEXT_HTML}.
-     */
-    public static final String TEXT_HTML_VALUE = "text/html";
-
-    /**
-     * Public constant media type for {@code text/plain}.
-     */
-    public static final MediaType TEXT_PLAIN;
-
-    /**
-     * A String equivalent of {@link MediaTypeUtils#TEXT_PLAIN}.
-     */
-    public static final String TEXT_PLAIN_VALUE = "text/plain";
-
-    /**
-     * Public constant media type for {@code text/xml}.
-     */
-    public static final MediaType TEXT_XML;
-
-    /**
-     * A String equivalent of {@link MediaTypeUtils#TEXT_XML}.
-     */
-    public static final String TEXT_XML_VALUE = "text/xml";
-
-    private static final Cache<String, MediaType> cachedMediaTypes =
+    private static final Cache<String, MediaType> lruCache =
         new ConcurrentLruCache<>(64, MediaTypeUtils::parseMediaTypeInternal);
 
-    static {
-        // Not using "parseMediaType" to avoid static init cost
-        ALL = new MediaType("*", "*");
-        APPLICATION_JSON = new MediaType("application", "json");
-        APPLICATION_OCTET_STREAM = new MediaType("application", "octet-stream");
-        APPLICATION_XML = new MediaType("application", "xml");
-        IMAGE_GIF = new MediaType("image", "gif");
-        IMAGE_JPEG = new MediaType("image", "jpeg");
-        IMAGE_PNG = new MediaType("image", "png");
-        TEXT_HTML = new MediaType("text", "html");
-        TEXT_PLAIN = new MediaType("text", "plain");
-        TEXT_XML = new MediaType("text", "xml");
-    }
+    private static final Cache<String, MediaType> weakCache =
+            new ConcurrentReferenceCache<>(ConcurrentReferenceHashMap.ReferenceType.WEAK,
+                    MediaTypeUtils::parseMediaTypeInternal);
 
     /**
      * Parse the given String into a single {@code MediaType}.
@@ -173,15 +57,16 @@ public abstract class MediaTypeUtils {
      * @return the media type
      * @throws InvalidMediaTypeException if the string cannot be parsed
      */
-    public static MediaType parseMediaType(String mediaType) {
+    protected static MediaType parseMediaType(String mediaType) {
         if (!StringUtils.hasLength(mediaType)) {
             throw new InvalidMediaTypeException(mediaType, "'mediaType' must not be empty");
         }
         // do not cache multipart mime types with random boundaries
         if (mediaType.startsWith("multipart")) {
-            return parseMediaTypeInternal(mediaType);
+            return weakCache.get(mediaType);
+        } else {
+            return lruCache.get(mediaType);
         }
-        return cachedMediaTypes.get(mediaType);
     }
 
     private static MediaType parseMediaTypeInternal(String mediaType) {
@@ -193,7 +78,7 @@ public abstract class MediaTypeUtils {
 
         // java.net.HttpURLConnection returns a *; q=.2 Accept header
         if (MediaType.WILDCARD_TYPE.equals(fullType)) {
-            fullType = "*/*";
+            fullType = MediaType.ALL_VALUE;
         }
         int subIndex = fullType.indexOf('/');
         if (subIndex == -1) {
@@ -245,23 +130,6 @@ public abstract class MediaTypeUtils {
         } catch (IllegalArgumentException ex) {
             throw new InvalidMediaTypeException(mediaType, ex.getMessage());
         }
-    }
-
-    /**
-     * Parse the comma-separated string into a list of {@code MediaType} objects.
-     *
-     * @param mediaTypes the string to parse
-     * @return the list of media types
-     * @throws InvalidMediaTypeException if the string cannot be parsed
-     */
-    public static List<MediaType> parseMediaTypes(String mediaTypes) {
-        if (!StringUtils.hasLength(mediaTypes)) {
-            return Collections.emptyList();
-        }
-        return tokenize(mediaTypes).stream()
-                .filter(StringUtils::hasText)
-                .map(MediaTypeUtils::parseMediaType)
-                .collect(Collectors.toList());
     }
 
     /**
@@ -318,39 +186,6 @@ public abstract class MediaTypeUtils {
             }
         }
         return builder.toString();
-    }
-
-    /**
-     * Sorts the given list of {@code MediaType} objects by specificity.
-     * <p>Given two media types:</p>
-     * <ol>
-     * <li>if either media type has a {@linkplain MediaType#isWildcardType() wildcard type},
-     * then the media type without the wildcard is ordered before the other.</li>
-     * <li>if the two media types have different {@linkplain MediaType#getType() types},
-     * then they are considered equal and remain their current order.</li>
-     * <li>if either media type has a {@linkplain MediaType#isWildcardSubtype() wildcard subtype}
-     * , then the media type without the wildcard is sorted before the other.</li>
-     * <li>if the two media types have different {@linkplain MediaType#getSubtype() subtypes},
-     * then they are considered equal and remain their current order.</li>
-     * <li>if the two media types have a different amount of
-     * {@linkplain MediaType#getParameter(String) parameters}, then the media type with the most
-     * parameters is ordered before the other.</li>
-     * </ol>
-     * <p>For example:</p>
-     * <blockquote>audio/basic &lt; audio/* &lt; *&#047;*</blockquote>
-     * <blockquote>audio/basic;level=1 &lt; audio/basic</blockquote>
-     * <blockquote>audio/basic == text/html</blockquote>
-     * <blockquote>audio/basic == audio/wave</blockquote>
-     *
-     * @param mediaTypes the list of media types to be sorted
-     * @see <a href="https://tools.ietf.org/html/rfc7231#section-5.3.2">HTTP 1.1: Semantics
-     * and Content, section 5.3.2</a>
-     */
-    public static void sortBySpecificity(List<MediaType> mediaTypes) {
-        Assert.notNull(mediaTypes, "'mediaTypes' must not be null");
-        if (mediaTypes.size() > 1) {
-            mediaTypes.sort(SPECIFICITY_COMPARATOR);
-        }
     }
 
 }
