@@ -62,9 +62,11 @@ Aspectran consists of the following major packages:
 
 ## Maven dependencies
 
-Use the following definition to use Aspectran in your maven project:
+Basically, to use Aspectran, the following definition including all dependencies can be added to pom.xml.
+However, it is recommended to add only the dependency definition suitable for the execution environment of the Aspectran-based application to be built.
 
 ```xml
+<!-- You can easily include all dependencies, but it is not recommended. -->
 <dependency>
   <groupId>com.aspectran</groupId>
   <artifactId>aspectran-all</artifactId>
@@ -72,76 +74,107 @@ Use the following definition to use Aspectran in your maven project:
 </dependency>
 ```
 
-Aspectran can also be used with more low-level jars:
+The dependency definition according to the execution environment of Aspectran-based application is as follows.
+In general, only one definition that fits the execution environment needs to be added.
+
+To build a daemon application running in the background
 ```xml
-<!-- To build a daemon application that runs in the background -->
 <dependency>
   <groupId>com.aspectran</groupId>
   <artifactId>aspectran-daemon</artifactId>
   <version>6.6.9</version>
 </dependency>
 ```
+
+To build a command line application
 ```xml
-<!-- To embed Aspectran in your application -->
-<dependency>
-  <groupId>com.aspectran</groupId>
-  <artifactId>aspectran-embed</artifactId>
-  <version>6.6.9</version>
-</dependency>
-```
-```xml
-<!-- To provide session clustering via persistence to Redis using Lettuce as a client -->
-<dependency>
-  <groupId>com.aspectran</groupId>
-  <artifactId>aspectran-rss-lettuce</artifactId>
-  <version>6.6.9</version>
-</dependency>
-```
-```xml
-<!-- To build command-line based applications -->
 <dependency>
   <groupId>com.aspectran</groupId>
   <artifactId>aspectran-shell</artifactId>
   <version>6.6.9</version>
 </dependency>
 ```
+
+To build a command line application that uses a feature-rich JLine
 ```xml
-<!-- To build command-line based applications that use the feature-rich JLine -->
 <dependency>
   <groupId>com.aspectran</groupId>
   <artifactId>aspectran-shell-jline</artifactId>
   <version>6.6.9</version>
 </dependency>
 ```
+
+To build a servlet-based web application
 ```xml
-<!-- To build a servlet-based web application -->
 <dependency>
   <groupId>com.aspectran</groupId>
   <artifactId>aspectran-web</artifactId>
   <version>6.6.9</version>
 </dependency>
 ```
+
+To embed Aspectran in a Java application that is not based on Aspectran
 ```xml
-<!-- To build a web application server with embedded Jetty -->
+<dependency>
+  <groupId>com.aspectran</groupId>
+  <artifactId>aspectran-embed</artifactId>
+  <version>6.6.9</version>
+</dependency>
+```
+
+In addition to defining dependencies according to the execution environment as above, 
+the dependencies that can be additionally defined are as follows.
+
+To integrate embedded Jetty to build a standalone web application
+```xml
 <dependency>
   <groupId>com.aspectran</groupId>
   <artifactId>aspectran-with-jetty</artifactId>
   <version>6.6.9</version>
 </dependency>
 ```
+
+To integrate Undertow to build a standalone web application
 ```xml
-<!-- To build MyBatis applications on top of the Aspectran -->
+<dependency>
+  <groupId>com.aspectran</groupId>
+  <artifactId>aspectran-with-undertow</artifactId>
+  <version>6.6.9</version>
+</dependency>
+```
+
+To integrate MyBatis with easy access to relational databases
+```xml
 <dependency>
   <groupId>com.aspectran</groupId>
   <artifactId>aspectran-with-mybatis</artifactId>
   <version>6.6.9</version>
 </dependency>
 ```
+
+To integrate the text template engine FreeMarker
 ```xml
-<!-- To build a web application server with embedded Undertow -->
 <dependency>
   <groupId>com.aspectran</groupId>
-  <artifactId>aspectran-with-undertow</artifactId>
+  <artifactId>aspectran-with-freemarker</artifactId>
+  <version>6.6.9</version>
+</dependency>
+```
+
+To integrate the text template engine Pebble
+```xml
+<dependency>
+  <groupId>com.aspectran</groupId>
+  <artifactId>aspectran-with-freemarker</artifactId>
+  <version>6.6.9</version>
+</dependency>
+```
+
+To use Redis Session Store with Lettuce or support session clustering
+```xml
+<dependency>
+  <groupId>com.aspectran</groupId>
+  <artifactId>aspectran-rss-lettuce</artifactId>
   <version>6.6.9</version>
 </dependency>
 ```
