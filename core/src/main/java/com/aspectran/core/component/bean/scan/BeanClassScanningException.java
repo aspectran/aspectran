@@ -18,9 +18,9 @@ package com.aspectran.core.component.bean.scan;
 import com.aspectran.core.component.bean.BeanException;
 
 /**
- * The Class BeanClassScanFailedException.
+ * The Class BeanClassScanningException.
  */
-public class BeanClassScanFailedException extends BeanException {
+public class BeanClassScanningException extends BeanException {
 
     /** @serial */
     private static final long serialVersionUID = -1301450076259511066L;
@@ -28,7 +28,7 @@ public class BeanClassScanFailedException extends BeanException {
     /**
      * Simple constructor.
      */
-    public BeanClassScanFailedException() {
+    public BeanClassScanningException() {
         super();
     }
 
@@ -37,7 +37,7 @@ public class BeanClassScanFailedException extends BeanException {
      *
      * @param msg a message to associate with the exception
      */
-    public BeanClassScanFailedException(String msg) {
+    public BeanClassScanningException(String msg) {
         super(msg);
     }
 
@@ -46,7 +46,7 @@ public class BeanClassScanFailedException extends BeanException {
      *
      * @param cause the real cause of the exception
      */
-    public BeanClassScanFailedException(Throwable cause) {
+    public BeanClassScanningException(Throwable cause) {
         super(cause);
     }
 
@@ -56,7 +56,7 @@ public class BeanClassScanFailedException extends BeanException {
      * @param msg a message to associate with the exception
      * @param cause the real cause of the exception
      */
-    public BeanClassScanFailedException(String msg, Throwable cause) {
+    public BeanClassScanningException(String msg, Throwable cause) {
         super(msg, cause);
     }
 

@@ -31,7 +31,7 @@ import java.util.ListIterator;
 import java.util.Map;
 
 /**
- * The Class AbstractScope.
+ * Base class for {@link Scope} implementations.
  *
  * @since 2011. 3. 12.
  */

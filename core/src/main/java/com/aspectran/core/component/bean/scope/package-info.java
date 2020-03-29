@@ -13,22 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.component.bean.scan;
-
 /**
- * The Interface BeanClassScanFilter.
+ * Support for AOP-based scoping of target objects.
  */
-public interface BeanClassScanFilter {
-
-    /**
-     * Filter the retrieved candidate classes.
-     * If null is returned instead of the bean ID, the candidate class is discarded without being included.
-     *
-     * @param beanId the bean id
-     * @param resourceName the resource name
-     * @param retrievedClass the retrieved class
-     * @return the bean id
-     */
-    String filter(String beanId, String resourceName, Class<?> retrievedClass);
-
-}
+package com.aspectran.core.component.bean.scope;

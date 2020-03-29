@@ -32,7 +32,7 @@ public class BeanClassScanner extends ClassScanner {
 
     private static final Log log = LogFactory.getLog(BeanClassScanner.class);
 
-    private BeanClassScanFilter beanClassScanFilter;
+    private BeanClassFilter beanClassFilter;
 
     private WildcardPattern beanIdMaskPattern;
 
@@ -42,8 +42,8 @@ public class BeanClassScanner extends ClassScanner {
         super(classLoader);
     }
 
-    public void setBeanClassScanFilter(BeanClassScanFilter beanClassScanFilter) {
-        this.beanClassScanFilter = beanClassScanFilter;
+    public void setBeanClassFilter(BeanClassFilter beanClassFilter) {
+        this.beanClassFilter = beanClassFilter;
     }
 
     public void setExcludePatterns(String[] excludePatterns) {
@@ -70,7 +70,7 @@ public class BeanClassScanner extends ClassScanner {
         try {
             super.scan(classNamePattern, new BeanSaveHandler(saveHandler));
         } catch (Exception e) {
-            throw new BeanClassScanFailedException("Failed to scan bean classes with given pattern: " +
+            throw new BeanClassScanningException("Failed to scan bean classes with given pattern: " +
                     classNamePattern, e);
         }
     }
@@ -104,8 +104,8 @@ public class BeanClassScanner extends ClassScanner {
                 }
             }
 
-            if (beanClassScanFilter != null) {
-                beanId = beanClassScanFilter.filter(beanId, resourceName, targetClass);
+            if (beanClassFilter != null) {
+                beanId = beanClassFilter.filter(beanId, resourceName, targetClass);
                 if (beanId == null) {
                     return;
                 }

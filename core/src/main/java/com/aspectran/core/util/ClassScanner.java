@@ -175,7 +175,8 @@ public class ClassScanner {
         });
     }
 
-    protected void scanFromJarResource(URL resource, WildcardMatcher matcher, SaveHandler saveHandler) throws IOException {
+    protected void scanFromJarResource(URL resource, WildcardMatcher matcher, SaveHandler saveHandler)
+            throws IOException {
         URLConnection conn = resource.openConnection();
         JarFile jarFile;
         String jarFileUrl;

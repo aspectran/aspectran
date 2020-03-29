@@ -25,7 +25,7 @@ import com.aspectran.core.component.bean.aware.ApplicationAdapterAware;
 import com.aspectran.core.component.bean.aware.ClassLoaderAware;
 import com.aspectran.core.component.bean.aware.CurrentActivityAware;
 import com.aspectran.core.component.bean.aware.EnvironmentAware;
-import com.aspectran.core.component.bean.scan.BeanClassScanFilter;
+import com.aspectran.core.component.bean.scan.BeanClassFilter;
 import com.aspectran.core.component.bean.scan.BeanClassScanner;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.AutowireRule;
@@ -240,17 +240,17 @@ public class BeanRuleRegistry {
         BeanClassScanner scanner = new BeanClassScanner(classLoader);
         if (beanRule.getFilterParameters() != null) {
             FilterParameters filterParameters = beanRule.getFilterParameters();
-            String beanClassScanFilterClassName = filterParameters.getString(FilterParameters.filterClass);
-            if (beanClassScanFilterClassName != null) {
-                BeanClassScanFilter beanClassScanFilter;
+            String beanClassFilterClassName = filterParameters.getString(FilterParameters.filterClass);
+            if (beanClassFilterClassName != null) {
+                BeanClassFilter beanClassFilter;
                 try {
-                    Class<?> filterClass = classLoader.loadClass(beanClassScanFilterClassName);
-                    beanClassScanFilter = (BeanClassScanFilter)ClassUtils.createInstance(filterClass);
+                    Class<?> filterClass = classLoader.loadClass(beanClassFilterClassName);
+                    beanClassFilter = (BeanClassFilter)ClassUtils.createInstance(filterClass);
                 } catch (Exception e) {
-                    throw new IllegalRuleException("Failed to instantiate BeanClassScanFilter [" +
-                            beanClassScanFilterClassName + "]", e);
+                    throw new IllegalRuleException("Failed to instantiate BeanClassFilter [" +
+                            beanClassFilterClassName + "]", e);
                 }
-                scanner.setBeanClassScanFilter(beanClassScanFilter);
+                scanner.setBeanClassFilter(beanClassFilter);
             }
             String[] excludePatterns = filterParameters.getStringArray(FilterParameters.exclude);
             if (excludePatterns != null) {
