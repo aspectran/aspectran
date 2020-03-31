@@ -131,10 +131,6 @@ public class DispatchResponse implements Response {
                     ViewDispatcher existing = cache.putIfAbsent(dispatcherName, viewDispatcher);
                     if (existing != null) {
                         viewDispatcher = existing;
-                    } else {
-                        if (log.isDebugEnabled()) {
-                            log.debug("Caching " + viewDispatcher);
-                        }
                     }
                 }
             }
