@@ -32,7 +32,6 @@ public class SessionFileStoreConfig extends AbstractParameters {
         deleteUnrestorableFiles = new ParameterKey("deleteUnrestorableFiles", ValueType.BOOLEAN);
         nonPersistentAttributes = new ParameterKey("nonPersistentAttributes", ValueType.STRING, true);
 
-
         parameterKeys = new ParameterKey[] {
                 storeDir,
                 deleteUnrestorableFiles,

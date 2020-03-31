@@ -42,7 +42,6 @@ public class ShellConfig extends AbstractParameters {
         verbose = new ParameterKey("verbose", ValueType.BOOLEAN);
         exposals = new ParameterKey("exposals", ExposalsConfig.class);
 
-
         parameterKeys = new ParameterKey[] {
                 greetings,
                 prompt,

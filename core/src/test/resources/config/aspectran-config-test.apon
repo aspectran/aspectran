@@ -15,13 +15,13 @@ context: {
     }
     autoReload: {
         scanIntervalSeconds: 5
-        startup: false
+        enabled: false
     }
 }
 scheduler: {
     startDelaySeconds: 3
     waitOnShutdown: true
-    startup: false
+    enabled: false
 }
 shell: {
     prompt: "{{BLUE}}aspectran-demo-app{{YELLOW,bold}}>{{reset}} "

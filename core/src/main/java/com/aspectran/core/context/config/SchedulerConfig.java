@@ -23,7 +23,7 @@ public class SchedulerConfig extends AbstractParameters {
 
     private static final ParameterKey startDelaySeconds;
     private static final ParameterKey waitOnShutdown;
-    private static final ParameterKey startup;
+    private static final ParameterKey enabled;
     private static final ParameterKey exposals;
 
     private static final ParameterKey[] parameterKeys;
@@ -31,13 +31,13 @@ public class SchedulerConfig extends AbstractParameters {
     static {
         startDelaySeconds = new ParameterKey("startDelaySeconds", ValueType.INT);
         waitOnShutdown = new ParameterKey("waitOnShutdown", ValueType.BOOLEAN);
-        startup = new ParameterKey("startup", ValueType.BOOLEAN);
+        enabled = new ParameterKey("enabled", ValueType.BOOLEAN);
         exposals = new ParameterKey("exposals", ExposalsConfig.class);
 
         parameterKeys = new ParameterKey[] {
                 startDelaySeconds,
                 waitOnShutdown,
-                startup,
+                enabled,
                 exposals
         };
     }
@@ -64,12 +64,12 @@ public class SchedulerConfig extends AbstractParameters {
         return this;
     }
 
-    public boolean isStartup() {
-        return getBoolean(startup, false);
+    public boolean isEnabled() {
+        return getBoolean(enabled, false);
     }
 
-    public SchedulerConfig setStartup(boolean startup) {
-        putValue(SchedulerConfig.startup, startup);
+    public SchedulerConfig setEnabled(boolean enabled) {
+        putValue(SchedulerConfig.enabled, enabled);
         return this;
     }
 

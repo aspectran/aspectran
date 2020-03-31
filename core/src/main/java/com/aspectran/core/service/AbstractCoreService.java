@@ -265,7 +265,7 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
             return null;
         }
 
-        if (!schedulerConfig.isStartup()) {
+        if (!schedulerConfig.isEnabled()) {
             return null;
         }
 

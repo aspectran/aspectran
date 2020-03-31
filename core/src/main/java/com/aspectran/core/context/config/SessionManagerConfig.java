@@ -36,7 +36,7 @@ public class SessionManagerConfig extends AbstractParameters {
     private static final ParameterKey removeUnloadableSessions;
     private static final ParameterKey fileStore;
     private static final ParameterKey clustered;
-    private static final ParameterKey startup;
+    private static final ParameterKey enabled;
 
     private static final ParameterKey[] parameterKeys;
 
@@ -51,7 +51,7 @@ public class SessionManagerConfig extends AbstractParameters {
         removeUnloadableSessions = new ParameterKey("removeUnloadableSessions", ValueType.BOOLEAN);
         fileStore = new ParameterKey("fileStore", SessionFileStoreConfig.class);
         clustered = new ParameterKey("clustered", ValueType.BOOLEAN);
-        startup = new ParameterKey("startup", ValueType.BOOLEAN);
+        enabled = new ParameterKey("enabled", ValueType.BOOLEAN);
 
         parameterKeys = new ParameterKey[] {
                 workerName,
@@ -64,7 +64,7 @@ public class SessionManagerConfig extends AbstractParameters {
                 removeUnloadableSessions,
                 fileStore,
                 clustered,
-                startup
+                enabled
         };
     }
 
@@ -206,12 +206,12 @@ public class SessionManagerConfig extends AbstractParameters {
         return this;
     }
 
-    public boolean isStartup() {
-        return BooleanUtils.toBoolean(getBoolean(startup));
+    public boolean isEnabled() {
+        return BooleanUtils.toBoolean(getBoolean(enabled));
     }
 
-    public SessionManagerConfig setStartup(boolean startup) {
-        putValue(SessionManagerConfig.startup, startup);
+    public SessionManagerConfig setEnabled(boolean enabled) {
+        putValue(SessionManagerConfig.enabled, enabled);
         return this;
     }
 
