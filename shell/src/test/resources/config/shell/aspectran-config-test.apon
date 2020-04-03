@@ -4,7 +4,7 @@ context: {
     ]
     autoReload: {
         scanIntervalSeconds: 5
-        startup: false
+        enabled: false
     }
     profiles: {
     }
@@ -12,7 +12,7 @@ context: {
 scheduler: {
     startDelaySeconds: 3
     waitOnShutdown: true
-    startup: false
+    enabled: false
 }
 shell: {
     greetings: (

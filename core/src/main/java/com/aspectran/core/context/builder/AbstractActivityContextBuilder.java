@@ -85,7 +85,7 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
 
     private boolean hardReload;
 
-    private boolean autoReloadStartup;
+    private boolean autoReloadEnabled;
 
     private int scanIntervalSeconds;
 
@@ -273,15 +273,15 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
         if (autoReloadConfig != null) {
             String reloadMode = autoReloadConfig.getReloadMode();
             int scanIntervalSeconds = autoReloadConfig.getScanIntervalSeconds();
-            boolean autoReloadStartup = autoReloadConfig.isStartup();
+            boolean autoReloadEnabled = autoReloadConfig.isEnabled();
             this.hardReload = AutoReloadType.HARD.toString().equals(reloadMode);
-            this.autoReloadStartup = autoReloadStartup;
+            this.autoReloadEnabled = autoReloadEnabled;
             this.scanIntervalSeconds = scanIntervalSeconds;
         }
-        if (this.autoReloadStartup && (this.resourceLocations == null || this.resourceLocations.length == 0)) {
-            this.autoReloadStartup = false;
+        if (this.autoReloadEnabled && (this.resourceLocations == null || this.resourceLocations.length == 0)) {
+            this.autoReloadEnabled = false;
         }
-        if (this.autoReloadStartup) {
+        if (this.autoReloadEnabled) {
             if (this.scanIntervalSeconds == -1) {
                 this.scanIntervalSeconds = 10;
                 if (logger.isDebugEnabled()) {
@@ -375,7 +375,7 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
     }
 
     protected void startContextReloader() {
-        if (autoReloadStartup && aspectranClassLoader != null) {
+        if (autoReloadEnabled && aspectranClassLoader != null) {
             contextReloader = new ActivityContextReloader(serviceController);
             contextReloader.setResources(aspectranClassLoader.getAllResources());
             contextReloader.start(scanIntervalSeconds);

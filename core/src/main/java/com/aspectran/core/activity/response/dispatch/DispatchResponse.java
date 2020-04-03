@@ -25,8 +25,8 @@ import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.DispatchRule;
 import com.aspectran.core.context.rule.type.ResponseType;
-import com.aspectran.core.util.logging.Logger;
-import com.aspectran.core.util.logging.LoggerFactory;
+import com.aspectran.core.util.logging.Log;
+import com.aspectran.core.util.logging.LogFactory;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -38,7 +38,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class DispatchResponse implements Response {
 
-    private static final Logger logger = LoggerFactory.getLogger(DispatchResponse.class);
+    private static final Log log = LogFactory.getLog(DispatchResponse.class);
 
     private static final Map<String, ViewDispatcher> cache = new ConcurrentHashMap<>();
 
@@ -56,8 +56,8 @@ public class DispatchResponse implements Response {
     @Override
     public void commit(Activity activity) throws ResponseException {
         try {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Response " + dispatchRule);
+            if (log.isDebugEnabled()) {
+                log.debug("Response " + dispatchRule);
             }
 
             ViewDispatcher viewDispatcher = getViewDispatcher(activity);
@@ -131,10 +131,6 @@ public class DispatchResponse implements Response {
                     ViewDispatcher existing = cache.putIfAbsent(dispatcherName, viewDispatcher);
                     if (existing != null) {
                         viewDispatcher = existing;
-                    } else {
-                        if (logger.isDebugEnabled()) {
-                            logger.debug("Caching " + viewDispatcher);
-                        }
                     }
                 }
             }

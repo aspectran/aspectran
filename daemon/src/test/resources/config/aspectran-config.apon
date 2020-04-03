@@ -8,14 +8,14 @@ context: {
     }
     autoReload: {
         scanIntervalSeconds: 5
-        startup: false
+        enabled: false
     }
     singleton: false
 }
 scheduler: {
     startDelaySeconds: 3
     waitOnShutdown: true
-    startup: false
+    enabled: false
 }
 daemon: {
     poller: {

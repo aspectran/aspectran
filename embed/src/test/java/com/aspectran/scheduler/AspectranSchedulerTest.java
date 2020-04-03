@@ -38,7 +38,7 @@ class AspectranSchedulerTest {
         aspectranConfig.newSchedulerConfig()
                 .setStartDelaySeconds(0)
                 .setWaitOnShutdown(true)
-                .setStartup(true);
+                .setEnabled(true);
 
         aspectran = EmbeddedAspectran.run(aspectranConfig);
     }

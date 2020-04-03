@@ -157,7 +157,7 @@
                             scavengingIntervalSeconds: 600
                             removeUnloadableSessions: true
                             clustered: false
-                            startup: true
+                            enabled: true
                         </item>
                     </arguments>
                 </bean>

@@ -36,19 +36,19 @@ public class ContextAutoReloadConfig extends AbstractParameters {
     /**
      *  Defaults to {@code false}, which disables automatic reloading.
      */
-    private static final ParameterKey startup;
+    private static final ParameterKey enabled;
 
     private static final ParameterKey[] parameterKeys;
 
     static {
         reloadMode = new ParameterKey("reloadMode", ValueType.STRING);
         scanIntervalSeconds = new ParameterKey("scanIntervalSeconds", ValueType.INT);
-        startup = new ParameterKey("startup", ValueType.BOOLEAN);
+        enabled = new ParameterKey("enabled", ValueType.BOOLEAN);
 
         parameterKeys = new ParameterKey[] {
                 reloadMode,
                 scanIntervalSeconds,
-                startup
+                enabled
         };
     }
 
@@ -74,12 +74,12 @@ public class ContextAutoReloadConfig extends AbstractParameters {
         return this;
     }
 
-    public boolean isStartup() {
-        return getBoolean(startup, false);
+    public boolean isEnabled() {
+        return getBoolean(enabled, false);
     }
 
-    public ContextAutoReloadConfig setStartup(boolean startup) {
-        putValue(ContextAutoReloadConfig.startup, startup);
+    public ContextAutoReloadConfig setEnabled(boolean enabled) {
+        putValue(ContextAutoReloadConfig.enabled, enabled);
         return this;
     }
 
