@@ -39,7 +39,7 @@ public class ProcessRunner {
 
     private final AtomicBoolean terminated = new AtomicBoolean();
 
-    private final ProcessLogger logger;
+    private final ProcessLogger processLogger;
 
     private String workingDir;
 
@@ -48,8 +48,8 @@ public class ProcessRunner {
     public ProcessRunner() {
         this(null);
     }
-    public ProcessRunner(ProcessLogger logger) {
-        this.logger = logger;
+    public ProcessRunner(ProcessLogger processLogger) {
+        this.processLogger = processLogger;
     }
 
     public void setWorkingDir(String workingDir) {
@@ -72,10 +72,10 @@ public class ProcessRunner {
                 builder.directory(new File(workingDir));
             }
             process = builder.start();
-            if (logger != null || logger.isDebugEnabled()) {
+            if (processLogger != null || logger.isDebugEnabled()) {
                 readNormalOutput(process);
             }
-            if (errOut != null || logger != null || logger.isDebugEnabled()) {
+            if (errOut != null || processLogger != null || logger.isDebugEnabled()) {
                 readErrorOutput(process, errOut);
             }
             return process.waitFor();
@@ -91,8 +91,8 @@ public class ProcessRunner {
                 run(command);
             } catch (Exception e) {
                 String message = "Error running process in background";
-                if (logger != null) {
-                    logger.error(message, e);
+                if (processLogger != null) {
+                    processLogger.error(message, e);
                 }
                 logger.error(message, e);
             }
@@ -119,8 +119,8 @@ public class ProcessRunner {
             BufferedReader reader = new BufferedReader(new InputStreamReader(is));
             String line;
             while ((line = reader.readLine()) != null) {
-                if (logger != null) {
-                    logger.info(line);
+                if (processLogger != null) {
+                    processLogger.info(line);
                 }
                 if (logger.isDebugEnabled()) {
                     logger.debug(line);
@@ -139,8 +139,8 @@ public class ProcessRunner {
                 if (errOut != null) {
                     errOut.println(line);
                 }
-                if (logger != null) {
-                    logger.warn(line);
+                if (processLogger != null) {
+                    processLogger.warn(line);
                 }
                 if (logger.isDebugEnabled()) {
                     logger.debug(line);
