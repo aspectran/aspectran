@@ -385,7 +385,7 @@ public class BeanRuleRegistry {
     private void parseAnnotatedConfig(ContextRuleAssistant assistant) throws IllegalRuleException {
         AnnotatedConfigRelater relater = new AnnotatedConfigRelater() {
             @Override
-            public void relay(Class<?> targetBeanClass, BeanRule beanRule) throws IllegalRuleException {
+            public void relate(Class<?> targetBeanClass, BeanRule beanRule) throws IllegalRuleException {
                 if (beanRule.getId() != null) {
                     saveBeanRule(beanRule.getId(), beanRule);
                 }
@@ -394,22 +394,22 @@ public class BeanRuleRegistry {
             }
 
             @Override
-            public void relay(AspectRule aspectRule) throws IllegalRuleException {
+            public void relate(AspectRule aspectRule) throws IllegalRuleException {
                 assistant.addAspectRule(aspectRule);
             }
 
             @Override
-            public void relay(ScheduleRule scheduleRule) throws IllegalRuleException {
+            public void relate(ScheduleRule scheduleRule) throws IllegalRuleException {
                 assistant.addScheduleRule(scheduleRule);
             }
 
             @Override
-            public void relay(TransletRule transletRule) throws IllegalRuleException {
+            public void relate(TransletRule transletRule) throws IllegalRuleException {
                 assistant.addTransletRule(transletRule);
             }
 
             @Override
-            public void relay(AutowireRule autowireRule) throws IllegalRuleException {
+            public void relate(AutowireRule autowireRule) throws IllegalRuleException {
                 assistant.resolveBeanClass(autowireRule);
             }
         };

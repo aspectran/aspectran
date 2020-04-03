@@ -29,14 +29,14 @@ import com.aspectran.core.context.rule.TransletRule;
  */
 interface AnnotatedConfigRelater {
 
-    void relay(Class<?> targetBeanClass, BeanRule beanRule) throws IllegalRuleException;
+    void relate(Class<?> targetBeanClass, BeanRule beanRule) throws IllegalRuleException;
 
-    void relay(AspectRule aspectRule) throws IllegalRuleException;
+    void relate(AspectRule aspectRule) throws IllegalRuleException;
 
-    void relay(ScheduleRule scheduleRule) throws IllegalRuleException;
+    void relate(ScheduleRule scheduleRule) throws IllegalRuleException;
 
-    void relay(TransletRule transletRule) throws IllegalRuleException;
+    void relate(TransletRule transletRule) throws IllegalRuleException;
 
-    void relay(AutowireRule autowireRule) throws IllegalRuleException;
+    void relate(AutowireRule autowireRule) throws IllegalRuleException;
 
 }
