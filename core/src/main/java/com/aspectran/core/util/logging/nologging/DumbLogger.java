@@ -18,11 +18,11 @@ package com.aspectran.core.util.logging.nologging;
 import com.aspectran.core.util.logging.Logger;
 
 /**
- * NoLogging logger.
+ * Dumb logger with no logging.
  */
-public class NoLogging implements Logger {
+public class DumbLogger implements Logger {
 
-    public NoLogging(String clazz) {
+    public DumbLogger(String name) {
         // Do Nothing
     }
 

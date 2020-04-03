@@ -26,8 +26,8 @@ public class Slf4jLogger implements Logger {
 
     private final transient Logger internalLogger;
 
-    public Slf4jLogger(String clazz) {
-        org.slf4j.Logger logger = LoggerFactory.getLogger(clazz);
+    public Slf4jLogger(String name) {
+        org.slf4j.Logger logger = LoggerFactory.getLogger(name);
         if (logger instanceof LocationAwareLogger) {
             this.internalLogger = new Slf4jLocationAwareLoggerWrapper((LocationAwareLogger)logger);
         } else {

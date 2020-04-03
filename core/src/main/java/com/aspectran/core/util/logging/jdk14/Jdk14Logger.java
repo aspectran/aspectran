@@ -26,8 +26,8 @@ public class Jdk14Logger implements Logger {
 
     private final transient java.util.logging.Logger internalLogger;
 
-    public Jdk14Logger(String clazz) {
-        internalLogger = java.util.logging.Logger.getLogger(clazz);
+    public Jdk14Logger(String name) {
+        internalLogger = java.util.logging.Logger.getLogger(name);
     }
 
     @Override

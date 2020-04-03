@@ -18,11 +18,12 @@ package com.aspectran.core.util.logging.stdout;
 import com.aspectran.core.util.logging.Logger;
 
 /**
- * StdOut logger.
+ * A {@link Logger} that logs directly to the standard output stream (System.out)
+ * or standard error output stream (System.err) depending on the log level.
  */
 public class StdOutLogger implements Logger {
 
-    public StdOutLogger(String clazz) {
+    public StdOutLogger(String name) {
         // Do Nothing
     }
 

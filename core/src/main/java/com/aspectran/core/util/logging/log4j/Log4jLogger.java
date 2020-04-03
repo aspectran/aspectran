@@ -27,8 +27,8 @@ public class Log4jLogger implements Logger {
 
     private final transient org.apache.log4j.Logger internalLogger;
 
-    public Log4jLogger(String clazz) {
-        internalLogger = org.apache.log4j.Logger.getLogger(clazz);
+    public Log4jLogger(String name) {
+        internalLogger = org.apache.log4j.Logger.getLogger(name);
     }
 
     @Override

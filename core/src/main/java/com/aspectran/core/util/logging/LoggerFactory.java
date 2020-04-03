@@ -19,19 +19,19 @@ import com.aspectran.core.util.logging.commons.JakartaCommonsLogger;
 import com.aspectran.core.util.logging.jdk14.Jdk14Logger;
 import com.aspectran.core.util.logging.log4j.Log4jLogger;
 import com.aspectran.core.util.logging.log4j2.Log4j2Logger;
-import com.aspectran.core.util.logging.nologging.NoLogging;
+import com.aspectran.core.util.logging.nologging.DumbLogger;
 import com.aspectran.core.util.logging.slf4j.Slf4jLogger;
 import com.aspectran.core.util.logging.stdout.StdOutLogger;
 
 import java.lang.reflect.Constructor;
 
 /**
- * The Class LoggerFactory.
+ * The LoggerFactory is a utility class producing Loggers for various logging APIs.
  */
 public final class LoggerFactory {
 
     /**
-     * Marker to be used by logging implementations that support markers
+     * Marker to be used by logging implementations that support markers.
      */
     public static final String MARKER = "ASPECTRAN";
 
@@ -93,7 +93,7 @@ public final class LoggerFactory {
     }
 
     public static synchronized void useNoLogging() {
-        setImplementation(NoLogging.class);
+        setImplementation(DumbLogger.class);
     }
 
     private static void tryImplementation(Runnable runnable) {

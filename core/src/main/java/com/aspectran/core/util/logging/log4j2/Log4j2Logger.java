@@ -26,11 +26,12 @@ public class Log4j2Logger implements Logger {
 
     private final transient Logger internalLogger;
 
-    public Log4j2Logger(String clazz) {
-        org.apache.logging.log4j.Logger logger = LogManager.getLogger(clazz);
+    public Log4j2Logger(String name) {
+        org.apache.logging.log4j.Logger logger = LogManager.getLogger(name);
         if (logger instanceof AbstractLogger) {
             this.internalLogger = new Log4j2ExtendedLoggerWrapper((AbstractLogger)logger);
         } else {
+            // It is not a logger that extends AbstractLogger
             this.internalLogger = new Log4j2LoggerWrapper(logger);
         }
     }

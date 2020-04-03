@@ -26,8 +26,8 @@ public class JakartaCommonsLogger implements Logger {
 
     private final transient Log internalLogger;
 
-    public JakartaCommonsLogger(String clazz) {
-        internalLogger = LogFactory.getLog(clazz);
+    public JakartaCommonsLogger(String name) {
+        internalLogger = LogFactory.getLog(name);
     }
 
     @Override
