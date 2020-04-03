@@ -17,8 +17,8 @@ package com.aspectran.demo.apm.stats;
 
 import com.aspectran.core.component.bean.annotation.AvoidAdvice;
 import com.aspectran.core.component.bean.annotation.Component;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 import com.aspectran.undertow.server.TowServer;
 import com.aspectran.web.socket.jsr356.ActivityContextAwareEndpoint;
 import com.aspectran.web.socket.jsr356.AspectranConfigurator;
@@ -54,7 +54,7 @@ import java.util.TimerTask;
 @AvoidAdvice
 public class SessionStatsEndpoint extends ActivityContextAwareEndpoint {
 
-    private static final Log log = LogFactory.getLog(SessionStatsEndpoint.class);
+    private static final Logger logger = LoggerFactory.getLogger(SessionStatsEndpoint.class);
 
     private static final String COMMAND_JOIN = "JOIN:";
 
@@ -74,8 +74,8 @@ public class SessionStatsEndpoint extends ActivityContextAwareEndpoint {
 
     @OnOpen
     public void onOpen(Session session) {
-        if (log.isDebugEnabled()) {
-            log.debug("WebSocket connection established with session: " + session.getId());
+        if (logger.isDebugEnabled()) {
+            logger.debug("WebSocket connection established with session: " + session.getId());
         }
     }
 
@@ -99,15 +99,15 @@ public class SessionStatsEndpoint extends ActivityContextAwareEndpoint {
 
     @OnClose
     public void onClose(Session session, CloseReason reason) {
-        if (log.isDebugEnabled()) {
-            log.debug("Websocket session " + session.getId() + " has been closed. Reason: " + reason);
+        if (logger.isDebugEnabled()) {
+            logger.debug("Websocket session " + session.getId() + " has been closed. Reason: " + reason);
         }
         removeSession(session);
     }
 
     @OnError
     public void onError(Session session, Throwable error) {
-        log.error("Error in websocket session: " + session.getId(), error);
+        logger.error("Error in websocket session: " + session.getId(), error);
         try {
             removeSession(session);
             session.close(new CloseReason(CloseReason.CloseCodes.UNEXPECTED_CONDITION, null));
@@ -142,7 +142,7 @@ public class SessionStatsEndpoint extends ActivityContextAwareEndpoint {
                             try {
                                 broadcast(newStats.toJson());
                             } catch (IOException e) {
-                                log.warn(e.getMessage(), e);
+                                logger.warn(e.getMessage(), e);
                             }
                             oldStats = newStats;
                             if (first) {

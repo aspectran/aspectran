@@ -27,8 +27,8 @@ import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.ServiceStateListener;
 import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 import com.aspectran.shell.activity.ShellActivity;
 import com.aspectran.shell.command.OutputRedirection;
 import com.aspectran.shell.command.TransletCommandLine;
@@ -46,7 +46,7 @@ import java.util.List;
  */
 public class DefaultShellService extends AbstractShellService {
 
-    private static final Log log = LogFactory.getLog(DefaultShellService.class);
+    private static final Logger logger = LoggerFactory.getLogger(DefaultShellService.class);
 
     private static final String DEFAULT_APP_CONFIG_ROOT_FILE = "/config/app-config.xml";
 
@@ -101,8 +101,8 @@ public class DefaultShellService extends AbstractShellService {
         } catch (TransletNotFoundException e) {
             throw e;
         } catch (ActivityTerminatedException e) {
-            if (log.isDebugEnabled()) {
-                log.debug("Activity terminated: " + e.getMessage());
+            if (logger.isDebugEnabled()) {
+                logger.debug("Activity terminated: " + e.getMessage());
             }
         } catch (Exception e) {
             throw new AspectranServiceException("An error occurred while processing translet: " + transletName, e);
@@ -118,7 +118,7 @@ public class DefaultShellService extends AbstractShellService {
                     console.writeLine(result);
                 }
             } catch (IOException e) {
-                log.warn("Failed to print activity result", e);
+                logger.warn("Failed to print activity result", e);
             }
         }
         return translet;
@@ -205,7 +205,7 @@ public class DefaultShellService extends AbstractShellService {
                 if (millis > 0L) {
                     service.pauseTimeout = System.currentTimeMillis() + millis;
                 } else {
-                    log.warn("Pause timeout in milliseconds needs to be set " +
+                    logger.warn("Pause timeout in milliseconds needs to be set " +
                             "to a value of greater than 0");
                 }
             }

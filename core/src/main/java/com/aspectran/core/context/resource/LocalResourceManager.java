@@ -17,8 +17,8 @@ package com.aspectran.core.context.resource;
 
 import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.core.util.ToStringBuilder;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,7 +35,7 @@ import java.util.jar.JarFile;
  */
 public class LocalResourceManager extends ResourceManager {
 
-    private static final Log log = LogFactory.getLog(LocalResourceManager.class);
+    private static final Logger logger = LoggerFactory.getLogger(LocalResourceManager.class);
 
     private final String resourceLocation;
 
@@ -59,7 +59,7 @@ public class LocalResourceManager extends ResourceManager {
         if (resourceLocation != null && !resourceLocation.isEmpty()) {
             File file = new File(resourceLocation);
             if (!file.exists() || !file.canRead()) {
-                log.warn("Resource [" + resourceLocation + "] does not exist or you do not have access");
+                logger.warn("Resource [" + resourceLocation + "] does not exist or you do not have access");
                 this.resourceLocation = null;
                 this.resourceNameStart = 0;
                 return;

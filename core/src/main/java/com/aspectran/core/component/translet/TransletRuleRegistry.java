@@ -34,8 +34,8 @@ import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.util.ClassUtils;
 import com.aspectran.core.util.PrefixSuffixPattern;
 import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 import com.aspectran.core.util.wildcard.WildcardPattern;
 
 import java.util.Collection;
@@ -52,7 +52,7 @@ import java.util.TreeSet;
  */
 public class TransletRuleRegistry extends AbstractComponent {
 
-    private static final Log log = LogFactory.getLog(TransletRuleRegistry.class);
+    private static final Logger logger = LoggerFactory.getLogger(TransletRuleRegistry.class);
 
     private final Map<String, TransletRule> transletRuleMap = new LinkedHashMap<>();
 
@@ -271,7 +271,7 @@ public class TransletRuleRegistry extends AbstractComponent {
                 String responseName = responseRule.getName();
                 if (responseName == null || responseName.isEmpty()) {
                     if (defaultResponseRule != null) {
-                        log.warn("Ignore duplicated default response rule " + defaultResponseRule +
+                        logger.warn("Ignore duplicated default response rule " + defaultResponseRule +
                                 " of transletRule " + transletRule);
                     }
                     defaultResponseRule = responseRule;
@@ -356,8 +356,8 @@ public class TransletRuleRegistry extends AbstractComponent {
             }
         }
 
-        if (log.isTraceEnabled()) {
-            log.trace("add TransletRule " + transletRule);
+        if (logger.isTraceEnabled()) {
+            logger.trace("add TransletRule " + transletRule);
         }
     }
 

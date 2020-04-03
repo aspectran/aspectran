@@ -17,8 +17,8 @@ package com.aspectran.core.component.session.redis.lettuce;
 
 import com.aspectran.core.component.session.AbstractSessionStore;
 import com.aspectran.core.component.session.SessionData;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -32,7 +32,7 @@ import java.util.Set;
  */
 public abstract class AbstractLettuceSessionStore<T> extends AbstractSessionStore {
 
-    private static final Log log = LogFactory.getLog(AbstractLettuceSessionStore.class);
+    private static final Logger logger = LoggerFactory.getLogger(AbstractLettuceSessionStore.class);
 
     private final ConnectionPool<T> pool;
 
@@ -60,7 +60,7 @@ public abstract class AbstractLettuceSessionStore<T> extends AbstractSessionStor
                     expired.add(candidate);
                 }
             } catch (Exception e) {
-                log.warn("Error checking if session " + candidate + " has expired", e);
+                logger.warn("Error checking if session " + candidate + " has expired", e);
             }
         }
         return expired;

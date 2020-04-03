@@ -29,8 +29,8 @@ import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.CoreService;
 import com.aspectran.core.service.ServiceStateListener;
 import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 import com.aspectran.undertow.activity.TowActivity;
 import com.aspectran.web.support.http.HttpStatus;
 import io.undertow.server.HttpServerExchange;
@@ -44,7 +44,7 @@ import java.net.URLDecoder;
  */
 public class DefaultTowService extends AbstractTowService {
 
-    private static final Log log = LogFactory.getLog(DefaultTowService.class);
+    private static final Logger logger = LoggerFactory.getLogger(DefaultTowService.class);
 
     private long pauseTimeout = -2L;
 
@@ -66,20 +66,20 @@ public class DefaultTowService extends AbstractTowService {
             return false;
         }
 
-        if (log.isDebugEnabled()) {
-            log.debug(getRequestInfo(exchange));
+        if (logger.isDebugEnabled()) {
+            logger.debug(getRequestInfo(exchange));
         }
 
         if (pauseTimeout != 0L) {
             if (pauseTimeout == -1L || pauseTimeout >= System.currentTimeMillis()) {
-                if (log.isDebugEnabled()) {
-                    log.debug(getServiceName() + " has been paused, so did not respond to the request URI \"" +
+                if (logger.isDebugEnabled()) {
+                    logger.debug(getServiceName() + " has been paused, so did not respond to the request URI \"" +
                             requestPath + "\"");
                 }
                 exchange.setStatusCode(HttpStatus.SERVICE_UNAVAILABLE.value());
                 return true;
             } else if (pauseTimeout == -2L) {
-                log.error(getServiceName() + " is not yet started");
+                logger.error(getServiceName() + " is not yet started");
                 exchange.setStatusCode(HttpStatus.SERVICE_UNAVAILABLE.value());
                 return true;
             } else {
@@ -102,26 +102,26 @@ public class DefaultTowService extends AbstractTowService {
                     exchange.setStatusCode(HttpStatus.MOVED_PERMANENTLY.value());
                     exchange.getResponseHeaders().put(Headers.LOCATION, transletNameWithSlash);
                     exchange.getResponseHeaders().put(Headers.CONNECTION, "close");
-                    if (log.isDebugEnabled()) {
-                        log.debug("Redirect URL with Trailing Slash: " + e.getTransletName());
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Redirect URL with Trailing Slash: " + e.getTransletName());
                     }
                     return true;
                 }
             }
 
-            if (log.isDebugEnabled()) {
-                log.debug("No translet mapped for request URI [" + requestPath + "]");
+            if (logger.isDebugEnabled()) {
+                logger.debug("No translet mapped for request URI [" + requestPath + "]");
             }
             return false;
         } catch (ActivityTerminatedException e) {
-            if (log.isDebugEnabled()) {
-                log.debug("Activity terminated: " + e.getMessage());
+            if (logger.isDebugEnabled()) {
+                logger.debug("Activity terminated: " + e.getMessage());
             }
         } catch (ActivityException e) {
             if (e.getCause() != null) {
-                log.error(e.getCause().getMessage(), e.getCause());
+                logger.error(e.getCause().getMessage(), e.getCause());
             } else {
-                log.error(e.getMessage(), e);
+                logger.error(e.getMessage(), e);
             }
             if (e.getCause() instanceof RequestMethodNotAllowedException) {
                 exchange.setStatusCode(HttpStatus.METHOD_NOT_ALLOWED.value());
@@ -131,7 +131,7 @@ public class DefaultTowService extends AbstractTowService {
                 exchange.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
             }
         } catch (Exception e) {
-            log.error("An error occurred while processing request: " + requestPath, e);
+            logger.error("An error occurred while processing request: " + requestPath, e);
             exchange.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
 
@@ -224,7 +224,7 @@ public class DefaultTowService extends AbstractTowService {
                 if (millis > 0L) {
                     service.pauseTimeout = System.currentTimeMillis() + millis;
                 } else {
-                    log.warn("Pause timeout in milliseconds needs to be set " +
+                    logger.warn("Pause timeout in milliseconds needs to be set " +
                             "to a value of greater than 0");
                 }
             }

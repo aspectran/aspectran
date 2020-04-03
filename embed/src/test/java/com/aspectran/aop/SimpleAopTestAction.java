@@ -18,8 +18,8 @@ package com.aspectran.aop;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.component.bean.annotation.Component;
 import com.aspectran.core.component.bean.annotation.Request;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 
 import java.io.IOException;
 
@@ -29,26 +29,26 @@ import java.io.IOException;
 @Component
 public class SimpleAopTestAction {
 
-    private static final Log log = LogFactory.getLog(SimpleAopTestAction.class);
+    private static final Logger logger = LoggerFactory.getLogger(SimpleAopTestAction.class);
 
     @Request("aop/test/action1")
     public void action1(Translet translet) {
-        log.debug("===> Action1: [SimpleAopTestAction]=== Action Result (Action-1)");
+        logger.debug("===> Action1: [SimpleAopTestAction]=== Action Result (Action-1)");
         SampleAnnotatedAspect sampleAnnotatedAspect = translet.getAspectAdviceBean("aspect02");
         sampleAnnotatedAspect.foo();
     }
 
     @Request("aop/test/action2")
     public void action2() {
-        log.debug("===> Action2: [SimpleAopTestAction]=== Action Result (Action-2)");
-        log.debug("===> Action2: [SimpleAopTestAction]=== Force Exception ==============");
+        logger.debug("===> Action2: [SimpleAopTestAction]=== Action Result (Action-2)");
+        logger.debug("===> Action2: [SimpleAopTestAction]=== Force Exception ==============");
         throw new SimpleAopTestException();
     }
 
     @Request("aop/test/action3-${param1}")
     public String action3(Translet translet, String param1) throws IOException {
-        log.debug("===> Action3: [SimpleAopTestAction]=== Action Result (Action-3)");
-        log.debug("===> Action3: (PathVariable)param1: " + param1);
+        logger.debug("===> Action3: [SimpleAopTestAction]=== Action Result (Action-3)");
+        logger.debug("===> Action3: (PathVariable)param1: " + param1);
         translet.getResponseAdapter().getWriter().write(param1);
         return param1;
     }

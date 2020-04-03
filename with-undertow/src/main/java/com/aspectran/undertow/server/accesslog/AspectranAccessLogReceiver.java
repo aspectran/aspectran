@@ -16,8 +16,8 @@
 package com.aspectran.undertow.server.accesslog;
 
 import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 import io.undertow.server.handlers.accesslog.AccessLogReceiver;
 
 /**
@@ -29,23 +29,23 @@ public class AspectranAccessLogReceiver implements AccessLogReceiver {
 
     private static final String DEFAULT_CATEGORY = "io.undertow.accesslog";
 
-    private final Log log;
+    private final Logger logger;
 
     public AspectranAccessLogReceiver() {
-        this.log = LogFactory.getLog(DEFAULT_CATEGORY);
+        this.logger = LoggerFactory.getLogger(DEFAULT_CATEGORY);
     }
 
     public AspectranAccessLogReceiver(String category) {
         if (StringUtils.hasText(category)) {
-            this.log = LogFactory.getLog(category);
+            this.logger = LoggerFactory.getLogger(category);
         } else {
-            this.log = LogFactory.getLog(DEFAULT_CATEGORY);
+            this.logger = LoggerFactory.getLogger(DEFAULT_CATEGORY);
         }
     }
 
     @Override
     public void logMessage(String message) {
-        log.info(message);
+        logger.info(message);
     }
 
 }

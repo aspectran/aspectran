@@ -15,8 +15,8 @@
  */
 package com.aspectran.core.service;
 
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 import com.aspectran.core.util.thread.ShutdownHooks;
 
 /**
@@ -24,7 +24,7 @@ import com.aspectran.core.util.thread.ShutdownHooks;
  */
 public class AspectranCoreService extends AbstractCoreService {
 
-    private final Log log = LogFactory.getLog(getClass());
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     /** Reference to the shutdown task, if registered */
     private ShutdownHooks.Task shutdownTask;
@@ -94,8 +94,8 @@ public class AspectranCoreService extends AbstractCoreService {
      * Called by both {@code shutdown()} and a JVM shutdown hook, if any.
      */
     private void stopAspectranService() {
-        if (log.isDebugEnabled()) {
-            log.debug("Destroying all cached resources...");
+        if (logger.isDebugEnabled()) {
+            logger.debug("Destroying all cached resources...");
         }
 
         beforeContextDestroy();

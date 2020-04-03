@@ -15,8 +15,8 @@
  */
 package com.aspectran.core.util;
 
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.InvocationTargetException;
@@ -34,7 +34,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 class MethodUtilsTest {
 
-    private static final Log log = LogFactory.getLog(MethodUtilsTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(MethodUtilsTest.class);
 
     @Test
     void testGetMatchingAccessibleMethod1() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
@@ -44,7 +44,7 @@ class MethodUtilsTest {
         Method method = MethodUtils.getMatchingAccessibleMethod(MethodUtilsTestBean.class, "primitiveArray", null, paramTypes);
         assertNotNull(method);
 
-        log.debug("matched method: " + method);
+        logger.debug("matched method: " + method);
 
         MethodUtilsTestBean sampleBean = new MethodUtilsTestBean();
         MethodUtils.invokeMethod(sampleBean, "primitiveArray", args);
@@ -58,7 +58,7 @@ class MethodUtilsTest {
         Method method = MethodUtils.getMatchingAccessibleMethod(MethodUtilsTestBean.class, "primitiveArray", args, paramTypes);
         assertNotNull(method);
 
-        log.debug("matched method: " + method);
+        logger.debug("matched method: " + method);
 
         MethodUtilsTestBean sampleBean = new MethodUtilsTestBean();
         MethodUtils.invokeMethod(sampleBean, "primitiveArray", args);
@@ -72,7 +72,7 @@ class MethodUtilsTest {
         Method method = MethodUtils.getMatchingAccessibleMethod(MethodUtilsTestBean.class, "setSampleBean", args, paramTypes);
         assertNotNull(method);
 
-        log.debug("matched method: " + method);
+        logger.debug("matched method: " + method);
 
         MethodUtilsTestBean sampleBean = new MethodUtilsTestBean();
         MethodUtils.invokeSetter(sampleBean, "sampleBean", args);
@@ -86,7 +86,7 @@ class MethodUtilsTest {
         Method method = MethodUtils.getMatchingAccessibleMethod(MethodUtilsTestBean.class, "setSampleBean", args, paramTypes);
         assertNotNull(method);
 
-        log.debug("matched method: " + method);
+        logger.debug("matched method: " + method);
 
         MethodUtilsTestBean sampleBean = new MethodUtilsTestBean();
         MethodUtils.invokeSetter(sampleBean, "sampleBean", args);
@@ -104,7 +104,7 @@ class MethodUtilsTest {
         Method method = MethodUtils.getMatchingAccessibleMethod(MethodUtilsTestBean.class, "setSampleBean", args, paramTypes);
         assertNotNull(method);
 
-        log.debug("matched method: " + method);
+        logger.debug("matched method: " + method);
         
         MethodUtilsTestBean sampleBean = new MethodUtilsTestBean();
         MethodUtils.invokeSetter(sampleBean, "sampleBean", args);

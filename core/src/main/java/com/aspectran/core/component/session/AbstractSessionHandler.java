@@ -17,8 +17,8 @@ package com.aspectran.core.component.session;
 
 import com.aspectran.core.component.AbstractComponent;
 import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 import com.aspectran.core.util.statistic.SampleStatistic;
 import com.aspectran.core.util.thread.Locker;
 import com.aspectran.core.util.thread.ScheduledExecutorScheduler;
@@ -42,7 +42,7 @@ import static java.lang.Math.round;
  */
 public abstract class AbstractSessionHandler extends AbstractComponent implements SessionHandler {
 
-    private static final Log log = LogFactory.getLog(AbstractSessionHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(AbstractSessionHandler.class);
 
     private final SampleStatistic sessionTimeStats = new SampleStatistic();
 
@@ -118,12 +118,12 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
     @Override
     public void setDefaultMaxIdleSecs(int defaultMaxIdleSecs) {
         this.defaultMaxIdleSecs = defaultMaxIdleSecs;
-        if (log.isDebugEnabled()) {
+        if (logger.isDebugEnabled()) {
             if (defaultMaxIdleSecs <= 0) {
-                log.debug("Sessions created by this manager are immortal (default maxInactiveInterval="
+                logger.debug("Sessions created by this manager are immortal (default maxInactiveInterval="
                         + defaultMaxIdleSecs + ")");
             } else {
-                log.debug("SessionHandler default maxInactiveInterval=" + defaultMaxIdleSecs);
+                logger.debug("SessionHandler default maxInactiveInterval=" + defaultMaxIdleSecs);
             }
         }
     }
@@ -140,14 +140,14 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
                         session.setDestroyedReason(Session.DestroyedReason.TIMEOUT);
                         session.invalidate();
                     } catch (Exception e) {
-                        log.warn("Invalidating session " + id + " found to be expired when requested", e);
+                        logger.warn("Invalidating session " + id + " found to be expired when requested", e);
                     }
                     return null;
                 }
             }
             return session;
         } catch (Exception e) {
-            log.warn(e.getMessage(), e);
+            logger.warn(e.getMessage(), e);
             return null;
         }
     }
@@ -170,7 +170,7 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
         try {
             sessionCache.release(session.getId(), session);
         } catch (Exception e) {
-            log.warn("Session failed to save", e);
+            logger.warn("Session failed to save", e);
         }
     }
 
@@ -188,7 +188,7 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
             }
             return session.getId();
         } catch (Exception e) {
-            log.warn("Failed to renew session", e);
+            logger.warn("Failed to renew session", e);
         }
         return null;
     }
@@ -215,20 +215,20 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
                         try {
                             fireSessionDestroyedListeners(session);
                         } catch (Exception e) {
-                            log.warn("Session listener threw exception", e);
+                            logger.warn("Session listener threw exception", e);
                         }
                         // call the attribute removed listeners and finally mark it as invalid
                         session.finishInvalidate();
                     }
                 } catch (IllegalStateException e) {
-                    if (log.isDebugEnabled()) {
-                        log.debug("Session " + session + " already invalid");
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Session " + session + " already invalid");
                     }
                 }
             }
             return session;
         } catch (Exception e) {
-            log.warn("Failed to invalidate session", e);
+            logger.warn("Failed to invalidate session", e);
             return null;
         }
     }
@@ -257,12 +257,12 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
             if (session.getRequests() > 0) {
                 return; // session can't expire or be idle if there is a request in it
             }
-            if (log.isTraceEnabled()) {
-                log.trace("Inspecting session " + session.getId() + ", valid=" + session.isValid());
+            if (logger.isTraceEnabled()) {
+                logger.trace("Inspecting session " + session.getId() + ", valid=" + session.isValid());
             }
             if (!session.isValid()) {
-                if (log.isTraceEnabled()) {
-                    log.trace("Session " + session.getId() + " is no longer valid");
+                if (logger.isTraceEnabled()) {
+                    logger.trace("Session " + session.getId() + " is no longer valid");
                 }
                 return; // do nothing, session is no longer valid
             }
@@ -275,8 +275,8 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
                 // does the scavenging is configured to actually scavenge
                 if (getHouseKeeper() != null && getHouseKeeper().isScavengable()) {
                     candidateSessionIdsForExpiry.add(session.getId());
-                    if (log.isDebugEnabled()) {
-                        log.debug("Session " + session.getId() + " is candidate for expiry");
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Session " + session.getId() + " is candidate for expiry");
                     }
                 } else {
                     invalidate(session.getId(), Session.DestroyedReason.TIMEOUT);
@@ -294,8 +294,8 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
         if (isDestroying() || isDestroyed()) {
             return;
         }
-        if (log.isTraceEnabled()) {
-            log.trace(getComponentName() + " scavenging sessions");
+        if (logger.isTraceEnabled()) {
+            logger.trace(getComponentName() + " scavenging sessions");
         }
         // Get a snapshot of the candidates as they are now. Others that
         // arrive during this processing will be dealt with on
@@ -303,8 +303,8 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
         String[] ss = candidateSessionIdsForExpiry.toArray(new String[0]);
         Set<String> candidates = new HashSet<>(Arrays.asList(ss));
         candidateSessionIdsForExpiry.removeAll(candidates);
-        if (log.isTraceEnabled()) {
-            log.trace(getComponentName() + " scavenging session ids " + candidates);
+        if (logger.isTraceEnabled()) {
+            logger.trace(getComponentName() + " scavenging session ids " + candidates);
         }
         try {
             candidates = sessionCache.checkExpiration(candidates);
@@ -313,27 +313,27 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
                     try {
                         invalidate(id, Session.DestroyedReason.TIMEOUT);
                     } catch (Exception e) {
-                        log.warn(e.getMessage(), e);
+                        logger.warn(e.getMessage(), e);
                     }
                 }
             }
         } catch (Exception e) {
-            log.warn(e.getMessage(), e);
+            logger.warn(e.getMessage(), e);
         }
     }
 
     @Override
     public void addSessionListener(SessionListener listener) {
-        if (log.isDebugEnabled()) {
-            log.debug("Registered session listener " + listener);
+        if (logger.isDebugEnabled()) {
+            logger.debug("Registered session listener " + listener);
         }
         sessionListeners.add(listener);
     }
 
     @Override
     public void removeSessionListener(SessionListener listener) {
-        if (log.isDebugEnabled()) {
-            log.debug("Removed session listener " + listener);
+        if (logger.isDebugEnabled()) {
+            logger.debug("Removed session listener " + listener);
         }
         sessionListeners.remove(listener);
     }

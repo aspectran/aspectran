@@ -24,8 +24,8 @@ import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.rule.DispatchRule;
 import com.aspectran.core.util.ToStringBuilder;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
@@ -41,7 +41,7 @@ import java.io.FileNotFoundException;
  */
 public class JspTemplateViewDispatcher implements ViewDispatcher {
 
-    private static final Log log = LogFactory.getLog(JspTemplateViewDispatcher.class);
+    private static final Logger logger = LoggerFactory.getLogger(JspTemplateViewDispatcher.class);
 
     private static final String DEFAULT_CONTENT_TYPE = "text/html;charset=ISO-8859-1";
 
@@ -112,8 +112,8 @@ public class JspTemplateViewDispatcher implements ViewDispatcher {
             HttpServletRequest request = requestAdapter.getAdaptee();
             HttpServletResponse response = responseAdapter.getAdaptee();
 
-            if (log.isTraceEnabled()) {
-                log.trace("Dispatching to JSP Template [" + template + "] with page [" + dispatchName + "]");
+            if (logger.isTraceEnabled()) {
+                logger.trace("Dispatching to JSP Template [" + template + "] with page [" + dispatchName + "]");
             }
 
             RequestDispatcher requestDispatcher = request.getRequestDispatcher(template);

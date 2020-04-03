@@ -15,8 +15,8 @@
  */
 package com.aspectran.core.component.session;
 
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 
 import java.security.SecureRandom;
 import java.util.Random;
@@ -29,7 +29,7 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 public class SessionIdGenerator {
 
-    private static final Log log = LogFactory.getLog(SessionIdGenerator.class);
+    private static final Logger logger = LoggerFactory.getLogger(SessionIdGenerator.class);
 
     private static final AtomicLong COUNTER = new AtomicLong();
 
@@ -99,7 +99,7 @@ public class SessionIdGenerator {
         try {
             return new SecureRandom();
         } catch (Exception e) {
-            log.warn("Could not generate SecureRandom for session-id randomness", e);
+            logger.warn("Could not generate SecureRandom for session-id randomness", e);
             weakRandom = true;
             return new Random();
         }

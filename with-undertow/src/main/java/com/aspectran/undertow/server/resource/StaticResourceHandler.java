@@ -15,8 +15,8 @@
  */
 package com.aspectran.undertow.server.resource;
 
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 import com.aspectran.core.util.wildcard.PluralWildcardPattern;
 import com.aspectran.core.util.wildcard.WildcardPattern;
 import io.undertow.server.HttpHandler;
@@ -37,7 +37,7 @@ import java.util.Set;
 
 public class StaticResourceHandler extends ResourceHandler {
 
-    private static final Log log = LogFactory.getLog(StaticResourceHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(StaticResourceHandler.class);
 
     private volatile PluralWildcardPattern resourcePathPatterns;
 
@@ -99,10 +99,10 @@ public class StaticResourceHandler extends ResourceHandler {
                 WildcardPattern[] excludePatterns = (resourcePathPatterns != null ? resourcePathPatterns.getExcludePatterns() : null);
                 resourcePathPatterns = new PluralWildcardPattern(includePatterns, excludePatterns);
 
-                if (log.isDebugEnabled()) {
-                    log.debug("StaticResourceHandler includePatterns=" + Arrays.toString(includePatterns));
+                if (logger.isDebugEnabled()) {
+                    logger.debug("StaticResourceHandler includePatterns=" + Arrays.toString(includePatterns));
                     if (excludePatterns != null) {
-                        log.debug("StaticResourceHandler excludePatterns=" + Arrays.toString(excludePatterns));
+                        logger.debug("StaticResourceHandler excludePatterns=" + Arrays.toString(excludePatterns));
                     }
                 }
             }

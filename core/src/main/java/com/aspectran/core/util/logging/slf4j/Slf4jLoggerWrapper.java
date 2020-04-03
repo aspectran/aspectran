@@ -15,85 +15,67 @@
  */
 package com.aspectran.core.util.logging.slf4j;
 
-import com.aspectran.core.util.logging.Log;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.slf4j.Marker;
-import org.slf4j.spi.LocationAwareLogger;
+import com.aspectran.core.util.logging.Logger;
 
 /**
- * The Class Slf4jImpl.
+ * The Class Slf4jLoggerWrapper.
  */
-public class Slf4jImpl implements Log {
+class Slf4jLoggerWrapper implements Logger {
 
-    private Log log;
+    private final transient org.slf4j.Logger internalLogger;
 
-    public Slf4jImpl(String clazz) {
-        Logger logger = LoggerFactory.getLogger(clazz);
-
-        if (logger instanceof LocationAwareLogger) {
-            try {
-                // check for slf4j >= 1.6 method signature
-                logger.getClass().getMethod("log", Marker.class, String.class, int.class, String.class, Object[].class, Throwable.class);
-                log = new Slf4jLocationAwareLoggerImpl((LocationAwareLogger) logger);
-                return;
-            } catch (SecurityException | NoSuchMethodException e) {
-                // fail-back to Slf4jLoggerImpl
-            }
-        }
-
-        // Logger is not LocationAwareLogger or slf4j version < 1.6
-        log = new Slf4jLoggerImpl(logger);
+    public Slf4jLoggerWrapper(org.slf4j.Logger internalLogger) {
+        this.internalLogger = internalLogger;
     }
 
     @Override
     public boolean isDebugEnabled() {
-        return log.isDebugEnabled();
+        return internalLogger.isDebugEnabled();
     }
 
     @Override
     public boolean isTraceEnabled() {
-        return log.isTraceEnabled();
+        return internalLogger.isTraceEnabled();
     }
 
     @Override
     public void error(String s) {
-        log.error(s);
+        internalLogger.error(s);
     }
 
     @Override
     public void error(String s, Throwable e) {
-        log.error(s, e);
+        internalLogger.error(s, e);
     }
 
     @Override
     public void debug(String s) {
-        log.debug(s);
+        internalLogger.debug(s);
     }
 
     @Override
     public void debug(String s, Throwable e) {
-        log.debug(s, e);
+        internalLogger.debug(s, e);
     }
 
     @Override
     public void info(String s) {
-        log.info(s);
+        internalLogger.info(s);
     }
 
     @Override
     public void trace(String s) {
-        log.trace(s);
+        internalLogger.trace(s);
     }
 
     @Override
     public void warn(String s) {
-        log.warn(s);
+        internalLogger.warn(s);
     }
 
     @Override
     public void warn(String s, Throwable e) {
-        log.warn(s, e);
+        internalLogger.warn(s, e);
     }
 
 }

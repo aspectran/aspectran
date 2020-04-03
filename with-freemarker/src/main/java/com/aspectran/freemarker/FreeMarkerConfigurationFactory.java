@@ -20,8 +20,8 @@ import com.aspectran.core.component.bean.aware.ApplicationAdapterAware;
 import com.aspectran.core.util.PropertiesLoaderUtils;
 import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.core.util.apon.Parameters;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 import com.aspectran.freemarker.directive.CustomTrimDirective;
 import com.aspectran.freemarker.directive.TrimDirective;
 import com.aspectran.freemarker.directive.TrimDirectiveGroup;
@@ -48,7 +48,7 @@ import java.util.Properties;
  */
 public class FreeMarkerConfigurationFactory implements ApplicationAdapterAware {
 
-    private static final Log log = LogFactory.getLog(FreeMarkerConfigurationFactory.class);
+    private static final Logger logger = LoggerFactory.getLogger(FreeMarkerConfigurationFactory.class);
 
     private static final String DIRECTIVE_NAME_PARAM_NAME = "name";
 
@@ -205,8 +205,8 @@ public class FreeMarkerConfigurationFactory implements ApplicationAdapterAware {
                         TrimDirective ctd = new CustomTrimDirective(groupName, directiveName, trimmer);
                         list.add(ctd);
 
-                        if (log.isDebugEnabled()) {
-                            log.debug("CustomTrimDirective " + ctd);
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("CustomTrimDirective " + ctd);
                         }
                     }
                 }
@@ -233,7 +233,7 @@ public class FreeMarkerConfigurationFactory implements ApplicationAdapterAware {
 
         // Load config file if set.
         if (this.configLocation != null) {
-            log.info("Loading Freemarker settings from [" + this.configLocation + "]");
+            logger.info("Loading Freemarker settings from [" + this.configLocation + "]");
             props.putAll(PropertiesLoaderUtils.loadProperties(this.configLocation));
         }
 
@@ -307,19 +307,19 @@ public class FreeMarkerConfigurationFactory implements ApplicationAdapterAware {
         int loaderCount = (templateLoaders != null ? templateLoaders.length : 0);
         switch (loaderCount) {
             case 0:
-                if (log.isDebugEnabled()) {
-                    log.debug("No FreeMarker TemplateLoaders specified; Can be used only inner template source");
+                if (logger.isDebugEnabled()) {
+                    logger.debug("No FreeMarker TemplateLoaders specified; Can be used only inner template source");
                 }
                 return null;
             case 1:
-                if (log.isDebugEnabled()) {
-                    log.debug("One FreeMarker TemplateLoader registered: " + templateLoaders[0]);
+                if (logger.isDebugEnabled()) {
+                    logger.debug("One FreeMarker TemplateLoader registered: " + templateLoaders[0]);
                 }
                 return templateLoaders[0];
             default:
                 TemplateLoader loader = new MultiTemplateLoader(templateLoaders);
-                if (log.isDebugEnabled()) {
-                    log.debug("Multiple FreeMarker TemplateLoader registered: " + loader);
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Multiple FreeMarker TemplateLoader registered: " + loader);
                 }
                 return loader;
         }
@@ -336,22 +336,22 @@ public class FreeMarkerConfigurationFactory implements ApplicationAdapterAware {
     protected TemplateLoader getTemplateLoaderForPath(String templateLoaderPath) throws IOException {
         if (templateLoaderPath.startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {
             String basePackagePath = templateLoaderPath.substring(ResourceUtils.CLASSPATH_URL_PREFIX.length());
-            if (log.isDebugEnabled()) {
-                log.debug("Template loader path [" + templateLoaderPath +
+            if (logger.isDebugEnabled()) {
+                logger.debug("Template loader path [" + templateLoaderPath +
                     "] resolved to class path [" + basePackagePath + "]");
             }
             return new ClassTemplateLoader(applicationAdapter.getClassLoader(), basePackagePath);
         } else if (templateLoaderPath.startsWith(ResourceUtils.FILE_URL_PREFIX)) {
             File file = new File(templateLoaderPath.substring(ResourceUtils.FILE_URL_PREFIX.length()));
-            if (log.isDebugEnabled()) {
-                log.debug("Template loader path [" + templateLoaderPath +
+            if (logger.isDebugEnabled()) {
+                logger.debug("Template loader path [" + templateLoaderPath +
                     "] resolved to file path [" + file.getAbsolutePath() + "]");
             }
             return new FileTemplateLoader(file);
         } else {
             File file = new File(applicationAdapter.getBasePath(), templateLoaderPath);
-            if (log.isDebugEnabled()) {
-                log.debug("Template loader path [" + templateLoaderPath +
+            if (logger.isDebugEnabled()) {
+                logger.debug("Template loader path [" + templateLoaderPath +
                     "] resolved to file path [" + file.getAbsolutePath() + "]");
             }
             return new FileTemplateLoader(file);

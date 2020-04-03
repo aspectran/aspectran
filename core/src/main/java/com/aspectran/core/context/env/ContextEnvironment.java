@@ -22,8 +22,8 @@ import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.SystemUtils;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -33,7 +33,7 @@ import java.util.Set;
  */
 public class ContextEnvironment implements Environment {
 
-    private static final Log log = LogFactory.getLog(ContextEnvironment.class);
+    private static final Logger logger = LoggerFactory.getLogger(ContextEnvironment.class);
 
     private final Set<String> activeProfiles = new LinkedHashSet<>();
 
@@ -63,7 +63,7 @@ public class ContextEnvironment implements Environment {
                     setActiveProfiles(profiles);
                     String[] activeProfiles = getActiveProfiles();
                     if (activeProfiles.length > 0) {
-                        log.info("Activating profiles [" + StringUtils.joinCommaDelimitedList(activeProfiles) + "]");
+                        logger.info("Activating profiles [" + StringUtils.joinCommaDelimitedList(activeProfiles) + "]");
                     }
                 }
             }
@@ -114,7 +114,7 @@ public class ContextEnvironment implements Environment {
                     setDefaultProfiles(profiles);
                     String[] defaultProfiles = getDefaultProfiles();
                     if (defaultProfiles.length > 0) {
-                        log.info("Default profiles [" + StringUtils.joinCommaDelimitedList(defaultProfiles) + "]");
+                        logger.info("Default profiles [" + StringUtils.joinCommaDelimitedList(defaultProfiles) + "]");
                     }
                 }
             }

@@ -16,8 +16,8 @@
 package com.aspectran.core.component.translet.scan;
 
 import com.aspectran.core.util.FileScanner;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 import com.aspectran.core.util.wildcard.WildcardMatcher;
 import com.aspectran.core.util.wildcard.WildcardPattern;
 
@@ -33,7 +33,7 @@ import static com.aspectran.core.util.ResourceUtils.REGULAR_FILE_SEPARATOR_CHAR;
  */
 public class TransletScanner extends FileScanner {
 
-    private static final Log log = LogFactory.getLog(TransletScanner.class);
+    private static final Logger logger = LoggerFactory.getLogger(TransletScanner.class);
 
     private TransletScanFilter transletScanFilter;
 
@@ -95,7 +95,7 @@ public class TransletScanner extends FileScanner {
                 if (maskedTransletName != null) {
                     transletName = maskedTransletName;
                 }  else {
-                    log.warn("Translet name [" + transletName + "] can not be masked by mask pattern [" +
+                    logger.warn("Translet name [" + transletName + "] can not be masked by mask pattern [" +
                             transletNameMaskPattern + "]");
                 }
             }
@@ -117,8 +117,8 @@ public class TransletScanner extends FileScanner {
 
             saveHandler.save(transletName, scannedFile);
 
-            if (log.isTraceEnabled()) {
-                log.trace("Scanned file: " + filePath);
+            if (logger.isTraceEnabled()) {
+                logger.trace("Scanned file: " + filePath);
             }
         }
     }

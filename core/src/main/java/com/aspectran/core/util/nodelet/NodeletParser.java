@@ -16,8 +16,8 @@
 package com.aspectran.core.util.nodelet;
 
 import com.aspectran.core.util.ArrayStack;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 import org.xml.sax.Attributes;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.ErrorHandler;
@@ -47,7 +47,7 @@ import java.util.Map;
  */
 public class NodeletParser {
 
-    private static final Log log = LogFactory.getLog(NodeletParser.class);
+    private static final Logger logger = LoggerFactory.getLogger(NodeletParser.class);
 
     private static final Map<String, String> EMPTY_ATTRIBUTES = Collections.emptyMap();
 
@@ -322,19 +322,19 @@ public class NodeletParser {
             reader.setErrorHandler(new ErrorHandler() {
                 @Override
                 public void error(SAXParseException e) throws SAXException {
-                    log.error(e.toString());
+                    logger.error(e.toString());
                     throw e;
                 }
 
                 @Override
                 public void fatalError(SAXParseException e) throws SAXException {
-                    log.error(e.toString());
+                    logger.error(e.toString());
                     throw e;
                 }
 
                 @Override
                 public void warning(SAXParseException e) throws SAXException {
-                    log.warn(e.toString());
+                    logger.warn(e.toString());
                 }
             });
             reader.parse(inputSource);

@@ -28,8 +28,8 @@ import com.aspectran.core.context.rule.type.BeanRefererType;
 import com.aspectran.core.util.BeanUtils;
 import com.aspectran.core.util.MethodUtils;
 import com.aspectran.core.util.ToStringBuilder;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 import com.aspectran.core.util.nodelet.NodeTracker;
 
 import java.lang.reflect.Method;
@@ -44,7 +44,7 @@ import java.util.Set;
  */
 public class BeanReferenceInspector {
 
-    private static final Log log = LogFactory.getLog(BeanReferenceInspector.class);
+    private static final Logger logger = LoggerFactory.getLogger(BeanReferenceInspector.class);
 
     private final Map<RefererKey, Set<RefererInfo>> refererInfoMap = new LinkedHashMap<>(256);
 
@@ -120,10 +120,10 @@ public class BeanReferenceInspector {
                 if (beanRules != null && beanRules.length > 1) {
                     for (RefererInfo refererInfo : refererInfoSet) {
                         if (beanId != null) {
-                            log.error("Cannot resolve reference to bean " + refererKey +
+                            logger.error("Cannot resolve reference to bean " + refererKey +
                                     "; Referer: " + refererInfo);
                         } else {
-                            log.error("No unique bean of type [" + beanClass + "] is defined: " +
+                            logger.error("No unique bean of type [" + beanClass + "] is defined: " +
                                     "expected single matching bean but found " + beanRules.length + ": [" +
                                     NoUniqueBeanException.getBeanDescriptions(beanRules) + "]; Referer: " + refererInfo);
                         }
@@ -134,7 +134,7 @@ public class BeanReferenceInspector {
                     for (RefererInfo refererInfo : refererInfoSet) {
                         if (!isStaticMethodReference(refererInfo)) {
                             count++;
-                            log.error("Cannot resolve reference to bean " + refererKey +
+                            logger.error("Cannot resolve reference to bean " + refererKey +
                                     "; Referer: " + refererInfo);
                         }
                     }

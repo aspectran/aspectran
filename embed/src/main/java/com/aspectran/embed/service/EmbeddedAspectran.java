@@ -22,8 +22,8 @@ import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.CoreService;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -260,8 +260,8 @@ public interface EmbeddedAspectran extends CoreService {
         } catch (Exception e) {
             String message = "EmbeddedAspectran run failed with parameters:" + System.lineSeparator() +
                     aspectranConfig.toString();
-            Log log = LogFactory.getLog(EmbeddedAspectran.class);
-            log.error(message);
+            Logger logger = LoggerFactory.getLogger(EmbeddedAspectran.class);
+            logger.error(message);
             throw new AspectranServiceException("EmbeddedAspectran run failed", e);
         }
     }

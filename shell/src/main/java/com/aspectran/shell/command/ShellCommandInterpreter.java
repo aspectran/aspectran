@@ -22,8 +22,8 @@ import com.aspectran.core.lang.NonNull;
 import com.aspectran.core.lang.Nullable;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.apon.AponReader;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 import com.aspectran.shell.command.builtins.QuitCommand;
 import com.aspectran.shell.command.option.OptionParserException;
 import com.aspectran.shell.command.option.ParsedOptions;
@@ -45,7 +45,7 @@ import java.nio.file.Paths;
  */
 public class ShellCommandInterpreter implements CommandInterpreter {
 
-    private static final Log log = LogFactory.getLog(ShellCommandInterpreter.class);
+    private static final Logger logger = LoggerFactory.getLogger(ShellCommandInterpreter.class);
 
     private final Console console;
 
@@ -165,13 +165,13 @@ public class ShellCommandInterpreter implements CommandInterpreter {
                 } catch (ConsoleTerminatedException e) {
                     break;
                 } catch (Throwable e) {
-                    log.error("Error executing shell command", e);
+                    logger.error("Error executing shell command", e);
                 }
             }
         } finally {
             if (service != null && service.getServiceController().isActive()) {
-                if (log.isDebugEnabled()) {
-                    log.debug("Do not terminate this application while releasing all resources");
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Do not terminate this application while releasing all resources");
                 }
             }
         }
@@ -197,7 +197,7 @@ public class ShellCommandInterpreter implements CommandInterpreter {
             wrappedConsole.writeError(e.getMessage());
             command.printHelp(wrappedConsole);
         } catch (Exception e) {
-            log.error("Failed to execute command: " + lineParser.getCommandLine(), e);
+            logger.error("Failed to execute command: " + lineParser.getCommandLine(), e);
         } finally {
             if (outputWriter != null) {
                 outputWriter.close();
@@ -219,7 +219,7 @@ public class ShellCommandInterpreter implements CommandInterpreter {
             } catch (ConsoleTerminatedException e) {
                 throw e;
             } catch (Exception e) {
-                log.error("Failed to execute command: " +
+                logger.error("Failed to execute command: " +
                         transletCommandLine.getLineParser().getCommandLine(), e);
             }
         } else {

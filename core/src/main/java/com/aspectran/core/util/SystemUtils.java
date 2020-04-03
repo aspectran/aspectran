@@ -15,8 +15,8 @@
  */
 package com.aspectran.core.util;
 
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 
 import java.security.AccessControlException;
 
@@ -25,7 +25,7 @@ import java.security.AccessControlException;
  */
 public class SystemUtils {
 
-    private static final Log log = LogFactory.getLog(SystemUtils.class);
+    private static final Logger logger = LoggerFactory.getLogger(SystemUtils.class);
 
     private static final String JAVA_IO_TMPDIR_PROPERTY = "java.io.tmpdir";
 
@@ -42,8 +42,8 @@ public class SystemUtils {
         try {
             return System.getProperty(name);
         } catch (AccessControlException ex) {
-            if (log.isDebugEnabled()) {
-                log.debug(String.format(
+            if (logger.isDebugEnabled()) {
+                logger.debug(String.format(
                         "Caught AccessControlException when accessing system property [%s]; " +
                                 "its value will be returned [null]. Reason: %s",
                         name, ex.getMessage()));

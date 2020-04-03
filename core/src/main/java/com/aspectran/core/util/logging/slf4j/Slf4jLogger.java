@@ -13,67 +13,77 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.util.logging.nologging;
+package com.aspectran.core.util.logging.slf4j;
 
-import com.aspectran.core.util.logging.Log;
+import com.aspectran.core.util.logging.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.spi.LocationAwareLogger;
 
 /**
- * The Class NoLoggingImpl.
+ * <a href="http://www.slf4j.org/">SLF4J</a> logger.
  */
-public class NoLoggingImpl implements Log {
+public class Slf4jLogger implements Logger {
 
-    public NoLoggingImpl(String clazz) {
-        // Do Nothing
+    private final transient Logger internalLogger;
+
+    public Slf4jLogger(String clazz) {
+        org.slf4j.Logger logger = LoggerFactory.getLogger(clazz);
+        if (logger instanceof LocationAwareLogger) {
+            this.internalLogger = new Slf4jLocationAwareLoggerWrapper((LocationAwareLogger)logger);
+        } else {
+            // Logger is not LocationAwareLogger or slf4j version < 1.6
+            this.internalLogger = new Slf4jLoggerWrapper(logger);
+        }
     }
 
     @Override
     public boolean isDebugEnabled() {
-        return false;
+        return internalLogger.isDebugEnabled();
     }
 
     @Override
     public boolean isTraceEnabled() {
-        return false;
+        return internalLogger.isTraceEnabled();
     }
 
     @Override
     public void error(String s) {
-        // Do Nothing
+        internalLogger.error(s);
     }
 
     @Override
     public void error(String s, Throwable e) {
-        // Do Nothing
+        internalLogger.error(s, e);
     }
 
     @Override
     public void debug(String s) {
-        // Do Nothing
+        internalLogger.debug(s);
     }
 
     @Override
     public void debug(String s, Throwable e) {
-        // Do Nothing
+        internalLogger.debug(s, e);
     }
 
     @Override
     public void info(String s) {
-        // Do Nothing
+        internalLogger.info(s);
     }
 
     @Override
     public void trace(String s) {
-        // Do Nothing
+        internalLogger.trace(s);
     }
 
     @Override
     public void warn(String s) {
-        // Do Nothing
+        internalLogger.warn(s);
     }
 
     @Override
     public void warn(String s, Throwable e) {
-        // Do Nothing
+        internalLogger.warn(s, e);
     }
 
 }

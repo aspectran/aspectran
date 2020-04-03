@@ -17,15 +17,15 @@ package com.aspectran.core.activity;
 
 import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 
 /**
  * <p>Created: 2019-07-06</p>
  */
 public class FormattingContext {
 
-    private static final Log log = LogFactory.getLog(FormattingContext.class);
+    private static final Logger logger = LoggerFactory.getLogger(FormattingContext.class);
 
     private static final int MAX_INDENT_SIZE = 8;
 
@@ -145,8 +145,8 @@ public class FormattingContext {
         try {
             int size = Integer.parseInt(indentSize);
             if (size > MAX_INDENT_SIZE) {
-                if (log.isDebugEnabled()) {
-                    log.debug("Indent size should be less than " + MAX_INDENT_SIZE);
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Indent size should be less than " + MAX_INDENT_SIZE);
                 }
                 size = MAX_INDENT_SIZE;
             }

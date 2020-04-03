@@ -15,8 +15,8 @@
  */
 package com.aspectran.undertow.server.servlet;
 
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 import org.apache.jasper.servlet.TldScanner;
 import org.apache.tomcat.Jar;
 import org.apache.tomcat.util.descriptor.tld.TldResourcePath;
@@ -34,7 +34,7 @@ import java.net.URL;
  */
 public class TowTldScanner extends TldScanner {
 
-    private final Log log = LogFactory.getLog(TowTldScanner.class);
+    private final Logger logger = LoggerFactory.getLogger(TowTldScanner.class);
 
     private ServletContext context;
 
@@ -96,11 +96,11 @@ public class TowTldScanner extends TldScanner {
                 }
             }
         }
-        if (log.isDebugEnabled()) {
+        if (logger.isDebugEnabled()) {
             if (found) {
-                log.debug("TLD files were found in JAR [" + jarFileUrl + "]");
+                logger.debug("TLD files were found in JAR [" + jarFileUrl + "]");
             } else {
-                log.debug("No TLD files were found in JAR [" + jarFileUrl + "]");
+                logger.debug("No TLD files were found in JAR [" + jarFileUrl + "]");
             }
         }
     }

@@ -15,8 +15,8 @@
  */
 package com.aspectran.core.util.thread;
 
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +29,7 @@ import java.util.ListIterator;
  */
 public class ShutdownHooks {
 
-    private static final Log log = LogFactory.getLog(ShutdownHooks.class);
+    private static final Logger logger = LoggerFactory.getLogger(ShutdownHooks.class);
 
     private static final List<Task> tasks = new ArrayList<>();
 
@@ -49,8 +49,8 @@ public class ShutdownHooks {
             });
         }
 
-        if (log.isDebugEnabled()) {
-            log.debug("Adding shutdown-hook task: " + task);
+        if (logger.isDebugEnabled()) {
+            logger.debug("Adding shutdown-hook task: " + task);
         }
 
         tasks.add(task);
@@ -78,31 +78,31 @@ public class ShutdownHooks {
     }
 
     private static Thread addHook(final Thread thread) {
-        if (log.isDebugEnabled()) {
-            log.debug("Registering shutdown-hook: " + thread);
+        if (logger.isDebugEnabled()) {
+            logger.debug("Registering shutdown-hook: " + thread);
         }
         try {
             Runtime.getRuntime().addShutdownHook(thread);
         } catch (AbstractMethodError e) {
             // JDK 1.3+ only method. Bummer.
-            if (log.isTraceEnabled()) {
-                log.trace("Failed to register shutdown-hook: " + e);
+            if (logger.isTraceEnabled()) {
+                logger.trace("Failed to register shutdown-hook: " + e);
             }
         }
         return thread;
     }
 
     private static void removeHook(final Thread thread) {
-        if (log.isDebugEnabled()) {
-            log.debug("Removing shutdown-hook: " + thread);
+        if (logger.isDebugEnabled()) {
+            logger.debug("Removing shutdown-hook: " + thread);
         }
 
         try {
             Runtime.getRuntime().removeShutdownHook(thread);
         } catch (AbstractMethodError e) {
             // JDK 1.3+ only method. Bummer.
-            if (log.isTraceEnabled()) {
-                log.trace("Failed to register shutdown-hook: " + e);
+            if (logger.isTraceEnabled()) {
+                logger.trace("Failed to register shutdown-hook: " + e);
             }
         } catch (IllegalStateException e) {
             // The VM is shutting down, not a big deal; ignore
@@ -110,20 +110,20 @@ public class ShutdownHooks {
     }
 
     private static synchronized void runTasks() {
-        if (log.isDebugEnabled()) {
-            log.debug("Running all shutdown-hook tasks");
+        if (logger.isDebugEnabled()) {
+            logger.debug("Running all shutdown-hook tasks");
         }
 
         List<Task> list = new ArrayList<>(tasks);
         for (ListIterator<Task> iter = list.listIterator(list.size()); iter.hasPrevious();) {
             Task task = iter.previous();
-            if (log.isDebugEnabled()) {
-                log.debug("Running task: " + task);
+            if (logger.isDebugEnabled()) {
+                logger.debug("Running task: " + task);
             }
             try {
                 task.run();
             } catch (Throwable e) {
-                log.warn("Task failed", e);
+                logger.warn("Task failed", e);
             }
         }
 

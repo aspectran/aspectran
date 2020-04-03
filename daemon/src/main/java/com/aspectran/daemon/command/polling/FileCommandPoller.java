@@ -20,8 +20,8 @@ import com.aspectran.core.util.FilenameUtils;
 import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.core.util.apon.AponReader;
 import com.aspectran.core.util.apon.AponWriter;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 import com.aspectran.daemon.Daemon;
 
 import java.io.File;
@@ -39,7 +39,7 @@ import java.util.Comparator;
  */
 public class FileCommandPoller extends AbstractCommandPoller {
 
-    protected final Log log = LogFactory.getLog(FileCommandPoller.class);
+    protected final Logger logger = LoggerFactory.getLogger(FileCommandPoller.class);
 
     private static final String COMMANDS_PATH = "/commands";
 
@@ -192,15 +192,15 @@ public class FileCommandPoller extends AbstractCommandPoller {
     }
 
     private CommandParameters readCommandFile(File file) {
-        if (log.isDebugEnabled()) {
-            log.debug("Read command file: " + file.getAbsolutePath());
+        if (logger.isDebugEnabled()) {
+            logger.debug("Read command file: " + file.getAbsolutePath());
         }
         try {
             CommandParameters parameters = new CommandParameters();
             AponReader.parse(file, parameters);
             return parameters;
         } catch (IOException e) {
-            log.error("Failed to read command file: " + file.getAbsolutePath(), e);
+            logger.error("Failed to read command file: " + file.getAbsolutePath(), e);
             removeCommandFile(incomingDir, file.getName());
             return null;
         }
@@ -213,8 +213,8 @@ public class FileCommandPoller extends AbstractCommandPoller {
                 file = FilenameUtils.generateUniqueFile(new File(dir, fileName));
                 file.createNewFile();
             }
-            if (log.isDebugEnabled()) {
-                log.debug("Write command file: " + file.getAbsolutePath());
+            if (logger.isDebugEnabled()) {
+                logger.debug("Write command file: " + file.getAbsolutePath());
             }
             AponWriter aponWriter = new AponWriter(file).nullWritable(false);
             aponWriter.write(parameters);
@@ -222,10 +222,10 @@ public class FileCommandPoller extends AbstractCommandPoller {
             return file.getName();
         } catch (IOException e) {
             if (file != null) {
-                log.warn("Failed to write command file: " + file.getAbsolutePath(), e);
+                logger.warn("Failed to write command file: " + file.getAbsolutePath(), e);
             } else {
                 File f = new File(dir, fileName);
-                log.warn("Failed to write command file: " + f.getAbsolutePath(), e);
+                logger.warn("Failed to write command file: " + f.getAbsolutePath(), e);
             }
             return null;
         }
@@ -233,11 +233,11 @@ public class FileCommandPoller extends AbstractCommandPoller {
 
     private void removeCommandFile(File dir, String fileName) {
         File file = new File(dir, fileName);
-        if (log.isDebugEnabled()) {
-            log.debug("Delete command file: " + file.getAbsolutePath());
+        if (logger.isDebugEnabled()) {
+            logger.debug("Delete command file: " + file.getAbsolutePath());
         }
         if (!file.delete()) {
-            log.warn("Failed to delete command file: " + file.getAbsolutePath());
+            logger.warn("Failed to delete command file: " + file.getAbsolutePath());
         }
     }
 

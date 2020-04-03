@@ -15,8 +15,8 @@
  */
 package com.aspectran.core.service;
 
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +26,7 @@ import java.util.List;
  */
 public abstract class AbstractServiceController implements ServiceController {
 
-    private final Log log = LogFactory.getLog(getClass());
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final Object lock = new Object();
 
@@ -104,7 +104,7 @@ public abstract class AbstractServiceController implements ServiceController {
             }
 
             if (!isDerived()) {
-                log.info("Starting " + getServiceName());
+                logger.info("Starting " + getServiceName());
 
                 doStart();
 
@@ -115,7 +115,7 @@ public abstract class AbstractServiceController implements ServiceController {
                 }
             }
 
-            log.info(getServiceName() + " started successfully");
+            logger.info(getServiceName() + " started successfully");
 
             if (serviceStateListener != null) {
                 serviceStateListener.started();
@@ -133,7 +133,7 @@ public abstract class AbstractServiceController implements ServiceController {
                     throw new IllegalStateException(getServiceName() + " is not yet started");
                 }
 
-                log.info("Restarting " + getServiceName());
+                logger.info("Restarting " + getServiceName());
             } else {
                 if (active) {
                     throw new IllegalStateException(getServiceName() + " should never be run separately");
@@ -164,7 +164,7 @@ public abstract class AbstractServiceController implements ServiceController {
                 }
             }
 
-            log.info(getServiceName() + " restarted successfully");
+            logger.info(getServiceName() + " restarted successfully");
 
             if (serviceStateListener != null) {
                 serviceStateListener.restarted();
@@ -181,7 +181,7 @@ public abstract class AbstractServiceController implements ServiceController {
     public void pause() throws Exception {
         synchronized (lock) {
             if (!active) {
-                log.warn(getServiceName() + " is not yet started");
+                logger.warn(getServiceName() + " is not yet started");
                 return;
             }
 
@@ -195,7 +195,7 @@ public abstract class AbstractServiceController implements ServiceController {
 
             doPause();
 
-            log.info(getServiceName() + " is paused");
+            logger.info(getServiceName() + " is paused");
 
             if (serviceStateListener != null) {
                 serviceStateListener.paused();
@@ -207,7 +207,7 @@ public abstract class AbstractServiceController implements ServiceController {
     public void pause(long timeout) throws Exception {
         synchronized (lock) {
             if (!active) {
-                log.warn(getServiceName() + " is not yet started");
+                logger.warn(getServiceName() + " is not yet started");
                 return;
             }
 
@@ -221,7 +221,7 @@ public abstract class AbstractServiceController implements ServiceController {
 
             doPause(timeout);
 
-            log.info(getServiceName() + " is paused and will resume after " + timeout + " ms");
+            logger.info(getServiceName() + " is paused and will resume after " + timeout + " ms");
 
             if (serviceStateListener != null) {
                 serviceStateListener.paused(timeout);
@@ -233,7 +233,7 @@ public abstract class AbstractServiceController implements ServiceController {
     public void resume() throws Exception {
         synchronized (lock) {
             if (!active) {
-                log.warn(getServiceName() + " is not yet started");
+                logger.warn(getServiceName() + " is not yet started");
                 return;
             }
 
@@ -247,7 +247,7 @@ public abstract class AbstractServiceController implements ServiceController {
                 }
             }
 
-            log.info(getServiceName() + " is resumed");
+            logger.info(getServiceName() + " is resumed");
 
             if (serviceStateListener != null) {
                 serviceStateListener.resumed();
@@ -259,7 +259,7 @@ public abstract class AbstractServiceController implements ServiceController {
     public void stop() {
         synchronized (lock) {
             if (!active) {
-                log.debug(getServiceName() + " is already stopped");
+                logger.debug(getServiceName() + " is already stopped");
                 return;
             }
 
@@ -267,7 +267,7 @@ public abstract class AbstractServiceController implements ServiceController {
                 try {
                     serviceStateListener.stopped();
                 } catch (Exception e) {
-                    log.warn(e.getMessage(), e);
+                    logger.warn(e.getMessage(), e);
                 }
             }
 
@@ -279,16 +279,16 @@ public abstract class AbstractServiceController implements ServiceController {
                 }
 
                 try {
-                    log.info("Stopping " + getServiceName());
+                    logger.info("Stopping " + getServiceName());
 
                     doStop();
 
-                    log.info(getServiceName() + " stopped successfully");
+                    logger.info(getServiceName() + " stopped successfully");
                 } catch (Exception e) {
-                    log.error(getServiceName() + " was not stopped normally", e);
+                    logger.error(getServiceName() + " was not stopped normally", e);
                 }
             } else {
-                log.info(getServiceName() + " stopped successfully");
+                logger.info(getServiceName() + " stopped successfully");
             }
 
             active = false;

@@ -25,8 +25,8 @@ import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.util.apon.AponWriter;
 import com.aspectran.core.util.apon.Parameters;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -38,7 +38,7 @@ import java.io.Writer;
  */
 public class AponTransformResponse extends TransformResponse {
 
-    private static final Log log = LogFactory.getLog(AponTransformResponse.class);
+    private static final Logger logger = LoggerFactory.getLogger(AponTransformResponse.class);
 
     private final String contentType;
 
@@ -66,8 +66,8 @@ public class AponTransformResponse extends TransformResponse {
             return;
         }
 
-        if (log.isDebugEnabled()) {
-            log.debug("Response " + getTransformRule());
+        if (logger.isDebugEnabled()) {
+            logger.debug("Response " + getTransformRule());
         }
 
         try {

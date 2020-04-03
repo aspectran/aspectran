@@ -18,8 +18,8 @@ package com.aspectran.jetty;
 import com.aspectran.core.component.bean.ablility.DisposableBean;
 import com.aspectran.core.component.bean.ablility.InitializableBean;
 import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.HandlerContainer;
 import org.eclipse.jetty.server.NetworkConnector;
@@ -37,7 +37,7 @@ import java.util.stream.Collectors;
  */
 public class JettyServer extends Server implements InitializableBean, DisposableBean {
 
-    private static final Log log = LogFactory.getLog(JettyServer.class);
+    private static final Logger logger = LoggerFactory.getLogger(JettyServer.class);
 
     private boolean autoStart;
 
@@ -75,29 +75,29 @@ public class JettyServer extends Server implements InitializableBean, Disposable
         try {
             stop();
         } catch (Exception e) {
-            log.error("Error while stopping jetty server: " + e.getMessage(), e);
+            logger.error("Error while stopping jetty server: " + e.getMessage(), e);
         }
     }
 
     @Override
     public void doStart() throws Exception {
         if (autoStart) {
-            log.info("Starting embedded Jetty server");
+            logger.info("Starting embedded Jetty server");
             super.doStart();
-            log.info("Jetty started on port(s) " + getActualPortsDescription()
+            logger.info("Jetty started on port(s) " + getActualPortsDescription()
                     + " with context path '" + getContextPath() + "'");
         }
     }
 
     @Override
     public void doStop() {
-        log.info("Stopping embedded Jetty server");
+        logger.info("Stopping embedded Jetty server");
         try {
             super.doStop();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         } catch (Exception e) {
-            log.error("Unable to stop embedded Jetty server", e);
+            logger.error("Unable to stop embedded Jetty server", e);
         }
     }
 

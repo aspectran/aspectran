@@ -35,8 +35,8 @@ import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.type.ActionType;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
 import com.aspectran.core.context.rule.type.MethodType;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 
 import java.util.HashSet;
 import java.util.List;
@@ -50,7 +50,7 @@ import java.util.Set;
  */
 public abstract class AdviceActivity extends AbstractActivity {
 
-    private static final Log log = LogFactory.getLog(AdviceActivity.class);
+    private static final Logger logger = LoggerFactory.getLogger(AdviceActivity.class);
 
     private AspectAdviceRuleRegistry aspectAdviceRuleRegistry;
 
@@ -114,7 +114,7 @@ public abstract class AdviceActivity extends AbstractActivity {
             AdviceConstraintViolationException ex = new AdviceConstraintViolationException();
             String msg = "Advice can not be registered at an UNKNOWN activity phase";
             msg = ex.addViolation(aspectRule, msg);
-            log.error(msg);
+            logger.error(msg);
             throw ex;
         }
 
@@ -122,7 +122,7 @@ public abstract class AdviceActivity extends AbstractActivity {
             AdviceConstraintViolationException ex = new AdviceConstraintViolationException();
             String msg = "Advice can not be registered at the THROWN activity phase";
             msg = ex.addViolation(aspectRule, msg);
-            log.error(msg);
+            logger.error(msg);
             throw ex;
         }
 
@@ -147,7 +147,7 @@ public abstract class AdviceActivity extends AbstractActivity {
                         String msg = "BEFORE or AFTER advice should never be registered after the FINALLY activity phase";
                         msg = ex.addViolation(aspectRule, msg);
                         if (msg != null) {
-                            log.error(msg);
+                            logger.error(msg);
                         }
                     }
                 }
@@ -227,13 +227,13 @@ public abstract class AdviceActivity extends AbstractActivity {
                 handleException(aspectAdviceRule.getExceptionRule());
             } catch (Exception e) {
                 if (aspectAdviceRule.getAspectRule().isIsolated()) {
-                    log.error("Failed to execute isolated advice action " + aspectAdviceRule, e);
+                    logger.error("Failed to execute isolated advice action " + aspectAdviceRule, e);
                 } else {
                     if (throwable) {
                         throw new AspectAdviceException("Failed to execute advice action " +
                                 aspectAdviceRule, aspectAdviceRule, e);
                     } else {
-                        log.error("Failed to execute advice action " + aspectAdviceRule, e);
+                        logger.error("Failed to execute advice action " + aspectAdviceRule, e);
                     }
                 }
             }
@@ -243,8 +243,8 @@ public abstract class AdviceActivity extends AbstractActivity {
 
         Executable action = aspectAdviceRule.getExecutableAction();
         if (action != null) {
-            if (log.isDebugEnabled()) {
-                log.debug("Advice " + action);
+            if (logger.isDebugEnabled()) {
+                logger.debug("Advice " + action);
             }
 
             AspectAdviceRule oldAspectAdviceRule = currentAspectAdviceRule;
@@ -289,14 +289,14 @@ public abstract class AdviceActivity extends AbstractActivity {
                 }
             } catch (Exception e) {
                 if (aspectAdviceRule.getAspectRule().isIsolated()) {
-                    log.error("Failed to execute an isolated advice action " + aspectAdviceRule, e);
+                    logger.error("Failed to execute an isolated advice action " + aspectAdviceRule, e);
                 } else {
                     setRaisedException(e);
                     if (throwable) {
                         throw new AspectAdviceException("Failed to execute an advice action " +
                                 aspectAdviceRule, aspectAdviceRule, e);
                     } else {
-                        log.error("Failed to execute an advice action " + aspectAdviceRule, e);
+                        logger.error("Failed to execute an advice action " + aspectAdviceRule, e);
                     }
                 }
             } finally {
@@ -341,8 +341,8 @@ public abstract class AdviceActivity extends AbstractActivity {
             if (exceptionThrownRule != null) {
                 Executable action = exceptionThrownRule.getAction();
                 if (action != null) {
-                    if (log.isDebugEnabled()) {
-                        log.debug("Advice " + action);
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Advice " + action);
                     }
                     try {
                         action.execute(this);

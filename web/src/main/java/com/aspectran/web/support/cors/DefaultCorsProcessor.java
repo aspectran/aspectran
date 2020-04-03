@@ -17,8 +17,8 @@ package com.aspectran.web.support.cors;
 
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 import com.aspectran.web.support.http.HttpHeaders;
 
 import javax.servlet.http.HttpServletRequest;
@@ -35,7 +35,7 @@ import java.io.IOException;
  */
 public class DefaultCorsProcessor extends AbstractCorsProcessor {
 
-    private static final Log log = LogFactory.getLog(DefaultCorsProcessor.class);
+    private static final Logger logger = LoggerFactory.getLogger(DefaultCorsProcessor.class);
 
     /**
      * ""CORS.HTTP_STATUS_CODE"" attribute name.
@@ -167,7 +167,7 @@ public class DefaultCorsProcessor extends AbstractCorsProcessor {
 
     protected boolean checkProcessable(HttpServletResponse res) {
         if (res.getHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN) != null) {
-            log.debug("Skip CORS processing: response already contains \"Access-Control-Allow-Origin\" header");
+            logger.debug("Skip CORS processing: response already contains \"Access-Control-Allow-Origin\" header");
             return false;
         } else {
             return true;

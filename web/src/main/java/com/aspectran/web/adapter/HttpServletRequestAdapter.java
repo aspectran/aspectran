@@ -21,8 +21,8 @@ import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.util.MultiValueMap;
 import com.aspectran.core.util.apon.Parameters;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 import com.aspectran.web.activity.request.ActivityRequestWrapper;
 import com.aspectran.web.activity.request.RequestAttributeMap;
 import com.aspectran.web.activity.request.WebRequestBodyParser;
@@ -42,7 +42,7 @@ import java.util.Map;
  */
 public class HttpServletRequestAdapter extends AbstractRequestAdapter {
 
-    private static final Log log = LogFactory.getLog(HttpServletRequestAdapter.class);
+    private static final Logger logger = LoggerFactory.getLogger(HttpServletRequestAdapter.class);
 
     private boolean headersObtained;
 
@@ -103,8 +103,8 @@ public class HttpServletRequestAdapter extends AbstractRequestAdapter {
                 String body = WebRequestBodyParser.parseBody(getInputStream(), getEncoding(), getMaxRequestSize());
                 setBody(body);
             } catch (Exception e) {
-                if (log.isDebugEnabled()) {
-                    log.debug("Failed to parse request body", e);
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Failed to parse request body", e);
                 }
                 setBody(null);
             }

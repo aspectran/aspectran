@@ -17,8 +17,8 @@ package com.aspectran.web.startup.filter;
 
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 import com.aspectran.core.util.wildcard.WildcardPattern;
 import com.aspectran.web.activity.request.ActivityRequestWrapper;
 import com.aspectran.web.service.DefaultServletHttpRequestHandler;
@@ -40,7 +40,7 @@ import java.util.List;
  */
 public class WebActivityFilter implements Filter {
 
-    private static final Log log = LogFactory.getLog(WebActivityFilter.class);
+    private static final Logger logger = LoggerFactory.getLogger(WebActivityFilter.class);
 
     private FilterConfig filterConfig;
 
@@ -63,16 +63,16 @@ public class WebActivityFilter implements Filter {
                 this.bypassPatterns = bypassPatterns;
                 this.defaultServletHttpRequestHandler = new DefaultServletHttpRequestHandler(filterConfig.getServletContext());
 
-                if (log.isDebugEnabled()) {
+                if (logger.isDebugEnabled()) {
                     for (WildcardPattern pattern : bypassPatterns) {
-                        log.debug("URI [" + pattern + "] is bypassed by " + getMyName() + " to servlet [" +
+                        logger.debug("URI [" + pattern + "] is bypassed by " + getMyName() + " to servlet [" +
                                 this.defaultServletHttpRequestHandler.getDefaultServletName() + "]");
                     }
                 }
             }
         }
 
-        log.info("Initialized " + getMyName());
+        logger.info("Initialized " + getMyName());
     }
 
     @Override
@@ -101,7 +101,7 @@ public class WebActivityFilter implements Filter {
 
     @Override
     public void destroy() {
-        log.info("Destroyed " + getMyName());
+        logger.info("Destroyed " + getMyName());
     }
 
     private String getMyName() {

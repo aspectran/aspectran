@@ -27,8 +27,8 @@ import com.aspectran.core.context.rule.type.ActionType;
 import com.aspectran.core.util.BeanUtils;
 import com.aspectran.core.util.MethodUtils;
 import com.aspectran.core.util.ToStringBuilder;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -41,7 +41,7 @@ import java.util.Map;
  */
 public class InvokeAction implements Executable {
 
-    private static final Log log = LogFactory.getLog(InvokeAction.class);
+    private static final Logger logger = LoggerFactory.getLogger(InvokeAction.class);
 
     private final InvokeActionRule invokeActionRule;
 
@@ -103,8 +103,8 @@ public class InvokeAction implements Executable {
                             result = invokeMethod(activity, bean, methodName, argumentItemRuleMap, evaluator, true);
                             requiresTranslet = Boolean.TRUE;
                         } catch (NoSuchMethodException e) {
-                            if (log.isTraceEnabled()) {
-                                log.trace("No have a Translet argument on bean method " + invokeActionRule);
+                            if (logger.isTraceEnabled()) {
+                                logger.trace("No have a Translet argument on bean method " + invokeActionRule);
                             }
                             requiresTranslet = Boolean.FALSE;
                             result = invokeMethod(activity, bean, methodName, argumentItemRuleMap, evaluator, false);

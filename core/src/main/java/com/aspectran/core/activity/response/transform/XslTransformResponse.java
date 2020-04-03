@@ -27,8 +27,8 @@ import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.context.rule.type.ContentType;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Source;
@@ -60,7 +60,7 @@ public class XslTransformResponse extends TransformResponse {
 
     private static final String OUTPUT_METHOD_TEXT = "text";
 
-    private static final Log log = LogFactory.getLog(XslTransformResponse.class);
+    private static final Logger logger = LoggerFactory.getLogger(XslTransformResponse.class);
 
     private final TemplateRule templateRule;
 
@@ -91,8 +91,8 @@ public class XslTransformResponse extends TransformResponse {
             return;
         }
 
-        if (log.isDebugEnabled()) {
-            log.debug("Response " + getTransformRule());
+        if (logger.isDebugEnabled()) {
+            logger.debug("Response " + getTransformRule());
         }
 
         try {

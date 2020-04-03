@@ -22,8 +22,8 @@ import com.aspectran.core.context.expr.ItemExpression;
 import com.aspectran.core.context.rule.ForwardRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.type.ResponseType;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 
 import java.util.Map;
 
@@ -34,7 +34,7 @@ import java.util.Map;
  */
 public class ForwardResponse implements Response {
 
-    private static final Log log = LogFactory.getLog(ForwardResponse.class);
+    private static final Logger logger = LoggerFactory.getLogger(ForwardResponse.class);
 
     private final ForwardRule forwardRule;
 
@@ -54,8 +54,8 @@ public class ForwardResponse implements Response {
             return;
         }
 
-        if (log.isDebugEnabled()) {
-            log.debug("Response " + forwardRule);
+        if (logger.isDebugEnabled()) {
+            logger.debug("Response " + forwardRule);
         }
 
         ItemRuleMap itemRuleMap = forwardRule.getAttributeItemRuleMap();

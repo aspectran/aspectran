@@ -13,70 +13,71 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.util.logging.commons;
+package com.aspectran.core.util.logging.jdk14;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+
+import java.util.logging.Level;
 
 /**
- * The Class JakartaCommonsLoggingImpl.
+ * <a href="http://java.sun.com/javase/6/docs/technotes/guides/logging/index.html">java.util.logging</a> logger.
  */
-public class JakartaCommonsLoggingImpl implements com.aspectran.core.util.logging.Log {
+public class Jdk14Logger implements Logger {
 
-    private Log log;
+    private final transient java.util.logging.Logger internalLogger;
 
-    public JakartaCommonsLoggingImpl(String clazz) {
-        log = LogFactory.getLog(clazz);
+    public Jdk14Logger(String clazz) {
+        internalLogger = java.util.logging.Logger.getLogger(clazz);
     }
 
     @Override
     public boolean isDebugEnabled() {
-        return log.isDebugEnabled();
+        return internalLogger.isLoggable(Level.FINE);
     }
 
     @Override
     public boolean isTraceEnabled() {
-        return log.isTraceEnabled();
+        return internalLogger.isLoggable(Level.FINER);
     }
 
     @Override
     public void error(String s) {
-        log.error(s);
+        internalLogger.log(Level.SEVERE, s);
     }
 
     @Override
     public void error(String s, Throwable e) {
-        log.error(s, e);
+        internalLogger.log(Level.SEVERE, s, e);
     }
 
     @Override
     public void debug(String s) {
-        log.debug(s);
+        internalLogger.log(Level.FINE, s);
     }
 
     @Override
     public void debug(String s, Throwable e) {
-        log.debug(s, e);
+        internalLogger.log(Level.FINE, s, e);
     }
 
     @Override
     public void info(String s) {
-        log.info(s);
+        internalLogger.log(Level.INFO, s);
     }
 
     @Override
     public void trace(String s) {
-        log.trace(s);
+        internalLogger.log(Level.FINER, s);
     }
 
     @Override
     public void warn(String s) {
-        log.warn(s);
+        internalLogger.log(Level.WARNING, s);
     }
 
     @Override
     public void warn(String s, Throwable e) {
-        log.warn(s, e);
+        internalLogger.log(Level.WARNING, s, e);
     }
 
 }

@@ -51,8 +51,8 @@ import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.support.i18n.locale.LocaleResolver;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 
 import java.util.concurrent.Callable;
 
@@ -66,7 +66,7 @@ import java.util.concurrent.Callable;
  */
 public class CoreActivity extends AdviceActivity {
 
-    private static final Log log = LogFactory.getLog(CoreActivity.class);
+    private static final Logger logger = LoggerFactory.getLogger(CoreActivity.class);
 
     private CoreTranslet translet;
 
@@ -170,8 +170,8 @@ public class CoreActivity extends AdviceActivity {
             throws ActivityPrepareException {
         Translet parentTranslet = translet;
         try {
-            if (log.isDebugEnabled()) {
-                log.debug("Translet " + transletRule);
+            if (logger.isDebugEnabled()) {
+                logger.debug("Translet " + transletRule);
             }
 
             translet = new CoreTranslet(transletRule, this);
@@ -341,8 +341,8 @@ public class CoreActivity extends AdviceActivity {
 
     private <V> V forward(ForwardRule forwardRule, Callable<V> instantAction)
             throws TransletNotFoundException, ActivityPrepareException, ActivityPerformException {
-        if (log.isDebugEnabled()) {
-            log.debug("Forwarding from [" + translet.getRequestName() + "] to [" +
+        if (logger.isDebugEnabled()) {
+            logger.debug("Forwarding from [" + translet.getRequestName() + "] to [" +
                     forwardRule.getTransletName() + "]");
         }
 
@@ -383,7 +383,7 @@ public class CoreActivity extends AdviceActivity {
                 getResponseAdapter().flush();
             }
         } catch (Exception e) {
-            log.error("An error was detected while finishing an activity", e);
+            logger.error("An error was detected while finishing an activity", e);
         } finally {
             removeCurrentActivity();
         }
@@ -425,8 +425,8 @@ public class CoreActivity extends AdviceActivity {
      */
     private void execute(Executable action, ContentResult contentResult) throws ActionExecutionException {
         try {
-            if (log.isDebugEnabled()) {
-                log.debug("Action " + action);
+            if (logger.isDebugEnabled()) {
+                logger.debug("Action " + action);
             }
 
             if (action.getActionType() == ActionType.CHOOSE) {
@@ -450,7 +450,7 @@ public class CoreActivity extends AdviceActivity {
                 }
             }
         } catch (ActionExecutionException e) {
-            log.error("Failed to execute action " + action, e);
+            logger.error("Failed to execute action " + action, e);
             throw e;
         } catch (Exception e) {
             setRaisedException(e);

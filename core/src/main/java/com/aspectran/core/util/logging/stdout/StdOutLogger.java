@@ -13,70 +13,70 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.util.logging.slf4j;
+package com.aspectran.core.util.logging.stdout;
 
-import com.aspectran.core.util.logging.Log;
-import org.slf4j.Logger;
+import com.aspectran.core.util.logging.Logger;
 
 /**
- * The Class Slf4jLoggerImpl.
+ * StdOut logger.
  */
-class Slf4jLoggerImpl implements Log {
+public class StdOutLogger implements Logger {
 
-    private Logger log;
-
-    public Slf4jLoggerImpl(Logger logger) {
-        log = logger;
+    public StdOutLogger(String clazz) {
+        // Do Nothing
     }
 
     @Override
     public boolean isDebugEnabled() {
-        return log.isDebugEnabled();
+        return true;
     }
 
     @Override
     public boolean isTraceEnabled() {
-        return log.isTraceEnabled();
-    }
-
-    @Override
-    public void error(String s) {
-        log.error(s);
+        return true;
     }
 
     @Override
     public void error(String s, Throwable e) {
-        log.error(s, e);
+        System.err.println(s);
+        e.printStackTrace(System.err);
+    }
+
+    @Override
+    public void error(String s) {
+        System.err.println(s);
     }
 
     @Override
     public void debug(String s) {
-        log.debug(s);
+        System.out.println(s);
     }
 
     @Override
     public void debug(String s, Throwable e) {
-        log.debug(s, e);
+        System.out.println(s);
+        e.printStackTrace(System.out);
     }
 
     @Override
     public void info(String s) {
-        log.info(s);
+        System.out.println(s);
     }
 
     @Override
     public void trace(String s) {
-        log.trace(s);
+        System.out.println(s);
     }
 
     @Override
     public void warn(String s) {
-        log.warn(s);
+        System.out.println(s);
     }
 
     @Override
     public void warn(String s, Throwable e) {
-        log.warn(s, e);
+        System.out.println(s);
+        e.printStackTrace(System.out);
     }
 
 }

@@ -147,8 +147,8 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
         File xmlFile = makeFile(fileRuleAppender);
         File aponFile = makeAponFile(fileRuleAppender);
 
-        if (log.isDebugEnabled()) {
-            log.debug("Save as APON file: " + aponFile);
+        if (logger.isDebugEnabled()) {
+            logger.debug("Save as APON file: " + aponFile);
         }
 
         try {
@@ -167,7 +167,7 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
                 try {
                     aponWriter.close();
                 } catch (IOException e) {
-                    log.error("Exception during closing file " + aponFile, e);
+                    logger.error("Exception during closing file " + aponFile, e);
                 }
             }
         } catch (Exception e) {

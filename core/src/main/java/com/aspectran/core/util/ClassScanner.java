@@ -15,8 +15,8 @@
  */
 package com.aspectran.core.util;
 
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 import com.aspectran.core.util.wildcard.WildcardMatcher;
 import com.aspectran.core.util.wildcard.WildcardPattern;
 
@@ -42,7 +42,7 @@ import static com.aspectran.core.util.ResourceUtils.REGULAR_FILE_SEPARATOR_CHAR;
  */
 public class ClassScanner {
 
-    private static final Log log = LogFactory.getLog(ClassScanner.class);
+    private static final Logger logger = LoggerFactory.getLogger(ClassScanner.class);
 
     private final ClassLoader classLoader;
 
@@ -115,8 +115,8 @@ public class ClassScanner {
         while (resources.hasMoreElements()) {
             URL resource = resources.nextElement();
 
-            if (log.isDebugEnabled()) {
-                log.debug("Scanning for components in path: " + resource.getFile());
+            if (logger.isDebugEnabled()) {
+                logger.debug("Scanning for components in path: " + resource.getFile());
             }
 
             if (isJarResource(resource)) {

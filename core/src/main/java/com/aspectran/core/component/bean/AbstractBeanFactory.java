@@ -48,8 +48,8 @@ import com.aspectran.core.context.rule.type.BeanProxifierType;
 import com.aspectran.core.util.ClassUtils;
 import com.aspectran.core.util.MethodUtils;
 import com.aspectran.core.util.ReflectionUtils;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -65,7 +65,7 @@ import java.util.Map;
  */
 abstract class AbstractBeanFactory extends AbstractComponent {
 
-    private static final Log log = LogFactory.getLog(AbstractBeanFactory.class);
+    private static final Logger logger = LoggerFactory.getLogger(AbstractBeanFactory.class);
 
     private final ActivityContext context;
 
@@ -150,7 +150,7 @@ abstract class AbstractBeanFactory extends AbstractComponent {
                                 args[i] = activity.getBean(types[i], qualifiers[i]);
                             } catch (NoSuchBeanException | NoUniqueBeanException e) {
                                 args[i] = null;
-                                log.warn(e.getMessage());
+                                logger.warn(e.getMessage());
                             }
                         }
                         argTypes[i] = types[i];
@@ -262,13 +262,13 @@ abstract class AbstractBeanFactory extends AbstractComponent {
     private Object instantiateDynamicBeanProxy(BeanRule beanRule, Object[] args, Class<?>[] argTypes) {
         Object bean;
         if (beanProxifierType == BeanProxifierType.JAVASSIST) {
-            if (log.isTraceEnabled()) {
-                log.trace("Create a dynamic proxy bean " + beanRule + " using Javassist");
+            if (logger.isTraceEnabled()) {
+                logger.trace("Create a dynamic proxy bean " + beanRule + " using Javassist");
             }
             bean = JavassistDynamicProxyBean.newInstance(context, beanRule, args, argTypes);
         } else if (beanProxifierType == BeanProxifierType.CGLIB) {
-            if (log.isTraceEnabled()) {
-                log.trace("Create a dynamic proxy bean " + beanRule + " using CGLIB");
+            if (logger.isTraceEnabled()) {
+                logger.trace("Create a dynamic proxy bean " + beanRule + " using CGLIB");
             }
             bean = CglibDynamicProxyBean.newInstance(context, beanRule, args, argTypes);
         } else {
@@ -277,8 +277,8 @@ abstract class AbstractBeanFactory extends AbstractComponent {
             } else {
                 bean = newInstance(beanRule.getBeanClass());
             }
-            if (log.isTraceEnabled()) {
-                log.trace("Create a dynamic proxy bean " + beanRule + " using JDK");
+            if (logger.isTraceEnabled()) {
+                logger.trace("Create a dynamic proxy bean " + beanRule + " using JDK");
             }
             bean = JdkDynamicProxyBean.newInstance(context, beanRule, bean);
         }
@@ -306,7 +306,7 @@ abstract class AbstractBeanFactory extends AbstractComponent {
                             value = activity.getBean(types[0], qualifiers[0]);
                         } catch (NoSuchBeanException | NoUniqueBeanException e) {
                             value = null;
-                            log.warn(e.getMessage());
+                            logger.warn(e.getMessage());
                         }
                     }
 
@@ -338,7 +338,7 @@ abstract class AbstractBeanFactory extends AbstractComponent {
                                 args[i] = activity.getBean(types[i], qualifiers[i]);
                             } catch (NoSuchBeanException | NoUniqueBeanException e) {
                                 args[i] = null;
-                                log.warn(e.getMessage());
+                                logger.warn(e.getMessage());
                             }
                         }
                     }

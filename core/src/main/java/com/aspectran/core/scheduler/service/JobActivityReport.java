@@ -19,8 +19,8 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.context.rule.ScheduledJobRule;
 import com.aspectran.core.util.ExceptionUtils;
 import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
@@ -42,7 +42,7 @@ import java.util.Date;
  */
 public class JobActivityReport {
 
-    private static final Log log = LogFactory.getLog(JobActivityReport.class);
+    private static final Logger logger = LoggerFactory.getLogger(JobActivityReport.class);
 
     private final JobExecutionContext jobExecutionContext;
 
@@ -98,12 +98,12 @@ public class JobActivityReport {
             if (jobException != null) {
                 String msg = ExceptionUtils.getRootCause(jobException).getMessage();
                 sb.append("[ERROR] ").append(msg.trim()).append(System.lineSeparator());
-                log.error(sb.toString().trim(), jobException);
+                logger.error(sb.toString().trim(), jobException);
             } else {
-                log.debug(sb.toString());
+                logger.debug(sb.toString());
             }
         } catch(IOException e) {
-            log.warn("Job activity reporting failed", e);
+            logger.warn("Job activity reporting failed", e);
         }
     }
 

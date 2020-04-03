@@ -15,8 +15,8 @@
  */
 package com.aspectran.core.util.timer;
 
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 import com.aspectran.core.util.thread.Scheduler;
 
 import javax.security.auth.Destroyable;
@@ -49,7 +49,7 @@ import static java.lang.Long.MAX_VALUE;
  */
 public abstract class CyclicTimeout implements Destroyable {
 
-    private static final Log log = LogFactory.getLog(CyclicTimeout.class);
+    private static final Logger logger = LoggerFactory.getLogger(CyclicTimeout.class);
 
     private static final Timeout NOT_SET = new Timeout(MAX_VALUE, null);
 
@@ -99,8 +99,8 @@ public abstract class CyclicTimeout implements Destroyable {
             }
 
             if (this.timeout.compareAndSet(timeout, new Timeout(newTimeoutAt, wakeup))) {
-                if (log.isTraceEnabled()) {
-                    log.trace("Installed timeout in " + units.toMillis(delay) + " ms, waking up in " +
+                if (logger.isTraceEnabled()) {
+                    logger.trace("Installed timeout in " + units.toMillis(delay) + " ms, waking up in " +
                         TimeUnit.NANOSECONDS.toMillis(wakeup.at - now) + " ms");
                 }
                 break;

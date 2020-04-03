@@ -20,8 +20,8 @@ import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.assistant.AssistantLocal;
 import com.aspectran.core.context.rule.assistant.DefaultSettings;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -34,7 +34,7 @@ import java.util.Map;
  */
 public class TemplateRuleRegistry extends AbstractComponent {
 
-    private static final Log log = LogFactory.getLog(TemplateRuleRegistry.class);
+    private static final Logger logger = LoggerFactory.getLogger(TemplateRuleRegistry.class);
 
     private final Map<String, TemplateRule> templateRuleMap = new LinkedHashMap<>();
 
@@ -76,8 +76,8 @@ public class TemplateRuleRegistry extends AbstractComponent {
         }
         templateRuleMap.put(templateRule.getId(), templateRule);
 
-        if (log.isTraceEnabled()) {
-            log.trace("add TemplateRule " + templateRule);
+        if (logger.isTraceEnabled()) {
+            logger.trace("add TemplateRule " + templateRule);
         }
     }
 

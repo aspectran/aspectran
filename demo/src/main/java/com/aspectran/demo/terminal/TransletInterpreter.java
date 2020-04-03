@@ -37,8 +37,8 @@ import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.context.rule.type.TransformType;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.json.JsonWriter;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -53,7 +53,7 @@ import java.util.Set;
 @Bean("transletInterpreter")
 public class TransletInterpreter implements ActivityContextAware {
 
-    private final Log log = LogFactory.getLog(TransletInterpreter.class);
+    private final Logger logger = LoggerFactory.getLogger(TransletInterpreter.class);
 
     private ActivityContext context;
 
@@ -72,8 +72,8 @@ public class TransletInterpreter implements ActivityContextAware {
 
         TransletRule transletRule = context.getTransletRuleRegistry().getTransletRule(transletName);
         if (transletRule == null) {
-            if (log.isDebugEnabled()) {
-                log.debug("Translet not found: " + transletName);
+            if (logger.isDebugEnabled()) {
+                logger.debug("Translet not found: " + transletName);
             }
 
             JsonWriter jsonWriter = new JsonWriter(translet.getResponseAdapter().getWriter());
@@ -144,7 +144,7 @@ public class TransletInterpreter implements ActivityContextAware {
         try {
             performActivity(transletName);
         } catch (ActivityException e) {
-            log.error("Failed to execute translet: " + transletName, e);
+            logger.error("Failed to execute translet: " + transletName, e);
         }
     }
 

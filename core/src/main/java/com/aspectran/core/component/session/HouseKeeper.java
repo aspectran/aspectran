@@ -16,8 +16,8 @@
 package com.aspectran.core.component.session;
 
 import com.aspectran.core.util.ToStringBuilder;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 import com.aspectran.core.util.thread.Scheduler;
 
 import java.util.concurrent.TimeUnit;
@@ -28,7 +28,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class HouseKeeper {
 
-    private static final Log log = LogFactory.getLog(HouseKeeper.class);
+    private static final Logger logger = LoggerFactory.getLogger(HouseKeeper.class);
 
     private final SessionHandler sessionHandler;
 
@@ -83,7 +83,7 @@ public class HouseKeeper {
     public void startScavenging(int intervalInSecs) {
         synchronized (this) {
             if (intervalInSecs < 10) {
-                log.warn(sessionHandler.getComponentName() + " Short interval of " + intervalInSecs +
+                logger.warn(sessionHandler.getComponentName() + " Short interval of " + intervalInSecs +
                         "sec for session scavenging");
             }
             setScavengingInterval(intervalInSecs);
@@ -94,7 +94,7 @@ public class HouseKeeper {
             if (runner == null) {
                 runner = new Runner();
             }
-            log.info(sessionHandler.getComponentName() + " Scavenging every " + scavengingInterval + " ms");
+            logger.info(sessionHandler.getComponentName() + " Scavenging every " + scavengingInterval + " ms");
             task = scheduler.schedule(runner, scavengingInterval, TimeUnit.MILLISECONDS);
         }
     }
@@ -106,7 +106,7 @@ public class HouseKeeper {
         synchronized (this) {
             if (task != null) {
                 task.cancel();
-                log.info(sessionHandler.getComponentName() + " Stopped scavenging");
+                logger.info(sessionHandler.getComponentName() + " Stopped scavenging");
             }
             task = null;
         }
@@ -124,7 +124,7 @@ public class HouseKeeper {
         try {
             sessionHandler.scavenge();
         } catch (Exception e) {
-            log.warn(e.getMessage(), e);
+            logger.warn(e.getMessage(), e);
         }
     }
 

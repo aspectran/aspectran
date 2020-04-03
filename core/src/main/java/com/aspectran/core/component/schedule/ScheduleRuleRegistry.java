@@ -22,8 +22,8 @@ import com.aspectran.core.context.rule.ScheduleRule;
 import com.aspectran.core.context.rule.ScheduledJobRule;
 import com.aspectran.core.context.rule.assistant.AssistantLocal;
 import com.aspectran.core.context.rule.assistant.DefaultSettings;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -36,7 +36,7 @@ import java.util.Set;
  */
 public class ScheduleRuleRegistry extends AbstractComponent {
 
-    private static final Log log = LogFactory.getLog(ScheduleRuleRegistry.class);
+    private static final Logger logger = LoggerFactory.getLogger(ScheduleRuleRegistry.class);
 
     private final Map<String, ScheduleRule> scheduleRuleMap = new LinkedHashMap<>();
 
@@ -82,8 +82,8 @@ public class ScheduleRuleRegistry extends AbstractComponent {
 
         scheduleRuleMap.put(scheduleRule.getId(), scheduleRule);
 
-        if (log.isTraceEnabled()) {
-            log.trace("add ScheduleRule " + scheduleRule);
+        if (logger.isTraceEnabled()) {
+            logger.trace("add ScheduleRule " + scheduleRule);
         }
     }
 

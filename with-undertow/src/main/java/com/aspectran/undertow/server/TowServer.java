@@ -18,8 +18,8 @@ package com.aspectran.undertow.server;
 import com.aspectran.core.component.bean.ablility.DisposableBean;
 import com.aspectran.core.component.bean.ablility.InitializableBean;
 import com.aspectran.core.util.lifecycle.AbstractLifeCycle;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 import com.aspectran.undertow.server.servlet.TowServletContainer;
 import io.undertow.Undertow;
 import io.undertow.Version;
@@ -39,7 +39,7 @@ import java.io.IOException;
  */
 public class TowServer extends AbstractLifeCycle implements InitializableBean, DisposableBean {
 
-    private static final Log log = LogFactory.getLog(TowServer.class);
+    private static final Logger logger = LoggerFactory.getLogger(TowServer.class);
 
     private final Undertow.Builder builder = Undertow.builder();
 
@@ -199,7 +199,7 @@ public class TowServer extends AbstractLifeCycle implements InitializableBean, D
         try {
             server = builder.build();
             server.start();
-            log.info("Undertow " + Version.getVersionString() + " started");
+            logger.info("Undertow " + Version.getVersionString() + " started");
         } catch (Exception e) {
             try {
                 if (server != null) {
@@ -223,14 +223,14 @@ public class TowServer extends AbstractLifeCycle implements InitializableBean, D
                             // Wait "30" seconds before make a force shutdown
                             boolean result = ((GracefulShutdownHandler)handler).awaitShutdown(shutdownTimeout * 1000);
                             if (!result) {
-                                log.warn("Undertow server did not shut down gracefully within " +
+                                logger.warn("Undertow server did not shut down gracefully within " +
                                         shutdownTimeout + " seconds. Proceeding with forceful shutdown");
                             }
                         } else {
                             ((GracefulShutdownHandler)handler).awaitShutdown();
                         }
                     } catch (Exception ex) {
-                        log.error("Unable to gracefully stop Undertow server");
+                        logger.error("Unable to gracefully stop Undertow server");
                     }
                 }
                 if (towServletContainer != null && towServletContainer.getDeploymentManagers() != null) {
@@ -241,10 +241,10 @@ public class TowServer extends AbstractLifeCycle implements InitializableBean, D
                 }
                 server.stop();
                 server = null;
-                log.info("Undertow " + Version.getVersionString() + " stopped");
+                logger.info("Undertow " + Version.getVersionString() + " stopped");
             }
         } catch (Exception e) {
-            log.error("Unable to stop Undertow server", e);
+            logger.error("Unable to stop Undertow server", e);
         }
     }
 
@@ -260,7 +260,7 @@ public class TowServer extends AbstractLifeCycle implements InitializableBean, D
         try {
             stop();
         } catch (Exception e) {
-            log.error("Error while stopping Undertow server: " + e.getMessage(), e);
+            logger.error("Error while stopping Undertow server: " + e.getMessage(), e);
         }
     }
 

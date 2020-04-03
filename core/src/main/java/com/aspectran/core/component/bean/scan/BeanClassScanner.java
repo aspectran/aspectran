@@ -16,8 +16,8 @@
 package com.aspectran.core.component.bean.scan;
 
 import com.aspectran.core.util.ClassScanner;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 import com.aspectran.core.util.wildcard.WildcardPattern;
 
 import java.lang.reflect.Modifier;
@@ -30,7 +30,7 @@ import static com.aspectran.core.util.ClassUtils.PACKAGE_SEPARATOR_CHAR;
  */
 public class BeanClassScanner extends ClassScanner {
 
-    private static final Log log = LogFactory.getLog(BeanClassScanner.class);
+    private static final Logger logger = LoggerFactory.getLogger(BeanClassScanner.class);
 
     private BeanClassFilter beanClassFilter;
 
@@ -99,7 +99,7 @@ public class BeanClassScanner extends ClassScanner {
                 if (maskedBeanId != null) {
                     beanId = maskedBeanId;
                 } else {
-                    log.warn("Bean name [" + beanId + "] can not be masked by mask pattern [" +
+                    logger.warn("Bean name [" + beanId + "] can not be masked by mask pattern [" +
                             beanIdMaskPattern + "]");
                 }
             }
@@ -121,8 +121,8 @@ public class BeanClassScanner extends ClassScanner {
 
             saveHandler.save(beanId, targetClass);
 
-            if (log.isTraceEnabled()) {
-                log.trace(String.format("Scanned bean {id=%s, class=%s}", beanId, className));
+            if (logger.isTraceEnabled()) {
+                logger.trace(String.format("Scanned bean {id=%s, class=%s}", beanId, className));
             }
         }
     }

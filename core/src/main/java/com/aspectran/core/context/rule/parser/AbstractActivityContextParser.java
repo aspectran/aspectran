@@ -21,8 +21,8 @@ import com.aspectran.core.context.rule.appender.RuleAppender;
 import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;
 import com.aspectran.core.context.rule.type.AppendedFileFormatType;
 import com.aspectran.core.util.ResourceUtils;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 
 /**
  * The Class AbstractActivityContextParser.
@@ -31,7 +31,7 @@ import com.aspectran.core.util.logging.LogFactory;
  */
 public abstract class AbstractActivityContextParser implements ActivityContextParser {
 
-    protected final Log log = LogFactory.getLog(getClass());
+    protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final ContextRuleAssistant assistant;
 

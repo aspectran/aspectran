@@ -39,8 +39,8 @@ import com.aspectran.core.context.rule.type.ScopeType;
 import com.aspectran.core.util.ClassUtils;
 import com.aspectran.core.util.PrefixSuffixPattern;
 import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
@@ -58,7 +58,7 @@ import java.util.Set;
  */
 public class BeanRuleRegistry {
 
-    private static final Log log = LogFactory.getLog(BeanRuleRegistry.class);
+    private static final Logger logger = LoggerFactory.getLogger(BeanRuleRegistry.class);
 
     private final Map<String, BeanRule> idBasedBeanRuleMap = new LinkedHashMap<>();
 
@@ -180,7 +180,7 @@ public class BeanRuleRegistry {
             return;
         }
 
-        log.info("Auto component scanning on packages [" + StringUtils.joinCommaDelimitedList(basePackages) + "]");
+        logger.info("Auto component scanning on packages [" + StringUtils.joinCommaDelimitedList(basePackages) + "]");
 
         for (String basePackage : basePackages) {
             BeanClassScanner scanner = new BeanClassScanner(classLoader);
@@ -279,8 +279,8 @@ public class BeanRuleRegistry {
                     saveBeanRuleWithInterfaces(targetBeanClass, beanRule);
                 }
             }
-            if (log.isTraceEnabled()) {
-                log.trace("add BeanRule " + beanRule);
+            if (logger.isTraceEnabled()) {
+                logger.trace("add BeanRule " + beanRule);
             }
         }
     }

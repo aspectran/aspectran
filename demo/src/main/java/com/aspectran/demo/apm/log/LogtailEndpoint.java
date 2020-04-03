@@ -18,8 +18,8 @@ package com.aspectran.demo.apm.log;
 import com.aspectran.core.component.bean.annotation.AvoidAdvice;
 import com.aspectran.core.component.bean.annotation.Component;
 import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 import com.aspectran.web.socket.jsr356.ActivityContextAwareEndpoint;
 import com.aspectran.web.socket.jsr356.AspectranConfigurator;
 
@@ -44,7 +44,7 @@ import java.util.Set;
 @AvoidAdvice
 public class LogtailEndpoint extends ActivityContextAwareEndpoint {
 
-    private static final Log log = LogFactory.getLog(LogtailEndpoint.class);
+    private static final Logger logger = LoggerFactory.getLogger(LogtailEndpoint.class);
 
     private static final String COMMAND_JOIN = "JOIN:";
 
@@ -64,8 +64,8 @@ public class LogtailEndpoint extends ActivityContextAwareEndpoint {
 
     @OnOpen
     public void onOpen(Session session) {
-        if (log.isDebugEnabled()) {
-            log.debug("WebSocket connection established with session: " + session.getId());
+        if (logger.isDebugEnabled()) {
+            logger.debug("WebSocket connection established with session: " + session.getId());
         }
     }
 
@@ -89,7 +89,7 @@ public class LogtailEndpoint extends ActivityContextAwareEndpoint {
 
     @OnError
     public void onError(Session session, Throwable error) {
-        log.error("Error in websocket session: " + session.getId(), error);
+        logger.error("Error in websocket session: " + session.getId(), error);
         try {
             removeSession(session);
             session.close(new CloseReason(CloseReason.CloseCodes.UNEXPECTED_CONDITION, null));

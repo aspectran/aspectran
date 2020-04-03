@@ -89,8 +89,8 @@ import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.context.rule.type.ScopeType;
 import com.aspectran.core.context.rule.type.TransformType;
 import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -111,7 +111,7 @@ import java.util.StringTokenizer;
  */
 public class AnnotatedConfigParser {
 
-    private static final Log log = LogFactory.getLog(AnnotatedConfigParser.class);
+    private static final Logger logger = LoggerFactory.getLogger(AnnotatedConfigParser.class);
 
     private final Environment environment;
 
@@ -136,17 +136,17 @@ public class AnnotatedConfigParser {
             return;
         }
 
-        if (log.isDebugEnabled()) {
-            log.debug("Now trying to parse annotated configurations");
+        if (logger.isDebugEnabled()) {
+            logger.debug("Now trying to parse annotated configurations");
         }
 
         if (!configurableBeanRuleMap.isEmpty()) {
-            if (log.isDebugEnabled()) {
-                log.debug("Parsing bean rules for annotated configurations: " + configurableBeanRuleMap.size());
+            if (logger.isDebugEnabled()) {
+                logger.debug("Parsing bean rules for annotated configurations: " + configurableBeanRuleMap.size());
             }
             for (BeanRule beanRule : configurableBeanRuleMap.values()) {
-                if (log.isTraceEnabled()) {
-                    log.trace("configurableBeanRule " + beanRule);
+                if (logger.isTraceEnabled()) {
+                    logger.trace("configurableBeanRule " + beanRule);
                 }
                 if (!beanRule.isFactoryOffered()) {
                     parseConfigurableBean(beanRule);
@@ -158,12 +158,12 @@ public class AnnotatedConfigParser {
         }
 
         if (!idBasedBeanRuleMap.isEmpty()) {
-            if (log.isDebugEnabled()) {
-                log.debug("Parsing for ID-based bean rules: " + idBasedBeanRuleMap.size());
+            if (logger.isDebugEnabled()) {
+                logger.debug("Parsing for ID-based bean rules: " + idBasedBeanRuleMap.size());
             }
             for (BeanRule beanRule : idBasedBeanRuleMap.values()) {
-                if (log.isTraceEnabled()) {
-                    log.trace("idBasedBeanRule " + beanRule);
+                if (logger.isTraceEnabled()) {
+                    logger.trace("idBasedBeanRule " + beanRule);
                 }
                 if (!beanRule.isFactoryOffered()) {
                     parseConstructorAutowire(beanRule);
@@ -174,14 +174,14 @@ public class AnnotatedConfigParser {
         }
 
         if (!typeBasedBeanRuleMap.isEmpty()) {
-            if (log.isDebugEnabled()) {
-                log.debug("Parsing for type-based bean rules: " + typeBasedBeanRuleMap.size());
+            if (logger.isDebugEnabled()) {
+                logger.debug("Parsing for type-based bean rules: " + typeBasedBeanRuleMap.size());
             }
             for (Set<BeanRule> set : typeBasedBeanRuleMap.values()) {
                 for (BeanRule beanRule : set) {
                     if (!beanRule.isFactoryOffered()) {
-                        if (log.isTraceEnabled()) {
-                            log.trace("typeBasedBeanRule " + beanRule);
+                        if (logger.isTraceEnabled()) {
+                            logger.trace("typeBasedBeanRule " + beanRule);
                         }
                         parseConstructorAutowire(beanRule);
                         parseFieldAutowire(beanRule);

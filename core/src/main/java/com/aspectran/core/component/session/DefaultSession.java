@@ -16,8 +16,8 @@
 package com.aspectran.core.component.session;
 
 import com.aspectran.core.util.ToStringBuilder;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 import com.aspectran.core.util.thread.Locker;
 import com.aspectran.core.util.thread.Locker.Lock;
 import com.aspectran.core.util.timer.CyclicTimeout;
@@ -32,7 +32,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class DefaultSession implements Session {
 
-    private static final Log log = LogFactory.getLog(DefaultSession.class);
+    private static final Logger logger = LoggerFactory.getLogger(DefaultSession.class);
 
     private final Locker locker = new Locker();
 
@@ -155,11 +155,11 @@ public class DefaultSession implements Session {
             sessionData.setMaxInactiveInterval((long)secs * 1000L);
             sessionData.calcAndSetExpiry();
             sessionData.setDirty(true);
-            if (log.isDebugEnabled()) {
+            if (logger.isDebugEnabled()) {
                 if (secs <= 0) {
-                    log.debug("Session " + sessionData.getId() + " is now immortal (maxInactiveInterval=" + secs + ")");
+                    logger.debug("Session " + sessionData.getId() + " is now immortal (maxInactiveInterval=" + secs + ")");
                 } else {
-                    log.debug("Session " + sessionData.getId() + " maxInactiveInterval=" + secs);
+                    logger.debug("Session " + sessionData.getId() + " maxInactiveInterval=" + secs);
                 }
             }
         }
@@ -185,8 +185,8 @@ public class DefaultSession implements Session {
             requests++;
 
             // temporarily stop the idle timer
-            if (log.isDebugEnabled()) {
-                log.debug("Session " + getId() + " accessed, stopping timer, active requests=" + requests);
+            if (logger.isDebugEnabled()) {
+                logger.debug("Session " + getId() + " accessed, stopping timer, active requests=" + requests);
             }
             sessionInactivityTimer.cancel();
 
@@ -199,8 +199,8 @@ public class DefaultSession implements Session {
         try (Lock ignored = locker.lock()) {
             requests--;
 
-            if (log.isDebugEnabled()) {
-                log.debug("Session " + getId() + " complete, active requests=" + requests);
+            if (logger.isDebugEnabled()) {
+                logger.debug("Session " + getId() + " complete, active requests=" + requests);
             }
 
             // start the inactivity timer if necessary
@@ -246,14 +246,14 @@ public class DefaultSession implements Session {
                 if (evictionIdleSecs < SessionCache.EVICT_ON_INACTIVITY) {
                     // we do not want to evict inactive sessions
                     time = -1;
-                    if (log.isDebugEnabled()) {
-                        log.debug("Session " + getId() + " is immortal && no inactivity eviction");
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Session " + getId() + " is immortal && no inactivity eviction");
                     }
                 } else {
                     // sessions are immortal but we want to evict after inactivity
                     time = TimeUnit.SECONDS.toMillis(evictionIdleSecs);
-                    if (log.isDebugEnabled()) {
-                        log.debug("Session " + getId() + " is immortal; evict after " + evictionIdleSecs +
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Session " + getId() + " is immortal; evict after " + evictionIdleSecs +
                                 " sec inactivity");
                     }
                 }
@@ -262,21 +262,21 @@ public class DefaultSession implements Session {
                 if (evictionIdleSecs == SessionCache.NEVER_EVICT) {
                     // timeout is the time remaining until its expiry
                     time = (remaining > 0 ? remaining : 0);
-                    if (log.isTraceEnabled()) {
-                        log.trace("Session " + getId() + " no eviction");
+                    if (logger.isTraceEnabled()) {
+                        logger.trace("Session " + getId() + " no eviction");
                     }
                 } else if (evictionIdleSecs == SessionCache.EVICT_ON_SESSION_EXIT) {
                     // session will not remain in the cache, so no timeout
                     time = -1;
-                    if (log.isDebugEnabled()) {
-                        log.debug("Session " + getId() + " evict on exit");
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Session " + getId() + " evict on exit");
                     }
                 } else {
                     // want to evict on idle: timer is lesser of the session's
                     // expiration remaining and the time to evict
                     time = (remaining > 0 ? Math.min(maxInactive, TimeUnit.SECONDS.toMillis(evictionIdleSecs)) : 0L);
-                    if (log.isDebugEnabled()) {
-                        log.debug("Session " + getId() + " timer set to lesser of maxIdleSeconds=" +
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Session " + getId() + " timer set to lesser of maxIdleSeconds=" +
                                 (maxInactive / 1000L) + " and evictionIdleSeconds=" + evictionIdleSecs);
                     }
                 }
@@ -309,7 +309,7 @@ public class DefaultSession implements Session {
                 }
                 sessionHandler.removeSession(sessionData.getId(), false);
             } catch (Exception e) {
-                log.warn("Failed to invalidate session", e);
+                logger.warn("Failed to invalidate session", e);
             }
         }
     }
@@ -322,8 +322,8 @@ public class DefaultSession implements Session {
                     // spec does not allow invalidate of already invalid session
                     throw new IllegalStateException();
                 case INVALIDATING:
-                    if (log.isDebugEnabled()) {
-                        log.debug("Session " + sessionData.getId() + " already being invalidated");
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Session " + sessionData.getId() + " already being invalidated");
                     }
                     break;
                 case VALID:
@@ -341,8 +341,8 @@ public class DefaultSession implements Session {
     protected void finishInvalidate() {
         try (Lock ignored = locker.lock()) {
             try {
-                if (log.isDebugEnabled()) {
-                    log.debug("Invalidate session " + sessionData.getId());
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Invalidate session " + sessionData.getId());
                 }
                 if (state == State.VALID || state == State.INVALIDATING) {
                     Set<String> keys;
@@ -549,8 +549,8 @@ public class DefaultSession implements Session {
             timer = new CyclicTimeout((getSessionHandler().getScheduler())) {
                 @Override
                 public void onTimeoutExpired() {
-                    if (log.isDebugEnabled()) {
-                        log.debug("Timer expired for session " + getId());
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Timer expired for session " + getId());
                     }
                     long now = System.currentTimeMillis();
                     // handle what to do with the session after the timer expired
@@ -573,28 +573,28 @@ public class DefaultSession implements Session {
          */
         public void schedule (long time) {
             if (time >= 0) {
-                if (log.isTraceEnabled()) {
-                    log.trace("(Re)starting timer for session " + getId() + " at " + time + "ms");
+                if (logger.isTraceEnabled()) {
+                    logger.trace("(Re)starting timer for session " + getId() + " at " + time + "ms");
                 }
                 timer.schedule(time, TimeUnit.MILLISECONDS);
             } else {
-                if (log.isTraceEnabled()) {
-                    log.trace("Not starting timer for session " + getId());
+                if (logger.isTraceEnabled()) {
+                    logger.trace("Not starting timer for session " + getId());
                 }
             }
         }
 
         public void cancel() {
             timer.cancel();
-            if (log.isTraceEnabled()) {
-                log.trace("Cancelled timer for session " + getId());
+            if (logger.isTraceEnabled()) {
+                logger.trace("Cancelled timer for session " + getId());
             }
         }
 
         public void destroy() {
             timer.destroy();
-            if (log.isTraceEnabled()) {
-                log.trace("Destroyed timer for session " + getId());
+            if (logger.isTraceEnabled()) {
+                logger.trace("Destroyed timer for session " + getId());
             }
         }
     }

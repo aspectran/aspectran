@@ -15,8 +15,8 @@
  */
 package com.aspectran.web.startup.servlet;
 
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -34,7 +34,7 @@ public class SpecificIPAllowedWebActivityServlet extends WebActivityServlet {
     /** @serial */
     private static final long serialVersionUID = -2369788867122156319L;
 
-    private static final Log log = LogFactory.getLog(SpecificIPAllowedWebActivityServlet.class);
+    private static final Logger logger = LoggerFactory.getLogger(SpecificIPAllowedWebActivityServlet.class);
 
     private static final String DELIMITERS = " ,;\t\r\n\f";
 
@@ -66,8 +66,8 @@ public class SpecificIPAllowedWebActivityServlet extends WebActivityServlet {
     public void service(HttpServletRequest req, HttpServletResponse res) throws IOException {
         String remoteAddr = req.getRemoteAddr();
         if (!isAllowedAddress(remoteAddr)) {
-            if (log.isDebugEnabled()) {
-                log.debug("Access Denied: " + remoteAddr);
+            if (logger.isDebugEnabled()) {
+                logger.debug("Access Denied: " + remoteAddr);
             }
             res.sendError(HttpServletResponse.SC_FORBIDDEN);
             return;

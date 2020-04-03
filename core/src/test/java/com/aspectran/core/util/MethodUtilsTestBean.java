@@ -16,24 +16,24 @@
 package com.aspectran.core.util;
 
 import com.aspectran.core.activity.Translet;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.List;
 
 public class MethodUtilsTestBean {
 
-    private static final Log log = LogFactory.getLog(MethodUtilsTestBean.class);
+    private static final Logger logger = LoggerFactory.getLogger(MethodUtilsTestBean.class);
 
     @SuppressWarnings("unused")
     public void primitiveArray(int num) {
-        log.debug("specified args: " + num);
+        logger.debug("specified args: " + num);
     }
 
     @SuppressWarnings("unused")
     public void primitiveArray(int[] intArray) {
-        log.debug("specified args: " + Arrays.toString(intArray));
+        logger.debug("specified args: " + Arrays.toString(intArray));
     }
 
     @SuppressWarnings("unused")
@@ -49,17 +49,17 @@ public class MethodUtilsTestBean {
 
     @SuppressWarnings("unused")
     public void setSampleBean(MethodUtilsTestBean sampleBean) {
-        log.debug("specified args: " + sampleBean);
+        logger.debug("specified args: " + sampleBean);
     }
 
     @SuppressWarnings("unused")
     public void setSampleBean(MethodUtilsTestBean[] sampleBean) {
-        log.debug("specified args: " + Arrays.toString(sampleBean));
+        logger.debug("specified args: " + Arrays.toString(sampleBean));
     }
 
     @SuppressWarnings("unused")
     public void setSampleBean(List<MethodUtilsTestBean> list) {
-        log.debug("specified args: " + list);
+        logger.debug("specified args: " + list);
     }
 
     @SuppressWarnings("unused")

@@ -19,8 +19,8 @@ import com.aspectran.core.activity.Translet;
 import com.aspectran.core.component.bean.ablility.DisposableBean;
 import com.aspectran.core.component.bean.ablility.InitializableBean;
 import com.aspectran.core.util.ToStringBuilder;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 import com.sun.speech.freetts.Voice;
 import com.sun.speech.freetts.VoiceManager;
 import com.sun.speech.freetts.audio.AudioPlayer;
@@ -39,7 +39,7 @@ import java.util.Set;
  */
 public class TextToSpeechBean implements InitializableBean, DisposableBean {
 
-    private static final Log log = LogFactory.getLog(TextToSpeechBean.class);
+    private static final Logger logger = LoggerFactory.getLogger(TextToSpeechBean.class);
 
     private static final byte[] DATA_URI_PREFIX = "data:audio/wav;base64,".getBytes();
 
@@ -93,7 +93,7 @@ public class TextToSpeechBean implements InitializableBean, DisposableBean {
 
         VoiceManager voiceManager = VoiceManager.getInstance();
 
-        if (log.isDebugEnabled()) {
+        if (logger.isDebugEnabled()) {
             Voice[] voices = voiceManager.getVoices();
             String[] arr = new String[voices.length];
             for (int i = 0; i < arr.length; i++) {
@@ -101,7 +101,7 @@ public class TextToSpeechBean implements InitializableBean, DisposableBean {
             }
             ToStringBuilder tsb = new ToStringBuilder("All voices available");
             tsb.append("voices", arr);
-            log.debug(tsb.toString());
+            logger.debug(tsb.toString());
         }
 
         if (voiceName != null) {

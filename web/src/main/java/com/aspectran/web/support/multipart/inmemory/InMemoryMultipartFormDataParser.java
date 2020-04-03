@@ -22,8 +22,8 @@ import com.aspectran.core.util.FilenameUtils;
 import com.aspectran.core.util.LinkedMultiValueMap;
 import com.aspectran.core.util.MultiValueMap;
 import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 import com.aspectran.web.activity.request.MultipartFormDataParser;
 import com.aspectran.web.activity.request.MultipartRequestParseException;
 import com.aspectran.web.support.multipart.commons.CommonsRequestContext;
@@ -45,7 +45,7 @@ import java.util.Map;
  */
 public class InMemoryMultipartFormDataParser implements MultipartFormDataParser {
 
-    private static final Log log = LogFactory.getLog(InMemoryMultipartFormDataParser.class);
+    private static final Logger logger = LoggerFactory.getLogger(InMemoryMultipartFormDataParser.class);
 
     private long maxRequestSize = -1L;
 
@@ -176,8 +176,8 @@ public class InMemoryMultipartFormDataParser implements MultipartFormDataParser 
                         InMemoryMultipartFileParameter fileParameter = new InMemoryMultipartFileParameter(fileItem);
                         fileParameterMap.add(fieldName, fileParameter);
 
-                        if (log.isDebugEnabled()) {
-                            log.debug("Found multipart file [" + fileParameter.getFileName() + "] of size " +
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("Found multipart file [" + fileParameter.getFileName() + "] of size " +
                                     fileParameter.getFileSize() + " bytes, stored " +
                                     fileParameter.getStorageDescription());
                         }
@@ -196,7 +196,7 @@ public class InMemoryMultipartFormDataParser implements MultipartFormDataParser 
             try {
                 value = fileItem.getString(encoding);
             } catch (UnsupportedEncodingException ex) {
-                log.warn("Could not decode multipart item '" + fileItem.getFieldName() +
+                logger.warn("Could not decode multipart item '" + fileItem.getFieldName() +
                         "' with encoding '" + encoding + "': using platform default");
                 value = fileItem.getString();
             }

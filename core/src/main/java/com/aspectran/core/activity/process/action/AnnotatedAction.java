@@ -34,8 +34,8 @@ import com.aspectran.core.util.MethodUtils;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.ToStringBuilder;
 import com.aspectran.core.util.apon.Parameters;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -64,7 +64,7 @@ import java.util.Map;
  */
 public class AnnotatedAction implements Executable {
 
-    private static final Log log = LogFactory.getLog(AnnotatedAction.class);
+    private static final Logger logger = LoggerFactory.getLogger(AnnotatedAction.class);
 
     private static final Object UNKNOWN_VALUE_TYPE = new Object();
 
@@ -171,8 +171,8 @@ public class AnnotatedAction implements Executable {
                     }
                 }
                 if (thrown != null) {
-                    if (log.isDebugEnabled()) {
-                        log.debug("Failed to bind argument " + parameterBindingRule + "; Cause: " +
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Failed to bind argument " + parameterBindingRule + "; Cause: " +
                             thrown.getMessage(), thrown);
                     }
                 }
@@ -302,8 +302,8 @@ public class AnnotatedAction implements Executable {
                     missingProperties.add(name);
                 }
             } catch (Exception e) {
-                if (log.isDebugEnabled()) {
-                    log.debug(e.getMessage(), e);
+                if (logger.isDebugEnabled()) {
+                    logger.debug(e.getMessage(), e);
                 }
             }
         }

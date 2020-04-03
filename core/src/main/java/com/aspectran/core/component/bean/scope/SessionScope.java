@@ -24,8 +24,8 @@ import com.aspectran.core.component.session.Session;
 import com.aspectran.core.component.session.SessionBindingListener;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.type.ScopeType;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -39,7 +39,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  */
 public class SessionScope extends AbstractScope implements SessionBindingListener {
 
-    private static final Log log = LogFactory.getLog(SessionScope.class);
+    private static final Logger logger = LoggerFactory.getLogger(SessionScope.class);
 
     private static final String SESSION_SCOPE_ATTR_NAME = SessionScope.class.getName();
 
@@ -115,9 +115,9 @@ public class SessionScope extends AbstractScope implements SessionBindingListene
                             try {
                                 beanRules = beanRuleRegistry.getBeanRules(beanName);
                                 if (beanRules == null) {
-                                    log.warn("No bean named '" + beanName + "' available");
+                                    logger.warn("No bean named '" + beanName + "' available");
                                 } else if (beanRules.length > 1) {
-                                    log.warn("No qualifying bean of type '" + beanName +
+                                    logger.warn("No qualifying bean of type '" + beanName +
                                             "' is defined: expected single matching bean but found " +
                                             beanRules.length +
                                             ": [" + NoUniqueBeanException.getBeanDescriptions(beanRules) + "]");
@@ -125,7 +125,7 @@ public class SessionScope extends AbstractScope implements SessionBindingListene
                                     sessionScope.putBeanInstance(activity, beanRules[0], beanInstance);
                                 }
                             } catch (Exception e) {
-                                log.warn("Failed to restore the bean to session scope", e);
+                                logger.warn("Failed to restore the bean to session scope", e);
                             }
                         }
                     }

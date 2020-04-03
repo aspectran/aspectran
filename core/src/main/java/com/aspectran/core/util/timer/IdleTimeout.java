@@ -15,8 +15,8 @@
  */
 package com.aspectran.core.util.timer;
 
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 import com.aspectran.core.util.thread.Scheduler;
 
 import java.util.concurrent.TimeUnit;
@@ -35,7 +35,7 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 public abstract class IdleTimeout {
 
-    private static final Log log = LogFactory.getLog(IdleTimeout.class);
+    private static final Logger logger = LoggerFactory.getLogger(IdleTimeout.class);
 
     private final Scheduler scheduler;
 
@@ -152,14 +152,14 @@ public abstract class IdleTimeout {
             long idleTimeout = getIdleTimeout();
             long idleLeft = idleTimeout - idleElapsed;
 
-            if (log.isTraceEnabled()) {
-                log.trace(this + " idle timeout check, elapsed: " + idleElapsed + " ms, remaining: " + idleLeft + " ms");
+            if (logger.isTraceEnabled()) {
+                logger.trace(this + " idle timeout check, elapsed: " + idleElapsed + " ms, remaining: " + idleLeft + " ms");
             }
 
             if (idleTimeout > 0) {
                 if (idleLeft <= 0) {
-                    if (log.isTraceEnabled()) {
-                        log.trace(this + " idle timeout expired");
+                    if (logger.isTraceEnabled()) {
+                        logger.trace(this + " idle timeout expired");
                     }
                     try {
                         onIdleExpired(new TimeoutException("Idle timeout expired: " + idleElapsed + "/" + idleTimeout + " ms"));

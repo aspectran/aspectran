@@ -15,76 +15,72 @@
  */
 package com.aspectran.core.util.logging.log4j2;
 
-import com.aspectran.core.util.logging.Log;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.spi.AbstractLogger;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
+import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.MarkerManager;
 
 /**
- * The Class Log4j2Impl.
+ * The Class Log4j2LoggerWrapper.
  */
-public class Log4j2Impl implements Log {
+public class Log4j2LoggerWrapper implements Logger {
 
-    private Log log;
+    private static final Marker MARKER = MarkerManager.getMarker(LoggerFactory.MARKER);
 
-    public Log4j2Impl(String clazz) {
-        Logger logger = LogManager.getLogger(clazz);
+    private final transient org.apache.logging.log4j.Logger internalLogger;
 
-        if (logger instanceof AbstractLogger) {
-            log = new Log4j2AbstractLoggerImpl((AbstractLogger)logger);
-        } else {
-            log = new Log4j2LoggerImpl(logger);
-        }
+    public Log4j2LoggerWrapper(org.apache.logging.log4j.Logger internalLogger) {
+        this.internalLogger = internalLogger;
     }
 
     @Override
     public boolean isDebugEnabled() {
-        return log.isDebugEnabled();
+        return internalLogger.isDebugEnabled();
     }
 
     @Override
     public boolean isTraceEnabled() {
-        return log.isTraceEnabled();
-    }
-
-    @Override
-    public void error(String s, Throwable e) {
-        log.error(s, e);
+        return internalLogger.isTraceEnabled();
     }
 
     @Override
     public void error(String s) {
-        log.error(s);
+        internalLogger.error(MARKER, s);
+    }
+
+    @Override
+    public void error(String s, Throwable e) {
+        internalLogger.error(MARKER, s, e);
     }
 
     @Override
     public void debug(String s) {
-        log.debug(s);
+        internalLogger.debug(MARKER, s);
     }
 
     @Override
     public void debug(String s, Throwable e) {
-        log.debug(s, e);
+        internalLogger.debug(MARKER, s, e);
     }
 
     @Override
     public void info(String s) {
-        log.info(s);
+        internalLogger.info(MARKER, s);
     }
 
     @Override
     public void trace(String s) {
-        log.trace(s);
+        internalLogger.trace(MARKER, s);
     }
 
     @Override
     public void warn(String s) {
-        log.warn(s);
+        internalLogger.warn(MARKER, s);
     }
 
     @Override
     public void warn(String s, Throwable e) {
-        log.warn(s, e);
+        internalLogger.warn(MARKER, s, e);
     }
 
 }

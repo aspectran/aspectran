@@ -19,30 +19,30 @@ import com.aspectran.core.activity.Translet;
 import com.aspectran.core.component.bean.annotation.Bean;
 import com.aspectran.core.component.bean.annotation.Component;
 import com.aspectran.core.component.bean.annotation.Description;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 
 @Component
 @Bean("helloAdvice")
 @Description("Defines the Advice Bean that has the Advice Method to be injected before and after the Action Method.")
 public class HelloAdvice {
 
-    private static final Log log = LogFactory.getLog(HelloAdvice.class);
+    private static final Logger logger = LoggerFactory.getLogger(HelloAdvice.class);
 
     public String welcome() {
         String msg = "Welcome to Aspectran!";
 
-        log.info(msg);
+        logger.info(msg);
 
         return msg;
     }
 
     public String goodbye(Translet translet) {
-        log.info("activityDataMap " + translet.getActivityDataMap());
+        logger.info("activityDataMap " + translet.getActivityDataMap());
 
         String msg = "Goodbye!";
 
-        log.info(msg);
+        logger.info(msg);
 
         return msg;
     }

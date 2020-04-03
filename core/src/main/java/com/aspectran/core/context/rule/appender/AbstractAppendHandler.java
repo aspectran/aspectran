@@ -19,8 +19,8 @@ import com.aspectran.core.context.env.ContextEnvironment;
 import com.aspectran.core.context.rule.AppendRule;
 import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;
 import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +30,7 @@ import java.util.List;
  */
 abstract class AbstractAppendHandler implements RuleAppendHandler {
 
-    protected final Log log = LogFactory.getLog(getClass());
+    protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final ContextRuleAssistant assistant;
 
@@ -78,8 +78,8 @@ abstract class AbstractAppendHandler implements RuleAppendHandler {
         }
         pendingList.add(appender);
 
-        if (log.isTraceEnabled()) {
-            log.trace("pending RuleAppender " + appender);
+        if (logger.isTraceEnabled()) {
+            logger.trace("pending RuleAppender " + appender);
         }
     }
 
@@ -91,16 +91,16 @@ abstract class AbstractAppendHandler implements RuleAppendHandler {
             if (environment != null) {
                 for (RuleAppender appender : pendedList) {
                     if (environment.acceptsProfiles(appender.getProfiles())) {
-                        if (log.isDebugEnabled()) {
-                            log.debug("Append " + appender);
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("Append " + appender);
                         }
                         handle(appender);
                     }
                 }
             } else {
                 for (RuleAppender appender : pendedList) {
-                    if (log.isDebugEnabled()) {
-                        log.debug("Append " + appender);
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Append " + appender);
                     }
                     handle(appender);
                 }

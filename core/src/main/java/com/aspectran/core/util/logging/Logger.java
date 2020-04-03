@@ -15,10 +15,12 @@
  */
 package com.aspectran.core.util.logging;
 
+import static com.aspectran.core.util.logging.LoggerFactory.EXCEPTION_MESSAGE;
+
 /**
  * This class provides a static logging interface.
  */
-public interface Log {
+public interface Logger {
 
     boolean isDebugEnabled();
 
@@ -28,9 +30,17 @@ public interface Log {
 
     void error(String s, Throwable e);
 
+    default void error(Throwable e) {
+        error(EXCEPTION_MESSAGE, e);
+    }
+
     void debug(String s);
 
     void debug(String s, Throwable e);
+
+    default void debug(Throwable e) {
+        debug(EXCEPTION_MESSAGE, e);
+    }
 
     void info(String s);
 
@@ -39,5 +49,9 @@ public interface Log {
     void warn(String s);
 
     void warn(String s, Throwable e);
+
+    default void warn(Throwable e) {
+        warn(EXCEPTION_MESSAGE, e);
+    }
 
 }

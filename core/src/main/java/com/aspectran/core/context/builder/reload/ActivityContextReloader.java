@@ -16,8 +16,8 @@
 package com.aspectran.core.context.builder.reload;
 
 import com.aspectran.core.service.ServiceController;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 
 import java.net.URL;
 import java.util.Enumeration;
@@ -28,7 +28,7 @@ import java.util.Timer;
  */
 public class ActivityContextReloader {
 
-    private static final Log log = LogFactory.getLog(ActivityContextReloader.class);
+    private static final Logger logger = LoggerFactory.getLogger(ActivityContextReloader.class);
 
     private final ServiceController serviceController;
 
@@ -45,16 +45,16 @@ public class ActivityContextReloader {
     public void setResources(Enumeration<URL> resources) {
         this.resources = resources;
 
-        if (log.isDebugEnabled()) {
-            log.debug("ActivityContextReloader is initialized");
+        if (logger.isDebugEnabled()) {
+            logger.debug("ActivityContextReloader is initialized");
         }
     }
 
     public void start(int scanIntervalInSeconds) {
         stop();
 
-        if (log.isDebugEnabled()) {
-            log.debug("Starting ActivityContextReloader...");
+        if (logger.isDebugEnabled()) {
+            logger.debug("Starting ActivityContextReloader...");
         }
 
         reloadTask = new ActivityContextReloadTask(serviceController);
@@ -66,8 +66,8 @@ public class ActivityContextReloader {
 
     public void stop() {
         if (timer != null) {
-            if (log.isDebugEnabled()) {
-                log.debug("Stopping ActivityContextReloader...");
+            if (logger.isDebugEnabled()) {
+                logger.debug("Stopping ActivityContextReloader...");
             }
 
             timer.cancel();

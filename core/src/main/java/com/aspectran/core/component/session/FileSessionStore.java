@@ -18,8 +18,8 @@ package com.aspectran.core.component.session;
 import com.aspectran.core.util.MultiException;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.ToStringBuilder;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -39,7 +39,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class FileSessionStore extends AbstractSessionStore {
 
-    private static final Log log = LogFactory.getLog(FileSessionStore.class);
+    private static final Logger logger = LoggerFactory.getLogger(FileSessionStore.class);
 
     private final Map<String, String> sessionFileMap = new ConcurrentHashMap<>();
 
@@ -72,16 +72,16 @@ public class FileSessionStore extends AbstractSessionStore {
         // load session info from its file
         String filename = sessionFileMap.get(id);
         if (filename == null) {
-            if (log.isTraceEnabled()) {
-                log.trace("Unknown file: " + id);
+            if (logger.isTraceEnabled()) {
+                logger.trace("Unknown file: " + id);
             }
             return null;
         }
 
         File file = new File(storeDir, filename);
         if (!file.exists()) {
-            if (log.isDebugEnabled()) {
-                log.debug("No such file: " + filename);
+            if (logger.isDebugEnabled()) {
+                logger.debug("No such file: " + filename);
             }
             return null;
         }
@@ -179,7 +179,7 @@ public class FileSessionStore extends AbstractSessionStore {
                     expired.add(getIdFromFilename(filename));
                 }
             } catch (Exception e) {
-                log.warn(e.getMessage(), e);
+                logger.warn(e.getMessage(), e);
             }
         }
 
@@ -230,7 +230,7 @@ public class FileSessionStore extends AbstractSessionStore {
                 String s = filename.substring(0, index);
                 return Long.parseLong(s);
             } catch (NumberFormatException e) {
-                log.warn("Not valid session filename: " + filename, e);
+                logger.warn("Not valid session filename: " + filename, e);
                 return -1L;
             }
         }
@@ -268,8 +268,8 @@ public class FileSessionStore extends AbstractSessionStore {
     private void sweepDisk() {
         //iterate over the files in the store dir and check expiry times
         long now = System.currentTimeMillis();
-        if (log.isTraceEnabled()) {
-            log.trace("Sweeping " + storeDir + " for old session files");
+        if (logger.isTraceEnabled()) {
+            logger.trace("Sweeping " + storeDir + " for old session files");
         }
         try {
             Files.walk(storeDir.toPath(), 1, FileVisitOption.FOLLOW_LINKS)
@@ -279,11 +279,11 @@ public class FileSessionStore extends AbstractSessionStore {
                         try {
                             sweepFile(now, p);
                         } catch (Exception e) {
-                            log.warn(e.getMessage(), e);
+                            logger.warn(e.getMessage(), e);
                         }
                     });
         } catch (Exception e) {
-            log.warn(e.getMessage(), e);
+            logger.warn(e.getMessage(), e);
         }
     }
 
@@ -302,13 +302,13 @@ public class FileSessionStore extends AbstractSessionStore {
             long expiry = getExpiryFromFilename(filename); // files with 0 expiry never expire
             if (expiry > 0 && ((now - expiry) >= (5 * TimeUnit.SECONDS.toMillis(getGracePeriodSecs())))) {
                 Files.deleteIfExists(p);
-                if (log.isDebugEnabled()) {
-                    log.debug("Sweep expired session file: " + p.getFileName());
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Sweep expired session file: " + p.getFileName());
                 }
             } else if (expiry == -1L && isDeleteUnrestorableFiles()) {
                 Files.deleteIfExists(p);
-                if (log.isDebugEnabled()) {
-                    log.debug("Deleted unrestorable session file: " + p.getFileName());
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Deleted unrestorable session file: " + p.getFileName());
                 }
             }
         }
@@ -374,14 +374,14 @@ public class FileSessionStore extends AbstractSessionStore {
                                     sessionFileMap.put(sessionId, filename);
                                     // delete the old file
                                     Files.delete(existingPath);
-                                    if (log.isDebugEnabled()) {
-                                        log.debug("Replaced " + existing + " with " + filename);
+                                    if (logger.isDebugEnabled()) {
+                                        logger.debug("Replaced " + existing + " with " + filename);
                                     }
                                 } else {
                                     // we found an older file, delete it
                                     Files.delete(p);
-                                    if (log.isDebugEnabled()) {
-                                        log.debug("Deleted expired session file " + filename);
+                                    if (logger.isDebugEnabled()) {
+                                        logger.debug("Deleted expired session file " + filename);
                                     }
                                 }
                             } catch (IOException e) {

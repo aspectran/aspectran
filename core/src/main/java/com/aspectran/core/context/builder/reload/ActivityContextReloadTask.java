@@ -17,8 +17,8 @@ package com.aspectran.core.context.builder.reload;
 
 import com.aspectran.core.service.ServiceController;
 import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,7 +33,7 @@ import static com.aspectran.core.util.ResourceUtils.URL_PROTOCOL_JAR;
 
 public class ActivityContextReloadTask extends TimerTask {
 
-    private static final Log log = LogFactory.getLog(ActivityContextReloadTask.class);
+    private static final Logger logger = LoggerFactory.getLogger(ActivityContextReloadTask.class);
 
     private final ServiceController serviceController;
 
@@ -61,7 +61,7 @@ public class ActivityContextReloadTask extends TimerTask {
                     String filePath = file.getAbsolutePath();
                     modifiedTimeMap.put(filePath, file.lastModified());
                 } catch (IOException e) {
-                    log.error(e.getMessage(), e);
+                    logger.error(e.getMessage(), e);
                 }
             }
         }
@@ -87,8 +87,8 @@ public class ActivityContextReloadTask extends TimerTask {
             if (prevLastModifiedTime != lastModifiedTime) {
                 modified = true;
                 modifiedTimeMap.put(filePath, lastModifiedTime);
-                if (log.isDebugEnabled()) {
-                    log.debug("Detected modified file: " + filePath);
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Detected modified file: " + filePath);
                 }
             }
         }

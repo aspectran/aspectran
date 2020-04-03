@@ -26,15 +26,15 @@ import com.aspectran.core.context.rule.parser.ActivityContextParser;
 import com.aspectran.core.context.rule.parser.HybridActivityContextParser;
 import com.aspectran.core.service.AbstractCoreService;
 import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 import com.aspectran.core.util.thread.ShutdownHooks;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class HybridActivityContextBuilder extends AbstractActivityContextBuilder {
 
-    private static final Log log = LogFactory.getLog(HybridActivityContextBuilder.class);
+    private static final Logger logger = LoggerFactory.getLogger(HybridActivityContextBuilder.class);
 
     private final AbstractCoreService coreService;
 
@@ -93,19 +93,19 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
             AspectranParameters aspectranParameters = getAspectranParameters();
 
             if (rootFile != null) {
-                log.info("Building ActivityContext with " + rootFile);
+                logger.info("Building ActivityContext with " + rootFile);
             } else if (aspectranParameters != null) {
-                log.info("Building ActivityContext with specified AspectranParameters");
+                logger.info("Building ActivityContext with specified AspectranParameters");
             } else {
-                log.info("No rootFile or aspectranParameters specified");
+                logger.info("No rootFile or aspectranParameters specified");
             }
 
             if (getActiveProfiles() != null) {
-                log.info("Activating profiles [" + StringUtils.joinCommaDelimitedList(getActiveProfiles()) + "]");
+                logger.info("Activating profiles [" + StringUtils.joinCommaDelimitedList(getActiveProfiles()) + "]");
             }
 
             if (getDefaultProfiles() != null) {
-                log.info("Default profiles [" + StringUtils.joinCommaDelimitedList(getDefaultProfiles()) + "]");
+                logger.info("Default profiles [" + StringUtils.joinCommaDelimitedList(getDefaultProfiles()) + "]");
             }
 
             long startTime = System.currentTimeMillis();
@@ -146,7 +146,7 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
 
             long elapsedTime = System.currentTimeMillis() - startTime;
 
-            log.info("ActivityContext build completed in " + elapsedTime + " ms");
+            logger.info("ActivityContext build completed in " + elapsedTime + " ms");
 
             if (coreService == null) {
                 // If it is driven by a builder without a service

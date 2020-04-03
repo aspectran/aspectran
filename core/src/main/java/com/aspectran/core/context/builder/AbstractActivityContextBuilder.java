@@ -54,14 +54,14 @@ import com.aspectran.core.context.rule.type.DefaultSettingType;
 import com.aspectran.core.service.ServiceController;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.SystemUtils;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 
 import java.util.List;
 
 public abstract class AbstractActivityContextBuilder implements ActivityContextBuilder {
 
-    private static final Log log = LogFactory.getLog(AbstractActivityContextBuilder.class);
+    private static final Logger logger = LoggerFactory.getLogger(AbstractActivityContextBuilder.class);
 
     private ContextConfig contextConfig;
 
@@ -284,8 +284,8 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
         if (this.autoReloadStartup) {
             if (this.scanIntervalSeconds == -1) {
                 this.scanIntervalSeconds = 10;
-                if (log.isDebugEnabled()) {
-                    log.debug("Context option 'autoReload' not specified, defaulting to 10 seconds");
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Context option 'autoReload' not specified, defaulting to 10 seconds");
                 }
             }
         }
@@ -438,12 +438,12 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
         boolean pointcutPatternVerifiable = assistant.isPointcutPatternVerifiable();
 
         AspectAdviceRulePreRegister preRegister = new AspectAdviceRulePreRegister(aspectRuleRegistry);
-        preRegister.setPointcutPatternVerifiable(pointcutPatternVerifiable || log.isDebugEnabled());
+        preRegister.setPointcutPatternVerifiable(pointcutPatternVerifiable || logger.isDebugEnabled());
         preRegister.register(beanRuleRegistry);
         preRegister.register(transletRuleRegistry);
 
         // check invalid pointcut pattern
-        if (pointcutPatternVerifiable || log.isDebugEnabled()) {
+        if (pointcutPatternVerifiable || logger.isDebugEnabled()) {
             int invalidPointcutPatterns = 0;
             for (AspectRule aspectRule : aspectRuleRegistry.getAspectRules()) {
                 Pointcut pointcut = aspectRule.getPointcut();
@@ -458,9 +458,9 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
                                     String msg = "No beans matching to '" + pp.getBeanIdPattern() +
                                             "'; aspectRule " + aspectRule;
                                     if (pointcutPatternVerifiable) {
-                                        log.error(msg);
+                                        logger.error(msg);
                                     } else {
-                                        log.debug(msg);
+                                        logger.debug(msg);
                                     }
                                 }
                                 if (pp.getClassNamePattern() != null && ppr.getMatchedClassNameCount() == 0) {
@@ -468,9 +468,9 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
                                     String msg = "No beans matching to '@class:" + pp.getClassNamePattern() +
                                             "'; aspectRule " + aspectRule;
                                     if (pointcutPatternVerifiable) {
-                                        log.error(msg);
+                                        logger.error(msg);
                                     } else {
-                                        log.debug(msg);
+                                        logger.debug(msg);
                                     }
                                 }
                                 if (pp.getMethodNamePattern() != null && ppr.getMatchedMethodNameCount() == 0) {
@@ -478,9 +478,9 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
                                     String msg = "No beans have methods matching to '^" + pp.getMethodNamePattern() +
                                             "'; aspectRule " + aspectRule;
                                     if (pointcutPatternVerifiable) {
-                                        log.error(msg);
+                                        logger.error(msg);
                                     } else {
-                                        log.debug(msg);
+                                        logger.debug(msg);
                                     }
                                 }
                             }
@@ -492,10 +492,10 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
                 String msg = "Invalid pointcut detected: " + invalidPointcutPatterns +
                         "; Please check the logs for more information";
                 if (pointcutPatternVerifiable) {
-                    log.error(msg);
+                    logger.error(msg);
                     throw new InvalidPointcutPatternException(msg);
                 } else {
-                    log.debug(msg);
+                    logger.debug(msg);
                 }
             }
         }

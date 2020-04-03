@@ -17,8 +17,8 @@ package com.aspectran.demo.examples.customer;
 
 import com.aspectran.core.component.bean.annotation.Bean;
 import com.aspectran.core.component.bean.annotation.Component;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +33,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Bean
 public class CustomerRepository {
     
-    private final Log log = LogFactory.getLog(CustomerRepository.class);
+    private final Logger logger = LoggerFactory.getLogger(CustomerRepository.class);
 
     private final Map<Integer, Customer> customerMap;
 
@@ -55,27 +55,27 @@ public class CustomerRepository {
     }
     
     public Customer getCustomer(int id) {
-        log.debug("Gets the details of customer: " + id);
+        logger.debug("Gets the details of customer: " + id);
         return customerMap.get(id);
 
     }
 
     public boolean isCustomer(int id) {
         if(customerMap.containsKey(id)) {
-            log.debug("Customer " + id + " exists");
+            logger.debug("Customer " + id + " exists");
             return true;
         } else {
-            log.debug("Customer " + id + " does not exists");
+            logger.debug("Customer " + id + " does not exists");
             return false;
         }
     }
     
     public List<Customer> getCustomerList() {
-        log.debug("Get a list of all customers");
+        logger.debug("Get a list of all customers");
 
         List<Customer> customerList = new ArrayList<>(customerMap.values());
         
-        log.debug("Retrieved " + customerList.size() + " customers");
+        logger.debug("Retrieved " + customerList.size() + " customers");
         
         return customerList;
     }
@@ -86,7 +86,7 @@ public class CustomerRepository {
         
         customerMap.put(id, customer);
 
-        log.debug("Customer " + id + " is registered");
+        logger.debug("Customer " + id + " is registered");
         
         return id;
     }
@@ -94,7 +94,7 @@ public class CustomerRepository {
     public synchronized boolean updateCustomer(Customer customer) {
         int id = customer.getInt(Customer.id);
         if(customerMap.containsKey(id)) {
-            log.debug("Update customer: " + id);
+            logger.debug("Update customer: " + id);
             customerMap.put(id, customer);
             return true;
         } else {
@@ -104,7 +104,7 @@ public class CustomerRepository {
 
     public synchronized boolean deleteCustomer(int id) {
         if(customerMap.containsKey(id)) {
-            log.debug("Delete customer: " + id);
+            logger.debug("Delete customer: " + id);
             customerMap.remove(id);
             return true;
         } else {
@@ -115,7 +115,7 @@ public class CustomerRepository {
     public boolean approve(int id, boolean approved) {
         Customer customer = customerMap.get(id);
         if(customer != null) {
-            log.debug(id + "Approval for customer " + id + " (approved: " + approved + ")");
+            logger.debug(id + "Approval for customer " + id + " (approved: " + approved + ")");
             customer.putValue(Customer.approved, approved);
             return true;
         } else {
@@ -126,7 +126,7 @@ public class CustomerRepository {
     public boolean isApproved(int id) {
         Customer customer = customerMap.get(id);
         if(customer != null) {
-            log.debug("Returns whether customer " + id + " is approved");
+            logger.debug("Returns whether customer " + id + " is approved");
             return customer.getBoolean(Customer.approved);
         } else {
             return false;

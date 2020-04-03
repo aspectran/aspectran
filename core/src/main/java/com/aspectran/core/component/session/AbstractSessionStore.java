@@ -17,8 +17,8 @@ package com.aspectran.core.component.session;
 
 import com.aspectran.core.component.AbstractComponent;
 import com.aspectran.core.util.ToStringBuilder;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -30,7 +30,7 @@ import java.util.concurrent.TimeUnit;
  */
 public abstract class AbstractSessionStore extends AbstractComponent implements SessionStore {
 
-    private static final Log log = LogFactory.getLog(AbstractSessionStore.class);
+    private static final Logger logger = LoggerFactory.getLogger(AbstractSessionStore.class);
 
     private int gracePeriodSecs = 60 * 60; // default of 1hr
 
@@ -114,14 +114,14 @@ public abstract class AbstractSessionStore extends AbstractComponent implements 
         long lastSave = data.getLastSavedTime();
         long savePeriodMs = (savePeriodSecs <= 0 ? 0 : TimeUnit.SECONDS.toMillis(savePeriodSecs));
 
-        if (log.isDebugEnabled()) {
+        if (logger.isDebugEnabled()) {
             ToStringBuilder tsb = new ToStringBuilder("Store session");
             tsb.append("id", id);
             tsb.append("dirty", data.isDirty());
             tsb.append("lastSaved", data.getLastSavedTime());
             tsb.append("savePeriod", savePeriodMs);
             tsb.append("elapsed", System.currentTimeMillis() - lastSave);
-            log.debug(tsb.toString());
+            logger.debug(tsb.toString());
         }
 
         // save session if attribute changed or never been saved or time between saves exceeds threshold

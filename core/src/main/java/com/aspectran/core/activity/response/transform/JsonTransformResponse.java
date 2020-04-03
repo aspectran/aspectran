@@ -23,8 +23,8 @@ import com.aspectran.core.activity.response.ResponseException;
 import com.aspectran.core.activity.response.transform.json.ContentsJsonWriter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.rule.TransformRule;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -36,7 +36,7 @@ import java.io.Writer;
  */
 public class JsonTransformResponse extends TransformResponse {
 
-    private static final Log log = LogFactory.getLog(JsonTransformResponse.class);
+    private static final Logger logger = LoggerFactory.getLogger(JsonTransformResponse.class);
 
     public static final String CALLBACK_PARAM_NAME = "callback";
 
@@ -70,8 +70,8 @@ public class JsonTransformResponse extends TransformResponse {
             return;
         }
 
-        if (log.isDebugEnabled()) {
-            log.debug("Response " + getTransformRule());
+        if (logger.isDebugEnabled()) {
+            logger.debug("Response " + getTransformRule());
         }
 
         try {

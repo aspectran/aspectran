@@ -15,8 +15,8 @@
  */
 package com.aspectran.web.service;
 
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
@@ -30,7 +30,7 @@ import java.io.IOException;
  */
 public class DefaultServletHttpRequestHandler {
 
-    private static final Log log = LogFactory.getLog(DefaultServletHttpRequestHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(DefaultServletHttpRequestHandler.class);
 
     /** Default Servlet name used by Tomcat, Jetty, JBoss, and Glassfish */
     private static final String COMMON_DEFAULT_SERVLET_NAME = "default";
@@ -96,8 +96,8 @@ public class DefaultServletHttpRequestHandler {
         } else if (servletContext.getNamedDispatcher(JEUS_DEFAULT_SERVLET_NAME) != null) {
             defaultServletName = JEUS_DEFAULT_SERVLET_NAME;
         } else {
-            if (log.isDebugEnabled()) {
-                log.debug("Unable to locate the default servlet for serving static content. " +
+            if (logger.isDebugEnabled()) {
+                logger.debug("Unable to locate the default servlet for serving static content. " +
                         "Please set the 'web.defaultServletName'.");
             }
         }

@@ -16,34 +16,34 @@
 package com.aspectran.aop;
 
 import com.aspectran.core.activity.Translet;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 
 /**
  * <p>Created: 2016. 11. 5.</p>
  */
 public class SimpleAopTestAdvice {
 
-    private static final Log log = LogFactory.getLog(SimpleAopTestAdvice.class);
+    private static final Logger logger = LoggerFactory.getLogger(SimpleAopTestAdvice.class);
 
     public void begin(Translet translet) {
-        log.debug("===> aspect01: [SimpleAopTestAdvice]=== Begin");
+        logger.debug("===> aspect01: [SimpleAopTestAdvice]=== Begin");
     }
 
     public void end(Translet translet) {
-        log.debug("===> aspect01: [SimpleAopTestAdvice]=== End");
+        logger.debug("===> aspect01: [SimpleAopTestAdvice]=== End");
     }
 
     public void thrown(Translet translet) {
-        log.debug("===> aspect01: [SimpleAopTestAdvice]=== Thrown - " + translet.getRootCauseOfRaisedException());
+        logger.debug("===> aspect01: [SimpleAopTestAdvice]=== Thrown - " + translet.getRootCauseOfRaisedException());
     }
 
     public void close(Translet translet) {
-        log.debug("===> aspect01: [SimpleAopTestAdvice]=== Close");
+        logger.debug("===> aspect01: [SimpleAopTestAdvice]=== Close");
     }
 
     public void globalExceptionHandling(Translet translet) {
-        log.debug("===> aspect01: [SimpleAopTestAdvice]=== globalExceptionHandling");
+        logger.debug("===> aspect01: [SimpleAopTestAdvice]=== globalExceptionHandling");
         translet.removeRaisedException();
     }
 

@@ -15,8 +15,8 @@
  */
 package com.aspectran.core.support.i18n.message;
 
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 
 import java.text.MessageFormat;
 import java.util.HashMap;
@@ -39,7 +39,7 @@ public class MessageSourceSupport {
     private static final MessageFormat INVALID_MESSAGE_FORMAT = new MessageFormat("");
 
     /** Logger available to subclasses */
-    protected final Log log = LogFactory.getLog(getClass());
+    protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     private boolean alwaysUseMessageFormat = false;
 

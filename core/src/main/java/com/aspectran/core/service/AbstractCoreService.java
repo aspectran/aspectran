@@ -31,8 +31,8 @@ import com.aspectran.core.scheduler.service.QuartzSchedulerService;
 import com.aspectran.core.scheduler.service.SchedulerService;
 import com.aspectran.core.util.FileLocker;
 import com.aspectran.core.util.SystemUtils;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 import com.aspectran.core.util.thread.ShutdownHooks;
 import com.aspectran.core.util.wildcard.PluralWildcardPattern;
 
@@ -46,7 +46,7 @@ import static com.aspectran.core.context.config.AspectranConfig.BASE_PATH_PROPER
  */
 public abstract class AbstractCoreService extends AbstractServiceController implements CoreService {
 
-    private final Log log = LogFactory.getLog(getClass());
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final CoreService rootService;
 
@@ -275,8 +275,8 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
 
         if (startDelaySeconds == -1) {
             startDelaySeconds = 5;
-            if (log.isDebugEnabled()) {
-                log.debug("Scheduler option 'startDelaySeconds' is not specified, defaulting to 5 seconds");
+            if (logger.isDebugEnabled()) {
+                logger.debug("Scheduler option 'startDelaySeconds' is not specified, defaulting to 5 seconds");
             }
         }
 
@@ -311,7 +311,7 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
                                 fileLocker.release();
                                 fileLocker = null;
                             } catch (Exception e) {
-                                log.warn("Unable to release Singleton lock: " + e);
+                                logger.warn("Unable to release Singleton lock: " + e);
                             }
                         }
                     });

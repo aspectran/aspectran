@@ -20,8 +20,8 @@ import com.aspectran.core.adapter.AbstractRequestAdapter;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.util.MultiValueMap;
 import com.aspectran.core.util.apon.Parameters;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 import com.aspectran.web.activity.request.WebRequestBodyParser;
 import com.aspectran.web.support.http.MediaType;
 import io.undertow.server.HttpServerExchange;
@@ -43,7 +43,7 @@ import java.util.Map;
  */
 public class TowRequestAdapter extends AbstractRequestAdapter {
 
-    private static final Log log = LogFactory.getLog(TowRequestAdapter.class);
+    private static final Logger logger = LoggerFactory.getLogger(TowRequestAdapter.class);
 
     private boolean headersObtained;
 
@@ -106,8 +106,8 @@ public class TowRequestAdapter extends AbstractRequestAdapter {
                 String body = WebRequestBodyParser.parseBody(getInputStream(), getEncoding(), getMaxRequestSize());
                 setBody(body);
             } catch (Exception e) {
-                if (log.isDebugEnabled()) {
-                    log.debug("Failed to parse request body", e);
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Failed to parse request body", e);
                 }
                 setBody(null);
             }

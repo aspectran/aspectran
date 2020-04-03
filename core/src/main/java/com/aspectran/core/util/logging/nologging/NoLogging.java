@@ -13,75 +13,67 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.util.logging.log4j2;
+package com.aspectran.core.util.logging.nologging;
 
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.Marker;
-import org.apache.logging.log4j.MarkerManager;
+import com.aspectran.core.util.logging.Logger;
 
 /**
- * The Class Log4j2LoggerImpl.
+ * NoLogging logger.
  */
-public class Log4j2LoggerImpl implements Log {
+public class NoLogging implements Logger {
 
-    private static Marker MARKER = MarkerManager.getMarker(LogFactory.MARKER);
-
-    private Logger log;
-
-    public Log4j2LoggerImpl(Logger logger) {
-        log = logger;
+    public NoLogging(String clazz) {
+        // Do Nothing
     }
 
     @Override
     public boolean isDebugEnabled() {
-        return log.isDebugEnabled();
+        return false;
     }
 
     @Override
     public boolean isTraceEnabled() {
-        return log.isTraceEnabled();
+        return false;
     }
 
     @Override
     public void error(String s) {
-        log.error(MARKER, s);
+        // Do Nothing
     }
 
     @Override
     public void error(String s, Throwable e) {
-        log.error(MARKER, s, e);
+        // Do Nothing
     }
 
     @Override
     public void debug(String s) {
-        log.debug(MARKER, s);
+        // Do Nothing
     }
 
     @Override
     public void debug(String s, Throwable e) {
-        log.debug(MARKER, s, e);
+        // Do Nothing
     }
 
     @Override
     public void info(String s) {
-        log.info(MARKER, s);
+        // Do Nothing
     }
 
     @Override
     public void trace(String s) {
-        log.trace(MARKER, s);
+        // Do Nothing
     }
 
     @Override
     public void warn(String s) {
-        log.warn(MARKER, s);
+        // Do Nothing
     }
 
     @Override
     public void warn(String s, Throwable e) {
-        log.warn(MARKER, s, e);
+        // Do Nothing
     }
 
 }

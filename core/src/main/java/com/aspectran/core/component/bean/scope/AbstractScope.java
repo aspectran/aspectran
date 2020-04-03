@@ -20,8 +20,8 @@ import com.aspectran.core.component.bean.BeanInstance;
 import com.aspectran.core.component.bean.ablility.DisposableBean;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.util.MethodUtils;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -37,7 +37,7 @@ import java.util.Map;
  */
 public abstract class AbstractScope implements Scope {
 
-    private static final Log log = LogFactory.getLog(AbstractScope.class);
+    private static final Logger logger = LoggerFactory.getLogger(AbstractScope.class);
 
     private final Map<BeanRule, BeanInstance> scopedBeanInstances = new LinkedHashMap<>();
 
@@ -92,9 +92,9 @@ public abstract class AbstractScope implements Scope {
 
     @Override
     public void destroy() {
-        if (log.isDebugEnabled()) {
+        if (logger.isDebugEnabled()) {
             if (!scopedBeanInstances.isEmpty()) {
-                log.debug("Destroy " + getScopeType() + " scoped beans from " + this);
+                logger.debug("Destroy " + getScopeType() + " scoped beans from " + this);
             }
         }
 
@@ -107,7 +107,7 @@ public abstract class AbstractScope implements Scope {
                 try {
                     doDestroy(beanRule, bean);
                 } catch (Exception e) {
-                    log.error("Could not destroy " + getScopeType() + " scoped bean " + beanRule, e);
+                    logger.error("Could not destroy " + getScopeType() + " scoped bean " + beanRule, e);
                 }
 
             }

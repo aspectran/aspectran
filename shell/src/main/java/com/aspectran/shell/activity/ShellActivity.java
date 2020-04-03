@@ -32,8 +32,8 @@ import com.aspectran.core.context.rule.type.ItemType;
 import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.util.OutputStringWriter;
 import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 import com.aspectran.shell.adapter.ShellRequestAdapter;
 import com.aspectran.shell.adapter.ShellResponseAdapter;
 import com.aspectran.shell.command.ConsoleTerminatedException;
@@ -54,7 +54,7 @@ import java.util.Set;
  */
 public class ShellActivity extends CoreActivity {
 
-    private static final Log log = LogFactory.getLog(ShellActivity.class);
+    private static final Logger logger = LoggerFactory.getLogger(ShellActivity.class);
 
     private final ShellService service;
 
@@ -304,7 +304,7 @@ public class ShellActivity extends CoreActivity {
                 }
             }
         } catch (ConsoleTerminatedException e) {
-            log.info("User interrupt occurred");
+            logger.info("User interrupt occurred");
             terminate("User interrupt occurred");
         }
         return (missingItemRules.isEmpty() ? null : missingItemRules);
@@ -409,7 +409,7 @@ public class ShellActivity extends CoreActivity {
                 }
             }
         } catch (ConsoleTerminatedException e) {
-            log.info("User interrupt occurred");
+            logger.info("User interrupt occurred");
             terminate("User interrupt occurred");
         }
         return (missingItemRules.isEmpty() ? null : missingItemRules);

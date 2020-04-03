@@ -27,8 +27,8 @@ import com.aspectran.core.context.rule.PointcutPatternRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.type.JoinpointTargetType;
 import com.aspectran.core.util.BeanDescriptor;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 
 import java.util.List;
 import java.util.Set;
@@ -38,7 +38,7 @@ import java.util.Set;
  */
 public class AspectAdviceRulePreRegister {
 
-    private static final Log log = LogFactory.getLog(AspectAdviceRulePreRegister.class);
+    private static final Logger logger = LoggerFactory.getLogger(AspectAdviceRulePreRegister.class);
 
     private AspectRuleRegistry aspectRuleRegistry;
 
@@ -71,8 +71,8 @@ public class AspectAdviceRulePreRegister {
                 }
             }
 
-            if (log.isTraceEnabled()) {
-                log.trace("preregistered AspectRule " + aspectRule);
+            if (logger.isTraceEnabled()) {
+                logger.trace("preregistered AspectRule " + aspectRule);
             }
         }
     }
@@ -115,16 +115,16 @@ public class AspectAdviceRulePreRegister {
                     if (pointcut.hasMethodNamePattern()) {
                         if (existsMatchedBean(pointcut, beanRule)) {
                             beanRule.setProxied(true);
-                            if (log.isTraceEnabled()) {
-                                log.trace("apply AspectRule " + aspectRule + " to BeanRule " + beanRule);
+                            if (logger.isTraceEnabled()) {
+                                logger.trace("apply AspectRule " + aspectRule + " to BeanRule " + beanRule);
                             }
                             break;
                         }
                     } else {
                         if (existsMatchedBean(pointcut, beanRule.getId(), beanRule.getTargetBeanClassName())) {
                             beanRule.setProxied(true);
-                            if (log.isTraceEnabled()) {
-                                log.trace("apply AspectRule " + aspectRule + " to BeanRule " + beanRule);
+                            if (logger.isTraceEnabled()) {
+                                logger.trace("apply AspectRule " + aspectRule + " to BeanRule " + beanRule);
                             }
                             break;
                         }
@@ -150,8 +150,8 @@ public class AspectAdviceRulePreRegister {
                     // register to the translet scope
                     transletRule.touchAspectAdviceRuleRegistry().register(aspectRule);
 
-                    if (log.isTraceEnabled()) {
-                        log.trace("apply AspectRule " + aspectRule + " to TransletRule " + transletRule);
+                    if (logger.isTraceEnabled()) {
+                        logger.trace("apply AspectRule " + aspectRule + " to TransletRule " + transletRule);
                     }
                 }
             }

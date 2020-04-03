@@ -24,8 +24,8 @@ import com.aspectran.core.activity.response.ResponseException;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.rule.CustomTransformRule;
 import com.aspectran.core.context.rule.type.ResponseType;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 
 import java.util.ListIterator;
 
@@ -36,7 +36,7 @@ import java.util.ListIterator;
  */
 public class CustomTransformResponse implements Response {
 
-    private static final Log log = LogFactory.getLog(CustomTransformResponse.class);
+    private static final Logger logger = LoggerFactory.getLogger(CustomTransformResponse.class);
 
     private static final ResponseType RESPONSE_TYPE = ResponseType.TRANSFORM;
 
@@ -73,8 +73,8 @@ public class CustomTransformResponse implements Response {
             return;
         }
 
-        if (log.isDebugEnabled()) {
-            log.debug("Response with " + transformer);
+        if (logger.isDebugEnabled()) {
+            logger.debug("Response with " + transformer);
         }
 
         try {

@@ -20,8 +20,8 @@ import com.aspectran.core.component.bean.aware.ActivityContextAware;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.service.CoreService;
 import com.aspectran.core.util.Assert;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 import com.aspectran.web.service.DefaultWebService;
 import com.aspectran.web.service.WebService;
 import com.aspectran.web.socket.jsr356.ServerEndpointExporter;
@@ -47,7 +47,7 @@ import java.util.List;
  */
 public class JettyWebAppContext extends WebAppContext implements ActivityContextAware, InitializableBean {
 
-    private static final Log log = LogFactory.getLog(JettyWebAppContext.class);
+    private static final Logger logger = LoggerFactory.getLogger(JettyWebAppContext.class);
 
     private ActivityContext context;
 
@@ -82,7 +82,7 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
             }
             super.setTempDirectory(tempDir);
         } catch (Exception e) {
-            log.error("Failed to establish Scratch directory: " + tempDir, e);
+            logger.error("Failed to establish Scratch directory: " + tempDir, e);
         }
     }
 

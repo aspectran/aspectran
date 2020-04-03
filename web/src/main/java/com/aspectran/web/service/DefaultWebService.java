@@ -30,8 +30,8 @@ import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.CoreService;
 import com.aspectran.core.service.ServiceStateListener;
 import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 import com.aspectran.web.activity.WebActivity;
 import com.aspectran.web.startup.servlet.WebActivityServlet;
 import com.aspectran.web.support.http.HttpHeaders;
@@ -50,7 +50,7 @@ import java.net.URLDecoder;
  */
 public class DefaultWebService extends AspectranCoreService implements WebService {
 
-    private static final Log log = LogFactory.getLog(DefaultWebService.class);
+    private static final Logger logger = LoggerFactory.getLogger(DefaultWebService.class);
 
     private static final String ASPECTRAN_CONFIG_PARAM = "aspectran:config";
 
@@ -98,26 +98,26 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
                     response.sendError(HttpServletResponse.SC_NOT_FOUND);
                 }
             } catch (Exception e) {
-                log.error("An error occurred while processing by the default servlet", e);
+                logger.error("An error occurred while processing by the default servlet", e);
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             }
             return;
         }
 
-        if (log.isDebugEnabled()) {
-            log.debug(getRequestInfo(request));
+        if (logger.isDebugEnabled()) {
+            logger.debug(getRequestInfo(request));
         }
 
         if (pauseTimeout != 0L) {
             if (pauseTimeout == -1L || pauseTimeout >= System.currentTimeMillis()) {
-                if (log.isDebugEnabled()) {
-                    log.debug(getServiceName() + " has been paused, so did not respond to the request URI \"" +
+                if (logger.isDebugEnabled()) {
+                    logger.debug(getServiceName() + " has been paused, so did not respond to the request URI \"" +
                             requestUri + "\"");
                 }
                 response.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
                 return;
             } else if (pauseTimeout == -2L) {
-                log.error(getServiceName() + " is not yet started");
+                logger.error(getServiceName() + " is not yet started");
                 response.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
                 return;
             } else {
@@ -140,15 +140,15 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
                     response.setStatus(HttpStatus.MOVED_PERMANENTLY.value());
                     response.setHeader(HttpHeaders.LOCATION, transletNameWithSlash);
                     response.setHeader(HttpHeaders.CONNECTION, "close");
-                    if (log.isDebugEnabled()) {
-                        log.debug("Redirect URL with Trailing Slash: " + e.getTransletName());
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Redirect URL with Trailing Slash: " + e.getTransletName());
                     }
                     return;
                 }
             }
 
-            if (log.isDebugEnabled()) {
-                log.debug("No translet mapped for request URI [" + requestUri + "]");
+            if (logger.isDebugEnabled()) {
+                logger.debug("No translet mapped for request URI [" + requestUri + "]");
             }
 
             try {
@@ -156,15 +156,15 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
                     response.sendError(HttpServletResponse.SC_NOT_FOUND);
                 }
             } catch (Exception e2) {
-                log.error(e2.getMessage(), e2);
+                logger.error(e2.getMessage(), e2);
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             }
         } catch (ActivityTerminatedException e) {
-            if (log.isDebugEnabled()) {
-                log.debug("Activity terminated: " + e.getMessage());
+            if (logger.isDebugEnabled()) {
+                logger.debug("Activity terminated: " + e.getMessage());
             }
         } catch (Exception e) {
-            log.error("An error occurred while processing request: " + requestUri, e);
+            logger.error("An error occurred while processing request: " + requestUri, e);
             if (!response.isCommitted()) {
                 if (e.getCause() instanceof RequestMethodNotAllowedException) {
                     response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
@@ -204,14 +204,14 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
     public static DefaultWebService create(ServletContext servletContext) {
         String aspectranConfigParam = servletContext.getInitParameter(ASPECTRAN_CONFIG_PARAM);
         if (aspectranConfigParam == null) {
-            log.warn("No specified servlet context initialization parameter for instantiating WebService");
+            logger.warn("No specified servlet context initialization parameter for instantiating WebService");
         }
 
         DefaultWebService service = create(servletContext, aspectranConfigParam);
         servletContext.setAttribute(ROOT_WEB_SERVICE_ATTR_NAME, service);
 
-        if (log.isDebugEnabled()) {
-            log.debug("The Root WebService attribute in ServletContext has been created; " + ROOT_WEB_SERVICE_ATTR_NAME + ": " + service);
+        if (logger.isDebugEnabled()) {
+            logger.debug("The Root WebService attribute in ServletContext has been created; " + ROOT_WEB_SERVICE_ATTR_NAME + ": " + service);
         }
 
         WebServiceHolder.putWebService(service);
@@ -260,15 +260,15 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
         ServletConfig servletConfig = servlet.getServletConfig();
         String aspectranConfigParam = servletConfig.getInitParameter(ASPECTRAN_CONFIG_PARAM);
         if (aspectranConfigParam == null) {
-            log.warn("No specified servlet initialization parameter for instantiating DefaultWebService");
+            logger.warn("No specified servlet initialization parameter for instantiating DefaultWebService");
         }
 
         DefaultWebService service = create(servletContext, aspectranConfigParam);
         String attrName = STANDALONE_WEB_SERVICE_ATTR_PREFIX + servlet.getServletName();
         servletContext.setAttribute(attrName, service);
 
-        if (log.isDebugEnabled()) {
-            log.debug("The Standalone WebService attribute in ServletContext has been created; " +
+        if (logger.isDebugEnabled()) {
+            logger.debug("The Standalone WebService attribute in ServletContext has been created; " +
                     attrName + ": " + service);
         }
 
@@ -292,8 +292,8 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
             String attrName = STANDALONE_WEB_SERVICE_ATTR_PREFIX + servlet.getServletName();
             servletContext.setAttribute(attrName, service);
 
-            if (log.isDebugEnabled()) {
-                log.debug("The Standalone WebService attribute in ServletContext has been created; " +
+            if (logger.isDebugEnabled()) {
+                logger.debug("The Standalone WebService attribute in ServletContext has been created; " +
                     attrName + ": " + service);
             }
 
@@ -376,7 +376,7 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
                 if (millis > 0L) {
                     service.pauseTimeout = System.currentTimeMillis() + millis;
                 } else {
-                    log.warn("Pause timeout in milliseconds needs to be set " +
+                    logger.warn("Pause timeout in milliseconds needs to be set " +
                             "to a value of greater than 0");
                 }
             }

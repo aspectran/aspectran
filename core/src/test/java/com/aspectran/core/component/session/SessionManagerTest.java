@@ -15,8 +15,8 @@
  */
 package com.aspectran.core.component.session;
 
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 import org.junit.jupiter.api.Test;
 
 import java.util.Enumeration;
@@ -31,7 +31,7 @@ import static org.awaitility.Awaitility.await;
  */
 class SessionManagerTest {
 
-    private Log log = LogFactory.getLog(getClass());
+    private Logger logger = LoggerFactory.getLogger(getClass());
 
     @Test
     void testShortLifecycle() throws Exception {
@@ -40,7 +40,7 @@ class SessionManagerTest {
 
         SessionAgent agent = new SessionAgent(sessionManager);
 
-        log.info("Created Session " + agent.getSession(true));
+        logger.info("Created Session " + agent.getSession(true));
 
         agent.setAttribute("attr1", "val-1");
         agent.setAttribute("attr2", "val-2");
@@ -49,7 +49,7 @@ class SessionManagerTest {
         Enumeration<String> enumeration = agent.getAttributeNames();
         while(enumeration.hasMoreElements()) {
             String key = enumeration.nextElement();
-            log.info("getAttribute " + key + "=" + agent.getAttribute(key));
+            logger.info("getAttribute " + key + "=" + agent.getAttribute(key));
         }
 
         agent.complete();
@@ -68,7 +68,7 @@ class SessionManagerTest {
 
         SessionAgent agent = new SessionAgent(sessionManager);
 
-        log.info("Created Session " + agent.getSession(true));
+        logger.info("Created Session " + agent.getSession(true));
 
         agent.complete();
 

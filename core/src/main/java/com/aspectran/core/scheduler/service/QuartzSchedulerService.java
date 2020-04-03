@@ -23,8 +23,8 @@ import com.aspectran.core.context.rule.params.TriggerExpressionParameters;
 import com.aspectran.core.context.rule.type.TriggerType;
 import com.aspectran.core.service.AbstractServiceController;
 import com.aspectran.core.service.CoreService;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 import com.aspectran.core.util.wildcard.PluralWildcardPattern;
 import org.quartz.CronScheduleBuilder;
 import org.quartz.JobBuilder;
@@ -51,7 +51,7 @@ import java.util.Set;
  */
 public class QuartzSchedulerService extends AbstractServiceController implements SchedulerService {
 
-    private static final Log log = LogFactory.getLog(QuartzSchedulerService.class);
+    private static final Logger logger = LoggerFactory.getLogger(QuartzSchedulerService.class);
 
     static final String SERVICE_DATA_KEY = "SERVICE";
 
@@ -127,7 +127,7 @@ public class QuartzSchedulerService extends AbstractServiceController implements
 
     @Override
     protected void doPause(long timeout) throws Exception {
-        log.warn(getServiceName() + " does not support pausing for a certain period of time");
+        logger.warn(getServiceName() + " does not support pausing for a certain period of time");
     }
 
     @Override
@@ -162,7 +162,7 @@ public class QuartzSchedulerService extends AbstractServiceController implements
             return;
         }
 
-        log.info("Now try to starting QuartzSchedulerService");
+        logger.info("Now try to starting QuartzSchedulerService");
 
         try {
             for (ScheduleRule scheduleRule : scheduleRules) {
@@ -172,7 +172,7 @@ public class QuartzSchedulerService extends AbstractServiceController implements
             }
 
             for (Scheduler scheduler : schedulerSet) {
-                log.info("Starting scheduler '" + scheduler.getSchedulerName() + "'");
+                logger.info("Starting scheduler '" + scheduler.getSchedulerName() + "'");
 
                 // Listener attached to jobKey
                 JobListener defaultJobListener = new QuartzJobListener();
@@ -190,12 +190,12 @@ public class QuartzSchedulerService extends AbstractServiceController implements
     }
 
     private void stopSchedulerService() throws SchedulerServiceException {
-        log.info("Now try to shutting down QuartzSchedulerService");
+        logger.info("Now try to shutting down QuartzSchedulerService");
 
         try {
             for (Scheduler scheduler : schedulerSet) {
                 if (!scheduler.isShutdown()) {
-                    log.info("Shutting down the scheduler '" + scheduler.getSchedulerName() +
+                    logger.info("Shutting down the scheduler '" + scheduler.getSchedulerName() +
                             "' with waitForJobsToComplete=" + waitOnShutdown);
                     scheduler.shutdown(waitOnShutdown);
                 }
@@ -259,7 +259,7 @@ public class QuartzSchedulerService extends AbstractServiceController implements
                     scheduler.scheduleJob(jobDetail, trigger);
                 }
             } else {
-                log.warn("Unavailable translet [" + jobRule.getTransletName() + "] in ScheduleRule " + scheduleRule);
+                logger.warn("Unavailable translet [" + jobRule.getTransletName() + "] in ScheduleRule " + scheduleRule);
             }
         }
 

@@ -15,8 +15,8 @@
  */
 package com.aspectran.core.component;
 
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 
 /**
  * Abstract Implementation of {@link Component}.
@@ -25,7 +25,7 @@ import com.aspectran.core.util.logging.LogFactory;
  */
 public abstract class AbstractComponent implements Component {
 
-    private static final Log log = LogFactory.getLog(AbstractComponent.class);
+    private static final Logger logger = LoggerFactory.getLogger(AbstractComponent.class);
 
     private final Object lock = new Object();
 
@@ -51,7 +51,7 @@ public abstract class AbstractComponent implements Component {
 
             doInitialize();
 
-            log.debug("Initialized " + getComponentName());
+            logger.debug("Initialized " + getComponentName());
 
             initialized = true;
         }
@@ -70,9 +70,9 @@ public abstract class AbstractComponent implements Component {
             try {
                 destroying = true;
                 doDestroy();
-                log.debug("Destroyed " + getComponentName());
+                logger.debug("Destroyed " + getComponentName());
             } catch (Exception e) {
-                log.warn("Failed to destroy " + getComponentName(), e);
+                logger.warn("Failed to destroy " + getComponentName(), e);
             } finally {
                 destroying = false;
             }

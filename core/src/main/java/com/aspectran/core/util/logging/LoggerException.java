@@ -18,23 +18,23 @@ package com.aspectran.core.util.logging;
 /**
  * The Class LogException.
  */
-public class LogException extends RuntimeException {
+public class LoggerException extends RuntimeException {
 
     private static final long serialVersionUID = 1007835506486086212L;
 
-    public LogException() {
+    public LoggerException() {
         super();
     }
 
-    public LogException(String message) {
+    public LoggerException(String message) {
         super(message);
     }
 
-    public LogException(String message, Throwable cause) {
+    public LoggerException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public LogException(Throwable cause) {
+    public LoggerException(Throwable cause) {
         super(cause);
     }
 

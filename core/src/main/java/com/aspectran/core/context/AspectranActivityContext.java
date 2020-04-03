@@ -32,8 +32,8 @@ import com.aspectran.core.context.rule.DescriptionRule;
 import com.aspectran.core.service.CoreService;
 import com.aspectran.core.support.i18n.message.DelegatingMessageSource;
 import com.aspectran.core.support.i18n.message.MessageSource;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 
 /**
  * The Class AspectranActivityContext.
@@ -42,7 +42,7 @@ import com.aspectran.core.util.logging.LogFactory;
  */
 public class AspectranActivityContext extends AbstractComponent implements ActivityContext {
 
-    private static final Log log = LogFactory.getLog(AspectranActivityContext.class);
+    private static final Logger logger = LoggerFactory.getLogger(AspectranActivityContext.class);
 
     private final ThreadLocal<Activity> currentActivityHolder = new ThreadLocal<>();
 
@@ -220,15 +220,15 @@ public class AspectranActivityContext extends AbstractComponent implements Activ
     private void initMessageSource() {
         if (contextualBeanRegistry.containsBean(MessageSource.class, MESSAGE_SOURCE_BEAN_ID)) {
             messageSource = contextualBeanRegistry.getBean(MessageSource.class, MESSAGE_SOURCE_BEAN_ID);
-            if (log.isDebugEnabled()) {
-                log.debug("Using MessageSource [" + messageSource + "]");
+            if (logger.isDebugEnabled()) {
+                logger.debug("Using MessageSource [" + messageSource + "]");
             }
         }
         if (messageSource == null) {
             // Use empty MessageSource to be able to accept getMessage calls.
             messageSource = new DelegatingMessageSource();
-            if (log.isDebugEnabled()) {
-                log.debug("Unable to locate MessageSource with name '" + MESSAGE_SOURCE_BEAN_ID +
+            if (logger.isDebugEnabled()) {
+                logger.debug("Unable to locate MessageSource with name '" + MESSAGE_SOURCE_BEAN_ID +
                         "': using default [" + messageSource + "]");
             }
         }

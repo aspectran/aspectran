@@ -13,70 +13,76 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.util.logging.stdout;
+package com.aspectran.core.util.logging.log4j2;
 
-import com.aspectran.core.util.logging.Log;
+import com.aspectran.core.util.logging.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.spi.AbstractLogger;
 
 /**
- * The Class StdOutImpl.
+ * <a href="https://logging.apache.org/log4j/2.x/">Apache Log4j 2</a> logger.
  */
-public class StdOutImpl implements Log {
+public class Log4j2Logger implements Logger {
 
-    public StdOutImpl(String clazz) {
-        // Do Nothing
+    private final transient Logger internalLogger;
+
+    public Log4j2Logger(String clazz) {
+        org.apache.logging.log4j.Logger logger = LogManager.getLogger(clazz);
+        if (logger instanceof AbstractLogger) {
+            this.internalLogger = new Log4j2ExtendedLoggerWrapper((AbstractLogger)logger);
+        } else {
+            this.internalLogger = new Log4j2LoggerWrapper(logger);
+        }
     }
 
     @Override
     public boolean isDebugEnabled() {
-        return true;
+        return internalLogger.isDebugEnabled();
     }
 
     @Override
     public boolean isTraceEnabled() {
-        return true;
+        return internalLogger.isTraceEnabled();
     }
 
     @Override
     public void error(String s, Throwable e) {
-        System.err.println(s);
-        e.printStackTrace(System.err);
+        internalLogger.error(s, e);
     }
 
     @Override
     public void error(String s) {
-        System.err.println(s);
+        internalLogger.error(s);
     }
 
     @Override
     public void debug(String s) {
-        System.out.println(s);
+        internalLogger.debug(s);
     }
 
     @Override
     public void debug(String s, Throwable e) {
-        System.out.println(s);
-        e.printStackTrace(System.out);
+        internalLogger.debug(s, e);
     }
 
     @Override
     public void info(String s) {
-        System.out.println(s);
+        internalLogger.info(s);
     }
 
     @Override
     public void trace(String s) {
-        System.out.println(s);
+        internalLogger.trace(s);
     }
 
     @Override
     public void warn(String s) {
-        System.out.println(s);
+        internalLogger.warn(s);
     }
 
     @Override
     public void warn(String s, Throwable e) {
-        System.out.println(s);
-        e.printStackTrace(System.out);
+        internalLogger.warn(s, e);
     }
 
 }

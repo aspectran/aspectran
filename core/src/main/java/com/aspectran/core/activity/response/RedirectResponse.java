@@ -19,8 +19,8 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.rule.RedirectRule;
 import com.aspectran.core.context.rule.type.ResponseType;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 
 /**
  * The Class RedirectResponse.
@@ -29,7 +29,7 @@ import com.aspectran.core.util.logging.LogFactory;
  */
 public class RedirectResponse implements Response {
 
-    private static final Log log = LogFactory.getLog(RedirectResponse.class);
+    private static final Logger logger = LoggerFactory.getLogger(RedirectResponse.class);
 
     private final RedirectRule redirectRule;
 
@@ -51,8 +51,8 @@ public class RedirectResponse implements Response {
 
         RedirectRule newRedirectRule = redirectRule.replicate();
 
-        if (log.isDebugEnabled()) {
-            log.debug("Response " + newRedirectRule);
+        if (logger.isDebugEnabled()) {
+            logger.debug("Response " + newRedirectRule);
         }
 
         try {

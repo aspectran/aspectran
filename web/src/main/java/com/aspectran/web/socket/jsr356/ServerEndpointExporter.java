@@ -18,8 +18,8 @@ package com.aspectran.web.socket.jsr356;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.lang.Nullable;
 import com.aspectran.core.util.Assert;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 
 import javax.servlet.ServletContext;
 import javax.websocket.DeploymentException;
@@ -41,7 +41,7 @@ import java.util.Set;
  */
 public class ServerEndpointExporter {
 
-    private static final Log log = LogFactory.getLog(ServerEndpointExporter.class);
+    private static final Logger logger = LoggerFactory.getLogger(ServerEndpointExporter.class);
 
     private final ActivityContext context;
 
@@ -117,8 +117,8 @@ public class ServerEndpointExporter {
                 "No ServerContainer set. Most likely the server's own WebSocket ServletContainerInitializer " +
                         "has not run yet.");
         try {
-            if (log.isDebugEnabled()) {
-                log.debug("Registering @ServerEndpoint class: " + endpointClass);
+            if (logger.isDebugEnabled()) {
+                logger.debug("Registering @ServerEndpoint class: " + endpointClass);
             }
             serverContainer.addEndpoint(endpointClass);
         }
@@ -131,8 +131,8 @@ public class ServerEndpointExporter {
         ServerContainer serverContainer = getServerContainer();
         Assert.state(serverContainer != null, "No ServerContainer set");
         try {
-            if (log.isDebugEnabled()) {
-                log.debug("Registering ServerEndpointConfig: " + endpointConfig);
+            if (logger.isDebugEnabled()) {
+                logger.debug("Registering ServerEndpointConfig: " + endpointConfig);
             }
             serverContainer.addEndpoint(endpointConfig);
         }

@@ -16,8 +16,8 @@
 package com.aspectran.web.adapter;
 
 import com.aspectran.core.component.bean.scope.SessionScope;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 
 import javax.servlet.http.HttpSessionBindingEvent;
 import javax.servlet.http.HttpSessionBindingListener;
@@ -30,7 +30,7 @@ public class HttpSessionScope extends SessionScope implements HttpSessionBinding
 
     private static final long serialVersionUID = 209145824535745248L;
 
-    private static final Log log = LogFactory.getLog(HttpSessionScope.class);
+    private static final Logger logger = LoggerFactory.getLogger(HttpSessionScope.class);
 
     /**
      * Instantiates a new HttpSessionScope.
@@ -41,15 +41,15 @@ public class HttpSessionScope extends SessionScope implements HttpSessionBinding
 
     @Override /* Explicit overrides for backward compatibility with Servlet 3.x */
     public  void valueBound(HttpSessionBindingEvent event) {
-        if (log.isDebugEnabled()) {
-            log.debug("New HttpSessionScope bound in session " + event.getSession());
+        if (logger.isDebugEnabled()) {
+            logger.debug("New HttpSessionScope bound in session " + event.getSession());
         }
     }
 
     @Override
     public void valueUnbound(HttpSessionBindingEvent event) {
-        if (log.isDebugEnabled()) {
-            log.debug("HttpSessionScope removed from session " + event.getSession());
+        if (logger.isDebugEnabled()) {
+            logger.debug("HttpSessionScope removed from session " + event.getSession());
         }
 
         destroy();

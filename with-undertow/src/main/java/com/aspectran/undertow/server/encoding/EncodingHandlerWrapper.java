@@ -15,10 +15,8 @@
  */
 package com.aspectran.undertow.server.encoding;
 
-import com.aspectran.core.lang.NonNull;
 import com.aspectran.web.support.http.HttpHeaders;
 import com.aspectran.web.support.http.MediaType;
-import com.aspectran.web.support.http.MediaTypeUtils;
 import io.undertow.attribute.RequestHeaderAttribute;
 import io.undertow.predicate.Predicate;
 import io.undertow.predicate.Predicates;

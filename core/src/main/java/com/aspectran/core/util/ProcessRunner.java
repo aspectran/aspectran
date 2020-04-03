@@ -15,8 +15,8 @@
  */
 package com.aspectran.core.util;
 
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -33,7 +33,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class ProcessRunner {
 
-    private static final Log log = LogFactory.getLog(ProcessRunner.class);
+    private static final Logger logger = LoggerFactory.getLogger(ProcessRunner.class);
 
     private final AtomicBoolean running = new AtomicBoolean();
 
@@ -72,10 +72,10 @@ public class ProcessRunner {
                 builder.directory(new File(workingDir));
             }
             process = builder.start();
-            if (logger != null || log.isDebugEnabled()) {
+            if (logger != null || logger.isDebugEnabled()) {
                 readNormalOutput(process);
             }
-            if (errOut != null || logger != null || log.isDebugEnabled()) {
+            if (errOut != null || logger != null || logger.isDebugEnabled()) {
                 readErrorOutput(process, errOut);
             }
             return process.waitFor();
@@ -94,7 +94,7 @@ public class ProcessRunner {
                 if (logger != null) {
                     logger.error(message, e);
                 }
-                log.error(message, e);
+                logger.error(message, e);
             }
         }).start();
     }
@@ -122,8 +122,8 @@ public class ProcessRunner {
                 if (logger != null) {
                     logger.info(line);
                 }
-                if (log.isDebugEnabled()) {
-                    log.debug(line);
+                if (logger.isDebugEnabled()) {
+                    logger.debug(line);
                 }
             }
         } catch (IOException e) {
@@ -142,8 +142,8 @@ public class ProcessRunner {
                 if (logger != null) {
                     logger.warn(line);
                 }
-                if (log.isDebugEnabled()) {
-                    log.debug(line);
+                if (logger.isDebugEnabled()) {
+                    logger.debug(line);
                 }
             }
         } catch (IOException e) {

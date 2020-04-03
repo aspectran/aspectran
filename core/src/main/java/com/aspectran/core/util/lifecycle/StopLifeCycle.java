@@ -15,15 +15,15 @@
  */
 package com.aspectran.core.util.lifecycle;
 
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 
 /**
  * A LifeCycle that when started will stop another LifeCycle.
  */
 public class StopLifeCycle extends AbstractLifeCycle implements LifeCycle.Listener {
 
-    private static final Log log = LogFactory.getLog(StopLifeCycle.class);
+    private static final Logger logger = LoggerFactory.getLogger(StopLifeCycle.class);
 
     private final LifeCycle lifecycle;
 
@@ -37,7 +37,7 @@ public class StopLifeCycle extends AbstractLifeCycle implements LifeCycle.Listen
         try {
             this.lifecycle.stop();
         } catch (Exception e) {
-            log.warn(e.getMessage(), e);
+            logger.warn(e.getMessage(), e);
         }
     }
 

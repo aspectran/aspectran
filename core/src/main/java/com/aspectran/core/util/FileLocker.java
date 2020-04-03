@@ -15,8 +15,8 @@
  */
 package com.aspectran.core.util;
 
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,7 +33,7 @@ import java.nio.channels.OverlappingFileLockException;
  */
 public class FileLocker {
 
-    private static final Log log = LogFactory.getLog(FileLocker.class);
+    private static final Logger logger = LoggerFactory.getLogger(FileLocker.class);
 
     private File lockFile;
 
@@ -64,8 +64,8 @@ public class FileLocker {
             if (fileLock != null) {
                 throw new Exception("The lock is already held");
             }
-            if (log.isDebugEnabled()) {
-                log.debug("Acquiring lock on " + lockFile.getAbsolutePath());
+            if (logger.isDebugEnabled()) {
+                logger.debug("Acquiring lock on " + lockFile.getAbsolutePath());
             }
             try {
                 fileChannel = new RandomAccessFile(lockFile, "rw").getChannel();
@@ -97,8 +97,8 @@ public class FileLocker {
      */
     public void release() throws Exception {
         synchronized (this) {
-            if (log.isDebugEnabled()) {
-                log.debug("Releasing lock on " + lockFile.getAbsolutePath());
+            if (logger.isDebugEnabled()) {
+                logger.debug("Releasing lock on " + lockFile.getAbsolutePath());
             }
             if (fileLock != null) {
                 try {

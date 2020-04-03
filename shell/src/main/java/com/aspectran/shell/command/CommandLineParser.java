@@ -16,8 +16,8 @@
 package com.aspectran.shell.command;
 
 import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 import com.aspectran.shell.command.option.DefaultOptionParser;
 import com.aspectran.shell.command.option.OptionParser;
 import com.aspectran.shell.command.option.OptionParserException;
@@ -39,7 +39,7 @@ public class CommandLineParser {
 
     private static final Pattern REDIRECTION_PATTERN = Pattern.compile("(>>)|(>)|(\")|(\')");
 
-    private static final Log log = LogFactory.getLog(CommandLineParser.class);
+    private static final Logger logger = LoggerFactory.getLogger(CommandLineParser.class);
 
     private final String commandLine;
 
@@ -183,8 +183,8 @@ public class CommandLineParser {
         }
         if (!redirectionList.isEmpty()) {
             this.redirectionList = redirectionList;
-            if (log.isDebugEnabled()) {
-                log.debug("Output Redirection: " + OutputRedirection.serialize(redirectionList));
+            if (logger.isDebugEnabled()) {
+                logger.debug("Output Redirection: " + OutputRedirection.serialize(redirectionList));
             }
         }
         if (StringUtils.hasLength(commandLine)) {

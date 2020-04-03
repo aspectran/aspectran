@@ -23,8 +23,8 @@ import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.context.rule.type.JoinpointTargetType;
 import com.aspectran.core.util.cache.Cache;
 import com.aspectran.core.util.cache.ConcurrentReferenceCache;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -39,7 +39,7 @@ import static com.aspectran.core.util.ConcurrentReferenceHashMap.ReferenceType;
  */
 public class AspectRuleRegistry extends AbstractComponent {
 
-    private static final Log log = LogFactory.getLog(AspectRuleRegistry.class);
+    private static final Logger logger = LoggerFactory.getLogger(AspectRuleRegistry.class);
 
     private static final RelevantAspectRuleHolder EMPTY_HOLDER = new RelevantAspectRuleHolder();
 
@@ -76,8 +76,8 @@ public class AspectRuleRegistry extends AbstractComponent {
                     aspectRule.getId());
         }
 
-        if (log.isTraceEnabled()) {
-            log.trace("add AspectRule " + aspectRule);
+        if (logger.isTraceEnabled()) {
+            logger.trace("add AspectRule " + aspectRule);
         }
     }
 

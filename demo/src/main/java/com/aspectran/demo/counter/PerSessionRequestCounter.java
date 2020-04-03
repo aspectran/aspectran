@@ -23,8 +23,8 @@ import com.aspectran.core.component.bean.annotation.Component;
 import com.aspectran.core.component.bean.annotation.Scope;
 import com.aspectran.core.context.rule.type.ScopeType;
 import com.aspectran.core.util.ToStringBuilder;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -36,7 +36,7 @@ import java.util.concurrent.atomic.AtomicLong;
 @Aspect("perSessionRequestCounter")
 public class PerSessionRequestCounter implements Serializable {
 
-    private static final Log log = LogFactory.getLog(PerSessionRequestCounter.class);
+    private static final Logger logger = LoggerFactory.getLogger(PerSessionRequestCounter.class);
 
     private static final long serialVersionUID = -7254733724811233759L;
 
@@ -58,12 +58,12 @@ public class PerSessionRequestCounter implements Serializable {
     public void after(PerSessionRequestCounter perSessionRequestCounter) {
         stopTime.set(System.currentTimeMillis());
 
-        if (log.isDebugEnabled()) {
+        if (logger.isDebugEnabled()) {
             ToStringBuilder tsb = new ToStringBuilder("PerSessionRequestCounter");
             tsb.append("requests", perSessionRequestCounter.getRequests());
             tsb.append("start", perSessionRequestCounter.getStartTime());
             tsb.append("stop", perSessionRequestCounter.getStopTime());
-            log.debug(tsb.toString());
+            logger.debug(tsb.toString());
         }
     }
 

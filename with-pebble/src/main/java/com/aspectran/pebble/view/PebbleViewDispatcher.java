@@ -21,8 +21,8 @@ import com.aspectran.core.activity.response.dispatch.ViewDispatcherException;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.component.template.TemplateDataMap;
 import com.aspectran.core.context.rule.DispatchRule;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 import com.mitchellbosecke.pebble.PebbleEngine;
 import com.mitchellbosecke.pebble.template.PebbleTemplate;
 
@@ -35,7 +35,7 @@ import com.mitchellbosecke.pebble.template.PebbleTemplate;
  */
 public class PebbleViewDispatcher implements ViewDispatcher {
 
-    private static final Log log = LogFactory.getLog(PebbleViewDispatcher.class);
+    private static final Logger logger = LoggerFactory.getLogger(PebbleViewDispatcher.class);
 
     private final PebbleEngine pebbleEngine;
 
@@ -111,8 +111,8 @@ public class PebbleViewDispatcher implements ViewDispatcher {
                 }
             }
 
-            if (log.isDebugEnabled()) {
-                log.debug("Dispatching to Pebble template [" + dispatchName + "]");
+            if (logger.isDebugEnabled()) {
+                logger.debug("Dispatching to Pebble template [" + dispatchName + "]");
             }
 
             TemplateDataMap model = new TemplateDataMap(activity);

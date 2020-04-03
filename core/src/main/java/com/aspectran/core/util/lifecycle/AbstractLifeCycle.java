@@ -15,8 +15,8 @@
  */
 package com.aspectran.core.util.lifecycle;
 
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -25,7 +25,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public abstract class AbstractLifeCycle implements LifeCycle {
 
-    private static final Log log = LogFactory.getLog(AbstractLifeCycle.class);
+    private static final Logger logger = LoggerFactory.getLogger(AbstractLifeCycle.class);
 
     private final CopyOnWriteArrayList<LifeCycle.Listener> listeners = new CopyOnWriteArrayList<>();
 
@@ -158,8 +158,8 @@ public abstract class AbstractLifeCycle implements LifeCycle {
 
     private void setStarted() {
         state = STATE_STARTED;
-        if (log.isDebugEnabled()) {
-            log.debug(STARTED + " " + this);
+        if (logger.isDebugEnabled()) {
+            logger.debug(STARTED + " " + this);
         }
         for (Listener listener : listeners) {
             listener.lifeCycleStarted(this);
@@ -167,8 +167,8 @@ public abstract class AbstractLifeCycle implements LifeCycle {
     }
 
     private void setStarting() {
-        if (log.isDebugEnabled()) {
-            log.debug("Starting " + this);
+        if (logger.isDebugEnabled()) {
+            logger.debug("Starting " + this);
         }
         state = STATE_STARTING;
         for (Listener listener : listeners) {
@@ -177,8 +177,8 @@ public abstract class AbstractLifeCycle implements LifeCycle {
     }
 
     private void setStopping() {
-        if (log.isDebugEnabled()) {
-            log.debug("Stopping " + this);
+        if (logger.isDebugEnabled()) {
+            logger.debug("Stopping " + this);
         }
         state = STATE_STOPPING;
         for (Listener listener : listeners) {
@@ -188,8 +188,8 @@ public abstract class AbstractLifeCycle implements LifeCycle {
 
     private void setStopped() {
         state = STATE_STOPPED;
-        if (log.isDebugEnabled()) {
-            log.debug(STOPPED + " " + this);
+        if (logger.isDebugEnabled()) {
+            logger.debug(STOPPED + " " + this);
         }
         for (Listener listener : listeners) {
             listener.lifeCycleStopped(this);
@@ -198,8 +198,8 @@ public abstract class AbstractLifeCycle implements LifeCycle {
 
     private void setFailed(Throwable th) {
         state = STATE_FAILED;
-        if (log.isDebugEnabled()) {
-            log.warn(FAILED + " " + this + ": " + th, th);
+        if (logger.isDebugEnabled()) {
+            logger.warn(FAILED + " " + this + ": " + th, th);
         }
         for (Listener listener : listeners) {
             listener.lifeCycleFailure(this, th);

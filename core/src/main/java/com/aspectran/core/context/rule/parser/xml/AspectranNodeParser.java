@@ -22,8 +22,8 @@ import com.aspectran.core.context.rule.appender.RuleAppendHandler;
 import com.aspectran.core.context.rule.appender.RuleAppender;
 import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;
 import com.aspectran.core.util.ExceptionUtils;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 import com.aspectran.core.util.nodelet.NodeletParser;
 import org.xml.sax.InputSource;
 
@@ -37,7 +37,7 @@ import java.io.InputStream;
  */
 public class AspectranNodeParser {
 
-    private static final Log log = LogFactory.getLog(AspectranNodeParser.class);
+    private static final Logger logger = LoggerFactory.getLogger(AspectranNodeParser.class);
 
     private final ContextRuleAssistant assistant;
 
@@ -177,7 +177,7 @@ public class AspectranNodeParser {
             detail = message + ": " +
                 assistant.getRuleAppendHandler().getCurrentRuleAppender().getQualifiedName();
         }
-        log.error(detail);
+        logger.error(detail);
         throw new Exception(detail, cause);
     }
 

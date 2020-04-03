@@ -15,8 +15,8 @@
  */
 package com.aspectran.web.startup.listener;
 
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 import com.aspectran.web.service.DefaultWebService;
 
 import javax.servlet.ServletContextEvent;
@@ -27,31 +27,31 @@ import javax.servlet.ServletContextListener;
  */
 public class WebServiceListener implements ServletContextListener {
 
-    private static final Log log = LogFactory.getLog(WebServiceListener.class);
+    private static final Logger logger = LoggerFactory.getLogger(WebServiceListener.class);
 
     private DefaultWebService webService;
 
     @Override
     public void contextInitialized(ServletContextEvent event) {
-        log.info("Initializing WebServiceListener...");
+        logger.info("Initializing WebServiceListener...");
 
         try {
             webService = DefaultWebService.create(event.getServletContext());
             webService.start();
         } catch (Exception e) {
-            log.error("WebServiceListener initialization failed", e);
+            logger.error("WebServiceListener initialization failed", e);
         }
     }
 
     @Override
     public void contextDestroyed(ServletContextEvent event) {
         if (webService != null) {
-            log.info("Do not terminate the server while the all scoped bean destroying");
+            logger.info("Do not terminate the server while the all scoped bean destroying");
 
             webService.stop();
             webService = null;
 
-            log.info("Successfully destroyed WebServiceListener: " + this);
+            logger.info("Successfully destroyed WebServiceListener: " + this);
         }
     }
 

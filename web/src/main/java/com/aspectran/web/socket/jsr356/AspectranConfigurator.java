@@ -16,8 +16,8 @@
 package com.aspectran.web.socket.jsr356;
 
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 import com.aspectran.web.service.WebServiceHolder;
 
 import javax.websocket.server.ServerEndpointConfig;
@@ -31,19 +31,19 @@ import javax.websocket.server.ServerEndpointConfig.Configurator;
  */
 public class AspectranConfigurator extends Configurator {
 
-    private static final Log log = LogFactory.getLog(AspectranConfigurator.class);
+    private static final Logger logger = LoggerFactory.getLogger(AspectranConfigurator.class);
 
     @Override
     public <T> T getEndpointInstance(Class<T> endpointClass) throws InstantiationException {
         ActivityContext context = WebServiceHolder.getCurrentActivityContext();
         if (context == null) {
             String message = "Failed to find WebService";
-            log.error(message);
+            logger.error(message);
             throw new IllegalStateException(message);
         }
         T endpoint = context.getBeanRegistry().getBean(endpointClass);
-        if (log.isTraceEnabled()) {
-            log.trace("Using @ServerEndpoint singleton " + endpoint);
+        if (logger.isTraceEnabled()) {
+            logger.trace("Using @ServerEndpoint singleton " + endpoint);
         }
         return endpoint;
     }

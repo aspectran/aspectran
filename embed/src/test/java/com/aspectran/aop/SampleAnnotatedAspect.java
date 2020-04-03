@@ -27,8 +27,8 @@ import com.aspectran.core.component.bean.annotation.Joinpoint;
 import com.aspectran.core.component.bean.annotation.Settings;
 import com.aspectran.core.context.rule.type.JoinpointTargetType;
 import com.aspectran.core.context.rule.type.MethodType;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 
 @Component
 @Aspect(
@@ -53,13 +53,13 @@ import com.aspectran.core.util.logging.LogFactory;
 @Description("The annotated aspect02")
 public class SampleAnnotatedAspect {
 
-    private static final Log log = LogFactory.getLog(SampleAnnotatedAspect.class);
+    private static final Logger logger = LoggerFactory.getLogger(SampleAnnotatedAspect.class);
 
     @Before
     public String helloWorld() {
         String msg = "Before: Hello, World.";
 
-        log.info("===> aspect02: " + msg);
+        logger.info("===> aspect02: " + msg);
 
         return msg;
     }
@@ -68,7 +68,7 @@ public class SampleAnnotatedAspect {
     public String goodbye() {
         String msg = "After: Goodbye.";
 
-        log.info("===> aspect02: " + msg);
+        logger.info("===> aspect02: " + msg);
 
         return msg;
     }
@@ -77,7 +77,7 @@ public class SampleAnnotatedAspect {
     public String seeYouAgain() {
         String msg = "Finally: See you again.";
 
-        log.info("===> aspect02: " + msg);
+        logger.info("===> aspect02: " + msg);
 
         return msg;
     }
@@ -86,7 +86,7 @@ public class SampleAnnotatedAspect {
     public String around() {
         String msg = "Around Method: Hi~~~~~~~~~~~~~~";
 
-        log.info("===> aspect02: " + msg);
+        logger.info("===> aspect02: " + msg);
 
         return msg;
     }
@@ -95,7 +95,7 @@ public class SampleAnnotatedAspect {
     public String oops() {
         String msg = "ExceptionThrown: Oops!!!!!!!!!!!!!!!";
 
-        log.info("===> aspect02: " + msg);
+        logger.info("===> aspect02: " + msg);
 
         return msg;
     }
@@ -104,7 +104,7 @@ public class SampleAnnotatedAspect {
     public String oopsGlobal() {
         String msg = "ExceptionThrown: Global Oops!!!!!!!!!!!!!!!";
 
-        log.info("===> aspect02: " + msg);
+        logger.info("===> aspect02: " + msg);
 
         return msg;
     }

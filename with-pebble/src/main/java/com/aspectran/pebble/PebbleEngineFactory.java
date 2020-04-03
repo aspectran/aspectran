@@ -19,8 +19,8 @@ import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.component.bean.aware.ApplicationAdapterAware;
 import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 import com.mitchellbosecke.pebble.PebbleEngine;
 import com.mitchellbosecke.pebble.loader.ClasspathLoader;
 import com.mitchellbosecke.pebble.loader.DelegatingLoader;
@@ -41,7 +41,7 @@ import java.util.Locale;
  */
 public class PebbleEngineFactory implements ApplicationAdapterAware {
 
-    private static final Log log = LogFactory.getLog(PebbleEngineFactory.class);
+    private static final Logger logger = LoggerFactory.getLogger(PebbleEngineFactory.class);
 
     private ApplicationAdapter applicationAdapter;
 
@@ -128,21 +128,21 @@ public class PebbleEngineFactory implements ApplicationAdapterAware {
             case 0:
                 // Register default template loaders.
                 Loader<?> stringLoader = new StringLoader();
-                if (log.isDebugEnabled()) {
-                    log.debug("Pebble Engine Template Loader not specified. Default Template Loader registered: " + stringLoader);
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Pebble Engine Template Loader not specified. Default Template Loader registered: " + stringLoader);
                 }
                 return stringLoader;
             case 1:
-                if (log.isDebugEnabled()) {
-                    log.debug("One Pebble Engine Template Loader registered: " + templateLoaders[0]);
+                if (logger.isDebugEnabled()) {
+                    logger.debug("One Pebble Engine Template Loader registered: " + templateLoaders[0]);
                 }
                 return templateLoaders[0];
             default:
                 List<Loader<?>> defaultLoadingStrategies = new ArrayList<>();
                 Collections.addAll(defaultLoadingStrategies, templateLoaders);
                 Loader<?> delegatingLoader = new DelegatingLoader(defaultLoadingStrategies);
-                if (log.isDebugEnabled()) {
-                    log.debug("Multiple Pebble Engine Template Loader registered: " + delegatingLoader);
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Multiple Pebble Engine Template Loader registered: " + delegatingLoader);
                 }
                 return delegatingLoader;
         }
@@ -157,8 +157,8 @@ public class PebbleEngineFactory implements ApplicationAdapterAware {
     protected Loader<?> getTemplateLoaderForPath(String templateLoaderPath) {
         if (templateLoaderPath.startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {
             String basePackagePath = templateLoaderPath.substring(ResourceUtils.CLASSPATH_URL_PREFIX.length());
-            if (log.isDebugEnabled()) {
-                log.debug("Template loader path [" + templateLoaderPath + "] resolved to class path [" + basePackagePath + "]");
+            if (logger.isDebugEnabled()) {
+                logger.debug("Template loader path [" + templateLoaderPath + "] resolved to class path [" + basePackagePath + "]");
             }
             ClasspathLoader loader = new ClasspathLoader(applicationAdapter.getClassLoader());
             loader.setPrefix(basePackagePath);
@@ -166,8 +166,8 @@ public class PebbleEngineFactory implements ApplicationAdapterAware {
         } else if (templateLoaderPath.startsWith(ResourceUtils.FILE_URL_PREFIX)) {
             File file = new File(templateLoaderPath.substring(ResourceUtils.FILE_URL_PREFIX.length()));
             String prefix = file.getAbsolutePath();
-            if (log.isDebugEnabled()) {
-                log.debug("Template loader path [" + templateLoaderPath + "] resolved to file path [" + prefix + "]");
+            if (logger.isDebugEnabled()) {
+                logger.debug("Template loader path [" + templateLoaderPath + "] resolved to file path [" + prefix + "]");
             }
             FileLoader loader = new FileLoader();
             loader.setPrefix(prefix);
@@ -175,8 +175,8 @@ public class PebbleEngineFactory implements ApplicationAdapterAware {
         } else {
             File file = new File(applicationAdapter.getBasePath(), templateLoaderPath);
             String prefix = file.getAbsolutePath();
-            if (log.isDebugEnabled()) {
-                log.debug("Template loader path [" + templateLoaderPath + "] resolved to file path [" + prefix + "]");
+            if (logger.isDebugEnabled()) {
+                logger.debug("Template loader path [" + templateLoaderPath + "] resolved to file path [" + prefix + "]");
             }
             FileLoader loader = new FileLoader();
             loader.setPrefix(prefix);

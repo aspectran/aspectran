@@ -27,8 +27,8 @@ import com.aspectran.core.context.rule.type.BeanProxifierType;
 import com.aspectran.core.context.rule.type.ScopeType;
 import com.aspectran.core.lang.NonNull;
 import com.aspectran.core.lang.Nullable;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 
 import java.util.Set;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -40,7 +40,7 @@ import java.util.concurrent.locks.ReadWriteLock;
  */
 abstract class AbstractBeanRegistry extends AbstractBeanFactory implements BeanRegistry {
 
-    private static final Log log = LogFactory.getLog(AbstractBeanRegistry.class);
+    private static final Logger logger = LoggerFactory.getLogger(AbstractBeanRegistry.class);
 
     private final SingletonScope singletonScope = new SingletonScope();
 
@@ -283,8 +283,8 @@ abstract class AbstractBeanRegistry extends AbstractBeanFactory implements BeanR
      * Instantiate all singletons(non-lazy-init).
      */
     private void instantiateSingletons() {
-        if (log.isDebugEnabled()) {
-            log.debug("Initializing singletons in " + this);
+        if (logger.isDebugEnabled()) {
+            logger.debug("Initializing singletons in " + this);
         }
 
         Activity activity = getActivityContext().getDefaultActivity();
@@ -312,8 +312,8 @@ abstract class AbstractBeanRegistry extends AbstractBeanFactory implements BeanR
      * Destroy all cached singletons.
      */
     private void destroySingletons() {
-        if (log.isDebugEnabled()) {
-            log.debug("Destroying singletons in " + this);
+        if (logger.isDebugEnabled()) {
+            logger.debug("Destroying singletons in " + this);
         }
 
         singletonScope.destroy();

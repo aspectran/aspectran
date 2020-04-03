@@ -16,8 +16,8 @@
 package com.aspectran.mybatis;
 
 import com.aspectran.core.util.ToStringBuilder;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -30,7 +30,7 @@ import org.apache.ibatis.session.SqlSessionFactory;
  */
 public class SqlSessionTxAdvice {
 
-    private static final Log log = LogFactory.getLog(SqlSessionTxAdvice.class);
+    private static final Logger logger = LoggerFactory.getLogger(SqlSessionTxAdvice.class);
 
     private final SqlSessionFactory sqlSessionFactory;
 
@@ -77,14 +77,14 @@ public class SqlSessionTxAdvice {
 
             sqlSession = sqlSessionFactory.openSession(executorType, autoCommit);
 
-            if (log.isDebugEnabled()) {
+            if (logger.isDebugEnabled()) {
                 ToStringBuilder tsb = new ToStringBuilder(String.format("%s %s@%x",
                         (arbitrarilyClosed ? "Reopened" : "Opened"),
                         sqlSession.getClass().getSimpleName(),
                         sqlSession.hashCode()));
                 tsb.append("executorType", executorType);
                 tsb.append("autoCommit", autoCommit);
-                log.debug(tsb.toString());
+                logger.debug(tsb.toString());
             }
 
             arbitrarilyClosed = false;
@@ -117,8 +117,8 @@ public class SqlSessionTxAdvice {
             return;
         }
 
-        if (log.isDebugEnabled()) {
-            log.debug(String.format("Committing transactional %s@%x",
+        if (logger.isDebugEnabled()) {
+            logger.debug(String.format("Committing transactional %s@%x",
                     sqlSession.getClass().getSimpleName(),
                     sqlSession.hashCode()));
         }
@@ -136,11 +136,11 @@ public class SqlSessionTxAdvice {
             return;
         }
 
-        if (log.isDebugEnabled()) {
+        if (logger.isDebugEnabled()) {
             ToStringBuilder tsb = new ToStringBuilder(String.format("Committing transactional %s@%x",
                     sqlSession.getClass().getSimpleName(),sqlSession.hashCode()));
             tsb.append("force", force);
-            log.debug(tsb.toString());
+            logger.debug(tsb.toString());
         }
 
         sqlSession.commit(force);
@@ -156,8 +156,8 @@ public class SqlSessionTxAdvice {
             return;
         }
 
-        if (log.isDebugEnabled()) {
-            log.debug(String.format("Rolling back transactional %s@%x",
+        if (logger.isDebugEnabled()) {
+            logger.debug(String.format("Rolling back transactional %s@%x",
                     sqlSession.getClass().getSimpleName(),
                     sqlSession.hashCode()));
         }
@@ -176,11 +176,11 @@ public class SqlSessionTxAdvice {
             return;
         }
 
-        if (log.isDebugEnabled()) {
+        if (logger.isDebugEnabled()) {
             ToStringBuilder tsb = new ToStringBuilder(String.format("Rolling back transactional %s@%x",
                     sqlSession.getClass().getSimpleName(),sqlSession.hashCode()));
             tsb.append("force", force);
-            log.debug(tsb.toString());
+            logger.debug(tsb.toString());
         }
 
         sqlSession.rollback(force);
@@ -207,8 +207,8 @@ public class SqlSessionTxAdvice {
         arbitrarilyClosed = arbitrarily;
         sqlSession.close();
 
-        if (log.isDebugEnabled()) {
-            log.debug(String.format("Closed %s@%x",
+        if (logger.isDebugEnabled()) {
+            logger.debug(String.format("Closed %s@%x",
                     sqlSession.getClass().getSimpleName(),
                     sqlSession.hashCode()));
         }

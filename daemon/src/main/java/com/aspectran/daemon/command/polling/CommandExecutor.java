@@ -16,8 +16,8 @@
 package com.aspectran.daemon.command.polling;
 
 import com.aspectran.core.util.ExceptionUtils;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 import com.aspectran.daemon.Daemon;
 import com.aspectran.daemon.command.Command;
 import com.aspectran.daemon.command.CommandResult;
@@ -33,7 +33,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class CommandExecutor {
 
-    private static final Log log = LogFactory.getLog(CommandExecutor.class);
+    private static final Logger logger = LoggerFactory.getLogger(CommandExecutor.class);
 
     private final Daemon daemon;
 
@@ -65,8 +65,8 @@ public class CommandExecutor {
         final String commandName = parameters.getCommandName();
 
         if (isolated.get()) {
-            if (log.isDebugEnabled()) {
-                log.debug("Holds '" + commandName + "' command until the end of the command " +
+            if (logger.isDebugEnabled()) {
+                logger.debug("Holds '" + commandName + "' command until the end of the command " +
                         "requiring a single execution guarantee.");
             }
             return false;
@@ -78,14 +78,14 @@ public class CommandExecutor {
             try {
                 callback.failure();
             } catch (Exception e) {
-                log.error("Failed to execute callback", e);
+                logger.error("Failed to execute callback", e);
             }
             return false;
         }
 
         if (command.isIsolated() && queueSize.get() > 0) {
-            if (log.isDebugEnabled()) {
-                log.debug("'" + commandName + "' command requires a single execution guarantee, " +
+            if (logger.isDebugEnabled()) {
+                logger.debug("'" + commandName + "' command requires a single execution guarantee, " +
                         "so it is held until another command completes");
             }
             return false;
@@ -110,7 +110,7 @@ public class CommandExecutor {
                         callback.failure();
                     }
                 } catch (Exception e) {
-                    log.error("Failed to execute callback", e);
+                    logger.error("Failed to execute callback", e);
                 }
             } finally {
                 currentThread.setName(oldThreadName);
@@ -124,7 +124,7 @@ public class CommandExecutor {
             executorService.execute(runnable);
             return true;
         } catch (RejectedExecutionException e) {
-            log.error("Failed to execute command", e);
+            logger.error("Failed to execute command", e);
             queueSize.decrementAndGet();
             return false;
         }
@@ -141,7 +141,7 @@ public class CommandExecutor {
                 return false;
             }
         } catch (Exception e) {
-            log.error("Error executing daemon command " + command, e);
+            logger.error("Error executing daemon command " + command, e);
             parameters.setOutput("[FAILED] Error executing daemon command " + command +
                     System.lineSeparator() + ExceptionUtils.getStacktrace(e));
             return false;
@@ -153,14 +153,14 @@ public class CommandExecutor {
     }
 
     public void shutdown() {
-        if (log.isDebugEnabled()) {
-            log.debug("Shutting down executor...");
+        if (logger.isDebugEnabled()) {
+            logger.debug("Shutting down executor...");
         }
 
         executorService.shutdown();
         if (!executorService.isTerminated()) {
             while (true) {
-                log.info("Waiting for executor to terminate...");
+                logger.info("Waiting for executor to terminate...");
                 if (executorService.isTerminated()) {
                     break;
                 }

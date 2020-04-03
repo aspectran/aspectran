@@ -15,8 +15,8 @@
  */
 package com.aspectran.web.startup.servlet;
 
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 import com.aspectran.web.service.DefaultWebService;
 import com.aspectran.web.service.WebService;
 
@@ -37,7 +37,7 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
     /** @serial */
     private static final long serialVersionUID = 6659683668233267847L;
 
-    private static final Log log = LogFactory.getLog(WebActivityServlet.class);
+    private static final Logger logger = LoggerFactory.getLogger(WebActivityServlet.class);
 
     private DefaultWebService webService;
 
@@ -69,14 +69,14 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
             standalone = (rootService != webService);
             if (standalone) {
                 webService.start();
-                log.info(webService.getServiceName() + " is running in standalone mode inside " + getMyName());
+                logger.info(webService.getServiceName() + " is running in standalone mode inside " + getMyName());
             }
         } catch (Exception e) {
-            log.error("Unable to initialize WebActivityServlet", e);
+            logger.error("Unable to initialize WebActivityServlet", e);
             throw new UnavailableException(e.getMessage());
         }
 
-        log.info("Initialized " + getMyName());
+        logger.info("Initialized " + getMyName());
     }
 
     @Override
@@ -89,11 +89,11 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
         super.destroy();
 
         if (standalone) {
-            log.info("Do not terminate the application server while destroying all scoped beans");
+            logger.info("Do not terminate the application server while destroying all scoped beans");
             webService.stop();
         }
 
-        log.info("Destroyed " + getMyName());
+        logger.info("Destroyed " + getMyName());
     }
 
     private String getMyName() {

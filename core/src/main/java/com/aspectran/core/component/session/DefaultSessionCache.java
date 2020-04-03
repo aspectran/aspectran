@@ -15,8 +15,8 @@
  */
 package com.aspectran.core.component.session;
 
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 import com.aspectran.core.util.statistic.CounterStatistic;
 
 import java.util.Map;
@@ -32,7 +32,7 @@ import java.util.function.Function;
  */
 public class DefaultSessionCache extends AbstractSessionCache {
 
-    private static final Log log = LogFactory.getLog(DefaultSessionCache.class);
+    private static final Logger logger = LoggerFactory.getLogger(DefaultSessionCache.class);
 
     /** the cache of sessions in a HashMap */
     private final Map<String, DefaultSession> sessions = new ConcurrentHashMap<>();
@@ -178,7 +178,7 @@ public class DefaultSessionCache extends AbstractSessionCache {
                     try {
                         getSessionStore().save(session.getId(), session.getSessionData());
                     } catch (Exception e) {
-                        log.warn("Failed to save session data", e);
+                        logger.warn("Failed to save session data", e);
                     }
                     doDelete(session.getId()); // remove from memory
                 } else {
@@ -187,8 +187,8 @@ public class DefaultSessionCache extends AbstractSessionCache {
                         session.invalidate();
                         session.setDestroyedReason(Session.DestroyedReason.UNDEPLOY);
                     } catch (Exception e) {
-                        if (log.isDebugEnabled()) {
-                            log.debug("Session invalidation failed, but ignored", e);
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("Session invalidation failed, but ignored", e);
                         }
                     }
                 }

@@ -23,7 +23,6 @@ import com.aspectran.web.activity.request.RequestHeaderParser;
 import com.aspectran.web.support.http.HttpMediaTypeNotAcceptableException;
 import com.aspectran.web.support.http.HttpStatus;
 import com.aspectran.web.support.http.MediaType;
-import com.aspectran.web.support.http.MediaTypeUtils;
 
 import java.util.List;
 import java.util.Locale;

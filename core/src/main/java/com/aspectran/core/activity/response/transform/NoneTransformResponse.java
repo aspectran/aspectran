@@ -20,8 +20,8 @@ import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.activity.response.ResponseException;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.rule.TransformRule;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 
 /**
  * The Class NoneTransformResponse.
@@ -30,7 +30,7 @@ import com.aspectran.core.util.logging.LogFactory;
  */
 public class NoneTransformResponse extends TransformResponse {
 
-    private static final Log log = LogFactory.getLog(NoneTransformResponse.class);
+    private static final Logger logger = LoggerFactory.getLogger(NoneTransformResponse.class);
 
     /**
      * Instantiates a new NoneTransformResponse.
@@ -48,8 +48,8 @@ public class NoneTransformResponse extends TransformResponse {
             return;
         }
 
-        if (log.isDebugEnabled()) {
-            log.debug("Response " + getTransformRule());
+        if (logger.isDebugEnabled()) {
+            logger.debug("Response " + getTransformRule());
         }
 
         if (getContentType() != null) {

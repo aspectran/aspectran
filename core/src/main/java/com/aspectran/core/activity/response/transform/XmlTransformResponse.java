@@ -24,8 +24,8 @@ import com.aspectran.core.activity.response.transform.xml.ContentsInputSource;
 import com.aspectran.core.activity.response.transform.xml.ContentsXMLReader;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.rule.TransformRule;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Source;
@@ -51,7 +51,7 @@ public class XmlTransformResponse extends TransformResponse {
 
     private static final String YES = "yes";
 
-    private static final Log log = LogFactory.getLog(XmlTransformResponse.class);
+    private static final Logger logger = LoggerFactory.getLogger(XmlTransformResponse.class);
 
     private final String contentType;
 
@@ -79,8 +79,8 @@ public class XmlTransformResponse extends TransformResponse {
             return;
         }
 
-        if (log.isDebugEnabled()) {
-            log.debug("Response " + getTransformRule());
+        if (logger.isDebugEnabled()) {
+            logger.debug("Response " + getTransformRule());
         }
 
         try {

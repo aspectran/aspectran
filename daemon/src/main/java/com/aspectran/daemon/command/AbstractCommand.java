@@ -16,13 +16,13 @@
 package com.aspectran.daemon.command;
 
 import com.aspectran.core.util.ExceptionUtils;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 import com.aspectran.daemon.service.DaemonService;
 
 public abstract class AbstractCommand implements Command {
 
-    private final Log log = LogFactory.getLog(getClass());
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final CommandRegistry registry;
 
@@ -55,22 +55,22 @@ public abstract class AbstractCommand implements Command {
     }
 
     protected String debug(String message) {
-        log.debug(message);
+        logger.debug(message);
         return message;
     }
 
     protected String info(String message) {
-        log.info(message);
+        logger.info(message);
         return message;
     }
 
     protected String warn(String message) {
-        log.warn(message);
+        logger.warn(message);
         return message;
     }
 
     protected String error(String message) {
-        log.error(message);
+        logger.error(message);
         return message;
     }
 
@@ -83,13 +83,13 @@ public abstract class AbstractCommand implements Command {
     }
 
     protected CommandResult failed(String message, Throwable throwable) {
-        log.error(message, throwable);
+        logger.error(message, throwable);
         return new CommandResult(false, message + System.lineSeparator() +
                 ExceptionUtils.getStacktrace(throwable));
     }
 
     protected CommandResult failed(Throwable throwable) {
-        log.error(throwable.getMessage(), throwable);
+        logger.error(throwable.getMessage(), throwable);
         return new CommandResult(false, ExceptionUtils.getStacktrace(throwable));
     }
 

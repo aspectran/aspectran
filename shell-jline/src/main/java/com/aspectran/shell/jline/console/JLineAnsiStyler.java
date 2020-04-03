@@ -15,8 +15,8 @@
  */
 package com.aspectran.shell.jline.console;
 
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 import com.aspectran.shell.console.AnsiStyleHandler;
 import org.jline.terminal.Terminal;
 import org.jline.utils.AttributedStringBuilder;
@@ -32,7 +32,7 @@ import org.jline.utils.Colors;
  */
 public class JLineAnsiStyler {
 
-    private static final Log log = LogFactory.getLog(JLineAnsiStyler.class);
+    private static final Logger logger = LoggerFactory.getLogger(JLineAnsiStyler.class);
 
     public static String parse(String input) {
         return parse(input, null);
@@ -247,7 +247,7 @@ public class JLineAnsiStyler {
                             try {
                                 color = Colors.rgbColor(style.toLowerCase());
                             } catch (Throwable e) {
-                                log.warn("Unable to parse color from string \"" + style + "\"", e);
+                                logger.warn("Unable to parse color from string \"" + style + "\"", e);
                             }
                         }
                         as = as.background(color);
@@ -262,13 +262,13 @@ public class JLineAnsiStyler {
                             try {
                                 color = Colors.rgbColor(style.toLowerCase());
                             } catch (Throwable e) {
-                                log.warn("Unable to parse color from string \"" + style + "\"", e);
+                                logger.warn("Unable to parse color from string \"" + style + "\"", e);
                             }
                         }
                         as = as.foreground(color);
                     }
                     if (color == -1) {
-                        log.warn("Unknown color code \"" + style + "\"");
+                        logger.warn("Unknown color code \"" + style + "\"");
                     }
                     break;
             }

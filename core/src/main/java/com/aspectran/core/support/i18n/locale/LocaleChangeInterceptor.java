@@ -19,8 +19,8 @@ import com.aspectran.core.activity.Translet;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 
 import java.util.Locale;
 import java.util.TimeZone;
@@ -43,7 +43,7 @@ public class LocaleChangeInterceptor {
      */
     public static final String DEFAULT_TIMEZONE_PARAM_NAME = "timezone";
 
-    protected final Log log = LogFactory.getLog(getClass());
+    protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     private String localeParamName = DEFAULT_LOCALE_PARAM_NAME;
 
@@ -147,7 +147,7 @@ public class LocaleChangeInterceptor {
                 locale = StringUtils.parseLocaleString(newLocale);
             } catch (IllegalArgumentException ex) {
                 if (isIgnoreInvalidLocale()) {
-                    log.debug("Ignoring invalid locale value [" + newLocale + "]: " + ex.getMessage());
+                    logger.debug("Ignoring invalid locale value [" + newLocale + "]: " + ex.getMessage());
                 } else {
                     throw ex;
                 }
@@ -168,7 +168,7 @@ public class LocaleChangeInterceptor {
                 timeZone = StringUtils.parseTimeZoneString(newTimeZone);
             } catch (IllegalArgumentException ex) {
                 if (isIgnoreInvalidLocale()) {
-                    log.debug("Ignoring invalid timezone value [" + newTimeZone + "]: " + ex.getMessage());
+                    logger.debug("Ignoring invalid timezone value [" + newTimeZone + "]: " + ex.getMessage());
                 } else {
                     throw ex;
                 }

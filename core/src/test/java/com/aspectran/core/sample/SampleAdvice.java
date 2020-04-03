@@ -16,27 +16,27 @@
 package com.aspectran.core.sample;
 
 import com.aspectran.core.activity.Translet;
-import com.aspectran.core.util.logging.Log;
-import com.aspectran.core.util.logging.LogFactory;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 
 public class SampleAdvice {
 
-    private final Log log = LogFactory.getLog(SampleAdvice.class);
+    private final Logger logger = LoggerFactory.getLogger(SampleAdvice.class);
 
     public String welcome(Translet translet) {
         String msg = "Welcome to Aspectran!";
 
-        log.info(msg);
+        logger.info(msg);
 
         return msg;
     }
 
     public String goodbye(Translet translet) {
-        log.info("activityDataMap " + translet.getActivityDataMap());
+        logger.info("activityDataMap " + translet.getActivityDataMap());
 
         String msg = "Goodbye!";
 
-        log.info(msg);
+        logger.info(msg);
 
         return msg;
     }
