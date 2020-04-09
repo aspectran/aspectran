@@ -19,7 +19,7 @@ import com.aspectran.core.util.Assert;
 
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Function;
@@ -34,7 +34,7 @@ import java.util.function.Function;
  */
 public class ConcurrentLruCache<K, V> implements Cache<K, V> {
 
-    private final ConcurrentLinkedQueue<K> queue = new ConcurrentLinkedQueue<>();
+    private final ConcurrentLinkedDeque<K> queue = new ConcurrentLinkedDeque<>();
 
     private final ConcurrentHashMap<K, V> cache = new ConcurrentHashMap<>();
 
@@ -63,8 +63,9 @@ public class ConcurrentLruCache<K, V> implements Cache<K, V> {
             }
             lock.readLock().lock();
             try {
-                queue.remove(key);
-                queue.add(key);
+                if (queue.removeLastOccurrence(key)) {
+                    queue.offer(key);
+                }
                 return cached;
             } finally {
                 lock.readLock().unlock();
@@ -72,11 +73,12 @@ public class ConcurrentLruCache<K, V> implements Cache<K, V> {
         }
         lock.writeLock().lock();
         try {
-            // retrying in case of concurrent reads on the same key
+            // Retrying in case of concurrent reads on the same key
             cached = cache.get(key);
             if (cached != null) {
-                queue.remove(key);
-                queue.add(key);
+                if (queue.removeLastOccurrence(key)) {
+                    queue.offer(key);
+                }
                 return cached;
             }
             // Generate value first, to prevent size inconsistency
@@ -89,7 +91,7 @@ public class ConcurrentLruCache<K, V> implements Cache<K, V> {
                     cacheSize--;
                 }
             }
-            queue.add(key);
+            queue.offer(key);
             cache.put(key, value);
             size = cacheSize + 1;
             return value;
