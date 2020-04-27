@@ -2,7 +2,7 @@
 
 [![Build Status](https://api.travis-ci.com/aspectran/aspectran.svg?branch=master)](https://travis-ci.com/github/aspectran/aspectran)
 [![Coverage Status](https://coveralls.io/repos/github/aspectran/aspectran/badge.svg?branch=master)](https://coveralls.io/github/aspectran/aspectran?branch=master)
-[![Maven central](https://maven-badges.herokuapp.com/maven-central/com.aspectran/aspectran/badge.svg#v6.6.9)](https://maven-badges.herokuapp.com/maven-central/com.aspectran/aspectran)
+[![Maven central](https://maven-badges.herokuapp.com/maven-central/com.aspectran/aspectran/badge.svg#v6.6.11)](https://maven-badges.herokuapp.com/maven-central/com.aspectran/aspectran)
 [![Sonatype Nexus (Snapshots)](https://img.shields.io/nexus/s/https/oss.sonatype.org/com.aspectran/aspectran.svg)](https://oss.sonatype.org/content/repositories/snapshots/com/aspectran/aspectran/)
 [![javadoc](https://javadoc.io/badge2/com.aspectran/aspectran-all/javadoc.svg)](https://javadoc.io/doc/com.aspectran/aspectran-all)
 [![License](https://img.shields.io/:license-apache-brightgreen.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
@@ -70,7 +70,7 @@ However, it is recommended to add only the dependency definition suitable for th
 <dependency>
   <groupId>com.aspectran</groupId>
   <artifactId>aspectran-all</artifactId>
-  <version>6.6.9</version>
+  <version>6.6.11</version>
 </dependency>
 ```
 
@@ -82,7 +82,7 @@ To build a daemon application running in the background
 <dependency>
   <groupId>com.aspectran</groupId>
   <artifactId>aspectran-daemon</artifactId>
-  <version>6.6.9</version>
+  <version>6.6.11</version>
 </dependency>
 ```
 
@@ -91,7 +91,7 @@ To build a command line application
 <dependency>
   <groupId>com.aspectran</groupId>
   <artifactId>aspectran-shell</artifactId>
-  <version>6.6.9</version>
+  <version>6.6.11</version>
 </dependency>
 ```
 
@@ -100,7 +100,7 @@ To build a command line application that uses a feature-rich JLine
 <dependency>
   <groupId>com.aspectran</groupId>
   <artifactId>aspectran-shell-jline</artifactId>
-  <version>6.6.9</version>
+  <version>6.6.11</version>
 </dependency>
 ```
 
@@ -109,7 +109,7 @@ To build a servlet-based web application
 <dependency>
   <groupId>com.aspectran</groupId>
   <artifactId>aspectran-web</artifactId>
-  <version>6.6.9</version>
+  <version>6.6.11</version>
 </dependency>
 ```
 
@@ -118,7 +118,7 @@ To embed Aspectran in a Java application that is not based on Aspectran
 <dependency>
   <groupId>com.aspectran</groupId>
   <artifactId>aspectran-embed</artifactId>
-  <version>6.6.9</version>
+  <version>6.6.11</version>
 </dependency>
 ```
 
@@ -130,7 +130,7 @@ To integrate embedded Jetty to build a standalone web application
 <dependency>
   <groupId>com.aspectran</groupId>
   <artifactId>aspectran-with-jetty</artifactId>
-  <version>6.6.9</version>
+  <version>6.6.11</version>
 </dependency>
 ```
 
@@ -139,7 +139,7 @@ To integrate Undertow to build a standalone web application
 <dependency>
   <groupId>com.aspectran</groupId>
   <artifactId>aspectran-with-undertow</artifactId>
-  <version>6.6.9</version>
+  <version>6.6.11</version>
 </dependency>
 ```
 
@@ -148,7 +148,7 @@ To integrate MyBatis with easy access to relational databases
 <dependency>
   <groupId>com.aspectran</groupId>
   <artifactId>aspectran-with-mybatis</artifactId>
-  <version>6.6.9</version>
+  <version>6.6.11</version>
 </dependency>
 ```
 
@@ -157,7 +157,7 @@ To integrate the text template engine FreeMarker
 <dependency>
   <groupId>com.aspectran</groupId>
   <artifactId>aspectran-with-freemarker</artifactId>
-  <version>6.6.9</version>
+  <version>6.6.11</version>
 </dependency>
 ```
 
@@ -166,7 +166,7 @@ To integrate the text template engine Pebble
 <dependency>
   <groupId>com.aspectran</groupId>
   <artifactId>aspectran-with-freemarker</artifactId>
-  <version>6.6.9</version>
+  <version>6.6.11</version>
 </dependency>
 ```
 
@@ -175,7 +175,7 @@ To use Redis Session Store with Lettuce or support session clustering
 <dependency>
   <groupId>com.aspectran</groupId>
   <artifactId>aspectran-rss-lettuce</artifactId>
-  <version>6.6.9</version>
+  <version>6.6.11</version>
 </dependency>
 ```
 
