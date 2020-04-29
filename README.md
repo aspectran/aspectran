@@ -7,7 +7,7 @@
 [![javadoc](https://javadoc.io/badge2/com.aspectran/aspectran-all/javadoc.svg)](https://javadoc.io/doc/com.aspectran/aspectran-all)
 [![License](https://img.shields.io/:license-apache-brightgreen.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
-[![asciicast](https://asciinema.org/a/267955.png)](https://asciinema.org/a/267955)
+[![asciicast](https://asciinema.org/a/325210.png)](https://asciinema.org/a/325210)
 
 Aspectran is a framework for developing Java applications that can be used to build simple shell applications and large enterprise web applications.
 
