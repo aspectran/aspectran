@@ -116,7 +116,7 @@ public class ClassScanner {
             URL resource = resources.nextElement();
 
             if (logger.isDebugEnabled()) {
-                logger.debug("Scanning for components in path: " + resource.getFile());
+                logger.debug("Scanning components in path: " + resource.getFile());
             }
 
             if (isJarResource(resource)) {

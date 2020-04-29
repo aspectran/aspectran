@@ -180,7 +180,7 @@ public class BeanRuleRegistry {
             return;
         }
 
-        logger.info("Auto component scanning on packages [" + StringUtils.joinCommaDelimitedList(basePackages) + "]");
+        logger.info("Auto scan for components on packages [" + StringUtils.joinCommaDelimitedList(basePackages) + "]");
 
         for (String basePackage : basePackages) {
             BeanClassScanner scanner = new BeanClassScanner(classLoader);

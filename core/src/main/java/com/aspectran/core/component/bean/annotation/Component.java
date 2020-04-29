@@ -22,7 +22,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Indicates this is class is an auto scan component.
+ * Indicates this class is an auto scan component.
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
