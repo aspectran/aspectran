@@ -13,12 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.web.socket.jsr356;
+package com.aspectran.core.activity;
 
-import com.aspectran.core.activity.InstantActivity;
-import com.aspectran.core.activity.InstantActivityException;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.component.bean.BeanRegistry;
+import com.aspectran.core.component.bean.annotation.AvoidAdvice;
 import com.aspectran.core.component.bean.aware.ActivityContextAware;
 import com.aspectran.core.component.template.TemplateRenderer;
 import com.aspectran.core.context.ActivityContext;
@@ -31,7 +30,7 @@ import java.util.concurrent.Callable;
 /**
  * <p>Created: 29/09/2019</p>
  */
-public abstract class ActivityContextAwareEndpoint implements ActivityContextAware {
+public abstract class InstantActivitySupport implements ActivityContextAware {
 
     private ActivityContext context;
 
@@ -41,6 +40,7 @@ public abstract class ActivityContextAwareEndpoint implements ActivityContextAwa
     }
 
     @Override
+    @AvoidAdvice
     public void setActivityContext(ActivityContext context) {
         this.context = context;
     }

@@ -15,12 +15,12 @@
  */
 package com.aspectran.demo.apm.log;
 
+import com.aspectran.core.activity.InstantActivitySupport;
 import com.aspectran.core.component.bean.annotation.AvoidAdvice;
 import com.aspectran.core.component.bean.annotation.Component;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
-import com.aspectran.web.socket.jsr356.ActivityContextAwareEndpoint;
 import com.aspectran.web.socket.jsr356.AspectranConfigurator;
 
 import javax.websocket.CloseReason;
@@ -42,7 +42,7 @@ import java.util.Set;
         configurator = AspectranConfigurator.class
 )
 @AvoidAdvice
-public class LogtailEndpoint extends ActivityContextAwareEndpoint {
+public class LogtailEndpoint extends InstantActivitySupport {
 
     private static final Logger logger = LoggerFactory.getLogger(LogtailEndpoint.class);
 

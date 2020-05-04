@@ -72,6 +72,10 @@ class WildcardMatcherTest {
         assertTrue(checkAntPattern("/static-?/*", "/static-a/abcd.jpg"));
         assertTrue(checkAntPattern("/static-?/???.jpg", "/static-a/abc.jpg"));
 
+        // null
+        assertFalse(checkAntPattern("null", null));
+        assertTrue(checkAntPattern("", null));
+
     }
 
     private boolean checkAntPattern(String pattern, String inputStr) {

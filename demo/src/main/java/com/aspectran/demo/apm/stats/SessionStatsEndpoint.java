@@ -15,12 +15,12 @@
  */
 package com.aspectran.demo.apm.stats;
 
+import com.aspectran.core.activity.InstantActivitySupport;
 import com.aspectran.core.component.bean.annotation.AvoidAdvice;
 import com.aspectran.core.component.bean.annotation.Component;
 import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
 import com.aspectran.undertow.server.TowServer;
-import com.aspectran.web.socket.jsr356.ActivityContextAwareEndpoint;
 import com.aspectran.web.socket.jsr356.AspectranConfigurator;
 import io.undertow.server.session.SessionManager;
 import io.undertow.server.session.SessionManagerStatistics;
@@ -52,7 +52,7 @@ import java.util.TimerTask;
         configurator = AspectranConfigurator.class
 )
 @AvoidAdvice
-public class SessionStatsEndpoint extends ActivityContextAwareEndpoint {
+public class SessionStatsEndpoint extends InstantActivitySupport {
 
     private static final Logger logger = LoggerFactory.getLogger(SessionStatsEndpoint.class);
 

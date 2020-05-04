@@ -34,7 +34,7 @@ import java.util.Set;
  */
 public class SessionDataCodec implements RedisCodec<String, SessionData> {
 
-    private static final Charset charset = StandardCharsets.UTF_8;
+    private static final Charset UTF8 = StandardCharsets.UTF_8;
 
     private final Set<String> nonPersistentAttributes;
 
@@ -44,7 +44,7 @@ public class SessionDataCodec implements RedisCodec<String, SessionData> {
 
     @Override
     public String decodeKey(ByteBuffer bytes) {
-        return charset.decode(bytes).toString();
+        return UTF8.decode(bytes).toString();
     }
 
     @Override
@@ -61,7 +61,7 @@ public class SessionDataCodec implements RedisCodec<String, SessionData> {
 
     @Override
     public ByteBuffer encodeKey(String key) {
-        return charset.encode(key);
+        return UTF8.encode(key);
     }
 
     @Override

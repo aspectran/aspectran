@@ -263,6 +263,7 @@
                 }
             };
             socket.send(JSON.stringify(chatMessage));
+            displayMessage(currentUser, text);
             $("#message").val('').focus();
         }
     }
@@ -290,7 +291,7 @@
 
     function displayConnectedUserMessage(username) {
         var sentByCurrentUer = currentUser === username;
-        var text = (sentByCurrentUer === true ? "Welcome <strong>" + username : username + "</strong> joined the chat");
+        var text = (sentByCurrentUer === true ? "Welcome <strong>" + username + "</strong>" : "<strong>" + username + "</strong> joined the chat");
         displayEventMessage(text);
     }
 
