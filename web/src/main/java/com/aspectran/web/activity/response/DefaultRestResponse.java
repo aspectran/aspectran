@@ -96,7 +96,7 @@ public class DefaultRestResponse extends AbstractRestResponse {
 
     @Override
     public void transform(Activity activity) throws Exception {
-        Assert.notNull(activity, "'activity' must not be null");
+        Assert.notNull(activity, "activity must not be null");
         ResponseAdapter responseAdapter = activity.getResponseAdapter();
 
         String encoding = determineEncoding(activity);

@@ -35,7 +35,7 @@ public interface RestResponse extends CustomTransformer {
      *
      * @param data the response data
      */
-    void setData(Object data);
+    RestResponse setData(Object data);
 
     /**
      * Specifies response data with a name.
@@ -43,7 +43,7 @@ public interface RestResponse extends CustomTransformer {
      * @param name the name of the response data
      * @param data the response data
      */
-    void setData(String name, Object data);
+    RestResponse setData(String name, Object data);
 
     boolean isPrettyPrint();
 

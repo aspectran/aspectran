@@ -74,12 +74,12 @@ public abstract class AbstractRestResponse implements RestResponse {
     }
 
     @Override
-    public void setData(Object data) {
-        setData(null, data);
+    public RestResponse setData(Object data) {
+        return setData(null, data);
     }
 
     @Override
-    public void setData(String name, Object data) {
+    public RestResponse setData(String name, Object data) {
         if (name != null) {
             name = name.trim();
             if (name.isEmpty()) {
@@ -88,6 +88,7 @@ public abstract class AbstractRestResponse implements RestResponse {
         }
         this.name = name;
         this.data = data;
+        return this;
     }
 
     @Override
