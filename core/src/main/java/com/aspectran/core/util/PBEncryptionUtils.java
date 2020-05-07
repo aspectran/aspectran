@@ -19,6 +19,9 @@ import com.aspectran.core.context.InsufficientEnvironmentException;
 import org.jasypt.encryption.pbe.PBEStringEncryptor;
 import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
+
 /**
  * This class provides basic encryption/decryption capabilities to implement PBE.
  *
@@ -72,7 +75,7 @@ public class PBEncryptionUtils {
      * @return the encrypted string
      */
     public static String encrypt(String inputString, String encryptionPassword) {
-        return getEncryptor(encryptionPassword).encrypt(inputString);
+        return encode(getEncryptor(encryptionPassword).encrypt(inputString));
     }
 
     /**
@@ -94,7 +97,19 @@ public class PBEncryptionUtils {
      */
     public static String decrypt(String inputString, String encryptionPassword) {
         checkPassword(encryptionPassword);
-        return getEncryptor(encryptionPassword).decrypt(inputString);
+        return getEncryptor(encryptionPassword).decrypt(decode(inputString));
+    }
+
+    private static String encode(String text) {
+        return Base64.getUrlEncoder()
+                .withoutPadding()
+                .encodeToString(text.getBytes(StandardCharsets.UTF_8));
+    }
+
+    private static String decode(String text) {
+        byte[] bytes = Base64.getUrlDecoder()
+                .decode(text.getBytes(StandardCharsets.UTF_8));
+        return new String(bytes, StandardCharsets.UTF_8);
     }
 
     public static PBEStringEncryptor getEncryptor() {

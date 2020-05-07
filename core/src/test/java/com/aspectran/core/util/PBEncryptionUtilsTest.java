@@ -55,7 +55,7 @@ class PBEncryptionUtilsTest {
 
     @Test
     void testEncrypt() {
-        String original = "1234"; // fmNbd3A/Jfey9jT+WzoOvQ==
+        String original = "1234"; // aW1qbm8rUjFrY1FEQ1gyUkdMdEJWZz09
         String encrypted = PBEncryptionUtils.encrypt(original);
         String decrypted = PBEncryptionUtils.decrypt(encrypted);
         assertEquals(original, decrypted);

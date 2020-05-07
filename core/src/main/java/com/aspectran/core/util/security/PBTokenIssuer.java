@@ -57,18 +57,6 @@ public class PBTokenIssuer {
         }
     }
 
-    protected String encode(String text) {
-        return Base64.getUrlEncoder()
-                .withoutPadding()
-                .encodeToString(text.getBytes(StandardCharsets.UTF_8));
-    }
-
-    protected String decode(String text) {
-        byte[] bytes = Base64.getUrlDecoder()
-                .decode(text.getBytes(StandardCharsets.UTF_8));
-        return new String(bytes, StandardCharsets.UTF_8);
-    }
-
     public static String getToken(Parameters payload) {
         return new PBTokenIssuer().createToken(payload);
     }
@@ -81,6 +69,18 @@ public class PBTokenIssuer {
     public static <T extends Parameters> T getPayload(String token, Class<T> payloadType)
             throws InvalidPBTokenException {
         return new PBTokenIssuer().parseToken(token, payloadType);
+    }
+
+    protected String encode(String text) {
+        return Base64.getUrlEncoder()
+                .withoutPadding()
+                .encodeToString(text.getBytes(StandardCharsets.UTF_8));
+    }
+
+    protected String decode(String text) {
+        byte[] bytes = Base64.getUrlDecoder()
+                .decode(text.getBytes(StandardCharsets.UTF_8));
+        return new String(bytes, StandardCharsets.UTF_8);
     }
 
 }
