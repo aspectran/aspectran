@@ -69,7 +69,7 @@ public abstract class AbstractEmbeddedAspectran extends AspectranCoreService imp
             SessionManagerConfig sessionManagerConfig = embedConfig.getSessionManagerConfig();
             if (sessionManagerConfig != null && sessionManagerConfig.isEnabled()) {
                 try {
-                    DefaultSessionManager sessionManager = new DefaultSessionManager("emb");
+                    DefaultSessionManager sessionManager = new DefaultSessionManager();
                     sessionManager.setApplicationAdapter(getActivityContext().getApplicationAdapter());
                     sessionManager.setSessionManagerConfig(sessionManagerConfig);
                     sessionManager.initialize();

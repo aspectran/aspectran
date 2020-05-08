@@ -115,7 +115,7 @@ final class TowSessionBridge implements io.undertow.server.session.Session {
         String newId = sessionManager.getSessionHandler().createSessionId(hashCode());
         String sessionId = sessionManager.getSessionHandler().renewSessionId(oldId, newId);
         if (sessionId != null) {
-            config.setSessionId(exchange, this.getId());
+            config.setSessionId(exchange, sessionId);
         }
         return sessionId;
     }

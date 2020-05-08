@@ -166,21 +166,21 @@ public class TowServletContext extends DeploymentInfo implements ApplicationAdap
     public static class WebSocketConnectionsUnboundListener implements SessionListener {
 
         @Override
-        public void attributeRemoved(Session session, String name, Object oldValue) {
-            closeWebSockets(name, oldValue);
-        }
-
-        @Override
         public void attributeUpdated(Session session, String name, Object newValue, Object oldValue) {
             if (oldValue != null && oldValue != newValue) {
                 closeWebSockets(name, oldValue);
             }
         }
 
-        private void closeWebSockets(String name, Object oldValue) {
+        @Override
+        public void attributeRemoved(Session session, String name, Object oldValue) {
+            closeWebSockets(name, oldValue);
+        }
+
+        private void closeWebSockets(String name, Object value) {
             if (WEBSOCKET_CURRENT_CONNECTIONS_ATTR.equals(name)) {
                 @SuppressWarnings("unchecked")
-                List<WebSocketChannel> connections = (List<WebSocketChannel>)oldValue;
+                List<WebSocketChannel> connections = (List<WebSocketChannel>)value;
                 for (WebSocketChannel c : new ArrayList<>(connections)) {
                     WebSockets.sendClose(CloseReason.CloseCodes.VIOLATED_POLICY.getCode(), "", c, null);
                 }

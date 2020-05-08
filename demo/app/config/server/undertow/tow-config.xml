@@ -150,14 +150,13 @@
                 <bean class="com.aspectran.core.context.config.SessionManagerConfig">
                     <arguments>
                         <item>
-                            workerName: node0
+                            workerName: n0
                             maxSessions: 99999
                             maxIdleSeconds: 1800
                             evictionIdleSeconds: 900
                             scavengingIntervalSeconds: 600
                             removeUnloadableSessions: true
-                            clustered: false
-                            enabled: true
+                            clusterMode: false
                         </item>
                     </arguments>
                 </bean>

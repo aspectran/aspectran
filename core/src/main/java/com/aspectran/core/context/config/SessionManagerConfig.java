@@ -35,7 +35,7 @@ public class SessionManagerConfig extends AbstractParameters {
     private static final ParameterKey saveOnInactiveEviction;
     private static final ParameterKey removeUnloadableSessions;
     private static final ParameterKey fileStore;
-    private static final ParameterKey clustered;
+    private static final ParameterKey clusterMode;
     private static final ParameterKey enabled;
 
     private static final ParameterKey[] parameterKeys;
@@ -50,7 +50,7 @@ public class SessionManagerConfig extends AbstractParameters {
         saveOnInactiveEviction = new ParameterKey("saveOnInactiveEviction", ValueType.BOOLEAN);
         removeUnloadableSessions = new ParameterKey("removeUnloadableSessions", ValueType.BOOLEAN);
         fileStore = new ParameterKey("fileStore", SessionFileStoreConfig.class);
-        clustered = new ParameterKey("clustered", ValueType.BOOLEAN);
+        clusterMode = new ParameterKey("clusterMode", ValueType.BOOLEAN);
         enabled = new ParameterKey("enabled", ValueType.BOOLEAN);
 
         parameterKeys = new ParameterKey[] {
@@ -63,7 +63,7 @@ public class SessionManagerConfig extends AbstractParameters {
                 saveOnInactiveEviction,
                 removeUnloadableSessions,
                 fileStore,
-                clustered,
+                clusterMode,
                 enabled
         };
     }
@@ -197,17 +197,17 @@ public class SessionManagerConfig extends AbstractParameters {
         return touchParameters(fileStore);
     }
 
-    public boolean isClustered() {
-        return BooleanUtils.toBoolean(getBoolean(clustered));
+    public boolean isClusterMode() {
+        return getBoolean(clusterMode, false);
     }
 
-    public SessionManagerConfig setClustered(boolean clustered) {
-        putValue(SessionManagerConfig.clustered, clustered);
+    public SessionManagerConfig setClusterMode(boolean clusterMode) {
+        putValue(SessionManagerConfig.clusterMode, clusterMode);
         return this;
     }
 
     public boolean isEnabled() {
-        return BooleanUtils.toBoolean(getBoolean(enabled));
+        return getBoolean(enabled, true);
     }
 
     public SessionManagerConfig setEnabled(boolean enabled) {

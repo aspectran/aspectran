@@ -84,10 +84,10 @@ public class DefaultSessionManager extends AbstractSessionHandler
 
     @Override
     protected void doInitialize() throws Exception {
-        boolean clustered = false;
+        boolean clusterMode = false;
         if (sessionManagerConfig != null) {
-            if (sessionManagerConfig.isClustered()) {
-                clustered = true;
+            if (sessionManagerConfig.isClusterMode()) {
+                clusterMode = true;
             }
             if (sessionManagerConfig.hasWorkerName()) {
                 setWorkerName(sessionManagerConfig.getWorkerName());
@@ -139,7 +139,7 @@ public class DefaultSessionManager extends AbstractSessionHandler
                 }
             }
 
-            DefaultSessionCache sessionCache = new DefaultSessionCache(this, sessionStore, clustered);
+            DefaultSessionCache sessionCache = new DefaultSessionCache(this, sessionStore, clusterMode);
             if (sessionManagerConfig != null) {
                 if (sessionManagerConfig.hasMaxSessions()) {
                     int maxSessions = sessionManagerConfig.getMaxSessions();

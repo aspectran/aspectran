@@ -50,7 +50,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
     /**
      * Whether or not to support session clustering
      */
-    private final boolean clustered;
+    private final boolean clusterMode;
 
     /**
      * When, if ever, to evict sessions: never; only when the last request for
@@ -76,10 +76,10 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
      */
     private boolean removeUnloadableSessions;
 
-    public AbstractSessionCache(SessionHandler sessionHandler, SessionStore sessionStore, boolean clustered) {
+    public AbstractSessionCache(SessionHandler sessionHandler, SessionStore sessionStore, boolean clusterMode) {
         this.sessionHandler = sessionHandler;
         this.sessionStore = sessionStore;
-        this.clustered = (clustered && sessionStore != null);
+        this.clusterMode = (clusterMode && sessionStore != null);
     }
 
     protected SessionHandler getSessionHandler() {
@@ -91,8 +91,8 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
     }
 
     @Override
-    public boolean isClustered() {
-        return clustered;
+    public boolean isClusterMode() {
+        return clusterMode;
     }
 
     @Override
@@ -194,7 +194,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
                     }
                     return null;
                 }
-                if (isClustered() && resident.get() && session.getRequests() <= 0) {
+                if (isClusterMode() && resident.get() && session.getRequests() <= 0) {
                     DefaultSession stored = loadSession(id);
                     if (stored != null) {
                         // swap it in instead of the local session
@@ -257,7 +257,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
         DefaultSession session = new DefaultSession(data, sessionHandler, true);
         if (doPutIfAbsent(id, session) == null) {
             session.setResident(true); // its in the cache
-            if (sessionStore != null && (isSaveOnCreate() || isClustered())) {
+            if (sessionStore != null && (isSaveOnCreate() || isClusterMode())) {
                 sessionStore.save(id, data);
             }
             return session;
@@ -312,7 +312,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
 
     @Override
     public boolean exists(String id) throws Exception {
-        if (isClustered()) {
+        if (isClusterMode()) {
             DefaultSession ds = get(id);
             if (ds != null) {
                 return ds.isValid();
