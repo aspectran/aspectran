@@ -36,7 +36,7 @@ public class TowTldScanner extends TldScanner {
 
     private final Logger logger = LoggerFactory.getLogger(TowTldScanner.class);
 
-    private ServletContext context;
+    private final ServletContext context;
 
     private String[] jarsToScan;
 

@@ -47,8 +47,6 @@ public class TowServer extends AbstractLifeCycle implements InitializableBean, D
 
     private int shutdownTimeout;
 
-    private int stopDelayTime;
-
     private TowServletContainer towServletContainer;
 
     private HttpHandler handler;
@@ -79,14 +77,6 @@ public class TowServer extends AbstractLifeCycle implements InitializableBean, D
 
     public void setShutdownTimeout(int shutdownTimeout) {
         this.shutdownTimeout = shutdownTimeout;
-    }
-
-    public int getStopDelayTime() {
-        return stopDelayTime;
-    }
-
-    public void setStopDelayTime(int stopDelayTime) {
-        this.stopDelayTime = stopDelayTime;
     }
 
     public void setSystemProperty(String key, String value) {
@@ -157,7 +147,7 @@ public class TowServer extends AbstractLifeCycle implements InitializableBean, D
         return builder;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public void setServerOptions(TowOptions options) {
         if (options != null) {
             OptionMap optionMap = options.getOptionMap();
@@ -167,7 +157,7 @@ public class TowServer extends AbstractLifeCycle implements InitializableBean, D
         }
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public void setSocketOptions(TowOptions options) {
         if (options != null) {
             OptionMap optionMap = options.getOptionMap();
@@ -177,7 +167,7 @@ public class TowServer extends AbstractLifeCycle implements InitializableBean, D
         }
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public void setWorkerOptions(TowOptions options) {
         if (options != null) {
             OptionMap optionMap = options.getOptionMap();

@@ -91,8 +91,6 @@ public class DefaultSessionManager extends AbstractSessionHandler
             }
             if (sessionManagerConfig.hasWorkerName()) {
                 setWorkerName(sessionManagerConfig.getWorkerName());
-            } else {
-                setWorkerName("node0");
             }
             if (sessionManagerConfig.hasMaxIdleSeconds()) {
                 int secs = sessionManagerConfig.getMaxIdleSeconds();

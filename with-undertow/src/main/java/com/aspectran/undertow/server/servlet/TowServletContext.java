@@ -119,22 +119,30 @@ public class TowServletContext extends DeploymentInfo implements ApplicationAdap
     }
 
     public void setWelcomePages(String[] welcomePages) {
-        addWelcomePages(welcomePages);
+        if (welcomePages != null) {
+            addWelcomePages(welcomePages);
+        }
     }
 
     public void setErrorPages(ErrorPage[] errorPages) {
-        addErrorPages(errorPages);
+        if (errorPages != null) {
+            addErrorPages(errorPages);
+        }
     }
 
     public void setInnerHandlerChainWrappers(HandlerWrapper[] wrappers) {
-        for (HandlerWrapper wrapper : wrappers) {
-            addInnerHandlerChainWrapper(wrapper);
+        if (wrappers != null) {
+            for (HandlerWrapper wrapper : wrappers) {
+                addInnerHandlerChainWrapper(wrapper);
+            }
         }
     }
 
     public void setOuterHandlerChainWrappers(HandlerWrapper[] wrappers) {
-        for (HandlerWrapper wrapper : wrappers) {
-            addOuterHandlerChainWrapper(wrapper);
+        if (wrappers != null) {
+            for (HandlerWrapper wrapper : wrappers) {
+                addOuterHandlerChainWrapper(wrapper);
+            }
         }
     }
 
