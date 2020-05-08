@@ -43,7 +43,9 @@ import java.util.Set;
  */
 public class TowServletContext extends DeploymentInfo implements ApplicationAdapterAware {
 
-    public static final String DERIVED_WEB_SERVICE_ATTRIBUTE = TowServletContext.class.getName() + ".DERIVED_WEB_SERVICE";
+    public static final String DERIVED_WEB_SERVICE_ATTR = TowServletContext.class.getName() + ".DERIVED_WEB_SERVICE";
+
+    private static final String WEBSOCKET_CURRENT_CONNECTIONS_ATTR = "io.undertow.websocket.current-connections";
 
     private static final Set<Class<?>> NO_CLASSES = Collections.emptySet();
 
@@ -155,9 +157,9 @@ public class TowServletContext extends DeploymentInfo implements ApplicationAdap
      */
     public void setDerived(boolean derived) {
         if (derived) {
-            addServletContextAttribute(DERIVED_WEB_SERVICE_ATTRIBUTE, "true");
+            addServletContextAttribute(DERIVED_WEB_SERVICE_ATTR, "true");
         } else {
-            getServletContextAttributes().remove(DERIVED_WEB_SERVICE_ATTRIBUTE);
+            getServletContextAttributes().remove(DERIVED_WEB_SERVICE_ATTR);
         }
     }
 
@@ -176,7 +178,7 @@ public class TowServletContext extends DeploymentInfo implements ApplicationAdap
         }
 
         private void closeWebSockets(String name, Object oldValue) {
-            if ("io.undertow.websocket.current-connections".equals(name)) {
+            if (WEBSOCKET_CURRENT_CONNECTIONS_ATTR.equals(name)) {
                 @SuppressWarnings("unchecked")
                 List<WebSocketChannel> connections = (List<WebSocketChannel>)oldValue;
                 for (WebSocketChannel c : new ArrayList<>(connections)) {

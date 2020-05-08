@@ -85,8 +85,8 @@ public class HybridServletHandlerFactory implements ActivityContextAware {
                 manager.deploy();
 
                 ServletContext servletContext = manager.getDeployment().getServletContext();
-                Object attr = servletContext.getAttribute(TowServletContext.DERIVED_WEB_SERVICE_ATTRIBUTE);
-                servletContext.removeAttribute(TowServletContext.DERIVED_WEB_SERVICE_ATTRIBUTE);
+                Object attr = servletContext.getAttribute(TowServletContext.DERIVED_WEB_SERVICE_ATTR);
+                servletContext.removeAttribute(TowServletContext.DERIVED_WEB_SERVICE_ATTR);
                 if ("true".equals(attr)) {
                     CoreService rootService = context.getRootService();
                     WebService webService = DefaultWebService.create(servletContext, rootService);
