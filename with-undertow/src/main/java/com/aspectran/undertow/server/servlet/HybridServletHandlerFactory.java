@@ -15,6 +15,7 @@
  */
 package com.aspectran.undertow.server.servlet;
 
+import com.aspectran.core.component.bean.annotation.AvoidAdvice;
 import com.aspectran.core.component.bean.aware.ActivityContextAware;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.service.CoreService;
@@ -49,6 +50,7 @@ public class HybridServletHandlerFactory implements ActivityContextAware {
     private List<HandlerWrapper> outerHandlerChainWrappers;
 
     @Override
+    @AvoidAdvice
     public void setActivityContext(ActivityContext context) {
         this.context = context;
     }

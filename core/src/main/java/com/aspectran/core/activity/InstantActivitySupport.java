@@ -22,56 +22,92 @@ import com.aspectran.core.component.bean.aware.ActivityContextAware;
 import com.aspectran.core.component.template.TemplateRenderer;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.env.Environment;
+import com.aspectran.core.context.rule.TransletRule;
+import com.aspectran.core.context.rule.type.MethodType;
+import com.aspectran.core.lang.NonNull;
 import com.aspectran.core.support.i18n.message.MessageSource;
 import com.aspectran.core.util.Assert;
+import com.aspectran.core.util.StringUtils;
 
 import java.util.concurrent.Callable;
 
 /**
+ * Inheritance of this class allows access to the activity context.
+ *
  * <p>Created: 29/09/2019</p>
  */
 public abstract class InstantActivitySupport implements ActivityContextAware {
 
     private ActivityContext context;
 
-    private ActivityContext getActivityContext() {
-        Assert.state(context != null, "No ActivityContext configured");
+    @NonNull
+    protected ActivityContext getActivityContext() {
+        Assert.state(context != null, "ActivityContext is not injected");
         return context;
     }
 
     @Override
     @AvoidAdvice
     public void setActivityContext(ActivityContext context) {
+        Assert.state(this.context == null, "ActivityContext cannot be re-injected");
         this.context = context;
     }
 
-    public ApplicationAdapter getApplicationAdapter() {
+    protected Activity getCurrentActivity() {
+        return getActivityContext().getCurrentActivity();
+    }
+
+    protected ApplicationAdapter getApplicationAdapter() {
         return getActivityContext().getApplicationAdapter();
     }
 
-    public Environment getEnvironment() {
+    protected Environment getEnvironment() {
         return getActivityContext().getEnvironment();
     }
 
-    public BeanRegistry getBeanRegistry() {
+    protected BeanRegistry getBeanRegistry() {
         return getActivityContext().getBeanRegistry();
     }
 
-    public TemplateRenderer getTemplateRenderer() {
+    protected TemplateRenderer getTemplateRenderer() {
         return getActivityContext().getTemplateRenderer();
     }
 
-    public MessageSource getMessageSource() {
+    protected MessageSource getMessageSource() {
         return getActivityContext().getMessageSource();
     }
 
-    public <V> V instantActivity(Callable<V> instantAction) {
+    protected <V> V instantActivity(Callable<V> instantAction) {
         if (instantAction == null) {
             throw new IllegalArgumentException("instantAction must not be null");
         }
         try {
             InstantActivity activity = new InstantActivity(getActivityContext());
             return activity.perform(instantAction);
+        } catch (Exception e) {
+            throw new InstantActivityException(e);
+        }
+    }
+
+    protected void instantActivity(String transletName) {
+        if (StringUtils.isEmpty(transletName)) {
+            throw new IllegalArgumentException("transletName must not be null or empty");
+        }
+        Translet translet = getCurrentActivity().getTranslet();
+        if (translet == null) {
+            throw new UnsupportedOperationException("There is no translet in current activity");
+        }
+        try {
+            TransletRule transletRule = getActivityContext().getTransletRuleRegistry().getTransletRule(transletName);
+            if (transletRule == null) {
+                throw new TransletNotFoundException(transletName, MethodType.GET);
+            }
+            InstantActivity activity = new InstantActivity(getActivityContext());
+            activity.setSessionAdapter(getCurrentActivity().getSessionAdapter());
+            activity.setRequestAdapter(getCurrentActivity().getRequestAdapter());
+            activity.setResponseAdapter(getCurrentActivity().getResponseAdapter());
+            activity.prepare(transletName, transletRule);
+            activity.perform();
         } catch (Exception e) {
             throw new InstantActivityException(e);
         }

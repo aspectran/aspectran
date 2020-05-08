@@ -302,8 +302,7 @@ public class AnnotatedConfigParser {
                 } else if (method.isAnnotationPresent(Required.class)) {
                     BeanRuleAnalyzer.checkRequiredProperty(beanRule, method);
                 } else if (method.isAnnotationPresent(Initialize.class)) {
-                    if (!beanRule.isInitializableBean() && !beanRule.isInitializableTransletBean() &&
-                            beanRule.getInitMethod() == null) {
+                    if (!beanRule.isInitializableBean() && beanRule.getInitMethod() == null) {
                         beanRule.setInitMethod(method);
                         beanRule.setInitMethodParameterBindingRules(createParameterBindingRules(method));
                     }

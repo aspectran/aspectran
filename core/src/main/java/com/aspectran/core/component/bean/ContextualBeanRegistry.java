@@ -59,7 +59,11 @@ public class ContextualBeanRegistry extends AbstractBeanRegistry {
             if (beanRule != null) {
                 return getBean(beanRule);
             } else {
-                throw new NoSuchBeanException(type, id);
+                if (id != null) {
+                    throw new NoSuchBeanException(type, id);
+                } else {
+                    throw new NoSuchBeanException(type);
+                }
             }
         }
         if (beanRules.length == 1) {

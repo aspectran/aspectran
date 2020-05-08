@@ -15,24 +15,19 @@
  */
 package com.aspectran.demo.terminal;
 
-import com.aspectran.core.activity.ActivityException;
-import com.aspectran.core.activity.InstantActivity;
+import com.aspectran.core.activity.InstantActivitySupport;
 import com.aspectran.core.activity.Translet;
-import com.aspectran.core.activity.TransletNotFoundException;
 import com.aspectran.core.component.bean.annotation.Bean;
 import com.aspectran.core.component.bean.annotation.Component;
 import com.aspectran.core.component.bean.annotation.RequestToGet;
 import com.aspectran.core.component.bean.annotation.RequestToPost;
 import com.aspectran.core.component.bean.annotation.Transform;
-import com.aspectran.core.component.bean.aware.ActivityContextAware;
-import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.expr.token.TokenParser;
 import com.aspectran.core.context.rule.DescriptionRule;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.TransletRule;
-import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.context.rule.type.TransformType;
 import com.aspectran.core.util.StringUtils;
@@ -51,16 +46,9 @@ import java.util.Set;
 
 @Component("/terminal")
 @Bean("transletInterpreter")
-public class TransletInterpreter implements ActivityContextAware {
+public class TransletInterpreter extends InstantActivitySupport {
 
     private final Logger logger = LoggerFactory.getLogger(TransletInterpreter.class);
-
-    private ActivityContext context;
-
-    @Override
-    public void setActivityContext(ActivityContext context) {
-        this.context = context;
-    }
 
     @RequestToGet("/query/@{_translet_}")
     @Transform(type = TransformType.TEXT, contentType = "application/json")
@@ -70,7 +58,7 @@ public class TransletInterpreter implements ActivityContextAware {
             return;
         }
 
-        TransletRule transletRule = context.getTransletRuleRegistry().getTransletRule(transletName);
+        TransletRule transletRule = getActivityContext().getTransletRuleRegistry().getTransletRule(transletName);
         if (transletRule == null) {
             if (logger.isDebugEnabled()) {
                 logger.debug("Translet not found: " + transletName);
@@ -98,7 +86,7 @@ public class TransletInterpreter implements ActivityContextAware {
         jsonWriter.writeName("name");
         jsonWriter.write(transletRule.getName());
         if (transletRule.getDescriptionRule() != null) {
-            String description = DescriptionRule.render(transletRule.getDescriptionRule(), context.getCurrentActivity());
+            String description = DescriptionRule.render(transletRule.getDescriptionRule(), getCurrentActivity());
             jsonWriter.writeName("description");
             jsonWriter.write(description);
         }
@@ -142,24 +130,10 @@ public class TransletInterpreter implements ActivityContextAware {
         }
 
         try {
-            performActivity(transletName);
-        } catch (ActivityException e) {
+            instantActivity(transletName);
+        } catch (Exception e) {
             logger.error("Failed to execute translet: " + transletName, e);
         }
-    }
-
-    private void performActivity(String transletName) throws ActivityException {
-        TransletRule transletRule = context.getTransletRuleRegistry().getTransletRule(transletName);
-        if (transletRule == null) {
-            throw new TransletNotFoundException(transletName, MethodType.GET);
-        }
-
-        InstantActivity activity = new InstantActivity(context);
-        activity.setSessionAdapter(context.getCurrentActivity().getSessionAdapter());
-        activity.setRequestAdapter(context.getCurrentActivity().getRequestAdapter());
-        activity.setResponseAdapter(context.getCurrentActivity().getResponseAdapter());
-        activity.prepare(transletName, transletRule);
-        activity.perform();
     }
 
     private List<Map<String, Object>> toListForTokens(Collection<ItemRule> itemRules) {

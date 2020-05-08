@@ -20,7 +20,6 @@ import com.aspectran.core.activity.process.action.AnnotatedAction;
 import com.aspectran.core.component.AbstractComponent;
 import com.aspectran.core.component.bean.ablility.FactoryBean;
 import com.aspectran.core.component.bean.ablility.InitializableBean;
-import com.aspectran.core.component.bean.ablility.InitializableTransletBean;
 import com.aspectran.core.component.bean.aware.ActivityContextAware;
 import com.aspectran.core.component.bean.aware.ApplicationAdapterAware;
 import com.aspectran.core.component.bean.aware.Aware;
@@ -181,8 +180,8 @@ abstract class AbstractBeanFactory extends AbstractComponent {
                 }
             }
 
-            if (beanRule.isInitializableBean() || beanRule.isInitializableTransletBean()) {
-                initializeBean(beanRule, bean, activity);
+            if (beanRule.isInitializableBean()) {
+                initializeBean(beanRule, bean);
             } else if (beanRule.getInitMethod() != null) {
                 invokeInitMethod(beanRule, bean, activity);
             }
@@ -369,13 +368,9 @@ abstract class AbstractBeanFactory extends AbstractComponent {
         }
     }
 
-    private void initializeBean(BeanRule beanRule, Object bean, Activity activity) {
+    private void initializeBean(BeanRule beanRule, Object bean) {
         try {
-            if (beanRule.isInitializableBean()) {
-                ((InitializableBean)bean).initialize();
-            } else if (beanRule.isInitializableTransletBean()) {
-                ((InitializableTransletBean)bean).initialize(activity.getTranslet());
-            }
+            ((InitializableBean)bean).initialize();
         } catch (Exception e) {
             throw new BeanCreationException("An exception occurred while initialization of bean", beanRule, e);
         }

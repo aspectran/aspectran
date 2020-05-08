@@ -16,9 +16,8 @@
 package com.aspectran.mybatis;
 
 import com.aspectran.core.activity.ActivityDataMap;
+import com.aspectran.core.activity.InstantActivitySupport;
 import com.aspectran.core.component.bean.annotation.AvoidAdvice;
-import com.aspectran.core.component.bean.aware.ActivityContextAware;
-import com.aspectran.core.context.ActivityContext;
 import org.apache.ibatis.cursor.Cursor;
 import org.apache.ibatis.executor.BatchResult;
 import org.apache.ibatis.session.Configuration;
@@ -33,11 +32,9 @@ import java.util.Map;
 /**
  * The SqlSession Agent.
  */
-public class SqlSessionAgent implements SqlSession, ActivityContextAware {
+public class SqlSessionAgent extends InstantActivitySupport implements SqlSession {
 
     private final String relevantAspectId;
-
-    private ActivityContext context;
 
     private boolean autoParameters;
 
@@ -254,12 +251,9 @@ public class SqlSessionAgent implements SqlSession, ActivityContextAware {
 
     @AvoidAdvice
     private SqlSessionTxAdvice getSqlSessionTxAdvice() {
-        if (context == null) {
-            throw new IllegalArgumentException("ActivityContext is not injected");
-        }
-        SqlSessionTxAdvice advice = context.getCurrentActivity().getAspectAdviceBean(relevantAspectId);
+        SqlSessionTxAdvice advice = getCurrentActivity().getAspectAdviceBean(relevantAspectId);
         if (advice == null) {
-            if (context.getAspectRuleRegistry().getAspectRule(relevantAspectId) == null) {
+            if (getActivityContext().getAspectRuleRegistry().getAspectRule(relevantAspectId) == null) {
                 throw new IllegalArgumentException("Aspect '" + relevantAspectId +
                         "' handling SqlSessionTxAdvice is undefined");
             }
@@ -268,15 +262,9 @@ public class SqlSessionAgent implements SqlSession, ActivityContextAware {
         return advice;
     }
 
-    @Override
-    @AvoidAdvice
-    public void setActivityContext(ActivityContext context) {
-        this.context = context;
-    }
-
     private ActivityDataMap getActivityDataMap() {
-        if (context != null && context.getCurrentActivity().getTranslet() != null) {
-            return context.getCurrentActivity().getTranslet().getActivityDataMap();
+        if (getCurrentActivity().getTranslet() != null) {
+            return getCurrentActivity().getTranslet().getActivityDataMap();
         } else {
             return null;
         }

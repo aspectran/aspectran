@@ -108,10 +108,6 @@ public class BeanRuleAnalyzer {
             throw new BeanRuleException("Bean initialization method is duplicated; " +
                     "Already implemented the InitializableBean", beanRule);
         }
-        if (beanRule.isInitializableTransletBean()) {
-            throw new BeanRuleException("Bean initialization method is duplicated; " +
-                    "Already implemented the InitializableTransletBean", beanRule);
-        }
 
         String initMethodName = beanRule.getInitMethodName();
         Method m1 = MethodUtils.getAccessibleMethod(beanClass, initMethodName, TRANSLET_ACTION_PARAMETER_TYPES);

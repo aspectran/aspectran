@@ -16,6 +16,7 @@
 package com.aspectran.undertow.server.http;
 
 import com.aspectran.core.component.bean.ablility.DisposableBean;
+import com.aspectran.core.component.bean.annotation.AvoidAdvice;
 import com.aspectran.core.component.bean.aware.ActivityContextAware;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.config.AspectranConfig;
@@ -60,6 +61,7 @@ public class HybridHttpHandlerFactory implements ActivityContextAware, Disposabl
     private TowService towService;
 
     @Override
+    @AvoidAdvice
     public void setActivityContext(ActivityContext context) {
         this.context = context;
     }
@@ -120,7 +122,7 @@ public class HybridHttpHandlerFactory implements ActivityContextAware, Disposabl
     }
 
     private TowService createTowService() {
-        Assert.state(towService == null, "Cannot reconfigure DefaultTowService");
+        Assert.state(towService == null, "TowService is already configured");
         if (aspectranConfig == null) {
             towService = DefaultTowService.create(context.getRootService());
         } else {

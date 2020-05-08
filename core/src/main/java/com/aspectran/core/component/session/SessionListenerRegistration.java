@@ -13,25 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.component.bean.ablility;
-
-import com.aspectran.core.activity.Translet;
-import com.aspectran.core.component.bean.annotation.AvoidAdvice;
+package com.aspectran.core.component.session;
 
 /**
- * The Interface InitializableTransletBean.
- * 
- * @since 2015. 3. 30.
+ * Support for registering or removing session listeners in the session manager.
+ *
+ * <p>Created: 2020/05/09</p>
+ *
+ * @since 6.7.0
  */
-public interface InitializableTransletBean {
+public interface SessionListenerRegistration {
 
     /**
-     * Invoke on initialization after it has set all bean properties supplied.
+     * Register a session listener to the session manager.
      *
-     * @param translet the Translet instance
-     * @throws Exception if initialization fails
+     * @param listener the session listener to register
      */
-    @AvoidAdvice
-    void initialize(Translet translet) throws Exception;
+    void register(SessionListener listener);
+
+    /**
+     * Remove a session listener from the session manager.
+     *
+     * @param listener the session listener to remove
+     */
+    void remove(SessionListener listener);
 
 }

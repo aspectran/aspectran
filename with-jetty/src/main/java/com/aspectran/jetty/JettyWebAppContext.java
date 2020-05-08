@@ -16,6 +16,7 @@
 package com.aspectran.jetty;
 
 import com.aspectran.core.component.bean.ablility.InitializableBean;
+import com.aspectran.core.component.bean.annotation.AvoidAdvice;
 import com.aspectran.core.component.bean.aware.ActivityContextAware;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.service.CoreService;
@@ -56,6 +57,7 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
     private boolean derived;
 
     @Override
+    @AvoidAdvice
     public void setActivityContext(ActivityContext context) {
         this.context = context;
     }
@@ -88,7 +90,7 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
 
     @Override
     public void initialize() throws Exception {
-        Assert.notNull(context, "context must not be null");
+        Assert.state(context != null, "No ActivityContext configured");
 
         if (derived) {
             CoreService rootService = context.getRootService();

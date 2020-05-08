@@ -18,7 +18,6 @@ package com.aspectran.core.context.rule;
 import com.aspectran.core.component.bean.ablility.DisposableBean;
 import com.aspectran.core.component.bean.ablility.FactoryBean;
 import com.aspectran.core.component.bean.ablility.InitializableBean;
-import com.aspectran.core.component.bean.ablility.InitializableTransletBean;
 import com.aspectran.core.context.rule.ability.BeanReferenceable;
 import com.aspectran.core.context.rule.ability.Replicable;
 import com.aspectran.core.context.rule.params.FilterParameters;
@@ -97,8 +96,6 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
 
     private boolean initializableBean;
 
-    private boolean initializableTransletBean;
-
     private boolean innerBean;
 
     private boolean replicated;
@@ -173,7 +170,6 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
         this.factoryBean = FactoryBean.class.isAssignableFrom(beanClass);
         this.disposableBean = DisposableBean.class.isAssignableFrom(beanClass);
         this.initializableBean = InitializableBean.class.isAssignableFrom(beanClass);
-        this.initializableTransletBean = InitializableTransletBean.class.isAssignableFrom(beanClass);
     }
 
     /**
@@ -617,15 +613,6 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
         return initializableBean;
     }
 
-    /**
-     * Returns whether this bean implements InitializableTransletBean.
-     *
-     * @return the boolean
-     */
-    public boolean isInitializableTransletBean() {
-        return initializableTransletBean;
-    }
-
     public boolean isInnerBean() {
         return innerBean;
     }
@@ -755,7 +742,6 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
             tsb.append("destroyMethod", destroyMethodName);
             tsb.append("factoryMethod", factoryMethodName);
             tsb.append("initializableBean", initializableBean);
-            tsb.append("initializableTransletBean", initializableTransletBean);
             tsb.append("disposableBean", disposableBean);
             tsb.append("factoryBean", factoryBean);
             tsb.append("lazyInit", lazyInit);

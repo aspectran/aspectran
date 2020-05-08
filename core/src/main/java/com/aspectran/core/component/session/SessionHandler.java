@@ -128,7 +128,7 @@ public interface SessionHandler extends Component {
     void addSessionListener(SessionListener listener);
 
     /**
-     * Removes an event listener for for session-related events.
+     * Removes an event listener for session-related events.
      *
      * @param listener the session listener to remove
      * @see #addSessionListener(SessionListener)
