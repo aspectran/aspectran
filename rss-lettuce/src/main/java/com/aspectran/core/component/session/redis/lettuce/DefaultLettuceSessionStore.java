@@ -16,9 +16,12 @@
 package com.aspectran.core.component.session.redis.lettuce;
 
 import com.aspectran.core.component.session.SessionData;
+import io.lettuce.core.RedisConnectionException;
+import io.lettuce.core.ScanIterator;
 import io.lettuce.core.api.StatefulRedisConnection;
 import io.lettuce.core.api.sync.RedisCommands;
 
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
@@ -28,25 +31,59 @@ import java.util.function.Function;
  *
  * @since 6.6.0
  */
-public class DefaultLettuceSessionStore extends AbstractLettuceSessionStore<StatefulRedisConnection<String, SessionData>> {
+public class DefaultLettuceSessionStore extends AbstractLettuceSessionStore {
+
+    private final ConnectionPool<StatefulRedisConnection<String, SessionData>> pool;
 
     public DefaultLettuceSessionStore(ConnectionPool<StatefulRedisConnection<String, SessionData>> pool) {
-        super(pool);
+        this.pool = pool;
     }
 
-    <R> R sync(Function<RedisCommands<String, SessionData>, R> func) throws Exception {
-        try (StatefulRedisConnection<String, SessionData> conn = getConnectionPool().getConnection()) {
+    @Override
+    protected void doInitialize() throws Exception {
+        SessionDataCodec codec = new SessionDataCodec(getNonPersistentAttributes());
+        pool.initialize(codec);
+    }
+
+    @Override
+    protected void doDestroy() throws Exception {
+        pool.destroy();
+    }
+
+    private StatefulRedisConnection<String, SessionData> getConnection() {
+        try {
+            return pool.getConnection();
+        } catch (Exception e) {
+            throw RedisConnectionException.create(e);
+        }
+    }
+
+    <R> R sync(Function<RedisCommands<String, SessionData>, R> func) {
+        try (StatefulRedisConnection<String, SessionData> conn = getConnection()) {
             return func.apply(conn.sync());
         }
     }
 
     @Override
-    public SessionData load(String id) throws Exception {
+    public void scan(Consumer<SessionData> func) {
+        sync(c -> {
+            ScanIterator<String> scanIterator = ScanIterator.scan(c);
+            while (scanIterator.hasNext()) {
+                String key = scanIterator.next();
+                SessionData data = c.get(key);
+                func.accept(data);
+            }
+            return null;
+        });
+    }
+
+    @Override
+    public SessionData load(String id) {
         return sync(c -> c.get(id));
     }
 
     @Override
-    public boolean delete(String id) throws Exception {
+    public boolean delete(String id) {
         return sync(c -> {
             Long deleted = c.del(id);
             return (deleted != null && deleted > 0L);
@@ -54,25 +91,13 @@ public class DefaultLettuceSessionStore extends AbstractLettuceSessionStore<Stat
     }
 
     @Override
-    public boolean exists(String id) throws Exception {
-        return sync(c -> {
-            SessionData data = c.get(id);
-            return checkExpiry(data);
-        });
+    public boolean exists(String id) {
+        return sync(c -> checkExpiry(c.get(id)));
     }
 
     @Override
-    public void doSave(String id, SessionData data, long lastSaveTime) throws Exception {
-        sync(c -> {
-            long timeout = calculateTimeout(data);
-            if (timeout > 0L) {
-                c.psetex(id, timeout, data);
-            } else {
-                // Never timeout
-                c.set(id, data);
-            }
-            return null;
-        });
+    public void doSave(String id, SessionData data) {
+        sync(c -> c.set(id, data));
     }
 
 }

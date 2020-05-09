@@ -16,7 +16,6 @@
 package com.aspectran.core.context.config;
 
 import com.aspectran.core.component.session.SessionCache;
-import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.apon.AbstractParameters;
 import com.aspectran.core.util.apon.ParameterKey;
 import com.aspectran.core.util.apon.ValueType;

@@ -303,7 +303,7 @@ public class AnnotatedAction implements Executable {
                 }
             } catch (Exception e) {
                 if (logger.isDebugEnabled()) {
-                    logger.debug(e.getMessage(), e);
+                    logger.debug(e);
                 }
             }
         }

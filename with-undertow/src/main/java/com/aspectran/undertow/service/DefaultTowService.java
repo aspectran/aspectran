@@ -121,7 +121,7 @@ public class DefaultTowService extends AbstractTowService {
             if (e.getCause() != null) {
                 logger.error(e.getCause().getMessage(), e.getCause());
             } else {
-                logger.error(e.getMessage(), e);
+                logger.error(e);
             }
             if (e.getCause() instanceof RequestMethodNotAllowedException) {
                 exchange.setStatusCode(HttpStatus.METHOD_NOT_ALLOWED.value());

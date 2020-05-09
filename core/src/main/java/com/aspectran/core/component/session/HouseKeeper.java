@@ -124,7 +124,7 @@ public class HouseKeeper {
         try {
             sessionHandler.scavenge();
         } catch (Exception e) {
-            logger.warn(e.getMessage(), e);
+            logger.warn(e);
         }
     }
 

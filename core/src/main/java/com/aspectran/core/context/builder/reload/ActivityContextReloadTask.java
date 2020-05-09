@@ -61,7 +61,7 @@ public class ActivityContextReloadTask extends TimerTask {
                     String filePath = file.getAbsolutePath();
                     modifiedTimeMap.put(filePath, file.lastModified());
                 } catch (IOException e) {
-                    logger.error(e.getMessage(), e);
+                    logger.error(e);
                 }
             }
         }

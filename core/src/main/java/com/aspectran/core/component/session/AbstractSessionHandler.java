@@ -64,7 +64,7 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
     private volatile int defaultMaxIdleSecs = 30 * 60;
 
     public AbstractSessionHandler() {
-        scheduler = new ScheduledExecutorScheduler(String.format("session-scheduler-%x", hashCode()), false);
+        scheduler = new ScheduledExecutorScheduler(String.format("SessionScheduler-%x", hashCode()), false);
     }
 
     @Override
@@ -147,7 +147,7 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
             }
             return session;
         } catch (Exception e) {
-            logger.warn(e.getMessage(), e);
+            logger.warn(e);
             return null;
         }
     }
@@ -300,8 +300,8 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
         // Get a snapshot of the candidates as they are now. Others that
         // arrive during this processing will be dealt with on
         // subsequent call to scavenge
-        String[] ss = candidateSessionIdsForExpiry.toArray(new String[0]);
-        Set<String> candidates = new HashSet<>(Arrays.asList(ss));
+        String[] candidateSessionIds = candidateSessionIdsForExpiry.toArray(new String[0]);
+        Set<String> candidates = new HashSet<>(Arrays.asList(candidateSessionIds));
         candidateSessionIdsForExpiry.removeAll(candidates);
         if (logger.isTraceEnabled()) {
             logger.trace(getComponentName() + " scavenging session ids " + candidates);
@@ -313,12 +313,12 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
                     try {
                         invalidate(id, Session.DestroyedReason.TIMEOUT);
                     } catch (Exception e) {
-                        logger.warn(e.getMessage(), e);
+                        logger.warn(e);
                     }
                 }
             }
         } catch (Exception e) {
-            logger.warn(e.getMessage(), e);
+            logger.warn(e);
         }
     }
 

@@ -267,7 +267,7 @@ public abstract class AbstractServiceController implements ServiceController {
                 try {
                     serviceStateListener.stopped();
                 } catch (Exception e) {
-                    logger.warn(e.getMessage(), e);
+                    logger.warn(e);
                 }
             }
 

@@ -142,7 +142,7 @@ public class SessionStatsEndpoint extends InstantActivitySupport {
                             try {
                                 broadcast(newStats.toJson());
                             } catch (IOException e) {
-                                logger.warn(e.getMessage(), e);
+                                logger.warn(e);
                             }
                             oldStats = newStats;
                             if (first) {

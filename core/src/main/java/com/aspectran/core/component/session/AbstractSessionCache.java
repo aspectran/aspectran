@@ -251,7 +251,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
             throw new IllegalArgumentException("id must not be null");
         }
         if (logger.isDebugEnabled()) {
-            logger.debug("Creating new session id=" + id);
+            logger.debug("Create new session id=" + id);
         }
         SessionData data = new SessionData(id, time, time, time, maxInactiveInterval);
         DefaultSession session = new DefaultSession(data, sessionHandler, true);
@@ -290,8 +290,8 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
                 sessionStore.save(id, session.getSessionData());
                 // if we evict on session exit, boot it from the cache
                 if (getEvictionIdleSecs() == EVICT_ON_SESSION_EXIT) {
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Eviction on request exit id=" + id);
+                    if (logger.isTraceEnabled()) {
+                        logger.trace("Eviction on request exit id=" + id);
                     }
                     doDelete(session.getId());
                     session.setResident(false);
@@ -320,7 +320,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
                 return false;
             }
         } else {
-            // try the object store first
+            // try to find it in the cache first
             DefaultSession ds = doGet(id);
             if (ds != null) {
                 return ds.isValid();
@@ -343,8 +343,8 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
         // Always delete it from the backing data store
         if (sessionStore != null) {
             boolean deleted = sessionStore.delete(id);
-            if (logger.isDebugEnabled()) {
-                logger.debug("Session " + id + " deleted in session data store: " + deleted);
+            if (logger.isTraceEnabled()) {
+                logger.trace("Session " + id + " deleted in session data store: " + deleted);
             }
         }
         // delete it from the session object store
@@ -459,11 +459,11 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
         Set<String> allCandidates = sessionStore.getExpired(candidates);
         Set<String> sessionsInUse = new HashSet<>();
         if (allCandidates != null) {
-            for (String c : allCandidates) {
-                DefaultSession ds = doGet(c);
+            for (String id : allCandidates) {
+                DefaultSession ds = doGet(id);
                 if (ds != null && ds.getRequests() > 0) {
                     // if the session is in my cache, check its not in use first
-                    sessionsInUse.add(c);
+                    sessionsInUse.add(id);
                 }
             }
             try {
@@ -496,20 +496,18 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
                     session.isValid() && session.isResident() && session.getRequests() <= 0) {
                 // Be careful with saveOnInactiveEviction - you may be able to re-animate a session that was
                 // being managed on another node and has expired.
-                try {
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Evicting idle session " + session.getId());
-                    }
-                    // save before evicting
-                    if (isSaveOnInactiveEviction() && sessionStore != null) {
-                        sessionStore.save(session.getId(), session.getSessionData());
-                    }
-                    doDelete(session.getId()); // detach from this cache
-                    session.setResident(false);
-                } catch (Exception e) {
-                    logger.warn("Passivation of idle session" + session.getId() + " failed", e);
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Evict idle session id=" + session.getId());
                 }
+                // save before evicting
+                if (sessionStore != null && (isClusterMode() || isSaveOnInactiveEviction())) {
+                    sessionStore.save(session.getId(), session.getSessionData());
+                }
+                doDelete(session.getId()); // detach from this cache
+                session.setResident(false);
             }
+        } catch (Exception e) {
+            logger.warn("Passivation of idle session " + session.getId() + " failed", e);
         }
     }
 

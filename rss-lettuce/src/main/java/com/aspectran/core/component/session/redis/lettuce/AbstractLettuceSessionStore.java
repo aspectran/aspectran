@@ -22,6 +22,7 @@ import com.aspectran.core.util.logging.LoggerFactory;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Consumer;
 
 /**
  * A Redis-based session store using Lettuce as the client.
@@ -30,37 +31,38 @@ import java.util.Set;
  *
  * @since 6.6.0
  */
-public abstract class AbstractLettuceSessionStore<T> extends AbstractSessionStore {
+public abstract class AbstractLettuceSessionStore extends AbstractSessionStore {
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractLettuceSessionStore.class);
 
-    private final ConnectionPool<T> pool;
-
-    public AbstractLettuceSessionStore(ConnectionPool<T> pool) {
-        this.pool = pool;
-    }
-
-    protected ConnectionPool<T> getConnectionPool() {
-        return pool;
-    }
+    abstract protected void scan(Consumer<SessionData> func);
 
     @Override
     public Set<String> doGetExpired(Set<String> candidates) {
         long now = System.currentTimeMillis();
         Set<String> expired = new HashSet<>();
-        for (String candidate : candidates) {
-            try {
-                SessionData data = load(candidate);
-                // if the session no longer exists
-                if (data != null) {
-                    if (data.getExpiryTime() > 0 && data.getExpiryTime() <= now) {
-                        expired.add(candidate);
+        // iterate over the saved sessions and work out which have expired
+        scan(sessionData -> {
+            long expiry = sessionData.getExpiryTime();
+            if (expiry > 0 && expiry < now) {
+                expired.add(sessionData.getId());
+            }
+        });
+        for (String id : candidates) {
+            if (!expired.contains(id)) {
+                try {
+                    SessionData data = load(id);
+                    if (data != null) {
+                        if (data.getExpiryTime() > 0 && data.getExpiryTime() <= now) {
+                            expired.add(id);
+                        }
+                    } else {
+                        // if the session no longer exists
+                        expired.add(id);
                     }
-                } else {
-                    expired.add(candidate);
+                } catch (Exception e) {
+                    logger.warn("Error checking if session " + id + " has expired", e);
                 }
-            } catch (Exception e) {
-                logger.warn("Error checking if session " + candidate + " has expired", e);
             }
         }
         return expired;
@@ -72,25 +74,6 @@ public abstract class AbstractLettuceSessionStore<T> extends AbstractSessionStor
         } else {
             return false;
         }
-    }
-
-    protected long calculateTimeout(SessionData data) {
-        if (data.getMaxInactiveInterval() > 0L) {
-            return (long)(data.getMaxInactiveInterval() / 0.9) + (getSavePeriodSecs() * 1000 * 2);
-        } else {
-            return 0L;
-        }
-    }
-
-    @Override
-    protected void doInitialize() throws Exception {
-        SessionDataCodec codec = new SessionDataCodec(getNonPersistentAttributes());
-        pool.initialize(codec);
-    }
-
-    @Override
-    protected void doDestroy() throws Exception {
-        pool.destroy();
     }
 
 }

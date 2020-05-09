@@ -41,7 +41,7 @@ public class FileSessionStore extends AbstractSessionStore {
 
     private static final Logger logger = LoggerFactory.getLogger(FileSessionStore.class);
 
-    private final Map<String, String> sessionFileMap = new ConcurrentHashMap<>();
+    private final Map<String, String> sessionFilenames = new ConcurrentHashMap<>();
 
     private File storeDir;
 
@@ -70,22 +70,20 @@ public class FileSessionStore extends AbstractSessionStore {
     @Override
     public SessionData load(String id) throws Exception {
         // load session info from its file
-        String filename = sessionFileMap.get(id);
+        String filename = sessionFilenames.get(id);
         if (filename == null) {
             if (logger.isTraceEnabled()) {
-                logger.trace("Unknown file: " + id);
+                logger.trace("Unknown session file: " + id);
             }
             return null;
         }
-
         File file = new File(storeDir, filename);
         if (!file.exists()) {
             if (logger.isDebugEnabled()) {
-                logger.debug("No such file: " + filename);
+                logger.debug("No such session file: " + filename);
             }
             return null;
         }
-
         try (FileInputStream in = new FileInputStream(file)) {
             SessionData data = SessionData.deserialize(in);
             data.setLastSavedTime(file.lastModified());
@@ -99,7 +97,7 @@ public class FileSessionStore extends AbstractSessionStore {
     public boolean delete(String id) throws Exception {
         if (storeDir != null) {
             // remove from our map
-            String filename = sessionFileMap.remove(id);
+            String filename = sessionFilenames.remove(id);
             if (filename == null) {
                 return false;
             }
@@ -126,7 +124,7 @@ public class FileSessionStore extends AbstractSessionStore {
 
     @Override
     public boolean exists(String id) {
-        String filename = sessionFileMap.get(id);
+        String filename = sessionFilenames.get(id);
         if (filename == null) {
             return false;
         }
@@ -142,7 +140,7 @@ public class FileSessionStore extends AbstractSessionStore {
     }
 
     @Override
-    public void doSave(String id, SessionData data, long lastSaveTime) throws Exception {
+    public void doSave(String id, SessionData data) throws Exception {
         if (storeDir != null) {
             delete(id);
             // make a fresh file using the latest session expiry
@@ -150,7 +148,7 @@ public class FileSessionStore extends AbstractSessionStore {
             File file = new File(storeDir, filename);
             try (FileOutputStream fos = new FileOutputStream(file,false)) {
                 SessionData.serialize(data, fos, getNonPersistentAttributes());
-                sessionFileMap.put(id, filename);
+                sessionFilenames.put(id, filename);
             } catch (Exception e) {
                 file.delete(); // No point keeping the file if we didn't save the whole session
                 throw new UnwritableSessionDataException(id, e);
@@ -170,34 +168,30 @@ public class FileSessionStore extends AbstractSessionStore {
     public Set<String> doGetExpired(Set<String> candidates) {
         long now = System.currentTimeMillis();
         Set<String> expired = new HashSet<>();
-
         // iterate over the files and work out which have expired
-        for (String filename : sessionFileMap.values()) {
+        for (String filename : sessionFilenames.values()) {
             try {
                 long expiry = getExpiryFromFilename(filename);
                 if (expiry > 0 && expiry < now) {
                     expired.add(getIdFromFilename(filename));
                 }
             } catch (Exception e) {
-                logger.warn(e.getMessage(), e);
+                logger.warn(e);
             }
         }
-
         // check candidates that were not found to be expired, perhaps
         // because they no longer exist and they should be expired
-        for (String c : candidates) {
-            if (!expired.contains(c)) {
+        for (String id : candidates) {
+            if (!expired.contains(id)) {
                 // if it doesn't have a file then the session doesn't exist
-                String filename = sessionFileMap.get(c);
-                if (filename == null) {
-                    expired.add(c);
+                if (!sessionFilenames.containsKey(id)) {
+                    expired.add(id);
                 }
             }
         }
-
         // Infrequently iterate over all files in the store, and delete those
         // that expired a long time ago.
-        // If the graceperiod is disabled, don't do the sweep!
+        // If the grace period is disabled, don't do the sweep!
         if (getGracePeriodSecs() > 0 &&
                 (lastSweepTime == 0L ||
                         ((now - lastSweepTime) >= (5 * TimeUnit.SECONDS.toMillis(getGracePeriodSecs()))))) {
@@ -279,11 +273,11 @@ public class FileSessionStore extends AbstractSessionStore {
                         try {
                             sweepFile(now, p);
                         } catch (Exception e) {
-                            logger.warn(e.getMessage(), e);
+                            logger.warn(e);
                         }
                     });
         } catch (Exception e) {
-            logger.warn(e.getMessage(), e);
+            logger.warn(e);
         }
     }
 
@@ -321,7 +315,7 @@ public class FileSessionStore extends AbstractSessionStore {
 
     @Override
     protected void doDestroy() {
-        sessionFileMap.clear();
+        sessionFilenames.clear();
         lastSweepTime = 0L;
     }
 
@@ -360,7 +354,7 @@ public class FileSessionStore extends AbstractSessionStore {
                         String sessionId = getIdFromFilename(filename);
                         // handle multiple session files existing for the same session: remove all
                         // but the file with the most recent expiry time
-                        String existing = sessionFileMap.putIfAbsent(sessionId, filename);
+                        String existing = sessionFilenames.putIfAbsent(sessionId, filename);
                         if (existing != null) {
                             // if there was a prior filename, work out which has the most
                             // recent modify time
@@ -371,7 +365,7 @@ public class FileSessionStore extends AbstractSessionStore {
                                     // replace with more recent file
                                     Path existingPath = storeDir.toPath().resolve(existing);
                                     // update the file we're keeping
-                                    sessionFileMap.put(sessionId, filename);
+                                    sessionFilenames.put(sessionId, filename);
                                     // delete the old file
                                     Files.delete(existingPath);
                                     if (logger.isDebugEnabled()) {

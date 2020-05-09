@@ -37,7 +37,7 @@ public class StopLifeCycle extends AbstractLifeCycle implements LifeCycle.Listen
         try {
             this.lifecycle.stop();
         } catch (Exception e) {
-            logger.warn(e.getMessage(), e);
+            logger.warn(e);
         }
     }
 

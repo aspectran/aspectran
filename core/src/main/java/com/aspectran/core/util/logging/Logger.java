@@ -31,7 +31,7 @@ public interface Logger {
     void error(String s, Throwable e);
 
     default void error(Throwable e) {
-        error(EXCEPTION_MESSAGE, e);
+        error(EXCEPTION_MESSAGE + e.getMessage(), e);
     }
 
     void debug(String s);
@@ -39,7 +39,7 @@ public interface Logger {
     void debug(String s, Throwable e);
 
     default void debug(Throwable e) {
-        debug(EXCEPTION_MESSAGE, e);
+        debug(EXCEPTION_MESSAGE + e.getMessage(), e);
     }
 
     void info(String s);
@@ -51,7 +51,7 @@ public interface Logger {
     void warn(String s, Throwable e);
 
     default void warn(Throwable e) {
-        warn(EXCEPTION_MESSAGE, e);
+        warn(EXCEPTION_MESSAGE + e.getMessage(), e);
     }
 
 }

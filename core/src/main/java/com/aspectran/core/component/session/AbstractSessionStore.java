@@ -114,14 +114,14 @@ public abstract class AbstractSessionStore extends AbstractComponent implements 
         long lastSave = data.getLastSavedTime();
         long savePeriodMs = (savePeriodSecs <= 0 ? 0 : TimeUnit.SECONDS.toMillis(savePeriodSecs));
 
-        if (logger.isDebugEnabled()) {
+        if (logger.isTraceEnabled()) {
             ToStringBuilder tsb = new ToStringBuilder("Store session");
             tsb.append("id", id);
             tsb.append("dirty", data.isDirty());
             tsb.append("lastSaved", data.getLastSavedTime());
             tsb.append("savePeriod", savePeriodMs);
             tsb.append("elapsed", System.currentTimeMillis() - lastSave);
-            logger.debug(tsb.toString());
+            logger.trace(tsb.toString());
         }
 
         // save session if attribute changed or never been saved or time between saves exceeds threshold
@@ -130,7 +130,7 @@ public abstract class AbstractSessionStore extends AbstractComponent implements 
             data.setLastSavedTime(System.currentTimeMillis());
             try {
                 // call the specific store method, passing in previous save time
-                doSave(id, data, lastSave);
+                doSave(id, data);
                 data.setDirty(false); // only undo the dirty setting if we saved it
             } catch (Exception e) {
                 // reset last save time if save failed
@@ -145,10 +145,9 @@ public abstract class AbstractSessionStore extends AbstractComponent implements 
      *
      * @param id identity of session to store
      * @param data info of the session
-     * @param lastSaveTime time of previous save or 0 if never saved
      * @throws Exception if unable to store data
      */
-    public abstract void doSave(String id, SessionData data, long lastSaveTime) throws Exception;
+    public abstract void doSave(String id, SessionData data) throws Exception;
 
     @Override
     public Set<String> getExpired(Set<String> candidates) {

@@ -35,7 +35,7 @@ public final class LoggerFactory {
      */
     public static final String MARKER = "ASPECTRAN";
 
-    protected static final String EXCEPTION_MESSAGE = "Unexpected exception:";
+    protected static final String EXCEPTION_MESSAGE = "Unexpected exception: ";
 
     private static Constructor<? extends Logger> loggerConstructor;
 

@@ -246,14 +246,14 @@ public class DefaultSession implements Session {
                 if (evictionIdleSecs < SessionCache.EVICT_ON_INACTIVITY) {
                     // we do not want to evict inactive sessions
                     time = -1;
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Session " + getId() + " is immortal && no inactivity eviction");
+                    if (logger.isTraceEnabled()) {
+                        logger.trace("Session " + getId() + " is immortal && no inactivity eviction");
                     }
                 } else {
                     // sessions are immortal but we want to evict after inactivity
                     time = TimeUnit.SECONDS.toMillis(evictionIdleSecs);
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Session " + getId() + " is immortal; evict after " + evictionIdleSecs +
+                    if (logger.isTraceEnabled()) {
+                        logger.trace("Session " + getId() + " is immortal; evict after " + evictionIdleSecs +
                                 " sec inactivity");
                     }
                 }
@@ -268,15 +268,15 @@ public class DefaultSession implements Session {
                 } else if (evictionIdleSecs == SessionCache.EVICT_ON_SESSION_EXIT) {
                     // session will not remain in the cache, so no timeout
                     time = -1;
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Session " + getId() + " evict on exit");
+                    if (logger.isTraceEnabled()) {
+                        logger.trace("Session " + getId() + " evict on exit");
                     }
                 } else {
                     // want to evict on idle: timer is lesser of the session's
                     // expiration remaining and the time to evict
                     time = (remaining > 0 ? Math.min(maxInactive, TimeUnit.SECONDS.toMillis(evictionIdleSecs)) : 0L);
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Session " + getId() + " timer set to lesser of maxIdleSeconds=" +
+                    if (logger.isTraceEnabled()) {
+                        logger.trace("Session " + getId() + " timer set to lesser of maxIdleSeconds=" +
                                 (maxInactive / 1000L) + " and evictionIdleSeconds=" + evictionIdleSecs);
                     }
                 }
@@ -342,7 +342,7 @@ public class DefaultSession implements Session {
         try (Lock ignored = locker.lock()) {
             try {
                 if (logger.isDebugEnabled()) {
-                    logger.debug("Invalidate session " + sessionData.getId());
+                    logger.debug("Invalidate session id=" + sessionData.getId());
                 }
                 if (state == State.VALID || state == State.INVALIDATING) {
                     Set<String> keys;
@@ -546,11 +546,11 @@ public class DefaultSession implements Session {
         protected final CyclicTimeout timer;
 
         SessionInactivityTimer() {
-            timer = new CyclicTimeout((getSessionHandler().getScheduler())) {
+            timer = new CyclicTimeout(getSessionHandler().getScheduler()) {
                 @Override
                 public void onTimeoutExpired() {
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Timer expired for session " + getId());
+                    if (logger.isTraceEnabled()) {
+                        logger.trace("Timer expired for session " + getId());
                     }
                     long now = System.currentTimeMillis();
                     // handle what to do with the session after the timer expired
