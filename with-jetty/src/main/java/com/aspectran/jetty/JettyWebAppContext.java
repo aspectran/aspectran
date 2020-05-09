@@ -90,7 +90,7 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
 
     @Override
     public void initialize() throws Exception {
-        Assert.state(context != null, "No ActivityContext configured");
+        Assert.state(context != null, "ActivityContext is not injected");
 
         if (derived) {
             CoreService rootService = context.getRootService();

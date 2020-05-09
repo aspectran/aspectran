@@ -16,6 +16,7 @@
 package com.aspectran.core.component.session.redis.lettuce;
 
 import com.aspectran.core.component.session.SessionData;
+import com.aspectran.core.util.Assert;
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.RedisURI;
 import io.lettuce.core.api.StatefulRedisConnection;
@@ -41,9 +42,7 @@ public class RedisConnectionPool implements ConnectionPool<StatefulRedisConnecti
 
     @Override
     public StatefulRedisConnection<String, SessionData> getConnection() throws Exception {
-        if (pool == null) {
-            throw new IllegalStateException("RedisConnectionPool is not initialized");
-        }
+        Assert.state(pool != null, "No RedisConnectionPool configured");
         return pool.borrowObject();
     }
 

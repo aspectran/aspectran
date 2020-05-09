@@ -18,6 +18,7 @@ package com.aspectran.core.component.session.redis.lettuce.cluster;
 import com.aspectran.core.component.session.SessionData;
 import com.aspectran.core.component.session.redis.lettuce.ConnectionPool;
 import com.aspectran.core.component.session.redis.lettuce.SessionDataCodec;
+import com.aspectran.core.util.Assert;
 import io.lettuce.core.RedisURI;
 import io.lettuce.core.cluster.RedisClusterClient;
 import io.lettuce.core.cluster.api.StatefulRedisClusterConnection;
@@ -44,9 +45,7 @@ public class RedisClusterConnectionPool implements ConnectionPool<StatefulRedisC
     }
 
     public StatefulRedisClusterConnection<String, SessionData> getConnection() throws Exception {
-        if (pool == null) {
-            throw new IllegalStateException("RedisClusterConnectionPool is not initialized");
-        }
+        Assert.state(pool != null, "No RedisClusterConnectionPool configured");
         return pool.borrowObject();
     }
 

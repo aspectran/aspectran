@@ -245,7 +245,7 @@ public class BeanDescriptor {
     public Method getGetter(String name) throws NoSuchMethodException {
         Method method = getterMethods.get(name);
         if (method == null) {
-            throw new NoSuchMethodException("There is no READABLE property named '" + name +
+            throw new NoSuchMethodException("No such READABLE property named '" + name +
                     "' in class '" + className + "'");
         }
         return method;
@@ -261,7 +261,7 @@ public class BeanDescriptor {
     public Method getSetter(String name) throws NoSuchMethodException {
         Method method = setterMethods.get(name);
         if (method == null) {
-            throw new NoSuchMethodException("There is no WRITABLE property named '" + name +
+            throw new NoSuchMethodException("No such WRITABLE property named '" + name +
                     "' in class '" + className + "'");
         }
         return method;
@@ -277,7 +277,7 @@ public class BeanDescriptor {
     public Class<?> getGetterType(String name) throws NoSuchMethodException {
         Class<?> type = getterTypes.get(name);
         if (type == null) {
-            throw new NoSuchMethodException("There is no READABLE property named '" + name +
+            throw new NoSuchMethodException("No such READABLE property named '" + name +
                     "' in class '" + className + "'");
         }
         return type;
@@ -293,7 +293,7 @@ public class BeanDescriptor {
     public Class<?> getSetterType(String name) throws NoSuchMethodException {
         Class<?> type = setterTypes.get(name);
         if (type == null) {
-            throw new NoSuchMethodException("There is no WRITABLE property named '" + name +
+            throw new NoSuchMethodException("No such WRITABLE property named '" + name +
                     "' in class '" + className + "'");
         }
         return type;
