@@ -206,9 +206,9 @@ function LogTailer(endpoint, tailers) {
     };
 
     this.pattern1 = /^Session ([\w\.]+) complete, active requests=(\d+)/i;
-    this.pattern2 = /^Session ([\w\.]+) deleted in session data store/i;
+    this.pattern2 = /^Invalidate session id=([\w\.]+)/i;
     this.pattern3 = /^Session ([\w\.]+) accessed, stopping timer, active requests=(\d+)/i;
-    this.pattern4 = /^Creating new session id=([\w\.]+)/i;
+    this.pattern4 = /^Create new session id=([\w\.]+)/i;
 
     this.launchMissile = function(line) {
         let idx = line.indexOf("] ");
