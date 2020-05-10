@@ -104,7 +104,7 @@ public class PBEncryptCommand extends AbstractCommand {
                 throw new IllegalArgumentException("Failed to encrypt input string \"" + input + "\"");
             }
             console.writeLine(" %1$9s : %2$s", "Input", input);
-            console.writeLine(" %1$9s : %2$s", "Output", output);
+            console.writeLine(" %1$9s : %2$s", "Result", output);
             console.writeLine("----------------------------------------------------------------------------");
         }
     }

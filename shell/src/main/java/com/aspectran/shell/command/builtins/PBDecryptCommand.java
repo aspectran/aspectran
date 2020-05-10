@@ -105,7 +105,7 @@ public class PBDecryptCommand extends AbstractCommand {
                 return;
             }
             console.writeLine(" %1$9s : %2$s", "Input", input);
-            console.writeLine(" %1$9s : %2$s", "Output", output);
+            console.writeLine(" %1$9s : %2$s", "Result", output);
             console.writeLine("----------------------------------------------------------------------------");
         }
     }
