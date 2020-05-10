@@ -15,13 +15,13 @@
  */
 package com.aspectran.core.util.security;
 
+import com.aspectran.core.lang.Nullable;
 import com.aspectran.core.util.PBEncryptionUtils;
+import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.apon.AponReader;
 import com.aspectran.core.util.apon.Parameters;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 
 /**
  * Password based token issuer.
@@ -32,7 +32,7 @@ public class PBTokenIssuer {
         if (payload == null) {
             throw new IllegalArgumentException("payload must not be null");
         }
-        return encode(PBEncryptionUtils.encrypt(payload.toString()));
+        return PBEncryptionUtils.encrypt(payload.toString());
     }
 
     public <T extends Parameters> T parseToken(String token) throws InvalidPBTokenException {
@@ -40,13 +40,13 @@ public class PBTokenIssuer {
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends Parameters> T parseToken(String token, Class<T> payloadType)
+    public <T extends Parameters> T parseToken(String token, @Nullable Class<T> payloadType)
             throws InvalidPBTokenException {
-        if (token == null) {
-            throw new IllegalArgumentException("token must not be null");
+        if (StringUtils.isEmpty(token)) {
+            throw new IllegalArgumentException("token must not be null or empty");
         }
         try {
-            String payload = PBEncryptionUtils.decrypt(decode(token));
+            String payload = PBEncryptionUtils.decrypt(token);
             if (payloadType != null) {
                 return AponReader.parse(payload, payloadType);
             } else {
@@ -58,29 +58,19 @@ public class PBTokenIssuer {
     }
 
     public static String getToken(Parameters payload) {
-        return new PBTokenIssuer().createToken(payload);
+        PBTokenIssuer tokenIssuer = new PBTokenIssuer();
+        return tokenIssuer.createToken(payload);
     }
 
     public static <T extends Parameters> T getPayload(String token)
             throws InvalidPBTokenException {
-        return new PBTokenIssuer().parseToken(token);
+        return getPayload(token, null);
     }
 
     public static <T extends Parameters> T getPayload(String token, Class<T> payloadType)
             throws InvalidPBTokenException {
-        return new PBTokenIssuer().parseToken(token, payloadType);
-    }
-
-    protected String encode(String text) {
-        return Base64.getUrlEncoder()
-                .withoutPadding()
-                .encodeToString(text.getBytes(StandardCharsets.UTF_8));
-    }
-
-    protected String decode(String text) {
-        byte[] bytes = Base64.getUrlDecoder()
-                .decode(text.getBytes(StandardCharsets.UTF_8));
-        return new String(bytes, StandardCharsets.UTF_8);
+        PBTokenIssuer tokenIssuer = new PBTokenIssuer();
+        return tokenIssuer.parseToken(token, payloadType);
     }
 
 }

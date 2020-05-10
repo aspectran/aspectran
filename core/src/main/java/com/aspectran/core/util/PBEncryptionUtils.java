@@ -75,6 +75,9 @@ public class PBEncryptionUtils {
      * @return the encrypted string
      */
     public static String encrypt(String inputString, String encryptionPassword) {
+        if (inputString == null) {
+            throw new IllegalArgumentException("inputString must not be null");
+        }
         return encode(getEncryptor(encryptionPassword).encrypt(inputString));
     }
 
@@ -96,19 +99,34 @@ public class PBEncryptionUtils {
      * @return the decrypted version of inputString
      */
     public static String decrypt(String inputString, String encryptionPassword) {
+        if (inputString == null) {
+            throw new IllegalArgumentException("inputString must not be null");
+        }
         checkPassword(encryptionPassword);
         return getEncryptor(encryptionPassword).decrypt(decode(inputString));
     }
 
-    private static String encode(String text) {
+    private static String encode(String inputString) {
+        if (inputString == null) {
+            throw new IllegalArgumentException("inputString must not be null");
+        }
+        if (inputString.isEmpty()) {
+            return StringUtils.EMPTY;
+        }
         return Base64.getUrlEncoder()
                 .withoutPadding()
-                .encodeToString(text.getBytes(StandardCharsets.UTF_8));
+                .encodeToString(inputString.getBytes(StandardCharsets.UTF_8));
     }
 
-    private static String decode(String text) {
+    private static String decode(String inputString) {
+        if (inputString == null) {
+            throw new IllegalArgumentException("inputString must not be null");
+        }
+        if (inputString.isEmpty()) {
+            return StringUtils.EMPTY;
+        }
         byte[] bytes = Base64.getUrlDecoder()
-                .decode(text.getBytes(StandardCharsets.UTF_8));
+                .decode(inputString.getBytes(StandardCharsets.UTF_8));
         return new String(bytes, StandardCharsets.UTF_8);
     }
 

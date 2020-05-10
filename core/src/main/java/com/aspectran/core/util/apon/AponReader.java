@@ -474,6 +474,9 @@ public class AponReader extends AponFormat implements Closeable {
         if (parameters == null) {
             throw new IllegalArgumentException("parameters must not be null");
         }
+        if (StringUtils.isEmpty(text)) {
+            return parameters;
+        }
         try {
             AponReader aponReader = new AponReader(text);
             aponReader.read(parameters);

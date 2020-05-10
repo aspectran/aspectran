@@ -15,17 +15,23 @@
  */
 package com.aspectran.core.util.security;
 
+import com.aspectran.core.lang.Nullable;
 import com.aspectran.core.util.PBEncryptionUtils;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.apon.AponReader;
 import com.aspectran.core.util.apon.Parameters;
+import com.aspectran.core.util.apon.VariableParameters;
 
 /**
  * Time-limited, password based token issuer.
  */
 public class TimeLimitedPBTokenIssuer extends PBTokenIssuer {
 
-    private static final String PAYLOAD_SEPARATOR = "_";
+    private static final String TOKEN_SEPARATOR = "_";
+
+    private static final Parameters EMPTY_PAYLOAD = new VariableParameters();
+
+    private static final int DIGIT_RADIX = 36;
 
     private static final long DEFAULT_EXPIRATION_TIME = 1000 * 30;
 
@@ -39,17 +45,18 @@ public class TimeLimitedPBTokenIssuer extends PBTokenIssuer {
         this.expirationTime = expirationTime;
     }
 
+    public String createToken() {
+        return createToken(EMPTY_PAYLOAD);
+    }
+
     @Override
     public String createToken(Parameters payload) {
-        long time = System.currentTimeMillis() + expirationTime;
-        String encodedTime = encode(PBEncryptionUtils.encrypt(Long.toString(time)));
-        if (payload != null) {
-            String combined = encodedTime + PAYLOAD_SEPARATOR +
-                    encode(PBEncryptionUtils.encrypt(payload.toString()));
-            return encode(combined);
-        } else {
-            return encodedTime;
+        if (payload == null) {
+            throw new IllegalArgumentException("payload must not be null");
         }
+        long time = System.currentTimeMillis() + expirationTime;
+        String combined = Long.toString(time, DIGIT_RADIX) + TOKEN_SEPARATOR + payload.toString();
+        return PBEncryptionUtils.encrypt(combined);
     }
 
     @Override
@@ -59,63 +66,62 @@ public class TimeLimitedPBTokenIssuer extends PBTokenIssuer {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T extends Parameters> T parseToken(String token, Class<T> payloadType) throws InvalidPBTokenException {
-        if (token == null) {
-            throw new IllegalArgumentException("token must not be null");
+    public <T extends Parameters> T parseToken(String token, @Nullable Class<T> payloadType)
+            throws InvalidPBTokenException {
+        if (StringUtils.isEmpty(token)) {
+            throw new IllegalArgumentException("token must not be null or empty");
         }
         long time;
         String payload;
         try {
-            String[] arr = StringUtils.split(decode(token), PAYLOAD_SEPARATOR);
-            if (arr.length == 2) {
-                time = Long.parseLong(PBEncryptionUtils.decrypt(decode(arr[0])));
-                payload = PBEncryptionUtils.decrypt(decode(arr[1]));
-            } else if (arr.length == 1) {
-                time = Long.parseLong(PBEncryptionUtils.decrypt(arr[0]));
-                payload = null;
-            } else {
+            String combined = PBEncryptionUtils.decrypt(token);
+            int index = combined.indexOf(TOKEN_SEPARATOR);
+            if (index == -1) {
                 throw new InvalidPBTokenException(token);
             }
+            time = Long.parseLong(combined.substring(0, index), DIGIT_RADIX);
+            payload = combined.substring(index + 1);
         } catch (Exception e) {
             throw new InvalidPBTokenException(token, e);
         }
         if (time < System.currentTimeMillis()) {
             throw new ExpiredPBTokenException(token);
         }
-        if (payload != null) {
-            try {
-                if (payloadType != null) {
-                    return AponReader.parse(payload, payloadType);
-                } else {
-                    return (T)AponReader.parse(payload);
-                }
-            } catch (Exception e) {
-                throw new InvalidPBTokenException(token, e);
+        try {
+            if (payloadType != null) {
+                return AponReader.parse(payload, payloadType);
+            } else {
+                return (T)AponReader.parse(payload);
             }
+        } catch (Exception e) {
+            throw new InvalidPBTokenException(token, e);
         }
-        return null;
+    }
+
+    public static String getToken() {
+        TimeLimitedPBTokenIssuer tokenIssuer = new TimeLimitedPBTokenIssuer();
+        return tokenIssuer.createToken();
     }
 
     public static String getToken(Parameters payload) {
-        return new TimeLimitedPBTokenIssuer().createToken(payload);
+        TimeLimitedPBTokenIssuer tokenIssuer = new TimeLimitedPBTokenIssuer();
+        return tokenIssuer.createToken(payload);
     }
 
     public static <T extends Parameters> T getPayload(String token)
             throws InvalidPBTokenException {
-        return new TimeLimitedPBTokenIssuer().parseToken(token);
+        return getPayload(token, null);
     }
 
     public static <T extends Parameters> T getPayload(String token, Class<T> payloadType)
             throws InvalidPBTokenException {
-        return new TimeLimitedPBTokenIssuer().parseToken(token, payloadType);
-    }
-
-    public static String getToken() {
-        return new TimeLimitedPBTokenIssuer().createToken(null);
+        TimeLimitedPBTokenIssuer tokenIssuer = new TimeLimitedPBTokenIssuer();
+        return tokenIssuer.parseToken(token, payloadType);
     }
 
     public static void validate(String token) throws InvalidPBTokenException {
-        new TimeLimitedPBTokenIssuer().parseToken(token, null);
+        TimeLimitedPBTokenIssuer tokenIssuer = new TimeLimitedPBTokenIssuer();
+        tokenIssuer.parseToken(token, null);
     }
 
 }
