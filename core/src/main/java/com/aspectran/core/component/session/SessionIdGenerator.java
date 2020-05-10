@@ -68,7 +68,6 @@ public class SessionIdGenerator {
             if (r0 < 0) {
                 r0 = -r0;
             }
-
             long r1;
             if (weakRandom) {
                 r1 = hashCode() ^ Runtime.getRuntime().freeMemory() ^ random.nextInt() ^ (seedTerm << 32);
@@ -78,10 +77,9 @@ public class SessionIdGenerator {
             if (r1 < 0) {
                 r1 = -r1;
             }
-
             StringBuilder id = new StringBuilder();
-            id.append(Long.toString(r0,36));
-            id.append(Long.toString(r1,36));
+            id.append(Long.toString(r0, Character.MAX_RADIX));
+            id.append(Long.toString(r1, Character.MAX_RADIX));
             id.append(COUNTER.getAndIncrement());
             if (workerName != null) {
                 id.append(".").append(workerName);
@@ -91,7 +89,7 @@ public class SessionIdGenerator {
     }
 
     /**
-     * Set up a random number generator for the sessionids.
+     * Set up a random number generator for the session ids.
      *
      * By preference, use a SecureRandom but allow to be injected.
      */

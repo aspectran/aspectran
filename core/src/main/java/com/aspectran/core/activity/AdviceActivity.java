@@ -21,6 +21,8 @@ import com.aspectran.core.activity.aspect.AspectAdviceResult;
 import com.aspectran.core.activity.process.action.ActionExecutionException;
 import com.aspectran.core.activity.process.action.Executable;
 import com.aspectran.core.activity.process.result.ActionResult;
+import com.aspectran.core.activity.process.result.ContentResult;
+import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.component.aspect.AspectAdviceRulePostRegister;
 import com.aspectran.core.component.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.component.aspect.pointcut.Pointcut;
@@ -345,7 +347,26 @@ public abstract class AdviceActivity extends AbstractActivity {
                         logger.debug("Advice " + action);
                     }
                     try {
-                        action.execute(this);
+                        Object resultValue = action.execute(this);
+                        if (getTranslet() != null && !action.isHidden() && resultValue != ActionResult.NO_RESULT) {
+                            if (resultValue instanceof ProcessResult) {
+                                getTranslet().setProcessResult((ProcessResult)resultValue);
+                            } else {
+                                ProcessResult processResult = getTranslet().getProcessResult();
+                                ContentResult contentResult;
+                                if (processResult == null) {
+                                    processResult = new ProcessResult(1);
+                                    contentResult = new ContentResult(processResult, 1);
+                                    getTranslet().setProcessResult(processResult);
+                                } else {
+                                    contentResult = processResult.lastContentResult();
+                                    if (contentResult == null) {
+                                        contentResult = new ContentResult(processResult, 1);
+                                    }
+                                }
+                                contentResult.addActionResult(action, resultValue);
+                            }
+                        }
                     } catch (Exception e) {
                         setRaisedException(e);
                         throw new ActionExecutionException("Failed to execute advice action " + action, e);

@@ -21,6 +21,7 @@ import com.aspectran.core.util.ToStringBuilder;
 
 import java.util.ArrayList;
 import java.util.ListIterator;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -88,6 +89,10 @@ public class ProcessResult extends ArrayList<ContentResult> {
         return null;
     }
 
+    public ContentResult lastContentResult() {
+        return (isEmpty() ? null : get(size() - 1));
+    }
+
     /**
      * Returns the result of the action as an {@code ActionResult}.
      *
@@ -128,17 +133,17 @@ public class ProcessResult extends ArrayList<ContentResult> {
                 return (actionResult != null ? actionResult.getResultValue() : null);
             } else {
                 ActionResult actionResult = getActionResult(ids[0]);
-                if (actionResult == null || !(actionResult.getResultValue() instanceof ResultValueMap)) {
+                if (actionResult == null || !(actionResult.getResultValue() instanceof Map)) {
                     return null;
                 }
-                ResultValueMap resultValueMap = (ResultValueMap)actionResult.getResultValue();
+                Map<?, ?> valueMap = (Map<?, ?>)actionResult.getResultValue();
                 for (int i = 1; i < ids.length - 1; i++) {
-                    Object value = resultValueMap.get(ids[i]);
-                    if (!(value instanceof ResultValueMap)) {
+                    Object value = valueMap.get(ids[i]);
+                    if (!(value instanceof Map)) {
                         return null;
                     }
                 }
-                return resultValueMap.get(ids[ids.length - 1]);
+                return valueMap.get(ids[ids.length - 1]);
             }
         }
     }

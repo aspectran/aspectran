@@ -18,6 +18,7 @@ package com.aspectran.core.component.session.redis.lettuce.masterreplica;
 import com.aspectran.core.component.session.SessionData;
 import com.aspectran.core.component.session.redis.lettuce.ConnectionPool;
 import com.aspectran.core.component.session.redis.lettuce.SessionDataCodec;
+import com.aspectran.core.util.Assert;
 import io.lettuce.core.ReadFrom;
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.RedisURI;
@@ -48,17 +49,13 @@ public class RedisMasterReplicaConnectionPool implements ConnectionPool<Stateful
 
     @Override
     public StatefulRedisConnection<String, SessionData> getConnection() throws Exception {
-        if (pool == null) {
-            throw new IllegalStateException("RedisMasterReplicaConnectionPool is not initialized");
-        }
+        Assert.state(pool != null, "No RedisMasterReplicaConnectionPool configured");
         return pool.borrowObject();
     }
 
     @Override
     public void initialize(SessionDataCodec codec) {
-        if (client != null) {
-            throw new IllegalStateException("RedisMasterReplicaConnectionPool is already initialized");
-        }
+        Assert.state(pool == null, "RedisMasterReplicaConnectionPool is already configured");
         RedisURI[] redisURIs = poolConfig.getRedisURIs();
         if (redisURIs == null || redisURIs.length == 0) {
             throw new IllegalArgumentException("redisURIs must not be null or empty");

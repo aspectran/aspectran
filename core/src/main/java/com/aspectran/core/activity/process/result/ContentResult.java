@@ -93,11 +93,11 @@ public class ContentResult extends ArrayList<ActionResult> {
      * @param actionResult the action result
      */
     public void addActionResult(ActionResult actionResult) {
-        ActionResult existActionResult = getActionResult(actionResult.getActionId());
-        if (existActionResult != null &&
-                existActionResult.getResultValue() instanceof ResultValueMap &&
+        ActionResult existing = getActionResult(actionResult.getActionId());
+        if (existing != null &&
+                existing.getResultValue() instanceof ResultValueMap &&
                 actionResult.getResultValue() instanceof ResultValueMap) {
-            ResultValueMap resultValueMap = (ResultValueMap)existActionResult.getResultValue();
+            ResultValueMap resultValueMap = (ResultValueMap)existing.getResultValue();
             resultValueMap.putAll((ResultValueMap)actionResult.getResultValue());
         } else {
             add(actionResult);

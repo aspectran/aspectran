@@ -397,7 +397,7 @@ public class CoreActivity extends AdviceActivity {
         if (contentResult == null) {
             ProcessResult processResult = translet.getProcessResult();
             if (processResult == null) {
-                processResult = new ProcessResult(1);
+                processResult = new ProcessResult(2); // Consider adding one when an exception occurs
                 translet.setProcessResult(processResult);
             }
             contentResult = processResult.getContentResult(actionList.getName(), actionList.isExplicit());

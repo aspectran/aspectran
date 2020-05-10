@@ -48,9 +48,7 @@ public class RedisConnectionPool implements ConnectionPool<StatefulRedisConnecti
 
     @Override
     public void initialize(SessionDataCodec codec) {
-        if (client != null) {
-            throw new IllegalStateException("RedisConnectionPool is already initialized");
-        }
+        Assert.state(pool == null, "RedisConnectionPool is already configured");
         RedisURI redisURI = poolConfig.getRedisURI();
         if (redisURI == null) {
             throw new IllegalArgumentException("redisURI must not be null");

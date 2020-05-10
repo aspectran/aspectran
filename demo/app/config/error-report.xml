@@ -5,7 +5,8 @@
 
     <aspect id="errorReport">
         <description>
-            Prints a simple error message to the console if an unexpected error occurs during processing of the Translet.
+            If an unexpected error occurs during translet processing,
+            a simple error message is printed.
         </description>
         <exception>
             <thrown>
