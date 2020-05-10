@@ -25,6 +25,8 @@ import java.util.Enumeration;
 import java.util.Map;
 import java.util.Properties;
 
+import static com.aspectran.core.util.PBEncryptionUtils.getDefaultEncryptor;
+
 /**
  * Convenient utility methods for loading of java.util.Properties,
  * performing standard handling of input streams.
@@ -120,7 +122,7 @@ public class PropertiesLoaderUtils {
                 if (val instanceof String) {
                     String value = (String)val;
                     if (PropertyValueEncryptionUtils.isEncryptedValue(value)) {
-                        value = PropertyValueEncryptionUtils.decrypt(value, PBEncryptionUtils.getEncryptor());
+                        value = PropertyValueEncryptionUtils.decrypt(value, getDefaultEncryptor());
                         props.put(key, value);
                     }
                 }

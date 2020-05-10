@@ -16,9 +16,11 @@
 package com.aspectran.core.util;
 
 import com.aspectran.core.context.InsufficientEnvironmentException;
-import org.jasypt.encryption.pbe.PBEStringEncryptor;
-import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
+import org.jasypt.encryption.ByteEncryptor;
+import org.jasypt.encryption.StringEncryptor;
+import org.jasypt.encryption.pbe.StandardPBEByteEncryptor;
 
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
@@ -40,13 +42,20 @@ public class PBEncryptionUtils {
 
     public static final String ENCRYPTION_PASSWORD_KEY = "aspectran.encryption.password";
 
+    private static final Charset MESSAGE_CHARSET = StandardCharsets.UTF_8;
+
+    private static final Charset ENCRYPTED_MESSAGE_CHARSET = StandardCharsets.US_ASCII;
+
     private static final String algorithm;
 
     private static final String password;
 
+    private static final StringEncryptor encryptor;
+
     static {
         algorithm = StringUtils.trimWhitespace(SystemUtils.getProperty(ENCRYPTION_ALGORITHM_KEY, DEFAULT_ALGORITHM));
         password = StringUtils.trimWhitespace(SystemUtils.getProperty(ENCRYPTION_PASSWORD_KEY));
+        encryptor = (StringUtils.hasText(password) ? getStringEncryptor(password) : null);
     }
 
     public static String getAlgorithm() {
@@ -61,10 +70,20 @@ public class PBEncryptionUtils {
      * Encrypts the inputString using the encryption password.
      *
      * @param inputString the string to encrypt
-     * @return the encrypted string
+     * @return the result of encryption
      */
     public static String encrypt(String inputString) {
-        return encrypt(inputString, password);
+        return encryptor.encrypt(inputString);
+    }
+
+    /**
+     * Decrypts the inputString using the encryption password.
+     *
+     * @param encryptedString the string to decrypt
+     * @return the result of decryption
+     */
+    public static String decrypt(String encryptedString) {
+        return encryptor.decrypt(encryptedString);
     }
 
     /**
@@ -72,74 +91,44 @@ public class PBEncryptionUtils {
      *
      * @param inputString the string to encrypt
      * @param encryptionPassword the password to be used for encryption
-     * @return the encrypted string
+     * @return the result of encryption
      */
     public static String encrypt(String inputString, String encryptionPassword) {
-        if (inputString == null) {
-            throw new IllegalArgumentException("inputString must not be null");
-        }
-        return encode(getEncryptor(encryptionPassword).encrypt(inputString));
+        ByteEncryptor byteEncryptor = getByteEncryptor(encryptionPassword);
+        StringEncryptor stringEncryptor = new CustomStringEncryptor(byteEncryptor);
+        return stringEncryptor.encrypt(inputString);
     }
 
     /**
      * Decrypts the inputString using the encryption password.
      *
-     * @param inputString the key used to originally encrypt the string
-     * @return the decrypted version of inputString
+     * @param encryptedString the string to decrypt
+     * @param encryptionPassword the password used for encryption
+     * @return the result of decryption
      */
-    public static String decrypt(String inputString) {
-        return decrypt(inputString, password);
+    public static String decrypt(String encryptedString, String encryptionPassword) {
+        ByteEncryptor byteEncryptor = getByteEncryptor(encryptionPassword);
+        StringEncryptor stringEncryptor = new CustomStringEncryptor(byteEncryptor);
+        return stringEncryptor.decrypt(encryptedString);
     }
 
-    /**
-     * Decrypts the inputString using the encryption password.
-     *
-     * @param inputString the key used to originally encrypt the string
-     * @param encryptionPassword the password to be used for encryption
-     * @return the decrypted version of inputString
-     */
-    public static String decrypt(String inputString, String encryptionPassword) {
-        if (inputString == null) {
-            throw new IllegalArgumentException("inputString must not be null");
+    public static StringEncryptor getDefaultEncryptor() {
+        if (encryptor == null) {
+            checkPassword(null);
         }
-        checkPassword(encryptionPassword);
-        return getEncryptor(encryptionPassword).decrypt(decode(inputString));
-    }
-
-    private static String encode(String inputString) {
-        if (inputString == null) {
-            throw new IllegalArgumentException("inputString must not be null");
-        }
-        if (inputString.isEmpty()) {
-            return StringUtils.EMPTY;
-        }
-        return Base64.getUrlEncoder()
-                .withoutPadding()
-                .encodeToString(inputString.getBytes(StandardCharsets.UTF_8));
-    }
-
-    private static String decode(String inputString) {
-        if (inputString == null) {
-            throw new IllegalArgumentException("inputString must not be null");
-        }
-        if (inputString.isEmpty()) {
-            return StringUtils.EMPTY;
-        }
-        byte[] bytes = Base64.getUrlDecoder()
-                .decode(inputString.getBytes(StandardCharsets.UTF_8));
-        return new String(bytes, StandardCharsets.UTF_8);
-    }
-
-    public static PBEStringEncryptor getEncryptor() {
-        return getEncryptor(password);
-    }
-
-    public static PBEStringEncryptor getEncryptor(String encryptionPassword) {
-        checkPassword(encryptionPassword);
-        StandardPBEStringEncryptor encryptor = new StandardPBEStringEncryptor();
-        encryptor.setAlgorithm(algorithm);
-        encryptor.setPassword(encryptionPassword);
         return encryptor;
+    }
+
+    public static StringEncryptor getStringEncryptor(String encryptionPassword) {
+        return new CustomStringEncryptor(getByteEncryptor(encryptionPassword));
+    }
+
+    public static ByteEncryptor getByteEncryptor(String encryptionPassword) {
+        checkPassword(encryptionPassword);
+        StandardPBEByteEncryptor byteEncryptor = new StandardPBEByteEncryptor();
+        byteEncryptor.setAlgorithm(algorithm);
+        byteEncryptor.setPassword(encryptionPassword);
+        return byteEncryptor;
     }
 
     private static void checkPassword(String encryptionPassword) {
@@ -148,6 +137,50 @@ public class PBEncryptionUtils {
                     "or decryption; Make sure the JVM system property \"aspectran.encryption.password\" is set up; " +
                     "(Default algorithm: " + getAlgorithm() + ")");
         }
+    }
+
+    /**
+     * Aspectran friendly string encryptor.
+     */
+    private static final class CustomStringEncryptor implements StringEncryptor {
+
+        private final ByteEncryptor byteEncryptor;
+
+        public CustomStringEncryptor(ByteEncryptor byteEncryptor) {
+            this.byteEncryptor = byteEncryptor;
+        }
+
+        @Override
+        public String encrypt(String inputString) {
+            if (inputString == null) {
+                throw new IllegalArgumentException("inputString must not be null");
+            }
+            byte[] bytes = inputString.getBytes(MESSAGE_CHARSET);
+            byte[] encrypted = encode(byteEncryptor.encrypt(bytes));
+            return new String(encrypted, ENCRYPTED_MESSAGE_CHARSET);
+        }
+
+        @Override
+        public String decrypt(String encryptedString) {
+            if (encryptedString == null) {
+                throw new IllegalArgumentException("encryptedString must not be null");
+            }
+            byte[] encrypted = decode(encryptedString.getBytes(ENCRYPTED_MESSAGE_CHARSET));
+            byte[] decrypted = byteEncryptor.decrypt(encrypted);
+            return new String(decrypted, MESSAGE_CHARSET);
+        }
+
+        private byte[] encode(byte[] inputBytes) {
+            return Base64.getUrlEncoder()
+                    .withoutPadding()
+                    .encode(inputBytes);
+        }
+
+        private byte[] decode(byte[] inputBytes) {
+            return Base64.getUrlDecoder()
+                    .decode(inputBytes);
+        }
+
     }
 
 }

@@ -15,7 +15,6 @@
  */
 package com.aspectran.core.util;
 
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -31,25 +30,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class PropertiesLoaderUtilsTest {
 
-    private String oldPassword;
-
     @BeforeAll
-    void saveProperties() {
-        oldPassword = System.getProperty(PBEncryptionUtils.ENCRYPTION_PASSWORD_KEY);
-    }
-
-    @AfterAll
-    void restoreProperties() {
-        if (oldPassword == null) {
-            System.clearProperty(PBEncryptionUtils.ENCRYPTION_PASSWORD_KEY);
-        } else {
-            System.setProperty(PBEncryptionUtils.ENCRYPTION_PASSWORD_KEY, oldPassword);
-        }
+    void passwordSetting() {
+        System.setProperty(PBEncryptionUtils.ENCRYPTION_PASSWORD_KEY, "encryption-password-for-test");
     }
 
     @Test
     void testLoadProperties() throws IOException {
-        System.setProperty(PBEncryptionUtils.ENCRYPTION_PASSWORD_KEY, "encryption-password-for-test");
         Properties props = PropertiesLoaderUtils.loadProperties("test.encrypted.properties");
         assertEquals(props.getProperty("name"), "Aspectran");
         assertEquals(props.getProperty("passwd"), "1234");

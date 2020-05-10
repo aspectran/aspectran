@@ -18,7 +18,6 @@ package com.aspectran.core.util.security;
 import com.aspectran.core.util.PBEncryptionUtils;
 import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.apon.VariableParameters;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -31,35 +30,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class TimeLimitedPBTokenIssuerTest {
 
-    private String oldPassword;
-
-    private String oldAlgorithm;
-
     @BeforeAll
-    void saveProperties() {
-        oldPassword = System.getProperty(PBEncryptionUtils.ENCRYPTION_PASSWORD_KEY);
-        oldAlgorithm = System.getProperty(PBEncryptionUtils.ENCRYPTION_ALGORITHM_KEY);
+    void passwordSetting() {
+        // System default
         System.setProperty(PBEncryptionUtils.ENCRYPTION_PASSWORD_KEY, "encryption-password-for-test");
-    }
-
-    @AfterAll
-    void restoreProperties() {
-        if (oldPassword == null) {
-            System.clearProperty(PBEncryptionUtils.ENCRYPTION_PASSWORD_KEY);
-        } else {
-            System.setProperty(PBEncryptionUtils.ENCRYPTION_PASSWORD_KEY, oldPassword);
-        }
-        if (oldAlgorithm == null) {
-            System.clearProperty(PBEncryptionUtils.ENCRYPTION_ALGORITHM_KEY);
-        } else {
-            System.setProperty(PBEncryptionUtils.ENCRYPTION_ALGORITHM_KEY, oldAlgorithm);
-        }
     }
 
     @Test
-    void testTimeLimitedPBToken() throws InvalidPBTokenException {
-        System.setProperty(PBEncryptionUtils.ENCRYPTION_PASSWORD_KEY, "encryption-password-for-test");
-
+    void testTimeLimitedPBTokenIssue() throws InvalidPBTokenException {
         Parameters params = new VariableParameters();
         params.putValue("p1", "v1");
         params.putValue("p2", "v2");

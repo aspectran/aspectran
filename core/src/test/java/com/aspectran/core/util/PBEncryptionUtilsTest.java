@@ -15,7 +15,6 @@
  */
 package com.aspectran.core.util;
 
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -28,29 +27,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class PBEncryptionUtilsTest {
 
-    private String oldPassword;
-
-    private String oldAlgorithm;
-
     @BeforeAll
-    void saveProperties() {
-        oldPassword = System.getProperty(PBEncryptionUtils.ENCRYPTION_PASSWORD_KEY);
-        oldAlgorithm = System.getProperty(PBEncryptionUtils.ENCRYPTION_ALGORITHM_KEY);
+    void passwordSetting() {
+        // System default
         System.setProperty(PBEncryptionUtils.ENCRYPTION_PASSWORD_KEY, "encryption-password-for-test");
-    }
-
-    @AfterAll
-    void restoreProperties() {
-        if (oldPassword == null) {
-            System.clearProperty(PBEncryptionUtils.ENCRYPTION_PASSWORD_KEY);
-        } else {
-            System.setProperty(PBEncryptionUtils.ENCRYPTION_PASSWORD_KEY, oldPassword);
-        }
-        if (oldAlgorithm == null) {
-            System.clearProperty(PBEncryptionUtils.ENCRYPTION_ALGORITHM_KEY);
-        } else {
-            System.setProperty(PBEncryptionUtils.ENCRYPTION_ALGORITHM_KEY, oldAlgorithm);
-        }
     }
 
     @Test
@@ -58,6 +38,17 @@ class PBEncryptionUtilsTest {
         String original = "1234"; // aW1qbm8rUjFrY1FEQ1gyUkdMdEJWZz09
         String encrypted = PBEncryptionUtils.encrypt(original);
         String decrypted = PBEncryptionUtils.decrypt(encrypted);
+        assertEquals(original, decrypted);
+    }
+
+    @Test
+    void testEncryptShorten() {
+        String original = "1A한";
+        //System.out.println(original);
+        String encrypted = PBEncryptionUtils.encrypt(original);
+        //System.out.println(encrypted);
+        String decrypted = PBEncryptionUtils.decrypt(encrypted);
+        //System.out.println(decrypted);
         assertEquals(original, decrypted);
     }
 

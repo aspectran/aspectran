@@ -38,35 +38,16 @@ class CommandTest {
 
     private final CommandInterpreter interpreter = new TestCommandInterpreter();
 
-    private String oldPassword;
-
-    private String oldAlgorithm;
-
     private Console getConsole() {
         return interpreter.getConsole();
     }
 
     @BeforeAll
     void saveProperties() {
-        oldPassword = System.getProperty(ENCRYPTION_PASSWORD_KEY);
-        oldAlgorithm = System.getProperty(PBEncryptionUtils.ENCRYPTION_ALGORITHM_KEY);
+        // System default
         System.setProperty(ENCRYPTION_PASSWORD_KEY, "encryption-password-for-test");
     }
 
-    @AfterAll
-    void restoreProperties() {
-        if (oldPassword == null) {
-            System.clearProperty(ENCRYPTION_PASSWORD_KEY);
-        } else {
-            System.setProperty(ENCRYPTION_PASSWORD_KEY, oldPassword);
-        }
-        if (oldAlgorithm == null) {
-            System.clearProperty(PBEncryptionUtils.ENCRYPTION_ALGORITHM_KEY);
-        } else {
-            System.setProperty(PBEncryptionUtils.ENCRYPTION_ALGORITHM_KEY, oldAlgorithm);
-        }
-    }
-    
     @Test
     void testVerboseCommand() {
         VerboseCommand command = new VerboseCommand(interpreter.getCommandRegistry());
