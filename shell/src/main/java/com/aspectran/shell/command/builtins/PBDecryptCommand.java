@@ -102,6 +102,7 @@ public class PBDecryptCommand extends AbstractCommand {
             } catch (Exception e) {
                 console.writeError("Failed to decrypt string \"" + input + "\" with password \"" + password + "\".");
                 console.writeError("Please make sure that the input string is encrypted with the password you entered.");
+                console.writeLine("----------------------------------------------------------------------------");
                 return;
             }
             console.writeLine(" %1$9s : %2$s", "Input", input);

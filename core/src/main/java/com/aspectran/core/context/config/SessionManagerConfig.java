@@ -34,7 +34,7 @@ public class SessionManagerConfig extends AbstractParameters {
     private static final ParameterKey saveOnInactiveEviction;
     private static final ParameterKey removeUnloadableSessions;
     private static final ParameterKey fileStore;
-    private static final ParameterKey clusterMode;
+    private static final ParameterKey clusterEnabled;
     private static final ParameterKey enabled;
 
     private static final ParameterKey[] parameterKeys;
@@ -49,7 +49,7 @@ public class SessionManagerConfig extends AbstractParameters {
         saveOnInactiveEviction = new ParameterKey("saveOnInactiveEviction", ValueType.BOOLEAN);
         removeUnloadableSessions = new ParameterKey("removeUnloadableSessions", ValueType.BOOLEAN);
         fileStore = new ParameterKey("fileStore", SessionFileStoreConfig.class);
-        clusterMode = new ParameterKey("clusterMode", ValueType.BOOLEAN);
+        clusterEnabled = new ParameterKey("clusterEnabled", ValueType.BOOLEAN);
         enabled = new ParameterKey("enabled", ValueType.BOOLEAN);
 
         parameterKeys = new ParameterKey[] {
@@ -62,7 +62,7 @@ public class SessionManagerConfig extends AbstractParameters {
                 saveOnInactiveEviction,
                 removeUnloadableSessions,
                 fileStore,
-                clusterMode,
+                clusterEnabled,
                 enabled
         };
     }
@@ -196,12 +196,12 @@ public class SessionManagerConfig extends AbstractParameters {
         return touchParameters(fileStore);
     }
 
-    public boolean isClusterMode() {
-        return getBoolean(clusterMode, false);
+    public boolean isClusterEnabled() {
+        return getBoolean(clusterEnabled, false);
     }
 
-    public SessionManagerConfig setClusterMode(boolean clusterMode) {
-        putValue(SessionManagerConfig.clusterMode, clusterMode);
+    public SessionManagerConfig setClusterEnabled(boolean clusterEnabled) {
+        putValue(SessionManagerConfig.clusterEnabled, clusterEnabled);
         return this;
     }
 

@@ -154,7 +154,7 @@
                             evictionIdleSeconds: 900
                             scavengingIntervalSeconds: 600
                             removeUnloadableSessions: true
-                            clusterMode: false
+                            clusterEnabled: false
                         </item>
                     </arguments>
                 </bean>

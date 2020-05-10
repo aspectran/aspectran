@@ -46,8 +46,8 @@ public class DefaultSessionCache extends AbstractSessionCache {
     /** Determines the maximum number of active sessions allowed. */
     private volatile int maxSessions;
 
-    public DefaultSessionCache(SessionHandler sessionHandler, SessionStore sessionStore, boolean clusterMode) {
-        super(sessionHandler, sessionStore, clusterMode);
+    public DefaultSessionCache(SessionHandler sessionHandler, SessionStore sessionStore, boolean clusterEnabled) {
+        super(sessionHandler, sessionStore, clusterEnabled);
     }
 
     @Override
