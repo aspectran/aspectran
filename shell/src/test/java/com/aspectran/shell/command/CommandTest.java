@@ -23,17 +23,48 @@ import com.aspectran.shell.command.builtins.PBEncryptCommand;
 import com.aspectran.shell.command.builtins.SysInfoCommand;
 import com.aspectran.shell.command.builtins.VerboseCommand;
 import com.aspectran.shell.console.Console;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+
+import static com.aspectran.core.util.PBEncryptionUtils.ENCRYPTION_PASSWORD_KEY;
 
 /**
  * <p>Created: 2017. 11. 19.</p>
  */
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class CommandTest {
 
-    private CommandInterpreter interpreter = new TestCommandInterpreter();
+    private final CommandInterpreter interpreter = new TestCommandInterpreter();
+
+    private String oldPassword;
+
+    private String oldAlgorithm;
 
     private Console getConsole() {
         return interpreter.getConsole();
+    }
+
+    @BeforeAll
+    void saveProperties() {
+        oldPassword = System.getProperty(ENCRYPTION_PASSWORD_KEY);
+        oldAlgorithm = System.getProperty(PBEncryptionUtils.ENCRYPTION_ALGORITHM_KEY);
+        System.setProperty(ENCRYPTION_PASSWORD_KEY, "encryption-password-for-test");
+    }
+
+    @AfterAll
+    void restoreProperties() {
+        if (oldPassword == null) {
+            System.clearProperty(ENCRYPTION_PASSWORD_KEY);
+        } else {
+            System.setProperty(ENCRYPTION_PASSWORD_KEY, oldPassword);
+        }
+        if (oldAlgorithm == null) {
+            System.clearProperty(PBEncryptionUtils.ENCRYPTION_ALGORITHM_KEY);
+        } else {
+            System.setProperty(PBEncryptionUtils.ENCRYPTION_ALGORITHM_KEY, oldAlgorithm);
+        }
     }
     
     @Test
@@ -53,7 +84,7 @@ class CommandTest {
     @Test
     void testSysInfoCommand() throws Exception {
         SysInfoCommand command = new SysInfoCommand(interpreter.getCommandRegistry());
-        getConsole().writeLine(command.getDescriptor().getDescription());
+        //getConsole().writeLine(command.getDescriptor().getDescription());
         command.printHelp(getConsole());
         CommandLineParser lineParser = new CommandLineParser("sysinfo -mem");
         command.execute(lineParser.parseOptions(command.getOptions()), getConsole());
@@ -62,7 +93,7 @@ class CommandTest {
     @Test
     void testPBEncryptCommand() throws Exception {
         PBEncryptCommand command = new PBEncryptCommand(interpreter.getCommandRegistry());
-        getConsole().writeLine(command.getDescriptor().getDescription());
+        //getConsole().writeLine(command.getDescriptor().getDescription());
         command.printHelp(getConsole());
         CommandLineParser lineParser = new CommandLineParser("encrypt \"aaa ccc d\" -p=bbb");
         command.execute(lineParser.parseOptions(command.getOptions()), getConsole());
@@ -70,38 +101,38 @@ class CommandTest {
 
     @Test
     void testPBDecryptCommand() throws Exception {
+        String encrypted = PBEncryptionUtils.encrypt("1234", "bbb");
+
         PBDecryptCommand command = new PBDecryptCommand(interpreter.getCommandRegistry());
-        getConsole().writeLine(command.getDescriptor().getDescription());
+        //getConsole().writeLine(command.getDescriptor().getDescription());
         command.printHelp(getConsole());
-        CommandLineParser lineParser = new CommandLineParser("decrypt -p=bbb RYr6VMzCxBuY9MoXYBV64w==");
+        CommandLineParser lineParser = new CommandLineParser("decrypt -p=\"bbb\" " + encrypted);
         command.execute(lineParser.parseOptions(command.getOptions()), getConsole());
     }
 
     @Test
     void testPBEncryptCommand2() throws Exception {
-        System.setProperty(PBEncryptionUtils.ENCRYPTION_PASSWORD_KEY, "encryption-password-for-test");
-
         PBEncryptCommand command = new PBEncryptCommand(interpreter.getCommandRegistry());
         getConsole().writeLine(command.getDescriptor().getDescription());
         command.printHelp(getConsole());
-        CommandLineParser lineParser = new CommandLineParser("decrypt input1 input2");
+        CommandLineParser lineParser = new CommandLineParser("encrypt input1 input2");
         command.execute(lineParser.parseOptions(command.getOptions()), getConsole());
     }
 
     @Test
     void testPBDecryptCommand2() throws Exception {
-        System.setProperty(PBEncryptionUtils.ENCRYPTION_PASSWORD_KEY, "encryption-password-for-test");
+        String encrypted = PBEncryptionUtils.encrypt("1234");
 
         PBDecryptCommand command = new PBDecryptCommand(interpreter.getCommandRegistry());
         getConsole().writeLine(command.getDescriptor().getDescription());
-        CommandLineParser lineParser = new CommandLineParser("decrypt vh84THBPIILa6BDgP+qPaw==");
+        CommandLineParser lineParser = new CommandLineParser("decrypt " + encrypted);
         command.execute(lineParser.parseOptions(command.getOptions()), getConsole());
     }
 
     @Test
     void testTestCommand() throws Exception {
         TestCommand command = new TestCommand(interpreter.getCommandRegistry());
-        getConsole().writeLine(command.getDescriptor().getDescription());
+        //getConsole().writeLine(command.getDescriptor().getDescription());
         command.printHelp(getConsole());
         CommandLineParser lineParser = new CommandLineParser("test -i=aaa -D=123 -p=bbb -X -Y -Z");
         command.execute(lineParser.parseOptions(command.getOptions()), getConsole());
@@ -110,7 +141,7 @@ class CommandTest {
     @Test
     void testJettyCommand() {
         JettyCommand command = new JettyCommand(interpreter.getCommandRegistry());
-        getConsole().writeLine(command.getDescriptor().getDescription());
+        //getConsole().writeLine(command.getDescriptor().getDescription());
         command.printHelp(getConsole());
     }
 
