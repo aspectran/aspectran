@@ -46,7 +46,7 @@ public class DefaultTowService extends AbstractTowService {
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultTowService.class);
 
-    private long pauseTimeout = -2L;
+    private volatile long pauseTimeout = -2L;
 
     public DefaultTowService() {
         super();

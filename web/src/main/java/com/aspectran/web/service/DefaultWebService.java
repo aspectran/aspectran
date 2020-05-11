@@ -62,7 +62,7 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
 
     private String uriDecoding;
 
-    private long pauseTimeout = -2L;
+    private volatile long pauseTimeout = -2L;
 
     private DefaultWebService(ServletContext servletContext) {
         super();

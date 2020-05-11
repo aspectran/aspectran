@@ -50,7 +50,7 @@ public class DefaultShellService extends AbstractShellService {
 
     private static final String DEFAULT_APP_CONFIG_ROOT_FILE = "/config/app-config.xml";
 
-    private long pauseTimeout = -1L;
+    private volatile long pauseTimeout = -1L;
 
     private DefaultShellService(Console console) {
         super(console);
