@@ -17,6 +17,7 @@ package com.aspectran.undertow.adapter;
 
 import com.aspectran.core.adapter.AbstractResponseAdapter;
 import com.aspectran.core.context.rule.RedirectRule;
+import com.aspectran.core.util.Assert;
 import com.aspectran.undertow.activity.TowActivity;
 import com.aspectran.web.adapter.HttpServletResponseAdapter;
 import com.aspectran.web.support.http.HttpStatus;
@@ -168,9 +169,8 @@ public class TowResponseAdapter extends AbstractResponseAdapter {
 
     @Override
     public OutputStream getOutputStream() throws IOException {
-        if (responseState == ResponseState.WRITER) {
-            throw new IllegalStateException("Cannot call getOutputStream(), getWriter() already called");
-        }
+        Assert.state(responseState != ResponseState.WRITER,
+                "Cannot call getOutputStream(), getWriter() already called");
         responseState = ResponseState.STREAM;
         ifStartBlocking();
         return getHttpServerExchange().getOutputStream();
@@ -179,9 +179,8 @@ public class TowResponseAdapter extends AbstractResponseAdapter {
     @Override
     public Writer getWriter() throws IOException {
         if (writer == null) {
-            if (responseState == ResponseState.STREAM) {
-                throw new IllegalStateException("Cannot call getWriter(), getOutputStream() already called");
-            }
+            Assert.state(responseState != ResponseState.STREAM,
+                    "Cannot call getWriter(), getOutputStream() already called");
             responseState = ResponseState.WRITER;
             ifStartBlocking();
             writer = new OutputStreamWriter(getHttpServerExchange().getOutputStream(), getEncoding());

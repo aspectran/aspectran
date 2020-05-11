@@ -123,6 +123,15 @@ public class DefaultRestResponse extends AbstractRestResponse {
         }
     }
 
+    public String getContentType(Activity activity) {
+        try {
+            MediaType contentType = determineContentType(activity);
+            return (contentType != null ? contentType.toString() : null);
+        } catch (HttpMediaTypeNotAcceptableException e) {
+            return null;
+        }
+    }
+
     protected void transformByContentType(Activity activity, String encoding, MediaType contentType) throws Exception {
         if (MediaType.APPLICATION_JSON.equalsTypeAndSubtype(contentType)) {
             toJSON(activity, parseIndent(contentType));

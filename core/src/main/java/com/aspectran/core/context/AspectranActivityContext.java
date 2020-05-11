@@ -32,6 +32,7 @@ import com.aspectran.core.context.rule.DescriptionRule;
 import com.aspectran.core.service.CoreService;
 import com.aspectran.core.support.i18n.message.DelegatingMessageSource;
 import com.aspectran.core.support.i18n.message.MessageSource;
+import com.aspectran.core.util.Assert;
 import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
 
@@ -113,9 +114,7 @@ public class AspectranActivityContext extends AbstractComponent implements Activ
 
     @Override
     public void setRootService(CoreService rootService) {
-        if (isInitialized()) {
-            throw new IllegalStateException("ActivityContext is already specified");
-        }
+        Assert.state(!isInitialized(), "This ActivityContext is already initialized");
         this.rootService = rootService;
     }
 

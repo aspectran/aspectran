@@ -61,7 +61,7 @@ public class JobActivityReport {
             String jobName = key.getName();
             String jobGroup = key.getGroup();
 
-            StringBuilder sb = new StringBuilder(720);
+            StringBuilder sb = new StringBuilder(768);
             sb.append("Result of job execution");
             if (jobException != null) {
                 sb.append(" (Failed)");

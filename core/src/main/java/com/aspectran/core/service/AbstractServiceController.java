@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.service;
 
+import com.aspectran.core.util.Assert;
 import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
 
@@ -99,9 +100,7 @@ public abstract class AbstractServiceController implements ServiceController {
     @Override
     public void start() throws Exception {
         synchronized (lock) {
-            if (active) {
-                throw new IllegalStateException(getServiceName() + " is already started");
-            }
+            Assert.state(!active, getServiceName() + " is already started");
 
             if (!isDerived()) {
                 logger.info("Starting " + getServiceName());
@@ -129,15 +128,10 @@ public abstract class AbstractServiceController implements ServiceController {
     public void restart() throws Exception {
         synchronized (lock) {
             if (!isDerived()) {
-                if (!active) {
-                    throw new IllegalStateException(getServiceName() + " is not yet started");
-                }
-
+                Assert.state(active, getServiceName() + " is not yet started");
                 logger.info("Restarting " + getServiceName());
             } else {
-                if (active) {
-                    throw new IllegalStateException(getServiceName() + " should never be run separately");
-                }
+                Assert.state(!active, getServiceName() + " should never be run separately");
                 active = true;
             }
 
@@ -259,7 +253,9 @@ public abstract class AbstractServiceController implements ServiceController {
     public void stop() {
         synchronized (lock) {
             if (!active) {
-                logger.debug(getServiceName() + " is already stopped");
+                if (logger.isDebugEnabled()) {
+                    logger.debug(getServiceName() + " is already stopped");
+                }
                 return;
             }
 

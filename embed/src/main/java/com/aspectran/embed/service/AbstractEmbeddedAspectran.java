@@ -23,6 +23,7 @@ import com.aspectran.core.context.config.EmbedConfig;
 import com.aspectran.core.context.config.SessionManagerConfig;
 import com.aspectran.core.service.AspectranCoreService;
 import com.aspectran.core.service.AspectranServiceException;
+import com.aspectran.core.util.Assert;
 import com.aspectran.embed.adapter.AspectranSessionAdapter;
 
 /**
@@ -61,9 +62,7 @@ public abstract class AbstractEmbeddedAspectran extends AspectranCoreService imp
     }
 
     protected void initSessionManager() {
-        if (this.sessionManager != null) {
-            throw new IllegalStateException("SessionManager already initialized");
-        }
+        Assert.state(this.sessionManager == null, "SessionManager is already initialized");
         EmbedConfig embedConfig = getAspectranConfig().getEmbedConfig();
         if (embedConfig != null) {
             SessionManagerConfig sessionManagerConfig = embedConfig.getSessionManagerConfig();

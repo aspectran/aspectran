@@ -54,13 +54,13 @@ import java.util.Properties;
  */
 public class XslTransformResponse extends TransformResponse {
 
+    private static final Logger logger = LoggerFactory.getLogger(XslTransformResponse.class);
+
     private static final String OUTPUT_METHOD_XML = "xml";
 
     private static final String OUTPUT_METHOD_HTML = "html";
 
     private static final String OUTPUT_METHOD_TEXT = "text";
-
-    private static final Logger logger = LoggerFactory.getLogger(XslTransformResponse.class);
 
     private final TemplateRule templateRule;
 

@@ -23,6 +23,7 @@ import com.aspectran.core.context.config.DaemonConfig;
 import com.aspectran.core.context.config.SessionManagerConfig;
 import com.aspectran.core.service.AspectranCoreService;
 import com.aspectran.core.service.AspectranServiceException;
+import com.aspectran.core.util.Assert;
 import com.aspectran.daemon.adapter.DaemonSessionAdapter;
 
 /**
@@ -56,9 +57,7 @@ public abstract class AbstractDaemonService extends AspectranCoreService impleme
     }
 
     protected void initSessionManager() {
-        if (this.sessionManager != null) {
-            throw new IllegalStateException("SessionManager already initialized");
-        }
+        Assert.state(this.sessionManager == null, "SessionManager is already initialized");
         DaemonConfig daemonConfig = getAspectranConfig().getDaemonConfig();
         if (daemonConfig != null) {
             SessionManagerConfig sessionManagerConfig = daemonConfig.getSessionManagerConfig();

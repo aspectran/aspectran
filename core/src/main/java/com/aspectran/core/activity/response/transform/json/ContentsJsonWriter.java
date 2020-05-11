@@ -58,7 +58,7 @@ public class ContentsJsonWriter extends JsonWriter {
      * @throws IOException if an I/O error has occurred
      */
     public void write(ProcessResult processResult) throws IOException {
-        Assert.notNull(processResult, "'processResult' must not be null");
+        Assert.notNull(processResult, "processResult must not be null");
         if (processResult.getName() != null) {
             beginObject();
             writeName(processResult.getName());
@@ -66,8 +66,7 @@ public class ContentsJsonWriter extends JsonWriter {
         if (processResult.isEmpty()) {
             writeNull(processResult.getName() == null);
         } else if (processResult.size() == 1) {
-            ContentResult contentResult = processResult.get(0);
-            write(contentResult);
+            write(processResult.get(0));
         } else {
             beginArray();
             for (ContentResult contentResult : processResult) {

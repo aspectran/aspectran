@@ -167,7 +167,9 @@ public class DefaultCorsProcessor extends AbstractCorsProcessor {
 
     protected boolean checkProcessable(HttpServletResponse res) {
         if (res.getHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN) != null) {
-            logger.debug("Skip CORS processing: response already contains \"Access-Control-Allow-Origin\" header");
+            if (logger.isDebugEnabled()) {
+                logger.debug("Skip CORS processing: response already contains \"Access-Control-Allow-Origin\" header");
+            }
             return false;
         } else {
             return true;

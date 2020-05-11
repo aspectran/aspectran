@@ -54,7 +54,7 @@ public class ScheduledExecutorScheduler implements Scheduler {
     }
 
     public ScheduledExecutorScheduler(String name, boolean daemon, ClassLoader classLoader, ThreadGroup threadGroup) {
-        this.name = (name == null ? "scheduler-" + hashCode() : name);
+        this.name = (name == null ? "Scheduler-" + hashCode() : name);
         this.daemon = daemon;
         this.classloader = classLoader;
         this.threadGroup = threadGroup;

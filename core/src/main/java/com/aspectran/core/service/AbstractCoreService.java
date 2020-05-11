@@ -29,6 +29,7 @@ import com.aspectran.core.context.config.SystemConfig;
 import com.aspectran.core.context.resource.AspectranClassLoader;
 import com.aspectran.core.scheduler.service.QuartzSchedulerService;
 import com.aspectran.core.scheduler.service.SchedulerService;
+import com.aspectran.core.util.Assert;
 import com.aspectran.core.util.FileLocker;
 import com.aspectran.core.util.SystemUtils;
 import com.aspectran.core.util.logging.Logger;
@@ -74,9 +75,8 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
         super(true);
 
         if (rootService != null) {
-            if (rootService.getActivityContext() == null) {
-                throw new IllegalStateException("Oops! No ActivityContext configured");
-            }
+            Assert.state(rootService.getActivityContext() != null,
+                    "Oops! No ActivityContext configured");
 
             this.rootService = rootService;
             this.activityContext = rootService.getActivityContext();
@@ -107,9 +107,8 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
 
     @Override
     public boolean isHardReload() {
-        if (activityContextBuilder == null) {
-            throw new IllegalStateException("ActivityContextLoader is not initialized; Call prepare() method first");
-        }
+        Assert.state(activityContextBuilder != null,
+                "No ActivityContextLoader configured; First, call the prepare() method");
         return activityContextBuilder.isHardReload();
     }
 
@@ -125,23 +124,15 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
 
     @Override
     public void withdrawDerivedService(CoreService coreService) {
-        if (!coreService.isDerived()) {
-            throw new IllegalArgumentException("Not derived service: " + coreService);
-        }
-        if (coreService.getServiceController().isActive()) {
-            throw new IllegalArgumentException("Not stopped service: " + coreService);
-        }
+        Assert.state(coreService.isDerived(), "Not derived service: " + coreService);
+        Assert.state(!coreService.getServiceController().isActive(), "Not stopped service: " + coreService);
         super.withdrawDerivedService(coreService.getServiceController());
     }
 
     @Override
     public void leaveFromRootService() {
-        if (!isDerived()) {
-            throw new IllegalArgumentException("Not derived service: " + this);
-        }
-        if (isActive()) {
-            throw new IllegalArgumentException("Not stopped service: " + this);
-        }
+        Assert.state(isDerived(), "Not derived service: " + this);
+        Assert.state(!isActive(), "Not stopped service: " + this);
         rootService.withdrawDerivedService(this);
     }
 
@@ -163,9 +154,7 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
     }
 
     protected void prepare(AspectranConfig aspectranConfig) throws AspectranServiceException {
-        if (activityContext != null) {
-            throw new IllegalStateException("ActivityContext has already been loaded");
-        }
+        Assert.state(activityContext == null, "ActivityContext is already configured");
 
         try {
             this.aspectranConfig = aspectranConfig;
@@ -206,21 +195,17 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
     }
 
     protected void loadActivityContext() throws ActivityContextBuilderException {
-        if (activityContextBuilder == null) {
-            throw new IllegalStateException("ActivityContextLoader is not in an instantiated state; First, call the prepare() method");
-        }
-        if (activityContext != null) {
-            throw new IllegalStateException("ActivityContext has already been loaded; Must destroy the current ActivityContext before reloading");
-        }
+        Assert.state(activityContextBuilder != null,
+                "No ActivityContextLoader configured; First, call the prepare() method");
+        Assert.state(activityContext == null,
+                "ActivityContext is already configured; Must destroy the current ActivityContext before reloading");
 
         activityContextBuilder.build();
     }
 
     protected void destroyActivityContext() {
-        if (activityContextBuilder == null) {
-            throw new IllegalStateException("ActivityContextBuilder is not in an instantiated state;" +
-                    " First, call the prepare() method");
-        }
+        Assert.state(activityContextBuilder != null,
+                "No ActivityContextLoader configured; First, call the prepare() method");
 
         activityContextBuilder.destroy();
     }
@@ -236,17 +221,15 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
 
     @Override
     public Activity getDefaultActivity() {
-        if (getActivityContext() == null) {
-            throw new IllegalStateException("ActivityContext is not yet created");
-        }
+        Assert.state(getActivityContext() != null,
+                "No ActivityContext configured yet");
         return getActivityContext().getDefaultActivity();
     }
 
     @Override
     public AspectranClassLoader getAspectranClassLoader() {
-        if (activityContextBuilder == null) {
-            throw new IllegalStateException("ActivityContextLoader is not initialized; Call prepare() method first");
-        }
+        Assert.state(activityContextBuilder != null,
+                "No ActivityContextLoader configured; First, call the prepare() method");
         return activityContextBuilder.getAspectranClassLoader();
     }
 
@@ -294,36 +277,32 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
     }
 
     private boolean checkSingletonLock() throws Exception {
-        if (fileLocker != null) {
-            throw new IllegalStateException("Already instantiated a file locker for Singleton lock");
-        }
+        Assert.state(fileLocker == null, "Singleton lock is already configured");
         try {
             String basePath = getBasePath();
             if (basePath == null) {
                 basePath = SystemUtils.getJavaIoTmpDir();
             }
-            if (basePath != null) {
-                fileLocker = new FileLocker(new File(basePath, ".lock"));
-                if (fileLocker.lock()) {
-                    ShutdownHooks.add(() -> {
-                        if (fileLocker != null) {
-                            try {
-                                fileLocker.release();
-                                fileLocker = null;
-                            } catch (Exception e) {
-                                logger.warn("Unable to release Singleton lock: " + e);
-                            }
+            Assert.state(basePath != null,
+                    "Unable to determine the directory where the lock file will be located");
+            fileLocker = new FileLocker(new File(basePath, ".lock"));
+            if (fileLocker.lock()) {
+                ShutdownHooks.add(() -> {
+                    if (fileLocker != null) {
+                        try {
+                            fileLocker.release();
+                            fileLocker = null;
+                        } catch (Exception e) {
+                            logger.warn("Unable to release singleton lock: " + e);
                         }
-                    });
-                    return true;
-                } else {
-                    return false;
-                }
+                    }
+                });
+                return true;
             } else {
-                throw new IllegalArgumentException("Unable to determine the directory where the lock file will be located");
+                return false;
             }
         } catch (Exception e) {
-            throw new Exception("Unable to acquire Singleton lock", e);
+            throw new Exception("Unable to acquire singleton lock", e);
         }
     }
 

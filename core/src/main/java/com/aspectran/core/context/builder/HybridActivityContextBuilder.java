@@ -25,6 +25,7 @@ import com.aspectran.core.context.rule.params.AspectranParameters;
 import com.aspectran.core.context.rule.parser.ActivityContextParser;
 import com.aspectran.core.context.rule.parser.HybridActivityContextParser;
 import com.aspectran.core.service.AbstractCoreService;
+import com.aspectran.core.util.Assert;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
@@ -38,7 +39,7 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
 
     private final AbstractCoreService coreService;
 
-    private ActivityContext activityContext;
+    private volatile ActivityContext activityContext;
 
     /** Flag that indicates whether an ActivityContext is activated */
     private final AtomicBoolean active = new AtomicBoolean();
@@ -85,9 +86,7 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
 
     private ActivityContext doBuild() throws ActivityContextBuilderException {
         try {
-            if (this.active.get()) {
-                throw new IllegalStateException("An ActivityContext already activated");
-            }
+            Assert.state(!this.active.get(), "ActivityContext is already configured");
 
             String rootFile = getRootFile();
             AspectranParameters aspectranParameters = getAspectranParameters();

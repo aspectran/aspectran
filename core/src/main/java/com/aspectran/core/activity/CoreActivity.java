@@ -301,7 +301,6 @@ public class CoreActivity extends AdviceActivity {
                 processResult.setExplicit(contentList.isExplicit());
                 translet.setProcessResult(processResult);
             }
-
             for (ActionList actionList : contentList) {
                 execute(actionList);
                 if (isResponseReserved()) {

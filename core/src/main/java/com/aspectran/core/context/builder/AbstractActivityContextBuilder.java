@@ -459,7 +459,7 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
                                             "'; aspectRule " + aspectRule;
                                     if (pointcutPatternVerifiable) {
                                         logger.error(msg);
-                                    } else {
+                                    } else if (logger.isDebugEnabled()) {
                                         logger.debug(msg);
                                     }
                                 }
@@ -469,7 +469,7 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
                                             "'; aspectRule " + aspectRule;
                                     if (pointcutPatternVerifiable) {
                                         logger.error(msg);
-                                    } else {
+                                    } else if (logger.isDebugEnabled()) {
                                         logger.debug(msg);
                                     }
                                 }
@@ -479,7 +479,7 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
                                             "'; aspectRule " + aspectRule;
                                     if (pointcutPatternVerifiable) {
                                         logger.error(msg);
-                                    } else {
+                                    } else if (logger.isDebugEnabled()) {
                                         logger.debug(msg);
                                     }
                                 }

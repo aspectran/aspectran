@@ -27,6 +27,7 @@ import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.expr.token.TokenParser;
 import com.aspectran.core.service.AspectranCoreService;
 import com.aspectran.core.service.AspectranServiceException;
+import com.aspectran.core.util.Assert;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
@@ -169,9 +170,7 @@ public abstract class AbstractShellService extends AspectranCoreService implemen
     }
 
     protected void initSessionManager() {
-        if (this.sessionManager != null) {
-            throw new IllegalStateException("SessionManager already initialized");
-        }
+        Assert.state(this.sessionManager == null, "SessionManager is already initialized");
         ShellConfig shellConfig = getAspectranConfig().getShellConfig();
         if (shellConfig != null) {
             SessionManagerConfig sessionManagerConfig = shellConfig.getSessionManagerConfig();

@@ -61,9 +61,7 @@ public class ProcessRunner {
     }
 
     public int run(String[] command, PrintWriter errOut) throws IOException, InterruptedException {
-        if (running.get()) {
-            throw new IllegalStateException("There is already a running process");
-        }
+        Assert.state(!running.get(), "There is already a running process");
         running.set(true);
         terminated.set(false);
         try {

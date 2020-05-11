@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.util.apon;
 
+import com.aspectran.core.util.Assert;
 import com.aspectran.core.util.ClassUtils;
 import com.aspectran.core.util.ToStringBuilder;
 
@@ -191,10 +192,8 @@ public class ParameterValue implements Parameter {
 
     @Override
     public void arraylize() {
-        if (assigned) {
-            throw new IllegalStateException(
-                    "This parameter can not be converted to an array type; it already has a value assigned to it");
-        }
+        Assert.state(!assigned,
+                "This parameter cannot be converted to an array type because it has already assigned value");
         array = true;
         bracketed = true;
     }

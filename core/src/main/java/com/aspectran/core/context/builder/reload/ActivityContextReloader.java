@@ -44,10 +44,6 @@ public class ActivityContextReloader {
 
     public void setResources(Enumeration<URL> resources) {
         this.resources = resources;
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("ActivityContextReloader is initialized");
-        }
     }
 
     public void start(int scanIntervalInSeconds) {

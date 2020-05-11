@@ -43,6 +43,8 @@ import java.io.Writer;
  */
 public class XmlTransformResponse extends TransformResponse {
 
+    private static final Logger logger = LoggerFactory.getLogger(XmlTransformResponse.class);
+
     private static final String OUTPUT_METHOD_XML = "xml";
 
     private static final String INDENT_NUMBER_KEY = "indent-number";
@@ -50,8 +52,6 @@ public class XmlTransformResponse extends TransformResponse {
     private static final Integer DEFAULT_INDENT_SIZE = 2;
 
     private static final String YES = "yes";
-
-    private static final Logger logger = LoggerFactory.getLogger(XmlTransformResponse.class);
 
     private final String contentType;
 

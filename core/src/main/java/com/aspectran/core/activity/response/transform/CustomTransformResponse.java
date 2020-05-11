@@ -99,6 +99,11 @@ public class CustomTransformResponse implements Response {
         throw new UnsupportedOperationException("No replicable");
     }
 
+    @Override
+    public String toString() {
+        return customTransformRule.toString();
+    }
+
     private CustomTransformer findTransformer(ProcessResult processResult) {
         if (processResult != null) {
             for (ListIterator<ContentResult> iter1 = processResult.listIterator(processResult.size());
@@ -114,11 +119,6 @@ public class CustomTransformResponse implements Response {
             }
         }
         return null;
-    }
-
-    @Override
-    public String toString() {
-        return customTransformRule.toString();
     }
 
 }
