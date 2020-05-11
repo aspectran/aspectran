@@ -71,7 +71,7 @@
 <div class="grid-x grid-padding-x">
   <div class="cell contour">
     <div class="t30 b20">
-      <form id="fileupload" action="https://jquery-file-upload.appspot.com/" method="POST" enctype="multipart/form-data">
+      <form id="fileupload" action="/examples/file-upload/files" method="POST" enctype="multipart/form-data">
         <label for="fileAdds" class="button fileinput-button">Add files...</label>
         <input type="file" name="file" id="fileAdds" class="show-for-sr" multiple>
         <div id="files" class="files">Drop files here to upload</div>

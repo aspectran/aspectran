@@ -46,7 +46,7 @@ import java.util.UUID;
 @Component("/examples/file-upload")
 public class SimpleFileUploadAction {
 
-    private Logger logger = LoggerFactory.getLogger(SimpleFileUploadAction.class);
+    private static final Logger logger = LoggerFactory.getLogger(SimpleFileUploadAction.class);
 
     private final Map<String, UploadedFile> uploadedFiles = new LinkedHashMap<>();
 
