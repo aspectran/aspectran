@@ -135,51 +135,50 @@
     // Change this to the location of your server-side upload handler:
     var url = '/examples/file-upload/files';
     var uploadButton = $('<button/>')
-        .attr("type", "button")
-        .addClass('upload button success')
-        .prop('disabled', true)
-        .text('Upload')
-        .on('click', function () {
-            var $this = $(this),
-                data = $this.data();
-            $this.off('click')
-                .text('Abort')
-                .on('click', function () {
-                    $this.remove();
-                    data.abort();
-                });
-            data.submit().always(function () {
-                $this.remove();
+      .attr("type", "button")
+      .addClass('upload button success')
+      .prop('disabled', true)
+      .text('Upload')
+      .on('click', function () {
+          var $this = $(this), data = $this.data();
+          $this.off('click')
+            .text('Abort')
+            .on('click', function () {
+              $this.remove();
+              data.abort();
             });
-            $("#progress").removeClass("alert").addClass("success");
-        });
+          data.submit().always(function () {
+            $this.remove();
+          });
+          $("#progress").removeClass("alert").addClass("success");
+      });
     var deleteButton = $('<button/>')
-        .attr("type", "button")
-        .addClass('button delete')
-        .prop('disabled', true)
-        .text('X')
-        .on('click', function() {
-            var $this = $(this);
-            var fileKey = $this.data("file-key");
-            if(fileKey) {
-                $.ajax({
-                    url: url + "/" + fileKey,
-                    type: 'delete',
-                    success: function() {
-                        $this.parent().fadeOut();
-                        setTimeout(function () {
-                            $this.parent().remove();
-                        }, 500)
-                    }
-                });
-            } else {
+      .attr("type", "button")
+      .addClass('button delete')
+      .prop('disabled', true)
+      .text('X')
+      .on('click', function() {
+        var $this = $(this);
+        var fileKey = $this.data("file-key");
+        if(fileKey) {
+          $.ajax({
+            url: url + "/" + fileKey,
+            type: 'delete',
+            success: function() {
+              $this.parent().fadeOut();
+              setTimeout(function () {
                 $this.parent().remove();
+              }, 500)
             }
-        });
+          });
+        } else {
+          $this.parent().remove();
+        }
+      });
     var progressBar = $('<div/>')
-            .addClass('success progress')
-            .append($('<div/>')
-                .addClass('progress-meter'));
+        .addClass('success progress')
+        .append($('<div/>')
+        .addClass('progress-meter'));
     $('#fileupload').fileupload({
       url: url,
       dataType: 'json',
@@ -201,102 +200,102 @@
       }
       data.context = $('<li/>');
       $.each(data.files, function(index, file) {
-          var node = $('<div/>').addClass('info').hide()
-              .append($('<p/>').addClass('filename').text(file.name))
-              .append($('<p/>').text(humanFileSize(file.size, true)));
-          if (!index) {
-              node.append(uploadButton.clone(true).data(data));
-              data.context.append(deleteButton.clone(true).data(data));
-              data.context.append(progressBar.clone(true));
-          }
-          node.appendTo(data.context).fadeIn();
+        var node = $('<div/>').addClass('info').hide()
+          .append($('<p/>').addClass('filename').text(file.name))
+          .append($('<p/>').text(humanFileSize(file.size, true)));
+        if (!index) {
+          node.append(uploadButton.clone(true).data(data));
+          data.context.append(deleteButton.clone(true).data(data));
+          data.context.append(progressBar.clone(true));
+        }
+        node.appendTo(data.context).fadeIn();
       });
       if (ul.find('li').length >= ${page.maxFiles}) {
-          ul.find('li:eq(0)').fadeOut(400);
-          setTimeout(function() {
-              ul.find('li:eq(0)').remove();
-              data.context.appendTo(ul);
-          }, 400);
-      } else {
+        ul.find('li:eq(0)').fadeOut(400);
+        setTimeout(function() {
+          ul.find('li:eq(0)').remove();
           data.context.appendTo(ul);
+        }, 400);
+      } else {
+        data.context.appendTo(ul);
       }
     }).on('fileuploadprocessalways', function (e, data) {
       var index = data.index,
           file = data.files[index],
           node = $(data.context[index]);
       if (file.preview) {
-          node.prepend(file.preview);
+        node.prepend(file.preview);
       } else {
-          node.prepend('<img class="blank"/>');
+        node.prepend('<img class="blank"/>');
       }
       if (file.error) {
-          node.find("div.info").append($('<span class="label alert"/>').text(file.error));
-          node.find("button.upload").hide();
-          node.find("button.delete").prop('disabled', false);
-          node.find('.progress').fadeOut();
-          return;
+        node.find("div.info").append($('<span class="label alert"/>').text(file.error));
+        node.find("button.upload").hide();
+        node.find("button.delete").prop('disabled', false);
+        node.find('.progress').fadeOut();
+        return;
       }
       if (index + 1 === data.files.length) {
-          $(data.context[index]).find('button.upload')
-              .prop('disabled', !!data.files.error);
+        $(data.context[index]).find('button.upload')
+          .prop('disabled', !!data.files.error);
       }
     }).on('fileuploadprogress', function (e, data) {
-        var node = $(data.context);
-        var progress = parseInt(data.loaded / data.total * 100, 10);
-        node.find('.progress-meter').css(
-            'width',
-            progress + '%'
-        );
+      var node = $(data.context);
+      var progress = parseInt(data.loaded / data.total * 100, 10);
+      node.find('.progress-meter').css(
+        'width',
+        progress + '%'
+      );
     }).on('fileuploaddone', function (e, data) {
       $.each(data.result.files, function (index, file) {
-          if (file.url) {
-              $(data.context[index]).find("canvas")
-                  .addClass("link")
-                  .click(function() {
-                    window.open(file.url);
-                  });
-              var link = $('<a>')
-                  .attr('href', file.url)
-                  .attr('target', '_blank')
-                  .attr('download', '');
-              $(data.context[index]).find("p.filename").wrap(link);
-              $(data.context[index]).find("button.upload").remove();
-              $(data.context[index]).find("button.delete")
-                  .data("file-key", file.key)
-                  .prop("disabled", false);
-          } else if (file.error) {
-              var error = $('<span class="label alert"/>').text(file.error);
-              $(data.context[index]).find('div.info').append(error);
-          }
-          setTimeout(function () {
-              $(data.context[index]).find(".progress").fadeOut();
-          }, 500);
+        if (file.url) {
+          $(data.context[index]).find("canvas")
+            .addClass("link")
+            .click(function() {
+              window.open(file.url);
+            });
+          var link = $('<a>')
+            .attr('href', file.url)
+            .attr('target', '_blank')
+            .attr('download', '');
+          $(data.context[index]).find("p.filename").wrap(link);
+          $(data.context[index]).find("button.upload").remove();
+          $(data.context[index]).find("button.delete")
+            .data("file-key", file.key)
+            .prop("disabled", false);
+        } else if (file.error) {
+          var error = $('<span class="label alert"/>').text(file.error);
+          $(data.context[index]).find('div.info').append(error);
+        }
+        setTimeout(function () {
+          $(data.context[index]).find(".progress").fadeOut();
+        }, 500);
       });
     }).on('fileuploadfail', function (e, data) {
       $.each(data.files, function (index) {
-          var error = $('<span class="label alert"/>').text('File upload failed.');
-          $(data.context[index]).find('div.info')
-              .append(error);
+        var error = $('<span class="label alert"/>').text('File upload failed.');
+        $(data.context[index]).find('div.info')
+          .append(error);
       });
-        $(data.context[index]).find('.progress').removeClass('success').addClass('alert');
-        $(data.context[index]).find('.progress-meter').css("width", "100%");
+      $(data.context[index]).find('.progress').removeClass('success').addClass('alert');
+      $(data.context[index]).find('.progress-meter').css("width", "100%");
     }).prop('disabled', !$.support.fileInput)
-        .parent().addClass($.support.fileInput ? undefined : 'disabled');
+      .parent().addClass($.support.fileInput ? undefined : 'disabled');
   });
 
   function humanFileSize(bytes, si) {
-      var thresh = si ? 1000 : 1024;
-      if(Math.abs(bytes) < thresh) {
-          return bytes + ' B';
-      }
-      var units = si
-          ? ['kB','MB','GB','TB','PB','EB','ZB','YB']
-          : ['KiB','MiB','GiB','TiB','PiB','EiB','ZiB','YiB'];
-      var u = -1;
-      do {
-          bytes /= thresh;
-          ++u;
-      } while(Math.abs(bytes) >= thresh && u < units.length - 1);
-      return bytes.toFixed() + ' ' + units[u];
+    var thresh = si ? 1000 : 1024;
+    if(Math.abs(bytes) < thresh) {
+      return bytes + ' B';
+    }
+    var units = si
+        ? ['kB','MB','GB','TB','PB','EB','ZB','YB']
+        : ['KiB','MiB','GiB','TiB','PiB','EiB','ZiB','YiB'];
+    var u = -1;
+    do {
+      bytes /= thresh;
+      ++u;
+    } while(Math.abs(bytes) >= thresh && u < units.length - 1);
+    return bytes.toFixed() + ' ' + units[u];
   }
 </script>
