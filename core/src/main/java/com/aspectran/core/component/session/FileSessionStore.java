@@ -86,7 +86,7 @@ public class FileSessionStore extends AbstractSessionStore {
         }
         try (FileInputStream in = new FileInputStream(file)) {
             SessionData data = SessionData.deserialize(in);
-            data.setLastSavedTime(file.lastModified());
+            data.setLastSaved(file.lastModified());
             return data;
         } catch (Exception e) {
             throw new UnreadableSessionDataException(id, e);
@@ -208,8 +208,8 @@ public class FileSessionStore extends AbstractSessionStore {
      * @return the session id plus expiry
      */
     private String getIdWithExpiry(SessionData data) {
-        if (data.getExpiryTime() > 0L) {
-            return data.getExpiryTime() + "_" + data.getId();
+        if (data.getExpiry() > 0L) {
+            return data.getExpiry() + "_" + data.getId();
         } else {
             return data.getId();
         }

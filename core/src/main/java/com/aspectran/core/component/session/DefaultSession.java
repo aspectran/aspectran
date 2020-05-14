@@ -127,22 +127,22 @@ public class DefaultSession implements Session {
     public long getCreationTime() {
         try (Lock ignored = locker.lock()) {
             checkValidForRead();
-            return sessionData.getCreationTime();
+            return sessionData.getCreated();
         }
     }
 
     @Override
     public long getLastAccessedTime() {
         try (Lock ignored = locker.lock()) {
-            return sessionData.getLastAccessedTime();
+            return sessionData.getLastAccessed();
         }
     }
 
     @Override
     public int getMaxInactiveInterval() {
         try (Lock ignored = locker.lock()) {
-            if (sessionData.getMaxInactiveInterval() > 0L) {
-                return (int)(sessionData.getMaxInactiveInterval() / 1000L);
+            if (sessionData.getInactiveInterval() > 0L) {
+                return (int)(sessionData.getInactiveInterval() / 1000L);
             } else {
                 return -1;
             }
@@ -152,7 +152,7 @@ public class DefaultSession implements Session {
     @Override
     public void setMaxInactiveInterval(int secs) {
         try (Lock ignored = locker.lock()) {
-            sessionData.setMaxInactiveInterval((long)secs * 1000L);
+            sessionData.setInactiveInterval((long)secs * 1000L);
             sessionData.calcAndSetExpiry();
             sessionData.setDirty(true);
             if (logger.isDebugEnabled()) {
@@ -175,7 +175,7 @@ public class DefaultSession implements Session {
             newSession = false;
 
             long now = System.currentTimeMillis();
-            sessionData.setAccessedTime(now);
+            sessionData.setAccessed(now);
             sessionData.calcAndSetExpiry(now);
             if (isExpiredAt(now)) {
                 invalidate();
@@ -208,7 +208,7 @@ public class DefaultSession implements Session {
                 // update the expiry time to take account of the time all requests spent inside of the session
                 long now = System.currentTimeMillis();
                 sessionData.calcAndSetExpiry(now);
-                sessionData.setLastAccessedTime(sessionData.getAccessedTime());
+                sessionData.setLastAccessed(sessionData.getAccessed());
                 sessionHandler.releaseSession(this);
                 sessionInactivityTimer.schedule(calculateInactivityTimeout(now));
             }
@@ -238,8 +238,8 @@ public class DefaultSession implements Session {
     private long calculateInactivityTimeout(long now) {
         long time;
         try (Lock ignored = locker.lock()) {
-            long remaining = sessionData.getExpiryTime() - now;
-            long maxInactive = sessionData.getMaxInactiveInterval();
+            long remaining = sessionData.getExpiry() - now;
+            long maxInactive = sessionData.getInactiveInterval();
             int evictionIdleSecs = sessionHandler.getSessionCache().getEvictionIdleSecs();
             if (maxInactive <= 0L) {
                 // sessions are immortal, they never expire
@@ -421,7 +421,7 @@ public class DefaultSession implements Session {
     protected boolean isIdleLongerThan(int sec) {
         long now = System.currentTimeMillis();
         try (Lock ignored = locker.lock()) {
-            return ((sessionData.getAccessedTime() + (sec * 1000)) <= now);
+            return ((sessionData.getAccessed() + (sec * 1000)) <= now);
         }
     }
 

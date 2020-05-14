@@ -111,30 +111,30 @@ public abstract class AbstractSessionStore extends AbstractComponent implements 
             return;
         }
 
-        long lastSave = data.getLastSavedTime();
+        long lastSaveMs = data.getLastSaved();
         long savePeriodMs = (savePeriodSecs <= 0 ? 0 : TimeUnit.SECONDS.toMillis(savePeriodSecs));
 
         if (logger.isTraceEnabled()) {
             ToStringBuilder tsb = new ToStringBuilder("Store session");
             tsb.append("id", id);
             tsb.append("dirty", data.isDirty());
-            tsb.append("lastSaved", data.getLastSavedTime());
+            tsb.append("lastSaved", data.getLastSaved());
             tsb.append("savePeriod", savePeriodMs);
-            tsb.append("elapsed", System.currentTimeMillis() - lastSave);
+            tsb.append("elapsed", System.currentTimeMillis() - lastSaveMs);
             logger.trace(tsb.toString());
         }
 
         // save session if attribute changed or never been saved or time between saves exceeds threshold
-        if (data.isDirty() || lastSave <= 0 || (System.currentTimeMillis() - lastSave) > savePeriodMs) {
+        if (data.isDirty() || lastSaveMs <= 0 || (System.currentTimeMillis() - lastSaveMs) > savePeriodMs) {
             // set the last saved time to now
-            data.setLastSavedTime(System.currentTimeMillis());
+            data.setLastSaved(System.currentTimeMillis());
             try {
                 // call the specific store method, passing in previous save time
                 doSave(id, data);
                 data.setDirty(false); // only undo the dirty setting if we saved it
             } catch (Exception e) {
                 // reset last save time if save failed
-                data.setLastSavedTime(lastSave);
+                data.setLastSaved(lastSaveMs);
                 throw e;
             }
         }

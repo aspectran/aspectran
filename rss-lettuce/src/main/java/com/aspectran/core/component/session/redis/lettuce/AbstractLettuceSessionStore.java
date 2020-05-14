@@ -43,7 +43,7 @@ public abstract class AbstractLettuceSessionStore extends AbstractSessionStore {
         Set<String> expired = new HashSet<>();
         // iterate over the saved sessions and work out which have expired
         scan(sessionData -> {
-            long expiry = sessionData.getExpiryTime();
+            long expiry = sessionData.getExpiry();
             if (expiry > 0 && expiry < now) {
                 expired.add(sessionData.getId());
             }
@@ -53,7 +53,7 @@ public abstract class AbstractLettuceSessionStore extends AbstractSessionStore {
                 try {
                     SessionData data = load(id);
                     if (data != null) {
-                        if (data.getExpiryTime() > 0 && data.getExpiryTime() <= now) {
+                        if (data.getExpiry() > 0 && data.getExpiry() <= now) {
                             expired.add(id);
                         }
                     } else {
@@ -70,7 +70,7 @@ public abstract class AbstractLettuceSessionStore extends AbstractSessionStore {
 
     protected boolean checkExpiry(SessionData data) {
         if (data != null) {
-            return (data.getExpiryTime() <= 0L || data.getExpiryTime() > System.currentTimeMillis());
+            return (data.getExpiry() <= 0L || data.getExpiry() > System.currentTimeMillis());
         } else {
             return false;
         }

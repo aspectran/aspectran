@@ -45,36 +45,36 @@ public class SessionData implements Serializable {
 
     private String id;
 
-    private final Map<String, Object> attributes = new ConcurrentHashMap<>();
-
-    private final long creationTime;
+    private final long created;
 
     /** the time of the last access */
-    private long accessedTime;
+    private long accessed;
 
     /** the time of the last access excluding this one */
-    private long lastAccessedTime;
+    private long lastAccessed;
 
-    private long maxInactiveInterval;
+    private long inactiveInterval;
 
     /** precalculated time of expiry in ms since epoch */
-    private long expiryTime;
+    private long expiry;
 
     private boolean dirty;
 
     /** time in ms since last save */
-    private long lastSavedTime;
+    private long lastSaved;
 
-    public SessionData(String id, long creationTime, long accessedTime, long lastAccessedTime, long maxInactiveInterval) {
+    private final Map<String, Object> attributes = new ConcurrentHashMap<>();
+
+    public SessionData(String id, long created, long accessed, long lastAccessed, long inactiveInterval) {
         if (id == null) {
             throw new IllegalArgumentException("id must not be null");
         }
         this.id = id;
-        this.creationTime = creationTime;
-        this.accessedTime = accessedTime;
-        this.lastAccessedTime = lastAccessedTime;
-        this.maxInactiveInterval = maxInactiveInterval;
-        calcAndSetExpiry(creationTime);
+        this.created = created;
+        this.accessed = accessed;
+        this.lastAccessed = lastAccessed;
+        this.inactiveInterval = inactiveInterval;
+        calcAndSetExpiry(created);
     }
 
     public String getId() {
@@ -83,6 +83,84 @@ public class SessionData implements Serializable {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public long getCreated() {
+        return created;
+    }
+
+    public long getAccessed() {
+        return accessed;
+    }
+
+    public void setAccessed(long accessed) {
+        this.accessed = accessed;
+    }
+
+    public long getLastAccessed() {
+        return lastAccessed;
+    }
+
+    public void setLastAccessed(long lastAccessed) {
+        this.lastAccessed = lastAccessed;
+    }
+
+    public long getInactiveInterval() {
+        return inactiveInterval;
+    }
+
+    public void setInactiveInterval(long inactiveInterval) {
+        this.inactiveInterval = inactiveInterval;
+    }
+
+    public long getExpiry() {
+        return expiry;
+    }
+
+    public void setExpiry(long expiry) {
+        this.expiry = expiry;
+    }
+
+    public long calcExpiry() {
+        return calcExpiry(System.currentTimeMillis());
+    }
+
+    public long calcExpiry(long time) {
+        return (inactiveInterval <= 0L ? 0L : (time + inactiveInterval));
+    }
+
+    public void calcAndSetExpiry() {
+        setExpiry(calcExpiry());
+    }
+
+    public void calcAndSetExpiry(long time) {
+        setExpiry(calcExpiry(time));
+    }
+
+    public boolean isExpiredAt(long time) {
+        if (inactiveInterval <= 0L) {
+            return false; // never expires
+        }
+        return (expiry <= time);
+    }
+
+    /**
+     * @return true if a session needs to be written out
+     */
+    public boolean isDirty() {
+        return dirty;
+    }
+
+    public void setDirty(boolean dirty) {
+        this.dirty = dirty;
+    }
+
+    public long getLastSaved() {
+        return lastSaved;
+    }
+
+    public void setLastSaved(long lastSaved) {
+        this.lastSaved = lastSaved;
     }
 
     @SuppressWarnings("unchecked")
@@ -137,93 +215,15 @@ public class SessionData implements Serializable {
         attributes.clear();
     }
 
-    public long getCreationTime() {
-        return creationTime;
-    }
-
-    public long getAccessedTime() {
-        return accessedTime;
-    }
-
-    public void setAccessedTime(long accessedTime) {
-        this.accessedTime = accessedTime;
-    }
-
-    public long getLastAccessedTime() {
-        return lastAccessedTime;
-    }
-
-    public void setLastAccessedTime(long lastAccessedTime) {
-        this.lastAccessedTime = lastAccessedTime;
-    }
-
-    public long getMaxInactiveInterval() {
-        return maxInactiveInterval;
-    }
-
-    public void setMaxInactiveInterval(long maxInactiveInterval) {
-        this.maxInactiveInterval = maxInactiveInterval;
-    }
-
-    public long getExpiryTime() {
-        return expiryTime;
-    }
-
-    public void setExpiryTime(long expiryTime) {
-        this.expiryTime = expiryTime;
-    }
-
-    public long calcExpiry() {
-        return calcExpiry(System.currentTimeMillis());
-    }
-
-    public long calcExpiry(long time) {
-        return (maxInactiveInterval <= 0L ? 0L : (time + maxInactiveInterval));
-    }
-
-    public void calcAndSetExpiry() {
-        setExpiryTime(calcExpiry());
-    }
-
-    public void calcAndSetExpiry(long time) {
-        setExpiryTime(calcExpiry(time));
-    }
-
-    public boolean isExpiredAt(long time) {
-        if (maxInactiveInterval <= 0L) {
-            return false; // never expires
-        }
-        return (expiryTime <= time);
-    }
-
-    /**
-     * @return true if a session needs to be written out
-     */
-    public boolean isDirty() {
-        return dirty;
-    }
-
-    public void setDirty(boolean dirty) {
-        this.dirty = dirty;
-    }
-
-    public long getLastSavedTime() {
-        return lastSavedTime;
-    }
-
-    public void setLastSavedTime(long lastSavedTime) {
-        this.lastSavedTime = lastSavedTime;
-    }
-
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.append("id", getId());
-        tsb.append("created", getCreationTime());
-        tsb.append("accessed", getLastAccessedTime());
-        tsb.append("lastAccessed", getLastAccessedTime());
-        tsb.append("maxInactiveInterval", getMaxInactiveInterval());
-        tsb.append("expiry", getExpiryTime());
+        tsb.append("created", getCreated());
+        tsb.append("accessed", getLastAccessed());
+        tsb.append("lastAccessed", getLastAccessed());
+        tsb.append("maxInactiveInterval", getInactiveInterval());
+        tsb.append("expiry", getExpiry());
         return tsb.toString();
     }
 
@@ -238,11 +238,11 @@ public class SessionData implements Serializable {
                                  Set<String> nonPersistentAttributes) throws IOException {
         DataOutputStream out = new DataOutputStream(os);
         out.writeUTF(data.getId());
-        out.writeLong(data.getCreationTime());
-        out.writeLong(data.getAccessedTime());
-        out.writeLong(data.getLastAccessedTime());
-        out.writeLong(data.getExpiryTime());
-        out.writeLong(data.getMaxInactiveInterval());
+        out.writeLong(data.getCreated());
+        out.writeLong(data.getAccessed());
+        out.writeLong(data.getLastAccessed());
+        out.writeLong(data.getExpiry());
+        out.writeLong(data.getInactiveInterval());
 
         Set<String> keys = data.getKeys();
         if (keys.isEmpty()) {
@@ -290,8 +290,8 @@ public class SessionData implements Serializable {
         int entries = dis.readInt();
 
         SessionData data = new SessionData(id, created, accessed, lastAccessed, maxInactive);
-        data.setExpiryTime(expiry);
-        data.setMaxInactiveInterval(maxInactive);
+        data.setExpiry(expiry);
+        data.setInactiveInterval(maxInactive);
 
         // Attributes
         restoreAttributes(dis, entries, data);
