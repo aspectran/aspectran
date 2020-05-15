@@ -18,6 +18,7 @@ package com.aspectran.core.component.session;
 import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
 import com.aspectran.core.util.statistic.CounterStatistic;
+import com.aspectran.core.util.thread.Locker;
 
 import java.util.Map;
 import java.util.Set;
@@ -171,14 +172,24 @@ public class DefaultSessionCache extends AbstractSessionCache {
                 if (getSessionStore() != null) {
                     // remove attributes excluded from serialization
                     if (getSessionStore().getNonPersistentAttributes() != null) {
-                        for (String attrName : getSessionStore().getNonPersistentAttributes()) {
-                            session.removeAttribute(attrName);
+                        for (String name : getSessionStore().getNonPersistentAttributes()) {
+                            try {
+                                Object old;
+                                try (Locker.Lock ignored = session.lock()) {
+                                    old = session.getSessionData().setAttribute(name, null);
+                                }
+                                if (old != null) {
+                                    session.fireSessionAttributeListeners(name, old, null);
+                                }
+                            } catch (Exception e) {
+                                logger.warn("Failed to remove non-persistent attribute: " + name, e);
+                            }
                         }
                     }
                     try {
                         getSessionStore().save(session.getId(), session.getSessionData());
                     } catch (Exception e) {
-                        logger.warn("Failed to save session data", e);
+                        logger.warn("Failed to save session data of session id=" + session.getId(), e);
                     }
                     doDelete(session.getId()); // remove from memory
                 } else {

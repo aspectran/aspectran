@@ -38,7 +38,7 @@ public interface SessionAdapter {
 
     /**
      * Returns a string containing the unique identifier assigned to this session.
-     * The identifier is assigned by the servlet container and is implementation dependent.
+     * The identifier is assigned by the session manager and is implementation dependent.
      *
      * @return a string specifying the identifier assigned to this session
      * @since 1.5.0
@@ -69,12 +69,18 @@ public interface SessionAdapter {
      */
     long getLastAccessedTime();
 
+    /**
+     * Specifies the time, in seconds, between client requests before invalidating the
+     * session. A negative time indicates the session should never timeout.
+     *
+     * @param interval an integer specifying the number of seconds
+     */
     void setMaxInactiveInterval(int interval);
 
     /**
-     * Returns the maximum time interval, in seconds, that the servlet container will keep
+     * Returns the maximum time interval, in seconds, that the session manager will keep
      * this session open between client accesses.
-     * After this interval, the servlet container will invalidate the session.
+     * After this interval, the session manager will invalidate the session.
      * The maximum time interval can be set with the {@code setMaxInactiveInterval} method.
      * A negative time indicates the session should never timeout.
      *
