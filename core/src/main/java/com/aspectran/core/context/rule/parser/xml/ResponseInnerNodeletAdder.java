@@ -43,13 +43,13 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
 
         parser.setXpath(xpath + "/transform");
         parser.addNodelet(attrs -> {
-            String type = attrs.get("type");
+            String format = attrs.get("format");
             String contentType = attrs.get("contentType");
             String encoding = attrs.get("encoding");
             Boolean defaultResponse = BooleanUtils.toNullableBooleanObject(attrs.get("default"));
             Boolean pretty = BooleanUtils.toNullableBooleanObject(attrs.get("pretty"));
 
-            TransformRule transformRule = TransformRule.newInstance(type, contentType, encoding, defaultResponse, pretty);
+            TransformRule transformRule = TransformRule.newInstance(format, contentType, encoding, defaultResponse, pretty);
             parser.pushObject(transformRule);
         });
         parser.addNodeEndlet(text -> {

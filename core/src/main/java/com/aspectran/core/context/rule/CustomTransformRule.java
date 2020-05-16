@@ -16,8 +16,8 @@
 package com.aspectran.core.context.rule;
 
 import com.aspectran.core.activity.response.transform.CustomTransformer;
+import com.aspectran.core.context.rule.type.FormatType;
 import com.aspectran.core.context.rule.type.ResponseType;
-import com.aspectran.core.context.rule.type.TransformType;
 import com.aspectran.core.util.ToStringBuilder;
 
 /**
@@ -31,7 +31,7 @@ public class CustomTransformRule {
 
     private static final ResponseType RESPONSE_TYPE = ResponseType.TRANSFORM;
 
-    private static final TransformType TRANSFORM_TYPE = TransformType.CUSTOM;
+    private static final FormatType FORMAT_TYPE = FormatType.CUSTOM;
 
     private final CustomTransformer transformer;
 
@@ -44,12 +44,12 @@ public class CustomTransformRule {
     }
 
     /**
-     * Gets the transform type.
+     * Gets the format type.
      *
-     * @return the transform type
+     * @return the format type
      */
-    public TransformType getTransformType() {
-        return TRANSFORM_TYPE;
+    public FormatType getFormatType() {
+        return FORMAT_TYPE;
     }
 
     public CustomTransformer getTransformer() {
@@ -60,7 +60,7 @@ public class CustomTransformRule {
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.appendForce("type", RESPONSE_TYPE);
-        tsb.appendForce("transform", TRANSFORM_TYPE);
+        tsb.appendForce("format", FORMAT_TYPE);
         tsb.append("transformer", transformer);
         return tsb.toString();
     }

@@ -12,7 +12,7 @@
             <item name="attr1" mandatory="true">${id}@${domain}</item>
             <item name="attr2" mandatory="true" secret="true">${password}</item>
         </attributes>
-        <transform type="text">
+        <transform format="text">
             <template style="apon">
                 |------------------------------------------------
                 |The parameters you entered are:

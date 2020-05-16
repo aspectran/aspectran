@@ -26,7 +26,7 @@
                 <item name="input_2">${input_2:67890}</item>
             </parameters>
         </request>
-        <transform type="text">
+        <transform format="text">
             <template engine="pebble" style="apon">
                 |{{ input_1 }}{{ input_2 }}
             </template>
@@ -34,7 +34,7 @@
     </translet>
 
     <translet name="translet-1">
-        <transform type="text">
+        <transform format="text">
             <template>~{template-1}</template>
         </transform>
     </translet>

@@ -84,10 +84,10 @@ import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
 import com.aspectran.core.context.rule.type.AutowireTargetType;
+import com.aspectran.core.context.rule.type.FormatType;
 import com.aspectran.core.context.rule.type.JoinpointTargetType;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.context.rule.type.ScopeType;
-import com.aspectran.core.context.rule.type.TransformType;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
@@ -651,15 +651,15 @@ public class AnnotatedConfigParser {
     }
 
     private TransformRule parseTransformRule(Transform transformAnno) {
-        TransformType transformType = transformAnno.value();
-        if (transformType == TransformType.NONE) {
-            transformType = transformAnno.type();
+        FormatType formatType = transformAnno.value();
+        if (formatType == FormatType.NONE) {
+            formatType = transformAnno.format();
         }
         String contentType = StringUtils.emptyToNull(transformAnno.contentType());
         String templateId = StringUtils.emptyToNull(transformAnno.template());
         String encoding = StringUtils.emptyToNull(transformAnno.encoding());
         boolean pretty = transformAnno.pretty();
-        TransformRule transformRule = TransformRule.newInstance(transformType, contentType, encoding, pretty);
+        TransformRule transformRule = TransformRule.newInstance(formatType, contentType, encoding, pretty);
         transformRule.setTemplateId(templateId);
         return transformRule;
     }

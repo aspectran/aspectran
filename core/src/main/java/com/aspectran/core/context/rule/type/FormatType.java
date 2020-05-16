@@ -22,7 +22,7 @@ package com.aspectran.core.context.rule.type;
  * 
  * <p>Created: 2008. 04. 25 AM 16:47:38</p>
  */
-public enum TransformType {
+public enum FormatType {
 
     NONE("none"),
     CUSTOM("custom"),
@@ -34,7 +34,7 @@ public enum TransformType {
 
     private final String alias;
 
-    TransformType(String alias) {
+    FormatType(String alias) {
         this.alias = alias;
     }
 
@@ -44,14 +44,14 @@ public enum TransformType {
     }
 
     /**
-     * Returns a {@code TransformType} with a value represented
+     * Returns a {@code FormatType} with a value represented
      * by the specified {@code String}.
      *
-     * @param alias the transform type as a {@code String}
-     * @return a {@code TransformType}, may be {@code null}
+     * @param alias the format type as a {@code String}
+     * @return a {@code FormatType}, may be {@code null}
      */
-    public static TransformType resolve(String alias) {
-        for (TransformType type : values()) {
+    public static FormatType resolve(String alias) {
+        for (FormatType type : values()) {
             if (type.alias.equals(alias)) {
                 return type;
             }
@@ -60,13 +60,13 @@ public enum TransformType {
     }
 
     /**
-     * Returns a {@code TransformType} with a value corresponding
+     * Returns a {@code FormatType} with a value corresponding
      * to the specified {@code ContentType}.
      *
      * @param contentType the content type as a {@code ContentType}
-     * @return a {@code TransformType}, may be {@code null}
+     * @return a {@code FormatType}, may be {@code null}
      */
-    public static TransformType resolve(ContentType contentType) {
+    public static FormatType resolve(ContentType contentType) {
         if (contentType == ContentType.TEXT_PLAIN) {
             return TEXT;
         } else if (contentType == ContentType.APPLICATION_APON) {

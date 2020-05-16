@@ -18,7 +18,7 @@ package com.aspectran.core.activity.response.transform;
 import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.context.rule.type.ContentType;
-import com.aspectran.core.context.rule.type.TransformType;
+import com.aspectran.core.context.rule.type.FormatType;
 
 /**
  * A factory for creating TransformResponse objects.
@@ -34,26 +34,26 @@ public class TransformResponseFactory {
      * @return the transform response
      */
     public static Response create(TransformRule transformRule) {
-        TransformType type = transformRule.getTransformType();
+        FormatType formatType = transformRule.getFormatType();
         Response res;
-        if (type == TransformType.APON) {
+        if (formatType == FormatType.APON) {
             if (transformRule.getContentType() == null) {
                 transformRule.setContentType(ContentType.APPLICATION_APON.toString());
             }
             res = new AponTransformResponse(transformRule);
-        } else if (type == TransformType.JSON) {
+        } else if (formatType == FormatType.JSON) {
             if (transformRule.getContentType() == null) {
                 transformRule.setContentType(ContentType.TEXT_PLAIN.toString());
             }
             res = new JsonTransformResponse(transformRule);
-        } else if (type == TransformType.TEXT) {
+        } else if (formatType == FormatType.TEXT) {
             res = new TextTransformResponse(transformRule);
-        } else if (type == TransformType.XML) {
+        } else if (formatType == FormatType.XML) {
             if (transformRule.getContentType() == null) {
                 transformRule.setContentType(ContentType.APPLICATION_XML.toString());
             }
             res = new XmlTransformResponse(transformRule);
-        } else if (type == TransformType.XSL) {
+        } else if (formatType == FormatType.XSL) {
             res = new XslTransformResponse(transformRule);
         } else {
             res = new NoneTransformResponse(transformRule);

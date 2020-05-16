@@ -27,7 +27,7 @@
         </description>
         <exception>
             <thrown>
-                <transform type="text">
+                <transform format="text">
                     <template style="apon">
                         |
                         |   {{RED}}An Error Occurred!{{reset}}
@@ -68,7 +68,7 @@
     <append resource="config/jetty/jetty-controller.xml"/>
 
     <translet name="/hello">
-        <transform type="text">
+        <transform format="text">
             <template style="apon">
                 |world
             </template>

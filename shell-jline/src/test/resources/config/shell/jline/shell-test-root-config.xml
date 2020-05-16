@@ -59,7 +59,7 @@
             |---------------------------------------------------------------------------------------------------------
         </description>
         <action id="helloData" bean="sampleAction" method="helloWorld"/>
-        <transform type="text"/>
+        <transform format="text"/>
     </translet>
 
     <translet name="echo1">
@@ -70,7 +70,7 @@
             <item name="param1" mandatory="false"/>
             <item name="param2" mandatory="true"/>
         </parameters>
-        <transform type="text">
+        <transform format="text">
             <template engine="token" style="apon">
                 |----------------------------------------------------------
                 |The parameters you entered are:
@@ -92,7 +92,7 @@
             <item name="param2">${prefix} - 2</item>
             <item name="param3">${prefix} - 3</item>
         </parameters>
-        <transform type="text">
+        <transform format="text">
             <template engine="token" style="apon">
                 |----------------------------------------------------------
                 |The parameters you entered are:
@@ -118,7 +118,7 @@
         <attributes>
             <item name="attr1">fourth ${param4}</item>
         </attributes>
-        <transform type="text">
+        <transform format="text">
             <template engine="token" style="apon">
                 |----------------------------------------------------------
                 |The input parameters and attributes are as follows:
@@ -132,7 +132,7 @@
     </translet>
 
     <translet name="echo ${text}">
-        <transform type="text">
+        <transform format="text">
             <template engine="token" style="apon">
                 |----------------------------------------------------------
                 |${text}
@@ -153,7 +153,7 @@
                 <item name="password" secret="true"/>
             </parameters>
         </request>
-        <transform type="text">
+        <transform format="text">
             <template style="apon">
                 |-----------------------------------------
                 | You entered the following for login:
@@ -177,7 +177,7 @@
                 <item name="confirmPassword" secret="true"/>
             </parameters>
         </request>
-        <transform type="text">
+        <transform format="text">
             <template style="apon">
                 |--------------------------------------------------------
                 | You entered the following to change your password:

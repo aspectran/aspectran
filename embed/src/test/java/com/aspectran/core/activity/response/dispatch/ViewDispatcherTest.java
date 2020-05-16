@@ -22,7 +22,7 @@ import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.params.AspectranParameters;
-import com.aspectran.core.context.rule.type.TransformType;
+import com.aspectran.core.context.rule.type.FormatType;
 import com.aspectran.embed.service.EmbeddedAspectran;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -51,7 +51,7 @@ class ViewDispatcherTest {
         TransletRule transletRule2 = new TransletRule();
         transletRule2.setName("test/appended/echo");
         TransformRule transformRule2 = new TransformRule();
-        transformRule2.setTransformType(TransformType.TEXT);
+        transformRule2.setFormatType(FormatType.TEXT);
         TemplateRule templateRule2 = new TemplateRule();
         templateRule2.setEngineBeanId("token");
         templateRule2.setTemplateSource("${param1} ${param2}");

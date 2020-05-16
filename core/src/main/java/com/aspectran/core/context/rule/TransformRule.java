@@ -17,8 +17,8 @@ package com.aspectran.core.context.rule;
 
 import com.aspectran.core.context.rule.ability.Replicable;
 import com.aspectran.core.context.rule.type.ContentType;
+import com.aspectran.core.context.rule.type.FormatType;
 import com.aspectran.core.context.rule.type.ResponseType;
-import com.aspectran.core.context.rule.type.TransformType;
 import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.ToStringBuilder;
 
@@ -31,7 +31,7 @@ public class TransformRule implements Replicable<TransformRule> {
 
     public static final ResponseType RESPONSE_TYPE = ResponseType.TRANSFORM;
 
-    private TransformType transformType;
+    private FormatType formatType;
 
     private String contentType;
 
@@ -52,32 +52,32 @@ public class TransformRule implements Replicable<TransformRule> {
     }
 
     /**
-     * Gets the transform type.
+     * Gets the format type.
      *
-     * @return the transform type
+     * @return the format type
      */
-    public TransformType getTransformType() {
-        return transformType;
+    public FormatType getFormatType() {
+        return formatType;
     }
 
     /**
-     * Sets the transform type.
+     * Sets the format type.
      *
-     * @param transformType the transformType to set
+     * @param formatType the format type to set
      */
-    public void setTransformType(TransformType transformType) {
-        if (transformType == TransformType.CUSTOM) {
-            throw new IllegalArgumentException("Custom Transform is only allowed to be defined via an annotated method");
+    public void setFormatType(FormatType formatType) {
+        if (formatType == FormatType.CUSTOM) {
+            throw new IllegalArgumentException("CustomTransform is only allowed to be defined via an annotated method");
         }
 
-        this.transformType = transformType;
+        this.formatType = formatType;
 
-        if (contentType == null && transformType != null) {
-            if (transformType == TransformType.TEXT) {
+        if (contentType == null && formatType != null) {
+            if (formatType == FormatType.TEXT) {
                 contentType = ContentType.TEXT_PLAIN.toString();
-            } else if (transformType == TransformType.JSON) {
+            } else if (formatType == FormatType.JSON) {
                 contentType = ContentType.APPLICATION_JSON.toString();
-            } else if (transformType == TransformType.XML) {
+            } else if (formatType == FormatType.XML) {
                 contentType = ContentType.APPLICATION_XML.toString();
             }
         }
@@ -187,8 +187,8 @@ public class TransformRule implements Replicable<TransformRule> {
     public void setTemplateRule(TemplateRule templateRule) {
         this.templateRule = templateRule;
         if (templateRule != null) {
-            if (this.transformType == null) {
-                setTransformType(TransformType.TEXT);
+            if (this.formatType == null) {
+                setFormatType(FormatType.TEXT);
             }
             if (templateRule.getEncoding() != null && this.encoding == null) {
                 this.encoding = templateRule.getEncoding();
@@ -232,7 +232,7 @@ public class TransformRule implements Replicable<TransformRule> {
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.appendForce("type", RESPONSE_TYPE);
-        tsb.appendForce("format", transformType);
+        tsb.appendForce("format", formatType);
         tsb.append("contentType", contentType);
         tsb.append("encoding", encoding);
         tsb.append("default", getDefaultResponse());
@@ -242,24 +242,24 @@ public class TransformRule implements Replicable<TransformRule> {
         return tsb.toString();
     }
 
-    public static TransformRule newInstance(String type, String contentType,
+    public static TransformRule newInstance(String format, String contentType,
             String encoding, Boolean defaultResponse, Boolean pretty) {
-        TransformType transformType = TransformType.resolve(type);
-        return newInstance(transformType, contentType, encoding, defaultResponse, pretty);
+        FormatType formatType = FormatType.resolve(format);
+        return newInstance(formatType, contentType, encoding, defaultResponse, pretty);
     }
 
-    public static TransformRule newInstance(TransformType transformType, String contentType,
-            String encoding, Boolean pretty) {
-        return newInstance(transformType, contentType, encoding, null, pretty);
+    public static TransformRule newInstance(FormatType formatType, String contentType,
+                                            String encoding, Boolean pretty) {
+        return newInstance(formatType, contentType, encoding, null, pretty);
     }
 
-    public static TransformRule newInstance(TransformType transformType, String contentType,
-            String encoding, Boolean defaultResponse, Boolean pretty) {
-        if (transformType == null && contentType != null) {
-            transformType = TransformType.resolve(ContentType.resolve(contentType));
+    public static TransformRule newInstance(FormatType formatType, String contentType,
+                                            String encoding, Boolean defaultResponse, Boolean pretty) {
+        if (formatType == null && contentType != null) {
+            formatType = FormatType.resolve(ContentType.resolve(contentType));
         }
         TransformRule tr = new TransformRule();
-        tr.setTransformType(transformType);
+        tr.setFormatType(formatType);
         if (contentType != null) {
             tr.setContentType(contentType);
         }
@@ -271,7 +271,7 @@ public class TransformRule implements Replicable<TransformRule> {
 
     public static TransformRule replicate(TransformRule transformRule) {
         TransformRule tr = new TransformRule();
-        tr.setTransformType(transformRule.getTransformType());
+        tr.setFormatType(transformRule.getFormatType());
         tr.setContentType(transformRule.getContentType());
         tr.setEncoding(transformRule.getEncoding());
         tr.setDefaultResponse(transformRule.getDefaultResponse());

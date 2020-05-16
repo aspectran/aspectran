@@ -17,8 +17,8 @@ package com.aspectran.core.activity.response.transform;
 
 import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.context.rule.TransformRule;
+import com.aspectran.core.context.rule.type.FormatType;
 import com.aspectran.core.context.rule.type.ResponseType;
-import com.aspectran.core.context.rule.type.TransformType;
 
 /**
  * The Class TransformResponse.
@@ -49,12 +49,12 @@ public abstract class TransformResponse implements Response {
     }
 
     /**
-     * Gets the transform type.
+     * Gets the format type.
      *
-     * @return the transform type
+     * @return the format type
      */
-    public TransformType getTransformType() {
-        return transformRule.getTransformType();
+    public FormatType getFormatType() {
+        return transformRule.getFormatType();
     }
 
     /**

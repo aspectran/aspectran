@@ -36,7 +36,7 @@
             <item name="input-2">2</item>
             <item name="input-3">3</item>
         </parameters>
-        <transform type="text" contentType="text/plain">
+        <transform format="text" contentType="text/plain">
             <template engine="token" style="apon">
                 |${input-1}${input-2}${input-3}==@{data^input-1}@{data^input-2}@{data^input-3}
             </template>
@@ -50,7 +50,7 @@
                 <item name="input-2">${input-2:67890}</item>
             </parameters>
         </request>
-        <transform type="text" contentType="text/plain">
+        <transform format="text" contentType="text/plain">
             <template style="apon">
                 |-------------------------------------
                 |Using Builtin Token Template Engine
@@ -83,7 +83,7 @@
             </attributes>
         </include>
         <action id="action1" bean="SecondBean" method="getMessage"/>
-        <transform type="text" contentType="text/plain">
+        <transform format="text" contentType="text/plain">
             <template> :: @{action1}</template>
         </transform>
     </translet>
@@ -93,7 +93,7 @@
             <item name="mode">param1</item>
         </parameters>
         <action id="case1-1" bean="action.TestAction" method="case1"/>
-        <transform type="text" contentType="text/plain">
+        <transform format="text" contentType="text/plain">
             <template>abc@{attr-1}@{attr-2}@{attr-3}-@{case1-1}</template>
         </transform>
     </translet>
@@ -104,7 +104,7 @@
             <item name="attr-2" value="2"/>
             <item name="attr-3" value="3"/>
         </attributes>
-        <transform type="text" contentType="text/plain">
+        <transform format="text" contentType="text/plain">
             <template>abc@{attr-1}@{attr-2}@{attr-3}</template>
         </transform>
     </translet>
@@ -124,7 +124,7 @@
         <choose>
             <when test="mode == 'case1-1'">
                 <action id="case1-1" bean="action.TestAction" method="case1"/>
-                <transform type="text">
+                <transform format="text">
                     <template style="apon">
                         |Case 1-1: @{case1-1}
                     </template>
@@ -137,7 +137,7 @@
         <choose>
             <when test="mode == 'case2-1'">
                 <action id="case2-1" bean="action.TestAction" method="case1"/>
-                <transform type="text">
+                <transform format="text">
                     <template style="apon">
                         |Case 2-1: @{case2-1}
                     </template>
@@ -150,7 +150,7 @@
                         <action id="case2-4" bean="action.TestAction" method="case4"/>
                     </when>
                 </choose>
-                <transform type="text">
+                <transform format="text">
                     <template style="apon">
                         |Case 2-2: @{case2-2}, Case 2-4: @{case2-4}
                     </template>
@@ -158,7 +158,7 @@
             </when>
             <otherwise>
                 <action id="case2-3" bean="action.TestAction" method="case3"/>
-                <transform type="text">
+                <transform format="text">
                     <template style="apon">
                         |Case 2-3: @{case2-3}
                     </template>
@@ -186,12 +186,12 @@
                 </transform>
             </thrown>
             <thrown type="java.lang.IllegalArgumentException">
-                <transform type="text">
+                <transform format="text">
                     <template>${mode} - thrown IllegalArgumentException</template>
                 </transform>
             </thrown>
             <thrown type="java.lang.UnsupportedOperationException">
-                <transform type="text">
+                <transform format="text">
                     <template>${mode} - thrown UnsupportedOperationException</template>
                 </transform>
             </thrown>

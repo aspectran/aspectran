@@ -28,8 +28,8 @@ import com.aspectran.core.context.rule.DescriptionRule;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.TransletRule;
+import com.aspectran.core.context.rule.type.FormatType;
 import com.aspectran.core.context.rule.type.TokenType;
-import com.aspectran.core.context.rule.type.TransformType;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.json.JsonWriter;
 import com.aspectran.core.util.logging.Logger;
@@ -51,7 +51,7 @@ public class TransletInterpreter extends InstantActivitySupport {
     private final Logger logger = LoggerFactory.getLogger(TransletInterpreter.class);
 
     @RequestToGet("/query/@{_translet_}")
-    @Transform(type = TransformType.TEXT, contentType = "application/json")
+    @Transform(format = FormatType.TEXT, contentType = "application/json")
     public void query(Translet translet) throws IOException {
         String transletName = translet.getAttribute("_translet_");
         if (StringUtils.isEmpty(transletName)) {

@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.component.bean.annotation;
 
-import com.aspectran.core.context.rule.type.TransformType;
+import com.aspectran.core.context.rule.type.FormatType;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -28,9 +28,9 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface Transform {
 
-    TransformType value() default TransformType.NONE;
+    FormatType value() default FormatType.NONE;
 
-    TransformType type() default TransformType.NONE;
+    FormatType format() default FormatType.NONE;
 
     String contentType() default "";
 

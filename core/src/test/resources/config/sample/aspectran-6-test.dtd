@@ -200,7 +200,7 @@
 
 <!ELEMENT transform (template?)>
 <!ATTLIST transform
-  type        CDATA #IMPLIED
+  format      CDATA #IMPLIED
   contentType CDATA #IMPLIED
   encoding    CDATA #IMPLIED
   default     (true | false) #IMPLIED

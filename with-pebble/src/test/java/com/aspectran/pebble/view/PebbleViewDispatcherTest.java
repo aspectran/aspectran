@@ -24,7 +24,7 @@ import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.params.AspectranParameters;
-import com.aspectran.core.context.rule.type.TransformType;
+import com.aspectran.core.context.rule.type.FormatType;
 import com.aspectran.embed.service.EmbeddedAspectran;
 import com.aspectran.pebble.PebbleEngineFactoryBean;
 import com.aspectran.pebble.PebbleTemplateEngine;
@@ -67,7 +67,7 @@ class PebbleViewDispatcherTest {
         TransletRule transletRule4 = new TransletRule();
         transletRule4.setName("test/pebble");
         TransformRule transformRule4 = new TransformRule();
-        transformRule4.setTransformType(TransformType.TEXT);
+        transformRule4.setFormatType(FormatType.TEXT);
         TemplateRule templateRule3 = new TemplateRule();
         templateRule3.setEngineBeanId("pebble");
         templateRule3.setTemplateSource("{{ param1 }} {{ param2 }}");

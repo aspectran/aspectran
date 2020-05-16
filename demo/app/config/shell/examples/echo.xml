@@ -18,7 +18,7 @@
             <item name="param1">${param1:hello}</item>
             <item name="param2" mandatory="true"/>
         </parameters>
-        <transform type="text">
+        <transform format="text">
             <template engine="token" style="apon">
                 |----------------------------------------------------------
                 |The parameters entered are as follows:
@@ -40,7 +40,7 @@
             <item name="param2">${prefix} - 2</item>
             <item name="param3">${prefix} - 3</item>
         </parameters>
-        <transform type="text">
+        <transform format="text">
             <template engine="token" style="apon">
                 |----------------------------------------------------------
                 |The parameters entered are as follows:
@@ -61,7 +61,7 @@
         <attributes>
             <item name="attr1">fourth - ${fourth:No input}</item>
         </attributes>
-        <transform type="text">
+        <transform format="text">
             <template engine="token" style="apon">
                 |----------------------------------------------------------
                 |The parameters and attributes entered are as follows:
@@ -86,7 +86,7 @@
             <item name="attr2">${email}</item>
             <item name="attr3">${password}</item>
         </attributes>
-        <transform type="text">
+        <transform format="text">
             <template style="apon">
                 |----------------------------------------------------------
                 |The parameters entered are as follows:
@@ -111,7 +111,7 @@
             <item name="attr1">${param1}:${param2}</item>
             <item name="attr2">${param2}:${param1}</item>
         </attributes>
-        <transform type="text">
+        <transform format="text">
             <template style="apon">
                 |----------------------------------------------------------
                 |The parameters entered are as follows:

@@ -32,7 +32,7 @@
                 <item>${text:Hello}</item>
             </arguments>
         </action>
-        <transform type="text">
+        <transform format="text">
             <template>${text}</template>
         </transform>
     </translet>
@@ -50,7 +50,7 @@
                 <item>${text:Hello}</item>
             </arguments>
         </action>
-        <transform type="text">
+        <transform format="text">
             <template>${text}</template>
         </transform>
     </translet>

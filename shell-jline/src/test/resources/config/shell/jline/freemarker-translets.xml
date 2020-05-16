@@ -56,7 +56,7 @@
                 <item name="input_2">${input_2:67890}</item>
             </parameters>
         </request>
-        <transform type="text">
+        <transform format="text">
             <template engine="freemarker" style="apon">
                 |-------------------------------------
                 |The input parameters are as follows:
@@ -132,7 +132,7 @@
                 <item name="email"/>
             </parameters>
         </request>
-        <transform type="text">
+        <transform format="text">
             <template>~{selectOne}</template>
         </transform>
     </translet>
@@ -150,7 +150,7 @@
                 <item name="email" mandatory="true">${email:jane@mail.com}</item>
             </parameters>
         </request>
-        <transform type="text">
+        <transform format="text">
             <template>~{updateOne}</template>
         </transform>
     </translet>

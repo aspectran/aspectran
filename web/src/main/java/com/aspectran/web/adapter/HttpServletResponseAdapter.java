@@ -25,7 +25,7 @@ import com.aspectran.core.context.expr.ItemEvaluator;
 import com.aspectran.core.context.expr.ItemExpression;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.RedirectRule;
-import com.aspectran.core.context.rule.type.TransformType;
+import com.aspectran.core.context.rule.type.FormatType;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -161,8 +161,8 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
             precommitDone = true;
             Response response = activity.getDeclaredResponse();
             if (response instanceof TransformResponse) {
-                TransformType transformType = ((TransformResponse)response).getTransformType();
-                if (transformType == null) {
+                FormatType formatType = ((TransformResponse)response).getFormatType();
+                if (formatType == null) {
                     try {
                         response.commit(activity);
                     } catch (ResponseException e) {

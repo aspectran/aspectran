@@ -935,13 +935,13 @@ public class ParametersToRules {
     }
 
     private void toTransformRule(TransformParameters transformParameters, ResponseRuleApplicable responseRuleApplicable) throws IllegalRuleException {
-        String transformType = transformParameters.getString(TransformParameters.type);
+        String format = transformParameters.getString(TransformParameters.format);
         String contentType = transformParameters.getString(TransformParameters.contentType);
         String encoding = transformParameters.getString(TransformParameters.encoding);
         Boolean defaultResponse = transformParameters.getBoolean(TransformParameters.defaultResponse);
         Boolean pretty = transformParameters.getBoolean(TransformParameters.pretty);
 
-        TransformRule transformRule = TransformRule.newInstance(transformType, contentType, encoding, defaultResponse, pretty);
+        TransformRule transformRule = TransformRule.newInstance(format, contentType, encoding, defaultResponse, pretty);
 
         TemplateParameters templateParameters = transformParameters.getParameters(TransformParameters.template);
         if (templateParameters != null) {

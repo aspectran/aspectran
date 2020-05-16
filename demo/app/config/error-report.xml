@@ -10,7 +10,7 @@
         </description>
         <exception>
             <thrown>
-                <transform type="text">
+                <transform format="text">
                     <template style="apon">
                         |An Error Occurred!
                         |#{currentTranslet^rootCauseOfRaisedException}

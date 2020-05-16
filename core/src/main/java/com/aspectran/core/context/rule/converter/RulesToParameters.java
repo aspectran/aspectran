@@ -634,7 +634,7 @@ public class RulesToParameters {
         }
 
         TransformParameters transformParameters = new TransformParameters();
-        transformParameters.putValueNonNull(TransformParameters.type, transformRule.getTransformType());
+        transformParameters.putValueNonNull(TransformParameters.format, transformRule.getFormatType());
         transformParameters.putValueNonNull(TransformParameters.contentType, transformRule.getContentType());
         transformParameters.putValueNonNull(TransformParameters.encoding, transformRule.getEncoding());
         transformParameters.putValueNonNull(TransformParameters.defaultResponse, transformRule.getDefaultResponse());

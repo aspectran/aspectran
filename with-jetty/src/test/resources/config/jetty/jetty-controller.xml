@@ -14,7 +14,7 @@
             |   {{CYAN}}jetty start{{fg:reset}}  Runs a Jetty Server
             |   {{CYAN}}jetty stop{{fg:reset}}   Stops the currently running Jetty Server
         </description>
-        <transform type="text">
+        <transform format="text">
             <template style="apon">
                 |
                 |   {{YELLOW}}Jetty #{jetty.server^version} - #{jetty.server^state}{{reset}}
@@ -30,7 +30,7 @@
             |-----------------------------------------
         </description>
         <action bean="jetty.server" method="start"/>
-        <transform type="text">
+        <transform format="text">
             <template style="apon">
                 |
                 |   {{YELLOW}}Jetty #{jetty.server^version} - #{jetty.server^state}{{reset}}
@@ -40,7 +40,7 @@
         </transform>
         <exception>
             <thrown type="java.net.BindException">
-                <transform type="text">
+                <transform format="text">
                     <template style="apon">
                         |
                         |   {{RED}}Jetty Server Error - Port %{jetty.server.port} already in use{{reset}}
@@ -58,7 +58,7 @@
             |-----------------------------------------
         </description>
         <action bean="jetty.server" method="stop"/>
-        <transform type="text">
+        <transform format="text">
             <template style="apon">
                 |
                 |   {{YELLOW}}Jetty #{jetty.server^version} - #{jetty.server^state}{{reset}}
