@@ -27,6 +27,10 @@ import java.util.function.Function;
 /**
  * A thread-safe LRU {@link Cache} with a fixed capacity. If the cache reaches
  * the capacity, it discards the least recently used entry first.
+ * <p>
+ * This implementation is backed by a {@code ConcurrentHashMap} for storing
+ * the cached values and a {@code ConcurrentLinkedQueue} for ordering the keys
+ * and choosing the least recently used key when the cache is at full capacity.</p>
  *
  * @param <K> the type of the key used for caching
  * @param <V> the type of the cached values
