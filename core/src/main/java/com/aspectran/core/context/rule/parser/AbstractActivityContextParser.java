@@ -19,7 +19,7 @@ import com.aspectran.core.context.rule.appender.FileRuleAppender;
 import com.aspectran.core.context.rule.appender.ResourceRuleAppender;
 import com.aspectran.core.context.rule.appender.RuleAppender;
 import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;
-import com.aspectran.core.context.rule.type.AppendedFileFormatType;
+import com.aspectran.core.context.rule.type.AppendableFileFormatType;
 import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
@@ -89,9 +89,9 @@ public abstract class AbstractActivityContextParser implements ActivityContextPa
             appender = new FileRuleAppender(assistant.getBasePath(), configFile);
         }
         if (configFile.toLowerCase().endsWith(".apon")) {
-            appender.setAppendedFileFormatType(AppendedFileFormatType.APON);
+            appender.setAppendableFileFormatType(AppendableFileFormatType.APON);
         } else {
-            appender.setAppendedFileFormatType(AppendedFileFormatType.XML);
+            appender.setAppendableFileFormatType(AppendableFileFormatType.XML);
         }
         return appender;
     }

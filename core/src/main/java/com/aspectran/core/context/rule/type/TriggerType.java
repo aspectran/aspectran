@@ -16,7 +16,7 @@
 package com.aspectran.core.context.rule.type;
 
 /**
- * Supported Trigger types.
+ * Supported trigger types.
  */
 public enum TriggerType {
 

@@ -16,7 +16,7 @@
 package com.aspectran.core.context.rule.type;
 
 /**
- * Supported Pointcut types.
+ * Supported pointcut types.
  */
 public enum PointcutType {
 

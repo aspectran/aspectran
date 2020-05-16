@@ -16,7 +16,7 @@
 package com.aspectran.core.context.rule.type;
 
 /**
- * Types of advice include "around," "before" and "after" advice.
+ * Advice types include "around", "before" and "after" advice.
  * <dl>
  * <dt>Before advice: <dd>Advice that executes before a join point.
  * <dt>After advice: <dd>Advice to be executed after a join point completes normally.

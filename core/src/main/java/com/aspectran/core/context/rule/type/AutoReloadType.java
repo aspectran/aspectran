@@ -16,7 +16,7 @@
 package com.aspectran.core.context.rule.type;
 
 /**
- * Supported Auto reload types.
+ * Supported auto-reload types.
  * 
  * <p>Created: 2019. 03. 19.</p>
  */

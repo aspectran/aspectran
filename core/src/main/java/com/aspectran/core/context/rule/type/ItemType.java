@@ -16,7 +16,7 @@
 package com.aspectran.core.context.rule.type;
 
 /**
- * Supported Item types.
+ * Supported item types.
  * 
  * <p>Created: 2008. 03. 29 PM 3:47:00</p>
  */

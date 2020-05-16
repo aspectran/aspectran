@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.StringTokenizer;
 
 /**
- * Supported Method types.
+ * Supported method types.
  * 
  * <p>Created: 2008. 03. 26 AM 12:58:38</p>
  */

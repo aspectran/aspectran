@@ -15,8 +15,10 @@
  */
 package com.aspectran.core.context.rule.type;
 
+import com.aspectran.core.context.rule.appender.RuleAppender;
+
 /**
- * Supported Appender types.
+ * Define the types of {@link RuleAppender}s.
  * 
  * <p>Created: 2008. 04. 25 AM 16:47:38</p>
  */

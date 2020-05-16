@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.context.rule;
 
-import com.aspectran.core.context.rule.type.AppendedFileFormatType;
+import com.aspectran.core.context.rule.type.AppendableFileFormatType;
 
 /**
  * Defines a rule to append a URL with defined rules.
@@ -32,11 +32,11 @@ public class UrlAppendRule extends AppendRule {
         this(url, null, profile);
     }
 
-    public UrlAppendRule(String url, AppendedFileFormatType format) {
+    public UrlAppendRule(String url, AppendableFileFormatType format) {
         this(url, format, null);
     }
 
-    public UrlAppendRule(String url, AppendedFileFormatType format, String profile) {
+    public UrlAppendRule(String url, AppendableFileFormatType format, String profile) {
         setUrl(url);
         setFormat(format);
         setProfile(profile);

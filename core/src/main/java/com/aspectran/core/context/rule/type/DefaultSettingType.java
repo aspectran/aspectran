@@ -16,7 +16,7 @@
 package com.aspectran.core.context.rule.type;
 
 /**
- * Supported Default setting types.
+ * Supported default setting types.
  */
 public enum DefaultSettingType {
 

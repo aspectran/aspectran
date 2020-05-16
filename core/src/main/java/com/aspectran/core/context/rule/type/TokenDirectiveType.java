@@ -16,7 +16,7 @@
 package com.aspectran.core.context.rule.type;
 
 /**
- * Supported Token directive types.
+ * Supported token directive types.
  * 
  * <p>Created: 2016. 07. 02 PM 1:15:48</p>
  */

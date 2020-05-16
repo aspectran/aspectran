@@ -16,7 +16,7 @@
 package com.aspectran.core.context.rule;
 
 import com.aspectran.core.context.rule.params.AspectranParameters;
-import com.aspectran.core.context.rule.type.AppendedFileFormatType;
+import com.aspectran.core.context.rule.type.AppendableFileFormatType;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.ToStringBuilder;
 
@@ -33,7 +33,7 @@ public class AppendRule {
 
     private String url;
 
-    private AppendedFileFormatType format;
+    private AppendableFileFormatType format;
 
     private String profile;
 
@@ -63,11 +63,11 @@ public class AppendRule {
         this.url = url;
     }
 
-    public AppendedFileFormatType getFormat() {
+    public AppendableFileFormatType getFormat() {
         return format;
     }
 
-    public void setFormat(AppendedFileFormatType format) {
+    public void setFormat(AppendableFileFormatType format) {
         this.format = format;
     }
 
@@ -124,11 +124,11 @@ public class AppendRule {
             throw new IllegalRuleException("The 'append' element requires either a 'file' or a 'resource' or a 'url' attribute");
         }
 
-        AppendedFileFormatType appendedFileFormatType = AppendedFileFormatType.resolve(format);
-        if (format != null && appendedFileFormatType == null) {
+        AppendableFileFormatType appendableFileFormatType = AppendableFileFormatType.resolve(format);
+        if (format != null && appendableFileFormatType == null) {
             throw new IllegalRuleException("No appended file format type for '" + format + "'");
         }
-        appendRule.setFormat(appendedFileFormatType);
+        appendRule.setFormat(appendableFileFormatType);
 
         if (profile != null && !profile.isEmpty()) {
             appendRule.setProfile(profile);

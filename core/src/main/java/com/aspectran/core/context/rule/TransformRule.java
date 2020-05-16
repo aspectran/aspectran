@@ -232,7 +232,7 @@ public class TransformRule implements Replicable<TransformRule> {
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.appendForce("type", RESPONSE_TYPE);
-        tsb.appendForce("transform", transformType);
+        tsb.appendForce("format", transformType);
         tsb.append("contentType", contentType);
         tsb.append("encoding", encoding);
         tsb.append("default", getDefaultResponse());

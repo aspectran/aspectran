@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.context.rule;
 
-import com.aspectran.core.context.rule.type.AppendedFileFormatType;
+import com.aspectran.core.context.rule.type.AppendableFileFormatType;
 
 /**
  * Defines a rule to append a resource with defined rules.
@@ -32,11 +32,11 @@ public class ResourceAppendRule extends AppendRule {
         this(resource, null, profile);
     }
 
-    public ResourceAppendRule(String resource, AppendedFileFormatType format) {
+    public ResourceAppendRule(String resource, AppendableFileFormatType format) {
         this(resource, format, null);
     }
 
-    public ResourceAppendRule(String resource, AppendedFileFormatType format, String profile) {
+    public ResourceAppendRule(String resource, AppendableFileFormatType format, String profile) {
         setResource(resource);
         setFormat(format);
         setProfile(profile);

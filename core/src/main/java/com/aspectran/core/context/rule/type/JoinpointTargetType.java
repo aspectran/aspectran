@@ -16,7 +16,7 @@
 package com.aspectran.core.context.rule.type;
 
 /**
- * Supported Joinpoint target types.
+ * Supported join point target types.
  */
 public enum JoinpointTargetType {
 

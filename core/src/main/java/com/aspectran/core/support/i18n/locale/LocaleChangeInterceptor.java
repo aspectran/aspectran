@@ -33,6 +33,8 @@ import java.util.TimeZone;
  */
 public class LocaleChangeInterceptor {
 
+    private static final Logger logger = LoggerFactory.getLogger(LocaleChangeInterceptor.class);
+
     /**
      * Default name of the locale specification parameter: "locale".
      */
@@ -42,8 +44,6 @@ public class LocaleChangeInterceptor {
      * Default name of the timezone specification parameter: "timezone".
      */
     public static final String DEFAULT_TIMEZONE_PARAM_NAME = "timezone";
-
-    protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     private String localeParamName = DEFAULT_LOCALE_PARAM_NAME;
 

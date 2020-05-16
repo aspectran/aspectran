@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.context.rule.appender;
 
-import com.aspectran.core.context.rule.type.AppendedFileFormatType;
+import com.aspectran.core.context.rule.type.AppendableFileFormatType;
 import com.aspectran.core.context.rule.type.AppenderType;
 import com.aspectran.core.util.ToStringBuilder;
 
@@ -33,7 +33,7 @@ public class ParametersRuleAppender extends AbstractRuleAppender {
     public ParametersRuleAppender() {
         super(AppenderType.PARAMETERS);
 
-        setAppendedFileFormatType(AppendedFileFormatType.APON);
+        setAppendableFileFormatType(AppendableFileFormatType.APON);
     }
 
     @Override
@@ -60,7 +60,7 @@ public class ParametersRuleAppender extends AbstractRuleAppender {
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.append("type", getAppenderType());
-        tsb.append("format", getAppendedFileFormatType());
+        tsb.append("format", getAppendableFileFormatType());
         tsb.append("profile", getProfiles());
         return tsb.toString();
     }

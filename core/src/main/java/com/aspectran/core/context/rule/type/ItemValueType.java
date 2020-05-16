@@ -18,7 +18,7 @@ package com.aspectran.core.context.rule.type;
 import com.aspectran.core.activity.request.FileParameter;
 
 /**
- * Supported Item value types.
+ * Types of supported item values.
  *
  * <p>Created: 2008. 03. 29 PM 3:47:00</p>
  */

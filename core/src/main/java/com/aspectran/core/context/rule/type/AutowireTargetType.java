@@ -16,7 +16,7 @@
 package com.aspectran.core.context.rule.type;
 
 /**
- * Supported Autowire target types.
+ * Supported autowire-target types.
  * 
  * <p>Created: 2016. 2. 24.</p>
  * 
