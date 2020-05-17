@@ -126,6 +126,10 @@ public class JspViewDispatcher implements ViewDispatcher {
                 logger.trace("Dispatching to JSP [" + dispatchName + "]");
             }
 
+            if (response.isCommitted()) {
+                response.reset();
+            }
+
             RequestDispatcher requestDispatcher = request.getRequestDispatcher(dispatchName);
             requestDispatcher.forward(request, response);
 

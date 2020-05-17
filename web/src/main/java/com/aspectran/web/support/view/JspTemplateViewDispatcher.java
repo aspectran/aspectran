@@ -116,6 +116,10 @@ public class JspTemplateViewDispatcher implements ViewDispatcher {
                 logger.trace("Dispatching to JSP Template [" + template + "] with page [" + dispatchName + "]");
             }
 
+            if (response.isCommitted()) {
+                response.reset();
+            }
+
             RequestDispatcher requestDispatcher = request.getRequestDispatcher(template);
             requestDispatcher.forward(request, response);
 
