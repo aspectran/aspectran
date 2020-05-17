@@ -6,7 +6,7 @@
         <h2 style="margin:0;">Customer List</h2>
         <span id="total" class="float-right warning badge" style="font-size:2em;position:absolute;top:0;right:20px;">0</span>
         <div id="customer-list-board" style="clear:both;border-radius:3px;margin-bottom:.5em;">
-          <select name="customerList" size="12" style="height:auto;background-image:none;margin:0;">
+          <select name="customerList" size="15" style="height:auto;background-image:none;margin:0;">
           </select>
         </div>
         <div class="float-left">
@@ -22,23 +22,20 @@
         <span id="cust-no" class="float-right success badge" style="font-size:2em;position:absolute;top:0;right:0;border-radius:50% 0 0 50%;">0</span>
         <div id="details" class="panel radius">
           <form>
-            <label>
-              No.
+            <label>No.
               <input type="text" name="id" disabled="disabled"/>
             </label>
-            <label>
-              Name
+            <label>Name
               <input type="text" name="name" maxlength="30"/>
             </label>
-            <label>
-              Age
+            <label>Age
               <input type="number" name="age" min="1" max="199" maxlength="3" oninput="if (this.value.length >= this.maxLength) this.value = this.value.slice(0, this.maxLength);"/>
             </label>
-            <legend>
-              Approval Status:
+            <fieldset>
+              <legend>Approval Status</legend>
               <input type="radio" name="approved" id="approved" value="Y" required><label for="approved">Approved</label>
               <input type="radio" name="approved" id="denied" value="N" required><label for="denied">Denied</label>
-            </legend>
+            </fieldset>
           </form>
         </div>
         <div class="float-right t10">
@@ -58,7 +55,6 @@
     </div>
   </div>
 </div>
-
 <script>
   let backend = "/examples";
   $(function() {
