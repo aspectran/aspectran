@@ -23,6 +23,8 @@ import com.aspectran.core.component.session.DefaultSessionManager;
 import com.aspectran.core.component.session.SessionHandler;
 import com.aspectran.core.component.session.SessionStoreFactory;
 import com.aspectran.core.context.config.SessionManagerConfig;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.server.session.Session;
 import io.undertow.server.session.SessionConfig;
@@ -41,6 +43,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * <p>Created: 2019-08-07</p>
  */
 public class TowSessionManager implements SessionManager, ApplicationAdapterAware, DisposableBean {
+
+    private static final Logger logger = LoggerFactory.getLogger(TowSessionManager.class);
 
     private final AttachmentKey<TowSessionBridge> NEW_SESSION = AttachmentKey.create(TowSessionBridge.class);
 
@@ -108,15 +112,21 @@ public class TowSessionManager implements SessionManager, ApplicationAdapterAwar
 
     @Override
     public Session createSession(HttpServerExchange serverExchange, SessionConfig sessionConfig) {
-        String sessionId = sessionConfig.findSessionId(serverExchange);
+        String sessionId;
+        try {
+            sessionId = sessionConfig.findSessionId(serverExchange);
+        } catch (Exception e) {
+            logger.error("Unable to create new session due to failure to find session ID", e);
+            return null;
+        }
         if (sessionId == null) {
             sessionId = sessionManager.createSessionId(hashCode());
         }
         DefaultSession session = sessionManager.createSession(sessionId);
-        TowSessionBridge sessionWrapper = newTowSessionBridge(session);
+        TowSessionBridge sessionBridge = newTowSessionBridge(session);
         sessionConfig.setSessionId(serverExchange, session.getId());
-        serverExchange.putAttachment(NEW_SESSION, sessionWrapper);
-        return sessionWrapper;
+        serverExchange.putAttachment(NEW_SESSION, sessionBridge);
+        return sessionBridge;
     }
 
     @Override
@@ -127,7 +137,13 @@ public class TowSessionManager implements SessionManager, ApplicationAdapterAwar
                 return newSession;
             }
         }
-        String sessionId = sessionConfig.findSessionId(serverExchange);
+        String sessionId;
+        try {
+            sessionId = sessionConfig.findSessionId(serverExchange);
+        } catch (Exception e) {
+            logger.error("Unable to retrieve session due to failure to find session ID", e);
+            return null;
+        }
         TowSessionBridge sessionWrapper = (TowSessionBridge)getSession(sessionId);
         if (sessionWrapper != null && serverExchange != null) {
             sessionWrapper.requestStarted(serverExchange);

@@ -341,8 +341,8 @@ public class CoreActivity extends AdviceActivity {
     private <V> V forward(ForwardRule forwardRule, Callable<V> instantAction)
             throws TransletNotFoundException, ActivityPrepareException, ActivityPerformException {
         if (logger.isDebugEnabled()) {
-            logger.debug("Forwarding from [" + translet.getRequestName() + "] to [" +
-                    forwardRule.getTransletName() + "]");
+            logger.debug("Forwarding from " + translet.getRequestName() + " to " +
+                    forwardRule.getTransletName());
         }
 
         reserveResponse(null);
@@ -353,6 +353,11 @@ public class CoreActivity extends AdviceActivity {
     }
 
     private void exception() throws ActionExecutionException {
+        if (logger.isDebugEnabled()) {
+            logger.debug("Exception handling request to " + translet.getRequestName() + "; Cause: " +
+                    getRootCauseOfRaisedException());
+        }
+
         reserveResponse(null);
         committed = false;
 
