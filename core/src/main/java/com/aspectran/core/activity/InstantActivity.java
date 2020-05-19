@@ -28,17 +28,10 @@ import com.aspectran.core.util.OutputStringWriter;
 
 import java.io.Writer;
 import java.util.Map;
-import java.util.concurrent.Callable;
 
 /**
- * An activity that handles the temporary request.
- *
- * <p>Note that this is an activity that has nothing to do with
- * advice. This does not execute any advice at all, and if you
- * attempt to register the advice dynamically, you will get an
- * exception of the advice constraint violation.</p>
- *
- * @since 3.0.0
+ * CoreActivity could only be executed by the framework, but
+ * using this InstantActivity could also be executed by user code.
  */
 public class InstantActivity extends CoreActivity {
 
@@ -114,7 +107,7 @@ public class InstantActivity extends CoreActivity {
     }
 
     @Override
-    public <V> V perform(Callable<V> instantAction) throws ActivityPerformException {
+    public <V> V perform(InstantAction<V> instantAction) throws ActivityPerformException {
         if (performed) {
             throw new ActivityPerformException("Activity has already been performed");
         }

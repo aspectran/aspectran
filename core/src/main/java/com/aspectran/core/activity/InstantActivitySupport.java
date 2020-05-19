@@ -29,10 +29,9 @@ import com.aspectran.core.support.i18n.message.MessageSource;
 import com.aspectran.core.util.Assert;
 import com.aspectran.core.util.StringUtils;
 
-import java.util.concurrent.Callable;
-
 /**
- * Inheritance of this class allows access to the activity context.
+ * Inheriting this class provides access to the activity context and
+ * facilitates execution of the activity.
  *
  * <p>Created: 29/09/2019</p>
  */
@@ -57,6 +56,10 @@ public abstract class InstantActivitySupport implements ActivityContextAware {
         return getActivityContext().getCurrentActivity();
     }
 
+    protected boolean hasCurrentActivity() {
+        return getActivityContext().hasCurrentActivity();
+    }
+
     protected ApplicationAdapter getApplicationAdapter() {
         return getActivityContext().getApplicationAdapter();
     }
@@ -77,7 +80,7 @@ public abstract class InstantActivitySupport implements ActivityContextAware {
         return getActivityContext().getMessageSource();
     }
 
-    protected <V> V instantActivity(Callable<V> instantAction) {
+    protected <V> V instantActivity(InstantAction<V> instantAction) {
         if (instantAction == null) {
             throw new IllegalArgumentException("instantAction must not be null");
         }
@@ -95,7 +98,7 @@ public abstract class InstantActivitySupport implements ActivityContextAware {
         }
         Translet translet = getCurrentActivity().getTranslet();
         if (translet == null) {
-            throw new UnsupportedOperationException("No such translet in current activity");
+            throw new UnsupportedOperationException("No such translet in " + getCurrentActivity());
         }
         try {
             TransletRule transletRule = getActivityContext().getTransletRuleRegistry().getTransletRule(transletName);

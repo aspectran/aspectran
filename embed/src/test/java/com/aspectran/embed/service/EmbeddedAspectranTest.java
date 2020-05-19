@@ -18,8 +18,6 @@ package com.aspectran.embed.service;
 import com.aspectran.core.activity.ActivityDataMap;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.request.ParameterMap;
-import com.aspectran.core.component.bean.BeanRegistry;
-import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.builder.ActivityContextBuilder;
 import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.util.StringUtils;
@@ -57,9 +55,7 @@ class EmbeddedAspectranTest {
 
     @Test
     void test1() {
-        ActivityContext activityContext = aspectran.getActivityContext();
-        BeanRegistry beanRegistry = activityContext.getBeanRegistry();
-        FirstBean firstBean = beanRegistry.getBean("thirdBean");
+        FirstBean firstBean = aspectran.getBean("thirdBean");
 
         //System.out.println(firstBean);
         //System.out.println(firstBean.getMessage());

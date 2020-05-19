@@ -23,7 +23,7 @@ import com.aspectran.core.context.rule.RedirectRule;
 import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.context.rule.ability.ResponseRuleApplicable;
-import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;
+import com.aspectran.core.context.rule.assistant.ActivityRuleAssistant;
 import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.nodelet.NodeletAdder;
@@ -39,7 +39,7 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
     @Override
     public void add(String xpath, NodeletParser parser) {
         AspectranNodeParser nodeParser = parser.getNodeParser();
-        ContextRuleAssistant assistant = nodeParser.getAssistant();
+        ActivityRuleAssistant assistant = nodeParser.getAssistant();
 
         parser.setXpath(xpath + "/transform");
         parser.addNodelet(attrs -> {

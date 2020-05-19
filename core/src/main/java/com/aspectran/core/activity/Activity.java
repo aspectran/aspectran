@@ -33,7 +33,6 @@ import com.aspectran.core.context.rule.ExceptionRule;
 import com.aspectran.core.context.rule.SettingsAdviceRule;
 
 import java.util.List;
-import java.util.concurrent.Callable;
 
 /**
  * The Interface Activity.
@@ -57,7 +56,7 @@ public interface Activity {
      * @return An object that is the result of performing an instant activity
      * @throws ActivityPerformException thrown when an exception occurs while performing an activity
      */
-    <V> V perform(Callable<V> instantAction) throws ActivityPerformException;
+    <V> V perform(InstantAction<V> instantAction) throws ActivityPerformException;
 
     /**
      * Throws an ActivityTerminatedException to terminate the current activity.

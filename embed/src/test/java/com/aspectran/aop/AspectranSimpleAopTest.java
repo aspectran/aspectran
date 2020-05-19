@@ -16,6 +16,7 @@
 package com.aspectran.aop;
 
 import com.aspectran.core.activity.Translet;
+import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.embed.service.EmbeddedAspectran;
@@ -63,7 +64,9 @@ class AspectranSimpleAopTest {
 
     @Test
     void test2() {
-        AspectRule aspectRule = aspectran.getActivityContext().getAspectRuleRegistry().getAspectRule("aspect01");
+        InstantActivityTestBean bean = aspectran.getBean(InstantActivityTestBean.class);
+        ActivityContext context = bean.getActivityContext();
+        AspectRule aspectRule = context.getAspectRuleRegistry().getAspectRule("aspect01");
         aspectRule.setDisabled(false);
         Translet translet = aspectran.translate("aop/test/action1");
         SimpleAopTestAdvice simpleAopTestAdvice = translet.getAspectAdviceBean("aspect01");
@@ -72,7 +75,9 @@ class AspectranSimpleAopTest {
 
     @Test
     void test3() {
-        AspectRule aspectRule = aspectran.getActivityContext().getAspectRuleRegistry().getAspectRule("aspect01");
+        InstantActivityTestBean bean = aspectran.getBean(InstantActivityTestBean.class);
+        ActivityContext context = bean.getActivityContext();
+        AspectRule aspectRule = context.getAspectRuleRegistry().getAspectRule("aspect01");
         aspectRule.setDisabled(true);
         Translet translet = aspectran.translate("aop/test/action1");
         SimpleAopTestAdvice simpleAopTestAdvice = translet.getAspectAdviceBean("aspect01");
@@ -89,6 +94,13 @@ class AspectranSimpleAopTest {
         Translet translet = aspectran.translate("aop/test/action3-hello");
         String param1 = translet.toString();
         assertEquals("hello", param1);
+    }
+
+    @Test
+    void instantActivityTest() {
+        InstantActivityTestBean bean = aspectran.getBean(InstantActivityTestBean.class);
+        ActivityContext context = bean.getActivityContext();
+        System.out.println(context);
     }
 
 }

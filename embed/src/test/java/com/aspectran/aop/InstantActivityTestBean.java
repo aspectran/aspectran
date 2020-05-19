@@ -13,24 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.context.rule.appender;
+package com.aspectran.aop;
 
-import com.aspectran.core.context.rule.assistant.ActivityRuleAssistant;
+import com.aspectran.core.activity.InstantActivitySupport;
+import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.lang.NonNull;
 
 /**
- * The Class ShallowRuleAppendHandler.
- * 
- * <p>Created: 2008. 06. 14 AM 4:39:24</p>
+ * <p>Created: 2016. 11. 5.</p>
  */
-public class ShallowRuleAppendHandler extends AbstractAppendHandler {
-
-    public ShallowRuleAppendHandler(ActivityRuleAssistant assistant) {
-        super(assistant);
-    }
+public class InstantActivityTestBean extends InstantActivitySupport {
 
     @Override
-    public void handle(RuleAppender appender) throws Exception {
-        // Do Nothing
+    @NonNull
+    public ActivityContext getActivityContext() {
+        return super.getActivityContext();
     }
 
 }

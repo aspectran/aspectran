@@ -31,9 +31,9 @@ import java.util.Set;
 /**
  * The Environment for ActivityContext.
  */
-public class ContextEnvironment implements Environment {
+public class ActivityEnvironment implements Environment {
 
-    private static final Logger logger = LoggerFactory.getLogger(ContextEnvironment.class);
+    private static final Logger logger = LoggerFactory.getLogger(ActivityEnvironment.class);
 
     private final Set<String> activeProfiles = new LinkedHashSet<>();
 

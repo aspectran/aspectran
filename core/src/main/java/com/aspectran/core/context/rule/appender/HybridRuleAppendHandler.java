@@ -16,8 +16,8 @@
 package com.aspectran.core.context.rule.appender;
 
 import com.aspectran.core.context.rule.IllegalRuleException;
+import com.aspectran.core.context.rule.assistant.ActivityRuleAssistant;
 import com.aspectran.core.context.rule.assistant.AssistantLocal;
-import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;
 import com.aspectran.core.context.rule.assistant.ShallowContextRuleAssistant;
 import com.aspectran.core.context.rule.converter.ParametersToRules;
 import com.aspectran.core.context.rule.converter.RulesToParameters;
@@ -50,7 +50,7 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
 
     private EntityResolver entityResolver;
 
-    public HybridRuleAppendHandler(ContextRuleAssistant assistant, String encoding) {
+    public HybridRuleAppendHandler(ActivityRuleAssistant assistant, String encoding) {
         super(assistant);
         this.encoding = encoding;
     }
@@ -122,7 +122,7 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
     }
 
     private void saveAsAponFile(FileRuleAppender fileRuleAppender) throws IOException {
-        ContextRuleAssistant assistant = null;
+        ActivityRuleAssistant assistant = null;
         RootParameters rootParameters;
         try {
             assistant = new ShallowContextRuleAssistant();

@@ -45,7 +45,7 @@ public class InvokeAction implements Executable {
 
     private final InvokeActionRule invokeActionRule;
 
-    private Boolean requiresTranslet;
+    private volatile Boolean requiresTranslet;
 
     /**
      * Instantiates a new InvokeAction.

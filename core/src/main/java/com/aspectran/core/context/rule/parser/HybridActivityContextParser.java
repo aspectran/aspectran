@@ -17,7 +17,7 @@ package com.aspectran.core.context.rule.parser;
 
 import com.aspectran.core.context.rule.appender.HybridRuleAppendHandler;
 import com.aspectran.core.context.rule.appender.RuleAppendHandler;
-import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;
+import com.aspectran.core.context.rule.assistant.ActivityRuleAssistant;
 import com.aspectran.core.context.rule.converter.ParametersToRules;
 import com.aspectran.core.context.rule.params.AspectranParameters;
 
@@ -28,12 +28,12 @@ import com.aspectran.core.context.rule.params.AspectranParameters;
  */
 public class HybridActivityContextParser extends AbstractActivityContextParser {
 
-    public HybridActivityContextParser(ContextRuleAssistant assistant) {
+    public HybridActivityContextParser(ActivityRuleAssistant assistant) {
         super(assistant);
     }
 
     @Override
-    public ContextRuleAssistant parse(String rootFile) throws ActivityContextParserException {
+    public ActivityRuleAssistant parse(String rootFile) throws ActivityContextParserException {
         try {
             if (rootFile == null) {
                 throw new IllegalArgumentException("rootFile must not be null");
@@ -49,7 +49,7 @@ public class HybridActivityContextParser extends AbstractActivityContextParser {
     }
 
     @Override
-    public ContextRuleAssistant parse(AspectranParameters aspectranParameters) throws ActivityContextParserException {
+    public ActivityRuleAssistant parse(AspectranParameters aspectranParameters) throws ActivityContextParserException {
         try {
             if (aspectranParameters == null) {
                 throw new IllegalArgumentException("aspectranParameters must not be null");

@@ -81,7 +81,7 @@ import com.aspectran.core.context.rule.ScheduledJobRule;
 import com.aspectran.core.context.rule.SettingsAdviceRule;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.context.rule.TransletRule;
-import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;
+import com.aspectran.core.context.rule.assistant.ActivityRuleAssistant;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
 import com.aspectran.core.context.rule.type.AutowireTargetType;
 import com.aspectran.core.context.rule.type.FormatType;
@@ -123,8 +123,8 @@ public class AnnotatedConfigParser {
 
     private final AnnotatedConfigRelater configRelater;
 
-    public AnnotatedConfigParser(ContextRuleAssistant assistant, AnnotatedConfigRelater configRelater) {
-        this.environment = assistant.getContextEnvironment();
+    public AnnotatedConfigParser(ActivityRuleAssistant assistant, AnnotatedConfigRelater configRelater) {
+        this.environment = assistant.getActivityEnvironment();
         this.idBasedBeanRuleMap = assistant.getBeanRuleRegistry().getIdBasedBeanRuleMap();
         this.typeBasedBeanRuleMap = assistant.getBeanRuleRegistry().getTypeBasedBeanRuleMap();
         this.configurableBeanRuleMap = assistant.getBeanRuleRegistry().getConfigurableBeanRuleMap();

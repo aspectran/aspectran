@@ -23,7 +23,7 @@ import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.RequestRule;
 import com.aspectran.core.context.rule.ResponseRule;
 import com.aspectran.core.context.rule.TransletRule;
-import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;
+import com.aspectran.core.context.rule.assistant.ActivityRuleAssistant;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.nodelet.NodeletAdder;
 import com.aspectran.core.util.nodelet.NodeletParser;
@@ -38,7 +38,7 @@ class TransletNodeletAdder implements NodeletAdder {
     @Override
     public void add(String xpath, NodeletParser parser) {
         AspectranNodeParser nodeParser = parser.getNodeParser();
-        ContextRuleAssistant assistant = nodeParser.getAssistant();
+        ActivityRuleAssistant assistant = nodeParser.getAssistant();
 
         parser.setXpath(xpath + "/translet");
         parser.addNodelet(attrs -> {

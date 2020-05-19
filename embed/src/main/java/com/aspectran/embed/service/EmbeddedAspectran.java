@@ -15,28 +15,30 @@
  */
 package com.aspectran.embed.service;
 
+import com.aspectran.core.activity.InstantAction;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.config.AspectranConfig;
+import com.aspectran.core.context.env.Environment;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.service.AspectranServiceException;
-import com.aspectran.core.service.CoreService;
+import com.aspectran.core.support.i18n.message.NoSuchMessageException;
 import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
+import java.util.Locale;
 import java.util.Map;
-import java.util.concurrent.Callable;
 
 /**
  * The Interface EmbeddedAspectran.
  *
  * <p>Created: 2017. 10. 28.</p>
  */
-public interface EmbeddedAspectran extends CoreService {
+public interface EmbeddedAspectran {
 
     /**
      * Returns whether or not the translet can be exposed to the daemon service.
@@ -60,7 +62,7 @@ public interface EmbeddedAspectran extends CoreService {
      * @return An object that is the result of performing an instant activity
      * @since 6.5.1
      */
-    <V> V execute(Callable<V> instantAction);
+    <V> V execute(InstantAction<V> instantAction);
 
     /**
      * Executes the translet.
@@ -185,6 +187,105 @@ public interface EmbeddedAspectran extends CoreService {
     String render(String templateId, ParameterMap parameterMap, Map<String, Object> attributeMap);
 
     /**
+     * Gets the environment.
+     *
+     * @return the environment
+     */
+    Environment getEnvironment();
+
+    /**
+     * Return an instance of the bean that matches the given id.
+     *
+     * @param <V> the result type of the bean
+     * @param id the id of the bean to retrieve
+     * @return an instance of the bean
+     */
+    <V> V getBean(String id);
+
+    /**
+     * Return an instance of the bean that matches the given object type.
+     *
+     * @param <V> the result type of the bean
+     * @param type the type the bean must match; can be an interface or superclass.
+     *      {@code null} is disallowed.
+     * @return an instance of the bean
+     * @since 1.3.1
+     */
+    <V> V getBean(Class<V> type);
+
+    /**
+     * Return an instance of the bean that matches the given object type.
+     *
+     * @param <V> the result type of the bean
+     * @param type type the bean must match; can be an interface or superclass.
+     *      {@code null} is allowed.
+     * @param id the id of the bean to retrieve
+     * @return an instance of the bean
+     * @since 2.0.0
+     */
+    <V> V getBean(Class<V> type, String id);
+
+    /**
+     * Return whether a bean with the specified id is present.
+     *
+     * @param id the id of the bean to query
+     * @return whether a bean with the specified id is present
+     */
+    boolean containsBean(String id);
+
+    /**
+     * Return whether a bean with the specified object type is present.
+     *
+     * @param type the object type of the bean to query
+     * @return whether a bean with the specified type is present
+     */
+    boolean containsBean(Class<?> type);
+
+    /**
+     * Returns whether the bean corresponding to the specified object type and ID exists.
+     *
+     * @param type the object type of the bean to query
+     * @param id the id of the bean to query
+     * @return whether a bean with the specified type is present
+     */
+    boolean containsBean(Class<?> type, String id);
+
+    //---------------------------------------------------------------------
+    // Implementation of MessageSource interface
+    //---------------------------------------------------------------------
+
+    /**
+     * Try to resolve the message. Treat as an error if the message can't be found.
+     *
+     * @param code the code to lookup up, such as 'calculator.noRateSet'
+     * @param args Array of arguments that will be filled in for params within
+     *         the message (params look like "{0}", "{1,date}", "{2,time}" within a message),
+     *         or {@code null} if none.
+     * @param locale the Locale in which to do the lookup
+     * @return the resolved message
+     * @throws NoSuchMessageException if the message wasn't found
+     * @see java.text.MessageFormat
+     */
+    String getMessage(String code, Object[] args, Locale locale) throws NoSuchMessageException;
+
+    /**
+     * Try to resolve the message. Return default message if no message was found.
+     *
+     * @param code the code to lookup up, such as 'calculator.noRateSet'. Users of
+     *         this class are encouraged to base message names on the relevant fully
+     *         qualified class name, thus avoiding conflict and ensuring maximum clarity.
+     * @param args array of arguments that will be filled in for params within
+     *         the message (params look like "{0}", "{1,date}", "{2,time}" within a message),
+     *         or {@code null} if none.
+     * @param defaultMessage String to return if the lookup fails
+     * @param locale the Locale in which to do the lookup
+     * @return the resolved message if the lookup was successful;
+     *         otherwise the default message passed as a parameter
+     * @see java.text.MessageFormat
+     */
+    String getMessage(String code, Object[] args, String defaultMessage, Locale locale);
+
+    /**
      * Stop the service and release all allocated resources.
      */
     void release();
@@ -217,7 +318,8 @@ public interface EmbeddedAspectran extends CoreService {
         try {
             aspectranConfig = new AspectranConfig(aspectranConfigFile);
         } catch (IOException e) {
-            throw new AspectranServiceException("Error parsing aspectran configuration file: " + aspectranConfigFile, e);
+            throw new AspectranServiceException("Error parsing aspectran configuration file: " +
+                    aspectranConfigFile, e);
         }
         return run(aspectranConfig);
     }

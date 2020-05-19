@@ -20,7 +20,7 @@ import com.aspectran.core.context.expr.token.TokenParser;
 import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
-import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;
+import com.aspectran.core.context.rule.assistant.ActivityRuleAssistant;
 import com.aspectran.core.context.rule.type.ItemType;
 import com.aspectran.core.context.rule.type.ItemValueType;
 import com.aspectran.core.util.BooleanUtils;
@@ -44,7 +44,7 @@ class ItemNodeletAdder implements NodeletAdder {
     @Override
     public void add(String xpath, NodeletParser parser) {
         AspectranNodeParser nodeParser = parser.getNodeParser();
-        ContextRuleAssistant assistant = nodeParser.getAssistant();
+        ActivityRuleAssistant assistant = nodeParser.getAssistant();
 
         parser.setXpath(xpath + "/item");
         parser.addNodelet(attrs -> {

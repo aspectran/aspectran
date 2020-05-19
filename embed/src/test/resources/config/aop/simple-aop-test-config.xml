@@ -9,6 +9,8 @@
 
     <bean scan="com.aspectran.aop.*TestAction"/>
 
+    <bean scan="com.aspectran.aop.*TestBean"/>
+
     <bean scan="com.aspectran.aop.*Aspect"/>
 
     <bean id="simpleAopTestAdvice" class="com.aspectran.aop.SimpleAopTestAdvice"/>
@@ -20,6 +22,35 @@
             }
         </joinpoint>
         <advice bean="simpleAopTestAdvice">
+            <before>
+                <invoke method="begin"/>
+            </before>
+            <after>
+                <invoke method="end"/>
+            </after>
+            <finally>
+                <thrown>
+                    <invoke method="thrown"/>
+                </thrown>
+                <invoke method="close"/>
+            </finally>
+        </advice>
+        <exception>
+            <thrown>
+                <action bean="simpleAopTestAdvice" method="globalExceptionHandling"/>
+            </thrown>
+        </exception>
+    </aspect>
+
+    <bean id="instantActivityAopTestAdvice" class="com.aspectran.aop.InstantActivityAopTestAdvice"/>
+
+    <aspect id="aspect03" order="1" disabled="false">
+        <joinpoint>
+            pointcut: {
+                +: **@class:com.aspectran.aop.InstantActivityTestBean
+            }
+        </joinpoint>
+        <advice bean="instantActivityAopTestAdvice">
             <before>
                 <invoke method="begin"/>
             </before>

@@ -18,7 +18,7 @@ package com.aspectran.core.context.rule.parser;
 import com.aspectran.core.context.rule.appender.FileRuleAppender;
 import com.aspectran.core.context.rule.appender.ResourceRuleAppender;
 import com.aspectran.core.context.rule.appender.RuleAppender;
-import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;
+import com.aspectran.core.context.rule.assistant.ActivityRuleAssistant;
 import com.aspectran.core.context.rule.type.AppendableFileFormatType;
 import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.core.util.logging.Logger;
@@ -33,7 +33,7 @@ public abstract class AbstractActivityContextParser implements ActivityContextPa
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private final ContextRuleAssistant assistant;
+    private final ActivityRuleAssistant assistant;
 
     private String encoding;
 
@@ -41,12 +41,12 @@ public abstract class AbstractActivityContextParser implements ActivityContextPa
 
     private boolean debugMode;
 
-    public AbstractActivityContextParser(ContextRuleAssistant assistant) {
+    public AbstractActivityContextParser(ActivityRuleAssistant assistant) {
         this.assistant = assistant;
     }
 
     @Override
-    public ContextRuleAssistant getContextRuleAssistant() {
+    public ActivityRuleAssistant getContextRuleAssistant() {
         return assistant;
     }
 

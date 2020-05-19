@@ -36,7 +36,7 @@ import java.util.List;
  * 
  * <p>Created: 2008. 04. 01 PM 10:25:35</p>
  */
-public class ShallowContextRuleAssistant extends ContextRuleAssistant {
+public class ShallowContextRuleAssistant extends ActivityRuleAssistant {
 
     private List<AspectRule> aspectRules;
 

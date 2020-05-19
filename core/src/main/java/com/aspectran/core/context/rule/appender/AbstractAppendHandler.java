@@ -15,9 +15,9 @@
  */
 package com.aspectran.core.context.rule.appender;
 
-import com.aspectran.core.context.env.ContextEnvironment;
+import com.aspectran.core.context.env.ActivityEnvironment;
 import com.aspectran.core.context.rule.AppendRule;
-import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;
+import com.aspectran.core.context.rule.assistant.ActivityRuleAssistant;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
@@ -32,9 +32,9 @@ abstract class AbstractAppendHandler implements RuleAppendHandler {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private final ContextRuleAssistant assistant;
+    private final ActivityRuleAssistant assistant;
 
-    private final ContextEnvironment environment;
+    private final ActivityEnvironment environment;
 
     private List<RuleAppender> pendingList;
 
@@ -44,13 +44,13 @@ abstract class AbstractAppendHandler implements RuleAppendHandler {
 
     private boolean debugMode;
 
-    AbstractAppendHandler(ContextRuleAssistant assistant) {
+    AbstractAppendHandler(ActivityRuleAssistant assistant) {
         this.assistant = assistant;
-        this.environment = assistant.getContextEnvironment();
+        this.environment = assistant.getActivityEnvironment();
     }
 
     @Override
-    public ContextRuleAssistant getContextRuleAssistant() {
+    public ActivityRuleAssistant getContextRuleAssistant() {
         return assistant;
     }
 

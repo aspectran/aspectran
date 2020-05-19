@@ -53,9 +53,9 @@ public interface ActivityContext {
     ApplicationAdapter getApplicationAdapter();
 
     /**
-     * Gets the context environment.
+     * Gets the environment.
      *
-     * @return the context environment
+     * @return the environment
      */
     Environment getEnvironment();
 
@@ -149,6 +149,11 @@ public interface ActivityContext {
      */
     void removeCurrentActivity();
 
+    /**
+     * Returns whether there is current activity.
+     *
+     * @return {@code true} if there is current activity, {@code false} otherwise
+     */
     boolean hasCurrentActivity();
 
 }

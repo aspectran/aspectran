@@ -19,7 +19,7 @@ import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.DescriptionRule;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
-import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;
+import com.aspectran.core.context.rule.assistant.ActivityRuleAssistant;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.nodelet.NodeletAdder;
 import com.aspectran.core.util.nodelet.NodeletParser;
@@ -40,7 +40,7 @@ class InnerBeanNodeletAdder implements NodeletAdder {
     @Override
     public void add(String xpath, NodeletParser parser) {
         AspectranNodeParser nodeParser = parser.getNodeParser();
-        ContextRuleAssistant assistant = nodeParser.getAssistant();
+        ActivityRuleAssistant assistant = nodeParser.getAssistant();
 
         parser.setXpath(xpath + "/bean");
         parser.addNodelet(attrs -> {

@@ -24,6 +24,7 @@ import com.aspectran.core.adapter.DefaultSessionAdapter;
 import com.aspectran.core.util.OutputStringWriter;
 import com.aspectran.embed.adapter.AspectranRequestAdapter;
 import com.aspectran.embed.adapter.AspectranResponseAdapter;
+import com.aspectran.embed.service.AbstractEmbeddedAspectran;
 import com.aspectran.embed.service.EmbeddedAspectran;
 
 import java.io.Writer;
@@ -49,7 +50,7 @@ public class AspectranActivity extends CoreActivity {
      *
      * @param aspectran the embedded aspectran
      */
-    public AspectranActivity(EmbeddedAspectran aspectran) {
+    public AspectranActivity(AbstractEmbeddedAspectran aspectran) {
         this(aspectran, null);
     }
 
@@ -59,7 +60,7 @@ public class AspectranActivity extends CoreActivity {
      * @param aspectran the embedded aspectran
      * @param outputWriter the output writer
      */
-    public AspectranActivity(EmbeddedAspectran aspectran, Writer outputWriter) {
+    public AspectranActivity(AbstractEmbeddedAspectran aspectran, Writer outputWriter) {
         super(aspectran.getActivityContext());
 
         this.aspectran = aspectran;

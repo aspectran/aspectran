@@ -58,7 +58,7 @@ class AnnotatedConfigurationTest {
 
     @Test
     void firstTest() {
-        ThirdResult thirdResult = aspectran.getActivityContext().getBeanRegistry().getBean("thirdResult");
+        ThirdResult thirdResult = aspectran.getBean("thirdResult");
         assertEquals(thirdResult.getMessage(), "This is a second bean.");
     }
 

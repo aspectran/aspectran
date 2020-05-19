@@ -54,8 +54,6 @@ import com.aspectran.core.support.i18n.locale.LocaleResolver;
 import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
 
-import java.util.concurrent.Callable;
-
 /**
  * Core activity that handles all external requests.
  *
@@ -215,7 +213,7 @@ public class CoreActivity extends AdviceActivity {
     }
 
     @Override
-    public <V> V perform(Callable<V> instantAction) throws ActivityPerformException {
+    public <V> V perform(InstantAction<V> instantAction) throws ActivityPerformException {
         V result = null;
         ForwardRule forwardRule = null;
         try {
@@ -250,7 +248,7 @@ public class CoreActivity extends AdviceActivity {
                 }
 
                 if (instantAction != null) {
-                    result = instantAction.call();
+                    result = instantAction.execute();
                 }
 
                 setCurrentAspectAdviceType(AspectAdviceType.AFTER);
@@ -338,7 +336,7 @@ public class CoreActivity extends AdviceActivity {
         return null;
     }
 
-    private <V> V forward(ForwardRule forwardRule, Callable<V> instantAction)
+    private <V> V forward(ForwardRule forwardRule, InstantAction<V> instantAction)
             throws TransletNotFoundException, ActivityPrepareException, ActivityPerformException {
         if (logger.isDebugEnabled()) {
             logger.debug("Forwarding from " + translet.getRequestName() + " to " +
@@ -354,8 +352,7 @@ public class CoreActivity extends AdviceActivity {
 
     private void exception() throws ActionExecutionException {
         if (logger.isDebugEnabled()) {
-            logger.debug("Exception handling request to " + translet.getRequestName() + "; Cause: " +
-                    getRootCauseOfRaisedException());
+            logger.debug("Exception handling due to " + getRootCauseOfRaisedException());
         }
 
         reserveResponse(null);

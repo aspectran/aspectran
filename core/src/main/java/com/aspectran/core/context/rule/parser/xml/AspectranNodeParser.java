@@ -20,7 +20,7 @@ import com.aspectran.core.context.rule.DescriptionRule;
 import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.context.rule.appender.RuleAppendHandler;
 import com.aspectran.core.context.rule.appender.RuleAppender;
-import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;
+import com.aspectran.core.context.rule.assistant.ActivityRuleAssistant;
 import com.aspectran.core.util.ExceptionUtils;
 import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
@@ -39,7 +39,7 @@ public class AspectranNodeParser {
 
     private static final Logger logger = LoggerFactory.getLogger(AspectranNodeParser.class);
 
-    private final ContextRuleAssistant assistant;
+    private final ActivityRuleAssistant assistant;
 
     private final ActionNodeletAdder actionNodeletAdder;
 
@@ -74,7 +74,7 @@ public class AspectranNodeParser {
      *
      * @param assistant the assistant for Context Builder
      */
-    public AspectranNodeParser(ContextRuleAssistant assistant) {
+    public AspectranNodeParser(ActivityRuleAssistant assistant) {
         this(assistant, true, true);
     }
 
@@ -87,7 +87,7 @@ public class AspectranNodeParser {
      * @param trackingLocation true if tracing the location of the node being
      *      parsed; false otherwise
      */
-    public AspectranNodeParser(ContextRuleAssistant assistant, boolean validating, boolean trackingLocation) {
+    public AspectranNodeParser(ActivityRuleAssistant assistant, boolean validating, boolean trackingLocation) {
         this.assistant = assistant;
         this.actionNodeletAdder = new ActionNodeletAdder();
         this.aspectAdviceInnerNodeletAdder = new AspectAdviceInnerNodeletAdder();
@@ -130,7 +130,7 @@ public class AspectranNodeParser {
         addAppendNodelets();
     }
 
-    public ContextRuleAssistant getAssistant() {
+    public ActivityRuleAssistant getAssistant() {
         return assistant;
     }
 

@@ -24,18 +24,18 @@ import com.aspectran.core.component.aspect.pointcut.Pointcut;
 import com.aspectran.core.component.aspect.pointcut.PointcutFactory;
 import com.aspectran.core.component.aspect.pointcut.PointcutPattern;
 import com.aspectran.core.component.bean.BeanRuleRegistry;
-import com.aspectran.core.component.bean.ContextualBeanRegistry;
+import com.aspectran.core.component.bean.DefaultBeanRegistry;
 import com.aspectran.core.component.schedule.ScheduleRuleRegistry;
-import com.aspectran.core.component.template.ContextualTemplateRenderer;
+import com.aspectran.core.component.template.DefaultTemplateRenderer;
 import com.aspectran.core.component.template.TemplateRuleRegistry;
 import com.aspectran.core.component.translet.TransletRuleRegistry;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.AspectranActivityContext;
+import com.aspectran.core.context.DefaultActivityContext;
 import com.aspectran.core.context.builder.reload.ActivityContextReloader;
 import com.aspectran.core.context.config.ContextAutoReloadConfig;
 import com.aspectran.core.context.config.ContextConfig;
 import com.aspectran.core.context.config.ContextProfilesConfig;
-import com.aspectran.core.context.env.ContextEnvironment;
+import com.aspectran.core.context.env.ActivityEnvironment;
 import com.aspectran.core.context.resource.AspectranClassLoader;
 import com.aspectran.core.context.resource.InvalidResourceException;
 import com.aspectran.core.context.rule.AspectRule;
@@ -44,9 +44,9 @@ import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.PointcutPatternRule;
 import com.aspectran.core.context.rule.PointcutRule;
+import com.aspectran.core.context.rule.assistant.ActivityRuleAssistant;
 import com.aspectran.core.context.rule.assistant.BeanReferenceException;
 import com.aspectran.core.context.rule.assistant.BeanReferenceInspector;
-import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;
 import com.aspectran.core.context.rule.params.AspectranParameters;
 import com.aspectran.core.context.rule.type.AutoReloadType;
 import com.aspectran.core.context.rule.type.BeanProxifierType;
@@ -314,8 +314,8 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
         return new DefaultApplicationAdapter(basePath, acl);
     }
 
-    protected ContextEnvironment createContextEnvironment() {
-        ContextEnvironment environment = new ContextEnvironment();
+    protected ActivityEnvironment createContextEnvironment() {
+        ActivityEnvironment environment = new ActivityEnvironment();
         if (activeProfiles != null) {
             environment.setActiveProfiles(activeProfiles);
         }
@@ -331,17 +331,17 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
     /**
      * Returns a new instance of ActivityContext.
      *
-     * @param assistant the context rule assistant
+     * @param assistant the activity rule assistant
      * @return the activity context
      * @throws BeanReferenceException will be thrown when cannot resolve reference to bean
      * @throws IllegalRuleException if an illegal rule is found
      */
-    protected ActivityContext createActivityContext(ContextRuleAssistant assistant)
+    protected ActivityContext createActivityContext(ActivityRuleAssistant assistant)
             throws BeanReferenceException, IllegalRuleException {
         initContextEnvironment(assistant);
 
-        AspectranActivityContext activityContext = new AspectranActivityContext(
-                assistant.getApplicationAdapter(), assistant.getContextEnvironment());
+        DefaultActivityContext activityContext = new DefaultActivityContext(
+                assistant.getApplicationAdapter(), assistant.getActivityEnvironment());
         activityContext.setDescriptionRule(assistant.getAssistantLocal().getDescriptionRule());
 
         AspectRuleRegistry aspectRuleRegistry = assistant.getAspectRuleRegistry();
@@ -356,20 +356,20 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
 
         BeanProxifierType beanProxifierType = BeanProxifierType.resolve(
                 (String)assistant.getSetting(DefaultSettingType.BEAN_PROXIFIER));
-        ContextualBeanRegistry contextualBeanRegistry = new ContextualBeanRegistry(
+        DefaultBeanRegistry defaultBeanRegistry = new DefaultBeanRegistry(
                 activityContext, beanRuleRegistry, beanProxifierType);
 
         TemplateRuleRegistry templateRuleRegistry = assistant.getTemplateRuleRegistry();
-        ContextualTemplateRenderer contextualTemplateRenderer = new ContextualTemplateRenderer(
+        DefaultTemplateRenderer defaultTemplateRenderer = new DefaultTemplateRenderer(
                 activityContext, templateRuleRegistry);
 
         ScheduleRuleRegistry scheduleRuleRegistry = assistant.getScheduleRuleRegistry();
         TransletRuleRegistry transletRuleRegistry = assistant.getTransletRuleRegistry();
 
         activityContext.setAspectRuleRegistry(aspectRuleRegistry);
-        activityContext.setContextualBeanRegistry(contextualBeanRegistry);
+        activityContext.setDefaultBeanRegistry(defaultBeanRegistry);
         activityContext.setScheduleRuleRegistry(scheduleRuleRegistry);
-        activityContext.setContextualTemplateRenderer(contextualTemplateRenderer);
+        activityContext.setDefaultTemplateRenderer(defaultTemplateRenderer);
         activityContext.setTransletRuleRegistry(transletRuleRegistry);
         return activityContext;
     }
@@ -400,8 +400,8 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
         return aspectranClassLoader;
     }
 
-    private void initContextEnvironment(ContextRuleAssistant assistant) {
-        ContextEnvironment environment = assistant.getContextEnvironment();
+    private void initContextEnvironment(ActivityRuleAssistant assistant) {
+        ActivityEnvironment environment = assistant.getActivityEnvironment();
         for (EnvironmentRule environmentRule : assistant.getEnvironmentRules()) {
             String[] profiles = StringUtils.splitCommaDelimitedString(environmentRule.getProfile());
             if (environment.acceptsProfiles(profiles)) {
@@ -420,9 +420,9 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
     /**
      * Initialize the aspect rule registry.
      *
-     * @param assistant the context rule assistant
+     * @param assistant the activity rule assistant
      */
-    private void initAspectRuleRegistry(ContextRuleAssistant assistant) {
+    private void initAspectRuleRegistry(ActivityRuleAssistant assistant) {
         AspectRuleRegistry aspectRuleRegistry = assistant.getAspectRuleRegistry();
         BeanRuleRegistry beanRuleRegistry = assistant.getBeanRuleRegistry();
         TransletRuleRegistry transletRuleRegistry = assistant.getTransletRuleRegistry();

@@ -79,6 +79,13 @@ public interface BeanRegistry {
      */
     boolean containsBean(Class<?> type);
 
+    /**
+     * Returns whether the bean corresponding to the specified object type and ID exists.
+     *
+     * @param type the object type of the bean to query
+     * @param id the id of the bean to query
+     * @return whether a bean with the specified type is present
+     */
     boolean containsBean(Class<?> type, String id);
 
     Collection<Class<?>> findConfigBeanClassesWithAnnotation(Class<? extends Annotation> annotationType);

@@ -48,7 +48,7 @@ import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
 import com.aspectran.core.context.rule.ability.ResponseRuleApplicable;
 import com.aspectran.core.context.rule.appender.RuleAppendHandler;
-import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;
+import com.aspectran.core.context.rule.assistant.ActivityRuleAssistant;
 import com.aspectran.core.context.rule.params.ActionParameters;
 import com.aspectran.core.context.rule.params.AdviceActionParameters;
 import com.aspectran.core.context.rule.params.AdviceParameters;
@@ -98,9 +98,9 @@ import java.util.List;
  */
 public class ParametersToRules {
 
-    private final ContextRuleAssistant assistant;
+    private final ActivityRuleAssistant assistant;
 
-    public ParametersToRules(ContextRuleAssistant assistant) {
+    public ParametersToRules(ActivityRuleAssistant assistant) {
         this.assistant = assistant;
     }
 

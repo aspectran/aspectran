@@ -24,7 +24,6 @@ import com.aspectran.core.context.rule.ExceptionRule;
 import com.aspectran.core.context.rule.SettingsAdviceRule;
 
 import java.util.List;
-import java.util.concurrent.Callable;
 
 /**
  * Default activity to handle all internal requests.
@@ -51,7 +50,7 @@ public class DefaultActivity extends AbstractActivity {
     }
 
     @Override
-    public <V> V perform(Callable<V> instantAction) {
+    public <V> V perform(InstantAction<V> instantAction) {
         throw new UnsupportedOperationException();
     }
 

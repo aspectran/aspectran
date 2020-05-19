@@ -25,7 +25,7 @@ import com.aspectran.core.context.rule.ability.Replicable;
  */
 public class AssistantLocal implements Replicable<AssistantLocal> {
 
-    private final ContextRuleAssistant assistant;
+    private final ActivityRuleAssistant assistant;
 
     private DescriptionRule descriptionRule;
 
@@ -33,16 +33,16 @@ public class AssistantLocal implements Replicable<AssistantLocal> {
 
     private final int replicatedCount;
 
-    public AssistantLocal(ContextRuleAssistant assistant) {
+    public AssistantLocal(ActivityRuleAssistant assistant) {
         this(assistant, 0);
     }
 
-    private AssistantLocal(ContextRuleAssistant assistant, int replicatedCount) {
+    private AssistantLocal(ActivityRuleAssistant assistant, int replicatedCount) {
         this.assistant = assistant;
         this.replicatedCount = replicatedCount;
     }
 
-    public ContextRuleAssistant getAssistant() {
+    public ActivityRuleAssistant getAssistant() {
         return assistant;
     }
 

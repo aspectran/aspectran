@@ -31,11 +31,11 @@ import java.util.Locale;
 import java.util.Map;
 
 /**
- * The Class ContextualTemplateRenderer.
+ * The Class DefaultTemplateRenderer.
  *
  * <p>Created: 2016. 1. 14.</p>
  */
-public class ContextualTemplateRenderer extends AbstractComponent implements TemplateRenderer {
+public class DefaultTemplateRenderer extends AbstractComponent implements TemplateRenderer {
 
     private final ActivityContext context;
 
@@ -47,7 +47,7 @@ public class ContextualTemplateRenderer extends AbstractComponent implements Tem
      * @param context the activity context
      * @param templateRuleRegistry the template rule registry
      */
-    public ContextualTemplateRenderer(ActivityContext context, TemplateRuleRegistry templateRuleRegistry) {
+    public DefaultTemplateRenderer(ActivityContext context, TemplateRuleRegistry templateRuleRegistry) {
         this.context = context;
         this.templateRuleRegistry = templateRuleRegistry;
     }

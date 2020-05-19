@@ -36,7 +36,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * <p>Created: 2017. 12. 3.</p>
  */
-class ContextEnvironmentTest {
+class ActivityEnvironmentTest {
 
     @Test
     void testEvaluateAsString() throws ActivityContextBuilderException, ActivityPerformException {

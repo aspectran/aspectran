@@ -21,10 +21,14 @@ import com.aspectran.core.component.session.SessionAgent;
 import com.aspectran.core.component.session.SessionManager;
 import com.aspectran.core.context.config.EmbedConfig;
 import com.aspectran.core.context.config.SessionManagerConfig;
+import com.aspectran.core.context.env.Environment;
 import com.aspectran.core.service.AspectranCoreService;
 import com.aspectran.core.service.AspectranServiceException;
+import com.aspectran.core.support.i18n.message.NoSuchMessageException;
 import com.aspectran.core.util.Assert;
 import com.aspectran.embed.adapter.AspectranSessionAdapter;
+
+import java.util.Locale;
 
 /**
  * Provides an interface that can be used by embedding Aspectran in Java applications.
@@ -90,6 +94,59 @@ public abstract class AbstractEmbeddedAspectran extends AspectranCoreService imp
             sessionManager.destroy();
             sessionManager = null;
         }
+    }
+
+    @Override
+    public Environment getEnvironment() {
+        return getActivityContext().getEnvironment();
+    }
+
+    //---------------------------------------------------------------------
+    // Implementation of BeanRegistry interface
+    //---------------------------------------------------------------------
+
+    @Override
+    public <V> V getBean(String id) {
+        return getActivityContext().getBeanRegistry().getBean(id);
+    }
+
+    @Override
+    public <V> V getBean(Class<V> type) {
+        return getActivityContext().getBeanRegistry().getBean(type);
+    }
+
+    @Override
+    public <V> V getBean(Class<V> type, String id) {
+        return getActivityContext().getBeanRegistry().getBean(type, id);
+    }
+
+    @Override
+    public boolean containsBean(String id) {
+        return getActivityContext().getBeanRegistry().containsBean(id);
+    }
+
+    @Override
+    public boolean containsBean(Class<?> type) {
+        return getActivityContext().getBeanRegistry().containsBean(type);
+    }
+
+    @Override
+    public boolean containsBean(Class<?> type, String id) {
+        return getActivityContext().getBeanRegistry().containsBean(type, id);
+    }
+
+    //---------------------------------------------------------------------
+    // Implementation of MessageSource interface
+    //---------------------------------------------------------------------
+
+    @Override
+    public String getMessage(String code, Object[] args, Locale locale) throws NoSuchMessageException {
+        return getActivityContext().getMessageSource().getMessage(code, args, locale);
+    }
+
+    @Override
+    public String getMessage(String code, Object[] args, String defaultMessage, Locale locale) {
+        return getActivityContext().getMessageSource().getMessage(code, args, defaultMessage, locale);
     }
 
 }

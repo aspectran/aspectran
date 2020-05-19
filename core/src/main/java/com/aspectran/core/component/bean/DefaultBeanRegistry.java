@@ -26,14 +26,14 @@ import java.lang.reflect.Array;
 import java.util.Collection;
 
 /**
- * The Class ContextualBeanRegistry.
+ * The Class DefaultBeanRegistry.
  * 
  * <p>Created: 2009. 03. 09 PM 23:48:09</p>
  */
-public class ContextualBeanRegistry extends AbstractBeanRegistry {
+public class DefaultBeanRegistry extends AbstractBeanRegistry {
 
-    public ContextualBeanRegistry(ActivityContext context, BeanRuleRegistry beanRuleRegistry,
-                                  BeanProxifierType beanProxifierType) {
+    public DefaultBeanRegistry(ActivityContext context, BeanRuleRegistry beanRuleRegistry,
+                               BeanProxifierType beanProxifierType) {
         super(context, beanRuleRegistry, beanProxifierType);
     }
 

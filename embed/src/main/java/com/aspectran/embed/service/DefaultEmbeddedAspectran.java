@@ -16,6 +16,7 @@
 package com.aspectran.embed.service;
 
 import com.aspectran.core.activity.ActivityTerminatedException;
+import com.aspectran.core.activity.InstantAction;
 import com.aspectran.core.activity.InstantActivity;
 import com.aspectran.core.activity.InstantActivityException;
 import com.aspectran.core.activity.Translet;
@@ -31,7 +32,6 @@ import com.aspectran.core.util.logging.LoggerFactory;
 import com.aspectran.embed.activity.AspectranActivity;
 
 import java.util.Map;
-import java.util.concurrent.Callable;
 
 import static com.aspectran.core.context.config.AspectranConfig.DEFAULT_APP_CONFIG_ROOT_FILE;
 
@@ -51,7 +51,7 @@ public class DefaultEmbeddedAspectran extends AbstractEmbeddedAspectran {
     }
 
     @Override
-    public <V> V execute(Callable<V> instantAction) {
+    public <V> V execute(InstantAction<V> instantAction) {
         try {
             InstantActivity activity = new InstantActivity(getActivityContext());
             return activity.perform(instantAction);

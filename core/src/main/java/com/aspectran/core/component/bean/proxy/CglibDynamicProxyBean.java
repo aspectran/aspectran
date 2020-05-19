@@ -16,6 +16,8 @@
 package com.aspectran.core.component.bean.proxy;
 
 import com.aspectran.core.activity.Activity;
+import com.aspectran.core.activity.InstantActivity;
+import com.aspectran.core.activity.InstantActivityException;
 import com.aspectran.core.component.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.BeanRule;
@@ -36,7 +38,6 @@ public class CglibDynamicProxyBean extends AbstractDynamicProxyBean implements M
 
     private CglibDynamicProxyBean(ActivityContext context, BeanRule beanRule) {
         super(context.getAspectRuleRegistry());
-
         this.context = context;
         this.beanRule = beanRule;
     }
@@ -46,17 +47,27 @@ public class CglibDynamicProxyBean extends AbstractDynamicProxyBean implements M
         if (isAvoidAdvice(method)) {
             return methodProxy.invokeSuper(proxy, args);
         }
+        if (context.hasCurrentActivity()) {
+            Activity activity = context.getCurrentActivity();
+            return intercept(proxy, method, args, methodProxy, activity);
+        } else {
+            try {
+                Activity activity = new InstantActivity(context);
+                return activity.perform(() -> intercept(proxy, method, args, methodProxy, activity));
+            } catch (Exception e) {
+                throw new InstantActivityException(e);
+            }
+        }
+    }
 
-        Activity activity = context.getCurrentActivity();
+    public Object intercept(Object proxy, Method method, Object[] args, MethodProxy methodProxy, Activity activity) throws Throwable {
         String beanId = beanRule.getId();
         String className = beanRule.getClassName();
         String methodName = method.getName();
-
         AspectAdviceRuleRegistry aarr = getAspectAdviceRuleRegistry(activity, beanId, className, methodName);
         if (aarr == null) {
             return methodProxy.invokeSuper(proxy, args);
         }
-
         try {
             try {
                 beforeAdvice(aarr.getBeforeAdviceRuleList(), beanRule, activity);

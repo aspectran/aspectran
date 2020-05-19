@@ -32,7 +32,7 @@ import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.context.rule.ScheduleRule;
 import com.aspectran.core.context.rule.TransletRule;
-import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;
+import com.aspectran.core.context.rule.assistant.ActivityRuleAssistant;
 import com.aspectran.core.context.rule.params.FilterParameters;
 import com.aspectran.core.context.rule.type.ScopeType;
 import com.aspectran.core.util.ClassUtils;
@@ -351,7 +351,7 @@ public class BeanRuleRegistry {
         }
     }
 
-    public void postProcess(ContextRuleAssistant assistant) throws IllegalRuleException {
+    public void postProcess(ActivityRuleAssistant assistant) throws IllegalRuleException {
         if (!postProcessBeanRuleMap.isEmpty()) {
             for (BeanRule beanRule : postProcessBeanRuleMap) {
                 if (!beanRule.isInnerBean() && beanRule.getId() != null) {
@@ -380,7 +380,7 @@ public class BeanRuleRegistry {
         parseAnnotatedConfig(assistant);
     }
 
-    private void parseAnnotatedConfig(ContextRuleAssistant assistant) throws IllegalRuleException {
+    private void parseAnnotatedConfig(ActivityRuleAssistant assistant) throws IllegalRuleException {
         AnnotatedConfigRelater relater = new AnnotatedConfigRelater() {
             @Override
             public void relate(Class<?> targetBeanClass, BeanRule beanRule) throws IllegalRuleException {

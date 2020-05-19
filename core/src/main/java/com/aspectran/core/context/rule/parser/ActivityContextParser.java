@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.context.rule.parser;
 
-import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;
+import com.aspectran.core.context.rule.assistant.ActivityRuleAssistant;
 import com.aspectran.core.context.rule.params.AspectranParameters;
 
 /**
@@ -25,7 +25,7 @@ import com.aspectran.core.context.rule.params.AspectranParameters;
  */
 public interface ActivityContextParser {
 
-    ContextRuleAssistant getContextRuleAssistant();
+    ActivityRuleAssistant getContextRuleAssistant();
 
     void setEncoding(String encoding);
 
@@ -33,8 +33,8 @@ public interface ActivityContextParser {
 
     void setDebugMode(boolean debugMode);
 
-    ContextRuleAssistant parse(String rootFile) throws ActivityContextParserException;
+    ActivityRuleAssistant parse(String rootFile) throws ActivityContextParserException;
 
-    ContextRuleAssistant parse(AspectranParameters aspectranParameters) throws ActivityContextParserException;
+    ActivityRuleAssistant parse(AspectranParameters aspectranParameters) throws ActivityContextParserException;
 
 }

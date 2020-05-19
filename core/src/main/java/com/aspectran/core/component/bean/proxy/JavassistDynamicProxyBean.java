@@ -16,6 +16,8 @@
 package com.aspectran.core.component.bean.proxy;
 
 import com.aspectran.core.activity.Activity;
+import com.aspectran.core.activity.InstantActivity;
+import com.aspectran.core.activity.InstantActivityException;
 import com.aspectran.core.component.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.BeanRule;
@@ -37,7 +39,6 @@ public class JavassistDynamicProxyBean extends AbstractDynamicProxyBean implemen
 
     private JavassistDynamicProxyBean(ActivityContext context, BeanRule beanRule) {
         super(context.getAspectRuleRegistry());
-
         this.context = context;
         this.beanRule = beanRule;
     }
@@ -47,17 +48,27 @@ public class JavassistDynamicProxyBean extends AbstractDynamicProxyBean implemen
         if (isAvoidAdvice(overridden)) {
             return proceed.invoke(self, args);
         }
+        if (context.hasCurrentActivity()) {
+            Activity activity = context.getCurrentActivity();
+            return invoke(self, overridden, proceed, args, activity);
+        } else {
+            try {
+                Activity activity = new InstantActivity(context);
+                return activity.perform(() -> invoke(self, overridden, proceed, args, activity));
+            } catch (Exception e) {
+                throw new InstantActivityException(e);
+            }
+        }
+    }
 
-        Activity activity = context.getCurrentActivity();
+    public Object invoke(Object self, Method overridden, Method proceed, Object[] args, Activity activity) throws Exception {
         String beanId = beanRule.getId();
         String className = beanRule.getClassName();
         String methodName = overridden.getName();
-
         AspectAdviceRuleRegistry aarr = getAspectAdviceRuleRegistry(activity, beanId, className, methodName);
         if (aarr == null) {
             return proceed.invoke(self, args);
         }
-
         try {
             try {
                 beforeAdvice(aarr.getBeforeAdviceRuleList(), beanRule, activity);

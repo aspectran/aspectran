@@ -80,13 +80,18 @@ abstract class AbstractBeanFactory extends AbstractComponent {
     }
 
     protected Object createBean(BeanRule beanRule) {
-        Activity activity = context.getCurrentActivity();
-        return createBean(beanRule, null, activity);
+        return createBean(beanRule, null);
     }
 
     protected Object createBean(BeanRule beanRule, Scope scope) {
         Activity activity = context.getCurrentActivity();
-        return createBean(beanRule, scope, activity);
+        Object bean;
+        if (beanRule.isFactoryOffered()) {
+            bean = createOfferedFactoryBean(beanRule, scope, activity);
+        } else {
+            bean = createNormalBean(beanRule, scope, activity);
+        }
+        return bean;
     }
 
     protected Object getFactoryProducedObject(BeanRule beanRule, Object bean) {
@@ -100,15 +105,15 @@ abstract class AbstractBeanFactory extends AbstractComponent {
         }
     }
 
-    protected Object createBean(BeanRule beanRule, Scope scope, Activity activity) {
-        Object bean;
-        if (beanRule.isFactoryOffered()) {
-            bean = createOfferedFactoryBean(beanRule, scope, activity);
-        } else {
-            bean = createNormalBean(beanRule, scope, activity);
-        }
-        return bean;
-    }
+//    protected Object createBean(BeanRule beanRule, Scope scope, Activity activity) {
+//        Object bean;
+//        if (beanRule.isFactoryOffered()) {
+//            bean = createOfferedFactoryBean(beanRule, scope, activity);
+//        } else {
+//            bean = createNormalBean(beanRule, scope, activity);
+//        }
+//        return bean;
+//    }
 
     private Object createNormalBean(BeanRule beanRule, Scope scope, Activity activity) {
         try {

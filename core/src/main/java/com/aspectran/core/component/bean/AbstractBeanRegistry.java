@@ -288,23 +288,28 @@ abstract class AbstractBeanRegistry extends AbstractBeanFactory implements BeanR
         }
 
         Activity activity = getActivityContext().getDefaultActivity();
-        for (BeanRule beanRule : beanRuleRegistry.getIdBasedBeanRules()) {
-            instantiateSingleton(beanRule, activity);
-        }
-        for (Set<BeanRule> beanRuleSet : beanRuleRegistry.getTypeBasedBeanRules()) {
-            for (BeanRule beanRule : beanRuleSet) {
-                instantiateSingleton(beanRule, activity);
+        getActivityContext().setCurrentActivity(activity);
+        try {
+            for (BeanRule beanRule : beanRuleRegistry.getIdBasedBeanRules()) {
+                instantiateSingleton(beanRule);
             }
-        }
-        for (BeanRule beanRule : beanRuleRegistry.getConfigurableBeanRules()) {
-            instantiateSingleton(beanRule, activity);
+            for (Set<BeanRule> beanRuleSet : beanRuleRegistry.getTypeBasedBeanRules()) {
+                for (BeanRule beanRule : beanRuleSet) {
+                    instantiateSingleton(beanRule);
+                }
+            }
+            for (BeanRule beanRule : beanRuleRegistry.getConfigurableBeanRules()) {
+                instantiateSingleton(beanRule);
+            }
+        } finally {
+            getActivityContext().removeCurrentActivity();
         }
     }
 
-    private void instantiateSingleton(BeanRule beanRule, Activity activity) {
+    private void instantiateSingleton(BeanRule beanRule) {
         if (beanRule.isSingleton() && !beanRule.isLazyInit()
                 && !singletonScope.containsBeanRule(beanRule)) {
-            createBean(beanRule, singletonScope, activity);
+            createBean(beanRule, singletonScope);
         }
     }
 

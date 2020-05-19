@@ -52,8 +52,8 @@ import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.appender.RuleAppender;
+import com.aspectran.core.context.rule.assistant.ActivityRuleAssistant;
 import com.aspectran.core.context.rule.assistant.AssistantLocal;
-import com.aspectran.core.context.rule.assistant.ContextRuleAssistant;
 import com.aspectran.core.context.rule.assistant.DefaultSettings;
 import com.aspectran.core.context.rule.params.ActionParameters;
 import com.aspectran.core.context.rule.params.AdviceActionParameters;
@@ -118,13 +118,13 @@ public class RulesToParameters {
     private RulesToParameters() {
     }
 
-    public static RootParameters toRootParameters(ContextRuleAssistant assistant) {
+    public static RootParameters toRootParameters(ActivityRuleAssistant assistant) {
         RootParameters rootParameters = new RootParameters();
         rootParameters.putValue(RootParameters.aspectran, toAspectranParameters(assistant));
         return rootParameters;
     }
 
-    private static AspectranParameters toAspectranParameters(ContextRuleAssistant assistant) {
+    private static AspectranParameters toAspectranParameters(ActivityRuleAssistant assistant) {
         AspectranParameters aspectranParameters = new AspectranParameters();
 
         AssistantLocal assistantLocal = assistant.getAssistantLocal();

@@ -72,7 +72,7 @@ public class AspectRuleRegistry extends AbstractComponent {
         }
         AspectRule old = aspectRuleMap.put(aspectRule.getId(), aspectRule);
         if (old != null) {
-            throw new IllegalRuleException("Cannot add an Aspect Rule because of Duplicate Aspect ID: " +
+            throw new IllegalRuleException("Cannot add AspectRule due to duplicate Aspect ID: " +
                     aspectRule.getId());
         }
 

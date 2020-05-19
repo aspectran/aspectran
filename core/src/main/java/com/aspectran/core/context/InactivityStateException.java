@@ -13,24 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.context.rule.appender;
-
-import com.aspectran.core.context.rule.assistant.ActivityRuleAssistant;
+package com.aspectran.core.context;
 
 /**
- * The Class ShallowRuleAppendHandler.
- * 
- * <p>Created: 2008. 06. 14 AM 4:39:24</p>
+ * Exception occurs when there is no current activity.
  */
-public class ShallowRuleAppendHandler extends AbstractAppendHandler {
+public class InactivityStateException extends IllegalStateException {
 
-    public ShallowRuleAppendHandler(ActivityRuleAssistant assistant) {
-        super(assistant);
-    }
+    /** @serial */
+    private static final long serialVersionUID = 8373382682956966522L;
 
-    @Override
-    public void handle(RuleAppender appender) throws Exception {
-        // Do Nothing
+    /**
+     * Constructs a InactivityStateException.
+     */
+    public InactivityStateException() {
+        super("No activity");
     }
 
 }

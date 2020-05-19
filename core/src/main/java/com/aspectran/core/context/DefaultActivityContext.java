@@ -21,12 +21,12 @@ import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.component.AbstractComponent;
 import com.aspectran.core.component.aspect.AspectRuleRegistry;
 import com.aspectran.core.component.bean.BeanRegistry;
-import com.aspectran.core.component.bean.ContextualBeanRegistry;
+import com.aspectran.core.component.bean.DefaultBeanRegistry;
 import com.aspectran.core.component.schedule.ScheduleRuleRegistry;
-import com.aspectran.core.component.template.ContextualTemplateRenderer;
+import com.aspectran.core.component.template.DefaultTemplateRenderer;
 import com.aspectran.core.component.template.TemplateRenderer;
 import com.aspectran.core.component.translet.TransletRuleRegistry;
-import com.aspectran.core.context.env.ContextEnvironment;
+import com.aspectran.core.context.env.ActivityEnvironment;
 import com.aspectran.core.context.env.Environment;
 import com.aspectran.core.context.rule.DescriptionRule;
 import com.aspectran.core.service.CoreService;
@@ -37,19 +37,19 @@ import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
 
 /**
- * The Class AspectranActivityContext.
+ * The Class DefaultActivityContext.
  * 
  * <p>Created: 2008. 06. 09 PM 2:12:40</p>
  */
-public class AspectranActivityContext extends AbstractComponent implements ActivityContext {
+public class DefaultActivityContext extends AbstractComponent implements ActivityContext {
 
-    private static final Logger logger = LoggerFactory.getLogger(AspectranActivityContext.class);
+    private static final Logger logger = LoggerFactory.getLogger(DefaultActivityContext.class);
 
     private final ThreadLocal<Activity> currentActivityHolder = new ThreadLocal<>();
 
     private final ApplicationAdapter applicationAdapter;
 
-    private final ContextEnvironment contextEnvironment;
+    private final ActivityEnvironment activityEnvironment;
 
     private final Activity defaultActivity;
 
@@ -59,9 +59,9 @@ public class AspectranActivityContext extends AbstractComponent implements Activ
 
     private AspectRuleRegistry aspectRuleRegistry;
 
-    private ContextualBeanRegistry contextualBeanRegistry;
+    private DefaultBeanRegistry defaultBeanRegistry;
 
-    private ContextualTemplateRenderer contextualTemplateRenderer;
+    private DefaultTemplateRenderer defaultTemplateRenderer;
 
     private ScheduleRuleRegistry scheduleRuleRegistry;
 
@@ -70,14 +70,14 @@ public class AspectranActivityContext extends AbstractComponent implements Activ
     private MessageSource messageSource;
 
     /**
-     * Instantiates a new AspectranActivityContext.
+     * Instantiates a new DefaultActivityContext.
      *
      * @param applicationAdapter the application adapter
-     * @param contextEnvironment the context environment
+     * @param activityEnvironment the environment
      */
-    public AspectranActivityContext(ApplicationAdapter applicationAdapter, ContextEnvironment contextEnvironment) {
+    public DefaultActivityContext(ApplicationAdapter applicationAdapter, ActivityEnvironment activityEnvironment) {
         this.applicationAdapter = applicationAdapter;
-        this.contextEnvironment = contextEnvironment;
+        this.activityEnvironment = activityEnvironment;
         this.defaultActivity = new DefaultActivity(this);
     }
 
@@ -104,7 +104,7 @@ public class AspectranActivityContext extends AbstractComponent implements Activ
 
     @Override
     public Environment getEnvironment() {
-        return contextEnvironment;
+        return activityEnvironment;
     }
 
     @Override
@@ -114,7 +114,7 @@ public class AspectranActivityContext extends AbstractComponent implements Activ
 
     @Override
     public void setRootService(CoreService rootService) {
-        Assert.state(!isInitialized(), "This ActivityContext is already initialized");
+        Assert.state(!isInitialized(), "ActivityContext is already initialized");
         this.rootService = rootService;
     }
 
@@ -129,30 +129,30 @@ public class AspectranActivityContext extends AbstractComponent implements Activ
 
     @Override
     public BeanRegistry getBeanRegistry() {
-        return contextualBeanRegistry;
+        return defaultBeanRegistry;
     }
 
     /**
-     * Sets the context bean registry.
+     * Sets the default bean registry.
      *
-     * @param contextualBeanRegistry the new context bean registry
+     * @param defaultBeanRegistry the new default bean registry
      */
-    public void setContextualBeanRegistry(ContextualBeanRegistry contextualBeanRegistry) {
-        this.contextualBeanRegistry = contextualBeanRegistry;
+    public void setDefaultBeanRegistry(DefaultBeanRegistry defaultBeanRegistry) {
+        this.defaultBeanRegistry = defaultBeanRegistry;
     }
 
     @Override
     public TemplateRenderer getTemplateRenderer() {
-        return contextualTemplateRenderer;
+        return defaultTemplateRenderer;
     }
 
     /**
      * Sets the template processor.
      *
-     * @param contextualTemplateRenderer the new template processor
+     * @param defaultTemplateRenderer the new template processor
      */
-    public void setContextualTemplateRenderer(ContextualTemplateRenderer contextualTemplateRenderer) {
-        this.contextualTemplateRenderer = contextualTemplateRenderer;
+    public void setDefaultTemplateRenderer(DefaultTemplateRenderer defaultTemplateRenderer) {
+        this.defaultTemplateRenderer = defaultTemplateRenderer;
     }
 
     @Override
@@ -194,7 +194,10 @@ public class AspectranActivityContext extends AbstractComponent implements Activ
     @Override
     public Activity getCurrentActivity() {
         Activity activity = currentActivityHolder.get();
-        return (activity != null ? activity : getDefaultActivity());
+        if (activity == null) {
+            throw new InactivityStateException();
+        }
+        return activity;
     }
 
     @Override
@@ -217,8 +220,8 @@ public class AspectranActivityContext extends AbstractComponent implements Activ
      * Use parent's if none defined in this context.
      */
     private void initMessageSource() {
-        if (contextualBeanRegistry.containsBean(MessageSource.class, MESSAGE_SOURCE_BEAN_ID)) {
-            messageSource = contextualBeanRegistry.getBean(MessageSource.class, MESSAGE_SOURCE_BEAN_ID);
+        if (defaultBeanRegistry.containsBean(MessageSource.class, MESSAGE_SOURCE_BEAN_ID)) {
+            messageSource = defaultBeanRegistry.getBean(MessageSource.class, MESSAGE_SOURCE_BEAN_ID);
             if (logger.isDebugEnabled()) {
                 logger.debug("Using MessageSource [" + messageSource + "]");
             }
@@ -238,11 +241,11 @@ public class AspectranActivityContext extends AbstractComponent implements Activ
         if (aspectRuleRegistry != null) {
             aspectRuleRegistry.initialize();
         }
-        if (contextualBeanRegistry != null) {
-            contextualBeanRegistry.initialize();
+        if (defaultBeanRegistry != null) {
+            defaultBeanRegistry.initialize();
         }
-        if (contextualTemplateRenderer != null) {
-            contextualTemplateRenderer.initialize();
+        if (defaultTemplateRenderer != null) {
+            defaultTemplateRenderer.initialize();
         }
         if (scheduleRuleRegistry != null) {
             scheduleRuleRegistry.initialize();
@@ -250,7 +253,7 @@ public class AspectranActivityContext extends AbstractComponent implements Activ
         if (transletRuleRegistry != null) {
             transletRuleRegistry.initialize();
         }
-        if (contextualBeanRegistry != null) {
+        if (defaultBeanRegistry != null) {
             initMessageSource();
         }
     }
@@ -265,13 +268,13 @@ public class AspectranActivityContext extends AbstractComponent implements Activ
             scheduleRuleRegistry.destroy();
             scheduleRuleRegistry = null;
         }
-        if (contextualTemplateRenderer != null) {
-            contextualTemplateRenderer.destroy();
-            contextualTemplateRenderer = null;
+        if (defaultTemplateRenderer != null) {
+            defaultTemplateRenderer.destroy();
+            defaultTemplateRenderer = null;
         }
-        if (contextualBeanRegistry != null) {
-            contextualBeanRegistry.destroy();
-            contextualBeanRegistry = null;
+        if (defaultBeanRegistry != null) {
+            defaultBeanRegistry.destroy();
+            defaultBeanRegistry = null;
         }
         if (aspectRuleRegistry != null) {
             aspectRuleRegistry.destroy();
