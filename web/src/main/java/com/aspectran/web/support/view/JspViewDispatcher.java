@@ -79,21 +79,20 @@ public class JspViewDispatcher implements ViewDispatcher {
     }
 
     @Override
-    public void dispatch(Activity activity, DispatchRule dispatchRule)
-            throws ViewDispatcherException {
-        String dispatchName = null;
+    public void dispatch(Activity activity, DispatchRule dispatchRule) throws ViewDispatcherException {
+        String resource = null;
         try {
-            dispatchName = dispatchRule.getName(activity);
-            if (dispatchName == null) {
+            resource = dispatchRule.getName(activity);
+            if (resource == null) {
                 throw new IllegalArgumentException("No specified dispatch name");
             }
 
             if (prefix != null && suffix != null) {
-                dispatchName = prefix + dispatchName + suffix;
+                resource = prefix + resource + suffix;
             } else if (prefix != null) {
-                dispatchName = prefix + dispatchName;
+                resource = prefix + resource;
             } else if (suffix != null) {
-                dispatchName = dispatchName + suffix;
+                resource = resource + suffix;
             }
 
             RequestAdapter requestAdapter = activity.getRequestAdapter();
@@ -123,22 +122,22 @@ public class JspViewDispatcher implements ViewDispatcher {
             HttpServletResponse response = responseAdapter.getAdaptee();
 
             if (logger.isTraceEnabled()) {
-                logger.trace("Dispatching to JSP [" + dispatchName + "]");
+                logger.trace("Dispatching to JSP [" + resource + "]");
             }
 
             if (response.isCommitted()) {
                 response.reset();
             }
 
-            RequestDispatcher requestDispatcher = request.getRequestDispatcher(dispatchName);
+            RequestDispatcher requestDispatcher = request.getRequestDispatcher(resource);
             requestDispatcher.forward(request, response);
 
             if (response.getStatus() == 404) {
-                throw new FileNotFoundException("Failed to find resource '" + dispatchName + "'");
+                throw new FileNotFoundException("Failed to find resource '" + resource + "'");
             }
         } catch (Exception e) {
             throw new ViewDispatcherException("Failed to dispatch to JSP " +
-                    dispatchRule.toString(this, dispatchName), e);
+                    dispatchRule.toString(this, resource), e);
         }
     }
 

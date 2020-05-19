@@ -69,8 +69,7 @@ public class JspTemplateViewDispatcher implements ViewDispatcher {
     }
 
     @Override
-    public void dispatch(Activity activity, DispatchRule dispatchRule)
-            throws ViewDispatcherException {
+    public void dispatch(Activity activity, DispatchRule dispatchRule) throws ViewDispatcherException {
         try {
             if (template == null) {
                 throw new IllegalArgumentException("No specified template page");
@@ -113,7 +112,7 @@ public class JspTemplateViewDispatcher implements ViewDispatcher {
             HttpServletResponse response = responseAdapter.getAdaptee();
 
             if (logger.isTraceEnabled()) {
-                logger.trace("Dispatching to JSP Template [" + template + "] with page [" + dispatchName + "]");
+                logger.trace("Dispatching to JSP Template [" + template + "] using dispatch name '" + dispatchName + "'");
             }
 
             if (response.isCommitted()) {
