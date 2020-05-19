@@ -36,7 +36,8 @@ import java.util.Locale;
 import java.util.Map;
 
 /**
- * The Interface Translet.
+ * Translet provides the parsed request data to the user and
+ * processes the user's response command.
  *
  * <p>Created: 2008. 7. 5. AM 12:35:44</p>
  */

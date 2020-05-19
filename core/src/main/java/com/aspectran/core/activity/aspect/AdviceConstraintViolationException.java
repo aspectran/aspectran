@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Exception thrown when an Advice Constraint Violation occurs.
+ * Checked exception thrown when Advice Constraint Violation occurs.
  */
 public class AdviceConstraintViolationException extends ActivityException {
 
@@ -43,7 +43,7 @@ public class AdviceConstraintViolationException extends ActivityException {
     public String addViolation(AspectRule aspectRule, String msg) {
         if (!relevantAspectRules.contains(aspectRule)) {
             relevantAspectRules.add(aspectRule);
-            msg = msg + "; Please check the Aspect Rule " + aspectRule;
+            msg = msg + "; Please check AspectRule " + aspectRule;
             violations.add(msg);
             return msg;
         } else {

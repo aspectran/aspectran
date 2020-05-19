@@ -16,7 +16,7 @@
 package com.aspectran.core.activity;
 
 /**
- * Exception thrown when an activity is terminated during preparation or execution.
+ * Checked exception thrown when activity is terminated while preparing or performing.
  */
 public class ActivityTerminatedException extends ActivityPerformException {
 

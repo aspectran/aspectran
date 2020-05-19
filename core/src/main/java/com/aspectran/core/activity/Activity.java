@@ -35,7 +35,7 @@ import com.aspectran.core.context.rule.SettingsAdviceRule;
 import java.util.List;
 
 /**
- * The Interface Activity.
+ * Activities are one task in which Aspectran services process requests.
  *
  * <p>Created: 2008. 03. 22 PM 5:48:09</p>
  */

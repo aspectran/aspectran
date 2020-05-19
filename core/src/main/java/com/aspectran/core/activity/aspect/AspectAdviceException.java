@@ -19,7 +19,7 @@ import com.aspectran.core.activity.ActivityException;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 
 /**
- * Thrown when an error occurs while running advice.
+ * Checked exception thrown if an error occurs while executing the advice.
  */
 public class AspectAdviceException extends ActivityException {
 

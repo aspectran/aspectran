@@ -18,7 +18,8 @@ package com.aspectran.core.activity.request;
 import com.aspectran.core.activity.ActivityException;
 
 /**
- * This exception will be thrown when a translet request is failed.
+ * Checked exception thrown if an error occurs while translet is
+ * parsing the request.
  * 
  * <p>Created: 2008. 01. 07 AM 3:35:55</p>
  */

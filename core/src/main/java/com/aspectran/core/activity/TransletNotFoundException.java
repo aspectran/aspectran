@@ -18,7 +18,8 @@ package com.aspectran.core.activity;
 import com.aspectran.core.context.rule.type.MethodType;
 
 /**
- * This exception will be thrown when a translet not found.
+ * Checked exception thrown when an attempt is made to access a translet
+ * that does not exist.
  * 
  * <p>Created: 2008. 01. 07 AM 3:35:55</p>
  */
@@ -47,7 +48,7 @@ public class TransletNotFoundException extends ActivityException {
      * @param requestMethod the request method
      */
     public TransletNotFoundException(String transletName, MethodType requestMethod) {
-        super("Unknown translet: " + makeTransletName(transletName, requestMethod));
+        super("No such translet map to " + makeTransletName(transletName, requestMethod));
         this.transletName = transletName;
         this.requestMethod = requestMethod;
     }

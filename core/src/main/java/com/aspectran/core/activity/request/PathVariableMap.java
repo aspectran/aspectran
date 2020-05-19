@@ -25,7 +25,8 @@ import java.util.Map;
 /**
  * The Class PathVariableMap.
  *
- * <p>This class is generally not thread-safe. It is primarily designed for use in a single thread only.
+ * <p>This class is generally not thread-safe.
+ * It is primarily designed for use in a single thread only.</p>
  *
  * <p>Created: 2016. 2. 13.</p>
  */

@@ -21,7 +21,8 @@ import com.aspectran.core.util.StringUtils;
 import java.util.Collection;
 
 /**
- * An exception to indicate mandatory attributes missing from the request.
+ * A checked exception thrown to indicate that the required attributes are
+ * missing from the request.
  *
  * <p>Created: 2019. 6. 5.</p>
  *

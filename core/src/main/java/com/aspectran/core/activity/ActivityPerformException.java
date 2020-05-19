@@ -16,7 +16,7 @@
 package com.aspectran.core.activity;
 
 /**
- * Exception thrown when an attempt to perform an activity fails.
+ * Checked exception thrown when an error occurs while performing an activity.
  *
  * <p>Created: 2019. 03. 25.</p>
  */

@@ -21,7 +21,8 @@ import com.aspectran.core.util.StringUtils;
 import java.util.Collection;
 
 /**
- * An exception to indicate mandatory parameters missing from the request.
+ * A checked exception thrown to indicate that the required parameters are
+ * missing from the request.
  *
  * <p>Created: 2016. 8. 21.</p>
  *

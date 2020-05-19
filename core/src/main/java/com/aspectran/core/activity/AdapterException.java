@@ -16,7 +16,8 @@
 package com.aspectran.core.activity;
 
 /**
- * The Class AdapterException.
+ * Checked exception thrown when an error occurs while attaching
+ * each adapter required for the activity.
  * 
  * <p>Created: 2016. 2. 14.</p>
  */
