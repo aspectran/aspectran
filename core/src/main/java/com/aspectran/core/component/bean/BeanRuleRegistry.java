@@ -295,12 +295,14 @@ public class BeanRuleRegistry {
     }
 
     private void saveBeanRule(Class<?> beanClass, BeanRule beanRule) throws BeanRuleException {
-        if (importantBeanTypeSet.contains(beanClass)) {
-            throw new BeanRuleException("Already exists a type-based bean that can not be overridden; Duplicated bean",
-                    beanRule);
-        }
-        if (beanRule.isImportant()) {
-            importantBeanTypeSet.add(beanClass);
+        if (beanRule.getId() == null) {
+            if (importantBeanTypeSet.contains(beanClass)) {
+                throw new BeanRuleException("Already exists a type-based bean that can not be overridden; Duplicated bean",
+                        beanRule);
+            }
+            if (beanRule.isImportant()) {
+                importantBeanTypeSet.add(beanClass);
+            }
         }
         Set<BeanRule> set = typeBasedBeanRuleMap.computeIfAbsent(beanClass, k -> new HashSet<>());
         set.add(beanRule);
