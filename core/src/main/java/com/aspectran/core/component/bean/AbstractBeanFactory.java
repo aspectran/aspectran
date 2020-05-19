@@ -84,7 +84,7 @@ abstract class AbstractBeanFactory extends AbstractComponent {
     }
 
     protected Object createBean(BeanRule beanRule, Scope scope) {
-        Activity activity = context.getCurrentActivity();
+        Activity activity = context.getAvailableActivity();
         Object bean;
         if (beanRule.isFactoryOffered()) {
             bean = createOfferedFactoryBean(beanRule, scope, activity);
@@ -98,22 +98,12 @@ abstract class AbstractBeanFactory extends AbstractComponent {
         if (beanRule.isFactoryBean()) {
             return invokeMethodOfFactoryBean(beanRule, bean);
         } else if (beanRule.getFactoryMethodName() != null) {
-            Activity activity = context.getCurrentActivity();
+            Activity activity = context.getAvailableActivity();
             return invokeFactoryMethod(beanRule, bean, activity);
         } else {
             return null;
         }
     }
-
-//    protected Object createBean(BeanRule beanRule, Scope scope, Activity activity) {
-//        Object bean;
-//        if (beanRule.isFactoryOffered()) {
-//            bean = createOfferedFactoryBean(beanRule, scope, activity);
-//        } else {
-//            bean = createNormalBean(beanRule, scope, activity);
-//        }
-//        return bean;
-//    }
 
     private Object createNormalBean(BeanRule beanRule, Scope scope, Activity activity) {
         try {
@@ -356,7 +346,9 @@ abstract class AbstractBeanFactory extends AbstractComponent {
     private void invokeAwareMethods(Object bean) {
         if (bean instanceof Aware) {
             if (bean instanceof CurrentActivityAware) {
-                ((CurrentActivityAware)bean).setCurrentActivity(context.getCurrentActivity());
+                if (context.hasCurrentActivity()) {
+                    ((CurrentActivityAware)bean).setCurrentActivity(context.getCurrentActivity());
+                }
             }
             if (bean instanceof ActivityContextAware) {
                 ((ActivityContextAware)bean).setActivityContext(context);

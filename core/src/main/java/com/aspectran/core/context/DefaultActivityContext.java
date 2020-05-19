@@ -192,6 +192,12 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
     }
 
     @Override
+    public Activity getAvailableActivity() {
+        Activity activity = currentActivityHolder.get();
+        return (activity != null ? activity : getDefaultActivity());
+    }
+
+    @Override
     public Activity getCurrentActivity() {
         Activity activity = currentActivityHolder.get();
         if (activity == null) {

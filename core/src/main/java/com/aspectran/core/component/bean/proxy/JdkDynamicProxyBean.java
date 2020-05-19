@@ -49,7 +49,7 @@ public class JdkDynamicProxyBean extends AbstractDynamicProxyBean implements Inv
             return method.invoke(bean, args);
         }
 
-        Activity activity = context.getCurrentActivity();
+        Activity activity = context.getAvailableActivity();
         String beanId = beanRule.getId();
         String className = beanRule.getClassName();
         String methodName = method.getName();

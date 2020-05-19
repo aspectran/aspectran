@@ -116,7 +116,7 @@ public class DefaultTemplateRenderer extends AbstractComponent implements Templa
     public void render(TemplateRule templateRule, Activity activity, Map<String, Object> model, Writer writer) {
         try {
             if (activity == null) {
-                activity = context.getCurrentActivity();
+                activity = context.getAvailableActivity();
             }
 
             if (writer == null) {

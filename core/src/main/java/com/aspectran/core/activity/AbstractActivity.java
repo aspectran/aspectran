@@ -68,7 +68,7 @@ public abstract class AbstractActivity implements Activity {
      * @return the current activity
      */
     protected Activity getCurrentActivity() {
-        return context.getCurrentActivity();
+        return context.getAvailableActivity();
     }
 
     /**

@@ -131,9 +131,18 @@ public interface ActivityContext {
     Activity getDefaultActivity();
 
     /**
+     * Gets the available activity.
+     * If there is no current activity, the application default activity is returned.
+     *
+     * @return the available activity
+     */
+    Activity getAvailableActivity();
+
+    /**
      * Gets the current activity.
      *
      * @return the current activity
+     * @throws InactivityStateException if there is no current activity
      */
     Activity getCurrentActivity();
 

@@ -21,6 +21,7 @@ import com.aspectran.core.activity.Translet;
 import com.aspectran.core.component.bean.ablility.FactoryBean;
 import com.aspectran.core.component.bean.annotation.AvoidAdvice;
 import com.aspectran.core.component.bean.aware.CurrentActivityAware;
+import com.aspectran.core.util.Assert;
 
 /**
  * {@link CurrentActivityDataFactoryBean} that returns the {@link ActivityDataMap} for
@@ -71,9 +72,7 @@ public class CurrentActivityDataFactoryBean implements CurrentActivityAware, Fac
 
     @Override
     public void setCurrentActivity(Activity activity) {
-        if (translet != null) {
-            throw new UnsupportedOperationException();
-        }
+        Assert.state(translet == null, "CurrentActivity cannot be re-injected");
         translet = activity.getTranslet();
         if (translet != null && attributeName != null) {
             translet.setAttribute(attributeName, translet.getActivityDataMap());

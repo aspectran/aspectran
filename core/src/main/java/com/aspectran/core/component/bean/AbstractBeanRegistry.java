@@ -174,7 +174,7 @@ abstract class AbstractBeanRegistry extends AbstractBeanFactory implements BeanR
     }
 
     private RequestScope getRequestScope() {
-        Activity activity = getActivityContext().getCurrentActivity();
+        Activity activity = getActivityContext().getAvailableActivity();
         if (activity != null) {
             RequestAdapter requestAdapter = activity.getRequestAdapter();
             if (requestAdapter != null) {
@@ -185,7 +185,7 @@ abstract class AbstractBeanRegistry extends AbstractBeanFactory implements BeanR
     }
 
     private SessionScope getSessionScope() {
-        Activity activity = getActivityContext().getCurrentActivity();
+        Activity activity = getActivityContext().getAvailableActivity();
         if (activity != null) {
             return SessionScope.restore(activity, getBeanRuleRegistry());
         } else {
@@ -286,23 +286,16 @@ abstract class AbstractBeanRegistry extends AbstractBeanFactory implements BeanR
         if (logger.isDebugEnabled()) {
             logger.debug("Initializing singletons in " + this);
         }
-
-        Activity activity = getActivityContext().getDefaultActivity();
-        getActivityContext().setCurrentActivity(activity);
-        try {
-            for (BeanRule beanRule : beanRuleRegistry.getIdBasedBeanRules()) {
+        for (BeanRule beanRule : beanRuleRegistry.getIdBasedBeanRules()) {
+            instantiateSingleton(beanRule);
+        }
+        for (Set<BeanRule> beanRuleSet : beanRuleRegistry.getTypeBasedBeanRules()) {
+            for (BeanRule beanRule : beanRuleSet) {
                 instantiateSingleton(beanRule);
             }
-            for (Set<BeanRule> beanRuleSet : beanRuleRegistry.getTypeBasedBeanRules()) {
-                for (BeanRule beanRule : beanRuleSet) {
-                    instantiateSingleton(beanRule);
-                }
-            }
-            for (BeanRule beanRule : beanRuleRegistry.getConfigurableBeanRules()) {
-                instantiateSingleton(beanRule);
-            }
-        } finally {
-            getActivityContext().removeCurrentActivity();
+        }
+        for (BeanRule beanRule : beanRuleRegistry.getConfigurableBeanRules()) {
+            instantiateSingleton(beanRule);
         }
     }
 
