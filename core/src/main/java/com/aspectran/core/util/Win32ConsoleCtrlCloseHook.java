@@ -24,7 +24,7 @@ public class Win32ConsoleCtrlCloseHook implements StdCallLibrary.StdCallCallback
 
     private static final Logger logger = LoggerFactory.getLogger(Win32ConsoleCtrlCloseHook.class);
 
-    private static final boolean WIN = System.getProperty("os.name").toLowerCase().contains("win");
+    private static final boolean IS_WIN = System.getProperty("os.name").toLowerCase().contains("win");
 
     private static final int CTRL_CLOSE_EVENT = 2;
 
@@ -64,7 +64,7 @@ public class Win32ConsoleCtrlCloseHook implements StdCallLibrary.StdCallCallback
     private native boolean SetConsoleCtrlHandler(StdCallLibrary.StdCallCallback handler, boolean add);
 
     public static Win32ConsoleCtrlCloseHook register(Thread hook) {
-        if (!WIN) {
+        if (!isWindows()) {
             return null;
         }
         try {
@@ -80,6 +80,10 @@ public class Win32ConsoleCtrlCloseHook implements StdCallLibrary.StdCallCallback
             logger.warn("Unable to link Windows/Kernel32 library. Native methods and handlers will be disabled.");
         }
         return null;
+    }
+
+    public static boolean isWindows() {
+        return IS_WIN;
     }
 
 }

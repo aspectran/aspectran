@@ -90,7 +90,10 @@ public class ShutdownHook {
         try {
             win32ConsoleCtrlCloseHook = Win32ConsoleCtrlCloseHook.register(hook);
         } catch (NoClassDefFoundError e) {
-            logger.error(e);
+            win32ConsoleCtrlCloseHook = null;
+            if (Win32ConsoleCtrlCloseHook.isWindows()) {
+                logger.error(e);
+            }
         }
     }
 
