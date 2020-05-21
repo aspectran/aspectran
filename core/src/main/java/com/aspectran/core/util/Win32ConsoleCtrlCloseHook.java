@@ -64,7 +64,7 @@ public class Win32ConsoleCtrlCloseHook implements StdCallLibrary.StdCallCallback
     private native boolean SetConsoleCtrlHandler(StdCallLibrary.StdCallCallback handler, boolean add);
 
     public static Win32ConsoleCtrlCloseHook register(Thread hook) {
-        if (!isWindows()) {
+        if (!IS_WIN) {
             return null;
         }
         try {
@@ -80,10 +80,6 @@ public class Win32ConsoleCtrlCloseHook implements StdCallLibrary.StdCallCallback
             logger.warn("Unable to link Windows/Kernel32 library. Native methods and handlers will be disabled.");
         }
         return null;
-    }
-
-    public static boolean isWindows() {
-        return IS_WIN;
     }
 
 }
