@@ -144,6 +144,12 @@ public class JLineConsole extends AbstractConsole {
             return line;
         } catch (EndOfFileException e) {
             throw new ConsoleTerminatedException();
+        } catch (IllegalStateException e) {
+            if (e.getMessage() == null) {
+                return null;
+            } else {
+                throw e;
+            }
         } catch (UserInterruptException e) {
             if (confirmQuit()) {
                 throw new ConsoleTerminatedException();
