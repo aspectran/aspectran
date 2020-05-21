@@ -26,10 +26,10 @@ import com.aspectran.core.context.rule.parser.ActivityContextParser;
 import com.aspectran.core.context.rule.parser.HybridActivityContextParser;
 import com.aspectran.core.service.AbstractCoreService;
 import com.aspectran.core.util.Assert;
+import com.aspectran.core.util.ShutdownHook;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
-import com.aspectran.core.util.thread.ShutdownHooks;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -48,7 +48,7 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
     private final Object buildDestroyMonitor = new Object();
 
     /** Reference to the shutdown task, if registered */
-    private ShutdownHooks.Task shutdownTask;
+    private ShutdownHook.Task shutdownTask;
 
     public HybridActivityContextBuilder() {
         super();
@@ -192,7 +192,7 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
     private void registerDestroyTask() {
         if (this.shutdownTask == null) {
             // Register a task to destroy the activity context on shutdown
-            this.shutdownTask = ShutdownHooks.add(() -> {
+            this.shutdownTask = ShutdownHook.addTask(() -> {
                 synchronized (this.buildDestroyMonitor) {
                     doDestroy();
                     removeDestroyTask();
@@ -208,7 +208,7 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
         // If we registered a JVM shutdown hook, we don't need it anymore now:
         // We've already explicitly closed the context.
         if (this.shutdownTask != null) {
-            ShutdownHooks.remove(this.shutdownTask);
+            ShutdownHook.removeTask(this.shutdownTask);
             this.shutdownTask = null;
         }
     }

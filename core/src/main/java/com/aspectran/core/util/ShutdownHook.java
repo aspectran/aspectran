@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.util.thread;
+package com.aspectran.core.util;
 
 import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
@@ -27,26 +27,29 @@ import java.util.ListIterator;
  *
  * @since 4.0.0
  */
-public class ShutdownHooks {
+public class ShutdownHook {
 
-    private static final Logger logger = LoggerFactory.getLogger(ShutdownHooks.class);
+    private static final Logger logger = LoggerFactory.getLogger(ShutdownHook.class);
 
     private static final List<Task> tasks = new ArrayList<>();
 
     private static Thread hook;
 
-    public static synchronized <T extends Task> T add(final T task) {
+    private static Win32ConsoleCtrlCloseHook win32ConsoleCtrlCloseHook;
+
+    public static synchronized <T extends Task> T addTask(final T task) {
         if (task == null) {
             throw new IllegalArgumentException("task must not be null");
         }
 
         if (hook == null) {
-            hook = addHook(new Thread("goodbye") {
+            hook = new Thread("goodbye") {
                 @Override
                 public void run() {
                     runTasks();
                 }
-            });
+            };
+            registerHook(hook);
         }
 
         if (logger.isDebugEnabled()) {
@@ -57,7 +60,7 @@ public class ShutdownHooks {
         return task;
     }
 
-    public static synchronized void remove(final Task task) {
+    public static synchronized void removeTask(final Task task) {
         if (task == null) {
             throw new IllegalArgumentException("task must not be null");
         }
@@ -72,40 +75,38 @@ public class ShutdownHooks {
 
         // If there are no more tasks, then remove the hook thread
         if (tasks.isEmpty()) {
-            removeHook(hook);
+            releaseHook(hook);
             hook = null;
         }
     }
 
-    private static Thread addHook(final Thread thread) {
+    private static void registerHook(final Thread thread) {
         if (logger.isDebugEnabled()) {
             logger.debug("Registering shutdown-hook: " + thread);
         }
+
+        Runtime.getRuntime().addShutdownHook(thread);
+
         try {
-            Runtime.getRuntime().addShutdownHook(thread);
-        } catch (AbstractMethodError e) {
-            // JDK 1.3+ only method. Bummer.
-            if (logger.isTraceEnabled()) {
-                logger.trace("Failed to register shutdown-hook: " + e);
-            }
+            win32ConsoleCtrlCloseHook = Win32ConsoleCtrlCloseHook.register(hook);
+        } catch (NoClassDefFoundError e) {
+            logger.error(e);
         }
-        return thread;
     }
 
-    private static void removeHook(final Thread thread) {
+    private static void releaseHook(final Thread thread) {
         if (logger.isDebugEnabled()) {
             logger.debug("Removing shutdown-hook: " + thread);
         }
-
         try {
             Runtime.getRuntime().removeShutdownHook(thread);
-        } catch (AbstractMethodError e) {
-            // JDK 1.3+ only method. Bummer.
-            if (logger.isTraceEnabled()) {
-                logger.trace("Failed to register shutdown-hook: " + e);
-            }
         } catch (IllegalStateException e) {
             // The VM is shutting down, not a big deal; ignore
+        }
+
+        if (win32ConsoleCtrlCloseHook != null) {
+            win32ConsoleCtrlCloseHook.release();
+            win32ConsoleCtrlCloseHook = null;
         }
     }
 
@@ -115,7 +116,7 @@ public class ShutdownHooks {
         }
 
         List<Task> list = new ArrayList<>(tasks);
-        for (ListIterator<Task> iter = list.listIterator(list.size()); iter.hasPrevious();) {
+        for (ListIterator<Task> iter = list.listIterator(list.size()); iter.hasPrevious(); ) {
             Task task = iter.previous();
             if (logger.isDebugEnabled()) {
                 logger.debug("Running task: " + task);

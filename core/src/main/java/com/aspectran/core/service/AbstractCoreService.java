@@ -31,10 +31,10 @@ import com.aspectran.core.scheduler.service.QuartzSchedulerService;
 import com.aspectran.core.scheduler.service.SchedulerService;
 import com.aspectran.core.util.Assert;
 import com.aspectran.core.util.FileLocker;
+import com.aspectran.core.util.ShutdownHook;
 import com.aspectran.core.util.SystemUtils;
 import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
-import com.aspectran.core.util.thread.ShutdownHooks;
 import com.aspectran.core.util.wildcard.PluralWildcardPattern;
 
 import java.io.File;
@@ -287,7 +287,7 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
                     "Unable to determine the directory where the lock file will be located");
             fileLocker = new FileLocker(new File(basePath, ".lock"));
             if (fileLocker.lock()) {
-                ShutdownHooks.add(() -> {
+                ShutdownHook.addTask(() -> {
                     if (fileLocker != null) {
                         try {
                             fileLocker.release();

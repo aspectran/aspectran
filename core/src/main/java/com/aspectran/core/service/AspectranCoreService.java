@@ -15,9 +15,9 @@
  */
 package com.aspectran.core.service;
 
+import com.aspectran.core.util.ShutdownHook;
 import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
-import com.aspectran.core.util.thread.ShutdownHooks;
 
 /**
  * The Class AspectranCoreService.
@@ -27,7 +27,7 @@ public class AspectranCoreService extends AbstractCoreService {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     /** Reference to the shutdown task, if registered */
-    private ShutdownHooks.Task shutdownTask;
+    private ShutdownHook.Task shutdownTask;
 
     /**
      * Instantiates a new AspectranCoreService.
@@ -109,7 +109,7 @@ public class AspectranCoreService extends AbstractCoreService {
     private void registerShutdownTask() {
         if (this.shutdownTask == null) {
             // Register a task to destroy the activity context on shutdown
-            this.shutdownTask = ShutdownHooks.add(() -> {
+            this.shutdownTask = ShutdownHook.addTask(() -> {
                 if (isActive()) {
                     stop();
                 }
@@ -124,7 +124,7 @@ public class AspectranCoreService extends AbstractCoreService {
         // If we registered a JVM shutdown hook, we don't need it anymore now:
         // We've already explicitly closed the context.
         if (this.shutdownTask != null) {
-            ShutdownHooks.remove(this.shutdownTask);
+            ShutdownHook.removeTask(this.shutdownTask);
             this.shutdownTask = null;
         }
     }
