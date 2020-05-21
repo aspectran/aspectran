@@ -17,10 +17,10 @@ package com.aspectran.shell.command.builtins;
 
 import com.aspectran.shell.command.AbstractCommand;
 import com.aspectran.shell.command.CommandRegistry;
-import com.aspectran.shell.command.ConsoleTerminatedException;
 import com.aspectran.shell.command.option.Option;
 import com.aspectran.shell.command.option.ParsedOptions;
 import com.aspectran.shell.console.Console;
+import com.aspectran.shell.console.ConsoleTerminatedException;
 
 /**
  * Releases all resources and exits this application.

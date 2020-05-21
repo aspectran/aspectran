@@ -13,20 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.shell.command;
+package com.aspectran.shell.console;
 
 /**
- * This exception raised if a console is terminated.
+ * Exception thrown when a command fails to read.
  */
-public class ConsoleTerminatedException extends RuntimeException {
+public class CommandReadFailedException extends RuntimeException {
 
     /** @serial */
-    private static final long serialVersionUID = -8812494142589655857L;
+    private static final long serialVersionUID = -6982213056770858079L;
 
     /**
      * Simple constructor.
      */
-    public ConsoleTerminatedException() {
+    public CommandReadFailedException() {
         super();
     }
 
@@ -35,7 +35,7 @@ public class ConsoleTerminatedException extends RuntimeException {
      *
      * @param msg a message to associate with the exception
      */
-    public ConsoleTerminatedException(String msg) {
+    public CommandReadFailedException(String msg) {
         super(msg);
     }
 
@@ -44,7 +44,7 @@ public class ConsoleTerminatedException extends RuntimeException {
      *
      * @param cause the real cause of the exception
      */
-    public ConsoleTerminatedException(Throwable cause) {
+    public CommandReadFailedException(Throwable cause) {
         super(cause);
     }
 
@@ -54,7 +54,7 @@ public class ConsoleTerminatedException extends RuntimeException {
      * @param msg the message
      * @param cause the real cause of the exception
      */
-    public ConsoleTerminatedException(String msg, Throwable cause) {
+    public CommandReadFailedException(String msg, Throwable cause) {
         super(msg, cause);
     }
 

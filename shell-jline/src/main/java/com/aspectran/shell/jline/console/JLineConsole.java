@@ -15,8 +15,9 @@
  */
 package com.aspectran.shell.jline.console;
 
-import com.aspectran.shell.command.ConsoleTerminatedException;
 import com.aspectran.shell.console.AbstractConsole;
+import com.aspectran.shell.console.CommandReadFailedException;
+import com.aspectran.shell.console.ConsoleTerminatedException;
 import org.jline.builtins.Widgets.AutosuggestionWidgets;
 import org.jline.reader.EndOfFileException;
 import org.jline.reader.History;
@@ -148,7 +149,7 @@ public class JLineConsole extends AbstractConsole {
             if (e.getMessage() == null) {
                 return null;
             } else {
-                throw e;
+                throw new CommandReadFailedException(e);
             }
         } catch (UserInterruptException e) {
             if (confirmQuit()) {
@@ -156,6 +157,8 @@ public class JLineConsole extends AbstractConsole {
             } else {
                 return null;
             }
+        } catch (Exception e) {
+            throw new CommandReadFailedException(e);
         }
     }
 

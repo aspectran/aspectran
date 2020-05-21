@@ -27,7 +27,9 @@ import com.aspectran.core.util.logging.LoggerFactory;
 import com.aspectran.shell.command.builtins.QuitCommand;
 import com.aspectran.shell.command.option.OptionParserException;
 import com.aspectran.shell.command.option.ParsedOptions;
+import com.aspectran.shell.console.CommandReadFailedException;
 import com.aspectran.shell.console.Console;
+import com.aspectran.shell.console.ConsoleTerminatedException;
 import com.aspectran.shell.console.ConsoleWrapper;
 import com.aspectran.shell.service.DefaultShellService;
 import com.aspectran.shell.service.ShellService;
@@ -164,6 +166,10 @@ public class ShellCommandInterpreter implements CommandInterpreter {
                     }
                 } catch (ConsoleTerminatedException e) {
                     break;
+                } catch (CommandReadFailedException e) {
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Command read failed", e.getCause());
+                    }
                 } catch (Throwable e) {
                     logger.error("Error executing shell command", e);
                 }

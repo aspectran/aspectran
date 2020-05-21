@@ -36,8 +36,8 @@ import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
 import com.aspectran.shell.adapter.ShellRequestAdapter;
 import com.aspectran.shell.adapter.ShellResponseAdapter;
-import com.aspectran.shell.command.ConsoleTerminatedException;
 import com.aspectran.shell.console.Console;
+import com.aspectran.shell.console.ConsoleTerminatedException;
 import com.aspectran.shell.service.ShellService;
 
 import java.io.Writer;
