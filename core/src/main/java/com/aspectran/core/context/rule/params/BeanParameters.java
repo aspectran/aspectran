@@ -33,6 +33,7 @@ public class BeanParameters extends AbstractParameters {
     public static final ParameterKey initMethod;
     public static final ParameterKey destroyMethod;
     public static final ParameterKey lazyInit;
+    public static final ParameterKey lazyDestroy;
     public static final ParameterKey important;
     public static final ParameterKey arguments;
     public static final ParameterKey properties;
@@ -53,6 +54,7 @@ public class BeanParameters extends AbstractParameters {
         initMethod = new ParameterKey("initMethod", ValueType.STRING);
         destroyMethod = new ParameterKey("destroyMethod", ValueType.STRING);
         lazyInit = new ParameterKey("lazyInit", ValueType.BOOLEAN);
+        lazyDestroy = new ParameterKey("lazyDestroy", ValueType.BOOLEAN);
         important = new ParameterKey("important", ValueType.BOOLEAN);
         arguments = new ParameterKey("arguments", ItemHolderParameters.class, true, true);
         properties = new ParameterKey("properties", ItemHolderParameters.class, true, true);
@@ -71,6 +73,7 @@ public class BeanParameters extends AbstractParameters {
                 initMethod,
                 destroyMethod,
                 lazyInit,
+                lazyDestroy,
                 important,
                 arguments,
                 properties,

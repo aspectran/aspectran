@@ -88,6 +88,8 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
 
     private Boolean lazyInit;
 
+    private Boolean lazyDestroy;
+
     private Boolean important;
 
     private boolean factoryBean;
@@ -473,6 +475,33 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
     }
 
     /**
+     * Returns whether this bean is to be lazily destroyed.
+     *
+     * @return true, if this bean is to be lazily destroyed
+     */
+    public Boolean getLazyDestroy() {
+        return lazyDestroy;
+    }
+
+    /**
+     * Sets whether this bean is to be lazily destroyed.
+     *
+     * @param lazyDestroy whether this bean is to be lazily destroyed
+     */
+    public void setLazyDestroy(Boolean lazyDestroy) {
+        this.lazyDestroy = lazyDestroy;
+    }
+
+    /**
+     * Returns whether this bean is to be lazily destroyed
+     *
+     * @return true, if this bean is to be lazily destroyed
+     */
+    public boolean isLazyDestroy() {
+        return BooleanUtils.toBoolean(lazyDestroy);
+    }
+
+    /**
      * Returns whether this bean is important.
      *
      * @return whether this bean is important
@@ -745,6 +774,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
             tsb.append("disposableBean", disposableBean);
             tsb.append("factoryBean", factoryBean);
             tsb.append("lazyInit", lazyInit);
+            tsb.append("lazyDestroy", lazyDestroy);
             tsb.append("important", important);
             tsb.append("proxied", proxied);
             if (constructorArgumentItemRuleMap != null) {
@@ -760,6 +790,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
             tsb.append("initMethod", initMethodName);
             tsb.append("destroyMethod", destroyMethodName);
             tsb.append("lazyInit", lazyInit);
+            tsb.append("lazyDestroy", lazyDestroy);
             tsb.append("important", important);
             tsb.append("proxied", proxied);
         }
@@ -778,6 +809,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
             String scope,
             Boolean singleton,
             Boolean lazyInit,
+            Boolean lazyDestroy,
             Boolean important) throws IllegalRuleException {
         if (className == null && scanPattern == null) {
             throw new IllegalRuleException("The 'bean' element requires a 'class' attribute");
@@ -805,6 +837,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
         beanRule.setDestroyMethodName(destroyMethodName);
         beanRule.setFactoryMethodName(factoryMethodName);
         beanRule.setLazyInit(lazyInit);
+        beanRule.setLazyDestroy(lazyDestroy);
         beanRule.setImportant(important);
         return beanRule;
     }
@@ -818,6 +851,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
             String scope,
             Boolean singleton,
             Boolean lazyInit,
+            Boolean lazyDestroy,
             Boolean important) throws IllegalRuleException {
         if (factoryBeanId == null || factoryMethodName == null) {
             throw new IllegalRuleException("The 'bean' element requires both 'factoryBean' attribute and 'factoryMethod' attribute");
@@ -841,6 +875,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
         beanRule.setInitMethodName(initMethodName);
         beanRule.setDestroyMethodName(destroyMethodName);
         beanRule.setLazyInit(lazyInit);
+        beanRule.setLazyDestroy(lazyDestroy);
         beanRule.setImportant(important);
         return beanRule;
     }
@@ -855,7 +890,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
         }
         BeanRule beanRule = newInstance(null, className, null, null,
                 initMethodName, destroyMethodName, factoryMethodName,
-                null, false, null, null);
+                null, false, null, null,null);
         beanRule.setInnerBean(true);
         return beanRule;
     }
@@ -869,7 +904,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
             throw new IllegalRuleException("Inner beans does not support destroy methods");
         }
         BeanRule beanRule = newOfferedFactoryBeanInstance(null, factoryBeanId, factoryMethodName,
-                initMethodName, destroyMethodName, null, false, null, null);
+                initMethodName, destroyMethodName, null, false, null, null,null);
         beanRule.setInnerBean(true);
         return beanRule;
     }
@@ -889,6 +924,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
         newBeanRule.setConstructorArgumentItemRuleMap(beanRule.getConstructorArgumentItemRuleMap());
         newBeanRule.setPropertyItemRuleMap(beanRule.getPropertyItemRuleMap());
         newBeanRule.setLazyInit(beanRule.getLazyInit());
+        newBeanRule.setLazyDestroy(beanRule.getLazyDestroy());
         newBeanRule.setImportant(beanRule.getImportant());
         newBeanRule.setDescriptionRule(beanRule.getDescriptionRule());
         newBeanRule.setInnerBean(beanRule.isInnerBean());

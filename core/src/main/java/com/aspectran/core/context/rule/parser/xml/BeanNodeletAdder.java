@@ -50,15 +50,16 @@ class BeanNodeletAdder implements NodeletAdder {
             String scope = attrs.get("scope");
             Boolean singleton = BooleanUtils.toNullableBooleanObject(attrs.get("singleton"));
             Boolean lazyInit = BooleanUtils.toNullableBooleanObject(attrs.get("lazyInit"));
+            Boolean lazyDestroy = BooleanUtils.toNullableBooleanObject(attrs.get("lazyDestroy"));
             Boolean important = BooleanUtils.toNullableBooleanObject(attrs.get("important"));
 
             BeanRule beanRule;
             if (className == null && scan == null && factoryBean != null) {
                 beanRule = BeanRule.newOfferedFactoryBeanInstance(id, factoryBean, factoryMethod,
-                        initMethod, destroyMethod, scope, singleton, lazyInit, important);
+                        initMethod, destroyMethod, scope, singleton, lazyInit, lazyDestroy, important);
             } else {
                 beanRule = BeanRule.newInstance(id, className, scan, mask, initMethod, destroyMethod,
-                        factoryMethod, scope, singleton, lazyInit, important);
+                        factoryMethod, scope, singleton, lazyInit, lazyDestroy, important);
             }
 
             parser.pushObject(beanRule);

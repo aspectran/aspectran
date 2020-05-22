@@ -90,6 +90,7 @@
   scope         (singleton | prototype | request | session) #IMPLIED
   singleton     (true | false) #IMPLIED
   lazyInit      (true | false) #IMPLIED
+  lazyDestroy   (true | false) #IMPLIED
   important     (true | false) #IMPLIED
 >
 

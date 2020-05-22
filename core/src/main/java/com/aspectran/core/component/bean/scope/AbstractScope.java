@@ -98,9 +98,25 @@ public abstract class AbstractScope implements Scope {
             }
         }
 
-        List<BeanRule> beanRules = new ArrayList<>(scopedBeanInstances.keySet());
-        for (ListIterator<BeanRule> iter = beanRules.listIterator(beanRules.size()); iter.hasPrevious();) {
+        List<BeanRule> targets = new ArrayList<>(scopedBeanInstances.keySet());
+        List<BeanRule> remainders = new ArrayList<>();
+        for (ListIterator<BeanRule> iter = targets.listIterator(targets.size()); iter.hasPrevious();) {
             BeanRule beanRule = iter.previous();
+            BeanInstance instance = scopedBeanInstances.get(beanRule);
+            Object bean = instance.getBean();
+            if (bean != null) {
+                if (beanRule.isLazyDestroy()) {
+                    remainders.add(beanRule);
+                } else {
+                    try {
+                        doDestroy(beanRule, bean);
+                    } catch (Exception e) {
+                        logger.error("Could not destroy " + getScopeType() + " scoped bean " + beanRule, e);
+                    }
+                }
+            }
+        }
+        for (BeanRule beanRule : remainders) {
             BeanInstance instance = scopedBeanInstances.get(beanRule);
             Object bean = instance.getBean();
             if (bean != null) {
@@ -109,9 +125,9 @@ public abstract class AbstractScope implements Scope {
                 } catch (Exception e) {
                     logger.error("Could not destroy " + getScopeType() + " scoped bean " + beanRule, e);
                 }
-
             }
         }
+
         scopedBeanInstances.clear();
     }
 

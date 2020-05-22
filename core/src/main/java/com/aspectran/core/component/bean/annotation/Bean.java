@@ -35,7 +35,9 @@ public @interface Bean {
     String destroyMethod() default "";
 
     boolean lazyInit() default false;
-    
+
+    boolean lazyDestroy() default false;
+
     boolean important() default false;
-    
+
 }
