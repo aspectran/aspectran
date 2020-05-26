@@ -46,20 +46,6 @@ public interface ActivityContext {
     String MESSAGE_SOURCE_BEAN_ID = "messageSource";
 
     /**
-     * Returns the class loader used by the current application.
-     *
-     * @return the class loader
-     */
-    ApplicationAdapter getApplicationAdapter();
-
-    /**
-     * Gets the environment.
-     *
-     * @return the environment
-     */
-    Environment getEnvironment();
-
-    /**
      * Gets the description of this ActivityContext.
      *
      * @return the description of this ActivityContext
@@ -80,6 +66,20 @@ public interface ActivityContext {
      * @param rootService the root service
      */
     void setRootService(CoreService rootService);
+
+    /**
+     * Returns the class loader used by the current application.
+     *
+     * @return the class loader
+     */
+    ApplicationAdapter getApplicationAdapter();
+
+    /**
+     * Gets the environment.
+     *
+     * @return the environment
+     */
+    Environment getEnvironment();
 
     /**
      * Gets the aspect rule registry.

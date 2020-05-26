@@ -19,7 +19,7 @@ import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.component.Component;
 import com.aspectran.core.component.bean.BeanRuleRegistry;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.env.ActivityEnvironment;
+import com.aspectran.core.context.env.EnvironmentProfiles;
 import com.aspectran.core.context.rule.assistant.ActivityRuleAssistant;
 import com.aspectran.core.context.rule.params.AspectranParameters;
 import com.aspectran.core.context.rule.parser.ActivityContextParser;
@@ -110,8 +110,8 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
             long startTime = System.currentTimeMillis();
 
             ApplicationAdapter applicationAdapter = createApplicationAdapter();
-            ActivityEnvironment activityEnvironment = createContextEnvironment();
-            ActivityRuleAssistant assistant = new ActivityRuleAssistant(applicationAdapter, activityEnvironment);
+            EnvironmentProfiles environmentProfiles = createEnvironmentProfiles();
+            ActivityRuleAssistant assistant = new ActivityRuleAssistant(applicationAdapter, environmentProfiles);
             assistant.ready();
 
             if (getBasePackages() != null) {

@@ -49,13 +49,13 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
 
     private final ApplicationAdapter applicationAdapter;
 
-    private final ActivityEnvironment activityEnvironment;
-
     private final Activity defaultActivity;
 
     private DescriptionRule descriptionRule;
 
     private CoreService rootService;
+
+    private ActivityEnvironment activityEnvironment;
 
     private AspectRuleRegistry aspectRuleRegistry;
 
@@ -73,11 +73,9 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
      * Instantiates a new DefaultActivityContext.
      *
      * @param applicationAdapter the application adapter
-     * @param activityEnvironment the environment
      */
-    public DefaultActivityContext(ApplicationAdapter applicationAdapter, ActivityEnvironment activityEnvironment) {
+    public DefaultActivityContext(ApplicationAdapter applicationAdapter) {
         this.applicationAdapter = applicationAdapter;
-        this.activityEnvironment = activityEnvironment;
         this.defaultActivity = new DefaultActivity(this);
     }
 
@@ -98,6 +96,17 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
     }
 
     @Override
+    public CoreService getRootService() {
+        return rootService;
+    }
+
+    @Override
+    public void setRootService(CoreService rootService) {
+        Assert.state(!isInitialized(), "ActivityContext is already initialized");
+        this.rootService = rootService;
+    }
+
+    @Override
     public ApplicationAdapter getApplicationAdapter() {
         return applicationAdapter;
     }
@@ -107,15 +116,8 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
         return activityEnvironment;
     }
 
-    @Override
-    public CoreService getRootService() {
-        return rootService;
-    }
-
-    @Override
-    public void setRootService(CoreService rootService) {
-        Assert.state(!isInitialized(), "ActivityContext is already initialized");
-        this.rootService = rootService;
+    public void setActivityEnvironment(ActivityEnvironment activityEnvironment) {
+        this.activityEnvironment = activityEnvironment;
     }
 
     @Override

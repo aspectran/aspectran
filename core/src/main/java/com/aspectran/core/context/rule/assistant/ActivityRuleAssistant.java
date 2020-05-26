@@ -21,7 +21,7 @@ import com.aspectran.core.component.bean.BeanRuleRegistry;
 import com.aspectran.core.component.schedule.ScheduleRuleRegistry;
 import com.aspectran.core.component.template.TemplateRuleRegistry;
 import com.aspectran.core.component.translet.TransletRuleRegistry;
-import com.aspectran.core.context.env.ActivityEnvironment;
+import com.aspectran.core.context.env.EnvironmentProfiles;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.AutowireRule;
@@ -71,7 +71,7 @@ public class ActivityRuleAssistant {
 
     private final ClassLoader classLoader;
 
-    private final ActivityEnvironment activityEnvironment;
+    private final EnvironmentProfiles environmentProfiles;
 
     private Map<DefaultSettingType, String> settings;
 
@@ -99,17 +99,17 @@ public class ActivityRuleAssistant {
         this(null, null);
     }
 
-    public ActivityRuleAssistant(ApplicationAdapter applicationAdapter, ActivityEnvironment activityEnvironment) {
+    public ActivityRuleAssistant(ApplicationAdapter applicationAdapter, EnvironmentProfiles environmentProfiles) {
         if (applicationAdapter != null) {
             this.applicationAdapter = applicationAdapter;
             this.basePath = applicationAdapter.getBasePath();
             this.classLoader = applicationAdapter.getClassLoader();
-            this.activityEnvironment = activityEnvironment;
+            this.environmentProfiles = environmentProfiles;
         } else {
             this.applicationAdapter = null;
             this.basePath = null;
             this.classLoader = null;
-            this.activityEnvironment = null;
+            this.environmentProfiles = null;
         }
     }
 
@@ -170,8 +170,8 @@ public class ActivityRuleAssistant {
         return classLoader;
     }
 
-    public ActivityEnvironment getActivityEnvironment() {
-        return activityEnvironment;
+    public EnvironmentProfiles getEnvironmentProfiles() {
+        return environmentProfiles;
     }
 
     /**
@@ -815,9 +815,9 @@ public class ActivityRuleAssistant {
     }
 
     public DescriptionRule profiling(DescriptionRule newDescriptionRule, DescriptionRule oldDescriptionRule) {
-        if (newDescriptionRule.getProfile() != null && getActivityEnvironment() != null) {
+        if (newDescriptionRule.getProfile() != null && getEnvironmentProfiles() != null) {
             String[] profiles = StringUtils.splitCommaDelimitedString(newDescriptionRule.getProfile());
-            if (getActivityEnvironment().acceptsProfiles(profiles)) {
+            if (getEnvironmentProfiles().acceptsProfiles(profiles)) {
                 return mergeDescriptionRule(newDescriptionRule, oldDescriptionRule);
             } else {
                 if (oldDescriptionRule == null) {
@@ -864,9 +864,9 @@ public class ActivityRuleAssistant {
     }
 
     public ItemRuleMap profiling(ItemRuleMap newIrm, ItemRuleMap oldIrm) {
-        if (newIrm.getProfile() != null && getActivityEnvironment() != null) {
+        if (newIrm.getProfile() != null && getEnvironmentProfiles() != null) {
             String[] profiles = StringUtils.splitCommaDelimitedString(newIrm.getProfile());
-            if (getActivityEnvironment().acceptsProfiles(profiles)) {
+            if (getEnvironmentProfiles().acceptsProfiles(profiles)) {
                 return mergeItemRuleMap(newIrm, oldIrm);
             } else {
                 if (oldIrm == null) {

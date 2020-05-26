@@ -16,6 +16,7 @@
 package com.aspectran.daemon;
 
 import com.aspectran.core.context.env.Environment;
+import com.aspectran.core.context.env.EnvironmentProfiles;
 import com.aspectran.core.util.ResourceUtils;
 
 import java.io.File;
@@ -27,7 +28,7 @@ public class DefaultDaemonTest {
 
     public static void main(String[] args) {
         try {
-            System.setProperty(Environment.ACTIVE_PROFILES_PROPERTY_NAME, "daemon");
+            System.setProperty(EnvironmentProfiles.ACTIVE_PROFILES_PROPERTY_NAME, "daemon");
             File current = ResourceUtils.getResourceAsFile("com/aspectran/daemon");
             File root = new File(current, "../../../../../../demo/app");
             String[] args2 = { root.getCanonicalPath(), "config/aspectran-config.apon" };

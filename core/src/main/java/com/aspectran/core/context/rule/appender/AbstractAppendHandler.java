@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.context.rule.appender;
 
-import com.aspectran.core.context.env.ActivityEnvironment;
+import com.aspectran.core.context.env.EnvironmentProfiles;
 import com.aspectran.core.context.rule.AppendRule;
 import com.aspectran.core.context.rule.assistant.ActivityRuleAssistant;
 import com.aspectran.core.util.StringUtils;
@@ -34,7 +34,7 @@ abstract class AbstractAppendHandler implements RuleAppendHandler {
 
     private final ActivityRuleAssistant assistant;
 
-    private final ActivityEnvironment environment;
+    private final EnvironmentProfiles environmentProfiles;
 
     private List<RuleAppender> pendingList;
 
@@ -46,7 +46,7 @@ abstract class AbstractAppendHandler implements RuleAppendHandler {
 
     AbstractAppendHandler(ActivityRuleAssistant assistant) {
         this.assistant = assistant;
-        this.environment = assistant.getActivityEnvironment();
+        this.environmentProfiles = assistant.getEnvironmentProfiles();
     }
 
     @Override
@@ -88,9 +88,9 @@ abstract class AbstractAppendHandler implements RuleAppendHandler {
             List<RuleAppender> pendedList = pendingList;
             pendingList = null;
 
-            if (environment != null) {
+            if (environmentProfiles != null) {
                 for (RuleAppender appender : pendedList) {
-                    if (environment.acceptsProfiles(appender.getProfiles())) {
+                    if (environmentProfiles.acceptsProfiles(appender.getProfiles())) {
                         if (logger.isDebugEnabled()) {
                             logger.debug("Append " + appender);
                         }

@@ -24,18 +24,6 @@ import com.aspectran.core.activity.Activity;
 public interface Environment {
 
     /**
-     * Name of property to set to specify active profiles: {@value}. Value may be comma
-     * delimited.
-     */
-    String ACTIVE_PROFILES_PROPERTY_NAME = "aspectran.profiles.active";
-
-    /**
-     * Name of property to set to specify profiles active by default: {@value}. Value may
-     * be comma delimited.
-     */
-    String DEFAULT_PROFILES_PROPERTY_NAME = "aspectran.profiles.default";
-
-    /**
      * Returns the set of profiles explicitly made active for this environment.
      *
      * @return the set of profiles explicitly made active
@@ -68,11 +56,20 @@ public interface Environment {
     boolean acceptsProfiles(String... profiles);
 
     /**
-     * Returns the value of the property on environment via Activity.
+     * Returns the value of the property on environment via the currently available activity.
      *
      * @param <T> the type of the value
      * @param name the given property name
-     * @param activity the current activity
+     * @return the value of the property on environment
+     */
+    <T> T getProperty(String name);
+
+    /**
+     * Returns the value of the property on environment via the specified activity.
+     *
+     * @param <T> the type of the value
+     * @param name the given property name
+     * @param activity the activity
      * @return the value of the property on environment
      */
     <T> T getProperty(String name, Activity activity);

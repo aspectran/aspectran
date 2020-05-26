@@ -371,7 +371,7 @@ public class CoreTranslet extends AbstractTranslet {
 
     @Override
     public boolean acceptsProfiles(String... profiles) {
-        return activity.getActivityContext().getEnvironment().acceptsProfiles(profiles);
+        return activity.getEnvironment().acceptsProfiles(profiles);
     }
 
     @Override

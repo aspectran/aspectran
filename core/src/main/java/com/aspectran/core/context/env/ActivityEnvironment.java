@@ -16,194 +16,41 @@
 package com.aspectran.core.context.env;
 
 import com.aspectran.core.activity.Activity;
+import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.expr.ItemEvaluator;
 import com.aspectran.core.context.expr.ItemExpression;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
-import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.SystemUtils;
-import com.aspectran.core.util.logging.Logger;
-import com.aspectran.core.util.logging.LoggerFactory;
-
-import java.util.LinkedHashSet;
-import java.util.Set;
 
 /**
- * The Environment for ActivityContext.
+ * The Class ActivityEnvironment.
  */
 public class ActivityEnvironment implements Environment {
 
-    private static final Logger logger = LoggerFactory.getLogger(ActivityEnvironment.class);
+    private final EnvironmentProfiles environmentProfiles;
 
-    private final Set<String> activeProfiles = new LinkedHashSet<>();
-
-    private final Set<String> defaultProfiles = new LinkedHashSet<>();
+    private final ActivityContext activityContext;
 
     private ItemRuleMap propertyItemRuleMap;
 
+    public ActivityEnvironment(EnvironmentProfiles environmentProfiles, ActivityContext activityContext) {
+        this.environmentProfiles = environmentProfiles;
+        this.activityContext = activityContext;
+    }
+
     @Override
     public String[] getActiveProfiles() {
-        return activeProfiles.toArray(new String[0]);
-    }
-
-    /**
-     * Returns the set of active profiles as explicitly set through
-     * {@link #setActiveProfiles} or if the current set of active profiles
-     * is empty, check for the presence of the {@value #ACTIVE_PROFILES_PROPERTY_NAME}
-     * property and assign its value to the set of active profiles.
-     *
-     * @see #getActiveProfiles()
-     * @see #ACTIVE_PROFILES_PROPERTY_NAME
-     */
-    private Set<String> doGetActiveProfiles() {
-        synchronized (activeProfiles) {
-            if (activeProfiles.isEmpty()) {
-                String[] profiles = getProfilesFromSystemProperty(ACTIVE_PROFILES_PROPERTY_NAME);
-                if (profiles != null) {
-                    setActiveProfiles(profiles);
-                    String[] activeProfiles = getActiveProfiles();
-                    if (activeProfiles.length > 0) {
-                        logger.info("Activating profiles [" + StringUtils.joinCommaDelimitedList(activeProfiles) + "]");
-                    }
-                }
-            }
-            return activeProfiles;
-        }
-    }
-
-    /**
-     * Specify the set of profiles active for this {@code Environment}.
-     * Profiles are evaluated during the ActivityContext configuration to determine
-     * whether configuration settings or rules should be registered.
-     * <p>Any existing active profiles will be replaced with the given arguments; call
-     * with zero arguments to clear the current set of active profiles.</p>
-     *
-     * @param profiles the set of profiles active
-     * @see #setDefaultProfiles
-     * @throws IllegalArgumentException if any profile is null, empty or whitespace-only
-     */
-    public void setActiveProfiles(String... profiles) {
-        if (profiles == null) {
-            throw new IllegalArgumentException("profiles must not be null");
-        }
-        synchronized (activeProfiles) {
-            activeProfiles.clear();
-            for (String profile : profiles) {
-                validateProfile(profile);
-                activeProfiles.add(profile);
-            }
-        }
+        return environmentProfiles.getActiveProfiles();
     }
 
     @Override
     public String[] getDefaultProfiles() {
-        return defaultProfiles.toArray(new String[0]);
-    }
-
-    /**
-     * Returns the set of default profiles explicitly set via
-     * {@link #setDefaultProfiles(String...)}, then check for the presence of the
-     * {@value #DEFAULT_PROFILES_PROPERTY_NAME} property and assign its value (if any)
-     * to the set of default profiles.
-     */
-    private Set<String> doGetDefaultProfiles() {
-        synchronized (defaultProfiles) {
-            if (defaultProfiles.isEmpty()) {
-                String[] profiles = getProfilesFromSystemProperty(DEFAULT_PROFILES_PROPERTY_NAME);
-                if (profiles != null) {
-                    setDefaultProfiles(profiles);
-                    String[] defaultProfiles = getDefaultProfiles();
-                    if (defaultProfiles.length > 0) {
-                        logger.info("Default profiles [" + StringUtils.joinCommaDelimitedList(defaultProfiles) + "]");
-                    }
-                }
-            }
-            return defaultProfiles;
-        }
-    }
-
-    /**
-     * Specify the set of profiles to be made active by default if no other profiles
-     * are explicitly made active through {@link #setActiveProfiles}.
-     * <p>Calling this method removes overrides any reserved default profiles
-     * that may have been added during construction of the environment.</p>
-     *
-     * @param profiles the set of profiles to be made active by default
-     */
-    public void setDefaultProfiles(String... profiles) {
-        if (profiles == null) {
-            throw new IllegalArgumentException("profiles must not be null");
-        }
-        synchronized (defaultProfiles) {
-            defaultProfiles.clear();
-            for (String profile : profiles) {
-                validateProfile(profile);
-                defaultProfiles.add(profile);
-            }
-        }
+        return environmentProfiles.getDefaultProfiles();
     }
 
     @Override
     public boolean acceptsProfiles(String... profiles) {
-        if (profiles == null || profiles.length == 0) {
-            return true;
-        }
-        for (String profile : profiles) {
-            if (StringUtils.hasLength(profile) && profile.charAt(0) == '!') {
-                if (!isProfileActive(profile.substring(1))) {
-                    return true;
-                }
-            } else {
-                if (isProfileActive(profile)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Returns whether the given profile is active, or if active profiles are empty
-     * whether the profile should be active by default.
-     *
-     * @throws IllegalArgumentException per {@link #validateProfile(String)}
-     */
-    private boolean isProfileActive(String profile) {
-        validateProfile(profile);
-        Set<String> currentActiveProfiles = doGetActiveProfiles();
-        return (currentActiveProfiles.contains(profile) ||
-                (currentActiveProfiles.isEmpty() && doGetDefaultProfiles().contains(profile)));
-    }
-
-    /**
-     * Validate the given profile, called internally prior to adding to the set of
-     * active or default profiles.
-     * <p>Subclasses may override to impose further restrictions on profile syntax.</p>
-     *
-     * @param profile the given profile
-     * @throws IllegalArgumentException if the profile is null, empty, whitespace-only or
-     *      begins with the profile NOT operator (!)
-     * @see #acceptsProfiles
-     * @see #setDefaultProfiles
-     */
-    protected void validateProfile(String profile) {
-        if (!StringUtils.hasText(profile)) {
-            throw new IllegalArgumentException("Invalid profile [" + profile + "]: must contain text");
-        }
-        if (profile.charAt(0) == '!') {
-            throw new IllegalArgumentException("Invalid profile [" + profile + "]: must not begin with ! operator");
-        }
-    }
-
-    private String[] getProfilesFromSystemProperty(String propName) {
-        String profilesProp = SystemUtils.getProperty(propName);
-        if (profilesProp != null) {
-            String[] profiles = StringUtils.splitCommaDelimitedString(profilesProp);
-            if (profiles.length > 0) {
-                return profiles;
-            }
-        }
-        return null;
+        return environmentProfiles.acceptsProfiles(profiles);
     }
 
     public ItemRuleMap getPropertyItemRuleMap() {
@@ -220,6 +67,11 @@ public class ActivityEnvironment implements Environment {
         } else {
             this.propertyItemRuleMap.putAll(propertyItemRuleMap);
         }
+    }
+
+    @Override
+    public <T> T getProperty(String name) {
+        return getProperty(name, activityContext.getAvailableActivity());
     }
 
     @Override

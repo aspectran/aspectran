@@ -36,6 +36,7 @@ import com.aspectran.core.context.config.ContextAutoReloadConfig;
 import com.aspectran.core.context.config.ContextConfig;
 import com.aspectran.core.context.config.ContextProfilesConfig;
 import com.aspectran.core.context.env.ActivityEnvironment;
+import com.aspectran.core.context.env.EnvironmentProfiles;
 import com.aspectran.core.context.resource.AspectranClassLoader;
 import com.aspectran.core.context.resource.InvalidResourceException;
 import com.aspectran.core.context.rule.AspectRule;
@@ -314,18 +315,15 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
         return new DefaultApplicationAdapter(basePath, acl);
     }
 
-    protected ActivityEnvironment createContextEnvironment() {
-        ActivityEnvironment environment = new ActivityEnvironment();
+    protected EnvironmentProfiles createEnvironmentProfiles() {
+        EnvironmentProfiles environmentProfiles = new EnvironmentProfiles();
         if (activeProfiles != null) {
-            environment.setActiveProfiles(activeProfiles);
+            environmentProfiles.setActiveProfiles(activeProfiles);
         }
         if (defaultProfiles != null) {
-            environment.setDefaultProfiles(defaultProfiles);
+            environmentProfiles.setDefaultProfiles(defaultProfiles);
         }
-        if (propertyItemRuleMap != null && !propertyItemRuleMap.isEmpty()) {
-            environment.setPropertyItemRuleMap(propertyItemRuleMap);
-        }
-        return environment;
+        return environmentProfiles;
     }
 
     /**
@@ -338,11 +336,11 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
      */
     protected ActivityContext createActivityContext(ActivityRuleAssistant assistant)
             throws BeanReferenceException, IllegalRuleException {
-        initContextEnvironment(assistant);
-
-        DefaultActivityContext activityContext = new DefaultActivityContext(
-                assistant.getApplicationAdapter(), assistant.getActivityEnvironment());
+        DefaultActivityContext activityContext = new DefaultActivityContext(assistant.getApplicationAdapter());
         activityContext.setDescriptionRule(assistant.getAssistantLocal().getDescriptionRule());
+
+        ActivityEnvironment activityEnvironment = createActivityEnvironment(assistant, activityContext);
+        activityContext.setActivityEnvironment(activityEnvironment);
 
         AspectRuleRegistry aspectRuleRegistry = assistant.getAspectRuleRegistry();
 
@@ -400,21 +398,26 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
         return aspectranClassLoader;
     }
 
-    private void initContextEnvironment(ActivityRuleAssistant assistant) {
-        ActivityEnvironment environment = assistant.getActivityEnvironment();
+    private ActivityEnvironment createActivityEnvironment(ActivityRuleAssistant assistant, ActivityContext activityContext) {
+        EnvironmentProfiles environmentProfiles = assistant.getEnvironmentProfiles();
+        ActivityEnvironment environment = new ActivityEnvironment(environmentProfiles, activityContext);
+        if (propertyItemRuleMap != null && !propertyItemRuleMap.isEmpty()) {
+            environment.setPropertyItemRuleMap(propertyItemRuleMap);
+        }
         for (EnvironmentRule environmentRule : assistant.getEnvironmentRules()) {
             String[] profiles = StringUtils.splitCommaDelimitedString(environmentRule.getProfile());
-            if (environment.acceptsProfiles(profiles)) {
+            if (environmentProfiles.acceptsProfiles(profiles)) {
                 if (environmentRule.getPropertyItemRuleMapList() != null) {
                     for (ItemRuleMap propertyItemRuleMap : environmentRule.getPropertyItemRuleMapList()) {
                         String[] profiles2 = StringUtils.splitCommaDelimitedString(propertyItemRuleMap.getProfile());
-                        if (environment.acceptsProfiles(profiles2)) {
+                        if (environmentProfiles.acceptsProfiles(profiles2)) {
                             environment.addPropertyItemRule(propertyItemRuleMap);
                         }
                     }
                 }
             }
         }
+        return environment;
     }
 
     /**

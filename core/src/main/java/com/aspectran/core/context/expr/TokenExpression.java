@@ -384,11 +384,11 @@ public class TokenExpression implements TokenEvaluator {
     protected Object getProperty(Token token) throws IOException {
         if (token.getDirectiveType() == TokenDirectiveType.CLASSPATH) {
             Properties props = PropertiesLoaderUtils.loadProperties(token.getValue(),
-                    activity.getActivityContext().getApplicationAdapter().getClassLoader());
+                    activity.getApplicationAdapter().getClassLoader());
             Object value = (token.getGetterName() != null ? props.get(token.getGetterName()) : props);
             return (value != null ? value : token.getDefaultValue());
         } else {
-            Object value = activity.getActivityContext().getEnvironment().getProperty(token.getName(), activity);
+            Object value = activity.getEnvironment().getProperty(token.getName(), activity);
             if (value != null && token.getGetterName() != null) {
                 value = getBeanProperty(value, token.getGetterName());
             }

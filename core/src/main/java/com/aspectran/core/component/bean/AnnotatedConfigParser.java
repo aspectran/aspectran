@@ -56,7 +56,7 @@ import com.aspectran.core.component.bean.annotation.SimpleTrigger;
 import com.aspectran.core.component.bean.annotation.Transform;
 import com.aspectran.core.component.bean.annotation.Value;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.context.env.Environment;
+import com.aspectran.core.context.env.EnvironmentProfiles;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.expr.token.TokenParser;
 import com.aspectran.core.context.rule.AnnotatedActionRule;
@@ -113,7 +113,7 @@ public class AnnotatedConfigParser {
 
     private static final Logger logger = LoggerFactory.getLogger(AnnotatedConfigParser.class);
 
-    private final Environment environment;
+    private final EnvironmentProfiles environmentProfiles;
 
     private final Map<String, BeanRule> idBasedBeanRuleMap;
 
@@ -124,7 +124,7 @@ public class AnnotatedConfigParser {
     private final AnnotatedConfigRelater configRelater;
 
     public AnnotatedConfigParser(ActivityRuleAssistant assistant, AnnotatedConfigRelater configRelater) {
-        this.environment = assistant.getActivityEnvironment();
+        this.environmentProfiles = assistant.getEnvironmentProfiles();
         this.idBasedBeanRuleMap = assistant.getBeanRuleRegistry().getIdBasedBeanRuleMap();
         this.typeBasedBeanRuleMap = assistant.getBeanRuleRegistry().getTypeBasedBeanRuleMap();
         this.configurableBeanRuleMap = assistant.getBeanRuleRegistry().getConfigurableBeanRuleMap();
@@ -198,7 +198,7 @@ public class AnnotatedConfigParser {
         if (componentAnno != null) {
             if (beanClass.isAnnotationPresent(Profile.class)) {
                 Profile profileAnno = beanClass.getAnnotation(Profile.class);
-                if (!environment.acceptsProfiles(profileAnno.value())) {
+                if (!environmentProfiles.acceptsProfiles(profileAnno.value())) {
                     return;
                 }
             }
@@ -215,7 +215,7 @@ public class AnnotatedConfigParser {
             for (Method method : beanClass.getMethods()) {
                 if (method.isAnnotationPresent(Profile.class)) {
                     Profile profileAnno = method.getAnnotation(Profile.class);
-                    if (!environment.acceptsProfiles(profileAnno.value())) {
+                    if (!environmentProfiles.acceptsProfiles(profileAnno.value())) {
                         continue;
                     }
                 }
@@ -602,7 +602,7 @@ public class AnnotatedConfigParser {
             ItemRuleMap itemRuleMap = new ItemRuleMap();
             for (ParamItem paramItemAnno : paramItemAnnos) {
                 String profile = StringUtils.emptyToNull(paramItemAnno.profile());
-                if (profile == null || environment.acceptsProfiles(profile)) {
+                if (profile == null || environmentProfiles.acceptsProfiles(profile)) {
                     itemRuleMap.putItemRule(ItemRuleUtils.toItemRule(paramItemAnno));
                 }
             }
@@ -614,7 +614,7 @@ public class AnnotatedConfigParser {
             ItemRuleMap itemRuleMap = new ItemRuleMap();
             for (AttrItem attrItemAnno : attrItemAnnos) {
                 String profile = StringUtils.emptyToNull(attrItemAnno.profile());
-                if (profile == null || environment.acceptsProfiles(profile)) {
+                if (profile == null || environmentProfiles.acceptsProfiles(profile)) {
                     itemRuleMap.putItemRule(ItemRuleUtils.toItemRule(attrItemAnno));
                 }
             }
@@ -694,7 +694,7 @@ public class AnnotatedConfigParser {
             ItemRuleMap itemRuleMap = new ItemRuleMap();
             for (AttrItem attrItemAnno : attrItemAnnos) {
                 String profile = StringUtils.emptyToNull(attrItemAnno.profile());
-                if (profile == null || environment.acceptsProfiles(profile)) {
+                if (profile == null || environmentProfiles.acceptsProfiles(profile)) {
                     itemRuleMap.putItemRule(ItemRuleUtils.toItemRule(attrItemAnno));
                 }
             }
@@ -714,7 +714,7 @@ public class AnnotatedConfigParser {
             ItemRuleMap itemRuleMap = new ItemRuleMap();
             for (ParamItem paramItemAnno : paramItemAnnos) {
                 String profile = StringUtils.emptyToNull(paramItemAnno.profile());
-                if (profile == null || environment.acceptsProfiles(profile)) {
+                if (profile == null || environmentProfiles.acceptsProfiles(profile)) {
                     itemRuleMap.putItemRule(ItemRuleUtils.toItemRule(paramItemAnno));
                 }
             }
