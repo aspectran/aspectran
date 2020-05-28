@@ -204,15 +204,16 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
             return null;
         }
         try {
+            // Remove the Session object from the session store and any backing data store
             DefaultSession session = sessionCache.delete(id);
             if (invalidate && session != null) {
                 // start invalidating if it is not already begun, and call the listeners
                 try {
                     if (session.beginInvalidate()) {
-                        if (reason != null) {
-                            session.setDestroyedReason(reason);
-                        }
-                        try {
+                        try (Locker.Lock ignored = session.lock()) {
+                            if (reason != null) {
+                                session.setDestroyedReason(reason);
+                            }
                             fireSessionDestroyedListeners(session);
                         } catch (Exception e) {
                             logger.warn("Session listener threw exception", e);
@@ -228,7 +229,7 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
             }
             return session;
         } catch (Exception e) {
-            logger.warn("Failed to invalidate session", e);
+            logger.warn("Unable to invalidate session", e);
             return null;
         }
     }

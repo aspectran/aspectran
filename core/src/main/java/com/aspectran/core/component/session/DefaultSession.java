@@ -295,13 +295,15 @@ public class DefaultSession implements Session {
     public void invalidate() {
         boolean result = beginInvalidate();
         if (result) {
-            if (getDestroyedReason() == null) {
-                setDestroyedReason(DestroyedReason.INVALIDATED);
-            }
             try {
                 try {
                     // do the invalidation
-                    sessionHandler.fireSessionDestroyedListeners(this);
+                    try (Lock ignored = locker.lock()) {
+                        if (getDestroyedReason() == null) {
+                            setDestroyedReason(DestroyedReason.INVALIDATED);
+                        }
+                        sessionHandler.fireSessionDestroyedListeners(this);
+                    }
                 } finally {
                     // call the attribute removed listeners and finally mark it
                     // as invalid
@@ -309,7 +311,7 @@ public class DefaultSession implements Session {
                 }
                 sessionHandler.removeSession(sessionData.getId(), false);
             } catch (Exception e) {
-                logger.warn("Failed to invalidate session", e);
+                logger.warn("Unable to invalidate session", e);
             }
         }
     }
