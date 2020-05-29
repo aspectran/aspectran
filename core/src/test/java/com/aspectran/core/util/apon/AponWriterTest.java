@@ -40,8 +40,6 @@ class AponWriterTest {
         Parameters output = reader.read();
 
         assertEquals(input, output.getString("param1"));
-
-        System.out.println(output);
     }
 
     @Test
@@ -58,10 +56,7 @@ class AponWriterTest {
         Parameters output = reader.read();
 
         assertEquals(input, output.getString("param1"));
-
-        System.out.println(output);
     }
-
 
     @Test
     void spacesEscapeTest() throws IOException {
@@ -77,8 +72,6 @@ class AponWriterTest {
         Parameters output = reader.read();
 
         assertEquals(input, output.getString("param1"));
-
-        System.out.println(output);
     }
 
 }
