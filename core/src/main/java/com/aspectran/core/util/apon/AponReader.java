@@ -34,7 +34,7 @@ import java.util.Objects;
  */
 public class AponReader extends AponFormat implements Closeable {
 
-    private final BufferedReader in;
+    private final BufferedReader reader;
 
     private int lineNumber;
 
@@ -50,16 +50,16 @@ public class AponReader extends AponFormat implements Closeable {
     /**
      * Instantiates a new AponReader.
      *
-     * @param in the character stream whose contents can be parsed as APON
+     * @param reader the character stream capable of parsing content into APON
      */
-    public AponReader(Reader in) {
-        if (in == null) {
-            throw new IllegalArgumentException("in must not be null");
+    public AponReader(Reader reader) {
+        if (reader == null) {
+            throw new IllegalArgumentException("reader must not be null");
         }
-        if (in instanceof BufferedReader) {
-            this.in = (BufferedReader)in;
+        if (reader instanceof BufferedReader) {
+            this.reader = (BufferedReader)reader;
         } else {
-            this.in = new BufferedReader(in);
+            this.reader = new BufferedReader(reader);
         }
     }
 
@@ -95,7 +95,7 @@ public class AponReader extends AponFormat implements Closeable {
         } catch (AponParseException e) {
             throw e;
         } catch (Exception e) {
-            throw new AponParseException("Failed to read APON document into given Parameters " +
+            throw new AponParseException("Failed to read APON document with specified parameters object " +
                     parameters.getClass().getName(), e);
         }
         return parameters;
@@ -109,7 +109,7 @@ public class AponReader extends AponFormat implements Closeable {
         int vlen;
         char cchar;
 
-        while ((line = in.readLine()) != null) {
+        while ((line = reader.readLine()) != null) {
             lineNumber++;
             tline = line.trim();
             tlen = tline.length();
@@ -150,7 +150,7 @@ public class AponReader extends AponFormat implements Closeable {
         int vlen;
         char cchar;
 
-        while ((line = in.readLine()) != null) {
+        while ((line = reader.readLine()) != null) {
             lineNumber++;
             tline = line.trim();
             tlen = tline.length();
@@ -343,7 +343,7 @@ public class AponReader extends AponFormat implements Closeable {
                 } else {
                     if (valueType == ValueType.STRING) {
                         if (value.charAt(0) == DOUBLE_QUOTE_CHAR || value.charAt(0) == SINGLE_QUOTE_CHAR) {
-                            value = unescape(value.substring(1, vlen - 1), lineNumber, line, tline);
+                            value = unescape(value.substring(1, vlen - 1), line, tline);
                         }
                         parameterValue.putValue(value);
                     } else if (valueType == ValueType.BOOLEAN) {
@@ -382,7 +382,7 @@ public class AponReader extends AponFormat implements Closeable {
         char tchar;
         StringBuilder sb = null;
 
-        while ((line = in.readLine()) != null) {
+        while ((line = reader.readLine()) != null) {
             lineNumber++;
 
             tline = line.trim();
@@ -413,7 +413,7 @@ public class AponReader extends AponFormat implements Closeable {
                 "The end of the text line was reached with no closing round bracket found");
     }
 
-    private String unescape(String value, int lineNumber, String line, String ltrim) throws IOException {
+    private String unescape(String value, String line, String ltrim) throws IOException {
         String s = unescape(value);
         if (Objects.equals(value, s)) {
             return value;
@@ -427,8 +427,8 @@ public class AponReader extends AponFormat implements Closeable {
 
     @Override
     public void close() throws IOException {
-        if (in != null) {
-            in.close();
+        if (reader != null) {
+            reader.close();
         }
     }
 

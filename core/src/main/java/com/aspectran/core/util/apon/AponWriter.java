@@ -33,7 +33,7 @@ import java.util.List;
  */
 public class AponWriter extends AponFormat implements Flushable, Closeable {
 
-    private final Writer out;
+    private final Writer writer;
 
     private boolean prettyPrint;
 
@@ -41,7 +41,7 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
 
     private boolean nullWritable;
 
-    private boolean valueTypeHintable;
+    private boolean valueTypeHintEnabled;
 
     private int indentDepth;
 
@@ -59,10 +59,10 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
      * Pretty printing is enabled by default, and the indent string is
      * set to "  " (two spaces).
      *
-     * @param out the character-output stream
+     * @param writer the character-output stream
      */
-    public AponWriter(Writer out) {
-        this.out = out;
+    public AponWriter(Writer writer) {
+        this.writer = writer;
         this.prettyPrint = true;
         setIndentString(DEFAULT_INDENT_STRING);
     }
@@ -105,11 +105,11 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
     /**
      * Sets whether write a type hint for values.
      *
-     * @param valueTypeHintable true, write a type hint for values
+     * @param valueTypeHintEnabled true, write a type hint for values
      */
     @SuppressWarnings("unchecked")
-    public <T extends AponWriter> T valueTypeHintable(boolean valueTypeHintable) {
-        this.valueTypeHintable = valueTypeHintable;
+    public <T extends AponWriter> T valueTypeHintEnabled(boolean valueTypeHintEnabled) {
+        this.valueTypeHintEnabled = valueTypeHintEnabled;
         return (T)this;
     }
 
@@ -355,9 +355,9 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
                 String line;
                 int start = 0;
                 while ((line = readLine(message, start)) != null) {
-                    out.write(COMMENT_LINE_START);
-                    out.write(SPACE_CHAR);
-                    out.write(line);
+                    writer.write(COMMENT_LINE_START);
+                    writer.write(SPACE_CHAR);
+                    writer.write(line);
                     newLine();
 
                     start += line.length();
@@ -367,13 +367,13 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
                     }
                 }
                 if (start != -1) {
-                    out.write(COMMENT_LINE_START);
+                    writer.write(COMMENT_LINE_START);
                     newLine();
                 }
             } else {
-                out.write(COMMENT_LINE_START);
-                out.write(SPACE_CHAR);
-                out.write(message);
+                writer.write(COMMENT_LINE_START);
+                writer.write(SPACE_CHAR);
+                writer.write(message);
                 newLine();
             }
         }
@@ -386,15 +386,15 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
 
     private void writeName(Parameter parameter, String actualName) throws IOException {
         indent();
-        out.write(actualName != null ? actualName : parameter.getName());
-        if (valueTypeHintable || parameter.isValueTypeHinted()) {
-            out.write(ROUND_BRACKET_OPEN);
-            out.write(parameter.getValueType().toString());
-            out.write(ROUND_BRACKET_CLOSE);
+        writer.write(actualName != null ? actualName : parameter.getName());
+        if (valueTypeHintEnabled || parameter.isValueTypeHinted()) {
+            writer.write(ROUND_BRACKET_OPEN);
+            writer.write(parameter.getValueType().toString());
+            writer.write(ROUND_BRACKET_CLOSE);
         }
-        out.write(NAME_VALUE_SEPARATOR);
+        writer.write(NAME_VALUE_SEPARATOR);
         if (prettyPrint) {
-            out.write(SPACE_CHAR);
+            writer.write(SPACE_CHAR);
         }
     }
 
@@ -403,14 +403,17 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
             writeNull();
         } else {
             if (value.isEmpty()) {
-                out.write(DOUBLE_QUOTE_CHAR);
-                out.write(DOUBLE_QUOTE_CHAR);
-            } else if (value.startsWith(SPACE) || value.endsWith(SPACE)) {
-                out.write(DOUBLE_QUOTE_CHAR);
-                out.write(escape(value, false));
-                out.write(DOUBLE_QUOTE_CHAR);
+                writer.write(DOUBLE_QUOTE_CHAR);
+                writer.write(DOUBLE_QUOTE_CHAR);
+            } else if (value.indexOf(DOUBLE_QUOTE_CHAR) >= 0 ||
+                    value.indexOf(SINGLE_QUOTE_CHAR) >= 0 ||
+                    value.startsWith(SPACE) ||
+                    value.endsWith(SPACE)) {
+                writer.write(DOUBLE_QUOTE_CHAR);
+                writer.write(escape(value));
+                writer.write(DOUBLE_QUOTE_CHAR);
             } else {
-                out.write(escape(value, true));
+                writer.write(escape(value));
             }
             newLine();
         }
@@ -421,8 +424,8 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
         int start = 0;
         while ((line = readLine(text, start)) != null) {
             indent();
-            out.write(TEXT_LINE_START);
-            out.write(line);
+            writer.write(TEXT_LINE_START);
+            writer.write(line);
             newLine();
 
             start += line.length();
@@ -433,14 +436,14 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
         }
         if (start != -1) {
             indent();
-            out.write(TEXT_LINE_START);
+            writer.write(TEXT_LINE_START);
             newLine();
         }
     }
 
     private void write(Object value) throws IOException {
         if (value != null) {
-            out.write(value.toString());
+            writer.write(value.toString());
             newLine();
         } else {
             writeNull();
@@ -448,12 +451,12 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
     }
 
     private void writeNull() throws IOException {
-        out.write(NULL);
+        writer.write(NULL);
         newLine();
     }
 
     private void beginBlock() throws IOException {
-        out.write(CURLY_BRACKET_OPEN);
+        writer.write(CURLY_BRACKET_OPEN);
         newLine();
         increaseIndent();
     }
@@ -461,12 +464,12 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
     private void endBlock() throws IOException {
         decreaseIndent();
         indent();
-        out.write(CURLY_BRACKET_CLOSE);
+        writer.write(CURLY_BRACKET_CLOSE);
         newLine();
     }
 
     private void beginArray() throws IOException {
-        out.write(SQUARE_BRACKET_OPEN);
+        writer.write(SQUARE_BRACKET_OPEN);
         newLine();
         increaseIndent();
     }
@@ -474,12 +477,12 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
     private void endArray() throws IOException {
         decreaseIndent();
         indent();
-        out.write(SQUARE_BRACKET_CLOSE);
+        writer.write(SQUARE_BRACKET_CLOSE);
         newLine();
     }
 
     private void beginText() throws IOException {
-        out.write(ROUND_BRACKET_OPEN);
+        writer.write(ROUND_BRACKET_OPEN);
         newLine();
         increaseIndent();
     }
@@ -487,18 +490,18 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
     private void endText() throws IOException {
         decreaseIndent();
         indent();
-        out.write(ROUND_BRACKET_CLOSE);
+        writer.write(ROUND_BRACKET_CLOSE);
         newLine();
     }
 
     private void newLine() throws IOException {
-        out.write(NEW_LINE);
+        writer.write(NEW_LINE);
     }
 
     private void indent() throws IOException {
         if (indentString != null) {
             for (int i = 0; i < indentDepth; i++) {
-                out.write(indentString);
+                writer.write(indentString);
             }
         }
     }
@@ -553,19 +556,19 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
 
     @Override
     public void flush() throws IOException {
-        out.flush();
+        writer.flush();
     }
 
     @Override
     public void close() throws IOException {
-        if (out != null) {
-            out.close();
+        if (writer != null) {
+            writer.close();
         }
     }
 
     @Override
     public String toString() {
-        return out.toString();
+        return writer.toString();
     }
 
 }

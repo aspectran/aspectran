@@ -59,7 +59,7 @@ public class AponFormat {
 
     protected static final String FALSE = "false";
 
-    public static String escape(String value, boolean noQuote) {
+    public static String escape(String value) {
         if (value == null) {
             return null;
         }
@@ -79,9 +79,7 @@ public class AponFormat {
             switch (c) {
             case '\\':
             case '"':
-                if (!noQuote) {
-                    sb.append('\\');
-                }
+                sb.append('\\');
                 sb.append(c);
                 break;
             case '\b':
