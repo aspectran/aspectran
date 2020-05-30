@@ -29,24 +29,6 @@
     <meta name="msapplication-TileImage" content="https://aspectran.com/assets/img/ms-icon-144x144.png" />
     <meta name="msapplication-TileColor" content="#4B555A" />
     <meta name="theme-color" content="#4B555A" />
-    <!-- Facebook Optimization -->
-    <meta property="og:locale" content="en_US" />
-    <meta property="og:type" content="website" />
-    <meta property="og:title" content="Quick Start Guide" />
-    <meta property="og:description" content="Aspectran is a Java framework for building Web and command-line applications." />
-    <meta property="og:url" content="https://aspectran.com/getting-started/quickstart/" />
-    <meta property="og:site_name" content="Aspectran" />
-    <!-- Search Engine Optimization -->
-    <link type="text/plain" rel="author" href="https://aspectran.com/humans.txt" />
-    <script>
-        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-        ga('create', 'UA-66807210-2', 'auto');
-        ga('set', 'anonymizeIp', true);
-        ga('send', 'pageview');
-    </script>
 </head>
 <body id="top-of-page" class="${page.style}" itemscope itemtype="http://schema.org/WebPage">
 <nav id="navigation" class="no-js">
