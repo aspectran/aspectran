@@ -106,4 +106,20 @@ class AponWriterTest {
         assertEquals(input, output.getString("param1"));
     }
 
+    @Test
+    void stringWithNewlinesWriteTest() throws IOException {
+        String input = "1\n2\n3";
+
+        Parameters parameters = new VariableParameters();
+        parameters.putValue("param1", input);
+
+        AponWriter writer = new AponWriter();
+        writer.write(parameters);
+
+        AponReader reader = new AponReader(writer.toString());
+        Parameters output = reader.read();
+
+        assertEquals(input, output.getString("param1"));
+    }
+
 }
