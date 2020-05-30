@@ -401,22 +401,26 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
     private void writeString(String value) throws IOException {
         if (value == null) {
             writeNull();
-        } else {
-            if (value.isEmpty()) {
-                writer.write(DOUBLE_QUOTE_CHAR);
-                writer.write(DOUBLE_QUOTE_CHAR);
-            } else if (value.indexOf(DOUBLE_QUOTE_CHAR) >= 0 ||
-                    value.indexOf(SINGLE_QUOTE_CHAR) >= 0 ||
-                    value.startsWith(SPACE) ||
-                    value.endsWith(SPACE)) {
-                writer.write(DOUBLE_QUOTE_CHAR);
-                writer.write(escape(value));
-                writer.write(DOUBLE_QUOTE_CHAR);
-            } else {
-                writer.write(escape(value));
-            }
-            newLine();
+            return;
         }
+        if (value.isEmpty()) {
+            writer.write(DOUBLE_QUOTE_CHAR);
+            writer.write(DOUBLE_QUOTE_CHAR);
+            newLine();
+            return;
+        }
+        String str = escape(value);
+        if (value.indexOf(DOUBLE_QUOTE_CHAR) >= 0 ||
+                value.indexOf(SINGLE_QUOTE_CHAR) >= 0 ||
+                value.startsWith(SPACE) ||
+                value.endsWith(SPACE)) {
+            writer.write(DOUBLE_QUOTE_CHAR);
+            writer.write(str);
+            writer.write(DOUBLE_QUOTE_CHAR);
+        } else {
+            writer.write(str);
+        }
+        newLine();
     }
 
     private void writeText(String text) throws IOException {
@@ -569,6 +573,54 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
     @Override
     public String toString() {
         return writer.toString();
+    }
+
+    public static String escape(String str) {
+        if (str == null) {
+            return null;
+        }
+
+        int len = str.length();
+        if (len == 0) {
+            return str;
+        }
+
+        StringBuilder sb = new StringBuilder(len);
+        char c;
+        String t;
+        for (int pos = 0; pos < len; pos++) {
+            c = str.charAt(pos);
+            switch (c) {
+                case ESCAPE_CHAR:
+                case DOUBLE_QUOTE_CHAR:
+                    sb.append('\\');
+                    sb.append(c);
+                    break;
+                case '\b':
+                    sb.append("\\b");
+                    break;
+                case '\t':
+                    sb.append("\\t");
+                    break;
+                case '\n':
+                    sb.append("\\n");
+                    break;
+                case '\f':
+                    sb.append("\\f");
+                    break;
+                case '\r':
+                    sb.append("\\r");
+                    break;
+                default:
+                    if (c < ' ' || (c >= '\u0080' && c < '\u00a0') || (c >= '\u2000' && c < '\u2100')) {
+                        t = "000" + Integer.toHexString(c);
+                        sb.append("\\u").append(t.substring(t.length() - 4));
+                    } else {
+                        sb.append(c);
+                    }
+            }
+        }
+        return sb.toString();
     }
 
 }

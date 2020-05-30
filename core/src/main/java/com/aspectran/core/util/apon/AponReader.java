@@ -27,7 +27,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
-import java.util.Objects;
 
 /**
  * Converts a string in APON format to a Parameters object.
@@ -344,6 +343,8 @@ public class AponReader extends AponFormat implements Closeable {
                     if (valueType == ValueType.STRING) {
                         if (value.charAt(0) == DOUBLE_QUOTE_CHAR || value.charAt(0) == SINGLE_QUOTE_CHAR) {
                             value = unescape(value.substring(1, vlen - 1), line, tline);
+                        } else {
+                            value = unescape(value, line, tline);
                         }
                         parameterValue.putValue(value);
                     } else if (valueType == ValueType.BOOLEAN) {
@@ -413,16 +414,79 @@ public class AponReader extends AponFormat implements Closeable {
                 "The end of the text line was reached with no closing round bracket found");
     }
 
-    private String unescape(String value, String line, String ltrim) throws IOException {
-        String s = unescape(value);
-        if (Objects.equals(value, s)) {
-            return value;
+    private String unescape(String str, String line, String ltrim) throws IOException {
+        if (str == null) {
+            return null;
         }
-        if (s == null) {
-            throw syntaxError(line, ltrim,
-                    "Invalid escape sequence (valid ones are  \\b  \\t  \\n  \\f  \\r  \\\"  \\\\ )");
+
+        int len = str.length();
+        if (len == 0 || str.indexOf(ESCAPE_CHAR) == -1) {
+            return str;
         }
-        return s;
+
+        StringBuilder sb = new StringBuilder(len);
+        char c;
+        for (int pos = 0; pos < len;) {
+            c = str.charAt(pos++);
+            if (c == ESCAPE_CHAR) {
+                if (pos >= len) {
+                    throw syntaxError(line, ltrim, "Unterminated escape sequence");
+                }
+                c = str.charAt(pos++);
+                switch (c) {
+                    case ESCAPE_CHAR:
+                    case DOUBLE_QUOTE_CHAR:
+                    case SINGLE_QUOTE_CHAR:
+                        sb.append(c);
+                        break;
+                    case 'b':
+                        sb.append('\b');
+                        break;
+                    case 't':
+                        sb.append('\t');
+                        break;
+                    case 'n':
+                        sb.append('\n');
+                        break;
+                    case 'f':
+                        sb.append('\f');
+                        break;
+                    case 'r':
+                        sb.append('\r');
+                        break;
+                    case 'u':
+                        if (pos + 4 > len) {
+                            throw syntaxError(line, ltrim, "Unterminated escape sequence");
+                        }
+                        // Equivalent to Integer.parseInt(stringPool.get(buffer, pos, 4), 16);
+                        char result = 0;
+                        int i = pos, end = i + 4;
+                        for (; i < end; i++) {
+                            c = str.charAt(i);
+                            result <<= 4;
+                            if (c >= '0' && c <= '9') {
+                                result += (c - '0');
+                            } else if (c >= 'a' && c <= 'f') {
+                                result += (c - 'a' + 10);
+                            } else if (c >= 'A' && c <= 'F') {
+                                result += (c - 'A' + 10);
+                            } else {
+                                throw syntaxError(line, ltrim, "Invalid number format: \\u" +
+                                        str.substring(pos, pos + 4));
+                            }
+                        }
+                        pos = end;
+                        sb.append(result);
+                        break;
+                    default:
+                        // throw error when none of the above cases are matched
+                        throw syntaxError(line, ltrim, "Invalid escape sequence");
+                }
+            } else {
+                sb.append(c);
+            }
+        }
+        return sb.toString();
     }
 
     @Override

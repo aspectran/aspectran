@@ -552,7 +552,7 @@ public class JsonReader implements Closeable {
                 default:
                     checkLenient();
                     pos--; // Don't consume the first character in an unquoted string.
-                    if (isLiteral((char) c)) {
+                    if (isLiteral((char)c)) {
                         return peeked = PEEKED_UNQUOTED_NAME;
                     } else {
                         throw syntaxError("Expected name");
@@ -1038,7 +1038,6 @@ public class JsonReader implements Closeable {
             int start = p;
             while (p < l) {
                 int c = buffer[p++];
-
                 if (c == quote) {
                     pos = p;
                     int len = p - start - 1;
@@ -1065,7 +1064,6 @@ public class JsonReader implements Closeable {
                     lineStart = p;
                 }
             }
-
             if (builder == null) {
                 int estimatedLength = (p - start) * 2;
                 builder = new StringBuilder(Math.max(estimatedLength, 16));
