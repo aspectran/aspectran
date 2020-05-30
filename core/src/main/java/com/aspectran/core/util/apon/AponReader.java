@@ -343,8 +343,6 @@ public class AponReader extends AponFormat implements Closeable {
                     if (valueType == ValueType.STRING) {
                         if (value.charAt(0) == DOUBLE_QUOTE_CHAR || value.charAt(0) == SINGLE_QUOTE_CHAR) {
                             value = unescape(value.substring(1, vlen - 1), line, tline);
-                        } else {
-                            value = unescape(value, line, tline);
                         }
                         parameterValue.putValue(value);
                     } else if (valueType == ValueType.BOOLEAN) {

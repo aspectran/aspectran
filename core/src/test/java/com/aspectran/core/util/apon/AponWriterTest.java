@@ -74,4 +74,36 @@ class AponWriterTest {
         assertEquals(input, output.getString("param1"));
     }
 
+    @Test
+    void unicodeEscapeTest() throws IOException {
+        String input = "\u2019";
+
+        Parameters parameters = new VariableParameters();
+        parameters.putValue("param1", input);
+
+        AponWriter writer = new AponWriter();
+        writer.write(parameters);
+
+        AponReader reader = new AponReader(writer.toString());
+        Parameters output = reader.read();
+
+        assertEquals(input, output.getString("param1"));
+    }
+
+    @Test
+    void escapedUnicodeTest() throws IOException {
+        String input = "\\u2019";
+
+        Parameters parameters = new VariableParameters();
+        parameters.putValue("param1", input);
+
+        AponWriter writer = new AponWriter();
+        writer.write(parameters);
+
+        AponReader reader = new AponReader(writer.toString());
+        Parameters output = reader.read();
+
+        assertEquals(input, output.getString("param1"));
+    }
+
 }

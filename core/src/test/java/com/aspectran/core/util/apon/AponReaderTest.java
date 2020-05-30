@@ -29,12 +29,19 @@ class AponReaderTest {
     @Test
     void singleQuoteEscapeTest() throws IOException {
         String input = "name: \"she\\u2019s \"";
-
         AponReader reader = new AponReader(input);
         Parameters parameters = reader.read();
         //System.out.println(parameters.getString("name"));
         assertEquals("she’s ", parameters.getString("name"));
+    }
 
+    @Test
+    void noEscapeTest() throws IOException {
+        String input = "name: she\u2019s";
+        AponReader reader = new AponReader(input);
+        Parameters parameters = reader.read();
+        //System.out.println(parameters.getString("name"));
+        assertEquals("she\u2019s", parameters.getString("name"));
     }
 
 }

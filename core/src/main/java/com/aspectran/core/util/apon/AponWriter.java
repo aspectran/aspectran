@@ -409,16 +409,15 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
             newLine();
             return;
         }
-        String str = escape(value);
         if (value.indexOf(DOUBLE_QUOTE_CHAR) >= 0 ||
                 value.indexOf(SINGLE_QUOTE_CHAR) >= 0 ||
                 value.startsWith(SPACE) ||
                 value.endsWith(SPACE)) {
             writer.write(DOUBLE_QUOTE_CHAR);
-            writer.write(str);
+            writer.write(escape(value));
             writer.write(DOUBLE_QUOTE_CHAR);
         } else {
-            writer.write(str);
+            writer.write(value);
         }
         newLine();
     }
