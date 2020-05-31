@@ -17,8 +17,8 @@ package com.aspectran.core.activity.process.action;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.adapter.ResponseAdapter;
+import com.aspectran.core.context.expr.ItemEvaluation;
 import com.aspectran.core.context.expr.ItemEvaluator;
-import com.aspectran.core.context.expr.ItemExpression;
 import com.aspectran.core.context.rule.HeaderActionRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.type.ActionType;
@@ -55,7 +55,7 @@ public class HeaderAction implements Executable {
             return null;
         }
         try {
-            ItemEvaluator evaluator = new ItemExpression(activity);
+            ItemEvaluator evaluator = new ItemEvaluation(activity);
             MultiValueMap<String, String> valueMap = evaluator.evaluateAsMultiValueMap(itemRuleMap);
             if (!valueMap.isEmpty()) {
                 ResponseAdapter responseAdapter = activity.getResponseAdapter();

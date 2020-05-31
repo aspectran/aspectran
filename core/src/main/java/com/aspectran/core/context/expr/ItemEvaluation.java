@@ -42,18 +42,18 @@ import java.util.Properties;
 import java.util.Set;
 
 /**
- * The Class ItemExpression.
+ * The Class ItemEvaluation.
  *
  * @since 2008. 06. 19
  */
-public class ItemExpression extends TokenExpression implements ItemEvaluator {
+public class ItemEvaluation extends TokenEvaluation implements ItemEvaluator {
 
     /**
-     * Instantiates a new ItemExpression.
+     * Instantiates a new ItemEvaluation.
      *
      * @param activity the current Activity
      */
-    public ItemExpression(Activity activity) {
+    public ItemEvaluation(Activity activity) {
         super(activity);
     }
 

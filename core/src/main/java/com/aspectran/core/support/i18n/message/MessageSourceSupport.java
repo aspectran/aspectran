@@ -57,12 +57,12 @@ public class MessageSourceSupport {
      * <p>Default is "false": Messages without arguments are by default
      * returned as-is, without parsing them through MessageFormat.
      * Set this to "true" to enforce MessageFormat for all messages,
-     * expecting all message texts to be written with MessageFormat escaping.
+     * expecting all message texts to be written with MessageFormat escaping.</p>
      * <p>For example, MessageFormat expects a single quote to be escaped
      * as "''". If your message texts are all written with such escaping,
      * even when not defining argument placeholders, you need to set this
      * flag to "true". Else, only message texts with actual arguments
-     * are supposed to be written with MessageFormat escaping.
+     * are supposed to be written with MessageFormat escaping.</p>
      *
      * @param alwaysUseMessageFormat whether always use message format
      * @see java.text.MessageFormat
@@ -87,7 +87,7 @@ public class MessageSourceSupport {
      * a fully formatted default message shown to the user.
      * <p>The default implementation passes the String to {@code formatMessage},
      * resolving any argument placeholders found in them. Subclasses may override
-     * this method to plug in custom processing of default messages.
+     * this method to plug in custom processing of default messages.</p>
      *
      * @param defaultMessage the passed-in default message String
      * @param args array of arguments that will be filled in for params within the message, or {@code null} if none.
@@ -159,7 +159,7 @@ public class MessageSourceSupport {
     /**
      * Template method for resolving argument objects.
      * <p>The default implementation simply returns the given argument array as-is.
-     * Can be overridden in subclasses in order to resolve special argument types.
+     * Can be overridden in subclasses in order to resolve special argument types.</p>
      *
      * @param args the original argument array
      * @param locale the Locale to resolve against

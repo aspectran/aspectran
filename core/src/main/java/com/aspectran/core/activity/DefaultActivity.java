@@ -105,8 +105,13 @@ public class DefaultActivity extends AbstractActivity {
     }
 
     @Override
-    public <V> V getSetting(String settingName) {
+    public <V> V getSetting(String name) {
         return null;
+    }
+
+    @Override
+    public void putSetting(String name, Object value) {
+        throw new UnsupportedOperationException();
     }
 
     @Override

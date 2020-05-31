@@ -23,8 +23,8 @@ import com.aspectran.core.activity.request.MissingMandatoryParametersException;
 import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.activity.request.RequestParseException;
 import com.aspectran.core.adapter.DefaultSessionAdapter;
+import com.aspectran.core.context.expr.ItemEvaluation;
 import com.aspectran.core.context.expr.ItemEvaluator;
-import com.aspectran.core.context.expr.ItemExpression;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
@@ -478,7 +478,7 @@ public class ShellActivity extends CoreActivity {
 
     private Collection<ItemRule> checkRequiredParameters(Collection<ItemRule> itemRules) {
         Set<ItemRule> missingItemRules = new LinkedHashSet<>();
-        ItemEvaluator evaluator = new ItemExpression(this);
+        ItemEvaluator evaluator = new ItemEvaluation(this);
         for (ItemRule itemRule : itemRules) {
             String[] values = getRequestAdapter().getParameterValues(itemRule.getName());
             if (values == null || values.length == 0) {

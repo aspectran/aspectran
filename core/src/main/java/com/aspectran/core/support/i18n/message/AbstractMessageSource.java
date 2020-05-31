@@ -174,7 +174,6 @@ public abstract class AbstractMessageSource extends MessageSourceSupport impleme
             if (args == null) {
                 args = new Object[0];
             }
-
             MessageFormat messageFormat = resolveCode(code, locale);
             if (messageFormat != null) {
                 synchronized (messageFormat) {

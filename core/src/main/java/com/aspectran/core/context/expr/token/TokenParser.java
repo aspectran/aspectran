@@ -31,30 +31,30 @@ public class TokenParser {
     /**
      * Returns an array of tokens that contains tokenized string.
      *
-     * @param text the string to parse
+     * @param expression the expression to parse
      * @return an array of tokens
      */
-    public static Token[] parse(String text) {
-        return parse(text, false);
+    public static Token[] parse(String expression) {
+        return parse(expression, false);
     }
 
     /**
      * Returns an array of tokens that contains tokenized string.
      *
-     * @param text the string to parse
+     * @param expression the expression to parse
      * @param optimize whether to optimize tokens
      * @return an array of tokens
      */
-    public static Token[] parse(String text, boolean optimize) {
-        if (text == null) {
+    public static Token[] parse(String expression, boolean optimize) {
+        if (expression == null) {
             return null;
         }
-        if (text.length() == 0) {
-            Token t = new Token(text);
+        if (expression.length() == 0) {
+            Token t = new Token(expression);
             return new Token[] { t };
         }
         Token[] tokens = null;
-        List<Token> tokenList = Tokenizer.tokenize(text, optimize);
+        List<Token> tokenList = Tokenizer.tokenize(expression, optimize);
         if (!tokenList.isEmpty()) {
             tokens = tokenList.toArray(new Token[0]);
             if (optimize) {
@@ -64,11 +64,11 @@ public class TokenParser {
         return tokens;
     }
 
-    public static List<Token[]> parseAsList(String text) {
-        if (text == null) {
+    public static List<Token[]> parseAsList(String expression) {
+        if (expression == null) {
             return null;
         }
-        List<Token> tokenList = Tokenizer.tokenize(text, true);
+        List<Token> tokenList = Tokenizer.tokenize(expression, true);
         List<Token[]> tokensList = null;
         if (!tokenList.isEmpty()) {
             tokensList = new ArrayList<>();
@@ -86,11 +86,11 @@ public class TokenParser {
         return (tokensList == null || tokensList.isEmpty() ? null : tokensList);
     }
 
-    public static Map<String, Token[]> parseAsMap(String text) {
-        if (text == null) {
+    public static Map<String, Token[]> parseAsMap(String expression) {
+        if (expression == null) {
             return null;
         }
-        List<Token> tokenList = Tokenizer.tokenize(text, true);
+        List<Token> tokenList = Tokenizer.tokenize(expression, true);
         Map<String, Token[]> tokensMap = null;
         if (!tokenList.isEmpty()) {
             tokensMap = new LinkedHashMap<>();
@@ -108,20 +108,20 @@ public class TokenParser {
     /**
      * Convert the given string into tokens.
      *
-     * @param text the text
+     * @param expression the expression to parse
      * @param tokenize whether to tokenize
      * @return the token[]
      */
-    public static Token[] makeTokens(String text, boolean tokenize) {
-        if (text == null) {
+    public static Token[] makeTokens(String expression, boolean tokenize) {
+        if (expression == null) {
             return null;
         }
         Token[] tokens;
         if (tokenize) {
-            tokens = parse(text);
+            tokens = parse(expression);
         } else {
             tokens = new Token[1];
-            tokens[0] = new Token(text);
+            tokens[0] = new Token(expression);
         }
         return tokens;
     }

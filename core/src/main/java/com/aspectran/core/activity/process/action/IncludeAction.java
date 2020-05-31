@@ -18,8 +18,8 @@ package com.aspectran.core.activity.process.action;
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.InstantActivity;
 import com.aspectran.core.activity.request.ParameterMap;
+import com.aspectran.core.context.expr.ItemEvaluation;
 import com.aspectran.core.context.expr.ItemEvaluator;
-import com.aspectran.core.context.expr.ItemExpression;
 import com.aspectran.core.context.rule.IncludeActionRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.type.ActionType;
@@ -53,7 +53,7 @@ public class IncludeAction implements Executable {
             ItemRuleMap attributeItemRuleMap = includeActionRule.getAttributeItemRuleMap();
             if ((parameterItemRuleMap != null && !parameterItemRuleMap.isEmpty()) ||
                     (attributeItemRuleMap != null && !attributeItemRuleMap.isEmpty())) {
-                ItemEvaluator evaluator = new ItemExpression(activity);
+                ItemEvaluator evaluator = new ItemEvaluation(activity);
                 if (parameterItemRuleMap != null && !parameterItemRuleMap.isEmpty()) {
                     ParameterMap parameterMap = evaluator.evaluateAsParameterMap(parameterItemRuleMap);
                     instantActivity.setParameterMap(parameterMap);

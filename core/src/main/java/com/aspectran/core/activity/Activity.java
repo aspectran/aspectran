@@ -188,13 +188,21 @@ public interface Activity {
     void handleException(List<ExceptionRule> exceptionRuleList) throws ActionExecutionException;
 
     /**
-     * Gets the setting value in the translet scope.
+     * Gets the specified setting value from the current activity scope.
      *
      * @param <V> the type of the value
-     * @param settingName the setting name
+     * @param name the setting name
      * @return the setting value
      */
-    <V> V getSetting(String settingName);
+    <V> V getSetting(String name);
+
+    /**
+     * Puts the specified setting value in the current activity scope.
+     *
+     * @param name the setting name
+     * @param value the setting value
+     */
+    void putSetting(String name, Object value);
 
     /**
      * Gets the aspect advice bean.

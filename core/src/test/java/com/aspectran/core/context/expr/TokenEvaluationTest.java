@@ -33,7 +33,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class TokenExpressionTest {
+class TokenEvaluationTest {
 
     private ActivityContext context;
 
@@ -52,7 +52,7 @@ class TokenExpressionTest {
 
             Token[] tokens = TokenParser.parse("${param1}, ${param2:Tomato}, @{attr1}, @{attr2:Melon}");
 
-            TokenEvaluator tokenEvaluator = new TokenExpression(activity);
+            TokenEvaluator tokenEvaluator = new TokenEvaluation(activity);
             return tokenEvaluator.evaluateAsString(tokens);
         });
         assertEquals("Apple, Tomato, Strawberry, Melon", result);
@@ -72,7 +72,7 @@ class TokenExpressionTest {
             Token[] tokens2 = TokenParser.parse("@{stringList}");
             Token[] tokens3 = TokenParser.parse("@{stringArray}@{stringList}");
 
-            TokenEvaluator tokenEvaluator = new TokenExpression(activity);
+            TokenEvaluator tokenEvaluator = new TokenEvaluation(activity);
             String result1 = tokenEvaluator.evaluateAsString(tokens1);
             String result2 = tokenEvaluator.evaluateAsString(tokens2);
             String result3 = tokenEvaluator.evaluateAsString(tokens3);

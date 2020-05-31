@@ -46,7 +46,7 @@ public class AspectAdviceRulePreRegister {
         for (AspectRule aspectRule : aspectRuleRegistry.getAspectRules()) {
             JoinpointTargetType joinpointTargetType = aspectRule.getJoinpointTargetType();
             if (joinpointTargetType == JoinpointTargetType.METHOD) {
-                aspectRule.setBeanRelevanted(true);
+                aspectRule.setBeanRelevant(true);
             } else {
                 Pointcut pointcut = aspectRule.getPointcut();
                 if (pointcut != null) {
@@ -58,7 +58,7 @@ public class AspectAdviceRulePreRegister {
                                 if (pp.getBeanIdPattern() != null ||
                                         pp.getClassNamePattern() != null ||
                                         pp.getMethodNamePattern() != null) {
-                                    aspectRule.setBeanRelevanted(true);
+                                    aspectRule.setBeanRelevant(true);
                                     break;
                                 }
                             }
@@ -101,7 +101,7 @@ public class AspectAdviceRulePreRegister {
         }
 
         for (AspectRule aspectRule : aspectRuleRegistry.getAspectRules()) {
-            if (aspectRule.isBeanRelevanted()) {
+            if (aspectRule.isBeanRelevant()) {
                 Pointcut pointcut = aspectRule.getPointcut();
                 if (pointcut != null) {
                     if (existsMatchedBean(pointcut, beanRule)) {
@@ -124,7 +124,7 @@ public class AspectAdviceRulePreRegister {
     private void register(TransletRule transletRule) {
         for (AspectRule aspectRule : aspectRuleRegistry.getAspectRules()) {
             Pointcut pointcut = aspectRule.getPointcut();
-            if (!aspectRule.isBeanRelevanted()) {
+            if (!aspectRule.isBeanRelevant()) {
                 if (pointcut == null || pointcut.matches(transletRule.getName())) {
                     // register to the translet scope
                     transletRule.touchAspectAdviceRuleRegistry().register(aspectRule);

@@ -15,8 +15,8 @@
  */
 package com.aspectran.daemon.command.builtins;
 
+import com.aspectran.core.context.expr.ItemEvaluation;
 import com.aspectran.core.context.expr.ItemEvaluator;
-import com.aspectran.core.context.expr.ItemExpression;
 import com.aspectran.core.context.rule.ItemRuleList;
 import com.aspectran.daemon.command.AbstractCommand;
 import com.aspectran.daemon.command.CommandRegistry;
@@ -46,7 +46,7 @@ public class PollingIntervalCommand extends AbstractCommand {
 
             ItemRuleList itemRuleList = parameters.getArgumentItemRuleList();
             if (!itemRuleList.isEmpty()) {
-                ItemEvaluator evaluator = new ItemExpression(service.getDefaultActivity());
+                ItemEvaluator evaluator = new ItemEvaluation(service.getDefaultActivity());
                 pollingInterval = evaluator.evaluate(itemRuleList.get(0));
             }
 

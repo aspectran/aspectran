@@ -15,7 +15,6 @@
  */
 package com.aspectran.daemon;
 
-import com.aspectran.core.context.env.Environment;
 import com.aspectran.core.context.env.EnvironmentProfiles;
 import com.aspectran.core.util.ResourceUtils;
 

@@ -37,10 +37,12 @@ import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.type.ActionType;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
 import com.aspectran.core.context.rule.type.MethodType;
+import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
 
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -53,6 +55,8 @@ import java.util.Set;
 public abstract class AdviceActivity extends AbstractActivity {
 
     private static final Logger logger = LoggerFactory.getLogger(AdviceActivity.class);
+
+    private Map<String, Object> settings;
 
     private AspectAdviceRuleRegistry aspectAdviceRuleRegistry;
 
@@ -80,7 +84,7 @@ public abstract class AdviceActivity extends AbstractActivity {
         if (transletRule.hasPathVariables()) {
             AspectAdviceRulePostRegister postRegister = new AspectAdviceRulePostRegister();
             for (AspectRule aspectRule : getActivityContext().getAspectRuleRegistry().getAspectRules()) {
-                if (!aspectRule.isBeanRelevanted()) {
+                if (!aspectRule.isBeanRelevant()) {
                     Pointcut pointcut = aspectRule.getPointcut();
                     if (pointcut == null || pointcut.matches(requestName)) {
                         postRegister.register(aspectRule);
@@ -412,18 +416,37 @@ public abstract class AdviceActivity extends AbstractActivity {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <V> V getSetting(String settingName) {
+    public <V> V getSetting(String name) {
+        if (settings != null) {
+            Object value = settings.get(name);
+            if (value != null) {
+                return (V)value;
+            }
+        }
         if (aspectAdviceRuleRegistry != null && aspectAdviceRuleRegistry.getSettingsAdviceRuleList() != null) {
             for (SettingsAdviceRule settingsAdviceRule : aspectAdviceRuleRegistry.getSettingsAdviceRuleList()) {
-                Object value = settingsAdviceRule.getSetting(settingName);
+                Object value = settingsAdviceRule.getSetting(name);
                 if (value != null && isAcceptable(settingsAdviceRule.getAspectRule())) {
                     if (value instanceof String) {
                         return (V)TokenEvaluator.evaluate((String)value, this);
+                    } else {
+                        return (V)value;
                     }
                 }
             }
         }
         return null;
+    }
+
+    @Override
+    public void putSetting(String name, Object value) {
+        if (StringUtils.isEmpty(name)) {
+            throw new IllegalArgumentException("Setting name must not be null or empty");
+        }
+        if (settings == null) {
+            settings = new LinkedHashMap<>();
+        }
+        settings.put(name, value);
     }
 
     /**

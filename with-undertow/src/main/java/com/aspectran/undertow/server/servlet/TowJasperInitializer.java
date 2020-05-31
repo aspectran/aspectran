@@ -16,19 +16,29 @@
 package com.aspectran.undertow.server.servlet;
 
 import com.aspectran.core.component.bean.aware.ClassLoaderAware;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 import org.apache.jasper.servlet.JasperInitializer;
 import org.apache.jasper.servlet.TldScanner;
 
 import javax.servlet.ServletContext;
+import java.io.IOException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Initializer for the Jasper JSP Engine.
  */
 public class TowJasperInitializer extends JasperInitializer implements ClassLoaderAware {
 
+    private static final Logger logger = LoggerFactory.getLogger(TowJasperInitializer.class);
+
     private ClassLoader classLoader;
 
-    private String[] jarsToScan;
+    private URL[] tldResources;
+
+    private String[] jarsToTldScan;
 
     public TowJasperInitializer() {
     }
@@ -38,8 +48,34 @@ public class TowJasperInitializer extends JasperInitializer implements ClassLoad
         this.classLoader = classLoader;
     }
 
-    public void setJarsToScan(String[] jarsToScan) {
-        this.jarsToScan = jarsToScan;
+    public void setTldResources(String[] resourcesToTldScan) throws IOException {
+        List<URL> tldResources = new ArrayList<>();
+        List<String> jarsToTldScan = new ArrayList<>();
+        if (resourcesToTldScan != null) {
+            for (String resource : resourcesToTldScan) {
+                if (resource != null) {
+                    if (resource.toLowerCase().endsWith(".jar")) {
+                        jarsToTldScan.add(resource);
+                    } else {
+                        URL url = classLoader.getResource(resource);
+                        if (url == null) {
+                            throw new IOException("Resource \"" + resource + "\" not found");
+                        }
+                        tldResources.add(url);
+                    }
+                }
+            }
+        }
+        if (!tldResources.isEmpty()) {
+            this.tldResources = tldResources.toArray(new URL[0]);
+        } else {
+            this.tldResources = null;
+        }
+        if (!jarsToTldScan.isEmpty()) {
+            this.jarsToTldScan = jarsToTldScan.toArray(new String[0]);
+        } else {
+            this.jarsToTldScan = null;
+        }
     }
 
     @Override
@@ -49,9 +85,8 @@ public class TowJasperInitializer extends JasperInitializer implements ClassLoad
         if (classLoader != null) {
             tldScanner.setClassLoader(classLoader);
         }
-        if (jarsToScan != null) {
-            tldScanner.setJarsToScan(jarsToScan);
-        }
+        tldScanner.setTldResources(tldResources);
+        tldScanner.setJarsToScan(jarsToTldScan);
         return tldScanner;
     }
 

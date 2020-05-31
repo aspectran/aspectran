@@ -49,13 +49,13 @@ public interface TokenEvaluator {
 
     Properties evaluateAsProperties(Properties tokensProp);
 
-    static Object evaluate(String str, Activity activity) {
-        if (Token.hasToken(str)) {
-            Token[] tokens = TokenParser.parse(str);
-            TokenEvaluator tokenEvaluator = new TokenExpression(activity);
+    static Object evaluate(String expression, Activity activity) {
+        if (Token.hasToken(expression)) {
+            Token[] tokens = TokenParser.parse(expression);
+            TokenEvaluator tokenEvaluator = new TokenEvaluation(activity);
             return tokenEvaluator.evaluate(tokens);
         } else {
-            return str;
+            return expression;
         }
     }
 

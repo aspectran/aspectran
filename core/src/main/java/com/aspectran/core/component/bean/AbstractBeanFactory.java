@@ -31,10 +31,10 @@ import com.aspectran.core.component.bean.proxy.JavassistDynamicProxyBean;
 import com.aspectran.core.component.bean.proxy.JdkDynamicProxyBean;
 import com.aspectran.core.component.bean.scope.Scope;
 import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.context.expr.ItemEvaluation;
 import com.aspectran.core.context.expr.ItemEvaluator;
-import com.aspectran.core.context.expr.ItemExpression;
+import com.aspectran.core.context.expr.TokenEvaluation;
 import com.aspectran.core.context.expr.TokenEvaluator;
-import com.aspectran.core.context.expr.TokenExpression;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.rule.AutowireRule;
 import com.aspectran.core.context.rule.BeanRule;
@@ -113,7 +113,7 @@ abstract class AbstractBeanFactory extends AbstractComponent {
             ItemEvaluator evaluator = null;
             ItemRuleMap constructorArgumentItemRuleMap = beanRule.getConstructorArgumentItemRuleMap();
             if (constructorArgumentItemRuleMap != null && !constructorArgumentItemRuleMap.isEmpty()) {
-                evaluator = new ItemExpression(activity);
+                evaluator = new ItemEvaluation(activity);
                 Map<String, Object> valueMap = evaluator.evaluate(constructorArgumentItemRuleMap);
                 args = new Object[constructorArgumentItemRuleMap.size()];
                 argTypes = new Class<?>[constructorArgumentItemRuleMap.size()];
@@ -167,7 +167,7 @@ abstract class AbstractBeanFactory extends AbstractComponent {
             ItemRuleMap propertyItemRuleMap = beanRule.getPropertyItemRuleMap();
             if (propertyItemRuleMap != null && !propertyItemRuleMap.isEmpty()) {
                 if (evaluator == null) {
-                    evaluator = new ItemExpression(activity);
+                    evaluator = new ItemEvaluation(activity);
                 }
                 for (Map.Entry<String, ItemRule> entry : propertyItemRuleMap.entrySet()) {
                     Object value = evaluator.evaluate(entry.getValue());
@@ -224,7 +224,7 @@ abstract class AbstractBeanFactory extends AbstractComponent {
         try {
             ItemRuleMap propertyItemRuleMap = beanRule.getPropertyItemRuleMap();
             if (propertyItemRuleMap != null && !propertyItemRuleMap.isEmpty()) {
-                ItemEvaluator evaluator = new ItemExpression(activity);
+                ItemEvaluator evaluator = new ItemEvaluation(activity);
                 for (Map.Entry<String, ItemRule> entry : propertyItemRuleMap.entrySet()) {
                     Object value = evaluator.evaluate(entry.getValue());
                     MethodUtils.invokeSetter(bean, entry.getKey(), value);
@@ -309,7 +309,7 @@ abstract class AbstractBeanFactory extends AbstractComponent {
                     Field field = autowireRule.getTarget();
                     Token token = autowireRule.getToken();
 
-                    TokenEvaluator evaluator = new TokenExpression(activity);
+                    TokenEvaluator evaluator = new TokenEvaluation(activity);
                     Object value = evaluator.evaluate(token);
 
                     ReflectionUtils.setField(field, bean, value);

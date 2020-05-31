@@ -110,7 +110,7 @@ public class AspectRule implements BeanReferenceable {
 
     private ExceptionRule exceptionRule;
 
-    private boolean beanRelevanted;
+    private boolean beanRelevant;
 
     private DescriptionRule descriptionRule;
 
@@ -256,12 +256,12 @@ public class AspectRule implements BeanReferenceable {
         exceptionRule.putExceptionThrownRule(exceptionThrownRule);
     }
 
-    public boolean isBeanRelevanted() {
-        return beanRelevanted;
+    public boolean isBeanRelevant() {
+        return beanRelevant;
     }
 
-    public void setBeanRelevanted(boolean beanRelevanted) {
-        this.beanRelevanted = beanRelevanted;
+    public void setBeanRelevant(boolean beanRelevant) {
+        this.beanRelevant = beanRelevant;
     }
 
     public DescriptionRule getDescriptionRule() {
@@ -291,7 +291,7 @@ public class AspectRule implements BeanReferenceable {
         tsb.append("settingsAdvice", settingsAdviceRule);
         tsb.append("aspectAdvices", aspectAdviceRuleList);
         tsb.append("exception", exceptionRule);
-        tsb.appendForce("beanRelevanted", beanRelevanted);
+        tsb.appendForce("beanRelevant", beanRelevant);
         return tsb.toString();
     }
 

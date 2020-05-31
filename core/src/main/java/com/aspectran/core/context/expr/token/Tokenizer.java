@@ -75,7 +75,6 @@ public class Tokenizer {
 
         for (int i = 0; i < inputLen; i++) {
             c = input.charAt(i);
-
             switch (status) {
                 case AT_TEXT:
                     textBuf.append(c);
@@ -252,7 +251,6 @@ public class Tokenizer {
         // leading whitespace
         for (int i = 0; i < end; i++) {
             c = textBuf.charAt(i);
-
             if (c == LF || c == CR) {
                 leadingLF = true;
             } else if (!Character.isWhitespace(c)) {
@@ -268,7 +266,6 @@ public class Tokenizer {
         // trailing whitespace
         for (int i = end - 1; i > start; i--) {
             c = textBuf.charAt(i);
-
             if (c == LF || c == CR) {
                 tailingLF = true;
             } else if (!Character.isWhitespace(c)) {
@@ -301,10 +298,8 @@ public class Tokenizer {
         if (tokens == null) {
             return null;
         }
-
         String firstVal = null;
         String lastVal = null;
-
         if (tokens.length == 1) {
             if (tokens[0].getType() == TokenType.TEXT) {
                 firstVal = tokens[0].getDefaultValue();
@@ -317,21 +312,18 @@ public class Tokenizer {
                 lastVal = tokens[tokens.length - 1].getDefaultValue();
             }
         }
-
         if (firstVal != null) {
             String text = trimLeadingWhitespace(firstVal);
             if (!Objects.equals(firstVal, text)) {
                 tokens[0] = new Token(text);
             }
         }
-
         if (lastVal != null && !lastVal.isEmpty()) {
             String text = trimTrailingWhitespace(lastVal);
             if (!Objects.equals(lastVal, text)) {
                 tokens[tokens.length - 1] = new Token(text);
             }
         }
-
         return tokens;
     }
 
@@ -346,10 +338,8 @@ public class Tokenizer {
         if (string.isEmpty()) {
             return string;
         }
-
         int start = 0;
         char c;
-
         for (int i = 0; i < string.length(); i++) {
             c = string.charAt(i);
             if (!Character.isWhitespace(c)) {
@@ -357,11 +347,9 @@ public class Tokenizer {
                 break;
             }
         }
-
         if (start == 0) {
             return string;
         }
-
         return string.substring(start);
     }
 
@@ -375,7 +363,6 @@ public class Tokenizer {
     private static String trimTrailingWhitespace(String string) {
         int end = 0;
         char c;
-
         for (int i = string.length() - 1; i >= 0; i--) {
             c = string.charAt(i);
             if (!Character.isWhitespace(c)) {
@@ -383,11 +370,9 @@ public class Tokenizer {
                 break;
             }
         }
-
         if (end == 0) {
             return string;
         }
-
         return string.substring(0, end + 1);
     }
 

@@ -435,7 +435,6 @@ public class StringUtils {
         int delimLen = delim.length();
         while (pos2 >= 0) {
             item[idx++] = (pos1 > pos2 - 1) ? EMPTY : str.substring(pos1, pos2);
-
             pos1 = pos2 + delimLen;
             pos2 = str.indexOf(delim, pos1);
         }

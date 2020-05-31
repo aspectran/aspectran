@@ -17,8 +17,8 @@ package com.aspectran.core.activity.process.action;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.Translet;
+import com.aspectran.core.context.expr.ItemEvaluation;
 import com.aspectran.core.context.expr.ItemEvaluator;
-import com.aspectran.core.context.expr.ItemExpression;
 import com.aspectran.core.context.rule.InvokeActionRule;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
@@ -77,7 +77,7 @@ public class InvokeAction implements Executable {
             ItemEvaluator evaluator = null;
             if ((propertyItemRuleMap != null && !propertyItemRuleMap.isEmpty()) ||
                     (argumentItemRuleMap != null && !argumentItemRuleMap.isEmpty())) {
-                evaluator = new ItemExpression(activity);
+                evaluator = new ItemEvaluation(activity);
             }
             if (propertyItemRuleMap != null && !propertyItemRuleMap.isEmpty()) {
                 Map<String, Object> valueMap = evaluator.evaluate(propertyItemRuleMap);
@@ -193,7 +193,7 @@ public class InvokeAction implements Executable {
 
         if (argumentItemRuleMap != null && !argumentItemRuleMap.isEmpty()) {
             if (evaluator == null) {
-                evaluator = new ItemExpression(activity);
+                evaluator = new ItemEvaluation(activity);
             }
 
             Map<String, Object> valueMap = evaluator.evaluate(argumentItemRuleMap);
@@ -237,7 +237,7 @@ public class InvokeAction implements Executable {
     private static Object[] createArguments(Activity activity, ItemRuleMap argumentItemRuleMap,
                                             ItemEvaluator evaluator, boolean requiresTranslet) {
         if (evaluator == null) {
-            evaluator = new ItemExpression(activity);
+            evaluator = new ItemEvaluation(activity);
         }
 
         Object[] args;

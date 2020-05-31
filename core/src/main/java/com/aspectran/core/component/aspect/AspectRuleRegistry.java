@@ -103,7 +103,7 @@ public class AspectRuleRegistry extends AbstractComponent {
         AspectAdviceRulePostRegister postRegister = new AspectAdviceRulePostRegister();
         List<AspectRule> dynamicAspectRuleList = new ArrayList<>();
         for (AspectRule aspectRule : getAspectRules()) {
-            if (aspectRule.isBeanRelevanted()) {
+            if (aspectRule.isBeanRelevant()) {
                 Pointcut pointcut = aspectRule.getPointcut();
                 if (pointcut == null || pointcut.matches(pointcutPattern)) {
                     if (aspectRule.getJoinpointTargetType() == JoinpointTargetType.METHOD) {

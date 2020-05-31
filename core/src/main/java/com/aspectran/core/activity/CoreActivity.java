@@ -32,8 +32,8 @@ import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.activity.response.ResponseException;
 import com.aspectran.core.component.bean.scope.Scope;
 import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.context.expr.ItemEvaluation;
 import com.aspectran.core.context.expr.ItemEvaluator;
-import com.aspectran.core.context.expr.ItemExpression;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.rule.ChooseWhenRule;
 import com.aspectran.core.context.rule.ExceptionRule;
@@ -595,7 +595,7 @@ public class CoreActivity extends AdviceActivity {
             for (ItemRule itemRule : itemRuleMap.values()) {
                 if (itemRule.isEvaluable()) {
                     if (evaluator == null) {
-                        evaluator = new ItemExpression(this);
+                        evaluator = new ItemEvaluation(this);
                     }
                     String[] values = evaluator.evaluateAsStringArray(itemRule);
                     String[] oldValues = getRequestAdapter().getParameterValues(itemRule.getName());
@@ -632,7 +632,7 @@ public class CoreActivity extends AdviceActivity {
             for (ItemRule itemRule : itemRuleMap.values()) {
                 if (itemRule.isEvaluable()) {
                     if (evaluator == null) {
-                        evaluator = new ItemExpression(this);
+                        evaluator = new ItemEvaluation(this);
                     }
                     Object value = evaluator.evaluate(itemRule);
                     Object oldValue = getRequestAdapter().getAttribute(itemRule.getName());

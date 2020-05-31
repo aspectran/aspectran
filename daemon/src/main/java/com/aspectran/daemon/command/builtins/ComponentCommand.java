@@ -19,8 +19,8 @@ import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.component.aspect.AspectRuleRegistry;
 import com.aspectran.core.component.schedule.ScheduleRuleRegistry;
 import com.aspectran.core.component.translet.TransletRuleRegistry;
+import com.aspectran.core.context.expr.ItemEvaluation;
 import com.aspectran.core.context.expr.ItemEvaluator;
-import com.aspectran.core.context.expr.ItemExpression;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.ScheduleRule;
@@ -70,7 +70,7 @@ public class ComponentCommand extends AbstractCommand {
         DaemonService service = getService();
 
         try {
-            ItemEvaluator evaluator = new ItemExpression(getService().getDefaultActivity());
+            ItemEvaluator evaluator = new ItemEvaluation(getService().getDefaultActivity());
 
             ParameterMap parameterMap = null;
             ItemRuleMap parameterItemRuleMap = parameters.getParameterItemRuleMap();

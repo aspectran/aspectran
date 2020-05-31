@@ -16,8 +16,8 @@
 package com.aspectran.core.context.rule;
 
 import com.aspectran.core.activity.Activity;
+import com.aspectran.core.context.expr.TokenEvaluation;
 import com.aspectran.core.context.expr.TokenEvaluator;
-import com.aspectran.core.context.expr.TokenExpression;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.expr.token.Tokenizer;
 import com.aspectran.core.context.rule.ability.Replicable;
@@ -89,7 +89,7 @@ public class RedirectRule implements Replicable<RedirectRule> {
      */
     public String getPath(Activity activity) {
         if (pathTokens != null && pathTokens.length > 0) {
-            TokenEvaluator evaluator = new TokenExpression(activity);
+            TokenEvaluator evaluator = new TokenEvaluation(activity);
             return evaluator.evaluateAsString(pathTokens);
         } else {
             return path;

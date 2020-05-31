@@ -44,11 +44,11 @@ import java.util.Properties;
 import java.util.Set;
 
 /**
- * The Class TokenExpression.
+ * The Class TokenEvaluation.
  * 
  * <p>Created: 2008. 03. 29 AM 12:59:16</p>
  */
-public class TokenExpression implements TokenEvaluator {
+public class TokenEvaluation implements TokenEvaluator {
 
     protected final Activity activity;
 
@@ -57,7 +57,7 @@ public class TokenExpression implements TokenEvaluator {
      *
      * @param activity the current Activity
      */
-    public TokenExpression(Activity activity) {
+    public TokenEvaluation(Activity activity) {
         if (activity == null) {
             throw new IllegalArgumentException("activity must not be null");
         }

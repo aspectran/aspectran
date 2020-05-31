@@ -54,7 +54,11 @@ public class SessionLocaleResolver extends AbstractLocaleResolver {
                 return locale;
             }
         }
-        return resolveDefaultLocale(translet);
+        if (translet.getRequestAdapter().getLocale() != null) {
+            return translet.getRequestAdapter().getLocale();
+        } else {
+            return resolveDefaultLocale(translet);
+        }
     }
 
     @Override
@@ -67,7 +71,11 @@ public class SessionLocaleResolver extends AbstractLocaleResolver {
                 return timeZone;
             }
         }
-        return resolveDefaultTimeZone(translet);
+        if (translet.getRequestAdapter().getTimeZone() != null) {
+            return translet.getRequestAdapter().getTimeZone();
+        } else {
+            return resolveDefaultTimeZone(translet);
+        }
     }
 
     @Override

@@ -20,8 +20,8 @@ import com.aspectran.core.activity.ActivityDataMap;
 import com.aspectran.core.component.AbstractComponent;
 import com.aspectran.core.component.template.engine.TemplateEngine;
 import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.context.expr.TokenEvaluation;
 import com.aspectran.core.context.expr.TokenEvaluator;
-import com.aspectran.core.context.expr.TokenExpression;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.rule.TemplateRule;
 
@@ -165,7 +165,7 @@ public class DefaultTemplateRenderer extends AbstractComponent implements Templa
             } else {
                 Token[] templateTokens = templateRule.getTemplateTokens(context.getApplicationAdapter());
                 if (templateTokens != null) {
-                    TokenEvaluator evaluator = new TokenExpression(activity);
+                    TokenEvaluator evaluator = new TokenEvaluation(activity);
                     evaluator.evaluate(templateTokens, writer);
                 } else {
                     writer.write(templateRule.getTemplateSource(context.getApplicationAdapter()));

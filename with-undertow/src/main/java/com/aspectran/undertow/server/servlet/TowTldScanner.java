@@ -38,6 +38,8 @@ public class TowTldScanner extends TldScanner {
 
     private final ServletContext context;
 
+    private URL[] tldResources;
+
     private String[] jarsToScan;
 
     /**
@@ -56,24 +58,43 @@ public class TowTldScanner extends TldScanner {
         this.context = context;
     }
 
+    public void setTldResources(URL[] tldResources) {
+        this.tldResources = tldResources;
+    }
+
     public void setJarsToScan(String[] jarsToScan) {
         this.jarsToScan = jarsToScan;
     }
 
     @Override
     public void scan() throws IOException, SAXException {
-        if (jarsToScan != null) {
+        if (tldResources != null || jarsToScan != null) {
             scanPlatform();
             scanJspConfig();
             scanResourcePaths("/WEB-INF/");
-            for (String path : jarsToScan) {
-                String realPath = context.getRealPath(path);
-                if (realPath == null) {
-                    throw new FileNotFoundException("In TLD scanning, the supplied resource '" + path + "' does not exist");
+            if (tldResources != null) {
+                for (URL resource : tldResources) {
+                    TldResourcePath tldResourcePath =
+                            new TldResourcePath(resource, null);
+                    try {
+                        parseTld(tldResourcePath);
+                    } catch (Exception e) {
+                        logger.error("Failed to parse TLD file: " + resource, e);
+                        throw new IOException("Failed to parse TLD file: " + resource, e);
+                    }
                 }
-                URL url = new File(realPath).toURI().toURL();
-                Jar jar = JarFactory.newInstance(url);
-                scanJar(jar, path);
+            }
+            if (jarsToScan != null) {
+                for (String path : jarsToScan) {
+                    String realPath = context.getRealPath(path);
+                    if (realPath == null) {
+                        throw new FileNotFoundException("In TLD scanning, the supplied resource '" +
+                                path + "' does not exist");
+                    }
+                    URL url = new File(realPath).toURI().toURL();
+                    Jar jar = JarFactory.newInstance(url);
+                    scanJar(jar, path);
+                }
             }
         } else {
             super.scan();
