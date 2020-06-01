@@ -20,6 +20,7 @@ import com.aspectran.core.component.bean.ablility.FactoryBean;
 import com.aspectran.core.component.bean.ablility.InitializableBean;
 import com.aspectran.core.component.bean.annotation.AvoidAdvice;
 import com.aspectran.core.component.bean.aware.ApplicationAdapterAware;
+import com.aspectran.core.util.Assert;
 import com.aspectran.core.util.ClassUtils;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
@@ -90,9 +91,7 @@ public class SqlSessionFactoryBean implements ApplicationAdapterAware, Initializ
 
     @Override
     public void initialize() throws Exception {
-        if (applicationAdapter == null) {
-            throw new IllegalStateException("applicationAdapter is not specified");
-        }
+        Assert.state(applicationAdapter != null, "No ApplicationAdapter injected");
         if(sqlSessionFactory == null) {
             if(configLocation == null) {
                 throw new IllegalArgumentException("Property 'configLocation' is required");

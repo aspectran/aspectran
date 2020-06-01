@@ -49,7 +49,7 @@ public class AccessLogHandlerWrapper implements ClassLoaderAware, HandlerWrapper
     @Override
     public HttpHandler wrap(HttpHandler handler) {
         if (handler == null) {
-            throw new IllegalStateException("The next handler is not specified");
+            throw new IllegalArgumentException("handler must not be null");
         }
         AccessLogReceiver accessLogReceiver = new AspectranAccessLogReceiver(category);
         String formatString = (StringUtils.hasText(this.formatString) ? this.formatString : "combined");

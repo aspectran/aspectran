@@ -15,54 +15,50 @@
  */
 package com.aspectran.undertow.server.servlet;
 
-import com.aspectran.core.component.bean.aware.ClassLoaderAware;
+import com.aspectran.core.adapter.ApplicationAdapter;
+import com.aspectran.core.component.bean.aware.ApplicationAdapterAware;
 import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
 import org.apache.jasper.servlet.JasperInitializer;
 import org.apache.jasper.servlet.TldScanner;
 
 import javax.servlet.ServletContext;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
  * Initializer for the Jasper JSP Engine.
  */
-public class TowJasperInitializer extends JasperInitializer implements ClassLoaderAware {
+public class TowJasperInitializer extends JasperInitializer implements ApplicationAdapterAware {
 
     private static final Logger logger = LoggerFactory.getLogger(TowJasperInitializer.class);
 
-    private ClassLoader classLoader;
+    private ApplicationAdapter applicationAdapter;
 
     private URL[] tldResources;
-
-    private String[] jarsToTldScan;
 
     public TowJasperInitializer() {
     }
 
     @Override
-    public void setClassLoader(ClassLoader classLoader) {
-        this.classLoader = classLoader;
+    public void setApplicationAdapter(ApplicationAdapter applicationAdapter) {
+        this.applicationAdapter = applicationAdapter;
     }
 
     public void setTldResources(String[] resourcesToTldScan) throws IOException {
+        if (logger.isDebugEnabled()) {
+            logger.debug("Specified TLD resources: " + Arrays.toString(resourcesToTldScan));
+        }
         List<URL> tldResources = new ArrayList<>();
-        List<String> jarsToTldScan = new ArrayList<>();
         if (resourcesToTldScan != null) {
             for (String resource : resourcesToTldScan) {
                 if (resource != null) {
-                    if (resource.toLowerCase().endsWith(".jar")) {
-                        jarsToTldScan.add(resource);
-                    } else {
-                        URL url = classLoader.getResource(resource);
-                        if (url == null) {
-                            throw new IOException("Resource \"" + resource + "\" not found");
-                        }
-                        tldResources.add(url);
-                    }
+                    tldResources.add(getURL(resource));
                 }
             }
         }
@@ -71,23 +67,25 @@ public class TowJasperInitializer extends JasperInitializer implements ClassLoad
         } else {
             this.tldResources = null;
         }
-        if (!jarsToTldScan.isEmpty()) {
-            this.jarsToTldScan = jarsToTldScan.toArray(new String[0]);
-        } else {
-            this.jarsToTldScan = null;
-        }
     }
 
     @Override
     protected TldScanner newTldScanner(ServletContext context, boolean namespaceAware,
                                        boolean validate, boolean blockExternal) {
         TowTldScanner tldScanner = new TowTldScanner(context, namespaceAware, validate, blockExternal);
-        if (classLoader != null) {
-            tldScanner.setClassLoader(classLoader);
-        }
+        tldScanner.setClassLoader(applicationAdapter.getClassLoader());
         tldScanner.setTldResources(tldResources);
-        tldScanner.setJarsToScan(jarsToTldScan);
         return tldScanner;
+    }
+
+    private URL getURL(String resourceLocation) throws FileNotFoundException {
+        try {
+            File file = applicationAdapter.toRealPathAsFile(resourceLocation);
+            return file.toURI().toURL();
+        } catch (IOException ex) {
+            throw new FileNotFoundException("In TLD scanning, the supplied resource '" +
+                    resourceLocation + "' does not exist");
+        }
     }
 
 }

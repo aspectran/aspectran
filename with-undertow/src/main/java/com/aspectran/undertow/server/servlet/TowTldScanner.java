@@ -15,6 +15,7 @@
  */
 package com.aspectran.undertow.server.servlet;
 
+import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
 import org.apache.jasper.servlet.TldScanner;
@@ -24,10 +25,9 @@ import org.apache.tomcat.util.scan.JarFactory;
 import org.xml.sax.SAXException;
 
 import javax.servlet.ServletContext;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Map;
 
 /**
  * Scans for and loads Tag Library Descriptors contained in a web application.
@@ -36,11 +36,7 @@ public class TowTldScanner extends TldScanner {
 
     private final Logger logger = LoggerFactory.getLogger(TowTldScanner.class);
 
-    private final ServletContext context;
-
     private URL[] tldResources;
-
-    private String[] jarsToScan;
 
     /**
      * Initialise with the application's ServletContext.
@@ -55,74 +51,66 @@ public class TowTldScanner extends TldScanner {
      */
     public TowTldScanner(ServletContext context, boolean namespaceAware, boolean validation, boolean blockExternal) {
         super(context, namespaceAware, validation, blockExternal);
-        this.context = context;
     }
 
     public void setTldResources(URL[] tldResources) {
         this.tldResources = tldResources;
     }
 
-    public void setJarsToScan(String[] jarsToScan) {
-        this.jarsToScan = jarsToScan;
-    }
-
     @Override
     public void scan() throws IOException, SAXException {
-        if (tldResources != null || jarsToScan != null) {
+        if (tldResources != null) {
             scanPlatform();
             scanJspConfig();
             scanResourcePaths("/WEB-INF/");
-            if (tldResources != null) {
-                for (URL resource : tldResources) {
-                    TldResourcePath tldResourcePath =
-                            new TldResourcePath(resource, null);
-                    try {
-                        parseTld(tldResourcePath);
-                    } catch (Exception e) {
-                        logger.error("Failed to parse TLD file: " + resource, e);
-                        throw new IOException("Failed to parse TLD file: " + resource, e);
+            for (URL url : tldResources) {
+                if (url != null) {
+                    if ((ResourceUtils.URL_PROTOCOL_FILE.equals(url.getProtocol()) &&
+                            url.getFile().endsWith(ResourceUtils.JAR_FILE_SUFFIX)) ||
+                            ResourceUtils.isJarSimilarURL(url)) {
+                        Jar jar = JarFactory.newInstance(url);
+                        scanJar(jar);
+                    } else {
+                        parseTld(url);
                     }
-                }
-            }
-            if (jarsToScan != null) {
-                for (String path : jarsToScan) {
-                    String realPath = context.getRealPath(path);
-                    if (realPath == null) {
-                        throw new FileNotFoundException("In TLD scanning, the supplied resource '" +
-                                path + "' does not exist");
-                    }
-                    URL url = new File(realPath).toURI().toURL();
-                    Jar jar = JarFactory.newInstance(url);
-                    scanJar(jar, path);
                 }
             }
         } else {
             super.scan();
         }
+        Map<String, TldResourcePath> result = getUriTldResourcePathMap();
+        for (Map.Entry<String, TldResourcePath> entry : result.entrySet()) {
+            logger.debug("Found TLD: " + entry.getKey() + " [" + entry.getValue().getUrl() + "]");
+        }
     }
 
-    protected void scanJar(Jar jar, String webappPath) throws IOException {
+    private void parseTld(URL url) throws IOException {
+        TldResourcePath tldResourcePath = new TldResourcePath(url, null);
+        try {
+            parseTld(tldResourcePath);
+        } catch (SAXException e) {
+            throw new IOException("Failed to parse TLD: " + url, e);
+        }
+    }
+
+    private void scanJar(Jar jar) throws IOException {
         boolean found = false;
         URL jarFileUrl = jar.getJarFileURL();
         jar.nextEntry();
         for (String entryName = jar.getEntryName();
-             entryName != null; jar.nextEntry(), entryName = jar.getEntryName()) {
+            entryName != null; jar.nextEntry(), entryName = jar.getEntryName()) {
             if (entryName.startsWith("META-INF/") && entryName.endsWith(".tld")) {
                 found = true;
-                TldResourcePath tldResourcePath = new TldResourcePath(jarFileUrl, webappPath, entryName);
+                TldResourcePath tldResourcePath = new TldResourcePath(jarFileUrl, null, entryName);
                 try {
                     parseTld(tldResourcePath);
                 } catch (SAXException e) {
-                    throw new IOException(e);
+                    throw new IOException("Failed to parse TLD: ", e);
                 }
             }
         }
-        if (logger.isDebugEnabled()) {
-            if (found) {
-                logger.debug("TLD files were found in JAR [" + jarFileUrl + "]");
-            } else {
-                logger.debug("No TLD files were found in JAR [" + jarFileUrl + "]");
-            }
+        if (!found && logger.isDebugEnabled()) {
+            logger.debug("No TLDs were found in JAR [" + jarFileUrl + "]");
         }
     }
 

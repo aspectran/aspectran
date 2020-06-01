@@ -373,7 +373,8 @@ public abstract class AdviceActivity extends AbstractActivity {
                         }
                     } catch (Exception e) {
                         setRaisedException(e);
-                        throw new ActionExecutionException("Failed to execute advice action " + action, e);
+                        throw new ActionExecutionException("Failed to execute advice action " + action +
+                                " for exception handling", e);
                     }
                 }
                 return exceptionThrownRule;

@@ -140,12 +140,11 @@ public class XslTransformResponse extends TransformResponse {
         boolean noCache = templateRule.isNoCache();
 
         if (templateFile != null) {
+            File file = applicationAdapter.toRealPathAsFile(templateFile);
             if (noCache) {
-                File file = applicationAdapter.toRealPathAsFile(templateFile);
                 this.templates = createTemplates(file);
                 determineOutputStyle();
             } else {
-                File file = applicationAdapter.toRealPathAsFile(templateFile);
                 long lastModifiedTime = file.lastModified();
                 if (lastModifiedTime > this.templateLastModifiedTime) {
                     synchronized (this) {

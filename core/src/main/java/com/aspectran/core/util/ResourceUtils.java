@@ -338,23 +338,18 @@ public class ResourceUtils {
     public static Reader getReader(final URL url, String encoding) throws IOException {
         InputStream stream;
         try {
-            stream = AccessController.doPrivileged(
-                    new PrivilegedExceptionAction<InputStream>() {
-                        @Override
-                        public InputStream run() throws IOException {
-                            InputStream is = null;
-                            if (url != null) {
-                                URLConnection connection = url.openConnection();
-                                if (connection != null) {
-                                    // Disable caches to get fresh data for reloading.
-                                    connection.setUseCaches(false);
-                                    is = connection.getInputStream();
-                                }
-                            }
-                            return is;
-                        }
+            stream = AccessController.doPrivileged((PrivilegedExceptionAction<InputStream>)() -> {
+                InputStream is = null;
+                if (url != null) {
+                    URLConnection connection = url.openConnection();
+                    if (connection != null) {
+                        // Disable caches to get fresh data for reloading.
+                        connection.setUseCaches(false);
+                        is = connection.getInputStream();
                     }
-            );
+                }
+                return is;
+            });
         } catch (PrivilegedActionException e) {
             throw (IOException)e.getException();
         }

@@ -36,7 +36,7 @@ import java.util.List;
  * internationalization.
  *
  * <p>Detects an HTML escaping setting, either on this tag instance, the page level,
- * or the {@code web.xml} level. Can alsoply JavaScript escaping.</p>
+ * or the {@code web.xml} level. Can also apply JavaScript escaping.</p>
  *
  * <p>If "code" isn't set or cannot be resolved, "text" will be used as default
  * message. Thus, this tag can also be used for HTML escaping of any texts.</p>
@@ -90,18 +90,6 @@ import java.util.List;
  * <td>true</td>
  * <td>Set JavaScript escaping for this tag, as boolean value.
  * Default is false.</td>
- * </tr>
- * <tr>
- * <td>message</td>
- * <td>false</td>
- * <td>true</td>
- * <td>A MessageSourceResolvable argument (direct or through JSP EL).
- * Fits nicely when used in conjunction with Spring’s own validation error
- * classes which all implement the MessageSourceResolvable interface.
- * For example, this allows you to iterate over all of the errors in a form,
- * passing each error (using a runtime expression) as the value of this
- * 'message' attribute, thus effecting the easy display of such error
- * messages.</td>
  * </tr>
  * <tr>
  * <td>scope</td>

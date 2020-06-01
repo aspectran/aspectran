@@ -55,17 +55,6 @@
         <tag-class>com.aspectran.web.support.tags.MessageTag</tag-class>
         <body-content>JSP</body-content>
         <attribute>
-            <description>A MessageSourceResolvable argument (direct or through JSP EL).
-                Fits nicely when used in conjunction with Spring's own validation error classes
-                which all implement the MessageSourceResolvable interface. For example, this
-                allows you to iterate over all of the errors in a form, passing each error
-                (using a runtime expression) as the value of this 'message' attribute, thus
-                effecting the easy display of such error messages.</description>
-            <name>message</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
             <description>The code (key) to use when looking up the message.
                 If code is not provided, the text attribute will be used.</description>
             <name>code</name>
@@ -76,7 +65,7 @@
             <description>Set optional message arguments for this tag, as a (comma-)
                 delimited String (each String argument can contain JSP EL), an Object array
                 (used as argument array), or a single Object (used as single argument).
-                You can additionally use nested spring:argument tags.</description>
+                You can additionally use nested aspectran:argument tags.</description>
             <name>arguments</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
@@ -130,7 +119,7 @@
 
     <tag>
         <description>Argument tag based on the JSTL fmt:param tag. The purpose is to
-            support arguments inside the spring:message and spring:theme tags.</description>
+            support arguments inside the aspectran:message tags.</description>
         <name>argument</name>
         <tag-class>com.aspectran.web.support.tags.ArgumentTag</tag-class>
         <body-content>JSP</body-content>
@@ -144,7 +133,7 @@
     </tag>
 
     <tag>
-        <description>Evaluates a Spring expression (SpEL) and either prints the result
+        <description>Evaluates a Token expression and either prints the result
             or assigns it to a variable.</description>
         <name>eval</name>
         <tag-class>com.aspectran.web.support.tags.EvalTag</tag-class>

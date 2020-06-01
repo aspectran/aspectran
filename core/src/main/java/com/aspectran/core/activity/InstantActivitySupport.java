@@ -41,7 +41,7 @@ public abstract class InstantActivitySupport implements ActivityContextAware {
 
     @NonNull
     protected ActivityContext getActivityContext() {
-        Assert.state(context != null, "ActivityContext is not injected");
+        Assert.state(context != null, "No ActivityContext injected");
         return context;
     }
 

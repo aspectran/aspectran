@@ -68,7 +68,7 @@ public abstract class CurrentActivityAwareTag extends TagSupport implements TryC
      * Return the current Activity.
      */
     protected final Activity getCurrentActivity() {
-        Assert.state(currentActivity != null, "No current Activity");
+        Assert.state(currentActivity != null, "No current Activity injected");
         return currentActivity;
     }
 

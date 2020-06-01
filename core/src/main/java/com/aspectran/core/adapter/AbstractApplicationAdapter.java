@@ -22,6 +22,9 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 
+import static com.aspectran.core.util.ResourceUtils.CLASSPATH_URL_PREFIX;
+import static com.aspectran.core.util.ResourceUtils.FILE_URL_PREFIX;
+
 /**
  * The Class AbstractApplicationAdapter.
  *
@@ -58,13 +61,14 @@ public abstract class AbstractApplicationAdapter implements ApplicationAdapter {
     @Override
     public File toRealPathAsFile(String filePath) throws IOException {
         File file;
-        if (filePath.startsWith(ResourceUtils.FILE_URL_PREFIX)) {
+        if (filePath.startsWith(FILE_URL_PREFIX)) {
             // Using url fully qualified paths
             URI uri = URI.create(filePath);
             file = new File(uri);
-        } else if (filePath.startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {
+        } else if (filePath.startsWith(CLASSPATH_URL_PREFIX)) {
             // Using classpath relative resources
-            URL url = getClassLoader().getResource(filePath);
+            String path = filePath.substring(CLASSPATH_URL_PREFIX.length());
+            URL url = getClassLoader().getResource(path);
             if (url == null) {
                 throw new IOException("Could not find the resource with the given name: " + filePath);
             }
