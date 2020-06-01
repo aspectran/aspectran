@@ -48,7 +48,6 @@ public class ResourceManager {
         return new Enumeration<URL>() {
             private Iterator<URL> values;
             private URL next;
-            private URL current;
 
             private boolean hasNext() {
                 while (true) {
@@ -78,7 +77,7 @@ public class ResourceManager {
                         throw new NoSuchElementException();
                     }
                 }
-                current = next;
+                URL current = next;
                 next = null;
                 return current;
             }
@@ -103,7 +102,6 @@ public class ResourceManager {
 
         return new Enumeration<URL>() {
             private URL next;
-            private URL current;
             private boolean noMore; //for parent
 
             private boolean hasNext() {
@@ -141,7 +139,7 @@ public class ResourceManager {
                         throw new NoSuchElementException();
                     }
                 }
-                current = next;
+                URL current = next;
                 next = null;
                 return current;
             }

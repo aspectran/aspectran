@@ -473,17 +473,17 @@ public class ResourceUtils {
      * @throws IOException if the resource cannot be found or read
      */
     public static InputStream getResourceAsStream(String resource, ClassLoader classLoader) throws IOException {
-        InputStream in = null;
+        InputStream stream = null;
         if (classLoader != null) {
-            in = classLoader.getResourceAsStream(resource);
+            stream = classLoader.getResourceAsStream(resource);
         }
-        if (in == null) {
-            in = ClassLoader.getSystemResourceAsStream(resource);
+        if (stream == null) {
+            stream = ClassLoader.getSystemResourceAsStream(resource);
         }
-        if (in == null) {
+        if (stream == null) {
             throw new IOException("Could not find resource " + resource);
         }
-        return in;
+        return stream;
     }
 
     /**

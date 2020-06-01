@@ -126,20 +126,10 @@ public class LocalResourceManager extends ResourceManager {
     }
 
     private void findResourceFromJAR(File target) throws InvalidResourceException, IOException {
-        JarFile jarFile = null;
-        try {
-            jarFile = new JarFile(target);
-            for (Enumeration<JarEntry> entries = jarFile.entries(); entries.hasMoreElements();) {
+        try (JarFile jarFile = new JarFile(target)) {
+            for (Enumeration<JarEntry> entries = jarFile.entries(); entries.hasMoreElements(); ) {
                 JarEntry entry = entries.nextElement();
                 putResource(target, entry);
-            }
-        } finally {
-            if (jarFile != null) {
-                try {
-                    jarFile.close();
-                } catch (IOException e) {
-                    // ignore
-                }
             }
         }
     }

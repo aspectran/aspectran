@@ -22,13 +22,15 @@ import com.aspectran.core.component.bean.annotation.AvoidAdvice;
 import com.aspectran.core.component.bean.aware.ApplicationAdapterAware;
 import com.aspectran.core.util.Assert;
 import com.aspectran.core.util.ClassUtils;
+import com.aspectran.core.util.ResourceUtils;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.Reader;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.Properties;
+
+import static com.aspectran.core.util.ResourceUtils.CLASSPATH_URL_PREFIX;
 
 /**
  * {@code FactoryBean} that creates an MyBatis {@code SqlSessionFactory}
@@ -70,12 +72,12 @@ public class SqlSessionFactoryBean implements ApplicationAdapterAware, Initializ
         this.properties = properties;
     }
 
-    protected SqlSessionFactory buildSqlSessionFactory(File configFile) {
+    protected SqlSessionFactory buildSqlSessionFactory(InputStream inputStream) {
         ClassLoader originalClassLoader = null;
-        try (Reader reader = new FileReader(configFile)) {
+        try {
             originalClassLoader = ClassUtils.overrideThreadContextClassLoader(applicationAdapter.getClassLoader());
             SqlSessionFactoryBuilder sqlSessionFactoryBuilder = new SqlSessionFactoryBuilder();
-            return sqlSessionFactoryBuilder.build(reader, environment, properties);
+            return sqlSessionFactoryBuilder.build(inputStream, environment, properties);
         } catch (Exception ex) {
             throw new IllegalArgumentException("Failed to parse mybatis config resource: " +
                     configLocation, ex);
@@ -96,8 +98,14 @@ public class SqlSessionFactoryBean implements ApplicationAdapterAware, Initializ
             if(configLocation == null) {
                 throw new IllegalArgumentException("Property 'configLocation' is required");
             }
-            File configFile = applicationAdapter.toRealPathAsFile(configLocation);
-            sqlSessionFactory = buildSqlSessionFactory(configFile);
+            InputStream is;
+            if (configLocation.startsWith(CLASSPATH_URL_PREFIX)) {
+                is = ResourceUtils.getResourceAsStream(configLocation.substring(CLASSPATH_URL_PREFIX.length()),
+                        applicationAdapter.getClassLoader());
+            } else {
+                is = new FileInputStream(applicationAdapter.toRealPathAsFile(configLocation));
+            }
+            sqlSessionFactory = buildSqlSessionFactory(is);
         }
     }
 

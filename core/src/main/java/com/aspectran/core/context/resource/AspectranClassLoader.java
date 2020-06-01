@@ -37,6 +37,7 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Set;
 
 import static com.aspectran.core.util.ClassUtils.CLASS_FILE_SUFFIX;
@@ -381,12 +382,10 @@ public class AspectranClassLoader extends ClassLoader {
             }
             try {
                 c = Class.forName(name, false, loader);
-                if (c != null) {
-                    if (resolve) {
-                        resolveClass(c);
-                    }
-                    return c;
+                if (resolve) {
+                    resolveClass(c);
                 }
+                return c;
             } catch (ClassNotFoundException e) {
                 // ignore
             }
@@ -397,6 +396,7 @@ public class AspectranClassLoader extends ClassLoader {
 
     @Override
     public Class<?> findClass(String name) throws ClassNotFoundException {
+        Objects.requireNonNull(name);
         try  {
             byte[] classData = loadClassData(name);
             if (classData != null) {
@@ -452,6 +452,7 @@ public class AspectranClassLoader extends ClassLoader {
 
     @Override
     public Enumeration<URL> getResources(String name) throws IOException {
+        Objects.requireNonNull(name);
         Enumeration<URL> parentResources = null;
         ClassLoader parent = root.getParent();
         if (parent != null) {
@@ -462,6 +463,7 @@ public class AspectranClassLoader extends ClassLoader {
 
     @Override
     public URL findResource(String name) {
+        Objects.requireNonNull(name);
         URL url = null;
         Enumeration<URL> res = ResourceManager.getResources(getAllMembers(), name);
         if (res.hasMoreElements()) {
@@ -472,6 +474,7 @@ public class AspectranClassLoader extends ClassLoader {
 
     @Override
     public Enumeration<URL> findResources(String name) {
+        Objects.requireNonNull(name);
         LinkedHashSet<URL> result = new LinkedHashSet<>();
         Enumeration<URL> res = ResourceManager.getResources(getAllMembers(), name);
         if (res.hasMoreElements()) {
