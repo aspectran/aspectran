@@ -65,11 +65,13 @@ public class TowTldScanner extends TldScanner {
             scanResourcePaths("/WEB-INF/");
             for (URL url : tldResources) {
                 if (url != null) {
-                    if (ResourceUtils.isJarURL(url) || ResourceUtils.isJarFileURL(url)) {
+                    if (url.getPath().endsWith(".tld")) {
+                        parseTld(url);
+                    } else if (ResourceUtils.isJarURL(url) || ResourceUtils.isJarFileURL(url)) {
                         Jar jar = JarFactory.newInstance(url);
                         scanJar(jar);
                     } else {
-                        parseTld(url);
+                        logger.warn("Unrecognized TLD Resource: " + url);
                     }
                 }
             }
