@@ -19,22 +19,80 @@ import com.aspectran.core.context.expr.TokenEvaluation;
 import com.aspectran.core.context.expr.TokenEvaluator;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.expr.token.TokenParser;
+import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.lang.Nullable;
 import com.aspectran.core.util.ObjectUtils;
 import com.aspectran.web.support.util.JavaScriptUtils;
 import com.aspectran.web.support.util.TagUtils;
 
 import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.PageContext;
 import java.io.IOException;
 
 /**
- * The {@code <eval>} tag evaluates a Token expression and either prints
+ * The {@code <token>} tag evaluates a Token expression and either prints
  * the result or assigns it to a variable.
+ *
+ * <table>
+ * <caption>Attribute Summary</caption>
+ * <thead>
+ * <tr>
+ * <th>Attribute</th>
+ * <th>Required?</th>
+ * <th>Runtime Expression?</th>
+ * <th>Description</th>
+ * </tr>
+ * </thead>
+ * <tbody>
+ * <tr>
+ * <td>type</td>
+ * <td>true</td>
+ * <td>true</td>
+ * <td>The type of the token to evaluate.</td>
+ * </tr>
+ * <tr>
+ * <td>expression</td>
+ * <td>true</td>
+ * <td>true</td>
+ * <td>The expression to evaluate.</td>
+ * </tr>
+ * <tr>
+ * <td>htmlEscape</td>
+ * <td>false</td>
+ * <td>true</td>
+ * <td>Set HTML escaping for this tag, as a boolean value.
+ * Overrides the default HTML escaping setting for the current page.</td>
+ * </tr>
+ * <tr>
+ * <td>javaScriptEscape</td>
+ * <td>false</td>
+ * <td>true</td>
+ * <td>Set JavaScript escaping for this tag, as a boolean value.
+ * Default is false.</td>
+ * </tr>
+ * <tr>
+ * <td>scope</td>
+ * <td>false</td>
+ * <td>true</td>
+ * <td>The scope for the var. 'application', 'session', 'request' and 'page'
+ * scopes are supported. Defaults to page scope. This attribute has no effect
+ * unless the var attribute is also defined.</td>
+ * </tr>
+ * <tr>
+ * <td>var</td>
+ * <td>false</td>
+ * <td>true</td>
+ * <td>The name of the variable to export the evaluation result to.
+ * If not specified the evaluation result is converted to a String and written
+ * as output.</td>
+ * </tr>
+ * </tbody>
+ * </table>
  *
  * <p>Created: 2020/05/31</p>
  */
-public class EvalTag extends HtmlEscapingAwareTag {
+public class TokenTag extends HtmlEscapingAwareTag {
 
     /**
      * {@link javax.servlet.jsp.PageContext} attribute for the
@@ -44,7 +102,10 @@ public class EvalTag extends HtmlEscapingAwareTag {
             "com.aspectran.web.support.tags.TOKEN_EVALUATOR";
 
     @Nullable
-    private Token[] tokens;
+    private String type;
+
+    @Nullable
+    private String expression;
 
     @Nullable
     private String var;
@@ -54,10 +115,17 @@ public class EvalTag extends HtmlEscapingAwareTag {
     private boolean javaScriptEscape = false;
 
     /**
+     * Set the toke type to evaluate.
+     */
+    public void setType(@Nullable String type) {
+        this.type = type;
+    }
+
+    /**
      * Set the expression to evaluate.
      */
-    public void setExpression(String expression) {
-        this.tokens = TokenParser.parse(expression);
+    public void setExpression(@Nullable String expression) {
+        this.expression = expression;
     }
 
     /**
@@ -97,23 +165,35 @@ public class EvalTag extends HtmlEscapingAwareTag {
             tokenEvaluator = new TokenEvaluation(getCurrentActivity());
             super.pageContext.setAttribute(TOKEN_EVALUATOR_PAGE_ATTRIBUTE, tokenEvaluator);
         }
-        if (var != null) {
-            Object result = tokenEvaluator.evaluate(tokens);
-            super.pageContext.setAttribute(var, result, scope);
-        } else {
-            try {
-                Object result = tokenEvaluator.evaluate(tokens);
-                String str = ObjectUtils.getDisplayString(result);
-                str = htmlEscape(str);
-                if (javaScriptEscape) {
-                    str = JavaScriptUtils.javaScriptEscape(str);
-                }
-                this.pageContext.getOut().print(str);
-            } catch (IOException ex) {
-                throw new JspException(ex);
+        try {
+            if (type == null) {
+                throw new IllegalArgumentException("No token type set");
             }
+            TokenType tokenType = TokenType.resolve(type);
+            if (tokenType == null) {
+                throw new IllegalArgumentException("Unknown token type: " + type);
+            }
+            Token[] tokens = TokenParser.parse(Token.format(tokenType, expression));
+            if (var != null) {
+                Object result = tokenEvaluator.evaluate(tokens);
+                super.pageContext.setAttribute(var, result, scope);
+            } else {
+                try {
+                    Object result = tokenEvaluator.evaluate(tokens);
+                    String str = ObjectUtils.getDisplayString(result);
+                    str = htmlEscape(str);
+                    if (javaScriptEscape) {
+                        str = JavaScriptUtils.javaScriptEscape(str);
+                    }
+                    this.pageContext.getOut().print(str);
+                } catch (IOException ex) {
+                    throw new JspException(ex);
+                }
+            }
+            return EVAL_PAGE;
+        } catch (Exception ex) {
+            throw new JspTagException(ex.getMessage(), ex);
         }
-        return EVAL_PAGE;
     }
 
 }

@@ -352,8 +352,7 @@ public class CoreActivity extends AdviceActivity {
 
     private void exception() throws ActionExecutionException {
         if (logger.isDebugEnabled()) {
-            Throwable cause = getRootCauseOfRaisedException();
-            logger.debug("Exception handling for " + getRootCauseOfRaisedException(), cause);
+            logger.debug("Exception handling for " + getRaisedException(), getRaisedException());
         }
 
         reserveResponse(null);

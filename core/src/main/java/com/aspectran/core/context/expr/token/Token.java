@@ -87,13 +87,13 @@ public class Token implements BeanReferenceable, Replicable<Token> {
 
     public static final char BEAN_SYMBOL = '#';
 
-    public static final char TEMPLATE_SYMBOL = '~';
-
     public static final char PARAMETER_SYMBOL = '$';
 
     public static final char ATTRIBUTE_SYMBOL = '@';
 
     public static final char PROPERTY_SYMBOL = '%';
+
+    public static final char TEMPLATE_SYMBOL = '~';
 
     public static final char BRACKET_OPEN = '{';
 
@@ -470,8 +470,8 @@ public class Token implements BeanReferenceable, Replicable<Token> {
                 || c == PROPERTY_SYMBOL);
     }
 
-    public static boolean hasToken(String str) {
-        char[] ca = str.toCharArray();
+    public static boolean hasToken(String expression) {
+        char[] ca = expression.toCharArray();
         boolean open = false;
         for (int i = 1; i < ca.length; i++) {
             if (isTokenSymbol(ca[i - 1]) && ca[i] == BRACKET_OPEN) {
@@ -545,6 +545,40 @@ public class Token implements BeanReferenceable, Replicable<Token> {
                 }
             }
         }
+    }
+
+    public static String format(TokenType type, String expression) {
+        if (type == null) {
+            throw new IllegalArgumentException("Token type must not be null");
+        }
+        if (type == TokenType.TEXT) {
+            return expression;
+        }
+        StringBuilder sb = new StringBuilder();
+        switch (type) {
+            case BEAN:
+                sb.append(BEAN_SYMBOL);
+                break;
+            case PARAMETER:
+                sb.append(PARAMETER_SYMBOL);
+                break;
+            case ATTRIBUTE:
+                sb.append(ATTRIBUTE_SYMBOL);
+                break;
+            case PROPERTY:
+                sb.append(PROPERTY_SYMBOL);
+                break;
+            case TEMPLATE:
+                sb.append(TEMPLATE_SYMBOL);
+                break;
+            default:
+                throw new IllegalArgumentException("Unknown token type: " + type);
+        }
+        sb.append(BRACKET_OPEN);
+        if (expression != null) {
+            sb.append(expression);
+        }
+        return sb.append(BRACKET_CLOSE).toString();
     }
 
 }

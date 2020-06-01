@@ -49,7 +49,7 @@ public class TokenParser {
         if (expression == null) {
             return null;
         }
-        if (expression.length() == 0) {
+        if (expression.isEmpty()) {
             Token t = new Token(expression);
             return new Token[] { t };
         }

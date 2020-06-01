@@ -22,12 +22,12 @@ package com.aspectran.core.context.rule.type;
  */
 public enum TokenType {
 
-    TEXT("text"),
     BEAN("bean"),
-    TEMPLATE("template"),
     PARAMETER("parameter"),
     ATTRIBUTE("attribute"),
-    PROPERTY("property");
+    PROPERTY("property"),
+    TEMPLATE("template"),
+    TEXT("text");
 
     private final String alias;
 
