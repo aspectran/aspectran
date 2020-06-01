@@ -22,6 +22,7 @@ import java.net.URL;
 
 import static com.aspectran.core.util.ResourceUtils.CLASSPATH_URL_PREFIX;
 import static com.aspectran.core.util.ResourceUtils.FILE_URL_PREFIX;
+import static com.aspectran.core.util.ResourceUtils.URL_PROTOCOL_FILE;
 
 /**
  * The Class AbstractApplicationAdapter.
@@ -42,10 +43,12 @@ public abstract class AbstractApplicationAdapter implements ApplicationAdapter {
         this.classLoader = classLoader;
     }
 
+    @Override
     public String getBasePath() {
         return basePath;
     }
 
+    @Override
     public ClassLoader getClassLoader() {
         return classLoader;
     }
@@ -67,8 +70,8 @@ public abstract class AbstractApplicationAdapter implements ApplicationAdapter {
             // Using classpath relative resources
             String path = filePath.substring(CLASSPATH_URL_PREFIX.length());
             URL url = getClassLoader().getResource(path);
-            if (url == null) {
-                throw new IOException("Could not find the resource with the given name: " + filePath);
+            if (url == null || !URL_PROTOCOL_FILE.equals(url.getProtocol())) {
+                throw new IOException("Could not find the file with the given name: " + filePath);
             }
             file = new File(url.getFile());
         } else {

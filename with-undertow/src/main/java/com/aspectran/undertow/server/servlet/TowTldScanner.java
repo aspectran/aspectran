@@ -66,8 +66,8 @@ public class TowTldScanner extends TldScanner {
             for (URL url : tldResources) {
                 if (url != null) {
                     if ((ResourceUtils.URL_PROTOCOL_FILE.equals(url.getProtocol()) &&
-                            url.getFile().endsWith(ResourceUtils.JAR_FILE_SUFFIX)) ||
-                            ResourceUtils.isJarSimilarURL(url)) {
+                            url.getFile().endsWith(ResourceUtils.JAR_FILE_EXTENSION)) ||
+                            ResourceUtils.isJarURL(url)) {
                         Jar jar = JarFactory.newInstance(url);
                         scanJar(jar);
                     } else {

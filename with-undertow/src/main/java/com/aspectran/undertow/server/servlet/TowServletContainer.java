@@ -27,7 +27,7 @@ import java.util.Map;
  */
 public class TowServletContainer extends ServletContainerImpl {
 
-    private Map<String, DeploymentManager> deploymentManagers = new LinkedHashMap<>();
+    private final Map<String, DeploymentManager> deploymentManagers = new LinkedHashMap<>();
 
     public DeploymentManager[] getDeploymentManagers() {
         if (deploymentManagers.isEmpty()) {

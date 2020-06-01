@@ -17,6 +17,7 @@ package com.aspectran.undertow.server.servlet;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.component.bean.aware.ApplicationAdapterAware;
+import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
 import org.apache.jasper.servlet.JasperInitializer;
@@ -30,6 +31,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import static com.aspectran.core.util.ResourceUtils.CLASSPATH_URL_PREFIX;
 
 /**
  * Initializer for the Jasper JSP Engine.
@@ -80,8 +83,12 @@ public class TowJasperInitializer extends JasperInitializer implements Applicati
 
     private URL getURL(String resourceLocation) throws FileNotFoundException {
         try {
-            File file = applicationAdapter.toRealPathAsFile(resourceLocation);
-            return file.toURI().toURL();
+            if (resourceLocation.startsWith(CLASSPATH_URL_PREFIX)) {
+                return ResourceUtils.getURL(resourceLocation, applicationAdapter.getClassLoader());
+            } else {
+                File file = applicationAdapter.toRealPathAsFile(resourceLocation);
+                return file.toURI().toURL();
+            }
         } catch (IOException ex) {
             throw new FileNotFoundException("In TLD scanning, the supplied resource '" +
                     resourceLocation + "' does not exist");

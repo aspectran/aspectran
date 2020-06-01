@@ -64,7 +64,7 @@ public class LocalResourceManager extends ResourceManager {
                 this.resourceNameStart = 0;
                 return;
             }
-            if (!file.isDirectory() && !resourceLocation.toLowerCase().endsWith(ResourceUtils.JAR_FILE_SUFFIX)) {
+            if (!file.isDirectory() && !resourceLocation.toLowerCase().endsWith(ResourceUtils.JAR_FILE_EXTENSION)) {
                 throw new InvalidResourceException("Invalid resource directory or jar file: " + file.getAbsolutePath());
             }
 
@@ -117,7 +117,7 @@ public class LocalResourceManager extends ResourceManager {
             if (file.isDirectory()) {
                 findResourceInDir(file, jarFileList);
             } else if (file.isFile()) {
-                if (filePath.toLowerCase().endsWith(ResourceUtils.JAR_FILE_SUFFIX)) {
+                if (filePath.toLowerCase().endsWith(ResourceUtils.JAR_FILE_EXTENSION)) {
                     jarFileList.add(file);
                 }
             }
