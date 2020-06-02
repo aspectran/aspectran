@@ -31,7 +31,7 @@ import static org.awaitility.Awaitility.await;
  */
 class SessionManagerTest {
 
-    private Logger logger = LoggerFactory.getLogger(getClass());
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Test
     void testShortLifecycle() throws Exception {

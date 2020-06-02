@@ -13,23 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.daemon;
+package com.aspectran.demo;
 
 import com.aspectran.core.context.env.EnvironmentProfiles;
 import com.aspectran.core.util.ResourceUtils;
+import com.aspectran.daemon.DefaultDaemon;
+import com.aspectran.shell.AspectranShell;
+import com.aspectran.shell.console.Console;
+import com.aspectran.shell.jline.console.JLineConsole;
 
 import java.io.File;
+import java.io.IOException;
+
+import static com.aspectran.core.context.config.AspectranConfig.BASE_PATH_PROPERTY_NAME;
 
 /**
- * <p>Created: 2017. 12. 12.</p>
+ * Application server for Aspectran Demo.
  */
-public class DefaultDaemonTest {
+public class DemoServer {
 
     public static void main(String[] args) {
         try {
             System.setProperty(EnvironmentProfiles.ACTIVE_PROFILES_PROPERTY_NAME, "daemon");
-            File current = ResourceUtils.getResourceAsFile("com/aspectran/daemon");
-            File root = new File(current, "../../../../../../demo/app");
+            File current = ResourceUtils.getResourceAsFile(".");
+            File root = new File(current, "../../app");
+            System.setProperty(BASE_PATH_PROPERTY_NAME, root.getCanonicalPath()); // for logback
             String[] args2 = { root.getCanonicalPath(), "config/aspectran-config.apon" };
             DefaultDaemon.main(args2);
         } catch (Exception e) {

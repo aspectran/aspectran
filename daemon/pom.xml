@@ -59,12 +59,6 @@
         </dependency>
         <!-- Test dependencies -->
         <dependency>
-            <groupId>com.aspectran</groupId>
-            <artifactId>aspectran-with-freemarker</artifactId>
-            <version>${project.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <scope>test</scope>
