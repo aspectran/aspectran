@@ -28,7 +28,6 @@
     <link rel="icon" type="image/png" sizes="96x96" href="https://aspectran.com/assets/img/favicon-96x96.png" />
     <meta name="msapplication-TileImage" content="https://aspectran.com/assets/img/ms-icon-144x144.png" />
     <meta name="msapplication-TileColor" content="#4B555A" />
-    <meta name="theme-color" content="#4B555A" />
 </head>
 <body id="top-of-page" class="${page.style}" itemscope itemtype="http://schema.org/WebPage">
 <nav id="navigation" class="no-js">
