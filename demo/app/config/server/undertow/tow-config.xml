@@ -123,9 +123,9 @@
             <item name="servletContainerInitializers" type="array">
                 <bean class="com.aspectran.undertow.server.servlet.TowJasperInitializer">
                     <properties>
-                        <item name="jarsToScan" type="array">
-                            <value>/WEB-INF/lib/taglibs-standard-spec-1.2.5.jar</value>
-                            <value>/WEB-INF/lib/taglibs-standard-impl-1.2.5.jar</value>
+                        <item name="tldResources" type="array">
+                            <value>/webapps/root/WEB-INF/lib/taglibs-standard-impl-1.2.5.jar</value>
+                            <value>classpath:com/aspectran/web/support/tags/aspectran.tld</value>
                         </item>
                     </properties>
                 </bean>
