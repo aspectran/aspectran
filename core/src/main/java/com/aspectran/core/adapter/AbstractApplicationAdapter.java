@@ -16,6 +16,7 @@
 package com.aspectran.core.adapter;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
@@ -55,8 +56,7 @@ public abstract class AbstractApplicationAdapter implements ApplicationAdapter {
 
     @Override
     public String toRealPath(String filePath) throws IOException {
-        File file = toRealPathAsFile(filePath);
-        return file.getCanonicalPath();
+        return toRealPathAsFile(filePath).getCanonicalPath();
     }
 
     @Override
@@ -71,7 +71,7 @@ public abstract class AbstractApplicationAdapter implements ApplicationAdapter {
             String path = filePath.substring(CLASSPATH_URL_PREFIX.length());
             URL url = getClassLoader().getResource(path);
             if (url == null || !URL_PROTOCOL_FILE.equals(url.getProtocol())) {
-                throw new IOException("Could not find the file with the given name: " + filePath);
+                throw new FileNotFoundException("Could not find resource file for given classpath: " + path);
             }
             file = new File(url.getFile());
         } else {

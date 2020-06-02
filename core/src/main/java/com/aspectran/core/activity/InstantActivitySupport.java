@@ -48,7 +48,7 @@ public abstract class InstantActivitySupport implements ActivityContextAware {
     @Override
     @AvoidAdvice
     public void setActivityContext(ActivityContext context) {
-        Assert.state(this.context == null, "ActivityContext cannot be re-injected");
+        Assert.state(this.context == null, "ActivityContext already injected");
         this.context = context;
     }
 

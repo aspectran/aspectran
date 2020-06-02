@@ -51,11 +51,11 @@ import java.util.concurrent.ConcurrentHashMap;
  * the generated MessageFormats for each message. It also implements rendering of
  * no-arg messages without MessageFormat, as supported by the AbstractMessageSource
  * base class. The caching provided by this MessageSource is significantly faster
- * than the built-in caching of the {@code java.util.ResourceBundle} class.
+ * than the built-in caching of the {@code java.util.ResourceBundle} class.</p>
  *
  * <p>Unfortunately, {@code java.util.ResourceBundle} caches loaded bundles
  * forever: Reloading a bundle during VM execution is <i>not</i> possible.
- * As this MessageSource relies on ResourceBundle, it faces the same limitation.
+ * As this MessageSource relies on ResourceBundle, it faces the same limitation.</p>
  *
  * <p>Created: 2016. 2. 8.</p>
  */

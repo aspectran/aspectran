@@ -35,7 +35,7 @@ public class CurrentEnvironmentFactoryBean implements EnvironmentAware, FactoryB
 
     @Override
     public void setEnvironment(Environment environment) {
-        Assert.state(this.environment == null, "Environment cannot be re-injected");
+        Assert.state(this.environment == null, "Environment already injected");
         this.environment = environment;
     }
 

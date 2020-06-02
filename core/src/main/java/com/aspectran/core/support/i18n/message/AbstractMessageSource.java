@@ -29,14 +29,14 @@ import java.util.Properties;
  * <p>Subclasses must implement the abstract {@link #resolveCode}
  * method. For efficient resolution of messages without arguments, the
  * {@link #resolveCodeWithoutArguments} method should be overridden
- * as well, resolving messages without a MessageFormat being involved.
+ * as well, resolving messages without a MessageFormat being involved.</p>
  *
  * <p><b>Note:</b> By default, message texts are only parsed through
  * MessageFormat if arguments have been passed in for the message. In case
  * of no arguments, message texts will be returned as-is. As a consequence,
  * you should only use MessageFormat escaping for messages with actual
  * arguments, and keep all other messages unescaped. If you prefer to
- * escape all messages, set the "alwaysUseMessageFormat" flag to "true".
+ * escape all messages, set the "alwaysUseMessageFormat" flag to "true".</p>
  *
  * <p>Created: 2016. 2. 8.</p>
  */
@@ -85,12 +85,12 @@ public abstract class AbstractMessageSource extends MessageSourceSupport impleme
      * (like a FieldError) and a MessageSource that has a parent MessageSource,
      * do <i>not</i> activate "useCodeAsDefaultMessage" in the <i>parent</i>:
      * Else, you'll get the first code returned as message by the parent,
-     * without attempts to check further codes.
+     * without attempts to check further codes.</p>
      * <p>To be able to work with "useCodeAsDefaultMessage" turned on in the parent,
      * AbstractMessageSource and AbstractApplicationContext contain special checks
      * to delegate to the internal {@link #getMessageInternal} method if available.
      * In general, it is recommended to just use "useCodeAsDefaultMessage" during
-     * development and not rely on it in production in the first place, though.
+     * development and not rely on it in production in the first place, though.</p>
      *
      * @param useCodeAsDefaultMessage whether use code as default message
      * @see #getMessage(String, Object[], Locale) #getMessage(String, Object[], Locale)
@@ -104,7 +104,7 @@ public abstract class AbstractMessageSource extends MessageSourceSupport impleme
      * throwing a NoSuchMessageException. Useful for development and debugging.
      * Default is "false".
      * <p>Alternatively, consider overriding the {@link #getDefaultMessage}
-     * method to return a custom fallback message for an unresolvable code.
+     * method to return a custom fallback message for an unresolvable code.</p>
      *
      * @return whether use code as default message
      * @see #getDefaultMessage(String) #getDefaultMessage(String)
@@ -224,7 +224,7 @@ public abstract class AbstractMessageSource extends MessageSourceSupport impleme
      * Return a fallback default message for the given code, if any.
      * <p>Default is to return the code itself if "useCodeAsDefaultMessage" is activated,
      * or return no fallback else. In case of no fallback, the caller will usually
-     * receive a NoSuchMessageException from {@code getMessage}.
+     * receive a NoSuchMessageException from {@code getMessage}.</p>
      *
      * @param code the message code that we couldn't resolve and that we didn't receive an explicit default message for
      * @return the default message to use, or {@code null} if none
@@ -243,11 +243,11 @@ public abstract class AbstractMessageSource extends MessageSourceSupport impleme
      * in an optimized fashion, i.e. to resolve without involving a MessageFormat.
      * <p>The default implementation <i>does</i> use MessageFormat, through
      * delegating to the {@link #resolveCode} method. Subclasses are encouraged
-     * to replace this with optimized resolution.
+     * to replace this with optimized resolution.</p>
      * <p>Unfortunately, {@code java.text.MessageFormat} is not implemented
      * in an efficient fashion. In particular, it does not detect that a message
      * pattern doesn't contain argument placeholders in the first place. Therefore,
-     * it is advisable to circumvent MessageFormat for messages without arguments.
+     * it is advisable to circumvent MessageFormat for messages without arguments.</p>
      *
      * @param code the code of the message to resolve
      * @param locale the Locale to resolve the code for (subclasses are encouraged to support internationalization)
@@ -272,7 +272,7 @@ public abstract class AbstractMessageSource extends MessageSourceSupport impleme
      * to allow for appropriate caching of MessageFormats in subclasses.
      * <p><b>Subclasses are encouraged to provide optimized resolution
      * for messages without arguments, not involving MessageFormat.</b>
-     * See the {@link #resolveCodeWithoutArguments} javadoc for details.
+     * See the {@link #resolveCodeWithoutArguments} javadoc for details.</p>
      *
      * @param code the code of the message to resolve
      * @param locale the Locale to resolve the code for (subclasses are encouraged to support internationalization)

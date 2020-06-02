@@ -36,56 +36,64 @@ public interface ApplicationAdapter {
     /**
      * Returns the base path that the current application is mapped to.
      *
-     * @return the application base path
+     * @return the base path for this application
      */
     String getBasePath();
 
     /**
-     * Returns to convert the given file path with the real file path.
+     * Returns the real path of the existing file as a canonical pathname string.
      *
-     * @param filePath the specified file path
-     * @return the real file path
-     * @throws IOException if an I/O error has occurred
+     * @param filePath the relative path or classpath of the file to find
+     * @return the canonical pathname string of the found file
+     * @throws IOException If there is no file corresponding to the classpath,
+     *      an exception is thrown, and if it is not the classpath, no exception
+     *      is thrown because the {@link File} instance is returned regardless
+     *      of the existence of the file.
      */
     String toRealPath(String filePath) throws IOException;
 
     /**
-     * Returns to convert the given file path with the real file path.
+     * Returns the real path of an existing file.
      *
-     * @param filePath the specified file path
-     * @return the real file path
-     * @throws IOException if an I/O error has occurred
+     * @param filePath the relative path or classpath of the file to find
+     * @return the real path of the found file
+     * @throws IOException If there is no file corresponding to the classpath,
+     *      an exception is thrown, and if it is not the classpath, no exception
+     *      is thrown because the {@link File} instance is returned regardless
+     *      of the existence of the file.
      */
     File toRealPathAsFile(String filePath) throws IOException;
 
     /**
-     * Gets the attribute.
+     * Returns the value for an attribute with the given name.
      *
-     * @param <T> the generic type
-     * @param name the name
-     * @return the attribute
+     * @param <T> the value type
+     * @param name the name of the attribute
+     * @return the value for the attribute
      */
     <T> T getAttribute(String name);
 
     /**
-     * Sets the attribute.
+     * Sets the value for the attribute of the given name,
+     * replacing an existing value (if any).
      *
-     * @param name the name
-     * @param value the value
+     * @param name the name of the attribute
+     * @param value the value for the attribute
      */
     void setAttribute(String name, Object value);
 
     /**
-     * Gets the attribute names.
+     * Returns an {@link Enumeration} containing the names
+     * of the attributes available to this application.
      *
      * @return the attribute names
      */
     Enumeration<String> getAttributeNames();
 
     /**
-     * Removes the attribute.
+     * Removes an attribute set with the given name.
      *
-     * @param name the name
+     * @param name the name of the attribute to be removed
      */
     void removeAttribute(String name);
 
