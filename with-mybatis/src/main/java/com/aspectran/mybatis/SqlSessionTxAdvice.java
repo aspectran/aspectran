@@ -70,7 +70,7 @@ public class SqlSessionTxAdvice {
      * the object must be created.
      */
     public void open() {
-        if(sqlSession == null) {
+        if (sqlSession == null) {
             if (executorType == null) {
                 executorType = ExecutorType.SIMPLE;
             }
@@ -234,7 +234,7 @@ public class SqlSessionTxAdvice {
         if (arbitrarilyClosed) {
             return true;
         }
-        if(sqlSession == null) {
+        if (sqlSession == null) {
             throw new IllegalStateException("SqlSession is not open");
         }
         return false;

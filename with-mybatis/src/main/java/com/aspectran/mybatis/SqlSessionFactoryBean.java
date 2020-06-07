@@ -94,7 +94,7 @@ public class SqlSessionFactoryBean implements ApplicationAdapterAware, Initializ
     @Override
     public void initialize() throws Exception {
         Assert.state(applicationAdapter != null, "No ApplicationAdapter injected");
-        if(sqlSessionFactory == null) {
+        if (sqlSessionFactory == null) {
             if(configLocation == null) {
                 throw new IllegalArgumentException("Property 'configLocation' is required");
             }
