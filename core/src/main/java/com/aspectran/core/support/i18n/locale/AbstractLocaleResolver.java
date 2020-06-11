@@ -16,8 +16,11 @@
 package com.aspectran.core.support.i18n.locale;
 
 import com.aspectran.core.activity.Translet;
+import com.aspectran.core.lang.Nullable;
 import com.aspectran.core.util.StringUtils;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
@@ -29,9 +32,44 @@ import java.util.TimeZone;
  */
 public abstract class AbstractLocaleResolver implements LocaleResolver {
 
+    private List<Locale> supportedLocales;
+
     private Locale defaultLocale;
 
     private TimeZone defaultTimeZone;
+
+    /**
+     * Return the configured list of supported locales.
+     */
+    public List<Locale> getSupportedLocales() {
+        return this.supportedLocales;
+    }
+
+    /**
+     * Configure supported locales.
+     *
+     * @param locales the supported locales
+     */
+    public void setSupportedLocales(List<Locale> locales) {
+        this.supportedLocales = locales;
+    }
+
+    /**
+     * Configure supported locales.
+     *
+     * @param locales the supported locales
+     */
+    public void setSupportedLocales(String[] locales) {
+        if (locales == null || locales.length == 0) {
+            this.supportedLocales = null;
+            return;
+        }
+        List<Locale> supportedLocales = new ArrayList<>(locales.length);
+        for (String locale : locales) {
+            supportedLocales.add(StringUtils.parseLocaleString(locale));
+        }
+        this.supportedLocales = (!supportedLocales.isEmpty() ? supportedLocales : null);
+    }
 
     /**
      * Return the default Locale that this resolver is supposed to fall back to, if any.
@@ -65,6 +103,7 @@ public abstract class AbstractLocaleResolver implements LocaleResolver {
      *
      * @return the default time zone
      */
+    @Nullable
     public TimeZone getDefaultTimeZone() {
         return this.defaultTimeZone;
     }
@@ -88,49 +127,44 @@ public abstract class AbstractLocaleResolver implements LocaleResolver {
     }
 
     /**
-     * Resolve the default locale for the given translet,
+     * Determine the default locale for the given translet,
      * Called if can not find specified Locale.
      *
      * @param translet the translet to resolve the locale for
      * @return the default locale (never {@code null})
      * @see #setDefaultLocale
      */
-    protected Locale resolveDefaultLocale(Translet translet) {
-        Locale defaultLocale = getDefaultLocale();
-        if (defaultLocale != null) {
-            translet.getRequestAdapter().setLocale(defaultLocale);
-            return defaultLocale;
-        } else {
-            return translet.getRequestAdapter().getLocale();
+    protected Locale determineDefaultLocale(Translet translet) {
+        Locale locale = translet.getRequestAdapter().getLocale();
+        if (locale != null && supportedLocales != null && !supportedLocales.contains(locale)) {
+            locale = null;
         }
+        if (locale == null) {
+            locale = getDefaultLocale();
+            if (locale != null) {
+                translet.getRequestAdapter().setLocale(locale);
+            }
+        }
+        return locale;
     }
 
     /**
-     * Resolve the default time zone for the given translet,
+     * Determine the default time zone for the given translet,
      * Called if can not find specified TimeZone.
      *
      * @param translet the translet to resolve the time zone for
      * @return the default time zone (or {@code null} if none defined)
      * @see #setDefaultTimeZone
      */
-    protected TimeZone resolveDefaultTimeZone(Translet translet) {
-        TimeZone defaultTimeZone = getDefaultTimeZone();
-        if (defaultTimeZone != null) {
-            translet.getRequestAdapter().setTimeZone(defaultTimeZone);
-            return defaultTimeZone;
-        } else {
-            return translet.getRequestAdapter().getTimeZone();
+    protected TimeZone determineDefaultTimeZone(Translet translet) {
+        TimeZone timeZone = translet.getRequestAdapter().getTimeZone();
+        if (timeZone == null) {
+            timeZone = getDefaultTimeZone();
+            if (timeZone != null) {
+                translet.getRequestAdapter().setTimeZone(timeZone);
+            }
         }
-    }
-
-    @Override
-    public void setLocale(Translet translet, Locale locale) {
-        translet.getRequestAdapter().setLocale(locale);
-    }
-
-    @Override
-    public void setTimeZone(Translet translet, TimeZone timeZone) {
-        translet.getRequestAdapter().setTimeZone(timeZone);
+        return timeZone;
     }
 
 }

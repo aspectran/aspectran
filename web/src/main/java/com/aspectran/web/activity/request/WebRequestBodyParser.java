@@ -45,7 +45,7 @@ import java.util.Map;
  */
 public class WebRequestBodyParser {
 
-    private static final String DEFAULT_ENCODING = "iso-8859-1";
+    private static final String DEFAULT_ENCODING = "ISO-8859-1";
 
     private static final int BUFFER_SIZE = 1024;
 

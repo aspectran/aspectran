@@ -65,12 +65,22 @@ public class FixedLocaleResolver extends AbstractLocaleResolver {
 
     @Override
     public Locale resolveLocale(Translet translet) {
-        return resolveDefaultLocale(translet);
+        Locale locale = getDefaultLocale();
+        if (locale == null) {
+            locale = Locale.getDefault();
+        }
+        translet.getRequestAdapter().setLocale(locale);
+        return locale;
     }
 
     @Override
     public TimeZone resolveTimeZone(Translet translet) {
-        return resolveDefaultTimeZone(translet);
+        TimeZone timeZone = getDefaultTimeZone();
+        if (timeZone == null) {
+            timeZone = TimeZone.getDefault();
+        }
+        translet.getRequestAdapter().setTimeZone(timeZone);
+        return timeZone;
     }
 
     @Override

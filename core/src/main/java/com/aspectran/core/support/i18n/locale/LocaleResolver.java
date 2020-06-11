@@ -21,7 +21,7 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 /**
- * Interface for locale and timezone resolution strategies
+ * Interface for locale and timezone resolution strategies.
  *
  * <p>Created: 2016. 3. 13.</p>
  */
@@ -51,7 +51,7 @@ public interface LocaleResolver {
      * @param translet the translet to resolve the locale for
      * @param locale the new locale, or {@code null} to clear the locale
      * @throws UnsupportedOperationException if the LocaleResolver implementation does not
-     * support dynamic changing of the locale
+     *      support dynamic changing of the locale
      */
     void setLocale(Translet translet, Locale locale);
 
@@ -61,7 +61,7 @@ public interface LocaleResolver {
      * @param translet the translet to resolve the locale for
      * @param timeZone the new timezone, or {@code null} to clear the timezone
      * @throws UnsupportedOperationException if the LocaleResolver implementation does not
-     * support dynamic changing of the timezone
+     *      support dynamic changing of the timezone
      */
     void setTimeZone(Translet translet, TimeZone timeZone);
 

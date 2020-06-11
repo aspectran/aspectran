@@ -30,6 +30,8 @@ public class StringUtils {
     /** The empty {@link String} */
     public static final String EMPTY = "";
 
+    private static final String[] EMPTY_STRING_ARRAY = {};
+
     /**
      * Check that the given {@code CharSequence} is neither {@code null} nor
      * of length 0.
@@ -421,7 +423,7 @@ public class StringUtils {
      */
     public static String[] split(String str, String delim) {
         if (isEmpty(str)) {
-            return new String[0];
+            return EMPTY_STRING_ARRAY;
         }
         int cnt = search(str, delim);
         String[] item = new String[cnt + 1];
@@ -477,7 +479,7 @@ public class StringUtils {
      */
     public static String[] split(String str, char delim) {
         if (isEmpty(str)) {
-            return new String[0];
+            return EMPTY_STRING_ARRAY;
         }
         int cnt = search(str, delim);
         String[] item = new String[cnt + 1];
@@ -622,14 +624,15 @@ public class StringUtils {
      */
     public static String[] tokenize(String str, String delimiters, boolean trim) {
         if (str == null) {
-            return new String[0];
+            return EMPTY_STRING_ARRAY;
         }
         StringTokenizer st = new StringTokenizer(str, delimiters);
         List<String> tokens = new ArrayList<>();
         while (st.hasMoreTokens()) {
-            tokens.add(trim ? st.nextToken().trim() : st.nextToken());
+            String token = st.nextToken();
+            tokens.add(trim ? token.trim() : token);
         }
-        return tokens.toArray(new String[0]);
+        return tokens.toArray(EMPTY_STRING_ARRAY);
     }
 
     /**
@@ -755,23 +758,61 @@ public class StringUtils {
     }
 
     /**
-     * Parse the given {@code localeString} value into a {@link Locale}.
-     * <p>This is the inverse operation of {@link Locale#toString Locale's toString}.
+     * Parse the given {@code String} value into a {@link Locale}, accepting
+     * the {@link Locale#toString} format as well as BCP 47 language tags.
      *
-     * @param localeString the locale {@code String}, following {@code Locale's}
-     *      {@code toString()} format ("en", "en_UK", etc);
-     *      also accepts spaces as separators, as an alternative to underscores
-     * @return a corresponding {@code Locale} instance
+     * @param localeValue the locale value: following either {@code Locale's}
+     *      {@code toString()} format ("en", "en_UK", etc), also accepting spaces as
+     *      separators (as an alternative to underscores), or BCP 47 (e.g. "en-UK")
+     *      as specified by {@link Locale#forLanguageTag} on Java 7+
+     * @return a corresponding {@code Locale} instance, or {@code null} if none
+     * @throws IllegalArgumentException in case of an invalid locale specification
+     * @see #parseLocaleString
+     * @see Locale#forLanguageTag
+     */
+    public static Locale parseLocale(String localeValue) {
+        String[] tokens = tokenizeLocaleSource(localeValue);
+        if (tokens.length == 1) {
+            validateLocalePart(localeValue);
+            Locale resolved = Locale.forLanguageTag(localeValue);
+            if (resolved.getLanguage().length() > 0) {
+                return resolved;
+            }
+        }
+        return parseLocaleTokens(localeValue, tokens);
+    }
+
+    /**
+     * Parse the given {@code String} representation into a {@link Locale}.
+     * <p>For many parsing scenarios, this is an inverse operation of
+     * {@link Locale#toString Locale's toString}, in a lenient sense.
+     * This method does not aim for strict {@code Locale} design compliance;
+     * it is rather specifically tailored for typical Spring parsing needs.</p>
+     * <p><b>Note: This delegate does not accept the BCP 47 language tag format.
+     * Please use {@link #parseLocale} for lenient parsing of both formats.</b></p>
+     *
+     * @param localeString the locale {@code String}: following {@code Locale's}
+     *      {@code toString()} format ("en", "en_UK", etc), also accepting spaces as
+     *      separators (as an alternative to underscores)
+     * @return a corresponding {@code Locale} instance, or {@code null} if none
      * @throws IllegalArgumentException in case of an invalid locale specification
      */
     public static Locale parseLocaleString(String localeString) {
-        String[] parts = tokenize(localeString, "_ ", false);
-        String language = (parts.length > 0 ? parts[0] : EMPTY);
-        String country = (parts.length > 1 ? parts[1] : EMPTY);
+        return parseLocaleTokens(localeString, tokenizeLocaleSource(localeString));
+    }
+
+    private static String[] tokenizeLocaleSource(String localeSource) {
+        return tokenize(localeSource, "_ ", false);
+    }
+
+    private static Locale parseLocaleTokens(String localeString, String[] tokens) {
+        String language = (tokens.length > 0 ? tokens[0] : EMPTY);
+        String country = (tokens.length > 1 ? tokens[1] : EMPTY);
         validateLocalePart(language);
         validateLocalePart(country);
+
         String variant = EMPTY;
-        if (parts.length > 2) {
+        if (tokens.length > 2) {
             // There is definitely a variant, and it is everything after the country
             // code sans the separator between the country code and the variant.
             int endIndexOfCountryCode = localeString.indexOf(country, language.length()) + country.length();
@@ -781,13 +822,19 @@ public class StringUtils {
                 variant = trimLeadingCharacter(variant, '_');
             }
         }
+
+        if (variant.isEmpty() && country.startsWith("#")) {
+            variant = country;
+            country = EMPTY;
+        }
+
         return (language.length() > 0 ? new Locale(language, country, variant) : null);
     }
 
     private static void validateLocalePart(String localePart) {
         for (int i = 0; i < localePart.length(); i++) {
             char ch = localePart.charAt(i);
-            if (ch != '_' && ch != ' ' && !Character.isLetterOrDigit(ch)) {
+            if (ch != ' ' && ch != '_' && ch != '-' && ch != '#' && !Character.isLetterOrDigit(ch)) {
                 throw new IllegalArgumentException(
                         "Locale part \"" + localePart + "\" contains invalid characters");
             }

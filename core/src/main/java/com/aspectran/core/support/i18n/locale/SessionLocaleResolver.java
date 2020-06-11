@@ -50,15 +50,11 @@ public class SessionLocaleResolver extends AbstractLocaleResolver {
         if (sessionAdapter != null) {
             Locale locale = sessionAdapter.getAttribute(LOCALE_SESSION_ATTR_NAME);
             if (locale != null) {
-                super.setLocale(translet, locale);
+                translet.getRequestAdapter().setLocale(locale);
                 return locale;
             }
         }
-        if (translet.getRequestAdapter().getLocale() != null) {
-            return translet.getRequestAdapter().getLocale();
-        } else {
-            return resolveDefaultLocale(translet);
-        }
+        return determineDefaultLocale(translet);
     }
 
     @Override
@@ -67,20 +63,16 @@ public class SessionLocaleResolver extends AbstractLocaleResolver {
         if (sessionAdapter != null) {
             TimeZone timeZone = sessionAdapter.getAttribute(TIME_ZONE_SESSION_ATTR_NAME);
             if (timeZone != null) {
-                super.setTimeZone(translet, timeZone);
+                translet.getRequestAdapter().setTimeZone(timeZone);
                 return timeZone;
             }
         }
-        if (translet.getRequestAdapter().getTimeZone() != null) {
-            return translet.getRequestAdapter().getTimeZone();
-        } else {
-            return resolveDefaultTimeZone(translet);
-        }
+        return determineDefaultTimeZone(translet);
     }
 
     @Override
     public void setLocale(Translet translet, Locale locale) {
-        super.setLocale(translet, locale);
+        translet.getRequestAdapter().setLocale(locale);
         SessionAdapter sessionAdapter = translet.getSessionAdapter();
         if (sessionAdapter != null) {
             sessionAdapter.setAttribute(LOCALE_SESSION_ATTR_NAME, locale);
@@ -89,7 +81,7 @@ public class SessionLocaleResolver extends AbstractLocaleResolver {
 
     @Override
     public void setTimeZone(Translet translet, TimeZone timeZone) {
-        super.setTimeZone(translet, timeZone);
+        translet.getRequestAdapter().setTimeZone(timeZone);
         SessionAdapter sessionAdapter = translet.getSessionAdapter();
         if (sessionAdapter != null) {
             sessionAdapter.setAttribute(TIME_ZONE_SESSION_ATTR_NAME, timeZone);
