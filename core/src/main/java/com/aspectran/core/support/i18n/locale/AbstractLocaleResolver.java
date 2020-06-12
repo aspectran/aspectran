@@ -66,7 +66,7 @@ public abstract class AbstractLocaleResolver implements LocaleResolver {
         }
         List<Locale> supportedLocales = new ArrayList<>(locales.length);
         for (String locale : locales) {
-            supportedLocales.add(StringUtils.parseLocaleString(locale));
+            supportedLocales.add(StringUtils.parseLocale(locale));
         }
         this.supportedLocales = (!supportedLocales.isEmpty() ? supportedLocales : null);
     }
@@ -95,7 +95,7 @@ public abstract class AbstractLocaleResolver implements LocaleResolver {
      * @param defaultLocale the default locale
      */
     public void setDefaultLocale(String defaultLocale) {
-        setDefaultLocale(StringUtils.parseLocaleString(defaultLocale));
+        setDefaultLocale(StringUtils.parseLocale(defaultLocale));
     }
 
     /**
@@ -136,7 +136,7 @@ public abstract class AbstractLocaleResolver implements LocaleResolver {
      */
     protected Locale determineDefaultLocale(Translet translet) {
         Locale locale = translet.getRequestAdapter().getLocale();
-        if (locale != null && supportedLocales != null && !supportedLocales.contains(locale)) {
+        if (locale != null && !isSupportedLocale(locale)) {
             locale = null;
         }
         if (locale == null) {
@@ -165,6 +165,22 @@ public abstract class AbstractLocaleResolver implements LocaleResolver {
             }
         }
         return timeZone;
+    }
+
+    private boolean isSupportedLocale(Locale locale) {
+        if (supportedLocales == null) {
+            return true;
+        }
+        for (Locale loc : supportedLocales) {
+            if (!loc.getCountry().isEmpty() || !loc.getVariant().isEmpty() || loc.hasExtensions()) {
+                if (loc.equals(locale)) {
+                    return true;
+                }
+            } else if (loc.getLanguage().equals(locale.getLanguage())) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }
