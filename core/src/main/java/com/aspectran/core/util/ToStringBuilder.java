@@ -30,7 +30,7 @@ import java.util.Map;
  */
 public class ToStringBuilder {
 
-    private StringBuilder sb;
+    private final StringBuilder sb;
 
     private final int start;
 

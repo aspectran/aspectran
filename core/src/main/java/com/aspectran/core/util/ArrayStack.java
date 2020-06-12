@@ -31,10 +31,9 @@ import java.util.EmptyStackException;
  * order: The most recently added element is removed first.  The iteration
  * order is <i>not</i> the same as the removal order.  The iterator returns
  * elements from the bottom up, whereas the {@link #pop()} method removes
- * them from the top down.
+ * them from the top down.</p>
  * <p>
- * Unlike <code>Stack</code>, <code>ArrayStack</code> accepts null entries.
- * <p>
+ * Unlike <code>Stack</code>, <code>ArrayStack</code> accepts null entries.<p>
  *
  * @param <E> the type of elements in this list
  * @see java.util.Stack
@@ -150,7 +149,7 @@ public class ArrayStack<E> extends ArrayList<E> {
      * @param n the number of items down to go
      * @return the n'th item previously on the stack, zero relative
      * @throws EmptyStackException if there are not enough items on the
-     *  stack to satisfy this request
+     *      stack to satisfy this request
      */
     public E update(int n, E item) throws EmptyStackException {
         int m = (size() - n) - 1;

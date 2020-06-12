@@ -55,14 +55,12 @@ public class FileCopyUtils {
      * This method copies the contents of the specified source file
      * to a file of the same name in the specified destination directory.
      * The destination directory is created if it does not exist.
-     * If the destination file exists, then this method will overwrite it.
-     * </p>
+     * If the destination file exists, then this method will overwrite it.</p>
      * <p>
      * <strong>Note:</strong> This method tries to preserve the file's last
      * modified date/times using {@link File#setLastModified(long)}, however
      * it is not guaranteed that the operation will succeed.
-     * If the modification operation fails, no indication is provided.
-     * </p>
+     * If the modification operation fails, no indication is provided.</p>
      *
      * @param srcFile an existing file to copy, must not be {@code null}
      * @param destDir the directory to place the copy in, must not be {@code null}
@@ -81,15 +79,13 @@ public class FileCopyUtils {
      * This method copies the contents of the specified source file
      * to a file of the same name in the specified destination directory.
      * The destination directory is created if it does not exist.
-     * If the destination file exists, then this method will overwrite it.
-     * </p>
+     * If the destination file exists, then this method will overwrite it.</p>
      * <p>
      * <strong>Note:</strong> Setting <code>preserveFileDate</code> to
      * {@code true} tries to preserve the file's last modified
      * date/times using {@link File#setLastModified(long)}, however it is
      * not guaranteed that the operation will succeed.
-     * If the modification operation fails, no indication is provided.
-     * </p>
+     * If the modification operation fails, no indication is provided.</p>
      *
      * @param srcFile          an existing file to copy, must not be {@code null}
      * @param destDir          the directory to place the copy in, must not be {@code null}
@@ -118,14 +114,12 @@ public class FileCopyUtils {
      * This method copies the contents of the specified source file to the
      * specified destination file. The directory holding the destination file is
      * created if it does not exist. If the destination file exists, then this
-     * method will overwrite it.
-     * </p>
+     * method will overwrite it.</p>
      * <p>
      * <strong>Note:</strong> This method tries to preserve the file's last
      * modified date/times using {@link File#setLastModified(long)}, however
      * it is not guaranteed that the operation will succeed.
-     * If the modification operation fails, no indication is provided.
-     * </p>
+     * If the modification operation fails, no indication is provided.</p>
      *
      * @param srcFile  an existing file to copy, must not be {@code null}
      * @param destFile the new file, must not be {@code null}
@@ -145,15 +139,13 @@ public class FileCopyUtils {
      * This method copies the contents of the specified source file
      * to the specified destination file.
      * The directory holding the destination file is created if it does not exist.
-     * If the destination file exists, then this method will overwrite it.
-     * </p>
+     * If the destination file exists, then this method will overwrite it.</p>
      * <p>
      * <strong>Note:</strong> Setting <code>preserveFileDate</code> to
      * {@code true} tries to preserve the file's last modified
      * date/times using {@link File#setLastModified(long)}, however it is
      * not guaranteed that the operation will succeed.
-     * If the modification operation fails, no indication is provided.
-     * </p>
+     * If the modification operation fails, no indication is provided.</p>
      *
      * @param srcFile          an existing file to copy, must not be {@code null}
      * @param destFile         the new file, must not be {@code null}
@@ -206,9 +198,9 @@ public class FileCopyUtils {
      * <code>OutputStream</code>.
      * <p>
      * This method buffers the input internally, so there is no need to use a
-     * <code>BufferedInputStream</code>.
+     * <code>BufferedInputStream</code>.</p>
      * <p>
-     * The buffer size is given by {@link #DEFAULT_BUFFER_SIZE}.
+     * The buffer size is given by {@link #DEFAULT_BUFFER_SIZE}.</p>
      *
      * @param input the <code>InputStream</code> to read from
      * @param output the <code>OutputStream</code> to write to
@@ -258,19 +250,16 @@ public class FileCopyUtils {
      * <p>
      * This method copies the specified directory and all its child
      * directories and files to the specified destination.
-     * The destination is the new location and name of the directory.
-     * </p>
+     * The destination is the new location and name of the directory.</p>
      * <p>
      * The destination directory is created if it does not exist.
      * If the destination directory did exist, then this method merges
-     * the source with the destination, with the source taking precedence.
-     * </p>
+     * the source with the destination, with the source taking precedence.</p>
      * <p>
      * <strong>Note:</strong> This method tries to preserve the files' last
      * modified date/times using {@link File#setLastModified(long)}, however
      * it is not guaranteed that those operations will succeed.
-     * If the modification operation fails, no indication is provided.
-     * </p>
+     * If the modification operation fails, no indication is provided.</p>
      *
      * @param srcDir  an existing directory to copy, must not be {@code null}
      * @param destDir the new directory, must not be {@code null}
@@ -286,20 +275,17 @@ public class FileCopyUtils {
      * Copies a whole directory to a new location.
      * <p>
      * This method copies the contents of the specified source directory
-     * to within the specified destination directory.
-     * </p>
+     * to within the specified destination directory.</p>
      * <p>
      * The destination directory is created if it does not exist.
      * If the destination directory did exist, then this method merges
-     * the source with the destination, with the source taking precedence.
-     * </p>
+     * the source with the destination, with the source taking precedence.</p>
      * <p>
      * <strong>Note:</strong> Setting <code>preserveFileDate</code> to
      * {@code true} tries to preserve the files' last modified
      * date/times using {@link File#setLastModified(long)}, however it is
      * not guaranteed that those operations will succeed.
-     * If the modification operation fails, no indication is provided.
-     * </p>
+     * If the modification operation fails, no indication is provided.</p>
      *
      * @param srcDir           an existing directory to copy, must not be {@code null}
      * @param destDir          the new directory, must not be {@code null}
@@ -318,19 +304,16 @@ public class FileCopyUtils {
      * Copies a filtered directory to a new location preserving the file dates.
      * <p>
      * This method copies the contents of the specified source directory
-     * to within the specified destination directory.
-     * </p>
+     * to within the specified destination directory.</p>
      * <p>
      * The destination directory is created if it does not exist.
      * If the destination directory did exist, then this method merges
-     * the source with the destination, with the source taking precedence.
-     * </p>
+     * the source with the destination, with the source taking precedence.</p>
      * <p>
      * <strong>Note:</strong> This method tries to preserve the files' last
      * modified date/times using {@link File#setLastModified(long)}, however
      * it is not guaranteed that those operations will succeed.
-     * If the modification operation fails, no indication is provided.
-     * </p>
+     * If the modification operation fails, no indication is provided.</p>
      * <strong>Example: Copy directories only</strong>
      * <pre>
      *  // only copy the directory structure
@@ -367,20 +350,17 @@ public class FileCopyUtils {
      * Copies a filtered directory to a new location.
      * <p>
      * This method copies the contents of the specified source directory
-     * to within the specified destination directory.
-     * </p>
+     * to within the specified destination directory.</p>
      * <p>
      * The destination directory is created if it does not exist.
      * If the destination directory did exist, then this method merges
-     * the source with the destination, with the source taking precedence.
-     * </p>
+     * the source with the destination, with the source taking precedence.</p>
      * <p>
      * <strong>Note:</strong> Setting <code>preserveFileDate</code> to
      * {@code true} tries to preserve the files' last modified
      * date/times using {@link File#setLastModified(long)}, however it is
      * not guaranteed that those operations will succeed.
-     * If the modification operation fails, no indication is provided.
-     * </p>
+     * If the modification operation fails, no indication is provided.</p>
      *
      * @param srcDir           an existing directory to copy, must not be {@code null}
      * @param destDir          the new directory, must not be {@code null}

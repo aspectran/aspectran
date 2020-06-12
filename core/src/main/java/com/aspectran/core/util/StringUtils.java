@@ -27,16 +27,17 @@ import java.util.TimeZone;
  */
 public class StringUtils {
 
-    /** The empty {@link String} */
+    /** Constant for an empty {@link String}. */
     public static final String EMPTY = "";
 
+    /** Constant for an empty {@link String} array. */
     private static final String[] EMPTY_STRING_ARRAY = {};
 
     /**
      * Check that the given {@code CharSequence} is neither {@code null} nor
      * of length 0.
      * <p>Note: this method returns {@code true} for a {@code CharSequence}
-     * that purely consists of whitespace.
+     * that purely consists of whitespace.</p>
      * <pre>
      * StringUtils.hasLength(null) = false
      * StringUtils.hasLength("") = false
@@ -55,7 +56,7 @@ public class StringUtils {
     /**
      * Check that the given {@code String} is neither {@code null} nor of length 0.
      * <p>Note: this method returns {@code true} for a {@code String} that
-     * purely consists of whitespace.
+     * purely consists of whitespace.</p>
      *
      * @param str the {@code String} to check (may be {@code null})
      * @return {@code true} if the {@code String} is not {@code null} and has length
@@ -70,7 +71,7 @@ public class StringUtils {
      * Check whether the given {@code CharSequence} contains actual <em>text</em>.
      * <p>More specifically, this method returns {@code true} if the
      * {@code CharSequence} is not {@code null}, its length is greater than
-     * 0, and it contains at least one non-whitespace character.
+     * 0, and it contains at least one non-whitespace character.</p>
      * <pre>
      * StringUtils.hasText(null) = false
      * StringUtils.hasText("") = false
@@ -101,7 +102,7 @@ public class StringUtils {
      * Check whether the given {@code String} contains actual <em>text</em>.
      * <p>More specifically, this method returns {@code true} if the
      * {@code String} is not {@code null}, its length is greater than 0,
-     * and it contains at least one non-whitespace character.
+     * and it contains at least one non-whitespace character.</p>
      *
      * @param str the {@code String} to check (may be {@code null})
      * @return {@code true} if the {@code String} is not {@code null}, its
@@ -492,7 +493,6 @@ public class StringUtils {
         int pos2 = str.indexOf(delim);
         while (pos2 >= 0) {
             item[idx++] = (pos1 > pos2 - 1) ? EMPTY : str.substring(pos1, pos2);
-
             pos1 = pos2 + 1;
             pos2 = str.indexOf(delim, pos1);
         }
@@ -637,7 +637,7 @@ public class StringUtils {
 
     /**
      * Convert a {@code String} array into a delimited {@code String} (e.g. CSV).
-     * <p>Useful for {@code toString()} implementations.
+     * <p>Useful for {@code toString()} implementations.</p>
      *
      * @param arr the array to display
      * @param delim the delimiter to use (typically a ",")
@@ -662,7 +662,7 @@ public class StringUtils {
 
     /**
      * Convert a {@code Collection} into a delimited {@code String} (e.g. CSV).
-     * <p>Useful for {@code toString()} implementations.
+     * <p>Useful for {@code toString()} implementations.</p>
      *
      * @param list the collection
      * @param delim the delimiter to use (typically a ",")
@@ -788,8 +788,8 @@ public class StringUtils {
      * {@link Locale#toString Locale's toString}, in a lenient sense.
      * This method does not aim for strict {@code Locale} design compliance;
      * it is rather specifically tailored for typical Spring parsing needs.</p>
-     * <p><b>Note: This delegate does not accept the BCP 47 language tag format.
-     * Please use {@link #parseLocale} for lenient parsing of both formats.</b></p>
+     * <p><strong>Note:</strong> This delegate does not accept the BCP 47 language tag format.
+     * Please use {@link #parseLocale} for lenient parsing of both formats.</p>
      *
      * @param localeString the locale {@code String}: following {@code Locale's}
      *      {@code toString()} format ("en", "en_UK", etc), also accepting spaces as

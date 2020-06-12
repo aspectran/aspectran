@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.util;
 
+import com.aspectran.core.lang.NonNull;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -154,7 +156,7 @@ public class BeanUtils {
      * @return the property value (as an Object)
      * @throws InvocationTargetException if the property accessor method throws an exception
      */
-    public static Object getProperty(Object bean, String name) throws InvocationTargetException {
+    public static Object getProperty(Object bean, @NonNull String name) throws InvocationTargetException {
         if (name.contains(".")) {
             StringTokenizer parser = new StringTokenizer(name, ".");
             Object value = bean;
@@ -180,7 +182,7 @@ public class BeanUtils {
      * @return the property value (as an Object)
      * @throws InvocationTargetException if the property accessor method throws an exception
      */
-    public static Object getSimpleProperty(Object bean, String name) throws InvocationTargetException {
+    public static Object getSimpleProperty(Object bean, @NonNull String name) throws InvocationTargetException {
         try {
             Object value;
             if (name.contains("[")) {
@@ -219,7 +221,7 @@ public class BeanUtils {
      * @throws InvocationTargetException if the property accessor method throws an exception
      * @throws NoSuchMethodException if an accessor method for this property cannot be found
      */
-    public static void setProperty(Object bean, String name, Object value)
+    public static void setProperty(Object bean, @NonNull String name, Object value)
             throws InvocationTargetException, NoSuchMethodException {
         if (name.contains(".")) {
             StringTokenizer parser = new StringTokenizer(name, ".");
@@ -259,7 +261,7 @@ public class BeanUtils {
      * @param value the value to which this property is to be set
      * @throws InvocationTargetException if the property accessor method throws an exception
      */
-    public static void setSimpleProperty(Object bean, String name, Object value) throws InvocationTargetException {
+    public static void setSimpleProperty(Object bean, @NonNull String name, Object value) throws InvocationTargetException {
         try {
             if (name.contains("[")) {
                 setIndexedProperty(bean, name, value);
@@ -298,7 +300,7 @@ public class BeanUtils {
         }
     }
 
-    public static Object getIndexedProperty(Object bean, String indexedName) throws InvocationTargetException {
+    public static Object getIndexedProperty(Object bean, @NonNull String indexedName) throws InvocationTargetException {
         try {
             String name = indexedName.substring(0, indexedName.indexOf("["));
             int index = Integer.parseInt(indexedName.substring(indexedName.indexOf("[") + 1, indexedName.indexOf("]")));
@@ -338,7 +340,7 @@ public class BeanUtils {
         }
     }
 
-    public static Class<?> getIndexedType(Object bean, String indexedName) throws InvocationTargetException {
+    public static Class<?> getIndexedType(Object bean, @NonNull String indexedName) throws InvocationTargetException {
         try {
             String name = indexedName.substring(0, indexedName.indexOf("["));
             int i = Integer.parseInt(indexedName.substring(indexedName.indexOf("[") + 1, indexedName.indexOf("]")));
@@ -378,7 +380,8 @@ public class BeanUtils {
         }
     }
 
-    public static void setIndexedProperty(Object bean, String indexedName, Object value) throws InvocationTargetException {
+    public static void setIndexedProperty(Object bean, @NonNull String indexedName, Object value)
+            throws InvocationTargetException {
         try {
             String name = indexedName.substring(0, indexedName.indexOf("["));
             int index = Integer.parseInt(indexedName.substring(indexedName.indexOf("[") + 1, indexedName.indexOf("]")));
@@ -425,7 +428,7 @@ public class BeanUtils {
      * @return true if the property exists and is writable
      * @throws NoSuchMethodException if an accessor method for this property cannot be found
      */
-    public static boolean hasWritableProperty(Object bean, String name) throws NoSuchMethodException {
+    public static boolean hasWritableProperty(Object bean, @NonNull String name) throws NoSuchMethodException {
         boolean exists = false;
         if (bean instanceof Map<?, ?>) {
             exists = true; // ((Map)bean).containsKey(propertyName);
@@ -453,7 +456,7 @@ public class BeanUtils {
      * @return true if the property exists and is readable
      * @throws NoSuchMethodException if an accessor method for this property cannot be found
      */
-    public static boolean hasReadableProperty(Object bean, String name) throws NoSuchMethodException {
+    public static boolean hasReadableProperty(Object bean, @NonNull String name) throws NoSuchMethodException {
         boolean exists = false;
         if (bean instanceof Map<?, ?>) {
             exists = true; // ((Map)bean).containsKey(propertyName);
@@ -569,7 +572,8 @@ public class BeanUtils {
      * @return the type of the property
      * @throws NoSuchMethodException if an accessor method for this property cannot be found
      */
-    public static Class<?> getClassPropertyTypeForGetter(Class<?> type, String name) throws NoSuchMethodException {
+    public static Class<?> getClassPropertyTypeForGetter(Class<?> type, @NonNull String name)
+            throws NoSuchMethodException {
         if (name.contains(".")) {
             StringTokenizer parser = new StringTokenizer(name, ".");
             while (parser.hasMoreTokens()) {
@@ -591,7 +595,8 @@ public class BeanUtils {
      * @return the type of the property
      * @throws NoSuchMethodException if an accessor method for this property cannot be found
      */
-    public static Class<?> getClassPropertyTypeForSetter(Class<?> type, String name) throws NoSuchMethodException {
+    public static Class<?> getClassPropertyTypeForSetter(Class<?> type, @NonNull String name)
+            throws NoSuchMethodException {
         if (name.contains(".")) {
             StringTokenizer parser = new StringTokenizer(name, ".");
             while (parser.hasMoreTokens()) {
