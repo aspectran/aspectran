@@ -50,9 +50,9 @@ public class CookieLocaleResolver extends AbstractLocaleResolver {
 
     private static final String TIME_ZONE_COOKIE_NAME = CookieLocaleResolver.class.getName() + ".TIME_ZONE";
 
-    private final CookieGenerator localeCookieGenerator = new CookieGenerator();
+    private CookieGenerator localeCookieGenerator;
 
-    private final CookieGenerator timeZoneCookieGenerator = new CookieGenerator();
+    private CookieGenerator timeZoneCookieGenerator;
 
     private boolean languageTagCompliant = true;
 
@@ -62,8 +62,30 @@ public class CookieLocaleResolver extends AbstractLocaleResolver {
      * Create a new instance of the {@link CookieLocaleResolver} class.
      */
     public CookieLocaleResolver() {
-        localeCookieGenerator.setCookieName(LOCALE_COOKIE_NAME);
-        timeZoneCookieGenerator.setCookieName(TIME_ZONE_COOKIE_NAME);
+    }
+
+    public void setLocaleCookieGenerator(CookieGenerator localeCookieGenerator) {
+        this.localeCookieGenerator = localeCookieGenerator;
+    }
+
+    public CookieGenerator getLocaleCookieGenerator() {
+        if (localeCookieGenerator == null) {
+            localeCookieGenerator = new CookieGenerator();
+            localeCookieGenerator.setCookieName(LOCALE_COOKIE_NAME);
+        }
+        return localeCookieGenerator;
+    }
+
+    public void setTimeZoneCookieGenerator(CookieGenerator timeZoneCookieGenerator) {
+        this.timeZoneCookieGenerator = timeZoneCookieGenerator;
+    }
+
+    public CookieGenerator getTimeZoneCookieGenerator() {
+        if (timeZoneCookieGenerator == null) {
+            timeZoneCookieGenerator = new CookieGenerator();
+            timeZoneCookieGenerator.setCookieName(TIME_ZONE_COOKIE_NAME);
+        }
+        return timeZoneCookieGenerator;
     }
 
     /**
@@ -73,8 +95,8 @@ public class CookieLocaleResolver extends AbstractLocaleResolver {
      * @see javax.servlet.http.Cookie#setDomain
      */
     public void setCookieDomain(String cookieDomain) {
-        localeCookieGenerator.setCookieDomain(cookieDomain);
-        timeZoneCookieGenerator.setCookieDomain(cookieDomain);
+        getLocaleCookieGenerator().setCookieDomain(cookieDomain);
+        getTimeZoneCookieGenerator().setCookieDomain(cookieDomain);
     }
 
     /**
@@ -84,8 +106,8 @@ public class CookieLocaleResolver extends AbstractLocaleResolver {
      * @see javax.servlet.http.Cookie#setPath
      */
     public void setCookiePath(String cookiePath) {
-        localeCookieGenerator.setCookiePath(cookiePath);
-        timeZoneCookieGenerator.setCookiePath(cookiePath);
+        getLocaleCookieGenerator().setCookiePath(cookiePath);
+        getTimeZoneCookieGenerator().setCookiePath(cookiePath);
     }
 
     /**
@@ -97,8 +119,8 @@ public class CookieLocaleResolver extends AbstractLocaleResolver {
      * @see javax.servlet.http.Cookie#setMaxAge
      */
     public void setCookieMaxAge(Integer cookieMaxAge) {
-        localeCookieGenerator.setCookieMaxAge(cookieMaxAge);
-        timeZoneCookieGenerator.setCookieMaxAge(cookieMaxAge);
+        getLocaleCookieGenerator().setCookieMaxAge(cookieMaxAge);
+        getTimeZoneCookieGenerator().setCookieMaxAge(cookieMaxAge);
     }
 
     /**
@@ -110,8 +132,8 @@ public class CookieLocaleResolver extends AbstractLocaleResolver {
      * @see javax.servlet.http.Cookie#setSecure
      */
     public void setCookieSecure(boolean cookieSecure) {
-        localeCookieGenerator.setCookieSecure(cookieSecure);
-        timeZoneCookieGenerator.setCookieSecure(cookieSecure);
+        getLocaleCookieGenerator().setCookieSecure(cookieSecure);
+        getTimeZoneCookieGenerator().setCookieSecure(cookieSecure);
     }
 
     /**
@@ -121,8 +143,8 @@ public class CookieLocaleResolver extends AbstractLocaleResolver {
      * @see javax.servlet.http.Cookie#setHttpOnly
      */
     public void setCookieHttpOnly(boolean cookieHttpOnly) {
-        localeCookieGenerator.setCookieHttpOnly(cookieHttpOnly);
-        timeZoneCookieGenerator.setCookieHttpOnly(cookieHttpOnly);
+        getLocaleCookieGenerator().setCookieHttpOnly(cookieHttpOnly);
+        getTimeZoneCookieGenerator().setCookieHttpOnly(cookieHttpOnly);
     }
 
     /**
@@ -195,19 +217,19 @@ public class CookieLocaleResolver extends AbstractLocaleResolver {
     public void setLocale(Translet translet, Locale locale) {
         translet.getRequestAdapter().setLocale(locale);
         HttpServletResponse response = translet.getResponseAdapter().getAdaptee();
-        localeCookieGenerator.addCookie(response, (locale != null ? toLocaleValue(locale) : ""));
+        getLocaleCookieGenerator().addCookie(response, (locale != null ? toLocaleValue(locale) : ""));
     }
 
     @Override
     public void setTimeZone(Translet translet, TimeZone timeZone) {
         translet.getRequestAdapter().setTimeZone(timeZone);
         HttpServletResponse response = translet.getResponseAdapter().getAdaptee();
-        timeZoneCookieGenerator.addCookie(response, (timeZone != null ? timeZone.getID() : ""));
+        getTimeZoneCookieGenerator().addCookie(response, (timeZone != null ? timeZone.getID() : ""));
     }
 
     private Locale parseLocaleCookie(Translet translet) {
         Locale locale = null;
-        String cookieName = localeCookieGenerator.getCookieName();
+        String cookieName = getLocaleCookieGenerator().getCookieName();
         HttpServletRequest request = translet.getRequestAdapter().getAdaptee();
         Cookie cookie = WebUtils.getCookie(request, cookieName);
         if (cookie != null) {
@@ -236,7 +258,7 @@ public class CookieLocaleResolver extends AbstractLocaleResolver {
 
     private TimeZone parseTimeZoneCookie(Translet translet) {
         TimeZone timeZone = null;
-        String cookieName = timeZoneCookieGenerator.getCookieName();
+        String cookieName = getTimeZoneCookieGenerator().getCookieName();
         HttpServletRequest request = translet.getRequestAdapter().getAdaptee();
         Cookie cookie = WebUtils.getCookie(request, cookieName);
         if (cookie != null) {

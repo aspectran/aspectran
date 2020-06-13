@@ -18,6 +18,7 @@ package com.aspectran.core.support.i18n.locale;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.context.rule.type.MethodType;
+import com.aspectran.core.lang.Nullable;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
@@ -30,6 +31,8 @@ import java.util.TimeZone;
  * via a configurable request parameter (default parameter name: "locale").
  *
  * <p>Created: 2016. 3. 13.</p>
+ *
+ * @see com.aspectran.core.support.i18n.locale.LocaleResolver
  */
 public class LocaleChangeInterceptor {
 
@@ -49,7 +52,8 @@ public class LocaleChangeInterceptor {
 
     private String timeZoneParamName = DEFAULT_TIMEZONE_PARAM_NAME;
 
-    private String[] allowedMethods;
+    @Nullable
+    private String[] requestMethods;
 
     private boolean ignoreInvalidLocale = false;
 
@@ -96,24 +100,24 @@ public class LocaleChangeInterceptor {
     /**
      * Configure the request method(s) over which the locale can be changed.
      *
-     * @param requestMethods the methods
+     * @param requestMethods the request methods
      */
     public void setRequestMethods(String... requestMethods) {
-        this.allowedMethods = requestMethods;
-        if (this.allowedMethods != null) {
-            for (int i = 0; i < this.allowedMethods.length; i++) {
-                this.allowedMethods[i] = this.allowedMethods[i].toUpperCase();
+        this.requestMethods = requestMethods;
+        if (this.requestMethods != null) {
+            for (int i = 0; i < this.requestMethods.length; i++) {
+                this.requestMethods[i] = this.requestMethods[i].toUpperCase();
             }
         }
     }
 
     /**
-     * Return the configured HTTP methods.
+     * Return the configured request methods.
      *
-     * @return the string [ ]
+     * @return the request methods
      */
-    public String[] getAllowedMethods() {
-        return this.allowedMethods;
+    public String[] getRequestMethods() {
+        return this.requestMethods;
     }
 
     /**
@@ -144,10 +148,12 @@ public class LocaleChangeInterceptor {
         if (newLocale != null) {
             Locale locale = null;
             try {
-                locale = StringUtils.parseLocaleString(newLocale);
+                locale = parseLocaleValue(newLocale);
             } catch (IllegalArgumentException ex) {
                 if (isIgnoreInvalidLocale()) {
-                    logger.debug("Ignoring invalid locale value [" + newLocale + "]: " + ex.getMessage());
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Ignoring invalid locale value [" + newLocale + "]: " + ex.getMessage());
+                    }
                 } else {
                     throw ex;
                 }
@@ -168,7 +174,9 @@ public class LocaleChangeInterceptor {
                 timeZone = StringUtils.parseTimeZoneString(newTimeZone);
             } catch (IllegalArgumentException ex) {
                 if (isIgnoreInvalidLocale()) {
-                    logger.debug("Ignoring invalid timezone value [" + newTimeZone + "]: " + ex.getMessage());
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Ignoring invalid timezone value [" + newTimeZone + "]: " + ex.getMessage());
+                    }
                 } else {
                     throw ex;
                 }
@@ -184,7 +192,7 @@ public class LocaleChangeInterceptor {
     }
 
     private boolean checkRequestMethod(MethodType requestMethod) {
-        String[] allowedMethods = getAllowedMethods();
+        String[] allowedMethods = getRequestMethods();
         if (allowedMethods == null || allowedMethods.length == 0) {
             return true;
         }
@@ -196,6 +204,19 @@ public class LocaleChangeInterceptor {
             }
         }
         return false;
+    }
+
+    /**
+     * Parse the given locale value as coming from a request parameter.
+     * <p>The default implementation calls {@link StringUtils#parseLocale(String)},
+     * accepting the {@link Locale#toString} format as well as BCP 47 language tags.</p>
+     *
+     * @param localeValue the locale value to parse
+     * @return the corresponding {@code Locale} instance
+     */
+    @Nullable
+    protected Locale parseLocaleValue(String localeValue) {
+        return StringUtils.parseLocale(localeValue);
     }
 
 }
