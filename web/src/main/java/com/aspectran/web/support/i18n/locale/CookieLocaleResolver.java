@@ -50,9 +50,9 @@ public class CookieLocaleResolver extends AbstractLocaleResolver {
 
     private static final String TIME_ZONE_COOKIE_NAME = CookieLocaleResolver.class.getName() + ".TIME_ZONE";
 
-    private CookieGenerator localeCookieGenerator;
+    private volatile CookieGenerator localeCookieGenerator;
 
-    private CookieGenerator timeZoneCookieGenerator;
+    private volatile CookieGenerator timeZoneCookieGenerator;
 
     private boolean languageTagCompliant = true;
 
