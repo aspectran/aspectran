@@ -63,7 +63,7 @@ public class JsonWriter implements Flushable, Closeable {
 
     private String dateTimeFormat;
 
-    private boolean skipNull;
+    private boolean nullWritable;
 
     private int indentDepth;
 
@@ -126,7 +126,7 @@ public class JsonWriter implements Flushable, Closeable {
 
     @SuppressWarnings("unchecked")
     public <T extends JsonWriter> T nullWritable(boolean nullWritable) {
-        this.skipNull = !nullWritable;
+        this.nullWritable = nullWritable;
         return (T)this;
     }
 
@@ -247,8 +247,9 @@ public class JsonWriter implements Flushable, Closeable {
      *
      * @param name the string to write to the writer
      */
-    public void writeName(String name) {
+    public JsonWriter writeName(String name) {
         pendedName = name;
+        return this;
     }
 
     private void writePendedName() throws IOException {
@@ -280,7 +281,7 @@ public class JsonWriter implements Flushable, Closeable {
      * @throws IOException if an I/O error has occurred
      */
     public void writeValue(String value) throws IOException {
-        if (!skipNull || value != null) {
+        if (nullWritable || value != null) {
             writePendedName();
             out.write(escape(value));
             writtenFlags.update(true);
@@ -296,7 +297,7 @@ public class JsonWriter implements Flushable, Closeable {
      * @throws IOException if an I/O error has occurred
      */
     public void writeValue(Boolean value) throws IOException {
-        if (!skipNull || value != null) {
+        if (nullWritable || value != null) {
             writePendedName();
             out.write(value.toString());
             writtenFlags.update(true);
@@ -312,7 +313,7 @@ public class JsonWriter implements Flushable, Closeable {
      * @throws IOException if an I/O error has occurred
      */
     public void writeValue(Number value) throws IOException {
-        if (!skipNull || value != null) {
+        if (nullWritable || value != null) {
             writePendedName();
             out.write(value.toString());
             writtenFlags.update(true);
@@ -337,7 +338,7 @@ public class JsonWriter implements Flushable, Closeable {
      * @throws IOException if an I/O error has occurred
      */
     public void writeNull(boolean force) throws IOException {
-        if (!skipNull || force) {
+        if (nullWritable || force) {
             writePendedName();
             out.write("null");
             writtenFlags.update(true);
@@ -354,7 +355,7 @@ public class JsonWriter implements Flushable, Closeable {
      * @throws IOException if an I/O error has occurred
      */
     public void writeJson(String json) throws IOException {
-        if (!skipNull || json != null) {
+        if (nullWritable || json != null) {
             writePendedName();
             BufferedReader reader = new BufferedReader(new StringReader(json));
             boolean first = true;
