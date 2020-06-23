@@ -63,7 +63,7 @@ public class JsonWriter implements Flushable, Closeable {
 
     private String dateTimeFormat;
 
-    private boolean nullWritable;
+    private boolean nullWritable = true;
 
     private int indentDepth;
 

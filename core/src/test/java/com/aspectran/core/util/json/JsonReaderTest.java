@@ -36,7 +36,7 @@ class JsonReaderTest {
         JsonReader reader = new JsonReader(new StringReader("{\"name\":\"she's\"}"));
         Parameters parameters = new VariableParameters();
         convert(reader, parameters, null);
-        System.out.println(parameters.toString());
+        //System.out.println(parameters.toString());
         assertEquals("name: \"she's\"", parameters.toString().trim());
     }
 

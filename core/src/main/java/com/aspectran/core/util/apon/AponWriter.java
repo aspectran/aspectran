@@ -39,7 +39,7 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
 
     private String indentString;
 
-    private boolean nullWritable;
+    private boolean nullWritable = true;
 
     private boolean valueTypeHintEnabled;
 
