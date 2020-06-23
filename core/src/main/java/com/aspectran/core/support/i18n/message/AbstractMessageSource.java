@@ -114,6 +114,16 @@ public abstract class AbstractMessageSource extends MessageSourceSupport impleme
     }
 
     @Override
+    public final String getMessage(String code, Locale locale) throws NoSuchMessageException {
+        return getMessage(code, (Object[])null, locale);
+    }
+
+    @Override
+    public final String getMessage(String code, String defaultMessage, Locale locale) throws NoSuchMessageException {
+        return getMessage(code, null, defaultMessage, locale);
+    }
+
+    @Override
     public final String getMessage(String code, Object[] args, Locale locale) throws NoSuchMessageException {
         String msg = getMessageInternal(code, args, locale);
         if (msg != null) {

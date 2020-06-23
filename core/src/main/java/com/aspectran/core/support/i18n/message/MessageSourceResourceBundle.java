@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.support.i18n.message;
 
+import com.aspectran.core.lang.NonNull;
+
 import java.util.Enumeration;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -64,9 +66,9 @@ public class MessageSourceResourceBundle extends ResourceBundle {
      * Returns {@code null} if the message could not be resolved.
      */
     @Override
-    protected Object handleGetObject(String key) {
+    protected Object handleGetObject(@NonNull String key) {
         try {
-            return this.messageSource.getMessage(key, null, this.locale);
+            return this.messageSource.getMessage(key, this.locale);
         } catch (NoSuchMessageException ex) {
             return null;
         }
@@ -79,9 +81,9 @@ public class MessageSourceResourceBundle extends ResourceBundle {
      * JDK 1.6, this does not rely on the capability to enumerate message keys.
      */
     @Override
-    public boolean containsKey(String key) {
+    public boolean containsKey(@NonNull String key) {
         try {
-            this.messageSource.getMessage(key, null, this.locale);
+            this.messageSource.getMessage(key, this.locale);
             return true;
         } catch (NoSuchMessageException ex) {
             return false;
@@ -93,6 +95,7 @@ public class MessageSourceResourceBundle extends ResourceBundle {
      * as a MessageSource does not allow for enumerating the defined message codes.
      */
     @Override
+    @NonNull
     public Enumeration<String> getKeys() {
         throw new UnsupportedOperationException("MessageSourceResourceBundle does not support enumerating its keys");
     }
