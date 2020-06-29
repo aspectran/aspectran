@@ -29,7 +29,6 @@ import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.support.i18n.locale.LocaleChangeInterceptor;
 import com.aspectran.core.support.i18n.locale.LocaleResolver;
 import com.aspectran.core.util.StringUtils;
-import com.aspectran.web.activity.request.ActivityRequestWrapper;
 import com.aspectran.web.activity.request.MultipartFormDataParser;
 import com.aspectran.web.activity.request.MultipartRequestParseException;
 import com.aspectran.web.activity.request.WebRequestBodyParser;
@@ -69,10 +68,6 @@ public class WebActivity extends CoreActivity {
         super(context);
         this.request = request;
         this.response = response;
-
-        if (request instanceof ActivityRequestWrapper) {
-            ((ActivityRequestWrapper)request).setWebActivity(this);
-        }
     }
 
     @Override

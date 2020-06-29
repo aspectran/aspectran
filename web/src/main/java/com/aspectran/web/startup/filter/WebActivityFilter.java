@@ -20,7 +20,6 @@ import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
 import com.aspectran.core.util.wildcard.WildcardPattern;
-import com.aspectran.web.activity.request.ActivityRequestWrapper;
 import com.aspectran.web.service.DefaultServletHttpRequestHandler;
 
 import javax.servlet.Filter;
@@ -42,6 +41,8 @@ public class WebActivityFilter implements Filter {
 
     private static final Logger logger = LoggerFactory.getLogger(WebActivityFilter.class);
 
+    private static final String BYPASS_PATTERN_DELIMITERS = ",;\t\r\n\f";
+
     private FilterConfig filterConfig;
 
     private List<WildcardPattern> bypassPatterns;
@@ -54,7 +55,7 @@ public class WebActivityFilter implements Filter {
 
         String bypassesParam = filterConfig.getInitParameter("bypasses");
         if (bypassesParam != null) {
-            String[] bypasses = StringUtils.tokenize(bypassesParam.trim(), ",;\t\r\n\f");
+            String[] bypasses = StringUtils.tokenize(bypassesParam, BYPASS_PATTERN_DELIMITERS);
             if (bypasses.length > 0) {
                 List<WildcardPattern> bypassPatterns = new ArrayList<>(bypasses.length);
                 for (String path : bypasses) {
@@ -78,7 +79,6 @@ public class WebActivityFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
-        ActivityRequestWrapper modifiedRequest = null;
         if (request instanceof HttpServletRequest && response instanceof HttpServletResponse) {
             HttpServletRequest httpRequest = (HttpServletRequest)request;
             if (bypassPatterns != null) {
@@ -90,13 +90,8 @@ public class WebActivityFilter implements Filter {
                     }
                 }
             }
-            modifiedRequest = new ActivityRequestWrapper(httpRequest);
         }
-        if (modifiedRequest != null) {
-            chain.doFilter(modifiedRequest, response);
-        } else {
-            chain.doFilter(request, response);
-        }
+        chain.doFilter(request, response);
     }
 
     @Override

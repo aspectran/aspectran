@@ -23,7 +23,6 @@ import com.aspectran.core.util.MultiValueMap;
 import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
-import com.aspectran.web.activity.request.ActivityRequestWrapper;
 import com.aspectran.web.activity.request.RequestAttributeMap;
 import com.aspectran.web.activity.request.WebRequestBodyParser;
 import com.aspectran.web.support.http.MediaType;
@@ -64,12 +63,13 @@ public class HttpServletRequestAdapter extends AbstractRequestAdapter {
     public MultiValueMap<String, String> getHeaderMap() {
         if (!headersObtained) {
             headersObtained = true;
-            Enumeration<String> headerNames = getHttpServletRequest().getHeaderNames();
+            HttpServletRequest request = getAdaptee();
+            Enumeration<String> headerNames = request.getHeaderNames();
             if (headerNames.hasMoreElements()) {
                 MultiValueMap<String, String> multiValueMap = super.getHeaderMap();
                 while (headerNames.hasMoreElements()) {
                     String name = headerNames.nextElement();
-                    for (Enumeration<String> values = getHttpServletRequest().getHeaders(name);
+                    for (Enumeration<String> values = request.getHeaders(name);
                             values.hasMoreElements();) {
                         String value = values.nextElement();
                         multiValueMap.add(name, value);
@@ -132,16 +132,8 @@ public class HttpServletRequestAdapter extends AbstractRequestAdapter {
         this.mediaType = mediaType;
     }
 
-    private HttpServletRequest getHttpServletRequest() {
-        if (getAdaptee() instanceof ActivityRequestWrapper) {
-            return (HttpServletRequest)((ActivityRequestWrapper)getAdaptee()).getRequest();
-        } else {
-            return (HttpServletRequest)getAdaptee();
-        }
-    }
-
     public void preparse() {
-        HttpServletRequest request = getHttpServletRequest();
+        HttpServletRequest request = getAdaptee();
         Map<String, String[]> parameters = request.getParameterMap();
         if (!parameters.isEmpty()) {
             getParameterMap().putAll(parameters);

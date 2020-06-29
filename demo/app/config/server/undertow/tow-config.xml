@@ -104,22 +104,6 @@
                     </properties>
                 </bean>
             </item>
-            <item name="filters" type="array">
-                <bean class="com.aspectran.undertow.server.servlet.TowFilter">
-                    <arguments>
-                        <item>web-activity-filter</item>
-                        <item>com.aspectran.web.startup.filter.WebActivityFilter</item>
-                    </arguments>
-                </bean>
-            </item>
-            <item name="filterServletMappings" type="array">
-                <bean class="com.aspectran.undertow.server.servlet.TowFilterServletMapping">
-                    <arguments>
-                        <item>web-activity-filter</item>
-                        <item>web-activity-servlet</item>
-                    </arguments>
-                </bean>
-            </item>
             <item name="servletContainerInitializers" type="array">
                 <bean class="com.aspectran.undertow.server.servlet.TowJasperInitializer">
                     <properties>
@@ -256,6 +240,7 @@
                 <bean class="com.aspectran.undertow.server.resource.ResourcePathPatterns">
                     <arguments>
                         <item>
+                            +: /assets/**
                             +: /favicon.ico
                             +: /robots.txt
                             +: /ads.txt

@@ -26,9 +26,9 @@ import com.aspectran.core.context.rule.DispatchRule;
 import com.aspectran.core.util.ToStringBuilder;
 import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
+import com.aspectran.web.activity.request.ActivityRequestWrapper;
 
 import javax.servlet.RequestDispatcher;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.FileNotFoundException;
 
@@ -108,19 +108,19 @@ public class JspTemplateViewDispatcher implements ViewDispatcher {
             ProcessResult processResult = activity.getProcessResult();
             DispatchResponse.saveAttributes(requestAdapter, processResult);
 
-            HttpServletRequest request = requestAdapter.getAdaptee();
             HttpServletResponse response = responseAdapter.getAdaptee();
-
-            if (logger.isTraceEnabled()) {
-                logger.trace("Dispatching to JSP Template [" + template + "] using dispatch name '" + dispatchName + "'");
-            }
-
             if (response.isCommitted()) {
                 response.reset();
             }
 
-            RequestDispatcher requestDispatcher = request.getRequestDispatcher(template);
-            requestDispatcher.forward(request, response);
+            if (logger.isTraceEnabled()) {
+                logger.trace("Dispatching to JSP Template [" + template + "] using dispatch name '" +
+                        dispatchName + "'");
+            }
+
+            ActivityRequestWrapper requestWrapper = new ActivityRequestWrapper(activity);
+            RequestDispatcher requestDispatcher = requestWrapper.getRequestDispatcher(template);
+            requestDispatcher.forward(requestWrapper, response);
 
             if (response.getStatus() == 404) {
                 throw new FileNotFoundException("Failed to find resource '" + template + "'");

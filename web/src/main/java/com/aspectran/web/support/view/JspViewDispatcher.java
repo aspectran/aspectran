@@ -26,9 +26,9 @@ import com.aspectran.core.context.rule.DispatchRule;
 import com.aspectran.core.util.ToStringBuilder;
 import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
+import com.aspectran.web.activity.request.ActivityRequestWrapper;
 
 import javax.servlet.RequestDispatcher;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.FileNotFoundException;
 
@@ -118,19 +118,18 @@ public class JspViewDispatcher implements ViewDispatcher {
             ProcessResult processResult = activity.getProcessResult();
             DispatchResponse.saveAttributes(requestAdapter, processResult);
 
-            HttpServletRequest request = requestAdapter.getAdaptee();
             HttpServletResponse response = responseAdapter.getAdaptee();
+            if (response.isCommitted()) {
+                response.reset();
+            }
 
             if (logger.isTraceEnabled()) {
                 logger.trace("Dispatching to JSP [" + resource + "]");
             }
 
-            if (response.isCommitted()) {
-                response.reset();
-            }
-
-            RequestDispatcher requestDispatcher = request.getRequestDispatcher(resource);
-            requestDispatcher.forward(request, response);
+            ActivityRequestWrapper requestWrapper = new ActivityRequestWrapper(activity);
+            RequestDispatcher requestDispatcher = requestWrapper.getRequestDispatcher(resource);
+            requestDispatcher.forward(requestWrapper, response);
 
             if (response.getStatus() == 404) {
                 throw new FileNotFoundException("Failed to find resource '" + resource + "'");
