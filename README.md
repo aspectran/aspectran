@@ -95,6 +95,12 @@ To run the demo, simply use the following command after having build `Aspectran`
 * [Skylark (Online Text to Speech Web APP)](https://skylark.aspectran.com/)
 * [API Reference](https://javadoc.io/doc/com.aspectran/aspectran-all)
 
+## Thanks
+
+[![JetBrains](http://aspectran.com/assets/img/jetbrains.svg)](https://www.jetbrains.com/?from=Aspectran)  
+[**JetBrains**](https://www.jetbrains.com/?from=Aspectran) products are very helpful in developing **Aspectran**.  
+Thank you for the Open Source License!
+
 ## License
 
 Aspectran is Open Source software released under the [Apache 2.0 license](http://www.apache.org/licenses/LICENSE-2.0).
