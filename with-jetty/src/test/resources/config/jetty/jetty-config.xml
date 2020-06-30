@@ -96,6 +96,7 @@
             <item name="persistTempDirectory" value="true" valueType="boolean"/>
             <item name="defaultsDescriptor" value="config/jetty/webdefault.xml"/>
             <item name="sessionHandler">#{jetty.sessionHandler}</item>
+            <item name="webSocketEnabled" valueType="boolean">false</item>
             <item name="derived" valueType="boolean">true</item>
         </properties>
     </bean>
