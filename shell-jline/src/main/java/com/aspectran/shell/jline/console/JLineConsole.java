@@ -18,7 +18,6 @@ package com.aspectran.shell.jline.console;
 import com.aspectran.shell.console.AbstractConsole;
 import com.aspectran.shell.console.CommandReadFailedException;
 import com.aspectran.shell.console.ConsoleTerminatedException;
-import org.jline.builtins.Widgets.AutosuggestionWidgets;
 import org.jline.reader.EndOfFileException;
 import org.jline.reader.History;
 import org.jline.reader.LineReader;
@@ -30,6 +29,7 @@ import org.jline.terminal.TerminalBuilder;
 import org.jline.utils.AttributedString;
 import org.jline.utils.AttributedStyle;
 import org.jline.utils.InfoCmp;
+import org.jline.widget.AutosuggestionWidgets;
 
 import java.io.IOException;
 import java.io.OutputStream;
