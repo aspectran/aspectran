@@ -363,26 +363,6 @@ public interface Translet {
     void removeAttribute(String name);
 
     /**
-     * Returns the originally declared response.
-     *
-     * @return the declared response
-     * @since 5.2.0
-     */
-    Response getDeclaredResponse();
-
-    /**
-     * Respond immediately, and the remaining jobs will be canceled.
-     */
-    void response();
-
-    /**
-     * Respond immediately, and the remaining jobs will be canceled.
-     *
-     * @param response the response
-     */
-    void response(Response response);
-
-    /**
      * Transformation according to a given rule, and transmits this response.
      *
      * @param transformRule the transformation rule
@@ -449,6 +429,26 @@ public interface Translet {
      * @param redirectRule the redirect rule
      */
     void redirect(RedirectRule redirectRule);
+
+    /**
+     * Respond immediately, and the remaining jobs will be canceled.
+     *
+     * @param response the response
+     */
+    void response(Response response);
+
+    /**
+     * Respond immediately, and the remaining jobs will be canceled.
+     */
+    void response();
+
+    /**
+     * Returns the originally declared response.
+     *
+     * @return the declared response
+     * @since 5.2.0
+     */
+    Response getDeclaredResponse();
 
     /**
      * Returns whether the response is reserved.

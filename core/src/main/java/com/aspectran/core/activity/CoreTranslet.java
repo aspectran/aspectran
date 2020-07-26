@@ -249,21 +249,6 @@ public class CoreTranslet extends AbstractTranslet {
     }
 
     @Override
-    public Response getDeclaredResponse() {
-        return activity.getDeclaredResponse();
-    }
-
-    @Override
-    public void response() {
-        activity.reserveResponse();
-    }
-
-    @Override
-    public void response(Response response) {
-        activity.reserveResponse(response);
-    }
-
-    @Override
     public void transform(TransformRule transformRule) {
         if (transformRule == null) {
             throw new IllegalArgumentException("transformRule must not be null");
@@ -342,6 +327,21 @@ public class CoreTranslet extends AbstractTranslet {
         }
         Response res = new RedirectResponse(redirectRule);
         response(res);
+    }
+
+    @Override
+    public void response(Response response) {
+        activity.reserveResponse(response);
+    }
+
+    @Override
+    public void response() {
+        activity.reserveResponse();
+    }
+
+    @Override
+    public Response getDeclaredResponse() {
+        return activity.getDeclaredResponse();
     }
 
     @Override

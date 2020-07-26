@@ -190,7 +190,7 @@ public class DefaultResponseAdapter extends AbstractResponseAdapter {
     @Override
     public OutputStream getOutputStream() {
         if (outputStream == null) {
-            throw new UnsupportedOperationException();
+            throw new IllegalStateException("OutputStream is not available");
         }
         return outputStream;
     }
@@ -202,7 +202,7 @@ public class DefaultResponseAdapter extends AbstractResponseAdapter {
     @Override
     public Writer getWriter() {
         if (writer == null) {
-            throw new UnsupportedOperationException();
+            throw new IllegalStateException("Writer is not available");
         }
         return writer;
     }

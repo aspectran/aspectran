@@ -29,11 +29,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * <p>This class is a clone of org.apache.commons.io.FileUtils</p>
+ *
  * Simple utility methods for file and directory copying.
  * All copy methods use a block size of 4096 bytes,
  * and close all affected streams when done.
- *
- * <p>This class is a clone of org.apache.commons.io.FileUtils</p>
  */
 public class FileCopyUtils {
 

@@ -50,6 +50,7 @@ import com.aspectran.core.context.rule.type.AspectAdviceType;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.core.context.rule.type.TokenType;
+import com.aspectran.core.lang.Nullable;
 import com.aspectran.core.support.i18n.locale.LocaleResolver;
 import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
@@ -323,11 +324,9 @@ public class CoreActivity extends AdviceActivity {
         Response res = getResponse();
         if (res != null) {
             res.commit(this);
-
             if (isExceptionRaised()) {
                 clearRaisedException();
             }
-
             if (res.getResponseType() == ResponseType.FORWARD) {
                 ForwardResponse forwardResponse = (ForwardResponse)res;
                 return forwardResponse.getForwardRule();
@@ -481,7 +480,7 @@ public class CoreActivity extends AdviceActivity {
         return res;
     }
 
-    protected void reserveResponse(Response response) {
+    protected void reserveResponse(@Nullable Response response) {
         this.reservedResponse = response;
         if (response != null && !isExceptionRaised()) {
             this.desiredResponse = response;
@@ -489,7 +488,7 @@ public class CoreActivity extends AdviceActivity {
     }
 
     protected void reserveResponse() {
-        if (this.reservedResponse != null) {
+        if (this.reservedResponse == null) {
             this.reservedResponse = getDeclaredResponse();
         }
     }

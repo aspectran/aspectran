@@ -19,6 +19,7 @@ import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.context.rule.type.ContentType;
 import com.aspectran.core.context.rule.type.FormatType;
+import com.aspectran.core.lang.NonNull;
 
 /**
  * A factory for creating TransformResponse objects.
@@ -33,7 +34,7 @@ public class TransformResponseFactory {
      * @param transformRule the transform rule
      * @return the transform response
      */
-    public static Response create(TransformRule transformRule) {
+    public static Response create(@NonNull TransformRule transformRule) {
         FormatType formatType = transformRule.getFormatType();
         Response res;
         if (formatType == FormatType.APON) {
