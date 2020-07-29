@@ -17,6 +17,9 @@ package com.aspectran.web.support.etag;
 
 import com.aspectran.core.activity.Translet;
 
+/**
+ * Interface to generate ETag tokens for requests.
+ */
 public interface ETagTokenFactory {
 
     byte[] getToken(Translet translet);

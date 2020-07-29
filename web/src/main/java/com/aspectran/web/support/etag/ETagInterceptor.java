@@ -19,7 +19,6 @@ import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.response.ResponseTemplate;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.lang.NonNull;
-import com.aspectran.core.lang.Nullable;
 import com.aspectran.core.util.DigestUtils;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.web.support.http.HttpHeaders;
@@ -30,6 +29,13 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Etag interceptor to enable If-None-Match request with ETAG support.
+ * If the ETag generated for each request matches the value in the If-None-Match header,
+ * an empty response with status code 304 (not modified) is sent to the client.
+ *
+ * @since 6.9.4
+ */
 public class ETagInterceptor {
 
     private static final String DIRECTIVE_NO_STORE = "no-store";
@@ -67,12 +73,15 @@ public class ETagInterceptor {
         HttpServletResponse response = translet.getResponseAdapter().getAdaptee();
         String cacheControl = response.getHeader(HttpHeaders.CACHE_CONTROL);
         if (cacheControl == null || !cacheControl.contains(DIRECTIVE_NO_STORE)) {
-            String eTag = response.getHeader(HttpHeaders.ETAG);
-            if (!StringUtils.hasText(eTag)) {
-                eTag = generateETagHeaderValue(translet);
-                response.setHeader(HttpHeaders.ETAG, eTag);
+            String token = response.getHeader(HttpHeaders.ETAG);
+            if (!StringUtils.hasText(token)) {
+                token = generateETagToken(translet, writeWeakETag);
+                if (token == null) {
+                    return;
+                }
+                response.setHeader(HttpHeaders.ETAG, token);
             }
-            boolean notModified = validateIfNoneMatch(translet.getRequestAdapter(), eTag);
+            boolean notModified = validateIfNoneMatch(translet.getRequestAdapter(), token);
             if (notModified) {
                 ResponseTemplate responseTemplate = new ResponseTemplate(translet.getResponseAdapter());
                 responseTemplate.setStatus(HttpStatus.NOT_MODIFIED.value());
@@ -81,38 +90,38 @@ public class ETagInterceptor {
         }
     }
 
-    private String generateETagHeaderValue(Translet translet) {
+    protected String generateETagToken(Translet translet, boolean isWeak) {
+        byte[] token = tokenFactory.getToken(translet);
+        if (token == null || token.length == 0) {
+            return null;
+        }
         // length of W/ + " + 0 + 32bits md5 hash + "
         StringBuilder builder = new StringBuilder(37);
-        if (isWriteWeakETag()) {
+        if (isWeak) {
             builder.append("W/");
         }
         builder.append("\"0");
-        builder.append(DigestUtils.md5DigestAsHex(tokenFactory.getToken(translet)));
+        builder.append(DigestUtils.md5DigestAsHex(token));
         builder.append('"');
         return builder.toString();
     }
 
-    private boolean validateIfNoneMatch(RequestAdapter requestAdapter,  @Nullable String etag) {
-        if (!StringUtils.hasLength(etag)) {
-            return false;
-        }
-
+    private boolean validateIfNoneMatch(RequestAdapter requestAdapter, String token) {
         List<String> ifNoneMatch = requestAdapter.getHeaderValues(HttpHeaders.IF_NONE_MATCH);
         if (ifNoneMatch == null || ifNoneMatch.isEmpty()) {
             return false;
         }
 
         // We will perform this validation...
-        etag = padEtagIfNecessary(etag);
-        if (etag.startsWith("W/")) {
-            etag = etag.substring(2);
+        token = padETagTokenIfNecessary(token);
+        if (token.startsWith("W/")) {
+            token = token.substring(2);
         }
-        for (String clientETags : ifNoneMatch) {
-            Matcher etagMatcher = ETAG_HEADER_VALUE_PATTERN.matcher(clientETags);
+        for (String tags : ifNoneMatch) {
+            Matcher tokenMatcher = ETAG_HEADER_VALUE_PATTERN.matcher(tags);
             // Compare weak/strong ETags as per https://tools.ietf.org/html/rfc7232#section-2.3
-            while (etagMatcher.find()) {
-                if (StringUtils.hasLength(etagMatcher.group()) && etag.equals(etagMatcher.group(3))) {
+            while (tokenMatcher.find()) {
+                if (StringUtils.hasLength(tokenMatcher.group()) && token.equals(tokenMatcher.group(3))) {
                     return true;
                 }
             }
@@ -121,14 +130,11 @@ public class ETagInterceptor {
         return false;
     }
 
-    private String padEtagIfNecessary(String etag) {
-        if (!StringUtils.hasLength(etag)) {
-            return etag;
+    private String padETagTokenIfNecessary(String token) {
+        if ((token.startsWith("\"") || token.startsWith("W/\"")) && token.endsWith("\"")) {
+            return token;
         }
-        if ((etag.startsWith("\"") || etag.startsWith("W/\"")) && etag.endsWith("\"")) {
-            return etag;
-        }
-        return "\"" + etag + "\"";
+        return "\"" + token + "\"";
     }
 
 }
