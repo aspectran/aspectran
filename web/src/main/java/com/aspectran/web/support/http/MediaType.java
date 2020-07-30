@@ -114,6 +114,28 @@ public class MediaType implements Comparable<MediaType>, Serializable {
     public static final String APPLICATION_JSON_VALUE = "application/json";
 
     /**
+     * Public constant media type for {@code application/x-ndjson}.
+     */
+    public static final MediaType APPLICATION_NDJSON;
+
+    /**
+     * A String equivalent of {@link MediaType#APPLICATION_NDJSON}.
+     */
+    public static final String APPLICATION_NDJSON_VALUE = "application/x-ndjson";
+
+    /**
+     * Public constant media type for {@code application/json-seq}.
+     * @see <a href="https://tools.ietf.org/html/rfc7464#section-4">
+     *     JavaScript Object Notation (JSON) Text Sequences</a>
+     */
+    public static final MediaType APPLICATION_JSON_SEQ;
+
+    /**
+     * A String equivalent of {@link MediaType#APPLICATION_JSON_SEQ}.
+     */
+    public static final String APPLICATION_JSON_SEQ_VALUE = "application/json-seq";
+
+    /**
      * Public constant media type for {@code application/apon}.
      */
     public static final MediaType APPLICATION_APON;
@@ -144,19 +166,6 @@ public class MediaType implements Comparable<MediaType>, Serializable {
     public static final String APPLICATION_PDF_VALUE = "application/pdf";
 
     /**
-     * Public constant media type for {@code application/problem+json}.
-     *
-     * @see <a href="https://tools.ietf.org/html/rfc7807#section-6.1">
-     * Problem Details for HTTP APIs, 6.1. application/problem+json</a>
-     */
-    public static final MediaType APPLICATION_PROBLEM_JSON;
-
-    /**
-     * A String equivalent of {@link MediaType#APPLICATION_PROBLEM_JSON}.
-     */
-    public static final String APPLICATION_PROBLEM_JSON_VALUE = "application/problem+json";
-
-    /**
      * Public constant media type for {@code application/problem+xml}.
      *
      * @see <a href="https://tools.ietf.org/html/rfc7807#section-6.2">
@@ -178,16 +187,6 @@ public class MediaType implements Comparable<MediaType>, Serializable {
      * A String equivalent of {@link MediaType#APPLICATION_RSS_XML}.
      */
     public static final String APPLICATION_RSS_XML_VALUE = "application/rss+xml";
-
-    /**
-     * Public constant media type for {@code application/stream+json}.
-     */
-    public static final MediaType APPLICATION_STREAM_JSON;
-
-    /**
-     * A String equivalent of {@link MediaType#APPLICATION_STREAM_JSON}.
-     */
-    public static final String APPLICATION_STREAM_JSON_VALUE = "application/stream+json";
 
     /**
      * Public constant media type for {@code application/xhtml+xml}.
@@ -370,13 +369,13 @@ public class MediaType implements Comparable<MediaType>, Serializable {
         APPLICATION_FORM_URLENCODED = new MediaType("application", "x-www-form-urlencoded");
         APPLICATION_GRAPHQL = new MediaType("application", "graphql");
         APPLICATION_JSON = new MediaType("application", "json");
+        APPLICATION_NDJSON = new MediaType("application", "x-ndjson");
+        APPLICATION_JSON_SEQ = new MediaType("application", "json-seq");
         APPLICATION_APON = new MediaType("application", "apon");
         APPLICATION_OCTET_STREAM = new MediaType("application", "octet-stream");
         APPLICATION_PDF = new MediaType("application", "pdf");
-        APPLICATION_PROBLEM_JSON = new MediaType("application", "problem+json");
         APPLICATION_PROBLEM_XML = new MediaType("application", "problem+xml");
         APPLICATION_RSS_XML = new MediaType("application", "rss+xml");
-        APPLICATION_STREAM_JSON = new MediaType("application", "stream+json");
         APPLICATION_XHTML_XML = new MediaType("application", "xhtml+xml");
         APPLICATION_XML = new MediaType("application", "xml");
         IMAGE_GIF = new MediaType("image", "gif");
