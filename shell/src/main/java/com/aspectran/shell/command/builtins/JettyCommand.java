@@ -119,6 +119,7 @@ public class JettyCommand extends AbstractCommand {
                     try {
                         jettyServer.stop();
                         printStatus(jettyServer, console);
+                        beanRegistry.destroySingleton(jettyServer);
                     } catch (Exception e) {
                         console.writeError("Jetty Server Error - " + e.getMessage());
                     }
@@ -130,6 +131,7 @@ public class JettyCommand extends AbstractCommand {
                         }
                         jettyServer.start();
                         printStatus(jettyServer, console);
+                        beanRegistry.destroySingleton(jettyServer);
                     } catch (BindException e) {
                         console.writeError("Jetty Server Error - Port already in use");
                     }
