@@ -18,7 +18,7 @@ package com.aspectran.core.component.session;
 import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
 import com.aspectran.core.util.statistic.CounterStatistic;
-import com.aspectran.core.util.thread.Locker;
+import com.aspectran.core.util.thread.AutoLock;
 
 import java.util.Map;
 import java.util.Set;
@@ -175,7 +175,7 @@ public class DefaultSessionCache extends AbstractSessionCache {
                         for (String name : getSessionStore().getNonPersistentAttributes()) {
                             try {
                                 Object old;
-                                try (Locker.Lock ignored = session.lock()) {
+                                try (AutoLock ignored = session.lock()) {
                                     old = session.getSessionData().setAttribute(name, null);
                                 }
                                 if (old != null) {

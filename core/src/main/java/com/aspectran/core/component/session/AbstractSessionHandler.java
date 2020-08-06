@@ -20,7 +20,7 @@ import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
 import com.aspectran.core.util.statistic.SampleStatistic;
-import com.aspectran.core.util.thread.Locker;
+import com.aspectran.core.util.thread.AutoLock;
 import com.aspectran.core.util.thread.ScheduledExecutorScheduler;
 import com.aspectran.core.util.thread.Scheduler;
 
@@ -210,7 +210,7 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
                 // start invalidating if it is not already begun, and call the listeners
                 try {
                     if (session.beginInvalidate()) {
-                        try (Locker.Lock ignored = session.lock()) {
+                        try (AutoLock ignored = session.lock()) {
                             if (reason != null) {
                                 session.setDestroyedReason(reason);
                             }
@@ -254,7 +254,7 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
         // 1. valid
         // 2. expired
         // 3. idle
-        try (Locker.Lock ignored = session.lock()) {
+        try (AutoLock ignored = session.lock()) {
             if (session.getRequests() > 0) {
                 return; // session can't expire or be idle if there is a request in it
             }
@@ -274,7 +274,7 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
                 // most efficient if it can be done as a bulk operation to eg reduce
                 // roundtrips to the persistent store. Only do this if the HouseKeeper that
                 // does the scavenging is configured to actually scavenge
-                if (getHouseKeeper() != null && getHouseKeeper().isScavengable()) {
+                if (getHouseKeeper() != null && getHouseKeeper().isRunning()) {
                     candidateSessionIdsForExpiry.add(session.getId());
                     if (logger.isDebugEnabled()) {
                         logger.debug("Session " + session.getId() + " is candidate for expiry");

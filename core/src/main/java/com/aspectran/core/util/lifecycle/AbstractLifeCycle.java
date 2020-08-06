@@ -15,8 +15,10 @@
  */
 package com.aspectran.core.util.lifecycle;
 
+import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
+import com.aspectran.core.util.thread.AutoLock;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -29,7 +31,7 @@ public abstract class AbstractLifeCycle implements LifeCycle {
 
     private final CopyOnWriteArrayList<LifeCycle.Listener> listeners = new CopyOnWriteArrayList<>();
 
-    private final Object lock = new Object();
+    private final AutoLock lock = new AutoLock();
 
     private static final int STATE_FAILED = -1;
 
@@ -51,7 +53,7 @@ public abstract class AbstractLifeCycle implements LifeCycle {
 
     @Override
     public final void start() throws Exception {
-        synchronized (lock) {
+        try (AutoLock ignored = lock.lock()) {
             try {
                 if (state == STATE_STARTED || state == STATE_STARTING) {
                     return;
@@ -68,7 +70,7 @@ public abstract class AbstractLifeCycle implements LifeCycle {
 
     @Override
     public final void stop() throws Exception {
-        synchronized (lock) {
+        try (AutoLock ignored = lock.lock()) {
             try {
                 if (state == STATE_STOPPING || state == STATE_STOPPED) {
                     return;
@@ -210,7 +212,7 @@ public abstract class AbstractLifeCycle implements LifeCycle {
     public String toString() {
         Class<?> clazz = getClass();
         String name = clazz.getSimpleName();
-        if ((name == null || name.length() == 0) && clazz.getSuperclass() != null) {
+        if (StringUtils.isEmpty(name) && clazz.getSuperclass() != null) {
             clazz = clazz.getSuperclass();
             name = clazz.getSimpleName();
         }

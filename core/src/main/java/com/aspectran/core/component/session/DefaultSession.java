@@ -18,8 +18,7 @@ package com.aspectran.core.component.session;
 import com.aspectran.core.util.ToStringBuilder;
 import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
-import com.aspectran.core.util.thread.Locker;
-import com.aspectran.core.util.thread.Locker.Lock;
+import com.aspectran.core.util.thread.AutoLock;
 import com.aspectran.core.util.timer.CyclicTimeout;
 
 import java.util.Set;
@@ -34,7 +33,7 @@ public class DefaultSession implements Session {
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultSession.class);
 
-    private final Locker locker = new Locker();
+    private final AutoLock autoLock = new AutoLock();
 
     private final SessionData sessionData;
 
@@ -82,14 +81,14 @@ public class DefaultSession implements Session {
 
     @Override
     public String getId() {
-        try (Lock ignored = locker.lock()) {
+        try (AutoLock ignored = autoLock.lock()) {
             return sessionData.getId();
         }
     }
 
     @Override
     public <T> T getAttribute(String name) {
-        try (Lock ignored = locker.lock()) {
+        try (AutoLock ignored = autoLock.lock()) {
             checkValidForRead();
             return sessionData.getAttribute(name);
         }
@@ -98,7 +97,7 @@ public class DefaultSession implements Session {
     @Override
     public Object setAttribute(String name, Object value) {
         Object old;
-        try (Lock ignored = locker.lock()) {
+        try (AutoLock ignored = autoLock.lock()) {
             // if session is not valid, don't accept the set
             checkValidForWrite();
             old = sessionData.setAttribute(name, value);
@@ -112,7 +111,7 @@ public class DefaultSession implements Session {
 
     @Override
     public Set<String> getAttributeNames() {
-        try (Lock ignored = locker.lock()) {
+        try (AutoLock ignored = autoLock.lock()) {
             checkValidForRead();
             return sessionData.getKeys();
         }
@@ -125,7 +124,7 @@ public class DefaultSession implements Session {
 
     @Override
     public long getCreationTime() {
-        try (Lock ignored = locker.lock()) {
+        try (AutoLock ignored = autoLock.lock()) {
             checkValidForRead();
             return sessionData.getCreated();
         }
@@ -133,14 +132,14 @@ public class DefaultSession implements Session {
 
     @Override
     public long getLastAccessedTime() {
-        try (Lock ignored = locker.lock()) {
+        try (AutoLock ignored = autoLock.lock()) {
             return sessionData.getLastAccessed();
         }
     }
 
     @Override
     public int getMaxInactiveInterval() {
-        try (Lock ignored = locker.lock()) {
+        try (AutoLock ignored = autoLock.lock()) {
             if (sessionData.getInactiveInterval() > 0L) {
                 return (int)(sessionData.getInactiveInterval() / 1000L);
             } else {
@@ -151,7 +150,7 @@ public class DefaultSession implements Session {
 
     @Override
     public void setMaxInactiveInterval(int secs) {
-        try (Lock ignored = locker.lock()) {
+        try (AutoLock ignored = autoLock.lock()) {
             sessionData.setInactiveInterval((long)secs * 1000L);
             sessionData.calcAndSetExpiry();
             sessionData.setDirty(true);
@@ -167,7 +166,7 @@ public class DefaultSession implements Session {
 
     @Override
     public boolean access() {
-        try (Lock ignored = locker.lock()) {
+        try (AutoLock ignored = autoLock.lock()) {
             if (!isValid()) {
                 return false;
             }
@@ -196,7 +195,7 @@ public class DefaultSession implements Session {
 
     @Override
     public void complete() {
-        try (Lock ignored = locker.lock()) {
+        try (AutoLock ignored = autoLock.lock()) {
             requests--;
 
             if (logger.isDebugEnabled()) {
@@ -221,7 +220,7 @@ public class DefaultSession implements Session {
      * @return the number of active requests for this session
      */
     protected long getRequests() {
-        try (Lock ignored = locker.lock()) {
+        try (AutoLock ignored = autoLock.lock()) {
             return requests;
         }
     }
@@ -237,7 +236,7 @@ public class DefaultSession implements Session {
      */
     private long calculateInactivityTimeout(long now) {
         long time;
-        try (Lock ignored = locker.lock()) {
+        try (AutoLock ignored = autoLock.lock()) {
             long remaining = sessionData.getExpiry() - now;
             long maxInactive = sessionData.getInactiveInterval();
             int evictionIdleSecs = sessionHandler.getSessionCache().getEvictionIdleSecs();
@@ -298,7 +297,7 @@ public class DefaultSession implements Session {
             try {
                 try {
                     // do the invalidation
-                    try (Lock ignored = locker.lock()) {
+                    try (AutoLock ignored = autoLock.lock()) {
                         if (getDestroyedReason() == null) {
                             setDestroyedReason(DestroyedReason.INVALIDATED);
                         }
@@ -318,7 +317,7 @@ public class DefaultSession implements Session {
 
     protected boolean beginInvalidate() {
         boolean result = false;
-        try (Lock ignored = locker.lock()) {
+        try (AutoLock ignored = autoLock.lock()) {
             switch (state) {
                 case INVALID:
                     // spec does not allow invalidate of already invalid session
@@ -341,7 +340,7 @@ public class DefaultSession implements Session {
     }
 
     protected void finishInvalidate() {
-        try (Lock ignored = locker.lock()) {
+        try (AutoLock ignored = autoLock.lock()) {
             try {
                 if (logger.isDebugEnabled()) {
                     logger.debug("Invalidate session id=" + sessionData.getId());
@@ -377,7 +376,7 @@ public class DefaultSession implements Session {
 
     @Override
     public boolean isNew() {
-        try (Lock ignored = locker.lock()) {
+        try (AutoLock ignored = autoLock.lock()) {
             checkValidForRead();
             return newSession;
         }
@@ -385,7 +384,7 @@ public class DefaultSession implements Session {
 
     @Override
     public boolean isValid() {
-        try (Lock ignored = locker.lock()) {
+        try (AutoLock ignored = autoLock.lock()) {
             return (state == State.VALID);
         }
     }
@@ -408,7 +407,7 @@ public class DefaultSession implements Session {
      * @return true if expired
      */
     protected boolean isExpiredAt(long time) {
-        try (Lock ignored = locker.lock()) {
+        try (AutoLock ignored = autoLock.lock()) {
             checkValidForRead();
             return sessionData.isExpiredAt(time);
         }
@@ -422,7 +421,7 @@ public class DefaultSession implements Session {
      */
     protected boolean isIdleLongerThan(int sec) {
         long now = System.currentTimeMillis();
-        try (Lock ignored = locker.lock()) {
+        try (AutoLock ignored = autoLock.lock()) {
             return ((sessionData.getAccessed() + (sec * 1000)) <= now);
         }
     }
@@ -480,7 +479,6 @@ public class DefaultSession implements Session {
      * @throws IllegalStateException if the session is invalid
      */
     protected void checkValidForWrite() {
-        checkLocked();
         if (state == State.INVALID) {
             throw new IllegalStateException("Not valid for write: session " + this);
         }
@@ -498,7 +496,6 @@ public class DefaultSession implements Session {
      * @throws IllegalStateException if the session is invalid
      */
     protected void checkValidForRead() {
-        checkLocked();
         if (state == State.INVALID) {
             throw new IllegalStateException("Invalid for read: session " + this);
         }
@@ -506,13 +503,7 @@ public class DefaultSession implements Session {
             return;
         }
         if (!isResident()) {
-            throw new IllegalStateException("Invalid for read: session " + this);
-        }
-    }
-
-    protected void checkLocked() {
-        if (!locker.isLocked()) {
-            throw new IllegalStateException("Session not locked");
+            throw new IllegalStateException("Invalid for read: id=" + sessionData.getId() + " not resident");
         }
     }
 
@@ -521,13 +512,13 @@ public class DefaultSession implements Session {
      *
      * @return the lock
      */
-    protected Lock lock() {
-        return locker.lock();
+    protected AutoLock lock() {
+        return autoLock.lock();
     }
 
     @Override
     public String toString() {
-        try (Lock ignored = locker.lock()) {
+        try (AutoLock ignored = autoLock.lock()) {
             ToStringBuilder tsb = new ToStringBuilder(getClass().getSimpleName() + "@" + hashCode());
             tsb.append("id", sessionData.getId());
             tsb.append("state", state);
@@ -557,7 +548,7 @@ public class DefaultSession implements Session {
                     long now = System.currentTimeMillis();
                     // handle what to do with the session after the timer expired
                     getSessionHandler().sessionInactivityTimerExpired(DefaultSession.this, now);
-                    try (Lock ignored = DefaultSession.this.lock()) {
+                    try (AutoLock ignored = DefaultSession.this.lock()) {
                         // grab the lock and check what happened to the session: if it didn't get evicted and
                         // it hasn't expired, we need to reset the timer
                         if (DefaultSession.this.isResident() && DefaultSession.this.getRequests() <= 0 &&

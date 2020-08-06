@@ -19,7 +19,7 @@ import com.aspectran.core.component.AbstractComponent;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
-import com.aspectran.core.util.thread.Locker.Lock;
+import com.aspectran.core.util.thread.AutoLock;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -167,7 +167,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
             try {
                 DefaultSession stored = loadSession(k);
                 if (stored != null) {
-                    try (Lock ignored = stored.lock()) {
+                    try (AutoLock ignored = stored.lock()) {
                         stored.setResident(true); // ensure freshly loaded session is resident
                     }
                     resident.set(false);
@@ -186,7 +186,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
             throw thrown.get();
         }
         if (session != null) {
-            try (Lock ignored = session.lock()) {
+            try (AutoLock ignored = session.lock()) {
                 if (!session.isResident()) {
                     // session isn't marked as resident in cache
                     if (logger.isTraceEnabled()) {
@@ -272,7 +272,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
             throw new IllegalArgumentException("Put key=" + id + " session=" +
                 (session == null ? "null" : session.getId()));
         }
-        try (Lock ignored = session.lock()) {
+        try (AutoLock ignored = session.lock()) {
             if (!session.isValid()) {
                 return;
             }
@@ -425,7 +425,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
         if (session == null) {
             return;
         }
-        try (Lock ignored = session.lock()) {
+        try (AutoLock ignored = session.lock()) {
             String oldId = session.getId();
             session.checkValidForWrite(); // can't change id on invalid session
             session.getSessionData().setId(newId);
@@ -491,7 +491,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
         if (logger.isTraceEnabled()) {
             logger.trace("Checking for idle " +  session.getId());
         }
-        try (Lock ignored = session.lock()) {
+        try (AutoLock ignored = session.lock()) {
             if (getEvictionIdleSecs() > 0 && session.isIdleLongerThan(getEvictionIdleSecs()) &&
                     session.isValid() && session.isResident() && session.getRequests() <= 0) {
                 // Be careful with saveOnInactiveEviction - you may be able to re-animate a session that was

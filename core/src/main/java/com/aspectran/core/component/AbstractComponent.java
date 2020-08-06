@@ -17,6 +17,7 @@ package com.aspectran.core.component;
 
 import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
+import com.aspectran.core.util.thread.AutoLock;
 
 /**
  * Abstract Implementation of {@link Component}.
@@ -27,7 +28,7 @@ public abstract class AbstractComponent implements Component {
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractComponent.class);
 
-    private final Object lock = new Object();
+    private final AutoLock lock = new AutoLock();
 
     private volatile boolean initialized;
 
@@ -41,7 +42,7 @@ public abstract class AbstractComponent implements Component {
 
     @Override
     public void initialize() throws Exception {
-        synchronized (lock) {
+        try (AutoLock ignored = lock.lock()) {
             if (destroyed) {
                 throw new IllegalStateException("Already destroyed " + getComponentName());
             }
@@ -50,16 +51,17 @@ public abstract class AbstractComponent implements Component {
             }
 
             doInitialize();
-
-            logger.debug("Initialized " + getComponentName());
-
             initialized = true;
+
+            if (logger.isDebugEnabled()) {
+                logger.debug("Initialized " + getComponentName());
+            }
         }
     }
 
     @Override
     public void destroy() {
-        synchronized (lock) {
+        try (AutoLock ignored = lock.lock()) {
             if (!initialized) {
                 throw new IllegalStateException("Not yet initialized " + getComponentName());
             }
@@ -70,7 +72,9 @@ public abstract class AbstractComponent implements Component {
             try {
                 destroying = true;
                 doDestroy();
-                logger.debug("Destroyed " + getComponentName());
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Destroyed " + getComponentName());
+                }
             } catch (Exception e) {
                 logger.warn("Failed to destroy " + getComponentName(), e);
             } finally {

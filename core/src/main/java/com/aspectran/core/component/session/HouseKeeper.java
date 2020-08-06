@@ -16,8 +16,10 @@
 package com.aspectran.core.component.session;
 
 import com.aspectran.core.util.ToStringBuilder;
+import com.aspectran.core.util.lifecycle.AbstractLifeCycle;
 import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
+import com.aspectran.core.util.thread.AutoLock;
 import com.aspectran.core.util.thread.Scheduler;
 
 import java.util.concurrent.TimeUnit;
@@ -26,9 +28,13 @@ import java.util.concurrent.TimeUnit;
  * The housekeeper for session scavenging.
  * There is 1 session HouseKeeper per SessionManager instance.
  */
-public class HouseKeeper {
+public class HouseKeeper extends AbstractLifeCycle {
 
     private static final Logger logger = LoggerFactory.getLogger(HouseKeeper.class);
+
+    public static final long DEFAULT_SCAVENGING_INTERVAL_MS = 1000L * 60 * 10;
+
+    private final AutoLock lock = new AutoLock();
 
     private final SessionHandler sessionHandler;
 
@@ -39,7 +45,7 @@ public class HouseKeeper {
     private Runner runner;
 
     /** 10 minute default */
-    private long scavengingInterval = 1000L * 60 * 10;
+    private long scavengingInterval = DEFAULT_SCAVENGING_INTERVAL_MS;
 
     /**
      * @param sessionHandler SessionHandler associated with this scavenger
@@ -64,29 +70,32 @@ public class HouseKeeper {
      * @param intervalInSecs the interval (in seconds)
      */
     public void setScavengingInterval(int intervalInSecs) {
-        scavengingInterval = intervalInSecs * 1000L;
-    }
-
-    public boolean isScavengable() {
-        return (scavengingInterval > 0L);
-    }
-
-    public void startScavenging() {
-        startScavenging(getScavengingInterval());
+        try (AutoLock ignored = lock.lock()) {
+            if (isStarted() || isStarting()) {
+                if (intervalInSecs <= 0) {
+                    scavengingInterval = 0L;
+                    logger.info("Scavenging disabled");
+                    stopScavenging();
+                } else {
+                    if (intervalInSecs < 10) {
+                        logger.warn("Short interval of " + intervalInSecs + "sec for session scavenging.");
+                    }
+                    scavengingInterval = intervalInSecs * 1000L;
+                    if (isStarting() || isStarted()) {
+                        startScavenging();
+                    }
+                }
+            } else {
+                scavengingInterval = intervalInSecs * 1000L;
+            }
+        }
     }
 
     /**
      * If scavenging is not scheduled, schedule it.
-     *
-     * @param intervalInSecs the interval (in seconds)
      */
-    public void startScavenging(int intervalInSecs) {
-        synchronized (this) {
-            if (intervalInSecs < 10) {
-                logger.warn(sessionHandler.getComponentName() + " Short interval of " + intervalInSecs +
-                        "sec for session scavenging");
-            }
-            setScavengingInterval(intervalInSecs);
+    protected void startScavenging() {
+        try (AutoLock ignored = lock.lock()) {
             // cancel any previous task
             if (task != null) {
                 task.cancel();
@@ -102,15 +111,15 @@ public class HouseKeeper {
     /**
      * If scavenging is scheduled, stop it.
      */
-    public void stopScavenging() {
-        synchronized (this) {
+    protected void stopScavenging() {
+        try (AutoLock ignored = lock.lock()) {
             if (task != null) {
                 task.cancel();
                 logger.info(sessionHandler.getComponentName() + " Stopped scavenging");
             }
             task = null;
+            runner = null;
         }
-        runner = null;
     }
 
     /**
@@ -118,7 +127,7 @@ public class HouseKeeper {
      */
     private void scavenge() {
         // don't attempt to scavenge if we are shutting down
-        if (!scheduler.isRunning()) {
+        if (isStopping() || isStopped()) {
             return;
         }
         try {
@@ -126,6 +135,18 @@ public class HouseKeeper {
         } catch (Exception e) {
             logger.warn(e);
         }
+    }
+
+    @Override
+    protected void doStart() throws Exception {
+        setScavengingInterval(getScavengingInterval());
+        super.doStart();
+    }
+
+    @Override
+    protected void doStop() throws Exception {
+        stopScavenging();
+        super.doStop();
     }
 
     @Override
@@ -145,8 +166,10 @@ public class HouseKeeper {
             try {
                 scavenge();
             } finally {
-                if (scheduler != null && scheduler.isRunning()) {
-                    task = scheduler.schedule(this, scavengingInterval, TimeUnit.MILLISECONDS);
+                try (AutoLock ignored = lock.lock()) {
+                    if (scheduler != null && scheduler.isRunning()) {
+                        task = scheduler.schedule(this, scavengingInterval, TimeUnit.MILLISECONDS);
+                    }
                 }
             }
         }
