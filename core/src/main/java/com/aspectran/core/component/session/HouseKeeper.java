@@ -78,7 +78,7 @@ public class HouseKeeper extends AbstractLifeCycle {
                     stopScavenging();
                 } else {
                     if (intervalInSecs < 10) {
-                        logger.warn("Short interval of " + intervalInSecs + "sec for session scavenging.");
+                        logger.warn("Short interval of " + intervalInSecs + " secs for session scavenging");
                     }
                     scavengingInterval = intervalInSecs * 1000L;
                     if (isStarting() || isStarted()) {

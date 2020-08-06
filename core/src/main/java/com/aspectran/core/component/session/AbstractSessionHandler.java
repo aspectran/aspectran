@@ -422,14 +422,14 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
     protected void doInitialize() throws Exception {
         scheduler.start();
         if (houseKeeper != null) {
-            houseKeeper.startScavenging();
+            houseKeeper.start();
         }
     }
 
     @Override
     protected void doDestroy() throws Exception {
         if (houseKeeper != null) {
-            houseKeeper.stopScavenging();
+            houseKeeper.stop();
         }
         scheduler.stop();
         sessionCache.destroy();

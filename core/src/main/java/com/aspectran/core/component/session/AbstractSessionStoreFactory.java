@@ -19,6 +19,8 @@ import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.component.bean.aware.ApplicationAdapterAware;
 
 /**
+ * Abstract Implementation for SessionStoreFactory.
+ *
  * <p>Created: 2019/12/07</p>
  */
 public abstract class AbstractSessionStoreFactory implements SessionStoreFactory, ApplicationAdapterAware {
