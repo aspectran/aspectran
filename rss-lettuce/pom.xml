@@ -32,7 +32,7 @@
     <properties>
         <main.basedir>${project.parent.basedir}</main.basedir>
         <java.module.name>com.aspectran.core.component.session.redis.lettuce</java.module.name>
-        <lettuce.version>5.3.2.RELEASE</lettuce.version>
+        <lettuce.version>5.3.3.RELEASE</lettuce.version>
     </properties>
 
     <dependencies>
