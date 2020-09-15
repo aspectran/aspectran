@@ -96,7 +96,7 @@ public class EncodingHandlerWrapper implements HandlerWrapper {
     private Predicate[] getCompressionPredicates() {
         List<Predicate> predicates = new ArrayList<>();
         if (maxContentSize > 0L) {
-            predicates.add(Predicates.maxContentSize(maxContentSize));
+            predicates.add(Predicates.requestLargerThan(maxContentSize));
         }
         if (mediaTypes != null && mediaTypes.length > 0) {
             predicates.add(new CompressibleMimeTypePredicate(mediaTypes));
