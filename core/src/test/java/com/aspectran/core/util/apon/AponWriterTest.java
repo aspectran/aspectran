@@ -109,9 +109,10 @@ class AponWriterTest {
     @Test
     void stringWithNewlinesWriteTest() throws IOException {
         String input = "1\n2\n3";
+        input = input.replace("\n", AponFormat.NEW_LINE);
 
         Parameters parameters = new VariableParameters();
-        parameters.putValue("param1", input);
+        parameters.putValue("textParam", input);
 
         AponWriter writer = new AponWriter();
         writer.write(parameters);
@@ -119,7 +120,7 @@ class AponWriterTest {
         AponReader reader = new AponReader(writer.toString());
         Parameters output = reader.read();
 
-        assertEquals(input, output.getString("param1"));
+        assertEquals(input, output.getString("textParam"));
     }
 
 }
