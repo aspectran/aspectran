@@ -18,12 +18,8 @@ package com.aspectran.demo;
 import com.aspectran.core.context.env.EnvironmentProfiles;
 import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.daemon.DefaultDaemon;
-import com.aspectran.shell.AspectranShell;
-import com.aspectran.shell.console.Console;
-import com.aspectran.shell.jline.console.JLineConsole;
 
 import java.io.File;
-import java.io.IOException;
 
 import static com.aspectran.core.context.config.AspectranConfig.BASE_PATH_PROPERTY_NAME;
 
