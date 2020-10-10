@@ -103,8 +103,18 @@ public class TimeLimitedPBTokenIssuer extends PBTokenIssuer {
         return tokenIssuer.createToken();
     }
 
+    public static String getToken(long expirationTime) {
+        TimeLimitedPBTokenIssuer tokenIssuer = new TimeLimitedPBTokenIssuer(expirationTime);
+        return tokenIssuer.createToken();
+    }
+
     public static String getToken(Parameters payload) {
         TimeLimitedPBTokenIssuer tokenIssuer = new TimeLimitedPBTokenIssuer();
+        return tokenIssuer.createToken(payload);
+    }
+
+    public static String getToken(Parameters payload, long expirationTime) {
+        TimeLimitedPBTokenIssuer tokenIssuer = new TimeLimitedPBTokenIssuer(expirationTime);
         return tokenIssuer.createToken(payload);
     }
 
@@ -115,12 +125,12 @@ public class TimeLimitedPBTokenIssuer extends PBTokenIssuer {
 
     public static <T extends Parameters> T getPayload(String token, Class<T> payloadType)
             throws InvalidPBTokenException {
-        TimeLimitedPBTokenIssuer tokenIssuer = new TimeLimitedPBTokenIssuer();
+        TimeLimitedPBTokenIssuer tokenIssuer = new TimeLimitedPBTokenIssuer(0L);
         return tokenIssuer.parseToken(token, payloadType);
     }
 
     public static void validate(String token) throws InvalidPBTokenException {
-        TimeLimitedPBTokenIssuer tokenIssuer = new TimeLimitedPBTokenIssuer();
+        TimeLimitedPBTokenIssuer tokenIssuer = new TimeLimitedPBTokenIssuer(0L);
         tokenIssuer.parseToken(token, null);
     }
 
