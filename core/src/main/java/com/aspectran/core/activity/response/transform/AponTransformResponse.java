@@ -32,7 +32,7 @@ import java.io.IOException;
 import java.io.Writer;
 
 /**
- * Response to transform into APON.
+ * APON Transform Response converts the response data to APON and outputs it.
  * 
  * Created: 2008. 03. 22 PM 5:51:58
  */

@@ -30,7 +30,7 @@ import com.aspectran.core.util.logging.LoggerFactory;
 import java.io.Writer;
 
 /**
- * Response to transform to plain text.
+ * Text Transform Response converts the response data to plain text and outputs it.
  * 
  * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */

@@ -48,7 +48,7 @@ import java.util.Objects;
 import java.util.Properties;
 
 /**
- * Response to transform into XSL.
+ * XSL Transform Response converts the response data to XML and applies XSLT transformation to it.
  * 
  * Created: 2008. 03. 22 PM 5:51:58
  */

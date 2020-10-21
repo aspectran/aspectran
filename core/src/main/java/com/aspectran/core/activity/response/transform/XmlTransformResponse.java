@@ -37,7 +37,7 @@ import javax.xml.transform.stream.StreamResult;
 import java.io.Writer;
 
 /**
- * Response to transform into XML.
+ * XML Transform Response converts the response data to XML and outputs it.
  * 
  * Created: 2008. 03. 22 PM 5:51:58
  */
