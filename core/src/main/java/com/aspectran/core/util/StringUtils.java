@@ -34,8 +34,37 @@ public class StringUtils {
     private static final String[] EMPTY_STRING_ARRAY = {};
 
     /**
-     * Check that the given {@code CharSequence} is neither {@code null} nor
-     * of length 0.
+     * Returns {@code true} if the given string is null or is the empty string.
+     *
+     * @param str a string reference to check
+     * @return {@code true} if the string is null or is the empty string
+     */
+    public static boolean isEmpty(String str) {
+        return (str == null || str.isEmpty());
+    }
+
+    /**
+     * Returns the given string if it is non-null; the empty string otherwise.
+     *
+     * @param str the string to test and possibly return
+     * @return {@code string} itself if it is non-null; {@code ""} if it is null
+     */
+    public static String nullToEmpty(String str) {
+        return (str != null ? str : EMPTY);
+    }
+
+    /**
+     * Returns the given string if it is nonempty; {@code null} otherwise.
+     *
+     * @param str the string to test and possibly return
+     * @return {@code string} itself if it is nonempty; {@code null} if it is empty or null
+     */
+    public static String emptyToNull(String str) {
+        return (str == null || str.isEmpty() ? null : str);
+    }
+
+    /**
+     * Check that the given {@code CharSequence} is neither {@code null} nor of length 0.
      * <p>Note: this method returns {@code true} for a {@code CharSequence}
      * that purely consists of whitespace.</p>
      * <pre>
@@ -47,7 +76,8 @@ public class StringUtils {
      *
      * @param chars the {@code CharSequence} to check (may be {@code null})
      * @return {@code true} if the {@code CharSequence} is not {@code null} and has length
-     * @see #hasText(String)
+     * @see #hasLength(String)
+     * @see #hasText(CharSequence)
      */
     public static boolean hasLength(CharSequence chars) {
         return (chars != null && chars.length() > 0);
@@ -64,7 +94,7 @@ public class StringUtils {
      * @see #hasText(String)
      */
     public static boolean hasLength(String str) {
-        return hasLength((CharSequence)str);
+        return (str != null && !str.isEmpty());
     }
 
     /**
@@ -83,19 +113,12 @@ public class StringUtils {
      * @param str the {@code CharSequence} to check (may be {@code null})
      * @return {@code true} if the {@code CharSequence} is not {@code null},
      *      its length is greater than 0, and it does not contain whitespace only
+     * @see #hasLength(String)
+     * @see #hasText(CharSequence)
      * @see Character#isWhitespace
      */
     public static boolean hasText(CharSequence str) {
-        if (!hasLength(str)) {
-            return false;
-        }
-        int strLen = str.length();
-        for (int i = 0; i < strLen; i++) {
-            if (!Character.isWhitespace(str.charAt(i))) {
-                return true;
-            }
-        }
-        return false;
+        return (str != null && str.length() > 0 && containsText(str));
     }
 
     /**
@@ -108,9 +131,21 @@ public class StringUtils {
      * @return {@code true} if the {@code String} is not {@code null}, its
      *      length is greater than 0, and it does not contain whitespace only
      * @see #hasText(CharSequence)
+     * @see #hasLength(String)
+     * @see Character#isWhitespace
      */
     public static boolean hasText(String str) {
-        return hasText((CharSequence)str);
+        return (str != null && !str.isEmpty() && containsText(str));
+    }
+
+    private static boolean containsText(CharSequence str) {
+        int strLen = str.length();
+        for (int i = 0; i < strLen; i++) {
+            if (!Character.isWhitespace(str.charAt(i))) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -292,36 +327,6 @@ public class StringUtils {
         return (str != null && suffix != null && str.length() >= suffix.length() &&
                 str.regionMatches(true, str.length() - suffix.length(),
                         suffix, 0, suffix.length()));
-    }
-
-    /**
-     * Returns {@code true} if the given string is null or is the empty string.
-     *
-     * @param str a string reference to check
-     * @return {@code true} if the string is null or is the empty string
-     */
-    public static boolean isEmpty(String str) {
-        return (str == null || str.length() == 0);
-    }
-
-    /**
-     * Returns the given string if it is non-null; the empty string otherwise.
-     *
-     * @param str the string to test and possibly return
-     * @return {@code string} itself if it is non-null; {@code ""} if it is null
-     */
-    public static String nullToEmpty(String str) {
-      return (str != null ? str : EMPTY);
-    }
-
-    /**
-     * Returns the given string if it is nonempty; {@code null} otherwise.
-     *
-     * @param str the string to test and possibly return
-     * @return {@code string} itself if it is nonempty; {@code null} if it is empty or null
-     */
-    public static String emptyToNull(String str) {
-        return (str == null || str.length() == 0 ? null : str);
     }
 
     /**
