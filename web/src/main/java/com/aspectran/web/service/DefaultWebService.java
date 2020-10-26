@@ -94,7 +94,7 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
         }
         if (!isExposable(requestUri)) {
             try {
-                if (!defaultServletHttpRequestHandler.handle(request, response)) {
+                if (!defaultServletHttpRequestHandler.handleRequest(request, response)) {
                     response.sendError(HttpServletResponse.SC_NOT_FOUND);
                 }
             } catch (Exception e) {
@@ -147,16 +147,15 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
                 }
             }
 
-            if (logger.isDebugEnabled()) {
-                logger.debug("No translet mapped for request URI [" + requestUri + "]");
-            }
-
             try {
-                if (!defaultServletHttpRequestHandler.handle(request, response)) {
+                if (!defaultServletHttpRequestHandler.handleRequest(request, response)) {
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("No translet mapped for request URI [" + requestUri + "]");
+                    }
                     response.sendError(HttpServletResponse.SC_NOT_FOUND);
                 }
             } catch (Exception e2) {
-                logger.error(e2.getMessage(), e2);
+                logger.error(e2);
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             }
         } catch (ActivityTerminatedException e) {
@@ -211,7 +210,8 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
         servletContext.setAttribute(ROOT_WEB_SERVICE_ATTR_NAME, service);
 
         if (logger.isDebugEnabled()) {
-            logger.debug("The Root WebService attribute in ServletContext has been created; " + ROOT_WEB_SERVICE_ATTR_NAME + ": " + service);
+            logger.debug("The Root WebService attribute in ServletContext has been created; " +
+                    ROOT_WEB_SERVICE_ATTR_NAME + ": " + service);
         }
 
         WebServiceHolder.putWebService(service);

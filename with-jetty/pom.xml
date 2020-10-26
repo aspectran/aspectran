@@ -32,7 +32,7 @@
     <properties>
         <main.basedir>${project.parent.basedir}</main.basedir>
         <java.module.name>com.aspectran.jetty</java.module.name>
-        <jetty.version>9.4.33.v20201020</jetty.version>
+        <jetty.version>9.4.32.v20200930</jetty.version>
     </properties>
 
     <dependencies>

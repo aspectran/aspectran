@@ -98,7 +98,7 @@ public class DefaultServletHttpRequestHandler {
         } else {
             if (logger.isDebugEnabled()) {
                 logger.debug("Unable to locate the default servlet for serving static content. " +
-                        "Please set the 'web.defaultServletName'.");
+                        "Please set the 'web.defaultServletName' property explicitly.");
             }
         }
     }
@@ -112,7 +112,7 @@ public class DefaultServletHttpRequestHandler {
      * @throws ServletException the servlet exception
      * @throws IOException if an input or output error occurs while the servlet is handling the HTTP request
      */
-    public boolean handle(HttpServletRequest request, HttpServletResponse response)
+    public boolean handleRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         if (defaultServletName != null) {
             RequestDispatcher rd = servletContext.getNamedDispatcher(defaultServletName);

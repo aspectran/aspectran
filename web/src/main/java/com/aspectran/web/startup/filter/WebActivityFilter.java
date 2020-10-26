@@ -84,7 +84,7 @@ public class WebActivityFilter implements Filter {
             if (bypassPatterns != null) {
                 for (WildcardPattern pattern : bypassPatterns) {
                     if (pattern.matches(httpRequest.getRequestURI())) {
-                        if (defaultServletHttpRequestHandler.handle(httpRequest, (HttpServletResponse)response)) {
+                        if (defaultServletHttpRequestHandler.handleRequest(httpRequest, (HttpServletResponse)response)) {
                             return;
                         }
                     }
