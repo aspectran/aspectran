@@ -21,7 +21,7 @@ set ASPECTRAN_CONFIG=%BASE_DIR%\config\aspectran-config.apon
     -Dlogback.configurationFile="%LOGGING_CONFIG%" ^
     -Daspectran.basePath="%BASE_DIR%" ^
     %ASPECTRAN_OPTS% ^
-    com.aspectran.shell.AspectranShell ^
+    com.aspectran.shell.jline.JLineAspectranShell ^
     "%ASPECTRAN_CONFIG%"
 goto end
 
