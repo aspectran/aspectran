@@ -37,6 +37,11 @@ else
 fi
 while [ ".$1" != . ]; do
   case "$1" in
+  --raw-mode)
+    ASPECTRAN_SHELL_CLASS="com.aspectran.shell.AspectranShell"
+    shift
+    continue
+    ;;
   --debug)
     LOGGING_CONFIG="$BASE_DIR/config/logback-debug.xml"
     shift
@@ -55,6 +60,9 @@ if [ -z "$LOGGING_CONFIG" ] || [ ! -f "$LOGGING_CONFIG" ]; then
   LOGGING_CONFIG="$BASE_DIR/config/logback.xml"
 fi
 TMP_DIR="$BASE_DIR/temp"
+if [ -z "$ASPECTRAN_SHELL_CLASS" ]; then
+  ASPECTRAN_SHELL_CLASS="com.aspectran.shell.jline.JLineAspectranShell"
+fi
 ASPECTRAN_CONFIG="$BASE_DIR/config/aspectran-config.apon"
 
 "$JAVA_BIN" \
@@ -66,5 +74,5 @@ ASPECTRAN_CONFIG="$BASE_DIR/config/aspectran-config.apon"
   -Dlogback.configurationFile="$LOGGING_CONFIG" \
   -Daspectran.basePath="$BASE_DIR" \
   $ASPECTRAN_OPTS \
-  com.aspectran.shell.jline.JLineAspectranShell \
+  $ASPECTRAN_SHELL_CLASS \
   "$ASPECTRAN_CONFIG"
