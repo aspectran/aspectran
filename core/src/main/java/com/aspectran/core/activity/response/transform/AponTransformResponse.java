@@ -19,14 +19,11 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.FormattingContext;
 import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.activity.response.Response;
-import com.aspectran.core.activity.response.ResponseException;
 import com.aspectran.core.activity.response.transform.apon.ContentsToAponConverter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.util.apon.AponWriter;
 import com.aspectran.core.util.apon.Parameters;
-import com.aspectran.core.util.logging.Logger;
-import com.aspectran.core.util.logging.LoggerFactory;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -37,8 +34,6 @@ import java.io.Writer;
  * Created: 2008. 03. 22 PM 5:51:58
  */
 public class AponTransformResponse extends TransformResponse {
-
-    private static final Logger logger = LoggerFactory.getLogger(AponTransformResponse.class);
 
     private final String contentType;
 
@@ -60,41 +55,30 @@ public class AponTransformResponse extends TransformResponse {
     }
 
     @Override
-    public void commit(Activity activity) throws ResponseException {
+    public void transform(Activity activity) throws Exception {
         ResponseAdapter responseAdapter = activity.getResponseAdapter();
-        if (responseAdapter == null) {
-            return;
+
+        if (this.encoding != null) {
+            responseAdapter.setEncoding(this.encoding);
+        } else if (responseAdapter.getEncoding() == null) {
+            String encoding = activity.getTranslet().getIntendedResponseEncoding();
+            if (encoding != null) {
+                responseAdapter.setEncoding(encoding);
+            }
+        }
+        if (contentType != null) {
+            responseAdapter.setContentType(contentType);
         }
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("Response " + getTransformRule());
-        }
-
-        try {
-            if (this.encoding != null) {
-                responseAdapter.setEncoding(this.encoding);
-            } else if (responseAdapter.getEncoding() == null) {
-                String encoding = activity.getTranslet().getIntendedResponseEncoding();
-                if (encoding != null) {
-                    responseAdapter.setEncoding(encoding);
-                }
-            }
-            if (contentType != null) {
-                responseAdapter.setContentType(contentType);
+        ProcessResult processResult = activity.getProcessResult();
+        if (processResult != null && !processResult.isEmpty()) {
+            FormattingContext formattingContext = FormattingContext.parse(activity);
+            if (pretty != null) {
+                formattingContext.setPretty(pretty);
             }
 
-            ProcessResult processResult = activity.getProcessResult();
-            if (processResult != null && !processResult.isEmpty()) {
-                FormattingContext formattingContext = FormattingContext.parse(activity);
-                if (pretty != null) {
-                    formattingContext.setPretty(pretty);
-                }
-
-                Writer writer = responseAdapter.getWriter();
-                transform(processResult, writer, formattingContext);
-            }
-        } catch (Exception e) {
-            throw new TransformResponseException(getTransformRule(), e);
+            Writer writer = responseAdapter.getWriter();
+            transform(processResult, writer, formattingContext);
         }
     }
 

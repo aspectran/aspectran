@@ -17,11 +17,7 @@ package com.aspectran.core.activity.response.transform;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.response.Response;
-import com.aspectran.core.activity.response.ResponseException;
-import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.rule.TransformRule;
-import com.aspectran.core.util.logging.Logger;
-import com.aspectran.core.util.logging.LoggerFactory;
 
 /**
  * The Class NoneTransformResponse.
@@ -29,8 +25,6 @@ import com.aspectran.core.util.logging.LoggerFactory;
  * <p>Created: 2018. 09. 11 PM 10:54:58</p>
  */
 public class NoneTransformResponse extends TransformResponse {
-
-    private static final Logger logger = LoggerFactory.getLogger(NoneTransformResponse.class);
 
     /**
      * Instantiates a new NoneTransformResponse.
@@ -42,18 +36,9 @@ public class NoneTransformResponse extends TransformResponse {
     }
 
     @Override
-    public void commit(Activity activity) throws ResponseException {
-        ResponseAdapter responseAdapter = activity.getResponseAdapter();
-        if (responseAdapter == null) {
-            return;
-        }
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("Response " + getTransformRule());
-        }
-
+    protected void transform(Activity activity) throws Exception {
         if (getContentType() != null) {
-            responseAdapter.setContentType(getContentType());
+            activity.getResponseAdapter().setContentType(getContentType());
         }
     }
 

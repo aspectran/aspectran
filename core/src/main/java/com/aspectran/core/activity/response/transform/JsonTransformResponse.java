@@ -19,12 +19,9 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.FormattingContext;
 import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.activity.response.Response;
-import com.aspectran.core.activity.response.ResponseException;
 import com.aspectran.core.activity.response.transform.json.ContentsJsonWriter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.rule.TransformRule;
-import com.aspectran.core.util.logging.Logger;
-import com.aspectran.core.util.logging.LoggerFactory;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -35,8 +32,6 @@ import java.io.Writer;
  * Created: 2008. 03. 22 PM 5:51:58
  */
 public class JsonTransformResponse extends TransformResponse {
-
-    private static final Logger logger = LoggerFactory.getLogger(JsonTransformResponse.class);
 
     public static final String CALLBACK_PARAM_NAME = "callback";
 
@@ -64,45 +59,34 @@ public class JsonTransformResponse extends TransformResponse {
     }
 
     @Override
-    public void commit(Activity activity) throws ResponseException {
+    protected void transform(Activity activity) throws Exception {
         ResponseAdapter responseAdapter = activity.getResponseAdapter();
-        if (responseAdapter == null) {
-            return;
+
+        if (this.encoding != null) {
+            responseAdapter.setEncoding(this.encoding);
+        } else if (responseAdapter.getEncoding() == null) {
+            String encoding = activity.getTranslet().getIntendedResponseEncoding();
+            if (encoding != null) {
+                responseAdapter.setEncoding(encoding);
+            }
         }
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("Response " + getTransformRule());
+        if (contentType != null) {
+            responseAdapter.setContentType(contentType);
         }
 
-        try {
-            if (this.encoding != null) {
-                responseAdapter.setEncoding(this.encoding);
-            } else if (responseAdapter.getEncoding() == null) {
-                String encoding = activity.getTranslet().getIntendedResponseEncoding();
-                if (encoding != null) {
-                    responseAdapter.setEncoding(encoding);
-                }
-            }
+        Writer writer = responseAdapter.getWriter();
+        ProcessResult processResult = activity.getProcessResult();
 
-            if (contentType != null) {
-                responseAdapter.setContentType(contentType);
-            }
-
-            Writer writer = responseAdapter.getWriter();
-            ProcessResult processResult = activity.getProcessResult();
-
-            FormattingContext formattingContext = FormattingContext.parse(activity);
-            if (pretty != null) {
-                formattingContext.setPretty(pretty);
-            }
-
-            // support for jsonp
-            String callback = activity.getTranslet().getParameter(CALLBACK_PARAM_NAME);
-
-            transform(processResult, callback, writer, formattingContext);
-        } catch (Exception e) {
-            throw new TransformResponseException(getTransformRule(), e);
+        FormattingContext formattingContext = FormattingContext.parse(activity);
+        if (pretty != null) {
+            formattingContext.setPretty(pretty);
         }
+
+        // support for jsonp
+        String callback = activity.getTranslet().getParameter(CALLBACK_PARAM_NAME);
+
+        transform(processResult, callback, writer, formattingContext);
     }
 
     @Override

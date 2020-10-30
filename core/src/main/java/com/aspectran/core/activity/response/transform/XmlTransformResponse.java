@@ -19,13 +19,10 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.FormattingContext;
 import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.activity.response.Response;
-import com.aspectran.core.activity.response.ResponseException;
 import com.aspectran.core.activity.response.transform.xml.ContentsInputSource;
 import com.aspectran.core.activity.response.transform.xml.ContentsXMLReader;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.rule.TransformRule;
-import com.aspectran.core.util.logging.Logger;
-import com.aspectran.core.util.logging.LoggerFactory;
 
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Source;
@@ -42,8 +39,6 @@ import java.io.Writer;
  * Created: 2008. 03. 22 PM 5:51:58
  */
 public class XmlTransformResponse extends TransformResponse {
-
-    private static final Logger logger = LoggerFactory.getLogger(XmlTransformResponse.class);
 
     private static final String OUTPUT_METHOD_XML = "xml";
 
@@ -73,46 +68,35 @@ public class XmlTransformResponse extends TransformResponse {
     }
 
     @Override
-    public void commit(Activity activity) throws ResponseException {
+    protected void transform(Activity activity) throws Exception {
         ResponseAdapter responseAdapter = activity.getResponseAdapter();
-        if (responseAdapter == null) {
-            return;
+
+        String encoding;
+        if (this.encoding != null) {
+            encoding = this.encoding;
+        } else {
+            encoding = responseAdapter.getEncoding();
+            if (encoding == null) {
+                encoding = activity.getTranslet().getIntendedResponseEncoding();
+            }
+        }
+        if (encoding != null) {
+            responseAdapter.setEncoding(encoding);
         }
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("Response " + getTransformRule());
+        if (contentType != null) {
+            responseAdapter.setContentType(contentType);
         }
 
-        try {
-            String encoding;
-            if (this.encoding != null) {
-                encoding = this.encoding;
-            } else {
-                encoding = responseAdapter.getEncoding();
-                if (encoding == null) {
-                    encoding = activity.getTranslet().getIntendedResponseEncoding();
-                }
-            }
-            if (encoding != null) {
-                responseAdapter.setEncoding(encoding);
-            }
+        ProcessResult processResult = activity.getProcessResult();
+        Writer writer = responseAdapter.getWriter();
 
-            if (contentType != null) {
-                responseAdapter.setContentType(contentType);
-            }
-
-            ProcessResult processResult = activity.getProcessResult();
-            Writer writer = responseAdapter.getWriter();
-
-            FormattingContext formattingContext = FormattingContext.parse(activity);
-            if (pretty != null) {
-                formattingContext.setPretty(pretty);
-            }
-
-            transform(processResult, writer, encoding, formattingContext);
-        } catch (Exception e) {
-            throw new TransformResponseException(getTransformRule(), e);
+        FormattingContext formattingContext = FormattingContext.parse(activity);
+        if (pretty != null) {
+            formattingContext.setPretty(pretty);
         }
+
+        transform(processResult, writer, encoding, formattingContext);
     }
 
     @Override

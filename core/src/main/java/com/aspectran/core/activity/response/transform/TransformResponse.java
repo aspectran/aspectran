@@ -15,10 +15,14 @@
  */
 package com.aspectran.core.activity.response.transform;
 
+import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.response.Response;
+import com.aspectran.core.activity.response.ResponseException;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.context.rule.type.FormatType;
 import com.aspectran.core.context.rule.type.ResponseType;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 
 /**
  * The Class TransformResponse.
@@ -26,6 +30,8 @@ import com.aspectran.core.context.rule.type.ResponseType;
  * Created: 2008. 03. 22 PM 5:51:58
  */
 public abstract class TransformResponse implements Response {
+
+    private static final Logger logger = LoggerFactory.getLogger(TransformResponse.class);
 
     private final TransformRule transformRule;
 
@@ -65,6 +71,28 @@ public abstract class TransformResponse implements Response {
     public TransformRule getTransformRule() {
         return transformRule;
     }
+
+    @Override
+    public void commit(Activity activity) throws ResponseException {
+        if (activity.getResponseAdapter() == null) {
+            if (logger.isTraceEnabled()) {
+                logger.trace("No response adapter in activity " + activity);
+            }
+            return;
+        }
+
+        if (logger.isDebugEnabled()) {
+            logger.debug("Response " + transformRule);
+        }
+
+        try {
+            transform(activity);
+        } catch (Exception e) {
+            throw new TransformResponseException(transformRule, e);
+        }
+    }
+
+    abstract protected void transform(Activity activity) throws Exception;
 
     @Override
     public String toString() {

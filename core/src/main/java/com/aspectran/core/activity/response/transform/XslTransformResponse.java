@@ -19,7 +19,6 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.FormattingContext;
 import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.activity.response.Response;
-import com.aspectran.core.activity.response.ResponseException;
 import com.aspectran.core.activity.response.transform.xml.ContentsInputSource;
 import com.aspectran.core.activity.response.transform.xml.ContentsXMLReader;
 import com.aspectran.core.adapter.ApplicationAdapter;
@@ -27,8 +26,6 @@ import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.context.rule.type.ContentType;
-import com.aspectran.core.util.logging.Logger;
-import com.aspectran.core.util.logging.LoggerFactory;
 
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Source;
@@ -53,8 +50,6 @@ import java.util.Properties;
  * Created: 2008. 03. 22 PM 5:51:58
  */
 public class XslTransformResponse extends TransformResponse {
-
-    private static final Logger logger = LoggerFactory.getLogger(XslTransformResponse.class);
 
     private static final String OUTPUT_METHOD_XML = "xml";
 
@@ -85,46 +80,35 @@ public class XslTransformResponse extends TransformResponse {
     }
 
     @Override
-    public void commit(Activity activity) throws ResponseException {
+    protected void transform(Activity activity) throws Exception {
         ResponseAdapter responseAdapter = activity.getResponseAdapter();
-        if (responseAdapter == null) {
-            return;
+
+        loadTemplate(activity.getApplicationAdapter());
+
+        if (outputEncoding != null) {
+            responseAdapter.setEncoding(outputEncoding);
+        }
+        if (contentType != null) {
+            responseAdapter.setContentType(contentType);
         }
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("Response " + getTransformRule());
+        Writer writer = responseAdapter.getWriter();
+        ProcessResult processResult = activity.getProcessResult();
+
+        ContentsXMLReader xmlReader = new ContentsXMLReader();
+        FormattingContext formattingContext = FormattingContext.parse(activity);
+        if (formattingContext.getDateFormat() != null) {
+            xmlReader.setDateFormat(formattingContext.getDateFormat());
+        }
+        if (formattingContext.getDateTimeFormat() != null) {
+            xmlReader.setDateTimeFormat(formattingContext.getDateTimeFormat());
         }
 
-        try {
-            loadTemplate(activity.getApplicationAdapter());
+        ContentsInputSource inputSource = new ContentsInputSource(processResult);
+        Source source = new SAXSource(xmlReader, inputSource);
 
-            if (outputEncoding != null) {
-                responseAdapter.setEncoding(outputEncoding);
-            }
-            if (contentType != null) {
-                responseAdapter.setContentType(contentType);
-            }
-
-            Writer writer = responseAdapter.getWriter();
-            ProcessResult processResult = activity.getProcessResult();
-
-            ContentsXMLReader xmlReader = new ContentsXMLReader();
-            FormattingContext formattingContext = FormattingContext.parse(activity);
-            if (formattingContext.getDateFormat() != null) {
-                xmlReader.setDateFormat(formattingContext.getDateFormat());
-            }
-            if (formattingContext.getDateTimeFormat() != null) {
-                xmlReader.setDateTimeFormat(formattingContext.getDateTimeFormat());
-            }
-
-            ContentsInputSource inputSource = new ContentsInputSource(processResult);
-            Source source = new SAXSource(xmlReader, inputSource);
-
-            Transformer transformer = templates.newTransformer();
-            transformer.transform(source, new StreamResult(writer));
-        } catch (Exception e) {
-            throw new TransformResponseException(getTransformRule(), e);
-        }
+        Transformer transformer = templates.newTransformer();
+        transformer.transform(source, new StreamResult(writer));
     }
 
     @Override

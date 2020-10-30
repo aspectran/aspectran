@@ -20,12 +20,9 @@ import com.aspectran.core.activity.process.result.ActionResult;
 import com.aspectran.core.activity.process.result.ContentResult;
 import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.activity.response.Response;
-import com.aspectran.core.activity.response.ResponseException;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.TransformRule;
-import com.aspectran.core.util.logging.Logger;
-import com.aspectran.core.util.logging.LoggerFactory;
 
 import java.io.Writer;
 
@@ -35,8 +32,6 @@ import java.io.Writer;
  * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */
 public class TextTransformResponse extends TransformResponse {
-
-    private static final Logger logger = LoggerFactory.getLogger(TextTransformResponse.class);
 
     private final String contentType;
 
@@ -61,54 +56,43 @@ public class TextTransformResponse extends TransformResponse {
     }
 
     @Override
-    public void commit(Activity activity) throws ResponseException {
+    protected void transform(Activity activity) throws Exception {
         ResponseAdapter responseAdapter = activity.getResponseAdapter();
-        if (responseAdapter == null) {
-            return;
+
+        if (this.encoding != null) {
+            responseAdapter.setEncoding(this.encoding);
+        } else if (responseAdapter.getEncoding() == null) {
+            String encoding = activity.getTranslet().getIntendedResponseEncoding();
+            if (encoding != null) {
+                responseAdapter.setEncoding(encoding);
+            }
         }
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("Response " + getTransformRule());
+        if (contentType != null) {
+            responseAdapter.setContentType(contentType);
         }
 
-        try {
-            if (this.encoding != null) {
-                responseAdapter.setEncoding(this.encoding);
-            } else if (responseAdapter.getEncoding() == null) {
-                String encoding = activity.getTranslet().getIntendedResponseEncoding();
-                if (encoding != null) {
-                    responseAdapter.setEncoding(encoding);
-                }
-            }
-
-            if (contentType != null) {
-                responseAdapter.setContentType(contentType);
-            }
-
-            Writer writer = responseAdapter.getWriter();
-            if (templateId != null) {
-                activity.getActivityContext().getTemplateRenderer().render(templateId, activity);
-            } else if (templateRule != null) {
-                activity.getActivityContext().getTemplateRenderer().render(templateRule, activity);
-            } else {
-                ProcessResult processResult = activity.getProcessResult();
-                if (processResult != null) {
-                    int chunks = 0;
-                    for (ContentResult contentResult : processResult) {
-                        for (ActionResult actionResult : contentResult) {
-                            Object resultValue = actionResult.getResultValue();
-                            if (resultValue != null) {
-                                if (chunks++ > 0) {
-                                    writer.write(System.lineSeparator());
-                                }
-                                writer.write(resultValue.toString());
+        Writer writer = responseAdapter.getWriter();
+        if (templateId != null) {
+            activity.getActivityContext().getTemplateRenderer().render(templateId, activity);
+        } else if (templateRule != null) {
+            activity.getActivityContext().getTemplateRenderer().render(templateRule, activity);
+        } else {
+            ProcessResult processResult = activity.getProcessResult();
+            if (processResult != null) {
+                int chunks = 0;
+                for (ContentResult contentResult : processResult) {
+                    for (ActionResult actionResult : contentResult) {
+                        Object resultValue = actionResult.getResultValue();
+                        if (resultValue != null) {
+                            if (chunks++ > 0) {
+                                writer.write(System.lineSeparator());
                             }
+                            writer.write(resultValue.toString());
                         }
                     }
                 }
             }
-        } catch (Exception e) {
-            throw new TransformResponseException(getTransformRule(), e);
         }
     }
 
