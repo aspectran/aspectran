@@ -57,7 +57,7 @@ public abstract class InstantActivitySupport implements ActivityContextAware {
     }
 
     protected Activity getCurrentActivity() {
-        return getActivityContext().getAvailableActivity();
+        return getActivityContext().getCurrentActivity();
     }
 
     protected boolean hasCurrentActivity() {
