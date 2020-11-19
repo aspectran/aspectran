@@ -100,9 +100,10 @@ public abstract class InstantActivitySupport implements ActivityContextAware {
         if (StringUtils.isEmpty(transletName)) {
             throw new IllegalArgumentException("transletName must not be null or empty");
         }
-        Translet translet = getCurrentActivity().getTranslet();
+        Activity currentActivity = getCurrentActivity();
+        Translet translet = currentActivity.getTranslet();
         if (translet == null) {
-            throw new UnsupportedOperationException("No such translet in " + getCurrentActivity());
+            throw new UnsupportedOperationException("No such translet in " + currentActivity);
         }
         try {
             TransletRule transletRule = getActivityContext().getTransletRuleRegistry().getTransletRule(transletName);
@@ -110,9 +111,9 @@ public abstract class InstantActivitySupport implements ActivityContextAware {
                 throw new TransletNotFoundException(transletName, MethodType.GET);
             }
             InstantActivity activity = new InstantActivity(getActivityContext());
-            activity.setSessionAdapter(getCurrentActivity().getSessionAdapter());
-            activity.setRequestAdapter(getCurrentActivity().getRequestAdapter());
-            activity.setResponseAdapter(getCurrentActivity().getResponseAdapter());
+            activity.setSessionAdapter(currentActivity.getSessionAdapter());
+            activity.setRequestAdapter(currentActivity.getRequestAdapter());
+            activity.setResponseAdapter(currentActivity.getResponseAdapter());
             activity.prepare(transletName, transletRule);
             activity.perform();
         } catch (Exception e) {

@@ -68,7 +68,7 @@ public abstract class AbstractActivity implements Activity {
      * @return the current activity
      */
     protected Activity getCurrentActivity() {
-        return context.getAvailableActivity();
+        return context.getCurrentActivity();
     }
 
     /**
@@ -76,11 +76,9 @@ public abstract class AbstractActivity implements Activity {
      */
     protected void saveCurrentActivity() {
         if (context.hasCurrentActivity()) {
-            parentActivity = getCurrentActivity();
-            context.setCurrentActivity(this);
-        } else {
-            context.setCurrentActivity(this);
+            parentActivity = context.getCurrentActivity();
         }
+        context.setCurrentActivity(this);
     }
 
     /**

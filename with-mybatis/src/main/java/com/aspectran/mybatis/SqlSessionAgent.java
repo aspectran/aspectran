@@ -17,6 +17,7 @@ package com.aspectran.mybatis;
 
 import com.aspectran.core.activity.ActivityDataMap;
 import com.aspectran.core.activity.InstantActivitySupport;
+import com.aspectran.core.activity.Translet;
 import com.aspectran.core.component.bean.annotation.AvoidAdvice;
 import org.apache.ibatis.cursor.Cursor;
 import org.apache.ibatis.executor.BatchResult;
@@ -251,7 +252,7 @@ public class SqlSessionAgent extends InstantActivitySupport implements SqlSessio
 
     @AvoidAdvice
     private SqlSessionTxAdvice getSqlSessionTxAdvice() {
-        SqlSessionTxAdvice advice = getCurrentActivity().getAspectAdviceBean(relevantAspectId);
+        SqlSessionTxAdvice advice = getAvailableActivity().getAspectAdviceBean(relevantAspectId);
         if (advice == null) {
             if (getActivityContext().getAspectRuleRegistry().getAspectRule(relevantAspectId) == null) {
                 throw new IllegalArgumentException("Aspect '" + relevantAspectId +
@@ -263,8 +264,9 @@ public class SqlSessionAgent extends InstantActivitySupport implements SqlSessio
     }
 
     private ActivityDataMap getActivityDataMap() {
-        if (getCurrentActivity().getTranslet() != null) {
-            return getCurrentActivity().getTranslet().getActivityDataMap();
+        Translet translet = getAvailableActivity().getTranslet();
+        if (translet != null) {
+            return translet.getActivityDataMap();
         } else {
             return null;
         }

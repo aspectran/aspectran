@@ -54,8 +54,7 @@ public abstract class CurrentActivityAwareTag extends TagSupport implements TryC
             }
             currentActivity = context.getCurrentActivity();
             return doStartTagInternal();
-        }
-        catch (JspException | RuntimeException ex) {
+        } catch (JspException | RuntimeException ex) {
             logger.error(ex.getMessage(), ex);
             throw ex;
         } catch (Exception ex) {
