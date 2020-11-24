@@ -79,14 +79,13 @@ public class ActivityEnvironment implements Environment {
         if (propertyItemRuleMap == null || propertyItemRuleMap.isEmpty()) {
             return null;
         }
-
         ItemRule itemRule = propertyItemRuleMap.get(name);
-        if (itemRule == null) {
+        if (itemRule != null) {
+            ItemEvaluator evaluator = new ItemEvaluation(activity);
+            return evaluator.evaluate(itemRule);
+        } else {
             return null;
         }
-
-        ItemEvaluator evaluator = new ItemEvaluation(activity);
-        return evaluator.evaluate(itemRule);
     }
 
 }
