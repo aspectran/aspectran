@@ -299,7 +299,6 @@ public class FilenameUtils {
 
         int count = 0;
         File destFile = new File(path, newName);
-
         while (destFile.exists()) {
             count++;
             if (ext != null && !ext.isEmpty()) {
@@ -309,7 +308,6 @@ public class FilenameUtils {
             }
             destFile = new File(path, newName);
         }
-
         return (count == 0 ? srcFile : destFile);
     }
 
@@ -330,20 +328,18 @@ public class FilenameUtils {
         String ext = getExtension(path);
         char separator = '_';
 
-        String name1 = Long.toString(System.currentTimeMillis());
-
+        String prefix = Long.toString(System.currentTimeMillis());
         Random rnd = new Random();
-        String name2 = Integer.toString(rnd.nextInt(9999));
+        String suffix = Integer.toString(rnd.nextInt(9999));
 
         String fullName;
         if (ext != null && !ext.isEmpty()) {
-            fullName = name1 + separator + name2 + separator + ext;
+            fullName = prefix + separator + suffix + separator + ext;
         } else {
-            fullName = name1 + separator + name2;
+            fullName = prefix + separator + suffix;
         }
 
         File file2 = new File(getFullPath(path), fullName);
-
         return generateUniqueFile(file2, separator);
     }
 

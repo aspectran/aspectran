@@ -167,6 +167,7 @@ public class CommonsMultipartFileParameter extends FileParameter {
     public void release() {
         if (fileItem != null) {
             fileItem = null;
+            fileSize = 0L;
         }
         releaseSavedFile();
     }
