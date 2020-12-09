@@ -72,7 +72,7 @@ public class RedisMasterReplicaConnectionPool implements ConnectionPool<Stateful
                     } else {
                         connection = MasterReplica.connect(client, codec, Arrays.asList(redisURIs));
                     }
-                    connection.setReadFrom(ReadFrom.MASTER_PREFERRED);
+                    connection.setReadFrom(ReadFrom.UPSTREAM_PREFERRED);
                     return connection;
                 }, poolConfig);
     }
