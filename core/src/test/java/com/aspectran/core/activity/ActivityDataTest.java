@@ -28,11 +28,11 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
- * Testcase for ActivityDataMap.
+ * Testcase for ActivityData.
  *
  * <p>Created: 2017. 12. 4.</p>
  */
-class ActivityDataMapTest {
+class ActivityDataTest {
 
     @Test
     void testEvaluateAsString() throws ActivityContextBuilderException, ActivityPerformException {
@@ -51,18 +51,18 @@ class ActivityDataMapTest {
         InstantActivity activity = new InstantActivity(context);
         activity.setParameterMap(parameterMap);
         activity.setAttributeMap(attributes);
-        ActivityDataMap activityDataMap = activity.perform(() -> {
-            ActivityDataMap activityDataMap2 = new ActivityDataMap(activity);
-            activityDataMap2.put("result1", 1);
-            return activityDataMap2;
+        ActivityData activityData = activity.perform(() -> {
+            ActivityData activityData2 = new ActivityData(activity);
+            activityData2.put("result1", 1);
+            return activityData2;
         });
-        assertEquals("Apple", activityDataMap.getParameterWithoutCache("param1"));
-        assertEquals("Apple", activityDataMap.get("param1"));
-        assertEquals("Tomato", activityDataMap.get("param2"));
-        assertEquals("Strawberry", activityDataMap.getAttributeWithoutCache("attr1"));
-        assertEquals("Strawberry", activityDataMap.get("attr1"));
-        assertEquals("Melon", activityDataMap.get("attr2"));
-        assertEquals(1, activityDataMap.get("result1"));
+        assertEquals("Apple", activityData.getParameterWithoutCache("param1"));
+        assertEquals("Apple", activityData.get("param1"));
+        assertEquals("Tomato", activityData.get("param2"));
+        assertEquals("Strawberry", activityData.getAttributeWithoutCache("attr1"));
+        assertEquals("Strawberry", activityData.get("attr1"));
+        assertEquals("Melon", activityData.get("attr2"));
+        assertEquals(1, activityData.get("result1"));
     }
 
 }

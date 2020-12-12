@@ -15,7 +15,7 @@
  */
 package com.aspectran.mybatis;
 
-import com.aspectran.core.activity.ActivityDataMap;
+import com.aspectran.core.activity.ActivityData;
 import com.aspectran.core.activity.InstantActivitySupport;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.component.bean.annotation.AvoidAdvice;
@@ -53,7 +53,7 @@ public class SqlSessionAgent extends InstantActivitySupport implements SqlSessio
     @Override
     public <T> T selectOne(String statement) {
         if (autoParameters) {
-            return getSqlSession().selectOne(statement, getActivityDataMap());
+            return getSqlSession().selectOne(statement, getActivityData());
         } else {
             return getSqlSession().selectOne(statement);
         }
@@ -67,7 +67,7 @@ public class SqlSessionAgent extends InstantActivitySupport implements SqlSessio
     @Override
     public <E> List<E> selectList(String statement) {
         if (autoParameters) {
-            return getSqlSession().selectList(statement, getActivityDataMap());
+            return getSqlSession().selectList(statement, getActivityData());
         } else {
             return getSqlSession().selectList(statement);
         }
@@ -86,7 +86,7 @@ public class SqlSessionAgent extends InstantActivitySupport implements SqlSessio
     @Override
     public <K, V> Map<K, V> selectMap(String statement, String mapKey) {
         if (autoParameters) {
-            return getSqlSession().selectMap(statement, getActivityDataMap(), mapKey);
+            return getSqlSession().selectMap(statement, getActivityData(), mapKey);
         } else {
             return getSqlSession().selectMap(statement, mapKey);
         }
@@ -105,7 +105,7 @@ public class SqlSessionAgent extends InstantActivitySupport implements SqlSessio
     @Override
     public <T> Cursor<T> selectCursor(String statement) {
         if (autoParameters) {
-            return getSqlSession().selectCursor(statement, getActivityDataMap());
+            return getSqlSession().selectCursor(statement, getActivityData());
         } else {
             return getSqlSession().selectCursor(statement);
         }
@@ -131,7 +131,7 @@ public class SqlSessionAgent extends InstantActivitySupport implements SqlSessio
     @SuppressWarnings("rawtypes")
     public void select(String statement, ResultHandler handler) {
         if (autoParameters) {
-            getSqlSession().select(statement, getActivityDataMap(), handler);
+            getSqlSession().select(statement, getActivityData(), handler);
         } else {
             getSqlSession().select(statement, handler);
         }
@@ -146,7 +146,7 @@ public class SqlSessionAgent extends InstantActivitySupport implements SqlSessio
     @Override
     public int insert(String statement) {
         if (autoParameters) {
-            return getSqlSession().insert(statement, getActivityDataMap());
+            return getSqlSession().insert(statement, getActivityData());
         } else {
             return getSqlSession().insert(statement);
         }
@@ -160,7 +160,7 @@ public class SqlSessionAgent extends InstantActivitySupport implements SqlSessio
     @Override
     public int update(String statement) {
         if (autoParameters) {
-            return getSqlSession().update(statement, getActivityDataMap());
+            return getSqlSession().update(statement, getActivityData());
         } else {
             return getSqlSession().update(statement);
         }
@@ -174,7 +174,7 @@ public class SqlSessionAgent extends InstantActivitySupport implements SqlSessio
     @Override
     public int delete(String statement) {
         if (autoParameters) {
-            return getSqlSession().delete(statement, getActivityDataMap());
+            return getSqlSession().delete(statement, getActivityData());
         } else {
             return getSqlSession().delete(statement);
         }
@@ -263,10 +263,10 @@ public class SqlSessionAgent extends InstantActivitySupport implements SqlSessio
         return advice;
     }
 
-    private ActivityDataMap getActivityDataMap() {
+    private ActivityData getActivityData() {
         Translet translet = getAvailableActivity().getTranslet();
         if (translet != null) {
-            return translet.getActivityDataMap();
+            return translet.getActivityData();
         } else {
             return null;
         }

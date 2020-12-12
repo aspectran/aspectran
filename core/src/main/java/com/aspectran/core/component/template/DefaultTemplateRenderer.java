@@ -16,7 +16,7 @@
 package com.aspectran.core.component.template;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.activity.ActivityDataMap;
+import com.aspectran.core.activity.ActivityData;
 import com.aspectran.core.component.AbstractComponent;
 import com.aspectran.core.component.template.engine.TemplateEngine;
 import com.aspectran.core.context.ActivityContext;
@@ -142,9 +142,9 @@ public class DefaultTemplateRenderer extends AbstractComponent implements Templa
 
                 if (model == null) {
                     if (activity.getTranslet() != null) {
-                        model = activity.getTranslet().getActivityDataMap();
+                        model = activity.getTranslet().getActivityData();
                     } else {
-                        model = new ActivityDataMap(activity);
+                        model = new ActivityData(activity);
                     }
                 }
 

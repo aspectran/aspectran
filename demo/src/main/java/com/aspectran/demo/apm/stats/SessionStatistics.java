@@ -105,9 +105,10 @@ public class SessionStatistics {
     }
 
     public String toJson() throws IOException {
-        JsonWriter jsonWriter = new JsonWriter().prettyPrint(false);
-        jsonWriter.write(this);
-        return jsonWriter.toString();
+        return new JsonWriter()
+                .prettyPrint(false)
+                .write(this)
+                .toString();
     }
 
 }

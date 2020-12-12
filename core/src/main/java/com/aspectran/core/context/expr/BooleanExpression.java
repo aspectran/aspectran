@@ -16,7 +16,7 @@
 package com.aspectran.core.context.expr;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.activity.ActivityDataMap;
+import com.aspectran.core.activity.ActivityData;
 import com.aspectran.core.context.expr.ognl.OgnlSupport;
 import com.aspectran.core.context.rule.ChooseWhenRule;
 import com.aspectran.core.context.rule.IllegalRuleException;
@@ -44,7 +44,7 @@ public class BooleanExpression {
         if (chooseWhenRule.getExpression() == null) {
             return true;
         }
-        ActivityDataMap root = (activity.getTranslet() != null ? activity.getTranslet().getActivityDataMap() : null);
+        ActivityData root = (activity.getTranslet() != null ? activity.getTranslet().getActivityData() : null);
         return OgnlSupport.evaluateAsBoolean(chooseWhenRule.getExpression(), chooseWhenRule.getRepresented(), root);
     }
 

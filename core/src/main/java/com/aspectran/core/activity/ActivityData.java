@@ -38,7 +38,7 @@ import java.util.Set;
  * <p>This class is generally not thread-safe.
  * It is primarily designed for use in a single thread only.</p>
  */
-public class ActivityDataMap extends HashMap<String, Object> {
+public class ActivityData extends HashMap<String, Object> {
 
     /** @serial */
     private static final long serialVersionUID = -4557424414862800204L;
@@ -48,11 +48,11 @@ public class ActivityDataMap extends HashMap<String, Object> {
     private final Activity activity;
 
     /**
-     * Instantiates a new ActivityDataMap.
+     * Instantiates a new ActivityData.
      *
      * @param activity the activity
      */
-    public ActivityDataMap(Activity activity) {
+    public ActivityData(Activity activity) {
         super();
         this.activity = activity;
         refresh();

@@ -168,11 +168,11 @@ public interface Translet {
     void setProcessResult(ProcessResult processResult);
 
     /**
-     * Returns an Activity Data Map containing the activity result data.
+     * Returns an Activity Data containing the activity result data.
      *
-     * @return the activity data map
+     * @return the activity data
      */
-    ActivityDataMap getActivityDataMap();
+    ActivityData getActivityData();
 
     /**
      * Gets the setting value in the translet scope.

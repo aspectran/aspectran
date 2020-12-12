@@ -70,7 +70,7 @@ public class CurrentTransletFactoryBean implements CurrentActivityAware, Factory
 
     @Override
     public void setCurrentActivity(Activity activity) {
-        Assert.state(translet == null, "Current Activity already injected");
+        Assert.state(translet == null, "Current activity already injected");
         translet = activity.getTranslet();
         if (translet != null && attributeName != null) {
             translet.setAttribute(attributeName, translet);

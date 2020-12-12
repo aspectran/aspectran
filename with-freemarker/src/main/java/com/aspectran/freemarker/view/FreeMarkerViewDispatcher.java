@@ -19,7 +19,7 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.response.dispatch.ViewDispatcher;
 import com.aspectran.core.activity.response.dispatch.ViewDispatcherException;
 import com.aspectran.core.adapter.ResponseAdapter;
-import com.aspectran.core.component.template.TemplateDataMap;
+import com.aspectran.core.component.template.TemplateModel;
 import com.aspectran.core.context.rule.DispatchRule;
 import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
@@ -115,7 +115,7 @@ public class FreeMarkerViewDispatcher implements ViewDispatcher {
                 logger.debug("Dispatching to FreeMarker template [" + dispatchName + "]");
             }
 
-            TemplateDataMap model = new TemplateDataMap(activity);
+            TemplateModel model = new TemplateModel(activity);
             Template template = configuration.getTemplate(dispatchName);
             template.process(model, responseAdapter.getWriter());
         } catch (Exception e) {

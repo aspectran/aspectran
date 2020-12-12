@@ -38,7 +38,7 @@ public class HelloAdvice {
     }
 
     public String goodbye(Translet translet) {
-        logger.info("activityDataMap " + translet.getActivityDataMap());
+        logger.info("activityData " + translet.getActivityData());
 
         String msg = "Goodbye!";
 

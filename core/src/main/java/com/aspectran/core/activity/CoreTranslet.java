@@ -55,7 +55,7 @@ public class CoreTranslet extends AbstractTranslet {
 
     private ProcessResult processResult;
 
-    private ActivityDataMap activityDataMap;
+    private ActivityData activityData;
 
     /**
      * Instantiates a new CoreTranslet.
@@ -144,13 +144,13 @@ public class CoreTranslet extends AbstractTranslet {
     }
 
     @Override
-    public ActivityDataMap getActivityDataMap() {
-        if (activityDataMap == null) {
-            activityDataMap = new ActivityDataMap(activity);
+    public ActivityData getActivityData() {
+        if (activityData == null) {
+            activityData = new ActivityData(activity);
         } else {
-            activityDataMap.refresh();
+            activityData.refresh();
         }
-        return activityDataMap;
+        return activityData;
     }
 
     @Override

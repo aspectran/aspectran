@@ -15,7 +15,7 @@
  */
 package com.aspectran.embed.service;
 
-import com.aspectran.core.activity.ActivityDataMap;
+import com.aspectran.core.activity.ActivityData;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.context.builder.ActivityContextBuilder;
@@ -101,9 +101,9 @@ class EmbeddedAspectranTest {
     @Test
     void actionCallTest() {
         Translet translet = aspectran.translate("add-up");
-        ActivityDataMap dataMap = translet.getActivityDataMap();
-        //System.out.println("Result: " + dataMap.get("result"));
-        assertEquals(dataMap.get("result"), 10);
+        ActivityData activityData = translet.getActivityData();
+        //System.out.println("Result: " + activityData.get("result"));
+        assertEquals(activityData.get("result"), 10);
     }
 
     @Test
@@ -120,14 +120,14 @@ class EmbeddedAspectranTest {
         params.setParameter("mode", mode);
 
         Translet translet = aspectran.translate("chooseWhenTest", params);
-        ActivityDataMap dataMap = translet.getActivityDataMap();
+        ActivityData activityData = translet.getActivityData();
         String response = translet.toString();
 
         System.out.println("Mode: " + mode);
-        System.out.println("Action Result: " + dataMap.get(mode));
+        System.out.println("Action Result: " + activityData.get(mode));
         System.out.println("Response: " + response);
 
-        assertEquals(mode, dataMap.get(mode));
+        assertEquals(mode, activityData.get(mode));
         assertEquals("Case 2-2: case2-2, Case 2-4: case2-2".trim(), response.trim());
     }
 

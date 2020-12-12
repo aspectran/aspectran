@@ -16,19 +16,19 @@
 package com.aspectran.core.component.template;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.activity.ActivityDataMap;
+import com.aspectran.core.activity.ActivityData;
 
 import java.util.Locale;
 
 /**
- * The Class TemplateDataMap.
+ * The Class TemplateModel.
  */
-public class TemplateDataMap extends ActivityDataMap {
+public class TemplateModel extends ActivityData {
 
     /** @serial */
     private static final long serialVersionUID = -1414688689441309354L;
 
-    public TemplateDataMap(Activity activity) {
+    public TemplateModel(Activity activity) {
         super(activity);
     }
 

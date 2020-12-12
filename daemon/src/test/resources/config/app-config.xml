@@ -25,7 +25,7 @@
 
     <aspect id="activityDataAccessibility">
         <description>
-            The Activity Data Map of all translets can be referenced as a "data" attribute in View Dispatching.
+            The Activity Data of all translets can be referenced as a "data" attribute in View Dispatching.
         </description>
 
         <advice>
