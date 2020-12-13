@@ -19,6 +19,8 @@ import com.aspectran.core.service.AspectranCoreService;
 import com.aspectran.core.service.CoreService;
 
 /**
+ * Abstract base class for {@code TowService} implementations.
+ *
  * <p>Created: 2019-07-27</p>
  */
 public abstract class AbstractTowService extends AspectranCoreService implements TowService {

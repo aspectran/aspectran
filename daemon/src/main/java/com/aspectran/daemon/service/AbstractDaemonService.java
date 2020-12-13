@@ -27,7 +27,7 @@ import com.aspectran.core.util.Assert;
 import com.aspectran.daemon.adapter.DaemonSessionAdapter;
 
 /**
- * The Class DefaultDaemonService.
+ * Abstract base class for {@code DaemonService} implementations.
  *
  * @since 5.1.0
  */

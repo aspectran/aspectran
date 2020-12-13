@@ -100,6 +100,11 @@ public interface CoreService {
      */
     AspectranConfig getAspectranConfig();
 
+    /**
+     * Returns the scheduler service.
+     *
+     * @return the scheduler service
+     */
     SchedulerService getSchedulerService();
 
 }

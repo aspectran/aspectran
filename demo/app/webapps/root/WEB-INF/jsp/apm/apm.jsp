@@ -2,7 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <div class="grid-x grid-padding-x">
     <div class="cell small-12 large-5 t20">
-        <h3>User Session Statistics</h3>
+        <h3>Session Statistics</h3>
         <div class="panel stats">
             <dl>
                 <dt>Current Active Sessions</dt>
