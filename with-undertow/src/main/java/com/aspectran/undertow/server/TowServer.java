@@ -185,6 +185,7 @@ public class TowServer extends AbstractLifeCycle implements InitializableBean, D
         this.towServletContainer = towServletContainer;
     }
 
+    @Override
     public void doStart() throws Exception {
         try {
             server = builder.build();
@@ -203,6 +204,7 @@ public class TowServer extends AbstractLifeCycle implements InitializableBean, D
         }
     }
 
+    @Override
     public void doStop() {
         try {
             if (server != null) {
@@ -211,7 +213,7 @@ public class TowServer extends AbstractLifeCycle implements InitializableBean, D
                     try {
                         if (shutdownTimeout > 0) {
                             // Wait "30" seconds before make a force shutdown
-                            boolean result = ((GracefulShutdownHandler)handler).awaitShutdown(shutdownTimeout * 1000);
+                            boolean result = ((GracefulShutdownHandler)handler).awaitShutdown(shutdownTimeout * 1000L);
                             if (!result) {
                                 logger.warn("Undertow server did not shut down gracefully within " +
                                         shutdownTimeout + " seconds. Proceeding with forceful shutdown");

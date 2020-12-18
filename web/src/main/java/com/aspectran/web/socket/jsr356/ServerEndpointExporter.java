@@ -121,8 +121,7 @@ public class ServerEndpointExporter {
                 logger.debug("Registering @ServerEndpoint class: " + endpointClass);
             }
             serverContainer.addEndpoint(endpointClass);
-        }
-        catch (DeploymentException ex) {
+        } catch (DeploymentException ex) {
             throw new IllegalStateException("Failed to register @ServerEndpoint class: " + endpointClass, ex);
         }
     }
@@ -135,8 +134,7 @@ public class ServerEndpointExporter {
                 logger.debug("Registering ServerEndpointConfig: " + endpointConfig);
             }
             serverContainer.addEndpoint(endpointConfig);
-        }
-        catch (DeploymentException ex) {
+        } catch (DeploymentException ex) {
             throw new IllegalStateException("Failed to register ServerEndpointConfig: " + endpointConfig, ex);
         }
     }
