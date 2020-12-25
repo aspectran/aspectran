@@ -100,9 +100,11 @@ public class JobActivityReport {
                 sb.append("[ERROR] ").append(msg.trim()).append(System.lineSeparator());
                 logger.error(sb.toString().trim(), jobException);
             } else {
-                logger.debug(sb.toString());
+                if (logger.isDebugEnabled()) {
+                    logger.debug(sb.toString());
+                }
             }
-        } catch(IOException e) {
+        } catch (IOException e) {
             logger.warn("Job activity reporting failed", e);
         }
     }

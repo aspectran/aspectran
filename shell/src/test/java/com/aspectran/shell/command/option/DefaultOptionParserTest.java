@@ -123,7 +123,7 @@ class DefaultOptionParserTest {
             assertEquals("D.txt", parsedOptions.getValues("z")[1]);
             assertTrue(parsedOptions.hasOption("b"));
             assertNull(parsedOptions.getValues("target"));
-        } catch(OptionParserException exp) {
+        } catch (OptionParserException exp) {
             System.out.println( "Unexpected exception: " + exp.getMessage() );
         }
     }
@@ -184,7 +184,7 @@ class DefaultOptionParserTest {
             assertTrue(parsedOptions.hasOption("a"));
             assertTrue(parsedOptions.hasOption("b"));
             assertTrue(parsedOptions.hasOption("c"));
-        } catch(OptionParserException exp) {
+        } catch (OptionParserException exp) {
             System.out.println( "Unexpected exception: " + exp.getMessage() );
         }
     }
@@ -224,7 +224,7 @@ class DefaultOptionParserTest {
             assertEquals("[yes, no]", Arrays.toString(parsedOptions.getValues("password")));
             assertTrue(parsedOptions.hasOption("help"));
             assertEquals("[arg1, arg2]", Arrays.toString(parsedOptions.getArgs()));
-        } catch(OptionParserException exp) {
+        } catch (OptionParserException exp) {
             System.out.println( "Unexpected exception: " + exp.getMessage() );
         }
     }

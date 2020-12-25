@@ -112,31 +112,31 @@ public class ParsedOptions implements Serializable {
         } else if (valueType == OptionValueType.INT) {
             try {
                 return (T)Integer.valueOf(value);
-            } catch(NumberFormatException e) {
+            } catch (NumberFormatException e) {
                 throw new OptionParserException(e.getMessage());
             }
         } else if (valueType == OptionValueType.LONG) {
             try {
                 return (T)Long.valueOf(value);
-            } catch(NumberFormatException e) {
+            } catch (NumberFormatException e) {
                 throw new OptionParserException(e.getMessage());
             }
         } else if (valueType == OptionValueType.FLOAT) {
             try {
                 return (T)Float.valueOf(value);
-            } catch(NumberFormatException e) {
+            } catch (NumberFormatException e) {
                 throw new OptionParserException(e.getMessage());
             }
         } else if (valueType == OptionValueType.DOUBLE) {
             try {
                 return (T)Double.valueOf(value);
-            } catch(NumberFormatException e) {
+            } catch (NumberFormatException e) {
                 throw new OptionParserException(e.getMessage());
             }
         } else if (valueType == OptionValueType.BOOLEAN) {
             try {
                 return (T)Boolean.valueOf(value);
-            } catch(NumberFormatException e) {
+            } catch (NumberFormatException e) {
                 throw new OptionParserException(e.getMessage());
             }
         } else if (valueType == OptionValueType.FILE) {
