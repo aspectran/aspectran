@@ -151,16 +151,19 @@ public class ScheduleRule implements BeanReferenceable {
         return scheduleRule;
     }
 
-    public static void updateTrigger(ScheduleRule scheduleRule, TriggerParameters triggerParameters) throws IllegalRuleException {
+    public static void updateTrigger(ScheduleRule scheduleRule, TriggerParameters triggerParameters)
+            throws IllegalRuleException {
         updateTriggerType(scheduleRule, triggerParameters.getString(TriggerParameters.type));
         TriggerExpressionParameters expressionParameters = triggerParameters.getParameters(TriggerParameters.expression);
         if (expressionParameters == null) {
-            throw new IllegalRuleException("Be sure to specify trigger expression parameters " + Arrays.toString(TriggerExpressionParameters.getParameterKeys()));
+            throw new IllegalRuleException("Be sure to specify trigger expression parameters " +
+                    Arrays.toString(TriggerExpressionParameters.getParameterKeys()));
         }
         updateTriggerExpression(scheduleRule, expressionParameters);
     }
 
-    public static void updateTrigger(ScheduleRule scheduleRule, String type, String expression) throws IllegalRuleException {
+    public static void updateTrigger(ScheduleRule scheduleRule, String type, String expression)
+            throws IllegalRuleException {
         updateTriggerType(scheduleRule, type);
         updateTriggerExpression(scheduleRule, expression);
     }
@@ -170,7 +173,8 @@ public class ScheduleRule implements BeanReferenceable {
         if (type != null) {
             triggerType = TriggerType.resolve(type);
             if (triggerType == null) {
-                throw new IllegalArgumentException("Unknown trigger type '" + type + "'; Trigger type for Scheduler must be 'cron' or 'simple'");
+                throw new IllegalArgumentException("Unknown trigger type '" + type +
+                        "'; Trigger type for Scheduler must be 'cron' or 'simple'");
             }
         } else {
             triggerType = TriggerType.CRON;
@@ -178,7 +182,8 @@ public class ScheduleRule implements BeanReferenceable {
         scheduleRule.setTriggerType(triggerType);
     }
 
-    public static void updateTriggerExpression(ScheduleRule scheduleRule, String expression) throws IllegalRuleException {
+    public static void updateTriggerExpression(ScheduleRule scheduleRule, String expression)
+            throws IllegalRuleException {
         if (StringUtils.hasText(expression)) {
             TriggerExpressionParameters expressionParameters;
             try {
@@ -197,13 +202,15 @@ public class ScheduleRule implements BeanReferenceable {
             Integer intervalInMinutes = expressionParameters.getInt(TriggerExpressionParameters.intervalInMinutes);
             Integer intervalInHours = expressionParameters.getInt(TriggerExpressionParameters.intervalInHours);
             if (intervalInMilliseconds == null && intervalInSeconds == null && intervalInMinutes == null && intervalInHours == null) {
-                throw new IllegalArgumentException("Must specify the interval between execution times for simple trigger. (" + "Specifiable time interval types: intervalInMilliseconds, intervalInSeconds, intervalInMinutes, intervalInHours)");
+                throw new IllegalArgumentException("Must specify the interval between execution times for simple trigger. (" +
+                        "Specifiable time interval types: intervalInMilliseconds, intervalInSeconds, intervalInMinutes, intervalInHours)");
             }
         } else {
             String expression = expressionParameters.getString(TriggerExpressionParameters.expression);
             String[] fields = StringUtils.tokenize(expression, " ");
             if (fields.length != 6) {
-                throw new IllegalArgumentException(String.format("Cron expression must consist of 6 fields (found %d in %s)", fields.length, expression));
+                throw new IllegalArgumentException(String.format("Cron expression must consist of 6 fields (found %d in %s)",
+                        fields.length, expression));
             }
             expressionParameters.putValue(TriggerParameters.expression, StringUtils.toDelimitedString(fields, " "));
         }
