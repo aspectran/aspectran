@@ -16,6 +16,7 @@
 package com.aspectran.core.util;
 
 import com.aspectran.core.context.InsufficientEnvironmentException;
+import com.aspectran.core.lang.Nullable;
 import org.jasypt.encryption.ByteEncryptor;
 import org.jasypt.encryption.StringEncryptor;
 import org.jasypt.encryption.pbe.StandardPBEByteEncryptor;
@@ -131,7 +132,7 @@ public class PBEncryptionUtils {
         return byteEncryptor;
     }
 
-    private static void checkPassword(String encryptionPassword) {
+    private static void checkPassword(@Nullable String encryptionPassword) {
         if (!StringUtils.hasText(encryptionPassword)) {
             throw new InsufficientEnvironmentException("A password is required to attempt password-based encryption " +
                     "or decryption; Make sure the JVM system property \"aspectran.encryption.password\" is set up; " +
