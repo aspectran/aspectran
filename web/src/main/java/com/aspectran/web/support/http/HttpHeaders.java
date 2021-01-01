@@ -396,4 +396,14 @@ public interface HttpHeaders {
      */
     String X_METHOD_OVERRIDE = "X-Method-Override";
 
+    /**
+     * The HTTP X-Forwarded-For header field name.
+     */
+    String X_FORWARDED_FOR = "X-FORWARDED-FOR";
+
+    /**
+     * The HTTP X-Forwarded-Proto header field name.
+     */
+    String X_FORWARDED_PROTO = "X-Forwarded-Proto";
+
 }

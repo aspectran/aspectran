@@ -154,12 +154,12 @@ public interface ResponseAdapter {
     void flush() throws IOException;
 
     /**
-     * Redirects a client to a new URL.
+     * Sends a temporary redirect response to the client using the specified redirect location.
      *
-     * @param path the redirect path
+     * @param location the redirect location
      * @throws IOException if an input or output exception occurs
      */
-    void redirect(String path) throws IOException;
+    void redirect(String location) throws IOException;
 
     /**
      * Redirects a client to a new URL.

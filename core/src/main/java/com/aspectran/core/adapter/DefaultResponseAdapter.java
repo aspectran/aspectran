@@ -222,7 +222,7 @@ public class DefaultResponseAdapter extends AbstractResponseAdapter {
     }
 
     @Override
-    public void redirect(String path) {
+    public void redirect(String location) {
         throw new UnsupportedOperationException("redirect");
     }
 

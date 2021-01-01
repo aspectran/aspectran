@@ -26,6 +26,7 @@ import com.aspectran.core.context.expr.ItemEvaluator;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.RedirectRule;
 import com.aspectran.core.context.rule.type.FormatType;
+import com.aspectran.web.support.util.SendRedirectBasedOnXForwardedProtocol;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -43,6 +44,8 @@ import java.util.Map;
  * @since 2011. 3. 13.
  */
 public class HttpServletResponseAdapter extends AbstractResponseAdapter {
+
+    public static final String PROXY_PROTOCOL_AWARE_SETTING_NAME = "proxyProtocolAware";
 
     private static final char QUESTION_CHAR = '?';
 
@@ -135,8 +138,12 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
     }
 
     @Override
-    public void redirect(String path) throws IOException {
-        ((HttpServletResponse)getAdaptee()).sendRedirect(path);
+    public void redirect(String location) throws IOException {
+        boolean proxyProtocolAware = Boolean.parseBoolean(activity.getSetting(PROXY_PROTOCOL_AWARE_SETTING_NAME));
+        if (proxyProtocolAware) {
+            location = SendRedirectBasedOnXForwardedProtocol.getLocation(activity.getTranslet(), location);
+        }
+        ((HttpServletResponse)getAdaptee()).sendRedirect(location);
     }
 
     @Override
@@ -177,20 +184,16 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
         if (redirectRule == null) {
             throw new IllegalArgumentException("redirectRule must not be null");
         }
-
         if (redirectRule.getEncoding() == null) {
             redirectRule.setEncoding(StandardCharsets.ISO_8859_1.name());
         }
-
         String path = redirectRule.getPath(activity);
         int questionPos = -1;
-
         StringBuilder sb = new StringBuilder(256);
         if (path != null) {
             sb.append(path);
             questionPos = path.indexOf(QUESTION_CHAR);
         }
-
         ItemRuleMap parameterItemRuleMap = redirectRule.getParameterItemRuleMap();
         if (parameterItemRuleMap != null && !parameterItemRuleMap.isEmpty()) {
             ItemEvaluator evaluator = new ItemEvaluation(activity);
@@ -199,14 +202,12 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
                 if (questionPos == -1) {
                     sb.append(QUESTION_CHAR);
                 }
-
                 String name = null;
                 Object value;
                 for (Map.Entry<String, Object> entry : valueMap.entrySet()) {
                     if (name != null) {
                         sb.append(AMPERSAND_CHAR);
                     }
-
                     name = entry.getKey();
                     value = entry.getValue();
                     String stringValue = (value != null ? value.toString() : null);
@@ -225,7 +226,6 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
                 }
             }
         }
-
         return sb.toString();
     }
 

@@ -32,6 +32,7 @@ import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
 import com.aspectran.undertow.activity.TowActivity;
+import com.aspectran.web.support.http.HttpHeaders;
 import com.aspectran.web.support.http.HttpStatus;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.Headers;
@@ -143,7 +144,7 @@ public class DefaultTowService extends AbstractTowService {
         sb.append(exchange.getRequestMethod()).append(" ");
         sb.append(exchange.getRequestURI()).append(" ");
         sb.append(exchange.getProtocol()).append(" ");
-        String remoteAddr = exchange.getRequestHeaders().getFirst("X-FORWARDED-FOR");
+        String remoteAddr = exchange.getRequestHeaders().getFirst(HttpHeaders.X_FORWARDED_FOR);
         if (!StringUtils.isEmpty(remoteAddr)) {
             sb.append(remoteAddr);
         } else {

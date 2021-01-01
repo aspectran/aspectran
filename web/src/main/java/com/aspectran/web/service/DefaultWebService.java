@@ -181,7 +181,7 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
         sb.append(request.getMethod()).append(" ");
         sb.append(request.getRequestURI()).append(" ");
         sb.append(request.getProtocol()).append(" ");
-        String remoteAddr = request.getHeader("X-FORWARDED-FOR");
+        String remoteAddr = request.getHeader(HttpHeaders.X_FORWARDED_FOR);
         if (!StringUtils.isEmpty(remoteAddr)) {
             sb.append(remoteAddr);
         } else {

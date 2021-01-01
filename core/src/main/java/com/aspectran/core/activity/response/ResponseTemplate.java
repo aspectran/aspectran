@@ -129,8 +129,8 @@ public class ResponseTemplate implements Response, ResponseAdapter {
     }
 
     @Override
-    public void redirect(String path) throws IOException {
-        responseAdapter.redirect(path);
+    public void redirect(String location) throws IOException {
+        responseAdapter.redirect(location);
     }
 
     @Override
