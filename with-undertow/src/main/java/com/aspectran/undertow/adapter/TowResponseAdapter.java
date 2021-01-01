@@ -19,7 +19,6 @@ import com.aspectran.core.activity.Translet;
 import com.aspectran.core.adapter.AbstractResponseAdapter;
 import com.aspectran.core.context.rule.RedirectRule;
 import com.aspectran.core.util.Assert;
-import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.undertow.activity.TowActivity;
 import com.aspectran.web.adapter.HttpServletResponseAdapter;
 import com.aspectran.web.support.http.HttpStatus;
