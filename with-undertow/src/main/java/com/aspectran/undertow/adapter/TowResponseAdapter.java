@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2020 The Aspectran Project
+ * Copyright (c) 2008-2021 The Aspectran Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -76,7 +76,8 @@ public class TowResponseAdapter extends AbstractResponseAdapter {
 
     @Override
     public Collection<String> getHeaderNames() {
-        return getHttpServerExchange().getResponseHeaders()
+        return getHttpServerExchange()
+                .getResponseHeaders()
                 .getHeaderNames()
                 .stream()
                 .map(HttpString::toString)
@@ -154,15 +155,12 @@ public class TowResponseAdapter extends AbstractResponseAdapter {
         if (contentType == null) {
             return;
         }
-
         MediaType type = MediaType.parseMediaType(contentType);
         String charset = type.getParameter(MediaType.PARAM_CHARSET);
-
         this.contentType = type.getType() + '/' + type.getSubtype();
         if (charset != null) {
             this.charset = charset;
         }
-
         if (this.charset != null) {
             String fullContentType = this.contentType + "; " + MediaType.PARAM_CHARSET + "=" + this.charset;
             getHttpServerExchange().getResponseHeaders().put(Headers.CONTENT_TYPE, fullContentType);
@@ -259,7 +257,7 @@ public class TowResponseAdapter extends AbstractResponseAdapter {
     }
 
     private HttpServerExchange getHttpServerExchange() {
-        return (HttpServerExchange)getAdaptee();
+        return getAdaptee();
     }
 
     public enum ResponseState {
