@@ -25,7 +25,7 @@ public class TestConfiguration {
 
     public static final String STATIC_FIELD = "static field";
 
-    private FirstBean firstBean;
+    private final FirstBean firstBean;
 
     @Autowired
     public TestConfiguration(@Qualifier("FirstBean") FirstBean firstBean) {

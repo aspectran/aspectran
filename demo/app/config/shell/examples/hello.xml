@@ -9,14 +9,14 @@
 
     <aspect id="helloAdviceAspect">
         <description>
-            If a translet that executes the helloWorld method of the helloAction bean is found,
+            If a translet that executes the helloWorld method of the helloActivity bean is found,
             executes the welcome() method of the helloAdvice bean before executing the translet,
             and executes the goodbye() method of the helloAdvice bean after executing the translet.
         </description>
         <joinpoint>
             pointcut: {
-                +: hello*@helloAction^helloWorld
-                +: /examples/hello-world@helloAction^helloWorld
+                +: hello*@helloActivity^helloWorld
+                +: /examples/hello-world@helloActivity^helloWorld
             }
         </joinpoint>
         <advice bean="helloAdvice">
@@ -32,27 +32,27 @@
     <translet name="hello">
         <description style="apon">
             |
-            |   Executes the method helloAction.helloWorld() and prints the
+            |   Executes the method helloActivity.helloWorld() and prints the
             |   returned value to the console.
             |   Maybe the words "Hello, World!" will be printed on the console.
             |   Is it difficult to find the words "Hello, World!" printed on
             |   the console? If so, try running the "hello2" command.
             |
         </description>
-        <action id="helloWorld" bean="helloAction" method="helloWorld"/>
+        <action id="helloWorld" bean="helloActivity" method="helloWorld"/>
         <transform format="text"/>
     </translet>
 
     <translet name="hello2">
         <description style="apon">
             |
-            |   Executes the method helloAction.helloWorld() and prints the
+            |   Executes the method helloActivity.helloWorld() and prints the
             |   returned value to the console using ANSI coloring.
             |   Maybe the word "Hello, World!" will be printed on the console
             |   with proper margin.
             |
         </description>
-        <action id="helloWorld" bean="helloAction" method="helloWorld"/>
+        <action id="helloWorld" bean="helloActivity" method="helloWorld"/>
         <transform format="text">
             <template style="apon">
                 |

@@ -18,9 +18,9 @@ package com.aspectran.shell.jline.sample;
 import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
 
-public class SampleAction {
+public class SampleActivity {
 
-    private final Logger logger = LoggerFactory.getLogger(SampleAction.class);
+    private final Logger logger = LoggerFactory.getLogger(SampleActivity.class);
 
     public String helloWorld() {
         String msg = "Hello, World.";

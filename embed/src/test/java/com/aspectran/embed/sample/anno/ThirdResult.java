@@ -17,7 +17,7 @@ package com.aspectran.embed.sample.anno;
 
 public class ThirdResult {
 
-    private FirstBean firstBean;
+    private final FirstBean firstBean;
 
     public ThirdResult(FirstBean firstBean) {
         this.firstBean = firstBean;

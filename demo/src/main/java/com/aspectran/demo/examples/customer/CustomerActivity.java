@@ -32,12 +32,12 @@ import java.util.List;
 
 @Component("/examples/gs-rest-service")
 @Bean
-public class CustomerAction {
+public class CustomerActivity {
 
     private final CustomerRepository repository;
 
     @Autowired
-    public CustomerAction(CustomerRepository repository) {
+    public CustomerActivity(CustomerRepository repository) {
         this.repository = repository;
     }
 

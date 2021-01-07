@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.sample.schedule;
+package com.aspectran.embed.sample.schedule;
 
-public class ScheduleAction {
+public class ScheduleActivity {
 
     public void delay(long millis) throws InterruptedException {
         if (millis > 0) {

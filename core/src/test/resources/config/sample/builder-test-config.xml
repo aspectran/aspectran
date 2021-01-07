@@ -45,17 +45,17 @@
     </translet>
 
     <bean id="*" scan="com.aspectran.core.sample.**.*Advice" mask="com.aspectran.core.sample.**.*"/>
-    <bean id="*" scan="com.aspectran.core.sample.**.*Action" mask="com.aspectran.core.sample.**.*"/>
+    <bean id="*" scan="com.aspectran.core.sample.**.*Activity" mask="com.aspectran.core.sample.**.*"/>
 
     <aspect id="simplestAdviceAspect" order="1">
         <description>
-            simplestAction Bean의 helloWorld 메쏘드를 실행하는 Translet이 발견되면,
+            simplestActivity Bean의 helloWorld 메쏘드를 실행하는 Translet이 발견되면,
             해당 Translet의 실행 전에는 simplestAdvice Bean의 welcome 메쏘드를 실행하고,
             해당 Translet의 실행 후에는 simplestAdvice Bean의 goodbye 메쏘드를 실행합니다.
         </description>
         <joinpoint>
             pointcut: {
-                +: hello@TestAction^helloWorld
+                +: hello@TestActivity^helloWorld
             }
         </joinpoint>
         <advice bean="TestAdvice">
@@ -70,10 +70,10 @@
 
     <translet name="hello">
         <description>
-            simplestAction 빈에서 helloWorld 메쏘드를 실행합니다.
+            simplestActivity 빈에서 helloWorld 메쏘드를 실행합니다.
             helloWorld 메쏘드가 반환하는 "Hello, World." 문자열을 텍스트 형식의 컨텐츠로 응답합니다.
         </description>
-        <action id="helloData" bean="TestAction" method="helloWorld"/>
+        <action id="helloData" bean="TestActivity" method="helloWorld"/>
         <transform format="text"/>
     </translet>
 
@@ -92,17 +92,17 @@
             <item name="input_1">${input_1:12345}</item>
             <item name="input_2">${input_2:67890}</item>
         </attributes>
-        <action id="case0" method="case0" bean="SampleAction"/>
+        <action id="case0" method="case0" bean="SampleActivity"/>
         <choose>
             <when test="case1">
-                <action id="case1" method="case1" bean="SampleAction"/>
+                <action id="case1" method="case1" bean="SampleActivity"/>
             </when>
             <otherwise>
-                <action id="case2" method="case2" bean="SampleAction"/>
+                <action id="case2" method="case2" bean="SampleActivity"/>
             </otherwise>
         </choose>
-        <action id="case3" method="case2" bean="SampleAction"/>
-        <action id="case4" method="case2" bean="SampleAction"/>
+        <action id="case3" method="case2" bean="SampleActivity"/>
+        <action id="case4" method="case2" bean="SampleActivity"/>
         <transform format="text">
             <template style="apon">
                 |@{case0}
@@ -122,31 +122,31 @@
         </attributes>
         <contents name="contents-1">
             <content name="content-11">
-                <action id="case0" method="case0" bean="SampleAction"/>
+                <action id="case0" method="case0" bean="SampleActivity"/>
                 <choose>
                     <when test="case1">
-                        <action id="case1" method="case1" bean="SampleAction"/>
+                        <action id="case1" method="case1" bean="SampleActivity"/>
                     </when>
                     <otherwise>
-                        <action id="case2" method="case2" bean="SampleAction"/>
+                        <action id="case2" method="case2" bean="SampleActivity"/>
                     </otherwise>
                 </choose>
             </content>
             <content name="content-12">
-                <action id="case0" method="case0" bean="SampleAction"/>
+                <action id="case0" method="case0" bean="SampleActivity"/>
                 <choose>
                     <when test="case1">
-                        <action id="case1" method="case1" bean="SampleAction"/>
+                        <action id="case1" method="case1" bean="SampleActivity"/>
                     </when>
                     <otherwise>
-                        <action id="case2" method="case2" bean="SampleAction"/>
+                        <action id="case2" method="case2" bean="SampleActivity"/>
                     </otherwise>
                 </choose>
             </content>
         </contents>
         <response name="name2">
-            <action id="case3" method="case2" bean="SampleAction"/>
-            <action id="case4" method="case2" bean="SampleAction"/>
+            <action id="case3" method="case2" bean="SampleActivity"/>
+            <action id="case4" method="case2" bean="SampleActivity"/>
             <transform format="text">
                 <template style="apon">
                     |@{case0}
@@ -167,31 +167,31 @@
         </attributes>
         <contents name="contents-1">
             <content name="content-11">
-                <action id="case0" method="case0" bean="SampleAction"/>
+                <action id="case0" method="case0" bean="SampleActivity"/>
                 <choose>
                     <when test="case1">
-                        <action id="case1" method="case1" bean="SampleAction"/>
+                        <action id="case1" method="case1" bean="SampleActivity"/>
                     </when>
                     <otherwise>
-                        <action id="case2" method="case2" bean="SampleAction"/>
+                        <action id="case2" method="case2" bean="SampleActivity"/>
                     </otherwise>
                 </choose>
             </content>
             <content name="content-12">
-                <action id="case0" method="case0" bean="SampleAction"/>
+                <action id="case0" method="case0" bean="SampleActivity"/>
                 <choose>
                     <when test="case1">
-                        <action id="case1" method="case1" bean="SampleAction"/>
+                        <action id="case1" method="case1" bean="SampleActivity"/>
                     </when>
                     <otherwise>
-                        <action id="case2" method="case2" bean="SampleAction"/>
+                        <action id="case2" method="case2" bean="SampleActivity"/>
                     </otherwise>
                 </choose>
             </content>
         </contents>
         <response name="name2">
-            <action id="case3" method="case2" bean="SampleAction"/>
-            <action id="case4" method="case2" bean="SampleAction"/>
+            <action id="case3" method="case2" bean="SampleActivity"/>
+            <action id="case4" method="case2" bean="SampleActivity"/>
             <transform format="text">
                 <template style="apon">
                     |@{case0}
@@ -201,7 +201,7 @@
         </response>
         <exception>
             <thrown>
-                <action id="case4" method="case2" bean="SampleAction"/>
+                <action id="case4" method="case2" bean="SampleActivity"/>
                 <redirect path="/fkdjalsfds"/>
             </thrown>
         </exception>

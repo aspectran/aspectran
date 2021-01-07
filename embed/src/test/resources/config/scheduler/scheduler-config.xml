@@ -7,8 +7,10 @@
         <setting name="transletNameSuffix" value=".job"/>
     </settings>
 
-    <bean id="*" scan="com.aspectran.embed.**.*Advice" mask="com.aspectran.embed.**.*"/>
-    <bean id="*" scan="com.aspectran.embed.**.*Action" mask="com.aspectran.embed.**.*"/>
+    <bean id="*" scan="com.aspectran.embed.sample.**.*Advice" mask="com.aspectran.embed.**.*"/>
+    <bean id="*" scan="com.aspectran.embed.service.**.*Advice" mask="com.aspectran.embed.**.*"/>
+    <bean id="*" scan="com.aspectran.embed.sample.**.*Activity" mask="com.aspectran.embed.**.*"/>
+    <bean id="*" scan="com.aspectran.embed.service.**.*Activity" mask="com.aspectran.embed.**.*"/>
 
     <bean id="defaultScheduler1" class="com.aspectran.core.scheduler.support.QuartzSchedulerFactoryBean" lazyInit="true">
         <properties>
@@ -68,7 +70,7 @@
     </schedule>
 
     <translet name="job1">
-        <action bean="sample.schedule.ScheduleAction" method="delay">
+        <action bean="sample.schedule.ScheduleActivity" method="delay">
             <arguments>
                 <item valueType="long">1</item>
             </arguments>
@@ -79,7 +81,7 @@
     </translet>
 
     <translet name="job2">
-        <action bean="sample.schedule.ScheduleAction" method="delay">
+        <action bean="sample.schedule.ScheduleActivity" method="delay">
             <arguments>
                 <item valueType="long">2</item>
             </arguments>

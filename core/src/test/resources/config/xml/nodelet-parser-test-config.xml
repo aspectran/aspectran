@@ -51,7 +51,7 @@
         </description>
         <joinpoint>
             pointcut: {
-                +: hello@TestAction^helloWorld
+                +: hello@TestActivity^helloWorld
             }
         </joinpoint>
         <advice bean="testAdvice">

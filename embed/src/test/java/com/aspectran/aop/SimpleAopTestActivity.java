@@ -27,27 +27,27 @@ import java.io.IOException;
  * <p>Created: 2016. 11. 5.</p>
  */
 @Component
-public class SimpleAopTestAction {
+public class SimpleAopTestActivity {
 
-    private static final Logger logger = LoggerFactory.getLogger(SimpleAopTestAction.class);
+    private static final Logger logger = LoggerFactory.getLogger(SimpleAopTestActivity.class);
 
     @Request("aop/test/action1")
     public void action1(Translet translet) {
-        logger.debug("===> Action1: [SimpleAopTestAction]=== Action Result (Action-1)");
+        logger.debug("===> Action1: [SimpleAopTestActivity]=== Action Result (Action-1)");
         SampleAnnotatedAspect sampleAnnotatedAspect = translet.getAspectAdviceBean("aspect02");
         sampleAnnotatedAspect.foo();
     }
 
     @Request("aop/test/action2")
     public void action2() {
-        logger.debug("===> Action2: [SimpleAopTestAction]=== Action Result (Action-2)");
-        logger.debug("===> Action2: [SimpleAopTestAction]=== Force Exception ==============");
+        logger.debug("===> Action2: [SimpleAopTestActivity]=== Action Result (Action-2)");
+        logger.debug("===> Action2: [SimpleAopTestActivity]=== Force Exception ==============");
         throw new SimpleAopTestException();
     }
 
     @Request("aop/test/action3-${param1}")
     public String action3(Translet translet, String param1) throws IOException {
-        logger.debug("===> Action3: [SimpleAopTestAction]=== Action Result (Action-3)");
+        logger.debug("===> Action3: [SimpleAopTestActivity]=== Action Result (Action-3)");
         logger.debug("===> Action3: (PathVariable)param1: " + param1);
         translet.getResponseAdapter().getWriter().write(param1);
         return param1;

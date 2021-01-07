@@ -17,7 +17,7 @@ package com.aspectran.embed.service.action;
 
 import com.aspectran.core.activity.Translet;
 
-public class TestAction {
+public class TestActivity {
 
     public int addUp(int arg1, int arg2, int arg3, int arg4) {
         return arg1 + arg2 + arg3 + arg4;

@@ -42,7 +42,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 @Component
-public class AnnotatedAction {
+public class AnnotatedActivity {
 
     @Request("/action-1")
     @ParamItem(

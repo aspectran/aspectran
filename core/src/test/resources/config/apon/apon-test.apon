@@ -94,7 +94,7 @@ aspectran: {
     translet: {
         name: job1
         action: {
-            bean: class:test.ScheduleAction
+            bean: class:test.ScheduleActivity
             method: delay
             arguments: {
                 item: {
@@ -114,7 +114,7 @@ aspectran: {
     translet: {
         name: job2
         action: {
-            bean: class:test.ScheduleAction
+            bean: class:test.ScheduleActivity
             method: delay
             arguments: {
                 item: {

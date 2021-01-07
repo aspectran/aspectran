@@ -65,10 +65,10 @@
         <job translet="job2.job"/>
     </schedule>
 
-    <bean id="scheduleAction" class="com.aspectran.core.sample.schedule.ScheduleAction"/>
+    <bean id="scheduleActivity" class="com.aspectran.core.sample.schedule.ScheduleActivity"/>
 
     <translet name="job1">
-        <action bean="scheduleAction" method="delay">
+        <action bean="scheduleActivity" method="delay">
             <arguments>
                 <item valueType="long">1</item>
             </arguments>
@@ -90,7 +90,7 @@
                 <value>a2</value>
             </item>
         </echo>
-        <action bean="scheduleAction" method="delay">
+        <action bean="scheduleActivity" method="delay">
             <arguments>
                 <item valueType="long">2</item>
             </arguments>

@@ -18,7 +18,6 @@ package com.aspectran.aop;
 /**
  * <p>Created: 2016. 11. 5.</p>
  */
-@SuppressWarnings("serial")
 public class SimpleAopTestException extends RuntimeException {
 
     public SimpleAopTestException() {

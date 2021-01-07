@@ -15,7 +15,7 @@
 
     <bean scan="com.aspectran.embed.service.**.*Configuration" mask="com.aspectran.embed.service.**"/>
 
-    <bean scan="com.aspectran.embed.service.**.*Action" mask="com.aspectran.embed.service.**"/>
+    <bean scan="com.aspectran.embed.service.**.*Activity" mask="com.aspectran.embed.service.**"/>
 
     <aspect id="transletSettings">
         <description>
@@ -92,7 +92,7 @@
         <parameters>
             <item name="mode">param1</item>
         </parameters>
-        <action id="case1-1" bean="action.TestAction" method="case1"/>
+        <action id="case1-1" bean="action.TestActivity" method="case1"/>
         <transform format="text" contentType="text/plain">
             <template>abc@{attr-1}@{attr-2}@{attr-3}-@{case1-1}</template>
         </transform>
@@ -110,12 +110,12 @@
     </translet>
 
     <translet name="add-up">
-        <action id="result" bean="action.TestAction" method="addUp">
+        <action id="result" bean="action.TestActivity" method="addUp">
             <arguments>
                 <item value="1" valueType="int"/>
                 <item value="2" valueType="int"/>
                 <item value="3" valueType="int"/>
-                <item valueType="int">#{action.TestAction^arg4}</item>
+                <item valueType="int">#{action.TestActivity^arg4}</item>
             </arguments>
         </action>
     </translet>
@@ -123,7 +123,7 @@
     <translet name="chooseWhenTest">
         <choose>
             <when test="mode == 'case1-1'">
-                <action id="case1-1" bean="action.TestAction" method="case1"/>
+                <action id="case1-1" bean="action.TestActivity" method="case1"/>
                 <transform format="text">
                     <template style="apon">
                         |Case 1-1: @{case1-1}
@@ -131,12 +131,12 @@
                 </transform>
             </when>
             <when test="mode == 'case2-2'">
-                <action id="case1-2" bean="action.TestAction" method="case2"/>
+                <action id="case1-2" bean="action.TestActivity" method="case2"/>
             </when>
         </choose>
         <choose>
             <when test="mode == 'case2-1'">
-                <action id="case2-1" bean="action.TestAction" method="case1"/>
+                <action id="case2-1" bean="action.TestActivity" method="case1"/>
                 <transform format="text">
                     <template style="apon">
                         |Case 2-1: @{case2-1}
@@ -144,10 +144,10 @@
                 </transform>
             </when>
             <when test="mode == 'case2-2'">
-                <action id="case2-2" bean="action.TestAction" method="case2"/>
+                <action id="case2-2" bean="action.TestActivity" method="case2"/>
                 <choose>
                     <when test="mode == 'case2-2'">
-                        <action id="case2-4" bean="action.TestAction" method="case4"/>
+                        <action id="case2-4" bean="action.TestActivity" method="case4"/>
                     </when>
                 </choose>
                 <transform format="text">
@@ -157,7 +157,7 @@
                 </transform>
             </when>
             <otherwise>
-                <action id="case2-3" bean="action.TestAction" method="case3"/>
+                <action id="case2-3" bean="action.TestActivity" method="case3"/>
                 <transform format="text">
                     <template style="apon">
                         |Case 2-3: @{case2-3}
@@ -170,13 +170,13 @@
     <translet name="thrownTest">
         <choose>
             <when test="mode == 'thrown1'">
-                <action bean="action.TestAction" method="thrown1"/>
+                <action bean="action.TestActivity" method="thrown1"/>
             </when>
             <when test="mode == 'thrown2'">
-                <action bean="action.TestAction" method="thrown2"/>
+                <action bean="action.TestActivity" method="thrown2"/>
             </when>
             <otherwise>
-                <action bean="action.TestAction" method="thrown3"/>
+                <action bean="action.TestActivity" method="thrown3"/>
             </otherwise>
         </choose>
         <exception>

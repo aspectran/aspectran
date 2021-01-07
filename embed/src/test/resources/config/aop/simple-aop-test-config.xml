@@ -7,7 +7,7 @@
         Aspectran's AOP is simple and powerful.
     </description>
 
-    <bean scan="com.aspectran.aop.*TestAction"/>
+    <bean scan="com.aspectran.aop.*TestActivity"/>
 
     <bean scan="com.aspectran.aop.*TestBean"/>
 

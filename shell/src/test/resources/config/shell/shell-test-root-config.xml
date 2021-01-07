@@ -5,7 +5,7 @@
 
     <description style="apon">
         |Commands that can run the examples:
-        |   hello     Runs the helloWorld() method of the sampleAction bean and prints the returned value to the console.
+        |   hello     Runs the helloWorld() method of the sampleActivity bean and prints the returned value to the console.
         |   echo      It accepts parameters and print them to the console.
         |   login     It accepts parameters used for login and print them to the console.
         |   chpw      It accepts parameters for changing the password and print them to the console.
@@ -15,7 +15,7 @@
         |
     </description>
 
-    <bean id="sampleAction" class="com.aspectran.shell.sample.SampleAction">
+    <bean id="sampleActivity" class="com.aspectran.shell.sample.SampleActivity">
         <description>
             Defines one sample action that contains the helloWorld method.
         </description>
@@ -31,13 +31,13 @@
 
     <aspect id="sampleAdviceAspect">
         <description>
-            If a Translet that executes the helloWorld method of the sampleAction bean is found,
+            If a Translet that executes the helloWorld method of the sampleActivity bean is found,
             executes the welcome() method of the sampleAdvice bean before executing the translet,
             and executes the goodbye() method of the sampleAdvice bean after executing the translet.
         </description>
         <joinpoint>
             pointcut: {
-                +: hello@sampleAction^helloWorld
+                +: hello@sampleActivity^helloWorld
             }
         </joinpoint>
         <advice bean="sampleAdvice">
@@ -53,13 +53,13 @@
     <translet name="hello">
         <description style="apon">
             |
-            |   Runs the helloWorld() method of the sampleAction bean and prints the returned value to the console.
+            |   Runs the helloWorld() method of the sampleActivity bean and prints the returned value to the console.
             |   Maybe the words "Hello, World." will be printed on the console.
             |   Is it difficult to find the words "Hello, World." printed on the console?
             |   If so, try running the "hello2" command.
             |---------------------------------------------------------------------------------------------------------
         </description>
-        <action id="helloData" bean="sampleAction" method="helloWorld"/>
+        <action id="helloData" bean="sampleActivity" method="helloWorld"/>
         <transform format="text"/>
     </translet>
 

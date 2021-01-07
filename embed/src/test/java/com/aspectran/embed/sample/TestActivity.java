@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.sample;
+package com.aspectran.embed.sample;
 
 import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
 
-public class TestAction {
+public class TestActivity {
 
-    private final Logger logger = LoggerFactory.getLogger(TestAction.class);
+    private final Logger logger = LoggerFactory.getLogger(TestActivity.class);
 
     public String helloWorld() {
         String msg = "Hello, World.";
