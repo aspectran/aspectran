@@ -38,29 +38,29 @@ shift
 
 case "$command" in
 # build for CI
-ci-build)
-  mvn clean install $*
-  ;;
+#ci-build)
+#  mvn clean install $*
+#  ;;
 
 # deploy for CI
-ci-deploy)
-  # get commit message
-  commit_message=$(git log --format=%B -n 1)
-  echo "Current commit detected: ${commit_message}"
-  echo "Travis JDK Version: $TRAVIS_JDK_VERSION"
-  echo "Travis Pull Request: $TRAVIS_PULL_REQUEST"
-  echo "Travis Branch: $TRAVIS_BRANCH"
-  if [ "$TRAVIS_JDK_VERSION" == 'openjdk8' ] && [ "$TRAVIS_PULL_REQUEST" == 'false' ] && [[ "$commit_message" != *"[maven-release-plugin]"* ]]; then
-    # deploy to sonatype
-    mvn clean deploy -q -P skip-test $*
-    echo "Successfully deployed SNAPSHOT artifacts to Sonatype under Travis job ${TRAVIS_JOB_NUMBER}"
-    # coverage reporting of coveralls
-    mvn clean test jacoco:report coveralls:report -q $*
-    echo "Successfully ran coveralls under Travis job ${TRAVIS_JOB_NUMBER}"
-  else
-    echo "Travis deploy skipped"
-  fi
-  ;;
+#ci-deploy)
+#  # get commit message
+#  commit_message=$(git log --format=%B -n 1)
+#  echo "Current commit detected: ${commit_message}"
+#  echo "Travis JDK Version: $TRAVIS_JDK_VERSION"
+#  echo "Travis Pull Request: $TRAVIS_PULL_REQUEST"
+#  echo "Travis Branch: $TRAVIS_BRANCH"
+#  if [ "$TRAVIS_JDK_VERSION" == 'openjdk8' ] && [ "$TRAVIS_PULL_REQUEST" == 'false' ] && [[ "$commit_message" != *"[maven-release-plugin]"* ]]; then
+#    # deploy to sonatype
+#    mvn clean deploy -q -P skip-test $*
+#    echo "Successfully deployed SNAPSHOT artifacts to Sonatype under Travis job ${TRAVIS_JOB_NUMBER}"
+#    # coverage reporting of coveralls
+#    mvn clean test jacoco:report coveralls:report -q $*
+#    echo "Successfully ran coveralls under Travis job ${TRAVIS_JOB_NUMBER}"
+#  else
+#    echo "Travis deploy skipped"
+#  fi
+#  ;;
 
 # prepare release
 release-prepare)
