@@ -12,7 +12,6 @@ jobs:
       fail-fast: false
       max-parallel: 4
     name: Test JDK ${{ matrix.java }}, ${{ matrix.os }}
-
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK
@@ -20,4 +19,4 @@ jobs:
         with:
           java-version: ${{ matrix.java }}
       - name: Test with Maven
-        run: ./mvnw test -B -Dlicense.skip=true
+        run: ./mvnw test -B -D"license.skip=true"
