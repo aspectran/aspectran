@@ -6,7 +6,6 @@ updates:
     interval: daily
   open-pull-requests-limit: 10
   ignore:
-  - dependency-name: org.junit.jupiter:junit-jupiter-engine
+  - dependency-name: org.eclipse.jetty
     versions:
-    - ">= 5.6.a"
-    - "< 5.7"
+      - ">= 10.0.0"
