@@ -4,7 +4,7 @@ on: [push, pull_request]
 
 jobs:
   build:
-    if: github.repository_owner == 'topframe'
+    if: github.repository_owner == 'aspectran'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
