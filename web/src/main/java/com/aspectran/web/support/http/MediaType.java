@@ -15,6 +15,7 @@
  */
 package com.aspectran.web.support.http;
 
+import com.aspectran.core.lang.NonNull;
 import com.aspectran.core.lang.Nullable;
 import com.aspectran.core.util.Assert;
 import com.aspectran.core.util.LinkedCaseInsensitiveMap;
@@ -398,11 +399,14 @@ public class MediaType implements Comparable<MediaType>, Serializable {
     private final Map<String, String> parameters;
 
     @Nullable
+    private transient Charset resolvedCharset;
+
+    @Nullable
     private volatile String toStringValue;
 
     /**
      * Create a new {@code MediaType} for the given primary type.
-     * <p>The {@linkplain #getSubtype() subtype} is set to "&#42;", parameters empty.
+     * <p>The {@linkplain #getSubtype() subtype} is set to "&#42;", parameters empty.</p>
      *
      * @param type the primary type
      * @throws IllegalArgumentException if any of the parameters contain illegal characters
@@ -413,9 +417,9 @@ public class MediaType implements Comparable<MediaType>, Serializable {
 
     /**
      * Create a new {@code MediaType} for the given primary type and subtype.
-     * <p>The parameters are empty.
+     * <p>The parameters are empty.</p>
      *
-     * @param type    the primary type
+     * @param type the primary type
      * @param subtype the subtype
      * @throws IllegalArgumentException if any of the parameters contain illegal characters
      */
@@ -426,20 +430,21 @@ public class MediaType implements Comparable<MediaType>, Serializable {
     /**
      * Create a new {@code MediaType} for the given type, subtype, and character set.
      *
-     * @param type    the primary type
+     * @param type the primary type
      * @param subtype the subtype
      * @param charset the character set
      * @throws IllegalArgumentException if any of the parameters contain illegal characters
      */
-    public MediaType(String type, String subtype, Charset charset) {
+    public MediaType(String type, String subtype, @NonNull Charset charset) {
         this(type, subtype, Collections.singletonMap(PARAM_CHARSET, charset.name()));
+        this.resolvedCharset = charset;
     }
 
     /**
      * Create a new {@code MediaType} for the given type, subtype, and quality value.
      *
-     * @param type         the primary type
-     * @param subtype      the subtype
+     * @param type the primary type
+     * @param subtype the subtype
      * @param qualityValue the quality value
      * @throws IllegalArgumentException if any of the parameters contain illegal characters
      */
@@ -451,19 +456,20 @@ public class MediaType implements Comparable<MediaType>, Serializable {
      * Copy-constructor that copies the type, subtype and parameters of the given
      * {@code MediaType}, and allows to set the specified character set.
      *
-     * @param other   the other media type
+     * @param other the other media type
      * @param charset the character set
      * @throws IllegalArgumentException if any of the parameters contain illegal characters
      */
-    public MediaType(MediaType other, Charset charset) {
+    public MediaType(MediaType other, @NonNull Charset charset) {
         this(other.getType(), other.getSubtype(), addCharsetParameter(charset, other.getParameters()));
+        this.resolvedCharset = charset;
     }
 
     /**
      * Copy-constructor that copies the type and subtype of the given {@code MediaType},
      * and allows for different parameter.
      *
-     * @param other      the other media type
+     * @param other the other media type
      * @param parameters the parameters, may be {@code null}
      * @throws IllegalArgumentException if any of the parameters contain illegal characters
      */
@@ -474,8 +480,8 @@ public class MediaType implements Comparable<MediaType>, Serializable {
     /**
      * Create a new {@code MediaType} for the given type, subtype, and parameters.
      *
-     * @param type       the primary type
-     * @param subtype    the subtype
+     * @param type the primary type
+     * @param subtype the subtype
      * @param parameters the parameters, may be {@code null}
      * @throws IllegalArgumentException if any of the parameters contain illegal characters
      */
@@ -488,9 +494,9 @@ public class MediaType implements Comparable<MediaType>, Serializable {
         this.subtype = subtype.toLowerCase(Locale.ENGLISH);
         if (parameters != null && !parameters.isEmpty()) {
             Map<String, String> map = new LinkedCaseInsensitiveMap<>(parameters.size(), Locale.ENGLISH);
-            parameters.forEach((attribute, value) -> {
-                checkParameters(attribute, value);
-                map.put(attribute, value);
+            parameters.forEach((parameter, value) -> {
+                checkParameters(parameter, value);
+                map.put(parameter, value);
             });
             this.parameters = Collections.unmodifiableMap(map);
         } else {
@@ -514,21 +520,21 @@ public class MediaType implements Comparable<MediaType>, Serializable {
         }
     }
 
-    private void checkParameters(String attribute, String value) {
-        Assert.hasLength(attribute, "'attribute' must not be empty");
+    private void checkParameters(String parameter, String value) {
+        Assert.hasLength(parameter, "'parameter' must not be empty");
         Assert.hasLength(value, "'value' must not be empty");
-        checkToken(attribute);
-        if (PARAM_CHARSET.equals(attribute)) {
-            value = unquote(value);
-            Charset.forName(value);
-        } else if (!isQuotedString(value)) {
-            checkToken(value);
-        }
-        if (PARAM_QUALITY_FACTOR.equals(attribute)) {
+        checkToken(parameter);
+        if (PARAM_CHARSET.equals(parameter)) {
+            if (this.resolvedCharset == null) {
+                this.resolvedCharset = Charset.forName(unquote(value));
+            }
+        } else if (PARAM_QUALITY_FACTOR.equals(parameter)) {
             value = unquote(value);
             double d = Double.parseDouble(value);
             Assert.isTrue(d >= 0D && d <= 1D,
-                "Invalid quality value \"" + value + "\": should be between 0.0 and 1.0");
+                    "Invalid quality value \"" + value + "\": should be between 0.0 and 1.0");
+        } else if (!isQuotedString(value)) {
+            checkToken(value);
         }
     }
 
@@ -600,8 +606,7 @@ public class MediaType implements Comparable<MediaType>, Serializable {
      */
     @Nullable
     public Charset getCharset() {
-        String charset = getParameter(PARAM_CHARSET);
-        return (charset != null ? Charset.forName(unquote(charset)) : null);
+        return this.resolvedCharset;
     }
 
     /**

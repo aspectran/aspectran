@@ -25,7 +25,7 @@ daemon: {
         incoming: /commands/incoming
     }
     commands: [
-        com.aspectran.daemon.command.builtins.JettyCommand
+        com.aspectran.daemon.command.builtins.UndertowCommand
         com.aspectran.daemon.command.builtins.InvokeActionCommand
         com.aspectran.daemon.command.builtins.TransletCommand
         com.aspectran.daemon.command.builtins.PollingIntervalCommand
