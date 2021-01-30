@@ -845,7 +845,8 @@ public class ParametersToRules {
         }
     }
 
-    private void toChooseRule(ActionParameters actionParameters, ActionRuleApplicable actionRuleApplicable) throws IllegalRuleException {
+    private void toChooseRule(ActionParameters actionParameters, ActionRuleApplicable actionRuleApplicable)
+            throws IllegalRuleException {
         List<ChooseWhenParameters> chooseWhenParametersList = actionParameters.getParametersList(ActionParameters.when);
         ChooseWhenParameters chooseOtherwiseParameters = actionParameters.getParameters(ActionParameters.otherwise);
 
@@ -866,7 +867,8 @@ public class ParametersToRules {
         }
     }
 
-    private void toChooseWhenRule(ChooseWhenParameters chooseWhenParameters, ChooseWhenRule chooseWhenRule) throws IllegalRuleException {
+    private void toChooseWhenRule(ChooseWhenParameters chooseWhenParameters, ChooseWhenRule chooseWhenRule)
+            throws IllegalRuleException {
         String expression = StringUtils.emptyToNull(chooseWhenParameters.getString(ChooseWhenParameters.test));
         chooseWhenRule.setExpression(expression);
 
@@ -935,7 +937,8 @@ public class ParametersToRules {
         }
     }
 
-    private void toTransformRule(TransformParameters transformParameters, ResponseRuleApplicable responseRuleApplicable) throws IllegalRuleException {
+    private void toTransformRule(TransformParameters transformParameters, ResponseRuleApplicable responseRuleApplicable)
+            throws IllegalRuleException {
         String format = transformParameters.getString(TransformParameters.format);
         String contentType = transformParameters.getString(TransformParameters.contentType);
         String encoding = transformParameters.getString(TransformParameters.encoding);
@@ -971,7 +974,8 @@ public class ParametersToRules {
         }
     }
 
-    private void toDispatchRule(DispatchParameters dispatchParameters, ResponseRuleApplicable responseRuleApplicable) throws IllegalRuleException {
+    private void toDispatchRule(DispatchParameters dispatchParameters, ResponseRuleApplicable responseRuleApplicable)
+            throws IllegalRuleException {
         String name = dispatchParameters.getString(DispatchParameters.name);
         String dispatcher = dispatchParameters.getString(DispatchParameters.dispatcher);
         String contentType = dispatchParameters.getString(DispatchParameters.contentType);
@@ -982,7 +986,8 @@ public class ParametersToRules {
         responseRuleApplicable.applyResponseRule(dispatchRule);
     }
 
-    private void toForwardRule(ForwardParameters forwardParameters, ResponseRuleApplicable responseRuleApplicable) throws IllegalRuleException {
+    private void toForwardRule(ForwardParameters forwardParameters, ResponseRuleApplicable responseRuleApplicable)
+            throws IllegalRuleException {
         String contentType = forwardParameters.getString(ForwardParameters.contentType);
         String translet = StringUtils.emptyToNull(forwardParameters.getString(ForwardParameters.translet));
         String method = StringUtils.emptyToNull(forwardParameters.getString(ForwardParameters.method));
@@ -1011,7 +1016,8 @@ public class ParametersToRules {
         }
     }
 
-    private void toRedirectRule(RedirectParameters redirectParameters, ResponseRuleApplicable responseRuleApplicable) throws IllegalRuleException {
+    private void toRedirectRule(RedirectParameters redirectParameters, ResponseRuleApplicable responseRuleApplicable)
+            throws IllegalRuleException {
         String contentType = redirectParameters.getString(RedirectParameters.contentType);
         String path = redirectParameters.getString(RedirectParameters.path);
         String encoding = redirectParameters.getString(RedirectParameters.encoding);

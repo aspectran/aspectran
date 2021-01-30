@@ -22,7 +22,7 @@ import com.aspectran.core.activity.response.RedirectResponse;
 import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.activity.response.dispatch.DispatchResponse;
 import com.aspectran.core.activity.response.transform.TransformResponseFactory;
-import com.aspectran.core.context.expr.BooleanExpression;
+import com.aspectran.core.context.expr.ognl.OgnlSupport;
 import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
 import com.aspectran.core.context.rule.ability.ResponseRuleApplicable;
 import com.aspectran.core.util.StringUtils;
@@ -42,16 +42,13 @@ public class ChooseWhenRule implements ActionRuleApplicable, ResponseRuleApplica
 
     private Response response;
 
-    public ChooseWhenRule() {
-    }
-
     public String getExpression() {
         return expression;
     }
 
     public void setExpression(String expression) throws IllegalRuleException {
         this.expression = (StringUtils.hasLength(expression) ? expression : null);
-        this.represented = BooleanExpression.parseExpression(expression);
+        this.represented = OgnlSupport.parseExpression(expression);
     }
 
     public Object getRepresented() {

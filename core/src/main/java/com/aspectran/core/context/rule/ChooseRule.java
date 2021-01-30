@@ -25,9 +25,6 @@ public class ChooseRule {
 
     private List<ChooseWhenRule> chooseWhenRules;
 
-    public ChooseRule() {
-    }
-
     public ChooseWhenRule newChooseWhenRule() {
         if (chooseWhenRules == null) {
             chooseWhenRules = new ArrayList<>();

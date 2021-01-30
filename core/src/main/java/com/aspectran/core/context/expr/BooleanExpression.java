@@ -44,12 +44,8 @@ public class BooleanExpression {
         if (chooseWhenRule.getExpression() == null) {
             return true;
         }
-        ActivityData root = (activity.getTranslet() != null ? activity.getTranslet().getActivityData() : null);
-        return OgnlSupport.evaluateAsBoolean(chooseWhenRule.getExpression(), chooseWhenRule.getRepresented(), root);
-    }
-
-    public static Object parseExpression(String expression) throws IllegalRuleException {
-        return OgnlSupport.parseExpression(expression);
+        ActivityData activityData = (activity.getTranslet() != null ? activity.getTranslet().getActivityData() : null);
+        return OgnlSupport.evaluateAsBoolean(chooseWhenRule.getExpression(), chooseWhenRule.getRepresented(), activityData);
     }
 
 }
