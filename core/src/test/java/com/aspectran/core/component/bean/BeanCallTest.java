@@ -20,7 +20,7 @@ import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.builder.ActivityContextBuilder;
 import com.aspectran.core.context.builder.ActivityContextBuilderException;
 import com.aspectran.core.context.builder.HybridActivityContextBuilder;
-import com.aspectran.core.sample.call.NumericBean;
+import com.aspectran.core.sample.call.OrderedBean;
 import com.aspectran.core.sample.call.TotalBean;
 import com.aspectran.core.util.Aspectran;
 import com.aspectran.core.util.apon.AponFormat;
@@ -40,20 +40,24 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * <p>Created: 2017. 3. 20.</p>
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class CallTest {
+class BeanCallTest {
 
-    private File baseDir = new File("./target/test-classes");
+    private final File baseDir = new File("./target/test-classes");
 
     private ActivityContextBuilder activityContextBuilder;
 
-    private ActivityContext context;
+    private BeanRegistry beanRegistry;
+
+    private TemplateRenderer templateRenderer;
 
     @BeforeAll
     void ready() throws IOException, ActivityContextBuilderException {
         activityContextBuilder = new HybridActivityContextBuilder();
         activityContextBuilder.setBasePath(baseDir.getCanonicalPath());
 
-        this.context = activityContextBuilder.build("/config/call/call-test-config.xml");
+        ActivityContext context = activityContextBuilder.build("/config/call/call-test-config.xml");
+        beanRegistry = context.getBeanRegistry();
+        templateRenderer = context.getTemplateRenderer();
     }
 
     @AfterAll
@@ -65,17 +69,15 @@ class CallTest {
 
     @Test
     void testBeanCall() {
-        TotalBean totalBean = context.getBeanRegistry().getBean("totalBean");
+        TotalBean totalBean = beanRegistry.getBean("totalBean");
         int count = 1;
-        for (NumericBean o : totalBean.getNumerics()) {
-            assertEquals(count++, o.getNumber());
+        for (OrderedBean o : totalBean.getOrderedBeans()) {
+            assertEquals(count++, o.getOrder());
         }
     }
 
     @Test
     void testTemplateCall() {
-        TemplateRenderer templateRenderer = context.getTemplateRenderer();
-
         String result1 = templateRenderer.render("template-2");
         assertEquals("TEMPLATE-1", result1);
 

@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.component.bean;
 
+import com.aspectran.core.component.template.TemplateRenderer;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.builder.ActivityContextBuilder;
 import com.aspectran.core.context.builder.ActivityContextBuilderException;
@@ -37,13 +38,13 @@ import static org.junit.jupiter.api.Assertions.assertNull;
  * <p>Created: 2016. 3. 26.</p>
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class BeanTest {
+class AutowireBeanTest {
 
     private ActivityContextBuilder builder;
 
-    private ActivityContext context;
-
     private BeanRegistry beanRegistry;
+    
+    private TemplateRenderer templateRenderer;
 
     @BeforeAll
     void ready() throws IOException, ActivityContextBuilderException {
@@ -54,8 +55,9 @@ class BeanTest {
         builder.setDebugMode(true);
         builder.setActiveProfiles("dev", "local");
         builder.setBasePackages("com.aspectran.core.component.bean");
-        context = builder.build("/config/bean/bean-test-config.xml");
+        ActivityContext context = builder.build("/config/bean/bean-test-config.xml");
         beanRegistry = context.getBeanRegistry();
+        templateRenderer = context.getTemplateRenderer();
     }
 
     @AfterAll
@@ -68,10 +70,10 @@ class BeanTest {
     @Test
     void testProperties() {
         beanRegistry.getBean("properties");
-        String property1 = context.getTemplateRenderer().render("property-1");
-        String property2 = context.getTemplateRenderer().render("property-2");
-        String property3 = context.getTemplateRenderer().render("property-3");
-        String property4 = context.getTemplateRenderer().render("property-4");
+        String property1 = templateRenderer.render("property-1");
+        String property2 = templateRenderer.render("property-2");
+        String property3 = templateRenderer.render("property-3");
+        String property4 = templateRenderer.render("property-4");
         assertEquals(property1, "DEV-This is a Property-1");
         assertEquals(property2, "DEV-This is a Property-2");
         assertEquals(property3, "DEV-This is a Property-3");

@@ -18,9 +18,10 @@ package com.aspectran.core.sample.call;
 /**
  * <p>Created: 2017. 3. 18.</p>
  */
-public class SecondBean implements NumericBean {
+public class SecondBean implements OrderedBean {
 
-    public int getNumber() {
+    @Override
+    public int getOrder() {
         return 2;
     }
 

@@ -20,14 +20,14 @@ package com.aspectran.core.sample.call;
  */
 public class TotalBean {
 
-    private NumericBean[] numerics;
+    private OrderedBean[] orderedBeans;
 
-    public void setNumerics(NumericBean[] numerics) {
-        this.numerics = numerics;
+    public void setOrderedBeans(OrderedBean[] orderedBeans) {
+        this.orderedBeans = orderedBeans;
     }
 
-    public NumericBean[] getNumerics() {
-        return numerics;
+    public OrderedBean[] getOrderedBeans() {
+        return orderedBeans;
     }
 
 }

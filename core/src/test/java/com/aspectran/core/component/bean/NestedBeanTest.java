@@ -38,11 +38,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * <p>Created: 2016. 3. 26.</p>
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class BasicTest {
+class NestedBeanTest {
 
     private ActivityContextBuilder builder;
 
     private ActivityContext context;
+
+    private BeanRegistry beanRegistry;
 
     @BeforeAll
     void ready() throws IOException, ActivityContextBuilderException {
@@ -53,6 +55,7 @@ class BasicTest {
         builder.setDebugMode(true);
         builder.setActiveProfiles("dev", "debug");
         context = builder.build("/config/bean/basic-test-config.xml");
+        beanRegistry = beanRegistry;
     }
 
     @AfterAll
@@ -64,37 +67,35 @@ class BasicTest {
 
     @Test
     void test1() {
-        assertEquals("String Bean", context.getBeanRegistry().getBean("stringBean"));
+        assertEquals("String Bean", beanRegistry.getBean("stringBean"));
 
-        Map map = context.getBeanRegistry().getBean("mapBean");
+        Map<?, ?> map = beanRegistry.getBean("mapBean");
         assertEquals("{item2=value2, item1=value1}", map.toString());
 
-        List list = context.getBeanRegistry().getBean("listBean");
+        List<?> list = beanRegistry.getBean("listBean");
         assertEquals("[value1, value2]", list.toString());
     }
 
     @Test
     void test2() {
-        assertEquals("Nested String Bean", context.getBeanRegistry().getBean("nestedStringBean"));
+        assertEquals("Nested String Bean", beanRegistry.getBean("nestedStringBean"));
     }
 
     @Test
     void nestedStringBean_1() {
-        String result = context.getBeanRegistry().getBean("nestedStringBean-1");
-//        System.out.println(result);
+        String result = beanRegistry.getBean("nestedStringBean-1");
         assertEquals("Nested String Bean", result);
     }
 
     @Test
     void nestedStringBean_2() {
-        String result = context.getBeanRegistry().getBean("nestedStringBean-2");
-//        System.out.println(result);
+        String result = beanRegistry.getBean("nestedStringBean-2");
         assertEquals("Nested String Bean", result);
     }
 
 //    @Test
 //    void overNestedStringBean() {
-//        String result = context.getBeanRegistry().getBean("overNestedStringBean");
+//        String result = beanRegistry.getBean("overNestedStringBean");
 //        System.out.println(result);
 //        assertEquals("Nested String Bean", result);
 //    }

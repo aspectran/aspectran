@@ -13,7 +13,7 @@
 
     <bean id="totalBean" class="com.aspectran.core.sample.call.TotalBean">
         <properties>
-            <item name="numerics" type="array">
+            <item name="orderedBeans" type="array">
                 <value>#{firstBean}</value>
                 <value>#{secondBean}</value>
                 <value>#{thirdBean}</value>

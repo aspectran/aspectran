@@ -41,6 +41,9 @@ public class BooleanExpression {
     }
 
     public boolean evaluate(ChooseWhenRule chooseWhenRule) throws IllegalRuleException {
+        if (chooseWhenRule == null) {
+            throw new IllegalArgumentException("chooseWhenRule must not be null");
+        }
         if (chooseWhenRule.getExpression() == null) {
             return true;
         }

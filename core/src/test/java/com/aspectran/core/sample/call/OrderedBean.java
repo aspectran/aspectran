@@ -18,8 +18,8 @@ package com.aspectran.core.sample.call;
 /**
  * <p>Created: 2017. 3. 18.</p>
  */
-public interface NumericBean {
+public interface OrderedBean {
 
-    int getNumber();
+    int getOrder();
 
 }

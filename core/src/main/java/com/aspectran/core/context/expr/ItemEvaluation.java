@@ -66,8 +66,10 @@ public class ItemEvaluation extends TokenEvaluation implements ItemEvaluator {
 
     @Override
     public void evaluate(ItemRuleMap itemRuleMap, Map<String, Object> valueMap) {
-        for (ItemRule itemRule : itemRuleMap.values()) {
-            valueMap.put(itemRule.getName(), evaluate(itemRule));
+        if (itemRuleMap != null) {
+            for (ItemRule itemRule : itemRuleMap.values()) {
+                valueMap.put(itemRule.getName(), evaluate(itemRule));
+            }
         }
     }
 

@@ -47,7 +47,7 @@ public class ChooseWhenRule implements ActionRuleApplicable, ResponseRuleApplica
     }
 
     public void setExpression(String expression) throws IllegalRuleException {
-        this.expression = (StringUtils.hasLength(expression) ? expression : null);
+        this.expression = (StringUtils.hasText(expression) ? expression.trim() : null);
         this.represented = OgnlSupport.parseExpression(expression);
     }
 
