@@ -313,7 +313,6 @@ abstract class AbstractBeanRegistry extends AbstractBeanFactory implements BeanR
         if (logger.isDebugEnabled()) {
             logger.debug("Destroying singletons in " + this);
         }
-
         singletonScope.destroy();
     }
 

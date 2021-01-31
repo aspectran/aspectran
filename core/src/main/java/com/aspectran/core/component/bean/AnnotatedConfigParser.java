@@ -783,7 +783,7 @@ public class AnnotatedConfigParser {
         return autowireRule;
     }
 
-    private AutowireRule createAutowireRuleForFieldValue(Field field) {
+    private AutowireRule createAutowireRuleForFieldValue(Field field) throws IllegalRuleException {
         AutowireRule autowireRule = null;
         Value valueAnno = field.getAnnotation(Value.class);
         if (valueAnno != null) {
@@ -794,7 +794,7 @@ public class AnnotatedConfigParser {
                     autowireRule = new AutowireRule();
                     autowireRule.setTargetType(AutowireTargetType.FIELD_VALUE);
                     autowireRule.setTarget(field);
-                    autowireRule.setToken(tokens[0]);
+                    autowireRule.setExpression(value);
                 }
             }
         }

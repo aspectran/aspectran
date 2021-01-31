@@ -28,8 +28,17 @@ public class TestFieldValueAutowireBean {
     @Value("#{properties^property3}")
     public String property3;
 
-    @Value("%{classpath:test.properties^hello}")
+    @Value("%{classpath:test.properties^property4}")
     public String property4;
+
+    @Value("'property5'")
+    public String property5;
+
+    @Value("(1 + 2 + 3) * 5")
+    public Integer property6;
+
+    @Value("#{properties^property1} + \"/\" + #{properties^property2} + \"/\" + #{properties^property3}")
+    public String property7;
 
     public String getProperty1() {
         return property1;
@@ -45,6 +54,18 @@ public class TestFieldValueAutowireBean {
 
     public String getProperty4() {
         return property4;
+    }
+
+    public String getProperty5() {
+        return property5;
+    }
+
+    public Integer getProperty6() {
+        return property6;
+    }
+
+    public String getProperty7() {
+        return property7;
     }
 
 }

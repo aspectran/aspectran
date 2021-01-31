@@ -59,29 +59,8 @@ public class OgnlSupport {
         }
     }
 
-    public static Boolean evaluateAsBoolean(String expression, Object root) throws IllegalRuleException {
-        return evaluateAsBoolean(expression, null, root);
-    }
-
     @SuppressWarnings("rawtypes")
-    public static Boolean evaluateAsBoolean(String expression, Object represented, Object root)
-            throws IllegalRuleException {
-        if (represented == null) {
-            represented = parseExpression(expression);
-        }
-        if (represented == null) {
-            return false;
-        }
-        try {
-            Map context = createDefaultContext(root);
-            return (Boolean)Ognl.getValue(represented, context, root, Boolean.class);
-        } catch (OgnlException e) {
-            throw new IllegalRuleException("Error evaluating expression '" + expression + "'. Cause: " + e, e);
-        }
-    }
-
-    @SuppressWarnings("rawtypes")
-    private static Map createDefaultContext(Object root) {
+    public static Map createDefaultContext(Object root) {
         return Ognl.createDefaultContext(root, MEMBER_ACCESS, CLASS_RESOLVER, null);
     }
 

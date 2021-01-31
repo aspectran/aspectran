@@ -48,8 +48,8 @@ public class ChooseAction implements Executable {
     public Object execute(Activity activity) throws Exception {
         if (chooseWhenRules != null) {
             for (ChooseWhenRule chooseWhenRule : chooseWhenRules) {
-                BooleanExpression expression = new BooleanExpression(activity);
-                if (expression.evaluate(chooseWhenRule)) {
+                BooleanExpression booleanExpression = chooseWhenRule.getBooleanExpression();
+                if (booleanExpression == null || booleanExpression.evaluate(activity)) {
                     return chooseWhenRule;
                 }
             }

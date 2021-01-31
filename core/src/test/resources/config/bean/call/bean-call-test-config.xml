@@ -7,7 +7,7 @@
         This is an Aspectran configuration for testing calls.
     </description>
 
-    <append file="/config/call/bean-call-test.xml"/>
-    <append file="/config/call/template-call-test.xml"/>
+    <append file="/config/bean/call/bean-call-test.xml"/>
+    <append file="/config/bean/call/template-call-test.xml"/>
 
 </aspectran>

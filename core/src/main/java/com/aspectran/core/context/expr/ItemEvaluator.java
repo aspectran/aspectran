@@ -34,7 +34,7 @@ public interface ItemEvaluator {
 
     void evaluate(ItemRuleMap itemRuleMap, Map<String, Object> valueMap);
 
-    <T> T evaluate(ItemRule itemRule);
+    <V> V evaluate(ItemRule itemRule);
 
     MultiValueMap<String, String> evaluateAsMultiValueMap(ItemRuleMap itemRuleMap);
 

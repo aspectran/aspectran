@@ -22,6 +22,7 @@ import com.aspectran.core.component.schedule.ScheduleRuleRegistry;
 import com.aspectran.core.component.template.TemplateRuleRegistry;
 import com.aspectran.core.component.translet.TransletRuleRegistry;
 import com.aspectran.core.context.env.EnvironmentProfiles;
+import com.aspectran.core.context.expr.ExpressionEvaluation;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.AutowireRule;
@@ -528,8 +529,15 @@ public class ActivityRuleAssistant {
                     reserveBeanReference(qualifiers[0], types[0], autowireRule);
                 }
             } else if (autowireRule.getTargetType() == AutowireTargetType.FIELD_VALUE) {
-                Token token = autowireRule.getToken();
-                resolveBeanClass(token, autowireRule);
+                ExpressionEvaluation expressionEvaluation = autowireRule.getExpressionEvaluation();
+                if (expressionEvaluation != null) {
+                    Token[] tokens = expressionEvaluation.getTokens();
+                    if (tokens != null) {
+                        for (Token token : tokens) {
+                            resolveBeanClass(token, autowireRule);
+                        }
+                    }
+                }
             } else if (autowireRule.getTargetType() == AutowireTargetType.METHOD ||
                 autowireRule.getTargetType() == AutowireTargetType.CONSTRUCTOR) {
                 if (autowireRule.isRequired()) {

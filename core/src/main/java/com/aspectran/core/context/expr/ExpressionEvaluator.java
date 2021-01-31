@@ -16,28 +16,14 @@
 package com.aspectran.core.context.expr;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.context.rule.IllegalRuleException;
 
 /**
- * It supports expressions in the CHOOSE-WHEN statement,
- * and evaluates the expression as a boolean result.
+ * The Expression Evaluator.
  *
- * <p>Created: 2019-01-06</p>
- *
- * @since 6.0.0
+ * <p>Created: 2021/01/31</p>
  */
-public class BooleanExpression extends ExpressionEvaluation {
+public interface ExpressionEvaluator {
 
-    public BooleanExpression(String expression) throws IllegalRuleException {
-        super(expression);
-    }
-
-    public boolean evaluate(Activity activity) {
-        Boolean result = evaluate(activity, Boolean.class);
-        if (result == null) {
-            return false;
-        }
-        return result;
-    }
+    <V> V evaluate(Activity activity, Class<V> resultType);
 
 }

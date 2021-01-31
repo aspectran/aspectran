@@ -55,7 +55,7 @@ class AutowireBeanTest {
         builder.setDebugMode(true);
         builder.setActiveProfiles("dev", "local");
         builder.setBasePackages("com.aspectran.core.component.bean");
-        ActivityContext context = builder.build("/config/bean/bean-test-config.xml");
+        ActivityContext context = builder.build("/config/bean/autowire-bean-test-config.xml");
         beanRegistry = context.getBeanRegistry();
         templateRenderer = context.getTemplateRenderer();
     }
@@ -74,61 +74,68 @@ class AutowireBeanTest {
         String property2 = templateRenderer.render("property-2");
         String property3 = templateRenderer.render("property-3");
         String property4 = templateRenderer.render("property-4");
-        assertEquals(property1, "DEV-This is a Property-1");
-        assertEquals(property2, "DEV-This is a Property-2");
-        assertEquals(property3, "DEV-This is a Property-3");
-        assertEquals(property4, "DEV-This is a Property-1 / This is a Property-2 / This is a Property-3");
+        assertEquals("DEV-Property-1", property1);
+        assertEquals("DEV-Property-2", property2);
+        assertEquals("DEV-Property-3", property3);
+        assertEquals("DEV-Property-1 / Property-2 / Property-3", property4);
     }
 
     @Test
     void testConstructorAutowire() {
         TestConstructorAutowireBean bean = beanRegistry.getBean("bean.TestConstructorAutowireBean");
-        assertEquals("This is a Property-1", bean.bean1.getProperty1());
-        assertEquals("This is a Property-1", bean.bean2.getProperty1());
+        assertEquals("Property-1", bean.bean1.getProperty1());
+        assertEquals("Property-1", bean.bean2.getProperty1());
     }
 
     @Test
     void testConstructorAutowire2() {
         TestConstructorAutowireBean2 bean = beanRegistry.getBean("bean.TestConstructorAutowireBean2");
-        assertEquals("This is a Property-1", bean.bean1.getProperty1());
-        assertEquals("This is a Property-1", bean.bean2.getProperty1());
+        assertEquals("Property-1", bean.bean1.getProperty1());
+        assertEquals("Property-1", bean.bean2.getProperty1());
     }
 
     @Test
     void testConstructorAutowire3() {
         TestConstructorAutowireBean3 bean = beanRegistry.getBean("bean.TestConstructorAutowireBean3");
-        assertEquals("This is a Property-1", bean.bean1.getBean1().getProperty1());
+        assertEquals("Property-1", bean.bean1.getBean1().getProperty1());
         assertNull(bean.bean2);
     }
 
     @Test
     void testFieldValueAutowire() {
         TestFieldValueAutowireBean bean = beanRegistry.getBean("bean.TestFieldValueAutowireBean");
-        assertEquals(bean.getProperty1(), "This is a Property-1");
-        assertEquals(bean.getProperty2(), "This is a Property-2");
-        assertEquals(bean.getProperty3(), "This is a Property-3");
-        assertEquals(bean.getProperty4(), "property-4");
-        assertEquals(bean.getProperty4(), "property-4");
+        assertEquals("Property-1", bean.getProperty1());
+        assertEquals("Property-2", bean.getProperty2());
+        assertEquals("Property-3", bean.getProperty3());
+        assertEquals("property-4", bean.getProperty4());
+    }
+
+    @Test
+    void testFieldValueExpression() {
+        TestFieldValueAutowireBean bean = beanRegistry.getBean("bean.TestFieldValueAutowireBean");
+        assertEquals("property5", bean.getProperty5());
+        assertEquals(30, bean.getProperty6());
+        assertEquals("Property-1/Property-2/Property-3", bean.getProperty7());
     }
 
     @Test
     void testFieldAutowire() {
         TestFieldAutowireBean bean = beanRegistry.getBean("bean.TestFieldAutowireBean");
-        assertEquals(bean.getBean1().getProperty1(), "This is a Property-1");
-        assertEquals(bean.getBean1().getProperty2(), "This is a Property-2");
-        assertEquals(bean.getBean1().getProperty3(), "This is a Property-3");
-        assertEquals(bean.getBean1().getProperty4(), "property-4");
+        assertEquals("Property-1", bean.getBean1().getProperty1());
+        assertEquals("Property-2", bean.getBean1().getProperty2());
+        assertEquals("Property-3", bean.getBean1().getProperty3());
+        assertEquals("property-4", bean.getBean1().getProperty4());
         assertNull(bean.getBean2());
     }
 
     @Test
     void testMethodAutowire() {
         TestMethodAutowireBean bean = beanRegistry.getBean("bean.TestMethodAutowireBean");
-        assertEquals(bean.getBean1().getProperty1(), "This is a Property-1");
-        assertEquals(bean.getBean1().getProperty2(), "This is a Property-2");
-        assertEquals(bean.getBean1().getProperty3(), "This is a Property-3");
-        assertEquals(bean.getBean1().getProperty4(), "property-4");
-        assertNull(bean.getBean2()); // No Unique Bean
+        assertEquals("Property-1", bean.getBean1().getProperty1());
+        assertEquals("Property-2", bean.getBean1().getProperty2());
+        assertEquals("Property-3", bean.getBean1().getProperty3());
+        assertEquals("property-4", bean.getBean1().getProperty4());
+        assertNull(bean.getBean2()); // Undefined bean
     }
 
 }

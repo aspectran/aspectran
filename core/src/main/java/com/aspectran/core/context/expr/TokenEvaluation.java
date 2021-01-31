@@ -305,8 +305,8 @@ public class TokenEvaluation implements TokenEvaluator {
                 if (Modifier.isStatic(field.getModifiers())) {
                     value = ReflectionUtils.getField(field, null);
                 } else {
-                    Class<?> cls = field.getDeclaringClass();
-                    Object target = activity.getBean(cls);
+                    Class<?> beanClass = field.getDeclaringClass();
+                    Object target = activity.getBean(beanClass);
                     value = ReflectionUtils.getField(field, target);
                 }
             } else if (token.getDirectiveType() == TokenDirectiveType.METHOD) {
@@ -314,18 +314,18 @@ public class TokenEvaluation implements TokenEvaluator {
                 if (Modifier.isStatic(method.getModifiers())) {
                     value = ReflectionUtils.invokeMethod(method, null);
                 } else {
-                    Class<?> cls = method.getDeclaringClass();
-                    Object target = activity.getBean(cls);
+                    Class<?> beanClass = method.getDeclaringClass();
+                    Object target = activity.getBean(beanClass);
                     value = ReflectionUtils.invokeMethod(method, target);
                 }
             } else {
-                Class<?> cls = (Class<?>)token.getAlternativeValue();
+                Class<?> beanClass = (Class<?>)token.getAlternativeValue();
                 try {
-                    value = activity.getBean(cls);
+                    value = activity.getBean(beanClass);
                 } catch (NoSuchBeanException | NoUniqueBeanException e) {
                     if (token.getGetterName() != null) {
                         try {
-                            value = BeanUtils.getProperty(cls, token.getGetterName());
+                            value = BeanUtils.getProperty(beanClass, token.getGetterName());
                             if (value == null) {
                                 value = token.getDefaultValue();
                             }

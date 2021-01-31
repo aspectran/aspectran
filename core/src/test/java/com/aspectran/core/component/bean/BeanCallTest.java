@@ -55,7 +55,7 @@ class BeanCallTest {
         activityContextBuilder = new HybridActivityContextBuilder();
         activityContextBuilder.setBasePath(baseDir.getCanonicalPath());
 
-        ActivityContext context = activityContextBuilder.build("/config/call/call-test-config.xml");
+        ActivityContext context = activityContextBuilder.build("/config/bean/call/bean-call-test-config.xml");
         beanRegistry = context.getBeanRegistry();
         templateRenderer = context.getTemplateRenderer();
     }

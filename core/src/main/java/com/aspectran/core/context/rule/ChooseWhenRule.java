@@ -22,7 +22,7 @@ import com.aspectran.core.activity.response.RedirectResponse;
 import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.activity.response.dispatch.DispatchResponse;
 import com.aspectran.core.activity.response.transform.TransformResponseFactory;
-import com.aspectran.core.context.expr.ognl.OgnlSupport;
+import com.aspectran.core.context.expr.BooleanExpression;
 import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
 import com.aspectran.core.context.rule.ability.ResponseRuleApplicable;
 import com.aspectran.core.util.StringUtils;
@@ -34,25 +34,31 @@ import com.aspectran.core.util.StringUtils;
  */
 public class ChooseWhenRule implements ActionRuleApplicable, ResponseRuleApplicable {
 
-    private String expression;
-
-    private Object represented;
+    private BooleanExpression booleanExpression;
 
     private ActionList actionList;
 
     private Response response;
 
+    public BooleanExpression getBooleanExpression() {
+        return booleanExpression;
+    }
+
     public String getExpression() {
-        return expression;
+        if (booleanExpression != null) {
+            return booleanExpression.getExpression();
+        } else {
+            return null;
+        }
     }
 
     public void setExpression(String expression) throws IllegalRuleException {
-        this.expression = (StringUtils.hasText(expression) ? expression.trim() : null);
-        this.represented = OgnlSupport.parseExpression(expression);
-    }
-
-    public Object getRepresented() {
-        return represented;
+        expression = (StringUtils.hasText(expression) ? expression.trim() : null);
+        if (expression != null) {
+            this.booleanExpression = new BooleanExpression(expression);
+        } else {
+            this.booleanExpression = null;
+        }
     }
 
     public ActionList getActionList() {

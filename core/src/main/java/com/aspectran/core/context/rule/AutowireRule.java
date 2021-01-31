@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.context.rule;
 
-import com.aspectran.core.context.expr.token.Token;
+import com.aspectran.core.context.expr.ExpressionEvaluation;
 import com.aspectran.core.context.rule.ability.BeanReferenceable;
 import com.aspectran.core.context.rule.type.AutowireTargetType;
 import com.aspectran.core.context.rule.type.BeanRefererType;
@@ -44,9 +44,9 @@ public class AutowireRule implements BeanReferenceable {
 
     private String[] qualifiers;
 
-    private Token token;
-
     private boolean required;
+
+    private ExpressionEvaluation expressionEvaluation;
 
     public AutowireTargetType getTargetType() {
         return targetType;
@@ -89,20 +89,20 @@ public class AutowireRule implements BeanReferenceable {
         this.qualifiers = qualifiers;
     }
 
-    public Token getToken() {
-        return token;
-    }
-
-    public void setToken(Token token) {
-        this.token = token;
-    }
-
     public boolean isRequired() {
         return required;
     }
 
     public void setRequired(boolean required) {
         this.required = required;
+    }
+
+    public ExpressionEvaluation getExpressionEvaluation() {
+        return expressionEvaluation;
+    }
+
+    public void setExpression(String expression) throws IllegalRuleException {
+        this.expressionEvaluation = new ExpressionEvaluation(expression);
     }
 
     @Override
@@ -117,8 +117,10 @@ public class AutowireRule implements BeanReferenceable {
         tsb.append("target", target);
         tsb.append("types", types);
         tsb.append("qualifiers", qualifiers);
-        tsb.append("token", token);
         tsb.append("required", required);
+        if (expressionEvaluation != null) {
+            tsb.append("expression", expressionEvaluation.getExpression());
+        }
         return tsb.toString();
     }
 

@@ -42,8 +42,6 @@ class NestedBeanTest {
 
     private ActivityContextBuilder builder;
 
-    private ActivityContext context;
-
     private BeanRegistry beanRegistry;
 
     @BeforeAll
@@ -54,8 +52,8 @@ class NestedBeanTest {
         builder.setBasePath(baseDir.getCanonicalPath());
         builder.setDebugMode(true);
         builder.setActiveProfiles("dev", "debug");
-        context = builder.build("/config/bean/basic-test-config.xml");
-        beanRegistry = beanRegistry;
+        ActivityContext context = builder.build("/config/bean/nested-bean-test-config.xml");
+        beanRegistry = context.getBeanRegistry();
     }
 
     @AfterAll

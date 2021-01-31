@@ -31,11 +31,9 @@ import com.aspectran.core.component.bean.proxy.JavassistDynamicProxyBean;
 import com.aspectran.core.component.bean.proxy.JdkDynamicProxyBean;
 import com.aspectran.core.component.bean.scope.Scope;
 import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.context.expr.ExpressionEvaluator;
 import com.aspectran.core.context.expr.ItemEvaluation;
 import com.aspectran.core.context.expr.ItemEvaluator;
-import com.aspectran.core.context.expr.TokenEvaluation;
-import com.aspectran.core.context.expr.TokenEvaluator;
-import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.rule.AutowireRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.ItemRule;
@@ -307,12 +305,11 @@ abstract class AbstractBeanFactory extends AbstractComponent {
                     ReflectionUtils.setField(field, bean, value);
                 } else if (autowireRule.getTargetType() == AutowireTargetType.FIELD_VALUE) {
                     Field field = autowireRule.getTarget();
-                    Token token = autowireRule.getToken();
-
-                    TokenEvaluator evaluator = new TokenEvaluation(activity);
-                    Object value = evaluator.evaluate(token);
-
-                    ReflectionUtils.setField(field, bean, value);
+                    ExpressionEvaluator evaluator = autowireRule.getExpressionEvaluation();
+                    if (evaluator != null) {
+                        Object value = evaluator.evaluate(activity, Object.class);
+                        ReflectionUtils.setField(field, bean, value);
+                    }
                 } else if (autowireRule.getTargetType() == AutowireTargetType.METHOD) {
                     Method method = autowireRule.getTarget();
                     Class<?>[] types = autowireRule.getTypes();

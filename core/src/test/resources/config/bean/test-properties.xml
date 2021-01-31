@@ -6,9 +6,9 @@
     <bean id="properties" class="java.util.HashMap">
         <arguments>
             <item type="map">
-                <entry name="property1">This is a Property-1</entry>
-                <entry name="property2">This is a Property-2</entry>
-                <entry name="property3">This is a Property-3</entry>
+                <entry name="property1">Property-1</entry>
+                <entry name="property2">Property-2</entry>
+                <entry name="property3">Property-3</entry>
             </item>
         </arguments>
     </bean>
