@@ -35,20 +35,21 @@ import java.util.Map;
  */
 public class ExpressionEvaluation implements ExpressionEvaluator {
 
-    private static final String OGNL_VARIABLE_PREFIX = "#";
+    private static final String OGNL_TOKEN_VARIABLE_PREFIX = "#__";
 
     private static final String TOKEN_VARIABLE_PREFIX = "__";
 
+    private static final int TOKEN_VARIABLE_FIRST_INDEX = 1;
+
     private final String expression;
 
-    private final Token[] tokens;
+    private Object represented;
 
-    private final Object represented;
+    private Token[] tokens;
 
     public ExpressionEvaluation(String expression) throws IllegalRuleException {
         this.expression = expression;
-        this.tokens = makeTokens(expression);
-        this.represented = parseExpression(expression, this.tokens);
+        parseExpression(expression);
     }
 
     public String getExpression() {
@@ -71,14 +72,23 @@ public class ExpressionEvaluation implements ExpressionEvaluator {
         try {
             ActivityData root = (activity.getTranslet() != null ? activity.getTranslet().getActivityData() : null);
             Map context = OgnlSupport.createDefaultContext(root);
-            if (tokens != null) {
+            if (tokens != null && tokens.length > 0) {
                 TokenEvaluator evaluator = new TokenEvaluation(activity);
-                int index = 1;
-                for (Token token : tokens) {
+                if (tokens.length == 1) {
+                    Token token = tokens[0];
                     if (token.getType() != TokenType.TEXT) {
-                        String name = TOKEN_VARIABLE_PREFIX + index++;
+                        String name = TOKEN_VARIABLE_PREFIX + TOKEN_VARIABLE_FIRST_INDEX;
                         Object value = evaluator.evaluate(token);
                         context.put(name, value);
+                    }
+                } else {
+                    int index = TOKEN_VARIABLE_FIRST_INDEX;
+                    for (Token token : tokens) {
+                        if (token.getType() != TokenType.TEXT) {
+                            String name = TOKEN_VARIABLE_PREFIX + index++;
+                            Object value = evaluator.evaluate(token);
+                            context.put(name, value);
+                        }
                     }
                 }
             }
@@ -88,24 +98,31 @@ public class ExpressionEvaluation implements ExpressionEvaluator {
         }
     }
 
-    private Token[] makeTokens(String expression) {
-        return TokenParser.makeTokens(expression, true);
-    }
-
-    private Object parseExpression(String expression, Token[] tokens) throws IllegalRuleException {
-        if (tokens != null) {
-            StringBuilder sb = new StringBuilder();
-            int index = 1;
-            for (Token token : tokens) {
+    private void parseExpression(String expression) throws IllegalRuleException {
+        tokens = TokenParser.makeTokens(expression, true);
+        if (tokens != null && tokens.length > 0) {
+            if (tokens.length == 1) {
+                Token token = tokens[0];
                 if (token.getType() == TokenType.TEXT) {
-                    sb.append(token.getDefaultValue());
+                    represented = OgnlSupport.parseExpression(token.getDefaultValue());
                 } else {
-                    sb.append(OGNL_VARIABLE_PREFIX).append(TOKEN_VARIABLE_PREFIX).append(index++);
+                    String ognlVariableName = OGNL_TOKEN_VARIABLE_PREFIX + TOKEN_VARIABLE_FIRST_INDEX;
+                    represented = OgnlSupport.parseExpression(ognlVariableName);
                 }
+            } else {
+                StringBuilder sb = new StringBuilder();
+                int index = TOKEN_VARIABLE_FIRST_INDEX;
+                for (Token token : tokens) {
+                    if (token.getType() == TokenType.TEXT) {
+                        sb.append(token.getDefaultValue());
+                    } else {
+                        sb.append(OGNL_TOKEN_VARIABLE_PREFIX).append(index++);
+                    }
+                }
+                represented = OgnlSupport.parseExpression(sb.toString());
             }
-            return OgnlSupport.parseExpression(sb.toString());
         } else {
-            return OgnlSupport.parseExpression(expression);
+            represented = OgnlSupport.parseExpression(expression);
         }
     }
 

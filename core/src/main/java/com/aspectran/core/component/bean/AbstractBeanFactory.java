@@ -307,7 +307,7 @@ abstract class AbstractBeanFactory extends AbstractComponent {
                     Field field = autowireRule.getTarget();
                     ExpressionEvaluator evaluator = autowireRule.getExpressionEvaluation();
                     if (evaluator != null) {
-                        Object value = evaluator.evaluate(activity, Object.class);
+                        Object value = evaluator.evaluate(activity, null);
                         ReflectionUtils.setField(field, bean, value);
                     }
                 } else if (autowireRule.getTargetType() == AutowireTargetType.METHOD) {

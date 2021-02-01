@@ -116,14 +116,12 @@ public class TokenParser {
         if (expression == null) {
             return null;
         }
-        Token[] tokens;
         if (tokenize) {
-            tokens = parse(expression);
+            return parse(expression);
         } else {
-            tokens = new Token[1];
-            tokens[0] = new Token(expression);
+            Token token = new Token(expression);
+            return new Token[] { token };
         }
-        return tokens;
     }
 
     /**
