@@ -57,8 +57,6 @@ import com.aspectran.core.component.bean.annotation.Transform;
 import com.aspectran.core.component.bean.annotation.Value;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.env.EnvironmentProfiles;
-import com.aspectran.core.context.expr.token.Token;
-import com.aspectran.core.context.expr.token.TokenParser;
 import com.aspectran.core.context.rule.AnnotatedActionRule;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
@@ -784,21 +782,18 @@ public class AnnotatedConfigParser {
     }
 
     private AutowireRule createAutowireRuleForFieldValue(Field field) throws IllegalRuleException {
-        AutowireRule autowireRule = null;
         Value valueAnno = field.getAnnotation(Value.class);
         if (valueAnno != null) {
-            String value = StringUtils.emptyToNull(valueAnno.value());
-            if (value != null) {
-                Token[] tokens = TokenParser.parse(value);
-                if (tokens != null && tokens.length > 0) {
-                    autowireRule = new AutowireRule();
-                    autowireRule.setTargetType(AutowireTargetType.FIELD_VALUE);
-                    autowireRule.setTarget(field);
-                    autowireRule.setExpression(value);
-                }
+            String expression = StringUtils.emptyToNull(valueAnno.value());
+            if (expression != null) {
+                AutowireRule autowireRule = new AutowireRule();
+                autowireRule.setTargetType(AutowireTargetType.FIELD_VALUE);
+                autowireRule.setTarget(field);
+                autowireRule.setExpression(expression);
+                return autowireRule;
             }
         }
-        return autowireRule;
+        return null;
     }
 
     private AutowireRule createAutowireRuleForMethod(Method method) {
