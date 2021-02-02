@@ -26,6 +26,7 @@ import com.aspectran.core.context.expr.ExpressionEvaluation;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.AutowireRule;
+import com.aspectran.core.context.rule.AutowireTargetRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.DescriptionRule;
 import com.aspectran.core.context.rule.EnvironmentRule;
@@ -476,14 +477,14 @@ public class ActivityRuleAssistant {
         if (token != null && token.getType() == TokenType.BEAN) {
             if (token.getDirectiveType() == TokenDirectiveType.FIELD) {
                 if (token.getGetterName() == null) {
-                    throw new IllegalRuleException("Target field name is unspecified token " + token);
+                    throw new IllegalRuleException("Token with no target field name specified: " + token);
                 }
-                Class<?> cls = loadClass(token.getValue(), token);
+                Class<?> beanClass = loadClass(token.getValue(), token);
                 try {
-                    Field field = cls.getField(token.getGetterName());
+                    Field field = beanClass.getField(token.getGetterName());
                     token.setAlternativeValue(field);
                     if (!Modifier.isStatic(field.getModifiers())) {
-                        reserveBeanReference(cls, referenceable);
+                        reserveBeanReference(beanClass, referenceable);
                     }
                 } catch (NoSuchFieldException e) {
                     throw new IllegalRuleException("Could not access field: " + token.getGetterName() +
@@ -491,25 +492,33 @@ public class ActivityRuleAssistant {
                 }
             } else if (token.getDirectiveType() == TokenDirectiveType.METHOD) {
                 if (token.getGetterName() == null) {
-                    throw new IllegalRuleException("Target method name is unspecified token " + token);
+                    throw new IllegalRuleException("Token with no target method name specified: " + token);
                 }
-                Class<?> cls = loadClass(token.getValue(), token);
+                Class<?> beanClass = loadClass(token.getValue(), token);
                 try {
-                    Method method = cls.getMethod(token.getGetterName());
+                    Method method = beanClass.getMethod(token.getGetterName());
                     token.setAlternativeValue(method);
                     if (!Modifier.isStatic(method.getModifiers())) {
-                        reserveBeanReference(cls, referenceable);
+                        reserveBeanReference(beanClass, referenceable);
                     }
                 } catch (NoSuchMethodException e) {
                     throw new IllegalRuleException("Could not access method: " + token.getGetterName() +
                             " on " + ruleAppendHandler.getCurrentRuleAppender().getQualifiedName() + " " + token, e);
                 }
             } else if (token.getDirectiveType() == TokenDirectiveType.CLASS) {
-                Class<?> cls = loadClass(token.getValue(), token);
-                token.setAlternativeValue(cls);
-                reserveBeanReference(cls, referenceable);
+                Class<?> beanClass = loadClass(token.getValue(), token);
+                token.setAlternativeValue(beanClass);
+                reserveBeanReference(beanClass, referenceable);
             } else {
                 reserveBeanReference(token.getName(), referenceable);
+            }
+        }
+    }
+
+    private void resolveBeanClass(Token[] tokens, BeanReferenceable referenceable) throws IllegalRuleException {
+        if (tokens != null) {
+            for (Token token : tokens) {
+                resolveBeanClass(token, referenceable);
             }
         }
     }
@@ -524,27 +533,49 @@ public class ActivityRuleAssistant {
         if (autowireRule != null) {
             if (autowireRule.getTargetType() == AutowireTargetType.FIELD) {
                 if (autowireRule.isRequired()) {
-                    Class<?>[] types = autowireRule.getTypes();
-                    String[] qualifiers = autowireRule.getQualifiers();
-                    reserveBeanReference(qualifiers[0], types[0], autowireRule);
+                    AutowireTargetRule[] autowireTargetRules = autowireRule.getAutowireTargetRules();
+                    if (autowireTargetRules == null || autowireTargetRules.length == 0) {
+                        throw new IllegalStateException("autowireTargetRules must not be null or empty");
+                    }
+                    ExpressionEvaluation expressionEvaluation = autowireTargetRules[0].getExpressionEvaluation();
+                    if (expressionEvaluation != null) {
+                        Token[] tokens = expressionEvaluation.getTokens();
+                        resolveBeanClass(tokens, autowireRule);
+                    } else {
+                        Class<?> type = autowireTargetRules[0].getType();
+                        String qualifier = autowireTargetRules[0].getQualifier();
+                        reserveBeanReference(qualifier, type, autowireRule);
+                    }
                 }
             } else if (autowireRule.getTargetType() == AutowireTargetType.FIELD_VALUE) {
-                ExpressionEvaluation expressionEvaluation = autowireRule.getExpressionEvaluation();
-                if (expressionEvaluation != null) {
-                    Token[] tokens = expressionEvaluation.getTokens();
-                    if (tokens != null) {
-                        for (Token token : tokens) {
-                            resolveBeanClass(token, autowireRule);
-                        }
+                if (autowireRule.isRequired()) {
+                    AutowireTargetRule[] autowireTargetRules = autowireRule.getAutowireTargetRules();
+                    if (autowireTargetRules == null || autowireTargetRules.length == 0) {
+                        throw new IllegalStateException("autowireTargetRules must not be null or empty");
+                    }
+                    ExpressionEvaluation expressionEvaluation = autowireTargetRules[0].getExpressionEvaluation();
+                    if (expressionEvaluation != null) {
+                        Token[] tokens = expressionEvaluation.getTokens();
+                        resolveBeanClass(tokens, autowireRule);
                     }
                 }
             } else if (autowireRule.getTargetType() == AutowireTargetType.METHOD ||
                 autowireRule.getTargetType() == AutowireTargetType.CONSTRUCTOR) {
                 if (autowireRule.isRequired()) {
-                    Class<?>[] types = autowireRule.getTypes();
-                    String[] qualifiers = autowireRule.getQualifiers();
-                    for (int i = 0; i < types.length; i++) {
-                        reserveBeanReference(qualifiers[i], types[i], autowireRule);
+                    AutowireTargetRule[] autowireTargetRules = autowireRule.getAutowireTargetRules();
+                    if (autowireTargetRules == null || autowireTargetRules.length == 0) {
+                        throw new IllegalStateException("autowireTargetRules must not be null or empty");
+                    }
+                    for (AutowireTargetRule autowireTargetRule : autowireTargetRules) {
+                        ExpressionEvaluation expressionEvaluation = autowireTargetRule.getExpressionEvaluation();
+                        if (expressionEvaluation != null) {
+                            Token[] tokens = expressionEvaluation.getTokens();
+                            resolveBeanClass(tokens, autowireRule);
+                        } else {
+                            Class<?> type = autowireTargetRule.getType();
+                            String qualifier = autowireTargetRule.getQualifier();
+                            reserveBeanReference(qualifier, type, autowireRule);
+                        }
                     }
                 }
             }

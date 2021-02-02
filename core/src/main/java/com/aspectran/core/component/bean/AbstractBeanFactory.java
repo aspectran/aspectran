@@ -35,6 +35,7 @@ import com.aspectran.core.context.expr.ExpressionEvaluator;
 import com.aspectran.core.context.expr.ItemEvaluation;
 import com.aspectran.core.context.expr.ItemEvaluator;
 import com.aspectran.core.context.rule.AutowireRule;
+import com.aspectran.core.context.rule.AutowireTargetRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
@@ -49,7 +50,6 @@ import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -108,11 +108,11 @@ abstract class AbstractBeanFactory extends AbstractComponent {
             Object[] args;
             Class<?>[] argTypes;
 
-            ItemEvaluator evaluator = null;
+            ItemEvaluator itemEvaluator = null;
             ItemRuleMap constructorArgumentItemRuleMap = beanRule.getConstructorArgumentItemRuleMap();
             if (constructorArgumentItemRuleMap != null && !constructorArgumentItemRuleMap.isEmpty()) {
-                evaluator = new ItemEvaluation(activity);
-                Map<String, Object> valueMap = evaluator.evaluate(constructorArgumentItemRuleMap);
+                itemEvaluator = new ItemEvaluation(activity);
+                Map<String, Object> valueMap = itemEvaluator.evaluate(constructorArgumentItemRuleMap);
                 args = new Object[constructorArgumentItemRuleMap.size()];
                 argTypes = new Class<?>[constructorArgumentItemRuleMap.size()];
                 int i = 0;
@@ -125,27 +125,40 @@ abstract class AbstractBeanFactory extends AbstractComponent {
             } else {
                 AutowireRule ctorAutowireRule = beanRule.getConstructorAutowireRule();
                 if (ctorAutowireRule != null) {
-                    Class<?>[] types = ctorAutowireRule.getTypes();
-                    String[] qualifiers = ctorAutowireRule.getQualifiers();
-                    args = new Object[types.length];
-                    argTypes = new Class<?>[types.length];
-                    for (int i = 0; i < types.length; i++) {
-                        if (ctorAutowireRule.isRequired()) {
-                            try {
-                                args[i] = activity.getBean(types[i], qualifiers[i]);
-                            } catch (NoSuchBeanException | NoUniqueBeanException e) {
+                    AutowireTargetRule[] autowireTargetRules = ctorAutowireRule.getAutowireTargetRules();
+                    if (autowireTargetRules == null || autowireTargetRules.length == 0) {
+                        throw new IllegalStateException("autowireTargetRules must not be null or empty");
+                    }
+                    args = new Object[autowireTargetRules.length];
+                    argTypes = new Class<?>[autowireTargetRules.length];
+                    for (int i = 0; i < autowireTargetRules.length; i++) {
+                        Class<?> type = autowireTargetRules[i].getType();
+                        ExpressionEvaluator expressionEvaluator = autowireTargetRules[i].getExpressionEvaluation();
+                        if (expressionEvaluator != null) {
+                            args[i] = expressionEvaluator.evaluate(activity, null);
+                            if (ctorAutowireRule.isRequired() && args[i] == null) {
                                 throw new BeanCreationException("Could not autowire constructor: " +
                                         ctorAutowireRule, beanRule);
                             }
                         } else {
-                            try {
-                                args[i] = activity.getBean(types[i], qualifiers[i]);
-                            } catch (NoSuchBeanException | NoUniqueBeanException e) {
-                                args[i] = null;
-                                logger.warn(e.getMessage());
+                            String qualifier = autowireTargetRules[i].getQualifier();
+                            if (ctorAutowireRule.isRequired()) {
+                                try {
+                                    args[i] = activity.getBean(type, qualifier);
+                                } catch (NoSuchBeanException | NoUniqueBeanException e) {
+                                    throw new BeanCreationException("Could not autowire constructor: " +
+                                            ctorAutowireRule, beanRule);
+                                }
+                            } else {
+                                try {
+                                    args[i] = activity.getBean(type, qualifier);
+                                } catch (NoSuchBeanException | NoUniqueBeanException e) {
+                                    args[i] = null;
+                                    logger.warn(e.getMessage());
+                                }
                             }
                         }
-                        argTypes[i] = types[i];
+                        argTypes[i] = type;
                     }
                 } else {
                     args = MethodUtils.EMPTY_OBJECT_ARRAY;
@@ -164,11 +177,11 @@ abstract class AbstractBeanFactory extends AbstractComponent {
 
             ItemRuleMap propertyItemRuleMap = beanRule.getPropertyItemRuleMap();
             if (propertyItemRuleMap != null && !propertyItemRuleMap.isEmpty()) {
-                if (evaluator == null) {
-                    evaluator = new ItemEvaluation(activity);
+                if (itemEvaluator == null) {
+                    itemEvaluator = new ItemEvaluation(activity);
                 }
                 for (Map.Entry<String, ItemRule> entry : propertyItemRuleMap.entrySet()) {
-                    Object value = evaluator.evaluate(entry.getValue());
+                    Object value = itemEvaluator.evaluate(entry.getValue());
                     MethodUtils.invokeSetter(bean, entry.getKey(), value);
                 }
             }
@@ -281,60 +294,79 @@ abstract class AbstractBeanFactory extends AbstractComponent {
         if (beanRule.getAutowireRuleList() != null) {
             for (AutowireRule autowireRule : beanRule.getAutowireRuleList()) {
                 if (autowireRule.getTargetType() == AutowireTargetType.FIELD) {
-                    Field field = autowireRule.getTarget();
-                    Class<?>[] types = autowireRule.getTypes();
-                    String[] qualifiers = autowireRule.getQualifiers();
-
+                    AutowireTargetRule[] autowireTargetRules = autowireRule.getAutowireTargetRules();
+                    if (autowireTargetRules == null || autowireTargetRules.length == 0) {
+                        throw new IllegalStateException("autowireTargetRules must not be null or empty");
+                    }
                     Object value;
-                    if (autowireRule.isRequired()) {
-                        try {
-                            value = activity.getBean(types[0], qualifiers[0]);
-                        } catch (NoSuchBeanException | NoUniqueBeanException e) {
-                            throw new BeanCreationException("Could not autowire field: " +
-                                    autowireRule, beanRule);
-                        }
-                    } else {
-                        try {
-                            value = activity.getBean(types[0], qualifiers[0]);
-                        } catch (NoSuchBeanException | NoUniqueBeanException e) {
-                            value = null;
-                            logger.warn(e.getMessage());
-                        }
-                    }
-
-                    ReflectionUtils.setField(field, bean, value);
-                } else if (autowireRule.getTargetType() == AutowireTargetType.FIELD_VALUE) {
-                    Field field = autowireRule.getTarget();
-                    ExpressionEvaluator evaluator = autowireRule.getExpressionEvaluation();
+                    ExpressionEvaluator evaluator = autowireTargetRules[0].getExpressionEvaluation();
                     if (evaluator != null) {
-                        Object value = evaluator.evaluate(activity, null);
-                        ReflectionUtils.setField(field, bean, value);
-                    }
-                } else if (autowireRule.getTargetType() == AutowireTargetType.METHOD) {
-                    Method method = autowireRule.getTarget();
-                    Class<?>[] types = autowireRule.getTypes();
-                    String[] qualifiers = autowireRule.getQualifiers();
-
-                    Object[] args = new Object[types.length];
-                    for (int i = 0; i < types.length; i++) {
+                        value = evaluator.evaluate(activity, null);
+                    } else {
+                        Class<?> type = autowireTargetRules[0].getType();
+                        String qualifier = autowireTargetRules[0].getQualifier();
                         if (autowireRule.isRequired()) {
                             try {
-                                args[i] = activity.getBean(types[i], qualifiers[i]);
+                                value = activity.getBean(type, qualifier);
                             } catch (NoSuchBeanException | NoUniqueBeanException e) {
-                                throw new BeanCreationException("Could not autowire method: " +
+                                throw new BeanCreationException("Could not autowire field: " +
                                         autowireRule, beanRule);
                             }
                         } else {
                             try {
-                                args[i] = activity.getBean(types[i], qualifiers[i]);
+                                value = activity.getBean(type, qualifier);
                             } catch (NoSuchBeanException | NoUniqueBeanException e) {
-                                args[i] = null;
+                                value = null;
                                 logger.warn(e.getMessage());
                             }
                         }
                     }
-
-                    ReflectionUtils.invokeMethod(method, bean, args);
+                    ReflectionUtils.setField(autowireRule.getTarget(), bean, value);
+                } else if (autowireRule.getTargetType() == AutowireTargetType.FIELD_VALUE) {
+                    AutowireTargetRule[] autowireTargetRules = autowireRule.getAutowireTargetRules();
+                    if (autowireTargetRules == null || autowireTargetRules.length == 0) {
+                        throw new IllegalStateException("autowireTargetRules must not be null or empty");
+                    }
+                    ExpressionEvaluator evaluator = autowireTargetRules[0].getExpressionEvaluation();
+                    if (evaluator != null) {
+                        Object value = evaluator.evaluate(activity, null);
+                        ReflectionUtils.setField(autowireRule.getTarget(), bean, value);
+                    }
+                } else if (autowireRule.getTargetType() == AutowireTargetType.METHOD) {
+                    AutowireTargetRule[] autowireTargetRules = autowireRule.getAutowireTargetRules();
+                    if (autowireTargetRules == null || autowireTargetRules.length == 0) {
+                        throw new IllegalStateException("autowireTargetRules must not be null or empty");
+                    }
+                    Object[] args = new Object[autowireTargetRules.length];
+                    for (int i = 0; i < autowireTargetRules.length; i++) {
+                        ExpressionEvaluator expressionEvaluator = autowireTargetRules[i].getExpressionEvaluation();
+                        if (expressionEvaluator != null) {
+                            args[i] = expressionEvaluator.evaluate(activity, null);
+                            if (autowireRule.isRequired() && args[i] == null) {
+                                throw new BeanCreationException("Could not autowire method: " +
+                                        autowireRule, beanRule);
+                            }
+                        } else {
+                            Class<?> type = autowireTargetRules[i].getType();
+                            String qualifier = autowireTargetRules[i].getQualifier();
+                            if (autowireRule.isRequired()) {
+                                try {
+                                    args[i] = activity.getBean(type, qualifier);
+                                } catch (NoSuchBeanException | NoUniqueBeanException e) {
+                                    throw new BeanCreationException("Could not autowire method: " +
+                                            autowireRule, beanRule);
+                                }
+                            } else {
+                                try {
+                                    args[i] = activity.getBean(type, qualifier);
+                                } catch (NoSuchBeanException | NoUniqueBeanException e) {
+                                    args[i] = null;
+                                    logger.warn(e.getMessage());
+                                }
+                            }
+                        }
+                    }
+                    ReflectionUtils.invokeMethod(autowireRule.getTarget(), bean, args);
                 }
             }
         }

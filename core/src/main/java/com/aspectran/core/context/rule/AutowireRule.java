@@ -15,7 +15,6 @@
  */
 package com.aspectran.core.context.rule;
 
-import com.aspectran.core.context.expr.ExpressionEvaluation;
 import com.aspectran.core.context.rule.ability.BeanReferenceable;
 import com.aspectran.core.context.rule.type.AutowireTargetType;
 import com.aspectran.core.context.rule.type.BeanRefererType;
@@ -40,13 +39,9 @@ public class AutowireRule implements BeanReferenceable {
 
     private Object target;
 
-    private Class<?>[] types;
-
-    private String[] qualifiers;
+    private AutowireTargetRule[] autowireTargetRules;
 
     private boolean required;
-
-    private ExpressionEvaluation expressionEvaluation;
 
     public AutowireTargetType getTargetType() {
         return targetType;
@@ -73,20 +68,12 @@ public class AutowireRule implements BeanReferenceable {
         this.target = method;
     }
 
-    public Class<?>[] getTypes() {
-        return types;
+    public AutowireTargetRule[] getAutowireTargetRules() {
+        return autowireTargetRules;
     }
 
-    public void setTypes(Class<?>... types) {
-        this.types = types;
-    }
-
-    public String[] getQualifiers() {
-        return qualifiers;
-    }
-
-    public void setQualifiers(String... qualifiers) {
-        this.qualifiers = qualifiers;
+    public void setAutowireTargetRules(AutowireTargetRule... autowireTargetRules) {
+        this.autowireTargetRules = autowireTargetRules;
     }
 
     public boolean isRequired() {
@@ -95,14 +82,6 @@ public class AutowireRule implements BeanReferenceable {
 
     public void setRequired(boolean required) {
         this.required = required;
-    }
-
-    public ExpressionEvaluation getExpressionEvaluation() {
-        return expressionEvaluation;
-    }
-
-    public void setExpression(String expression) throws IllegalRuleException {
-        this.expressionEvaluation = new ExpressionEvaluation(expression);
     }
 
     @Override
@@ -115,12 +94,8 @@ public class AutowireRule implements BeanReferenceable {
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.append("targetType", targetType);
         tsb.append("target", target);
-        tsb.append("types", types);
-        tsb.append("qualifiers", qualifiers);
+        tsb.append("targetRules", autowireTargetRules);
         tsb.append("required", required);
-        if (expressionEvaluation != null) {
-            tsb.append("expression", expressionEvaluation.getExpression());
-        }
         return tsb.toString();
     }
 

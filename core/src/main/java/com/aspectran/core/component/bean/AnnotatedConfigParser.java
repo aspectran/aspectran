@@ -61,6 +61,7 @@ import com.aspectran.core.context.rule.AnnotatedActionRule;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.AutowireRule;
+import com.aspectran.core.context.rule.AutowireTargetRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.DescriptionRule;
 import com.aspectran.core.context.rule.DispatchRule;
@@ -295,8 +296,10 @@ public class AnnotatedConfigParser {
             for (Method method : beanClass.getDeclaredMethods()) {
                 if (method.isAnnotationPresent(Autowired.class)) {
                     AutowireRule autowireRule = createAutowireRuleForMethod(method);
-                    beanRule.addAutowireRule(autowireRule);
-                    configRelater.relate(autowireRule);
+                    if (autowireRule != null) {
+                        beanRule.addAutowireRule(autowireRule);
+                        configRelater.relate(autowireRule);
+                    }
                 } else if (method.isAnnotationPresent(Required.class)) {
                     BeanRuleAnalyzer.checkRequiredProperty(beanRule, method);
                 } else if (method.isAnnotationPresent(Initialize.class)) {
@@ -733,50 +736,69 @@ public class AnnotatedConfigParser {
         return null;
     }
 
-    private AutowireRule createAutowireRuleForConstructor(Constructor<?> candidate) {
+    private AutowireRule createAutowireRuleForConstructor(Constructor<?> candidate) throws IllegalRuleException {
         java.lang.reflect.Parameter[] params = candidate.getParameters();
         if (params.length == 0) {
             return null;
         }
-        Class<?>[] paramTypes = new Class<?>[params.length];
-        String[] paramQualifiers = new String[params.length];
+
+        AutowireTargetRule[] autowireTargetRules = AutowireTargetRule.newArrayInstance(params.length);
         for (int i = 0; i < params.length; i++) {
-            String paramQualifier = null;
-            Qualifier paramQualifierAnno = params[i].getAnnotation(Qualifier.class);
-            if (paramQualifierAnno != null) {
-                paramQualifier = StringUtils.emptyToNull(paramQualifierAnno.value());
+            autowireTargetRules[i].setType(params[i].getType());
+            Value ValueAnno = params[i].getAnnotation(Value.class);
+            if (ValueAnno != null) {
+                String expression = StringUtils.emptyToNull(ValueAnno.value());
+                if (expression != null) {
+                    autowireTargetRules[i].setExpression(expression);
+                }
+            } else {
+                Qualifier qualifierAnno = params[i].getAnnotation(Qualifier.class);
+                if (qualifierAnno != null) {
+                    String qualifier = StringUtils.emptyToNull(qualifierAnno.value());
+                    if (qualifier != null) {
+                        autowireTargetRules[i].setQualifier(qualifier);
+                    }
+                }
             }
-            paramTypes[i] = params[i].getType();
-            paramQualifiers[i] = paramQualifier;
         }
 
-        boolean required = false;
         Autowired autowiredAnno = candidate.getAnnotation(Autowired.class);
-        if (autowiredAnno != null) {
-            required = autowiredAnno.required();
-        }
+        boolean required = (autowiredAnno != null && autowiredAnno.required());
 
         AutowireRule autowireRule = new AutowireRule();
         autowireRule.setTargetType(AutowireTargetType.CONSTRUCTOR);
         autowireRule.setTarget(candidate);
-        autowireRule.setTypes(paramTypes);
-        autowireRule.setQualifiers(paramQualifiers);
+        autowireRule.setAutowireTargetRules(autowireTargetRules);
         autowireRule.setRequired(required);
         return autowireRule;
     }
 
-    private AutowireRule createAutowireRuleForField(Field field) {
+    private AutowireRule createAutowireRuleForField(Field field) throws IllegalRuleException {
+        AutowireTargetRule autowireTargetRule = AutowireTargetRule.newInstance();
+        autowireTargetRule.setType(field.getType());
+        Value ValueAnno = field.getAnnotation(Value.class);
+        if (ValueAnno != null) {
+            String expression = StringUtils.emptyToNull(ValueAnno.value());
+            if (expression != null) {
+                autowireTargetRule.setExpression(expression);
+            }
+        } else {
+            Qualifier qualifierAnno = field.getAnnotation(Qualifier.class);
+            if (qualifierAnno != null) {
+                String qualifier = StringUtils.emptyToNull(qualifierAnno.value());
+                if (qualifier != null) {
+                    autowireTargetRule.setQualifier(qualifier);
+                }
+            }
+        }
+
         Autowired autowiredAnno = field.getAnnotation(Autowired.class);
         boolean required = (autowiredAnno == null || autowiredAnno.required());
-        Qualifier qualifierAnno = field.getAnnotation(Qualifier.class);
-        String qualifier = (qualifierAnno != null ? StringUtils.emptyToNull(qualifierAnno.value()) : null);
-        Class<?> type = field.getType();
 
         AutowireRule autowireRule = new AutowireRule();
         autowireRule.setTargetType(AutowireTargetType.FIELD);
         autowireRule.setTarget(field);
-        autowireRule.setTypes(type);
-        autowireRule.setQualifiers(qualifier);
+        autowireRule.setAutowireTargetRules(autowireTargetRule);
         autowireRule.setRequired(required);
         return autowireRule;
     }
@@ -786,40 +808,65 @@ public class AnnotatedConfigParser {
         if (valueAnno != null) {
             String expression = StringUtils.emptyToNull(valueAnno.value());
             if (expression != null) {
+                AutowireTargetRule autowireTargetRule = AutowireTargetRule.newInstance();
+                autowireTargetRule.setExpression(expression);
+
+                Autowired autowiredAnno = field.getAnnotation(Autowired.class);
+                boolean required = (autowiredAnno != null && autowiredAnno.required());
+
                 AutowireRule autowireRule = new AutowireRule();
                 autowireRule.setTargetType(AutowireTargetType.FIELD_VALUE);
                 autowireRule.setTarget(field);
-                autowireRule.setExpression(expression);
+                autowireRule.setAutowireTargetRules(autowireTargetRule);
+                autowireRule.setRequired(required);
                 return autowireRule;
             }
         }
         return null;
     }
 
-    private AutowireRule createAutowireRuleForMethod(Method method) {
-        Autowired autowiredAnno = method.getAnnotation(Autowired.class);
-        boolean required = (autowiredAnno == null || autowiredAnno.required());
-        Qualifier typicalQualifierAnno = method.getAnnotation(Qualifier.class);
-        String typicalQualifier = (typicalQualifierAnno != null ? typicalQualifierAnno.value() : null);
-
+    private AutowireRule createAutowireRuleForMethod(Method method) throws IllegalRuleException {
         java.lang.reflect.Parameter[] params = method.getParameters();
-        Class<?>[] paramTypes = new Class<?>[params.length];
-        String[] paramQualifiers = new String[params.length];
+        if (params.length == 0) {
+            return null;
+        }
+
+        String typicalQualifier = null;
+        Qualifier typicalQualifierAnno = method.getAnnotation(Qualifier.class);
+        if (typicalQualifierAnno != null) {
+            typicalQualifier = StringUtils.emptyToNull(typicalQualifierAnno.value());
+        }
+
+        AutowireTargetRule[] autowireTargetRules = AutowireTargetRule.newArrayInstance(params.length);
         for (int i = 0; i < params.length; i++) {
-            paramTypes[i] = params[i].getType();
-            Qualifier qualifierAnno = params[i].getAnnotation(Qualifier.class);
-            if (qualifierAnno != null) {
-                paramQualifiers[i] = StringUtils.emptyToNull(qualifierAnno.value());
+            autowireTargetRules[i].setType(params[i].getType());
+            Value ValueAnno = params[i].getAnnotation(Value.class);
+            if (ValueAnno != null) {
+                String expression = StringUtils.emptyToNull(ValueAnno.value());
+                if (expression != null) {
+                    autowireTargetRules[i].setExpression(expression);
+                }
             } else {
-                paramQualifiers[i] = typicalQualifier;
+                Qualifier qualifierAnno = params[i].getAnnotation(Qualifier.class);
+                String qualifier;
+                if (qualifierAnno != null) {
+                    qualifier = StringUtils.emptyToNull(qualifierAnno.value());
+                } else {
+                    qualifier = typicalQualifier;
+                }
+                if (qualifier != null) {
+                    autowireTargetRules[i].setQualifier(qualifier);
+                }
             }
         }
+
+        Autowired autowiredAnno = method.getAnnotation(Autowired.class);
+        boolean required = (autowiredAnno == null || autowiredAnno.required());
 
         AutowireRule autowireRule = new AutowireRule();
         autowireRule.setTargetType(AutowireTargetType.METHOD);
         autowireRule.setTarget(method);
-        autowireRule.setTypes(paramTypes);
-        autowireRule.setQualifiers(paramQualifiers);
+        autowireRule.setAutowireTargetRules(autowireTargetRules);
         autowireRule.setRequired(required);
         return autowireRule;
     }
