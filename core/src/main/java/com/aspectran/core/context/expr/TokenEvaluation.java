@@ -353,7 +353,7 @@ public class TokenEvaluation implements TokenEvaluator {
     }
 
     /**
-     * Invoke bean's property.
+     * Return the value of the specified property of the specified bean.
      *
      * @param bean the bean object
      * @param propertyName the property name

@@ -27,8 +27,8 @@ public class TestFieldAutowireBean {
     @Qualifier("bean.TestFieldValueAutowireBean")
     public TestFieldValueAutowireBean bean1;
 
-    @Autowired(required = false)
-    @Qualifier("bean.TestFieldValueAutowireBean3")
+    @Autowired
+    @Qualifier("bean.TestFieldValueAutowireBean2")
     public TestFieldValueAutowireBean bean2;
 
     public TestFieldValueAutowireBean getBean1() {

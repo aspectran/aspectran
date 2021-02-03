@@ -135,6 +135,7 @@ class AutowireBeanTest {
         assertEquals("Property-2", bean.getBean1().getProperty2());
         assertEquals("Property-3", bean.getBean1().getProperty3());
         assertEquals("property-4", bean.getBean1().getProperty4());
+        assertEquals(123, bean.getNumber());
         assertNull(bean.getBean2()); // Undefined bean
     }
 

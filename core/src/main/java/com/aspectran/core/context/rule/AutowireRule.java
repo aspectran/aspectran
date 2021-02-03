@@ -73,7 +73,14 @@ public class AutowireRule implements BeanReferenceable {
     }
 
     public void setAutowireTargetRules(AutowireTargetRule... autowireTargetRules) {
+        if (autowireTargetRules == null || autowireTargetRules.length == 0) {
+            throw new IllegalArgumentException("autowireTargetRules must not be null or empty");
+        }
         this.autowireTargetRules = autowireTargetRules;
+    }
+
+    public void clearAutowireTargetRules() {
+        this.autowireTargetRules = null;
     }
 
     public boolean isRequired() {

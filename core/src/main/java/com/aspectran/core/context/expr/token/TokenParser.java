@@ -76,10 +76,10 @@ public class TokenParser {
                 if (t.getType() == TokenType.TEXT) {
                     // except empty token
                     if (StringUtils.hasText(t.getDefaultValue())) {
-                        tokensList.add(new Token[] {t});
+                        tokensList.add(new Token[] { t });
                     }
                 } else {
-                    tokensList.add(new Token[] {t});
+                    tokensList.add(new Token[] { t });
                 }
             }
         }
@@ -97,7 +97,7 @@ public class TokenParser {
             for (Token t : tokenList) {
                 if (t.getType() != TokenType.TEXT) {
                     if (StringUtils.hasLength(t.getName()) && StringUtils.hasLength(t.getDefaultValue())) {
-                        tokensMap.put(t.getName(), new Token[] {t});
+                        tokensMap.put(t.getName(), new Token[] { t });
                     }
                 }
             }

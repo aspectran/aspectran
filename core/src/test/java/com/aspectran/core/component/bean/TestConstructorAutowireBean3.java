@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.component.bean;
 
+import com.aspectran.core.component.bean.annotation.Qualifier;
+
 /**
  * <p>Created: 2017. 11. 29.</p>
  */
@@ -26,7 +28,7 @@ public class TestConstructorAutowireBean3 {
 
     public TestConstructorAutowireBean3(
             TestFieldAutowireBean bean1,
-            TestFieldValueAutowireBean bean2
+            @Qualifier("bean.TestFieldValueAutowireBean") TestFieldValueAutowireBean bean2
     ) {
         this.bean1 = bean1;
         this.bean2 = bean2;

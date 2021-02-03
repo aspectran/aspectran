@@ -532,11 +532,8 @@ public class ActivityRuleAssistant {
     public void resolveBeanClass(AutowireRule autowireRule) throws IllegalRuleException {
         if (autowireRule != null) {
             if (autowireRule.getTargetType() == AutowireTargetType.FIELD) {
-                if (autowireRule.isRequired()) {
-                    AutowireTargetRule[] autowireTargetRules = autowireRule.getAutowireTargetRules();
-                    if (autowireTargetRules == null || autowireTargetRules.length == 0) {
-                        throw new IllegalStateException("autowireTargetRules must not be null or empty");
-                    }
+                AutowireTargetRule[] autowireTargetRules = autowireRule.getAutowireTargetRules();
+                if (autowireRule.isRequired() && autowireTargetRules != null) {
                     ExpressionEvaluation expressionEvaluation = autowireTargetRules[0].getExpressionEvaluation();
                     if (expressionEvaluation != null) {
                         Token[] tokens = expressionEvaluation.getTokens();
@@ -548,11 +545,8 @@ public class ActivityRuleAssistant {
                     }
                 }
             } else if (autowireRule.getTargetType() == AutowireTargetType.FIELD_VALUE) {
-                if (autowireRule.isRequired()) {
-                    AutowireTargetRule[] autowireTargetRules = autowireRule.getAutowireTargetRules();
-                    if (autowireTargetRules == null || autowireTargetRules.length == 0) {
-                        throw new IllegalStateException("autowireTargetRules must not be null or empty");
-                    }
+                AutowireTargetRule[] autowireTargetRules = autowireRule.getAutowireTargetRules();
+                if (autowireRule.isRequired() && autowireTargetRules != null) {
                     ExpressionEvaluation expressionEvaluation = autowireTargetRules[0].getExpressionEvaluation();
                     if (expressionEvaluation != null) {
                         Token[] tokens = expressionEvaluation.getTokens();
@@ -561,11 +555,8 @@ public class ActivityRuleAssistant {
                 }
             } else if (autowireRule.getTargetType() == AutowireTargetType.METHOD ||
                 autowireRule.getTargetType() == AutowireTargetType.CONSTRUCTOR) {
-                if (autowireRule.isRequired()) {
-                    AutowireTargetRule[] autowireTargetRules = autowireRule.getAutowireTargetRules();
-                    if (autowireTargetRules == null || autowireTargetRules.length == 0) {
-                        throw new IllegalStateException("autowireTargetRules must not be null or empty");
-                    }
+                AutowireTargetRule[] autowireTargetRules = autowireRule.getAutowireTargetRules();
+                if (autowireRule.isRequired() && autowireTargetRules != null) {
                     for (AutowireTargetRule autowireTargetRule : autowireTargetRules) {
                         ExpressionEvaluation expressionEvaluation = autowireTargetRule.getExpressionEvaluation();
                         if (expressionEvaluation != null) {

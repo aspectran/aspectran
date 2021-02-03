@@ -763,7 +763,7 @@ public class AnnotatedConfigParser {
         }
 
         Autowired autowiredAnno = candidate.getAnnotation(Autowired.class);
-        boolean required = (autowiredAnno != null && autowiredAnno.required());
+        boolean required = (autowiredAnno == null || autowiredAnno.required());
 
         AutowireRule autowireRule = new AutowireRule();
         autowireRule.setTargetType(AutowireTargetType.CONSTRUCTOR);
@@ -831,10 +831,10 @@ public class AnnotatedConfigParser {
             return null;
         }
 
-        String typicalQualifier = null;
+        String upperQualifier = null;
         Qualifier typicalQualifierAnno = method.getAnnotation(Qualifier.class);
         if (typicalQualifierAnno != null) {
-            typicalQualifier = StringUtils.emptyToNull(typicalQualifierAnno.value());
+            upperQualifier = StringUtils.emptyToNull(typicalQualifierAnno.value());
         }
 
         AutowireTargetRule[] autowireTargetRules = AutowireTargetRule.newArrayInstance(params.length);
@@ -852,7 +852,7 @@ public class AnnotatedConfigParser {
                 if (qualifierAnno != null) {
                     qualifier = StringUtils.emptyToNull(qualifierAnno.value());
                 } else {
-                    qualifier = typicalQualifier;
+                    qualifier = upperQualifier;
                 }
                 if (qualifier != null) {
                     autowireTargetRules[i].setQualifier(qualifier);

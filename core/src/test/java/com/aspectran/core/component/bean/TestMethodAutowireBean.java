@@ -17,6 +17,7 @@ package com.aspectran.core.component.bean;
 
 import com.aspectran.core.component.bean.annotation.Autowired;
 import com.aspectran.core.component.bean.annotation.Qualifier;
+import com.aspectran.core.component.bean.annotation.Value;
 
 /**
  * <p>Created: 2017. 11. 29.</p>
@@ -26,6 +27,8 @@ public class TestMethodAutowireBean {
     private TestFieldValueAutowireBean bean1;
 
     private TestFieldValueAutowireBean bean2;
+
+    private int number;
 
     @Autowired
     @Qualifier("bean.TestFieldValueAutowireBean")
@@ -41,13 +44,22 @@ public class TestMethodAutowireBean {
 
     @Autowired(required = false)
     public void setBean2(
-            @Qualifier("bean.TestFieldValueAutowireBean3") TestFieldValueAutowireBean bean
+            @Qualifier("bean.TestFieldValueAutowireBean3-FOR-TEST") TestFieldValueAutowireBean bean
     ) {
         this.bean2 = bean;
     }
 
     public TestFieldValueAutowireBean getBean2() {
         return bean2;
+    }
+
+    @Autowired
+    public void setNumber(@Value("123") int number) {
+        this.number = number;
+    }
+
+    public int getNumber() {
+        return number;
     }
 
 }
