@@ -106,4 +106,20 @@ public class AutowireRule implements BeanReferenceable {
         return tsb.toString();
     }
 
+    public static AutowireTargetRule[] getAutowireTargetRules(AutowireRule autowireRule) {
+        if (autowireRule != null && autowireRule.getAutowireTargetRules() != null) {
+            return autowireRule.getAutowireTargetRules();
+        } else {
+            return null;
+        }
+    }
+
+    public static AutowireTargetRule getAutowireTargetRule(AutowireRule autowireRule) {
+        if (autowireRule != null && autowireRule.getAutowireTargetRules() != null) {
+            return autowireRule.getAutowireTargetRules()[0];
+        } else {
+            return null;
+        }
+    }
+
 }

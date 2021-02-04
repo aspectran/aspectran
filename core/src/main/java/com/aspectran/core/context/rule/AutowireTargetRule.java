@@ -33,6 +33,8 @@ public class AutowireTargetRule {
 
     private ExpressionEvaluation expressionEvaluation;
 
+    private boolean innerBean;
+
     public Class<?> getType() {
         return type;
     }
@@ -55,6 +57,14 @@ public class AutowireTargetRule {
 
     public void setExpression(String expression) throws IllegalRuleException {
         this.expressionEvaluation = new ExpressionEvaluation(expression);
+    }
+
+    public boolean isInnerBean() {
+        return innerBean;
+    }
+
+    public void setInnerBean(boolean innerBean) {
+        this.innerBean = innerBean;
     }
 
     @Override

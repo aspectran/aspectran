@@ -77,7 +77,7 @@ public class BeanClassScanner extends ClassScanner {
 
     private class BeanSaveHandler implements SaveHandler {
 
-        private SaveHandler saveHandler;
+        private final SaveHandler saveHandler;
 
         public BeanSaveHandler(SaveHandler saveHandler) {
             this.saveHandler = saveHandler;

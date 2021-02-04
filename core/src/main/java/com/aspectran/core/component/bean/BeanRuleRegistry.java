@@ -86,6 +86,7 @@ public class BeanRuleRegistry {
         ignoreDependencyInterface(ClassLoaderAware.class);
         ignoreDependencyInterface(CurrentActivityAware.class);
         ignoreDependencyInterface(EnvironmentAware.class);
+        ignoreDependencyInterface(java.lang.Cloneable.class);
         ignoreDependencyInterface(java.lang.Comparable.class);
         ignoreDependencyInterface(java.lang.CharSequence.class);
         ignoreDependencyInterface(java.io.Serializable.class);

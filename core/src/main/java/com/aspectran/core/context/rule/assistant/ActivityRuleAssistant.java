@@ -532,22 +532,22 @@ public class ActivityRuleAssistant {
     public void resolveBeanClass(AutowireRule autowireRule) throws IllegalRuleException {
         if (autowireRule != null) {
             if (autowireRule.getTargetType() == AutowireTargetType.FIELD) {
-                AutowireTargetRule[] autowireTargetRules = autowireRule.getAutowireTargetRules();
-                if (autowireRule.isRequired() && autowireTargetRules != null) {
-                    ExpressionEvaluation expressionEvaluation = autowireTargetRules[0].getExpressionEvaluation();
+                AutowireTargetRule autowireTargetRule = AutowireRule.getAutowireTargetRule(autowireRule);
+                if (autowireRule.isRequired() && autowireTargetRule != null && !autowireTargetRule.isInnerBean()) {
+                    ExpressionEvaluation expressionEvaluation = autowireTargetRule.getExpressionEvaluation();
                     if (expressionEvaluation != null) {
                         Token[] tokens = expressionEvaluation.getTokens();
                         resolveBeanClass(tokens, autowireRule);
                     } else {
-                        Class<?> type = autowireTargetRules[0].getType();
-                        String qualifier = autowireTargetRules[0].getQualifier();
+                        Class<?> type = autowireTargetRule.getType();
+                        String qualifier = autowireTargetRule.getQualifier();
                         reserveBeanReference(qualifier, type, autowireRule);
                     }
                 }
             } else if (autowireRule.getTargetType() == AutowireTargetType.FIELD_VALUE) {
-                AutowireTargetRule[] autowireTargetRules = autowireRule.getAutowireTargetRules();
-                if (autowireRule.isRequired() && autowireTargetRules != null) {
-                    ExpressionEvaluation expressionEvaluation = autowireTargetRules[0].getExpressionEvaluation();
+                AutowireTargetRule autowireTargetRule = AutowireRule.getAutowireTargetRule(autowireRule);
+                if (autowireRule.isRequired() && autowireTargetRule != null && !autowireTargetRule.isInnerBean()) {
+                    ExpressionEvaluation expressionEvaluation = autowireTargetRule.getExpressionEvaluation();
                     if (expressionEvaluation != null) {
                         Token[] tokens = expressionEvaluation.getTokens();
                         resolveBeanClass(tokens, autowireRule);
@@ -558,14 +558,16 @@ public class ActivityRuleAssistant {
                 AutowireTargetRule[] autowireTargetRules = autowireRule.getAutowireTargetRules();
                 if (autowireRule.isRequired() && autowireTargetRules != null) {
                     for (AutowireTargetRule autowireTargetRule : autowireTargetRules) {
-                        ExpressionEvaluation expressionEvaluation = autowireTargetRule.getExpressionEvaluation();
-                        if (expressionEvaluation != null) {
-                            Token[] tokens = expressionEvaluation.getTokens();
-                            resolveBeanClass(tokens, autowireRule);
-                        } else {
-                            Class<?> type = autowireTargetRule.getType();
-                            String qualifier = autowireTargetRule.getQualifier();
-                            reserveBeanReference(qualifier, type, autowireRule);
+                        if (!autowireTargetRule.isInnerBean()) {
+                            ExpressionEvaluation expressionEvaluation = autowireTargetRule.getExpressionEvaluation();
+                            if (expressionEvaluation != null) {
+                                Token[] tokens = expressionEvaluation.getTokens();
+                                resolveBeanClass(tokens, autowireRule);
+                            } else {
+                                Class<?> type = autowireTargetRule.getType();
+                                String qualifier = autowireTargetRule.getQualifier();
+                                reserveBeanReference(qualifier, type, autowireRule);
+                            }
                         }
                     }
                 }

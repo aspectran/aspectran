@@ -124,8 +124,7 @@ abstract class AbstractBeanFactory extends AbstractComponent {
                 }
             } else {
                 AutowireRule ctorAutowireRule = beanRule.getConstructorAutowireRule();
-                AutowireTargetRule[] autowireTargetRules =
-                        (ctorAutowireRule != null ? ctorAutowireRule.getAutowireTargetRules() : null);
+                AutowireTargetRule[] autowireTargetRules = AutowireRule.getAutowireTargetRules(ctorAutowireRule);
                 if (autowireTargetRules != null) {
                     args = new Object[autowireTargetRules.length];
                     argTypes = new Class<?>[autowireTargetRules.length];
@@ -295,20 +294,20 @@ abstract class AbstractBeanFactory extends AbstractComponent {
         if (beanRule.getAutowireRuleList() != null) {
             for (AutowireRule autowireRule : beanRule.getAutowireRuleList()) {
                 if (autowireRule.getTargetType() == AutowireTargetType.FIELD) {
-                    AutowireTargetRule[] autowireTargetRules = autowireRule.getAutowireTargetRules();
-                    if (autowireTargetRules != null) {
+                    AutowireTargetRule autowireTargetRule = AutowireRule.getAutowireTargetRule(autowireRule);
+                    if (autowireTargetRule != null) {
                         Object value;
-                        ExpressionEvaluator evaluator = autowireTargetRules[0].getExpressionEvaluation();
+                        ExpressionEvaluator evaluator = autowireTargetRule.getExpressionEvaluation();
                         if (evaluator != null) {
                             value = evaluator.evaluate(activity, null);
                         } else {
-                            Class<?> type = autowireTargetRules[0].getType();
-                            String qualifier = autowireTargetRules[0].getQualifier();
+                            Class<?> type = autowireTargetRule.getType();
+                            String qualifier = autowireTargetRule.getQualifier();
                             if (autowireRule.isRequired()) {
                                 try {
                                     value = activity.getBean(type, qualifier);
                                 } catch (NoSuchBeanException | NoUniqueBeanException e) {
-                                    logger.error("No bean found for autowiring target " + autowireTargetRules[0] +
+                                    logger.error("No bean found for autowiring target " + autowireTargetRule +
                                             " of " + autowireRule, e);
                                     throw new BeanCreationException("Could not autowire field: " +
                                             autowireRule, beanRule, e);
@@ -318,7 +317,7 @@ abstract class AbstractBeanFactory extends AbstractComponent {
                                     value = activity.getBean(type, qualifier);
                                 } catch (NoSuchBeanException | NoUniqueBeanException e) {
                                     value = null;
-                                    logger.warn("No bean found for autowiring target " + autowireTargetRules[0] +
+                                    logger.warn("No bean found for autowiring target " + autowireTargetRule  +
                                             " of " + autowireRule + "; Cause: " + e);
                                 }
                             }
@@ -326,9 +325,9 @@ abstract class AbstractBeanFactory extends AbstractComponent {
                         ReflectionUtils.setField(autowireRule.getTarget(), bean, value);
                     }
                 } else if (autowireRule.getTargetType() == AutowireTargetType.FIELD_VALUE) {
-                    AutowireTargetRule[] autowireTargetRules = autowireRule.getAutowireTargetRules();
-                    if (autowireTargetRules != null) {
-                        ExpressionEvaluator evaluator = autowireTargetRules[0].getExpressionEvaluation();
+                    AutowireTargetRule autowireTargetRule = AutowireRule.getAutowireTargetRule(autowireRule);
+                    if (autowireTargetRule != null) {
+                        ExpressionEvaluator evaluator = autowireTargetRule.getExpressionEvaluation();
                         if (evaluator != null) {
                             Object value = evaluator.evaluate(activity, null);
                             ReflectionUtils.setField(autowireRule.getTarget(), bean, value);
