@@ -76,7 +76,14 @@ public class TokenEvaluation implements TokenEvaluator {
             } else if (tokenType == TokenType.TEMPLATE) {
                 value = getTemplate(token);
             } else if (tokenType == TokenType.PARAMETER) {
-                value = getParameter(token.getName(), token.getDefaultValue());
+                String[] values = getParameterValues(token.getName());
+                if (values == null || values.length == 0) {
+                    value = token.getDefaultValue();
+                } else if (values.length > 1 && token.getDefaultValue() == null) {
+                    value = values;
+                } else {
+                    value = (values[0] != null ? values[0] : token.getDefaultValue());
+                }
             } else if (tokenType == TokenType.ATTRIBUTE) {
                 value = getAttribute(token);
             } else if (tokenType == TokenType.PROPERTY) {

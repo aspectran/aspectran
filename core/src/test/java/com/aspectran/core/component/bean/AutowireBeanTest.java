@@ -98,7 +98,6 @@ class AutowireBeanTest {
     void testConstructorAutowire3() {
         TestConstructorAutowireBean3 bean = beanRegistry.getBean("bean.TestConstructorAutowireBean3");
         assertEquals("Property-1", bean.bean1.getBean1().getProperty1());
-        assertNull(bean.bean2);
     }
 
     @Test
@@ -125,7 +124,10 @@ class AutowireBeanTest {
         assertEquals("Property-2", bean.getBean1().getProperty2());
         assertEquals("Property-3", bean.getBean1().getProperty3());
         assertEquals("property-4", bean.getBean1().getProperty4());
-        assertNull(bean.getBean2());
+        assertEquals("Property-1", bean.getBean2().getProperty1());
+        assertEquals("Property-2", bean.getBean2().getProperty2());
+        assertEquals("Property-3", bean.getBean2().getProperty3());
+        assertEquals("property-4", bean.getBean2().getProperty4());
     }
 
     @Test
@@ -135,7 +137,7 @@ class AutowireBeanTest {
         assertEquals("Property-2", bean.getBean1().getProperty2());
         assertEquals("Property-3", bean.getBean1().getProperty3());
         assertEquals("property-4", bean.getBean1().getProperty4());
-        assertEquals(123, bean.getNumber());
+        assertEquals(223, bean.getNumber());
         assertNull(bean.getBean2()); // Undefined bean
     }
 

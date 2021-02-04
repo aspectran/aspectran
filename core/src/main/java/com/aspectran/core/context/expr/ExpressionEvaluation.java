@@ -70,15 +70,20 @@ public class ExpressionEvaluation implements ExpressionEvaluator {
             return null;
         }
         try {
-            ActivityData root = (activity.getTranslet() != null ? activity.getTranslet().getActivityData() : null);
-            Map context = OgnlSupport.createDefaultContext(root);
+            ActivityData activityData;
+            if (activity.getTranslet() != null) {
+                activityData = activity.getTranslet().getActivityData();
+            } else {
+                activityData = new ActivityData(activity);
+            }
+            Map context = OgnlSupport.createDefaultContext(activityData);
             if (tokens != null && tokens.length > 0) {
-                TokenEvaluator evaluator = new TokenEvaluation(activity);
+                TokenEvaluator tokenEvaluator = new TokenEvaluation(activity);
                 if (tokens.length == 1) {
                     Token token = tokens[0];
                     if (token.getType() != TokenType.TEXT) {
                         String name = TOKEN_VARIABLE_PREFIX + TOKEN_VARIABLE_FIRST_INDEX;
-                        Object value = evaluator.evaluate(token);
+                        Object value = tokenEvaluator.evaluate(token);
                         context.put(name, value);
                     }
                 } else {
@@ -86,13 +91,13 @@ public class ExpressionEvaluation implements ExpressionEvaluator {
                     for (Token token : tokens) {
                         if (token.getType() != TokenType.TEXT) {
                             String name = TOKEN_VARIABLE_PREFIX + index++;
-                            Object value = evaluator.evaluate(token);
+                            Object value = tokenEvaluator.evaluate(token);
                             context.put(name, value);
                         }
                     }
                 }
             }
-            return (V)Ognl.getValue(represented, context, root, resultType);
+            return (V)Ognl.getValue(represented, context, activityData, resultType);
         } catch (OgnlException e) {
             throw new ExpressionEvaluationException(expression, e);
         }

@@ -30,7 +30,7 @@ public class ShellRequestAdapter extends DefaultRequestAdapter {
      * @param requestMethod the request method
      */
     public ShellRequestAdapter(MethodType requestMethod) {
-        super(requestMethod, null);
+        super(requestMethod);
     }
 
 }

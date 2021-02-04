@@ -80,7 +80,7 @@ public class InstantActivity extends CoreActivity {
         }
         if (getRequestAdapter() == null) {
             MethodType requestMethod = (getTranslet() != null ? getTranslet().getRequestMethod() : null);
-            DefaultRequestAdapter requestAdapter = new DefaultRequestAdapter(requestMethod, null);
+            DefaultRequestAdapter requestAdapter = new DefaultRequestAdapter(requestMethod);
             setRequestAdapter(requestAdapter);
         }
         if (getResponseAdapter() == null) {

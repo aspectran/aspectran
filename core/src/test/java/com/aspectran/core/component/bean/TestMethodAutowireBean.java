@@ -54,7 +54,7 @@ public class TestMethodAutowireBean {
     }
 
     @Autowired
-    public void setNumber(@Value("123") int number) {
+    public void setNumber(@Value("123 + 100") int number) {
         this.number = number;
     }
 

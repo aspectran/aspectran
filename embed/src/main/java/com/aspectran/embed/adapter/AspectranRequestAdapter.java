@@ -30,7 +30,7 @@ public class AspectranRequestAdapter extends DefaultRequestAdapter {
      * @param requestMethod the request method
      */
     public AspectranRequestAdapter(MethodType requestMethod) {
-        super(requestMethod, null);
+        super(requestMethod);
     }
 
 }

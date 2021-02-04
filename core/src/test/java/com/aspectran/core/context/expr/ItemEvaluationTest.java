@@ -40,7 +40,7 @@ class ItemEvaluationTest {
     private ActivityContext context;
 
     @BeforeAll
-    void ready() throws ActivityContextBuilderException {
+    void setUp() throws ActivityContextBuilderException {
         ActivityContextBuilder builder = new HybridActivityContextBuilder();
         context = builder.build();
     }

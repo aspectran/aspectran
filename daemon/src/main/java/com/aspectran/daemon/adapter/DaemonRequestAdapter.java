@@ -30,7 +30,7 @@ public class DaemonRequestAdapter extends DefaultRequestAdapter {
      * @param requestMethod the request method
      */
     public DaemonRequestAdapter(MethodType requestMethod) {
-        super(requestMethod, null);
+        super(requestMethod);
     }
 
 }

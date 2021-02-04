@@ -16,6 +16,7 @@
 package com.aspectran.core.context.expr;
 
 import com.aspectran.core.activity.Activity;
+import com.aspectran.core.context.rule.IllegalRuleException;
 
 /**
  * The Expression Evaluator.
@@ -25,5 +26,13 @@ import com.aspectran.core.activity.Activity;
 public interface ExpressionEvaluator {
 
     <V> V evaluate(Activity activity, Class<V> resultType);
+
+    static <V> V evaluate(String expression, Activity activity) throws IllegalRuleException {
+        return evaluate(expression, activity, null);
+    }
+
+    static <V> V evaluate(String expression, Activity activity, Class<V> resultType) throws IllegalRuleException {
+        return new ExpressionEvaluation(expression).evaluate(activity, resultType);
+    }
 
 }

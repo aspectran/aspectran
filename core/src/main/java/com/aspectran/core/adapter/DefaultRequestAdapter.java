@@ -15,10 +15,7 @@
  */
 package com.aspectran.core.adapter;
 
-import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.context.rule.type.MethodType;
-
-import java.util.Map;
 
 /**
  * The Class DefaultRequestAdapter.
@@ -29,21 +26,28 @@ public class DefaultRequestAdapter extends AbstractRequestAdapter {
 
     /**
      * Instantiates a new DefaultRequestAdapter.
+     */
+    public DefaultRequestAdapter() {
+        this(null, null);
+    }
+
+    /**
+     * Instantiates a new DefaultRequestAdapter.
+     *
+     * @param requestMethod the request method
+     */
+    public DefaultRequestAdapter(MethodType requestMethod) {
+        this(requestMethod, null);
+    }
+
+    /**
+     * Instantiates a new DefaultRequestAdapter.
      *
      * @param requestMethod the request method
      * @param adaptee the adaptee object
      */
     public DefaultRequestAdapter(MethodType requestMethod, Object adaptee) {
         super(requestMethod, adaptee);
-    }
-
-    public void preparse(ParameterMap parameterMap, Map<String, Object> attributeMap) {
-        if (parameterMap != null) {
-            setParameterMap(parameterMap);
-        }
-        if (attributeMap != null) {
-            setAttributeMap(attributeMap);
-        }
     }
 
 }
