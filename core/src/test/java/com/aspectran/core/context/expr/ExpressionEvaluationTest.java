@@ -22,6 +22,7 @@ import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.builder.ActivityContextBuilder;
 import com.aspectran.core.context.builder.ActivityContextBuilderException;
 import com.aspectran.core.context.builder.HybridActivityContextBuilder;
+import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.rule.IllegalRuleException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -59,6 +60,10 @@ class ExpressionEvaluationTest {
         assertEquals("bar2", ExpressionEvaluator.evaluate("bars[1]", activity));
         assertEquals("bar2", ExpressionEvaluator.evaluate("${bars}[1]", activity));
         assertEquals("T", ExpressionEvaluator.evaluate("${bars}.length > 3 ? \"F\" : \"T\"", activity));
+        assertEquals("foofoo", ExpressionEvaluator.evaluate("${foo} + ${foo}", activity));
+        assertEquals("[1]", ExpressionEvaluator.evaluate("'${bars--}[1]'", activity));
+        //System.out.println(ExpressionEvaluator.evaluate("${foo} + ${foo}", activity));
+        //System.out.println(ExpressionEvaluator.evaluate("'${bars--}[1]'", activity));
     }
 
 }

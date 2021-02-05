@@ -22,10 +22,13 @@ import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.expr.token.TokenParser;
 import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.context.rule.type.TokenType;
+import com.aspectran.core.util.StringUtils;
 import ognl.Ognl;
 import ognl.OgnlException;
 
+import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * ExpressionEvaluator implementation that evaluates expressions written in
@@ -35,11 +38,13 @@ import java.util.Map;
  */
 public class ExpressionEvaluation implements ExpressionEvaluator {
 
-    private static final String OGNL_TOKEN_VARIABLE_PREFIX = "#__";
+    private static final String TOKEN_VAR_NAME_PREFIX = "__";
 
-    private static final String TOKEN_VARIABLE_PREFIX = "__";
+    private static final String TOKEN_VAR_NAME_SUFFIX = TOKEN_VAR_NAME_PREFIX;
 
-    private static final int TOKEN_VARIABLE_FIRST_INDEX = 1;
+    private static final String TOKEN_VAR_REF_SYMBOL = "#";
+
+    private static final String TOKEN_VAR_REF_NAME_PREFIX = TOKEN_VAR_REF_SYMBOL + TOKEN_VAR_NAME_PREFIX;
 
     private final String expression;
 
@@ -77,30 +82,87 @@ public class ExpressionEvaluation implements ExpressionEvaluator {
                 activityData = new ActivityData(activity);
             }
             Map context = OgnlSupport.createDefaultContext(activityData);
+            String[] tokenVarNames = null;
             if (tokens != null && tokens.length > 0) {
                 TokenEvaluator tokenEvaluator = new TokenEvaluation(activity);
-                if (tokens.length == 1) {
-                    Token token = tokens[0];
-                    if (token.getType() != TokenType.TEXT) {
-                        String name = TOKEN_VARIABLE_PREFIX + TOKEN_VARIABLE_FIRST_INDEX;
-                        Object value = tokenEvaluator.evaluate(token);
-                        context.put(name, value);
-                    }
-                } else {
-                    int index = TOKEN_VARIABLE_FIRST_INDEX;
-                    for (Token token : tokens) {
-                        if (token.getType() != TokenType.TEXT) {
-                            String name = TOKEN_VARIABLE_PREFIX + index++;
-                            Object value = tokenEvaluator.evaluate(token);
-                            context.put(name, value);
+                tokenVarNames = putTokenVariables(context, tokenEvaluator, tokens);
+            }
+            Object result = Ognl.getValue(represented, context, activityData, resultType);
+            if (tokenVarNames != null && result instanceof String) {
+                for (String tokenVarName : tokenVarNames) {
+                    String tokenVarRefName = TOKEN_VAR_REF_SYMBOL + tokenVarName;
+                    String str = (String)result;
+                    if (str.contains(tokenVarRefName)) {
+                        Object value = context.get(tokenVarName);
+                        if (value != null) {
+                            result = str.replace(tokenVarRefName, value.toString());
+                        } else {
+                            result = str.replace(tokenVarRefName, StringUtils.EMPTY);
                         }
                     }
                 }
             }
-            return (V)Ognl.getValue(represented, context, activityData, resultType);
+            return (V)result;
         } catch (OgnlException e) {
             throw new ExpressionEvaluationException(expression, e);
         }
+    }
+
+    @Override
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    public <V> V evaluate(TokenEvaluator tokenEvaluator, Class<V> resultType) {
+        if (tokenEvaluator == null) {
+            throw new IllegalArgumentException("tokenEvaluator must not be null");
+        }
+        if (represented == null) {
+            return null;
+        }
+        try {
+            Activity activity = tokenEvaluator.getActivity();
+            ActivityData activityData;
+            if (activity.getTranslet() != null) {
+                activityData = activity.getTranslet().getActivityData();
+            } else {
+                activityData = new ActivityData(activity);
+            }
+            Map context = OgnlSupport.createDefaultContext(activityData);
+            String[] tokenVarNames = null;
+            if (tokens != null && tokens.length > 0) {
+                tokenVarNames = putTokenVariables(context, tokenEvaluator, tokens);
+            }
+            Object result = Ognl.getValue(represented, context, activityData, resultType);
+            if (tokenVarNames != null && result instanceof String) {
+                for (String tokenVarName : tokenVarNames) {
+                    String tokenVarRefName = TOKEN_VAR_REF_NAME_PREFIX + tokenVarName;
+                    String str = (String)result;
+                    if (str.contains(tokenVarRefName)) {
+                        Object value = context.get(tokenVarName);
+                        if (value != null) {
+                            result = str.replace(tokenVarRefName, value.toString());
+                        } else {
+                            result = str.replace(tokenVarRefName, StringUtils.EMPTY);
+                        }
+                    }
+                }
+            }
+            return (V)result;
+        } catch (OgnlException e) {
+            throw new ExpressionEvaluationException(expression, e);
+        }
+    }
+
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    private String[] putTokenVariables(Map context, TokenEvaluator tokenEvaluator, Token[] tokens) {
+        Set<String> tokenVarNames = new LinkedHashSet<>();
+        for (Token token : tokens) {
+            if (token.getType() != TokenType.TEXT) {
+                String name = makeTokenVarName(token);
+                Object value = tokenEvaluator.evaluate(token);
+                context.put(name, value);
+                tokenVarNames.add(name);
+            }
+        }
+        return (tokenVarNames.isEmpty() ? null : tokenVarNames.toArray(new String[0]));
     }
 
     private void parseExpression(String expression) throws IllegalRuleException {
@@ -111,23 +173,39 @@ public class ExpressionEvaluation implements ExpressionEvaluator {
                 if (token.getType() == TokenType.TEXT) {
                     represented = OgnlSupport.parseExpression(token.getDefaultValue());
                 } else {
-                    String ognlVariableName = OGNL_TOKEN_VARIABLE_PREFIX + TOKEN_VARIABLE_FIRST_INDEX;
+                    String ognlVariableName = makeTokenVarRefName(token);
                     represented = OgnlSupport.parseExpression(ognlVariableName);
                 }
             } else {
                 StringBuilder sb = new StringBuilder();
-                int index = TOKEN_VARIABLE_FIRST_INDEX;
                 for (Token token : tokens) {
                     if (token.getType() == TokenType.TEXT) {
                         sb.append(token.getDefaultValue());
                     } else {
-                        sb.append(OGNL_TOKEN_VARIABLE_PREFIX).append(index++);
+                        sb.append(makeTokenVarRefName(token));
                     }
                 }
                 represented = OgnlSupport.parseExpression(sb.toString());
             }
         } else {
             represented = OgnlSupport.parseExpression(expression);
+        }
+    }
+
+    private String makeTokenVarName(Token token) {
+        return TOKEN_VAR_NAME_PREFIX + makeTokenName(token) + TOKEN_VAR_NAME_SUFFIX;
+    }
+
+    private String makeTokenVarRefName(Token token) {
+        return TOKEN_VAR_REF_NAME_PREFIX + makeTokenName(token) + TOKEN_VAR_NAME_SUFFIX;
+    }
+
+    private String makeTokenName(Token token) {
+        int hashCode = token.hashCode();
+        if (hashCode >= 0) {
+            return Long.toString(hashCode, 32);
+        } else {
+            return Long.toString(hashCode & 0x7fffffff, 32);
         }
     }
 

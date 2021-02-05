@@ -27,12 +27,22 @@ public interface ExpressionEvaluator {
 
     <V> V evaluate(Activity activity, Class<V> resultType);
 
-    static <V> V evaluate(String expression, Activity activity) throws IllegalRuleException {
+    <V> V evaluate(TokenEvaluator tokenEvaluator, Class<V> resultType);
+
+    static Object evaluate(String expression, Activity activity) throws IllegalRuleException {
         return evaluate(expression, activity, null);
     }
 
     static <V> V evaluate(String expression, Activity activity, Class<V> resultType) throws IllegalRuleException {
         return new ExpressionEvaluation(expression).evaluate(activity, resultType);
+    }
+
+    static Object evaluate(String expression, TokenEvaluator tokenEvaluator) throws IllegalRuleException {
+        return evaluate(expression, tokenEvaluator, null);
+    }
+
+    static <V> V evaluate(String expression, TokenEvaluator tokenEvaluator, Class<V> resultType) throws IllegalRuleException {
+        return new ExpressionEvaluation(expression).evaluate(tokenEvaluator, resultType);
     }
 
 }

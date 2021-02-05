@@ -15,11 +15,9 @@
  */
 package com.aspectran.web.support.tags;
 
+import com.aspectran.core.context.expr.ExpressionEvaluator;
 import com.aspectran.core.context.expr.TokenEvaluation;
 import com.aspectran.core.context.expr.TokenEvaluator;
-import com.aspectran.core.context.expr.token.Token;
-import com.aspectran.core.context.expr.token.TokenParser;
-import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.lang.Nullable;
 import com.aspectran.core.util.ObjectUtils;
 import com.aspectran.web.support.util.JavaScriptUtils;
@@ -30,9 +28,12 @@ import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.PageContext;
 import java.io.IOException;
 
+import static com.aspectran.web.support.tags.TokenTag.TOKEN_EVALUATOR_PAGE_ATTRIBUTE;
+
 /**
- * The {@code <token>} tag evaluates a Token expression and either prints
- * the result or assigns it to a variable.
+ * The {@code <eval>} tag evaluates an Aspectran expression (SpEL) and either prints
+ * the result or assigns it to a variable. Supports the standard JSP evaluation
+ * context consisting of implicit variables and scoped attributes.
  *
  * <table>
  * <caption>Attribute Summary</caption>
@@ -45,12 +46,6 @@ import java.io.IOException;
  * </tr>
  * </thead>
  * <tbody>
- * <tr>
- * <td>type</td>
- * <td>true</td>
- * <td>true</td>
- * <td>The type of the token to evaluate.</td>
- * </tr>
  * <tr>
  * <td>expression</td>
  * <td>true</td>
@@ -90,19 +85,9 @@ import java.io.IOException;
  * </tbody>
  * </table>
  *
- * <p>Created: 2020/05/31</p>
+ * <p>Created: 2021/02/05</p>
  */
-public class TokenTag extends HtmlEscapingAwareTag {
-
-    /**
-     * {@link javax.servlet.jsp.PageContext} attribute for the
-     * page-level {@link TokenEvaluator} instance.
-     */
-    protected static final String TOKEN_EVALUATOR_PAGE_ATTRIBUTE =
-            "com.aspectran.web.support.tags.TOKEN_EVALUATOR";
-
-    @Nullable
-    private String type;
+public class EvalTag extends HtmlEscapingAwareTag {
 
     @Nullable
     private String expression;
@@ -113,13 +98,6 @@ public class TokenTag extends HtmlEscapingAwareTag {
     private int scope = PageContext.PAGE_SCOPE;
 
     private boolean javaScriptEscape = false;
-
-    /**
-     * Set the toke type to evaluate.
-     */
-    public void setType(@Nullable String type) {
-        this.type = type;
-    }
 
     /**
      * Set the expression to evaluate.
@@ -166,23 +144,15 @@ public class TokenTag extends HtmlEscapingAwareTag {
             super.pageContext.setAttribute(TOKEN_EVALUATOR_PAGE_ATTRIBUTE, tokenEvaluator);
         }
         try {
-            if (this.type == null) {
-                throw new IllegalArgumentException("No token type set");
-            }
-            TokenType tokenType = TokenType.resolve(this.type);
-            if (tokenType == null) {
-                throw new IllegalArgumentException("Unknown token type: " + this.type);
-            }
-            Token[] tokens = TokenParser.parse(Token.format(tokenType, this.expression));
-            if (this.var != null) {
-                Object result = tokenEvaluator.evaluate(tokens);
-                super.pageContext.setAttribute(this.var, result, this.scope);
+            if (var != null) {
+                Object result = ExpressionEvaluator.evaluate(this.expression, tokenEvaluator);
+                super.pageContext.setAttribute(var, result, scope);
             } else {
                 try {
-                    Object result = tokenEvaluator.evaluate(tokens);
+                    Object result = ExpressionEvaluator.evaluate(this.expression, tokenEvaluator);
                     String str = ObjectUtils.getDisplayString(result);
                     str = htmlEscape(str);
-                    if (this.javaScriptEscape) {
+                    if (javaScriptEscape) {
                         str = JavaScriptUtils.javaScriptEscape(str);
                     }
                     super.pageContext.getOut().print(str);

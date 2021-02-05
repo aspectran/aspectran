@@ -33,6 +33,8 @@ import java.util.Set;
  */
 public interface TokenEvaluator {
 
+    Activity getActivity();
+
     Object evaluate(Token token);
 
     Object evaluate(Token[] tokens);

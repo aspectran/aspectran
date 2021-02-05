@@ -68,7 +68,6 @@ import com.aspectran.core.context.rule.DispatchRule;
 import com.aspectran.core.context.rule.ExceptionThrownRule;
 import com.aspectran.core.context.rule.ForwardRule;
 import com.aspectran.core.context.rule.IllegalRuleException;
-import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.ItemRuleUtils;
 import com.aspectran.core.context.rule.JoinpointRule;
@@ -85,7 +84,6 @@ import com.aspectran.core.context.rule.assistant.ActivityRuleAssistant;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
 import com.aspectran.core.context.rule.type.AutowireTargetType;
 import com.aspectran.core.context.rule.type.FormatType;
-import com.aspectran.core.context.rule.type.ItemValueType;
 import com.aspectran.core.context.rule.type.JoinpointTargetType;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.context.rule.type.ScopeType;
@@ -240,6 +238,10 @@ public class AnnotatedConfigParser {
         } else {
             beanRule.setConstructorAutowireParsed(true);
         }
+        ItemRuleMap ctorArgumentItemRuleMap = beanRule.getConstructorArgumentItemRuleMap();
+        if (ctorArgumentItemRuleMap != null && !ctorArgumentItemRuleMap.isEmpty()) {
+            return;
+        }
         Class<?> beanClass = beanRule.getBeanClass();
         Constructor<?>[] constructors = beanClass.getDeclaredConstructors();
         Constructor<?> candidate = null;
@@ -255,21 +257,6 @@ public class AnnotatedConfigParser {
         }
         if (candidate != null) {
             AutowireRule autowireRule = createAutowireRuleForConstructor(candidate);
-            ItemRuleMap itemRuleMap = beanRule.getConstructorArgumentItemRuleMap();
-            if (itemRuleMap != null) {
-                AutowireTargetRule[] autowireTargetRules = AutowireRule.getAutowireTargetRules(autowireRule);
-                if (autowireRule == null || autowireTargetRules == null ||
-                        autowireTargetRules.length != itemRuleMap.size()) {
-                    throw new IllegalRuleException("Arguments mismatch between " + beanRule + " and " + candidate);
-                }
-                int index = 0;
-                for (ItemRule itemRule : itemRuleMap.values()) {
-                    if (itemRule.getValueType() == ItemValueType.BEAN) {
-                        autowireTargetRules[index].setInnerBean(true);
-                    }
-                    index++;
-                }
-            }
             if (autowireRule != null) {
                 beanRule.setConstructorAutowireRule(autowireRule);
                 configRelater.relate(autowireRule);

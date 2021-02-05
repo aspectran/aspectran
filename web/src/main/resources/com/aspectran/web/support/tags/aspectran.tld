@@ -133,7 +133,7 @@
     </tag>
 
     <tag>
-        <description>Evaluates a Token expression and either prints the result
+        <description>Evaluates a token expression and either prints the result
             or assigns it to a variable.</description>
         <name>token</name>
         <tag-class>com.aspectran.web.support.tags.TokenTag</tag-class>
@@ -145,6 +145,48 @@
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
+        <attribute>
+            <description>The expression to evaluate.</description>
+            <name>expression</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>The name of the variable to export the evaluation result to.</description>
+            <name>var</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>The scope for the var. 'application', 'session', 'request' and
+                'page' scopes are supported. Defaults to page scope. This attribute has no
+                effect unless the var attribute is also defined.</description>
+            <name>scope</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Set HTML escaping for this tag, as a boolean value. Overrides the
+                default HTML escaping setting for the current page.</description>
+            <name>htmlEscape</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Set JavaScript escaping for this tag, as a boolean value.
+                Default is 'false'.</description>
+            <name>javaScriptEscape</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+
+    <tag>
+        <description>Evaluates an Aspectran expression and either prints the result
+            or assigns it to a variable.</description>
+        <name>eval</name>
+        <tag-class>com.aspectran.web.support.tags.EvalTag</tag-class>
+        <body-content>JSP</body-content>
         <attribute>
             <description>The expression to evaluate.</description>
             <name>expression</name>

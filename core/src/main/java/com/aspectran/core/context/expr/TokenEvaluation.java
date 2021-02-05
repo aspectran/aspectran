@@ -65,6 +65,11 @@ public class TokenEvaluation implements TokenEvaluator {
     }
 
     @Override
+    public Activity getActivity() {
+        return activity;
+    }
+
+    @Override
     public Object evaluate(Token token) {
         try {
             TokenType tokenType = token.getType();

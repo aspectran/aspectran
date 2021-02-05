@@ -111,6 +111,7 @@ public class EscapeBodyTag extends HtmlEscapingAwareTag implements BodyTag {
 
     /**
      * Read the unescaped body content from the page.
+     *
      * @return the original content
      */
     protected String readBodyContent() {
