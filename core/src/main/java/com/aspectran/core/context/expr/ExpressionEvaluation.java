@@ -24,6 +24,7 @@ import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.util.StringUtils;
 import ognl.Ognl;
+import ognl.OgnlContext;
 import ognl.OgnlException;
 
 import java.util.LinkedHashSet;
@@ -66,7 +67,7 @@ public class ExpressionEvaluation implements ExpressionEvaluator {
     }
 
     @Override
-    @SuppressWarnings({"rawtypes", "unchecked"})
+    @SuppressWarnings("unchecked")
     public <V> V evaluate(Activity activity, Class<V> resultType) {
         if (activity == null) {
             throw new IllegalArgumentException("activity must not be null");
@@ -81,7 +82,7 @@ public class ExpressionEvaluation implements ExpressionEvaluator {
             } else {
                 activityData = new ActivityData(activity);
             }
-            Map context = OgnlSupport.createDefaultContext(activityData);
+            OgnlContext context = OgnlSupport.createDefaultContext(activityData);
             String[] tokenVarNames = null;
             if (tokens != null && tokens.length > 0) {
                 TokenEvaluator tokenEvaluator = new TokenEvaluation(activity);
@@ -109,7 +110,7 @@ public class ExpressionEvaluation implements ExpressionEvaluator {
     }
 
     @Override
-    @SuppressWarnings({"rawtypes", "unchecked"})
+    @SuppressWarnings("unchecked")
     public <V> V evaluate(TokenEvaluator tokenEvaluator, Class<V> resultType) {
         if (tokenEvaluator == null) {
             throw new IllegalArgumentException("tokenEvaluator must not be null");
@@ -125,7 +126,7 @@ public class ExpressionEvaluation implements ExpressionEvaluator {
             } else {
                 activityData = new ActivityData(activity);
             }
-            Map context = OgnlSupport.createDefaultContext(activityData);
+            OgnlContext context = OgnlSupport.createDefaultContext(activityData);
             String[] tokenVarNames = null;
             if (tokens != null && tokens.length > 0) {
                 tokenVarNames = putTokenVariables(context, tokenEvaluator, tokens);

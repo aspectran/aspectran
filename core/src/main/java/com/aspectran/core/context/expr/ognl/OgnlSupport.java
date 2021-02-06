@@ -18,8 +18,8 @@ package com.aspectran.core.context.expr.ognl;
 import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.util.ConcurrentReferenceHashMap;
 import com.aspectran.core.util.StringUtils;
-import ognl.DefaultClassResolver;
 import ognl.Ognl;
+import ognl.OgnlContext;
 import ognl.OgnlException;
 
 import java.util.Map;
@@ -32,8 +32,6 @@ import java.util.Map;
 public class OgnlSupport {
 
     private static final OgnlMemberAccess MEMBER_ACCESS = new OgnlMemberAccess();
-
-    private static final DefaultClassResolver CLASS_RESOLVER = new DefaultClassResolver();
 
     private static final Map<String, Object> cache = new ConcurrentReferenceHashMap<>();
 
@@ -59,9 +57,8 @@ public class OgnlSupport {
         }
     }
 
-    @SuppressWarnings("rawtypes")
-    public static Map createDefaultContext(Object root) {
-        return Ognl.createDefaultContext(root, MEMBER_ACCESS, CLASS_RESOLVER, null);
+    public static OgnlContext createDefaultContext(Object root) {
+        return new OgnlContext(null, null, MEMBER_ACCESS);
     }
 
 }
