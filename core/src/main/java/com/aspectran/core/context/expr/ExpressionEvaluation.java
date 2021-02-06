@@ -28,7 +28,6 @@ import ognl.OgnlContext;
 import ognl.OgnlException;
 
 import java.util.LinkedHashSet;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -82,19 +81,19 @@ public class ExpressionEvaluation implements ExpressionEvaluator {
             } else {
                 activityData = new ActivityData(activity);
             }
-            OgnlContext context = OgnlSupport.createDefaultContext(activityData);
+            OgnlContext ognlContext = OgnlSupport.createDefaultContext();
             String[] tokenVarNames = null;
             if (tokens != null && tokens.length > 0) {
                 TokenEvaluator tokenEvaluator = new TokenEvaluation(activity);
-                tokenVarNames = putTokenVariables(context, tokenEvaluator, tokens);
+                tokenVarNames = putTokenVariables(ognlContext, tokenEvaluator, tokens);
             }
-            Object result = Ognl.getValue(represented, context, activityData, resultType);
+            Object result = Ognl.getValue(represented, ognlContext, activityData, resultType);
             if (tokenVarNames != null && result instanceof String) {
                 for (String tokenVarName : tokenVarNames) {
                     String tokenVarRefName = TOKEN_VAR_REF_SYMBOL + tokenVarName;
                     String str = (String)result;
                     if (str.contains(tokenVarRefName)) {
-                        Object value = context.get(tokenVarName);
+                        Object value = ognlContext.get(tokenVarName);
                         if (value != null) {
                             result = str.replace(tokenVarRefName, value.toString());
                         } else {
@@ -126,18 +125,18 @@ public class ExpressionEvaluation implements ExpressionEvaluator {
             } else {
                 activityData = new ActivityData(activity);
             }
-            OgnlContext context = OgnlSupport.createDefaultContext(activityData);
+            OgnlContext ognlContext = OgnlSupport.createDefaultContext();
             String[] tokenVarNames = null;
             if (tokens != null && tokens.length > 0) {
-                tokenVarNames = putTokenVariables(context, tokenEvaluator, tokens);
+                tokenVarNames = putTokenVariables(ognlContext, tokenEvaluator, tokens);
             }
-            Object result = Ognl.getValue(represented, context, activityData, resultType);
+            Object result = Ognl.getValue(represented, ognlContext, activityData, resultType);
             if (tokenVarNames != null && result instanceof String) {
                 for (String tokenVarName : tokenVarNames) {
                     String tokenVarRefName = TOKEN_VAR_REF_NAME_PREFIX + tokenVarName;
                     String str = (String)result;
                     if (str.contains(tokenVarRefName)) {
-                        Object value = context.get(tokenVarName);
+                        Object value = ognlContext.get(tokenVarName);
                         if (value != null) {
                             result = str.replace(tokenVarRefName, value.toString());
                         } else {
@@ -152,14 +151,13 @@ public class ExpressionEvaluation implements ExpressionEvaluator {
         }
     }
 
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    private String[] putTokenVariables(Map context, TokenEvaluator tokenEvaluator, Token[] tokens) {
+    private String[] putTokenVariables(OgnlContext ognlContext, TokenEvaluator tokenEvaluator, Token[] tokens) {
         Set<String> tokenVarNames = new LinkedHashSet<>();
         for (Token token : tokens) {
             if (token.getType() != TokenType.TEXT) {
                 String name = makeTokenVarName(token);
                 Object value = tokenEvaluator.evaluate(token);
-                context.put(name, value);
+                ognlContext.put(name, value);
                 tokenVarNames.add(name);
             }
         }

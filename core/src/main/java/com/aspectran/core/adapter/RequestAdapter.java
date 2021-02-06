@@ -185,7 +185,7 @@ public interface RequestAdapter {
      * @param name a {@code String} specifying the name of the parameter
      * @param values an array of {@code String} objects
      *         containing the parameter's values
-     * @see #setParameter
+     * @see #setParameter(String, String)
      */
     void setParameter(String name, String[] values);
 

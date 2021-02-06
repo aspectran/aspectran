@@ -17,12 +17,10 @@ package com.aspectran.core.context.expr;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.NonActivity;
-import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.builder.ActivityContextBuilder;
 import com.aspectran.core.context.builder.ActivityContextBuilderException;
 import com.aspectran.core.context.builder.HybridActivityContextBuilder;
-import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.rule.IllegalRuleException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -44,10 +42,8 @@ class ExpressionEvaluationTest {
         ActivityContext context = builder.build();
 
         NonActivity activity = new NonActivity(context);
-        ParameterMap parameterMap = new ParameterMap();
-        parameterMap.setParameter("foo", "foo");
-        parameterMap.setParameterValues("bars", new String[] {"bar1", "bar2", "bar3"});
-        activity.setParameterMap(parameterMap);
+        activity.getRequestAdapter().setParameter("foo", "foo");
+        activity.getRequestAdapter().setParameter("bars", new String[] {"bar1", "bar2", "bar3"});
         this.activity = activity;
     }
 

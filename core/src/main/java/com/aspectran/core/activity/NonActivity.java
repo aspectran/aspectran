@@ -15,12 +15,9 @@
  */
 package com.aspectran.core.activity;
 
-import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.adapter.DefaultRequestAdapter;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.context.ActivityContext;
-
-import java.util.Map;
 
 /**
  * This is an activity that does nothing, and is mainly used for unit testing.
@@ -36,20 +33,13 @@ public class NonActivity extends CoreActivity {
         super(context);
     }
 
-    public void setParameterMap(ParameterMap parameterMap) {
-        touchRequestAdapter().putAllParameters(parameterMap);
-    }
-
-    public void setAttributeMap(Map<String, Object> attributeMap) {
-        touchRequestAdapter().putAllAttributes(attributeMap);
-    }
-
-    private RequestAdapter touchRequestAdapter() {
-        if (getRequestAdapter() == null) {
+    @Override
+    public RequestAdapter getRequestAdapter() {
+        if (super.getRequestAdapter() == null) {
             DefaultRequestAdapter requestAdapter = new DefaultRequestAdapter();
             setRequestAdapter(requestAdapter);
         }
-        return getRequestAdapter();
+        return super.getRequestAdapter();
     }
 
     @Override

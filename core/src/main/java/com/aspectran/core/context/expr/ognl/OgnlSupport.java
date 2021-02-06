@@ -57,7 +57,7 @@ public class OgnlSupport {
         }
     }
 
-    public static OgnlContext createDefaultContext(Object root) {
+    public static OgnlContext createDefaultContext() {
         return new OgnlContext(null, null, MEMBER_ACCESS);
     }
 
