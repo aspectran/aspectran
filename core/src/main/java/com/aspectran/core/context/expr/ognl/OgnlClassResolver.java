@@ -13,30 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.core.context.expr;
+package com.aspectran.core.context.expr.ognl;
 
-import com.aspectran.core.activity.Activity;
+import com.aspectran.core.util.ClassUtils;
+import ognl.DefaultClassResolver;
 
 /**
- * It supports expressions in the CHOOSE-WHEN statement,
- * and evaluates the expression as a boolean result.
+ * Custom ognl {@code ClassResolver}.
  *
- * <p>Created: 2019-01-06</p>
- *
- * @since 6.0.0
+ * <p>Created: 2021/02/07</p>
  */
-public class BooleanExpression extends ExpressionEvaluation {
+public class OgnlClassResolver extends DefaultClassResolver {
 
-    public BooleanExpression(String expression) throws ExpressionParserException {
-        super(expression);
-    }
-
-    public boolean evaluate(Activity activity) {
-        Boolean result = evaluate(activity, Boolean.class);
-        if (result == null) {
-            return false;
-        }
-        return result;
+    @Override
+    protected Class<?> toClassForName(String className) throws ClassNotFoundException {
+        return ClassUtils.getDefaultClassLoader().loadClass(className);
     }
 
 }

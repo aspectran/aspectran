@@ -22,7 +22,6 @@ import com.aspectran.core.context.expr.token.Token;
  */
 public class TokenEvaluationException extends RuntimeException {
 
-    /** @serial */
     private static final long serialVersionUID = 2303202652519466514L;
 
     private final Token token;

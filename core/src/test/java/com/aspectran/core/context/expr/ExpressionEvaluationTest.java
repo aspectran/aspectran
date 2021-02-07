@@ -21,7 +21,6 @@ import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.builder.ActivityContextBuilder;
 import com.aspectran.core.context.builder.ActivityContextBuilderException;
 import com.aspectran.core.context.builder.HybridActivityContextBuilder;
-import com.aspectran.core.context.rule.IllegalRuleException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -48,7 +47,7 @@ class ExpressionEvaluationTest {
     }
 
     @Test
-    void evaluate() throws IllegalRuleException {
+    void evaluate() {
         assertEquals(true, ExpressionEvaluator.evaluate("foo in {'foo','bar'}", activity));
         assertEquals(true, ExpressionEvaluator.evaluate("${foo} in {'foo','bar'}", activity));
         assertEquals(3, (int)ExpressionEvaluator.evaluate("bars.length", activity));

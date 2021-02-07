@@ -20,7 +20,6 @@ import com.aspectran.core.activity.ActivityData;
 import com.aspectran.core.context.expr.ognl.OgnlSupport;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.expr.token.TokenParser;
-import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.util.StringUtils;
 import ognl.Ognl;
@@ -35,6 +34,8 @@ import java.util.Set;
  * OGNL-based Aspectran expression language.
  *
  * <p>Created: 2021/01/31</p>
+ *
+ * @since 6.11.0
  */
 public class ExpressionEvaluation implements ExpressionEvaluator {
 
@@ -52,7 +53,7 @@ public class ExpressionEvaluation implements ExpressionEvaluator {
 
     private Token[] tokens;
 
-    public ExpressionEvaluation(String expression) throws IllegalRuleException {
+    public ExpressionEvaluation(String expression) throws ExpressionParserException {
         this.expression = expression;
         parseExpression(expression);
     }
@@ -164,7 +165,7 @@ public class ExpressionEvaluation implements ExpressionEvaluator {
         return (tokenVarNames.isEmpty() ? null : tokenVarNames.toArray(new String[0]));
     }
 
-    private void parseExpression(String expression) throws IllegalRuleException {
+    private void parseExpression(String expression) throws ExpressionParserException {
         tokens = TokenParser.makeTokens(expression, true);
         if (tokens != null && tokens.length > 0) {
             if (tokens.length == 1) {

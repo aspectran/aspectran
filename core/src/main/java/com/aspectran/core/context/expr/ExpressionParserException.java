@@ -15,23 +15,25 @@
  */
 package com.aspectran.core.context.expr;
 
-/**
- * Error during evaluation of expression.
- */
-public class ExpressionEvaluationException extends RuntimeException {
+import com.aspectran.core.context.rule.IllegalRuleException;
 
-    private static final long serialVersionUID = 4909566791419959020L;
+/**
+ * Exception for all errors occurring during expression parsing.
+ */
+public class ExpressionParserException extends IllegalRuleException {
+
+    private static final long serialVersionUID = -2232633791981628212L;
 
     private final String expression;
 
     /**
-     * Instantiates a new expression evaluation exception.
+     * Instantiates a new expression parser exception.
      *
      * @param expression the expression to be evaluated
      * @param cause the root cause
      */
-    public ExpressionEvaluationException(String expression, Throwable cause) {
-        super("Error evaluating expression '" + expression + "'. Cause: " + cause, cause);
+    public ExpressionParserException(String expression, Throwable cause) {
+        super("Error parsing expression '" + expression + "'. Cause: " + cause, cause);
         this.expression = expression;
     }
 

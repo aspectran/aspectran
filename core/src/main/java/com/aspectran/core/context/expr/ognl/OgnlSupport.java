@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.context.expr.ognl;
 
-import com.aspectran.core.context.rule.IllegalRuleException;
+import com.aspectran.core.context.expr.ExpressionParserException;
 import com.aspectran.core.util.ConcurrentReferenceHashMap;
 import com.aspectran.core.util.StringUtils;
 import ognl.Ognl;
@@ -31,6 +31,8 @@ import java.util.Map;
  */
 public class OgnlSupport {
 
+    private static final OgnlClassResolver CLASS_RESOLVER = new OgnlClassResolver();
+
     private static final OgnlMemberAccess MEMBER_ACCESS = new OgnlMemberAccess();
 
     private static final Map<String, Object> cache = new ConcurrentReferenceHashMap<>();
@@ -38,7 +40,7 @@ public class OgnlSupport {
     private OgnlSupport() {
     }
 
-    public static Object parseExpression(String expression) throws IllegalRuleException {
+    public static Object parseExpression(String expression) throws ExpressionParserException {
         if (!StringUtils.hasLength(expression)) {
             return null;
         }
@@ -53,12 +55,12 @@ public class OgnlSupport {
             }
             return node;
         } catch (OgnlException e) {
-            throw new IllegalRuleException("Error parsing expression '" + expression + "'. Cause: " + e, e);
+            throw new ExpressionParserException(expression, e);
         }
     }
 
     public static OgnlContext createDefaultContext() {
-        return new OgnlContext(null, null, MEMBER_ACCESS);
+        return new OgnlContext(CLASS_RESOLVER, null, MEMBER_ACCESS);
     }
 
 }
