@@ -106,7 +106,7 @@
                             </excludes>
                         </fileset>
                         <fileset>
-                            <directory>app/temp/_root</directory>
+                            <directory>app/temp/_webroot</directory>
                         </fileset>
                     </filesets>
                 </configuration>

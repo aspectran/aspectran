@@ -40,7 +40,7 @@ import java.util.List;
 /**
  * <p>Created: 06/10/2019</p>
  */
-public class HybridHttpHandlerFactory implements ActivityContextAware, DisposableBean {
+public class HttpHybridHandlerFactory implements ActivityContextAware, DisposableBean {
 
     private ActivityContext context;
 
@@ -108,16 +108,16 @@ public class HybridHttpHandlerFactory implements ActivityContextAware, Disposabl
             sessionManager.start();
         }
 
-        HybridHttpHandler defaultHttpHandler = new HybridHttpHandler(resourceManager);
-        defaultHttpHandler.setStaticResourceHandler(staticResourceHandler);
-        defaultHttpHandler.setSessionManager(sessionManager);
-        defaultHttpHandler.setSessionConfig(sessionConfig);
-        defaultHttpHandler.setTowService(towService);
+        HttpHybridHandler httpHybridHandler = new HttpHybridHandler(resourceManager);
+        httpHybridHandler.setStaticResourceHandler(staticResourceHandler);
+        httpHybridHandler.setSessionManager(sessionManager);
+        httpHybridHandler.setSessionConfig(sessionConfig);
+        httpHybridHandler.setTowService(towService);
 
         if (outerHandlerChainWrappers != null) {
-            return wrapHandlers(defaultHttpHandler, outerHandlerChainWrappers);
+            return wrapHandlers(httpHybridHandler, outerHandlerChainWrappers);
         } else {
-            return defaultHttpHandler;
+            return httpHybridHandler;
         }
     }
 

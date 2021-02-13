@@ -236,21 +236,21 @@ public class HttpsListenerConfig {
         }
 
         @Override
-        public String chooseEngineClientAlias(String[] strings, Principal[] principals, SSLEngine sslEngine) {
-            return this.keyManager.chooseEngineClientAlias(strings, principals, sslEngine);
+        public String chooseEngineClientAlias(String[] keyTypes, Principal[] principals, SSLEngine sslEngine) {
+            return this.keyManager.chooseEngineClientAlias(keyTypes, principals, sslEngine);
         }
 
         @Override
-        public String chooseEngineServerAlias(String s, Principal[] principals, SSLEngine sslEngine) {
+        public String chooseEngineServerAlias(String keyType, Principal[] principals, SSLEngine sslEngine) {
             if (this.alias == null) {
-                return this.keyManager.chooseEngineServerAlias(s, principals, sslEngine);
+                return this.keyManager.chooseEngineServerAlias(keyType, principals, sslEngine);
             }
             return this.alias;
         }
 
         @Override
-        public String chooseClientAlias(String[] keyType, Principal[] issuers, Socket socket) {
-            return this.keyManager.chooseClientAlias(keyType, issuers, socket);
+        public String chooseClientAlias(String[] keyTypes, Principal[] issuers, Socket socket) {
+            return this.keyManager.chooseClientAlias(keyTypes, issuers, socket);
         }
 
         @Override

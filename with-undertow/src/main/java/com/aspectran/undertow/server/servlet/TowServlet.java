@@ -15,6 +15,7 @@
  */
 package com.aspectran.undertow.server.servlet;
 
+import com.aspectran.core.util.ClassUtils;
 import io.undertow.servlet.api.ServletInfo;
 
 import javax.servlet.Servlet;
@@ -27,7 +28,7 @@ public class TowServlet extends ServletInfo {
 
     @SuppressWarnings("unchecked")
     public TowServlet(String name, String servletClass) throws ClassNotFoundException {
-        this(name, (Class<? extends Servlet>)TowServlet.class.getClassLoader().loadClass(servletClass));
+        this(name, (Class<? extends Servlet>)ClassUtils.getDefaultClassLoader().loadClass(servletClass));
     }
 
     public TowServlet(String name, Class<? extends Servlet> servletClass) {

@@ -22,7 +22,7 @@ daemon: {
         pollingInterval: 5000
         maxThreads: 5
         requeuable: false
-        incoming: /commands/incoming
+        incoming: /cmd/incoming
     }
     commands: [
         com.aspectran.daemon.command.builtins.UndertowCommand

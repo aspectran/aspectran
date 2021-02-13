@@ -61,7 +61,7 @@ public class SessionListenerRegistrationBean extends InstantActivitySupport
         if (towServer == null) {
             throw new IllegalArgumentException("No TowServer named '" + towServerId + "'");
         }
-        DeploymentManager deploymentManager = towServer.getTowServletContainer().getDeployment(deploymentName);
+        DeploymentManager deploymentManager = towServer.getServletContainer().getDeployment(deploymentName);
         if (deploymentManager == null) {
             throw new IllegalArgumentException("TowServer named '" + towServerId +
                     "' does not have a deployment called '" + deploymentName + "'");

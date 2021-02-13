@@ -46,7 +46,7 @@ class JettyServerTest {
         String basePath = new File("target").getCanonicalPath();
         File configFile = ResourceUtils.getResourceAsFile("config/aspectran-config.apon");
 
-        FileCopyUtils.copyDirectory(ResourceUtils.getResourceAsFile("webapps"), new File(basePath, "webapps"));
+        FileCopyUtils.copyDirectory(ResourceUtils.getResourceAsFile("webroot"), new File(basePath, "webroot"));
 
         AspectranConfig aspectranConfig = new AspectranConfig(configFile);
         aspectranConfig.touchContextConfig()

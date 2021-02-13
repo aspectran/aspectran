@@ -36,6 +36,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -74,6 +75,22 @@ public class TowServletContext extends DeploymentInfo implements ApplicationAdap
     public void setSessionManager(SessionManager sessionManager) {
         this.sessionManager = sessionManager;
         setSessionManagerFactory(deployment -> sessionManager);
+    }
+
+    public void setInitParams(Map<String, String> initParams) {
+        if (initParams != null) {
+            for (Map.Entry<String, String> entry : initParams.entrySet()) {
+                addInitParameter(entry.getKey(), entry.getValue());
+            }
+        }
+    }
+
+    public void setListeners(TowListener[] towListeners) {
+        if (towListeners != null) {
+            for (TowListener towListener : towListeners) {
+                addListener(towListener);
+            }
+        }
     }
 
     public void setServlets(TowServlet[] towServlets) {

@@ -33,7 +33,6 @@
         <main.basedir>${project.parent.basedir}</main.basedir>
         <java.module.name>com.aspectran.undertow</java.module.name>
         <undertow.version>2.2.4.Final</undertow.version>
-        <taglibs.version>1.2.5</taglibs.version>
     </properties>
 
     <dependencies>
@@ -41,16 +40,6 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>aspectran-web</artifactId>
             <version>${project.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>javax.servlet</groupId>
-                    <artifactId>javax.servlet-api</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>javax.websocket</groupId>
-                    <artifactId>javax.websocket-api</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <!-- Undertow dependencies -->
         <dependency>

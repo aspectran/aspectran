@@ -28,6 +28,7 @@ import io.undertow.server.HttpHandler;
 import io.undertow.server.handlers.PathHandler;
 import io.undertow.server.handlers.ResponseCodeHandler;
 import io.undertow.servlet.api.DeploymentManager;
+import io.undertow.servlet.api.ServletContainer;
 
 import javax.servlet.ServletContext;
 import javax.websocket.server.ServerContainer;
@@ -39,11 +40,11 @@ import static com.aspectran.web.service.WebService.ROOT_WEB_SERVICE_ATTR_NAME;
 /**
  * <p>Created: 2019-08-04</p>
  */
-public class HybridServletHandlerFactory implements ActivityContextAware {
+public class ServletHybridHandlerFactory implements ActivityContextAware {
 
     private ActivityContext context;
 
-    private TowServletContainer towServletContainer;
+    private ServletContainer servletContainer;
 
     private StaticResourceHandler staticResourceHandler;
 
@@ -55,12 +56,15 @@ public class HybridServletHandlerFactory implements ActivityContextAware {
         this.context = context;
     }
 
-    public TowServletContainer getTowServletContainer() {
-        return towServletContainer;
+    public ServletContainer getServletContainer() {
+        return servletContainer;
     }
 
-    public void setTowServletContainer(TowServletContainer towServletContainer) {
-        this.towServletContainer = towServletContainer;
+    public void setServletContainer(ServletContainer servletContainer) {
+        if (servletContainer == null) {
+            throw new IllegalArgumentException("servletContainer must not be null");
+        }
+        this.servletContainer = servletContainer;
     }
 
     public StaticResourceHandler getStaticResourceHandler() {
@@ -68,22 +72,25 @@ public class HybridServletHandlerFactory implements ActivityContextAware {
     }
 
     public void setStaticResourceHandler(StaticResourceHandler staticResourceHandler) {
+        if (staticResourceHandler == null) {
+            throw new IllegalArgumentException("staticResourceHandler must not be null");
+        }
         this.staticResourceHandler = staticResourceHandler;
     }
 
-    public void setOuterHandlerChainWrappers(HandlerWrapper[] wrappers) {
-        if (wrappers != null && wrappers.length > 0) {
-            this.outerHandlerChainWrappers = Arrays.asList(wrappers);
-        } else {
-            this.outerHandlerChainWrappers = null;
+    public void setOuterHandlerChainWrappers(HandlerWrapper[] handlerWrappers) {
+        if (handlerWrappers == null || handlerWrappers.length == 0) {
+            throw new IllegalArgumentException("handlerWrappers must not be null or empty");
         }
+        this.outerHandlerChainWrappers = Arrays.asList(handlerWrappers);
     }
 
     public HttpHandler createHandler() throws Exception {
         HttpHandler rootHandler;
-        if (towServletContainer != null && towServletContainer.getDeploymentManagers() != null) {
+        if (servletContainer != null) {
             PathHandler pathHandler = new PathHandler();
-            for (DeploymentManager manager : towServletContainer.getDeploymentManagers()) {
+            for (String deploymentName : servletContainer.listDeployments()) {
+                DeploymentManager manager = servletContainer.getDeployment(deploymentName);
                 manager.deploy();
 
                 ServletContext servletContext = manager.getDeployment().getServletContext();
@@ -112,7 +119,7 @@ public class HybridServletHandlerFactory implements ActivityContextAware {
             rootHandler = ResponseCodeHandler.HANDLE_404;
         }
         if (staticResourceHandler != null && staticResourceHandler.hasPatterns()) {
-            rootHandler = new HybridServletHandler(rootHandler, staticResourceHandler);
+            rootHandler = new ServletHybridHandler(rootHandler, staticResourceHandler);
         }
         if (outerHandlerChainWrappers != null) {
             rootHandler = wrapHandlers(rootHandler, outerHandlerChainWrappers);

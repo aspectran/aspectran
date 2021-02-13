@@ -12,6 +12,8 @@
             <item name="tow.server.startup" valueType="boolean">true</item>
             <item name="tow.server.listener.http.port" valueType="int">8080</item>
             <item name="tow.server.listener.http.host">0.0.0.0</item>
+            <item name="tow.server.web.root">/webroot</item>
+            <item name="tow.web.root.scratch_dir">/temp/_webroot</item>
         </properties>
     </environment>
 
@@ -41,7 +43,15 @@
                     </properties>
                 </bean>
             </item>
-            <item name="towServletContainer">#{tow.servletContainer}</item>
+            <item name="servletContainer">
+                <bean class="com.aspectran.undertow.server.servlet.TowServletContainer">
+                    <properties>
+                        <item name="servletContexts" type="array">
+                            <value>#{tow.defaultServletContext}</value>
+                        </item>
+                    </properties>
+                </bean>
+            </item>
             <item name="handler">
                 <bean class="io.undertow.server.handlers.GracefulShutdownHandler">
                     <arguments>
@@ -52,21 +62,19 @@
         </properties>
     </bean>
 
-    <bean id="tow.servletContainer" class="com.aspectran.undertow.server.servlet.TowServletContainer" scope="prototype">
-        <properties>
-            <item name="towServletContexts" type="array">
-                <value>#{tow.defaultServletContext}</value>
-            </item>
-        </properties>
-    </bean>
-
     <bean id="tow.defaultServletContext" class="com.aspectran.undertow.server.servlet.TowServletContext"
           scope="prototype">
         <properties>
             <item name="deploymentName">root.war</item>
             <item name="contextPath">/</item>
-            <item name="resourceManager">#{tow.resourceManager}</item>
-            <item name="scratchDir">/temp/_root</item>
+            <item name="resourceManager">
+                <bean class="com.aspectran.undertow.server.resource.TowResourceManager">
+                    <properties>
+                        <item name="base">%{tow.server.web.root}</item>
+                    </properties>
+                </bean>
+            </item>
+            <item name="scratchDir">%{tow.web.root.scratch_dir}</item>
             <item name="sessionManager">#{tow.sessionManager}</item>
             <item name="servletSessionConfig">
                 <bean class="io.undertow.servlet.api.ServletSessionConfig"/>
@@ -108,7 +116,7 @@
                 <bean class="com.aspectran.undertow.server.servlet.TowJasperInitializer">
                     <properties>
                         <item name="tldResources" type="array">
-                            <value>/webapps/root/WEB-INF/lib/taglibs-standard-impl-1.2.5.jar</value>
+                            <value>/webroot/WEB-INF/lib/taglibs-standard-impl-1.2.5.jar</value>
                             <value>classpath:com/aspectran/web/support/tags/aspectran.tld</value>
                         </item>
                     </properties>
@@ -148,7 +156,7 @@
             <item name="sessionStoreFactory">
                 <bean class="com.aspectran.core.component.session.FileSessionStoreFactory">
                     <properties>
-                        <item name="storeDir">/temp/sessions/undertow</item>
+                        <item name="storeDir">/temp/sessions/tow</item>
                         <item name="nonPersistentAttributes" type="array">
                             <value>io.undertow.websocket.current-connections</value>
                         </item>
@@ -212,16 +220,10 @@
         </properties>
     </bean>
 
-    <bean id="tow.resourceManager" class="com.aspectran.undertow.server.resource.TowResourceManager" scope="prototype">
-        <properties>
-            <item name="base">/webapps/root</item>
-        </properties>
-    </bean>
-
-    <bean id="tow.hybridServletHandler" class="com.aspectran.undertow.server.servlet.HybridServletHandlerFactoryBean"
+    <bean id="tow.hybridServletHandler" class="com.aspectran.undertow.server.servlet.ServletHybridHandlerFactoryBean"
           scope="prototype">
         <properties>
-            <item name="towServletContainer">#{tow.server^towServletContainer}</item>
+            <item name="servletContainer">#{tow.server^servletContainer}</item>
             <item name="staticResourceHandler">#{tow.staticResourceHandler}</item>
             <item name="outerHandlerChainWrappers" type="array">
                 <value>#{tow.encodingHandlerWrapper}</value>
@@ -233,7 +235,13 @@
     <bean id="tow.staticResourceHandler" class="com.aspectran.undertow.server.resource.StaticResourceHandler"
           initMethod="autoDetect" scope="prototype">
         <arguments>
-            <item>#{tow.resourceManager}</item>
+            <item>
+                <bean class="com.aspectran.undertow.server.resource.TowResourceManager">
+                    <properties>
+                        <item name="base">%{tow.server.web.root}</item>
+                    </properties>
+                </bean>
+            </item>
         </arguments>
         <properties>
             <item name="resourcePathPatterns">

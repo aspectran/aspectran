@@ -40,16 +40,6 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>aspectran-web</artifactId>
             <version>${project.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>javax.servlet</groupId>
-                    <artifactId>javax.servlet-api</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>javax.websocket</groupId>
-                    <artifactId>javax.websocket-api</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <!-- Jetty dependencies -->
         <dependency>

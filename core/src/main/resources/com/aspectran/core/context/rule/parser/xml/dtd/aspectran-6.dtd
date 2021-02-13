@@ -271,6 +271,7 @@
 <!ELEMENT entry (#PCDATA | bean)*>
 <!ATTLIST entry
   name     CDATA #IMPLIED
+  value    CDATA #IMPLIED
   tokenize (true | false) #IMPLIED
 >
 

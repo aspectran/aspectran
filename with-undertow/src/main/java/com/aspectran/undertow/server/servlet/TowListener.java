@@ -15,26 +15,23 @@
  */
 package com.aspectran.undertow.server.servlet;
 
-import com.aspectran.core.component.bean.ablility.FactoryBean;
-import com.aspectran.core.component.bean.ablility.InitializableBean;
-import io.undertow.server.HttpHandler;
+import com.aspectran.core.util.ClassUtils;
+import io.undertow.servlet.api.ListenerInfo;
+
+import java.util.EventListener;
 
 /**
- * <p>Created: 2019-08-04</p>
+ * <p>Created: 2021-02-12</p>
  */
-public class HybridServletHandlerFactoryBean extends HybridServletHandlerFactory
-        implements InitializableBean, FactoryBean<HttpHandler> {
+public class TowListener extends ListenerInfo {
 
-    private volatile HttpHandler handler;
-
-    @Override
-    public void initialize() throws Exception {
-        handler = createHandler();
+    @SuppressWarnings("unchecked")
+    public TowListener(String listenerClass) throws ClassNotFoundException {
+        this((Class<? extends EventListener>)ClassUtils.getDefaultClassLoader().loadClass(listenerClass));
     }
 
-    @Override
-    public HttpHandler getObject() throws Exception {
-        return handler;
+    public TowListener(Class<? extends EventListener> listenerClass) {
+        super(listenerClass);
     }
 
 }

@@ -29,7 +29,7 @@ class FileCommandPollerTest {
     @Test
     void testPolling() throws Exception {
         File root = ResourceUtils.getResourceAsFile(".");
-        File incomingDir = new File(root, "commands/incoming");
+        File incomingDir = new File(root, "cmd/incoming");
 
         DaemonConfig daemonConfig = new DaemonConfig();
 

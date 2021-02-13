@@ -20,12 +20,12 @@ import com.aspectran.core.component.bean.ablility.InitializableBean;
 import com.aspectran.core.util.lifecycle.AbstractLifeCycle;
 import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
-import com.aspectran.undertow.server.servlet.TowServletContainer;
 import io.undertow.Undertow;
 import io.undertow.Version;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.handlers.GracefulShutdownHandler;
 import io.undertow.servlet.api.DeploymentManager;
+import io.undertow.servlet.api.ServletContainer;
 import org.xnio.Option;
 import org.xnio.OptionMap;
 
@@ -47,7 +47,7 @@ public class TowServer extends AbstractLifeCycle implements InitializableBean, D
 
     private int shutdownTimeout;
 
-    private TowServletContainer towServletContainer;
+    private ServletContainer servletContainer;
 
     private HttpHandler handler;
 
@@ -177,12 +177,12 @@ public class TowServer extends AbstractLifeCycle implements InitializableBean, D
         }
     }
 
-    public TowServletContainer getTowServletContainer() {
-        return towServletContainer;
+    public ServletContainer getServletContainer() {
+        return servletContainer;
     }
 
-    public void setTowServletContainer(TowServletContainer towServletContainer) {
-        this.towServletContainer = towServletContainer;
+    public void setServletContainer(ServletContainer servletContainer) {
+        this.servletContainer = servletContainer;
     }
 
     @Override
@@ -225,8 +225,9 @@ public class TowServer extends AbstractLifeCycle implements InitializableBean, D
                         logger.error("Unable to gracefully stop Undertow server");
                     }
                 }
-                if (towServletContainer != null && towServletContainer.getDeploymentManagers() != null) {
-                    for (DeploymentManager manager : towServletContainer.getDeploymentManagers()) {
+                if (servletContainer != null) {
+                    for (String deploymentName : servletContainer.listDeployments()) {
+                        DeploymentManager manager = servletContainer.getDeployment(deploymentName);
                         manager.stop();
                         manager.undeploy();
                     }

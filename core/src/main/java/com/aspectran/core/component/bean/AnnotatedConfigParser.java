@@ -271,7 +271,7 @@ public class AnnotatedConfigParser {
             beanRule.setFieldAutowireParsed(true);
         }
         Class<?> beanClass = beanRule.getBeanClass();
-        while (beanClass != null) {
+        while (beanClass != null && beanClass != Object.class) {
             for (Field field : beanClass.getDeclaredFields()) {
                 if (field.isAnnotationPresent(Autowired.class)) {
                     AutowireRule autowireRule = createAutowireRuleForField(field);
@@ -296,7 +296,7 @@ public class AnnotatedConfigParser {
             beanRule.setMethodAutowireParsed(true);
         }
         Class<?> beanClass = beanRule.getBeanClass();
-        while (beanClass != null) {
+        while (beanClass != null && beanClass != Object.class) {
             for (Method method : beanClass.getDeclaredMethods()) {
                 if (method.isAnnotationPresent(Autowired.class)) {
                     AutowireRule autowireRule = createAutowireRuleForMethod(method);

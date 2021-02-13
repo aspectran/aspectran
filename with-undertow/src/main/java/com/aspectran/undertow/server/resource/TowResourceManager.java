@@ -18,18 +18,14 @@ package com.aspectran.undertow.server.resource;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.component.bean.aware.ApplicationAdapterAware;
 import com.aspectran.core.util.StringUtils;
-import io.undertow.server.HandlerWrapper;
 import io.undertow.server.handlers.resource.PathResourceManager;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 
 public class TowResourceManager extends PathResourceManager implements ApplicationAdapterAware {
 
     private ApplicationAdapter applicationAdapter;
-
-    private List<HandlerWrapper> outerHandlerChainWrappers;
 
     public TowResourceManager() {
         this(1024, true, false, (String[])null);
@@ -70,7 +66,7 @@ public class TowResourceManager extends PathResourceManager implements Applicati
 
     public void setBase(String base) throws IOException {
         if (!StringUtils.hasText(base)) {
-            throw new IllegalArgumentException("'base' must not be null or empty");
+            throw new IllegalArgumentException("Resource base path must not be null or empty");
         }
         if (applicationAdapter != null) {
             setBase(applicationAdapter.toRealPathAsFile(base));
@@ -82,10 +78,10 @@ public class TowResourceManager extends PathResourceManager implements Applicati
     @Override
     public TowResourceManager setBase(File base) {
         if (base == null) {
-            throw new IllegalArgumentException("'base' must not be null");
+            throw new IllegalArgumentException("Resource base path must not be null");
         }
         if (!base.isDirectory()) {
-            throw new IllegalArgumentException("Resource base directory '" + base + "' does not exist");
+            throw new IllegalArgumentException("Resource base path '" + base + "' does not exist");
         }
         super.setBase(base);
         return this;

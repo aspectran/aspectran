@@ -30,7 +30,7 @@ import io.undertow.server.session.SessionManager;
 /**
  * <p>Created: 2019-07-31</p>
  */
-public class HybridHttpHandler extends ResourceHandler {
+public class HttpHybridHandler extends ResourceHandler {
 
     private volatile StaticResourceHandler staticResourceHandler;
 
@@ -40,19 +40,19 @@ public class HybridHttpHandler extends ResourceHandler {
 
     private volatile TowService towService;
 
-    public HybridHttpHandler(ResourceManager resourceManager) {
+    public HttpHybridHandler(ResourceManager resourceManager) {
         super(resourceManager);
     }
 
-    public HybridHttpHandler(ResourceManager resourceManager, HttpHandler next) {
+    public HttpHybridHandler(ResourceManager resourceManager, HttpHandler next) {
         super(resourceManager, next);
     }
 
-    public HybridHttpHandler(ResourceSupplier resourceSupplier) {
+    public HttpHybridHandler(ResourceSupplier resourceSupplier) {
         super(resourceSupplier);
     }
 
-    public HybridHttpHandler(ResourceSupplier resourceSupplier, HttpHandler next) {
+    public HttpHybridHandler(ResourceSupplier resourceSupplier, HttpHandler next) {
         super(resourceSupplier, next);
     }
 

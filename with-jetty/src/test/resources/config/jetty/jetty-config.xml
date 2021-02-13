@@ -92,7 +92,7 @@
     <bean id="jetty.contexts.root" class="com.aspectran.jetty.JettyWebAppContext" scope="prototype">
         <properties>
             <item name="contextPath" value="/"/>
-            <item name="war" value="#{basePath}/webapps/root"/>
+            <item name="war" value="#{basePath}/webroot"/>
             <item name="persistTempDirectory" value="true" valueType="boolean"/>
             <item name="defaultsDescriptor" value="config/jetty/webdefault.xml"/>
             <item name="sessionHandler">#{jetty.sessionHandler}</item>

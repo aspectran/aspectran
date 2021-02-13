@@ -41,7 +41,7 @@ public class FileCommandPoller extends AbstractCommandPoller {
 
     protected final Logger logger = LoggerFactory.getLogger(FileCommandPoller.class);
 
-    private static final String COMMANDS_PATH = "/commands";
+    private static final String COMMANDS_PATH = "/cmd";
 
     private static final String QUEUED_PATH = COMMANDS_PATH + "/queued";
 

@@ -15,20 +15,26 @@
  */
 package com.aspectran.undertow.server.servlet;
 
-import io.undertow.servlet.api.DeploymentInfo;
-import io.undertow.servlet.core.ServletContainerImpl;
+import com.aspectran.core.component.bean.ablility.FactoryBean;
+import com.aspectran.core.component.bean.ablility.InitializableBean;
+import io.undertow.server.HttpHandler;
 
 /**
- * <p>Created: 2019-08-05</p>
+ * <p>Created: 2019-08-04</p>
  */
-public class TowServletContainer extends ServletContainerImpl {
+public class ServletHybridHandlerFactoryBean extends ServletHybridHandlerFactory
+        implements InitializableBean, FactoryBean<HttpHandler> {
 
-    public void setServletContexts(TowServletContext... towServletContexts) {
-        if (towServletContexts != null) {
-            for (DeploymentInfo deploymentInfo : towServletContexts) {
-                addDeployment(deploymentInfo);
-            }
-        }
+    private volatile HttpHandler handler;
+
+    @Override
+    public void initialize() throws Exception {
+        handler = createHandler();
+    }
+
+    @Override
+    public HttpHandler getObject() throws Exception {
+        return handler;
     }
 
 }

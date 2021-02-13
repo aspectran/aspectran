@@ -133,7 +133,7 @@ class ItemNodeletAdder implements NodeletAdder {
                 boolean isTokenize = BooleanUtils.toBoolean(BooleanUtils.toNullableBooleanObject(tokenize),
                         itemRule.isTokenize());
                 Token[] tokens = null;
-                if (StringUtils.hasText(value)) {
+                if (value != null) {
                     tokens = TokenParser.makeTokens(value, isTokenize);
                 } else if (StringUtils.hasText(text)) {
                     tokens = TokenParser.makeTokens(text, isTokenize);
