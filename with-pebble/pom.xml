@@ -32,7 +32,7 @@
     <properties>
         <main.basedir>${project.parent.basedir}</main.basedir>
         <java.module.name>com.aspectran.pebble</java.module.name>
-        <pebble.version>3.1.4</pebble.version>
+        <pebble.version>3.1.5</pebble.version>
     </properties>
 
     <dependencies>
