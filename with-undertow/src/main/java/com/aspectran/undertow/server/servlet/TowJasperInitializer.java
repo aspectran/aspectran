@@ -23,7 +23,7 @@ import com.aspectran.core.util.logging.LoggerFactory;
 import org.apache.jasper.servlet.JasperInitializer;
 import org.apache.jasper.servlet.TldScanner;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;

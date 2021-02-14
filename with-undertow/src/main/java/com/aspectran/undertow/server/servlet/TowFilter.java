@@ -17,7 +17,7 @@ package com.aspectran.undertow.server.servlet;
 
 import io.undertow.servlet.api.FilterInfo;
 
-import javax.servlet.Filter;
+import jakarta.servlet.Filter;
 import java.util.Map;
 
 /**

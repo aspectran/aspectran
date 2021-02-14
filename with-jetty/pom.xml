@@ -20,7 +20,7 @@
     <parent>
         <groupId>com.aspectran</groupId>
         <artifactId>aspectran</artifactId>
-        <version>6.12.0-SNAPSHOT</version>
+        <version>7.0.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>aspectran-with-jetty</artifactId>
@@ -31,8 +31,7 @@
 
     <properties>
         <main.basedir>${project.parent.basedir}</main.basedir>
-        <java.module.name>com.aspectran.jetty</java.module.name>
-        <jetty.version>9.4.36.v20210114</jetty.version>
+        <jetty.version>11.0.0</jetty.version>
     </properties>
 
     <dependencies>
@@ -40,6 +39,20 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>aspectran-web</artifactId>
             <version>${project.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>jakarta.servlet</groupId>
+                    <artifactId>jakarta.servlet-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>jakarta.servlet</groupId>
+                    <artifactId>jakarta.websocket-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>jakarta.servlet</groupId>
+                    <artifactId>jakarta.servlet.jsp-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <!-- Jetty dependencies -->
         <dependency>
@@ -69,7 +82,12 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty.websocket</groupId>
-            <artifactId>javax-websocket-server-impl</artifactId>
+            <artifactId>websocket-jetty-server</artifactId>
+            <version>${jetty.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty.websocket</groupId>
+            <artifactId>websocket-jakarta-server</artifactId>
             <version>${jetty.version}</version>
         </dependency>
         <!-- JSP and JSTL dependencies -->

@@ -17,7 +17,7 @@ package com.aspectran.undertow.server.servlet;
 
 import io.undertow.servlet.api.FilterMappingInfo;
 
-import javax.servlet.DispatcherType;
+import jakarta.servlet.DispatcherType;
 
 /**
  * <p>Created: 2019-08-05</p>

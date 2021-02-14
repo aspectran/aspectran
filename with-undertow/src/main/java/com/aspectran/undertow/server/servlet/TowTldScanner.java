@@ -24,7 +24,7 @@ import org.apache.tomcat.util.descriptor.tld.TldResourcePath;
 import org.apache.tomcat.util.scan.JarFactory;
 import org.xml.sax.SAXException;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Map;

@@ -30,8 +30,8 @@ import io.undertow.server.handlers.ResponseCodeHandler;
 import io.undertow.servlet.api.DeploymentManager;
 import io.undertow.servlet.api.ServletContainer;
 
-import javax.servlet.ServletContext;
-import javax.websocket.server.ServerContainer;
+import jakarta.servlet.ServletContext;
+import jakarta.websocket.server.ServerContainer;
 import java.util.Arrays;
 import java.util.List;
 

@@ -27,7 +27,7 @@ import com.aspectran.web.activity.request.RequestAttributeMap;
 import com.aspectran.web.activity.request.WebRequestBodyParser;
 import com.aspectran.web.support.http.MediaType;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;

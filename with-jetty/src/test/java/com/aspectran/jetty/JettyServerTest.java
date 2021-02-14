@@ -44,10 +44,10 @@ class JettyServerTest {
     @BeforeAll
     void ready() throws Exception {
         String basePath = new File("target").getCanonicalPath();
-        File configFile = ResourceUtils.getResourceAsFile("config/aspectran-config.apon");
-
         FileCopyUtils.copyDirectory(ResourceUtils.getResourceAsFile("webroot"), new File(basePath, "webroot"));
+        new File(basePath, "logs").mkdir();
 
+        File configFile = ResourceUtils.getResourceAsFile("config/aspectran-config.apon");
         AspectranConfig aspectranConfig = new AspectranConfig(configFile);
         aspectranConfig.touchContextConfig()
                 .setBasePath(basePath);

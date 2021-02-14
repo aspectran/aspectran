@@ -22,8 +22,8 @@ import com.aspectran.core.util.StringUtils;
 import com.aspectran.web.support.util.JavaScriptUtils;
 import com.aspectran.web.support.util.TagUtils;
 
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.JspTagException;
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.JspTagException;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
@@ -186,7 +186,7 @@ public class MessageTag extends HtmlEscapingAwareTag implements ArgumentAware {
      * a variable that contains the resolved message.
      *
      * @see #setScope
-     * @see javax.servlet.jsp.PageContext#setAttribute
+     * @see jakarta.servlet.jsp.PageContext#setAttribute
      */
     public void setVar(@Nullable String var) {
         this.var = var;
@@ -198,7 +198,7 @@ public class MessageTag extends HtmlEscapingAwareTag implements ArgumentAware {
      *
      * @see #setVar
      * @see com.aspectran.web.support.util.TagUtils#SCOPE_PAGE
-     * @see javax.servlet.jsp.PageContext#setAttribute
+     * @see jakarta.servlet.jsp.PageContext#setAttribute
      */
     public void setScope(String scope) {
         this.scope = scope;

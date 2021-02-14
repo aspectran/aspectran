@@ -15,7 +15,7 @@
  */
 package com.aspectran.web.support.http;
 
-import javax.servlet.ServletException;
+import jakarta.servlet.ServletException;
 import java.util.Collections;
 import java.util.List;
 

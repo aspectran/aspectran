@@ -19,7 +19,7 @@
 
     <groupId>com.aspectran</groupId>
     <artifactId>aspectran</artifactId>
-    <version>6.12.0-SNAPSHOT</version>
+    <version>7.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Aspectran</name>
@@ -83,24 +83,16 @@
     <properties>
         <main.basedir>${project.basedir}</main.basedir>
 
-        <java.version>1.8</java.version>
-        <java.release.version>8</java.release.version>
-        <java.module.name />
+        <compiler.source>11</compiler.source>
+        <compiler.target>11</compiler.target>
+        <compiler.release>11</compiler.release>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.build.resourceEncoding>UTF-8</project.build.resourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <!-- plugins configuration -->
         <javadoc.title>${project.name} API Reference (${project.version})</javadoc.title>
         <javadoc.locale>en_US</javadoc.locale>
-        <!-- Default to html4 for JDK 8 but html5 on jdk9+ -->
-        <javadoc.additionalOptions />
-
-        <!-- Animal Sniffer Signature -->
-        <signature.group>org.codehaus.mojo.signature</signature.group>
-        <signature.artifact>java18</signature.artifact>
-        <signature.version>1.0</signature.version>
     </properties>
 
     <modules>
@@ -212,11 +204,6 @@
                     <version>3.0.0-M3</version>
                 </plugin>
                 <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>animal-sniffer-maven-plugin</artifactId>
-                    <version>1.20</version>
-                </plugin>
-                <plugin>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>3.8.1</version>
                 </plugin>
@@ -227,10 +214,6 @@
                 <plugin>
                     <artifactId>maven-source-plugin</artifactId>
                     <version>3.2.1</version>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-jxr-plugin</artifactId>
-                    <version>3.0.0</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-javadoc-plugin</artifactId>
@@ -273,18 +256,9 @@
                     <version>3.0.0-M5</version>
                 </plugin>
                 <plugin>
-                    <artifactId>maven-failsafe-plugin</artifactId>
-                    <version>3.0.0-M5</version>
-                </plugin>
-                <plugin>
                     <groupId>org.apache.felix</groupId>
                     <artifactId>maven-bundle-plugin</artifactId>
                     <version>5.1.1</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.eluder.coveralls</groupId>
-                    <artifactId>coveralls-maven-plugin</artifactId>
-                    <version>4.3.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
@@ -295,11 +269,6 @@
                     <groupId>org.jacoco</groupId>
                     <artifactId>jacoco-maven-plugin</artifactId>
                     <version>0.8.6</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>versions-maven-plugin</artifactId>
-                    <version>2.8.1</version>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -327,7 +296,6 @@
                     </excludes>
                 </configuration>
             </plugin>
-
             <plugin>
                 <artifactId>maven-enforcer-plugin</artifactId>
                 <executions>
@@ -340,46 +308,24 @@
                         <configuration>
                             <rules>
                                 <requireJavaVersion>
-                                    <!-- Enforce JDK 1.8+ for compilation. -->
-                                    <version>[1.8.0,)</version>
+                                    <version>[11,)</version>
+                                    <message>[ERROR] OLD JDK in use. Aspectran Release ${project.version} MUST use JDK 11 or newer</message>
                                 </requireJavaVersion>
                                 <requireMavenVersion>
-                                    <version>[3.3.9,)</version>
+                                    <version>[3.5.0,)</version>
+                                    <message>[ERROR] OLD MAVEN in use, Aspectran ${project.version} requires Maven 3.5.0 or newer</message>
                                 </requireMavenVersion>
                             </rules>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
-
-            <!-- Make sure we only use Java8 methods -->
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>animal-sniffer-maven-plugin</artifactId>
-                <configuration>
-                    <signature>
-                        <groupId>${signature.group}</groupId>
-                        <artifactId>${signature.artifact}</artifactId>
-                        <version>${signature.version}</version>
-                    </signature>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>check-java-1.8-compat</id>
-                        <phase>process-classes</phase>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
-                    <compilerVersion>${java.version}</compilerVersion>
+                    <source>${compiler.source}</source>
+                    <target>${compiler.target}</target>
+                    <release>${compiler.release}</release>
                     <compilerArgs>
                         <arg>-Xlint:-try,-path,-options</arg>
                     </compilerArgs>
@@ -396,23 +342,9 @@
                     </excludes>
                 </configuration>
             </plugin>
-
             <plugin>
                 <artifactId>maven-jar-plugin</artifactId>
-                <configuration>
-                    <archive>
-                        <index>true</index>
-                        <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
-                        <manifest>
-                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                        </manifest>
-                        <manifestEntries>
-                            <Automatic-Module-Name>${java.module.name}</Automatic-Module-Name>
-                        </manifestEntries>
-                    </archive>
-                </configuration>
             </plugin>
-
             <plugin>
                 <artifactId>maven-source-plugin</artifactId>
                 <configuration>
@@ -435,11 +367,10 @@
                     </execution>
                 </executions>
             </plugin>
-
             <plugin>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <configuration>
-                    <source>${java.version}</source>
+                    <source>${compiler.source}</source>
                     <doctitle>${javadoc.title}</doctitle>
                     <windowtitle>${javadoc.title}</windowtitle>
                     <locale>${javadoc.locale}</locale>
@@ -448,7 +379,7 @@
                     <detectLinks>false</detectLinks>
                     <detectOfflineLinks>false</detectOfflineLinks>
                     <detectJavaApiLink>false</detectJavaApiLink>
-                    <additionalOptions>${javadoc.additionalOptions}</additionalOptions>
+                    <additionalOptions>-html5</additionalOptions>
                 </configuration>
                 <executions>
                     <execution>
@@ -459,7 +390,6 @@
                     </execution>
                 </executions>
             </plugin>
-
             <plugin>
                 <artifactId>maven-release-plugin</artifactId>
                 <configuration>
@@ -468,8 +398,6 @@
                     <tagNameFormat>v@{project.version}</tagNameFormat>
                 </configuration>
             </plugin>
-
-            <!-- Always produce osgi bundles -->
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
@@ -488,11 +416,9 @@
                     </execution>
                 </executions>
             </plugin>
-
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
             </plugin>
-
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
@@ -528,7 +454,6 @@
                 </plugins>
             </build>
         </profile>
-
         <profile>
             <id>release</id>
             <build>
@@ -588,27 +513,6 @@
                 </plugins>
             </build>
         </profile>
-
-        <profile>
-            <id>java9+</id>
-            <activation>
-                <jdk>[9,)</jdk>
-            </activation>
-            <properties>
-                <javadoc.additionalOptions>-html5</javadoc.additionalOptions>
-            </properties>
-            <build>
-                <plugins>
-                    <plugin>
-                        <artifactId>maven-compiler-plugin</artifactId>
-                        <configuration>
-                            <release>${java.release.version}</release>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-
         <profile>
             <id>fast</id>
             <properties>
@@ -616,7 +520,6 @@
                 <maven.source.skip>true</maven.source.skip>
             </properties>
         </profile>
-
         <profile>
             <id>skip-test</id>
             <properties>

@@ -25,9 +25,9 @@ import com.aspectran.core.util.ObjectUtils;
 import com.aspectran.web.support.util.JavaScriptUtils;
 import com.aspectran.web.support.util.TagUtils;
 
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.JspTagException;
-import javax.servlet.jsp.PageContext;
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.JspTagException;
+import jakarta.servlet.jsp.PageContext;
 import java.io.IOException;
 
 /**
@@ -95,7 +95,7 @@ import java.io.IOException;
 public class TokenTag extends HtmlEscapingAwareTag {
 
     /**
-     * {@link javax.servlet.jsp.PageContext} attribute for the
+     * {@link jakarta.servlet.jsp.PageContext} attribute for the
      * page-level {@link TokenEvaluator} instance.
      */
     protected static final String TOKEN_EVALUATOR_PAGE_ATTRIBUTE =

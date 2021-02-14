@@ -26,6 +26,7 @@ import com.aspectran.core.util.logging.LoggerFactory;
 import com.aspectran.web.service.DefaultWebService;
 import com.aspectran.web.service.WebService;
 import com.aspectran.web.socket.jsr356.ServerEndpointExporter;
+import jakarta.websocket.server.ServerContainer;
 import org.apache.tomcat.InstanceManager;
 import org.apache.tomcat.SimpleInstanceManager;
 import org.eclipse.jetty.annotations.ServletContainerInitializersStarter;
@@ -33,9 +34,9 @@ import org.eclipse.jetty.apache.jsp.JettyJasperInitializer;
 import org.eclipse.jetty.plus.annotation.ContainerInitializer;
 import org.eclipse.jetty.webapp.WebAppClassLoader;
 import org.eclipse.jetty.webapp.WebAppContext;
-import org.eclipse.jetty.websocket.jsr356.server.deploy.WebSocketServerContainerInitializer;
+import org.eclipse.jetty.websocket.jakarta.server.internal.JakartaWebSocketServerContainer;
+import org.eclipse.jetty.websocket.server.config.JettyWebSocketServletContainerInitializer;
 
-import javax.websocket.server.ServerContainer;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
@@ -112,10 +113,17 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
         addBean(new ServletContainerInitializersStarter(this), true);
 
         if (webSocketEnabled) {
-            ServerContainer serverContainer = WebSocketServerContainerInitializer.initialize(this);
-            ServerEndpointExporter serverEndpointExporter = new ServerEndpointExporter(context);
-            serverEndpointExporter.setServerContainer(serverContainer);
-            serverEndpointExporter.registerEndpoints();
+            JettyWebSocketServletContainerInitializer.configure(this, (servletContext, jettyWebSocketServerContainer) -> {
+                ServerContainer serverContainer = JakartaWebSocketServerContainer.getContainer(servletContext);
+                ServerEndpointExporter serverEndpointExporter = new ServerEndpointExporter(context);
+                serverEndpointExporter.setServerContainer(serverContainer);
+                serverEndpointExporter.registerEndpoints();
+            });
+
+//            ServerContainer serverContainer = JettyWebSocketServletContainerInitializer.initialize(this);
+//            ServerEndpointExporter serverEndpointExporter = new ServerEndpointExporter(context);
+//            serverEndpointExporter.setServerContainer(serverContainer);
+//            serverEndpointExporter.registerEndpoints();
         }
     }
 

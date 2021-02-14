@@ -25,9 +25,9 @@ import com.aspectran.core.util.logging.LoggerFactory;
 import com.aspectran.web.support.util.CookieGenerator;
 import com.aspectran.web.support.util.WebUtils;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.Locale;
 import java.util.TimeZone;
 
@@ -92,7 +92,7 @@ public class CookieLocaleResolver extends AbstractLocaleResolver {
      * Use the given domain for cookies.
      * The cookie is only visible to servers in this domain.
      *
-     * @see javax.servlet.http.Cookie#setDomain
+     * @see jakarta.servlet.http.Cookie#setDomain
      */
     public void setCookieDomain(String cookieDomain) {
         getLocaleCookieGenerator().setCookieDomain(cookieDomain);
@@ -103,7 +103,7 @@ public class CookieLocaleResolver extends AbstractLocaleResolver {
      * Use the given path for cookies.
      * The cookie is only visible to URLs in this path and below.
      *
-     * @see javax.servlet.http.Cookie#setPath
+     * @see jakarta.servlet.http.Cookie#setPath
      */
     public void setCookiePath(String cookiePath) {
         getLocaleCookieGenerator().setCookiePath(cookiePath);
@@ -116,7 +116,7 @@ public class CookieLocaleResolver extends AbstractLocaleResolver {
      * <p>Default is no specific maximum age at all, using the Servlet container's
      * default.</p>
      *
-     * @see javax.servlet.http.Cookie#setMaxAge
+     * @see jakarta.servlet.http.Cookie#setMaxAge
      */
     public void setCookieMaxAge(Integer cookieMaxAge) {
         getLocaleCookieGenerator().setCookieMaxAge(cookieMaxAge);
@@ -129,7 +129,7 @@ public class CookieLocaleResolver extends AbstractLocaleResolver {
      * not processed by the HTTP server itself.
      * <p>Default is "false".</p>
      *
-     * @see javax.servlet.http.Cookie#setSecure
+     * @see jakarta.servlet.http.Cookie#setSecure
      */
     public void setCookieSecure(boolean cookieSecure) {
         getLocaleCookieGenerator().setCookieSecure(cookieSecure);
@@ -140,7 +140,7 @@ public class CookieLocaleResolver extends AbstractLocaleResolver {
      * Set whether the cookie is supposed to be marked with the "HttpOnly" attribute.
      * <p>Default is "false".</p>
      *
-     * @see javax.servlet.http.Cookie#setHttpOnly
+     * @see jakarta.servlet.http.Cookie#setHttpOnly
      */
     public void setCookieHttpOnly(boolean cookieHttpOnly) {
         getLocaleCookieGenerator().setCookieHttpOnly(cookieHttpOnly);

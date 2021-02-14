@@ -21,11 +21,11 @@ import com.aspectran.core.util.Assert;
 import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
 
-import javax.servlet.ServletContext;
-import javax.websocket.DeploymentException;
-import javax.websocket.server.ServerContainer;
-import javax.websocket.server.ServerEndpoint;
-import javax.websocket.server.ServerEndpointConfig;
+import jakarta.servlet.ServletContext;
+import jakarta.websocket.DeploymentException;
+import jakarta.websocket.server.ServerContainer;
+import jakarta.websocket.server.ServerEndpoint;
+import jakarta.websocket.server.ServerEndpointConfig;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -92,7 +92,7 @@ public class ServerEndpointExporter {
      * Actually register the endpoints.
      */
     public void registerEndpoints() {
-        Assert.state(getServerContainer() != null, "javax.websocket.server.ServerContainer not available");
+        Assert.state(getServerContainer() != null, "jakarta.websocket.server.ServerContainer not available");
 
         Set<Class<?>> endpointClasses = new LinkedHashSet<>();
         if (this.annotatedEndpointClasses != null) {

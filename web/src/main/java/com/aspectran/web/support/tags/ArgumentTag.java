@@ -17,8 +17,8 @@ package com.aspectran.web.support.tags;
 
 import com.aspectran.core.lang.Nullable;
 
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.tagext.BodyTagSupport;
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.tagext.BodyTagSupport;
 
 /**
  * The {@code <argument>} tag is based on the JSTL {@code fmt:param} tag.

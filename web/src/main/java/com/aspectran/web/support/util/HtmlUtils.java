@@ -17,7 +17,7 @@ package com.aspectran.web.support.util;
 
 import com.aspectran.core.util.Assert;
 
-import javax.servlet.ServletRequest;
+import jakarta.servlet.ServletRequest;
 
 /**
  * <p>This class is a clone of org.springframework.web.util.HtmlUtils</p>

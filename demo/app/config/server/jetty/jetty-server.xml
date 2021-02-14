@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 6.0//EN"
-        "http://aspectran.github.io/dtd/aspectran-6.dtd">
+‰<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 7.0//EN"
+        "http://aspectran.github.io/dtd/aspectran-7.dtd">
 <aspectran>
 
     <description>
@@ -15,8 +15,6 @@
             <item name="jetty.server.maxThreads" value="10" valueType="int"/>
             <item name="jetty.session.dataStoreDir" value="#{basePath}/temp/sessions/jetty"/>
             <item name="jetty.gzip.minGzipSize" value="20000" valueType="int"/>
-            <item name="jetty.gzip.inflateBufferSize" value="0" valueType="int"/>
-            <item name="jetty.gzip.deflaterPoolCapacity" value="-1" valueType="int"/>
             <item name="jetty.gzip.syncFlush" value="false" valueType="boolean"/>
             <item name="jetty.gzip.includedMethodList" value="GET"/>
             <item name="jetty.gzip.excludedMethodList" value=""/>
@@ -62,8 +60,6 @@
     <bean id="jetty.gzipHandler" class="org.eclipse.jetty.server.handler.gzip.GzipHandler" scope="prototype">
         <properties>
             <item name="minGzipSize" valueType="int">%{jetty.gzip.minGzipSize}</item>
-            <item name="inflateBufferSize" valueType="int">%{jetty.gzip.inflateBufferSize}</item>
-            <item name="deflaterPoolCapacity" valueType="int">%{jetty.gzip.deflaterPoolCapacity}</item>
             <item name="syncFlush" valueType="boolean">%{jetty.gzip.syncFlush}</item>
             <item name="includedMethodList">%{jetty.gzip.includedMethodList}</item>
             <item name="excludedMethodList">%{jetty.gzip.excludedMethodList}</item>

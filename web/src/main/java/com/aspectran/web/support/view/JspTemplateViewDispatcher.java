@@ -28,8 +28,8 @@ import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
 import com.aspectran.web.activity.request.ActivityRequestWrapper;
 
-import javax.servlet.RequestDispatcher;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.FileNotFoundException;
 
 /**

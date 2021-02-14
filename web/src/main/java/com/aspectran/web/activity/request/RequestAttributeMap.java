@@ -18,7 +18,7 @@ package com.aspectran.web.activity.request;
 import com.aspectran.core.lang.NonNull;
 import com.aspectran.core.lang.Nullable;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collection;

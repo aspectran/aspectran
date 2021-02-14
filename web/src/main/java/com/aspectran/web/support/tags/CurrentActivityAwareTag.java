@@ -23,10 +23,10 @@ import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
 import com.aspectran.web.service.WebServiceHolder;
 
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.JspTagException;
-import javax.servlet.jsp.tagext.TagSupport;
-import javax.servlet.jsp.tagext.TryCatchFinally;
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.JspTagException;
+import jakarta.servlet.jsp.tagext.TagSupport;
+import jakarta.servlet.jsp.tagext.TryCatchFinally;
 
 /**
  * Superclass for all tags that require a {@link Activity}.
@@ -77,7 +77,7 @@ public abstract class CurrentActivityAwareTag extends TagSupport implements TryC
      * @return same as TagSupport.doStartTag
      * @throws Exception any exception, any checked one other than
      *      a JspException gets wrapped in a JspException by doStartTag
-     * @see javax.servlet.jsp.tagext.TagSupport#doStartTag
+     * @see jakarta.servlet.jsp.tagext.TagSupport#doStartTag
      */
     protected abstract int doStartTagInternal() throws Exception;
 

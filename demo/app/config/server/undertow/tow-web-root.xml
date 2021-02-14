@@ -1,68 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 6.0//EN"
-        "http://aspectran.github.io/dtd/aspectran-6.dtd">
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 7.0//EN"
+        "http://aspectran.github.io/dtd/aspectran-7.dtd">
 <aspectran>
 
     <description>
-        An Aspectran configuration for Undertow Server.
+        Aspectran configuration for setting servlet context and root web application.
     </description>
 
     <environment>
         <properties>
-            <item name="tow.server.startup" valueType="boolean">true</item>
-            <item name="tow.server.listener.http.port" valueType="int">8080</item>
-            <item name="tow.server.listener.http.host">0.0.0.0</item>
-            <item name="tow.server.web.root">/webroot</item>
+            <item name="tow.web.root.path">/webroot</item>
             <item name="tow.web.root.scratch_dir">/temp/_webroot</item>
         </properties>
     </environment>
 
-    <bean id="tow.server" class="com.aspectran.undertow.server.TowServer">
-        <properties>
-            <item name="autoStart">%{tow.server.startup}</item>
-            <item name="httpListeners" type="array">
-                <bean class="com.aspectran.undertow.server.HttpListenerConfig">
-                    <properties>
-                        <item name="port" valueType="int">%{tow.server.listener.http.port}</item>
-                        <item name="host">%{tow.server.listener.http.host}</item>
-                    </properties>
-                </bean>
-            </item>
-            <item name="serverOptions">
-                <bean class="com.aspectran.undertow.server.TowOptions">
-                    <properties>
-                        <item name="decodeUrl" valueType="boolean">true</item>
-                        <item name="urlCharset">UTF-8</item>
-                    </properties>
-                </bean>
-            </item>
-            <item name="workerOptions">
-                <bean class="com.aspectran.undertow.server.TowOptions">
-                    <properties>
-                        <item name="workerName">TOW</item>
-                    </properties>
-                </bean>
-            </item>
-            <item name="servletContainer">
-                <bean class="com.aspectran.undertow.server.servlet.TowServletContainer">
-                    <properties>
-                        <item name="servletContexts" type="array">
-                            <value>#{tow.defaultServletContext}</value>
-                        </item>
-                    </properties>
-                </bean>
-            </item>
-            <item name="handler">
-                <bean class="io.undertow.server.handlers.GracefulShutdownHandler">
-                    <arguments>
-                        <item>#{tow.hybridServletHandler}</item>
-                    </arguments>
-                </bean>
-            </item>
-        </properties>
-    </bean>
-
-    <bean id="tow.defaultServletContext" class="com.aspectran.undertow.server.servlet.TowServletContext"
+    <bean id="tow.web.root.servletContext" class="com.aspectran.undertow.server.servlet.TowServletContext"
           scope="prototype">
         <properties>
             <item name="deploymentName">root.war</item>
@@ -70,12 +22,12 @@
             <item name="resourceManager">
                 <bean class="com.aspectran.undertow.server.resource.TowResourceManager">
                     <properties>
-                        <item name="base">%{tow.server.web.root}</item>
+                        <item name="base">%{tow.web.root.path}</item>
                     </properties>
                 </bean>
             </item>
             <item name="scratchDir">%{tow.web.root.scratch_dir}</item>
-            <item name="sessionManager">#{tow.sessionManager}</item>
+            <item name="sessionManager">#{tow.web.root.sessionManager}</item>
             <item name="servletSessionConfig">
                 <bean class="io.undertow.servlet.api.ServletSessionConfig"/>
             </item>
@@ -134,7 +86,54 @@
         </properties>
     </bean>
 
-    <bean id="tow.sessionManager" class="com.aspectran.undertow.server.session.TowSessionManager" scope="prototype">
+    <bean id="tow.web.root.servletHybridHandler" class="com.aspectran.undertow.server.servlet.ServletHybridHandlerFactoryBean"
+          scope="prototype">
+        <properties>
+            <item name="servletContainer">#{tow.server^servletContainer}</item>
+            <item name="staticResourceHandler">#{tow.web.root.staticResourceHandler}</item>
+        </properties>
+        <properties profile="prod">
+            <item name="outerHandlerChainWrappers" type="array">
+                <value>#{tow.encodingHandlerWrapper}</value>
+                <value>#{tow.accessLogHandlerWrapper}</value>
+            </item>
+        </properties>
+        <properties profile="!prod">
+            <item name="outerHandlerChainWrappers" type="array">
+                <value>#{tow.encodingHandlerWrapper}</value>
+            </item>
+        </properties>
+    </bean>
+
+    <bean id="tow.web.root.staticResourceHandler" class="com.aspectran.undertow.server.resource.StaticResourceHandler"
+          initMethod="autoDetect" scope="prototype">
+        <arguments>
+            <item>
+                <bean class="com.aspectran.undertow.server.resource.TowResourceManager">
+                    <properties>
+                        <item name="base">%{tow.web.root.path}</item>
+                    </properties>
+                </bean>
+            </item>
+        </arguments>
+        <properties>
+            <item name="resourcePathPatterns">
+                <bean class="com.aspectran.undertow.server.resource.ResourcePathPatterns">
+                    <arguments>
+                        <item>
+                            +: /assets/**
+                            +: /favicon.ico
+                            +: /robots.txt
+                            +: /ads.txt
+                        </item>
+                    </arguments>
+                </bean>
+            </item>
+        </properties>
+    </bean>
+
+    <bean id="tow.web.root.sessionManager" class="com.aspectran.undertow.server.session.TowSessionManager"
+          scope="prototype">
         <properties>
             <item name="sessionManagerConfig">
                 <bean class="com.aspectran.core.context.config.SessionManagerConfig">
@@ -217,75 +216,6 @@
                     </properties>
                 </bean>
             </item>
-        </properties>
-    </bean>
-
-    <bean id="tow.hybridServletHandler" class="com.aspectran.undertow.server.servlet.ServletHybridHandlerFactoryBean"
-          scope="prototype">
-        <properties>
-            <item name="servletContainer">#{tow.server^servletContainer}</item>
-            <item name="staticResourceHandler">#{tow.staticResourceHandler}</item>
-            <item name="outerHandlerChainWrappers" type="array">
-                <value>#{tow.encodingHandlerWrapper}</value>
-                <value>#{tow.accessLogHandlerWrapper}</value>
-            </item>
-        </properties>
-    </bean>
-
-    <bean id="tow.staticResourceHandler" class="com.aspectran.undertow.server.resource.StaticResourceHandler"
-          initMethod="autoDetect" scope="prototype">
-        <arguments>
-            <item>
-                <bean class="com.aspectran.undertow.server.resource.TowResourceManager">
-                    <properties>
-                        <item name="base">%{tow.server.web.root}</item>
-                    </properties>
-                </bean>
-            </item>
-        </arguments>
-        <properties>
-            <item name="resourcePathPatterns">
-                <bean class="com.aspectran.undertow.server.resource.ResourcePathPatterns">
-                    <arguments>
-                        <item>
-                            +: /assets/**
-                            +: /favicon.ico
-                            +: /robots.txt
-                            +: /ads.txt
-                        </item>
-                    </arguments>
-                </bean>
-            </item>
-        </properties>
-    </bean>
-
-    <bean id="tow.encodingHandlerWrapper" class="com.aspectran.undertow.server.encoding.EncodingHandlerWrapper"
-          scope="prototype">
-        <properties>
-            <item name="contentEncodingProviders" type="array">
-                <value>gzip</value>
-                <value>deflate</value>
-            </item>
-            <item name="maxContentSize" valueType="long">32</item>
-            <item name="mediaTypes" type="array">
-                <value>text/html</value>
-                <value>text/xml</value>
-                <value>text/plain</value>
-                <value>text/css</value>
-                <value>text/javascript</value>
-                <value>application/javascript</value>
-                <value>application/json</value>
-                <value>application/xml</value>
-                <value>application/apon</value>
-            </item>
-        </properties>
-    </bean>
-
-    <bean id="tow.accessLogHandlerWrapper" class="com.aspectran.undertow.server.accesslog.AccessLogHandlerWrapper"
-          scope="prototype">
-        <properties>
-            <item name="formatString">combined</item>
-            <item name="category">io.undertow.accesslog</item>
         </properties>
     </bean>
 

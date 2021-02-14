@@ -19,8 +19,8 @@ import com.aspectran.core.activity.Translet;
 import com.aspectran.core.lang.Nullable;
 import com.aspectran.core.util.Assert;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * <p>This class is a clone of org.springframework.web.util.WebUtils</p>
@@ -36,7 +36,7 @@ public abstract class WebUtils {
      * to them directly rather than through the servlet container's error page
      * resolution mechanism.</p>
      */
-    public static final String ERROR_EXCEPTION_ATTRIBUTE = "javax.servlet.error.exception";
+    public static final String ERROR_EXCEPTION_ATTRIBUTE = "jakarta.servlet.error.exception";
 
     /**
      * Retrieve the first cookie with the given name. Note that multiple

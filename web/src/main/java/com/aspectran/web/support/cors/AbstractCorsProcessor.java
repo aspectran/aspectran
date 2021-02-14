@@ -19,7 +19,7 @@ import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.web.support.http.HttpHeaders;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
