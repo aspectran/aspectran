@@ -91,8 +91,6 @@ To run the demo, simply use the following command after having build `Aspectran`
 
 * [Official Website](https://aspectran.com/)
 * [Aspectran Demo Site](https://demo.aspectran.com/)
-* [Aspectran Demo Site on GAE](https://demo-gae.aspectran.com/)
-* [Skylark (Online Text to Speech Web APP)](https://skylark.aspectran.com/)
 * [API Reference](https://javadoc.io/doc/com.aspectran/aspectran-all)
 
 ## Thanks
