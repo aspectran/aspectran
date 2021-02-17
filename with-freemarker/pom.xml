@@ -32,7 +32,7 @@
     <properties>
         <main.basedir>${project.parent.basedir}</main.basedir>
         <java.module.name>com.aspectran.freemarker</java.module.name>
-        <freemarker.version>2.3.30</freemarker.version>
+        <freemarker.version>2.3.31</freemarker.version>
     </properties>
 
     <dependencies>
