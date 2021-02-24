@@ -422,7 +422,7 @@ public class DefaultSession implements Session {
     protected boolean isIdleLongerThan(int sec) {
         long now = System.currentTimeMillis();
         try (AutoLock ignored = autoLock.lock()) {
-            return ((sessionData.getAccessed() + (sec * 1000)) <= now);
+            return ((sessionData.getAccessed() + (sec * 1000L)) <= now);
         }
     }
 

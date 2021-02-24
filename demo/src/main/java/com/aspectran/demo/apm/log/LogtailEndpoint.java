@@ -21,7 +21,7 @@ import com.aspectran.core.component.bean.annotation.Component;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
-import com.aspectran.web.socket.jsr356.AspectranConfigurator;
+import com.aspectran.websocket.jsr356.AspectranConfigurator;
 
 import jakarta.websocket.CloseReason;
 import jakarta.websocket.OnClose;

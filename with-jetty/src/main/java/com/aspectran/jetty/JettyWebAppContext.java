@@ -25,13 +25,8 @@ import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
 import com.aspectran.web.service.DefaultWebService;
 import com.aspectran.web.service.WebService;
-import com.aspectran.web.socket.jsr356.ServerEndpointExporter;
+import com.aspectran.websocket.jsr356.ServerEndpointExporter;
 import jakarta.websocket.server.ServerContainer;
-import org.apache.tomcat.InstanceManager;
-import org.apache.tomcat.SimpleInstanceManager;
-import org.eclipse.jetty.annotations.ServletContainerInitializersStarter;
-import org.eclipse.jetty.apache.jsp.JettyJasperInitializer;
-import org.eclipse.jetty.plus.annotation.ContainerInitializer;
 import org.eclipse.jetty.webapp.WebAppClassLoader;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.eclipse.jetty.websocket.jakarta.server.internal.JakartaWebSocketServerContainer;
@@ -39,8 +34,6 @@ import org.eclipse.jetty.websocket.server.config.JettyWebSocketServletContainerI
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * The Class JettyWebAppContext.
@@ -103,15 +96,6 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
         WebAppClassLoader webAppClassLoader = new WebAppClassLoader(parent, this);
         setClassLoader(webAppClassLoader);
 
-        /*
-         * Configure the application to support the compilation of JSP files.
-         * We need a new class loader and some stuff so that Jetty can call the
-         * onStartup() methods as required.
-         */
-        setAttribute("org.eclipse.jetty.containerInitializers", jspInitializers());
-        setAttribute(InstanceManager.class.getName(), new SimpleInstanceManager());
-        addBean(new ServletContainerInitializersStarter(this), true);
-
         if (webSocketEnabled) {
             JettyWebSocketServletContainerInitializer.configure(this, (servletContext, jettyWebSocketServerContainer) -> {
                 ServerContainer serverContainer = JakartaWebSocketServerContainer.getContainer(servletContext);
@@ -119,18 +103,7 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
                 serverEndpointExporter.setServerContainer(serverContainer);
                 serverEndpointExporter.registerEndpoints();
             });
-
-//            ServerContainer serverContainer = JettyWebSocketServletContainerInitializer.initialize(this);
-//            ServerEndpointExporter serverEndpointExporter = new ServerEndpointExporter(context);
-//            serverEndpointExporter.setServerContainer(serverContainer);
-//            serverEndpointExporter.registerEndpoints();
         }
-    }
-
-    private List<ContainerInitializer> jspInitializers() {
-        JettyJasperInitializer sci = new JettyJasperInitializer();
-        ContainerInitializer initializer = new ContainerInitializer(sci, null);
-        return Collections.singletonList(initializer);
     }
 
 }

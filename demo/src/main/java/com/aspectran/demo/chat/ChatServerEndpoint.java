@@ -27,7 +27,7 @@ import com.aspectran.demo.chat.model.payload.BroadcastTextMessagePayload;
 import com.aspectran.demo.chat.model.payload.DuplicatedUserPayload;
 import com.aspectran.demo.chat.model.payload.SendTextMessagePayload;
 import com.aspectran.demo.chat.model.payload.WelcomeUserPayload;
-import com.aspectran.web.socket.jsr356.AspectranConfigurator;
+import com.aspectran.websocket.jsr356.AspectranConfigurator;
 
 import jakarta.websocket.CloseReason;
 import jakarta.websocket.EndpointConfig;

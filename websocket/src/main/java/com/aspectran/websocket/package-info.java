@@ -13,22 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.undertow.server.servlet;
-
-import io.undertow.servlet.api.FilterMappingInfo;
-import jakarta.servlet.DispatcherType;
-
 /**
- * <p>Created: 2019-08-05</p>
+ * Provides overall functionality for building WebSocket applications.
  */
-public class TowFilterServletMapping extends FilterMappingInfo {
-
-    public TowFilterServletMapping(String filterName, String mapping) {
-        this(filterName, mapping, DispatcherType.REQUEST);
-    }
-
-    public TowFilterServletMapping(String filterName, String mapping, DispatcherType dispatcher) {
-        super(filterName, MappingType.SERVLET, mapping, dispatcher);
-    }
-
-}
+package com.aspectran.websocket;

@@ -21,7 +21,7 @@ import com.aspectran.core.component.bean.annotation.Component;
 import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
 import com.aspectran.undertow.server.TowServer;
-import com.aspectran.web.socket.jsr356.AspectranConfigurator;
+import com.aspectran.websocket.jsr356.AspectranConfigurator;
 import io.undertow.server.session.SessionManager;
 import io.undertow.server.session.SessionManagerStatistics;
 import io.undertow.servlet.api.DeploymentManager;

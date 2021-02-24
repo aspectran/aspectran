@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.web.socket.jsr356;
+package com.aspectran.websocket.jsr356;
 
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.lang.Nullable;
@@ -63,6 +63,10 @@ public class ServerEndpointExporter {
         return this.serverContainer;
     }
 
+    public boolean hasServerContainer() {
+        return (this.serverContainer != null);
+    }
+
     /**
      * Set the JSR-356 {@link ServerContainer} to use for endpoint registration.
      * If not set, the container is going to be retrieved via the {@code ServletContext}.
@@ -71,11 +75,9 @@ public class ServerEndpointExporter {
         this.serverContainer = serverContainer;
     }
 
-    public void initServletContext(ServletContext servletContext) {
-        if (this.serverContainer == null) {
-            this.serverContainer =
-                    (ServerContainer)servletContext.getAttribute(ServerContainer.class.getName());
-        }
+    public void setServerContainer(ServletContext servletContext) {
+        Assert.notNull(servletContext, "servletContext must not be null");
+        this.serverContainer = (ServerContainer)servletContext.getAttribute(ServerContainer.class.getName());
     }
 
     /**

@@ -31,7 +31,7 @@
 
     <properties>
         <main.basedir>${project.parent.basedir}</main.basedir>
-        <jetty.version>11.0.0</jetty.version>
+        <jetty.version>11.0.1</jetty.version>
     </properties>
 
     <dependencies>
@@ -39,20 +39,11 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>aspectran-web</artifactId>
             <version>${project.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>jakarta.servlet</groupId>
-                    <artifactId>jakarta.servlet-api</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>jakarta.servlet</groupId>
-                    <artifactId>jakarta.websocket-api</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>jakarta.servlet</groupId>
-                    <artifactId>jakarta.servlet.jsp-api</artifactId>
-                </exclusion>
-            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>aspectran-websocket</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <!-- Jetty dependencies -->
         <dependency>
@@ -98,7 +89,7 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
-            <artifactId>apache-jstl</artifactId>
+            <artifactId>glassfish-jstl</artifactId>
             <version>${jetty.version}</version>
         </dependency>
         <!-- Test dependencies -->
