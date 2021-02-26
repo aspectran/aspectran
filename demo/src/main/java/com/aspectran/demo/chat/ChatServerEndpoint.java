@@ -17,6 +17,8 @@ package com.aspectran.demo.chat;
 
 import com.aspectran.core.activity.InstantActivitySupport;
 import com.aspectran.core.component.bean.annotation.Component;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 import com.aspectran.demo.chat.codec.ChatMessageDecoder;
 import com.aspectran.demo.chat.codec.ChatMessageEncoder;
 import com.aspectran.demo.chat.model.ChatMessage;
@@ -28,14 +30,17 @@ import com.aspectran.demo.chat.model.payload.DuplicatedUserPayload;
 import com.aspectran.demo.chat.model.payload.SendTextMessagePayload;
 import com.aspectran.demo.chat.model.payload.WelcomeUserPayload;
 import com.aspectran.websocket.jsr356.AspectranConfigurator;
-
 import jakarta.websocket.CloseReason;
 import jakarta.websocket.EndpointConfig;
 import jakarta.websocket.OnClose;
+import jakarta.websocket.OnError;
 import jakarta.websocket.OnMessage;
 import jakarta.websocket.OnOpen;
 import jakarta.websocket.Session;
 import jakarta.websocket.server.ServerEndpoint;
+
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -53,10 +58,15 @@ import java.util.concurrent.ConcurrentHashMap;
 )
 public class ChatServerEndpoint extends InstantActivitySupport {
 
+    private static final Logger logger = LoggerFactory.getLogger(ChatServerEndpoint.class);
+
     private static final Map<String, Session> sessions = new ConcurrentHashMap<>();
 
     @OnOpen
-    public void onOpen(Session session, EndpointConfig config) {
+    public void onOpen(Session session) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("WebSocket connection established with session: " + session.getId());
+        }
     }
 
     @OnMessage
@@ -95,9 +105,22 @@ public class ChatServerEndpoint extends InstantActivitySupport {
 
     @OnClose
     public void onClose(Session session, CloseReason reason) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("Websocket session " + session.getId() + " has been closed. Reason: " + reason);
+        }
         String username = getUsername(session);
         if (username != null) {
             leaveUser(username);
+        }
+    }
+
+    @OnError
+    public void onError(Session session, Throwable error) {
+        logger.error("Error in websocket session: " + session.getId(), error);
+        try {
+            session.close(new CloseReason(CloseReason.CloseCodes.UNEXPECTED_CONDITION, null));
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
         }
     }
 
