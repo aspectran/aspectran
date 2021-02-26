@@ -15,8 +15,6 @@
             <item name="jetty.server.maxThreads" value="10" valueType="int"/>
             <item name="jetty.session.dataStoreDir" value="#{basePath}/temp/sessions/jetty"/>
             <item name="jetty.gzip.minGzipSize" value="20000" valueType="int"/>
-<!--            <item name="jetty.gzip.inflateBufferSize" value="0" valueType="int"/>-->
-<!--            <item name="jetty.gzip.deflaterPoolCapacity" value="-1" valueType="int"/>-->
             <item name="jetty.gzip.syncFlush" value="false" valueType="boolean"/>
             <item name="jetty.gzip.includedMethodList" value="GET"/>
             <item name="jetty.gzip.excludedMethodList" value=""/>
@@ -79,8 +77,6 @@
     <bean id="jetty.gzipHandler" class="org.eclipse.jetty.server.handler.gzip.GzipHandler" scope="prototype">
         <properties>
             <item name="minGzipSize" valueType="int">%{jetty.gzip.minGzipSize}</item>
-<!--            <item name="inflateBufferSize" valueType="int">%{jetty.gzip.inflateBufferSize}</item>-->
-<!--            <item name="deflaterPoolCapacity" valueType="int">%{jetty.gzip.deflaterPoolCapacity}</item>-->
             <item name="syncFlush" valueType="boolean">%{jetty.gzip.syncFlush}</item>
             <item name="includedMethodList">%{jetty.gzip.includedMethodList}</item>
             <item name="excludedMethodList">%{jetty.gzip.excludedMethodList}</item>
@@ -94,22 +90,30 @@
                 <bean class="org.eclipse.jetty.server.handler.ContextHandlerCollection">
                     <properties>
                         <item name="handlers" type="array">
-                            <bean class="com.aspectran.jetty.JettyWebAppContext">
-                                <properties>
-                                    <item name="contextPath">/</item>
-                                    <item name="war">#{basePath}/webroot</item>
-                                    <item name="persistTempDirectory" valueType="boolean">true</item>
-                                    <item name="defaultsDescriptor">config/jetty/webdefault.xml</item>
-                                    <item name="sessionHandler">#{jetty.sessionHandler}</item>
-                                    <item name="webSocketEnabled" valueType="boolean">true</item>
-                                    <item name="derived" valueType="boolean">true</item>
-                                </properties>
-                            </bean>
+                            <value>#{jetty.rootContext}</value>
                         </item>
                     </properties>
                 </bean>
                 <bean class="org.eclipse.jetty.server.handler.DefaultHandler"/>
             </item>
+        </properties>
+    </bean>
+
+    <bean id="jetty.rootContext" class="com.aspectran.jetty.JettyWebAppContext" scope="prototype">
+        <properties>
+            <item name="contextPath">/</item>
+            <item name="war">#{basePath}/webroot</item>
+            <item name="persistTempDirectory" valueType="boolean">true</item>
+            <item name="defaultsDescriptor">config/jetty/webdefault.xml</item>
+            <item name="sessionHandler">#{jetty.sessionHandler}</item>
+            <item name="webSocketInitializer">
+                <bean class="com.aspectran.jetty.JettyWebSocketInitializer">
+                    <properties>
+                        <item name="idleTimeout" valueType="long">60000</item>
+                    </properties>
+                </bean>
+            </item>
+            <item name="webServiceDerived" valueType="boolean">true</item>
         </properties>
     </bean>
 

@@ -67,11 +67,6 @@
             <version>${jetty.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-annotations</artifactId>
-            <version>${jetty.version}</version>
-        </dependency>
-        <dependency>
             <groupId>org.eclipse.jetty.websocket</groupId>
             <artifactId>websocket-jetty-server</artifactId>
             <version>${jetty.version}</version>

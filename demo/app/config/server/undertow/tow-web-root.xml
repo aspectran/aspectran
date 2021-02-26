@@ -82,7 +82,7 @@
                     </properties>
                 </bean>
             </item>
-            <item name="derived" valueType="boolean">true</item>
+            <item name="webServiceDerived" valueType="boolean">true</item>
         </properties>
     </bean>
 

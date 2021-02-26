@@ -46,9 +46,9 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
 
     private ActivityContext context;
 
-    private boolean webSocketEnabled;
+    private JettyWebSocketInitializer webSocketInitializer;
 
-    private boolean derived;
+    private boolean webServiceDerived;
 
     @Override
     @AvoidAdvice
@@ -56,15 +56,15 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
         this.context = context;
     }
 
-    public void setWebSocketEnabled(boolean webSocketEnabled) {
-        this.webSocketEnabled = webSocketEnabled;
+    public void setWebSocketInitializer(JettyWebSocketInitializer webSocketInitializer) {
+        this.webSocketInitializer = webSocketInitializer;
     }
 
     /**
-     * Specifies whether this is a derived web service that inherits the root web service.
+     * Specifies whether to use a web service derived from the root web service.
      */
-    public void setDerived(boolean derived) {
-        this.derived = derived;
+    public void setWebServiceDerived(boolean webServiceDerived) {
+        this.webServiceDerived = webServiceDerived;
     }
 
     public void setTempDirectory(String tempDirectory) {
@@ -86,7 +86,7 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
     public void initialize() throws Exception {
         Assert.state(context != null, "No ActivityContext injected");
 
-        if (derived) {
+        if (webServiceDerived) {
             CoreService rootService = context.getRootService();
             WebService webService = DefaultWebService.create(getServletContext(), rootService);
             setAttribute(WebService.ROOT_WEB_SERVICE_ATTR_NAME, webService);
@@ -96,9 +96,10 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
         WebAppClassLoader webAppClassLoader = new WebAppClassLoader(parent, this);
         setClassLoader(webAppClassLoader);
 
-        if (webSocketEnabled) {
+        if (webSocketInitializer != null) {
             JettyWebSocketServletContainerInitializer.configure(this, (servletContext, jettyWebSocketServerContainer) -> {
                 ServerContainer serverContainer = JakartaWebSocketServerContainer.getContainer(servletContext);
+                webSocketInitializer.customize(serverContainer);
                 ServerEndpointExporter serverEndpointExporter = new ServerEndpointExporter(context);
                 serverEndpointExporter.setServerContainer(serverContainer);
                 serverEndpointExporter.registerEndpoints();

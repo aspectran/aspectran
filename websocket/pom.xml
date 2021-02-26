@@ -26,7 +26,7 @@
     <artifactId>aspectran-websocket</artifactId>
     <packaging>jar</packaging>
 
-    <name>Aspectran Websocket</name>
+    <name>Aspectran WebSocket</name>
     <description>Add-on package for WebSocket support</description>
 
     <properties>

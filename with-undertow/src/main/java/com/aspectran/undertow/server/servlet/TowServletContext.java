@@ -161,10 +161,10 @@ public class TowServletContext extends DeploymentInfo implements ApplicationAdap
     }
 
     /**
-     * Specifies whether this is a derived web service that inherits the root web service.
+     * Specifies whether to use a web service derived from the root web service.
      */
-    public void setDerived(boolean derived) {
-        if (derived) {
+    public void setWebServiceDerived(boolean webServiceDerived) {
+        if (webServiceDerived) {
             addServletContextAttribute(DERIVED_WEB_SERVICE_ATTR, "true");
         } else {
             getServletContextAttributes().remove(DERIVED_WEB_SERVICE_ATTR);

@@ -1,4 +1,4 @@
-‰<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 7.0//EN"
         "http://aspectran.github.io/dtd/aspectran-7.dtd">
 <aspectran>
@@ -73,22 +73,30 @@
                 <bean class="org.eclipse.jetty.server.handler.ContextHandlerCollection">
                     <properties>
                         <item name="handlers" type="array">
-                            <bean class="com.aspectran.jetty.JettyWebAppContext">
-                                <properties>
-                                    <item name="contextPath">/</item>
-                                    <item name="war">#{basePath}/webroot</item>
-                                    <item name="persistTempDirectory" valueType="boolean">true</item>
-                                    <item name="defaultsDescriptor">#{basePath}/config/server/jetty/webdefault.xml</item>
-                                    <item name="sessionHandler">#{jetty.sessionHandler}</item>
-                                    <item name="webSocketEnabled" valueType="boolean">true</item>
-                                    <item name="derived" valueType="boolean">true</item>
-                                </properties>
-                            </bean>
+                            <value>#{jetty.rootContext}</value>
                         </item>
                     </properties>
                 </bean>
                 <bean class="org.eclipse.jetty.server.handler.DefaultHandler"/>
             </item>
+        </properties>
+    </bean>
+
+    <bean id="jetty.rootContext" class="com.aspectran.jetty.JettyWebAppContext" scope="prototype">
+        <properties>
+            <item name="contextPath">/</item>
+            <item name="war">#{basePath}/webroot</item>
+            <item name="persistTempDirectory" valueType="boolean">true</item>
+            <item name="defaultsDescriptor">#{basePath}/config/server/jetty/webdefault.xml</item>
+            <item name="sessionHandler">#{jetty.sessionHandler}</item>
+            <item name="webSocketInitializer">
+                <bean class="com.aspectran.jetty.JettyWebSocketInitializer">
+                    <properties>
+                        <item name="idleTimeout" valueType="long">60000</item>
+                    </properties>
+                </bean>
+            </item>
+            <item name="webServiceDerived" valueType="boolean">true</item>
         </properties>
     </bean>
 
