@@ -85,7 +85,6 @@
 
         <compiler.source>11</compiler.source>
         <compiler.target>11</compiler.target>
-        <compiler.release>11</compiler.release>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.build.resourceEncoding>UTF-8</project.build.resourceEncoding>
@@ -331,7 +330,6 @@
                 <configuration>
                     <source>${compiler.source}</source>
                     <target>${compiler.target}</target>
-                    <release>${compiler.release}</release>
                     <compilerArgs>
                         <arg>-Xlint:-try,-path,-options</arg>
                     </compilerArgs>
