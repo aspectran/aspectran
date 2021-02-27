@@ -40,32 +40,38 @@ Applications developed based on Aspectran support the following execution enviro
 Aspectran consists of the following major packages:
 
 * **com.aspectran.core**  
-  Package that contains implementations of Aspectran's core features and is the basis for other sub-implements
+  Core package containing the main features of Aspectran
 * **com.aspectran.daemon**  
-  Provide daemon services for running Aspectran as a background process on Unix-based or Windows operating systems
+  Package required to build applications that run as background processes on Unix-based or Windows operating systems
 * **com.aspectran.embed**  
-  Package that provide services for embedding Aspectran instances in other Java applications
-* **com.aspectran.rss-lettuce**  
-  Add-on package for providing session clustering via persistence to Redis using Lettuce as the client
+  Package required to embed Aspectran in other Java applications
 * **com.aspectran.shell**  
-  Package to provide a consistent interactive shell interface on the command line
+  Package required to build shell (aka command line) applications
 * **com.aspectran.shell-jline**  
-  Package to provide interactive shell interface using feature-rich JLine
+  Package for using feature-rich JLine as an interactive shell interface
 * **com.aspectran.web**  
-  Package to provide the overall functionality for building web applications
+  Basic package required for building web applications
+* **com.aspectran.websocket**  
+  Package required to configure WebSocket endpoints
 * **com.aspectran.jetty**  
-  Add-on package for integrating Jetty
+  Add-on package for building web application servers using Jetty
+* **com.aspectran.undertow**  
+  Add-on package for building web application servers using Undertow
+* **com.aspectran.rss-lettuce**  
+  Package containing a Redis session store implementation using Lettuce as a client
 * **com.aspectran.mybatis**  
   Add-on package for integrating MyBatis
-* **com.aspectran.undertow**  
-  Add-on package for integrating Undertow
+* **com.aspectran.freemarker**  
+  Add-on package required to use the FreeMarker template engine
+* **com.aspectran.pebble**  
+  Add-on package required to use the Pebble template engine
 
 ## Building
 
 Requirements
 
-* Maven 3.3+ (prefer included maven-wrapper)
-* Java 8+
+* Maven 3.5+ (prefer included maven-wrapper)
+* Java 11+
 
 Check out and build:
 

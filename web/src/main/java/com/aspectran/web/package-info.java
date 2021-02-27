@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * Provides overall functionality for building web applications.
+ * Provides essential functions necessary for building web applications.
  */
 package com.aspectran.web;

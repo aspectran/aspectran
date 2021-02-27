@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 /**
- * Add-on package for providing session clustering via persistence to
- * Redis using Lettuce as the client
+ * Contains the Redis session store implementation using Lettuce as a client.
  */
 package com.aspectran.core.component.session.redis.lettuce;

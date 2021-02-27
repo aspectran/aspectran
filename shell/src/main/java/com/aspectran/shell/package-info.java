@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 /**
- * Provides the ability to easily build interactive
- * shell applications.
+ * Provides the ability to easily build interactive shell applications.
  */
 package com.aspectran.shell;
