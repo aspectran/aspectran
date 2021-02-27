@@ -25,6 +25,7 @@
     <name>Aspectran</name>
     <description>Aspectran is a lightweight framework for building high performance Java applications.</description>
     <url>https://aspectran.com/</url>
+    <inceptionYear>2008</inceptionYear>
 
     <organization>
         <name>The Aspectran Project</name>
@@ -37,7 +38,6 @@
             <url>http://www.apache.org/licenses/LICENSE-2.0</url>
         </license>
     </licenses>
-    <inceptionYear>2008</inceptionYear>
 
     <developers>
         <developer>
@@ -270,6 +270,11 @@
                     <groupId>org.jacoco</groupId>
                     <artifactId>jacoco-maven-plugin</artifactId>
                     <version>0.8.6</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.eluder.coveralls</groupId>
+                    <artifactId>coveralls-maven-plugin</artifactId>
+                    <version>4.3.0</version>
                 </plugin>
             </plugins>
         </pluginManagement>
