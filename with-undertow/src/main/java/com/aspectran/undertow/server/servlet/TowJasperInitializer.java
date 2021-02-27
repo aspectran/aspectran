@@ -20,10 +20,10 @@ import com.aspectran.core.component.bean.aware.ApplicationAdapterAware;
 import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
+import jakarta.servlet.ServletContext;
 import org.apache.jasper.servlet.JasperInitializer;
 import org.apache.jasper.servlet.TldScanner;
 
-import javax.servlet.ServletContext;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;

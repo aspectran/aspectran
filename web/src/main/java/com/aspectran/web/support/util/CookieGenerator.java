@@ -19,9 +19,8 @@ import com.aspectran.core.lang.Nullable;
 import com.aspectran.core.util.Assert;
 import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
-
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * <p>This class is a clone of org.springframework.web.util.CookieGenerator</p>
@@ -57,7 +56,7 @@ public class CookieGenerator {
     /**
      * Use the given name for cookies created by this generator.
      *
-     * @see javax.servlet.http.Cookie#getName()
+     * @see jakarta.servlet.http.Cookie#getName()
      */
     public void setCookieName(@Nullable String cookieName) {
         this.cookieName = cookieName;
@@ -75,7 +74,7 @@ public class CookieGenerator {
      * Use the given domain for cookies created by this generator.
      * The cookie is only visible to servers in this domain.
      *
-     * @see javax.servlet.http.Cookie#setDomain
+     * @see jakarta.servlet.http.Cookie#setDomain
      */
     public void setCookieDomain(@Nullable String cookieDomain) {
         this.cookieDomain = cookieDomain;
@@ -93,7 +92,7 @@ public class CookieGenerator {
      * Use the given path for cookies created by this generator.
      * The cookie is only visible to URLs in this path and below.
      *
-     * @see javax.servlet.http.Cookie#setPath
+     * @see jakarta.servlet.http.Cookie#setPath
      */
     public void setCookiePath(String cookiePath) {
         this.cookiePath = cookiePath;
@@ -112,7 +111,7 @@ public class CookieGenerator {
      * <p>Default is no specific maximum age at all, using the Servlet container's
      * default.</p>
      *
-     * @see javax.servlet.http.Cookie#setMaxAge
+     * @see jakarta.servlet.http.Cookie#setMaxAge
      */
     public void setCookieMaxAge(@Nullable Integer cookieMaxAge) {
         this.cookieMaxAge = cookieMaxAge;
@@ -132,7 +131,7 @@ public class CookieGenerator {
      * not processed by the HTTP server itself.
      * <p>Default is "false".</p>
      *
-     * @see javax.servlet.http.Cookie#setSecure
+     * @see jakarta.servlet.http.Cookie#setSecure
      */
     public void setCookieSecure(boolean cookieSecure) {
         this.cookieSecure = cookieSecure;
@@ -150,7 +149,7 @@ public class CookieGenerator {
      * Set whether the cookie is supposed to be marked with the "HttpOnly" attribute.
      * <p>Default is "false".</p>
      *
-     * @see javax.servlet.http.Cookie#setHttpOnly
+     * @see jakarta.servlet.http.Cookie#setHttpOnly
      */
     public void setCookieHttpOnly(boolean cookieHttpOnly) {
         this.cookieHttpOnly = cookieHttpOnly;

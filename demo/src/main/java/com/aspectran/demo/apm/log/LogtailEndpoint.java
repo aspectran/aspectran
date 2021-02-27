@@ -21,15 +21,15 @@ import com.aspectran.core.component.bean.annotation.Component;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
-import com.aspectran.web.socket.jsr356.AspectranConfigurator;
+import com.aspectran.websocket.jsr356.AspectranConfigurator;
+import jakarta.websocket.CloseReason;
+import jakarta.websocket.OnClose;
+import jakarta.websocket.OnError;
+import jakarta.websocket.OnMessage;
+import jakarta.websocket.OnOpen;
+import jakarta.websocket.Session;
+import jakarta.websocket.server.ServerEndpoint;
 
-import javax.websocket.CloseReason;
-import javax.websocket.OnClose;
-import javax.websocket.OnError;
-import javax.websocket.OnMessage;
-import javax.websocket.OnOpen;
-import javax.websocket.Session;
-import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.Collections;
@@ -84,6 +84,9 @@ public class LogtailEndpoint extends InstantActivitySupport {
 
     @OnClose
     public void onClose(Session session, CloseReason reason) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("Websocket session " + session.getId() + " has been closed. Reason: " + reason);
+        }
         removeSession(session);
     }
 

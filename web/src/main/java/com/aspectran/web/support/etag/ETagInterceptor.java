@@ -23,8 +23,8 @@ import com.aspectran.core.util.DigestUtils;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.web.support.http.HttpHeaders;
 import com.aspectran.web.support.http.HttpStatus;
+import jakarta.servlet.http.HttpServletResponse;
 
-import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

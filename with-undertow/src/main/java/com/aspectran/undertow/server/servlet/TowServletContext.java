@@ -18,24 +18,17 @@ package com.aspectran.undertow.server.servlet;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.component.bean.aware.ApplicationAdapterAware;
 import io.undertow.server.HandlerWrapper;
-import io.undertow.server.session.Session;
-import io.undertow.server.session.SessionListener;
 import io.undertow.server.session.SessionManager;
 import io.undertow.servlet.api.DeploymentInfo;
 import io.undertow.servlet.api.ErrorPage;
 import io.undertow.servlet.api.InstanceFactory;
 import io.undertow.servlet.api.ServletContainerInitializerInfo;
 import io.undertow.servlet.util.ImmediateInstanceFactory;
-import io.undertow.websockets.core.WebSocketChannel;
-import io.undertow.websockets.core.WebSockets;
+import jakarta.servlet.ServletContainerInitializer;
 
-import javax.servlet.ServletContainerInitializer;
-import javax.websocket.CloseReason;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -45,8 +38,6 @@ import java.util.Set;
 public class TowServletContext extends DeploymentInfo implements ApplicationAdapterAware {
 
     public static final String DERIVED_WEB_SERVICE_ATTR = TowServletContext.class.getName() + ".DERIVED_WEB_SERVICE";
-
-    private static final String WEBSOCKET_CURRENT_CONNECTIONS_ATTR = "io.undertow.websocket.current-connections";
 
     private static final Set<Class<?>> NO_CLASSES = Collections.emptySet();
 
@@ -170,40 +161,14 @@ public class TowServletContext extends DeploymentInfo implements ApplicationAdap
     }
 
     /**
-     * Specifies whether this is a derived web service that inherits the root web service.
+     * Specifies whether to use a web service derived from the root web service.
      */
-    public void setDerived(boolean derived) {
-        if (derived) {
+    public void setWebServiceDerived(boolean webServiceDerived) {
+        if (webServiceDerived) {
             addServletContextAttribute(DERIVED_WEB_SERVICE_ATTR, "true");
         } else {
             getServletContextAttributes().remove(DERIVED_WEB_SERVICE_ATTR);
         }
-    }
-
-    public static class WebSocketConnectionsUnboundListener implements SessionListener {
-
-        @Override
-        public void attributeUpdated(Session session, String name, Object newValue, Object oldValue) {
-            if (oldValue != null && oldValue != newValue) {
-                closeWebSockets(name, oldValue);
-            }
-        }
-
-        @Override
-        public void attributeRemoved(Session session, String name, Object oldValue) {
-            closeWebSockets(name, oldValue);
-        }
-
-        private void closeWebSockets(String name, Object value) {
-            if (WEBSOCKET_CURRENT_CONNECTIONS_ATTR.equals(name)) {
-                @SuppressWarnings("unchecked")
-                List<WebSocketChannel> connections = (List<WebSocketChannel>)value;
-                for (WebSocketChannel c : new ArrayList<>(connections)) {
-                    WebSockets.sendClose(CloseReason.CloseCodes.VIOLATED_POLICY.getCode(), "", c, null);
-                }
-            }
-        }
-
     }
 
 }

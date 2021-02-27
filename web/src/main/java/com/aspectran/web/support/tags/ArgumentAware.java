@@ -16,8 +16,7 @@
 package com.aspectran.web.support.tags;
 
 import com.aspectran.core.lang.Nullable;
-
-import javax.servlet.jsp.JspTagException;
+import jakarta.servlet.jsp.JspTagException;
 
 /**
  * Allows implementing tag to utilize nested {@code spring:argument} tags.

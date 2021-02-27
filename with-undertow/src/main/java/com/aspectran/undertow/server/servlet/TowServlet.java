@@ -17,8 +17,8 @@ package com.aspectran.undertow.server.servlet;
 
 import com.aspectran.core.util.ClassUtils;
 import io.undertow.servlet.api.ServletInfo;
+import jakarta.servlet.Servlet;
 
-import javax.servlet.Servlet;
 import java.util.Map;
 
 /**

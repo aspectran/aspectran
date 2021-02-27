@@ -19,9 +19,9 @@ import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.lang.Nullable;
 import com.aspectran.core.service.CoreService;
 import com.aspectran.core.util.Assert;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpServlet;
 
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServlet;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 

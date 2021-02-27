@@ -20,11 +20,11 @@ import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.util.FileCopyUtils;
 import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.embed.service.EmbeddedAspectran;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.BasicResponseHandler;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.util.EntityUtils;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -32,7 +32,6 @@ import org.junit.jupiter.api.TestInstance;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.SocketException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -44,10 +43,10 @@ class JettyServerTest {
     @BeforeAll
     void ready() throws Exception {
         String basePath = new File("target").getCanonicalPath();
-        File configFile = ResourceUtils.getResourceAsFile("config/aspectran-config.apon");
-
         FileCopyUtils.copyDirectory(ResourceUtils.getResourceAsFile("webroot"), new File(basePath, "webroot"));
+        new File(basePath, "logs").mkdir();
 
+        File configFile = ResourceUtils.getResourceAsFile("config/aspectran-config.apon");
         AspectranConfig aspectranConfig = new AspectranConfig(configFile);
         aspectranConfig.touchContextConfig()
                 .setBasePath(basePath);
@@ -70,14 +69,11 @@ class JettyServerTest {
         String result1 = translet.toString();
         String result2;
 
-        try {
-            HttpClient client = HttpClientBuilder.create().build();
+        try (CloseableHttpClient client = HttpClientBuilder.create().build()) {
             HttpGet request = new HttpGet("http://127.0.0.1:8099/hello_jsp");
-            HttpResponse response = client.execute(request);
-            result2 = new BasicResponseHandler().handleResponse(response).trim();
-        } catch (SocketException e) {
-            // Network is unreachable
-            return;
+            try (CloseableHttpResponse response = client.execute(request)) {
+                result2 = EntityUtils.toString(response.getEntity()).trim();
+            }
         }
 
         assertEquals(result1, result2);

@@ -20,7 +20,7 @@
     <parent>
         <groupId>com.aspectran</groupId>
         <artifactId>aspectran</artifactId>
-        <version>6.12.1-SNAPSHOT</version>
+        <version>7.0.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>aspectran-with-undertow</artifactId>
@@ -31,7 +31,6 @@
 
     <properties>
         <main.basedir>${project.parent.basedir}</main.basedir>
-        <java.module.name>com.aspectran.undertow</java.module.name>
         <undertow.version>2.2.4.Final</undertow.version>
     </properties>
 
@@ -41,6 +40,16 @@
             <artifactId>aspectran-web</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>aspectran-websocket</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.websocket</groupId>
+            <artifactId>jakarta.websocket-api</artifactId>
+            <version>2.0.0</version>
+        </dependency>
         <!-- Undertow dependencies -->
         <dependency>
             <groupId>io.undertow</groupId>
@@ -49,41 +58,24 @@
         </dependency>
         <dependency>
             <groupId>io.undertow</groupId>
-            <artifactId>undertow-servlet</artifactId>
+            <artifactId>undertow-servlet-jakartaee9</artifactId>
             <version>${undertow.version}</version>
         </dependency>
         <dependency>
             <groupId>io.undertow</groupId>
-            <artifactId>undertow-websockets-jsr</artifactId>
+            <artifactId>undertow-websockets-jsr-jakartaee9</artifactId>
             <version>${undertow.version}</version>
         </dependency>
         <!-- Apache JSP and JSTL dependencies -->
         <dependency>
             <groupId>org.mortbay.jasper</groupId>
             <artifactId>apache-jsp</artifactId>
-            <version>9.0.29</version>
+            <version>10.0.2</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.taglibs</groupId>
-            <artifactId>taglibs-standard-spec</artifactId>
-            <version>1.2.5</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.taglibs</groupId>
-            <artifactId>taglibs-standard-impl</artifactId>
-            <version>1.2.5</version>
-        </dependency>
-        <dependency>
-            <groupId>xalan</groupId>
-            <artifactId>xalan</artifactId>
-            <version>2.7.2</version>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>xalan</groupId>
-            <artifactId>serializer</artifactId>
-            <version>2.7.2</version>
-            <scope>runtime</scope>
+            <groupId>org.glassfish.web</groupId>
+            <artifactId>jakarta.servlet.jsp.jstl</artifactId>
+            <version>2.0.0</version>
         </dependency>
         <!-- Test dependencies -->
         <dependency>

@@ -15,7 +15,7 @@
  */
 package com.aspectran.web.support.cors;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Process an incoming cross-origin (CORS) requests.

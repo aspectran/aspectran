@@ -18,13 +18,13 @@ package com.aspectran.undertow.server.servlet;
 import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
+import jakarta.servlet.ServletContext;
 import org.apache.jasper.servlet.TldScanner;
 import org.apache.tomcat.Jar;
 import org.apache.tomcat.util.descriptor.tld.TldResourcePath;
 import org.apache.tomcat.util.scan.JarFactory;
 import org.xml.sax.SAXException;
 
-import javax.servlet.ServletContext;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Map;

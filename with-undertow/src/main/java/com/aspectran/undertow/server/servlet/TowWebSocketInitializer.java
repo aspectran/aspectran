@@ -16,13 +16,23 @@
 package com.aspectran.undertow.server.servlet;
 
 import io.undertow.server.DefaultByteBufferPool;
+import io.undertow.server.session.Session;
+import io.undertow.server.session.SessionListener;
 import io.undertow.servlet.api.DeploymentInfo;
+import io.undertow.websockets.core.CloseMessage;
+import io.undertow.websockets.core.WebSocketChannel;
+import io.undertow.websockets.core.WebSockets;
 import io.undertow.websockets.jsr.WebSocketDeploymentInfo;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Initializer for WebSocket Support in Undertow.
  */
 public class TowWebSocketInitializer  {
+
+    private static final String WEBSOCKET_CURRENT_CONNECTIONS_ATTR = "io.undertow.websocket.current-connections";
 
     private boolean directBuffers = false;
 
@@ -53,8 +63,35 @@ public class TowWebSocketInitializer  {
             deploymentInfo.addServletContextAttribute(WebSocketDeploymentInfo.ATTRIBUTE_NAME,
                     new WebSocketDeploymentInfo().setBuffers(
                             new DefaultByteBufferPool(directBuffers, bufferSize, maximumPoolSize, threadLocalCacheSize)));
-            deploymentInfo.addSessionListener(new TowServletContext.WebSocketConnectionsUnboundListener());
+            deploymentInfo.addSessionListener(new WebSocketGracefulUndeployingListener());
         }
+    }
+
+    public static class WebSocketGracefulUndeployingListener implements SessionListener {
+
+        @Override
+        public void attributeUpdated(Session session, String name, Object newValue, Object oldValue) {
+            if (oldValue != null && oldValue != newValue) {
+                closeWebSockets(name, oldValue);
+            }
+        }
+
+        @Override
+        public void attributeRemoved(Session session, String name, Object oldValue) {
+            closeWebSockets(name, oldValue);
+        }
+
+        private void closeWebSockets(String name, Object value) {
+            if (WEBSOCKET_CURRENT_CONNECTIONS_ATTR.equals(name)) {
+                @SuppressWarnings("unchecked")
+                List<WebSocketChannel> connections = (List<WebSocketChannel>)value;
+                CloseMessage closeMessage = new CloseMessage(CloseMessage.MSG_VIOLATES_POLICY, null);
+                for (WebSocketChannel webSocketChannel : new ArrayList<>(connections)) {
+                    WebSockets.sendClose(closeMessage, webSocketChannel, null);
+                }
+            }
+        }
+
     }
 
 }

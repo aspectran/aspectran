@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.web.socket.jsr356;
+package com.aspectran.websocket.jsr356;
 
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
 import com.aspectran.web.service.WebServiceHolder;
 
-import javax.websocket.server.ServerEndpointConfig;
-import javax.websocket.server.ServerEndpointConfig.Configurator;
+import jakarta.websocket.server.ServerEndpointConfig;
+import jakarta.websocket.server.ServerEndpointConfig.Configurator;
 
 /**
  * A {@link ServerEndpointConfig.Configurator} for initializing ServerEndpoint-annotated
