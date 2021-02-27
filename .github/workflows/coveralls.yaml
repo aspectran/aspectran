@@ -1,13 +1,12 @@
 name: Coveralls
-
 on: [push, pull_request]
-
 jobs:
   build:
     if: github.repository_owner == 'aspectran'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
       - name: Set up JDK
         uses: actions/setup-java@v1
         with:
