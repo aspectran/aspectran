@@ -25,6 +25,7 @@
     <name>Aspectran BOM</name>
     <description>Aspectran (Bill of Materials)</description>
     <url>https://aspectran.com/</url>
+    <inceptionYear>2008</inceptionYear>
 
     <organization>
         <name>The Aspectran Project</name>
@@ -37,7 +38,6 @@
             <url>http://www.apache.org/licenses/LICENSE-2.0</url>
         </license>
     </licenses>
-    <inceptionYear>2008</inceptionYear>
 
     <developers>
         <developer>
