@@ -63,7 +63,6 @@ public class Aspectran {
 
     /**
      * Prints Aspectran information to the specified print stream.
-     *
      * @param out a {@link PrintStream} object to print
      */
     public static void printAboutMe(PrintStream out) {
@@ -77,7 +76,6 @@ public class Aspectran {
 
     /**
      * Prints Aspectran information to the specified print stream.
-     *
      * @param out a {@link PrintStream} object to print
      */
     public static void printPrettyAboutMe(PrintStream out) {
@@ -93,7 +91,6 @@ public class Aspectran {
 
     /**
      * Prints Aspectran information to {@link System#out}.
-     *
      * @param args a string array containing the command line arguments
      */
     public static void main(String[] args) {

@@ -87,7 +87,6 @@ public class DefaultOptionParser implements OptionParser {
      * {@code "debug"} option. However, with "partial matching" disabled,
      * {@code -de} would enable both {@code debug} as well as
      * {@code extract} options.
-     *
      * @param allowPartialMatching if partial matching of long options shall be enabled
      */
     public DefaultOptionParser(boolean allowPartialMatching) {
@@ -100,7 +99,6 @@ public class DefaultOptionParser implements OptionParser {
 
     /**
      * Parse the arguments according to the specified options and properties.
-     *
      * @param options    the specified Options
      * @param args  the command line arguments
      * @param properties command line option name-value pairs
@@ -120,7 +118,6 @@ public class DefaultOptionParser implements OptionParser {
 
     /**
      * Parse the arguments according to the specified options and properties.
-     *
      * @param options the specified Options
      * @param args the command line arguments
      * @param properties command line option name-value pairs
@@ -165,7 +162,6 @@ public class DefaultOptionParser implements OptionParser {
 
     /**
      * Sets the values of Options using the values in {@code properties}.
-     *
      * @param properties the value properties to be processed
      * @throws OptionParserException if option parsing fails
      */
@@ -205,7 +201,6 @@ public class DefaultOptionParser implements OptionParser {
 
     /**
      * Handle any command line token.
-     *
      * @param token the command line token to handle
      * @throws OptionParserException if option parsing fails
      */
@@ -239,7 +234,6 @@ public class DefaultOptionParser implements OptionParser {
      * --L V
      * --l
      * </pre>
-     *
      * @param token the command line token to handle
      * @throws OptionParserException if option parsing fails
      */
@@ -259,7 +253,6 @@ public class DefaultOptionParser implements OptionParser {
      * --l
      * -l
      * </pre>
-     *
      * @param token the command line token to handle
      * @throws OptionParserException if option parsing fails
      */
@@ -283,7 +276,6 @@ public class DefaultOptionParser implements OptionParser {
      * --l=V
      * -l=V
      * </pre>
-     *
      * @param token the command line token to handle
      * @throws OptionParserException if option parsing fails
      */
@@ -326,7 +318,6 @@ public class DefaultOptionParser implements OptionParser {
      * -L=V
      * -l
      * </pre>
-     *
      * @param token the command line token to handle
      * @throws OptionParserException if option parsing fails
      */
@@ -385,7 +376,6 @@ public class DefaultOptionParser implements OptionParser {
      * to the arguments of the command line. If the skipParsingAtNonOption flag
      * is set, this stops the parsing and the remaining tokens are added
      * as-is in the arguments of the command line.
-     *
      * @param token the command line token to handle
      * @throws OptionParserException if option parsing fails
      */
@@ -429,7 +419,6 @@ public class DefaultOptionParser implements OptionParser {
     /**
      * Throws a {@link MissingOptionException} if all of the required options
      * are not present.
-     *
      * @throws MissingOptionException if any of the required Options are not present
      */
     private void checkRequiredOptions() throws MissingOptionException {
@@ -451,7 +440,6 @@ public class DefaultOptionParser implements OptionParser {
 
     /**
      * Returns true is the token is a valid argument.
-     *
      * @param token the command line token to handle
      * @return true if the token is a valid argument
      */
@@ -461,7 +449,6 @@ public class DefaultOptionParser implements OptionParser {
 
     /**
      * Check if the token is a negative number.
-     *
      * @param token the command line token to handle
      * @return true if the token is a negative number
      */
@@ -476,7 +463,6 @@ public class DefaultOptionParser implements OptionParser {
 
     /**
      * Tells if the token looks like an option.
-     *
      * @param token the command line token to handle
      * @return true if the token looks like an option
      */
@@ -486,7 +472,6 @@ public class DefaultOptionParser implements OptionParser {
 
     /**
      * Tells if the token looks like a short option.
-     *
      * @param token the command line token to handle
      * @return true if the token like a short option
      */
@@ -507,7 +492,6 @@ public class DefaultOptionParser implements OptionParser {
 
     /**
      * Tells if the token looks like a long option.
-     *
      * @param token the command line token to handle
      * @return true if the token like a long option
      */
@@ -530,7 +514,6 @@ public class DefaultOptionParser implements OptionParser {
     /**
      * Returns a list of matching option strings for the given token, depending
      * on the selected partial matching policy.
-     *
      * @param token the token (may contain leading dashes)
      * @return the list of matching option strings or an empty list if no
      *      matching option could be found
@@ -550,7 +533,6 @@ public class DefaultOptionParser implements OptionParser {
 
     /**
      * Search for a prefix that is the long name of an option (-Xmx512m).
-     *
      * @param token the command line token to handle
      */
     private String getLongPrefix(String token) {

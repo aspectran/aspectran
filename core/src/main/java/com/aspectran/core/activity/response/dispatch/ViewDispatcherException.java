@@ -24,7 +24,6 @@ import com.aspectran.core.activity.response.ResponseException;
  */
 public class ViewDispatcherException extends ResponseException {
 
-    /** @serial */
     private static final long serialVersionUID = 5341799597740412582L;
 
     /**
@@ -36,7 +35,6 @@ public class ViewDispatcherException extends ResponseException {
 
     /**
      * Constructor to create exception with a message.
-     *
      * @param msg the detail message
      */
     public ViewDispatcherException(String msg) {
@@ -45,7 +43,6 @@ public class ViewDispatcherException extends ResponseException {
 
     /**
      * Constructor to create exception to wrap another exception.
-     *
      * @param cause the real cause of the exception
      */
     public ViewDispatcherException(Throwable cause) {
@@ -54,7 +51,6 @@ public class ViewDispatcherException extends ResponseException {
 
     /**
      * Constructor to create exception to wrap another exception and pass a message.
-     *
      * @param msg the detail message
      * @param cause the real cause of the exception
      */

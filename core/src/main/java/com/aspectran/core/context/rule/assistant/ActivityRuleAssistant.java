@@ -178,7 +178,6 @@ public class ActivityRuleAssistant {
 
     /**
      * Gets the settings.
-     *
      * @return the settings
      */
     public Map<DefaultSettingType, String> getSettings() {
@@ -187,7 +186,6 @@ public class ActivityRuleAssistant {
 
     /**
      * Gets the setting value.
-     *
      * @param settingType the setting type
      * @return the setting
      */
@@ -197,7 +195,6 @@ public class ActivityRuleAssistant {
 
     /**
      * Puts the setting value.
-     *
      * @param name the name
      * @param value the value
      * @throws IllegalRuleException if an unknown setting name is found
@@ -223,7 +220,6 @@ public class ActivityRuleAssistant {
 
     /**
      * Gets the environment rules.
-     *
      * @return the environment rules
      */
     public List<EnvironmentRule> getEnvironmentRules() {
@@ -232,7 +228,6 @@ public class ActivityRuleAssistant {
 
     /**
      * Adds the environment rule.
-     *
      * @param environmentRule the environment rule
      */
     public void addEnvironmentRule(EnvironmentRule environmentRule) {
@@ -241,7 +236,6 @@ public class ActivityRuleAssistant {
 
     /**
      * Gets the type aliases.
-     *
      * @return the type aliases
      */
     public Map<String, String> getTypeAliases() {
@@ -251,7 +245,6 @@ public class ActivityRuleAssistant {
     /**
      * Adds a type alias to use for simplifying complex type signatures.
      * A type alias is defined by assigning the type to the alias.
-     *
      * @param alias the name of the alias
      * @param type the type identifier that you are creating an alias for
      */
@@ -261,7 +254,6 @@ public class ActivityRuleAssistant {
 
     /**
      * Returns a type of an aliased type that is defined by assigning the type to the alias.
-     *
      * @param alias the name of the alias
      * @return the aliased type
      */
@@ -272,7 +264,6 @@ public class ActivityRuleAssistant {
     /**
      * Returns a type of an aliased type that is defined by assigning the type to the alias.
      * If aliased type is not found, it returns alias.
-     *
      * @param alias the name of the alias
      * @return the aliased type
      */
@@ -283,7 +274,6 @@ public class ActivityRuleAssistant {
 
     /**
      * Returns the translet name of the prefix and suffix are combined.
-     *
      * @param transletName the translet name
      * @return the string
      */
@@ -296,7 +286,6 @@ public class ActivityRuleAssistant {
 
     /**
      * Gets the assistant local.
-     *
      * @return the assistant local
      */
     public AssistantLocal getAssistantLocal() {
@@ -305,7 +294,6 @@ public class ActivityRuleAssistant {
 
     /**
      * Sets the assistant local.
-     *
      * @param newAssistantLocal the new assistant local
      */
     private void setAssistantLocal(AssistantLocal newAssistantLocal) {
@@ -317,7 +305,6 @@ public class ActivityRuleAssistant {
 
     /**
      * Backup the assistant local.
-     *
      * @return the assistant local
      */
     public AssistantLocal backupAssistantLocal() {
@@ -329,7 +316,6 @@ public class ActivityRuleAssistant {
 
     /**
      * Restore the assistant local.
-     *
      * @param oldAssistantLocal the old assistant local
      */
     public void restoreAssistantLocal(AssistantLocal oldAssistantLocal) {
@@ -338,7 +324,6 @@ public class ActivityRuleAssistant {
 
     /**
      * Returns whether the pointcut pattern validation is required.
-     *
      * @return true if pointcut pattern validation is required
      */
     public boolean isPointcutPatternVerifiable() {
@@ -355,7 +340,6 @@ public class ActivityRuleAssistant {
 
     /**
      * Resolve bean class for factory bean rule.
-     *
      * @param beanRule the bean rule
      * @throws IllegalRuleException if an illegal rule is found
      */
@@ -373,7 +357,6 @@ public class ActivityRuleAssistant {
 
     /**
      * Resolve bean class for the aspect rule.
-     *
      * @param aspectRule the aspect rule
      * @throws IllegalRuleException if an illegal rule is found
      */
@@ -392,7 +375,6 @@ public class ActivityRuleAssistant {
 
     /**
      * Resolve bean class for bean method action rule.
-     *
      * @param invokeActionRule the invoke action rule
      * @throws IllegalRuleException if an illegal rule is found
      */
@@ -411,7 +393,6 @@ public class ActivityRuleAssistant {
 
     /**
      * Resolve bean class.
-     *
      * @param itemRule the item rule
      * @throws IllegalRuleException if an illegal rule is found
      */
@@ -451,7 +432,6 @@ public class ActivityRuleAssistant {
 
     /**
      * Resolve bean class for token.
-     *
      * @param tokens an array of tokens
      * @throws IllegalRuleException if an illegal rule is found
      */
@@ -465,7 +445,6 @@ public class ActivityRuleAssistant {
 
     /**
      * Resolve bean class for token.
-     *
      * @param token the token
      * @throws IllegalRuleException if an illegal rule is found
      */
@@ -525,7 +504,6 @@ public class ActivityRuleAssistant {
 
     /**
      * Resolve bean class for the autowire rule.
-     *
      * @param autowireRule the autowire rule
      * @throws IllegalRuleException if an illegal rule is found
      */
@@ -577,7 +555,6 @@ public class ActivityRuleAssistant {
 
     /**
      * Resolve bean class for the schedule rule.
-     *
      * @param scheduleRule the schedule rule
      * @throws IllegalRuleException if an illegal rule is found
      */
@@ -598,7 +575,6 @@ public class ActivityRuleAssistant {
 
     /**
      * Resolve bean class for the template rule.
-     *
      * @param templateRule the template rule
      * @throws IllegalRuleException if an illegal rule is found
      */
@@ -651,7 +627,6 @@ public class ActivityRuleAssistant {
 
     /**
      * Returns the bean reference inspector.
-     *
      * @return the bean reference inspector
      */
     public BeanReferenceInspector getBeanReferenceInspector() {
@@ -660,7 +635,6 @@ public class ActivityRuleAssistant {
 
     /**
      * Adds the aspect rule.
-     *
      * @param aspectRule the aspect rule to add
      * @throws IllegalRuleException if an illegal rule is found
      */
@@ -670,7 +644,6 @@ public class ActivityRuleAssistant {
 
     /**
      * Adds the bean rule.
-     *
      * @param beanRule the bean rule to add
      * @throws IllegalRuleException if an error occurs while adding a bean rule
      */
@@ -684,7 +657,6 @@ public class ActivityRuleAssistant {
 
     /**
      * Adds the schedule rule.
-     *
      * @param scheduleRule the schedule rule to add
      * @throws IllegalRuleException if an illegal rule is found
      */
@@ -694,7 +666,6 @@ public class ActivityRuleAssistant {
 
     /**
      * Add the translet rule.
-     *
      * @param transletRule the translet rule to add
      * @throws IllegalRuleException if an illegal rule is found
      */
@@ -704,7 +675,6 @@ public class ActivityRuleAssistant {
 
     /**
      * Add the template rule.
-     *
      * @param templateRule the template rule to add
      * @throws IllegalRuleException if an illegal rule is found
      */
@@ -714,7 +684,6 @@ public class ActivityRuleAssistant {
 
     /**
      * Gets the aspect rule registry.
-     *
      * @return the aspect rule registry
      */
     public AspectRuleRegistry getAspectRuleRegistry() {
@@ -723,7 +692,6 @@ public class ActivityRuleAssistant {
 
     /**
      * Returns the bean rule registry.
-     *
      * @return the bean rule registry
      */
     public BeanRuleRegistry getBeanRuleRegistry() {
@@ -732,7 +700,6 @@ public class ActivityRuleAssistant {
 
     /**
      * Returns the schedule rule registry.
-     *
      * @return the template rule registry
      */
     public ScheduleRuleRegistry getScheduleRuleRegistry() {
@@ -741,7 +708,6 @@ public class ActivityRuleAssistant {
 
     /**
      * Returns the translet rule registry.
-     *
      * @return the translet rule registry
      */
     public TransletRuleRegistry getTransletRuleRegistry() {
@@ -750,7 +716,6 @@ public class ActivityRuleAssistant {
 
     /**
      * Returns the template rule registry.
-     *
      * @return the template rule registry
      */
     public TemplateRuleRegistry getTemplateRuleRegistry() {
@@ -759,7 +724,6 @@ public class ActivityRuleAssistant {
 
     /**
      * Returns all Aspect rules.
-     *
      * @return the aspect rules
      */
     public Collection<AspectRule> getAspectRules() {
@@ -768,7 +732,6 @@ public class ActivityRuleAssistant {
 
     /**
      * Returns all bean rules.
-     *
      * @return the bean rules
      */
     public Collection<BeanRule> getBeanRules() {
@@ -794,7 +757,6 @@ public class ActivityRuleAssistant {
 
     /**
      * Returns all schedule rules.
-     *
      * @return the schedule rules
      */
     public Collection<ScheduleRule> getScheduleRules() {
@@ -803,7 +765,6 @@ public class ActivityRuleAssistant {
 
     /**
      * Returns all translet rules.
-     *
      * @return the translet rules
      */
     public Collection<TransletRule> getTransletRules() {
@@ -812,7 +773,6 @@ public class ActivityRuleAssistant {
 
     /**
      * Returns all template rules.
-     *
      * @return the template rules
      */
     public Collection<TemplateRule> getTemplateRules() {
@@ -821,7 +781,6 @@ public class ActivityRuleAssistant {
 
     /**
      * Returns the rule append handler.
-     *
      * @return the rule append handler
      */
     public RuleAppendHandler getRuleAppendHandler() {
@@ -830,7 +789,6 @@ public class ActivityRuleAssistant {
 
     /**
      * Sets the rule append handler.
-     *
      * @param ruleAppendHandler the new rule append handler
      */
     public void setRuleAppendHandler(RuleAppendHandler ruleAppendHandler) {

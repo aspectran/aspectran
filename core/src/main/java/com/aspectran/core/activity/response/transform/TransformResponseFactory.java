@@ -30,7 +30,6 @@ public class TransformResponseFactory {
 
     /**
      * Creates a new Transform object with specified TransformRule.
-     *
      * @param transformRule the transform rule
      * @return the transform response
      */

@@ -328,7 +328,6 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
 
     /**
      * Returns a new instance of ActivityContext.
-     *
      * @param assistant the activity rule assistant
      * @return the activity context
      * @throws BeanReferenceException will be thrown when cannot resolve reference to bean
@@ -422,7 +421,6 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
 
     /**
      * Initialize the aspect rule registry.
-     *
      * @param assistant the activity rule assistant
      */
     private void initAspectRuleRegistry(ActivityRuleAssistant assistant) {

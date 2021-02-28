@@ -23,7 +23,6 @@ import com.aspectran.core.util.StringUtils;
  */
 public class InsufficientEnvironmentException extends IllegalStateException {
 
-    /** @serial */
     private static final long serialVersionUID = -8963344360314936952L;
 
     /**
@@ -35,7 +34,6 @@ public class InsufficientEnvironmentException extends IllegalStateException {
 
     /**
      * Constructs an InsufficientEnvironmentException with the specified message.
-     *
      * @param msg the specific message
      */
     public InsufficientEnvironmentException(String msg) {
@@ -44,7 +42,6 @@ public class InsufficientEnvironmentException extends IllegalStateException {
 
     /**
      * Constructs an InsufficientEnvironmentException with the wrapped exception.
-     *
      * @param cause the real cause of the exception
      */
     public InsufficientEnvironmentException(Throwable cause) {
@@ -53,7 +50,6 @@ public class InsufficientEnvironmentException extends IllegalStateException {
 
     /**
      * Constructs an AspectranCheckedException with the specified message and wrapped exception.
-     *
      * @param msg the specific message
      * @param cause the real cause of the exception
      */
@@ -77,8 +73,9 @@ public class InsufficientEnvironmentException extends IllegalStateException {
             }
             lines[i] = line;
         }
+        String hr = String.format("-%" + maxLen + "s-", "").replaceAll(" ", "-");
         StringBuilder sb = new StringBuilder();
-        sb.append(String.format("-%" + maxLen + "s-", "").replaceAll(" ","-"));
+        sb.append(hr);
         sb.append(System.lineSeparator());
         sb.append(String.format(" %-" + maxLen + "s ", "ASPECTRAN RUN FAILURE"));
         sb.append(System.lineSeparator());
@@ -86,7 +83,7 @@ public class InsufficientEnvironmentException extends IllegalStateException {
             sb.append(String.format(" %-" + maxLen + "s ", line));
             sb.append(System.lineSeparator());
         }
-        sb.append(String.format("-%" + maxLen + "s-", "").replaceAll(" ","-"));
+        sb.append(hr);
         return sb.toString();
     }
 

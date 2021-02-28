@@ -59,7 +59,6 @@ public class WebActivity extends CoreActivity {
 
     /**
      * Instantiates a new WebActivity.
-     *
      * @param context the current ActivityContext
      * @param request the HTTP request
      * @param response the HTTP response

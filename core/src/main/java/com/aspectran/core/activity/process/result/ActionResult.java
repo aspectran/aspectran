@@ -34,7 +34,6 @@ public class ActionResult {
 
     /**
      * Gets the action id.
-     *
      * @return the action id
      */
     public String getActionId() {
@@ -43,7 +42,6 @@ public class ActionResult {
 
     /**
      * Gets the result value of the action.
-     *
      * @return the result value of the action
      */
     public Object getResultValue() {
@@ -52,7 +50,6 @@ public class ActionResult {
 
     /**
      * Sets the result value of the action.
-     *
      * @param actionId the new action id
      * @param resultValue the new result value of the action
      */

@@ -47,7 +47,6 @@ public class AspectranActivity extends CoreActivity {
 
     /**
      * Instantiates a new embedded aspectran activity.
-     *
      * @param aspectran the embedded aspectran
      */
     public AspectranActivity(AbstractEmbeddedAspectran aspectran) {
@@ -56,7 +55,6 @@ public class AspectranActivity extends CoreActivity {
 
     /**
      * Instantiates a new embedded aspectran activity.
-     *
      * @param aspectran the embedded aspectran
      * @param outputWriter the output writer
      */

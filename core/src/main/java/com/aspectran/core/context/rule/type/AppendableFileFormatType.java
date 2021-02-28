@@ -39,7 +39,6 @@ public enum AppendableFileFormatType {
     /**
      * Returns an {@code AppendableFileFormatType} with a value represented
      * by the specified {@code String}.
-     *
      * @param alias the appendable file format type as a {@code String}
      * @return an {@code AppendableFileFormatType}, may be {@code null}
      */

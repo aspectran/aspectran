@@ -22,7 +22,6 @@ package com.aspectran.core.component.translet;
  */
 public class TransletException extends RuntimeException {
 
-    /** @serial */
     private static final long serialVersionUID = 3736262494374232352L;
 
     /**
@@ -34,7 +33,6 @@ public class TransletException extends RuntimeException {
 
     /**
      * Constructs a TransletException with the specified detail message.
-     *
      * @param msg a message to associate with the exception
      */
     public TransletException(String msg) {
@@ -43,7 +41,6 @@ public class TransletException extends RuntimeException {
 
     /**
      * Constructor to create exception to wrap another exception.
-     *
      * @param cause the real cause of the exception
      */
     public TransletException(Throwable cause) {
@@ -52,7 +49,6 @@ public class TransletException extends RuntimeException {
 
     /**
      * Constructor to create exception to wrap another exception and pass a message.
-     *
      * @param msg the detail message
      * @param cause the real cause of the exception
      */

@@ -87,7 +87,6 @@ public class InMemoryFileItem implements FileItem, FileItemHeadersSupport {
 
     /**
      * Constructs a new MemoryFileItem instance.
-     *
      * @param fieldName the name of the form field
      * @param contentType the content type passed by the browser or {@code null} if not specified
      * @param isFormField whether or not this item is a plain form field, as opposed to a file upload
@@ -105,7 +104,6 @@ public class InMemoryFileItem implements FileItem, FileItemHeadersSupport {
 
     /**
      * Returns an {@link java.io.InputStream InputStream} that can be used to retrieve the contents of the file.
-     *
      * @return an {@link java.io.InputStream InputStream} that can be used to retrieve the contents of the file
      * @throws IOException if an error occurs
      */
@@ -118,7 +116,6 @@ public class InMemoryFileItem implements FileItem, FileItemHeadersSupport {
 
     /**
      * Returns the content type passed by the agent or {@code null} if not defined.
-     *
      * @return the content type passed by the agent or {@code null} if not defined
      */
     public String getContentType() {
@@ -127,7 +124,6 @@ public class InMemoryFileItem implements FileItem, FileItemHeadersSupport {
 
     /**
      * Returns the content charset passed by the agent or {@code null} if not defined.
-     *
      * @return the content charset passed by the agent or {@code null} if not defined
      */
     public String getCharset() {
@@ -140,7 +136,6 @@ public class InMemoryFileItem implements FileItem, FileItemHeadersSupport {
 
     /**
      * Returns the original filename in the client's filesystem.
-     *
      * @return the original filename in the client's filesystem
      */
     public String getName() {
@@ -149,7 +144,6 @@ public class InMemoryFileItem implements FileItem, FileItemHeadersSupport {
 
     /**
      * Provides a hint as to whether or not the file contents will be read from memory.
-     *
      * @return {@code true} if the file contents will be read from memory; {@code false} otherwise
      */
     public boolean isInMemory() {
@@ -158,7 +152,6 @@ public class InMemoryFileItem implements FileItem, FileItemHeadersSupport {
 
     /**
      * Returns the size of the file.
-     *
      * @return the size of the file, in bytes
      */
     public long getSize() {
@@ -171,7 +164,6 @@ public class InMemoryFileItem implements FileItem, FileItemHeadersSupport {
 
     /**
      * Returns the contents of the file as an array of bytes.
-     *
      * @return the contents of the file as an array of bytes
      */
     public byte[] get() {
@@ -184,7 +176,6 @@ public class InMemoryFileItem implements FileItem, FileItemHeadersSupport {
     /**
      * Returns the contents of the file as a String, using the specified encoding.
      * This method uses {@link #get()} to retrieve the contents of the file.
-     *
      * @param charset the charset to use
      * @return the contents of the file, as a string
      * @throws UnsupportedEncodingException if the requested character encoding is not available
@@ -197,7 +188,6 @@ public class InMemoryFileItem implements FileItem, FileItemHeadersSupport {
      * Returns the contents of the file as a String, using the default
      * character encoding.  This method uses {@link #get()} to retrieve the
      * contents of the file.
-     *
      * @return the contents of the file, as a string
      */
     public String getString() {
@@ -227,7 +217,6 @@ public class InMemoryFileItem implements FileItem, FileItemHeadersSupport {
      * is invoked for a particular item. This is because, in the event that the
      * method renames a temporary file, that file will no longer be available
      * to copy or rename again at a later time.
-     *
      * @param file the {@code File} into which the uploaded item should
      *             be stored
      * @throws Exception if an error occurs
@@ -247,7 +236,6 @@ public class InMemoryFileItem implements FileItem, FileItemHeadersSupport {
 
     /**
      * Returns the name of the field in the multipart form corresponding to this file item.
-     *
      * @return the name of the form field
      * @see #setFieldName(java.lang.String)
      */
@@ -257,7 +245,6 @@ public class InMemoryFileItem implements FileItem, FileItemHeadersSupport {
 
     /**
      * Sets the field name used to reference this file item.
-     *
      * @param fieldName the name of the form field
      * @see #getFieldName()
      */
@@ -267,7 +254,6 @@ public class InMemoryFileItem implements FileItem, FileItemHeadersSupport {
 
     /**
      * Determines whether or not a <code>FileItem</code> instance represents a simple form field.
-     *
      * @return {@code true} if the instance represents a simple form field;
      *      {@code false} if it represents an uploaded file.
      * @see #setFormField(boolean)
@@ -278,7 +264,6 @@ public class InMemoryFileItem implements FileItem, FileItemHeadersSupport {
 
     /**
      * Specifies whether or not a <code>FileItem</code> instance represents a simple form field.
-     *
      * @param state {@code true} if the instance represents a simple form field;
      *      {@code false} if it represents an uploaded file
      * @see #isFormField()
@@ -289,7 +274,6 @@ public class InMemoryFileItem implements FileItem, FileItemHeadersSupport {
 
     /**
      * Returns an {@link java.io.OutputStream OutputStream} of the file.
-     *
      * @return an {@link java.io.OutputStream OutputStream} of the file
      * @throws IOException if an error occurs
      */
@@ -302,7 +286,6 @@ public class InMemoryFileItem implements FileItem, FileItemHeadersSupport {
 
     /**
      * Returns a string representation of this object.
-     *
      * @return a string representation of this object
      */
     @Override
@@ -313,7 +296,6 @@ public class InMemoryFileItem implements FileItem, FileItemHeadersSupport {
 
     /**
      * Writes the state of this object during serialization.
-     *
      * @param out the stream to which the state should be written
      * @throws IOException if an error occurs
      */
@@ -327,7 +309,6 @@ public class InMemoryFileItem implements FileItem, FileItemHeadersSupport {
 
     /**
      * Reads the state of this object during deserialization.
-     *
      * @param in the stream from which the state should be read
      * @throws IOException if an error occurs
      * @throws ClassNotFoundException if class cannot be found
@@ -347,7 +328,6 @@ public class InMemoryFileItem implements FileItem, FileItemHeadersSupport {
 
     /**
      * Returns the file item headers.
-     *
      * @return the file items headers
      */
     public FileItemHeaders getHeaders() {
@@ -356,7 +336,6 @@ public class InMemoryFileItem implements FileItem, FileItemHeadersSupport {
 
     /**
      * Sets the file item headers.
-     *
      * @param pHeaders the file items headers
      */
     public void setHeaders(FileItemHeaders pHeaders) {

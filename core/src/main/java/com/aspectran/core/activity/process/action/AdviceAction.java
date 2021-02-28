@@ -31,7 +31,6 @@ public class AdviceAction extends InvokeAction {
 
     /**
      * Instantiates a new AdviceAction.
-     *
      * @param invokeActionRule the invoke action rule
      * @param aspectAdviceRule the aspect advice rule
      */
@@ -42,7 +41,6 @@ public class AdviceAction extends InvokeAction {
 
     /**
      * Gets the aspect advice rule.
-     *
      * @return the aspect advice rule
      */
     public AspectAdviceRule getAspectAdviceRule() {

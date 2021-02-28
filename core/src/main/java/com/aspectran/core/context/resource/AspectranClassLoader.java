@@ -173,7 +173,6 @@ public class AspectranClassLoader extends ClassLoader {
      * Adds packages that this ClassLoader should not handle.
      * Any class whose fully-qualified name starts with the name registered here will be handled
      * by the parent ClassLoader in the usual fashion.
-     *
      * @param packageNames package names that we be compared against fully qualified package names to exclude
      */
     public void excludePackage(String... packageNames) {
@@ -193,7 +192,6 @@ public class AspectranClassLoader extends ClassLoader {
      * Adds classes that this ClassLoader should not handle.
      * Any class whose fully-qualified name starts with the name registered here will be handled
      * by the parent ClassLoader in the usual fashion.
-     *
      * @param classNames class names that we be compared against fully qualified class names to exclude
      */
     public void excludeClass(String... classNames) {

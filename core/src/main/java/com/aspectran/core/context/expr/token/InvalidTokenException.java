@@ -20,14 +20,12 @@ package com.aspectran.core.context.expr.token;
  */
 public class InvalidTokenException extends RuntimeException {
 
-    /** @serial */
     private static final long serialVersionUID = -3013940354563756601L;
 
     private final Token token;
 
     /**
      * Instantiates a new invalid token exception.
-     *
      * @param token the token
      */
     public InvalidTokenException(Token token) {
@@ -36,7 +34,6 @@ public class InvalidTokenException extends RuntimeException {
 
     /**
      * Instantiates a new invalid token exception.
-     *
      * @param msg the detail message
      * @param token the token
      */

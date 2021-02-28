@@ -39,7 +39,6 @@ public interface LifeCycle {
 
     /**
      * Starts the component.
-     *
      * @throws Exception If the component fails to start
      * @see #isStarted()
      * @see #stop()
@@ -51,7 +50,6 @@ public interface LifeCycle {
      * Stops the component.
      * The component may wait for current activities to complete
      * normally, but it can be interrupted.
-     *
      * @throws Exception If the component fails to stop
      * @see #isStopped()
      * @see #start()
@@ -124,7 +122,6 @@ public interface LifeCycle {
     /**
      * Utility to start an object if it is a LifeCycle and to convert
      * any exception thrown to a {@link RuntimeException}.
-     *
      * @param object the instance to start.
      * @throws RuntimeException if the call to start throws an exception
      */
@@ -141,7 +138,6 @@ public interface LifeCycle {
     /**
      * Utility to stop an object if it is a LifeCycle and to convert
      * any exception thrown to a {@link RuntimeException}.
-     *
      * @param object the instance to stop.
      * @throws RuntimeException if the call to stop throws an exception
      */

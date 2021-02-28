@@ -27,7 +27,6 @@ import java.util.LinkedHashMap;
  */
 public class ResponseMap extends LinkedHashMap<String, Response> implements Iterable<Response> {
 
-    /** @serial */
     private static final long serialVersionUID = 2093093144584776388L;
 
     public Response getFirst() {

@@ -76,7 +76,6 @@ public abstract class AbstractShellService extends AspectranCoreService implemen
      * Tests if the verbose mode is enabled.
      * If verbose mode is on, a detailed description is printed each time the command is executed.
      * Returns a flag indicating whether to show the description or not.
-     *
      * @return true if the verbose mode is enabled
      */
     @Override
@@ -88,7 +87,6 @@ public abstract class AbstractShellService extends AspectranCoreService implemen
      * Enables or disables the verbose mode.
      * If verbose mode is on, a detailed description is printed each time the command is executed.
      * Sets a flag indicating whether to show the description or not.
-     *
      * @param verbose true to enable the verbose mode; false to disable
      */
     @Override

@@ -28,7 +28,6 @@ public interface BeanReferenceable {
 
     /**
      * Returns the Bean Referrer Type.
-     *
      * @return the Bean Referrer Type
      */
     BeanRefererType getBeanRefererType();

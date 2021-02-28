@@ -23,7 +23,6 @@ import com.aspectran.core.util.StringUtils;
  */
 public class NoUniqueBeanException extends BeanException {
 
-    /** @serial */
     private static final long serialVersionUID = 8350428939010030065L;
 
     private final Class<?> type;
@@ -32,7 +31,6 @@ public class NoUniqueBeanException extends BeanException {
 
     /**
      * Instantiates a new NoUniqueBeanException.
-     *
      * @param type the required type of the missing bean
      * @param beanRules the bean rules
      */
@@ -45,7 +43,6 @@ public class NoUniqueBeanException extends BeanException {
 
     /**
      * Returns the type required type of the missing bean.
-     *
      * @return the required type
      */
     public Class<?> getType() {
@@ -54,7 +51,6 @@ public class NoUniqueBeanException extends BeanException {
 
     /**
      * Gets the bean rules.
-     *
      * @return the bean rules
      */
     public BeanRule[] getBeanRules() {

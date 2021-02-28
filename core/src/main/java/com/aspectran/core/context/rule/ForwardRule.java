@@ -42,7 +42,6 @@ public class ForwardRule implements Replicable<ForwardRule> {
 
     /**
      * Gets the content type.
-     *
      * @return the content type
      */
     public String getContentType() {
@@ -51,7 +50,6 @@ public class ForwardRule implements Replicable<ForwardRule> {
 
     /**
      * Sets the content type.
-     *
      * @param contentType the new content type
      */
     public void setContentType(String contentType) {
@@ -60,7 +58,6 @@ public class ForwardRule implements Replicable<ForwardRule> {
 
     /**
      * Gets the translet name.
-     *
      * @return the translet name
      */
     public String getTransletName() {
@@ -69,7 +66,6 @@ public class ForwardRule implements Replicable<ForwardRule> {
 
     /**
      * Sets the translet name.
-     *
      * @param transletName the new translet name
      */
     public void setTransletName(String transletName) {
@@ -86,7 +82,6 @@ public class ForwardRule implements Replicable<ForwardRule> {
 
     /**
      * Gets the attribute item rule map.
-     *
      * @return the attribute item rule map
      */
     public ItemRuleMap getAttributeItemRuleMap() {
@@ -95,7 +90,6 @@ public class ForwardRule implements Replicable<ForwardRule> {
 
     /**
      * Sets the attribute item rule map.
-     *
      * @param attributeItemRuleMap the new attribute item rule map
      */
     public void setAttributeItemRuleMap(ItemRuleMap attributeItemRuleMap) {
@@ -104,7 +98,6 @@ public class ForwardRule implements Replicable<ForwardRule> {
 
     /**
      * Adds a new attribute rule with the specified name and returns it.
-     *
      * @param attributeName the attribute name
      * @return the attribute item rule
      */
@@ -117,7 +110,6 @@ public class ForwardRule implements Replicable<ForwardRule> {
 
     /**
      * Adds the attribute item rule.
-     *
      * @param itemRule the attribute item rule
      */
     public void addAttributeItemRule(ItemRule itemRule) {
@@ -129,7 +121,6 @@ public class ForwardRule implements Replicable<ForwardRule> {
 
     /**
      * Returns whether the default response.
-     *
      * @return whether the default response
      */
     public Boolean getDefaultResponse() {
@@ -138,7 +129,6 @@ public class ForwardRule implements Replicable<ForwardRule> {
 
     /**
      * Returns whether the default response.
-     *
      * @return true, if is default response
      */
     public boolean isDefaultResponse() {
@@ -147,7 +137,6 @@ public class ForwardRule implements Replicable<ForwardRule> {
 
     /**
      * Sets whether the default response.
-     *
      * @param defaultResponse whether the default response
      */
     public void setDefaultResponse(Boolean defaultResponse) {
@@ -172,7 +161,6 @@ public class ForwardRule implements Replicable<ForwardRule> {
 
     /**
      * Returns a new instance of ForwardRule.
-     *
      * @param contentType the content type
      * @param transletName the translet name
      * @param method the request method
@@ -204,7 +192,6 @@ public class ForwardRule implements Replicable<ForwardRule> {
 
     /**
      * Returns a new instance of ForwardRule.
-     *
      * @param transletName the translet name
      * @return an instance of ForwardRule
      * @throws IllegalRuleException if an illegal rule is found

@@ -26,14 +26,12 @@ public interface SessionListenerRegistration {
 
     /**
      * Register a session listener to the session manager.
-     *
      * @param listener the session listener to register
      */
     void register(SessionListener listener);
 
     /**
      * Remove a session listener from the session manager.
-     *
      * @param listener the session listener to remove
      */
     void remove(SessionListener listener);

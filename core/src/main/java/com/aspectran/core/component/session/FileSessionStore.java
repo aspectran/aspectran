@@ -109,7 +109,6 @@ public class FileSessionStore extends AbstractSessionStore {
 
     /**
      * Delete the file associated with a session
-     *
      * @param filename name of the file containing the session's information
      * @return true if file was deleted, false otherwise
      * @throws Exception if the file associated with the session fails to be deleted
@@ -158,7 +157,6 @@ public class FileSessionStore extends AbstractSessionStore {
 
     /**
      * Check to see which sessions have expired.
-     *
      * @param candidates the set of session ids that the SessionCache believes
      *      have expired
      * @return the complete set of sessions that have expired, including those
@@ -203,7 +201,6 @@ public class FileSessionStore extends AbstractSessionStore {
 
     /**
      * Get the session id with its expiry time.
-     *
      * @param data the session data
      * @return the session id plus expiry
      */
@@ -232,7 +229,6 @@ public class FileSessionStore extends AbstractSessionStore {
 
     /**
      * Extract the session id from the filename.
-     *
      * @param filename the name of the file to use
      * @return the session id
      */
@@ -247,7 +243,6 @@ public class FileSessionStore extends AbstractSessionStore {
 
     /**
      * Check if the filename matches our session pattern.
-     *
      * @param filename the name of the file to checks
      * @return true if pattern matches
      */
@@ -285,7 +280,6 @@ public class FileSessionStore extends AbstractSessionStore {
      * Check to see if the expiry on the file is very old, and
      * delete the file if so. "Old" means that it expired at least
      * 5 gracePeriods ago.
-     *
      * @param now the time now in msec
      * @param p the file to check
      * @throws Exception indicating error in sweep

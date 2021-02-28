@@ -50,7 +50,6 @@ public class FileParameter {
 
     /**
      * Instantiates a new FileParameter.
-     *
      * @param file the file
      */
     public FileParameter(File file) {
@@ -63,7 +62,6 @@ public class FileParameter {
 
     /**
      * Gets the actual name of the file uploaded.
-     *
      * @return the actual name of the file uploaded
      */
     public String getFileName() {
@@ -72,7 +70,6 @@ public class FileParameter {
 
     /**
      * Gets the size of the file uploaded.
-     *
      * @return the size of the file uploaded
      */
     public long getFileSize() {
@@ -81,7 +78,6 @@ public class FileParameter {
 
     /**
      * Gets the the content type of the file.
-     *
      * @return the content type of the file
      */
     public String getContentType() {
@@ -90,7 +86,6 @@ public class FileParameter {
 
     /**
      * Returns an {@code InputStream} object of the file.
-     *
      * @return an {@link java.io.OutputStream OutputStream} that can be used
      *         for storing the contents of the file.
      * @throws IOException if an I/O error has occurred
@@ -105,7 +100,6 @@ public class FileParameter {
     /**
      * Returns the contents of the file in a byte array.
      * Can not use a large array of memory than the JVM Heap deal.
-     *
      * @return a byte array
      * @throws IOException if an I/O error has occurred
      */
@@ -138,7 +132,6 @@ public class FileParameter {
 
     /**
      * Checks if the file is refused.
-     *
      * @return true if the file is refused; false otherwise
      */
     public boolean isRefused() {
@@ -147,7 +140,6 @@ public class FileParameter {
 
     /**
      * Sets whether the refused file.
-     *
      * @param refused whether the file is refused or not
      */
     public void setRefused(boolean refused) {
@@ -157,7 +149,6 @@ public class FileParameter {
     /**
      * Save an uploaded file as a given destination file.
      * If the file already exists in directory the save with a different name.
-     *
      * @param destFile the destination file
      * @return a saved file
      * @throws IOException if an I/O error has occurred
@@ -168,7 +159,6 @@ public class FileParameter {
 
     /**
      * Save an file as a given destination file.
-     *
      * @param destFile the destination file
      * @param overwrite whether to overwrite if it already exists
      * @return a saved file
@@ -240,7 +230,6 @@ public class FileParameter {
 
     /**
      * Returns the saved file.
-     *
      * @return the saved file
      */
     public File getSavedFile() {

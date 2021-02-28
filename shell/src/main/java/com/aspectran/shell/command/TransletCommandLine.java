@@ -31,7 +31,6 @@ public class TransletCommandLine extends AbstractCommandLine {
     /**
      * Returns the request method of the target translet
      * extracted from the command line.
-     *
      * @return the request method
      */
     public MethodType getRequestMethod() {

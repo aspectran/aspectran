@@ -22,12 +22,10 @@ import com.aspectran.core.activity.request.RequestParseException;
  */
 public class MultipartRequestParseException extends RequestParseException {
 
-    /** @serial */
-    static final long serialVersionUID = -3261897166973264629L;
+    private static final long serialVersionUID = -3261897166973264629L;
 
     /**
      * Constructor to create exception with a message.
-     *
      * @param msg a message to associate with the exception
      */
     public MultipartRequestParseException(String msg) {
@@ -36,7 +34,6 @@ public class MultipartRequestParseException extends RequestParseException {
 
     /**
      * Constructor to create exception to wrap another exception and pass a message.
-     *
      * @param msg the message
      * @param cause the real cause of the exception
      */

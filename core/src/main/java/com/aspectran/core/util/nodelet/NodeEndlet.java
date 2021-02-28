@@ -28,7 +28,6 @@ public interface NodeEndlet {
     /**
      * For a registered XPath, the NodeletParser will call the Nodelet's
      * process method for processing.
-     *
      * @param text the text and CDATA data collected
      * @throws Exception if an error occurs while processing the nodelet
      */

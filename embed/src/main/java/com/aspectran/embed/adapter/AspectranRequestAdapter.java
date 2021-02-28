@@ -26,7 +26,6 @@ public class AspectranRequestAdapter extends DefaultRequestAdapter {
 
     /**
      * Instantiates a new AspectranRequestAdapter.
-     *
      * @param requestMethod the request method
      */
     public AspectranRequestAdapter(MethodType requestMethod) {

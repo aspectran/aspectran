@@ -31,7 +31,6 @@ import java.util.StringTokenizer;
  */
 public class SpecificIPAllowedWebActivityServlet extends WebActivityServlet {
 
-    /** @serial */
     private static final long serialVersionUID = -2369788867122156319L;
 
     private static final Logger logger = LoggerFactory.getLogger(SpecificIPAllowedWebActivityServlet.class);
@@ -78,7 +77,6 @@ public class SpecificIPAllowedWebActivityServlet extends WebActivityServlet {
 
     /**
      * Returns whether IP address is valid.
-     *
      * @param ipAddress the IP address
      * @return true if IP address is a valid; false otherwise
      */

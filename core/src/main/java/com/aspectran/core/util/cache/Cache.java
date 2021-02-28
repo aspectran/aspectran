@@ -29,7 +29,6 @@ public interface Cache<K, V> {
 
     /**
      * Gets an entry from the cache.
-     *
      * @param key the key whose associated value is to be returned
      * @return the element, or {@code null}, if it does not exist
      */
@@ -37,7 +36,6 @@ public interface Cache<K, V> {
 
     /**
      * Removes the specified element from this cache if it is present.
-     *
      * @param key key with which the specified value is to be associated
      */
     void remove(K key);
@@ -49,21 +47,18 @@ public interface Cache<K, V> {
 
     /**
      * Returns a {@link Set} view of the keys contained in this cache.
-     *
      * @return the set view
      */
     Set<K> keySet();
 
     /**
      * Returns the number of elements in this cache.
-     *
      * @return the number of elements in this cache
      */
     int size();
 
     /**
      * Returns {@code true} if this cache contains no key-value mappings.
-     *
      * @return {@code true} if this cache contains no key-value mappings
      */
     boolean isEmpty();

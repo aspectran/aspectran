@@ -49,7 +49,6 @@ public enum OptionValueType {
     /**
      * Returns an {@code OptionValueType} with a value represented
      * by the specified {@code String}.
-     *
      * @param alias the item value type as a {@code String}
      * @return an {@code OptionValueType}, may be {@code null}
      */

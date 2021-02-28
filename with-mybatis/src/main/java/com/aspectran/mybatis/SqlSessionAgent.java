@@ -136,7 +136,6 @@ public class SqlSessionAgent extends InstantActivitySupport implements SqlSessio
     }
 
     @Override
-    @SuppressWarnings("rawtypes")
     public void select(String statement, Object parameter, RowBounds rowBounds, ResultHandler handler) {
         getSqlSession().select(statement, parameter, rowBounds, handler);
     }

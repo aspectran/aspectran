@@ -46,7 +46,6 @@ public class DefaultResponseAdapter extends AbstractResponseAdapter {
 
     /**
      * Instantiates a new default response adapter.
-     *
      * @param adaptee the adaptee object
      */
     public DefaultResponseAdapter(Object adaptee) {
@@ -55,7 +54,6 @@ public class DefaultResponseAdapter extends AbstractResponseAdapter {
 
     /**
      * Instantiates a new default response adapter.
-     *
      * @param adaptee the adaptee object
      * @param writer the writer to output
      */
@@ -69,7 +67,6 @@ public class DefaultResponseAdapter extends AbstractResponseAdapter {
      *
      * <p>If a response header with the given name exists and contains
      * multiple values, the value that was added first will be returned.
-     *
      * @param name the name of the response header whose value to return
      * @return the value of the response header with the given name,
      *         or {@code null} if no header with the given name has been set
@@ -82,7 +79,6 @@ public class DefaultResponseAdapter extends AbstractResponseAdapter {
 
     /**
      * Returns the values of the response header with the given name.
-     *
      * @param name the name of the response header whose values to return
      * @return a (possibly empty) {@code Collection} of the values
      *         of the response header with the given name
@@ -94,7 +90,6 @@ public class DefaultResponseAdapter extends AbstractResponseAdapter {
 
     /**
      * Returns the names of the headers of this response.
-     *
      * @return a (possibly empty) {@code Collection} of the names
      *         of the headers of this response
      */
@@ -106,7 +101,6 @@ public class DefaultResponseAdapter extends AbstractResponseAdapter {
     /**
      * Returns a boolean indicating whether the named response header
      * has already been set.
-     *
      * @param name the header name
      * @return {@code true} if the named response header
      *         has already been set; {@code false} otherwise
@@ -118,7 +112,6 @@ public class DefaultResponseAdapter extends AbstractResponseAdapter {
 
     /**
      * Set the given single header value under the given header name.
-     *
      * @param name the header name
      * @param value the header value to set
      */
@@ -133,7 +126,6 @@ public class DefaultResponseAdapter extends AbstractResponseAdapter {
     /**
      * Add the given single header value to the current list of values
      * for the given header.
-     *
      * @param name the header name
      * @param value the header value to be added
      */
@@ -147,7 +139,6 @@ public class DefaultResponseAdapter extends AbstractResponseAdapter {
 
     /**
      * Returns a map of the request headers that can be modified.
-     *
      * @return an {@code MultiValueMap} object, may be {@code null}
      */
     public MultiValueMap<String, String> getAllHeaders() {
@@ -157,7 +148,6 @@ public class DefaultResponseAdapter extends AbstractResponseAdapter {
     /**
      * Returns a map of the response headers that can be modified.
      * If not yet instantiated then create a new one.
-     *
      * @return an {@code MultiValueMap} object, may not be {@code null}
      */
     public MultiValueMap<String, String> touchHeaders() {
@@ -233,7 +223,6 @@ public class DefaultResponseAdapter extends AbstractResponseAdapter {
 
     /**
      * Returns the status code.
-     *
      * @return the status
      */
     public int getStatus() {
@@ -242,7 +231,6 @@ public class DefaultResponseAdapter extends AbstractResponseAdapter {
 
     /**
      * Sets the status code.
-     *
      * @param status the status code
      */
     public void setStatus(int status) {

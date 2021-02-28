@@ -51,7 +51,6 @@ public class HttpServletRequestAdapter extends AbstractRequestAdapter {
 
     /**
      * Instantiates a new HttpServletRequestAdapter.
-     *
      * @param requestMethod the request method
      * @param request the activity request wrapper
      */

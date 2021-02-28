@@ -39,7 +39,6 @@ public class CurrentTransletFactoryBean implements CurrentActivityAware, Factory
     /**
      * Returns whether the current {@code Translet} is registered as an attribute
      * in the request scope.
-     *
      * @return true if the current {@code Translet} is registered as an attribute
      *      in the request scope; false otherwise
      */
@@ -50,7 +49,6 @@ public class CurrentTransletFactoryBean implements CurrentActivityAware, Factory
     /**
      * Returns the attribute name of the current {@code Translet} specified to register
      * in the request scope.
-     *
      * @return the attribute name
      */
     public String getAttributeName() {
@@ -60,7 +58,6 @@ public class CurrentTransletFactoryBean implements CurrentActivityAware, Factory
     /**
      * Specifies the attribute name for registering the current {@code Translet} as an attribute
      * in the request scope.
-     *
      * @param attributeName the attribute name of the current {@code Translet} to be registered
      *                      in the request scope.
      */

@@ -107,7 +107,6 @@ public class NodeletParser {
      * <ul>
      * <li> Element Path - /rootElement/childElement/theElement </li>
      * </ul>
-     *
      * @param nodelet the nodelet for processing start elements and attributes
      */
     public void addNodelet(Nodelet nodelet) {
@@ -117,7 +116,6 @@ public class NodeletParser {
     /**
      * Registers the nodelet to process the end elements of the specified XPath
      * and the text and CDATA data collected.
-     *
      * @param endlet the nodelet for processing end elements, text and CDATA data collected
      */
     public void addNodeEndlet(NodeEndlet endlet) {
@@ -126,7 +124,6 @@ public class NodeletParser {
 
     /**
      * Adds the nodelet.
-     *
      * @param nodeletAdder the nodelet adder
      */
     public void addNodelet(NodeletAdder nodeletAdder) {
@@ -135,7 +132,6 @@ public class NodeletParser {
 
     /**
      * Adds the nodelet.
-     *
      * @param xpath the xpath
      * @param nodeletAdder the nodelet adder
      */
@@ -177,7 +173,6 @@ public class NodeletParser {
 
     /**
      * Begins parsing from the provided Reader.
-     *
      * @param reader the reader
      * @throws NodeletException the nodelet exception
      */
@@ -187,7 +182,6 @@ public class NodeletParser {
 
     /**
      * Begins parsing from the provided InputStream.
-     *
      * @param inputStream the input stream
      * @throws NodeletException the nodelet exception
      */
@@ -197,7 +191,6 @@ public class NodeletParser {
 
     /**
      * Begins parsing from the provided InputSource.
-     *
      * @param inputSource the input source
      * @throws NodeletException the nodelet exception
      */

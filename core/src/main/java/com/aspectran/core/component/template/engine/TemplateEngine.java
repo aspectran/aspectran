@@ -28,7 +28,6 @@ public interface TemplateEngine {
 
     /**
      * Executes template, using the data-model provided, writing the generated output to the supplied {@link Writer}.
-     *
      * @param templateName the template name
      * @param model the holder of the variables visible from the template (name-value pairs)
      * @param templateSource the template source
@@ -40,7 +39,6 @@ public interface TemplateEngine {
 
     /**
      * Executes template, using the data-model provided, writing the generated output to the supplied {@link Writer}.
-     *
      * @param templateName the template name
      * @param model the holder of the variables visible from the template (name-value pairs)
      * @param writer the {@link Writer} where the output of the template will go. {@link Writer#close()} is not called.
@@ -50,7 +48,6 @@ public interface TemplateEngine {
 
     /**
      * Executes template, using the data-model provided, writing the generated output to the supplied {@link Writer}.
-     *
      * @param templateName the template name
      * @param model the holder of the variables visible from the template (name-value pairs)
      * @param writer the {@link Writer} where the output of the template will go. {@link Writer#close()} is not called.

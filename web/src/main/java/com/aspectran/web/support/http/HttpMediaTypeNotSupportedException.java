@@ -35,7 +35,6 @@ public class HttpMediaTypeNotSupportedException extends HttpMediaTypeException {
 
     /**
      * Create a new HttpMediaTypeNotSupportedException.
-     *
      * @param message the exception message
      */
     public HttpMediaTypeNotSupportedException(String message) {
@@ -45,7 +44,6 @@ public class HttpMediaTypeNotSupportedException extends HttpMediaTypeException {
 
     /**
      * Create a new HttpMediaTypeNotSupportedException.
-     *
      * @param contentType         the unsupported content type
      * @param supportedMediaTypes the list of supported media types
      */
@@ -56,7 +54,6 @@ public class HttpMediaTypeNotSupportedException extends HttpMediaTypeException {
 
     /**
      * Create a new HttpMediaTypeNotSupportedException.
-     *
      * @param contentType         the unsupported content type
      * @param supportedMediaTypes the list of supported media types
      * @param msg                 the detail message
@@ -69,7 +66,6 @@ public class HttpMediaTypeNotSupportedException extends HttpMediaTypeException {
 
     /**
      * Return the HTTP request content type method that caused the failure.
-     *
      * @return the media type
      */
     @Nullable

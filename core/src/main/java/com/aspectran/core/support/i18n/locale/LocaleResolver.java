@@ -30,7 +30,6 @@ public interface LocaleResolver {
     /**
      * Resolve the current locale via the given translet.
      * Can return a default locale as fallback in any case.
-     *
      * @param translet the translet to resolve the locale for
      * @return the current locale (never {@code null})
      */
@@ -39,7 +38,6 @@ public interface LocaleResolver {
     /**
      * Resolve the current timezone via the given translet.
      * Can return a default timezone as fallback in any case.
-     *
      * @param translet the translet to resolve the timezone for
      * @return the current timezone (never {@code null})
      */
@@ -47,7 +45,6 @@ public interface LocaleResolver {
 
     /**
      * Set the current locale to the given one.
-     *
      * @param translet the translet to resolve the locale for
      * @param locale the new locale, or {@code null} to clear the locale
      * @throws UnsupportedOperationException if the LocaleResolver implementation does not
@@ -57,7 +54,6 @@ public interface LocaleResolver {
 
     /**
      * Set the current timezone to the given one.
-     *
      * @param translet the translet to resolve the locale for
      * @param timeZone the new timezone, or {@code null} to clear the timezone
      * @throws UnsupportedOperationException if the LocaleResolver implementation does not

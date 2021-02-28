@@ -51,7 +51,6 @@ public class InvokeActionRule implements BeanReferenceable {
 
     /**
      * Gets the action id.
-     *
      * @return the action id
      */
     public String getActionId() {
@@ -60,7 +59,6 @@ public class InvokeActionRule implements BeanReferenceable {
 
     /**
      * Sets the action id.
-     *
      * @param actionId the new action id
      */
     public void setActionId(String actionId) {
@@ -69,7 +67,6 @@ public class InvokeActionRule implements BeanReferenceable {
 
     /**
      * Gets bean id.
-     *
      * @return the bean id
      */
     public String getBeanId() {
@@ -78,7 +75,6 @@ public class InvokeActionRule implements BeanReferenceable {
 
     /**
      * Sets bean id.
-     *
      * @param beanId the bean id
      */
     public void setBeanId(String beanId) {
@@ -95,7 +91,6 @@ public class InvokeActionRule implements BeanReferenceable {
 
     /**
      * Gets the action method name.
-     *
      * @return the action method name
      */
     public String getMethodName() {
@@ -104,7 +99,6 @@ public class InvokeActionRule implements BeanReferenceable {
 
     /**
      * Sets the action method name.
-     *
      * @param methodName the new action method name
      */
     public void setMethodName(String methodName) {
@@ -129,7 +123,6 @@ public class InvokeActionRule implements BeanReferenceable {
 
     /**
      * Returns whether to hide result of the action.
-     *
      * @return true, if this action is hidden
      */
     public Boolean getHidden() {
@@ -138,7 +131,6 @@ public class InvokeActionRule implements BeanReferenceable {
 
     /**
      * Returns whether to hide result of the action.
-     *
      * @return true, if this action is hidden
      */
     public boolean isHidden() {
@@ -147,7 +139,6 @@ public class InvokeActionRule implements BeanReferenceable {
 
     /**
      * Sets whether to hide result of the action.
-     *
      * @param hidden whether to hide result of the action
      */
     public void setHidden(Boolean hidden) {
@@ -156,7 +147,6 @@ public class InvokeActionRule implements BeanReferenceable {
 
     /**
      * Gets the argument item rule map.
-     *
      * @return the argument item rule map
      */
     public ItemRuleMap getArgumentItemRuleMap() {
@@ -165,7 +155,6 @@ public class InvokeActionRule implements BeanReferenceable {
 
     /**
      * Sets the argument item rule map.
-     *
      * @param argumentItemRuleMap the new argument item rule map
      */
     public void setArgumentItemRuleMap(ItemRuleMap argumentItemRuleMap) {
@@ -174,7 +163,6 @@ public class InvokeActionRule implements BeanReferenceable {
 
     /**
      * Adds a new argument rule with the specified name and returns it.
-     *
      * @param argumentName the argument name
      * @return the argument item rule
      */
@@ -187,7 +175,6 @@ public class InvokeActionRule implements BeanReferenceable {
 
     /**
      * Adds the argument item rule.
-     *
      * @param argumentItemRule the new argument item rule
      */
     public void addArgumentItemRule(ItemRule argumentItemRule) {
@@ -199,7 +186,6 @@ public class InvokeActionRule implements BeanReferenceable {
 
     /**
      * Gets the property item rule map.
-     *
      * @return the property item rule map
      */
     public ItemRuleMap getPropertyItemRuleMap() {
@@ -208,7 +194,6 @@ public class InvokeActionRule implements BeanReferenceable {
 
     /**
      * Sets the property item rule map.
-     *
      * @param propertyItemRuleMap the new property item rule map
      */
     public void setPropertyItemRuleMap(ItemRuleMap propertyItemRuleMap) {
@@ -217,7 +202,6 @@ public class InvokeActionRule implements BeanReferenceable {
 
     /**
      * Adds a new property rule with the specified name and returns it.
-     *
      * @param propertyName the property name
      * @return the property item rule
      */
@@ -230,7 +214,6 @@ public class InvokeActionRule implements BeanReferenceable {
 
     /**
      * Adds the property item rule.
-     *
      * @param propertyItemRule the new property item rule
      */
     public void addPropertyItemRule(ItemRule propertyItemRule) {
@@ -267,7 +250,6 @@ public class InvokeActionRule implements BeanReferenceable {
 
     /**
      * Returns a new instance of BeanActionRule.
-     *
      * @param id the action id
      * @param beanId the bean id
      * @param methodName the method name
@@ -294,7 +276,6 @@ public class InvokeActionRule implements BeanReferenceable {
 
     /**
      * Returns a new instance of BeanActionRule.
-     *
      * @param methodName the method name
      * @param hidden true if hiding the result of the action; false otherwise
      * @return the invoke action rule

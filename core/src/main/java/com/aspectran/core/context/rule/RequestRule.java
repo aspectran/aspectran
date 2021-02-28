@@ -49,7 +49,6 @@ public class RequestRule {
 
     /**
      * Instantiates a new RequestRule.
-     *
      * @param explicit whether this request rule is explicit
      */
     public RequestRule(boolean explicit) {
@@ -58,7 +57,6 @@ public class RequestRule {
 
     /**
      * Gets whether the request rule is explicitly generated.
-     *
      * @return true if this request rule is explicit; false otherwise
      */
     public boolean isExplicit() {
@@ -67,7 +65,6 @@ public class RequestRule {
 
     /**
      * Returns the method allowed on the requested resource.
-     *
      * @return the allowed method
      */
     public MethodType getAllowedMethod() {
@@ -76,7 +73,6 @@ public class RequestRule {
 
     /**
      * Sets the method allowed on the requested resource.
-     *
      * @param allowedMethod the new allowed method
      */
     public void setAllowedMethod(MethodType allowedMethod) {
@@ -85,7 +81,6 @@ public class RequestRule {
 
     /**
      * Gets the request encoding.
-     *
      * @return the request encoding
      */
     public String getEncoding() {
@@ -94,7 +89,6 @@ public class RequestRule {
 
     /**
      * Sets the request encoding.
-     *
      * @param encoding the new request encoding
      */
     public void setEncoding(String encoding) {
@@ -103,7 +97,6 @@ public class RequestRule {
 
     /**
      * Gets the parameter item rule map.
-     *
      * @return the parameter item rule map
      */
     public ItemRuleMap getParameterItemRuleMap() {
@@ -112,7 +105,6 @@ public class RequestRule {
 
     /**
      * Sets the attribute item rule map.
-     *
      * @param parameterItemRuleMap the new attribute item rule map
      */
     public void setParameterItemRuleMap(ItemRuleMap parameterItemRuleMap) {
@@ -121,7 +113,6 @@ public class RequestRule {
 
     /**
      * Adds a new parameter rule with the specified name and returns it.
-     *
      * @param parameterName the parameter name
      * @return the parameter item rule
      */
@@ -134,7 +125,6 @@ public class RequestRule {
 
     /**
      * Adds the parameter item rule.
-     *
      * @param parameterItemRule the parameter item rule
      */
     public void addParameterItemRule(ItemRule parameterItemRule) {
@@ -146,7 +136,6 @@ public class RequestRule {
 
     /**
      * Gets the attribute item rule map.
-     *
      * @return the attribute item rule map
      */
     public ItemRuleMap getAttributeItemRuleMap() {
@@ -155,7 +144,6 @@ public class RequestRule {
 
     /**
      * Sets the attribute item rule map.
-     *
      * @param attributeItemRuleMap the new attribute item rule map
      */
     public void setAttributeItemRuleMap(ItemRuleMap attributeItemRuleMap) {
@@ -164,7 +152,6 @@ public class RequestRule {
 
     /**
      * Adds a new attribute rule with the specified name and returns it.
-     *
      * @param attributeName the parameter name
      * @return the attribute item rule
      */
@@ -177,7 +164,6 @@ public class RequestRule {
 
     /**
      * Adds the attribute item rule.
-     *
      * @param attributeItemRule the attribute item rule
      */
     public void addAttributeItemRule(ItemRule attributeItemRule) {

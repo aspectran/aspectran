@@ -38,7 +38,6 @@ public class AutoLock implements AutoCloseable, Serializable {
 
     /**
      * Acquires the lock.
-     *
      * @return this AutoLock for unlocking
      */
     public AutoLock lock() {

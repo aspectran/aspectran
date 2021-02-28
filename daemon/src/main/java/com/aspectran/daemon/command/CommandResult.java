@@ -28,7 +28,6 @@ public class CommandResult {
 
     /**
      * Creates a new instance of the command result.
-     *
      * @param success whether the command executed successfully
      * @param message the message output to the console as a result of an executed command
      */

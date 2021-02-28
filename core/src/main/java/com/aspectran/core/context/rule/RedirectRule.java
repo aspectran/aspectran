@@ -56,7 +56,6 @@ public class RedirectRule implements Replicable<RedirectRule> {
 
     /**
      * Gets the content type.
-     *
      * @return the content type
      */
     public String getContentType() {
@@ -65,7 +64,6 @@ public class RedirectRule implements Replicable<RedirectRule> {
 
     /**
      * Sets the content type.
-     *
      * @param contentType the new content type
      */
     public void setContentType(String contentType) {
@@ -74,7 +72,6 @@ public class RedirectRule implements Replicable<RedirectRule> {
 
     /**
      * Gets the redirect path.
-     *
      * @return the redirect path
      */
     public String getPath() {
@@ -83,7 +80,6 @@ public class RedirectRule implements Replicable<RedirectRule> {
 
     /**
      * Gets the redirect path.
-     *
      * @param activity the activity
      * @return the redirect path
      */
@@ -98,7 +94,6 @@ public class RedirectRule implements Replicable<RedirectRule> {
 
     /**
      * Sets the redirect path.
-     *
      * @param path the redirect path
      */
     public void setPath(String path) {
@@ -125,7 +120,6 @@ public class RedirectRule implements Replicable<RedirectRule> {
 
     /**
      * Gets the tokens of the redirect path.
-     *
      * @return the tokens of the redirect path
      */
     public Token[] getPathTokens() {
@@ -134,7 +128,6 @@ public class RedirectRule implements Replicable<RedirectRule> {
 
     /**
      * Gets the character encoding.
-     *
      * @return the character encoding
      */
     public String getEncoding() {
@@ -143,7 +136,6 @@ public class RedirectRule implements Replicable<RedirectRule> {
 
     /**
      * Sets the character encoding.
-     *
      * @param encoding the new character encoding
      */
     public void setEncoding(String encoding) {
@@ -152,7 +144,6 @@ public class RedirectRule implements Replicable<RedirectRule> {
 
     /**
      * Gets whether to exclude parameters with null values.
-     *
      * @return whether to exclude parameters with null values
      */
     public Boolean getExcludeNullParameters() {
@@ -161,7 +152,6 @@ public class RedirectRule implements Replicable<RedirectRule> {
 
     /**
      * Returns whether to exclude parameters with null values.
-     *
      * @return whether to exclude parameters with null values
      */
     public boolean isExcludeNullParameters() {
@@ -170,7 +160,6 @@ public class RedirectRule implements Replicable<RedirectRule> {
 
     /**
      * Sets whether to exclude parameters with null values.
-     *
      * @param excludeNullParameters whether to exclude parameters with null values
      */
     public void setExcludeNullParameters(Boolean excludeNullParameters) {
@@ -179,7 +168,6 @@ public class RedirectRule implements Replicable<RedirectRule> {
 
     /**
      * Gets whether to exclude parameters with empty values.
-     *
      * @return whether to exclude parameters with empty values
      */
     public Boolean getExcludeEmptyParameters() {
@@ -188,7 +176,6 @@ public class RedirectRule implements Replicable<RedirectRule> {
 
     /**
      * Returns whether to exclude parameters with empty values.
-     *
      * @return whether to exclude parameters with empty values
      */
     public boolean isExcludeEmptyParameters() {
@@ -197,7 +184,6 @@ public class RedirectRule implements Replicable<RedirectRule> {
 
     /**
      * Sets whether to exclude parameters with empty values.
-     *
      * @param excludeEmptyParameters whether to exclude parameters with empty values
      */
     public void setExcludeEmptyParameters(Boolean excludeEmptyParameters) {
@@ -206,7 +192,6 @@ public class RedirectRule implements Replicable<RedirectRule> {
 
     /**
      * Gets the parameter item rule map.
-     *
      * @return the parameter item rule map
      */
     public ItemRuleMap getParameterItemRuleMap() {
@@ -215,7 +200,6 @@ public class RedirectRule implements Replicable<RedirectRule> {
 
     /**
      * Sets the attribute item rule map.
-     *
      * @param parameterItemRuleMap the new attribute item rule map
      */
     public void setParameterItemRuleMap(ItemRuleMap parameterItemRuleMap) {
@@ -224,7 +208,6 @@ public class RedirectRule implements Replicable<RedirectRule> {
 
     /**
      * Adds a new parameter rule with the specified name and returns it.
-     *
      * @param parameterName the parameter name
      * @return the parameter item rule
      */
@@ -237,7 +220,6 @@ public class RedirectRule implements Replicable<RedirectRule> {
 
     /**
      * Adds the parameter item rule.
-     *
      * @param parameterItemRule the parameter item rule
      */
     public void addParameterItemRule(ItemRule parameterItemRule) {
@@ -249,7 +231,6 @@ public class RedirectRule implements Replicable<RedirectRule> {
 
     /**
      * Sets the parameter map.
-     *
      * @param parameters the parameter map
      */
     public void setParameters(Map<String, String> parameters) {
@@ -270,7 +251,6 @@ public class RedirectRule implements Replicable<RedirectRule> {
 
     /**
      * Returns whether the default response.
-     *
      * @return whether the default response
      */
     public Boolean getDefaultResponse() {
@@ -279,7 +259,6 @@ public class RedirectRule implements Replicable<RedirectRule> {
 
     /**
      * Returns whether the default response.
-     *
      * @return true, if is default response
      */
     public boolean isDefaultResponse() {
@@ -288,7 +267,6 @@ public class RedirectRule implements Replicable<RedirectRule> {
 
     /**
      * Sets whether the default response.
-     *
      * @param defaultResponse whether the default response
      */
     public void setDefaultResponse(Boolean defaultResponse) {

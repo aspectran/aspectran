@@ -115,7 +115,6 @@ public class ChooseWhenRule implements ActionRuleApplicable, ResponseRuleApplica
     /**
      * Returns the action list.
      * If not yet instantiated then create a new one.
-     *
      * @return the action list
      */
     private ActionList touchActionList() {

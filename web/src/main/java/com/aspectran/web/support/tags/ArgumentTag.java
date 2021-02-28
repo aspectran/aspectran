@@ -55,7 +55,6 @@ public class ArgumentTag extends BodyTagSupport {
     /**
      * Set the value of the argument (optional).
      * If not set, the tag's body content will get evaluated.
-     *
      * @param value the parameter value
      */
     public void setValue(Object value) {

@@ -28,7 +28,6 @@ public interface SessionStore extends Component {
 
     /**
      * Read in session data.
-     *
      * @param id identity of session to load
      * @return the SessionData matching the id
      * @throws Exception if unable to load session data
@@ -37,7 +36,6 @@ public interface SessionStore extends Component {
 
     /**
      * Save the session data.
-     *
      * @param id identity of session to store
      * @param data info of session to store
      * @throws Exception if unable to write session data
@@ -46,7 +44,6 @@ public interface SessionStore extends Component {
 
     /**
      * Delete session data.
-     *
      * @param id identity of session to delete
      * @return true if the session was deleted
      * @throws Exception if unable to delete session data
@@ -55,7 +52,6 @@ public interface SessionStore extends Component {
 
     /**
      * Test if data exists for a given session id.
-     *
      * @param id Identity of session whose existence should be checked
      * @return true if valid, non-expired session exists
      * @throws Exception if there is a problem checking the existence with persistence layer
@@ -66,7 +62,6 @@ public interface SessionStore extends Component {
      * Called periodically, this method should search the data store
      * for sessions that have been expired for a 'reasonable' amount
      * of time.
-     *
      * @param candidates if provided, these are keys of sessions that
      *      the SessionStore thinks has expired and should be verified by the
      *      SessionStore
@@ -76,7 +71,6 @@ public interface SessionStore extends Component {
 
     /**
      * Returns the names of the attributes that should be excluded from serialization.
-     *
      * @return the attribute names to be excluded from serialization
      */
     Set<String> getNonPersistentAttributes();

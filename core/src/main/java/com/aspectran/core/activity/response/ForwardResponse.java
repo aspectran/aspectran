@@ -40,7 +40,6 @@ public class ForwardResponse implements Response {
 
     /**
      * Instantiates a new ForwardResponse.
-     *
      * @param forwardRule the forward rule
      */
     public ForwardResponse(ForwardRule forwardRule) {
@@ -87,7 +86,6 @@ public class ForwardResponse implements Response {
 
     /**
      * Returns the forward rule.
-     *
      * @return the forward rule
      */
     public ForwardRule getForwardRule() {

@@ -55,7 +55,6 @@ public abstract class TagUtils {
      * Determines the scope for a given input {@code String}.
      * <p>If the {@code String} does not match 'request', 'session',
      * 'page' or 'application', the method will return {@link PageContext#PAGE_SCOPE}.
-     *
      * @param scope the {@code String} to inspect
      * @return the scope found, or {@link PageContext#PAGE_SCOPE} if no scope matched
      * @throws IllegalArgumentException if the supplied {@code scope} is {@code null}
@@ -105,7 +104,6 @@ public abstract class TagUtils {
      * Determine whether the supplied {@link Tag} has any ancestor tag
      * of the supplied type, throwing an {@link IllegalStateException}
      * if not.
-     *
      * @param tag the tag whose ancestors are to be checked
      * @param ancestorTagClass the ancestor {@link Class} being searched for
      * @param tagName the name of the {@code tag}; for example '{@code option}'

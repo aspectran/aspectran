@@ -40,7 +40,6 @@ import java.util.ArrayList;
  */
 public class ActionList extends ArrayList<Executable> implements ActionRuleApplicable {
 
-    /** @serial */
     private static final long serialVersionUID = 4636431127789162551L;
 
     private final boolean explicit;

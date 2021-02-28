@@ -27,14 +27,12 @@ public interface Executable {
 
     /**
      * Gets the action id.
-     *
      * @return the action id
      */
     String getActionId();
 
     /**
      * Execute this action.
-     *
      * @param activity the activity
      * @return the result of action execution
      * @throws Exception if the action fails to execute
@@ -43,21 +41,18 @@ public interface Executable {
 
     /**
      * Returns whether this action is hidden.
-     *
      * @return true, if is hidden action
      */
     boolean isHidden();
 
     /**
      * Gets the Action Type.
-     *
      * @return the Action Type
      */
     ActionType getActionType();
 
     /**
      * Gets the action rule.
-     *
      * @param <T> the generic type
      * @return the action rule
      */

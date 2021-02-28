@@ -43,7 +43,6 @@ public enum AppenderType {
     /**
      * Returns an {@code AppenderType} with a value represented
      * by the specified {@code String}.
-     *
      * @param alias the appender type as a {@code String}
      * @return an {@code AppenderType}, may be {@code null}
      */

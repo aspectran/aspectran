@@ -28,7 +28,6 @@ import java.util.Objects;
  */
 public class ContentList extends ArrayList<ActionList> implements Replicable<ContentList> {
 
-    /** @serial */
     private static final long serialVersionUID = 2567969961069441527L;
 
     private final boolean explicit;

@@ -71,7 +71,6 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
 
     /**
      * Instantiates a new DefaultActivityContext.
-     *
      * @param applicationAdapter the application adapter
      */
     public DefaultActivityContext(ApplicationAdapter applicationAdapter) {
@@ -136,7 +135,6 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
 
     /**
      * Sets the default bean registry.
-     *
      * @param defaultBeanRegistry the new default bean registry
      */
     public void setDefaultBeanRegistry(DefaultBeanRegistry defaultBeanRegistry) {
@@ -150,7 +148,6 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
 
     /**
      * Sets the template processor.
-     *
      * @param defaultTemplateRenderer the new template processor
      */
     public void setDefaultTemplateRenderer(DefaultTemplateRenderer defaultTemplateRenderer) {
@@ -173,7 +170,6 @@ public class DefaultActivityContext extends AbstractComponent implements Activit
 
     /**
      * Sets the translet rule registry.
-     *
      * @param transletRuleRegistry the new translet rule registry
      */
     public void setTransletRuleRegistry(TransletRuleRegistry transletRuleRegistry) {

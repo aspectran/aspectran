@@ -32,7 +32,6 @@ public interface DaemonService extends CoreService {
 
     /**
      * Returns whether or not the translet can be exposed to the daemon service.
-     *
      * @param transletName the name of the translet to check
      * @return true if the translet can be exposed; false otherwise
      */
@@ -40,14 +39,12 @@ public interface DaemonService extends CoreService {
 
     /**
      * Create and return a new session adapter from the daemon service.
-     *
      * @return the session adapter
      */
     SessionAdapter newSessionAdapter();
 
     /**
      * Executes the translet with the given parameters and attributes.
-     *
      * @param name the translet name
      * @param parameterMap the parameter map
      * @param attributeMap the attribute map
@@ -57,7 +54,6 @@ public interface DaemonService extends CoreService {
 
     /**
      * Executes the translet with the given parameters and attributes.
-     *
      * @param name the translet name
      * @param method the request method
      * @param parameterMap the parameter map

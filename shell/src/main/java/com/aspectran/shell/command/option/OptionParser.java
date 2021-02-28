@@ -26,7 +26,6 @@ public interface OptionParser {
 
     /**
      * Parse the arguments according to the specified options.
-     *
      * @param options the specified Options
      * @param args the command line arguments
      * @return the list of atomic option and value tokens
@@ -38,7 +37,6 @@ public interface OptionParser {
     /**
      * Parse the arguments according to the specified options and
      * properties.
-     *
      * @param options the specified Options
      * @param args the command line arguments
      * @param properties command line option name-value pairs
@@ -51,7 +49,6 @@ public interface OptionParser {
 
     /**
      * Parse the arguments according to the specified options.
-     *
      * @param options the specified Options
      * @param args the command line arguments
      * @param skipParsingAtNonOption if {@code true} an unrecognized argument stops
@@ -68,7 +65,6 @@ public interface OptionParser {
     /**
      * Parse the arguments according to the specified options and
      * properties.
-     *
      * @param options the specified Options
      * @param args the command line arguments
      * @param properties command line option name-value pairs

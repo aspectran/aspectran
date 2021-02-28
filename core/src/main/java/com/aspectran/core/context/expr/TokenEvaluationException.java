@@ -28,7 +28,6 @@ public class TokenEvaluationException extends RuntimeException {
 
     /**
      * Instantiates a new token evaluation exception.
-     *
      * @param token the token
      * @param cause the root cause
      */
@@ -39,7 +38,6 @@ public class TokenEvaluationException extends RuntimeException {
 
     /**
      * Gets the token which is failed to evaluate expression.
-     *
      * @return the token
      */
     public Token getToken() {

@@ -30,7 +30,6 @@ public interface BeanRegistry {
 
     /**
      * Returns an instance of the bean that matches the given id.
-     *
      * @param <V> the result type of the bean
      * @param id the id of the bean to retrieve
      * @return an instance of the bean
@@ -39,7 +38,6 @@ public interface BeanRegistry {
 
     /**
      * Returns the bean instance that uniquely matches the given object type.
-     *
      * @param <V> the result type of the bean
      * @param type the type the bean must match; can be an interface or superclass
      * @return an instance of the bean
@@ -50,7 +48,6 @@ public interface BeanRegistry {
     /**
      * Returns an instance of the bean that matches the given object type.
      * If more than one matching bean is found, we pick a bean that matches the given id.
-     *
      * @param <V> the result type of the bean
      * @param type type the bean must match; can be an interface or superclass
      * @param id the id of the bean to retrieve
@@ -65,7 +62,6 @@ public interface BeanRegistry {
 
     /**
      * Return whether a bean with the specified id is present.
-     *
      * @param id the id of the bean to query
      * @return whether a bean with the specified id is present
      */
@@ -73,7 +69,6 @@ public interface BeanRegistry {
 
     /**
      * Return whether a bean with the specified object type is present.
-     *
      * @param type the object type of the bean to query
      * @return whether a bean with the specified type is present
      */
@@ -81,7 +76,6 @@ public interface BeanRegistry {
 
     /**
      * Returns whether the bean corresponding to the specified object type and ID exists.
-     *
      * @param type the object type of the bean to query
      * @param id the id of the bean to query
      * @return whether a bean with the specified type is present

@@ -27,7 +27,6 @@ import java.util.Set;
  */
 public class ParameterMap extends LinkedHashMap<String, String[]> {
 
-    /** @serial */
     private static final long serialVersionUID = 1709146569240133920L;
 
     /**
@@ -39,7 +38,6 @@ public class ParameterMap extends LinkedHashMap<String, String[]> {
 
     /**
      * Instantiates a new ParameterMap.
-     *
      * @param initialCapacity the initial capacity
      */
     public ParameterMap(int initialCapacity) {
@@ -48,7 +46,6 @@ public class ParameterMap extends LinkedHashMap<String, String[]> {
 
     /**
      * Instantiates a new ParameterMap.
-     *
      * @param params the other parameter map
      */
     public ParameterMap(Map<String, String[]> params) {
@@ -58,7 +55,6 @@ public class ParameterMap extends LinkedHashMap<String, String[]> {
     /**
      * Returns the string value to which the specified name is mapped,
      * or {@code null} if this map contains no mapping for the name.
-     *
      * @param name the parameter name
      * @return a {@code String} representing the
      *            single value of the parameter
@@ -71,7 +67,6 @@ public class ParameterMap extends LinkedHashMap<String, String[]> {
     /**
      * Returns the string values to which the specified name is mapped,
      * or {@code null} if this map contains no mapping for the name.
-     *
      * @param name the parameter name
      * @return an array of {@code String} objects
      *            containing the parameter's values
@@ -82,7 +77,6 @@ public class ParameterMap extends LinkedHashMap<String, String[]> {
 
     /**
      * Sets the value to the parameter with the given name.
-     *
      * @param name a {@code String} specifying the name of the parameter
      * @param value a {@code String} representing the
      *            single value of the parameter
@@ -94,7 +88,6 @@ public class ParameterMap extends LinkedHashMap<String, String[]> {
 
     /**
      * Sets the values to the parameter with the given name.
-     *
      * @param name a {@code String} specifying the name of the parameter
      * @param values an array of {@code String} objects
      *            containing the parameter's values
@@ -108,7 +101,6 @@ public class ParameterMap extends LinkedHashMap<String, String[]> {
      * Returns a {@code Collection} of {@code String} objects containing
      * the names of the parameters.
      * If no parameters, the method returns an empty {@code Collection}.
-     *
      * @return a {@code Collection} of {@code String} objects, each {@code String}
      *             containing the name of a parameter;
      *             or an empty {@code Collection} if no parameters
@@ -119,7 +111,6 @@ public class ParameterMap extends LinkedHashMap<String, String[]> {
 
     /**
      * Set the given parameters under.
-     *
      * @param params the other parameter map
      */
     public void setAll(Map<String, String> params) {

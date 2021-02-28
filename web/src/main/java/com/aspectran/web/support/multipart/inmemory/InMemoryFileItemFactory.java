@@ -29,7 +29,6 @@ public class InMemoryFileItemFactory implements FileItemFactory {
     /**
      * Create a new {@link InMemoryFileItem} instance from the supplied parameters
      * and the local factory configuration.
-     *
      * @param fieldName the name of the form field
      * @param contentType the content type of the form field
      * @param isFormField {@code true} if this is a plain form field; {@code false} otherwise
@@ -43,7 +42,6 @@ public class InMemoryFileItemFactory implements FileItemFactory {
     /**
      * Sets the size threshold for storing data in memory.
      * If this value is exceeded, the {@link InMemoryFileItem} will throw an error.
-     *
      * @param sizeThreshold the size threshold, in bytes
      * @see #getSizeThreshold()
      */
@@ -54,7 +52,6 @@ public class InMemoryFileItemFactory implements FileItemFactory {
     /**
      * Returns the size threshold for storing data in memory.
      * The default value is Integer.MAX_VALUE bytes (2 GB approx).
-     *
      * @return the size threshold, in bytes.
      * @see #setSizeThreshold(int)
      */

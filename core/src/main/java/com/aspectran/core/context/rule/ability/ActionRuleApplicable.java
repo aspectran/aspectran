@@ -32,7 +32,6 @@ public interface ActionRuleApplicable {
 
     /**
      * Adds the header action rule.
-     *
      * @param headerActionRule the header action rule
      * @return an instance of the executable action
      */
@@ -40,7 +39,6 @@ public interface ActionRuleApplicable {
 
     /**
      * Adds the echo action rule.
-     *
      * @param echoActionRule the echo action rule
      * @return an instance of the executable action
      */
@@ -48,7 +46,6 @@ public interface ActionRuleApplicable {
 
     /**
      * Adds the invoke action rule.
-     *
      * @param invokeActionRule the invoke action rule
      * @return an instance of the executable action
      */
@@ -56,7 +53,6 @@ public interface ActionRuleApplicable {
 
     /**
      * Adds the annotated method action rule.
-     *
      * @param annotatedActionRule the annotated method action rule
      * @return an instance of the executable action
      */
@@ -64,7 +60,6 @@ public interface ActionRuleApplicable {
 
     /**
      * Adds the include action rule.
-     *
      * @param includeActionRule the include action rule
      * @return an instance of the executable action
      */
@@ -72,7 +67,6 @@ public interface ActionRuleApplicable {
 
     /**
      * Adds a list of action instances that can be executed.
-     *
      * @param chooseRule the choose rule
      * @return an instance of the executable action
      */
@@ -80,7 +74,6 @@ public interface ActionRuleApplicable {
 
     /**
      * Adds an executable action instance.
-     *
      * @param action an executable action instance
      */
     void applyActionRule(Executable action);

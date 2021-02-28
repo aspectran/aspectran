@@ -23,7 +23,6 @@ import java.util.List;
  */
 public class MissingOptionException extends OptionParserException {
 
-    /** @serial */
     private static final long serialVersionUID = -3648528884089184961L;
 
     /** The list of missing options and groups */
@@ -32,7 +31,6 @@ public class MissingOptionException extends OptionParserException {
     /**
      * Construct a new {@code MissingSelectedException}
      * with the specified detail message.
-     *
      * @param message the detail message
      */
     public MissingOptionException(String message) {
@@ -42,7 +40,6 @@ public class MissingOptionException extends OptionParserException {
     /**
      * Constructs a new {@code MissingSelectedException} with the
      * specified list of missing options.
-     *
      * @param missingOptions the list of missing options and groups
      */
     public MissingOptionException(List<?> missingOptions) {
@@ -52,7 +49,6 @@ public class MissingOptionException extends OptionParserException {
 
     /**
      * Returns the list of options or option groups missing in the command line parsed.
-     *
      * @return the missing options, consisting of String instances for simple
      *         options, and OptionGroup instances for required option groups.
      */
@@ -62,7 +58,6 @@ public class MissingOptionException extends OptionParserException {
 
     /**
      * Build the exception message from the specified list of options.
-     *
      * @param missingOptions the list of missing options and groups
      */
     private static String createMessage(final List<?> missingOptions) {

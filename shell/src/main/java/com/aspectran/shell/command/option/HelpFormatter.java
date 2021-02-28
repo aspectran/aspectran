@@ -97,7 +97,6 @@ public class HelpFormatter {
 
     /**
      * Creates a help formatter.
-     *
      * @param console the console to which the help will be written
      */
     public HelpFormatter(Console console) {
@@ -155,7 +154,6 @@ public class HelpFormatter {
     /**
      * Comparator used to sort the options when they output in help text.
      * Defaults to case-insensitive alphabetical sorting by option key.
-     *
      * @return the {@link Comparator} currently in use to sort the options
      */
     public Comparator<Option> getOptionComparator() {
@@ -165,7 +163,6 @@ public class HelpFormatter {
     /**
      * Set the comparator used to sort the options when they output in help text.
      * Passing in a null comparator will keep the options in the order they were declared.
-     *
      * @param comparator the {@link Comparator} to use for sorting the options
      */
     public void setOptionComparator(Comparator<Option> comparator) {
@@ -174,7 +171,6 @@ public class HelpFormatter {
 
     /**
      * Print the help with the given Command object.
-     *
      * @param command the Command instance
      */
     public void printHelp(Command command) {
@@ -190,7 +186,6 @@ public class HelpFormatter {
     /**
      * Print the help for {@code options} with the specified
      * command line syntax.
-     *
      * @param cmdLineSyntax the usage statement
      */
     public void printUsage(String cmdLineSyntax) {
@@ -200,7 +195,6 @@ public class HelpFormatter {
 
     /**
      * Prints the usage statement for the specified command.
-     *
      * @param command the Command instance
      */
     public void printUsage(Command command) {
@@ -254,7 +248,6 @@ public class HelpFormatter {
      * Appends the usage clause for an OptionGroup to a StringBuilder.  
      * The clause is wrapped in square brackets if the group is required.
      * The display of the options is handled by appendOption.
-     *
      * @param sb the StringBuilder to append to
      * @param group the group to append
      */
@@ -281,7 +274,6 @@ public class HelpFormatter {
 
     /**
      * Appends the usage clause for an Option to a StringBuilder.  
-     *
      * @param sb the StringBuilder to append to
      * @param option the Option to append
      * @param required whether the Option is required or not
@@ -329,7 +321,6 @@ public class HelpFormatter {
     /**
      * Print the help for the specified Options to the specified writer, 
      * using the specified width, left padding and description padding.
-     *
      * @param options the Options instance
      * @return the longest opt string's length
      */
@@ -365,7 +356,6 @@ public class HelpFormatter {
 
     /**
      * Print the specified text to the specified PrintWriter.
-     *
      * @param text the text to be written to the PrintWriter
      */
     public void printWrapped(String text) {
@@ -374,7 +364,6 @@ public class HelpFormatter {
 
     /**
      * Print the specified text to the specified PrintWriter.
-     *
      * @param nextLineTabStop the position on the next line for the first tab
      * @param text the text to be written to the PrintWriter
      */
@@ -387,7 +376,6 @@ public class HelpFormatter {
     /**
      * Render the specified Options and return the rendered Options
      * in a StringBuilder.
-     *
      * @param sb the StringBuilder to place the rendered Options into
      * @param options the command line Options
      * @return the longest opt string's length
@@ -504,7 +492,6 @@ public class HelpFormatter {
     /**
      * Render the specified text width a maximum width. This method differs
      * from renderWrappedText by not removing leading spaces after a new line.
-     *
      * @param sb the StringBuilder to place the rendered text into
      * @param nextLineTabStop the position on the next line for the first tab
      * @param text the text to be rendered
@@ -530,7 +517,6 @@ public class HelpFormatter {
     /**
      * Render the specified text and return the rendered Options
      * in a StringBuilder.
-     *
      * @param sb the StringBuilder to place the rendered text into
      * @param width the number of characters to display per line
      * @param nextLineTabStop the position on the next line for the first tab

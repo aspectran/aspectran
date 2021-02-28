@@ -34,7 +34,6 @@ public class EchoAction implements Executable {
 
     /**
      * Instantiates a new EchoAction.
-     *
      * @param echoActionRule the echo action rule
      */
     public EchoAction(EchoActionRule echoActionRule) {
@@ -57,7 +56,6 @@ public class EchoAction implements Executable {
 
     /**
      * Returns the echo action rule.
-     *
      * @return the echoActionRule
      */
     public EchoActionRule getEchoActionRule() {

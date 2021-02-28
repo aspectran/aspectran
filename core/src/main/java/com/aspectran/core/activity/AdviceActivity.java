@@ -72,7 +72,6 @@ public abstract class AdviceActivity extends AbstractActivity {
 
     /**
      * Instantiates a new AdviceActivity.
-     *
      * @param context the activity context
      */
     public AdviceActivity(ActivityContext context) {
@@ -452,7 +451,6 @@ public abstract class AdviceActivity extends AbstractActivity {
 
     /**
      * Gets the aspect advice bean.
-     *
      * @param <V> the type of the advice bean
      * @param aspectId the aspect id
      * @return the aspect advice bean
@@ -464,7 +462,6 @@ public abstract class AdviceActivity extends AbstractActivity {
 
     /**
      * Puts the aspect advice bean.
-     *
      * @param aspectId the aspect id
      * @param adviceBean the advice bean
      */
@@ -477,7 +474,6 @@ public abstract class AdviceActivity extends AbstractActivity {
 
     /**
      * Gets the before advice result.
-     *
      * @param <V> the result type of the before advice
      * @param aspectId the aspect id
      * @return the before advice result
@@ -489,7 +485,6 @@ public abstract class AdviceActivity extends AbstractActivity {
 
     /**
      * Gets the after advice result.
-     *
      * @param <V> the result type of the after advice
      * @param aspectId the aspect id
      * @return the after advice result
@@ -501,7 +496,6 @@ public abstract class AdviceActivity extends AbstractActivity {
 
     /**
      * Gets the around advice result.
-     *
      * @param <V> the result type of the around advice
      * @param aspectId the aspect id
      * @return the around advice result
@@ -513,7 +507,6 @@ public abstract class AdviceActivity extends AbstractActivity {
 
     /**
      * Gets the finally advice result.
-     *
      * @param <V> the result type of the finally advice
      * @param aspectId the aspect id
      * @return the finally advice result
@@ -525,7 +518,6 @@ public abstract class AdviceActivity extends AbstractActivity {
 
     /**
      * Puts the result of the advice.
-     *
      * @param aspectAdviceRule the aspect advice rule
      * @param adviceActionResult the advice action result
      */

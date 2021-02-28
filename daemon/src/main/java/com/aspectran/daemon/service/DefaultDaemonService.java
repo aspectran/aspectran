@@ -105,7 +105,6 @@ public class DefaultDaemonService extends AbstractDaemonService {
 
     /**
      * Returns a new instance of {@code DefaultDaemonService}.
-     *
      * @param aspectranConfig the parameters for aspectran configuration
      * @return the instance of {@code DefaultDaemonService}
      */

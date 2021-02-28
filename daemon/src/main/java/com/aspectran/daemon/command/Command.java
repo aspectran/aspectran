@@ -26,7 +26,6 @@ public interface Command {
     /**
      * Returns whether it is a command that must be guaranteed not to be executed
      * at the same time as another command.
-     *
      * @return true if the command should ensure that it is not executed at the same
      *      time as another command; false otherwise
      */
@@ -35,7 +34,6 @@ public interface Command {
     /**
      * This method will be called as the starting point to execute the logic
      * for the action mapped to this command.
-     *
      * @param parameters the command parameters
      * @return the message output to the console as a result of an executed command
      */
@@ -44,7 +42,6 @@ public interface Command {
     /**
      * This method returns an instance of Command.Descriptor.
      * The descriptor is meta information about the command.
-     *
      * @return a Descriptor that is meta information about the command
      */
     Command.Descriptor getDescriptor();

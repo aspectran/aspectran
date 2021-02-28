@@ -92,7 +92,6 @@ public class PebbleEngineFactory implements ApplicationAdapterAware {
 
     /**
      * Creates a PebbleEngine instance.
-     *
      * @return a PebbleEngine object that can be used to create PebbleTemplate objects
      */
     public PebbleEngine createPebbleEngine() {
@@ -118,7 +117,6 @@ public class PebbleEngineFactory implements ApplicationAdapterAware {
     /**
      * Return a Template Loader based on the given Template Loader list.
      * If more than one Template Loader has been registered, a DelegatingLoader needs to be created.
-     *
      * @param templateLoaders the final List of TemplateLoader instances
      * @return the aggregate TemplateLoader
      */
@@ -150,7 +148,6 @@ public class PebbleEngineFactory implements ApplicationAdapterAware {
 
     /**
      * Determine a Pebble Engine Template Loader for the given path.
-     *
      * @param templateLoaderPath the path to load templates from
      * @return an appropriate Template Loader
      */

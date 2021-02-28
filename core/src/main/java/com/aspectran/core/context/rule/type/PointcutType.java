@@ -37,7 +37,6 @@ public enum PointcutType {
     /**
      * Returns a {@code PointcutType} with a value represented
      * by the specified {@code String}.
-     *
      * @param alias the pointcut type as a {@code String}
      * @return a {@code PointcutType}, may be {@code null}
      */

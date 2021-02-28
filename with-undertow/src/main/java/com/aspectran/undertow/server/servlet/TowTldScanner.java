@@ -40,7 +40,6 @@ public class TowTldScanner extends TldScanner {
 
     /**
      * Initialise with the application's ServletContext.
-     *
      * @param context        the application's servletContext
      * @param namespaceAware should the XML parser used to parse TLD files be
      *                       configured to be name space aware

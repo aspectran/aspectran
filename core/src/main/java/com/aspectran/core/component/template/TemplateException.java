@@ -22,7 +22,6 @@ package com.aspectran.core.component.template;
  */
 public class TemplateException extends RuntimeException {
 
-    /** @serial */
     private static final long serialVersionUID = -6904998412140480762L;
 
     /**
@@ -34,7 +33,6 @@ public class TemplateException extends RuntimeException {
 
     /**
      * Constructs a TemplateException with the specified detail message.
-     *
      * @param msg a message to associate with the exception
      */
     public TemplateException(String msg) {
@@ -43,7 +41,6 @@ public class TemplateException extends RuntimeException {
 
     /**
      * Constructor to create exception to wrap another exception.
-     *
      * @param cause the real cause of the exception
      */
     public TemplateException(Throwable cause) {
@@ -55,7 +52,6 @@ public class TemplateException extends RuntimeException {
      * also the specified root cause exception.
      * The root cause exception is generally for TypeConversionException's root cause
      * or something that might have caused a TemplateException.
-     *
      * @param msg the detail message
      * @param cause the real cause of the exception
      */

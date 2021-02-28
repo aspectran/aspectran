@@ -78,7 +78,6 @@ public class ItemRule {
 
     /**
      * Gets the item type.
-     *
      * @return the item type
      */
     public ItemType getType() {
@@ -87,7 +86,6 @@ public class ItemRule {
 
     /**
      * Sets the item type.
-     *
      * @param type the new item type
      */
     public void setType(ItemType type) {
@@ -96,7 +94,6 @@ public class ItemRule {
 
     /**
      * Returns the name of the item.
-     *
      * @return the name of the item
      */
     public String getName() {
@@ -105,7 +102,6 @@ public class ItemRule {
 
     /**
      * Sets the name of the item.
-     *
      * @param name the name to set
      */
     public void setName(String name) {
@@ -125,7 +121,6 @@ public class ItemRule {
 
     /**
      * Returns the value of the item.
-     *
      * @return the value of the item
      */
     public String getValue() {
@@ -138,7 +133,6 @@ public class ItemRule {
 
     /**
      * Gets the tokens.
-     *
      * @return the tokens
      */
     public Token[] getTokens() {
@@ -147,7 +141,6 @@ public class ItemRule {
 
     /**
      * Gets the list of tokens.
-     *
      * @return the tokens list
      */
     public List<Token[]> getTokensList() {
@@ -156,7 +149,6 @@ public class ItemRule {
 
     /**
      * Returns a list of string values of this item.
-     *
      * @return a list of string values
      */
     public List<String> getValueList() {
@@ -176,7 +168,6 @@ public class ItemRule {
 
     /**
      * Gets the tokens map.
-     *
      * @return the tokens map
      */
     public Map<String, Token[]> getTokensMap() {
@@ -185,7 +176,6 @@ public class ItemRule {
 
     /**
      * Returns a map of string values of this item.
-     *
      * @return a map of string values
      */
     public Map<String, String> getValueMap() {
@@ -205,7 +195,6 @@ public class ItemRule {
 
     /**
      * Sets the specified value to this Single type item.
-     *
      * @param text the value to be analyzed for use as the value of this item
      * @see #setValue(Token[])
      */
@@ -216,7 +205,6 @@ public class ItemRule {
 
     /**
      * Sets the specified value to this Single type item.
-     *
      * @param tokens an array of tokens
      */
     public void setValue(Token[] tokens) {
@@ -229,7 +217,6 @@ public class ItemRule {
 
     /**
      * Puts the specified value with the specified key to this Map type item.
-     *
      * @param name the value name; may be null
      * @param text the value to be analyzed for use as the value of this item
      * @see #putValue(String, Token[])
@@ -241,7 +228,6 @@ public class ItemRule {
 
     /**
      * Puts the specified value with the specified key to this Map type item.
-     *
      * @param name the value name; may be null
      * @param tokens an array of tokens
      */
@@ -258,7 +244,6 @@ public class ItemRule {
 
     /**
      * Sets a value to this Map type item.
-     *
      * @param tokensMap the tokens map
      */
     public void setValue(Map<String, Token[]> tokensMap) {
@@ -271,7 +256,6 @@ public class ItemRule {
 
     /**
      * Sets a value to this Properties type item.
-     *
      * @param properties the properties
      */
     public void setValue(Properties properties)  {
@@ -299,7 +283,6 @@ public class ItemRule {
 
     /**
      * Adds the specified value to this List type item.
-     *
      * @param text the value to be analyzed for use as the value of this item
      * @see #addValue(Token[])
      */
@@ -310,7 +293,6 @@ public class ItemRule {
 
     /**
      * Adds the specified value to this List type item.
-     *
      * @param tokens an array of tokens
      */
     public void addValue(Token[] tokens) {
@@ -326,7 +308,6 @@ public class ItemRule {
 
     /**
      * Sets a value to this List type item.
-     *
      * @param tokensList the tokens list
      */
     public void setValue(List<Token[]> tokensList) {
@@ -339,7 +320,6 @@ public class ItemRule {
 
     /**
      * Sets a value to this Set type item.
-     *
      * @param tokensSet the tokens set
      */
     public void setValue(Set<Token[]> tokensSet) {
@@ -355,7 +335,6 @@ public class ItemRule {
 
     /**
      * Gets the value type of this item.
-     *
      * @return the value type of this item
      */
     public ItemValueType getValueType() {
@@ -364,7 +343,6 @@ public class ItemRule {
 
     /**
      * Sets the value type of this item.
-     *
      * @param valueType the new value type
      */
     public void setValueType(ItemValueType valueType) {
@@ -373,7 +351,6 @@ public class ItemRule {
 
     /**
      * Returns whether to tokenize.
-     *
      * @return whether to tokenize
      */
     public Boolean getTokenize() {
@@ -382,7 +359,6 @@ public class ItemRule {
 
     /**
      * Returns whether tokenize.
-     *
      * @return whether tokenize
      */
     public boolean isTokenize() {
@@ -391,7 +367,6 @@ public class ItemRule {
 
     /**
      * Sets whether tokenize.
-     *
      * @param tokenize whether tokenize
      */
     public void setTokenize(Boolean tokenize) {
@@ -400,7 +375,6 @@ public class ItemRule {
 
     /**
      * Returns whether the item name was auto generated.
-     *
      * @return true, if the item name was auto generated
      */
     public boolean isAutoNamed() {
@@ -409,7 +383,6 @@ public class ItemRule {
 
     /**
      * Sets whether the item is an auto generated name.
-     *
      * @param autoNamed true, if the item name is auto generated
      */
     public void setAutoNamed(boolean autoNamed) {
@@ -418,7 +391,6 @@ public class ItemRule {
 
     /**
      * Return whether this item is listable type.
-     *
      * @return true, if this item is listable type
      */
     public boolean isListableType() {
@@ -427,7 +399,6 @@ public class ItemRule {
 
     /**
      * Return whether this item is mappable type.
-     *
      * @return true, if this item is mappable type
      */
     public boolean isMappableType() {
@@ -436,7 +407,6 @@ public class ItemRule {
 
     /**
      * Returns whether this item is mandatory.
-     *
      * @return whether or not this item is mandatory
      */
     public Boolean getMandatory() {
@@ -445,7 +415,6 @@ public class ItemRule {
 
     /**
      * Returns whether this item is mandatory.
-     *
      * @return whether or not this item is mandatory
      */
     public boolean isMandatory() {
@@ -454,7 +423,6 @@ public class ItemRule {
 
     /**
      * Sets whether this item is mandatory.
-     *
      * @param mandatory whether or not this item is mandatory
      */
     public void setMandatory(Boolean mandatory) {
@@ -463,7 +431,6 @@ public class ItemRule {
 
     /**
      * Returns whether this item requires secure input.
-     *
      * @return whether or not this item requires secure input
      */
     public Boolean getSecret() {
@@ -472,7 +439,6 @@ public class ItemRule {
 
     /**
      * Returns whether this item requires secure input.
-     *
      * @return whether or not this item requires secure input
      */
     public boolean isSecret() {
@@ -481,7 +447,6 @@ public class ItemRule {
 
     /**
      * Sets whether this item requires secure input.
-     *
      * @param secret whether or not this item requires secure input
      */
     public void setSecret(Boolean secret) {
@@ -644,7 +609,6 @@ public class ItemRule {
 
     /**
      * Returns a new derived instance of ItemRule.
-     *
      * @param type the item type
      * @param name the name of the item
      * @param valueType the type of value an item can have

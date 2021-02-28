@@ -81,7 +81,7 @@ public class SysInfoCommand extends AbstractCommand {
     }
 
     private void printSysProperties(Console console) {
-        for(Map.Entry<Object, Object> entry : System.getProperties().entrySet()) {
+        for (Map.Entry<Object, Object> entry : System.getProperties().entrySet()) {
             console.writeLine("%1$30s   %2$s", entry.getKey(), entry.getValue());
         }
     }
@@ -95,7 +95,6 @@ public class SysInfoCommand extends AbstractCommand {
 
     /**
      * Displays memory usage.
-     *
      * @param gc true if performing garbage collection; false otherwise
      */
     private void mem(boolean gc, Console console) {

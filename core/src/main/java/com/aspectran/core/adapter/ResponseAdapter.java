@@ -32,7 +32,6 @@ public interface ResponseAdapter {
 
     /**
      * Returns the adaptee object to provide response information.
-     *
      * @param <T> the type of the adaptee object
      * @return the adaptee object
      */
@@ -43,7 +42,6 @@ public interface ResponseAdapter {
      *
      * <p>If a response header with the given name exists and contains
      * multiple values, the value that was added first will be returned.
-     *
      * @param name the name of the response header whose value to return
      * @return the value of the response header with the given name,
      *         or {@code null} if no header with the given name has been set
@@ -53,7 +51,6 @@ public interface ResponseAdapter {
 
     /**
      * Returns the values of the response header with the given name.
-     *
      * @param name the name of the response header whose values to return
      * @return a (possibly empty) {@code Collection} of the values
      *         of the response header with the given name
@@ -62,7 +59,6 @@ public interface ResponseAdapter {
 
     /**
      * Returns the names of the headers of this response.
-     *
      * @return a (possibly empty) {@code Collection} of the names
      *         of the headers of this response
      */
@@ -71,7 +67,6 @@ public interface ResponseAdapter {
     /**
      * Returns a boolean indicating whether the named response header
      * has already been set.
-     *
      * @param name the header name
      * @return {@code true} if the named response header
      *         has already been set; {@code false} otherwise
@@ -81,7 +76,6 @@ public interface ResponseAdapter {
     /**
      * Set the given single header value under the given header name.
      * If the header had already been set, the new value overwrites the previous one.
-     *
      * @param name the header name
      * @param value the header value to set
      */
@@ -90,7 +84,6 @@ public interface ResponseAdapter {
     /**
      * Add the given single header value to the current list of values
      * for the given header.
-     *
      * @param name the header name
      * @param value the header value to be added
      */
@@ -99,7 +92,6 @@ public interface ResponseAdapter {
     /**
      * Returns the name of the character encoding (MIME charset) used for the body
      * sent in this response.
-     *
      * @return a {@code String} specifying the name of the character encoding,
      *         for example, UTF-8
      */
@@ -107,7 +99,6 @@ public interface ResponseAdapter {
 
     /**
      * Sets the character encoding of the response being sent to the client.
-     *
      * @param encoding a {@code String} specifying only the character set
      *         defined by IANA Character Sets (http://www.iana.org/assignments/character-sets)
      * @throws UnsupportedEncodingException if character encoding is not supported
@@ -116,7 +107,6 @@ public interface ResponseAdapter {
 
     /**
      * Returns the content type used for the MIME body sent in this response.
-     *
      * @return a {@code String} specifying the content type,
      *         for example, {@code text/html}, or null
      */
@@ -125,14 +115,12 @@ public interface ResponseAdapter {
     /**
      * Sets the content type of the response being sent to the client,
      * if the response has not been committed yet.
-     *
      * @param contentType a {@code String} specifying the MIME type of the content
      */
     void setContentType(String contentType);
 
     /**
      * Returns a {@code OutputStream} suitable for writing binary data in the response.
-     *
      * @return a {@code OutputStream} for writing binary data
      * @throws IOException if an input or output exception occurs
      */
@@ -140,7 +128,6 @@ public interface ResponseAdapter {
 
     /**
      * Returns a {@code Writer} object that can send character text to the client.
-     *
      * @return a {@code Writer} object that can return character data to the client
      * @throws IOException if an input or output exception occurs
      */
@@ -148,14 +135,12 @@ public interface ResponseAdapter {
 
     /**
      * Forces any content in the buffer to be written to the client.
-     *
      * @throws IOException if an input or output exception occurs
      */
     void flush() throws IOException;
 
     /**
      * Sends a temporary redirect response to the client using the specified redirect location.
-     *
      * @param location the redirect location
      * @throws IOException if an input or output exception occurs
      */
@@ -163,7 +148,6 @@ public interface ResponseAdapter {
 
     /**
      * Redirects a client to a new URL.
-     *
      * @param redirectRule the redirect rule
      * @return the redirect path
      * @throws IOException if an input or output exception occurs
@@ -172,14 +156,12 @@ public interface ResponseAdapter {
 
     /**
      * Returns the status code.
-     *
      * @return the status
      */
     int getStatus();
 
     /**
      * Sets the status code.
-     *
      * @param status the status code
      */
     void setStatus(int status);

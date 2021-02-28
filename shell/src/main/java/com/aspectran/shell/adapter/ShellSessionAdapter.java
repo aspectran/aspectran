@@ -26,7 +26,6 @@ public class ShellSessionAdapter extends DefaultSessionAdapter {
 
     /**
      * Instantiates a new ShellSessionAdapter.
-     *
      * @param agent the session agent
      */
     public ShellSessionAdapter(SessionAgent agent) {

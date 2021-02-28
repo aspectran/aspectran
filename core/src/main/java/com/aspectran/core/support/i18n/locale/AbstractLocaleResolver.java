@@ -47,7 +47,6 @@ public abstract class AbstractLocaleResolver implements LocaleResolver {
 
     /**
      * Configure supported locales.
-     *
      * @param locales the supported locales
      */
     public void setSupportedLocales(List<Locale> locales) {
@@ -56,7 +55,6 @@ public abstract class AbstractLocaleResolver implements LocaleResolver {
 
     /**
      * Configure supported locales.
-     *
      * @param locales the supported locales
      */
     public void setSupportedLocales(String[] locales) {
@@ -73,7 +71,6 @@ public abstract class AbstractLocaleResolver implements LocaleResolver {
 
     /**
      * Return the default Locale that this resolver is supposed to fall back to, if any.
-     *
      * @return the default locale
      */
     public Locale getDefaultLocale() {
@@ -82,7 +79,6 @@ public abstract class AbstractLocaleResolver implements LocaleResolver {
 
     /**
      * Set a default Locale that this resolver will return if no other locale found.
-     *
      * @param defaultLocale the default locale
      */
     public void setDefaultLocale(Locale defaultLocale) {
@@ -91,7 +87,6 @@ public abstract class AbstractLocaleResolver implements LocaleResolver {
 
     /**
      * Set a default Locale that this resolver will return if no other locale found.
-     *
      * @param defaultLocale the default locale
      */
     public void setDefaultLocale(String defaultLocale) {
@@ -100,7 +95,6 @@ public abstract class AbstractLocaleResolver implements LocaleResolver {
 
     /**
      * Return the default TimeZone that this resolver is supposed to fall back to, if any.
-     *
      * @return the default time zone
      */
     @Nullable
@@ -110,7 +104,6 @@ public abstract class AbstractLocaleResolver implements LocaleResolver {
 
     /**
      * Set a default TimeZone that this resolver will return if no other time zone found.
-     *
      * @param defaultTimeZone the default time zone
      */
     public void setDefaultTimeZone(TimeZone defaultTimeZone) {
@@ -119,7 +112,6 @@ public abstract class AbstractLocaleResolver implements LocaleResolver {
 
     /**
      * Set a default TimeZone that this resolver will return if no other time zone found.
-     *
      * @param defaultTimeZone the default time zone
      */
     public void setDefaultTimeZone(String defaultTimeZone) {
@@ -129,7 +121,6 @@ public abstract class AbstractLocaleResolver implements LocaleResolver {
     /**
      * Determine the default locale for the given translet,
      * Called if can not find specified Locale.
-     *
      * @param translet the translet to resolve the locale for
      * @return the default locale (never {@code null})
      * @see #setDefaultLocale
@@ -151,7 +142,6 @@ public abstract class AbstractLocaleResolver implements LocaleResolver {
     /**
      * Determine the default time zone for the given translet,
      * Called if can not find specified TimeZone.
-     *
      * @param translet the translet to resolve the time zone for
      * @return the default time zone (or {@code null} if none defined)
      * @see #setDefaultTimeZone

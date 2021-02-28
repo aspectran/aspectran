@@ -41,7 +41,6 @@ public class HeaderAction implements Executable {
 
     /**
      * Instantiates a new HeaderAction.
-     *
      * @param headerActionRule the header action rule
      */
     public HeaderAction(HeaderActionRule headerActionRule) {
@@ -75,7 +74,6 @@ public class HeaderAction implements Executable {
 
     /**
      * Returns the header action rule.
-     *
      * @return the headerActionRule
      */
     public HeaderActionRule getHeaderActionRule() {

@@ -22,7 +22,6 @@ import com.aspectran.core.component.bean.BeanException;
  */
 public class BeanClassScanningException extends BeanException {
 
-    /** @serial */
     private static final long serialVersionUID = -1301450076259511066L;
 
     /**
@@ -34,7 +33,6 @@ public class BeanClassScanningException extends BeanException {
 
     /**
      * Constructor to create exception with a message.
-     *
      * @param msg a message to associate with the exception
      */
     public BeanClassScanningException(String msg) {
@@ -43,7 +41,6 @@ public class BeanClassScanningException extends BeanException {
 
     /**
      * Constructor to create exception to wrap another exception.
-     *
      * @param cause the real cause of the exception
      */
     public BeanClassScanningException(Throwable cause) {
@@ -52,7 +49,6 @@ public class BeanClassScanningException extends BeanException {
 
     /**
      * Constructor to create exception to wrap another exception and pass a message.
-     *
      * @param msg a message to associate with the exception
      * @param cause the real cause of the exception
      */

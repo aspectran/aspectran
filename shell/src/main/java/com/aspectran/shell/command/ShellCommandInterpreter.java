@@ -185,7 +185,6 @@ public class ShellCommandInterpreter implements CommandInterpreter {
 
     /**
      * Executes a command built into Aspectran Shell.
-     *
      * @param command an instance of the built-in command to be executed
      * @param lineParser the command line parser
      */
@@ -213,7 +212,6 @@ public class ShellCommandInterpreter implements CommandInterpreter {
 
     /**
      * Executes a Translet defined in Aspectran.
-     *
      * @param transletCommandLine the {@code TransletCommandLine} instance
      */
     private void execute(TransletCommandLine transletCommandLine) {

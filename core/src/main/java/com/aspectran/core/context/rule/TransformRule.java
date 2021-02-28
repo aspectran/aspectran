@@ -53,7 +53,6 @@ public class TransformRule implements Replicable<TransformRule> {
 
     /**
      * Gets the format type.
-     *
      * @return the format type
      */
     public FormatType getFormatType() {
@@ -62,7 +61,6 @@ public class TransformRule implements Replicable<TransformRule> {
 
     /**
      * Sets the format type.
-     *
      * @param formatType the format type to set
      */
     public void setFormatType(FormatType formatType) {
@@ -85,7 +83,6 @@ public class TransformRule implements Replicable<TransformRule> {
 
     /**
      * Gets the content type.
-     *
      * @return the content type
      */
     public String getContentType() {
@@ -94,7 +91,6 @@ public class TransformRule implements Replicable<TransformRule> {
 
     /**
      * Sets the content type.
-     *
      * @param contentType the new content type
      */
     public void setContentType(String contentType) {
@@ -103,7 +99,6 @@ public class TransformRule implements Replicable<TransformRule> {
 
     /**
      * Gets the character encoding.
-     *
      * @return the character encoding
      */
     public String getEncoding() {
@@ -112,7 +107,6 @@ public class TransformRule implements Replicable<TransformRule> {
 
     /**
      * Sets the character encoding.
-     *
      * @param encoding the character encoding to set
      */
     public void setEncoding(String encoding) {
@@ -122,7 +116,6 @@ public class TransformRule implements Replicable<TransformRule> {
     /**
      * Returns whether to format the content of the response
      * to make it easier to read by adding spaces or tabs.
-     *
      * @return true, if the content of the response should be
      *      formatted to make it easier to read
      */
@@ -133,7 +126,6 @@ public class TransformRule implements Replicable<TransformRule> {
     /**
      * Returns whether to format the content of the response
      * to make it easier to read by adding spaces or tabs.
-     *
      * @return true, if the content of the response should be
      *      formatted to make it easier to read
      */
@@ -144,7 +136,6 @@ public class TransformRule implements Replicable<TransformRule> {
     /**
      * Set whether to format the content of the response
      * to make it easier to read by adding spaces or tabs.
-     *
      * @param pretty if true, format the content of the response
      *      by adding spaces or tabs
      */
@@ -154,7 +145,6 @@ public class TransformRule implements Replicable<TransformRule> {
 
     /**
      * Gets the template id.
-     *
      * @return the template id
      */
     public String getTemplateId() {
@@ -163,7 +153,6 @@ public class TransformRule implements Replicable<TransformRule> {
 
     /**
      * Sets the template id.
-     *
      * @param templateId the template id
      */
     public void setTemplateId(String templateId) {
@@ -172,7 +161,6 @@ public class TransformRule implements Replicable<TransformRule> {
 
     /**
      * Gets the template rule.
-     *
      * @return the template rule
      */
     public TemplateRule getTemplateRule() {
@@ -181,7 +169,6 @@ public class TransformRule implements Replicable<TransformRule> {
 
     /**
      * Sets the template rule.
-     *
      * @param templateRule the template rule
      */
     public void setTemplateRule(TemplateRule templateRule) {
@@ -198,7 +185,6 @@ public class TransformRule implements Replicable<TransformRule> {
 
     /**
      * Returns whether the default response.
-     *
      * @return whether the default response
      */
     public Boolean getDefaultResponse() {
@@ -207,7 +193,6 @@ public class TransformRule implements Replicable<TransformRule> {
 
     /**
      * Returns whether the default response.
-     *
      * @return true, if is default response
      */
     public boolean isDefaultResponse() {
@@ -216,7 +201,6 @@ public class TransformRule implements Replicable<TransformRule> {
 
     /**
      * Sets whether the default response.
-     *
      * @param defaultResponse whether the default response
      */
     public void setDefaultResponse(Boolean defaultResponse) {

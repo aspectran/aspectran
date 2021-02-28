@@ -23,12 +23,10 @@ import com.aspectran.core.context.rule.type.ScopeType;
  */
 public class UnsupportedBeanScopeException extends BeanException {
 
-    /** @serial */
     private static final long serialVersionUID = -5350555208208267662L;
 
     /**
      * Create a new UnsupportedBeanScopeException.
-     *
      * @param scopeType the scope type
      * @param beanRule the bean rule
      */

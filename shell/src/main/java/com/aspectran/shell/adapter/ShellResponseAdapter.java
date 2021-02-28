@@ -27,7 +27,6 @@ public class ShellResponseAdapter extends DefaultResponseAdapter {
 
     /**
      * Instantiates a new ShellResponseAdapter.
-     *
      * @param writer the writer to output
      */
     public ShellResponseAdapter(Writer writer) {

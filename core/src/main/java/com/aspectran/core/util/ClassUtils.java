@@ -37,7 +37,6 @@ public abstract class ClassUtils {
      * Method that can be called to try to create an instantiate of
      * specified type. Instantiation is done using default no-argument
      * constructor.
-     *
      * @param <T> the generic type
      * @param cls the class to check
      * @return an instantiated object
@@ -64,7 +63,6 @@ public abstract class ClassUtils {
     /**
      * Method that can be called to try to create an instantiate of
      * specified type.
-     *
      * @param <T> the generic type
      * @param cls the class to check
      * @param args the arguments
@@ -84,7 +82,6 @@ public abstract class ClassUtils {
     /**
      * Method that can be called to try to create an instantiate of
      * specified type.
-     *
      * @param <T> the generic type
      * @param cls the class to check
      * @param args the arguments
@@ -112,7 +109,6 @@ public abstract class ClassUtils {
 
     /**
      * Obtain an accessible constructor for the given class and parameters.
-     *
      * @param cls the class to check
      * @param argTypes the argument types of the desired constructor
      * @param <T> the generic type
@@ -140,7 +136,6 @@ public abstract class ClassUtils {
 
     /**
      * Check whether the given class is visible in the given ClassLoader.
-     *
      * @param clazz the class to check (typically an interface)
      * @param classLoader the ClassLoader to check against
      *      (may be {@code null} in which case this method will always return {@code true})
@@ -165,7 +160,6 @@ public abstract class ClassUtils {
 
     /**
      * Check whether the given class is loadable in the given ClassLoader.
-     *
      * @param clazz the class to check (typically an interface)
      * @param classLoader the ClassLoader to check against
      * @return true if the given class is loadable; otherwise false
@@ -185,7 +179,6 @@ public abstract class ClassUtils {
      * Returns the default class loader within the current context.
      * If there is a context classloader it is returned, otherwise the classloader
      * which loaded the ClassUtils Class is returned.
-     *
      * @return the appropriate default classloader which is guaranteed to be non-null
      */
     public static ClassLoader getDefaultClassLoader() {
@@ -226,7 +219,6 @@ public abstract class ClassUtils {
      * Override the thread context ClassLoader with the environment's bean ClassLoader
      * if necessary, i.e. if the bean ClassLoader is not equivalent to the thread
      * context ClassLoader already.
-     *
      * @param classLoaderToUse the actual ClassLoader to use for the thread context
      * @return the original thread context ClassLoader, or {@code null} if not overridden
      */

@@ -44,7 +44,6 @@ public abstract class DigestUtils {
 
     /**
      * Calculate the MD5 digest of the given bytes.
-     *
      * @param bytes the bytes to calculate the digest over
      * @return the digest
      */
@@ -55,7 +54,6 @@ public abstract class DigestUtils {
     /**
      * Calculate the MD5 digest of the given stream.
      * <p>This method does <strong>not</strong> close the input stream.</p>
-     *
      * @param inputStream the InputStream to calculate the digest over
      * @return the digest
      */
@@ -65,7 +63,6 @@ public abstract class DigestUtils {
 
     /**
      * Return a hexadecimal string representation of the MD5 digest of the given bytes.
-     *
      * @param bytes the bytes to calculate the digest over
      * @return a hexadecimal digest string
      */
@@ -76,7 +73,6 @@ public abstract class DigestUtils {
     /**
      * Return a hexadecimal string representation of the MD5 digest of the given stream.
      * <p>This method does <strong>not</strong> close the input stream.</p>
-     *
      * @param inputStream the InputStream to calculate the digest over
      * @return a hexadecimal digest string
      */
@@ -87,7 +83,6 @@ public abstract class DigestUtils {
     /**
      * Append a hexadecimal string representation of the MD5 digest of the given
      * bytes to the given {@link StringBuilder}.
-     *
      * @param bytes the bytes to calculate the digest over
      * @param builder the string builder to append the digest to
      * @return the given string builder
@@ -100,7 +95,6 @@ public abstract class DigestUtils {
      * Append a hexadecimal string representation of the MD5 digest of the given
      * inputStream to the given {@link StringBuilder}.
      * <p>This method does <strong>not</strong> close the input stream.</p>
-     *
      * @param inputStream the inputStream to calculate the digest over
      * @param builder the string builder to append the digest to
      * @return the given string builder

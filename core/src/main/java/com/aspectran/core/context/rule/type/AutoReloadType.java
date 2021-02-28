@@ -39,7 +39,6 @@ public enum AutoReloadType {
     /**
      * Returns an {@code AutoReloadType} with a value represented
      * by the specified {@code String}.
-     *
      * @param alias the auto reload type as a {@code String}
      * @return an {@code AutoReloadType}, may be {@code null}
      */

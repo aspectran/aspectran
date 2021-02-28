@@ -35,7 +35,6 @@ public class RedirectResponse implements Response {
 
     /**
      * Instantiates a new RedirectResponse.
-     *
      * @param redirectRule the redirect rule
      */
     public RedirectResponse(RedirectRule redirectRule) {
@@ -94,7 +93,6 @@ public class RedirectResponse implements Response {
 
     /**
      * Returns the redirect rule.
-     *
      * @return the redirect rule
      */
     public RedirectRule getRedirectRule() {

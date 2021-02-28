@@ -61,7 +61,6 @@ public class FileCopyUtils {
      * modified date/times using {@link File#setLastModified(long)}, however
      * it is not guaranteed that the operation will succeed.
      * If the modification operation fails, no indication is provided.</p>
-     *
      * @param srcFile an existing file to copy, must not be {@code null}
      * @param destDir the directory to place the copy in, must not be {@code null}
      * @throws NullPointerException if source or destination is null
@@ -86,7 +85,6 @@ public class FileCopyUtils {
      * date/times using {@link File#setLastModified(long)}, however it is
      * not guaranteed that the operation will succeed.
      * If the modification operation fails, no indication is provided.</p>
-     *
      * @param srcFile          an existing file to copy, must not be {@code null}
      * @param destDir          the directory to place the copy in, must not be {@code null}
      * @param preserveFileDate true if the file date of the copy
@@ -120,7 +118,6 @@ public class FileCopyUtils {
      * modified date/times using {@link File#setLastModified(long)}, however
      * it is not guaranteed that the operation will succeed.
      * If the modification operation fails, no indication is provided.</p>
-     *
      * @param srcFile  an existing file to copy, must not be {@code null}
      * @param destFile the new file, must not be {@code null}
      * @throws NullPointerException if source or destination is {@code null}
@@ -146,7 +143,6 @@ public class FileCopyUtils {
      * date/times using {@link File#setLastModified(long)}, however it is
      * not guaranteed that the operation will succeed.
      * If the modification operation fails, no indication is provided.</p>
-     *
      * @param srcFile          an existing file to copy, must not be {@code null}
      * @param destFile         the new file, must not be {@code null}
      * @param preserveFileDate true if the file date of the copy
@@ -180,7 +176,6 @@ public class FileCopyUtils {
 
     /**
      * Copy bytes from a <code>File</code> to an <code>OutputStream</code>.
-     *
      * @param input  the <code>File</code> to read from
      * @param output the <code>OutputStream</code> to write to
      * @return the number of bytes copied
@@ -201,7 +196,6 @@ public class FileCopyUtils {
      * <code>BufferedInputStream</code>.</p>
      * <p>
      * The buffer size is given by {@link #DEFAULT_BUFFER_SIZE}.</p>
-     *
      * @param input the <code>InputStream</code> to read from
      * @param output the <code>OutputStream</code> to write to
      * @return the number of bytes copied
@@ -227,7 +221,6 @@ public class FileCopyUtils {
      * So it may fail if the file changes size.
      * It may also fail with "IllegalArgumentException: Negative size" if the input file is truncated part way
      * through copying the data and the new file size is less than the current position.
-     *
      * @param srcFile          the validated source file, must not be {@code null}
      * @param destFile         the validated destination file, must not be {@code null}
      * @param preserveFileDate whether to preserve the file date
@@ -260,7 +253,6 @@ public class FileCopyUtils {
      * modified date/times using {@link File#setLastModified(long)}, however
      * it is not guaranteed that those operations will succeed.
      * If the modification operation fails, no indication is provided.</p>
-     *
      * @param srcDir  an existing directory to copy, must not be {@code null}
      * @param destDir the new directory, must not be {@code null}
      * @throws NullPointerException if source or destination is {@code null}
@@ -286,7 +278,6 @@ public class FileCopyUtils {
      * date/times using {@link File#setLastModified(long)}, however it is
      * not guaranteed that those operations will succeed.
      * If the modification operation fails, no indication is provided.</p>
-     *
      * @param srcDir           an existing directory to copy, must not be {@code null}
      * @param destDir          the new directory, must not be {@code null}
      * @param preserveFileDate true if the file date of the copy
@@ -332,7 +323,6 @@ public class FileCopyUtils {
      *  // Copy using the filter
      *  FileCopyUtils.copyDirectory(srcDir, destDir, filter);
      * </pre>
-     *
      * @param srcDir  an existing directory to copy, must not be {@code null}
      * @param destDir the new directory, must not be {@code null}
      * @param filter  the filter to apply, null means copy all directories and files
@@ -361,7 +351,6 @@ public class FileCopyUtils {
      * date/times using {@link File#setLastModified(long)}, however it is
      * not guaranteed that those operations will succeed.
      * If the modification operation fails, no indication is provided.</p>
-     *
      * @param srcDir           an existing directory to copy, must not be {@code null}
      * @param destDir          the new directory, must not be {@code null}
      * @param filter           the filter to apply, null means copy all directories and files
@@ -397,7 +386,6 @@ public class FileCopyUtils {
 
     /**
      * Checks requirements for file copy.
-     *
      * @param src the source file
      * @param dest the destination
      * @throws FileNotFoundException if the destination does not exist
@@ -416,7 +404,6 @@ public class FileCopyUtils {
 
     /**
      * Internal copy directory method.
-     *
      * @param srcDir           the validated source directory, must not be {@code null}
      * @param destDir          the validated destination directory, must not be {@code null}
      * @param filter           the filter to apply, null means copy all directories and files

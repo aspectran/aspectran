@@ -28,7 +28,6 @@ public class PointcutFactory {
 
     /**
      * Creates a new Pointcut instance.
-     *
      * @param pointcutRule the pointcut rule
      * @return the pointcut
      */
@@ -42,7 +41,6 @@ public class PointcutFactory {
 
     /**
      * Creates a new WildcardPointcut instance.
-     *
      * @param pointcutPatternRuleList the pointcut pattern rule list
      * @return the pointcut
      */
@@ -52,7 +50,6 @@ public class PointcutFactory {
 
     /**
      * Creates a new RegexpPointcut instance.
-     *
      * @param pointcutPatternRuleList the pointcut pattern rule list
      * @return the pointcut
      */

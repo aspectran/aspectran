@@ -77,7 +77,6 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 
     /**
      * Gets the translet name.
-     *
      * @return the translet name
      */
     public String getName() {
@@ -86,7 +85,6 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 
     /**
      * Sets the name.
-     *
      * @param name the new name
      */
     public void setName(String name) {
@@ -95,7 +93,6 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 
     /**
      * Returns the array of methods allowed on the requested resource.
-     *
      * @return the allowed methods
      */
     public MethodType[] getAllowedMethods() {
@@ -104,7 +101,6 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 
     /**
      * Sets the array of methods allowed on the requested resource.
-     *
      * @param allowedMethods the allowed methods
      */
     public void setAllowedMethods(MethodType[] allowedMethods) {
@@ -113,7 +109,6 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 
     /**
      * Gets the name pattern.
-     *
      * @return the name pattern
      */
     public WildcardPattern getNamePattern() {
@@ -122,7 +117,6 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 
     /**
      * Sets the name pattern.
-     *
      * @param namePattern the new name pattern
      */
     public void setNamePattern(WildcardPattern namePattern) {
@@ -131,7 +125,6 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 
     /**
      * Gets the name tokens.
-     *
      * @return the name tokens
      */
     public Token[] getNameTokens() {
@@ -140,7 +133,6 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 
     /**
      * Sets the name tokens.
-     *
      * @param nameTokens the new name tokens
      */
     public void setNameTokens(Token[] nameTokens) {
@@ -149,7 +141,6 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 
     /**
      * Gets the scan path.
-     *
      * @return the scan path
      */
     public String getScanPath() {
@@ -158,7 +149,6 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 
     /**
      * Sets the scan path.
-     *
      * @param scanPath the new scan path
      */
     public void setScanPath(String scanPath) {
@@ -167,7 +157,6 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 
     /**
      * Gets the mask pattern.
-     *
      * @return the mask pattern
      */
     public String getMaskPattern() {
@@ -176,7 +165,6 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 
     /**
      * Sets the mask pattern.
-     *
      * @param maskPattern the new mask pattern
      */
     public void setMaskPattern(String maskPattern) {
@@ -185,7 +173,6 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 
     /**
      * Gets the filter parameters.
-     *
      * @return the filter parameters
      */
     public FilterParameters getFilterParameters() {
@@ -194,7 +181,6 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 
     /**
      * Sets the filter parameters.
-     *
      * @param filterParameters the new filter parameters
      */
     public void setFilterParameters(FilterParameters filterParameters) {
@@ -203,7 +189,6 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 
     /**
      * Gets the request rule.
-     *
      * @return the request rule
      */
     public RequestRule getRequestRule() {
@@ -212,7 +197,6 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 
     /**
      * Sets the request rule.
-     *
      * @param requestRule the new request rule
      */
     public void setRequestRule(RequestRule requestRule) {
@@ -230,7 +214,6 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 
     /**
      * Gets the content list.
-     *
      * @return the content list
      */
     public ContentList getContentList() {
@@ -239,7 +222,6 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 
     /**
      * Sets the content list.
-     *
      * @param contentList the new content list
      */
     public void setContentList(ContentList contentList) {
@@ -248,7 +230,6 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 
     /**
      * Returns whether the translet name has tokens for extracting parameters or attributes.
-     *
      * @return true if the translet name has tokens for extracting parameters or attributes
      */
     public boolean hasPathVariables() {
@@ -293,7 +274,6 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
     /**
      * Returns the action list.
      * If not yet instantiated then create a new one.
-     *
      * @return the action list
      */
     private ActionList touchActionList() {
@@ -320,7 +300,6 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 
     /**
      * Gets the response rule.
-     *
      * @return the response rule
      */
     public ResponseRule getResponseRule() {
@@ -329,7 +308,6 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
 
     /**
      * Sets the response rule.
-     *
      * @param responseRule the new response rule
      */
     public void setResponseRule(ResponseRule responseRule) {

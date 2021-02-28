@@ -42,7 +42,6 @@ public enum ContentType {
     /**
      * Returns a {@code ContentType} with a value represented
      * by the specified {@code String}.
-     *
      * @param alias the content type as a {@code String}
      * @return a {@code ContentType}, may be {@code null}
      */

@@ -293,7 +293,6 @@ public class MessageTag extends HtmlEscapingAwareTag implements ArgumentAware {
 
     /**
      * Resolve the given arguments Object into an arguments array.
-     *
      * @param arguments the specified arguments Object
      * @return the resolved arguments as array
      * @see #setArguments
@@ -327,7 +326,6 @@ public class MessageTag extends HtmlEscapingAwareTag implements ArgumentAware {
     /**
      * Write the message to the page.
      * <p>Can be overridden in subclasses, e.g. for testing purposes.</p>
-     *
      * @param msg the message to write
      * @throws IOException if writing failed
      */

@@ -42,7 +42,6 @@ public interface EmbeddedAspectran {
 
     /**
      * Returns whether or not the translet can be exposed to the daemon service.
-     *
      * @param transletName the name of the translet to check
      * @return true if the translet can be exposed; false otherwise
      */
@@ -50,14 +49,12 @@ public interface EmbeddedAspectran {
 
     /**
      * Create and return a new session adapter from the embedded aspectran.
-     *
      * @return the session adapter
      */
     SessionAdapter newSessionAdapter();
 
     /**
      * Executes an instant activity.
-     *
      * @param instantAction the instant action
      * @return An object that is the result of performing an instant activity
      * @since 6.5.1
@@ -66,7 +63,6 @@ public interface EmbeddedAspectran {
 
     /**
      * Executes the translet.
-     *
      * @param name the translet name
      * @return the {@code Translet} object
      */
@@ -74,7 +70,6 @@ public interface EmbeddedAspectran {
 
     /**
      * Executes the translet.
-     *
      * @param name the translet name
      * @param body the request body
      * @return the {@code Translet} object
@@ -83,7 +78,6 @@ public interface EmbeddedAspectran {
 
     /**
      * Executes the translet with the given parameters.
-     *
      * @param name the translet name
      * @param parameterMap the parameter map
      * @return the {@code Translet} object
@@ -92,7 +86,6 @@ public interface EmbeddedAspectran {
 
     /**
      * Executes the translet with the given parameters and attributes.
-     *
      * @param name the translet name
      * @param parameterMap the parameter map
      * @param attributeMap the attribute map
@@ -102,7 +95,6 @@ public interface EmbeddedAspectran {
 
     /**
      * Executes the translet with the given parameters.
-     *
      * @param name the translet name
      * @param attributeMap the attribute map
      * @return the {@code Translet} object
@@ -111,7 +103,6 @@ public interface EmbeddedAspectran {
 
     /**
      * Executes the translet without the supplied variables.
-     *
      * @param name the translet name
      * @param method the request method
      * @return the {@code Translet} object
@@ -120,7 +111,6 @@ public interface EmbeddedAspectran {
 
     /**
      * Executes the translet with the given parameters.
-     *
      * @param name the translet name
      * @param method the request method
      * @param parameterMap the parameter map
@@ -130,7 +120,6 @@ public interface EmbeddedAspectran {
 
     /**
      * Executes the translet with the given attributes.
-     *
      * @param name the translet name
      * @param method the request method
      * @param attributeMap the attribute map
@@ -140,7 +129,6 @@ public interface EmbeddedAspectran {
 
     /**
      * Executes the translet with the given parameters and attributes.
-     *
      * @param name the translet name
      * @param method the request method
      * @param parameterMap the parameter map
@@ -152,7 +140,6 @@ public interface EmbeddedAspectran {
 
     /**
      * Renders the template without the supplied variables.
-     *
      * @param templateId the template id
      * @return the output string of the template
      */
@@ -160,7 +147,6 @@ public interface EmbeddedAspectran {
 
     /**
      * Renders the template with the given parameters.
-     *
      * @param templateId the template id
      * @param parameterMap the parameter map
      * @return the output string of the template
@@ -169,7 +155,6 @@ public interface EmbeddedAspectran {
 
     /**
      * Renders the template with the given attributes.
-     *
      * @param templateId the template id
      * @param attributeMap the attribute map
      * @return the output string of the template
@@ -178,7 +163,6 @@ public interface EmbeddedAspectran {
 
     /**
      * Renders the template with the given parameters and attributes.
-     *
      * @param templateId the template id
      * @param parameterMap the parameter map
      * @param attributeMap the attribute map
@@ -188,14 +172,12 @@ public interface EmbeddedAspectran {
 
     /**
      * Gets the environment.
-     *
      * @return the environment
      */
     Environment getEnvironment();
 
     /**
      * Return an instance of the bean that matches the given id.
-     *
      * @param <V> the result type of the bean
      * @param id the id of the bean to retrieve
      * @return an instance of the bean
@@ -204,7 +186,6 @@ public interface EmbeddedAspectran {
 
     /**
      * Return an instance of the bean that matches the given object type.
-     *
      * @param <V> the result type of the bean
      * @param type the type the bean must match; can be an interface or superclass.
      *      {@code null} is disallowed.
@@ -215,7 +196,6 @@ public interface EmbeddedAspectran {
 
     /**
      * Return an instance of the bean that matches the given object type.
-     *
      * @param <V> the result type of the bean
      * @param type type the bean must match; can be an interface or superclass.
      *      {@code null} is allowed.
@@ -227,7 +207,6 @@ public interface EmbeddedAspectran {
 
     /**
      * Return whether a bean with the specified id is present.
-     *
      * @param id the id of the bean to query
      * @return whether a bean with the specified id is present
      */
@@ -235,7 +214,6 @@ public interface EmbeddedAspectran {
 
     /**
      * Return whether a bean with the specified object type is present.
-     *
      * @param type the object type of the bean to query
      * @return whether a bean with the specified type is present
      */
@@ -243,7 +221,6 @@ public interface EmbeddedAspectran {
 
     /**
      * Returns whether the bean corresponding to the specified object type and ID exists.
-     *
      * @param type the object type of the bean to query
      * @param id the id of the bean to query
      * @return whether a bean with the specified type is present
@@ -256,7 +233,6 @@ public interface EmbeddedAspectran {
 
     /**
      * Try to resolve the message. Treat as an error if the message can't be found.
-     *
      * @param code the code to lookup up, such as 'calculator.noRateSet'
      * @param args Array of arguments that will be filled in for params within
      *         the message (params look like "{0}", "{1,date}", "{2,time}" within a message),
@@ -270,7 +246,6 @@ public interface EmbeddedAspectran {
 
     /**
      * Try to resolve the message. Return default message if no message was found.
-     *
      * @param code the code to lookup up, such as 'calculator.noRateSet'. Users of
      *         this class are encouraged to base message names on the relevant fully
      *         qualified class name, thus avoiding conflict and ensuring maximum clarity.
@@ -292,7 +267,6 @@ public interface EmbeddedAspectran {
 
     /**
      * Creates and starts a new {@code DefaultEmbeddedAspectran}.
-     *
      * @param aspectranConfigFile the aspectran configuration file
      * @return the instance of {@code EmbeddedAspectran}
      */
@@ -306,7 +280,6 @@ public interface EmbeddedAspectran {
 
     /**
      * Creates and starts a new {@code DefaultEmbeddedAspectran}.
-     *
      * @param aspectranConfigFile the aspectran configuration file
      * @return the instance of {@code EmbeddedAspectran}
      */
@@ -326,7 +299,6 @@ public interface EmbeddedAspectran {
 
     /**
      * Creates and starts a new {@code DefaultEmbeddedAspectran}.
-     *
      * @param configFileReader the aspectran configuration file reader
      * @return the instance of {@code EmbeddedAspectran}
      */
@@ -345,7 +317,6 @@ public interface EmbeddedAspectran {
 
     /**
      * Creates and starts a new {@code DefaultEmbeddedAspectran}.
-     *
      * @param aspectranConfig the parameters for aspectran configuration
      * @return the instance of {@code EmbeddedAspectran}
      */

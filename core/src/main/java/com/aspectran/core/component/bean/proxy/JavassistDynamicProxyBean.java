@@ -88,7 +88,6 @@ public class JavassistDynamicProxyBean extends AbstractDynamicProxyBean implemen
 
     /**
      * Creates a proxy class of bean and returns an instance of that class.
-     *
      * @param context the activity context
      * @param beanRule the bean rule
      * @param args the arguments passed to a constructor

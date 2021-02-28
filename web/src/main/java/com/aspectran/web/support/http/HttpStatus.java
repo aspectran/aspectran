@@ -360,7 +360,6 @@ public enum HttpStatus {
 
     /**
      * Return the integer value of this status code.
-     *
      * @return the integer value of this status code
      */
     public int value() {
@@ -369,7 +368,6 @@ public enum HttpStatus {
 
     /**
      * Return the reason phrase of this status code.
-     *
      * @return the reason phrase of this status code
      */
     public String getReasonPhrase() {
@@ -378,7 +376,6 @@ public enum HttpStatus {
 
     /**
      * Return a string representation of this status code.
-     *
      * @return a string representation of this status code
      */
     @Override
@@ -388,7 +385,6 @@ public enum HttpStatus {
 
     /**
      * Return the enum constant of this type with the specified numeric value.
-     *
      * @param statusCode the numeric value of the enum to be returned
      * @return the enum constant with the specified numeric value
      * @throws IllegalArgumentException if this enum has no constant for the specified numeric value

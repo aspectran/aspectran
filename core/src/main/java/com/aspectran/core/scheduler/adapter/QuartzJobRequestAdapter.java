@@ -29,7 +29,6 @@ public class QuartzJobRequestAdapter extends DefaultRequestAdapter {
 
     /**
      * Instantiates a new QuartzJobRequestAdapter.
-     *
      * @param requestMethod the request method
      * @param jobExecutionContext the job execution context
      */

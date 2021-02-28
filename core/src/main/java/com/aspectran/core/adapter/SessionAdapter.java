@@ -28,7 +28,6 @@ public interface SessionAdapter {
 
     /**
      * Returns the adaptee object to provide session information.
-     *
      * @param <T> the type of the adaptee object
      * @return the adaptee object
      */
@@ -39,7 +38,6 @@ public interface SessionAdapter {
     /**
      * Returns a string containing the unique identifier assigned to this session.
      * The identifier is assigned by the session manager and is implementation dependent.
-     *
      * @return a string specifying the identifier assigned to this session
      * @since 1.5.0
      */
@@ -48,7 +46,6 @@ public interface SessionAdapter {
     /**
      * Returns the time when this session was created, measured
      * in milliseconds since midnight January 1, 1970 GMT.
-     *
      * @return a long specifying when this session was created,
      *         expressed in milliseconds since 1/1/1970 GMT
      * @since 1.5.0
@@ -62,7 +59,6 @@ public interface SessionAdapter {
      *
      * Actions that your application takes, such as getting or setting a value associated with the session,
      * do not affect the access time.
-     *
      * @return a long representing the last time the client sent a request associated with this session,
      *         expressed in milliseconds since 1/1/1970 GMT
      * @since 1.5.0
@@ -72,7 +68,6 @@ public interface SessionAdapter {
     /**
      * Specifies the time, in seconds, between client requests before invalidating the
      * session. A negative time indicates the session should never timeout.
-     *
      * @param interval an integer specifying the number of seconds
      */
     void setMaxInactiveInterval(int interval);
@@ -83,7 +78,6 @@ public interface SessionAdapter {
      * After this interval, the session manager will invalidate the session.
      * The maximum time interval can be set with the {@code setMaxInactiveInterval} method.
      * A negative time indicates the session should never timeout.
-     *
      * @return an integer specifying the number of seconds this session
      *         remains open between client requests
      * @since 1.5.0
@@ -93,7 +87,6 @@ public interface SessionAdapter {
     /**
      * Returns an Enumeration of String objects containing the names
      * of all the objects bound to this session.
-     *
      * @return an Enumeration of String objects specifying the names
      *         of all the objects bound to this session
      * @since 1.5.0
@@ -103,7 +96,6 @@ public interface SessionAdapter {
     /**
      * Returns the value of the named attribute as a given type,
      * or {@code null} if no attribute of the given name exists.
-     *
      * @param <T> the generic type
      * @param name a {@code String} specifying the name of the attribute
      * @return an {@code Object} containing the value of the attribute,
@@ -113,7 +105,6 @@ public interface SessionAdapter {
 
     /**
      * Stores an attribute in this session.
-     *
      * @param name specifying the name of the attribute
      * @param value the {@code Object} to be stored
      */
@@ -123,7 +114,6 @@ public interface SessionAdapter {
      * Removes the object bound with the specified name from this session.
      * If the session does not have an object bound with the specified name,
      * this method does nothing.
-     *
      * @param name the name of the object to remove from this session
      */
     void removeAttribute(String name);
@@ -135,7 +125,6 @@ public interface SessionAdapter {
 
     /**
      * Returns true if a new session was created for this request.
-     *
      * @return true if the server has created a session,
      *      but the client has not yet joined
      */

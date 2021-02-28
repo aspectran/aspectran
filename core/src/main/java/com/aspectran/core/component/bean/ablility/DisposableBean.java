@@ -26,7 +26,6 @@ public interface DisposableBean {
 
     /**
      * A Dispose implementation that calls the destroy() method.
-     *
      * @throws Exception if destruction fails
      */
     @AvoidAdvice

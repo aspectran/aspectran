@@ -32,21 +32,18 @@ public interface Scope extends NonPersistent {
 
     /**
      * Returns the type of this scope.
-     *
      * @return the scope type
      */
     ScopeType getScopeType();
 
     /**
      * Returns the lock of this scope.
-     *
      * @return the scope lock
      */
     ReadWriteLock getScopeLock();
 
     /**
      * Returns an instance of the bean that matches the given bean rule.
-     *
      * @param beanRule the bean rule of the bean to retrieve
      * @return an instance of the bean
      */
@@ -54,7 +51,6 @@ public interface Scope extends NonPersistent {
 
     /**
      * Saves an instantiated bean with the given bean rule into the scope.
-     *
      * @param activity the current activity
      * @param beanRule the bean rule of the bean to save
      * @param beanInstance an instance of the bean
@@ -63,7 +59,6 @@ public interface Scope extends NonPersistent {
 
     /**
      * Returns the bean rule corresponding to the bean object.
-     *
      * @param bean the bean object to find
      * @return the bean rule
      */
@@ -71,7 +66,6 @@ public interface Scope extends NonPersistent {
 
     /**
      * Returns whether the bean rule exists in this scope.
-     *
      * @param beanRule the bean rule to find
      * @return {@code true} if the bean rule exists in this scope,  {@code false} otherwise
      */
@@ -79,7 +73,6 @@ public interface Scope extends NonPersistent {
 
     /**
      * Destroy the bean that matches the given object in this scope.
-     *
      * @param bean the bean object to destroy
      * @throws Exception if the bean cannot be destroyed
      */

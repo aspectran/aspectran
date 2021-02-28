@@ -57,7 +57,6 @@ public class FilenameUtils {
      * </pre>
      * <p>
      * The output will be the same irrespective of the machine that the code is running on.</p>
-     *
      * @param filename  the filename to query, null returns null
      * @return the name of the file without the path, or an empty string if none exists
      */
@@ -80,7 +79,6 @@ public class FilenameUtils {
      * </pre>
      * <p>
      * The output will be the same irrespective of the machine that the code is running on.</p>
-     *
      * @param filename  the filename to query, null returns null
      * @return the name of the file without the path, or an empty string if none exists
      */
@@ -101,7 +99,6 @@ public class FilenameUtils {
      * </pre>
      * <p>
      * The output will be the same irrespective of the machine that the code is running on.</p>
-     *
      * @param filename the filename to retrieve the extension of
      * @return the extension of the file or an empty string if none exists
      */
@@ -128,7 +125,6 @@ public class FilenameUtils {
      * </pre>
      * <p>
      * The output will be the same irrespective of the machine that the code is running on.</p>
-     *
      * @param filename  the filename to query, null returns null
      * @return the filename minus the extension
      */
@@ -149,7 +145,6 @@ public class FilenameUtils {
      * The position of the last forward or backslash is returned.</p>
      * <p>
      * The output will be the same irrespective of the machine that the code is running on.</p>
-     *
      * @param filename  the filename to find the last path separator in, null returns -1
      * @return the index of the last separator character, or -1 if there
      * is no such character
@@ -171,7 +166,6 @@ public class FilenameUtils {
      * handle a file in either Unix or Windows format.</p>
      * <p>
      * The output will be the same irrespective of the machine that the code is running on.</p>
-     *
      * @param filename  the filename to find the last path separator in, null returns -1
      * @return the index of the last separator character, or -1 if there
      * is no such character
@@ -187,7 +181,6 @@ public class FilenameUtils {
 
     /**
      * Gets the path from a full filename.
-     *
      * @param filename a full filename
      * @return the path
      */
@@ -204,7 +197,6 @@ public class FilenameUtils {
 
     /**
      * Gets the path with end separator from a full filename.
-     *
      * @param filename a full filename
      * @return the path
      */
@@ -222,7 +214,6 @@ public class FilenameUtils {
     /**
      * Checks whether the extension of the filename is valid.
      * The extension check is case-sensitive on all platforms.
-     *
      * @param filename the filename to query, null returns false
      * @param allowedFileExtensions the allowed file extensions
      * @param deniedFileExtensions the denied file extensions
@@ -265,7 +256,6 @@ public class FilenameUtils {
     /**
      * Returns a file name that does not overlap in the specified directory.
      * If a duplicate file name exists, it is returned by appending a number after the file name.
-     *
      * @param srcFile the file to seek
      * @return an unique file
      * @throws IOException if failed to obtain an unique file
@@ -277,7 +267,6 @@ public class FilenameUtils {
     /**
      * Returns a file name that does not overlap in the specified directory.
      * If a duplicate file name exists, it is returned by appending a number after the file name.
-     *
      * @param srcFile the file to seek
      * @param extSeparator the extension separator
      * @return an unique file
@@ -318,7 +307,6 @@ public class FilenameUtils {
      * <pre>
      * ex) 1111111111_txt
      * </pre>
-     *
      * @param file the file to seek
      * @return an unique file
      * @throws IOException if failed to obtain an unique file

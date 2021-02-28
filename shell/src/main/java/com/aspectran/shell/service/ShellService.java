@@ -33,7 +33,6 @@ public interface ShellService extends CoreService {
      * Tests if the verbose mode is enabled.
      * If verbose mode is on, a detailed description is printed each time the command is executed.
      * Returns a flag indicating whether to show the description or not.
-     *
      * @return true if the verbose mode is enabled
      */
     boolean isVerbose();
@@ -42,21 +41,18 @@ public interface ShellService extends CoreService {
      * Enables or disables the verbose mode.
      * If verbose mode is on, a detailed description is printed each time the command is executed.
      * Sets a flag indicating whether to show the description or not.
-     *
      * @param verbose true to enable the verbose mode; false to disable
      */
     void setVerbose(boolean verbose);
 
     /**
      * Returns the greeting message.
-     *
      * @return the greeting message
      */
     String getGreetings();
 
     /**
      * Specifies the greeting message.
-     *
      * @param greetings the greeting message
      */
     void setGreetings(String greetings);
@@ -73,7 +69,6 @@ public interface ShellService extends CoreService {
 
     /**
      * Returns whether or not the translet can be exposed to the shell service.
-     *
      * @param transletName the name of the translet to check
      * @return true if the translet can be exposed; false otherwise
      */
@@ -81,14 +76,12 @@ public interface ShellService extends CoreService {
 
     /**
      * Create and return a new session adapter from the shell service.
-     *
      * @return the session adapter
      */
     SessionAdapter newSessionAdapter();
 
     /**
      * Executes translet.
-     *
      * @param transletCommandLine the translet command line
      * @param console the {@code Console} instance
      * @return the {@code Translet} instance

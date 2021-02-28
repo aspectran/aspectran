@@ -24,7 +24,6 @@ import java.util.LinkedHashMap;
  */
 public class FileParameterMap extends LinkedHashMap<String, FileParameter[]> {
 
-    /** @serial */
     private static final long serialVersionUID = -2589963778315184242L;
 
     public FileParameter getFileParameter(String name) {

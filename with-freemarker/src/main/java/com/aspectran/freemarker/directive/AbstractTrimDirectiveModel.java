@@ -39,7 +39,6 @@ import java.util.Map;
 public abstract class AbstractTrimDirectiveModel implements TemplateDirectiveModel {
 
     @Override
-    @SuppressWarnings("rawtypes")
     public void execute(Environment env, Map params, TemplateModel[] loopVars, TemplateDirectiveBody body)
             throws TemplateException, IOException {
         if (body == null) {
@@ -59,7 +58,6 @@ public abstract class AbstractTrimDirectiveModel implements TemplateDirectiveMod
 
     /**
      * Gets trimmer.
-     *
      * @param params the params
      * @return the trimmer
      * @throws TemplateModelException the template model exception
@@ -69,7 +67,6 @@ public abstract class AbstractTrimDirectiveModel implements TemplateDirectiveMod
 
     /**
      * Parse string parameter.
-     *
      * @param params the params
      * @param paramName the param name
      * @return the string
@@ -88,7 +85,6 @@ public abstract class AbstractTrimDirectiveModel implements TemplateDirectiveMod
 
     /**
      * Parse sequence parameter.
-     *
      * @param params the params
      * @param paramName the param name
      * @return the string [ ]
@@ -109,7 +105,6 @@ public abstract class AbstractTrimDirectiveModel implements TemplateDirectiveMod
 
     /**
      * Transform simple sequence as string list.
-     *
      * @param sequence the sequence
      * @param paramName the param name
      * @return the list

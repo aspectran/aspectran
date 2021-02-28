@@ -42,7 +42,7 @@ public class CustomerRepository {
     public CustomerRepository() {
         // Pre-create 10 customers whose names begin with "Guest"
         Map<Integer, Customer> customerMap = new ConcurrentSkipListMap<>();
-        for(int i = 1; i <= 10; i++) {
+        for (int i = 1; i <= 10; i++) {
             Customer customer = new Customer();
             customer.putValue(Customer.id, i);
             customer.putValue(Customer.name, "Guest - " + i);
@@ -61,7 +61,7 @@ public class CustomerRepository {
     }
 
     public boolean isCustomer(int id) {
-        if(customerMap.containsKey(id)) {
+        if (customerMap.containsKey(id)) {
             logger.debug("Customer " + id + " exists");
             return true;
         } else {
@@ -93,7 +93,7 @@ public class CustomerRepository {
 
     public synchronized boolean updateCustomer(Customer customer) {
         int id = customer.getInt(Customer.id);
-        if(customerMap.containsKey(id)) {
+        if (customerMap.containsKey(id)) {
             logger.debug("Update customer: " + id);
             customerMap.put(id, customer);
             return true;
@@ -103,7 +103,7 @@ public class CustomerRepository {
     }
 
     public synchronized boolean deleteCustomer(int id) {
-        if(customerMap.containsKey(id)) {
+        if (customerMap.containsKey(id)) {
             logger.debug("Delete customer: " + id);
             customerMap.remove(id);
             return true;
@@ -114,7 +114,7 @@ public class CustomerRepository {
     
     public boolean approve(int id, boolean approved) {
         Customer customer = customerMap.get(id);
-        if(customer != null) {
+        if (customer != null) {
             logger.debug(id + "Approval for customer " + id + " (approved: " + approved + ")");
             customer.putValue(Customer.approved, approved);
             return true;
@@ -125,7 +125,7 @@ public class CustomerRepository {
 
     public boolean isApproved(int id) {
         Customer customer = customerMap.get(id);
-        if(customer != null) {
+        if (customer != null) {
             logger.debug("Returns whether customer " + id + " is approved");
             return customer.getBoolean(Customer.approved);
         } else {

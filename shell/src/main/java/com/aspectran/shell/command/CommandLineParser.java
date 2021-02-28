@@ -100,7 +100,6 @@ public class CommandLineParser {
     /**
      * Returns a list of the output redirection extracted
      * from the command line.
-     *
      * @return a list of the output redirection
      */
     public List<OutputRedirection> getRedirectionList() {

@@ -26,7 +26,6 @@ public class DaemonRequestAdapter extends DefaultRequestAdapter {
 
     /**
      * Instantiates a new DaemonRequestAdapter.
-     *
      * @param requestMethod the request method
      */
     public DaemonRequestAdapter(MethodType requestMethod) {

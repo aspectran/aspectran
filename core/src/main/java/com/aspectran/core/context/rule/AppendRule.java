@@ -101,7 +101,6 @@ public class AppendRule {
 
     /**
      * Create a new AppendRule.
-     *
      * @param file the rule file to append
      * @param resource the rule resource to append
      * @param url the rule url to append
@@ -139,7 +138,6 @@ public class AppendRule {
 
     /**
      * Create a new AppendRule.
-     *
      * @param aspectranParameters the aspectran parameters to append
      * @param profile the environment profile name
      * @return an {@code AppendRule} object

@@ -34,7 +34,6 @@ public class InMemoryMultipartFileParameter extends FileParameter {
 
     /**
      * Create an instance wrapping the given FileItem.
-     *
      * @param fileItem the FileItem to wrap
      */
     public InMemoryMultipartFileParameter(FileItem fileItem) {
@@ -50,7 +49,6 @@ public class InMemoryMultipartFileParameter extends FileParameter {
      * Gets the content type of the data being uploaded. This is never null, and
      * defaults to "content/unknown" when the mime type of the data couldn't be
      * determined and was not set manually.
-     *
      * @return the content type
      */
     @Override
@@ -60,7 +58,6 @@ public class InMemoryMultipartFileParameter extends FileParameter {
 
     /**
      * Returns the file name that was uploaded in the multipart form.
-     *
      * @return the file name
      */
     @Override
@@ -70,7 +67,6 @@ public class InMemoryMultipartFileParameter extends FileParameter {
 
     /**
      * Returns the file size that was uploaded in the multipart form.
-     *
      * @return the file size
      */
     @Override
@@ -80,7 +76,6 @@ public class InMemoryMultipartFileParameter extends FileParameter {
 
     /**
      * Return an InputStream to read the contents of the file from.
-     *
      * @return the contents of the file as stream, or an empty stream if empty
      * @throws IOException in case of access errors (if the temporary store fails)
      */
@@ -92,7 +87,6 @@ public class InMemoryMultipartFileParameter extends FileParameter {
 
     /**
      * Return an byte array to read the contents of the file from.
-     *
      * @return the byte array
      */
     @Override
@@ -103,7 +97,6 @@ public class InMemoryMultipartFileParameter extends FileParameter {
 
     /**
      * Save an uploaded file as a given destination file.
-     *
      * @param destFile the destination file
      * @param overwrite whether to overwrite if it already exists
      * @return a saved file
@@ -152,7 +145,6 @@ public class InMemoryMultipartFileParameter extends FileParameter {
 
     /**
      * Returns the canonical name of the given filename.
-     *
      * @param filename the given filename
      * @return the canonical name of the given filename
      */
@@ -164,7 +156,6 @@ public class InMemoryMultipartFileParameter extends FileParameter {
      * Return a description for the storage location of the multipart content.
      * Tries to be as specific as possible: mentions the file location in case
      * of a temporary file.
-     *
      * @return a description for the storage location of the multipart content
      */
     public String getStorageDescription() {

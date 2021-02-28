@@ -412,7 +412,6 @@ public class TransletRuleRegistry extends AbstractComponent {
 
     /**
      * Returns the translet name of the prefix and suffix are combined.
-     *
      * @param transletName the translet name
      * @return the new translet name
      */
@@ -422,7 +421,6 @@ public class TransletRuleRegistry extends AbstractComponent {
 
     /**
      * Returns the translet name of the prefix and suffix are combined.
-     *
      * @param transletName the translet name
      * @param absolutely whether to allow absolutely name for translet
      * @return the new translet name

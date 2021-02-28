@@ -28,7 +28,6 @@ public interface CoreService {
 
     /**
      * Returns the base path where the root application is running.
-     *
      * @return the base path for the root application
      */
     String getBasePath();
@@ -36,7 +35,6 @@ public interface CoreService {
     /**
      * Returns whether the service should be started separately
      * late after the root service is started.
-     *
      * @return true if the service should start separately late; false otherwise
      */
     boolean isLateStart();
@@ -44,7 +42,6 @@ public interface CoreService {
     /**
      * Returns whether to reload all Java classes, resources,
      * and activity context configurations.
-     *
      * @return false if only the activity context configuration
      *      is reloaded; true if all are reloaded
      */
@@ -52,7 +49,6 @@ public interface CoreService {
 
     /**
      * Returns the service controller for this service.
-     *
      * @return the service controller
      */
     ServiceController getServiceController();
@@ -60,7 +56,6 @@ public interface CoreService {
     /**
      * Add a derived core service.
      * Derived services follow the life cycle of the root service.
-     *
      * @param coreService the core service
      */
     void joinDerivedService(CoreService coreService);
@@ -73,21 +68,18 @@ public interface CoreService {
 
     /**
      * Returns the activity context.
-     *
      * @return the activity context
      */
     ActivityContext getActivityContext();
 
     /**
      * Returns the default activity.
-     *
      * @return the default activity
      */
     Activity getDefaultActivity();
 
     /**
      * Returns the aspectran class loader.
-     *
      * @return the aspectran class loader
      */
     AspectranClassLoader getAspectranClassLoader();
@@ -95,14 +87,12 @@ public interface CoreService {
     /**
      * Returns the Aspectran configuration parameters used to
      * generate the AspectranService.
-     *
      * @return the Aspectran Configuration Parameters
      */
     AspectranConfig getAspectranConfig();
 
     /**
      * Returns the scheduler service.
-     *
      * @return the scheduler service
      */
     SchedulerService getSchedulerService();

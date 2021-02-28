@@ -196,7 +196,6 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
 
     /**
      * Returns a new instance of {@code DefaultWebService}.
-     *
      * @param servletContext the servlet context
      * @return the instance of {@code DefaultWebService}
      */
@@ -220,7 +219,6 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
 
     /**
      * Returns a new instance of {@code DefaultWebService}.
-     *
      * @param servletContext the servlet context
      * @param rootService the root service
      * @return the instance of {@code DefaultWebService}
@@ -251,7 +249,6 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
 
     /**
      * Returns a new instance of {@code DefaultWebService}.
-     *
      * @param servlet the web activity servlet
      * @return the instance of {@code DefaultWebService}
      */
@@ -278,7 +275,6 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
 
     /**
      * Returns a new instance of {@code DefaultWebService}.
-     *
      * @param servlet the servlet
      * @param rootService the root service
      * @return the instance of {@code DefaultWebService}
@@ -307,7 +303,6 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
 
     /**
      * Returns a new instance of {@code DefaultWebService}.
-     *
      * @param servletContext the servlet context
      * @param aspectranConfigParam the parameter for aspectran configuration
      * @return the instance of {@code DefaultWebService}

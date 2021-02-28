@@ -43,7 +43,6 @@ public class DefaultTemplateRenderer extends AbstractComponent implements Templa
 
     /**
      * Instantiates a new context template renderer.
-     *
      * @param context the activity context
      * @param templateRuleRegistry the template rule registry
      */

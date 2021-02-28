@@ -123,7 +123,6 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
     /**
      * Whether we should save a session that has been inactive before
      * we boot it from the cache.
-     *
      * @return true if an inactive session will be saved before being evicted
      */
     @Override
@@ -147,7 +146,6 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
     /**
      * If a session's data cannot be loaded from the store without error, remove
      * it from the persistent store.
-     *
      * @param removeUnloadableSessions whether to delete sessions that can not be loaded
      */
     @Override
@@ -221,7 +219,6 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
 
     /**
      * Load the info for the session from the session store.
-     *
      * @param id the session id
      * @return a Session object filled with data or null if the session doesn't exist
      * @throws Exception if the session can not be loaded
@@ -356,7 +353,6 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
 
     /**
      * Get the session matching the key.
-     *
      * @param id the session id
      * @return the Session object matching the id
      */
@@ -364,7 +360,6 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
 
     /**
      * Put the session into the map if it wasn't already there.
-     *
      * @param id the identity of the session
      * @param session the session object
      * @return null if the session wasn't already in the map, or the existing entry otherwise
@@ -376,7 +371,6 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
      * with the given id isn't already in the map, otherwise return the existing Session.
      * This method is expected to have precisely the same behaviour as
      * {@link java.util.concurrent.ConcurrentHashMap#computeIfAbsent}
-     *
      * @param id the session id
      * @param mappingFunction the function to load the data for the session
      * @return an existing Session from the cache
@@ -385,7 +379,6 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
 
     /**
      * Replace the mapping from id to oldValue with newValue.
-     *
      * @param id the session id
      * @param oldValue the old value
      * @param newValue the new value
@@ -395,7 +388,6 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
 
     /**
      * Remove the session with this identity from the store.
-     *
      * @param id the session id
      * @return true if removed; false otherwise
      */
@@ -416,7 +408,6 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
 
     /**
      * Swap the id on a session.
-     *
      * @param session the session for which to do the swap
      * @param newId the new id
      * @throws Exception if there was a failure saving the change
@@ -480,7 +471,6 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
     /**
      * Check a session for being inactive and thus being able to be evicted,
      * if eviction is enabled.
-     *
      * @param session the session to check
      */
     @Override

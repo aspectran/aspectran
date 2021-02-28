@@ -33,7 +33,6 @@ public class DefaultRequestAdapter extends AbstractRequestAdapter {
 
     /**
      * Instantiates a new DefaultRequestAdapter.
-     *
      * @param requestMethod the request method
      */
     public DefaultRequestAdapter(MethodType requestMethod) {
@@ -42,7 +41,6 @@ public class DefaultRequestAdapter extends AbstractRequestAdapter {
 
     /**
      * Instantiates a new DefaultRequestAdapter.
-     *
      * @param requestMethod the request method
      * @param adaptee the adaptee object
      */

@@ -31,7 +31,6 @@ public interface ViewDispatcher {
 
     /**
      * Dispatch to other resources as the given rule.
-     *
      * @param activity the current activity
      * @param dispatchRule the dispatch rule
      * @throws ViewDispatcherException the view dispatch exception
@@ -40,7 +39,6 @@ public interface ViewDispatcher {
 
     /**
      * Return whether this view dispatcher corresponds to a singleton instance.
-     *
      * @return whether this view dispatcher corresponds to a singleton instance
      */
     boolean isSingleton();

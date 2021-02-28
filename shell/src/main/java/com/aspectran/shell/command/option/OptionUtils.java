@@ -36,7 +36,6 @@ public final class OptionUtils {
      * <p>
      * In case {@code opt} is {@code null} no further validation is performed.
      * </p>
-     *
      * @param opt the option string to validate, may be null
      * @throws IllegalArgumentException if the Option is not valid
      */
@@ -65,7 +64,6 @@ public final class OptionUtils {
 
     /**
      * Returns whether the specified character is a valid Option.
-     *
      * @param c the option to validate
      * @return true if {@code c} is a letter, '?' or '@', otherwise false
      */
@@ -75,7 +73,6 @@ public final class OptionUtils {
 
     /**
      * Returns whether the specified character is a valid character.
-     *
      * @param c the character to validate
      * @return true if {@code c} is a letter
      */
@@ -86,7 +83,6 @@ public final class OptionUtils {
     /**
      * Remove the hyphens from the beginning of <code>str</code> and
      * return the new String.
-     *
      * @param str the string from which the hyphens should be removed
      * @return the new String
      */
@@ -105,7 +101,6 @@ public final class OptionUtils {
     /**
      * Remove the leading and trailing quotes from <code>str</code>.
      * E.g. if str is '"one two"', then 'one two' is returned.
-     *
      * @param str the string from which the leading and trailing quotes
      *      should be removed
      * @return the string without the leading and trailing quotes
@@ -121,7 +116,6 @@ public final class OptionUtils {
 
     /**
      * Return a String of padding of length {@code len}.
-     *
      * @param len the length of the String of padding to create
      * @return the String of padding
      */
@@ -133,7 +127,6 @@ public final class OptionUtils {
 
     /**
      * Remove the trailing whitespace from the specified String.
-     *
      * @param s the String to remove the trailing padding from
      * @return the String of without the trailing padding
      */
@@ -154,7 +147,6 @@ public final class OptionUtils {
      * The wrap point is the last position before startPos+width having a
      * whitespace character (space, \n, \r). If there is no whitespace character
      * before startPos+width, it will return startPos+width.
-     *
      * @param text the text being searched for the wrap position
      * @param width width of the wrapped text
      * @param startPos position from which to start the lookup whitespace character

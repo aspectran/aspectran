@@ -28,7 +28,6 @@ public class ItemEvaluationException extends RuntimeException {
 
     /**
      * Instantiates a new item evaluation exception.
-     *
      * @param itemRule the item rule
      * @param cause the root cause
      */
@@ -39,7 +38,6 @@ public class ItemEvaluationException extends RuntimeException {
 
     /**
      * Gets the item rule which is failed to evaluate expression.
-     *
      * @return the item rule
      */
     public ItemRule getItemRule() {

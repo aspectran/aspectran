@@ -94,7 +94,6 @@ public class ResourceBundleMessageSource extends AbstractMessageSource implement
     /**
      * Set the default charset to use for parsing resource bundle files.
      * <p>Default is the {@code java.util.ResourceBundle} default encoding: ISO-8859-1.
-     *
      * @param defaultEncoding the default encoding
      */
     public void setDefaultEncoding(String defaultEncoding) {
@@ -110,7 +109,6 @@ public class ResourceBundleMessageSource extends AbstractMessageSource implement
      * {@code java.util.ResourceBundle}. However, this is often not desirable
      * in an application server environment, where the system Locale is not relevant
      * to the application at all: Set this flag to "false" in such a scenario.
-     *
      * @param fallbackToSystemLocale whether fallback to system locale
      */
     public void setFallbackToSystemLocale(boolean fallbackToSystemLocale) {
@@ -131,7 +129,6 @@ public class ResourceBundleMessageSource extends AbstractMessageSource implement
      * <li><b>Note that depending on your ClassLoader, expiration might not work reliably
      * since the ClassLoader may hold on to a cached version of the bundle file.</b>
      * </ul>
-     *
      * @param cacheSeconds the cache seconds
      */
     public void setCacheSeconds(int cacheSeconds) {
@@ -163,7 +160,6 @@ public class ResourceBundleMessageSource extends AbstractMessageSource implement
      * consequence, the JDK's standard ResourceBundle treats dots as package separators.
      * This means that "test.theme" is effectively equivalent to "test/theme",
      * just like it is for programmatic {@code java.util.ResourceBundle} usage.
-     *
      * @param basename the basename
      * @see #setBasenames #setBasenames
      * @see java.util.ResourceBundle#getBundle(String) java.util.ResourceBundle#getBundle(String)
@@ -185,7 +181,6 @@ public class ResourceBundleMessageSource extends AbstractMessageSource implement
      * consequence, the JDK's standard ResourceBundle treats dots as package separators.
      * This means that "test.theme" is effectively equivalent to "test/theme",
      * just like it is for programmatic {@code java.util.ResourceBundle} usage.
-     *
      * @param basenames the basenames
      * @see #setBasename #setBasename
      * @see java.util.ResourceBundle#getBundle(String) java.util.ResourceBundle#getBundle(String)
@@ -240,7 +235,6 @@ public class ResourceBundleMessageSource extends AbstractMessageSource implement
     /**
      * Return a ResourceBundle for the given basename and code,
      * fetching already generated MessageFormats from the cache.
-     *
      * @param basename the basename of the ResourceBundle
      * @param locale the Locale to find the ResourceBundle for
      * @return the resulting ResourceBundle, or {@code null} if none found for the given basename and Locale
@@ -282,7 +276,6 @@ public class ResourceBundleMessageSource extends AbstractMessageSource implement
 
     /**
      * Obtain the resource bundle for the given basename and Locale.
-     *
      * @param basename the basename to look for
      * @param locale the Locale to look for
      * @return the corresponding ResourceBundle
@@ -296,7 +289,6 @@ public class ResourceBundleMessageSource extends AbstractMessageSource implement
     /**
      * Load a property-based resource bundle from the given reader.
      * <p>The default implementation returns a {@link PropertyResourceBundle}.
-     *
      * @param reader the reader for the target resource
      * @return the fully loaded bundle
      * @throws IOException in case of I/O failure
@@ -317,7 +309,6 @@ public class ResourceBundleMessageSource extends AbstractMessageSource implement
      * When running on the JDK 9+ module path where such control handles are not
      * supported, any overrides in custom subclasses will effectively get ignored.
      * <p>The default implementation returns a {@link PropertyResourceBundle}.
-     *
      * @param inputStream the input stream for the target resource
      * @return the fully loaded bundle
      * @throws IOException in case of I/O failure
@@ -331,7 +322,6 @@ public class ResourceBundleMessageSource extends AbstractMessageSource implement
     /**
      * Return a MessageFormat for the given bundle and code,
      * fetching already generated MessageFormats from the cache.
-     *
      * @param bundle the ResourceBundle to work on
      * @param code the message code to retrieve
      * @param locale the Locale to use to build the MessageFormat
@@ -379,7 +369,6 @@ public class ResourceBundleMessageSource extends AbstractMessageSource implement
     /**
      * Efficiently retrieve the String value for the specified key,
      * or return {@code null} if not found.
-     *
      * @param bundle the ResourceBundle to perform the lookup in
      * @param key the key to look up
      * @return the associated value, or {@code null} if none

@@ -46,7 +46,6 @@ public abstract class MediaTypeUtils {
     /**
      * Parse the given String into a single {@code MediaType}.
      * Recently parsed {@code MediaType} are cached for further retrieval.
-     *
      * @param mediaType the string to parse
      * @return the media type
      * @throws InvalidMediaTypeException if the string cannot be parsed
@@ -129,7 +128,6 @@ public abstract class MediaTypeUtils {
      * Tokenize the given comma-separated string of {@code MediaType} objects
      * into a {@code List<String>}. Unlike simple tokenization by ",", this
      * method takes into account quoted parameters.
-     *
      * @param mediaTypes the string to tokenize
      * @return the list of tokens
      */
@@ -164,7 +162,6 @@ public abstract class MediaTypeUtils {
 
     /**
      * Return a string representation of the given list of {@code MediaType} objects.
-     *
      * @param mediaTypes the string to parse
      * @return the list of media types
      * @throws IllegalArgumentException if the String cannot be parsed

@@ -170,7 +170,6 @@ public class BeanRuleRegistry {
 
     /**
      * Scans for annotated components.
-     *
      * @param basePackages the base packages to scan for annotated components
      * @throws BeanRuleException if an illegal bean rule is found
      */
@@ -200,7 +199,6 @@ public class BeanRuleRegistry {
 
     /**
      * Adds a bean rule.
-     *
      * @param beanRule the bean rule to add
      * @throws IllegalRuleException if an error occurs while adding a bean rule
      */

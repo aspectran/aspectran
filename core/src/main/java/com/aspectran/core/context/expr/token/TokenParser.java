@@ -30,7 +30,6 @@ public class TokenParser {
 
     /**
      * Returns an array of tokens that contains tokenized string.
-     *
      * @param expression the expression to parse
      * @return an array of tokens
      */
@@ -40,7 +39,6 @@ public class TokenParser {
 
     /**
      * Returns an array of tokens that contains tokenized string.
-     *
      * @param expression the expression to parse
      * @param optimize whether to optimize tokens
      * @return an array of tokens
@@ -107,7 +105,6 @@ public class TokenParser {
 
     /**
      * Convert the given string into tokens.
-     *
      * @param expression the expression to parse
      * @param tokenize whether to tokenize
      * @return the token[]
@@ -126,7 +123,6 @@ public class TokenParser {
 
     /**
      * Convert to string from the token array.
-     *
      * @param tokens the tokens
      * @return the string
      */

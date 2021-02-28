@@ -60,7 +60,6 @@ public class FreeMarkerViewDispatcher implements ViewDispatcher {
 
     /**
      * Sets the prefix for the template name.
-     *
      * @param prefix the new prefix for the template name
      */
     public void setPrefix(String prefix) {
@@ -69,7 +68,6 @@ public class FreeMarkerViewDispatcher implements ViewDispatcher {
 
     /**
      * Sets the suffix for the template name.
-     *
      * @param suffix the new suffix for the template name
      */
     public void setSuffix(String suffix) {

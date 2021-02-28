@@ -26,7 +26,6 @@ public class AspectranSessionAdapter extends DefaultSessionAdapter {
 
     /**
      * Instantiates a new AspectranSessionAdapter.
-     *
      * @param agent the session agent
      */
     public AspectranSessionAdapter(SessionAgent agent) {

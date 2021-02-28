@@ -37,7 +37,6 @@ public class MessageSourceResourceBundle extends ResourceBundle {
 
     /**
      * Create a new MessageSourceResourceBundle for the given MessageSource and Locale.
-     *
      * @param source the MessageSource to retrieve messages from
      * @param locale the Locale to retrieve messages for
      */
@@ -51,7 +50,6 @@ public class MessageSourceResourceBundle extends ResourceBundle {
 
     /**
      * Create a new MessageSourceResourceBundle for the given MessageSource and Locale.
-     *
      * @param source the MessageSource to retrieve messages from
      * @param locale the Locale to retrieve messages for
      * @param parent the parent ResourceBundle to delegate to if no local message found

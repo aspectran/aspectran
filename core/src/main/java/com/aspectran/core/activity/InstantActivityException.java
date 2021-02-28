@@ -24,7 +24,6 @@ public class InstantActivityException extends RuntimeException {
 
     /**
      * Instantiates a new InstantActivityException.
-     *
      * @param cause the real cause of the exception
      */
     public InstantActivityException(Throwable cause) {

@@ -39,7 +39,6 @@ public class AponReader extends AponFormat implements Closeable {
 
     /**
      * Instantiates a new AponReader.
-     *
      * @param text the APON formatted string
      */
     public AponReader(String text) {
@@ -48,7 +47,6 @@ public class AponReader extends AponFormat implements Closeable {
 
     /**
      * Instantiates a new AponReader.
-     *
      * @param reader the character stream capable of parsing content into APON
      */
     public AponReader(Reader reader) {
@@ -64,7 +62,6 @@ public class AponReader extends AponFormat implements Closeable {
 
     /**
      * Reads an APON document into a {@code VariableParameters} object.
-     *
      * @return the Parameters object
      * @throws IOException if reading APON format document fails
      */
@@ -75,7 +72,6 @@ public class AponReader extends AponFormat implements Closeable {
 
     /**
      * Reads an APON formatted document into the specified {@link Parameters} object.
-     *
      * @param <T> the generic type
      * @param parameters the Parameters object
      * @return the Parameters object
@@ -131,7 +127,6 @@ public class AponReader extends AponFormat implements Closeable {
 
     /**
      * Creates a {@link Parameters} object by parsing the content of the specified character stream as APON.
-     *
      * @param container the Parameters object
      * @param openedBracket the opened bracket character
      * @param name the parameter name
@@ -505,7 +500,6 @@ public class AponReader extends AponFormat implements Closeable {
 
     /**
      * Converts an APON formatted string into a Parameters object.
-     *
      * @param text the APON formatted string
      * @return the Parameters object
      * @throws IOException if reading APON format document fails
@@ -522,7 +516,6 @@ public class AponReader extends AponFormat implements Closeable {
 
     /**
      * Converts an APON formatted string into a given Parameters object.
-     *
      * @param <T> the generic type
      * @param text the APON formatted string
      * @param parameters the Parameters object
@@ -553,7 +546,6 @@ public class AponReader extends AponFormat implements Closeable {
 
     /**
      * Converts to a Parameters object from a file.
-     *
      * @param file the file to parse
      * @return the Parameters object
      * @throws IOException if reading APON format document fails
@@ -564,7 +556,6 @@ public class AponReader extends AponFormat implements Closeable {
 
     /**
      * Converts to a Parameters object from a file.
-     *
      * @param file the file to parse
      * @param encoding the character encoding
      * @return the Parameters object
@@ -580,7 +571,6 @@ public class AponReader extends AponFormat implements Closeable {
 
     /**
      * Converts into a given Parameters object from a file.
-     *
      * @param <T> the generic type
      * @param file the file to parse
      * @param parameters the Parameters object
@@ -593,7 +583,6 @@ public class AponReader extends AponFormat implements Closeable {
 
     /**
      * Converts into a given Parameters object from a file.
-     *
      * @param <T> the generic type
      * @param file the file to parse
      * @param encoding the character encoding
@@ -634,7 +623,6 @@ public class AponReader extends AponFormat implements Closeable {
 
     /**
      * Converts to a Parameters object from a character-input stream.
-     *
      * @param reader the character-input stream
      * @return the Parameters object
      * @throws IOException if reading APON format document fails
@@ -649,7 +637,6 @@ public class AponReader extends AponFormat implements Closeable {
 
     /**
      * Converts into a given Parameters object from a character-input stream.
-     *
      * @param <T> the generic type
      * @param reader the character-input stream
      * @param parameters the Parameters object

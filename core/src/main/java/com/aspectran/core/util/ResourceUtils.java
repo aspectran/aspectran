@@ -90,7 +90,6 @@ public class ResourceUtils {
     /**
      * Return whether the given resource location is a URL:
      * either a special "classpath" pseudo URL or a standard URL.
-     *
      * @param resourceLocation the location String to check
      * @return whether the location qualifies as a URL
      * @see #CLASSPATH_URL_PREFIX
@@ -115,7 +114,6 @@ public class ResourceUtils {
      * Resolve the given resource location to a {@code java.net.URL}.
      * <p>Does not check whether the URL actually exists; simply returns
      * the URL that the given location would correspond to.</p>
-     *
      * @param resourceLocation the resource location to resolve: either a
      *      "classpath:" pseudo URL, a "file:" URL, or a plain file path
      * @return a corresponding URL object
@@ -129,7 +127,6 @@ public class ResourceUtils {
      * Resolve the given resource location to a {@code java.net.URL}.
      * <p>Does not check whether the URL actually exists; simply returns
      * the URL that the given location would correspond to.</p>
-     *
      * @param resourceLocation the resource location to resolve: either a
      *      "classpath:" pseudo URL, a "file:" URL, or a plain file path
      * @param classLoader the class loader
@@ -167,7 +164,6 @@ public class ResourceUtils {
      * i.e. to a file in the file system.
      * <p>Does not check whether the file actually exists; simply returns
      * the File that the given location would correspond to.</p>
-     *
      * @param resourceLocation the resource location to resolve: either a
      *      "classpath:" pseudo URL, a "file:" URL, or a plain file path
      * @return a corresponding File object
@@ -183,7 +179,6 @@ public class ResourceUtils {
      * i.e. to a file in the file system.
      * <p>Does not check whether the file actually exists; simply returns
      * the File that the given location would correspond to.</p>
-     *
      * @param resourceLocation the resource location to resolve: either a
      *      "classpath:" pseudo URL, a "file:" URL, or a plain file path
      * @param classLoader the class loader
@@ -215,7 +210,6 @@ public class ResourceUtils {
     /**
      * Resolve the given resource URL to a {@code java.io.File},
      * i.e. to a file in the file system.
-     *
      * @param resourceUrl the resource URL to resolve
      * @return a corresponding File object
      * @throws FileNotFoundException if the URL cannot be resolved to
@@ -228,7 +222,6 @@ public class ResourceUtils {
     /**
      * Resolve the given resource URL to a {@code java.io.File},
      * i.e. to a file in the file system.
-     *
      * @param resourceUrl the resource URL to resolve
      * @param description a description of the original resource that
      *      the URL was created for (for example, a class path location)
@@ -254,7 +247,6 @@ public class ResourceUtils {
     /**
      * Resolve the given resource URI to a {@code java.io.File},
      * i.e. to a file in the file system.
-     *
      * @param resourceUri the resource URI to resolve
      * @return a corresponding File object
      * @throws FileNotFoundException if the URL cannot be resolved to
@@ -267,7 +259,6 @@ public class ResourceUtils {
     /**
      * Resolve the given resource URI to a {@code java.io.File},
      * i.e. to a file in the file system.
-     *
      * @param resourceUri the resource URI to resolve
      * @param description a description of the original resource that
      *      the URI was created for (for example, a class path location)
@@ -288,7 +279,6 @@ public class ResourceUtils {
     /**
      * Determine whether the given URL points to a resource in the file system,
      * i.e. has protocol "file", "vfsfile" or "vfs".
-     *
      * @param url the URL to check
      * @return whether the URL has been identified as a file system URL
      */
@@ -301,7 +291,6 @@ public class ResourceUtils {
     /**
      * Determine whether the given URL points to a resource in a jar file.
      * i.e. has protocol "jar", "war, ""zip", "vfszip" or "wsjar".
-     *
      * @param url the URL to check
      * @return whether the URL has been identified as a JAR URL
      */
@@ -315,7 +304,6 @@ public class ResourceUtils {
     /**
      * Determine whether the given URL points to a jar file itself,
      * that is, has protocol "file" and ends with the ".jar" extension.
-     *
      * @param url the URL to check
      * @return whether the URL has been identified as a JAR file URL
      */
@@ -327,7 +315,6 @@ public class ResourceUtils {
     /**
      * Extract the URL for the actual jar file from the given URL
      * (which may point to a resource in a jar file or to a jar file itself).
-     *
      * @param jarUrl the original URL
      * @return the URL for the actual jar file
      * @throws MalformedURLException if no valid jar file URL could be extracted
@@ -357,7 +344,6 @@ public class ResourceUtils {
      * (which may point to a resource in a jar file or to a jar file itself).
      * <p>In the case of a jar file nested within a war file, this will return
      * a URL to the war file since that is the one resolvable in the file system.</p>
-     *
      * @param jarUrl the original URL
      * @return the URL for the actual jar file
      * @throws MalformedURLException if no valid jar file URL could be extracted
@@ -386,7 +372,6 @@ public class ResourceUtils {
     /**
      * Create a URI instance for the given URL,
      * replacing spaces with "%20" URI encoding first.
-     *
      * @param url the URL to convert into a URI instance
      * @return the URI instance
      * @throws URISyntaxException if the URL wasn't a valid URI
@@ -399,7 +384,6 @@ public class ResourceUtils {
     /**
      * Create a URI instance for the given location String,
      * replacing spaces with "%20" URI encoding first.
-     *
      * @param location the location String to convert into a URI instance
      * @return the URI instance
      * @throws URISyntaxException if the location wasn't a valid URI
@@ -410,7 +394,6 @@ public class ResourceUtils {
 
     /**
      * Returns the URL of the resource on the classpath.
-     *
      * @param resource the resource to find
      * @return {@code URL} object for reading the resource;
      *      {@code null} if the resource could not be found
@@ -422,7 +405,6 @@ public class ResourceUtils {
 
     /**
      * Returns the URL of the resource on the classpath.
-     *
      * @param classLoader the class loader used to load the resource
      * @param resource the resource to find
      * @return {@code URL} object for reading the resource;
@@ -453,7 +435,6 @@ public class ResourceUtils {
 
     /**
      * Returns a resource on the classpath as a Stream object.
-     *
      * @param resource the resource to find
      * @return an input stream for reading the resource;
      *      {@code null} if the resource could not be found
@@ -465,7 +446,6 @@ public class ResourceUtils {
 
     /**
      * Returns a resource on the classpath as a Stream object.
-     *
      * @param resource the resource to find
      * @param classLoader the class loader
      * @return an input stream for reading the resource;
@@ -488,7 +468,6 @@ public class ResourceUtils {
 
     /**
      * Returns a Reader for reading the specified file.
-     *
      * @param file the file
      * @param encoding the encoding
      * @return the reader instance
@@ -514,7 +493,6 @@ public class ResourceUtils {
 
     /**
      * Returns a Reader for reading the specified url.
-     *
      * @param url the url
      * @param encoding the encoding
      * @return the reader instance
@@ -550,7 +528,6 @@ public class ResourceUtils {
 
     /**
      * Returns a string from the specified file.
-     *
      * @param file the file
      * @param encoding the encoding
      * @return the reader instance
@@ -569,7 +546,6 @@ public class ResourceUtils {
 
     /**
      * Returns a string from the specified url.
-     *
      * @param url the url
      * @param encoding the encoding
      * @return the string
@@ -588,7 +564,6 @@ public class ResourceUtils {
 
     /**
      * Returns a string from the specified Reader object.
-     *
      * @param reader the reader
      * @return the string
      * @throws IOException if an error occurred when reading resources using any I/O operations

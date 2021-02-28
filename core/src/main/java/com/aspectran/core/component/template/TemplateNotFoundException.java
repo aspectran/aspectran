@@ -20,14 +20,12 @@ package com.aspectran.core.component.template;
  */
 public class TemplateNotFoundException extends TemplateException {
 
-    /** @serial */
     private static final long serialVersionUID = 7022297599581677022L;
 
     private final String templateId;
 
     /**
      * Instantiates a new TemplateNotFoundException.
-     *
      * @param templateId the template id
      */
     public TemplateNotFoundException(String templateId) {
@@ -37,7 +35,6 @@ public class TemplateNotFoundException extends TemplateException {
 
     /**
      * Gets the template id.
-     *
      * @return the template id
      */
     public String getTemplateId() {

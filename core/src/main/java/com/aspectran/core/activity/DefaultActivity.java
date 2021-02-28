@@ -37,7 +37,6 @@ public class DefaultActivity extends AbstractActivity {
 
     /**
      * Instantiates a new DefaultActivity.
-     *
      * @param context the activity context
      */
     public DefaultActivity(ActivityContext context) {

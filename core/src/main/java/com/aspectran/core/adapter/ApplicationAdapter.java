@@ -28,21 +28,18 @@ public interface ApplicationAdapter {
 
     /**
      * Returns the class loader used by the current application.
-     *
      * @return the class loader
      */
     ClassLoader getClassLoader();
 
     /**
      * Returns the base path that the current application is mapped to.
-     *
      * @return the base path for this application
      */
     String getBasePath();
 
     /**
      * Returns the real path of the existing file as a canonical pathname string.
-     *
      * @param filePath the relative path or classpath of the file to find
      * @return the canonical pathname string of the found file
      * @throws IOException If there is no file corresponding to the classpath,
@@ -54,7 +51,6 @@ public interface ApplicationAdapter {
 
     /**
      * Returns the real path of an existing file.
-     *
      * @param filePath the relative path or classpath of the file to find
      * @return the real path of the found file
      * @throws IOException If there is no file corresponding to the classpath,
@@ -66,7 +62,6 @@ public interface ApplicationAdapter {
 
     /**
      * Returns the value for an attribute with the given name.
-     *
      * @param <T> the value type
      * @param name the name of the attribute
      * @return the value for the attribute
@@ -76,7 +71,6 @@ public interface ApplicationAdapter {
     /**
      * Sets the value for the attribute of the given name,
      * replacing an existing value (if any).
-     *
      * @param name the name of the attribute
      * @param value the value for the attribute
      */
@@ -85,14 +79,12 @@ public interface ApplicationAdapter {
     /**
      * Returns an {@link Enumeration} containing the names
      * of the attributes available to this application.
-     *
      * @return the attribute names
      */
     Enumeration<String> getAttributeNames();
 
     /**
      * Removes an attribute set with the given name.
-     *
      * @param name the name of the attribute to be removed
      */
     void removeAttribute(String name);

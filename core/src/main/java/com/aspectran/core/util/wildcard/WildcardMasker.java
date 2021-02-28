@@ -26,7 +26,6 @@ public class WildcardMasker {
      * Erase the characters that does not corresponds to the wildcard, and
      * returns collect only the  remaining characters. In other words,
      * only the characters that correspond to wildcards are left.
-     *
      * @param pattern the pattern to match
      * @param input the input string
      * @return the remains string

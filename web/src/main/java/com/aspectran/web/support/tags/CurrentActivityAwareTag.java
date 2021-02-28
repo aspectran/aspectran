@@ -72,7 +72,6 @@ public abstract class CurrentActivityAwareTag extends TagSupport implements TryC
 
     /**
      * Called by doStartTag to perform the actual work.
-     *
      * @return same as TagSupport.doStartTag
      * @throws Exception any exception, any checked one other than
      *      a JspException gets wrapped in a JspException by doStartTag

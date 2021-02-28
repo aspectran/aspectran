@@ -29,7 +29,6 @@ public interface Parameters {
     /**
      * Returns whether the parameter can be added after the parameters instance
      * is created.
-     *
      * @return {@code true} if the parameter can be added after the parameters
      *      instance is created, otherwise {@code false}
      */
@@ -37,14 +36,12 @@ public interface Parameters {
 
     /**
      * Returns the owner of this Parameters.
-     *
      * @return the owner of this Parameters
      */
     Parameter getProprietor();
 
     /**
      * Specifies the owner of this Parameters.
-     *
      * @param proprietor the owner of this Parameters
      */
     void setProprietor(Parameter proprietor);
@@ -54,7 +51,6 @@ public interface Parameters {
      * <pre>
      * proprietor --&gt; container --&gt; proprietor == parent
      * </pre>
-     *
      * @return a {@code Parameter}
      */
     Parameter getParent();
@@ -62,21 +58,18 @@ public interface Parameters {
     /**
      * Returns its real name.
      * If no name is given, it returns the name given by the owner.
-     *
      * @return the actual name of this Parameters
      */
     String getActualName();
 
     /**
      * Specifies the actual name of this Parameters.
-     *
      * @param actualName the actual name of this Parameters
      */
     void setActualName(String actualName);
 
     /**
      * Returns the qualified name.
-     *
      * @return the qualified name
      */
     String getQualifiedName();
@@ -85,28 +78,24 @@ public interface Parameters {
 
     /**
      * Returns a map of the {@code ParameterValue}s.
-     *
      * @return a map of the {@code ParameterValue}s
      */
     Map<String, ParameterValue> getParameterValueMap();
 
     /**
      * Returns all the parameter names associated with this Parameters.
-     *
      * @return an array of all parameter names associated with this Parameters
      */
     String[] getParameterNames();
 
     /**
      * Returns all the parameter names associated with this Parameters.
-     *
      * @return the Set with all parameter names associated with this Parameters
      */
     Set<String> getParameterNameSet();
 
     /**
      * Returns whether this parameter exists.
-     *
      * @param name the name of the parameter to check
      * @return {@code true} if the specified parameter exists; {@code false} otherwise
      */
@@ -114,7 +103,6 @@ public interface Parameters {
 
     /**
      * Returns whether the specified parameter exists.
-     *
      * @param parameterKey the parameter definition
      * @return {@code true} if the specified parameter exists; {@code false} otherwise
      */
@@ -123,7 +111,6 @@ public interface Parameters {
     /**
      * Returns whether a value is assigned to the specified parameter.
      * Even if a null is assigned, it is valid.
-     *
      * @param name the name of the parameter to check
      * @return {@code true} if a parameter is assigned a value; {@code false} otherwise
      */
@@ -132,7 +119,6 @@ public interface Parameters {
     /**
      * Returns whether a value is assigned to the specified parameter.
      * Even if a null is assigned, it is valid.
-     *
      * @param parameterKey the parameter definition
      * @return {@code true} if a parameter is assigned a value; {@code false} otherwise
      */
@@ -140,7 +126,6 @@ public interface Parameters {
 
     /**
      * Returns whether a non-null value is assigned to the specified parameter.
-     *
      * @param name the name of the parameter to check
      * @return {@code true} if a non-null value is assigned a value; {@code false} otherwise
      */
@@ -148,7 +133,6 @@ public interface Parameters {
 
     /**
      * Returns whether a non-null value is assigned to the specified parameter.
-     *
      * @param parameterKey the parameter definition
      * @return {@code true} if a non-null value is assigned a value; {@code false} otherwise
      */
@@ -156,7 +140,6 @@ public interface Parameters {
 
     /**
      * Returns the Parameter with the specified name.
-     *
      * @param name the parameter name
      * @return the Parameter with the specified name, or {@code null} if it does not exist
      */
@@ -164,7 +147,6 @@ public interface Parameters {
 
     /**
      * Returns the Parameter corresponding to the specified parameter definition.
-     *
      * @param parameterKey the parameter definition
      * @return the Parameter corresponding to the specified parameter definition,
      *      or {@code null} if it does not exist
@@ -174,7 +156,6 @@ public interface Parameters {
     /**
      * Return the value for the specified parameter,
      * or {@code null} if the parameter does not exist.
-     *
      * @param name the parameter name
      * @return the value for the specified parameter, or {@code null}
      */
@@ -183,7 +164,6 @@ public interface Parameters {
     /**
      * Return the value for the specified parameter,
      * or {@code null} if the parameter does not exist.
-     *
      * @param parameterKey the parameter definition
      * @return the value for the specified parameter, or {@code null}
      */
@@ -193,7 +173,6 @@ public interface Parameters {
 
     /**
      * Put a value into the Parameter with the specified name.
-     *
      * @param name the parameter name
      * @param value the value of parameter
      */
@@ -201,7 +180,6 @@ public interface Parameters {
 
     /**
      * Put a value into the Parameter with the specified parameter definition.
-     *
      * @param parameterKey the parameter definition
      * @param value the value of parameter
      */
@@ -210,7 +188,6 @@ public interface Parameters {
     /**
      * Put a value of the parameter corresponding to the given name.
      * If the value is null, ignore it.
-     *
      * @param name the parameter name
      * @param value the value of parameter
      */
@@ -219,7 +196,6 @@ public interface Parameters {
     /**
      * Put a value of the parameter corresponding to the given parameter definition.
      * If the value is null, ignore it.
-     *
      * @param parameterKey the parameter definition
      * @param value the value of parameter
      */
@@ -232,7 +208,6 @@ public interface Parameters {
     /**
      * Return the value for the specified parameter,
      * or {@code null} if the parameter does not exist.
-     *
      * @param name the parameter name
      * @return the value for the specified parameter, or {@code null}
      */
@@ -241,7 +216,6 @@ public interface Parameters {
     /**
      * Return the value for the specified parameter,
      * or {@code defaultValue} if the parameter does not exist.
-     *
      * @param name the parameter name
      * @param defaultValue the default value to return if no value is found
      * @return the value for the specified parameter, or {@code defaultValue}
@@ -251,7 +225,6 @@ public interface Parameters {
     /**
      * Return the value for the specified parameter,
      * or {@code null} if the parameter does not exist.
-     *
      * @param name the parameter name
      * @return the value for the specified parameter, or {@code null}
      */
@@ -260,7 +233,6 @@ public interface Parameters {
     /**
      * Return the value for the specified parameter,
      * or {@code null} if the parameter does not exist.
-     *
      * @param parameterKey the parameter definition
      * @return the value for the specified parameter, or {@code null}
      */
@@ -269,7 +241,6 @@ public interface Parameters {
     /**
      * Return the value for the specified parameter,
      * or {@code defaultValue} if the parameter does not exist.
-     *
      * @param parameterKey the parameter definition
      * @param defaultValue the default value to return if no value is found
      * @return the value for the specified parameter, or {@code defaultValue}
@@ -279,7 +250,6 @@ public interface Parameters {
     /**
      * Return the value for the specified parameter,
      * or {@code null} if the parameter does not exist.
-     *
      * @param parameterKey the parameter definition
      * @return the value for the specified parameter, or {@code null}
      */
@@ -288,7 +258,6 @@ public interface Parameters {
     /**
      * Return the value for the specified parameter,
      * or {@code null} if the parameter does not exist.
-     *
      * @param name the parameter name
      * @return the value for the specified parameter, or {@code null}
      */
@@ -297,7 +266,6 @@ public interface Parameters {
     /**
      * Return the value for the specified parameter,
      * or {@code null} if the parameter does not exist.
-     *
      * @param parameterKey the parameter definition
      * @return the value for the specified parameter, or {@code null}
      */
@@ -306,7 +274,6 @@ public interface Parameters {
     /**
      * Return the value for the specified parameter,
      * or {@code null} if the parameter does not exist.
-     *
      * @param name the parameter name
      * @return the value for the specified parameter, or {@code null}
      */
@@ -315,7 +282,6 @@ public interface Parameters {
     /**
      * Return the value for the specified parameter,
      * or {@code defaultValue} if the parameter does not exist.
-     *
      * @param name the parameter name
      * @param defaultValue the default value to return if no value is found
      * @return the value for the specified parameter, or {@code defaultValue}
@@ -325,7 +291,6 @@ public interface Parameters {
     /**
      * Return the value for the specified parameter,
      * or {@code null} if the parameter does not exist.
-     *
      * @param name the parameter name
      * @return the value for the specified parameter, or {@code null}
      */
@@ -334,7 +299,6 @@ public interface Parameters {
     /**
      * Return the value for the specified parameter,
      * or {@code null} if the parameter does not exist.
-     *
      * @param parameterKey the parameter definition
      * @return the value for the specified parameter, or {@code null}
      */
@@ -343,7 +307,6 @@ public interface Parameters {
     /**
      * Return the value for the specified parameter,
      * or {@code defaultValue} if the parameter does not exist.
-     *
      * @param parameterKey the parameter definition
      * @param defaultValue the default value to return if no value is found
      * @return the value for the specified parameter, or {@code defaultValue}
@@ -353,7 +316,6 @@ public interface Parameters {
     /**
      * Return the value for the specified parameter,
      * or {@code null} if the parameter does not exist.
-     *
      * @param parameterKey the parameter definition
      * @return the value for the specified parameter, or {@code null}
      */
@@ -362,7 +324,6 @@ public interface Parameters {
     /**
      * Return the value for the specified parameter,
      * or {@code null} if the parameter does not exist.
-     *
      * @param name the parameter name
      * @return the value for the specified parameter, or {@code null}
      */
@@ -371,7 +332,6 @@ public interface Parameters {
     /**
      * Return the value for the specified parameter,
      * or {@code null} if the parameter does not exist.
-     *
      * @param parameterKey the parameter definition
      * @return the value for the specified parameter, or {@code null}
      */
@@ -380,7 +340,6 @@ public interface Parameters {
     /**
      * Return the value for the specified parameter,
      * or {@code null} if the parameter does not exist.
-     *
      * @param name the parameter name
      * @return the value for the specified parameter, or {@code null}
      */
@@ -389,7 +348,6 @@ public interface Parameters {
     /**
      * Return the value for the specified parameter,
      * or {@code defaultValue} if the parameter does not exist.
-     *
      * @param name the parameter name
      * @param defaultValue the default value to return if no value is found
      * @return the value for the specified parameter, or {@code defaultValue}
@@ -399,7 +357,6 @@ public interface Parameters {
     /**
      * Return the value for the specified parameter,
      * or {@code null} if the parameter does not exist.
-     *
      * @param name the parameter name
      * @return the value for the specified parameter, or {@code null}
      */
@@ -408,7 +365,6 @@ public interface Parameters {
     /**
      * Return the value for the specified parameter,
      * or {@code null} if the parameter does not exist.
-     *
      * @param parameterKey the parameter definition
      * @return the value for the specified parameter, or {@code null}
      */
@@ -417,7 +373,6 @@ public interface Parameters {
     /**
      * Return the value for the specified parameter,
      * or {@code defaultValue} if the parameter does not exist.
-     *
      * @param parameterKey the parameter definition
      * @param defaultValue the default value to return if no value is found
      * @return the value for the specified parameter, or {@code defaultValue}
@@ -427,7 +382,6 @@ public interface Parameters {
     /**
      * Return the value for the specified parameter,
      * or {@code null} if the parameter does not exist.
-     *
      * @param parameterKey the parameter definition
      * @return the value for the specified parameter, or {@code null}
      */
@@ -436,7 +390,6 @@ public interface Parameters {
     /**
      * Return the value for the specified parameter,
      * or {@code null} if the parameter does not exist.
-     *
      * @param name the parameter name
      * @return the value for the specified parameter, or {@code null}
      */
@@ -445,7 +398,6 @@ public interface Parameters {
     /**
      * Return the value for the specified parameter,
      * or {@code null} if the parameter does not exist.
-     *
      * @param parameterKey the parameter definition
      * @return the value for the specified parameter, or {@code null}
      */
@@ -454,7 +406,6 @@ public interface Parameters {
     /**
      * Return the value for the specified parameter,
      * or {@code null} if the parameter does not exist.
-     *
      * @param name the parameter name
      * @return the value for the specified parameter, or {@code null}
      */
@@ -463,7 +414,6 @@ public interface Parameters {
     /**
      * Return the value for the specified parameter,
      * or {@code defaultValue} if the parameter does not exist.
-     *
      * @param name the parameter name
      * @param defaultValue the default value to return if no value is found
      * @return the value for the specified parameter, or {@code defaultValue}
@@ -473,7 +423,6 @@ public interface Parameters {
     /**
      * Return the value for the specified parameter,
      * or {@code null} if the parameter does not exist.
-     *
      * @param name the parameter name
      * @return the value for the specified parameter, or {@code null}
      */
@@ -482,7 +431,6 @@ public interface Parameters {
     /**
      * Return the value for the specified parameter,
      * or {@code null} if the parameter does not exist.
-     *
      * @param parameterKey the parameter definition
      * @return the value for the specified parameter, or {@code null}
      */
@@ -491,7 +439,6 @@ public interface Parameters {
     /**
      * Return the value for the specified parameter,
      * or {@code defaultValue} if the parameter does not exist.
-     *
      * @param parameterKey the parameter definition
      * @param defaultValue the default value to return if no value is found
      * @return the value for the specified parameter, or {@code defaultValue}
@@ -501,7 +448,6 @@ public interface Parameters {
     /**
      * Return the value for the specified parameter,
      * or {@code null} if the parameter does not exist.
-     *
      * @param parameterKey the parameter definition
      * @return the value for the specified parameter, or {@code null}
      */
@@ -510,7 +456,6 @@ public interface Parameters {
     /**
      * Return the value for the specified parameter,
      * or {@code null} if the parameter does not exist.
-     *
      * @param name the parameter name
      * @return the value for the specified parameter, or {@code null}
      */
@@ -519,7 +464,6 @@ public interface Parameters {
     /**
      * Return the value for the specified parameter,
      * or {@code null} if the parameter does not exist.
-     *
      * @param parameterKey the parameter definition
      * @return the value for the specified parameter, or {@code null}
      */
@@ -528,7 +472,6 @@ public interface Parameters {
     /**
      * Return the value for the specified parameter,
      * or {@code null} if the parameter does not exist.
-     *
      * @param name the parameter name
      * @return the value for the specified parameter, or {@code null}
      */
@@ -537,7 +480,6 @@ public interface Parameters {
     /**
      * Return the value for the specified parameter,
      * or {@code defaultValue} if the parameter does not exist.
-     *
      * @param name the parameter name
      * @param defaultValue the default value to return if no value is found
      * @return the value for the specified parameter, or {@code defaultValue}
@@ -547,7 +489,6 @@ public interface Parameters {
     /**
      * Return the value for the specified parameter,
      * or {@code null} if the parameter does not exist.
-     *
      * @param name the parameter name
      * @return the value for the specified parameter, or {@code null}
      */
@@ -556,7 +497,6 @@ public interface Parameters {
     /**
      * Return the value for the specified parameter,
      * or {@code null} if the parameter does not exist.
-     *
      * @param parameterKey the parameter definition
      * @return the value for the specified parameter, or {@code null}
      */
@@ -565,7 +505,6 @@ public interface Parameters {
     /**
      * Return the value for the specified parameter,
      * or {@code defaultValue} if the parameter does not exist.
-     *
      * @param parameterKey the parameter definition
      * @param defaultValue the default value to return if no value is found
      * @return the value for the specified parameter, or {@code defaultValue}
@@ -575,7 +514,6 @@ public interface Parameters {
     /**
      * Return the value for the specified parameter,
      * or {@code null} if the parameter does not exist.
-     *
      * @param parameterKey the parameter definition
      * @return the value for the specified parameter, or {@code null}
      */
@@ -584,7 +522,6 @@ public interface Parameters {
     /**
      * Return the value for the specified parameter,
      * or {@code null} if the parameter does not exist.
-     *
      * @param name the parameter name
      * @return the value for the specified parameter, or {@code null}
      */
@@ -593,7 +530,6 @@ public interface Parameters {
     /**
      * Return the value for the specified parameter,
      * or {@code null} if the parameter does not exist.
-     *
      * @param parameterKey the parameter definition
      * @return the value for the specified parameter, or {@code null}
      */
@@ -602,7 +538,6 @@ public interface Parameters {
     /**
      * Return the value for the specified parameter,
      * or {@code null} if the parameter does not exist.
-     *
      * @param name the parameter name
      * @return the value for the specified parameter, or {@code null}
      */
@@ -611,7 +546,6 @@ public interface Parameters {
     /**
      * Return the value for the specified parameter,
      * or {@code defaultValue} if the parameter does not exist.
-     *
      * @param name the parameter name
      * @param defaultValue the default value to return if no value is found
      * @return the value for the specified parameter, or {@code defaultValue}
@@ -621,7 +555,6 @@ public interface Parameters {
     /**
      * Return the value for the specified parameter,
      * or {@code null} if the parameter does not exist.
-     *
      * @param name the parameter name
      * @return the value for the specified parameter, or {@code null}
      */
@@ -630,7 +563,6 @@ public interface Parameters {
     /**
      * Return the value for the specified parameter,
      * or {@code null} if the parameter does not exist.
-     *
      * @param parameterKey the parameter definition
      * @return the value for the specified parameter, or {@code null}
      */
@@ -639,7 +571,6 @@ public interface Parameters {
     /**
      * Return the value for the specified parameter,
      * or {@code defaultValue} if the parameter does not exist.
-     *
      * @param parameterKey the parameter definition
      * @param defaultValue the default value to return if no value is found
      * @return the value for the specified parameter, or {@code defaultValue}
@@ -649,7 +580,6 @@ public interface Parameters {
     /**
      * Return the value for the specified parameter,
      * or {@code null} if the parameter does not exist.
-     *
      * @param parameterKey the parameter definition
      * @return the value for the specified parameter, or {@code null}
      */
@@ -658,7 +588,6 @@ public interface Parameters {
     /**
      * Return the value for the specified parameter,
      * or {@code null} if the parameter does not exist.
-     *
      * @param name the parameter name
      * @return the value for the specified parameter, or {@code null}
      */
@@ -667,7 +596,6 @@ public interface Parameters {
     /**
      * Return the value for the specified parameter,
      * or {@code null} if the parameter does not exist.
-     *
      * @param parameterKey the parameter definition
      * @return the value for the specified parameter, or {@code null}
      */
@@ -676,7 +604,6 @@ public interface Parameters {
     /**
      * Return the value for the specified parameter,
      * or {@code null} if the parameter does not exist.
-     *
      * @param <T> the type parameter
      * @param name the parameter name
      * @return the value for the specified parameter, or {@code null}
@@ -686,7 +613,6 @@ public interface Parameters {
     /**
      * Return the value for the specified parameter,
      * or {@code null} if the parameter does not exist.
-     *
      * @param <T> the type parameter
      * @param name the parameter name
      * @return the value for the specified parameter, or {@code null}
@@ -696,7 +622,6 @@ public interface Parameters {
     /**
      * Return the value for the specified parameter,
      * or {@code null} if the parameter does not exist.
-     *
      * @param <T> the type parameter
      * @param parameterKey the parameter definition
      * @return the value for the specified parameter, or {@code null}
@@ -706,7 +631,6 @@ public interface Parameters {
     /**
      * Return the value for the specified parameter,
      * or {@code null} if the parameter does not exist.
-     *
      * @param <T> the type parameter
      * @param parameterKey the parameter definition
      * @return the value for the specified parameter, or {@code null}
@@ -716,7 +640,6 @@ public interface Parameters {
     /**
      * Return the value for the specified parameter,
      * or {@code null} if the parameter does not exist.
-     *
      * @param <T> the type parameter
      * @param name the parameter name
      * @return the value for the specified parameter, or {@code null}
@@ -726,7 +649,6 @@ public interface Parameters {
     /**
      * Return the value for the specified parameter,
      * or {@code null} if the parameter does not exist.
-     *
      * @param <T> the type parameter
      * @param parameterKey the parameter definition
      * @return the value for the specified parameter, or {@code null}

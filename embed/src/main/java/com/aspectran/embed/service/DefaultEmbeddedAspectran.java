@@ -182,7 +182,6 @@ public class DefaultEmbeddedAspectran extends AbstractEmbeddedAspectran {
 
     /**
      * Returns a new instance of {@code DefaultEmbeddedAspectran}.
-     *
      * @param aspectranConfig the parameters for aspectran configuration
      * @return the instance of {@code DefaultEmbeddedAspectran}
      */

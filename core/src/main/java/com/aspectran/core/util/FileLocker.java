@@ -43,7 +43,6 @@ public class FileLocker {
 
     /**
      * Instantiates a new FileLocker.
-     *
      * @param lockFile the file to lock
      */
     public FileLocker(File lockFile) {
@@ -55,7 +54,6 @@ public class FileLocker {
 
     /**
      * Try to lock the file and return true if the locking succeeds.
-     *
      * @return true if the locking succeeds; false if the lock is already held
      * @throws Exception if the lock could not be obtained for any reason
      */
@@ -92,7 +90,6 @@ public class FileLocker {
 
     /**
      * Releases the lock.
-     *
      * @throws Exception if the lock could not be released  for any reason
      */
     public void release() throws Exception {

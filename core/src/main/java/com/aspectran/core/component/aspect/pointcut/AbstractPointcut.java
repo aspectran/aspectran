@@ -124,7 +124,6 @@ public abstract class AbstractPointcut implements Pointcut {
     /**
      * Returns whether or not corresponding to the point cut pattern rules.
      * It is recognized to {@code true} if the operands are {@code null}.
-     *
      * @param pointcutPatternRule the pointcut pattern
      * @param transletName the translet name
      * @param beanId the bean id

@@ -148,7 +148,6 @@ public class DefaultShellService extends AbstractShellService {
 
     /**
      * Returns a new instance of {@code DefaultShellService}.
-     *
      * @param aspectranConfig the aspectran configuration
      * @param console the {@code Console} instance
      * @return the instance of {@code DefaultShellService}

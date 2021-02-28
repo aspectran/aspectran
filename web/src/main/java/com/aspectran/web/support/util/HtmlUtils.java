@@ -60,7 +60,6 @@ public abstract class HtmlUtils {
      * <a href="https://www.w3.org/TR/html4/sgml/entities.html">
      * https://www.w3.org/TR/html4/sgml/entities.html
      * </a></p>
-     *
      * @param input the (unescaped) input string
      * @return the escaped string
      */
@@ -79,7 +78,6 @@ public abstract class HtmlUtils {
      * <a href="https://www.w3.org/TR/html4/sgml/entities.html">
      * https://www.w3.org/TR/html4/sgml/entities.html
      * </a></p>
-     *
      * @param input the (unescaped) input string
      * @param encoding the name of a supported {@link java.nio.charset.Charset charset}
      * @return the escaped string
@@ -111,7 +109,6 @@ public abstract class HtmlUtils {
      * <a href="https://www.w3.org/TR/html4/sgml/entities.html">
      * https://www.w3.org/TR/html4/sgml/entities.html
      * </a></p>
-     *
      * @param input the (unescaped) input string
      * @return the escaped string
      */
@@ -130,7 +127,6 @@ public abstract class HtmlUtils {
      * <a href="https://www.w3.org/TR/html4/sgml/entities.html">
      * https://www.w3.org/TR/html4/sgml/entities.html
      * </a></p>
-     *
      * @param input the (unescaped) input string
      * @param encoding the name of a supported {@link java.nio.charset.Charset charset}
      * @return the escaped string
@@ -163,7 +159,6 @@ public abstract class HtmlUtils {
      * <a href="https://www.w3.org/TR/html4/sgml/entities.html">
      * https://www.w3.org/TR/html4/sgml/entities.html
      * </a></p>
-     *
      * @param input the (unescaped) input string
      * @return the escaped string
      */
@@ -182,7 +177,6 @@ public abstract class HtmlUtils {
      * <a href="https://www.w3.org/TR/html4/sgml/entities.html">
      * https://www.w3.org/TR/html4/sgml/entities.html
      * </a></p>
-     *
      * @param input the (unescaped) input string
      * @param encoding the name of a supported {@link java.nio.charset.Charset charset}
      * @return the escaped string
@@ -222,7 +216,6 @@ public abstract class HtmlUtils {
      * <a href="https://www.w3.org/TR/html4/sgml/entities.html">
      * https://www.w3.org/TR/html4/sgml/entities.html
      * </a></p>
-     *
      * @param input the (escaped) input string
      * @return the unescaped string
      */

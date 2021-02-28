@@ -39,7 +39,6 @@ public class InMemoryOutputStream extends ThresholdingOutputStream {
     /**
      * Constructs an instance of this class which will trigger throw
      * UnsupportedOperationException if the specified threshold is reached.
-     *
      * @param threshold the number of bytes at which to trigger an event
      */
     public InMemoryOutputStream(long threshold) {
@@ -50,7 +49,6 @@ public class InMemoryOutputStream extends ThresholdingOutputStream {
     /**
      * Returns the current output stream. This may be memory based or disk based, depending on the
      * current state with respect to the threshold.
-     *
      * @return the underlying output stream
      * @exception IOException if an error occurs
      */
@@ -71,7 +69,6 @@ public class InMemoryOutputStream extends ThresholdingOutputStream {
 
     /**
      * Determines whether or not the data for this output stream has been retained in memory.
-     *
      * @return always {@code true}
      */
     public boolean isInMemory() {
@@ -80,7 +77,6 @@ public class InMemoryOutputStream extends ThresholdingOutputStream {
 
     /**
      * Returns the data for this output stream as an array of bytes.
-     *
      * @return the data for this output stream, or {@code null} if no such data is available
      */
     public byte[] getData() {
@@ -89,7 +85,6 @@ public class InMemoryOutputStream extends ThresholdingOutputStream {
 
     /**
      * Closes underlying output stream, and mark this as closed
-     *
      * @exception IOException if an error occurs
      */
     @Override
@@ -101,7 +96,6 @@ public class InMemoryOutputStream extends ThresholdingOutputStream {
     /**
      * Writes the data from this output stream to the specified output stream, after it has been
      * closed.
-     *
      * @param out output stream to write to
      * @exception IOException if this stream is not yet closed or an error occurs
      */

@@ -43,7 +43,6 @@ public class InstantActivity extends CoreActivity {
 
     /**
      * Instantiates a new InstantActivity.
-     *
      * @param context the activity context
      */
     public InstantActivity(ActivityContext context) {

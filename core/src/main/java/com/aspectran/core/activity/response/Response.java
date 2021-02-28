@@ -29,7 +29,6 @@ public interface Response extends Replicable<Response> {
     /**
      * The result of the activity is processed into a specific response
      * form and then sent to the client.
-     *
      * @param activity the current Activity
      * @throws ResponseException the response exception
      */
@@ -37,21 +36,18 @@ public interface Response extends Replicable<Response> {
 
     /**
      * Gets the response type.
-     *
      * @return the response type
      */
     ResponseType getResponseType();
 
     /**
      * Gets the content type.
-     *
      * @return the content type
      */
     String getContentType();
 
     /**
      * Replicates and returns this response.
-     *
      * @return the new response
      */
     Response replicate();

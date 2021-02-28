@@ -184,7 +184,6 @@ public class WildcardPattern {
 
     /**
      * If the pattern matches then returns true.
-     *
      * @param compareString the compare string
      * @return true, if successful
      */
@@ -196,7 +195,6 @@ public class WildcardPattern {
      * Erase the characters that corresponds to the wildcard, and
      * returns collect only the remaining characters.
      * In other words, only it remains for the wildcard character.
-     *
      * @param nakedString the naked string
      * @return the masked string
      */

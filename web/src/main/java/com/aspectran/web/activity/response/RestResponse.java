@@ -32,14 +32,12 @@ public interface RestResponse extends CustomTransformer {
 
     /**
      * Specifies response data.
-     *
      * @param data the response data
      */
     RestResponse setData(Object data);
 
     /**
      * Specifies response data with a name.
-     *
      * @param name the name of the response data
      * @param data the response data
      */
@@ -50,7 +48,6 @@ public interface RestResponse extends CustomTransformer {
     /**
      * Sets whether to apply indentations and line breaks
      * when generating response data.
-     *
      * @param prettyPrint true if responding with indentations
      *                    and line breaks; otherwise false
      */

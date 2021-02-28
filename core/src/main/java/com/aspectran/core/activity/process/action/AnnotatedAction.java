@@ -72,7 +72,6 @@ public class AnnotatedAction implements Executable {
 
     /**
      * Instantiates a new AnnotatedMethodAction.
-     *
      * @param annotatedActionRule the annotated method action rule
      */
     public AnnotatedAction(AnnotatedActionRule annotatedActionRule) {
@@ -96,7 +95,6 @@ public class AnnotatedAction implements Executable {
 
     /**
      * Returns the annotated bean method action rule.
-     *
      * @return the annotated bean method action rule
      */
     public AnnotatedActionRule getAnnotatedActionRule() {

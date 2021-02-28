@@ -43,7 +43,6 @@ public class TextTransformResponse extends TransformResponse {
 
     /**
      * Instantiates a new TextTransformResponse.
-     *
      * @param transformRule the transform rule
      */
     public TextTransformResponse(TransformRule transformRule) {

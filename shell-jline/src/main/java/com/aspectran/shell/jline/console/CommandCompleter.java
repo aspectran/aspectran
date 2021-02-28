@@ -141,7 +141,7 @@ public class CommandCompleter implements Completer {
                     if (word == null || name.startsWith(word)) {
                         if (transletRule.hasPathVariables()) {
                             name = transletRule.getNamePattern().toString();
-                            name = name.replaceAll(" [*\\+\\?] | [*\\+\\?]$|[*\\+\\?]", " ").trim();
+                            name = name.replaceAll(" [*+?] | [*+?]$|[*+?]", " ").trim();
                         }
                         if (!name.isEmpty()) {
                             candidates.add(new Candidate(name, dispName, "translets",

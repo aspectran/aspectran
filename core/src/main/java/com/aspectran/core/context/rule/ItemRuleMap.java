@@ -26,7 +26,6 @@ import java.util.List;
  */
 public class ItemRuleMap extends LinkedHashMap<String, ItemRule> {
 
-    /** @serial */
     private static final long serialVersionUID = 192817512158305803L;
 
     private String profile;
@@ -43,7 +42,6 @@ public class ItemRuleMap extends LinkedHashMap<String, ItemRule> {
 
     /**
      * Adds a item rule.
-     *
      * @param itemRule the item rule
      * @return the item rule
      */
@@ -57,7 +55,6 @@ public class ItemRuleMap extends LinkedHashMap<String, ItemRule> {
     /**
      * Auto-naming for unnamed item.
      * Auto-naming if did not specify the name of the item.
-     *
      * @param itemRule the item rule
      */
     private void autoNaming(ItemRule itemRule) {

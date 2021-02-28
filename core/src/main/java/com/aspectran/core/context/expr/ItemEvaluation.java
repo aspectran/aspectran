@@ -50,7 +50,6 @@ public class ItemEvaluation extends TokenEvaluation implements ItemEvaluator {
 
     /**
      * Instantiates a new ItemEvaluation.
-     *
      * @param activity the current Activity
      */
     public ItemEvaluation(Activity activity) {

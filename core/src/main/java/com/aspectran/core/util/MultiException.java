@@ -38,7 +38,7 @@ public class MultiException extends Exception {
         if (e == null) {
             throw new IllegalArgumentException();
         }
-        if(nested == null) {
+        if (nested == null) {
             initCause(e);
             nested = new ArrayList<>();
         } else {
@@ -57,11 +57,7 @@ public class MultiException extends Exception {
     }
 
     public List<Throwable> getThrowables() {
-        if(nested == null) {
-            return Collections.emptyList();
-        } else {
-            return nested;
-        }
+        return (nested == null ? Collections.emptyList() : nested);
     }
 
     public Throwable getThrowable(int i) {
@@ -73,12 +69,11 @@ public class MultiException extends Exception {
      * If this multi exception is empty then no action is taken. If it
      * contains a single exception that is thrown, otherwise the this
      * multi exception is thrown.
-     *
      * @exception Exception the Error or Exception if nested is 1, or the
      *      MultiException itself if nested is more than 1.
      */
     public void ifExceptionThrow() throws Exception {
-        if(nested == null || nested.isEmpty()) {
+        if (nested == null || nested.isEmpty()) {
             return;
         }
         if (nested.size() == 1) {
@@ -98,13 +93,12 @@ public class MultiException extends Exception {
      * If this multi exception is empty then no action is taken. If it
      * contains a single error or runtime exception that is thrown, otherwise the this
      * multi exception is thrown, wrapped in a runtime exception.
-     *
      * @exception Error if this exception contains exactly 1 {@link Error}
      * @exception RuntimeException if this exception contains 1 {@link Throwable} but
      *      it is not an error, or it contains more than 1 {@link Throwable} of any type
      */
     public void ifExceptionThrowRuntime() throws Error {
-        if(nested == null || nested.isEmpty()) {
+        if (nested == null || nested.isEmpty()) {
             return;
         }
         if (nested.size() == 1) {
@@ -125,11 +119,10 @@ public class MultiException extends Exception {
      * If this multi exception is empty then no action is taken. If it
      * contains a any exceptions then this
      * multi exception is thrown.
-     *
      * @throws MultiException the MultiException if there are nested exception
      */
     public void ifExceptionThrowMulti() throws MultiException {
-        if(nested != null && !nested.isEmpty()) {
+        if (nested != null && !nested.isEmpty()) {
             throw this;
         }
     }
@@ -138,7 +131,7 @@ public class MultiException extends Exception {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(MultiException.class.getSimpleName());
-        if(nested == null || nested.size() <= 0) {
+        if (nested == null || nested.size() <= 0) {
             sb.append("[]");
         } else {
             sb.append(nested);

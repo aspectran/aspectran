@@ -41,7 +41,6 @@ public interface WebService extends CoreService {
 
     /**
      * Returns a reference to the {@link ServletContext} in which this WebService is running.
-     *
      * @return a {@link ServletContext} object, used by this WebService to interact with
      *      its servlet container
      */
@@ -49,7 +48,6 @@ public interface WebService extends CoreService {
 
     /**
      * Executes web activity.
-     *
      * @param request current HTTP servlet request
      * @param response current HTTP servlet response
      * @throws IOException If an error occurs during Activity execution

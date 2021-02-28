@@ -74,7 +74,6 @@ public abstract class IdleTimeout {
     /**
      * <p>Sets the idle timeout in milliseconds.</p>
      * <p>A value that is less than or zero disables the idle timeout checks.</p>
-     *
      * @param idleTimeout the idle timeout in milliseconds
      * @see #getIdleTimeout()
      */
@@ -175,7 +174,6 @@ public abstract class IdleTimeout {
 
     /**
      * This abstract method is called when the idle timeout has expired.
-     *
      * @param timeout a TimeoutException
      */
     protected abstract void onIdleExpired(TimeoutException timeout);
@@ -183,7 +181,6 @@ public abstract class IdleTimeout {
     /**
      * This abstract method should be called to check if idle timeouts
      * should still be checked.
-     *
      * @return true if the entity monitored should still be checked for idle timeouts
      */
     public abstract boolean isOpen();

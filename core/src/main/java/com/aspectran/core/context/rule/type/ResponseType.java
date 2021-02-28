@@ -42,7 +42,6 @@ public enum ResponseType {
     /**
      * Returns a {@code ResponseType} with a value represented
      * by the specified {@code String}.
-     *
      * @param alias the response type as a {@code String}
      * @return a {@code ResponseType}, may be {@code null}
      */

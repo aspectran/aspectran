@@ -23,14 +23,12 @@ import com.aspectran.core.context.rule.IllegalRuleException;
  */
 public class BeanRuleException extends IllegalRuleException {
 
-    /** @serial */
     private static final long serialVersionUID = -8362121026201328444L;
 
     private final BeanRule beanRule;
 
     /**
      * Instantiates a new BeanRuleException.
-     *
      * @param beanRule the bean rule
      */
     public BeanRuleException(BeanRule beanRule) {
@@ -40,7 +38,6 @@ public class BeanRuleException extends IllegalRuleException {
 
     /**
      * Instantiates a new BeanRuleException.
-     *
      * @param beanRule the bean rule
      * @param cause the root cause
      */
@@ -51,7 +48,6 @@ public class BeanRuleException extends IllegalRuleException {
 
     /**
      * Instantiates a new BeanRuleException.
-     *
      * @param msg the detail message
      * @param beanRule the bean rule
      */
@@ -62,7 +58,6 @@ public class BeanRuleException extends IllegalRuleException {
 
     /**
      * Instantiates a new BeanRuleException.
-     *
      * @param beanRule the bean rule
      * @param msg the detail message
      * @param cause the root cause
@@ -74,7 +69,6 @@ public class BeanRuleException extends IllegalRuleException {
 
     /**
      * Gets bean rule.
-     *
      * @return the bean rule
      */
     public BeanRule getBeanRule() {

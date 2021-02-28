@@ -26,7 +26,6 @@ public interface Nodelet {
     /**
      * For a registered XPath, the NodeletParser will call the Nodelet's 
      * process method for processing. 
-     *
      * @param attrs the attributes of the start element
      * @throws Exception if an error occurs while processing the nodelet
      */

@@ -31,7 +31,6 @@ public interface ClassLoaderAware extends Aware {
      * Specify the {@code ClassLoader} to provide. The {@code ClassLoader} can be set
      * when the object is created, and allows the creator to provide the appropriate class
      * loader to be used by the object when when loading classes and resources.
-     *
      * @param classLoader the {@code ClassLoader} to provide
      */
     @AvoidAdvice

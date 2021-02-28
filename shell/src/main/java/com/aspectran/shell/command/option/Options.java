@@ -38,7 +38,6 @@ import java.util.Map;
  */
 public class Options implements Serializable {
 
-    /** @serial */
     private static final long serialVersionUID = -6416293453155205092L;
 
     /** A map of the options with the character key */
@@ -83,7 +82,6 @@ public class Options implements Serializable {
 
     /**
      * Add the specified option group.
-     *
      * @param group the OptionGroup that is to be added
      * @return the resulting Options instance
      */
@@ -104,7 +102,6 @@ public class Options implements Serializable {
 
     /**
      * Lists the OptionGroups that are members of this Options instance.
-     *
      * @return a Collection of OptionGroup instances
      */
     Collection<OptionGroup> getOptionGroups() {
@@ -113,7 +110,6 @@ public class Options implements Serializable {
 
     /**
      * Adds an option instance.
-     *
      * @param opt the option that is to be added
      * @return the resulting Options instance
      */
@@ -139,7 +135,6 @@ public class Options implements Serializable {
 
     /**
      * Returns {@code true} if no options have been added.
-     *
      * @return {@code true} if no options have been added
      */
     public boolean isEmpty() {
@@ -148,7 +143,6 @@ public class Options implements Serializable {
 
     /**
      * Retrieve a read-only list of options in this set.
-     *
      * @return read-only Collection of {@link Option} objects in this descriptor
      */
     public Collection<Option> getAllOptions() {
@@ -157,7 +151,6 @@ public class Options implements Serializable {
 
     /**
      * Returns the Options for use by the HelpFormatter.
-     *
      * @return the List of Options
      */
     public List<Option> getHelpOptions() {
@@ -166,7 +159,6 @@ public class Options implements Serializable {
 
     /**
      * Returns the required options.
-     *
      * @return read-only List of required options
      */
     public List<Object> getRequiredOptions() {
@@ -176,7 +168,6 @@ public class Options implements Serializable {
     /**
      * Retrieve the {@link Option} matching the long or short name specified.
      * <p>The leading hyphens in the name are ignored (up to 2).</p>
-     *
      * @param name short or long name of the {@link Option}
      * @return the option represented by name
      */
@@ -189,7 +180,6 @@ public class Options implements Serializable {
 
     /**
      * Returns the options with a long name starting with the name specified.
-     *
      * @param name the partial name of the option
      * @return the options matching the partial name specified, or an empty list if none matches
      */
@@ -209,7 +199,6 @@ public class Options implements Serializable {
 
     /**
      * Returns whether the named {@link Option} is a member of this {@link Options}.
-     *
      * @param name short or long name of the {@link Option}
      * @return true if the named {@link Option} is a member of this {@link Options}
      */
@@ -219,7 +208,6 @@ public class Options implements Serializable {
 
     /**
      * Returns whether the named {@link Option} is a member of this {@link Options}.
-     *
      * @param name long name of the {@link Option}
      * @return true if the named {@link Option} is a member of this {@link Options}
      */
@@ -229,7 +217,6 @@ public class Options implements Serializable {
 
     /**
      * Returns whether the named {@link Option} is a member of this {@link Options}.
-     *
      * @param name short name of the {@link Option}
      * @return true if the named {@link Option} is a member of this {@link Options}
      */
@@ -239,7 +226,6 @@ public class Options implements Serializable {
 
     /**
      * Returns the OptionGroup the <code>opt</code> belongs to.
-     *
      * @param opt the option whose OptionGroup is being queried.
      * @return the OptionGroup if <code>opt</code> is part of an OptionGroup, otherwise return null
      */
@@ -249,7 +235,6 @@ public class Options implements Serializable {
 
     /**
      * Dump state, suitable for debugging.
-     *
      * @return the stringified form of this object
      */
     @Override

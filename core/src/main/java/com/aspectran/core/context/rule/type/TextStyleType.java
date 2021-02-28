@@ -40,7 +40,6 @@ public enum TextStyleType {
     /**
      * Returns an {@code TextStyleType} with a value represented
      * by the specified {@code String}.
-     *
      * @param alias the action type as a {@code String}
      * @return an {@code TextStyleType}, may be {@code null}
      */

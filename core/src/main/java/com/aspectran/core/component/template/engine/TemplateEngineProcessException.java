@@ -22,12 +22,10 @@ package com.aspectran.core.component.template.engine;
  */
 public class TemplateEngineProcessException extends Exception {
 
-    /** @serial */
     private static final long serialVersionUID = 3136366504332981036L;
 
     /**
      * Instantiates a new TemplateEngineProcessException.
-     *
      * @param msg the detail message
      */
     public TemplateEngineProcessException(String msg) {
@@ -36,7 +34,6 @@ public class TemplateEngineProcessException extends Exception {
 
     /**
      * Instantiates a new TemplateEngineProcessException.
-     *
      * @param msg the detail message
      * @param cause the root cause
      */
@@ -46,7 +43,6 @@ public class TemplateEngineProcessException extends Exception {
 
     /**
      * Instantiates a new TemplateEngineProcessException.
-     *
      * @param cause the root cause
      */
     public TemplateEngineProcessException(Throwable cause) {

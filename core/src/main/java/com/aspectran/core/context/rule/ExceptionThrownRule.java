@@ -69,7 +69,6 @@ public class ExceptionThrownRule implements ActionRuleApplicable, ResponseRuleAp
 
     /**
      * Returns the advice action.
-     *
      * @return the advice action
      */
     public Executable getAction() {
@@ -82,7 +81,6 @@ public class ExceptionThrownRule implements ActionRuleApplicable, ResponseRuleAp
 
     /**
      * Returns the action type of the executable action.
-     *
      * @return the action type
      */
     public ActionType getActionType() {
@@ -109,7 +107,6 @@ public class ExceptionThrownRule implements ActionRuleApplicable, ResponseRuleAp
 
     /**
      * Gets the response map.
-     *
      * @return the response map
      */
     public ResponseMap getResponseMap() {

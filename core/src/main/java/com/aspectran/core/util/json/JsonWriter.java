@@ -82,7 +82,6 @@ public class JsonWriter implements Flushable, Closeable {
      * Instantiates a new JsonWriter.
      * Pretty printing is enabled by default, and the indent string is
      * set to "  " (two spaces).
-     *
      * @param out the character-output stream
      */
     public JsonWriter(Writer out) {
@@ -132,7 +131,6 @@ public class JsonWriter implements Flushable, Closeable {
 
     /**
      * Writes an object to the writer.
-     *
      * @param object the object to write to the writer.
      * @throws IOException if an I/O error has occurred.
      */
@@ -244,7 +242,6 @@ public class JsonWriter implements Flushable, Closeable {
 
     /**
      * Writes a key name to the writer.
-     *
      * @param name the string to write to the writer
      */
     public JsonWriter writeName(String name) {
@@ -276,7 +273,6 @@ public class JsonWriter implements Flushable, Closeable {
     /**
      * Writes a string to the writer.
      * If {@code value} is null, write a null string ("").
-     *
      * @param value the string to write to the writer
      * @throws IOException if an I/O error has occurred
      */
@@ -292,7 +288,6 @@ public class JsonWriter implements Flushable, Closeable {
 
     /**
      *  Writes a {@code Boolean} object to the writer.
-     *
      * @param value a {@code Boolean} object to write to the writer
      * @throws IOException if an I/O error has occurred
      */
@@ -308,7 +303,6 @@ public class JsonWriter implements Flushable, Closeable {
 
     /**
      *  Writes a {@code Number} object to the writer.
-     *
      * @param value a {@code Number} object to write to the writer
      * @throws IOException if an I/O error has occurred
      */
@@ -324,7 +318,6 @@ public class JsonWriter implements Flushable, Closeable {
 
     /**
      * Writes a "null" string to the writer.
-     *
      * @throws IOException if an I/O error has occurred
      */
     public void writeNull() throws IOException {
@@ -333,7 +326,6 @@ public class JsonWriter implements Flushable, Closeable {
 
     /**
      * Writes a "null" string to the writer.
-     *
      * @param force true if forces should be written null value
      * @throws IOException if an I/O error has occurred
      */
@@ -350,7 +342,6 @@ public class JsonWriter implements Flushable, Closeable {
     /**
      * Writes a string directly to the writer stream without
      * quoting or escaping.
-     *
      * @param json the string to write to the writer
      * @throws IOException if an I/O error has occurred
      */
@@ -376,7 +367,6 @@ public class JsonWriter implements Flushable, Closeable {
 
     /**
      * Writes a comma character to the writer.
-     *
      * @throws IOException if an I/O error has occurred
      */
     private void writeComma() throws IOException {
@@ -386,7 +376,6 @@ public class JsonWriter implements Flushable, Closeable {
 
     /**
      * Begins encoding a new object.
-     *
      * @throws IOException if an I/O error has occurred
      */
     public void beginObject() throws IOException {
@@ -399,7 +388,6 @@ public class JsonWriter implements Flushable, Closeable {
 
     /**
      * Ends encoding the current object.
-     *
      * @throws IOException if an I/O error has occurred
      */
     public void endObject() throws IOException {
@@ -414,7 +402,6 @@ public class JsonWriter implements Flushable, Closeable {
 
     /**
      * Begins encoding a new array.
-     *
      * @throws IOException if an I/O error has occurred
      */
     public void beginArray() throws IOException {
@@ -427,7 +414,6 @@ public class JsonWriter implements Flushable, Closeable {
 
     /**
      * Ends encoding the current array.
-     *
      * @throws IOException if an I/O error has occurred
      */
     public void endArray() throws IOException {
@@ -442,7 +428,6 @@ public class JsonWriter implements Flushable, Closeable {
 
     /**
      * Writes a tab character to the writer.
-     *
      * @throws IOException if an I/O error has occurred
      */
     private void indent() throws IOException {
@@ -455,7 +440,6 @@ public class JsonWriter implements Flushable, Closeable {
 
     /**
      * Writes a new line character to the writer.
-     *
      * @throws IOException if an I/O error has occurred
      */
     private void nextLine() throws IOException {
@@ -467,7 +451,6 @@ public class JsonWriter implements Flushable, Closeable {
     /**
      * Ensures all buffered data is written to the underlying
      * {@link Writer} and flushes that writer.
-     *
      * @throws IOException if an I/O error has occurred
      */
     @Override
@@ -499,7 +482,6 @@ public class JsonWriter implements Flushable, Closeable {
      * right places. A backslash will be inserted within &lt;/, allowing JSON
      * text to be delivered in HTML. In JSON text, a string cannot contain a
      * control character or an unescaped quote or backslash.
-     *
      * @param string the input String, may be null
      * @return a String correctly formatted for insertion in a JSON text
      */

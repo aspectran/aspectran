@@ -25,7 +25,6 @@ import java.util.Map;
  */
 public class TrimDirectiveGroup extends HashMap<String, Map<String, TrimDirective>> {
 
-    /** @serial */
     private static final long serialVersionUID = 6709732757055800503L;
 
     public TrimDirectiveGroup(TrimDirective[] trimDirectives) {

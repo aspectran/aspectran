@@ -39,7 +39,6 @@ public class BeanUtils {
 
     /**
      * Invokes the static method of the specified class to get the bean property value.
-     *
      * @param beanClass the class for which to lookup
      * @param name the property name
      * @return the property value (as an Object)
@@ -68,7 +67,6 @@ public class BeanUtils {
 
     /**
      * Invokes the static method of the specified class to get the bean property value.
-     *
      * @param beanClass the class for which to lookup
      * @param name the property name
      * @param value the value to which this property is to be set
@@ -150,7 +148,6 @@ public class BeanUtils {
      * Return the value of the specified property of the specified bean,
      * no matter which property reference format is used, with no type
      * conversions.
-     *
      * @param bean the bean whose property is to be extracted
      * @param name possibly indexed and/or nested name of the property to be extracted
      * @return the property value (as an Object)
@@ -176,7 +173,6 @@ public class BeanUtils {
      * Return the value of the specified property of the specified bean,
      * no matter which property reference format is used, with no type
      * conversions.
-     *
      * @param bean the bean whose property is to be extracted
      * @param name the name of the property to be extracted that does not allow nesting
      * @return the property value (as an Object)
@@ -214,7 +210,6 @@ public class BeanUtils {
 
     /**
      * Sets the value of the specified property of the specified bean.
-     *
      * @param bean the bean whose property is to be modified
      * @param name possibly indexed and/or nested name of the property to be modified
      * @param value the value to which this property is to be set
@@ -255,7 +250,6 @@ public class BeanUtils {
 
     /**
      * Sets the value of the specified property of the specified bean.
-     *
      * @param bean the bean whose property is to be modified
      * @param name the name of the property to be modified that does not allow nesting
      * @param value the value to which this property is to be set
@@ -422,7 +416,6 @@ public class BeanUtils {
 
     /**
      * Checks to see if a bean has a writable property be a given name.
-     *
      * @param bean the bean to check
      * @param name the property name to check for
      * @return true if the property exists and is writable
@@ -450,7 +443,6 @@ public class BeanUtils {
 
     /**
      * Checks to see if a bean has a readable property be a given name.
-     *
      * @param bean the bean to check
      * @param name the property name to check for
      * @return true if the property exists and is readable
@@ -478,7 +470,6 @@ public class BeanUtils {
 
     /**
      * Examines a Throwable object and gets it's root cause
-     *
      * @param t the exception to examine
      * @return the root cause
      */
@@ -498,7 +489,6 @@ public class BeanUtils {
     /**
      * Returns the class that the setter expects to receive as a parameter when
      * setting a property value.
-     *
      * @param bean the bean to check
      * @param name the name of the property
      * @return the type of the property
@@ -532,7 +522,6 @@ public class BeanUtils {
 
     /**
      * Returns the class that the getter will return when reading a property value.
-     *
      * @param bean the bean to check
      * @param name the name of the property
      * @return the type of the property
@@ -566,7 +555,6 @@ public class BeanUtils {
 
     /**
      * Returns the class that the getter will return when reading a property value.
-     *
      * @param type the class to check
      * @param name the name of the property
      * @return the type of the property
@@ -589,7 +577,6 @@ public class BeanUtils {
     /**
      * Returns the class that the setter expects to receive as a parameter when
      * setting a property value.
-     *
      * @param type The class to check
      * @param name the name of the property
      * @return the type of the property
@@ -611,7 +598,6 @@ public class BeanUtils {
 
     /**
      * Returns an array of the readable properties exposed by a bean.
-     *
      * @param bean the bean
      * @return the readable properties
      */
@@ -622,7 +608,6 @@ public class BeanUtils {
     /**
      * Returns an array of readable properties exposed by the bean,
      * except those specified by NonSerializable.
-     *
      * @param bean the bean
      * @return the readable properties without non serializable
      */
@@ -632,7 +617,6 @@ public class BeanUtils {
 
     /**
      * Returns an array of the writable properties exposed by a bean.
-     *
      * @param bean the bean
      * @return the properties
      */
@@ -642,7 +626,6 @@ public class BeanUtils {
 
     /**
      * Gets an instance of BeanDescriptor for the specified class.
-     *
      * @param beanClass the class for which to lookup the ClassDescriptor cache.
      * @return the ClassDescriptor cache for the class
      */

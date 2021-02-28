@@ -53,7 +53,6 @@ public class ArrayStack<E> extends ArrayList<E> {
 
     /**
      * Constructs a new empty <code>ArrayStack</code> with an initial size.
-     *
      * @param initialSize the initial size to use
      * @throws IllegalArgumentException if the specified initial size is negative
      */
@@ -63,7 +62,6 @@ public class ArrayStack<E> extends ArrayList<E> {
 
     /**
      * Returns the top item off of this stack without removing it.
-     *
      * @return the top item on the stack
      * @throws EmptyStackException if the stack is empty
      */
@@ -78,7 +76,6 @@ public class ArrayStack<E> extends ArrayList<E> {
     /**
      * Returns the n'th item down (zero-relative) from the top of this
      * stack without removing it.
-     *
      * @param n the number of items down to go
      * @return the n'th item on the stack, zero relative
      * @throws EmptyStackException if there are not enough items on the
@@ -104,7 +101,6 @@ public class ArrayStack<E> extends ArrayList<E> {
 
     /**
      * Pops the top item off of this stack and return it.
-     *
      * @return the top item on the stack
      * @throws EmptyStackException if the stack is empty
      */
@@ -119,7 +115,6 @@ public class ArrayStack<E> extends ArrayList<E> {
     /**
      * Pushes a new item onto the top of this stack. The pushed item is also
      * returned. This is equivalent to calling <code>add</code>.
-     *
      * @param item the item to be added
      * @return the item just pushed
      */
@@ -130,7 +125,6 @@ public class ArrayStack<E> extends ArrayList<E> {
 
     /**
      * Replaces the top item of this stack with another item without removing it.
-     *
      * @return the top item previously on the stack
      * @throws EmptyStackException if the stack is empty
      */
@@ -145,7 +139,6 @@ public class ArrayStack<E> extends ArrayList<E> {
     /**
      * Replaces the n'th item down (zero-relative) from the top of this
      * stack with another item without removing it.
-     *
      * @param n the number of items down to go
      * @return the n'th item previously on the stack, zero relative
      * @throws EmptyStackException if there are not enough items on the
@@ -166,7 +159,6 @@ public class ArrayStack<E> extends ArrayList<E> {
      * present on the stack, return <code>-1</code> instead.  The
      * <code>equals()</code> method is used to compare to the items
      * in this stack.
-     *
      * @param object the object to be searched for
      * @return the 1-based depth into the stack of the object, or -1 if not found
      */

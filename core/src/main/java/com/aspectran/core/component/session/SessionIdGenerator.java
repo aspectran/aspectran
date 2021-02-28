@@ -53,7 +53,6 @@ public class SessionIdGenerator {
 
     /**
      * Returns a new unique session id.
-     *
      * @param seedTerm the seed for RNG
      * @return a new unique session id
      */

@@ -216,7 +216,6 @@ public class DefaultSession implements Session {
 
     /**
      * Returns the current number of requests that are active in the Session.
-     *
      * @return the number of active requests for this session
      */
     protected long getRequests() {
@@ -230,7 +229,6 @@ public class DefaultSession implements Session {
      * the time remaining before the session expires
      * and any idle eviction time configured.
      * The timer value will be the lesser of the above.
-     *
      * @param now the time at which to calculate remaining expiry
      * @return the time remaining before expiry or inactivity timeout
      */
@@ -402,7 +400,6 @@ public class DefaultSession implements Session {
 
     /**
      * Check to see if session has expired as at the time given.
-     *
      * @param time the time since the epoch in ms
      * @return true if expired
      */
@@ -415,7 +412,6 @@ public class DefaultSession implements Session {
 
     /**
      * Check if the Session has been idle longer than a number of seconds.
-     *
      * @param sec the number of seconds
      * @return true if the session has been idle longer than the interval
      */
@@ -429,7 +425,6 @@ public class DefaultSession implements Session {
     /**
      * Call binding and attribute listeners based on the new and old values of
      * the attribute.
-     *
      * @param name name of the attribute
      * @param newValue new value of the attribute
      * @param oldValue previous value of the attribute
@@ -450,7 +445,6 @@ public class DefaultSession implements Session {
     /**
      * Unbind value if value implements {@link SessionBindingListener}
      * (calls {@link SessionBindingListener#valueUnbound(Session, String, Object)})
-     *
      * @param name the name with which the object is bound or unbound
      * @param value the bound value
      */
@@ -463,7 +457,6 @@ public class DefaultSession implements Session {
     /**
      * Bind value if value implements {@link SessionBindingListener}
      * (calls {@link SessionBindingListener#valueBound(Session, String, Object)})
-     *
      * @param name the name with which the object is bound or unbound
      * @param value the bound value
      */
@@ -475,7 +468,6 @@ public class DefaultSession implements Session {
 
     /**
      * Check that the session can be modified.
-     *
      * @throws IllegalStateException if the session is invalid
      */
     protected void checkValidForWrite() {
@@ -492,7 +484,6 @@ public class DefaultSession implements Session {
 
     /**
      * Check that the session data can be read.
-     *
      * @throws IllegalStateException if the session is invalid
      */
     protected void checkValidForRead() {
@@ -509,7 +500,6 @@ public class DefaultSession implements Session {
 
     /**
      * Grab the lock on the session.
-     *
      * @return the lock
      */
     protected AutoLock lock() {

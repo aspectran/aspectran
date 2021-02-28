@@ -50,7 +50,6 @@ public class BeanReferenceInspector {
 
     /**
      * Reserves to bean reference inspection.
-     *
      * @param beanId the bean id
      * @param beanClass the bean class
      * @param referenceable the object to be inspected
@@ -70,7 +69,6 @@ public class BeanReferenceInspector {
 
     /**
      * Inspect bean reference.
-     *
      * @param beanRuleRegistry the bean rule registry
      * @throws BeanReferenceException the bean reference exception
      * @throws BeanRuleException if an illegal bean rule is found

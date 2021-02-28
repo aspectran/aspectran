@@ -289,7 +289,6 @@ public class CookieLocaleResolver extends AbstractLocaleResolver {
      * Parse the given locale value coming from an incoming cookie.
      * <p>The default implementation calls {@link StringUtils#parseLocale(String)},
      * accepting the {@link Locale#toString} format as well as BCP 47 language tags.</p>
-     *
      * @param localeValue the locale value to parse
      * @return the corresponding {@code Locale} instance
      * @see StringUtils#parseLocale(String)

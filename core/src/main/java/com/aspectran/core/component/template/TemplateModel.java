@@ -25,7 +25,6 @@ import java.util.Locale;
  */
 public class TemplateModel extends ActivityData {
 
-    /** @serial */
     private static final long serialVersionUID = -1414688689441309354L;
 
     public TemplateModel(Activity activity) {

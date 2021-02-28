@@ -32,7 +32,6 @@ public class RelevantAspectRuleHolder {
 
     /**
      * Gets the aspect advice rule registry.
-     *
      * @return the aspect advice rule registry
      */
     public AspectAdviceRuleRegistry getAspectAdviceRuleRegistry() {
@@ -41,7 +40,6 @@ public class RelevantAspectRuleHolder {
 
     /**
      * Sets the aspect advice rule registry.
-     *
      * @param aspectAdviceRuleRegistry the new aspect advice rule registry
      */
     public void setAspectAdviceRuleRegistry(AspectAdviceRuleRegistry aspectAdviceRuleRegistry) {
@@ -50,7 +48,6 @@ public class RelevantAspectRuleHolder {
 
     /**
      * Gets the dynamic aspect rule list.
-     *
      * @return the dynamic aspect rule list
      */
     public List<AspectRule> getDynamicAspectRuleList() {
@@ -59,7 +56,6 @@ public class RelevantAspectRuleHolder {
 
     /**
      * Sets the relevant aspect rule list.
-     *
      * @param dynamicAspectRuleList the new relevant aspect rule list
      */
     public void setDynamicAspectRuleList(List<AspectRule> dynamicAspectRuleList) {

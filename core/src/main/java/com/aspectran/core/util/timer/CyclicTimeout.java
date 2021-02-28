@@ -76,7 +76,6 @@ public abstract class CyclicTimeout implements Destroyable {
      * <p>Schedules a timeout, even if already set, cancelled or expired.</p>
      * <p>If a timeout is already set, it will be cancelled and replaced
      * by the new one.</p>
-     *
      * @param delay The period of time before the timeout expires.
      * @param units The unit of time of the period.
      * @return true if the timeout was already set.
@@ -120,7 +119,6 @@ public abstract class CyclicTimeout implements Destroyable {
     /**
      * <p>Cancels this CyclicTimeout so that it won't expire.</p>
      * <p>After being cancelled, this CyclicTimeout can be scheduled again.</p>
-     *
      * @return true if this CyclicTimeout was scheduled to expire
      * @see #destroy()
      */

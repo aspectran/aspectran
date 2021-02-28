@@ -109,7 +109,6 @@ public class ConcurrentReferenceHashMap<K, V> extends AbstractMap<K, V> implemen
 
     /**
      * Create a new {@code ConcurrentReferenceHashMap} instance.
-     *
      * @param initialCapacity the initial capacity of the map
      */
     public ConcurrentReferenceHashMap(int initialCapacity) {
@@ -118,7 +117,6 @@ public class ConcurrentReferenceHashMap<K, V> extends AbstractMap<K, V> implemen
 
     /**
      * Create a new {@code ConcurrentReferenceHashMap} instance.
-     *
      * @param initialCapacity the initial capacity of the map
      * @param loadFactor the load factor. When the average number of references per table
      * exceeds this value resize will be attempted
@@ -129,7 +127,6 @@ public class ConcurrentReferenceHashMap<K, V> extends AbstractMap<K, V> implemen
 
     /**
      * Create a new {@code ConcurrentReferenceHashMap} instance.
-     *
      * @param initialCapacity the initial capacity of the map
      * @param concurrencyLevel the expected number of threads that will concurrently
      * write to the map
@@ -140,7 +137,6 @@ public class ConcurrentReferenceHashMap<K, V> extends AbstractMap<K, V> implemen
 
     /**
      * Create a new {@code ConcurrentReferenceHashMap} instance.
-     *
      * @param initialCapacity the initial capacity of the map
      * @param referenceType the reference type used for entries (soft or weak)
      */
@@ -150,7 +146,6 @@ public class ConcurrentReferenceHashMap<K, V> extends AbstractMap<K, V> implemen
 
     /**
      * Create a new {@code ConcurrentReferenceHashMap} instance.
-     *
      * @param initialCapacity the initial capacity of the map
      * @param loadFactor the load factor. When the average number of references per
      * table exceeds this value, resize will be attempted.
@@ -163,7 +158,6 @@ public class ConcurrentReferenceHashMap<K, V> extends AbstractMap<K, V> implemen
 
     /**
      * Create a new {@code ConcurrentReferenceHashMap} instance.
-     *
      * @param initialCapacity the initial capacity of the map
      * @param loadFactor the load factor. When the average number of references per
      * table exceeds this value, resize will be attempted.
@@ -207,7 +201,6 @@ public class ConcurrentReferenceHashMap<K, V> extends AbstractMap<K, V> implemen
     /**
      * Factory method that returns the {@link ReferenceManager}.
      * This method will be called once for each {@link Segment}.
-     *
      * @return a new reference manager
      */
     protected ReferenceManager createReferenceManager() {
@@ -218,7 +211,6 @@ public class ConcurrentReferenceHashMap<K, V> extends AbstractMap<K, V> implemen
      * Get the hash for a given object, apply an additional hash function to reduce
      * collisions. This implementation uses the same Wang/Jenkins algorithm as
      * {@link ConcurrentHashMap}. Subclasses can override to provide alternative hashing.
-     *
      * @param o the object to hash (may be null)
      * @return the resulting hash code
      */
@@ -259,7 +251,6 @@ public class ConcurrentReferenceHashMap<K, V> extends AbstractMap<K, V> implemen
     /**
      * Return a {@link Reference} to the {@link Entry} for the specified {@code key},
      * or {@code null} if not found.
-     *
      * @param key the key (can be {@code null})
      * @param restructure types of restructure allowed during this call
      * @return the reference, or {@code null} if not found
@@ -430,7 +421,6 @@ public class ConcurrentReferenceHashMap<K, V> extends AbstractMap<K, V> implemen
     /**
      * Calculate a shift value that can be used to create a power-of-two value between
      * the specified maximum and minimum values.
-     *
      * @param minimumValue the minimum value
      * @param maximumValue the maximum value
      * @return the calculated shift (use {@code 1 << shift} to obtain a value)
@@ -691,7 +681,6 @@ public class ConcurrentReferenceHashMap<K, V> extends AbstractMap<K, V> implemen
     /**
      * A reference to an {@link Entry} contained in the map. Implementations are usually
      * wrappers around specific Java reference implementations (e.g., {@link SoftReference}).
-     *
      * @param <K> the key type
      * @param <V> the value type
      */
@@ -725,7 +714,6 @@ public class ConcurrentReferenceHashMap<K, V> extends AbstractMap<K, V> implemen
 
     /**
      * A single map entry.
-     *
      * @param <K> the key type
      * @param <V> the value type
      */

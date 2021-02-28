@@ -54,7 +54,6 @@ public class DispatchRule implements Replicable<DispatchRule> {
 
     /**
      * Gets the dispatch name.
-     *
      * @return the dispatch name
      */
     public String getName() {
@@ -63,7 +62,6 @@ public class DispatchRule implements Replicable<DispatchRule> {
 
     /**
      * Gets the dispatch name.
-     *
      * @param activity the activity
      * @return the dispatch name
      */
@@ -78,7 +76,6 @@ public class DispatchRule implements Replicable<DispatchRule> {
 
     /**
      * Sets the dispatch name.
-     *
      * @param name the new dispatch name
      */
     public void setName(String name) {
@@ -103,7 +100,6 @@ public class DispatchRule implements Replicable<DispatchRule> {
 
     /**
      * Sets the dispatch name and its name tokens.
-     *
      * @param name the new dispatch name
      * @param nameTokens the name tokens
      */
@@ -114,7 +110,6 @@ public class DispatchRule implements Replicable<DispatchRule> {
 
     /**
      * Gets the tokens of the dispatch name.
-     *
      * @return the tokens of the dispatch name
      */
     public Token[] getNameTokens() {
@@ -124,7 +119,6 @@ public class DispatchRule implements Replicable<DispatchRule> {
     /**
      * Gets the id or class name of the view dispatcher bean that
      * implements {@link ViewDispatcher}.
-     *
      * @return the id or class name of the view dispatcher bean
      */
     public String getDispatcherName() {
@@ -134,7 +128,6 @@ public class DispatchRule implements Replicable<DispatchRule> {
     /**
      * Gets the id or class name of the view dispatcher bean that
      * implements {@link ViewDispatcher}.
-     *
      * @param dispatcherName the id or class name of the view dispatcher bean
      */
     public void setDispatcherName(String dispatcherName) {
@@ -143,7 +136,6 @@ public class DispatchRule implements Replicable<DispatchRule> {
 
     /**
      * Gets the content type.
-     *
      * @return the content type
      */
     public String getContentType() {
@@ -152,7 +144,6 @@ public class DispatchRule implements Replicable<DispatchRule> {
 
     /**
      * Sets the content type.
-     *
      * @param contentType the new content type
      */
     public void setContentType(String contentType) {
@@ -161,7 +152,6 @@ public class DispatchRule implements Replicable<DispatchRule> {
 
     /**
      * Gets the character encoding.
-     *
      * @return the character encoding
      */
     public String getEncoding() {
@@ -170,7 +160,6 @@ public class DispatchRule implements Replicable<DispatchRule> {
 
     /**
      * Sets the character encoding.
-     *
      * @param encoding the character encoding to set
      */
     public void setEncoding(String encoding) {
@@ -187,7 +176,6 @@ public class DispatchRule implements Replicable<DispatchRule> {
 
     /**
      * Returns whether the default response.
-     *
      * @return whether the default response
      */
     public Boolean getDefaultResponse() {
@@ -196,7 +184,6 @@ public class DispatchRule implements Replicable<DispatchRule> {
 
     /**
      * Returns whether the default response.
-     *
      * @return true, if is default response
      */
     public boolean isDefaultResponse() {
@@ -205,7 +192,6 @@ public class DispatchRule implements Replicable<DispatchRule> {
 
     /**
      * Sets whether the default response.
-     *
      * @param defaultResponse whether the default response
      */
     public void setDefaultResponse(Boolean defaultResponse) {
@@ -224,7 +210,6 @@ public class DispatchRule implements Replicable<DispatchRule> {
 
     /**
      * Returns a string representation of {@code DispatchRule} with used {@code Dispatcher}.
-     *
      * @param viewDispatcher the view dispatcher
      * @param targetName the new dispatch name
      * @return a string representation of {@code DispatchRule}.
@@ -243,7 +228,6 @@ public class DispatchRule implements Replicable<DispatchRule> {
 
     /**
      * Returns a new instance of DispatchRule.
-     *
      * @param name the dispatch name
      * @param dispatcherName the id or class name of the view dispatcher bean
      * @param contentType the content type
@@ -268,7 +252,6 @@ public class DispatchRule implements Replicable<DispatchRule> {
 
     /**
      * Returns a new instance of DispatchRule.
-     *
      * @param name the dispatch name
      * @param dispatcher the id or class name of the view dispatcher bean
      * @param contentType the content type
@@ -283,7 +266,6 @@ public class DispatchRule implements Replicable<DispatchRule> {
 
     /**
      * Returns a new instance of DispatchRule.
-     *
      * @param name the dispatch name
      * @return the dispatch rule
      * @throws IllegalRuleException if an illegal rule is found
@@ -299,7 +281,6 @@ public class DispatchRule implements Replicable<DispatchRule> {
 
     /**
      * Returns a new derived instance of DispatchRule.
-     *
      * @param dispatchRule an instance of DispatchRule
      * @return the dispatch rule
      */

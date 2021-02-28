@@ -47,14 +47,12 @@ public interface ActivityContext {
 
     /**
      * Gets the description of this ActivityContext.
-     *
      * @return the description of this ActivityContext
      */
     String getDescription();
 
     /**
      * Returns the Aspectran Service that created the current ActivityContext.
-     *
      * @return the root service
      */
     CoreService getRootService();
@@ -62,70 +60,60 @@ public interface ActivityContext {
     /**
      * Sets the Aspectran Service that created the current ActivityContext.
      * It is set only once, just after the ActivityContext is created.
-     *
      * @param rootService the root service
      */
     void setRootService(CoreService rootService);
 
     /**
      * Returns the class loader used by the current application.
-     *
      * @return the class loader
      */
     ApplicationAdapter getApplicationAdapter();
 
     /**
      * Gets the environment.
-     *
      * @return the environment
      */
     Environment getEnvironment();
 
     /**
      * Gets the aspect rule registry.
-     *
      * @return the aspect rule registry
      */
     AspectRuleRegistry getAspectRuleRegistry();
 
     /**
      * Gets the bean registry.
-     *
      * @return the bean registry
      */
     BeanRegistry getBeanRegistry();
 
     /**
      * Gets the schedule rule registry.
-     *
      * @return the schedule rule registry
      */
     ScheduleRuleRegistry getScheduleRuleRegistry();
 
     /**
      * Gets the template renderer.
-     *
      * @return the template renderer
      */
     TemplateRenderer getTemplateRenderer();
 
     /**
      * Gets the translet rule registry.
-     *
      * @return the translet rule registry
      */
     TransletRuleRegistry getTransletRuleRegistry();
 
     /**
      * Gets the message source.
-     *
      * @return the message source
      */
     MessageSource getMessageSource();
 
     /**
      * Gets the default activity.
-     *
      * @return the default activity
      */
     Activity getDefaultActivity();
@@ -133,14 +121,12 @@ public interface ActivityContext {
     /**
      * Gets the available activity.
      * If there is no current activity, the application default activity is returned.
-     *
      * @return the available activity
      */
     Activity getAvailableActivity();
 
     /**
      * Gets the current activity.
-     *
      * @return the current activity
      * @throws InactivityStateException if there is no current activity
      */
@@ -148,7 +134,6 @@ public interface ActivityContext {
 
     /**
      * Sets the current activity.
-     *
      * @param activity the new current activity
      */
     void setCurrentActivity(Activity activity);
@@ -160,7 +145,6 @@ public interface ActivityContext {
 
     /**
      * Returns whether there is current activity.
-     *
      * @return {@code true} if there is current activity, {@code false} otherwise
      */
     boolean hasCurrentActivity();

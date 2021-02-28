@@ -21,7 +21,6 @@ package com.aspectran.shell.command.option;
  */
 public class AlreadySelectedException extends OptionParserException {
 
-    /** @serial */
     private static final long serialVersionUID = -1818262614499753083L;
 
     /** The option group selected. */
@@ -33,7 +32,6 @@ public class AlreadySelectedException extends OptionParserException {
     /**
      * Construct a new {@code AlreadySelectedException}
      * with the specified detail message.
-     *
      * @param message the detail message
      */
     public AlreadySelectedException(final String message) {
@@ -43,7 +41,6 @@ public class AlreadySelectedException extends OptionParserException {
     /**
      * Construct a new {@code AlreadySelectedException}
      * for the specified option group.
-     *
      * @param group  the option group already selected
      * @param option the option that triggered the exception
      */
@@ -56,7 +53,6 @@ public class AlreadySelectedException extends OptionParserException {
 
     /**
      * Returns the option group where another option has been selected.
-     *
      * @return the related option group
      */
     public OptionGroup getOptionGroup() {
@@ -65,7 +61,6 @@ public class AlreadySelectedException extends OptionParserException {
 
     /**
      * Returns the option that was added to the group and triggered the exception.
-     *
      * @return the related option
      */
     public Option getOption() {

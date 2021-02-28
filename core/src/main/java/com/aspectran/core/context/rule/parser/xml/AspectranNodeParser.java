@@ -71,7 +71,6 @@ public class AspectranNodeParser {
 
     /**
      * Instantiates a new AspectranNodeParser.
-     *
      * @param assistant the assistant for Context Builder
      */
     public AspectranNodeParser(ActivityRuleAssistant assistant) {
@@ -80,7 +79,6 @@ public class AspectranNodeParser {
 
     /**
      * Instantiates a new AspectranNodeParser.
-     *
      * @param assistant the context builder assistant
      * @param validating true if the parser produced will validate documents
      *      as they are parsed; false otherwise
@@ -136,7 +134,6 @@ public class AspectranNodeParser {
 
     /**
      * Parses the aspectran configuration.
-     *
      * @param ruleAppender the rule appender
      * @throws Exception the exception
      */

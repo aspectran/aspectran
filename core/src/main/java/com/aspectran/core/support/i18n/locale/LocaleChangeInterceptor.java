@@ -60,7 +60,6 @@ public class LocaleChangeInterceptor {
     /**
      * Set the name of the parameter that contains a locale specification
      * in a locale change request. Default is "locale".
-     *
      * @param localeParamName the locale parameter name
      */
     public void setLocaleParamName(String localeParamName) {
@@ -70,7 +69,6 @@ public class LocaleChangeInterceptor {
     /**
      * Set the name of the parameter that contains a timezone specification
      * in a locale change request. Default is "timezone".
-     *
      * @param timezoneParamName the timezone parameter name
      */
     public void setTimeZoneParamName(String timezoneParamName) {
@@ -80,7 +78,6 @@ public class LocaleChangeInterceptor {
     /**
      * Return the name of the parameter that contains a locale specification
      * in a locale change request.
-     *
      * @return the locale parameter name
      */
     public String getLocaleParamName() {
@@ -90,7 +87,6 @@ public class LocaleChangeInterceptor {
     /**
      * Return the name of the parameter that contains a timezone specification
      * in a timezone change request.
-     *
      * @return the time zone parameter name
      */
     public String getTimeZoneParamName() {
@@ -99,7 +95,6 @@ public class LocaleChangeInterceptor {
 
     /**
      * Configure the request method(s) over which the locale can be changed.
-     *
      * @param requestMethods the request methods
      */
     public void setRequestMethods(String... requestMethods) {
@@ -113,7 +108,6 @@ public class LocaleChangeInterceptor {
 
     /**
      * Return the configured request methods.
-     *
      * @return the request methods
      */
     public String[] getRequestMethods() {
@@ -122,7 +116,6 @@ public class LocaleChangeInterceptor {
 
     /**
      * Set whether to ignore an invalid value for the locale parameter.
-     *
      * @param ignoreInvalidLocale whether ignoring invalid locale
      */
     public void setIgnoreInvalidLocale(boolean ignoreInvalidLocale) {
@@ -131,7 +124,6 @@ public class LocaleChangeInterceptor {
 
     /**
      * Return whether to ignore an invalid value for the locale parameter.
-     *
      * @return whether ignoring invalid locale
      */
     public boolean isIgnoreInvalidLocale() {
@@ -210,7 +202,6 @@ public class LocaleChangeInterceptor {
      * Parse the given locale value as coming from a request parameter.
      * <p>The default implementation calls {@link StringUtils#parseLocale(String)},
      * accepting the {@link Locale#toString} format as well as BCP 47 language tags.</p>
-     *
      * @param localeValue the locale value to parse
      * @return the corresponding {@code Locale} instance
      */

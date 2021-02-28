@@ -25,14 +25,12 @@ import com.aspectran.core.context.rule.DispatchRule;
  */
 public class DispatchResponseException extends ResponseException {
 
-    /** @serial */
     private static final long serialVersionUID = 6318844460136930428L;
 
     private final DispatchRule dispatchRule;
 
     /**
      * Constructor to create exception to wrap another exception and pass a message.
-     *
      * @param dispatchRule the dispatch rule
      * @param cause the real cause of the exception
      */
@@ -43,7 +41,6 @@ public class DispatchResponseException extends ResponseException {
 
     /**
      * Constructor to create exception to wrap another exception and pass a message.
-     *
      * @param dispatchRule the dispatch rule
      * @param msg the detail message
      * @param cause the real cause of the exception
@@ -55,7 +52,6 @@ public class DispatchResponseException extends ResponseException {
 
     /**
      * Constructor to create exception to wrap another exception and pass a message.
-     *
      * @param dispatchRule the dispatch rule
      * @param msg the detail message
      */
@@ -66,7 +62,6 @@ public class DispatchResponseException extends ResponseException {
 
     /**
      * Gets the dispatch rule.
-     *
      * @return the dispatch rule
      */
     public DispatchRule getDispatchRule() {

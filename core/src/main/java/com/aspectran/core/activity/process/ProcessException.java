@@ -24,7 +24,6 @@ import com.aspectran.core.activity.ActivityException;
  */
 public class ProcessException extends ActivityException {
 
-    /** @serial */
     private static final long serialVersionUID = 7290974002627109441L;
 
     /**
@@ -37,7 +36,6 @@ public class ProcessException extends ActivityException {
 
     /**
      * Constructor to create exception to wrap another exception and pass a message.
-     *
      * @param msg the message
      * @param cause the real cause of the exception
      */

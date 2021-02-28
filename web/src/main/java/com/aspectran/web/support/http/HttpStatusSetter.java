@@ -24,7 +24,6 @@ public class HttpStatusSetter {
 
     /**
      * Sets the status code.
-     *
      * @param httpStatus the http status code
      * @param translet the Translet instance
      */
@@ -34,7 +33,6 @@ public class HttpStatusSetter {
 
     /**
      * Sets the status code.
-     *
      * @param statusCode the http status code
      * @param translet the Translet instance
      */
@@ -56,7 +54,6 @@ public class HttpStatusSetter {
      *   <li>TRACE an entity containing the request message as received
      *     by the end server.</li>
      * </ul>
-     *
      * @param translet the Translet instance
      */
     public static void ok(Translet translet) {
@@ -67,7 +64,6 @@ public class HttpStatusSetter {
      * {@code 201 Created}.
      * The request has succeeded and a new resource has been created as a result of it.
      * This is typically the response sent after a PUT request.
-     *
      * @param translet the Translet instance
      */
     public static void created(Translet translet) {
@@ -81,7 +77,6 @@ public class HttpStatusSetter {
      * The newly created resource can be referenced by the URI(s) returned in the entity
      * of the response,with the most specific URI for the resource given by
      * a Location header field.
-     *
      * @param translet the Translet instance
      * @param location a location header set to the given URI
      */
@@ -99,7 +94,6 @@ public class HttpStatusSetter {
      * an asynchronous response indicating the outcome of processing the request.
      * It is intended for cases where another process or server handles the request,
      * or for batch processing.
-     *
      * @param translet the Translet instance
      */
     public static void accepted(Translet translet) {
@@ -111,7 +105,6 @@ public class HttpStatusSetter {
      * The server successfully processed the request and is not returning any content.
      * The 204 response MUST NOT include a message-body, and thus is always terminated
      * by the first empty line after the header fields.
-     *
      * @param translet the Translet instance
      */
     public static void noContent(Translet translet) {
@@ -122,7 +115,6 @@ public class HttpStatusSetter {
      * {@code 301 Moved Permanently}.
      * This response code means that URI of requested resource has been changed.
      * Any future references to this resource SHOULD use one of the returned URIs.
-     *
      * @param translet the Translet instance
      */
     public static void movedPermanently(Translet translet) {
@@ -137,7 +129,6 @@ public class HttpStatusSetter {
      * The new URI is not a substitute reference for the originally requested resource.
      * The 303 response MUST NOT be cached, but the response to the second (redirected)
      * request might be cacheable.
-     *
      * @param translet the Translet instance
      */
     public static void seeOther(Translet translet) {
@@ -149,7 +140,6 @@ public class HttpStatusSetter {
      * This is used for caching purposes.
      * It is telling to client that response has not been modified.
      * So, client can continue to use same cached version of response.
-     *
      * @param translet the Translet instance
      */
     public static void notModified(Translet translet) {
@@ -160,7 +150,6 @@ public class HttpStatusSetter {
      * {@code 307 Temporary Redirect}.
      * The target resource resides temporarily under a different URI and the user agent
      * MUST NOT change the request method if it performs an automatic redirection to that URI.
-     *
      * @param translet the Translet instance
      */
     public static void temporaryRedirect(Translet translet) {
@@ -172,7 +161,6 @@ public class HttpStatusSetter {
      * The server cannot or will not process the request due to something that is perceived
      * to be a client error (e.g., malformed request syntax, invalid request message framing,
      * or deceptive request routing).
-     *
      * @param translet the Translet instance
      */
     public static void badRequest(Translet translet) {
@@ -183,7 +171,6 @@ public class HttpStatusSetter {
      * {@code 401 Unauthorized}.
      * The request was a legal request, but the server is refusing to respond to it.
      * For use when authentication is possible but has failed or not yet been provided.
-     *
      * @param translet the Translet instance
      */
     public static void unauthorized(Translet translet) {
@@ -193,7 +180,6 @@ public class HttpStatusSetter {
     /**
      * {@code 403 Forbidden}.
      * The request was a legal request, but the server is refusing to respond to it.
-     *
      * @param translet the Translet instance
      */
     public static void forbidden(Translet translet) {
@@ -205,7 +191,6 @@ public class HttpStatusSetter {
      * The server has not found anything matching the Request-URI.
      * The requested resource could not be found but may be available again
      * in the future. Subsequent requests by the client are permissible.
-     *
      * @param translet the Translet instance
      */
     public static void notFound(Translet translet) {
@@ -217,7 +202,6 @@ public class HttpStatusSetter {
      * The request method is known by the server but has been disabled
      * and cannot be used. The two mandatory methods, GET and HEAD,
      * must never be disabled and should not return this error code.
-     *
      * @param translet the Translet instance
      */
     public static void methodNotAllowed(Translet translet) {
@@ -228,7 +212,6 @@ public class HttpStatusSetter {
      * {@code 406 Not Acceptable}.
      * The requested resource is capable of generating only content not
      * acceptable according to the Accept headers sent in the request.
-     *
      * @param translet the Translet instance
      */
     public static void notAcceptable(Translet translet) {
@@ -238,7 +221,6 @@ public class HttpStatusSetter {
     /**
      * {@code 409 Conflict}.
      * The request could not be completed because of a conflict.
-     *
      * @param translet the Translet instance
      */
     public static void conflict(Translet translet) {
@@ -249,7 +231,6 @@ public class HttpStatusSetter {
      * {@code 412 Precondition failed}.
      * The server does not meet one of the preconditions that
      * the requester put on the request.
-     *
      * @param translet the Translet instance
      */
     public static void preconditionFailed(Translet translet) {
@@ -261,7 +242,6 @@ public class HttpStatusSetter {
      * The server is refusing to service the request because
      * the entity of the request is in a format not supported by
      * the requested resource for the requested method.
-     *
      * @param translet the Translet instance
      */
     public static void unsupportedMediaType(Translet translet) {
@@ -272,7 +252,6 @@ public class HttpStatusSetter {
      * {@code 500 Internal Server Error}.
      * The server encountered an unexpected condition which
      * prevented it from fulfilling the request.
-     *
      * @param translet the Translet instance
      */
     public static void internalServerError(Translet translet) {

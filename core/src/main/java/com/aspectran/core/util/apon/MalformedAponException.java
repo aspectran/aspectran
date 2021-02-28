@@ -22,12 +22,10 @@ import com.aspectran.core.util.StringUtils;
  */
 public class MalformedAponException extends AponParseException {
 
-    /** @serial */
     private static final long serialVersionUID = -2012813522496665651L;
 
     /**
      * Constructor to create exception with a message.
-     *
      * @param msg a message to associate with the exception
      */
     public MalformedAponException(String msg) {
@@ -36,7 +34,6 @@ public class MalformedAponException extends AponParseException {
 
     /**
      * Constructor to create exception with a message.
-     *
      * @param lineNumber the line number
      * @param line the character line
      * @param tline the trimmed character line
@@ -48,7 +45,6 @@ public class MalformedAponException extends AponParseException {
 
     /**
      * Constructor to create exception with a message.
-     *
      * @param lineNumber the line number
      * @param line the character line
      * @param tline the trimmed character line
@@ -62,7 +58,6 @@ public class MalformedAponException extends AponParseException {
 
     /**
      * Create a detail message.
-     *
      * @param lineNumber the line number
      * @param line the character line
      * @param tline the trimmed character line

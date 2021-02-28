@@ -77,7 +77,6 @@ public class CoreActivity extends AdviceActivity {
 
     /**
      * Instantiates a new CoreActivity.
-     *
      * @param context the activity context
      */
     protected CoreActivity(ActivityContext context) {
@@ -86,7 +85,6 @@ public class CoreActivity extends AdviceActivity {
 
     /**
      * Prepare for the activity.
-     *
      * @param requestName the request name
      * @throws TransletNotFoundException thrown if the translet is not found
      * @throws ActivityPrepareException thrown when an exception occurs while preparing an activity
@@ -103,7 +101,6 @@ public class CoreActivity extends AdviceActivity {
 
     /**
      * Prepare for the activity.
-     *
      * @param transletRule the translet rule
      * @throws ActivityPrepareException thrown when an exception occurs while preparing an activity
      */
@@ -113,7 +110,6 @@ public class CoreActivity extends AdviceActivity {
 
     /**
      * Prepare for the activity.
-     *
      * @param requestName the request name
      * @param transletRule the translet rule
      * @throws ActivityPrepareException thrown when an exception occurs while preparing an activity
@@ -124,7 +120,6 @@ public class CoreActivity extends AdviceActivity {
 
     /**
      * Prepare for the activity.
-     *
      * @param requestName the request name
      * @param requestMethod the request method
      * @throws TransletNotFoundException thrown if the translet is not found
@@ -137,7 +132,6 @@ public class CoreActivity extends AdviceActivity {
 
     /**
      * Prepare for the activity.
-     *
      * @param requestName the request name
      * @param requestMethod the request method
      * @throws TransletNotFoundException thrown if the translet is not found
@@ -160,7 +154,6 @@ public class CoreActivity extends AdviceActivity {
     /**
      * Prepares a new activity for the Translet Rule by taking
      * the results of the process that was created earlier.
-     *
      * @param requestName the request name
      * @param requestMethod the request method
      * @param transletRule the translet rule
@@ -419,7 +412,6 @@ public class CoreActivity extends AdviceActivity {
 
     /**
      * Execute an action.
-     *
      * @param action the executable action
      * @param contentResult the content result
      */
@@ -527,7 +519,6 @@ public class CoreActivity extends AdviceActivity {
 
     /**
      * Returns the translet rule.
-     *
      * @return the translet rule
      */
     protected TransletRule getTransletRule() {
@@ -536,7 +527,6 @@ public class CoreActivity extends AdviceActivity {
 
     /**
      * Returns the request rule.
-     *
      * @return the request rule
      */
     protected RequestRule getRequestRule() {
@@ -545,7 +535,6 @@ public class CoreActivity extends AdviceActivity {
 
     /**
      * Returns the response rule.
-     *
      * @return the response rule
      */
     protected ResponseRule getResponseRule() {
@@ -559,7 +548,6 @@ public class CoreActivity extends AdviceActivity {
 
     /**
      * Determines the default request encoding.
-     *
      * @return the default request encoding
      */
     protected String getIntendedRequestEncoding() {
@@ -572,7 +560,6 @@ public class CoreActivity extends AdviceActivity {
 
     /**
      * Determines the default response encoding.
-     *
      * @return the default response encoding
      */
     protected String getIntendedResponseEncoding() {
@@ -620,7 +607,6 @@ public class CoreActivity extends AdviceActivity {
 
     /**
      * Parses the declared attributes.
-     *
      * @throws MissingMandatoryAttributesException thrown if a required attribute is missing from the request
      */
     protected void parseDeclaredAttributes() throws MissingMandatoryAttributesException {

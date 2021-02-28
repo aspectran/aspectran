@@ -72,7 +72,6 @@ public class SampleStatistic {
 
     /**
      * Records a sample value.
-     *
      * @param sample the value to record.
      */
 

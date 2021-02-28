@@ -56,7 +56,6 @@ public class LinkedCaseInsensitiveMultiValueMap<V> implements MultiValueMap<Stri
 
     /**
      * Constructs a new, empty instance of the {@code LinkedCaseInsensitiveMultiValueMap} object.
-     *
      * @param initialCapacity the initial capacity
      */
     public LinkedCaseInsensitiveMultiValueMap(int initialCapacity) {

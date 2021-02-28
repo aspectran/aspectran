@@ -26,7 +26,6 @@ public class ShellRequestAdapter extends DefaultRequestAdapter {
 
     /**
      * Instantiates a new ShellRequestAdapter.
-     *
      * @param requestMethod the request method
      */
     public ShellRequestAdapter(MethodType requestMethod) {

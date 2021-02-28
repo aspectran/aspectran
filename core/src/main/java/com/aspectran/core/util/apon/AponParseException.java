@@ -22,7 +22,6 @@ import java.io.IOException;
  */
 public class AponParseException extends IOException {
 
-    /** @serial */
     private static final long serialVersionUID = -8511680666286307705L;
 
     /**
@@ -34,7 +33,6 @@ public class AponParseException extends IOException {
 
     /**
      * Constructor to create exception with a message.
-     *
      * @param msg a message to associate with the exception
      */
     public AponParseException(String msg) {
@@ -43,7 +41,6 @@ public class AponParseException extends IOException {
 
     /**
      * Constructor to create exception to wrap another exception.
-     *
      * @param cause the real cause of the exception
      */
     public AponParseException(Throwable cause) {
@@ -52,7 +49,6 @@ public class AponParseException extends IOException {
 
     /**
      * Constructor to create exception to wrap another exception and pass a message.
-     *
      * @param msg the message
      * @param cause the real cause of the exception
      */

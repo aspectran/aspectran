@@ -41,7 +41,6 @@ public enum ScopeType {
     /**
      * Returns a {@code ScopeType} with a value represented
      * by the specified {@code String}.
-     *
      * @param alias the scope type as a {@code String}
      * @return a {@code ScopeType}, may be {@code null}
      */

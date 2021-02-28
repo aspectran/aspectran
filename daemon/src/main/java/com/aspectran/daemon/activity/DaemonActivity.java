@@ -44,7 +44,6 @@ public class DaemonActivity extends CoreActivity {
 
     /**
      * Instantiates a new daemon activity.
-     *
      * @param service the daemon service
      */
     public DaemonActivity(DaemonService service) {

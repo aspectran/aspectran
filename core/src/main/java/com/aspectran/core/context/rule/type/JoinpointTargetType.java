@@ -37,7 +37,6 @@ public enum JoinpointTargetType {
     /**
      * Returns a {@code JoinpointTargetType} with a value represented
      * by the specified {@code String}.
-     *
      * @param alias the join-point target type as a {@code String}
      * @return a {@code JoinpointTargetType}, may be {@code null}
      */

@@ -32,7 +32,6 @@ public class HttpSessionAdapter extends AbstractSessionAdapter {
 
     /**
      * Instantiates a new HttpSessionAdapter.
-     *
      * @param request the HTTP request
      */
     public HttpSessionAdapter(HttpServletRequest request) {

@@ -407,7 +407,6 @@ public class MediaType implements Comparable<MediaType>, Serializable {
     /**
      * Create a new {@code MediaType} for the given primary type.
      * <p>The {@linkplain #getSubtype() subtype} is set to "&#42;", parameters empty.</p>
-     *
      * @param type the primary type
      * @throws IllegalArgumentException if any of the parameters contain illegal characters
      */
@@ -418,7 +417,6 @@ public class MediaType implements Comparable<MediaType>, Serializable {
     /**
      * Create a new {@code MediaType} for the given primary type and subtype.
      * <p>The parameters are empty.</p>
-     *
      * @param type the primary type
      * @param subtype the subtype
      * @throws IllegalArgumentException if any of the parameters contain illegal characters
@@ -429,7 +427,6 @@ public class MediaType implements Comparable<MediaType>, Serializable {
 
     /**
      * Create a new {@code MediaType} for the given type, subtype, and character set.
-     *
      * @param type the primary type
      * @param subtype the subtype
      * @param charset the character set
@@ -442,7 +439,6 @@ public class MediaType implements Comparable<MediaType>, Serializable {
 
     /**
      * Create a new {@code MediaType} for the given type, subtype, and quality value.
-     *
      * @param type the primary type
      * @param subtype the subtype
      * @param qualityValue the quality value
@@ -455,7 +451,6 @@ public class MediaType implements Comparable<MediaType>, Serializable {
     /**
      * Copy-constructor that copies the type, subtype and parameters of the given
      * {@code MediaType}, and allows to set the specified character set.
-     *
      * @param other the other media type
      * @param charset the character set
      * @throws IllegalArgumentException if any of the parameters contain illegal characters
@@ -468,7 +463,6 @@ public class MediaType implements Comparable<MediaType>, Serializable {
     /**
      * Copy-constructor that copies the type and subtype of the given {@code MediaType},
      * and allows for different parameter.
-     *
      * @param other the other media type
      * @param parameters the parameters, may be {@code null}
      * @throws IllegalArgumentException if any of the parameters contain illegal characters
@@ -479,7 +473,6 @@ public class MediaType implements Comparable<MediaType>, Serializable {
 
     /**
      * Create a new {@code MediaType} for the given type, subtype, and parameters.
-     *
      * @param type the primary type
      * @param subtype the subtype
      * @param parameters the parameters, may be {@code null}
@@ -507,7 +500,6 @@ public class MediaType implements Comparable<MediaType>, Serializable {
     /**
      * Checks the given token string for illegal characters, as defined in RFC 2616,
      * section 2.2.
-     *
      * @throws IllegalArgumentException in case of illegal characters
      * @see <a href="https://tools.ietf.org/html/rfc2616#section-2.2">HTTP 1.1, section 2.2</a>
      */
@@ -553,7 +545,6 @@ public class MediaType implements Comparable<MediaType>, Serializable {
     /**
      * Indicates whether the {@linkplain #getType() type} is the wildcard character
      * <code>&#42;</code> or not.
-     *
      * @return true if it is a wildcard character; Otherwise false
      */
     public boolean isWildcardType() {
@@ -564,7 +555,6 @@ public class MediaType implements Comparable<MediaType>, Serializable {
      * Indicates whether the {@linkplain #getSubtype() subtype} is the wildcard
      * character <code>&#42;</code> or the wildcard character followed by a suffix
      * (e.g. <code>&#42;+xml</code>).
-     *
      * @return whether the subtype is a wildcard
      */
     public boolean isWildcardSubtype() {
@@ -574,7 +564,6 @@ public class MediaType implements Comparable<MediaType>, Serializable {
     /**
      * Indicates whether this MIME Type is concrete, i.e. whether neither the type
      * nor the subtype is a wildcard character <code>&#42;</code>.
-     *
      * @return whether this MIME Type is concrete
      */
     public boolean isConcrete() {
@@ -583,7 +572,6 @@ public class MediaType implements Comparable<MediaType>, Serializable {
 
     /**
      * Return the primary type.
-     *
      * @return the primary type
      */
     public String getType() {
@@ -592,7 +580,6 @@ public class MediaType implements Comparable<MediaType>, Serializable {
 
     /**
      * Return the subtype.
-     *
      * @return the subtype
      */
     public String getSubtype() {
@@ -601,7 +588,6 @@ public class MediaType implements Comparable<MediaType>, Serializable {
 
     /**
      * Return the character set, as indicated by a {@code charset} parameter, if any.
-     *
      * @return the character set, or {@code null} if not available
      */
     @Nullable
@@ -611,7 +597,6 @@ public class MediaType implements Comparable<MediaType>, Serializable {
 
     /**
      * Return a generic parameter value, given a parameter name.
-     *
      * @param name the parameter name
      * @return the parameter value, or {@code null} if not present
      */
@@ -622,7 +607,6 @@ public class MediaType implements Comparable<MediaType>, Serializable {
 
     /**
      * Return all generic parameter values.
-     *
      * @return a read-only map (possibly empty, never {@code null})
      */
     public Map<String, String> getParameters() {
@@ -636,7 +620,6 @@ public class MediaType implements Comparable<MediaType>, Serializable {
      * This method is <b>not</b> symmetric.</p>
      * <p>Simply calls {@link #includes(MediaType)} but declared with a
      * {@code MediaType} parameter for binary backwards compatibility.</p>
-     *
      * @param other the reference media type with which to compare
      * @return {@code true} if this media type includes the given media type;
      * {@code false} otherwise
@@ -681,7 +664,6 @@ public class MediaType implements Comparable<MediaType>, Serializable {
      * {@link #includes}, except that it <b>is</b> symmetric.</p>
      * <p>Simply calls {@link #isCompatibleWith(MediaType)} but declared with a
      * {@code MediaType} parameter for binary backwards compatibility.</p>
-     *
      * @param other the reference media type with which to compare
      * @return {@code true} if this media type is compatible with the given media type;
      * {@code false} otherwise
@@ -720,7 +702,6 @@ public class MediaType implements Comparable<MediaType>, Serializable {
     /**
      * Similar to {@link #equals(Object)} but based on the type and subtype
      * only, i.e. ignoring parameters.
-     *
      * @param other the other mime type to compare to
      * @return whether the two mime types have the same type and subtype
      */
@@ -736,7 +717,6 @@ public class MediaType implements Comparable<MediaType>, Serializable {
      * Unlike {@link Collection#contains(Object)} which relies on
      * {@link MediaType#equals(Object)}, this method only checks the type and the
      * subtype, but otherwise ignores parameters.
-     *
      * @param MediaTypes the list of mime types to perform the check against
      * @return whether the list contains the given mime type
      */
@@ -826,7 +806,6 @@ public class MediaType implements Comparable<MediaType>, Serializable {
 
     /**
      * Compares this Media Type to another alphabetically.
-     *
      * @param other the Media Type to compare to
      */
     @Override
@@ -892,7 +871,6 @@ public class MediaType implements Comparable<MediaType>, Serializable {
     /**
      * Return the quality factor, as indicated by a {@code q} parameter, if any.
      * Defaults to {@code 1.0}.
-     *
      * @return the quality factor as double value
      */
     public double getQualityValue() {
@@ -902,7 +880,6 @@ public class MediaType implements Comparable<MediaType>, Serializable {
 
     /**
      * Return a replica of this instance with the quality value of the given {@code MediaType}.
-     *
      * @param mediaType the media type
      * @return the same instance if the given MediaType doesn't have a quality value,
      * or a new one otherwise
@@ -918,7 +895,6 @@ public class MediaType implements Comparable<MediaType>, Serializable {
 
     /**
      * Return a replica of this instance with its quality value removed.
-     *
      * @return the same instance if the media type doesn't contain a quality value,
      * or a new one otherwise
      */
@@ -933,7 +909,6 @@ public class MediaType implements Comparable<MediaType>, Serializable {
 
     /**
      * Parse the given String into a single {@code MediaType}.
-     *
      * @param mediaType the string to parse
      * @return the media type
      * @throws InvalidMediaTypeException if the media type value cannot be parsed
@@ -950,7 +925,6 @@ public class MediaType implements Comparable<MediaType>, Serializable {
     /**
      * Parse the comma-separated string into a list of {@code MediaType} objects.
      * <p>This method can be used to parse an Accept or Content-Type header.</p>
-     *
      * @param mediaTypes the string to parse
      * @return the list of media types
      * @throws InvalidMediaTypeException if the media type value cannot be parsed
@@ -974,7 +948,6 @@ public class MediaType implements Comparable<MediaType>, Serializable {
      * Parse the given list of (potentially) comma-separated strings into a
      * list of {@code MediaType} objects.
      * <p>This method can be used to parse an Accept or Content-Type header.</p>
-     *
      * @param mediaTypes the string to parse
      * @return the list of media types
      * @throws InvalidMediaTypeException if the media type value cannot be parsed
@@ -996,7 +969,6 @@ public class MediaType implements Comparable<MediaType>, Serializable {
     /**
      * Return a string representation of the given list of {@code MediaType} objects.
      * <p>This method can be used to for an {@code Accept} or {@code Content-Type} header.</p>
-     *
      * @param mediaTypes the media types to create a string representation for
      * @return the string representation
      */
@@ -1027,7 +999,6 @@ public class MediaType implements Comparable<MediaType>, Serializable {
      * <blockquote>audio/basic;level=1 &lt; audio/basic</blockquote>
      * <blockquote>audio/basic == text/html</blockquote>
      * <blockquote>audio/basic == audio/wave</blockquote>
-     *
      * @param mediaTypes the list of media types to be sorted
      * @see <a href="https://tools.ietf.org/html/rfc7231#section-5.3.2">HTTP 1.1: Semantics
      * and Content, section 5.3.2</a>
@@ -1056,7 +1027,6 @@ public class MediaType implements Comparable<MediaType>, Serializable {
      * <li>if the two media types have a different amount of {@linkplain #getParameter(String) parameters}, then the
      * media type with the most parameters is ordered before the other.</li>
      * </ol>
-     *
      * @param mediaTypes the list of media types to be sorted
      * @see #getQualityValue()
      */
@@ -1070,7 +1040,6 @@ public class MediaType implements Comparable<MediaType>, Serializable {
     /**
      * Sorts the given list of {@code MediaType} objects by specificity as the
      * primary criteria and quality value the secondary.
-     *
      * @param mediaTypes the list of media types to sort
      * @see MediaType#sortBySpecificity(List)
      * @see MediaType#sortByQualityValue(List)
@@ -1085,7 +1054,6 @@ public class MediaType implements Comparable<MediaType>, Serializable {
     /**
      * Parse the given String value into a {@code MediaType} object,
      * with this method name following the 'valueOf' naming convention.
-     *
      * @param value the string to parse
      * @return the media type
      * @throws InvalidMediaTypeException if the media type value cannot be parsed
@@ -1153,7 +1121,6 @@ public class MediaType implements Comparable<MediaType>, Serializable {
 
     /**
      * Comparator to sort {@link MediaType MediaTypes} in order of specificity.
-     *
      * @param <T> the type of mime types that may be compared by this comparator
      */
     public static class SpecificityComparator<T extends MediaType> implements Comparator<T> {

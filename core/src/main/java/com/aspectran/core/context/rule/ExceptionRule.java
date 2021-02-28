@@ -49,7 +49,6 @@ public class ExceptionRule {
 
     /**
      * Puts the exception thrown rule.
-     *
      * @param exceptionThrownRule the exception thrown rule
      */
     public void putExceptionThrownRule(ExceptionThrownRule exceptionThrownRule) {
@@ -69,7 +68,6 @@ public class ExceptionRule {
 
     /**
      * Gets the exception thrown rule as specified exception.
-     *
      * @param ex the exception
      * @return the exception thrown rule
      */
@@ -88,7 +86,6 @@ public class ExceptionRule {
 
     /**
      * Returns the matched depth.
-     *
      * @param exceptionType the exception type
      * @param ex the throwable exception
      * @return the matched depth
@@ -104,7 +101,6 @@ public class ExceptionRule {
 
     /**
      * Returns the matched depth.
-     *
      * @param exceptionType the exception type
      * @param exceptionClass the exception class
      * @param depth the depth

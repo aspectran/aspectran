@@ -28,7 +28,6 @@ import java.util.Collection;
  */
 public class BeanReferenceException extends ActivityContextParserException {
 
-    /** @serial */
     private static final long serialVersionUID = -244633940486989865L;
 
     /**
@@ -40,7 +39,6 @@ public class BeanReferenceException extends ActivityContextParserException {
 
     /**
      * Constructor to create exception with a message.
-     *
      * @param brokenReferences the list of beans that can not find
      */
     public BeanReferenceException(Collection<BeanReferenceInspector.RefererKey> brokenReferences) {
@@ -49,7 +47,6 @@ public class BeanReferenceException extends ActivityContextParserException {
 
     /**
      * Gets the detail message.
-     *
      * @param brokenReferences the list of beans that can not find
      * @return the message
      */

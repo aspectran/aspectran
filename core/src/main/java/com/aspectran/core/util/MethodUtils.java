@@ -40,7 +40,6 @@ public class MethodUtils {
 
     /**
      * Sets the value of a bean property to an Object.
-     *
      * @param object the bean to change
      * @param setterName the property name or setter method name
      * @param arg use this argument
@@ -56,7 +55,6 @@ public class MethodUtils {
 
     /**
      * Sets the value of a bean property to an Object.
-     *
      * @param object the bean to change
      * @param setterName the property name or setter method name
      * @param args use this arguments
@@ -81,7 +79,6 @@ public class MethodUtils {
 
     /**
      * Gets an Object property from a bean.
-     *
      * @param object the bean
      * @param getterName the property name or getter method name
      * @return the property value (as an Object)
@@ -96,7 +93,6 @@ public class MethodUtils {
 
     /**
      * Gets an Object property from a bean.
-     *
      * @param object the bean
      * @param getterName the property name or getter method name
      * @param arg use this argument
@@ -113,7 +109,6 @@ public class MethodUtils {
 
     /**
      * Gets an Object property from a bean.
-     *
      * @param object the bean
      * @param getterName the property name or getter method name
      * @param args use this arguments
@@ -139,7 +134,6 @@ public class MethodUtils {
 
     /**
      * <p>Invoke a named method whose parameter type matches the object type.</p>
-     *
      * @param object invoke method on this object
      * @param methodName get method with this name
      * @return the value returned by the invoked method
@@ -154,20 +148,16 @@ public class MethodUtils {
 
     /**
      * <p>Invoke a named method whose parameter type matches the object type.</p>
-     *
      * <p>The behaviour of this method is less deterministic
      * than {@code invokeExactMethod()}.
      * It loops through all methods with names that match
      * and then executes the first it finds with compatible parameters.</p>
-     *
      * <p>This method supports calls to methods taking primitive parameters
      * via passing in wrapping classes. So, for example, a {@code Boolean} class
      * would match a {@code boolean} primitive.</p>
-     *
      * <p> This is a convenient wrapper for
      * {@link #invokeMethod(Object object,String methodName,Object[] args)}.
      * </p>
-     *
      * @param object invoke method on this object
      * @param methodName get method with this name
      * @param arg use this argument
@@ -184,20 +174,16 @@ public class MethodUtils {
 
     /**
      * <p>Invoke a named method whose parameter type matches the object type.</p>
-     *
      * <p>The behaviour of this method is less deterministic
      * than {@link #invokeExactMethod(Object object,String methodName,Object[] args)}.
      * It loops through all methods with names that match
      * and then executes the first it finds with compatible parameters.</p>
-     *
      * <p>This method supports calls to methods taking primitive parameters
      * via passing in wrapping classes. So, for example, a {@code Boolean} class
      * would match a {@code boolean} primitive.</p>
-     *
      * <p> This is a convenient wrapper for
      * {@link #invokeMethod(Object object,String methodName,Object[] args,Class[] paramTypes)}.
      * </p>
-     *
      * @param object invoke method on this object
      * @param methodName get method with this name
      * @param args use these arguments - treat null as empty array
@@ -230,17 +216,14 @@ public class MethodUtils {
 
     /**
      * <p>Invoke a named method whose parameter type matches the object type.</p>
-     *
      * <p>The behaviour of this method is less deterministic
      * than {@link
      * #invokeExactMethod(Object object,String methodName,Object[] args,Class[] paramTypes)}.
      * It loops through all methods with names that match
      * and then executes the first it finds with compatible parameters.</p>
-     *
      * <p>This method supports calls to methods taking primitive parameters
      * via passing in wrapping classes. So, for example, a {@code Boolean} class
      * would match a {@code boolean} primitive.</p>
-     *
      * @param object invoke method on this object
      * @param methodName get method with this name
      * @param args use these arguments - treat null as empty array
@@ -267,11 +250,9 @@ public class MethodUtils {
 
     /**
      * <p>Invoke a method whose parameter type matches exactly the object type.</p>
-     *
      * <p> This is a convenient wrapper for
      * {@link #invokeExactMethod(Object object,String methodName,Object[] args)}.
      * </p>
-     *
      * @param object invoke method on this object
      * @param methodName get method with this name
      * @param arg use this argument
@@ -288,10 +269,8 @@ public class MethodUtils {
 
     /**
      * <p>Invoke a method whose parameter types match exactly the object types.</p>
-     *
      * <p> This uses reflection to invoke the method obtained from a call to
      * {@code getAccessibleMethod()}.</p>
-     *
      * @param object invoke method on this object
      * @param methodName get method with this name
      * @param args use these arguments - treat null as empty array
@@ -323,10 +302,8 @@ public class MethodUtils {
 
     /**
      * <p>Invoke a method whose parameter types match exactly the parameter types given.</p>
-     *
      * <p>This uses reflection to invoke the method obtained from a call to
      * {@code getAccessibleMethod()}.</p>
-     *
      * @param object invoke method on this object
      * @param methodName get method with this name
      * @param args use these arguments - treat null as empty array
@@ -354,10 +331,8 @@ public class MethodUtils {
 
     /**
      * <p>Invoke a static method whose parameter types match exactly the parameter types given.</p>
-     *
      * <p>This uses reflection to invoke the method obtained from a call to
      * {@link #getAccessibleMethod(Class, String, Class[])}.</p>
-     *
      * @param objectClass invoke static method on this class
      * @param methodName get method with this name
      * @param args use these arguments - treat null as empty array
@@ -386,7 +361,6 @@ public class MethodUtils {
 
     /**
      * Invoke a named static method that has no parameters.
-     *
      * @param objectClass invoke static method on this class
      * @param methodName get method with this name
      * @return the value returned by the invoked method
@@ -401,20 +375,16 @@ public class MethodUtils {
 
     /**
      * <p>Invoke a named static method whose parameter type matches the object type.</p>
-     *
      * <p>The behaviour of this method is less deterministic
      * than {@link #invokeExactMethod(Object, String, Object[], Class[])}.
      * It loops through all methods with names that match
      * and then executes the first it finds with compatible parameters.</p>
-     *
      * <p>This method supports calls to methods taking primitive parameters
      * via passing in wrapping classes. So, for example, a {@code Boolean} class
      * would match a {@code boolean} primitive.</p>
-     *
      * <p> This is a convenient wrapper for
      * {@link #invokeStaticMethod(Class objectClass,String methodName,Object[] args)}.
      * </p>
-     *
      * @param objectClass invoke static method on this class
      * @param methodName get method with this name
      * @param arg use this argument
@@ -431,20 +401,16 @@ public class MethodUtils {
 
     /**
      * <p>Invoke a named static method whose parameter type matches the object type.</p>
-     *
      * <p>The behaviour of this method is less deterministic
      * than {@link #invokeExactMethod(Object object,String methodName,Object[] args)}.
      * It loops through all methods with names that match
      * and then executes the first it finds with compatible parameters.</p>
-     *
      * <p>This method supports calls to methods taking primitive parameters
      * via passing in wrapping classes. So, for example, a {@code Boolean} class
      * would match a {@code boolean} primitive.</p>
-     *
      * <p> This is a convenient wrapper for
      * {@link #invokeStaticMethod(Class objectClass,String methodName,Object[] args,Class[] paramTypes)}.
      * </p>
-     *
      * @param objectClass invoke static method on this class
      * @param methodName get method with this name
      * @param args use these arguments - treat null as empty array
@@ -468,16 +434,13 @@ public class MethodUtils {
 
     /**
      * <p>Invoke a named static method whose parameter type matches the object type.</p>
-     *
      * <p>The behaviour of this method is less deterministic
      * than {@link #invokeExactStaticMethod(Class objectClass,String methodName,Object[] args,Class[] paramTypes)}.
      * It loops through all methods with names that match
      * and then executes the first it finds with compatible parameters.</p>
-     *
      * <p>This method supports calls to methods taking primitive parameters
      * via passing in wrapping classes. So, for example, a {@code Boolean} class
      * would match a {@code boolean} primitive.</p>
-     *
      * @param objectClass invoke static method on this class
      * @param methodName get method with this name
      * @param args use these arguments - treat null as empty array
@@ -506,7 +469,6 @@ public class MethodUtils {
 
     /**
      * Invoke a static method that has no parameters.
-     *
      * @param objectClass invoke static method on this class
      * @param methodName get method with this name
      * @return the value returned by the invoked method
@@ -524,7 +486,6 @@ public class MethodUtils {
      *
      * <p>This is a convenient wrapper for
      * {@link #invokeExactStaticMethod(Class objectClass,String methodName,Object[] args)}.</p>
-     *
      * @param objectClass invoke static method on this class
      * @param methodName get method with this name
      * @param arg use this argument
@@ -541,10 +502,8 @@ public class MethodUtils {
 
     /**
      * <p>Invoke a static method whose parameter types match exactly the object types.</p>
-     *
      * <p> This uses reflection to invoke the method obtained from a call to
      * {@link #getAccessibleMethod(Class, String, Class[])}.</p>
-     *
      * @param objectClass invoke static method on this class
      * @param methodName get method with this name
      * @param args use these arguments - treat null as empty array
@@ -599,7 +558,6 @@ public class MethodUtils {
      * can be found, return {@code null}.
      * Basically, a convenience wrapper that constructs a {@code Class}
      * array for you.</p>
-     *
      * @param clazz get method from this class
      * @param methodName get method with this name
      * @return the accessible method
@@ -614,7 +572,6 @@ public class MethodUtils {
      * can be found, return {@code null}.
      * Basically, a convenience wrapper that constructs a {@code Class}
      * array for you.</p>
-     *
      * @param clazz get method from this class
      * @param methodName get method with this name
      * @param paramType taking this type of parameter
@@ -631,7 +588,6 @@ public class MethodUtils {
      * can be found, return {@code null}.
      * This is just a convenient wrapper for
      * {@link #getAccessibleMethod(Method method)}.</p>
-     *
      * @param clazz get method from this class
      * @param methodName get method with this name
      * @param paramTypes with these parameters types
@@ -656,7 +612,6 @@ public class MethodUtils {
      * <p>Return an accessible method (that is, one that can be invoked via
      * reflection) that implements the specified Method.  If no such method
      * can be found, return {@code null}.</p>
-     *
      * @param method the method that we wish to call
      * @return the accessible method
      */
@@ -672,7 +627,6 @@ public class MethodUtils {
      * <p>Return an accessible method (that is, one that can be invoked via
      * reflection) that implements the specified Method.  If no such method
      * can be found, return {@code null}.</p>
-     *
      * @param clazz The class of the object
      * @param method The method that we wish to call
      * @return the accessible method
@@ -718,7 +672,6 @@ public class MethodUtils {
      * <p>Return an accessible method (that is, one that can be invoked via
      * reflection) by scanning through the superclasses. If no such method
      * can be found, return {@code null}.</p>
-     *
      * @param clazz Class to be checked
      * @param methodName Method name of the method we wish to call
      * @param paramTypes The parameter type signatures
@@ -743,11 +696,9 @@ public class MethodUtils {
      * reflection) that implements the specified method, by scanning through
      * all implemented interfaces and subinterfaces.  If no such method
      * can be found, return {@code null}.</p>
-     *
      * <p> There isn't any good reason why this method must be private.
      * It is because there doesn't seem any reason why other classes should
      * call this rather than the higher level methods.</p>
-     *
      * @param clazz Parent class for the interfaces to be checked
      * @param methodName Method name of the method we wish to call
      * @param paramTypes The parameter type signatures
@@ -800,14 +751,12 @@ public class MethodUtils {
      *
      * <p>This method is slightly undeterminstic since it loops
      * through methods names and return the first matching method.</p>
-     *
      * <p>This method is used by
      * {@link #invokeMethod(Object object,String methodName,Object[] args,Class[] paramTypes)}.
      *
      * <p>This method can match primitive parameter by passing in wrapper classes.
      * For example, a {@code Boolean} will match a primitive {@code boolean}
      * parameter.
-     *
      * @param clazz find method in this class
      * @param methodName find method with this name
      * @param args find method with given arguments
@@ -893,11 +842,9 @@ public class MethodUtils {
      *
      * <p>This method is slightly undeterminstic since it loops
      * through methods names and return the first matching method.</p>
-     *
      * <p>This method can match primitive parameter by passing in wrapper classes.
      * For example, a {@code Boolean} will match a primitive {@code boolean}
      * parameter.
-     *
      * @param clazz find method in this class
      * @param methodName find method with this name
      * @param paramTypes find method with compatible parameters
@@ -923,13 +870,13 @@ public class MethodUtils {
      */
     private static class MethodDescriptor {
 
-        private Class<?> cls;
+        private final Class<?> cls;
 
-        private String methodName;
+        private final String methodName;
 
-        private Class<?>[] paramTypes;
+        private final Class<?>[] paramTypes;
 
-        private boolean exact;
+        private final boolean exact;
 
         private volatile int hashCode;
 

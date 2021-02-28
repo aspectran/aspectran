@@ -25,14 +25,12 @@ import com.aspectran.core.context.rule.TransformRule;
  */
 public class TransformResponseException extends ResponseException {
 
-    /** @serial */
     private static final long serialVersionUID = -2902489274291058715L;
 
     private final TransformRule transformRule;
 
     /**
      * Instantiates a new TransformResponseException.
-     *
      * @param transformRule the transform rule
      * @param cause the real cause of the exception
      */
@@ -43,7 +41,6 @@ public class TransformResponseException extends ResponseException {
 
     /**
      * Gets the transform rule.
-     *
      * @return the transform rule
      */
     public TransformRule getTransformRule() {

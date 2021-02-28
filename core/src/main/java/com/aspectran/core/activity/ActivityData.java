@@ -40,7 +40,6 @@ import java.util.Set;
  */
 public class ActivityData extends HashMap<String, Object> {
 
-    /** @serial */
     private static final long serialVersionUID = -4557424414862800204L;
 
     private static final Object PREEMPTED = new Object();
@@ -49,7 +48,6 @@ public class ActivityData extends HashMap<String, Object> {
 
     /**
      * Instantiates a new ActivityData.
-     *
      * @param activity the activity
      */
     public ActivityData(Activity activity) {
@@ -134,7 +132,6 @@ public class ActivityData extends HashMap<String, Object> {
      * Returns the value of the request parameter from the request adapter
      * without storing it in the cache.
      * If the parameter does not exist, returns null.
-     *
      * @param name a {@code String} specifying the name of the parameter
      * @return an {@code Object} containing the value of the parameter,
      *         or {@code null} if the parameter does not exist
@@ -158,7 +155,6 @@ public class ActivityData extends HashMap<String, Object> {
      * Returns the value of the named attribute from the request adapter
      * without storing it in the cache.
      * If no attribute of the given name exists, returns null.
-     *
      * @param name a {@code String} specifying the name of the attribute
      * @return an {@code Object} containing the value of the attribute,
      *         or {@code null} if the attribute does not exist
@@ -176,7 +172,6 @@ public class ActivityData extends HashMap<String, Object> {
      * Returns the value of the named action's process result
      * without storing it in the cache.
      * If no process result of the given name exists, returns null.
-     *
      * @param name a {@code String} specifying the name of the action
      * @return an {@code Object} containing the value of the action result,
      *         or {@code null} if the action result does not exist
@@ -193,7 +188,6 @@ public class ActivityData extends HashMap<String, Object> {
      * Returns the value of the named attribute from the session adapter
      * without storing it in the cache.
      * If no attribute of the given name exists, returns null.
-     *
      * @param name a {@code String} specifying the name of the attribute
      * @return an {@code Object} containing the value of the attribute,
      *         or {@code null} if the attribute does not exist

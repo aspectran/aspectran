@@ -93,7 +93,6 @@ public enum MethodType {
     /**
      * Returns a {@code MethodType} with a value represented
      * by the specified {@code String}.
-     *
      * @param methodType the method type as a {@code String}
      * @return a {@code MethodType}, may be {@code null}
      */
@@ -104,7 +103,6 @@ public enum MethodType {
     /**
      * Returns an array of {@code MethodType} with a value represented
      * by the specified {@code String}.
-     *
      * @param value the method type as a {@code String}
      * @return a {@code MethodType}, may be {@code null}
      */
@@ -142,7 +140,6 @@ public enum MethodType {
 
     /**
      * Converts an array of {@code MethodType} to a comma separated {@code String}.
-     *
      * @param types an array of {@code MethodType}
      * @return a comma separated {@code String}
      */

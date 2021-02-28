@@ -22,7 +22,6 @@ package com.aspectran.core.context.rule;
  */
 public class IllegalRuleException extends Exception {
 
-    /** @serial */
     private static final long serialVersionUID = 4725758105730046172L;
 
     /**
@@ -34,7 +33,6 @@ public class IllegalRuleException extends Exception {
 
     /**
      * Constructor to create exception with a message.
-     *
      * @param msg a message to associate with the exception
      */
     public IllegalRuleException(String msg) {
@@ -43,7 +41,6 @@ public class IllegalRuleException extends Exception {
 
     /**
      * Constructor to create exception to wrap another exception.
-     *
      * @param cause the real cause of the exception
      */
     public IllegalRuleException(Throwable cause) {
@@ -52,7 +49,6 @@ public class IllegalRuleException extends Exception {
 
     /**
      * Constructor to create exception to wrap another exception and pass a message.
-     *
      * @param msg a message to associate with the exception
      * @param cause the real cause of the exception
      */

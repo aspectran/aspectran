@@ -46,7 +46,6 @@ public enum FormatType {
     /**
      * Returns a {@code FormatType} with a value represented
      * by the specified {@code String}.
-     *
      * @param alias the format type as a {@code String}
      * @return a {@code FormatType}, may be {@code null}
      */
@@ -62,7 +61,6 @@ public enum FormatType {
     /**
      * Returns a {@code FormatType} with a value corresponding
      * to the specified {@code ContentType}.
-     *
      * @param contentType the content type as a {@code ContentType}
      * @return a {@code FormatType}, may be {@code null}
      */

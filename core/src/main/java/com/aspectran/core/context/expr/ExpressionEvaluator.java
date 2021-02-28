@@ -28,7 +28,6 @@ public interface ExpressionEvaluator {
 
     /**
      * Evaluates an expression.
-     *
      * @param activity the aspectran activity
      * @param resultType the expected type of the result of the evaluation
      * @param <V> the type of the result
@@ -38,7 +37,6 @@ public interface ExpressionEvaluator {
 
     /**
      * Evaluates an expression.
-     *
      * @param tokenEvaluator the token evaluator
      * @param resultType the expected type of the result of the evaluation
      * @param <V> the type of the result
@@ -48,7 +46,6 @@ public interface ExpressionEvaluator {
 
     /**
      * Evaluates an expression.
-     *
      * @param expression the expression to be evaluated
      * @param activity the aspectran activity
      * @return the result of the expression evaluation
@@ -60,7 +57,6 @@ public interface ExpressionEvaluator {
 
     /**
      * Evaluates an expression.
-     *
      * @param expression the expression to be evaluated
      * @param activity the aspectran activity
      * @param resultType the expected type of the result of the evaluation
@@ -78,7 +74,6 @@ public interface ExpressionEvaluator {
 
     /**
      * Evaluates an expression.
-     *
      * @param expression the expression to be evaluated
      * @param tokenEvaluator the token evaluator
      * @return the result of the expression evaluation
@@ -90,7 +85,6 @@ public interface ExpressionEvaluator {
 
     /**
      * Evaluates an expression.
-     *
      * @param expression the expression to be evaluated
      * @param tokenEvaluator the token evaluator
      * @param resultType the expected type of the result of the evaluation

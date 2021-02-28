@@ -20,7 +20,6 @@ package com.aspectran.shell.command.option;
  */
 public class MissingOptionValueException extends OptionParserException {
 
-    /** @serial */
     private static final long serialVersionUID = 3097819241980741135L;
 
     /** The option requiring additional values */
@@ -29,7 +28,6 @@ public class MissingOptionValueException extends OptionParserException {
     /**
      * Construct a new {@code MissingOptionValueException}
      * with the specified detail message.
-     *
      * @param message the detail message
      */
     public MissingOptionValueException(String message) {
@@ -39,7 +37,6 @@ public class MissingOptionValueException extends OptionParserException {
     /**
      * Construct a new {@code MissingOptionValueException}
      * with the specified detail message.
-     *
      * @param option the option requiring an argument
      */
     public MissingOptionValueException(Option option) {
@@ -50,7 +47,6 @@ public class MissingOptionValueException extends OptionParserException {
     /**
      * Return the option requiring a value that wasn't provided
      * on the command line.
-     *
      * @return the related option
      */
     public Option getOption() {

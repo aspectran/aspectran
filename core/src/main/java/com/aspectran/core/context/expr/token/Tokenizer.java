@@ -45,7 +45,6 @@ public class Tokenizer {
 
     /**
      * Returns a list of tokens that contains tokenized string.
-     *
      * @param input the string to tokenize
      * @param textTrim whether to trim text
      * @return a list of tokens
@@ -154,7 +153,6 @@ public class Tokenizer {
 
     /**
      * Create a token.
-     *
      * @param symbol the token symbol
      * @param nameBuf the name buffer
      * @param valueBuf the value buffer
@@ -232,7 +230,6 @@ public class Tokenizer {
      * "   \r\n   aaa  \r\n  bbb  "   ==&gt;   "\naaa  \n  bbb"
      * "  aaa    \r\n   bbb   \r\n  "   ==&gt;   "aaa\nbbb\n"
      * </pre>
-     *
      * @param textBuf the string builder object
      * @param end the ending index, exclusive.
      * @param trim whether to trim
@@ -290,7 +287,6 @@ public class Tokenizer {
     /**
      * Returns an array of tokens that is optimized.
      * Eliminates unnecessary white spaces for the first and last tokens.
-     *
      * @param tokens the tokens before optimizing
      * @return the optimized tokens
      */
@@ -330,7 +326,6 @@ public class Tokenizer {
     /**
      * Returns a string that contains a copy of a specified string
      * without leading whitespaces.
-     *
      * @param string the string to trim leading whitespaces
      * @return a string with leading whitespaces trimmed
      */
@@ -356,7 +351,6 @@ public class Tokenizer {
     /**
      * Returns a string that contains a copy of a specified string
      * without trailing whitespaces.
-     *
      * @param string the string to trim trailing whitespaces
      * @return a string with trailing whitespaces trimmed
      */

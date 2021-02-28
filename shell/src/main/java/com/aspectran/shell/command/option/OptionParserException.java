@@ -20,13 +20,11 @@ package com.aspectran.shell.command.option;
  */
 public class OptionParserException extends Exception {
 
-    /** @serial */
     private static final long serialVersionUID = -8387597753242192122L;
 
     /**
      * Construct a new {@code OptionParseException}
      * with the specified detail message.
-     *
      * @param message the detail message
      */
     public OptionParserException(String message) {

@@ -22,7 +22,6 @@ import com.aspectran.core.context.rule.AspectRule;
  */
 public class InvalidPointcutPatternException extends AspectException {
 
-    /** @serial */
     private static final long serialVersionUID = 3736262494374232352L;
 
     /**
@@ -34,7 +33,6 @@ public class InvalidPointcutPatternException extends AspectException {
 
     /**
      * Constructs a InvalidPointcutPatternException with the specified detail message.
-     *
      * @param msg a message to associate with the exception
      */
     public InvalidPointcutPatternException(String msg) {
@@ -43,7 +41,6 @@ public class InvalidPointcutPatternException extends AspectException {
 
     /**
      * Constructor to create exception to wrap another exception.
-     *
      * @param cause the real cause of the exception
      */
     public InvalidPointcutPatternException(Throwable cause) {
@@ -53,7 +50,6 @@ public class InvalidPointcutPatternException extends AspectException {
     /**
      * Constructs a InvalidPointcutPatternException with the specified error message and
      * also the specified root cause exception.
-     *
      * @param msg the detail message
      * @param cause the real cause of the exception
      */
@@ -63,7 +59,6 @@ public class InvalidPointcutPatternException extends AspectException {
 
     /**
      * Instantiates a new InvalidPointcutPatternException.
-     *
      * @param aspectRule the aspect rule
      * @param msg the msg
      */

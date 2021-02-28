@@ -45,7 +45,6 @@ public class CustomTransformRule {
 
     /**
      * Gets the format type.
-     *
      * @return the format type
      */
     public FormatType getFormatType() {

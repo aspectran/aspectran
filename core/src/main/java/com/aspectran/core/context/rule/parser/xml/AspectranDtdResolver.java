@@ -52,7 +52,6 @@ public class AspectranDtdResolver implements EntityResolver {
 
     /**
      * Converts a public DTD into a local one.
-     *
      * @param publicId unused but required by EntityResolver interface
      * @param systemId the DTD that is being requested
      * @return the InputSource for the DTD

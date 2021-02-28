@@ -31,7 +31,6 @@ public interface FactoryBean<T> {
     /**
      * Return an instance (possibly shared or independent) of the object managed by this factory.
      * As with a BeanFactory, this allows support for both the Singleton and Prototype design pattern.
-     *
      * @return an instance of the bean (can be null)
      * @throws Exception in case of creation errors
      */

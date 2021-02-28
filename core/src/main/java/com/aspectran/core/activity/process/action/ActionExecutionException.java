@@ -24,14 +24,12 @@ import com.aspectran.core.activity.process.ProcessException;
  */
 public class ActionExecutionException extends ProcessException {
 
-    /** @serial */
     private static final long serialVersionUID = 3568162614053964319L;
 
     private Executable action;
 
     /**
      * Constructor to create exception with a message.
-     *
      * @param msg a message to associate with the exception
      */
     public ActionExecutionException(String msg) {
@@ -41,7 +39,6 @@ public class ActionExecutionException extends ProcessException {
     /**
      * Constructor to create exception to wrap another exception and pass a
      * message.
-     *
      * @param msg the detail message
      * @param cause the real cause of the exception
      */

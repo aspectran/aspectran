@@ -78,7 +78,6 @@ public abstract class AbstractServiceController implements ServiceController {
 
     /**
      * Returns whether this service is derived from another root service.
-     *
      * @return whether this service is derived
      */
     protected abstract boolean isDerived();

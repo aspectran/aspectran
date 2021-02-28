@@ -192,7 +192,6 @@ public class SessionData implements Serializable {
 
     /**
      * Returns an unmodifiable map of the attributes.
-     *
      * @return an unmodifiable map of the attributes
      */
     public Map<String, Object> getAllAttributes() {
@@ -201,7 +200,6 @@ public class SessionData implements Serializable {
 
     /**
      * Copies all of the mappings from the specified attributes.
-     *
      * @param attributes the specified attributes
      */
     public void putAllAttributes(Map<String, Object> attributes) {
@@ -229,7 +227,6 @@ public class SessionData implements Serializable {
 
     /**
      * Save the session data.
-     *
      * @param os the output stream to save to
      * @param nonPersistentAttributes the attribute names to be excluded from serialization
      * @throws IOException if an I/O error has occurred
@@ -274,7 +271,6 @@ public class SessionData implements Serializable {
 
     /**
      * Load session data from an input stream that contains session data.
-     *
      * @param is the input stream containing session data
      * @return the session data
      * @throws Exception if the session data could not be read from the file
@@ -301,7 +297,6 @@ public class SessionData implements Serializable {
 
     /**
      * Load attributes from an input stream that contains session data.
-     *
      * @param is the input stream containing session data
      * @param entries number of attributes
      * @param data the data to restore to

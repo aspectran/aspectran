@@ -46,7 +46,6 @@ public class DispatchResponse implements Response {
 
     /**
      * Instantiates a new DispatchResponse with specified DispatchRule.
-     *
      * @param dispatchRule the dispatch rule
      */
     public DispatchResponse(DispatchRule dispatchRule) {
@@ -69,7 +68,6 @@ public class DispatchResponse implements Response {
 
     /**
      * Gets the dispatch rule.
-     *
      * @return the dispatch rule
      */
     public DispatchRule getDispatchRule() {
@@ -93,7 +91,6 @@ public class DispatchResponse implements Response {
 
     /**
      * Determine the view dispatcher.
-     *
      * @param activity the current Activity
      * @throws ViewDispatcherException if ViewDispatcher can not be determined
      */
@@ -147,7 +144,6 @@ public class DispatchResponse implements Response {
 
     /**
      * Save processing results as request attributes.
-     *
      * @param requestAdapter the request adapter
      * @param processResult the process result
      */

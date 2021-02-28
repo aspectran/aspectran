@@ -26,7 +26,6 @@ public interface InitializableBean {
 
     /**
      * Invoke on initialization after it has set all bean properties supplied.
-     *
      * @throws Exception if initialization fails
      */
     @AvoidAdvice

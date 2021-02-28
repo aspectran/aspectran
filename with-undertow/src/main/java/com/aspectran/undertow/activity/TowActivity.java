@@ -55,7 +55,6 @@ public class TowActivity extends CoreActivity {
 
     /**
      * Instantiates a new tow service
-     *
      * @param service the tow service
      * @param exchange the adaptee object
      */

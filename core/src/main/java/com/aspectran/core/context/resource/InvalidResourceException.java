@@ -22,7 +22,6 @@ package com.aspectran.core.context.resource;
  */
 public class InvalidResourceException extends Exception {
 
-    /** @serial */
     private static final long serialVersionUID = -8749285705396087498L;
 
     /**
@@ -33,7 +32,6 @@ public class InvalidResourceException extends Exception {
 
     /**
      * Constructor to create exception with a message
-     *
      * @param msg a message to associate with the exception
      */
     public InvalidResourceException(String msg) {
@@ -42,7 +40,6 @@ public class InvalidResourceException extends Exception {
 
     /**
      * Constructor to create exception to wrap another exception
-     *
      * @param cause the real cause of the exception
      */
     public InvalidResourceException(Throwable cause) {
@@ -52,7 +49,6 @@ public class InvalidResourceException extends Exception {
     /**
      * Constructor to create exception to wrap another exception and pass a
      * message
-     *
      * @param msg the message
      * @param cause the real cause of the exception
      */

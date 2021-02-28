@@ -119,7 +119,6 @@ public class Token implements BeanReferenceable, Replicable<Token> {
 
     /**
      * Instantiates a new Token.
-     *
      * @param defaultValue the default value
      */
     public Token(String defaultValue) {
@@ -130,7 +129,6 @@ public class Token implements BeanReferenceable, Replicable<Token> {
 
     /**
      * Instantiates a new Token.
-     *
      * @param type the token type
      * @param name the token name
      */
@@ -150,7 +148,6 @@ public class Token implements BeanReferenceable, Replicable<Token> {
 
     /**
      * Instantiates a new Token.
-     *
      * @param type the token type
      * @param directiveType the token directive type
      * @param value the token value
@@ -170,7 +167,6 @@ public class Token implements BeanReferenceable, Replicable<Token> {
 
     /**
      * Gets the token type.
-     *
      * @return the token type
      */
     public TokenType getType() {
@@ -179,7 +175,6 @@ public class Token implements BeanReferenceable, Replicable<Token> {
 
     /**
      * Gets the token directive type.
-     *
      * @return the token directive type
      * @see TokenDirectiveType
      */
@@ -189,7 +184,6 @@ public class Token implements BeanReferenceable, Replicable<Token> {
 
     /**
      * Sets the token directive type.
-     *
      * @param directiveType the token directive type
      * @see TokenDirectiveType
      */
@@ -199,7 +193,6 @@ public class Token implements BeanReferenceable, Replicable<Token> {
 
     /**
      * Gets the token name.
-     *
      * @return the token name
      */
     public String getName() {
@@ -213,7 +206,6 @@ public class Token implements BeanReferenceable, Replicable<Token> {
      * the value of the token is the class name of the bean.
      * Also, if the token type is "property" and the token name is "classpath",
      * the value of the token is the path to reference in the Properties file.
-     *
      * @return the default value or bean's class name
      */
     public String getValue() {
@@ -223,7 +215,6 @@ public class Token implements BeanReferenceable, Replicable<Token> {
     /**
      * Sets the class name of the bean or the classpath of the Properties file,
      * depending on the type of the token.
-     *
      * @param value the class name of the bean or the classpath of the Properties file
      */
     public void setValue(String value) {
@@ -232,7 +223,6 @@ public class Token implements BeanReferenceable, Replicable<Token> {
 
     /**
      * Gets the name of the property whose value is to be retrieved.
-     *
      * @return the name of the property whose value is to be retrieved
      */
     public String getGetterName() {
@@ -242,7 +232,6 @@ public class Token implements BeanReferenceable, Replicable<Token> {
     /**
      * Gets the alternative value.
      * It is a value corresponding to class name or class path according to token directive.
-     *
      * @return the alternative value
      */
     public Object getAlternativeValue() {
@@ -252,7 +241,6 @@ public class Token implements BeanReferenceable, Replicable<Token> {
     /**
      * Sets the alternative value.
      * It is a value corresponding to class name or class path according to token directive.
-     *
      * @param value the new alternative value
      */
     public void setAlternativeValue(Object value) {
@@ -261,7 +249,6 @@ public class Token implements BeanReferenceable, Replicable<Token> {
 
     /**
      * Sets the name of the property whose value is to be retrieved.
-     *
      * @param getterName the name of the property whose value is to be retrieved
      */
     public void setGetterName(String getterName) {
@@ -270,7 +257,6 @@ public class Token implements BeanReferenceable, Replicable<Token> {
 
     /**
      * Gets the default value.
-     *
      * @return the default value
      */
     public String getDefaultValue() {
@@ -279,7 +265,6 @@ public class Token implements BeanReferenceable, Replicable<Token> {
 
     /**
      * Sets the default value.
-     *
      * @param defaultValue the new default value
      */
     public void setDefaultValue(String defaultValue) {
@@ -293,7 +278,6 @@ public class Token implements BeanReferenceable, Replicable<Token> {
 
     /**
      * Convert a Token object into a string.
-     *
      * @return a string representation of the token
      */
     public String stringify() {
@@ -458,7 +442,6 @@ public class Token implements BeanReferenceable, Replicable<Token> {
 
     /**
      * Returns whether a specified character is the token symbol.
-     *
      * @param c a character
      * @return true, if a specified character is one of the token symbols
      */
@@ -486,7 +469,6 @@ public class Token implements BeanReferenceable, Replicable<Token> {
 
     /**
      * Returns the token type for the specified character.
-     *
      * @param symbol the token symbol character
      * @return the token type
      */

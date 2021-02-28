@@ -43,7 +43,6 @@ public class AponTransformResponse extends TransformResponse {
 
     /**
      * Instantiates a new AponTransformResponse.
-     *
      * @param transformRule the transform rule
      */
     public AponTransformResponse(TransformRule transformRule) {

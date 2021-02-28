@@ -35,7 +35,6 @@ public class CustomTrimDirective extends AbstractTrimDirectiveModel implements T
 
     /**
      * Instantiates a new Custom trim directive.
-     *
      * @param groupName the group name
      * @param directiveName the directive name
      */
@@ -45,7 +44,6 @@ public class CustomTrimDirective extends AbstractTrimDirectiveModel implements T
 
     /**
      * Instantiates a new Custom trim directive.
-     *
      * @param groupName the group name
      * @param directiveName the directive name
      * @param trimmer the trimmer
@@ -58,7 +56,6 @@ public class CustomTrimDirective extends AbstractTrimDirectiveModel implements T
 
     /**
      * Instantiates a new Custom trim directive.
-     *
      * @param groupName the group name
      * @param directiveName the directive name
      * @param prefix the prefix
@@ -83,7 +80,6 @@ public class CustomTrimDirective extends AbstractTrimDirectiveModel implements T
 
     /**
      * Gets group name.
-     *
      * @return the group name
      */
     public String getGroupName() {
@@ -92,7 +88,6 @@ public class CustomTrimDirective extends AbstractTrimDirectiveModel implements T
 
     /**
      * Gets directive name.
-     *
      * @return the directive name
      */
     public String getDirectiveName() {

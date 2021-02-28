@@ -23,7 +23,6 @@ public interface BeanClassFilter {
     /**
      * Filter the retrieved candidate classes.
      * If null is returned instead of the bean ID, the candidate class is discarded without being included.
-     *
      * @param beanId the bean id
      * @param resourceName the resource name
      * @param retrievedClass the retrieved class

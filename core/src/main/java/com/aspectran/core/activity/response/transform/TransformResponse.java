@@ -37,7 +37,6 @@ public abstract class TransformResponse implements Response {
 
     /**
      * Instantiates a new TransformResponse.
-     *
      * @param transformRule the transform rule
      */
     public TransformResponse(TransformRule transformRule) {
@@ -56,7 +55,6 @@ public abstract class TransformResponse implements Response {
 
     /**
      * Gets the format type.
-     *
      * @return the format type
      */
     public FormatType getFormatType() {
@@ -65,7 +63,6 @@ public abstract class TransformResponse implements Response {
 
     /**
      * Gets the transform rule.
-     *
      * @return the transform rule
      */
     public TransformRule getTransformRule() {

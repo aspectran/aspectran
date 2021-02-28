@@ -28,7 +28,6 @@ public class NoneTransformResponse extends TransformResponse {
 
     /**
      * Instantiates a new NoneTransformResponse.
-     *
      * @param transformRule the transform rule
      */
     public NoneTransformResponse(TransformRule transformRule) {

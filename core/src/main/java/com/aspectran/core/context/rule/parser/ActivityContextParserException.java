@@ -22,7 +22,6 @@ package com.aspectran.core.context.rule.parser;
  */
 public class ActivityContextParserException extends Exception {
 
-    /** @serial */
     private static final long serialVersionUID = 5702282474852901391L;
 
     /**
@@ -34,7 +33,6 @@ public class ActivityContextParserException extends Exception {
 
     /**
      * Constructor to create exception with a message.
-     *
      * @param msg the specific message
      */
     public ActivityContextParserException(String msg) {
@@ -43,7 +41,6 @@ public class ActivityContextParserException extends Exception {
 
     /**
      * Constructor to create exception to wrap another exception.
-     *
      * @param cause the real cause of the exception
      */
     public ActivityContextParserException(Throwable cause) {
@@ -52,7 +49,6 @@ public class ActivityContextParserException extends Exception {
 
     /**
      * Constructor to create exception to wrap another exception and pass a message.
-     *
      * @param msg the specific message
      * @param cause the real cause of the exception
      */

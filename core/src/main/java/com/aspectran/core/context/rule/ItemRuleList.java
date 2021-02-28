@@ -25,7 +25,6 @@ import java.util.Collection;
  */
 public class ItemRuleList extends ArrayList<ItemRule> {
 
-    /** @serial */
     private static final long serialVersionUID = -7578440777195693622L;
 
     public ItemRuleList() {

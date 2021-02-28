@@ -61,7 +61,6 @@ public class DefaultServletHttpRequestHandler {
 
     /**
      * Gets the default servlet name.
-     *
      * @return the default servlet name
      */
     public String getDefaultServletName() {
@@ -70,7 +69,6 @@ public class DefaultServletHttpRequestHandler {
 
     /**
      * Set the name of the default Servlet to be forwarded to for static resource requests.
-     *
      * @param defaultServletName the new default servlet name
      */
     public void setDefaultServletName(String defaultServletName) {
@@ -79,7 +77,6 @@ public class DefaultServletHttpRequestHandler {
 
     /**
      * Lookup default servlet name.
-     *
      * @param servletContext the servlet context
      */
     private void lookupDefaultServletName(ServletContext servletContext) {
@@ -105,7 +102,6 @@ public class DefaultServletHttpRequestHandler {
 
     /**
      * Process the actual dispatching.
-     *
      * @param request current HTTP servlet request
      * @param response current HTTP servlet response
      * @return true, if successful

@@ -22,12 +22,10 @@ package com.aspectran.core.activity;
  */
 public class ActivityPrepareException extends ActivityException {
 
-    /** @serial */
     private static final long serialVersionUID = -6964737280809517019L;
 
     /**
      * Instantiates a new ActivityPrepareException.
-     *
      * @param msg the message
      * @param cause the real cause of the exception
      */

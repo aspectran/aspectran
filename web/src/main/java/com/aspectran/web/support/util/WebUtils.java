@@ -40,7 +40,6 @@ public abstract class WebUtils {
     /**
      * Retrieve the first cookie with the given name. Note that multiple
      * cookies can have the same name but different paths or domains.
-     *
      * @param request current servlet request
      * @param name cookie name
      * @return the first cookie with the given name, or {@code null} if none is found
@@ -62,7 +61,6 @@ public abstract class WebUtils {
     /**
      * Retrieve the first cookie with the given name. Note that multiple
      * cookies can have the same name but different paths or domains.
-     *
      * @param translet current translet
      * @param name cookie name
      * @return the first cookie with the given name, or {@code null} if none is found

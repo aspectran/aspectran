@@ -37,7 +37,6 @@ import java.util.Properties;
  */
 public class ParsedOptions implements Serializable {
 
-    /** @serial */
     private static final long serialVersionUID = -875791688751934582L;
 
     /** The processed options */
@@ -52,7 +51,6 @@ public class ParsedOptions implements Serializable {
 
     /**
      * Query to see if an option has been set.
-     *
      * @param opt the option to check
      * @return true if set, false if not
      */
@@ -62,7 +60,6 @@ public class ParsedOptions implements Serializable {
 
     /**
      * Query to see if an option has been set.
-     *
      * @param name short name of the option
      * @return true if set, false if not
      */
@@ -72,7 +69,6 @@ public class ParsedOptions implements Serializable {
 
     /**
      * Query to see if an option has been set.
-     *
      * @param name character name of the option
      * @return true if set, false if not
      */
@@ -82,7 +78,6 @@ public class ParsedOptions implements Serializable {
 
     /**
      * Checks if options exists.
-     *
      * @return true if options exists; false otherwise
      */
     public boolean hasOptions() {
@@ -91,7 +86,6 @@ public class ParsedOptions implements Serializable {
 
     /**
      * Return a version of this {@code Option} converted to a particular type.
-     *
      * @param <T> type to attempt to convert to
      * @param option the option
      * @return the value parsed into a particular object
@@ -148,7 +142,6 @@ public class ParsedOptions implements Serializable {
 
     /**
      * Return a version of this {@code Option} converted to a particular type.
-     *
      * @param <T> type to attempt to convert to
      * @param name the name of the option
      * @return the value parsed into a particular object
@@ -160,7 +153,6 @@ public class ParsedOptions implements Serializable {
 
     /**
      * Return a version of this {@code Option} converted to a particular type.
-     *
      * @param <T> type to attempt to convert to
      * @param name the name of the option
      * @return the value parsed into a particular object
@@ -172,7 +164,6 @@ public class ParsedOptions implements Serializable {
 
     /**
      * Retrieve the first argument, if any, of this option.
-     *
      * @param option the name of the option
      * @return the value of the argument if option is set, and has an argument,
      *      otherwise {@code null}
@@ -187,7 +178,6 @@ public class ParsedOptions implements Serializable {
 
     /**
      * Retrieve the first argument, if any, of this option.
-     *
      * @param name the name of the option
      * @return the value of the argument if option is set, and has an argument,
      *      otherwise {@code null}
@@ -198,7 +188,6 @@ public class ParsedOptions implements Serializable {
 
     /**
      * Retrieve the first argument, if any, of this option.
-     *
      * @param name the character name of the option
      * @return the value of the argument if option is set, and has an argument,
      *      otherwise {@code null}
@@ -209,7 +198,6 @@ public class ParsedOptions implements Serializable {
 
     /**
      * Retrieves the array of values, if any, of an option.
-     *
      * @param option string name of the option
      * @return the values of the argument if option is set, and has an argument,
      *      otherwise {@code null}
@@ -226,7 +214,6 @@ public class ParsedOptions implements Serializable {
 
     /**
      * Retrieves the array of values, if any, of an option.
-     *
      * @param name string name of the option
      * @return the values of the argument if option is set, and has an argument,
      *      otherwise {@code null}
@@ -237,7 +224,6 @@ public class ParsedOptions implements Serializable {
 
     /**
      * Retrieves the array of values, if any, of an option.
-     *
      * @param opt character name of the option
      * @return Values of the argument if option is set, and has an argument,
      *      otherwise {@code null}
@@ -248,7 +234,6 @@ public class ParsedOptions implements Serializable {
 
     /**
      * Retrieve the first argument, if any, of an option.
-     *
      * @param option the name of the option
      * @param defaultValue the default value to be returned if the option
      *      is not specified
@@ -262,7 +247,6 @@ public class ParsedOptions implements Serializable {
 
     /**
      * Retrieve the first argument, if any, of an option.
-     *
      * @param name the name of the option
      * @param defaultValue the default value to be returned if the option
      *      is not specified
@@ -275,7 +259,6 @@ public class ParsedOptions implements Serializable {
 
     /**
      * Retrieve the argument, if any, of an option.
-     *
      * @param name character name of the option
      * @param defaultValue the default value to be returned if the option
      *      is not specified
@@ -288,7 +271,6 @@ public class ParsedOptions implements Serializable {
 
     /**
      * Retrieves the option object given the long or short option as a String.
-     *
      * @param name the short or long name of the option
      * @return the canonicalized option
      */
@@ -312,7 +294,6 @@ public class ParsedOptions implements Serializable {
      * the 2nd argument is the value. If the option has only one argument
      * (<code>-Dfoo</code>) it is considered as a boolean flag and the value is
      * <code>"true"</code>.
-     *
      * @param option the option to be processed
      * @return the Properties mapped by the option, never {@code null}
      *         even if the option doesn't exists
@@ -341,7 +322,6 @@ public class ParsedOptions implements Serializable {
      * the 2nd argument is the value. If the option has only one argument
      * (<code>-Dfoo</code>) it is considered as a boolean flag and the value is
      * <code>"true"</code>.
-     *
      * @param name the name of the option
      * @return the Properties mapped by the option, never {@code null}
      *         even if the option doesn't exists
@@ -366,7 +346,6 @@ public class ParsedOptions implements Serializable {
     /**
      * Add an option.
      * The values of the option are stored.
-     *
      * @param opt the option to be processed
      */
     protected void addOption(Option opt) {
@@ -375,7 +354,6 @@ public class ParsedOptions implements Serializable {
 
     /**
      * Returns an iterator over the Option members of ParsedOptions.
-     *
      * @return an {@code Iterator} over the processed {@link Option}
      *      members of this {@link ParsedOptions}
      */
@@ -385,7 +363,6 @@ public class ParsedOptions implements Serializable {
 
     /**
      * Returns an array of the processed {@link Option}s.
-     *
      * @return an array of the processed {@link Option}s
      */
     public Option[] getOptions() {
@@ -394,7 +371,6 @@ public class ParsedOptions implements Serializable {
 
     /**
      * Checks if non-recognized options or arguments exists.
-     *
      * @return true if non-recognized options or arguments exists; false otherwise
      */
     public boolean hasArgs() {
@@ -403,7 +379,6 @@ public class ParsedOptions implements Serializable {
 
     /**
      * Retrieve any left-over non-recognized options and arguments.
-     *
      * @return remaining items passed in but not parsed as an array
      */
     public String[] getArgs() {
@@ -416,7 +391,6 @@ public class ParsedOptions implements Serializable {
 
     /**
      * Retrieve any left-over non-recognized options and arguments.
-     *
      * @return remaining items passed in but not parsed as a {@link List}
      */
     public List<String> getArgList() {
@@ -425,7 +399,6 @@ public class ParsedOptions implements Serializable {
 
     /**
      * Add left-over unrecognized option/argument.
-     *
      * @param arg the unrecognized option/argument
      */
     protected void addArg(String arg) {

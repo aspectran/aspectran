@@ -34,7 +34,6 @@ public interface Command {
     /**
      * This method will be called as the starting point to execute the logic
      * for the action mapped to this command.
-     *
      * @param options the parsed options
      * @param console the console
      * @throws Exception if an error occurs during command execution
@@ -43,7 +42,6 @@ public interface Command {
 
     /**
      * Prints the usage statement for the specified command.
-     *
      * @param console the Console instance
      */
     void printHelp(Console console);
@@ -53,7 +51,6 @@ public interface Command {
     /**
      * This method returns an instance of Command.Descriptor.
      * The descriptor is meta information about the command.
-     *
      * @return a Descriptor that is meta information about the command
      */
     Command.Descriptor getDescriptor();

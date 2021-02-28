@@ -43,7 +43,6 @@ public class QuartzSchedulerFactoryBean implements InitializableBean, FactoryBea
     /**
      * Set the name of the Scheduler to create via the SchedulerFactory.
      * <p>If not specified, the bean name will be used as default scheduler name.</p>
-     *
      * @param schedulerName the scheduler name
      * @see org.quartz.SchedulerFactory#getScheduler()
      * @see org.quartz.SchedulerFactory#getScheduler(String)
@@ -54,7 +53,6 @@ public class QuartzSchedulerFactoryBean implements InitializableBean, FactoryBea
 
     /**
      * Set quartz properties.
-     *
      * @param quartzProperties the quartz properties
      */
     public void setQuartzProperties(Properties quartzProperties) {
@@ -68,7 +66,6 @@ public class QuartzSchedulerFactoryBean implements InitializableBean, FactoryBea
      * <p>Switch this flag to "true" in order to expose the Scheduler globally.
      * This is not recommended unless you have an existing Aspectran application that
      * relies on this behavior.</p>
-     *
      * @param exposeSchedulerInRepository whether to expose scheduler in the quartz scheduler repository
      */
     public void setExposeSchedulerInRepository(boolean exposeSchedulerInRepository) {
@@ -79,7 +76,6 @@ public class QuartzSchedulerFactoryBean implements InitializableBean, FactoryBea
      * Create the Scheduler instance.
      * <p>The default implementation invokes SchedulerFactory's {@code getScheduler}
      * method. Can be overridden for custom Scheduler creation.</p>
-     *
      * @return the Scheduler instance
      * @throws SchedulerException if thrown by Quartz methods
      * @see org.quartz.SchedulerFactory#getScheduler

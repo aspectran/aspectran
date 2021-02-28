@@ -56,7 +56,6 @@ public class XmlTransformResponse extends TransformResponse {
 
     /**
      * Instantiates a new XmlTransformResponse.
-     *
      * @param transformRule the transform rule
      */
     public XmlTransformResponse(TransformRule transformRule) {

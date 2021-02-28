@@ -43,7 +43,6 @@ public enum ActionType {
     /**
      * Returns an {@code ActionType} with a value represented
      * by the specified {@code String}.
-     *
      * @param alias the action type as a {@code String}
      * @return an {@code ActionType}, may be {@code null}
      */

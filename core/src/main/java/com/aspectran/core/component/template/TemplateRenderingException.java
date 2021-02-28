@@ -24,14 +24,12 @@ import com.aspectran.core.context.rule.TemplateRule;
  */
 public class TemplateRenderingException extends TemplateException {
 
-    /** @serial */
     private static final long serialVersionUID = -1495281620922964138L;
 
     private final TemplateRule templateRule;
 
     /**
      * Instantiates a new TemplateRenderingException.
-     *
      * @param msg the detail message
      * @param templateRule the template rule
      */
@@ -42,7 +40,6 @@ public class TemplateRenderingException extends TemplateException {
 
     /**
      * Instantiates a new TemplateRenderingException.
-     *
      * @param msg the detail message
      * @param templateRule the template rule
      * @param cause the root cause

@@ -281,7 +281,6 @@ public abstract class AbstractCorsProcessor implements CorsProcessor {
 
     /**
      * Helper method to check whether requests from the specified origin must be allowed.
-     *
      * @param origin The origin as reported by the web client (browser), {@code null} if unknown.
      * @return {@code true} if the origin is allowed, else {@code false}.
      */
@@ -293,7 +292,6 @@ public abstract class AbstractCorsProcessor implements CorsProcessor {
      * Helper method to check whether the specified HTTP method is
      * supported. This is done by looking up {@link #allowedMethods}.
      * GET and HEAD, must never be disabled and should not return 405 error code.
-     *
      * @param method The HTTP method.
      * @return {@code true} if the method is supported, else {@code false}.
      */
@@ -307,7 +305,6 @@ public abstract class AbstractCorsProcessor implements CorsProcessor {
 
     /**
      * Helper method to check whether the specified HTTP header is supported.
-     *
      * @param header the HTTP header
      * @return {@code true} if the header is supported, else {@code false}.
      */
@@ -317,7 +314,6 @@ public abstract class AbstractCorsProcessor implements CorsProcessor {
 
     /**
      * Returns {@code true} if the request is a valid CORS one.
-     *
      * @param request the http request
      * @return {@code true} if the request is a valid CORS one, else {@code false}
      */
@@ -327,7 +323,6 @@ public abstract class AbstractCorsProcessor implements CorsProcessor {
 
     /**
      * Returns {@code true} if the request is a valid CORS pre-flight one.
-     *
      * @param request the http request
      * @return {@code true} if the request is a valid CORS pre-flight one, else {@code false}
      */

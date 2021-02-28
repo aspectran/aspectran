@@ -34,7 +34,6 @@ public abstract class SerializationUtils {
 
     /**
      * Serialize the given object to a byte array.
-     *
      * @param object the object to serialize
      * @return an array of bytes representing the object in a portable fashion
      */
@@ -56,7 +55,6 @@ public abstract class SerializationUtils {
 
     /**
      * Deserialize the byte array into an object.
-     *
      * @param bytes a serialized object
      * @return the result of deserializing the bytes
      */

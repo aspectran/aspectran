@@ -24,7 +24,6 @@ public interface Component {
 
     /**
      * Initialize the component.
-     *
      * @throws Exception if the component fails to initialize
      */
     void initialize() throws Exception;
@@ -36,35 +35,30 @@ public interface Component {
 
     /**
      * Returns whether the component is currently available.
-     *
      * @return true if the component is currently available
      */
     boolean isAvailable();
 
     /**
      * Returns whether or not the component has been initialized.
-     *
      * @return true if the component has been initialized
      */
     boolean isInitialized();
 
     /**
      * Returns whether the component is being destroyed.
-     *
      * @return true if the component is being destroyed
      */
     boolean isDestroying();
 
     /**
      * Returns whether or not the component has been destroyed.
-     *
      * @return true if the component has been destroyed
      */
     boolean isDestroyed();
 
     /**
      * Returns the component name.
-     *
      * @return the component name
      */
     String getComponentName();

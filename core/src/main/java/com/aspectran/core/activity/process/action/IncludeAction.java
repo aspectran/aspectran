@@ -38,7 +38,6 @@ public class IncludeAction implements Executable {
 
     /**
      * Instantiates a new IncludeAction.
-     *
      * @param includeActionRule the process call action rule
      */
     public IncludeAction(IncludeActionRule includeActionRule) {
@@ -73,7 +72,6 @@ public class IncludeAction implements Executable {
 
     /**
      * Returns the include action rule.
-     *
      * @return the include action rule
      */
     public IncludeActionRule getIncludeActionRule() {

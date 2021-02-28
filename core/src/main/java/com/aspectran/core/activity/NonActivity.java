@@ -26,7 +26,6 @@ public class NonActivity extends CoreActivity {
 
     /**
      * Instantiates a new NonActivity.
-     *
      * @param context the activity context
      */
     public NonActivity(ActivityContext context) {

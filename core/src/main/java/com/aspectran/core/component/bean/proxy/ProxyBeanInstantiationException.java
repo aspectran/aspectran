@@ -23,14 +23,12 @@ import com.aspectran.core.context.rule.BeanRule;
  */
 public class ProxyBeanInstantiationException extends BeanException {
 
-    /** @serial */
     private static final long serialVersionUID = -3560168431550039638L;
 
     private BeanRule beanRule;
 
     /**
      * Create a new ProxyBeanInstantiationException.
-     *
      * @param beanRule the offending bean rule
      * @param cause the root cause
      */
@@ -41,7 +39,6 @@ public class ProxyBeanInstantiationException extends BeanException {
 
     /**
      * Return the offending bean rule.
-     *
      * @return the bean rule
      */
     public BeanRule getBeanRule() {

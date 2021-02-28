@@ -21,7 +21,6 @@ package com.aspectran.shell.command.option;
  */
 public class UnrecognizedOptionException extends OptionParserException {
 
-    /** @serial */
     private static final long serialVersionUID = 4662457863100554595L;
 
     /** The unrecognized option */
@@ -30,7 +29,6 @@ public class UnrecognizedOptionException extends OptionParserException {
     /**
      * Construct a new {@code UnrecognizedArgumentException}
      * with the specified detail message.
-     *
      * @param message the detail message
      */
     public UnrecognizedOptionException(String message) {
@@ -40,7 +38,6 @@ public class UnrecognizedOptionException extends OptionParserException {
     /**
      * Construct a new {@code UnrecognizedArgumentException}
      * with the specified option and detail message.
-     *
      * @param message the detail message
      * @param option the unrecognized option
      */
@@ -51,7 +48,6 @@ public class UnrecognizedOptionException extends OptionParserException {
 
     /**
      * Returns the unrecognized option.
-     *
      * @return the related option
      */
     public String getOption() {

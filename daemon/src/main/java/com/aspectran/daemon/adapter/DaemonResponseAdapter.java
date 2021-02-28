@@ -28,7 +28,6 @@ public class DaemonResponseAdapter extends DefaultResponseAdapter {
 
     /**
      * Instantiates a new DaemonResponseAdapter.
-     *
      * @param outputWriter the writer to output
      */
     public DaemonResponseAdapter(Writer outputWriter) {

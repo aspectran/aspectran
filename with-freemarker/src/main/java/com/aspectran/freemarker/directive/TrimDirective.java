@@ -46,14 +46,12 @@ public interface TrimDirective {
 
     /**
      * Gets group name.
-     *
      * @return the group name
      */
     String getGroupName();
 
     /**
      * Gets directive name.
-     *
      * @return the directive name
      */
     String getDirectiveName();

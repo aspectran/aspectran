@@ -25,7 +25,6 @@ import com.aspectran.core.context.rule.type.MethodType;
  */
 public class TransletNotFoundException extends ActivityException {
 
-    /** @serial */
     private static final long serialVersionUID = -5619283297296999361L;
 
     private final String transletName;
@@ -34,7 +33,6 @@ public class TransletNotFoundException extends ActivityException {
 
     /**
      * Constructor to create exception with a message.
-     *
      * @param transletName the translet name
      */
     public TransletNotFoundException(String transletName) {
@@ -43,7 +41,6 @@ public class TransletNotFoundException extends ActivityException {
 
     /**
      * Constructor to create exception with a message.
-     *
      * @param transletName the translet name
      * @param requestMethod the request method
      */

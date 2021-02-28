@@ -20,7 +20,6 @@ package com.aspectran.core.component.bean;
  */
 public class NoSuchBeanException extends BeanException {
 
-    /** @serial */
     private static final long serialVersionUID = 1866105813455720749L;
 
     private final String id;
@@ -29,7 +28,6 @@ public class NoSuchBeanException extends BeanException {
 
     /**
      * Instantiates a new NoSuchBeanException.
-     *
      * @param id the bean id
      */
     public NoSuchBeanException(String id) {
@@ -40,7 +38,6 @@ public class NoSuchBeanException extends BeanException {
 
     /**
      * Instantiates a new NoSuchBeanException.
-     *
      * @param type the required type of the missing bean
      */
     public NoSuchBeanException(Class<?> type) {
@@ -51,7 +48,6 @@ public class NoSuchBeanException extends BeanException {
 
     /**
      * Instantiates a new NoSuchBeanException.
-     *
      * @param type the required type
      * @param id the bean id
      */
@@ -63,7 +59,6 @@ public class NoSuchBeanException extends BeanException {
 
     /**
      * Returns the id of the missing bean.
-     *
      * @return the bean id
      */
     public String getId() {
@@ -72,7 +67,6 @@ public class NoSuchBeanException extends BeanException {
 
     /**
      * Returns the type required type of the missing bean.
-     *
      * @return the required type
      */
     public Class<?> getType() {

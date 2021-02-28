@@ -57,7 +57,6 @@ public class SqlSessionTxAdvice {
     /**
      * Returns an open SqlSession.
      * If no SqlSession is open then return null.
-     *
      * @return a SqlSession instance
      */
     public SqlSession getSqlSession() {
@@ -128,7 +127,6 @@ public class SqlSessionTxAdvice {
 
     /**
      * Flushes batch statements and commits database connection.
-     *
      * @param force forces connection commit
      */
     public void commit(boolean force) {
@@ -168,7 +166,6 @@ public class SqlSessionTxAdvice {
     /**
      * Discards pending batch statements and rolls database connection back.
      * Note that database connection will not be rolled back if no updates/deletes/inserts were called.
-     *
      * @param force forces connection rollback
      */
     public void rollback(boolean force) {
@@ -192,11 +189,11 @@ public class SqlSessionTxAdvice {
     public void close() {
         close(false);
     }
+
     /**
      * Closes the session arbitrarily.
      * If the transaction advice does not finally close the session, the session
      * will automatically reopen whenever necessary.
-     *
      * @param arbitrarily true if the session is closed arbitrarily; otherwise false
      */
     public void close(boolean arbitrarily) {
@@ -218,7 +215,6 @@ public class SqlSessionTxAdvice {
 
     /**
      * Returns whether the session is arbitrarily closed.
-     *
      * @return whether the session is arbitrarily closed
      */
     public boolean isArbitrarilyClosed() {
@@ -227,7 +223,6 @@ public class SqlSessionTxAdvice {
 
     /**
      * Checks if the SqlSession is open.
-     *
      * @return whether the session is arbitrarily closed
      */
     private boolean checkSession() {

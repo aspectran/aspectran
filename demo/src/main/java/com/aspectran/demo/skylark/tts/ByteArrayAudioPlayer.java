@@ -50,7 +50,6 @@ public class ByteArrayAudioPlayer implements AudioPlayer {
 
     /**
      * Sets the audio format for this player.
-     *
      * @param format the audio format
      */
     @Override
@@ -60,7 +59,6 @@ public class ByteArrayAudioPlayer implements AudioPlayer {
 
     /**
      * Retrieves the audio format for this player.
-     *
      * @return the current audio format
      */
     @Override
@@ -108,7 +106,6 @@ public class ByteArrayAudioPlayer implements AudioPlayer {
 
     /**
      * Returns the current volume.
-     *
      * @return the current volume (between 0 and 1)
      */
     @Override
@@ -118,7 +115,6 @@ public class ByteArrayAudioPlayer implements AudioPlayer {
 
     /**
      * Sets the current volume.
-     *
      * @param volume the current volume (between 0 and 1)
      */
     @Override
@@ -127,7 +123,6 @@ public class ByteArrayAudioPlayer implements AudioPlayer {
 
     /**
      * Waits for all queued audio to be played
-     *
      * @return <code>true</code> if the audio played to completion,
      * <code> false </code>if the audio was stopped
      */
@@ -139,7 +134,6 @@ public class ByteArrayAudioPlayer implements AudioPlayer {
     /**
      * Gets the amount of played since the last resetTime
      * Currently not supported.
-     *
      * @return the amount of audio in milliseconds
      */
     @Override
@@ -170,7 +164,6 @@ public class ByteArrayAudioPlayer implements AudioPlayer {
 
     /**
      * Starts the output of a set of data.
-     *
      * @param size the size of data between now and the end
      */
     @Override
@@ -191,7 +184,6 @@ public class ByteArrayAudioPlayer implements AudioPlayer {
 
     /**
      * Writes the given bytes to the audio stream.
-     *
      * @param audioData array of audio data
      * @return <code>true</code> of the write completed successfully,
      * <code> false </code>if the write was cancelled.
@@ -203,7 +195,6 @@ public class ByteArrayAudioPlayer implements AudioPlayer {
 
     /**
      * Writes the given bytes to the audio stream.
-     *
      * @param bytes  audio data to write to the device
      * @param offset the offset into the buffer
      * @param size   the size into the buffer
@@ -237,7 +228,6 @@ public class ByteArrayAudioPlayer implements AudioPlayer {
 
     /**
      * Returns the name of this AudioPlayer.
-     *
      * @return the name of the audio player
      */
     @Override

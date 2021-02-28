@@ -40,7 +40,6 @@ public interface SessionHandler extends Component {
 
     /**
      * Get a known existing session.
-     *
      * @param id the session id
      * @return a Session or null if none exists
      */
@@ -48,7 +47,6 @@ public interface SessionHandler extends Component {
 
     /**
      * Create an entirely new Session.
-     *
      * @param id identity of session to create
      * @return the new session object
      */
@@ -58,7 +56,6 @@ public interface SessionHandler extends Component {
 
     /**
      * Create a new Session ID.
-     *
      * @param seedTerm the seed for RNG
      * @return the new session id
      */
@@ -66,7 +63,6 @@ public interface SessionHandler extends Component {
 
     /**
      * Change the id of a Session.
-     *
      * @param oldId the current session id
      * @param newId the new session id
      * @return the Session after changing its id
@@ -75,7 +71,6 @@ public interface SessionHandler extends Component {
 
     /**
      * Remove session from manager.
-     *
      * @param id the session to remove
      * @param invalidate if false, only remove from cache
      * @return if the session was removed
@@ -86,7 +81,6 @@ public interface SessionHandler extends Component {
 
     /**
      * Called when a session has expired.
-     *
      * @param id the id to invalidate
      */
     void invalidate(String id);
@@ -107,7 +101,6 @@ public interface SessionHandler extends Component {
      * If none of the above are true, then the System timer
      * is inconsistent and the caller of this method will
      * need to reset the timer.
-     *
      * @param session the default session
      * @param now the time at which to check for expiry
      */
@@ -121,7 +114,6 @@ public interface SessionHandler extends Component {
 
     /**
      * Adds an event listener for session-related events.
-     *
      * @param listener the session listener
      * @see #removeSessionListener(SessionListener)
      */
@@ -129,7 +121,6 @@ public interface SessionHandler extends Component {
 
     /**
      * Removes an event listener for session-related events.
-     *
      * @param listener the session listener to remove
      * @see #addSessionListener(SessionListener)
      */
@@ -145,7 +136,6 @@ public interface SessionHandler extends Component {
     /**
      * Call binding and attribute listeners based on the new and old values of
      * the attribute.
-     *
      * @param name name of the attribute
      * @param newValue new value of the attribute
      * @param oldValue previous value of the attribute
@@ -155,7 +145,6 @@ public interface SessionHandler extends Component {
 
     /**
      * Call the session lifecycle listeners.
-     *
      * @param session the session on which to call the lifecycle listeners
      */
     void fireSessionDestroyedListeners(Session session);
@@ -163,7 +152,6 @@ public interface SessionHandler extends Component {
     /**
      * Record length of time session has been active. Called when the
      * session is about to be invalidated.
-     *
      * @param session the session whose time to record
      */
     void recordSessionTime(DefaultSession session);

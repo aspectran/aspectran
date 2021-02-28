@@ -130,7 +130,6 @@ public class TextToSpeechBean implements InitializableBean, DisposableBean {
 
     /**
      * Synthesizes speech of the given text and plays immediately.
-     *
      * @param text the text that will be transformed to speech
      */
     public void speak(String text) {
@@ -142,7 +141,6 @@ public class TextToSpeechBean implements InitializableBean, DisposableBean {
 
     /**
      * Sends synthesized sound data to an output stream of bytes.
-     *
      * @param text the text that will be transformed to speech
      * @param out the output stream of bytes
      */
@@ -152,7 +150,6 @@ public class TextToSpeechBean implements InitializableBean, DisposableBean {
 
     /**
      * Sends synthesized sound data to an output stream of bytes.
-     *
      * @param text the text that will be transformed to speech
      * @param out the output stream of bytes
      * @param transformer the transformer that encodes bytes into different types of data
@@ -171,7 +168,6 @@ public class TextToSpeechBean implements InitializableBean, DisposableBean {
 
     /**
      * Sends synthesized sound data to an output stream of bytes.
-     *
      * @param text the text that will be transformed to speech
      * @param audioPlayer the audio player
      * @return the audio player

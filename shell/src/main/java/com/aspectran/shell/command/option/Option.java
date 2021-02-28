@@ -38,7 +38,6 @@ import java.util.Objects;
  */
 public class Option implements Cloneable, Serializable {
 
-    /** @serial */
     private static final long serialVersionUID = -7707766888283034409L;
 
     /** Constant that specifies the number of argument values has not been specified */
@@ -97,7 +96,6 @@ public class Option implements Cloneable, Serializable {
     /**
      * Creates an Option using the specified parameters.
      * The option does not take an argument.
-     *
      * @param name short representation of the option
      * @param description describes the function of the option
      * @throws IllegalArgumentException if there are any non valid
@@ -109,7 +107,6 @@ public class Option implements Cloneable, Serializable {
 
     /**
      * Creates an Option using the specified parameters.
-     *
      * @param name short representation of the option
      * @param hasValue specifies whether the Option takes an argument value or not
      * @param description describes the function of the option
@@ -122,7 +119,6 @@ public class Option implements Cloneable, Serializable {
 
     /**
      * Creates an Option using the specified parameters.
-     *
      * @param name short representation of the option
      * @param longName the long representation of the option
      * @param hasValue specifies whether the Option takes an argument value or not
@@ -150,7 +146,6 @@ public class Option implements Cloneable, Serializable {
      * Returns the id of this Option.  This is only set when the
      * Option shortOpt is a single character.  This is used for switch
      * statements.
-     *
      * @return the id of this Option
      */
     public int getId() {
@@ -174,7 +169,6 @@ public class Option implements Cloneable, Serializable {
      * {@link ParsedOptions#hasOption(String name)} and
      * {@link ParsedOptions#getValue(String name)} to check
      * for existence and argument.
-     *
      * @return the name of this option
      */
     public String getName() {
@@ -183,7 +177,6 @@ public class Option implements Cloneable, Serializable {
 
     /**
      * Retrieve the long name of this Option.
-     *
      * @return the long name of this Option, or null, if there is no long name
      */
     public String getLongName() {
@@ -192,7 +185,6 @@ public class Option implements Cloneable, Serializable {
 
     /**
      * Sets the long name of this Option.
-     *
      * @param longName the long name of this Option
      */
     public void setLongName(String longName) {
@@ -201,7 +193,6 @@ public class Option implements Cloneable, Serializable {
 
     /**
      * Query to see if this Option has a long name.
-     *
      * @return boolean flag indicating existence of a long name
      */
     public boolean hasLongName() {
@@ -210,7 +201,6 @@ public class Option implements Cloneable, Serializable {
 
     /**
      * Gets the display name for the argument value.
-     *
      * @return the display name for the argument value
      */
     public String getValueName() {
@@ -219,7 +209,6 @@ public class Option implements Cloneable, Serializable {
 
     /**
      * Sets the display name for the argument value.
-     *
      * @param valueName the display name for the argument value
      */
     public void setValueName(String valueName) {
@@ -228,7 +217,6 @@ public class Option implements Cloneable, Serializable {
 
     /**
      * Returns whether the display name for the argument value has been set.
-     *
      * @return if the display name for the argument value has been set
      */
     public boolean hasValueName() {
@@ -237,7 +225,6 @@ public class Option implements Cloneable, Serializable {
 
     /**
      * Retrieve the type of this Option.
-     *
      * @return the type of this option
      */
     public OptionValueType getValueType() {
@@ -246,7 +233,6 @@ public class Option implements Cloneable, Serializable {
 
     /**
      * Sets the type of this Option.
-     *
      * @param valueType the type of this Option
      */
     public void setValueType(OptionValueType valueType) {
@@ -255,7 +241,6 @@ public class Option implements Cloneable, Serializable {
 
     /**
      * Sets whether this Option can have an optional argument.
-     *
      * @param optionalValue specifies whether the Option can have
      *      an optional argument.
      */
@@ -265,7 +250,6 @@ public class Option implements Cloneable, Serializable {
 
     /**
      * Returns whether this Option can have an optional argument.
-     *
      * @return whether this Option can have an optional argument
      */
     public boolean hasOptionalValue() {
@@ -281,7 +265,6 @@ public class Option implements Cloneable, Serializable {
      * A value equal to the constant {@link #UNLIMITED_VALUES} (= -2) indicates
      * that this options takes an unlimited amount of values.
      * </p>
-     *
      * @return num the number of argument values
      * @see #UNINITIALIZED
      * @see #UNLIMITED_VALUES
@@ -292,7 +275,6 @@ public class Option implements Cloneable, Serializable {
 
     /**
      * Sets the number of argument values this Option can take.
-     *
      * @param num the number of argument values
      */
     public void setNumberOfValues(int num) {
@@ -301,7 +283,6 @@ public class Option implements Cloneable, Serializable {
 
     /**
      * Query to see if this Option requires an argument.
-     *
      * @return boolean flag indicating if an argument is required
      */
     public boolean hasValue() {
@@ -310,7 +291,6 @@ public class Option implements Cloneable, Serializable {
 
     /**
      * Query to see if this Option can take many values.
-     *
      * @return boolean flag indicating if multiple values are allowed
      */
     public boolean hasValues() {
@@ -331,7 +311,6 @@ public class Option implements Cloneable, Serializable {
 
     /**
      * Adds the specified value to this Option.
-     *
      * @param value is a/the value of this Option
      */
     public void addValue(String value) {
@@ -345,7 +324,6 @@ public class Option implements Cloneable, Serializable {
      * Add the value to this Option.  If the number of arguments
      * is greater than zero and there is enough space in the list then
      * add the value.  Otherwise, throw a runtime exception.
-     *
      * @param value the value to be added to this Option
      */
     private void add(String value) {
@@ -360,7 +338,6 @@ public class Option implements Cloneable, Serializable {
     /**
      * Returns the specified value of this Option or
      * {@code null} if there is no value.
-     *
      * @return the value/first value of this Option or
      *      {@code null} if there is no value
      */
@@ -371,7 +348,6 @@ public class Option implements Cloneable, Serializable {
     /**
      * Returns the specified value of this Option or
      * {@code null} if there is no value.
-     *
      * @param index the index of the value to be returned.
      * @return the specified value of this Option or
      *      {@code null} if there is no value.
@@ -385,7 +361,6 @@ public class Option implements Cloneable, Serializable {
     /**
      * Returns the value/first value of this Option or the
      * <code>defaultValue</code> if there is no value.
-     *
      * @param defaultValue the value to be returned if there
      *      is no value.
      * @return the value/first value of this Option or the
@@ -399,7 +374,6 @@ public class Option implements Cloneable, Serializable {
     /**
      * Return the values of this Option as a String array
      * or null if there are no values.
-     *
      * @return the values of this Option as a String array
      *      or null if there are no values
      */
@@ -410,7 +384,6 @@ public class Option implements Cloneable, Serializable {
     /**
      * Returns the values of this Option as a List
      * or null if there are no values.
-     *
      * @return the values of this Option as a List
      *      or null if there are no values
      */
@@ -420,7 +393,6 @@ public class Option implements Cloneable, Serializable {
 
     /**
      * Returns whether this Option has any values.
-     *
      * @return true if this Option has no value; false otherwise
      */
     private boolean hasNoValues() {
@@ -429,7 +401,6 @@ public class Option implements Cloneable, Serializable {
 
     /**
      * Query to see if this Option is mandatory
-     *
      * @return boolean flag indicating whether this Option is mandatory
      */
     public boolean isRequired() {
@@ -438,7 +409,6 @@ public class Option implements Cloneable, Serializable {
 
     /**
      * Sets whether this Option is mandatory.
-     *
      * @param required specifies whether this Option is mandatory
      */
     public void setRequired(boolean required) {
@@ -447,7 +417,6 @@ public class Option implements Cloneable, Serializable {
 
     /**
      * Retrieve the self-documenting description of this Option
-     *
      * @return the string description of this option
      */
     public String getDescription() {
@@ -456,7 +425,6 @@ public class Option implements Cloneable, Serializable {
 
     /**
      * Sets the self-documenting description of this Option
-     *
      * @param description the description of this option
      */
     public void setDescription(String description) {
@@ -497,7 +465,6 @@ public class Option implements Cloneable, Serializable {
      *
      * After calling this method, it is very likely you will want to call
      * clearValues().
-     *
      * @return a clone of this Option instance
      * @throws RuntimeException if a {@link CloneNotSupportedException} has been thrown
      *      by {@code super.clone()}
@@ -515,7 +482,6 @@ public class Option implements Cloneable, Serializable {
 
     /**
      * Dump state, suitable for debugging.
-     *
      * @return the stringified form of this object
      */
     @Override
@@ -586,7 +552,6 @@ public class Option implements Cloneable, Serializable {
     /**
      * Returns a {@link Builder} to create an {@link Option} using descriptive
      * methods.  
-     *
      * @param name short representation of the option
      * @return a new {@link Builder} instance
      * @throws IllegalArgumentException if there are any non valid Option characters in {@code name}

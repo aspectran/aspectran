@@ -118,7 +118,6 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
 
     /**
      * Returns the bean id.
-     *
      * @return the bean id
      */
     public String getId() {
@@ -127,7 +126,6 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
 
     /**
      * Sets the bean id.
-     *
      * @param id the bean id
      */
     public void setId(String id) {
@@ -136,7 +134,6 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
 
     /**
      * Gets the class type.
-     *
      * @return the class type
      */
     public String getClassName() {
@@ -145,7 +142,6 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
 
     /**
      * Sets the class type.
-     *
      * @param className the new class name
      */
     public void setClassName(String className) {
@@ -154,7 +150,6 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
 
     /**
      * Gets the bean class.
-     *
      * @return the bean class
      */
     public Class<?> getBeanClass() {
@@ -163,7 +158,6 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
 
     /**
      * Sets the bean class.
-     *
      * @param beanClass the new bean class
      */
     public void setBeanClass(Class<?> beanClass) {
@@ -176,7 +170,6 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
 
     /**
      * Gets the scan pattern.
-     *
      * @return the scan pattern
      */
     public String getScanPattern() {
@@ -185,7 +178,6 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
 
     /**
      * Sets the scan pattern.
-     *
      * @param scanPattern the new scan pattern
      */
     public void setScanPattern(String scanPattern) {
@@ -194,7 +186,6 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
 
     /**
      * Gets the mask pattern.
-     *
      * @return the mask pattern
      */
     public String getMaskPattern() {
@@ -203,7 +194,6 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
 
     /**
      * Gets the filter parameters.
-     *
      * @return the filter parameters
      */
     public FilterParameters getFilterParameters() {
@@ -212,7 +202,6 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
 
     /**
      * Sets the filter parameters.
-     *
      * @param filterParameters the new filter parameters
      */
     public void setFilterParameters(FilterParameters filterParameters) {
@@ -221,7 +210,6 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
 
     /**
      * Sets the mask pattern.
-     *
      * @param maskPattern the new mask pattern
      */
     public void setMaskPattern(String maskPattern) {
@@ -230,7 +218,6 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
 
     /**
      * Gets the scope type.
-     *
      * @return the scope type
      */
     public ScopeType getScopeType() {
@@ -239,7 +226,6 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
 
     /**
      * Sets the scope type.
-     *
      * @param scopeType the new scope type
      */
     public void setScopeType(ScopeType scopeType) {
@@ -275,7 +261,6 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
 
     /**
      * Gets the factory bean id.
-     *
      * @return the factory bean id
      */
     public String getFactoryBeanId() {
@@ -284,7 +269,6 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
 
     /**
      * Sets the factory bean id.
-     *
      * @param factoryBeanId the new factory bean id
      */
     public void setFactoryBeanId(String factoryBeanId) {
@@ -293,7 +277,6 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
 
     /**
      * Gets factory bean class.
-     *
      * @return the factory bean class
      */
     public Class<?> getFactoryBeanClass() {
@@ -302,7 +285,6 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
 
     /**
      * Sets factory bean class.
-     *
      * @param factoryBeanClass the factory bean class
      */
     public void setFactoryBeanClass(Class<?> factoryBeanClass) {
@@ -311,7 +293,6 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
 
     /**
      * Gets the factory method name.
-     *
      * @return the factory method
      */
     public String getFactoryMethodName() {
@@ -320,7 +301,6 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
 
     /**
      * Sets the factory method name.
-     *
      * @param factoryMethodName the new factory method name
      */
     public void setFactoryMethodName(String factoryMethodName) {
@@ -369,7 +349,6 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
 
     /**
      * Returns the initialization method name.
-     *
      * @return the initialization method name
      */
     public String getInitMethodName() {
@@ -378,7 +357,6 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
 
     /**
      * Sets the initialization method name.
-     *
      * @param initMethodName the new initialization method name
      */
     public void setInitMethodName(String initMethodName) {
@@ -387,7 +365,6 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
 
     /**
      * Returns the initialization method.
-     *
      * @return the initialization method
      */
     public Method getInitMethod() {
@@ -396,7 +373,6 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
 
     /**
      * Sets the initialization method.
-     *
      * @param initMethod the initialization method
      */
     public void setInitMethod(Method initMethod) {
@@ -413,7 +389,6 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
 
     /**
      * Returns the destroy method name.
-     *
      * @return the destroy method name
      */
     public String getDestroyMethodName() {
@@ -422,7 +397,6 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
 
     /**
      * Sets the destroy method name.
-     *
      * @param destroyMethodName the new destroy method name
      */
     public void setDestroyMethodName(String destroyMethodName) {
@@ -431,7 +405,6 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
 
     /**
      * Returns the destroy method.
-     *
      * @return the destroy method
      */
     public Method getDestroyMethod() {
@@ -440,7 +413,6 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
 
     /**
      * Sets the destroy method.
-     *
      * @param destroyMethod the new destroy method
      */
     public void setDestroyMethod(Method destroyMethod) {
@@ -449,7 +421,6 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
 
     /**
      * Returns whether this bean is to be lazily initialized.
-     *
      * @return true, if this bean is to be lazily initialized
      */
     public Boolean getLazyInit() {
@@ -458,7 +429,6 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
 
     /**
      * Sets whether this bean is to be lazily initialized.
-     *
      * @param lazyInit whether this bean is to be lazily initialized
      */
     public void setLazyInit(Boolean lazyInit) {
@@ -467,7 +437,6 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
 
     /**
      * Returns whether this bean is to be lazily initialized.
-     *
      * @return true, if this bean is to be lazily initialized
      */
     public boolean isLazyInit() {
@@ -476,7 +445,6 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
 
     /**
      * Returns whether this bean is to be lazily destroyed.
-     *
      * @return true, if this bean is to be lazily destroyed
      */
     public Boolean getLazyDestroy() {
@@ -485,7 +453,6 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
 
     /**
      * Sets whether this bean is to be lazily destroyed.
-     *
      * @param lazyDestroy whether this bean is to be lazily destroyed
      */
     public void setLazyDestroy(Boolean lazyDestroy) {
@@ -494,7 +461,6 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
 
     /**
      * Returns whether this bean is to be lazily destroyed
-     *
      * @return true, if this bean is to be lazily destroyed
      */
     public boolean isLazyDestroy() {
@@ -503,7 +469,6 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
 
     /**
      * Returns whether this bean is important.
-     *
      * @return whether this bean is important
      */
     public Boolean getImportant() {
@@ -514,7 +479,6 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
      * Sets whether this bean is important.
      * If specified as an important bean, it can not be overridden
      * by another bean rule with the same name.
-     *
      * @param important whether important bean
      */
     public void setImportant(Boolean important) {
@@ -523,7 +487,6 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
 
     /**
      * Returns whether this bean is important.
-     *
      * @return whether this bean is important
      */
     public boolean isImportant() {
@@ -532,7 +495,6 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
 
     /**
      * Gets the constructor argument item rule map.
-     *
      * @return the constructor argument item rule map
      */
     public ItemRuleMap getConstructorArgumentItemRuleMap() {
@@ -541,7 +503,6 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
 
     /**
      * Sets the constructor argument item rule map.
-     *
      * @param constructorArgumentItemRuleMap the new constructor argument item rule map
      */
     public void setConstructorArgumentItemRuleMap(ItemRuleMap constructorArgumentItemRuleMap) {
@@ -550,7 +511,6 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
 
     /**
      * Adds a new constructor argument item rule and returns it.
-     *
      * @return the constructor argument item rule
      */
     public ItemRule newConstructorArgumentItemRule() {
@@ -562,7 +522,6 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
 
     /**
      * Adds the constructor argument item rule.
-     *
      * @param constructorArgumentItemRule the constructor argument item rule
      */
     public void addConstructorArgumentItemRule(ItemRule constructorArgumentItemRule) {
@@ -574,7 +533,6 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
 
     /**
      * Gets the property item rule map.
-     *
      * @return the property item rule map
      */
     public ItemRuleMap getPropertyItemRuleMap() {
@@ -583,7 +541,6 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
 
     /**
      * Sets the property item rule map.
-     *
      * @param propertyItemRuleMap the new property item rule map
      */
     public void setPropertyItemRuleMap(ItemRuleMap propertyItemRuleMap) {
@@ -592,7 +549,6 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
 
     /**
      * Adds a new property rule with the specified name and returns it.
-     *
      * @param propertyName the property name
      * @return the property item rule
      */
@@ -605,7 +561,6 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
 
     /**
      * Adds the property item rule.
-     *
      * @param propertyItemRule the new property item rule
      */
     public void addPropertyItemRule(ItemRule propertyItemRule) {
@@ -617,7 +572,6 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
 
     /**
      * Returns whether this bean implements FactoryBean.
-     *
      * @return the boolean
      */
     public boolean isFactoryBean() {
@@ -626,7 +580,6 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
 
     /**
      * Returns whether this bean implements DisposableBean.
-     *
      * @return the boolean
      */
     public boolean isDisposableBean() {
@@ -635,7 +588,6 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
 
     /**
      * Returns whether this bean implements InitializableBean.
-     *
      * @return the boolean
      */
     public boolean isInitializableBean() {
@@ -652,7 +604,6 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
 
     /**
      * Returns whether this bean has been replicated.
-     *
      * @return true if this bean has been replicated; false otherwise
      */
     public boolean isReplicated() {
@@ -661,7 +612,6 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
 
     /**
      * Sets whether this bean is replicated.
-     *
      * @param replicated true, if this bean is replicated
      */
     public void setReplicated(boolean replicated) {
@@ -670,7 +620,6 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
 
     /**
      * Returns whether this bean is proxied.
-     *
      * @return true if this bean is proxied; false otherwise
      */
     public boolean isProxied() {
@@ -683,7 +632,6 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
 
     /**
      * Sets whether this bean is proxied.
-     *
      * @param proxied true, if this bean is proxied
      */
     public void setProxied(boolean proxied) {
@@ -692,7 +640,6 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
 
     /**
      * Returns whether this bean can be proxied.
-     *
      * @return true if this bean can be proxied; false otherwise
      */
     public boolean isFactoryable() {

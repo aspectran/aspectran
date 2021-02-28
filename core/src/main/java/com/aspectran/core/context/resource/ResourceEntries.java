@@ -34,7 +34,6 @@ import static com.aspectran.core.util.ResourceUtils.REGULAR_FILE_SEPARATOR_CHAR;
  */
 public class ResourceEntries extends LinkedHashMap<String, URL> {
 
-    /** @serial */
     private static final long serialVersionUID = -6936820061673430782L;
 
     public ResourceEntries() {

@@ -30,7 +30,6 @@ public interface TemplateRenderer {
 
     /**
      * Renders the template with specified TemplateRule by its ID.
-     *
      * @param templateId the template id
      * @return the output string of the template
      */
@@ -38,7 +37,6 @@ public interface TemplateRenderer {
 
     /**
      * Renders the template with specified TemplateRule by its ID.
-     *
      * @param templateId the template id
      * @param model the holder of the variables visible from the template (name-value pairs)
      * @return the output string of the template
@@ -47,7 +45,6 @@ public interface TemplateRenderer {
 
     /**
      * Renders the template with specified TemplateRule.
-     *
      * @param templateRule the template rule
      * @param model the holder of the variables visible from the template (name-value pairs)
      * @return the output string of the template
@@ -56,7 +53,6 @@ public interface TemplateRenderer {
 
     /**
      * Renders the template with specified TemplateRule by its ID.
-     *
      * @param templateId the template id
      * @param activity the activity
      */
@@ -64,7 +60,6 @@ public interface TemplateRenderer {
 
     /**
      * Renders the template with specified TemplateRule.
-     *
      * @param templateRule the template rule
      * @param activity the activity
      */
@@ -72,7 +67,6 @@ public interface TemplateRenderer {
 
     /**
      * Renders the template with specified TemplateRule by its ID.
-     *
      * @param templateId the template id
      * @param activity the activity
      * @param model the holder of the variables visible from the template (name-value pairs)
@@ -81,7 +75,6 @@ public interface TemplateRenderer {
 
     /**
      * Renders the template with specified TemplateRule by its ID.
-     *
      * @param templateId the template id
      * @param activity the activity
      * @param writer the {@link Writer} where the output of the template will go.
@@ -91,7 +84,6 @@ public interface TemplateRenderer {
 
     /**
      * Renders the template with specified TemplateRule.
-     *
      * @param templateRule the template rule
      * @param activity the activity
      * @param model the holder of the variables visible from the template (name-value pairs)
@@ -101,7 +93,6 @@ public interface TemplateRenderer {
     /**
      * TRenders the template with specified TemplateRule by its ID.
      * Writing the generated output to the supplied {@link Writer}.
-     *
      * @param templateId the template id
      * @param activity the activity
      * @param model the holder of the variables visible from the template (name-value pairs)
@@ -113,7 +104,6 @@ public interface TemplateRenderer {
     /**
      * Renders the template with specified TemplateRule.
      * Writing the generated output to the supplied {@link Writer}.
-     *
      * @param templateRule the template rule
      * @param activity the activity
      * @param model the holder of the variables visible from the template (name-value pairs)

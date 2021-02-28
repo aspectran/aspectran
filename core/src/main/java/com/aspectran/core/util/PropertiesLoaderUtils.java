@@ -44,7 +44,6 @@ public class PropertiesLoaderUtils {
      * (in ISO-8859-1 encoding), using the default class loader.
      * <p>Merges properties if more than one resource of the same name
      * found in the class path.</p>
-     *
      * @param resourceName the name of the class path resource
      * @return the Properties instance
      * @throws IOException if loading failed
@@ -58,7 +57,6 @@ public class PropertiesLoaderUtils {
      * (in ISO-8859-1 encoding), using the given class loader.
      * <p>Merges properties if more than one resource of the same name
      * found in the class path.</p>
-     *
      * @param resourceName the name of the class path resource
      * @param classLoader the class loader
      * @return the Properties instance
@@ -81,7 +79,6 @@ public class PropertiesLoaderUtils {
      * Fill the given properties from the specified class path resource (in ISO-8859-1 encoding).
      * <p>Merges properties if more than one resource of the same name
      * found in the class path.</p>
-     *
      * @param props the Properties instance to load into
      * @param resourceName the name of the class path resource
      * @throws IOException if loading failed
@@ -95,7 +92,6 @@ public class PropertiesLoaderUtils {
      * Fill the given properties from the specified class path resource (in ISO-8859-1 encoding).
      * <p>Merges properties if more than one resource of the same name
      * found in the class path.</p>
-     *
      * @param props the Properties instance to load into
      * @param resourceName the name of the class path resource
      * @param classLoader the class loader

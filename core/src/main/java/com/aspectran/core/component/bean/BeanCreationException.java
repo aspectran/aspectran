@@ -22,14 +22,12 @@ import com.aspectran.core.context.rule.BeanRule;
  */
 public class BeanCreationException extends BeanException {
 
-    /** @serial */
     private static final long serialVersionUID = -4711272699122321571L;
 
     private final BeanRule beanRule;
 
     /**
      * Instantiates a new BeanCreationException.
-     *
      * @param beanRule the bean rule
      */
     public BeanCreationException(BeanRule beanRule) {
@@ -39,7 +37,6 @@ public class BeanCreationException extends BeanException {
 
     /**
      * Instantiates a new BeanCreationException.
-     *
      * @param msg The detail message
      * @param beanRule the bean rule
      */
@@ -50,7 +47,6 @@ public class BeanCreationException extends BeanException {
 
     /**
      * Instantiates a new BeanCreationException.
-     *
      * @param beanRule the bean rule
      * @param cause the root cause
      */
@@ -61,7 +57,6 @@ public class BeanCreationException extends BeanException {
 
     /**
      * Instantiates a new BeanCreationException.
-     *
      * @param msg the detail message
      * @param beanRule the bean rule
      * @param cause the root cause
@@ -73,7 +68,6 @@ public class BeanCreationException extends BeanException {
 
     /**
      * Gets bean rule.
-     *
      * @return the bean rule
      */
     public BeanRule getBeanRule() {

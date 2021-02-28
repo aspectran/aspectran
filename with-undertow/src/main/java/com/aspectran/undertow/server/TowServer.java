@@ -55,7 +55,6 @@ public class TowServer extends AbstractLifeCycle implements InitializableBean, D
 
     /**
      * Returns whether the server starts automatically.
-     *
      * @return true if the server should be started
      */
     public boolean isAutoStart() {
@@ -64,7 +63,6 @@ public class TowServer extends AbstractLifeCycle implements InitializableBean, D
 
     /**
      * Specifies whether the server should start automatically.
-     *
      * @param autoStart if the server should be started
      */
     public void setAutoStart(boolean autoStart) {

@@ -46,7 +46,6 @@ public enum ValueType {
 
     /**
      * Returns a ValueType with a value represented by the specified String.
-     *
      * @param alias the specified String
      * @return the parameter value type
      */

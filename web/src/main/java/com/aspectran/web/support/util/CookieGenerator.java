@@ -166,7 +166,6 @@ public class CookieGenerator {
      * Add a cookie with the given value to the response,
      * using the cookie descriptor settings of this generator.
      * <p>Delegates to {@link #createCookie} for cookie creation.</p>
-     *
      * @param response the HTTP response to add the cookie to
      * @param cookieValue the value of the cookie to add
      * @see #setCookieName
@@ -197,7 +196,6 @@ public class CookieGenerator {
      * Remove the cookie that this generator describes from the response.
      * Will generate a cookie with empty value and max age 0.
      * <p>Delegates to {@link #createCookie} for cookie creation.</p>
-     *
      * @param response the HTTP response to remove the cookie from
      * @see #setCookieName
      * @see #setCookieDomain
@@ -222,7 +220,6 @@ public class CookieGenerator {
     /**
      * Create a cookie with the given value, using the cookie descriptor
      * settings of this generator (except for "cookieMaxAge").
-     *
      * @param cookieValue the value of the cookie to crate
      * @return the cookie
      * @see #setCookieName

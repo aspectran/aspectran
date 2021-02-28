@@ -26,7 +26,6 @@ import java.util.Map;
  */
 public class OptionGroup implements Serializable {
 
-    /** @serial */
     private static final long serialVersionUID = 5281255012541670780L;
 
     /** Hold the options */
@@ -40,7 +39,6 @@ public class OptionGroup implements Serializable {
 
     /**
      * Add the specified {@code Option} to this group.
-     *
      * @param option the option to add to this group
      * @return this option group with the option added
      */
@@ -69,7 +67,6 @@ public class OptionGroup implements Serializable {
 
     /**
      * Set the selected option of this group to {@code name}.
-     *
      * @param option the option that is selected
      * @throws AlreadySelectedException if an option from this group has
      *      already been selected.
@@ -93,7 +90,6 @@ public class OptionGroup implements Serializable {
 
     /**
      * Returns the selected option name.
-     *
      * @return the selected option name
      */
     public String getSelected() {
@@ -109,7 +105,6 @@ public class OptionGroup implements Serializable {
 
     /**
      * Returns whether this option group is required.
-     *
      * @return whether this option group is required
      */
     public boolean isRequired() {

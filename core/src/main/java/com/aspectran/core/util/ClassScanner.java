@@ -56,7 +56,6 @@ public class ClassScanner {
 
     /**
      * Find all classes that match the class name pattern.
-     *
      * @param classNamePattern the class name pattern
      * @return a Map for scanned classes
      * @throws IOException if an I/O error has occurred
@@ -69,7 +68,6 @@ public class ClassScanner {
 
     /**
      * Find all classes that match the class name pattern.
-     *
      * @param classNamePattern the class name pattern
      * @param scannedClasses the Map for scanned classes
      * @throws IOException if an I/O error has occurred
@@ -80,7 +78,6 @@ public class ClassScanner {
 
     /**
      * Find all classes that match the class name pattern.
-     *
      * @param classNamePattern the class name pattern
      * @param saveHandler the save handler
      * @throws IOException if an I/O error has occurred
@@ -129,7 +126,6 @@ public class ClassScanner {
 
     /**
      * Recursive method used to find all classes in a given directory and sub dirs.
-     *
      * @param targetPath the target path
      * @param basePackageName the base package name
      * @param relativePackageName the relative package name

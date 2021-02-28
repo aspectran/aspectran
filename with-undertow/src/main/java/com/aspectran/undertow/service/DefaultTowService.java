@@ -155,7 +155,6 @@ public class DefaultTowService extends AbstractTowService {
 
     /**
      * Returns a new instance of {@code DefaultTowService}.
-     *
      * @param rootService the root service
      * @return the instance of {@code DefaultTowService}
      */
@@ -181,7 +180,6 @@ public class DefaultTowService extends AbstractTowService {
 
     /**
      * Returns a new instance of {@code DefaultTowService}.
-     *
      * @param aspectranConfig the aspectran configuration
      * @return the instance of {@code DefaultTowService}
      */

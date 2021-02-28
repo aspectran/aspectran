@@ -28,7 +28,6 @@ public class AspectranResponseAdapter extends DefaultResponseAdapter {
 
     /**
      * Instantiates a new AspectranResponseAdapter.
-     *
      * @param outputWriter the writer to output
      */
     public AspectranResponseAdapter(Writer outputWriter) {

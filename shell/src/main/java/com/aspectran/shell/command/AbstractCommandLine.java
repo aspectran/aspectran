@@ -34,7 +34,6 @@ public abstract class AbstractCommandLine {
 
     /**
      * Returns the command line parser.
-     *
      * @return the command line parser
      */
     public CommandLineParser getLineParser() {
@@ -44,7 +43,6 @@ public abstract class AbstractCommandLine {
     /**
      * Returns the name of the request extracted
      * from the command line.
-     *
      * @return the request name
      */
     public String getRequestName() {
@@ -54,7 +52,6 @@ public abstract class AbstractCommandLine {
     /**
      * Returns the parameters to pass to the execution target
      * extracted from the command line.
-     *
      * @return the parameter map
      */
     public ParameterMap getParameterMap() {

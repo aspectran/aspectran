@@ -54,7 +54,6 @@ public class TokenEvaluation implements TokenEvaluator {
 
     /**
      * Instantiates a new token expression parser.
-     *
      * @param activity the current Activity
      */
     public TokenEvaluation(Activity activity) {
@@ -204,7 +203,6 @@ public class TokenEvaluation implements TokenEvaluator {
     /**
      * Returns the value of an activity's request parameter as a {@code String},
      * or {@code defaultValue} if the parameter does not exist.
-     *
      * @param name a {@code String} specifying the name of the parameter
      * @param defaultValue the default value
      * @return a {@code String} representing the
@@ -218,7 +216,6 @@ public class TokenEvaluation implements TokenEvaluator {
     /**
      * Returns the value of an activity's request parameter as a {@code String},
      * or {@code null} if the parameter does not exist.
-     *
      * @param name a {@code String} specifying the name of the parameter
      * @return a {@code String} representing the
      *      single value of the parameter
@@ -235,7 +232,6 @@ public class TokenEvaluation implements TokenEvaluator {
      * Returns an array of {@code String} objects containing all
      * of the values the given activity's request parameter has,
      * or {@code null} if the parameter does not exist.
-     *
      * @param name a {@code String} specifying the name of the parameter
      * @return an array of {@code String} objects
      *      containing the parameter's values
@@ -251,7 +247,6 @@ public class TokenEvaluation implements TokenEvaluator {
     /**
      * Returns a {@code FileParameter} object as a given activity's request parameter name,
      * or {@code null} if the parameter does not exist.
-     *
      * @param name a {@code String} specifying the name of the parameter
      * @return a {@code FileParameter} representing the
      *      single value of the parameter
@@ -268,7 +263,6 @@ public class TokenEvaluation implements TokenEvaluator {
      * Returns an array of {@code FileParameter} objects containing all
      * of the values the given activity's request parameter has,
      * or {@code null} if the parameter does not exist.
-     *
      * @param name a {@code String} specifying the name of the parameter
      * @return an array of {@code FileParameter} objects
      *      containing the parameter's values
@@ -284,7 +278,6 @@ public class TokenEvaluation implements TokenEvaluator {
     /**
      * Returns the value of the named attribute as an {@code Object}
      * of the activity's request attributes or action results.
-     *
      * @param token the token
      * @return an {@code Object} containing the value of the attribute,
      *       or {@code null} if the attribute does not exist
@@ -305,7 +298,6 @@ public class TokenEvaluation implements TokenEvaluator {
 
     /**
      * Returns the bean instance that matches the given token.
-     *
      * @param token the token
      * @return an instance of the bean
      */
@@ -366,7 +358,6 @@ public class TokenEvaluation implements TokenEvaluator {
 
     /**
      * Return the value of the specified property of the specified bean.
-     *
      * @param bean the bean object
      * @param propertyName the property name
      * @return the object
@@ -388,7 +379,6 @@ public class TokenEvaluation implements TokenEvaluator {
      *   %{classpath:/com/aspectran/sample.properties}
      *   %{classpath:/com/aspectran/sample.properties^propertyName:defaultValue}
      * </pre>
-     *
      * @param token the token
      * @return an environment variable
      * @throws IOException if an I/O error has occurred
@@ -410,7 +400,6 @@ public class TokenEvaluation implements TokenEvaluator {
 
     /**
      * Executes template, returns the generated output.
-     *
      * @param token the token
      * @return the generated output as {@code String}
      */

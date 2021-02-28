@@ -25,12 +25,10 @@ import com.aspectran.core.context.rule.CustomTransformRule;
  */
 public class CustomTransformResponseException extends ResponseException {
 
-    /** @serial */
     private static final long serialVersionUID = -5289305670156473011L;
 
     /**
      * Instantiates a new CustomTransformResponseException.
-     *
      * @param customTransformRule the custom transform rule
      * @param cause the real cause of the exception
      */
@@ -40,7 +38,6 @@ public class CustomTransformResponseException extends ResponseException {
 
     /**
      * Instantiates a new CustomTransformResponseException.
-     *
      * @param customTransformer the custom transformer
      * @param cause the real cause of the exception
      */

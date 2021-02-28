@@ -40,7 +40,6 @@ public class IncludeActionRule {
 
     /**
      * Gets the action id.
-     *
      * @return the action id
      */
     public String getActionId() {
@@ -49,7 +48,6 @@ public class IncludeActionRule {
 
     /**
      * Sets the id.
-     *
      * @param actionId the new id
      */
     public void setActionId(String actionId) {
@@ -58,7 +56,6 @@ public class IncludeActionRule {
 
     /**
      * Gets the translet name.
-     *
      * @return the translet name
      */
     public String getTransletName() {
@@ -67,7 +64,6 @@ public class IncludeActionRule {
 
     /**
      * Sets the translet name.
-     *
      * @param transletName the new translet name
      */
     public void setTransletName(String transletName) {
@@ -84,7 +80,6 @@ public class IncludeActionRule {
 
     /**
      * Gets the parameter item rule map.
-     *
      * @return the parameter item rule map
      */
     public ItemRuleMap getParameterItemRuleMap() {
@@ -93,7 +88,6 @@ public class IncludeActionRule {
 
     /**
      * Sets the attribute item rule map.
-     *
      * @param parameterItemRuleMap the new attribute item rule map
      */
     public void setParameterItemRuleMap(ItemRuleMap parameterItemRuleMap) {
@@ -102,7 +96,6 @@ public class IncludeActionRule {
 
     /**
      * Adds a new parameter rule with the specified name and returns it.
-     *
      * @param parameterName the parameter name
      * @return the parameter item rule
      */
@@ -115,7 +108,6 @@ public class IncludeActionRule {
 
     /**
      * Adds the parameter item rule.
-     *
      * @param parameterItemRule the parameter item rule
      */
     public void addParameterItemRule(ItemRule parameterItemRule) {
@@ -127,7 +119,6 @@ public class IncludeActionRule {
 
     /**
      * Gets the attribute item rule map.
-     *
      * @return the attribute item rule map
      */
     public ItemRuleMap getAttributeItemRuleMap() {
@@ -136,7 +127,6 @@ public class IncludeActionRule {
 
     /**
      * Sets the attribute item rule map.
-     *
      * @param attributeItemRuleMap the new attribute item rule map
      */
     public void setAttributeItemRuleMap(ItemRuleMap attributeItemRuleMap) {
@@ -145,7 +135,6 @@ public class IncludeActionRule {
 
     /**
      * Adds a new attribute rule with the specified name and returns it.
-     *
      * @param attributeName the attribute name
      * @return the attribute item rule
      */
@@ -158,7 +147,6 @@ public class IncludeActionRule {
 
     /**
      * Adds the attribute item rule.
-     *
      * @param attributeItemRule the attribute item rule
      */
     public void addAttributeItemRule(ItemRule attributeItemRule) {
@@ -170,7 +158,6 @@ public class IncludeActionRule {
 
     /**
      * Returns whether to hide result of the action.
-     *
      * @return true, if this action is hidden
      */
     public Boolean getHidden() {
@@ -179,7 +166,6 @@ public class IncludeActionRule {
 
     /**
      * Returns whether to hide result of the action.
-     *
      * @return true, if this action is hidden
      */
     public Boolean isHidden() {
@@ -188,7 +174,6 @@ public class IncludeActionRule {
 
     /**
      * Sets whether to hide result of the action.
-     *
      * @param hidden whether to hide result of the action
      */
     public void setHidden(Boolean hidden) {
@@ -212,7 +197,6 @@ public class IncludeActionRule {
 
     /**
      * Returns a new instance of IncludeActionRule.
-     *
      * @param id the action id
      * @param transletName the translet name
      * @param method the request method type

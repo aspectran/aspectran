@@ -49,7 +49,6 @@ public class InvokeAction implements Executable {
 
     /**
      * Instantiates a new InvokeAction.
-     *
      * @param invokeActionRule the invoke action rule
      */
     public InvokeAction(InvokeActionRule invokeActionRule) {
@@ -126,7 +125,6 @@ public class InvokeAction implements Executable {
 
     /**
      * Returns the invoke action rule.
-     *
      * @return the invoke action rule
      */
     public InvokeActionRule getInvokeActionRule() {

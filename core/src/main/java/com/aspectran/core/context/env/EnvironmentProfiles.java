@@ -82,7 +82,6 @@ public class EnvironmentProfiles {
      * whether configuration settings or rules should be registered.
      * <p>Any existing active profiles will be replaced with the given arguments; call
      * with zero arguments to clear the current set of active profiles.</p>
-     *
      * @param profiles the set of profiles active
      * @see #setDefaultProfiles
      * @throws IllegalArgumentException if any profile is null, empty or whitespace-only
@@ -131,7 +130,6 @@ public class EnvironmentProfiles {
      * are explicitly made active through {@link #setActiveProfiles}.
      * <p>Calling this method removes overrides any reserved default profiles
      * that may have been added during construction of the environment.</p>
-     *
      * @param profiles the set of profiles to be made active by default
      */
     public void setDefaultProfiles(String... profiles) {
@@ -168,7 +166,6 @@ public class EnvironmentProfiles {
     /**
      * Returns whether the given profile is active, or if active profiles are empty
      * whether the profile should be active by default.
-     *
      * @throws IllegalArgumentException per {@link #validateProfile(String)}
      */
     private boolean isProfileActive(String profile) {
@@ -182,7 +179,6 @@ public class EnvironmentProfiles {
      * Validate the given profile, called internally prior to adding to the set of
      * active or default profiles.
      * <p>Subclasses may override to impose further restrictions on profile syntax.</p>
-     *
      * @param profile the given profile
      * @throws IllegalArgumentException if the profile is null, empty, whitespace-only or
      *      begins with the profile NOT operator (!)

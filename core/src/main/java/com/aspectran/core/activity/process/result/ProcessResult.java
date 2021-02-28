@@ -31,7 +31,6 @@ import java.util.Objects;
  */
 public class ProcessResult extends ArrayList<ContentResult> {
 
-    /** @serial */
     private static final long serialVersionUID = 4734650376929217378L;
 
     private String name;
@@ -64,7 +63,6 @@ public class ProcessResult extends ArrayList<ContentResult> {
 
     /**
      * Adds the content result.
-     *
      * @param contentResult the content result
      */
     protected void addContentResult(ContentResult contentResult) {
@@ -95,7 +93,6 @@ public class ProcessResult extends ArrayList<ContentResult> {
 
     /**
      * Returns the result of the action as an {@code ActionResult}.
-     *
      * @param actionId the action id
      * @return the result of the action
      */
@@ -115,7 +112,6 @@ public class ProcessResult extends ArrayList<ContentResult> {
 
     /**
      * Returns the result value of the action as an {@code Object}.
-     *
      * @param actionId the action id
      * @return the result value of the action
      */

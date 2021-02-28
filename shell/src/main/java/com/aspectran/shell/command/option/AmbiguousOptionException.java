@@ -23,7 +23,6 @@ import java.util.Iterator;
  */
 public class AmbiguousOptionException extends UnrecognizedOptionException {
 
-    /** @serial */
     private static final long serialVersionUID = 7582734904376616120L;
 
     /** The list of options matching the partial name specified */
@@ -31,7 +30,6 @@ public class AmbiguousOptionException extends UnrecognizedOptionException {
 
     /**
      * Constructs a new AmbiguousOptionException.
-     *
      * @param option the partial option name
      * @param matchingOptions the options matching the name
      */
@@ -42,7 +40,6 @@ public class AmbiguousOptionException extends UnrecognizedOptionException {
 
     /**
      * Returns the options matching the partial name.
-     *
      * @return a collection of options matching the name
      */
     public Collection<String> getMatchingOptions() {

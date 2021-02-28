@@ -33,7 +33,6 @@ public class ContentsJsonWriter extends JsonWriter {
 
     /**
      * Instantiates a new ContentsJsonWriter.
-     *
      * @param writer a {@code Writer} object that can send character text
      */
     public ContentsJsonWriter(Writer writer) {
@@ -53,7 +52,6 @@ public class ContentsJsonWriter extends JsonWriter {
 
     /**
      * Write a {@code ProcessResult} object to the character-output stream.
-     *
      * @param processResult the {@code ProcessResult} object to write to the writer
      * @throws IOException if an I/O error has occurred
      */
@@ -81,7 +79,6 @@ public class ContentsJsonWriter extends JsonWriter {
 
     /**
      * Write a {@code ContentResult} object to the character-output stream.
-     *
      * @param contentResult the {@code ContentResult} object to write to the writer
      * @throws IOException if an I/O error has occurred
      */

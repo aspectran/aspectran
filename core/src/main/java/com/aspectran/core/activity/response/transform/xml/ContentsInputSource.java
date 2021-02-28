@@ -28,7 +28,6 @@ public class ContentsInputSource extends InputSource {
 
     /**
      * Instantiates a new ContentsInputSource.
-     *
      * @param data the data to be the input source
      */
     public ContentsInputSource(Object data) {
@@ -37,7 +36,6 @@ public class ContentsInputSource extends InputSource {
 
     /**
      * Returns the data to be the input source.
-     *
      * @return the data to be the input source
      */
     public Object getData() {

@@ -25,7 +25,6 @@ public interface SessionListener {
 
     /**
      * Receives notification that a session has been created.
-     *
      * @param session the new session
      */
     default void sessionCreated(Session session) {
@@ -33,7 +32,6 @@ public interface SessionListener {
 
     /**
      * Receives notification that a session is about to be invalidated.
-     *
      * @param session the session
      */
     default void sessionDestroyed(Session session) {
@@ -41,7 +39,6 @@ public interface SessionListener {
 
     /**
      * Receives notification that an attribute has been added to a session.
-     *
      * @param session the session to which the object is bound or unbound
      * @param name the name with which the object is bound or unbound
      * @param value the new value of the attribute that has been added
@@ -51,7 +48,6 @@ public interface SessionListener {
 
     /**
      * Receives notification that an attribute has been replaced in a session.
-     *
      * @param session the session to which the object is bound or unbound
      * @param name the name with which the object is bound or unbound
      * @param newValue the new value of the attribute that has been added
@@ -62,7 +58,6 @@ public interface SessionListener {
 
     /**
      * Receives notification that an attribute has been removed from a session.
-     *
      * @param session the session to which the object is bound or unbound
      * @param name the name with which the object is bound or unbound
      * @param oldValue the old value of the attribute that has been removed

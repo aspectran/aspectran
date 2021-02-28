@@ -73,7 +73,6 @@ public abstract class AbstractRequest {
      *
      * <p>If a response header with the given name exists and contains
      * multiple values, the value that was added first will be returned.</p>
-     *
      * @param name the name of the response header whose value to return
      * @return the value of the response header with the given name,
      *         or {@code null} if no header with the given name has been set
@@ -85,7 +84,6 @@ public abstract class AbstractRequest {
 
     /**
      * Returns the values of the response header with the given name.
-     *
      * @param name the name of the response header whose values to return
      * @return a (possibly empty) {@code Collection} of the values
      *         of the response header with the given name
@@ -96,7 +94,6 @@ public abstract class AbstractRequest {
 
     /**
      * Returns the names of the headers of this response.
-     *
      * @return a (possibly empty) {@code Collection} of the names
      *         of the headers of this response
      */
@@ -107,7 +104,6 @@ public abstract class AbstractRequest {
     /**
      * Returns a boolean indicating whether the named response header
      * has already been set.
-     *
      * @param name the header name
      * @return {@code true} if the named response header
      *         has already been set; {@code false} otherwise
@@ -119,7 +115,6 @@ public abstract class AbstractRequest {
 
     /**
      * Set the given single header value under the given header name.
-     *
      * @param name the header name
      * @param value the header value to set
      */
@@ -130,7 +125,6 @@ public abstract class AbstractRequest {
     /**
      * Add the given single header value to the current list of values
      * for the given header.
-     *
      * @param name the header name
      * @param value the header value to be added
      */
@@ -141,7 +135,6 @@ public abstract class AbstractRequest {
     /**
      * Returns a map of the request headers that can be modified.
      * If not yet instantiated then create a new one.
-     *
      * @return an {@code MultiValueMap} object, may not be {@code null}
      */
     public MultiValueMap<String, String> getHeaderMap() {
@@ -181,7 +174,6 @@ public abstract class AbstractRequest {
 
     /**
      * Returns all parameters as a mutable {@code Map<String, Object>}.
-     *
      * @return an {@code Map<String, Object>} object, must not be {@code null}
      */
     public Map<String, Object> getAllParameters() {
@@ -212,7 +204,6 @@ public abstract class AbstractRequest {
     /**
      * Returns a map of the request parameters that can be modified.
      * If not yet instantiated then create a new one.
-     *
      * @return an {@code ParameterMap} object, may not be {@code null}
      */
     public ParameterMap getParameterMap() {
@@ -315,7 +306,6 @@ public abstract class AbstractRequest {
     /**
      * Returns a map of the request attributes that can be modified.
      * If not yet instantiated then create a new one.
-     *
      * @return an {@code Map<String, Object>} object, may not be {@code null}
      */
     public Map<String, Object> getAttributeMap() {
@@ -347,7 +337,6 @@ public abstract class AbstractRequest {
 
     /**
      * Sets the locale.
-     *
      * @param locale the locale
      */
     public void setLocale(Locale locale) {
@@ -356,7 +345,6 @@ public abstract class AbstractRequest {
 
     /**
      * Gets the time zone.
-     *
      * @return the time zone
      */
     public TimeZone getTimeZone() {
@@ -365,7 +353,6 @@ public abstract class AbstractRequest {
 
     /**
      * Sets the time zone.
-     *
      * @param timeZone the time zone
      */
     public void setTimeZone(TimeZone timeZone) {

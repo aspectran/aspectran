@@ -56,14 +56,12 @@ public interface ActivityContextBuilder {
 
     /**
      * Returns the base packages to scan for annotated components.
-     *
      * @return the base packages
      */
     String[] getBasePackages();
 
     /**
      * Sets the base packages to scan for annotated components.
-     *
      * @param basePackages the base packages to scan
      */
     void setBasePackages(String... basePackages);

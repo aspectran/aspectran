@@ -22,7 +22,6 @@ package com.aspectran.core.activity;
  */
 public class ActivityException extends Exception {
 
-    /** @serial */
     private static final long serialVersionUID = -4400747654771758521L;
 
     /**
@@ -34,7 +33,6 @@ public class ActivityException extends Exception {
 
     /**
      * Instantiates a new ActivityException.
-     *
      * @param msg a message to associate with the exception
      */
     public ActivityException(String msg) {
@@ -43,7 +41,6 @@ public class ActivityException extends Exception {
 
     /**
      * Instantiates a new ActivityException.
-     *
      * @param cause the real cause of the exception
      */
     public ActivityException(Throwable cause) {
@@ -52,7 +49,6 @@ public class ActivityException extends Exception {
 
     /**
      * Instantiates a new ActivityException.
-     *
      * @param msg the message
      * @param cause the real cause of the exception
      */

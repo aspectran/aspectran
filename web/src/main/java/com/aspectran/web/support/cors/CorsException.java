@@ -74,7 +74,6 @@ public class CorsException extends Exception {
     /**
      * Creates a new CORS exception with the specified message and
      * associated HTTP status code.
-     *
      * @param message the message
      * @param httpStatusCode the HTTP status code, zero if not specified
      */
@@ -85,7 +84,6 @@ public class CorsException extends Exception {
 
     /**
      * Returns the associated HTTP status code.
-     *
      * @return the HTTP status code, zero if not specified
      */
     public int getHttpStatusCode() {

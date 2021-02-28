@@ -31,7 +31,6 @@ import java.util.Set;
  */
 public class ContentResult extends ArrayList<ActionResult> {
 
-    /** @serial */
     private static final long serialVersionUID = 7394299260107452305L;
 
     private final ProcessResult parent;
@@ -89,7 +88,6 @@ public class ContentResult extends ArrayList<ActionResult> {
 
     /**
      * Adds the action result.
-     *
      * @param actionResult the action result
      */
     public void addActionResult(ActionResult actionResult) {

@@ -71,7 +71,6 @@ public class XslTransformResponse extends TransformResponse {
 
     /**
      * Instantiates a new XslTransformResponse.
-     *
      * @param transformRule the transform rule
      */
     public XslTransformResponse(TransformRule transformRule) {

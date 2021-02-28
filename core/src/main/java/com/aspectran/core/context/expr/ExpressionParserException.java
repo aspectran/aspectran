@@ -28,7 +28,6 @@ public class ExpressionParserException extends IllegalRuleException {
 
     /**
      * Instantiates a new expression parser exception.
-     *
      * @param expression the expression to be evaluated
      * @param cause the root cause
      */
@@ -39,7 +38,6 @@ public class ExpressionParserException extends IllegalRuleException {
 
     /**
      * Gets the expression that failed evaluation.
-     *
      * @return the expression that failed evaluation
      */
     public String getExpression() {

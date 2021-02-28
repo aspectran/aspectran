@@ -35,7 +35,6 @@ public abstract class HttpMediaTypeException extends ServletException {
 
     /**
      * Create a new HttpMediaTypeException.
-     *
      * @param message the exception message
      */
     protected HttpMediaTypeException(String message) {
@@ -45,7 +44,6 @@ public abstract class HttpMediaTypeException extends ServletException {
 
     /**
      * Create a new HttpMediaTypeException with a list of supported media types.
-     *
      * @param message the exception message
      * @param supportedMediaTypes the list of supported media types
      */
@@ -57,7 +55,6 @@ public abstract class HttpMediaTypeException extends ServletException {
 
     /**
      * Return the list of supported media types.
-     *
      * @return the list of supported media types
      */
     public List<MediaType> getSupportedMediaTypes() {

@@ -20,7 +20,6 @@ package com.aspectran.shell.console;
  */
 public class CommandReadFailedException extends RuntimeException {
 
-    /** @serial */
     private static final long serialVersionUID = -6982213056770858079L;
 
     /**
@@ -32,7 +31,6 @@ public class CommandReadFailedException extends RuntimeException {
 
     /**
      * Constructor to create exception with a message.
-     *
      * @param msg a message to associate with the exception
      */
     public CommandReadFailedException(String msg) {
@@ -41,7 +39,6 @@ public class CommandReadFailedException extends RuntimeException {
 
     /**
      * Constructor to create exception to wrap another exception.
-     *
      * @param cause the real cause of the exception
      */
     public CommandReadFailedException(Throwable cause) {
@@ -50,7 +47,6 @@ public class CommandReadFailedException extends RuntimeException {
 
     /**
      * Constructor to create exception to wrap another exception and pass a message.
-     *
      * @param msg the message
      * @param cause the real cause of the exception
      */

@@ -28,7 +28,6 @@ public class InvalidMediaTypeException extends IllegalArgumentException {
 
     /**
      * Create a new InvalidContentTypeException for the given content type.
-     *
      * @param mediaType the offending media type
      * @param message   a detail message indicating the invalid part
      */
@@ -39,7 +38,6 @@ public class InvalidMediaTypeException extends IllegalArgumentException {
 
     /**
      * Return the offending media type.
-     *
      * @return the media type
      */
     public String getMediaType() {

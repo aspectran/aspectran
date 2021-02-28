@@ -25,7 +25,6 @@ import com.aspectran.core.activity.ActivityException;
  */
 public class RequestException extends ActivityException {
 
-    /** @serial */
     private static final long serialVersionUID = -890371130094039206L;
 
     /**
@@ -37,7 +36,6 @@ public class RequestException extends ActivityException {
 
     /**
      * Instantiates a new RequestException.
-     *
      * @param msg the detail message
      */
     public RequestException(String msg) {
@@ -46,7 +44,6 @@ public class RequestException extends ActivityException {
 
     /**
      * Instantiates a new RequestException.
-     *
      * @param cause the real cause of the exception
      */
     public RequestException(Throwable cause) {
@@ -55,7 +52,6 @@ public class RequestException extends ActivityException {
 
     /**
      * Instantiates a new RequestException.
-     *
      * @param msg the detail message
      * @param cause the real cause of the exception
      */

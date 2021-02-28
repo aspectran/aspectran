@@ -41,7 +41,6 @@ public class InMemoryMultipartFormDataParserFactory {
 
     /**
      * Gets the maximum size of the request.
-     *
      * @return the maximum size of the request
      */
     public long getMaxRequestSize() {
@@ -50,7 +49,6 @@ public class InMemoryMultipartFormDataParserFactory {
 
     /**
      * Sets the maximum size of the request.
-     *
      * @param maxRequestSize the maximum size of the request
      */
     public void setMaxRequestSize(long maxRequestSize) {
@@ -59,7 +57,6 @@ public class InMemoryMultipartFormDataParserFactory {
 
     /**
      * Sets the maximum size of the request.
-     *
      * @param maxRequestSize the maximum size of the request
      */
     public void setMaxRequestSize(String maxRequestSize) {
@@ -68,7 +65,6 @@ public class InMemoryMultipartFormDataParserFactory {
 
     /**
      * Sets the maximum size of the file.
-     *
      * @param maxFileSize the maximum size of the file
      */
     public void setMaxFileSize(long maxFileSize) {
@@ -77,7 +73,6 @@ public class InMemoryMultipartFormDataParserFactory {
 
     /**
      * Sets the maximum size of the file.
-     *
      * @param maxFileSize the maximum size of the file
      */
     public void setMaxFileSize(String maxFileSize) {
@@ -86,7 +81,6 @@ public class InMemoryMultipartFormDataParserFactory {
 
     /**
      * Gets the allowed file extensions.
-     *
      * @return the allowed file extensions
      */
     public String getAllowedFileExtensions() {
@@ -95,7 +89,6 @@ public class InMemoryMultipartFormDataParserFactory {
 
     /**
      * Sets the allowed file extensions.
-     *
      * @param allowedFileExtensions the allowed file extensions
      */
     public void setAllowedFileExtensions(String allowedFileExtensions) {
@@ -104,7 +97,6 @@ public class InMemoryMultipartFormDataParserFactory {
 
     /**
      * Gets the denied file extensions.
-     *
      * @return the denied file extensions
      */
     public String getDeniedFileExtensions() {
@@ -113,7 +105,6 @@ public class InMemoryMultipartFormDataParserFactory {
 
     /**
      * Sets the denied file extensions.
-     *
      * @param deniedFileExtensions the denied file extensions
      */
     public void setDeniedFileExtensions(String deniedFileExtensions) {
@@ -122,7 +113,6 @@ public class InMemoryMultipartFormDataParserFactory {
 
     /**
      * Creates a new MultipartFormDataParser object.
-     *
      * @return the multipart form data parser
      */
     public MultipartFormDataParser createMultipartFormDataParser() {

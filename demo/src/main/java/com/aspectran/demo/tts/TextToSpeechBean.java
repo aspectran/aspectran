@@ -122,7 +122,6 @@ public class TextToSpeechBean implements InitializableBean, DisposableBean {
 
     /**
      * Synthesizes speech of the given text and plays immediately.
-     *
      * @param text the text that will be transformed to speech
      */
     public void speak(String text) {

@@ -52,7 +52,6 @@ public class SqlSessionFactoryBean implements ApplicationAdapterAware, Initializ
 
     /**
      * Set the location of the MyBatis {@code SqlSessionFactory} config file.
-     *
      * @param configLocation the location of the MyBatis {@code SqlSessionFactory} config file
      */
     public void setConfigLocation(String configLocation) {
@@ -65,7 +64,6 @@ public class SqlSessionFactoryBean implements ApplicationAdapterAware, Initializ
 
     /**
      * Set optional properties to be passed into the SqlSession configuration.
-     *
      * @param properties the optional properties
      */
     public void setProperties(Properties properties) {
@@ -95,7 +93,7 @@ public class SqlSessionFactoryBean implements ApplicationAdapterAware, Initializ
     public void initialize() throws Exception {
         Assert.state(applicationAdapter != null, "No ApplicationAdapter injected");
         if (sqlSessionFactory == null) {
-            if(configLocation == null) {
+            if (configLocation == null) {
                 throw new IllegalArgumentException("Property 'configLocation' is required");
             }
             InputStream is;

@@ -24,7 +24,6 @@ import com.aspectran.core.service.AspectranServiceException;
  */
 public class SchedulerServiceException extends AspectranServiceException {
 
-    /** @serial */
     private static final long serialVersionUID = -6814416137683710109L;
 
     /**
@@ -36,7 +35,6 @@ public class SchedulerServiceException extends AspectranServiceException {
 
     /**
      * Constructor to create exception with a message.
-     *
      * @param msg a message to associate with the exception
      */
     public SchedulerServiceException(String msg) {
@@ -45,7 +43,6 @@ public class SchedulerServiceException extends AspectranServiceException {
 
     /**
      * Constructor to create exception to wrap another exception.
-     *
      * @param cause the real cause of the exception
      */
     public SchedulerServiceException(Throwable cause) {
@@ -54,7 +51,6 @@ public class SchedulerServiceException extends AspectranServiceException {
 
     /**
      * Constructor to create exception to wrap another exception and pass a message
-     *
      * @param msg the message
      * @param cause the real cause of the exception
      */

@@ -20,7 +20,6 @@ package com.aspectran.core.activity.request;
  */
 public class RequestParseException extends RequestException {
 
-    /** @serial */
     private static final long serialVersionUID = -2918986957102012812L;
 
     /**
@@ -32,7 +31,6 @@ public class RequestParseException extends RequestException {
 
     /**
      * Constructor to create exception with a message.
-     *
      * @param msg a message to associate with the exception
      */
     public RequestParseException(String msg) {
@@ -41,7 +39,6 @@ public class RequestParseException extends RequestException {
 
     /**
      * Constructor to create exception to wrap another exception and pass a message.
-     *
      * @param msg the message
      * @param cause the real cause of the exception
      */

@@ -39,7 +39,6 @@ public class OutputStringWriter extends Writer {
 
     /**
      * Create a new string writer using the specified initial string-builder size.
-     *
      * @param initialSize the number of char values that will fit into this buffer
      *         before it is automatically expanded
      */

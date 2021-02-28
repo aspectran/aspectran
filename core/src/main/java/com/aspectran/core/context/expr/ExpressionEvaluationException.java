@@ -26,7 +26,6 @@ public class ExpressionEvaluationException extends RuntimeException {
 
     /**
      * Instantiates a new expression evaluation exception.
-     *
      * @param expression the expression to be evaluated
      * @param cause the root cause
      */
@@ -37,7 +36,6 @@ public class ExpressionEvaluationException extends RuntimeException {
 
     /**
      * Gets the expression that failed evaluation.
-     *
      * @return the expression that failed evaluation
      */
     public String getExpression() {

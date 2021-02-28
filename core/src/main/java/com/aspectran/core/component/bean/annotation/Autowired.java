@@ -33,7 +33,6 @@ public @interface Autowired {
     /**
      * Declares whether the annotated dependency is required.
      * Defaults to true.
-     *
      * @return true if an annotated dependency is require
      */
     boolean required() default true;

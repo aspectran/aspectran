@@ -47,7 +47,6 @@ public class JsonTransformResponse extends TransformResponse {
 
     /**
      * Instantiates a new JsonTransformResponse.
-     *
      * @param transformRule the transform rule
      */
     public JsonTransformResponse(TransformRule transformRule) {

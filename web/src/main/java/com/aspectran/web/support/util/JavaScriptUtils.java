@@ -29,7 +29,6 @@ public abstract class JavaScriptUtils {
 
     /**
      * Turn JavaScript special characters into escaped characters.
-     *
      * @param input the input string
      * @return the string with escaped characters
      */

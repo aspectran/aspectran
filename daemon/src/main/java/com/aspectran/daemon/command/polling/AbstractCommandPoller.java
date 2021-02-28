@@ -29,13 +29,13 @@ public abstract class AbstractCommandPoller implements CommandPoller {
 
     private final Daemon daemon;
 
-    private CommandExecutor executor;
+    private final CommandExecutor executor;
 
-    private long pollingInterval;
+    private volatile long pollingInterval;
 
-    private int maxThreads;
+    private final int maxThreads;
 
-    private boolean requeuable;
+    private final boolean requeuable;
 
     public AbstractCommandPoller(Daemon daemon, DaemonPollerConfig pollerConfig) {
         if (daemon == null) {

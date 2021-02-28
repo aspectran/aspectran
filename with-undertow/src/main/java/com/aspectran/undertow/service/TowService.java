@@ -27,7 +27,6 @@ public interface TowService extends CoreService {
 
     /**
      * Executes web activity.
-     *
      * @param exchange the HTTP request/response exchange
      * @return true if the activity was handled; false otherwise
      * @throws IOException If an error occurs during Activity execution

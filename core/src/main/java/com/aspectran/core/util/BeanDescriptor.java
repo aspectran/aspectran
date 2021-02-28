@@ -170,7 +170,6 @@ public class BeanDescriptor {
      * This method returns an array containing all methods exposed in this
      * class and any superclass. In the future, Java is not pleased to have
      * access to private or protected methods.
-     *
      * @param beanClass the class
      * @return an array containing all the public methods in this class
      */
@@ -237,7 +236,6 @@ public class BeanDescriptor {
 
     /**
      * Gets the getter for a property as a Method object.
-     *
      * @param name the name of the property
      * @return the getter Method
      * @throws NoSuchMethodException when a getter method cannot be found
@@ -253,7 +251,6 @@ public class BeanDescriptor {
 
     /**
      * Gets the setter for a property as a Method object.
-     *
      * @param name the name of the property
      * @return the setter method
      * @throws NoSuchMethodException when a setter method cannot be found
@@ -269,7 +266,6 @@ public class BeanDescriptor {
 
     /**
      * Gets the type for a property getter.
-     *
      * @param name the name of the property
      * @return the Class of the property getter
      * @throws NoSuchMethodException when a getter method cannot be found
@@ -285,7 +281,6 @@ public class BeanDescriptor {
 
     /**
      * Gets the type for a property setter.
-     *
      * @param name the name of the property
      * @return the Class of the property setter
      * @throws NoSuchMethodException when a setter method cannot be found
@@ -301,7 +296,6 @@ public class BeanDescriptor {
 
     /**
      * Invokes the annotation of the given type.
-     *
      * @param name the given setter name
      * @param annotationType the annotation type to look for
      * @param <T> the annotation type
@@ -316,7 +310,6 @@ public class BeanDescriptor {
 
     /**
      * Invokes the annotation of the given type.
-     *
      * @param method the given setter method
      * @param annotationType the annotation type to look for
      * @param <T> the annotation type
@@ -341,7 +334,6 @@ public class BeanDescriptor {
 
     /**
      * Gets an array of the readable properties for an object.
-     *
      * @return the array
      */
     public String[] getReadablePropertyNames() {
@@ -354,7 +346,6 @@ public class BeanDescriptor {
 
     /**
      * Gets an array of the writable properties for an object.
-     *
      * @return the array
      */
     public String[] getWritablePropertyNames() {
@@ -363,7 +354,6 @@ public class BeanDescriptor {
 
     /**
      * Check to see if a class has a writable property by name.
-     *
      * @param propertyName the name of the property to check
      * @return true if the object has a writable property by the name
      */
@@ -373,7 +363,6 @@ public class BeanDescriptor {
 
     /**
      * Check to see if a class has a readable property by name.
-     *
      * @param propertyName the name of the property to check
      * @return true if the object has a readable property by the name
      */
@@ -383,7 +372,6 @@ public class BeanDescriptor {
 
     /**
      * Gets the class methods' names that is unique.
-     *
      * @return the distinct method names
      */
     public String[] getDistinctMethodNames() {
@@ -392,7 +380,6 @@ public class BeanDescriptor {
 
     /**
      * Gets an instance of ClassDescriptor for the specified class.
-     *
      * @param type the class for which to lookup the method cache
      * @return the method cache for the class
      */
@@ -410,7 +397,6 @@ public class BeanDescriptor {
 
     /**
      * Clear the ClassDescriptor cache.
-     *
      * @return the number of cached ClassDescriptor cleared
      */
     public static synchronized int clearCache() {

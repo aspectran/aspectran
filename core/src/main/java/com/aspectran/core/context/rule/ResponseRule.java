@@ -53,7 +53,6 @@ public class ResponseRule implements ActionRuleApplicable, ResponseRuleApplicabl
 
     /**
      * Instantiates a new ResponseRule.
-     *
      * @param explicit whether this response rule is explicit
      */
     public ResponseRule(boolean explicit) {
@@ -74,7 +73,6 @@ public class ResponseRule implements ActionRuleApplicable, ResponseRuleApplicabl
 
     /**
      * Gets the response encoding.
-     *
      * @return the response encoding
      */
     public String getEncoding() {
@@ -83,7 +81,6 @@ public class ResponseRule implements ActionRuleApplicable, ResponseRuleApplicabl
 
     /**
      * Sets the response encoding.
-     *
      * @param encoding the new response encoding
      */
     public void setEncoding(String encoding) {
@@ -136,7 +133,6 @@ public class ResponseRule implements ActionRuleApplicable, ResponseRuleApplicabl
     /**
      * Returns the action list.
      * If not yet instantiated then create a new one.
-     *
      * @return the action list
      */
     private ActionList touchActionList() {

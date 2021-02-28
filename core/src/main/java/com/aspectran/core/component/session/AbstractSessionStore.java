@@ -48,7 +48,6 @@ public abstract class AbstractSessionStore extends AbstractComponent implements 
 
     /**
      * Sets the interval in secs to prevent too eager session scavenging.
-     *
      * @param gracePeriodSecs interval in secs to prevent too eager session scavenging
      */
     public void setGracePeriodSecs(int gracePeriodSecs) {
@@ -72,7 +71,6 @@ public abstract class AbstractSessionStore extends AbstractComponent implements 
      * session isn't dirty if the elapsed time since
      * the session was last saved does not exceed this
      * value.</p>
-     *
      * @param savePeriodSecs the savePeriodSecs to set
      */
     public void setSavePeriodSecs(int savePeriodSecs) {
@@ -86,7 +84,6 @@ public abstract class AbstractSessionStore extends AbstractComponent implements 
 
     /**
      * Specifies attributes that should be excluded from serialization.
-     *
      * @param nonPersistentAttributes the attribute names to exclude from serialization
      */
     public void setNonPersistentAttributes(String... nonPersistentAttributes) {
@@ -144,7 +141,6 @@ public abstract class AbstractSessionStore extends AbstractComponent implements 
 
     /**
      * Store the session data persistently.
-     *
      * @param id identity of session to store
      * @param data info of the session
      * @throws Exception if unable to store data
@@ -163,7 +159,6 @@ public abstract class AbstractSessionStore extends AbstractComponent implements 
     /**
      * Implemented by subclasses to resolve which sessions this node
      * should attempt to expire.
-     *
      * @param candidates the ids of sessions the SessionStore thinks has expired
      * @return the reconciled set of session ids that this node should attempt to expire
      */

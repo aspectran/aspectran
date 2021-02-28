@@ -42,7 +42,6 @@ public class AspectranCoreService extends AbstractCoreService {
 
     /**
      * This method is executed immediately after the ActivityContext is loaded.
-     *
      * @throws Exception if an error occurs
      */
     protected void afterContextLoaded() throws Exception {

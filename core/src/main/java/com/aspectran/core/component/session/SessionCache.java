@@ -39,7 +39,6 @@ public interface SessionCache {
      * The number of active sessions exceeds this limit, attempts to create new sessions
      * will be rejected.
      * If set to 0 (the default), there is no limit.
-     *
      * @param maxSessions the maximum number of active sessions allowed in this session cache
      */
     void setMaxSessions(int maxSessions);
@@ -53,7 +52,6 @@ public interface SessionCache {
      * <li>evicted once the last request exits</li>
      * <li>evicted after a configurable period of inactivity</li>
      * </ul>
-     *
      * @param policy -1 is never evict; 0 is evict-on-exit; and any other positive
      *      value is the time in seconds that a session can be idle before it can
      *      be evicted.
@@ -69,7 +67,6 @@ public interface SessionCache {
      * Whether or not a session that is newly created should be
      * immediately saved. If false, a session that is created and
      * invalidated within a single request is never persisted.
-     *
      * @param saveOnCreate if true, immediately save the newly created session
      */
     void setSaveOnCreate(boolean saveOnCreate);
@@ -82,7 +79,6 @@ public interface SessionCache {
     /**
      * Whether or not a a session that is about to be evicted should
      * be saved before being evicted.
-     *
      * @param saveOnEvict if true, save the session before eviction
      */
     void setSaveOnInactiveEviction(boolean saveOnEvict);
@@ -95,7 +91,6 @@ public interface SessionCache {
     /**
      * If the data for a session exists but is unreadable,
      * the SessionCache can instruct the SessionStore to delete it.
-     *
      * @param removeUnloadableSessions whether or not SessionCache will delete
      *      session data that can not be loaded from the SessionStore
      */
@@ -104,7 +99,6 @@ public interface SessionCache {
     /**
      * Get an existing Session. If necessary, the cache will load the data for
      * the session from the configured SessionStore.
-     *
      * @param id the session id
      * @return the Session if one exists, null otherwise
      * @throws Exception if an error occurs
@@ -113,7 +107,6 @@ public interface SessionCache {
 
     /**
      * Add an entirely new session to the cache.
-     *
      * @param id the session id
      * @param time the timestamp of the session creation
      * @param maxInactiveInterval the max inactive time in milliseconds
@@ -125,7 +118,6 @@ public interface SessionCache {
      * once a request is finished with a Session. SessionCache
      * implementations may want to delay writing out Session contents
      * until the last request exits a Session.
-     *
      * @param id the session id
      * @param session the session object
      * @throws Exception if an error occurs
@@ -135,7 +127,6 @@ public interface SessionCache {
     /**
      * Check to see if a session exists: WILL consult the
      * SessionStore.
-     *
      * @param id the session id
      * @return true if the session exists; false otherwise
      * @throws Exception if an error occurs
@@ -145,7 +136,6 @@ public interface SessionCache {
     /**
      * Check to see if a Session is in the cache. Does NOT consult
      * the SessionStore.
-     *
      * @param id the session id
      * @return true if a Session object matching the id is present
      *      in the cache; false otherwise
@@ -156,7 +146,6 @@ public interface SessionCache {
     /**
      * Remove a Session completely: from both this
      * cache and the SessionStore.
-     *
      * @param id the session id
      * @return the Session that was removed, null otherwise
      * @throws Exception if an error occurs when deleting a session
@@ -165,7 +154,6 @@ public interface SessionCache {
 
     /**
      * Change the id of a Session.
-     *
      * @param oldId the current session id
      * @param newId the new session id
      * @return the Session after changing its id
@@ -178,7 +166,6 @@ public interface SessionCache {
      * sessions. The Session in the cache should be checked,
      * but also the SessionStore, as that is the authoritative
      * source of all session information.
-     *
      * @param candidates the session ids to check
      * @return the set of session ids that have actually expired: this can
      *      be a superset of the original candidate list.
@@ -188,7 +175,6 @@ public interface SessionCache {
     /**
      * Check a Session to see if it might be appropriate to
      * evict or expire.
-     *
      * @param session the session object
      */
     void checkInactiveSession(DefaultSession session);

@@ -37,7 +37,6 @@ public enum TriggerType {
     /**
      * Returns a {@code TriggerType} with a value represented
      * by the specified {@code String}.
-     *
      * @param alias the trigger type as a {@code String}
      * @return a {@code TriggerType}, may be {@code null}
      */

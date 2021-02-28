@@ -26,7 +26,6 @@ public interface Replicable<T> {
 
     /**
      * Creates and returns a new instance after replicating a rule or Object.
-     *
      * @return replicated rule or new instance of Object
      */
     T replicate();

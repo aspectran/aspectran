@@ -24,7 +24,6 @@ import com.aspectran.core.component.translet.TransletException;
  */
 public class TransletScanFailedException extends TransletException {
 
-    /** @serial */
     private static final long serialVersionUID = -7694783910759443211L;
 
     /**
@@ -36,7 +35,6 @@ public class TransletScanFailedException extends TransletException {
 
     /**
      * Constructor to create exception with a message.
-     *
      * @param msg a message to associate with the exception
      */
     public TransletScanFailedException(String msg) {
@@ -45,7 +43,6 @@ public class TransletScanFailedException extends TransletException {
 
     /**
      * Constructor to create exception to wrap another exception.
-     *
      * @param cause the real cause of the exception
      */
     public TransletScanFailedException(Throwable cause) {
@@ -54,7 +51,6 @@ public class TransletScanFailedException extends TransletException {
 
     /**
      * Constructor to create exception to wrap another exception and pass a message.
-     *
      * @param msg the detail message
      * @param cause the real cause of the exception
      */

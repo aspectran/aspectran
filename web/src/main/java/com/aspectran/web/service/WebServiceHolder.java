@@ -75,7 +75,6 @@ public class WebServiceHolder {
 
     /**
      * Find the root ActivityContext for this web aspectran service.
-     *
      * @param servletContext ServletContext to find the web aspectran service for
      * @return the ActivityContext for this web aspectran service
      */
@@ -90,7 +89,6 @@ public class WebServiceHolder {
 
     /**
      * Find the standalone ActivityContext for this web aspectran service.
-     *
      * @param servlet the servlet
      * @return the ActivityContext for this web aspectran service
      */
@@ -107,7 +105,6 @@ public class WebServiceHolder {
 
     /**
      * Find the ActivityContext for this web aspectran service.
-     *
      * @param servletContext ServletContext to find the web aspectran service for
      * @param attrName the name of the ServletContext attribute to look for
      * @return the ActivityContext for this web aspectran service

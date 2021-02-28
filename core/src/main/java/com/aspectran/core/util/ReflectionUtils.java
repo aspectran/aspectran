@@ -32,7 +32,6 @@ public class ReflectionUtils {
      * specified {@link Object target object}. In accordance with {@link Field#get(Object)}
      * semantics, the returned value is automatically wrapped if the underlying field
      * has a primitive type.
-     *
      * @param field the field to get
      * @param target the target object from which to get the field
      * @return the field's current value
@@ -50,7 +49,6 @@ public class ReflectionUtils {
      * specified {@link Object target object} to the specified {@code value}.
      * In accordance with {@link Field#set(Object, Object)} semantics, the new value
      * is automatically unwrapped if the underlying field has a primitive type.
-     *
      * @param field the field to set
      * @param target the target object on which to set the field
      * @param value the value to set (may be {@code null})
@@ -67,7 +65,6 @@ public class ReflectionUtils {
      * Invoke the specified {@link Method} against the supplied target object with the
      * supplied arguments. The target object can be {@code null} when invoking a
      * static {@link Method}.
-     *
      * @param method the method to invoke
      * @param target the target object to invoke the method on
      * @param args the invocation arguments (may be {@code null})
@@ -86,7 +83,6 @@ public class ReflectionUtils {
      * Algorithm that judges the match between the declared parameter types of
      * a candidate method and a specific list of arguments that this method is
      * supposed to be invoked with.
-     *
      * @param paramTypes the parameter types to match
      * @param destArgs the arguments to match
      * @return the accumulated weight for all arguments
@@ -112,7 +108,6 @@ public class ReflectionUtils {
      * Algorithm that judges the match between the declared parameter types of
      * a candidate method and a specific list of arguments that this method is
      * supposed to be invoked with.
-     *
      * @param paramType the parameter type to match
      * @param destArg the argument to match
      * @return the type difference weight
@@ -127,7 +122,6 @@ public class ReflectionUtils {
     /**
      * Returns the sum of the object transformation cost for each class in the source
      * argument list.
-     *
      * @param srcArgs the source arguments
      * @param destArgs the destination arguments
      * @return the accumulated weight for all arguments
@@ -149,7 +143,6 @@ public class ReflectionUtils {
      * Gets the number of steps required needed to turn the source class into the
      * destination class. This represents the number of steps in the object hierarchy
      * graph.
-     *
      * @param srcClass the source class
      * @param destClass the destination class
      * @return the cost of transforming an object
@@ -200,7 +193,6 @@ public class ReflectionUtils {
 
     /**
      * Converts an array of objects to an array of their primitive types.
-     *
      * @param val an array of objects to be converted, may be {@code null}
      * @return an array of their primitive types
      */
@@ -268,7 +260,6 @@ public class ReflectionUtils {
 
     /**
      * Converts an array of objects to an array of the specified component type.
-     *
      * @param val an array of objects to be converted
      * @param componentType the {@code Class} object representing the component type of the new array
      * @return an array of the objects with the specified component type

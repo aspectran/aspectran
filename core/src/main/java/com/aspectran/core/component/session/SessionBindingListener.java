@@ -27,7 +27,6 @@ public interface SessionBindingListener extends EventListener {
     /**
      * Notifies the object that it is being bound to
      * a session and identifies the session.
-     *
      * @param session the session to which the object is bound or unbound
      * @param name the name with which the object is bound or unbound
      * @param value the value of the attribute that has been added, removed or replaced.
@@ -39,7 +38,6 @@ public interface SessionBindingListener extends EventListener {
     /**
      * Notifies the object that it is being unbound
      * from a session and identifies the session.
-     *
      * @param session the session to which the object is bound or unbound
      * @param name the name with which the object is bound or unbound
      * @param value the value of the attribute that has been added, removed or replaced.

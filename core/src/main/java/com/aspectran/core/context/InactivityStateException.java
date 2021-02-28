@@ -20,7 +20,6 @@ package com.aspectran.core.context;
  */
 public class InactivityStateException extends IllegalStateException {
 
-    /** @serial */
     private static final long serialVersionUID = 8373382682956966522L;
 
     /**

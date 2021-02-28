@@ -22,7 +22,6 @@ import com.aspectran.core.context.rule.type.MethodType;
  */
 public class RequestMethodNotAllowedException extends RequestException {
 
-    /** @serial */
     private static final long serialVersionUID = 4068498460127610368L;
 
     private MethodType requestMethod;
@@ -36,7 +35,6 @@ public class RequestMethodNotAllowedException extends RequestException {
 
     /**
      * Instantiates a new RequestMethodNotAllowedException.
-     *
      * @param msg a message to associate with the exception
      */
     public RequestMethodNotAllowedException(String msg) {
@@ -45,7 +43,6 @@ public class RequestMethodNotAllowedException extends RequestException {
 
     /**
      * Instantiates a new RequestMethodNotAllowedException.
-     *
      * @param cause the real cause of the exception
      */
     public RequestMethodNotAllowedException(Throwable cause) {
@@ -54,7 +51,6 @@ public class RequestMethodNotAllowedException extends RequestException {
 
     /**
      * Instantiates a new RequestMethodNotAllowedException.
-     *
      * @param msg the detail message
      * @param cause the real cause of the exception
      */
@@ -64,7 +60,6 @@ public class RequestMethodNotAllowedException extends RequestException {
 
     /**
      * Instantiates a new RequestMethodNotAllowedException.
-     *
      * @param requestMethod the request method
      * @param msg the detail message
      */
@@ -75,7 +70,6 @@ public class RequestMethodNotAllowedException extends RequestException {
 
     /**
      * Instantiates a new RequestMethodNotAllowedException.
-     *
      * @param requestMethod the request method
      */
     public RequestMethodNotAllowedException(MethodType requestMethod) {
@@ -84,7 +78,6 @@ public class RequestMethodNotAllowedException extends RequestException {
 
     /**
      * Gets the request method type.
-     *
      * @return the request method type
      */
     public MethodType getRequestMethod() {

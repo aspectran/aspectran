@@ -64,7 +64,6 @@ public class EnvironmentRule {
 
     /**
      * Returns a new instance of EnvironmentRule.
-     *
      * @param profile the profile
      * @return an instance of EnvironmentRule
      */

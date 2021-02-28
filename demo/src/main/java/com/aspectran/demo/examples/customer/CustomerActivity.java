@@ -53,7 +53,7 @@ public class CustomerActivity {
     public RestResponse getCustomer(@Required Integer id) {
         Customer customer = repository.getCustomer(id);
         RestResponse response = new DefaultRestResponse();
-        if(customer != null) {
+        if (customer != null) {
             response.setData("customer", customer);
         } else {
             response.notFound();
@@ -75,7 +75,7 @@ public class CustomerActivity {
     public RestResponse updateCustomer(@Required Customer customer) {
         boolean updated = repository.updateCustomer(customer);
         RestResponse response = new DefaultRestResponse();
-        if(updated) {
+        if (updated) {
             response.setData("customer", customer);
         } else {
             response.notFound();
@@ -88,7 +88,7 @@ public class CustomerActivity {
     public RestResponse deleteCustomer(@Required Integer id) {
         boolean deleted = repository.deleteCustomer(id);
         RestResponse response = new DefaultRestResponse();
-        if(deleted) {
+        if (deleted) {
             response.setData("result", Boolean.TRUE);
         } else {
             response.notFound();
@@ -101,7 +101,7 @@ public class CustomerActivity {
     public RestResponse updateAttributes(@Required Integer id, @Required Boolean approved) {
         boolean updated = repository.approve(id, approved);
         RestResponse response = new DefaultRestResponse();
-        if(updated) {
+        if (updated) {
             response.setData("result", Boolean.TRUE);
         } else {
             response.notFound();

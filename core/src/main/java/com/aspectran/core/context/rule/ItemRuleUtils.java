@@ -47,7 +47,6 @@ public class ItemRuleUtils {
      * Returns the {@code Class} according to the given item value.
      * If the type of the item value is unknown, the class of the value
      * actually assigned is returned.
-     *
      * @param itemRule the item rule
      * @param value the value actually assigned to the item
      * @return a {@code Class} determined by the type of item or its actual value
@@ -111,7 +110,6 @@ public class ItemRuleUtils {
 
     /**
      * Returns an {@code Iterator} of all the tokens the item has.
-     *
      * @param itemRule the item rule
      * @return an {@code Iterator} for all tokens
      */
@@ -150,7 +148,6 @@ public class ItemRuleUtils {
 
     /**
      * Convert the given {@code ItemParameters} list into an {@code ItemRuleMap}.
-     *
      * @param itemParametersList the ItemParameters list to convert
      * @return the item rule map
      * @throws IllegalRuleException if an illegal rule is found
@@ -168,7 +165,6 @@ public class ItemRuleUtils {
 
     /**
      * Convert the given {@code ItemParameters} list into an {@code ItemRuleList}.
-     *
      * @param itemParametersList the ItemParameters list to convert
      * @return the item rule list
      * @throws IllegalRuleException if an illegal rule is found
@@ -185,7 +181,6 @@ public class ItemRuleUtils {
 
     /**
      * Convert the given {@code ItemParameters} into an {@code ItemRule}.
-     *
      * @param itemParameters the item parameters
      * @return an instance of {@code ItemRule}
      * @throws IllegalRuleException if an illegal rule is found

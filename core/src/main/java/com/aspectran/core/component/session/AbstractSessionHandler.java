@@ -376,7 +376,6 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
 
     /**
      * Call the session lifecycle listeners.
-     *
      * @param session the session on which to call the lifecycle listeners
      */
     private void fireSessionCreatedListeners(Session session) {

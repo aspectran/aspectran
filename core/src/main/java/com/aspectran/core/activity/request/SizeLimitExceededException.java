@@ -22,7 +22,6 @@ package com.aspectran.core.activity.request;
  */
 public class SizeLimitExceededException extends RequestParseException {
 
-    /** @serial */
     private static final long serialVersionUID = -6153625356301952978L;
 
     private final long actual;
@@ -32,7 +31,6 @@ public class SizeLimitExceededException extends RequestParseException {
     /**
      * Constructs a <code>SizeExceededException</code> with
      * the specified detail message, and actual and permitted sizes.
-     *
      * @param msg the detail message
      * @param actual the actual request size
      * @param permitted the maximum permitted request size

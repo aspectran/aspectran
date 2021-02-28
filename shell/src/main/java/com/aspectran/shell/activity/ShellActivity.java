@@ -70,7 +70,6 @@ public class ShellActivity extends CoreActivity {
 
     /**
      * Instantiates a new ShellActivity.
-     *
      * @param service the {@code ShellService} instance
      * @param console the {@code Console} instance
      */

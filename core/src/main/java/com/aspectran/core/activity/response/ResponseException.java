@@ -24,7 +24,6 @@ import com.aspectran.core.activity.ActivityException;
  */
 public class ResponseException extends ActivityException {
 
-    /** @serial */
     private static final long serialVersionUID = -7446545758142913255L;
 
     /**
@@ -36,7 +35,6 @@ public class ResponseException extends ActivityException {
 
     /**
      * Constructor to create exception with a message.
-     *
      * @param msg a message to associate with the exception
      */
     public ResponseException(String msg) {
@@ -45,7 +43,6 @@ public class ResponseException extends ActivityException {
 
     /**
      * Constructor to create exception to wrap another exception.
-     *
      * @param cause the real cause of the exception
      */
     public ResponseException(Throwable cause) {
@@ -54,7 +51,6 @@ public class ResponseException extends ActivityException {
 
     /**
      * Constructor to create exception to wrap another exception and pass a message.
-     *
      * @param msg the message
      * @param cause the real cause of the exception
      */

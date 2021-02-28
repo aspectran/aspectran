@@ -69,7 +69,6 @@ public class PBEncryptionUtils {
 
     /**
      * Encrypts the inputString using the encryption password.
-     *
      * @param inputString the string to encrypt
      * @return the result of encryption
      */
@@ -79,7 +78,6 @@ public class PBEncryptionUtils {
 
     /**
      * Decrypts the inputString using the encryption password.
-     *
      * @param encryptedString the string to decrypt
      * @return the result of decryption
      */
@@ -89,7 +87,6 @@ public class PBEncryptionUtils {
 
     /**
      * Encrypts the inputString using the encryption password.
-     *
      * @param inputString the string to encrypt
      * @param encryptionPassword the password to be used for encryption
      * @return the result of encryption
@@ -102,7 +99,6 @@ public class PBEncryptionUtils {
 
     /**
      * Decrypts the inputString using the encryption password.
-     *
      * @param encryptedString the string to decrypt
      * @param encryptionPassword the password used for encryption
      * @return the result of decryption

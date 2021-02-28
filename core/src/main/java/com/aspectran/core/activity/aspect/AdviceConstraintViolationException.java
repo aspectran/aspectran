@@ -29,7 +29,6 @@ import java.util.Set;
  */
 public class AdviceConstraintViolationException extends ActivityException {
 
-    /** @serial */
     private static final long serialVersionUID = -5175491727350661063L;
 
     private final Set<AspectRule> relevantAspectRules = new LinkedHashSet<>();

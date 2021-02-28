@@ -59,7 +59,6 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
 
     /**
      * Instantiates a new HttpServletResponseAdapter.
-     *
      * @param response the HTTP response
      * @param activity the activity
      */

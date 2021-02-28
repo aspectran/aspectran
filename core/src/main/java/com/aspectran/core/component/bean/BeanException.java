@@ -22,7 +22,6 @@ package com.aspectran.core.component.bean;
  */
 public class BeanException extends RuntimeException {
 
-    /** @serial */
     private static final long serialVersionUID = 2598750999734896601L;
 
     /**
@@ -34,7 +33,6 @@ public class BeanException extends RuntimeException {
 
     /**
      * Constructs a BeanException with the specified detail message.
-     *
      * @param msg the detail message
      */
     public BeanException(String msg) {
@@ -43,7 +41,6 @@ public class BeanException extends RuntimeException {
 
     /**
      * Constructor to create exception to wrap another exception.
-     *
      * @param cause the real cause of the exception
      */
     public BeanException(Throwable cause) {
@@ -53,7 +50,6 @@ public class BeanException extends RuntimeException {
     /**
      * Constructs a BeanException with the specified error message and
      * also the specified root cause exception.
-     *
      * @param msg the detail message
      * @param cause the real cause of the exception
      */

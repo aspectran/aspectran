@@ -35,7 +35,6 @@ public class HeaderActionRule {
 
     /**
      * Gets the action id.
-     *
      * @return the action id
      */
     public String getActionId() {
@@ -44,7 +43,6 @@ public class HeaderActionRule {
 
     /**
      * Sets the action id.
-     *
      * @param actionId the new action id
      */
     public void setActionId(String actionId) {
@@ -53,7 +51,6 @@ public class HeaderActionRule {
 
     /**
      * Gets the header item rule map.
-     *
      * @return the header item rule map
      */
     public ItemRuleMap getHeaderItemRuleMap() {
@@ -62,7 +59,6 @@ public class HeaderActionRule {
 
     /**
      * Sets the header rule map.
-     *
      * @param headerItemRuleMap the new header item rule map
      */
     public void setHeaderItemRuleMap(ItemRuleMap headerItemRuleMap) {
@@ -71,7 +67,6 @@ public class HeaderActionRule {
 
     /**
      * Adds a new header rule with the specified name and returns it.
-     *
      * @param headerName the header name
      * @return the header item rule
      */
@@ -84,7 +79,6 @@ public class HeaderActionRule {
 
     /**
      * Adds the header item rule.
-     *
      * @param headerItemRule the header item rule
      */
     public void addHeaderItemRule(ItemRule headerItemRule) {
@@ -96,7 +90,6 @@ public class HeaderActionRule {
 
     /**
      * Returns whether to hide result of the action.
-     *
      * @return true, if this action is hidden
      */
     public Boolean getHidden() {
@@ -105,7 +98,6 @@ public class HeaderActionRule {
 
     /**
      * Returns whether to hide result of the action.
-     *
      * @return true, if this action is hidden
      */
     public boolean isHidden() {
@@ -114,7 +106,6 @@ public class HeaderActionRule {
 
     /**
      * Sets whether to hide result of the action.
-     *
      * @param hidden whether to hide result of the action
      */
     public void setHidden(Boolean hidden) {
@@ -134,7 +125,6 @@ public class HeaderActionRule {
 
     /**
      * Returns a new derived instance of HeaderActionRule.
-     *
      * @param id the action id
      * @param hidden whether to hide result of the action
      * @return the header action rule

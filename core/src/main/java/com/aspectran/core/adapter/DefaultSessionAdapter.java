@@ -29,7 +29,6 @@ public class DefaultSessionAdapter extends AbstractSessionAdapter {
 
     /**
      * Instantiates a new DefaultSessionAdapter.
-     *
      * @param agent the session agent
      */
     public DefaultSessionAdapter(SessionAgent agent) {

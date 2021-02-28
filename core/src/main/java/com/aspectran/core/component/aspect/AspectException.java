@@ -20,7 +20,6 @@ package com.aspectran.core.component.aspect;
  */
 public class AspectException extends RuntimeException {
 
-    /** @serial */
     private static final long serialVersionUID = 3778865608683444815L;
 
     /**
@@ -32,7 +31,6 @@ public class AspectException extends RuntimeException {
 
     /**
      * Constructs a AspectException with the specified detail message.
-     *
      * @param msg a message to associate with the exception
      */
     public AspectException(String msg) {
@@ -41,7 +39,6 @@ public class AspectException extends RuntimeException {
 
     /**
      * Constructor to create exception to wrap another exception.
-     *
      * @param cause the real cause of the exception
      */
     public AspectException(Throwable cause) {
@@ -51,7 +48,6 @@ public class AspectException extends RuntimeException {
     /**
      * Constructs a AspectException with the specified error message and
      * also the specified root cause exception.
-     *
      * @param msg the detail message
      * @param cause the real cause of the exception
      */

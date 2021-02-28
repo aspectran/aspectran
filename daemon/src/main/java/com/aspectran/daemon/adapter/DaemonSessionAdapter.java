@@ -26,7 +26,6 @@ public class DaemonSessionAdapter extends DefaultSessionAdapter {
 
     /**
      * Instantiates a new DaemonSessionAdapter.
-     *
      * @param agent the session agent
      */
     public DaemonSessionAdapter(SessionAgent agent) {

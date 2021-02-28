@@ -58,7 +58,6 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
      * Instantiates a new AponWriter.
      * Pretty printing is enabled by default, and the indent string is
      * set to "  " (two spaces).
-     *
      * @param writer the character-output stream
      */
     public AponWriter(Writer writer) {
@@ -71,7 +70,6 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
      * Instantiates a new AponWriter.
      * Pretty printing is enabled by default, and the indent string is
      * set to "  " (two spaces).
-     *
      * @param file a File object to write to
      * @throws IOException if an I/O error occurs
      */
@@ -104,7 +102,6 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
 
     /**
      * Sets whether write a type hint for values.
-     *
      * @param valueTypeHintEnabled true, write a type hint for values
      */
     @SuppressWarnings("unchecked")
@@ -115,7 +112,6 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
 
     /**
      * Specifies the indent string.
-     *
      * @param indentString the indentation string, by default "  " (two blanks).
      */
     public void setIndentString(String indentString) {
@@ -124,7 +120,6 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
 
     /**
      * Write a Parameters object to the character-output stream.
-     *
      * @param parameters the Parameters object to be converted
      * @throws IOException if an I/O error occurs
      */
@@ -155,7 +150,6 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
 
     /**
      * Write a Parameter object to the character-output stream.
-     *
      * @param parameter the Parameter object to be converted
      * @throws IOException if an I/O error occurs
      */
@@ -344,7 +338,6 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
 
     /**
      * Writes a comment to the character-output stream.
-     *
      * @param message the comment to write to a character-output stream
      * @throws IOException if an I/O error occurs
      */

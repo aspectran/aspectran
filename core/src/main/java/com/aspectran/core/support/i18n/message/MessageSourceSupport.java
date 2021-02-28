@@ -63,7 +63,6 @@ public class MessageSourceSupport {
      * even when not defining argument placeholders, you need to set this
      * flag to "true". Else, only message texts with actual arguments
      * are supposed to be written with MessageFormat escaping.</p>
-     *
      * @param alwaysUseMessageFormat whether always use message format
      * @see java.text.MessageFormat
      */
@@ -74,7 +73,6 @@ public class MessageSourceSupport {
     /**
      * Return whether to always apply the MessageFormat rules, parsing even
      * messages without arguments.
-     *
      * @return whether always use message format
      */
     protected boolean isAlwaysUseMessageFormat() {
@@ -88,7 +86,6 @@ public class MessageSourceSupport {
      * <p>The default implementation passes the String to {@code formatMessage},
      * resolving any argument placeholders found in them. Subclasses may override
      * this method to plug in custom processing of default messages.</p>
-     *
      * @param defaultMessage the passed-in default message String
      * @param args array of arguments that will be filled in for params within the message, or {@code null} if none.
      * @param locale the Locale used for formatting
@@ -103,7 +100,6 @@ public class MessageSourceSupport {
      * Format the given message String, using cached MessageFormats.
      * By default invoked for passed-in default messages, to resolve
      * any argument placeholders found in them.
-     *
      * @param msg the message to format
      * @param args array of arguments that will be filled in for params within the message, or {@code null} if none
      * @param locale the Locale used for formatting
@@ -147,7 +143,6 @@ public class MessageSourceSupport {
 
     /**
      * Create a MessageFormat for the given message and Locale.
-     *
      * @param msg the message to create a MessageFormat for
      * @param locale the Locale to create a MessageFormat for
      * @return the MessageFormat instance
@@ -160,7 +155,6 @@ public class MessageSourceSupport {
      * Template method for resolving argument objects.
      * <p>The default implementation simply returns the given argument array as-is.
      * Can be overridden in subclasses in order to resolve special argument types.</p>
-     *
      * @param args the original argument array
      * @param locale the Locale to resolve against
      * @return the resolved argument array

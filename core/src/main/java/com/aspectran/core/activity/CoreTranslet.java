@@ -59,7 +59,6 @@ public class CoreTranslet extends AbstractTranslet {
 
     /**
      * Instantiates a new CoreTranslet.
-     *
      * @param transletRule the translet rule
      * @param activity the current Activity
      */

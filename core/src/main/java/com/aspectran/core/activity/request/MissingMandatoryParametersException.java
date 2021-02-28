@@ -30,7 +30,6 @@ import java.util.Collection;
  */
 public class MissingMandatoryParametersException extends RequestException {
 
-    /** @serial */
     private static final long serialVersionUID = 6311784727928597298L;
 
     private final Collection<ItemRule> itemRules;
@@ -38,7 +37,6 @@ public class MissingMandatoryParametersException extends RequestException {
     /**
      * Creates a new MissingMandatoryParametersException referencing
      * the specified parameter.
-     *
      * @param itemRules an item rule list that represents missing parameters
      */
     public MissingMandatoryParametersException(Collection<ItemRule> itemRules) {
@@ -48,7 +46,6 @@ public class MissingMandatoryParametersException extends RequestException {
 
     /**
      * Returns an item rule list that represents missing parameters.
-     *
      * @return an item rule list that represents missing parameters
      */
     public Collection<ItemRule> getItemRules() {

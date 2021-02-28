@@ -51,7 +51,6 @@ public class CustomTransformResponse implements Response {
 
     /**
      * Instantiates a new CustomTransformResponse.
-     *
      * @param transformer the custom transformer
      */
     public CustomTransformResponse(CustomTransformer transformer) {

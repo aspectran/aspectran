@@ -35,7 +35,6 @@ public class JobActivity extends CoreActivity {
 
     /**
      * Instantiates a new job activity.
-     *
      * @param context the current ActivityContext
      * @param jobExecutionContext the job execution context
      */

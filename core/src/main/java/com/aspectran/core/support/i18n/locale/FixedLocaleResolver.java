@@ -45,7 +45,6 @@ public class FixedLocaleResolver extends AbstractLocaleResolver {
 
     /**
      * Create a FixedLocaleResolver that exposes the given locale.
-     *
      * @param locale the locale to expose
      */
     public FixedLocaleResolver(Locale locale) {
@@ -54,7 +53,6 @@ public class FixedLocaleResolver extends AbstractLocaleResolver {
 
     /**
      * Create a FixedLocaleResolver that exposes the given locale and time zone.
-     *
      * @param locale the locale to expose
      * @param timeZone the time zone to expose
      */

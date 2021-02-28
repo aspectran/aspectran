@@ -23,14 +23,12 @@ import com.aspectran.core.context.rule.AspectAdviceRule;
  */
 public class AspectAdviceException extends ActivityException {
 
-    /** @serial */
     private static final long serialVersionUID = 6813516429436576091L;
 
     private final AspectAdviceRule aspectAdviceRule;
 
     /**
      * Constructor to create exception to wrap another exception and pass a message.
-     *
      * @param msg a message to associate with the exception
      * @param aspectAdviceRule the aspect advice rule
      * @param cause the real cause of the exception
@@ -42,7 +40,6 @@ public class AspectAdviceException extends ActivityException {
 
     /**
      * Returns the aspect advice rule.
-     *
      * @return the aspect advice rule
      */
     public AspectAdviceRule getAspectAdviceRule() {

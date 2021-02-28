@@ -61,7 +61,6 @@ public abstract class AbstractMessageSource extends MessageSourceSupport impleme
     /**
      * Specify locale-independent common messages, with the message code as key
      * and the full message String (may contain argument placeholders) as value.
-     *
      * @param commonMessages the common messages
      */
     public void setCommonMessages(Properties commonMessages) {
@@ -70,7 +69,6 @@ public abstract class AbstractMessageSource extends MessageSourceSupport impleme
 
     /**
      * Return a Properties object defining locale-independent common messages, if any.
-     *
      * @return the common messages
      */
     protected Properties getCommonMessages() {
@@ -91,7 +89,6 @@ public abstract class AbstractMessageSource extends MessageSourceSupport impleme
      * to delegate to the internal {@link #getMessageInternal} method if available.
      * In general, it is recommended to just use "useCodeAsDefaultMessage" during
      * development and not rely on it in production in the first place, though.</p>
-     *
      * @param useCodeAsDefaultMessage whether use code as default message
      * @see #getMessage(String, Object[], Locale) #getMessage(String, Object[], Locale)
      */
@@ -105,7 +102,6 @@ public abstract class AbstractMessageSource extends MessageSourceSupport impleme
      * Default is "false".
      * <p>Alternatively, consider overriding the {@link #getDefaultMessage}
      * method to return a custom fallback message for an unresolvable code.</p>
-     *
      * @return whether use code as default message
      * @see #getDefaultMessage(String) #getDefaultMessage(String)
      */
@@ -155,7 +151,6 @@ public abstract class AbstractMessageSource extends MessageSourceSupport impleme
      * Resolve the given code and arguments as message in the given Locale,
      * returning {@code null} if not found. Does <i>not</i> fall back to
      * the code as default message. Invoked by {@code getMessage} methods.
-     *
      * @param code the code to lookup up, such as 'calculator.noRateSet'
      * @param args array of arguments that will be filled in for params within the message
      * @param locale the Locale in which to do the lookup
@@ -207,7 +202,6 @@ public abstract class AbstractMessageSource extends MessageSourceSupport impleme
 
     /**
      * Try to retrieve the given message from the parent MessageSource, if any.
-     *
      * @param code the code to lookup up, such as 'calculator.noRateSet'
      * @param args array of arguments that will be filled in for params within the message
      * @param locale the Locale in which to do the lookup
@@ -235,7 +229,6 @@ public abstract class AbstractMessageSource extends MessageSourceSupport impleme
      * <p>Default is to return the code itself if "useCodeAsDefaultMessage" is activated,
      * or return no fallback else. In case of no fallback, the caller will usually
      * receive a NoSuchMessageException from {@code getMessage}.</p>
-     *
      * @param code the message code that we couldn't resolve and that we didn't receive an explicit default message for
      * @return the default message to use, or {@code null} if none
      * @see #setUseCodeAsDefaultMessage #setUseCodeAsDefaultMessage
@@ -258,7 +251,6 @@ public abstract class AbstractMessageSource extends MessageSourceSupport impleme
      * in an efficient fashion. In particular, it does not detect that a message
      * pattern doesn't contain argument placeholders in the first place. Therefore,
      * it is advisable to circumvent MessageFormat for messages without arguments.</p>
-     *
      * @param code the code of the message to resolve
      * @param locale the Locale to resolve the code for (subclasses are encouraged to support internationalization)
      * @return the message String, or {@code null} if not found
@@ -283,7 +275,6 @@ public abstract class AbstractMessageSource extends MessageSourceSupport impleme
      * <p><b>Subclasses are encouraged to provide optimized resolution
      * for messages without arguments, not involving MessageFormat.</b>
      * See the {@link #resolveCodeWithoutArguments} javadoc for details.</p>
-     *
      * @param code the code of the message to resolve
      * @param locale the Locale to resolve the code for (subclasses are encouraged to support internationalization)
      * @return the MessageFormat for the message, or {@code null} if not found

@@ -28,7 +28,6 @@ public interface ResponseRuleApplicable {
 
     /**
      * Apply the transform rule to the response rule.
-     *
      * @param transformRule the transform rule
      * @return the response
      */
@@ -36,7 +35,6 @@ public interface ResponseRuleApplicable {
 
     /**
      * Apply the dispatch rule to the response rule.
-     *
      * @param dispatchRule the dispatch rule
      * @return the response
      */
@@ -44,7 +42,6 @@ public interface ResponseRuleApplicable {
 
     /**
      * Apply the forward rule to the response rule.
-     *
      * @param forwardRule the forward rule
      * @return the response
      */
@@ -52,7 +49,6 @@ public interface ResponseRuleApplicable {
 
     /**
      * Apply the redirect rule to the response rule.
-     *
      * @param redirectRule the redirect rule
      * @return the response
      */

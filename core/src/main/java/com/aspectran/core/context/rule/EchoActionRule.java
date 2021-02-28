@@ -33,7 +33,6 @@ public class EchoActionRule {
 
     /**
      * Gets the action id.
-     *
      * @return the action id
      */
     public String getActionId() {
@@ -42,7 +41,6 @@ public class EchoActionRule {
 
     /**
      * Sets the action id.
-     *
      * @param actionId the new action id
      */
     public void setActionId(String actionId) {
@@ -51,7 +49,6 @@ public class EchoActionRule {
 
     /**
      * Gets the echo item rule map.
-     *
      * @return the echo item rule map
      */
     public ItemRuleMap getEchoItemRuleMap() {
@@ -60,7 +57,6 @@ public class EchoActionRule {
 
     /**
      * Sets the echo item rule map.
-     *
      * @param echoItemRuleMap the new echo item rule map
      */
     public void setEchoItemRuleMap(ItemRuleMap echoItemRuleMap) {
@@ -69,7 +65,6 @@ public class EchoActionRule {
 
     /**
      * Adds a new echo item rule with the specified name and returns it.
-     *
      * @param echoName the echo name
      * @return the echo item rule
      */
@@ -82,7 +77,6 @@ public class EchoActionRule {
 
     /**
      * Adds the echo item rule.
-     *
      * @param itemRule the echo item rule
      */
     public void addEchoItemRule(ItemRule itemRule) {
@@ -94,7 +88,6 @@ public class EchoActionRule {
 
     /**
      * Returns whether to hide result of the action.
-     *
      * @return true, if is hidden
      */
     public Boolean getHidden() {
@@ -103,7 +96,6 @@ public class EchoActionRule {
 
     /**
      * Returns whether to hide result of the action.
-     *
      * @return true, if is hidden
      */
     public boolean isHidden() {
@@ -112,7 +104,6 @@ public class EchoActionRule {
 
     /**
      * Sets whether to hide result of the action.
-     *
      * @param hidden whether to hide result of the action
      */
     public void setHidden(Boolean hidden) {
@@ -132,7 +123,6 @@ public class EchoActionRule {
 
     /**
      * Returns a new derived instance of EchoActionRule.
-     *
      * @param id the action id
      * @param hidden whether to hide result of the action
      * @return the echo action rule

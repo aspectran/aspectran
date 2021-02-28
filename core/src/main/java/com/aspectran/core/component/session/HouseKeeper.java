@@ -57,7 +57,6 @@ public class HouseKeeper extends AbstractLifeCycle {
 
     /**
      * Get the period between scavenge cycles.
-     *
      * @return the interval (in seconds)
      */
     public int getScavengingInterval() {
@@ -66,7 +65,6 @@ public class HouseKeeper extends AbstractLifeCycle {
 
     /**
      * Set the period between scavenge cycles.
-     *
      * @param intervalInSecs the interval (in seconds)
      */
     public void setScavengingInterval(int intervalInSecs) {
