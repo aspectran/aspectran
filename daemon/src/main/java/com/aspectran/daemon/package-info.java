@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 /**
- * Provides a daemon that runs Aspectran as a service in the
- * background on Unix-based or Windows operating systems.
+ * Package required to build applications that run as background
+ * processes on Unix-based or Windows operating systems.
  */
 package com.aspectran.daemon;

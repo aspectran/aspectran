@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 /**
- * Provides an interface for embedding Aspectran
- * in Java applications.
+ * Package required to embed Aspectran in other Java applications.
  */
 package com.aspectran.embed;

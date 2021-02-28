@@ -40,7 +40,7 @@ Applications developed based on Aspectran support the following execution enviro
 Aspectran consists of the following major packages:
 
 * **com.aspectran.core**  
-  Core package containing the main features of Aspectran
+  Package containing the core features of Aspectran
 * **com.aspectran.daemon**  
   Package required to build applications that run as background processes on Unix-based or Windows operating systems
 * **com.aspectran.embed**  

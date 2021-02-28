@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * Add-on package for integrating Embedded Jetty.
+ * Add-on package for building web application servers using Jetty.
  */
 package com.aspectran.jetty;
