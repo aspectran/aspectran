@@ -63,7 +63,7 @@ public class MethodUtilsTestBean {
     }
 
     @SuppressWarnings("unused")
-    public class ExtendedMethodUtilsTestBean extends MethodUtilsTestBean {
+    public static class ExtendedMethodUtilsTestBean extends MethodUtilsTestBean {
     }
 
 }

@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertLinesMatch;
@@ -95,7 +96,7 @@ class LinkedMultiValueMapTest {
     void addAllWithEmptyList() {
         map.addAll("key", Collections.emptyList());
         assertEquals(1, map.size());
-        assertTrue(map.get("key").isEmpty());
+        assertTrue(Objects.requireNonNull(map.get("key")).isEmpty());
         assertNull(map.getFirst("key"));
     }
 

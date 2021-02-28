@@ -46,9 +46,9 @@ class LinkedCaseInsensitiveMapTest {
         assertTrue(map.containsKey("key"));
         assertTrue(map.containsKey("KEY"));
         assertTrue(map.containsKey("Key"));
-        assertTrue(map.keySet().contains("key"));
-        assertTrue(map.keySet().contains("KEY"));
-        assertTrue(map.keySet().contains("Key"));
+        assertTrue(map.containsKey("key"));
+        assertTrue(map.containsKey("KEY"));
+        assertTrue(map.containsKey("Key"));
     }
 
     @Test
@@ -63,9 +63,9 @@ class LinkedCaseInsensitiveMapTest {
         assertTrue(map.containsKey("key"));
         assertTrue(map.containsKey("KEY"));
         assertTrue(map.containsKey("Key"));
-        assertTrue(map.keySet().contains("key"));
-        assertTrue(map.keySet().contains("KEY"));
-        assertTrue(map.keySet().contains("Key"));
+        assertTrue(map.containsKey("key"));
+        assertTrue(map.containsKey("KEY"));
+        assertTrue(map.containsKey("Key"));
     }
 
     @Test
