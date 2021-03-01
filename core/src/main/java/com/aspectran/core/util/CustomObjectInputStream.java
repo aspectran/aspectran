@@ -18,7 +18,7 @@ package com.aspectran.core.util;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
-import java.lang.reflect.Modifier;
+import java.io.ObjectStreamClass;
 import java.lang.reflect.Proxy;
 
 /**
@@ -27,52 +27,39 @@ import java.lang.reflect.Proxy;
  */
 public class CustomObjectInputStream extends ObjectInputStream {
 
-    public CustomObjectInputStream() throws IOException {
-        super();
-    }
+    private final ClassLoader classLoader;
 
     public CustomObjectInputStream(InputStream in) throws IOException {
+        this(in, ClassUtils.getDefaultClassLoader());
+    }
+
+    public CustomObjectInputStream(InputStream in, ClassLoader classLoader) throws IOException {
         super(in);
+        this.classLoader = classLoader;
     }
 
     @Override
-    public Class<?> resolveClass(java.io.ObjectStreamClass cl) throws IOException, ClassNotFoundException {
+    public Class<?> resolveClass(ObjectStreamClass classDesc) throws IOException, ClassNotFoundException {
         try {
-            return Class.forName(cl.getName(), false, ClassUtils.getDefaultClassLoader());
+            return Class.forName(classDesc.getName(), false, classLoader);
         } catch (ClassNotFoundException e) {
-            return super.resolveClass(cl);
+            return super.resolveClass(classDesc);
         }
     }
 
     @Override
     protected Class<?> resolveProxyClass(String[] interfaces) throws ClassNotFoundException {
-        ClassLoader loader = ClassUtils.getDefaultClassLoader();
-        ClassLoader nonPublicLoader = null;
-        boolean hasNonPublicInterface = false;
-
-        // define proxy in class loader of non-public interface(s), if any
-        Class<?>[] classObjs = new Class[interfaces.length];
+        Class<?>[] resolvedInterfaces = new Class<?>[interfaces.length];
         for (int i = 0; i < interfaces.length; i++) {
-            Class<?> cl = Class.forName(interfaces[i], false, loader);
-            if ((cl.getModifiers() & Modifier.PUBLIC) == 0) {
-                if (hasNonPublicInterface) {
-                    if (nonPublicLoader != cl.getClassLoader()) {
-                        throw new IllegalAccessError("conflicting non-public interface class loaders");
-                    }
-                } else {
-                    nonPublicLoader = cl.getClassLoader();
-                    hasNonPublicInterface = true;
-                }
-            }
-            classObjs[i] = cl;
+            resolvedInterfaces[i] = Class.forName(interfaces[i], false, classLoader);
         }
         try {
             @SuppressWarnings("deprecation")
-            Class<?> proxyClass = Proxy.getProxyClass(hasNonPublicInterface ? nonPublicLoader : loader, classObjs);
+            Class<?> proxyClass = Proxy.getProxyClass(classLoader, resolvedInterfaces);
             return proxyClass;
         } catch (IllegalArgumentException e) {
             throw new ClassNotFoundException(null, e);
-        }    
+        }
     }
 
 }
