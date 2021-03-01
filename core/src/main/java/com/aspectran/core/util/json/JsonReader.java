@@ -343,7 +343,6 @@ public class JsonReader implements Closeable {
      * this parser is strict and only accepts JSON as specified by <a
      * href="http://www.ietf.org/rfc/rfc4627.txt">RFC 4627</a>. Setting the
      * parser to lenient causes it to ignore the following syntax errors:
-     *
      * <ul>
      *   <li>Streams that start with the <a href="#nonexecuteprefix">non-execute
      *       prefix</a>, <code>")]}'\n"</code>.

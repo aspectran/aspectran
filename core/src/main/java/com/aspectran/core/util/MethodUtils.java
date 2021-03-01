@@ -243,7 +243,8 @@ public class MethodUtils {
         }
         Method method = getMatchingAccessibleMethod(object.getClass(), methodName, args, paramTypes);
         if (method == null) {
-            throw new NoSuchMethodException("No such accessible method: " + methodName + "() on object: " + object.getClass().getName());
+            throw new NoSuchMethodException("No such accessible method: " + methodName + "() on object: "
+                    + object.getClass().getName());
         }
         return invokeMethod(object, method, args, paramTypes);
     }
@@ -748,12 +749,10 @@ public class MethodUtils {
      * the given parameters.
      * In other words, it finds a method with the given name
      * that will take the parameters given.
-     *
      * <p>This method is slightly undeterminstic since it loops
      * through methods names and return the first matching method.</p>
      * <p>This method is used by
      * {@link #invokeMethod(Object object,String methodName,Object[] args,Class[] paramTypes)}.
-     *
      * <p>This method can match primitive parameter by passing in wrapper classes.
      * For example, a {@code Boolean} will match a primitive {@code boolean}
      * parameter.
@@ -839,7 +838,6 @@ public class MethodUtils {
      * the given parameters.
      * In other words, it finds a method with the given name
      * that will take the parameters given.
-     *
      * <p>This method is slightly undeterminstic since it loops
      * through methods names and return the first matching method.</p>
      * <p>This method can match primitive parameter by passing in wrapper classes.
