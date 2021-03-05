@@ -9,9 +9,6 @@
 *.iws
 .idea/
 
-# Geany project file
-.geany
-
 # Build targets
 /target
 */target

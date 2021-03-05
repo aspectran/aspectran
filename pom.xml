@@ -85,7 +85,6 @@
 
         <java.version>1.8</java.version>
         <java.release.version>8</java.release.version>
-        <java.module.name />
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.build.resourceEncoding>UTF-8</project.build.resourceEncoding>
@@ -113,6 +112,7 @@
         <module>shell</module>
         <module>shell-jline</module>
         <module>web</module>
+        <module>websocket</module>
         <module>with-freemarker</module>
         <module>with-jetty</module>
         <module>with-mybatis</module>
@@ -406,9 +406,6 @@
                         <manifest>
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                         </manifest>
-                        <manifestEntries>
-                            <Automatic-Module-Name>${java.module.name}</Automatic-Module-Name>
-                        </manifestEntries>
                     </archive>
                 </configuration>
             </plugin>
@@ -474,6 +471,7 @@
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
                 <configuration>
+                    <noWarningProjectTypes>pom</noWarningProjectTypes>
                     <instructions>
                         <Export-Package>*;-noimport:=true</Export-Package>
                     </instructions>

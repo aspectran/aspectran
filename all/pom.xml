@@ -30,7 +30,6 @@
 
     <properties>
         <main.basedir>${project.parent.basedir}</main.basedir>
-        <java.module.name>com.aspectran.all</java.module.name>
         <generatedSourceDir>${project.build.directory}/src</generatedSourceDir>
 
         <!-- plugins configuration -->
@@ -73,6 +72,11 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>aspectran-web</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>aspectran-websocket</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -273,7 +277,7 @@
                         </group>
                         <group>
                             <title>Add-ons</title>
-                            <packages>com.aspectran.freemarker*:com.aspectran.jetty*:com.aspectran.mybatis*:com.aspectran.pebble*:com.aspectran.undertow*</packages>
+                            <packages>com.aspectran.websocket*:com.aspectran.freemarker*:com.aspectran.jetty*:com.aspectran.mybatis*:com.aspectran.pebble*:com.aspectran.undertow*</packages>
                         </group>
                     </groups>
                     <stylesheetfile>${project.basedir}/src/main/javadoc/stylesheet.css</stylesheetfile>

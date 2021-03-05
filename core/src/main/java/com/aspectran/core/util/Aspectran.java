@@ -17,6 +17,10 @@ package com.aspectran.core.util;
 
 import java.io.PrintStream;
 
+/**
+ * Class that exposes the build information of Aspectran.
+ * Fetches the "Implementation-Version" manifest attribute from the jar file.
+ */
 public class Aspectran {
 
     public static final String VERSION;
@@ -33,7 +37,7 @@ public class Aspectran {
                 pkg.getImplementationVersion() != null) {
             VERSION = pkg.getImplementationVersion();
         } else {
-            VERSION = System.getProperty("aspectran.version", "6.12.z");
+            VERSION = System.getProperty("aspectran.version", "6.12.x");
         }
 
         POWERED_BY = "Powered by Aspectran " + VERSION;

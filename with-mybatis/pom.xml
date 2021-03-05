@@ -31,7 +31,6 @@
 
     <properties>
         <main.basedir>${project.parent.basedir}</main.basedir>
-        <java.module.name>com.aspectran.mybatis</java.module.name>
         <mybatis.version>3.5.6</mybatis.version>
     </properties>
 

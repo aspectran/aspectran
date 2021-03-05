@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 /**
- * Provides the ability to easily build interactive shell
- * applications using feature-rich JLine 3.
+ * Package for using feature-rich JLine as an interactive shell interface.
  */
 package com.aspectran.shell.jline;

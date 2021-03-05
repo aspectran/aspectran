@@ -31,7 +31,6 @@
 
     <properties>
         <main.basedir>${project.parent.basedir}</main.basedir>
-        <java.module.name>com.aspectran.jetty</java.module.name>
         <jetty.version>9.4.37.v20210219</jetty.version>
     </properties>
 
@@ -39,6 +38,11 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>aspectran-web</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>aspectran-websocket</artifactId>
             <version>${project.version}</version>
         </dependency>
         <!-- Jetty dependencies -->

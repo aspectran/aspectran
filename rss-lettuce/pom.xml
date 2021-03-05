@@ -31,7 +31,6 @@
 
     <properties>
         <main.basedir>${project.parent.basedir}</main.basedir>
-        <java.module.name>com.aspectran.core.component.session.redis.lettuce</java.module.name>
         <lettuce.version>6.0.2.RELEASE</lettuce.version>
     </properties>
 

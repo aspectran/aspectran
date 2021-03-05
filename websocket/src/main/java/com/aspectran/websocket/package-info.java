@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 /**
- * Package required to build applications that run as background
- * processes on Unix-based or Windows operating systems.
+ * Package required to configure WebSocket endpoints.
  */
-package com.aspectran.daemon;
+package com.aspectran.websocket;

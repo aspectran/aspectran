@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * Add-on package for integrating Undertow.
+ * Add-on package for building web application servers using Undertow.
  */
 package com.aspectran.undertow;

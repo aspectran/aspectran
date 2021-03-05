@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * Add-on package for integrating Pebble.
+ * Add-on package required to use the Pebble template engine.
  */
 package com.aspectran.pebble;

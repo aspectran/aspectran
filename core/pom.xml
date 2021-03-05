@@ -31,7 +31,6 @@
 
     <properties>
         <main.basedir>${project.parent.basedir}</main.basedir>
-        <java.module.name>com.aspectran.core</java.module.name>
     </properties>
 
     <dependencies>
