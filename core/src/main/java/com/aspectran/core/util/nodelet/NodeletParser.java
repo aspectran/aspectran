@@ -354,9 +354,9 @@ public class NodeletParser {
 
         private final List<NodeTracker> trackerList = new ArrayList<>();
 
-        private String path;
+        private final NodeTracker nodeTracker;
 
-        private NodeTracker nodeTracker;
+        private String path;
 
         private Path(NodeTracker NodeTracker) {
             this.nodeTracker = NodeTracker;

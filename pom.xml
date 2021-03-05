@@ -66,8 +66,8 @@
         <url>https://github.com/aspectran/aspectran/issues</url>
     </issueManagement>
     <ciManagement>
-        <system>Travis CI</system>
-        <url>https://travis-ci.org/aspectran/aspectran</url>
+        <system>GitHub Workflows</system>
+        <url>https://github.com/aspectran/aspectran/actions</url>
     </ciManagement>
     <distributionManagement>
         <snapshotRepository>
