@@ -203,8 +203,8 @@ public class NodeletParser {
             reader.setEntityResolver(entityResolver);
             reader.setContentHandler(new DefaultHandler() {
                 private Locator locator;
-                private Path path = new Path(getNodeTracker());
-                private StringBuilder textBuffer = new StringBuilder();
+                private final Path path = new Path(getNodeTracker());
+                private final StringBuilder textBuffer = new StringBuilder();
 
                 @Override
                 public void setDocumentLocator(Locator locator) {
@@ -347,9 +347,9 @@ public class NodeletParser {
 
         private final List<NodeTracker> trackerList = new ArrayList<>();
 
-        private String path;
+        private final NodeTracker nodeTracker;
 
-        private NodeTracker nodeTracker;
+        private String path;
 
         private Path(NodeTracker NodeTracker) {
             this.nodeTracker = NodeTracker;
