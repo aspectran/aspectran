@@ -33,7 +33,7 @@ public class ByteArrayAudioPlayer implements AudioPlayer {
 
     private AudioFormat audioFormat;
 
-    private Vector<ByteArrayInputStream> outputList;
+    private final Vector<ByteArrayInputStream> outputList;
 
     private byte[] outputData;
 

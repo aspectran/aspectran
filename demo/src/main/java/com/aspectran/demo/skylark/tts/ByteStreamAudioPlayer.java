@@ -33,7 +33,7 @@ import java.io.OutputStream;
  */
 public class ByteStreamAudioPlayer implements AudioPlayer {
 
-    private OutputStream output;
+    private final OutputStream output;
 
     private AudioFormat audioFormat;
 
