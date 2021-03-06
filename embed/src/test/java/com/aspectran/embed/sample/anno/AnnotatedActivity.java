@@ -143,7 +143,8 @@ public class AnnotatedActivity {
         assertEquals(Float.valueOf(5678), param2);
         assertEquals(Double.valueOf(33333333.0), param3);
         assertEquals(BigInteger.valueOf(44444444), param4);
-        assertEquals(new BigDecimal("55555555.0"), param5);
+        //noinspection UnpredictableBigDecimalConstructorCall
+        assertEquals(new BigDecimal(55555555.0), param5);
     }
 
     @Request("/action-6")
