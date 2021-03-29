@@ -29,8 +29,8 @@ import com.aspectran.websocket.jsr356.ServerEndpointExporter;
 import jakarta.websocket.server.ServerContainer;
 import org.eclipse.jetty.webapp.WebAppClassLoader;
 import org.eclipse.jetty.webapp.WebAppContext;
+import org.eclipse.jetty.websocket.jakarta.server.config.JakartaWebSocketServletContainerInitializer;
 import org.eclipse.jetty.websocket.jakarta.server.internal.JakartaWebSocketServerContainer;
-import org.eclipse.jetty.websocket.server.config.JettyWebSocketServletContainerInitializer;
 
 import java.io.File;
 import java.io.IOException;
@@ -97,8 +97,8 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
         setClassLoader(webAppClassLoader);
 
         if (webSocketInitializer != null) {
-            JettyWebSocketServletContainerInitializer.configure(this, (servletContext, jettyWebSocketServerContainer) -> {
-                ServerContainer serverContainer = JakartaWebSocketServerContainer.getContainer(servletContext);
+            JakartaWebSocketServletContainerInitializer.configure(this, (servletContext, jettyWebSocketServerContainer) -> {
+                ServerContainer serverContainer = JakartaWebSocketServerContainer.ensureContainer(servletContext);
                 webSocketInitializer.customize(serverContainer);
                 ServerEndpointExporter serverEndpointExporter = new ServerEndpointExporter(context);
                 serverEndpointExporter.setServerContainer(serverContainer);
