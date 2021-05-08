@@ -120,11 +120,11 @@ public class ServerEndpointExporter {
                         "has not run yet.");
         try {
             if (logger.isDebugEnabled()) {
-                logger.debug("Registering @ServerEndpoint class: " + endpointClass);
+                logger.debug("Registering @ServerEndpoint: " + endpointClass);
             }
             serverContainer.addEndpoint(endpointClass);
         } catch (DeploymentException ex) {
-            throw new IllegalStateException("Failed to register @ServerEndpoint class: " + endpointClass, ex);
+            throw new IllegalStateException("Failed to register @ServerEndpoint: " + endpointClass, ex);
         }
     }
 
