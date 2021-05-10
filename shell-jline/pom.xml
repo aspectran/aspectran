@@ -31,7 +31,7 @@
 
     <properties>
         <main.basedir>${project.parent.basedir}</main.basedir>
-        <jline.version>3.19.0</jline.version>
+        <jline.version>3.20.0</jline.version>
     </properties>
 
     <dependencies>
