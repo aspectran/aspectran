@@ -21,7 +21,6 @@ package com.aspectran.web.support.http;
  *
  * <p>Created: 2019-06-18</p>
  */
-@SuppressWarnings("serial")
 public class InvalidMediaTypeException extends IllegalArgumentException {
 
     private final String mediaType;

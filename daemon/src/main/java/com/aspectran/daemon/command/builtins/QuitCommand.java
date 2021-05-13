@@ -16,9 +16,9 @@
 package com.aspectran.daemon.command.builtins;
 
 import com.aspectran.daemon.command.AbstractCommand;
+import com.aspectran.daemon.command.CommandParameters;
 import com.aspectran.daemon.command.CommandRegistry;
 import com.aspectran.daemon.command.CommandResult;
-import com.aspectran.daemon.command.polling.CommandParameters;
 
 public class QuitCommand extends AbstractCommand {
 

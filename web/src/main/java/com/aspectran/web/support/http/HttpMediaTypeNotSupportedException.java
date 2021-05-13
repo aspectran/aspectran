@@ -27,7 +27,6 @@ import java.util.List;
  *
  * @author Arjen Poutsma
  */
-@SuppressWarnings("serial")
 public class HttpMediaTypeNotSupportedException extends HttpMediaTypeException {
 
     @Nullable

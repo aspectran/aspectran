@@ -13,15 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.daemon.command.polling;
+package com.aspectran.daemon.command.file;
 
 import com.aspectran.core.context.config.DaemonPollerConfig;
 import com.aspectran.daemon.Daemon;
+import com.aspectran.daemon.command.CommandExecutor;
 
 /**
  * <p>Created: 2017. 12. 11.</p>
  */
-public abstract class AbstractCommandPoller implements CommandPoller {
+public abstract class AbstractCommandFilePoller implements CommandFilePoller {
 
     private static final long DEFAULT_POLLING_INTERVAL = 5000L;
 
@@ -37,7 +38,7 @@ public abstract class AbstractCommandPoller implements CommandPoller {
 
     private final boolean requeuable;
 
-    public AbstractCommandPoller(Daemon daemon, DaemonPollerConfig pollerConfig) {
+    public AbstractCommandFilePoller(Daemon daemon, DaemonPollerConfig pollerConfig) {
         if (daemon == null) {
             throw new IllegalArgumentException("daemon must not be null");
         }

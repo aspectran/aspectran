@@ -21,9 +21,9 @@ import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.InvokeActionRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.daemon.command.AbstractCommand;
+import com.aspectran.daemon.command.CommandParameters;
 import com.aspectran.daemon.command.CommandRegistry;
 import com.aspectran.daemon.command.CommandResult;
-import com.aspectran.daemon.command.polling.CommandParameters;
 import com.aspectran.daemon.service.DaemonService;
 
 public class InvokeActionCommand extends AbstractCommand {

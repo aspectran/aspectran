@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.daemon.command.polling;
+package com.aspectran.daemon.command;
 
 import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.context.rule.ItemRuleList;
@@ -41,7 +41,7 @@ public class CommandParameters extends AbstractParameters {
     private static final ParameterKey parameters;
     private static final ParameterKey attributes;
     private static final ParameterKey requeuable;
-    private static final ParameterKey output;
+    private static final ParameterKey result;
 
     private static final ParameterKey[] parameterKeys;
 
@@ -55,7 +55,7 @@ public class CommandParameters extends AbstractParameters {
         parameters = new ParameterKey("parameters", ItemHolderParameters.class);
         attributes = new ParameterKey("attributes", ItemHolderParameters.class);
         requeuable = new ParameterKey("requeuable", ValueType.BOOLEAN);
-        output = new ParameterKey("output", ValueType.TEXT);
+        result = new ParameterKey("result", ValueType.TEXT);
 
         parameterKeys = new ParameterKey[] {
                 command,
@@ -67,7 +67,7 @@ public class CommandParameters extends AbstractParameters {
                 parameters,
                 attributes,
                 requeuable,
-                output
+                result
         };
     }
 
@@ -174,12 +174,12 @@ public class CommandParameters extends AbstractParameters {
         return this;
     }
 
-    public String getOutput() {
-        return getString(output);
+    public String getResult() {
+        return getString(result);
     }
 
-    public CommandParameters setOutput(String outputText) {
-        putValue(output, outputText);
+    public CommandParameters setResult(String resultText) {
+        putValue(result, resultText);
         return this;
     }
 

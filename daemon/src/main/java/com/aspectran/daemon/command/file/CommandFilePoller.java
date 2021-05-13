@@ -13,16 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.daemon.command.polling;
+package com.aspectran.daemon.command.file;
 
 import com.aspectran.daemon.Daemon;
+import com.aspectran.daemon.command.CommandExecutor;
 
 /**
- * The command poller.
+ * The command file poller.
  *
  * <p>Created: 2017. 12. 11.</p>
  */
-public interface CommandPoller {
+public interface CommandFilePoller {
 
     Daemon getDaemon();
 

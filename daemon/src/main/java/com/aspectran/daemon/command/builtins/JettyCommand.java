@@ -22,9 +22,9 @@ import com.aspectran.core.context.expr.ItemEvaluator;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.daemon.command.AbstractCommand;
+import com.aspectran.daemon.command.CommandParameters;
 import com.aspectran.daemon.command.CommandRegistry;
 import com.aspectran.daemon.command.CommandResult;
-import com.aspectran.daemon.command.polling.CommandParameters;
 import com.aspectran.daemon.service.DaemonService;
 import com.aspectran.jetty.JettyServer;
 

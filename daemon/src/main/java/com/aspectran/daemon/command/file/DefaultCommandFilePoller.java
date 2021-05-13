@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.daemon.command.polling;
+package com.aspectran.daemon.command.file;
 
 import com.aspectran.core.context.config.DaemonPollerConfig;
 import com.aspectran.core.util.FilenameUtils;
@@ -23,6 +23,8 @@ import com.aspectran.core.util.apon.AponWriter;
 import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
 import com.aspectran.daemon.Daemon;
+import com.aspectran.daemon.command.CommandExecutor;
+import com.aspectran.daemon.command.CommandParameters;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,9 +39,9 @@ import java.util.Comparator;
  *
  * <p>Created: 2017. 12. 11.</p>
  */
-public class FileCommandPoller extends AbstractCommandPoller {
+public class DefaultCommandFilePoller extends AbstractCommandFilePoller {
 
-    protected final Logger logger = LoggerFactory.getLogger(FileCommandPoller.class);
+    protected final Logger logger = LoggerFactory.getLogger(DefaultCommandFilePoller.class);
 
     private static final String COMMANDS_PATH = "/cmd";
 
@@ -61,7 +63,7 @@ public class FileCommandPoller extends AbstractCommandPoller {
 
     private final File failedDir;
 
-    public FileCommandPoller(Daemon daemon, DaemonPollerConfig pollerConfig) throws Exception {
+    public DefaultCommandFilePoller(Daemon daemon, DaemonPollerConfig pollerConfig) throws Exception {
         super(daemon, pollerConfig);
 
         try {
