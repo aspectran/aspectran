@@ -19,9 +19,9 @@ import com.aspectran.core.context.expr.ItemEvaluation;
 import com.aspectran.core.context.expr.ItemEvaluator;
 import com.aspectran.core.context.rule.ItemRuleList;
 import com.aspectran.daemon.command.AbstractCommand;
+import com.aspectran.daemon.command.CommandParameters;
 import com.aspectran.daemon.command.CommandRegistry;
 import com.aspectran.daemon.command.CommandResult;
-import com.aspectran.daemon.command.polling.CommandParameters;
 import com.aspectran.daemon.service.DaemonService;
 
 public class PollingIntervalCommand extends AbstractCommand {
@@ -41,7 +41,7 @@ public class PollingIntervalCommand extends AbstractCommand {
         DaemonService service = getService();
 
         try {
-            long oldPollingInterval = getCommandRegistry().getDaemon().getCommandPoller().getPollingInterval();
+            long oldPollingInterval = getCommandRegistry().getDaemon().getCommandFilePoller().getPollingInterval();
             long pollingInterval = 0L;
 
             ItemRuleList itemRuleList = parameters.getArgumentItemRuleList();
@@ -51,7 +51,7 @@ public class PollingIntervalCommand extends AbstractCommand {
             }
 
             if (pollingInterval > 0L) {
-                getCommandRegistry().getDaemon().getCommandPoller().setPollingInterval(pollingInterval);
+                getCommandRegistry().getDaemon().getCommandFilePoller().setPollingInterval(pollingInterval);
                 return success(info("The polling interval is changed from " + oldPollingInterval +
                         "ms to " + pollingInterval + " ms"));
             } else if (pollingInterval < 0L) {

@@ -23,8 +23,8 @@ import com.aspectran.core.util.apon.AponReader;
 import com.aspectran.daemon.command.CommandRegistry;
 import com.aspectran.daemon.command.DaemonCommandRegistry;
 import com.aspectran.daemon.command.builtins.QuitCommand;
-import com.aspectran.daemon.command.polling.CommandPoller;
-import com.aspectran.daemon.command.polling.FileCommandPoller;
+import com.aspectran.daemon.command.file.CommandFilePoller;
+import com.aspectran.daemon.command.file.DefaultCommandFilePoller;
 import com.aspectran.daemon.service.DaemonService;
 import com.aspectran.daemon.service.DefaultDaemonService;
 
@@ -43,7 +43,7 @@ public class AbstractDaemon implements Daemon {
 
     private DefaultDaemonService service;
 
-    private CommandPoller commandPoller;
+    private CommandFilePoller commandFilePoller;
 
     private CommandRegistry commandRegistry;
 
@@ -74,8 +74,8 @@ public class AbstractDaemon implements Daemon {
     }
 
     @Override
-    public CommandPoller getCommandPoller() {
-        return commandPoller;
+    public CommandFilePoller getCommandFilePoller() {
+        return commandFilePoller;
     }
 
     @Override
@@ -124,7 +124,7 @@ public class AbstractDaemon implements Daemon {
 
         try {
             DaemonPollerConfig pollerConfig = daemonConfig.touchPollerConfig();
-            this.commandPoller = new FileCommandPoller(this, pollerConfig);
+            this.commandFilePoller = new DefaultCommandFilePoller(this, pollerConfig);
 
             DaemonCommandRegistry commandRegistry = new DaemonCommandRegistry(this);
             commandRegistry.addCommand(daemonConfig.getCommands());
@@ -159,11 +159,11 @@ public class AbstractDaemon implements Daemon {
             Runnable runnable = () -> {
                 if (!active) {
                     active = true;
-                    getCommandPoller().requeue();
+                    getCommandFilePoller().requeue();
                     while (active) {
                         try {
-                            getCommandPoller().polling();
-                            Thread.sleep(getCommandPoller().getPollingInterval());
+                            getCommandFilePoller().polling();
+                            Thread.sleep(getCommandFilePoller().getPollingInterval());
                         } catch (InterruptedException ie) {
                             active = false;
                         }
@@ -196,9 +196,9 @@ public class AbstractDaemon implements Daemon {
     public void destroy() {
         stop();
 
-        if (commandPoller != null) {
-            commandPoller.stop();
-            commandPoller = null;
+        if (commandFilePoller != null) {
+            commandFilePoller.stop();
+            commandFilePoller = null;
         }
         if (service != null) {
             service.stop();

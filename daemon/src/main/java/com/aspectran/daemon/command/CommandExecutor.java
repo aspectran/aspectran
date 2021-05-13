@@ -13,14 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.daemon.command.polling;
+package com.aspectran.daemon.command;
 
 import com.aspectran.core.util.ExceptionUtils;
 import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
 import com.aspectran.daemon.Daemon;
-import com.aspectran.daemon.command.Command;
-import com.aspectran.daemon.command.CommandResult;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
@@ -74,7 +72,7 @@ public class CommandExecutor {
 
         Command command = daemon.getCommandRegistry().getCommand(commandName);
         if (command == null) {
-            parameters.setOutput("No command mapped to '" + commandName + "'");
+            parameters.setResult("No command mapped to '" + commandName + "'");
             try {
                 callback.failure();
             } catch (Exception e) {
@@ -134,15 +132,15 @@ public class CommandExecutor {
         try {
             CommandResult result = command.execute(parameters);
             if (result.isSuccess()) {
-                parameters.setOutput(result.getMessage());
+                parameters.setResult(result.getMessage());
                 return true;
             } else {
-                parameters.setOutput("[FAILED] " + result.getMessage());
+                parameters.setResult("[FAILED] " + result.getMessage());
                 return false;
             }
         } catch (Exception e) {
             logger.error("Error executing daemon command " + command, e);
-            parameters.setOutput("[FAILED] Error executing daemon command " + command +
+            parameters.setResult("[FAILED] Error executing daemon command " + command +
                     System.lineSeparator() + ExceptionUtils.getStacktrace(e));
             return false;
         }
@@ -175,7 +173,7 @@ public class CommandExecutor {
         }
     }
 
-    interface Callback {
+    public interface Callback {
 
         void success();
 

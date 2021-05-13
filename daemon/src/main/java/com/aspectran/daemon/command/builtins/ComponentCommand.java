@@ -35,9 +35,9 @@ import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.apon.AponFormat;
 import com.aspectran.core.util.apon.AponWriter;
 import com.aspectran.daemon.command.AbstractCommand;
+import com.aspectran.daemon.command.CommandParameters;
 import com.aspectran.daemon.command.CommandRegistry;
 import com.aspectran.daemon.command.CommandResult;
-import com.aspectran.daemon.command.polling.CommandParameters;
 import com.aspectran.daemon.service.DaemonService;
 
 import java.io.IOException;
