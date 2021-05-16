@@ -32,7 +32,6 @@ import com.aspectran.demo.chat.model.payload.WelcomeUserPayload;
 import com.aspectran.websocket.jsr356.AspectranConfigurator;
 
 import javax.websocket.CloseReason;
-import javax.websocket.EndpointConfig;
 import javax.websocket.OnClose;
 import javax.websocket.OnError;
 import javax.websocket.OnMessage;

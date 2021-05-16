@@ -24,25 +24,25 @@ public class CommandResult {
 
     private final boolean success;
 
-    private final String message;
+    private final String result;
 
     /**
      * Creates a new instance of the command result.
      *
      * @param success whether the command executed successfully
-     * @param message the message output to the console as a result of an executed command
+     * @param result the output of executed command
      */
-    public CommandResult(boolean success, String message) {
+    public CommandResult(boolean success, String result) {
         this.success = success;
-        this.message = message;
+        this.result = result;
     }
 
     public boolean isSuccess() {
         return success;
     }
 
-    public String getMessage() {
-        return message;
+    public String getResult() {
+        return result;
     }
 
 }

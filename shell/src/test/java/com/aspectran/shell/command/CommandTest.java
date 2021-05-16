@@ -17,7 +17,6 @@ package com.aspectran.shell.command;
 
 import com.aspectran.core.util.PBEncryptionUtils;
 import com.aspectran.shell.command.builtins.HelpCommand;
-import com.aspectran.shell.command.builtins.JettyCommand;
 import com.aspectran.shell.command.builtins.PBDecryptCommand;
 import com.aspectran.shell.command.builtins.PBEncryptCommand;
 import com.aspectran.shell.command.builtins.SysInfoCommand;
@@ -116,13 +115,6 @@ class CommandTest {
         command.printHelp(getConsole());
         CommandLineParser lineParser = new CommandLineParser("test -i=aaa -D=123 -p=bbb -X -Y -Z");
         command.execute(lineParser.parseOptions(command.getOptions()), getConsole());
-    }
-
-    @Test
-    void testJettyCommand() {
-        JettyCommand command = new JettyCommand(interpreter.getCommandRegistry());
-        //getConsole().writeLine(command.getDescriptor().getDescription());
-        command.printHelp(getConsole());
     }
 
 }

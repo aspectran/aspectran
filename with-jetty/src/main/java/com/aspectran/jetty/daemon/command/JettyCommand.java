@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.daemon.command.builtins;
+package com.aspectran.jetty.daemon.command;
 
 import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.component.bean.BeanRegistry;
@@ -26,23 +26,22 @@ import com.aspectran.daemon.command.CommandParameters;
 import com.aspectran.daemon.command.CommandRegistry;
 import com.aspectran.daemon.command.CommandResult;
 import com.aspectran.daemon.service.DaemonService;
-import com.aspectran.undertow.server.TowServer;
-import io.undertow.Version;
+import com.aspectran.jetty.JettyServer;
 
 import java.net.BindException;
 
 /**
- * Use the command 'undertow' to control the Undertow Server.
+ * Use the command 'jetty' to control the Jetty Server.
  */
-public class UndertowCommand extends AbstractCommand {
+public class JettyCommand extends AbstractCommand {
 
     private static final String NAMESPACE = "builtins";
 
-    private static final String COMMAND_NAME = "undertow";
+    private static final String COMMAND_NAME = "jetty";
 
     private final CommandDescriptor descriptor = new CommandDescriptor();
 
-    public UndertowCommand(CommandRegistry registry) {
+    public JettyCommand(CommandRegistry registry) {
         super(registry);
     }
 
@@ -52,10 +51,10 @@ public class UndertowCommand extends AbstractCommand {
 
         try {
             ClassLoader classLoader = service.getActivityContext().getApplicationAdapter().getClassLoader();
-            classLoader.loadClass("com.aspectran.undertow.server.TowServer");
+            classLoader.loadClass("com.aspectran.jetty.JettyServer");
         } catch (ClassNotFoundException e) {
-            return failed("Unable to load class com.aspectran.undertow.server.TowServer " +
-                    "due to missing dependency 'aspectran-with-undertow'", e);
+            return failed("Unable to load class com.aspectran.jetty.JettyServer " +
+                    "due to missing dependency 'aspectran-with-jetty'", e);
         }
 
         try {
@@ -71,23 +70,23 @@ public class UndertowCommand extends AbstractCommand {
             }
 
             if (!StringUtils.hasLength(serverName)) {
-                serverName = "tow.server";
+                serverName = "jetty.server";
             }
 
             BeanRegistry beanRegistry = service.getActivityContext().getBeanRegistry();
 
-            boolean justCreated = !beanRegistry.hasSingleton(TowServer.class, serverName);
+            boolean justCreated = !beanRegistry.hasSingleton(JettyServer.class, serverName);
             if (justCreated) {
                 if ("stop".equals(mode) || "restart".equals(mode)) {
-                    return failed("Undertow server is not running");
+                    return failed("Jetty server is not running");
                 }
             }
 
-            TowServer towServer;
+            JettyServer jettyServer;
             try {
-                towServer = beanRegistry.getBean(TowServer.class, serverName);
+                jettyServer = beanRegistry.getBean(JettyServer.class, serverName);
             } catch (Exception e) {
-                return failed("Undertow server is not available", e);
+                return failed("Jetty server is not available", e);
             }
 
             if (mode == null) {
@@ -96,44 +95,37 @@ public class UndertowCommand extends AbstractCommand {
 
             switch (mode) {
                 case "start":
-                    if (!justCreated && towServer.isRunning()) {
-                        return failed(warn("Undertow server is already running"));
+                    if (!justCreated && jettyServer.isRunning()) {
+                        return failed(warn("Jetty server is already running"));
                     }
                     try {
-                        if (!towServer.isAutoStart()) {
-                            towServer.start();
-                        }
-                        return success(info(getStatus(towServer)));
+                        jettyServer.start();
+                        return success(info(getStatus(jettyServer)));
                     } catch (BindException e) {
-                        return failed("Undertow Server Error - Port already in use", e);
-                    }
-                case "stop":
-                    if (!towServer.isRunning()) {
-                        return failed(warn("Undertow server is not running"));
-                    }
-                    try {
-                        towServer.stop();
-                        beanRegistry.destroySingleton(towServer);
-                        return success(info(getStatus(towServer)));
-                    } catch (Exception e) {
-                        return failed("Undertow server stop failed", e);
+                        return failed("Jetty Server Error - Port already in use", e);
                     }
                 case "restart":
                     try {
-                        if (towServer.isRunning()) {
-                            towServer.stop();
-                            beanRegistry.destroySingleton(towServer);
-                            towServer = beanRegistry.getBean(TowServer.class, serverName);
+                        if (jettyServer.isRunning()) {
+                            jettyServer.stop();
                         }
-                        if (!towServer.isAutoStart()) {
-                            towServer.start();
-                        }
-                        return success(info(getStatus(towServer)));
+                        jettyServer.start();
+                        return success(info(getStatus(jettyServer)));
                     } catch (BindException e) {
-                        return failed("Undertow Server Error - Port already in use");
+                        return failed("Jetty Server Error - Port already in use");
+                    }
+                case "stop":
+                    if (!jettyServer.isRunning()) {
+                        return failed(warn("Jetty server is not running"));
+                    }
+                    try {
+                        jettyServer.stop();
+                        return success(info(getStatus(jettyServer)));
+                    } catch (Exception e) {
+                        return failed("Jetty server stop failed", e);
                     }
                 case "status":
-                    return success(getStatus(towServer));
+                    return success(getStatus(jettyServer));
                 default:
                     return failed(error("Unknown mode '" + mode + "'"));
             }
@@ -142,8 +134,8 @@ public class UndertowCommand extends AbstractCommand {
         }
     }
 
-    private String getStatus(TowServer towServer) {
-        return towServer.getState() + " - " + "Undertow " + Version.getVersionString();
+    private String getStatus(JettyServer jettyServer) {
+        return jettyServer.getState() + " - " + "Jetty " + JettyServer.getVersion();
     }
 
     @Override
@@ -165,7 +157,7 @@ public class UndertowCommand extends AbstractCommand {
 
         @Override
         public String getDescription() {
-            return "Use the command 'undertow' to control the Undertow server";
+            return "Use the command 'jetty' to control the Jetty server";
         }
 
     }

@@ -39,18 +39,6 @@
             <artifactId>aspectran-core</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>aspectran-with-jetty</artifactId>
-            <version>${project.version}</version>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>aspectran-with-undertow</artifactId>
-            <version>${project.version}</version>
-            <optional>true</optional>
-        </dependency>
         <!-- Test dependencies -->
         <dependency>
             <groupId>${project.groupId}</groupId>

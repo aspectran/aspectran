@@ -20,7 +20,6 @@ package com.aspectran.daemon.command;
  */
 public interface Command {
 
-
     /**
      * Returns whether it is a command that must be guaranteed not to be executed
      * at the same time as another command.
