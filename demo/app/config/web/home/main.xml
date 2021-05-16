@@ -9,12 +9,8 @@
 
     <translet name="/">
         <echo id="page">
-            <item name="headline">Welcome to Aspectran Demo</item>
-            <item name="teaser">
-                The "Aspectran Demo" is a reference application created
-                to show how to develop Aspectran applications following
-                the recommended best practices.
-            </item>
+            <item name="headline">Welcome to the Aspectran Demo Site</item>
+            <item name="teaser">This is a website for demonstrating some recommended best practices developed with Aspectran.</item>
             <item name="include">home/main</item>
             <item name="style">plate solid</item>
         </echo>
