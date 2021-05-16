@@ -12,11 +12,6 @@
         |   {{CYAN}}echo2{{fg:reset}}      It accepts parameters and attributes, and print them as is
         |   --- for more examples, type '{{GREEN}}translet -l{{reset}}' ---
         |
-        |{{bold}}The Jetty Server is currently running.{{bold:off}}
-        |Use the command '{{GREEN}}jetty{{reset}}' to control the Jetty Server.
-        |When your Jetty Server is running, point your web browser to:
-        |   {{81}}http://localhost:8088/{{fg:reset}}
-        |
     </description>
 
     <bean id="basePath" class="com.aspectran.core.support.BasePathFactoryBean"/>

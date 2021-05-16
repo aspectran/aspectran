@@ -50,6 +50,18 @@
             <artifactId>jakarta.websocket-api</artifactId>
             <version>2.0.0</version>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>aspectran-daemon</artifactId>
+            <version>${project.version}</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>aspectran-shell</artifactId>
+            <version>${project.version}</version>
+            <optional>true</optional>
+        </dependency>
         <!-- Undertow dependencies -->
         <dependency>
             <groupId>io.undertow</groupId>

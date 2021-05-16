@@ -17,7 +17,6 @@ scheduler: {
 shell: {
     prompt: "jline-shell-test> "
     commands: [
-        com.aspectran.shell.command.builtins.JettyCommand
         com.aspectran.shell.command.builtins.TransletCommand
         com.aspectran.shell.command.builtins.SysInfoCommand
         com.aspectran.shell.command.builtins.PBEncryptCommand

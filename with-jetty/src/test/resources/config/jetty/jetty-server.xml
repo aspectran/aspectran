@@ -103,7 +103,7 @@
         <properties>
             <item name="contextPath">/</item>
             <item name="war">#{basePath}/webroot</item>
-            <item name="persistTempDirectory" valueType="boolean">true</item>
+            <item name="persistTempDirectory" valueType="boolean">false</item>
             <item name="defaultsDescriptor">config/jetty/webdefault.xml</item>
             <item name="sessionHandler">#{jetty.sessionHandler}</item>
             <item name="webSocketInitializer">
