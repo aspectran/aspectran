@@ -130,12 +130,12 @@ public class CommandExecutor {
 
     private boolean execute(Command command, CommandParameters parameters) {
         try {
-            CommandResult result = command.execute(parameters);
-            if (result.isSuccess()) {
-                parameters.setResult(result.getMessage());
+            CommandResult commandResult = command.execute(parameters);
+            if (commandResult.isSuccess()) {
+                parameters.setResult(commandResult.getResult());
                 return true;
             } else {
-                parameters.setResult("[FAILED] " + result.getMessage());
+                parameters.setResult("[FAILED] " + commandResult.getResult());
                 return false;
             }
         } catch (Exception e) {

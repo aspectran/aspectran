@@ -67,7 +67,7 @@ class CommandTest {
 
         Command command = new InvokeActionCommand(commandRegistry);
         CommandResult result = command.execute(parameters);
-        assertEquals("<<command1>>", result.getMessage());
+        assertEquals("<<command1>>", result.getResult());
     }
 
     @Test
