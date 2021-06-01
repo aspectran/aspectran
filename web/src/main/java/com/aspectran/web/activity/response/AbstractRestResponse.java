@@ -18,8 +18,11 @@ package com.aspectran.web.activity.response;
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.util.Assert;
 import com.aspectran.core.util.FilenameUtils;
+import com.aspectran.core.util.LinkedCaseInsensitiveMultiValueMap;
+import com.aspectran.core.util.MultiValueMap;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.web.activity.request.RequestHeaderParser;
+import com.aspectran.web.support.http.HttpHeaders;
 import com.aspectran.web.support.http.HttpMediaTypeNotAcceptableException;
 import com.aspectran.web.support.http.HttpStatus;
 import com.aspectran.web.support.http.MediaType;
@@ -50,7 +53,7 @@ public abstract class AbstractRestResponse implements RestResponse {
 
     private int status;
 
-    private String location;
+    private MultiValueMap<String, String> headers;
 
     public AbstractRestResponse() {
     }
@@ -190,7 +193,7 @@ public abstract class AbstractRestResponse implements RestResponse {
     @Override
     public RestResponse created(String location) {
         this.status = HttpStatus.CREATED.value();
-        this.location = location;
+        setHeader(HttpHeaders.LOCATION, location);
         return this;
     }
 
@@ -307,8 +310,30 @@ public abstract class AbstractRestResponse implements RestResponse {
     }
 
     @Override
-    public String getLocation() {
-        return location;
+    public void setHeader(String name, String value) {
+        if (name == null) {
+            throw new IllegalArgumentException("Header name must not be null");
+        }
+        touchHeaders().set(name, value);
+    }
+
+    @Override
+    public void addHeader(String name, String value) {
+        if (name == null) {
+            throw new IllegalArgumentException("Header name must not be null");
+        }
+        touchHeaders().add(name, value);
+    }
+
+    protected MultiValueMap<String, String> getHeaders() {
+        return headers;
+    }
+
+    private MultiValueMap<String, String> touchHeaders() {
+        if (headers == null) {
+            headers = new LinkedCaseInsensitiveMultiValueMap<>();
+        }
+        return headers;
     }
 
     abstract protected List<MediaType> getSupportedContentTypes();

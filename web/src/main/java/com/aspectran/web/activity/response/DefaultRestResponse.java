@@ -26,7 +26,6 @@ import com.aspectran.core.util.Assert;
 import com.aspectran.core.util.apon.ObjectToAponConverter;
 import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.core.util.json.JsonWriter;
-import com.aspectran.web.support.http.HttpHeaders;
 import com.aspectran.web.support.http.HttpMediaTypeNotAcceptableException;
 import com.aspectran.web.support.http.HttpStatus;
 import com.aspectran.web.support.http.MediaType;
@@ -115,11 +114,18 @@ public class DefaultRestResponse extends AbstractRestResponse {
 
         transformByContentType(activity, encoding, contentType);
 
+        if (getHeaders() != null) {
+            for (Map.Entry<String, List<String>> entry : getHeaders().entrySet()) {
+                String name = entry.getKey();
+                List<String> values = entry.getValue();
+                for (String value : values) {
+                    responseAdapter.addHeader(name, value);
+                }
+            }
+        }
+
         if (getStatus() > 0) {
             responseAdapter.setStatus(getStatus());
-            if (getStatus() == HttpStatus.CREATED.value() && getLocation() != null) {
-                responseAdapter.setHeader(HttpHeaders.LOCATION, getLocation());
-            }
         }
     }
 

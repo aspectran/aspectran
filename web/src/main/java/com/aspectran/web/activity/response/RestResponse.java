@@ -125,6 +125,19 @@ public interface RestResponse extends CustomTransformer {
 
     void setStatus(HttpStatus status);
 
-    String getLocation();
+    /**
+     * Set the given single header value under the given header name.
+     * @param name the header name
+     * @param value the header value to set
+     */
+    void setHeader(String name, String value);
+
+    /**
+     * Add the given single header value to the current list of values
+     * for the given header.
+     * @param name the header name
+     * @param value the header value to be added
+     */
+    void addHeader(String name, String value);
 
 }

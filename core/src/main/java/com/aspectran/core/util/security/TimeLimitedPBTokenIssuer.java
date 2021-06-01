@@ -55,7 +55,7 @@ public class TimeLimitedPBTokenIssuer extends PBTokenIssuer {
             throw new IllegalArgumentException("payload must not be null");
         }
         long time = System.currentTimeMillis() + expirationTime;
-        String combined = Long.toString(time, DIGIT_RADIX) + TOKEN_SEPARATOR + payload.toString();
+        String combined = Long.toString(time, DIGIT_RADIX) + TOKEN_SEPARATOR + payload;
         return PBEncryptionUtils.encrypt(combined);
     }
 
