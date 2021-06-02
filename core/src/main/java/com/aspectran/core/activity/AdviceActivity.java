@@ -277,15 +277,15 @@ public abstract class AdviceActivity extends AbstractActivity {
                     }
                 }
 
-                Object result = action.execute(this);
-                if (!action.isHidden() && result != null && result != ActionResult.NO_RESULT) {
-                    putAdviceResult(aspectAdviceRule, result);
+                Object resultValue = action.execute(this);
+                if (!action.isHidden() && resultValue != null && resultValue != ActionResult.NO_RESULT) {
+                    putAdviceResult(aspectAdviceRule, resultValue);
                     if (action.getActionType() == ActionType.ECHO) {
                         if (action.getActionId() != null) {
-                            getRequestAdapter().setAttribute(action.getActionId(), result);
+                            getRequestAdapter().setAttribute(action.getActionId(), resultValue);
                         } else {
                             @SuppressWarnings("unchecked")
-                            Map<String, Object> echos = (Map<String, Object>)result;
+                            Map<String, Object> echos = (Map<String, Object>)resultValue;
                             for (Map.Entry<String, Object> item : echos.entrySet()) {
                                 getRequestAdapter().setAttribute(item.getKey(), item.getValue());
                             }
