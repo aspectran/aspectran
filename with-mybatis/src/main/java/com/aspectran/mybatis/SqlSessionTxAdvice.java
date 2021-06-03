@@ -117,7 +117,7 @@ public class SqlSessionTxAdvice {
         }
 
         if (logger.isDebugEnabled()) {
-            logger.debug(String.format("Committing transactional %s@%x",
+            logger.debug(String.format("Commit transaction for %s@%x",
                     sqlSession.getClass().getSimpleName(),
                     sqlSession.hashCode()));
         }
@@ -135,7 +135,7 @@ public class SqlSessionTxAdvice {
         }
 
         if (logger.isDebugEnabled()) {
-            ToStringBuilder tsb = new ToStringBuilder(String.format("Committing transactional %s@%x",
+            ToStringBuilder tsb = new ToStringBuilder(String.format("Commit transaction for %s@%x",
                     sqlSession.getClass().getSimpleName(),sqlSession.hashCode()));
             tsb.append("force", force);
             logger.debug(tsb.toString());
@@ -155,7 +155,7 @@ public class SqlSessionTxAdvice {
         }
 
         if (logger.isDebugEnabled()) {
-            logger.debug(String.format("Rolling back transactional %s@%x",
+            logger.debug(String.format("Rollback transaction for %s@%x",
                     sqlSession.getClass().getSimpleName(),
                     sqlSession.hashCode()));
         }
@@ -174,7 +174,7 @@ public class SqlSessionTxAdvice {
         }
 
         if (logger.isDebugEnabled()) {
-            ToStringBuilder tsb = new ToStringBuilder(String.format("Rolling back transactional %s@%x",
+            ToStringBuilder tsb = new ToStringBuilder(String.format("Rollback transaction for %s@%x",
                     sqlSession.getClass().getSimpleName(),sqlSession.hashCode()));
             tsb.append("force", force);
             logger.debug(tsb.toString());
