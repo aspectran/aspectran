@@ -412,7 +412,8 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
         if (value.indexOf(DOUBLE_QUOTE_CHAR) >= 0 ||
                 value.indexOf(SINGLE_QUOTE_CHAR) >= 0 ||
                 value.startsWith(SPACE) ||
-                value.endsWith(SPACE)) {
+                value.endsWith(SPACE) ||
+                value.contains(AponFormat.NEW_LINE)) {
             writer.write(DOUBLE_QUOTE_CHAR);
             writer.write(escape(value));
             writer.write(DOUBLE_QUOTE_CHAR);
@@ -498,7 +499,7 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
     }
 
     private void newLine() throws IOException {
-        writer.write(NEW_LINE);
+        writer.write(SYSTEM_NEW_LINE);
     }
 
     private void indent() throws IOException {

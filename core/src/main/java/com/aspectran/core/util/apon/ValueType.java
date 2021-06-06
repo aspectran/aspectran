@@ -17,7 +17,7 @@ package com.aspectran.core.util.apon;
 
 /**
  * Defines the type of the parameter value.
- * 
+ *
  * <p>Created: 2008. 03. 29 PM 3:47:00</p>
  */
 public enum ValueType {
@@ -82,10 +82,10 @@ public enum ValueType {
     public static ValueType determineValueType(Object value) {
         ValueType type;
         if (value instanceof CharSequence) {
-            if (value.toString().indexOf(AponFormat.NEW_LINE_CHAR) == -1) {
-                type = ValueType.STRING;
-            } else {
+            if (value.toString().contains(AponFormat.NEW_LINE)) {
                 type = ValueType.TEXT;
+            } else {
+                type = ValueType.STRING;
             }
         } else if (value instanceof Character) {
             type = ValueType.STRING;

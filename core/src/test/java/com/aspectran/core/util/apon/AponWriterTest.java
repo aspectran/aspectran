@@ -109,7 +109,7 @@ class AponWriterTest {
     @Test
     void stringWithNewlinesWriteTest() throws IOException {
         String input = "1\n2\n3";
-        input = input.replace("\n", AponFormat.NEW_LINE);
+        input = input.replace("\n", AponFormat.SYSTEM_NEW_LINE);
 
         Parameters parameters = new VariableParameters();
         parameters.putValue("textParam", input);

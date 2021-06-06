@@ -45,7 +45,9 @@ public class AponFormat {
 
     public static final char NEW_LINE_CHAR = '\n';
 
-    public static final String NEW_LINE = System.lineSeparator();
+    public static final String NEW_LINE = "\n";
+
+    public static final String SYSTEM_NEW_LINE = System.lineSeparator();
 
     protected static final String DEFAULT_INDENT_STRING = "  ";
 

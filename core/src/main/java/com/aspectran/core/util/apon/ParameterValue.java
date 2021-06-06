@@ -202,7 +202,7 @@ public class ParameterValue implements Parameter {
     public void putValue(Object value) {
         if (value != null) {
             if (valueTypeFixed) {
-                value = fitValue(value);
+                value = determineValue(value);
             } else {
                 determineValueType(value);
             }
@@ -454,12 +454,12 @@ public class ParameterValue implements Parameter {
 
     private void determineValueType(Object value) {
         if (valueType == ValueType.STRING) {
-            if (value.toString().indexOf(AponFormat.NEW_LINE_CHAR) != -1) {
+            if (value.toString().contains(AponFormat.NEW_LINE)) {
                 valueType = ValueType.TEXT;
             }
         } else if (valueType == ValueType.VARIABLE) {
             if (value instanceof CharSequence) {
-                if (value.toString().indexOf(AponFormat.NEW_LINE_CHAR) != -1) {
+                if (value.toString().contains(AponFormat.NEW_LINE)) {
                     valueType = ValueType.TEXT;
                 } else {
                     valueType = ValueType.STRING;
@@ -470,11 +470,9 @@ public class ParameterValue implements Parameter {
         }
     }
 
-    private Object fitValue(Object value) {
-        if (valueType == ValueType.STRING) {
-            if (!(value instanceof String)) {
-                return value.toString();
-            }
+    private Object determineValue(Object value) {
+        if (valueType == ValueType.STRING || valueType == ValueType.TEXT) {
+            return value.toString();
         } else if (valueType == ValueType.BOOLEAN) {
             if (!(value instanceof Boolean)) {
                 return Boolean.valueOf(value.toString());

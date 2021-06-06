@@ -56,7 +56,7 @@ public class TextStyler {
             char c = text.charAt(end);
             if (start == 0 && c == AponFormat.TEXT_LINE_START) {
                 if (line > 0) {
-                    sb.append(AponFormat.NEW_LINE);
+                    sb.append(AponFormat.SYSTEM_NEW_LINE);
                 }
                 start = end + 1;
                 line++;

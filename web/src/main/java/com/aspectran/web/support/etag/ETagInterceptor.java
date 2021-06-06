@@ -44,7 +44,7 @@ public class ETagInterceptor {
      * Pattern matching ETag multiple field values in headers such as "If-Match", "If-None-Match".
      * @see <a href="https://tools.ietf.org/html/rfc7232#section-2.3">Section 2.3 of RFC 7232</a>
      */
-    private static final Pattern ETAG_HEADER_VALUE_PATTERN = Pattern.compile("\\*|\\s*((W\\/)?(\"[^\"]*\"))\\s*,?");
+    private static final Pattern ETAG_HEADER_VALUE_PATTERN = Pattern.compile("\\*|\\s*((W/)?(\"[^\"]*\"))\\s*,?");
 
     private final ETagTokenFactory tokenFactory;
 
@@ -126,15 +126,15 @@ public class ETagInterceptor {
                 }
             }
         }
-
         return false;
     }
 
     private String padETagTokenIfNecessary(String token) {
         if ((token.startsWith("\"") || token.startsWith("W/\"")) && token.endsWith("\"")) {
             return token;
+        } else {
+            return "\"" + token + "\"";
         }
-        return "\"" + token + "\"";
     }
 
 }

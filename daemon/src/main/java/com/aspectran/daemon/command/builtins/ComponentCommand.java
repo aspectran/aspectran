@@ -193,7 +193,7 @@ public class ComponentCommand extends AbstractCommand {
             AspectParameters aspectParameters = RulesToParameters.toAspectParameters(aspectRule);
             if (count > 0) {
                 writer.write("----------------------------------------------------------------------------");
-                writer.write(AponFormat.NEW_LINE);
+                writer.write(AponFormat.SYSTEM_NEW_LINE);
             }
             AponWriter aponWriter = new AponWriter(writer).nullWritable(false);
             aponWriter.write(aspectParameters);
@@ -318,7 +318,7 @@ public class ComponentCommand extends AbstractCommand {
             TransletParameters transletParameters = RulesToParameters.toTransletParameters(transletRule);
             if (count > 0) {
                 writer.write("----------------------------------------------------------------------------");
-                writer.write(AponFormat.NEW_LINE);
+                writer.write(AponFormat.SYSTEM_NEW_LINE);
             }
             AponWriter aponWriter = new AponWriter(writer).nullWritable(false);
             aponWriter.write(transletParameters);
@@ -376,7 +376,7 @@ public class ComponentCommand extends AbstractCommand {
                 ScheduleParameters scheduleParameters = RulesToParameters.toScheduleParameters(scheduleRule);
                 if (count > 0) {
                     writer.write("----------------------------------------------------------------------------");
-                    writer.write(AponFormat.NEW_LINE);
+                    writer.write(AponFormat.SYSTEM_NEW_LINE);
                 }
                 AponWriter aponWriter = new AponWriter(writer).nullWritable(false);
                 aponWriter.write(scheduleParameters);
@@ -410,7 +410,7 @@ public class ComponentCommand extends AbstractCommand {
                             ScheduleParameters scheduleParameters = RulesToParameters.toScheduleParameters(jobRule.getScheduleRule(), jobRule);
                             if (count > 0) {
                                 writer.write("----------------------------------------------------------------------------");
-                                writer.write(AponFormat.NEW_LINE);
+                                writer.write(AponFormat.SYSTEM_NEW_LINE);
                             }
                             AponWriter aponWriter = new AponWriter(writer).nullWritable(false);
                             aponWriter.write(scheduleParameters);
