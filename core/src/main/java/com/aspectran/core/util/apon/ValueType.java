@@ -81,10 +81,10 @@ public enum ValueType {
     public static ValueType determineValueType(Object value) {
         ValueType type;
         if (value instanceof CharSequence) {
-            if (value.toString().indexOf(AponFormat.NEW_LINE_CHAR) == -1) {
-                type = ValueType.STRING;
-            } else {
+            if (value.toString().contains(AponFormat.NEW_LINE)) {
                 type = ValueType.TEXT;
+            } else {
+                type = ValueType.STRING;
             }
         } else if (value instanceof Character) {
             type = ValueType.STRING;

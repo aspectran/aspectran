@@ -76,7 +76,7 @@ class JsonWriterTest {
                 "      \"name\": \"Guest1\",\n" + "      \"age\": 21,\n" + "      \"approved\": true\n" + "    },\n" +
                 "    {\n" + "      \"id\": \"guest-2\",\n" + "      \"name\": \"Guest2\",\n" + "      \"age\": 22,\n" +
                 "      \"approved\": true\n" + "    }\n" + "  ],\n" + "  \"emptyMap\": {\n" + "  }\n" + "}"
-                .replace("\n", AponFormat.NEW_LINE);
+                .replace("\n", AponFormat.SYSTEM_NEW_LINE);
 
         assertEquals(expected, result.trim());
     }
@@ -103,7 +103,7 @@ class JsonWriterTest {
 
         String expected = "{\n" + "  \"item1\": 1,\n" + "  \"item2\": 2,\n" + "  \"item3\": {\n" +
                 "    \"item11\": 11,\n" + "    \"item22\": 22\n" + "  }\n" + "}"
-                .replace("\n", AponFormat.NEW_LINE);
+                .replace("\n", AponFormat.SYSTEM_NEW_LINE);
 
         assertEquals(expected, result.trim());
     }
@@ -126,7 +126,7 @@ class JsonWriterTest {
         // System.out.println(result);
 
         String expected = "{\n" + "  \"localDate\": \"2019-11-19\",\n" + "  \"localDateTime\": \"2019-11-19\"\n" + "}"
-                .replace("\n", AponFormat.NEW_LINE);
+                .replace("\n", AponFormat.SYSTEM_NEW_LINE);
 
         assertEquals(expected, result.trim());
     }
@@ -157,7 +157,7 @@ class JsonWriterTest {
 
         String expected = "{\n" + "  \"key1\": \"value\",\n" + "  \"key2\": \"1234\",\n" + "  \"json\": {\n" +
                 "    \"key1\": \"value\",\n" + "    \"key2\": \"1234\"\n" + "  },\n" + "  \"array\": [1, 2, 3]\n" + "}"
-                .replace("\n", AponFormat.NEW_LINE);
+                .replace("\n", AponFormat.SYSTEM_NEW_LINE);
 
         assertEquals(expected, writer.toString().trim());
     }

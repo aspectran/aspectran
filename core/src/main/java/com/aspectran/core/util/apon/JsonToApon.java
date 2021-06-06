@@ -46,28 +46,28 @@ public class JsonToApon {
         return from(new StringReader(json), container);
     }
 
-    public static Parameters from(Reader in) throws IOException {
-        return from(in, new VariableParameters());
+    public static Parameters from(Reader reader) throws IOException {
+        return from(reader, new VariableParameters());
     }
 
-    public static <T extends Parameters> T from(Reader in, Class<T> requiredType) throws IOException {
+    public static <T extends Parameters> T from(Reader reader, Class<T> requiredType) throws IOException {
         T container = ClassUtils.createInstance(requiredType);
-        from(in, container);
+        from(reader, container);
         return container;
     }
 
-    public static <T extends Parameters> T from(Reader in, T container) throws IOException {
-        if (in == null) {
-            throw new IllegalArgumentException("in must not be null");
+    public static <T extends Parameters> T from(Reader reader, T container) throws IOException {
+        if (reader == null) {
+            throw new IllegalArgumentException("reader must not be null");
         }
         if (container == null) {
             throw new IllegalArgumentException("container must not be null");
         }
 
         try {
-            JsonReader reader = new JsonReader(in);
+            JsonReader jsonReader = new JsonReader(reader);
             String name = (container instanceof ArrayParameters ? ArrayParameters.NONAME : null);
-            convert(reader, container, name);
+            read(jsonReader, container, name);
         } catch (Exception e) {
             throw new IOException("Failed to convert JSON to APON", e);
         }
@@ -75,7 +75,7 @@ public class JsonToApon {
         return container;
     }
 
-    private static void convert(JsonReader reader, Parameters container, String name) throws IOException {
+    private static void read(JsonReader reader, Parameters container, String name) throws IOException {
         switch (reader.peek()) {
             case BEGIN_OBJECT:
                 reader.beginObject();
@@ -83,14 +83,14 @@ public class JsonToApon {
                     container = container.newParameters(name);
                 }
                 while (reader.hasNext()) {
-                    convert(reader, container, reader.nextName());
+                    read(reader, container, reader.nextName());
                 }
                 reader.endObject();
                 return;
             case BEGIN_ARRAY:
                 reader.beginArray();
                 while (reader.hasNext()) {
-                    convert(reader, container, name);
+                    read(reader, container, name);
                 }
                 reader.endArray();
                 return;

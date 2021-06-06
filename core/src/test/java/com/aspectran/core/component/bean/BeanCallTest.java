@@ -85,10 +85,10 @@ class BeanCallTest {
         assertEquals("TEMPLATE-3", result2);
 
         String result4 = templateRenderer.render("aponStyle");
-        assertEquals("line-1\nline-2\nline-3".replace("\n", AponFormat.NEW_LINE), result4);
+        assertEquals("line-1\nline-2\nline-3".replace("\n", AponFormat.SYSTEM_NEW_LINE), result4);
 
         String result5 = templateRenderer.render("compactStyle");
-        assertEquals("line-1\nline-2\nline-3".replace("\n", AponFormat.NEW_LINE), result5);
+        assertEquals("line-1\nline-2\nline-3".replace("\n", AponFormat.SYSTEM_NEW_LINE), result5);
 
         String result6 = templateRenderer.render("compressedStyle");
         assertEquals("line-1line-2line-3", result6);

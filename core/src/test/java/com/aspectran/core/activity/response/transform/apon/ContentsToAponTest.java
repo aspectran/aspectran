@@ -46,7 +46,7 @@ class ContentsToAponTest {
 
         String apon = "action1: {\n  result1: value1\n  result2: value2\n}";
 
-        String s1 = apon.replace("\n", AponFormat.NEW_LINE);
+        String s1 = apon.replace("\n", AponFormat.SYSTEM_NEW_LINE);
         String s2 = ps.toString().trim();
 
         assertEquals(s1, s2);
@@ -77,7 +77,7 @@ class ContentsToAponTest {
 
         String apon = "action0: value0\naction1: value3";
 
-        String s1 = apon.replace("\n", AponFormat.NEW_LINE);
+        String s1 = apon.replace("\n", AponFormat.SYSTEM_NEW_LINE);
         String s2 = ps.toString().trim();
 
         assertEquals(s1, s2);
@@ -109,7 +109,7 @@ class ContentsToAponTest {
 
         String apon = "content1: {\n  action0: value0\n" + "  action1: {\n" + "    result1: value1\n" + "    result2: value2\n" + "  }\n" + "  action3: value3\n" + "}";
 
-        String s1 = apon.replace("\n", AponFormat.NEW_LINE);
+        String s1 = apon.replace("\n", AponFormat.SYSTEM_NEW_LINE);
         String s2 = ps.toString().trim();
 
         assertEquals(s1, s2);
@@ -160,7 +160,7 @@ class ContentsToAponTest {
 
         String apon = "content1: {\n  action0: value0\n" + "  action1: {\n" + "    result1: value1\n" + "    result2: value2\n" + "  }\n" + "  action3: value3\n" + "}\n" + "content2: {\n" + "  action0: value0\n" + "  action1: {\n" + "    result1: value1\n" + "    result2: value2\n" + "  }\n" + "  action3: value3\n" + "}";
 
-        String s1 = apon.replace("\n", AponFormat.NEW_LINE);
+        String s1 = apon.replace("\n", AponFormat.SYSTEM_NEW_LINE);
         String s2 = ps.toString().trim();
 
         assertEquals(s1, s2);
@@ -185,7 +185,7 @@ class ContentsToAponTest {
 
         String apon = "key1: value1\nkey2: value2\n" + "key3: value3";
 
-        String s1 = apon.replace("\n", AponFormat.NEW_LINE);
+        String s1 = apon.replace("\n", AponFormat.SYSTEM_NEW_LINE);
         String s2 = ps.toString().trim();
 
         assertEquals(s1, s2);
@@ -219,7 +219,7 @@ class ContentsToAponTest {
 
         String apon = "content1: {\n  key1: value1\n  key2: value2\n  key3: value3\n  action1: {\n    result2: value2\n  }\n  action2: value3\n}";
 
-        String s1 = apon.replace("\n", AponFormat.NEW_LINE);
+        String s1 = apon.replace("\n", AponFormat.SYSTEM_NEW_LINE);
         String s2 = ps.toString().trim();
 
         assertEquals(s1, s2);

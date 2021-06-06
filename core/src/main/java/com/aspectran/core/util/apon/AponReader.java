@@ -391,7 +391,7 @@ public class AponReader extends AponFormat implements Closeable {
                 if (sb == null) {
                     sb = new StringBuilder();
                 } else {
-                    sb.append(NEW_LINE);
+                    sb.append(SYSTEM_NEW_LINE);
                 }
                 str = line.substring(line.indexOf(TEXT_LINE_START) + 1);
                 if (str.length() > 0) {

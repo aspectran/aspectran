@@ -45,7 +45,7 @@ class JsonToAponTest {
 
         Parameters ps = JsonToApon.from(sb.toString(), new ArrayParameters());
 
-        String s1 = apon.replace("\n", AponFormat.NEW_LINE);
+        String s1 = apon.replace("\n", AponFormat.SYSTEM_NEW_LINE);
         String s2 = ps.toString().trim();
 
         assertEquals(s1, s2);
@@ -58,10 +58,50 @@ class JsonToAponTest {
 
         Parameters ps = JsonToApon.from(json);
 
-        String s1 = apon.replace("\n", AponFormat.NEW_LINE);
+        String s1 = apon.replace("\n", AponFormat.SYSTEM_NEW_LINE);
         String s2 = ps.toString().trim();
 
         assertEquals(s1, s2);
+    }
+
+    @Test
+    void testConvertJsonToApon3() throws IOException {
+        String json = "{\"message\": \"11\\n22\"}";
+
+        Parameters messagePayload = JsonToApon.from(json, MessagePayload.class);
+        String result1 = messagePayload.toString();
+
+        MessagePayload messagePayload2 = new MessagePayload();
+        AponReader reader = new AponReader(messagePayload.toString());
+        Parameters parameters = reader.read(messagePayload2);
+        String result2 = messagePayload.toString();
+
+        assertEquals(result1, result2);
+    }
+
+    public static class MessagePayload extends AbstractParameters {
+
+        private static final ParameterKey message;
+
+        private static final ParameterKey[] parameterKeys;
+
+        static {
+            message = new ParameterKey("message", ValueType.STRING);
+            parameterKeys = new ParameterKey[] { message };
+        }
+
+        public MessagePayload() {
+            super(parameterKeys);
+        }
+
+        public String getContent() {
+            return getString(message);
+        }
+
+        public void setContent(String content) {
+            putValue(MessagePayload.message, content);
+        }
+
     }
 
 }
