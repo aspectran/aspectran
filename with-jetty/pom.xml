@@ -31,7 +31,7 @@
 
     <properties>
         <main.basedir>${project.parent.basedir}</main.basedir>
-        <jetty.version>9.4.41.v20210516</jetty.version>
+        <jetty.version>9.4.42.v20210604</jetty.version>
     </properties>
 
     <dependencies>
