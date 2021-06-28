@@ -979,8 +979,10 @@ public class AnnotatedConfigParser {
 
         StringBuilder sb = new StringBuilder();
         for (int i = nameArray.length - 1; i >= 0; i--) {
-            sb.append(ActivityContext.NAME_SEPARATOR_CHAR);
-            sb.append(nameArray[i]);
+            if (nameArray[i] != null) {
+                sb.append(ActivityContext.NAME_SEPARATOR_CHAR);
+                sb.append(nameArray[i]);
+            }
         }
         return sb.toString();
     }
