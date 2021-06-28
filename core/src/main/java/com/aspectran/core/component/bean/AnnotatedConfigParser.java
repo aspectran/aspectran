@@ -592,10 +592,6 @@ public class AnnotatedConfigParser {
             transletName = StringUtils.emptyToNull(requestToDeleteAnno.value());
             allowedMethods = new MethodType[] { MethodType.DELETE };
         }
-        if (transletName == null) {
-            transletName = method.getName();
-            transletName = transletName.replace('_', ActivityContext.NAME_SEPARATOR_CHAR);
-        }
         if (nameArray != null) {
             transletName = applyNamespaceForTranslet(nameArray, transletName);
         }
