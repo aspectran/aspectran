@@ -560,9 +560,8 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public <T extends Parameters> T getParameters(ParameterKey parameterKey) {
-        return (T)getParameters(parameterKey.getName());
+        return getParameters(parameterKey.getName());
     }
 
     @Override
