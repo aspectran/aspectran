@@ -222,7 +222,7 @@ public abstract class AdviceActivity extends AbstractActivity {
 
     @Override
     public void executeAdvice(AspectAdviceRule aspectAdviceRule, boolean throwable) throws AspectAdviceException {
-        if (!isAcceptable(aspectAdviceRule.getAspectRule()) || aspectAdviceRule.getAspectRule().isDisabled()) {
+        if (aspectAdviceRule.getAspectRule().isDisabled() || !isAcceptable(aspectAdviceRule.getAspectRule())) {
             touchExecutedAspectAdviceRules().add(aspectAdviceRule);
             return;
         }
