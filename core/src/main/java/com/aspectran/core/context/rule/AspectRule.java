@@ -94,7 +94,7 @@ public class AspectRule implements BeanReferenceable {
 
     private Boolean isolated;
 
-    private Boolean disabled;
+    private volatile Boolean disabled;
 
     private JoinpointRule joinpointRule;
 
