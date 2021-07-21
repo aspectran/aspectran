@@ -30,7 +30,7 @@ import com.aspectran.web.activity.response.RestResponse;
 
 import java.util.List;
 
-@Component("/examples/gs-rest-service")
+@Component("/examples/gs-rest-service/customers")
 @Bean
 public class CustomerActivity {
 
@@ -41,14 +41,14 @@ public class CustomerActivity {
         this.repository = repository;
     }
 
-    @RequestToGet("/customers")
+    @RequestToGet
     @Description("Returns list of all customers in JSON format.")
     public RestResponse getCustomerList() {
         List<Customer> list = repository.getCustomerList();
         return new DefaultRestResponse("customers", list).ok();
     }
 
-    @RequestToGet("/customers/${id:guest}")
+    @RequestToGet("/${id:guest}")
     @Description("Retrieves a customer by ID.")
     public RestResponse getCustomer(@Required Integer id) {
         Customer customer = repository.getCustomer(id);
@@ -61,7 +61,7 @@ public class CustomerActivity {
         return response;
     }
 
-    @RequestToPost("/customers")
+    @RequestToPost
     @Description("Add a new customer to the repository.")
     public RestResponse addCustomer(Translet translet, @Required Customer customer) {
         int id = repository.insertCustomer(customer);
@@ -70,7 +70,7 @@ public class CustomerActivity {
                 .created(resourceUri);
     }
 
-    @RequestToPut("/customers/${id}")
+    @RequestToPut("/${id}")
     @Description("Updates an existing customer in the repository with form data.")
     public RestResponse updateCustomer(@Required Customer customer) {
         boolean updated = repository.updateCustomer(customer);
@@ -83,7 +83,7 @@ public class CustomerActivity {
         return response;
     }
 
-    @RequestToDelete("/customers/${id}")
+    @RequestToDelete("/${id}")
     @Description("Deletes a customer by ID.")
     public RestResponse deleteCustomer(@Required Integer id) {
         boolean deleted = repository.deleteCustomer(id);
@@ -96,7 +96,7 @@ public class CustomerActivity {
         return response;
     }
 
-    @RequestToPut("/customers/${id}/attributes")
+    @RequestToPut("/${id}/attributes")
     @Description("Updates an existing customer's attributes.")
     public RestResponse updateAttributes(@Required Integer id, @Required Boolean approved) {
         boolean updated = repository.approve(id, approved);
