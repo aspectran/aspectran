@@ -592,10 +592,6 @@ public class AnnotatedConfigParser {
             transletName = StringUtils.emptyToNull(requestToDeleteAnno.value());
             allowedMethods = new MethodType[] { MethodType.DELETE };
         }
-        if (transletName == null) {
-            transletName = method.getName();
-            transletName = transletName.replace('_', ActivityContext.NAME_SEPARATOR_CHAR);
-        }
         if (nameArray != null) {
             transletName = applyNamespaceForTranslet(nameArray, transletName);
         }
@@ -983,8 +979,11 @@ public class AnnotatedConfigParser {
 
         StringBuilder sb = new StringBuilder();
         for (int i = nameArray.length - 1; i >= 0; i--) {
-            sb.append(ActivityContext.NAME_SEPARATOR_CHAR);
-            sb.append(nameArray[i]);
+            if (nameArray[i] != null) {
+                sb.append(nameArray[i]);
+                sb.append(ActivityContext.NAME_SEPARATOR_CHAR);
+                sb.append(nameArray[i]);
+            }
         }
         return sb.toString();
     }
