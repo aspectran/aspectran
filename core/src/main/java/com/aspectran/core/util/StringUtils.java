@@ -104,15 +104,15 @@ public class StringUtils {
      * StringUtils.hasText("12345") = true
      * StringUtils.hasText(" 12345 ") = true
      * </pre>
-     * @param str the {@code CharSequence} to check (may be {@code null})
+     * @param chars the {@code CharSequence} to check (may be {@code null})
      * @return {@code true} if the {@code CharSequence} is not {@code null},
      *      its length is greater than 0, and it does not contain whitespace only
      * @see #hasLength(String)
      * @see #hasText(CharSequence)
      * @see Character#isWhitespace
      */
-    public static boolean hasText(CharSequence str) {
-        return (str != null && str.length() > 0 && containsText(str));
+    public static boolean hasText(CharSequence chars) {
+        return (chars != null && chars.length() > 0 && containsText(chars));
     }
 
     /**
@@ -131,10 +131,10 @@ public class StringUtils {
         return (str != null && !str.isEmpty() && containsText(str));
     }
 
-    private static boolean containsText(CharSequence str) {
-        int strLen = str.length();
+    private static boolean containsText(CharSequence chars) {
+        int strLen = chars.length();
         for (int i = 0; i < strLen; i++) {
-            if (!Character.isWhitespace(str.charAt(i))) {
+            if (!Character.isWhitespace(chars.charAt(i))) {
                 return true;
             }
         }
@@ -143,18 +143,18 @@ public class StringUtils {
 
     /**
      * Check whether the given {@code CharSequence} contains any whitespace characters.
-     * @param str the {@code CharSequence} to check (may be {@code null})
+     * @param chars the {@code CharSequence} to check (may be {@code null})
      * @return {@code true} if the {@code CharSequence} is not empty and
      *      contains at least 1 whitespace character
      * @see Character#isWhitespace
      */
-    public static boolean containsWhitespace(CharSequence str) {
-        if (!hasLength(str)) {
+    public static boolean containsWhitespace(CharSequence chars) {
+        if (!hasLength(chars)) {
             return false;
         }
-        int strLen = str.length();
+        int strLen = chars.length();
         for (int i = 0; i < strLen; i++) {
-            if (Character.isWhitespace(str.charAt(i))) {
+            if (Character.isWhitespace(chars.charAt(i))) {
                 return true;
             }
         }
@@ -252,15 +252,15 @@ public class StringUtils {
     /**
      * Trim all occurrences of the supplied leading character from the given {@code String}.
      * @param str the {@code String} to check
-     * @param leadingCharacter the leading character to be trimmed
+     * @param leadingChar the leading character to be trimmed
      * @return the trimmed {@code String}
      */
-    public static String trimLeadingCharacter(String str, char leadingCharacter) {
+    public static String trimLeadingCharacter(String str, char leadingChar) {
         if (!hasLength(str)) {
             return str;
         }
         StringBuilder buf = new StringBuilder(str);
-        while (buf.length() > 0 && buf.charAt(0) == leadingCharacter) {
+        while (buf.length() > 0 && buf.charAt(0) == leadingChar) {
             buf.deleteCharAt(0);
         }
         return buf.toString();
@@ -269,15 +269,15 @@ public class StringUtils {
     /**
      * Trim all occurrences of the supplied trailing character from the given {@code String}.
      * @param str the {@code String} to check
-     * @param trailingCharacter the trailing character to be trimmed
+     * @param trailingChar the trailing character to be trimmed
      * @return the trimmed {@code String}
      */
-    public static String trimTrailingCharacter(String str, char trailingCharacter) {
+    public static String trimTrailingCharacter(String str, char trailingChar) {
         if (!hasLength(str)) {
             return str;
         }
         StringBuilder buf = new StringBuilder(str);
-        while (buf.length() > 0 && buf.charAt(buf.length() - 1) == trailingCharacter) {
+        while (buf.length() > 0 && buf.charAt(buf.length() - 1) == trailingChar) {
             buf.deleteCharAt(buf.length() - 1);
         }
         return buf.toString();
@@ -338,11 +338,11 @@ public class StringUtils {
      * Replace all occurrences of a substring within a string with another string.
      * @param str {@code String} to examine
      * @param search {@code String} to replace
-     * @param replace {@code String} to insert
+     * @param replacement {@code String} to insert
      * @return a {@code String} with the replacements
      */
-    public static String replace(String str, String search, String replace) {
-        if (str == null || search == null || replace == null) {
+    public static String replace(String str, String search, String replacement) {
+        if (str == null || search == null || replacement == null) {
             return str;
         }
         StringBuilder sb = new StringBuilder();
@@ -352,7 +352,7 @@ public class StringUtils {
         int index;
         while ((index = str.indexOf(search, oldIndex)) >= 0) {
             sb.append(str, oldIndex, index);
-            sb.append(replace);
+            sb.append(replacement);
             oldIndex = index + searchLen;
         }
         if (oldIndex < stringLen) {
@@ -364,39 +364,56 @@ public class StringUtils {
     /**
      * Replace all occurrences of a substring within a string with another string.
      * @param str {@code String} to examine
-     * @param search {@code String} array to replace
-     * @param replace {@code String} array to insert
+     * @param searchList {@code String} array to replace
+     * @param replacementList {@code String} array to insert
      * @return a {@code String} with the replacements
      */
-    public static String replace(String str, String[] search, String[] replace) {
-        if (str == null || search == null || replace == null) {
+    public static String replace(String str, String[] searchList, String[] replacementList) {
+        if (str == null || searchList == null || replacementList == null) {
             return str;
         }
         StringBuilder sb = new StringBuilder(str);
-        int loop = Math.min(search.length, replace.length);
+        int loop = Math.min(searchList.length, replacementList.length);
         int start = 0;
         int end;
         int searchLen;
         int replaceLen;
         for (int i = 0; i < loop; i++) {
-            if (search[i] == null || replace[i] == null) {
+            if (searchList[i] == null || replacementList[i] == null) {
                 continue;
             }
-            searchLen = search[i].length();
-            replaceLen = replace[i].length();
+            searchLen = searchList[i].length();
+            replaceLen = replacementList[i].length();
             while (true) {
                 if (sb.length() == 0) {
                     break;
                 }
-                start = sb.indexOf(search[i], start + replaceLen);
+                start = sb.indexOf(searchList[i], start + replaceLen);
                 if (start == -1) {
                     break;
                 }
                 end = start + searchLen;
-                sb.replace(start, end, replace[i]);
+                sb.replace(start, end, replacementList[i]);
             }
         }
         return sb.toString();
+    }
+
+    /**
+     * Replace last occurrence of a string.
+     * @param str {@code String} to examine
+     * @param searchStr {@code String} to replace
+     * @param replacement {@code String} to insert
+     * @return a {@code String} with the replacements
+     */
+    public static String replaceLast(String str, String searchStr, String replacement) {
+        int pos = str.lastIndexOf(searchStr);
+        if (pos > -1) {
+            return str.substring(0, pos) + replacement +
+                    str.substring(pos + searchStr.length());
+        } else {
+            return str;
+        }
     }
 
     /**
@@ -510,18 +527,18 @@ public class StringUtils {
      * Returns the number of times the specified string was found
      * in the target string, or 0 if there is no specified string.
      * @param str the target string
-     * @param keyw the string to find
+     * @param searchStr the string to find
      * @return the number of times the specified string was found
      */
-    public static int search(String str, String keyw) {
+    public static int search(String str, String searchStr) {
         int strLen = str.length();
-        int keywLen = keyw.length();
+        int keywLen = searchStr.length();
         int pos = 0;
         int cnt = 0;
         if (keywLen == 0) {
             return 0;
         }
-        while ((pos = str.indexOf(keyw, pos)) != -1) {
+        while ((pos = str.indexOf(searchStr, pos)) != -1) {
             pos += keywLen;
             cnt++;
             if (pos >= strLen) {
@@ -536,11 +553,11 @@ public class StringUtils {
      * in the target string, or 0 if there is no specified string.
      * When searching for the specified string, it is not case-sensitive.
      * @param str the target string
-     * @param keyw the string to find
+     * @param searchStr the string to find
      * @return the number of times the specified string was found
      */
-    public static int searchIgnoreCase(String str, String keyw) {
-        return search(str.toLowerCase(), keyw.toLowerCase());
+    public static int searchIgnoreCase(String str, String searchStr) {
+        return search(str.toLowerCase(), searchStr.toLowerCase());
     }
 
     /**
@@ -565,12 +582,12 @@ public class StringUtils {
      * in the target string, or 0 if there is no specified character.
      * When searching for the specified character, it is not case-sensitive.
      * @param chars the target string
-     * @param c the character to find
+     * @param searchChar the character to find
      * @return the number of times the specified character was found
      */
-    public static int searchIgnoreCase(CharSequence chars, char c) {
+    public static int searchIgnoreCase(CharSequence chars, char searchChar) {
         int count = 0;
-        char cl = Character.toLowerCase(c);
+        char cl = Character.toLowerCase(searchChar);
         for (int i = 0; i < chars.length(); i++) {
             if (Character.toLowerCase(chars.charAt(i)) == cl) {
                 count++;

@@ -36,7 +36,9 @@ import java.util.StringTokenizer;
  */
 public class FilenameUtils {
 
-    private static final char EXTENSION_SEPARATOR = '.';
+    private static final String NAME_SEPARATOR = "_";
+
+    private static final String EXTENSION_SEPARATOR = ".";
 
     private static final char UNIX_SEPARATOR = '/';
 
@@ -257,8 +259,8 @@ public class FilenameUtils {
      * Returns a file name that does not overlap in the specified directory.
      * If a duplicate file name exists, it is returned by appending a number after the file name.
      * @param srcFile the file to seek
-     * @return an unique file
-     * @throws IOException if failed to obtain an unique file
+     * @return a unique file
+     * @throws IOException if failed to obtain a unique file
      */
     public static File generateUniqueFile(File srcFile) throws IOException {
         return generateUniqueFile(srcFile, EXTENSION_SEPARATOR);
@@ -269,10 +271,10 @@ public class FilenameUtils {
      * If a duplicate file name exists, it is returned by appending a number after the file name.
      * @param srcFile the file to seek
      * @param extSeparator the extension separator
-     * @return an unique file
-     * @throws IOException if failed to obtain an unique file
+     * @return a unique file
+     * @throws IOException if failed to obtain a unique file
      */
-    public static File generateUniqueFile(File srcFile, char extSeparator) throws IOException {
+    public static File generateUniqueFile(File srcFile, String extSeparator) throws IOException {
         Assert.notNull(srcFile, "'srcFile' must not be null");
 
         String path = getFullPath(srcFile.getCanonicalPath());
@@ -308,13 +310,12 @@ public class FilenameUtils {
      * ex) 1111111111_txt
      * </pre>
      * @param file the file to seek
-     * @return an unique file
-     * @throws IOException if failed to obtain an unique file
+     * @return a unique file
+     * @throws IOException if failed to obtain a unique file
      */
     public static File generateSafetyUniqueFile(File file) throws IOException {
         String path = file.getCanonicalPath();
         String ext = getExtension(path);
-        char separator = '_';
 
         String prefix = Long.toString(System.currentTimeMillis());
         Random rnd = new Random();
@@ -322,13 +323,22 @@ public class FilenameUtils {
 
         String fullName;
         if (ext != null && !ext.isEmpty()) {
-            fullName = prefix + separator + suffix + separator + ext;
+            fullName = prefix + NAME_SEPARATOR + suffix + NAME_SEPARATOR + ext;
         } else {
-            fullName = prefix + separator + suffix;
+            fullName = prefix + NAME_SEPARATOR + suffix;
         }
 
         File file2 = new File(getFullPath(path), fullName);
-        return generateUniqueFile(file2, separator);
+        return generateUniqueFile(file2, NAME_SEPARATOR);
+    }
+
+    /**
+     * Recovers the extension from a unique file name.
+     * @param uniqueFilename a unique file name
+     * @return file name with recovered extension
+     */
+    public static String recoverExtension(String uniqueFilename) {
+        return StringUtils.replaceLast(uniqueFilename, NAME_SEPARATOR, EXTENSION_SEPARATOR);
     }
 
 }
