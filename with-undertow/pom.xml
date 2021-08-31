@@ -77,7 +77,7 @@
         <dependency>
             <groupId>org.mortbay.jasper</groupId>
             <artifactId>apache-jsp</artifactId>
-            <version>9.0.29</version>
+            <version>9.0.48</version>
         </dependency>
         <dependency>
             <groupId>org.glassfish.web</groupId>
