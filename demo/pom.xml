@@ -31,8 +31,8 @@
 
     <properties>
         <main.basedir>${project.parent.basedir}</main.basedir>
-        <slf4j.version>1.7.30</slf4j.version>
-        <logback.version>1.2.5</logback.version>
+        <slf4j.version>1.7.32</slf4j.version>
+        <logback.version>1.2.6</logback.version>
     </properties>
 
     <build>
