@@ -153,12 +153,6 @@
                 <optional>true</optional>
             </dependency>
             <dependency>
-                <groupId>ch.qos.logback</groupId>
-                <artifactId>logback-classic</artifactId>
-                <version>1.2.6</version>
-                <optional>true</optional>
-            </dependency>
-            <dependency>
                 <groupId>org.apache.logging.log4j</groupId>
                 <artifactId>log4j-api</artifactId>
                 <version>2.14.1</version>
@@ -174,6 +168,12 @@
                 <groupId>log4j</groupId>
                 <artifactId>log4j</artifactId>
                 <version>1.2.17</version>
+                <optional>true</optional>
+            </dependency>
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-classic</artifactId>
+                <version>1.2.6</version>
                 <optional>true</optional>
             </dependency>
             <dependency>
