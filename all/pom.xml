@@ -20,7 +20,7 @@
     <parent>
         <groupId>com.aspectran</groupId>
         <artifactId>aspectran</artifactId>
-        <version>7.0.5-SNAPSHOT</version>
+        <version>7.0.5</version>
     </parent>
 
     <artifactId>aspectran-all</artifactId>
