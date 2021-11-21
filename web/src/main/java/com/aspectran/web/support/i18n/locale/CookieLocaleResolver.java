@@ -19,7 +19,7 @@ import com.aspectran.core.activity.Translet;
 import com.aspectran.core.lang.Nullable;
 import com.aspectran.core.support.i18n.locale.AbstractLocaleResolver;
 import com.aspectran.core.support.i18n.locale.LocaleResolver;
-import com.aspectran.core.util.StringUtils;
+import com.aspectran.core.util.LocaleUtils;
 import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
 import com.aspectran.web.support.util.CookieGenerator;
@@ -264,7 +264,7 @@ public class CookieLocaleResolver extends AbstractLocaleResolver {
         if (cookie != null) {
             String value = cookie.getValue();
             try {
-                timeZone = StringUtils.parseTimeZoneString(value);
+                timeZone = LocaleUtils.parseTimeZoneString(value);
             } catch (IllegalArgumentException ex) {
                 if (isRejectInvalidCookies() &&
                         request.getAttribute(WebUtils.ERROR_EXCEPTION_ATTRIBUTE) == null) {
@@ -287,15 +287,15 @@ public class CookieLocaleResolver extends AbstractLocaleResolver {
 
     /**
      * Parse the given locale value coming from an incoming cookie.
-     * <p>The default implementation calls {@link StringUtils#parseLocale(String)},
+     * <p>The default implementation calls {@link LocaleUtils#parseLocale(String)},
      * accepting the {@link Locale#toString} format as well as BCP 47 language tags.</p>
      * @param localeValue the locale value to parse
      * @return the corresponding {@code Locale} instance
-     * @see StringUtils#parseLocale(String)
+     * @see LocaleUtils#parseLocale(String)
      */
     @Nullable
     protected Locale parseLocaleValue(String localeValue) {
-        return StringUtils.parseLocale(localeValue);
+        return LocaleUtils.parseLocale(localeValue);
     }
 
     /**
