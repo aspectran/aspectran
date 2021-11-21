@@ -19,7 +19,7 @@ import com.aspectran.core.activity.Translet;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.lang.Nullable;
-import com.aspectran.core.util.StringUtils;
+import com.aspectran.core.util.LocaleUtils;
 import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
 
@@ -171,7 +171,7 @@ public class LocaleChangeInterceptor {
         if (newTimeZone != null) {
             TimeZone timeZone = null;
             try {
-                timeZone = StringUtils.parseTimeZoneString(newTimeZone);
+                timeZone = LocaleUtils.parseTimeZoneString(newTimeZone);
             } catch (IllegalArgumentException ex) {
                 if (isIgnoreInvalidLocale()) {
                     if (logger.isDebugEnabled()) {
@@ -208,7 +208,7 @@ public class LocaleChangeInterceptor {
 
     /**
      * Parse the given locale value as coming from a request parameter.
-     * <p>The default implementation calls {@link StringUtils#parseLocale(String)},
+     * <p>The default implementation calls {@link LocaleUtils#parseLocale(String)},
      * accepting the {@link Locale#toString} format as well as BCP 47 language tags.</p>
      *
      * @param localeValue the locale value to parse
@@ -216,7 +216,7 @@ public class LocaleChangeInterceptor {
      */
     @Nullable
     protected Locale parseLocaleValue(String localeValue) {
-        return StringUtils.parseLocale(localeValue);
+        return LocaleUtils.parseLocale(localeValue);
     }
 
 }

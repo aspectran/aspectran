@@ -17,7 +17,7 @@ package com.aspectran.core.support.i18n.locale;
 
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.lang.Nullable;
-import com.aspectran.core.util.StringUtils;
+import com.aspectran.core.util.LocaleUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,9 +66,9 @@ public abstract class AbstractLocaleResolver implements LocaleResolver {
         }
         List<Locale> supportedLocales = new ArrayList<>(locales.length);
         for (String locale : locales) {
-            supportedLocales.add(StringUtils.parseLocale(locale));
+            supportedLocales.add(LocaleUtils.parseLocale(locale));
         }
-        this.supportedLocales = (!supportedLocales.isEmpty() ? supportedLocales : null);
+        this.supportedLocales = supportedLocales;
     }
 
     /**
@@ -95,7 +95,7 @@ public abstract class AbstractLocaleResolver implements LocaleResolver {
      * @param defaultLocale the default locale
      */
     public void setDefaultLocale(String defaultLocale) {
-        setDefaultLocale(StringUtils.parseLocale(defaultLocale));
+        setDefaultLocale(LocaleUtils.parseLocale(defaultLocale));
     }
 
     /**
@@ -123,7 +123,7 @@ public abstract class AbstractLocaleResolver implements LocaleResolver {
      * @param defaultTimeZone the default time zone
      */
     public void setDefaultTimeZone(String defaultTimeZone) {
-        setDefaultTimeZone(StringUtils.parseTimeZoneString(defaultTimeZone));
+        setDefaultTimeZone(LocaleUtils.parseTimeZoneString(defaultTimeZone));
     }
 
     /**

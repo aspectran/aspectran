@@ -17,8 +17,8 @@ package com.aspectran.pebble;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.component.bean.aware.ApplicationAdapterAware;
+import com.aspectran.core.util.LocaleUtils;
 import com.aspectran.core.util.ResourceUtils;
-import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
 import com.mitchellbosecke.pebble.PebbleEngine;
@@ -59,7 +59,7 @@ public class PebbleEngineFactory implements ApplicationAdapterAware {
     }
 
     public void setDefaultLocale(String defaultLocale) {
-        this.defaultLocale = StringUtils.parseLocaleString(defaultLocale);
+        this.defaultLocale = LocaleUtils.parseLocaleString(defaultLocale);
     }
 
     public void setStrictVariables(boolean strictVariables) {
