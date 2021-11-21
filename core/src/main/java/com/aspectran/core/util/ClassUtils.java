@@ -19,8 +19,6 @@ import com.aspectran.core.lang.Nullable;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 
 /**
  * Miscellaneous class utility methods.
@@ -34,7 +32,7 @@ public abstract class ClassUtils {
     public static final String CLASS_FILE_SUFFIX = ".class";
 
     /**
-     * Method that can be called to try to create an instantiate of
+     * Method that can be called to try to create an instance of
      * specified type. Instantiation is done using default no-argument
      * constructor.
      * @param <T> the generic type
@@ -80,7 +78,7 @@ public abstract class ClassUtils {
     }
 
     /**
-     * Method that can be called to try to create an instantiate of
+     * Method that can be called to try to create an instance of
      * specified type.
      * @param <T> the generic type
      * @param cls the class to check
@@ -182,37 +180,19 @@ public abstract class ClassUtils {
      * @return the appropriate default classloader which is guaranteed to be non-null
      */
     public static ClassLoader getDefaultClassLoader() {
-        if (System.getSecurityManager() == null) {
-            ClassLoader cl = null;
-            try {
-                cl = Thread.currentThread().getContextClassLoader();
-            } catch (Throwable ex) {
-                // ignore
-            }
-            if (cl == null) {
-                cl = ClassUtils.class.getClassLoader();
-            }
-            if (cl == null) {
-                cl = ClassLoader.getSystemClassLoader();
-            }
-            return cl;
-        } else {
-            return AccessController.doPrivileged((PrivilegedAction<ClassLoader>)() -> {
-                ClassLoader cl = null;
-                try {
-                    cl = Thread.currentThread().getContextClassLoader();
-                } catch (Throwable ex) {
-                    // ignore
-                }
-                if (cl == null) {
-                    cl = ClassUtils.class.getClassLoader();
-                }
-                if (cl == null) {
-                    cl = ClassLoader.getSystemClassLoader();
-                }
-                return cl;
-            });
+        ClassLoader cl = null;
+        try {
+            cl = Thread.currentThread().getContextClassLoader();
+        } catch (Throwable ex) {
+            // ignore
         }
+        if (cl == null) {
+            cl = ClassUtils.class.getClassLoader();
+        }
+        if (cl == null) {
+            cl = ClassLoader.getSystemClassLoader();
+        }
+        return cl;
     }
 
     /**
@@ -224,39 +204,19 @@ public abstract class ClassUtils {
      */
     @Nullable
     public static ClassLoader overrideThreadContextClassLoader(@Nullable ClassLoader classLoaderToUse) {
-        if (System.getSecurityManager() == null) {
-            Thread currentThread = Thread.currentThread();
-            ClassLoader threadContextClassLoader = currentThread.getContextClassLoader();
-            if (classLoaderToUse != null && !classLoaderToUse.equals(threadContextClassLoader)) {
-                currentThread.setContextClassLoader(classLoaderToUse);
-                return threadContextClassLoader;
-            } else {
-                return null;
-            }
+        Thread currentThread = Thread.currentThread();
+        ClassLoader threadContextClassLoader = currentThread.getContextClassLoader();
+        if (classLoaderToUse != null && !classLoaderToUse.equals(threadContextClassLoader)) {
+            currentThread.setContextClassLoader(classLoaderToUse);
+            return threadContextClassLoader;
         } else {
-            return AccessController.doPrivileged((PrivilegedAction<ClassLoader>)() -> {
-                Thread currentThread = Thread.currentThread();
-                ClassLoader threadContextClassLoader = currentThread.getContextClassLoader();
-                if (classLoaderToUse != null && !classLoaderToUse.equals(threadContextClassLoader)) {
-                    currentThread.setContextClassLoader(classLoaderToUse);
-                    return threadContextClassLoader;
-                } else {
-                    return null;
-                }
-            });
+            return null;
         }
     }
 
     public static void restoreThreadContextClassLoader(@Nullable ClassLoader classLoader) {
         if (classLoader != null) {
-            if (System.getSecurityManager() == null) {
-                Thread.currentThread().setContextClassLoader(classLoader);
-            } else {
-                AccessController.doPrivileged((PrivilegedAction<Void>)() -> {
-                    Thread.currentThread().setContextClassLoader(classLoader);
-                    return null;
-                });
-            }
+            Thread.currentThread().setContextClassLoader(classLoader);
         }
     }
 
