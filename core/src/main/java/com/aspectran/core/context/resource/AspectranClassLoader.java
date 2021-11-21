@@ -26,8 +26,6 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.security.AccessControlException;
-import java.security.Policy;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -47,7 +45,7 @@ import static com.aspectran.core.util.ResourceUtils.FILE_URL_PREFIX;
 import static com.aspectran.core.util.ResourceUtils.REGULAR_FILE_SEPARATOR_CHAR;
 
 /**
- * Specialized aspectran class loader.
+ * Specialized class loader for Aspectran.
  */
 public class AspectranClassLoader extends ClassLoader {
 
@@ -336,30 +334,6 @@ public class AspectranClassLoader extends ClassLoader {
                 }
             } catch (ClassNotFoundException e) {
                 // ignore
-            }
-
-            // Permission to access this class when using a SecurityManager
-            try {
-                // The policy file may have been modified to adjust
-                // permissions, so we're reloading it when loading or
-                // reloading a Context
-                Policy policy = Policy.getPolicy();
-                policy.refresh();
-            } catch (AccessControlException e) {
-                // Some policy files may restrict this, even for the core,
-                // so this exception is ignored
-            }
-            SecurityManager securityManager = System.getSecurityManager();
-            if (securityManager != null) {
-                int index = name.lastIndexOf('.');
-                if (index >= 0) {
-                    try {
-                        securityManager.checkPackageAccess(name.substring(0, index));
-                    } catch (SecurityException se) {
-                        String error = "Security Violation, attempt to use Restricted Class: " + name;
-                        throw new ClassNotFoundException(error, se);
-                    }
-                }
             }
 
             // Search local repositories
