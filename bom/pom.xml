@@ -35,7 +35,7 @@
     <licenses>
         <license>
             <name>Apache License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+            <url>https://www.apache.org/licenses/LICENSE-2.0</url>
         </license>
     </licenses>
 
@@ -80,77 +80,73 @@
         </repository>
     </distributionManagement>
 
-    <properties>
-        <jacoco.skip>true</jacoco.skip>
-    </properties>
-
     <dependencyManagement>
         <dependencies>
             <!-- All release modules -->
             <dependency>
                 <groupId>com.aspectran</groupId>
                 <artifactId>aspectran-core</artifactId>
-                <version>6.13.6-SNAPSHOT</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.aspectran</groupId>
                 <artifactId>aspectran-daemon</artifactId>
-                <version>6.13.6-SNAPSHOT</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.aspectran</groupId>
                 <artifactId>aspectran-embed</artifactId>
-                <version>6.13.6-SNAPSHOT</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.aspectran</groupId>
                 <artifactId>aspectran-rss-lettuce</artifactId>
-                <version>6.13.6-SNAPSHOT</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.aspectran</groupId>
                 <artifactId>aspectran-shell</artifactId>
-                <version>6.13.6-SNAPSHOT</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.aspectran</groupId>
                 <artifactId>aspectran-shell-jline</artifactId>
-                <version>6.13.6-SNAPSHOT</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.aspectran</groupId>
                 <artifactId>aspectran-web</artifactId>
-                <version>6.13.6-SNAPSHOT</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.aspectran</groupId>
                 <artifactId>aspectran-websocket</artifactId>
-                <version>6.13.6-SNAPSHOT</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.aspectran</groupId>
                 <artifactId>aspectran-with-freemarker</artifactId>
-                <version>6.13.6-SNAPSHOT</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.aspectran</groupId>
                 <artifactId>aspectran-with-jetty</artifactId>
-                <version>6.13.6-SNAPSHOT</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.aspectran</groupId>
                 <artifactId>aspectran-with-mybatis</artifactId>
-                <version>6.13.6-SNAPSHOT</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.aspectran</groupId>
                 <artifactId>aspectran-with-pebble</artifactId>
-                <version>6.13.6-SNAPSHOT</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.aspectran</groupId>
                 <artifactId>aspectran-with-undertow</artifactId>
-                <version>6.13.6-SNAPSHOT</version>
+                <version>${project.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -158,9 +154,18 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.7</version>
+                <groupId>com.commsen.maven</groupId>
+                <artifactId>bom-helper-maven-plugin</artifactId>
+                <version>0.4.0</version>
+                <executions>
+                    <execution>
+                        <id>resolve</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>resolve</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
