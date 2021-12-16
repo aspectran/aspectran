@@ -80,6 +80,10 @@
         </repository>
     </distributionManagement>
 
+    <properties>
+        <jacoco.skip>true</jacoco.skip>
+    </properties>
+
     <dependencyManagement>
         <dependencies>
             <!-- All release modules -->
