@@ -19,7 +19,7 @@
 
     <groupId>com.aspectran</groupId>
     <artifactId>aspectran-bom</artifactId>
-    <version>6.13.7-SNAPSHOT</version>
+    <version>6.13.6-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Aspectran BOM</name>
