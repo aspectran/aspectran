@@ -17,7 +17,6 @@ package com.aspectran.core.util.logging;
 
 import com.aspectran.core.util.logging.commons.JakartaCommonsLogger;
 import com.aspectran.core.util.logging.jdk14.Jdk14Logger;
-import com.aspectran.core.util.logging.log4j.Log4jLogger;
 import com.aspectran.core.util.logging.log4j2.Log4j2Logger;
 import com.aspectran.core.util.logging.nologging.DumbLogger;
 import com.aspectran.core.util.logging.slf4j.Slf4jLogger;
@@ -35,7 +34,7 @@ public final class LoggerFactory {
      */
     public static final String MARKER = "ASPECTRAN";
 
-    protected static final String EXCEPTION_MESSAGE = "Unexpected exception: ";
+    static final String EXCEPTION_MESSAGE = "Unexpected exception: ";
 
     private static Constructor<? extends Logger> loggerConstructor;
 
@@ -43,7 +42,6 @@ public final class LoggerFactory {
         tryImplementation(LoggerFactory::useSlf4jLogging);
         tryImplementation(LoggerFactory::useCommonsLogging);
         tryImplementation(LoggerFactory::useLog4J2Logging);
-        tryImplementation(LoggerFactory::useLog4JLogging);
         tryImplementation(LoggerFactory::useJdkLogging);
         tryImplementation(LoggerFactory::useNoLogging);
     }
@@ -74,10 +72,6 @@ public final class LoggerFactory {
 
     public static synchronized void useCommonsLogging() {
         setImplementation(JakartaCommonsLogger.class);
-    }
-
-    public static synchronized void useLog4JLogging() {
-        setImplementation(Log4jLogger.class);
     }
 
     public static synchronized void useLog4J2Logging() {
