@@ -18,11 +18,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.aspectran</groupId>
-    <artifactId>aspectran</artifactId>
+    <artifactId>aspectran-project</artifactId>
     <version>7.0.6-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <name>Aspectran</name>
+    <name>Aspectran Project</name>
     <description>Aspectran is a lightweight framework for building high performance Java applications.</description>
     <url>https://aspectran.com/</url>
     <inceptionYear>2008</inceptionYear>

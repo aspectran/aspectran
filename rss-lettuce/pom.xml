@@ -19,14 +19,14 @@
 
     <parent>
         <groupId>com.aspectran</groupId>
-        <artifactId>aspectran</artifactId>
+        <artifactId>aspectran-project</artifactId>
         <version>7.0.6-SNAPSHOT</version>
     </parent>
 
     <artifactId>aspectran-rss-lettuce</artifactId>
     <packaging>jar</packaging>
 
-    <name>Redis Session Store using Lettuce</name>
+    <name>Aspectran's Redis Session Store using Lettuce</name>
     <description>Package containing a Redis session store implementation using Lettuce as a client</description>
 
     <properties>
