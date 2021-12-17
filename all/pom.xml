@@ -27,6 +27,8 @@
     <packaging>jar</packaging>
 
     <name>Aspectran All-in-One</name>
+    <description>Aspectran (All-in-One)</description>
+
 
     <properties>
         <main.basedir>${project.parent.basedir}</main.basedir>
