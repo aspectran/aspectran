@@ -29,7 +29,6 @@
     <name>Aspectran All-in-One</name>
     <description>Aspectran (All-in-One)</description>
 
-
     <properties>
         <main.basedir>${project.parent.basedir}</main.basedir>
         <generatedSourceDir>${project.build.directory}/src</generatedSourceDir>
