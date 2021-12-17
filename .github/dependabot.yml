@@ -1,11 +1,11 @@
 version: 2
 updates:
-- package-ecosystem: maven
+- package-ecosystem: "maven"
   directory: "/"
   schedule:
-    interval: daily
-  open-pull-requests-limit: 10
+    interval: "daily"
+  target-branch: "6.13.x"
   ignore:
-  - dependency-name: org.eclipse.jetty
+  - dependency-name: "org.eclipse.jetty"
     versions:
       - ">= 10.0.0"
