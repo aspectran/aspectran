@@ -160,8 +160,11 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
-    public boolean hasParameter(ParameterKey parameterKey) {
-        return hasParameter(parameterKey.getName());
+    public boolean hasParameter(ParameterKey key) {
+        if (key == null) {
+            throw new IllegalArgumentException("key must not be null");
+        }
+        return hasParameter(key.getName());
     }
 
     @Override
@@ -171,8 +174,11 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
-    public boolean isAssigned(ParameterKey parameterKey) {
-        return isAssigned(parameterKey.getName());
+    public boolean isAssigned(ParameterKey key) {
+        if (key == null) {
+            throw new IllegalArgumentException("key must not be null");
+        }
+        return isAssigned(key.getName());
     }
 
     @Override
@@ -182,8 +188,11 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
-    public boolean hasValue(ParameterKey parameterKey) {
-        Parameter p = getParameterValue(parameterKey.getName());
+    public boolean hasValue(ParameterKey key) {
+        if (key == null) {
+            throw new IllegalArgumentException("key must not be null");
+        }
+        Parameter p = getParameterValue(key.getName());
         return (p != null && p.hasValue());
     }
 
@@ -197,8 +206,11 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
-    public Parameter getParameter(ParameterKey parameterKey) {
-        return getParameter(parameterKey.getName());
+    public Parameter getParameter(ParameterKey key) {
+        if (key == null) {
+            throw new IllegalArgumentException("key must not be null");
+        }
+        return getParameter(key.getName());
     }
 
     @Override
@@ -208,8 +220,11 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
-    public Object getValue(ParameterKey parameterKey) {
-        return getValue(parameterKey.getName());
+    public Object getValue(ParameterKey key) {
+        if (key == null) {
+            throw new IllegalArgumentException("key must not be null");
+        }
+        return getValue(key.getName());
     }
 
     @Override
@@ -237,8 +252,11 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
-    public void putValue(ParameterKey parameterKey, Object value) {
-        putValue(parameterKey.getName(), value);
+    public void putValue(ParameterKey key, Object value) {
+        if (key == null) {
+            throw new IllegalArgumentException("key must not be null");
+        }
+        putValue(key.getName(), value);
     }
 
     @Override
@@ -249,9 +267,12 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
-    public void putValueNonNull(ParameterKey parameterKey, Object value) {
+    public void putValueNonNull(ParameterKey key, Object value) {
+        if (key == null) {
+            throw new IllegalArgumentException("key must not be null");
+        }
         if (value != null) {
-            putValue(parameterKey.getName(), value);
+            putValue(key.getName(), value);
         }
     }
 
@@ -268,8 +289,11 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
-    public void clearValue(ParameterKey parameterKey) {
-        clearValue(parameterKey.getName());
+    public void clearValue(ParameterKey key) {
+        if (key == null) {
+            throw new IllegalArgumentException("key must not be null");
+        }
+        clearValue(key.getName());
     }
 
     @Override
@@ -285,13 +309,19 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
-    public String getString(ParameterKey parameterKey) {
-        return getString(parameterKey.getName());
+    public String getString(ParameterKey key) {
+        if (key == null) {
+            throw new IllegalArgumentException("key must not be null");
+        }
+        return getString(key.getName());
     }
 
     @Override
-    public String getString(ParameterKey parameterKey, String defaultValue) {
-        return getString(parameterKey.getName(), defaultValue);
+    public String getString(ParameterKey key, String defaultValue) {
+        if (key == null) {
+            throw new IllegalArgumentException("key must not be null");
+        }
+        return getString(key.getName(), defaultValue);
     }
 
     @Override
@@ -301,8 +331,11 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
-    public String[] getStringArray(ParameterKey parameterKey) {
-        return getStringArray(parameterKey.getName());
+    public String[] getStringArray(ParameterKey key) {
+        if (key == null) {
+            throw new IllegalArgumentException("key must not be null");
+        }
+        return getStringArray(key.getName());
     }
 
     @Override
@@ -312,8 +345,11 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
-    public List<String> getStringList(ParameterKey parameterKey) {
-        return getStringList(parameterKey.getName());
+    public List<String> getStringList(ParameterKey key) {
+        if (key == null) {
+            throw new IllegalArgumentException("key must not be null");
+        }
+        return getStringList(key.getName());
     }
 
     @Override
@@ -339,18 +375,27 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
-    public Integer getInt(ParameterKey parameterKey) {
-        return getInt(parameterKey.getName());
+    public Integer getInt(ParameterKey key) {
+        if (key == null) {
+            throw new IllegalArgumentException("key must not be null");
+        }
+        return getInt(key.getName());
     }
 
     @Override
-    public int getInt(ParameterKey parameterKey, int defaultValue) {
-        return getInt(parameterKey.getName(), defaultValue);
+    public int getInt(ParameterKey key, int defaultValue) {
+        if (key == null) {
+            throw new IllegalArgumentException("key must not be null");
+        }
+        return getInt(key.getName(), defaultValue);
     }
 
     @Override
-    public Integer[] getIntArray(ParameterKey parameterKey) {
-        return getIntArray(parameterKey.getName());
+    public Integer[] getIntArray(ParameterKey key) {
+        if (key == null) {
+            throw new IllegalArgumentException("key must not be null");
+        }
+        return getIntArray(key.getName());
     }
 
     @Override
@@ -360,8 +405,11 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
-    public List<Integer> getIntList(ParameterKey parameterKey) {
-        return getIntList(parameterKey.getName());
+    public List<Integer> getIntList(ParameterKey key) {
+        if (key == null) {
+            throw new IllegalArgumentException("key must not be null");
+        }
+        return getIntList(key.getName());
     }
 
     @Override
@@ -381,13 +429,19 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
-    public Long getLong(ParameterKey parameterKey) {
-        return getLong(parameterKey.getName());
+    public Long getLong(ParameterKey key) {
+        if (key == null) {
+            throw new IllegalArgumentException("key must not be null");
+        }
+        return getLong(key.getName());
     }
 
     @Override
-    public long getLong(ParameterKey parameterKey, long defaultValue) {
-        return getLong(parameterKey.getName(), defaultValue);
+    public long getLong(ParameterKey key, long defaultValue) {
+        if (key == null) {
+            throw new IllegalArgumentException("key must not be null");
+        }
+        return getLong(key.getName(), defaultValue);
     }
 
     @Override
@@ -397,8 +451,11 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
-    public Long[] getLongArray(ParameterKey parameterKey) {
-        return getLongArray(parameterKey.getName());
+    public Long[] getLongArray(ParameterKey key) {
+        if (key == null) {
+            throw new IllegalArgumentException("key must not be null");
+        }
+        return getLongArray(key.getName());
     }
 
     @Override
@@ -408,8 +465,11 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
-    public List<Long> getLongList(ParameterKey parameterKey) {
-        return getLongList(parameterKey.getName());
+    public List<Long> getLongList(ParameterKey key) {
+        if (key == null) {
+            throw new IllegalArgumentException("key must not be null");
+        }
+        return getLongList(key.getName());
     }
 
     @Override
@@ -429,13 +489,19 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
-    public Float getFloat(ParameterKey parameterKey) {
-        return getFloat(parameterKey.getName());
+    public Float getFloat(ParameterKey key) {
+        if (key == null) {
+            throw new IllegalArgumentException("key must not be null");
+        }
+        return getFloat(key.getName());
     }
 
     @Override
-    public float getFloat(ParameterKey parameterKey, float defaultValue) {
-        return getFloat(parameterKey.getName(), defaultValue);
+    public float getFloat(ParameterKey key, float defaultValue) {
+        if (key == null) {
+            throw new IllegalArgumentException("key must not be null");
+        }
+        return getFloat(key.getName(), defaultValue);
     }
 
     @Override
@@ -445,8 +511,11 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
-    public Float[] getFloatArray(ParameterKey parameterKey) {
-        return getFloatArray(parameterKey.getName());
+    public Float[] getFloatArray(ParameterKey key) {
+        if (key == null) {
+            throw new IllegalArgumentException("key must not be null");
+        }
+        return getFloatArray(key.getName());
     }
 
     @Override
@@ -456,8 +525,11 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
-    public List<Float> getFloatList(ParameterKey parameterKey) {
-        return getFloatList(parameterKey.getName());
+    public List<Float> getFloatList(ParameterKey key) {
+        if (key == null) {
+            throw new IllegalArgumentException("key must not be null");
+        }
+        return getFloatList(key.getName());
     }
 
     @Override
@@ -477,13 +549,19 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
-    public Double getDouble(ParameterKey parameterKey) {
-        return getDouble(parameterKey.getName());
+    public Double getDouble(ParameterKey key) {
+        if (key == null) {
+            throw new IllegalArgumentException("key must not be null");
+        }
+        return getDouble(key.getName());
     }
 
     @Override
-    public double getDouble(ParameterKey parameterKey, double defaultValue) {
-        return getDouble(parameterKey.getName(), defaultValue);
+    public double getDouble(ParameterKey key, double defaultValue) {
+        if (key == null) {
+            throw new IllegalArgumentException("key must not be null");
+        }
+        return getDouble(key.getName(), defaultValue);
     }
 
     @Override
@@ -493,8 +571,11 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
-    public Double[] getDoubleArray(ParameterKey parameterKey) {
-        return getDoubleArray(parameterKey.getName());
+    public Double[] getDoubleArray(ParameterKey key) {
+        if (key == null) {
+            throw new IllegalArgumentException("key must not be null");
+        }
+        return getDoubleArray(key.getName());
     }
 
     @Override
@@ -504,8 +585,11 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
-    public List<Double> getDoubleList(ParameterKey parameterKey) {
-        return getDoubleList(parameterKey.getName());
+    public List<Double> getDoubleList(ParameterKey key) {
+        if (key == null) {
+            throw new IllegalArgumentException("key must not be null");
+        }
+        return getDoubleList(key.getName());
     }
 
     @Override
@@ -521,13 +605,19 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
-    public Boolean getBoolean(ParameterKey parameterKey) {
-        return getBoolean(parameterKey.getName());
+    public Boolean getBoolean(ParameterKey key) {
+        if (key == null) {
+            throw new IllegalArgumentException("key must not be null");
+        }
+        return getBoolean(key.getName());
     }
 
     @Override
-    public boolean getBoolean(ParameterKey parameterKey, boolean defaultValue) {
-        return getBoolean(parameterKey.getName(), defaultValue);
+    public boolean getBoolean(ParameterKey key, boolean defaultValue) {
+        if (key == null) {
+            throw new IllegalArgumentException("key must not be null");
+        }
+        return getBoolean(key.getName(), defaultValue);
     }
 
     @Override
@@ -537,8 +627,11 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
-    public Boolean[] getBooleanArray(ParameterKey parameterKey) {
-        return getBooleanArray(parameterKey.getName());
+    public Boolean[] getBooleanArray(ParameterKey key) {
+        if (key == null) {
+            throw new IllegalArgumentException("key must not be null");
+        }
+        return getBooleanArray(key.getName());
     }
 
     @Override
@@ -548,8 +641,11 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
-    public List<Boolean> getBooleanList(ParameterKey parameterKey) {
-        return getBooleanList(parameterKey.getName());
+    public List<Boolean> getBooleanList(ParameterKey key) {
+        if (key == null) {
+            throw new IllegalArgumentException("key must not be null");
+        }
+        return getBooleanList(key.getName());
     }
 
     @Override
@@ -560,8 +656,11 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
-    public <T extends Parameters> T getParameters(ParameterKey parameterKey) {
-        return getParameters(parameterKey.getName());
+    public <T extends Parameters> T getParameters(ParameterKey key) {
+        if (key == null) {
+            throw new IllegalArgumentException("key must not be null");
+        }
+        return getParameters(key.getName());
     }
 
     @Override
@@ -572,8 +671,11 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
-    public <T extends Parameters> T[] getParametersArray(ParameterKey parameterKey) {
-        return getParametersArray(parameterKey.getName());
+    public <T extends Parameters> T[] getParametersArray(ParameterKey key) {
+        if (key == null) {
+            throw new IllegalArgumentException("key must not be null");
+        }
+        return getParametersArray(key.getName());
     }
 
     @Override
@@ -584,8 +686,11 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
-    public <T extends Parameters> List<T> getParametersList(ParameterKey parameterKey) {
-        return getParametersList(parameterKey.getName());
+    public <T extends Parameters> List<T> getParametersList(ParameterKey key) {
+        if (key == null) {
+            throw new IllegalArgumentException("key must not be null");
+        }
+        return getParametersList(key.getName());
     }
 
     @Override
@@ -622,8 +727,11 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
-    public <T extends Parameters> T newParameters(ParameterKey parameterKey) {
-        return newParameters(parameterKey.getName());
+    public <T extends Parameters> T newParameters(ParameterKey key) {
+        if (key == null) {
+            throw new IllegalArgumentException("key must not be null");
+        }
+        return newParameters(key.getName());
     }
 
     @Override
@@ -637,8 +745,11 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
-    public <T extends Parameters> T touchParameters(ParameterKey parameterKey) {
-        return touchParameters(parameterKey.getName());
+    public <T extends Parameters> T touchParameters(ParameterKey key) {
+        if (key == null) {
+            throw new IllegalArgumentException("key must not be null");
+        }
+        return touchParameters(key.getName());
     }
 
     @Override
