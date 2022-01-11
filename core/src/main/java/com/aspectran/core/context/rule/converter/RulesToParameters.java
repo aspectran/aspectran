@@ -187,7 +187,7 @@ public class RulesToParameters {
         return aspectranParameters;
     }
 
-    public static void toDescriptionParameters(DescriptionRule descriptionRule, Parameters parameters, ParameterKey parameterKey) {
+    public static void toDescriptionParameters(DescriptionRule descriptionRule, Parameters parameters, ParameterKey key) {
         if (descriptionRule == null) {
             throw new IllegalArgumentException("descriptionRule must not be null");
         }
@@ -195,11 +195,11 @@ public class RulesToParameters {
         if (descriptionRule.getCandidates() != null) {
             for (DescriptionRule dr : descriptionRule.getCandidates()) {
                 DescriptionParameters descriptionParameters = new DescriptionParameters(dr);
-                parameters.putValue(parameterKey, descriptionParameters);
+                parameters.putValue(key, descriptionParameters);
             }
         } else {
             DescriptionParameters descriptionParameters = new DescriptionParameters(descriptionRule);
-            parameters.putValue(parameterKey, descriptionParameters);
+            parameters.putValue(key, descriptionParameters);
         }
     }
 
@@ -921,13 +921,13 @@ public class RulesToParameters {
         return itemHolderParameters;
     }
 
-    private static void toItemHolderParameters(ItemRuleMap itemRuleMap, Parameters parameters, ParameterKey parameterKey) {
+    private static void toItemHolderParameters(ItemRuleMap itemRuleMap, Parameters parameters, ParameterKey key) {
         if (itemRuleMap.getCandidates() != null) {
             for (ItemRuleMap irm : itemRuleMap.getCandidates()) {
-                parameters.putValue(parameterKey, toItemHolderParameters(irm));
+                parameters.putValue(key, toItemHolderParameters(irm));
             }
         } else {
-            parameters.putValue(parameterKey, toItemHolderParameters(itemRuleMap));
+            parameters.putValue(key, toItemHolderParameters(itemRuleMap));
         }
     }
 
