@@ -270,7 +270,7 @@ public class FilenameUtils {
      * Returns a file name that does not overlap in the specified directory.
      * If a duplicate file name exists, it is returned by appending a number after the file name.
      * @param srcFile the file to seek
-     * @param extSeparator the extension separator
+     * @param extSeparator the file extension separator
      * @return a unique file
      * @throws IOException if failed to obtain a unique file
      */
@@ -288,14 +288,14 @@ public class FilenameUtils {
             newName = name;
         }
 
-        int count = 0;
         File destFile = new File(path, newName);
+        int count = 0;
         while (destFile.exists()) {
             count++;
             if (ext != null && !ext.isEmpty()) {
-                newName = name + "-" + count + extSeparator + ext;
+                newName = name + NAME_SEPARATOR + count + extSeparator + ext;
             } else {
-                newName = name + "-" + count;
+                newName = name + NAME_SEPARATOR + count;
             }
             destFile = new File(path, newName);
         }
@@ -303,17 +303,34 @@ public class FilenameUtils {
     }
 
     /**
-     * Creates and returns a safe file name on the system without duplication in the specified directory.
-     * If a duplicate file name exists, it is returned by appending a number after the file name.
-     * File extensions are separated by '_' character.
+     * Creates and returns a system-safe file name without duplicates in the specified directory.
+     * If there is a duplicate file name, a number is added after the file name and returned.
+     * File extensions are separated by '.' character.
      * <pre>
-     * ex) 1111111111_txt
+     * ex) 1111111111_1.txt
      * </pre>
      * @param file the file to seek
      * @return a unique file
      * @throws IOException if failed to obtain a unique file
      */
     public static File generateSafetyUniqueFile(File file) throws IOException {
+        return generateSafetyUniqueFile(file, EXTENSION_SEPARATOR);
+    }
+
+    /**
+     * Creates and returns a system-safe file name without duplicates in the specified directory.
+     * If there is a duplicate file name, a number is added after the file name and returned.
+     * If the file extension separator is specified as '_', the file name can be obtained
+     * in the following format.
+     * <pre>
+     * ex) 1111111111_txt
+     * </pre>
+     * @param file the file to seek
+     * @return a unique file
+     * @param extSeparator the file extension separator
+     * @throws IOException if failed to obtain a unique file
+     */
+    public static File generateSafetyUniqueFile(File file, String extSeparator) throws IOException {
         String path = file.getCanonicalPath();
         String ext = getExtension(path);
 
@@ -323,7 +340,7 @@ public class FilenameUtils {
 
         String fullName;
         if (ext != null && !ext.isEmpty()) {
-            fullName = prefix + NAME_SEPARATOR + suffix + NAME_SEPARATOR + ext;
+            fullName = prefix + NAME_SEPARATOR + suffix + extSeparator + ext;
         } else {
             fullName = prefix + NAME_SEPARATOR + suffix;
         }
