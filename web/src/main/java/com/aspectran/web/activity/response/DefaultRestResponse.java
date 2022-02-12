@@ -50,25 +50,23 @@ public class DefaultRestResponse extends AbstractRestResponse {
 
     private static final List<MediaType> supportedContentTypes;
     static {
-        List<MediaType> contentTypes = new ArrayList<>();
-        contentTypes.add(MediaType.TEXT_PLAIN);
-        contentTypes.add(MediaType.TEXT_HTML);
-        contentTypes.add(MediaType.APPLICATION_JSON);
-        contentTypes.add(MediaType.APPLICATION_APON);
-        contentTypes.add(MediaType.APPLICATION_XML);
-        supportedContentTypes = Collections.unmodifiableList(contentTypes);
+        supportedContentTypes = List.of(
+                MediaType.TEXT_PLAIN,
+                MediaType.TEXT_HTML,
+                MediaType.APPLICATION_JSON,
+                MediaType.APPLICATION_APON,
+                MediaType.APPLICATION_XML);
     }
 
     private static final Map<String, MediaType> supportedPathExtensions;
     static {
-        Map<String, MediaType> pathExtensions = new HashMap<>();
-        pathExtensions.put("json", MediaType.APPLICATION_JSON);
-        pathExtensions.put("apon", MediaType.APPLICATION_APON);
-        pathExtensions.put("xml", MediaType.APPLICATION_XML);
-        pathExtensions.put("txt", MediaType.TEXT_PLAIN);
-        pathExtensions.put("html", MediaType.TEXT_HTML);
-        pathExtensions.put("htm", MediaType.TEXT_HTML);
-        supportedPathExtensions = Collections.unmodifiableMap(pathExtensions);
+        supportedPathExtensions = Map.of(
+                "json", MediaType.APPLICATION_JSON,
+                "apon", MediaType.APPLICATION_APON,
+                "xml", MediaType.APPLICATION_XML,
+                "txt", MediaType.TEXT_PLAIN,
+                "html", MediaType.TEXT_HTML,
+                "htm", MediaType.TEXT_HTML);
     }
 
     public DefaultRestResponse() {
