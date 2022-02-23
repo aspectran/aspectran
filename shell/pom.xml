@@ -24,6 +24,7 @@
     </parent>
 
     <artifactId>aspectran-shell</artifactId>
+    <version>6.13.8-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>Aspectran Shell</name>
