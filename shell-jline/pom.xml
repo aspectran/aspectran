@@ -24,6 +24,7 @@
     </parent>
 
     <artifactId>aspectran-shell-jline</artifactId>
+    <version>7.0.8-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>Aspectran Shell using JLine</name>

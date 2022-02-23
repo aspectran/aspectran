@@ -24,6 +24,7 @@
     </parent>
 
     <artifactId>aspectran-demo</artifactId>
+    <version>7.0.8-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>Aspectran Demo</name>

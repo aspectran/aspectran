@@ -24,6 +24,7 @@
     </parent>
 
     <artifactId>aspectran-with-freemarker</artifactId>
+    <version>7.0.8-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>Aspectran with Freemarker</name>

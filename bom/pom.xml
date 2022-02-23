@@ -24,6 +24,7 @@
     </parent>
 
     <artifactId>aspectran-bom</artifactId>
+    <version>7.0.8-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Aspectran BOM</name>
