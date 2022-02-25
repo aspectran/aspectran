@@ -60,7 +60,7 @@ public class CglibDynamicProxyBean extends AbstractDynamicProxyBean implements M
         }
     }
 
-    public Object intercept(Object proxy, Method method, Object[] args, MethodProxy methodProxy, Activity activity) throws Throwable {
+    private Object intercept(Object proxy, Method method, Object[] args, MethodProxy methodProxy, Activity activity) throws Throwable {
         String beanId = beanRule.getId();
         String className = beanRule.getClassName();
         String methodName = method.getName();

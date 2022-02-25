@@ -35,6 +35,7 @@ import com.aspectran.core.util.StringUtils;
  *
  * <p>Created: 29/09/2019</p>
  */
+@AvoidAdvice
 public abstract class InstantActivitySupport implements ActivityContextAware {
 
     private ActivityContext context;
@@ -46,7 +47,6 @@ public abstract class InstantActivitySupport implements ActivityContextAware {
     }
 
     @Override
-    @AvoidAdvice
     public void setActivityContext(ActivityContext context) {
         Assert.state(this.context == null, "ActivityContext already injected");
         this.context = context;
