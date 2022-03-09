@@ -25,7 +25,7 @@ import com.aspectran.core.component.bean.annotation.AvoidAdvice;
 public interface DisposableBean {
 
     /**
-     * A Dispose implementation that calls the destroy() method.
+     * A DisposableBean implementation that calls the destroy() method.
      *
      * @throws Exception if destruction fails
      */

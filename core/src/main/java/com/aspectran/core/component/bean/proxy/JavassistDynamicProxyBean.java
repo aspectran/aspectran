@@ -61,7 +61,8 @@ public class JavassistDynamicProxyBean extends AbstractDynamicProxyBean implemen
         }
     }
 
-    private Object invoke(Object self, Method overridden, Method proceed, Object[] args, Activity activity) throws Exception {
+    private Object invoke(Object self, Method overridden, Method proceed, Object[] args, Activity activity)
+            throws Exception {
         String beanId = beanRule.getId();
         String className = beanRule.getClassName();
         String methodName = overridden.getName();

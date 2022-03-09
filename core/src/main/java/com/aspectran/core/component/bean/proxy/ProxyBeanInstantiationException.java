@@ -26,7 +26,7 @@ public class ProxyBeanInstantiationException extends BeanException {
     /** @serial */
     private static final long serialVersionUID = -3560168431550039638L;
 
-    private BeanRule beanRule;
+    private final BeanRule beanRule;
 
     /**
      * Create a new ProxyBeanInstantiationException.
