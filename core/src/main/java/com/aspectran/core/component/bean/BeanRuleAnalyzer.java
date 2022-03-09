@@ -36,7 +36,7 @@ public class BeanRuleAnalyzer {
         if (beanRule.isFactoryOffered()) {
             targetBeanClass = beanRule.getFactoryBeanClass();
             if (targetBeanClass == null) {
-                // (will be post processing)
+                // (will be post-processing)
                 return null;
             }
             targetBeanClass = determineFactoryMethodTargetBeanClass(targetBeanClass, beanRule);

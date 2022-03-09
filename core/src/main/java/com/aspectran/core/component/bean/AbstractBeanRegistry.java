@@ -63,7 +63,7 @@ abstract class AbstractBeanRegistry extends AbstractBeanFactory implements BeanR
         } else if (beanRule.getScopeType() == ScopeType.PROTOTYPE) {
             // Does not manage the complete lifecycle of a prototype bean.
             // In particular, Aspectran does not manage destruction phase of prototype-scoped beans.
-            return (V)getPrototypeScopeBean(beanRule);
+            return getPrototypeScopeBean(beanRule);
         } else if (beanRule.getScopeType() == ScopeType.REQUEST) {
             return (V)getRequestScopeBean(beanRule);
         } else if (beanRule.getScopeType() == ScopeType.SESSION) {
@@ -240,15 +240,14 @@ abstract class AbstractBeanRegistry extends AbstractBeanFactory implements BeanR
                             return singletonScope.containsBeanRule(beanRule);
                         }
                     }
-                    return false;
                 } else {
                     for (BeanRule beanRule : beanRules) {
                         if (singletonScope.containsBeanRule(beanRule)) {
                             return true;
                         }
                     }
-                    return false;
                 }
+                return false;
             }
         } finally {
             scopeLock.readLock().unlock();
