@@ -81,9 +81,11 @@ public class EncodingHandlerWrapper implements HandlerWrapper {
             int priority = 100;
             for (String name : names) {
                 if (GZIP.equalsIgnoreCase(name)) {
-                    contentEncodingRepository.addEncodingHandler(GZIP, new GzipEncodingProvider(), priority, predicate);
+                    contentEncodingRepository.addEncodingHandler(GZIP,
+                            new GzipEncodingProvider(), priority, predicate);
                 } else if (DEFLATE.equalsIgnoreCase(name)) {
-                    contentEncodingRepository.addEncodingHandler(DEFLATE, new DeflateEncodingProvider(), priority, predicate);
+                    contentEncodingRepository.addEncodingHandler(DEFLATE,
+                            new DeflateEncodingProvider(), priority, predicate);
                 } else {
                     throw new IllegalArgumentException("Unknown content encoding provider '" + name + "'");
                 }

@@ -32,7 +32,7 @@
 
     <properties>
         <main.basedir>${project.parent.basedir}</main.basedir>
-        <undertow.version>2.2.13.Final</undertow.version>
+        <undertow.version>2.2.16.Final</undertow.version>
     </properties>
 
     <dependencies>
@@ -71,12 +71,12 @@
         </dependency>
         <dependency>
             <groupId>io.undertow</groupId>
-            <artifactId>undertow-servlet-jakartaee9</artifactId>
+            <artifactId>undertow-servlet-jakarta</artifactId>
             <version>${undertow.version}</version>
         </dependency>
         <dependency>
             <groupId>io.undertow</groupId>
-            <artifactId>undertow-websockets-jsr-jakartaee9</artifactId>
+            <artifactId>undertow-websockets-jsr-jakarta</artifactId>
             <version>${undertow.version}</version>
         </dependency>
         <!-- Apache JSP and JSTL dependencies -->

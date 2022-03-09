@@ -63,11 +63,11 @@ public class TowWebSocketInitializer  {
             deploymentInfo.addServletContextAttribute(WebSocketDeploymentInfo.ATTRIBUTE_NAME,
                     new WebSocketDeploymentInfo().setBuffers(
                             new DefaultByteBufferPool(directBuffers, bufferSize, maximumPoolSize, threadLocalCacheSize)));
-            deploymentInfo.addSessionListener(new WebSocketGracefulUndeployingListener());
+            deploymentInfo.addSessionListener(new WebSocketGracefulUndeployListener());
         }
     }
 
-    public static class WebSocketGracefulUndeployingListener implements SessionListener {
+    public static class WebSocketGracefulUndeployListener implements SessionListener {
 
         @Override
         public void attributeUpdated(Session session, String name, Object newValue, Object oldValue) {
