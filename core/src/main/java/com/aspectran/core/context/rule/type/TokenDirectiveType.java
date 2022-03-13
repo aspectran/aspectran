@@ -25,7 +25,8 @@ public enum TokenDirectiveType {
     FIELD("field"),
     METHOD("method"),
     CLASS("class"),
-    CLASSPATH("classpath");
+    CLASSPATH("classpath"),
+    SYSTEM("system");
 
     private final String alias;
 
