@@ -104,7 +104,7 @@ start_daemon() {
     line=$(head -n 1 "$DAEMON_OUT")
   done
   fail_str="Failed to initialize daemon"
-  if [ "${line#*$fail_str}" != "$line" ]; then
+  if [ "$fail_str" != "$line" ]; then
     return 0
   else
     return 1
@@ -112,7 +112,7 @@ start_daemon() {
 }
 
 stop_daemon() {
-  echo "command: quit" >"$BASE_DIR/inbound/99-quit.apon"
+  echo "command: quit" >"$BASE_DIR/cmd/incoming/99-quit.apon"
   return $?
 }
 
