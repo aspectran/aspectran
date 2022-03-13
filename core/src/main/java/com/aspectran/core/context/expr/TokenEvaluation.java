@@ -26,6 +26,7 @@ import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.util.BeanUtils;
 import com.aspectran.core.util.PropertiesLoaderUtils;
 import com.aspectran.core.util.ReflectionUtils;
+import com.aspectran.core.util.SystemUtils;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -112,7 +113,7 @@ public class TokenEvaluation implements TokenEvaluator {
                     if (value instanceof Object[]) {
                         sb.append(Arrays.toString((Object[])value));
                     } else {
-                        sb.append(value.toString());
+                        sb.append(value);
                     }
                 }
             }
@@ -389,6 +390,8 @@ public class TokenEvaluation implements TokenEvaluator {
                     activity.getApplicationAdapter().getClassLoader());
             Object value = (token.getGetterName() != null ? props.get(token.getGetterName()) : props);
             return (value != null ? value : token.getDefaultValue());
+        } else if (token.getDirectiveType() == TokenDirectiveType.SYSTEM) {
+            return SystemUtils.getProperty(token.getValue(), token.getDefaultValue());
         } else {
             Object value = activity.getEnvironment().getProperty(token.getName(), activity);
             if (value != null && token.getGetterName() != null) {
