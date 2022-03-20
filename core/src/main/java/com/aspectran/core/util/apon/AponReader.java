@@ -194,14 +194,10 @@ public class AponReader extends AponFormat implements Closeable {
                 if (parameterValue != null) {
                     valueType = parameterValue.getValueType();
                 } else {
-                    if (container.isStructureFixed()) {
-                        throw syntaxError(line, tline, "Parameter '" +
-                                name + "' is not defined; " + container);
-                    }
                     valueType = ValueType.resolveByHint(name);
                     if (valueType != null) {
                         valueTypeHinted = true;
-                        name = ValueType.stripValueTypeHint(name);
+                        name = ValueType.stripHint(name);
                         parameterValue = container.getParameterValueMap().get(name);
                         if (parameterValue != null) {
                             valueType = parameterValue.getValueType();

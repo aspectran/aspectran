@@ -105,7 +105,7 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
      * @param valueTypeHintEnabled true, write a type hint for values
      */
     @SuppressWarnings("unchecked")
-    public <T extends AponWriter> T valueTypeHintEnabled(boolean valueTypeHintEnabled) {
+    public <T extends AponWriter> T enableValueTypeHints(boolean valueTypeHintEnabled) {
         this.valueTypeHintEnabled = valueTypeHintEnabled;
         return (T)this;
     }
