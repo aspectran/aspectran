@@ -71,7 +71,7 @@ public enum ValueType {
         return null;
     }
 
-    public static String stripValueTypeHint(String name) {
+    public static String stripHint(String name) {
         int hintStartIndex = name.indexOf(AponFormat.ROUND_BRACKET_OPEN);
         if (hintStartIndex > 0) {
             return name.substring(0, hintStartIndex);
