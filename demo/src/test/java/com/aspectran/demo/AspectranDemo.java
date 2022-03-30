@@ -16,10 +16,7 @@
 package com.aspectran.demo;
 
 import com.aspectran.core.util.ResourceUtils;
-import com.aspectran.shell.AspectranShell;
-import com.aspectran.shell.console.Console;
 import com.aspectran.shell.jline.JLineAspectranShell;
-import com.aspectran.shell.jline.console.JLineConsole;
 
 import java.io.File;
 import java.io.IOException;
