@@ -326,6 +326,11 @@ public class TransletRuleRegistry extends AbstractComponent {
                 wildGetTransletRuleSet.add(transletRule);
             }
         } else {
+            if (WildcardPattern.hasWildcards(transletRule.getName())) {
+                WildcardPattern namePattern = WildcardPattern.compile(transletRule.getName(),
+                        ActivityContext.NAME_SEPARATOR_CHAR);
+                transletRule.setNamePattern(namePattern);
+            }
             if (allowedMethods != null) {
                 String restfulTransletName = assembleTransletName(transletName, allowedMethods);
                 transletRuleMap.put(restfulTransletName, transletRule);
