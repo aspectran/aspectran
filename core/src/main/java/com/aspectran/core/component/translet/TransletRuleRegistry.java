@@ -116,46 +116,46 @@ public class TransletRuleRegistry extends AbstractComponent {
             case GET:
                 transletRule = getTransletRuleMap.get(transletName);
                 if (transletRule == null) {
-                    transletRule = lookupWildTransletRule(wildGetTransletRuleSet, transletName);
+                    transletRule = retrieveWildTransletRule(wildGetTransletRuleSet, transletName);
                 }
                 break;
             case POST:
                 transletRule = postTransletRuleMap.get(transletName);
                 if (transletRule == null) {
-                    transletRule = lookupWildTransletRule(wildPostTransletRuleSet, transletName);
+                    transletRule = retrieveWildTransletRule(wildPostTransletRuleSet, transletName);
                 }
                 break;
             case PUT:
                 transletRule = putTransletRuleMap.get(transletName);
                 if (transletRule == null) {
-                    transletRule = lookupWildTransletRule(wildPutTransletRuleSet, transletName);
+                    transletRule = retrieveWildTransletRule(wildPutTransletRuleSet, transletName);
                 }
                 break;
             case PATCH:
                 transletRule = patchTransletRuleMap.get(transletName);
                 if (transletRule == null) {
-                    transletRule = lookupWildTransletRule(wildPatchTransletRuleSet, transletName);
+                    transletRule = retrieveWildTransletRule(wildPatchTransletRuleSet, transletName);
                 }
                 break;
             case DELETE:
                 transletRule = deleteTransletRuleMap.get(transletName);
                 if (transletRule == null) {
-                    transletRule = lookupWildTransletRule(wildDeleteTransletRuleSet, transletName);
+                    transletRule = retrieveWildTransletRule(wildDeleteTransletRuleSet, transletName);
                 }
                 break;
             default:
-                transletRule = lookupEtcTransletRule(transletName, requestMethod);
+                transletRule = retrieveEtcTransletRule(transletName, requestMethod);
         }
         if (transletRule == null && requestMethod != MethodType.GET) {
             transletRule = transletRuleMap.get(transletName);
             if (transletRule == null) {
-                transletRule = lookupWildTransletRule(wildGetTransletRuleSet, transletName);
+                transletRule = retrieveWildTransletRule(wildGetTransletRuleSet, transletName);
             }
         }
         return transletRule;
     }
 
-    private TransletRule lookupWildTransletRule(Set<TransletRule> transletRuleSet, String transletName) {
+    private TransletRule retrieveWildTransletRule(Set<TransletRule> transletRuleSet, String transletName) {
         if (!transletRuleSet.isEmpty()) {
             for (TransletRule transletRule : transletRuleSet) {
                 WildcardPattern namePattern = transletRule.getNamePattern();
@@ -173,7 +173,7 @@ public class TransletRuleRegistry extends AbstractComponent {
         return null;
     }
 
-    private TransletRule lookupEtcTransletRule(String transletName, MethodType requestMethod) {
+    private TransletRule retrieveEtcTransletRule(String transletName, MethodType requestMethod) {
         if (!etcTransletRuleSet.isEmpty()) {
             for (TransletRule transletRule : etcTransletRuleSet) {
                 if (requestMethod.containsTo(transletRule.getAllowedMethods())) {
@@ -326,6 +326,11 @@ public class TransletRuleRegistry extends AbstractComponent {
                 wildGetTransletRuleSet.add(transletRule);
             }
         } else {
+            if (WildcardPattern.hasWildcards(transletRule.getName())) {
+                WildcardPattern namePattern = WildcardPattern.compile(transletRule.getName(),
+                        ActivityContext.NAME_SEPARATOR_CHAR);
+                transletRule.setNamePattern(namePattern);
+            }
             if (allowedMethods != null) {
                 String restfulTransletName = assembleTransletName(transletName, allowedMethods);
                 transletRuleMap.put(restfulTransletName, transletRule);
