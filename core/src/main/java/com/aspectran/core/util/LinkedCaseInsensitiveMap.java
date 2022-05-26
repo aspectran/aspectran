@@ -209,7 +209,12 @@ public class LinkedCaseInsensitiveMap<V> implements Map<String, V>, Serializable
     public V putIfAbsent(String key, @Nullable V value) {
         String oldKey = this.caseInsensitiveKeys.putIfAbsent(convertKey(key), key);
         if (oldKey != null) {
-            return this.targetMap.get(oldKey);
+            V oldKeyValue = this.targetMap.get(oldKey);
+            if (oldKeyValue != null) {
+                return oldKeyValue;
+            } else {
+                key = oldKey;
+            }
         }
         return this.targetMap.putIfAbsent(key, value);
     }
@@ -219,7 +224,12 @@ public class LinkedCaseInsensitiveMap<V> implements Map<String, V>, Serializable
     public V computeIfAbsent(String key, Function<? super String, ? extends V> mappingFunction) {
         String oldKey = this.caseInsensitiveKeys.putIfAbsent(convertKey(key), key);
         if (oldKey != null) {
-            return this.targetMap.get(oldKey);
+            V oldKeyValue = this.targetMap.get(oldKey);
+            if (oldKeyValue != null) {
+                return oldKeyValue;
+            } else {
+                key = oldKey;
+            }
         }
         return this.targetMap.computeIfAbsent(key, mappingFunction);
     }
