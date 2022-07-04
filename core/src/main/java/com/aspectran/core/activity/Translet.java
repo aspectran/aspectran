@@ -472,10 +472,10 @@ public interface Translet {
     <V> V getAroundAdviceResult(String aspectId);
 
     /**
-     * Gets the finally advice result.
-     * @param <V> the result type of the finally advice
+     * Gets the final advice result.
+     * @param <V> the result type of the final advice
      * @param aspectId the aspect id
-     * @return the finally advice result
+     * @return the result of final advice
      */
     <V> V getFinallyAdviceResult(String aspectId);
 

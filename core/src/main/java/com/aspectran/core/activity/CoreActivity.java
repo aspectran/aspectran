@@ -56,7 +56,7 @@ import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
 
 /**
- * Core activity that handles all external requests.
+ * Core activity for handling official requests in Aspectran services.
  *
  * <p>This class is generally not thread-safe. It is primarily designed
  * for use in a single thread only.</p>

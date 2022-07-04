@@ -48,7 +48,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Activity related to advice.
+ * Abstract activity for executing advice injected between actions.
  *
  * <p>Created: 2016. 9. 10.</p>
  */
@@ -506,10 +506,10 @@ public abstract class AdviceActivity extends AbstractActivity {
     }
 
     /**
-     * Gets the finally advice result.
-     * @param <V> the result type of the finally advice
+     * Gets the final advice result.
+     * @param <V> the result type of the final advice
      * @param aspectId the aspect id
-     * @return the finally advice result
+     * @return the result of the final advice
      */
     @SuppressWarnings("unchecked")
     public <V> V getFinallyAdviceResult(String aspectId) {
