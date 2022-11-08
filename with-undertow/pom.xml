@@ -32,7 +32,7 @@
 
     <properties>
         <main.basedir>${project.parent.basedir}</main.basedir>
-        <undertow.version>2.2.20.Final</undertow.version>
+        <undertow.version>2.3.0.Final</undertow.version>
     </properties>
 
     <dependencies>
@@ -71,19 +71,19 @@
         </dependency>
         <dependency>
             <groupId>io.undertow</groupId>
-            <artifactId>undertow-servlet-jakarta</artifactId>
+            <artifactId>undertow-servlet</artifactId>
             <version>${undertow.version}</version>
         </dependency>
         <dependency>
             <groupId>io.undertow</groupId>
-            <artifactId>undertow-websockets-jsr-jakarta</artifactId>
+            <artifactId>undertow-websockets-jsr</artifactId>
             <version>${undertow.version}</version>
         </dependency>
         <!-- Apache JSP and JSTL dependencies -->
         <dependency>
             <groupId>org.mortbay.jasper</groupId>
             <artifactId>apache-jsp</artifactId>
-            <version>10.1.1</version>
+            <version>10.0.14</version>
         </dependency>
         <dependency>
             <groupId>org.glassfish.web</groupId>
