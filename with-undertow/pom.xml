@@ -88,7 +88,7 @@
         <dependency>
             <groupId>org.glassfish.web</groupId>
             <artifactId>jakarta.servlet.jsp.jstl</artifactId>
-            <version>3.0.0</version>
+            <version>3.0.1</version>
             <exclusions>
                 <exclusion>
                     <groupId>jakarta.servlet.jsp.jstl</groupId>
