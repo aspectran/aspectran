@@ -17,7 +17,7 @@ package com.aspectran.pebble;
 
 import com.aspectran.core.component.bean.ablility.FactoryBean;
 import com.aspectran.core.component.bean.ablility.InitializableBean;
-import com.mitchellbosecke.pebble.PebbleEngine;
+import io.pebbletemplates.pebble.PebbleEngine;
 
 /**
  * JavaBean to configure Pebble Engine.
