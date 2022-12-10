@@ -85,10 +85,6 @@ public class TowActivity extends CoreActivity {
     @Override
     protected void adapt() throws AdapterException {
         try {
-            if (!exchange.isBlocking()) {
-                exchange.startBlocking();
-            }
-
             if (getParentActivity() == null) {
                 SessionManager sessionManager = exchange.getAttachment(SessionManager.ATTACHMENT_KEY);
                 SessionConfig sessionConfig = exchange.getAttachment(SessionConfig.ATTACHMENT_KEY);
