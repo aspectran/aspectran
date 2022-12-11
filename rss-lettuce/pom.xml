@@ -20,11 +20,11 @@
     <parent>
         <groupId>com.aspectran</groupId>
         <artifactId>aspectran-project</artifactId>
-        <version>7.1.0</version>
+        <version>7.1.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>aspectran-rss-lettuce</artifactId>
-    <version>7.1.0</version>
+    <version>7.1.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>Aspectran's Redis Session Store using Lettuce</name>
