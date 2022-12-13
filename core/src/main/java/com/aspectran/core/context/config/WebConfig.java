@@ -23,6 +23,7 @@ public class WebConfig extends AbstractParameters {
 
     private static final ParameterKey uriDecoding;
     private static final ParameterKey defaultServletName;
+    private static final ParameterKey trailingSlashRedirect;
     private static final ParameterKey exposals;
 
     private static final ParameterKey[] parameterKeys;
@@ -30,11 +31,13 @@ public class WebConfig extends AbstractParameters {
     static {
         uriDecoding = new ParameterKey("uriDecoding", ValueType.STRING);
         defaultServletName = new ParameterKey("defaultServletName", ValueType.STRING);
+        trailingSlashRedirect = new ParameterKey("trailingSlashRedirect", ValueType.BOOLEAN);
         exposals = new ParameterKey("exposals", ExposalsConfig.class);
 
         parameterKeys = new ParameterKey[] {
                 uriDecoding,
                 defaultServletName,
+                trailingSlashRedirect,
                 exposals
         };
     }
@@ -58,6 +61,15 @@ public class WebConfig extends AbstractParameters {
 
     public WebConfig setDefaultServletName(String defaultServletName) {
         putValue(WebConfig.defaultServletName, defaultServletName);
+        return this;
+    }
+
+    public boolean isTrailingSlashRedirect() {
+        return getBoolean(trailingSlashRedirect, false);
+    }
+
+    public WebConfig setTrailingSlashRedirect(boolean trailingSlashRedirect) {
+        putValue(WebConfig.trailingSlashRedirect, trailingSlashRedirect);
         return this;
     }
 

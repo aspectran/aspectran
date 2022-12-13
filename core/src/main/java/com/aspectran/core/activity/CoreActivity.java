@@ -158,7 +158,7 @@ public class CoreActivity extends AdviceActivity {
      * @param requestMethod the request method
      * @param transletRule the translet rule
      */
-    private void prepare(String requestName, MethodType requestMethod, TransletRule transletRule)
+    public void prepare(String requestName, MethodType requestMethod, TransletRule transletRule)
             throws ActivityPrepareException {
         Translet parentTranslet = translet;
         try {
@@ -167,7 +167,7 @@ public class CoreActivity extends AdviceActivity {
             }
 
             translet = new CoreTranslet(transletRule, this);
-            translet.setRequestName(requestName);
+            translet.setRequestName(requestName); // original request name
             translet.setRequestMethod(requestMethod);
             if (parentTranslet != null) {
                 translet.setParentTranslet(parentTranslet);

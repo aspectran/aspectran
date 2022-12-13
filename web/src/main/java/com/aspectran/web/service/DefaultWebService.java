@@ -16,7 +16,6 @@
 package com.aspectran.web.service;
 
 import com.aspectran.core.activity.ActivityTerminatedException;
-import com.aspectran.core.activity.TransletNotFoundException;
 import com.aspectran.core.activity.request.RequestMethodNotAllowedException;
 import com.aspectran.core.activity.request.SizeLimitExceededException;
 import com.aspectran.core.context.ActivityContext;
@@ -24,6 +23,7 @@ import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.config.ContextConfig;
 import com.aspectran.core.context.config.ExposalsConfig;
 import com.aspectran.core.context.config.WebConfig;
+import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.service.AspectranCoreService;
 import com.aspectran.core.service.AspectranServiceException;
@@ -62,6 +62,8 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
 
     private String uriDecoding;
 
+    private boolean trailingSlashRedirect;
+
     private volatile long pauseTimeout = -2L;
 
     private DefaultWebService(ServletContext servletContext) {
@@ -84,6 +86,14 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
 
     protected void setUriDecoding(String uriDecoding) {
         this.uriDecoding = uriDecoding;
+    }
+
+    public boolean isTrailingSlashRedirect() {
+        return trailingSlashRedirect;
+    }
+
+    public void setTrailingSlashRedirect(boolean trailingSlashRedirect) {
+        this.trailingSlashRedirect = trailingSlashRedirect;
     }
 
     @Override
@@ -125,39 +135,45 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
             }
         }
 
-        try {
-            WebActivity activity = new WebActivity(getActivityContext(), request, response);
-            activity.prepare(requestUri, request.getMethod());
-            activity.perform();
-        } catch (TransletNotFoundException e) {
-            // Provides for "trailing slash" redirects and  serving directory index files
-            String transletName = e.getTransletName();
-            if (StringUtils.startsWith(transletName, ActivityContext.NAME_SEPARATOR_CHAR) &&
-                    !StringUtils.endsWith(transletName, ActivityContext.NAME_SEPARATOR_CHAR)) {
-                String transletNameWithSlash = transletName + ActivityContext.NAME_SEPARATOR_CHAR;
-                MethodType requestMethod = e.getRequestMethod(MethodType.GET);
+        MethodType requestMethod = MethodType.resolve(request.getMethod());
+        if (requestMethod == null) {
+            requestMethod = MethodType.GET;
+        }
+        TransletRule transletRule = getActivityContext().getTransletRuleRegistry().getTransletRule(requestUri, requestMethod);
+        if (transletRule == null) {
+            // Provides for "trailing slash" redirects and serving directory index files
+            if (requestMethod == MethodType.GET &&
+                    StringUtils.startsWith(requestUri, ActivityContext.NAME_SEPARATOR_CHAR) &&
+                    !StringUtils.endsWith(requestUri, ActivityContext.NAME_SEPARATOR_CHAR)) {
+                String transletNameWithSlash = requestUri + ActivityContext.NAME_SEPARATOR_CHAR;
                 if (getActivityContext().getTransletRuleRegistry().contains(transletNameWithSlash, requestMethod)) {
                     response.setStatus(HttpStatus.MOVED_PERMANENTLY.value());
                     response.setHeader(HttpHeaders.LOCATION, transletNameWithSlash);
                     response.setHeader(HttpHeaders.CONNECTION, "close");
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Redirect URL with Trailing Slash: " + e.getTransletName());
+                    if (logger.isTraceEnabled()) {
+                        logger.trace("Redirect URL with a Trailing Slash: " + requestUri);
                     }
                     return;
                 }
             }
-
             try {
                 if (!defaultServletHttpRequestHandler.handleRequest(request, response)) {
                     if (logger.isDebugEnabled()) {
-                        logger.debug("No translet mapped for request URI [" + requestUri + "]");
+                        logger.debug("No translet mapped for " + requestMethod + " " + requestUri);
                     }
                     response.sendError(HttpServletResponse.SC_NOT_FOUND);
                 }
-            } catch (Exception e2) {
-                logger.error(e2);
+            } catch (Exception e) {
+                logger.error(e);
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             }
+            return;
+        }
+
+        try {
+            WebActivity activity = new WebActivity(getActivityContext(), request, response);
+            activity.prepare(requestUri, requestMethod, transletRule);
+            activity.perform();
         } catch (ActivityTerminatedException e) {
             if (logger.isDebugEnabled()) {
                 logger.debug("Activity terminated: " + e.getMessage());
@@ -345,6 +361,8 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
         if (defaultServletName != null) {
             service.getDefaultServletHttpRequestHandler().setDefaultServletName(defaultServletName);
         }
+
+        service.setTrailingSlashRedirect(webConfig.isTrailingSlashRedirect());
 
         ExposalsConfig exposalsConfig = webConfig.getExposalsConfig();
         if (exposalsConfig != null) {
