@@ -35,7 +35,6 @@ import com.aspectran.core.util.logging.LoggerFactory;
 import com.aspectran.web.activity.WebActivity;
 import com.aspectran.web.startup.servlet.WebActivityServlet;
 import com.aspectran.web.support.http.HttpHeaders;
-import com.aspectran.web.support.http.HttpStatus;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
@@ -88,16 +87,12 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
         this.uriDecoding = uriDecoding;
     }
 
-    public boolean isTrailingSlashRedirect() {
-        return trailingSlashRedirect;
-    }
-
     public void setTrailingSlashRedirect(boolean trailingSlashRedirect) {
         this.trailingSlashRedirect = trailingSlashRedirect;
     }
 
     @Override
-    public void execute(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void service(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String requestUri = request.getRequestURI();
         if (uriDecoding != null) {
             requestUri = URLDecoder.decode(requestUri, uriDecoding);
@@ -142,12 +137,13 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
         TransletRule transletRule = getActivityContext().getTransletRuleRegistry().getTransletRule(requestUri, requestMethod);
         if (transletRule == null) {
             // Provides for "trailing slash" redirects and serving directory index files
-            if (requestMethod == MethodType.GET &&
+            if (trailingSlashRedirect &&
+                    requestMethod == MethodType.GET &&
                     StringUtils.startsWith(requestUri, ActivityContext.NAME_SEPARATOR_CHAR) &&
                     !StringUtils.endsWith(requestUri, ActivityContext.NAME_SEPARATOR_CHAR)) {
                 String transletNameWithSlash = requestUri + ActivityContext.NAME_SEPARATOR_CHAR;
                 if (getActivityContext().getTransletRuleRegistry().contains(transletNameWithSlash, requestMethod)) {
-                    response.setStatus(HttpStatus.MOVED_PERMANENTLY.value());
+                    response.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
                     response.setHeader(HttpHeaders.LOCATION, transletNameWithSlash);
                     response.setHeader(HttpHeaders.CONNECTION, "close");
                     if (logger.isTraceEnabled()) {

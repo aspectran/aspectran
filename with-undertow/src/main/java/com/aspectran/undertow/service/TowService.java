@@ -31,6 +31,6 @@ public interface TowService extends CoreService {
      * @return true if the activity was handled; false otherwise
      * @throws IOException If an error occurs during Activity execution
      */
-    boolean execute(HttpServerExchange exchange) throws IOException;
+    boolean service(HttpServerExchange exchange) throws IOException;
 
 }

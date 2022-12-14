@@ -52,6 +52,6 @@ public interface WebService extends CoreService {
      * @param response current HTTP servlet response
      * @throws IOException If an error occurs during Activity execution
      */
-    void execute(HttpServletRequest request, HttpServletResponse response) throws IOException;
+    void service(HttpServletRequest request, HttpServletResponse response) throws IOException;
 
 }

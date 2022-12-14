@@ -99,7 +99,7 @@ public class HttpHybridHandler extends ResourceHandler {
                 exchange.addExchangeCompleteListener(listener);
             }
 
-            boolean processed = towService.execute(exchange);
+            boolean processed = towService.service(exchange);
             if (!processed) {
                 super.handleRequest(exchange);
             }

@@ -17,13 +17,13 @@ package com.aspectran.undertow.service;
 
 import com.aspectran.core.activity.ActivityException;
 import com.aspectran.core.activity.ActivityTerminatedException;
-import com.aspectran.core.activity.TransletNotFoundException;
 import com.aspectran.core.activity.request.RequestMethodNotAllowedException;
 import com.aspectran.core.activity.request.SizeLimitExceededException;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.config.ExposalsConfig;
 import com.aspectran.core.context.config.WebConfig;
+import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.CoreService;
@@ -47,6 +47,8 @@ public class DefaultTowService extends AbstractTowService {
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultTowService.class);
 
+    private boolean trailingSlashRedirect;
+
     private volatile long pauseTimeout = -2L;
 
     public DefaultTowService() {
@@ -57,8 +59,12 @@ public class DefaultTowService extends AbstractTowService {
         super(rootService);
     }
 
+    public void setTrailingSlashRedirect(boolean trailingSlashRedirect) {
+        this.trailingSlashRedirect = trailingSlashRedirect;
+    }
+
     @Override
-    public boolean execute(HttpServerExchange exchange) throws IOException {
+    public boolean service(HttpServerExchange exchange) throws IOException {
         String requestPath = exchange.getRequestPath();
         if (getUriDecoding() != null) {
             requestPath = URLDecoder.decode(requestPath, getUriDecoding());
@@ -88,32 +94,39 @@ public class DefaultTowService extends AbstractTowService {
             }
         }
 
-        try {
-            TowActivity activity = new TowActivity(this, exchange);
-            activity.prepare(requestPath, exchange.getRequestMethod().toString());
-            activity.perform();
-        } catch (TransletNotFoundException e) {
-            // Provides for "trailing slash" redirects and  serving directory index files
-            String transletName = e.getTransletName();
-            if (StringUtils.startsWith(transletName, ActivityContext.NAME_SEPARATOR_CHAR) &&
-                    !StringUtils.endsWith(transletName, ActivityContext.NAME_SEPARATOR_CHAR)) {
-                String transletNameWithSlash = transletName + ActivityContext.NAME_SEPARATOR_CHAR;
-                MethodType requestMethod = e.getRequestMethod(MethodType.GET);
+        MethodType requestMethod = MethodType.resolve(exchange.getRequestMethod().toString());
+        if (requestMethod == null) {
+            requestMethod = MethodType.GET;
+        }
+        TransletRule transletRule = getActivityContext().getTransletRuleRegistry().getTransletRule(requestPath, requestMethod);
+        if (transletRule == null) {
+            // Provides for "trailing slash" redirects and serving directory index files
+            if (trailingSlashRedirect &&
+                    requestMethod == MethodType.GET &&
+                    StringUtils.startsWith(requestPath, ActivityContext.NAME_SEPARATOR_CHAR) &&
+                    !StringUtils.endsWith(requestPath, ActivityContext.NAME_SEPARATOR_CHAR)) {
+                String transletNameWithSlash = requestPath + ActivityContext.NAME_SEPARATOR_CHAR;
                 if (getActivityContext().getTransletRuleRegistry().contains(transletNameWithSlash, requestMethod)) {
                     exchange.setStatusCode(HttpStatus.MOVED_PERMANENTLY.value());
                     exchange.getResponseHeaders().put(Headers.LOCATION, transletNameWithSlash);
                     exchange.getResponseHeaders().put(Headers.CONNECTION, "close");
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Redirect URL with Trailing Slash: " + e.getTransletName());
+                    if (logger.isTraceEnabled()) {
+                        logger.trace("Redirect URL with a Trailing Slash: " + requestPath);
                     }
                     return true;
                 }
             }
-
             if (logger.isDebugEnabled()) {
-                logger.debug("No translet mapped for request URI [" + requestPath + "]");
+                logger.debug("No translet mapped for " + requestMethod + " " + requestPath);
             }
-            return false;
+            exchange.setStatusCode(HttpStatus.NOT_FOUND.value());
+            return true;
+        }
+
+        try {
+            TowActivity activity = new TowActivity(this, exchange);
+            activity.prepare(requestPath, exchange.getRequestMethod().toString());
+            activity.perform();
         } catch (ActivityTerminatedException e) {
             if (logger.isDebugEnabled()) {
                 logger.debug("Activity terminated: " + e.getMessage());
@@ -198,6 +211,7 @@ public class DefaultTowService extends AbstractTowService {
 
     private static void applyWebConfig(DefaultTowService service, WebConfig webConfig) {
         service.setUriDecoding(webConfig.getUriDecoding());
+        service.setTrailingSlashRedirect(webConfig.isTrailingSlashRedirect());
         ExposalsConfig exposalsConfig = webConfig.getExposalsConfig();
         if (exposalsConfig != null) {
             String[] includePatterns = exposalsConfig.getIncludePatterns();
