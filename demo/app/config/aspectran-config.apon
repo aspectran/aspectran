@@ -102,6 +102,5 @@ web: {
     trailingSlashRedirect: true
     exposals: {
         +: /**
-        -: /favicon.ico
     }
 }

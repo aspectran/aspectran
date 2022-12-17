@@ -121,7 +121,6 @@
                 <bean class="com.aspectran.undertow.server.resource.ResourcePathPatterns">
                     <arguments>
                         <item>
-                            +: /assets/**
                             +: /favicon.ico
                             +: /robots.txt
                             +: /ads.txt

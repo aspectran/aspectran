@@ -41,6 +41,9 @@
                     </arguments>
                     <properties>
                         <item name="port">%{jetty.server.port}</item>
+                        <item name="connectionFactories" type="list">
+                            <value>#{jetty.connectionFactory}</value>
+                        </item>
                     </properties>
                 </bean>
             </item>
@@ -55,6 +58,20 @@
                 </bean>
             </item>
         </properties>
+    </bean>
+
+    <bean id="jetty.connectionFactory" class="org.eclipse.jetty.server.HttpConnectionFactory" scope="prototype">
+        <arguments>
+            <item>
+                <bean class="org.eclipse.jetty.server.HttpConfiguration">
+                    <properties>
+                        <item name="customizers" type="list">
+                            <bean class="org.eclipse.jetty.server.ForwardedRequestCustomizer"/>
+                        </item>
+                    </properties>
+                </bean>
+            </item>
+        </arguments>
     </bean>
 
     <bean id="jetty.gzipHandler" class="org.eclipse.jetty.server.handler.gzip.GzipHandler" scope="prototype">
