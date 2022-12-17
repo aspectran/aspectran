@@ -71,7 +71,7 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
                     convertAsRules(rootParameters);
                 }
             } else if (isUseAponToLoadXml()) {
-                // Using APON to load XML configuration
+                // Using APON to load XML based configuration
                 RootParameters rootParameters;
                 if (appender.getAppenderType() == AppenderType.FILE) {
                     FileRuleAppender fileRuleAppender = (FileRuleAppender)appender;
@@ -86,7 +86,7 @@ public class HybridRuleAppendHandler extends AbstractAppendHandler {
                 }
                 convertAsRules(rootParameters);
             } else {
-                // Using Nodelet to load XML configuration: It is much faster than APON
+                // Using Nodelet to load XML based configuration: It is much faster than APON
                 getAspectranNodeParser().parse(appender);
                 if (isDebugMode() && appender.getAppenderType() == AppenderType.FILE) {
                     FileRuleAppender fileRuleAppender = (FileRuleAppender)appender;

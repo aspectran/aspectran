@@ -94,7 +94,7 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
             if (rootFile != null) {
                 logger.info("Building ActivityContext with " + rootFile);
             } else if (aspectranParameters != null) {
-                logger.info("Building ActivityContext with specified AspectranParameters");
+                logger.info("Building ActivityContext with specified parameters");
             } else {
                 logger.info("No rootFile or aspectranParameters specified");
             }
