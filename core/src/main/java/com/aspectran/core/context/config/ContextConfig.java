@@ -23,7 +23,7 @@ import com.aspectran.core.util.apon.ValueType;
 public class ContextConfig extends AbstractParameters {
 
     private static final ParameterKey base;
-    private static final ParameterKey root;
+    private static final ParameterKey rules;
     private static final ParameterKey encoding;
     private static final ParameterKey resources;
     private static final ParameterKey scan;
@@ -36,7 +36,7 @@ public class ContextConfig extends AbstractParameters {
 
     static {
         base = new ParameterKey("base", ValueType.STRING);
-        root = new ParameterKey("root", ValueType.STRING);
+        rules = new ParameterKey("rules", ValueType.STRING, true);
         encoding = new ParameterKey("encoding", ValueType.STRING);
         resources = new ParameterKey("resources", ValueType.STRING, true);
         scan = new ParameterKey("scan", ValueType.STRING, true);
@@ -47,7 +47,7 @@ public class ContextConfig extends AbstractParameters {
 
         parameterKeys = new ParameterKey[] {
                 base,
-                root,
+                rules,
                 encoding,
                 resources,
                 scan,
@@ -71,12 +71,18 @@ public class ContextConfig extends AbstractParameters {
         return this;
     }
 
-    public String getRootFile() {
-        return getString(root);
+    public String[] getContextRules() {
+        return getStringArray(rules);
     }
 
-    public ContextConfig setRootFile(String rootFile) {
-        putValue(root, rootFile);
+    public ContextConfig setContextRules(String[] contextRules) {
+        removeValue(rules);
+        putValue(rules, contextRules);
+        return this;
+    }
+
+    public ContextConfig addContextRule(String contextRule) {
+        putValue(rules, contextRule);
         return this;
     }
 
@@ -93,6 +99,12 @@ public class ContextConfig extends AbstractParameters {
         return getStringArray(resources);
     }
 
+    public ContextConfig setResourceLocations(String[] resourceLocations) {
+        removeValue(resources);
+        putValue(resources, resourceLocations);
+        return this;
+    }
+
     public ContextConfig addResourceLocation(String resourceLocation) {
         putValue(resources, resourceLocation);
         return this;
@@ -100,6 +112,12 @@ public class ContextConfig extends AbstractParameters {
 
     public String[] getBasePackages() {
         return getStringArray(scan);
+    }
+
+    public ContextConfig setBasePackage(String[] basePackages) {
+        removeValue(scan);
+        putValue(scan, basePackages);
+        return this;
     }
 
     public ContextConfig addBasePackage(String basePackage) {

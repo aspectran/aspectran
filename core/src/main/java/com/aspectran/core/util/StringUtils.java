@@ -141,7 +141,7 @@ public class StringUtils {
 
     /**
      * Check whether the given {@code CharSequence} contains any whitespace characters.
-     * @param chars the {@code CharSequence} to check (may be {@code null})
+     * @param chars the {@code CharSequence} to check (maybe {@code null})
      * @return {@code true} if the {@code CharSequence} is not empty and
      *      contains at least 1 whitespace character
      * @see Character#isWhitespace

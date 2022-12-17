@@ -107,7 +107,7 @@ public class AspectranParameters extends AbstractParameters {
     public AspectranParameters addTypeAlias(String alias, String type) {
         TypeAliasesParameters typeAliasesParameters = touchParameters(typeAliases);
         Parameters parameters = typeAliasesParameters.touchParameters(TypeAliasesParameters.typeAlias);
-        parameters.clearValue(alias);
+        parameters.removeValue(alias);
         parameters.putValue(alias, type);
         return this;
     }

@@ -18,6 +18,9 @@ package com.aspectran.core.util.apon;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.text.ParseException;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * <p>Created: 2019-07-08</p>
@@ -25,7 +28,13 @@ import java.io.IOException;
 class XmlToAponTest {
 
     @Test
-    void testConvert1() throws IOException {
+    void test() throws IOException, ParseException {
+        String converted = convert();
+        String expected = "container: {\n" + "  id: 12\n" + "  item1: {\n" + "    container: [\n" + "      {\n" + "        id: 34\n" + "        item: [\n" + "          {\n" + "            id: 56\n" + "            item: (\n" + "              |a\n" + "              |a\n" + "              |a\n" + "            )\n" + "          }\n" + "          {\n" + "            id: 78\n" + "            item: bbb\n" + "          }\n" + "        ]\n" + "      }\n" + "      {\n" + "        item: [\n" + "          aaa\n" + "          bbb\n" + "          ccc\n" + "        ]\n" + "      }\n" + "    ]\n" + "  }\n" + "  item2: (\n" + "    |\n" + "    |    xyz\n" + "    |  \n" + "  )\n" + "  item3: {\n" + "    id: 90\n" + "    item3: (\n" + "      |\n" + "      |    xyz\n" + "      |  \n" + "    )\n" + "  }\n" + "  item4: {\n" + "    item5: {\n" + "      id: 91\n" + "      item5: (\n" + "        |\n" + "        |      xyz\n" + "        |    \n" + "      )\n" + "    }\n" + "  }\n" + "}\n";
+        assertEquals(converted, expected.replace("\n", AponFormat.SYSTEM_NEW_LINE));
+    }
+
+    static String convert() throws IOException {
         String xml = "<container id=\"12\">\n" +
                 "  <item1>\n" +
                 "    <container id=\"34\">\n" +
@@ -52,8 +61,16 @@ class XmlToAponTest {
                 "</container>";
 
         Parameters ps = XmlToApon.from(xml);
+        return ps.toString();
+    }
 
-        System.out.println(ps);
+    public static void main(String[] args) {
+        try {
+            String result = convert();
+            System.out.println(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

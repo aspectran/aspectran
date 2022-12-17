@@ -5,7 +5,7 @@
 #
 context: {
     base: ./target/test-classes
-    root: /WEB-INF/aspectran/config/test-root.xml
+    rules: /WEB-INF/aspectran/config/test-root.xml
     encoding: utf-8
     resources: [
         /WEB-INF/aspectran/config

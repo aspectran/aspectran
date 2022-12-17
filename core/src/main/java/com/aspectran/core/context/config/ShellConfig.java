@@ -80,6 +80,12 @@ public class ShellConfig extends AbstractParameters {
         return getStringArray(commands);
     }
 
+    public ShellConfig setCommands(String[] commands) {
+        removeValue(ShellConfig.commands);
+        putValue(ShellConfig.commands, commands);
+        return this;
+    }
+
     public ShellConfig addCommand(String command) {
         putValue(ShellConfig.commands, command);
         return this;

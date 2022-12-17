@@ -45,9 +45,7 @@ public class BroadcastAvailableUsersPayload extends AbstractParameters {
     }
 
     public void setUsernames(Set<String> usernames) {
-        for (String username : usernames) {
-            putValue(BroadcastAvailableUsersPayload.usernames, username);
-        }
+        putValueNonNull(BroadcastAvailableUsersPayload.usernames, usernames);
     }
 
 }

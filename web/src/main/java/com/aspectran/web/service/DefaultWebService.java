@@ -29,6 +29,7 @@ import com.aspectran.core.service.AspectranCoreService;
 import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.CoreService;
 import com.aspectran.core.service.ServiceStateListener;
+import com.aspectran.core.util.ObjectUtils;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
@@ -53,7 +54,7 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
 
     private static final String ASPECTRAN_CONFIG_PARAM = "aspectran:config";
 
-    private static final String DEFAULT_APP_CONFIG_ROOT_FILE = "/WEB-INF/aspectran/app-config.xml";
+    private static final String DEFAULT_APP_CONTEXT_FILE = "/WEB-INF/aspectran/app-context.xml";
 
     private final ServletContext servletContext;
 
@@ -333,9 +334,9 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
         }
 
         ContextConfig contextConfig = aspectranConfig.touchContextConfig();
-        String rootFile = contextConfig.getRootFile();
-        if (!StringUtils.hasText(rootFile) && !contextConfig.hasAspectranParameters()) {
-            contextConfig.setRootFile(DEFAULT_APP_CONFIG_ROOT_FILE);
+        String[] contextRules = contextConfig.getContextRules();
+        if (ObjectUtils.isEmpty(contextRules) && !contextConfig.hasAspectranParameters()) {
+            contextConfig.setContextRules(new String[] {DEFAULT_APP_CONTEXT_FILE});
         }
 
         DefaultWebService service = new DefaultWebService(servletContext);

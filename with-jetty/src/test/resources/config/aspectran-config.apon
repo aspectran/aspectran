@@ -1,5 +1,5 @@
 context: {
-    root: classpath:config/root-config.xml
+    rules: classpath:config/root-context.xml
     resources: [
     ]
     profiles: {

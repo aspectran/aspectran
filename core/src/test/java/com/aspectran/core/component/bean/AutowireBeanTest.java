@@ -55,7 +55,7 @@ class AutowireBeanTest {
         builder.setDebugMode(true);
         builder.setActiveProfiles("dev", "local");
         builder.setBasePackages("com.aspectran.core.component.bean");
-        ActivityContext context = builder.build("/config/bean/autowire-bean-test-config.xml");
+        ActivityContext context = builder.build(new String[] {"/config/bean/autowire-bean-test-config.xml", "/config/bean/test-properties.xml"});
         beanRegistry = context.getBeanRegistry();
         templateRenderer = context.getTemplateRenderer();
     }

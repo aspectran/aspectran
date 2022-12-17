@@ -92,7 +92,7 @@ abstract class AbstractAppendHandler implements RuleAppendHandler {
                 for (RuleAppender appender : pendedList) {
                     if (environmentProfiles.acceptsProfiles(appender.getProfiles())) {
                         if (logger.isDebugEnabled()) {
-                            logger.debug("Append Rules " + appender);
+                            logger.debug("Append rules " + appender);
                         }
                         handle(appender);
                     }
@@ -100,7 +100,7 @@ abstract class AbstractAppendHandler implements RuleAppendHandler {
             } else {
                 for (RuleAppender appender : pendedList) {
                     if (logger.isDebugEnabled()) {
-                        logger.debug("Append Rules " + appender);
+                        logger.debug("Append rules " + appender);
                     }
                     handle(appender);
                 }

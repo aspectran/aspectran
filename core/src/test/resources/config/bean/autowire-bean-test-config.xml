@@ -1,12 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 7.0//EN"
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran 7.0//EN"
         "http://aspectran.github.io/dtd/aspectran-7.dtd">
 <aspectran>
 
     <bean id="bean.*" scan="com.aspectran.core.component.**.Test*Bean?" mask="com.aspectran.core.component.bean.**.*"/>
 
     <bean id="bean.TestFieldValueAutowireBean2" class="com.aspectran.core.component.bean.TestFieldValueAutowireBean"/>
-
-    <append file="/config/bean/test-properties.xml"/>
 
 </aspectran>

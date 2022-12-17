@@ -33,7 +33,7 @@ public interface ActivityContextParser {
 
     void setDebugMode(boolean debugMode);
 
-    ActivityRuleAssistant parse(String rootFile) throws ActivityContextParserException;
+    ActivityRuleAssistant parse(String[] contextRules) throws ActivityContextParserException;
 
     ActivityRuleAssistant parse(AspectranParameters aspectranParameters) throws ActivityContextParserException;
 

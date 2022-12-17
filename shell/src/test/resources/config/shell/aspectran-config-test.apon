@@ -1,5 +1,5 @@
 context: {
-    root: classpath:config/shell/shell-test-root-config.xml
+    rules: classpath:config/shell/shell-test-root-context.xml
     resources: [
     ]
     autoReload: {

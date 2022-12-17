@@ -117,9 +117,9 @@ public interface Parameter {
     void putValue(Object value);
 
     /**
-     * Clears the parameter value.
+     * Removes the parameter value.
      */
-    void clearValue();
+    void removeValue();
 
     /**
      * Returns a value as an {@code Object} array.

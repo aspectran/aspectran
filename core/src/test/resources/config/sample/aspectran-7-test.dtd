@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 
 <!--
   XML DTD for the Aspectran Configuration File, Version 7.0
@@ -7,12 +7,12 @@
 
   This DTD module is identified by the PUBLIC and SYSTEM identifiers:
 
-  PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 7.0//EN"
+  PUBLIC "-//ASPECTRAN//DTD Aspectran 7.0//EN"
   SYSTEM "http://aspectran.github.io/dtd/aspectran-7.dtd">
 
   XML documents that conform to this DTD should declare the following doctype:
 
-  <!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 7.0//EN"
+  <!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran 7.0//EN"
           "http://aspectran.github.io/dtd/aspectran-7.dtd">
 -->
 

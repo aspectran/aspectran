@@ -26,6 +26,7 @@ import com.aspectran.core.context.config.ShellConfig;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.ServiceStateListener;
+import com.aspectran.core.util.ObjectUtils;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
@@ -48,7 +49,7 @@ public class DefaultShellService extends AbstractShellService {
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultShellService.class);
 
-    private static final String DEFAULT_APP_CONFIG_ROOT_FILE = "/config/app-config.xml";
+    private static final String DEFAULT_APP_CONTEXT_FILE = "/config/app-context.xml";
 
     private volatile long pauseTimeout = -1L;
 
@@ -154,9 +155,9 @@ public class DefaultShellService extends AbstractShellService {
      */
     public static DefaultShellService create(AspectranConfig aspectranConfig, Console console) {
         ContextConfig contextConfig = aspectranConfig.touchContextConfig();
-        String rootFile = contextConfig.getRootFile();
-        if (!StringUtils.hasText(rootFile) && !contextConfig.hasAspectranParameters()) {
-            contextConfig.setRootFile(DEFAULT_APP_CONFIG_ROOT_FILE);
+        String[] contextRules = contextConfig.getContextRules();
+        if (ObjectUtils.isEmpty(contextRules) && !contextConfig.hasAspectranParameters()) {
+            contextConfig.setContextRules(new String[] {DEFAULT_APP_CONTEXT_FILE});
         }
 
         DefaultShellService service = new DefaultShellService(console);

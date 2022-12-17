@@ -6,7 +6,9 @@ system: {
     }
 }
 context: {
-    root: /config/app-config.xml
+    rules: [
+        /config/app-context.xml
+    ]
     resources: [
         /config
     ]

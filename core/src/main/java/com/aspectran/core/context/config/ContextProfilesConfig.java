@@ -44,8 +44,14 @@ public class ContextProfilesConfig extends AbstractParameters {
         return getStringArray(activeProfiles);
     }
 
+    public ContextProfilesConfig setActiveProfiles(String[] activeProfiles) {
+        removeValue(ContextProfilesConfig.activeProfiles);
+        putValue(ContextProfilesConfig.activeProfiles, activeProfiles);
+        return this;
+    }
+
     public ContextProfilesConfig addActiveProfile(String activeProfile) {
-        putValue(activeProfiles, activeProfile);
+        putValue(ContextProfilesConfig.activeProfiles, activeProfile);
         return this;
     }
 
@@ -53,8 +59,14 @@ public class ContextProfilesConfig extends AbstractParameters {
         return getStringArray(defaultProfiles);
     }
 
+    public ContextProfilesConfig setDefaultProfiles(String[] defaultProfiles) {
+        removeValue(ContextProfilesConfig.defaultProfiles);
+        putValue(ContextProfilesConfig.defaultProfiles, defaultProfiles);
+        return this;
+    }
+
     public ContextProfilesConfig addDefaultProfile(String defaultProfile) {
-        putValue(defaultProfiles, defaultProfile);
+        putValue(ContextProfilesConfig.defaultProfiles, defaultProfile);
         return this;
     }
 

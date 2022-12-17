@@ -65,6 +65,12 @@ public class DaemonConfig extends AbstractParameters {
         return getStringArray(commands);
     }
 
+    public DaemonConfig setCommands(String[] commands) {
+        removeValue(DaemonConfig.commands);
+        putValue(DaemonConfig.commands, commands);
+        return this;
+    }
+
     public DaemonConfig addCommand(String command) {
         putValue(DaemonConfig.commands, command);
         return this;

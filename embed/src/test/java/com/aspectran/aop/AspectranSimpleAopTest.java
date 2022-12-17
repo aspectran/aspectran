@@ -39,9 +39,9 @@ class AspectranSimpleAopTest {
 
     @BeforeAll
     void ready() {
-        String rootFile = "classpath:config/aop/simple-aop-test-config.xml";
+        String contextFile = "classpath:config/aop/simple-aop-test-context.xml";
         AspectranConfig aspectranConfig = new AspectranConfig();
-        aspectranConfig.newContextConfig().setRootFile(rootFile);
+        aspectranConfig.newContextConfig().setContextRules(new String[] {contextFile});
         aspectran = EmbeddedAspectran.run(aspectranConfig);
     }
 

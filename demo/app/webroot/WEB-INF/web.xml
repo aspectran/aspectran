@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
 This web.xml is only needed when using the Jetty server.
 The Undertow server does not use web.xml separately, instead it is set directly in tow-web-root.xml.

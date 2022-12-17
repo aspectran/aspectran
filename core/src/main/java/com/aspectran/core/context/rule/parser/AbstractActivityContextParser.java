@@ -77,18 +77,18 @@ public abstract class AbstractActivityContextParser implements ActivityContextPa
         this.debugMode = debugMode;
     }
 
-    protected RuleAppender resolveAppender(String configFile) {
+    protected RuleAppender resolveAppender(String classpathOrFilePath) {
         RuleAppender appender;
-        if (configFile.startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {
-            String resource = configFile.substring(ResourceUtils.CLASSPATH_URL_PREFIX.length());
+        if (classpathOrFilePath.startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {
+            String resource = classpathOrFilePath.substring(ResourceUtils.CLASSPATH_URL_PREFIX.length());
             appender = new ResourceRuleAppender(resource, assistant.getClassLoader());
-        } else if (configFile.startsWith(ResourceUtils.FILE_URL_PREFIX)) {
-            String filePath = configFile.substring(ResourceUtils.FILE_URL_PREFIX.length());
+        } else if (classpathOrFilePath.startsWith(ResourceUtils.FILE_URL_PREFIX)) {
+            String filePath = classpathOrFilePath.substring(ResourceUtils.FILE_URL_PREFIX.length());
             appender = new FileRuleAppender(filePath);
         } else {
-            appender = new FileRuleAppender(assistant.getBasePath(), configFile);
+            appender = new FileRuleAppender(assistant.getBasePath(), classpathOrFilePath);
         }
-        if (configFile.toLowerCase().endsWith(".apon")) {
+        if (classpathOrFilePath.toLowerCase().endsWith(".apon")) {
             appender.setAppendableFileFormatType(AppendableFileFormatType.APON);
         } else {
             appender.setAppendableFileFormatType(AppendableFileFormatType.XML);
