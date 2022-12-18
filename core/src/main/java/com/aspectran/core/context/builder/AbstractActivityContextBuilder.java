@@ -70,7 +70,7 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
 
     private String basePath;
 
-    private String rootFile;
+    private String[] contextRules;
 
     private String encoding;
 
@@ -118,7 +118,7 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
     @Override
     public void setAspectranParameters(AspectranParameters aspectranParameters) {
         this.aspectranParameters = aspectranParameters;
-        this.rootFile = null;
+        this.contextRules = null;
     }
 
     @Override
@@ -132,13 +132,13 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
     }
 
     @Override
-    public String getRootFile() {
-        return rootFile;
+    public String[] getContextRules() {
+        return contextRules;
     }
 
     @Override
-    public void setRootFile(String rootFile) {
-        this.rootFile = rootFile;
+    public void setContextRules(String[] contextRules) {
+        this.contextRules = contextRules;
         this.aspectranParameters = null;
     }
 
@@ -250,7 +250,7 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
             setBasePath(contextConfig.getBasePath());
         }
 
-        this.rootFile = contextConfig.getRootFile();
+        this.contextRules = contextConfig.getContextRules();
 
         AspectranParameters aspectranParameters = contextConfig.getAspectranParameters();
         if (aspectranParameters != null) {

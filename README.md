@@ -55,11 +55,11 @@ Aspectran consists of the following major packages:
 * **com.aspectran.rss-lettuce**  
   Package containing a Redis session store implementation using Lettuce as a client
 * **com.aspectran.mybatis**  
-  Add-on package for integrating MyBatis
+  Add-on package for integration with MyBatis
 * **com.aspectran.freemarker**  
-  Add-on package required to use the FreeMarker template engine
+  Add-on package for using the FreeMarker template engine
 * **com.aspectran.pebble**  
-  Add-on package required to use the Pebble template engine
+  Add-on package for using the Pebble template engine
 
 ## Building
 

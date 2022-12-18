@@ -22,6 +22,8 @@ import com.aspectran.core.util.ToStringBuilder;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Array;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -125,7 +127,7 @@ public abstract class AbstractParameters implements Parameters {
         if (pv != null) {
             return pv;
         }
-        if (altParameterValueMap != null) {
+        if (structureFixed) {
             return altParameterValueMap.get(name);
         }
         return null;
@@ -155,8 +157,7 @@ public abstract class AbstractParameters implements Parameters {
 
     @Override
     public boolean hasParameter(String name) {
-        return (parameterValueMap.containsKey(name) ||
-            altParameterValueMap != null && altParameterValueMap.containsKey(name));
+        return (parameterValueMap.containsKey(name) || structureFixed && altParameterValueMap.containsKey(name));
     }
 
     @Override
@@ -244,6 +245,25 @@ public abstract class AbstractParameters implements Parameters {
         if (p == null) {
             p = newParameterValue(name, ValueType.determineValueType(value));
         }
+        if (value != null && value.getClass().isArray()) {
+            if (structureFixed && !p.isArray()) {
+                throw new IllegalStateException("Not a parameter of array type: " + p);
+            }
+            int len = Array.getLength(value);
+            for (int i = 0; i < len; i++) {
+                Object obj = Array.get(value, i);
+                putValue(p, name, obj);
+            }
+        } else if (value instanceof Collection<?>) {
+            for (Object obj : (Collection<?>)value) {
+                putValue(p, name, obj);
+            }
+        } else {
+            putValue(p, name, value);
+        }
+    }
+
+    private void putValue(Parameter p, String name, Object value) {
         p.putValue(value);
         if (value instanceof Parameters) {
             ((Parameters)value).setActualName(name);
@@ -277,11 +297,11 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
-    public void clearValue(String name) {
+    public void removeValue(String name) {
         if (structureFixed) {
             Parameter p = getParameter(name);
             if (p != null) {
-                p.clearValue();
+                p.removeValue();
             }
         } else {
             parameterValueMap.remove(name);
@@ -289,11 +309,11 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
-    public void clearValue(ParameterKey key) {
+    public void removeValue(ParameterKey key) {
         if (key == null) {
             throw new IllegalArgumentException("key must not be null");
         }
-        clearValue(key.getName());
+        removeValue(key.getName());
     }
 
     @Override
@@ -701,7 +721,7 @@ public abstract class AbstractParameters implements Parameters {
     @Override
     public ParameterValue newParameterValue(String name, ValueType valueType, boolean array) {
         if (structureFixed) {
-            throw new IllegalStateException();
+            throw new IllegalStateException("Unknown parameter: " + name);
         }
         ParameterValue pv = new ParameterValue(name, valueType, array);
         pv.setContainer(this);
@@ -791,7 +811,9 @@ public abstract class AbstractParameters implements Parameters {
         tsb.append("qualifiedName", getQualifiedName());
         if (details) {
             tsb.append("parameters", parameterValueMap);
-            tsb.append("altParameters", altParameterValueMap);
+            if (structureFixed && !altParameterValueMap.isEmpty()) {
+                tsb.append("altParameters", altParameterValueMap);
+            }
         } else {
             tsb.append("parameters", getParameterNames());
         }

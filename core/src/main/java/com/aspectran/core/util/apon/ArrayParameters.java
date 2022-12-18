@@ -33,7 +33,6 @@ import java.util.List;
 public class ArrayParameters extends AbstractParameters
         implements Iterable<Parameters>, Serializable {
 
-    /** @serial */
     private static final long serialVersionUID = 2058392199376865356L;
 
     public static final String NONAME = "<noname>";

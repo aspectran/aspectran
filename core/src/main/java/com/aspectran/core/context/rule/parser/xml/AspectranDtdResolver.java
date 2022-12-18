@@ -38,7 +38,7 @@ public class AspectranDtdResolver implements EntityResolver {
     private final boolean validating;
 
     static {
-        doctypeMap.put("-//ASPECTRAN//DTD Aspectran Configuration 6.0//EN".toUpperCase(), ASPECTRAN_DTD);
+        doctypeMap.put("-//ASPECTRAN//DTD Aspectran 6.0//EN".toUpperCase(), ASPECTRAN_DTD);
         doctypeMap.put("aspectran-6.dtd".toUpperCase(), ASPECTRAN_DTD);
     }
 

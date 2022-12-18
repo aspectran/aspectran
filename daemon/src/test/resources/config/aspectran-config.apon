@@ -1,5 +1,5 @@
 context: {
-    root: classpath:config/app-config.xml
+    rules: classpath:config/app-config.xml
     resources: [
     ]
     scan: [

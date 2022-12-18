@@ -192,8 +192,8 @@ public class ParameterValue implements Parameter {
 
     @Override
     public void arraylize() {
-        Assert.state(!assigned,
-                "This parameter cannot be converted to an array type because it has already assigned value");
+        Assert.state(!assigned, "This parameter cannot be converted to " +
+                "an array type because it already has a value assigned to it");
         array = true;
         bracketed = true;
     }
@@ -232,7 +232,7 @@ public class ParameterValue implements Parameter {
     }
 
     @Override
-    public void clearValue() {
+    public void removeValue() {
         value = null;
         list = null;
         assigned = false;

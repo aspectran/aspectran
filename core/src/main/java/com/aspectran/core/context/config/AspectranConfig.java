@@ -33,7 +33,7 @@ public class AspectranConfig extends AbstractParameters {
 
     public static final String BASE_PATH_PROPERTY_NAME = "aspectran.basePath";
     public static final String DEFAULT_ASPECTRAN_CONFIG_FILE = "aspectran-config.apon";
-    public static final String DEFAULT_APP_CONFIG_ROOT_FILE = "classpath:app-config.xml";
+    public static final String DEFAULT_APP_CONTEXT_FILE = "classpath:app-context.xml";
 
     private static final ParameterKey system;
     private static final ParameterKey context;

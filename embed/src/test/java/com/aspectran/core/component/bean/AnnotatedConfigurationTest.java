@@ -43,7 +43,7 @@ class AnnotatedConfigurationTest {
     void ready() {
         AspectranConfig aspectranConfig = new AspectranConfig();
         aspectranConfig.newContextConfig()
-                .setRootFile("classpath:config/anno/annotated-configuration-test-config.xml")
+                .setContextRules(new String[] {"classpath:config/anno/annotated-configuration-test-config.xml"})
                 .addBasePackage("com.aspectran.embed.sample.anno");
 
         aspectran = EmbeddedAspectran.run(aspectranConfig);

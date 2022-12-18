@@ -81,22 +81,24 @@ public class ObjectToAponConverter {
             }
         } else if (value == null) {
             if (container.hasParameter(name)) {
-                container.clearValue(name);
-            } else {
-                container.putValue(name, null);
+                container.removeValue(name);
             }
+            container.putValue(name, null);
         } else if (value instanceof Collection<?>) {
             if (container.hasParameter(name)) {
-                container.clearValue(name);
+                container.removeValue(name);
             }
             for (Object o : ((Collection<?>)value)) {
                 if (o != null) {
                     putValue(container, name, o);
                 }
             }
+            if (!container.hasParameter(name)) {
+                container.putValue(name, null);
+            }
         } else if (value.getClass().isArray()) {
             if (container.hasParameter(name)) {
-                container.clearValue(name);
+                container.removeValue(name);
             }
             int len = Array.getLength(value);
             for (int i = 0; i < len; i++) {
@@ -104,6 +106,9 @@ public class ObjectToAponConverter {
                 if (o != null) {
                     putValue(container, name, o);
                 }
+            }
+            if (!container.hasParameter(name)) {
+                container.putValue(name, null);
             }
         } else {
             container.putValue(name, valuelize(value));

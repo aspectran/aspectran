@@ -20,12 +20,10 @@ package com.aspectran.core.util.apon;
  */
 public class UnknownParameterException extends RuntimeException {
 
-    /** @serial */
     private static final long serialVersionUID = 6446576507072773588L;
 
     /**
      * Constructor to create exception with a message.
-     *
      * @param parameterName the parameter name
      * @param parameters the Parameters object
      */

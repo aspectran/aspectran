@@ -20,12 +20,10 @@ package com.aspectran.core.util.apon;
  */
 public class InvalidParameterValueException extends RuntimeException {
 
-    /** @serial */
     private static final long serialVersionUID = -459157992330424751L;
 
     /**
      * Constructor to create exception with a message.
-     *
      * @param msg a message to associate with the exception
      */
     public InvalidParameterValueException(String msg) {
@@ -34,7 +32,6 @@ public class InvalidParameterValueException extends RuntimeException {
 
     /**
      * Constructor to create exception to wrap another exception.
-     *
      * @param cause the real cause of the exception
      */
     public InvalidParameterValueException(Throwable cause) {
@@ -43,7 +40,6 @@ public class InvalidParameterValueException extends RuntimeException {
 
     /**
      * Constructor to create exception to wrap another exception and pass a message.
-     *
      * @param msg the message
      * @param cause the real cause of the exception
      */

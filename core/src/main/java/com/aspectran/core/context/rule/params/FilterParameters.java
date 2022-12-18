@@ -53,6 +53,12 @@ public class FilterParameters extends AbstractParameters {
         return getStringArray(exclude);
     }
 
+    public FilterParameters setExcludePattern(String[] excludePatterns) {
+        removeValue(exclude);
+        putValue(exclude, excludePatterns);
+        return this;
+    }
+
     public FilterParameters addExcludePattern(String excludePattern) {
         putValue(exclude, excludePattern);
         return this;

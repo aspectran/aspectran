@@ -201,9 +201,17 @@ public interface Parameters {
      */
     void putValueNonNull(ParameterKey key, Object value);
 
-    void clearValue(String name);
+    /**
+     * Remove the value of this parameter.
+     * @param name the parameter name
+     */
+    void removeValue(String name);
 
-    void clearValue(ParameterKey key);
+    /**
+     * Remove the value of this parameter.
+     * @param key the parameter key
+     */
+    void removeValue(ParameterKey key);
 
     /**
      * Return the value for the specified parameter,

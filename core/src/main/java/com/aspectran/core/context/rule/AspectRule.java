@@ -333,7 +333,7 @@ public class AspectRule implements BeanReferenceable {
         if (!StringUtils.isEmpty(expression)) {
             try {
                 AponReader.parse(expression, joinpointParameters);
-                joinpointParameters.clearValue(JoinpointParameters.expression);
+                joinpointParameters.removeValue(JoinpointParameters.expression);
             } catch (IOException e) {
                 // ignore
             }

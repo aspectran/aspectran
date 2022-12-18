@@ -20,7 +20,7 @@ import com.aspectran.core.context.rule.params.AspectranParameters;
 
 /**
  * The Interface ActivityContextParser.
- * 
+ *
  * <p>Created: 2008. 06. 14 PM 8:53:29</p>
  */
 public interface ActivityContextParser {
@@ -33,7 +33,7 @@ public interface ActivityContextParser {
 
     void setDebugMode(boolean debugMode);
 
-    ActivityRuleAssistant parse(String rootFile) throws ActivityContextParserException;
+    ActivityRuleAssistant parse(String[] contextRules) throws ActivityContextParserException;
 
     ActivityRuleAssistant parse(AspectranParameters aspectranParameters) throws ActivityContextParserException;
 

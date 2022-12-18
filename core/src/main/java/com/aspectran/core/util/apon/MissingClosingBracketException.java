@@ -20,12 +20,10 @@ package com.aspectran.core.util.apon;
  */
 public class MissingClosingBracketException extends MalformedAponException {
 
-    /** @serial */
     private static final long serialVersionUID = -6294265620028959255L;
 
     /**
      * Constructor to create exception with a message.
-     *
      * @param bracketShape the bracket character
      * @param name the parameter name
      * @param parameterValue the parameter value

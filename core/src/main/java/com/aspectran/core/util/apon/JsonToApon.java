@@ -58,7 +58,7 @@ public class JsonToApon {
 
     public static <T extends Parameters> T from(Reader reader, T container) throws IOException {
         if (reader == null) {
-            throw new IllegalArgumentException("in must not be null");
+            throw new IllegalArgumentException("reader must not be null");
         }
         if (container == null) {
             throw new IllegalArgumentException("container must not be null");

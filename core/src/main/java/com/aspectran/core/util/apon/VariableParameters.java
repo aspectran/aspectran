@@ -23,7 +23,6 @@ import java.io.Serializable;
  */
 public class VariableParameters extends AbstractParameters implements Serializable {
 
-    /** @serial */
     private static final long serialVersionUID = 4492298345259110525L;
 
     public VariableParameters() {

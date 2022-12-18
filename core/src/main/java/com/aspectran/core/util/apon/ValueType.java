@@ -17,7 +17,7 @@ package com.aspectran.core.util.apon;
 
 /**
  * Defines the type of the parameter value.
- *
+ * 
  * <p>Created: 2008. 03. 29 PM 3:47:00</p>
  */
 public enum ValueType {
@@ -46,7 +46,6 @@ public enum ValueType {
 
     /**
      * Returns a ValueType with a value represented by the specified String.
-     *
      * @param alias the specified String
      * @return the parameter value type
      */

@@ -70,9 +70,17 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
     }
 
     @Override
-    public ActivityContext build(String rootFile) throws ActivityContextBuilderException {
+    public ActivityContext build(String[] contextRules) throws ActivityContextBuilderException {
         synchronized (this.buildDestroyMonitor) {
-            setRootFile(rootFile);
+            setContextRules(contextRules);
+            return doBuild();
+        }
+    }
+
+    @Override
+    public ActivityContext build(String contextRuleFile) throws ActivityContextBuilderException {
+        synchronized (this.buildDestroyMonitor) {
+            setContextRules(new String[] {contextRuleFile});
             return doBuild();
         }
     }
@@ -88,23 +96,26 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
         try {
             Assert.state(!this.active.get(), "ActivityContext is already configured");
 
-            String rootFile = getRootFile();
+            String[] contextRules = getContextRules();
             AspectranParameters aspectranParameters = getAspectranParameters();
 
-            if (rootFile != null) {
-                logger.info("Building ActivityContext with " + rootFile);
+            if (contextRules != null) {
+                logger.info("Building ActivityContext with context rules [" +
+                        StringUtils.joinCommaDelimitedList(contextRules) + "]");
             } else if (aspectranParameters != null) {
-                logger.info("Building ActivityContext with specified AspectranParameters");
+                logger.info("Building ActivityContext with specified parameters");
             } else {
-                logger.info("No rootFile or aspectranParameters specified");
+                logger.warn("No rootFile or aspectranParameters specified");
             }
 
             if (getActiveProfiles() != null) {
-                logger.info("Activating profiles [" + StringUtils.joinCommaDelimitedList(getActiveProfiles()) + "]");
+                logger.info("Activating profiles [" +
+                        StringUtils.joinCommaDelimitedList(getActiveProfiles()) + "]");
             }
 
             if (getDefaultProfiles() != null) {
-                logger.info("Default profiles [" + StringUtils.joinCommaDelimitedList(getDefaultProfiles()) + "]");
+                logger.info("Default profiles [" +
+                        StringUtils.joinCommaDelimitedList(getDefaultProfiles()) + "]");
             }
 
             long startTime = System.currentTimeMillis();
@@ -119,13 +130,13 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
                 beanRuleRegistry.scanConfigurableBeans(getBasePackages());
             }
 
-            if (rootFile != null || aspectranParameters != null) {
+            if (contextRules != null || aspectranParameters != null) {
                 ActivityContextParser parser = new HybridActivityContextParser(assistant);
                 parser.setEncoding(getEncoding());
                 parser.setUseXmlToApon(isUseAponToLoadXml());
                 parser.setDebugMode(isDebugMode());
-                if (rootFile != null) {
-                    parser.parse(rootFile);
+                if (contextRules != null) {
+                    parser.parse(contextRules);
                 } else {
                     parser.parse(aspectranParameters);
                 }

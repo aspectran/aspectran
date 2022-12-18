@@ -20,10 +20,11 @@ import com.aspectran.core.context.rule.appender.RuleAppendHandler;
 import com.aspectran.core.context.rule.assistant.ActivityRuleAssistant;
 import com.aspectran.core.context.rule.converter.ParametersToRules;
 import com.aspectran.core.context.rule.params.AspectranParameters;
+import com.aspectran.core.util.StringUtils;
 
 /**
  * The Class HybridActivityContextParser.
- * 
+ *
  * <p>Created: 2015. 01. 27 PM 10:36:29</p>
  */
 public class HybridActivityContextParser extends AbstractActivityContextParser {
@@ -33,18 +34,21 @@ public class HybridActivityContextParser extends AbstractActivityContextParser {
     }
 
     @Override
-    public ActivityRuleAssistant parse(String rootFile) throws ActivityContextParserException {
+    public ActivityRuleAssistant parse(String[] contextRules) throws ActivityContextParserException {
         try {
-            if (rootFile == null) {
-                throw new IllegalArgumentException("rootFile must not be null");
+            if (contextRules == null) {
+                throw new IllegalArgumentException("contextRules must not be null");
             }
 
             RuleAppendHandler appendHandler = createRuleAppendHandler();
-            appendHandler.handle(resolveAppender(rootFile));
+            for (String ruleFile : contextRules) {
+                appendHandler.handle(resolveAppender(ruleFile));
+            }
 
             return getContextRuleAssistant();
         } catch (Exception e) {
-            throw new ActivityContextParserException("Failed to parse configuration: " + rootFile, e);
+            throw new ActivityContextParserException("Failed to parse configurations [" +
+                    StringUtils.joinCommaDelimitedList(contextRules) + "]", e);
         }
     }
 
