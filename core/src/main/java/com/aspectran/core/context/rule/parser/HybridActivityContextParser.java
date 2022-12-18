@@ -20,6 +20,7 @@ import com.aspectran.core.context.rule.appender.RuleAppendHandler;
 import com.aspectran.core.context.rule.assistant.ActivityRuleAssistant;
 import com.aspectran.core.context.rule.converter.ParametersToRules;
 import com.aspectran.core.context.rule.params.AspectranParameters;
+import com.aspectran.core.util.StringUtils;
 
 /**
  * The Class HybridActivityContextParser.
@@ -46,7 +47,8 @@ public class HybridActivityContextParser extends AbstractActivityContextParser {
 
             return getContextRuleAssistant();
         } catch (Exception e) {
-            throw new ActivityContextParserException("Failed to parse configuration: " + contextRules, e);
+            throw new ActivityContextParserException("Failed to parse configurations [" +
+                    StringUtils.joinCommaDelimitedList(contextRules) + "]", e);
         }
     }
 
