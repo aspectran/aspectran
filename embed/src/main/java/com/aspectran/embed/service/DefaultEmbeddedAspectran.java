@@ -135,7 +135,7 @@ public class DefaultEmbeddedAspectran extends AbstractEmbeddedAspectran {
                 logger.debug("Activity terminated: " + e.getMessage());
             }
         } catch (Exception e) {
-            throw new AspectranServiceException("An error occurred while processing translet: " + name, e);
+            throw new AspectranServiceException("Error while processing translet: " + name, e);
         }
         return translet;
     }
@@ -176,7 +176,7 @@ public class DefaultEmbeddedAspectran extends AbstractEmbeddedAspectran {
             Object result = activity.perform(() -> getActivityContext().getTemplateRenderer().render(templateId));
             return result.toString();
         } catch (Exception e) {
-            throw new AspectranServiceException("An error occurred while rendering template: " + templateId, e);
+            throw new AspectranServiceException("Error while rendering template: " + templateId, e);
         }
     }
 
