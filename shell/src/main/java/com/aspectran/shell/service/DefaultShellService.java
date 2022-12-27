@@ -23,6 +23,7 @@ import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.config.ContextConfig;
 import com.aspectran.core.context.config.ExposalsConfig;
 import com.aspectran.core.context.config.ShellConfig;
+import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.ServiceStateListener;
@@ -74,6 +75,19 @@ public class DefaultShellService extends AbstractShellService {
             return null;
         }
 
+        String transletName = transletCommandLine.getRequestName();
+        MethodType requestMethod = transletCommandLine.getRequestMethod();
+        if (requestMethod == null) {
+            requestMethod = MethodType.GET;
+        }
+        TransletRule transletRule = getActivityContext().getTransletRuleRegistry().getTransletRule(transletName, requestMethod);
+        if (transletRule == null) {
+            if (logger.isTraceEnabled()) {
+                logger.trace("No translet mapped for " + requestMethod + " " + transletName);
+            }
+            throw new TransletNotFoundException(transletName, requestMethod);
+        }
+
         PrintWriter outputWriter = null;
         List<OutputRedirection> redirectionList = transletCommandLine.getLineParser().getRedirectionList();
         if (redirectionList != null) {
@@ -87,8 +101,6 @@ public class DefaultShellService extends AbstractShellService {
 
         boolean procedural = (transletCommandLine.getParameterMap() == null);
         ParameterMap parameterMap = transletCommandLine.getParameterMap();
-        String transletName = transletCommandLine.getRequestName();
-        MethodType requestMethod = transletCommandLine.getRequestMethod();
 
         Translet translet = null;
         try {
@@ -96,11 +108,9 @@ public class DefaultShellService extends AbstractShellService {
             activity.setProcedural(procedural);
             activity.setParameterMap(parameterMap);
             activity.setOutputWriter(outputWriter);
-            activity.prepare(transletName, requestMethod);
+            activity.prepare(transletName, requestMethod, transletRule);
             activity.perform();
             translet = activity.getTranslet();
-        } catch (TransletNotFoundException e) {
-            throw e;
         } catch (ActivityTerminatedException e) {
             if (logger.isDebugEnabled()) {
                 logger.debug("Activity terminated: " + e.getMessage());
@@ -186,7 +196,7 @@ public class DefaultShellService extends AbstractShellService {
             @Override
             public void started() {
                 service.initSessionManager();
-                service.pauseTimeout = 0;
+                service.pauseTimeout = 0L;
                 service.printGreetings();
                 service.printHelp();
             }
@@ -195,7 +205,7 @@ public class DefaultShellService extends AbstractShellService {
             public void restarted() {
                 service.destroySessionManager();
                 service.initSessionManager();
-                service.pauseTimeout = 0;
+                service.pauseTimeout = 0L;
                 service.printGreetings();
                 service.printHelp();
             }
@@ -217,7 +227,7 @@ public class DefaultShellService extends AbstractShellService {
 
             @Override
             public void resumed() {
-                service.pauseTimeout = 0;
+                service.pauseTimeout = 0L;
             }
 
             @Override

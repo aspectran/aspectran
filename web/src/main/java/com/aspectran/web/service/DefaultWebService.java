@@ -104,7 +104,7 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
                     response.sendError(HttpServletResponse.SC_NOT_FOUND);
                 }
             } catch (Exception e) {
-                logger.error("An error occurred while processing by the default servlet", e);
+                logger.error("Error while processing with default servlet", e);
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             }
             return;
@@ -117,8 +117,7 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
         if (pauseTimeout != 0L) {
             if (pauseTimeout == -1L || pauseTimeout >= System.currentTimeMillis()) {
                 if (logger.isDebugEnabled()) {
-                    logger.debug(getServiceName() + " has been paused, so did not respond to the request URI \"" +
-                            requestUri + "\"");
+                    logger.debug(getServiceName() + " has been paused, so did not respond to request " + requestUri);
                 }
                 response.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
                 return;
@@ -167,6 +166,11 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
             return;
         }
 
+        perform(request, response, requestUri, requestMethod, transletRule);
+    }
+
+    private void perform(HttpServletRequest request, HttpServletResponse response,
+                         String requestUri, MethodType requestMethod, TransletRule transletRule) throws IOException {
         try {
             WebActivity activity = new WebActivity(getActivityContext(), request, response);
             activity.prepare(requestUri, requestMethod, transletRule);
@@ -176,7 +180,7 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
                 logger.debug("Activity terminated: " + e.getMessage());
             }
         } catch (Exception e) {
-            logger.error("An error occurred while processing request: " + requestUri, e);
+            logger.error("Error while processing " + requestMethod + " request " + requestUri, e);
             if (!response.isCommitted()) {
                 if (e.getCause() instanceof RequestMethodNotAllowedException) {
                     response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);

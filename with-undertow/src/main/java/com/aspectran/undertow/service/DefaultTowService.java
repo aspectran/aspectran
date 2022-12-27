@@ -80,8 +80,7 @@ public class DefaultTowService extends AbstractTowService {
         if (pauseTimeout != 0L) {
             if (pauseTimeout == -1L || pauseTimeout >= System.currentTimeMillis()) {
                 if (logger.isDebugEnabled()) {
-                    logger.debug(getServiceName() + " has been paused, so did not respond to the request URI \"" +
-                            requestPath + "\"");
+                    logger.debug(getServiceName() + " has been paused, so did not respond to request " + requestPath);
                 }
                 exchange.setStatusCode(HttpStatus.SERVICE_UNAVAILABLE.value());
                 return true;
@@ -123,9 +122,16 @@ public class DefaultTowService extends AbstractTowService {
             return true;
         }
 
+        perform(exchange, requestPath, requestMethod, transletRule);
+
+        return true;
+    }
+
+    private void perform(HttpServerExchange exchange, String requestPath,
+                         MethodType requestMethod, TransletRule transletRule) {
         try {
             TowActivity activity = new TowActivity(this, exchange);
-            activity.prepare(requestPath, exchange.getRequestMethod().toString());
+            activity.prepare(requestPath, requestMethod, transletRule);
             activity.perform();
         } catch (ActivityTerminatedException e) {
             if (logger.isDebugEnabled()) {
@@ -145,11 +151,9 @@ public class DefaultTowService extends AbstractTowService {
                 exchange.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
             }
         } catch (Exception e) {
-            logger.error("An error occurred while processing request: " + requestPath, e);
+            logger.error("Error while processing " + requestMethod + " request " + requestPath, e);
             exchange.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
-
-        return true;
     }
 
     private String getRequestInfo(HttpServerExchange exchange) {

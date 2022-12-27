@@ -203,14 +203,14 @@ public class DefaultEmbeddedAspectran extends AbstractEmbeddedAspectran {
             @Override
             public void started() {
                 aspectran.initSessionManager();
-                aspectran.pauseTimeout = 0;
+                aspectran.pauseTimeout = 0L;
             }
 
             @Override
             public void restarted() {
                 aspectran.destroySessionManager();
                 aspectran.initSessionManager();
-                aspectran.pauseTimeout = 0;
+                aspectran.pauseTimeout = 0L;
             }
 
             @Override
