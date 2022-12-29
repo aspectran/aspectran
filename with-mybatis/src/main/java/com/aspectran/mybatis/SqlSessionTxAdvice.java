@@ -46,10 +46,20 @@ public class SqlSessionTxAdvice {
         this.sqlSessionFactory = sqlSessionFactory;
     }
 
+    /**
+     * Specifies whether to auto-commit.
+     * @param autoCommit true to automatically commit each time updates/deletes/inserts
+     *                  is called, false to commit manually
+     */
     public void setAutoCommit(boolean autoCommit) {
         this.autoCommit = autoCommit;
     }
 
+    /**
+     * Sets the mode for using PreparedStatements effectively.
+     * @param executorType executor types include SIMPLE, REUSE, and BATCH, and can be
+     *                     specified as a string value
+     */
     public void setExecutorType(String executorType) {
         this.executorType = ExecutorType.valueOf(executorType);
     }
@@ -109,7 +119,7 @@ public class SqlSessionTxAdvice {
     /**
      * Flushes batch statements and commits database connection.
      * Note that database connection will not be committed if no updates/deletes/inserts were called.
-     * To force the commit call {@link #commit(boolean)}
+     * To force the commit, call {@link #commit(boolean)}.
      */
     public void commit() {
         if (checkSession()) {
@@ -147,7 +157,7 @@ public class SqlSessionTxAdvice {
     /**
      * Discards pending batch statements and rolls database connection back.
      * Note that database connection will not be rolled back if no updates/deletes/inserts were called.
-     * To force the rollback call {@link #rollback(boolean)}
+     * To force the rollback, call {@link #rollback(boolean)}.
      */
     public void rollback() {
         if (checkSession()) {
@@ -191,10 +201,8 @@ public class SqlSessionTxAdvice {
     }
 
     /**
-     * Closes the session arbitrarily.
-     * If the transaction advice does not finally close the session, the session
-     * will automatically reopen whenever necessary.
-     * @param arbitrarily true if the session is closed arbitrarily; otherwise false
+     * Closes the session.
+     * @param arbitrarily true if the session is arbitrarily closed by user code, false otherwise
      */
     public void close(boolean arbitrarily) {
         if (checkSession()) {
@@ -214,8 +222,8 @@ public class SqlSessionTxAdvice {
     }
 
     /**
-     * Returns whether the session is arbitrarily closed.
-     * @return whether the session is arbitrarily closed
+     * Returns whether the session was logically closed in user code, not by the framework.
+     * @return true if the session was closed by user code, false otherwise
      */
     public boolean isArbitrarilyClosed() {
         return arbitrarilyClosed;
@@ -223,7 +231,8 @@ public class SqlSessionTxAdvice {
 
     /**
      * Checks if the SqlSession is open.
-     * @return whether the session is arbitrarily closed
+     * If the session has already been closed by user code, it always returns true to ignore further processing.
+     * @return true if the session has already been closed by user code, otherwise false
      */
     private boolean checkSession() {
         if (arbitrarilyClosed) {
