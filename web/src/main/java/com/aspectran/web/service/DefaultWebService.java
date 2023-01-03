@@ -36,6 +36,7 @@ import com.aspectran.core.util.logging.LoggerFactory;
 import com.aspectran.web.activity.WebActivity;
 import com.aspectran.web.startup.servlet.WebActivityServlet;
 import com.aspectran.web.support.http.HttpHeaders;
+import jakarta.servlet.AsyncContext;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
@@ -94,9 +95,11 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
 
     @Override
     public void service(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String requestUri = request.getRequestURI();
+        final String requestUri;
         if (uriDecoding != null) {
-            requestUri = URLDecoder.decode(requestUri, uriDecoding);
+            requestUri = URLDecoder.decode(request.getRequestURI(), uriDecoding);
+        } else {
+            requestUri = request.getRequestURI();
         }
         if (!isExposable(requestUri)) {
             try {
@@ -130,10 +133,7 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
             }
         }
 
-        MethodType requestMethod = MethodType.resolve(request.getMethod());
-        if (requestMethod == null) {
-            requestMethod = MethodType.GET;
-        }
+        final MethodType requestMethod = MethodType.resolve(request.getMethod(), MethodType.GET);
         TransletRule transletRule = getActivityContext().getTransletRuleRegistry().getTransletRule(requestUri, requestMethod);
         if (transletRule == null) {
             // Provides for "trailing slash" redirects and serving directory index files
@@ -166,11 +166,19 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
             return;
         }
 
-        perform(request, response, requestUri, requestMethod, transletRule);
+        if (request.isAsyncSupported()) {
+            AsyncContext asyncContext = request.getAsyncContext();
+            asyncContext.start(() -> {
+                perform(request, response, requestUri, requestMethod, transletRule);
+                asyncContext.complete();
+            });
+        } else {
+            perform(request, response, requestUri, requestMethod, transletRule);
+        }
     }
 
     private void perform(HttpServletRequest request, HttpServletResponse response,
-                         String requestUri, MethodType requestMethod, TransletRule transletRule) throws IOException {
+                         String requestUri, MethodType requestMethod, TransletRule transletRule) {
         try {
             WebActivity activity = new WebActivity(getActivityContext(), request, response);
             activity.prepare(requestUri, requestMethod, transletRule);
@@ -183,13 +191,21 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
             logger.error("Error while processing " + requestMethod + " request " + requestUri, e);
             if (!response.isCommitted()) {
                 if (e.getCause() instanceof RequestMethodNotAllowedException) {
-                    response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+                    sendError(response, HttpServletResponse.SC_METHOD_NOT_ALLOWED);
                 } else if (e.getCause() instanceof SizeLimitExceededException) {
-                    response.sendError(HttpServletResponse.SC_REQUEST_ENTITY_TOO_LARGE);
+                    sendError(response, HttpServletResponse.SC_REQUEST_ENTITY_TOO_LARGE);
                 } else {
-                    response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                    sendError(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                 }
             }
+        }
+    }
+
+    private void sendError(HttpServletResponse response, int statusCode) {
+        try {
+            response.sendError(statusCode);
+        } catch (IOException e) {
+            logger.error("Failed to send an error response to the client with status code " + statusCode, e);
         }
     }
 

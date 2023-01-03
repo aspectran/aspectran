@@ -101,6 +101,18 @@ public enum MethodType {
     }
 
     /**
+     * Returns a {@code MethodType} with a value represented
+     * by the specified {@code String}.
+     * @param methodType the method type as a {@code String}
+     * @param defaultMethodType the default method type
+     * @return a {@code MethodType}; If {@code null}, should be {@code defaultMethodType}
+     */
+    public static MethodType resolve(String methodType, MethodType defaultMethodType) {
+        MethodType resolvedMethodType = resolve(methodType);
+        return (resolvedMethodType != null ? resolvedMethodType : defaultMethodType);
+    }
+
+    /**
      * Returns an array of {@code MethodType} with a value represented
      * by the specified {@code String}.
      * @param value the method type as a {@code String}
