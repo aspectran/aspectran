@@ -32,7 +32,7 @@
 
     <properties>
         <main.basedir>${project.parent.basedir}</main.basedir>
-        <undertow.version>2.3.2.Final</undertow.version>
+        <undertow.version>2.3.3.Final</undertow.version>
     </properties>
 
     <dependencies>
