@@ -167,7 +167,7 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
         }
 
         if (request.isAsyncSupported()) {
-            AsyncContext asyncContext = request.getAsyncContext();
+            AsyncContext asyncContext = request.startAsync();
             asyncContext.start(() -> {
                 perform(request, response, requestUri, requestMethod, transletRule);
                 asyncContext.complete();
