@@ -61,6 +61,7 @@
                             <value>/</value>
                         </item>
                         <item name="loadOnStartup" valueType="int">1</item>
+                        <item name="asyncSupported" valueType="boolean">true</item>
                     </properties>
                 </bean>
             </item>

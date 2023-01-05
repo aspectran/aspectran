@@ -102,6 +102,24 @@ public class DefaultShellService extends AbstractShellService {
         boolean procedural = (transletCommandLine.getParameterMap() == null);
         ParameterMap parameterMap = transletCommandLine.getParameterMap();
 
+        if (transletRule.isAsync()) {
+            asyncPerform(console, outputWriter, procedural, parameterMap, transletName, requestMethod, transletRule);
+            return null;
+        } else {
+            return perform(console, outputWriter, procedural, parameterMap, transletName, requestMethod, transletRule);
+        }
+    }
+
+    private void asyncPerform(Console console, PrintWriter outputWriter,
+                              boolean procedural, ParameterMap parameterMap,
+                              String transletName, MethodType requestMethod, TransletRule transletRule) {
+        //@TODO
+        perform(console, outputWriter, procedural, parameterMap, transletName, requestMethod, transletRule);
+    }
+
+    private Translet perform(Console console, PrintWriter outputWriter,
+                             boolean procedural, ParameterMap parameterMap,
+                             String transletName, MethodType requestMethod, TransletRule transletRule) {
         Translet translet = null;
         try {
             ShellActivity activity = new ShellActivity(this, console);
