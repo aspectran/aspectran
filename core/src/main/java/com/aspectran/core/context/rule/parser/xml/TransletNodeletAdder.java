@@ -24,6 +24,7 @@ import com.aspectran.core.context.rule.RequestRule;
 import com.aspectran.core.context.rule.ResponseRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.assistant.ActivityRuleAssistant;
+import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.nodelet.NodeletAdder;
 import com.aspectran.core.util.nodelet.NodeletParser;
@@ -46,8 +47,10 @@ class TransletNodeletAdder implements NodeletAdder {
             String scan = attrs.get("scan");
             String mask = attrs.get("mask");
             String method = attrs.get("method");
+            Boolean async = BooleanUtils.toNullableBooleanObject(attrs.get("async"));
+            String timeout = attrs.get("timeout");
 
-            TransletRule transletRule = TransletRule.newInstance(name, scan, mask, method);
+            TransletRule transletRule = TransletRule.newInstance(name, scan, mask, method, async, timeout);
             parser.pushObject(transletRule);
         });
         parser.addNodeEndlet(text -> {

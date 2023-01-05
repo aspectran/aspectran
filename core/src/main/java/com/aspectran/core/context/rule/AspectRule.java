@@ -310,7 +310,7 @@ public class AspectRule implements BeanReferenceable {
             try {
                 aspectRule.setOrder(Integer.parseInt(order));
             } catch (NumberFormatException e) {
-                throw new IllegalRuleException("The 'order' attribute of the 'aspect' element is not a valid integer");
+                throw new IllegalRuleException("The value of 'order' attribute on element 'aspect' is not valid for 'integer'");
             }
         }
 

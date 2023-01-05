@@ -99,9 +99,14 @@ public class WebActivity extends CoreActivity {
             if (getParentActivity() == null) {
                 String maxRequestSizeSetting = getSetting(MAX_REQUEST_SIZE_SETTING_NAME);
                 if (!StringUtils.isEmpty(maxRequestSizeSetting)) {
-                    long maxRequestSize = Long.parseLong(maxRequestSizeSetting);
-                    if (maxRequestSize >= 0L) {
-                        requestAdapter.setMaxRequestSize(maxRequestSize);
+                    try {
+                        long maxRequestSize = Long.parseLong(maxRequestSizeSetting);
+                        if (maxRequestSize >= 0L) {
+                            requestAdapter.setMaxRequestSize(maxRequestSize);
+                        }
+                    } catch (NumberFormatException e) {
+                        throw new RequestParseException("Illegal value for " + MAX_REQUEST_SIZE_SETTING_NAME +
+                                ": " + maxRequestSizeSetting, e);
                     }
                 }
                 String requestEncoding = getIntendedRequestEncoding();

@@ -525,8 +525,10 @@ public class ParametersToRules {
         String scan = StringUtils.emptyToNull(transletParameters.getString(TransletParameters.scan));
         String mask = StringUtils.emptyToNull(transletParameters.getString(TransletParameters.mask));
         String method = StringUtils.emptyToNull(transletParameters.getString(TransletParameters.method));
+        Boolean async = transletParameters.getBoolean(TransletParameters.async);
+        Long timeout = transletParameters.getLong(TransletParameters.timeout);
 
-        TransletRule transletRule = TransletRule.newInstance(name, mask, scan, method);
+        TransletRule transletRule = TransletRule.newInstance(name, mask, scan, method, async, timeout);
 
         List<DescriptionParameters> descriptionParametersList = transletParameters.getParametersList(TransletParameters.description);
         if (descriptionParametersList != null) {

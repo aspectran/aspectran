@@ -28,4 +28,8 @@ public @interface RequestToPost {
 
     String value() default "";
 
+    boolean async() default false;
+
+    long timeout() default -1L;
+
 }

@@ -132,6 +132,8 @@
   scan    CDATA #IMPLIED
   mask    CDATA #IMPLIED
   method  CDATA #IMPLIED
+  async   (true | false) #IMPLIED
+  timeout CDATA #IMPLIED
 >
 
 <!ELEMENT request (parameters*, attributes*)>
@@ -142,12 +144,12 @@
 
 <!ELEMENT contents (content*)>
 <!ATTLIST contents
-  name      CDATA #IMPLIED
+  name    CDATA #IMPLIED
 >
 
 <!ELEMENT content (choose | headers | echo | action | include)*>
 <!ATTLIST content
-  name      CDATA #IMPLIED
+  name    CDATA #IMPLIED
 >
 
 <!ELEMENT choose (when*, otherwise?)>
@@ -257,13 +259,13 @@
 
 <!ELEMENT item (#PCDATA | value | entry | bean)*>
 <!ATTLIST item
-  type         (single | array | list | map | set | properties) #IMPLIED
-  name         CDATA #IMPLIED
-  value        CDATA #IMPLIED
-  valueType    (string | int | long | float | double | boolean | parameters | file | multipart-file | bean) #IMPLIED
-  tokenize     (true | false) #IMPLIED
-  mandatory    (true | false) #IMPLIED
-  secret       (true | false) #IMPLIED
+  type      (single | array | list | map | set | properties) #IMPLIED
+  name      CDATA #IMPLIED
+  value     CDATA #IMPLIED
+  valueType (string | int | long | float | double | boolean | parameters | file | multipart-file | bean) #IMPLIED
+  tokenize  (true | false) #IMPLIED
+  mandatory (true | false) #IMPLIED
+  secret    (true | false) #IMPLIED
 >
 
 <!ELEMENT value (#PCDATA | bean)*>

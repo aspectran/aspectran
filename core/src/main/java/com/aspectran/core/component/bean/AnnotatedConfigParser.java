@@ -570,33 +570,71 @@ public class AnnotatedConfigParser {
 
         String transletName = null;
         MethodType[] allowedMethods = null;
+        Boolean async = null;
+        Long timeout = null;
         if (requestAnno != null) {
             transletName = StringUtils.emptyToNull(requestAnno.value());
             if (transletName == null) {
                 transletName = StringUtils.emptyToNull(requestAnno.translet());
             }
             allowedMethods = requestAnno.method();
+            if (requestAnno.async()) {
+                async = Boolean.TRUE;
+            }
+            if (requestAnno.timeout() != -1L) {
+                timeout = requestAnno.timeout();
+            }
         } else if (requestToGetAnno != null) {
             transletName = StringUtils.emptyToNull(requestToGetAnno.value());
             allowedMethods = new MethodType[] { MethodType.GET };
+            if (requestToGetAnno.async()) {
+                async = Boolean.TRUE;
+            }
+            if (requestToGetAnno.timeout() != -1L) {
+                timeout = requestToGetAnno.timeout();
+            }
         } else if (requestToPostAnno != null) {
             transletName = StringUtils.emptyToNull(requestToPostAnno.value());
             allowedMethods = new MethodType[] { MethodType.POST };
+            if (requestToPostAnno.async()) {
+                async = Boolean.TRUE;
+            }
+            if (requestToPostAnno.timeout() != -1L) {
+                timeout = requestToPostAnno.timeout();
+            }
         } else if (requestToPutAnno != null) {
             transletName = StringUtils.emptyToNull(requestToPutAnno.value());
             allowedMethods = new MethodType[] { MethodType.PUT };
+            if (requestToPutAnno.async()) {
+                async = Boolean.TRUE;
+            }
+            if (requestToPutAnno.timeout() != -1L) {
+                timeout = requestToPutAnno.timeout();
+            }
         } else if (requestToPatchAnno != null) {
             transletName = StringUtils.emptyToNull(requestToPatchAnno.value());
             allowedMethods = new MethodType[] { MethodType.PATCH };
+            if (requestToPatchAnno.async()) {
+                async = Boolean.TRUE;
+            }
+            if (requestToPatchAnno.timeout() != -1L) {
+                timeout = requestToPatchAnno.timeout();
+            }
         } else if (requestToDeleteAnno != null) {
             transletName = StringUtils.emptyToNull(requestToDeleteAnno.value());
             allowedMethods = new MethodType[] { MethodType.DELETE };
+            if (requestToDeleteAnno.async()) {
+                async = Boolean.TRUE;
+            }
+            if (requestToDeleteAnno.timeout() != -1L) {
+                timeout = requestToDeleteAnno.timeout();
+            }
         }
         if (nameArray != null) {
             transletName = applyNamespaceForTranslet(nameArray, transletName);
         }
 
-        TransletRule transletRule = TransletRule.newInstance(transletName, allowedMethods);
+        TransletRule transletRule = TransletRule.newInstance(transletName, allowedMethods, async, timeout);
 
         ParamItem[] paramItemAnnos = method.getAnnotationsByType(ParamItem.class);
         if (paramItemAnnos.length > 0) {

@@ -34,4 +34,8 @@ public @interface Request {
 
     MethodType[] method() default {};
 
+    boolean async() default false;
+
+    long timeout() default -1L;
+
 }

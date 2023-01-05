@@ -28,4 +28,8 @@ public @interface RequestToGet {
 
     String value() default "";
 
+    boolean async() default false;
+
+    long timeout() default -1L;
+
 }

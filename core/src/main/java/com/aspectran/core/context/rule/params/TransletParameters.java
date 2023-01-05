@@ -26,6 +26,8 @@ public class TransletParameters extends AbstractParameters {
     public static final ParameterKey scan;
     public static final ParameterKey mask;
     public static final ParameterKey method;
+    public static final ParameterKey async;
+    public static final ParameterKey timeout;
     public static final ParameterKey request;
     public static final ParameterKey parameters;
     public static final ParameterKey attributes;
@@ -47,6 +49,8 @@ public class TransletParameters extends AbstractParameters {
         scan = new ParameterKey("scan", ValueType.STRING);
         mask = new ParameterKey("mask", ValueType.STRING);
         method = new ParameterKey("method", ValueType.STRING);
+        async = new ParameterKey("async", ValueType.BOOLEAN);
+        timeout = new ParameterKey("timeout", ValueType.LONG);
         request = new ParameterKey("request", RequestParameters.class);
         parameters = new ParameterKey("parameters", ItemHolderParameters.class, true, true);
         attributes = new ParameterKey("attributes", ItemHolderParameters.class, true, true);
@@ -67,6 +71,8 @@ public class TransletParameters extends AbstractParameters {
                 scan,
                 mask,
                 method,
+                async,
+                timeout,
                 request,
                 parameters,
                 attributes,
