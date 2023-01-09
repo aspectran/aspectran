@@ -44,7 +44,7 @@ public interface Command {
     Command.Descriptor getDescriptor();
 
     /**
-     * An interface that can be used to describe the the functionality of the
+     * An interface that can be used to describe the functionality of the
      * command implementation.  This is a very important concept in a text-driven
      * environment such as a command-line user interface.
      */

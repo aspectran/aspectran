@@ -188,50 +188,50 @@ public class DefaultShellService extends AbstractShellService {
             contextConfig.setContextRules(new String[] {DEFAULT_APP_CONTEXT_FILE});
         }
 
-        DefaultShellService service = new DefaultShellService(console);
+        DefaultShellService shellService = new DefaultShellService(console);
         ShellConfig shellConfig = aspectranConfig.getShellConfig();
         if (shellConfig != null) {
-            applyShellConfig(service, shellConfig);
+            applyShellConfig(shellService, shellConfig);
         }
-        service.prepare(aspectranConfig);
-        setServiceStateListener(service);
-        return service;
+        shellService.prepare(aspectranConfig);
+        setServiceStateListener(shellService);
+        return shellService;
     }
 
-    private static void applyShellConfig(DefaultShellService service, ShellConfig shellConfig) {
-        service.setVerbose(shellConfig.isVerbose());
-        service.setGreetings(shellConfig.getGreetings());
+    private static void applyShellConfig(DefaultShellService shellService, ShellConfig shellConfig) {
+        shellService.setVerbose(shellConfig.isVerbose());
+        shellService.setGreetings(shellConfig.getGreetings());
         ExposalsConfig exposalsConfig = shellConfig.getExposalsConfig();
         if (exposalsConfig != null) {
             String[] includePatterns = exposalsConfig.getIncludePatterns();
             String[] excludePatterns = exposalsConfig.getExcludePatterns();
-            service.setExposals(includePatterns, excludePatterns);
+            shellService.setExposals(includePatterns, excludePatterns);
         }
     }
 
-    private static void setServiceStateListener(final DefaultShellService service) {
-        service.setServiceStateListener(new ServiceStateListener() {
+    private static void setServiceStateListener(final DefaultShellService shellService) {
+        shellService.setServiceStateListener(new ServiceStateListener() {
             @Override
             public void started() {
-                service.initSessionManager();
-                service.pauseTimeout = 0L;
-                service.printGreetings();
-                service.printHelp();
+                shellService.initSessionManager();
+                shellService.pauseTimeout = 0L;
+                shellService.printGreetings();
+                shellService.printHelp();
             }
 
             @Override
             public void restarted() {
-                service.destroySessionManager();
-                service.initSessionManager();
-                service.pauseTimeout = 0L;
-                service.printGreetings();
-                service.printHelp();
+                shellService.destroySessionManager();
+                shellService.initSessionManager();
+                shellService.pauseTimeout = 0L;
+                shellService.printGreetings();
+                shellService.printHelp();
             }
 
             @Override
             public void paused(long millis) {
                 if (millis > 0L) {
-                    service.pauseTimeout = System.currentTimeMillis() + millis;
+                    shellService.pauseTimeout = System.currentTimeMillis() + millis;
                 } else {
                     logger.warn("Pause timeout in milliseconds needs to be set " +
                             "to a value of greater than 0");
@@ -240,18 +240,18 @@ public class DefaultShellService extends AbstractShellService {
 
             @Override
             public void paused() {
-                service.pauseTimeout = -1L;
+                shellService.pauseTimeout = -1L;
             }
 
             @Override
             public void resumed() {
-                service.pauseTimeout = 0L;
+                shellService.pauseTimeout = 0L;
             }
 
             @Override
             public void stopped() {
                 paused();
-                service.destroySessionManager();
+                shellService.destroySessionManager();
             }
         });
     }

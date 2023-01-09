@@ -56,7 +56,7 @@ public class ShellActivity extends CoreActivity {
 
     private static final Logger logger = LoggerFactory.getLogger(ShellActivity.class);
 
-    private final ShellService service;
+    private final ShellService shellService;
 
     private final Console console;
 
@@ -70,13 +70,13 @@ public class ShellActivity extends CoreActivity {
 
     /**
      * Instantiates a new ShellActivity.
-     * @param service the {@code ShellService} instance
+     * @param shellService the {@code ShellService} instance
      * @param console the {@code Console} instance
      */
-    public ShellActivity(ShellService service, Console console) {
-        super(service.getActivityContext());
+    public ShellActivity(ShellService shellService, Console console) {
+        super(shellService.getActivityContext());
 
-        this.service = service;
+        this.shellService = shellService;
         this.console = console;
     }
 
@@ -95,7 +95,7 @@ public class ShellActivity extends CoreActivity {
     @Override
     protected void adapt() throws AdapterException {
         try {
-            setSessionAdapter(service.newSessionAdapter());
+            setSessionAdapter(shellService.newSessionAdapter());
 
             ShellRequestAdapter requestAdapter = new ShellRequestAdapter(getTranslet().getRequestMethod());
             requestAdapter.setEncoding(console.getEncoding());
@@ -184,7 +184,7 @@ public class ShellActivity extends CoreActivity {
      * Prints a description for the {@code Translet}.
      */
     private void showDescription() {
-        if (service.isVerbose()) {
+        if (shellService.isVerbose()) {
             String description = getTranslet().getDescription();
             if (description != null) {
                 console.writeLine(description);

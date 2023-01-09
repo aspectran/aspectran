@@ -41,7 +41,7 @@ public class AbstractDaemon implements Daemon {
 
     private String name;
 
-    private DefaultDaemonService service;
+    private DefaultDaemonService daemonService;
 
     private CommandFilePoller commandFilePoller;
 
@@ -65,12 +65,12 @@ public class AbstractDaemon implements Daemon {
 
     @Override
     public String getBasePath() {
-        return (service != null ? service.getBasePath() : null);
+        return (daemonService != null ? daemonService.getBasePath() : null);
     }
 
     @Override
-    public DaemonService getService() {
-        return service;
+    public DaemonService getDaemonService() {
+        return daemonService;
     }
 
     @Override
@@ -110,8 +110,8 @@ public class AbstractDaemon implements Daemon {
 
     protected void init(AspectranConfig aspectranConfig) throws Exception {
         try {
-            this.service = DefaultDaemonService.create(aspectranConfig);
-            this.service.start();
+            this.daemonService = DefaultDaemonService.create(aspectranConfig);
+            this.daemonService.start();
         } catch (Exception e) {
             throw new Exception("Failed to initialize daemon", e);
         }
@@ -200,9 +200,9 @@ public class AbstractDaemon implements Daemon {
             commandFilePoller.stop();
             commandFilePoller = null;
         }
-        if (service != null) {
-            service.stop();
-            service = null;
+        if (daemonService != null) {
+            daemonService.stop();
+            daemonService = null;
         }
     }
 

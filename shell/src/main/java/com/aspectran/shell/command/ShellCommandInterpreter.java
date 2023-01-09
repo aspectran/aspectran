@@ -53,7 +53,7 @@ public class ShellCommandInterpreter implements CommandInterpreter {
 
     private ShellCommandRegistry commandRegistry;
 
-    private DefaultShellService service;
+    private DefaultShellService shellService;
 
     private PrintStream originalSystemOut;
 
@@ -77,8 +77,8 @@ public class ShellCommandInterpreter implements CommandInterpreter {
     }
 
     @Override
-    public ShellService getService() {
-        return service;
+    public ShellService getShellService() {
+        return shellService;
     }
 
     public void init(@Nullable String basePath, File aspectranConfigFile) throws Exception {
@@ -100,8 +100,8 @@ public class ShellCommandInterpreter implements CommandInterpreter {
         }
 
         if (aspectranConfig.hasContextConfig()) {
-            service = DefaultShellService.create(aspectranConfig, console);
-            service.start();
+            shellService = DefaultShellService.create(aspectranConfig, console);
+            shellService.start();
         } else {
             String greetings = shellConfig.getGreetings();
             if (StringUtils.hasText(greetings)) {
@@ -158,7 +158,7 @@ public class ShellCommandInterpreter implements CommandInterpreter {
                     }
                     if (command != null) {
                         execute(command, lineParser);
-                    } else if (service != null) {
+                    } else if (shellService != null) {
                         TransletCommandLine transletCommandLine = new TransletCommandLine(lineParser);
                         execute(transletCommandLine);
                     } else {
@@ -175,7 +175,7 @@ public class ShellCommandInterpreter implements CommandInterpreter {
                 }
             }
         } finally {
-            if (service != null && service.getServiceController().isActive()) {
+            if (shellService != null && shellService.getServiceController().isActive()) {
                 if (logger.isDebugEnabled()) {
                     logger.debug("Do not terminate this application while releasing all resources");
                 }
@@ -217,7 +217,7 @@ public class ShellCommandInterpreter implements CommandInterpreter {
     private void execute(TransletCommandLine transletCommandLine) {
         if (transletCommandLine.getRequestName() != null) {
             try {
-                service.translate(transletCommandLine, console);
+                shellService.translate(transletCommandLine, console);
             } catch (TransletNotFoundException e) {
                 console.writeError("No command or translet mapped to '" + e.getTransletName() + "'");
             } catch (ConsoleTerminatedException e) {
@@ -241,9 +241,9 @@ public class ShellCommandInterpreter implements CommandInterpreter {
             System.setErr(originalSystemErr);
             originalSystemErr = null;
         }
-        if (service != null) {
-            service.stop();
-            service = null;
+        if (shellService != null) {
+            shellService.stop();
+            shellService = null;
         }
     }
 
@@ -282,22 +282,22 @@ public class ShellCommandInterpreter implements CommandInterpreter {
 
         @Override
         public void write(int b) {
-            if (service.isActive()) {
+            if (shellService.isActive()) {
                 console.clearLine();
             }
             super.write(b);
-            if (service.isActive()) {
+            if (shellService.isActive()) {
                 console.redrawLine();
             }
         }
 
         @Override
         public void write(@NonNull byte[] buf, int off, int len) {
-            if (service.isActive()) {
+            if (shellService.isActive()) {
                 console.clearLine();
             }
             super.write(buf, off, len);
-            if (service.isActive()) {
+            if (shellService.isActive()) {
                 console.redrawLine();
             }
         }

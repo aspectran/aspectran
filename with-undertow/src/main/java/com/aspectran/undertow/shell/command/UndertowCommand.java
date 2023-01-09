@@ -77,10 +77,10 @@ public class UndertowCommand extends AbstractCommand {
             command = options.getFirstArg();
         }
 
-        ShellService service = getService();
+        ShellService shellService = getShellService();
 
         String serverName = options.getValue("server", "tow.server");
-        BeanRegistry beanRegistry = service.getActivityContext().getBeanRegistry();
+        BeanRegistry beanRegistry = shellService.getActivityContext().getBeanRegistry();
 
         boolean justCreated = !beanRegistry.hasSingleton(TowServer.class, serverName);
         if (justCreated) {

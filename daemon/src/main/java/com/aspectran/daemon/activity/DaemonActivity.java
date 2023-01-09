@@ -34,7 +34,7 @@ import java.util.Map;
  */
 public class DaemonActivity extends CoreActivity {
 
-    private final DaemonService service;
+    private final DaemonService daemonService;
 
     private Writer outputWriter;
 
@@ -44,11 +44,11 @@ public class DaemonActivity extends CoreActivity {
 
     /**
      * Instantiates a new daemon activity.
-     * @param service the daemon service
+     * @param daemonService the daemon service
      */
-    public DaemonActivity(DaemonService service) {
-        super(service.getActivityContext());
-        this.service = service;
+    public DaemonActivity(DaemonService daemonService) {
+        super(daemonService.getActivityContext());
+        this.daemonService = daemonService;
     }
 
     public void setParameterMap(ParameterMap parameterMap) {
@@ -65,7 +65,7 @@ public class DaemonActivity extends CoreActivity {
 
     @Override
     protected void adapt() throws AdapterException {
-        setSessionAdapter(service.newSessionAdapter());
+        setSessionAdapter(daemonService.newSessionAdapter());
 
         DaemonRequestAdapter requestAdapter = new DaemonRequestAdapter(getTranslet().getRequestMethod());
         setRequestAdapter(requestAdapter);

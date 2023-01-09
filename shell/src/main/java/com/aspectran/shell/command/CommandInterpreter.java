@@ -29,6 +29,6 @@ public interface CommandInterpreter {
 
     CommandRegistry getCommandRegistry();
 
-    ShellService getService();
+    ShellService getShellService();
 
 }

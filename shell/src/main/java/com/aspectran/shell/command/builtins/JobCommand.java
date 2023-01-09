@@ -76,28 +76,28 @@ public class JobCommand extends AbstractCommand {
 
     @Override
     public void execute(ParsedOptions options, Console console) throws Exception {
-        ShellService service = getService();
+        ShellService shellService = getShellService();
         if (options.hasOption("help")) {
             printHelp(console);
         } else if (options.hasOption("list")) {
             String[] keywords = options.getValues("list");
-            listScheduledJobs(service, console, keywords);
+            listScheduledJobs(shellService, console, keywords);
         } else if (options.hasOption("detail")) {
             String[] transletNames = options.getValues("detail");
-            describeScheduledJobRule(service, console, transletNames);
+            describeScheduledJobRule(shellService, console, transletNames);
         } else if (options.hasOption("enable")) {
             String[] transletNames = options.getValues("enable");
-            changeJobActiveState(service, console, transletNames, false);
+            changeJobActiveState(shellService, console, transletNames, false);
         } else if (options.hasOption("disable")) {
             String[] transletNames = options.getValues("disable");
-            changeJobActiveState(service, console, transletNames, true);
+            changeJobActiveState(shellService, console, transletNames, true);
         } else {
             printQuickHelp(console);
         }
     }
 
-    private void listScheduledJobs(ShellService service, Console console, String[] keywords) {
-        ScheduleRuleRegistry scheduleRuleRegistry = service.getActivityContext().getScheduleRuleRegistry();
+    private void listScheduledJobs(ShellService shellService, Console console, String[] keywords) {
+        ScheduleRuleRegistry scheduleRuleRegistry = shellService.getActivityContext().getScheduleRuleRegistry();
         console.writeLine("-%4s-+-%-20s-+-%-33s-+-%-8s-", "----", "--------------------",
                 "---------------------------------", "--------");
         console.writeLine(" %4s | %-20s | %-33s | %-8s ", "No.", "Schedule ID", "Job Name", "Enabled");
@@ -135,9 +135,9 @@ public class JobCommand extends AbstractCommand {
                 "---------------------------------", "--------");
     }
 
-    private void describeScheduledJobRule(ShellService service, Console console, String[] transletNames)
+    private void describeScheduledJobRule(ShellService shellService, Console console, String[] transletNames)
             throws IOException {
-        ScheduleRuleRegistry scheduleRuleRegistry = service.getActivityContext().getScheduleRuleRegistry();
+        ScheduleRuleRegistry scheduleRuleRegistry = shellService.getActivityContext().getScheduleRuleRegistry();
         if (transletNames != null && transletNames.length > 0) {
             Set<ScheduledJobRule> scheduledJobRules = scheduleRuleRegistry.getScheduledJobRules(transletNames);
             if (scheduledJobRules.isEmpty()) {
@@ -175,8 +175,8 @@ public class JobCommand extends AbstractCommand {
         }
     }
 
-    private void changeJobActiveState(ShellService service, Console console, String[] transletNames, boolean disabled) {
-        ScheduleRuleRegistry scheduleRuleRegistry = service.getActivityContext().getScheduleRuleRegistry();
+    private void changeJobActiveState(ShellService shellService, Console console, String[] transletNames, boolean disabled) {
+        ScheduleRuleRegistry scheduleRuleRegistry = shellService.getActivityContext().getScheduleRuleRegistry();
         Set<ScheduledJobRule> scheduledJobRules = scheduleRuleRegistry.getScheduledJobRules(transletNames);
         if (scheduledJobRules.isEmpty()) {
             console.writeError("Unknown scheduled job " + Arrays.toString(transletNames));

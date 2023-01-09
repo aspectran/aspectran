@@ -115,44 +115,44 @@ public class DefaultDaemonService extends AbstractDaemonService {
             contextConfig.setContextRules(new String[] {DEFAULT_APP_CONTEXT_FILE});
         }
 
-        DefaultDaemonService service = new DefaultDaemonService();
-        service.prepare(aspectranConfig);
+        DefaultDaemonService daemonService = new DefaultDaemonService();
+        daemonService.prepare(aspectranConfig);
         DaemonConfig daemonConfig = aspectranConfig.getDaemonConfig();
         if (daemonConfig != null) {
-            applyDaemonConfig(service, daemonConfig);
+            applyDaemonConfig(daemonService, daemonConfig);
         }
-        setServiceStateListener(service);
-        return service;
+        setServiceStateListener(daemonService);
+        return daemonService;
     }
 
-    private static void applyDaemonConfig(DefaultDaemonService service, DaemonConfig daemonConfig) {
+    private static void applyDaemonConfig(DefaultDaemonService daemonService, DaemonConfig daemonConfig) {
         ExposalsConfig exposalsConfig = daemonConfig.getExposalsConfig();
         if (exposalsConfig != null) {
             String[] includePatterns = exposalsConfig.getIncludePatterns();
             String[] excludePatterns = exposalsConfig.getExcludePatterns();
-            service.setExposals(includePatterns, excludePatterns);
+            daemonService.setExposals(includePatterns, excludePatterns);
         }
     }
 
-    private static void setServiceStateListener(final DefaultDaemonService service) {
-        service.setServiceStateListener(new ServiceStateListener() {
+    private static void setServiceStateListener(final DefaultDaemonService daemonService) {
+        daemonService.setServiceStateListener(new ServiceStateListener() {
             @Override
             public void started() {
-                service.initSessionManager();
-                service.pauseTimeout = 0L;
+                daemonService.initSessionManager();
+                daemonService.pauseTimeout = 0L;
             }
 
             @Override
             public void restarted() {
-                service.destroySessionManager();
-                service.initSessionManager();
-                service.pauseTimeout = 0L;
+                daemonService.destroySessionManager();
+                daemonService.initSessionManager();
+                daemonService.pauseTimeout = 0L;
             }
 
             @Override
             public void paused(long millis) {
                 if (millis > 0L) {
-                    service.pauseTimeout = System.currentTimeMillis() + millis;
+                    daemonService.pauseTimeout = System.currentTimeMillis() + millis;
                 } else {
                     logger.warn("Pause timeout in milliseconds needs to be set " +
                             "to a value of greater than 0");
@@ -161,7 +161,7 @@ public class DefaultDaemonService extends AbstractDaemonService {
 
             @Override
             public void paused() {
-                service.pauseTimeout = -1L;
+                daemonService.pauseTimeout = -1L;
             }
 
             @Override
@@ -172,7 +172,7 @@ public class DefaultDaemonService extends AbstractDaemonService {
             @Override
             public void stopped() {
                 paused();
-                service.destroySessionManager();
+                daemonService.destroySessionManager();
             }
         });
     }

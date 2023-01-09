@@ -44,7 +44,7 @@ public class TransletCommand extends AbstractCommand {
 
     @Override
     public CommandResult execute(CommandParameters parameters) {
-        DaemonService service = getService();
+        DaemonService daemonService = getDaemonService();
 
         String transletName = parameters.getTransletName();
         if (transletName == null) {
@@ -52,7 +52,7 @@ public class TransletCommand extends AbstractCommand {
         }
 
         try {
-            ItemEvaluator evaluator = new ItemEvaluation(service.getDefaultActivity());
+            ItemEvaluator evaluator = new ItemEvaluation(daemonService.getDefaultActivity());
 
             ParameterMap parameterMap = null;
             ItemRuleMap parameterItemRuleMap = parameters.getParameterItemRuleMap();
@@ -66,7 +66,7 @@ public class TransletCommand extends AbstractCommand {
                 attributeMap = evaluator.evaluate(attributeItemRuleMap);
             }
 
-            Translet translet = service.translate(transletName, parameterMap, attributeMap);
+            Translet translet = daemonService.translate(transletName, parameterMap, attributeMap);
             Writer writer = translet.getResponseAdapter().getWriter();
             if (writer instanceof OutputStringWriter && !((OutputStringWriter)writer).isDirty()) {
                 return success(null);

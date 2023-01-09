@@ -54,11 +54,11 @@ public class VerboseCommand extends AbstractCommand {
         } else if (options.hasArgs()) {
             String arg = options.getFirstArg();
             if ("on".equals(arg)) {
-                getService().setVerbose(true);
+                getShellService().setVerbose(true);
                 console.writeLine("Verbose mode is enabled.");
                 console.writeLine("Displays a description of the translet before it is executed.");
             } else if ("off".equals(arg)) {
-                getService().setVerbose(false);
+                getShellService().setVerbose(false);
                 console.writeLine("Verbose mode is disabled.");
                 console.writeLine("Do not displays a description of the translet before it is executed.");
             } else {

@@ -30,7 +30,7 @@ public interface Daemon {
 
     String getBasePath();
 
-    DaemonService getService();
+    DaemonService getDaemonService();
 
     CommandFilePoller getCommandFilePoller();
 

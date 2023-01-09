@@ -67,10 +67,10 @@ public class ComponentCommand extends AbstractCommand {
 
     @Override
     public CommandResult execute(CommandParameters parameters) {
-        DaemonService service = getService();
+        DaemonService daemonService = getDaemonService();
 
         try {
-            ItemEvaluator evaluator = new ItemEvaluation(getService().getDefaultActivity());
+            ItemEvaluator evaluator = new ItemEvaluation(getDaemonService().getDefaultActivity());
 
             ParameterMap parameterMap = null;
             ItemRuleMap parameterItemRuleMap = parameters.getParameterItemRuleMap();
@@ -94,38 +94,38 @@ public class ComponentCommand extends AbstractCommand {
                 case "aspect":
                     switch (mode) {
                         case "list":
-                            return listAspects(service, targets);
+                            return listAspects(daemonService, targets);
                         case "detail":
-                            return describeAspectRule(service, targets);
+                            return describeAspectRule(daemonService, targets);
                         case "enable":
-                            return changeAspectActiveState(service, targets, false);
+                            return changeAspectActiveState(daemonService, targets, false);
                         case "disable":
-                            return changeAspectActiveState(service, targets, true);
+                            return changeAspectActiveState(daemonService, targets, true);
                     }
                     break;
                 case "translet": {
                     switch (mode) {
                         case "list":
-                            return listTranslets(service, targets, false);
+                            return listTranslets(daemonService, targets, false);
                         case "list-all":
-                            return listTranslets(service, targets, true);
+                            return listTranslets(daemonService, targets, true);
                         case "detail":
-                            return describeTransletRule(service, targets, false);
+                            return describeTransletRule(daemonService, targets, false);
                         case "detail-all":
-                            return describeTransletRule(service, targets, true);
+                            return describeTransletRule(daemonService, targets, true);
                     }
                     break;
                 }
                 case "job": {
                     switch (mode) {
                         case "list":
-                            return listScheduledJobs(service, targets);
+                            return listScheduledJobs(daemonService, targets);
                         case "detail":
-                            return describeScheduledJobRule(service, targets);
+                            return describeScheduledJobRule(daemonService, targets);
                         case "enable":
-                            return changeJobActiveState(service, targets, false);
+                            return changeJobActiveState(daemonService, targets, false);
                         case "disable":
-                            return changeJobActiveState(service, targets, true);
+                            return changeJobActiveState(daemonService, targets, true);
                     }
                     break;
                 }
@@ -138,8 +138,8 @@ public class ComponentCommand extends AbstractCommand {
         }
     }
 
-    private CommandResult listAspects(DaemonService service, String[] keywords) {
-        AspectRuleRegistry aspectRuleRegistry = service.getActivityContext().getAspectRuleRegistry();
+    private CommandResult listAspects(DaemonService daemonService, String[] keywords) {
+        AspectRuleRegistry aspectRuleRegistry = daemonService.getActivityContext().getAspectRuleRegistry();
         Collection<AspectRule> aspectRules = aspectRuleRegistry.getAspectRules();
         Formatter formatter = new Formatter();
         formatter.format("-%4s-+-%-45s-+-%-8s-+-%-8s-%n", "----", "---------------------------------------------",
@@ -172,8 +172,8 @@ public class ComponentCommand extends AbstractCommand {
         return success(formatter.toString());
     }
 
-    private CommandResult describeAspectRule(DaemonService service, String[] targets) throws IOException {
-        AspectRuleRegistry aspectRuleRegistry = service.getActivityContext().getAspectRuleRegistry();
+    private CommandResult describeAspectRule(DaemonService daemonService, String[] targets) throws IOException {
+        AspectRuleRegistry aspectRuleRegistry = daemonService.getActivityContext().getAspectRuleRegistry();
         Collection<AspectRule> aspectRules;
         if (targets == null || targets.length == 0) {
             aspectRules = aspectRuleRegistry.getAspectRules();
@@ -206,11 +206,11 @@ public class ComponentCommand extends AbstractCommand {
         }
     }
 
-    private CommandResult changeAspectActiveState(DaemonService service, String[] targets, boolean disabled) {
+    private CommandResult changeAspectActiveState(DaemonService daemonService, String[] targets, boolean disabled) {
         if (targets == null || targets.length == 0) {
             return failed(error("Please specify aspects to be enabled or disabled"));
         }
-        AspectRuleRegistry aspectRuleRegistry = service.getActivityContext().getAspectRuleRegistry();
+        AspectRuleRegistry aspectRuleRegistry = daemonService.getActivityContext().getAspectRuleRegistry();
         Set<AspectRule> aspectRules = new LinkedHashSet<>();
         for (String aspectId : targets) {
             AspectRule aspectRule = aspectRuleRegistry.getAspectRule(aspectId);
@@ -243,8 +243,8 @@ public class ComponentCommand extends AbstractCommand {
         return success(formatter.toString());
     }
 
-    private CommandResult listTranslets(DaemonService service, String[] keywords, boolean all) {
-        TransletRuleRegistry transletRuleRegistry = service.getActivityContext().getTransletRuleRegistry();
+    private CommandResult listTranslets(DaemonService daemonService, String[] keywords, boolean all) {
+        TransletRuleRegistry transletRuleRegistry = daemonService.getActivityContext().getTransletRuleRegistry();
         Collection<TransletRule> transletRules = transletRuleRegistry.getTransletRules();
         Formatter formatter = new Formatter();
         formatter.format("-%4s-+-%-67s-%n", "----", "-------------------------------------------------------------------");
@@ -253,7 +253,7 @@ public class ComponentCommand extends AbstractCommand {
         int num = 0;
         for (TransletRule transletRule : transletRules) {
             String transletName = transletRule.getName();
-            if (!all && !service.isExposable(transletName)) {
+            if (!all && !daemonService.isExposable(transletName)) {
                 continue;
             }
             if (keywords != null) {
@@ -281,8 +281,8 @@ public class ComponentCommand extends AbstractCommand {
         return success(formatter.toString());
     }
 
-    private CommandResult describeTransletRule(DaemonService service, String[] targets, boolean all) throws IOException {
-        TransletRuleRegistry transletRuleRegistry = service.getActivityContext().getTransletRuleRegistry();
+    private CommandResult describeTransletRule(DaemonService daemonService, String[] targets, boolean all) throws IOException {
+        TransletRuleRegistry transletRuleRegistry = daemonService.getActivityContext().getTransletRuleRegistry();
         Collection<TransletRule> transletRules;
         if (targets == null || targets.length == 0) {
             transletRules = transletRuleRegistry.getTransletRules();
@@ -312,7 +312,7 @@ public class ComponentCommand extends AbstractCommand {
         int count = 0;
         StringWriter writer = new StringWriter();
         for (TransletRule transletRule : transletRules) {
-            if (!all && !service.isExposable(transletRule.getName())) {
+            if (!all && !daemonService.isExposable(transletRule.getName())) {
                 continue;
             }
             TransletParameters transletParameters = RulesToParameters.toTransletParameters(transletRule);
@@ -331,8 +331,8 @@ public class ComponentCommand extends AbstractCommand {
         }
     }
 
-    private CommandResult listScheduledJobs(DaemonService service, String[] keywords) {
-        Collection<ScheduleRule> scheduleRules = service.getActivityContext().getScheduleRuleRegistry().getScheduleRules();
+    private CommandResult listScheduledJobs(DaemonService daemonService, String[] keywords) {
+        Collection<ScheduleRule> scheduleRules = daemonService.getActivityContext().getScheduleRuleRegistry().getScheduleRules();
         Formatter formatter = new Formatter();
         formatter.format("-%4s-+-%-20s-+-%-33s-+-%-8s-%n", "----", "--------------------",
                 "---------------------------------", "--------");
@@ -366,9 +366,9 @@ public class ComponentCommand extends AbstractCommand {
         return success(formatter.toString());
     }
 
-    private CommandResult describeScheduledJobRule(DaemonService service, String[] targets)
+    private CommandResult describeScheduledJobRule(DaemonService daemonService, String[] targets)
             throws IOException {
-        ScheduleRuleRegistry scheduleRuleRegistry = service.getActivityContext().getScheduleRuleRegistry();
+        ScheduleRuleRegistry scheduleRuleRegistry = daemonService.getActivityContext().getScheduleRuleRegistry();
         if (targets == null || targets.length == 0) {
             Writer writer = new StringWriter();
             int count = 0;
@@ -423,11 +423,11 @@ public class ComponentCommand extends AbstractCommand {
         }
     }
 
-    private CommandResult changeJobActiveState(DaemonService service, String[] targets, boolean disabled) {
+    private CommandResult changeJobActiveState(DaemonService daemonService, String[] targets, boolean disabled) {
         if (targets == null || targets.length == 0) {
             return failed(error("Please specify jobs to be enabled or disabled"));
         }
-        ScheduleRuleRegistry scheduleRuleRegistry = service.getActivityContext().getScheduleRuleRegistry();
+        ScheduleRuleRegistry scheduleRuleRegistry = daemonService.getActivityContext().getScheduleRuleRegistry();
         Set<ScheduledJobRule> scheduledJobRules = scheduleRuleRegistry.getScheduledJobRules(targets);
         if (scheduledJobRules.isEmpty()) {
             return failed(error("Unknown scheduled jobs " + Arrays.toString(targets)));

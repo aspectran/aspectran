@@ -38,7 +38,7 @@ public class PollingIntervalCommand extends AbstractCommand {
 
     @Override
     public CommandResult execute(CommandParameters parameters) {
-        DaemonService service = getService();
+        DaemonService daemonService = getDaemonService();
 
         try {
             long oldPollingInterval = getCommandRegistry().getDaemon().getCommandFilePoller().getPollingInterval();
@@ -46,7 +46,7 @@ public class PollingIntervalCommand extends AbstractCommand {
 
             ItemRuleList itemRuleList = parameters.getArgumentItemRuleList();
             if (!itemRuleList.isEmpty()) {
-                ItemEvaluator evaluator = new ItemEvaluation(service.getDefaultActivity());
+                ItemEvaluator evaluator = new ItemEvaluation(daemonService.getDefaultActivity());
                 pollingInterval = evaluator.evaluate(itemRuleList.get(0));
             }
 

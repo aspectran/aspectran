@@ -40,7 +40,7 @@ public class InvokeActionCommand extends AbstractCommand {
 
     @Override
     public CommandResult execute(CommandParameters parameters) {
-        DaemonService service = getService();
+        DaemonService daemonService = getDaemonService();
 
         try {
             String beanName = parameters.getBeanName();
@@ -63,11 +63,11 @@ public class InvokeActionCommand extends AbstractCommand {
 
             if (beanName.startsWith(BeanRule.CLASS_DIRECTIVE_PREFIX)) {
                 String className = beanName.substring(BeanRule.CLASS_DIRECTIVE_PREFIX.length());
-                Class<?> beanClass = service.getAspectranClassLoader().loadClass(className);
+                Class<?> beanClass = daemonService.getAspectranClassLoader().loadClass(className);
                 invokeActionRule.setBeanClass(beanClass);
             }
 
-            InstantActivity activity = new InstantActivity(service.getActivityContext());
+            InstantActivity activity = new InstantActivity(daemonService.getActivityContext());
             Object result = activity.perform(() -> {
                 InvokeAction invokeAction = new InvokeAction(invokeActionRule);
                 return invokeAction.execute(activity);

@@ -76,10 +76,10 @@ public class JettyCommand extends AbstractCommand {
             command = options.getFirstArg();
         }
 
-        ShellService service = getService();
+        ShellService shellService = getShellService();
 
         String serverName = options.getValue("server", "jetty.server");
-        BeanRegistry beanRegistry = service.getActivityContext().getBeanRegistry();
+        BeanRegistry beanRegistry = shellService.getActivityContext().getBeanRegistry();
 
         boolean justCreated = !beanRegistry.hasSingleton(JettyServer.class, serverName);
         if (justCreated) {

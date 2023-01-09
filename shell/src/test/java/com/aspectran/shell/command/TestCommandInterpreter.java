@@ -36,7 +36,7 @@ public class TestCommandInterpreter implements CommandInterpreter {
     }
 
     @Override
-    public ShellService getService() {
+    public ShellService getShellService() {
         return null;
     }
 

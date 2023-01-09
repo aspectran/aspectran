@@ -46,12 +46,12 @@ public abstract class AbstractCommand implements Command {
         return isolated;
     }
 
-    public DaemonService getService() {
-        DaemonService service = registry.getDaemon().getService();
-        if (service == null || !service.getServiceController().isActive()) {
+    public DaemonService getDaemonService() {
+        DaemonService daemonService = registry.getDaemon().getDaemonService();
+        if (daemonService == null || !daemonService.getServiceController().isActive()) {
             throw new IllegalStateException("SERVICE NOT AVAILABLE");
         }
-        return service;
+        return daemonService;
     }
 
     protected String debug(String message) {

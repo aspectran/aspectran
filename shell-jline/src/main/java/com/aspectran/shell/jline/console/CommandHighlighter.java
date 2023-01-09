@@ -149,13 +149,13 @@ public class CommandHighlighter implements Highlighter {
 
     private String getMatchedTransletName(String buffer) {
         String best = null;
-        ShellService service = console.getInterpreter().getService();
-        if (service != null && service.getServiceController().isActive()) {
-            TransletRuleRegistry transletRuleRegistry = service.getActivityContext().getTransletRuleRegistry();
+        ShellService shellService = console.getInterpreter().getShellService();
+        if (shellService != null && shellService.getServiceController().isActive()) {
+            TransletRuleRegistry transletRuleRegistry = shellService.getActivityContext().getTransletRuleRegistry();
             int len = 0;
             for (TransletRule transletRule : transletRuleRegistry.getTransletRules()) {
                 String name = transletRule.getName();
-                if (service.isExposable(name)) {
+                if (shellService.isExposable(name)) {
                     if (transletRule.getNamePattern() != null) {
                         if (transletRule.getNamePattern().matches(buffer)) {
                             return buffer;

@@ -48,10 +48,10 @@ public class UndertowCommand extends AbstractCommand {
 
     @Override
     public CommandResult execute(CommandParameters parameters) {
-        DaemonService service = getService();
+        DaemonService daemonService = getDaemonService();
 
         try {
-            ClassLoader classLoader = service.getActivityContext().getApplicationAdapter().getClassLoader();
+            ClassLoader classLoader = daemonService.getActivityContext().getApplicationAdapter().getClassLoader();
             classLoader.loadClass("com.aspectran.undertow.server.TowServer");
         } catch (ClassNotFoundException e) {
             return failed("Unable to load class com.aspectran.undertow.server.TowServer " +
@@ -64,7 +64,7 @@ public class UndertowCommand extends AbstractCommand {
 
             ItemRuleMap parameterItemRuleMap = parameters.getParameterItemRuleMap();
             if ((parameterItemRuleMap != null && !parameterItemRuleMap.isEmpty())) {
-                ItemEvaluator evaluator = new ItemEvaluation(service.getDefaultActivity());
+                ItemEvaluator evaluator = new ItemEvaluation(daemonService.getDefaultActivity());
                 ParameterMap parameterMap = evaluator.evaluateAsParameterMap(parameterItemRuleMap);
                 mode = parameterMap.getParameter("mode");
                 serverName = parameterMap.getParameter("server");
@@ -74,7 +74,7 @@ public class UndertowCommand extends AbstractCommand {
                 serverName = "tow.server";
             }
 
-            BeanRegistry beanRegistry = service.getActivityContext().getBeanRegistry();
+            BeanRegistry beanRegistry = daemonService.getActivityContext().getBeanRegistry();
 
             boolean justCreated = !beanRegistry.hasSingleton(TowServer.class, serverName);
             if (justCreated) {

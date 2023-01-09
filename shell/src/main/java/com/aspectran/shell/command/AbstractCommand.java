@@ -48,16 +48,16 @@ public abstract class AbstractCommand implements Command {
         return registry.getInterpreter();
     }
 
-    public ShellService getService() {
-        ShellService service = (getInterpreter() != null ? getInterpreter().getService() : null);
-        if (service == null || !service.getServiceController().isActive()) {
+    public ShellService getShellService() {
+        ShellService shellService = (getInterpreter() != null ? getInterpreter().getShellService() : null);
+        if (shellService == null || !shellService.getServiceController().isActive()) {
             throw new IllegalStateException("SERVICE NOT AVAILABLE");
         }
-        return service;
+        return shellService;
     }
 
     public boolean isServiceAvailable() {
-        return (getInterpreter() != null && getInterpreter().getService() != null);
+        return (getInterpreter() != null && getInterpreter().getShellService() != null);
     }
 
     protected void addOption(Option option) {

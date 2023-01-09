@@ -78,28 +78,28 @@ public class AspectCommand extends AbstractCommand {
 
     @Override
     public void execute(ParsedOptions options, Console console) throws Exception {
-        ShellService service = getService();
+        ShellService shellService = getShellService();
         if (options.hasOption("help")) {
             printHelp(console);
         } else if (options.hasOption("list")) {
             String[] keywords = options.getValues("list");
-            listAspects(service, console, keywords);
+            listAspects(shellService, console, keywords);
         } else if (options.hasOption("detail")) {
             String[] aspectIds = options.getValues("detail");
-            describeAspectRule(service, console, aspectIds);
+            describeAspectRule(shellService, console, aspectIds);
         } else if (options.hasOption("enable")) {
             String[] aspectIds = options.getValues("enable");
-            changeAspectActiveState(service, console, aspectIds, false);
+            changeAspectActiveState(shellService, console, aspectIds, false);
         } else if (options.hasOption("disable")) {
             String[] aspectIds = options.getValues("disable");
-            changeAspectActiveState(service, console, aspectIds, true);
+            changeAspectActiveState(shellService, console, aspectIds, true);
         } else {
             printQuickHelp(console);
         }
     }
 
-    private void listAspects(ShellService service, Console console, String[] keywords) {
-        AspectRuleRegistry aspectRuleRegistry = service.getActivityContext().getAspectRuleRegistry();
+    private void listAspects(ShellService shellService, Console console, String[] keywords) {
+        AspectRuleRegistry aspectRuleRegistry = shellService.getActivityContext().getAspectRuleRegistry();
         Collection<AspectRule> aspectRules = aspectRuleRegistry.getAspectRules();
         console.writeLine("-%4s-+-%-45s-+-%-8s-+-%-8s-", "----", "---------------------------------------------",
                 "--------", "--------");
@@ -145,8 +145,8 @@ public class AspectCommand extends AbstractCommand {
                 "--------", "--------");
     }
 
-    private void describeAspectRule(ShellService service, Console console, String[] aspectIds) throws IOException {
-        AspectRuleRegistry aspectRuleRegistry = service.getActivityContext().getAspectRuleRegistry();
+    private void describeAspectRule(ShellService shellService, Console console, String[] aspectIds) throws IOException {
+        AspectRuleRegistry aspectRuleRegistry = shellService.getActivityContext().getAspectRuleRegistry();
         Collection<AspectRule> aspectRules;
         if (aspectIds == null || aspectIds.length == 0) {
             aspectRules = aspectRuleRegistry.getAspectRules();
@@ -183,8 +183,8 @@ public class AspectCommand extends AbstractCommand {
         }
     }
 
-    private void changeAspectActiveState(ShellService service, Console console, String[] aspectIds, boolean disabled) {
-        AspectRuleRegistry aspectRuleRegistry = service.getActivityContext().getAspectRuleRegistry();
+    private void changeAspectActiveState(ShellService shellService, Console console, String[] aspectIds, boolean disabled) {
+        AspectRuleRegistry aspectRuleRegistry = shellService.getActivityContext().getAspectRuleRegistry();
         List<AspectRule> aspectRules = new ArrayList<>();
         for (String aspectId : aspectIds) {
             AspectRule aspectRule = aspectRuleRegistry.getAspectRule(aspectId);

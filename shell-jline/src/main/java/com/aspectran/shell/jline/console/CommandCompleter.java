@@ -131,13 +131,13 @@ public class CommandCompleter implements Completer {
     }
 
     private void makeTransletCandidates(String word, List<Candidate> candidates) {
-        ShellService service = console.getInterpreter().getService();
-        if (service != null && service.getServiceController().isActive()) {
-            TransletRuleRegistry transletRuleRegistry = service.getActivityContext().getTransletRuleRegistry();
+        ShellService shellService = console.getInterpreter().getShellService();
+        if (shellService != null && shellService.getServiceController().isActive()) {
+            TransletRuleRegistry transletRuleRegistry = shellService.getActivityContext().getTransletRuleRegistry();
             for (TransletRule transletRule : transletRuleRegistry.getTransletRules()) {
                 String name = transletRule.getName();
                 String dispName = name;
-                if (service.isExposable(name)) {
+                if (shellService.isExposable(name)) {
                     if (word == null || name.startsWith(word)) {
                         if (transletRule.hasPathVariables()) {
                             name = transletRule.getNamePattern().toString();

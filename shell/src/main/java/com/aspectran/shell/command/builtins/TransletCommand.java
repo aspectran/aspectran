@@ -99,15 +99,15 @@ public class TransletCommand extends AbstractCommand {
 
     @Override
     public void execute(ParsedOptions options, Console console) throws Exception {
-        ShellService service = getService();
+        ShellService shellService = getShellService();
         if (options.hasOption("help")) {
             printHelp(console);
         } else if (options.hasOption("list")) {
             String[] keywords = options.getValues("list");
-            listTranslets(service, console, keywords, false);
+            listTranslets(shellService, console, keywords, false);
         } else if (options.hasOption("list-all")) {
             String[] keywords = options.getValues("list-all");
-            listTranslets(service, console, keywords, true);
+            listTranslets(shellService, console, keywords, true);
         } else if (options.hasOption("detail")) {
             String[] transletNames = options.getValues("detail");
             String method = options.getValue("method");
@@ -116,7 +116,7 @@ public class TransletCommand extends AbstractCommand {
                 console.writeError("No request method type for '" + method + "'");
                 return;
             }
-            describeTransletRule(service, console, transletNames, requestMethod, false);
+            describeTransletRule(shellService, console, transletNames, requestMethod, false);
         } else if (options.hasOption("detail-all")) {
             String[] transletNames = options.getValues("detail-all");
             String method = options.getValue("method");
@@ -125,28 +125,28 @@ public class TransletCommand extends AbstractCommand {
                 console.writeError("No request method type for '" + method + "'");
                 return;
             }
-            describeTransletRule(service, console, transletNames, requestMethod, true);
+            describeTransletRule(shellService, console, transletNames, requestMethod, true);
         } else if (options.hasArgs()) {
             CommandLineParser lineParser = new CommandLineParser(options.getFirstArg());
             TransletCommandLine transletCommandLine = new TransletCommandLine(lineParser);
-            boolean verbose = service.isVerbose();
+            boolean verbose = shellService.isVerbose();
             try {
                 if (options.hasOption("verbose")) {
-                    service.setVerbose(true);
+                    shellService.setVerbose(true);
                 }
-                service.translate(transletCommandLine, console);
+                shellService.translate(transletCommandLine, console);
             } catch (TransletNotFoundException e) {
                 console.writeError("No translet mapped to '" + e.getTransletName() + "'");
             } finally {
-                service.setVerbose(verbose);
+                shellService.setVerbose(verbose);
             }
         } else {
             printQuickHelp(console);
         }
     }
 
-    private void listTranslets(ShellService service, Console console, String[] keywords, boolean all) {
-        TransletRuleRegistry transletRuleRegistry = service.getActivityContext().getTransletRuleRegistry();
+    private void listTranslets(ShellService shellService, Console console, String[] keywords, boolean all) {
+        TransletRuleRegistry transletRuleRegistry = shellService.getActivityContext().getTransletRuleRegistry();
         Collection<TransletRule> transletRules = transletRuleRegistry.getTransletRules();
         console.writeLine("-%4s-+-%-67s-", "----", "-------------------------------------------------------------------");
         console.writeLine(" %4s | %-67s ", "No.", "Translet Name");
@@ -154,7 +154,7 @@ public class TransletCommand extends AbstractCommand {
         int num = 0;
         for (TransletRule transletRule : transletRules) {
             String transletName = transletRule.getName();
-            if (!all && !service.isExposable(transletName)) {
+            if (!all && !shellService.isExposable(transletName)) {
                 continue;
             }
             if (keywords != null) {
@@ -181,9 +181,10 @@ public class TransletCommand extends AbstractCommand {
         console.writeLine("-%4s-+-%-67s-", "----", "-------------------------------------------------------------------");
     }
 
-    private void describeTransletRule(ShellService service, Console console, String[] transletNames, MethodType requestMethod, boolean all)
+    private void describeTransletRule(ShellService shellService, Console console, String[] transletNames,
+                                      MethodType requestMethod, boolean all)
             throws IOException {
-        TransletRuleRegistry transletRuleRegistry = service.getActivityContext().getTransletRuleRegistry();
+        TransletRuleRegistry transletRuleRegistry = shellService.getActivityContext().getTransletRuleRegistry();
         Collection<TransletRule> transletRules;
         if (transletNames == null || transletNames.length == 0) {
             transletRules = transletRuleRegistry.getTransletRules();
@@ -228,7 +229,7 @@ public class TransletCommand extends AbstractCommand {
         }
         int count = 0;
         for (TransletRule transletRule : transletRules) {
-            if (!all && !service.isExposable(transletRule.getName())) {
+            if (!all && !shellService.isExposable(transletRule.getName())) {
                 continue;
             }
 

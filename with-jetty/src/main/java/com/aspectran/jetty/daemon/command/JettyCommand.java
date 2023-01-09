@@ -47,10 +47,10 @@ public class JettyCommand extends AbstractCommand {
 
     @Override
     public CommandResult execute(CommandParameters parameters) {
-        DaemonService service = getService();
+        DaemonService daemonService = getDaemonService();
 
         try {
-            ClassLoader classLoader = service.getActivityContext().getApplicationAdapter().getClassLoader();
+            ClassLoader classLoader = daemonService.getActivityContext().getApplicationAdapter().getClassLoader();
             classLoader.loadClass("com.aspectran.jetty.JettyServer");
         } catch (ClassNotFoundException e) {
             return failed("Unable to load class com.aspectran.jetty.JettyServer " +
@@ -63,7 +63,7 @@ public class JettyCommand extends AbstractCommand {
 
             ItemRuleMap parameterItemRuleMap = parameters.getParameterItemRuleMap();
             if ((parameterItemRuleMap != null && !parameterItemRuleMap.isEmpty())) {
-                ItemEvaluator evaluator = new ItemEvaluation(service.getDefaultActivity());
+                ItemEvaluator evaluator = new ItemEvaluation(daemonService.getDefaultActivity());
                 ParameterMap parameterMap = evaluator.evaluateAsParameterMap(parameterItemRuleMap);
                 mode = parameterMap.getParameter("mode");
                 serverName = parameterMap.getParameter("server");
@@ -73,7 +73,7 @@ public class JettyCommand extends AbstractCommand {
                 serverName = "jetty.server";
             }
 
-            BeanRegistry beanRegistry = service.getActivityContext().getBeanRegistry();
+            BeanRegistry beanRegistry = daemonService.getActivityContext().getBeanRegistry();
 
             boolean justCreated = !beanRegistry.hasSingleton(JettyServer.class, serverName);
             if (justCreated) {
