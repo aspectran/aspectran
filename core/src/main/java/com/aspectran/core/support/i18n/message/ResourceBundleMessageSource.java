@@ -27,9 +27,6 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URL;
 import java.net.URLConnection;
-import java.security.AccessController;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
 import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.Map;
@@ -132,7 +129,7 @@ public class ResourceBundleMessageSource extends AbstractMessageSource implement
      * @param cacheSeconds the cache seconds
      */
     public void setCacheSeconds(int cacheSeconds) {
-        this.cacheMillis = (cacheSeconds * 1000);
+        this.cacheMillis = (cacheSeconds * 1000L);
     }
 
     public ClassLoader getClassLoader() {
@@ -408,28 +405,18 @@ public class ResourceBundleMessageSource extends AbstractMessageSource implement
             if (format.equals("java.properties")) {
                 String bundleName = toBundleName(baseName, locale);
                 final String resourceName = toResourceName(bundleName, "properties");
-                final ClassLoader classLoader = loader;
-                final boolean reloadFlag = reload;
-                InputStream inputStream;
-                try {
-                    inputStream = AccessController.doPrivileged((PrivilegedExceptionAction<InputStream>) () -> {
-                        InputStream is = null;
-                        if (reloadFlag) {
-                            URL url = classLoader.getResource(resourceName);
-                            if (url != null) {
-                                URLConnection connection = url.openConnection();
-                                if (connection != null) {
-                                    connection.setUseCaches(false);
-                                    is = connection.getInputStream();
-                                }
-                            }
-                        } else {
-                            is = classLoader.getResourceAsStream(resourceName);
+                InputStream inputStream = null;
+                if (reload) {
+                    URL url = loader.getResource(resourceName);
+                    if (url != null) {
+                        URLConnection connection = url.openConnection();
+                        if (connection != null) {
+                            connection.setUseCaches(false);
+                            inputStream = connection.getInputStream();
                         }
-                        return is;
-                    });
-                } catch (PrivilegedActionException ex) {
-                    throw (IOException)ex.getException();
+                    }
+                } else {
+                    inputStream = loader.getResourceAsStream(resourceName);
                 }
                 if (inputStream != null) {
                     if (defaultEncoding != null) {
