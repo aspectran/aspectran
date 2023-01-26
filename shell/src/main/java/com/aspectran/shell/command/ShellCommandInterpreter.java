@@ -55,9 +55,9 @@ public class ShellCommandInterpreter implements CommandInterpreter {
 
     private DefaultShellService shellService;
 
-    private PrintStream originalSystemOut;
+    private PrintStream orgSystemOut;
 
-    private PrintStream originalSystemErr;
+    private PrintStream orgSystemErr;
 
     public ShellCommandInterpreter(Console console) {
         if (console == null) {
@@ -130,10 +130,10 @@ public class ShellCommandInterpreter implements CommandInterpreter {
 
         console.setInterpreter(this);
 
-        originalSystemOut = System.out;
-        originalSystemErr = System.err;
-        PrintStream out = new PrintStreamWrapper(originalSystemOut, console);
-        PrintStream err = new PrintStreamWrapper(originalSystemErr, console);
+        orgSystemOut = System.out;
+        orgSystemErr = System.err;
+        PrintStream out = new PrintStreamWrapper(orgSystemOut, console);
+        PrintStream err = new PrintStreamWrapper(orgSystemErr, console);
         System.setOut(out);
         System.setErr(err);
     }
@@ -233,13 +233,13 @@ public class ShellCommandInterpreter implements CommandInterpreter {
     }
 
     public void release() {
-        if (originalSystemOut != null) {
-            System.setOut(originalSystemOut);
-            originalSystemOut = null;
+        if (orgSystemOut != null) {
+            System.setOut(orgSystemOut);
+            orgSystemOut = null;
         }
-        if (originalSystemErr != null) {
-            System.setErr(originalSystemErr);
-            originalSystemErr = null;
+        if (orgSystemErr != null) {
+            System.setErr(orgSystemErr);
+            orgSystemErr = null;
         }
         if (shellService != null) {
             shellService.stop();
