@@ -20,7 +20,7 @@ import com.aspectran.shell.command.CommandRegistry;
 import com.aspectran.shell.command.option.Option;
 import com.aspectran.shell.command.option.ParsedOptions;
 import com.aspectran.shell.console.Console;
-import com.aspectran.shell.console.ConsoleTerminatedException;
+import com.aspectran.shell.console.ConsoleClosedException;
 
 /**
  * Releases all resources and exits this application.
@@ -47,7 +47,7 @@ public class QuitCommand extends AbstractCommand {
         if (options.hasOption("help")) {
             printHelp(console);
         } else if (console.confirmQuit()) {
-            throw new ConsoleTerminatedException();
+            throw new ConsoleClosedException();
         }
     }
 

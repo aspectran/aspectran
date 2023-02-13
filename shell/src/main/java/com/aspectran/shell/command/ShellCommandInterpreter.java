@@ -29,7 +29,7 @@ import com.aspectran.shell.command.option.OptionParserException;
 import com.aspectran.shell.command.option.ParsedOptions;
 import com.aspectran.shell.console.CommandReadFailedException;
 import com.aspectran.shell.console.Console;
-import com.aspectran.shell.console.ConsoleTerminatedException;
+import com.aspectran.shell.console.ConsoleClosedException;
 import com.aspectran.shell.console.ConsoleWrapper;
 import com.aspectran.shell.service.DefaultShellService;
 import com.aspectran.shell.service.ShellService;
@@ -164,7 +164,7 @@ public class ShellCommandInterpreter implements CommandInterpreter {
                     } else {
                         console.writeLine("No command mapped to '" + lineParser.getCommandName() + "'");
                     }
-                } catch (ConsoleTerminatedException e) {
+                } catch (ConsoleClosedException e) {
                     break;
                 } catch (CommandReadFailedException e) {
                     if (logger.isDebugEnabled()) {
@@ -196,7 +196,7 @@ public class ShellCommandInterpreter implements CommandInterpreter {
             outputWriter = OutputRedirection.determineOutputWriter(lineParser.getRedirectionList(), wrappedConsole);
             wrappedConsole.setWriter(outputWriter);
             command.execute(options, wrappedConsole);
-        } catch (ConsoleTerminatedException e) {
+        } catch (ConsoleClosedException e) {
             throw e;
         } catch (OptionParserException e) {
             wrappedConsole.writeError(e.getMessage());
@@ -220,7 +220,7 @@ public class ShellCommandInterpreter implements CommandInterpreter {
                 shellService.translate(transletCommandLine, console);
             } catch (TransletNotFoundException e) {
                 console.writeError("No command or translet mapped to '" + e.getTransletName() + "'");
-            } catch (ConsoleTerminatedException e) {
+            } catch (ConsoleClosedException e) {
                 throw e;
             } catch (Exception e) {
                 logger.error("Failed to execute command: " +

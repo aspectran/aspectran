@@ -186,7 +186,7 @@ public class DefaultConsole extends AbstractConsole {
 
     @Override
     public void write(String format, Object... args) {
-        System.out.print(String.format(format, args));
+        System.out.printf(format, args);
     }
 
     @Override
@@ -196,7 +196,7 @@ public class DefaultConsole extends AbstractConsole {
 
     @Override
     public void writeLine(String format, Object... args) {
-        System.out.println(String.format(format, args));
+        System.out.printf(format + "%n", args);
     }
 
     @Override
@@ -211,7 +211,7 @@ public class DefaultConsole extends AbstractConsole {
 
     @Override
     public void writeError(String format, Object... args) {
-        System.err.println(String.format(format, args));
+        System.err.printf(format + "%n", args);
     }
 
     @Override

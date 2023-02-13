@@ -37,7 +37,7 @@ import com.aspectran.core.util.logging.LoggerFactory;
 import com.aspectran.shell.adapter.ShellRequestAdapter;
 import com.aspectran.shell.adapter.ShellResponseAdapter;
 import com.aspectran.shell.console.Console;
-import com.aspectran.shell.console.ConsoleTerminatedException;
+import com.aspectran.shell.console.ConsoleClosedException;
 import com.aspectran.shell.service.ShellService;
 
 import java.io.Writer;
@@ -302,7 +302,7 @@ public class ShellActivity extends CoreActivity {
                     missingItemRules.add(ir);
                 }
             }
-        } catch (ConsoleTerminatedException e) {
+        } catch (ConsoleClosedException e) {
             logger.info("User interrupt occurred");
             terminate("User interrupt occurred");
         }
@@ -407,7 +407,7 @@ public class ShellActivity extends CoreActivity {
                     }
                 }
             }
-        } catch (ConsoleTerminatedException e) {
+        } catch (ConsoleClosedException e) {
             logger.info("User interrupt occurred");
             terminate("User interrupt occurred");
         }

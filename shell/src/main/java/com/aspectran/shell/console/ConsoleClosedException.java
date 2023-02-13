@@ -16,16 +16,16 @@
 package com.aspectran.shell.console;
 
 /**
- * This exception raised if a console is terminated.
+ * This exception raised if a console is closed.
  */
-public class ConsoleTerminatedException extends RuntimeException {
+public class ConsoleClosedException extends RuntimeException {
 
     private static final long serialVersionUID = -8812494142589655857L;
 
     /**
      * Simple constructor.
      */
-    public ConsoleTerminatedException() {
+    public ConsoleClosedException() {
         super();
     }
 
@@ -33,7 +33,7 @@ public class ConsoleTerminatedException extends RuntimeException {
      * Constructor to create exception with a message.
      * @param msg a message to associate with the exception
      */
-    public ConsoleTerminatedException(String msg) {
+    public ConsoleClosedException(String msg) {
         super(msg);
     }
 
@@ -41,7 +41,7 @@ public class ConsoleTerminatedException extends RuntimeException {
      * Constructor to create exception to wrap another exception.
      * @param cause the real cause of the exception
      */
-    public ConsoleTerminatedException(Throwable cause) {
+    public ConsoleClosedException(Throwable cause) {
         super(cause);
     }
 
@@ -50,7 +50,7 @@ public class ConsoleTerminatedException extends RuntimeException {
      * @param msg the message
      * @param cause the real cause of the exception
      */
-    public ConsoleTerminatedException(String msg, Throwable cause) {
+    public ConsoleClosedException(String msg, Throwable cause) {
         super(msg, cause);
     }
 

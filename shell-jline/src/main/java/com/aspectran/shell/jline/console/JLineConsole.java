@@ -17,7 +17,7 @@ package com.aspectran.shell.jline.console;
 
 import com.aspectran.shell.console.AbstractConsole;
 import com.aspectran.shell.console.CommandReadFailedException;
-import com.aspectran.shell.console.ConsoleTerminatedException;
+import com.aspectran.shell.console.ConsoleClosedException;
 import org.jline.reader.EndOfFileException;
 import org.jline.reader.History;
 import org.jline.reader.LineReader;
@@ -44,7 +44,7 @@ import java.util.List;
  */
 public class JLineConsole extends AbstractConsole {
 
-    private static final String APP_NAME = "Aspectran Shell";
+    private static final String TERMINAL_NAME = "Aspectran JLine terminal";
 
     private final Terminal terminal;
 
@@ -74,6 +74,7 @@ public class JLineConsole extends AbstractConsole {
         super(encoding);
 
         this.terminal = TerminalBuilder.builder()
+                .name(TERMINAL_NAME)
                 .encoding(getEncoding())
                 .build();
 
@@ -81,7 +82,6 @@ public class JLineConsole extends AbstractConsole {
         this.dumbColor = Terminal.TYPE_DUMB_COLOR.equals(terminal.getType());
 
         this.reader = LineReaderBuilder.builder()
-                .appName(APP_NAME)
                 .terminal(terminal)
                 .build();
         this.reader.setOpt(LineReader.Option.DISABLE_EVENT_EXPANSION);
@@ -92,7 +92,6 @@ public class JLineConsole extends AbstractConsole {
         this.commandHistory = new DefaultHistory();
 
         this.commandReader = LineReaderBuilder.builder()
-                .appName(APP_NAME)
                 .completer(commandCompleter)
                 .highlighter(commandHighlighter)
                 .history(commandHistory)
@@ -144,7 +143,7 @@ public class JLineConsole extends AbstractConsole {
             commandHighlighter.setLimited(false);
             return line;
         } catch (EndOfFileException e) {
-            throw new ConsoleTerminatedException();
+            throw new ConsoleClosedException();
         } catch (IllegalStateException e) {
             if (e.getMessage() == null) {
                 return null;
@@ -153,7 +152,7 @@ public class JLineConsole extends AbstractConsole {
             }
         } catch (UserInterruptException e) {
             if (confirmQuit()) {
-                throw new ConsoleTerminatedException();
+                throw new ConsoleClosedException();
             } else {
                 return null;
             }
@@ -180,7 +179,7 @@ public class JLineConsole extends AbstractConsole {
             }
             return readMultiLine(readRawLine(prompt, null, buffer));
         } catch (EndOfFileException | UserInterruptException e) {
-            throw new ConsoleTerminatedException();
+            throw new ConsoleClosedException();
         }
     }
 
@@ -202,7 +201,7 @@ public class JLineConsole extends AbstractConsole {
             }
             return readRawLine(prompt, MASK_CHAR, buffer);
         } catch (EndOfFileException | UserInterruptException e) {
-            throw new ConsoleTerminatedException();
+            throw new ConsoleClosedException();
         }
     }
 
