@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.shell.console;
+package com.aspectran.shell.jline.console;
 
 import com.aspectran.core.util.StringUtils;
 
 /**
  * <p>Created: 2017. 11. 19.</p>
  */
-public abstract class AnsiStyleHandler {
+public abstract class TextStyleAttributeHandler {
 
     public abstract void character(char c);
 

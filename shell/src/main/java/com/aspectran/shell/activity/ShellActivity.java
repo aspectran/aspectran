@@ -36,8 +36,8 @@ import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
 import com.aspectran.shell.adapter.ShellRequestAdapter;
 import com.aspectran.shell.adapter.ShellResponseAdapter;
-import com.aspectran.shell.console.Console;
-import com.aspectran.shell.console.ConsoleClosedException;
+import com.aspectran.shell.console.ShellConsole;
+import com.aspectran.shell.console.ShellConsoleClosedException;
 import com.aspectran.shell.service.ShellService;
 
 import java.io.Writer;
@@ -58,7 +58,7 @@ public class ShellActivity extends CoreActivity {
 
     private final ShellService shellService;
 
-    private final Console console;
+    private final ShellConsole console;
 
     private boolean procedural;
 
@@ -73,7 +73,7 @@ public class ShellActivity extends CoreActivity {
      * @param shellService the {@code ShellService} instance
      * @param console the {@code Console} instance
      */
-    public ShellActivity(ShellService shellService, Console console) {
+    public ShellActivity(ShellService shellService, ShellConsole console) {
         super(shellService.getActivityContext());
 
         this.shellService = shellService;
@@ -140,13 +140,13 @@ public class ShellActivity extends CoreActivity {
             Collection<ItemRule> itemRules = e.getItemRules();
             console.setStyle("RED");
             console.writeLine("Required parameters are missing:");
-            console.styleOff();
+            console.clearStyle();
             for (ItemRule ir : itemRules) {
                 console.setStyle("RED");
                 console.write(" - ");
                 console.setStyle("YELLOW");
                 console.writeLine(ir.getName());
-                console.styleOff();
+                console.clearStyle();
             }
             terminate("Required parameters are missing");
         }
@@ -157,13 +157,13 @@ public class ShellActivity extends CoreActivity {
             Collection<ItemRule> itemRules = e.getItemRules();
             console.setStyle("RED");
             console.writeLine("Required attributes are missing:");
-            console.styleOff();
+            console.clearStyle();
             for (ItemRule ir : itemRules) {
                 console.setStyle("RED");
                 console.write(" - ");
                 console.setStyle("YELLOW");
                 console.writeLine(ir.getName());
-                console.styleOff();
+                console.clearStyle();
             }
             terminate("Required attributes are missing");
         }
@@ -234,7 +234,7 @@ public class ShellActivity extends CoreActivity {
         if (parameterItemRuleMap != null && !parameterItemRuleMap.isEmpty()) {
             console.setStyle("GREEN");
             console.writeLine("Required parameters:");
-            console.styleOff();
+            console.clearStyle();
             if (!readSimply) {
                 writeItems(parameterItemRuleMap.values(), TokenType.PARAMETER);
             }
@@ -247,7 +247,7 @@ public class ShellActivity extends CoreActivity {
             if (attributeItemRuleMap != null && !attributeItemRuleMap.isEmpty()) {
                 console.setStyle("GREEN");
                 console.writeLine("Required attributes:");
-                console.styleOff();
+                console.clearStyle();
                 writeItems(attributeItemRuleMap.values(), TokenType.ATTRIBUTE);
             }
         }
@@ -274,7 +274,7 @@ public class ShellActivity extends CoreActivity {
         if (missingItemRules != null) {
             console.setStyle("YELLOW");
             console.writeLine("Missing required parameters:");
-            console.styleOff();
+            console.clearStyle();
             if (!readSimply) {
                 writeItems(missingItemRules, TokenType.PARAMETER);
             }
@@ -302,7 +302,7 @@ public class ShellActivity extends CoreActivity {
                     missingItemRules.add(ir);
                 }
             }
-        } catch (ConsoleClosedException e) {
+        } catch (ShellConsoleClosedException e) {
             logger.info("User interrupt occurred");
             terminate("User interrupt occurred");
         }
@@ -313,10 +313,10 @@ public class ShellActivity extends CoreActivity {
         console.clearPrompt();
         console.setStyle("YELLOW");
         console.appendPrompt(getMandatoryMarker(itemRule.isMandatory()));
-        console.styleOff();
+        console.clearStyle();
         console.setStyle("bold");
         console.appendPrompt(itemRule.getName());
-        console.styleOff();
+        console.clearStyle();
         console.appendPrompt(": ");
 
         String defaultValue = null;
@@ -341,7 +341,7 @@ public class ShellActivity extends CoreActivity {
     private Collection<ItemRule> readEachToken(Collection<ItemRule> itemRules) throws ActivityTerminatedException {
         console.setStyle("GREEN");
         console.writeLine("Enter a value for each token:");
-        console.styleOff();
+        console.clearStyle();
 
         Set<ItemRule> missingItemRules = new LinkedHashSet<>();
         try {
@@ -385,11 +385,11 @@ public class ShellActivity extends CoreActivity {
                 console.setStyle("CYAN");
                 console.appendPrompt(String.valueOf(Token.PARAMETER_SYMBOL));
                 console.appendPrompt(String.valueOf(Token.BRACKET_OPEN));
-                console.styleOff();
+                console.clearStyle();
                 console.appendPrompt(token.getName());
                 console.setStyle("CYAN");
                 console.appendPrompt(String.valueOf(Token.BRACKET_CLOSE));
-                console.styleOff();
+                console.clearStyle();
                 console.appendPrompt(": ");
                 String line;
                 if (secret) {
@@ -407,7 +407,7 @@ public class ShellActivity extends CoreActivity {
                     }
                 }
             }
-        } catch (ConsoleClosedException e) {
+        } catch (ShellConsoleClosedException e) {
             logger.info("User interrupt occurred");
             terminate("User interrupt occurred");
         }
@@ -447,10 +447,10 @@ public class ShellActivity extends CoreActivity {
     private void writeItem(ItemRule itemRule, Token[] tokens) {
         console.setStyle("YELLOW");
         console.write(getMandatoryMarker(itemRule.isMandatory()));
-        console.styleOff();
+        console.clearStyle();
         console.setStyle("bold");
         console.write(itemRule.getName());
-        console.styleOff();
+        console.clearStyle();
         if (tokens != null && tokens.length > 0) {
             console.write(": ");
             for (Token token : tokens) {
@@ -467,11 +467,11 @@ public class ShellActivity extends CoreActivity {
             String str = token.stringify();
             console.setStyle("CYAN");
             console.write(str.substring(0, 2));
-            console.styleOff();
+            console.clearStyle();
             console.write(str.substring(2, str.length() - 1));
             console.setStyle("CYAN");
             console.write(str.substring(str.length() - 1));
-            console.styleOff();
+            console.clearStyle();
         }
     }
 

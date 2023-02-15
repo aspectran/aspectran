@@ -15,7 +15,7 @@
  */
 package com.aspectran.shell.command;
 
-import com.aspectran.shell.console.Console;
+import com.aspectran.shell.console.ShellConsole;
 import com.aspectran.shell.service.ShellService;
 
 /**
@@ -25,7 +25,7 @@ import com.aspectran.shell.service.ShellService;
  */
 public interface CommandInterpreter {
 
-    Console getConsole();
+    ShellConsole getConsole();
 
     CommandRegistry getCommandRegistry();
 

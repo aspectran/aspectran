@@ -32,15 +32,15 @@ import java.util.List;
  *
  * <p>Created: 2017. 3. 4.</p>
  */
-public class DefaultConsole extends AbstractConsole {
+public class DefaultShellConsole extends AbstractShellConsole {
 
     private volatile boolean busy;
 
-    public DefaultConsole() {
+    public DefaultShellConsole() {
         this(null);
     }
 
-    public DefaultConsole(String encoding) {
+    public DefaultShellConsole(String encoding) {
         super(encoding);
     }
 
@@ -180,8 +180,8 @@ public class DefaultConsole extends AbstractConsole {
     }
 
     @Override
-    public void write(String string) {
-        System.out.print(string);
+    public void write(String str) {
+        System.out.print(str);
     }
 
     @Override
@@ -190,8 +190,8 @@ public class DefaultConsole extends AbstractConsole {
     }
 
     @Override
-    public void writeLine(String string) {
-        System.out.println(string);
+    public void writeLine(String str) {
+        System.out.println(str);
     }
 
     @Override
@@ -205,13 +205,18 @@ public class DefaultConsole extends AbstractConsole {
     }
 
     @Override
-    public void writeError(String string) {
-        System.err.println(string);
+    public void writeError(String str) {
+        System.err.println(str);
     }
 
     @Override
     public void writeError(String format, Object... args) {
         System.err.printf(format + "%n", args);
+    }
+
+    @Override
+    public void writeAbove(String str) {
+        writeLine(str);
     }
 
     @Override
@@ -249,8 +254,8 @@ public class DefaultConsole extends AbstractConsole {
     }
 
     @Override
-    public String[] getStyles() {
-        return null;
+    public boolean isBusy() {
+        return busy;
     }
 
     @Override
@@ -259,39 +264,8 @@ public class DefaultConsole extends AbstractConsole {
     }
 
     @Override
-    public void styleOff() {
+    public void clearStyle() {
         // Nothing to do
-    }
-
-    @Override
-    public boolean isBusy() {
-        return busy;
-    }
-
-    @Override
-    public boolean confirmRestart() {
-        return confirmRestart(null);
-    }
-
-    @Override
-    public boolean confirmRestart(String message) {
-        if (isBusy()) {
-            writeLine("Illegal State");
-            return false;
-        }
-        if (message != null) {
-            writeLine(message);
-        }
-        String confirm = "Would you like to restart this shell [Y/n]? ";
-        String yn = readLine(confirm);
-        return (yn.isEmpty() || yn.equalsIgnoreCase("Y"));
-    }
-
-    @Override
-    public boolean confirmQuit() {
-        String confirm = "Are you sure you want to quit [Y/n]? ";
-        String yn = readLine(confirm);
-        return (yn.isEmpty() || yn.equalsIgnoreCase("Y"));
     }
 
 }

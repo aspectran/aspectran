@@ -29,7 +29,7 @@ import java.util.List;
  *
  * @since 4.0.0
  */
-public interface Console {
+public interface ShellConsole {
 
     String DEFAULT_PROMPT = "Aspectran> ";
 
@@ -79,21 +79,21 @@ public interface Console {
 
     String readPassword(String prompt, String buffer);
 
-    void write(String string);
+    void write(String str);
 
     void write(String format, Object... args);
 
-    void writeLine(String string);
+    void writeLine(String str);
 
     void writeLine(String format, Object... args);
 
     void writeLine();
 
-    void writeError(String string);
+    void writeError(String str);
 
     void writeError(String format, Object... args);
 
-    void appendPrompt(String string);
+    void appendPrompt(String str);
 
     void clearPrompt();
 
@@ -107,13 +107,11 @@ public interface Console {
 
     PrintWriter getWriter();
 
-    String[] getStyles();
+    boolean isBusy();
 
     void setStyle(String... styles);
 
-    void styleOff();
-
-    boolean isBusy();
+    void clearStyle();
 
     boolean confirmRestart();
 

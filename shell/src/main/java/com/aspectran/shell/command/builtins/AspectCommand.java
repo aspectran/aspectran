@@ -24,7 +24,7 @@ import com.aspectran.shell.command.AbstractCommand;
 import com.aspectran.shell.command.CommandRegistry;
 import com.aspectran.shell.command.option.Option;
 import com.aspectran.shell.command.option.ParsedOptions;
-import com.aspectran.shell.console.Console;
+import com.aspectran.shell.console.ShellConsole;
 import com.aspectran.shell.service.ShellService;
 
 import java.io.IOException;
@@ -77,7 +77,7 @@ public class AspectCommand extends AbstractCommand {
     }
 
     @Override
-    public void execute(ParsedOptions options, Console console) throws Exception {
+    public void execute(ParsedOptions options, ShellConsole console) throws Exception {
         ShellService shellService = getShellService();
         if (options.hasOption("help")) {
             printHelp(console);
@@ -98,7 +98,7 @@ public class AspectCommand extends AbstractCommand {
         }
     }
 
-    private void listAspects(ShellService shellService, Console console, String[] keywords) {
+    private void listAspects(ShellService shellService, ShellConsole console, String[] keywords) {
         AspectRuleRegistry aspectRuleRegistry = shellService.getActivityContext().getAspectRuleRegistry();
         Collection<AspectRule> aspectRules = aspectRuleRegistry.getAspectRules();
         console.writeLine("-%4s-+-%-45s-+-%-8s-+-%-8s-", "----", "---------------------------------------------",
@@ -126,7 +126,7 @@ public class AspectCommand extends AbstractCommand {
                 console.setStyle("YELLOW");
             }
             console.write(" %-8s ", aspectRule.isIsolated());
-            console.styleOff();
+            console.clearStyle();
             console.write("|");
             if (!aspectRule.isIsolated()) {
                 if (aspectRule.isDisabled()) {
@@ -136,7 +136,7 @@ public class AspectCommand extends AbstractCommand {
                 }
             }
             console.writeLine(" %-8s ", !aspectRule.isDisabled());
-            console.styleOff();
+            console.clearStyle();
         }
         if (num == 0) {
             console.writeLine("%33s %s", " ", "No Data");
@@ -145,7 +145,7 @@ public class AspectCommand extends AbstractCommand {
                 "--------", "--------");
     }
 
-    private void describeAspectRule(ShellService shellService, Console console, String[] aspectIds) throws IOException {
+    private void describeAspectRule(ShellService shellService, ShellConsole console, String[] aspectIds) throws IOException {
         AspectRuleRegistry aspectRuleRegistry = shellService.getActivityContext().getAspectRuleRegistry();
         Collection<AspectRule> aspectRules;
         if (aspectIds == null || aspectIds.length == 0) {
@@ -183,7 +183,7 @@ public class AspectCommand extends AbstractCommand {
         }
     }
 
-    private void changeAspectActiveState(ShellService shellService, Console console, String[] aspectIds, boolean disabled) {
+    private void changeAspectActiveState(ShellService shellService, ShellConsole console, String[] aspectIds, boolean disabled) {
         AspectRuleRegistry aspectRuleRegistry = shellService.getActivityContext().getAspectRuleRegistry();
         List<AspectRule> aspectRules = new ArrayList<>();
         for (String aspectId : aspectIds) {

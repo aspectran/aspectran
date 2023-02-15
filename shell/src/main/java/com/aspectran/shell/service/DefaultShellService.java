@@ -34,7 +34,7 @@ import com.aspectran.core.util.logging.LoggerFactory;
 import com.aspectran.shell.activity.ShellActivity;
 import com.aspectran.shell.command.OutputRedirection;
 import com.aspectran.shell.command.TransletCommandLine;
-import com.aspectran.shell.console.Console;
+import com.aspectran.shell.console.ShellConsole;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -54,12 +54,12 @@ public class DefaultShellService extends AbstractShellService {
 
     private volatile long pauseTimeout = -1L;
 
-    private DefaultShellService(Console console) {
+    private DefaultShellService(ShellConsole console) {
         super(console);
     }
 
     @Override
-    public Translet translate(TransletCommandLine transletCommandLine, Console console)
+    public Translet translate(TransletCommandLine transletCommandLine, ShellConsole console)
             throws TransletNotFoundException {
         if (transletCommandLine == null) {
             throw new IllegalArgumentException("transletCommandLine must not be null");
@@ -110,14 +110,14 @@ public class DefaultShellService extends AbstractShellService {
         }
     }
 
-    private void asyncPerform(Console console, PrintWriter outputWriter,
+    private void asyncPerform(ShellConsole console, PrintWriter outputWriter,
                               boolean procedural, ParameterMap parameterMap,
                               String transletName, MethodType requestMethod, TransletRule transletRule) {
         //@TODO
         perform(console, outputWriter, procedural, parameterMap, transletName, requestMethod, transletRule);
     }
 
-    private Translet perform(Console console, PrintWriter outputWriter,
+    private Translet perform(ShellConsole console, PrintWriter outputWriter,
                              boolean procedural, ParameterMap parameterMap,
                              String transletName, MethodType requestMethod, TransletRule transletRule) {
         Translet translet = null;
@@ -153,7 +153,7 @@ public class DefaultShellService extends AbstractShellService {
         return translet;
     }
 
-    private boolean checkPaused(Console console) {
+    private boolean checkPaused(ShellConsole console) {
         if (pauseTimeout != 0L) {
             if (pauseTimeout == -1L || pauseTimeout >= System.currentTimeMillis()) {
                 if (pauseTimeout == -1L) {
@@ -181,7 +181,7 @@ public class DefaultShellService extends AbstractShellService {
      * @param console the {@code Console} instance
      * @return the instance of {@code DefaultShellService}
      */
-    public static DefaultShellService create(AspectranConfig aspectranConfig, Console console) {
+    public static DefaultShellService create(AspectranConfig aspectranConfig, ShellConsole console) {
         ContextConfig contextConfig = aspectranConfig.touchContextConfig();
         String[] contextRules = contextConfig.getContextRules();
         if (ObjectUtils.isEmpty(contextRules) && !contextConfig.hasAspectranParameters()) {

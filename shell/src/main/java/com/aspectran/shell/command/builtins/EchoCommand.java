@@ -20,7 +20,7 @@ import com.aspectran.shell.command.CommandRegistry;
 import com.aspectran.shell.command.option.Arguments;
 import com.aspectran.shell.command.option.Option;
 import com.aspectran.shell.command.option.ParsedOptions;
-import com.aspectran.shell.console.Console;
+import com.aspectran.shell.console.ShellConsole;
 
 /**
  * Displays a message on the screen.
@@ -47,7 +47,7 @@ public class EchoCommand extends AbstractCommand {
     }
 
     @Override
-    public void execute(ParsedOptions options, Console console) throws Exception {
+    public void execute(ParsedOptions options, ShellConsole console) throws Exception {
         if (options.hasOption("help")) {
             printHelp(console);
         } else {

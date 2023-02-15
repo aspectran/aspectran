@@ -30,7 +30,7 @@ import com.aspectran.shell.command.TransletCommandLine;
 import com.aspectran.shell.command.option.Arguments;
 import com.aspectran.shell.command.option.Option;
 import com.aspectran.shell.command.option.ParsedOptions;
-import com.aspectran.shell.console.Console;
+import com.aspectran.shell.console.ShellConsole;
 import com.aspectran.shell.service.ShellService;
 
 import java.io.IOException;
@@ -98,7 +98,7 @@ public class TransletCommand extends AbstractCommand {
     }
 
     @Override
-    public void execute(ParsedOptions options, Console console) throws Exception {
+    public void execute(ParsedOptions options, ShellConsole console) throws Exception {
         ShellService shellService = getShellService();
         if (options.hasOption("help")) {
             printHelp(console);
@@ -145,7 +145,7 @@ public class TransletCommand extends AbstractCommand {
         }
     }
 
-    private void listTranslets(ShellService shellService, Console console, String[] keywords, boolean all) {
+    private void listTranslets(ShellService shellService, ShellConsole console, String[] keywords, boolean all) {
         TransletRuleRegistry transletRuleRegistry = shellService.getActivityContext().getTransletRuleRegistry();
         Collection<TransletRule> transletRules = transletRuleRegistry.getTransletRules();
         console.writeLine("-%4s-+-%-67s-", "----", "-------------------------------------------------------------------");
@@ -181,7 +181,7 @@ public class TransletCommand extends AbstractCommand {
         console.writeLine("-%4s-+-%-67s-", "----", "-------------------------------------------------------------------");
     }
 
-    private void describeTransletRule(ShellService shellService, Console console, String[] transletNames,
+    private void describeTransletRule(ShellService shellService, ShellConsole console, String[] transletNames,
                                       MethodType requestMethod, boolean all)
             throws IOException {
         TransletRuleRegistry transletRuleRegistry = shellService.getActivityContext().getTransletRuleRegistry();

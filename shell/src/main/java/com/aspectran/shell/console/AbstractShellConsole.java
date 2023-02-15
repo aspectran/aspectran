@@ -25,7 +25,7 @@ import java.nio.charset.Charset;
  *
  * <p>Created: 2017. 3. 4.</p>
  */
-public abstract class AbstractConsole implements Console {
+public abstract class AbstractShellConsole implements ShellConsole {
 
     private final String encoding;
 
@@ -37,7 +37,7 @@ public abstract class AbstractConsole implements Console {
 
     private CommandInterpreter interpreter;
 
-    public AbstractConsole(String encoding) {
+    public AbstractShellConsole(String encoding) {
         if (encoding != null) {
             this.encoding = encoding;
         } else {
@@ -65,8 +65,8 @@ public abstract class AbstractConsole implements Console {
     }
 
     @Override
-    public void appendPrompt(String string) {
-        promptBuilder.append(string);
+    public void appendPrompt(String str) {
+        promptBuilder.append(str);
     }
 
     @Override
@@ -157,5 +157,39 @@ public abstract class AbstractConsole implements Console {
             return null;
         }
     }
+
+    @Override
+    public boolean confirmRestart() {
+        return confirmRestart(null);
+    }
+
+    @Override
+    public boolean confirmRestart(String message) {
+        if (isBusy()) {
+            writeAbove("Illegal State");
+            return false;
+        }
+        if (message != null) {
+            setStyle("YELLOW");
+            writeAbove(message);
+            clearStyle();
+        }
+        String confirm = "Would you like to restart this shell [Y/n]? ";
+        setStyle("YELLOW");
+        String yn = readLine(confirm);
+        clearStyle();
+        return (yn.isEmpty() || yn.equalsIgnoreCase("Y"));
+    }
+
+    @Override
+    public boolean confirmQuit() {
+        String confirm = "Are you sure you want to quit [Y/n]? ";
+        setStyle("YELLOW");
+        String yn = readLine(confirm);
+        clearStyle();
+        return (yn.isEmpty() || yn.equalsIgnoreCase("Y"));
+    }
+
+    abstract public void writeAbove(String str);
 
 }

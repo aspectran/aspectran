@@ -19,7 +19,7 @@ import com.aspectran.shell.command.AbstractCommand;
 import com.aspectran.shell.command.CommandRegistry;
 import com.aspectran.shell.command.option.Option;
 import com.aspectran.shell.command.option.ParsedOptions;
-import com.aspectran.shell.console.Console;
+import com.aspectran.shell.console.ShellConsole;
 
 /**
  * A command that display or delete all previously run commands.
@@ -46,7 +46,7 @@ public class HistoryCommand extends AbstractCommand {
     }
 
     @Override
-    public void execute(ParsedOptions options, Console console) throws Exception {
+    public void execute(ParsedOptions options, ShellConsole console) throws Exception {
         if (options.hasOption("help")) {
             printHelp(console);
         } else if (options.hasOption("clear")) {
@@ -56,7 +56,7 @@ public class HistoryCommand extends AbstractCommand {
         }
     }
 
-    private void listHistory(Console console) {
+    private void listHistory(ShellConsole console) {
         console.writeLine("-%4s-+-%-67s-", "----", "-------------------------------------------------------------------");
         console.writeLine(" %4s | %-67s ", "No.", "User input commands");
         console.writeLine("-%4s-+-%-67s-", "----", "-------------------------------------------------------------------");

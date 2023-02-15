@@ -18,7 +18,7 @@ package com.aspectran.shell.command;
 import com.aspectran.shell.command.option.Arguments;
 import com.aspectran.shell.command.option.Options;
 import com.aspectran.shell.command.option.ParsedOptions;
-import com.aspectran.shell.console.Console;
+import com.aspectran.shell.console.ShellConsole;
 
 import java.util.List;
 
@@ -38,15 +38,15 @@ public interface Command {
      * @param console the console
      * @throws Exception if an error occurs during command execution
      */
-    void execute(ParsedOptions options, Console console) throws Exception;
+    void execute(ParsedOptions options, ShellConsole console) throws Exception;
 
     /**
      * Prints the usage statement for the specified command.
      * @param console the Console instance
      */
-    void printHelp(Console console);
+    void printHelp(ShellConsole console);
 
-    void printQuickHelp(Console console);
+    void printQuickHelp(ShellConsole console);
 
     /**
      * This method returns an instance of Command.Descriptor.

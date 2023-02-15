@@ -21,7 +21,7 @@ import com.aspectran.shell.command.builtins.PBDecryptCommand;
 import com.aspectran.shell.command.builtins.PBEncryptCommand;
 import com.aspectran.shell.command.builtins.SysInfoCommand;
 import com.aspectran.shell.command.builtins.VerboseCommand;
-import com.aspectran.shell.console.Console;
+import com.aspectran.shell.console.ShellConsole;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -36,7 +36,7 @@ class CommandTest {
 
     private final CommandInterpreter interpreter = new TestCommandInterpreter();
 
-    private Console getConsole() {
+    private ShellConsole getConsole() {
         return interpreter.getConsole();
     }
 

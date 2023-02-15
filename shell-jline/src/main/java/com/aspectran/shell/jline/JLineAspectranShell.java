@@ -17,8 +17,8 @@ package com.aspectran.shell.jline;
 
 import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.shell.AspectranShell;
-import com.aspectran.shell.console.Console;
-import com.aspectran.shell.jline.console.JLineConsole;
+import com.aspectran.shell.console.ShellConsole;
+import com.aspectran.shell.jline.console.JLineShellConsole;
 
 import java.io.File;
 
@@ -35,7 +35,7 @@ public class JLineAspectranShell {
         String basePath = AspectranConfig.determineBasePath(args);
         File aspectranConfigFile = AspectranConfig.determineAspectranConfigFile(args);
         try {
-            Console console = new JLineConsole();
+            ShellConsole console = new JLineShellConsole();
             AspectranShell.bootstrap(basePath, aspectranConfigFile, console);
         } catch (Exception e) {
             e.printStackTrace(System.err);

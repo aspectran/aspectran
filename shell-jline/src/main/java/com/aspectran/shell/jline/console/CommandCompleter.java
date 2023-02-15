@@ -22,7 +22,7 @@ import com.aspectran.shell.command.CommandRegistry;
 import com.aspectran.shell.command.option.Arguments;
 import com.aspectran.shell.command.option.HelpFormatter;
 import com.aspectran.shell.command.option.Option;
-import com.aspectran.shell.console.Console;
+import com.aspectran.shell.console.ShellConsole;
 import com.aspectran.shell.service.ShellService;
 import org.jline.reader.Candidate;
 import org.jline.reader.Completer;
@@ -40,11 +40,11 @@ import java.util.List;
  */
 public class CommandCompleter implements Completer {
 
-    private final Console console;
+    private final ShellConsole console;
 
     private boolean limited;
 
-    public CommandCompleter(Console console) {
+    public CommandCompleter(ShellConsole console) {
         if (console == null) {
             throw new IllegalArgumentException("console must not be null");
         }
@@ -78,7 +78,7 @@ public class CommandCompleter implements Completer {
             for (Command command : commandRegistry.getAllCommands()) {
                 String name = command.getDescriptor().getName();
                 if (word == null || name.startsWith(word) ||
-                        (name + JLineConsole.MULTILINE_DELIMITER).startsWith(word)) {
+                        (name + JLineShellConsole.MULTILINE_DELIMITER).startsWith(word)) {
                     candidates.add(new Candidate(name, name, command.getDescriptor().getNamespace(),
                             null, null, null, true));
                 }

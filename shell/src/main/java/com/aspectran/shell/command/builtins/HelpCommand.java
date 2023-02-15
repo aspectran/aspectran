@@ -23,7 +23,7 @@ import com.aspectran.shell.command.option.HelpFormatter;
 import com.aspectran.shell.command.option.Option;
 import com.aspectran.shell.command.option.OptionUtils;
 import com.aspectran.shell.command.option.ParsedOptions;
-import com.aspectran.shell.console.Console;
+import com.aspectran.shell.console.ShellConsole;
 
 import java.util.Comparator;
 import java.util.LinkedList;
@@ -54,7 +54,7 @@ public class HelpCommand extends AbstractCommand {
     }
 
     @Override
-    public void execute(ParsedOptions options, Console console) throws Exception {
+    public void execute(ParsedOptions options, ShellConsole console) throws Exception {
         if (options.hasOption("help")) {
             printHelp(console);
             return;
@@ -78,7 +78,7 @@ public class HelpCommand extends AbstractCommand {
         } else {
             console.setStyle("bold");
             console.writeLine("Built-in commands:");
-            console.styleOff();
+            console.clearStyle();
             printHelp(targetCommands, console);
         }
     }
@@ -101,11 +101,11 @@ public class HelpCommand extends AbstractCommand {
         return argumentsList;
     }
 
-    private void printHelp(String[] targetCommands, Console console) {
+    private void printHelp(String[] targetCommands, ShellConsole console) {
         if (targetCommands == null) {
             console.setStyle("bold");
             console.writeLine("Available commands:");
-            console.styleOff();
+            console.clearStyle();
         }
         final int lineWidth = HelpFormatter.DEFAULT_WIDTH;
         final int commandWidth = maxLengthOfCommandName(targetCommands);

@@ -22,13 +22,13 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.List;
 
-public class ConsoleWrapper implements Console {
+public class ShellConsoleWrapper implements ShellConsole {
 
-    private final Console console;
+    private final ShellConsole console;
 
     private PrintWriter writer;
 
-    public ConsoleWrapper(Console console) {
+    public ShellConsoleWrapper(ShellConsole console) {
         this.console = console;
     }
 
@@ -123,8 +123,8 @@ public class ConsoleWrapper implements Console {
     }
 
     @Override
-    public void write(String string) {
-        console.write(string);
+    public void write(String str) {
+        console.write(str);
     }
 
     @Override
@@ -133,11 +133,11 @@ public class ConsoleWrapper implements Console {
     }
 
     @Override
-    public void writeLine(String string) {
+    public void writeLine(String str) {
         if (writer != null) {
-            writer.println(string);
+            writer.println(str);
         } else {
-            console.writeLine(string);
+            console.writeLine(str);
         }
     }
 
@@ -160,8 +160,8 @@ public class ConsoleWrapper implements Console {
     }
 
     @Override
-    public void writeError(String string) {
-        console.writeError(string);
+    public void writeError(String str) {
+        console.writeError(str);
     }
 
     @Override
@@ -170,8 +170,8 @@ public class ConsoleWrapper implements Console {
     }
 
     @Override
-    public void appendPrompt(String string) {
-        console.appendPrompt(string);
+    public void appendPrompt(String str) {
+        console.appendPrompt(str);
     }
 
     @Override
@@ -213,8 +213,8 @@ public class ConsoleWrapper implements Console {
     }
 
     @Override
-    public String[] getStyles() {
-        return console.getStyles();
+    public boolean isBusy() {
+        return console.isBusy();
     }
 
     @Override
@@ -223,13 +223,8 @@ public class ConsoleWrapper implements Console {
     }
 
     @Override
-    public void styleOff() {
-        console.styleOff();
-    }
-
-    @Override
-    public boolean isBusy() {
-        return console.isBusy();
+    public void clearStyle() {
+        console.clearStyle();
     }
 
     @Override

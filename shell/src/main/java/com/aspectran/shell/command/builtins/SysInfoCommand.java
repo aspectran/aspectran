@@ -20,7 +20,7 @@ import com.aspectran.shell.command.AbstractCommand;
 import com.aspectran.shell.command.CommandRegistry;
 import com.aspectran.shell.command.option.Option;
 import com.aspectran.shell.command.option.ParsedOptions;
-import com.aspectran.shell.console.Console;
+import com.aspectran.shell.console.ShellConsole;
 
 import java.io.File;
 import java.lang.management.ManagementFactory;
@@ -64,7 +64,7 @@ public class SysInfoCommand extends AbstractCommand {
     }
 
     @Override
-    public void execute(ParsedOptions options, Console console) throws Exception {
+    public void execute(ParsedOptions options, ShellConsole console) throws Exception {
         if (options.hasOption("help")) {
             printHelp(console);
         } else if (options.hasOption("props")) {
@@ -80,13 +80,13 @@ public class SysInfoCommand extends AbstractCommand {
         }
     }
 
-    private void printSysProperties(Console console) {
+    private void printSysProperties(ShellConsole console) {
         for (Map.Entry<Object, Object> entry : System.getProperties().entrySet()) {
             console.writeLine("%1$30s   %2$s", entry.getKey(), entry.getValue());
         }
     }
 
-    private void printClasspath(Console console) {
+    private void printClasspath(ShellConsole console) {
         RuntimeMXBean bean = ManagementFactory.getRuntimeMXBean();
         for (String line : StringUtils.split(bean.getClassPath(), File.pathSeparator)) {
             console.writeLine(line);
@@ -97,7 +97,7 @@ public class SysInfoCommand extends AbstractCommand {
      * Displays memory usage.
      * @param gc true if performing garbage collection; false otherwise
      */
-    private void mem(boolean gc, Console console) {
+    private void mem(boolean gc, ShellConsole console) {
         long total = Runtime.getRuntime().totalMemory();
         long before = Runtime.getRuntime().freeMemory();
 

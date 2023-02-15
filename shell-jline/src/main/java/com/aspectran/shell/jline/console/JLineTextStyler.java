@@ -15,10 +15,13 @@
  */
 package com.aspectran.shell.jline.console;
 
+import com.aspectran.core.lang.NonNull;
+import com.aspectran.core.lang.Nullable;
 import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
-import com.aspectran.shell.console.AnsiStyleHandler;
 import org.jline.terminal.Terminal;
+import org.jline.utils.AttributedCharSequence;
+import org.jline.utils.AttributedString;
 import org.jline.utils.AttributedStringBuilder;
 import org.jline.utils.AttributedStyle;
 import org.jline.utils.Colors;
@@ -30,250 +33,266 @@ import org.jline.utils.Colors;
  *
  * @since 4.1.0
  */
-public class JLineAnsiStyler {
+public class JLineTextStyler {
 
-    private static final Logger logger = LoggerFactory.getLogger(JLineAnsiStyler.class);
+    private static final Logger logger = LoggerFactory.getLogger(JLineTextStyler.class);
 
-    public static String parse(String input) {
+    public static AttributedCharSequence parse(String input) {
         return parse(input, null);
     }
 
-    public static String parse(String input, Terminal terminal) {
-        if (input == null || !input.contains("{{") || !input.contains("}}")) {
-            return input;
+    public static AttributedCharSequence parse(final String input, final AttributedStyle defaultStyle) {
+        if (input == null) {
+            return AttributedString.EMPTY;
         }
-
+        if (!input.contains("{{") || !input.contains("}}")) {
+            return new AttributedString(input);
+        }
         final AttributedStringBuilder asb = new AttributedStringBuilder(input.length());
-        AnsiStyleHandler handler = new AnsiStyleHandler() {
+        if (defaultStyle != null) {
+            asb.style(defaultStyle);
+        }
+        new TextStyleAttributeHandler() {
             @Override
             public void character(char c) {
                 asb.append(c);
             }
             @Override
             public void attribute(String... attrs) {
-                asb.style(makeStyle(asb.style(), attrs));
+                asb.style(style(asb.style(), defaultStyle, attrs));
             }
-        };
-        handler.handle(input);
-        return asb.toAnsi(terminal);
+        }.handle(input);
+        return asb;
     }
 
-    public static AttributedStyle makeStyle(String... styles) {
-        AttributedStyle attributedStyle = AttributedStyle.DEFAULT;
-        return makeStyle(attributedStyle, styles);
+    public static String parseAsString(String input, Terminal terminal) {
+        return parseAsString(null, input, terminal);
     }
 
-    public static AttributedStyle makeStyle(AttributedStyle as, String... styles) {
-        for (String style : styles) {
-            switch (style) {
+    public static String parseAsString(AttributedStyle defaultStyle, String input, Terminal terminal) {
+        return parse(input, defaultStyle).toAnsi(terminal);
+    }
+
+    public static AttributedStyle style(String... attrs) {
+        return style(AttributedStyle.DEFAULT, AttributedStyle.DEFAULT, attrs);
+    }
+
+    private static AttributedStyle style(@NonNull AttributedStyle baseStyle,
+                                         @Nullable AttributedStyle defaultStyle,
+                                         String... attrs) {
+        if (defaultStyle == null) {
+            defaultStyle = AttributedStyle.DEFAULT;
+        }
+        for (String attr : attrs) {
+            switch (attr) {
                 case "reset":
-                    as = AttributedStyle.DEFAULT;
+                    baseStyle = defaultStyle;
                     break;
                 case "bold":
-                    as = as.bold();
+                    baseStyle = baseStyle.bold();
                     break;
                 case "faint":
-                    as = as.faint();
+                    baseStyle = baseStyle.faint();
                     break;
                 case "bold:off":
-                    as = as.boldOff().faintOff();
+                    baseStyle = baseStyle.boldOff().faintOff();
                     break;
                 case "italic":
-                    as = as.italic();
+                    baseStyle = baseStyle.italic();
                     break;
                 case "italic:off":
-                    as = as.italicOff();
+                    baseStyle = baseStyle.italicOff();
                     break;
                 case "underline":
-                    as = as.underline();
+                    baseStyle = baseStyle.underline();
                     break;
                 case "underline:off":
-                    as = as.underlineOff();
+                    baseStyle = baseStyle.underlineOff();
                     break;
                 case "blink":
-                    as = as.blink();
+                    baseStyle = baseStyle.blink();
                     break;
                 case "blink:off":
-                    as = as.blinkOff();
+                    baseStyle = baseStyle.blinkOff();
                     break;
                 case "inverse":
-                    as = as.inverse();
+                    baseStyle = baseStyle.inverse();
                     break;
                 case "inverse:off":
-                    as = as.inverseOff();
+                    baseStyle = baseStyle.inverseOff();
                     break;
                 case "conceal":
-                    as = as.conceal();
+                    baseStyle = baseStyle.conceal();
                     break;
                 case "conceal:off":
-                    as = as.concealOff();
+                    baseStyle = baseStyle.concealOff();
                     break;
                 case "crossedOut":
-                    as = as.crossedOut();
+                    baseStyle = baseStyle.crossedOut();
                     break;
                 case "crossedOut:off":
-                    as = as.crossedOutOff();
+                    baseStyle = baseStyle.crossedOutOff();
                     break;
                 case "black":
                 case "BLACK":
                 case "fg:black":
                 case "fg:BLACK":
-                    as = as.foreground(0);
+                    baseStyle = baseStyle.foreground(0);
                     break;
                 case "red":
                 case "fg:red":
-                    as = as.foreground(1);
+                    baseStyle = baseStyle.foreground(1);
                     break;
                 case "green":
                 case "fg:green":
-                    as = as.foreground(2);
+                    baseStyle = baseStyle.foreground(2);
                     break;
                 case "yellow":
                 case "fg:yellow":
-                    as = as.foreground(3);
+                    baseStyle = baseStyle.foreground(3);
                     break;
                 case "blue":
                 case "fg:blue":
-                    as = as.foreground(4);
+                    baseStyle = baseStyle.foreground(4);
                     break;
                 case "magenta":
                 case "fg:magenta":
-                    as = as.foreground(5);
+                    baseStyle = baseStyle.foreground(5);
                     break;
                 case "cyan":
                 case "fg:cyan":
-                    as = as.foreground(6);
+                    baseStyle = baseStyle.foreground(6);
                     break;
                 case "GRAY":
                 case "fg:GRAY":
-                    as = as.foreground(7);
+                    baseStyle = baseStyle.foreground(7);
                     break;
                 case "gray":
                 case "fg:gray":
-                    as = as.foreground(8);
+                    baseStyle = baseStyle.foreground(8);
                     break;
                 case "RED":
                 case "fg:RED":
-                    as = as.foreground(9);
+                    baseStyle = baseStyle.foreground(9);
                     break;
                 case "GREEN":
                 case "fg:GREEN":
-                    as = as.foreground(10);
+                    baseStyle = baseStyle.foreground(10);
                     break;
                 case "YELLOW":
                 case "fg:YELLOW":
-                    as = as.foreground(11);
+                    baseStyle = baseStyle.foreground(11);
                     break;
                 case "BLUE":
                 case "fg:BLUE":
-                    as = as.foreground(12);
+                    baseStyle = baseStyle.foreground(12);
                     break;
                 case "MAGENTA":
                 case "fg:MAGENTA":
-                    as = as.foreground(13);
+                    baseStyle = baseStyle.foreground(13);
                     break;
                 case "CYAN":
                 case "fg:CYAN":
-                    as = as.foreground(14);
+                    baseStyle = baseStyle.foreground(14);
                     break;
                 case "WHITE":
                 case "white":
                 case "fg:WHITE":
                 case "fg:white":
-                    as = as.foreground(15);
+                    baseStyle = baseStyle.foreground(15);
                     break;
                 case "fg:reset":
-                    as = as.foregroundOff();
+                    baseStyle = defaultStyle.backgroundDefault();
                     break;
                 case "bg:black":
                 case "bg:BLACK":
-                    as = as.background(0);
+                    baseStyle = baseStyle.background(0);
                     break;
                 case "bg:red":
-                    as = as.background(1);
+                    baseStyle = baseStyle.background(1);
                     break;
                 case "bg:green":
-                    as = as.background(2);
+                    baseStyle = baseStyle.background(2);
                     break;
                 case "bg:yellow":
-                    as = as.background(3);
+                    baseStyle = baseStyle.background(3);
                     break;
                 case "bg:blue":
-                    as = as.background(4);
+                    baseStyle = baseStyle.background(4);
                     break;
                 case "bg:magenta":
-                    as = as.background(5);
+                    baseStyle = baseStyle.background(5);
                     break;
                 case "bg:cyan":
-                    as = as.background(6);
+                    baseStyle = baseStyle.background(6);
                     break;
                 case "bg:GRAY":
-                    as = as.background(7);
+                    baseStyle = baseStyle.background(7);
                     break;
                 case "bg:gray":
-                    as = as.background(8);
+                    baseStyle = baseStyle.background(8);
                     break;
                 case "bg:RED":
-                    as = as.background(9);
+                    baseStyle = baseStyle.background(9);
                     break;
                 case "bg:GREEN":
-                    as = as.background(10);
+                    baseStyle = baseStyle.background(10);
                     break;
                 case "bg:YELLOW":
-                    as = as.background(11);
+                    baseStyle = baseStyle.background(11);
                     break;
                 case "bg:BLUE":
-                    as = as.background(12);
+                    baseStyle = baseStyle.background(12);
                     break;
                 case "bg:MAGENTA":
-                    as = as.background(13);
+                    baseStyle = baseStyle.background(13);
                     break;
                 case "bg:CYAN":
-                    as = as.background(14);
+                    baseStyle = baseStyle.background(14);
                     break;
                 case "bg:WHITE":
                 case "bg:white":
-                    as = as.background(15);
+                    baseStyle = baseStyle.background(15);
                     break;
                 case "bg:reset":
-                    as = as.backgroundOff();
+                    baseStyle = defaultStyle.foregroundDefault();
                     break;
                 default:
                     int color = -1;
-                    if (style.startsWith("bg:")) {
+                    if (attr.startsWith("bg:")) {
                         try {
-                            color = Integer.parseInt(style.substring(3));
+                            color = Integer.parseInt(attr.substring(3));
                         } catch (NumberFormatException ignored) {
                             try {
-                                color = Colors.rgbColor(style.toLowerCase());
+                                color = Colors.rgbColor(attr.toLowerCase());
                             } catch (Throwable e) {
-                                logger.warn("Unable to parse color from string \"" + style + "\"", e);
+                                logger.warn("Unable to parse color from string \"" + attr + "\"", e);
                             }
                         }
-                        as = as.background(color);
+                        baseStyle = baseStyle.background(color);
                     } else {
                         try {
-                            if (style.startsWith("fb:")) {
-                                color = Integer.parseInt(style.substring(3));
+                            if (attr.startsWith("fb:")) {
+                                color = Integer.parseInt(attr.substring(3));
                             } else {
-                                color = Integer.parseInt(style);
+                                color = Integer.parseInt(attr);
                             }
                         } catch (NumberFormatException ignored) {
                             try {
-                                color = Colors.rgbColor(style.toLowerCase());
+                                color = Colors.rgbColor(attr.toLowerCase());
                             } catch (Throwable e) {
-                                logger.warn("Unable to parse color from string \"" + style + "\"", e);
+                                logger.warn("Unable to parse color from string \"" + attr + "\"", e);
                             }
                         }
-                        as = as.foreground(color);
+                        baseStyle = baseStyle.foreground(color);
                     }
                     if (color == -1) {
-                        logger.warn("Unknown color code \"" + style + "\"");
+                        logger.warn("Unknown color code \"" + attr + "\"");
                     }
                     break;
             }
         }
-        return as;
+        return baseStyle;
     }
 
 }

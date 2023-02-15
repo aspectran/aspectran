@@ -17,7 +17,7 @@ package com.aspectran.shell.command;
 
 import com.aspectran.shell.command.option.Option;
 import com.aspectran.shell.command.option.ParsedOptions;
-import com.aspectran.shell.console.Console;
+import com.aspectran.shell.console.ShellConsole;
 
 public class TestCommand extends AbstractCommand {
 
@@ -58,7 +58,7 @@ public class TestCommand extends AbstractCommand {
     }
 
     @Override
-    public void execute(ParsedOptions options, Console console) throws Exception {
+    public void execute(ParsedOptions options, ShellConsole console) throws Exception {
         String input = options.getTypedValue("input");
         String password = options.getTypedValue("password");
         String D = options.getValue("D");

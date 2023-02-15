@@ -16,7 +16,7 @@
 package com.aspectran.shell;
 
 import com.aspectran.core.util.ResourceUtils;
-import com.aspectran.shell.console.DefaultConsole;
+import com.aspectran.shell.console.DefaultShellConsole;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,7 +30,7 @@ public class AspectranShellOnlyTest {
 
     public static void main(String[] args) throws IOException {
         File aspectranConfigFile = ResourceUtils.getResourceAsFile("config/shell/aspectran-config-shell-only-test.apon");
-        AspectranShell.bootstrap(aspectranConfigFile, new DefaultConsole());
+        AspectranShell.bootstrap(aspectranConfigFile, new DefaultShellConsole());
     }
 
 }

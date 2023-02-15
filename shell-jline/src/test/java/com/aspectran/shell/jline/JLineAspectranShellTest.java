@@ -17,7 +17,7 @@ package com.aspectran.shell.jline;
 
 import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.shell.AspectranShell;
-import com.aspectran.shell.jline.console.JLineConsole;
+import com.aspectran.shell.jline.console.JLineShellConsole;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,7 +29,7 @@ class JLineAspectranShellTest {
 
     public static void main(String[] args) throws IOException {
         File aspectranConfigFile = ResourceUtils.getResourceAsFile("config/shell/jline/aspectran-config-jline-shell-test.apon");
-        AspectranShell.bootstrap(aspectranConfigFile, new JLineConsole());
+        AspectranShell.bootstrap(aspectranConfigFile, new JLineShellConsole());
     }
 
 }

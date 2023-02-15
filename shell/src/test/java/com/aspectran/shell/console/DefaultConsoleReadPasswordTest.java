@@ -23,7 +23,7 @@ import com.aspectran.core.util.StringUtils;
 public class DefaultConsoleReadPasswordTest {
 
     public static void main(String[] args) {
-        Console console = new DefaultConsole();
+        ShellConsole console = new DefaultShellConsole();
         String prompt = "> ";
         while (true) {
             String line = console.readPassword(prompt);

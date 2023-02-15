@@ -28,9 +28,9 @@ import com.aspectran.shell.command.builtins.QuitCommand;
 import com.aspectran.shell.command.option.OptionParserException;
 import com.aspectran.shell.command.option.ParsedOptions;
 import com.aspectran.shell.console.CommandReadFailedException;
-import com.aspectran.shell.console.Console;
-import com.aspectran.shell.console.ConsoleClosedException;
-import com.aspectran.shell.console.ConsoleWrapper;
+import com.aspectran.shell.console.ShellConsole;
+import com.aspectran.shell.console.ShellConsoleClosedException;
+import com.aspectran.shell.console.ShellConsoleWrapper;
 import com.aspectran.shell.service.DefaultShellService;
 import com.aspectran.shell.service.ShellService;
 
@@ -49,7 +49,7 @@ public class ShellCommandInterpreter implements CommandInterpreter {
 
     private static final Logger logger = LoggerFactory.getLogger(ShellCommandInterpreter.class);
 
-    private final Console console;
+    private final ShellConsole console;
 
     private ShellCommandRegistry commandRegistry;
 
@@ -59,7 +59,7 @@ public class ShellCommandInterpreter implements CommandInterpreter {
 
     private PrintStream orgSystemErr;
 
-    public ShellCommandInterpreter(Console console) {
+    public ShellCommandInterpreter(ShellConsole console) {
         if (console == null) {
             throw new IllegalArgumentException("console must not be null");
         }
@@ -67,7 +67,7 @@ public class ShellCommandInterpreter implements CommandInterpreter {
     }
 
     @Override
-    public Console getConsole() {
+    public ShellConsole getConsole() {
         return console;
     }
 
@@ -94,6 +94,10 @@ public class ShellCommandInterpreter implements CommandInterpreter {
         }
 
         ShellConfig shellConfig = aspectranConfig.touchShellConfig();
+        String[] textStyles = shellConfig.getTextStyles();
+        if (textStyles != null) {
+            console.setStyle(textStyles);
+        }
         String commandPrompt = shellConfig.getPrompt();
         if (commandPrompt != null) {
             console.setCommandPrompt(commandPrompt);
@@ -164,7 +168,7 @@ public class ShellCommandInterpreter implements CommandInterpreter {
                     } else {
                         console.writeLine("No command mapped to '" + lineParser.getCommandName() + "'");
                     }
-                } catch (ConsoleClosedException e) {
+                } catch (ShellConsoleClosedException e) {
                     break;
                 } catch (CommandReadFailedException e) {
                     if (logger.isDebugEnabled()) {
@@ -189,14 +193,14 @@ public class ShellCommandInterpreter implements CommandInterpreter {
      * @param lineParser the command line parser
      */
     private void execute(Command command, CommandLineParser lineParser) {
-        ConsoleWrapper wrappedConsole = new ConsoleWrapper(console);
+        ShellConsoleWrapper wrappedConsole = new ShellConsoleWrapper(console);
         PrintWriter outputWriter = null;
         try {
             ParsedOptions options = lineParser.parseOptions(command.getOptions());
             outputWriter = OutputRedirection.determineOutputWriter(lineParser.getRedirectionList(), wrappedConsole);
             wrappedConsole.setWriter(outputWriter);
             command.execute(options, wrappedConsole);
-        } catch (ConsoleClosedException e) {
+        } catch (ShellConsoleClosedException e) {
             throw e;
         } catch (OptionParserException e) {
             wrappedConsole.writeError(e.getMessage());
@@ -220,7 +224,7 @@ public class ShellCommandInterpreter implements CommandInterpreter {
                 shellService.translate(transletCommandLine, console);
             } catch (TransletNotFoundException e) {
                 console.writeError("No command or translet mapped to '" + e.getTransletName() + "'");
-            } catch (ConsoleClosedException e) {
+            } catch (ShellConsoleClosedException e) {
                 throw e;
             } catch (Exception e) {
                 logger.error("Failed to execute command: " +
@@ -273,9 +277,9 @@ public class ShellCommandInterpreter implements CommandInterpreter {
 
     private class PrintStreamWrapper extends PrintStream {
 
-        private final Console console;
+        private final ShellConsole console;
 
-        PrintStreamWrapper(PrintStream parent, Console console) {
+        PrintStreamWrapper(PrintStream parent, ShellConsole console) {
             super(parent);
             this.console = console;
         }

@@ -16,17 +16,17 @@
 package com.aspectran.shell.jline.console;
 
 import com.aspectran.core.util.StringUtils;
-import com.aspectran.shell.console.Console;
+import com.aspectran.shell.console.ShellConsole;
 
 import java.io.IOException;
 
 /**
  * <p>Created: 2017. 3. 5.</p>
  */
-class JLineConsoleTest {
+class JLineShellConsoleTest {
 
     public static void main(String[] args) throws IOException {
-        Console console = new JLineConsole();
+        ShellConsole console = new JLineShellConsole();
         String prompt = "> ";
         while (true) {
             String line = console.readLine(prompt);

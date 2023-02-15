@@ -21,7 +21,7 @@ import com.aspectran.shell.command.CommandRegistry;
 import com.aspectran.shell.command.option.Arguments;
 import com.aspectran.shell.command.option.Option;
 import com.aspectran.shell.command.option.ParsedOptions;
-import com.aspectran.shell.console.Console;
+import com.aspectran.shell.console.ShellConsole;
 import com.aspectran.shell.service.ShellService;
 import com.aspectran.undertow.server.TowServer;
 import io.undertow.Version;
@@ -62,7 +62,7 @@ public class UndertowCommand extends AbstractCommand {
     }
 
     @Override
-    public void execute(ParsedOptions options, Console console) throws Exception {
+    public void execute(ParsedOptions options, ShellConsole console) throws Exception {
         if (!options.hasOptions() && !options.hasArgs()) {
             printQuickHelp(console);
             return;
@@ -155,11 +155,11 @@ public class UndertowCommand extends AbstractCommand {
         }
     }
 
-    private void printStatus(TowServer towServer, Console console) {
+    private void printStatus(TowServer towServer, ShellConsole console) {
         console.writeLine("----------------------------------------------------------------------------");
         console.setStyle("YELLOW");
         console.write(towServer.getState());
-        console.styleOff();
+        console.clearStyle();
         console.writeLine(" - Undertow " + Version.getVersionString());
         console.writeLine("----------------------------------------------------------------------------");
     }

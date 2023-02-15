@@ -17,7 +17,7 @@ package com.aspectran.shell.command;
 
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.ToStringBuilder;
-import com.aspectran.shell.console.Console;
+import com.aspectran.shell.console.ShellConsole;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -111,7 +111,7 @@ public class OutputRedirection {
      * @throws FileNotFoundException if the file has an invalid path
      * @throws UnsupportedEncodingException if the named encoding is not supported
      */
-    public static PrintWriter determineOutputWriter(List<OutputRedirection> redirectionList, Console console)
+    public static PrintWriter determineOutputWriter(List<OutputRedirection> redirectionList, ShellConsole console)
             throws FileNotFoundException, UnsupportedEncodingException {
         Writer[] redirectionWriters = getRedirectionWriters(redirectionList, console);
         PrintWriter outputWriter = null;
@@ -125,7 +125,7 @@ public class OutputRedirection {
         return outputWriter;
     }
 
-    private static Writer[] getRedirectionWriters(List<OutputRedirection> redirectionList, Console console)
+    private static Writer[] getRedirectionWriters(List<OutputRedirection> redirectionList, ShellConsole console)
             throws FileNotFoundException, UnsupportedEncodingException {
         if (redirectionList != null && !redirectionList.isEmpty()) {
             List<Writer> writers = new ArrayList<>(redirectionList.size());

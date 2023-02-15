@@ -32,7 +32,7 @@ import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
 import com.aspectran.shell.adapter.ShellSessionAdapter;
-import com.aspectran.shell.console.Console;
+import com.aspectran.shell.console.ShellConsole;
 
 /**
  * Abstract base class for {@code ShellService} implementations.
@@ -43,7 +43,7 @@ public abstract class AbstractShellService extends AspectranCoreService implemen
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractShellService.class);
 
-    private final Console console;
+    private final ShellConsole console;
 
     private SessionManager sessionManager;
 
@@ -56,7 +56,7 @@ public abstract class AbstractShellService extends AspectranCoreService implemen
 
     private Token[] greetingsTokens;
 
-    protected AbstractShellService(Console console) {
+    protected AbstractShellService(ShellConsole console) {
         super();
 
         if (console == null) {

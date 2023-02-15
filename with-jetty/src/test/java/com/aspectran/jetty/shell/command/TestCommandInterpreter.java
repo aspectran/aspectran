@@ -18,18 +18,18 @@ package com.aspectran.jetty.shell.command;
 import com.aspectran.shell.command.CommandInterpreter;
 import com.aspectran.shell.command.CommandRegistry;
 import com.aspectran.shell.command.ShellCommandRegistry;
-import com.aspectran.shell.console.Console;
-import com.aspectran.shell.console.DefaultConsole;
+import com.aspectran.shell.console.ShellConsole;
+import com.aspectran.shell.console.DefaultShellConsole;
 import com.aspectran.shell.service.ShellService;
 
 public class TestCommandInterpreter implements CommandInterpreter {
 
-    private final Console console = new DefaultConsole();
+    private final ShellConsole console = new DefaultShellConsole();
 
     private final CommandRegistry commandRegistry = new ShellCommandRegistry(this);
 
     @Override
-    public Console getConsole() {
+    public ShellConsole getConsole() {
         return console;
     }
 

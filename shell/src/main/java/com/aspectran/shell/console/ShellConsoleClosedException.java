@@ -18,14 +18,14 @@ package com.aspectran.shell.console;
 /**
  * This exception raised if a console is closed.
  */
-public class ConsoleClosedException extends RuntimeException {
+public class ShellConsoleClosedException extends RuntimeException {
 
     private static final long serialVersionUID = -8812494142589655857L;
 
     /**
      * Simple constructor.
      */
-    public ConsoleClosedException() {
+    public ShellConsoleClosedException() {
         super();
     }
 
@@ -33,7 +33,7 @@ public class ConsoleClosedException extends RuntimeException {
      * Constructor to create exception with a message.
      * @param msg a message to associate with the exception
      */
-    public ConsoleClosedException(String msg) {
+    public ShellConsoleClosedException(String msg) {
         super(msg);
     }
 
@@ -41,7 +41,7 @@ public class ConsoleClosedException extends RuntimeException {
      * Constructor to create exception to wrap another exception.
      * @param cause the real cause of the exception
      */
-    public ConsoleClosedException(Throwable cause) {
+    public ShellConsoleClosedException(Throwable cause) {
         super(cause);
     }
 
@@ -50,7 +50,7 @@ public class ConsoleClosedException extends RuntimeException {
      * @param msg the message
      * @param cause the real cause of the exception
      */
-    public ConsoleClosedException(String msg, Throwable cause) {
+    public ShellConsoleClosedException(String msg, Throwable cause) {
         super(msg, cause);
     }
 

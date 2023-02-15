@@ -15,7 +15,7 @@
  */
 package com.aspectran.shell.command.option;
 
-import com.aspectran.shell.console.DefaultConsole;
+import com.aspectran.shell.console.DefaultShellConsole;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -112,7 +112,7 @@ class DefaultOptionParserTest {
         try {
             ParsedOptions parsedOptions = parser.parse(options, args);
 
-            HelpFormatter formatter = new HelpFormatter(new DefaultConsole());
+            HelpFormatter formatter = new HelpFormatter(new DefaultShellConsole());
             int leftPadSize = formatter.printOptions(options);
             formatter.printArguments(argumentsList, leftPadSize);
 
@@ -178,7 +178,7 @@ class DefaultOptionParserTest {
         try {
             ParsedOptions parsedOptions = parser.parse(options, args);
 
-            HelpFormatter formatter = new HelpFormatter(new DefaultConsole());
+            HelpFormatter formatter = new HelpFormatter(new DefaultShellConsole());
             formatter.printOptions(options);
 
             assertTrue(parsedOptions.hasOption("a"));
@@ -218,7 +218,7 @@ class DefaultOptionParserTest {
         try {
             ParsedOptions parsedOptions = parser.parse(options, args, true);
 
-            HelpFormatter formatter = new HelpFormatter(new DefaultConsole());
+            HelpFormatter formatter = new HelpFormatter(new DefaultShellConsole());
             formatter.printOptions(options);
 
             assertEquals("[yes, no]", Arrays.toString(parsedOptions.getValues("password")));

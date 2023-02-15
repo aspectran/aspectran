@@ -25,12 +25,12 @@ class DefaultConsoleTest {
 
     @Test
     void testWrite() {
-        DefaultConsole console = new DefaultConsole();
+        DefaultShellConsole console = new DefaultShellConsole();
         console.writeLine("--- DefaultConsoleTest ---");
     }
 
     public static void main(String[] args) {
-        Console console = new DefaultConsole();
+        ShellConsole console = new DefaultShellConsole();
         String prompt = "> ";
         while (true) {
             String line = console.readLine(prompt);

@@ -16,7 +16,7 @@
 package com.aspectran.jetty.shell.command;
 
 import com.aspectran.shell.command.CommandInterpreter;
-import com.aspectran.shell.console.Console;
+import com.aspectran.shell.console.ShellConsole;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -31,7 +31,7 @@ class JettyCommandTest {
 
     private final CommandInterpreter interpreter = new TestCommandInterpreter();
 
-    private Console getConsole() {
+    private ShellConsole getConsole() {
         return interpreter.getConsole();
     }
 

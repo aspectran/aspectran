@@ -19,7 +19,7 @@ import com.aspectran.shell.command.option.Arguments;
 import com.aspectran.shell.command.option.HelpFormatter;
 import com.aspectran.shell.command.option.Option;
 import com.aspectran.shell.command.option.Options;
-import com.aspectran.shell.console.Console;
+import com.aspectran.shell.console.ShellConsole;
 import com.aspectran.shell.service.ShellService;
 
 import java.util.ArrayList;
@@ -89,7 +89,7 @@ public abstract class AbstractCommand implements Command {
     }
 
     @Override
-    public void printHelp(Console console) {
+    public void printHelp(ShellConsole console) {
         if (getDescriptor().getDescription() != null) {
             console.writeLine(getDescriptor().getDescription());
         }
@@ -97,7 +97,7 @@ public abstract class AbstractCommand implements Command {
     }
 
     @Override
-    public void printQuickHelp(Console console) {
+    public void printQuickHelp(ShellConsole console) {
         HelpFormatter formatter = new HelpFormatter(console);
         formatter.printHelp(this);
     }

@@ -21,8 +21,8 @@ import com.aspectran.core.lang.Nullable;
 import com.aspectran.core.util.Aspectran;
 import com.aspectran.core.util.ExceptionUtils;
 import com.aspectran.shell.command.ShellCommandInterpreter;
-import com.aspectran.shell.console.Console;
-import com.aspectran.shell.console.DefaultConsole;
+import com.aspectran.shell.console.DefaultShellConsole;
+import com.aspectran.shell.console.ShellConsole;
 
 import java.io.File;
 
@@ -39,15 +39,15 @@ public class AspectranShell {
     public static void main(String[] args) {
         String basePath = AspectranConfig.determineBasePath(args);
         File aspectranConfigFile = AspectranConfig.determineAspectranConfigFile(args);
-        Console console = new DefaultConsole();
+        ShellConsole console = new DefaultShellConsole();
         bootstrap(basePath, aspectranConfigFile, console);
     }
 
-    public static void bootstrap(File aspectranConfigFile, Console console) {
+    public static void bootstrap(File aspectranConfigFile, ShellConsole console) {
         bootstrap(null, aspectranConfigFile, console);
     }
 
-    public static void bootstrap(@Nullable String basePath, File aspectranConfigFile, Console console) {
+    public static void bootstrap(@Nullable String basePath, File aspectranConfigFile, ShellConsole console) {
         if (aspectranConfigFile == null) {
             throw new IllegalArgumentException("aspectranConfigFile must not be null");
         }

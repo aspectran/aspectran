@@ -17,7 +17,7 @@ package com.aspectran.shell.command.option;
 
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.shell.command.Command;
-import com.aspectran.shell.console.Console;
+import com.aspectran.shell.console.ShellConsole;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -93,13 +93,13 @@ public class HelpFormatter {
      */
     private Comparator<Option> optionComparator;
 
-    private final Console console;
+    private final ShellConsole console;
 
     /**
      * Creates a help formatter.
      * @param console the console to which the help will be written
      */
-    public HelpFormatter(Console console) {
+    public HelpFormatter(ShellConsole console) {
         this.console = console;
     }
 
