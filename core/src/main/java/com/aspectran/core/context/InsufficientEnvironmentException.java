@@ -59,7 +59,7 @@ public class InsufficientEnvironmentException extends IllegalStateException {
 
     public String getPrettyMessage() {
         String[] lines = StringUtils.split(getMessage(), ";");
-        int maxLen = 50;
+        int maxLen = 67;
         for (int i = 0; i < lines.length; i++) {
             String line = lines[i];
             if (!line.endsWith(")") && !line.endsWith("}") && !line.endsWith("]") && !line.endsWith(">") &&

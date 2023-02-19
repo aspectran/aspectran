@@ -74,12 +74,16 @@ public class JLineTextStyler {
     }
 
     public static AttributedStyle style(String... attrs) {
-        return style(AttributedStyle.DEFAULT, AttributedStyle.DEFAULT, attrs);
+        return style(AttributedStyle.DEFAULT, attrs);
+    }
+
+    public static AttributedStyle style(AttributedStyle baseStyle, String... attrs) {
+        return style(baseStyle, baseStyle, attrs);
     }
 
     private static AttributedStyle style(@NonNull AttributedStyle baseStyle,
                                          @Nullable AttributedStyle defaultStyle,
-                                         String... attrs) {
+                                         @NonNull String... attrs) {
         if (defaultStyle == null) {
             defaultStyle = AttributedStyle.DEFAULT;
         }
@@ -201,9 +205,6 @@ public class JLineTextStyler {
                 case "fg:white":
                     baseStyle = baseStyle.foreground(15);
                     break;
-                case "fg:reset":
-                    baseStyle = defaultStyle.backgroundDefault();
-                    break;
                 case "bg:black":
                 case "bg:BLACK":
                     baseStyle = baseStyle.background(0);
@@ -253,9 +254,6 @@ public class JLineTextStyler {
                 case "bg:WHITE":
                 case "bg:white":
                     baseStyle = baseStyle.background(15);
-                    break;
-                case "bg:reset":
-                    baseStyle = defaultStyle.foregroundDefault();
                     break;
                 default:
                     int color = -1;

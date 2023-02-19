@@ -6,14 +6,16 @@
     <description style="apon">
         |
         |{{bold}}Commands that can run examples:{{bold:off}}
-        |   {{CYAN}}hello{{fg:reset}}      Prints "Hello, World!" in your console
-        |   {{CYAN}}hello2{{fg:reset}}     Prints "Hello, World!" in your console using ANSI color codes
-        |   {{CYAN}}echo1{{fg:reset}}      It accepts parameters and print as is
+        |   {{CYAN}}hello{{reset}}      Prints "Hello, World!" in your console
+        |   {{CYAN}}hello2{{reset}}     Prints "Hello, World!" in your console using ANSI color codes
+        |   {{CYAN}}echo1{{reset}}      It accepts parameters and print as is
         |   --- for more examples, type '{{GREEN}}translet -l{{reset}}' ---
         |
         |Use the command '{{GREEN}}undertow{{reset}}' to control the Undertow Server.
         |Since Undertow Server is running, have your web browser point to:
-        |   {{81}}http://localhost:8080/{{fg:reset}}
+        |   {{81}}http://localhost:8080/{{reset}}
+        |
+        | {{bg:yellow}}{{red}}HAHAHHA{{reset}}{{bg:yellow}}{{YELLOW}}fjdlsajfldas{{reset}}
         |
     </description>
     <description profile="!demo" style="apon">

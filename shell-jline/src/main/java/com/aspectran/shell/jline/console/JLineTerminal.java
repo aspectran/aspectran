@@ -15,6 +15,7 @@
  */
 package com.aspectran.shell.jline.console;
 
+import com.aspectran.core.lang.NonNull;
 import com.aspectran.core.util.ArrayStack;
 import com.aspectran.shell.console.ShellConsole;
 import org.jline.reader.History;
@@ -206,6 +207,10 @@ public class JLineTerminal {
         return JLineTextStyler.parseAsString(attributedStyle, str, terminal);
     }
 
+    public boolean hasStyle() {
+        return !styleStack.isEmpty();
+    }
+
     public Style getStyle() {
         return styleStack.isEmpty() ? null : styleStack.peek();
     }
@@ -224,9 +229,13 @@ public class JLineTerminal {
 
         private final AttributedStyle attributedStyle;
 
-        private Style(JLineTerminal jlineTerminal, String... styles) {
+        private Style(@NonNull JLineTerminal jlineTerminal, @NonNull String... styles) {
             this.jlineTerminal = jlineTerminal;
-            this.attributedStyle = JLineTextStyler.style(styles);
+            if (jlineTerminal.hasStyle()) {
+                this.attributedStyle = JLineTextStyler.style(jlineTerminal.getStyle().getAttributedStyle(), styles);
+            } else {
+                this.attributedStyle = JLineTextStyler.style(styles);
+            }
         }
 
         public AttributedStyle getAttributedStyle() {

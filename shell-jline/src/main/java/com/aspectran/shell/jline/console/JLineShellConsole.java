@@ -182,7 +182,7 @@ public class JLineShellConsole extends AbstractShellConsole {
     @Override
     public void writeLine(String str) {
         write(str);
-        getWriter().println();
+        writeLine();
         getWriter().flush();
     }
 
@@ -193,7 +193,7 @@ public class JLineShellConsole extends AbstractShellConsole {
 
     @Override
     public void writeLine() {
-        getWriter().println();
+        write(System.lineSeparator());
     }
 
     @Override

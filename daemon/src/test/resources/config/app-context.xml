@@ -6,10 +6,10 @@
     <description style="apon">
         |
         |{{bold}}Commands that can run examples:{{bold:off}}
-        |   {{CYAN}}hello{{fg:reset}}      Prints "Hello, World!" in your console
-        |   {{CYAN}}hello2{{fg:reset}}     Prints "Hello, World!" in your console using ANSI escape sequences
-        |   {{CYAN}}echo{{fg:reset}}       It accepts parameters and print as is
-        |   {{CYAN}}echo2{{fg:reset}}      It accepts parameters and attributes, and print them as is
+        |   {{CYAN}}hello{{reset}}      Prints "Hello, World!" in your console
+        |   {{CYAN}}hello2{{reset}}     Prints "Hello, World!" in your console using ANSI escape sequences
+        |   {{CYAN}}echo{{reset}}       It accepts parameters and print as is
+        |   {{CYAN}}echo2{{reset}}      It accepts parameters and attributes, and print them as is
         |   --- for more examples, type '{{GREEN}}translet -l{{reset}}' ---
         |
     </description>

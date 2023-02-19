@@ -11,8 +11,8 @@
         <description style="apon">
             |
             |{{underline}}To control Jetty, try one of the following commands:{{reset}}
-            |   {{CYAN}}jetty start{{fg:reset}}  Runs a Jetty Server
-            |   {{CYAN}}jetty stop{{fg:reset}}   Stops the currently running Jetty Server
+            |   {{CYAN}}jetty start{{reset}}  Runs a Jetty Server
+            |   {{CYAN}}jetty stop{{reset}}   Stops the currently running Jetty Server
         </description>
         <transform format="text">
             <template style="apon">
