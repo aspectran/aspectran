@@ -15,8 +15,6 @@
         |Since Undertow Server is running, have your web browser point to:
         |   {{81}}http://localhost:8080/{{reset}}
         |
-        | {{bg:yellow}}{{red}}HAHAHHA{{reset}}{{bg:yellow}}{{YELLOW}}fjdlsajfldas{{reset}}
-        |
     </description>
     <description profile="!demo" style="apon">
         |
