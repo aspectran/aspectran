@@ -243,7 +243,7 @@ public class JLineTerminal {
         }
 
         public String toAnsi(String str) {
-            return new AttributedString(jlineTerminal.toAnsi(str), attributedStyle).toAnsi();
+            return new AttributedString(jlineTerminal.toAnsi(str), attributedStyle).toAnsi(jlineTerminal.getTerminal());
         }
 
     }

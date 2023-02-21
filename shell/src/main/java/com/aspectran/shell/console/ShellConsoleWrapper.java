@@ -218,6 +218,11 @@ public class ShellConsoleWrapper implements ShellConsole {
     }
 
     @Override
+    public boolean hasStyle() {
+        return false;
+    }
+
+    @Override
     public void setStyle(String... styles) {
         console.setStyle(styles);
     }

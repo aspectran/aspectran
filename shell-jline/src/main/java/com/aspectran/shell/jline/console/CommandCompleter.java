@@ -31,6 +31,8 @@ import org.jline.reader.ParsedLine;
 
 import java.util.List;
 
+import static com.aspectran.shell.console.ShellConsole.MULTILINE_DELIMITER;
+
 /**
  * Command and option name autocompleter.
  *
@@ -78,7 +80,7 @@ public class CommandCompleter implements Completer {
             for (Command command : commandRegistry.getAllCommands()) {
                 String name = command.getDescriptor().getName();
                 if (word == null || name.startsWith(word) ||
-                        (name + JLineShellConsole.MULTILINE_DELIMITER).startsWith(word)) {
+                        (name + MULTILINE_DELIMITER).startsWith(word)) {
                     candidates.add(new Candidate(name, name, command.getDescriptor().getNamespace(),
                             null, null, null, true));
                 }

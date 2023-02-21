@@ -27,7 +27,8 @@ class JLineShellConsoleTest {
 
     public static void main(String[] args) throws IOException {
         ShellConsole console = new JLineShellConsole();
-        String prompt = "> ";
+        console.setStyle("white", "bg:gray");
+        String prompt = "Test> ";
         while (true) {
             String line = console.readLine(prompt);
             if (StringUtils.hasLength(line)) {

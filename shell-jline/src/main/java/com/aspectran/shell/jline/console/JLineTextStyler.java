@@ -52,14 +52,14 @@ public class JLineTextStyler {
         if (defaultStyle != null) {
             asb.style(defaultStyle);
         }
-        new TextStyleAttributeHandler() {
+        new TextStyleTokenHandler() {
             @Override
             public void character(char c) {
                 asb.append(c);
             }
             @Override
-            public void attribute(String... attrs) {
-                asb.style(style(asb.style(), defaultStyle, attrs));
+            public void style(String... styles) {
+                asb.style(JLineTextStyler.style(asb.style(), defaultStyle, styles));
             }
         }.handle(input);
         return asb;
@@ -141,119 +141,119 @@ public class JLineTextStyler {
                 case "BLACK":
                 case "fg:black":
                 case "fg:BLACK":
-                    baseStyle = baseStyle.foreground(0);
+                    baseStyle = baseStyle.foreground(AttributedStyle.BLACK);
                     break;
                 case "red":
                 case "fg:red":
-                    baseStyle = baseStyle.foreground(1);
+                    baseStyle = baseStyle.foreground(AttributedStyle.RED);
                     break;
                 case "green":
                 case "fg:green":
-                    baseStyle = baseStyle.foreground(2);
+                    baseStyle = baseStyle.foreground(AttributedStyle.GREEN);
                     break;
                 case "yellow":
                 case "fg:yellow":
-                    baseStyle = baseStyle.foreground(3);
+                    baseStyle = baseStyle.foreground(AttributedStyle.YELLOW);
                     break;
                 case "blue":
                 case "fg:blue":
-                    baseStyle = baseStyle.foreground(4);
+                    baseStyle = baseStyle.foreground(AttributedStyle.BLUE);
                     break;
                 case "magenta":
                 case "fg:magenta":
-                    baseStyle = baseStyle.foreground(5);
+                    baseStyle = baseStyle.foreground(AttributedStyle.MAGENTA);
                     break;
                 case "cyan":
                 case "fg:cyan":
-                    baseStyle = baseStyle.foreground(6);
+                    baseStyle = baseStyle.foreground(AttributedStyle.CYAN);
                     break;
                 case "GRAY":
                 case "fg:GRAY":
-                    baseStyle = baseStyle.foreground(7);
+                    baseStyle = baseStyle.foreground(AttributedStyle.WHITE);
                     break;
                 case "gray":
                 case "fg:gray":
-                    baseStyle = baseStyle.foreground(8);
+                    baseStyle = baseStyle.foreground(AttributedStyle.BLACK | AttributedStyle.BRIGHT);
                     break;
                 case "RED":
                 case "fg:RED":
-                    baseStyle = baseStyle.foreground(9);
+                    baseStyle = baseStyle.foreground(AttributedStyle.RED | AttributedStyle.BRIGHT);
                     break;
                 case "GREEN":
                 case "fg:GREEN":
-                    baseStyle = baseStyle.foreground(10);
+                    baseStyle = baseStyle.foreground(AttributedStyle.GREEN | AttributedStyle.BRIGHT);
                     break;
                 case "YELLOW":
                 case "fg:YELLOW":
-                    baseStyle = baseStyle.foreground(11);
+                    baseStyle = baseStyle.foreground(AttributedStyle.YELLOW | AttributedStyle.BRIGHT);
                     break;
                 case "BLUE":
                 case "fg:BLUE":
-                    baseStyle = baseStyle.foreground(12);
+                    baseStyle = baseStyle.foreground(AttributedStyle.BLUE | AttributedStyle.BRIGHT);
                     break;
                 case "MAGENTA":
                 case "fg:MAGENTA":
-                    baseStyle = baseStyle.foreground(13);
+                    baseStyle = baseStyle.foreground(AttributedStyle.MAGENTA | AttributedStyle.BRIGHT);
                     break;
                 case "CYAN":
                 case "fg:CYAN":
-                    baseStyle = baseStyle.foreground(14);
+                    baseStyle = baseStyle.foreground(AttributedStyle.CYAN | AttributedStyle.BRIGHT);
                     break;
                 case "WHITE":
                 case "white":
                 case "fg:WHITE":
                 case "fg:white":
-                    baseStyle = baseStyle.foreground(15);
+                    baseStyle = baseStyle.foreground(AttributedStyle.WHITE | AttributedStyle.BRIGHT);
                     break;
                 case "bg:black":
                 case "bg:BLACK":
-                    baseStyle = baseStyle.background(0);
+                    baseStyle = baseStyle.background(AttributedStyle.BLACK);
                     break;
                 case "bg:red":
-                    baseStyle = baseStyle.background(1);
+                    baseStyle = baseStyle.background(AttributedStyle.RED);
                     break;
                 case "bg:green":
-                    baseStyle = baseStyle.background(2);
+                    baseStyle = baseStyle.background(AttributedStyle.GREEN);
                     break;
                 case "bg:yellow":
-                    baseStyle = baseStyle.background(3);
+                    baseStyle = baseStyle.background(AttributedStyle.YELLOW);
                     break;
                 case "bg:blue":
-                    baseStyle = baseStyle.background(4);
+                    baseStyle = baseStyle.background(AttributedStyle.BLUE);
                     break;
                 case "bg:magenta":
-                    baseStyle = baseStyle.background(5);
+                    baseStyle = baseStyle.background(AttributedStyle.MAGENTA);
                     break;
                 case "bg:cyan":
-                    baseStyle = baseStyle.background(6);
+                    baseStyle = baseStyle.background(AttributedStyle.CYAN);
                     break;
                 case "bg:GRAY":
-                    baseStyle = baseStyle.background(7);
+                    baseStyle = baseStyle.background(AttributedStyle.WHITE);
                     break;
                 case "bg:gray":
-                    baseStyle = baseStyle.background(8);
+                    baseStyle = baseStyle.background(AttributedStyle.BLACK | AttributedStyle.BRIGHT);
                     break;
                 case "bg:RED":
-                    baseStyle = baseStyle.background(9);
+                    baseStyle = baseStyle.background(AttributedStyle.RED | AttributedStyle.BRIGHT);
                     break;
                 case "bg:GREEN":
-                    baseStyle = baseStyle.background(10);
+                    baseStyle = baseStyle.background(AttributedStyle.GREEN | AttributedStyle.BRIGHT);
                     break;
                 case "bg:YELLOW":
-                    baseStyle = baseStyle.background(11);
+                    baseStyle = baseStyle.background(AttributedStyle.YELLOW | AttributedStyle.BRIGHT);
                     break;
                 case "bg:BLUE":
-                    baseStyle = baseStyle.background(12);
+                    baseStyle = baseStyle.background(AttributedStyle.BLUE | AttributedStyle.BRIGHT);
                     break;
                 case "bg:MAGENTA":
-                    baseStyle = baseStyle.background(13);
+                    baseStyle = baseStyle.background(AttributedStyle.MAGENTA | AttributedStyle.BRIGHT);
                     break;
                 case "bg:CYAN":
-                    baseStyle = baseStyle.background(14);
+                    baseStyle = baseStyle.background(AttributedStyle.CYAN | AttributedStyle.BRIGHT);
                     break;
                 case "bg:WHITE":
                 case "bg:white":
-                    baseStyle = baseStyle.background(15);
+                    baseStyle = baseStyle.background(AttributedStyle.WHITE | AttributedStyle.BRIGHT);
                     break;
                 default:
                     int color = -1;

@@ -30,6 +30,9 @@ import org.jline.utils.AttributedStyle;
 
 import java.util.regex.Pattern;
 
+import static com.aspectran.shell.console.ShellConsole.COMMENT_DELIMITER;
+import static com.aspectran.shell.console.ShellConsole.MULTILINE_DELIMITER;
+
 /**
  * Command and option name highlighter.
  *
@@ -73,51 +76,64 @@ public class CommandHighlighter implements Highlighter {
                 } else {
                     prefix = "";
                 }
-                if (buffer.endsWith(ShellConsole.MULTILINE_DELIMITER)) {
-                    AttributedStringBuilder asb = new AttributedStringBuilder(buffer.length());
+                if (buffer.endsWith(MULTILINE_DELIMITER)) {
+                    AttributedStringBuilder asb = newAttributedStringBuilder(buffer);
                     asb.append(prefix + best, AttributedStyle.BOLD);
                     asb.append(buffer.substring(prefix.length() + best.length(),
-                            buffer.length() - ShellConsole.MULTILINE_DELIMITER.length()));
-                    asb.append(new AttributedString(buffer.substring(buffer.length() - ShellConsole.MULTILINE_DELIMITER.length()),
+                            buffer.length() - MULTILINE_DELIMITER.length()));
+                    asb.append(new AttributedString(buffer.substring(buffer.length() - MULTILINE_DELIMITER.length()),
                             AttributedStyle.DEFAULT.foreground(AttributedStyle.GREEN | AttributedStyle.BRIGHT)));
                     return asb.toAttributedString();
                 } else {
-                    AttributedStringBuilder asb = new AttributedStringBuilder(buffer.length());
+                    AttributedStringBuilder asb = newAttributedStringBuilder(buffer);
                     asb.append(prefix + best, AttributedStyle.BOLD);
                     asb.append(buffer.substring(prefix.length() + best.length()));
                     return asb.toAttributedString();
                 }
             }
         }
-        if (buffer.startsWith(ShellConsole.COMMENT_DELIMITER) && buffer.endsWith(ShellConsole.MULTILINE_DELIMITER)) {
-            AttributedStringBuilder asb = new AttributedStringBuilder(buffer.length());
-            asb.append(new AttributedString(buffer.substring(0, ShellConsole.COMMENT_DELIMITER.length()),
+        if (buffer.startsWith(COMMENT_DELIMITER) && buffer.endsWith(MULTILINE_DELIMITER)) {
+            AttributedStringBuilder asb = newAttributedStringBuilder(buffer);
+            asb.append(new AttributedString(buffer.substring(0, COMMENT_DELIMITER.length()),
                     AttributedStyle.DEFAULT.foreground(AttributedStyle.BLUE | AttributedStyle.BRIGHT)));
-            asb.append(new AttributedString(buffer.substring(ShellConsole.COMMENT_DELIMITER.length(),
-                    buffer.length() - ShellConsole.MULTILINE_DELIMITER.length())));
-            asb.append(new AttributedString(buffer.substring(buffer.length() - ShellConsole.MULTILINE_DELIMITER.length()),
+            asb.append(new AttributedString(buffer.substring(COMMENT_DELIMITER.length(),
+                    buffer.length() - MULTILINE_DELIMITER.length())));
+            asb.append(new AttributedString(buffer.substring(buffer.length() - MULTILINE_DELIMITER.length()),
                     AttributedStyle.DEFAULT.foreground(AttributedStyle.GREEN | AttributedStyle.BRIGHT)));
             return asb.toAttributedString();
-        } else if (buffer.startsWith(ShellConsole.COMMENT_DELIMITER)) {
-            AttributedStringBuilder asb = new AttributedStringBuilder(buffer.length());
-            asb.append(new AttributedString(buffer.substring(0, ShellConsole.COMMENT_DELIMITER.length()),
+        } else if (buffer.startsWith(COMMENT_DELIMITER)) {
+            AttributedStringBuilder asb = newAttributedStringBuilder(buffer);
+            asb.append(new AttributedString(buffer.substring(0, COMMENT_DELIMITER.length()),
                     AttributedStyle.DEFAULT.foreground(AttributedStyle.BLUE | AttributedStyle.BRIGHT)));
-            asb.append(new AttributedString(buffer.substring(ShellConsole.COMMENT_DELIMITER.length())));
+            asb.append(new AttributedString(buffer.substring(COMMENT_DELIMITER.length())));
             return asb.toAttributedString();
-        } else if (buffer.endsWith(ShellConsole.MULTILINE_DELIMITER)) {
-            AttributedStringBuilder asb = new AttributedStringBuilder(buffer.length());
-            asb.append(new AttributedString(buffer.substring(0, buffer.length() - ShellConsole.MULTILINE_DELIMITER.length())));
-            asb.append(new AttributedString(buffer.substring(buffer.length() - ShellConsole.MULTILINE_DELIMITER.length()),
+        } else if (buffer.endsWith(MULTILINE_DELIMITER)) {
+            AttributedStringBuilder asb = newAttributedStringBuilder(buffer);
+            asb.append(new AttributedString(buffer.substring(0, buffer.length() - MULTILINE_DELIMITER.length())));
+            asb.append(new AttributedString(buffer.substring(buffer.length() - MULTILINE_DELIMITER.length()),
                     AttributedStyle.DEFAULT.foreground(AttributedStyle.GREEN | AttributedStyle.BRIGHT)));
             return asb.toAttributedString();
         } else {
-            if (isLimited()) {
-                return new AttributedString(buffer);
-            } else {
-                return new AttributedString(buffer,
-                        AttributedStyle.DEFAULT.foreground(AttributedStyle.RED | AttributedStyle.BRIGHT));
+            AttributedStyle as = null;
+            if (console.hasStyle()) {
+                as = ((JLineShellConsole)console).getStyle().getAttributedStyle();
             }
+            if (!isLimited()) {
+                if (as == null) {
+                    as = AttributedStyle.DEFAULT;
+                }
+                as = as.foreground(AttributedStyle.RED | AttributedStyle.BRIGHT);
+            }
+            return new AttributedString(buffer, as);
         }
+    }
+
+    private AttributedStringBuilder newAttributedStringBuilder(String buffer) {
+        AttributedStringBuilder asb = new AttributedStringBuilder(buffer.length());
+        if (console.hasStyle()) {
+            asb.style(((JLineShellConsole)console).getStyle().getAttributedStyle());
+        }
+        return asb;
     }
 
     @Override
@@ -137,7 +153,7 @@ public class CommandHighlighter implements Highlighter {
                 String name = command.getDescriptor().getName();
                 if (name.length() > len) {
                     if (buffer.equals(name) || buffer.startsWith(name + " ") ||
-                            buffer.startsWith(name + ShellConsole.MULTILINE_DELIMITER)) {
+                            buffer.startsWith(name + MULTILINE_DELIMITER)) {
                         best = name;
                         len = name.length();
                     }
@@ -162,7 +178,7 @@ public class CommandHighlighter implements Highlighter {
                         }
                     } else if (name.length() > len) {
                         if (buffer.equals(name) || buffer.startsWith(name + " ") ||
-                                buffer.startsWith(name + ShellConsole.MULTILINE_DELIMITER)) {
+                                buffer.startsWith(name + MULTILINE_DELIMITER)) {
                             best = name;
                             len = name.length();
                         }

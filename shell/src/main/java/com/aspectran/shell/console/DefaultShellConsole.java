@@ -259,6 +259,11 @@ public class DefaultShellConsole extends AbstractShellConsole {
     }
 
     @Override
+    public boolean hasStyle() {
+        return false;
+    }
+
+    @Override
     public void setStyle(String... styles) {
         // Nothing to do
     }

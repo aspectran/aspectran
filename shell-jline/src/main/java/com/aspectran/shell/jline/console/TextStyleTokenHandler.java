@@ -20,11 +20,11 @@ import com.aspectran.core.util.StringUtils;
 /**
  * <p>Created: 2017. 11. 19.</p>
  */
-public abstract class TextStyleAttributeHandler {
+public abstract class TextStyleTokenHandler {
 
     public abstract void character(char c);
 
-    public abstract void attribute(String... attrs);
+    public abstract void style(String... styles);
 
     public void handle(CharSequence input) {
         if (input == null) {
@@ -70,8 +70,8 @@ public abstract class TextStyleAttributeHandler {
             if (p1 == 0) {
                 character(c);
             } else if (p1 >= 2 && p1 < p2) {
-                String[] attrs = StringUtils.splitCommaDelimitedString(input.subSequence(p1, p2).toString());
-                attribute(attrs);
+                String[] arr = StringUtils.splitCommaDelimitedString(input.subSequence(p1, p2).toString());
+                style(arr);
                 p1 = p2 = p3 = 0;
             }
         }
@@ -80,8 +80,8 @@ public abstract class TextStyleAttributeHandler {
             for (int i = 0; i < p1; i++) {
                 character('{');
             }
-            String attr = input.subSequence(p1, inputLen).toString();
-            attribute(attr);
+            String str = input.subSequence(p1, inputLen).toString();
+            style(str);
         }
     }
 

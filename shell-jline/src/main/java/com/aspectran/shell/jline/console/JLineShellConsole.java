@@ -258,6 +258,15 @@ public class JLineShellConsole extends AbstractShellConsole {
     }
 
     @Override
+    public boolean hasStyle() {
+        return jlineTerminal.hasStyle();
+    }
+
+    public Style getStyle() {
+        return jlineTerminal.getStyle();
+    }
+
+    @Override
     public void setStyle(String... styles) {
         jlineTerminal.setStyle(styles);
     }

@@ -109,6 +109,8 @@ public interface ShellConsole {
 
     boolean isBusy();
 
+    boolean hasStyle();
+
     void setStyle(String... styles);
 
     void clearStyle();
