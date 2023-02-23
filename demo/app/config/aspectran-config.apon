@@ -32,6 +32,7 @@ scheduler: {
     enabled: false
 }
 shell: {
+    styles: GRAY
     greetings: (
         |
         |{{YELLOW}}     ___                         __
@@ -48,7 +49,6 @@ shell: {
         |If you want a list of all available translets, type '{{GREEN}}translet -l{{reset}}'.
         |To run a translet, type '{{GREEN}}translet <translet_name>{{reset}}' or '{{GREEN}}translet_name{{reset}}'.
     )
-    textStyles: GRAY
     prompt: "{{green}}aspectran-demo>{{reset}} "
     commands: [
         com.aspectran.undertow.shell.command.UndertowCommand

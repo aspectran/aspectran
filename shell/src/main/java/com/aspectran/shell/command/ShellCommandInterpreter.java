@@ -94,9 +94,9 @@ public class ShellCommandInterpreter implements CommandInterpreter {
         }
 
         ShellConfig shellConfig = aspectranConfig.touchShellConfig();
-        String[] textStyles = shellConfig.getTextStyles();
-        if (textStyles != null) {
-            console.setStyle(textStyles);
+        String[] styles = shellConfig.getStyles();
+        if (styles != null) {
+            console.setStyle(styles);
         }
         String commandPrompt = shellConfig.getPrompt();
         if (commandPrompt != null) {
