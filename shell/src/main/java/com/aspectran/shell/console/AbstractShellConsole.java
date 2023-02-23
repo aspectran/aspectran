@@ -15,6 +15,7 @@
  */
 package com.aspectran.shell.console;
 
+import com.aspectran.core.context.config.ShellStyleConfig;
 import com.aspectran.shell.command.CommandInterpreter;
 
 import java.io.File;
@@ -36,6 +37,18 @@ public abstract class AbstractShellConsole implements ShellConsole {
     private File workingDir;
 
     private CommandInterpreter interpreter;
+
+    private String[] primaryStyle;
+
+    private String[] secondaryStyle;
+
+    private String[] successStyle;
+
+    private String[] dangerStyle;
+
+    private String[] warningStyle;
+
+    private String[] infoStyle;
 
     public AbstractShellConsole(String encoding) {
         if (encoding != null) {
@@ -159,6 +172,50 @@ public abstract class AbstractShellConsole implements ShellConsole {
     }
 
     @Override
+    public void setShellStyleConfig(ShellStyleConfig shellStyleConfig) {
+        if (shellStyleConfig == null) {
+            throw new IllegalArgumentException("shellStyleConfig must not be null");
+        }
+        primaryStyle = shellStyleConfig.getPrimaryStyle();
+        secondaryStyle = shellStyleConfig.getSecondaryStyle();
+        successStyle = shellStyleConfig.getSuccessStyle();
+        dangerStyle = shellStyleConfig.getDangerStyle();
+        warningStyle = shellStyleConfig.getWarningStyle();
+        infoStyle = shellStyleConfig.getInfoStyle();
+        setStyle(primaryStyle);
+    }
+
+    @Override
+    public String[] getPrimaryStyle() {
+        return primaryStyle;
+    }
+
+    @Override
+    public String[] getSecondaryStyle() {
+        return secondaryStyle;
+    }
+
+    @Override
+    public String[] getSuccessStyle() {
+        return successStyle;
+    }
+
+    @Override
+    public String[] getDangerStyle() {
+        return dangerStyle;
+    }
+
+    @Override
+    public String[] getWarningStyle() {
+        return warningStyle;
+    }
+
+    @Override
+    public String[] getInfoStyle() {
+        return infoStyle;
+    }
+
+    @Override
     public boolean confirmRestart() {
         return confirmRestart(null);
     }
@@ -170,7 +227,7 @@ public abstract class AbstractShellConsole implements ShellConsole {
             return false;
         }
         if (message != null) {
-            setStyle("YELLOW");
+            setStyle(getWarningStyle());
             writeAbove(message);
             clearStyle();
         }
@@ -184,7 +241,7 @@ public abstract class AbstractShellConsole implements ShellConsole {
     @Override
     public boolean confirmQuit() {
         String confirm = "Are you sure you want to quit [Y/n]? ";
-        setStyle("YELLOW");
+        setStyle(getWarningStyle());
         String yn = readLine(confirm);
         clearStyle();
         return (yn.isEmpty() || yn.equalsIgnoreCase("Y"));

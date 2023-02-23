@@ -18,6 +18,7 @@ package com.aspectran.shell.command;
 import com.aspectran.core.activity.TransletNotFoundException;
 import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.config.ShellConfig;
+import com.aspectran.core.context.config.ShellStyleConfig;
 import com.aspectran.core.lang.NonNull;
 import com.aspectran.core.lang.Nullable;
 import com.aspectran.core.util.StringUtils;
@@ -94,9 +95,9 @@ public class ShellCommandInterpreter implements CommandInterpreter {
         }
 
         ShellConfig shellConfig = aspectranConfig.touchShellConfig();
-        String[] styles = shellConfig.getStyles();
-        if (styles != null) {
-            console.setStyle(styles);
+        ShellStyleConfig shellStyleConfig = shellConfig.getShellStyleConfig();
+        if (shellStyleConfig != null) {
+            console.setShellStyleConfig(shellStyleConfig);
         }
         String commandPrompt = shellConfig.getPrompt();
         if (commandPrompt != null) {

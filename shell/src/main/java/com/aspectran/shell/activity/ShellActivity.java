@@ -187,7 +187,9 @@ public class ShellActivity extends CoreActivity {
         if (shellService.isVerbose()) {
             String description = getTranslet().getDescription();
             if (description != null) {
+                console.setStyle(console.getInfoStyle());
                 console.writeLine(description);
+                console.clearStyle();
             }
         }
     }

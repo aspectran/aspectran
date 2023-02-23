@@ -15,6 +15,7 @@
  */
 package com.aspectran.shell.console;
 
+import com.aspectran.core.context.config.ShellStyleConfig;
 import com.aspectran.shell.command.CommandInterpreter;
 
 import java.io.File;
@@ -219,7 +220,7 @@ public class ShellConsoleWrapper implements ShellConsole {
 
     @Override
     public boolean hasStyle() {
-        return false;
+        return console.hasStyle();
     }
 
     @Override
@@ -230,6 +231,41 @@ public class ShellConsoleWrapper implements ShellConsole {
     @Override
     public void clearStyle() {
         console.clearStyle();
+    }
+
+    @Override
+    public void setShellStyleConfig(ShellStyleConfig shellStyleConfig) {
+        console.setShellStyleConfig(shellStyleConfig);
+    }
+
+    @Override
+    public String[] getPrimaryStyle() {
+        return console.getPrimaryStyle();
+    }
+
+    @Override
+    public String[] getSecondaryStyle() {
+        return console.getSecondaryStyle();
+    }
+
+    @Override
+    public String[] getSuccessStyle() {
+        return console.getSuccessStyle();
+    }
+
+    @Override
+    public String[] getDangerStyle() {
+        return console.getDangerStyle();
+    }
+
+    @Override
+    public String[] getWarningStyle() {
+        return console.getWarningStyle();
+    }
+
+    @Override
+    public String[] getInfoStyle() {
+        return console.getInfoStyle();
     }
 
     @Override

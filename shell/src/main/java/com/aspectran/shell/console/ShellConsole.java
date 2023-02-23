@@ -15,6 +15,7 @@
  */
 package com.aspectran.shell.console;
 
+import com.aspectran.core.context.config.ShellStyleConfig;
 import com.aspectran.shell.command.CommandInterpreter;
 
 import java.io.File;
@@ -114,6 +115,20 @@ public interface ShellConsole {
     void setStyle(String... styles);
 
     void clearStyle();
+
+    void setShellStyleConfig(ShellStyleConfig shellStyleConfig);
+
+    String[] getPrimaryStyle();
+
+    String[] getSecondaryStyle();
+
+    String[] getSuccessStyle();
+
+    String[] getDangerStyle();
+
+    String[] getWarningStyle();
+
+    String[] getInfoStyle();
 
     boolean confirmRestart();
 

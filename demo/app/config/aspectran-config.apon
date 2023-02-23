@@ -32,7 +32,14 @@ scheduler: {
     enabled: false
 }
 shell: {
-    styles: GRAY
+    style: {
+         primary: GRAY
+         secondary: white
+         success: BLUE
+         danger: RED
+         warning: YELLOW
+         info: BLUE
+    }
     greetings: (
         |
         |{{YELLOW}}     ___                         __

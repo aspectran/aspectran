@@ -21,8 +21,8 @@ import com.aspectran.core.util.apon.ValueType;
 
 public class ShellConfig extends AbstractParameters {
 
+    private static final ParameterKey style;
     private static final ParameterKey greetings;
-    private static final ParameterKey styles;
     private static final ParameterKey prompt;
     private static final ParameterKey commands;
     private static final ParameterKey session;
@@ -34,8 +34,8 @@ public class ShellConfig extends AbstractParameters {
     private static final ParameterKey[] parameterKeys;
 
     static {
+        style = new ParameterKey("style", ShellStyleConfig.class);
         greetings = new ParameterKey("greetings", ValueType.TEXT);
-        styles = new ParameterKey("styles", ValueType.STRING, true);
         prompt = new ParameterKey("prompt", ValueType.STRING);
         commands = new ParameterKey("commands", ValueType.STRING, true);
         session = new ParameterKey("session", SessionManagerConfig.class);
@@ -45,8 +45,8 @@ public class ShellConfig extends AbstractParameters {
         exposals = new ParameterKey("exposals", ExposalsConfig.class);
 
         parameterKeys = new ParameterKey[] {
+                style,
                 greetings,
-                styles,
                 prompt,
                 commands,
                 session,
@@ -61,13 +61,16 @@ public class ShellConfig extends AbstractParameters {
         super(parameterKeys);
     }
 
-    public String[] getStyles() {
-        return getStringArray(styles);
+    public ShellStyleConfig getShellStyleConfig() {
+        return getParameters(style);
     }
 
-    public ShellConfig setStyles(String[] styles) {
-        putValue(ShellConfig.styles, styles);
-        return this;
+    public ShellStyleConfig newShellStyleConfig() {
+        return newParameters(style);
+    }
+
+    public SessionManagerConfig touchShellStyleConfig() {
+        return touchParameters(style);
     }
 
     public String getGreetings() {

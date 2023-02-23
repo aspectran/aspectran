@@ -123,17 +123,17 @@ public class AspectCommand extends AbstractCommand {
             console.write("%5d | %-45s ", ++num, aspectRule.getId());
             console.write("|");
             if (aspectRule.isIsolated()) {
-                console.setStyle("YELLOW");
+                console.setStyle(console.getSecondaryStyle());
             }
             console.write(" %-8s ", aspectRule.isIsolated());
-            console.clearStyle();
+            if (aspectRule.isIsolated()) {
+                console.clearStyle();
+            }
             console.write("|");
-            if (!aspectRule.isIsolated()) {
-                if (aspectRule.isDisabled()) {
-                    console.setStyle("RED");
-                } else {
-                    console.setStyle("BLUE");
-                }
+            if (aspectRule.isDisabled()) {
+                console.setStyle(console.getDangerStyle());
+            } else {
+                console.setStyle(console.getSuccessStyle());
             }
             console.writeLine(" %-8s ", !aspectRule.isDisabled());
             console.clearStyle();
