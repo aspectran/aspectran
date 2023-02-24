@@ -33,7 +33,7 @@
     <bean id="currentTranslet" class="com.aspectran.core.support.CurrentTransletFactoryBean" scope="request"/>
     <bean id="currentActivityData" class="com.aspectran.core.support.CurrentActivityDataFactoryBean" scope="request"/>
 
-    <aspect id="defaultTransletSettings" isolated="true">
+    <aspect id="defaultTransletSettings">
         <description>
             Define an aspect to inject the default settings into all translets.
         </description>
