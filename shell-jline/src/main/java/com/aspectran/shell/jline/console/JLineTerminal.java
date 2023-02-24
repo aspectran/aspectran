@@ -24,7 +24,6 @@ import org.jline.reader.LineReaderBuilder;
 import org.jline.reader.impl.history.DefaultHistory;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
-import org.jline.utils.AttributedString;
 import org.jline.utils.AttributedStyle;
 import org.jline.utils.InfoCmp;
 import org.jline.widget.AutosuggestionWidgets;
@@ -203,7 +202,7 @@ public class JLineTerminal {
 
     public String toAnsi(String str) {
         Style style = getStyle();
-        AttributedStyle attributedStyle = style != null ? style.getAttributedStyle() : null;
+        AttributedStyle attributedStyle = (style != null ? style.getAttributedStyle() : null);
         return JLineTextStyler.parseAsString(attributedStyle, str, terminal);
     }
 
@@ -225,12 +224,9 @@ public class JLineTerminal {
 
     protected static class Style {
 
-        private final JLineTerminal jlineTerminal;
-
         private final AttributedStyle attributedStyle;
 
         private Style(@NonNull JLineTerminal jlineTerminal, @NonNull String... styles) {
-            this.jlineTerminal = jlineTerminal;
             if (jlineTerminal.hasStyle()) {
                 this.attributedStyle = JLineTextStyler.style(jlineTerminal.getStyle().getAttributedStyle(), styles);
             } else {
@@ -240,10 +236,6 @@ public class JLineTerminal {
 
         public AttributedStyle getAttributedStyle() {
             return attributedStyle;
-        }
-
-        public String toAnsi(String str) {
-            return new AttributedString(jlineTerminal.toAnsi(str), attributedStyle).toAnsi(jlineTerminal.getTerminal());
         }
 
     }

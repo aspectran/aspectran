@@ -65,7 +65,7 @@ public class HistoryCommand extends AbstractCommand {
             console.writeLine("%5d | %s", ++num, line);
         }
         if (num == 0) {
-            console.writeLine("%33s %s", " ", "No Data");
+            console.writeLine("%31s %s", " ", "- No Data -");
         }
         console.writeLine("-%4s-+-%-67s-", "----", "-------------------------------------------------------------------");
     }

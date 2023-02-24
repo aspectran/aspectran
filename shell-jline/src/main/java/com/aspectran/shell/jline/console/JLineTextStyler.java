@@ -46,7 +46,7 @@ public class JLineTextStyler {
             return AttributedString.EMPTY;
         }
         if (!input.contains("{{") || !input.contains("}}")) {
-            return new AttributedString(input);
+            return new AttributedString(input, defaultStyle);
         }
         final AttributedStringBuilder asb = new AttributedStringBuilder(input.length());
         if (defaultStyle != null) {

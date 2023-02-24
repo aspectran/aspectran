@@ -64,11 +64,11 @@
         <transform format="text">
             <template engine="token" style="apon">
                 |----------------------------------------------------------
-                |The parameters and attributes entered are as follows:
+                |The parameters and attributes entered are:
                 |   param1: ${param1}
                 |   param2: ${param2}
                 |   param3: ${param3}
-                |The attributes entered are as follows:
+                |The attributes entered are:
                 |   attr1: @{attr1}
                 |----------------------------------------------------------
             </template>
@@ -89,11 +89,11 @@
         <transform format="text">
             <template style="apon">
                 |----------------------------------------------------------
-                |The parameters entered are as follows:
+                |The parameters entered are:
                 |   id: ${id}
                 |   email: ${email}
                 |   password: ${password}
-                |The attributes entered are as follows:
+                |The attributes entered are:
                 |   attr1: @{attr1}
                 |   attr2: @{attr2}
                 |   attr3: @{attr3}
@@ -114,10 +114,10 @@
         <transform format="text">
             <template style="apon">
                 |----------------------------------------------------------
-                |The parameters entered are as follows:
+                |The parameters entered are:
                 |   param1: ${param1}
                 |   param2: ${param2}
-                |The attributes entered are as follows:
+                |The attributes entered are:
                 |   attr1: @{attr1}
                 |   attr2: @{attr2}
                 |----------------------------------------------------------

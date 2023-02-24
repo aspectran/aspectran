@@ -103,12 +103,7 @@ public class JLineShellConsole extends AbstractShellConsole {
 
     @Override
     public String readLine(String prompt) {
-        Style style = jlineTerminal.getStyle();
-        if (style != null) {
-            return readLine(style.toAnsi(prompt), null);
-        } else {
-            return readLine(prompt, null);
-        }
+        return readLine(jlineTerminal.toAnsi(prompt), null);
     }
 
     @Override
@@ -130,12 +125,7 @@ public class JLineShellConsole extends AbstractShellConsole {
 
     @Override
     public String readPassword(String prompt) {
-        Style style = jlineTerminal.getStyle();
-        if (style != null) {
-            return readPassword(style.toAnsi(prompt), null);
-        } else {
-            return readPassword(prompt, null);
-        }
+        return readPassword(jlineTerminal.toAnsi(prompt), null);
     }
 
     @Override
@@ -166,12 +156,7 @@ public class JLineShellConsole extends AbstractShellConsole {
 
     @Override
     public void write(String str) {
-        Style style = jlineTerminal.getStyle();
-        if (style != null) {
-            getWriter().print(style.toAnsi(str));
-        } else {
-            getWriter().print(jlineTerminal.toAnsi(str));
-        }
+        getWriter().print(jlineTerminal.toAnsi(str));
     }
 
     @Override
@@ -198,9 +183,9 @@ public class JLineShellConsole extends AbstractShellConsole {
 
     @Override
     public void writeError(String str) {
-        jlineTerminal.setStyle("red");
+        setStyle(getDangerStyle());
         writeLine(str);
-        jlineTerminal.clearStyle();
+        clearStyle();
     }
 
     @Override
@@ -209,22 +194,12 @@ public class JLineShellConsole extends AbstractShellConsole {
     }
 
     public void writeAbove(String str) {
-        Style style = jlineTerminal.getStyle();
-        if (style != null) {
-            jlineTerminal.getReader().printAbove(style.toAnsi(str));
-        } else {
-            jlineTerminal.getReader().printAbove(str);
-        }
+        jlineTerminal.getReader().printAbove(jlineTerminal.toAnsi(str));
     }
 
     @Override
     public void appendPrompt(String str) {
-        Style style = jlineTerminal.getStyle();
-        if (style != null) {
-            super.appendPrompt(style.toAnsi(str));
-        } else {
-            super.appendPrompt(jlineTerminal.toAnsi(str));
-        }
+        super.appendPrompt(jlineTerminal.toAnsi(str));
     }
 
     @Override

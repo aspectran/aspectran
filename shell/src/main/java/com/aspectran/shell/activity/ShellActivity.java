@@ -138,34 +138,36 @@ public class ShellActivity extends CoreActivity {
             parseDeclaredParameters();
         } catch (MissingMandatoryParametersException e) {
             Collection<ItemRule> itemRules = e.getItemRules();
-            console.setStyle("RED");
-            console.writeLine("Required parameters are missing:");
+            console.setStyle(console.getDangerStyle());
+            console.writeLine("Some mandatory parameters are missing:");
             console.clearStyle();
             for (ItemRule ir : itemRules) {
-                console.setStyle("RED");
-                console.write(" - ");
-                console.setStyle("YELLOW");
+                console.setStyle(console.getWarningStyle());
+                console.write(" * ");
+                console.clearStyle();
+                console.setStyle(console.getSuccessStyle());
                 console.writeLine(ir.getName());
                 console.clearStyle();
             }
-            terminate("Required parameters are missing");
+            terminate("Some mandatory parameters are missing");
         }
 
         try {
             parseDeclaredAttributes();
         } catch (MissingMandatoryAttributesException e) {
             Collection<ItemRule> itemRules = e.getItemRules();
-            console.setStyle("RED");
-            console.writeLine("Required attributes are missing:");
+            console.setStyle(console.getDangerStyle());
+            console.writeLine("Some mandatory attributes are missing:");
             console.clearStyle();
             for (ItemRule ir : itemRules) {
-                console.setStyle("RED");
-                console.write(" - ");
-                console.setStyle("YELLOW");
+                console.setStyle(console.getWarningStyle());
+                console.write(" * ");
+                console.clearStyle();
+                console.setStyle(console.getSuccessStyle());
                 console.writeLine(ir.getName());
                 console.clearStyle();
             }
-            terminate("Required attributes are missing");
+            terminate("Some mandatory attributes are missing");
         }
 
         super.parseRequest();
@@ -234,7 +236,7 @@ public class ShellActivity extends CoreActivity {
     private void printRequiredParameters() {
         ItemRuleMap parameterItemRuleMap = getRequestRule().getParameterItemRuleMap();
         if (parameterItemRuleMap != null && !parameterItemRuleMap.isEmpty()) {
-            console.setStyle("GREEN");
+            console.setStyle(console.getSecondaryStyle());
             console.writeLine("Required parameters:");
             console.clearStyle();
             if (!readSimply) {
@@ -247,7 +249,7 @@ public class ShellActivity extends CoreActivity {
         if (!readSimply) {
             ItemRuleMap attributeItemRuleMap = getRequestRule().getAttributeItemRuleMap();
             if (attributeItemRuleMap != null && !attributeItemRuleMap.isEmpty()) {
-                console.setStyle("GREEN");
+                console.setStyle(console.getSecondaryStyle());
                 console.writeLine("Required attributes:");
                 console.clearStyle();
                 writeItems(attributeItemRuleMap.values(), TokenType.ATTRIBUTE);
@@ -274,8 +276,8 @@ public class ShellActivity extends CoreActivity {
             missingItemRules = checkRequiredParameters(itemRules);
         }
         if (missingItemRules != null) {
-            console.setStyle("YELLOW");
-            console.writeLine("Missing required parameters:");
+            console.setStyle(console.getWarningStyle());
+            console.writeLine("Missing mandatory parameters:");
             console.clearStyle();
             if (!readSimply) {
                 writeItems(missingItemRules, TokenType.PARAMETER);
@@ -313,10 +315,10 @@ public class ShellActivity extends CoreActivity {
 
     private String readParameter(ItemRule itemRule) {
         console.clearPrompt();
-        console.setStyle("YELLOW");
+        console.setStyle(console.getWarningStyle());
         console.appendPrompt(getMandatoryMarker(itemRule.isMandatory()));
         console.clearStyle();
-        console.setStyle("bold");
+        console.setStyle(console.getSuccessStyle());
         console.appendPrompt(itemRule.getName());
         console.clearStyle();
         console.appendPrompt(": ");
@@ -341,7 +343,7 @@ public class ShellActivity extends CoreActivity {
     }
 
     private Collection<ItemRule> readEachToken(Collection<ItemRule> itemRules) throws ActivityTerminatedException {
-        console.setStyle("GREEN");
+        console.setStyle(console.getSecondaryStyle());
         console.writeLine("Enter a value for each token:");
         console.clearStyle();
 
@@ -384,12 +386,14 @@ public class ShellActivity extends CoreActivity {
                 boolean secret = hasSecretItem(itemRuleSet);
                 console.clearPrompt();
                 console.appendPrompt("   ");
-                console.setStyle("CYAN");
+                console.setStyle(console.getInfoStyle());
                 console.appendPrompt(String.valueOf(Token.PARAMETER_SYMBOL));
                 console.appendPrompt(String.valueOf(Token.BRACKET_OPEN));
                 console.clearStyle();
+                console.setStyle(console.getSuccessStyle());
                 console.appendPrompt(token.getName());
-                console.setStyle("CYAN");
+                console.clearStyle();
+                console.setStyle(console.getInfoStyle());
                 console.appendPrompt(String.valueOf(Token.BRACKET_CLOSE));
                 console.clearStyle();
                 console.appendPrompt(": ");
@@ -447,10 +451,10 @@ public class ShellActivity extends CoreActivity {
     }
 
     private void writeItem(ItemRule itemRule, Token[] tokens) {
-        console.setStyle("YELLOW");
+        console.setStyle(console.getWarningStyle());
         console.write(getMandatoryMarker(itemRule.isMandatory()));
         console.clearStyle();
-        console.setStyle("bold");
+        console.setStyle(console.getSuccessStyle());
         console.write(itemRule.getName());
         console.clearStyle();
         if (tokens != null && tokens.length > 0) {
@@ -467,11 +471,13 @@ public class ShellActivity extends CoreActivity {
             console.write(token.stringify());
         } else {
             String str = token.stringify();
-            console.setStyle("CYAN");
+            console.setStyle(console.getInfoStyle());
             console.write(str.substring(0, 2));
             console.clearStyle();
+            console.setStyle(console.getSuccessStyle());
             console.write(str.substring(2, str.length() - 1));
-            console.setStyle("CYAN");
+            console.clearStyle();
+            console.setStyle(console.getInfoStyle());
             console.write(str.substring(str.length() - 1));
             console.clearStyle();
         }

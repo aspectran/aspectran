@@ -148,9 +148,11 @@ public class TransletCommand extends AbstractCommand {
     private void listTranslets(ShellService shellService, ShellConsole console, String[] keywords, boolean all) {
         TransletRuleRegistry transletRuleRegistry = shellService.getActivityContext().getTransletRuleRegistry();
         Collection<TransletRule> transletRules = transletRuleRegistry.getTransletRules();
-        console.writeLine("-%4s-+-%-67s-", "----", "-------------------------------------------------------------------");
-        console.writeLine(" %4s | %-67s ", "No.", "Translet Name");
-        console.writeLine("-%4s-+-%-67s-", "----", "-------------------------------------------------------------------");
+        console.writeLine("-%4s-+-%-59s-+-%-5s-", "----", "-----------------------------------------------------------",
+                "-----");
+        console.writeLine(" %4s | %-59s | %-5s ", "No.", "Translet Name", "Async");
+        console.writeLine("-%4s-+-%-59s-+-%-5s-", "----", "-----------------------------------------------------------",
+                "-----");
         int num = 0;
         for (TransletRule transletRule : transletRules) {
             String transletName = transletRule.getName();
@@ -173,12 +175,20 @@ public class TransletCommand extends AbstractCommand {
             if (requestMethods != null) {
                 transletName = StringUtils.toDelimitedString(requestMethods, ",") + " " + transletName;
             }
-            console.writeLine("%5d | %s", ++num, transletName);
+            console.write("%5d | %-59s |", ++num, transletName);
+            if (transletRule.isAsync()) {
+                console.setStyle(console.getSuccessStyle());
+            } else {
+                console.setStyle(console.getDangerStyle());
+            }
+            console.writeLine(" %-5s ", transletRule.isAsync());
+            console.clearStyle();
         }
         if (num == 0) {
-            console.writeLine("%33s %s", " ", "No Data");
+            console.writeLine("%31s %s", " ", "- No Data -");
         }
-        console.writeLine("-%4s-+-%-67s-", "----", "-------------------------------------------------------------------");
+        console.writeLine("-%4s-+-%-59s-+-%-5s-", "----", "-----------------------------------------------------------",
+                "-----");
     }
 
     private void describeTransletRule(ShellService shellService, ShellConsole console, String[] transletNames,

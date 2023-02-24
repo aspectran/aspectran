@@ -34,11 +34,11 @@ scheduler: {
 shell: {
     style: {
          primary: GRAY
-         secondary: white
-         success: BLUE
-         danger: RED
+         secondary: green
+         success: CYAN
+         danger: magenta
          warning: YELLOW
-         info: BLUE
+         info: cyan
     }
     greetings: (
         |
