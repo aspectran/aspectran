@@ -15,6 +15,14 @@ scheduler: {
     enabled: false
 }
 shell: {
+    style: {
+         primary: GRAY
+         secondary: green
+         success: CYAN
+         danger: red
+         warning: YELLOW
+         info: cyan
+    }
     greetings: (
         |
         |{{YELLOW}}     ___                         __
@@ -22,7 +30,7 @@ shell: {
         |{{GREEN }}   / /| | / __|/ __ |/ _ |/ __|/ __/ __|/ __ |/ __ |
         |{{GREEN }}  / ___ |(__  ) /_/ /  __/ /  / / / /  / /_/ / / / /
         |{{CYAN  }} /_/  |_|____/ .___/|___/|___/|__/_/   |__(_(_/ /_/   Shell
-        |{{CYAN  }}=========== /_/ =============================================
+        |{{cyan  }}=========== /_/ =============================================
         |{{reset }}
         |{{RED   }}Welcome To Aspectran Shell #{class:com.aspectran.core.util.Aspectran^version}
         |{{reset }}

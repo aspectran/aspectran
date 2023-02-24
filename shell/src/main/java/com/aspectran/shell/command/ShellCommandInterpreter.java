@@ -220,6 +220,9 @@ public class ShellCommandInterpreter implements CommandInterpreter {
      * @param transletCommandLine the {@code TransletCommandLine} instance
      */
     private void execute(TransletCommandLine transletCommandLine) {
+        if (shellService == null) {
+            throw new IllegalStateException("Shell service not available");
+        }
         if (transletCommandLine.getRequestName() != null) {
             try {
                 shellService.translate(transletCommandLine, console);
@@ -287,22 +290,22 @@ public class ShellCommandInterpreter implements CommandInterpreter {
 
         @Override
         public void write(int b) {
-            if (shellService.isActive()) {
+            if (shellService != null && shellService.isActive()) {
                 console.clearLine();
             }
             super.write(b);
-            if (shellService.isActive()) {
+            if (shellService != null && shellService.isActive()) {
                 console.redrawLine();
             }
         }
 
         @Override
         public void write(@NonNull byte[] buf, int off, int len) {
-            if (shellService.isActive()) {
+            if (shellService != null && shellService.isActive()) {
                 console.clearLine();
             }
             super.write(buf, off, len);
-            if (shellService.isActive()) {
+            if (shellService != null && shellService.isActive()) {
                 console.redrawLine();
             }
         }

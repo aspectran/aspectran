@@ -1,4 +1,12 @@
 shell: {
+    style: {
+         primary: GRAY
+         secondary: green
+         success: CYAN
+         danger: red
+         warning: YELLOW
+         info: cyan
+    }
     greetings: (
         |
         |{{YELLOW}}     ___                         __

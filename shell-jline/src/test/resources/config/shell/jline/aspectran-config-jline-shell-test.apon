@@ -15,6 +15,14 @@ scheduler: {
     enabled: false
 }
 shell: {
+    style: {
+         primary: GRAY
+         secondary: green
+         success: CYAN
+         danger: red
+         warning: YELLOW
+         info: cyan
+    }
     prompt: "jline-shell-test> "
     commands: [
         com.aspectran.shell.command.builtins.TransletCommand

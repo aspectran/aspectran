@@ -24,6 +24,14 @@ scheduler: {
     enabled: false
 }
 shell: {
+    style: {
+         primary: GRAY
+         secondary: green
+         success: CYAN
+         danger: red
+         warning: YELLOW
+         info: cyan
+    }
     prompt: "{{BLUE}}aspectran-demo-app{{YELLOW,bold}}>{{reset}} "
     verbose: true
     greetings: (
