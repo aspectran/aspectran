@@ -20,11 +20,11 @@
         </parameters>
         <transform format="text">
             <template engine="token" style="apon">
-                |----------------------------------------------------------
-                |The parameters entered are as follows:
-                |   param1: ${param1}
-                |   param2: ${param2}
-                |----------------------------------------------------------
+                |{{gray}}----------------------------------------------------------{{reset}}
+                |The parameters you entered are:
+                |   param1: {{bold}}${param1}{{reset}}
+                |   param2: {{bold}}${param2}{{reset}}
+                |{{gray}}----------------------------------------------------------{{reset}}
             </template>
         </transform>
     </translet>
@@ -42,12 +42,12 @@
         </parameters>
         <transform format="text">
             <template engine="token" style="apon">
-                |----------------------------------------------------------
-                |The parameters entered are as follows:
-                |   param1: ${param1}
-                |   param2: ${param2}
-                |   param3: ${param3}
-                |----------------------------------------------------------
+                |{{gray}}----------------------------------------------------------{{reset}}
+                |The parameters you entered are:
+                |   param1: {{bold}}${param1}{{reset}}
+                |   param2: {{bold}}${param2}{{reset}}
+                |   param3: {{bold}}${param3}{{reset}}
+                |{{gray}}----------------------------------------------------------{{reset}}
             </template>
         </transform>
     </translet>
@@ -63,14 +63,14 @@
         </attributes>
         <transform format="text">
             <template engine="token" style="apon">
-                |----------------------------------------------------------
+                |{{gray}}----------------------------------------------------------{{reset}}
                 |The parameters and attributes entered are:
                 |   param1: ${param1}
                 |   param2: ${param2}
                 |   param3: ${param3}
                 |The attributes entered are:
                 |   attr1: @{attr1}
-                |----------------------------------------------------------
+                |{{gray}}----------------------------------------------------------{{reset}}
             </template>
         </transform>
     </translet>
