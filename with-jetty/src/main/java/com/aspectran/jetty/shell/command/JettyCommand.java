@@ -52,7 +52,7 @@ public class JettyCommand extends AbstractCommand {
                 .build());
 
         Arguments arguments = touchArguments();
-        arguments.setTitle("Commands:");
+        arguments.setTitle("Available commands:");
         arguments.put("start", "Start Jetty server");
         arguments.put("stop", "Stop Jetty server");
         arguments.put("restart", "Restart Jetty server");

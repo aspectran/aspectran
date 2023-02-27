@@ -92,7 +92,7 @@ public class HelpCommand extends AbstractCommand {
         list.sort(Comparator.comparing(Command::getDescriptor, Comparator.comparing(Descriptor::getName)));
 
         Arguments arguments = touchArguments();
-        arguments.setTitle("Commands:");
+        arguments.setTitle("Available commands:");
         for (Command command : list) {
             String commandName = command.getDescriptor().getName();
             arguments.put(commandName, "Display help for command " + commandName);
