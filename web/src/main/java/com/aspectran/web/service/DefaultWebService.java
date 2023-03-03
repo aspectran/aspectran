@@ -15,6 +15,7 @@
  */
 package com.aspectran.web.service;
 
+import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.ActivityTerminatedException;
 import com.aspectran.core.activity.request.RequestMethodNotAllowedException;
 import com.aspectran.core.activity.request.SizeLimitExceededException;
@@ -37,6 +38,8 @@ import com.aspectran.web.activity.WebActivity;
 import com.aspectran.web.startup.servlet.WebActivityServlet;
 import com.aspectran.web.support.http.HttpHeaders;
 import jakarta.servlet.AsyncContext;
+import jakarta.servlet.AsyncEvent;
+import jakarta.servlet.AsyncListener;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
@@ -167,17 +170,74 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
         }
 
         if (transletRule.isAsync() && request.isAsyncSupported()) {
-            AsyncContext asyncContext = request.startAsync();
-            if (transletRule.getTimeout() != null) {
-                asyncContext.setTimeout(transletRule.getTimeout());
-            }
-            asyncContext.start(() -> {
-                perform(request, response, requestUri, requestMethod, transletRule);
-                asyncContext.complete();
-            });
+            asyncPerform(request, response, requestUri, requestMethod, transletRule);
         } else {
             perform(request, response, requestUri, requestMethod, transletRule);
         }
+    }
+
+    private void asyncPerform(HttpServletRequest request, HttpServletResponse response,
+                              String requestUri, MethodType requestMethod, TransletRule transletRule) {
+        final AsyncContext asyncContext;
+        if (request.isAsyncStarted()) {
+            asyncContext = request.getAsyncContext();
+            if (transletRule.getTimeout() != null) {
+                try {
+                    asyncContext.setTimeout(transletRule.getTimeout());
+                } catch (IllegalStateException ex) {
+                    logger.warn("Servlet request has been put into asynchronous mode by an external force. " +
+                            "Proceeding with the existing AsyncContext instance, " +
+                            "but cannot guarantee the correct behavior of JAX-RS AsyncResponse time-out support.");
+                }
+            }
+        } else {
+            asyncContext = request.startAsync();
+            if (logger.isDebugEnabled()) {
+                logger.debug("Async Started " + asyncContext);
+            }
+            if (transletRule.getTimeout() != null) {
+                asyncContext.setTimeout(transletRule.getTimeout());
+            }
+        }
+        asyncContext.addListener(new AsyncListener() {
+            @Override
+            public void onComplete(AsyncEvent asyncEvent) throws IOException {
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Async Completed " + asyncEvent);
+                }
+            }
+
+            @Override
+            public void onTimeout(AsyncEvent asyncEvent) throws IOException {
+                logger.error("Async Timeout " + asyncEvent);
+                try {
+                    Activity activity = getActivityContext().getCurrentActivity();
+                    activity.terminate("Async Timeout " + transletRule);
+                } catch (ActivityTerminatedException e) {
+                    logger.error(e.getMessage(), e);
+                } catch (Exception e) {
+                    if (logger.isTraceEnabled()) {
+                        logger.trace(e.getMessage());
+                    }
+                }
+            }
+
+            @Override
+            public void onError(AsyncEvent asyncEvent) throws IOException {
+                logger.error("Async Error " + asyncEvent);
+            }
+
+            @Override
+            public void onStartAsync(AsyncEvent asyncEvent) throws IOException {
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Async Started " + asyncEvent);
+                }
+            }
+        });
+        asyncContext.start(() -> {
+            perform(request, response, requestUri, requestMethod, transletRule);
+            asyncContext.complete();
+        });
     }
 
     private void perform(HttpServletRequest request, HttpServletResponse response,
