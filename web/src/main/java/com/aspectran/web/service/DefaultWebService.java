@@ -47,6 +47,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.net.URLDecoder;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Provides overall functionality for building web applications within a web
@@ -172,7 +173,7 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
         if (transletRule.isAsync() && request.isAsyncSupported()) {
             asyncPerform(request, response, requestUri, requestMethod, transletRule);
         } else {
-            perform(request, response, requestUri, requestMethod, transletRule);
+            perform(request, response, requestUri, requestMethod, transletRule, null);
         }
     }
 
@@ -199,6 +200,7 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
                 asyncContext.setTimeout(transletRule.getTimeout());
             }
         }
+        final AtomicReference<Activity> activityReference = new AtomicReference<>();
         asyncContext.addListener(new AsyncListener() {
             @Override
             public void onComplete(AsyncEvent asyncEvent) throws IOException {
@@ -209,16 +211,11 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
 
             @Override
             public void onTimeout(AsyncEvent asyncEvent) throws IOException {
-                logger.error("Async Timeout " + asyncEvent);
-                try {
-                    Activity activity = getActivityContext().getCurrentActivity();
-                    activity.terminate("Async Timeout " + transletRule);
-                } catch (ActivityTerminatedException e) {
-                    logger.error(e.getMessage(), e);
-                } catch (Exception e) {
-                    if (logger.isTraceEnabled()) {
-                        logger.trace(e.getMessage());
-                    }
+                Activity activity = activityReference.get();
+                if (activity != null && !activity.isExceptionRaised()) {
+                    activity.setRaisedException(new ActivityTerminatedException("Async Timeout " + asyncEvent));
+                } else {
+                    logger.error("Async Timeout " + asyncEvent);
                 }
             }
 
@@ -235,15 +232,19 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
             }
         });
         asyncContext.start(() -> {
-            perform(request, response, requestUri, requestMethod, transletRule);
+            perform(request, response, requestUri, requestMethod, transletRule, activityReference);
             asyncContext.complete();
         });
     }
 
     private void perform(HttpServletRequest request, HttpServletResponse response,
-                         String requestUri, MethodType requestMethod, TransletRule transletRule) {
+                         String requestUri, MethodType requestMethod, TransletRule transletRule,
+                         AtomicReference<Activity> activityReference) {
         try {
             WebActivity activity = new WebActivity(getActivityContext(), request, response);
+            if (activityReference != null) {
+                activityReference.set(activity);
+            }
             activity.prepare(requestUri, requestMethod, transletRule);
             activity.perform();
         } catch (ActivityTerminatedException e) {
