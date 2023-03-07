@@ -115,7 +115,7 @@ public class DefaultShellService extends AbstractShellService {
         }
     }
 
-    private void asyncPerform(PrintWriter outputWriter,
+    private void asyncPerform(@Nullable PrintWriter outputWriter,
                               boolean procedural, boolean verbose,
                               @Nullable ParameterMap parameterMap, String transletName,
                               MethodType requestMethod, TransletRule transletRule) {
@@ -155,14 +155,14 @@ public class DefaultShellService extends AbstractShellService {
         });
     }
 
-    private Translet perform(PrintWriter outputWriter,
+    private Translet perform(@Nullable PrintWriter outputWriter,
                              boolean procedural, boolean verbose,
-                             ParameterMap parameterMap, String transletName,
+                             @Nullable ParameterMap parameterMap, String transletName,
                              MethodType requestMethod, TransletRule transletRule,
                              AtomicReference<Activity> activityReference) {
         Translet translet = null;
         try {
-            ShellActivity activity = new ShellActivity(this, getConsole());
+            ShellActivity activity = new ShellActivity(this);
             if (activityReference != null) {
                 activityReference.set(activity);
             }

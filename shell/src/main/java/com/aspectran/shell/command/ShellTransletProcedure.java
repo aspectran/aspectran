@@ -26,6 +26,7 @@ import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.type.ItemType;
 import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.lang.NonNull;
+import com.aspectran.core.lang.Nullable;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.shell.console.ShellConsole;
 import com.aspectran.shell.service.ShellService;
@@ -111,9 +112,6 @@ public class ShellTransletProcedure {
         return true;
     }
 
-    /**
-     * Prints a description for the {@code Translet}.
-     */
     public void printDescription(String description) {
         if (description != null) {
             console.setStyle(console.getInfoStyle());
@@ -123,18 +121,19 @@ public class ShellTransletProcedure {
     }
 
     public void printDescription(Translet translet) {
-        if (!procedural && verbose) {
+        if (verbose) {
             printDescription(translet.getDescription());
         }
     }
 
     public void printDescription(TransletRule transletRule) {
-        if (!procedural && verbose) {
+        if (verbose) {
             printDescription(getDescription(transletRule));
         }
     }
 
-    private String getDescription(TransletRule transletRule) {
+    @Nullable
+    private String getDescription(@NonNull TransletRule transletRule) {
         DescriptionRule descriptionRule = transletRule.getDescriptionRule();
         if (descriptionRule != null) {
             return DescriptionRule.render(descriptionRule, shellService.getDefaultActivity());
@@ -168,30 +167,34 @@ public class ShellTransletProcedure {
     }
 
     public void printSomeMandatoryParametersMissing(Collection<ItemRule> itemRules) {
-        console.setStyle(console.getDangerStyle());
-        console.writeLine("Some mandatory parameters are missing:");
-        console.clearStyle();
-        for (ItemRule ir : itemRules) {
-            console.setStyle(console.getWarningStyle());
-            console.write(" * ");
+        if (itemRules != null && !itemRules.isEmpty()) {
+            console.setStyle(console.getDangerStyle());
+            console.writeLine("Some mandatory parameters are missing:");
             console.clearStyle();
-            console.setStyle(console.getSuccessStyle());
-            console.writeLine(ir.getName());
-            console.clearStyle();
+            for (ItemRule ir : itemRules) {
+                console.setStyle(console.getWarningStyle());
+                console.write(" * ");
+                console.clearStyle();
+                console.setStyle(console.getSuccessStyle());
+                console.writeLine(ir.getName());
+                console.clearStyle();
+            }
         }
     }
 
     public void printSomeMandatoryAttributesMissing(Collection<ItemRule> itemRules) {
-        console.setStyle(console.getDangerStyle());
-        console.writeLine("Some mandatory attributes are missing:");
-        console.clearStyle();
-        for (ItemRule ir : itemRules) {
-            console.setStyle(console.getWarningStyle());
-            console.write(" * ");
+        if (itemRules != null && !itemRules.isEmpty()) {
+            console.setStyle(console.getDangerStyle());
+            console.writeLine("Some mandatory attributes are missing:");
             console.clearStyle();
-            console.setStyle(console.getSuccessStyle());
-            console.writeLine(ir.getName());
-            console.clearStyle();
+            for (ItemRule ir : itemRules) {
+                console.setStyle(console.getWarningStyle());
+                console.write(" * ");
+                console.clearStyle();
+                console.setStyle(console.getSuccessStyle());
+                console.writeLine(ir.getName());
+                console.clearStyle();
+            }
         }
     }
 

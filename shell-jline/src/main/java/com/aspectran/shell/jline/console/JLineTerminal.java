@@ -170,8 +170,12 @@ public class JLineTerminal {
                     reader.callWidget(LineReader.CLEAR);
                 }
             } else {
-                getWriter().print("\r");
-                getWriter().flush();
+                if (terminal.puts(InfoCmp.Capability.carriage_return)) {
+                    terminal.flush();
+                } else {
+                    getWriter().print("\r");
+                    getWriter().flush();
+                }
             }
         }
     }

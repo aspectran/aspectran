@@ -62,11 +62,11 @@ public class ShellActivity extends CoreActivity {
      * @param shellService the {@code ShellService} instance
      * @param console the {@code Console} instance
      */
-    public ShellActivity(ShellService shellService, ShellConsole console) {
+    public ShellActivity(ShellService shellService) {
         super(shellService.getActivityContext());
 
         this.shellService = shellService;
-        this.console = console;
+        this.console = shellService.getConsole();
     }
 
     public void setProcedural(boolean procedural) {
