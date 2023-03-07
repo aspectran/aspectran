@@ -40,6 +40,8 @@ public class ShellTransletProcedure {
 
     private final ShellService shellService;
 
+    private final ShellConsole console;
+
     private final TransletRule transletRule;
 
     private final ParameterMap parameterMap;
@@ -56,6 +58,7 @@ public class ShellTransletProcedure {
             throw new IllegalArgumentException("service must not be null");
         }
         this.shellService = shellService;
+        this.console = shellService.getConsole();
         this.transletRule = transletRule;
         this.parameterMap = parameterMap;
         this.procedural = procedural;
@@ -69,10 +72,6 @@ public class ShellTransletProcedure {
             printRequiredAttributes();
         }
         readRequiredParameters();
-    }
-
-    private ShellConsole getConsole() {
-        return shellService.getConsole();
     }
 
     private void determineSimpleReading() {
@@ -117,9 +116,9 @@ public class ShellTransletProcedure {
      */
     public void printDescription(String description) {
         if (description != null) {
-            getConsole().setStyle(getConsole().getInfoStyle());
-            getConsole().writeLine(description);
-            getConsole().clearStyle();
+            console.setStyle(console.getInfoStyle());
+            console.writeLine(description);
+            console.clearStyle();
         }
     }
 
@@ -147,9 +146,9 @@ public class ShellTransletProcedure {
     private void printRequiredParameters() {
         ItemRuleMap parameterItemRuleMap = transletRule.getRequestRule().getParameterItemRuleMap();
         if (parameterItemRuleMap != null && !parameterItemRuleMap.isEmpty()) {
-            getConsole().setStyle(getConsole().getSecondaryStyle());
-            getConsole().writeLine("Required parameters:");
-            getConsole().clearStyle();
+            console.setStyle(console.getSecondaryStyle());
+            console.writeLine("Required parameters:");
+            console.clearStyle();
             if (!readSimply) {
                 writeItems(parameterItemRuleMap.values(), TokenType.PARAMETER);
             }
@@ -160,39 +159,39 @@ public class ShellTransletProcedure {
         if (!readSimply) {
             ItemRuleMap attributeItemRuleMap = transletRule.getRequestRule().getAttributeItemRuleMap();
             if (attributeItemRuleMap != null && !attributeItemRuleMap.isEmpty()) {
-                getConsole().setStyle(getConsole().getSecondaryStyle());
-                getConsole().writeLine("Required attributes:");
-                getConsole().clearStyle();
+                console.setStyle(console.getSecondaryStyle());
+                console.writeLine("Required attributes:");
+                console.clearStyle();
                 writeItems(attributeItemRuleMap.values(), TokenType.ATTRIBUTE);
             }
         }
     }
 
     public void printSomeMandatoryParametersMissing(Collection<ItemRule> itemRules) {
-        getConsole().setStyle(getConsole().getDangerStyle());
-        getConsole().writeLine("Some mandatory parameters are missing:");
-        getConsole().clearStyle();
+        console.setStyle(console.getDangerStyle());
+        console.writeLine("Some mandatory parameters are missing:");
+        console.clearStyle();
         for (ItemRule ir : itemRules) {
-            getConsole().setStyle(getConsole().getWarningStyle());
-            getConsole().write(" * ");
-            getConsole().clearStyle();
-            getConsole().setStyle(getConsole().getSuccessStyle());
-            getConsole().writeLine(ir.getName());
-            getConsole().clearStyle();
+            console.setStyle(console.getWarningStyle());
+            console.write(" * ");
+            console.clearStyle();
+            console.setStyle(console.getSuccessStyle());
+            console.writeLine(ir.getName());
+            console.clearStyle();
         }
     }
 
     public void printSomeMandatoryAttributesMissing(Collection<ItemRule> itemRules) {
-        getConsole().setStyle(getConsole().getDangerStyle());
-        getConsole().writeLine("Some mandatory attributes are missing:");
-        getConsole().clearStyle();
+        console.setStyle(console.getDangerStyle());
+        console.writeLine("Some mandatory attributes are missing:");
+        console.clearStyle();
         for (ItemRule ir : itemRules) {
-            getConsole().setStyle(getConsole().getWarningStyle());
-            getConsole().write(" * ");
-            getConsole().clearStyle();
-            getConsole().setStyle(getConsole().getSuccessStyle());
-            getConsole().writeLine(ir.getName());
-            getConsole().clearStyle();
+            console.setStyle(console.getWarningStyle());
+            console.write(" * ");
+            console.clearStyle();
+            console.setStyle(console.getSuccessStyle());
+            console.writeLine(ir.getName());
+            console.clearStyle();
         }
     }
 
@@ -215,9 +214,9 @@ public class ShellTransletProcedure {
             missingItemRules = checkRequiredParameters(itemRules);
         }
         if (missingItemRules != null) {
-            getConsole().setStyle(getConsole().getWarningStyle());
-            getConsole().writeLine("Missing mandatory parameters:");
-            getConsole().clearStyle();
+            console.setStyle(console.getWarningStyle());
+            console.writeLine("Missing mandatory parameters:");
+            console.clearStyle();
             if (!readSimply) {
                 writeItems(missingItemRules, TokenType.PARAMETER);
             }
@@ -247,14 +246,14 @@ public class ShellTransletProcedure {
     }
 
     private String readParameter(ItemRule itemRule) {
-        getConsole().clearPrompt();
-        getConsole().setStyle(getConsole().getWarningStyle());
-        getConsole().appendPrompt(getMandatoryMarker(itemRule.isMandatory()));
-        getConsole().clearStyle();
-        getConsole().setStyle(getConsole().getSuccessStyle());
-        getConsole().appendPrompt(itemRule.getName());
-        getConsole().clearStyle();
-        getConsole().appendPrompt(": ");
+        console.clearPrompt();
+        console.setStyle(console.getWarningStyle());
+        console.appendPrompt(getMandatoryMarker(itemRule.isMandatory()));
+        console.clearStyle();
+        console.setStyle(console.getSuccessStyle());
+        console.appendPrompt(itemRule.getName());
+        console.clearStyle();
+        console.appendPrompt(": ");
 
         String defaultValue = null;
         Token[] tokens = itemRule.getAllTokens();
@@ -269,16 +268,16 @@ public class ShellTransletProcedure {
         }
 
         if (itemRule.isSecret()) {
-            return getConsole().readPassword(null, defaultValue);
+            return console.readPassword(null, defaultValue);
         } else {
-            return getConsole().readLine(null, defaultValue);
+            return console.readLine(null, defaultValue);
         }
     }
 
     private Collection<ItemRule> readEachToken(Collection<ItemRule> itemRules) {
-        getConsole().setStyle(getConsole().getSecondaryStyle());
-        getConsole().writeLine("Enter a value for each token:");
-        getConsole().clearStyle();
+        console.setStyle(console.getSecondaryStyle());
+        console.writeLine("Enter a value for each token:");
+        console.clearStyle();
 
         Set<ItemRule> missingItemRules = new LinkedHashSet<>();
         Map<Token, Set<ItemRule>> valueTokens = new LinkedHashMap<>();
@@ -316,24 +315,24 @@ public class ShellTransletProcedure {
             Token token = entry.getKey();
             Set<ItemRule> itemRuleSet = entry.getValue();
             boolean secret = hasSecretItem(itemRuleSet);
-            getConsole().clearPrompt();
-            getConsole().appendPrompt("   ");
-            getConsole().setStyle(getConsole().getInfoStyle());
-            getConsole().appendPrompt(String.valueOf(Token.PARAMETER_SYMBOL));
-            getConsole().appendPrompt(String.valueOf(Token.BRACKET_OPEN));
-            getConsole().clearStyle();
-            getConsole().setStyle(getConsole().getSuccessStyle());
-            getConsole().appendPrompt(token.getName());
-            getConsole().clearStyle();
-            getConsole().setStyle(getConsole().getInfoStyle());
-            getConsole().appendPrompt(String.valueOf(Token.BRACKET_CLOSE));
-            getConsole().clearStyle();
-            getConsole().appendPrompt(": ");
+            console.clearPrompt();
+            console.appendPrompt("   ");
+            console.setStyle(console.getInfoStyle());
+            console.appendPrompt(String.valueOf(Token.PARAMETER_SYMBOL));
+            console.appendPrompt(String.valueOf(Token.BRACKET_OPEN));
+            console.clearStyle();
+            console.setStyle(console.getSuccessStyle());
+            console.appendPrompt(token.getName());
+            console.clearStyle();
+            console.setStyle(console.getInfoStyle());
+            console.appendPrompt(String.valueOf(Token.BRACKET_CLOSE));
+            console.clearStyle();
+            console.appendPrompt(": ");
             String line;
             if (secret) {
-                line = getConsole().readPassword(null, token.getDefaultValue());
+                line = console.readPassword(null, token.getDefaultValue());
             } else {
-                line = getConsole().readLine(null, token.getDefaultValue());
+                line = console.readLine(null, token.getDefaultValue());
             }
             if (StringUtils.hasLength(line)) {
                 parameterMap.setParameter(token.getName(), line);
@@ -379,35 +378,35 @@ public class ShellTransletProcedure {
     }
 
     private void writeItem(ItemRule itemRule, Token[] tokens) {
-        getConsole().setStyle(getConsole().getWarningStyle());
-        getConsole().write(getMandatoryMarker(itemRule.isMandatory()));
-        getConsole().clearStyle();
-        getConsole().setStyle(getConsole().getSuccessStyle());
-        getConsole().write(itemRule.getName());
-        getConsole().clearStyle();
+        console.setStyle(console.getWarningStyle());
+        console.write(getMandatoryMarker(itemRule.isMandatory()));
+        console.clearStyle();
+        console.setStyle(console.getSuccessStyle());
+        console.write(itemRule.getName());
+        console.clearStyle();
         if (tokens != null && tokens.length > 0) {
-            getConsole().write(": ");
+            console.write(": ");
             for (Token token : tokens) {
                 writeToken(token);
             }
         }
-        getConsole().writeLine();
+        console.writeLine();
     }
 
     private void writeToken(Token token) {
         if (token.getType() == TokenType.TEXT) {
-            getConsole().write(token.stringify());
+            console.write(token.stringify());
         } else {
             String str = token.stringify();
-            getConsole().setStyle(getConsole().getInfoStyle());
-            getConsole().write(str.substring(0, 2));
-            getConsole().clearStyle();
-            getConsole().setStyle(getConsole().getSuccessStyle());
-            getConsole().write(str.substring(2, str.length() - 1));
-            getConsole().clearStyle();
-            getConsole().setStyle(getConsole().getInfoStyle());
-            getConsole().write(str.substring(str.length() - 1));
-            getConsole().clearStyle();
+            console.setStyle(console.getInfoStyle());
+            console.write(str.substring(0, 2));
+            console.clearStyle();
+            console.setStyle(console.getSuccessStyle());
+            console.write(str.substring(2, str.length() - 1));
+            console.clearStyle();
+            console.setStyle(console.getInfoStyle());
+            console.write(str.substring(str.length() - 1));
+            console.clearStyle();
         }
     }
 
