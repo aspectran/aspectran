@@ -155,8 +155,9 @@ public class JLineTerminal {
                 reader.callWidget(LineReader.REDRAW_LINE);
                 reader.callWidget(LineReader.REDISPLAY);
             } else {
-                terminal.puts(InfoCmp.Capability.clear_screen);
-                terminal.flush();
+                if (terminal.puts(InfoCmp.Capability.clear_screen)) {
+                    terminal.flush();
+                }
             }
         }
     }

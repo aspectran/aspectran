@@ -60,7 +60,6 @@ public class ShellActivity extends CoreActivity {
     /**
      * Instantiates a new ShellActivity.
      * @param shellService the {@code ShellService} instance
-     * @param console the {@code Console} instance
      */
     public ShellActivity(ShellService shellService) {
         super(shellService.getActivityContext());
