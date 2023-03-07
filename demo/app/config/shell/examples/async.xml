@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran 7.0//EN"
+        "http://aspectran.github.io/dtd/aspectran-7.dtd">
+<aspectran>
+
+    <description>
+        Aspectran configuration that defines translets that prints
+        request parameters and attributes directly to the console.
+    </description>
+
+    <translet name="async1" async="true">
+        <description style="apon">
+            |
+            |   The value of each parameter you enter is immediately output to the console.
+            |
+        </description>
+        <action id="sleepAction" bean="asyncActivity" method="sleep">
+            <arguments>
+                <item valueType="long">2000</item>
+            </arguments>
+        </action>
+        <transform format="text">
+            <template engine="token" style="apon">
+                |{{gray}}----------------------------------------------------------{{reset}}
+                |@{sleepAction}
+                |{{gray}}----------------------------------------------------------{{reset}}
+            </template>
+        </transform>
+    </translet>
+
+    <translet name="async2" async="true">
+        <description style="apon">
+            |
+            |   The value of each parameter you enter is immediately output to the console.
+            |
+        </description>
+        <parameters>
+            <item name="param1">${param1:hello}</item>
+            <item name="param2" mandatory="true"/>
+        </parameters>
+        <action id="sleepAction" bean="asyncActivity" method="sleep">
+            <arguments>
+                <item valueType="long">2000</item>
+            </arguments>
+        </action>
+        <transform format="text">
+            <template engine="token" style="apon">
+                |{{gray}}----------------------------------------------------------{{reset}}
+                |The parameters you entered are:
+                |   param1: {{bold}}${param1}{{reset}}
+                |   param2: {{bold}}${param2}{{reset}}
+                |{{gray}}----------------------------------------------------------{{reset}}
+                |@{sleepAction}
+            </template>
+        </transform>
+    </translet>
+
+</aspectran>

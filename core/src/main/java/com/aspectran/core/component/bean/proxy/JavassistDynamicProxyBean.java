@@ -80,7 +80,7 @@ public class JavassistDynamicProxyBean extends AbstractDynamicProxyBean implemen
                 finallyAdvice(aarr.getFinallyAdviceRuleList(), beanRule, activity);
             }
         } catch (Exception e) {
-            if (exception(aarr.getExceptionRuleList(), e, activity)) {
+            if (exceptionally(aarr.getExceptionRuleList(), e, activity)) {
                 return null;
             }
             throw e;

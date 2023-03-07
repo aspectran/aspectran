@@ -79,6 +79,11 @@ public class DefaultActivity extends AbstractActivity {
     }
 
     @Override
+    public boolean isCommitted() {
+        return false;
+    }
+
+    @Override
     public void executeAdvice(List<AspectAdviceRule> aspectAdviceRuleList, boolean throwable) {
         throw new UnsupportedOperationException();
     }

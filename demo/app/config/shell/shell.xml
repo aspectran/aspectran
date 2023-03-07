@@ -12,5 +12,6 @@
     <append file="/config/shell/examples/login.xml"/>
     <append file="/config/shell/examples/speak.xml"/>
     <append file="/config/shell/examples/resource.xml"/>
+    <append file="/config/shell/examples/async.xml"/>
 
 </aspectran>

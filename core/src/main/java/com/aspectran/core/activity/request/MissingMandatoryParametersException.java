@@ -28,7 +28,7 @@ import java.util.Collection;
  *
  * @since 3.0.0
  */
-public class MissingMandatoryParametersException extends RequestException {
+public class MissingMandatoryParametersException extends RequestParseException {
 
     private static final long serialVersionUID = 6311784727928597298L;
 

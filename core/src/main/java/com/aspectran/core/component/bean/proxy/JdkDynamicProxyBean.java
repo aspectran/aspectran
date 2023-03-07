@@ -69,7 +69,7 @@ public class JdkDynamicProxyBean extends AbstractDynamicProxyBean implements Inv
                 finallyAdvice(aarr.getFinallyAdviceRuleList(), beanRule, activity);
             }
         } catch (Exception e) {
-            if (exception(aarr.getExceptionRuleList(), e, activity)) {
+            if (exceptionally(aarr.getExceptionRuleList(), e, activity)) {
                 return null;
             }
             throw e;

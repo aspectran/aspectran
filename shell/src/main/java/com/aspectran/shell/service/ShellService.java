@@ -29,6 +29,8 @@ import com.aspectran.shell.console.ShellConsole;
  */
 public interface ShellService extends CoreService {
 
+    ShellConsole getConsole();
+
     /**
      * Tests if the verbose mode is enabled.
      * If verbose mode is on, a detailed description is printed each time the command is executed.
@@ -83,9 +85,8 @@ public interface ShellService extends CoreService {
     /**
      * Executes translet.
      * @param transletCommandLine the translet command line
-     * @param console the {@code Console} instance
      * @return the {@code Translet} instance
      */
-    Translet translate(TransletCommandLine transletCommandLine, ShellConsole console) throws TransletNotFoundException;
+    Translet translate(TransletCommandLine transletCommandLine) throws TransletNotFoundException;
 
 }

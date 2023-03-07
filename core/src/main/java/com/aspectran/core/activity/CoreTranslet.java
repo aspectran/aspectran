@@ -69,11 +69,12 @@ public class CoreTranslet extends AbstractTranslet {
 
     @Override
     public String getDescription() {
-        if (activity.getTransletRule().getDescriptionRule() == null) {
+        DescriptionRule descriptionRule = activity.getTransletRule().getDescriptionRule();
+        if (descriptionRule != null) {
+            return DescriptionRule.render(descriptionRule, activity);
+        } else {
             return null;
         }
-        DescriptionRule descriptionRule = activity.getTransletRule().getDescriptionRule();
-        return DescriptionRule.render(descriptionRule, activity);
     }
 
     @Override

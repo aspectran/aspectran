@@ -16,6 +16,7 @@
 package com.aspectran.core.activity;
 
 import com.aspectran.core.activity.request.ParameterMap;
+import com.aspectran.core.activity.request.RequestParseException;
 import com.aspectran.core.adapter.DefaultRequestAdapter;
 import com.aspectran.core.adapter.DefaultResponseAdapter;
 import com.aspectran.core.adapter.DefaultSessionAdapter;
@@ -96,13 +97,15 @@ public class InstantActivity extends CoreActivity {
     }
 
     @Override
-    protected void parseRequest() {
+    protected void parseRequest() throws RequestParseException, ActivityTerminatedException {
         if (parameterMap != null) {
             getRequestAdapter().putAllParameters(parameterMap);
         }
         if (attributeMap != null) {
             getRequestAdapter().putAllAttributes(attributeMap);
         }
+
+        super.parseRequest();
     }
 
     @Override

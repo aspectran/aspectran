@@ -25,11 +25,21 @@ public abstract class AbstractCommandLine {
 
     private final CommandLineParser lineParser;
 
+    private boolean verbose;
+
     private ParameterMap parameterMap;
 
     public AbstractCommandLine(CommandLineParser lineParser) {
         this.lineParser = lineParser;
         parse();
+    }
+
+    public boolean isVerbose() {
+        return verbose;
+    }
+
+    public void setVerbose(boolean verbose) {
+        this.verbose = verbose;
     }
 
     /**

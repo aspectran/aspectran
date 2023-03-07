@@ -15,9 +15,11 @@
  */
 package com.aspectran.shell.service;
 
+import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.ActivityTerminatedException;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.TransletNotFoundException;
+import com.aspectran.core.activity.request.MissingMandatoryParametersException;
 import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.config.ContextConfig;
@@ -25,6 +27,7 @@ import com.aspectran.core.context.config.ExposalsConfig;
 import com.aspectran.core.context.config.ShellConfig;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.type.MethodType;
+import com.aspectran.core.lang.Nullable;
 import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.ServiceStateListener;
 import com.aspectran.core.util.ObjectUtils;
@@ -33,12 +36,16 @@ import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
 import com.aspectran.shell.activity.ShellActivity;
 import com.aspectran.shell.command.OutputRedirection;
+import com.aspectran.shell.command.ShellTransletProcedure;
 import com.aspectran.shell.command.TransletCommandLine;
 import com.aspectran.shell.console.ShellConsole;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Provides an interactive shell that lets you use or control Aspectran directly
@@ -58,20 +65,15 @@ public class DefaultShellService extends AbstractShellService {
         super(console);
     }
 
-    @Override
-    public Translet translate(TransletCommandLine transletCommandLine, ShellConsole console)
-            throws TransletNotFoundException {
+    public Translet translate(TransletCommandLine transletCommandLine) throws TransletNotFoundException {
         if (transletCommandLine == null) {
             throw new IllegalArgumentException("transletCommandLine must not be null");
         }
-        if (console == null) {
-            throw new IllegalArgumentException("console must not be null");
-        }
         if (!isExposable(transletCommandLine.getRequestName())) {
-            console.writeError("Unavailable translet: " + transletCommandLine.getRequestName());
+            getConsole().writeError("Unavailable translet: " + transletCommandLine.getRequestName());
             return null;
         }
-        if (checkPaused(console)) {
+        if (checkPaused()) {
             return null;
         }
 
@@ -92,38 +94,80 @@ public class DefaultShellService extends AbstractShellService {
         List<OutputRedirection> redirectionList = transletCommandLine.getLineParser().getRedirectionList();
         if (redirectionList != null) {
             try {
-                outputWriter = OutputRedirection.determineOutputWriter(redirectionList, console);
+                outputWriter = OutputRedirection.determineOutputWriter(redirectionList, getConsole());
             } catch (Exception e) {
-                console.writeError("Invalid Output Redirection - " + e.getMessage());
+                getConsole().writeError("Invalid Output Redirection - " + e.getMessage());
                 return null;
             }
         }
 
-        boolean procedural = (transletCommandLine.getParameterMap() == null);
         ParameterMap parameterMap = transletCommandLine.getParameterMap();
+        boolean procedural = (parameterMap == null);
+        boolean verbose = (isVerbose() || transletCommandLine.isVerbose());
 
         if (transletRule.isAsync()) {
-            asyncPerform(console, outputWriter, procedural, parameterMap, transletName, requestMethod, transletRule);
+            asyncPerform(outputWriter, procedural, verbose, parameterMap,
+                    transletName, requestMethod, transletRule);
             return null;
         } else {
-            return perform(console, outputWriter, procedural, parameterMap, transletName, requestMethod, transletRule);
+            return perform(outputWriter, procedural, verbose, parameterMap,
+                    transletName, requestMethod, transletRule, null);
         }
     }
 
-    private void asyncPerform(ShellConsole console, PrintWriter outputWriter,
-                              boolean procedural, ParameterMap parameterMap,
-                              String transletName, MethodType requestMethod, TransletRule transletRule) {
-        //@TODO
-        perform(console, outputWriter, procedural, parameterMap, transletName, requestMethod, transletRule);
+    private void asyncPerform(PrintWriter outputWriter,
+                              boolean procedural, boolean verbose,
+                              @Nullable ParameterMap parameterMap, String transletName,
+                              MethodType requestMethod, TransletRule transletRule) {
+        final ParameterMap finalParameterMap;
+        if (parameterMap != null) {
+            finalParameterMap = parameterMap;
+        } else {
+            finalParameterMap = new ParameterMap();
+        }
+        ShellTransletProcedure procedure = new ShellTransletProcedure(
+                this, transletRule, finalParameterMap, procedural, verbose);
+        procedure.printDescription(transletRule);
+        try {
+            procedure.proceed();
+        } catch (MissingMandatoryParametersException e) {
+            procedure.printSomeMandatoryParametersMissing(e.getItemRules());
+            return;
+        }
+
+        final AtomicReference<Activity> activityReference = new AtomicReference<>();
+        Runnable performable = () ->
+                perform(outputWriter, procedural, verbose, finalParameterMap,
+                        transletName, requestMethod, transletRule, activityReference);
+
+        CompletableFuture<Void> completableFuture = CompletableFuture.runAsync(performable);
+        if (transletRule.getTimeout() != null) {
+            completableFuture.orTimeout(transletRule.getTimeout(), TimeUnit.MILLISECONDS);
+        }
+        completableFuture.exceptionally(throwable -> {
+            Activity activity = activityReference.get();
+            if (activity != null && !activity.isCommitted() && !activity.isExceptionRaised()) {
+                activity.setRaisedException(new ActivityTerminatedException("Async Timeout"));
+            } else {
+                logger.error("Async Timeout ", throwable);
+            }
+            return null;
+        });
     }
 
-    private Translet perform(ShellConsole console, PrintWriter outputWriter,
-                             boolean procedural, ParameterMap parameterMap,
-                             String transletName, MethodType requestMethod, TransletRule transletRule) {
+    private Translet perform(PrintWriter outputWriter,
+                             boolean procedural, boolean verbose,
+                             ParameterMap parameterMap, String transletName,
+                             MethodType requestMethod, TransletRule transletRule,
+                             AtomicReference<Activity> activityReference) {
         Translet translet = null;
         try {
-            ShellActivity activity = new ShellActivity(this, console);
+            ShellActivity activity = new ShellActivity(this, getConsole());
+            if (activityReference != null) {
+                activityReference.set(activity);
+            }
             activity.setProcedural(procedural);
+            activity.setVerbose(verbose);
             activity.setParameterMap(parameterMap);
             activity.setOutputWriter(outputWriter);
             activity.prepare(transletName, requestMethod, transletRule);
@@ -144,7 +188,7 @@ public class DefaultShellService extends AbstractShellService {
             try {
                 String result = translet.getResponseAdapter().getWriter().toString();
                 if (StringUtils.hasLength(result)) {
-                    console.writeLine(result);
+                    getConsole().writeLine(result);
                 }
             } catch (IOException e) {
                 logger.warn("Failed to print activity result", e);
@@ -153,18 +197,18 @@ public class DefaultShellService extends AbstractShellService {
         return translet;
     }
 
-    private boolean checkPaused(ShellConsole console) {
+    private boolean checkPaused() {
         if (pauseTimeout != 0L) {
             if (pauseTimeout == -1L || pauseTimeout >= System.currentTimeMillis()) {
                 if (pauseTimeout == -1L) {
-                    console.writeLine(getServiceName() + " has been paused");
+                    getConsole().writeLine(getServiceName() + " has been paused");
                 } else {
                     long remains = pauseTimeout - System.currentTimeMillis();
                     if (remains > 0L) {
-                        console.writeLine(getServiceName() + " has been paused and will resume after "
+                        getConsole().writeLine(getServiceName() + " has been paused and will resume after "
                                 + remains + " ms");
                     } else {
-                        console.writeLine(getServiceName() + " has been paused and will soon resume");
+                        getConsole().writeLine(getServiceName() + " has been paused and will soon resume");
                     }
                 }
                 return true;

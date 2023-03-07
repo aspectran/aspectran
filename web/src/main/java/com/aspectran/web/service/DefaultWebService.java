@@ -212,7 +212,7 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
             @Override
             public void onTimeout(AsyncEvent asyncEvent) throws IOException {
                 Activity activity = activityReference.get();
-                if (activity != null && !activity.isExceptionRaised()) {
+                if (activity != null && !activity.isCommitted() && !activity.isExceptionRaised()) {
                     activity.setRaisedException(new ActivityTerminatedException("Async Timeout " + asyncEvent));
                 } else {
                     logger.error("Async Timeout " + asyncEvent);

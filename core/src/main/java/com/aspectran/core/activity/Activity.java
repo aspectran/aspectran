@@ -103,8 +103,14 @@ public interface Activity {
     boolean isResponseReserved();
 
     /**
-     * Returns whether the exception was thrown.
-     * @return true, if is exception raised
+     * Returns whether a response was attempted after performing the activity.
+     * @return true if a response was attempted, false otherwise
+     */
+    boolean isCommitted();
+
+    /**
+     * Returns whether an exception was thrown in the activity.
+     * @return true if there was an exception thrown by the activity, false otherwise
      */
     boolean isExceptionRaised();
 

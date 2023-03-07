@@ -225,7 +225,7 @@ public class ShellCommandInterpreter implements CommandInterpreter {
         }
         if (transletCommandLine.getRequestName() != null) {
             try {
-                shellService.translate(transletCommandLine, console);
+                shellService.translate(transletCommandLine);
             } catch (TransletNotFoundException e) {
                 console.writeError("No command or translet mapped to '" + e.getTransletName() + "'");
             } catch (ShellConsoleClosedException e) {

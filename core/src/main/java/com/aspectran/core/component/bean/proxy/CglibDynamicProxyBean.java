@@ -79,7 +79,7 @@ public class CglibDynamicProxyBean extends AbstractDynamicProxyBean implements M
                 finallyAdvice(aarr.getFinallyAdviceRuleList(), beanRule, activity);
             }
         } catch (Exception e) {
-            if (exception(aarr.getExceptionRuleList(), e, activity)) {
+            if (exceptionally(aarr.getExceptionRuleList(), e, activity)) {
                 return null;
             }
             throw e;

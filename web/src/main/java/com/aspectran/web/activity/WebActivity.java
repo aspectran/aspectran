@@ -136,7 +136,7 @@ public class WebActivity extends CoreActivity {
     }
 
     @Override
-    protected void parseRequest() throws ActivityTerminatedException, RequestParseException {
+    protected void parseRequest() throws RequestParseException, ActivityTerminatedException {
         if (getParentActivity() == null) {
             ((HttpServletRequestAdapter)getRequestAdapter()).preparse();
         } else {

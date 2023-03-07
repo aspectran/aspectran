@@ -119,7 +119,7 @@ public abstract class AbstractDynamicProxyBean {
         }
     }
 
-    protected boolean exception(List<ExceptionRule> exceptionRuleList, Exception e, Activity activity)
+    protected boolean exceptionally(List<ExceptionRule> exceptionRuleList, Exception e, Activity activity)
             throws ActionExecutionException {
         activity.setRaisedException(e);
         if (exceptionRuleList != null) {

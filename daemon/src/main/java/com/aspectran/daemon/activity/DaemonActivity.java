@@ -84,7 +84,7 @@ public class DaemonActivity extends CoreActivity {
     }
 
     @Override
-    protected void parseRequest() throws ActivityTerminatedException, RequestParseException {
+    protected void parseRequest() throws RequestParseException, ActivityTerminatedException {
         if (parameterMap != null) {
             ((DaemonRequestAdapter)getRequestAdapter()).setParameterMap(parameterMap);
         }

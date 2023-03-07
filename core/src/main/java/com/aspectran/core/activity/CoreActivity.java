@@ -187,7 +187,15 @@ public class CoreActivity extends AdviceActivity {
     protected void adapt() throws AdapterException {
     }
 
-    protected void parseRequest() throws ActivityTerminatedException, RequestParseException {
+    protected void parseRequest() throws RequestParseException, ActivityTerminatedException {
+        if (translet != null) {
+            parseDeclaredParameters();
+            parseDeclaredAttributes();
+            parsePathVariables();
+            if (!translet.hasParentTranslet()) {
+                resolveLocale();
+            }
+        }
     }
 
     protected LocaleResolver resolveLocale() {
@@ -215,15 +223,6 @@ public class CoreActivity extends AdviceActivity {
                 saveCurrentActivity();
                 adapt();
                 parseRequest();
-            }
-
-            if (translet != null) {
-                parseDeclaredParameters();
-                parseDeclaredAttributes();
-                parsePathVariables();
-                if (!translet.hasParentTranslet()) {
-                    resolveLocale();
-                }
             }
 
             try {
@@ -492,6 +491,11 @@ public class CoreActivity extends AdviceActivity {
 
     protected Response getDesiredResponse() {
         return (this.desiredResponse != null ? this.desiredResponse : getDeclaredResponse());
+    }
+
+    @Override
+    public boolean isCommitted() {
+        return false;
     }
 
     @Override

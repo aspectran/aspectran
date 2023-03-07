@@ -72,6 +72,11 @@ public abstract class AbstractShellService extends AspectranCoreService implemen
         parseGreetings();
     }
 
+    @Override
+    public ShellConsole getConsole() {
+        return console;
+    }
+
     /**
      * Tests if the verbose mode is enabled.
      * If verbose mode is on, a detailed description is printed each time the command is executed.

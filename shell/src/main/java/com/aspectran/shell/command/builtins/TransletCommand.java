@@ -129,16 +129,13 @@ public class TransletCommand extends AbstractCommand {
         } else if (options.hasArgs()) {
             CommandLineParser lineParser = new CommandLineParser(options.getFirstArg());
             TransletCommandLine transletCommandLine = new TransletCommandLine(lineParser);
-            boolean verbose = shellService.isVerbose();
+            if (options.hasOption("verbose")) {
+                transletCommandLine.setVerbose(true);
+            }
             try {
-                if (options.hasOption("verbose")) {
-                    shellService.setVerbose(true);
-                }
-                shellService.translate(transletCommandLine, console);
+                shellService.translate(transletCommandLine);
             } catch (TransletNotFoundException e) {
                 console.writeError("No translet mapped to '" + e.getTransletName() + "'");
-            } finally {
-                shellService.setVerbose(verbose);
             }
         } else {
             printQuickHelp(console);
