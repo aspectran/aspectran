@@ -16,7 +16,7 @@
 package com.aspectran.shell.console;
 
 import com.aspectran.core.context.config.ShellStyleConfig;
-import com.aspectran.shell.command.CommandInterpreter;
+import com.aspectran.shell.command.CommandRunner;
 
 import java.io.File;
 import java.io.OutputStream;
@@ -59,12 +59,12 @@ public class ShellConsoleWrapper implements ShellConsole {
     }
 
     @Override
-    public CommandInterpreter getInterpreter() {
-        return console.getInterpreter();
+    public CommandRunner getCommandRunner() {
+        return console.getCommandRunner();
     }
 
     @Override
-    public void setInterpreter(CommandInterpreter interpreter) {
+    public void setCommandRunner(CommandRunner runner) {
         throw new UnsupportedOperationException();
     }
 

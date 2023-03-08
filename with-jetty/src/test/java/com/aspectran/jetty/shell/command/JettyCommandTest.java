@@ -15,7 +15,7 @@
  */
 package com.aspectran.jetty.shell.command;
 
-import com.aspectran.shell.command.CommandInterpreter;
+import com.aspectran.shell.command.CommandRunner;
 import com.aspectran.shell.console.ShellConsole;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -29,10 +29,10 @@ import static com.aspectran.core.util.PBEncryptionUtils.ENCRYPTION_PASSWORD_KEY;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class JettyCommandTest {
 
-    private final CommandInterpreter interpreter = new TestCommandInterpreter();
+    private final CommandRunner runner = new TestCommandRunner();
 
     private ShellConsole getConsole() {
-        return interpreter.getConsole();
+        return runner.getConsole();
     }
 
     @BeforeAll
@@ -43,7 +43,7 @@ class JettyCommandTest {
 
     @Test
     void testJettyCommand() {
-        JettyCommand command = new JettyCommand(interpreter.getCommandRegistry());
+        JettyCommand command = new JettyCommand(runner.getCommandRegistry());
         //getConsole().writeLine(command.getDescriptor().getDescription());
         command.printHelp(getConsole());
     }

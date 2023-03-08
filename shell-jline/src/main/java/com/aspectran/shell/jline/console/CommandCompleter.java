@@ -63,7 +63,7 @@ public class CommandCompleter implements Completer {
 
     @Override
     public void complete(LineReader reader, ParsedLine line, List<Candidate> candidates) {
-        if (!isLimited() && console.getInterpreter() != null) {
+        if (!isLimited() && console.getCommandRunner() != null) {
             if (line.wordIndex() == 0) {
                 makeCommandCandidates(line.word(), candidates);
                 makeTransletCandidates(line.word(), candidates);
@@ -75,7 +75,7 @@ public class CommandCompleter implements Completer {
     }
 
     private void makeCommandCandidates(String word, List<Candidate> candidates) {
-        CommandRegistry commandRegistry = console.getInterpreter().getCommandRegistry();
+        CommandRegistry commandRegistry = console.getCommandRunner().getCommandRegistry();
         if (commandRegistry != null) {
             for (Command command : commandRegistry.getAllCommands()) {
                 String name = command.getDescriptor().getName();
@@ -89,7 +89,7 @@ public class CommandCompleter implements Completer {
     }
 
     private void makeArgumentsCandidates(String word, String opt, List<Candidate> candidates) {
-        CommandRegistry commandRegistry = console.getInterpreter().getCommandRegistry();
+        CommandRegistry commandRegistry = console.getCommandRunner().getCommandRegistry();
         if (commandRegistry != null) {
             Command command = commandRegistry.getCommand(word);
             if (command != null) {
@@ -133,7 +133,7 @@ public class CommandCompleter implements Completer {
     }
 
     private void makeTransletCandidates(String word, List<Candidate> candidates) {
-        ShellService shellService = console.getInterpreter().getShellService();
+        ShellService shellService = console.getCommandRunner().getShellService();
         if (shellService != null && shellService.getServiceController().isActive()) {
             TransletRuleRegistry transletRuleRegistry = shellService.getActivityContext().getTransletRuleRegistry();
             for (TransletRule transletRule : transletRuleRegistry.getTransletRules()) {

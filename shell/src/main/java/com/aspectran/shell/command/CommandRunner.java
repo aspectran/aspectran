@@ -15,21 +15,20 @@
  */
 package com.aspectran.shell.command;
 
-import java.util.Collection;
+import com.aspectran.shell.console.ShellConsole;
+import com.aspectran.shell.service.ShellService;
 
 /**
- * A registry that contains the commands known by a shell.
+ * The Shell Command Runner.
  *
- * <p>Created: 2017. 10. 25.</p>
+ * <p>Created: 2017. 6. 3.</p>
  */
-public interface CommandRegistry {
+public interface CommandRunner {
 
-    CommandRunner getCommandRunner();
+    ShellConsole getConsole();
 
-    Command getCommand(String commandName);
+    CommandRegistry getCommandRegistry();
 
-    Command getCommand(Class<? extends Command> commandClass);
-
-    Collection<Command> getAllCommands();
+    ShellService getShellService();
 
 }

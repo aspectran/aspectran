@@ -36,19 +36,20 @@ import com.aspectran.shell.service.DefaultShellService;
 import com.aspectran.shell.service.ShellService;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 /**
- * The Shell Command Interpreter.
+ * The Shell Command Runner.
  *
  * <p>Created: 2017. 6. 3.</p>
  */
-public class ShellCommandInterpreter implements CommandInterpreter {
+public class ShellCommandRunner implements CommandRunner {
 
-    private static final Logger logger = LoggerFactory.getLogger(ShellCommandInterpreter.class);
+    private static final Logger logger = LoggerFactory.getLogger(ShellCommandRunner.class);
 
     private final ShellConsole console;
 
@@ -60,7 +61,7 @@ public class ShellCommandInterpreter implements CommandInterpreter {
 
     private PrintStream orgSystemErr;
 
-    public ShellCommandInterpreter(ShellConsole console) {
+    public ShellCommandRunner(ShellConsole console) {
         if (console == null) {
             throw new IllegalArgumentException("console must not be null");
         }
@@ -133,7 +134,7 @@ public class ShellCommandInterpreter implements CommandInterpreter {
             console.setCommandHistoryFile(historyFile);
         }
 
-        console.setInterpreter(this);
+        console.setCommandRunner(this);
 
         orgSystemOut = System.out;
         orgSystemErr = System.err;
@@ -143,7 +144,7 @@ public class ShellCommandInterpreter implements CommandInterpreter {
         System.setErr(err);
     }
 
-    public void perform() {
+    public void run() {
         try {
             for (;;) {
                 try {
@@ -293,7 +294,11 @@ public class ShellCommandInterpreter implements CommandInterpreter {
             if (shellService != null && shellService.isActive()) {
                 console.clearLine();
             }
-            super.write(b);
+            try {
+                console.getOutput().write(b);
+            } catch (IOException e) {
+                // ignore
+            }
             if (shellService != null && shellService.isActive()) {
                 console.redrawLine();
             }
@@ -304,7 +309,11 @@ public class ShellCommandInterpreter implements CommandInterpreter {
             if (shellService != null && shellService.isActive()) {
                 console.clearLine();
             }
-            super.write(buf, off, len);
+            try {
+                console.getOutput().write(buf, off, len);
+            } catch (IOException e) {
+                // ignore
+            }
             if (shellService != null && shellService.isActive()) {
                 console.redrawLine();
             }

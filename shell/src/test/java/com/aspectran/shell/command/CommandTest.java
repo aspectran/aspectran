@@ -34,10 +34,10 @@ import static com.aspectran.core.util.PBEncryptionUtils.ENCRYPTION_PASSWORD_KEY;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class CommandTest {
 
-    private final CommandInterpreter interpreter = new TestCommandInterpreter();
+    private final CommandRunner runner = new TestCommandRunner();
 
     private ShellConsole getConsole() {
-        return interpreter.getConsole();
+        return runner.getConsole();
     }
 
     @BeforeAll
@@ -48,21 +48,21 @@ class CommandTest {
 
     @Test
     void testVerboseCommand() {
-        VerboseCommand command = new VerboseCommand(interpreter.getCommandRegistry());
+        VerboseCommand command = new VerboseCommand(runner.getCommandRegistry());
         getConsole().writeLine(command.getDescriptor().getDescription());
         command.printHelp(getConsole());
     }
 
     @Test
     void testHelpCommand() {
-        HelpCommand command = new HelpCommand(interpreter.getCommandRegistry());
+        HelpCommand command = new HelpCommand(runner.getCommandRegistry());
         getConsole().writeLine(command.getDescriptor().getDescription());
         command.printHelp(getConsole());
     }
 
     @Test
     void testSysInfoCommand() throws Exception {
-        SysInfoCommand command = new SysInfoCommand(interpreter.getCommandRegistry());
+        SysInfoCommand command = new SysInfoCommand(runner.getCommandRegistry());
         //getConsole().writeLine(command.getDescriptor().getDescription());
         command.printHelp(getConsole());
         CommandLineParser lineParser = new CommandLineParser("sysinfo -mem");
@@ -71,7 +71,7 @@ class CommandTest {
 
     @Test
     void testPBEncryptCommand() throws Exception {
-        PBEncryptCommand command = new PBEncryptCommand(interpreter.getCommandRegistry());
+        PBEncryptCommand command = new PBEncryptCommand(runner.getCommandRegistry());
         //getConsole().writeLine(command.getDescriptor().getDescription());
         command.printHelp(getConsole());
         CommandLineParser lineParser = new CommandLineParser("encrypt \"aaa ccc d\" -p=bbb");
@@ -82,7 +82,7 @@ class CommandTest {
     void testPBDecryptCommand() throws Exception {
         String encrypted = PBEncryptionUtils.encrypt("1234", "bbb");
 
-        PBDecryptCommand command = new PBDecryptCommand(interpreter.getCommandRegistry());
+        PBDecryptCommand command = new PBDecryptCommand(runner.getCommandRegistry());
         //getConsole().writeLine(command.getDescriptor().getDescription());
         command.printHelp(getConsole());
         CommandLineParser lineParser = new CommandLineParser("decrypt -p=\"bbb\" " + encrypted);
@@ -91,7 +91,7 @@ class CommandTest {
 
     @Test
     void testPBEncryptCommand2() throws Exception {
-        PBEncryptCommand command = new PBEncryptCommand(interpreter.getCommandRegistry());
+        PBEncryptCommand command = new PBEncryptCommand(runner.getCommandRegistry());
         getConsole().writeLine(command.getDescriptor().getDescription());
         command.printHelp(getConsole());
         CommandLineParser lineParser = new CommandLineParser("encrypt input1 input2");
@@ -102,7 +102,7 @@ class CommandTest {
     void testPBDecryptCommand2() throws Exception {
         String encrypted = PBEncryptionUtils.encrypt("1234");
 
-        PBDecryptCommand command = new PBDecryptCommand(interpreter.getCommandRegistry());
+        PBDecryptCommand command = new PBDecryptCommand(runner.getCommandRegistry());
         getConsole().writeLine(command.getDescriptor().getDescription());
         CommandLineParser lineParser = new CommandLineParser("decrypt " + encrypted);
         command.execute(lineParser.parseOptions(command.getOptions()), getConsole());
@@ -110,7 +110,7 @@ class CommandTest {
 
     @Test
     void testTestCommand() throws Exception {
-        TestCommand command = new TestCommand(interpreter.getCommandRegistry());
+        TestCommand command = new TestCommand(runner.getCommandRegistry());
         //getConsole().writeLine(command.getDescriptor().getDescription());
         command.printHelp(getConsole());
         CommandLineParser lineParser = new CommandLineParser("test -i=aaa -D=123 -p=bbb -X -Y -Z");

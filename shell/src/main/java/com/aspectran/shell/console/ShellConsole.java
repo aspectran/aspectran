@@ -16,7 +16,7 @@
 package com.aspectran.shell.console;
 
 import com.aspectran.core.context.config.ShellStyleConfig;
-import com.aspectran.shell.command.CommandInterpreter;
+import com.aspectran.shell.command.CommandRunner;
 
 import java.io.File;
 import java.io.OutputStream;
@@ -54,9 +54,9 @@ public interface ShellConsole {
 
     void setWorkingDir(File workingDir);
 
-    CommandInterpreter getInterpreter();
+    CommandRunner getCommandRunner();
 
-    void setInterpreter(CommandInterpreter interpreter);
+    void setCommandRunner(CommandRunner runner);
 
     void setCommandHistoryFile(String historyFile);
 

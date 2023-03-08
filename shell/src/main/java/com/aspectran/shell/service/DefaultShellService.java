@@ -188,7 +188,13 @@ public class DefaultShellService extends AbstractShellService {
             try {
                 String result = translet.getResponseAdapter().getWriter().toString();
                 if (StringUtils.hasLength(result)) {
+                    if (transletRule.isAsync()) {
+                        getConsole().clearLine();
+                    }
                     getConsole().writeLine(result);
+                    if (transletRule.isAsync()) {
+                        getConsole().redrawLine();
+                    }
                 }
             } catch (IOException e) {
                 logger.warn("Failed to print activity result", e);

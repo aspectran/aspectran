@@ -13,13 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.shell.command;
+package com.aspectran.jetty.shell.command;
 
-import com.aspectran.shell.console.DefaultShellConsole;
+import com.aspectran.shell.command.CommandRunner;
+import com.aspectran.shell.command.CommandRegistry;
+import com.aspectran.shell.command.ShellCommandRegistry;
 import com.aspectran.shell.console.ShellConsole;
+import com.aspectran.shell.console.DefaultShellConsole;
 import com.aspectran.shell.service.ShellService;
 
-public class TestCommandInterpreter implements CommandInterpreter {
+public class TestCommandRunner implements CommandRunner {
 
     private final ShellConsole console = new DefaultShellConsole();
 

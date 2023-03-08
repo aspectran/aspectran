@@ -20,7 +20,7 @@ import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.lang.Nullable;
 import com.aspectran.core.util.Aspectran;
 import com.aspectran.core.util.ExceptionUtils;
-import com.aspectran.shell.command.ShellCommandInterpreter;
+import com.aspectran.shell.command.ShellCommandRunner;
 import com.aspectran.shell.console.DefaultShellConsole;
 import com.aspectran.shell.console.ShellConsole;
 
@@ -28,7 +28,7 @@ import java.io.File;
 
 /**
  * Main entry point for the Aspectran Shell.
- * <P>Aspectran Shell is a command interpreter that allows you to
+ * <P>Aspectran Shell is a command runner that allows you to
  * run the built-in commands and translets provided by Aspectran
  * in the console environment.</P>
  *
@@ -55,15 +55,15 @@ public class AspectranShell {
             throw new IllegalArgumentException("console must not be null");
         }
 
-        ShellCommandInterpreter interpreter = null;
+        ShellCommandRunner runner = null;
         int exitStatus = 0;
 
         try {
             Aspectran.printPrettyAboutMe(System.out);
 
-            interpreter = new ShellCommandInterpreter(console);
-            interpreter.init(basePath, aspectranConfigFile);
-            interpreter.perform();
+            runner = new ShellCommandRunner(console);
+            runner.init(basePath, aspectranConfigFile);
+            runner.run();
         } catch (Exception e) {
             Throwable t = ExceptionUtils.getRootCause(e);
             if (t instanceof InsufficientEnvironmentException) {
@@ -73,8 +73,8 @@ public class AspectranShell {
             }
             exitStatus = 1;
         } finally {
-            if (interpreter != null) {
-                interpreter.release();
+            if (runner != null) {
+                runner.release();
             }
         }
 

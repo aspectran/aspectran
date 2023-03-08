@@ -24,8 +24,6 @@ import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.activity.request.RequestParseException;
 import com.aspectran.core.adapter.DefaultSessionAdapter;
 import com.aspectran.core.util.OutputStringWriter;
-import com.aspectran.core.util.logging.Logger;
-import com.aspectran.core.util.logging.LoggerFactory;
 import com.aspectran.shell.adapter.ShellRequestAdapter;
 import com.aspectran.shell.adapter.ShellResponseAdapter;
 import com.aspectran.shell.command.ShellTransletProcedure;
@@ -41,8 +39,6 @@ import java.io.Writer;
  */
 public class ShellActivity extends CoreActivity {
 
-    private static final Logger logger = LoggerFactory.getLogger(ShellActivity.class);
-
     private final ShellService shellService;
 
     private final ShellConsole console;
@@ -54,8 +50,6 @@ public class ShellActivity extends CoreActivity {
     private ParameterMap parameterMap;
 
     private Writer outputWriter;
-
-    private boolean readSimply;
 
     /**
      * Instantiates a new ShellActivity.

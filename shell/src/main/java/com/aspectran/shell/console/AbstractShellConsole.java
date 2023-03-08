@@ -16,7 +16,7 @@
 package com.aspectran.shell.console;
 
 import com.aspectran.core.context.config.ShellStyleConfig;
-import com.aspectran.shell.command.CommandInterpreter;
+import com.aspectran.shell.command.CommandRunner;
 
 import java.io.File;
 import java.nio.charset.Charset;
@@ -36,7 +36,7 @@ public abstract class AbstractShellConsole implements ShellConsole {
 
     private File workingDir;
 
-    private CommandInterpreter interpreter;
+    private CommandRunner runner;
 
     private String[] primaryStyle;
 
@@ -98,13 +98,13 @@ public abstract class AbstractShellConsole implements ShellConsole {
     }
 
     @Override
-    public CommandInterpreter getInterpreter() {
-        return interpreter;
+    public CommandRunner getCommandRunner() {
+        return runner;
     }
 
     @Override
-    public void setInterpreter(CommandInterpreter interpreter) {
-        this.interpreter = interpreter;
+    public void setCommandRunner(CommandRunner runner) {
+        this.runner = runner;
     }
 
     protected String readMultiCommandLine(String line) {

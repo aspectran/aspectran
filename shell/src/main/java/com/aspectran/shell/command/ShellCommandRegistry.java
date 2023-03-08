@@ -30,15 +30,15 @@ public class ShellCommandRegistry implements CommandRegistry {
 
     private final Map<String, Command> commands = new LinkedHashMap<>();
 
-    private final CommandInterpreter interpreter;
+    private final CommandRunner runner;
 
-    public ShellCommandRegistry(CommandInterpreter interpreter) {
-        this.interpreter = interpreter;
+    public ShellCommandRegistry(CommandRunner runner) {
+        this.runner = runner;
     }
 
     @Override
-    public CommandInterpreter getInterpreter() {
-        return interpreter;
+    public CommandRunner getCommandRunner() {
+        return runner;
     }
 
     @Override

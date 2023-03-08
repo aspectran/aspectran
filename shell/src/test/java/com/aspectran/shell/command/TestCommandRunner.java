@@ -15,20 +15,29 @@
  */
 package com.aspectran.shell.command;
 
+import com.aspectran.shell.console.DefaultShellConsole;
 import com.aspectran.shell.console.ShellConsole;
 import com.aspectran.shell.service.ShellService;
 
-/**
- * The Shell Command Interpreter.
- *
- * <p>Created: 2017. 6. 3.</p>
- */
-public interface CommandInterpreter {
+public class TestCommandRunner implements CommandRunner {
 
-    ShellConsole getConsole();
+    private final ShellConsole console = new DefaultShellConsole();
 
-    CommandRegistry getCommandRegistry();
+    private final CommandRegistry commandRegistry = new ShellCommandRegistry(this);
 
-    ShellService getShellService();
+    @Override
+    public ShellConsole getConsole() {
+        return console;
+    }
+
+    @Override
+    public CommandRegistry getCommandRegistry() {
+        return commandRegistry;
+    }
+
+    @Override
+    public ShellService getShellService() {
+        return null;
+    }
 
 }
