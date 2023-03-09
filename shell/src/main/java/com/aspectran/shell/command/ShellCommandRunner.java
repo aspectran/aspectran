@@ -291,17 +291,7 @@ public class ShellCommandRunner implements CommandRunner {
 
         @Override
         public void write(int b) {
-            if (shellService != null && shellService.isActive()) {
-                console.clearLine();
-            }
-            try {
-                console.getOutput().write(b);
-            } catch (IOException e) {
-                // ignore
-            }
-            if (shellService != null && shellService.isActive()) {
-                console.redrawLine();
-            }
+            write(new byte[] { (byte)b }, 0, 1);
         }
 
         @Override
@@ -310,7 +300,7 @@ public class ShellCommandRunner implements CommandRunner {
                 console.clearLine();
             }
             try {
-                console.getOutput().write(buf, off, len);
+                console.write(new String(buf, off, len, console.getEncoding()));
             } catch (IOException e) {
                 // ignore
             }

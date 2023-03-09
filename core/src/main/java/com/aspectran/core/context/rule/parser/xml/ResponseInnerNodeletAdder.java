@@ -59,6 +59,7 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
         });
         parser.setXpath(xpath + "/transform/template");
         parser.addNodelet(attrs -> {
+            String id = attrs.get("id");
             String engine = attrs.get("engine");
             String name = attrs.get("name");
             String file = attrs.get("file");
@@ -68,7 +69,7 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
             String encoding = attrs.get("encoding");
             Boolean noCache = BooleanUtils.toNullableBooleanObject(attrs.get("noCache"));
 
-            TemplateRule templateRule = TemplateRule.newInstanceForBuiltin(engine, name, file, resource, url,
+            TemplateRule templateRule = TemplateRule.newInstanceForBuiltin(id, engine, name, file, resource, url,
                     style, null, encoding, noCache);
             parser.pushObject(templateRule);
         });

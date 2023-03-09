@@ -67,16 +67,14 @@ public class TransformRule implements Replicable<TransformRule> {
         if (formatType == FormatType.CUSTOM) {
             throw new IllegalArgumentException("CustomTransform is only allowed to be defined via an annotated method");
         }
-
         this.formatType = formatType;
-
-        if (contentType == null && formatType != null) {
+        if (this.contentType == null && formatType != null) {
             if (formatType == FormatType.TEXT) {
-                contentType = ContentType.TEXT_PLAIN.toString();
+                this.contentType = ContentType.TEXT_PLAIN.toString();
             } else if (formatType == FormatType.JSON) {
-                contentType = ContentType.APPLICATION_JSON.toString();
+                this.contentType = ContentType.APPLICATION_JSON.toString();
             } else if (formatType == FormatType.XML) {
-                contentType = ContentType.APPLICATION_XML.toString();
+                this.contentType = ContentType.APPLICATION_XML.toString();
             }
         }
     }
@@ -174,6 +172,7 @@ public class TransformRule implements Replicable<TransformRule> {
     public void setTemplateRule(TemplateRule templateRule) {
         this.templateRule = templateRule;
         if (templateRule != null) {
+            this.templateId = templateRule.getId();
             if (this.formatType == null) {
                 setFormatType(FormatType.TEXT);
             }

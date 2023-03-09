@@ -66,7 +66,16 @@
         </transform>
     </translet>
 
-    <template id="hello" style="apon">
+    <translet name="hello3">
+        <parameters>
+            <item name="what"/>
+        </parameters>
+        <transform format="text">
+            <template id="helloTemplate"/>
+        </transform>
+    </translet>
+
+    <template id="helloTemplate" style="apon">
         |Hello, ${what}!
     </template>
 

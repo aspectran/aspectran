@@ -178,6 +178,9 @@ public class JLineTerminal {
                     getWriter().flush();
                 }
             }
+        } else {
+            getWriter().print("\r");
+            getWriter().flush();
         }
     }
 

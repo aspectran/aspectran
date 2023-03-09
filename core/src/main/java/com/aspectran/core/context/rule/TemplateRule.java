@@ -405,7 +405,7 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceable
         return tr;
     }
 
-    public static TemplateRule newInstanceForBuiltin(String engine, String name, String file,
+    public static TemplateRule newInstanceForBuiltin(String id, String engine, String name, String file,
             String resource, String url, String style, String content, String encoding, Boolean noCache)
             throws IllegalRuleException {
 
@@ -415,6 +415,7 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceable
         }
 
         TemplateRule tr = new TemplateRule();
+        tr.setId(id);
         tr.setEngineBeanId(engine);
         tr.setName(name);
         tr.setFile(file);

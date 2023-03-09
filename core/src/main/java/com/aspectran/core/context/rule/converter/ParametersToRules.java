@@ -951,6 +951,7 @@ public class ParametersToRules {
 
         TemplateParameters templateParameters = transformParameters.getParameters(TransformParameters.template);
         if (templateParameters != null) {
+            String id = StringUtils.emptyToNull(templateParameters.getString(TemplateParameters.id));
             String engine = StringUtils.emptyToNull(templateParameters.getString(TemplateParameters.engine));
             String name = StringUtils.emptyToNull(templateParameters.getString(TemplateParameters.name));
             String file = StringUtils.emptyToNull(templateParameters.getString(TemplateParameters.file));
@@ -961,7 +962,7 @@ public class ParametersToRules {
             String encoding2 = StringUtils.emptyToNull(templateParameters.getString(TemplateParameters.encoding));
             Boolean noCache = templateParameters.getBoolean(TemplateParameters.noCache);
 
-            TemplateRule templateRule = TemplateRule.newInstanceForBuiltin(engine, name, file, resource, url, style, content, encoding2, noCache);
+            TemplateRule templateRule = TemplateRule.newInstanceForBuiltin(id, engine, name, file, resource, url, style, content, encoding2, noCache);
             transformRule.setTemplateRule(templateRule);
             assistant.resolveBeanClass(templateRule.getTemplateTokens());
         }
