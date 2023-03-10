@@ -129,4 +129,13 @@ public class ShellActivity extends CoreActivity {
         }
     }
 
+    @Override
+    protected void release() {
+        if (!hasParentActivity() && getSessionAdapter() instanceof DefaultSessionAdapter) {
+            ((DefaultSessionAdapter)getSessionAdapter()).getSessionAgent().complete();
+        }
+
+        super.release();
+    }
+
 }
