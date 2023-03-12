@@ -229,8 +229,8 @@ public class ShellConsoleWrapper implements ShellConsole {
     }
 
     @Override
-    public void clearStyle() {
-        console.clearStyle();
+    public void resetStyle() {
+        console.resetStyle();
     }
 
     @Override

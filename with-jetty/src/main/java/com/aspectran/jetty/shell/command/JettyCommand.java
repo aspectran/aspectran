@@ -153,7 +153,7 @@ public class JettyCommand extends AbstractCommand {
         console.writeLine("----------------------------------------------------------------------------");
         console.setStyle("YELLOW");
         console.write(jettyServer.getState());
-        console.clearStyle();
+        console.resetStyle();
         console.writeLine(" - Jetty " + JettyServer.getVersion());
         console.writeLine("----------------------------------------------------------------------------");
     }

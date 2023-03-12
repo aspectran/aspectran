@@ -128,7 +128,7 @@ public class AspectCommand extends AbstractCommand {
                 console.setStyle(console.getDangerStyle());
             }
             console.write(" %-8s ", aspectRule.isIsolated());
-            console.clearStyle();
+            console.resetStyle();
             console.write("|");
             if (aspectRule.isDisabled()) {
                 console.setStyle(console.getDangerStyle());
@@ -136,7 +136,7 @@ public class AspectCommand extends AbstractCommand {
                 console.setStyle(console.getSuccessStyle());
             }
             console.writeLine(" %-7s ", !aspectRule.isDisabled());
-            console.clearStyle();
+            console.resetStyle();
         }
         if (num == 0) {
             console.writeLine("%31s %s", " ", "- No Data -");

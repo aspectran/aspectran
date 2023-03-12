@@ -159,7 +159,7 @@ public class UndertowCommand extends AbstractCommand {
         console.writeLine("----------------------------------------------------------------------------");
         console.setStyle("YELLOW");
         console.write(towServer.getState());
-        console.clearStyle();
+        console.resetStyle();
         console.writeLine(" - Undertow " + Version.getVersionString());
         console.writeLine("----------------------------------------------------------------------------");
     }

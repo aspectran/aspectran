@@ -116,7 +116,7 @@ public class ShellTransletProcedure {
         if (description != null) {
             console.setStyle(console.getInfoStyle());
             console.writeLine(description);
-            console.clearStyle();
+            console.resetStyle();
         }
     }
 
@@ -147,7 +147,7 @@ public class ShellTransletProcedure {
         if (parameterItemRuleMap != null && !parameterItemRuleMap.isEmpty()) {
             console.setStyle(console.getSecondaryStyle());
             console.writeLine("Required parameters:");
-            console.clearStyle();
+            console.resetStyle();
             if (!readSimply) {
                 writeItems(parameterItemRuleMap.values(), TokenType.PARAMETER);
             }
@@ -160,7 +160,7 @@ public class ShellTransletProcedure {
             if (attributeItemRuleMap != null && !attributeItemRuleMap.isEmpty()) {
                 console.setStyle(console.getSecondaryStyle());
                 console.writeLine("Required attributes:");
-                console.clearStyle();
+                console.resetStyle();
                 writeItems(attributeItemRuleMap.values(), TokenType.ATTRIBUTE);
             }
         }
@@ -170,14 +170,14 @@ public class ShellTransletProcedure {
         if (itemRules != null && !itemRules.isEmpty()) {
             console.setStyle(console.getDangerStyle());
             console.writeLine("Some mandatory parameters are missing:");
-            console.clearStyle();
+            console.resetStyle();
             for (ItemRule ir : itemRules) {
                 console.setStyle(console.getWarningStyle());
                 console.write(" * ");
-                console.clearStyle();
+                console.resetStyle();
                 console.setStyle(console.getSuccessStyle());
                 console.writeLine(ir.getName());
-                console.clearStyle();
+                console.resetStyle();
             }
         }
     }
@@ -186,14 +186,14 @@ public class ShellTransletProcedure {
         if (itemRules != null && !itemRules.isEmpty()) {
             console.setStyle(console.getDangerStyle());
             console.writeLine("Some mandatory attributes are missing:");
-            console.clearStyle();
+            console.resetStyle();
             for (ItemRule ir : itemRules) {
                 console.setStyle(console.getWarningStyle());
                 console.write(" * ");
-                console.clearStyle();
+                console.resetStyle();
                 console.setStyle(console.getSuccessStyle());
                 console.writeLine(ir.getName());
-                console.clearStyle();
+                console.resetStyle();
             }
         }
     }
@@ -219,7 +219,7 @@ public class ShellTransletProcedure {
         if (missingItemRules != null) {
             console.setStyle(console.getWarningStyle());
             console.writeLine("Missing mandatory parameters:");
-            console.clearStyle();
+            console.resetStyle();
             if (!readSimply) {
                 writeItems(missingItemRules, TokenType.PARAMETER);
             }
@@ -252,10 +252,10 @@ public class ShellTransletProcedure {
         console.clearPrompt();
         console.setStyle(console.getWarningStyle());
         console.appendPrompt(getMandatoryMarker(itemRule.isMandatory()));
-        console.clearStyle();
+        console.resetStyle();
         console.setStyle(console.getSuccessStyle());
         console.appendPrompt(itemRule.getName());
-        console.clearStyle();
+        console.resetStyle();
         console.appendPrompt(": ");
 
         String defaultValue = null;
@@ -280,7 +280,7 @@ public class ShellTransletProcedure {
     private Collection<ItemRule> readEachToken(Collection<ItemRule> itemRules) {
         console.setStyle(console.getSecondaryStyle());
         console.writeLine("Enter a value for each token:");
-        console.clearStyle();
+        console.resetStyle();
 
         Set<ItemRule> missingItemRules = new LinkedHashSet<>();
         Map<Token, Set<ItemRule>> valueTokens = new LinkedHashMap<>();
@@ -323,13 +323,13 @@ public class ShellTransletProcedure {
             console.setStyle(console.getInfoStyle());
             console.appendPrompt(String.valueOf(Token.PARAMETER_SYMBOL));
             console.appendPrompt(String.valueOf(Token.BRACKET_OPEN));
-            console.clearStyle();
+            console.resetStyle();
             console.setStyle(console.getSuccessStyle());
             console.appendPrompt(token.getName());
-            console.clearStyle();
+            console.resetStyle();
             console.setStyle(console.getInfoStyle());
             console.appendPrompt(String.valueOf(Token.BRACKET_CLOSE));
-            console.clearStyle();
+            console.resetStyle();
             console.appendPrompt(": ");
             String line;
             if (secret) {
@@ -383,10 +383,10 @@ public class ShellTransletProcedure {
     private void writeItem(ItemRule itemRule, Token[] tokens) {
         console.setStyle(console.getWarningStyle());
         console.write(getMandatoryMarker(itemRule.isMandatory()));
-        console.clearStyle();
+        console.resetStyle();
         console.setStyle(console.getSuccessStyle());
         console.write(itemRule.getName());
-        console.clearStyle();
+        console.resetStyle();
         if (tokens != null && tokens.length > 0) {
             console.write(": ");
             for (Token token : tokens) {
@@ -403,13 +403,13 @@ public class ShellTransletProcedure {
             String str = token.stringify();
             console.setStyle(console.getInfoStyle());
             console.write(str.substring(0, 2));
-            console.clearStyle();
+            console.resetStyle();
             console.setStyle(console.getSuccessStyle());
             console.write(str.substring(2, str.length() - 1));
-            console.clearStyle();
+            console.resetStyle();
             console.setStyle(console.getInfoStyle());
             console.write(str.substring(str.length() - 1));
-            console.clearStyle();
+            console.resetStyle();
         }
     }
 

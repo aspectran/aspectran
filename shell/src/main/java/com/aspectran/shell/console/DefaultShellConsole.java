@@ -269,7 +269,7 @@ public class DefaultShellConsole extends AbstractShellConsole {
     }
 
     @Override
-    public void clearStyle() {
+    public void resetStyle() {
         // Nothing to do
     }
 

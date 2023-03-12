@@ -78,7 +78,7 @@ public class HelpCommand extends AbstractCommand {
         } else {
             console.setStyle("bold");
             console.writeLine("Built-in commands:");
-            console.clearStyle();
+            console.resetStyle();
             printHelp(targetCommands, console);
         }
     }
@@ -105,7 +105,7 @@ public class HelpCommand extends AbstractCommand {
         if (targetCommands == null) {
             console.setStyle("bold");
             console.writeLine("Available commands:");
-            console.clearStyle();
+            console.resetStyle();
         }
         final int lineWidth = HelpFormatter.DEFAULT_WIDTH;
         final int commandWidth = maxLengthOfCommandName(targetCommands);

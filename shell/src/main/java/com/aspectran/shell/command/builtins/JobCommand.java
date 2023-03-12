@@ -125,7 +125,7 @@ public class JobCommand extends AbstractCommand {
                     console.setStyle(console.getSuccessStyle());
                 }
                 console.writeLine(" %-7s ", !jobRule.isDisabled());
-                console.clearStyle();
+                console.resetStyle();
             }
         }
         if (num == 0) {

@@ -16,7 +16,6 @@
 package com.aspectran.shell.jline.console;
 
 import com.aspectran.core.lang.NonNull;
-import com.aspectran.core.util.ArrayStack;
 import com.aspectran.shell.console.ShellConsole;
 import org.jline.reader.History;
 import org.jline.reader.LineReader;
@@ -59,7 +58,7 @@ public class JLineTerminal {
 
     private final boolean dumbColor;
 
-    private final ArrayStack<Style> styleStack = new ArrayStack<>();
+    private Style style;
 
     public JLineTerminal(ShellConsole console) throws IOException {
         this(console, null);
@@ -215,19 +214,15 @@ public class JLineTerminal {
     }
 
     public boolean hasStyle() {
-        return !styleStack.isEmpty();
+        return (style != null);
     }
 
     public Style getStyle() {
-        return styleStack.isEmpty() ? null : styleStack.peek();
+        return style;
     }
 
     public void setStyle(String... styles) {
-        styleStack.push(new Style(this, styles));
-    }
-
-    public void clearStyle() {
-        styleStack.pop();
+        this.style = new Style(this, styles);
     }
 
     protected static class Style {

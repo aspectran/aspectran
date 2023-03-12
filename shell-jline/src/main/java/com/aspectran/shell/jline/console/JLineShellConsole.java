@@ -185,7 +185,7 @@ public class JLineShellConsole extends AbstractShellConsole {
     public void writeError(String str) {
         setStyle(getDangerStyle());
         writeLine(str);
-        clearStyle();
+        resetStyle();
     }
 
     @Override
@@ -247,8 +247,8 @@ public class JLineShellConsole extends AbstractShellConsole {
     }
 
     @Override
-    public void clearStyle() {
-        jlineTerminal.clearStyle();
+    public void resetStyle() {
+        jlineTerminal.setStyle(getPrimaryStyle());
     }
 
 }

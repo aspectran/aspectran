@@ -182,7 +182,7 @@ public abstract class AbstractShellConsole implements ShellConsole {
         dangerStyle = shellStyleConfig.getDangerStyle();
         warningStyle = shellStyleConfig.getWarningStyle();
         infoStyle = shellStyleConfig.getInfoStyle();
-        setStyle(primaryStyle);
+        resetStyle();
     }
 
     @Override
@@ -229,12 +229,12 @@ public abstract class AbstractShellConsole implements ShellConsole {
         if (message != null) {
             setStyle(getWarningStyle());
             writeAbove(message);
-            clearStyle();
+            resetStyle();
         }
         String confirm = "Would you like to restart this shell [Y/n]? ";
         setStyle("YELLOW");
         String yn = readLine(confirm);
-        clearStyle();
+        resetStyle();
         return (yn.isEmpty() || yn.equalsIgnoreCase("Y"));
     }
 
@@ -243,7 +243,7 @@ public abstract class AbstractShellConsole implements ShellConsole {
         String confirm = "Are you sure you want to quit [Y/n]? ";
         setStyle(getWarningStyle());
         String yn = readLine(confirm);
-        clearStyle();
+        resetStyle();
         return (yn.isEmpty() || yn.equalsIgnoreCase("Y"));
     }
 

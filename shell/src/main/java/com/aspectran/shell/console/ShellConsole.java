@@ -114,7 +114,7 @@ public interface ShellConsole {
 
     void setStyle(String... styles);
 
-    void clearStyle();
+    void resetStyle();
 
     void setShellStyleConfig(ShellStyleConfig shellStyleConfig);
 

@@ -179,7 +179,7 @@ public class TransletCommand extends AbstractCommand {
                 console.setStyle(console.getDangerStyle());
             }
             console.writeLine(" %-5s ", transletRule.isAsync());
-            console.clearStyle();
+            console.resetStyle();
         }
         if (num == 0) {
             console.writeLine("%31s %s", " ", "- No Data -");
