@@ -18,11 +18,9 @@
 
     <translet name="speak">
         <description style="apon">
-            |
-            |   Converts any written text into spoken words.
-            |   If your system's audio works well, it will speak the text
-            |   you type.
-            |
+            |Converts any written text into spoken words.
+            |If your system's audio works well, it will speak the text
+            |you type.
         </description>
         <parameters>
             <item name="text" mandatory="true"/>
@@ -39,11 +37,9 @@
 
     <translet name="speak ${text}">
         <description style="apon">
-            |
-            |   To call this translet, type "speak [TEXT]".
-            |   If your system's audio works well, it will speak the text
-            |   you type.
-            |
+            |To call this translet, type "speak [TEXT]".
+            |If your system's audio works well, it will speak the text
+            |you type.
         </description>
         <action bean="speaker" method="speak">
             <arguments>

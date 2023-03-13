@@ -23,6 +23,7 @@ import com.aspectran.core.activity.request.MissingMandatoryParametersException;
 import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.activity.request.RequestParseException;
 import com.aspectran.core.adapter.DefaultSessionAdapter;
+import com.aspectran.core.lang.NonNull;
 import com.aspectran.core.util.OutputStringWriter;
 import com.aspectran.shell.adapter.ShellRequestAdapter;
 import com.aspectran.shell.adapter.ShellResponseAdapter;
@@ -55,7 +56,7 @@ public class ShellActivity extends CoreActivity {
      * Instantiates a new ShellActivity.
      * @param shellService the {@code ShellService} instance
      */
-    public ShellActivity(ShellService shellService) {
+    public ShellActivity(@NonNull ShellService shellService) {
         super(shellService.getActivityContext());
 
         this.shellService = shellService;

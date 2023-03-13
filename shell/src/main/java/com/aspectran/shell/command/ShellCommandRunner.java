@@ -61,10 +61,7 @@ public class ShellCommandRunner implements CommandRunner {
 
     private PrintStream orgSystemErr;
 
-    public ShellCommandRunner(ShellConsole console) {
-        if (console == null) {
-            throw new IllegalArgumentException("console must not be null");
-        }
+    public ShellCommandRunner(@NonNull ShellConsole console) {
         this.console = console;
     }
 

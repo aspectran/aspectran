@@ -10,9 +10,7 @@
 
     <translet name="async1" async="true">
         <description style="apon">
-            |
-            |   The value of each parameter you enter is immediately output to the console.
-            |
+            |The value of each parameter you enter is immediately output to the console.
         </description>
         <action id="sleepAction" bean="asyncActivity" method="sleep">
             <arguments>
@@ -30,9 +28,7 @@
 
     <translet name="async2" async="true">
         <description style="apon">
-            |
-            |   The value of each parameter you enter is immediately output to the console.
-            |
+            |The value of each parameter you enter is immediately output to the console.
         </description>
         <parameters>
             <item name="param1">${param1:hello}</item>

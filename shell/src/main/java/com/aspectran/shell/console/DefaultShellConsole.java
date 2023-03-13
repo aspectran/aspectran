@@ -273,4 +273,9 @@ public class DefaultShellConsole extends AbstractShellConsole {
         // Nothing to do
     }
 
+    @Override
+    public void resetStyle(String... styles) {
+        // Nothing to do
+    }
+
 }

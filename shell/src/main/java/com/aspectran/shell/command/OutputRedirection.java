@@ -15,6 +15,7 @@
  */
 package com.aspectran.shell.command;
 
+import com.aspectran.core.lang.NonNull;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.ToStringBuilder;
 import com.aspectran.shell.console.ShellConsole;
@@ -43,7 +44,7 @@ public class OutputRedirection {
 
     private String operand;
 
-    public OutputRedirection(Operator operator) {
+    public OutputRedirection(@NonNull Operator operator) {
         this.operator = operator;
     }
 
@@ -195,7 +196,7 @@ public class OutputRedirection {
         }
 
         @Override
-        public void write(char[] cbuf, int off, int len) throws IOException {
+        public void write(@NonNull char[] cbuf, int off, int len) throws IOException {
             for (Writer writer : writers) {
                 writer.write(cbuf, off, len);
             }

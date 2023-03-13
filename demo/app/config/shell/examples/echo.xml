@@ -10,9 +10,7 @@
 
     <translet name="echo1">
         <description style="apon">
-            |
-            |   The value of each parameter you enter is immediately output to the console.
-            |
+            |The value of each parameter you enter is immediately output to the console.
         </description>
         <parameters>
             <item name="param1">${param1:hello}</item>
@@ -31,9 +29,7 @@
 
     <translet name="echo2">
         <description style="apon">
-            |
-            |   The value of each parameter you enter is immediately output to the console.
-            |
+            |The value of each parameter you enter is immediately output to the console.
         </description>
         <parameters>
             <item name="param1" mandatory="true">${prefix} - 1</item>

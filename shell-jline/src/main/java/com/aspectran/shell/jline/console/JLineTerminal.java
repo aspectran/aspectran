@@ -222,16 +222,24 @@ public class JLineTerminal {
     }
 
     public void setStyle(String... styles) {
-        this.style = new Style(this, styles);
+        this.style = new Style(style, styles);
+    }
+
+    public void resetStyle(String... styles) {
+        this.style = new Style(styles);
     }
 
     protected static class Style {
 
         private final AttributedStyle attributedStyle;
 
-        private Style(@NonNull JLineTerminal jlineTerminal, @NonNull String... styles) {
-            if (jlineTerminal.hasStyle()) {
-                this.attributedStyle = JLineTextStyler.style(jlineTerminal.getStyle().getAttributedStyle(), styles);
+        private Style(@NonNull String... styles) {
+            this(null, styles);
+        }
+
+        private Style(Style defaultStyle, @NonNull String... styles) {
+            if (defaultStyle != null) {
+                this.attributedStyle = JLineTextStyler.style(defaultStyle.getAttributedStyle(), styles);
             } else {
                 this.attributedStyle = JLineTextStyler.style(styles);
             }

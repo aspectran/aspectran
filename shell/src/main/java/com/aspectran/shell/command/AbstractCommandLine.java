@@ -16,6 +16,7 @@
 package com.aspectran.shell.command;
 
 import com.aspectran.core.activity.request.ParameterMap;
+import com.aspectran.core.lang.NonNull;
 
 import java.util.Arrays;
 
@@ -29,7 +30,7 @@ public abstract class AbstractCommandLine {
 
     private ParameterMap parameterMap;
 
-    public AbstractCommandLine(CommandLineParser lineParser) {
+    public AbstractCommandLine(@NonNull CommandLineParser lineParser) {
         this.lineParser = lineParser;
         parse();
     }

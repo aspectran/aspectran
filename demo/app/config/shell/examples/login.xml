@@ -9,9 +9,7 @@
 
     <translet name="login">
         <description style="apon">
-            |
-            |   It accepts parameters required for login and prints them.
-            |
+            |It accepts parameters required for login and prints them.
         </description>
         <parameters>
             <item name="id" mandatory="true"/>
@@ -31,10 +29,7 @@
 
     <translet name="chpw">
         <description style="apon">
-            |
-            |   It accepts parameters required for changing password
-            |   and prints them.
-            |
+            |It accepts parameters required for changing password and prints them.
         </description>
         <parameters>
             <item name="email">${emailId}@${emailDomain}</item>

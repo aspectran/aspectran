@@ -234,6 +234,11 @@ public class ShellConsoleWrapper implements ShellConsole {
     }
 
     @Override
+    public void resetStyle(String... styles) {
+        console.resetStyle(styles);
+    }
+
+    @Override
     public void setShellStyleConfig(ShellStyleConfig shellStyleConfig) {
         console.setShellStyleConfig(shellStyleConfig);
     }

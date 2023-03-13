@@ -31,13 +31,10 @@
 
     <translet name="hello">
         <description style="apon">
-            |
-            |   Executes the method helloActivity.helloWorld() and prints the
-            |   returned value to the console.
-            |   Maybe the words "Hello, World!" will be printed on the console.
-            |   Is it difficult to find the words "Hello, World!" printed on
-            |   the console? If so, try running the "hello2" command.
-            |
+            |Executes the method {{bold}}helloActivity.helloWorld(){{reset}} and prints the
+            |returned value to the console.
+            |It probably prints "Hello, World!" to the console. Hard to find
+            |on console? If so, try running the {{GREEN}}hello2{{reset}} command.
         </description>
         <action id="helloWorld" bean="helloActivity" method="helloWorld"/>
         <transform format="text"/>
@@ -45,12 +42,9 @@
 
     <translet name="hello2">
         <description style="apon">
-            |
-            |   Executes the method helloActivity.helloWorld() and prints the
-            |   returned value to the console using ANSI coloring.
-            |   Maybe the word "Hello, World!" will be printed on the console
-            |   with proper margin.
-            |
+            |Executes the method {{bold}}helloActivity.helloWorld(){{reset}} and prints the
+            |returned value to the console using ANSI coloring.
+            |It probably prints "Hello, World!" inside a colored box.
         </description>
         <action id="helloWorld" bean="helloActivity" method="helloWorld"/>
         <transform format="text">

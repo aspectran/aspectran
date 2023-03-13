@@ -53,11 +53,8 @@ public class ShellTransletProcedure {
 
     private boolean readSimply;
 
-    public ShellTransletProcedure(ShellService shellService, TransletRule transletRule,
+    public ShellTransletProcedure(@NonNull ShellService shellService, @NonNull TransletRule transletRule,
                                   @NonNull ParameterMap parameterMap, boolean procedural, boolean verbose) {
-        if (shellService == null) {
-            throw new IllegalArgumentException("service must not be null");
-        }
         this.shellService = shellService;
         this.console = shellService.getConsole();
         this.transletRule = transletRule;
@@ -174,8 +171,7 @@ public class ShellTransletProcedure {
             for (ItemRule ir : itemRules) {
                 console.setStyle(console.getWarningStyle());
                 console.write(" * ");
-                console.resetStyle();
-                console.setStyle(console.getSuccessStyle());
+                console.resetStyle("bold");
                 console.writeLine(ir.getName());
                 console.resetStyle();
             }
@@ -190,8 +186,7 @@ public class ShellTransletProcedure {
             for (ItemRule ir : itemRules) {
                 console.setStyle(console.getWarningStyle());
                 console.write(" * ");
-                console.resetStyle();
-                console.setStyle(console.getSuccessStyle());
+                console.resetStyle("bold");
                 console.writeLine(ir.getName());
                 console.resetStyle();
             }
@@ -252,8 +247,7 @@ public class ShellTransletProcedure {
         console.clearPrompt();
         console.setStyle(console.getWarningStyle());
         console.appendPrompt(getMandatoryMarker(itemRule.isMandatory()));
-        console.resetStyle();
-        console.setStyle(console.getSuccessStyle());
+        console.resetStyle("bold");
         console.appendPrompt(itemRule.getName());
         console.resetStyle();
         console.appendPrompt(": ");
@@ -323,11 +317,9 @@ public class ShellTransletProcedure {
             console.setStyle(console.getInfoStyle());
             console.appendPrompt(String.valueOf(Token.PARAMETER_SYMBOL));
             console.appendPrompt(String.valueOf(Token.BRACKET_OPEN));
-            console.resetStyle();
-            console.setStyle(console.getSuccessStyle());
+            console.resetStyle("bold");
             console.appendPrompt(token.getName());
-            console.resetStyle();
-            console.setStyle(console.getInfoStyle());
+            console.resetStyle(console.getInfoStyle());
             console.appendPrompt(String.valueOf(Token.BRACKET_CLOSE));
             console.resetStyle();
             console.appendPrompt(": ");
@@ -383,8 +375,7 @@ public class ShellTransletProcedure {
     private void writeItem(ItemRule itemRule, Token[] tokens) {
         console.setStyle(console.getWarningStyle());
         console.write(getMandatoryMarker(itemRule.isMandatory()));
-        console.resetStyle();
-        console.setStyle(console.getSuccessStyle());
+        console.resetStyle("bold");
         console.write(itemRule.getName());
         console.resetStyle();
         if (tokens != null && tokens.length > 0) {
@@ -403,11 +394,9 @@ public class ShellTransletProcedure {
             String str = token.stringify();
             console.setStyle(console.getInfoStyle());
             console.write(str.substring(0, 2));
-            console.resetStyle();
-            console.setStyle(console.getSuccessStyle());
+            console.resetStyle("bold");
             console.write(str.substring(2, str.length() - 1));
-            console.resetStyle();
-            console.setStyle(console.getInfoStyle());
+            console.resetStyle(console.getInfoStyle());
             console.write(str.substring(str.length() - 1));
             console.resetStyle();
         }

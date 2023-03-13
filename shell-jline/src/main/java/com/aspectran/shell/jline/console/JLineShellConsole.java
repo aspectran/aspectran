@@ -24,6 +24,8 @@ import org.jline.reader.UserInterruptException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.aspectran.shell.jline.console.JLineTerminal.Style;
@@ -248,7 +250,20 @@ public class JLineShellConsole extends AbstractShellConsole {
 
     @Override
     public void resetStyle() {
-        jlineTerminal.setStyle(getPrimaryStyle());
+        jlineTerminal.resetStyle(getPrimaryStyle());
+    }
+
+    @Override
+    public void resetStyle(String... styles) {
+        if (getPrimaryStyle() != null) {
+            ArrayList<String> list = new ArrayList<>(Arrays.asList(getPrimaryStyle()));
+            if (styles != null) {
+                list.addAll(Arrays.asList(styles));
+            }
+            jlineTerminal.resetStyle(list.toArray(new String[0]));
+        } else {
+            jlineTerminal.resetStyle(styles);
+        }
     }
 
 }
