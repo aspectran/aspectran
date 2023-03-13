@@ -18,10 +18,10 @@ shell: {
     style: {
          primary: GRAY
          secondary: green
-         success: CYAN
+         success: cyan
          danger: red
          warning: YELLOW
-         info: cyan
+         info: BLUE
     }
     greetings: (
         |
