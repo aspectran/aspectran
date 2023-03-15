@@ -53,7 +53,7 @@ public class UndertowCommand extends AbstractCommand {
                 .build());
 
         Arguments arguments = touchArguments();
-        arguments.setTitle("Commands:");
+        arguments.setTitle("Available commands:");
         arguments.put("start", "Start Undertow server");
         arguments.put("stop", "Stop Undertow server");
         arguments.put("restart", "Restart Undertow server");

@@ -183,16 +183,6 @@
             <plugin>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <executions>
-                    <!-- Populate the properties whose key is groupId:artifactId:type
-                         and whose value is the path to the artifact -->
-                    <execution>
-                        <id>locate-dependencies</id>
-                        <phase>initialize</phase>
-                        <goals>
-                            <goal>properties</goal>
-                        </goals>
-                    </execution>
-
                     <!-- Unpack all source files -->
                     <execution>
                         <id>unpack-sources</id>
@@ -202,9 +192,9 @@
                         </goals>
                         <configuration>
                             <classifier>sources</classifier>
-                            <includes>com/aspectran/**</includes>
                             <includeScope>runtime</includeScope>
                             <includeGroupIds>${project.groupId}</includeGroupIds>
+                            <includes>com/aspectran/**</includes>
                             <outputDirectory>${generatedSourceDir}</outputDirectory>
                         </configuration>
                     </execution>
@@ -217,10 +207,9 @@
                             <goal>unpack-dependencies</goal>
                         </goals>
                         <configuration>
-                            <excludes>com/aspectran/demo/**</excludes>
-                            <includes>com/aspectran/**</includes>
                             <includeScope>runtime</includeScope>
                             <includeGroupIds>${project.groupId}</includeGroupIds>
+                            <includes>com/aspectran/**</includes>
                             <outputDirectory>${project.build.outputDirectory}</outputDirectory>
                         </configuration>
                     </execution>

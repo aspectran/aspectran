@@ -32,9 +32,9 @@ import static java.lang.Long.MAX_VALUE;
  * <p>Subclasses should implement {@link #onTimeoutExpired()}.</p>
  * <p>This implementation is optimised assuming that the timeout
  * will mostly be cancelled and then reused with a similar value.</p>
- * <p>This implementation has a {@link Timeout} holding the time
+ * <p>This implementation has a {@link CyclicTimeout.Timeout} holding the time
  * at which the scheduled task should fire, and a linked list of
- * {@link Wakeup}, each holding the actual scheduled task.</p>
+ * {@link CyclicTimeout.Wakeup}, each holding the actual scheduled task.</p>
  * <p>Calling {@link #schedule(long, TimeUnit)} the first time will
  * create a Timeout with an associated Wakeup and submit a task to
  * the scheduler.

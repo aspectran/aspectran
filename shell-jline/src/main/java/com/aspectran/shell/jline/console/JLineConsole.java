@@ -44,7 +44,7 @@ import java.util.List;
  */
 public class JLineConsole extends AbstractConsole {
 
-    private static final String APP_NAME = "Aspectran Shell";
+    private static final String TERMINAL_NAME = "Aspectran JLine terminal";
 
     private final Terminal terminal;
 
@@ -74,6 +74,7 @@ public class JLineConsole extends AbstractConsole {
         super(encoding);
 
         this.terminal = TerminalBuilder.builder()
+                .name(TERMINAL_NAME)
                 .encoding(getEncoding())
                 .build();
 
@@ -81,7 +82,6 @@ public class JLineConsole extends AbstractConsole {
         this.dumbColor = Terminal.TYPE_DUMB_COLOR.equals(terminal.getType());
 
         this.reader = LineReaderBuilder.builder()
-                .appName(APP_NAME)
                 .terminal(terminal)
                 .build();
         this.reader.setOpt(LineReader.Option.DISABLE_EVENT_EXPANSION);
@@ -92,7 +92,6 @@ public class JLineConsole extends AbstractConsole {
         this.commandHistory = new DefaultHistory();
 
         this.commandReader = LineReaderBuilder.builder()
-                .appName(APP_NAME)
                 .completer(commandCompleter)
                 .highlighter(commandHighlighter)
                 .history(commandHistory)

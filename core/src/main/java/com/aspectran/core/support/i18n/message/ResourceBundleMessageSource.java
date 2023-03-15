@@ -135,7 +135,7 @@ public class ResourceBundleMessageSource extends AbstractMessageSource implement
      * @param cacheSeconds the cache seconds
      */
     public void setCacheSeconds(int cacheSeconds) {
-        this.cacheMillis = (cacheSeconds * 1000);
+        this.cacheMillis = (cacheSeconds * 1000L);
     }
 
     public ClassLoader getClassLoader() {

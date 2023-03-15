@@ -35,6 +35,7 @@ import com.aspectran.shell.service.DefaultShellService;
 import com.aspectran.shell.service.ShellService;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.nio.file.Path;
@@ -284,22 +285,20 @@ public class ShellCommandInterpreter implements CommandInterpreter {
 
         @Override
         public void write(int b) {
-            if (service.isActive()) {
-                console.clearLine();
-            }
-            super.write(b);
-            if (service.isActive()) {
-                console.redrawLine();
-            }
+            write(new byte[] { (byte)b }, 0, 1);
         }
 
         @Override
         public void write(@NonNull byte[] buf, int off, int len) {
-            if (service.isActive()) {
+            if (service != null && service.isActive()) {
                 console.clearLine();
             }
-            super.write(buf, off, len);
-            if (service.isActive()) {
+            try {
+                console.write(new String(buf, off, len, console.getEncoding()));
+            } catch (IOException e) {
+                // ignore
+            }
+            if (service != null && service.isActive()) {
                 console.redrawLine();
             }
         }

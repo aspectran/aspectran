@@ -60,7 +60,7 @@ public class VerboseCommand extends AbstractCommand {
             } else if ("off".equals(arg)) {
                 getService().setVerbose(false);
                 console.writeLine("Verbose mode is disabled.");
-                console.writeLine("Do not displays a description of the translet before it is executed.");
+                console.writeLine("Doesn't display a description of the command to be executed.");
             } else {
                 console.writeError("Unknown command '" + String.join(" ", options.getArgs()) + "'");
                 printQuickHelp(console);
