@@ -159,13 +159,15 @@ public class AbstractDaemon implements Daemon {
             Runnable runnable = () -> {
                 if (!active) {
                     active = true;
-                    getCommandFilePoller().requeue();
-                    while (active) {
-                        try {
-                            getCommandFilePoller().polling();
-                            Thread.sleep(getCommandFilePoller().getPollingInterval());
-                        } catch (InterruptedException ie) {
-                            active = false;
+                    if (commandFilePoller != null) {
+                        commandFilePoller.requeue();
+                        while (active) {
+                            try {
+                                commandFilePoller.polling();
+                                Thread.sleep(commandFilePoller.getPollingInterval());
+                            } catch (InterruptedException ie) {
+                                active = false;
+                            }
                         }
                     }
                 }

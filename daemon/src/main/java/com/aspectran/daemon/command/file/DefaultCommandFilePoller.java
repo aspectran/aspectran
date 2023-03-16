@@ -163,8 +163,8 @@ public class DefaultCommandFilePoller extends AbstractCommandFilePoller {
         }
     }
 
-    private boolean executeQueuedCommand(final CommandParameters parameters, final String queuedFileName) {
-        return getExecutor().execute(parameters, new CommandExecutor.Callback() {
+    private void executeQueuedCommand(final CommandParameters parameters, final String queuedFileName) {
+        getExecutor().execute(parameters, new CommandExecutor.Callback() {
             @Override
             public void success() {
                 removeCommandFile(queuedDir, queuedFileName);
