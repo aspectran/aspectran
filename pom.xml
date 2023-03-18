@@ -308,7 +308,7 @@
                     <aggregate>true</aggregate>
                     <strictCheck>true</strictCheck>
                     <properties>
-                        <copyright-range>${project.inceptionYear}-2022</copyright-range>
+                        <copyright-range>${project.inceptionYear}-2023</copyright-range>
                     </properties>
                     <mapping>
                         <java>SLASHSTAR_STYLE</java>

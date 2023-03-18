@@ -31,6 +31,10 @@
     <description>Aspectran (Bill of Materials)</description>
     <url>https://aspectran.com/</url>
 
+    <properties>
+        <license.skip>true</license.skip>
+    </properties>
+
     <dependencyManagement>
         <dependencies>
             <!-- All release modules -->
