@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <appender name="APP-LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${aspectran.basePath}/logs/app.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <fileNamePattern>${aspectran.basePath}/logs/archived/app.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
@@ -10,51 +11,28 @@
         </rollingPolicy>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <charset>UTF-8</charset>
-            <pattern>%-5level %d{yyyy-MM-dd HH:mm:ss} [%thread] %msg - %logger{30}.%M\(%line\)%n</pattern>
+            <pattern>%-5level %d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %msg - %logger{30}.%M\(%line\)%n</pattern>
         </encoder>
     </appender>
-    <logger name="com.aspectran" level="debug" additivity="false">
-        <appender-ref ref="APP-LOG"/>
-    </logger>
-    <logger name="com.aspectran.core.scheduler.service.JobActivityReport" level="debug" additivity="false">
-        <appender-ref ref="APP-LOG"/>
-    </logger>
-    <logger name="com.aspectran.core.component.session" level="debug" additivity="false">
-        <appender-ref ref="APP-LOG"/>
-    </logger>
-    <logger name="org.quartz" level="info" additivity="false">
-        <appender-ref ref="APP-LOG"/>
-    </logger>
-    <logger name="org.eclipse.jetty" level="error" additivity="false">
-        <appender-ref ref="APP-LOG"/>
-    </logger>
 
-    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>%-5level %d{yyyy-MM-dd HH:mm:ss} [%thread] %msg - %logger{30}.%M\(%line\)%n</pattern>
         </encoder>
     </appender>
-    <logger name="com.aspectran" level="debug" additivity="false">
-        <appender-ref ref="STDOUT"/>
-    </logger>
-    <logger name="com.aspectran.core.scheduler.service.JobActivityReport" level="debug" additivity="false">
-        <appender-ref ref="STDOUT"/>
-    </logger>
-    <logger name="com.aspectran.core.component.session" level="debug" additivity="false">
-        <appender-ref ref="STDOUT"/>
-    </logger>
-    <logger name="org.quartz" level="info" additivity="false">
-        <appender-ref ref="STDOUT"/>
-    </logger>
-    <logger name="org.eclipse.jetty" level="error" additivity="false">
-        <appender-ref ref="STDOUT"/>
-    </logger>
+
+    <logger name="com.aspectran" level="debug"/>
+    <logger name="com.aspectran.core.scheduler.service.JobActivityReport" level="debug"/>
+    <logger name="com.aspectran.core.component.session" level="debug"/>
+    <logger name="org.quartz" level="info"/>
+    <logger name="org.apache.ibatis" level="error"/>
 
     <root level="info">
-        <appender-ref ref="APP-LOG"/>
-        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="FILE"/>
+        <appender-ref ref="CONSOLE"/>
     </root>
 
     <include optional="true" file="${aspectran.basePath}/config/logback-scheduler.xml"/>
     <include optional="true" file="${aspectran.basePath}/config/logback-undertow.xml"/>
+
 </configuration>
