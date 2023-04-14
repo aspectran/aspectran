@@ -103,7 +103,7 @@ public class EncodingHandlerWrapper implements HandlerWrapper {
         if (mediaTypes != null && mediaTypes.length > 0) {
             predicates.add(new CompressibleMimeTypePredicate(mediaTypes));
         }
-        if (excludedUserAgents != null && excludedUserAgents.length > 0) {
+        if (excludedUserAgents != null) {
             for (String agent : excludedUserAgents) {
                 RequestHeaderAttribute agentHeader = new RequestHeaderAttribute(new HttpString(HttpHeaders.USER_AGENT));
                 predicates.add(Predicates.not(Predicates.regex(agentHeader, agent)));
