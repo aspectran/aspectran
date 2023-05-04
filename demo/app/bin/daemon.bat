@@ -1,13 +1,17 @@
 @echo off
 rem Detect JAVA_HOME environment variable
-if not defined JAVA_HOME goto java-not-set
+if "%JAVA_HOME%" == "" goto java-not-set
 
 set BASE_DIR=%~dp0..
-if not defined JAVA_OPTS (
+if "%JAVA_OPTS%" == "" (
     set JAVA_OPTS=-Xms256m -Xmx1024m
 )
-if not defined LOGGING_CONFIG (
-    set LOGGING_CONFIG=%BASE_DIR%\config\logback.xml
+if "%1" == "debug" (
+    set LOGGING_CONFIG=%BASE_DIR%\config\logging\logback-debug.xml
+) else (
+    if "%LOGGING_CONFIG%" == "" (
+        set LOGGING_CONFIG=%BASE_DIR%\config\logging\logback.xml
+    )
 )
 set TMP_DIR=%BASE_DIR%\temp
 set ASPECTRAN_CONFIG=%BASE_DIR%\config\aspectran-config.apon
