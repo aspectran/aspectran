@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration>
+<included>
+
+    <include file="${aspectran.basePath}/config/logging/logback-scheduler.xml"/>
+    <include file="${aspectran.basePath}/config/logging/logback-undertow.xml"/>
 
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${aspectran.basePath}/logs/app.log</file>
@@ -15,14 +18,12 @@
         </encoder>
     </appender>
 
-    <logger name="com.aspectran" level="debug"/>
-    <logger name="org.quartz" level="info"/>
-
     <root level="info">
         <appender-ref ref="FILE"/>
     </root>
 
-    <include optional="true" file="${aspectran.basePath}/config/logback-scheduler.xml"/>
-    <include optional="true" file="${aspectran.basePath}/config/logback-undertow.xml"/>
+    <logger name="com.aspectran" level="debug"/>
+    <logger name="org.quartz" level="info"/>
+    <logger name="org.apache.ibatis" level="error"/>
 
-</configuration>
+</included>

@@ -1,7 +1,5 @@
 #!/bin/sh
 
-# Copyright (c) 2008-2023 The Aspectran Project
-#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -112,7 +110,7 @@ DAEMON_ERR="$BASE_DIR/logs/daemon.err"
 DAEMON_MAIN="com.aspectran.daemon.JsvcDaemon"
 CLASSPATH="$BASE_DIR/lib/*"
 TMP_DIR="$BASE_DIR/temp"
-LOGGING_CONFIG="$BASE_DIR/config/logback.xml"
+LOGGING_CONFIG="$BASE_DIR/config/logging/logging/logback.xml"
 ASPECTRAN_CONFIG="$BASE_DIR/config/aspectran-config.apon"
 
 start_daemon() {
