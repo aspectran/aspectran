@@ -1,5 +1,9 @@
 #!/bin/sh
 
+set -a
+. ./.env
+set +a
+
 ARG0="$0"
 while [ -h "$ARG0" ]; do
   ls=$(ls -ld "$ARG0")
@@ -16,6 +20,7 @@ BASE_DIR="$(
   cd "$BASE_DIR" || exit
   pwd
 )"
+
 if [ -z "$JAVA_HOME" ]; then
   JAVA_BIN="$(command -v java 2>/dev/null || type java 2>&1)"
   while [ -h "$JAVA_BIN" ]; do
@@ -35,6 +40,15 @@ if [ -z "$JAVA_HOME" ]; then
 else
   JAVA_BIN="$JAVA_HOME/bin/java"
 fi
+
+if [ -z "$JAVA_OPTS" ]; then
+  JAVA_OPTS="-Xms256m -Xmx512m"
+fi
+
+CLASSPATH="$BASE_DIR/lib/*"
+TMP_DIR="$BASE_DIR/temp"
+ASPECTRAN_CONFIG="$BASE_DIR/config/aspectran-config.apon"
+
 while [ ".$1" != . ]; do
   case "$1" in
   --debug)
@@ -47,15 +61,9 @@ while [ ".$1" != . ]; do
     ;;
   esac
 done
-if [ -z "$JAVA_OPTS" ]; then
-  JAVA_OPTS="-Xms256m -Xmx1024m"
-fi
-CLASSPATH="$BASE_DIR/lib/*"
 if [ -z "$LOGGING_CONFIG" ] || [ ! -f "$LOGGING_CONFIG" ]; then
   LOGGING_CONFIG="$BASE_DIR/config/logging/logback.xml"
 fi
-TMP_DIR="$BASE_DIR/temp"
-ASPECTRAN_CONFIG="$BASE_DIR/config/aspectran-config.apon"
 
 "$JAVA_BIN" \
   $JAVA_OPTS \

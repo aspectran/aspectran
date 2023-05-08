@@ -16,6 +16,10 @@
 # Control Script for the Aspectran Daemon
 # -----------------------------------------------------------------------------
 
+set -a
+. ./.env
+set +a
+
 ARG0="$0"
 while [ -h "$ARG0" ]; do
   ls=$(ls -ld "$ARG0")
@@ -73,13 +77,17 @@ else
   JAVA_BIN="$JAVA_HOME/bin/java"
 fi
 
+if [ -z "$JAVA_OPTS" ]; then
+  JAVA_OPTS="-Xms256m -Xmx512m"
+fi
+
 DAEMON_OUT="$BASE_DIR/logs/daemon.out"
 DAEMON_MAIN="com.aspectran.daemon.DefaultDaemon"
 LOCK_FILE="$BASE_DIR/.lock"
 CLASSPATH="$BASE_DIR/lib/*"
 TMP_DIR="$BASE_DIR/temp"
-LOGGING_CONFIG="$BASE_DIR/config/logging/logging/logback.xml"
 ASPECTRAN_CONFIG="$BASE_DIR/config/aspectran-config.apon"
+LOGGING_CONFIG="$BASE_DIR/config/logging/logging/logback.xml"
 
 start_daemon() {
   rm -f "$DAEMON_OUT"
