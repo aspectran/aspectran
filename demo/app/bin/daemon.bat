@@ -1,20 +1,27 @@
 @echo off
-rem Detect JAVA_HOME environment variable
+setlocal
+
+rem Set explicitly declared application-independent environment variables, if any.
+for /F "eol=# tokens=*" %%i in (%~dp0\.env) do set %%i
+
 if "%JAVA_HOME%" == "" goto java-not-set
+if not exist "%JAVA_HOME%" goto java-not-set
+
+if "%JAVA_OPTS%" == "" (
+    set JAVA_OPTS=-Xms256m -Xmx512m
+)
 
 set BASE_DIR=%~dp0..
-if "%JAVA_OPTS%" == "" (
-    set JAVA_OPTS=-Xms256m -Xmx1024m
-)
+set TMP_DIR=%BASE_DIR%\temp
+set ASPECTRAN_CONFIG=%BASE_DIR%\config\aspectran-config.apon
+
 if "%1" == "debug" (
     set LOGGING_CONFIG=%BASE_DIR%\config\logging\logback-debug.xml
 ) else (
-    if "%LOGGING_CONFIG%" == "" (
-        set LOGGING_CONFIG=%BASE_DIR%\config\logging\logback.xml
-    )
+    set LOGGING_CONFIG=%BASE_DIR%\config\logging\logback.xml
 )
-set TMP_DIR=%BASE_DIR%\temp
-set ASPECTRAN_CONFIG=%BASE_DIR%\config\aspectran-config.apon
+
+echo Aspectran daemon running... To terminate the process press `CTRL+C`.
 
 "%JAVA_HOME%\bin\java.exe" ^
     %JAVA_OPTS% ^
