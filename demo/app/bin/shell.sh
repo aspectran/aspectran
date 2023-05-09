@@ -1,7 +1,7 @@
 #!/bin/sh
 
 set -a
-. ./.env
+. ./run.options
 set +a
 
 ARG0="$0"

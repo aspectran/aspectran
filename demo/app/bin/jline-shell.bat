@@ -1,8 +1,10 @@
 @echo off
 setlocal
 
-rem Set explicitly declared application-independent environment variables, if any.
-for /F "eol=# tokens=*" %%i in (%~dp0\.env) do set %%i
+rem Set any explicitly specified variables required to run.
+if exist run.options (
+    for /F "eol=# tokens=*" %%i in (%~dp0\run.options) do set "%%i"
+)
 
 if "%JAVA_HOME%" == "" goto java-not-set
 if not exist "%JAVA_HOME%" goto java-not-set
@@ -20,6 +22,9 @@ if "%1" == "debug" (
 ) else (
     set LOGGING_CONFIG=%BASE_DIR%\config\logging\logback.xml
 )
+
+echo Using JAVA_HOME: %JAVA_HOME%
+echo Using JAVA_OPTS: %JAVA_OPTS%
 
 "%JAVA_HOME%\bin\java.exe" ^
     %JAVA_OPTS% ^
