@@ -26,7 +26,7 @@ import com.aspectran.core.context.config.ContextConfig;
 import com.aspectran.core.context.config.ExposalsConfig;
 import com.aspectran.core.context.config.SchedulerConfig;
 import com.aspectran.core.context.config.SystemConfig;
-import com.aspectran.core.context.resource.AspectranClassLoader;
+import com.aspectran.core.context.resource.SiblingsClassLoader;
 import com.aspectran.core.scheduler.service.QuartzSchedulerService;
 import com.aspectran.core.scheduler.service.SchedulerService;
 import com.aspectran.core.util.Assert;
@@ -227,10 +227,10 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
     }
 
     @Override
-    public AspectranClassLoader getAspectranClassLoader() {
+    public SiblingsClassLoader getSiblingsClassLoader() {
         Assert.state(activityContextBuilder != null,
                 "No ActivityContextLoader configured; First, call the prepare() method");
-        return activityContextBuilder.getAspectranClassLoader();
+        return activityContextBuilder.getSiblingsClassLoader();
     }
 
     @Override

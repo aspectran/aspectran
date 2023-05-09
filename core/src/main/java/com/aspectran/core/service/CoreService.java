@@ -18,7 +18,7 @@ package com.aspectran.core.service;
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.config.AspectranConfig;
-import com.aspectran.core.context.resource.AspectranClassLoader;
+import com.aspectran.core.context.resource.SiblingsClassLoader;
 import com.aspectran.core.scheduler.service.SchedulerService;
 
 /**
@@ -79,10 +79,10 @@ public interface CoreService {
     Activity getDefaultActivity();
 
     /**
-     * Returns the aspectran class loader.
-     * @return the aspectran class loader
+     * Returns the siblings class loader.
+     * @return the siblings class loader
      */
-    AspectranClassLoader getAspectranClassLoader();
+    SiblingsClassLoader getSiblingsClassLoader();
 
     /**
      * Returns the Aspectran configuration parameters used to

@@ -44,7 +44,7 @@ public class ResourceManager {
         return resourceEntries.get(name);
     }
 
-    public static Enumeration<URL> getResources(final Iterator<AspectranClassLoader> owners) {
+    public static Enumeration<URL> getResources(final Iterator<SiblingsClassLoader> owners) {
         return new Enumeration<URL>() {
             private Iterator<URL> values;
             private URL next;
@@ -84,11 +84,11 @@ public class ResourceManager {
         };
     }
 
-    public static Enumeration<URL> getResources(final Iterator<AspectranClassLoader> owners, String name) {
+    public static Enumeration<URL> getResources(final Iterator<SiblingsClassLoader> owners, String name) {
         return getResources(owners, name, null);
     }
 
-    public static Enumeration<URL> getResources(final Iterator<AspectranClassLoader> owners, String name,
+    public static Enumeration<URL> getResources(final Iterator<SiblingsClassLoader> owners, String name,
                                                 final Enumeration<URL> inherited) {
         if (owners == null || name == null) {
             return Collections.emptyEnumeration();
@@ -100,7 +100,7 @@ public class ResourceManager {
 
         final String nameToSearch = name;
 
-        return new Enumeration<URL>() {
+        return new Enumeration<>() {
             private URL next;
             private boolean noMore; //for parent
 
@@ -146,11 +146,11 @@ public class ResourceManager {
         };
     }
 
-    public static Enumeration<URL> searchResources(final Iterator<AspectranClassLoader> owners, String name) {
+    public static Enumeration<URL> searchResources(final Iterator<SiblingsClassLoader> owners, String name) {
         return searchResources(owners, name, null);
     }
 
-    public static Enumeration<URL> searchResources(final Iterator<AspectranClassLoader> owners, String name,
+    public static Enumeration<URL> searchResources(final Iterator<SiblingsClassLoader> owners, String name,
                                                    final Enumeration<URL> inherited) {
         if (StringUtils.endsWith(name, REGULAR_FILE_SEPARATOR_CHAR)) {
             name = name.substring(0, name.length() - 1);

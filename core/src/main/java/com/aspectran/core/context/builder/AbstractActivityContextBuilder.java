@@ -37,7 +37,7 @@ import com.aspectran.core.context.config.ContextConfig;
 import com.aspectran.core.context.config.ContextProfilesConfig;
 import com.aspectran.core.context.env.ActivityEnvironment;
 import com.aspectran.core.context.env.EnvironmentProfiles;
-import com.aspectran.core.context.resource.AspectranClassLoader;
+import com.aspectran.core.context.resource.SiblingsClassLoader;
 import com.aspectran.core.context.resource.InvalidResourceException;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.EnvironmentRule;
@@ -94,7 +94,7 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
 
     private ServiceController serviceController;
 
-    private AspectranClassLoader aspectranClassLoader;
+    private SiblingsClassLoader siblingsClassLoader;
 
     private boolean useAponToLoadXml;
 
@@ -234,8 +234,8 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
     }
 
     @Override
-    public AspectranClassLoader getAspectranClassLoader() {
-        return aspectranClassLoader;
+    public SiblingsClassLoader getSiblingsClassLoader() {
+        return siblingsClassLoader;
     }
 
     @Override
@@ -260,7 +260,7 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
         this.encoding = contextConfig.getEncoding();
 
         String[] resourceLocations = contextConfig.getResourceLocations();
-        this.resourceLocations = AspectranClassLoader.checkResourceLocations(resourceLocations, getBasePath());
+        this.resourceLocations = SiblingsClassLoader.checkResourceLocations(resourceLocations, getBasePath());
 
         this.basePackages = contextConfig.getBasePackages();
 
@@ -311,8 +311,8 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
     }
 
     protected ApplicationAdapter createApplicationAdapter() throws InvalidResourceException {
-        AspectranClassLoader acl = newAspectranClassLoader();
-        return new DefaultApplicationAdapter(basePath, acl);
+        SiblingsClassLoader classLoader = newSiblingsClassLoader();
+        return new DefaultApplicationAdapter(basePath, classLoader);
     }
 
     protected EnvironmentProfiles createEnvironmentProfiles() {
@@ -372,9 +372,9 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
     }
 
     protected void startContextReloader() {
-        if (autoReloadEnabled && aspectranClassLoader != null) {
+        if (autoReloadEnabled && siblingsClassLoader != null) {
             contextReloader = new ActivityContextReloader(serviceController);
-            contextReloader.setResources(aspectranClassLoader.getAllResources());
+            contextReloader.setResources(siblingsClassLoader.getAllResources());
             contextReloader.start(scanIntervalSeconds);
         }
     }
@@ -386,15 +386,15 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
         }
     }
 
-    private AspectranClassLoader newAspectranClassLoader() throws InvalidResourceException {
-        if (aspectranClassLoader == null || hardReload) {
-            AspectranClassLoader acl = new AspectranClassLoader();
+    private SiblingsClassLoader newSiblingsClassLoader() throws InvalidResourceException {
+        if (siblingsClassLoader == null || hardReload) {
+            SiblingsClassLoader scl = new SiblingsClassLoader();
             if (resourceLocations != null && resourceLocations.length > 0) {
-                acl.setResourceLocations(resourceLocations);
+                scl.setResourceLocations(resourceLocations);
             }
-            aspectranClassLoader = acl;
+            siblingsClassLoader = scl;
         }
-        return aspectranClassLoader;
+        return siblingsClassLoader;
     }
 
     private ActivityEnvironment createActivityEnvironment(ActivityRuleAssistant assistant, ActivityContext activityContext) {

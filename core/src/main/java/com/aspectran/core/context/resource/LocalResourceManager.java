@@ -41,9 +41,9 @@ public class LocalResourceManager extends ResourceManager {
 
     private final int resourceNameStart;
 
-    private final AspectranClassLoader owner;
+    private final SiblingsClassLoader owner;
 
-    public LocalResourceManager(AspectranClassLoader owner) {
+    public LocalResourceManager(SiblingsClassLoader owner) {
         super();
 
         this.owner = owner;
@@ -51,7 +51,7 @@ public class LocalResourceManager extends ResourceManager {
         this.resourceNameStart = 0;
     }
 
-    public LocalResourceManager(String resourceLocation, AspectranClassLoader owner) throws InvalidResourceException {
+    public LocalResourceManager(String resourceLocation, SiblingsClassLoader owner) throws InvalidResourceException {
         super();
 
         this.owner = owner;
@@ -94,7 +94,7 @@ public class LocalResourceManager extends ResourceManager {
                 findResourceInDir(file, jarFileList);
                 if (!jarFileList.isEmpty()) {
                     for (File jarFile : jarFileList) {
-                        owner.joinBrother(jarFile.getAbsolutePath());
+                        owner.joinSibling(jarFile.getAbsolutePath());
                     }
                 }
             } else {

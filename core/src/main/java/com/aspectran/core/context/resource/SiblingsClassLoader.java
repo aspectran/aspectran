@@ -47,17 +47,17 @@ import static com.aspectran.core.util.ResourceUtils.REGULAR_FILE_SEPARATOR_CHAR;
 /**
  * Specialized class loader for Aspectran.
  */
-public class AspectranClassLoader extends ClassLoader {
+public class SiblingsClassLoader extends ClassLoader {
 
     private final int id;
 
-    private final AspectranClassLoader root;
+    private final SiblingsClassLoader root;
 
     private final String resourceLocation;
 
     private final ResourceManager resourceManager;
 
-    private final List<AspectranClassLoader> children = new LinkedList<>();
+    private final List<SiblingsClassLoader> children = new LinkedList<>();
 
     private final boolean firstborn;
 
@@ -67,11 +67,11 @@ public class AspectranClassLoader extends ClassLoader {
 
     private Set<String> excludePackageNames;
 
-    public AspectranClassLoader() {
+    public SiblingsClassLoader() {
         this(ClassUtils.getDefaultClassLoader());
     }
 
-    public AspectranClassLoader(ClassLoader parent) {
+    public SiblingsClassLoader(ClassLoader parent) {
         super(parent);
 
         this.id = 1000;
@@ -81,11 +81,11 @@ public class AspectranClassLoader extends ClassLoader {
         this.resourceManager = new LocalResourceManager(this);
     }
 
-    public AspectranClassLoader(String resourceLocation) throws InvalidResourceException {
+    public SiblingsClassLoader(String resourceLocation) throws InvalidResourceException {
         this(resourceLocation, ClassUtils.getDefaultClassLoader());
     }
 
-    public AspectranClassLoader(String resourceLocation, ClassLoader parent) throws InvalidResourceException {
+    public SiblingsClassLoader(String resourceLocation, ClassLoader parent) throws InvalidResourceException {
         super(parent);
 
         this.id = 1000;
@@ -95,20 +95,20 @@ public class AspectranClassLoader extends ClassLoader {
         this.resourceManager = new LocalResourceManager(resourceLocation, this);
     }
 
-    public AspectranClassLoader(String[] resourceLocations) throws InvalidResourceException {
+    public SiblingsClassLoader(String[] resourceLocations) throws InvalidResourceException {
         this(resourceLocations, ClassUtils.getDefaultClassLoader());
     }
 
-    public AspectranClassLoader(String[] resourceLocations, ClassLoader parent) throws InvalidResourceException {
+    public SiblingsClassLoader(String[] resourceLocations, ClassLoader parent) throws InvalidResourceException {
         this(parent);
 
-        AspectranClassLoader acl = this;
+        SiblingsClassLoader acl = this;
         for (String resourceLocation : resourceLocations) {
             acl = acl.createChild(resourceLocation);
         }
     }
 
-    protected AspectranClassLoader(String resourceLocation, AspectranClassLoader parent) throws InvalidResourceException {
+    protected SiblingsClassLoader(String resourceLocation, SiblingsClassLoader parent) throws InvalidResourceException {
         super(parent);
 
         int numOfChildren = parent.addChild(this);
@@ -120,7 +120,7 @@ public class AspectranClassLoader extends ClassLoader {
         this.resourceManager = new LocalResourceManager(resourceLocation, this);
     }
 
-    private AspectranClassLoader(ClassLoader parent, AspectranClassLoader latest) {
+    private SiblingsClassLoader(ClassLoader parent, SiblingsClassLoader latest) {
         super(parent);
 
         int numOfChildren = latest.addChild(this);
@@ -138,7 +138,7 @@ public class AspectranClassLoader extends ClassLoader {
                 children.clear();
             }
 
-            AspectranClassLoader acl = this;
+            SiblingsClassLoader acl = this;
             for (String resourceLocation : resourceLocations) {
                 if (resourceLocation != null && !resourceLocation.isEmpty()) {
                     acl = acl.createChild(resourceLocation);
@@ -147,24 +147,24 @@ public class AspectranClassLoader extends ClassLoader {
         }
     }
 
-    public AspectranClassLoader addGeneration(ClassLoader classLoader) {
-        AspectranClassLoader latest = root;
+    public SiblingsClassLoader addGeneration(ClassLoader classLoader) {
+        SiblingsClassLoader latest = root;
         while (latest.hasChildren()) {
             latest = latest.getChildren().get(0);
         }
-        return new AspectranClassLoader(classLoader, latest);
+        return new SiblingsClassLoader(classLoader, latest);
     }
 
-    protected AspectranClassLoader joinBrother(String resourceLocation) throws InvalidResourceException {
-        AspectranClassLoader parent = (AspectranClassLoader)getParent();
+    protected SiblingsClassLoader joinSibling(String resourceLocation) throws InvalidResourceException {
+        SiblingsClassLoader parent = (SiblingsClassLoader)getParent();
         return parent.createChild(resourceLocation);
     }
 
-    private AspectranClassLoader createChild(String resourceLocation) throws InvalidResourceException {
+    private SiblingsClassLoader createChild(String resourceLocation) throws InvalidResourceException {
         if (!firstborn) {
-            throw new IllegalStateException("Only the firstborn AspectranClassLoader can create a child");
+            throw new IllegalStateException("Only the first among siblings can create a child");
         }
-        return new AspectranClassLoader(resourceLocation, this);
+        return new SiblingsClassLoader(resourceLocation, this);
     }
 
     /**
@@ -230,7 +230,7 @@ public class AspectranClassLoader extends ClassLoader {
         return id;
     }
 
-    public AspectranClassLoader getRoot() {
+    public SiblingsClassLoader getRoot() {
         return root;
     }
 
@@ -238,11 +238,11 @@ public class AspectranClassLoader extends ClassLoader {
         return (this == root);
     }
 
-    public List<AspectranClassLoader> getChildren() {
+    public List<SiblingsClassLoader> getChildren() {
         return children;
     }
 
-    private int addChild(AspectranClassLoader child) {
+    private int addChild(SiblingsClassLoader child) {
         synchronized (children) {
             children.add(child);
             return children.size();
@@ -269,24 +269,24 @@ public class AspectranClassLoader extends ClassLoader {
         reload(root);
     }
 
-    private void reload(AspectranClassLoader self) throws InvalidResourceException {
+    private void reload(SiblingsClassLoader self) throws InvalidResourceException {
         self.increaseReloadedCount();
 
         if (self.getResourceManager() != null) {
             self.getResourceManager().reset();
         }
 
-        AspectranClassLoader firstborn = null;
-        List<AspectranClassLoader> brothers = new ArrayList<>();
-        for (AspectranClassLoader child : self.getChildren()) {
+        SiblingsClassLoader firstborn = null;
+        List<SiblingsClassLoader> siblings = new ArrayList<>();
+        for (SiblingsClassLoader child : self.getChildren()) {
             if (child.isFirstborn()) {
                 firstborn = child;
             } else {
-                brothers.add(child);
+                siblings.add(child);
             }
         }
-        if (!brothers.isEmpty()) {
-            self.leave(brothers);
+        if (!siblings.isEmpty()) {
+            self.leave(siblings);
         }
         if (firstborn != null) {
             reload(firstborn);
@@ -297,13 +297,13 @@ public class AspectranClassLoader extends ClassLoader {
         reloadedCount++;
     }
 
-    private void leave(List<AspectranClassLoader> brothers) {
-        for (AspectranClassLoader acl : brothers) {
-            ResourceManager rm = acl.getResourceManager();
+    private void leave(List<SiblingsClassLoader> siblings) {
+        for (SiblingsClassLoader sibling : siblings) {
+            ResourceManager rm = sibling.getResourceManager();
             if (rm != null) {
                 rm.release();
             }
-            children.remove(acl);
+            children.remove(sibling);
         }
     }
 
@@ -447,15 +447,15 @@ public class AspectranClassLoader extends ClassLoader {
     @Override
     public Enumeration<URL> findResources(String name) {
         Objects.requireNonNull(name);
-        LinkedHashSet<URL> result = new LinkedHashSet<>();
+        Set<URL> urls = new LinkedHashSet<>();
         Enumeration<URL> res = ResourceManager.getResources(getAllMembers(), name);
         if (res.hasMoreElements()) {
-            result.add(res.nextElement());
+            urls.add(res.nextElement());
         }
-        return Collections.enumeration(result);
+        return Collections.enumeration(urls);
     }
 
-    public Iterator<AspectranClassLoader> getAllMembers() {
+    public Iterator<SiblingsClassLoader> getAllMembers() {
         return getMembers(root);
     }
 
@@ -467,8 +467,8 @@ public class AspectranClassLoader extends ClassLoader {
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.append("id", id);
-        if (getParent() instanceof AspectranClassLoader) {
-            tsb.append("parent", ((AspectranClassLoader)getParent()).getId());
+        if (getParent() instanceof SiblingsClassLoader) {
+            tsb.append("parent", ((SiblingsClassLoader)getParent()).getId());
         } else {
             tsb.append("parent", getParent().getClass().getName());
         }
@@ -481,11 +481,11 @@ public class AspectranClassLoader extends ClassLoader {
         return tsb.toString();
     }
 
-    public static Iterator<AspectranClassLoader> getMembers(final AspectranClassLoader root) {
-        return new Iterator<AspectranClassLoader>() {
-            private AspectranClassLoader next = root;
-            private Iterator<AspectranClassLoader> children = root.getChildren().iterator();
-            private AspectranClassLoader firstChild;
+    public static Iterator<SiblingsClassLoader> getMembers(final SiblingsClassLoader root) {
+        return new Iterator<>() {
+            private SiblingsClassLoader next = root;
+            private Iterator<SiblingsClassLoader> children = root.getChildren().iterator();
+            private SiblingsClassLoader firstChild;
 
             @Override
             public boolean hasNext() {
@@ -493,12 +493,12 @@ public class AspectranClassLoader extends ClassLoader {
             }
 
             @Override
-            public AspectranClassLoader next() {
+            public SiblingsClassLoader next() {
                 if (next == null) {
                     throw new NoSuchElementException();
                 }
 
-                AspectranClassLoader current = next;
+                SiblingsClassLoader current = next;
                 if (children.hasNext()) {
                     next = children.next();
                     if (firstChild == null) {
