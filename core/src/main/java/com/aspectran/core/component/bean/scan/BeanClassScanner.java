@@ -70,7 +70,7 @@ public class BeanClassScanner extends ClassScanner {
         try {
             super.scan(classNamePattern, new BeanSaveHandler(saveHandler));
         } catch (Exception e) {
-            throw new BeanClassScanningException("Failed to scan bean classes with given pattern: " +
+            throw new BeanClassScanException("Failed to scan bean classes with given pattern: " +
                     classNamePattern, e);
         }
     }

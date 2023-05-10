@@ -138,10 +138,10 @@ public class SiblingsClassLoader extends ClassLoader {
                 children.clear();
             }
 
-            SiblingsClassLoader acl = this;
+            SiblingsClassLoader scl = this;
             for (String resourceLocation : resourceLocations) {
                 if (resourceLocation != null && !resourceLocation.isEmpty()) {
-                    acl = acl.createChild(resourceLocation);
+                    scl = scl.createChild(resourceLocation);
                 }
             }
         }
@@ -475,7 +475,7 @@ public class SiblingsClassLoader extends ClassLoader {
         tsb.append("root", this == root);
         tsb.append("firstborn", firstborn);
         tsb.append("resourceLocation", resourceLocation);
-        tsb.append("numberOfResource", resourceManager.getNumberOfResources());
+        tsb.append("numberOfResource", resourceManager != null ? resourceManager.getNumberOfResources() : '?');
         tsb.appendSize("numberOfChildren", children);
         tsb.append("reloadedCount", reloadedCount);
         return tsb.toString();

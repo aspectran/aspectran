@@ -45,7 +45,7 @@ public class ResourceManager {
     }
 
     public static Enumeration<URL> getResources(final Iterator<SiblingsClassLoader> owners) {
-        return new Enumeration<URL>() {
+        return new Enumeration<>() {
             private Iterator<URL> values;
             private URL next;
 
@@ -158,7 +158,7 @@ public class ResourceManager {
 
         final String nameToSearch = name;
 
-        return new Enumeration<URL>() {
+        return new Enumeration<>() {
             private Iterator<Map.Entry<String, URL>> current;
             private Map.Entry<String, URL> entry;
             private boolean noMore; //for parent

@@ -58,14 +58,14 @@ public abstract class AbstractServiceController implements ServiceController {
 
     protected void joinDerivedService(ServiceController serviceController) {
         if (derivedServices == null) {
-            throw new UnsupportedOperationException("No support for derived service controls");
+            throw new UnsupportedOperationException("No support to control derived services");
         }
         derivedServices.add(serviceController);
     }
 
     protected void withdrawDerivedService(ServiceController serviceController) {
         if (derivedServices == null) {
-            throw new UnsupportedOperationException("No support for derived service controls");
+            throw new UnsupportedOperationException("No support to control derived services");
         }
         derivedServices.remove(serviceController);
     }
