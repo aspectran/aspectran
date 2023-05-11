@@ -102,14 +102,22 @@ public class SiblingsClassLoader extends ClassLoader {
     public SiblingsClassLoader(String[] resourceLocations, ClassLoader parent) throws InvalidResourceException {
         this(parent);
 
-        SiblingsClassLoader acl = this;
-        for (String resourceLocation : resourceLocations) {
-            acl = acl.createChild(resourceLocation);
+        SiblingsClassLoader scl = this;
+        if (resourceLocations != null) {
+            for (String resourceLocation : resourceLocations) {
+                if (resourceLocation != null && !resourceLocation.isEmpty()) {
+                    scl = scl.createChild(resourceLocation);
+                }
+            }
         }
     }
 
     protected SiblingsClassLoader(String resourceLocation, SiblingsClassLoader parent) throws InvalidResourceException {
         super(parent);
+
+        if (parent == null) {
+            throw new IllegalArgumentException("parent must not be null");
+        }
 
         int numOfChildren = parent.addChild(this);
 
@@ -120,13 +128,17 @@ public class SiblingsClassLoader extends ClassLoader {
         this.resourceManager = new LocalResourceManager(resourceLocation, this);
     }
 
-    private SiblingsClassLoader(ClassLoader parent, SiblingsClassLoader latest) {
+    private SiblingsClassLoader(ClassLoader parent, SiblingsClassLoader youngest) {
         super(parent);
 
-        int numOfChildren = latest.addChild(this);
+        if (youngest == null) {
+            throw new IllegalArgumentException("youngest must not be null");
+        }
 
-        this.id = (Math.abs(latest.getId() / 1000) + 1) * 1000 + numOfChildren;
-        this.root = latest;
+        int numOfChildren = youngest.addChild(this);
+
+        this.id = (Math.abs(youngest.getId() / 1000) + 1) * 1000 + numOfChildren;
+        this.root = youngest;
         this.firstborn = (numOfChildren == 1);
         this.resourceLocation = null;
         this.resourceManager = new LocalResourceManager(this);
@@ -139,20 +151,22 @@ public class SiblingsClassLoader extends ClassLoader {
             }
 
             SiblingsClassLoader scl = this;
-            for (String resourceLocation : resourceLocations) {
-                if (resourceLocation != null && !resourceLocation.isEmpty()) {
-                    scl = scl.createChild(resourceLocation);
+            if (resourceLocations != null) {
+                for (String resourceLocation : resourceLocations) {
+                    if (resourceLocation != null && !resourceLocation.isEmpty()) {
+                        scl = scl.createChild(resourceLocation);
+                    }
                 }
             }
         }
     }
 
     public SiblingsClassLoader addGeneration(ClassLoader classLoader) {
-        SiblingsClassLoader latest = root;
-        while (latest.hasChildren()) {
-            latest = latest.getChildren().get(0);
+        SiblingsClassLoader youngest = root;
+        while (youngest.hasChildren()) {
+            youngest = youngest.getChildren().get(0);
         }
-        return new SiblingsClassLoader(classLoader, latest);
+        return new SiblingsClassLoader(classLoader, youngest);
     }
 
     protected SiblingsClassLoader joinSibling(String resourceLocation) throws InvalidResourceException {

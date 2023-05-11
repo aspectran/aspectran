@@ -388,11 +388,7 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
 
     private SiblingsClassLoader newSiblingsClassLoader() throws InvalidResourceException {
         if (siblingsClassLoader == null || hardReload) {
-            SiblingsClassLoader scl = new SiblingsClassLoader();
-            if (resourceLocations != null && resourceLocations.length > 0) {
-                scl.setResourceLocations(resourceLocations);
-            }
-            siblingsClassLoader = scl;
+            siblingsClassLoader = new SiblingsClassLoader(resourceLocations);
         }
         return siblingsClassLoader;
     }

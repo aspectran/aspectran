@@ -15,6 +15,7 @@
  */
 package com.aspectran.shell.command.builtins;
 
+import com.aspectran.core.context.resource.SiblingsClassLoader;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.shell.command.AbstractCommand;
 import com.aspectran.shell.command.CommandRegistry;
@@ -25,6 +26,9 @@ import com.aspectran.shell.console.ShellConsole;
 import java.io.File;
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
+import java.net.URL;
+import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -90,6 +94,17 @@ public class SysInfoCommand extends AbstractCommand {
         RuntimeMXBean bean = ManagementFactory.getRuntimeMXBean();
         for (String line : StringUtils.split(bean.getClassPath(), File.pathSeparator)) {
             console.writeLine(line);
+        }
+        if (isServiceAvailable()) {
+            ClassLoader classLoader = getShellService().getActivityContext().getApplicationAdapter().getClassLoader();
+            if (classLoader instanceof SiblingsClassLoader) {
+                SiblingsClassLoader scl = (SiblingsClassLoader)classLoader;
+                Enumeration<URL> urls = scl.getAllResources();
+                while (urls.hasMoreElements()) {
+                    URL url = urls.nextElement();
+                    console.writeLine(url.toString());
+                }
+            }
         }
     }
 

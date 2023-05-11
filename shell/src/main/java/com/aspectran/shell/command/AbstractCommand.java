@@ -57,7 +57,8 @@ public abstract class AbstractCommand implements Command {
     }
 
     public boolean isServiceAvailable() {
-        return (getCommandRunner() != null && getCommandRunner().getShellService() != null);
+        return (getCommandRunner() != null && getCommandRunner().getShellService() != null &&
+                getCommandRunner().getShellService().getServiceController().isActive());
     }
 
     protected void addOption(Option option) {

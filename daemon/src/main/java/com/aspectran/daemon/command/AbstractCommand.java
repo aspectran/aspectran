@@ -54,6 +54,11 @@ public abstract class AbstractCommand implements Command {
         return daemonService;
     }
 
+    public boolean isServiceAvailable() {
+        return (registry.getDaemon().getDaemonService() != null &&
+                registry.getDaemon().getDaemonService().getServiceController().isActive());
+    }
+
     protected String debug(String message) {
         logger.debug(message);
         return message;
