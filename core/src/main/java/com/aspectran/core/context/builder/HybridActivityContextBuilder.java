@@ -105,7 +105,7 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
             } else if (aspectranParameters != null) {
                 logger.info("Building ActivityContext with specified parameters");
             } else {
-                logger.warn("No rootFile or aspectranParameters specified");
+                logger.warn("No context rules specified");
             }
 
             if (getActiveProfiles() != null) {

@@ -19,10 +19,10 @@ import com.aspectran.core.util.ClassUtils;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.ToStringBuilder;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -333,11 +333,9 @@ public class SiblingsClassLoader extends ClassLoader {
                 return c;
             }
 
-            ClassLoader system = getSystemClassLoader();
-
             // Try loading the class with the system class loader
             try {
-                c = system.loadClass(name);
+                c = getSystemClassLoader().loadClass(name);
                 if (c != null) {
                     if (resolve) {
                         resolveClass(c);
@@ -348,7 +346,7 @@ public class SiblingsClassLoader extends ClassLoader {
                 // ignore
             }
 
-            // Search local repositories
+            // Search from local repositories
             try {
                 c = findClass(name);
                 if (c != null) {
@@ -364,20 +362,14 @@ public class SiblingsClassLoader extends ClassLoader {
             // Delegate to parent unconditionally
             ClassLoader loader = root.getParent();
             if (loader == null) {
-                loader = system;
+                throw new ClassNotFoundException(name);
             }
-            try {
-                c = Class.forName(name, false, loader);
-                if (resolve) {
-                    resolveClass(c);
-                }
-                return c;
-            } catch (ClassNotFoundException e) {
-                // ignore
+            c = Class.forName(name, false, loader);
+            if (resolve) {
+                resolveClass(c);
             }
+            return c;
         }
-
-        throw new ClassNotFoundException(name);
     }
 
     @Override
@@ -412,15 +404,16 @@ public class SiblingsClassLoader extends ClassLoader {
 
         try {
             URLConnection connection = url.openConnection();
-            InputStream input = connection.getInputStream();
+            BufferedInputStream input = new BufferedInputStream(connection.getInputStream());
             ByteArrayOutputStream output = new ByteArrayOutputStream();
-            byte[] buffer = new byte[4096];
-            int len;
-            while ((len = input.read(buffer)) >= 0) {
-                output.write(buffer, 0, len);
+            int i;
+            while ((i = input.read()) != -1) {
+                output.write(i);
             }
             input.close();
-            return output.toByteArray();
+            byte[] classData = output.toByteArray();
+            output.close();
+            return classData;
         } catch (IOException e) {
             throw new InvalidResourceException("Unable to read class file: " + url, e);
         }
