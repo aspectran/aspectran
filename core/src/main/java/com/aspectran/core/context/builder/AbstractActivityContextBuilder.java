@@ -37,8 +37,9 @@ import com.aspectran.core.context.config.ContextConfig;
 import com.aspectran.core.context.config.ContextProfilesConfig;
 import com.aspectran.core.context.env.ActivityEnvironment;
 import com.aspectran.core.context.env.EnvironmentProfiles;
-import com.aspectran.core.context.resource.SiblingsClassLoader;
 import com.aspectran.core.context.resource.InvalidResourceException;
+import com.aspectran.core.context.resource.ResourceManager;
+import com.aspectran.core.context.resource.SiblingsClassLoader;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.EnvironmentRule;
 import com.aspectran.core.context.rule.IllegalRuleException;
@@ -260,7 +261,7 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
         this.encoding = contextConfig.getEncoding();
 
         String[] resourceLocations = contextConfig.getResourceLocations();
-        this.resourceLocations = SiblingsClassLoader.checkResourceLocations(resourceLocations, getBasePath());
+        this.resourceLocations = ResourceManager.checkResourceLocations(resourceLocations, getBasePath());
 
         this.basePackages = contextConfig.getBasePackages();
 
@@ -389,6 +390,8 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
     private SiblingsClassLoader newSiblingsClassLoader() throws InvalidResourceException {
         if (siblingsClassLoader == null || hardReload) {
             siblingsClassLoader = new SiblingsClassLoader(resourceLocations);
+        } else {
+            siblingsClassLoader.reload();
         }
         return siblingsClassLoader;
     }

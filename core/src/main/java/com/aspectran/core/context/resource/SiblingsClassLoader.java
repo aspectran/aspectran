@@ -15,15 +15,11 @@
  */
 package com.aspectran.core.context.resource;
 
-import com.aspectran.core.util.ClassUtils;
-import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.ToStringBuilder;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -38,11 +34,7 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Set;
 
-import static com.aspectran.core.util.ClassUtils.CLASS_FILE_SUFFIX;
 import static com.aspectran.core.util.ClassUtils.PACKAGE_SEPARATOR_CHAR;
-import static com.aspectran.core.util.ResourceUtils.CLASSPATH_URL_PREFIX;
-import static com.aspectran.core.util.ResourceUtils.FILE_URL_PREFIX;
-import static com.aspectran.core.util.ResourceUtils.REGULAR_FILE_SEPARATOR_CHAR;
 
 /**
  * Specialized class loader for Aspectran.
@@ -68,7 +60,7 @@ public class SiblingsClassLoader extends ClassLoader {
     private Set<String> excludePackageNames;
 
     public SiblingsClassLoader() {
-        this(ClassUtils.getDefaultClassLoader());
+        this(SiblingsClassLoader.class.getClassLoader());
     }
 
     public SiblingsClassLoader(ClassLoader parent) {
@@ -82,7 +74,7 @@ public class SiblingsClassLoader extends ClassLoader {
     }
 
     public SiblingsClassLoader(String resourceLocation) throws InvalidResourceException {
-        this(resourceLocation, ClassUtils.getDefaultClassLoader());
+        this(resourceLocation, SiblingsClassLoader.class.getClassLoader());
     }
 
     public SiblingsClassLoader(String resourceLocation, ClassLoader parent) throws InvalidResourceException {
@@ -96,7 +88,7 @@ public class SiblingsClassLoader extends ClassLoader {
     }
 
     public SiblingsClassLoader(String[] resourceLocations) throws InvalidResourceException {
-        this(resourceLocations, ClassUtils.getDefaultClassLoader());
+        this(resourceLocations, SiblingsClassLoader.class.getClassLoader());
     }
 
     public SiblingsClassLoader(String[] resourceLocations, ClassLoader parent) throws InvalidResourceException {
@@ -335,7 +327,7 @@ public class SiblingsClassLoader extends ClassLoader {
 
             // Try loading the class with the system class loader
             try {
-                c = getSystemClassLoader().loadClass(name);
+                c = findSystemClass(name);
                 if (c != null) {
                     if (resolve) {
                         resolveClass(c);
@@ -392,7 +384,7 @@ public class SiblingsClassLoader extends ClassLoader {
             return null;
         }
 
-        String resourceName = classNameToResourceName(className);
+        String resourceName = ResourceManager.classNameToResourceName(className);
         Enumeration<URL> res = ResourceManager.getResources(getAllMembers(), resourceName);
         URL url = null;
         if (res.hasMoreElements()) {
@@ -472,7 +464,8 @@ public class SiblingsClassLoader extends ClassLoader {
 
     @Override
     public String toString() {
-        ToStringBuilder tsb = new ToStringBuilder();
+        String name = getClass().getSimpleName() + '@' + Integer.toString(hashCode(), 16);
+        ToStringBuilder tsb = new ToStringBuilder(name);
         tsb.append("id", id);
         if (getParent() instanceof SiblingsClassLoader) {
             tsb.append("parent", ((SiblingsClassLoader)getParent()).getId());
@@ -532,104 +525,6 @@ public class SiblingsClassLoader extends ClassLoader {
                 throw new UnsupportedOperationException("remove");
             }
         };
-    }
-
-    public static String resourceNameToClassName(String resourceName) {
-        String className = resourceName.substring(0, resourceName.length() - CLASS_FILE_SUFFIX.length());
-        className = className.replace(REGULAR_FILE_SEPARATOR_CHAR, PACKAGE_SEPARATOR_CHAR);
-        return className;
-    }
-
-    public static String classNameToResourceName(String className) {
-        return className.replace(PACKAGE_SEPARATOR_CHAR, REGULAR_FILE_SEPARATOR_CHAR)
-                + CLASS_FILE_SUFFIX;
-    }
-
-    public static String packageNameToResourceName(String packageName) {
-        String resourceName = packageName.replace(PACKAGE_SEPARATOR_CHAR, REGULAR_FILE_SEPARATOR_CHAR);
-        if (StringUtils.endsWith(resourceName, REGULAR_FILE_SEPARATOR_CHAR)) {
-            resourceName = resourceName.substring(0, resourceName.length() - 1);
-        }
-        return resourceName;
-    }
-
-    public static String[] checkResourceLocations(String[] resourceLocations, String basePath)
-            throws InvalidResourceException {
-        if (resourceLocations == null) {
-            return null;
-        }
-
-        ClassLoader classLoader = ClassUtils.getDefaultClassLoader();
-        for (int i = 0; i < resourceLocations.length; i++) {
-            if (resourceLocations[i].startsWith(CLASSPATH_URL_PREFIX)) {
-                String path = resourceLocations[i].substring(CLASSPATH_URL_PREFIX.length());
-                URL url = classLoader.getResource(path);
-                if (url == null) {
-                    throw new InvalidResourceException("Class path resource [" + resourceLocations[i] +
-                            "] cannot be resolved to URL because it does not exist");
-                }
-                resourceLocations[i] = url.getFile();
-            } else if (resourceLocations[i].startsWith(FILE_URL_PREFIX)) {
-                try {
-                    URL url = new URL(resourceLocations[i]);
-                    resourceLocations[i] = url.getFile();
-                } catch (MalformedURLException e) {
-                    throw new InvalidResourceException("Resource location [" + resourceLocations[i] +
-                            "] is neither a URL not a well-formed file path");
-                }
-            } else {
-                if (basePath != null) {
-                    try {
-                        File f = new File(basePath, resourceLocations[i]);
-                        resourceLocations[i] = f.getCanonicalPath();
-                    } catch (IOException e) {
-                        throw new InvalidResourceException("Invalid resource location: " + resourceLocations[i], e);
-                    }
-                }
-            }
-            resourceLocations[i] = resourceLocations[i].replace(File.separatorChar, REGULAR_FILE_SEPARATOR_CHAR);
-            if (StringUtils.endsWith(resourceLocations[i], REGULAR_FILE_SEPARATOR_CHAR)) {
-                resourceLocations[i] = resourceLocations[i].substring(0, resourceLocations[i].length() - 1);
-            }
-        }
-
-        String resourceLocation = null;
-        int cleared = 0;
-
-        try {
-            for (int i = 0; i < resourceLocations.length - 1; i++) {
-                if (resourceLocations[i] != null) {
-                    resourceLocation = resourceLocations[i];
-                    File f1 = new File(resourceLocations[i]);
-                    String l1 = f1.getCanonicalPath();
-                    for (int j = i + 1; j < resourceLocations.length; j++) {
-                        if (resourceLocations[j] != null) {
-                            resourceLocation = resourceLocations[j];
-                            File f2 = new File(resourceLocations[j]);
-                            String l2 = f2.getCanonicalPath();
-                            if (l1.equals(l2)) {
-                                resourceLocations[j] = null;
-                                cleared++;
-                            }
-                        }
-                    }
-                }
-            }
-        } catch (IOException e) {
-            throw new InvalidResourceException("Invalid resource location: " + resourceLocation, e);
-        }
-
-        if (cleared > 0) {
-            List<String> list = new ArrayList<>(resourceLocations.length);
-            for (String r : resourceLocations) {
-                if (r != null) {
-                    list.add(r);
-                }
-            }
-            return list.toArray(new String[0]);
-        } else {
-            return resourceLocations;
-        }
     }
 
 }
