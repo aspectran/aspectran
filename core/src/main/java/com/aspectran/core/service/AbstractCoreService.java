@@ -39,6 +39,7 @@ import com.aspectran.core.util.wildcard.PluralWildcardPattern;
 
 import java.io.File;
 import java.io.IOException;
+import java.security.AccessControlException;
 
 import static com.aspectran.core.context.config.AspectranConfig.BASE_PATH_PROPERTY_NAME;
 
@@ -306,21 +307,45 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
         }
     }
 
+    /**
+     * Gets the path of the base directory from the system property aspectran.basePath.
+     */
     protected void determineBasePath() {
         try {
-            String baseDir = SystemUtils.getProperty(BASE_PATH_PROPERTY_NAME);
-            if (baseDir != null) {
-                File dir = new File(baseDir);
+            String basePath = SystemUtils.getProperty(BASE_PATH_PROPERTY_NAME);
+            if (basePath != null) {
+                File dir = new File(basePath);
                 if (!dir.isDirectory()) {
                     throw new IOException("Make sure it is a valid base directory; " +
-                            BASE_PATH_PROPERTY_NAME + "=" + baseDir);
+                            BASE_PATH_PROPERTY_NAME + "=" + basePath);
                 }
             } else {
-                baseDir = new File("").getCanonicalPath();
+                basePath = new File("").getCanonicalPath();
             }
-            setBasePath(baseDir);
+            setBasePath(basePath);
         } catch (IOException e) {
             throw new AspectranServiceException("Can not verify base directory");
+        }
+    }
+
+    /**
+     * Sets the path to the temporary directory as a system property.
+     * The property {@code aspectran.tempPath} is set if the temporary
+     * directory {@code temp} exists under the base directory.
+     */
+    protected void determineTempPath() {
+        String basePath = getBasePath();
+        if (basePath != null) {
+            File tempPath = new File(basePath, "temp");
+            if (tempPath.isDirectory()) {
+                try {
+                System.setProperty(AspectranConfig.TEMP_PATH_PROPERTY_NAME, tempPath.getCanonicalPath());
+                } catch (AccessControlException | IOException e) {
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Failed to determine the path to the temporary directory: " + tempPath);
+                    }
+                }
+            }
         }
     }
 

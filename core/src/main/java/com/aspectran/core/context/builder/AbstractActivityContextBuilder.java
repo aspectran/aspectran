@@ -54,6 +54,7 @@ import com.aspectran.core.context.rule.type.AutoReloadType;
 import com.aspectran.core.context.rule.type.BeanProxifierType;
 import com.aspectran.core.context.rule.type.DefaultSettingType;
 import com.aspectran.core.service.ServiceController;
+import com.aspectran.core.util.ClassUtils;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.SystemUtils;
 import com.aspectran.core.util.logging.Logger;
@@ -390,6 +391,7 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
     private SiblingsClassLoader newSiblingsClassLoader() throws InvalidResourceException {
         if (siblingsClassLoader == null || hardReload) {
             siblingsClassLoader = new SiblingsClassLoader(resourceLocations);
+            ClassUtils.overrideThreadContextClassLoader(siblingsClassLoader);
         } else {
             siblingsClassLoader.reload();
         }

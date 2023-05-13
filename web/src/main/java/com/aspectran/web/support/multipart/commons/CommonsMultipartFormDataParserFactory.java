@@ -77,8 +77,8 @@ public class CommonsMultipartFormDataParserFactory {
     }
 
     /**
-     * Sets the maximum size of the request in human readable format.
-     * @param maxRequestSize the maximum size of the request in human readable format.
+     * Sets the maximum size of the request in human-readable format.
+     * @param maxRequestSize the maximum size of the request in human-readable format.
      * @see org.apache.commons.fileupload.FileUploadBase#setSizeMax
      */
     public void setMaxRequestSize(String maxRequestSize) {
@@ -95,8 +95,8 @@ public class CommonsMultipartFormDataParserFactory {
     }
 
     /**
-     * Sets the maximum size of the file in human readable format.
-     * @param maxFileSize the maximum size of the file in human readable format
+     * Sets the maximum size of the file in human-readable format.
+     * @param maxFileSize the maximum size of the file in human-readable format
      * @see org.apache.commons.fileupload.FileUploadBase#setFileSizeMax
      */
     public void setMaxFileSize(String maxFileSize) {
@@ -118,7 +118,7 @@ public class CommonsMultipartFormDataParserFactory {
      * Set the maximum allowed size (in bytes) before uploads are written to disk.
      * Uploaded files will still be received past this amount, but they will not be
      * stored in memory. Default is 10240, according to Commons FileUpload.
-     * @param maxInMemorySize the maximum in memory size allowed (human readable format)
+     * @param maxInMemorySize the maximum in memory size allowed (human-readable format)
      * @see org.apache.commons.fileupload.disk.DiskFileItemFactory#setSizeThreshold
      */
     public void setMaxInMemorySize(String maxInMemorySize) {

@@ -32,6 +32,7 @@ import java.nio.file.Paths;
 public class AspectranConfig extends AbstractParameters {
 
     public static final String BASE_PATH_PROPERTY_NAME = "aspectran.basePath";
+    public static final String TEMP_PATH_PROPERTY_NAME = "aspectran.tempPath";
     public static final String DEFAULT_ASPECTRAN_CONFIG_FILE = "aspectran-config.apon";
     public static final String DEFAULT_APP_CONTEXT_FILE = "classpath:app-context.xml";
 

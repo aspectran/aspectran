@@ -10,7 +10,6 @@ context: {
         /config/app-context.xml
     ]
     resources: [
-        /config
     ]
     scan: [
         com.aspectran.demo

@@ -33,21 +33,21 @@ public class SystemUtils {
      * <p>Gets a System property, defaulting to <code>null</code> if the property
      * cannot be read.</p>
      * <p>If a <code>SecurityException</code> is caught, the return value is <code>null</code>.</p>
-     * @param name the system property name
+     * @param key the name of the system property
      * @return the system property value or <code>null</code> if a security problem occurs
      */
-    public static String getProperty(String name) {
+    public static String getProperty(String key) {
         try {
-            return System.getProperty(name);
+            return System.getProperty(key);
         } catch (AccessControlException ex) {
             if (logger.isDebugEnabled()) {
                 logger.debug(String.format(
                         "Caught AccessControlException when accessing system property [%s]; " +
                                 "its value will be returned [null]. Reason: %s",
-                        name, ex.getMessage()));
+                        key, ex.getMessage()));
             }
+            return null;
         }
-        return null;
     }
 
     public static String getProperty(String name, String defVal) {

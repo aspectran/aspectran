@@ -43,13 +43,6 @@ public class FileCopyUtils {
     private static final int DEFAULT_BUFFER_SIZE = 1024 * 4;
 
     /**
-     * Instances should NOT be constructed in standard programming.
-     */
-    public FileCopyUtils() {
-        super();
-    }
-
-    /**
      * Copies a file to a directory preserving the file date.
      * <p>
      * This method copies the contents of the specified source file

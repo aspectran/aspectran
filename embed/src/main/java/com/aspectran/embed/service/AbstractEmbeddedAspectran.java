@@ -44,6 +44,7 @@ public abstract class AbstractEmbeddedAspectran extends AspectranCoreService imp
     public AbstractEmbeddedAspectran() {
         super();
         determineBasePath();
+        determineTempPath();
     }
 
     @Override

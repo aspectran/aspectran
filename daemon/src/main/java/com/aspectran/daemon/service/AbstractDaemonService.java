@@ -40,6 +40,7 @@ public abstract class AbstractDaemonService extends AspectranCoreService impleme
     public AbstractDaemonService() {
         super();
         determineBasePath();
+        determineTempPath();
     }
 
     @Override

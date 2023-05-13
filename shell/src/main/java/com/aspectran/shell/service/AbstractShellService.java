@@ -65,6 +65,7 @@ public abstract class AbstractShellService extends AspectranCoreService implemen
         this.console = console;
 
         determineBasePath();
+        determineTempPath();
     }
 
     @Override

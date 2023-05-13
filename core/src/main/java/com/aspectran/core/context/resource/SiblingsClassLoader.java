@@ -45,19 +45,19 @@ public class SiblingsClassLoader extends ClassLoader {
 
     private final SiblingsClassLoader root;
 
+    private final boolean firstborn;
+
     private final String resourceLocation;
 
     private final ResourceManager resourceManager;
 
     private final List<SiblingsClassLoader> children = new LinkedList<>();
 
-    private final boolean firstborn;
-
-    private int reloadedCount;
-
     private Set<String> excludeClassNames;
 
     private Set<String> excludePackageNames;
+
+    private int reloadedCount;
 
     public SiblingsClassLoader() {
         this(SiblingsClassLoader.class.getClassLoader());
@@ -84,7 +84,7 @@ public class SiblingsClassLoader extends ClassLoader {
         this.root = this;
         this.firstborn = true;
         this.resourceLocation = resourceLocation;
-        this.resourceManager = new LocalResourceManager(resourceLocation, this);
+        this.resourceManager = new LocalResourceManager(this, resourceLocation);
     }
 
     public SiblingsClassLoader(String[] resourceLocations) throws InvalidResourceException {
@@ -117,7 +117,7 @@ public class SiblingsClassLoader extends ClassLoader {
         this.root = parent.getRoot();
         this.firstborn = (numOfChildren == 1);
         this.resourceLocation = resourceLocation;
-        this.resourceManager = new LocalResourceManager(resourceLocation, this);
+        this.resourceManager = new LocalResourceManager(this, resourceLocation);
     }
 
     private SiblingsClassLoader(ClassLoader parent, SiblingsClassLoader youngest) {
@@ -203,7 +203,7 @@ public class SiblingsClassLoader extends ClassLoader {
             excludeClassNames = null;
         } else {
             for (String className : classNames) {
-                if (!isExcludePackage(className)) {
+                if (!isExcludedPackage(className)) {
                     if (excludeClassNames == null) {
                         excludeClassNames = new HashSet<>();
                     }
@@ -214,10 +214,10 @@ public class SiblingsClassLoader extends ClassLoader {
     }
 
     private boolean isExcluded(String className) {
-        return (isExcludePackage(className) || isExcludeClass(className));
+        return (isExcludedPackage(className) || isExcludedClass(className));
     }
 
-    private boolean isExcludePackage(String className) {
+    private boolean isExcludedPackage(String className) {
         if (excludePackageNames != null) {
             for (String packageName : excludePackageNames) {
                 if (className.startsWith(packageName)) {
@@ -228,7 +228,7 @@ public class SiblingsClassLoader extends ClassLoader {
         return false;
     }
 
-    private boolean isExcludeClass(String className) {
+    private boolean isExcludedClass(String className) {
         return (excludeClassNames != null && excludeClassNames.contains(className));
     }
 
@@ -316,47 +316,26 @@ public class SiblingsClassLoader extends ClassLoader {
     @Override
     protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
         synchronized (getClassLoadingLock(name)) {
-            // First check if the class is already loaded
+            // First, check if the class has already been loaded
             Class<?> c = findLoadedClass(name);
-            if (c != null) {
-                if (resolve) {
-                    resolveClass(c);
-                }
-                return c;
-            }
-
-            // Try loading the class with the system class loader
-            try {
-                c = findSystemClass(name);
-                if (c != null) {
-                    if (resolve) {
-                        resolveClass(c);
+            if (c == null) {
+                try {
+                    ClassLoader parent = root.getParent();
+                    if (parent != null) {
+                        c = Class.forName(name, false, parent);
+                    } else {
+                        // Try loading the class with the system class loader
+                        c = findSystemClass(name);
                     }
-                    return c;
+                } catch (ClassNotFoundException e) {
+                    // ClassNotFoundException thrown if class not found
+                    // from the non-null parent class loader
                 }
-            } catch (ClassNotFoundException e) {
-                // ignore
-            }
-
-            // Search from local repositories
-            try {
-                c = findClass(name);
-                if (c != null) {
-                    if (resolve) {
-                        resolveClass(c);
-                    }
-                    return c;
+                if (c == null) {
+                    // Search from local repositories
+                    c = findClass(name);
                 }
-            } catch (ClassNotFoundException e) {
-                // ignore
             }
-
-            // Delegate to parent unconditionally
-            ClassLoader loader = root.getParent();
-            if (loader == null) {
-                throw new ClassNotFoundException(name);
-            }
-            c = Class.forName(name, false, loader);
             if (resolve) {
                 resolveClass(c);
             }
@@ -413,10 +392,16 @@ public class SiblingsClassLoader extends ClassLoader {
 
     @Override
     public URL getResource(String name) {
-        // Search local repositories
-        URL url = findResource(name);
+        ClassLoader parent = root.getParent();
+        URL url;
+        if (parent != null) {
+            url = parent.getResource(name);
+        } else {
+            url = getSystemClassLoader().getResource(name);
+        }
         if (url == null) {
-            url = getParent().getResource(name);
+            // Search from local repositories
+            url = findResource(name);
         }
         return url;
     }

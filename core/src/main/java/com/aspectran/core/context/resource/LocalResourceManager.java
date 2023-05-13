@@ -15,13 +15,18 @@
  */
 package com.aspectran.core.context.resource;
 
+import com.aspectran.core.context.config.AspectranConfig;
+import com.aspectran.core.util.FileCopyUtils;
 import com.aspectran.core.util.ResourceUtils;
+import com.aspectran.core.util.SystemUtils;
 import com.aspectran.core.util.ToStringBuilder;
 import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -51,7 +56,7 @@ public class LocalResourceManager extends ResourceManager {
         this.resourceNameStart = 0;
     }
 
-    public LocalResourceManager(String resourceLocation, SiblingsClassLoader owner) throws InvalidResourceException {
+    public LocalResourceManager(SiblingsClassLoader owner, String resourceLocation) throws InvalidResourceException {
         super();
 
         this.owner = owner;
@@ -59,7 +64,7 @@ public class LocalResourceManager extends ResourceManager {
         if (resourceLocation != null && !resourceLocation.isEmpty()) {
             File file = new File(resourceLocation);
             if (!file.exists() || !file.canRead()) {
-                logger.warn("Resource [" + resourceLocation + "] does not exist or you do not have access");
+                logger.warn("Non-existent or inaccessible resource location: " + resourceLocation);
                 this.resourceLocation = null;
                 this.resourceNameStart = 0;
                 return;
@@ -126,19 +131,34 @@ public class LocalResourceManager extends ResourceManager {
     }
 
     private void findResourceFromJAR(File target) throws InvalidResourceException, IOException {
-        try (JarFile jarFile = new JarFile(target)) {
-            for (Enumeration<JarEntry> entries = jarFile.entries(); entries.hasMoreElements(); ) {
-                JarEntry entry = entries.nextElement();
-                putResource(target, entry);
+        String tempPath = SystemUtils.getProperty(AspectranConfig.TEMP_PATH_PROPERTY_NAME);
+        File altResourceDir = null;
+        if (tempPath != null) {
+            Path tempDir = Path.of(tempPath);
+            if (Files.isDirectory(tempDir) && Files.isWritable(tempDir)) {
+                altResourceDir = Files.createTempDirectory(tempDir, "_resource_").toFile();
             }
         }
+        if (altResourceDir == null) {
+            altResourceDir = Files.createTempDirectory("_resource_").toFile();
+        }
+        FileCopyUtils.copyFileToDirectory(target, altResourceDir);
+        File altTarget = new File(altResourceDir, target.getName());
+        try (JarFile jarFile = new JarFile(altTarget)) {
+            for (Enumeration<JarEntry> entries = jarFile.entries(); entries.hasMoreElements(); ) {
+                JarEntry entry = entries.nextElement();
+                putResource(altTarget, entry);
+            }
+        }
+        altResourceDir.deleteOnExit();
+        altTarget.deleteOnExit();
     }
 
     @Override
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.appendForce("resourceLocation", resourceLocation);
-        tsb.append("resourceEntries", getResourceEntries());
+        tsb.append("resourceEntries", getResourceEntries().size());
         tsb.append("owner", owner);
         return tsb.toString();
     }
