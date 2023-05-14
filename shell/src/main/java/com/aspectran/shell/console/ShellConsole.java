@@ -94,6 +94,8 @@ public interface ShellConsole {
 
     void writeError(String format, Object... args);
 
+    void writeAbove(String str);
+
     void appendPrompt(String str);
 
     void clearPrompt();
@@ -108,7 +110,7 @@ public interface ShellConsole {
 
     PrintWriter getWriter();
 
-    boolean isBusy();
+    boolean isReading();
 
     boolean hasStyle();
 
@@ -133,8 +135,6 @@ public interface ShellConsole {
     String[] getInfoStyle();
 
     boolean confirmRestart();
-
-    boolean confirmRestart(String message);
 
     boolean confirmQuit();
 

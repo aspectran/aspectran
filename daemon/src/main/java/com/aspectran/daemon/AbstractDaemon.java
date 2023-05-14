@@ -105,17 +105,7 @@ public class AbstractDaemon implements Daemon {
             aspectranConfig.touchContextConfig().setBasePath(basePath);
         }
 
-        init(aspectranConfig);
-    }
-
-    protected void init(AspectranConfig aspectranConfig) throws Exception {
-        try {
-            this.daemonService = DefaultDaemonService.create(aspectranConfig);
-            this.daemonService.start();
-        } catch (Exception e) {
-            throw new Exception("Failed to initialize daemon", e);
-        }
-
+        startDaemonService(aspectranConfig);
         init(aspectranConfig.touchDaemonConfig());
     }
 
@@ -134,6 +124,15 @@ public class AbstractDaemon implements Daemon {
             this.commandRegistry = commandRegistry;
         } catch (Exception e) {
             throw new Exception("Failed to initialize daemon", e);
+        }
+    }
+
+    private void startDaemonService(AspectranConfig aspectranConfig) throws Exception {
+        try {
+            this.daemonService = DefaultDaemonService.create(aspectranConfig);
+            this.daemonService.start();
+        } catch (Exception e) {
+            throw new Exception("Failed to start daemon service", e);
         }
     }
 

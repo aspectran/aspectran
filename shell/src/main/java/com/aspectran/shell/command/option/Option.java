@@ -78,7 +78,6 @@ public class Option implements Cloneable, Serializable {
 
     /**
      * Private constructor used by the nested Builder class.
-     * 
      * @param builder builder used to create this option
      */
     private Option(Builder builder) {
@@ -98,7 +97,7 @@ public class Option implements Cloneable, Serializable {
      * The option does not take an argument.
      * @param name short representation of the option
      * @param description describes the function of the option
-     * @throws IllegalArgumentException if there are any non valid
+     * @throws IllegalArgumentException if there are any non-valid
      *      Option characters in {@code name}
      */
     public Option(String name, String description) throws IllegalArgumentException {
@@ -110,7 +109,7 @@ public class Option implements Cloneable, Serializable {
      * @param name short representation of the option
      * @param hasValue specifies whether the Option takes an argument value or not
      * @param description describes the function of the option
-     * @throws IllegalArgumentException if there are any non valid
+     * @throws IllegalArgumentException if there are any non-valid
      *      Option characters in {@code name}
      */
     public Option(String name, boolean hasValue, String description) throws IllegalArgumentException {
@@ -123,7 +122,7 @@ public class Option implements Cloneable, Serializable {
      * @param longName the long representation of the option
      * @param hasValue specifies whether the Option takes an argument value or not
      * @param description describes the function of the option
-     * @throws IllegalArgumentException if there are any non valid
+     * @throws IllegalArgumentException if there are any non-valid
      *      Option characters in {@code name}
      */
     public Option(String name, String longName, boolean hasValue, String description)
@@ -458,26 +457,11 @@ public class Option implements Cloneable, Serializable {
         return result;
     }
 
-    /**
-     * A rather odd clone method - due to incorrect code in 1.0 it is public
-     * and in 1.1 rather than throwing a CloneNotSupportedException it throws
-     * a RuntimeException so as to maintain backwards compat at the API level.
-     *
-     * After calling this method, it is very likely you will want to call
-     * clearValues().
-     * @return a clone of this Option instance
-     * @throws RuntimeException if a {@link CloneNotSupportedException} has been thrown
-     *      by {@code super.clone()}
-     */
     @Override
-    public Option clone() {
-        try {
-            Option option = (Option)super.clone();
-            option.values = new ArrayList<>(values);
-            return option;
-        } catch (CloneNotSupportedException e) {
-            throw new RuntimeException("A CloneNotSupportedException was thrown: " + e.getMessage());
-        }
+    public Option clone() throws CloneNotSupportedException {
+        Option option = (Option)super.clone();
+        option.values = new ArrayList<>(values);
+        return option;
     }
 
     /**
@@ -507,8 +491,7 @@ public class Option implements Cloneable, Serializable {
 
     /**
      * Clear the Option values. After a parse is complete, these are left with
-     * data in them and they need clearing if another parse is done.
-     *
+     * data in them, and they need clearing if another parse is done.
      * See: <a href="https://issues.apache.org/jira/browse/CLI-71">CLI-71</a>
      */
     void clearValues() {
@@ -517,7 +500,6 @@ public class Option implements Cloneable, Serializable {
 
     /**
      * Tells if the option can accept more arguments.
-     * 
      * @return false if the maximum number of arguments is reached
      */
     boolean acceptsValue() {
@@ -526,7 +508,6 @@ public class Option implements Cloneable, Serializable {
 
     /**
      * Tells if the option requires more arguments to be valid.
-     * 
      * @return false if the option doesn't require more arguments
      */
     boolean requiresValue() {
@@ -542,7 +523,6 @@ public class Option implements Cloneable, Serializable {
     /**
      * Returns a {@link Builder} to create an {@link Option} using descriptive
      * methods.  
-     * 
      * @return a new {@link Builder} instance
      */
     public static Builder builder() {
@@ -603,7 +583,6 @@ public class Option implements Cloneable, Serializable {
         /**
          * Constructs a new {@code Builder} with the minimum
          * required parameters for an {@code Option} instance.
-         * 
          * @param name short representation of the option
          * @throws IllegalArgumentException if there are any non valid Option characters in {@code name}
          */
@@ -614,7 +593,6 @@ public class Option implements Cloneable, Serializable {
 
         /**
          * Sets the long name of the Option.
-         *
          * @param longName the long name of the Option
          * @return this builder, to allow method chaining
          */
@@ -625,7 +603,6 @@ public class Option implements Cloneable, Serializable {
 
         /**
          * Sets the display name for the argument value.
-         *
          * @param valueName the display name for the argument value
          * @return this builder, to allow method chaining
          */
@@ -636,7 +613,6 @@ public class Option implements Cloneable, Serializable {
 
         /**
          * Sets the type of the Option.
-         *
          * @param valueType the type of the Option
          * @return this builder, to allow method chaining
          */
@@ -647,7 +623,6 @@ public class Option implements Cloneable, Serializable {
 
         /**
          * The Option will use '=' as a means to separate argument value.
-         *
          * @return this builder, to allow method chaining
          */
         public Builder withEqualSign() {
@@ -657,7 +632,6 @@ public class Option implements Cloneable, Serializable {
 
         /**
          * Indicates that the Option will require an argument.
-         *
          * @return this builder, to allow method chaining
          */
         public Builder hasValue() {
@@ -666,7 +640,6 @@ public class Option implements Cloneable, Serializable {
 
         /**
          * Indicates if the Option has an argument value or not.
-         *
          * @param hasValue specifies whether the Option takes an argument value or not
          * @return this builder, to allow method chaining
          */
@@ -678,7 +651,6 @@ public class Option implements Cloneable, Serializable {
 
         /**
          * Indicates that the Option can have unlimited argument values.
-         *
          * @return this builder, to allow method chaining
          */
         public Builder hasValues() {
@@ -688,7 +660,6 @@ public class Option implements Cloneable, Serializable {
 
         /**
          * Sets the number of argument values the Option can take.
-         *
          * @param numberOfValues the number of argument values
          * @return this builder, to allow method chaining
          */
@@ -699,7 +670,6 @@ public class Option implements Cloneable, Serializable {
 
         /**
          * Sets whether the Option can have an optional argument value.
-         *
          * @return this builder, to allow method chaining
          */
         public Builder optionalValue() {
@@ -709,7 +679,6 @@ public class Option implements Cloneable, Serializable {
 
         /**
          * Marks this Option as required.
-         *
          * @return this builder, to allow method chaining
          */
         public Builder required() {
@@ -718,7 +687,6 @@ public class Option implements Cloneable, Serializable {
 
         /**
          * Sets whether the Option is mandatory.
-         *
          * @param required specifies whether the Option is mandatory
          * @return this builder, to allow method chaining
          */
@@ -729,7 +697,6 @@ public class Option implements Cloneable, Serializable {
 
         /**
          * Sets the description for this option.
-         *
          * @param description the description of the option
          * @return this builder, to allow method chaining
          */
@@ -740,7 +707,6 @@ public class Option implements Cloneable, Serializable {
 
         /**
          * Constructs an Option with the values declared by this {@link Builder}.
-         * 
          * @return the new {@link Option}
          * @throws IllegalArgumentException if neither {@code name} or {@code longName} has been set
          */

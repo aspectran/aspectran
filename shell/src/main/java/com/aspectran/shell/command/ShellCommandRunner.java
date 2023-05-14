@@ -277,7 +277,7 @@ public class ShellCommandRunner implements CommandRunner {
         return dir;
     }
 
-    private class PrintStreamWrapper extends PrintStream {
+    private static class PrintStreamWrapper extends PrintStream {
 
         private final ShellConsole console;
 
@@ -293,16 +293,10 @@ public class ShellCommandRunner implements CommandRunner {
 
         @Override
         public void write(@NonNull byte[] buf, int off, int len) {
-            if (shellService != null && shellService.isActive()) {
-                console.clearLine();
-            }
             try {
-                console.write(new String(buf, off, len, console.getEncoding()));
+                console.writeAbove(new String(buf, off, len, console.getEncoding()));
             } catch (IOException e) {
                 // ignore
-            }
-            if (shellService != null && shellService.isActive()) {
-                console.redrawLine();
             }
         }
 

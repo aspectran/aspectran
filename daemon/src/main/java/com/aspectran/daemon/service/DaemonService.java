@@ -31,7 +31,7 @@ import java.util.Map;
 public interface DaemonService extends CoreService {
 
     /**
-     * Returns whether or not the translet can be exposed to the daemon service.
+     * Returns whether the translet can be exposed to the daemon service.
      * @param transletName the name of the translet to check
      * @return true if the translet can be exposed; false otherwise
      */

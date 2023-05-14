@@ -171,6 +171,11 @@ public class ShellConsoleWrapper implements ShellConsole {
     }
 
     @Override
+    public void writeAbove(String str) {
+        console.writeAbove(str);
+    }
+
+    @Override
     public void appendPrompt(String str) {
         console.appendPrompt(str);
     }
@@ -214,8 +219,8 @@ public class ShellConsoleWrapper implements ShellConsole {
     }
 
     @Override
-    public boolean isBusy() {
-        return console.isBusy();
+    public boolean isReading() {
+        return console.isReading();
     }
 
     @Override
@@ -276,11 +281,6 @@ public class ShellConsoleWrapper implements ShellConsole {
     @Override
     public boolean confirmRestart() {
         return console.confirmRestart();
-    }
-
-    @Override
-    public boolean confirmRestart(String message) {
-        return console.confirmRestart(message);
     }
 
     @Override

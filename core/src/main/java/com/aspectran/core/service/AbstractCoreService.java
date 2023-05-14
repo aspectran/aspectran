@@ -199,7 +199,8 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
         Assert.state(activityContextBuilder != null,
                 "No ActivityContextLoader configured; First, call the prepare() method");
         Assert.state(activityContext == null,
-                "ActivityContext is already configured; Must destroy the current ActivityContext before reloading");
+                "ActivityContext is already configured; " +
+                        "Must destroy the current ActivityContext before reloading");
 
         activityContextBuilder.build();
     }

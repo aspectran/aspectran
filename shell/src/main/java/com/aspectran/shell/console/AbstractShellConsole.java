@@ -217,22 +217,11 @@ public abstract class AbstractShellConsole implements ShellConsole {
 
     @Override
     public boolean confirmRestart() {
-        return confirmRestart(null);
-    }
-
-    @Override
-    public boolean confirmRestart(String message) {
-        if (isBusy()) {
-            writeAbove("Illegal State");
+        if (checkReadingState()) {
             return false;
         }
-        if (message != null) {
-            setStyle(getWarningStyle());
-            writeAbove(message);
-            resetStyle();
-        }
         String confirm = "Would you like to restart this shell [Y/n]? ";
-        setStyle("YELLOW");
+        setStyle(getWarningStyle());
         String yn = readLine(confirm);
         resetStyle();
         return (yn.isEmpty() || yn.equalsIgnoreCase("Y"));
@@ -240,6 +229,9 @@ public abstract class AbstractShellConsole implements ShellConsole {
 
     @Override
     public boolean confirmQuit() {
+        if (checkReadingState()) {
+            return false;
+        }
         String confirm = "Are you sure you want to quit [Y/n]? ";
         setStyle(getWarningStyle());
         String yn = readLine(confirm);
@@ -247,6 +239,15 @@ public abstract class AbstractShellConsole implements ShellConsole {
         return (yn.isEmpty() || yn.equalsIgnoreCase("Y"));
     }
 
-    abstract public void writeAbove(String str);
+    private boolean checkReadingState() {
+        if (isReading()) {
+            setStyle(getDangerStyle());
+            writeAbove("Illegal State");
+            resetStyle();
+            return true;
+        } else {
+            return false;
+        }
+    }
 
 }

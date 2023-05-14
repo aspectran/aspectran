@@ -113,7 +113,6 @@ public class OptionGroup implements Serializable {
 
     /**
      * Returns the stringified version of this OptionGroup.
-     * 
      * @return the stringified representation of this group
      */
     @Override

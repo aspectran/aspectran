@@ -34,7 +34,7 @@ import java.util.List;
  */
 public class DefaultShellConsole extends AbstractShellConsole {
 
-    private volatile boolean busy;
+    private volatile boolean reading;
 
     public DefaultShellConsole() {
         this(null);
@@ -82,7 +82,7 @@ public class DefaultShellConsole extends AbstractShellConsole {
     @Override
     public String readLine(String prompt, String buffer) {
         try {
-            busy = true;
+            reading = true;
             if (prompt == null) {
                 prompt = getPrompt();
             }
@@ -102,7 +102,7 @@ public class DefaultShellConsole extends AbstractShellConsole {
                 return line;
             }
         } finally {
-            busy = false;
+            reading = false;
         }
     }
 
@@ -123,7 +123,7 @@ public class DefaultShellConsole extends AbstractShellConsole {
     @Override
     public String readPassword(String prompt, String buffer) {
         try {
-            busy = true;
+            reading = true;
             if (prompt == null) {
                 prompt = getPrompt();
             }
@@ -143,7 +143,7 @@ public class DefaultShellConsole extends AbstractShellConsole {
                 return line;
             }
         } finally {
-            busy = false;
+            reading = false;
         }
     }
 
@@ -254,8 +254,8 @@ public class DefaultShellConsole extends AbstractShellConsole {
     }
 
     @Override
-    public boolean isBusy() {
-        return busy;
+    public boolean isReading() {
+        return reading;
     }
 
     @Override

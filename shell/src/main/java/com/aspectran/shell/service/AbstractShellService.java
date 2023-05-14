@@ -148,18 +148,6 @@ public abstract class AbstractShellService extends AspectranCoreService implemen
     }
 
     @Override
-    public void restart(String message) throws Exception {
-        if (console.confirmRestart(message)) {
-            super.restart(message);
-        }
-    }
-
-    @Override
-    public boolean isBusy() {
-        return console.isBusy();
-    }
-
-    @Override
     public boolean isExposable(String transletName) {
         return super.isExposable(transletName);
     }
@@ -202,6 +190,28 @@ public abstract class AbstractShellService extends AspectranCoreService implemen
             sessionManager.destroy();
             sessionManager = null;
         }
+    }
+
+    @Override
+    public void restart(String message) throws Exception {
+        if (StringUtils.hasText(message)) {
+            console.writeAbove(message);
+        }
+        if (!isBusy() && console.confirmRestart()) {
+            try {
+                super.restart(message);
+            } catch (Exception e) {
+                console.setStyle(console.getDangerStyle());
+                console.writeAbove("Shell restart failed!");
+                e.printStackTrace(console.getWriter());
+                console.resetStyle();
+            }
+        }
+    }
+
+    @Override
+    public boolean isBusy() {
+        return console.isReading();
     }
 
 }

@@ -26,7 +26,6 @@ public final class OptionUtils {
      * Validates whether {@code opt} is a permissible Option
      * shortOpt.  The rules that specify if the {@code opt}
      * is valid are:
-     *
      * <ul>
      *  <li>a single character {@code opt} that is either
      *  ' '(special case), '?', '@' or a letter</li>

@@ -31,17 +31,17 @@ import java.util.TimerTask;
 import static com.aspectran.core.util.ResourceUtils.JAR_URL_SEPARATOR;
 import static com.aspectran.core.util.ResourceUtils.URL_PROTOCOL_JAR;
 
-public class ActivityContextReloadTask extends TimerTask {
+public class ContextReloadingTimerTask extends TimerTask {
 
-    private static final Logger logger = LoggerFactory.getLogger(ActivityContextReloadTask.class);
+    private static final Logger logger = LoggerFactory.getLogger(ContextReloadingTimerTask.class);
 
     private final ServiceController serviceController;
 
     private final Map<String, Long> modifiedTimeMap = new HashMap<>();
 
-    private volatile boolean modified = false;
+    private boolean modified = false;
 
-    public ActivityContextReloadTask(ServiceController serviceController) {
+    public ContextReloadingTimerTask(ServiceController serviceController) {
         this.serviceController = serviceController;
     }
 
@@ -69,15 +69,8 @@ public class ActivityContextReloadTask extends TimerTask {
 
     @Override
     public void run() {
-        if (modifiedTimeMap.isEmpty()) {
+        if (modified || modifiedTimeMap.isEmpty()) {
             return;
-        }
-        if (modified) {
-            if (!serviceController.isBusy()) {
-                restartService();
-            } else {
-                return;
-            }
         }
         for (Map.Entry<String, Long> entry : modifiedTimeMap.entrySet()) {
             String filePath = entry.getKey();
@@ -88,14 +81,12 @@ public class ActivityContextReloadTask extends TimerTask {
                 modified = true;
                 modifiedTimeMap.put(filePath, lastModifiedTime);
                 if (logger.isDebugEnabled()) {
-                    logger.debug("Detected modified file: " + filePath);
+                    logger.debug("Detected modified resource: " + filePath);
                 }
             }
         }
         if (modified) {
-            if (!serviceController.isBusy()) {
-                restartService();
-            }
+            restartService();
         }
     }
 
@@ -104,7 +95,7 @@ public class ActivityContextReloadTask extends TimerTask {
             String message = "Some resource file changes have been detected.";
             serviceController.restart(message);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            // ignore
         } finally {
             modified = false;
         }

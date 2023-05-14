@@ -91,6 +91,7 @@ public class JLineTerminal {
                 .build();
         this.commandReader.setOpt(LineReader.Option.DISABLE_EVENT_EXPANSION);
         this.commandReader.unsetOpt(LineReader.Option.INSERT_TAB);
+        this.commandReader.unsetOpt(LineReader.Option.AUTO_FRESH_LINE);
 
         AutosuggestionWidgets autosuggestionWidgets = new AutosuggestionWidgets(commandReader);
         autosuggestionWidgets.enable();
@@ -164,10 +165,10 @@ public class JLineTerminal {
     public void clearLine() {
         if (!isDumb()) {
             if (!isDumbColor()) {
-                if (commandReader.isReading()) {
-                    commandReader.callWidget(LineReader.CLEAR);
-                } else if (reader.isReading()) {
+                if (reader.isReading()) {
                     reader.callWidget(LineReader.CLEAR);
+                } else {
+                    commandReader.callWidget(LineReader.CLEAR);
                 }
             } else {
                 if (terminal.puts(InfoCmp.Capability.carriage_return)) {
@@ -203,8 +204,8 @@ public class JLineTerminal {
         return terminal.writer();
     }
     
-    public boolean isBusy() {
-        return reader.isReading();
+    public boolean isReading() {
+        return commandReader.isReading() || reader.isReading();
     }
 
     public String toAnsi(String str) {

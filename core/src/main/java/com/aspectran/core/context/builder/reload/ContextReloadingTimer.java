@@ -26,9 +26,9 @@ import java.util.Timer;
 /**
  * Provides timer control to reload the ActivityContext.
  */
-public class ActivityContextReloader {
+public class ContextReloadingTimer {
 
-    private static final Logger logger = LoggerFactory.getLogger(ActivityContextReloader.class);
+    private static final Logger logger = LoggerFactory.getLogger(ContextReloadingTimer.class);
 
     private final ServiceController serviceController;
 
@@ -36,9 +36,9 @@ public class ActivityContextReloader {
 
     private volatile Timer timer;
 
-    private ActivityContextReloadTask reloadTask;
+    private ContextReloadingTimerTask timerTask;
 
-    public ActivityContextReloader(ServiceController serviceController) {
+    public ContextReloadingTimer(ServiceController serviceController) {
         this.serviceController = serviceController;
     }
 
@@ -50,27 +50,27 @@ public class ActivityContextReloader {
         stop();
 
         if (logger.isDebugEnabled()) {
-            logger.debug("Starting ActivityContextReloader...");
+            logger.debug("Starting ContextReloadingTimer...");
         }
 
-        reloadTask = new ActivityContextReloadTask(serviceController);
-        reloadTask.setResources(resources);
+        timerTask = new ContextReloadingTimerTask(serviceController);
+        timerTask.setResources(resources);
 
-        timer = new Timer("ContextReloadTask@" + reloadTask.hashCode());
-        timer.schedule(reloadTask, 0, scanIntervalInSeconds * 1000L);
+        timer = new Timer("ContextReloadingTimer");
+        timer.schedule(timerTask, 0, scanIntervalInSeconds * 1000L);
     }
 
     public void stop() {
         if (timer != null) {
             if (logger.isDebugEnabled()) {
-                logger.debug("Stopping ActivityContextReloader...");
+                logger.debug("Stopping ContextReloadingTimer...");
             }
 
             timer.cancel();
             timer = null;
 
-            reloadTask.cancel();
-            reloadTask = null;
+            timerTask.cancel();
+            timerTask = null;
         }
     }
 

@@ -99,8 +99,8 @@ public class DefaultOptionParser implements OptionParser {
 
     /**
      * Parse the arguments according to the specified options and properties.
-     * @param options    the specified Options
-     * @param args  the command line arguments
+     * @param options the specified Options
+     * @param args the command line arguments
      * @param properties command line option name-value pairs
      * @return the list of atomic option and value tokens
      * @throws OptionParserException if there are any problems encountered
@@ -372,7 +372,7 @@ public class DefaultOptionParser implements OptionParser {
 
     /**
      * Handles an unknown token. If the token starts with a dash an
-     * UnrecognizedOptionException is thrown. Otherwise the token is added
+     * UnrecognizedOptionException is thrown. Otherwise, the token is added
      * to the arguments of the command line. If the skipParsingAtNonOption flag
      * is set, this stops the parsing and the remaining tokens are added
      * as-is in the arguments of the command line.
@@ -389,7 +389,12 @@ public class DefaultOptionParser implements OptionParser {
     private void handleOption(Option option) throws OptionParserException {
         // check the previous option before handling the next one
         checkRequiredOptionValues();
-        option = option.clone();
+        try {
+            option = option.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new OptionParserException("A CloneNotSupportedException was thrown: " + e.getMessage() + "; " +
+                    "Class " + option.getClass() + " must implement the Cloneable interface");
+        }
         updateRequiredOptions(option);
         parsedOptions.addOption(option);
         if (option.hasValue()) {
@@ -417,8 +422,7 @@ public class DefaultOptionParser implements OptionParser {
     }
 
     /**
-     * Throws a {@link MissingOptionException} if all of the required options
-     * are not present.
+     * Throws a {@link MissingOptionException} if all required options are not present.
      * @throws MissingOptionException if any of the required Options are not present
      */
     private void checkRequiredOptions() throws MissingOptionException {

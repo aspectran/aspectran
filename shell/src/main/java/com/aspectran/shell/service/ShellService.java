@@ -70,7 +70,7 @@ public interface ShellService extends CoreService {
     void printHelp();
 
     /**
-     * Returns whether or not the translet can be exposed to the shell service.
+     * Returns whether the translet can be exposed to the shell service.
      * @param transletName the name of the translet to check
      * @return true if the translet can be exposed; false otherwise
      */

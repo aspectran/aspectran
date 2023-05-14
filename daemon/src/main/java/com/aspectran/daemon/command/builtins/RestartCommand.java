@@ -65,7 +65,7 @@ public class RestartCommand extends AbstractCommand {
 
         @Override
         public String getDescription() {
-            return "Restart this application to reload all resources";
+            return "Restart the daemon to reload all resources";
         }
 
     }

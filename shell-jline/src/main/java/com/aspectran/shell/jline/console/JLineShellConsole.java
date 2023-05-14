@@ -196,7 +196,11 @@ public class JLineShellConsole extends AbstractShellConsole {
     }
 
     public void writeAbove(String str) {
-        jlineTerminal.getReader().printAbove(jlineTerminal.toAnsi(str));
+        if (jlineTerminal.getReader().isReading()) {
+            jlineTerminal.getReader().printAbove(jlineTerminal.toAnsi(str));
+        } else {
+            jlineTerminal.getCommandReader().printAbove(jlineTerminal.toAnsi(str));
+        }
     }
 
     @Override
@@ -230,8 +234,8 @@ public class JLineShellConsole extends AbstractShellConsole {
     }
 
     @Override
-    public boolean isBusy() {
-        return jlineTerminal.isBusy();
+    public boolean isReading() {
+        return jlineTerminal.isReading();
     }
 
     @Override

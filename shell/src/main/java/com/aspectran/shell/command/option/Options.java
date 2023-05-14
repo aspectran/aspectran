@@ -241,7 +241,7 @@ public class Options implements Serializable {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("[ Options: [ short ");
-        sb.append(shortOpts.toString());
+        sb.append(shortOpts);
         sb.append(" ] [ long ");
         sb.append(longOpts);
         sb.append(" ]");
