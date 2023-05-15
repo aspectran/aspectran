@@ -33,6 +33,7 @@ import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
 import com.aspectran.shell.adapter.ShellSessionAdapter;
 import com.aspectran.shell.console.ShellConsole;
+import com.aspectran.shell.console.ShellConsolePrintStream;
 
 /**
  * Abstract base class for {@code ShellService} implementations.
@@ -195,18 +196,20 @@ public abstract class AbstractShellService extends AspectranCoreService implemen
     @Override
     public void restart(String message) throws Exception {
         if (StringUtils.hasText(message)) {
+            console.setStyle(console.getDangerStyle());
             console.writeAbove(message);
+            console.resetStyle();
         }
-        if (!isBusy() && console.confirmRestart()) {
+//        if (!isBusy() && console.confirmRestart()) {
             try {
                 super.restart(message);
             } catch (Exception e) {
                 console.setStyle(console.getDangerStyle());
                 console.writeAbove("Shell restart failed!");
-                e.printStackTrace(console.getWriter());
+                e.printStackTrace(new ShellConsolePrintStream(System.err, console));
                 console.resetStyle();
             }
-        }
+//        }
     }
 
     @Override

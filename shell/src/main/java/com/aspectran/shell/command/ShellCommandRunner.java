@@ -31,6 +31,7 @@ import com.aspectran.shell.command.option.ParsedOptions;
 import com.aspectran.shell.console.CommandReadFailedException;
 import com.aspectran.shell.console.ShellConsole;
 import com.aspectran.shell.console.ShellConsoleClosedException;
+import com.aspectran.shell.console.ShellConsolePrintStream;
 import com.aspectran.shell.console.ShellConsoleWrapper;
 import com.aspectran.shell.service.DefaultShellService;
 import com.aspectran.shell.service.ShellService;
@@ -135,8 +136,8 @@ public class ShellCommandRunner implements CommandRunner {
 
         orgSystemOut = System.out;
         orgSystemErr = System.err;
-        PrintStream out = new PrintStreamWrapper(orgSystemOut, console);
-        PrintStream err = new PrintStreamWrapper(orgSystemErr, console);
+        PrintStream out = new ShellConsolePrintStream(orgSystemOut, console);
+        PrintStream err = new ShellConsolePrintStream(orgSystemErr, console);
         System.setOut(out);
         System.setErr(err);
     }
@@ -275,31 +276,6 @@ public class ShellCommandRunner implements CommandRunner {
             dir.mkdirs();
         }
         return dir;
-    }
-
-    private static class PrintStreamWrapper extends PrintStream {
-
-        private final ShellConsole console;
-
-        PrintStreamWrapper(PrintStream parent, ShellConsole console) {
-            super(parent);
-            this.console = console;
-        }
-
-        @Override
-        public void write(int b) {
-            write(new byte[] { (byte)b }, 0, 1);
-        }
-
-        @Override
-        public void write(@NonNull byte[] buf, int off, int len) {
-            try {
-                console.writeAbove(new String(buf, off, len, console.getEncoding()));
-            } catch (IOException e) {
-                // ignore
-            }
-        }
-
     }
 
 }
