@@ -144,9 +144,7 @@ public class DefaultDaemonService extends AbstractDaemonService {
 
             @Override
             public void restarted() {
-                daemonService.destroySessionManager();
-                daemonService.initSessionManager();
-                daemonService.pauseTimeout = 0L;
+                started();
             }
 
             @Override

@@ -78,7 +78,7 @@ public class AspectCommand extends AbstractCommand {
 
     @Override
     public void execute(ParsedOptions options, ShellConsole console) throws Exception {
-        ShellService shellService = getShellService();
+        ShellService shellService = getActiveShellService();
         if (options.hasOption("help")) {
             printHelp(console);
         } else if (options.hasOption("list")) {

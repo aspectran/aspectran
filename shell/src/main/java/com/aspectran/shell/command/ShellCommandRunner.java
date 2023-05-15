@@ -37,7 +37,6 @@ import com.aspectran.shell.service.DefaultShellService;
 import com.aspectran.shell.service.ShellService;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.nio.file.Path;
@@ -136,8 +135,8 @@ public class ShellCommandRunner implements CommandRunner {
 
         orgSystemOut = System.out;
         orgSystemErr = System.err;
-        PrintStream out = new ShellConsolePrintStream(orgSystemOut, console);
-        PrintStream err = new ShellConsolePrintStream(orgSystemErr, console);
+        PrintStream out = new ShellConsolePrintStream(console);
+        PrintStream err = new ShellConsolePrintStream(console);
         System.setOut(out);
         System.setErr(err);
     }

@@ -147,6 +147,15 @@ public abstract class AbstractServiceController implements ServiceController {
 
                 active = false;
                 doStop();
+
+                if (serviceStateListener != null) {
+                    try {
+                        serviceStateListener.stopped();
+                    } catch (Exception e) {
+                        logger.warn(e);
+                    }
+                }
+
                 doStart();
                 active = true;
 

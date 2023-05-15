@@ -76,7 +76,7 @@ public class JettyCommand extends AbstractCommand {
             command = options.getFirstArg();
         }
 
-        ShellService shellService = getShellService();
+        ShellService shellService = getActiveShellService();
 
         String serverName = options.getValue("server", "jetty.server");
         BeanRegistry beanRegistry = shellService.getActivityContext().getBeanRegistry();

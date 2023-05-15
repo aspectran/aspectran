@@ -77,7 +77,7 @@ public class UndertowCommand extends AbstractCommand {
             command = options.getFirstArg();
         }
 
-        ShellService shellService = getShellService();
+        ShellService shellService = getActiveShellService();
 
         String serverName = options.getValue("server", "tow.server");
         BeanRegistry beanRegistry = shellService.getActivityContext().getBeanRegistry();

@@ -47,7 +47,11 @@ public class RestartCommand extends AbstractCommand {
             printHelp(console);
         } else if (console.confirmRestart()) {
             console.clearScreen();
-            getShellService().getServiceController().restart();
+            if (getShellService().getServiceController().isActive()) {
+                getShellService().getServiceController().restart();
+            } else {
+                getShellService().getServiceController().start();
+            }
         }
     }
 

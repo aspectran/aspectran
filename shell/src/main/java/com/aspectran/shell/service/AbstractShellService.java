@@ -200,16 +200,19 @@ public abstract class AbstractShellService extends AspectranCoreService implemen
             console.writeAbove(message);
             console.resetStyle();
         }
-//        if (!isBusy() && console.confirmRestart()) {
+        if (!isBusy() && console.confirmRestart()) {
             try {
                 super.restart(message);
             } catch (Exception e) {
                 console.setStyle(console.getDangerStyle());
                 console.writeAbove("Shell restart failed!");
-                e.printStackTrace(new ShellConsolePrintStream(System.err, console));
+                e.printStackTrace(new ShellConsolePrintStream(console));
                 console.resetStyle();
+                if (console.isReading()) {
+                    console.redrawLine();
+                }
             }
-//        }
+        }
     }
 
     @Override

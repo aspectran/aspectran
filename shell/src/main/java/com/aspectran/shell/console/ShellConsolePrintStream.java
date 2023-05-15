@@ -19,12 +19,13 @@ import com.aspectran.core.lang.NonNull;
 
 import java.io.IOException;
 import java.io.PrintStream;
+
 public class ShellConsolePrintStream extends PrintStream {
 
     private final ShellConsole console;
 
-    public ShellConsolePrintStream(PrintStream parent, ShellConsole console) {
-        super(parent);
+    public ShellConsolePrintStream(ShellConsole console) {
+        super(console.getOutput());
         this.console = console;
     }
 
@@ -35,9 +36,12 @@ public class ShellConsolePrintStream extends PrintStream {
 
     @Override
     public void write(@NonNull byte[] buf, int off, int len) {
+        if (console.isReading()) {
+            console.clearLine();
+        }
         try {
             String str = new String(buf, off, len, console.getEncoding());
-            console.writeAbove(str);
+            console.write(str);
         } catch (IOException e) {
             // ignore
         }

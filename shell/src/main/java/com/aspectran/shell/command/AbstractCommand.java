@@ -50,7 +50,15 @@ public abstract class AbstractCommand implements Command {
 
     public ShellService getShellService() {
         ShellService shellService = (getCommandRunner() != null ? getCommandRunner().getShellService() : null);
-        if (shellService == null || !shellService.getServiceController().isActive()) {
+        if (shellService == null) {
+            throw new IllegalStateException("SERVICE NOT AVAILABLE");
+        }
+        return shellService;
+    }
+
+    public ShellService getActiveShellService() {
+        ShellService shellService = getShellService();
+        if (!shellService.getServiceController().isActive()) {
             throw new IllegalStateException("SERVICE NOT AVAILABLE");
         }
         return shellService;
