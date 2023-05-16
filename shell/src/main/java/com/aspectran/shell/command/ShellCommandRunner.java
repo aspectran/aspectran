@@ -31,7 +31,8 @@ import com.aspectran.shell.command.option.ParsedOptions;
 import com.aspectran.shell.console.CommandReadFailedException;
 import com.aspectran.shell.console.ShellConsole;
 import com.aspectran.shell.console.ShellConsoleClosedException;
-import com.aspectran.shell.console.ShellConsolePrintStream;
+import com.aspectran.shell.console.ShellConsoleErrorStream;
+import com.aspectran.shell.console.ShellConsoleOutStream;
 import com.aspectran.shell.console.ShellConsoleWrapper;
 import com.aspectran.shell.service.DefaultShellService;
 import com.aspectran.shell.service.ShellService;
@@ -135,10 +136,8 @@ public class ShellCommandRunner implements CommandRunner {
 
         orgSystemOut = System.out;
         orgSystemErr = System.err;
-        PrintStream out = new ShellConsolePrintStream(console);
-        PrintStream err = new ShellConsolePrintStream(console);
-        System.setOut(out);
-        System.setErr(err);
+        System.setOut(new ShellConsoleOutStream(console));
+        System.setErr(new ShellConsoleErrorStream(console));
     }
 
     public void run() {
@@ -204,6 +203,11 @@ public class ShellCommandRunner implements CommandRunner {
         } catch (OptionParserException e) {
             wrappedConsole.writeError(e.getMessage());
             command.printHelp(wrappedConsole);
+        } catch (FailedCommandException e) {
+            logger.error("Failed to execute command: " + lineParser.getCommandLine(), e.getCause());
+            console.setStyle(console.getDangerStyle());
+            console.writeAbove(e.getMessage());
+            console.resetStyle();
         } catch (Exception e) {
             logger.error("Failed to execute command: " + lineParser.getCommandLine(), e);
         } finally {

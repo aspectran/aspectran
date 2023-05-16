@@ -33,13 +33,13 @@
         </settings>
     </aspect>
 
-    <append file="/config/web/home/main.xml"/>
-    <append file="/config/web/examples/hello-world.xml"/>
-    <append file="/config/web/examples/gs-rest-service.xml" profile="!daemon"/>
-    <append file="/config/web/examples/file-upload.xml" profile="!daemon"/>
-    <append file="/config/web/terminal/translet-interpreter.xml" profile="!daemon"/>
-    <append file="/config/web/chat/chat.xml" profile="!daemon"/>
-    <append file="/config/web/skylark/skylark.xml" profile="!daemon"/>
-    <append file="/config/web/apm/apm.xml" profile="!daemon"/>
+    <append resource="web/home/main.xml"/>
+    <append resource="web/examples/hello-world.xml"/>
+    <append resource="web/examples/gs-rest-service.xml" profile="!daemon"/>
+    <append resource="web/examples/file-upload.xml" profile="!daemon"/>
+    <append resource="web/terminal/translet-interpreter.xml" profile="!daemon"/>
+    <append resource="web/skylark/skylark.xml" profile="!daemon"/>
+    <append resource="web/chat/chat.xml" profile="!daemon"/>
+    <append resource="web/apm/apm.xml" profile="!daemon"/>
 
 </aspectran>

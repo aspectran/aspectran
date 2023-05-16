@@ -163,35 +163,26 @@ public class JLineTerminal {
     }
 
     public void clearLine() {
-        if (!isDumb()) {
-            if (!isDumbColor()) {
-                if (reader.isReading()) {
-                    reader.callWidget(LineReader.CLEAR);
-                } else {
-                    commandReader.callWidget(LineReader.CLEAR);
-                }
+        if (!isDumb() && !isDumbColor()) {
+            if (reader.isReading()) {
+                reader.callWidget(LineReader.CLEAR);
             } else {
-                if (terminal.puts(InfoCmp.Capability.carriage_return)) {
-                    terminal.flush();
-                } else {
-                    getWriter().print("\r");
-                    getWriter().flush();
-                }
+                commandReader.callWidget(LineReader.CLEAR);
             }
         } else {
-            getWriter().print("\r");
+            getWriter().write("\r \r");
             getWriter().flush();
         }
     }
 
     public void redrawLine() {
         if (!isDumb()) {
-            if (commandReader.isReading()) {
-                commandReader.callWidget(LineReader.REDRAW_LINE);
-                commandReader.callWidget(LineReader.REDISPLAY);
-            } else if (reader.isReading()) {
+            if (reader.isReading()) {
                 reader.callWidget(LineReader.REDRAW_LINE);
                 reader.callWidget(LineReader.REDISPLAY);
+            } else if (commandReader.isReading()) {
+                commandReader.callWidget(LineReader.REDRAW_LINE);
+                commandReader.callWidget(LineReader.REDISPLAY);
             }
         }
     }

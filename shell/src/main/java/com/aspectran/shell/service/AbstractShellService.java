@@ -33,7 +33,6 @@ import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
 import com.aspectran.shell.adapter.ShellSessionAdapter;
 import com.aspectran.shell.console.ShellConsole;
-import com.aspectran.shell.console.ShellConsolePrintStream;
 
 /**
  * Abstract base class for {@code ShellService} implementations.
@@ -116,8 +115,14 @@ public abstract class AbstractShellService extends AspectranCoreService implemen
         if (greetingsTokens != null) {
             TokenEvaluator evaluator = new TokenEvaluation(getDefaultActivity());
             String message = evaluator.evaluateAsString(greetingsTokens);
+            if (console.isReading()) {
+                console.clearLine();
+            }
             console.writeLine(message);
         } else if (greetings != null) {
+            if (console.isReading()) {
+                console.clearLine();
+            }
             console.writeLine(greetings);
         }
     }
@@ -204,13 +209,13 @@ public abstract class AbstractShellService extends AspectranCoreService implemen
             try {
                 super.restart(message);
             } catch (Exception e) {
+                logger.error("Shell restart failed", e);
                 console.setStyle(console.getDangerStyle());
                 console.writeAbove("Shell restart failed!");
-                e.printStackTrace(new ShellConsolePrintStream(console));
                 console.resetStyle();
-                if (console.isReading()) {
-                    console.redrawLine();
-                }
+            }
+            if (console.isReading()) {
+                console.redrawLine();
             }
         }
     }

@@ -10,6 +10,7 @@ context: {
         /config/app-context.xml
     ]
     resources: [
+        /lib/ext
     ]
     scan: [
         com.aspectran.demo
@@ -20,8 +21,9 @@ context: {
         ]
     }
     autoReload: {
+        reloadMode: hard
         scanIntervalSeconds: 5
-        enabled: false
+        enabled: true
     }
     singleton: true
 }

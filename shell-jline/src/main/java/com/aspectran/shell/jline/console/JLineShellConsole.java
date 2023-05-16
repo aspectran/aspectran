@@ -158,7 +158,7 @@ public class JLineShellConsole extends AbstractShellConsole {
 
     @Override
     public void write(String str) {
-        getWriter().print(jlineTerminal.toAnsi(str));
+        getWriter().write(jlineTerminal.toAnsi(str));
     }
 
     @Override

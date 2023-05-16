@@ -20,30 +20,37 @@ import com.aspectran.core.lang.NonNull;
 import java.io.IOException;
 import java.io.PrintStream;
 
-public class ShellConsolePrintStream extends PrintStream {
+public class ShellConsoleOutStream extends PrintStream {
 
     private final ShellConsole console;
 
-    public ShellConsolePrintStream(ShellConsole console) {
-        super(console.getOutput());
-        this.console = console;
+    private final String[] styles;
+
+    public ShellConsoleOutStream(ShellConsole console) {
+        this(console, null);
     }
 
-    @Override
-    public void write(int b) {
-        write(new byte[] { (byte)b }, 0, 1);
+    public ShellConsoleOutStream(ShellConsole console, String[] styles) {
+        super(console.getOutput());
+        this.console = console;
+        this.styles = styles;
     }
 
     @Override
     public void write(@NonNull byte[] buf, int off, int len) {
-        if (console.isReading()) {
-            console.clearLine();
-        }
         try {
-            String str = new String(buf, off, len, console.getEncoding());
-            console.write(str);
+            String str = new String(buf, off, len, console.getEncoding()).stripTrailing();
+            if (!str.isBlank()) {
+                if (styles != null) {
+                    console.setStyle(styles);
+                }
+                console.writeAbove(str.stripTrailing());
+                if (styles != null) {
+                    console.resetStyle();
+                }
+            }
         } catch (IOException e) {
-            // ignore
+            super.write(buf, off, len);
         }
     }
 
