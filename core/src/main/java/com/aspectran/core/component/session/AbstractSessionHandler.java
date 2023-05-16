@@ -389,7 +389,8 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
 
     @Override
     public void recordSessionTime(DefaultSession session) {
-        sessionTimeStats.record(round((System.currentTimeMillis() - session.getSessionData().getCreated()) / 1000.0));
+        long now = System.currentTimeMillis();
+        sessionTimeStats.record(round((now - session.getSessionData().getCreated()) / 1000.0));
     }
 
     @Override

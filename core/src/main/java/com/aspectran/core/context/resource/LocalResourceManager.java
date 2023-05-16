@@ -25,9 +25,11 @@ import com.aspectran.core.util.logging.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.jar.JarEntry;
@@ -42,18 +44,16 @@ public class LocalResourceManager extends ResourceManager {
 
     private static final Logger logger = LoggerFactory.getLogger(LocalResourceManager.class);
 
+    private static final String TEMP_RESOURCE_DIRNAME_PREFIX = "_resource_";
+
     private final String resourceLocation;
 
     private final int resourceNameStart;
 
     private final SiblingsClassLoader owner;
 
-    public LocalResourceManager(SiblingsClassLoader owner) {
-        super();
-
-        this.owner = owner;
-        this.resourceLocation = null;
-        this.resourceNameStart = 0;
+    public LocalResourceManager(SiblingsClassLoader owner) throws InvalidResourceException {
+        this(owner, null);
     }
 
     public LocalResourceManager(SiblingsClassLoader owner, String resourceLocation) throws InvalidResourceException {
@@ -80,6 +80,10 @@ public class LocalResourceManager extends ResourceManager {
         } else {
             this.resourceLocation = null;
             this.resourceNameStart = 0;
+        }
+
+        if (owner.isRoot()) {
+            sweepTempResourceFiles();
         }
     }
 
@@ -136,11 +140,11 @@ public class LocalResourceManager extends ResourceManager {
         if (tempPath != null) {
             Path tempDir = Path.of(tempPath);
             if (Files.isDirectory(tempDir) && Files.isWritable(tempDir)) {
-                altResourceDir = Files.createTempDirectory(tempDir, "_resource_").toFile();
+                altResourceDir = Files.createTempDirectory(tempDir, TEMP_RESOURCE_DIRNAME_PREFIX).toFile();
             }
         }
         if (altResourceDir == null) {
-            altResourceDir = Files.createTempDirectory("_resource_").toFile();
+            altResourceDir = Files.createTempDirectory(TEMP_RESOURCE_DIRNAME_PREFIX).toFile();
         }
         FileCopyUtils.copyFileToDirectory(target, altResourceDir);
         File altTarget = new File(altResourceDir, target.getName());
@@ -158,9 +162,42 @@ public class LocalResourceManager extends ResourceManager {
     public String toString() {
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.appendForce("resourceLocation", resourceLocation);
-        tsb.append("resourceEntries", getResourceEntries().size());
+        tsb.append("numberOfResources", getNumberOfResources());
         tsb.append("owner", owner);
         return tsb.toString();
+    }
+
+    private void sweepTempResourceFiles() {
+        String tempPath = SystemUtils.getProperty(AspectranConfig.TEMP_PATH_PROPERTY_NAME);
+        if (tempPath != null) {
+            Path tempDir = Path.of(tempPath);
+            if (logger.isDebugEnabled()) {
+                logger.debug("Sweeping " + tempDir.toAbsolutePath() + TEMP_RESOURCE_DIRNAME_PREFIX + "*" +
+                        " for old resource files");
+            }
+            try {
+                Files.walk(tempDir, 1, FileVisitOption.FOLLOW_LINKS)
+                        .filter(Files::isDirectory)
+                        .filter(p -> p.getFileName().toString().startsWith(TEMP_RESOURCE_DIRNAME_PREFIX))
+                        .forEach(p -> {
+                            try {
+                                Files.walk(p)
+                                        .sorted(Comparator.reverseOrder())
+                                        .map(Path::toFile)
+                                        .forEach(file -> {
+                                            if (logger.isTraceEnabled()) {
+                                                logger.trace("Delete temp resource: " + file);
+                                            }
+                                            file.delete();
+                                        });
+                            } catch (IOException e) {
+                                logger.warn("Failed to delete temp resource: " + e.getMessage());
+                            }
+                        });
+            } catch (IOException e) {
+                logger.warn(e);
+            }
+        }
     }
 
 }

@@ -59,11 +59,11 @@ public class SiblingsClassLoader extends ClassLoader {
 
     private int reloadedCount;
 
-    public SiblingsClassLoader() {
+    public SiblingsClassLoader() throws InvalidResourceException {
         this(SiblingsClassLoader.class.getClassLoader());
     }
 
-    public SiblingsClassLoader(ClassLoader parent) {
+    public SiblingsClassLoader(ClassLoader parent) throws InvalidResourceException {
         super(parent);
 
         this.id = 1000;
@@ -120,7 +120,7 @@ public class SiblingsClassLoader extends ClassLoader {
         this.resourceManager = new LocalResourceManager(this, resourceLocation);
     }
 
-    private SiblingsClassLoader(ClassLoader parent, SiblingsClassLoader youngest) {
+    private SiblingsClassLoader(ClassLoader parent, SiblingsClassLoader youngest) throws InvalidResourceException {
         super(parent);
 
         if (youngest == null) {
@@ -153,7 +153,7 @@ public class SiblingsClassLoader extends ClassLoader {
         }
     }
 
-    public SiblingsClassLoader addGeneration(ClassLoader classLoader) {
+    public SiblingsClassLoader addGeneration(ClassLoader classLoader) throws InvalidResourceException {
         SiblingsClassLoader youngest = root;
         while (youngest.hasChildren()) {
             youngest = youngest.getChildren().get(0);
@@ -460,7 +460,7 @@ public class SiblingsClassLoader extends ClassLoader {
         tsb.append("root", this == root);
         tsb.append("firstborn", firstborn);
         tsb.append("resourceLocation", resourceLocation);
-        tsb.append("numberOfResource", resourceManager != null ? resourceManager.getNumberOfResources() : '?');
+        tsb.append("numberOfResources", resourceManager != null ? resourceManager.getNumberOfResources() : '?');
         tsb.appendSize("numberOfChildren", children);
         tsb.append("reloadedCount", reloadedCount);
         return tsb.toString();
