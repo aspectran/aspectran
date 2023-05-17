@@ -172,8 +172,8 @@ public class LocalResourceManager extends ResourceManager {
         if (tempPath != null) {
             Path tempDir = Path.of(tempPath);
             if (logger.isDebugEnabled()) {
-                logger.debug("Sweeping " + tempDir.toAbsolutePath() + TEMP_RESOURCE_DIRNAME_PREFIX + "*" +
-                        " for old resource files");
+                logger.debug("Sweeping " + tempDir.toAbsolutePath() + File.separatorChar +
+                        TEMP_RESOURCE_DIRNAME_PREFIX + "* for old resource files");
             }
             try {
                 Files.walk(tempDir, 1, FileVisitOption.FOLLOW_LINKS)
@@ -195,7 +195,7 @@ public class LocalResourceManager extends ResourceManager {
                             }
                         });
             } catch (IOException e) {
-                logger.warn(e);
+                logger.warn("Inaccessible temp path: " + tempPath, e);
             }
         }
     }
