@@ -51,6 +51,8 @@ public class JsonWriter implements Flushable, Closeable {
 
     private static final String DEFAULT_INDENT_STRING = "  ";
 
+    private static final String NULL_STRING = "null";
+
     private final ArrayStack<Boolean> writtenFlags = new ArrayStack<>();
 
     private final Writer out;
@@ -140,6 +142,8 @@ public class JsonWriter implements Flushable, Closeable {
             writeNull();
         } else if (object instanceof String) {
             writeValue(object.toString());
+        } else if (object instanceof JsonString) {
+            writeJson(object.toString());
         } else if (object instanceof Character) {
             writeValue(String.valueOf(((char)object)));
         } else if (object instanceof Boolean) {
@@ -332,7 +336,7 @@ public class JsonWriter implements Flushable, Closeable {
     public void writeNull(boolean force) throws IOException {
         if (nullWritable || force) {
             writePendedName();
-            out.write("null");
+            out.write(NULL_STRING);
             writtenFlags.update(true);
         } else {
             clearPendedName();
@@ -348,16 +352,20 @@ public class JsonWriter implements Flushable, Closeable {
     public void writeJson(String json) throws IOException {
         if (nullWritable || json != null) {
             writePendedName();
-            BufferedReader reader = new BufferedReader(new StringReader(json));
-            boolean first = true;
-            String line;
-            while ((line = reader.readLine()) != null) {
-                if (!first) {
-                    nextLine();
-                    indent();
+            if (json != null) {
+                BufferedReader reader = new BufferedReader(new StringReader(json));
+                boolean first = true;
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    if (!first) {
+                        nextLine();
+                        indent();
+                    }
+                    out.write(line);
+                    first = false;
                 }
-                out.write(line);
-                first = false;
+            } else {
+                out.write(NULL_STRING);
             }
             writtenFlags.update(true);
         } else {

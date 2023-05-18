@@ -222,7 +222,7 @@ public interface Translet {
     void setParameter(String name, String[] values);
 
     /**
-     * Return an mutable Map of the request parameters,
+     * Return a mutable Map of the request parameters,
      * with parameter names as map keys and parameter values as map values.
      * If the parameter value type is the {@code String} then map value will be of type {@code String}.
      * If the parameter value type is the {@code String} array then map value will be of type {@code String} array.

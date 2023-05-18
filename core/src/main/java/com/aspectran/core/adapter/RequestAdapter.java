@@ -330,9 +330,9 @@ public interface RequestAdapter {
     void extractAttributes(Map<String, Object> targetAttributes);
 
     /**
-     * Returns an mutable map of the attributes,
+     * Returns a mutable map of the attributes,
      * with attribute names as map keys and attribute value as map value.
-     * @return an modifiable map of the attributes
+     * @return a modifiable map of the attributes
      */
     Map<String, Object> getAttributeMap();
 
