@@ -121,16 +121,16 @@ public interface RestResponse extends CustomTransformer {
 
     int getStatus();
 
-    void setStatus(int status);
+    RestResponse setStatus(int status);
 
-    void setStatus(HttpStatus status);
+    RestResponse setStatus(HttpStatus status);
 
     /**
      * Set the given single header value under the given header name.
      * @param name the header name
      * @param value the header value to set
      */
-    void setHeader(String name, String value);
+    RestResponse setHeader(String name, String value);
 
     /**
      * Add the given single header value to the current list of values
@@ -138,6 +138,6 @@ public interface RestResponse extends CustomTransformer {
      * @param name the header name
      * @param value the header value to be added
      */
-    void addHeader(String name, String value);
+    RestResponse addHeader(String name, String value);
 
 }

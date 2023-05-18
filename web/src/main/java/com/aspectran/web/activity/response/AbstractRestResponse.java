@@ -299,30 +299,34 @@ public abstract class AbstractRestResponse implements RestResponse {
     }
 
     @Override
-    public void setStatus(int status) {
+    public RestResponse setStatus(int status) {
         this.status = status;
+        return this;
     }
 
     @Override
-    public void setStatus(HttpStatus status) {
+    public RestResponse setStatus(HttpStatus status) {
         Assert.notNull(status, "'status' must not be null");
         this.status = status.value();
+        return this;
     }
 
     @Override
-    public void setHeader(String name, String value) {
+    public RestResponse setHeader(String name, String value) {
         if (name == null) {
             throw new IllegalArgumentException("Header name must not be null");
         }
         touchHeaders().set(name, value);
+        return this;
     }
 
     @Override
-    public void addHeader(String name, String value) {
+    public RestResponse addHeader(String name, String value) {
         if (name == null) {
             throw new IllegalArgumentException("Header name must not be null");
         }
         touchHeaders().add(name, value);
+        return this;
     }
 
     protected MultiValueMap<String, String> getHeaders() {

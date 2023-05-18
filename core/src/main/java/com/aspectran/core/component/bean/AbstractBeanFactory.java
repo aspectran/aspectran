@@ -342,7 +342,7 @@ abstract class AbstractBeanFactory extends AbstractComponent {
                             if (evaluator != null) {
                                 args[i] = evaluator.evaluate(activity, null);
                                 if (autowireRule.isRequired() && args[i] == null) {
-                                    throw new BeanCreationException("Could not autowire method: " +
+                                    throw new BeanCreationException("Autowiring failed for method: " +
                                             autowireRule, beanRule);
                                 }
                             } else {

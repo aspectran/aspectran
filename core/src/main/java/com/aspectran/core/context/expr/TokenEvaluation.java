@@ -27,6 +27,8 @@ import com.aspectran.core.util.BeanUtils;
 import com.aspectran.core.util.PropertiesLoaderUtils;
 import com.aspectran.core.util.ReflectionUtils;
 import com.aspectran.core.util.SystemUtils;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -50,6 +52,8 @@ import java.util.Set;
  * <p>Created: 2008. 03. 29 AM 12:59:16</p>
  */
 public class TokenEvaluation implements TokenEvaluator {
+
+    private static final Logger logger = LoggerFactory.getLogger(TokenEvaluation.class);
 
     protected final Activity activity;
 
@@ -375,7 +379,6 @@ public class TokenEvaluation implements TokenEvaluator {
 
     /**
      * Returns an Environment variable that matches the given token.
-     *
      * <pre>
      *   %{classpath:/com/aspectran/sample.properties}
      *   %{classpath:/com/aspectran/sample.properties^propertyName:defaultValue}
@@ -386,10 +389,17 @@ public class TokenEvaluation implements TokenEvaluator {
      */
     protected Object getProperty(Token token) throws IOException {
         if (token.getDirectiveType() == TokenDirectiveType.CLASSPATH) {
-            Properties props = PropertiesLoaderUtils.loadProperties(token.getValue(),
-                    activity.getApplicationAdapter().getClassLoader());
-            Object value = (token.getGetterName() != null ? props.get(token.getGetterName()) : props);
-            return (value != null ? value : token.getDefaultValue());
+            try {
+                Properties props = PropertiesLoaderUtils.loadProperties(token.getValue(),
+                        activity.getApplicationAdapter().getClassLoader());
+                Object value = (token.getGetterName() != null ? props.get(token.getGetterName()) : props);
+                return (value != null ? value : token.getDefaultValue());
+            } catch (Exception e) {
+                // Most of these occur when the password used for encryption is different
+                logger.error("Failed to decrypt values of encrypted properties while evaluating token " +
+                        token + "; Most of these occur when the password used for encryption is different" , e);
+                return null;
+            }
         } else if (token.getDirectiveType() == TokenDirectiveType.SYSTEM) {
             return SystemUtils.getProperty(token.getValue(), token.getDefaultValue());
         } else {
