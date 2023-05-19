@@ -1,4 +1,5 @@
 @echo off
+setlocal
 
 if "%1"=="/?" goto help
 
@@ -7,14 +8,31 @@ cd %~dp0..\..
 set BASE_DIR=%CD%
 cd %CURRENT_DIR%
 
-set SERVICE_NAME=%1
-rem If no ServiceName is specified, the default is "AspectranService"
+rem Set any explicitly specified variables required to run.
+if exist %~dp0\procrun.options (
+    for /F "eol=# tokens=*" %%i in (%~dp0\procrun.options) do set "%%i"
+)
+
+if "%SERVICE_NAME%" == "" set SERVICE_NAME=%1
+rem If no ServiceName is specified, the default is "Aspectran"
 if not defined SERVICE_NAME (
-  set SERVICE_NAME=AspectranService
+  set SERVICE_NAME=Aspectran
 )
 
 rem Detect JAVA_HOME environment variable
-if not defined JAVA_HOME goto java-not-set
+if "%JAVA_HOME%" == "" goto java-not-set
+call :ResolvePath JAVA_HOME %JAVA_HOME%
+if not exist "%JAVA_HOME%" goto java-not-set
+
+if "%JVM_MS%" == "" set JVM_MS=256
+if "%JVM_MX%" == "" set JVM_MS=512
+if "%JVM_SS%" == "" set JVM_MS=4096
+
+echo Using SERVICE_NAME: %SERVICE_NAME%
+echo Using JAVA_HOME: %JAVA_HOME%
+echo Using JVM_MS: %JVM_MS%MB
+echo Using JVM_MX: %JVM_MX%MB
+echo Using JVM_SS: %JVM_SS%KB
 
 rem Detect x86 or amd64
 if PROCESSOR_ARCHITECTURE EQU "amd64" goto is-amd64
@@ -63,19 +81,20 @@ set PR_STOPCLASS=com.aspectran.daemon.ProcrunDaemon
 set PR_STOPMETHOD=stop
 
 rem JVM configuration
-set PR_JVMMS=256
-set PR_JVMMX=1024
-set PR_JVMSS=4096
+set PR_JVMMS=%JVM_MS%
+set PR_JVMMX=%JVM_MX%
+set PR_JVMSS=%JVM_SS%
 set PR_JVMOPTIONS=-Duser.language=en;-Duser.region=US;^
 -Djava.awt.headless=true;^
 -Djava.net.preferIPv4Stack=true;^
 -Djava.io.tmpdir=%BASE_DIR%\temp;^
 -Daspectran.basePath=%BASE_DIR%;^
--Dlogback.configurationFile=%BASE_DIR%\config\logback.xml
+-Dlogback.configurationFile=%BASE_DIR%\config\logging\logback.xml
 
 echo Creating Service...
 %PR_INSTALL% //IS/%SERVICE_NAME% ^
 --DisplayName="%SERVICE_NAME%" ^
+--Description="%SERVICE_DESCRIPTION%" ^
 --Install="%PR_INSTALL%" ^
 --Startup="%PR_STARTUP%" ^
 --LogPath="%PR_LOGPATH%" ^
@@ -132,3 +151,12 @@ goto end
 echo Usage: %~n0 [ServiceName]
 
 :end
+exit /b
+
+rem Resolve path to absolute.
+rem Param 1: Name of output variable.
+rem Param 2: Path to resolve.
+rem Return: Resolved absolute path.
+:ResolvePath
+  set %1=%~dpfn2
+  exit /b

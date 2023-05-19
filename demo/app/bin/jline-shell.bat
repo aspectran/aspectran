@@ -2,7 +2,7 @@
 setlocal
 
 rem Set any explicitly specified variables required to run.
-if exist run.options (
+if exist %~dp0\run.options (
     for /F "eol=# tokens=*" %%i in (%~dp0\run.options) do set "%%i"
 )
 

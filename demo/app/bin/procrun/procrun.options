@@ -1,0 +1,7 @@
+# Variables required for execution can be explicitly specified here.
+SERVICE_NAME=Aspectran
+SERVICE_DESCRIPTION=Aspectran Daemon for Window Service
+#JAVA_HOME=../jdk-17.0.7
+#JVM_MS=256
+#JVM_MX=512
+#JVM_SS=4096

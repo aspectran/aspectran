@@ -1,4 +1,5 @@
 @echo off
+setlocal
 
 if "%1"=="/?" goto help
 
@@ -7,14 +8,17 @@ cd %~dp0..\..
 set BASE_DIR=%CD%
 cd %CURRENT_DIR%
 
-set SERVICE_NAME=%1
-rem If no ServiceName is specified, the default is "AspectranService"
-if not defined SERVICE_NAME (
-  set SERVICE_NAME=AspectranService
+rem Set any explicitly specified variables required to run.
+if exist %~dp0\procrun.options (
+    for /F "eol=# tokens=*" %%i in (%~dp0\procrun.options) do set "%%i"
 )
 
-rem Detect JAVA_HOME environment variable
-if not defined JAVA_HOME goto java-not-set
+if "%SERVICE_NAME%" == "" set SERVICE_NAME=%1
+rem If no ServiceName is specified, the default is "Aspectran"
+if not defined SERVICE_NAME (
+  set SERVICE_NAME=Aspectran
+)
+echo Using SERVICE_NAME: %SERVICE_NAME%
 
 rem Detect x86 or x64
 if PROCESSOR_ARCHITECTURE EQU "amd64" goto is-amd64
@@ -39,10 +43,6 @@ if exist "%BASE_DIR%\bin\procrun\%SERVICE_NAME%.exe" (
   del %BASE_DIR%\bin\procrun\%SERVICE_NAME%.exe
 )
 goto removed
-
-:java-not-set
-echo JAVA_HOME environment variable missing. Please set it before using the script.
-goto end
 
 :invalid-installer
 echo Could not find the installer %PR_INSTALL%

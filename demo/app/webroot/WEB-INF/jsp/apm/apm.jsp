@@ -4,7 +4,7 @@
 <script src="/assets/js/apm.js"></script>
 <div class="grid-x grid-padding-x">
     <div class="cell t20">
-        <h3>Application Log</h3>
+        <h3>Application Logs</h3>
         <div class="log-container">
             <div class="log-header">
                 <ul class="tab">
