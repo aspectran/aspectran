@@ -15,9 +15,8 @@ if exist %~dp0\procrun.options (
 
 if "%SERVICE_NAME%" == "" set SERVICE_NAME=%1
 rem If no ServiceName is specified, the default is "Aspectran"
-if not defined SERVICE_NAME (
-  set SERVICE_NAME=Aspectran
-)
+if "%SERVICE_NAME%" == "" set SERVICE_NAME=Aspectran
+if "%DISPLAY_NAME%" == "" set DISPLAY_NAME=%SERVICE_NAME%
 
 rem Detect JAVA_HOME environment variable
 if "%JAVA_HOME%" == "" goto java-not-set
@@ -29,6 +28,8 @@ if "%JVM_MX%" == "" set JVM_MS=512
 if "%JVM_SS%" == "" set JVM_MS=4096
 
 echo Using SERVICE_NAME: %SERVICE_NAME%
+echo Using DISPLAY_NAME: %DISPLAY_NAME%
+if not "%DESCRIPTION%" == "" echo Using DESCRIPTION: %DESCRIPTION%
 echo Using JAVA_HOME: %JAVA_HOME%
 echo Using JVM_MS: %JVM_MS%MB
 echo Using JVM_MX: %JVM_MX%MB
@@ -93,8 +94,8 @@ set PR_JVMOPTIONS=-Duser.language=en;-Duser.region=US;^
 
 echo Creating Service...
 %PR_INSTALL% //IS/%SERVICE_NAME% ^
---DisplayName="%SERVICE_NAME%" ^
---Description="%SERVICE_DESCRIPTION%" ^
+--DisplayName="%DISPLAY_NAME%" ^
+--Description="%DESCRIPTION%" ^
 --Install="%PR_INSTALL%" ^
 --Startup="%PR_STARTUP%" ^
 --LogPath="%PR_LOGPATH%" ^
@@ -142,7 +143,7 @@ goto end
 :installed
 echo Service %SERVICE_NAME% created.
 if not exist "%SystemRoot%\System32\choice.exe" goto end
-%SystemRoot%\System32\choice.exe /C YN /N /M "Do you want to run Service Manager now [Y/N]? "
+%SystemRoot%\System32\choice.exe /C YN /N /M "Do you want to run %SERVICE_NAME% Service Manager now [Y/N]? "
 if errorlevel 2 goto end
 start %SERVICE_NAME%.exe
 goto end
