@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.daemon.command.file;
+package com.aspectran.daemon.command.polling;
 
-import com.aspectran.core.context.config.DaemonPollerConfig;
+import com.aspectran.core.context.config.DaemonPollingConfig;
 import com.aspectran.core.util.FilenameUtils;
 import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.core.util.apon.AponReader;
@@ -35,13 +35,13 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 /**
- * File system-based command poller.
+ * File system-based commander.
  *
  * <p>Created: 2017. 12. 11.</p>
  */
-public class DefaultCommandFilePoller extends AbstractCommandFilePoller {
+public class DefaultFileCommander extends AbstractFileCommander {
 
-    protected final Logger logger = LoggerFactory.getLogger(DefaultCommandFilePoller.class);
+    protected final Logger logger = LoggerFactory.getLogger(DefaultFileCommander.class);
 
     private static final String COMMANDS_PATH = "/cmd";
 
@@ -63,8 +63,8 @@ public class DefaultCommandFilePoller extends AbstractCommandFilePoller {
 
     private final File failedDir;
 
-    public DefaultCommandFilePoller(Daemon daemon, DaemonPollerConfig pollerConfig) throws Exception {
-        super(daemon, pollerConfig);
+    public DefaultFileCommander(Daemon daemon, DaemonPollingConfig pollingConfig) throws Exception {
+        super(daemon, pollingConfig);
 
         try {
             File commandsDir = new File(getDaemon().getBasePath(), COMMANDS_PATH);
@@ -82,7 +82,7 @@ public class DefaultCommandFilePoller extends AbstractCommandFilePoller {
             failedDir.mkdirs();
             this.failedDir = failedDir;
 
-            String incomingPath = pollerConfig.getIncoming(DEFAULT_INCOMING_PATH);
+            String incomingPath = pollingConfig.getIncoming(DEFAULT_INCOMING_PATH);
             File incomingDir;
             if (incomingPath.startsWith(ResourceUtils.FILE_URL_PREFIX)) {
                 // Using url fully qualified paths
@@ -101,7 +101,7 @@ public class DefaultCommandFilePoller extends AbstractCommandFilePoller {
                 }
             }
         } catch (Exception e) {
-            throw new Exception("Failed to initialize daemon command poller", e);
+            throw new Exception("Could not create directory structure for file commander", e);
         }
     }
 
@@ -147,7 +147,7 @@ public class DefaultCommandFilePoller extends AbstractCommandFilePoller {
     public void polling() {
         File[] files = getCommandFiles(incomingDir);
         if (files != null) {
-            int limit = getMaxThreads() - getExecutor().getQueueSize();
+            int limit = getCommandExecutor().getAvailableThreads();
             for (int i = 0; i < files.length && i < limit; i++) {
                 File file = files[i];
                 CommandParameters parameters = readCommandFile(file);
@@ -164,7 +164,7 @@ public class DefaultCommandFilePoller extends AbstractCommandFilePoller {
     }
 
     private void executeQueuedCommand(final CommandParameters parameters, final String queuedFileName) {
-        getExecutor().execute(parameters, new CommandExecutor.Callback() {
+        getCommandExecutor().execute(parameters, new CommandExecutor.Callback() {
             @Override
             public void success() {
                 removeCommandFile(queuedDir, queuedFileName);

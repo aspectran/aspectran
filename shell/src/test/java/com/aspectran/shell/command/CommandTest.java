@@ -34,7 +34,7 @@ import static com.aspectran.core.util.PBEncryptionUtils.ENCRYPTION_PASSWORD_KEY;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class CommandTest {
 
-    private final CommandRunner runner = new TestCommandRunner();
+    private final ConsoleCommander runner = new TestShellCommander();
 
     private ShellConsole getConsole() {
         return runner.getConsole();

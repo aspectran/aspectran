@@ -17,14 +17,16 @@ package com.aspectran.daemon;
 
 import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.config.DaemonConfig;
-import com.aspectran.core.context.config.DaemonPollerConfig;
+import com.aspectran.core.context.config.DaemonExecutorConfig;
+import com.aspectran.core.context.config.DaemonPollingConfig;
 import com.aspectran.core.util.Aspectran;
 import com.aspectran.core.util.apon.AponReader;
+import com.aspectran.daemon.command.CommandExecutor;
 import com.aspectran.daemon.command.CommandRegistry;
 import com.aspectran.daemon.command.DaemonCommandRegistry;
 import com.aspectran.daemon.command.builtins.QuitCommand;
-import com.aspectran.daemon.command.file.CommandFilePoller;
-import com.aspectran.daemon.command.file.DefaultCommandFilePoller;
+import com.aspectran.daemon.command.polling.DefaultFileCommander;
+import com.aspectran.daemon.command.polling.FileCommander;
 import com.aspectran.daemon.service.DaemonService;
 import com.aspectran.daemon.service.DefaultDaemonService;
 
@@ -43,7 +45,9 @@ public class AbstractDaemon implements Daemon {
 
     private DefaultDaemonService daemonService;
 
-    private CommandFilePoller commandFilePoller;
+    private CommandExecutor commandExecutor;
+
+    private FileCommander fileCommander;
 
     private CommandRegistry commandRegistry;
 
@@ -74,8 +78,13 @@ public class AbstractDaemon implements Daemon {
     }
 
     @Override
-    public CommandFilePoller getCommandFilePoller() {
-        return commandFilePoller;
+    public CommandExecutor getCommandExecutor() {
+        return commandExecutor;
+    }
+
+    @Override
+    public FileCommander getFileCommander() {
+        return fileCommander;
     }
 
     @Override
@@ -113,8 +122,11 @@ public class AbstractDaemon implements Daemon {
         Aspectran.printPrettyAboutMe(System.out);
 
         try {
-            DaemonPollerConfig pollerConfig = daemonConfig.touchPollerConfig();
-            this.commandFilePoller = new DefaultCommandFilePoller(this, pollerConfig);
+            DaemonExecutorConfig executorConfig = daemonConfig.touchExecutorConfig();
+            this.commandExecutor = new CommandExecutor(this, executorConfig);
+
+            DaemonPollingConfig pollingConfig = daemonConfig.touchPollingConfig();
+            this.fileCommander = new DefaultFileCommander(this, pollingConfig);
 
             DaemonCommandRegistry commandRegistry = new DaemonCommandRegistry(this);
             commandRegistry.addCommand(daemonConfig.getCommands());
@@ -158,12 +170,12 @@ public class AbstractDaemon implements Daemon {
             Runnable runnable = () -> {
                 if (!active) {
                     active = true;
-                    if (commandFilePoller != null) {
-                        commandFilePoller.requeue();
+                    if (fileCommander != null) {
+                        fileCommander.requeue();
                         while (active) {
                             try {
-                                commandFilePoller.polling();
-                                Thread.sleep(commandFilePoller.getPollingInterval());
+                                fileCommander.polling();
+                                Thread.sleep(fileCommander.getPollingInterval());
                             } catch (InterruptedException ie) {
                                 active = false;
                             }
@@ -197,9 +209,11 @@ public class AbstractDaemon implements Daemon {
     public void destroy() {
         stop();
 
-        if (commandFilePoller != null) {
-            commandFilePoller.stop();
-            commandFilePoller = null;
+        if (commandExecutor != null) {
+            commandExecutor.shutdown();
+        }
+        if (fileCommander != null) {
+            fileCommander = null;
         }
         if (daemonService != null) {
             daemonService.stop();

@@ -48,9 +48,9 @@ import java.nio.file.Paths;
  *
  * <p>Created: 2017. 6. 3.</p>
  */
-public class ShellCommandRunner implements CommandRunner {
+public class DefaultConsoleCommander implements ConsoleCommander {
 
-    private static final Logger logger = LoggerFactory.getLogger(ShellCommandRunner.class);
+    private static final Logger logger = LoggerFactory.getLogger(DefaultConsoleCommander.class);
 
     private final ShellConsole console;
 
@@ -62,7 +62,7 @@ public class ShellCommandRunner implements CommandRunner {
 
     private PrintStream orgSystemErr;
 
-    public ShellCommandRunner(@NonNull ShellConsole console) {
+    public DefaultConsoleCommander(@NonNull ShellConsole console) {
         this.console = console;
     }
 
@@ -81,7 +81,7 @@ public class ShellCommandRunner implements CommandRunner {
         return shellService;
     }
 
-    public void init(@Nullable String basePath, File aspectranConfigFile) throws Exception {
+    public void prepare(@Nullable String basePath, File aspectranConfigFile) throws Exception {
         AspectranConfig aspectranConfig = new AspectranConfig();
         try {
             AponReader.parse(aspectranConfigFile, aspectranConfig);
@@ -140,7 +140,7 @@ public class ShellCommandRunner implements CommandRunner {
         System.setErr(new ShellConsoleErrorStream(console));
     }
 
-    public void run() {
+    public void perform() {
         try {
             for (;;) {
                 try {
@@ -177,8 +177,8 @@ public class ShellCommandRunner implements CommandRunner {
                 }
             }
         } finally {
-            if (shellService != null && shellService.getServiceController().isActive()) {
-                if (logger.isDebugEnabled()) {
+            if (logger.isDebugEnabled()) {
+                if (shellService != null && shellService.getServiceController().isActive()) {
                     logger.debug("Do not terminate this application while releasing all resources");
                 }
             }
@@ -203,7 +203,7 @@ public class ShellCommandRunner implements CommandRunner {
         } catch (OptionParserException e) {
             wrappedConsole.writeError(e.getMessage());
             command.printHelp(wrappedConsole);
-        } catch (FailedCommandException e) {
+        } catch (ShellCommandExecutionException e) {
             logger.error("Failed to execute command: " + lineParser.getCommandLine(), e.getCause());
             console.setStyle(console.getDangerStyle());
             console.writeAbove(e.getMessage());

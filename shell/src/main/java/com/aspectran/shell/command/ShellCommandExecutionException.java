@@ -13,34 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.daemon.command.file;
-
-import com.aspectran.daemon.Daemon;
-import com.aspectran.daemon.command.CommandExecutor;
+package com.aspectran.shell.command;
 
 /**
- * The command file poller.
- *
- * <p>Created: 2017. 12. 11.</p>
+ * Holds an exception that occurred during command execution
+ * and a message to be printed after.
  */
-public interface CommandFilePoller {
+public class ShellCommandExecutionException extends Exception {
 
-    Daemon getDaemon();
+    private static final long serialVersionUID = -5340974047528806025L;
 
-    CommandExecutor getExecutor();
-
-    void requeue();
-
-    void polling();
-
-    void stop();
-
-    long getPollingInterval();
-
-    void setPollingInterval(long pollingInterval);
-
-    int getMaxThreads();
-
-    boolean isRequeuable();
+    /**
+     * Constructor to create exception to wrap another exception and pass a message.
+     * @param msg the message
+     * @param cause the real cause of the exception
+     */
+    public ShellCommandExecutionException(String msg, Throwable cause) {
+        super(msg, cause);
+    }
 
 }

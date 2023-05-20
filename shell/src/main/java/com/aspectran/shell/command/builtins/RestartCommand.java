@@ -17,12 +17,10 @@ package com.aspectran.shell.command.builtins;
 
 import com.aspectran.shell.command.AbstractCommand;
 import com.aspectran.shell.command.CommandRegistry;
-import com.aspectran.shell.command.FailedCommandException;
+import com.aspectran.shell.command.ShellCommandExecutionException;
 import com.aspectran.shell.command.option.Option;
 import com.aspectran.shell.command.option.ParsedOptions;
 import com.aspectran.shell.console.ShellConsole;
-import com.aspectran.shell.console.ShellConsoleErrorStream;
-import com.aspectran.shell.console.ShellConsoleOutStream;
 
 /**
  * Restarts the Aspectran Shell.
@@ -57,7 +55,7 @@ public class RestartCommand extends AbstractCommand {
                     getShellService().getServiceController().start();
                 }
             } catch (Exception e) {
-                throw new FailedCommandException("Shell restart failed!", e);
+                throw new ShellCommandExecutionException("Shell restart failed!", e);
             }
         }
     }

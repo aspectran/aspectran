@@ -24,7 +24,7 @@ import java.util.Collection;
  */
 public interface CommandRegistry {
 
-    CommandRunner getCommandRunner();
+    ConsoleCommander getCommandRunner();
 
     Command getCommand(String commandName);
 

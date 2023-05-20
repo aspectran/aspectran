@@ -15,14 +15,14 @@
  */
 package com.aspectran.jetty.shell.command;
 
-import com.aspectran.shell.command.CommandRunner;
+import com.aspectran.shell.command.ConsoleCommander;
 import com.aspectran.shell.command.CommandRegistry;
 import com.aspectran.shell.command.ShellCommandRegistry;
 import com.aspectran.shell.console.ShellConsole;
 import com.aspectran.shell.console.DefaultShellConsole;
 import com.aspectran.shell.service.ShellService;
 
-public class TestCommandRunner implements CommandRunner {
+public class TestConsoleCommander implements ConsoleCommander {
 
     private final ShellConsole console = new DefaultShellConsole();
 

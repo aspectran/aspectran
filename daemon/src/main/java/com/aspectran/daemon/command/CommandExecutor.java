@@ -15,6 +15,7 @@
  */
 package com.aspectran.daemon.command;
 
+import com.aspectran.core.context.config.DaemonExecutorConfig;
 import com.aspectran.core.util.ExceptionUtils;
 import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
@@ -33,30 +34,43 @@ public class CommandExecutor {
 
     private static final Logger logger = LoggerFactory.getLogger(CommandExecutor.class);
 
+    private static final int DEFAULT_MAX_THREADS = Runtime.getRuntime().availableProcessors();
+
     private final Daemon daemon;
 
-    private final ExecutorService executorService;
+    private final int maxThreads;
 
-    private final BlockingQueue<Runnable> workQueue;
+    private final ExecutorService executorService;
 
     private final AtomicInteger queueSize = new AtomicInteger();
 
     private final AtomicBoolean isolated = new AtomicBoolean();
 
-    public CommandExecutor(Daemon daemon, int maxThreads) {
+    public CommandExecutor(Daemon daemon, DaemonExecutorConfig executorConfig) {
         if (daemon == null) {
             throw new IllegalArgumentException("daemon must not be null");
         }
 
         this.daemon = daemon;
-        this.workQueue = new SynchronousQueue<>();
+
+        if (executorConfig != null) {
+            this.maxThreads = executorConfig.getMaxThreads(DEFAULT_MAX_THREADS);
+        } else {
+            this.maxThreads = DEFAULT_MAX_THREADS;
+        }
+
+        BlockingQueue<Runnable> workQueue = new SynchronousQueue<>();
         this.executorService = new ThreadPoolExecutor(
                 1,
                 maxThreads,
                 180L,
                 TimeUnit.SECONDS,
-                this.workQueue
+                workQueue
         );
+    }
+
+    public int getAvailableThreads() {
+        return maxThreads - queueSize.get();
     }
 
     public boolean execute(final CommandParameters parameters, final Callback callback) {
@@ -144,10 +158,6 @@ public class CommandExecutor {
                     System.lineSeparator() + ExceptionUtils.getStacktrace(e));
             return false;
         }
-    }
-
-    public int getQueueSize() {
-        return queueSize.get();
     }
 
     public void shutdown() {

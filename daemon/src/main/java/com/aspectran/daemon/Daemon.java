@@ -15,8 +15,9 @@
  */
 package com.aspectran.daemon;
 
+import com.aspectran.daemon.command.CommandExecutor;
 import com.aspectran.daemon.command.CommandRegistry;
-import com.aspectran.daemon.command.file.CommandFilePoller;
+import com.aspectran.daemon.command.polling.FileCommander;
 import com.aspectran.daemon.service.DaemonService;
 
 /**
@@ -32,7 +33,9 @@ public interface Daemon {
 
     DaemonService getDaemonService();
 
-    CommandFilePoller getCommandFilePoller();
+    CommandExecutor getCommandExecutor();
+
+    FileCommander getFileCommander();
 
     CommandRegistry getCommandRegistry();
 

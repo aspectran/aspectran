@@ -41,7 +41,7 @@ public class PollingIntervalCommand extends AbstractCommand {
         DaemonService daemonService = getDaemonService();
 
         try {
-            long oldPollingInterval = getCommandRegistry().getDaemon().getCommandFilePoller().getPollingInterval();
+            long oldPollingInterval = getCommandRegistry().getDaemon().getFileCommander().getPollingInterval();
             long pollingInterval = 0L;
 
             ItemRuleList itemRuleList = parameters.getArgumentItemRuleList();
@@ -51,7 +51,7 @@ public class PollingIntervalCommand extends AbstractCommand {
             }
 
             if (pollingInterval > 0L) {
-                getCommandRegistry().getDaemon().getCommandFilePoller().setPollingInterval(pollingInterval);
+                getCommandRegistry().getDaemon().getFileCommander().setPollingInterval(pollingInterval);
                 return success(info("The polling interval is changed from " + oldPollingInterval +
                         "ms to " + pollingInterval + " ms"));
             } else if (pollingInterval < 0L) {

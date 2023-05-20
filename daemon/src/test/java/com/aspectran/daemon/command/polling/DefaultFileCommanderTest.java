@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.daemon.command.file;
+package com.aspectran.daemon.command.polling;
 
 import com.aspectran.core.context.config.DaemonConfig;
 import com.aspectran.core.util.ResourceUtils;
@@ -24,7 +24,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.Writer;
 
-class DefaultCommandFilePollerTest {
+class DefaultFileCommanderTest {
 
     @Test
     void testPolling() throws Exception {

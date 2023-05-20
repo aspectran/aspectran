@@ -20,7 +20,7 @@ import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.lang.Nullable;
 import com.aspectran.core.util.Aspectran;
 import com.aspectran.core.util.ExceptionUtils;
-import com.aspectran.shell.command.ShellCommandRunner;
+import com.aspectran.shell.command.DefaultConsoleCommander;
 import com.aspectran.shell.console.DefaultShellConsole;
 import com.aspectran.shell.console.ShellConsole;
 
@@ -55,15 +55,15 @@ public class AspectranShell {
             throw new IllegalArgumentException("console must not be null");
         }
 
-        ShellCommandRunner runner = null;
+        DefaultConsoleCommander runner = null;
         int exitStatus = 0;
 
         try {
             Aspectran.printPrettyAboutMe(System.out);
 
-            runner = new ShellCommandRunner(console);
-            runner.init(basePath, aspectranConfigFile);
-            runner.run();
+            runner = new DefaultConsoleCommander(console);
+            runner.prepare(basePath, aspectranConfigFile);
+            runner.perform();
         } catch (Exception e) {
             Throwable t = ExceptionUtils.getRootCause(e);
             if (t instanceof InsufficientEnvironmentException) {

@@ -30,14 +30,14 @@ public class ShellCommandRegistry implements CommandRegistry {
 
     private final Map<String, Command> commands = new LinkedHashMap<>();
 
-    private final CommandRunner runner;
+    private final ConsoleCommander runner;
 
-    public ShellCommandRegistry(CommandRunner runner) {
+    public ShellCommandRegistry(ConsoleCommander runner) {
         this.runner = runner;
     }
 
     @Override
-    public CommandRunner getCommandRunner() {
+    public ConsoleCommander getCommandRunner() {
         return runner;
     }
 

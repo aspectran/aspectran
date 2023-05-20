@@ -24,7 +24,8 @@ import com.aspectran.core.util.apon.ValueType;
  */
 public class DaemonConfig extends AbstractParameters {
 
-    private static final ParameterKey poller;
+    private static final ParameterKey executor;
+    private static final ParameterKey polling;
     private static final ParameterKey commands;
     private static final ParameterKey session;
     private static final ParameterKey exposals;
@@ -32,13 +33,15 @@ public class DaemonConfig extends AbstractParameters {
     private static final ParameterKey[] parameterKeys;
 
     static {
-        poller = new ParameterKey("poller", DaemonPollerConfig.class);
+        executor = new ParameterKey("executor", DaemonExecutorConfig.class);
+        polling = new ParameterKey("polling", DaemonPollingConfig.class);
         commands = new ParameterKey("commands", ValueType.STRING, true);
         session = new ParameterKey("session", SessionManagerConfig.class);
         exposals = new ParameterKey("exposals", ExposalsConfig.class);
 
         parameterKeys = new ParameterKey[] {
-                poller,
+                executor,
+                polling,
                 commands,
                 session,
                 exposals
@@ -49,16 +52,28 @@ public class DaemonConfig extends AbstractParameters {
         super(parameterKeys);
     }
 
-    public DaemonPollerConfig getPollerConfig() {
-        return getParameters(poller);
+    public DaemonExecutorConfig getExecutorConfig() {
+        return getParameters(executor);
     }
 
-    public DaemonPollerConfig newPollerConfig() {
-        return newParameters(poller);
+    public DaemonExecutorConfig newExecutorConfig() {
+        return newParameters(executor);
     }
 
-    public DaemonPollerConfig touchPollerConfig() {
-        return touchParameters(poller);
+    public DaemonExecutorConfig touchExecutorConfig() {
+        return touchParameters(executor);
+    }
+
+    public DaemonPollingConfig getPollingConfig() {
+        return getParameters(polling);
+    }
+
+    public DaemonPollingConfig newPollingConfig() {
+        return newParameters(polling);
+    }
+
+    public DaemonPollingConfig touchPollingConfig() {
+        return touchParameters(polling);
     }
 
     public String[] getCommands() {

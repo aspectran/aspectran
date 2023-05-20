@@ -13,22 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.shell.command;
+package com.aspectran.daemon.command.polling;
 
-import com.aspectran.shell.console.ShellConsole;
-import com.aspectran.shell.service.ShellService;
+import com.aspectran.daemon.Daemon;
+import com.aspectran.daemon.command.CommandExecutor;
 
 /**
- * The Shell Command Runner.
+ * The file commander.
  *
- * <p>Created: 2017. 6. 3.</p>
+ * <p>Created: 2017. 12. 11.</p>
  */
-public interface CommandRunner {
+public interface FileCommander {
 
-    ShellConsole getConsole();
+    Daemon getDaemon();
 
-    CommandRegistry getCommandRegistry();
+    CommandExecutor getCommandExecutor();
 
-    ShellService getShellService();
+    void requeue();
+
+    void polling();
+
+    long getPollingInterval();
+
+    void setPollingInterval(long pollingInterval);
+
+    boolean isRequeuable();
 
 }

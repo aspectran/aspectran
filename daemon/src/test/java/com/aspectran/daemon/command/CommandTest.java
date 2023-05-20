@@ -96,7 +96,7 @@ class CommandTest {
         aponWriter.write(parameters);
         aponWriter.close();
 
-        String s1 = "translet: nullResult".replace("\n", AponFormat.SYSTEM_NEW_LINE);
+        String s1 = "translet: nullResult";
         String s2 = aponWriter.toString().trim();
 
         assertEquals(s1, s2);

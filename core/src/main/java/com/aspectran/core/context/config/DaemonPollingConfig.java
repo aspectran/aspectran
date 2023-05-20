@@ -24,7 +24,7 @@ import com.aspectran.core.util.apon.ValueType;
  *
  * @since 5.1.0
  */
-public class DaemonPollerConfig extends AbstractParameters {
+public class DaemonPollingConfig extends AbstractParameters {
 
     private static final ParameterKey pollingInterval;
     private static final ParameterKey maxThreads;
@@ -47,7 +47,7 @@ public class DaemonPollerConfig extends AbstractParameters {
         };
     }
 
-    public DaemonPollerConfig() {
+    public DaemonPollingConfig() {
         super(parameterKeys);
     }
 
@@ -55,8 +55,8 @@ public class DaemonPollerConfig extends AbstractParameters {
         return getLong(pollingInterval, defaultPollingInterval);
     }
 
-    public DaemonPollerConfig setPollingInterval(long pollingInterval) {
-        putValue(DaemonPollerConfig.pollingInterval, pollingInterval);
+    public DaemonPollingConfig setPollingInterval(long pollingInterval) {
+        putValue(DaemonPollingConfig.pollingInterval, pollingInterval);
         return this;
     }
 
@@ -64,8 +64,8 @@ public class DaemonPollerConfig extends AbstractParameters {
         return getInt(maxThreads, defaultMaxThreads);
     }
 
-    public DaemonPollerConfig setMaxThreads(int maxThreads) {
-        putValue(DaemonPollerConfig.maxThreads, maxThreads);
+    public DaemonPollingConfig setMaxThreads(int maxThreads) {
+        putValue(DaemonPollingConfig.maxThreads, maxThreads);
         return this;
     }
 
@@ -73,8 +73,8 @@ public class DaemonPollerConfig extends AbstractParameters {
         return getBoolean(requeuable, false);
     }
 
-    public DaemonPollerConfig setRequeuable(boolean requeuable) {
-        putValue(DaemonPollerConfig.requeuable, requeuable);
+    public DaemonPollingConfig setRequeuable(boolean requeuable) {
+        putValue(DaemonPollingConfig.requeuable, requeuable);
         return this;
     }
 
@@ -86,8 +86,8 @@ public class DaemonPollerConfig extends AbstractParameters {
         return getString(incoming, defaultIncoming);
     }
 
-    public DaemonPollerConfig setIncoming(String incoming) {
-        putValue(DaemonPollerConfig.incoming, incoming);
+    public DaemonPollingConfig setIncoming(String incoming) {
+        putValue(DaemonPollingConfig.incoming, incoming);
         return this;
     }
 

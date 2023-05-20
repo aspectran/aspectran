@@ -18,9 +18,11 @@ scheduler: {
     enabled: false
 }
 daemon: {
-    poller: {
-        pollingInterval: 5000
+    executor: {
         maxThreads: 5
+    }
+    polling: {
+        pollingInterval: 5000
         requeuable: false
         incoming: /cmd/incoming
     }

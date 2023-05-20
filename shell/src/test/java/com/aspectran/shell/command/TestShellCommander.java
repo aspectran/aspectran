@@ -15,21 +15,29 @@
  */
 package com.aspectran.shell.command;
 
-/**
- * Holds an exception that occurred during command execution
- * and a message to be printed after.
- */
-public class FailedCommandException extends Exception {
+import com.aspectran.shell.console.DefaultShellConsole;
+import com.aspectran.shell.console.ShellConsole;
+import com.aspectran.shell.service.ShellService;
 
-    private static final long serialVersionUID = -5340974047528806025L;
+public class TestShellCommander implements ConsoleCommander {
 
-    /**
-     * Constructor to create exception to wrap another exception and pass a message.
-     * @param msg the message
-     * @param cause the real cause of the exception
-     */
-    public FailedCommandException(String msg, Throwable cause) {
-        super(msg, cause);
+    private final ShellConsole console = new DefaultShellConsole();
+
+    private final CommandRegistry commandRegistry = new ShellCommandRegistry(this);
+
+    @Override
+    public ShellConsole getConsole() {
+        return console;
+    }
+
+    @Override
+    public CommandRegistry getCommandRegistry() {
+        return commandRegistry;
+    }
+
+    @Override
+    public ShellService getShellService() {
+        return null;
     }
 
 }

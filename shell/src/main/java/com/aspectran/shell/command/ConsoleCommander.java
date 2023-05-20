@@ -15,29 +15,20 @@
  */
 package com.aspectran.shell.command;
 
-import com.aspectran.shell.console.DefaultShellConsole;
 import com.aspectran.shell.console.ShellConsole;
 import com.aspectran.shell.service.ShellService;
 
-public class TestCommandRunner implements CommandRunner {
+/**
+ * The Shell Commander.
+ *
+ * <p>Created: 2017. 6. 3.</p>
+ */
+public interface ConsoleCommander {
 
-    private final ShellConsole console = new DefaultShellConsole();
+    ShellConsole getConsole();
 
-    private final CommandRegistry commandRegistry = new ShellCommandRegistry(this);
+    CommandRegistry getCommandRegistry();
 
-    @Override
-    public ShellConsole getConsole() {
-        return console;
-    }
-
-    @Override
-    public CommandRegistry getCommandRegistry() {
-        return commandRegistry;
-    }
-
-    @Override
-    public ShellService getShellService() {
-        return null;
-    }
+    ShellService getShellService();
 
 }

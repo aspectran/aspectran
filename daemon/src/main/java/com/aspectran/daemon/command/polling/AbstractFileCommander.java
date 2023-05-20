@@ -13,43 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.daemon.command.file;
+package com.aspectran.daemon.command.polling;
 
-import com.aspectran.core.context.config.DaemonPollerConfig;
+import com.aspectran.core.context.config.DaemonPollingConfig;
 import com.aspectran.daemon.Daemon;
 import com.aspectran.daemon.command.CommandExecutor;
 
 /**
  * <p>Created: 2017. 12. 11.</p>
  */
-public abstract class AbstractCommandFilePoller implements CommandFilePoller {
+public abstract class AbstractFileCommander implements FileCommander {
 
     private static final long DEFAULT_POLLING_INTERVAL = 5000L;
 
-    private static final int DEFAULT_MAX_THREADS = Runtime.getRuntime().availableProcessors();
-
     private final Daemon daemon;
-
-    private final CommandExecutor executor;
 
     private volatile long pollingInterval;
 
-    private final int maxThreads;
-
     private final boolean requeuable;
 
-    public AbstractCommandFilePoller(Daemon daemon, DaemonPollerConfig pollerConfig) {
+    public AbstractFileCommander(Daemon daemon, DaemonPollingConfig pollingConfig) {
         if (daemon == null) {
             throw new IllegalArgumentException("daemon must not be null");
         }
 
         this.daemon = daemon;
-
-        this.pollingInterval = pollerConfig.getPollingInterval(DEFAULT_POLLING_INTERVAL);
-        this.maxThreads = pollerConfig.getMaxThreads(DEFAULT_MAX_THREADS);
-        this.requeuable = pollerConfig.isRequeuable();
-
-        this.executor = new CommandExecutor(daemon, maxThreads);
+        this.pollingInterval = pollingConfig.getPollingInterval(DEFAULT_POLLING_INTERVAL);
+        this.requeuable = pollingConfig.isRequeuable();
     }
 
     @Override
@@ -58,13 +48,8 @@ public abstract class AbstractCommandFilePoller implements CommandFilePoller {
     }
 
     @Override
-    public CommandExecutor getExecutor() {
-        return executor;
-    }
-
-    @Override
-    public void stop() {
-        executor.shutdown();
+    public CommandExecutor getCommandExecutor() {
+        return daemon.getCommandExecutor();
     }
 
     @Override
@@ -75,11 +60,6 @@ public abstract class AbstractCommandFilePoller implements CommandFilePoller {
     @Override
     public void setPollingInterval(long pollingInterval) {
         this.pollingInterval = pollingInterval;
-    }
-
-    @Override
-    public int getMaxThreads() {
-        return maxThreads;
     }
 
     @Override

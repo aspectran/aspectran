@@ -44,7 +44,7 @@ public abstract class AbstractCommand implements Command {
         return registry;
     }
 
-    public CommandRunner getCommandRunner() {
+    public ConsoleCommander getCommandRunner() {
         return registry.getCommandRunner();
     }
 
