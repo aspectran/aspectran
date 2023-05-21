@@ -56,7 +56,7 @@ public class ContextReloadingTimer {
         timerTask = new ContextReloadingTimerTask(serviceController);
         timerTask.setResources(resources);
 
-        timer = new Timer("ContextReloadingTimer");
+        timer = new Timer("ContextReloading");
         timer.schedule(timerTask, 0, scanIntervalInSeconds * 1000L);
     }
 

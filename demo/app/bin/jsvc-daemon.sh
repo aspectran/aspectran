@@ -119,7 +119,7 @@ DAEMON_MAIN="com.aspectran.daemon.JsvcDaemon"
 CLASSPATH="$BASE_DIR/lib/*"
 TMP_DIR="$BASE_DIR/temp"
 ASPECTRAN_CONFIG="$BASE_DIR/config/aspectran-config.apon"
-LOGGING_CONFIG="$BASE_DIR/config/logging/logging/logback.xml"
+LOGGING_CONFIG="$BASE_DIR/config/logging/logback.xml"
 
 start_daemon() {
   : >"$DAEMON_OUT"
