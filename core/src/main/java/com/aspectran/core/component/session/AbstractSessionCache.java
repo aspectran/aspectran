@@ -335,7 +335,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
 
     @Override
     public DefaultSession delete(String id) throws Exception {
-        // get the session, if its not in memory, this will load it
+        // get the session, if it's not in memory, this will load it
         DefaultSession session = get(id);
         // Always delete it from the backing data store
         if (sessionStore != null) {

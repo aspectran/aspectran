@@ -141,7 +141,11 @@ public class FileSessionStore extends AbstractSessionStore {
     @Override
     public void doSave(String id, SessionData data) throws Exception {
         if (storeDir != null) {
-            delete(id);
+            try {
+                delete(id);
+            } catch (IOException e) {
+                logger.warn("Failed to delete old data file for session " + id);
+            }
             // make a fresh file using the latest session expiry
             String filename = getIdWithExpiry(data);
             File file = new File(storeDir, filename);
@@ -268,7 +272,7 @@ public class FileSessionStore extends AbstractSessionStore {
                         try {
                             sweepFile(now, p);
                         } catch (Exception e) {
-                            logger.warn(e);
+                            logger.warn("Failed to delete expired session file: " + p, e);
                         }
                     });
         } catch (Exception e) {
@@ -336,14 +340,18 @@ public class FileSessionStore extends AbstractSessionStore {
                 .filter(p -> isSessionFilename(p.getFileName().toString()))
                 .forEach(p -> {
                     // first get rid of all ancient files, regardless of which context they are for
+                    boolean swept = false;
                     try {
                         sweepFile(now, p);
-                    } catch (Exception x) {
-                        me.add(x);
+                        swept = true;
+                    } catch (IOException x) {
+                        logger.warn("Failed to sweep session file: " + p);
+                    } catch (Exception e) {
+                        me.add(e);
                     }
 
                     // now process it if it wasn't deleted
-                    if (Files.exists(p)) {
+                    if (!swept && Files.exists(p)) {
                         String filename = p.getFileName().toString();
                         String sessionId = getIdFromFilename(filename);
                         // handle multiple session files existing for the same session: remove all
@@ -357,11 +365,11 @@ public class FileSessionStore extends AbstractSessionStore {
                                 long thisExpiry = getExpiryFromFilename(filename);
                                 if (thisExpiry > existingExpiry) {
                                     // replace with more recent file
-                                    Path existingPath = storeDir.toPath().resolve(existing);
+                                    Path existingFile = storeDir.toPath().resolve(existing);
                                     // update the file we're keeping
                                     sessionFilenames.put(sessionId, filename);
                                     // delete the old file
-                                    Files.delete(existingPath);
+                                    Files.delete(existingFile);
                                     if (logger.isDebugEnabled()) {
                                         logger.debug("Replaced " + existing + " with " + filename);
                                     }

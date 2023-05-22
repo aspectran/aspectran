@@ -67,7 +67,7 @@ public class MultiException extends Exception {
     /**
      * Throw a MultiException.
      * If this multi exception is empty then no action is taken. If it
-     * contains a single exception that is thrown, otherwise the this
+     * contains a single exception that is thrown, otherwise this
      * multi exception is thrown.
      * @exception Exception the Error or Exception if nested is 1, or the
      *      MultiException itself if nested is more than 1.
@@ -91,7 +91,7 @@ public class MultiException extends Exception {
     /**
      * Throw a Runtime exception.
      * If this multi exception is empty then no action is taken. If it
-     * contains a single error or runtime exception that is thrown, otherwise the this
+     * contains a single error or runtime exception that is thrown, otherwise this
      * multi exception is thrown, wrapped in a runtime exception.
      * @exception Error if this exception contains exactly 1 {@link Error}
      * @exception RuntimeException if this exception contains 1 {@link Throwable} but
