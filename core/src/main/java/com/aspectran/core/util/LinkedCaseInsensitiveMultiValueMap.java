@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.BiConsumer;
 
 /**
  * <p>This class is a clone of org.springframework.util.LinkedCaseInsensitiveMultiValueMap</p>
@@ -182,6 +183,11 @@ public class LinkedCaseInsensitiveMultiValueMap<V> implements MultiValueMap<Stri
     @NonNull
     public Set<Entry<String, List<V>>> entrySet() {
         return this.targetMap.entrySet();
+    }
+
+    @Override
+    public void forEach(BiConsumer<? super String, ? super List<V>> action) {
+        this.targetMap.forEach(action);
     }
 
     @Override

@@ -119,11 +119,6 @@ public class LinkedMultiValueMap<K, V> implements MultiValueMap<K, V>, Serializa
     }
 
     @Override
-    public void setAll(Map<K, V> values) {
-        values.forEach(this::set);
-    }
-
-    @Override
     public Map<K, V> toSingleValueMap() {
         LinkedHashMap<K, V> singleValueMap = new LinkedHashMap<>(this.targetMap.size());
         this.targetMap.forEach((key, values) -> {
@@ -132,6 +127,11 @@ public class LinkedMultiValueMap<K, V> implements MultiValueMap<K, V>, Serializa
             }
         });
         return singleValueMap;
+    }
+
+    @Override
+    public void setAll(Map<K, V> values) {
+        values.forEach(this::set);
     }
 
 
@@ -235,8 +235,8 @@ public class LinkedMultiValueMap<K, V> implements MultiValueMap<K, V>, Serializa
 
     @Override
     @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
-    public boolean equals(@Nullable Object obj) {
-        return this.targetMap.equals(obj);
+    public boolean equals(@Nullable Object other) {
+        return (this == other || this.targetMap.equals(other));
     }
 
     @Override
