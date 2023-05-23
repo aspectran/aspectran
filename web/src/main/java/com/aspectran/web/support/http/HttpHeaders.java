@@ -386,7 +386,7 @@ public interface HttpHeaders {
      * set the X-HTTP-Method-Override header and set the value to
      * the intended HTTP method (such as PATCH).
      * <p>
-     * Web infrastructure and solutions providers have proposed to use customized HTTP header fields:
+     * Web infrastructure and solutions providers have proposed to use customized HTTP header fields:</p>
      * <pre>
      *   X-HTTP-Method-Override (Google/GData)
      *   X-HTTP-Method (Microsoft)
@@ -397,12 +397,20 @@ public interface HttpHeaders {
     String X_METHOD_OVERRIDE = "X-Method-Override";
 
     /**
-     * The HTTP X-Forwarded-For header field name.
+     * The X-Forwarded-For (XFF) request header is a de-facto standard header for identifying
+     * the originating IP address of a client connecting to a web server through a proxy server.
      */
-    String X_FORWARDED_FOR = "X-FORWARDED-FOR";
+    String X_FORWARDED_FOR = "X-Forwarded-For";
 
     /**
-     * The HTTP X-Forwarded-Proto header field name.
+     * The X-Forwarded-Host (XFH) header is a de-facto standard header for identifying
+     * the original host requested by the client in the Host HTTP request header.
+     */
+    String X_FORWARDED_HOST = "X-Forwarded-Host";
+
+    /**
+     * The X-Forwarded-Proto (XFP) header is a de-facto standard header for identifying
+     * the protocol (HTTP or HTTPS) that a client used to connect to your proxy or load balancer.
      */
     String X_FORWARDED_PROTO = "X-Forwarded-Proto";
 
