@@ -53,7 +53,7 @@ echo Windows Service Name: %SERVICE_NAME%
 echo Aspectran Home: %BASE_DIR%
 
 rem Service log configuration
-set PR_LOGPATH=%BASE_DIR%\logs
+set PR_LOGPATH=%BASE_DIR%\logs\procrun
 set PR_LOGPREFIX=%SERVICE_NAME%
 set PR_LOGLEVEL=Debug
 set PR_STDOUTPUT=%BASE_DIR%\logs\%SERVICE_NAME%.out
