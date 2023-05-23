@@ -77,11 +77,17 @@ else
   JAVA_BIN="$JAVA_HOME/bin/java"
 fi
 
-if [ -z "$JAVA_OPTS" ]; then
-  JAVA_OPTS="-Xms256m -Xmx1024m"
+if [ ! -z "$JVM_MS" ]; then
+  JVM_MS_OPT="-Xms${JVM_MS}m"
+fi
+if [ ! -z "$JVM_MX" ]; then
+  JVM_MX_OPT="-Xmx${JVM_MX}m"
+fi
+if [ ! -z "$JVM_SS" ]; then
+  JVM_SS_OPT="-Xss${JVM_SS}k"
 fi
 
-DAEMON_OUT="$BASE_DIR/logs/daemon.out"
+DAEMON_OUT="$BASE_DIR/logs/daemon-stdout.log"
 DAEMON_MAIN="com.aspectran.daemon.DefaultDaemon"
 LOCK_FILE="$BASE_DIR/.lock"
 CLASSPATH="$BASE_DIR/lib/*"
@@ -92,7 +98,10 @@ LOGGING_CONFIG="$BASE_DIR/config/logging/logback.xml"
 start_daemon() {
   rm -f "$DAEMON_OUT"
   nohup "$JAVA_BIN" \
-    $JAVA_OPTS \
+    $JVM_MS_OPT \
+    $JVM_MX_OPT \
+    $JVM_SS_OPT \
+    -server \
     -classpath "$CLASSPATH" \
     -Djava.awt.headless=true \
     -Djava.net.preferIPv4Stack=true \

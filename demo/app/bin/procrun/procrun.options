@@ -2,7 +2,7 @@
 SERVICE_NAME=Aspectran
 DISPLAY_NAME=Aspectran Daemon
 DESCRIPTION=Aspectran Daemon for Windows Service
-#JAVA_HOME=../jdk-17.0.7
+#JAVA_HOME=
 #JVM_MS=256
-#JVM_MX=512
+#JVM_MX=1024
 #JVM_SS=4096

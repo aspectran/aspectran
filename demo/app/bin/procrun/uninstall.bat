@@ -14,15 +14,13 @@ if exist %~dp0\procrun.options (
 )
 
 if "%SERVICE_NAME%" == "" set SERVICE_NAME=%1
-rem If no ServiceName is specified, the default is "Aspectran"
-if not defined SERVICE_NAME (
-  set SERVICE_NAME=Aspectran
-)
+rem If no ServiceName is specified, the default is "AspectranService"
+if "%SERVICE_NAME%" == "" set SERVICE_NAME=AspectranService
 echo Using SERVICE_NAME: %SERVICE_NAME%
 
 rem Detect x86 or x64
-if PROCESSOR_ARCHITECTURE EQU "amd64" goto is-amd64
-if PROCESSOR_ARCHITEW6432 EQU "amd64" goto is-amd64
+if PROCESSOR_ARCHITECTURE == "amd64" goto is-amd64
+if PROCESSOR_ARCHITEW6432 == "amd64" goto is-amd64
 if defined ProgramFiles(x86) goto is-amd64
 :is-x86
 echo Current System Architecture: x86

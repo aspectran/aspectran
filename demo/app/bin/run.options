@@ -1,3 +1,5 @@
 # Variables required for execution can be explicitly specified here.
-#JAVA_HOME=./jdk-17.0.7
-#JAVA_OPTS=-Xms256m -Xmx1024m
+#JAVA_HOME=
+#JVM_MS=256
+#JVM_MX=1024
+#JVM_SS=1024

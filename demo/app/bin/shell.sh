@@ -41,8 +41,14 @@ else
   JAVA_BIN="$JAVA_HOME/bin/java"
 fi
 
-if [ -z "$JAVA_OPTS" ]; then
-  JAVA_OPTS="-Xms256m -Xmx1024m"
+if [ ! -z "$JVM_MS" ]; then
+  JVM_MS_OPT="-Xms${JVM_MS}m"
+fi
+if [ ! -z "$JVM_MX" ]; then
+  JVM_MX_OPT="-Xmx${JVM_MX}m"
+fi
+if [ ! -z "$JVM_SS" ]; then
+  JVM_SS_OPT="-Xss${JVM_SS}k"
 fi
 
 CLASSPATH="$BASE_DIR/lib/*"
@@ -66,7 +72,10 @@ if [ -z "$LOGGING_CONFIG" ] || [ ! -f "$LOGGING_CONFIG" ]; then
 fi
 
 "$JAVA_BIN" \
-  $JAVA_OPTS \
+  $JVM_MS_OPT \
+  $JVM_MX_OPT \
+  $JVM_SS_OPT \
+  -server \
   -classpath "$CLASSPATH" \
   -Djava.io.tmpdir="$TMP_DIR" \
   -Djava.awt.headless=true \

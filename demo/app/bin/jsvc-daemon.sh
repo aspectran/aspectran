@@ -95,8 +95,14 @@ else
   JAVA_BIN="$JAVA_HOME/bin/java"
 fi
 
-if [ -z "$JAVA_OPTS" ]; then
-  JAVA_OPTS="-Xms256m -Xmx1024m"
+if [ ! -z "$JVM_MS" ]; then
+  JVM_MS_OPT="-Xms${JVM_MS}m"
+fi
+if [ ! -z "$JVM_MX" ]; then
+  JVM_MX_OPT="-Xmx${JVM_MX}m"
+fi
+if [ ! -z "$JVM_SS" ]; then
+  JVM_SS_OPT="-Xss${JVM_SS}k"
 fi
 
 JSVC="$BASE_DIR/bin/jsvc"
@@ -113,8 +119,8 @@ fi
 test ".$PROC_NAME" = . && PROC_NAME="jsvc-daemon"
 test ".$PID_FILE" = . && PID_FILE="$BASE_DIR/.$PROC_NAME.pid"
 test ".$SERVICE_START_WAIT_TIME" = . && SERVICE_START_WAIT_TIME=10
-DAEMON_OUT="$BASE_DIR/logs/daemon.out"
-DAEMON_ERR="$BASE_DIR/logs/daemon.err"
+DAEMON_OUT="$BASE_DIR/logs/daemon-stdout.log"
+DAEMON_ERR="$BASE_DIR/logs/daemon-stderr.log"
 DAEMON_MAIN="com.aspectran.daemon.JsvcDaemon"
 CLASSPATH="$BASE_DIR/lib/*"
 TMP_DIR="$BASE_DIR/temp"
@@ -124,8 +130,9 @@ LOGGING_CONFIG="$BASE_DIR/config/logging/logback.xml"
 start_daemon() {
   : >"$DAEMON_OUT"
   "$JSVC" \
-    $JSVC_OPTS \
-    $JAVA_OPTS \
+    $JVM_MS_OPT \
+    $JVM_MX_OPT \
+    $JVM_SS_OPT \
     $DAEMON_USER \
     -jvm server \
     -java-home "$JAVA_HOME" \
@@ -149,8 +156,9 @@ start_daemon() {
 stop_daemon() {
   : >"$DAEMON_OUT"
   "$JSVC" \
-    $JSVC_OPTS \
-    $JAVA_OPTS \
+    $JVM_MS_OPT \
+    $JVM_MX_OPT \
+    $JVM_SS_OPT \
     -stop \
     -jvm server \
     -procname $PROC_NAME \
