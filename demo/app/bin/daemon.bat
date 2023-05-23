@@ -10,7 +10,7 @@ if "%JAVA_HOME%" == "" goto java-not-set
 if not exist "%JAVA_HOME%" goto java-not-set
 
 if "%JAVA_OPTS%" == "" (
-    set JAVA_OPTS=-Xms256m -Xmx512m
+    set JAVA_OPTS=-Xms256m -Xmx1024m
 )
 
 set BASE_DIR=%~dp0..

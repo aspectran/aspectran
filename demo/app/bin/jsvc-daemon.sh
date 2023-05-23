@@ -96,7 +96,7 @@ else
 fi
 
 if [ -z "$JAVA_OPTS" ]; then
-  JAVA_OPTS="-Xms256m -Xmx512m"
+  JAVA_OPTS="-Xms256m -Xmx1024m"
 fi
 
 JSVC="$BASE_DIR/bin/jsvc"

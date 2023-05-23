@@ -55,9 +55,9 @@ echo Aspectran Home: %BASE_DIR%
 rem Service log configuration
 set PR_LOGPATH=%BASE_DIR%\logs\procrun
 set PR_LOGPREFIX=%SERVICE_NAME%
-set PR_LOGLEVEL=Debug
-set PR_STDOUTPUT=%BASE_DIR%\logs\%SERVICE_NAME%.out
-set PR_STDERROR=%BASE_DIR%\logs\%SERVICE_NAME%.err
+set PR_LOGLEVEL=Info
+set PR_STDOUTPUT=%BASE_DIR%\logs\%SERVICE_NAME%-stdout.log
+set PR_STDERROR=%BASE_DIR%\logs\%SERVICE_NAME%-stderr.log
 
 rem Path to java installation
 set PR_JVM=%JAVA_HOME%\jre\bin\server\jvm.dll
