@@ -17,9 +17,6 @@ package com.aspectran.daemon.command.builtins;
 
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.request.ParameterMap;
-import com.aspectran.core.context.expr.ItemEvaluation;
-import com.aspectran.core.context.expr.ItemEvaluator;
-import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.util.OutputStringWriter;
 import com.aspectran.daemon.command.AbstractCommand;
 import com.aspectran.daemon.command.CommandParameters;
@@ -52,20 +49,8 @@ public class TransletCommand extends AbstractCommand {
         }
 
         try {
-            ItemEvaluator evaluator = new ItemEvaluation(daemonService.getDefaultActivity());
-
-            ParameterMap parameterMap = null;
-            ItemRuleMap parameterItemRuleMap = parameters.getParameterItemRuleMap();
-            if (parameterItemRuleMap != null && !parameterItemRuleMap.isEmpty()) {
-                parameterMap = evaluator.evaluateAsParameterMap(parameterItemRuleMap);
-            }
-
-            Map<String, Object> attributeMap = null;
-            ItemRuleMap attributeItemRuleMap = parameters.getAttributeItemRuleMap();
-            if (attributeItemRuleMap != null && !attributeItemRuleMap.isEmpty()) {
-                attributeMap = evaluator.evaluate(attributeItemRuleMap);
-            }
-
+            ParameterMap parameterMap = parameters.getParameterMap();
+            Map<String, Object> attributeMap = parameters.getAttributeMap();
             Translet translet = daemonService.translate(transletName, parameterMap, attributeMap);
             Writer writer = translet.getResponseAdapter().getWriter();
             if (writer instanceof OutputStringWriter && !((OutputStringWriter)writer).isDirty()) {

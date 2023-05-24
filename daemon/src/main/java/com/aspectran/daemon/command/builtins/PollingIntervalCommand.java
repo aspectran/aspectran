@@ -15,14 +15,10 @@
  */
 package com.aspectran.daemon.command.builtins;
 
-import com.aspectran.core.context.expr.ItemEvaluation;
-import com.aspectran.core.context.expr.ItemEvaluator;
-import com.aspectran.core.context.rule.ItemRuleList;
 import com.aspectran.daemon.command.AbstractCommand;
 import com.aspectran.daemon.command.CommandParameters;
 import com.aspectran.daemon.command.CommandRegistry;
 import com.aspectran.daemon.command.CommandResult;
-import com.aspectran.daemon.service.DaemonService;
 
 public class PollingIntervalCommand extends AbstractCommand {
 
@@ -38,26 +34,29 @@ public class PollingIntervalCommand extends AbstractCommand {
 
     @Override
     public CommandResult execute(CommandParameters parameters) {
-        DaemonService daemonService = getDaemonService();
-
         try {
             long oldPollingInterval = getCommandRegistry().getDaemon().getFileCommander().getPollingInterval();
-            long pollingInterval = 0L;
+            long newPollingInterval = 0L;
 
-            ItemRuleList itemRuleList = parameters.getArgumentItemRuleList();
-            if (!itemRuleList.isEmpty()) {
-                ItemEvaluator evaluator = new ItemEvaluation(daemonService.getDefaultActivity());
-                pollingInterval = evaluator.evaluate(itemRuleList.get(0));
+            Object[] args = parameters.getArguments();
+            if (args != null && args.length > 0) {
+                if (args[0] instanceof Long) {
+                    newPollingInterval = (Long)args[0];
+                } else {
+                    newPollingInterval = Long.parseLong(args[0].toString());
+                }
             }
 
-            if (pollingInterval > 0L) {
-                getCommandRegistry().getDaemon().getFileCommander().setPollingInterval(pollingInterval);
-                return success(info("The polling interval is changed from " + oldPollingInterval +
-                        "ms to " + pollingInterval + " ms"));
-            } else if (pollingInterval < 0L) {
-                return failed(error("The polling interval can not be negative: " + pollingInterval));
+            if (newPollingInterval == 0L) {
+                return failed(warn("The polling interval does not change"));
+            } else if (newPollingInterval < 0L) {
+                return failed(error("The polling interval can not be negative: " + newPollingInterval));
+            } else if (newPollingInterval < 1000L) {
+                return failed(error("The polling interval must be greater than 1000 ms."));
             } else {
-                return failed(warn("The polling interval is not changed"));
+                getCommandRegistry().getDaemon().getFileCommander().setPollingInterval(newPollingInterval);
+                return success(info("The polling interval is changed from " + oldPollingInterval +
+                        "ms to " + newPollingInterval + " ms"));
             }
         } catch (Exception e) {
             return failed(e);

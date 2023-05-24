@@ -31,14 +31,11 @@ import com.aspectran.shell.command.option.ParsedOptions;
 import com.aspectran.shell.console.CommandReadFailedException;
 import com.aspectran.shell.console.ShellConsole;
 import com.aspectran.shell.console.ShellConsoleClosedException;
-import com.aspectran.shell.console.ShellConsoleErrorStream;
-import com.aspectran.shell.console.ShellConsoleOutStream;
 import com.aspectran.shell.console.ShellConsoleWrapper;
 import com.aspectran.shell.service.DefaultShellService;
 import com.aspectran.shell.service.ShellService;
 
 import java.io.File;
-import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -57,10 +54,6 @@ public class DefaultConsoleCommander implements ConsoleCommander {
     private ShellCommandRegistry commandRegistry;
 
     private DefaultShellService shellService;
-
-    private PrintStream orgSystemOut;
-
-    private PrintStream orgSystemErr;
 
     public DefaultConsoleCommander(@NonNull ShellConsole console) {
         this.console = console;
@@ -133,11 +126,6 @@ public class DefaultConsoleCommander implements ConsoleCommander {
         }
 
         console.setCommandRunner(this);
-
-        orgSystemOut = System.out;
-        orgSystemErr = System.err;
-        System.setOut(new ShellConsoleOutStream(console));
-        System.setErr(new ShellConsoleErrorStream(console));
     }
 
     public void perform() {
@@ -243,14 +231,6 @@ public class DefaultConsoleCommander implements ConsoleCommander {
     }
 
     public void release() {
-        if (orgSystemOut != null) {
-            System.setOut(orgSystemOut);
-            orgSystemOut = null;
-        }
-        if (orgSystemErr != null) {
-            System.setErr(orgSystemErr);
-            orgSystemErr = null;
-        }
         if (shellService != null) {
             shellService.stop();
             shellService = null;

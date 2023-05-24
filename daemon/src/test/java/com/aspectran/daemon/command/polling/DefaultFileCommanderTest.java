@@ -32,12 +32,27 @@ class DefaultFileCommanderTest {
         File incomingDir = new File(root, "cmd/incoming");
 
         DaemonConfig daemonConfig = new DaemonConfig();
+        daemonConfig.addCommand("com.aspectran.daemon.command.builtins.PollingIntervalCommand");
 
+        // The polling interval is not specified, so it is 5 seconds.
         SimpleDaemon daemon = new SimpleDaemon(root.getCanonicalPath());
         daemon.init(daemonConfig);
 
-        File commandFile = new File(incomingDir, "quit.apon");
-        try (Writer writer = new FileWriter(commandFile)) {
+        // Since the simple daemon has no activity, this command will fail.
+        File pollingIntervalCommandFile = new File(incomingDir, "10-polling-interval.apon");
+        try (Writer writer = new FileWriter(pollingIntervalCommandFile)) {
+            writer.write("command: pollingInterval\n" +
+                    "arguments: {\n" +
+                    "    item: {\n" +
+                    "        value: 4000\n" +
+                    "        valueType: long\n" +
+                    "    }\n" +
+                    "}");
+        }
+
+        // The quit command is built in by default.
+        File quitCommandFile = new File(incomingDir, "99-quit.apon");
+        try (Writer writer = new FileWriter(quitCommandFile)) {
             writer.write("command: quit");
         }
 

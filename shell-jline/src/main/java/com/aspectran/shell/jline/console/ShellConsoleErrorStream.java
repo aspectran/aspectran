@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.shell.console;
+package com.aspectran.shell.jline.console;
+
+import com.aspectran.shell.console.ShellConsole;
 
 public class ShellConsoleErrorStream extends ShellConsoleOutStream {
 

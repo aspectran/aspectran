@@ -27,14 +27,16 @@ class JLineShellConsoleTest {
 
     public static void main(String[] args) throws IOException {
         ShellConsole console = new JLineShellConsole();
-        console.setStyle("white", "bg:gray");
-        String prompt = "{{magenta}}Test>{{reset}} ";
+        console.setStyle("yellow");
+        String prompt = "{{GREEN}}Test>{{reset}} ";
         while (true) {
             String line = console.readLine(prompt);
             if (StringUtils.hasLength(line)) {
-                console.writeLine(line);
                 if ("quit".equals(line)) {
+                    console.writeLine("Bye~");
                     break;
+                } else {
+                    console.writeLine(line);
                 }
             }
         }

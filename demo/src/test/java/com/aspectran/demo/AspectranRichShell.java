@@ -15,30 +15,26 @@
  */
 package com.aspectran.demo;
 
-import com.aspectran.core.context.env.EnvironmentProfiles;
 import com.aspectran.core.util.ResourceUtils;
-import com.aspectran.daemon.DefaultDaemon;
+import com.aspectran.shell.jline.JLineAspectranShell;
 
 import java.io.File;
+import java.io.IOException;
 
 import static com.aspectran.core.context.config.AspectranConfig.BASE_PATH_PROPERTY_NAME;
 
 /**
- * Application server for Aspectran Demo.
+ * Main entry point for the application.
  */
-public class DemoServer {
+public class AspectranRichShell {
 
     public static void main(String[] args) {
         try {
-            System.setProperty(EnvironmentProfiles.ACTIVE_PROFILES_PROPERTY_NAME, "daemon");
-            File current = ResourceUtils.getResourceAsFile(".");
-            File root = new File(current, "../../app");
+            File root = new File(ResourceUtils.getResourceAsFile(""), "../../app");
             System.setProperty(BASE_PATH_PROPERTY_NAME, root.getCanonicalPath()); // for logback
-            String[] args2 = { root.getCanonicalPath(), "config/aspectran-config.apon" };
-            DefaultDaemon.main(args2);
-        } catch (Exception e) {
+            JLineAspectranShell.main(new String[] { root.getCanonicalPath(), "config/aspectran-config.apon" });
+        } catch (IOException e) {
             e.printStackTrace(System.err);
-            System.exit(1);
         }
     }
 

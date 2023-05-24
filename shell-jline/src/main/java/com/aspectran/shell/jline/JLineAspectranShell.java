@@ -15,12 +15,17 @@
  */
 package com.aspectran.shell.jline;
 
+import com.aspectran.core.context.InsufficientEnvironmentException;
 import com.aspectran.core.context.config.AspectranConfig;
-import com.aspectran.shell.AspectranShell;
+import com.aspectran.core.lang.Nullable;
+import com.aspectran.core.util.Aspectran;
+import com.aspectran.core.util.ExceptionUtils;
 import com.aspectran.shell.console.ShellConsole;
+import com.aspectran.shell.jline.command.JLineConsoleCommander;
 import com.aspectran.shell.jline.console.JLineShellConsole;
 
 import java.io.File;
+import java.io.IOException;
 
 /**
  * Main entry point for the Aspectran Shell using JLine.
@@ -36,10 +41,52 @@ public class JLineAspectranShell {
         File aspectranConfigFile = AspectranConfig.determineAspectranConfigFile(args);
         try {
             ShellConsole console = new JLineShellConsole();
-            AspectranShell.bootstrap(basePath, aspectranConfigFile, console);
+            bootstrap(basePath, aspectranConfigFile, console);
         } catch (Exception e) {
             e.printStackTrace(System.err);
         }
+    }
+
+    public static void bootstrap(File aspectranConfigFile) throws IOException {
+        bootstrap(null, aspectranConfigFile, new JLineShellConsole());
+    }
+
+    public static void bootstrap(File aspectranConfigFile, ShellConsole console) {
+        bootstrap(null, aspectranConfigFile, console);
+    }
+
+    public static void bootstrap(@Nullable String basePath, File aspectranConfigFile, ShellConsole console) {
+        if (aspectranConfigFile == null) {
+            throw new IllegalArgumentException("aspectranConfigFile must not be null");
+        }
+        if (console == null) {
+            throw new IllegalArgumentException("console must not be null");
+        }
+
+        JLineConsoleCommander commander = null;
+        int exitStatus = 0;
+
+        try {
+            Aspectran.printPrettyAboutMe(System.out);
+
+            commander = new JLineConsoleCommander(console);
+            commander.prepare(basePath, aspectranConfigFile);
+            commander.perform();
+        } catch (Exception e) {
+            Throwable t = ExceptionUtils.getRootCause(e);
+            if (t instanceof InsufficientEnvironmentException) {
+                System.err.println(((InsufficientEnvironmentException)t).getPrettyMessage());
+            } else {
+                e.printStackTrace(System.err);
+            }
+            exitStatus = 1;
+        } finally {
+            if (commander != null) {
+                commander.release();
+            }
+        }
+
+        System.exit(exitStatus);
     }
 
 }

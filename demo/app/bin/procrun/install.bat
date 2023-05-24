@@ -23,10 +23,6 @@ if "%JAVA_HOME%" == "" goto java-not-set
 call :ResolvePath JAVA_HOME %JAVA_HOME%
 if not exist "%JAVA_HOME%" goto java-not-set
 
-if "%JVM_MS%" == "" set JVM_MS=256
-if "%JVM_MX%" == "" set JVM_MX=1024
-if "%JVM_SS%" == "" set JVM_SS=1024
-
 echo Using SERVICE_NAME: %SERVICE_NAME%
 echo Using DISPLAY_NAME: %DISPLAY_NAME%
 if not "%DESCRIPTION%" == "" echo Using DESCRIPTION: %DESCRIPTION%
@@ -82,9 +78,6 @@ set PR_STOPCLASS=com.aspectran.daemon.ProcrunDaemon
 set PR_STOPMETHOD=stop
 
 rem JVM configuration
-set PR_JVMMS=%JVM_MS%
-set PR_JVMMX=%JVM_MX%
-set PR_JVMSS=%JVM_SS%
 set PR_JVMOPTIONS=-Duser.language=en
 set PR_JVMOPTIONS=%PR_JVMOPTIONS%;-Duser.region=US
 set PR_JVMOPTIONS=%PR_JVMOPTIONS%;-Djava.awt.headless=true
@@ -106,9 +99,9 @@ echo Creating Service...
  --StdError="%PR_STDERROR%"^
  --JavaHome="%JAVA_HOME%"^
  --Jvm="%PR_JVM%"^
- --JvmMs="%PR_JVMMS%"^
- --JvmMx="%PR_JVMMX%"^
- --JvmSs="%PR_JVMSS%"^
+ --JvmMs="%JVM_MS%"^
+ --JvmMx="%JVM_MX%"^
+ --JvmSs="%JVM_SS%"^
  --JvmOptions="%PR_JVMOPTIONS%"^
  --Classpath="%PR_CLASSPATH%"^
  --StartMode="%PR_STARTMODE%"^

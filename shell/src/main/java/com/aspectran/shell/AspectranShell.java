@@ -43,6 +43,10 @@ public class AspectranShell {
         bootstrap(basePath, aspectranConfigFile, console);
     }
 
+    public static void bootstrap(File aspectranConfigFile) {
+        bootstrap(null, aspectranConfigFile, new DefaultShellConsole());
+    }
+
     public static void bootstrap(File aspectranConfigFile, ShellConsole console) {
         bootstrap(null, aspectranConfigFile, console);
     }
@@ -55,15 +59,15 @@ public class AspectranShell {
             throw new IllegalArgumentException("console must not be null");
         }
 
-        DefaultConsoleCommander runner = null;
+        DefaultConsoleCommander commander = null;
         int exitStatus = 0;
 
         try {
             Aspectran.printPrettyAboutMe(System.out);
 
-            runner = new DefaultConsoleCommander(console);
-            runner.prepare(basePath, aspectranConfigFile);
-            runner.perform();
+            commander = new DefaultConsoleCommander(console);
+            commander.prepare(basePath, aspectranConfigFile);
+            commander.perform();
         } catch (Exception e) {
             Throwable t = ExceptionUtils.getRootCause(e);
             if (t instanceof InsufficientEnvironmentException) {
@@ -73,8 +77,8 @@ public class AspectranShell {
             }
             exitStatus = 1;
         } finally {
-            if (runner != null) {
-                runner.release();
+            if (commander != null) {
+                commander.release();
             }
         }
 

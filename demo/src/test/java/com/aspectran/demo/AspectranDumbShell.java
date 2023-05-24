@@ -13,22 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.shell.jline;
+package com.aspectran.demo;
 
 import com.aspectran.core.util.ResourceUtils;
+import com.aspectran.shell.AspectranShell;
 
 import java.io.File;
 import java.io.IOException;
 
-/**
- * <p>Created: 2017. 3. 26.</p>
- */
-class JLineAspectranShellTest {
+import static com.aspectran.core.context.config.AspectranConfig.BASE_PATH_PROPERTY_NAME;
 
-    public static void main(String[] args) throws IOException {
-        String configFilePath = "config/shell/jline/aspectran-config-jline-shell-test.apon";
-        File aspectranConfigFile = ResourceUtils.getResourceAsFile(configFilePath);
-        JLineAspectranShell.bootstrap(aspectranConfigFile);
+/**
+ * Main entry point for the application.
+ */
+public class AspectranDumbShell {
+
+    public static void main(String[] args) {
+        try {
+            File root = new File(ResourceUtils.getResourceAsFile(""), "../../app");
+            System.setProperty(BASE_PATH_PROPERTY_NAME, root.getCanonicalPath()); // for logback
+            AspectranShell.main(new String[] { root.getCanonicalPath(), "config/aspectran-config.apon" });
+        } catch (IOException e) {
+            e.printStackTrace(System.err);
+        }
     }
 
 }

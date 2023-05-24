@@ -15,10 +15,16 @@
  */
 package com.aspectran.daemon.command;
 
+import com.aspectran.core.activity.Activity;
+import com.aspectran.core.activity.request.ParameterMap;
+import com.aspectran.core.context.expr.ItemEvaluation;
+import com.aspectran.core.context.expr.ItemEvaluator;
 import com.aspectran.core.context.rule.IllegalRuleException;
+import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleList;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.ItemRuleUtils;
+import com.aspectran.core.context.rule.converter.RulesToParameters;
 import com.aspectran.core.context.rule.params.ItemHolderParameters;
 import com.aspectran.core.context.rule.params.ItemParameters;
 import com.aspectran.core.util.apon.AbstractParameters;
@@ -26,6 +32,7 @@ import com.aspectran.core.util.apon.ParameterKey;
 import com.aspectran.core.util.apon.ValueType;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>Created: 2017. 12. 11.</p>
@@ -71,8 +78,14 @@ public class CommandParameters extends AbstractParameters {
         };
     }
 
+    private Activity activity;
+
     public CommandParameters() {
         super(parameterKeys);
+    }
+
+    public void setActivity(Activity activity) {
+        this.activity = activity;
     }
 
     public String getCommandName() {
@@ -111,6 +124,16 @@ public class CommandParameters extends AbstractParameters {
         return this;
     }
 
+    public ItemRuleMap getArgumentItemRuleMap() throws IllegalRuleException {
+        ItemHolderParameters itemHolderParameters = getParameters(arguments);
+        if (itemHolderParameters != null) {
+            List<ItemParameters> itemParametersList = itemHolderParameters.getItemParametersList();
+            return ItemRuleUtils.toItemRuleMap(itemParametersList);
+        } else {
+            return null;
+        }
+    }
+
     public ItemRuleList getArgumentItemRuleList() throws IllegalRuleException {
         ItemHolderParameters itemHolderParameters = getParameters(arguments);
         if (itemHolderParameters != null) {
@@ -121,14 +144,27 @@ public class CommandParameters extends AbstractParameters {
         }
     }
 
-    public ItemRuleMap getArgumentItemRuleMap() throws IllegalRuleException {
-        ItemHolderParameters itemHolderParameters = getParameters(arguments);
-        if (itemHolderParameters != null) {
-            List<ItemParameters> itemParametersList = itemHolderParameters.getItemParametersList();
-            return ItemRuleUtils.toItemRuleMap(itemParametersList);
+    public Object[] getArguments() throws IllegalRuleException {
+        if (activity == null) {
+            throw new IllegalStateException("No available activity");
+        }
+        ItemRuleList itemRuleList = getArgumentItemRuleList();
+        if (itemRuleList != null) {
+            ItemEvaluator evaluator = new ItemEvaluation(activity);
+            Object[] args = new Object[itemRuleList.size()];
+            for (int i = 0; i < itemRuleList.size(); i++) {
+                args[i] = evaluator.evaluate(itemRuleList.get(i));
+            }
+            return args;
         } else {
             return null;
         }
+    }
+
+    public void putArgument(ItemRule itemRule) {
+        ItemHolderParameters ihp = touchParameters(CommandParameters.arguments);
+        ihp.addItemParameters(RulesToParameters.toItemParameters(itemRule));
+        putValue(arguments, ihp);
     }
 
     public ItemRuleMap getPropertyItemRuleMap() throws IllegalRuleException {
@@ -151,11 +187,37 @@ public class CommandParameters extends AbstractParameters {
         }
     }
 
+    public ParameterMap getParameterMap() throws IllegalRuleException {
+        if (activity == null) {
+            throw new IllegalStateException("No available activity");
+        }
+        ItemRuleMap parameterItemRuleMap = getParameterItemRuleMap();
+        if (parameterItemRuleMap != null && !parameterItemRuleMap.isEmpty()) {
+            ItemEvaluator evaluator = new ItemEvaluation(activity);
+            return evaluator.evaluateAsParameterMap(parameterItemRuleMap);
+        } else {
+            return null;
+        }
+    }
+
     public ItemRuleMap getAttributeItemRuleMap() throws IllegalRuleException {
         ItemHolderParameters itemHolderParameters = getParameters(attributes);
         if (itemHolderParameters != null) {
             List<ItemParameters> itemParametersList = itemHolderParameters.getItemParametersList();
             return ItemRuleUtils.toItemRuleMap(itemParametersList);
+        } else {
+            return null;
+        }
+    }
+
+    public Map<String, Object> getAttributeMap() throws IllegalRuleException {
+        if (activity == null) {
+            throw new IllegalStateException("No available activity");
+        }
+        ItemRuleMap attributeItemRuleMap = getAttributeItemRuleMap();
+        if (attributeItemRuleMap != null && !attributeItemRuleMap.isEmpty()) {
+            ItemEvaluator evaluator = new ItemEvaluation(activity);
+            return evaluator.evaluate(attributeItemRuleMap);
         } else {
             return null;
         }

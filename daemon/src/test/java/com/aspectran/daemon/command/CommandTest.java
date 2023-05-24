@@ -15,10 +15,13 @@
  */
 package com.aspectran.daemon.command;
 
+import com.aspectran.core.context.rule.ItemRule;
+import com.aspectran.core.context.rule.type.ItemValueType;
 import com.aspectran.core.util.apon.AponFormat;
 import com.aspectran.core.util.apon.AponWriter;
 import com.aspectran.daemon.TestDaemon;
 import com.aspectran.daemon.command.builtins.InvokeActionCommand;
+import com.aspectran.daemon.command.builtins.PollingIntervalCommand;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -59,7 +62,7 @@ class CommandTest {
     }
 
     @Test
-    void testVerboseCommand() {
+    void testInvokeActionCommand() {
         CommandParameters parameters = new CommandParameters();
         parameters.setCommandName("invokeAction");
         parameters.setBeanName("class:com.aspectran.daemon.command.CommandTestBean");
@@ -68,6 +71,22 @@ class CommandTest {
         Command command = new InvokeActionCommand(commandRegistry);
         CommandResult result = command.execute(parameters);
         assertEquals("<<command1>>", result.getResult());
+    }
+
+    @Test
+    void testPollingIntervalCommand() {
+        ItemRule argItemRule = new ItemRule();
+        argItemRule.setValue("3000");
+        argItemRule.setValueType(ItemValueType.LONG);
+
+        CommandParameters parameters = new CommandParameters();
+        parameters.setActivity(daemon.getDaemonService().getActivityContext().getAvailableActivity());
+        parameters.setCommandName("pollingInterval");
+        parameters.putArgument(argItemRule);
+
+        Command command = new PollingIntervalCommand(commandRegistry);
+        CommandResult result = command.execute(parameters);
+        assertEquals("The polling interval is changed from 5000ms to 3000 ms", result.getResult());
     }
 
     @Test
@@ -82,7 +101,6 @@ class CommandTest {
 
         String s1 = ("translet: emptyResult\n" + "result: (\n" + "  |\n" + ")").replace("\n", AponFormat.SYSTEM_NEW_LINE);
         String s2 = aponWriter.toString().trim();
-
         assertEquals(s1, s2);
     }
 
@@ -98,7 +116,6 @@ class CommandTest {
 
         String s1 = "translet: nullResult";
         String s2 = aponWriter.toString().trim();
-
         assertEquals(s1, s2);
     }
 

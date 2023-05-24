@@ -903,6 +903,7 @@ public class RulesToParameters {
         if (itemRuleMap == null) {
             throw new IllegalArgumentException("itemRuleMap must not be null");
         }
+
         for (ItemRule itemRule : itemRuleMap.values()) {
             actionParameters.putValue(ActionParameters.item, toItemParameters(itemRule));
         }

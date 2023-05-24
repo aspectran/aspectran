@@ -103,6 +103,11 @@ public class CommandExecutor {
             return false;
         }
 
+        if (daemon.getDaemonService() != null) {
+            // DefaultActivity will always be specified here
+            parameters.setActivity(daemon.getDaemonService().getActivityContext().getAvailableActivity());
+        }
+
         Runnable runnable = () -> {
             Thread currentThread = Thread.currentThread();
             String oldThreadName = currentThread.getName();

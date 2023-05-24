@@ -19,10 +19,7 @@ import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.component.aspect.AspectRuleRegistry;
 import com.aspectran.core.component.schedule.ScheduleRuleRegistry;
 import com.aspectran.core.component.translet.TransletRuleRegistry;
-import com.aspectran.core.context.expr.ItemEvaluation;
-import com.aspectran.core.context.expr.ItemEvaluator;
 import com.aspectran.core.context.rule.AspectRule;
-import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.ScheduleRule;
 import com.aspectran.core.context.rule.ScheduledJobRule;
 import com.aspectran.core.context.rule.TransletRule;
@@ -70,14 +67,7 @@ public class ComponentCommand extends AbstractCommand {
         DaemonService daemonService = getDaemonService();
 
         try {
-            ItemEvaluator evaluator = new ItemEvaluation(getDaemonService().getDefaultActivity());
-
-            ParameterMap parameterMap = null;
-            ItemRuleMap parameterItemRuleMap = parameters.getParameterItemRuleMap();
-            if (parameterItemRuleMap != null && !parameterItemRuleMap.isEmpty()) {
-                parameterMap = evaluator.evaluateAsParameterMap(parameterItemRuleMap);
-            }
-
+            ParameterMap parameterMap = parameters.getParameterMap();
             if (parameterMap == null) {
                 return failed(error("No parameters specified"));
             }
