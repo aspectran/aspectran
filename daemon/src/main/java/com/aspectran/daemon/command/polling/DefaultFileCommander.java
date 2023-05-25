@@ -168,7 +168,7 @@ public class DefaultFileCommander extends AbstractFileCommander {
 
     private void executeQueuedCommand(final CommandParameters parameters, final String fileName) {
         if (logger.isDebugEnabled()) {
-            logger.debug("Execute Command: " + fileName + "\n" + parameters);
+            logger.debug("Execute Command: " + fileName + System.lineSeparator() + parameters);
         }
         getCommandExecutor().execute(parameters, new CommandExecutor.Callback() {
             @Override
@@ -176,7 +176,7 @@ public class DefaultFileCommander extends AbstractFileCommander {
                 removeCommandFile(queuedDir, fileName);
                 writeCompletedCommand(parameters, makeFileName());
                 if (logger.isTraceEnabled()) {
-                    logger.trace("Result of Completed Command: " + fileName + "\n" + parameters);
+                    logger.trace("Result of Completed Command: " + fileName + System.lineSeparator() + parameters);
                 }
             }
 
@@ -185,7 +185,7 @@ public class DefaultFileCommander extends AbstractFileCommander {
                 removeCommandFile(queuedDir, fileName);
                 writeFailedCommand(parameters, makeFileName());
                 if (logger.isTraceEnabled()) {
-                    logger.trace("Result of Failed Command: " + fileName + "\n" + parameters);
+                    logger.trace("Result of Failed Command: " + fileName + System.lineSeparator() + parameters);
                 }
             }
 
