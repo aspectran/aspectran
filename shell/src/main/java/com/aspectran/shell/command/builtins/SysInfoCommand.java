@@ -97,7 +97,10 @@ public class SysInfoCommand extends AbstractCommand {
             }
         } else {
             mem(false, console);
+            console.writeLine();
             printSysProperties(console);
+            console.writeLine();
+            console.writeLine("-----------------------------------------------------------------");
             printHelp(console);
         }
     }
