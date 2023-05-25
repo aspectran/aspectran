@@ -740,30 +740,35 @@ public class StringUtils {
 
     /**
      * Convert byte size into human friendly format.
-     * @param size the number of bytes
+     * @param bytes the number of bytes
      * @return a human friendly byte size (includes units)
      */
-    public static String convertToHumanFriendlyByteSize(long size) {
-        if (size < 1024) {
-            return size + " B";
+    public static String convertToHumanFriendlyByteSize(long bytes) {
+        if (bytes < 1024 && bytes > -1024) {
+            return bytes + " B";
         }
-        int z = (63 - Long.numberOfLeadingZeros(size)) / 10;
-        double d = (double)size / (1L << (z * 10));
-        String format = (d % 1.0 == 0) ? "%.0f %sB" : "%.1f %sB";
-        return String.format(format, d, " KMGTPE".charAt(z));
+        String minus = null;
+        if (bytes < 0) {
+            minus = "-";
+            bytes = -bytes;
+        }
+        int z = (63 - Long.numberOfLeadingZeros(bytes)) / 10;
+        double d = (double)bytes / (1L << (z * 10));
+        String format = (d % 1.0 == 0 ? "%s%.0f %sB" : "%s%.1f %sB");
+        return String.format(format, nullToEmpty(minus), d, " KMGTPE".charAt(z));
     }
 
     /**
      * Convert byte size into machine friendly format.
-     * @param size the human friendly byte size (includes units)
+     * @param bytes the human friendly byte size (includes units)
      * @return a number of bytes
      * @throws NumberFormatException if failed parse given size
      */
     @SuppressWarnings("fallthrough")
-    public static long convertToMachineFriendlyByteSize(String size) {
+    public static long convertToMachineFriendlyByteSize(String bytes) {
         double d;
         try {
-            d = Double.parseDouble(size.replaceAll("[GMK]?[B]?$", EMPTY));
+            d = Double.parseDouble(bytes.replaceAll("[GMK]?B?$", EMPTY));
         } catch (NumberFormatException e)  {
             String msg = "Size must be specified as bytes (B), " +
                     "kilobytes (KB), megabytes (MB), gigabytes (GB). " +
@@ -771,8 +776,8 @@ public class StringUtils {
             throw new NumberFormatException(msg + " " + e.getMessage());
         }
         long l = Math.round(d * 1024 * 1024 * 1024L);
-        int index = Math.max(0, size.length() - (size.endsWith("B") ? 2 : 1));
-        switch (size.charAt(index)) {
+        int index = Math.max(0, bytes.length() - (bytes.endsWith("B") ? 2 : 1));
+        switch (bytes.charAt(index)) {
             default:  l /= 1024;
             case 'K': l /= 1024;
             case 'M': l /= 1024;

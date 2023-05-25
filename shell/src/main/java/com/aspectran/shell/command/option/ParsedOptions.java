@@ -274,7 +274,7 @@ public class ParsedOptions implements Serializable {
      * @param name the short or long name of the option
      * @return the canonicalized option
      */
-    private Option resolveOption(String name) {
+    public Option resolveOption(String name) {
         name = OptionUtils.stripLeadingHyphens(name);
         for (Option option : options) {
             if (name.equals(option.getName())) {

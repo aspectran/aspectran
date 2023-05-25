@@ -94,9 +94,12 @@ public class DefaultFileCommander extends AbstractFileCommander {
             incomingDir.mkdirs();
             this.incomingDir = incomingDir;
 
-            File[] incomingFiles = getCommandFiles(incomingDir);
+            File[] incomingFiles = retrieveCommandFiles(incomingDir);
             if (incomingFiles != null) {
                 for (File file : incomingFiles) {
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Delete old incoming command file: " + file);
+                    }
                     file.delete();
                 }
             }
@@ -123,14 +126,14 @@ public class DefaultFileCommander extends AbstractFileCommander {
 
     @Override
     public void requeue() {
-        File[] queuedFiles = getCommandFiles(queuedDir);
+        File[] queuedFiles = retrieveCommandFiles(queuedDir);
         if (queuedFiles != null) {
             if (isRequeuable()) {
                 for (File file : queuedFiles) {
                     CommandParameters parameters = readCommandFile(file);
                     if (parameters != null) {
                         if (parameters.isRequeuable()) {
-                            writeCommandFile(incomingDir, file.getName(), parameters);
+                            writeIncomingCommand(parameters, file.getName());
                         }
                         removeCommandFile(queuedDir, file.getName());
                     }
@@ -145,7 +148,7 @@ public class DefaultFileCommander extends AbstractFileCommander {
 
     @Override
     public void polling() {
-        File[] files = getCommandFiles(incomingDir);
+        File[] files = retrieveCommandFiles(incomingDir);
         if (files != null) {
             int limit = getCommandExecutor().getAvailableThreads();
             for (int i = 0; i < files.length && i < limit; i++) {
@@ -153,7 +156,7 @@ public class DefaultFileCommander extends AbstractFileCommander {
                 CommandParameters parameters = readCommandFile(file);
                 if (parameters != null) {
                     String incomingFileName = file.getName();
-                    String queuedFileName = writeCommandFile(queuedDir, incomingFileName, parameters);
+                    String queuedFileName = writeQueuedCommand(parameters, incomingFileName);
                     if (queuedFileName != null) {
                         removeCommandFile(incomingDir, incomingFileName);
                         executeQueuedCommand(parameters, queuedFileName);
@@ -163,29 +166,38 @@ public class DefaultFileCommander extends AbstractFileCommander {
         }
     }
 
-    private void executeQueuedCommand(final CommandParameters parameters, final String queuedFileName) {
+    private void executeQueuedCommand(final CommandParameters parameters, final String fileName) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("Execute Command: " + fileName + "\n" + parameters);
+        }
         getCommandExecutor().execute(parameters, new CommandExecutor.Callback() {
             @Override
             public void success() {
-                removeCommandFile(queuedDir, queuedFileName);
-                writeCommandFile(completedDir, makeFileName(), parameters);
+                removeCommandFile(queuedDir, fileName);
+                writeCompletedCommand(parameters, makeFileName());
+                if (logger.isTraceEnabled()) {
+                    logger.trace("Result of Completed Command: " + fileName + "\n" + parameters);
+                }
             }
 
             @Override
             public void failure() {
-                removeCommandFile(queuedDir, queuedFileName);
-                writeCommandFile(failedDir, makeFileName(), parameters);
+                removeCommandFile(queuedDir, fileName);
+                writeFailedCommand(parameters, makeFileName());
+                if (logger.isTraceEnabled()) {
+                    logger.trace("Result of Failed Command: " + fileName + "\n" + parameters);
+                }
             }
 
             private String makeFileName() {
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmssSSS");
                 String datetime = formatter.format(LocalDateTime.now());
-                return datetime + "_" + queuedFileName;
+                return datetime + "_" + fileName;
             }
         });
     }
 
-    private File[] getCommandFiles(File dir) {
+    private File[] retrieveCommandFiles(File dir) {
         File[] files = dir.listFiles((file) -> (file.isFile() && file.getName().toLowerCase().endsWith(".apon")));
         if (files != null && files.length > 0) {
             Arrays.sort(files, Comparator.comparing(File::getName));
@@ -194,17 +206,46 @@ public class DefaultFileCommander extends AbstractFileCommander {
     }
 
     private CommandParameters readCommandFile(File file) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("Read command file: " + file.getAbsolutePath());
+        if (logger.isTraceEnabled()) {
+            logger.trace("Read command file: " + file);
         }
         try {
             CommandParameters parameters = new CommandParameters();
             AponReader.parse(file, parameters);
             return parameters;
         } catch (IOException e) {
-            logger.error("Failed to read command file: " + file.getAbsolutePath(), e);
+            logger.error("Failed to read command file: " + file, e);
             removeCommandFile(incomingDir, file.getName());
             return null;
+        }
+    }
+
+    private void writeIncomingCommand(CommandParameters parameters, String fileName) {
+        String written = writeCommandFile(incomingDir, fileName, parameters);
+        if (logger.isDebugEnabled()) {
+            logger.debug("Incoming Command: " + written + " in " + incomingDir);
+        }
+    }
+
+    private String writeQueuedCommand(CommandParameters parameters, String fileName) {
+        String written = writeCommandFile(queuedDir, fileName, parameters);
+        if (logger.isDebugEnabled()) {
+            logger.debug("Queued Command: " + written + " in " + queuedDir);
+        }
+        return written;
+    }
+
+    private void writeCompletedCommand(CommandParameters parameters, String fileName) {
+        String written = writeCommandFile(completedDir, fileName, parameters);
+        if (logger.isDebugEnabled()) {
+            logger.debug("Completed Command: " + written + " in " + completedDir);
+        }
+    }
+
+    private void writeFailedCommand(CommandParameters parameters, String fileName) {
+        String written = writeCommandFile(failedDir, fileName, parameters);
+        if (logger.isDebugEnabled()) {
+            logger.debug("Failed Command: " + written + " in " + failedDir);
         }
     }
 
@@ -215,8 +256,8 @@ public class DefaultFileCommander extends AbstractFileCommander {
                 file = FilenameUtils.generateUniqueFile(new File(dir, fileName));
                 file.createNewFile();
             }
-            if (logger.isDebugEnabled()) {
-                logger.debug("Write command file: " + file.getAbsolutePath());
+            if (logger.isTraceEnabled()) {
+                logger.trace("Write command file: " + file);
             }
             AponWriter aponWriter = new AponWriter(file).nullWritable(false);
             aponWriter.write(parameters);
@@ -224,10 +265,10 @@ public class DefaultFileCommander extends AbstractFileCommander {
             return file.getName();
         } catch (IOException e) {
             if (file != null) {
-                logger.warn("Failed to write command file: " + file.getAbsolutePath(), e);
+                logger.warn("Failed to write command file: " + file, e);
             } else {
                 File f = new File(dir, fileName);
-                logger.warn("Failed to write command file: " + f.getAbsolutePath(), e);
+                logger.warn("Failed to write command file: " + f, e);
             }
             return null;
         }
@@ -235,11 +276,11 @@ public class DefaultFileCommander extends AbstractFileCommander {
 
     private void removeCommandFile(File dir, String fileName) {
         File file = new File(dir, fileName);
-        if (logger.isDebugEnabled()) {
-            logger.debug("Delete command file: " + file.getAbsolutePath());
+        if (logger.isTraceEnabled()) {
+            logger.trace("Delete command file: " + file);
         }
         if (!file.delete()) {
-            logger.warn("Failed to delete command file: " + file.getAbsolutePath());
+            logger.warn("Failed to delete command file: " + file);
         }
     }
 

@@ -28,7 +28,10 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
 import java.net.URL;
 import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Displays current JVM runtime information.
@@ -46,7 +49,7 @@ public class SysInfoCommand extends AbstractCommand {
 
         addOption(Option.builder("props")
                 .longName("system-properties")
-                .desc("Displays the JVM's system properties")
+                .desc("Displays JVM system properties")
                 .build());
         addOption(Option.builder("cp")
                 .longName("class-path")
@@ -68,28 +71,51 @@ public class SysInfoCommand extends AbstractCommand {
 
     @Override
     public void execute(ParsedOptions options, ShellConsole console) throws Exception {
-        if (options.hasOption("help")) {
-            printHelp(console);
-        } else if (options.hasOption("props")) {
-            printSysProperties(console);
-        } else if (options.hasOption("cp")) {
-            printClasspath(console);
-        } else if (options.hasOption("mem")) {
-            mem(false, console);
-        } else if (options.hasOption("gc")) {
-            mem(true, console);
+        if (options.hasOptions()) {
+            Iterator<Option> iter = options.iterator();
+            Set<Option> done = new HashSet<>();
+            while (iter.hasNext()) {
+                Option option = iter.next();
+                String name = option.getName();
+                if (!done.contains(option)) {
+                    if (!done.isEmpty()) {
+                        console.writeLine();
+                    }
+                    if ("h".equals(name)) {
+                        printHelp(console);
+                    } else if ("props".equals(name)) {
+                        printSysProperties(console);
+                    } else if ("cp".equals(name)) {
+                        printClasspath(console);
+                    } else if ("mem".equals(name)) {
+                        mem(false, console);
+                    } else if ("gc".equals(name)) {
+                        mem(true, console);
+                    }
+                }
+                done.add(option);
+            }
         } else {
-            printQuickHelp(console);
+            mem(false, console);
+            printSysProperties(console);
+            printHelp(console);
         }
     }
 
     private void printSysProperties(ShellConsole console) {
+        console.writeLine("---------------------");
+        console.writeLine("JVM system properties");
+        console.writeLine("---------------------");
         for (Map.Entry<Object, Object> entry : System.getProperties().entrySet()) {
-            console.writeLine("%1$30s   %2$s", entry.getKey(), entry.getValue());
+            String value = entry.getValue() != null ? escape(entry.getValue().toString()) : null;
+            console.writeLine("%s=%s", entry.getKey(), StringUtils.nullToEmpty(value));
         }
     }
 
     private void printClasspath(ShellConsole console) {
+        console.writeLine("-------------------------");
+        console.writeLine("JVM classpath information");
+        console.writeLine("-------------------------");
         RuntimeMXBean bean = ManagementFactory.getRuntimeMXBean();
         for (String line : StringUtils.split(bean.getClassPath(), File.pathSeparator)) {
             console.writeLine(line);
@@ -112,11 +138,16 @@ public class SysInfoCommand extends AbstractCommand {
      * @param gc true if performing garbage collection; false otherwise
      */
     private void mem(boolean gc, ShellConsole console) {
+        long max = Runtime.getRuntime().maxMemory();
         long total = Runtime.getRuntime().totalMemory();
-        long before = Runtime.getRuntime().freeMemory();
+        long free = Runtime.getRuntime().freeMemory();
 
-        console.writeLine("%-24s %12s", "Total memory", StringUtils.convertToHumanFriendlyByteSize(total));
-        console.writeLine("%-24s %12s", "Used memory", StringUtils.convertToHumanFriendlyByteSize(total - before));
+        console.writeLine("------------------------------------");
+        console.writeLine("Memory information about current JVM");
+        console.writeLine("------------------------------------");
+        console.writeLine("%-23s %12s", "Available memory", StringUtils.convertToHumanFriendlyByteSize(max));
+        console.writeLine("%-23s %12s", "Total memory", StringUtils.convertToHumanFriendlyByteSize(total));
+        console.writeLine("%-23s %12s", "Used memory", StringUtils.convertToHumanFriendlyByteSize(total - free));
 
         if (gc) {
             // Let the finalizer finish its work and remove objects from its queue
@@ -131,12 +162,21 @@ public class SysInfoCommand extends AbstractCommand {
 
             long after = Runtime.getRuntime().freeMemory();
 
-            console.writeLine("%-24s %12s", "Free memory before GC", StringUtils.convertToHumanFriendlyByteSize(before));
-            console.writeLine("%-24s %12s", "Free memory after GC", StringUtils.convertToHumanFriendlyByteSize(after));
-            console.writeLine("%-24s %12s", "Memory gained with GC", StringUtils.convertToHumanFriendlyByteSize(after - before));
+            console.writeLine("%-23s %12s", "Free memory before GC", StringUtils.convertToHumanFriendlyByteSize(free));
+            console.writeLine("%-23s %12s", "Free memory after GC", StringUtils.convertToHumanFriendlyByteSize(after));
+            console.writeLine("%-23s %12s", "Memory gained with GC", StringUtils.convertToHumanFriendlyByteSize(after - free));
         } else {
-            console.writeLine("%-24s %12s", "Free memory", StringUtils.convertToHumanFriendlyByteSize(before));
+            console.writeLine("%-23s %12s", "Free memory", StringUtils.convertToHumanFriendlyByteSize(free));
         }
+        console.writeLine("------------------------------------");
+    }
+
+    private String escape(String s){
+        return s.replace("\t", "\\t")
+                .replace("\b", "\\b")
+                .replace("\n", "\\n")
+                .replace("\r", "\\r")
+                .replace("\f", "\\f");
     }
 
     @Override

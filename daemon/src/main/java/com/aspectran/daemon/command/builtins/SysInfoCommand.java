@@ -15,7 +15,6 @@
  */
 package com.aspectran.daemon.command.builtins;
 
-import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.context.resource.SiblingsClassLoader;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.daemon.command.AbstractCommand;
@@ -31,7 +30,9 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
 import java.net.URL;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class SysInfoCommand extends AbstractCommand {
 
@@ -48,20 +49,26 @@ public class SysInfoCommand extends AbstractCommand {
     @Override
     public CommandResult execute(CommandParameters parameters) {
         try  {
-            ParameterMap parameterMap = parameters.getParameterMap();
-            String[] options = parameterMap.getParameterValues("options");
+            Object[] args = parameters.getArguments();
             Writer writer = new StringWriter();
             PrintWriter printWriter = new PrintWriter(writer);
-            for (String option : options) {
-                if ("props".equals(option)) {
-                    printSysProperties(printWriter);
-                } else if ("cp".equals(option)) {
-                    printClasspath(printWriter);
-                } else if ("mem".equals(option)) {
-                    mem(false, printWriter);
-                } else if ("gc".equals(option)) {
-                    mem(true, printWriter);
+            Set<Object> done = new HashSet<>();
+            for (Object arg : args) {
+                if (!done.contains(arg)) {
+                    if (!done.isEmpty()) {
+                        printWriter.println();
+                    }
+                    if ("props".equals(arg)) {
+                        printSysProperties(printWriter);
+                    } else if ("cp".equals(arg)) {
+                        printClasspath(printWriter);
+                    } else if ("mem".equals(arg)) {
+                        mem(false, printWriter);
+                    } else if ("gc".equals(arg)) {
+                        mem(true, printWriter);
+                    }
                 }
+                done.add(arg);
             }
             return success(writer.toString());
         } catch (Exception e) {
@@ -70,12 +77,19 @@ public class SysInfoCommand extends AbstractCommand {
     }
 
     private void printSysProperties(PrintWriter printWriter) {
+        printWriter.println("---------------------");
+        printWriter.println("JVM system properties");
+        printWriter.println("---------------------");
         for (Map.Entry<Object, Object> entry : System.getProperties().entrySet()) {
-            printWriter.format("%1$30s   %2$s", entry.getKey(), entry.getValue()).println();
+            String value = entry.getValue() != null ? escape(entry.getValue().toString()) : null;
+            printWriter.format("%s=%s", entry.getKey(), StringUtils.nullToEmpty(value)).println();
         }
     }
 
     private void printClasspath(PrintWriter printWriter) {
+        printWriter.println("-------------------------");
+        printWriter.println("JVM classpath information");
+        printWriter.println("-------------------------");
         RuntimeMXBean bean = ManagementFactory.getRuntimeMXBean();
         for (String line : StringUtils.split(bean.getClassPath(), File.pathSeparator)) {
             printWriter.println(line);
@@ -98,11 +112,16 @@ public class SysInfoCommand extends AbstractCommand {
      * @param gc true if performing garbage collection; false otherwise
      */
     private void mem(boolean gc, PrintWriter printWriter) {
+        long max = Runtime.getRuntime().maxMemory();
         long total = Runtime.getRuntime().totalMemory();
-        long before = Runtime.getRuntime().freeMemory();
+        long free = Runtime.getRuntime().freeMemory();
 
-        printWriter.format("%-24s %12s", "Total memory", StringUtils.convertToHumanFriendlyByteSize(total));
-        printWriter.format("%-24s %12s", "Used memory", StringUtils.convertToHumanFriendlyByteSize(total - before));
+        printWriter.println("------------------------------------");
+        printWriter.println("Memory information about current JVM");
+        printWriter.println("------------------------------------");
+        printWriter.format("%-23s %12s", "Available memory", StringUtils.convertToHumanFriendlyByteSize(max)).println();
+        printWriter.format("%-23s %12s", "Total memory", StringUtils.convertToHumanFriendlyByteSize(total)).println();
+        printWriter.format("%-23s %12s", "Used memory", StringUtils.convertToHumanFriendlyByteSize(total - free)).println();
 
         if (gc) {
             // Let the finalizer finish its work and remove objects from its queue
@@ -117,12 +136,21 @@ public class SysInfoCommand extends AbstractCommand {
 
             long after = Runtime.getRuntime().freeMemory();
 
-            printWriter.format("%-24s %12s", "Free memory before GC", StringUtils.convertToHumanFriendlyByteSize(before));
-            printWriter.format("%-24s %12s", "Free memory after GC", StringUtils.convertToHumanFriendlyByteSize(after));
-            printWriter.format("%-24s %12s", "Memory gained with GC", StringUtils.convertToHumanFriendlyByteSize(after - before));
+            printWriter.format("%-23s %12s", "Free memory before GC", StringUtils.convertToHumanFriendlyByteSize(free)).println();
+            printWriter.format("%-23s %12s", "Free memory after GC", StringUtils.convertToHumanFriendlyByteSize(after)).println();
+            printWriter.format("%-23s %12s", "Memory gained with GC", StringUtils.convertToHumanFriendlyByteSize(after - free)).println();
         } else {
-            printWriter.format("%-24s %12s", "Free memory", StringUtils.convertToHumanFriendlyByteSize(before));
+            printWriter.format("%-23s %12s", "Free memory", StringUtils.convertToHumanFriendlyByteSize(free)).println();
         }
+        printWriter.println("------------------------------------");
+    }
+
+    private String escape(String s){
+        return s.replace("\t", "\\t")
+                .replace("\b", "\\b")
+                .replace("\n", "\\n")
+                .replace("\r", "\\r")
+                .replace("\f", "\\f");
     }
 
     @Override
