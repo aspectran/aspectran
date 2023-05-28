@@ -1,5 +1,9 @@
 #!/bin/sh
 
+set -a
+. ./run.options
+set +a
+
 ARG0="$0"
 while [ -h "$ARG0" ]; do
   ls=$(ls -ld "$ARG0")
@@ -16,6 +20,7 @@ BASE_DIR="$(
   cd "$BASE_DIR" || exit
   pwd
 )"
+
 if [ -z "$JAVA_HOME" ]; then
   JAVA_BIN="$(command -v java 2>/dev/null || type java 2>&1)"
   while [ -h "$JAVA_BIN" ]; do
@@ -35,15 +40,25 @@ if [ -z "$JAVA_HOME" ]; then
 else
   JAVA_BIN="$JAVA_HOME/bin/java"
 fi
+
+if [ ! -z "$JVM_MS" ]; then
+  JVM_MS_OPT="-Xms${JVM_MS}m"
+fi
+if [ ! -z "$JVM_MX" ]; then
+  JVM_MX_OPT="-Xmx${JVM_MX}m"
+fi
+if [ ! -z "$JVM_SS" ]; then
+  JVM_SS_OPT="-Xss${JVM_SS}k"
+fi
+
+CLASSPATH="$BASE_DIR/lib/*"
+TMP_DIR="$BASE_DIR/temp"
+ASPECTRAN_CONFIG="$BASE_DIR/config/aspectran-config.apon"
+
 while [ ".$1" != . ]; do
   case "$1" in
-  --raw-mode)
-    ASPECTRAN_SHELL_CLASS="com.aspectran.shell.AspectranShell"
-    shift
-    continue
-    ;;
   --debug)
-    LOGGING_CONFIG="$BASE_DIR/config/logback-debug.xml"
+    LOGGING_CONFIG="$BASE_DIR/config/logging/logback-debug.xml"
     shift
     continue
     ;;
@@ -52,21 +67,15 @@ while [ ".$1" != . ]; do
     ;;
   esac
 done
-if [ -z "$JAVA_OPTS" ]; then
-  JAVA_OPTS="-Xms256m -Xmx1024m"
-fi
-CLASSPATH="$BASE_DIR/lib/*"
 if [ -z "$LOGGING_CONFIG" ] || [ ! -f "$LOGGING_CONFIG" ]; then
-  LOGGING_CONFIG="$BASE_DIR/config/logback.xml"
+  LOGGING_CONFIG="$BASE_DIR/config/logging/logback.xml"
 fi
-TMP_DIR="$BASE_DIR/temp"
-if [ -z "$ASPECTRAN_SHELL_CLASS" ]; then
-  ASPECTRAN_SHELL_CLASS="com.aspectran.shell.jline.JLineAspectranShell"
-fi
-ASPECTRAN_CONFIG="$BASE_DIR/config/aspectran-config.apon"
 
 "$JAVA_BIN" \
-  $JAVA_OPTS \
+  $JVM_MS_OPT \
+  $JVM_MX_OPT \
+  $JVM_SS_OPT \
+  -server \
   -classpath "$CLASSPATH" \
   -Djava.io.tmpdir="$TMP_DIR" \
   -Djava.awt.headless=true \
@@ -74,5 +83,5 @@ ASPECTRAN_CONFIG="$BASE_DIR/config/aspectran-config.apon"
   -Dlogback.configurationFile="$LOGGING_CONFIG" \
   -Daspectran.basePath="$BASE_DIR" \
   $ASPECTRAN_OPTS \
-  $ASPECTRAN_SHELL_CLASS \
+  com.aspectran.shell.jline.JLineAspectranShell \
   "$ASPECTRAN_CONFIG"

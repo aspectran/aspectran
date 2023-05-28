@@ -1,0 +1,8 @@
+# Variables required for execution can be explicitly specified here.
+SERVICE_NAME=Aspectran
+DISPLAY_NAME=Aspectran Daemon
+DESCRIPTION=Aspectran Daemon for Windows Service
+#JAVA_HOME=
+#JVM_MS=256
+#JVM_MX=1024
+#JVM_SS=4096

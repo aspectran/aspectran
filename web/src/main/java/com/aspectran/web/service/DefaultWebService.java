@@ -30,6 +30,7 @@ import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.CoreService;
 import com.aspectran.core.service.ServiceStateListener;
 import com.aspectran.core.util.ObjectUtils;
+import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
@@ -41,6 +42,7 @@ import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.io.IOException;
 import java.net.URLDecoder;
 
@@ -53,6 +55,10 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
     private static final Logger logger = LoggerFactory.getLogger(DefaultWebService.class);
 
     private static final String ASPECTRAN_CONFIG_PARAM = "aspectran:config";
+
+    private static final String ASPECTRAN_CONFIG_FILE_FROM = "file:";
+
+    private static final String ASPECTRAN_CONFIG_RESOURCE_FROM = "resource:";
 
     private static final String DEFAULT_APP_CONTEXT_FILE = "/WEB-INF/aspectran/app-context.xml";
 
@@ -328,11 +334,30 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
     private static DefaultWebService create(ServletContext servletContext, String aspectranConfigParam) {
         AspectranConfig aspectranConfig;
         if (aspectranConfigParam != null) {
-            try {
-                aspectranConfig = new AspectranConfig(aspectranConfigParam);
-            } catch (IOException e) {
-                throw new AspectranServiceException("Error parsing '" + ASPECTRAN_CONFIG_PARAM +
-                        "' initialization parameter for Aspectran Configuration", e);
+            if (aspectranConfigParam.startsWith(ASPECTRAN_CONFIG_FILE_FROM)) {
+                String filePath = aspectranConfigParam.substring(ASPECTRAN_CONFIG_FILE_FROM.length()).trim();
+                try {
+                    File configFile = new File(servletContext.getRealPath(filePath));
+                    aspectranConfig = new AspectranConfig(configFile);
+                } catch (IOException e) {
+                    throw new AspectranServiceException("Error parsing Aspectran configuration from file: " + filePath, e);
+                }
+            } else if (aspectranConfigParam.startsWith(ASPECTRAN_CONFIG_RESOURCE_FROM)) {
+                String resourcePath = aspectranConfigParam.substring(ASPECTRAN_CONFIG_RESOURCE_FROM.length()).trim();
+                try {
+                    File configFile = ResourceUtils.getResourceAsFile(resourcePath);
+                    aspectranConfig = new AspectranConfig(configFile);
+                } catch (IOException e) {
+                    throw new AspectranServiceException("Error parsing Aspectran configuration from resource: " +
+                            resourcePath, e);
+                }
+            } else {
+                try {
+                    aspectranConfig = new AspectranConfig(aspectranConfigParam);
+                } catch (IOException e) {
+                    throw new AspectranServiceException("Error parsing Aspectran configuration from '" +
+                            ASPECTRAN_CONFIG_PARAM + "' initialization parameter in web.xml", e);
+                }
             }
         } else {
             aspectranConfig = new AspectranConfig();

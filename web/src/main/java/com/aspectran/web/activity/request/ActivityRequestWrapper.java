@@ -15,8 +15,10 @@
  */
 package com.aspectran.web.activity.request;
 
-import com.aspectran.core.activity.Activity;
+import com.aspectran.core.adapter.RequestAdapter;
+import com.aspectran.core.lang.NonNull;
 
+import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -30,82 +32,91 @@ import java.util.Map;
  */
 public class ActivityRequestWrapper extends HttpServletRequestWrapper {
 
-    private final Activity activity;
+    private final RequestAdapter requestAdapter;
 
-    public ActivityRequestWrapper(Activity activity) {
-        super(activity.getRequestAdapter().getAdaptee());
-        this.activity = activity;
+    public ActivityRequestWrapper(@NonNull RequestAdapter requestAdapter) {
+        super(requestAdapter.getAdaptee());
+        this.requestAdapter = requestAdapter;
+    }
+
+    @Override
+    public void setRequest(@NonNull ServletRequest request) {
+        super.setRequest(request);
+        Map<String, Object> requestAttributeMap = requestAdapter.getAttributeMap();
+        if (requestAttributeMap instanceof RequestAttributeMap) {
+            ((RequestAttributeMap)requestAttributeMap).setRequest(request);
+        }
     }
 
     @Override
     public String getHeader(String name) {
-        return activity.getRequestAdapter().getHeader(name);
+        return requestAdapter.getHeader(name);
     }
 
     @Override
     public Enumeration<String> getHeaders(String name) {
-        return Collections.enumeration(activity.getRequestAdapter().getHeaderValues(name));
+        return Collections.enumeration(requestAdapter.getHeaderValues(name));
     }
 
     @Override
     public Enumeration<String> getHeaderNames() {
-        return Collections.enumeration(activity.getRequestAdapter().getHeaderNames());
-    }
-
-    @Override
-    public String getParameter(String name) {
-        return activity.getRequestAdapter().getParameter(name);
-    }
-
-    @Override
-    public Map<String, String[]> getParameterMap() {
-        return activity.getRequestAdapter().getParameterMap();
-    }
-
-    @Override
-    public Enumeration<String> getParameterNames() {
-        return Collections.enumeration(activity.getRequestAdapter().getParameterNames());
-    }
-
-    @Override
-    public String[] getParameterValues(String name) {
-        return activity.getRequestAdapter().getParameterValues(name);
+        return Collections.enumeration(requestAdapter.getHeaderNames());
     }
 
     @Override
     public Object getAttribute(String name) {
-        return activity.getRequestAdapter().getAttribute(name);
+        return requestAdapter.getAttribute(name);
     }
 
     @Override
     public Enumeration<String> getAttributeNames() {
-        return Collections.enumeration(activity.getRequestAdapter().getAttributeNames());
+        return Collections.enumeration(requestAdapter.getAttributeNames());
     }
 
     @Override
     public void setAttribute(String name, Object o) {
-        activity.getRequestAdapter().setAttribute(name, o);
+        requestAdapter.setAttribute(name, o);
     }
 
     @Override
     public void removeAttribute(String name) {
-        activity.getRequestAdapter().removeAttribute(name);
+        requestAdapter.removeAttribute(name);
+    }
+
+    @Override
+    public String getParameter(String name) {
+        return requestAdapter.getParameter(name);
+    }
+
+    @Override
+    public Map<String, String[]> getParameterMap() {
+        return requestAdapter.getParameterMap();
+    }
+
+    @Override
+    public Enumeration<String> getParameterNames() {
+        return Collections.enumeration(requestAdapter.getParameterNames());
+    }
+
+    @Override
+    public String[] getParameterValues(String name) {
+        return requestAdapter.getParameterValues(name);
     }
 
     @Override
     public Locale getLocale() {
-        if (activity.getRequestAdapter().getLocale() == null) {
+        if (requestAdapter.getLocale() == null) {
             return super.getLocale();
         }
-        return activity.getRequestAdapter().getLocale();
+        return requestAdapter.getLocale();
     }
 
     @Override
     public Enumeration<Locale> getLocales() {
-        if (activity.getRequestAdapter().getLocale() == null) {
+        if (requestAdapter.getLocale() == null) {
             return super.getLocales();
         }
-        return Collections.enumeration(Collections.singleton(activity.getRequestAdapter().getLocale()));
+        return Collections.enumeration(Collections.singleton(requestAdapter.getLocale()));
     }
 
 }

@@ -158,6 +158,9 @@ public class TowRequestAdapter extends AbstractRequestAdapter {
     }
 
     public void preparse(TowRequestAdapter requestAdapter) {
+        if (requestAdapter == this) {
+            throw new IllegalStateException("Unable To Replicate");
+        }
         getParameterMap().putAll(requestAdapter.getParameterMap());
         setAttributeMap(requestAdapter.getAttributeMap());
         setMediaType(requestAdapter.getMediaType());

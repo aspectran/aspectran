@@ -1,3 +1,6 @@
+This file contains instructions on how to run Aspectran as a Windows Service
+using Apache Procrun.
+
 Run as a Windows Service
 ------------------------
 
@@ -8,11 +11,8 @@ Aspectran using the standard Windows Services administration tool
 Apache Procrun is used to wrap Aspectran as the Windows Service. It is included
 in the same directory as this file.
 
-
-Commands
---------
-
 Install Service
+---------------
 
 This command to install Aspectran as a Windows service and must be executed
 as Administrator (see instructions below for how to do this):
@@ -29,6 +29,7 @@ which is installed. Therefore, be sure to set your current directory properly
 before executing the command.
 
 Remove Service
+--------------
 
 This command removes the specified Windows Service from the registry and must
 be executed as Administrator (see instructions below for how to do this):

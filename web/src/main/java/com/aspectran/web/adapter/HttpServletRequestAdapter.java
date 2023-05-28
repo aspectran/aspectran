@@ -146,6 +146,9 @@ public class HttpServletRequestAdapter extends AbstractRequestAdapter {
     }
 
     public void preparse(HttpServletRequestAdapter requestAdapter) {
+        if (requestAdapter == this) {
+            throw new IllegalStateException("Unable To Replicate");
+        }
         getParameterMap().putAll(requestAdapter.getParameterMap());
         setAttributeMap(requestAdapter.getAttributeMap());
         setMediaType(requestAdapter.getMediaType());
