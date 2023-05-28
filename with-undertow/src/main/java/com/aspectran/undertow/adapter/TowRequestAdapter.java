@@ -135,7 +135,7 @@ public class TowRequestAdapter extends AbstractRequestAdapter {
     }
 
     private HttpServerExchange getHttpServerExchange() {
-        return (HttpServerExchange)getAdaptee();
+        return getAdaptee();
     }
 
     public void preparse() {
@@ -157,8 +157,11 @@ public class TowRequestAdapter extends AbstractRequestAdapter {
     }
 
     public void preparse(TowRequestAdapter requestAdapter) {
-        getParameterMap().putAll(requestAdapter.getParameterMap());
+        if (requestAdapter == this) {
+            throw new IllegalStateException("Unable To Replicate");
+        }
         setAttributeMap(requestAdapter.getAttributeMap());
+        getParameterMap().putAll(requestAdapter.getParameterMap());
         setMediaType(requestAdapter.getMediaType());
         setLocale(requestAdapter.getLocale());
     }

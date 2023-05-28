@@ -133,11 +133,11 @@ public class HttpServletRequestAdapter extends AbstractRequestAdapter {
 
     public void preparse() {
         HttpServletRequest request = getAdaptee();
+        setAttributeMap(new RequestAttributeMap(request));
         Map<String, String[]> parameters = request.getParameterMap();
         if (!parameters.isEmpty()) {
             getParameterMap().putAll(parameters);
         }
-        setAttributeMap(new RequestAttributeMap(request));
         if (request.getContentType() != null) {
             setMediaType(MediaType.parseMediaType(request.getContentType()));
         }
@@ -145,8 +145,11 @@ public class HttpServletRequestAdapter extends AbstractRequestAdapter {
     }
 
     public void preparse(HttpServletRequestAdapter requestAdapter) {
-        getParameterMap().putAll(requestAdapter.getParameterMap());
+        if (requestAdapter == this) {
+            throw new IllegalStateException("Unable To Replicate");
+        }
         setAttributeMap(requestAdapter.getAttributeMap());
+        getParameterMap().putAll(requestAdapter.getParameterMap());
         setMediaType(requestAdapter.getMediaType());
         setLocale(requestAdapter.getLocale());
     }

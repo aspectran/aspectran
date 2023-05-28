@@ -118,7 +118,7 @@ public class JspTemplateViewDispatcher implements ViewDispatcher {
                         dispatchName + "'");
             }
 
-            ActivityRequestWrapper requestWrapper = new ActivityRequestWrapper(activity);
+            ActivityRequestWrapper requestWrapper = new ActivityRequestWrapper(activity.getRequestAdapter());
             RequestDispatcher requestDispatcher = requestWrapper.getRequestDispatcher(template);
             requestDispatcher.forward(requestWrapper, response);
 

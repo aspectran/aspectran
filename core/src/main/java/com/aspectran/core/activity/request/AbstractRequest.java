@@ -44,11 +44,11 @@ public abstract class AbstractRequest {
 
     private MultiValueMap<String, String> headers;
 
+    private Map<String, Object> attributes;
+
     private ParameterMap parameterMap;
 
     private FileParameterMap fileParameterMap;
-
-    private Map<String, Object> attributes;
 
     private String encoding;
 
@@ -150,6 +150,62 @@ public abstract class AbstractRequest {
 
     public boolean hasHeaders() {
         return (headers != null && !headers.isEmpty());
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> T getAttribute(String name) {
+        return (T)getAttributeMap().get(name);
+    }
+
+    public void setAttribute(String name, Object value) {
+        if (value == null) {
+            // If the object passed in is null, the effect is the same
+            // as calling removeAttribute(java.lang.String).
+            removeAttribute(name);
+        } else {
+            getAttributeMap().put(name, value);
+        }
+    }
+
+    public Set<String> getAttributeNames() {
+        return getAttributeMap().keySet();
+    }
+
+    public void removeAttribute(String name) {
+        getAttributeMap().remove(name);
+    }
+
+    public void putAllAttributes(Map<String, Object> attributes) {
+        getAttributeMap().putAll(attributes);
+    }
+
+    public void extractAttributes(Map<String, Object> targetMap) {
+        if (targetMap == null) {
+            throw new IllegalArgumentException("targetMap must not be null");
+        }
+        if (hasAttributes()) {
+            targetMap.putAll(getAttributeMap());
+        }
+    }
+
+    /**
+     * Returns a map of the request attributes that can be modified.
+     * If not yet instantiated then create a new one.
+     * @return an {@code Map<String, Object>} object, may not be {@code null}
+     */
+    public Map<String, Object> getAttributeMap() {
+        if (attributes == null) {
+            attributes = new HashMap<>();
+        }
+        return attributes;
+    }
+
+    public void setAttributeMap(Map<String, Object> attributeMap) {
+        this.attributes = attributeMap;
+    }
+
+    public boolean hasAttributes() {
+        return (attributes != null && !attributes.isEmpty());
     }
 
     public String getParameter(String name) {
@@ -265,62 +321,6 @@ public abstract class AbstractRequest {
 
     public boolean hasFileParameters() {
         return (fileParameterMap != null && !fileParameterMap.isEmpty());
-    }
-
-    @SuppressWarnings("unchecked")
-    public <T> T getAttribute(String name) {
-        return (T)getAttributeMap().get(name);
-    }
-
-    public void setAttribute(String name, Object value) {
-        if (value == null) {
-            // If the object passed in is null, the effect is the same
-            // as calling removeAttribute(java.lang.String).
-            removeAttribute(name);
-        } else {
-            getAttributeMap().put(name, value);
-        }
-    }
-
-    public Set<String> getAttributeNames() {
-        return getAttributeMap().keySet();
-    }
-
-    public void removeAttribute(String name) {
-        getAttributeMap().remove(name);
-    }
-
-    public void putAllAttributes(Map<String, Object> attributes) {
-        getAttributeMap().putAll(attributes);
-    }
-
-    public void extractAttributes(Map<String, Object> targetMap) {
-        if (targetMap == null) {
-            throw new IllegalArgumentException("targetMap must not be null");
-        }
-        if (hasAttributes()) {
-            targetMap.putAll(getAttributeMap());
-        }
-    }
-
-    /**
-     * Returns a map of the request attributes that can be modified.
-     * If not yet instantiated then create a new one.
-     * @return an {@code Map<String, Object>} object, may not be {@code null}
-     */
-    public Map<String, Object> getAttributeMap() {
-        if (attributes == null) {
-            attributes = new HashMap<>();
-        }
-        return attributes;
-    }
-
-    public void setAttributeMap(Map<String, Object> attributeMap) {
-        this.attributes = attributeMap;
-    }
-
-    public boolean hasAttributes() {
-        return (attributes != null && !attributes.isEmpty());
     }
 
     public String getEncoding() {

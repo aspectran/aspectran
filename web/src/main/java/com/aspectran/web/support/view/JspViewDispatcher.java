@@ -125,7 +125,7 @@ public class JspViewDispatcher implements ViewDispatcher {
                 logger.trace("Dispatching to JSP [" + resource + "]");
             }
 
-            ActivityRequestWrapper requestWrapper = new ActivityRequestWrapper(activity);
+            ActivityRequestWrapper requestWrapper = new ActivityRequestWrapper(activity.getRequestAdapter());
             RequestDispatcher requestDispatcher = requestWrapper.getRequestDispatcher(resource);
             requestDispatcher.forward(requestWrapper, response);
 

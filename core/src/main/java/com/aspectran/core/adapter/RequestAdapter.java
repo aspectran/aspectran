@@ -125,6 +125,64 @@ public interface RequestAdapter {
     boolean hasHeaders();
 
     /**
+     * Returns the value of the named attribute as a given type,
+     * or {@code null} if no attribute of the given name exists.
+     * @param <T> the generic type
+     * @param name a {@code String} specifying the name of the attribute
+     * @return an {@code Object} containing the value of the attribute,
+     *         or {@code null} if the attribute does not exist
+     */
+    <T> T getAttribute(String name);
+
+    /**
+     * Stores an attribute in this request.
+     * @param name specifying the name of the attribute
+     * @param value the {@code Object} to be stored
+     */
+    void setAttribute(String name, Object value);
+
+    /**
+     * Returns a {@code Collection} containing the
+     * names of the attributes available to this request.
+     * This method returns an empty {@code Collection}
+     * if the request has no attributes available to it.
+     * @return the attribute names
+     */
+    Set<String> getAttributeNames();
+
+    /**
+     * Removes an attribute from this request.
+     * @param name a {@code String} specifying the name of the attribute to remove
+     */
+    void removeAttribute(String name);
+
+    /**
+     * Copies all of the mappings from the specified attributes.
+     * @param attributes the specified attributes
+     */
+    void putAllAttributes(Map<String, Object> attributes);
+
+    /**
+     * Extracts all the attributes and fills in the specified map.
+     * @param targetAttributes the target attribute map to be filled
+     * @since 2.0.0
+     */
+    void extractAttributes(Map<String, Object> targetAttributes);
+
+    /**
+     * Returns a mutable map of the attributes,
+     * with attribute names as map keys and attribute value as map value.
+     * @return a modifiable map of the attributes
+     */
+    Map<String, Object> getAttributeMap();
+
+    /**
+     * Returns whether the request has attributes.
+     * @return true if attributes exists, false otherwise
+     */
+    boolean hasAttributes();
+
+    /**
      * Returns the value of a request parameter as a {@code String},
      * or {@code null} if the parameter does not exist.
      * @param name a {@code String} specifying the name of the parameter
@@ -283,64 +341,6 @@ public interface RequestAdapter {
      * @return true if file parameters exists, false otherwise
      */
     boolean hasFileParameters();
-
-    /**
-     * Returns the value of the named attribute as a given type,
-     * or {@code null} if no attribute of the given name exists.
-     * @param <T> the generic type
-     * @param name a {@code String} specifying the name of the attribute
-     * @return an {@code Object} containing the value of the attribute,
-     *         or {@code null} if the attribute does not exist
-     */
-    <T> T getAttribute(String name);
-
-    /**
-     * Stores an attribute in this request.
-     * @param name specifying the name of the attribute
-     * @param value the {@code Object} to be stored
-     */
-    void setAttribute(String name, Object value);
-
-    /**
-     * Returns a {@code Collection} containing the
-     * names of the attributes available to this request.
-     * This method returns an empty {@code Collection}
-     * if the request has no attributes available to it.
-     * @return the attribute names
-     */
-    Set<String> getAttributeNames();
-
-    /**
-     * Removes an attribute from this request.
-     * @param name a {@code String} specifying the name of the attribute to remove
-     */
-    void removeAttribute(String name);
-
-    /**
-     * Copies all of the mappings from the specified attributes.
-     * @param attributes the specified attributes
-     */
-    void putAllAttributes(Map<String, Object> attributes);
-
-    /**
-     * Extracts all the attributes and fills in the specified map.
-     * @param targetAttributes the target attribute map to be filled
-     * @since 2.0.0
-     */
-    void extractAttributes(Map<String, Object> targetAttributes);
-
-    /**
-     * Returns a mutable map of the attributes,
-     * with attribute names as map keys and attribute value as map value.
-     * @return a modifiable map of the attributes
-     */
-    Map<String, Object> getAttributeMap();
-
-    /**
-     * Returns whether the request has attributes.
-     * @return true if attributes exists, false otherwise
-     */
-    boolean hasAttributes();
 
     /**
      * Returns the method used for the request.
