@@ -16,10 +16,6 @@
 # Control Script for the Aspectran Daemon
 # -----------------------------------------------------------------------------
 
-set -a
-. ./run.options
-set +a
-
 ARG0="$0"
 while [ -h "$ARG0" ]; do
   ls=$(ls -ld "$ARG0")
@@ -37,6 +33,11 @@ BASE_DIR="$(
   cd "$BASE_DIR" || exit
   pwd
 )"
+
+set -a
+. "$BASE_DIR/bin/run.options"
+set +a
+
 while [ ".$1" != . ]; do
   case "$1" in
   --base-dir)

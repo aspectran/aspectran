@@ -1,9 +1,5 @@
 #!/bin/sh
 
-set -a
-. ./run.options
-set +a
-
 ARG0="$0"
 while [ -h "$ARG0" ]; do
   ls=$(ls -ld "$ARG0")
@@ -20,6 +16,10 @@ BASE_DIR="$(
   cd "$BASE_DIR" || exit
   pwd
 )"
+
+set -a
+. "$BASE_DIR/bin/run.options"
+set +a
 
 if [ -z "$JAVA_HOME" ]; then
   JAVA_BIN="$(command -v java 2>/dev/null || type java 2>&1)"
