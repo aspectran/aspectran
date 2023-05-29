@@ -71,10 +71,6 @@ public class TowOptions {
         options.set(UndertowOptions.MAX_COOKIES, maxCookies);
     }
 
-    public void setAllowEncodedSlash(boolean allowEncodedSlash) {
-        options.set(UndertowOptions.ALLOW_ENCODED_SLASH, allowEncodedSlash);
-    }
-
     public void setDecodeUrl(boolean decodeUrl) {
         options.set(UndertowOptions.DECODE_URL, decodeUrl);
     }

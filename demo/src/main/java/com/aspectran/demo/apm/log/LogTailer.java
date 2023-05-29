@@ -19,7 +19,7 @@ import com.aspectran.core.util.lifecycle.AbstractLifeCycle;
 import org.apache.commons.io.input.Tailer;
 import org.apache.commons.io.input.TailerListener;
 
-import java.io.File;
+import java.time.Duration;
 
 public class LogTailer extends AbstractLifeCycle {
 
@@ -59,12 +59,17 @@ public class LogTailer extends AbstractLifeCycle {
         if (tailerListener == null) {
             throw new IllegalStateException("No TailerListener configured");
         }
-        tailer = Tailer.create(new File(logFile), tailerListener, sampleInterval, true);
+        tailer = Tailer.builder()
+                .setFile(logFile)
+                .setTailerListener(tailerListener)
+                .setDelayDuration(Duration.ofMillis(sampleInterval))
+                .setTailFromEnd(true)
+                .get();
     }
 
     protected void doStop() throws Exception {
         if (tailer != null) {
-            tailer.stop();
+            tailer.close();
             tailer = null;
         }
     }
