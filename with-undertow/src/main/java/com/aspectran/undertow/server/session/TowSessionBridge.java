@@ -24,7 +24,7 @@ import io.undertow.util.AttachmentKey;
 import java.util.Set;
 
 /**
- * Class that bridges between Aspectran native session and Undertow ones.
+ * Class that bridges between Aspectran native session and Undertow one.
  *
  * <p>Created: 2019-08-11</p>
  */

@@ -17,9 +17,14 @@ package com.aspectran.undertow.server.session;
 
 import com.aspectran.core.component.session.Session;
 import com.aspectran.core.component.session.SessionListener;
+import io.undertow.server.HttpServerExchange;
+import io.undertow.servlet.handlers.ServletRequestContext;
+
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 
 /**
- * Class that bridges between Aspectran native session listeners and Undertow ones.
+ * Class that bridges between Aspectran native session listener and Undertow ones.
  *
  * <p>Created: 2019-08-11</p>
  */
@@ -36,7 +41,7 @@ final class TowSessionListenerBridge implements SessionListener {
 
     @Override
     public void sessionCreated(Session session) {
-        listener.sessionCreated(wrapSession(session), null);
+        listener.sessionCreated(wrapSession(session), getCurrentExchange());
     }
 
     @Override
@@ -55,7 +60,7 @@ final class TowSessionListenerBridge implements SessionListener {
                     break;
             }
         }
-        listener.sessionDestroyed(wrapSession(session), null, reason);
+        listener.sessionDestroyed(wrapSession(session), getCurrentExchange(), reason);
     }
 
     @Override
@@ -80,6 +85,17 @@ final class TowSessionListenerBridge implements SessionListener {
 
     private TowSessionBridge wrapSession(com.aspectran.core.component.session.Session session) {
         return towSessionManager.newTowSessionBridge(session);
+    }
+
+    static HttpServerExchange getCurrentExchange() {
+        if (System.getSecurityManager() == null) {
+            ServletRequestContext current = ServletRequestContext.current();
+            return current != null ? current.getExchange() : null;
+        } else {
+            ServletRequestContext current = AccessController
+                    .doPrivileged((PrivilegedAction<ServletRequestContext>)ServletRequestContext::current);
+            return current != null ? current.getExchange() : null;
+        }
     }
 
 }

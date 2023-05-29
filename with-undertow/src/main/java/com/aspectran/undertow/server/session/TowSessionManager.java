@@ -111,10 +111,10 @@ public class TowSessionManager implements SessionManager, ApplicationAdapterAwar
     }
 
     @Override
-    public Session createSession(HttpServerExchange serverExchange, SessionConfig sessionConfig) {
+    public Session createSession(HttpServerExchange exchange, SessionConfig sessionConfig) {
         String sessionId;
         try {
-            sessionId = sessionConfig.findSessionId(serverExchange);
+            sessionId = sessionConfig.findSessionId(exchange);
         } catch (Exception e) {
             logger.error("Unable to create new session due to failure to find session ID", e);
             return null;
@@ -124,29 +124,29 @@ public class TowSessionManager implements SessionManager, ApplicationAdapterAwar
         }
         DefaultSession session = sessionManager.createSession(sessionId);
         TowSessionBridge sessionBridge = newTowSessionBridge(session);
-        sessionConfig.setSessionId(serverExchange, session.getId());
-        serverExchange.putAttachment(NEW_SESSION, sessionBridge);
+        sessionConfig.setSessionId(exchange, session.getId());
+        exchange.putAttachment(NEW_SESSION, sessionBridge);
         return sessionBridge;
     }
 
     @Override
-    public Session getSession(HttpServerExchange serverExchange, SessionConfig sessionConfig) {
-        if (serverExchange != null) {
-            TowSessionBridge newSession = serverExchange.getAttachment(NEW_SESSION);
+    public Session getSession(HttpServerExchange exchange, SessionConfig sessionConfig) {
+        if (exchange != null) {
+            TowSessionBridge newSession = exchange.getAttachment(NEW_SESSION);
             if (newSession != null) {
                 return newSession;
             }
         }
         String sessionId;
         try {
-            sessionId = sessionConfig.findSessionId(serverExchange);
+            sessionId = sessionConfig.findSessionId(exchange);
         } catch (Exception e) {
             logger.error("Unable to retrieve session due to failure to find session ID", e);
             return null;
         }
         TowSessionBridge sessionWrapper = (TowSessionBridge)getSession(sessionId);
-        if (sessionWrapper != null && serverExchange != null) {
-            sessionWrapper.requestStarted(serverExchange);
+        if (sessionWrapper != null && exchange != null) {
+            sessionWrapper.requestStarted(exchange);
         }
         return sessionWrapper;
     }
