@@ -27,7 +27,6 @@ import java.util.List;
  *
  * @author Arjen Poutsma
  */
-@SuppressWarnings("serial")
 public abstract class HttpMediaTypeException extends ServletException {
 
     private final List<MediaType> supportedMediaTypes;
