@@ -28,11 +28,12 @@ The key features of Aspectran are:
 * **Create Aspectran-powered, production-grade applications**  
   You can create reliable, standalone Java applications that run on multiple operating systems, and even run them in servlet containers or embed them into other Java applications.
 
-Aspectran-based applications support the following execution environments on the JVM:
+Aspectran-powered applications support the following execution environments on the JVM:
 
 * Consistent shell interface for command line applications
+* Runs as a background process on Unix-based or Windows operating systems
 * Built-in high performance web application server (Undertow, Jetty)
-* Daemons running as background processes
+* Can also be run as a servlet in a traditional servlet container like Apache Tomcat or WildFly
 
 Aspectran consists of the following major packages:
 
