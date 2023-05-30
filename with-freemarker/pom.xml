@@ -28,7 +28,7 @@
     <packaging>jar</packaging>
 
     <name>Aspectran with Freemarker</name>
-    <description>Add-on package for integration with Freemarker</description>
+    <description>Add-on package for using Freemarker as the templating engine</description>
 
     <properties>
         <main.basedir>${project.parent.basedir}</main.basedir>
