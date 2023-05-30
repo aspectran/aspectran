@@ -26,7 +26,7 @@ The key features of Aspectran are:
 * **Fast development and startup time**  
   Aspectran's intuitive programming model guarantees fast development time and runs faster than other frameworks.
 * **Create Aspectran-powered, production-grade applications**  
-  You can create reliable, standalone Java applications that run on multiple operating systems at once, and even run them in servlet containers or embed them into other Java applications.
+  You can create reliable, standalone Java applications that run on multiple operating systems, and even run them in servlet containers or embed them into other Java applications.
 
 Aspectran-based applications support the following execution environments on the JVM:
 
