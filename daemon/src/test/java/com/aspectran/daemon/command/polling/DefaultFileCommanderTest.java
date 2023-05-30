@@ -35,8 +35,8 @@ class DefaultFileCommanderTest {
         daemonConfig.addCommand("com.aspectran.daemon.command.builtins.PollingIntervalCommand");
 
         // The polling interval is not specified, so it is 5 seconds.
-        SimpleDaemon daemon = new SimpleDaemon(root.getCanonicalPath());
-        daemon.init(daemonConfig);
+        SimpleDaemon daemon = new SimpleDaemon();
+        daemon.init(root.getCanonicalPath(), daemonConfig);
 
         // Since the simple daemon has no activity, this command will fail.
         File pollingIntervalCommandFile = new File(incomingDir, "10-polling-interval.apon");

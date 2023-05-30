@@ -15,7 +15,10 @@
  */
 package com.aspectran.daemon;
 
+import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.config.DaemonConfig;
+import com.aspectran.core.lang.NonNull;
+import com.aspectran.core.lang.Nullable;
 
 /**
  * SimpleDaemon does not run Aspectran Service internally,
@@ -27,20 +30,14 @@ import com.aspectran.core.context.config.DaemonConfig;
  */
 public class SimpleDaemon extends AbstractDaemon {
 
-    private final String basePath;
-
-    public SimpleDaemon(String basePath) {
-        this.basePath = basePath;
+    public SimpleDaemon() {
+        super();
     }
 
-    @Override
-    public String getBasePath() {
-        return basePath;
-    }
-
-    @Override
-    public void init(DaemonConfig daemonConfig) throws Exception {
-        super.init(daemonConfig);
+    public void init(@Nullable String basePath, @NonNull DaemonConfig daemonConfig) throws Exception {
+        AspectranConfig aspectranConfig = new AspectranConfig();
+        aspectranConfig.setDaemonConfig(daemonConfig);
+        super.init(basePath, aspectranConfig);
     }
 
     @Override

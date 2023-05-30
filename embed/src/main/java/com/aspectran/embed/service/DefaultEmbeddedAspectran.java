@@ -22,18 +22,14 @@ import com.aspectran.core.activity.InstantActivityException;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.context.config.AspectranConfig;
-import com.aspectran.core.context.config.ContextConfig;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.ServiceStateListener;
-import com.aspectran.core.util.ObjectUtils;
 import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
 import com.aspectran.embed.activity.AspectranActivity;
 
 import java.util.Map;
-
-import static com.aspectran.core.context.config.AspectranConfig.DEFAULT_APP_CONTEXT_FILE;
 
 /**
  * Provides an interface that can be used by embedding Aspectran in Java applications.
@@ -186,12 +182,6 @@ public class DefaultEmbeddedAspectran extends AbstractEmbeddedAspectran {
      * @return the instance of {@code DefaultEmbeddedAspectran}
      */
     static DefaultEmbeddedAspectran create(AspectranConfig aspectranConfig) {
-        ContextConfig contextConfig = aspectranConfig.touchContextConfig();
-        String[] contextRules = contextConfig.getContextRules();
-        if (ObjectUtils.isEmpty(contextRules) && !contextConfig.hasAspectranParameters()) {
-            contextConfig.setContextRules(new String[] {DEFAULT_APP_CONTEXT_FILE});
-        }
-
         DefaultEmbeddedAspectran aspectran = new DefaultEmbeddedAspectran();
         aspectran.prepare(aspectranConfig);
         setServiceStateListener(aspectran);

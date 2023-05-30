@@ -19,20 +19,16 @@ import com.aspectran.core.activity.ActivityTerminatedException;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.context.config.AspectranConfig;
-import com.aspectran.core.context.config.ContextConfig;
 import com.aspectran.core.context.config.DaemonConfig;
 import com.aspectran.core.context.config.ExposalsConfig;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.ServiceStateListener;
-import com.aspectran.core.util.ObjectUtils;
 import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
 import com.aspectran.daemon.activity.DaemonActivity;
 
 import java.util.Map;
-
-import static com.aspectran.core.context.config.AspectranConfig.DEFAULT_APP_CONTEXT_FILE;
 
 /**
  * The Class DefaultDaemonService.
@@ -109,12 +105,6 @@ public class DefaultDaemonService extends AbstractDaemonService {
      * @return the instance of {@code DefaultDaemonService}
      */
     public static DefaultDaemonService create(AspectranConfig aspectranConfig) {
-        ContextConfig contextConfig = aspectranConfig.touchContextConfig();
-        String[] contextRules = contextConfig.getContextRules();
-        if (ObjectUtils.isEmpty(contextRules) && !contextConfig.hasAspectranParameters()) {
-            contextConfig.setContextRules(new String[] {DEFAULT_APP_CONTEXT_FILE});
-        }
-
         DefaultDaemonService daemonService = new DefaultDaemonService();
         daemonService.prepare(aspectranConfig);
         DaemonConfig daemonConfig = aspectranConfig.getDaemonConfig();

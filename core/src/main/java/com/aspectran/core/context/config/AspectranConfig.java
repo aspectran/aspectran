@@ -34,7 +34,6 @@ public class AspectranConfig extends AbstractParameters {
     public static final String BASE_PATH_PROPERTY_NAME = "aspectran.basePath";
     public static final String TEMP_PATH_PROPERTY_NAME = "aspectran.tempPath";
     public static final String DEFAULT_ASPECTRAN_CONFIG_FILE = "aspectran-config.apon";
-    public static final String DEFAULT_APP_CONTEXT_FILE = "classpath:app-context.xml";
 
     private static final ParameterKey system;
     private static final ParameterKey context;
@@ -161,6 +160,10 @@ public class AspectranConfig extends AbstractParameters {
         return getParameters(daemon);
     }
 
+    public void setDaemonConfig(DaemonConfig daemonConfig) {
+        putValue(AspectranConfig.daemon, daemonConfig);
+    }
+
     public DaemonConfig newDaemonConfig() {
         return newParameters(daemon);
     }
@@ -201,9 +204,9 @@ public class AspectranConfig extends AbstractParameters {
     public static File determineAspectranConfigFile(@Nullable String[] args) {
         File file;
         if (args == null || args.length == 0) {
-            String baseDir = SystemUtils.getProperty(BASE_PATH_PROPERTY_NAME);
-            if (baseDir != null) {
-                file = new File(baseDir, DEFAULT_ASPECTRAN_CONFIG_FILE);
+            String basePath = SystemUtils.getProperty(BASE_PATH_PROPERTY_NAME);
+            if (basePath != null) {
+                file = new File(basePath, DEFAULT_ASPECTRAN_CONFIG_FILE);
             } else {
                 file = new File(DEFAULT_ASPECTRAN_CONFIG_FILE);
             }
@@ -226,7 +229,7 @@ public class AspectranConfig extends AbstractParameters {
         try {
             return file.getCanonicalFile();
         } catch (IOException e) {
-            throw new IllegalArgumentException("Unable to determine the base path", e);
+            throw new IllegalArgumentException("Unable to determine the aspectran config file", e);
         }
     }
 

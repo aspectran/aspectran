@@ -19,6 +19,8 @@ import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.config.DaemonConfig;
 import com.aspectran.core.context.config.DaemonExecutorConfig;
 import com.aspectran.core.context.config.DaemonPollingConfig;
+import com.aspectran.core.lang.NonNull;
+import com.aspectran.core.lang.Nullable;
 import com.aspectran.core.util.Aspectran;
 import com.aspectran.core.util.apon.AponReader;
 import com.aspectran.daemon.command.CommandExecutor;
@@ -102,23 +104,29 @@ public class AbstractDaemon implements Daemon {
         return active;
     }
 
-    protected void init(String basePath, File aspectranConfigFile) throws Exception {
+    protected void init(@Nullable String basePath, @Nullable File aspectranConfigFile) throws Exception {
         AspectranConfig aspectranConfig = new AspectranConfig();
-        try {
-            AponReader.parse(aspectranConfigFile, aspectranConfig);
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Failed to parse aspectran config file: " +
-                    aspectranConfigFile, e);
+        if (aspectranConfigFile != null) {
+            try {
+                AponReader.parse(aspectranConfigFile, aspectranConfig);
+            } catch (Exception e) {
+                throw new IllegalArgumentException("Failed to parse aspectran config file: " +
+                        aspectranConfigFile, e);
+            }
         }
+        init(basePath, aspectranConfig);
+    }
+
+    protected void init(@Nullable String basePath, @NonNull AspectranConfig aspectranConfig) throws Exception {
         if (basePath != null) {
             aspectranConfig.touchContextConfig().setBasePath(basePath);
         }
 
         startDaemonService(aspectranConfig);
-        init(aspectranConfig.touchDaemonConfig());
+        initDaemon(aspectranConfig.touchDaemonConfig());
     }
 
-    protected void init(DaemonConfig daemonConfig) throws Exception {
+    private void initDaemon(DaemonConfig daemonConfig) throws Exception {
         Aspectran.printPrettyAboutMe(System.out);
 
         try {
