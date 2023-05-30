@@ -25,41 +25,44 @@ The key features of Aspectran are:
   Aspectran is a framework designed from the ground up for REST API implementations and optimized for microservices architectures.
 * **Fast development and startup time**  
   Aspectran's intuitive programming model guarantees fast development time and runs faster than other frameworks.
+* **Create Aspectran-powered, production-grade applications**  
+  You can create reliable, standalone Java applications that run on multiple operating systems, and even run them in servlet containers or embed them into other Java applications.
 
-Aspectran-based applications support the following execution environments on the JVM:
+Aspectran-powered applications support the following execution environments on the JVM:
 
 * Consistent shell interface for command line applications
+* Runs as a background process on Unix-based or Windows operating systems
 * Built-in high performance web application server (Undertow, Jetty)
-* Daemons running as background processes
+* Can also be run as a servlet in a traditional servlet container like Apache Tomcat or WildFly
 
 Aspectran consists of the following major packages:
 
 * **com.aspectran.core**  
   Package containing the core features of Aspectran
 * **com.aspectran.daemon**  
-  Package required to build applications that run as background processes on Unix-based or Windows operating systems
+  Package for running Aspectran-based Java applications as background processes on Unix-based or Windows operating systems
 * **com.aspectran.embed**  
-  Package required to embed Aspectran in other Java applications
+  Package for embedding Aspectran in non-Aspectran-based Java applications
 * **com.aspectran.shell**  
-  Package required to build shell (aka command line) applications
+  Package for building interactive shell (aka command line) applications based on Aspectran
 * **com.aspectran.shell-jline**  
-  Package for using feature-rich JLine as an interactive shell interface
+  Package for building feature-rich Aspectran-based interactive shell applications with JLine 3
 * **com.aspectran.web**  
-  Basic package required for building web applications
+  Package for building web applications using Jakarta EE
 * **com.aspectran.websocket**  
-  Package required to configure WebSocket endpoints
-* **com.aspectran.jetty**  
-  Add-on package for building web application servers using Jetty
-* **com.aspectran.undertow**  
-  Add-on package for building web application servers using Undertow
+  Package required to configure websockets in Aspectran-based web applications
 * **com.aspectran.rss-lettuce**  
   Package containing a Redis session store implementation using Lettuce as a client
+* **com.aspectran.jetty**  
+  Add-on package for using Jetty as the embedded servlet container
+* **com.aspectran.undertow**  
+  Add-on package for using Undertow as the embedded servlet container
 * **com.aspectran.mybatis**  
-  Add-on package for integration with MyBatis
+  Add-on package for using the MyBatis SQL mapper framework that makes using relational databases easy
 * **com.aspectran.freemarker**  
-  Add-on package for using the FreeMarker template engine
+  Add-on package for using Freemarker as the templating engine
 * **com.aspectran.pebble**  
-  Add-on package for using the Pebble template engine
+  Add-on package for using Pebble as the templating engine
 
 ## Building
 
