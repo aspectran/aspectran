@@ -36,9 +36,9 @@ import java.util.Map;
  */
 public class InstantActivity extends CoreActivity {
 
-    private ParameterMap parameterMap;
-
     private Map<String, Object> attributeMap;
+
+    private ParameterMap parameterMap;
 
     private volatile boolean performed;
 
@@ -65,12 +65,12 @@ public class InstantActivity extends CoreActivity {
         super.setResponseAdapter(responseAdapter);
     }
 
-    public void setParameterMap(ParameterMap parameterMap) {
-        this.parameterMap = parameterMap;
-    }
-
     public void setAttributeMap(Map<String, Object> attributeMap) {
         this.attributeMap = attributeMap;
+    }
+
+    public void setParameterMap(ParameterMap parameterMap) {
+        this.parameterMap = parameterMap;
     }
 
     @Override
@@ -98,11 +98,11 @@ public class InstantActivity extends CoreActivity {
 
     @Override
     protected void parseRequest() throws RequestParseException, ActivityTerminatedException {
-        if (parameterMap != null) {
-            getRequestAdapter().putAllParameters(parameterMap);
-        }
         if (attributeMap != null) {
             getRequestAdapter().putAllAttributes(attributeMap);
+        }
+        if (parameterMap != null) {
+            getRequestAdapter().putAllParameters(parameterMap);
         }
 
         super.parseRequest();

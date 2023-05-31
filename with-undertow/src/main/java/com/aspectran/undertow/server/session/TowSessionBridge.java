@@ -46,16 +46,16 @@ final class TowSessionBridge implements io.undertow.server.session.Session {
         return session.getId();
     }
 
-    void requestStarted(HttpServerExchange serverExchange) {
-        Boolean existing = serverExchange.getAttachment(FIRST_REQUEST_ACCESSED);
+    void requestStarted(HttpServerExchange exchange) {
+        Boolean existing = exchange.getAttachment(FIRST_REQUEST_ACCESSED);
         if (existing == null) {
-            serverExchange.putAttachment(FIRST_REQUEST_ACCESSED, true);
+            exchange.putAttachment(FIRST_REQUEST_ACCESSED, true);
             session.access();
         }
     }
 
     @Override
-    public void requestDone(HttpServerExchange serverExchange) {
+    public void requestDone(HttpServerExchange exchange) {
         session.complete();
     }
 

@@ -97,7 +97,9 @@ public class DefaultTowService extends AbstractTowService {
         if (requestMethod == null) {
             requestMethod = MethodType.GET;
         }
-        TransletRule transletRule = getActivityContext().getTransletRuleRegistry().getTransletRule(requestPath, requestMethod);
+        TransletRule transletRule = getActivityContext()
+                .getTransletRuleRegistry()
+                .getTransletRule(requestPath, requestMethod);
         if (transletRule == null) {
             // Provides for "trailing slash" redirects and serving directory index files
             if (trailingSlashRedirect &&

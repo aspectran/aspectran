@@ -46,7 +46,7 @@ public class DefaultDaemonService extends AbstractDaemonService {
     }
 
     @Override
-    public Translet translate(String name, ParameterMap parameterMap, Map<String, Object> attributeMap) {
+    public Translet translate(String name, Map<String, Object> attributeMap, ParameterMap parameterMap) {
         if (name == null) {
             throw new IllegalArgumentException("name must not be null");
         }
@@ -57,12 +57,12 @@ public class DefaultDaemonService extends AbstractDaemonService {
                 name = name.substring(methodType.name().length()).trim();
             }
         }
-        return translate(name, requestMethod, parameterMap, attributeMap);
+        return translate(name, requestMethod, attributeMap, parameterMap);
     }
 
     @Override
     public Translet translate(String name, MethodType method,
-                              ParameterMap parameterMap, Map<String, Object> attributeMap) {
+                              Map<String, Object> attributeMap, ParameterMap parameterMap) {
         if (name == null) {
             throw new IllegalArgumentException("name must not be null");
         }
@@ -84,8 +84,8 @@ public class DefaultDaemonService extends AbstractDaemonService {
         Translet translet = null;
         try {
             DaemonActivity activity = new DaemonActivity(this);
-            activity.setParameterMap(parameterMap);
             activity.setAttributeMap(attributeMap);
+            activity.setParameterMap(parameterMap);
             activity.prepare(name, method);
             activity.perform();
             translet = activity.getTranslet();

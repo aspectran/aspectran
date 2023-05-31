@@ -38,9 +38,9 @@ public class DaemonActivity extends CoreActivity {
 
     private Writer outputWriter;
 
-    private ParameterMap parameterMap;
-
     private Map<String, Object> attributeMap;
+
+    private ParameterMap parameterMap;
 
     /**
      * Instantiates a new daemon activity.
@@ -51,12 +51,12 @@ public class DaemonActivity extends CoreActivity {
         this.daemonService = daemonService;
     }
 
-    public void setParameterMap(ParameterMap parameterMap) {
-        this.parameterMap = parameterMap;
-    }
-
     public void setAttributeMap(Map<String, Object> attributeMap) {
         this.attributeMap = attributeMap;
+    }
+
+    public void setParameterMap(ParameterMap parameterMap) {
+        this.parameterMap = parameterMap;
     }
 
     public void setOutputWriter(Writer outputWriter) {
@@ -85,11 +85,11 @@ public class DaemonActivity extends CoreActivity {
 
     @Override
     protected void parseRequest() throws RequestParseException, ActivityTerminatedException {
-        if (parameterMap != null) {
-            ((DaemonRequestAdapter)getRequestAdapter()).setParameterMap(parameterMap);
-        }
         if (attributeMap != null) {
             ((DaemonRequestAdapter)getRequestAdapter()).setAttributeMap(attributeMap);
+        }
+        if (parameterMap != null) {
+            ((DaemonRequestAdapter)getRequestAdapter()).setParameterMap(parameterMap);
         }
 
         super.parseRequest();

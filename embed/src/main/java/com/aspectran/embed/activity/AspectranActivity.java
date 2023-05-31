@@ -39,9 +39,9 @@ public class AspectranActivity extends CoreActivity {
 
     private Writer outputWriter;
 
-    private ParameterMap parameterMap;
-
     private Map<String, Object> attributeMap;
+
+    private ParameterMap parameterMap;
 
     private String body;
 
@@ -65,12 +65,12 @@ public class AspectranActivity extends CoreActivity {
         this.outputWriter = outputWriter;
     }
 
-    public void setParameterMap(ParameterMap parameterMap) {
-        this.parameterMap = parameterMap;
-    }
-
     public void setAttributeMap(Map<String, Object> attributeMap) {
         this.attributeMap = attributeMap;
+    }
+
+    public void setParameterMap(ParameterMap parameterMap) {
+        this.parameterMap = parameterMap;
     }
 
     public void setBody(String body) {

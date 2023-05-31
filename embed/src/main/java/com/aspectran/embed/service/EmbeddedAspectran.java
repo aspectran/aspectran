@@ -41,7 +41,7 @@ import java.util.Map;
 public interface EmbeddedAspectran {
 
     /**
-     * Returns whether or not the translet can be exposed to the daemon service.
+     * Returns whether the translet can be exposed to the daemon service.
      * @param transletName the name of the translet to check
      * @return true if the translet can be exposed; false otherwise
      */
@@ -79,27 +79,27 @@ public interface EmbeddedAspectran {
     /**
      * Executes the translet with the given parameters.
      * @param name the translet name
+     * @param attributeMap the attribute map
+     * @return the {@code Translet} object
+     */
+    Translet translate(String name, Map<String, Object> attributeMap);
+
+    /**
+     * Executes the translet with the given parameters.
+     * @param name the translet name
      * @param parameterMap the parameter map
      * @return the {@code Translet} object
      */
     Translet translate(String name, ParameterMap parameterMap);
 
     /**
-     * Executes the translet with the given parameters and attributes.
+     * Executes the translet with the given attributes and parameters.
      * @param name the translet name
+     * @param attributeMap the attribute map
      * @param parameterMap the parameter map
-     * @param attributeMap the attribute map
      * @return the {@code Translet} object
      */
-    Translet translate(String name, ParameterMap parameterMap, Map<String, Object> attributeMap);
-
-    /**
-     * Executes the translet with the given parameters.
-     * @param name the translet name
-     * @param attributeMap the attribute map
-     * @return the {@code Translet} object
-     */
-    Translet translate(String name, Map<String, Object> attributeMap);
+    Translet translate(String name, Map<String, Object> attributeMap, ParameterMap parameterMap);
 
     /**
      * Executes the translet without the supplied variables.
@@ -108,15 +108,6 @@ public interface EmbeddedAspectran {
      * @return the {@code Translet} object
      */
     Translet translate(String name, MethodType method);
-
-    /**
-     * Executes the translet with the given parameters.
-     * @param name the translet name
-     * @param method the request method
-     * @param parameterMap the parameter map
-     * @return the {@code Translet} object
-     */
-    Translet translate(String name, MethodType method, ParameterMap parameterMap);
 
     /**
      * Executes the translet with the given attributes.
@@ -128,15 +119,34 @@ public interface EmbeddedAspectran {
     Translet translate(String name, MethodType method, Map<String, Object> attributeMap);
 
     /**
-     * Executes the translet with the given parameters and attributes.
+     * Executes the translet with the given parameters.
      * @param name the translet name
      * @param method the request method
      * @param parameterMap the parameter map
+     * @return the {@code Translet} object
+     */
+    Translet translate(String name, MethodType method, ParameterMap parameterMap);
+
+    /**
+     * Executes the translet with the given attributes and parameters.
+     * @param name the translet name
+     * @param method the request method
      * @param attributeMap the attribute map
+     * @param parameterMap the parameter map
+     * @return the {@code Translet} object
+     */
+    Translet translate(String name, MethodType method, Map<String, Object> attributeMap, ParameterMap parameterMap);
+
+    /**
+     * Executes the translet with the given attributes and parameters.
+     * @param name the translet name
+     * @param method the request method
+     * @param attributeMap the attribute map
+     * @param parameterMap the parameter map
      * @param body the request body
      * @return the {@code Translet} object
      */
-    Translet translate(String name, MethodType method, ParameterMap parameterMap, Map<String, Object> attributeMap, String body);
+    Translet translate(String name, MethodType method, Map<String, Object> attributeMap, ParameterMap parameterMap, String body);
 
     /**
      * Renders the template without the supplied variables.
@@ -144,14 +154,6 @@ public interface EmbeddedAspectran {
      * @return the output string of the template
      */
     String render(String templateId);
-
-    /**
-     * Renders the template with the given parameters.
-     * @param templateId the template id
-     * @param parameterMap the parameter map
-     * @return the output string of the template
-     */
-    String render(String templateId, ParameterMap parameterMap);
 
     /**
      * Renders the template with the given attributes.
@@ -162,13 +164,21 @@ public interface EmbeddedAspectran {
     String render(String templateId, Map<String, Object> attributeMap);
 
     /**
-     * Renders the template with the given parameters and attributes.
+     * Renders the template with the given parameters.
      * @param templateId the template id
      * @param parameterMap the parameter map
-     * @param attributeMap the attribute map
      * @return the output string of the template
      */
-    String render(String templateId, ParameterMap parameterMap, Map<String, Object> attributeMap);
+    String render(String templateId, ParameterMap parameterMap);
+
+    /**
+     * Renders the template with the given attributes and parameters.
+     * @param templateId the template id
+     * @param attributeMap the attribute map
+     * @param parameterMap the parameter map
+     * @return the output string of the template
+     */
+    String render(String templateId, Map<String, Object> attributeMap, ParameterMap parameterMap);
 
     /**
      * Gets the environment.
@@ -331,8 +341,7 @@ public interface EmbeddedAspectran {
         } catch (AspectranServiceException e) {
             throw e;
         } catch (Exception e) {
-            String message = "EmbeddedAspectran run failed with parameters:" + System.lineSeparator() +
-                    aspectranConfig.toString();
+            String message = "EmbeddedAspectran run failed with parameters:" + System.lineSeparator() + aspectranConfig;
             Logger logger = LoggerFactory.getLogger(EmbeddedAspectran.class);
             logger.error(message);
             throw new AspectranServiceException("EmbeddedAspectran run failed", e);

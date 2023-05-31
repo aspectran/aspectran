@@ -21,8 +21,8 @@ import com.aspectran.core.lang.NonNull;
 import com.aspectran.core.lang.Nullable;
 
 /**
- * SimpleDaemon does not run Aspectran Service internally,
- * so only shell commands are available.
+ * Since SimpleDaemon has an empty Activity context, it should be
+ * used primarily to execute daemon commands.
  *
  * <p>Created: 2019. 01. 22.</p>
  *

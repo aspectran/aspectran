@@ -22,7 +22,6 @@ import com.aspectran.core.activity.TransletNotFoundException;
 import com.aspectran.core.activity.request.MissingMandatoryParametersException;
 import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.context.config.AspectranConfig;
-import com.aspectran.core.context.config.ContextConfig;
 import com.aspectran.core.context.config.ExposalsConfig;
 import com.aspectran.core.context.config.ShellConfig;
 import com.aspectran.core.context.rule.TransletRule;
@@ -30,7 +29,6 @@ import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.lang.Nullable;
 import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.ServiceStateListener;
-import com.aspectran.core.util.ObjectUtils;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
@@ -57,8 +55,6 @@ public class DefaultShellService extends AbstractShellService {
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultShellService.class);
 
-    private static final String DEFAULT_APP_CONTEXT_FILE = "/config/app-context.xml";
-
     private volatile long pauseTimeout = -1L;
 
     private DefaultShellService(ShellConsole console) {
@@ -82,7 +78,9 @@ public class DefaultShellService extends AbstractShellService {
         if (requestMethod == null) {
             requestMethod = MethodType.GET;
         }
-        TransletRule transletRule = getActivityContext().getTransletRuleRegistry().getTransletRule(transletName, requestMethod);
+        TransletRule transletRule = getActivityContext()
+                .getTransletRuleRegistry()
+                .getTransletRule(transletName, requestMethod);
         if (transletRule == null) {
             if (logger.isTraceEnabled()) {
                 logger.trace("No translet mapped for " + requestMethod + " " + transletName);
@@ -232,12 +230,6 @@ public class DefaultShellService extends AbstractShellService {
      * @return the instance of {@code DefaultShellService}
      */
     public static DefaultShellService create(AspectranConfig aspectranConfig, ShellConsole console) {
-        ContextConfig contextConfig = aspectranConfig.touchContextConfig();
-        String[] contextRules = contextConfig.getContextRules();
-        if (ObjectUtils.isEmpty(contextRules) && !contextConfig.hasAspectranParameters()) {
-            contextConfig.setContextRules(new String[] {DEFAULT_APP_CONTEXT_FILE});
-        }
-
         DefaultShellService shellService = new DefaultShellService(console);
         ShellConfig shellConfig = aspectranConfig.getShellConfig();
         if (shellConfig != null) {

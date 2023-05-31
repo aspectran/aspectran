@@ -19,6 +19,7 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.ActivityTerminatedException;
 import com.aspectran.core.activity.request.RequestMethodNotAllowedException;
 import com.aspectran.core.activity.request.SizeLimitExceededException;
+import com.aspectran.core.component.translet.TransletRuleRegistry;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.config.ContextConfig;
@@ -143,8 +144,9 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
             }
         }
 
+        TransletRuleRegistry transletRuleRegistry = getActivityContext().getTransletRuleRegistry();
         final MethodType requestMethod = MethodType.resolve(request.getMethod(), MethodType.GET);
-        TransletRule transletRule = getActivityContext().getTransletRuleRegistry().getTransletRule(requestUri, requestMethod);
+        TransletRule transletRule = transletRuleRegistry.getTransletRule(requestUri, requestMethod);
         if (transletRule == null) {
             // Provides for "trailing slash" redirects and serving directory index files
             if (trailingSlashRedirect &&
@@ -152,7 +154,7 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
                     StringUtils.startsWith(requestUri, ActivityContext.NAME_SEPARATOR_CHAR) &&
                     !StringUtils.endsWith(requestUri, ActivityContext.NAME_SEPARATOR_CHAR)) {
                 String transletNameWithSlash = requestUri + ActivityContext.NAME_SEPARATOR_CHAR;
-                if (getActivityContext().getTransletRuleRegistry().contains(transletNameWithSlash, requestMethod)) {
+                if (transletRuleRegistry.contains(transletNameWithSlash, requestMethod)) {
                     response.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
                     response.setHeader(HttpHeaders.LOCATION, transletNameWithSlash);
                     response.setHeader(HttpHeaders.CONNECTION, "close");

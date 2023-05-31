@@ -67,18 +67,18 @@ public class DefaultEmbeddedAspectran extends AbstractEmbeddedAspectran {
     }
 
     @Override
-    public Translet translate(String name, ParameterMap parameterMap) {
-        return translate(name, null, parameterMap, null, null);
-    }
-
-    @Override
-    public Translet translate(String name, ParameterMap parameterMap, Map<String, Object> attributeMap) {
-        return translate(name, null, parameterMap, attributeMap, null);
-    }
-
-    @Override
     public Translet translate(String name, Map<String, Object> attributeMap) {
-        return translate(name, null, null, attributeMap, null);
+        return translate(name, null, attributeMap, null, null);
+    }
+
+    @Override
+    public Translet translate(String name, ParameterMap parameterMap) {
+        return translate(name, null, null, parameterMap, null);
+    }
+
+    @Override
+    public Translet translate(String name, Map<String, Object> attributeMap, ParameterMap parameterMap) {
+        return translate(name, null, attributeMap, parameterMap, null);
     }
 
     @Override
@@ -87,18 +87,24 @@ public class DefaultEmbeddedAspectran extends AbstractEmbeddedAspectran {
     }
 
     @Override
-    public Translet translate(String name, MethodType method, ParameterMap parameterMap) {
-        return translate(name, method, parameterMap, null, null);
-    }
-
-    @Override
     public Translet translate(String name, MethodType method, Map<String, Object> attributeMap) {
-        return translate(name, method, null, attributeMap, null);
+        return translate(name, method, attributeMap, null, null);
     }
 
     @Override
-    public Translet translate(String name, MethodType method, ParameterMap parameterMap,
-                              Map<String, Object> attributeMap, String body) {
+    public Translet translate(String name, MethodType method, ParameterMap parameterMap) {
+        return translate(name, method, null, parameterMap, null);
+    }
+
+    @Override
+    public Translet translate(String name, MethodType method, Map<String, Object> attributeMap, ParameterMap parameterMap) {
+        return translate(name, method, attributeMap, parameterMap, null);
+    }
+
+    @Override
+    public Translet translate(String name, MethodType method,
+                              Map<String, Object> attributeMap, ParameterMap parameterMap,
+                              String body) {
         if (name == null) {
             throw new IllegalArgumentException("name must not be null");
         }
@@ -120,8 +126,8 @@ public class DefaultEmbeddedAspectran extends AbstractEmbeddedAspectran {
         Translet translet = null;
         try {
             AspectranActivity activity = new AspectranActivity(this);
-            activity.setParameterMap(parameterMap);
             activity.setAttributeMap(attributeMap);
+            activity.setParameterMap(parameterMap);
             activity.setBody(body);
             activity.prepare(name, method);
             activity.perform();
@@ -142,17 +148,17 @@ public class DefaultEmbeddedAspectran extends AbstractEmbeddedAspectran {
     }
 
     @Override
-    public String render(String templateId, ParameterMap parameterMap) {
-        return render(templateId, parameterMap, null);
-    }
-
-    @Override
     public String render(String templateId, Map<String, Object> attributeMap) {
-        return render(templateId, null, attributeMap);
+        return render(templateId, attributeMap, null);
     }
 
     @Override
-    public String render(String templateId, ParameterMap parameterMap, Map<String, Object> attributeMap) {
+    public String render(String templateId, ParameterMap parameterMap) {
+        return render(templateId, null, parameterMap);
+    }
+
+    @Override
+    public String render(String templateId, Map<String, Object> attributeMap, ParameterMap parameterMap) {
         if (pauseTimeout != 0L) {
             if (pauseTimeout == -1L || pauseTimeout >= System.currentTimeMillis()) {
                 if (logger.isDebugEnabled()) {
@@ -166,8 +172,8 @@ public class DefaultEmbeddedAspectran extends AbstractEmbeddedAspectran {
 
         try {
             InstantActivity activity = new InstantActivity(getActivityContext());
-            activity.setParameterMap(parameterMap);
             activity.setAttributeMap(attributeMap);
+            activity.setParameterMap(parameterMap);
             activity.setSessionAdapter(newSessionAdapter());
             Object result = activity.perform(() -> getActivityContext().getTemplateRenderer().render(templateId));
             return result.toString();

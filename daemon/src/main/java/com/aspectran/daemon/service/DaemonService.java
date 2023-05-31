@@ -44,22 +44,22 @@ public interface DaemonService extends CoreService {
     SessionAdapter newSessionAdapter();
 
     /**
-     * Executes the translet with the given parameters and attributes.
+     * Executes the translet with the given attributes and parameters.
      * @param name the translet name
-     * @param parameterMap the parameter map
      * @param attributeMap the attribute map
+     * @param parameterMap the parameter map
      * @return the {@code Translet} object
      */
-    Translet translate(String name, ParameterMap parameterMap, Map<String, Object> attributeMap);
+    Translet translate(String name, Map<String, Object> attributeMap, ParameterMap parameterMap);
 
     /**
-     * Executes the translet with the given parameters and attributes.
+     * Executes the translet with the given attributes and parameters.
      * @param name the translet name
      * @param method the request method
-     * @param parameterMap the parameter map
      * @param attributeMap the attribute map
+     * @param parameterMap the parameter map
      * @return the {@code Translet} object
      */
-    Translet translate(String name, MethodType method, ParameterMap parameterMap, Map<String, Object> attributeMap);
+    Translet translate(String name, MethodType method, Map<String, Object> attributeMap, ParameterMap parameterMap);
 
 }

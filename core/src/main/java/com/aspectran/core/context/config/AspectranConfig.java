@@ -148,6 +148,10 @@ public class AspectranConfig extends AbstractParameters {
         return getParameters(shell);
     }
 
+    public void setShellConfig(ShellConfig shellConfig) {
+        putValue(AspectranConfig.shell, shellConfig);
+    }
+
     public ShellConfig newShellConfig() {
         return newParameters(shell);
     }

@@ -48,18 +48,18 @@ public class IncludeAction implements Executable {
     public Object execute(Activity activity) throws Exception {
         try {
             InstantActivity instantActivity = new InstantActivity(activity.getActivityContext());
-            ItemRuleMap parameterItemRuleMap = includeActionRule.getParameterItemRuleMap();
             ItemRuleMap attributeItemRuleMap = includeActionRule.getAttributeItemRuleMap();
-            if ((parameterItemRuleMap != null && !parameterItemRuleMap.isEmpty()) ||
-                    (attributeItemRuleMap != null && !attributeItemRuleMap.isEmpty())) {
+            ItemRuleMap parameterItemRuleMap = includeActionRule.getParameterItemRuleMap();
+            if ((attributeItemRuleMap != null && !attributeItemRuleMap.isEmpty()) ||
+                    (parameterItemRuleMap != null && !parameterItemRuleMap.isEmpty())) {
                 ItemEvaluator evaluator = new ItemEvaluation(activity);
-                if (parameterItemRuleMap != null && !parameterItemRuleMap.isEmpty()) {
-                    ParameterMap parameterMap = evaluator.evaluateAsParameterMap(parameterItemRuleMap);
-                    instantActivity.setParameterMap(parameterMap);
-                }
                 if (attributeItemRuleMap != null && !attributeItemRuleMap.isEmpty()) {
                     Map<String, Object> attributeMap = evaluator.evaluate(attributeItemRuleMap);
                     instantActivity.setAttributeMap(attributeMap);
+                }
+                if (parameterItemRuleMap != null && !parameterItemRuleMap.isEmpty()) {
+                    ParameterMap parameterMap = evaluator.evaluateAsParameterMap(parameterItemRuleMap);
+                    instantActivity.setParameterMap(parameterMap);
                 }
             }
             instantActivity.prepare(includeActionRule.getTransletName(), includeActionRule.getMethodType());
