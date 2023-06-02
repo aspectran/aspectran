@@ -473,8 +473,14 @@ public class JsonWriter {
 
     private void checkCircularReference(Object object, Object member) throws IOException {
         if (object == member || (upperObject != null && upperObject == member)) {
-            throw new IOException("JSON Serialization Failure: A circular reference was detected " +
-                    "while converting member '" + pendedName + "'");
+            String what;
+            if (pendedName != null) {
+                what = "member '" + pendedName + "'";
+            } else {
+                what = "a member";
+            }
+            throw new IOException("JSON Serialization Failure: " +
+                    "A circular reference was detected while converting " + what);
         }
     }
 

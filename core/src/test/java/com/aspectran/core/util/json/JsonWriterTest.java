@@ -164,7 +164,7 @@ class JsonWriterTest {
     }
 
     @Test
-    void test5() throws IOException {
+    void test5() {
         Map<String, Object> map1 = new HashMap<>();
         Map<String, Object> map2 = new HashMap<>();
 
@@ -176,7 +176,25 @@ class JsonWriterTest {
             JsonWriter writer = new JsonWriter();
             writer.write(map1);
         } catch (IOException e) {
+            System.out.println(e.getMessage());
             assertEquals("JSON Serialization Failure: A circular reference was detected while converting member 'map2-1'", e.getMessage());
+        }
+    }
+
+    @Test
+    void test6() {
+        Map<String, Object> map1 = new HashMap<>();
+        List<Object> list1 = new ArrayList<>();
+
+        map1.put("list1", list1);
+        list1.add(map1);
+
+        try {
+            JsonWriter writer = new JsonWriter();
+            writer.write(map1);
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+            assertEquals("JSON Serialization Failure: A circular reference was detected while converting a member", e.getMessage());
         }
     }
 
