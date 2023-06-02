@@ -10,7 +10,7 @@
     <environment>
         <properties>
             <item name="tow.web.root.path">/webroot</item>
-            <item name="tow.web.root.scratch_dir">/temp/_webroot</item>
+            <item name="tow.web.root.scratch_dir">/work/_webroot</item>
         </properties>
     </environment>
 
@@ -155,7 +155,7 @@
             <item name="sessionStoreFactory">
                 <bean class="com.aspectran.core.component.session.FileSessionStoreFactory">
                     <properties>
-                        <item name="storeDir">/temp/_sessions/tow</item>
+                        <item name="storeDir">/work/_sessions/tow</item>
                         <item name="nonPersistentAttributes" type="array">
                             <value>io.undertow.websocket.current-connections</value>
                         </item>

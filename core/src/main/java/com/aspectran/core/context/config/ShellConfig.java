@@ -26,7 +26,6 @@ public class ShellConfig extends AbstractParameters {
     private static final ParameterKey prompt;
     private static final ParameterKey commands;
     private static final ParameterKey session;
-    private static final ParameterKey workingDir;
     private static final ParameterKey historyFile;
     private static final ParameterKey verbose;
     private static final ParameterKey exposals;
@@ -39,7 +38,6 @@ public class ShellConfig extends AbstractParameters {
         prompt = new ParameterKey("prompt", ValueType.STRING);
         commands = new ParameterKey("commands", ValueType.STRING, true);
         session = new ParameterKey("session", SessionManagerConfig.class);
-        workingDir = new ParameterKey("workingDir", ValueType.STRING);
         historyFile = new ParameterKey("historyFile", ValueType.STRING);
         verbose = new ParameterKey("verbose", ValueType.BOOLEAN);
         exposals = new ParameterKey("exposals", ExposalsConfig.class);
@@ -50,7 +48,6 @@ public class ShellConfig extends AbstractParameters {
                 prompt,
                 commands,
                 session,
-                workingDir,
                 historyFile,
                 verbose,
                 exposals
@@ -116,15 +113,6 @@ public class ShellConfig extends AbstractParameters {
 
     public SessionManagerConfig touchSessionManagerConfig() {
         return touchParameters(session);
-    }
-
-    public String getWorkingDir() {
-        return getString(workingDir);
-    }
-
-    public ShellConfig setWorkingDir(String workingDir) {
-        putValue(ShellConfig.workingDir, workingDir);
-        return this;
     }
 
     public String getHistoryFile() {

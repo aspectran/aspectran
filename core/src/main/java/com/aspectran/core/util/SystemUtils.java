@@ -29,6 +29,10 @@ public class SystemUtils {
 
     private static final String JAVA_IO_TMPDIR_PROPERTY = "java.io.tmpdir";
 
+    private static final String USER_HOME_PROPERTY = "user.home";
+
+    private static final String USER_DIR_PROPERTY = "user.dir";
+
     /**
      * <p>Gets a System property, defaulting to <code>null</code> if the property
      * cannot be read.</p>
@@ -57,6 +61,14 @@ public class SystemUtils {
 
     public static String getJavaIoTmpDir() {
         return getProperty(JAVA_IO_TMPDIR_PROPERTY);
+    }
+
+    public static String getUserHome() {
+        return getProperty(USER_HOME_PROPERTY);
+    }
+
+    public static String getUserDir() {
+        return getProperty(USER_DIR_PROPERTY);
     }
 
 }

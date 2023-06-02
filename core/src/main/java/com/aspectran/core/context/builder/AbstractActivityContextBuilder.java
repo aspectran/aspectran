@@ -373,7 +373,7 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
         return activityContext;
     }
 
-    protected void startContextReloader() {
+    protected void startContextReloadingTimer() {
         if (autoReloadEnabled && siblingsClassLoader != null) {
             contextReloadingTimer = new ContextReloadingTimer(serviceController);
             contextReloadingTimer.setResources(siblingsClassLoader.getAllResources());
@@ -381,7 +381,7 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
         }
     }
 
-    protected void stopContextReloader() {
+    protected void stopContextReloadingTimer() {
         if (contextReloadingTimer != null) {
             contextReloadingTimer.stop();
             contextReloadingTimer = null;

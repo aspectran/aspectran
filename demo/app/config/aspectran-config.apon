@@ -77,7 +77,6 @@ shell: {
     session: {
         enabled: true
     }
-    workingDir: /work
     historyFile: /logs/history.log
     verbose: true
     exposals: {

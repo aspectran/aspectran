@@ -15,7 +15,6 @@
  */
 package com.aspectran.core.context.resource;
 
-import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.util.FileCopyUtils;
 import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.core.util.SystemUtils;
@@ -35,6 +34,8 @@ import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+import static com.aspectran.core.context.config.AspectranConfig.WORK_PATH_PROPERTY_NAME;
+
 /**
  * The Class LocalResourceManager.
  *
@@ -44,7 +45,7 @@ public class LocalResourceManager extends ResourceManager {
 
     private static final Logger logger = LoggerFactory.getLogger(LocalResourceManager.class);
 
-    private static final String TEMP_RESOURCE_DIRNAME_PREFIX = "_resource_";
+    private static final String WORK_RESOURCE_DIRNAME_PREFIX = "_resource_";
 
     private final String resourceLocation;
 
@@ -83,7 +84,7 @@ public class LocalResourceManager extends ResourceManager {
         }
 
         if (owner.isRoot()) {
-            sweepTempResourceFiles();
+            sweepWorkResourceFiles();
         }
     }
 
@@ -135,27 +136,27 @@ public class LocalResourceManager extends ResourceManager {
     }
 
     private void findResourceFromJAR(File target) throws InvalidResourceException, IOException {
-        String tempPath = SystemUtils.getProperty(AspectranConfig.TEMP_PATH_PROPERTY_NAME);
-        File altResourceDir = null;
-        if (tempPath != null) {
-            Path tempDir = Path.of(tempPath);
-            if (Files.isDirectory(tempDir) && Files.isWritable(tempDir)) {
-                altResourceDir = Files.createTempDirectory(tempDir, TEMP_RESOURCE_DIRNAME_PREFIX).toFile();
+        String workPath = SystemUtils.getProperty(WORK_PATH_PROPERTY_NAME);
+        File workResourceDir = null;
+        if (workPath != null) {
+            Path workDir = Path.of(workPath);
+            if (Files.isDirectory(workDir) && Files.isWritable(workDir)) {
+                workResourceDir = Files.createTempDirectory(workDir, WORK_RESOURCE_DIRNAME_PREFIX).toFile();
             }
         }
-        if (altResourceDir == null) {
-            altResourceDir = Files.createTempDirectory(TEMP_RESOURCE_DIRNAME_PREFIX).toFile();
+        if (workResourceDir == null) {
+            workResourceDir = Files.createTempDirectory(WORK_RESOURCE_DIRNAME_PREFIX).toFile();
         }
-        FileCopyUtils.copyFileToDirectory(target, altResourceDir);
-        File altTarget = new File(altResourceDir, target.getName());
-        try (JarFile jarFile = new JarFile(altTarget)) {
+        FileCopyUtils.copyFileToDirectory(target, workResourceDir);
+        File workResourceFile = new File(workResourceDir, target.getName());
+        try (JarFile jarFile = new JarFile(workResourceFile)) {
             for (Enumeration<JarEntry> entries = jarFile.entries(); entries.hasMoreElements(); ) {
                 JarEntry entry = entries.nextElement();
-                putResource(altTarget, entry);
+                putResource(workResourceFile, entry);
             }
         }
-        altResourceDir.deleteOnExit();
-        altTarget.deleteOnExit();
+        workResourceDir.deleteOnExit();
+        workResourceFile.deleteOnExit();
     }
 
     @Override
@@ -167,35 +168,37 @@ public class LocalResourceManager extends ResourceManager {
         return tsb.toString();
     }
 
-    private void sweepTempResourceFiles() {
-        String tempPath = SystemUtils.getProperty(AspectranConfig.TEMP_PATH_PROPERTY_NAME);
-        if (tempPath != null) {
-            Path tempDir = Path.of(tempPath);
-            if (logger.isDebugEnabled()) {
-                logger.debug("Sweeping " + tempDir.toAbsolutePath() + File.separatorChar +
-                        TEMP_RESOURCE_DIRNAME_PREFIX + "* for old resource files");
-            }
-            try {
-                Files.walk(tempDir, 1, FileVisitOption.FOLLOW_LINKS)
-                        .filter(Files::isDirectory)
-                        .filter(p -> p.getFileName().toString().startsWith(TEMP_RESOURCE_DIRNAME_PREFIX))
-                        .forEach(p -> {
-                            try {
-                                Files.walk(p)
-                                        .sorted(Comparator.reverseOrder())
-                                        .map(Path::toFile)
-                                        .forEach(file -> {
-                                            if (logger.isTraceEnabled()) {
-                                                logger.trace("Delete temp resource: " + file);
-                                            }
-                                            file.delete();
-                                        });
-                            } catch (IOException e) {
-                                logger.warn("Failed to delete temp resource: " + e.getMessage());
-                            }
-                        });
-            } catch (IOException e) {
-                logger.warn("Inaccessible temp path: " + tempPath, e);
+    private void sweepWorkResourceFiles() {
+        String workPath = SystemUtils.getProperty(WORK_PATH_PROPERTY_NAME);
+        if (workPath != null) {
+            Path workDir = Path.of(workPath);
+            if (Files.isDirectory(workDir)) {
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Sweeping " + workDir.toAbsolutePath() + File.separatorChar +
+                            WORK_RESOURCE_DIRNAME_PREFIX + "* for old resource files");
+                }
+                try {
+                    Files.walk(workDir, 1, FileVisitOption.FOLLOW_LINKS)
+                            .filter(Files::isDirectory)
+                            .filter(p -> p.getFileName().toString().startsWith(WORK_RESOURCE_DIRNAME_PREFIX))
+                            .forEach(p -> {
+                                try {
+                                    Files.walk(p)
+                                            .sorted(Comparator.reverseOrder())
+                                            .map(Path::toFile)
+                                            .forEach(file -> {
+                                                if (logger.isTraceEnabled()) {
+                                                    logger.trace("Delete temp resource: " + file);
+                                                }
+                                                file.delete();
+                                            });
+                                } catch (IOException e) {
+                                    logger.warn("Failed to delete temp resource: " + e.getMessage());
+                                }
+                            });
+                } catch (IOException e) {
+                    logger.warn("Inaccessible temp path: " + workPath, e);
+                }
             }
         }
     }

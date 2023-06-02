@@ -13,7 +13,7 @@
             <item name="jetty.server.port" value="8080" valueType="int"/>
             <item name="jetty.server.minThreads" value="3" valueType="int"/>
             <item name="jetty.server.maxThreads" value="10" valueType="int"/>
-            <item name="jetty.session.dataStoreDir" value="#{basePath}/temp/_sessions/jetty"/>
+            <item name="jetty.session.dataStoreDir" value="#{basePath}/work/_sessions/jetty"/>
             <item name="jetty.gzip.minGzipSize" value="20000" valueType="int"/>
             <item name="jetty.gzip.syncFlush" value="false" valueType="boolean"/>
             <item name="jetty.gzip.includedMethodList" value="GET"/>
@@ -103,7 +103,7 @@
         <properties>
             <item name="contextPath">/</item>
             <item name="war">#{basePath}/webroot</item>
-            <item name="tempDirectory">#{basePath}/temp/_webroot</item>
+            <item name="tempDirectory">#{basePath}/work/_webroot</item>
             <item name="persistTempDirectory" valueType="boolean">false</item>
             <item name="defaultsDescriptor">#{basePath}/config/server/jetty/webdefault.xml</item>
             <item name="sessionHandler">#{jetty.sessionHandler}</item>

@@ -22,6 +22,7 @@ import com.aspectran.core.context.config.ShellStyleConfig;
 import com.aspectran.core.lang.NonNull;
 import com.aspectran.core.lang.Nullable;
 import com.aspectran.core.util.StringUtils;
+import com.aspectran.core.util.SystemUtils;
 import com.aspectran.core.util.apon.AponReader;
 import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
@@ -39,6 +40,8 @@ import java.io.File;
 import java.io.PrintWriter;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+
+import static com.aspectran.core.context.config.AspectranConfig.WORK_PATH_PROPERTY_NAME;
 
 /**
  * The Shell Command Runner.
@@ -112,8 +115,10 @@ public class DefaultConsoleCommander implements ConsoleCommander {
             commandRegistry.addCommand(QuitCommand.class);
         }
 
-        File workingDir = determineWorkingDir(basePath, shellConfig.getWorkingDir());
-        console.setWorkingDir(workingDir);
+        File workingDir = determineWorkingDir();
+        if (workingDir != null) {
+            console.setWorkingDir(workingDir);
+        }
 
         String historyFile = shellConfig.getHistoryFile();
         if (!StringUtils.isEmpty(historyFile)) {
@@ -237,28 +242,20 @@ public class DefaultConsoleCommander implements ConsoleCommander {
         }
     }
 
-    private File determineWorkingDir(String baseDir, String workingDir) {
-        File dir = null;
-        if (baseDir != null && workingDir != null) {
-            Path basePath = Paths.get(baseDir);
-            Path workingPath = Paths.get(workingDir);
-            if (workingPath.startsWith(basePath) && workingPath.isAbsolute()) {
-                dir = workingPath.toFile();
-            } else {
-                dir = new File(baseDir, workingDir);
-            }
-        } else if (workingDir != null) {
-            dir = new File(workingDir);
-        } else {
-            String userDir = System.getProperty("user.dir");
-            if (userDir != null) {
-                dir = new File(userDir);
-            }
+    private File determineWorkingDir() {
+        String workPath = SystemUtils.getProperty(WORK_PATH_PROPERTY_NAME);
+        if (workPath != null) {
+            return new File(workPath);
         }
-        if (dir != null) {
-            dir.mkdirs();
+        String userHome = SystemUtils.getUserHome();
+        if (userHome != null) {
+            return new File(userHome);
         }
-        return dir;
+        String userDir = SystemUtils.getUserDir();
+        if (userDir != null) {
+            return new File(userDir);
+        }
+        return null;
     }
 
 }

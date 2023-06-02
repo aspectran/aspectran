@@ -93,7 +93,14 @@
                             </excludes>
                         </fileset>
                         <fileset>
-                            <directory>app/temp/_webroot</directory>
+                            <directory>app/work</directory>
+                            <includes>
+                                <include>_resource_*/</include>
+                                <include>_webroot/</include>
+                            </includes>
+                            <excludes>
+                                <exclude>.gitignore</exclude>
+                            </excludes>
                         </fileset>
                     </filesets>
                 </configuration>

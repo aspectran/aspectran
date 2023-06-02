@@ -42,6 +42,8 @@ import java.io.IOException;
 import java.security.AccessControlException;
 
 import static com.aspectran.core.context.config.AspectranConfig.BASE_PATH_PROPERTY_NAME;
+import static com.aspectran.core.context.config.AspectranConfig.TEMP_PATH_PROPERTY_NAME;
+import static com.aspectran.core.context.config.AspectranConfig.WORK_PATH_PROPERTY_NAME;
 
 /**
  * The Class AbstractCoreService.
@@ -308,16 +310,14 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
         }
     }
 
-    /**
-     * Gets the path of the base directory from the system property aspectran.basePath.
-     */
-    protected void determineBasePath() {
+    protected void checkDirectoryStructure() {
+        // Determines the path of the base directory
         try {
             String basePath = SystemUtils.getProperty(BASE_PATH_PROPERTY_NAME);
             if (basePath != null) {
-                File dir = new File(basePath);
-                if (!dir.isDirectory()) {
-                    throw new IOException("Make sure it is a valid base directory; " +
+                File baseDir = new File(basePath);
+                if (!baseDir.isDirectory()) {
+                    throw new AspectranServiceException("Make sure it is a valid base directory; " +
                             BASE_PATH_PROPERTY_NAME + "=" + basePath);
                 }
             } else {
@@ -325,25 +325,56 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
             }
             setBasePath(basePath);
         } catch (IOException e) {
-            throw new AspectranServiceException("Can not verify base directory");
+            throw new AspectranServiceException("Could not verify the base directory", e);
         }
-    }
 
-    /**
-     * Sets the path to the temporary directory as a system property.
-     * The property {@code aspectran.tempPath} is set if the temporary
-     * directory {@code temp} exists under the base directory.
-     */
-    protected void determineTempPath() {
-        String basePath = getBasePath();
-        if (basePath != null) {
-            File tempPath = new File(basePath, "temp");
-            if (tempPath.isDirectory()) {
+        // Determines the path of the working directory
+        String workPath = SystemUtils.getProperty(WORK_PATH_PROPERTY_NAME);
+        if (workPath != null) {
+            File workDir = new File(workPath);
+            if (!workDir.isDirectory()) {
+                throw new AspectranServiceException("Make sure it is a valid working directory; " +
+                        WORK_PATH_PROPERTY_NAME + "=" + workPath);
+            }
+        } else {
+            /*
+             * Sets the path to the working directory as a system property.
+             * The property {@code aspectran.workPath} is set if the working
+             * directory {@code work} exists under the base directory.
+             */
+            File workDir = new File(getBasePath(), "work");
+            if (workDir.isDirectory()) {
                 try {
-                System.setProperty(AspectranConfig.TEMP_PATH_PROPERTY_NAME, tempPath.getCanonicalPath());
+                    System.setProperty(WORK_PATH_PROPERTY_NAME, workDir.getCanonicalPath());
                 } catch (AccessControlException | IOException e) {
                     if (logger.isDebugEnabled()) {
-                        logger.debug("Failed to determine the path to the temporary directory: " + tempPath);
+                        logger.debug("Could not verify the working directory: " + workDir);
+                    }
+                }
+            }
+        }
+
+        // Determines the path of the temporary directory
+        String tempPath = SystemUtils.getProperty(TEMP_PATH_PROPERTY_NAME);
+        if (tempPath != null) {
+            File tempDir = new File(tempPath);
+            if (!tempDir.isDirectory()) {
+                throw new AspectranServiceException("Make sure it is a valid temporary directory; " +
+                        TEMP_PATH_PROPERTY_NAME + "=" + tempPath);
+            }
+        } else {
+            /*
+             * Sets the path to the temporary directory as a system property.
+             * The property {@code aspectran.tempPath} is set if the temporary
+             * directory {@code temp} exists under the base directory.
+             */
+            File tempDir = new File(getBasePath(), "temp");
+            if (tempDir.isDirectory()) {
+                try {
+                    System.setProperty(TEMP_PATH_PROPERTY_NAME, tempDir.getCanonicalPath());
+                } catch (AccessControlException | IOException e) {
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Could not verify the temporary directory: " + tempDir);
                     }
                 }
             }
