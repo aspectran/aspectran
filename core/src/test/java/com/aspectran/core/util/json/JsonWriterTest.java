@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -160,6 +161,23 @@ class JsonWriterTest {
                 .replace("\n", AponFormat.SYSTEM_NEW_LINE);
 
         assertEquals(expected, writer.toString().trim());
+    }
+
+    @Test
+    void test5() throws IOException {
+        Map<String, Object> map1 = new HashMap<>();
+        Map<String, Object> map2 = new HashMap<>();
+
+        map1.put("map0", "map0");
+        map1.put("map1-2", map2);
+        map2.put("map2-1", map1);
+
+        try {
+            JsonWriter writer = new JsonWriter();
+            writer.write(map1);
+        } catch (IOException e) {
+            assertEquals("JSON Serialization Failure: A circular reference was detected while converting member 'map2-1'", e.getMessage());
+        }
     }
 
 }

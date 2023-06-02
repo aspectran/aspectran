@@ -22,8 +22,6 @@ import com.aspectran.core.util.apon.ParameterValue;
 import com.aspectran.core.util.apon.Parameters;
 
 import java.io.BufferedReader;
-import java.io.Closeable;
-import java.io.Flushable;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -47,7 +45,7 @@ import java.util.Map;
  * 
  * @author Juho Jeong
  */
-public class JsonWriter implements Flushable, Closeable {
+public class JsonWriter {
 
     private static final String DEFAULT_INDENT_STRING = "  ";
 
@@ -70,6 +68,8 @@ public class JsonWriter implements Flushable, Closeable {
     private int indentDepth;
 
     private String pendedName;
+
+    private Object upperObject;
 
     /**
      * Instantiates a new JsonWriter.
@@ -156,10 +156,8 @@ public class JsonWriter implements Flushable, Closeable {
             for (Parameter p : params.values()) {
                 String name = p.getName();
                 Object value = p.getValue();
-                checkCircularReference(object, value);
-
                 writeName(name);
-                write(value);
+                write(object, value);
             }
             endObject();
         } else if (object instanceof Map<?, ?>) {
@@ -167,19 +165,15 @@ public class JsonWriter implements Flushable, Closeable {
             for (Map.Entry<Object, Object> entry : ((Map<Object, Object>)object).entrySet()) {
                 String name = entry.getKey().toString();
                 Object value = entry.getValue();
-                checkCircularReference(object, value);
-
                 writeName(name);
-                write(value);
+                write(object, value);
             }
             endObject();
         } else if (object instanceof Collection<?>) {
             beginArray();
             for (Object value : (Collection<Object>)object) {
-                checkCircularReference(object, value);
-
                 if (value != null) {
-                    write(value);
+                    write(object, value);
                 } else {
                     writeNull(true);
                 }
@@ -190,10 +184,8 @@ public class JsonWriter implements Flushable, Closeable {
             int len = Array.getLength(object);
             for (int i = 0; i < len; i++) {
                 Object value = Array.get(object, i);
-                checkCircularReference(object, value);
-
                 if (value != null) {
-                    write(value);
+                    write(object, value);
                 } else {
                     writeNull(true);
                 }
@@ -231,10 +223,8 @@ public class JsonWriter implements Flushable, Closeable {
                     } catch (InvocationTargetException e) {
                         throw new IOException(e);
                     }
-                    checkCircularReference(object, value);
-
                     writeName(propertyName);
-                    write(value);
+                    write(object, value);
                 }
                 endObject();
             } else {
@@ -242,6 +232,13 @@ public class JsonWriter implements Flushable, Closeable {
             }
         }
         return (T)this;
+    }
+
+    private void write(Object object, Object member) throws IOException {
+        checkCircularReference(object, member);
+        this.upperObject = object;
+        write(member);
+        this.upperObject = null;
     }
 
     /**
@@ -461,16 +458,12 @@ public class JsonWriter implements Flushable, Closeable {
      * {@link Writer} and flushes that writer.
      * @throws IOException if an I/O error has occurred
      */
-    @Override
     public void flush() throws IOException {
         out.flush();
     }
 
-    @Override
     public void close() throws IOException {
-        if (out != null) {
-            out.close();
-        }
+        out.close();
     }
 
     @Override
@@ -478,10 +471,10 @@ public class JsonWriter implements Flushable, Closeable {
         return out.toString();
     }
 
-    private void checkCircularReference(Object wrapper, Object member) throws IOException {
-        if (wrapper.equals(member)) {
+    private void checkCircularReference(Object object, Object member) throws IOException {
+        if (object == member || (upperObject != null && upperObject == member)) {
             throw new IOException("JSON Serialization Failure: A circular reference was detected " +
-                    "while converting a member object [" + member + "] in [" + wrapper + "]");
+                    "while converting member '" + pendedName + "'");
         }
     }
 
