@@ -46,10 +46,13 @@ public class RequestAttributeMap implements Map<String, Object> {
     }
     
     public ServletRequest getRequest() {
+        if (request == null) {
+            throw new IllegalStateException("ServletRequest is not specified");
+        }
         return request;
     }
 
-    public void setRequest(ServletRequest request) {
+    public void setRequest(@NonNull ServletRequest request) {
         this.request = request;
     }
 
@@ -138,14 +141,14 @@ public class RequestAttributeMap implements Map<String, Object> {
     @Override
     @NonNull
     public Set<Entry<String, Object>> entrySet() {
-        Set<Entry<String, Object>> set = new HashSet<>();
+        Set<Entry<String, Object>> entries = new HashSet<>();
         Enumeration<String> names = getRequest().getAttributeNames();
         while (names.hasMoreElements()) {
             String name = names.nextElement();
             Object value = getRequest().getAttribute(name);
-            set.add(new AbstractMap.SimpleImmutableEntry<>(name, value));
+            entries.add(new AbstractMap.SimpleImmutableEntry<>(name, value));
         }
-        return set;
+        return entries;
     }
 
 }
