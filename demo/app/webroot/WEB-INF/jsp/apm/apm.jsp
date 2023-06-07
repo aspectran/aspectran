@@ -4,7 +4,8 @@
 <script src="/assets/js/apm.js"></script>
 <div class="grid-x grid-padding-x">
     <div class="cell t20">
-        <h3>Application Logs</h3>
+        <h3>Application Logs
+            <a id="anchor1" href="#anchor1" class="float-right"><span class="icon fi-anchor"></span></a></h3>
         <div class="log-container">
             <div class="log-header">
                 <ul class="tab">
@@ -40,7 +41,8 @@
         </div>
     </div>
     <div class="cell small-12 large-7 t20">
-        <h3>Current Users</h3>
+        <h3>Current Users
+            <a id="anchor2" href="#anchor2" class="float-right"><span class="icon fi-anchor"></span></a></h3>
         <div class="panel users-wrap">
             <ul class="users">
             </ul>
