@@ -99,8 +99,8 @@ To run the demo, simply use the following command after having build `Aspectran`
 
 ## Thanks
 
-[![JetBrains](http://aspectran.com/assets/img/jetbrains.svg)](https://www.jetbrains.com/?from=Aspectran)  
-[**JetBrains**](https://www.jetbrains.com/?from=Aspectran) products are very helpful in developing **Aspectran**.  
+[![JetBrains](http://aspectran.com/assets/img/jetbrains.svg)](https://jb.gg/OpenSourceSupport)  
+[**JetBrains**](https://jb.gg/OpenSourceSupport) products are very helpful in developing **Aspectran**.  
 Thank you for the Open Source License!
 
 ## License
