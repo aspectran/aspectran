@@ -24,7 +24,8 @@
 </div>
 <div class="grid-x grid-padding-x stats-wrap" style="display: none">
     <div class="cell small-12 large-5 t20">
-        <h3>Session Statistics</h3>
+        <h3>Session Statistics
+            <a id="anchor3" href="#anchor3" class="float-right hide-for-large"><span class="icon fi-anchor"></span></a></h3>
         <div class="panel stats">
             <dl>
                 <dt>Current Active Sessions</dt>
@@ -42,7 +43,7 @@
     </div>
     <div class="cell small-12 large-7 t20">
         <h3>Current Users
-            <a id="anchor2" href="#anchor2" class="float-right"><span class="icon fi-anchor"></span></a></h3>
+            <a id="anchor2" href="#anchor2" class="float-right show-for-large"><span class="icon fi-anchor"></span></a></h3>
         <div class="panel users-wrap">
             <ul class="users">
             </ul>

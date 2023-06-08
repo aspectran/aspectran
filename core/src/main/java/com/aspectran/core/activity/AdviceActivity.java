@@ -294,14 +294,14 @@ public abstract class AdviceActivity extends AbstractActivity {
                 }
             } catch (Exception e) {
                 if (aspectAdviceRule.getAspectRule().isIsolated()) {
-                    logger.error("Failed to execute an isolated advice action " + aspectAdviceRule, e);
+                    logger.error("Failed to execute isolated advice action " + aspectAdviceRule, e);
                 } else {
                     setRaisedException(e);
                     if (throwable) {
-                        throw new AspectAdviceException("Failed to execute an advice action " +
+                        throw new AspectAdviceException("Failed to execute advice action " +
                                 aspectAdviceRule, aspectAdviceRule, e);
                     } else {
-                        logger.error("Failed to execute an advice action " + aspectAdviceRule, e);
+                        logger.error("Failed to execute advice action " + aspectAdviceRule, e);
                     }
                 }
             } finally {
@@ -372,8 +372,8 @@ public abstract class AdviceActivity extends AbstractActivity {
                         }
                     } catch (Exception e) {
                         setRaisedException(e);
-                        throw new ActionExecutionException("Failed to execute advice action " + action +
-                                " for exception handling", e);
+                        throw new ActionExecutionException("Failed to execute exception handling advice action " +
+                                action, e);
                     }
                 }
                 return exceptionThrownRule;

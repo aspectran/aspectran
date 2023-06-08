@@ -226,8 +226,10 @@ public class TowServer extends AbstractLifeCycle implements InitializableBean, D
                 if (servletContainer != null) {
                     for (String deploymentName : servletContainer.listDeployments()) {
                         DeploymentManager manager = servletContainer.getDeployment(deploymentName);
-                        manager.stop();
-                        manager.undeploy();
+                        if (manager != null) {
+                            manager.stop();
+                            manager.undeploy();
+                        }
                     }
                 }
                 server.stop();

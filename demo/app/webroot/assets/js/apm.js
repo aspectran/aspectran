@@ -112,7 +112,14 @@ function LogTailer(endpoint, tailers) {
                 let msg = event.data;
                 let idx = msg.indexOf(":");
                 if (idx !== -1) {
-                    self.printMessage(msg.substring(0, idx), msg.substring(idx + 1));
+                    let tailerName = msg.substring(0, idx);
+                    let text = msg.substring(idx + 1);
+                    if (text.startsWith("last:")) {
+                        text = text.substring(5);
+                        self.printMessage(tailerName, text, false);
+                    } else {
+                        self.printMessage(tailerName, text, true);
+                    }
                 }
             }
         };
@@ -151,11 +158,13 @@ function LogTailer(endpoint, tailers) {
         }, 57000);
     };
 
-    this.printMessage = function(tailer, text) {
-        let self = this;
-        setTimeout(function () {
-            self.launchMissile(text);
-        }, 1);
+    this.printMessage = function(tailer, text, visualize) {
+        if (visualize) {
+            let self = this;
+            setTimeout(function () {
+                self.launchMissile(text);
+            }, 1);
+        }
         let line = $("<p/>").text(text);
         let logtail = $("#" + tailer);
         logtail.append(line);
@@ -205,10 +214,10 @@ function LogTailer(endpoint, tailers) {
         }
     };
 
-    this.pattern1 = /^Session ([\w\.]+) complete, active requests=(\d+)/i;
-    this.pattern2 = /^Invalidate session id=([\w\.]+)/i;
-    this.pattern3 = /^Session ([\w\.]+) accessed, stopping timer, active requests=(\d+)/i;
-    this.pattern4 = /^Create new session id=([\w\.]+)/i;
+    this.pattern1 = /^Session ([\w.]+) complete, active requests=(\d+)/i;
+    this.pattern2 = /^Invalidate session id=([\w.]+)/i;
+    this.pattern3 = /^Session ([\w.]+) accessed, stopping timer, active requests=(\d+)/i;
+    this.pattern4 = /^Create new session id=([\w.]+)/i;
 
     this.launchMissile = function(line) {
         let idx = line.indexOf("] ");
@@ -216,11 +225,26 @@ function LogTailer(endpoint, tailers) {
             line = line.substring(idx + 2);
         }
 
+        let matches1 = this.pattern1.exec(line);
+        let matches2 = this.pattern2.exec(line);
+        let matches3 = this.pattern3.exec(line);
+        let matches4 = this.pattern4.exec(line);
+
+        console.log(line);
+        console.log('matches1', matches1);
+        console.log('matches2', matches2);
+        console.log('matches3', matches3);
+        console.log('matches4', matches4);
+
         let sessionId = "";
         let requests = 0;
-        if (this.pattern1.test(line) || this.pattern2.test(line)) {
-            sessionId = RegExp.$1;
-            requests = RegExp.$2||0;
+        if (matches1 || matches2) {
+            if (matches1) {
+                sessionId = matches1[1];
+                requests = matches1[2];
+            } else {
+                sessionId = matches2[1];
+            }
             if (requests > 3) {
                 requests = 3;
             }
@@ -239,9 +263,13 @@ function LogTailer(endpoint, tailers) {
             }
             return;
         }
-        if (this.pattern3.test(line) || this.pattern4.test(line)) {
-            sessionId = RegExp.$1;
-            requests = RegExp.$2||1;
+        if (matches3 || matches4) {
+            if (matches3) {
+                sessionId = matches3[1];
+                requests = matches3[2];
+            } else {
+                sessionId = matches4[1];
+            }
             if (requests > 3) {
                 requests = 3;
             }

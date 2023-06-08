@@ -103,7 +103,7 @@ public class InvokeAction implements Executable {
                             requiresTranslet = Boolean.TRUE;
                         } catch (NoSuchMethodException e) {
                             if (logger.isTraceEnabled()) {
-                                logger.trace("No have a Translet argument on bean method " + invokeActionRule);
+                                logger.trace("No such accessible method to invoke action " + invokeActionRule);
                             }
                             requiresTranslet = Boolean.FALSE;
                             result = invokeMethod(activity, bean, methodName, argumentItemRuleMap, evaluator, false);
@@ -118,6 +118,12 @@ public class InvokeAction implements Executable {
             }
         } catch (ActionExecutionException e) {
             throw e;
+        } catch (InvocationTargetException e) {
+            if (e.getCause() != null) {
+                throw (Exception)e.getCause();
+            } else {
+                throw new ActionExecutionException("Failed to execute action " + this, e);
+            }
         } catch (Exception e) {
             throw new ActionExecutionException("Failed to execute action " + this, e);
         }
@@ -171,15 +177,7 @@ public class InvokeAction implements Executable {
     }
 
     private static Object invokeMethod(Object bean, Method method, Object[] args) throws Exception {
-        try {
-            return method.invoke(bean, args);
-        } catch (InvocationTargetException e) {
-            if (e.getCause() != null) {
-                throw (Exception)e.getCause();
-            } else {
-                throw e;
-            }
-        }
+        return method.invoke(bean, args);
     }
 
     private static Object invokeMethod(Activity activity, Object bean, String methodName,
@@ -221,15 +219,7 @@ public class InvokeAction implements Executable {
             argsObjects = new Object[] { activity.getTranslet() };
         }
 
-        try {
-            return MethodUtils.invokeMethod(bean, methodName, argsObjects, argsTypes);
-        } catch (InvocationTargetException e) {
-            if (e.getCause() != null) {
-                throw (Exception)e.getCause();
-            } else {
-                throw e;
-            }
-        }
+        return MethodUtils.invokeMethod(bean, methodName, argsObjects, argsTypes);
     }
 
     private static Object[] createArguments(Activity activity, ItemRuleMap argumentItemRuleMap,
