@@ -146,7 +146,7 @@ public class CommandHighlighter implements Highlighter {
 
     private String getMatchedCommandName(String buffer) {
         String best = null;
-        CommandRegistry commandRegistry = console.getCommandRunner().getCommandRegistry();
+        CommandRegistry commandRegistry = console.getConsoleCommander().getCommandRegistry();
         if (commandRegistry != null) {
             int len = 0;
             for (Command command : commandRegistry.getAllCommands()) {
@@ -165,7 +165,7 @@ public class CommandHighlighter implements Highlighter {
 
     private String getMatchedTransletName(String buffer) {
         String best = null;
-        ShellService shellService = console.getCommandRunner().getShellService();
+        ShellService shellService = console.getConsoleCommander().getShellService();
         if (shellService != null && shellService.getServiceController().isActive()) {
             TransletRuleRegistry transletRuleRegistry = shellService.getActivityContext().getTransletRuleRegistry();
             int len = 0;

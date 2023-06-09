@@ -46,17 +46,13 @@ public interface ShellConsole {
 
     String getEncoding();
 
-    String getCommandPrompt();
-
-    void setCommandPrompt(String commandPrompt);
-
     File getWorkingDir();
 
     void setWorkingDir(File workingDir);
 
-    ConsoleCommander getCommandRunner();
+    ConsoleCommander getConsoleCommander();
 
-    void setCommandRunner(ConsoleCommander runner);
+    void setConsoleCommander(ConsoleCommander runner);
 
     void setCommandHistoryFile(String historyFile);
 
@@ -64,21 +60,25 @@ public interface ShellConsole {
 
     void clearCommandHistory();
 
-    String readCommandLine();
+    String getCommandPrompt();
 
-    String readCommandLine(String prompt);
+    void setCommandPrompt(String commandPrompt);
+
+    PromptStringBuilder newPromptStringBuilder();
+
+    String readCommandLine();
 
     String readLine();
 
     String readLine(String prompt);
 
-    String readLine(String prompt, String buffer);
+    String readLine(String prompt, String defaultValue);
 
     String readPassword();
 
     String readPassword(String prompt);
 
-    String readPassword(String prompt, String buffer);
+    String readPassword(String prompt, String defaultValue);
 
     void write(String str);
 
@@ -95,10 +95,6 @@ public interface ShellConsole {
     void writeError(String format, Object... args);
 
     void writeAbove(String str);
-
-    void appendPrompt(String str);
-
-    void clearPrompt();
 
     void clearScreen();
 

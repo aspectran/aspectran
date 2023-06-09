@@ -59,12 +59,12 @@ public class ShellConsoleWrapper implements ShellConsole {
     }
 
     @Override
-    public ConsoleCommander getCommandRunner() {
-        return console.getCommandRunner();
+    public ConsoleCommander getConsoleCommander() {
+        return console.getConsoleCommander();
     }
 
     @Override
-    public void setCommandRunner(ConsoleCommander runner) {
+    public void setConsoleCommander(ConsoleCommander runner) {
         throw new UnsupportedOperationException();
     }
 
@@ -89,11 +89,6 @@ public class ShellConsoleWrapper implements ShellConsole {
     }
 
     @Override
-    public String readCommandLine(String prompt) {
-        return console.readCommandLine(prompt);
-    }
-
-    @Override
     public String readLine() {
         return console.readLine();
     }
@@ -104,8 +99,8 @@ public class ShellConsoleWrapper implements ShellConsole {
     }
 
     @Override
-    public String readLine(String prompt, String buffer) {
-        return console.readLine(prompt, buffer);
+    public String readLine(String prompt, String defaultValue) {
+        return console.readLine(prompt, defaultValue);
     }
 
     @Override
@@ -119,8 +114,8 @@ public class ShellConsoleWrapper implements ShellConsole {
     }
 
     @Override
-    public String readPassword(String prompt, String buffer) {
-        return console.readPassword(prompt, buffer);
+    public String readPassword(String prompt, String defaultValue) {
+        return console.readPassword(prompt, defaultValue);
     }
 
     @Override

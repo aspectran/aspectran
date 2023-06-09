@@ -17,6 +17,7 @@ package com.aspectran.shell.jline.console;
 
 import com.aspectran.shell.console.AbstractShellConsole;
 import com.aspectran.shell.console.CommandReadFailedException;
+import com.aspectran.shell.console.PromptStringBuilder;
 import com.aspectran.shell.console.ShellConsoleClosedException;
 import org.jline.reader.EndOfFileException;
 import org.jline.reader.UserInterruptException;
@@ -49,6 +50,11 @@ public class JLineShellConsole extends AbstractShellConsole {
     }
 
     @Override
+    public void setCommandPrompt(String commandPrompt) {
+        super.setCommandPrompt(jlineTerminal.toAnsi(commandPrompt));
+    }
+
+    @Override
     public void setCommandHistoryFile(String historyFile) {
         jlineTerminal.setCommandHistoryFile(historyFile);
     }
@@ -64,15 +70,14 @@ public class JLineShellConsole extends AbstractShellConsole {
     }
 
     @Override
-    public String readCommandLine() {
-        String prompt = jlineTerminal.toAnsi(getCommandPrompt());
-        return readCommandLine(prompt);
+    public PromptStringBuilder newPromptStringBuilder() {
+        return new JLinePromptStringBuilder(jlineTerminal);
     }
 
     @Override
-    public String readCommandLine(String prompt) {
+    public String readCommandLine() {
         try {
-            String line = readRawCommandLine(prompt).trim();
+            String line = readRawCommandLine(getCommandPrompt()).trim();
             jlineTerminal.getCommandCompleter().setLimited(true);
             jlineTerminal.getCommandHighlighter().setLimited(true);
             line = readMultiCommandLine(line);
@@ -80,7 +85,7 @@ public class JLineShellConsole extends AbstractShellConsole {
             jlineTerminal.getCommandHighlighter().setLimited(false);
             return line;
         } catch (EndOfFileException e) {
-            throw new ShellConsoleClosedException();
+            return null;
         } catch (IllegalStateException e) {
             if (e.getMessage() == null) {
                 return null;
@@ -105,18 +110,20 @@ public class JLineShellConsole extends AbstractShellConsole {
 
     @Override
     public String readLine(String prompt) {
-        return readLine(jlineTerminal.toAnsi(prompt), null);
+        return readLine(prompt, null);
     }
 
     @Override
-    public String readLine(String prompt, String buffer) {
+    public String readLine(String prompt, String defaultValue) {
         try {
-            if (prompt == null) {
+            if (prompt != null) {
+                prompt = jlineTerminal.toAnsi(prompt);
+            } else {
                 prompt = getPrompt();
             }
-            return readMultiLine(readRawLine(prompt, null, buffer));
+            return readMultiLine(readRawLine(prompt, null, defaultValue));
         } catch (EndOfFileException | UserInterruptException e) {
-            throw new ShellConsoleClosedException();
+            return null;
         }
     }
 
@@ -127,18 +134,20 @@ public class JLineShellConsole extends AbstractShellConsole {
 
     @Override
     public String readPassword(String prompt) {
-        return readPassword(jlineTerminal.toAnsi(prompt), null);
+        return readPassword(prompt, null);
     }
 
     @Override
-    public String readPassword(String prompt, String buffer) {
+    public String readPassword(String prompt, String defaultValue) {
         try {
-            if (prompt == null) {
+            if (prompt != null) {
+                prompt = jlineTerminal.toAnsi(prompt);
+            } else {
                 prompt = getPrompt();
             }
-            return readRawLine(prompt, MASK_CHAR, buffer);
+            return readRawLine(prompt, MASK_CHAR, defaultValue);
         } catch (EndOfFileException | UserInterruptException e) {
-            throw new ShellConsoleClosedException();
+            return null;
         }
     }
 
@@ -201,11 +210,6 @@ public class JLineShellConsole extends AbstractShellConsole {
         } else {
             jlineTerminal.getCommandReader().printAbove(jlineTerminal.toAnsi(str));
         }
-    }
-
-    @Override
-    public void appendPrompt(String str) {
-        super.appendPrompt(jlineTerminal.toAnsi(str));
     }
 
     @Override

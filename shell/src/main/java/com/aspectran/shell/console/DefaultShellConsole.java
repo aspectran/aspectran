@@ -61,11 +61,6 @@ public class DefaultShellConsole extends AbstractShellConsole {
     @Override
     public String readCommandLine() {
         String prompt = getCommandPrompt();
-        return readCommandLine(prompt);
-    }
-
-    @Override
-    public String readCommandLine(String prompt) {
         return readMultiCommandLine(readRawLine(prompt).trim());
     }
 
@@ -80,24 +75,24 @@ public class DefaultShellConsole extends AbstractShellConsole {
     }
 
     @Override
-    public String readLine(String prompt, String buffer) {
+    public String readLine(String prompt, String defaultValue) {
         try {
             reading = true;
             if (prompt == null) {
                 prompt = getPrompt();
             }
             if (prompt != null) {
-                if (buffer != null) {
-                    prompt += "[" + buffer + "]: ";
+                if (defaultValue != null) {
+                    prompt += "[" + defaultValue + "]: ";
                 }
             } else {
-                if (buffer != null) {
-                    prompt = "[" + buffer + "]: ";
+                if (defaultValue != null) {
+                    prompt = "[" + defaultValue + "]: ";
                 }
             }
             String line = readMultiLine(readRawLine(prompt));
-            if (buffer != null && StringUtils.isEmpty(line)) {
-                return buffer;
+            if (defaultValue != null && StringUtils.isEmpty(line)) {
+                return defaultValue;
             } else {
                 return line;
             }
@@ -121,24 +116,24 @@ public class DefaultShellConsole extends AbstractShellConsole {
     }
 
     @Override
-    public String readPassword(String prompt, String buffer) {
+    public String readPassword(String prompt, String defaultValue) {
         try {
             reading = true;
             if (prompt == null) {
                 prompt = getPrompt();
             }
             if (prompt != null) {
-                if (buffer != null) {
+                if (defaultValue != null) {
                     prompt += "[" + StringUtils.repeat(MASK_CHAR, 8) + "]: ";
                 }
             } else {
-                if (buffer != null) {
+                if (defaultValue != null) {
                     prompt = "[" + StringUtils.repeat(MASK_CHAR, 8) + "]: ";
                 }
             }
             String line = readRawPassword(prompt);
-            if (buffer != null && StringUtils.isEmpty(line)) {
-                return buffer;
+            if (defaultValue != null && StringUtils.isEmpty(line)) {
+                return defaultValue;
             } else {
                 return line;
             }

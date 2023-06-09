@@ -73,12 +73,6 @@ public class JLineTerminal {
         this.dumb = Terminal.TYPE_DUMB.equals(terminal.getType());
         this.dumbColor = Terminal.TYPE_DUMB_COLOR.equals(terminal.getType());
 
-        this.reader = LineReaderBuilder.builder()
-                .terminal(terminal)
-                .build();
-        this.reader.setOpt(LineReader.Option.DISABLE_EVENT_EXPANSION);
-        this.reader.unsetOpt(LineReader.Option.INSERT_TAB);
-
         this.commandCompleter = new CommandCompleter(console);
         this.commandHighlighter = new CommandHighlighter(console);
         this.commandHistory = new DefaultHistory();
@@ -95,6 +89,12 @@ public class JLineTerminal {
 
         AutosuggestionWidgets autosuggestionWidgets = new AutosuggestionWidgets(commandReader);
         autosuggestionWidgets.enable();
+
+        this.reader = LineReaderBuilder.builder()
+                .terminal(terminal)
+                .build();
+        this.reader.setOpt(LineReader.Option.DISABLE_EVENT_EXPANSION);
+        this.reader.unsetOpt(LineReader.Option.INSERT_TAB);
     }
 
     public Terminal getTerminal() {
@@ -199,12 +199,6 @@ public class JLineTerminal {
         return commandReader.isReading() || reader.isReading();
     }
 
-    public String toAnsi(String str) {
-        Style style = getStyle();
-        AttributedStyle attributedStyle = (style != null ? style.getAttributedStyle() : null);
-        return JLineTextStyler.parseAsString(attributedStyle, str, terminal);
-    }
-
     public boolean hasStyle() {
         return (style != null);
     }
@@ -221,15 +215,24 @@ public class JLineTerminal {
         this.style = new Style(styles);
     }
 
+    public String toAnsi(String str) {
+        return toAnsi(str, getStyle());
+    }
+
+    public String toAnsi(String str, Style style) {
+        AttributedStyle attributedStyle = (style != null ? style.getAttributedStyle() : null);
+        return JLineTextStyler.parseAsString(attributedStyle, str, terminal);
+    }
+
     protected static class Style {
 
         private final AttributedStyle attributedStyle;
 
-        private Style(@NonNull String... styles) {
+        protected Style(@NonNull String... styles) {
             this(null, styles);
         }
 
-        private Style(Style defaultStyle, @NonNull String... styles) {
+        protected Style(Style defaultStyle, @NonNull String... styles) {
             if (defaultStyle != null) {
                 this.attributedStyle = JLineTextStyler.style(defaultStyle.getAttributedStyle(), styles);
             } else {

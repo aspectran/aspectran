@@ -13,23 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.shell.command;
+package com.aspectran.shell.console;
 
-import java.util.Collection;
+public class PromptStringBuilder {
 
-/**
- * A registry that contains the commands known by a shell.
- *
- * <p>Created: 2017. 10. 25.</p>
- */
-public interface CommandRegistry {
+    private final StringBuilder sb = new StringBuilder();
 
-    ConsoleCommander getConsoleCommander();
+    public void setStyle(String... styles) {
+    }
 
-    Command getCommand(String commandName);
+    public void resetStyle(String... styles) {
+    }
 
-    Command getCommand(Class<? extends Command> commandClass);
+    public void append(String str) {
+        sb.append(str);
+    }
 
-    Collection<Command> getAllCommands();
+    public void clear() {
+        sb.setLength(0);
+    }
+
+    @Override
+    public String toString() {
+        return sb.toString();
+    }
 
 }

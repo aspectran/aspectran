@@ -32,11 +32,9 @@ public abstract class AbstractShellConsole implements ShellConsole {
 
     private String commandPrompt = DEFAULT_PROMPT;
 
-    private final StringBuilder promptBuilder = new StringBuilder();
-
     private File workingDir;
 
-    private ConsoleCommander runner;
+    private ConsoleCommander consoleCommander;
 
     private String[] primaryStyle;
 
@@ -64,30 +62,6 @@ public abstract class AbstractShellConsole implements ShellConsole {
     }
 
     @Override
-    public String getCommandPrompt() {
-        return commandPrompt;
-    }
-
-    @Override
-    public void setCommandPrompt(String commandPrompt) {
-        this.commandPrompt = commandPrompt;
-    }
-
-    protected String getPrompt() {
-        return (promptBuilder.length() > 0 ? promptBuilder.toString() : null);
-    }
-
-    @Override
-    public void appendPrompt(String str) {
-        promptBuilder.append(str);
-    }
-
-    @Override
-    public void clearPrompt() {
-        promptBuilder.setLength(0);
-    }
-
-    @Override
     public File getWorkingDir() {
         return workingDir;
     }
@@ -98,13 +72,28 @@ public abstract class AbstractShellConsole implements ShellConsole {
     }
 
     @Override
-    public ConsoleCommander getCommandRunner() {
-        return runner;
+    public ConsoleCommander getConsoleCommander() {
+        return consoleCommander;
     }
 
     @Override
-    public void setCommandRunner(ConsoleCommander runner) {
-        this.runner = runner;
+    public void setConsoleCommander(ConsoleCommander consoleCommander) {
+        this.consoleCommander = consoleCommander;
+    }
+
+    @Override
+    public String getCommandPrompt() {
+        return commandPrompt;
+    }
+
+    @Override
+    public void setCommandPrompt(String commandPrompt) {
+        this.commandPrompt = commandPrompt;
+    }
+
+    @Override
+    public PromptStringBuilder newPromptStringBuilder() {
+        return new PromptStringBuilder();
     }
 
     protected String readMultiCommandLine(String line) {

@@ -45,7 +45,7 @@ public abstract class AbstractCommand implements Command {
     }
 
     public ConsoleCommander getCommandRunner() {
-        return registry.getCommandRunner();
+        return registry.getConsoleCommander();
     }
 
     public ShellService getShellService() {

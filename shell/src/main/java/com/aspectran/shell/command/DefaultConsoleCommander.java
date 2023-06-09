@@ -38,8 +38,6 @@ import com.aspectran.shell.service.ShellService;
 
 import java.io.File;
 import java.io.PrintWriter;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import static com.aspectran.core.context.config.AspectranConfig.WORK_PATH_PROPERTY_NAME;
 
@@ -130,7 +128,7 @@ public class DefaultConsoleCommander implements ConsoleCommander {
             console.setCommandHistoryFile(historyFile);
         }
 
-        console.setCommandRunner(this);
+        console.setConsoleCommander(this);
     }
 
     public void perform() {
