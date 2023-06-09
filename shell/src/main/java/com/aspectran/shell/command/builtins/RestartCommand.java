@@ -79,7 +79,7 @@ public class RestartCommand extends AbstractCommand {
 
         @Override
         public String getDescription() {
-            return "Restart the shell to reload all resources";
+            return "Restarts the shell to reload all resources";
         }
 
         @Override

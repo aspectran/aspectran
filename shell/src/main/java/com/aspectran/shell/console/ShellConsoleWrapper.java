@@ -49,6 +49,11 @@ public class ShellConsoleWrapper implements ShellConsole {
     }
 
     @Override
+    public PromptStringBuilder newPromptStringBuilder() {
+        return console.newPromptStringBuilder();
+    }
+
+    @Override
     public File getWorkingDir() {
         return console.getWorkingDir();
     }
@@ -94,13 +99,8 @@ public class ShellConsoleWrapper implements ShellConsole {
     }
 
     @Override
-    public String readLine(String prompt) {
-        return console.readLine(prompt);
-    }
-
-    @Override
-    public String readLine(String prompt, String defaultValue) {
-        return console.readLine(prompt, defaultValue);
+    public String readLine(PromptStringBuilder promptStringBuilder) {
+        return console.readLine(promptStringBuilder);
     }
 
     @Override
@@ -109,13 +109,8 @@ public class ShellConsoleWrapper implements ShellConsole {
     }
 
     @Override
-    public String readPassword(String prompt) {
-        return console.readPassword(prompt);
-    }
-
-    @Override
-    public String readPassword(String prompt, String defaultValue) {
-        return console.readPassword(prompt, defaultValue);
+    public String readPassword(PromptStringBuilder promptStringBuilder) {
+        return console.readPassword(promptStringBuilder);
     }
 
     @Override
@@ -168,16 +163,6 @@ public class ShellConsoleWrapper implements ShellConsole {
     @Override
     public void writeAbove(String str) {
         console.writeAbove(str);
-    }
-
-    @Override
-    public void appendPrompt(String str) {
-        console.appendPrompt(str);
-    }
-
-    @Override
-    public void clearPrompt() {
-        console.clearPrompt();
     }
 
     @Override

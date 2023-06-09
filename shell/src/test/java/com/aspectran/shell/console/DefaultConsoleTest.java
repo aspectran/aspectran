@@ -33,7 +33,9 @@ class DefaultConsoleTest {
         ShellConsole console = new DefaultShellConsole();
         String prompt = "> ";
         while (true) {
-            String line = console.readLine(prompt);
+            PromptStringBuilder psb = console.newPromptStringBuilder()
+                    .append(prompt);
+            String line = console.readLine(psb);
             if (StringUtils.hasLength(line)) {
                 console.writeLine(line);
                 if ("quit".equals(line)) {

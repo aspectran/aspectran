@@ -224,7 +224,7 @@ public class JobCommand extends AbstractCommand {
 
         @Override
         public String getDescription() {
-            return "Show scheduled jobs, or disable or enable them";
+            return "Shows scheduled jobs, disables or enables them";
         }
 
         @Override

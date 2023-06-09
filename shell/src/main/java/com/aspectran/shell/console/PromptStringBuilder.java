@@ -15,27 +15,23 @@
  */
 package com.aspectran.shell.console;
 
-public class PromptStringBuilder {
+public interface PromptStringBuilder {
 
-    private final StringBuilder sb = new StringBuilder();
+    PromptStringBuilder setStyle(String... styles);
 
-    public void setStyle(String... styles) {
-    }
+    PromptStringBuilder resetStyle(String... styles);
 
-    public void resetStyle(String... styles) {
-    }
+    PromptStringBuilder resetStyle();
 
-    public void append(String str) {
-        sb.append(str);
-    }
+    PromptStringBuilder append(String str);
 
-    public void clear() {
-        sb.setLength(0);
-    }
+    PromptStringBuilder clear();
+
+    String getDefaultValue();
+
+    PromptStringBuilder setDefaultValue(String defaultValue);
 
     @Override
-    public String toString() {
-        return sb.toString();
-    }
+    String toString();
 
 }

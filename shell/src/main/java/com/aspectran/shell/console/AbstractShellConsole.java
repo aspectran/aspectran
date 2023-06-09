@@ -92,8 +92,13 @@ public abstract class AbstractShellConsole implements ShellConsole {
     }
 
     @Override
-    public PromptStringBuilder newPromptStringBuilder() {
-        return new PromptStringBuilder();
+    public String readLine() {
+        return readLine(null);
+    }
+
+    @Override
+    public String readPassword() {
+        return readPassword(null);
     }
 
     protected String readMultiCommandLine(String line) {
@@ -209,9 +214,10 @@ public abstract class AbstractShellConsole implements ShellConsole {
         if (checkReadingState()) {
             return false;
         }
-        String confirm = "Would you like to restart this shell [Y/n]? ";
-        setStyle(getWarningStyle());
-        String yn = readLine(confirm);
+        PromptStringBuilder psb = newPromptStringBuilder()
+                .setStyle(getWarningStyle())
+                .append("Would you like to restart this shell [Y/n]? ");
+        String yn = readLine(psb);
         resetStyle();
         return (yn.isEmpty() || yn.equalsIgnoreCase("Y"));
     }
@@ -221,9 +227,10 @@ public abstract class AbstractShellConsole implements ShellConsole {
         if (checkReadingState()) {
             return false;
         }
-        String confirm = "Are you sure you want to quit [Y/n]? ";
-        setStyle(getWarningStyle());
-        String yn = readLine(confirm);
+        PromptStringBuilder psb = newPromptStringBuilder()
+                .setStyle(getWarningStyle())
+                .append("Are you sure you want to quit [Y/n]? ");
+        String yn = readLine(psb);
         resetStyle();
         return (yn.isEmpty() || yn.equalsIgnoreCase("Y"));
     }

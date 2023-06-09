@@ -26,7 +26,9 @@ public class DefaultConsoleReadPasswordTest {
         ShellConsole console = new DefaultShellConsole();
         String prompt = "> ";
         while (true) {
-            String line = console.readPassword(prompt);
+            PromptStringBuilder psb = console.newPromptStringBuilder()
+                    .append(prompt);
+            String line = console.readPassword(psb);
             if (StringUtils.hasLength(line)) {
                 console.writeLine(line);
                 if ("quit".equals(line)) {

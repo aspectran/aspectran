@@ -15,6 +15,7 @@
  */
 package com.aspectran.shell.jline.console;
 
+import com.aspectran.shell.console.PromptStringBuilder;
 import com.aspectran.shell.console.ShellConsole;
 
 import java.io.IOException;
@@ -28,7 +29,9 @@ class JLineShellConsoleReadPasswordTest {
         ShellConsole console = new JLineShellConsole();
         String prompt = "password: ";
         while (true) {
-            String line = console.readPassword(prompt);
+            PromptStringBuilder psb = console.newPromptStringBuilder()
+                    .append(prompt);
+            String line = console.readPassword(psb);
             if ("quit".equals(line)) {
                 break;
             }

@@ -69,7 +69,7 @@ public class ClearCommand extends AbstractCommand {
 
         @Override
         public String getDescription() {
-            return "Clear the terminal screen";
+            return "Clears your screen if this is possible";
         }
 
         @Override

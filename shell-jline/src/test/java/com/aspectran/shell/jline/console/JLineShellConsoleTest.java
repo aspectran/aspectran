@@ -16,6 +16,7 @@
 package com.aspectran.shell.jline.console;
 
 import com.aspectran.core.util.StringUtils;
+import com.aspectran.shell.console.PromptStringBuilder;
 import com.aspectran.shell.console.ShellConsole;
 
 import java.io.IOException;
@@ -30,7 +31,9 @@ class JLineShellConsoleTest {
         console.setStyle("yellow");
         String prompt = "{{GREEN}}Test>{{reset}} ";
         while (true) {
-            String line = console.readLine(prompt);
+            PromptStringBuilder psb = console.newPromptStringBuilder()
+                    .append(prompt);
+            String line = console.readLine(psb);
             if (StringUtils.hasLength(line)) {
                 if ("quit".equals(line)) {
                     console.writeLine("Bye~");

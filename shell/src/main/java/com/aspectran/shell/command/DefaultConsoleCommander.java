@@ -83,8 +83,14 @@ public class DefaultConsoleCommander implements ConsoleCommander {
             throw new IllegalArgumentException("Failed to parse aspectran config file: " +
                     aspectranConfigFile, e);
         }
+
         if (basePath != null) {
             aspectranConfig.touchContextConfig().setBasePath(basePath);
+        }
+
+        File workingDir = determineWorkingDir();
+        if (workingDir != null) {
+            console.setWorkingDir(workingDir);
         }
 
         ShellConfig shellConfig = aspectranConfig.touchShellConfig();
@@ -111,11 +117,6 @@ public class DefaultConsoleCommander implements ConsoleCommander {
         commandRegistry.addCommand(shellConfig.getCommands());
         if (commandRegistry.getCommand(QuitCommand.class) == null) {
             commandRegistry.addCommand(QuitCommand.class);
-        }
-
-        File workingDir = determineWorkingDir();
-        if (workingDir != null) {
-            console.setWorkingDir(workingDir);
         }
 
         String historyFile = shellConfig.getHistoryFile();

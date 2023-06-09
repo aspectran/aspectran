@@ -236,7 +236,7 @@ public class AspectCommand extends AbstractCommand {
 
         @Override
         public String getDescription() {
-            return "Show registered aspects, or disable or enable them";
+            return "Shows registered aspects, disables or enables them";
         }
 
         @Override

@@ -13,47 +13,66 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.shell.jline.console;
+package com.aspectran.shell.console;
 
-import com.aspectran.shell.console.DefaultPromptStringBuilder;
-import com.aspectran.shell.console.PromptStringBuilder;
+public class DefaultPromptStringBuilder implements PromptStringBuilder {
 
-public class JLinePromptStringBuilder extends DefaultPromptStringBuilder {
+    private final StringBuilder sb;
 
-    private final JLineTerminal jlineTerminal;
+    private String defaultValue;
 
-    private final JLineTerminal.Style primaryStyle;
+    public DefaultPromptStringBuilder() {
+        this.sb = new StringBuilder();
+    }
 
-    private JLineTerminal.Style style;
-
-    public JLinePromptStringBuilder(JLineTerminal jlineTerminal, String... styles) {
-        super();
-        this.jlineTerminal = jlineTerminal;
-        this.primaryStyle = new JLineTerminal.Style(styles);
+    public DefaultPromptStringBuilder(String str) {
+        if (str == null) {
+            throw new IllegalArgumentException("str must not be null");
+        }
+        this.sb = new StringBuilder(str);
     }
 
     @Override
     public PromptStringBuilder setStyle(String... styles) {
-        style = new JLineTerminal.Style(style, styles);
         return this;
     }
 
     @Override
     public PromptStringBuilder resetStyle(String... styles) {
-        style = new JLineTerminal.Style(primaryStyle, styles);
         return this;
     }
 
     @Override
     public PromptStringBuilder resetStyle() {
-        style = primaryStyle;
         return this;
     }
 
     @Override
     public PromptStringBuilder append(String str) {
-        super.append(jlineTerminal.toAnsi(str, style));
+        sb.append(str);
         return this;
+    }
+
+    @Override
+    public PromptStringBuilder clear() {
+        sb.setLength(0);
+        return this;
+    }
+
+    @Override
+    public String getDefaultValue() {
+        return defaultValue;
+    }
+
+    @Override
+    public PromptStringBuilder setDefaultValue(String defaultValue) {
+        this.defaultValue = defaultValue;
+        return this;
+    }
+
+    @Override
+    public String toString() {
+        return sb.toString();
     }
 
 }

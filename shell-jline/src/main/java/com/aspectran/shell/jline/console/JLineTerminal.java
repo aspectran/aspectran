@@ -16,6 +16,7 @@
 package com.aspectran.shell.jline.console;
 
 import com.aspectran.core.lang.NonNull;
+import com.aspectran.core.lang.Nullable;
 import com.aspectran.shell.console.ShellConsole;
 import org.jline.reader.History;
 import org.jline.reader.LineReader;
@@ -208,7 +209,7 @@ public class JLineTerminal {
     }
 
     public void setStyle(String... styles) {
-        this.style = new Style(style, styles);
+        this.style = new Style(this.style, styles);
     }
 
     public void resetStyle(String... styles) {
@@ -232,7 +233,7 @@ public class JLineTerminal {
             this(null, styles);
         }
 
-        protected Style(Style defaultStyle, @NonNull String... styles) {
+        protected Style(@Nullable Style defaultStyle, @NonNull String... styles) {
             if (defaultStyle != null) {
                 this.attributedStyle = JLineTextStyler.style(defaultStyle.getAttributedStyle(), styles);
             } else {

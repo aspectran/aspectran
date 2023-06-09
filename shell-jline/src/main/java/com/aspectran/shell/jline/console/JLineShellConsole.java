@@ -50,11 +50,6 @@ public class JLineShellConsole extends AbstractShellConsole {
     }
 
     @Override
-    public void setCommandPrompt(String commandPrompt) {
-        super.setCommandPrompt(jlineTerminal.toAnsi(commandPrompt));
-    }
-
-    @Override
     public void setCommandHistoryFile(String historyFile) {
         jlineTerminal.setCommandHistoryFile(historyFile);
     }
@@ -70,8 +65,14 @@ public class JLineShellConsole extends AbstractShellConsole {
     }
 
     @Override
+    public void setCommandPrompt(String commandPrompt) {
+        super.setCommandPrompt(jlineTerminal.toAnsi(commandPrompt));
+    }
+
+    @Override
     public PromptStringBuilder newPromptStringBuilder() {
-        return new JLinePromptStringBuilder(jlineTerminal);
+        return new JLinePromptStringBuilder(jlineTerminal)
+                .resetStyle(getPrimaryStyle());
     }
 
     @Override
@@ -104,50 +105,32 @@ public class JLineShellConsole extends AbstractShellConsole {
     }
 
     @Override
-    public String readLine() {
-        return readLine(null);
-    }
-
-    @Override
-    public String readLine(String prompt) {
-        return readLine(prompt, null);
-    }
-
-    @Override
-    public String readLine(String prompt, String defaultValue) {
+    public String readLine(PromptStringBuilder promptStringBuilder) {
+        String prompt = null;
+        String defaultValue = null;
+        if (promptStringBuilder != null) {
+            prompt = promptStringBuilder.toString();
+            defaultValue = promptStringBuilder.getDefaultValue();
+        }
         try {
-            if (prompt != null) {
-                prompt = jlineTerminal.toAnsi(prompt);
-            } else {
-                prompt = getPrompt();
-            }
             return readMultiLine(readRawLine(prompt, null, defaultValue));
         } catch (EndOfFileException | UserInterruptException e) {
-            return null;
+            return defaultValue;
         }
     }
 
     @Override
-    public String readPassword() {
-        return readPassword(null);
-    }
-
-    @Override
-    public String readPassword(String prompt) {
-        return readPassword(prompt, null);
-    }
-
-    @Override
-    public String readPassword(String prompt, String defaultValue) {
+    public String readPassword(PromptStringBuilder promptStringBuilder) {
+        String prompt = null;
+        String defaultValue = null;
+        if (promptStringBuilder != null) {
+            prompt = promptStringBuilder.toString();
+            defaultValue = promptStringBuilder.getDefaultValue();
+        }
         try {
-            if (prompt != null) {
-                prompt = jlineTerminal.toAnsi(prompt);
-            } else {
-                prompt = getPrompt();
-            }
             return readRawLine(prompt, MASK_CHAR, defaultValue);
         } catch (EndOfFileException | UserInterruptException e) {
-            return null;
+            return defaultValue;
         }
     }
 
@@ -161,8 +144,8 @@ public class JLineShellConsole extends AbstractShellConsole {
         return readRawLine(prompt, null, null);
     }
 
-    private String readRawLine(String prompt, Character mask, String buffer) {
-        return jlineTerminal.getReader().readLine(prompt, mask, buffer);
+    private String readRawLine(String prompt, Character mask, String defaultValue) {
+        return jlineTerminal.getReader().readLine(prompt, mask, defaultValue);
     }
 
     @Override
@@ -204,6 +187,7 @@ public class JLineShellConsole extends AbstractShellConsole {
         writeError(String.format(format, args));
     }
 
+    @Override
     public void writeAbove(String str) {
         if (jlineTerminal.getReader().isReading()) {
             jlineTerminal.getReader().printAbove(jlineTerminal.toAnsi(str));

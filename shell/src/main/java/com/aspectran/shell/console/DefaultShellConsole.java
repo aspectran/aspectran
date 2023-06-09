@@ -65,80 +65,69 @@ public class DefaultShellConsole extends AbstractShellConsole {
     }
 
     @Override
-    public String readLine() {
-        return readLine(null);
+    public PromptStringBuilder newPromptStringBuilder() {
+        return new DefaultPromptStringBuilder();
     }
 
     @Override
-    public String readLine(String prompt) {
-        return readLine(prompt, null);
-    }
-
-    @Override
-    public String readLine(String prompt, String defaultValue) {
-        try {
-            reading = true;
-            if (prompt == null) {
-                prompt = getPrompt();
-            }
-            if (prompt != null) {
-                if (defaultValue != null) {
-                    prompt += "[" + defaultValue + "]: ";
-                }
-            } else {
-                if (defaultValue != null) {
-                    prompt = "[" + defaultValue + "]: ";
-                }
-            }
-            String line = readMultiLine(readRawLine(prompt));
-            if (defaultValue != null && StringUtils.isEmpty(line)) {
-                return defaultValue;
-            } else {
-                return line;
-            }
-        } finally {
-            reading = false;
+    public String readLine(PromptStringBuilder promptStringBuilder) {
+        String prompt = null;
+        String defaultValue = null;
+        if (promptStringBuilder != null) {
+            prompt = promptStringBuilder.toString();
+            defaultValue = promptStringBuilder.getDefaultValue();
         }
-    }
-
-    @Override
-    public String readPassword() {
-        return readPassword(null);
-    }
-
-    @Override
-    public String readPassword(String prompt) {
-        if (System.console() != null) {
-            return new String(System.console().readPassword(prompt));
+        if (prompt != null) {
+            if (defaultValue != null) {
+                prompt += "[" + defaultValue + "]: ";
+            }
         } else {
-            return readRawLine(prompt);
+            if (defaultValue != null) {
+                prompt = "[" + defaultValue + "]: ";
+            }
+        }
+        String line;
+        try {
+            reading = true;
+            line = readMultiLine(readRawLine(prompt));
+        } finally {
+            reading = false;
+        }
+        if (defaultValue != null && StringUtils.isEmpty(line)) {
+            return defaultValue;
+        } else {
+            return line;
         }
     }
 
     @Override
-    public String readPassword(String prompt, String defaultValue) {
+    public String readPassword(PromptStringBuilder promptStringBuilder) {
+        String prompt = null;
+        String defaultValue = null;
+        if (promptStringBuilder != null) {
+            prompt = promptStringBuilder.toString();
+            defaultValue = promptStringBuilder.getDefaultValue();
+        }
+        if (prompt != null) {
+            if (defaultValue != null) {
+                prompt += "[" + StringUtils.repeat(MASK_CHAR, 8) + "]: ";
+            }
+        } else {
+            if (defaultValue != null) {
+                prompt = "[" + StringUtils.repeat(MASK_CHAR, 8) + "]: ";
+            }
+        }
+        String line;
         try {
             reading = true;
-            if (prompt == null) {
-                prompt = getPrompt();
-            }
-            if (prompt != null) {
-                if (defaultValue != null) {
-                    prompt += "[" + StringUtils.repeat(MASK_CHAR, 8) + "]: ";
-                }
-            } else {
-                if (defaultValue != null) {
-                    prompt = "[" + StringUtils.repeat(MASK_CHAR, 8) + "]: ";
-                }
-            }
-            String line = readRawPassword(prompt);
-            if (defaultValue != null && StringUtils.isEmpty(line)) {
-                return defaultValue;
-            } else {
-                return line;
-            }
+            line = readRawPassword(prompt);
         } finally {
             reading = false;
+        }
+        if (defaultValue != null && StringUtils.isEmpty(line)) {
+            return defaultValue;
+        } else {
+            return line;
         }
     }
 

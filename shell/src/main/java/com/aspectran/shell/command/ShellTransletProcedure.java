@@ -28,6 +28,7 @@ import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.lang.NonNull;
 import com.aspectran.core.lang.Nullable;
 import com.aspectran.core.util.StringUtils;
+import com.aspectran.shell.console.PromptStringBuilder;
 import com.aspectran.shell.console.ShellConsole;
 import com.aspectran.shell.service.ShellService;
 
@@ -244,30 +245,29 @@ public class ShellTransletProcedure {
     }
 
     private String readParameter(ItemRule itemRule) {
-        console.clearPrompt();
-        console.setStyle(console.getWarningStyle());
-        console.appendPrompt(getMandatoryMarker(itemRule.isMandatory()));
-        console.resetStyle("bold");
-        console.appendPrompt(itemRule.getName());
-        console.resetStyle();
-        console.appendPrompt(": ");
+        PromptStringBuilder psb = console.newPromptStringBuilder()
+                .setStyle(console.getWarningStyle())
+                .append(getMandatoryMarker(itemRule.isMandatory()))
+                .resetStyle("bold")
+                .append(itemRule.getName())
+                .resetStyle()
+                .append(": ");
 
-        String defaultValue = null;
         Token[] tokens = itemRule.getAllTokens();
         if (tokens != null && tokens.length == 1) {
             Token token = tokens[0];
             if (token.getType() == TokenType.TEXT) {
-                defaultValue = token.getDefaultValue();
+                psb.setDefaultValue(token.getDefaultValue());
             } else if (token.getType() == TokenType.PARAMETER &&
                     token.getName().equals(itemRule.getName())) {
-                defaultValue = token.getDefaultValue();
+                psb.setDefaultValue(token.getDefaultValue());
             }
         }
 
         if (itemRule.isSecret()) {
-            return console.readPassword(null, defaultValue);
+            return console.readPassword(psb);
         } else {
-            return console.readLine(null, defaultValue);
+            return console.readLine(psb);
         }
     }
 
@@ -312,22 +312,23 @@ public class ShellTransletProcedure {
             Token token = entry.getKey();
             Set<ItemRule> itemRuleSet = entry.getValue();
             boolean secret = hasSecretItem(itemRuleSet);
-            console.clearPrompt();
-            console.appendPrompt("   ");
-            console.setStyle(console.getInfoStyle());
-            console.appendPrompt(String.valueOf(Token.PARAMETER_SYMBOL));
-            console.appendPrompt(String.valueOf(Token.BRACKET_OPEN));
-            console.resetStyle("bold");
-            console.appendPrompt(token.getName());
-            console.resetStyle(console.getInfoStyle());
-            console.appendPrompt(String.valueOf(Token.BRACKET_CLOSE));
-            console.resetStyle();
-            console.appendPrompt(": ");
+            PromptStringBuilder psb = console.newPromptStringBuilder()
+                    .append("   ")
+                    .setStyle(console.getInfoStyle())
+                    .append(String.valueOf(Token.PARAMETER_SYMBOL))
+                    .append(String.valueOf(Token.BRACKET_OPEN))
+                    .resetStyle("bold")
+                    .append(token.getName())
+                    .resetStyle(console.getInfoStyle())
+                    .append(String.valueOf(Token.BRACKET_CLOSE))
+                    .resetStyle()
+                    .append(": ")
+                    .setDefaultValue(token.getDefaultValue());
             String line;
             if (secret) {
-                line = console.readPassword(null, token.getDefaultValue());
+                line = console.readPassword(psb);
             } else {
-                line = console.readLine(null, token.getDefaultValue());
+                line = console.readLine(psb);
             }
             if (StringUtils.hasLength(line)) {
                 parameterMap.setParameter(token.getName(), line);

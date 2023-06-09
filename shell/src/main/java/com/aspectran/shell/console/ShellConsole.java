@@ -70,15 +70,11 @@ public interface ShellConsole {
 
     String readLine();
 
-    String readLine(String prompt);
-
-    String readLine(String prompt, String defaultValue);
+    String readLine(PromptStringBuilder promptStringBuilder);
 
     String readPassword();
 
-    String readPassword(String prompt);
-
-    String readPassword(String prompt, String defaultValue);
+    String readPassword(PromptStringBuilder promptStringBuilder);
 
     void write(String str);
 
