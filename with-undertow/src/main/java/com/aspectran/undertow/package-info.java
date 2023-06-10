@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * Add-on package for building web application servers using Undertow.
+ * Add-on package for using Undertow as the embedded servlet container.
  */
 package com.aspectran.undertow;

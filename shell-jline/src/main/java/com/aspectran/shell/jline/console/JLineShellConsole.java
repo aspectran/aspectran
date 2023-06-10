@@ -177,9 +177,10 @@ public class JLineShellConsole extends AbstractShellConsole {
 
     @Override
     public void writeError(String str) {
+        Style oldStyle = getStyle();
         setStyle(getDangerStyle());
         writeLine(str);
-        resetStyle();
+        setStyle(oldStyle);
     }
 
     @Override
@@ -240,6 +241,10 @@ public class JLineShellConsole extends AbstractShellConsole {
         jlineTerminal.setStyle(styles);
     }
 
+    public void setStyle(Style style) {
+        jlineTerminal.setStyle(style);
+    }
+
     @Override
     public void resetStyle() {
         jlineTerminal.resetStyle(getPrimaryStyle());
@@ -248,7 +253,7 @@ public class JLineShellConsole extends AbstractShellConsole {
     @Override
     public void resetStyle(String... styles) {
         if (getPrimaryStyle() != null) {
-            ArrayList<String> list = new ArrayList<>(Arrays.asList(getPrimaryStyle()));
+            List<String> list = new ArrayList<>(Arrays.asList(getPrimaryStyle()));
             if (styles != null) {
                 list.addAll(Arrays.asList(styles));
             }

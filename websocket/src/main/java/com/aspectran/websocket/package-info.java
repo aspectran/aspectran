@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * Package required to configure WebSocket endpoints.
+ * Package required to configure websockets in Aspectran-based web applications.
  */
 package com.aspectran.websocket;

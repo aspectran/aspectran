@@ -218,8 +218,7 @@ public abstract class AbstractShellConsole implements ShellConsole {
                 .setStyle(getWarningStyle())
                 .append("Would you like to restart this shell [Y/n]? ");
         String yn = readLine(psb);
-        resetStyle();
-        return (yn.isEmpty() || yn.equalsIgnoreCase("Y"));
+        return (yn == null || yn.isEmpty() || yn.equalsIgnoreCase("Y"));
     }
 
     @Override
@@ -231,8 +230,7 @@ public abstract class AbstractShellConsole implements ShellConsole {
                 .setStyle(getWarningStyle())
                 .append("Are you sure you want to quit [Y/n]? ");
         String yn = readLine(psb);
-        resetStyle();
-        return (yn.isEmpty() || yn.equalsIgnoreCase("Y"));
+        return (yn == null || yn.isEmpty() || yn.equalsIgnoreCase("Y"));
     }
 
     private boolean checkReadingState() {

@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * Basic package required for building web applications.
+ * Package for building web applications using Jakarta EE.
  */
 package com.aspectran.web;

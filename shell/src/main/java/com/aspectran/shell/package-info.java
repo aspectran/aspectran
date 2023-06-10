@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * Package required to build shell (aka command line) applications.
+ * Package for building interactive shell (aka command line) applications based on Aspectran.
  */
 package com.aspectran.shell;

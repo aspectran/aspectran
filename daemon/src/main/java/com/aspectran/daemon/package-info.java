@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 /**
- * Package required to build applications that run as background
+ * Package for running Aspectran-based Java applications as background
  * processes on Unix-based or Windows operating systems.
  */
 package com.aspectran.daemon;

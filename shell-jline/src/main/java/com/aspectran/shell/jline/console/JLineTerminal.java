@@ -209,7 +209,11 @@ public class JLineTerminal {
     }
 
     public void setStyle(String... styles) {
-        this.style = new Style(this.style, styles);
+        setStyle(new Style(this.style, styles));
+    }
+
+    public void setStyle(Style style) {
+        this.style = style;
     }
 
     public void resetStyle(String... styles) {

@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 /**
- * Add-on package for integrating MyBatis.
+ * Add-on package for using the MyBatis SQL mapper framework
+ * that makes using relational databases easy.
  */
 package com.aspectran.mybatis;

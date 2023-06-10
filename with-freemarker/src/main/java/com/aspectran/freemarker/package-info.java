@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * Add-on package required to use the FreeMarker template engine.
+ * Add-on package for using Freemarker as the templating engine.
  */
 package com.aspectran.freemarker;
