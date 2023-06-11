@@ -4,7 +4,7 @@
 <aspectran>
 
     <description>
-        An Aspectran configuration for the Shell Environment.
+        Aspectran configuration to configure the web environment.
     </description>
 
     <append file="/config/shell/examples/hello.xml"/>

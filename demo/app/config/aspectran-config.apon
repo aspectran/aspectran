@@ -98,6 +98,8 @@ daemon: {
     }
     commands: [
         com.aspectran.undertow.daemon.command.UndertowCommand
+        # To use Jetty as the embedded servlet container, comment out the line above and uncomment the line below.
+        #com.aspectran.jetty.daemon.command.JettyCommand
         com.aspectran.daemon.command.builtins.InvokeActionCommand
         com.aspectran.daemon.command.builtins.TransletCommand
         com.aspectran.daemon.command.builtins.ComponentCommand

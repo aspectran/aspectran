@@ -4,7 +4,7 @@
 <aspectran>
 
     <description>
-        An Aspectran configuration for the Web Environment.
+        Aspectran configuration to configure the web environment.
         Note that names of translets that match the request URI always start with a forward slash (/).
     </description>
 

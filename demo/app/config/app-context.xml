@@ -47,7 +47,7 @@
 
     <append file="/config/server/server.xml"/>
     <append file="/config/shell/shell.xml" profile="!daemon"/>
-    <append resource="web/web.xml"/>
+    <append resource="web/web-config.xml"/>
     <!--<append file="/config/error-report.xml"/>-->
 
 </aspectran>
