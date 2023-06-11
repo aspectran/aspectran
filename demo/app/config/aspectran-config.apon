@@ -18,7 +18,7 @@ context: {
     profiles: {
         default: [
             demo
-            #If you want to use Jetty as your embedded servlet container, uncomment the line below.
+            # If you want to use Jetty as your embedded servlet container, uncomment the line below.
             #jetty
         ]
     }
@@ -62,7 +62,7 @@ shell: {
     prompt: "{{green}}aspectran-demo>{{reset}} "
     commands: [
         com.aspectran.undertow.shell.command.UndertowCommand
-        #To use Jetty as the embedded servlet container, comment out the line above and uncomment the line below.
+        # To use Jetty as the embedded servlet container, comment out the line above and uncomment the line below.
         #com.aspectran.jetty.shell.command.JettyCommand
         com.aspectran.shell.command.builtins.TransletCommand
         com.aspectran.shell.command.builtins.AspectCommand
