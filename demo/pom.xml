@@ -150,12 +150,13 @@
             <artifactId>aspectran-with-undertow</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
+        <!-- If you want to use Jetty as your embedded servlet container, uncomment the dependency below. -->
+        <!--<dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>aspectran-with-jetty</artifactId>
             <version>${project.version}</version>
             <optional>true</optional>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>aspectran-rss-lettuce</artifactId>
