@@ -20,11 +20,11 @@
     <parent>
         <groupId>com.aspectran</groupId>
         <artifactId>aspectran-project</artifactId>
-        <version>7.3.1</version>
+        <version>7.3.2-SNAPSHOT</version>
     </parent>
 
     <artifactId>aspectran-bom</artifactId>
-    <version>7.3.1</version>
+    <version>7.3.2-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Aspectran BOM</name>
@@ -41,67 +41,67 @@
             <dependency>
                 <groupId>com.aspectran</groupId>
                 <artifactId>aspectran-core</artifactId>
-                <version>7.3.1</version>
+                <version>7.3.2-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>com.aspectran</groupId>
                 <artifactId>aspectran-daemon</artifactId>
-                <version>7.3.1</version>
+                <version>7.3.2-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>com.aspectran</groupId>
                 <artifactId>aspectran-embed</artifactId>
-                <version>7.3.1</version>
+                <version>7.3.2-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>com.aspectran</groupId>
                 <artifactId>aspectran-rss-lettuce</artifactId>
-                <version>7.3.1</version>
+                <version>7.3.2-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>com.aspectran</groupId>
                 <artifactId>aspectran-shell</artifactId>
-                <version>7.3.1</version>
+                <version>7.3.2-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>com.aspectran</groupId>
                 <artifactId>aspectran-shell-jline</artifactId>
-                <version>7.3.1</version>
+                <version>7.3.2-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>com.aspectran</groupId>
                 <artifactId>aspectran-web</artifactId>
-                <version>7.3.1</version>
+                <version>7.3.2-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>com.aspectran</groupId>
                 <artifactId>aspectran-websocket</artifactId>
-                <version>7.3.1</version>
+                <version>7.3.2-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>com.aspectran</groupId>
                 <artifactId>aspectran-with-freemarker</artifactId>
-                <version>7.3.1</version>
+                <version>7.3.2-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>com.aspectran</groupId>
                 <artifactId>aspectran-with-jetty</artifactId>
-                <version>7.3.1</version>
+                <version>7.3.2-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>com.aspectran</groupId>
                 <artifactId>aspectran-with-mybatis</artifactId>
-                <version>7.3.1</version>
+                <version>7.3.2-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>com.aspectran</groupId>
                 <artifactId>aspectran-with-pebble</artifactId>
-                <version>7.3.1</version>
+                <version>7.3.2-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>com.aspectran</groupId>
                 <artifactId>aspectran-with-undertow</artifactId>
-                <version>7.3.1</version>
+                <version>7.3.2-SNAPSHOT</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
