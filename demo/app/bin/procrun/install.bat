@@ -50,6 +50,7 @@ echo Aspectran Home: %BASE_DIR%
 
 rem Service log configuration
 set PR_LOGPATH=%BASE_DIR%\logs\procrun
+if not exist %PR_LOGPATH% mkdir %PR_LOGPATH%
 set PR_LOGPREFIX=%SERVICE_NAME%
 set PR_LOGLEVEL=Info
 set PR_STDOUTPUT=%BASE_DIR%\logs\%SERVICE_NAME%-stdout.log
