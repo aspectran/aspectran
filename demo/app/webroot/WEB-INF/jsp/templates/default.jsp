@@ -74,7 +74,6 @@
                         <ul class="submenu menu vertical" data-submenu>
                             <li><a href="https://jpetstore.aspectran.com">JPetStore Demo</a></li>
                             <li><a href="https://log-relay.aspectran.com">Log Relay</a></li>
-                            <li><a href="https://skylark.aspectran.com">Skylark Terminal</a></li>
                         </ul>
                     </li>
                 </ul>
