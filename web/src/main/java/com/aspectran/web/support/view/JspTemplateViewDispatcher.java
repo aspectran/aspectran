@@ -53,7 +53,7 @@ public class JspTemplateViewDispatcher implements ViewDispatcher {
 
     @Override
     public String getContentType() {
-        return (contentType != null ? contentType : "text/html");
+        return contentType;
     }
 
     public void setContentType(String contentType) {
@@ -89,6 +89,9 @@ public class JspTemplateViewDispatcher implements ViewDispatcher {
             requestAdapter.setAttribute(includePageKey, dispatchName);
 
             String contentType = dispatchRule.getContentType();
+            if (contentType == null) {
+                contentType = getContentType();
+            }
             if (contentType != null) {
                 responseAdapter.setContentType(contentType);
             } else {
@@ -96,13 +99,11 @@ public class JspTemplateViewDispatcher implements ViewDispatcher {
             }
 
             String encoding = dispatchRule.getEncoding();
+            if (encoding == null && responseAdapter.getEncoding() == null) {
+                encoding = activity.getTranslet().getIntendedResponseEncoding();
+            }
             if (encoding != null) {
                 responseAdapter.setEncoding(encoding);
-            } else if (responseAdapter.getEncoding() == null) {
-                encoding = activity.getTranslet().getIntendedResponseEncoding();
-                if (encoding != null) {
-                    responseAdapter.setEncoding(encoding);
-                }
             }
 
             ProcessResult processResult = activity.getProcessResult();
@@ -127,7 +128,7 @@ public class JspTemplateViewDispatcher implements ViewDispatcher {
             }
         } catch (Exception e) {
             throw new ViewDispatcherException("Failed to dispatch to JSP " +
-                    dispatchRule.toString(this, template), e);
+                    dispatchRule.toString(this, null), e);
         }
     }
 

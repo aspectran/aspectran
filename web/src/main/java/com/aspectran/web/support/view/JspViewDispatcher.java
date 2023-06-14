@@ -53,7 +53,7 @@ public class JspViewDispatcher implements ViewDispatcher {
 
     @Override
     public String getContentType() {
-        return (contentType != null ? contentType : "text/html");
+        return contentType;
     }
 
     public void setContentType(String contentType) {
@@ -97,6 +97,9 @@ public class JspViewDispatcher implements ViewDispatcher {
             ResponseAdapter responseAdapter = activity.getResponseAdapter();
 
             String contentType = dispatchRule.getContentType();
+            if (contentType == null) {
+                contentType = getContentType();
+            }
             if (contentType != null) {
                 responseAdapter.setContentType(contentType);
             } else {
@@ -104,13 +107,11 @@ public class JspViewDispatcher implements ViewDispatcher {
             }
 
             String encoding = dispatchRule.getEncoding();
+            if (encoding == null && responseAdapter.getEncoding() == null) {
+                encoding = activity.getTranslet().getIntendedResponseEncoding();
+            }
             if (encoding != null) {
                 responseAdapter.setEncoding(encoding);
-            } else if (responseAdapter.getEncoding() == null) {
-                encoding = activity.getTranslet().getIntendedResponseEncoding();
-                if (encoding != null) {
-                    responseAdapter.setEncoding(encoding);
-                }
             }
 
             ProcessResult processResult = activity.getProcessResult();

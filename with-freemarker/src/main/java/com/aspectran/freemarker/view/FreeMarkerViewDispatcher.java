@@ -21,6 +21,7 @@ import com.aspectran.core.activity.response.dispatch.ViewDispatcherException;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.component.template.TemplateModel;
 import com.aspectran.core.context.rule.DispatchRule;
+import com.aspectran.core.util.ToStringBuilder;
 import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
 import freemarker.template.Configuration;
@@ -95,18 +96,19 @@ public class FreeMarkerViewDispatcher implements ViewDispatcher {
             ResponseAdapter responseAdapter = activity.getResponseAdapter();
 
             String contentType = dispatchRule.getContentType();
+            if (contentType == null) {
+                contentType = getContentType();
+            }
             if (contentType != null) {
                 responseAdapter.setContentType(contentType);
             }
 
             String encoding = dispatchRule.getEncoding();
+            if (encoding == null && responseAdapter.getEncoding() == null) {
+                encoding = activity.getTranslet().getIntendedResponseEncoding();
+            }
             if (encoding != null) {
                 responseAdapter.setEncoding(encoding);
-            } else if (responseAdapter.getEncoding() == null) {
-                encoding = activity.getTranslet().getIntendedResponseEncoding();
-                if (encoding != null) {
-                    responseAdapter.setEncoding(encoding);
-                }
             }
 
             if (logger.isDebugEnabled()) {
@@ -125,6 +127,16 @@ public class FreeMarkerViewDispatcher implements ViewDispatcher {
     @Override
     public boolean isSingleton() {
         return true;
+    }
+
+    @Override
+    public String toString() {
+        ToStringBuilder tsb = new ToStringBuilder();
+        tsb.append("name", super.toString());
+        tsb.append("defaultContentType", contentType);
+        tsb.append("prefix", prefix);
+        tsb.append("suffix", suffix);
+        return tsb.toString();
     }
 
 }

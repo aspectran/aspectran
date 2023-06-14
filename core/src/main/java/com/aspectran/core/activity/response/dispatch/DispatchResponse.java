@@ -100,15 +100,13 @@ public class DispatchResponse implements Response {
         }
 
         try {
-            String dispatcherName;
-            if (dispatchRule.getDispatcherName() != null) {
-                dispatcherName = dispatchRule.getDispatcherName();
-            } else {
+            String dispatcherName = dispatchRule.getDispatcherName();
+            if (dispatcherName == null) {
                 dispatcherName = activity.getSetting(ViewDispatcher.VIEW_DISPATCHER_SETTING_NAME);
                 if (dispatcherName == null) {
                     throw new IllegalArgumentException("Could not find the '" +
                             ViewDispatcher.VIEW_DISPATCHER_SETTING_NAME +
-                            "' setting in the translet");
+                            "' setting in the translet " + activity.getTranslet());
                 }
             }
 
