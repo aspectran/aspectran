@@ -636,7 +636,7 @@ public class StringUtils {
             return EMPTY;
         }
         if (arr.length == 1) {
-            return (arr[0] == null) ? EMPTY : arr[0].toString();
+            return (arr[0] == null ? EMPTY : arr[0].toString());
         }
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < arr.length; i++) {

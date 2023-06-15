@@ -55,7 +55,6 @@ import com.aspectran.core.component.bean.annotation.Settings;
 import com.aspectran.core.component.bean.annotation.SimpleTrigger;
 import com.aspectran.core.component.bean.annotation.Transform;
 import com.aspectran.core.component.bean.annotation.Value;
-import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.env.EnvironmentProfiles;
 import com.aspectran.core.context.rule.AnnotatedActionRule;
 import com.aspectran.core.context.rule.AspectAdviceRule;
@@ -95,11 +94,15 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
+
+import static com.aspectran.core.context.ActivityContext.ID_SEPARATOR;
+import static com.aspectran.core.context.ActivityContext.ID_SEPARATOR_CHAR;
+import static com.aspectran.core.context.ActivityContext.NAME_SEPARATOR;
+import static com.aspectran.core.context.ActivityContext.NAME_SEPARATOR_CHAR;
 
 /**
  * The Class AnnotatedConfigParser.
@@ -960,67 +963,82 @@ public class AnnotatedConfigParser {
     }
 
     private String[] explodeNamespace(String namespace) {
-        if (StringUtils.isEmpty(namespace)) {
+        if (!StringUtils.hasText(namespace)) {
             return null;
         }
 
-        namespace = namespace.replace(ActivityContext.NAME_SEPARATOR_CHAR, ActivityContext.ID_SEPARATOR_CHAR);
+        boolean absolutelyStart = namespace.startsWith(NAME_SEPARATOR);
+        namespace = namespace.replace(NAME_SEPARATOR_CHAR, ID_SEPARATOR_CHAR);
 
-        int cnt = StringUtils.search(namespace, ActivityContext.ID_SEPARATOR_CHAR);
+        int cnt = StringUtils.search(namespace, ID_SEPARATOR_CHAR);
         if (cnt == 0) {
-            String[] arr = new String[2];
-            arr[1] = namespace;
-            return arr;
+            if (absolutelyStart) {
+                return new String[] { null, namespace };
+            } else {
+                return new String[] { namespace };
+            }
         }
 
         List<String> list = new ArrayList<>();
-        StringTokenizer st = new StringTokenizer(namespace, ActivityContext.ID_SEPARATOR);
+        if (absolutelyStart) {
+            list.add(null);
+        }
+        StringTokenizer st = new StringTokenizer(namespace, ID_SEPARATOR);
         while (st.hasMoreTokens()) {
             list.add(st.nextToken());
         }
-        list.add(null);
-        Collections.reverse(list);
         return list.toArray(new String[0]);
     }
 
-    private String applyNamespace(String[] nameArray, String name) {
-        if (nameArray == null) {
-            return name;
+    private String applyNamespace(String[] nameArray, String lastName) {
+        if (nameArray == null || nameArray.length == 0) {
+            return lastName;
         }
-
-        if (StringUtils.startsWith(name, ActivityContext.ID_SEPARATOR_CHAR)) {
-            nameArray[0] = name.substring(1);
-        } else {
-            nameArray[0] = name;
+        if (lastName != null && lastName.startsWith(ID_SEPARATOR)) {
+            lastName = lastName.substring(ID_SEPARATOR.length());
         }
-
         StringBuilder sb = new StringBuilder();
-        for (int i = nameArray.length - 1; i >= 0; i--) {
-            sb.append(nameArray[i]);
-            if (i > 0) {
-                sb.append(ActivityContext.ID_SEPARATOR_CHAR);
+        for (String name : nameArray) {
+            if (name != null && !name.isEmpty()) {
+                if (sb.length() > 0) {
+                    sb.append(ID_SEPARATOR);
+                }
+                sb.append(name);
             }
+        }
+        if (StringUtils.hasText(lastName)) {
+            if (sb.length() > 0) {
+                sb.append(ID_SEPARATOR);
+            }
+            sb.append(lastName);
         }
         return sb.toString();
     }
 
-    private String applyNamespaceForTranslet(String[] nameArray, String name) {
-        if (nameArray == null) {
-            return name;
+    private String applyNamespaceForTranslet(String[] nameArray, String lastName) {
+        if (nameArray == null || nameArray.length == 0) {
+            return lastName;
         }
-
-        if (StringUtils.startsWith(name, ActivityContext.NAME_SEPARATOR_CHAR)) {
-            nameArray[0] = name.substring(1);
-        } else {
-            nameArray[0] = name;
+        if (lastName != null && lastName.startsWith(NAME_SEPARATOR)) {
+            lastName = lastName.substring(NAME_SEPARATOR.length());
         }
-
         StringBuilder sb = new StringBuilder();
-        for (int i = nameArray.length - 1; i >= 0; i--) {
-            if (nameArray[i] != null) {
-                sb.append(ActivityContext.NAME_SEPARATOR_CHAR);
-                sb.append(nameArray[i]);
+        for (String name : nameArray) {
+            if (name != null && !name.isEmpty()) {
+                if (sb.length() > 0) {
+                    sb.append(NAME_SEPARATOR);
+                }
+                sb.append(name);
             }
+        }
+        if (StringUtils.hasText(lastName)) {
+            if (sb.length() > 0) {
+                sb.append(NAME_SEPARATOR);
+            }
+            sb.append(lastName);
+        }
+        if (nameArray[0] == null && sb.charAt(0) != NAME_SEPARATOR_CHAR) {
+            sb.insert(0, NAME_SEPARATOR);
         }
         return sb.toString();
     }

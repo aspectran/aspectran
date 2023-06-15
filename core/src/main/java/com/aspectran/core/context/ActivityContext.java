@@ -39,6 +39,8 @@ public interface ActivityContext {
 
     char ID_SEPARATOR_CHAR = '.';
 
+    String NAME_SEPARATOR = "/";
+
     char NAME_SEPARATOR_CHAR = '/';
 
     String DEFAULT_ENCODING = StandardCharsets.UTF_8.name();

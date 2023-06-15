@@ -432,11 +432,9 @@ public class TransletRuleRegistry extends AbstractComponent {
      */
     public String applyTransletNamePattern(String transletName, boolean absolutely) {
         DefaultSettings defaultSettings = assistantLocal.getDefaultSettings();
-        if (defaultSettings == null) {
-            return transletName;
-        }
-        if (defaultSettings.getTransletNamePrefix() == null
-            && defaultSettings.getTransletNameSuffix() == null) {
+        if (defaultSettings == null ||
+                (defaultSettings.getTransletNamePrefix() == null &&
+                        defaultSettings.getTransletNameSuffix() == null)) {
             return transletName;
         }
         if (StringUtils.startsWith(transletName, ActivityContext.NAME_SEPARATOR_CHAR)) {
