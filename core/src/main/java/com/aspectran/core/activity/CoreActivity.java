@@ -587,10 +587,10 @@ public class CoreActivity extends AdviceActivity {
                     if (evaluator == null) {
                         evaluator = new ItemEvaluation(this);
                     }
-                    String[] values = evaluator.evaluateAsStringArray(itemRule);
                     String[] oldValues = getRequestAdapter().getParameterValues(itemRule.getName());
-                    if (values != oldValues) {
-                        getRequestAdapter().setParameter(itemRule.getName(), values);
+                    String[] newValues = evaluator.evaluateAsStringArray(itemRule);
+                    if (oldValues != newValues) {
+                        getRequestAdapter().setParameter(itemRule.getName(), newValues);
                     }
                 }
                 if (itemRule.isMandatory()) {
@@ -623,10 +623,10 @@ public class CoreActivity extends AdviceActivity {
                     if (evaluator == null) {
                         evaluator = new ItemEvaluation(this);
                     }
-                    Object value = evaluator.evaluate(itemRule);
                     Object oldValue = getRequestAdapter().getAttribute(itemRule.getName());
-                    if (value != oldValue) {
-                        getRequestAdapter().setAttribute(itemRule.getName(), value);
+                    Object newValue = evaluator.evaluate(itemRule);
+                    if (oldValue != newValue) {
+                        getRequestAdapter().setAttribute(itemRule.getName(), newValue);
                     }
                 }
                 if (itemRule.isMandatory()) {

@@ -38,6 +38,8 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
+import static com.aspectran.shell.console.ShellConsole.MASK_CHAR;
+
 public class ShellTransletProcedure {
 
     private final ShellService shellService;
@@ -234,11 +236,13 @@ public class ShellTransletProcedure {
     private Collection<ItemRule> readEachParameter(Collection<ItemRule> itemRules) {
         Set<ItemRule> missingItemRules = new LinkedHashSet<>();
         for (ItemRule ir : itemRules) {
-            String value = readParameter(ir);
-            if (StringUtils.hasLength(value)) {
-                parameterMap.setParameter(ir.getName(), value);
-            } else if (ir.isMandatory()) {
-                missingItemRules.add(ir);
+            if (!ir.hasOnlyFixedValue()) {
+                String value = readParameter(ir);
+                if (StringUtils.hasLength(value)) {
+                    parameterMap.setParameter(ir.getName(), value);
+                } else if (ir.isMandatory()) {
+                    missingItemRules.add(ir);
+                }
             }
         }
         return (missingItemRules.isEmpty() ? null : missingItemRules);
@@ -279,39 +283,37 @@ public class ShellTransletProcedure {
         Set<ItemRule> missingItemRules = new LinkedHashSet<>();
         Map<Token, Set<ItemRule>> valueTokens = new LinkedHashMap<>();
         for (ItemRule itemRule : itemRules) {
-            Token[] tokens = itemRule.getAllTokens();
-            if (tokens == null || tokens.length == 0) {
-                Token t = new Token(TokenType.PARAMETER, itemRule.getName());
-                tokens = new Token[] { t };
-            } else if (tokens.length == 1 && tokens[0].getType() == TokenType.TEXT) {
-                Token t = new Token(TokenType.PARAMETER, itemRule.getName());
-                t.setDefaultValue(tokens[0].getDefaultValue());
-                tokens = new Token[] { t };
-            }
-            for (Token t1 : tokens) {
-                if (t1.getType() == TokenType.PARAMETER) {
-                    boolean exists = false;
-                    for (Token t2 : valueTokens.keySet()) {
-                        if (t2.equals(t1)) {
-                            exists = true;
-                            break;
+            if (!itemRule.hasOnlyFixedValue()) {
+                Token[] tokens = itemRule.getAllTokens();
+                if (tokens == null || tokens.length == 0) {
+                    Token t = new Token(TokenType.PARAMETER, itemRule.getName());
+                    tokens = new Token[] { t };
+                }
+                for (Token t1 : tokens) {
+                    if (t1.getType() == TokenType.PARAMETER) {
+                        boolean exists = false;
+                        for (Token t2 : valueTokens.keySet()) {
+                            if (t2.equals(t1)) {
+                                exists = true;
+                                break;
+                            }
                         }
-                    }
-                    if (exists) {
-                        Set<ItemRule> rules = valueTokens.get(t1);
-                        rules.add(itemRule);
-                    } else {
-                        Set<ItemRule> rules = new LinkedHashSet<>();
-                        rules.add(itemRule);
-                        valueTokens.put(t1, rules);
+                        if (exists) {
+                            Set<ItemRule> rules = valueTokens.get(t1);
+                            rules.add(itemRule);
+                        } else {
+                            Set<ItemRule> rules = new LinkedHashSet<>();
+                            rules.add(itemRule);
+                            valueTokens.put(t1, rules);
+                        }
                     }
                 }
             }
         }
         for (Map.Entry<Token, Set<ItemRule>> entry : valueTokens.entrySet()) {
             Token token = entry.getKey();
-            Set<ItemRule> itemRuleSet = entry.getValue();
-            boolean secret = hasSecretItem(itemRuleSet);
+            Set<ItemRule> rules = entry.getValue();
+            boolean secret = hasSecretItem(rules);
             PromptStringBuilder psb = console.newPromptStringBuilder()
                     .append("   ")
                     .setStyle(console.getInfoStyle())
@@ -333,7 +335,7 @@ public class ShellTransletProcedure {
             if (StringUtils.hasLength(line)) {
                 parameterMap.setParameter(token.getName(), line);
             } else {
-                for (ItemRule ir : itemRuleSet) {
+                for (ItemRule ir : rules) {
                     if (ir.isMandatory()) {
                         missingItemRules.add(ir);
                     }
@@ -381,8 +383,12 @@ public class ShellTransletProcedure {
         console.resetStyle();
         if (tokens != null && tokens.length > 0) {
             console.write(": ");
-            for (Token token : tokens) {
-                writeToken(token);
+            if (itemRule.isSecret()) {
+                console.write(StringUtils.repeat(MASK_CHAR, 8));
+            } else {
+                for (Token token : tokens) {
+                    writeToken(token);
+                }
             }
         }
         console.writeLine();

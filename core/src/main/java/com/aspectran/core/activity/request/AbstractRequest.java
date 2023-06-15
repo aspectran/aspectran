@@ -260,7 +260,7 @@ public abstract class AbstractRequest {
     /**
      * Returns a map of the request parameters that can be modified.
      * If not yet instantiated then create a new one.
-     * @return an {@code ParameterMap} object, may not be {@code null}
+     * @return a {@code ParameterMap} object, may not be {@code null}
      */
     public ParameterMap getParameterMap() {
         if (parameterMap == null) {

@@ -114,8 +114,10 @@ public class ShellActivity extends CoreActivity {
         if (getTransletRule().isAsync()) {
             super.parseRequest();
         } else {
-            ShellTransletProcedure procedure = new ShellTransletProcedure(shellService, getTransletRule(),
-                    getRequestAdapter().getParameterMap(), procedural, verbose);
+            ShellTransletProcedure procedure = new ShellTransletProcedure(
+                    shellService, getTransletRule(),
+                    getRequestAdapter().getParameterMap(),
+                    procedural, verbose);
             procedure.printDescription(getTranslet());
             try {
                 procedure.proceed();

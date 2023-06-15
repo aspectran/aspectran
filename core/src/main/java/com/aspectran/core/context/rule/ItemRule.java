@@ -19,6 +19,7 @@ import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.expr.token.TokenParser;
 import com.aspectran.core.context.rule.type.ItemType;
 import com.aspectran.core.context.rule.type.ItemValueType;
+import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.ToStringBuilder;
 
@@ -415,7 +416,7 @@ public class ItemRule {
 
     /**
      * Returns whether this item is mandatory.
-     * @return whether or not this item is mandatory
+     * @return whether this item is mandatory
      */
     public boolean isMandatory() {
         return (mandatory == Boolean.TRUE);
@@ -423,7 +424,7 @@ public class ItemRule {
 
     /**
      * Sets whether this item is mandatory.
-     * @param mandatory whether or not this item is mandatory
+     * @param mandatory whether this item is mandatory
      */
     public void setMandatory(Boolean mandatory) {
         this.mandatory = mandatory;
@@ -431,7 +432,7 @@ public class ItemRule {
 
     /**
      * Returns whether this item requires secure input.
-     * @return whether or not this item requires secure input
+     * @return whether this item requires secure input
      */
     public Boolean getSecret() {
         return secret;
@@ -439,7 +440,7 @@ public class ItemRule {
 
     /**
      * Returns whether this item requires secure input.
-     * @return whether or not this item requires secure input
+     * @return whether this item requires secure input
      */
     public boolean isSecret() {
         return (secret == Boolean.TRUE);
@@ -447,7 +448,7 @@ public class ItemRule {
 
     /**
      * Sets whether this item requires secure input.
-     * @param secret whether or not this item requires secure input
+     * @param secret whether this item requires secure input
      */
     public void setSecret(Boolean secret) {
         this.secret = secret;
@@ -558,6 +559,20 @@ public class ItemRule {
                 beanRule != null || beanRuleList != null || beanRuleMap != null);
     }
 
+    public boolean hasOnlyFixedValue() {
+        Token[] allTokens = getAllTokens();
+        if (allTokens != null) {
+            for (Token t : getAllTokens()) {
+                if (t.getType() != TokenType.TEXT) {
+                    return false;
+                }
+            }
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     private void checkSingleType() {
         if (type != ItemType.SINGLE) {
             throw new IllegalStateException("The type of this item must be 'single'");
@@ -613,8 +628,8 @@ public class ItemRule {
      * @param name the name of the item
      * @param valueType the type of value an item can have
      * @param tokenize whether to tokenize
-     * @param mandatory whether or not this item is mandatory
-     * @param secret whether or not this item requires secure input
+     * @param mandatory whether this item is mandatory
+     * @param secret whether this item requires secure input
      * @return the item rule
      * @throws IllegalRuleException if an illegal rule is found
      */

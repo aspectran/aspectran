@@ -77,13 +77,12 @@ public class DefaultShellConsole extends AbstractShellConsole {
             prompt = promptStringBuilder.toString();
             defaultValue = promptStringBuilder.getDefaultValue();
         }
-        if (prompt != null) {
-            if (defaultValue != null) {
-                prompt += "[" + defaultValue + "]: ";
-            }
-        } else {
-            if (defaultValue != null) {
-                prompt = "[" + defaultValue + "]: ";
+        if (defaultValue != null) {
+            String prompt2 = "[" + defaultValue + "] ";
+            if (prompt != null) {
+                prompt += prompt2;
+            } else {
+                prompt = prompt2;
             }
         }
         String line;
@@ -108,13 +107,12 @@ public class DefaultShellConsole extends AbstractShellConsole {
             prompt = promptStringBuilder.toString();
             defaultValue = promptStringBuilder.getDefaultValue();
         }
-        if (prompt != null) {
-            if (defaultValue != null) {
-                prompt += "[" + StringUtils.repeat(MASK_CHAR, 8) + "]: ";
-            }
-        } else {
-            if (defaultValue != null) {
-                prompt = "[" + StringUtils.repeat(MASK_CHAR, 8) + "]: ";
+        if (defaultValue != null) {
+            String prompt2 = "[" + StringUtils.repeat(MASK_CHAR, 8) + "] ";
+            if (prompt != null) {
+                prompt += prompt2;
+            } else {
+                prompt = prompt2;
             }
         }
         String line;
