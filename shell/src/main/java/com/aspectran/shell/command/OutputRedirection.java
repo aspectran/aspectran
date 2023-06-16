@@ -132,7 +132,7 @@ public class OutputRedirection {
             List<Writer> writers = new ArrayList<>(redirectionList.size());
             for (OutputRedirection redirection : redirectionList) {
                 if (!StringUtils.hasText(redirection.getOperand())) {
-                    throw new FileNotFoundException("Target file for redirection not specified");
+                    throw new FileNotFoundException("Redirect destination file not specified");
                 }
                 File file;
                 Path path = Paths.get(redirection.getOperand());
@@ -196,9 +196,9 @@ public class OutputRedirection {
         }
 
         @Override
-        public void write(@NonNull char[] cbuf, int off, int len) throws IOException {
+        public void write(@NonNull char[] buf, int off, int len) throws IOException {
             for (Writer writer : writers) {
-                writer.write(cbuf, off, len);
+                writer.write(buf, off, len);
             }
         }
 

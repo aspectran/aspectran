@@ -102,6 +102,9 @@ public abstract class AbstractShellConsole implements ShellConsole {
     }
 
     protected String readMultiCommandLine(String line) {
+        if (line == null) {
+            return null;
+        }
         if (COMMENT_DELIMITER.equals(line)) {
             String next = readRawCommandLine(COMMENT_PROMPT);
             if (next.isEmpty()) {

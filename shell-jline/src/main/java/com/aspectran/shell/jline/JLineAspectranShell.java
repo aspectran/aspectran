@@ -38,33 +38,26 @@ public class JLineAspectranShell {
         String basePath = AspectranConfig.determineBasePath(args);
         File aspectranConfigFile = AspectranConfig.determineAspectranConfigFile(args);
         try {
-            JLineShellConsole console = new JLineShellConsole();
-            bootstrap(basePath, aspectranConfigFile, console);
+            bootstrap(basePath, aspectranConfigFile);
         } catch (Exception e) {
             e.printStackTrace(System.err);
         }
     }
 
     public static void bootstrap(File aspectranConfigFile) throws IOException {
-        bootstrap(null, aspectranConfigFile, new JLineShellConsole());
+        bootstrap(null, aspectranConfigFile);
     }
 
-    public static void bootstrap(File aspectranConfigFile, JLineShellConsole console) {
-        bootstrap(null, aspectranConfigFile, console);
-    }
-
-    public static void bootstrap(@Nullable String basePath, File aspectranConfigFile, JLineShellConsole console) {
+    public static void bootstrap(@Nullable String basePath, File aspectranConfigFile) {
         if (aspectranConfigFile == null) {
             throw new IllegalArgumentException("aspectranConfigFile must not be null");
-        }
-        if (console == null) {
-            throw new IllegalArgumentException("console must not be null");
         }
 
         JLineConsoleCommander commander = null;
         int exitStatus = 0;
 
         try {
+            JLineShellConsole console = new JLineShellConsole();
             commander = new JLineConsoleCommander(console);
             commander.prepare(basePath, aspectranConfigFile);
             commander.perform();

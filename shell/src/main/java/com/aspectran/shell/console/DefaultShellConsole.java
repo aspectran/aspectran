@@ -59,7 +59,7 @@ public class DefaultShellConsole extends AbstractShellConsole {
         if (System.console() != null) {
             return System.console().writer();
         } else {
-            return new PrintWriter(System.out);
+            return new PrintWriter(System.out, true);
         }
     }
 
@@ -80,7 +80,8 @@ public class DefaultShellConsole extends AbstractShellConsole {
     @Override
     public String readCommandLine() {
         String prompt = getCommandPrompt();
-        return readMultiCommandLine(readRawLine(prompt).trim());
+        String line = readMultiCommandLine(readRawLine(prompt));
+        return (line != null ? line.trim() : null);
     }
 
     @Override
@@ -168,7 +169,7 @@ public class DefaultShellConsole extends AbstractShellConsole {
             }
             return line;
         } catch (IOException e) {
-            throw new IOError(e);
+            return null;
         }
     }
 

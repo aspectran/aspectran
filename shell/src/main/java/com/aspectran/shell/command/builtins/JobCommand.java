@@ -98,11 +98,11 @@ public class JobCommand extends AbstractCommand {
 
     private void listScheduledJobs(ShellService shellService, ShellConsole console, String[] keywords) {
         ScheduleRuleRegistry scheduleRuleRegistry = shellService.getActivityContext().getScheduleRuleRegistry();
-        console.writeLine("-%4s-+-%-20s-+-%-34s-+-%-7s-", "----", "--------------------",
-                "----------------------------------", "-------");
+        console.writeLine("-%4s-+-%-20s-+-%-34s-+-%-7s-",
+                "----", "--------------------", "----------------------------------", "-------");
         console.writeLine(" %4s | %-20s | %-34s | %-7s ", "No.", "Schedule ID", "Job Name", "Enabled");
-        console.writeLine("-%4s-+-%-20s-+-%-34s-+-%-7s-", "----", "--------------------",
-                "----------------------------------", "-------");
+        console.writeLine("-%4s-+-%-20s-+-%-34s-+-%-7s-",
+                "----", "--------------------", "----------------------------------", "-------");
         int num = 0;
         for (ScheduleRule scheduleRule : scheduleRuleRegistry.getScheduleRules()) {
             for (ScheduledJobRule jobRule : scheduleRule.getScheduledJobRuleList()) {
@@ -119,20 +119,20 @@ public class JobCommand extends AbstractCommand {
                     }
                 }
                 console.write("%5d | %-20s | %-34s |", ++num, scheduleRule.getId(), jobRule.getTransletName());
-                if (jobRule.isDisabled()) {
-                    console.setStyle(console.getDangerStyle());
-                } else {
+                if (!jobRule.isDisabled()) {
                     console.setStyle(console.getSuccessStyle());
                 }
                 console.writeLine(" %-7s ", !jobRule.isDisabled());
-                console.resetStyle();
+                if (!jobRule.isDisabled()) {
+                    console.resetStyle();
+                }
             }
         }
         if (num == 0) {
             console.writeLine("%31s %s", " ", "- No Data -");
         }
-        console.writeLine("-%4s-+-%-20s-+-%-34s-+-%-7s-", "----", "--------------------",
-                "----------------------------------", "-------");
+        console.writeLine("-%4s-+-%-20s-+-%-34s-+-%-7s-",
+                "----", "--------------------", "----------------------------------", "-------");
     }
 
     private void describeScheduledJobRule(ShellService shellService, ShellConsole console, String[] transletNames)
@@ -150,8 +150,9 @@ public class JobCommand extends AbstractCommand {
                 if (count == 0) {
                     console.writeLine("----------------------------------------------------------------------------");
                 }
-                AponWriter aponWriter = new AponWriter(console.getWriter()).nullWritable(false);
+                AponWriter aponWriter = new AponWriter(console.getWriter()).nullWritable(false).autoFlush(true);
                 aponWriter.write(scheduleParameters);
+                aponWriter.flush();
                 console.writeLine("----------------------------------------------------------------------------");
                 count++;
             }
@@ -166,8 +167,9 @@ public class JobCommand extends AbstractCommand {
                 if (count == 0) {
                     console.writeLine("----------------------------------------------------------------------------");
                 }
-                AponWriter aponWriter = new AponWriter(console.getWriter()).nullWritable(false);
+                AponWriter aponWriter = new AponWriter(console.getWriter()).nullWritable(false).autoFlush(true);
                 aponWriter.write(scheduleParameters);
+                aponWriter.flush();
                 console.writeLine("----------------------------------------------------------------------------");
                 count++;
             }

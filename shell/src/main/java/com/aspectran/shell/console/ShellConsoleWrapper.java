@@ -39,6 +39,34 @@ public class ShellConsoleWrapper implements ShellConsole {
     }
 
     @Override
+    public PrintStream getOutput() {
+        return console.getOutput();
+    }
+
+    @Override
+    public PrintWriter getWriter() {
+        if (writer != null) {
+            return writer;
+        } else {
+            return console.getWriter();
+        }
+    }
+
+    public void setWriter(PrintWriter writer) {
+        this.writer = writer;
+    }
+
+    @Override
+    public File getWorkingDir() {
+        return console.getWorkingDir();
+    }
+
+    @Override
+    public void setWorkingDir(File workingDir) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public String getCommandPrompt() {
         return console.getCommandPrompt();
     }
@@ -51,16 +79,6 @@ public class ShellConsoleWrapper implements ShellConsole {
     @Override
     public PromptStringBuilder newPromptStringBuilder() {
         return console.newPromptStringBuilder();
-    }
-
-    @Override
-    public File getWorkingDir() {
-        return console.getWorkingDir();
-    }
-
-    @Override
-    public void setWorkingDir(File workingDir) {
-        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -178,24 +196,6 @@ public class ShellConsoleWrapper implements ShellConsole {
     @Override
     public void redrawLine() {
         console.redrawLine();
-    }
-
-    @Override
-    public PrintStream getOutput() {
-        return console.getOutput();
-    }
-
-    @Override
-    public PrintWriter getWriter() {
-        if (writer != null) {
-            return writer;
-        } else {
-            return console.getWriter();
-        }
-    }
-
-    public void setWriter(PrintWriter writer) {
-        this.writer = writer;
     }
 
     @Override

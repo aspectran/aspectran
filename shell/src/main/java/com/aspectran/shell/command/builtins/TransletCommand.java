@@ -34,6 +34,7 @@ import com.aspectran.shell.console.ShellConsole;
 import com.aspectran.shell.service.ShellService;
 
 import java.io.IOException;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -175,17 +176,17 @@ public class TransletCommand extends AbstractCommand {
             console.write("%5d | %-59s |", ++num, transletName);
             if (transletRule.isAsync()) {
                 console.setStyle(console.getSuccessStyle());
-            } else {
-                console.setStyle(console.getDangerStyle());
             }
             console.writeLine(" %-5s ", transletRule.isAsync());
-            console.resetStyle();
+            if (transletRule.isAsync()) {
+                console.resetStyle();
+            }
         }
         if (num == 0) {
             console.writeLine("%31s %s", " ", "- No Data -");
         }
-        console.writeLine("-%4s-+-%-59s-+-%-5s-", "----", "-----------------------------------------------------------",
-                "-----");
+        console.writeLine("-%4s-+-%-59s-+-%-5s-",
+                "----", "-----------------------------------------------------------", "-----");
     }
 
     private void describeTransletRule(ShellService shellService, ShellConsole console, String[] transletNames,
@@ -236,8 +237,9 @@ public class TransletCommand extends AbstractCommand {
             if (count == 0) {
                 console.writeLine("----------------------------------------------------------------------------");
             }
-            AponWriter aponWriter = new AponWriter(console.getWriter()).nullWritable(false);
+            AponWriter aponWriter = new AponWriter(console.getWriter()).nullWritable(false).autoFlush(true);
             aponWriter.write(transletParameters);
+            aponWriter.flush();
             console.writeLine("----------------------------------------------------------------------------");
             count++;
         }

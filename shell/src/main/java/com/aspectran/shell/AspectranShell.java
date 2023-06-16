@@ -38,30 +38,23 @@ public class AspectranShell {
     public static void main(String[] args) {
         String basePath = AspectranConfig.determineBasePath(args);
         File aspectranConfigFile = AspectranConfig.determineAspectranConfigFile(args);
-        ShellConsole console = new DefaultShellConsole();
-        bootstrap(basePath, aspectranConfigFile, console);
+        bootstrap(basePath, aspectranConfigFile);
     }
 
     public static void bootstrap(File aspectranConfigFile) {
-        bootstrap(null, aspectranConfigFile, new DefaultShellConsole());
+        bootstrap(null, aspectranConfigFile);
     }
 
-    public static void bootstrap(File aspectranConfigFile, ShellConsole console) {
-        bootstrap(null, aspectranConfigFile, console);
-    }
-
-    public static void bootstrap(@Nullable String basePath, File aspectranConfigFile, ShellConsole console) {
+    public static void bootstrap(@Nullable String basePath, File aspectranConfigFile) {
         if (aspectranConfigFile == null) {
             throw new IllegalArgumentException("aspectranConfigFile must not be null");
-        }
-        if (console == null) {
-            throw new IllegalArgumentException("console must not be null");
         }
 
         DefaultConsoleCommander commander = null;
         int exitStatus = 0;
 
         try {
+            ShellConsole console = new DefaultShellConsole();
             commander = new DefaultConsoleCommander(console);
             commander.prepare(basePath, aspectranConfigFile);
             commander.perform();

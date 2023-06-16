@@ -101,11 +101,11 @@ public class AspectCommand extends AbstractCommand {
     private void listAspects(ShellService shellService, ShellConsole console, String[] keywords) {
         AspectRuleRegistry aspectRuleRegistry = shellService.getActivityContext().getAspectRuleRegistry();
         Collection<AspectRule> aspectRules = aspectRuleRegistry.getAspectRules();
-        console.writeLine("-%4s-+-%-46s-+-%-8s-+-%-7s-", "----", "----------------------------------------------",
-                "--------", "-------");
+        console.writeLine("-%4s-+-%-46s-+-%-8s-+-%-7s-",
+                "----", "----------------------------------------------", "--------", "-------");
         console.writeLine(" %4s | %-46s | %-8s | %-7s ", "No.", "Aspect ID", "Isolated", "Enabled");
-        console.writeLine("-%4s-+-%-46s-+-%-8s-+-%-7s-", "----", "----------------------------------------------",
-                "--------", "-------");
+        console.writeLine("-%4s-+-%-46s-+-%-8s-+-%-7s-",
+                "----", "----------------------------------------------", "--------", "-------");
         int num = 0;
         for (AspectRule aspectRule : aspectRules) {
             if (keywords != null) {
@@ -124,25 +124,25 @@ public class AspectCommand extends AbstractCommand {
             console.write("|");
             if (aspectRule.isIsolated()) {
                 console.setStyle(console.getSuccessStyle());
-            } else {
-                console.setStyle(console.getDangerStyle());
             }
             console.write(" %-8s ", aspectRule.isIsolated());
-            console.resetStyle();
+            if (aspectRule.isIsolated()) {
+                console.resetStyle();
+            }
             console.write("|");
-            if (aspectRule.isDisabled()) {
-                console.setStyle(console.getDangerStyle());
-            } else {
+            if (!aspectRule.isDisabled()) {
                 console.setStyle(console.getSuccessStyle());
             }
             console.writeLine(" %-7s ", !aspectRule.isDisabled());
-            console.resetStyle();
+            if (!aspectRule.isDisabled()) {
+                console.resetStyle();
+            }
         }
         if (num == 0) {
             console.writeLine("%31s %s", " ", "- No Data -");
         }
-        console.writeLine("-%4s-+-%-46s-+-%-8s-+-%-7s-", "----", "----------------------------------------------",
-                "--------", "-------");
+        console.writeLine("-%4s-+-%-46s-+-%-8s-+-%-7s-",
+                "----", "----------------------------------------------", "--------", "-------");
     }
 
     private void describeAspectRule(ShellService shellService, ShellConsole console, String[] aspectIds) throws IOException {
@@ -175,8 +175,9 @@ public class AspectCommand extends AbstractCommand {
             if (count == 0) {
                 console.writeLine("----------------------------------------------------------------------------");
             }
-            AponWriter aponWriter = new AponWriter(console.getWriter()).nullWritable(false);
+            AponWriter aponWriter = new AponWriter(console.getWriter()).nullWritable(false).autoFlush(true);
             aponWriter.write(aspectParameters);
+            aponWriter.flush();
             console.writeLine("----------------------------------------------------------------------------");
             count++;
         }

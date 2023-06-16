@@ -34,10 +34,10 @@ shell: {
         |
         |Welcome To Aspectran Shell #{class:com.aspectran.core.util.Aspectran^version}
         |
-        |If you want a list of all supported built-in commands, type '{{GREEN}}help{{reset}}'.
-        |To get help on a specific command, type '{{GREEN}}command_name -h{{reset}}'.
-        |If you want a list of all available translets, type '{{GREEN}}translet -l{{reset}}'.
-        |To run a translet, type '{{GREEN}}translet <translet_name>{{reset}}' or '{{GREEN}}translet_name{{reset}}'.
+        |If you want a list of all supported built-in commands, type 'help'.
+        |To get help on a specific command, type 'command_name -h'.
+        |If you want a list of all available translets, type 'translet -l'.
+        |To run a translet, type 'translet <translet_name>' or 'translet_name'.
     )
     prompt: "default-shell-test> "
     commands: [

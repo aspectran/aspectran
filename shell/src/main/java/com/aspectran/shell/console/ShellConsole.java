@@ -46,13 +46,13 @@ public interface ShellConsole {
 
     String getEncoding();
 
-    File getWorkingDir();
-
-    void setWorkingDir(File workingDir);
-
     PrintStream getOutput();
 
     PrintWriter getWriter();
+
+    File getWorkingDir();
+
+    void setWorkingDir(File workingDir);
 
     ConsoleCommander getConsoleCommander();
 
