@@ -21,6 +21,7 @@ import com.aspectran.core.context.config.ShellConfig;
 import com.aspectran.core.context.config.ShellStyleConfig;
 import com.aspectran.core.lang.NonNull;
 import com.aspectran.core.lang.Nullable;
+import com.aspectran.core.util.Aspectran;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.SystemUtils;
 import com.aspectran.core.util.apon.AponReader;
@@ -61,8 +62,9 @@ public class DefaultConsoleCommander implements ConsoleCommander {
     }
 
     @Override
-    public ShellConsole getConsole() {
-        return console;
+    @SuppressWarnings("unchecked")
+    public <T extends ShellConsole> T getConsole() {
+        return (T)console;
     }
 
     @Override
@@ -73,6 +75,11 @@ public class DefaultConsoleCommander implements ConsoleCommander {
     @Override
     public ShellService getShellService() {
         return shellService;
+    }
+
+    protected void consoleReady() {
+        Aspectran.printPrettyAboutMe(console.getOutput());
+        console.getOutput().flush();
     }
 
     public void prepare(@Nullable String basePath, File aspectranConfigFile) throws Exception {
@@ -103,6 +110,18 @@ public class DefaultConsoleCommander implements ConsoleCommander {
             console.setCommandPrompt(commandPrompt);
         }
 
+        String historyFile = shellConfig.getHistoryFile();
+        if (!StringUtils.isEmpty(historyFile)) {
+            if (basePath != null) {
+                historyFile = new File(basePath, historyFile).getCanonicalPath();
+            } else {
+                historyFile = new File(historyFile).getCanonicalPath();
+            }
+            console.setCommandHistoryFile(historyFile);
+        }
+
+        consoleReady();
+
         if (aspectranConfig.hasContextConfig()) {
             shellService = DefaultShellService.create(aspectranConfig, console);
             shellService.start();
@@ -118,22 +137,12 @@ public class DefaultConsoleCommander implements ConsoleCommander {
         if (commandRegistry.getCommand(QuitCommand.class) == null) {
             commandRegistry.addCommand(QuitCommand.class);
         }
-
-        String historyFile = shellConfig.getHistoryFile();
-        if (!StringUtils.isEmpty(historyFile)) {
-            if (basePath != null) {
-                historyFile = new File(basePath, historyFile).getCanonicalPath();
-            } else {
-                historyFile = new File(historyFile).getCanonicalPath();
-            }
-            console.setCommandHistoryFile(historyFile);
-        }
-
-        console.setConsoleCommander(this);
     }
 
     public void perform() {
         try {
+            console.setConsoleCommander(this);
+
             for (;;) {
                 try {
                     String commandLine = console.readCommandLine();
@@ -169,6 +178,8 @@ public class DefaultConsoleCommander implements ConsoleCommander {
                 }
             }
         } finally {
+            console.setConsoleCommander(null);
+
             if (logger.isDebugEnabled()) {
                 if (shellService != null && shellService.getServiceController().isActive()) {
                     logger.debug("Do not terminate this application while releasing all resources");

@@ -25,7 +25,7 @@ import com.aspectran.shell.service.ShellService;
  */
 public interface ConsoleCommander {
 
-    ShellConsole getConsole();
+    <T extends ShellConsole> T getConsole();
 
     CommandRegistry getCommandRegistry();
 

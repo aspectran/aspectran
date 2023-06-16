@@ -52,14 +52,14 @@ public class OutputStringWriter extends Writer {
     }
 
     @Override
-    public void write(@NonNull char[] cbuf, int off, int len) {
-        if ((off < 0) || (off > cbuf.length) || (len < 0) ||
-                ((off + len) > cbuf.length) || ((off + len) < 0)) {
+    public void write(@NonNull char[] buf, int off, int len) {
+        if ((off < 0) || (off > buf.length) || (len < 0) ||
+                ((off + len) > buf.length) || ((off + len) < 0)) {
             throw new IndexOutOfBoundsException();
         } else if (len == 0) {
             return;
         }
-        touchBuffer().append(cbuf, off, len);
+        touchBuffer().append(buf, off, len);
     }
 
     @Override

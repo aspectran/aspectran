@@ -19,7 +19,7 @@ import com.aspectran.core.context.config.ShellStyleConfig;
 import com.aspectran.shell.command.ConsoleCommander;
 
 import java.io.File;
-import java.io.OutputStream;
+import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.util.List;
 
@@ -181,7 +181,7 @@ public class ShellConsoleWrapper implements ShellConsole {
     }
 
     @Override
-    public OutputStream getOutput() {
+    public PrintStream getOutput() {
         return console.getOutput();
     }
 

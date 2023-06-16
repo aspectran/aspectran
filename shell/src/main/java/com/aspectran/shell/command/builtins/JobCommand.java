@@ -147,7 +147,6 @@ public class JobCommand extends AbstractCommand {
             int count = 0;
             for (ScheduledJobRule jobRule : scheduledJobRules) {
                 ScheduleParameters scheduleParameters = RulesToParameters.toScheduleParameters(jobRule.getScheduleRule(), jobRule);
-
                 if (count == 0) {
                     console.writeLine("----------------------------------------------------------------------------");
                 }

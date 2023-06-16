@@ -67,30 +67,30 @@ public class Aspectran {
 
     /**
      * Prints Aspectran information to the specified print stream.
-     * @param out a {@link PrintStream} object to print
+     * @param output a {@link PrintStream} object to print
      */
-    public static void printAboutMe(PrintStream out) {
-        out.println("Aspectran: " + VERSION);
-        out.println("JVM: " + System.getProperty("java.version") +
+    public static void printAboutMe(PrintStream output) {
+        output.println("Aspectran: " + VERSION);
+        output.println("JVM: " + System.getProperty("java.version") +
                 " (\"" + System.getProperty("java.vm.vendor") + "\"" + " " +
                 System.getProperty("java.runtime.version") + ")");
-        out.println("OS: " + System.getProperty("os.name") + " " +
+        output.println("OS: " + System.getProperty("os.name") + " " +
                 System.getProperty("os.version") + " " + System.getProperty("os.arch"));
     }
 
     /**
      * Prints Aspectran information to the specified print stream.
-     * @param out a {@link PrintStream} object to print
+     * @param output a {@link PrintStream} object to print
      */
-    public static void printPrettyAboutMe(PrintStream out) {
-        out.println("---------------------------------------------------------------------");
-        out.printf(" %1$-9s : %2$s%n", "Aspectran", VERSION);
-        out.printf(" %1$-9s : %2$s%n", "JVM", System.getProperty("java.version") +
+    public static void printPrettyAboutMe(PrintStream output) {
+        output.println("---------------------------------------------------------------------");
+        output.printf(" %1$-9s : %2$s%n", "Aspectran", VERSION);
+        output.printf(" %1$-9s : %2$s%n", "JVM", System.getProperty("java.version") +
                 " (\"" + System.getProperty("java.vm.vendor") + "\"" + " " +
                 System.getProperty("java.runtime.version") + ")");
-        out.printf(" %1$-9s : %2$s%n", "OS", System.getProperty("os.name") + " " +
+        output.printf(" %1$-9s : %2$s%n", "OS", System.getProperty("os.name") + " " +
                 System.getProperty("os.version") + " " + System.getProperty("os.arch"));
-        out.println("---------------------------------------------------------------------");
+        output.println("---------------------------------------------------------------------");
     }
 
     /**

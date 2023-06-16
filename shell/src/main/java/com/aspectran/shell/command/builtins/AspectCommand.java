@@ -172,7 +172,6 @@ public class AspectCommand extends AbstractCommand {
         int count = 0;
         for (AspectRule aspectRule : aspectRules) {
             Parameters aspectParameters = RulesToParameters.toAspectParameters(aspectRule);
-
             if (count == 0) {
                 console.writeLine("----------------------------------------------------------------------------");
             }

@@ -31,6 +31,7 @@ import org.jline.widget.AutosuggestionWidgets;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -100,6 +101,10 @@ public class JLineTerminal {
 
     public Terminal getTerminal() {
         return terminal;
+    }
+
+    public Charset getEncoding() {
+        return terminal.encoding();
     }
 
     protected boolean isDumb() {
@@ -227,6 +232,27 @@ public class JLineTerminal {
     public String toAnsi(String str, Style style) {
         AttributedStyle attributedStyle = (style != null ? style.getAttributedStyle() : null);
         return JLineTextStyler.parseAsString(attributedStyle, str, terminal);
+    }
+
+    public void write(String str) {
+        getWriter().write(toAnsi(str));
+    }
+
+    public void writeLine() {
+        getWriter().println();
+        getWriter().flush();
+    }
+
+    public void writeAbove(String str) {
+        if (getReader().isReading()) {
+            getReader().printAbove(toAnsi(str));
+        } else {
+            getCommandReader().printAbove(toAnsi(str));
+        }
+    }
+
+    public void flush() {
+        getWriter().flush();
     }
 
     protected static class Style {

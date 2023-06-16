@@ -18,7 +18,6 @@ package com.aspectran.shell;
 import com.aspectran.core.context.InsufficientEnvironmentException;
 import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.lang.Nullable;
-import com.aspectran.core.util.Aspectran;
 import com.aspectran.core.util.ExceptionUtils;
 import com.aspectran.shell.command.DefaultConsoleCommander;
 import com.aspectran.shell.console.DefaultShellConsole;
@@ -63,8 +62,6 @@ public class AspectranShell {
         int exitStatus = 0;
 
         try {
-            Aspectran.printPrettyAboutMe(System.out);
-
             commander = new DefaultConsoleCommander(console);
             commander.prepare(basePath, aspectranConfigFile);
             commander.perform();

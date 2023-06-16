@@ -16,14 +16,9 @@
 package com.aspectran.shell.jline.command;
 
 import com.aspectran.core.lang.NonNull;
-import com.aspectran.core.lang.Nullable;
 import com.aspectran.shell.command.DefaultConsoleCommander;
-import com.aspectran.shell.console.ShellConsole;
-import com.aspectran.shell.jline.console.ShellConsoleErrorStream;
-import com.aspectran.shell.jline.console.ShellConsoleOutStream;
-
-import java.io.File;
-import java.io.PrintStream;
+import com.aspectran.shell.jline.console.JLineShellConsole;
+import com.aspectran.shell.jline.console.TerminalPrintStream;
 
 /**
  * The Shell Command Runner.
@@ -32,33 +27,17 @@ import java.io.PrintStream;
  */
 public class JLineConsoleCommander extends DefaultConsoleCommander {
 
-    private PrintStream orgSystemOut;
-
-    private PrintStream orgSystemErr;
-
-    public JLineConsoleCommander(@NonNull ShellConsole console) {
+    public JLineConsoleCommander(@NonNull JLineShellConsole console) {
         super(console);
     }
 
-    public void prepare(@Nullable String basePath, File aspectranConfigFile) throws Exception {
-        super.prepare(basePath, aspectranConfigFile);
+    @Override
+    protected void consoleReady() {
+        super.consoleReady();
 
-        orgSystemOut = System.out;
-        orgSystemErr = System.err;
-        System.setOut(new ShellConsoleOutStream(getConsole()));
-        System.setErr(new ShellConsoleErrorStream(getConsole()));
-    }
-
-    public void release() {
-        if (orgSystemOut != null) {
-            System.setOut(orgSystemOut);
-            orgSystemOut = null;
-        }
-        if (orgSystemErr != null) {
-            System.setErr(orgSystemErr);
-            orgSystemErr = null;
-        }
-        super.release();
+        JLineShellConsole console = getConsole();
+        System.setOut(new TerminalPrintStream(console.getJlineTerminal(), true));
+        System.setErr(new TerminalPrintStream(console.getJlineTerminal(), true, console.getDangerStyle()));
     }
 
 }

@@ -60,22 +60,22 @@ public class AnnotatedActivity {
     }
 
     @Request("/action-2")
-        @ParamItem(
-                name = "param1",
-                value = "1234"
-        )
-        @ParamItem(
-                name = "param2",
-                value = "5678"
-        )
-        @ParamItem(
-                name = "param3",
-                value = "88888888888888888888"
-        )
-        @ParamItem(
-                name = "param4",
-                value = "99999999999999999999"
-        )
+    @ParamItem(
+            name = "param1",
+            value = "1234"
+    )
+    @ParamItem(
+            name = "param2",
+            value = "5678"
+    )
+    @ParamItem(
+            name = "param3",
+            value = "88888888888888888888"
+    )
+    @ParamItem(
+            name = "param4",
+            value = "99999999999999999999"
+    )
     public void action2(Integer param1, int param2, int param3, Integer param4) {
         assertEquals(1234, param1);
         assertEquals(5678, param2);

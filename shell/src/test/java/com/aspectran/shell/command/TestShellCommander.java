@@ -26,8 +26,9 @@ public class TestShellCommander implements ConsoleCommander {
     private final CommandRegistry commandRegistry = new ShellCommandRegistry(this);
 
     @Override
-    public ShellConsole getConsole() {
-        return console;
+    @SuppressWarnings("unchecked")
+    public <T extends ShellConsole> T getConsole() {
+        return (T)console;
     }
 
     @Override

@@ -134,20 +134,22 @@ public class CommandCompleter implements Completer {
 
     private void makeTransletCandidates(String word, List<Candidate> candidates) {
         ShellService shellService = console.getConsoleCommander().getShellService();
-        if (shellService != null && shellService.getServiceController().isActive()) {
+        if (shellService != null && shellService.getActivityContext() != null) {
             TransletRuleRegistry transletRuleRegistry = shellService.getActivityContext().getTransletRuleRegistry();
-            for (TransletRule transletRule : transletRuleRegistry.getTransletRules()) {
-                String name = transletRule.getName();
-                String dispName = name;
-                if (shellService.isExposable(name)) {
-                    if (word == null || name.startsWith(word)) {
-                        if (transletRule.hasPathVariables()) {
-                            name = transletRule.getNamePattern().toString();
-                            name = name.replaceAll(" [*+?] | [*+?]$|[*+?]", " ").trim();
-                        }
-                        if (!name.isEmpty()) {
-                            candidates.add(new Candidate(name, dispName, "translets",
-                                    null, null, null, true));
+            if (transletRuleRegistry != null) {
+                for (TransletRule transletRule : transletRuleRegistry.getTransletRules()) {
+                    String name = transletRule.getName();
+                    String dispName = name;
+                    if (shellService.isExposable(name)) {
+                        if (word == null || name.startsWith(word)) {
+                            if (transletRule.hasPathVariables()) {
+                                name = transletRule.getNamePattern().toString();
+                                name = name.replaceAll(" [*+?] | [*+?]$|[*+?]", " ").trim();
+                            }
+                            if (!name.isEmpty()) {
+                                candidates.add(new Candidate(name, dispName, "translets",
+                                        null, null, null, true));
+                            }
                         }
                     }
                 }

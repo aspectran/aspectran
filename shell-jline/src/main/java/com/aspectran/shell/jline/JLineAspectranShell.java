@@ -18,9 +18,7 @@ package com.aspectran.shell.jline;
 import com.aspectran.core.context.InsufficientEnvironmentException;
 import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.lang.Nullable;
-import com.aspectran.core.util.Aspectran;
 import com.aspectran.core.util.ExceptionUtils;
-import com.aspectran.shell.console.ShellConsole;
 import com.aspectran.shell.jline.command.JLineConsoleCommander;
 import com.aspectran.shell.jline.console.JLineShellConsole;
 
@@ -40,7 +38,7 @@ public class JLineAspectranShell {
         String basePath = AspectranConfig.determineBasePath(args);
         File aspectranConfigFile = AspectranConfig.determineAspectranConfigFile(args);
         try {
-            ShellConsole console = new JLineShellConsole();
+            JLineShellConsole console = new JLineShellConsole();
             bootstrap(basePath, aspectranConfigFile, console);
         } catch (Exception e) {
             e.printStackTrace(System.err);
@@ -51,11 +49,11 @@ public class JLineAspectranShell {
         bootstrap(null, aspectranConfigFile, new JLineShellConsole());
     }
 
-    public static void bootstrap(File aspectranConfigFile, ShellConsole console) {
+    public static void bootstrap(File aspectranConfigFile, JLineShellConsole console) {
         bootstrap(null, aspectranConfigFile, console);
     }
 
-    public static void bootstrap(@Nullable String basePath, File aspectranConfigFile, ShellConsole console) {
+    public static void bootstrap(@Nullable String basePath, File aspectranConfigFile, JLineShellConsole console) {
         if (aspectranConfigFile == null) {
             throw new IllegalArgumentException("aspectranConfigFile must not be null");
         }
@@ -67,8 +65,6 @@ public class JLineAspectranShell {
         int exitStatus = 0;
 
         try {
-            Aspectran.printPrettyAboutMe(System.out);
-
             commander = new JLineConsoleCommander(console);
             commander.prepare(basePath, aspectranConfigFile);
             commander.perform();

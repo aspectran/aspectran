@@ -19,7 +19,7 @@ import com.aspectran.core.context.config.ShellStyleConfig;
 import com.aspectran.shell.command.ConsoleCommander;
 
 import java.io.File;
-import java.io.OutputStream;
+import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.util.List;
 
@@ -49,6 +49,10 @@ public interface ShellConsole {
     File getWorkingDir();
 
     void setWorkingDir(File workingDir);
+
+    PrintStream getOutput();
+
+    PrintWriter getWriter();
 
     ConsoleCommander getConsoleCommander();
 
@@ -97,10 +101,6 @@ public interface ShellConsole {
     void clearLine();
 
     void redrawLine();
-
-    OutputStream getOutput();
-
-    PrintWriter getWriter();
 
     boolean isReading();
 

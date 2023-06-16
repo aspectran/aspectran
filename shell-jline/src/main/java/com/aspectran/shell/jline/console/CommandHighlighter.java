@@ -63,7 +63,7 @@ public class CommandHighlighter implements Highlighter {
 
     @Override
     public AttributedString highlight(LineReader reader, String buffer) {
-        if (!isLimited()) {
+        if (!isLimited() && console.getConsoleCommander() != null) {
             String str = StringUtils.trimLeadingWhitespace(buffer);
             String best = getMatchedCommandName(str);
             if (best == null) {
@@ -81,7 +81,8 @@ public class CommandHighlighter implements Highlighter {
                     asb.append(prefix + best, AttributedStyle.BOLD);
                     asb.append(buffer.substring(prefix.length() + best.length(),
                             buffer.length() - MULTILINE_DELIMITER.length()));
-                    asb.append(new AttributedString(buffer.substring(buffer.length() - MULTILINE_DELIMITER.length()),
+                    asb.append(new AttributedString(
+                            buffer.substring(buffer.length() - MULTILINE_DELIMITER.length()),
                             AttributedStyle.DEFAULT.foreground(AttributedStyle.GREEN | AttributedStyle.BRIGHT)));
                     return asb.toAttributedString();
                 } else {
@@ -166,21 +167,23 @@ public class CommandHighlighter implements Highlighter {
     private String getMatchedTransletName(String buffer) {
         String best = null;
         ShellService shellService = console.getConsoleCommander().getShellService();
-        if (shellService != null && shellService.getServiceController().isActive()) {
+        if (shellService != null && shellService.getActivityContext() != null) {
             TransletRuleRegistry transletRuleRegistry = shellService.getActivityContext().getTransletRuleRegistry();
-            int len = 0;
-            for (TransletRule transletRule : transletRuleRegistry.getTransletRules()) {
-                String name = transletRule.getName();
-                if (shellService.isExposable(name)) {
-                    if (transletRule.getNamePattern() != null) {
-                        if (transletRule.getNamePattern().matches(buffer)) {
-                            return buffer;
-                        }
-                    } else if (name.length() > len) {
-                        if (buffer.equals(name) || buffer.startsWith(name + " ") ||
-                                buffer.startsWith(name + MULTILINE_DELIMITER)) {
-                            best = name;
-                            len = name.length();
+            if (transletRuleRegistry != null) {
+                int len = 0;
+                for (TransletRule transletRule : transletRuleRegistry.getTransletRules()) {
+                    String name = transletRule.getName();
+                    if (shellService.isExposable(name)) {
+                        if (transletRule.getNamePattern() != null) {
+                            if (transletRule.getNamePattern().matches(buffer)) {
+                                return buffer;
+                            }
+                        } else if (name.length() > len) {
+                            if (buffer.equals(name) || buffer.startsWith(name + " ") ||
+                                    buffer.startsWith(name + MULTILINE_DELIMITER)) {
+                                best = name;
+                                len = name.length();
+                            }
                         }
                     }
                 }

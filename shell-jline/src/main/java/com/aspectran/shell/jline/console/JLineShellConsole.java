@@ -23,7 +23,7 @@ import org.jline.reader.EndOfFileException;
 import org.jline.reader.UserInterruptException;
 
 import java.io.IOException;
-import java.io.OutputStream;
+import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -40,6 +40,10 @@ public class JLineShellConsole extends AbstractShellConsole {
 
     private final JLineTerminal jlineTerminal;
 
+    private final PrintStream output;
+
+    private final PrintWriter writer;
+
     public JLineShellConsole() throws IOException {
         this(null);
     }
@@ -47,6 +51,22 @@ public class JLineShellConsole extends AbstractShellConsole {
     public JLineShellConsole(String encoding) throws IOException {
         super(encoding);
         this.jlineTerminal = new JLineTerminal(this, encoding);
+        this.output = new TerminalPrintStream(jlineTerminal);
+        this.writer = new TerminalPrintWriter(jlineTerminal);
+    }
+
+    public JLineTerminal getJlineTerminal() {
+        return jlineTerminal;
+    }
+
+    @Override
+    public PrintStream getOutput() {
+        return output;
+    }
+
+    @Override
+    public PrintWriter getWriter() {
+        return writer;
     }
 
     @Override
@@ -150,7 +170,7 @@ public class JLineShellConsole extends AbstractShellConsole {
 
     @Override
     public void write(String str) {
-        getWriter().write(jlineTerminal.toAnsi(str));
+        jlineTerminal.write(str);
     }
 
     @Override
@@ -162,7 +182,6 @@ public class JLineShellConsole extends AbstractShellConsole {
     public void writeLine(String str) {
         write(str);
         writeLine();
-        getWriter().flush();
     }
 
     @Override
@@ -172,7 +191,7 @@ public class JLineShellConsole extends AbstractShellConsole {
 
     @Override
     public void writeLine() {
-        write(System.lineSeparator());
+        jlineTerminal.writeLine();
     }
 
     @Override
@@ -190,11 +209,7 @@ public class JLineShellConsole extends AbstractShellConsole {
 
     @Override
     public void writeAbove(String str) {
-        if (jlineTerminal.getReader().isReading()) {
-            jlineTerminal.getReader().printAbove(jlineTerminal.toAnsi(str));
-        } else {
-            jlineTerminal.getCommandReader().printAbove(jlineTerminal.toAnsi(str));
-        }
+        jlineTerminal.writeAbove(str);
     }
 
     @Override
@@ -210,16 +225,6 @@ public class JLineShellConsole extends AbstractShellConsole {
     @Override
     public void redrawLine() {
         jlineTerminal.redrawLine();
-    }
-
-    @Override
-    public OutputStream getOutput() {
-        return jlineTerminal.getOutput();
-    }
-
-    @Override
-    public PrintWriter getWriter() {
-        return jlineTerminal.getWriter();
     }
 
     @Override

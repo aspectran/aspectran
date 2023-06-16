@@ -21,7 +21,7 @@ import java.io.BufferedReader;
 import java.io.IOError;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
+import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.nio.charset.Charset;
 import java.util.Collections;
@@ -42,6 +42,25 @@ public class DefaultShellConsole extends AbstractShellConsole {
 
     public DefaultShellConsole(String encoding) {
         super(encoding);
+    }
+
+    @Override
+    public String getEncoding() {
+        return Charset.defaultCharset().name();
+    }
+
+    @Override
+    public PrintStream getOutput() {
+        return System.out;
+    }
+
+    @Override
+    public PrintWriter getWriter() {
+        if (System.console() != null) {
+            return System.console().writer();
+        } else {
+            return new PrintWriter(System.out);
+        }
     }
 
     @Override
@@ -215,24 +234,6 @@ public class DefaultShellConsole extends AbstractShellConsole {
     @Override
     public void redrawLine() {
         // Nothing to do
-    }
-
-    @Override
-    public String getEncoding() {
-        return Charset.defaultCharset().name();
-    }
-
-    public OutputStream getOutput() {
-        return System.out;
-    }
-
-    @Override
-    public PrintWriter getWriter() {
-        if (System.console() != null) {
-            return System.console().writer();
-        } else {
-            return new PrintWriter(System.out);
-        }
     }
 
     @Override

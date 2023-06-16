@@ -145,11 +145,11 @@ public class TransletCommand extends AbstractCommand {
     private void listTranslets(ShellService shellService, ShellConsole console, String[] keywords, boolean all) {
         TransletRuleRegistry transletRuleRegistry = shellService.getActivityContext().getTransletRuleRegistry();
         Collection<TransletRule> transletRules = transletRuleRegistry.getTransletRules();
-        console.writeLine("-%4s-+-%-59s-+-%-5s-", "----", "-----------------------------------------------------------",
-                "-----");
+        console.writeLine("-%4s-+-%-59s-+-%-5s-",
+                "----", "-----------------------------------------------------------", "-----");
         console.writeLine(" %4s | %-59s | %-5s ", "No.", "Translet Name", "Async");
-        console.writeLine("-%4s-+-%-59s-+-%-5s-", "----", "-----------------------------------------------------------",
-                "-----");
+        console.writeLine("-%4s-+-%-59s-+-%-5s-",
+                "----", "-----------------------------------------------------------", "-----");
         int num = 0;
         for (TransletRule transletRule : transletRules) {
             String transletName = transletRule.getName();
@@ -189,8 +189,7 @@ public class TransletCommand extends AbstractCommand {
     }
 
     private void describeTransletRule(ShellService shellService, ShellConsole console, String[] transletNames,
-                                      MethodType requestMethod, boolean all)
-            throws IOException {
+                                      MethodType requestMethod, boolean all) throws IOException {
         TransletRuleRegistry transletRuleRegistry = shellService.getActivityContext().getTransletRuleRegistry();
         Collection<TransletRule> transletRules;
         if (transletNames == null || transletNames.length == 0) {
@@ -213,14 +212,6 @@ public class TransletCommand extends AbstractCommand {
                         transletRule = transletRuleRegistry.getTransletRule(transletName, requestMethod2);
                     } else {
                         transletRule = transletRuleRegistry.getTransletRule(transletName);
-                    }
-                }
-                if (transletRule == null) {
-                    try {
-                        int num = Integer.parseInt(transletName) - 1;
-                        transletRule = transletRuleRegistry.getTransletRules().toArray(new TransletRule[0])[num];
-                    } catch (Exception e) {
-                        // ignore
                     }
                 }
                 if (transletRule == null) {
