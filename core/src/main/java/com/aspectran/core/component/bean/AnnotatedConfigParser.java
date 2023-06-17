@@ -19,73 +19,12 @@ import com.aspectran.core.activity.process.action.AnnotatedAction;
 import com.aspectran.core.activity.process.action.Executable;
 import com.aspectran.core.activity.response.transform.CustomTransformResponse;
 import com.aspectran.core.activity.response.transform.CustomTransformer;
-import com.aspectran.core.component.bean.annotation.Action;
-import com.aspectran.core.component.bean.annotation.After;
-import com.aspectran.core.component.bean.annotation.Around;
-import com.aspectran.core.component.bean.annotation.Aspect;
-import com.aspectran.core.component.bean.annotation.AttrItem;
-import com.aspectran.core.component.bean.annotation.Autowired;
-import com.aspectran.core.component.bean.annotation.Bean;
-import com.aspectran.core.component.bean.annotation.Before;
-import com.aspectran.core.component.bean.annotation.Component;
-import com.aspectran.core.component.bean.annotation.CronTrigger;
-import com.aspectran.core.component.bean.annotation.Description;
-import com.aspectran.core.component.bean.annotation.Destroy;
-import com.aspectran.core.component.bean.annotation.Dispatch;
-import com.aspectran.core.component.bean.annotation.ExceptionThrown;
-import com.aspectran.core.component.bean.annotation.Format;
-import com.aspectran.core.component.bean.annotation.Forward;
-import com.aspectran.core.component.bean.annotation.Initialize;
-import com.aspectran.core.component.bean.annotation.Job;
-import com.aspectran.core.component.bean.annotation.Joinpoint;
-import com.aspectran.core.component.bean.annotation.ParamItem;
-import com.aspectran.core.component.bean.annotation.Profile;
-import com.aspectran.core.component.bean.annotation.Qualifier;
-import com.aspectran.core.component.bean.annotation.Redirect;
-import com.aspectran.core.component.bean.annotation.Request;
-import com.aspectran.core.component.bean.annotation.RequestToDelete;
-import com.aspectran.core.component.bean.annotation.RequestToGet;
-import com.aspectran.core.component.bean.annotation.RequestToPatch;
-import com.aspectran.core.component.bean.annotation.RequestToPost;
-import com.aspectran.core.component.bean.annotation.RequestToPut;
-import com.aspectran.core.component.bean.annotation.Required;
-import com.aspectran.core.component.bean.annotation.Schedule;
-import com.aspectran.core.component.bean.annotation.Scope;
-import com.aspectran.core.component.bean.annotation.Settings;
-import com.aspectran.core.component.bean.annotation.SimpleTrigger;
-import com.aspectran.core.component.bean.annotation.Transform;
-import com.aspectran.core.component.bean.annotation.Value;
+import com.aspectran.core.component.bean.annotation.*;
 import com.aspectran.core.context.env.EnvironmentProfiles;
-import com.aspectran.core.context.rule.AnnotatedActionRule;
-import com.aspectran.core.context.rule.AspectAdviceRule;
-import com.aspectran.core.context.rule.AspectRule;
-import com.aspectran.core.context.rule.AutowireRule;
-import com.aspectran.core.context.rule.AutowireTargetRule;
-import com.aspectran.core.context.rule.BeanRule;
-import com.aspectran.core.context.rule.DescriptionRule;
-import com.aspectran.core.context.rule.DispatchRule;
-import com.aspectran.core.context.rule.ExceptionThrownRule;
-import com.aspectran.core.context.rule.ForwardRule;
-import com.aspectran.core.context.rule.IllegalRuleException;
-import com.aspectran.core.context.rule.ItemRuleMap;
-import com.aspectran.core.context.rule.ItemRuleUtils;
-import com.aspectran.core.context.rule.JoinpointRule;
-import com.aspectran.core.context.rule.ParameterBindingRule;
-import com.aspectran.core.context.rule.PointcutRule;
-import com.aspectran.core.context.rule.RedirectRule;
-import com.aspectran.core.context.rule.ResponseRule;
-import com.aspectran.core.context.rule.ScheduleRule;
-import com.aspectran.core.context.rule.ScheduledJobRule;
-import com.aspectran.core.context.rule.SettingsAdviceRule;
-import com.aspectran.core.context.rule.TransformRule;
-import com.aspectran.core.context.rule.TransletRule;
+import com.aspectran.core.context.rule.*;
 import com.aspectran.core.context.rule.assistant.ActivityRuleAssistant;
-import com.aspectran.core.context.rule.type.AspectAdviceType;
-import com.aspectran.core.context.rule.type.AutowireTargetType;
-import com.aspectran.core.context.rule.type.FormatType;
-import com.aspectran.core.context.rule.type.JoinpointTargetType;
-import com.aspectran.core.context.rule.type.MethodType;
-import com.aspectran.core.context.rule.type.ScopeType;
+import com.aspectran.core.context.rule.type.*;
+import com.aspectran.core.util.NamespaceUtils;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
@@ -93,16 +32,8 @@ import com.aspectran.core.util.logging.LoggerFactory;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.StringTokenizer;
-
-import static com.aspectran.core.context.ActivityContext.ID_SEPARATOR;
-import static com.aspectran.core.context.ActivityContext.ID_SEPARATOR_CHAR;
-import static com.aspectran.core.context.ActivityContext.NAME_SEPARATOR;
-import static com.aspectran.core.context.ActivityContext.NAME_SEPARATOR_CHAR;
 
 /**
  * The Class AnnotatedConfigParser.
@@ -204,7 +135,7 @@ public class AnnotatedConfigParser {
                     return;
                 }
             }
-            String[] nameArray = explodeNamespace(componentAnno.value());
+            String[] nameArray = NamespaceUtils.splitNamespace(componentAnno.value());
             if (beanClass.isAnnotationPresent(Aspect.class)) {
                 parseAspectRule(beanClass, nameArray);
             }
@@ -334,7 +265,7 @@ public class AnnotatedConfigParser {
             aspectId = beanClass.getName();
         }
         if (nameArray != null) {
-            aspectId = applyNamespace(nameArray, aspectId);
+            aspectId = NamespaceUtils.applyNamespace(nameArray, aspectId);
         }
         int order = aspectAnno.order();
         boolean isolated = aspectAnno.isolated();
@@ -427,7 +358,7 @@ public class AnnotatedConfigParser {
             beanId = StringUtils.emptyToNull(beanAnno.id());
         }
         if (beanId != null && nameArray != null) {
-            beanId = applyNamespace(nameArray, beanId);
+            beanId = NamespaceUtils.applyNamespace(nameArray, beanId);
         }
         String initMethodName = StringUtils.emptyToNull(beanAnno.initMethod());
         String destroyMethodName = StringUtils.emptyToNull(beanAnno.destroyMethod());
@@ -473,7 +404,7 @@ public class AnnotatedConfigParser {
             beanId = method.getName();
         }
         if (nameArray != null) {
-            beanId = applyNamespace(nameArray, beanId);
+            beanId = NamespaceUtils.applyNamespace(nameArray, beanId);
         }
         String initMethodName = StringUtils.emptyToNull(beanAnno.initMethod());
         String destroyMethodName = StringUtils.emptyToNull(beanAnno.destroyMethod());
@@ -520,7 +451,7 @@ public class AnnotatedConfigParser {
         Schedule scheduleAnno = beanClass.getAnnotation(Schedule.class);
         String scheduleId = StringUtils.emptyToNull(scheduleAnno.id());
         if (scheduleId != null && nameArray != null) {
-            scheduleId = applyNamespace(nameArray, scheduleId);
+            scheduleId = NamespaceUtils.applyNamespace(nameArray, scheduleId);
         }
 
         ScheduleRule scheduleRule = ScheduleRule.newInstance(scheduleId);
@@ -633,8 +564,11 @@ public class AnnotatedConfigParser {
                 timeout = requestToDeleteAnno.timeout();
             }
         }
+        if (transletName != null) {
+            transletName = transletName.trim();
+        }
         if (nameArray != null) {
-            transletName = applyNamespaceForTranslet(nameArray, transletName);
+            transletName = NamespaceUtils.applyNamespaceForTranslet(nameArray, transletName);
         }
 
         TransletRule transletRule = TransletRule.newInstance(transletName, allowedMethods, async, timeout);
@@ -960,87 +894,6 @@ public class AnnotatedConfigParser {
             bindingRules[cnt++] = bindingRule;
         }
         return bindingRules;
-    }
-
-    private String[] explodeNamespace(String namespace) {
-        if (!StringUtils.hasText(namespace)) {
-            return null;
-        }
-
-        boolean absolutelyStart = namespace.startsWith(NAME_SEPARATOR);
-        namespace = namespace.replace(NAME_SEPARATOR_CHAR, ID_SEPARATOR_CHAR);
-
-        int cnt = StringUtils.search(namespace, ID_SEPARATOR_CHAR);
-        if (cnt == 0) {
-            if (absolutelyStart) {
-                return new String[] { null, namespace };
-            } else {
-                return new String[] { namespace };
-            }
-        }
-
-        List<String> list = new ArrayList<>();
-        if (absolutelyStart) {
-            list.add(null);
-        }
-        StringTokenizer st = new StringTokenizer(namespace, ID_SEPARATOR);
-        while (st.hasMoreTokens()) {
-            list.add(st.nextToken());
-        }
-        return list.toArray(new String[0]);
-    }
-
-    private String applyNamespace(String[] nameArray, String lastName) {
-        if (nameArray == null || nameArray.length == 0) {
-            return lastName;
-        }
-        if (lastName != null && lastName.startsWith(ID_SEPARATOR)) {
-            lastName = lastName.substring(ID_SEPARATOR.length());
-        }
-        StringBuilder sb = new StringBuilder();
-        for (String name : nameArray) {
-            if (name != null && !name.isEmpty()) {
-                if (sb.length() > 0) {
-                    sb.append(ID_SEPARATOR);
-                }
-                sb.append(name);
-            }
-        }
-        if (StringUtils.hasText(lastName)) {
-            if (sb.length() > 0) {
-                sb.append(ID_SEPARATOR);
-            }
-            sb.append(lastName);
-        }
-        return sb.toString();
-    }
-
-    private String applyNamespaceForTranslet(String[] nameArray, String lastName) {
-        if (nameArray == null || nameArray.length == 0) {
-            return lastName;
-        }
-        if (lastName != null && lastName.startsWith(NAME_SEPARATOR)) {
-            lastName = lastName.substring(NAME_SEPARATOR.length());
-        }
-        StringBuilder sb = new StringBuilder();
-        for (String name : nameArray) {
-            if (name != null && !name.isEmpty()) {
-                if (sb.length() > 0) {
-                    sb.append(NAME_SEPARATOR);
-                }
-                sb.append(name);
-            }
-        }
-        if (StringUtils.hasText(lastName)) {
-            if (sb.length() > 0) {
-                sb.append(NAME_SEPARATOR);
-            }
-            sb.append(lastName);
-        }
-        if (nameArray[0] == null && sb.charAt(0) != NAME_SEPARATOR_CHAR) {
-            sb.insert(0, NAME_SEPARATOR);
-        }
-        return sb.toString();
     }
 
 }
