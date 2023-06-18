@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import static com.aspectran.core.context.ActivityContext.ID_SEPARATOR;
-import static com.aspectran.core.context.ActivityContext.ID_SEPARATOR_CHAR;
 import static com.aspectran.core.context.ActivityContext.NAME_SEPARATOR;
 import static com.aspectran.core.context.ActivityContext.NAME_SEPARATOR_CHAR;
 
@@ -35,26 +34,19 @@ public class NamespaceUtils {
         if (!StringUtils.hasText(namespace)) {
             return null;
         }
-
+        namespace = namespace.trim();
         boolean absolutelyStart = namespace.startsWith(NAME_SEPARATOR);
-        namespace = namespace.replace(NAME_SEPARATOR_CHAR, ID_SEPARATOR_CHAR);
-
-        int cnt = StringUtils.search(namespace, ID_SEPARATOR_CHAR);
-        if (cnt == 0) {
-            if (absolutelyStart) {
-                return new String[] { null, namespace };
-            } else {
-                return new String[] { namespace };
-            }
-        }
-
+        boolean absolutelyEnd = namespace.endsWith(NAME_SEPARATOR);
         List<String> list = new ArrayList<>();
         if (absolutelyStart) {
             list.add(null);
         }
-        StringTokenizer st = new StringTokenizer(namespace, ID_SEPARATOR);
+        StringTokenizer st = new StringTokenizer(namespace, ID_SEPARATOR + NAME_SEPARATOR);
         while (st.hasMoreTokens()) {
             list.add(st.nextToken());
+        }
+        if (absolutelyEnd) {
+            list.add(null);
         }
         return list.toArray(new String[0]);
     }
@@ -103,6 +95,10 @@ public class NamespaceUtils {
         if (nameArray[0] == null && sb.charAt(0) != NAME_SEPARATOR_CHAR) {
             sb.insert(0, NAME_SEPARATOR);
         }
+        if (nameArray.length > 1 && nameArray[nameArray.length - 1] == null &&
+            sb.charAt(sb.length() - 1) != NAME_SEPARATOR_CHAR) {
+            sb.append(NAME_SEPARATOR);
+        }
         return sb.toString();
     }
 
@@ -132,17 +128,17 @@ public class NamespaceUtils {
     }
 
     public static String applyTransletNamePattern(String prefix, String transletName, String suffix, boolean absolutely) {
-        if (absolutely && StringUtils.startsWith(transletName, NAME_SEPARATOR_CHAR)) {
+        if (prefix == null && suffix == null) {
             return transletName;
         }
-        if (prefix == null && suffix == null) {
+        if (absolutely && StringUtils.startsWith(transletName, NAME_SEPARATOR_CHAR)) {
             return transletName;
         }
         StringBuilder sb = new StringBuilder();
         if (prefix != null) {
             sb.append(prefix);
         }
-        if (transletName != null) {
+        if (transletName != null && !transletName.isEmpty()) {
             sb.append(transletName);
         }
         if (suffix != null) {
