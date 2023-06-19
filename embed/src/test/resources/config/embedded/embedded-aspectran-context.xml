@@ -74,7 +74,7 @@
         <forward translet="include-test"/>
     </translet>
 
-    <translet name="include-test">
+    <translet name="include-${param1}">
         <include id="inc" translet="include-target">
             <attributes>
                 <item name="attr-1" value="1"/>
@@ -84,7 +84,7 @@
         </include>
         <action id="action1" bean="SecondBean" method="getMessage"/>
         <transform format="text" contentType="text/plain">
-            <template> :: @{action1}</template>
+            <template> :: @{action1}${param1}</template>
         </transform>
     </translet>
 

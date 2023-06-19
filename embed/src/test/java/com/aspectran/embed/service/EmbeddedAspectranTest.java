@@ -83,13 +83,13 @@ class EmbeddedAspectranTest {
     @Test
     void includeTest() {
         Translet translet = aspectran.translate("include-test");
-        assertEquals(" :: This is the second bean.", translet.toString());
+        assertEquals(" :: This is the second bean.test", translet.toString());
     }
 
     @Test
     void forwardTest() {
         Translet translet = aspectran.translate("forward-test");
-        assertEquals(" :: This is the second bean.", translet.toString());
+        assertEquals(" :: This is the second bean.test", translet.toString());
     }
 
     @Test
