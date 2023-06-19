@@ -24,6 +24,7 @@ import com.aspectran.core.context.rule.params.ItemParameters;
 import com.aspectran.core.context.rule.type.ItemType;
 import com.aspectran.core.context.rule.type.ItemValueType;
 import com.aspectran.core.util.Assert;
+import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.apon.Parameters;
 
 import java.io.File;
@@ -230,28 +231,28 @@ public class ItemRuleUtils {
 
     public static ItemRule toItemRule(ParamItem paramItem) throws IllegalRuleException {
         Assert.notNull(paramItem, "paramItem must not be null");
-        String name = paramItem.name();
-        String value = paramItem.value();
+        String name = StringUtils.emptyToNull(paramItem.name());
+        String value = StringUtils.emptyToNull(paramItem.value());
         boolean tokenize = paramItem.tokenize();
         boolean mandatory = paramItem.mandatory();
         boolean secret = paramItem.secret();
 
-        ItemRule itemRule = ItemRule.newInstance(null, name, null,
-                tokenize, mandatory, secret);
+        ItemRule itemRule = ItemRule.newInstance(
+                null, name, null, tokenize, mandatory, secret);
         itemRule.setValue(value);
         return itemRule;
     }
 
     public static ItemRule toItemRule(AttrItem attrItem) throws IllegalRuleException {
         Assert.notNull(attrItem, "attrItem must not be null");
-        String name = attrItem.name();
-        String value = attrItem.value();
+        String name = StringUtils.emptyToNull(attrItem.name());
+        String value = StringUtils.emptyToNull(attrItem.value());
         boolean tokenize = attrItem.tokenize();
         boolean mandatory = attrItem.mandatory();
         boolean secret = attrItem.secret();
 
-        ItemRule itemRule = ItemRule.newInstance(null, name, null,
-                tokenize, mandatory, secret);
+        ItemRule itemRule = ItemRule.newInstance(
+                null, name, null, tokenize, mandatory, secret);
         itemRule.setValue(value);
         return itemRule;
     }

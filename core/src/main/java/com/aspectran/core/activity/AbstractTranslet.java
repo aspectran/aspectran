@@ -28,8 +28,6 @@ public abstract class AbstractTranslet implements Translet {
 
     private MethodType requestMethod;
 
-    private Translet parentTranslet;
-
     protected AbstractTranslet(TransletRule transletRule) {
         this.transletRule = transletRule;
     }
@@ -67,21 +65,6 @@ public abstract class AbstractTranslet implements Translet {
 
     protected ResponseRule getResponseRule() {
         return transletRule.getResponseRule();
-    }
-
-    protected Translet getParentTranslet() {
-        return parentTranslet;
-    }
-
-    protected void setParentTranslet(Translet parentTranslet) {
-        this.parentTranslet = parentTranslet;
-        if (parentTranslet != null) {
-            setProcessResult(parentTranslet.getProcessResult());
-        }
-    }
-
-    protected boolean hasParentTranslet() {
-        return (parentTranslet != null);
     }
 
 }

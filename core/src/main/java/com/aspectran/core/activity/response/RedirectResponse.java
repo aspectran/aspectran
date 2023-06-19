@@ -45,7 +45,7 @@ public class RedirectResponse implements Response {
     public void commit(Activity activity) throws ResponseException {
         ResponseAdapter responseAdapter = activity.getResponseAdapter();
         if (responseAdapter == null) {
-            return;
+            throw new IllegalStateException("No ResponseAdapter");
         }
 
         RedirectRule newRedirectRule = redirectRule.replicate();

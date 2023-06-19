@@ -50,7 +50,7 @@ public class ForwardResponse implements Response {
     public void commit(Activity activity) {
         RequestAdapter requestAdapter = activity.getRequestAdapter();
         if (requestAdapter == null) {
-            return;
+            throw new IllegalStateException("No RequestAdapter");
         }
 
         if (logger.isDebugEnabled()) {

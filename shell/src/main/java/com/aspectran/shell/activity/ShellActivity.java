@@ -86,6 +86,9 @@ public class ShellActivity extends CoreActivity {
 
             ShellRequestAdapter requestAdapter = new ShellRequestAdapter(getTranslet().getRequestMethod());
             requestAdapter.setEncoding(console.getEncoding());
+            if (parameterMap != null) {
+                requestAdapter.setParameterMap(parameterMap);
+            }
             setRequestAdapter(requestAdapter);
 
             if (outputWriter == null) {
@@ -107,10 +110,6 @@ public class ShellActivity extends CoreActivity {
 
     @Override
     protected void parseRequest() throws RequestParseException, ActivityTerminatedException {
-        if (parameterMap != null) {
-            ((ShellRequestAdapter)getRequestAdapter()).setParameterMap(parameterMap);
-        }
-
         if (getTransletRule().isAsync()) {
             super.parseRequest();
         } else {

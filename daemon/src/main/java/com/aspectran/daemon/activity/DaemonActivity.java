@@ -15,11 +15,9 @@
  */
 package com.aspectran.daemon.activity;
 
-import com.aspectran.core.activity.ActivityTerminatedException;
 import com.aspectran.core.activity.AdapterException;
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.request.ParameterMap;
-import com.aspectran.core.activity.request.RequestParseException;
 import com.aspectran.core.adapter.DefaultSessionAdapter;
 import com.aspectran.core.util.OutputStringWriter;
 import com.aspectran.daemon.adapter.DaemonRequestAdapter;
@@ -68,6 +66,12 @@ public class DaemonActivity extends CoreActivity {
         setSessionAdapter(daemonService.newSessionAdapter());
 
         DaemonRequestAdapter requestAdapter = new DaemonRequestAdapter(getTranslet().getRequestMethod());
+        if (attributeMap != null) {
+            requestAdapter.setAttributeMap(attributeMap);
+        }
+        if (parameterMap != null) {
+            requestAdapter.setParameterMap(parameterMap);
+        }
         setRequestAdapter(requestAdapter);
 
         if (outputWriter == null) {
@@ -81,18 +85,6 @@ public class DaemonActivity extends CoreActivity {
         }
 
         super.adapt();
-    }
-
-    @Override
-    protected void parseRequest() throws RequestParseException, ActivityTerminatedException {
-        if (attributeMap != null) {
-            ((DaemonRequestAdapter)getRequestAdapter()).setAttributeMap(attributeMap);
-        }
-        if (parameterMap != null) {
-            ((DaemonRequestAdapter)getRequestAdapter()).setParameterMap(parameterMap);
-        }
-
-        super.parseRequest();
     }
 
     @Override

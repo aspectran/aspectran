@@ -82,6 +82,12 @@ public class AspectranActivity extends CoreActivity {
         setSessionAdapter(aspectran.newSessionAdapter());
 
         AspectranRequestAdapter requestAdapter = new AspectranRequestAdapter(getTranslet().getRequestMethod());
+        if (parameterMap != null) {
+            requestAdapter.setParameterMap(parameterMap);
+        }
+        if (attributeMap != null) {
+            requestAdapter.setAttributeMap(attributeMap);
+        }
         if (body != null) {
             requestAdapter.setBody(body);
         }
@@ -98,18 +104,6 @@ public class AspectranActivity extends CoreActivity {
         }
 
         super.adapt();
-    }
-
-    @Override
-    protected void parseRequest() throws RequestParseException, ActivityTerminatedException {
-        if (parameterMap != null) {
-            ((AspectranRequestAdapter)getRequestAdapter()).setParameterMap(parameterMap);
-        }
-        if (attributeMap != null) {
-            ((AspectranRequestAdapter)getRequestAdapter()).setAttributeMap(attributeMap);
-        }
-
-        super.parseRequest();
     }
 
     @Override

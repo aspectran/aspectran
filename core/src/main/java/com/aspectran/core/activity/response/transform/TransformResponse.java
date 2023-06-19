@@ -72,10 +72,7 @@ public abstract class TransformResponse implements Response {
     @Override
     public void commit(Activity activity) throws ResponseException {
         if (activity.getResponseAdapter() == null) {
-            if (logger.isTraceEnabled()) {
-                logger.trace("No response adapter in activity " + activity);
-            }
-            return;
+            throw new IllegalStateException("No ResponseAdapter");
         }
 
         if (logger.isDebugEnabled()) {

@@ -138,19 +138,21 @@ public class TowActivity extends CoreActivity {
 
     @Override
     protected void parseRequest() throws ActivityTerminatedException, RequestParseException {
-        if (getParentActivity() == null) {
-            ((TowRequestAdapter)getRequestAdapter()).preparse();
-        } else {
-            ((TowRequestAdapter)getRequestAdapter()).preparse(
-                    (TowRequestAdapter)getParentActivity().getRequestAdapter());
-        }
+        if (!isRequestParsed()) {
+            if (getParentActivity() == null) {
+                ((TowRequestAdapter)getRequestAdapter()).preparse();
+            } else {
+                ((TowRequestAdapter)getRequestAdapter()).preparse(
+                        (TowRequestAdapter)getParentActivity().getRequestAdapter());
+            }
 
-        MediaType mediaType = ((TowRequestAdapter)getRequestAdapter()).getMediaType();
-        if (mediaType != null) {
-            if (WebRequestBodyParser.isMultipartForm(getRequestAdapter().getRequestMethod(), mediaType)) {
-                parseMultipartFormData();
-            } else if (WebRequestBodyParser.isURLEncodedForm(mediaType)) {
-                parseURLEncodedFormData();
+            MediaType mediaType = ((TowRequestAdapter)getRequestAdapter()).getMediaType();
+            if (mediaType != null) {
+                if (WebRequestBodyParser.isMultipartForm(getRequestAdapter().getRequestMethod(), mediaType)) {
+                    parseMultipartFormData();
+                } else if (WebRequestBodyParser.isURLEncodedForm(mediaType)) {
+                    parseURLEncodedFormData();
+                }
             }
         }
 

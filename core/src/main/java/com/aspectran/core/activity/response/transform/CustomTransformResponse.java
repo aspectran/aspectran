@@ -61,10 +61,7 @@ public class CustomTransformResponse implements Response {
     public void commit(Activity activity) throws ResponseException {
         ResponseAdapter responseAdapter = activity.getResponseAdapter();
         if (responseAdapter == null) {
-            if (logger.isTraceEnabled()) {
-                logger.trace("No response adapter in activity " + activity);
-            }
-            return;
+            throw new IllegalStateException("No ResponseAdapter");
         }
 
         CustomTransformer transformer = customTransformRule.getTransformer();

@@ -73,6 +73,10 @@ public class CoreActivity extends AdviceActivity {
 
     private Response desiredResponse;
 
+    private boolean adapted;
+
+    private boolean requestParsed;
+
     private boolean committed;
 
     /**
@@ -160,7 +164,7 @@ public class CoreActivity extends AdviceActivity {
      */
     public void prepare(String requestName, MethodType requestMethod, TransletRule transletRule)
             throws ActivityPrepareException {
-        Translet parentTranslet = translet;
+        Translet prevTranslet = translet;
         try {
             if (logger.isDebugEnabled()) {
                 logger.debug("Translet " + transletRule);
@@ -169,8 +173,8 @@ public class CoreActivity extends AdviceActivity {
             translet = new CoreTranslet(transletRule, this);
             translet.setRequestName(requestName); // original request name
             translet.setRequestMethod(requestMethod);
-            if (parentTranslet != null) {
-                translet.setParentTranslet(parentTranslet);
+            if (prevTranslet != null) {
+                translet.setProcessResult(prevTranslet.getProcessResult());
             }
 
             MethodType allowedMethod = getRequestRule().getAllowedMethod();
@@ -192,10 +196,14 @@ public class CoreActivity extends AdviceActivity {
             parseDeclaredParameters();
             parseDeclaredAttributes();
             parsePathVariables();
-            if (!translet.hasParentTranslet()) {
+            if (!requestParsed) {
                 resolveLocale();
             }
         }
+    }
+
+    protected boolean isRequestParsed() {
+        return requestParsed;
     }
 
     protected LocaleResolver resolveLocale() {
@@ -219,11 +227,14 @@ public class CoreActivity extends AdviceActivity {
         V result = null;
         ForwardRule forwardRule = null;
         try {
-            if (translet == null || !translet.hasParentTranslet()) {
+            if (!adapted) {
                 saveCurrentActivity();
                 adapt();
-                parseRequest();
+                adapted = true;
             }
+
+            parseRequest();
+            requestParsed = true;
 
             try {
                 setCurrentAspectAdviceType(AspectAdviceType.BEFORE);

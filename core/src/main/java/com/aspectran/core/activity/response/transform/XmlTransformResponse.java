@@ -69,6 +69,9 @@ public class XmlTransformResponse extends TransformResponse {
     @Override
     protected void transform(Activity activity) throws Exception {
         ResponseAdapter responseAdapter = activity.getResponseAdapter();
+        if (responseAdapter == null) {
+            throw new IllegalStateException("No ResponseAdapter");
+        }
 
         String encoding;
         if (this.encoding != null) {
