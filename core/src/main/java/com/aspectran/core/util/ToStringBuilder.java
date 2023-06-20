@@ -152,7 +152,7 @@ public class ToStringBuilder {
         } else if (object instanceof Parameters) {
             buffer.append(((Parameters)object).describe());
         } else if (object instanceof ToStringBuilder) {
-            buffer.append(((ToStringBuilder)object).getStringBuilder());
+            buffer.append(((ToStringBuilder)object).getBuffer());
         } else if (object instanceof CharSequence) {
             buffer.append(((CharSequence)object));
         } else if (object.getClass().isArray()) {
@@ -236,7 +236,7 @@ public class ToStringBuilder {
         return buffer.toString();
     }
 
-    protected StringBuilder getStringBuilder() {
+    protected StringBuilder getBuffer() {
         return buffer;
     }
 
