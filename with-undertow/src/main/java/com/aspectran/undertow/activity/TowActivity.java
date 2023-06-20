@@ -21,7 +21,6 @@ import com.aspectran.core.activity.AdapterException;
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.request.RequestParseException;
 import com.aspectran.core.adapter.ResponseAdapter;
-import com.aspectran.core.context.rule.RequestRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.support.i18n.locale.LocaleChangeInterceptor;
@@ -41,6 +40,8 @@ import io.undertow.server.session.SessionConfig;
 import io.undertow.server.session.SessionManager;
 
 import java.io.UnsupportedEncodingException;
+
+import static com.aspectran.core.context.rule.RequestRule.LOCALE_CHANGE_INTERCEPTOR_SETTING_NAME;
 
 /**
  * <p>Created: 2019-07-27</p>
@@ -130,7 +131,7 @@ public class TowActivity extends CoreActivity {
             }
             setResponseAdapter(responseAdapter);
         } catch (Exception e) {
-            throw new AdapterException("Failed to adapt for Tow Activity", e);
+            throw new AdapterException("Failed to adapt for the tow activity", e);
         }
 
         super.adapt();
@@ -188,7 +189,7 @@ public class TowActivity extends CoreActivity {
     protected LocaleResolver resolveLocale() {
         LocaleResolver localeResolver = super.resolveLocale();
         if (localeResolver != null) {
-            String localeChangeInterceptorId = getSetting(RequestRule.LOCALE_CHANGE_INTERCEPTOR_SETTING_NAME);
+            String localeChangeInterceptorId = getSetting(LOCALE_CHANGE_INTERCEPTOR_SETTING_NAME);
             if (localeChangeInterceptorId != null) {
                 LocaleChangeInterceptor localeChangeInterceptor = getBean(LocaleChangeInterceptor.class,
                         localeChangeInterceptorId);

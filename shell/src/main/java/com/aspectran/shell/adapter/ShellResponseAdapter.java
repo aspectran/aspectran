@@ -17,6 +17,7 @@ package com.aspectran.shell.adapter;
 
 import com.aspectran.core.adapter.DefaultResponseAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
+import com.aspectran.shell.console.ShellConsole;
 
 import java.io.Writer;
 
@@ -29,8 +30,8 @@ public class ShellResponseAdapter extends DefaultResponseAdapter {
      * Instantiates a new ShellResponseAdapter.
      * @param writer the writer to output
      */
-    public ShellResponseAdapter(Writer writer) {
-        super(null, writer);
+    public ShellResponseAdapter(ShellConsole console, Writer writer) {
+        super(console, writer);
     }
 
 }

@@ -94,11 +94,11 @@ public class ShellActivity extends CoreActivity {
             if (outputWriter == null) {
                 outputWriter = new OutputStringWriter();
             }
-            ShellResponseAdapter responseAdapter = new ShellResponseAdapter(outputWriter);
+            ShellResponseAdapter responseAdapter = new ShellResponseAdapter(console, outputWriter);
             responseAdapter.setEncoding(console.getEncoding());
             setResponseAdapter(responseAdapter);
         } catch (Exception e) {
-            throw new AdapterException("Failed to adapt for Shell Activity", e);
+            throw new AdapterException("Failed to adapt for the shell activity", e);
         }
 
         if (getParentActivity() == null && getSessionAdapter() instanceof DefaultSessionAdapter) {

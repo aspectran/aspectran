@@ -60,9 +60,6 @@ public class JsonTransformResponse extends TransformResponse {
     @Override
     protected void transform(Activity activity) throws Exception {
         ResponseAdapter responseAdapter = activity.getResponseAdapter();
-        if (responseAdapter == null) {
-            throw new IllegalStateException("No ResponseAdapter");
-        }
 
         if (this.encoding != null) {
             responseAdapter.setEncoding(this.encoding);

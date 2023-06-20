@@ -43,18 +43,13 @@ public class RedirectResponse implements Response {
 
     @Override
     public void commit(Activity activity) throws ResponseException {
-        ResponseAdapter responseAdapter = activity.getResponseAdapter();
-        if (responseAdapter == null) {
-            throw new IllegalStateException("No ResponseAdapter");
-        }
-
         RedirectRule newRedirectRule = redirectRule.replicate();
-
         if (logger.isDebugEnabled()) {
             logger.debug("Response " + newRedirectRule);
         }
 
         try {
+            ResponseAdapter responseAdapter = activity.getResponseAdapter();
             if (newRedirectRule.getEncoding() != null) {
                 responseAdapter.setEncoding(newRedirectRule.getEncoding());
             } else {

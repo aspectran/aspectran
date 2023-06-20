@@ -17,19 +17,19 @@ package com.aspectran.shell.console;
 
 public class DefaultPromptStringBuilder implements PromptStringBuilder {
 
-    private final StringBuilder sb;
+    private final StringBuilder buffer;
 
     private String defaultValue;
 
     public DefaultPromptStringBuilder() {
-        this.sb = new StringBuilder();
+        this.buffer = new StringBuilder();
     }
 
     public DefaultPromptStringBuilder(String str) {
         if (str == null) {
             throw new IllegalArgumentException("str must not be null");
         }
-        this.sb = new StringBuilder(str);
+        this.buffer = new StringBuilder(str);
     }
 
     @Override
@@ -49,13 +49,19 @@ public class DefaultPromptStringBuilder implements PromptStringBuilder {
 
     @Override
     public PromptStringBuilder append(String str) {
-        sb.append(str);
+        buffer.append(str);
         return this;
     }
 
     @Override
     public PromptStringBuilder clear() {
-        sb.setLength(0);
+        buffer.setLength(0);
+        return this;
+    }
+
+    @Override
+    public PromptStringBuilder defaultValue(String defaultValue) {
+        this.defaultValue = defaultValue;
         return this;
     }
 
@@ -65,14 +71,8 @@ public class DefaultPromptStringBuilder implements PromptStringBuilder {
     }
 
     @Override
-    public PromptStringBuilder setDefaultValue(String defaultValue) {
-        this.defaultValue = defaultValue;
-        return this;
-    }
-
-    @Override
     public String toString() {
-        return sb.toString();
+        return buffer.toString();
     }
 
 }

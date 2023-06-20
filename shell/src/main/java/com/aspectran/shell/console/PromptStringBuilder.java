@@ -27,9 +27,9 @@ public interface PromptStringBuilder {
 
     PromptStringBuilder clear();
 
-    String getDefaultValue();
+    PromptStringBuilder defaultValue(String defaultValue);
 
-    PromptStringBuilder setDefaultValue(String defaultValue);
+    String getDefaultValue();
 
     @Override
     String toString();

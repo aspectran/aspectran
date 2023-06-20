@@ -17,7 +17,6 @@ package com.aspectran.core.activity.response.transform;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.response.Response;
-import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.rule.TransformRule;
 
 /**
@@ -37,12 +36,8 @@ public class NoneTransformResponse extends TransformResponse {
 
     @Override
     protected void transform(Activity activity) throws Exception {
-        ResponseAdapter responseAdapter = activity.getResponseAdapter();
-        if (responseAdapter == null) {
-            throw new IllegalStateException("No ResponseAdapter");
-        }
         if (getContentType() != null) {
-            responseAdapter.setContentType(getContentType());
+            activity.getResponseAdapter().setContentType(getContentType());
         }
     }
 

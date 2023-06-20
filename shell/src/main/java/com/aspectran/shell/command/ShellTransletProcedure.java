@@ -261,10 +261,10 @@ public class ShellTransletProcedure {
         if (tokens != null && tokens.length == 1) {
             Token token = tokens[0];
             if (token.getType() == TokenType.TEXT) {
-                psb.setDefaultValue(token.getDefaultValue());
+                psb.defaultValue(token.getDefaultValue());
             } else if (token.getType() == TokenType.PARAMETER &&
                     token.getName().equals(itemRule.getName())) {
-                psb.setDefaultValue(token.getDefaultValue());
+                psb.defaultValue(token.getDefaultValue());
             }
         }
 
@@ -325,7 +325,7 @@ public class ShellTransletProcedure {
                     .append(String.valueOf(Token.BRACKET_CLOSE))
                     .resetStyle()
                     .append(": ")
-                    .setDefaultValue(token.getDefaultValue());
+                    .defaultValue(token.getDefaultValue());
             String line;
             if (secret) {
                 line = console.readPassword(psb);

@@ -18,7 +18,7 @@ package com.aspectran.shell.jline.console;
 import com.aspectran.shell.console.DefaultPromptStringBuilder;
 import com.aspectran.shell.console.PromptStringBuilder;
 
-public class JLinePromptStringBuilder extends DefaultPromptStringBuilder {
+class JLinePromptStringBuilder extends DefaultPromptStringBuilder {
 
     private final JLineTerminal jlineTerminal;
 

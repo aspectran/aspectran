@@ -55,6 +55,9 @@ import com.aspectran.core.support.i18n.locale.LocaleResolver;
 import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
 
+import static com.aspectran.core.context.rule.RequestRule.CHARACTER_ENCODING_SETTING_NAME;
+import static com.aspectran.core.context.rule.RequestRule.LOCALE_RESOLVER_SETTING_NAME;
+
 /**
  * Core activity for handling official requests in Aspectran services.
  *
@@ -76,6 +79,8 @@ public class CoreActivity extends AdviceActivity {
     private boolean adapted;
 
     private boolean requestParsed;
+
+    private boolean forwarding;
 
     private boolean committed;
 
@@ -208,7 +213,7 @@ public class CoreActivity extends AdviceActivity {
 
     protected LocaleResolver resolveLocale() {
         LocaleResolver localeResolver = null;
-        String localeResolverBeanId = getSetting(RequestRule.LOCALE_RESOLVER_SETTING_NAME);
+        String localeResolverBeanId = getSetting(LOCALE_RESOLVER_SETTING_NAME);
         if (localeResolverBeanId != null) {
             localeResolver = getBean(LocaleResolver.class, localeResolverBeanId);
             localeResolver.resolveLocale(getTranslet());
@@ -225,7 +230,6 @@ public class CoreActivity extends AdviceActivity {
     @Override
     public <V> V perform(InstantAction<V> instantAction) throws ActivityPerformException {
         V result = null;
-        ForwardRule forwardRule = null;
         try {
             if (!adapted) {
                 saveCurrentActivity();
@@ -245,45 +249,55 @@ public class CoreActivity extends AdviceActivity {
                         produce();
                     }
 
-                    forwardRule = response();
+                    ForwardRule forwardRule = response();
                     if (forwardRule != null) {
-                        return forward(forwardRule, instantAction);
+                        if (forwarding) {
+                            forward(forwardRule);
+                        } else {
+                            forwarding = true;
+                            forward(forwardRule);
+                            forwarding = false;
+                        }
                     }
                 }
 
-                if (instantAction != null) {
-                    result = instantAction.execute();
-                }
+                if (!forwarding) {
+                    if (instantAction != null) {
+                        result = instantAction.execute();
+                    }
 
-                setCurrentAspectAdviceType(AspectAdviceType.AFTER);
-                executeAdvice(getAfterAdviceRuleList(), true);
+                    setCurrentAspectAdviceType(AspectAdviceType.AFTER);
+                    executeAdvice(getAfterAdviceRuleList(), true);
+                }
             } catch (Exception e) {
                 setRaisedException(e);
             } finally {
-                if (forwardRule == null) {
+                if (!forwarding) {
                     setCurrentAspectAdviceType(AspectAdviceType.FINALLY);
                     executeAdvice(getFinallyAdviceRuleList(), false);
                 }
             }
 
-            if (isExceptionRaised()) {
-                setCurrentAspectAdviceType(AspectAdviceType.THROWN);
-                exception();
-                if (translet != null) {
-                    response();
-                }
+            if (!forwarding) {
                 if (isExceptionRaised()) {
-                    throw getRaisedException();
+                    setCurrentAspectAdviceType(AspectAdviceType.THROWN);
+                    exception();
+                    if (translet != null) {
+                        response();
+                    }
+                    if (isExceptionRaised()) {
+                        throw getRaisedException();
+                    }
                 }
-            }
 
-            setCurrentAspectAdviceType(null);
+                setCurrentAspectAdviceType(null);
+            }
         } catch (ActivityTerminatedException e) {
             throw e;
         } catch (Throwable e) {
             throw new ActivityPerformException("Failed to perform the activity", e);
         } finally {
-            if (forwardRule == null) {
+            if (!forwarding) {
                 finish();
             }
         }
@@ -338,18 +352,13 @@ public class CoreActivity extends AdviceActivity {
         return null;
     }
 
-    private <V> V forward(ForwardRule forwardRule, InstantAction<V> instantAction)
+    private void forward(ForwardRule forwardRule)
             throws TransletNotFoundException, ActivityPrepareException, ActivityPerformException {
-        if (logger.isDebugEnabled()) {
-            logger.debug("Forwarding from " + translet.getRequestName() + " to " +
-                    forwardRule.getTransletName());
-        }
-
         reserveResponse(null);
         committed = false;
 
         prepare(forwardRule.getTransletName(), forwardRule.getRequestMethod());
-        return perform(instantAction);
+        perform();
     }
 
     private void exception() throws ActionExecutionException {
@@ -375,9 +384,11 @@ public class CoreActivity extends AdviceActivity {
 
     private void finish() {
         try {
-            Scope requestScope = getRequestAdapter().getRequestScope(false);
-            if (requestScope != null) {
-                requestScope.destroy();
+            if (getRequestAdapter() != null) {
+                Scope requestScope = getRequestAdapter().getRequestScope(false);
+                if (requestScope != null) {
+                    requestScope.destroy();
+                }
             }
 
             release();
@@ -568,7 +579,7 @@ public class CoreActivity extends AdviceActivity {
     protected String getIntendedRequestEncoding() {
         String encoding = getRequestRule().getEncoding();
         if (encoding == null) {
-            encoding = getSetting(RequestRule.CHARACTER_ENCODING_SETTING_NAME);
+            encoding = getSetting(CHARACTER_ENCODING_SETTING_NAME);
         }
         return encoding;
     }

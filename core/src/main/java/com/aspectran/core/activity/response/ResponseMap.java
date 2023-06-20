@@ -30,7 +30,7 @@ public class ResponseMap extends LinkedHashMap<String, Response> implements Iter
     private static final long serialVersionUID = 2093093144584776388L;
 
     public Response getFirst() {
-        if (size() > 0) {
+        if (!isEmpty()) {
             return (Response)values().toArray()[0];
         } else {
             return null;

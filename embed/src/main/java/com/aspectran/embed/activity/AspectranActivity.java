@@ -15,11 +15,9 @@
  */
 package com.aspectran.embed.activity;
 
-import com.aspectran.core.activity.ActivityTerminatedException;
 import com.aspectran.core.activity.AdapterException;
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.request.ParameterMap;
-import com.aspectran.core.activity.request.RequestParseException;
 import com.aspectran.core.adapter.DefaultSessionAdapter;
 import com.aspectran.core.util.OutputStringWriter;
 import com.aspectran.embed.adapter.AspectranRequestAdapter;

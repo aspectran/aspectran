@@ -16,7 +16,6 @@
 package com.aspectran.core.activity.response;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.context.expr.ItemEvaluation;
 import com.aspectran.core.context.expr.ItemEvaluator;
 import com.aspectran.core.context.rule.ForwardRule;
@@ -48,11 +47,6 @@ public class ForwardResponse implements Response {
 
     @Override
     public void commit(Activity activity) {
-        RequestAdapter requestAdapter = activity.getRequestAdapter();
-        if (requestAdapter == null) {
-            throw new IllegalStateException("No RequestAdapter");
-        }
-
         if (logger.isDebugEnabled()) {
             logger.debug("Response " + forwardRule);
         }
@@ -61,7 +55,7 @@ public class ForwardResponse implements Response {
         if (itemRuleMap != null && !itemRuleMap.isEmpty()) {
             ItemEvaluator evaluator = new ItemEvaluation(activity);
             Map<String, Object> valueMap = evaluator.evaluate(itemRuleMap);
-            requestAdapter.putAllAttributes(valueMap);
+            activity.getRequestAdapter().putAllAttributes(valueMap);
         }
     }
 

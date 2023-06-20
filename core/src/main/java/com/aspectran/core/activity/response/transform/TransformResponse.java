@@ -71,10 +71,6 @@ public abstract class TransformResponse implements Response {
 
     @Override
     public void commit(Activity activity) throws ResponseException {
-        if (activity.getResponseAdapter() == null) {
-            throw new IllegalStateException("No ResponseAdapter");
-        }
-
         if (logger.isDebugEnabled()) {
             logger.debug("Response " + transformRule);
         }

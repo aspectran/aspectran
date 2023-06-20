@@ -687,7 +687,7 @@ public class AnnotatedConfigParser {
             }
         }
 
-        Description descriptionAnno = beanClass.getAnnotation(Description.class);
+        Description descriptionAnno = method.getAnnotation(Description.class);
         DescriptionRule descriptionRule = parseDescriptionRule(descriptionAnno);
         if (descriptionRule != null) {
             transletRule.setDescriptionRule(descriptionRule);

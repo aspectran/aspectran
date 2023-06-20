@@ -93,9 +93,6 @@ public class DefaultRestResponse extends AbstractRestResponse {
     public void transform(Activity activity) throws Exception {
         Assert.notNull(activity, "activity must not be null");
         ResponseAdapter responseAdapter = activity.getResponseAdapter();
-        if (responseAdapter == null) {
-            throw new IllegalStateException("No ResponseAdapter");
-        }
 
         String encoding = determineEncoding(activity);
         if (encoding != null) {
