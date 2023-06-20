@@ -18,19 +18,20 @@ package com.aspectran.core.util;
 import com.aspectran.core.util.apon.Parameters;
 
 import java.lang.reflect.Array;
+import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Map;
 
 /**
  * This class enables a good and consistent toString() to be built for any class or object.
- * 
+ *
  * @author Juho Jeong
  * @since 2016. 2. 11.
  */
 public class ToStringBuilder {
 
-    private final StringBuilder sb;
+    private final StringBuilder buffer;
 
     private final int start;
 
@@ -47,14 +48,14 @@ public class ToStringBuilder {
     }
 
     public ToStringBuilder(String name, int capacity) {
-        this.sb = new StringBuilder(capacity);
+        buffer = new StringBuilder(capacity);
         if (name != null) {
-            this.sb.append(name).append(" ");
-            this.start = sb.length() + 1;
+            buffer.append(name).append(" ");
+            this.start = buffer.length() + 1;
         } else {
             this.start = 1;
         }
-        this.sb.append("{");
+        buffer.append("{");
     }
 
     public void append(String name, Object value) {
@@ -67,7 +68,14 @@ public class ToStringBuilder {
     public void append(String name, Class<?> clazz) {
         if (clazz != null) {
             appendName(name);
-            append(clazz.getName());
+            append(clazz.getTypeName());
+        }
+    }
+
+    public void append(String name, Method method) {
+        if (method != null) {
+            appendName(name);
+            append(method);
         }
     }
 
@@ -79,13 +87,13 @@ public class ToStringBuilder {
     public void append(String name, boolean value) {
         if (value) {
             appendName(name);
-            this.sb.append(true);
+            buffer.append(true);
         }
     }
 
     public void appendForce(String name, boolean value) {
         appendName(name);
-        this.sb.append(value);
+        buffer.append(value);
     }
 
     public void appendEqual(String name, Object value, Object compare) {
@@ -106,13 +114,13 @@ public class ToStringBuilder {
         if (object != null) {
             appendName(name);
             if (object instanceof Map<?, ?>) {
-                this.sb.append(((Map<?, ?>)object).size());
+                buffer.append(((Map<?, ?>)object).size());
             } else if (object instanceof Collection<?>) {
-                this.sb.append(((Collection<?>)object).size());
+                buffer.append(((Collection<?>)object).size());
             } else if (object.getClass().isArray()) {
-                this.sb.append(Array.getLength(object));
+                buffer.append(Array.getLength(object));
             } else if (object instanceof CharSequence) {
-                this.sb.append(((CharSequence)object).length());
+                buffer.append(((CharSequence)object).length());
             }
         }
     }
@@ -122,19 +130,19 @@ public class ToStringBuilder {
     }
 
     private void appendName(Object name, int start) {
-        if (this.sb.length() > start) {
+        if (buffer.length() > start) {
             appendComma();
         }
-        this.sb.append(name).append("=");
+        buffer.append(name).append("=");
     }
 
     private void appendComma() {
-        this.sb.append(", ");
+        buffer.append(", ");
     }
 
     private void append(Object object) {
         if (object == null) {
-            this.sb.append((Object)null);
+            buffer.append((Object)null);
         } else if (object instanceof Map<?, ?>) {
             append((Map<?, ?>)object);
         } else if (object instanceof Collection<?>) {
@@ -142,13 +150,13 @@ public class ToStringBuilder {
         } else if (object instanceof Enumeration<?>) {
             append((Enumeration<?>)object);
         } else if (object instanceof Parameters) {
-            this.sb.append(((Parameters)object).describe());
+            buffer.append(((Parameters)object).describe());
         } else if (object instanceof ToStringBuilder) {
-            this.sb.append(((ToStringBuilder)object).getStringBuilder());
+            buffer.append(((ToStringBuilder)object).getStringBuilder());
         } else if (object instanceof CharSequence) {
-            this.sb.append(((CharSequence)object));
+            buffer.append(((CharSequence)object));
         } else if (object.getClass().isArray()) {
-            this.sb.append("[");
+            buffer.append("[");
             int len = Array.getLength(object);
             for (int i = 0; i < len; i++) {
                 Object value = Array.get(object, i);
@@ -158,17 +166,17 @@ public class ToStringBuilder {
                 }
                 append(value);
             }
-            this.sb.append("]");
+            buffer.append("]");
         } else {
-            this.sb.append(object);
+            buffer.append(object);
         }
     }
 
     private void append(Map<?, ?> map) {
         if (map != null) {
-            this.sb.append("{");
-            int len = this.sb.length();
-            for (Map.Entry<?, ?> entry : ((Map<?, ?>)map).entrySet()) {
+            buffer.append("{");
+            int len = buffer.length();
+            for (Map.Entry<?, ?> entry : map.entrySet()) {
                 Object key = entry.getKey();
                 Object value = entry.getValue();
                 if (value != null) {
@@ -176,45 +184,60 @@ public class ToStringBuilder {
                     append(value);
                 }
             }
-            this.sb.append("}");
+            buffer.append("}");
         }
     }
 
     private void append(Collection<?> list) {
         if (list != null) {
-            this.sb.append("[");
-            int len = this.sb.length();
+            buffer.append("[");
+            int len = buffer.length();
             for (Object o : list) {
-                if (this.sb.length() > len) {
+                if (buffer.length() > len) {
                     appendComma();
                 }
                 append(o);
             }
-            this.sb.append("]");
+            buffer.append("]");
         }
     }
 
     private void append(Enumeration<?> en) {
         if (en != null) {
-            this.sb.append("[");
+            buffer.append("[");
             while (en.hasMoreElements()) {
                 append(en.nextElement());
                 if (en.hasMoreElements()) {
                     appendComma();
                 }
             }
-            this.sb.append("]");
+            buffer.append("]");
         }
+    }
+
+    private void append(Method method) {
+        buffer.append(method.getDeclaringClass().getTypeName());
+        buffer.append('.');
+        buffer.append(method.getName());
+        buffer.append('(');
+        Class<?>[] types = method.getParameterTypes();
+        for (int i = 0; i < types.length; i++) {
+            if (i > 0) {
+                appendComma();
+            }
+            append(types[i].getTypeName());
+        }
+        buffer.append(')');
     }
 
     @Override
     public String toString() {
-        this.sb.append("}");
-        return this.sb.toString();
+        buffer.append("}");
+        return buffer.toString();
     }
 
     protected StringBuilder getStringBuilder() {
-        return this.sb;
+        return buffer;
     }
 
     private void checkCircularReference(Object wrapper, Object member) {
