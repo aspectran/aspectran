@@ -15,11 +15,9 @@
  */
 package com.aspectran.embed.activity;
 
-import com.aspectran.core.activity.ActivityTerminatedException;
 import com.aspectran.core.activity.AdapterException;
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.request.ParameterMap;
-import com.aspectran.core.activity.request.RequestParseException;
 import com.aspectran.core.adapter.DefaultSessionAdapter;
 import com.aspectran.core.util.OutputStringWriter;
 import com.aspectran.embed.adapter.AspectranRequestAdapter;
@@ -39,15 +37,14 @@ public class AspectranActivity extends CoreActivity {
 
     private Writer outputWriter;
 
-    private ParameterMap parameterMap;
-
     private Map<String, Object> attributeMap;
+
+    private ParameterMap parameterMap;
 
     private String body;
 
     /**
      * Instantiates a new embedded aspectran activity.
-     *
      * @param aspectran the embedded aspectran
      */
     public AspectranActivity(AbstractEmbeddedAspectran aspectran) {
@@ -56,7 +53,6 @@ public class AspectranActivity extends CoreActivity {
 
     /**
      * Instantiates a new embedded aspectran activity.
-     *
      * @param aspectran the embedded aspectran
      * @param outputWriter the output writer
      */
@@ -67,12 +63,12 @@ public class AspectranActivity extends CoreActivity {
         this.outputWriter = outputWriter;
     }
 
-    public void setParameterMap(ParameterMap parameterMap) {
-        this.parameterMap = parameterMap;
-    }
-
     public void setAttributeMap(Map<String, Object> attributeMap) {
         this.attributeMap = attributeMap;
+    }
+
+    public void setParameterMap(ParameterMap parameterMap) {
+        this.parameterMap = parameterMap;
     }
 
     public void setBody(String body) {
@@ -84,6 +80,12 @@ public class AspectranActivity extends CoreActivity {
         setSessionAdapter(aspectran.newSessionAdapter());
 
         AspectranRequestAdapter requestAdapter = new AspectranRequestAdapter(getTranslet().getRequestMethod());
+        if (parameterMap != null) {
+            requestAdapter.setParameterMap(parameterMap);
+        }
+        if (attributeMap != null) {
+            requestAdapter.setAttributeMap(attributeMap);
+        }
         if (body != null) {
             requestAdapter.setBody(body);
         }
@@ -100,18 +102,6 @@ public class AspectranActivity extends CoreActivity {
         }
 
         super.adapt();
-    }
-
-    @Override
-    protected void parseRequest() throws ActivityTerminatedException, RequestParseException {
-        if (parameterMap != null) {
-            ((AspectranRequestAdapter)getRequestAdapter()).setParameterMap(parameterMap);
-        }
-        if (attributeMap != null) {
-            ((AspectranRequestAdapter)getRequestAdapter()).setAttributeMap(attributeMap);
-        }
-
-        super.parseRequest();
     }
 
     @Override

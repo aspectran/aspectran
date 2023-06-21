@@ -45,7 +45,6 @@ public abstract class AbstractActivity implements Activity {
 
     /**
      * Instantiates a new abstract activity.
-     *
      * @param context the activity context
      */
     protected AbstractActivity(ActivityContext context) {
@@ -64,7 +63,6 @@ public abstract class AbstractActivity implements Activity {
 
     /**
      * Gets the current activity.
-     *
      * @return the current activity
      */
     protected Activity getCurrentActivity() {
@@ -113,7 +111,6 @@ public abstract class AbstractActivity implements Activity {
 
     /**
      * Sets the session adapter.
-     *
      * @param sessionAdapter the new session adapter
      */
     protected void setSessionAdapter(SessionAdapter sessionAdapter) {
@@ -127,7 +124,6 @@ public abstract class AbstractActivity implements Activity {
 
     /**
      * Sets the request adapter.
-     *
      * @param requestAdapter the new request adapter
      */
     protected void setRequestAdapter(RequestAdapter requestAdapter) {
@@ -141,7 +137,6 @@ public abstract class AbstractActivity implements Activity {
 
     /**
      * Sets the response adapter.
-     *
      * @param responseAdapter the new response adapter
      */
     protected void setResponseAdapter(ResponseAdapter responseAdapter) {

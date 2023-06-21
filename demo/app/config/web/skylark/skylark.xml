@@ -8,7 +8,7 @@
     </description>
 
     <settings>
-        <setting name="transletNamePrefix" value="/skylark/"/>
+        <setting name="transletNamePrefix" value="/skylark"/>
     </settings>
 
     <translet name="/">

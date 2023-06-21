@@ -15,11 +15,9 @@
  */
 package com.aspectran.daemon.activity;
 
-import com.aspectran.core.activity.ActivityTerminatedException;
 import com.aspectran.core.activity.AdapterException;
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.request.ParameterMap;
-import com.aspectran.core.activity.request.RequestParseException;
 import com.aspectran.core.adapter.DefaultSessionAdapter;
 import com.aspectran.core.util.OutputStringWriter;
 import com.aspectran.daemon.adapter.DaemonRequestAdapter;
@@ -34,30 +32,29 @@ import java.util.Map;
  */
 public class DaemonActivity extends CoreActivity {
 
-    private final DaemonService service;
+    private final DaemonService daemonService;
 
     private Writer outputWriter;
 
-    private ParameterMap parameterMap;
-
     private Map<String, Object> attributeMap;
+
+    private ParameterMap parameterMap;
 
     /**
      * Instantiates a new daemon activity.
-     *
-     * @param service the daemon service
+     * @param daemonService the daemon service
      */
-    public DaemonActivity(DaemonService service) {
-        super(service.getActivityContext());
-        this.service = service;
-    }
-
-    public void setParameterMap(ParameterMap parameterMap) {
-        this.parameterMap = parameterMap;
+    public DaemonActivity(DaemonService daemonService) {
+        super(daemonService.getActivityContext());
+        this.daemonService = daemonService;
     }
 
     public void setAttributeMap(Map<String, Object> attributeMap) {
         this.attributeMap = attributeMap;
+    }
+
+    public void setParameterMap(ParameterMap parameterMap) {
+        this.parameterMap = parameterMap;
     }
 
     public void setOutputWriter(Writer outputWriter) {
@@ -66,9 +63,15 @@ public class DaemonActivity extends CoreActivity {
 
     @Override
     protected void adapt() throws AdapterException {
-        setSessionAdapter(service.newSessionAdapter());
+        setSessionAdapter(daemonService.newSessionAdapter());
 
         DaemonRequestAdapter requestAdapter = new DaemonRequestAdapter(getTranslet().getRequestMethod());
+        if (attributeMap != null) {
+            requestAdapter.setAttributeMap(attributeMap);
+        }
+        if (parameterMap != null) {
+            requestAdapter.setParameterMap(parameterMap);
+        }
         setRequestAdapter(requestAdapter);
 
         if (outputWriter == null) {
@@ -82,18 +85,6 @@ public class DaemonActivity extends CoreActivity {
         }
 
         super.adapt();
-    }
-
-    @Override
-    protected void parseRequest() throws ActivityTerminatedException, RequestParseException {
-        if (parameterMap != null) {
-            ((DaemonRequestAdapter)getRequestAdapter()).setParameterMap(parameterMap);
-        }
-        if (attributeMap != null) {
-            ((DaemonRequestAdapter)getRequestAdapter()).setAttributeMap(attributeMap);
-        }
-
-        super.parseRequest();
     }
 
     @Override

@@ -19,10 +19,9 @@ import com.aspectran.core.activity.ActivityPrepareException;
 import com.aspectran.core.activity.ActivityTerminatedException;
 import com.aspectran.core.activity.AdapterException;
 import com.aspectran.core.activity.CoreActivity;
-import com.aspectran.core.activity.TransletNotFoundException;
 import com.aspectran.core.activity.request.RequestParseException;
 import com.aspectran.core.adapter.ResponseAdapter;
-import com.aspectran.core.context.rule.RequestRule;
+import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.support.i18n.locale.LocaleChangeInterceptor;
 import com.aspectran.core.support.i18n.locale.LocaleResolver;
@@ -42,6 +41,8 @@ import io.undertow.server.session.SessionManager;
 
 import java.io.UnsupportedEncodingException;
 
+import static com.aspectran.core.context.rule.RequestRule.LOCALE_CHANGE_INTERCEPTOR_SETTING_NAME;
+
 /**
  * <p>Created: 2019-07-27</p>
  */
@@ -55,7 +56,6 @@ public class TowActivity extends CoreActivity {
 
     /**
      * Instantiates a new tow service
-     *
      * @param service the tow service
      * @param exchange the adaptee object
      */
@@ -65,8 +65,8 @@ public class TowActivity extends CoreActivity {
     }
 
     @Override
-    public void prepare(String transletName, MethodType requestMethod)
-            throws TransletNotFoundException, ActivityPrepareException{
+    public void prepare(String transletName, MethodType requestMethod, TransletRule transletRule)
+            throws ActivityPrepareException{
         // Check for HTTP POST with the X-HTTP-Method-Override header
         if (requestMethod == MethodType.POST) {
             String method = exchange.getRequestHeaders().getFirst(HttpHeaders.X_METHOD_OVERRIDE);
@@ -80,7 +80,7 @@ public class TowActivity extends CoreActivity {
             }
         }
 
-        super.prepare(transletName, requestMethod);
+        super.prepare(transletName, requestMethod, transletRule);
     }
 
     @Override
@@ -100,10 +100,15 @@ public class TowActivity extends CoreActivity {
             if (getParentActivity() == null) {
                 String maxRequestSizeSetting = getSetting(MAX_REQUEST_SIZE_SETTING_NAME);
                 if (!StringUtils.isEmpty(maxRequestSizeSetting)) {
-                    long maxRequestSize = Long.parseLong(maxRequestSizeSetting);
-                    if (maxRequestSize >= 0L) {
-                        requestAdapter.setMaxRequestSize(maxRequestSize);
-                        exchange.setMaxEntitySize(maxRequestSize);
+                    try {
+                        long maxRequestSize = Long.parseLong(maxRequestSizeSetting);
+                        if (maxRequestSize >= 0L) {
+                            requestAdapter.setMaxRequestSize(maxRequestSize);
+                            exchange.setMaxEntitySize(maxRequestSize);
+                        }
+                    } catch (NumberFormatException e) {
+                        throw new RequestParseException("Illegal value for " + MAX_REQUEST_SIZE_SETTING_NAME +
+                                ": " + maxRequestSizeSetting, e);
                     }
                 }
                 String requestEncoding = getIntendedRequestEncoding();
@@ -126,7 +131,7 @@ public class TowActivity extends CoreActivity {
             }
             setResponseAdapter(responseAdapter);
         } catch (Exception e) {
-            throw new AdapterException("Failed to adapt for Tow Activity", e);
+            throw new AdapterException("Failed to adapt for the tow activity", e);
         }
 
         super.adapt();
@@ -134,19 +139,21 @@ public class TowActivity extends CoreActivity {
 
     @Override
     protected void parseRequest() throws ActivityTerminatedException, RequestParseException {
-        if (getParentActivity() == null) {
-            ((TowRequestAdapter)getRequestAdapter()).preparse();
-        } else {
-            ((TowRequestAdapter)getRequestAdapter()).preparse(
-                    (TowRequestAdapter)getParentActivity().getRequestAdapter());
-        }
+        if (!isRequestParsed()) {
+            if (getParentActivity() == null) {
+                ((TowRequestAdapter)getRequestAdapter()).preparse();
+            } else {
+                ((TowRequestAdapter)getRequestAdapter()).preparse(
+                        (TowRequestAdapter)getParentActivity().getRequestAdapter());
+            }
 
-        MediaType mediaType = ((TowRequestAdapter)getRequestAdapter()).getMediaType();
-        if (mediaType != null) {
-            if (WebRequestBodyParser.isMultipartForm(getRequestAdapter().getRequestMethod(), mediaType)) {
-                parseMultipartFormData();
-            } else if (WebRequestBodyParser.isURLEncodedForm(mediaType)) {
-                parseURLEncodedFormData();
+            MediaType mediaType = ((TowRequestAdapter)getRequestAdapter()).getMediaType();
+            if (mediaType != null) {
+                if (WebRequestBodyParser.isMultipartForm(getRequestAdapter().getRequestMethod(), mediaType)) {
+                    parseMultipartFormData();
+                } else if (WebRequestBodyParser.isURLEncodedForm(mediaType)) {
+                    parseURLEncodedFormData();
+                }
             }
         }
 
@@ -182,7 +189,7 @@ public class TowActivity extends CoreActivity {
     protected LocaleResolver resolveLocale() {
         LocaleResolver localeResolver = super.resolveLocale();
         if (localeResolver != null) {
-            String localeChangeInterceptorId = getSetting(RequestRule.LOCALE_CHANGE_INTERCEPTOR_SETTING_NAME);
+            String localeChangeInterceptorId = getSetting(LOCALE_CHANGE_INTERCEPTOR_SETTING_NAME);
             if (localeChangeInterceptorId != null) {
                 LocaleChangeInterceptor localeChangeInterceptor = getBean(LocaleChangeInterceptor.class,
                         localeChangeInterceptorId);

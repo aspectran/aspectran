@@ -26,7 +26,7 @@ import com.aspectran.core.context.rule.SettingsAdviceRule;
 import java.util.List;
 
 /**
- * Default activity to handle all internal requests.
+ * Default activity used only internally when there is no official activity.
  *
  * <p>Note that this is an activity that has nothing to do with
  * advice. This does not execute any advice at all, and if you
@@ -37,7 +37,6 @@ public class DefaultActivity extends AbstractActivity {
 
     /**
      * Instantiates a new DefaultActivity.
-     *
      * @param context the activity context
      */
     public DefaultActivity(ActivityContext context) {
@@ -76,6 +75,11 @@ public class DefaultActivity extends AbstractActivity {
 
     @Override
     public boolean isResponseReserved() {
+        return false;
+    }
+
+    @Override
+    public boolean isCommitted() {
         return false;
     }
 

@@ -35,7 +35,7 @@ import com.aspectran.core.context.rule.SettingsAdviceRule;
 import java.util.List;
 
 /**
- * Activities are one task in which Aspectran services process requests.
+ * An activity is a set of actions that an Aspectran service performs to process a request.
  *
  * <p>Created: 2008. 03. 22 PM 5:48:09</p>
  */
@@ -43,14 +43,12 @@ public interface Activity {
 
     /**
      * Performs the prepared activity.
-     *
      * @throws ActivityPerformException thrown when an exception occurs while performing an activity
      */
     void perform() throws ActivityPerformException;
 
     /**
      * Performs the given instant activity.
-     *
      * @param <V> the result type of the instant action
      * @param instantAction the instant action
      * @return An object that is the result of performing an instant activity
@@ -60,14 +58,12 @@ public interface Activity {
 
     /**
      * Throws an ActivityTerminatedException to terminate the current activity.
-     *
      * @throws ActivityTerminatedException if an activity terminated without completion
      */
     void terminate() throws ActivityTerminatedException;
 
     /**
      * Throws an ActivityTerminatedException with the reason for terminating the current activity.
-     *
      * @param cause the termination cause
      * @throws ActivityTerminatedException the exception to terminate activity
      */
@@ -75,14 +71,12 @@ public interface Activity {
 
     /**
      * Returns an instance of the current translet.
-     *
      * @return an instance of the current translet
      */
     Translet getTranslet();
 
     /**
      * Returns the process result.
-     *
      * @return the process result
      */
     ProcessResult getProcessResult();
@@ -90,7 +84,6 @@ public interface Activity {
     /**
      * Returns an action result for the specified action id from the process result,
      * or {@code null} if the action does not exist.
-     *
      * @param actionId the specified action id
      * @return an action result
      */
@@ -98,7 +91,6 @@ public interface Activity {
 
     /**
      * Returns the originally declared response.
-     *
      * @return the declared response
      * @since 5.2.0
      */
@@ -106,35 +98,36 @@ public interface Activity {
 
     /**
      * Returns whether the response is reserved.
-     *
      * @return true, if the response is reserved
      */
     boolean isResponseReserved();
 
     /**
-     * Returns whether the exception was thrown.
-     *
-     * @return true, if is exception raised
+     * Returns whether a response was attempted after performing the activity.
+     * @return true if a response was attempted, false otherwise
+     */
+    boolean isCommitted();
+
+    /**
+     * Returns whether an exception was thrown in the activity.
+     * @return true if there was an exception thrown by the activity, false otherwise
      */
     boolean isExceptionRaised();
 
     /**
      * Returns an instance of the currently raised exception.
-     *
      * @return an instance of the currently raised exception
      */
     Throwable getRaisedException();
 
     /**
      * Returns the innermost one of the chained (wrapped) exceptions.
-     *
      * @return the innermost one of the chained (wrapped) exceptions
      */
     Throwable getRootCauseOfRaisedException();
 
     /**
      * Sets an instance of the currently raised exception.
-     *
      * @param raisedException an instance of the currently raised exception
      */
     void setRaisedException(Throwable raisedException);
@@ -146,7 +139,6 @@ public interface Activity {
 
     /**
      * Register an aspect rule dynamically.
-     *
      * @param aspectRule the aspect rule
      * @throws AdviceConstraintViolationException thrown when an Advice Constraint Violation occurs
      * @throws AspectAdviceException thrown when an error occurs while running advice
@@ -156,14 +148,12 @@ public interface Activity {
 
     /**
      * Register a settings advice rule dynamically.
-     *
      * @param settingsAdviceRule the settings advice rule
      */
     void registerSettingsAdviceRule(SettingsAdviceRule settingsAdviceRule);
 
     /**
      * Execute aspect advices with given rules.
-     *
      * @param aspectAdviceRuleList the aspect advice rules
      * @param throwable whether to raise an exception
      * @throws AspectAdviceException thrown when an error occurs while running advice
@@ -172,7 +162,6 @@ public interface Activity {
 
     /**
      * Executes an aspect advice with a given rule.
-     *
      * @param aspectAdviceRule the aspect advice rule
      * @param throwable whether to raise an exception
      * @throws AspectAdviceException thrown when an error occurs while running advice
@@ -181,7 +170,6 @@ public interface Activity {
 
     /**
      * Exception handling.
-     *
      * @param exceptionRuleList the exception rule list
      * @throws ActionExecutionException thrown when an error occurs while executing an action
      */
@@ -189,7 +177,6 @@ public interface Activity {
 
     /**
      * Gets the specified setting value from the current activity scope.
-     *
      * @param <V> the type of the value
      * @param name the setting name
      * @return the setting value
@@ -198,7 +185,6 @@ public interface Activity {
 
     /**
      * Puts the specified setting value in the current activity scope.
-     *
      * @param name the setting name
      * @param value the setting value
      */
@@ -206,7 +192,6 @@ public interface Activity {
 
     /**
      * Gets the aspect advice bean.
-     *
      * @param <V> the type of the bean
      * @param aspectId the aspect id
      * @return the aspect advice bean object
@@ -215,49 +200,42 @@ public interface Activity {
 
     /**
      * Gets the activity context.
-     *
      * @return the activity context
      */
     ActivityContext getActivityContext();
 
     /**
      * Returns the environment of the current activity context.
-     *
      * @return the environment
      */
     Environment getEnvironment();
 
     /**
      * Gets the application adapter.
-     *
      * @return the application adapter
      */
     ApplicationAdapter getApplicationAdapter();
 
     /**
      * Gets the session adapter.
-     *
      * @return the session adapter
      */
     SessionAdapter getSessionAdapter();
 
     /**
      * Gets the request adapter.
-     *
      * @return the request adapter
      */
     RequestAdapter getRequestAdapter();
 
     /**
      * Gets the response adapter.
-     *
      * @return the response adapter
      */
     ResponseAdapter getResponseAdapter();
 
     /**
      * Returns an instance of the bean that matches the given id.
-     *
      * @param <V> the result type of the bean
      * @param id the id of the bean to retrieve
      * @return an instance of the bean
@@ -266,7 +244,6 @@ public interface Activity {
 
     /**
      * Returns an instance of the bean that matches the given object type.
-     *
      * @param <V> the result type of the bean
      * @param type the type the bean must match; can be an interface or superclass.
      *      {@code null} is disallowed.
@@ -277,7 +254,6 @@ public interface Activity {
 
     /**
      * Returns an instance of the bean that matches the given object type.
-     *
      * @param <V> the result type of the bean
      * @param type type the bean must match; can be an interface or superclass.
      *      {@code null} is allowed.
@@ -291,7 +267,6 @@ public interface Activity {
 
     /**
      * Returns whether a bean with the specified id is present.
-     *
      * @param id the id of the bean to query
      * @return whether a bean with the specified id is present
      */
@@ -299,7 +274,6 @@ public interface Activity {
 
     /**
      * Returns whether a bean with the specified object type is present.
-     *
      * @param type the object type of the bean to query
      * @return whether a bean with the specified type is present
      */
@@ -307,7 +281,6 @@ public interface Activity {
 
     /**
      * Returns whether the bean corresponding to the specified object type and ID exists.
-     *
      * @param type the object type of the bean to query
      * @param id the id of the bean to query
      * @return whether a bean with the specified type is present

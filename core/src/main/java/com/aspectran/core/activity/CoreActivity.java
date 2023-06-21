@@ -55,8 +55,11 @@ import com.aspectran.core.support.i18n.locale.LocaleResolver;
 import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
 
+import static com.aspectran.core.context.rule.RequestRule.CHARACTER_ENCODING_SETTING_NAME;
+import static com.aspectran.core.context.rule.RequestRule.LOCALE_RESOLVER_SETTING_NAME;
+
 /**
- * Core activity that handles all external requests.
+ * Core activity for handling official requests in Aspectran services.
  *
  * <p>This class is generally not thread-safe. It is primarily designed
  * for use in a single thread only.</p>
@@ -73,11 +76,16 @@ public class CoreActivity extends AdviceActivity {
 
     private Response desiredResponse;
 
+    private boolean adapted;
+
+    private boolean requestParsed;
+
+    private boolean forwarding;
+
     private boolean committed;
 
     /**
      * Instantiates a new CoreActivity.
-     *
      * @param context the activity context
      */
     protected CoreActivity(ActivityContext context) {
@@ -86,7 +94,6 @@ public class CoreActivity extends AdviceActivity {
 
     /**
      * Prepare for the activity.
-     *
      * @param requestName the request name
      * @throws TransletNotFoundException thrown if the translet is not found
      * @throws ActivityPrepareException thrown when an exception occurs while preparing an activity
@@ -103,7 +110,6 @@ public class CoreActivity extends AdviceActivity {
 
     /**
      * Prepare for the activity.
-     *
      * @param transletRule the translet rule
      * @throws ActivityPrepareException thrown when an exception occurs while preparing an activity
      */
@@ -113,7 +119,6 @@ public class CoreActivity extends AdviceActivity {
 
     /**
      * Prepare for the activity.
-     *
      * @param requestName the request name
      * @param transletRule the translet rule
      * @throws ActivityPrepareException thrown when an exception occurs while preparing an activity
@@ -124,7 +129,6 @@ public class CoreActivity extends AdviceActivity {
 
     /**
      * Prepare for the activity.
-     *
      * @param requestName the request name
      * @param requestMethod the request method
      * @throws TransletNotFoundException thrown if the translet is not found
@@ -137,7 +141,6 @@ public class CoreActivity extends AdviceActivity {
 
     /**
      * Prepare for the activity.
-     *
      * @param requestName the request name
      * @param requestMethod the request method
      * @throws TransletNotFoundException thrown if the translet is not found
@@ -160,24 +163,23 @@ public class CoreActivity extends AdviceActivity {
     /**
      * Prepares a new activity for the Translet Rule by taking
      * the results of the process that was created earlier.
-     *
      * @param requestName the request name
      * @param requestMethod the request method
      * @param transletRule the translet rule
      */
-    private void prepare(String requestName, MethodType requestMethod, TransletRule transletRule)
+    public void prepare(String requestName, MethodType requestMethod, TransletRule transletRule)
             throws ActivityPrepareException {
-        Translet parentTranslet = translet;
+        Translet prevTranslet = translet;
         try {
             if (logger.isDebugEnabled()) {
                 logger.debug("Translet " + transletRule);
             }
 
             translet = new CoreTranslet(transletRule, this);
-            translet.setRequestName(requestName);
+            translet.setRequestName(requestName); // original request name
             translet.setRequestMethod(requestMethod);
-            if (parentTranslet != null) {
-                translet.setParentTranslet(parentTranslet);
+            if (prevTranslet != null) {
+                translet.setProcessResult(prevTranslet.getProcessResult());
             }
 
             MethodType allowedMethod = getRequestRule().getAllowedMethod();
@@ -194,12 +196,24 @@ public class CoreActivity extends AdviceActivity {
     protected void adapt() throws AdapterException {
     }
 
-    protected void parseRequest() throws ActivityTerminatedException, RequestParseException {
+    protected void parseRequest() throws RequestParseException, ActivityTerminatedException {
+        if (translet != null) {
+            parseDeclaredParameters();
+            parseDeclaredAttributes();
+            parsePathVariables();
+            if (!requestParsed) {
+                resolveLocale();
+            }
+        }
+    }
+
+    protected boolean isRequestParsed() {
+        return requestParsed;
     }
 
     protected LocaleResolver resolveLocale() {
         LocaleResolver localeResolver = null;
-        String localeResolverBeanId = getSetting(RequestRule.LOCALE_RESOLVER_SETTING_NAME);
+        String localeResolverBeanId = getSetting(LOCALE_RESOLVER_SETTING_NAME);
         if (localeResolverBeanId != null) {
             localeResolver = getBean(LocaleResolver.class, localeResolverBeanId);
             localeResolver.resolveLocale(getTranslet());
@@ -216,22 +230,15 @@ public class CoreActivity extends AdviceActivity {
     @Override
     public <V> V perform(InstantAction<V> instantAction) throws ActivityPerformException {
         V result = null;
-        ForwardRule forwardRule = null;
         try {
-            if (translet == null || !translet.hasParentTranslet()) {
+            if (!adapted) {
                 saveCurrentActivity();
                 adapt();
-                parseRequest();
+                adapted = true;
             }
 
-            if (translet != null) {
-                parseDeclaredParameters();
-                parseDeclaredAttributes();
-                parsePathVariables();
-                if (!translet.hasParentTranslet()) {
-                    resolveLocale();
-                }
-            }
+            parseRequest();
+            requestParsed = true;
 
             try {
                 setCurrentAspectAdviceType(AspectAdviceType.BEFORE);
@@ -242,45 +249,55 @@ public class CoreActivity extends AdviceActivity {
                         produce();
                     }
 
-                    forwardRule = response();
+                    ForwardRule forwardRule = response();
                     if (forwardRule != null) {
-                        return forward(forwardRule, instantAction);
+                        if (forwarding) {
+                            forward(forwardRule);
+                        } else {
+                            forwarding = true;
+                            forward(forwardRule);
+                            forwarding = false;
+                        }
                     }
                 }
 
-                if (instantAction != null) {
-                    result = instantAction.execute();
-                }
+                if (!forwarding) {
+                    if (instantAction != null) {
+                        result = instantAction.execute();
+                    }
 
-                setCurrentAspectAdviceType(AspectAdviceType.AFTER);
-                executeAdvice(getAfterAdviceRuleList(), true);
+                    setCurrentAspectAdviceType(AspectAdviceType.AFTER);
+                    executeAdvice(getAfterAdviceRuleList(), true);
+                }
             } catch (Exception e) {
                 setRaisedException(e);
             } finally {
-                if (forwardRule == null) {
+                if (!forwarding) {
                     setCurrentAspectAdviceType(AspectAdviceType.FINALLY);
                     executeAdvice(getFinallyAdviceRuleList(), false);
                 }
             }
 
-            if (isExceptionRaised()) {
-                setCurrentAspectAdviceType(AspectAdviceType.THROWN);
-                exception();
-                if (translet != null) {
-                    response();
-                }
+            if (!forwarding) {
                 if (isExceptionRaised()) {
-                    throw getRaisedException();
+                    setCurrentAspectAdviceType(AspectAdviceType.THROWN);
+                    exception();
+                    if (translet != null) {
+                        response();
+                    }
+                    if (isExceptionRaised()) {
+                        throw getRaisedException();
+                    }
                 }
-            }
 
-            setCurrentAspectAdviceType(null);
+                setCurrentAspectAdviceType(null);
+            }
         } catch (ActivityTerminatedException e) {
             throw e;
         } catch (Throwable e) {
             throw new ActivityPerformException("Failed to perform the activity", e);
         } finally {
-            if (forwardRule == null) {
+            if (!forwarding) {
                 finish();
             }
         }
@@ -335,23 +352,18 @@ public class CoreActivity extends AdviceActivity {
         return null;
     }
 
-    private <V> V forward(ForwardRule forwardRule, InstantAction<V> instantAction)
+    private void forward(ForwardRule forwardRule)
             throws TransletNotFoundException, ActivityPrepareException, ActivityPerformException {
-        if (logger.isDebugEnabled()) {
-            logger.debug("Forwarding from " + translet.getRequestName() + " to " +
-                    forwardRule.getTransletName());
-        }
-
         reserveResponse(null);
         committed = false;
 
         prepare(forwardRule.getTransletName(), forwardRule.getRequestMethod());
-        return perform(instantAction);
+        perform();
     }
 
     private void exception() throws ActionExecutionException {
         if (logger.isDebugEnabled()) {
-            logger.debug("Exception handling for " + getRaisedException(), getRaisedException());
+            logger.debug("Raised exception " + getRaisedException(), getRaisedException());
         }
 
         reserveResponse(null);
@@ -372,9 +384,11 @@ public class CoreActivity extends AdviceActivity {
 
     private void finish() {
         try {
-            Scope requestScope = getRequestAdapter().getRequestScope(false);
-            if (requestScope != null) {
-                requestScope.destroy();
+            if (getRequestAdapter() != null) {
+                Scope requestScope = getRequestAdapter().getRequestScope(false);
+                if (requestScope != null) {
+                    requestScope.destroy();
+                }
             }
 
             release();
@@ -419,7 +433,6 @@ public class CoreActivity extends AdviceActivity {
 
     /**
      * Execute an action.
-     *
      * @param action the executable action
      * @param contentResult the content result
      */
@@ -503,6 +516,11 @@ public class CoreActivity extends AdviceActivity {
     }
 
     @Override
+    public boolean isCommitted() {
+        return false;
+    }
+
+    @Override
     public Translet getTranslet() {
         return translet;
     }
@@ -527,7 +545,6 @@ public class CoreActivity extends AdviceActivity {
 
     /**
      * Returns the translet rule.
-     *
      * @return the translet rule
      */
     protected TransletRule getTransletRule() {
@@ -536,7 +553,6 @@ public class CoreActivity extends AdviceActivity {
 
     /**
      * Returns the request rule.
-     *
      * @return the request rule
      */
     protected RequestRule getRequestRule() {
@@ -545,7 +561,6 @@ public class CoreActivity extends AdviceActivity {
 
     /**
      * Returns the response rule.
-     *
      * @return the response rule
      */
     protected ResponseRule getResponseRule() {
@@ -559,20 +574,18 @@ public class CoreActivity extends AdviceActivity {
 
     /**
      * Determines the default request encoding.
-     *
      * @return the default request encoding
      */
     protected String getIntendedRequestEncoding() {
         String encoding = getRequestRule().getEncoding();
         if (encoding == null) {
-            encoding = getSetting(RequestRule.CHARACTER_ENCODING_SETTING_NAME);
+            encoding = getSetting(CHARACTER_ENCODING_SETTING_NAME);
         }
         return encoding;
     }
 
     /**
      * Determines the default response encoding.
-     *
      * @return the default response encoding
      */
     protected String getIntendedResponseEncoding() {
@@ -596,10 +609,10 @@ public class CoreActivity extends AdviceActivity {
                     if (evaluator == null) {
                         evaluator = new ItemEvaluation(this);
                     }
-                    String[] values = evaluator.evaluateAsStringArray(itemRule);
                     String[] oldValues = getRequestAdapter().getParameterValues(itemRule.getName());
-                    if (values != oldValues) {
-                        getRequestAdapter().setParameter(itemRule.getName(), values);
+                    String[] newValues = evaluator.evaluateAsStringArray(itemRule);
+                    if (oldValues != newValues) {
+                        getRequestAdapter().setParameter(itemRule.getName(), newValues);
                     }
                 }
                 if (itemRule.isMandatory()) {
@@ -620,7 +633,6 @@ public class CoreActivity extends AdviceActivity {
 
     /**
      * Parses the declared attributes.
-     *
      * @throws MissingMandatoryAttributesException thrown if a required attribute is missing from the request
      */
     protected void parseDeclaredAttributes() throws MissingMandatoryAttributesException {
@@ -633,10 +645,10 @@ public class CoreActivity extends AdviceActivity {
                     if (evaluator == null) {
                         evaluator = new ItemEvaluation(this);
                     }
-                    Object value = evaluator.evaluate(itemRule);
                     Object oldValue = getRequestAdapter().getAttribute(itemRule.getName());
-                    if (value != oldValue) {
-                        getRequestAdapter().setAttribute(itemRule.getName(), value);
+                    Object newValue = evaluator.evaluate(itemRule);
+                    if (oldValue != newValue) {
+                        getRequestAdapter().setAttribute(itemRule.getName(), newValue);
                     }
                 }
                 if (itemRule.isMandatory()) {

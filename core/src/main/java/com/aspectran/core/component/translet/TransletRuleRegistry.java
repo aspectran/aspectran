@@ -27,13 +27,12 @@ import com.aspectran.core.context.rule.RequestRule;
 import com.aspectran.core.context.rule.ResponseRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.assistant.AssistantLocal;
-import com.aspectran.core.context.rule.assistant.DefaultSettings;
 import com.aspectran.core.context.rule.params.FilterParameters;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.util.ClassUtils;
+import com.aspectran.core.util.NamespaceUtils;
 import com.aspectran.core.util.PrefixSuffixPattern;
-import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
 import com.aspectran.core.util.wildcard.WildcardPattern;
@@ -291,7 +290,8 @@ public class TransletRuleRegistry extends AbstractComponent {
     private void saveTransletRule(TransletRule transletRule) {
         transletRule.determineResponseRule();
 
-        String transletName = applyTransletNamePattern(transletRule.getName());
+        String transletName = NamespaceUtils.applyTransletNamePattern(
+                assistantLocal.getDefaultSettings(), transletRule.getName());
         transletRule.setName(transletName);
 
         MethodType[] allowedMethods = transletRule.getAllowedMethods();
@@ -413,52 +413,6 @@ public class TransletRuleRegistry extends AbstractComponent {
 
     private String assembleRestfulTransletName(String transletName, MethodType requestMethod) {
         return (requestMethod + " " + transletName);
-    }
-
-    /**
-     * Returns the translet name of the prefix and suffix are combined.
-     *
-     * @param transletName the translet name
-     * @return the new translet name
-     */
-    public String applyTransletNamePattern(String transletName) {
-        return applyTransletNamePattern(transletName, false);
-    }
-
-    /**
-     * Returns the translet name of the prefix and suffix are combined.
-     *
-     * @param transletName the translet name
-     * @param absolutely whether to allow absolutely name for translet
-     * @return the new translet name
-     */
-    public String applyTransletNamePattern(String transletName, boolean absolutely) {
-        DefaultSettings defaultSettings = assistantLocal.getDefaultSettings();
-        if (defaultSettings == null) {
-            return transletName;
-        }
-        if (defaultSettings.getTransletNamePrefix() == null
-            && defaultSettings.getTransletNameSuffix() == null) {
-            return transletName;
-        }
-        if (StringUtils.startsWith(transletName, ActivityContext.NAME_SEPARATOR_CHAR)) {
-            if (absolutely) {
-                return transletName;
-            }
-            transletName = transletName.substring(1);
-        }
-
-        StringBuilder sb = new StringBuilder();
-        if (defaultSettings.getTransletNamePrefix() != null) {
-            sb.append(defaultSettings.getTransletNamePrefix());
-        }
-        if (transletName != null) {
-            sb.append(transletName);
-        }
-        if (defaultSettings.getTransletNameSuffix() != null) {
-            sb.append(defaultSettings.getTransletNameSuffix());
-        }
-        return sb.toString();
     }
 
     @Override

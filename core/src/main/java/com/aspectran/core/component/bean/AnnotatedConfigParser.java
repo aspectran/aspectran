@@ -55,7 +55,6 @@ import com.aspectran.core.component.bean.annotation.Settings;
 import com.aspectran.core.component.bean.annotation.SimpleTrigger;
 import com.aspectran.core.component.bean.annotation.Transform;
 import com.aspectran.core.component.bean.annotation.Value;
-import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.env.EnvironmentProfiles;
 import com.aspectran.core.context.rule.AnnotatedActionRule;
 import com.aspectran.core.context.rule.AspectAdviceRule;
@@ -87,6 +86,7 @@ import com.aspectran.core.context.rule.type.FormatType;
 import com.aspectran.core.context.rule.type.JoinpointTargetType;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.context.rule.type.ScopeType;
+import com.aspectran.core.util.NamespaceUtils;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
@@ -94,12 +94,8 @@ import com.aspectran.core.util.logging.LoggerFactory;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.StringTokenizer;
 
 /**
  * The Class AnnotatedConfigParser.
@@ -201,7 +197,7 @@ public class AnnotatedConfigParser {
                     return;
                 }
             }
-            String[] nameArray = explodeNamespace(componentAnno.value());
+            String[] nameArray = NamespaceUtils.splitNamespace(componentAnno.value());
             if (beanClass.isAnnotationPresent(Aspect.class)) {
                 parseAspectRule(beanClass, nameArray);
             }
@@ -331,7 +327,7 @@ public class AnnotatedConfigParser {
             aspectId = beanClass.getName();
         }
         if (nameArray != null) {
-            aspectId = applyNamespace(nameArray, aspectId);
+            aspectId = NamespaceUtils.applyNamespace(nameArray, aspectId);
         }
         int order = aspectAnno.order();
         boolean isolated = aspectAnno.isolated();
@@ -424,7 +420,7 @@ public class AnnotatedConfigParser {
             beanId = StringUtils.emptyToNull(beanAnno.id());
         }
         if (beanId != null && nameArray != null) {
-            beanId = applyNamespace(nameArray, beanId);
+            beanId = NamespaceUtils.applyNamespace(nameArray, beanId);
         }
         String initMethodName = StringUtils.emptyToNull(beanAnno.initMethod());
         String destroyMethodName = StringUtils.emptyToNull(beanAnno.destroyMethod());
@@ -470,7 +466,7 @@ public class AnnotatedConfigParser {
             beanId = method.getName();
         }
         if (nameArray != null) {
-            beanId = applyNamespace(nameArray, beanId);
+            beanId = NamespaceUtils.applyNamespace(nameArray, beanId);
         }
         String initMethodName = StringUtils.emptyToNull(beanAnno.initMethod());
         String destroyMethodName = StringUtils.emptyToNull(beanAnno.destroyMethod());
@@ -517,7 +513,7 @@ public class AnnotatedConfigParser {
         Schedule scheduleAnno = beanClass.getAnnotation(Schedule.class);
         String scheduleId = StringUtils.emptyToNull(scheduleAnno.id());
         if (scheduleId != null && nameArray != null) {
-            scheduleId = applyNamespace(nameArray, scheduleId);
+            scheduleId = NamespaceUtils.applyNamespace(nameArray, scheduleId);
         }
 
         ScheduleRule scheduleRule = ScheduleRule.newInstance(scheduleId);
@@ -543,7 +539,7 @@ public class AnnotatedConfigParser {
                 transletName = StringUtils.emptyToNull(job.translet());
             }
             ScheduledJobRule jobRule = new ScheduledJobRule(scheduleRule);
-            jobRule.setTransletName(transletName);;
+            jobRule.setTransletName(transletName);
             if (job.disabled()) {
                 jobRule.setDisabled(true);
             }
@@ -592,8 +588,11 @@ public class AnnotatedConfigParser {
             transletName = StringUtils.emptyToNull(requestToDeleteAnno.value());
             allowedMethods = new MethodType[] { MethodType.DELETE };
         }
+        if (transletName != null) {
+            transletName = transletName.trim();
+        }
         if (nameArray != null) {
-            transletName = applyNamespaceForTranslet(nameArray, transletName);
+            transletName = NamespaceUtils.applyNamespaceForTranslet(nameArray, transletName);
         }
 
         TransletRule transletRule = TransletRule.newInstance(transletName, allowedMethods);
@@ -650,7 +649,7 @@ public class AnnotatedConfigParser {
             }
         }
 
-        Description descriptionAnno = beanClass.getAnnotation(Description.class);
+        Description descriptionAnno = method.getAnnotation(Description.class);
         DescriptionRule descriptionRule = parseDescriptionRule(descriptionAnno);
         if (descriptionRule != null) {
             transletRule.setDescriptionRule(descriptionRule);
@@ -919,72 +918,6 @@ public class AnnotatedConfigParser {
             bindingRules[cnt++] = bindingRule;
         }
         return bindingRules;
-    }
-
-    private String[] explodeNamespace(String namespace) {
-        if (StringUtils.isEmpty(namespace)) {
-            return null;
-        }
-
-        namespace = namespace.replace(ActivityContext.NAME_SEPARATOR_CHAR, ActivityContext.ID_SEPARATOR_CHAR);
-
-        int cnt = StringUtils.search(namespace, ActivityContext.ID_SEPARATOR_CHAR);
-        if (cnt == 0) {
-            String[] arr = new String[2];
-            arr[1] = namespace;
-            return arr;
-        }
-
-        List<String> list = new ArrayList<>();
-        StringTokenizer st = new StringTokenizer(namespace, ActivityContext.ID_SEPARATOR);
-        while (st.hasMoreTokens()) {
-            list.add(st.nextToken());
-        }
-        list.add(null);
-        Collections.reverse(list);
-        return list.toArray(new String[0]);
-    }
-
-    private String applyNamespace(String[] nameArray, String name) {
-        if (nameArray == null) {
-            return name;
-        }
-
-        if (StringUtils.startsWith(name, ActivityContext.ID_SEPARATOR_CHAR)) {
-            nameArray[0] = name.substring(1);
-        } else {
-            nameArray[0] = name;
-        }
-
-        StringBuilder sb = new StringBuilder();
-        for (int i = nameArray.length - 1; i >= 0; i--) {
-            sb.append(nameArray[i]);
-            if (i > 0) {
-                sb.append(ActivityContext.ID_SEPARATOR_CHAR);
-            }
-        }
-        return sb.toString();
-    }
-
-    private String applyNamespaceForTranslet(String[] nameArray, String name) {
-        if (nameArray == null) {
-            return name;
-        }
-
-        if (StringUtils.startsWith(name, ActivityContext.NAME_SEPARATOR_CHAR)) {
-            nameArray[0] = name.substring(1);
-        } else {
-            nameArray[0] = name;
-        }
-
-        StringBuilder sb = new StringBuilder();
-        for (int i = nameArray.length - 1; i >= 0; i--) {
-            if (nameArray[i] != null) {
-                sb.append(ActivityContext.NAME_SEPARATOR_CHAR);
-                sb.append(nameArray[i]);
-            }
-        }
-        return sb.toString();
     }
 
 }

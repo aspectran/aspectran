@@ -48,7 +48,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Activity related to advice.
+ * Abstract activity for executing advice injected between actions.
  *
  * <p>Created: 2016. 9. 10.</p>
  */
@@ -72,7 +72,6 @@ public abstract class AdviceActivity extends AbstractActivity {
 
     /**
      * Instantiates a new AdviceActivity.
-     *
      * @param context the activity context
      */
     public AdviceActivity(ActivityContext context) {
@@ -295,14 +294,14 @@ public abstract class AdviceActivity extends AbstractActivity {
                 }
             } catch (Exception e) {
                 if (aspectAdviceRule.getAspectRule().isIsolated()) {
-                    logger.error("Failed to execute an isolated advice action " + aspectAdviceRule, e);
+                    logger.error("Failed to execute isolated advice action " + aspectAdviceRule, e);
                 } else {
                     setRaisedException(e);
                     if (throwable) {
-                        throw new AspectAdviceException("Failed to execute an advice action " +
+                        throw new AspectAdviceException("Failed to execute advice action " +
                                 aspectAdviceRule, aspectAdviceRule, e);
                     } else {
-                        logger.error("Failed to execute an advice action " + aspectAdviceRule, e);
+                        logger.error("Failed to execute advice action " + aspectAdviceRule, e);
                     }
                 }
             } finally {
@@ -373,8 +372,8 @@ public abstract class AdviceActivity extends AbstractActivity {
                         }
                     } catch (Exception e) {
                         setRaisedException(e);
-                        throw new ActionExecutionException("Failed to execute advice action " + action +
-                                " for exception handling", e);
+                        throw new ActionExecutionException("Failed to execute exception handling advice action " +
+                                action, e);
                     }
                 }
                 return exceptionThrownRule;
@@ -452,7 +451,6 @@ public abstract class AdviceActivity extends AbstractActivity {
 
     /**
      * Gets the aspect advice bean.
-     *
      * @param <V> the type of the advice bean
      * @param aspectId the aspect id
      * @return the aspect advice bean
@@ -464,7 +462,6 @@ public abstract class AdviceActivity extends AbstractActivity {
 
     /**
      * Puts the aspect advice bean.
-     *
      * @param aspectId the aspect id
      * @param adviceBean the advice bean
      */
@@ -477,7 +474,6 @@ public abstract class AdviceActivity extends AbstractActivity {
 
     /**
      * Gets the before advice result.
-     *
      * @param <V> the result type of the before advice
      * @param aspectId the aspect id
      * @return the before advice result
@@ -489,7 +485,6 @@ public abstract class AdviceActivity extends AbstractActivity {
 
     /**
      * Gets the after advice result.
-     *
      * @param <V> the result type of the after advice
      * @param aspectId the aspect id
      * @return the after advice result
@@ -501,7 +496,6 @@ public abstract class AdviceActivity extends AbstractActivity {
 
     /**
      * Gets the around advice result.
-     *
      * @param <V> the result type of the around advice
      * @param aspectId the aspect id
      * @return the around advice result
@@ -512,11 +506,10 @@ public abstract class AdviceActivity extends AbstractActivity {
     }
 
     /**
-     * Gets the finally advice result.
-     *
-     * @param <V> the result type of the finally advice
+     * Gets the final advice result.
+     * @param <V> the result type of the final advice
      * @param aspectId the aspect id
-     * @return the finally advice result
+     * @return the result of the final advice
      */
     @SuppressWarnings("unchecked")
     public <V> V getFinallyAdviceResult(String aspectId) {
@@ -525,7 +518,6 @@ public abstract class AdviceActivity extends AbstractActivity {
 
     /**
      * Puts the result of the advice.
-     *
      * @param aspectAdviceRule the aspect advice rule
      * @param adviceActionResult the advice action result
      */

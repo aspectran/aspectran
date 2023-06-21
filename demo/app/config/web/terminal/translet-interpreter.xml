@@ -8,7 +8,7 @@
     </description>
 
     <settings>
-        <setting name="transletNamePrefix" value="/interpreter/"/>
+        <setting name="transletNamePrefix" value="/interpreter"/>
     </settings>
 
     <translet name="/">

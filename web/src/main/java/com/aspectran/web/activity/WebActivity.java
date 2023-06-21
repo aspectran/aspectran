@@ -19,12 +19,12 @@ import com.aspectran.core.activity.ActivityPrepareException;
 import com.aspectran.core.activity.ActivityTerminatedException;
 import com.aspectran.core.activity.AdapterException;
 import com.aspectran.core.activity.CoreActivity;
-import com.aspectran.core.activity.TransletNotFoundException;
 import com.aspectran.core.activity.request.RequestParseException;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.RequestRule;
+import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.support.i18n.locale.LocaleChangeInterceptor;
 import com.aspectran.core.support.i18n.locale.LocaleResolver;
@@ -59,7 +59,6 @@ public class WebActivity extends CoreActivity {
 
     /**
      * Instantiates a new WebActivity.
-     *
      * @param context the current ActivityContext
      * @param request the HTTP request
      * @param response the HTTP response
@@ -71,8 +70,8 @@ public class WebActivity extends CoreActivity {
     }
 
     @Override
-    public void prepare(String transletName, MethodType requestMethod)
-            throws TransletNotFoundException, ActivityPrepareException {
+    public void prepare(String transletName, MethodType requestMethod, TransletRule transletRule)
+            throws ActivityPrepareException {
         // Check for HTTP POST with the X-HTTP-Method-Override header
         if (requestMethod == MethodType.POST) {
             String method = request.getHeader(HttpHeaders.X_METHOD_OVERRIDE);
@@ -86,7 +85,7 @@ public class WebActivity extends CoreActivity {
             }
         }
 
-        super.prepare(transletName, requestMethod);
+        super.prepare(transletName, requestMethod, transletRule);
     }
 
     @Override
@@ -100,9 +99,14 @@ public class WebActivity extends CoreActivity {
             if (getParentActivity() == null) {
                 String maxRequestSizeSetting = getSetting(MAX_REQUEST_SIZE_SETTING_NAME);
                 if (!StringUtils.isEmpty(maxRequestSizeSetting)) {
-                    long maxRequestSize = Long.parseLong(maxRequestSizeSetting);
-                    if (maxRequestSize >= 0L) {
-                        requestAdapter.setMaxRequestSize(maxRequestSize);
+                    try {
+                        long maxRequestSize = Long.parseLong(maxRequestSizeSetting);
+                        if (maxRequestSize >= 0L) {
+                            requestAdapter.setMaxRequestSize(maxRequestSize);
+                        }
+                    } catch (NumberFormatException e) {
+                        throw new RequestParseException("Illegal value for " + MAX_REQUEST_SIZE_SETTING_NAME +
+                                ": " + maxRequestSizeSetting, e);
                     }
                 }
                 String requestEncoding = getIntendedRequestEncoding();
@@ -125,27 +129,29 @@ public class WebActivity extends CoreActivity {
             }
             setResponseAdapter(responseAdapter);
         } catch (Exception e) {
-            throw new AdapterException("Failed to adapt for Web Activity", e);
+            throw new AdapterException("Failed to adapt for the web activity", e);
         }
 
         super.adapt();
     }
 
     @Override
-    protected void parseRequest() throws ActivityTerminatedException, RequestParseException {
-        if (getParentActivity() == null) {
-            ((HttpServletRequestAdapter)getRequestAdapter()).preparse();
-        } else {
-            ((HttpServletRequestAdapter)getRequestAdapter()).preparse(
-                    (HttpServletRequestAdapter)getParentActivity().getRequestAdapter());
-        }
+    protected void parseRequest() throws RequestParseException, ActivityTerminatedException {
+        if (!isRequestParsed()) {
+            if (getParentActivity() == null) {
+                ((HttpServletRequestAdapter)getRequestAdapter()).preparse();
+            } else {
+                ((HttpServletRequestAdapter)getRequestAdapter()).preparse(
+                        (HttpServletRequestAdapter)getParentActivity().getRequestAdapter());
+            }
 
-        MediaType mediaType = ((HttpServletRequestAdapter)getRequestAdapter()).getMediaType();
-        if (mediaType != null) {
-            if (WebRequestBodyParser.isMultipartForm(getRequestAdapter().getRequestMethod(), mediaType)) {
-                parseMultipartFormData();
-            } else if (WebRequestBodyParser.isURLEncodedForm(mediaType)) {
-                parseURLEncodedFormData();
+            MediaType mediaType = ((HttpServletRequestAdapter)getRequestAdapter()).getMediaType();
+            if (mediaType != null) {
+                if (WebRequestBodyParser.isMultipartForm(getRequestAdapter().getRequestMethod(), mediaType)) {
+                    parseMultipartFormData();
+                } else if (WebRequestBodyParser.isURLEncodedForm(mediaType)) {
+                    parseURLEncodedFormData();
+                }
             }
         }
 
