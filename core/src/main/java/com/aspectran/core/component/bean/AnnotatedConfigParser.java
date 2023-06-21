@@ -539,7 +539,7 @@ public class AnnotatedConfigParser {
                 transletName = StringUtils.emptyToNull(job.translet());
             }
             ScheduledJobRule jobRule = new ScheduledJobRule(scheduleRule);
-            jobRule.setTransletName(transletName);;
+            jobRule.setTransletName(transletName);
             if (job.disabled()) {
                 jobRule.setDisabled(true);
             }
