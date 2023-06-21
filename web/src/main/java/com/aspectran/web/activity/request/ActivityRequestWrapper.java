@@ -20,6 +20,7 @@ import com.aspectran.core.lang.NonNull;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.http.HttpServletRequestWrapper;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Locale;
@@ -55,12 +56,22 @@ public class ActivityRequestWrapper extends HttpServletRequestWrapper {
 
     @Override
     public Enumeration<String> getHeaders(String name) {
-        return Collections.enumeration(requestAdapter.getHeaderValues(name));
+        Collection<String> values = requestAdapter.getHeaderValues(name);
+        if (values != null) {
+            return Collections.enumeration(requestAdapter.getHeaderValues(name));
+        } else {
+            return Collections.emptyEnumeration();
+        }
     }
 
     @Override
     public Enumeration<String> getHeaderNames() {
-        return Collections.enumeration(requestAdapter.getHeaderNames());
+        Collection<String> names = requestAdapter.getHeaderNames();
+        if (names != null) {
+            return Collections.enumeration(requestAdapter.getHeaderNames());
+        } else {
+            return Collections.emptyEnumeration();
+        }
     }
 
     @Override
@@ -70,7 +81,12 @@ public class ActivityRequestWrapper extends HttpServletRequestWrapper {
 
     @Override
     public Enumeration<String> getAttributeNames() {
-        return Collections.enumeration(requestAdapter.getAttributeNames());
+        Collection<String> names = requestAdapter.getAttributeNames();
+        if (names != null) {
+            return Collections.enumeration(requestAdapter.getAttributeNames());
+        } else {
+            return Collections.emptyEnumeration();
+        }
     }
 
     @Override
@@ -95,7 +111,12 @@ public class ActivityRequestWrapper extends HttpServletRequestWrapper {
 
     @Override
     public Enumeration<String> getParameterNames() {
-        return Collections.enumeration(requestAdapter.getParameterNames());
+        Collection<String> names = requestAdapter.getParameterNames();
+        if (names != null) {
+            return Collections.enumeration(requestAdapter.getParameterNames());
+        } else {
+            return Collections.emptyEnumeration();
+        }
     }
 
     @Override
