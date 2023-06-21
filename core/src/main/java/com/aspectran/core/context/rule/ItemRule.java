@@ -317,7 +317,7 @@ public class ItemRule {
         if (type == null) {
             type = ItemType.LIST;
         }
-        checkListType();;
+        checkListType();
         if (tokensList == null) {
             tokensList = new ArrayList<>();
         }
@@ -333,7 +333,7 @@ public class ItemRule {
         if (type == null) {
             type = ItemType.LIST;
         }
-        checkListType();;
+        checkListType();
         this.tokensList = tokensList;
     }
 
@@ -349,7 +349,7 @@ public class ItemRule {
         if (type == null) {
             type = ItemType.SET;
         }
-        checkListType();;
+        checkListType();
         tokensList = new ArrayList<>(tokensSet);
     }
 
