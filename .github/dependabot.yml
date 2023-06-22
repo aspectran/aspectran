@@ -4,7 +4,7 @@ updates:
   directory: "/"
   schedule:
     interval: "daily"
-  target-branch: "6.13.x"
+  target-branch: "6.15.x"
   ignore:
   - dependency-name: "org.eclipse.jetty"
     versions:
