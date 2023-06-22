@@ -28,7 +28,7 @@
     <packaging>jar</packaging>
 
     <name>Aspectran Demo</name>
-    <description>Aspectran Demo Application</description>
+    <description>Demo application based on Aspectran</description>
 
     <properties>
         <main.basedir>${project.parent.basedir}</main.basedir>
@@ -157,12 +157,14 @@
             <artifactId>aspectran-with-undertow</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
+        <!-- To use Jetty as the embedded servlet container,
+             comment out the dependency above and uncomment the dependency below. -->
+        <!--<dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>aspectran-with-jetty</artifactId>
             <version>${project.version}</version>
             <optional>true</optional>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>aspectran-rss-lettuce</artifactId>

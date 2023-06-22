@@ -143,7 +143,7 @@ public class JLineConsole extends AbstractConsole {
             commandHighlighter.setLimited(false);
             return line;
         } catch (EndOfFileException e) {
-            throw new ConsoleTerminatedException();
+            return null;
         } catch (IllegalStateException e) {
             if (e.getMessage() == null) {
                 return null;
@@ -179,7 +179,7 @@ public class JLineConsole extends AbstractConsole {
             }
             return readMultiLine(readRawLine(prompt, null, buffer));
         } catch (EndOfFileException | UserInterruptException e) {
-            throw new ConsoleTerminatedException();
+            return null;
         }
     }
 
@@ -201,7 +201,7 @@ public class JLineConsole extends AbstractConsole {
             }
             return readRawLine(prompt, MASK_CHAR, buffer);
         } catch (EndOfFileException | UserInterruptException e) {
-            throw new ConsoleTerminatedException();
+            return null;
         }
     }
 
@@ -385,7 +385,7 @@ public class JLineConsole extends AbstractConsole {
             confirm = toAnsi("{{YELLOW}}" + confirm + "{{reset}}");
         }
         String yn = readLine(confirm);
-        return (yn.isEmpty() || yn.equalsIgnoreCase("Y"));
+        return (yn == null || yn.isEmpty() || yn.equalsIgnoreCase("Y"));
     }
 
     @Override
@@ -395,7 +395,7 @@ public class JLineConsole extends AbstractConsole {
             confirm = toAnsi("{{YELLOW}}" + confirm + "{{reset}}");
         }
         String yn = readLine(confirm);
-        return (yn.isEmpty() || yn.equalsIgnoreCase("Y"));
+        return (yn == null || yn.isEmpty() || yn.equalsIgnoreCase("Y"));
     }
 
 }

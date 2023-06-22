@@ -28,7 +28,7 @@
     <packaging>jar</packaging>
 
     <name>Aspectran Daemon</name>
-    <description>Aspectran running in the background</description>
+    <description>Package for running Aspectran-based Java applications as background processes on Unix-based or Windows operating systems</description>
 
     <properties>
         <main.basedir>${project.parent.basedir}</main.basedir>

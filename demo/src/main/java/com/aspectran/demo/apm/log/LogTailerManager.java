@@ -55,6 +55,7 @@ public class LogTailerManager {
         for (String name : names) {
             LogTailer tailer = tailers.get(name);
             if (tailer != null) {
+                tailer.readLastLines();
                 list.add(name);
                 if (!tailer.isRunning()) {
                     try {

@@ -149,7 +149,7 @@ public class AponReader extends AponFormat implements Closeable {
             tline = line.trim();
             tlen = tline.length();
 
-            if (tlen == 0 || (tline.charAt(0) == COMMENT_LINE_START && openedBracket != SQUARE_BRACKET_OPEN)) {
+            if (tlen == 0 || tline.charAt(0) == COMMENT_LINE_START) {
                 continue;
             }
 

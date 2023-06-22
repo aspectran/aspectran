@@ -322,7 +322,7 @@ public class JsonReader implements Closeable {
      * stack contains an object (EMPTY_OBJECT, DANGLING_NAME or NONEMPTY_OBJECT),
      * pathNames contains the name at this scope. Where it contains an array
      * (EMPTY_ARRAY, NONEMPTY_ARRAY) pathIndices contains the current index in
-     * that array. Otherwise the value is undefined, and we take advantage of that
+     * that array. Otherwise, the value is undefined, and we take advantage of that
      * by incrementing pathIndices when doing so isn't useful.
      */
     private String[] pathNames = new String[32];
@@ -343,7 +343,6 @@ public class JsonReader implements Closeable {
      * this parser is strict and only accepts JSON as specified by <a
      * href="http://www.ietf.org/rfc/rfc4627.txt">RFC 4627</a>. Setting the
      * parser to lenient causes it to ignore the following syntax errors:
-     *
      * <ul>
      *   <li>Streams that start with the <a href="#nonexecuteprefix">non-execute
      *       prefix</a>, <code>")]}'\n"</code>.
@@ -814,7 +813,6 @@ public class JsonReader implements Closeable {
     /**
      * Returns the next token, a {@link JsonToken#NAME property name}, and
      * consumes it.
-     *
      * @throws IOException if the next token in the stream is not a property
      *     name.
      */
@@ -842,7 +840,6 @@ public class JsonReader implements Closeable {
      * Returns the {@link JsonToken#STRING string} value of the next token,
      * consuming it. If the next token is a number, this method will return its
      * string form.
-     *
      * @throws IllegalStateException if the next token is not a string or if
      *     this reader is closed.
      */
@@ -877,7 +874,6 @@ public class JsonReader implements Closeable {
     /**
      * Returns the {@link JsonToken#BOOLEAN boolean} value of the next token,
      * consuming it.
-     *
      * @throws IllegalStateException if the next token is not a boolean or if
      *     this reader is closed.
      */
@@ -901,7 +897,6 @@ public class JsonReader implements Closeable {
     /**
      * Consumes the next token from the JSON stream and asserts that it is a
      * literal null.
-     *
      * @throws IllegalStateException if the next token is not null or if this
      *     reader is closed.
      */
@@ -922,7 +917,6 @@ public class JsonReader implements Closeable {
      * Returns the {@link JsonToken#NUMBER double} value of the next token,
      * consuming it. If the next token is a string, this method will attempt to
      * parse it as a double using {@link Double#parseDouble(String)}.
-     *
      * @throws IllegalStateException if the next token is not a literal value.
      * @throws NumberFormatException if the next literal value cannot be parsed
      *     as a double, or is non-finite.
@@ -967,7 +961,6 @@ public class JsonReader implements Closeable {
      * consuming it. If the next token is a string, this method will attempt to
      * parse it as a long. If the next token's numeric value cannot be exactly
      * represented by a Java {@code long}, this method throws.
-     *
      * @throws IllegalStateException if the next token is not a literal value.
      * @throws NumberFormatException if the next literal value cannot be parsed
      *     as a number, or exactly represented as a long.
@@ -1022,7 +1015,6 @@ public class JsonReader implements Closeable {
      * character escape sequences encountered along the way. The opening quote
      * should have already been read. This consumes the closing quote, but does
      * not include it in the returned string.
-     *
      * @param quote either ' or ".
      * @throws NumberFormatException if any unicode escape sequences are
      *     malformed.
@@ -1197,7 +1189,6 @@ public class JsonReader implements Closeable {
      * consuming it. If the next token is a string, this method will attempt to
      * parse it as an int. If the next token's numeric value cannot be exactly
      * represented by a Java {@code int}, this method throws.
-     *
      * @throws IllegalStateException if the next token is not a literal value.
      * @throws NumberFormatException if the next literal value cannot be parsed
      *     as a number, or exactly represented as an int.
@@ -1530,7 +1521,6 @@ public class JsonReader implements Closeable {
      * immediately follow a backslash. The backslash '\' should have already
      * been read. This supports both unicode escapes "u000A" and two-character
      * escapes "\n".
-     *
      * @throws NumberFormatException if any unicode escape sequences are
      *     malformed.
      */
@@ -1599,7 +1589,7 @@ public class JsonReader implements Closeable {
      * Consumes the non-execute prefix if it exists.
      */
     private void consumeNonExecutePrefix() throws IOException {
-        // fast forward through the leading whitespace
+        // fast-forward through the leading whitespace
         nextNonWhitespace(true);
         pos--;
 

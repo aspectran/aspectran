@@ -44,11 +44,6 @@ public class RedirectResponse implements Response {
 
     @Override
     public void commit(Activity activity) throws ResponseException {
-        ResponseAdapter responseAdapter = activity.getResponseAdapter();
-        if (responseAdapter == null) {
-            return;
-        }
-
         RedirectRule newRedirectRule = redirectRule.replicate();
 
         if (logger.isDebugEnabled()) {
@@ -56,6 +51,7 @@ public class RedirectResponse implements Response {
         }
 
         try {
+            ResponseAdapter responseAdapter = activity.getResponseAdapter();
             if (newRedirectRule.getEncoding() != null) {
                 responseAdapter.setEncoding(newRedirectRule.getEncoding());
             } else {

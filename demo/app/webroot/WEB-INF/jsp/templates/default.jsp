@@ -73,8 +73,7 @@
                         <a title="Demo Applications made with Aspectran">More Demo Apps</a>
                         <ul class="submenu menu vertical" data-submenu>
                             <li><a href="https://jpetstore.aspectran.com">JPetStore Demo</a></li>
-                            <li><a href="https://log-relayer.aspectran.com">Log Relayer</a></li>
-                            <li><a href="https://skylark.aspectran.com">Skylark Terminal</a></li>
+                            <li><a href="https://log-relay.aspectran.com">Log Relay</a></li>
                         </ul>
                     </li>
                 </ul>

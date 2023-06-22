@@ -35,6 +35,8 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
 
     private final Writer writer;
 
+    private boolean autoFlush;
+
     private boolean prettyPrint;
 
     private String indentString;
@@ -75,6 +77,12 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
      */
     public AponWriter(File file) throws IOException {
         this(new FileWriter(file));
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T extends AponWriter> T autoFlush(boolean autoFlush) {
+        this.autoFlush = autoFlush;
+        return (T)this;
     }
 
     @SuppressWarnings("unchecked")
@@ -493,6 +501,9 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
 
     private void newLine() throws IOException {
         writer.write(SYSTEM_NEW_LINE);
+        if (autoFlush) {
+            flush();
+        }
     }
 
     private void indent() throws IOException {

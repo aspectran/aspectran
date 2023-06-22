@@ -28,7 +28,7 @@
     <packaging>jar</packaging>
 
     <name>Aspectran with MyBatis</name>
-    <description>Add-on package for integration with MyBatis</description>
+    <description>Add-on package for using the MyBatis SQL mapper framework that makes using relational databases easy</description>
 
     <properties>
         <main.basedir>${project.parent.basedir}</main.basedir>

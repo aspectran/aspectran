@@ -21,7 +21,6 @@ import com.aspectran.core.activity.process.result.ContentResult;
 import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.activity.response.ResponseException;
-import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.rule.CustomTransformRule;
 import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.core.util.logging.Logger;
@@ -31,7 +30,6 @@ import java.util.ListIterator;
 
 /**
  * Responding with user-implemented {@link CustomTransformer}.
- * 
  * Created: 2019. 06. 15
  */
 public class CustomTransformResponse implements Response {
@@ -60,14 +58,6 @@ public class CustomTransformResponse implements Response {
 
     @Override
     public void commit(Activity activity) throws ResponseException {
-        ResponseAdapter responseAdapter = activity.getResponseAdapter();
-        if (responseAdapter == null) {
-            if (logger.isTraceEnabled()) {
-                logger.trace("No response adapter in activity " + activity);
-            }
-            return;
-        }
-
         CustomTransformer transformer = customTransformRule.getTransformer();
         if (transformer == null) {
             transformer = findTransformer(activity.getProcessResult());
