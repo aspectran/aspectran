@@ -322,7 +322,7 @@ public class JsonReader implements Closeable {
      * stack contains an object (EMPTY_OBJECT, DANGLING_NAME or NONEMPTY_OBJECT),
      * pathNames contains the name at this scope. Where it contains an array
      * (EMPTY_ARRAY, NONEMPTY_ARRAY) pathIndices contains the current index in
-     * that array. Otherwise the value is undefined, and we take advantage of that
+     * that array. Otherwise, the value is undefined, and we take advantage of that
      * by incrementing pathIndices when doing so isn't useful.
      */
     private String[] pathNames = new String[32];
@@ -1589,7 +1589,7 @@ public class JsonReader implements Closeable {
      * Consumes the non-execute prefix if it exists.
      */
     private void consumeNonExecutePrefix() throws IOException {
-        // fast forward through the leading whitespace
+        // fast-forward through the leading whitespace
         nextNonWhitespace(true);
         pos--;
 

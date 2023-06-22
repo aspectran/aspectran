@@ -88,7 +88,7 @@ public class SqlSessionTxAdvice {
 
             if (logger.isDebugEnabled()) {
                 ToStringBuilder tsb = new ToStringBuilder(String.format("%s %s@%x",
-                        (arbitrarilyClosed ? "Reopened" : "Opened"),
+                        (arbitrarilyClosed ? "Reopen" : "Open"),
                         sqlSession.getClass().getSimpleName(),
                         sqlSession.hashCode()));
                 tsb.append("executorType", executorType);
@@ -213,7 +213,7 @@ public class SqlSessionTxAdvice {
         sqlSession.close();
 
         if (logger.isDebugEnabled()) {
-            logger.debug(String.format("Closed %s@%x",
+            logger.debug(String.format("Close %s@%x",
                     sqlSession.getClass().getSimpleName(),
                     sqlSession.hashCode()));
         }
