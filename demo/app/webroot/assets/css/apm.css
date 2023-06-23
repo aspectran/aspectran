@@ -53,6 +53,7 @@
 .log-header ul.tab {
     float: left;
     margin: 4px 0 0 0;
+    list-style-type: none;
 }
 .log-header ul.tab li {
     float: left;
@@ -131,7 +132,7 @@
     margin: 0;
     padding: 10px;
     overflow: auto;
-    height: 400px;
+    height: 600px;
     color: #f1f1f1;
     background: transparent;
     border: none;
