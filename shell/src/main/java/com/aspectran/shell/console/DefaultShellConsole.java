@@ -261,4 +261,29 @@ public class DefaultShellConsole extends AbstractShellConsole {
         // Nothing to do
     }
 
+    @Override
+    public void secondaryStyle() {
+        // Nothing to do
+    }
+
+    @Override
+    public void successStyle() {
+        // Nothing to do
+    }
+
+    @Override
+    public void dangerStyle() {
+        // Nothing to do
+    }
+
+    @Override
+    public void warningStyle() {
+        // Nothing to do
+    }
+
+    @Override
+    public void infoStyle() {
+        // Nothing to do
+    }
+
 }

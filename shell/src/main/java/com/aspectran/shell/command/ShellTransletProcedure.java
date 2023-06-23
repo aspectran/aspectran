@@ -114,7 +114,7 @@ public class ShellTransletProcedure {
 
     public void printDescription(String description) {
         if (description != null) {
-            console.setStyle(console.getInfoStyle());
+            console.infoStyle();
             console.writeLine(description);
             console.resetStyle();
         }
@@ -145,7 +145,7 @@ public class ShellTransletProcedure {
     private void printRequiredParameters() {
         ItemRuleMap parameterItemRuleMap = transletRule.getRequestRule().getParameterItemRuleMap();
         if (parameterItemRuleMap != null && !parameterItemRuleMap.isEmpty()) {
-            console.setStyle(console.getSecondaryStyle());
+            console.secondaryStyle();
             console.writeLine("Required parameters:");
             console.resetStyle();
             if (!readSimply) {
@@ -158,7 +158,7 @@ public class ShellTransletProcedure {
         if (!readSimply) {
             ItemRuleMap attributeItemRuleMap = transletRule.getRequestRule().getAttributeItemRuleMap();
             if (attributeItemRuleMap != null && !attributeItemRuleMap.isEmpty()) {
-                console.setStyle(console.getSecondaryStyle());
+                console.secondaryStyle();
                 console.writeLine("Required attributes:");
                 console.resetStyle();
                 writeItems(attributeItemRuleMap.values(), TokenType.ATTRIBUTE);
@@ -168,31 +168,29 @@ public class ShellTransletProcedure {
 
     public void printSomeMandatoryParametersMissing(Collection<ItemRule> itemRules) {
         if (itemRules != null && !itemRules.isEmpty()) {
-            console.setStyle(console.getDangerStyle());
+            console.dangerStyle();
             console.writeLine("Some mandatory parameters are missing:");
-            console.resetStyle();
             for (ItemRule ir : itemRules) {
-                console.setStyle(console.getWarningStyle());
+                console.warningStyle();
                 console.write(" * ");
                 console.resetStyle("bold");
                 console.writeLine(ir.getName());
-                console.resetStyle();
             }
+            console.resetStyle();
         }
     }
 
     public void printSomeMandatoryAttributesMissing(Collection<ItemRule> itemRules) {
         if (itemRules != null && !itemRules.isEmpty()) {
-            console.setStyle(console.getDangerStyle());
+            console.dangerStyle();
             console.writeLine("Some mandatory attributes are missing:");
-            console.resetStyle();
             for (ItemRule ir : itemRules) {
-                console.setStyle(console.getWarningStyle());
+                console.warningStyle();
                 console.write(" * ");
                 console.resetStyle("bold");
                 console.writeLine(ir.getName());
-                console.resetStyle();
             }
+            console.resetStyle();
         }
     }
 
@@ -215,7 +213,7 @@ public class ShellTransletProcedure {
             missingItemRules = checkRequiredParameters(itemRules);
         }
         if (missingItemRules != null) {
-            console.setStyle(console.getWarningStyle());
+            console.warningStyle();
             console.writeLine("Missing mandatory parameters:");
             console.resetStyle();
             if (!readSimply) {
@@ -250,7 +248,7 @@ public class ShellTransletProcedure {
 
     private String readParameter(ItemRule itemRule) {
         PromptStringBuilder psb = console.newPromptStringBuilder()
-                .setStyle(console.getWarningStyle())
+                .warningStyle()
                 .append(getMandatoryMarker(itemRule.isMandatory()))
                 .resetStyle("bold")
                 .append(itemRule.getName())
@@ -276,7 +274,7 @@ public class ShellTransletProcedure {
     }
 
     private Collection<ItemRule> readEachToken(Collection<ItemRule> itemRules) {
-        console.setStyle(console.getSecondaryStyle());
+        console.secondaryStyle();
         console.writeLine("Enter a value for each token:");
         console.resetStyle();
 
@@ -316,12 +314,12 @@ public class ShellTransletProcedure {
             boolean secret = hasSecretItem(rules);
             PromptStringBuilder psb = console.newPromptStringBuilder()
                     .append("   ")
-                    .setStyle(console.getInfoStyle())
+                    .infoStyle()
                     .append(String.valueOf(Token.PARAMETER_SYMBOL))
                     .append(String.valueOf(Token.BRACKET_OPEN))
                     .resetStyle("bold")
                     .append(token.getName())
-                    .resetStyle(console.getInfoStyle())
+                    .infoStyle()
                     .append(String.valueOf(Token.BRACKET_CLOSE))
                     .resetStyle()
                     .append(": ")
@@ -376,7 +374,7 @@ public class ShellTransletProcedure {
     }
 
     private void writeItem(ItemRule itemRule, Token[] tokens) {
-        console.setStyle(console.getWarningStyle());
+        console.warningStyle();
         console.write(getMandatoryMarker(itemRule.isMandatory()));
         console.resetStyle("bold");
         console.write(itemRule.getName());
@@ -399,11 +397,11 @@ public class ShellTransletProcedure {
             console.write(token.stringify());
         } else {
             String str = token.stringify();
-            console.setStyle(console.getInfoStyle());
+            console.infoStyle();
             console.write(str.substring(0, 2));
             console.resetStyle("bold");
             console.write(str.substring(2, str.length() - 1));
-            console.resetStyle(console.getInfoStyle());
+            console.infoStyle();
             console.write(str.substring(str.length() - 1));
             console.resetStyle();
         }

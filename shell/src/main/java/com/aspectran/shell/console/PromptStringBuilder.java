@@ -17,19 +17,29 @@ package com.aspectran.shell.console;
 
 public interface PromptStringBuilder {
 
+    PromptStringBuilder append(String str);
+
     PromptStringBuilder setStyle(String... styles);
 
     PromptStringBuilder resetStyle(String... styles);
 
     PromptStringBuilder resetStyle();
 
-    PromptStringBuilder append(String str);
+    PromptStringBuilder secondaryStyle();
 
-    PromptStringBuilder clear();
+    PromptStringBuilder successStyle();
+
+    PromptStringBuilder dangerStyle();
+
+    PromptStringBuilder warningStyle();
+
+    PromptStringBuilder infoStyle();
 
     PromptStringBuilder defaultValue(String defaultValue);
 
     String getDefaultValue();
+
+    void clear();
 
     @Override
     String toString();

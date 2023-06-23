@@ -126,6 +126,16 @@ public interface ShellConsole {
 
     String[] getInfoStyle();
 
+    void secondaryStyle();
+
+    void successStyle();
+
+    void dangerStyle();
+
+    void warningStyle();
+
+    void infoStyle();
+
     boolean confirmRestart();
 
     boolean confirmQuit();

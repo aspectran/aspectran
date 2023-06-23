@@ -120,7 +120,7 @@ public class JobCommand extends AbstractCommand {
                 }
                 console.write("%5d | %-20s | %-34s |", ++num, scheduleRule.getId(), jobRule.getTransletName());
                 if (!jobRule.isDisabled()) {
-                    console.setStyle(console.getSuccessStyle());
+                    console.successStyle();
                 }
                 console.writeLine(" %-7s ", !jobRule.isDisabled());
                 if (!jobRule.isDisabled()) {

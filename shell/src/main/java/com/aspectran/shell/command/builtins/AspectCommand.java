@@ -123,7 +123,7 @@ public class AspectCommand extends AbstractCommand {
             console.write("%5d | %-46s ", ++num, aspectRule.getId());
             console.write("|");
             if (aspectRule.isIsolated()) {
-                console.setStyle(console.getSuccessStyle());
+                console.successStyle();
             }
             console.write(" %-8s ", aspectRule.isIsolated());
             if (aspectRule.isIsolated()) {
@@ -131,7 +131,7 @@ public class AspectCommand extends AbstractCommand {
             }
             console.write("|");
             if (!aspectRule.isDisabled()) {
-                console.setStyle(console.getSuccessStyle());
+                console.successStyle();
             }
             console.writeLine(" %-7s ", !aspectRule.isDisabled());
             if (!aspectRule.isDisabled()) {

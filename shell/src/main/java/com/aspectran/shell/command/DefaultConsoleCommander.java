@@ -208,7 +208,7 @@ public class DefaultConsoleCommander implements ConsoleCommander {
             command.printHelp(wrappedConsole);
         } catch (ShellCommandExecutionException e) {
             logger.error("Failed to execute command: " + lineParser.getCommandLine(), e.getCause());
-            console.setStyle(console.getDangerStyle());
+            console.dangerStyle();
             console.writeAbove(e.getMessage());
             console.resetStyle();
         } catch (Exception e) {

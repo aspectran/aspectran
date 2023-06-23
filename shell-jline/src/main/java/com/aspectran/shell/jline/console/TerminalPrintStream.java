@@ -57,7 +57,7 @@ public class TerminalPrintStream extends PrintStream {
             Style oldStyle = null;
             if (styles != null) {
                 oldStyle = jlineTerminal.getStyle();
-                jlineTerminal.setStyle(styles);
+                jlineTerminal.applyStyle(styles);
             }
             if (above) {
                 jlineTerminal.writeAbove(str);

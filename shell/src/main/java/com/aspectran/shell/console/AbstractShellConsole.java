@@ -218,7 +218,7 @@ public abstract class AbstractShellConsole implements ShellConsole {
             return false;
         }
         PromptStringBuilder psb = newPromptStringBuilder()
-                .setStyle(getWarningStyle())
+                .warningStyle()
                 .append("Would you like to restart this shell [Y/n]? ");
         String yn = readLine(psb);
         return (yn == null || yn.isEmpty() || yn.equalsIgnoreCase("Y"));
@@ -230,7 +230,7 @@ public abstract class AbstractShellConsole implements ShellConsole {
             return false;
         }
         PromptStringBuilder psb = newPromptStringBuilder()
-                .setStyle(getWarningStyle())
+                .warningStyle()
                 .append("Are you sure you want to quit [Y/n]? ");
         String yn = readLine(psb);
         return (yn == null || yn.isEmpty() || yn.equalsIgnoreCase("Y"));

@@ -259,6 +259,31 @@ public class ShellConsoleWrapper implements ShellConsole {
     }
 
     @Override
+    public void secondaryStyle() {
+        console.secondaryStyle();
+    }
+
+    @Override
+    public void successStyle() {
+        console.successStyle();
+    }
+
+    @Override
+    public void dangerStyle() {
+        console.dangerStyle();
+    }
+
+    @Override
+    public void warningStyle() {
+        console.warningStyle();
+    }
+
+    @Override
+    public void infoStyle() {
+        console.infoStyle();
+    }
+
+    @Override
     public boolean confirmRestart() {
         return console.confirmRestart();
     }

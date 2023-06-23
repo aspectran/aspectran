@@ -17,43 +17,96 @@ package com.aspectran.shell.jline.console;
 
 import com.aspectran.shell.console.DefaultPromptStringBuilder;
 import com.aspectran.shell.console.PromptStringBuilder;
+import com.aspectran.shell.jline.console.JLineTerminal.Style;
 
 class JLinePromptStringBuilder extends DefaultPromptStringBuilder {
 
+    private final JLineShellConsole console;
+
     private final JLineTerminal jlineTerminal;
 
-    private final JLineTerminal.Style primaryStyle;
+    private final Style baseStyle;
 
-    private JLineTerminal.Style style;
+    private Style style;
 
-    public JLinePromptStringBuilder(JLineTerminal jlineTerminal, String... styles) {
+    public JLinePromptStringBuilder(JLineShellConsole console) {
         super();
-        this.jlineTerminal = jlineTerminal;
-        this.primaryStyle = new JLineTerminal.Style(styles);
-    }
-
-    @Override
-    public PromptStringBuilder setStyle(String... styles) {
-        style = new JLineTerminal.Style(style, styles);
-        return this;
-    }
-
-    @Override
-    public PromptStringBuilder resetStyle(String... styles) {
-        style = new JLineTerminal.Style(primaryStyle, styles);
-        return this;
-    }
-
-    @Override
-    public PromptStringBuilder resetStyle() {
-        style = primaryStyle;
-        return this;
+        this.console = console;
+        this.jlineTerminal = console.getJlineTerminal();
+        this.baseStyle = console.getBaseStyle();
+        this.style = console.getBaseStyle();
     }
 
     @Override
     public PromptStringBuilder append(String str) {
         super.append(jlineTerminal.toAnsi(str, style));
         return this;
+    }
+
+    @Override
+    public PromptStringBuilder setStyle(String... styles) {
+        return setStyle(new Style(style, styles));
+    }
+
+    private PromptStringBuilder setStyle(Style style) {
+        this.style = style;
+        return this;
+    }
+
+    @Override
+    public PromptStringBuilder resetStyle(String... styles) {
+        resetStyle();
+        return setStyle(styles);
+    }
+
+    @Override
+    public PromptStringBuilder resetStyle() {
+        return setStyle(baseStyle);
+    }
+
+    @Override
+    public PromptStringBuilder secondaryStyle() {
+        if (console.getSecondaryStyle() != null) {
+            return setStyle(new Style(console.getSecondaryStyle()));
+        } else {
+            return resetStyle();
+        }
+    }
+
+    @Override
+    public PromptStringBuilder successStyle() {
+        if (console.getSecondaryStyle() != null) {
+            return setStyle(new Style(console.getSuccessStyle()));
+        } else {
+            return resetStyle();
+        }
+    }
+
+    @Override
+    public PromptStringBuilder dangerStyle() {
+        if (console.getSecondaryStyle() != null) {
+            return setStyle(new Style(console.getDangerStyle()));
+        } else {
+            return resetStyle();
+        }
+    }
+
+    @Override
+    public PromptStringBuilder warningStyle() {
+        if (console.getSecondaryStyle() != null) {
+            return setStyle(new Style(console.getWarningStyle()));
+        } else {
+            return resetStyle();
+        }
+    }
+
+    @Override
+    public PromptStringBuilder infoStyle() {
+        if (console.getSecondaryStyle() != null) {
+            return setStyle(new Style(console.getInfoStyle()));
+        } else {
+            return resetStyle();
+        }
     }
 
 }

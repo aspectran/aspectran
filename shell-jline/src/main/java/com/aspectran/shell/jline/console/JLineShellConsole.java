@@ -25,8 +25,6 @@ import org.jline.reader.UserInterruptException;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static com.aspectran.shell.jline.console.JLineTerminal.Style;
@@ -43,6 +41,8 @@ public class JLineShellConsole extends AbstractShellConsole {
     private final PrintStream output;
 
     private final PrintWriter writer;
+
+    private Style baseStyle;
 
     public JLineShellConsole() throws IOException {
         this(null);
@@ -91,8 +91,7 @@ public class JLineShellConsole extends AbstractShellConsole {
 
     @Override
     public PromptStringBuilder newPromptStringBuilder() {
-        return new JLinePromptStringBuilder(jlineTerminal)
-                .resetStyle(getPrimaryStyle());
+        return new JLinePromptStringBuilder(this);
     }
 
     @Override
@@ -232,6 +231,10 @@ public class JLineShellConsole extends AbstractShellConsole {
         return jlineTerminal.isReading();
     }
 
+    public Style getBaseStyle() {
+        return baseStyle;
+    }
+
     @Override
     public boolean hasStyle() {
         return jlineTerminal.hasStyle();
@@ -241,30 +244,71 @@ public class JLineShellConsole extends AbstractShellConsole {
         return jlineTerminal.getStyle();
     }
 
-    @Override
-    public void setStyle(String... styles) {
-        jlineTerminal.setStyle(styles);
-    }
-
     public void setStyle(Style style) {
         jlineTerminal.setStyle(style);
     }
 
     @Override
+    public void setStyle(String... styles) {
+        jlineTerminal.applyStyle(styles);
+    }
+
+    @Override
     public void resetStyle() {
-        jlineTerminal.resetStyle(getPrimaryStyle());
+        if (baseStyle == null && getPrimaryStyle() != null) {
+            baseStyle = new Style(getPrimaryStyle());
+        }
+        setStyle(baseStyle);
     }
 
     @Override
     public void resetStyle(String... styles) {
-        if (getPrimaryStyle() != null) {
-            List<String> list = new ArrayList<>(Arrays.asList(getPrimaryStyle()));
-            if (styles != null) {
-                list.addAll(Arrays.asList(styles));
-            }
-            jlineTerminal.resetStyle(list.toArray(new String[0]));
+        resetStyle();
+        setStyle(styles);
+    }
+
+    @Override
+    public void secondaryStyle() {
+        if (getSecondaryStyle() != null) {
+            setStyle(new Style(getSecondaryStyle()));
         } else {
-            jlineTerminal.resetStyle(styles);
+            resetStyle();
+        }
+    }
+
+    @Override
+    public void successStyle() {
+        if (getSecondaryStyle() != null) {
+            setStyle(new Style(getSuccessStyle()));
+        } else {
+            resetStyle();
+        }
+    }
+
+    @Override
+    public void dangerStyle() {
+        if (getSecondaryStyle() != null) {
+            setStyle(new Style(getDangerStyle()));
+        } else {
+            resetStyle();
+        }
+    }
+
+    @Override
+    public void warningStyle() {
+        if (getSecondaryStyle() != null) {
+            setStyle(new Style(getWarningStyle()));
+        } else {
+            resetStyle();
+        }
+    }
+
+    @Override
+    public void infoStyle() {
+        if (getSecondaryStyle() != null) {
+            setStyle(new Style(getInfoStyle()));
+        } else {
+            resetStyle();
         }
     }
 
