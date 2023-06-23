@@ -94,6 +94,9 @@ public class TowRequestAdapter extends AbstractRequestAdapter {
 
     @Override
     public InputStream getInputStream() throws IOException {
+        if (!getHttpServerExchange().isBlocking()) {
+            getHttpServerExchange().startBlocking();
+        }
         return getHttpServerExchange().getInputStream();
     }
 
