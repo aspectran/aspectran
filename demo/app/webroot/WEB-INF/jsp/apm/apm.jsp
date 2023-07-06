@@ -1,7 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <link rel="stylesheet" href="/assets/css/apm.css?20200111">
-<script src="/assets/js/apm.js"></script>
+<script src="/assets/js/apm.js?20230706"></script>
 <div class="grid-x grid-padding-x">
     <div class="cell t20">
         <h3>Application Logs

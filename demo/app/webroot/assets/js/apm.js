@@ -269,6 +269,7 @@ function LogTailer(endpoint, tailers) {
                 requests = matches3[2];
             } else {
                 sessionId = matches4[1];
+                requests = 1;
             }
             if (requests > 3) {
                 requests = 3;
