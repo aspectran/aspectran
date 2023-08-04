@@ -21,7 +21,6 @@ import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
 import com.aspectran.core.util.statistic.SampleStatistic;
 import com.aspectran.core.util.thread.AutoLock;
-import com.aspectran.core.util.thread.ScheduledExecutorScheduler;
 import com.aspectran.core.util.thread.Scheduler;
 
 import java.util.ArrayList;
@@ -50,9 +49,9 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
 
     private final Set<String> candidateSessionIdsForExpiry = ConcurrentHashMap.newKeySet();
 
-    private final Scheduler scheduler;
-
     private String workerName;
+
+    private Scheduler scheduler;
 
     private SessionIdGenerator sessionIdGenerator;
 
@@ -62,15 +61,6 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
 
     /** 30 minute default */
     private volatile int defaultMaxIdleSecs = 30 * 60;
-
-    public AbstractSessionHandler() {
-        scheduler = new ScheduledExecutorScheduler(String.format("SessionScheduler-%x", hashCode()), false);
-    }
-
-    @Override
-    public Scheduler getScheduler() {
-        return scheduler;
-    }
 
     @Override
     public String getWorkerName() {
@@ -82,6 +72,15 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
             throw new IllegalArgumentException("Worker name cannot contain '.'");
         }
         this.workerName = workerName;
+    }
+
+    @Override
+    public Scheduler getScheduler() {
+        return scheduler;
+    }
+
+    protected void setScheduler(Scheduler scheduler) {
+        this.scheduler = scheduler;
     }
 
     @Override
@@ -437,8 +436,8 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
 
     @Override
     public String getComponentName() {
-        if (workerName != null) {
-            return super.getComponentName() + "(" + workerName + ")";
+        if (getWorkerName() != null) {
+            return super.getComponentName() + "(" + getWorkerName() + ")";
         } else {
             return super.getComponentName();
         }

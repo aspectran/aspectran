@@ -21,6 +21,8 @@ import com.aspectran.core.component.bean.aware.ApplicationAdapterAware;
 import com.aspectran.core.context.config.SessionFileStoreConfig;
 import com.aspectran.core.context.config.SessionManagerConfig;
 import com.aspectran.core.util.StringUtils;
+import com.aspectran.core.util.thread.ScheduledExecutorScheduler;
+import com.aspectran.core.util.thread.Scheduler;
 
 import java.io.IOException;
 
@@ -85,6 +87,7 @@ public class DefaultSessionManager extends AbstractSessionHandler
     @Override
     protected void doInitialize() throws Exception {
         boolean clusterEnabled = false;
+        int scavengingIntervalSeconds = -1;
         if (sessionManagerConfig != null) {
             if (sessionManagerConfig.isClusterEnabled()) {
                 clusterEnabled = true;
@@ -93,19 +96,28 @@ public class DefaultSessionManager extends AbstractSessionHandler
                 setWorkerName(sessionManagerConfig.getWorkerName());
             }
             if (sessionManagerConfig.hasMaxIdleSeconds()) {
-                int secs = sessionManagerConfig.getMaxIdleSeconds();
-                setDefaultMaxIdleSecs(secs);
+                setDefaultMaxIdleSecs(sessionManagerConfig.getMaxIdleSeconds());
             }
             if (sessionManagerConfig.hasScavengingIntervalSeconds()) {
-                int secs = sessionManagerConfig.getScavengingIntervalSeconds();
-                if (secs > 0) {
-                    HouseKeeper houseKeeper = new HouseKeeper(this);
-                    houseKeeper.setScavengingInterval(secs);
-                    setHouseKeeper(houseKeeper);
-                }
-            } else {
-                setHouseKeeper(new HouseKeeper(this));
+                scavengingIntervalSeconds = sessionManagerConfig.getScavengingIntervalSeconds();
             }
+        }
+
+        if (getScheduler() == null) {
+            String schedulerName = getWorkerName();
+            if (schedulerName == null) {
+                schedulerName = String.format("SessionScheduler-%x", hashCode());
+            }
+            Scheduler scheduler = new ScheduledExecutorScheduler(schedulerName, false);
+            setScheduler(scheduler);
+        }
+
+        if (scavengingIntervalSeconds >= 0) {
+            HouseKeeper houseKeeper = new HouseKeeper(this);
+            if (scavengingIntervalSeconds > 0) {
+                houseKeeper.setScavengingInterval(scavengingIntervalSeconds);
+            }
+            setHouseKeeper(houseKeeper);
         }
 
         if (getSessionIdGenerator() == null) {

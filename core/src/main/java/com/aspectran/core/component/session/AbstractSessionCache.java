@@ -48,7 +48,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
     private final SessionStore sessionStore;
 
     /**
-     * Whether or not to support session clustering
+     * Whether to support session clustering
      */
     private final boolean clusterEnabled;
 
@@ -389,7 +389,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
     /**
      * Remove the session with this identity from the store.
      * @param id the session id
-     * @return true if removed; false otherwise
+     * @return the Session object if removed; null otherwise
      */
     protected abstract DefaultSession doDelete(String id);
 
