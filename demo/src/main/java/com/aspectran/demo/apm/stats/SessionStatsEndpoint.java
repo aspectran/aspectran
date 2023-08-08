@@ -60,9 +60,9 @@ public class SessionStatsEndpoint extends InstantActivitySupport {
 
     private static final String COMMAND_LEAVE = "LEAVE";
 
-    private static final String HEARTBEAT_PING_MSG = "--heartbeat-ping--";
+    private static final String HEARTBEAT_PING_MSG = "--ping--";
 
-    private static final String HEARTBEAT_PONG_MSG = "--heartbeat-pong--";
+    private static final String HEARTBEAT_PONG_MSG = "--pong--";
 
     private static final Set<Session> sessions = Collections.synchronizedSet(new HashSet<>());
 
@@ -177,15 +177,16 @@ public class SessionStatsEndpoint extends InstantActivitySupport {
         stats.setRejectedSessionCount(statistics.getRejectedSessions());
 
         // Current Users
-        List<String> currentUsers = new ArrayList<>();
+        List<String> currentSessions = new ArrayList<>();
         Set<String> sessionIds = sessionManager.getActiveSessions();
         for (String sessionId : sessionIds) {
             io.undertow.server.session.Session session = sessionManager.getSession(sessionId);
             if (session != null) {
-                currentUsers.add("1:Session " + session.getId() + " created at " + formatTime(session.getCreationTime()));
+                currentSessions.add("1:Session " + session.getId() + " created at " +
+                        formatTime(session.getCreationTime()));
             }
         }
-        stats.setCurrentUsers(currentUsers.toArray(new String[0]));
+        stats.setCurrentSessions(currentSessions.toArray(new String[0]));
         return stats;
     }
 

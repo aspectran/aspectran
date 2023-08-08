@@ -18,18 +18,18 @@
     height: 40px;
 }
 
-.users-wrap {
+.sessions-wrap {
     height: 220px;
     overflow-y: auto;
     list-style-type: none;
 }
-.users {
+.sessions {
     margin-left: 0;
 }
-.users li {
+.sessions li {
     list-style-type: none;
 }
-.users .status {
+.sessions .status {
     background-color: #13CF13;
     width: 12px;
     height: 12px;
@@ -37,7 +37,7 @@
     display: inline-block;
     margin-right: 10px;
 }
-.users .status.logged-out {
+.sessions .status.logged-out {
     background-color: #ccc;
 }
 
@@ -196,6 +196,9 @@
     animation-timing-function: linear;
     animation-iteration-count: 1;
     z-index: 100;
+}
+.missile.hidden {
+    display: none;
 }
 .mis-1 {
     animation-duration: .8s;

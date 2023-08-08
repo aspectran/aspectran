@@ -59,12 +59,12 @@
   let backend = "/examples";
   $(function() {
     $("select[name=customerList]").change(function() {
-      $("#details form, #cust-no").fadeOut(300);
+      $("#details form, #cust-no").stop(true).fadeOut(300);
       getCustomer($(this).val());
       $("#details form, #cust-no").fadeIn(200);
     });
     $("button#refresh").click(function() {
-      $("#customer-list-board, #total").fadeOut(300);
+      $("#customer-list-board, #total").stop(true).fadeOut(300);
       getCustomerList();
       $("#customer-list-board, #total").fadeIn(200);
     });
@@ -236,7 +236,7 @@
   function describe(method, url, xhr) {
     $("#describe span").text(method);
     $("#describe input").val(url);
-    $("#response-status-code").fadeOut(300);
+    $("#response-status-code").stop(true).fadeOut(300);
     $("#response-status-code").text(xhr.status);
     $("#response-text").text(xhr.responseText);
     if (xhr.status == "201") {

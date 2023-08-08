@@ -35,7 +35,7 @@ public class SessionStatistics {
 
     private long rejectedSessionCount;
 
-    private String[] currentUsers;
+    private String[] currentSessions;
 
     public long getActiveSessionCount() {
         return activeSessionCount;
@@ -77,12 +77,12 @@ public class SessionStatistics {
         this.rejectedSessionCount = rejectedSessionCount;
     }
 
-    public String[] getCurrentUsers() {
-        return currentUsers;
+    public String[] getCurrentSessions() {
+        return currentSessions;
     }
 
-    public void setCurrentUsers(String[] currentUsers) {
-        this.currentUsers = currentUsers;
+    public void setCurrentSessions(String[] currentSessions) {
+        this.currentSessions = currentSessions;
     }
 
     @Override
@@ -101,7 +101,7 @@ public class SessionStatistics {
                 stats.rejectedSessionCount != rejectedSessionCount) {
             return false;
         }
-        return Arrays.equals(stats.currentUsers, currentUsers);
+        return Arrays.equals(stats.currentSessions, currentSessions);
     }
 
     public String toJson() throws IOException {

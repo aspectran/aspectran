@@ -29,7 +29,7 @@ import java.util.List;
 
 public class LogTailer extends AbstractLifeCycle {
 
-    private static final long DEFAULT_SAMPLE_INTERVAL = 1000L;
+    private static final long DEFAULT_SAMPLE_INTERVAL = 500L;
 
     private final String name;
 

@@ -50,9 +50,9 @@ public class LogtailEndpoint extends InstantActivitySupport {
 
     private static final String COMMAND_LEAVE = "LEAVE";
 
-    private static final String HEARTBEAT_PING_MSG = "--heartbeat-ping--";
+    private static final String HEARTBEAT_PING_MSG = "--ping--";
 
-    private static final String HEARTBEAT_PONG_MSG = "--heartbeat-pong--";
+    private static final String HEARTBEAT_PONG_MSG = "--pong--";
 
     private static final Set<Session> sessions = Collections.synchronizedSet(new HashSet<>());
 

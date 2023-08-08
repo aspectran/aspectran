@@ -1,7 +1,9 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<link rel="stylesheet" href="/assets/css/apm.css?20200111">
-<script src="/assets/js/apm.js?20230706"></script>
+<link rel="stylesheet" href="/assets/css/apm.css?20230808">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment-with-locales.min.js"></script>
+<script src="/assets/js/apm-log.js?20230808"></script>
+<script src="/assets/js/apm-session.js?20230808"></script>
 <div class="grid-x grid-padding-x">
     <div class="cell t20">
         <h3>Application Logs
@@ -42,10 +44,10 @@
         </div>
     </div>
     <div class="cell small-12 large-7 t20">
-        <h3>Current Users
+        <h3>Current Sessions
             <a id="anchor2" href="#anchor2" class="float-right show-for-large"><span class="icon fi-anchor"></span></a></h3>
-        <div class="panel users-wrap">
-            <ul class="users">
+        <div class="panel sessions-wrap">
+            <ul class="sessions">
             </ul>
         </div>
     </div>
