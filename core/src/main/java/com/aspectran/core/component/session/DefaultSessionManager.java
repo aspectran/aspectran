@@ -104,8 +104,10 @@ public class DefaultSessionManager extends AbstractSessionHandler
         }
 
         if (getScheduler() == null) {
-            String schedulerName = getWorkerName();
-            if (schedulerName == null) {
+            String schedulerName;
+            if (getWorkerName() != null) {
+                schedulerName = "SessionScheduler-" + getWorkerName();
+            } else {
                 schedulerName = String.format("SessionScheduler-%x", hashCode());
             }
             Scheduler scheduler = new ScheduledExecutorScheduler(schedulerName, false);
