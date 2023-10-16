@@ -56,7 +56,7 @@ public class InMemoryFileItem implements FileItem, FileItemHeadersSupport {
     private final String contentType;
 
     /**
-     * Whether or not this item is a simple form field.
+     * Whether this item is a simple form field.
      */
     private boolean isFormField;
 
@@ -78,7 +78,7 @@ public class InMemoryFileItem implements FileItem, FileItemHeadersSupport {
     /**
      * The threshold above which uploads will be stored on disk.
      */
-    private int sizeThreshold;
+    private final int sizeThreshold;
 
     /**
      * The file items headers.
@@ -89,7 +89,7 @@ public class InMemoryFileItem implements FileItem, FileItemHeadersSupport {
      * Constructs a new MemoryFileItem instance.
      * @param fieldName the name of the form field
      * @param contentType the content type passed by the browser or {@code null} if not specified
-     * @param isFormField whether or not this item is a plain form field, as opposed to a file upload
+     * @param isFormField whether this item is a plain form field, as opposed to a file upload
      * @param fileName the original filename in the user's filesystem, or {@code null} if not specified
      * @param sizeThreshold the threshold, in bytes, below which items will be retained in memory.
      *                      (sizeThreshold will always be equal to file upload limit)
@@ -143,7 +143,7 @@ public class InMemoryFileItem implements FileItem, FileItemHeadersSupport {
     }
 
     /**
-     * Provides a hint as to whether or not the file contents will be read from memory.
+     * Provides a hint whether the file contents will be read from memory.
      * @return {@code true} if the file contents will be read from memory; {@code false} otherwise
      */
     public boolean isInMemory() {
@@ -191,21 +191,21 @@ public class InMemoryFileItem implements FileItem, FileItemHeadersSupport {
      * @return the contents of the file, as a string
      */
     public String getString() {
-        byte[] rawdata = get();
+        byte[] rawData = get();
         String charset = getCharset();
         if (charset == null) {
             charset = DEFAULT_CHARSET;
         }
         try {
-            return new String(rawdata, charset);
+            return new String(rawData, charset);
         } catch (UnsupportedEncodingException e) {
-            return new String(rawdata);
+            return new String(rawData);
         }
     }
 
     /**
      * A convenience method to write an uploaded item to disk. The client code
-     * is not concerned with whether or not the item is stored in memory, or on
+     * is not concerned with whether the item is stored in memory, or on
      * disk in a temporary location. They just want to write the uploaded item
      * to a file.
      * <p>
@@ -222,8 +222,8 @@ public class InMemoryFileItem implements FileItem, FileItemHeadersSupport {
      * @throws Exception if an error occurs
      */
     public void write(File file) throws Exception {
-        try (FileOutputStream fout = new FileOutputStream(file)) {
-            fout.write(get());
+        try (FileOutputStream out = new FileOutputStream(file)) {
+            out.write(get());
         }
     }
 
@@ -253,7 +253,7 @@ public class InMemoryFileItem implements FileItem, FileItemHeadersSupport {
     }
 
     /**
-     * Determines whether or not a <code>FileItem</code> instance represents a simple form field.
+     * Determines whether a <code>FileItem</code> instance represents a simple form field.
      * @return {@code true} if the instance represents a simple form field;
      *      {@code false} if it represents an uploaded file.
      * @see #setFormField(boolean)
@@ -263,7 +263,7 @@ public class InMemoryFileItem implements FileItem, FileItemHeadersSupport {
     }
 
     /**
-     * Specifies whether or not a <code>FileItem</code> instance represents a simple form field.
+     * Specifies whether a <code>FileItem</code> instance represents a simple form field.
      * @param state {@code true} if the instance represents a simple form field;
      *      {@code false} if it represents an uploaded file
      * @see #isFormField()

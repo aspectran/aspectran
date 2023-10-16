@@ -53,7 +53,7 @@ public class InMemoryOutputStream extends ThresholdingOutputStream {
      * @exception IOException if an error occurs
      */
     @Override
-    protected OutputStream getStream() throws IOException {
+    protected OutputStream getOutputStream() throws IOException {
         return outputStream;
     }
 
@@ -68,7 +68,7 @@ public class InMemoryOutputStream extends ThresholdingOutputStream {
     }
 
     /**
-     * Determines whether or not the data for this output stream has been retained in memory.
+     * Determines whether the data for this output stream has been retained in memory.
      * @return always {@code true}
      */
     public boolean isInMemory() {
