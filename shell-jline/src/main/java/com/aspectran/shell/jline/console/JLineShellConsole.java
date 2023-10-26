@@ -231,7 +231,7 @@ public class JLineShellConsole extends AbstractShellConsole {
         return jlineTerminal.isReading();
     }
 
-    public Style getBaseStyle() {
+    protected Style getBaseStyle() {
         return baseStyle;
     }
 
@@ -240,11 +240,11 @@ public class JLineShellConsole extends AbstractShellConsole {
         return jlineTerminal.hasStyle();
     }
 
-    public Style getStyle() {
+    protected Style getStyle() {
         return jlineTerminal.getStyle();
     }
 
-    public void setStyle(Style style) {
+    protected void setStyle(Style style) {
         jlineTerminal.setStyle(style);
     }
 

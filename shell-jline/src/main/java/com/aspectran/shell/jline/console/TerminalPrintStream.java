@@ -72,6 +72,7 @@ public class TerminalPrintStream extends PrintStream {
         }
     }
 
+    @Override
     public void flush() {
         jlineTerminal.flush();
     }

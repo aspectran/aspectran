@@ -20,9 +20,6 @@ import com.aspectran.core.component.session.SessionListener;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.servlet.handlers.ServletRequestContext;
 
-import java.security.AccessController;
-import java.security.PrivilegedAction;
-
 /**
  * Class that bridges between Aspectran native session listener and Undertow ones.
  *
@@ -88,14 +85,8 @@ final class TowSessionListenerBridge implements SessionListener {
     }
 
     static HttpServerExchange getCurrentExchange() {
-        if (System.getSecurityManager() == null) {
-            ServletRequestContext current = ServletRequestContext.current();
-            return current != null ? current.getExchange() : null;
-        } else {
-            ServletRequestContext current = AccessController
-                    .doPrivileged((PrivilegedAction<ServletRequestContext>)ServletRequestContext::current);
-            return current != null ? current.getExchange() : null;
-        }
+        ServletRequestContext current = ServletRequestContext.current();
+        return current != null ? current.getExchange() : null;
     }
 
 }

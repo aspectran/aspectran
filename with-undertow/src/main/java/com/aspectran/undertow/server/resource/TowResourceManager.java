@@ -64,14 +64,14 @@ public class TowResourceManager extends PathResourceManager implements Applicati
         return super.getBasePath().toString();
     }
 
-    public void setBase(String base) throws IOException {
+    public TowResourceManager setBase(String base) throws IOException {
         if (!StringUtils.hasText(base)) {
             throw new IllegalArgumentException("Resource base path must not be null or empty");
         }
         if (applicationAdapter != null) {
-            setBase(applicationAdapter.toRealPathAsFile(base));
+            return setBase(applicationAdapter.toRealPathAsFile(base));
         } else {
-            setBase(new File(base));
+            return setBase(new File(base));
         }
     }
 
