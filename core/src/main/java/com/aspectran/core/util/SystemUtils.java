@@ -43,7 +43,7 @@ public class SystemUtils {
     public static String getProperty(String key) {
         try {
             return System.getProperty(key);
-        } catch (AccessControlException ex) {
+        } catch (Exception ex) { // AccessControlException is deprecated for removal
             if (logger.isDebugEnabled()) {
                 logger.debug(String.format(
                         "Caught AccessControlException when accessing system property [%s]; " +

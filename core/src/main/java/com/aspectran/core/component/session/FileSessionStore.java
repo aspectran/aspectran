@@ -94,7 +94,7 @@ public class FileSessionStore extends AbstractSessionStore {
     }
 
     @Override
-    public boolean delete(String id) throws Exception {
+    public boolean delete(String id) throws IOException {
         if (storeDir != null) {
             // remove from our map
             String filename = sessionFilenames.remove(id);
@@ -111,9 +111,9 @@ public class FileSessionStore extends AbstractSessionStore {
      * Delete the file associated with a session
      * @param filename name of the file containing the session's information
      * @return true if file was deleted, false otherwise
-     * @throws Exception if the file associated with the session fails to be deleted
+     * @throws IOException if the file associated with the session fails to be deleted
      */
-    private boolean deleteFile(String filename) throws Exception {
+    private boolean deleteFile(String filename) throws IOException {
         if (filename == null) {
             return false;
         }
@@ -286,9 +286,9 @@ public class FileSessionStore extends AbstractSessionStore {
      * 5 gracePeriods ago.
      * @param now the time now in msec
      * @param p the file to check
-     * @throws Exception indicating error in sweep
+     * @throws IOException indicating error in sweep
      */
-    private void sweepFile(long now, Path p) throws Exception {
+    private void sweepFile(long now, Path p) throws IOException {
         if (p != null) {
             String filename = p.getFileName().toString();
             long expiry = getExpiryFromFilename(filename); // files with 0 expiry never expire

@@ -137,7 +137,8 @@ public class DefaultEmbeddedAspectran extends AbstractEmbeddedAspectran {
                 logger.debug("Activity terminated: " + e.getMessage());
             }
         } catch (Exception e) {
-            throw new AspectranServiceException("Error while processing translet: " + name, e);
+            throw new AspectranServiceException("Error while processing translet: " + name +
+                    "; Cause: " + e.getCause(), e);
         }
         return translet;
     }

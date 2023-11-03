@@ -178,7 +178,8 @@ public class DefaultShellService extends AbstractShellService {
         } catch (Exception e) {
             getConsole().clearLine();
             getConsole().resetStyle();
-            throw new AspectranServiceException("Error while processing translet: " + transletName, e);
+            throw new AspectranServiceException("Error while processing translet: " + transletName +
+                    "; Cause: " + e.getCause(), e);
         } finally {
             if (outputWriter != null) {
                 outputWriter.close();

@@ -19,6 +19,7 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.ActivityTerminatedException;
 import com.aspectran.core.activity.request.RequestMethodNotAllowedException;
 import com.aspectran.core.activity.request.SizeLimitExceededException;
+import com.aspectran.core.component.session.MaxSessionsExceededException;
 import com.aspectran.core.component.translet.TransletRuleRegistry;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.config.AspectranConfig;
@@ -260,24 +261,32 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
                 logger.debug("Activity terminated: " + e.getMessage());
             }
         } catch (Exception e) {
-            logger.error("Error while processing " + requestMethod + " request " + requestUri, e);
+            logger.error("Error while processing " + requestMethod + " request " + requestUri +
+                    "; Cause: " + e.getCause());
             if (!response.isCommitted()) {
                 if (e.getCause() instanceof RequestMethodNotAllowedException) {
-                    sendError(response, HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+                    sendError(response, HttpServletResponse.SC_METHOD_NOT_ALLOWED, null);
                 } else if (e.getCause() instanceof SizeLimitExceededException) {
-                    sendError(response, HttpServletResponse.SC_REQUEST_ENTITY_TOO_LARGE);
+                    sendError(response, HttpServletResponse.SC_REQUEST_ENTITY_TOO_LARGE, null);
+                } else if (e.getCause() instanceof MaxSessionsExceededException) {
+                    sendError(response, HttpServletResponse.SC_SERVICE_UNAVAILABLE,
+                            MaxSessionsExceededException.MAX_SESSIONS_EXCEEDED);
                 } else {
-                    sendError(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                    sendError(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, null);
                 }
             }
         }
     }
 
-    private void sendError(HttpServletResponse response, int statusCode) {
+    private void sendError(HttpServletResponse response, int sc, String msg) {
         try {
-            response.sendError(statusCode);
+            if (msg != null) {
+                response.sendError(sc, msg);
+            } else {
+                response.sendError(sc);
+            }
         } catch (IOException e) {
-            logger.error("Failed to send an error response to the client with status code " + statusCode, e);
+            logger.error("Failed to send an error response to the client with status code " + sc, e);
         }
     }
 

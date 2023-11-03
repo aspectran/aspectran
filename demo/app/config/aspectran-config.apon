@@ -79,6 +79,11 @@ shell: {
         com.aspectran.shell.command.builtins.QuitCommand
     ]
     session: {
+        workerName: sn0
+        maxSessions: 1
+        maxIdleSeconds: 20
+        evictionIdleSeconds: 10
+        scavengingIntervalSeconds: 60
         enabled: true
     }
     historyFile: /logs/history.log

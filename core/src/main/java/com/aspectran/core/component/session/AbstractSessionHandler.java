@@ -153,14 +153,16 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
 
     @Override
     public DefaultSession createSession(String id) {
-        long created = System.currentTimeMillis();
+        long now = System.currentTimeMillis();
         long maxInactiveInterval = (defaultMaxIdleSecs > 0 ? defaultMaxIdleSecs * 1000L : -1L);
         try {
-            DefaultSession session = sessionCache.add(id, created, maxInactiveInterval);
+            DefaultSession session = sessionCache.add(id, now, maxInactiveInterval);
             fireSessionCreatedListeners(session);
             return session;
+        } catch (MaxSessionsExceededException e) {
+            throw e;
         } catch (Exception e) {
-            throw new RuntimeException("Could not create a new session", e);
+            throw new RuntimeException("Unable to create new session id=" + id, e);
         }
     }
 

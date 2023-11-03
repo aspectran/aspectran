@@ -140,11 +140,10 @@
                     <arguments>
                         <item>
                             workerName: n0
-                            maxSessions: 99999
+                            maxSessions: 999
                             maxIdleSeconds: 1800
                             evictionIdleSeconds: 900
                             scavengingIntervalSeconds: 600
-                            removeUnloadableSessions: true
                             clusterEnabled: false
                         </item>
                     </arguments>

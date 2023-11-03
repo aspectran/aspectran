@@ -21,6 +21,9 @@ import com.aspectran.core.component.bean.aware.ApplicationAdapterAware;
 import com.aspectran.core.context.config.SessionFileStoreConfig;
 import com.aspectran.core.context.config.SessionManagerConfig;
 import com.aspectran.core.util.StringUtils;
+import com.aspectran.core.util.ToStringBuilder;
+import com.aspectran.core.util.logging.Logger;
+import com.aspectran.core.util.logging.LoggerFactory;
 import com.aspectran.core.util.thread.ScheduledExecutorScheduler;
 import com.aspectran.core.util.thread.Scheduler;
 
@@ -33,6 +36,8 @@ import java.io.IOException;
  */
 public class DefaultSessionManager extends AbstractSessionHandler
         implements SessionManager, ApplicationAdapterAware, DisposableBean {
+
+    private static final Logger logger = LoggerFactory.getLogger(DefaultSessionManager.class);
 
     private ApplicationAdapter applicationAdapter;
 
@@ -59,6 +64,12 @@ public class DefaultSessionManager extends AbstractSessionHandler
     }
 
     public void setSessionManagerConfig(SessionManagerConfig sessionManagerConfig) {
+        if (sessionManagerConfig != null) {
+            if (logger.isDebugEnabled()) {
+                ToStringBuilder tsb = new ToStringBuilder("Configuring SessionManager", sessionManagerConfig);
+                logger.debug(tsb.toString());
+            }
+        }
         this.sessionManagerConfig = sessionManagerConfig;
     }
 
@@ -174,6 +185,8 @@ public class DefaultSessionManager extends AbstractSessionHandler
                 if (sessionManagerConfig.hasRemoveUnloadableSessions()) {
                     boolean removeUnloadableSessions = sessionManagerConfig.getRemoveUnloadableSessions();
                     sessionCache.setRemoveUnloadableSessions(removeUnloadableSessions);
+                } else {
+                    sessionCache.setRemoveUnloadableSessions(true);
                 }
             }
             sessionCache.initialize();

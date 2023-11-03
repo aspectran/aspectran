@@ -19,6 +19,7 @@ import com.aspectran.core.activity.ActivityException;
 import com.aspectran.core.activity.ActivityTerminatedException;
 import com.aspectran.core.activity.request.RequestMethodNotAllowedException;
 import com.aspectran.core.activity.request.SizeLimitExceededException;
+import com.aspectran.core.component.session.MaxSessionsExceededException;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.config.ExposalsConfig;
@@ -149,11 +150,15 @@ public class DefaultTowService extends AbstractTowService {
                 exchange.setStatusCode(HttpStatus.METHOD_NOT_ALLOWED.value());
             } else if (e.getCause() instanceof SizeLimitExceededException) {
                 exchange.setStatusCode(HttpStatus.PAYLOAD_TOO_LARGE.value());
+            } else if (e.getCause() instanceof MaxSessionsExceededException) {
+                exchange.setStatusCode(HttpStatus.SERVICE_UNAVAILABLE.value());
+                exchange.setReasonPhrase(MaxSessionsExceededException.MAX_SESSIONS_EXCEEDED);
             } else {
                 exchange.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
             }
         } catch (Exception e) {
-            logger.error("Error while processing " + requestMethod + " request " + requestPath, e);
+            logger.error("Error while processing " + requestMethod + " request " + requestPath +
+                    "; Cause: " + e.getCause());
             exchange.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
     }

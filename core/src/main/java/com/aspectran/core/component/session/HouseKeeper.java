@@ -101,7 +101,9 @@ public class HouseKeeper extends AbstractLifeCycle {
             if (runner == null) {
                 runner = new Runner();
             }
-            logger.info(sessionHandler.getComponentName() + " Scavenging every " + scavengingInterval + " ms");
+            if (logger.isTraceEnabled()) {
+                logger.trace(this + " is scavenging every " + scavengingInterval + " ms");
+            }
             task = scheduler.schedule(runner, scavengingInterval, TimeUnit.MILLISECONDS);
         }
     }
@@ -113,7 +115,9 @@ public class HouseKeeper extends AbstractLifeCycle {
         try (AutoLock ignored = lock.lock()) {
             if (task != null) {
                 task.cancel();
-                logger.info(sessionHandler.getComponentName() + " Stopped scavenging");
+                if (logger.isTraceEnabled()) {
+                    logger.trace(this + "  stopped scavenging");
+                }
             }
             task = null;
             runner = null;

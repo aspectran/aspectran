@@ -23,6 +23,7 @@ import com.aspectran.core.util.thread.AutoLock;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Function;
 
@@ -71,32 +72,34 @@ public class DefaultSessionCache extends AbstractSessionCache {
 
     @Override
     protected DefaultSession doPutIfAbsent(String id, DefaultSession session) {
-        DefaultSession ds = sessions.putIfAbsent(id, session);
-        if (ds == null) {
-            checkMaxSessions(id);
-        }
-        return ds;
+        AtomicBoolean absent = new AtomicBoolean(false);
+        DefaultSession current = doComputeIfAbsent(id, k -> {
+            absent.set(true);
+            return session;
+        });
+        return (absent.get() ? null : current);
     }
 
     @Override
     protected DefaultSession doComputeIfAbsent(String id, Function<String, DefaultSession> mappingFunction) {
         return sessions.computeIfAbsent(id, k -> {
-            DefaultSession ds = mappingFunction.apply(k);
-            if (ds != null) {
-                checkMaxSessions(null);
+            checkMaxSessions(id);
+            DefaultSession session = mappingFunction.apply(k);
+            if (session != null) {
+                statistics.increment();
             }
-            return ds;
+            return session;
         });
     }
 
     @Override
     protected DefaultSession doDelete(String id) {
-        DefaultSession ds = sessions.remove(id);
-        if (ds != null) {
+        DefaultSession session = sessions.remove(id);
+        if (session != null) {
             statistics.decrement();
             expiredSessionCount.incrementAndGet();
         }
-        return ds;
+        return session;
     }
 
     @Override
@@ -106,14 +109,11 @@ public class DefaultSessionCache extends AbstractSessionCache {
 
     private void checkMaxSessions(String id) {
         if (maxSessions > 0 && statistics.getCurrent() >= maxSessions) {
-            if (id != null) {
-                sessions.remove(id);
-            }
             rejectedSessionCount.incrementAndGet();
-            throw new IllegalStateException("Session was rejected as the maximum number of sessions " +
-                    maxSessions + " has been hit");
-        } else {
-            statistics.increment();
+            if (logger.isDebugEnabled()) {
+                logger.debug("Reject session id=" + id + "; Exceeded maximum number of sessions allowed");
+            }
+            throw new MaxSessionsExceededException(id, maxSessions);
         }
     }
 

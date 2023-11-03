@@ -163,7 +163,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
                 logger.trace("Session " + id + " not found locally in " + this + ", attempting to load");
             }
             try {
-                DefaultSession stored = loadSession(k);
+                DefaultSession stored = loadSession(id);
                 if (stored != null) {
                     try (AutoLock ignored = stored.lock()) {
                         stored.setResident(true); // ensure freshly loaded session is resident
@@ -253,7 +253,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
         SessionData data = new SessionData(id, time, time, time, maxInactiveInterval);
         DefaultSession session = new DefaultSession(data, sessionHandler, true);
         if (doPutIfAbsent(id, session) == null) {
-            session.setResident(true); // its in the cache
+            session.setResident(true); // it's in the cache
             if (sessionStore != null && (isSaveOnCreate() || isClusterEnabled())) {
                 sessionStore.save(id, data);
             }
@@ -310,17 +310,17 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
     @Override
     public boolean exists(String id) throws Exception {
         if (isClusterEnabled()) {
-            DefaultSession ds = get(id);
-            if (ds != null) {
-                return ds.isValid();
+            DefaultSession session = get(id);
+            if (session != null) {
+                return session.isValid();
             } else {
                 return false;
             }
         } else {
             // try to find it in the cache first
-            DefaultSession ds = doGet(id);
-            if (ds != null) {
-                return ds.isValid();
+            DefaultSession session = doGet(id);
+            if (session != null) {
+                return session.isValid();
             }
             // not there, so find out if session data exists for it
             return (sessionStore != null && sessionStore.exists(id));
@@ -451,9 +451,9 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
         Set<String> sessionsInUse = new HashSet<>();
         if (allCandidates != null) {
             for (String id : allCandidates) {
-                DefaultSession ds = doGet(id);
-                if (ds != null && ds.getRequests() > 0) {
-                    // if the session is in my cache, check its not in use first
+                DefaultSession session = doGet(id);
+                if (session != null && session.getRequests() > 0) {
+                    // if the session is in my cache, check it's not in use first
                     sessionsInUse.add(id);
                 }
             }

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.demo.counter;
+package com.aspectran.demo.aspect;
 
 import com.aspectran.core.component.bean.annotation.After;
 import com.aspectran.core.component.bean.annotation.Aspect;
@@ -33,10 +33,10 @@ import java.util.concurrent.atomic.AtomicLong;
 @Component
 @Bean
 @Scope(ScopeType.SESSION)
-@Aspect("perSessionRequestCounter")
-public class PerSessionRequestCounter implements Serializable {
+@Aspect("perSessionShellRequestCounter")
+public class PerSessionShellRequestCounter implements Serializable {
 
-    private static final Logger logger = LoggerFactory.getLogger(PerSessionRequestCounter.class);
+    private static final Logger logger = LoggerFactory.getLogger(PerSessionShellRequestCounter.class);
 
     private static final long serialVersionUID = -7254733724811233759L;
 
@@ -53,11 +53,11 @@ public class PerSessionRequestCounter implements Serializable {
     }
 
     @After
-    public void after(PerSessionRequestCounter perSessionRequestCounter) {
+    public void after(PerSessionShellRequestCounter perSessionRequestCounter) {
         stopTime.set(System.currentTimeMillis());
 
         if (logger.isDebugEnabled()) {
-            ToStringBuilder tsb = new ToStringBuilder("PerSessionRequestCounter");
+            ToStringBuilder tsb = new ToStringBuilder("PerSessionShellRequestCounter");
             tsb.append("requests", perSessionRequestCounter.getRequests());
             tsb.append("start", perSessionRequestCounter.getStartTime());
             tsb.append("stop", perSessionRequestCounter.getStopTime());

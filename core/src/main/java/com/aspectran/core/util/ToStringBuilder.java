@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.util;
 
+import com.aspectran.core.util.apon.Parameter;
+import com.aspectran.core.util.apon.ParameterValue;
 import com.aspectran.core.util.apon.Parameters;
 
 import java.lang.reflect.Array;
@@ -56,6 +58,13 @@ public class ToStringBuilder {
             this.start = 1;
         }
         buffer.append("{");
+    }
+
+    public ToStringBuilder(String name, Parameters parameters) {
+        this(name, 32);
+        if (parameters != null) {
+            append(parameters);
+        }
     }
 
     public void append(String name, Object value) {
@@ -143,18 +152,14 @@ public class ToStringBuilder {
     private void append(Object object) {
         if (object == null) {
             buffer.append((Object)null);
+        } else if (object instanceof CharSequence) {
+            buffer.append(((CharSequence)object));
         } else if (object instanceof Map<?, ?>) {
             append((Map<?, ?>)object);
         } else if (object instanceof Collection<?>) {
             append((Collection<?>)object);
         } else if (object instanceof Enumeration<?>) {
             append((Enumeration<?>)object);
-        } else if (object instanceof Parameters) {
-            buffer.append(((Parameters)object).describe());
-        } else if (object instanceof ToStringBuilder) {
-            buffer.append(((ToStringBuilder)object).getBuffer());
-        } else if (object instanceof CharSequence) {
-            buffer.append(((CharSequence)object));
         } else if (object.getClass().isArray()) {
             buffer.append("[");
             int len = Array.getLength(object);
@@ -167,51 +172,64 @@ public class ToStringBuilder {
                 append(value);
             }
             buffer.append("]");
+        } else if (object instanceof Parameters) {
+            buffer.append("{");
+            append((Parameters)object);
+            buffer.append("}");
+        } else if (object instanceof ToStringBuilder) {
+            buffer.append(((ToStringBuilder)object).getBuffer());
         } else {
             buffer.append(object);
         }
     }
 
     private void append(Map<?, ?> map) {
-        if (map != null) {
-            buffer.append("{");
-            int len = buffer.length();
-            for (Map.Entry<?, ?> entry : map.entrySet()) {
-                Object key = entry.getKey();
-                Object value = entry.getValue();
-                if (value != null) {
-                    appendName(key, len);
-                    append(value);
-                }
+        buffer.append("{");
+        int len = buffer.length();
+        for (Map.Entry<?, ?> entry : map.entrySet()) {
+            Object key = entry.getKey();
+            Object value = entry.getValue();
+            if (value != null) {
+                appendName(key, len);
+                append(value);
             }
-            buffer.append("}");
         }
+        buffer.append("}");
     }
 
     private void append(Collection<?> list) {
-        if (list != null) {
-            buffer.append("[");
-            int len = buffer.length();
-            for (Object o : list) {
-                if (buffer.length() > len) {
-                    appendComma();
-                }
-                append(o);
+        buffer.append("[");
+        int len = buffer.length();
+        for (Object o : list) {
+            if (buffer.length() > len) {
+                appendComma();
             }
-            buffer.append("]");
+            append(o);
         }
+        buffer.append("]");
     }
 
     private void append(Enumeration<?> en) {
-        if (en != null) {
-            buffer.append("[");
-            while (en.hasMoreElements()) {
-                append(en.nextElement());
-                if (en.hasMoreElements()) {
-                    appendComma();
-                }
+        buffer.append("[");
+        while (en.hasMoreElements()) {
+            append(en.nextElement());
+            if (en.hasMoreElements()) {
+                appendComma();
             }
-            buffer.append("]");
+        }
+        buffer.append("]");
+    }
+
+    private void append(Parameters parameters) {
+        int len = buffer.length();
+        Map<String, ParameterValue> params = parameters.getParameterValueMap();
+        for (Parameter p : params.values()) {
+            String name = p.getName();
+            Object value = p.getValue();
+            if (value != null) {
+                appendName(name, len);
+                append(value);
+            }
         }
     }
 

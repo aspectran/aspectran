@@ -39,7 +39,6 @@ import com.aspectran.core.util.wildcard.PluralWildcardPattern;
 
 import java.io.File;
 import java.io.IOException;
-import java.security.AccessControlException;
 
 import static com.aspectran.core.context.config.AspectranConfig.BASE_PATH_PROPERTY_NAME;
 import static com.aspectran.core.context.config.AspectranConfig.TEMP_PATH_PROPERTY_NAME;
@@ -346,7 +345,7 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
             if (workDir.isDirectory()) {
                 try {
                     System.setProperty(WORK_PATH_PROPERTY_NAME, workDir.getCanonicalPath());
-                } catch (AccessControlException | IOException e) {
+                } catch (Exception e) {
                     if (logger.isDebugEnabled()) {
                         logger.debug("Could not verify the working directory: " + workDir);
                     }
@@ -372,7 +371,7 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
             if (tempDir.isDirectory()) {
                 try {
                     System.setProperty(TEMP_PATH_PROPERTY_NAME, tempDir.getCanonicalPath());
-                } catch (AccessControlException | IOException e) {
+                } catch (Exception e) {
                     if (logger.isDebugEnabled()) {
                         logger.debug("Could not verify the temporary directory: " + tempDir);
                     }

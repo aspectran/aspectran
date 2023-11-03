@@ -1,36 +1,34 @@
-function SessionStats(endpoint, refreshInterval) {
-    this.endpoint = endpoint;
-    this.refreshInterval = refreshInterval;
-    this.socket = null;
-    this.heartbeatTimer = null;
+const SessionStats = function(endpoint, refreshInterval) {
+    let socket = null;
+    let heartbeatTimer = null;
 
     this.openSocket = function() {
-        if (this.socket) {
-            this.socket.close();
+        if (socket) {
+            socket.close();
         }
-        let url = new URL(this.endpoint, location.href);
+        let url = new URL(endpoint, location.href);
         url.protocol = url.protocol.replace('https:', 'wss:');
         url.protocol = url.protocol.replace('http:', 'ws:');
-        this.socket = new WebSocket(url.href);
+        socket = new WebSocket(url.href);
         let self = this;
-        this.socket.onopen = function (event) {
-            self.socket.send("JOIN:" + self.refreshInterval);
-            self.heartbeatPing();
+        socket.onopen = function (event) {
+            socket.send("JOIN:" + refreshInterval);
+            heartbeatPing();
         };
-        this.socket.onmessage = function (event) {
+        socket.onmessage = function (event) {
             if (typeof event.data === "string") {
                 if (event.data === "--pong--") {
-                    self.heartbeatPing();
+                    heartbeatPing();
                     return;
                 }
                 let stats = JSON.parse(event.data);
-                self.printStats(stats);
+                printStats(stats);
             }
         };
-        this.socket.onclose = function (event) {
+        socket.onclose = function (event) {
             self.closeSocket();
         };
-        this.socket.onerror = function (event) {
+        socket.onerror = function (event) {
             console.error("WebSocket error observed:", event);
             setTimeout(function () {
                 self.openSocket();
@@ -39,27 +37,27 @@ function SessionStats(endpoint, refreshInterval) {
     };
 
     this.closeSocket = function() {
-        if (this.socket) {
-            this.socket.close();
-            this.socket = null;
+        if (socket) {
+            socket.close();
+            socket = null;
         }
     };
 
-    this.heartbeatPing = function() {
-        if (this.heartbeatTimer) {
-            clearTimeout(this.heartbeatTimer);
+    const heartbeatPing = function() {
+        if (heartbeatTimer) {
+            clearTimeout(heartbeatTimer);
         }
         let self = this;
-        this.heartbeatTimer = setTimeout(function () {
-            if (self.socket) {
-                self.socket.send("--ping--");
-                self.heartbeatTimer = null;
-                self.heartbeatPing();
+        heartbeatTimer = setTimeout(function () {
+            if (socket) {
+                socket.send("--ping--");
+                heartbeatTimer = null;
+                heartbeatPing();
             }
         }, 57000);
     };
 
-    this.printStats = function(stats) {
+    const printStats = function(stats) {
         $(".activeSessionCount").text(stats.activeSessionCount);
         $(".highestSessionCount").text(stats.highestSessionCount);
         $(".createdSessionCount").text(stats.createdSessionCount);

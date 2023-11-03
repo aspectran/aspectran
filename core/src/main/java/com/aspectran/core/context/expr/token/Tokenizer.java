@@ -91,7 +91,6 @@ public class Tokenizer {
                     } else {
                         if (Token.isTokenSymbol(c)) {
                             symbol = c;
-                            status = AT_TOKEN_SYMBOL;
                             // abc$ --> tokenStartOffset: 3
                             tokenStartOffset = textBuf.length() - 1;
                         } else {
