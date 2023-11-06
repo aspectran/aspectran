@@ -46,7 +46,7 @@ public class TowSessionManager implements SessionManager, ApplicationAdapterAwar
 
     private static final Logger logger = LoggerFactory.getLogger(TowSessionManager.class);
 
-    private final AttachmentKey<TowSessionBridge> NEW_SESSION = AttachmentKey.create(TowSessionBridge.class);
+    private final AttachmentKey<TowSessionBridge> BRIDGED = AttachmentKey.create(TowSessionBridge.class);
 
     private final Map<SessionListener, TowSessionListenerBridge> sessionListenerMappings = new ConcurrentHashMap<>();
 
@@ -125,16 +125,16 @@ public class TowSessionManager implements SessionManager, ApplicationAdapterAwar
         DefaultSession session = sessionManager.createSession(sessionId);
         TowSessionBridge sessionBridge = newTowSessionBridge(session);
         sessionConfig.setSessionId(exchange, session.getId());
-        exchange.putAttachment(NEW_SESSION, sessionBridge);
+        exchange.putAttachment(BRIDGED, sessionBridge);
         return sessionBridge;
     }
 
     @Override
     public Session getSession(HttpServerExchange exchange, SessionConfig sessionConfig) {
         if (exchange != null) {
-            TowSessionBridge newSession = exchange.getAttachment(NEW_SESSION);
-            if (newSession != null) {
-                return newSession;
+            TowSessionBridge bridged = exchange.getAttachment(BRIDGED);
+            if (bridged != null) {
+                return bridged;
             }
         }
         String sessionId;
@@ -144,11 +144,12 @@ public class TowSessionManager implements SessionManager, ApplicationAdapterAwar
             logger.error("Unable to retrieve session due to failure to find session ID", e);
             return null;
         }
-        TowSessionBridge sessionWrapper = (TowSessionBridge)getSession(sessionId);
-        if (sessionWrapper != null && exchange != null) {
-            sessionWrapper.requestStarted(exchange);
+        TowSessionBridge sessionBridge = (TowSessionBridge)getSession(sessionId);
+        if (sessionBridge != null && exchange != null) {
+            exchange.putAttachment(BRIDGED, sessionBridge);
+            sessionBridge.requestStarted(exchange);
         }
-        return sessionWrapper;
+        return sessionBridge;
     }
 
     @Override

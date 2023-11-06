@@ -53,14 +53,14 @@ public class PerSessionShellRequestCounter implements Serializable {
     }
 
     @After
-    public void after(PerSessionShellRequestCounter perSessionRequestCounter) {
+    public void after(PerSessionShellRequestCounter counter) {
         stopTime.set(System.currentTimeMillis());
 
         if (logger.isDebugEnabled()) {
             ToStringBuilder tsb = new ToStringBuilder("PerSessionShellRequestCounter");
-            tsb.append("requests", perSessionRequestCounter.getRequests());
-            tsb.append("start", perSessionRequestCounter.getStartTime());
-            tsb.append("stop", perSessionRequestCounter.getStopTime());
+            tsb.append("requests", counter.getRequests());
+            tsb.append("start", counter.getStartTime());
+            tsb.append("stop", counter.getStopTime());
             logger.debug(tsb.toString());
         }
     }

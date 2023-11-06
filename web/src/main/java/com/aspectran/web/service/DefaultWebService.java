@@ -32,6 +32,7 @@ import com.aspectran.core.service.AspectranCoreService;
 import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.CoreService;
 import com.aspectran.core.service.ServiceStateListener;
+import com.aspectran.core.util.ExceptionUtils;
 import com.aspectran.core.util.ObjectUtils;
 import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.core.util.StringUtils;
@@ -261,14 +262,17 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
                 logger.debug("Activity terminated: " + e.getMessage());
             }
         } catch (Exception e) {
-            logger.error("Error while processing " + requestMethod + " request " + requestUri +
-                    "; Cause: " + e.getCause());
+            Throwable cause = ExceptionUtils.getRootCause(e);
+            if (cause == null) {
+                cause = e.getCause();
+            }
+            logger.error("Error while processing " + requestMethod + " request " + requestUri + "; Cause: " + cause);
             if (!response.isCommitted()) {
-                if (e.getCause() instanceof RequestMethodNotAllowedException) {
+                if (cause instanceof RequestMethodNotAllowedException) {
                     sendError(response, HttpServletResponse.SC_METHOD_NOT_ALLOWED, null);
-                } else if (e.getCause() instanceof SizeLimitExceededException) {
+                } else if (cause instanceof SizeLimitExceededException) {
                     sendError(response, HttpServletResponse.SC_REQUEST_ENTITY_TOO_LARGE, null);
-                } else if (e.getCause() instanceof MaxSessionsExceededException) {
+                } else if (cause instanceof MaxSessionsExceededException) {
                     sendError(response, HttpServletResponse.SC_SERVICE_UNAVAILABLE,
                             MaxSessionsExceededException.MAX_SESSIONS_EXCEEDED);
                 } else {

@@ -51,9 +51,9 @@ class ClusterLettuceSessionStoreFactoryTest {
                     agent.setAttribute("key-" + j, "val-" + j);
                 }
 
-                Enumeration<String> enumeration = agent.getAttributeNames();
-                while (enumeration.hasMoreElements()) {
-                    String key = enumeration.nextElement();
+                Enumeration<String> enumer = agent.getAttributeNames();
+                while (enumer.hasMoreElements()) {
+                    String key = enumer.nextElement();
                     String val = agent.getAttribute(key);
                     assertEquals(key, "key" + val.substring(val.indexOf('-')));
                 }

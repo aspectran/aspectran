@@ -46,9 +46,9 @@ class SessionManagerTest {
         agent.setAttribute("attr2", "val-2");
         agent.setAttribute("attr3", "val-3");
 
-        Enumeration<String> enumeration = agent.getAttributeNames();
-        while(enumeration.hasMoreElements()) {
-            String key = enumeration.nextElement();
+        Enumeration<String> enumer = agent.getAttributeNames();
+        while(enumer.hasMoreElements()) {
+            String key = enumer.nextElement();
             logger.info("getAttribute " + key + "=" + agent.getAttribute(key));
         }
 
