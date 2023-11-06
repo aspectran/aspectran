@@ -18,8 +18,6 @@ package com.aspectran.core.util;
 import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
 
-import java.security.AccessControlException;
-
 /**
  * Helpers for java.lang.System.
  */

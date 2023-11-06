@@ -15,7 +15,6 @@
  */
 package com.aspectran.undertow.service;
 
-import com.aspectran.core.activity.ActivityException;
 import com.aspectran.core.activity.ActivityTerminatedException;
 import com.aspectran.core.activity.request.RequestMethodNotAllowedException;
 import com.aspectran.core.activity.request.SizeLimitExceededException;
@@ -29,6 +28,7 @@ import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.CoreService;
 import com.aspectran.core.service.ServiceStateListener;
+import com.aspectran.core.util.ExceptionUtils;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
@@ -140,26 +140,22 @@ public class DefaultTowService extends AbstractTowService {
             if (logger.isDebugEnabled()) {
                 logger.debug("Activity terminated: " + e.getMessage());
             }
-        } catch (ActivityException e) {
-            if (e.getCause() != null) {
-                logger.error(e.getCause().getMessage(), e.getCause());
-            } else {
-                logger.error(e);
+        } catch (Exception e) {
+            Throwable cause = ExceptionUtils.getRootCause(e);
+            if (cause == null) {
+                cause = e;
             }
-            if (e.getCause() instanceof RequestMethodNotAllowedException) {
+            logger.error("Error while processing " + requestMethod + " request " + requestPath + "; Cause: " + cause);
+            if (cause instanceof RequestMethodNotAllowedException) {
                 exchange.setStatusCode(HttpStatus.METHOD_NOT_ALLOWED.value());
-            } else if (e.getCause() instanceof SizeLimitExceededException) {
+            } else if (cause instanceof SizeLimitExceededException) {
                 exchange.setStatusCode(HttpStatus.PAYLOAD_TOO_LARGE.value());
-            } else if (e.getCause() instanceof MaxSessionsExceededException) {
+            } else if (cause instanceof MaxSessionsExceededException) {
                 exchange.setStatusCode(HttpStatus.SERVICE_UNAVAILABLE.value());
                 exchange.setReasonPhrase(MaxSessionsExceededException.MAX_SESSIONS_EXCEEDED);
             } else {
                 exchange.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
             }
-        } catch (Exception e) {
-            logger.error("Error while processing " + requestMethod + " request " + requestPath +
-                    "; Cause: " + e.getCause());
-            exchange.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
     }
 

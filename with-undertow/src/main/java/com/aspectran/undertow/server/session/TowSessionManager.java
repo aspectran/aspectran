@@ -46,7 +46,7 @@ public class TowSessionManager implements SessionManager, ApplicationAdapterAwar
 
     private static final Logger logger = LoggerFactory.getLogger(TowSessionManager.class);
 
-    private final AttachmentKey<TowSessionBridge> BRIDGED = AttachmentKey.create(TowSessionBridge.class);
+    private final AttachmentKey<TowSessionBridge> SESSION_BRIDGE = AttachmentKey.create(TowSessionBridge.class);
 
     private final Map<SessionListener, TowSessionListenerBridge> sessionListenerMappings = new ConcurrentHashMap<>();
 
@@ -125,14 +125,14 @@ public class TowSessionManager implements SessionManager, ApplicationAdapterAwar
         DefaultSession session = sessionManager.createSession(sessionId);
         TowSessionBridge sessionBridge = newTowSessionBridge(session);
         sessionConfig.setSessionId(exchange, session.getId());
-        exchange.putAttachment(BRIDGED, sessionBridge);
+        exchange.putAttachment(SESSION_BRIDGE, sessionBridge);
         return sessionBridge;
     }
 
     @Override
     public Session getSession(HttpServerExchange exchange, SessionConfig sessionConfig) {
         if (exchange != null) {
-            TowSessionBridge bridged = exchange.getAttachment(BRIDGED);
+            TowSessionBridge bridged = exchange.getAttachment(SESSION_BRIDGE);
             if (bridged != null) {
                 return bridged;
             }
@@ -146,7 +146,7 @@ public class TowSessionManager implements SessionManager, ApplicationAdapterAwar
         }
         TowSessionBridge sessionBridge = (TowSessionBridge)getSession(sessionId);
         if (sessionBridge != null && exchange != null) {
-            exchange.putAttachment(BRIDGED, sessionBridge);
+            exchange.putAttachment(SESSION_BRIDGE, sessionBridge);
             sessionBridge.requestStarted(exchange);
         }
         return sessionBridge;

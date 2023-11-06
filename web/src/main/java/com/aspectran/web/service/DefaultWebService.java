@@ -264,7 +264,7 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
         } catch (Exception e) {
             Throwable cause = ExceptionUtils.getRootCause(e);
             if (cause == null) {
-                cause = e.getCause();
+                cause = e;
             }
             logger.error("Error while processing " + requestMethod + " request " + requestUri + "; Cause: " + cause);
             if (!response.isCommitted()) {
