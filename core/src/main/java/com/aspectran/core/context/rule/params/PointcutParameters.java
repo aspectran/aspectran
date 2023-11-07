@@ -32,7 +32,7 @@ public class PointcutParameters extends AbstractParameters {
     private static final ParameterKey[] parameterKeys;
 
     static {
-        type = new ParameterKey("type", ValueType.STRING);
+        type = new ParameterKey("type", ValueType.STRING); // "wildcard" or "regexp"
         plus = new ParameterKey("+", ValueType.STRING, true, true);
         minus = new ParameterKey("-", ValueType.STRING, true, true);
         include = new ParameterKey("include", PointcutQualifierParameters.class, true, true);

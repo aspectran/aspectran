@@ -45,10 +45,6 @@ public class PointcutRule {
         return pointcutPatternRuleList;
     }
 
-    public void setPointcutPatternRuleList(List<PointcutPatternRule> pointcutPatternRuleList) {
-        this.pointcutPatternRuleList = pointcutPatternRuleList;
-    }
-
     public void addPointcutPatternRule(PointcutPatternRule pointcutPatternRule) {
         pointcutPatternRule.setPointcutType(pointcutType);
         touchPointcutPatternRuleList().add(pointcutPatternRule);
@@ -56,18 +52,8 @@ public class PointcutRule {
 
     public List<PointcutPatternRule> touchPointcutPatternRuleList() {
         if (pointcutPatternRuleList == null) {
-            newPointcutPatternRuleList();
+            pointcutPatternRuleList = new ArrayList<>();
         }
-        return pointcutPatternRuleList;
-    }
-
-    public List<PointcutPatternRule> newPointcutPatternRuleList() {
-        pointcutPatternRuleList = new ArrayList<>();
-        return pointcutPatternRuleList;
-    }
-
-    public List<PointcutPatternRule> newPointcutPatternRuleList(int initialCapacity) {
-        pointcutPatternRuleList = new ArrayList<>(initialCapacity);
         return pointcutPatternRuleList;
     }
 
@@ -92,9 +78,12 @@ public class PointcutRule {
     }
 
     public static PointcutRule newInstance(String[] patterns) {
+        if (patterns == null || patterns.length == 0) {
+            return null;
+        }
         PointcutRule pointcutRule = new PointcutRule(PointcutType.WILDCARD);
-        List<PointcutPatternRule> pointcutPatternRuleList = pointcutRule.newPointcutPatternRuleList();
-        List<PointcutPatternRule> excludePointcutPatternRuleList = pointcutRule.newPointcutPatternRuleList();
+        List<PointcutPatternRule> pointcutPatternRuleList = new ArrayList<>(patterns.length);
+        List<PointcutPatternRule> excludePointcutPatternRuleList = new ArrayList<>(patterns.length);
         for (String pattern : patterns) {
             if (pattern != null) {
                 pattern = pattern.trim();
@@ -117,13 +106,20 @@ public class PointcutRule {
                 }
             }
         }
-        for (PointcutPatternRule pointcutPatternRule : pointcutPatternRuleList) {
-            pointcutPatternRule.setPointcutType(pointcutRule.getPointcutType());
-            if (!excludePointcutPatternRuleList.isEmpty()) {
+        if (pointcutPatternRuleList.isEmpty() && excludePointcutPatternRuleList.isEmpty()) {
+            return null;
+        }
+        if (pointcutPatternRuleList.isEmpty()) {
+            PointcutPatternRule pointcutPatternRule = new PointcutPatternRule();
+            pointcutPatternRule.setExcludePointcutPatternRuleList(excludePointcutPatternRuleList);
+            pointcutRule.addPointcutPatternRule(pointcutPatternRule);
+        } else {
+            for (PointcutPatternRule pointcutPatternRule : pointcutPatternRuleList) {
+                pointcutPatternRule.setPointcutType(pointcutRule.getPointcutType());
                 pointcutPatternRule.setExcludePointcutPatternRuleList(excludePointcutPatternRuleList);
+                pointcutRule.addPointcutPatternRule(pointcutPatternRule);
             }
         }
-        pointcutRule.setPointcutPatternRuleList(pointcutPatternRuleList);
         return pointcutRule;
     }
 

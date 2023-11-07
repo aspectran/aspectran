@@ -259,19 +259,19 @@ public class JoinpointRule {
             }
         }
         if (qualifierParametersSize > 0) {
-            for (PointcutQualifierParameters includeQualifierParameters : qualifierParametersList) {
-                PointcutPatternRule pointcutPatternRule = createPointcutPatternRule(includeQualifierParameters);
+            for (PointcutQualifierParameters qualifierParameters : qualifierParametersList) {
+                PointcutPatternRule pointcutPatternRule = createPointcutPatternRule(qualifierParameters);
                 pointcutPatternRuleList.add(pointcutPatternRule);
             }
         }
         return pointcutPatternRuleList;
     }
 
-    private static PointcutPatternRule createPointcutPatternRule(PointcutQualifierParameters pointcutQualifierParameters) {
+    private static PointcutPatternRule createPointcutPatternRule(PointcutQualifierParameters qualifierParameters) {
         PointcutPatternRule pointcutPatternRule = null;
-        String translet = pointcutQualifierParameters.getString(PointcutQualifierParameters.translet);
-        String bean = pointcutQualifierParameters.getString(PointcutQualifierParameters.bean);
-        String method = pointcutQualifierParameters.getString(PointcutQualifierParameters.method);
+        String translet = qualifierParameters.getString(PointcutQualifierParameters.translet);
+        String bean = qualifierParameters.getString(PointcutQualifierParameters.bean);
+        String method = qualifierParameters.getString(PointcutQualifierParameters.method);
         if (StringUtils.hasLength(translet) || StringUtils.hasLength(bean) || StringUtils.hasLength(method)) {
             pointcutPatternRule = PointcutPatternRule.newInstance(translet, bean, method);
         }

@@ -27,7 +27,7 @@ import com.aspectran.core.context.rule.TransletRule;
  *
  * <p>Created: 2016. 2. 21.</p>
  */
-interface AnnotatedConfigRelater {
+public interface AnnotatedConfigRelater {
 
     void relate(Class<?> targetBeanClass, BeanRule beanRule) throws IllegalRuleException;
 

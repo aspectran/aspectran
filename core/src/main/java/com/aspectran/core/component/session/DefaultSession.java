@@ -198,6 +198,12 @@ public class DefaultSession implements Session {
         try (AutoLock ignored = autoLock.lock()) {
             requests--;
 
+            if (requests < 0) {
+                int old = requests;
+                requests = 0;
+                throw new IllegalStateException("Incomplete session transaction; requests=" + old);
+            }
+
             if (logger.isDebugEnabled()) {
                 logger.debug("Session " + getId() + " complete, active requests=" + requests);
             }

@@ -34,17 +34,17 @@ import java.util.concurrent.atomic.AtomicLong;
 @Component
 @Bean
 @Scope(ScopeType.SESSION)
-@Aspect("perSessionShellRequestCounter")
+@Aspect("perSessionWebRequestCounter")
 @Joinpoint(
         pointcut = {
-                "-: /**"
+                "+: /**"
         }
 )
-public class PerSessionShellRequestCounter implements Serializable {
+public class PerSessionWebRequestCounter implements Serializable {
 
-    private static final long serialVersionUID = -7254733724811233759L;
+    private static final long serialVersionUID = -1887943450985496469L;
 
-    private static final Logger logger = LoggerFactory.getLogger(PerSessionShellRequestCounter.class);
+    private static final Logger logger = LoggerFactory.getLogger(PerSessionWebRequestCounter.class);
 
     private final AtomicInteger requests = new AtomicInteger();
 
@@ -59,7 +59,7 @@ public class PerSessionShellRequestCounter implements Serializable {
     }
 
     @After
-    public void after(PerSessionShellRequestCounter counter) {
+    public void after(PerSessionWebRequestCounter counter) {
         stopTime.set(System.currentTimeMillis());
 
         if (logger.isDebugEnabled()) {

@@ -81,7 +81,7 @@ final class TowSessionListenerBridge implements SessionListener {
     }
 
     private TowSessionBridge wrapSession(com.aspectran.core.component.session.Session session) {
-        return towSessionManager.newTowSessionBridge(session);
+        return towSessionManager.createTowSessionBridge(session);
     }
 
     static HttpServerExchange getCurrentExchange() {

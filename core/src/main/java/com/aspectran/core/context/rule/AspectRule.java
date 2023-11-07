@@ -86,7 +86,7 @@ public class AspectRule implements BeanReferenceable {
     private String id;
 
     /**
-     * The lowest value has highest priority.
+     * The lowest value has the highest priority.
      * Normally starting with 0, with Integer.MAX_VALUE indicating the greatest value.
      * If it is the same value, the Aspect declared first takes precedence.
      */

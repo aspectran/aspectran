@@ -123,7 +123,7 @@ public class TowSessionManager implements SessionManager, ApplicationAdapterAwar
             sessionId = sessionManager.createSessionId(hashCode());
         }
         DefaultSession session = sessionManager.createSession(sessionId);
-        TowSessionBridge sessionBridge = newTowSessionBridge(session);
+        TowSessionBridge sessionBridge = createTowSessionBridge(session);
         sessionConfig.setSessionId(exchange, session.getId());
         exchange.putAttachment(SESSION_BRIDGE, sessionBridge);
         return sessionBridge;
@@ -159,7 +159,7 @@ public class TowSessionManager implements SessionManager, ApplicationAdapterAwar
         }
         DefaultSession session = sessionManager.getSession(sessionId);
         if (session != null) {
-            return newTowSessionBridge(session);
+            return createTowSessionBridge(session);
         } else {
             return null;
         }
@@ -256,7 +256,7 @@ public class TowSessionManager implements SessionManager, ApplicationAdapterAwar
         };
     }
 
-    TowSessionBridge newTowSessionBridge(com.aspectran.core.component.session.Session session) {
+    TowSessionBridge createTowSessionBridge(com.aspectran.core.component.session.Session session) {
         if (session == null) {
             throw new IllegalArgumentException("session must not be null");
         }
