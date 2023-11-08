@@ -127,24 +127,21 @@ public class TowSessionAdapter extends AbstractSessionAdapter {
     @Override
     public boolean isNew() {
         Session session = getSession(false);
-        if (session == null) {
-            return true;
-        }
-        return newSession;
+        return (session == null || newSession);
     }
 
     public Session getSession(boolean create) {
         HttpServerExchange exchange = super.getAdaptee();
-        SessionManager sm = exchange.getAttachment(SessionManager.ATTACHMENT_KEY);
-        SessionConfig sc = exchange.getAttachment(SessionConfig.ATTACHMENT_KEY);
-        if (sc == null || sm == null) {
+        SessionManager sessionManager = exchange.getAttachment(SessionManager.ATTACHMENT_KEY);
+        SessionConfig sessionConfig = exchange.getAttachment(SessionConfig.ATTACHMENT_KEY);
+        if (sessionConfig == null || sessionManager == null) {
             return null;
         }
 
-        Session session = sm.getSession(exchange, sc);
+        Session session = sessionManager.getSession(exchange, sessionConfig);
         if (session == null && create) {
             newSession = true;
-            return sm.createSession(exchange, sc);
+            return sessionManager.createSession(exchange, sessionConfig);
         }
         return session;
     }

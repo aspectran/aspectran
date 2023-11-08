@@ -27,7 +27,7 @@ public class SessionAgent {
 
     private final SessionHandler sessionHandler;
 
-    private volatile Session session;
+    private volatile String sessionId;
 
     public SessionAgent(SessionHandler sessionHandler) {
         this.sessionHandler = sessionHandler;
@@ -81,18 +81,23 @@ public class SessionAgent {
     }
 
     public Session getSession(boolean create) {
-        if (session != null) {
-            if (session.isValid()) {
-                return session;
-            }
-            session = null;
-        }
-        if (!create) {
+        if (sessionId == null && !create) {
             return null;
         }
-        String id = sessionHandler.createSessionId(hashCode());
-        session = sessionHandler.createSession(id);
-        return session;
+        if (sessionId != null) {
+            Session session = sessionHandler.getSession(sessionId);
+            if (session == null && create) {
+                session = createSession();
+            }
+            return session;
+        } else {
+            return createSession();
+        }
+    }
+
+    private Session createSession() {
+        sessionId = sessionHandler.createSessionId(hashCode());
+        return sessionHandler.createSession(sessionId);
     }
 
     public void invalidate() {
@@ -104,10 +109,7 @@ public class SessionAgent {
 
     public boolean isNew() {
         Session session = getSession(false);
-        if (session == null) {
-            return true;
-        }
-        return session.isNew();
+        return (session == null || session.isNew());
     }
 
     /**

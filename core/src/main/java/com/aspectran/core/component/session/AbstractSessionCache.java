@@ -102,8 +102,8 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
 
     /**
      * -1 means we never evict inactive sessions.
-     * 0 means we evict a session after the last request for it exits
-     * &gt;0 is the number of seconds after which we evict inactive sessions from the cache
+     * 0 means we evict a session after the last request for it exits.
+     * &gt;0 is the number of seconds after which we evict inactive sessions from the cache.
      */
     @Override
     public void setEvictionIdleSecs(int evictionTimeout) {
@@ -474,12 +474,12 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
      * @param session the session to check
      */
     @Override
-    public void checkInactiveSession(DefaultSession session) {
+    public boolean checkInactiveSession(DefaultSession session) {
         if (session == null) {
-            return;
+            return false;
         }
         if (logger.isTraceEnabled()) {
-            logger.trace("Checking for idle " +  session.getId());
+            logger.trace("Checking for idle session id=" +  session.getId());
         }
         try (AutoLock ignored = session.lock()) {
             if (getEvictionIdleSecs() > 0 && session.isIdleLongerThan(getEvictionIdleSecs()) &&
@@ -495,10 +495,12 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
                 }
                 doDelete(session.getId()); // detach from this cache
                 session.setResident(false);
+                return true;
             }
         } catch (Exception e) {
             logger.warn("Passivation of idle session " + session.getId() + " failed", e);
         }
+        return false;
     }
 
 }

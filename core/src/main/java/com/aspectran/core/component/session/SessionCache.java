@@ -64,7 +64,7 @@ public interface SessionCache {
     boolean isSaveOnCreate();
 
     /**
-     * Whether or not a session that is newly created should be
+     * Whether a session that is newly created should be
      * immediately saved. If false, a session that is created and
      * invalidated within a single request is never persisted.
      * @param saveOnCreate if true, immediately save the newly created session
@@ -77,7 +77,7 @@ public interface SessionCache {
     boolean isSaveOnInactiveEviction();
 
     /**
-     * Whether or not a a session that is about to be evicted should
+     * Whether a session that is about to be evicted should
      * be saved before being evicted.
      * @param saveOnEvict if true, save the session before eviction
      */
@@ -91,7 +91,7 @@ public interface SessionCache {
     /**
      * If the data for a session exists but is unreadable,
      * the SessionCache can instruct the SessionStore to delete it.
-     * @param removeUnloadableSessions whether or not SessionCache will delete
+     * @param removeUnloadableSessions whether SessionCache will delete
      *      session data that can not be loaded from the SessionStore
      */
     void setRemoveUnloadableSessions(boolean removeUnloadableSessions);
@@ -176,8 +176,9 @@ public interface SessionCache {
      * Check a Session to see if it might be appropriate to
      * evict or expire.
      * @param session the session object
+     * @return true if evicted session, false otherwise
      */
-    void checkInactiveSession(DefaultSession session);
+    boolean checkInactiveSession(DefaultSession session);
 
     Set<String> getAllSessions();
 

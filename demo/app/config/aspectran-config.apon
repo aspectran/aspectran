@@ -83,7 +83,7 @@ shell: {
         maxSessions: 1
         maxIdleSeconds: 20
         evictionIdleSeconds: 10
-        scavengingIntervalSeconds: 60
+        scavengingIntervalSeconds: 22
         enabled: true
     }
     historyFile: /logs/history.log

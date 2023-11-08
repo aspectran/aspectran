@@ -172,20 +172,44 @@ public class DefaultSessionManager extends AbstractSessionHandler
                 }
                 if (sessionManagerConfig.hasEvictionIdleSeconds()) {
                     int secs = sessionManagerConfig.getEvictionIdleSeconds();
+                    if (sessionStore == null && secs != SessionCache.NEVER_EVICT) {
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("Fixed to evictionIdleSeconds=-1 because there is no session store");
+                        }
+                        secs = SessionCache.NEVER_EVICT;
+                    }
                     sessionCache.setEvictionIdleSecs(secs);
                 }
                 if (sessionManagerConfig.hasSaveOnCreate()) {
                     boolean saveOnCreate = sessionManagerConfig.getSaveOnCreate();
+                    if (sessionStore == null && saveOnCreate) {
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("Fixed to saveOnCreate=false because there is no session store");
+                        }
+                        saveOnCreate = false;
+                    }
                     sessionCache.setSaveOnCreate(saveOnCreate);
                 }
                 if (sessionManagerConfig.hasSaveOnInactiveEviction()) {
                     boolean saveOnInactiveEviction = sessionManagerConfig.getSaveOnInactiveEviction();
+                    if (sessionStore == null && saveOnInactiveEviction) {
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("Fixed to saveOnInactiveEviction=false because there is no session store");
+                        }
+                        saveOnInactiveEviction = false;
+                    }
                     sessionCache.setSaveOnInactiveEviction(saveOnInactiveEviction);
                 }
                 if (sessionManagerConfig.hasRemoveUnloadableSessions()) {
                     boolean removeUnloadableSessions = sessionManagerConfig.getRemoveUnloadableSessions();
+                    if (sessionStore == null && removeUnloadableSessions) {
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("Fixed to removeUnloadableSessions=false because there is no session store");
+                        }
+                        removeUnloadableSessions = false;
+                    }
                     sessionCache.setRemoveUnloadableSessions(removeUnloadableSessions);
-                } else {
+                } else if (sessionStore != null) {
                     sessionCache.setRemoveUnloadableSessions(true);
                 }
             }

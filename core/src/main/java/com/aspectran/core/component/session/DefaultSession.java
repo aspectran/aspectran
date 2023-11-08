@@ -248,7 +248,7 @@ public class DefaultSession implements Session {
                 // sessions are immortal, they never expire
                 if (evictionIdleSecs < SessionCache.EVICT_ON_INACTIVITY) {
                     // we do not want to evict inactive sessions
-                    time = -1;
+                    time = -1L;
                     if (logger.isTraceEnabled()) {
                         logger.trace("Session " + getId() + " is immortal && no inactivity eviction");
                     }
@@ -264,20 +264,20 @@ public class DefaultSession implements Session {
                 // sessions are not immortal
                 if (evictionIdleSecs == SessionCache.NEVER_EVICT) {
                     // timeout is the time remaining until its expiry
-                    time = (remaining > 0 ? remaining : 0);
+                    time = Math.max(remaining, 0L);
                     if (logger.isTraceEnabled()) {
                         logger.trace("Session " + getId() + " no eviction");
                     }
                 } else if (evictionIdleSecs == SessionCache.EVICT_ON_SESSION_EXIT) {
                     // session will not remain in the cache, so no timeout
-                    time = -1;
+                    time = -1L;
                     if (logger.isTraceEnabled()) {
                         logger.trace("Session " + getId() + " evict on exit");
                     }
                 } else {
-                    // want to evict on idle: timer is lesser of the session's
+                    // want to evict on idle: timer is the lesser of the session's
                     // expiration remaining and the time to evict
-                    time = (remaining > 0 ? Math.min(maxInactive, TimeUnit.SECONDS.toMillis(evictionIdleSecs)) : 0L);
+                    time = (remaining > 0L ? Math.min(maxInactive, TimeUnit.SECONDS.toMillis(evictionIdleSecs)) : 0L);
                     if (logger.isTraceEnabled()) {
                         logger.trace("Session " + getId() + " timer set to lesser of maxIdleSeconds=" +
                                 (maxInactive / 1000L) + " and evictionIdleSeconds=" + evictionIdleSecs);

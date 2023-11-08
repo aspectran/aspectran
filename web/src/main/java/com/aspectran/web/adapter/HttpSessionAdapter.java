@@ -126,10 +126,7 @@ public class HttpSessionAdapter extends AbstractSessionAdapter {
     @Override
     public boolean isNew() {
         HttpSession session = getSession(false);
-        if (session == null) {
-            return true;
-        }
-        return session.isNew();
+        return (session == null || session.isNew());
     }
 
     public HttpSession getSession(boolean create) {

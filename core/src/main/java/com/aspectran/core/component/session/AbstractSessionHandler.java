@@ -276,17 +276,24 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
                 // roundtrips to the persistent store. Only do this if the HouseKeeper that
                 // does the scavenging is configured to actually scavenge
                 if (getHouseKeeper() != null && getHouseKeeper().isRunning()) {
-                    candidateSessionIdsForExpiry.add(session.getId());
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Session " + session.getId() + " is candidate for expiry");
-                    }
+                    addCandidateSessionIdForExpiry(session.getId());
                 } else {
                     invalidate(session.getId(), Session.DestroyedReason.TIMEOUT);
                 }
             } else {
                 // possibly evict the session
-                sessionCache.checkInactiveSession(session);
+                boolean evicted = sessionCache.checkInactiveSession(session);
+                if (evicted && getHouseKeeper() != null && getHouseKeeper().isRunning()) {
+                    addCandidateSessionIdForExpiry(session.getId());
+                }
             }
+        }
+    }
+
+    private void addCandidateSessionIdForExpiry(String id) {
+        candidateSessionIdsForExpiry.add(id);
+        if (logger.isDebugEnabled()) {
+            logger.debug("Session " + id + " is candidate for expiry");
         }
     }
 

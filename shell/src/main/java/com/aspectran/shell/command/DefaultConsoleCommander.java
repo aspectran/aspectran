@@ -38,6 +38,7 @@ import com.aspectran.shell.service.DefaultShellService;
 import com.aspectran.shell.service.ShellService;
 
 import java.io.File;
+import java.io.IOError;
 import java.io.PrintWriter;
 
 import static com.aspectran.core.context.config.AspectranConfig.WORK_PATH_PROPERTY_NAME;
@@ -173,6 +174,9 @@ public class DefaultConsoleCommander implements ConsoleCommander {
                     if (logger.isDebugEnabled()) {
                         logger.debug("Command read failed", e.getCause());
                     }
+                } catch (IOError e) {
+                    console.clearLine();
+                    break;
                 } catch (Throwable e) {
                     logger.error("Error executing shell command", e);
                 }

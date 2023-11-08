@@ -92,12 +92,12 @@ public interface SessionHandler extends Component {
      * when either the session has not been accessed for a
      * configurable amount of time, or the session itself
      * has passed its expiry.
-     *
+     * <p>
      * If it has passed its expiry, then we will mark it for
      * scavenging by next run of the HouseKeeper; if it has
      * been idle longer than the configured eviction period,
      * we evict from the cache.
-     *
+     * <p>
      * If none of the above are true, then the System timer
      * is inconsistent and the caller of this method will
      * need to reset the timer.
