@@ -167,7 +167,7 @@ public class DefaultSession implements Session {
     @Override
     public boolean access() {
         try (AutoLock ignored = autoLock.lock()) {
-            if (!isValid()) {
+            if (state != State.VALID) {
                 return false;
             }
 
@@ -379,17 +379,17 @@ public class DefaultSession implements Session {
     }
 
     @Override
-    public boolean isNew() {
+    public boolean isValid() {
         try (AutoLock ignored = autoLock.lock()) {
-            checkValidForRead();
-            return newSession;
+            return (state == State.VALID);
         }
     }
 
     @Override
-    public boolean isValid() {
+    public boolean isNew() {
         try (AutoLock ignored = autoLock.lock()) {
-            return (state == State.VALID);
+            checkValidForRead();
+            return newSession;
         }
     }
 
@@ -519,7 +519,7 @@ public class DefaultSession implements Session {
             tsb.append("id", sessionData.getId());
             tsb.append("state", state);
             tsb.append("requests", requests);
-            tsb.append("resident", resident);
+            tsb.appendForce("resident", resident);
             return tsb.toString();
         }
     }

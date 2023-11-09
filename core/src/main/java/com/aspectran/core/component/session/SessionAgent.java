@@ -107,6 +107,11 @@ public class SessionAgent {
         }
     }
 
+    public boolean isValid() {
+        Session session = getSession(false);
+        return (session != null && session.isValid());
+    }
+
     public boolean isNew() {
         Session session = getSession(false);
         return (session == null || session.isNew());

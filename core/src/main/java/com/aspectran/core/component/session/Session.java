@@ -50,11 +50,24 @@ public interface Session {
      */
     void invalidate();
 
+    /**
+     * Returns the reason why the session was destroyed.
+     * @return the destroyed reason
+     */
     DestroyedReason getDestroyedReason();
 
-    boolean isNew();
-
+    /**
+     * Returns whether it is a valid session or not.
+     * @return true if valid session, false otherwise
+     */
     boolean isValid();
+
+    /**
+     * Returns true if a new session was created for the request.
+     * @return true if the server has created a session,
+     *      but the client has not yet joined
+     */
+    boolean isNew();
 
     /**
      * Called when a session is first accessed by a request.

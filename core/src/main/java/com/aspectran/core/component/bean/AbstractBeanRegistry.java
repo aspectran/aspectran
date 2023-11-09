@@ -17,6 +17,7 @@ package com.aspectran.core.component.bean;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.adapter.RequestAdapter;
+import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.component.bean.scope.RequestScope;
 import com.aspectran.core.component.bean.scope.Scope;
 import com.aspectran.core.component.bean.scope.SessionScope;
@@ -187,10 +188,16 @@ abstract class AbstractBeanRegistry extends AbstractBeanFactory implements BeanR
     private SessionScope getSessionScope() {
         Activity activity = getActivityContext().getAvailableActivity();
         if (activity != null) {
-            return SessionScope.restore(activity, getBeanRuleRegistry());
-        } else {
-            return null;
+            SessionAdapter sessionAdapter = activity.getSessionAdapter();
+            if (sessionAdapter != null) {
+                SessionScope sessionScope = sessionAdapter.getSessionScope(false);
+                if (sessionScope == null) {
+                    sessionScope = SessionScope.restore(activity, getBeanRuleRegistry());
+                }
+                return sessionScope;
+            }
         }
+        return null;
     }
 
     @Override

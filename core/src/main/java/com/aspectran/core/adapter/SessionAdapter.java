@@ -33,7 +33,12 @@ public interface SessionAdapter {
      */
     <T> T getAdaptee();
 
-    SessionScope newSessionScope();
+    /**
+     * Returns the current session scope.
+     * @param create if true, if there is no currently created session area, a new one is created.
+     * @return the session scope
+     */
+    SessionScope getSessionScope(boolean create);
 
     /**
      * Returns a string containing the unique identifier assigned to this session.
@@ -77,7 +82,7 @@ public interface SessionAdapter {
      * this session open between client accesses.
      * After this interval, the session manager will invalidate the session.
      * The maximum time interval can be set with the {@code setMaxInactiveInterval} method.
-     * A negative time indicates the session should never timeout.
+     * A negative time indicates the session should never time out.
      * @return an integer specifying the number of seconds this session
      *         remains open between client requests
      * @since 1.5.0
@@ -122,6 +127,12 @@ public interface SessionAdapter {
      * Invalidates this session then unbinds any objects bound to it.
      */
     void invalidate();
+
+    /**
+     * Returns whether it is a valid session or not.
+     * @return true if valid session, false otherwise
+     */
+    boolean isValid();
 
     /**
      * Returns true if a new session was created for this request.

@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.adapter;
 
+import com.aspectran.core.component.bean.scope.SessionScope;
 import com.aspectran.core.util.ToStringBuilder;
 
 /**
@@ -25,6 +26,8 @@ import com.aspectran.core.util.ToStringBuilder;
 public abstract class AbstractSessionAdapter implements SessionAdapter {
 
     private final Object adaptee;
+
+    private volatile SessionScope sessionScope;
 
     /**
      * Instantiates a new AbstractSessionAdapter.
@@ -38,6 +41,18 @@ public abstract class AbstractSessionAdapter implements SessionAdapter {
     @SuppressWarnings("unchecked")
     public <T> T getAdaptee() {
         return (T)adaptee;
+    }
+
+    @Override
+    public SessionScope getSessionScope(boolean create) {
+        if (sessionScope == null && create) {
+            sessionScope = createSessionScope();
+        }
+        return sessionScope;
+    }
+
+    protected SessionScope createSessionScope() {
+        return new SessionScope();
     }
 
     @Override

@@ -45,7 +45,7 @@ public class HttpSessionAdapter extends AbstractSessionAdapter {
     }
 
     @Override
-    public SessionScope newSessionScope() {
+    public SessionScope createSessionScope() {
         return new HttpSessionScope();
     }
 
@@ -121,6 +121,12 @@ public class HttpSessionAdapter extends AbstractSessionAdapter {
         if (session != null) {
             session.invalidate();
         }
+    }
+
+    @Override
+    public boolean isValid() {
+        HttpSession session = getSession(false);
+        return (session != null);
     }
 
     @Override

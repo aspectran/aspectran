@@ -17,7 +17,6 @@ package com.aspectran.undertow.adapter;
 
 import com.aspectran.core.adapter.AbstractSessionAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
-import com.aspectran.core.component.bean.scope.SessionScope;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.server.session.Session;
 import io.undertow.server.session.SessionConfig;
@@ -43,11 +42,6 @@ public class TowSessionAdapter extends AbstractSessionAdapter {
     @SuppressWarnings("unchecked")
     public <T> T getAdaptee() {
         return (T)getSession(true);
-    }
-
-    @Override
-    public SessionScope newSessionScope() {
-        return new SessionScope();
     }
 
     @Override
@@ -122,6 +116,12 @@ public class TowSessionAdapter extends AbstractSessionAdapter {
         if (session != null) {
             session.invalidate(getAdaptee());
         }
+    }
+
+    @Override
+    public boolean isValid() {
+        Session session = getSession(false);
+        return (session != null);
     }
 
     @Override
