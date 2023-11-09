@@ -229,10 +229,15 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
         }
         try {
             SessionData data = sessionStore.load(id);
-            if (data == null) { // session doesn't exist
+            if (data != null) {
+                if (logger.isTraceEnabled()) {
+                    logger.trace("Session " + id + " loaded from session store " + sessionStore);
+                }
+                return new DefaultSession(data, sessionHandler, false);
+            } else {
+                // session doesn't exist
                 return null;
             }
-            return new DefaultSession(data, sessionHandler, false);
         } catch (UnreadableSessionDataException e) {
             // can't load the session, delete it
             if (isRemoveUnloadableSessions()) {
@@ -472,6 +477,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
      * Check a session for being inactive and thus being able to be evicted,
      * if eviction is enabled.
      * @param session the session to check
+     * @return true if evicted session, false otherwise
      */
     @Override
     public boolean checkInactiveSession(DefaultSession session) {

@@ -81,9 +81,11 @@ shell: {
     session: {
         workerName: sn0
         maxSessions: 1
-        maxIdleSeconds: 20
-        evictionIdleSeconds: 10
-        scavengingIntervalSeconds: 22
+        maxIdleSeconds: 1800
+        scavengingIntervalSeconds: 600
+        fileStore: {
+            storeDir: /work/_sessions/shell
+        }
         enabled: true
     }
     historyFile: /logs/history.log

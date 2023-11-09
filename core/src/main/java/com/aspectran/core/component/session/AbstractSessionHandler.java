@@ -273,27 +273,36 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
                 // session ids that need to be expired. This is an efficiency measure: as
                 // the expiration involves the SessionStore doing a delete, it is
                 // most efficient if it can be done as a bulk operation to eg reduce
-                // roundtrips to the persistent store. Only do this if the HouseKeeper that
-                // does the scavenging is configured to actually scavenge
-                if (getHouseKeeper() != null && getHouseKeeper().isRunning()) {
-                    addCandidateSessionIdForExpiry(session.getId());
-                } else {
+                // roundtrips to the persistent store.
+                if (!addCandidateSessionIdForExpiry(session.getId())) {
                     invalidate(session.getId(), Session.DestroyedReason.TIMEOUT);
                 }
             } else {
                 // possibly evict the session
                 boolean evicted = sessionCache.checkInactiveSession(session);
-                if (evicted && getHouseKeeper() != null && getHouseKeeper().isRunning()) {
+                if (evicted) {
+                    // for evicted sessions, their expiration is checked from the session store
                     addCandidateSessionIdForExpiry(session.getId());
                 }
             }
         }
     }
 
-    private void addCandidateSessionIdForExpiry(String id) {
-        candidateSessionIdsForExpiry.add(id);
-        if (logger.isDebugEnabled()) {
-            logger.debug("Session " + id + " is candidate for expiry");
+    /**
+     * Accumulate a list of session IDs that should expire. It will only do this
+     * if the HouseKeeper doing the cleaning is actually configured to do so.
+     * @param id Session ID to accumulate
+     * @return true if accumulation is successful otherwise false
+     */
+    private boolean addCandidateSessionIdForExpiry(String id) {
+        if (getHouseKeeper() != null && getHouseKeeper().isRunning()) {
+            candidateSessionIdsForExpiry.add(id);
+            if (logger.isDebugEnabled()) {
+                logger.debug("Session " + id + " is candidate for expiry");
+            }
+            return true;
+        } else {
+            return false;
         }
     }
 
