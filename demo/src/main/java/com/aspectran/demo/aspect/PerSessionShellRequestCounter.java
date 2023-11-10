@@ -63,7 +63,7 @@ public class PerSessionShellRequestCounter implements Serializable {
         stopTime.set(System.currentTimeMillis());
 
         if (logger.isDebugEnabled()) {
-            ToStringBuilder tsb = new ToStringBuilder(getClass().getSimpleName());
+            ToStringBuilder tsb = new ToStringBuilder(String.format("%s@%x", getClass().getSimpleName(), hashCode()));
             tsb.append("requests", counter.getRequests());
             tsb.append("start", counter.getStartTime());
             tsb.append("stop", counter.getStopTime());
