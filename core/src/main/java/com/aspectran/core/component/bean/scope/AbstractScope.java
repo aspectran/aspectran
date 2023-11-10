@@ -44,6 +44,10 @@ public abstract class AbstractScope implements Scope {
     public AbstractScope() {
     }
 
+    protected Map<BeanRule, BeanInstance> getScopedBeanInstances() {
+        return scopedBeanInstances;
+    }
+
     @Override
     public BeanInstance getBeanInstance(BeanRule beanRule) {
         return scopedBeanInstances.get(beanRule);
@@ -64,7 +68,7 @@ public abstract class AbstractScope implements Scope {
     }
 
     @Override
-    public BeanRule getBeanRule(Object bean) {
+    public BeanRule getBeanRuleByInstance(Object bean) {
         if (bean == null) {
             throw new IllegalArgumentException("bean must not be null");
         }
@@ -83,7 +87,7 @@ public abstract class AbstractScope implements Scope {
 
     @Override
     public void destroy(Object bean) throws Exception {
-        BeanRule beanRule = getBeanRule(bean);
+        BeanRule beanRule = getBeanRuleByInstance(bean);
         if (beanRule != null) {
             doDestroy(beanRule, bean);
             scopedBeanInstances.remove(beanRule);

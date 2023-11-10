@@ -190,11 +190,7 @@ abstract class AbstractBeanRegistry extends AbstractBeanFactory implements BeanR
         if (activity != null) {
             SessionAdapter sessionAdapter = activity.getSessionAdapter();
             if (sessionAdapter != null) {
-                SessionScope sessionScope = sessionAdapter.getSessionScope(false);
-                if (sessionScope == null) {
-                    sessionScope = SessionScope.restore(activity, getBeanRuleRegistry());
-                }
-                return sessionScope;
+                return sessionAdapter.getSessionScope(true);
             }
         }
         return null;
@@ -205,7 +201,7 @@ abstract class AbstractBeanRegistry extends AbstractBeanFactory implements BeanR
         ReadWriteLock scopeLock = singletonScope.getScopeLock();
         scopeLock.readLock().lock();
         try {
-            return (singletonScope.getBeanRule(bean) != null);
+            return (singletonScope.getBeanRuleByInstance(bean) != null);
         } finally {
             scopeLock.readLock().unlock();
         }
@@ -267,7 +263,7 @@ abstract class AbstractBeanRegistry extends AbstractBeanFactory implements BeanR
         boolean readLocked = true;
         scopeLock.readLock().lock();
         try {
-            BeanRule beanRule = singletonScope.getBeanRule(bean);
+            BeanRule beanRule = singletonScope.getBeanRuleByInstance(bean);
             if (beanRule != null) {
                 readLocked = false;
                 scopeLock.readLock().unlock();

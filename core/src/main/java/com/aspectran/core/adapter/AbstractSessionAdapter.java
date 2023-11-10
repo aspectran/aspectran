@@ -18,6 +18,8 @@ package com.aspectran.core.adapter;
 import com.aspectran.core.component.bean.scope.SessionScope;
 import com.aspectran.core.util.ToStringBuilder;
 
+import static com.aspectran.core.component.bean.scope.SessionScope.SESSION_SCOPE_ATTR_NAME;
+
 /**
  * The Abstract Class for session object adapter.
  *
@@ -45,8 +47,14 @@ public abstract class AbstractSessionAdapter implements SessionAdapter {
 
     @Override
     public SessionScope getSessionScope(boolean create) {
-        if (sessionScope == null && create) {
-            sessionScope = createSessionScope();
+        if (sessionScope == null) {
+            SessionScope loaded = getAttribute(SESSION_SCOPE_ATTR_NAME);
+            if (loaded != null) {
+                sessionScope = loaded;
+            } else if (create) {
+                sessionScope = createSessionScope();
+                setAttribute(SESSION_SCOPE_ATTR_NAME, sessionScope);
+            }
         }
         return sessionScope;
     }

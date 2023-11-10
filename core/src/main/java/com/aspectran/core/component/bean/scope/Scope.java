@@ -62,7 +62,7 @@ public interface Scope extends NonPersistent {
      * @param bean the bean object to find
      * @return the bean rule
      */
-    BeanRule getBeanRule(Object bean);
+    BeanRule getBeanRuleByInstance(Object bean);
 
     /**
      * Returns whether the bean rule exists in this scope.
