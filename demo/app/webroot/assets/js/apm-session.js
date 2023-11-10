@@ -47,7 +47,6 @@ const SessionStats = function(endpoint, refreshInterval) {
         if (heartbeatTimer) {
             clearTimeout(heartbeatTimer);
         }
-        let self = this;
         heartbeatTimer = setTimeout(function () {
             if (socket) {
                 socket.send("--ping--");

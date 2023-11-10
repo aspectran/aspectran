@@ -16,28 +16,28 @@ const LogTailer = function(endpoint, tailers) {
         socket = new WebSocket(url.href);
         let self = this;
         socket.onopen = function (event) {
-            self.printEventMessage("Socket connection successful");
+            printEventMessage("Socket connection successful");
             socket.send("JOIN:" + tailers);
-            self.heartbeatPing();
-            self.switchTailBite(false, true);
+            heartbeatPing();
+            switchTailBite(false, true);
         };
         socket.onmessage = function (event) {
             if (typeof event.data === "string") {
                 if (event.data === "--pong--") {
-                    self.heartbeatPing();
+                    heartbeatPing();
                 } else {
-                    self.parseMessage(event.data);
+                    parseMessage(event.data);
                 }
             }
         };
         socket.onclose = function (event) {
-            self.printEventMessage("Socket connection closed. Please refresh this page to try again!");
+            printEventMessage("Socket connection closed. Please refresh this page to try again!");
             self.closeSocket();
         };
         socket.onerror = function (event) {
             console.error("WebSocket error observed:", event);
-            self.printErrorMessage("Could not connect to WebSocket server");
-            self.switchTailBite(false, false);
+            printErrorMessage("Could not connect to WebSocket server");
+            switchTailBite(false, false);
             setTimeout(function () {
                 self.openSocket();
             }, 60000);
@@ -51,21 +51,20 @@ const LogTailer = function(endpoint, tailers) {
         }
     };
 
-    this.heartbeatPing = function() {
+     const heartbeatPing = function() {
         if (heartbeatTimer) {
             clearTimeout(heartbeatTimer);
         }
-        let self = this;
         heartbeatTimer = setTimeout(function () {
             if (socket) {
                 socket.send("--ping--");
-                self.heartbeatTimer = null;
-                self.heartbeatPing();
+                heartbeatTimer = null;
+                heartbeatPing();
             }
         }, 57000);
     };
 
-    this.parseMessage = function(msg) {
+    const parseMessage = function(msg) {
         let idx = msg.indexOf(":");
         if (idx !== -1) {
             let tailerName = msg.substring(0, idx);
@@ -75,30 +74,30 @@ const LogTailer = function(endpoint, tailers) {
             } else {
                 launchMissile(text);
             }
-            this.printMessage(tailerName, text);
+            printMessage(tailerName, text);
         }
     };
 
-    this.printMessage = function(tailer, text) {
+    const printMessage = function(tailer, text) {
         let line = $("<p/>").text(text);
         let logtail = $("#" + tailer);
         logtail.append(line);
         scrollToBottom(logtail);
     };
 
-    this.printEventMessage = function(text, tailer) {
+    const printEventMessage = function(text, tailer) {
         let logtail = (tailer ? $("#" + tailer) : $(".log-tail"));
         $("<p/>").addClass("event").html(text).appendTo(logtail);
         scrollToBottom(logtail);
     };
 
-    this.printErrorMessage = function(text, tailer) {
+    const printErrorMessage = function(text, tailer) {
         let logtail = (tailer ? $("#" + tailer) : $(".log-tail"));
         $("<p/>").addClass("event error").html(text).appendTo(logtail);
         scrollToBottom(logtail);
     };
 
-    this.switchTailBite = function(logtail, status) {
+    const switchTailBite = function(logtail, status) {
         if (!logtail) {
             logtail = $(".log-tail");
         }

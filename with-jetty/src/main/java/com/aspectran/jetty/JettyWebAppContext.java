@@ -97,7 +97,8 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
         setClassLoader(webAppClassLoader);
 
         if (webSocketInitializer != null) {
-            JakartaWebSocketServletContainerInitializer.configure(this, (servletContext, jettyWebSocketServerContainer) -> {
+            JakartaWebSocketServletContainerInitializer.configure(this,
+                    (servletContext, jettyWebSocketServerContainer) -> {
                 ServerContainer serverContainer = JakartaWebSocketServerContainer.ensureContainer(servletContext);
                 webSocketInitializer.customize(serverContainer);
                 ServerEndpointExporter serverEndpointExporter = new ServerEndpointExporter(context);
