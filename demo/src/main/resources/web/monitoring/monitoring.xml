@@ -4,24 +4,24 @@
 <aspectran>
 
     <settings>
-        <setting name="transletNamePrefix" value="/apm"/>
+        <setting name="transletNamePrefix" value="/monitoring"/>
     </settings>
 
     <translet name="/">
         <echo id="page">
-            <item name="headline">Application Performance Monitoring</item>
+            <item name="headline">Application Monitoring</item>
             <item name="teaser">Analyze application logging messages to visually express the frequency of web requests based on the user's session usage history.</item>
-            <item name="include">apm/apm</item>
+            <item name="include">monitoring/monitoring</item>
             <item name="style">fluid</item>
         </echo>
         <dispatch name="templates/default"/>
     </translet>
 
-    <bean id="logTailerManager" class="com.aspectran.demo.apm.log.LogTailerManager">
+    <bean id="logTailerManager" class="com.aspectran.demo.monitoring.log.LogTailerManager">
         <arguments>
-            <item>#{class:com.aspectran.demo.apm.log.LogtailEndpoint}</item>
+            <item>#{class:com.aspectran.demo.monitoring.log.LogtailEndpoint}</item>
             <item type="array">
-                <bean class="com.aspectran.demo.apm.log.LogTailer">
+                <bean class="com.aspectran.demo.monitoring.log.LogTailer">
                     <arguments>
                         <item>app-log</item>
                         <item>#{basePath}/logs/app.log</item>

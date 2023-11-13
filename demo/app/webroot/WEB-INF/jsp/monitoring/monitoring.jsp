@@ -1,12 +1,12 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<link rel="stylesheet" href="/assets/css/apm.css?20230808">
+<link rel="stylesheet" href="/assets/css/monitoring.css?20230808">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment-with-locales.min.js"></script>
-<script src="/assets/js/apm-log.js?20231110"></script>
-<script src="/assets/js/apm-session.js?20231110"></script>
+<script src="/assets/js/monitoring-log.js?20231110"></script>
+<script src="/assets/js/monitoring-session.js?20231110"></script>
 <div class="grid-x grid-padding-x">
     <div class="cell t20">
-        <h3>Application Logs
+        <h3>Server Logs
             <a id="anchor1" href="#anchor1" class="float-right"><span class="icon fi-anchor"></span></a></h3>
         <div class="log-container">
             <div class="log-header">
@@ -54,7 +54,7 @@
 </div>
 <script>
     $(function() {
-        let sessionStats = new SessionStats("/apm/stats", 5);
+        let sessionStats = new SessionStats("/monitoring/stats", 5);
         try {
             sessionStats.openSocket();
             $(".stats-wrap").fadeIn();
@@ -65,7 +65,7 @@
 </script>
 <script>
     $(function() {
-        let logTailer = new LogTailer("/apm/logtail", "app-log");
+        let logTailer = new LogTailer("/monitoring/logtail", "app-log");
         $(".bite-tail").click(function() {
             let logtail = $(this).closest(".log-container").find(".log-tail");
             logTailer.switchTailBite(logtail, !logtail.data("bite"));

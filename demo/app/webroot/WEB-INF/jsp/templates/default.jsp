@@ -63,7 +63,7 @@
                         </ul>
                     </li>
                     <li>
-                        <a href="/apm/">APM</a>
+                        <a href="/monitoring/">Monitoring</a>
                     </li>
                 </ul>
             </div>

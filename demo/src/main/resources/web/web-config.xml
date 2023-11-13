@@ -40,6 +40,6 @@
     <append resource="web/terminal/translet-interpreter.xml"/>
     <append resource="web/skylark/skylark.xml"/>
     <append resource="web/chat/chat.xml"/>
-    <append resource="web/apm/apm.xml"/>
+    <append resource="web/monitoring/monitoring.xml"/>
 
 </aspectran>

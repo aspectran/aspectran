@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.demo.apm.stats;
+package com.aspectran.demo.monitoring.stats;
 
 import com.aspectran.core.activity.InstantActivitySupport;
 import com.aspectran.core.component.bean.annotation.AvoidAdvice;
@@ -48,7 +48,7 @@ import java.util.TimerTask;
 
 @Component
 @ServerEndpoint(
-        value = "/apm/stats",
+        value = "/monitoring/stats",
         configurator = AspectranConfigurator.class
 )
 @AvoidAdvice
