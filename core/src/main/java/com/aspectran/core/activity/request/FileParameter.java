@@ -158,7 +158,7 @@ public class FileParameter {
     }
 
     /**
-     * Save an file as a given destination file.
+     * Save a file as a given destination file.
      * @param destFile the destination file
      * @param overwrite whether to overwrite if it already exists
      * @return a saved file
