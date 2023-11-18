@@ -31,7 +31,6 @@ public class MaxSessionsExceededException extends RuntimeException {
     private final int maxSessions;
 
     public MaxSessionsExceededException(String id, int maxSessions) {
-        //super("Maximum of sessions " + maxSessions + " exceeded");
         super("Session id=" + id + " was rejected as the maximum number of sessions " +
                 maxSessions + " has been hit");
         this.id = id;

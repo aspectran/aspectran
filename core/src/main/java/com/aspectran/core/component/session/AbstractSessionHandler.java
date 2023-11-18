@@ -19,7 +19,6 @@ import com.aspectran.core.component.AbstractComponent;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
-import com.aspectran.core.util.statistic.SampleStatistic;
 import com.aspectran.core.util.thread.AutoLock;
 import com.aspectran.core.util.thread.Scheduler;
 
@@ -43,7 +42,7 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractSessionHandler.class);
 
-    private final SampleStatistic sessionTimeStats = new SampleStatistic();
+    private final SessionStatistics statistics = new SessionStatistics();
 
     private final List<SessionListener> sessionListeners = new CopyOnWriteArrayList<>();
 
@@ -61,6 +60,11 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
 
     /** 30 minute default */
     private volatile int defaultMaxIdleSecs = 30 * 60;
+
+    @Override
+    public SessionStatistics getStatistics() {
+        return statistics;
+    }
 
     @Override
     public String getWorkerName() {
@@ -407,32 +411,7 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
     @Override
     public void recordSessionTime(DefaultSession session) {
         long now = System.currentTimeMillis();
-        sessionTimeStats.record(round((now - session.getSessionData().getCreated()) / 1000.0));
-    }
-
-    @Override
-    public long getSessionTimeMax() {
-        return sessionTimeStats.getMax();
-    }
-
-    @Override
-    public long getSessionTimeTotal() {
-        return sessionTimeStats.getTotal();
-    }
-
-    @Override
-    public long getSessionTimeMean() {
-        return Math.round(sessionTimeStats.getMean());
-    }
-
-    @Override
-    public double getSessionTimeStdDev() {
-        return sessionTimeStats.getStdDev();
-    }
-
-    @Override
-    public void statsReset() {
-        sessionTimeStats.reset();
+        getStatistics().recordTime(round((now - session.getSessionData().getCreated()) / 1000.0));
     }
 
     @Override

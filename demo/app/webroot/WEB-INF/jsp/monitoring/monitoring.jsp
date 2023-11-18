@@ -3,7 +3,7 @@
 <link rel="stylesheet" href="/assets/css/monitoring.css?20230808">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment-with-locales.min.js"></script>
 <script src="/assets/js/monitoring-log.js?20231110"></script>
-<script src="/assets/js/monitoring-session.js?20231110"></script>
+<script src="/assets/js/monitoring-session.js?20231118"></script>
 <div class="grid-x grid-padding-x">
     <div class="cell t20">
         <h3>Server Logs
@@ -32,8 +32,10 @@
             <dl>
                 <dt>Current Active Sessions</dt>
                 <dd><span class="number activeSessionCount">0</span></dd>
-                <dt>Max Active Sessions</dt>
-                <dd><span class="number highestSessionCount">0</span></dd>
+                <dt>Highest Active Sessions</dt>
+                <dd><span class="number highestActiveSessionCount">0</span></dd>
+                <dt>Evicted Sessions</dt>
+                <dd><span class="number evictedSessionCount">0</span></dd>
                 <dt title="Number of sessions created since system bootup">Created Sessions</dt>
                 <dd><span class="number createdSessionCount">0</span></dd>
                 <dt>Expired Sessions</dt>

@@ -211,47 +211,47 @@ public class TowSessionManager implements SessionManager, ApplicationAdapterAwar
         return new SessionManagerStatistics() {
             @Override
             public long getCreatedSessionCount() {
-                return sessionManager.getSessionCache().getCreatedSessionCount();
+                return sessionManager.getStatistics().getCreatedSessions();
             }
 
             @Override
             public long getMaxActiveSessions() {
-                return sessionManager.getSessionCache().getMaxSessions();
+                return sessionManager.getSessionCache().getMaxActiveSessions();
             }
 
             @Override
             public long getHighestSessionCount() {
-                return sessionManager.getSessionCache().getHighestSessionCount();
+                return sessionManager.getStatistics().getHighestActiveSessions();
             }
 
             @Override
             public long getActiveSessionCount() {
-                return sessionManager.getSessionCache().getActiveSessionCount();
+                return sessionManager.getStatistics().getActiveSessions();
             }
 
             @Override
             public long getExpiredSessionCount() {
-                return sessionManager.getSessionCache().getExpiredSessionCount();
+                return sessionManager.getStatistics().getExpiredSessions();
             }
 
             @Override
             public long getRejectedSessions() {
-                return sessionManager.getSessionCache().getRejectedSessionCount();
+                return sessionManager.getStatistics().getRejectedSessions();
             }
 
             @Override
             public long getMaxSessionAliveTime() {
-                return sessionManager.getSessionHandler().getSessionTimeMax();
+                return sessionManager.getStatistics().getSessionTimeMax();
             }
 
             @Override
             public long getAverageSessionAliveTime() {
-                return sessionManager.getSessionHandler().getSessionTimeMean();
+                return sessionManager.getStatistics().getSessionTimeMean();
             }
 
             @Override
             public long getStartTime() {
-                return startTime;
+                return sessionManager.getStatistics().getStartTime();
             }
         };
     }

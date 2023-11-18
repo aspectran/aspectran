@@ -18,12 +18,15 @@ package com.aspectran.demo.monitoring.stats;
 import com.aspectran.core.activity.InstantActivitySupport;
 import com.aspectran.core.component.bean.annotation.AvoidAdvice;
 import com.aspectran.core.component.bean.annotation.Component;
+import com.aspectran.core.component.session.DefaultSession;
+import com.aspectran.core.component.session.SessionHandler;
+import com.aspectran.core.component.session.SessionStatistics;
 import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
 import com.aspectran.undertow.server.TowServer;
+import com.aspectran.undertow.server.session.TowSessionManager;
 import com.aspectran.websocket.jsr356.AspectranConfigurator;
 import io.undertow.server.session.SessionManager;
-import io.undertow.server.session.SessionManagerStatistics;
 import io.undertow.servlet.api.DeploymentManager;
 import jakarta.websocket.CloseReason;
 import jakarta.websocket.OnClose;
@@ -132,12 +135,11 @@ public class SessionStatsEndpoint extends InstantActivitySupport {
             if (timer == null) {
                 timer = new Timer();
                 timer.schedule(new TimerTask() {
-
-                    private SessionStatistics oldStats;
+                    private SessionStatsPayload oldStats;
 
                     @Override
                     public void run() {
-                        SessionStatistics newStats = getSessionStats();
+                        SessionStatsPayload newStats = getSessionStats();
                         if (first || !newStats.equals(oldStats)) {
                             try {
                                 broadcast(newStats.toJson());
@@ -150,7 +152,6 @@ public class SessionStatsEndpoint extends InstantActivitySupport {
                             }
                         }
                     }
-
                 }, 0, refreshIntervalInSeconds * 1000L);
             }
         }
@@ -163,24 +164,26 @@ public class SessionStatsEndpoint extends InstantActivitySupport {
         }
     }
 
-    public SessionStatistics getSessionStats() {
+    private SessionStatsPayload getSessionStats() {
         TowServer towServer = getBeanRegistry().getBean("tow.server");
         DeploymentManager deploymentManager = towServer.getServletContainer().getDeployment("root.war");
         SessionManager sessionManager = deploymentManager.getDeployment().getSessionManager();
-        SessionManagerStatistics statistics = sessionManager.getStatistics();
+        SessionHandler sessionHandler = ((TowSessionManager)sessionManager).getSessionHandler();
+        SessionStatistics statistics = sessionHandler.getStatistics();
 
-        SessionStatistics stats = new SessionStatistics();
-        stats.setActiveSessionCount(statistics.getActiveSessionCount());
-        stats.setHighestSessionCount(statistics.getHighestSessionCount());
-        stats.setCreatedSessionCount(statistics.getCreatedSessionCount());
-        stats.setExpiredSessionCount(statistics.getExpiredSessionCount());
+        SessionStatsPayload stats = new SessionStatsPayload();
+        stats.setCreatedSessionCount(statistics.getCreatedSessions());
+        stats.setExpiredSessionCount(statistics.getExpiredSessions());
+        stats.setActiveSessionCount(statistics.getActiveSessions());
+        stats.setHighestActiveSessionCount(statistics.getHighestActiveSessions());
+        stats.setEvictedSessionCount(statistics.getEvictedSessions());
         stats.setRejectedSessionCount(statistics.getRejectedSessions());
 
         // Current Users
         List<String> currentSessions = new ArrayList<>();
-        Set<String> sessionIds = sessionManager.getActiveSessions();
+        Set<String> sessionIds = sessionHandler.getSessionCache().getAllSessions();
         for (String sessionId : sessionIds) {
-            io.undertow.server.session.Session session = sessionManager.getSession(sessionId);
+            DefaultSession session = sessionHandler.getSession(sessionId);
             if (session != null) {
                 currentSessions.add("1:Session " + session.getId() + " created at " +
                         formatTime(session.getCreationTime()));

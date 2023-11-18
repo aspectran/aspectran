@@ -1,5 +1,5 @@
 .stats {
-    height: 220px;
+    height: 260px;
 }
 .stats dt {
     float: left;
@@ -19,7 +19,7 @@
 }
 
 .sessions-wrap {
-    height: 220px;
+    height: 260px;
     overflow-y: auto;
     list-style-type: none;
 }

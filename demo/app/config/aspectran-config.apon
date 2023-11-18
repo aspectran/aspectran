@@ -80,7 +80,7 @@ shell: {
     ]
     session: {
         workerName: sn0
-        maxSessions: 1
+        maxActiveSessions: 1
         maxIdleSeconds: 1800
         scavengingIntervalSeconds: 600
         fileStore: {

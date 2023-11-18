@@ -26,7 +26,7 @@ import java.io.IOException;
 public class SessionManagerConfig extends AbstractParameters {
 
     private static final ParameterKey workerName;
-    private static final ParameterKey maxSessions;
+    private static final ParameterKey maxActiveSessions;
     private static final ParameterKey maxIdleSeconds;
     private static final ParameterKey evictionIdleSeconds;
     private static final ParameterKey scavengingIntervalSeconds;
@@ -41,7 +41,7 @@ public class SessionManagerConfig extends AbstractParameters {
 
     static {
         workerName = new ParameterKey("workerName", ValueType.STRING);
-        maxSessions = new ParameterKey("maxSessions", ValueType.INT);
+        maxActiveSessions = new ParameterKey("maxActiveSessions", ValueType.INT);
         maxIdleSeconds = new ParameterKey("maxIdleSeconds", ValueType.INT);
         evictionIdleSeconds = new ParameterKey("evictionIdleSeconds", ValueType.INT);
         scavengingIntervalSeconds = new ParameterKey("scavengingIntervalSeconds", ValueType.INT);
@@ -54,7 +54,7 @@ public class SessionManagerConfig extends AbstractParameters {
 
         parameterKeys = new ParameterKey[] {
                 workerName,
-                maxSessions,
+                maxActiveSessions,
                 maxIdleSeconds,
                 evictionIdleSeconds,
                 scavengingIntervalSeconds,
@@ -93,17 +93,17 @@ public class SessionManagerConfig extends AbstractParameters {
         return hasValue(workerName);
     }
 
-    public int getMaxSessions() {
-        return getInt(maxSessions, 0);
+    public int getMaxActiveSessions() {
+        return getInt(maxActiveSessions, 0);
     }
 
-    public SessionManagerConfig setMaxSessions(int maxSessions) {
-        putValue(SessionManagerConfig.maxSessions, maxSessions);
+    public SessionManagerConfig setMaxActiveSessions(int maxActiveSessions) {
+        putValue(SessionManagerConfig.maxActiveSessions, maxActiveSessions);
         return this;
     }
 
-    public boolean hasMaxSessions() {
-        return hasValue(maxSessions);
+    public boolean hasMaxActiveSessions() {
+        return hasValue(maxActiveSessions);
     }
 
     public int getMaxIdleSeconds() {

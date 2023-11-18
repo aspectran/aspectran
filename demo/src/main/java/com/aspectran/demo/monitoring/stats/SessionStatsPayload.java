@@ -23,35 +23,21 @@ import java.util.Arrays;
 /**
  * <p>Created: 2020/01/11</p>
  */
-public class SessionStatistics {
-
-    private long activeSessionCount;
-
-    private long highestSessionCount;
+public class SessionStatsPayload {
 
     private long createdSessionCount;
 
     private long expiredSessionCount;
 
+    private long activeSessionCount;
+
+    private long highestActiveSessionCount;
+
+    private long evictedSessionCount;
+
     private long rejectedSessionCount;
 
     private String[] currentSessions;
-
-    public long getActiveSessionCount() {
-        return activeSessionCount;
-    }
-
-    public void setActiveSessionCount(long activeSessionCount) {
-        this.activeSessionCount = activeSessionCount;
-    }
-
-    public long getHighestSessionCount() {
-        return highestSessionCount;
-    }
-
-    public void setHighestSessionCount(long highestSessionCount) {
-        this.highestSessionCount = highestSessionCount;
-    }
 
     public long getCreatedSessionCount() {
         return createdSessionCount;
@@ -67,6 +53,30 @@ public class SessionStatistics {
 
     public void setExpiredSessionCount(long expiredSessionCount) {
         this.expiredSessionCount = expiredSessionCount;
+    }
+
+    public long getEvictedSessionCount() {
+        return evictedSessionCount;
+    }
+
+    public long getActiveSessionCount() {
+        return activeSessionCount;
+    }
+
+    public void setActiveSessionCount(long activeSessionCount) {
+        this.activeSessionCount = activeSessionCount;
+    }
+
+    public void setEvictedSessionCount(long evictedSessionCount) {
+        this.evictedSessionCount = evictedSessionCount;
+    }
+
+    public long getHighestActiveSessionCount() {
+        return highestActiveSessionCount;
+    }
+
+    public void setHighestActiveSessionCount(long highestActiveSessionCount) {
+        this.highestActiveSessionCount = highestActiveSessionCount;
     }
 
     public long getRejectedSessionCount() {
@@ -90,14 +100,15 @@ public class SessionStatistics {
         if (this == other) {
             return true;
         }
-        if (!(other instanceof SessionStatistics)) {
+        if (!(other instanceof SessionStatsPayload)) {
             return false;
         }
-        SessionStatistics stats = (SessionStatistics)other;
-        if (stats.activeSessionCount != activeSessionCount ||
-                stats.highestSessionCount != highestSessionCount ||
-                stats.createdSessionCount != createdSessionCount ||
+        SessionStatsPayload stats = (SessionStatsPayload)other;
+        if (stats.createdSessionCount != createdSessionCount ||
                 stats.expiredSessionCount != expiredSessionCount ||
+                stats.evictedSessionCount != evictedSessionCount ||
+                stats.activeSessionCount != activeSessionCount ||
+                stats.highestActiveSessionCount != highestActiveSessionCount ||
                 stats.rejectedSessionCount != rejectedSessionCount) {
             return false;
         }

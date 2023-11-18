@@ -364,6 +364,7 @@ public class DefaultSession implements Session {
             } finally {
                 // mark as invalid
                 state = State.INVALID;
+                sessionHandler.getStatistics().sessionExpired();
                 sessionHandler.recordSessionTime(this);
             }
         }

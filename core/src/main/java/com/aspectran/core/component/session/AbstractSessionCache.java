@@ -90,6 +90,10 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
         return sessionStore;
     }
 
+    protected SessionStatistics getStatistics() {
+        return sessionHandler.getStatistics();
+    }
+
     @Override
     public boolean isClusterEnabled() {
         return clusterEnabled;

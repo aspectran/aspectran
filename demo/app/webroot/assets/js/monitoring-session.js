@@ -58,7 +58,8 @@ const SessionStats = function(endpoint, refreshInterval) {
 
     const printStats = function(stats) {
         $(".activeSessionCount").text(stats.activeSessionCount);
-        $(".highestSessionCount").text(stats.highestSessionCount);
+        $(".highestActiveSessionCount").text(stats.highestActiveSessionCount);
+        $(".evictedSessionCount").text(stats.evictedSessionCount);
         $(".createdSessionCount").text(stats.createdSessionCount);
         $(".expiredSessionCount").text(stats.expiredSessionCount);
         $(".rejectedSessionCount").text(stats.rejectedSessionCount);

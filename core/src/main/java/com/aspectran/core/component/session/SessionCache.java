@@ -32,16 +32,16 @@ public interface SessionCache {
 
     boolean isClusterEnabled();
 
-    int getMaxSessions();
+    int getMaxActiveSessions();
 
     /**
      * Sets the maximum number of active sessions allowed in this session cache.
      * The number of active sessions exceeds this limit, attempts to create new sessions
      * will be rejected.
      * If set to 0 (the default), there is no limit.
-     * @param maxSessions the maximum number of active sessions allowed in this session cache
+     * @param maxActiveSessions the maximum number of active sessions allowed in this session cache
      */
-    void setMaxSessions(int maxSessions);
+    void setMaxActiveSessions(int maxActiveSessions);
 
     int getEvictionIdleSecs();
 
@@ -181,30 +181,6 @@ public interface SessionCache {
     boolean checkInactiveSession(DefaultSession session);
 
     Set<String> getAllSessions();
-
-    /**
-     * @return the number of sessions in the cache
-     */
-    long getActiveSessionCount();
-
-    /**
-     * @return the max number of sessions in the cache
-     */
-    long getHighestSessionCount();
-
-    /**
-     * @return a running total of sessions in the cache
-     */
-    long getCreatedSessionCount();
-
-    long getExpiredSessionCount();
-
-    long getRejectedSessionCount();
-
-    /**
-     * Resets the running total session count in the cache.
-     */
-    void resetStatistics();
 
     void destroy();
 

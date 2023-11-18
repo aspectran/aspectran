@@ -26,6 +26,8 @@ import com.aspectran.core.util.thread.Scheduler;
  */
 public interface SessionHandler extends Component {
 
+    SessionStatistics getStatistics();
+
     String getWorkerName();
 
     Scheduler getScheduler();
@@ -155,30 +157,5 @@ public interface SessionHandler extends Component {
      * @param session the session whose time to record
      */
     void recordSessionTime(DefaultSession session);
-
-    /**
-     * @return the maximum amount of time session remained valid
-     */
-    long getSessionTimeMax();
-
-    /**
-     * @return the total amount of time all sessions remained valid
-     */
-    long getSessionTimeTotal();
-
-    /**
-     * @return the mean amount of time session remained valid
-     */
-    long getSessionTimeMean();
-
-    /**
-     * @return the standard deviation of amount of time session remained valid
-     */
-    double getSessionTimeStdDev();
-
-    /**
-     * Resets the session usage statistics.
-     */
-    void statsReset();
 
 }

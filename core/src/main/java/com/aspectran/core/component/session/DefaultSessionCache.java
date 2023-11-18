@@ -17,14 +17,12 @@ package com.aspectran.core.component.session;
 
 import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
-import com.aspectran.core.util.statistic.CounterStatistic;
 import com.aspectran.core.util.thread.AutoLock;
 
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Function;
 
 /**
@@ -39,27 +37,21 @@ public class DefaultSessionCache extends AbstractSessionCache {
     /** the cache of sessions in a HashMap */
     private final Map<String, DefaultSession> sessions = new ConcurrentHashMap<>();
 
-    private final CounterStatistic statistics = new CounterStatistic();
-
-    private final AtomicLong expiredSessionCount = new AtomicLong();
-
-    private final AtomicLong rejectedSessionCount = new AtomicLong();
-
-    /** Determines the maximum number of active sessions allowed. */
-    private volatile int maxSessions;
+    /** Determines the maximum number of concurrent active sessions allowed. */
+    private volatile int maxActiveSessions;
 
     public DefaultSessionCache(SessionHandler sessionHandler, SessionStore sessionStore, boolean clusterEnabled) {
         super(sessionHandler, sessionStore, clusterEnabled);
     }
 
     @Override
-    public int getMaxSessions() {
-        return maxSessions;
+    public int getMaxActiveSessions() {
+        return maxActiveSessions;
     }
 
     @Override
-    public void setMaxSessions(int maxSessions) {
-        this.maxSessions = maxSessions;
+    public void setMaxActiveSessions(int maxActiveSessions) {
+        this.maxActiveSessions = maxActiveSessions;
     }
 
     @Override
@@ -86,7 +78,7 @@ public class DefaultSessionCache extends AbstractSessionCache {
             checkMaxSessions(id);
             DefaultSession session = mappingFunction.apply(k);
             if (session != null) {
-                statistics.increment();
+                getStatistics().sessionCreated();
             }
             return session;
         });
@@ -96,8 +88,7 @@ public class DefaultSessionCache extends AbstractSessionCache {
     protected DefaultSession doDelete(String id) {
         DefaultSession session = sessions.remove(id);
         if (session != null) {
-            statistics.decrement();
-            expiredSessionCount.incrementAndGet();
+            getStatistics().sessionEvicted();
         }
         return session;
     }
@@ -108,50 +99,18 @@ public class DefaultSessionCache extends AbstractSessionCache {
     }
 
     private void checkMaxSessions(String id) {
-        if (maxSessions > 0 && statistics.getCurrent() >= maxSessions) {
-            rejectedSessionCount.incrementAndGet();
+        if (maxActiveSessions > 0 && getStatistics().getActiveSessions() >= maxActiveSessions) {
+            getStatistics().sessionRejected();
             if (logger.isDebugEnabled()) {
                 logger.debug("Reject session id=" + id + "; Exceeded maximum number of sessions allowed");
             }
-            throw new MaxSessionsExceededException(id, maxSessions);
+            throw new MaxSessionsExceededException(id, maxActiveSessions);
         }
     }
 
     @Override
     public Set<String> getAllSessions() {
         return sessions.keySet();
-    }
-
-    @Override
-    public long getActiveSessionCount() {
-        return statistics.getCurrent();
-    }
-
-    @Override
-    public long getHighestSessionCount() {
-        return statistics.getMax();
-    }
-
-    @Override
-    public long getCreatedSessionCount() {
-        return statistics.getTotal();
-    }
-
-    @Override
-    public long getExpiredSessionCount() {
-        return expiredSessionCount.get();
-    }
-
-    @Override
-    public long getRejectedSessionCount() {
-        return rejectedSessionCount.get();
-    }
-
-    @Override
-    public void resetStatistics() {
-        statistics.reset();
-        expiredSessionCount.set(0L);
-        rejectedSessionCount.set(0L);
     }
 
     @Override

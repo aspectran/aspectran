@@ -166,9 +166,9 @@ public class DefaultSessionManager extends AbstractSessionHandler
 
             DefaultSessionCache sessionCache = new DefaultSessionCache(this, sessionStore, clusterEnabled);
             if (sessionManagerConfig != null) {
-                if (sessionManagerConfig.hasMaxSessions()) {
-                    int maxSessions = sessionManagerConfig.getMaxSessions();
-                    sessionCache.setMaxSessions(maxSessions);
+                if (sessionManagerConfig.hasMaxActiveSessions()) {
+                    int maxActiveSessions = sessionManagerConfig.getMaxActiveSessions();
+                    sessionCache.setMaxActiveSessions(maxActiveSessions);
                 }
                 if (sessionManagerConfig.hasEvictionIdleSeconds()) {
                     int secs = sessionManagerConfig.getEvictionIdleSeconds();
