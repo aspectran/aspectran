@@ -199,9 +199,9 @@ public class DefaultSession implements Session {
             requests--;
 
             if (requests < 0) {
-                int old = requests;
+                int temp = requests;
                 requests = 0;
-                throw new IllegalStateException("Incomplete session transaction; requests=" + old);
+                throw new IllegalStateException("Incomplete session transaction; requests=" + temp);
             }
 
             if (logger.isDebugEnabled()) {

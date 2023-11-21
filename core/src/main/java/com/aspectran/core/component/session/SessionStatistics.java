@@ -25,21 +25,23 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 public class SessionStatistics {
 
-    private final CounterStatistic creationCount = new CounterStatistic();
+    private final CounterStatistic activationCount = new CounterStatistic();
+
+    private final AtomicLong creationCount = new AtomicLong();
 
     private final AtomicLong expirationCount = new AtomicLong();
 
     private final AtomicLong rejectionCount = new AtomicLong();
 
-    private final SampleStatistic timeStats = new SampleStatistic();
+    private final SampleStatistic timeRecord = new SampleStatistic();
 
-    private final AtomicLong startTime = new AtomicLong();
+    private final AtomicLong startTime = new AtomicLong(System.currentTimeMillis());
 
     /**
      * @return total number of sessions created
      */
     public long getCreatedSessions() {
-        return creationCount.getTotal();
+        return creationCount.get();
     }
 
     /**
@@ -53,21 +55,21 @@ public class SessionStatistics {
      * @return the number of valid sessions in the session cache
      */
     public long getActiveSessions() {
-        return creationCount.getCurrent();
+        return activationCount.getCurrent();
     }
 
     /**
      * @return the highest number of sessions that have been active at a single time
      */
     public long getHighestActiveSessions() {
-        return creationCount.getMax();
+        return activationCount.getMax();
     }
 
     /**
      * @return the number of valid sessions temporarily evicted from the session cache
      */
     public long getEvictedSessions() {
-        return (getCreatedSessions() - getExpiredSessions() - getActiveSessions());
+        return (getCreatedSessions() - getExpiredSessions() - activationCount.getCurrent());
     }
 
     /**
@@ -81,28 +83,28 @@ public class SessionStatistics {
      * @return the maximum amount of time session remained valid
      */
     public long getSessionTimeMax() {
-        return timeStats.getMax();
+        return timeRecord.getMax();
     }
 
     /**
      * @return the total amount of time all sessions remained valid
      */
     public long getSessionTimeTotal() {
-        return timeStats.getTotal();
+        return timeRecord.getTotal();
     }
 
     /**
      * @return the mean amount of time session remained valid
      */
     public long getSessionTimeMean() {
-        return Math.round(timeStats.getMean());
+        return Math.round(timeRecord.getMean());
     }
 
     /**
      * @return the standard deviation of amount of time session remained valid
      */
     public double getSessionTimeStdDev() {
-        return timeStats.getStdDev();
+        return timeRecord.getStdDev();
     }
 
     /**
@@ -115,24 +117,29 @@ public class SessionStatistics {
     /**
      * Resets the session usage statistics.
      */
-    public void resetStatistics() {
-        creationCount.reset();
+    public void reset() {
+        activationCount.reset();
+        creationCount.set(0L);
         expirationCount.set(0L);
         rejectionCount.set(0L);
-        timeStats.reset();
+        timeRecord.reset();
         startTime.set(System.currentTimeMillis());
     }
 
     protected void sessionCreated() {
-        creationCount.increment();
-    }
-
-    protected void sessionEvicted() {
-        creationCount.decrement();
+        creationCount.incrementAndGet();
     }
 
     protected void sessionExpired() {
         expirationCount.incrementAndGet();
+    }
+
+    protected void sessionActivated() {
+        activationCount.increment();
+    }
+
+    protected void sessionEvicted() {
+        activationCount.decrement();
     }
 
     protected void sessionRejected() {
@@ -145,7 +152,7 @@ public class SessionStatistics {
      * @param sample the value to record.
      */
     protected void recordTime(long sample) {
-        timeStats.record(sample);
+        timeRecord.record(sample);
     }
 
 }

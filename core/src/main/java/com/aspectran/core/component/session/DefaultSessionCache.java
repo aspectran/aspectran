@@ -78,7 +78,7 @@ public class DefaultSessionCache extends AbstractSessionCache {
             checkMaxSessions(id);
             DefaultSession session = mappingFunction.apply(k);
             if (session != null) {
-                getStatistics().sessionCreated();
+                getStatistics().sessionActivated();
             }
             return session;
         });

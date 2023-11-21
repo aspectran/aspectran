@@ -161,6 +161,7 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
         long maxInactiveInterval = (defaultMaxIdleSecs > 0 ? defaultMaxIdleSecs * 1000L : -1L);
         try {
             DefaultSession session = sessionCache.add(id, now, maxInactiveInterval);
+            getStatistics().sessionCreated();
             fireSessionCreatedListeners(session);
             return session;
         } catch (MaxSessionsExceededException e) {

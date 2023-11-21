@@ -139,7 +139,7 @@ public class SessionStatsEndpoint extends InstantActivitySupport {
 
                     @Override
                     public void run() {
-                        SessionStatsPayload newStats = getSessionStats();
+                        SessionStatsPayload newStats = getSessionStatsPayload();
                         if (first || !newStats.equals(oldStats)) {
                             try {
                                 broadcast(newStats.toJson());
@@ -164,7 +164,7 @@ public class SessionStatsEndpoint extends InstantActivitySupport {
         }
     }
 
-    private SessionStatsPayload getSessionStats() {
+    private SessionStatsPayload getSessionStatsPayload() {
         TowServer towServer = getBeanRegistry().getBean("tow.server");
         DeploymentManager deploymentManager = towServer.getServletContainer().getDeployment("root.war");
         SessionManager sessionManager = deploymentManager.getDeployment().getSessionManager();
@@ -178,6 +178,7 @@ public class SessionStatsEndpoint extends InstantActivitySupport {
         stats.setHighestActiveSessionCount(statistics.getHighestActiveSessions());
         stats.setEvictedSessionCount(statistics.getEvictedSessions());
         stats.setRejectedSessionCount(statistics.getRejectedSessions());
+        stats.setStartTime(formatTime(statistics.getStartTime()));
 
         // Current Users
         List<String> currentSessions = new ArrayList<>();

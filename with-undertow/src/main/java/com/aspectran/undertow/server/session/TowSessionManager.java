@@ -52,8 +52,6 @@ public class TowSessionManager implements SessionManager, ApplicationAdapterAwar
 
     private final DefaultSessionManager sessionManager = new DefaultSessionManager();
 
-    private volatile long startTime;
-
     @Override
     public void setApplicationAdapter(ApplicationAdapter applicationAdapter) {
         sessionManager.setApplicationAdapter(applicationAdapter);
@@ -90,7 +88,6 @@ public class TowSessionManager implements SessionManager, ApplicationAdapterAwar
     public void start() {
         try {
             sessionManager.initialize();
-            startTime = System.currentTimeMillis();
         } catch (Exception e) {
             throw new RuntimeException("Error initializing TowSessionManager", e);
         }
