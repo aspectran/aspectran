@@ -18,7 +18,6 @@ package com.aspectran.undertow.server;
 import com.aspectran.core.component.bean.ablility.DisposableBean;
 import com.aspectran.core.component.bean.ablility.InitializableBean;
 import com.aspectran.core.component.session.SessionHandler;
-import com.aspectran.core.component.session.SessionStatistics;
 import com.aspectran.core.lang.NonNull;
 import com.aspectran.core.lang.Nullable;
 import com.aspectran.core.util.lifecycle.AbstractLifeCycle;
@@ -246,16 +245,6 @@ public class TowServer extends AbstractLifeCycle implements InitializableBean, D
             }
         }
         return null;
-    }
-
-    public SessionStatistics getSessionStatistics(String deploymentName) {
-        SessionHandler sessionHandler = getSessionHandler(deploymentName);
-        return sessionHandler.getStatistics();
-    }
-
-    public SessionStatistics getSessionStatisticsByPath(String path) {
-        SessionHandler sessionHandler = getSessionHandlerByPath(path);
-        return sessionHandler.getStatistics();
     }
 
     @Override
