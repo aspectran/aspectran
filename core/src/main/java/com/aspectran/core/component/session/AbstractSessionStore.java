@@ -34,19 +34,19 @@ public abstract class AbstractSessionStore extends AbstractComponent implements 
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractSessionStore.class);
 
-    private static final int DEFAULT_GRACE_PERIOD_SECS = 60 * 60; //default of 1hr
+    public static final int DEFAULT_GRACE_PERIOD_SECS = 60 * 60; //default of 1hr
 
-    private static final int DEFAULT_SAVE_PERIOD_SECS = 0;
+    public static final int DEFAULT_SAVE_PERIOD_SECS = 0;
 
     private int gracePeriodSecs = DEFAULT_GRACE_PERIOD_SECS;
 
     private int savePeriodSecs = DEFAULT_SAVE_PERIOD_SECS; // time in seconds between saves
 
+    private Set<String> nonPersistentAttributes;
+
     private long lastExpiryCheckTime = 0L; // last time in ms that getExpired was called
 
     private long lastOrphanSweepTime = 0L; // last time in ms that we deleted orphaned sessions
-
-    private Set<String> nonPersistentAttributes;
 
     public int getGracePeriodSecs() {
         return gracePeriodSecs;
@@ -171,7 +171,7 @@ public abstract class AbstractSessionStore extends AbstractComponent implements 
             // if we have never checked for old expired sessions, then only find
             // those that are very old so we don't find sessions that other nodes
             // that are also starting up find
-            if (lastExpiryCheckTime <= 0) {
+            if (lastExpiryCheckTime <= 0L) {
                 time = now - TimeUnit.SECONDS.toMillis(gracePeriodSecs * 3L);
             } else {
                 // only do the check once every gracePeriod to avoid expensive searches,
@@ -180,7 +180,7 @@ public abstract class AbstractSessionStore extends AbstractComponent implements 
                     time = now - TimeUnit.SECONDS.toMillis(gracePeriodSecs);
                 }
             }
-            if (time > 0) {
+            if (time > 0L) {
                 expired = doGetExpired(candidates, time);
             } else {
                 expired = null;
@@ -189,16 +189,16 @@ public abstract class AbstractSessionStore extends AbstractComponent implements 
             lastExpiryCheckTime = now;
         }
 
-        // 2. Periodically but infrequently comb the backing store to delete sessions for
-        // OTHER contexts that expired a very long time ago (ie not being actively
+        // 2. Periodically but infrequently comb the backing store to delete sessions
+        // that expired a very long time ago (ie not being actively
         // managed by any node). As these sessions are not for our context, we
         // can't load them, so they must just be forcibly deleted.
         try {
-            if (now > (lastOrphanSweepTime + TimeUnit.SECONDS.toMillis(10L * gracePeriodSecs))) {
-                if (logger.isTraceEnabled()) {
-                    logger.trace("Cleaning orphans at " + now + ", last sweep at " + lastOrphanSweepTime);
+            if (now > (lastOrphanSweepTime + TimeUnit.SECONDS.toMillis(gracePeriodSecs * 10L))) {
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Cleaning orphans at " + now + ", last sweep at " + lastOrphanSweepTime);
                 }
-                doCleanOrphans(now - TimeUnit.SECONDS.toMillis(10L * gracePeriodSecs));
+                doCleanOrphans(now - TimeUnit.SECONDS.toMillis(gracePeriodSecs * 10L));
             }
         } finally {
             lastOrphanSweepTime = now;

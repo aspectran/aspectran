@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.component.session;
 
+import com.aspectran.core.util.ToStringBuilder;
 import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
 import com.aspectran.core.util.thread.AutoLock;
@@ -167,6 +168,17 @@ public class DefaultSessionCache extends AbstractSessionCache {
         if (getSessionStore() != null) {
             getSessionStore().destroy();
         }
+    }
+
+    @Override
+    public String toString() {
+        ToStringBuilder tsb = new ToStringBuilder();
+        tsb.append("maxActiveSessions", maxActiveSessions);
+        tsb.append("evictionIdleSecs", getEvictionIdleSecs());
+        tsb.appendForce("saveOnCreate", isSaveOnCreate());
+        tsb.appendForce("saveOnInactiveEviction", isSaveOnInactiveEviction());
+        tsb.appendForce("clusterEnabled", isClusterEnabled());
+        return tsb.toString();
     }
 
 }

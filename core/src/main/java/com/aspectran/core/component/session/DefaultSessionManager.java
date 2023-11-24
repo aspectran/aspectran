@@ -151,13 +151,17 @@ public class DefaultSessionManager extends AbstractSessionHandler
                     if (StringUtils.hasText(storeDir)) {
                         fileSessionStoreFactory.setStoreDir(storeDir);
                     }
-                    boolean deleteUnrestorableFiles = fileStoreConfig.isDeleteUnrestorableFiles();
-                    if (deleteUnrestorableFiles) {
-                        fileSessionStoreFactory.setDeleteUnrestorableFiles(true);
+                    if (fileStoreConfig.hasGracePeriodSeconds()) {
+                        fileSessionStoreFactory.setGracePeriodSecs(fileStoreConfig.getGracePeriodSeconds());
                     }
-                    String[] nonPersistentAttributes = fileStoreConfig.getNonPersistentAttributes();
-                    if (nonPersistentAttributes != null) {
-                        fileSessionStoreFactory.setNonPersistentAttributes(nonPersistentAttributes);
+                    if (fileStoreConfig.hasSavePeriodSeconds()) {
+                        fileSessionStoreFactory.setSavePeriodSecs(fileStoreConfig.getSavePeriodSeconds());
+                    }
+                    if (fileStoreConfig.hasDeleteUnrestorableFiles()) {
+                        fileSessionStoreFactory.setDeleteUnrestorableFiles(fileStoreConfig.isDeleteUnrestorableFiles());
+                    }
+                    if (fileStoreConfig.hasNonPersistentAttributes()) {
+                        fileSessionStoreFactory.setNonPersistentAttributes(fileStoreConfig.getNonPersistentAttributes());
                     }
                     sessionStore = fileSessionStoreFactory.getSessionStore();
                 }

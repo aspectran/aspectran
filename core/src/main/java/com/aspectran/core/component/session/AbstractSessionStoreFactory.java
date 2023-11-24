@@ -18,6 +18,9 @@ package com.aspectran.core.component.session;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.component.bean.aware.ApplicationAdapterAware;
 
+import static com.aspectran.core.component.session.AbstractSessionStore.DEFAULT_GRACE_PERIOD_SECS;
+import static com.aspectran.core.component.session.AbstractSessionStore.DEFAULT_SAVE_PERIOD_SECS;
+
 /**
  * Abstract Implementation for SessionStoreFactory.
  *
@@ -26,6 +29,10 @@ import com.aspectran.core.component.bean.aware.ApplicationAdapterAware;
 public abstract class AbstractSessionStoreFactory implements SessionStoreFactory, ApplicationAdapterAware {
 
     private ApplicationAdapter applicationAdapter;
+
+    private int gracePeriodSecs = DEFAULT_GRACE_PERIOD_SECS;
+
+    private int savePeriodSecs = DEFAULT_SAVE_PERIOD_SECS; // time in seconds between saves
 
     private String[] nonPersistentAttributes;
 
@@ -36,6 +43,22 @@ public abstract class AbstractSessionStoreFactory implements SessionStoreFactory
     @Override
     public void setApplicationAdapter(ApplicationAdapter applicationAdapter) {
         this.applicationAdapter = applicationAdapter;
+    }
+
+    public int getGracePeriodSecs() {
+        return gracePeriodSecs;
+    }
+
+    public void setGracePeriodSecs(int gracePeriodSecs) {
+        this.gracePeriodSecs = gracePeriodSecs;
+    }
+
+    public int getSavePeriodSecs() {
+        return savePeriodSecs;
+    }
+
+    public void setSavePeriodSecs(int savePeriodSecs) {
+        this.savePeriodSecs = savePeriodSecs;
     }
 
     @Override

@@ -33,6 +33,7 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.stream.Stream;
 
 import static com.aspectran.core.context.config.AspectranConfig.WORK_PATH_PROPERTY_NAME;
 
@@ -177,25 +178,25 @@ public class LocalResourceManager extends ResourceManager {
                     logger.debug("Sweeping " + workDir.toAbsolutePath() + File.separatorChar +
                             WORK_RESOURCE_DIRNAME_PREFIX + "* for old resource files");
                 }
-                try {
-                    Files.walk(workDir, 1, FileVisitOption.FOLLOW_LINKS)
-                            .filter(Files::isDirectory)
-                            .filter(p -> p.getFileName().toString().startsWith(WORK_RESOURCE_DIRNAME_PREFIX))
-                            .forEach(p -> {
-                                try {
-                                    Files.walk(p)
-                                            .sorted(Comparator.reverseOrder())
-                                            .map(Path::toFile)
-                                            .forEach(file -> {
-                                                if (logger.isTraceEnabled()) {
-                                                    logger.trace("Delete temp resource: " + file);
-                                                }
-                                                file.delete();
-                                            });
-                                } catch (IOException e) {
-                                    logger.warn("Failed to delete temp resource: " + e.getMessage());
-                                }
-                            });
+                try (Stream<Path> stream = Files.walk(workDir, 1, FileVisitOption.FOLLOW_LINKS)) {
+                    stream
+                        .filter(Files::isDirectory)
+                        .filter(p -> p.getFileName().toString().startsWith(WORK_RESOURCE_DIRNAME_PREFIX))
+                        .forEach(p -> {
+                            try (Stream<Path> stream2 = Files.walk(p)) {
+                                stream2
+                                    .sorted(Comparator.reverseOrder())
+                                    .map(Path::toFile)
+                                    .forEach(file -> {
+                                        if (logger.isTraceEnabled()) {
+                                            logger.trace("Delete temp resource: " + file);
+                                        }
+                                        file.delete();
+                                    });
+                            } catch (IOException e) {
+                                logger.warn("Failed to delete temp resource: " + e.getMessage());
+                            }
+                        });
                 } catch (IOException e) {
                     logger.warn("Inaccessible temp path: " + workPath, e);
                 }

@@ -22,6 +22,8 @@ import com.aspectran.core.util.apon.ValueType;
 public class SessionFileStoreConfig extends AbstractParameters {
 
     private static final ParameterKey storeDir;
+    private static final ParameterKey gracePeriodSeconds;
+    private static final ParameterKey savePeriodSeconds;
     private static final ParameterKey deleteUnrestorableFiles;
     private static final ParameterKey nonPersistentAttributes;
 
@@ -29,11 +31,14 @@ public class SessionFileStoreConfig extends AbstractParameters {
 
     static {
         storeDir = new ParameterKey("storeDir", ValueType.STRING);
+        gracePeriodSeconds = new ParameterKey("gracePeriodSeconds", ValueType.INT);
+        savePeriodSeconds = new ParameterKey("savePeriodSeconds", ValueType.INT);
         deleteUnrestorableFiles = new ParameterKey("deleteUnrestorableFiles", ValueType.BOOLEAN);
         nonPersistentAttributes = new ParameterKey("nonPersistentAttributes", ValueType.STRING, true);
 
         parameterKeys = new ParameterKey[] {
                 storeDir,
+                gracePeriodSeconds,
                 deleteUnrestorableFiles,
                 nonPersistentAttributes
         };
@@ -52,6 +57,32 @@ public class SessionFileStoreConfig extends AbstractParameters {
         return this;
     }
 
+    public int getGracePeriodSeconds() {
+        return getInt(gracePeriodSeconds, 0);
+    }
+
+    public SessionFileStoreConfig setGracePeriodSeconds(int gracePeriodSeconds) {
+        putValue(SessionFileStoreConfig.gracePeriodSeconds, gracePeriodSeconds);
+        return this;
+    }
+
+    public boolean hasGracePeriodSeconds() {
+        return hasValue(gracePeriodSeconds);
+    }
+
+    public int getSavePeriodSeconds() {
+        return getInt(savePeriodSeconds, 0);
+    }
+
+    public SessionFileStoreConfig setSavePeriodSeconds(int savePeriodSeconds) {
+        putValue(SessionFileStoreConfig.savePeriodSeconds, savePeriodSeconds);
+        return this;
+    }
+
+    public boolean hasSavePeriodSeconds() {
+        return hasValue(savePeriodSeconds);
+    }
+
     public boolean isDeleteUnrestorableFiles() {
         return getBoolean(deleteUnrestorableFiles, false);
     }
@@ -59,6 +90,10 @@ public class SessionFileStoreConfig extends AbstractParameters {
     public SessionFileStoreConfig setDeleteUnrestorableFiles(boolean deleteUnrestorableFiles) {
         putValue(SessionFileStoreConfig.deleteUnrestorableFiles, deleteUnrestorableFiles);
         return this;
+    }
+
+    public boolean hasDeleteUnrestorableFiles() {
+        return hasValue(deleteUnrestorableFiles);
     }
 
     public String[] getNonPersistentAttributes() {

@@ -24,10 +24,18 @@ public class FileSessionStoreFactory extends AbstractSessionStoreFactory {
 
     private String storeDir;
 
-    private boolean deleteUnrestorableFiles;
+    private boolean deleteUnrestorableFiles = true;
+
+    public String getStoreDir() {
+        return storeDir;
+    }
 
     public void setStoreDir(String storeDir) {
         this.storeDir = storeDir;
+    }
+
+    public boolean isDeleteUnrestorableFiles() {
+        return deleteUnrestorableFiles;
     }
 
     public void setDeleteUnrestorableFiles(boolean deleteUnrestorableFiles) {
@@ -37,23 +45,23 @@ public class FileSessionStoreFactory extends AbstractSessionStoreFactory {
     @Override
     public SessionStore getSessionStore() throws IOException {
         FileSessionStore sessionStore = new FileSessionStore();
+        sessionStore.setGracePeriodSecs(getGracePeriodSecs());
+        sessionStore.setSavePeriodSecs(getSavePeriodSecs());
         if (getNonPersistentAttributes() != null) {
             sessionStore.setNonPersistentAttributes(getNonPersistentAttributes());
         }
         File storeDirFile;
-        if (storeDir != null) {
+        if (getStoreDir() != null) {
             if (getApplicationAdapter() != null) {
-                storeDirFile = getApplicationAdapter().toRealPathAsFile(storeDir);
+                storeDirFile = getApplicationAdapter().toRealPathAsFile(getStoreDir());
             } else {
-                storeDirFile = new File(storeDir);
+                storeDirFile = new File(getStoreDir());
             }
         } else {
             storeDirFile = new File(SystemUtils.getJavaIoTmpDir());
         }
         sessionStore.setStoreDir(storeDirFile);
-        if (deleteUnrestorableFiles) {
-            sessionStore.setDeleteUnrestorableFiles(true);
-        }
+        sessionStore.setDeleteUnrestorableFiles(isDeleteUnrestorableFiles());
         return sessionStore;
     }
 
