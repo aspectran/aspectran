@@ -38,13 +38,12 @@ public abstract class AbstractLettuceSessionStore extends AbstractSessionStore {
     abstract protected void scan(Consumer<SessionData> func);
 
     @Override
-    public Set<String> doGetExpired(Set<String> candidates) {
-        long now = System.currentTimeMillis();
+    public Set<String> doGetExpired(Set<String> candidates, long time) {
         Set<String> expired = new HashSet<>();
         // iterate over the saved sessions and work out which have expired
         scan(sessionData -> {
             long expiry = sessionData.getExpiry();
-            if (expiry > 0 && expiry < now) {
+            if (expiry > 0 && expiry <= time) {
                 expired.add(sessionData.getId());
             }
         });
@@ -53,7 +52,7 @@ public abstract class AbstractLettuceSessionStore extends AbstractSessionStore {
                 try {
                     SessionData data = load(id);
                     if (data != null) {
-                        if (data.getExpiry() > 0 && data.getExpiry() <= now) {
+                        if (data.getExpiry() > 0 && data.getExpiry() <= time) {
                             expired.add(id);
                         }
                     } else {
@@ -68,9 +67,23 @@ public abstract class AbstractLettuceSessionStore extends AbstractSessionStore {
         return expired;
     }
 
-    protected boolean checkExpiry(SessionData data) {
+    @Override
+    public void doCleanOrphans(long time) {
+        scan(sessionData -> {
+            long expiry = sessionData.getExpiry();
+            if (expiry > 0 && expiry <= time) {
+                try {
+                    delete(sessionData.getId());
+                } catch (Exception e) {
+                    logger.warn("Could not delete session id=" + sessionData.getId(), e);
+                }
+            }
+        });
+    }
+
+    protected boolean checkExpiry(SessionData data, long time) {
         if (data != null) {
-            return (data.getExpiry() <= 0L || data.getExpiry() > System.currentTimeMillis());
+            return (data.getExpiry() <= 0L || data.getExpiry() > time);
         } else {
             return false;
         }

@@ -95,9 +95,10 @@ public class ClusterLettuceSessionStore extends AbstractLettuceSessionStore {
 
     @Override
     public boolean exists(String id) {
+        long now = System.currentTimeMillis();
         return sync(c -> {
             SessionData data = c.get(id);
-            return checkExpiry(data);
+            return checkExpiry(data, now);
         });
     }
 

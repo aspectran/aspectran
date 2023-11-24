@@ -34,11 +34,17 @@ public abstract class AbstractSessionStore extends AbstractComponent implements 
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractSessionStore.class);
 
-    private int gracePeriodSecs = 60 * 60; // default of 1hr
+    private static final int DEFAULT_GRACE_PERIOD_SECS = 60 * 60; //default of 1hr
 
-    private long lastExpiryCheckTime = 0; // last time in ms that getExpired was called
+    private static final int DEFAULT_SAVE_PERIOD_SECS = 0;
 
-    private int savePeriodSecs = 0; // time in sec between saves
+    private int gracePeriodSecs = DEFAULT_GRACE_PERIOD_SECS;
+
+    private int savePeriodSecs = DEFAULT_SAVE_PERIOD_SECS; // time in seconds between saves
+
+    private long lastExpiryCheckTime = 0L; // last time in ms that getExpired was called
+
+    private long lastOrphanSweepTime = 0L; // last time in ms that we deleted orphaned sessions
 
     private Set<String> nonPersistentAttributes;
 
@@ -54,6 +60,9 @@ public abstract class AbstractSessionStore extends AbstractComponent implements 
         this.gracePeriodSecs = gracePeriodSecs;
     }
 
+    /**
+     * @return the time in seconds between saves
+     */
     public int getSavePeriodSecs() {
         return savePeriodSecs;
     }
@@ -64,7 +73,6 @@ public abstract class AbstractSessionStore extends AbstractComponent implements 
      * exits as session. If nothing changes on the session
      * except for the access time and the persistence technology
      * is slow, this can cause delays.
-     *
      * <p>By default the value is 0, which means we save
      * after the last request exists. A non zero value
      * means that we will skip doing the save if the
@@ -106,6 +114,8 @@ public abstract class AbstractSessionStore extends AbstractComponent implements 
 
     @Override
     public void save(String id, SessionData data) throws Exception {
+        checkInitialized();
+
         if (data == null) {
             return;
         }
@@ -149,23 +159,90 @@ public abstract class AbstractSessionStore extends AbstractComponent implements 
 
     @Override
     public Set<String> getExpired(Set<String> candidates) {
+        checkInitialized();
+
+        long now = System.currentTimeMillis();
+        Set<String> expired;
+
+        // 1. check the backing store to find other sessions
+        // that expired long ago (ie cannot be actively managed by any node)
         try {
-            return doGetExpired(candidates);
+            long time = 0L;
+            // if we have never checked for old expired sessions, then only find
+            // those that are very old so we don't find sessions that other nodes
+            // that are also starting up find
+            if (lastExpiryCheckTime <= 0) {
+                time = now - TimeUnit.SECONDS.toMillis(gracePeriodSecs * 3L);
+            } else {
+                // only do the check once every gracePeriod to avoid expensive searches,
+                // and find sessions that expired at least one gracePeriod ago
+                if (now > (lastExpiryCheckTime + TimeUnit.SECONDS.toMillis(gracePeriodSecs))) {
+                    time = now - TimeUnit.SECONDS.toMillis(gracePeriodSecs);
+                }
+            }
+            if (time > 0) {
+                expired = doGetExpired(candidates, time);
+            } else {
+                expired = null;
+            }
         } finally {
-            lastExpiryCheckTime = System.currentTimeMillis();
+            lastExpiryCheckTime = now;
         }
+
+        // 2. Periodically but infrequently comb the backing store to delete sessions for
+        // OTHER contexts that expired a very long time ago (ie not being actively
+        // managed by any node). As these sessions are not for our context, we
+        // can't load them, so they must just be forcibly deleted.
+        try {
+            if (now > (lastOrphanSweepTime + TimeUnit.SECONDS.toMillis(10L * gracePeriodSecs))) {
+                if (logger.isTraceEnabled()) {
+                    logger.trace("Cleaning orphans at " + now + ", last sweep at " + lastOrphanSweepTime);
+                }
+                doCleanOrphans(now - TimeUnit.SECONDS.toMillis(10L * gracePeriodSecs));
+            }
+        } finally {
+            lastOrphanSweepTime = now;
+        }
+
+        return expired;
     }
 
     /**
      * Implemented by subclasses to resolve which sessions this node
      * should attempt to expire.
      * @param candidates the ids of sessions the SessionStore thinks has expired
+     * @param time the upper limit of expiry times to check
      * @return the reconciled set of session ids that this node should attempt to expire
      */
-    public abstract Set<String> doGetExpired (Set<String> candidates);
+    public abstract Set<String> doGetExpired (Set<String> candidates, long time);
 
-    public long getLastExpiryCheckTime() {
-        return lastExpiryCheckTime;
+    /**
+     * Implemented by subclasses to delete sessions for other contexts that
+     * expired at or before the timeLimit. These are 'orphaned' sessions that
+     * are no longer being actively managed by any node. These are explicitly
+     * sessions that do NOT belong to this context (other mechanisms such as
+     * doGetExpired take care of those). As they don't belong to this context,
+     * they cannot be loaded by us.
+     * <p>
+     * This is called only periodically to avoid placing excessive load on the
+     * store.
+     * @param time the upper limit of the expiry time to check in msec
+     */
+    public abstract void doCleanOrphans(long time);
+
+    /**
+     * Remove all sessions that expired at or before the given time.
+     * @param time the time before which the sessions must have expired
+     */
+    public void cleanOrphans(long time) {
+        checkInitialized();
+        doCleanOrphans(time);
+    }
+
+    protected void checkInitialized() throws IllegalStateException {
+        if (!isInitialized()) {
+            throw new IllegalStateException("Not initialized");
+        }
     }
 
     protected void checkAlreadyInitialized() throws IllegalStateException {

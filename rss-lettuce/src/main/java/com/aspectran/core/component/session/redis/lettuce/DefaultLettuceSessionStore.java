@@ -92,7 +92,8 @@ public class DefaultLettuceSessionStore extends AbstractLettuceSessionStore {
 
     @Override
     public boolean exists(String id) {
-        return sync(c -> checkExpiry(c.get(id)));
+        long now = System.currentTimeMillis();
+        return sync(c -> checkExpiry(c.get(id), now));
     }
 
     @Override

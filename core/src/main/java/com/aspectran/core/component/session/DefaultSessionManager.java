@@ -159,7 +159,6 @@ public class DefaultSessionManager extends AbstractSessionHandler
                     if (nonPersistentAttributes != null) {
                         fileSessionStoreFactory.setNonPersistentAttributes(nonPersistentAttributes);
                     }
-                    sessionStoreFactory = fileSessionStoreFactory;
                     sessionStore = fileSessionStoreFactory.getSessionStore();
                 }
             }
