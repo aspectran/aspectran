@@ -75,4 +75,6 @@ public interface SessionStore extends Component {
      */
     Set<String> getNonPersistentAttributes();
 
+    Set<String> getAllSessions();
+
 }

@@ -180,6 +180,14 @@ public interface SessionCache {
      */
     boolean checkInactiveSession(DefaultSession session);
 
+    /**
+     * @return the identifiers of those sessions that are active on this node, excluding passivated sessions
+     */
+    Set<String> getActiveSessions();
+
+    /**
+     * @return the identifiers of all sessions, including both active and passive
+     */
     Set<String> getAllSessions();
 
     void destroy();

@@ -17,13 +17,20 @@ package com.aspectran.undertow.server;
 
 import com.aspectran.core.component.bean.ablility.DisposableBean;
 import com.aspectran.core.component.bean.ablility.InitializableBean;
+import com.aspectran.core.component.session.SessionHandler;
+import com.aspectran.core.component.session.SessionStatistics;
+import com.aspectran.core.lang.NonNull;
+import com.aspectran.core.lang.Nullable;
 import com.aspectran.core.util.lifecycle.AbstractLifeCycle;
 import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
+import com.aspectran.undertow.server.session.TowSessionManager;
 import io.undertow.Undertow;
 import io.undertow.Version;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.handlers.GracefulShutdownHandler;
+import io.undertow.server.session.SessionManager;
+import io.undertow.servlet.api.Deployment;
 import io.undertow.servlet.api.DeploymentManager;
 import io.undertow.servlet.api.ServletContainer;
 import org.xnio.Option;
@@ -183,6 +190,74 @@ public class TowServer extends AbstractLifeCycle implements InitializableBean, D
         this.servletContainer = servletContainer;
     }
 
+    public DeploymentManager getDeploymentManager(String deploymentName) {
+        checkStarted();
+        if (servletContainer == null) {
+            throw new IllegalStateException("servletContainer is not set");
+        }
+        if (deploymentName == null) {
+            throw new IllegalArgumentException("deploymentName must not be null");
+        }
+        return servletContainer.getDeployment(deploymentName);
+    }
+
+    public DeploymentManager getDeploymentManagerByPath(String path) {
+        checkStarted();
+        if (servletContainer == null) {
+            throw new IllegalStateException("servletContainer is not set");
+        }
+        if (path == null) {
+            throw new IllegalArgumentException("path must not be null");
+        }
+        return servletContainer.getDeploymentByPath(path);
+    }
+
+    public SessionHandler getSessionHandler(String deploymentName) {
+        DeploymentManager deploymentManager = getDeploymentManager(deploymentName);
+        if (deploymentManager == null) {
+            throw new IllegalStateException("Deployment named '" + deploymentName + "' not found");
+        }
+        SessionHandler sessionHandler = getSessionHandler(deploymentManager);
+        if (sessionHandler == null) {
+            throw new IllegalStateException("No session handler for the deployment named '" + deploymentName + "'");
+        }
+        return sessionHandler;
+    }
+
+    public SessionHandler getSessionHandlerByPath(String path) {
+        DeploymentManager deploymentManager = getDeploymentManagerByPath(path);
+        if (deploymentManager == null) {
+            throw new IllegalStateException("Deployment with path '" + path + "' not found");
+        }
+        SessionHandler sessionHandler = getSessionHandler(deploymentManager);
+        if (sessionHandler == null) {
+            throw new IllegalStateException("No session handler for the deployment with path " + path + "'");
+        }
+        return sessionHandler;
+    }
+
+    @Nullable
+    private SessionHandler getSessionHandler(@NonNull DeploymentManager deploymentManager) {
+        Deployment deployment = deploymentManager.getDeployment();
+        if (deployment != null) {
+            SessionManager sessionManager = deployment.getSessionManager();
+            if (sessionManager instanceof TowSessionManager) {
+                return ((TowSessionManager) sessionManager).getSessionHandler();
+            }
+        }
+        return null;
+    }
+
+    public SessionStatistics getSessionStatistics(String deploymentName) {
+        SessionHandler sessionHandler = getSessionHandler(deploymentName);
+        return sessionHandler.getStatistics();
+    }
+
+    public SessionStatistics getSessionStatisticsByPath(String path) {
+        SessionHandler sessionHandler = getSessionHandlerByPath(path);
+        return sessionHandler.getStatistics();
+    }
+
     @Override
     public void doStart() throws Exception {
         try {
@@ -254,6 +329,12 @@ public class TowServer extends AbstractLifeCycle implements InitializableBean, D
             stop();
         } catch (Exception e) {
             logger.error("Error while stopping Undertow server: " + e.getMessage(), e);
+        }
+    }
+
+    protected void checkStarted() throws IllegalStateException {
+        if (!isStarted()) {
+            throw new IllegalStateException("Not started");
         }
     }
 

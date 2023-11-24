@@ -20,6 +20,7 @@ import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
 import com.aspectran.core.util.thread.AutoLock;
 
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -110,8 +111,17 @@ public class DefaultSessionCache extends AbstractSessionCache {
     }
 
     @Override
+    public Set<String> getActiveSessions() {
+        return new HashSet<>(sessions.keySet());
+    }
+
+    @Override
     public Set<String> getAllSessions() {
-        return sessions.keySet();
+        if (getSessionStore() != null) {
+            return getSessionStore().getAllSessions();
+        } else {
+            return getActiveSessions();
+        }
     }
 
     @Override

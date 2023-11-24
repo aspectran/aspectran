@@ -18,6 +18,8 @@ package com.aspectran.core.component.session;
 import com.aspectran.core.component.Component;
 import com.aspectran.core.util.thread.Scheduler;
 
+import java.util.Set;
+
 /**
  * The session handler is responsible for session start, session exists, session write,
  * time to live and session destroy.
@@ -25,8 +27,6 @@ import com.aspectran.core.util.thread.Scheduler;
  * <p>Created: 2017. 6. 12.</p>
  */
 public interface SessionHandler extends Component {
-
-    SessionStatistics getStatistics();
 
     String getWorkerName();
 
@@ -152,10 +152,22 @@ public interface SessionHandler extends Component {
     void fireSessionDestroyedListeners(Session session);
 
     /**
+     * @return the identifiers of those sessions that are active on this node, excluding passivated sessions
+     */
+    Set<String> getActiveSessions();
+
+    /**
+     * @return the identifiers of all sessions, including both active and passive
+     */
+    Set<String> getAllSessions();
+
+    /**
      * Record length of time session has been active. Called when the
      * session is about to be invalidated.
      * @param session the session whose time to record
      */
     void recordSessionTime(DefaultSession session);
+
+    SessionStatistics getStatistics();
 
 }

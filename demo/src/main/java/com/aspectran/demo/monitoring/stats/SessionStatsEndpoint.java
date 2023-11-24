@@ -24,10 +24,7 @@ import com.aspectran.core.component.session.SessionStatistics;
 import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
 import com.aspectran.undertow.server.TowServer;
-import com.aspectran.undertow.server.session.TowSessionManager;
 import com.aspectran.websocket.jsr356.AspectranConfigurator;
-import io.undertow.server.session.SessionManager;
-import io.undertow.servlet.api.DeploymentManager;
 import jakarta.websocket.CloseReason;
 import jakarta.websocket.OnClose;
 import jakarta.websocket.OnError;
@@ -166,9 +163,7 @@ public class SessionStatsEndpoint extends InstantActivitySupport {
 
     private SessionStatsPayload getSessionStatsPayload() {
         TowServer towServer = getBeanRegistry().getBean("tow.server");
-        DeploymentManager deploymentManager = towServer.getServletContainer().getDeployment("root.war");
-        SessionManager sessionManager = deploymentManager.getDeployment().getSessionManager();
-        SessionHandler sessionHandler = ((TowSessionManager)sessionManager).getSessionHandler();
+        SessionHandler sessionHandler = towServer.getSessionHandler("root.war");
         SessionStatistics statistics = sessionHandler.getStatistics();
 
         SessionStatsPayload stats = new SessionStatsPayload();
@@ -182,7 +177,7 @@ public class SessionStatsEndpoint extends InstantActivitySupport {
 
         // Current Users
         List<String> currentSessions = new ArrayList<>();
-        Set<String> sessionIds = sessionHandler.getSessionCache().getAllSessions();
+        Set<String> sessionIds = sessionHandler.getActiveSessions();
         for (String sessionId : sessionIds) {
             DefaultSession session = sessionHandler.getSession(sessionId);
             if (session != null) {

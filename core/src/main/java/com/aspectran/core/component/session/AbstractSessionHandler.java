@@ -62,11 +62,6 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
     private volatile int defaultMaxIdleSecs = 30 * 60;
 
     @Override
-    public SessionStatistics getStatistics() {
-        return statistics;
-    }
-
-    @Override
     public String getWorkerName() {
         return workerName;
     }
@@ -410,9 +405,24 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
     }
 
     @Override
+    public Set<String> getActiveSessions() {
+        return sessionCache.getActiveSessions();
+    }
+
+    @Override
+    public Set<String> getAllSessions() {
+        return sessionCache.getActiveSessions();
+    }
+
+    @Override
     public void recordSessionTime(DefaultSession session) {
         long now = System.currentTimeMillis();
         getStatistics().recordTime(round((now - session.getSessionData().getCreated()) / 1000.0));
+    }
+
+    @Override
+    public SessionStatistics getStatistics() {
+        return statistics;
     }
 
     @Override

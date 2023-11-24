@@ -198,6 +198,11 @@ public class FileSessionStore extends AbstractSessionStore {
         sweepDisk(time);
     }
 
+    @Override
+    public Set<String> getAllSessions() {
+        return new HashSet<>(sessionFileMap.keySet());
+    }
+
     /**
      * Get the session id with its expiry time.
      * @param data the session data
@@ -308,7 +313,7 @@ public class FileSessionStore extends AbstractSessionStore {
 
     @Override
     protected void doInitialize() throws Exception {
-        initFileSessionStore();
+        initializeStore();
     }
 
     @Override
@@ -316,7 +321,7 @@ public class FileSessionStore extends AbstractSessionStore {
         sessionFileMap.clear();
     }
 
-    private void initFileSessionStore() throws Exception {
+    private void initializeStore() throws Exception {
         if (storeDir == null) {
             throw new IllegalStateException("No file store directory specified");
         }

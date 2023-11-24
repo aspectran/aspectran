@@ -34,6 +34,7 @@ import io.undertow.server.session.SessionManagerStatistics;
 import io.undertow.util.AttachmentKey;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -190,17 +191,17 @@ public class TowSessionManager implements SessionManager, ApplicationAdapterAwar
 
     @Override
     public Set<String> getTransientSessions() {
-        return getAllSessions();
+        return Collections.emptySet();
     }
 
     @Override
     public Set<String> getActiveSessions() {
-        return getAllSessions();
+        return getSessionHandler().getActiveSessions();
     }
 
     @Override
     public Set<String> getAllSessions() {
-        return new HashSet<>(sessionManager.getSessionCache().getAllSessions());
+        return getSessionHandler().getAllSessions();
     }
 
     @Override
