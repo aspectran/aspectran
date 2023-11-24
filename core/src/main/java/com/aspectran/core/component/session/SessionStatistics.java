@@ -69,7 +69,7 @@ public class SessionStatistics {
      * @return the number of valid sessions temporarily evicted from the session cache
      */
     public long getEvictedSessions() {
-        return (getCreatedSessions() - getExpiredSessions() - activationCount.getCurrent());
+        return Math.max(getCreatedSessions() - getExpiredSessions() - getActiveSessions(), 0L);
     }
 
     /**

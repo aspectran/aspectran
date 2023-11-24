@@ -45,11 +45,6 @@ public class FileSessionStoreFactory extends AbstractSessionStoreFactory {
     @Override
     public SessionStore getSessionStore() throws IOException {
         FileSessionStore sessionStore = new FileSessionStore();
-        sessionStore.setGracePeriodSecs(getGracePeriodSecs());
-        sessionStore.setSavePeriodSecs(getSavePeriodSecs());
-        if (getNonPersistentAttributes() != null) {
-            sessionStore.setNonPersistentAttributes(getNonPersistentAttributes());
-        }
         File storeDirFile;
         if (getStoreDir() != null) {
             if (getApplicationAdapter() != null) {
@@ -62,6 +57,9 @@ public class FileSessionStoreFactory extends AbstractSessionStoreFactory {
         }
         sessionStore.setStoreDir(storeDirFile);
         sessionStore.setDeleteUnrestorableFiles(isDeleteUnrestorableFiles());
+        sessionStore.setGracePeriodSecs(getGracePeriodSecs());
+        sessionStore.setSavePeriodSecs(getSavePeriodSecs());
+        sessionStore.setNonPersistentAttributes(getNonPersistentAttributes());
         return sessionStore;
     }
 
