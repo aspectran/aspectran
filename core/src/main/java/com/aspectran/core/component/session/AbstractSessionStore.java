@@ -34,7 +34,7 @@ public abstract class AbstractSessionStore extends AbstractComponent implements 
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractSessionStore.class);
 
-    public static final int DEFAULT_GRACE_PERIOD_SECS = 60 * 60; //default of 1hr
+    public static final int DEFAULT_GRACE_PERIOD_SECS = 60 * 5; //default of 5min
 
     public static final int DEFAULT_SAVE_PERIOD_SECS = 0;
 
