@@ -97,6 +97,8 @@ public interface LifeCycle {
 
     void removeLifeCycleListener(LifeCycle.Listener listener);
 
+    String getState();
+
     /**
      * A listener for Lifecycle events.
      */

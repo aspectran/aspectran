@@ -43,7 +43,7 @@ public class DefaultSessionManager extends AbstractSessionHandler
 
     private SessionManagerConfig sessionManagerConfig;
 
-    private SessionStoreFactory sessionStoreFactory;
+    private SessionStore sessionStore;
 
     public DefaultSessionManager() {
         super();
@@ -83,8 +83,8 @@ public class DefaultSessionManager extends AbstractSessionHandler
         setSessionManagerConfig(sessionManagerConfig);
     }
 
-    public void setSessionStoreFactory(SessionStoreFactory sessionStoreFactory) {
-        this.sessionStoreFactory = sessionStoreFactory;
+    public void setSessionStore(SessionStore sessionStore) {
+        this.sessionStore = sessionStore;
     }
 
     @Override
@@ -139,10 +139,7 @@ public class DefaultSessionManager extends AbstractSessionHandler
         }
 
         if (getSessionCache() == null) {
-            SessionStore sessionStore = null;
-            if (sessionStoreFactory != null) {
-                sessionStore = sessionStoreFactory.getSessionStore();
-            } else if (sessionManagerConfig != null) {
+            if (sessionStore == null && sessionManagerConfig != null) {
                 SessionFileStoreConfig fileStoreConfig = sessionManagerConfig.getFileStoreConfig();
                 if (fileStoreConfig != null) {
                     FileSessionStoreFactory fileSessionStoreFactory = new FileSessionStoreFactory();

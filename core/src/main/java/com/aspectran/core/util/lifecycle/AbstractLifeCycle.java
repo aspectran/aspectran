@@ -126,6 +126,7 @@ public abstract class AbstractLifeCycle implements LifeCycle {
         listeners.remove(listener);
     }
 
+    @Override
     public String getState() {
         switch (state) {
             case STATE_FAILED:

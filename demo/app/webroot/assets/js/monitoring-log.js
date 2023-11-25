@@ -19,7 +19,7 @@ const LogTailer = function(endpoint, tailers) {
             printEventMessage("Socket connection successful");
             socket.send("JOIN:" + tailers);
             heartbeatPing();
-            switchTailBite(false, true);
+            self.switchTailBite(true);
         };
         socket.onmessage = function (event) {
             if (typeof event.data === "string") {
@@ -37,7 +37,7 @@ const LogTailer = function(endpoint, tailers) {
         socket.onerror = function (event) {
             console.error("WebSocket error observed:", event);
             printErrorMessage("Could not connect to WebSocket server");
-            switchTailBite(false, false);
+            self.switchTailBite(false);
             setTimeout(function () {
                 self.openSocket();
             }, 60000);
@@ -97,7 +97,7 @@ const LogTailer = function(endpoint, tailers) {
         scrollToBottom(logtail);
     };
 
-    const switchTailBite = function(logtail, status) {
+    this.switchTailBite = function(status, logtail) {
         if (!logtail) {
             logtail = $(".log-tail");
         }

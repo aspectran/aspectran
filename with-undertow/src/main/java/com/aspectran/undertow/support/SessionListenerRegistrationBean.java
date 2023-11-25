@@ -21,9 +21,6 @@ import com.aspectran.core.component.session.SessionHandler;
 import com.aspectran.core.component.session.SessionListener;
 import com.aspectran.core.component.session.SessionListenerRegistration;
 import com.aspectran.undertow.server.TowServer;
-import com.aspectran.undertow.server.session.TowSessionManager;
-import io.undertow.server.session.SessionManager;
-import io.undertow.servlet.api.DeploymentManager;
 
 /**
  * A Bean to register session listener in session manager.
@@ -61,17 +58,7 @@ public class SessionListenerRegistrationBean extends InstantActivitySupport
         if (towServer == null) {
             throw new IllegalArgumentException("No TowServer named '" + towServerId + "'");
         }
-        DeploymentManager deploymentManager = towServer.getServletContainer().getDeployment(deploymentName);
-        if (deploymentManager == null) {
-            throw new IllegalArgumentException("TowServer named '" + towServerId +
-                    "' does not have a deployment called '" + deploymentName + "'");
-        }
-        SessionManager sessionManager = deploymentManager.getDeployment().getSessionManager();
-        if (sessionManager instanceof TowSessionManager) {
-            return ((TowSessionManager)sessionManager).getSessionHandler();
-        } else {
-            throw new IllegalStateException("TowServer does not have TowSessionManager configured");
-        }
+        return towServer.getSessionHandler(deploymentName);
     }
 
     @Override

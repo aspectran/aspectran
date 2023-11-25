@@ -15,7 +15,7 @@
         </properties>
     </environment>
 
-    <bean id="tow.server" class="com.aspectran.undertow.server.TowServer">
+    <bean id="tow.server" class="com.aspectran.undertow.server.DefaultTowServer">
         <properties>
             <item name="autoStart">%{tow.server.startup}</item>
             <item name="httpListeners" type="array">

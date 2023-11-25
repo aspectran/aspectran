@@ -151,7 +151,7 @@
             </item>
         </properties>
         <properties profile="!rss-lettuce,!rss-lettuce-masterreplica,!rss-lettuce-cluster">
-            <item name="sessionStoreFactory">
+            <item name="sessionStore">
                 <bean class="com.aspectran.core.component.session.FileSessionStoreFactory">
                     <properties>
                         <item name="storeDir">/work/_sessions/tow</item>
@@ -163,7 +163,7 @@
             </item>
         </properties>
         <properties profile="rss-lettuce">
-            <item name="sessionStoreFactory">
+            <item name="sessionStore">
                 <bean class="com.aspectran.core.component.session.redis.lettuce.DefaultLettuceSessionStoreFactory">
                     <properties>
                         <item name="poolConfig">
@@ -181,7 +181,7 @@
             </item>
         </properties>
         <properties profile="rss-lettuce-masterreplica">
-            <item name="sessionStoreFactory">
+            <item name="sessionStore">
                 <bean class="com.aspectran.core.component.session.redis.lettuce.DefaultLettuceSessionStoreFactory">
                     <properties>
                         <item name="poolConfig">
@@ -199,7 +199,7 @@
             </item>
         </properties>
         <properties profile="rss-lettuce-cluster">
-            <item name="sessionStoreFactory">
+            <item name="sessionStore">
                 <bean class="com.aspectran.core.component.session.redis.lettuce.cluster.ClusterLettuceSessionStoreFactory">
                     <properties>
                         <item name="poolConfig">

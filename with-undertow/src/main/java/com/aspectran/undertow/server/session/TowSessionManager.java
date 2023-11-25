@@ -21,7 +21,7 @@ import com.aspectran.core.component.bean.aware.ApplicationAdapterAware;
 import com.aspectran.core.component.session.DefaultSession;
 import com.aspectran.core.component.session.DefaultSessionManager;
 import com.aspectran.core.component.session.SessionHandler;
-import com.aspectran.core.component.session.SessionStoreFactory;
+import com.aspectran.core.component.session.SessionStore;
 import com.aspectran.core.context.config.SessionManagerConfig;
 import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
@@ -35,7 +35,6 @@ import io.undertow.util.AttachmentKey;
 
 import java.io.IOException;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -72,8 +71,8 @@ public class TowSessionManager implements SessionManager, ApplicationAdapterAwar
         setSessionManagerConfig(sessionManagerConfig);
     }
 
-    public void setSessionStoreFactory(SessionStoreFactory sessionStoreFactory) {
-        sessionManager.setSessionStoreFactory(sessionStoreFactory);
+    public void setSessionStore(SessionStore sessionStore) {
+        sessionManager.setSessionStore(sessionStore);
     }
 
     public SessionHandler getSessionHandler() {
