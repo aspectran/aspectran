@@ -457,8 +457,8 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
             logger.trace("SessionStore checking expiration on " + candidates);
         }
         Set<String> allCandidates = sessionStore.getExpired(candidates);
-        Set<String> sessionsInUse = new HashSet<>();
         if (allCandidates != null) {
+            Set<String> sessionsInUse = new HashSet<>();
             for (String id : allCandidates) {
                 DefaultSession session = doGet(id);
                 if (session != null && session.getRequests() > 0) {
@@ -466,12 +466,14 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
                     sessionsInUse.add(id);
                 }
             }
-            try {
-                allCandidates.removeAll(sessionsInUse);
-            } catch (UnsupportedOperationException e) {
-                Set<String> tmp = new HashSet<>(allCandidates);
-                tmp.removeAll(sessionsInUse);
-                allCandidates = tmp;
+            if (!sessionsInUse.isEmpty()) {
+                try {
+                    allCandidates.removeAll(sessionsInUse);
+                } catch (UnsupportedOperationException e) {
+                    Set<String> tmp = new HashSet<>(allCandidates);
+                    tmp.removeAll(sessionsInUse);
+                    allCandidates = tmp;
+                }
             }
         }
         return allCandidates;

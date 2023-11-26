@@ -327,9 +327,9 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
             logger.trace(getComponentName() + " scavenging session ids " + candidates);
         }
         try {
-            candidates = sessionCache.checkExpiration(candidates);
-            if (candidates != null) {
-                for (String id : candidates) {
+            Set<String> checkedCandidates = sessionCache.checkExpiration(candidates);
+            if (checkedCandidates != null) {
+                for (String id : checkedCandidates) {
                     try {
                         invalidate(id, Session.DestroyedReason.TIMEOUT);
                         candidateSessionIdsForExpiry.remove(id);
@@ -338,8 +338,17 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
                     }
                 }
             }
+            if (logger.isDebugEnabled()) {
+                int before = candidates.size();
+                int after = candidateSessionIdsForExpiry.size();
+                int expired = (checkedCandidates != null ? checkedCandidates.size() : 0);
+                logger.debug("Expiration candidates {before=" + before + ", after=" +
+                    after + ", expired=" + expired + "}");
+
+            }
         } catch (Exception e) {
-            logger.warn(e);
+            logger.warn("Failed to check expiration on [" +
+                StringUtils.joinCommaDelimitedList(candidates) + "]", e);
         }
 
         // Periodically but infrequently comb the backing store to delete sessions
