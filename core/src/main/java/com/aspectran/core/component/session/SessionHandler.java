@@ -111,8 +111,9 @@ public interface SessionHandler extends Component {
     /**
      * Called periodically by the HouseKeeper to handle the list of
      * sessions that have expired since the last call to scavenge.
+     * @param scavengingInterval the period between scavenge cycles
      */
-    void scavenge();
+    void scavenge(long scavengingInterval);
 
     /**
      * Adds an event listener for session-related events.

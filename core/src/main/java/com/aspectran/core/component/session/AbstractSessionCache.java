@@ -513,4 +513,11 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
         return false;
     }
 
+    @Override
+    public void cleanOrphans(long time) {
+        if (sessionStore != null) {
+            sessionStore.cleanOrphans(time);
+        }
+    }
+
 }

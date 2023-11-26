@@ -69,16 +69,7 @@ public abstract class AbstractLettuceSessionStore extends AbstractSessionStore {
 
     @Override
     public void doCleanOrphans(long time) {
-        scan(sessionData -> {
-            long expiry = sessionData.getExpiry();
-            if (expiry > 0 && expiry <= time) {
-                try {
-                    delete(sessionData.getId());
-                } catch (Exception e) {
-                    logger.warn("Could not delete session id=" + sessionData.getId(), e);
-                }
-            }
-        });
+        // Unnecessary
     }
 
     @Override

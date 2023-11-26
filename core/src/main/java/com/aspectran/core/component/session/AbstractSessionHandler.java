@@ -61,6 +61,8 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
     /** 30 minute default */
     private volatile int defaultMaxIdleSecs = 30 * 60;
 
+    private long lastOrphanSweepTime = 0L; // last time in ms that we deleted orphaned sessions
+
     @Override
     public String getWorkerName() {
         return workerName;
@@ -307,7 +309,7 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
     }
 
     @Override
-    public void scavenge() {
+    public void scavenge(long scavengingInterval) {
         // don't attempt to scavenge if we are shutting down
         if (isDestroying() || isDestroyed()) {
             return;
@@ -315,6 +317,7 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
         if (logger.isTraceEnabled()) {
             logger.trace(getComponentName() + " scavenging sessions");
         }
+
         // Get a snapshot of the candidates as they are now. Others that
         // arrive during this processing will be dealt with on
         // subsequent call to scavenge
@@ -337,6 +340,22 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
             }
         } catch (Exception e) {
             logger.warn(e);
+        }
+
+        // Periodically but infrequently comb the backing store to delete sessions
+        // that expired a very long time ago (ie not being actively
+        // managed by any node). As these sessions are not for our context, we
+        // can't load them, so they must just be forcibly deleted.
+        long now = System.currentTimeMillis();
+        try {
+            if (now > (lastOrphanSweepTime + scavengingInterval * 10L)) {
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Cleaning orphans at " + now + ", last sweep at " + lastOrphanSweepTime);
+                }
+                sessionCache.cleanOrphans(now - scavengingInterval * 10L);
+            }
+        } finally {
+            lastOrphanSweepTime = now;
         }
     }
 

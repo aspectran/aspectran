@@ -32,7 +32,7 @@ public class HouseKeeper extends AbstractLifeCycle {
 
     private static final Logger logger = LoggerFactory.getLogger(HouseKeeper.class);
 
-    public static final long DEFAULT_SCAVENGING_INTERVAL_MS = 1000 * 60 * 10;
+    public static final long DEFAULT_SCAVENGING_INTERVAL_MS = 1000 * 60 * 10; //default of 10min
 
     private final AutoLock lock = new AutoLock();
 
@@ -133,7 +133,7 @@ public class HouseKeeper extends AbstractLifeCycle {
             return;
         }
         try {
-            sessionHandler.scavenge();
+            sessionHandler.scavenge(scavengingInterval);
         } catch (Exception e) {
             logger.warn(e);
         }

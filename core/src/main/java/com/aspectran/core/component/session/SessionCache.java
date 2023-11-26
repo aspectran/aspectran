@@ -43,6 +43,9 @@ public interface SessionCache {
      */
     void setMaxActiveSessions(int maxActiveSessions);
 
+    /**
+     * @return the interval in seconds to evict inactive sessions from cache
+     */
     int getEvictionIdleSecs();
 
     /**
@@ -181,7 +184,14 @@ public interface SessionCache {
     boolean checkInactiveSession(DefaultSession session);
 
     /**
-     * @return the identifiers of those sessions that are active on this node, excluding passivated sessions
+     * Remove all unmanaged sessions that expired at or before the given time.
+     * @param time the time before which the sessions must have expired
+     */
+    void cleanOrphans(long time);
+
+    /**
+     * @return the identifiers of those sessions that are active on this node,
+     *      excluding passivated sessions
      */
     Set<String> getActiveSessions();
 

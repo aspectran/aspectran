@@ -34,7 +34,7 @@ public abstract class AbstractSessionStore extends AbstractComponent implements 
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractSessionStore.class);
 
-    public static final int DEFAULT_GRACE_PERIOD_SECS = 60 * 5; //default of 5min
+    public static final int DEFAULT_GRACE_PERIOD_SECS = 60 * 5; // default of 5min
 
     public static final int DEFAULT_SAVE_PERIOD_SECS = 0;
 
@@ -45,8 +45,6 @@ public abstract class AbstractSessionStore extends AbstractComponent implements 
     private Set<String> nonPersistentAttributes;
 
     private long lastExpiryCheckTime = 0L; // last time in ms that getExpired was called
-
-    private long lastOrphanSweepTime = 0L; // last time in ms that we deleted orphaned sessions
 
     public int getGracePeriodSecs() {
         return gracePeriodSecs;
@@ -115,7 +113,6 @@ public abstract class AbstractSessionStore extends AbstractComponent implements 
     @Override
     public void save(String id, SessionData data) throws Exception {
         checkInitialized();
-
         if (data == null) {
             return;
         }
@@ -161,11 +158,10 @@ public abstract class AbstractSessionStore extends AbstractComponent implements 
     public Set<String> getExpired(Set<String> candidates) {
         checkInitialized();
 
+        // check the backing store to find other sessions
+        // that expired long ago (ie cannot be actively managed by any node)
         long now = System.currentTimeMillis();
         Set<String> expired;
-
-        // 1. check the backing store to find other sessions
-        // that expired long ago (ie cannot be actively managed by any node)
         try {
             long time = 0L;
             // if we have never checked for old expired sessions, then only find
@@ -188,22 +184,6 @@ public abstract class AbstractSessionStore extends AbstractComponent implements 
         } finally {
             lastExpiryCheckTime = now;
         }
-
-        // 2. Periodically but infrequently comb the backing store to delete sessions
-        // that expired a very long time ago (ie not being actively
-        // managed by any node). As these sessions are not for our context, we
-        // can't load them, so they must just be forcibly deleted.
-        try {
-            if (now > (lastOrphanSweepTime + TimeUnit.SECONDS.toMillis(gracePeriodSecs * 10L))) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Cleaning orphans at " + now + ", last sweep at " + lastOrphanSweepTime);
-                }
-                doCleanOrphans(now - TimeUnit.SECONDS.toMillis(gracePeriodSecs * 10L));
-            }
-        } finally {
-            lastOrphanSweepTime = now;
-        }
-
         return expired;
     }
 
@@ -217,23 +197,18 @@ public abstract class AbstractSessionStore extends AbstractComponent implements 
     public abstract Set<String> doGetExpired (Set<String> candidates, long time);
 
     /**
-     * Implemented by subclasses to delete sessions for other contexts that
-     * expired at or before the timeLimit. These are 'orphaned' sessions that
-     * are no longer being actively managed by any node. These are explicitly
-     * sessions that do NOT belong to this context (other mechanisms such as
-     * doGetExpired take care of those). As they don't belong to this context,
-     * they cannot be loaded by us.
-     * <p>
-     * This is called only periodically to avoid placing excessive load on the
-     * store.
+     * Implemented by subclasses to delete unmanaged sessions that expired
+     * before a specified time. This is to remove 'orphaned' sessions that are
+     * no longer actively managed on any node, while sessions that are
+     * explicitly managed on each node are handled by other mechanisms such
+     * as doGetExpired.
+     * <p>This is called only periodically to avoid placing
+     * excessive load on the store.</p>
      * @param time the upper limit of the expiry time to check in msec
      */
     public abstract void doCleanOrphans(long time);
 
-    /**
-     * Remove all sessions that expired at or before the given time.
-     * @param time the time before which the sessions must have expired
-     */
+    @Override
     public void cleanOrphans(long time) {
         checkInitialized();
         doCleanOrphans(time);

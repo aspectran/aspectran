@@ -71,16 +71,12 @@ public class FileSessionStore extends AbstractSessionStore {
         // load session info from its file
         String filename = sessionFileMap.get(id);
         if (filename == null) {
-            if (logger.isTraceEnabled()) {
-                logger.trace("Unknown session file: " + id);
-            }
+            logger.warn("Unknown session file: " + id);
             return null;
         }
         File file = new File(storeDir, filename);
         if (!file.exists()) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("No such session file: " + filename);
-            }
+            logger.warn("No such session file: " + filename);
             return null;
         }
         try (FileInputStream in = new FileInputStream(file)) {
@@ -346,7 +342,7 @@ public class FileSessionStore extends AbstractSessionStore {
                 .filter(p -> isSessionFilename(p.getFileName().toString()))
                 .forEach(p -> {
                     // first get rid of all ancient files
-                    sweepFile(now - TimeUnit.SECONDS.toMillis(getGracePeriodSecs() * 10L), p);
+                    sweepFile(now - TimeUnit.SECONDS.toMillis(getGracePeriodSecs() * 6L), p);
 
                     // now process it if it wasn't deleted
                     if (Files.exists(p)) {

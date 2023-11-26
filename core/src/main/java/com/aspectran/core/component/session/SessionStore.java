@@ -70,6 +70,12 @@ public interface SessionStore extends Component {
     Set<String> getExpired (Set<String> candidates);
 
     /**
+     * Remove all unmanaged sessions that expired at or before the given time.
+     * @param time the time before which the sessions must have expired
+     */
+    void cleanOrphans(long time);
+
+    /**
      * Returns the names of the attributes that should be excluded from serialization.
      * @return the attribute names to be excluded from serialization
      */
