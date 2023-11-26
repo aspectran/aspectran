@@ -391,6 +391,9 @@ public class FileSessionStore extends AbstractSessionStore {
         ToStringBuilder tsb = new ToStringBuilder();
         tsb.append("storeDir", storeDir);
         tsb.appendForce("deleteUnrestorableFiles", deleteUnrestorableFiles);
+        tsb.append("gracePeriodSecs", getGracePeriodSecs());
+        tsb.append("savePeriodSecs", getSavePeriodSecs());
+        tsb.append("nonPersistentAttributes", getNonPersistentAttributes());
         return tsb.toString();
     }
 
