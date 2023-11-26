@@ -71,12 +71,14 @@ public class FileSessionStore extends AbstractSessionStore {
         // load session info from its file
         String filename = sessionFileMap.get(id);
         if (filename == null) {
-            logger.warn("Unknown session file: " + id);
+            if (logger.isTraceEnabled()) {
+                logger.trace("Session id=" + id + " does not exist in session file map");
+            }
             return null;
         }
         File file = new File(storeDir, filename);
         if (!file.exists()) {
-            logger.warn("No such session file: " + filename);
+            logger.warn("No such file " + filename + " for session id=" + id);
             return null;
         }
         try (FileInputStream in = new FileInputStream(file)) {
@@ -156,14 +158,12 @@ public class FileSessionStore extends AbstractSessionStore {
 
     /**
      * Check to see which sessions have expired.
-     * @param candidates the set of session ids that the SessionCache believes
-     *      have expired
      * @param time the upper limit of expiry times to check
      * @return the complete set of sessions that have expired, including those
      *      that are not currently loaded into the SessionCache
      */
     @Override
-    public Set<String> doGetExpired(Set<String> candidates, long time) {
+    public Set<String> doGetExpired(long time) {
         Set<String> expired = new HashSet<>();
         // iterate over the files and work out which have expired
         for (String filename : sessionFileMap.values()) {
@@ -174,16 +174,6 @@ public class FileSessionStore extends AbstractSessionStore {
                 }
             } catch (Exception e) {
                 logger.warn("Error finding sessions expired before " + time, e);
-            }
-        }
-        // check candidates that were not found to be expired, perhaps
-        // because they no longer exist and they should be expired
-        for (String id : candidates) {
-            if (!expired.contains(id)) {
-                // if it doesn't have a file then the session doesn't exist
-                if (!sessionFileMap.containsKey(id)) {
-                    expired.add(id);
-                }
             }
         }
         return expired;

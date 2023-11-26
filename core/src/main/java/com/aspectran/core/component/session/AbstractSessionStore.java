@@ -161,7 +161,7 @@ public abstract class AbstractSessionStore extends AbstractComponent implements 
         // check the backing store to find other sessions
         // that expired long ago (ie cannot be actively managed by any node)
         long now = System.currentTimeMillis();
-        Set<String> expired;
+        Set<String> expiredSessions = null;
         try {
             long time = 0L;
             // if we have never checked for old expired sessions, then only find
@@ -177,24 +177,39 @@ public abstract class AbstractSessionStore extends AbstractComponent implements 
                 }
             }
             if (time > 0L) {
-                expired = doGetExpired(candidates, time);
-            } else {
-                expired = null;
+                expiredSessions = doGetExpired(time);
+                for (String id : candidates) {
+                    if (!expiredSessions.contains(id)) {
+                        boolean expired = false;
+                        try {
+                            SessionData data = load(id);
+                            if (data != null) {
+                                if (data.getExpiry() > 0 && data.getExpiry() <= time) {
+                                    expired = true;
+                                }
+                            }
+                        } catch (Exception ignored) {
+                            // no grace period unless session data is valid
+                        }
+                        if (expired) {
+                            expiredSessions.add(id);
+                        }
+                    }
+                }
             }
         } finally {
             lastExpiryCheckTime = now;
         }
-        return expired;
+        return expiredSessions;
     }
 
     /**
      * Implemented by subclasses to resolve which sessions this node
      * should attempt to expire.
-     * @param candidates the ids of sessions the SessionStore thinks has expired
      * @param time the upper limit of expiry times to check
      * @return the reconciled set of session ids that this node should attempt to expire
      */
-    public abstract Set<String> doGetExpired (Set<String> candidates, long time);
+    public abstract Set<String> doGetExpired (long time);
 
     /**
      * Implemented by subclasses to delete unmanaged sessions that expired

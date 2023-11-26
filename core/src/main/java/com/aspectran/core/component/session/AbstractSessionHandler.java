@@ -323,7 +323,6 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
         // subsequent call to scavenge
         String[] candidateSessionIds = candidateSessionIdsForExpiry.toArray(new String[0]);
         Set<String> candidates = new HashSet<>(Arrays.asList(candidateSessionIds));
-        candidateSessionIdsForExpiry.removeAll(candidates);
         if (logger.isTraceEnabled()) {
             logger.trace(getComponentName() + " scavenging session ids " + candidates);
         }
@@ -333,6 +332,7 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
                 for (String id : candidates) {
                     try {
                         invalidate(id, Session.DestroyedReason.TIMEOUT);
+                        candidateSessionIdsForExpiry.remove(id);
                     } catch (Exception e) {
                         logger.warn(e);
                     }

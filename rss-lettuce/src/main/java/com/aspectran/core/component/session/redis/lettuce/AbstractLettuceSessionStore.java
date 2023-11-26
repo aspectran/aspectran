@@ -38,7 +38,7 @@ public abstract class AbstractLettuceSessionStore extends AbstractSessionStore {
     abstract protected void scan(Consumer<SessionData> func);
 
     @Override
-    public Set<String> doGetExpired(Set<String> candidates, long time) {
+    public Set<String> doGetExpired(long time) {
         Set<String> expired = new HashSet<>();
         // iterate over the saved sessions and work out which have expired
         scan(sessionData -> {
@@ -47,23 +47,6 @@ public abstract class AbstractLettuceSessionStore extends AbstractSessionStore {
                 expired.add(sessionData.getId());
             }
         });
-        for (String id : candidates) {
-            if (!expired.contains(id)) {
-                try {
-                    SessionData data = load(id);
-                    if (data != null) {
-                        if (data.getExpiry() > 0 && data.getExpiry() <= time) {
-                            expired.add(id);
-                        }
-                    } else {
-                        // if the session no longer exists
-                        expired.add(id);
-                    }
-                } catch (Exception e) {
-                    logger.warn("Error checking if session " + id + " has expired", e);
-                }
-            }
-        }
         return expired;
     }
 
