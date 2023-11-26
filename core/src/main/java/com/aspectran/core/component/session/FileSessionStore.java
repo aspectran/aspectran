@@ -263,6 +263,7 @@ public class FileSessionStore extends AbstractSessionStore {
             stream
                 .filter(p -> !Files.isDirectory(p))
                 .filter(p -> isSessionFilename(p.getFileName().toString()))
+                .filter(p -> !sessionFileMap.containsValue(p.getFileName().toString()))
                 .forEach(p -> sweepFile(time, p));
         } catch (Exception e) {
             logger.warn("Unable to walk path " + storeDir, e);
