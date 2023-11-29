@@ -37,8 +37,6 @@ import java.util.Set;
  */
 public class TowServletContext extends DeploymentInfo implements ApplicationAdapterAware {
 
-    public static final String DERIVED_WEB_SERVICE_ATTR = TowServletContext.class.getName() + ".DERIVED_WEB_SERVICE";
-
     private static final Set<Class<?>> NO_CLASSES = Collections.emptySet();
 
     private ApplicationAdapter applicationAdapter;
@@ -157,17 +155,8 @@ public class TowServletContext extends DeploymentInfo implements ApplicationAdap
     }
 
     public void setWebSocketInitializer(TowWebSocketInitializer webSocketInitializer) {
-        webSocketInitializer.initialize(this);
-    }
-
-    /**
-     * Specifies whether to use a web service derived from the root web service.
-     */
-    public void setWebServiceDerived(boolean webServiceDerived) {
-        if (webServiceDerived) {
-            addServletContextAttribute(DERIVED_WEB_SERVICE_ATTR, "true");
-        } else {
-            getServletContextAttributes().remove(DERIVED_WEB_SERVICE_ATTR);
+        if (webSocketInitializer != null) {
+            webSocketInitializer.initialize(this);
         }
     }
 

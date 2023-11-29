@@ -29,6 +29,8 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
+import static com.aspectran.web.service.WebService.ROOT_WEB_SERVICE_ATTR_NAME;
+
 /**
  * The Class WebActivityServlet.
  */
@@ -53,19 +55,19 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
     public void init() throws ServletException {
         try {
             ServletContext servletContext = getServletContext();
-            Object attr = servletContext.getAttribute(WebService.ROOT_WEB_SERVICE_ATTR_NAME);
-            DefaultWebService rootService = null;
-            if (attr != null) {
-                if (!(attr instanceof DefaultWebService)) {
-                    throw new IllegalStateException("Context attribute [" + attr + "] is not of type [" +
+            Object obj = servletContext.getAttribute(ROOT_WEB_SERVICE_ATTR_NAME);
+            DefaultWebService rootWebService = null;
+            if (obj != null) {
+                if (!(obj instanceof DefaultWebService)) {
+                    throw new IllegalStateException("Context attribute [" + obj + "] is not of type [" +
                             DefaultWebService.class.getName() + "]");
                 }
-                rootService = (DefaultWebService)attr;
-                webService = DefaultWebService.create(this, rootService);
+                rootWebService = (DefaultWebService)obj;
+                webService = DefaultWebService.create(this, rootWebService);
             } else {
                 webService = DefaultWebService.create(this);
             }
-            standalone = (rootService != webService);
+            standalone = (rootWebService != webService);
             if (standalone) {
                 webService.start();
                 logger.info(webService.getServiceName() + " is running in standalone mode inside " + getMyName());

@@ -87,7 +87,9 @@ public class TowSessionManager implements SessionManager, ApplicationAdapterAwar
     @Override
     public void start() {
         try {
-            sessionManager.initialize();
+            if (!sessionManager.isInitialized()) {
+                sessionManager.initialize();
+            }
         } catch (Exception e) {
             throw new RuntimeException("Error initializing TowSessionManager", e);
         }
@@ -96,7 +98,9 @@ public class TowSessionManager implements SessionManager, ApplicationAdapterAwar
     @Override
     public void stop() {
         try {
-            sessionManager.destroy();
+            if (!sessionManager.isAvailable()) {
+                sessionManager.destroy();
+            }
         } catch (Exception e) {
             throw new RuntimeException("Error destroying TowSessionManager", e);
         }

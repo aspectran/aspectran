@@ -138,8 +138,8 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
                 response.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
                 return;
             } else if (pauseTimeout == -2L) {
-                logger.error(getServiceName() + " is not yet started");
-                response.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
+                logger.warn(getServiceName() + " is not yet started");
+                response.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, "Starting... Try again in a moment.");
                 return;
             } else {
                 pauseTimeout = 0L;
@@ -323,16 +323,16 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
             logger.warn("No specified servlet context initialization parameter for instantiating WebService");
         }
 
-        DefaultWebService service = create(servletContext, aspectranConfigParam);
-        servletContext.setAttribute(ROOT_WEB_SERVICE_ATTR_NAME, service);
+        DefaultWebService webService = create(servletContext, aspectranConfigParam);
+        servletContext.setAttribute(ROOT_WEB_SERVICE_ATTR_NAME, webService);
 
         if (logger.isDebugEnabled()) {
             logger.debug("The Root WebService attribute in ServletContext has been created; " +
-                    ROOT_WEB_SERVICE_ATTR_NAME + ": " + service);
+                    ROOT_WEB_SERVICE_ATTR_NAME + ": " + webService);
         }
 
-        WebServiceHolder.putWebService(service);
-        return service;
+        WebServiceHolder.putWebService(webService);
+        return webService;
     }
 
     /**
@@ -342,27 +342,27 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
      * @return the instance of {@code DefaultWebService}
      */
     public static DefaultWebService create(ServletContext servletContext, CoreService rootService) {
-        DefaultWebService service = new DefaultWebService(servletContext, rootService);
+        DefaultWebService webService = new DefaultWebService(servletContext, rootService);
         AspectranConfig aspectranConfig = rootService.getAspectranConfig();
         if (aspectranConfig != null) {
             WebConfig webConfig = aspectranConfig.getWebConfig();
             if (webConfig != null) {
-                applyWebConfig(service, webConfig);
+                applyWebConfig(webService, webConfig);
             }
         }
 
-        setServiceStateListener(service);
+        setServiceStateListener(webService);
 
-        if (service.isLateStart()) {
+        if (webService.isLateStart()) {
             try {
-                service.getServiceController().start();
+                webService.getServiceController().start();
             } catch (Exception e) {
                 throw new AspectranServiceException("Failed to start DefaultWebService");
             }
         }
 
-        WebServiceHolder.putWebService(service);
-        return service;
+        WebServiceHolder.putWebService(webService);
+        return webService;
     }
 
     /**
@@ -378,44 +378,44 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
             logger.warn("No specified servlet initialization parameter for instantiating DefaultWebService");
         }
 
-        DefaultWebService service = create(servletContext, aspectranConfigParam);
+        DefaultWebService webService = create(servletContext, aspectranConfigParam);
         String attrName = STANDALONE_WEB_SERVICE_ATTR_PREFIX + servlet.getServletName();
-        servletContext.setAttribute(attrName, service);
+        servletContext.setAttribute(attrName, webService);
 
         if (logger.isDebugEnabled()) {
             logger.debug("The Standalone WebService attribute in ServletContext has been created; " +
-                    attrName + ": " + service);
+                    attrName + ": " + webService);
         }
 
-        WebServiceHolder.putWebService(service);
-        return service;
+        WebServiceHolder.putWebService(webService);
+        return webService;
     }
 
     /**
      * Returns a new instance of {@code DefaultWebService}.
-     * @param servlet the servlet
-     * @param rootService the root service
+     * @param servlet the web activity servlet
+     * @param rootWebService the root web service
      * @return the instance of {@code DefaultWebService}
      */
-    public static DefaultWebService create(WebActivityServlet servlet, DefaultWebService rootService) {
+    public static DefaultWebService create(WebActivityServlet servlet, DefaultWebService rootWebService) {
         ServletContext servletContext = servlet.getServletContext();
         ServletConfig servletConfig = servlet.getServletConfig();
         String aspectranConfigParam = servletConfig.getInitParameter(ASPECTRAN_CONFIG_PARAM);
         if (aspectranConfigParam != null) {
-            DefaultWebService service = create(servletContext, aspectranConfigParam);
+            DefaultWebService webService = create(servletContext, aspectranConfigParam);
             String attrName = STANDALONE_WEB_SERVICE_ATTR_PREFIX + servlet.getServletName();
-            servletContext.setAttribute(attrName, service);
+            servletContext.setAttribute(attrName, webService);
 
             if (logger.isDebugEnabled()) {
                 logger.debug("The Standalone WebService attribute in ServletContext has been created; " +
-                    attrName + ": " + service);
+                    attrName + ": " + webService);
             }
 
-            WebServiceHolder.putWebService(service);
-            return service;
+            WebServiceHolder.putWebService(webService);
+            return webService;
         } else {
-            WebServiceHolder.putWebService(rootService);
-            return rootService;
+            WebServiceHolder.putWebService(rootWebService);
+            return rootWebService;
         }
     }
 
@@ -463,41 +463,41 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
             contextConfig.setContextRules(new String[] {DEFAULT_APP_CONTEXT_FILE});
         }
 
-        DefaultWebService service = new DefaultWebService(servletContext);
-        service.prepare(aspectranConfig);
+        DefaultWebService webService = new DefaultWebService(servletContext);
+        webService.prepare(aspectranConfig);
 
         WebConfig webConfig = aspectranConfig.getWebConfig();
         if (webConfig != null) {
-            applyWebConfig(service, webConfig);
+            applyWebConfig(webService, webConfig);
         }
 
-        setServiceStateListener(service);
-        return service;
+        setServiceStateListener(webService);
+        return webService;
     }
 
-    private static void applyWebConfig(DefaultWebService service, WebConfig webConfig) {
-        service.setUriDecoding(webConfig.getUriDecoding());
+    private static void applyWebConfig(DefaultWebService webService, WebConfig webConfig) {
+        webService.setUriDecoding(webConfig.getUriDecoding());
 
         String defaultServletName = webConfig.getDefaultServletName();
         if (defaultServletName != null) {
-            service.getDefaultServletHttpRequestHandler().setDefaultServletName(defaultServletName);
+            webService.getDefaultServletHttpRequestHandler().setDefaultServletName(defaultServletName);
         }
 
-        service.setTrailingSlashRedirect(webConfig.isTrailingSlashRedirect());
+        webService.setTrailingSlashRedirect(webConfig.isTrailingSlashRedirect());
 
         ExposalsConfig exposalsConfig = webConfig.getExposalsConfig();
         if (exposalsConfig != null) {
             String[] includePatterns = exposalsConfig.getIncludePatterns();
             String[] excludePatterns = exposalsConfig.getExcludePatterns();
-            service.setExposals(includePatterns, excludePatterns);
+            webService.setExposals(includePatterns, excludePatterns);
         }
     }
 
-    private static void setServiceStateListener(final DefaultWebService service) {
-        service.setServiceStateListener(new ServiceStateListener() {
+    private static void setServiceStateListener(final DefaultWebService webService) {
+        webService.setServiceStateListener(new ServiceStateListener() {
             @Override
             public void started() {
-                service.pauseTimeout = 0L;
+                webService.pauseTimeout = 0L;
             }
 
             @Override
@@ -508,7 +508,7 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
             @Override
             public void paused(long millis) {
                 if (millis > 0L) {
-                    service.pauseTimeout = System.currentTimeMillis() + millis;
+                    webService.pauseTimeout = System.currentTimeMillis() + millis;
                 } else {
                     logger.warn("Pause timeout in milliseconds needs to be set " +
                             "to a value of greater than 0");
@@ -517,7 +517,7 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
 
             @Override
             public void paused() {
-                service.pauseTimeout = -1L;
+                webService.pauseTimeout = -1L;
             }
 
             @Override

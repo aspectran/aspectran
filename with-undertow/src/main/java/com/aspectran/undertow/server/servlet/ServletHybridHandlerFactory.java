@@ -27,6 +27,7 @@ import io.undertow.server.HandlerWrapper;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.handlers.PathHandler;
 import io.undertow.server.handlers.ResponseCodeHandler;
+import io.undertow.servlet.api.Deployment;
 import io.undertow.servlet.api.DeploymentManager;
 import io.undertow.servlet.api.ServletContainer;
 import jakarta.servlet.ServletContext;
@@ -91,15 +92,13 @@ public class ServletHybridHandlerFactory implements ActivityContextAware {
             for (String deploymentName : servletContainer.listDeployments()) {
                 DeploymentManager manager = servletContainer.getDeployment(deploymentName);
                 manager.deploy();
+                Deployment deployment = manager.getDeployment();
+                ServletContext servletContext = deployment.getServletContext();
 
-                ServletContext servletContext = manager.getDeployment().getServletContext();
-                Object attr = servletContext.getAttribute(TowServletContext.DERIVED_WEB_SERVICE_ATTR);
-                servletContext.removeAttribute(TowServletContext.DERIVED_WEB_SERVICE_ATTR);
-                if ("true".equals(attr)) {
-                    CoreService rootService = context.getRootService();
-                    WebService webService = DefaultWebService.create(servletContext, rootService);
-                    servletContext.setAttribute(ROOT_WEB_SERVICE_ATTR_NAME, webService);
-                }
+                // Create a root web service
+                CoreService rootService = context.getRootService();
+                WebService rootWebService = DefaultWebService.create(servletContext, rootService);
+                servletContext.setAttribute(ROOT_WEB_SERVICE_ATTR_NAME, rootWebService);
 
                 // Required for any websocket support in undertow
                 ServerEndpointExporter serverEndpointExporter = new ServerEndpointExporter(context);
@@ -109,7 +108,7 @@ public class ServletHybridHandlerFactory implements ActivityContextAware {
                 }
 
                 HttpHandler handler = manager.start();
-                String contextPath = manager.getDeployment().getDeploymentInfo().getContextPath();
+                String contextPath = deployment.getDeploymentInfo().getContextPath();
                 pathHandler.addPrefixPath(contextPath, handler);
             }
             rootHandler = pathHandler;

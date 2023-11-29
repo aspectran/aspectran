@@ -86,8 +86,9 @@ public class DefaultTowService extends AbstractTowService {
                 exchange.setStatusCode(HttpStatus.SERVICE_UNAVAILABLE.value());
                 return true;
             } else if (pauseTimeout == -2L) {
-                logger.error(getServiceName() + " is not yet started");
+                logger.warn(getServiceName() + " is not yet started");
                 exchange.setStatusCode(HttpStatus.SERVICE_UNAVAILABLE.value());
+                exchange.setReasonPhrase("Starting... Try again in a moment.");
                 return true;
             } else {
                 pauseTimeout = 0L;
@@ -179,23 +180,23 @@ public class DefaultTowService extends AbstractTowService {
      * @return the instance of {@code DefaultTowService}
      */
     public static DefaultTowService create(CoreService rootService) {
-        DefaultTowService service = new DefaultTowService(rootService);
+        DefaultTowService towService = new DefaultTowService(rootService);
         AspectranConfig aspectranConfig = rootService.getAspectranConfig();
         if (aspectranConfig != null) {
             WebConfig webConfig = aspectranConfig.getWebConfig();
             if (webConfig != null) {
-                applyWebConfig(service, webConfig);
+                applyWebConfig(towService, webConfig);
             }
         }
-        setServiceStateListener(service);
-        if (service.isLateStart()) {
+        setServiceStateListener(towService);
+        if (towService.isLateStart()) {
             try {
-                service.getServiceController().start();
+                towService.getServiceController().start();
             } catch (Exception e) {
                 throw new AspectranServiceException("Failed to start DefaultTowService");
             }
         }
-        return service;
+        return towService;
     }
 
     /**
@@ -204,34 +205,34 @@ public class DefaultTowService extends AbstractTowService {
      * @return the instance of {@code DefaultTowService}
      */
     public static DefaultTowService create(AspectranConfig aspectranConfig) {
-        DefaultTowService service = new DefaultTowService();
-        service.prepare(aspectranConfig);
+        DefaultTowService towService = new DefaultTowService();
+        towService.prepare(aspectranConfig);
 
         WebConfig webConfig = aspectranConfig.getWebConfig();
         if (webConfig != null) {
-            applyWebConfig(service, webConfig);
+            applyWebConfig(towService, webConfig);
         }
 
-        setServiceStateListener(service);
-        return service;
+        setServiceStateListener(towService);
+        return towService;
     }
 
-    private static void applyWebConfig(DefaultTowService service, WebConfig webConfig) {
-        service.setUriDecoding(webConfig.getUriDecoding());
-        service.setTrailingSlashRedirect(webConfig.isTrailingSlashRedirect());
+    private static void applyWebConfig(DefaultTowService towService, WebConfig webConfig) {
+        towService.setUriDecoding(webConfig.getUriDecoding());
+        towService.setTrailingSlashRedirect(webConfig.isTrailingSlashRedirect());
         ExposalsConfig exposalsConfig = webConfig.getExposalsConfig();
         if (exposalsConfig != null) {
             String[] includePatterns = exposalsConfig.getIncludePatterns();
             String[] excludePatterns = exposalsConfig.getExcludePatterns();
-            service.setExposals(includePatterns, excludePatterns);
+            towService.setExposals(includePatterns, excludePatterns);
         }
     }
 
-    private static void setServiceStateListener(final DefaultTowService service) {
-        service.setServiceStateListener(new ServiceStateListener() {
+    private static void setServiceStateListener(final DefaultTowService towService) {
+        towService.setServiceStateListener(new ServiceStateListener() {
             @Override
             public void started() {
-                service.pauseTimeout = 0L;
+                towService.pauseTimeout = 0L;
             }
 
             @Override
@@ -242,7 +243,7 @@ public class DefaultTowService extends AbstractTowService {
             @Override
             public void paused(long millis) {
                 if (millis > 0L) {
-                    service.pauseTimeout = System.currentTimeMillis() + millis;
+                    towService.pauseTimeout = System.currentTimeMillis() + millis;
                 } else {
                     logger.warn("Pause timeout in milliseconds needs to be set " +
                             "to a value of greater than 0");
@@ -251,7 +252,7 @@ public class DefaultTowService extends AbstractTowService {
 
             @Override
             public void paused() {
-                service.pauseTimeout = -1L;
+                towService.pauseTimeout = -1L;
             }
 
             @Override

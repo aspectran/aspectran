@@ -35,6 +35,8 @@ import org.eclipse.jetty.websocket.jakarta.server.internal.JakartaWebSocketServe
 import java.io.File;
 import java.io.IOException;
 
+import static com.aspectran.web.service.WebService.ROOT_WEB_SERVICE_ATTR_NAME;
+
 /**
  * The Class JettyWebAppContext.
  *
@@ -48,8 +50,6 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
 
     private JettyWebSocketInitializer webSocketInitializer;
 
-    private boolean webServiceDerived;
-
     @Override
     @AvoidAdvice
     public void setActivityContext(ActivityContext context) {
@@ -58,13 +58,6 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
 
     public void setWebSocketInitializer(JettyWebSocketInitializer webSocketInitializer) {
         this.webSocketInitializer = webSocketInitializer;
-    }
-
-    /**
-     * Specifies whether to use a web service derived from the root web service.
-     */
-    public void setWebServiceDerived(boolean webServiceDerived) {
-        this.webServiceDerived = webServiceDerived;
     }
 
     public void setTempDirectory(String tempDirectory) {
@@ -86,11 +79,10 @@ public class JettyWebAppContext extends WebAppContext implements ActivityContext
     public void initialize() throws Exception {
         Assert.state(context != null, "No ActivityContext injected");
 
-        if (webServiceDerived) {
-            CoreService rootService = context.getRootService();
-            WebService webService = DefaultWebService.create(getServletContext(), rootService);
-            setAttribute(WebService.ROOT_WEB_SERVICE_ATTR_NAME, webService);
-        }
+        // Create a root web service
+        CoreService rootService = context.getRootService();
+        WebService rootWebService = DefaultWebService.create(getServletContext(), rootService);
+        setAttribute(ROOT_WEB_SERVICE_ATTR_NAME, rootWebService);
 
         ClassLoader parent = context.getApplicationAdapter().getClassLoader();
         WebAppClassLoader webAppClassLoader = new WebAppClassLoader(parent, this);

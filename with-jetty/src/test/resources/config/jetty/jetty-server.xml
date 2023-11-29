@@ -113,7 +113,6 @@
                     </properties>
                 </bean>
             </item>
-            <item name="webServiceDerived" valueType="boolean">true</item>
         </properties>
     </bean>
 

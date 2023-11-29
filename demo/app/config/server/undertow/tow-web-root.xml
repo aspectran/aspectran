@@ -34,7 +34,7 @@
             <item name="servlets" type="array">
                 <bean class="com.aspectran.undertow.server.servlet.TowServlet">
                     <arguments>
-                        <item>Default Jsp Servlet</item>
+                        <item>Default JSP Servlet</item>
                         <item>org.apache.jasper.servlet.JspServlet</item>
                     </arguments>
                     <properties>
@@ -83,7 +83,6 @@
                     </properties>
                 </bean>
             </item>
-            <item name="webServiceDerived" valueType="boolean">true</item>
         </properties>
     </bean>
 
