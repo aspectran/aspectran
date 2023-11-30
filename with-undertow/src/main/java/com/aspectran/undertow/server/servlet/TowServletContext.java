@@ -23,6 +23,7 @@ import io.undertow.servlet.api.DeploymentInfo;
 import io.undertow.servlet.api.ErrorPage;
 import io.undertow.servlet.api.InstanceFactory;
 import io.undertow.servlet.api.ServletContainerInitializerInfo;
+import io.undertow.servlet.api.ServletInfo;
 import io.undertow.servlet.util.ImmediateInstanceFactory;
 import jakarta.servlet.ServletContainerInitializer;
 
@@ -85,6 +86,13 @@ public class TowServletContext extends DeploymentInfo implements ApplicationAdap
     public void setServlets(TowServlet[] towServlets) {
         if (towServlets != null) {
             for (TowServlet towServlet : towServlets) {
+                ServletInfo existingServlet = getServlets().get(towServlet.getName());
+                if (getServlets().containsKey(towServlet.getName())) {
+                    throw new IllegalArgumentException("Duplicate servlet name detected: " +
+                            "Existing: " + existingServlet + "; This: " + towServlet + "; " +
+                            "Each servlet added to the servlet context must have a unique name. " +
+                            "Otherwise existing servlets will be ignored.");
+                }
                 addServlet(towServlet);
             }
         }

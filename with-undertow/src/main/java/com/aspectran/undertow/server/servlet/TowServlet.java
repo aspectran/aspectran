@@ -37,9 +37,7 @@ public class TowServlet extends ServletInfo {
 
     public void setMappings(String[] mappings) {
         if (mappings != null) {
-            for (String mapping : mappings) {
-                addMapping(mapping);
-            }
+            super.addMappings(mappings);
         }
     }
 
