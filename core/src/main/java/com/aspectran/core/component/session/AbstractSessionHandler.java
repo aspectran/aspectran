@@ -330,12 +330,8 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
             Set<String> checkedCandidates = sessionCache.checkExpiration(candidates);
             if (checkedCandidates != null) {
                 for (String id : checkedCandidates) {
-                    try {
-                        invalidate(id, Session.DestroyedReason.TIMEOUT);
-                        candidateSessionIdsForExpiry.remove(id);
-                    } catch (Exception e) {
-                        logger.warn(e);
-                    }
+                    candidateSessionIdsForExpiry.remove(id);
+                    invalidate(id, Session.DestroyedReason.TIMEOUT);
                 }
             }
             if (logger.isDebugEnabled()) {

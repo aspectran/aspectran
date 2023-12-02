@@ -179,21 +179,8 @@ public abstract class AbstractSessionStore extends AbstractComponent implements 
             if (time > 0L) {
                 expiredSessions = doGetExpired(time);
                 for (String id : candidates) {
-                    if (!expiredSessions.contains(id)) {
-                        boolean expired = false;
-                        try {
-                            SessionData data = load(id);
-                            if (data != null) {
-                                if (data.getExpiry() > 0 && data.getExpiry() <= time) {
-                                    expired = true;
-                                }
-                            }
-                        } catch (Exception ignored) {
-                            // no grace period unless session data is valid
-                        }
-                        if (expired) {
-                            expiredSessions.add(id);
-                        }
+                    if (!expiredSessions.contains(id) && !checkExpiry(id, time)) {
+                        expiredSessions.add(id);
                     }
                 }
             }
@@ -201,6 +188,26 @@ public abstract class AbstractSessionStore extends AbstractComponent implements 
             lastExpiryCheckTime = now;
         }
         return expiredSessions;
+    }
+
+    private boolean checkExpiry(String id, long time) {
+        SessionData data = null;
+        try {
+            data = load(id);
+        } catch (Exception ignored) {
+            // ignore
+        }
+        return checkExpiry(data, time);
+    }
+
+    /**
+     * Checks whether the given session has not expired.
+     * @param data the session data
+     * @param time the time before which the sessions must have expired
+     * @return true if the session has not yet expired, false otherwise
+     */
+    protected boolean checkExpiry(SessionData data, long time) {
+        return (data != null && (data.getExpiry() <= 0L || data.getExpiry() > time));
     }
 
     /**

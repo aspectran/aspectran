@@ -17,8 +17,6 @@ package com.aspectran.core.component.session.redis.lettuce;
 
 import com.aspectran.core.component.session.AbstractSessionStore;
 import com.aspectran.core.component.session.SessionData;
-import com.aspectran.core.util.logging.Logger;
-import com.aspectran.core.util.logging.LoggerFactory;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -32,8 +30,6 @@ import java.util.function.Consumer;
  * @since 6.6.0
  */
 public abstract class AbstractLettuceSessionStore extends AbstractSessionStore {
-
-    private static final Logger logger = LoggerFactory.getLogger(AbstractLettuceSessionStore.class);
 
     abstract protected void scan(Consumer<SessionData> func);
 
@@ -66,14 +62,6 @@ public abstract class AbstractLettuceSessionStore extends AbstractSessionStore {
             }
         });
         return all;
-    }
-
-    protected boolean checkExpiry(SessionData data, long time) {
-        if (data != null) {
-            return (data.getExpiry() <= 0L || data.getExpiry() > time);
-        } else {
-            return false;
-        }
     }
 
 }
