@@ -243,7 +243,7 @@ public class FileSessionStore extends AbstractSessionStore {
     /**
      * Check all session files and remove any that expired at or before the time limit.
      * @param time the time in msec
-     * @param withManaged whether to also include managed sessions
+     * @param withManaged whether to also sweep managed sessions
      */
     private void sweepDisk(long time, boolean withManaged) {
         // iterate over the files in the store dir and check expiry times

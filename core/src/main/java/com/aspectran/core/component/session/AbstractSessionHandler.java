@@ -337,9 +337,9 @@ public abstract class AbstractSessionHandler extends AbstractComponent implement
             if (logger.isDebugEnabled()) {
                 int before = candidates.size();
                 int after = candidateSessionIdsForExpiry.size();
-                int expired = (checkedCandidates != null ? checkedCandidates.size() : 0);
-                logger.debug("Expiration candidates {before=" + before + ", after=" +
-                    after + ", expired=" + expired + "}");
+                int scavenged = (checkedCandidates != null ? checkedCandidates.size() : 0);
+                logger.debug("Scavenging status for expired sessions {before=" + before + ", after=" +
+                    after + ", scavenged=" + scavenged + "}");
 
             }
         } catch (Exception e) {
