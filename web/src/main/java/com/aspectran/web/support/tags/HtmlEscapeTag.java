@@ -48,6 +48,8 @@ import jakarta.servlet.jsp.JspException;
  */
 public class HtmlEscapeTag extends CurrentActivityAwareTag {
 
+    private static final long serialVersionUID = -8222837265865482049L;
+
     /**
      * HTML escape parameter at the servlet context level
      * (i.e. a context-param in {@code web.xml}): "defaultHtmlEscape".

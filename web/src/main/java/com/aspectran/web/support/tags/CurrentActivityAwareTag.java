@@ -34,6 +34,8 @@ import jakarta.servlet.jsp.tagext.TryCatchFinally;
  */
 public abstract class CurrentActivityAwareTag extends TagSupport implements TryCatchFinally {
 
+    private static final long serialVersionUID = 2941680793598183983L;
+
     /** Logger available to subclasses. */
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 

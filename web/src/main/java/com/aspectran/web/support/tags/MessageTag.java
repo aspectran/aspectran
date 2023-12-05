@@ -119,6 +119,8 @@ import java.util.List;
  */
 public class MessageTag extends HtmlEscapingAwareTag implements ArgumentAware {
 
+    private static final long serialVersionUID = -1411894383022986406L;
+
     /**
      * Default separator for splitting an arguments String: a comma (",").
      */

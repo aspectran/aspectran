@@ -94,6 +94,8 @@ import java.io.IOException;
  */
 public class TokenTag extends HtmlEscapingAwareTag {
 
+    private static final long serialVersionUID = -3988228472260819648L;
+
     /**
      * {@link jakarta.servlet.jsp.PageContext} attribute for the
      * page-level {@link TokenEvaluator} instance.

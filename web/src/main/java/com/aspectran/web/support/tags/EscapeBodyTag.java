@@ -66,6 +66,8 @@ import java.io.IOException;
  */
 public class EscapeBodyTag extends HtmlEscapingAwareTag implements BodyTag {
 
+    private static final long serialVersionUID = -4704418839663089166L;
+
     private boolean javaScriptEscape;
 
     @Nullable

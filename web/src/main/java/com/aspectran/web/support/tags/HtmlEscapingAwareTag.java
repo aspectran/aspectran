@@ -31,6 +31,8 @@ import static com.aspectran.web.support.tags.HtmlEscapeTag.DEFAULT_HTML_ESCAPE_S
  */
 public abstract class HtmlEscapingAwareTag extends CurrentActivityAwareTag {
 
+    private static final long serialVersionUID = 1853699535371633474L;
+
     @Nullable
     private Boolean htmlEscape;
 

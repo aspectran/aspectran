@@ -47,6 +47,8 @@ import jakarta.servlet.jsp.tagext.BodyTagSupport;
  */
 public class ArgumentTag extends BodyTagSupport {
 
+    private static final long serialVersionUID = 6978546222061654320L;
+
     @Nullable
     private Object value;
 
