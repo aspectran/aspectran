@@ -188,7 +188,7 @@ public interface EmbeddedAspectran {
 
     /**
      * Return an instance of the bean that matches the given id.
-     * @param <V> the result type of the bean
+     * @param <V> the type of bean object retrieved
      * @param id the id of the bean to retrieve
      * @return an instance of the bean
      */
@@ -196,7 +196,7 @@ public interface EmbeddedAspectran {
 
     /**
      * Return an instance of the bean that matches the given object type.
-     * @param <V> the result type of the bean
+     * @param <V> the type of bean object retrieved
      * @param type the type the bean must match; can be an interface or superclass.
      *      {@code null} is disallowed.
      * @return an instance of the bean
@@ -206,7 +206,7 @@ public interface EmbeddedAspectran {
 
     /**
      * Return an instance of the bean that matches the given object type.
-     * @param <V> the result type of the bean
+     * @param <V> the type of bean object retrieved
      * @param type type the bean must match; can be an interface or superclass.
      *      {@code null} is allowed.
      * @param id the id of the bean to retrieve

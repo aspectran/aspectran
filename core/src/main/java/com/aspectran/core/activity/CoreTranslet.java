@@ -29,6 +29,10 @@ import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.env.Environment;
+import com.aspectran.core.context.expr.TokenEvaluation;
+import com.aspectran.core.context.expr.TokenEvaluator;
+import com.aspectran.core.context.expr.token.Token;
+import com.aspectran.core.context.expr.token.TokenParser;
 import com.aspectran.core.context.rule.DescriptionRule;
 import com.aspectran.core.context.rule.DispatchRule;
 import com.aspectran.core.context.rule.ForwardRule;
@@ -57,6 +61,8 @@ public class CoreTranslet extends AbstractTranslet {
 
     private ActivityData activityData;
 
+    private TokenEvaluator evaluator;
+
     /**
      * Instantiates a new CoreTranslet.
      * @param transletRule the translet rule
@@ -80,6 +86,11 @@ public class CoreTranslet extends AbstractTranslet {
     @Override
     public Environment getEnvironment() {
         return activity.getEnvironment();
+    }
+
+    @Override
+    public boolean acceptsProfiles(String... profiles) {
+        return getEnvironment().acceptsProfiles(profiles);
     }
 
     @Override
@@ -370,11 +381,6 @@ public class CoreTranslet extends AbstractTranslet {
     }
 
     @Override
-    public boolean acceptsProfiles(String... profiles) {
-        return activity.getEnvironment().acceptsProfiles(profiles);
-    }
-
-    @Override
     public <V> V getAspectAdviceBean(String aspectId) {
         return activity.getAspectAdviceBean(aspectId);
     }
@@ -414,6 +420,25 @@ public class CoreTranslet extends AbstractTranslet {
             }
         }
         return super.toString();
+    }
+
+    //---------------------------------------------------------------------
+    // Implementation for token expression evaluation
+    //---------------------------------------------------------------------
+
+    @Override
+    public <V> V evaluate(String expression) {
+        Token[] tokens = TokenParser.parse(expression);
+        return evaluate(tokens);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <V> V evaluate(Token[] tokens) {
+        if (evaluator == null) {
+            evaluator = new TokenEvaluation(activity);
+        }
+        return (V)evaluator.evaluate(tokens);
     }
 
     //---------------------------------------------------------------------

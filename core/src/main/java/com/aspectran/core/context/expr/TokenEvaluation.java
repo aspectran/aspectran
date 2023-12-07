@@ -58,7 +58,7 @@ public class TokenEvaluation implements TokenEvaluator {
     protected final Activity activity;
 
     /**
-     * Instantiates a new token expression parser.
+     * Instantiates a new TokenEvaluation.
      * @param activity the current Activity
      */
     public TokenEvaluation(Activity activity) {

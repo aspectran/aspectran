@@ -24,6 +24,7 @@ import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.env.Environment;
+import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.rule.DispatchRule;
 import com.aspectran.core.context.rule.ForwardRule;
 import com.aspectran.core.context.rule.RedirectRule;
@@ -72,6 +73,14 @@ public interface Translet {
      * @return the environment
      */
     Environment getEnvironment();
+
+    /**
+     * Return whether the given profile is active.
+     * If active profiles are empty whether the profile should be active by default.
+     * @param profiles the profiles
+     * @return {@code true} if profile is active, otherwise {@code false}
+     */
+    boolean acceptsProfiles(String... profiles);
 
     /**
      * Gets the application adapter.
@@ -184,7 +193,7 @@ public interface Translet {
 
     /**
      * Returns an array of {@code String} objects containing all
-     * of the values the given activity's request parameter has,
+     * the values the given activity's request parameter has,
      * or {@code null} if the parameter does not exist.
      * @param name a {@code String} specifying the name of the parameter
      * @return an array of {@code String} objects
@@ -250,7 +259,7 @@ public interface Translet {
 
     /**
      * Returns an array of {@code FileParameter} objects containing all
-     * of the values the given activity's request parameter has,
+     * the values the given activity's request file parameter has,
      * or {@code null} if the parameter does not exist.
      * @param name a {@code String} specifying the name of the file parameter
      * @return an array of {@code FileParameter} objects
@@ -296,7 +305,7 @@ public interface Translet {
     /**
      * Returns the value of the named attribute as a given type,
      * or {@code null} if no attribute of the given name exists.
-     * @param <V> the result type of the bean
+     * @param <V> the type of attribute retrieved
      * @param name a {@code String} specifying the name of the attribute
      * @return an {@code Object} containing the value of the attribute,
      *             or {@code null} if the attribute does not exist
@@ -432,14 +441,6 @@ public interface Translet {
     void removeRaisedException();
 
     /**
-     * Return whether the given profile is active.
-     * If active profiles are empty whether the profile should be active by default.
-     * @param profiles the profiles
-     * @return {@code true} if profile is active, otherwise {@code false}
-     */
-    boolean acceptsProfiles(String... profiles);
-
-    /**
      * Gets the aspect advice bean.
      * @param <V> the result type of the advice
      * @param aspectId the aspect id
@@ -486,8 +487,28 @@ public interface Translet {
     boolean hasPathVariables();
 
     /**
+     * Evaluates a token expression.
+     * @param <V> the type of evaluation result value
+     * @param expression the token expression to evaluate
+     * @return if there are multiple tokens, the result of evaluating them is returned
+     *      as a string. If there is only one token, it is returned as is.
+     * @since 7.4.3
+     */
+    <V> V evaluate(String expression);
+
+    /**
+     * Evaluates a token expression.
+     * @param <V> the type of evaluation result value
+     * @param tokens the tokens to evaluate
+     * @return if there are multiple tokens, the result of evaluating them is returned
+     *      as a string. If there is only one token, it is returned as is.
+     * @since 7.4.3
+     */
+    <V> V evaluate(Token[] tokens);
+
+    /**
      * Return an instance of the bean that matches the given id.
-     * @param <V> the result type of the bean
+     * @param <V> the type of bean object retrieved
      * @param id the id of the bean to retrieve
      * @return an instance of the bean
      */
@@ -495,7 +516,7 @@ public interface Translet {
 
     /**
      * Return an instance of the bean that matches the given object type.
-     * @param <V> the result type of the bean
+     * @param <V> the type of bean object retrieved
      * @param type the type the bean must match; can be an interface or superclass.
      *      {@code null} is disallowed.
      * @return an instance of the bean
@@ -505,7 +526,7 @@ public interface Translet {
 
     /**
      * Return an instance of the bean that matches the given object type.
-     * @param <V> the result type of the bean
+     * @param <V> the type of bean object retrieved
      * @param type type the bean must match; can be an interface or superclass.
      *      {@code null} is allowed.
      * @param id the id of the bean to retrieve
