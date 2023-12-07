@@ -29,9 +29,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.security.AccessController;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
 
 /**
  * A class to simplify access to ResourceUtils through the classloader.
@@ -351,7 +348,6 @@ public class ResourceUtils {
      */
     public static URL extractArchiveURL(URL jarUrl) throws MalformedURLException {
         String urlFile = jarUrl.getFile();
-
         int endIndex = urlFile.indexOf(WAR_URL_SEPARATOR);
         if (endIndex != -1) {
             // Tomcat's "war:file:...mywar.war*/WEB-INF/lib/myjar.jar!/myentry.txt"
@@ -364,7 +360,6 @@ public class ResourceUtils {
                 return new URL(warFile.substring(startIndex + WAR_URL_PREFIX.length()));
             }
         }
-
         // Regular "jar:file:...myjar.jar!/myentry.txt"
         return extractJarFileURL(jarUrl);
     }
@@ -468,20 +463,14 @@ public class ResourceUtils {
 
     /**
      * Returns a Reader for reading the specified file.
-     * @param file the file
+     * @param file the resource file to resolve
      * @param encoding the encoding
      * @return the reader instance
      * @throws IOException if an error occurred when reading resources using any I/O operations
      */
     public static Reader getReader(final File file, String encoding) throws IOException {
-        InputStream stream;
-        try {
-            stream = AccessController.doPrivileged((PrivilegedExceptionAction<InputStream>)()
-                    -> new FileInputStream(file));
-        } catch (PrivilegedActionException e) {
-            throw (IOException)e.getException();
-        }
-
+        Assert.notNull(file, "Resource file must not be null");
+        InputStream stream = new FileInputStream(file);
         Reader reader;
         if (encoding != null) {
             reader = new InputStreamReader(stream, encoding);
@@ -493,30 +482,16 @@ public class ResourceUtils {
 
     /**
      * Returns a Reader for reading the specified url.
-     * @param url the url
+     * @param url the resource URL to resolve
      * @param encoding the encoding
      * @return the reader instance
      * @throws IOException if an error occurred when reading resources using any I/O operations
      */
     public static Reader getReader(final URL url, String encoding) throws IOException {
-        InputStream stream;
-        try {
-            stream = AccessController.doPrivileged((PrivilegedExceptionAction<InputStream>)() -> {
-                InputStream is = null;
-                if (url != null) {
-                    URLConnection connection = url.openConnection();
-                    if (connection != null) {
-                        // Disable caches to get fresh data for reloading.
-                        connection.setUseCaches(false);
-                        is = connection.getInputStream();
-                    }
-                }
-                return is;
-            });
-        } catch (PrivilegedActionException e) {
-            throw (IOException)e.getException();
-        }
-
+        Assert.notNull(url, "Resource URL must not be null");
+        URLConnection connection = url.openConnection();
+        connection.setUseCaches(false); // disable caches to get fresh data for reloading
+        InputStream stream = connection.getInputStream();
         Reader reader;
         if (encoding != null) {
             reader = new InputStreamReader(stream, encoding);
