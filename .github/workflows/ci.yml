@@ -6,16 +6,16 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
-        java: [11, 17, 19]
-        distribution: ['zulu']
+        java: [11, 17, 21]
+        distribution: ['temurin']
       fail-fast: false
       max-parallel: 4
     name: Test JDK ${{ matrix.java }}, ${{ matrix.os }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Set up JDK
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           java-version: ${{ matrix.java }}
           distribution: ${{ matrix.distribution }}
@@ -25,8 +25,8 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
-            ${{ runner.os }}-maven
+            ${{ runner.os }}-m2
       - name: Test with Maven
-        run: ./mvnw test -B -D"license.skip=true" -D"jacoco.skip=true"
+        run: ./mvnw test -B -V -ntp -D"license.skip=true" -D"jacoco.skip=true"
