@@ -63,10 +63,11 @@ public class PropertiesLoaderUtils {
      * @throws IOException if loading failed
      */
     public static Properties loadProperties(String resourceName, ClassLoader classLoader) throws IOException {
+        Assert.notNull(resourceName, "resourceName must not be null");
         Properties props = cache.get(resourceName);
         if (props == null) {
             props = new Properties();
-            fillProperties(props, resourceName, classLoader);
+            loadIntoProperties(props, resourceName, classLoader);
             Properties existing = cache.putIfAbsent(resourceName, props);
             if (existing != null) {
                 props = existing;
@@ -76,20 +77,20 @@ public class PropertiesLoaderUtils {
     }
 
     /**
-     * Fill the given properties from the specified class path resource (in ISO-8859-1 encoding).
+     * Load into the given properties from the specified class path resource (in ISO-8859-1 encoding).
      * <p>Merges properties if more than one resource of the same name
      * found in the class path.</p>
      * @param props the Properties instance to load into
      * @param resourceName the name of the class path resource
      * @throws IOException if loading failed
      */
-    public static void fillProperties(Properties props, String resourceName)
+    public static void loadIntoProperties(Properties props, String resourceName)
             throws IOException {
-        fillProperties(props, resourceName, ClassUtils.getDefaultClassLoader());
+        loadIntoProperties(props, resourceName, ClassUtils.getDefaultClassLoader());
     }
 
     /**
-     * Fill the given properties from the specified class path resource (in ISO-8859-1 encoding).
+     * Load into given properties from the specified class path resource (in ISO-8859-1 encoding).
      * <p>Merges properties if more than one resource of the same name
      * found in the class path.</p>
      * @param props the Properties instance to load into
@@ -97,8 +98,11 @@ public class PropertiesLoaderUtils {
      * @param classLoader the class loader
      * @throws IOException if loading failed
      */
-    public static void fillProperties(Properties props, String resourceName, ClassLoader classLoader)
+    public static void loadIntoProperties(Properties props, String resourceName, ClassLoader classLoader)
             throws IOException {
+        Assert.notNull(props, "props must not be null");
+        Assert.notNull(resourceName, "resourceName must not be null");
+        Assert.notNull(classLoader, "classLoader must not be null");
         Enumeration<URL> urls = classLoader.getResources(resourceName);
         while (urls.hasMoreElements()) {
             URL url = urls.nextElement();
