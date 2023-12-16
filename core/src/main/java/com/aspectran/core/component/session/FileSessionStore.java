@@ -323,7 +323,6 @@ public class FileSessionStore extends AbstractSessionStore {
             throw new IllegalStateException(storeDir.getAbsolutePath() + " must be readable/writable directory");
         }
 
-        // iterate over files in storeDir and build map of session id to filename
         MultiException me = new MultiException();
         long now = System.currentTimeMillis();
 
@@ -350,20 +349,20 @@ public class FileSessionStore extends AbstractSessionStore {
                                 long existingExpiry = getExpiryFromFilename(existing);
                                 long thisExpiry = getExpiryFromFilename(filename);
                                 if (thisExpiry > existingExpiry) {
-                                    // replace with more recent file
-                                    Path existingFile = storeDir.toPath().resolve(existing);
                                     // update the file we're keeping
                                     sessionFileMap.put(sessionId, filename);
-                                    // delete the old file
+                                    // delete the old file as it has been replaced with a more recent file
+                                    Path existingFile = storeDir.toPath().resolve(existing);
                                     Files.delete(existingFile);
                                     if (logger.isDebugEnabled()) {
-                                        logger.debug("Replaced " + existing + " with " + filename);
+                                        logger.debug("Replaced file " + existing + " with " + filename +
+                                            " for session " + sessionId);
                                     }
                                 } else {
                                     // we found an older file, delete it
                                     Files.delete(p);
                                     if (logger.isDebugEnabled()) {
-                                        logger.debug("Deleted expired session file " + filename);
+                                        logger.debug("Deleted file " + filename + " for expired session " + sessionId);
                                     }
                                 }
                             } catch (IOException e) {

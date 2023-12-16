@@ -58,10 +58,7 @@ public class DefaultSessionCache extends AbstractSessionCache {
 
     @Override
     protected DefaultSession doGet(String id) {
-        if (id == null) {
-            return null;
-        }
-        return sessions.get(id);
+        return (id != null ? sessions.get(id) : null);
     }
 
     @Override
@@ -128,6 +125,13 @@ public class DefaultSessionCache extends AbstractSessionCache {
     protected void doInitialize() throws Exception {
         if (getSessionStore() != null) {
             getSessionStore().initialize();
+            int restoredSessions = getSessionStore().getAllSessions().size();
+            if (restoredSessions > 0) {
+                long createdSessions = getStatistics().addCreatedSessionsAndGet(restoredSessions);
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Sessions restored: " + createdSessions);
+                }
+            }
         }
     }
 

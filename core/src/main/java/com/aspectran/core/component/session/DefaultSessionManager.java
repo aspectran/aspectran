@@ -64,12 +64,6 @@ public class DefaultSessionManager extends AbstractSessionHandler
     }
 
     public void setSessionManagerConfig(SessionManagerConfig sessionManagerConfig) {
-        if (sessionManagerConfig != null) {
-            if (logger.isDebugEnabled()) {
-                ToStringBuilder tsb = new ToStringBuilder("Configuring SessionManager", sessionManagerConfig);
-                logger.debug(tsb.toString());
-            }
-        }
         this.sessionManagerConfig = sessionManagerConfig;
     }
 
@@ -100,6 +94,9 @@ public class DefaultSessionManager extends AbstractSessionHandler
         boolean clusterEnabled = false;
         int scavengingIntervalSeconds = -1;
         if (sessionManagerConfig != null) {
+            if (logger.isDebugEnabled()) {
+                logger.debug("Initializing " + new ToStringBuilder(getComponentName(), sessionManagerConfig));
+            }
             if (sessionManagerConfig.isClusterEnabled()) {
                 clusterEnabled = true;
             }
