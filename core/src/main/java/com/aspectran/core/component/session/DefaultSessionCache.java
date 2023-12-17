@@ -127,9 +127,9 @@ public class DefaultSessionCache extends AbstractSessionCache {
             getSessionStore().initialize();
             int restoredSessions = getSessionStore().getAllSessions().size();
             if (restoredSessions > 0) {
-                long createdSessions = getStatistics().addCreatedSessionsAndGet(restoredSessions);
+                getStatistics().sessionCreated(restoredSessions);
                 if (logger.isDebugEnabled()) {
-                    logger.debug("Sessions restored: " + createdSessions);
+                    logger.debug("Sessions restored: " + restoredSessions);
                 }
             }
         }

@@ -38,26 +38,76 @@ public class SessionStatistics {
     private final AtomicLong startTime = new AtomicLong(System.currentTimeMillis());
 
     /**
+     * This is called when a session is created.
+     */
+    protected void sessionCreated() {
+        creationCount.incrementAndGet();
+    }
+
+    /**
+     * When initializing the session manager, it is called to accumulate
+     * restored sessions into the created count.
+     * @param createdSessionsToAdd number of created sessions to add
+     */
+    protected void sessionCreated(long createdSessionsToAdd) {
+        creationCount.addAndGet(createdSessionsToAdd);
+    }
+
+    /**
+     * This is called when a session is created.
+     */
+    protected void sessionExpired() {
+        expirationCount.incrementAndGet();
+    }
+
+    /**
+     * This is called when a session is loaded into the cache.
+     */
+    protected void sessionActivated() {
+        activationCount.increment();
+    }
+
+    /**
+     * This is called when a session is evicted from the cache.
+     */
+    protected void sessionEvicted() {
+        activationCount.decrement();
+    }
+
+    /**
+     * This is called when an attempt is made to create a session exceeding
+     * the maximum number of active sessions.
+     */
+    protected void sessionRejected() {
+        rejectionCount.incrementAndGet();
+    }
+
+    /**
+     * Record length of time session has been active. Called when the
+     * session is about to be invalidated.
+     * @param sample the value to record.
+     */
+    protected void recordTime(long sample) {
+        timeRecord.record(sample);
+    }
+
+    /**
+     * Resets the session usage statistics.
+     */
+    protected void reset() {
+        activationCount.reset();
+        creationCount.set(0L);
+        expirationCount.set(0L);
+        rejectionCount.set(0L);
+        timeRecord.reset();
+        startTime.set(System.currentTimeMillis());
+    }
+
+    /**
      * @return total number of sessions created
      */
     public long getCreatedSessions() {
         return creationCount.get();
-    }
-
-    /**
-     * @param createdSessionsToAdd number of created sessions to add
-     * @return total number of sessions created before adding
-     */
-    protected long getCreatedSessionsAndAdd(long createdSessionsToAdd) {
-        return creationCount.getAndAdd(createdSessionsToAdd);
-    }
-
-    /**
-     * @param createdSessionsToAdd number of created sessions to add
-     * @return total number of sessions created after adding
-     */
-    protected long addCreatedSessionsAndGet(long createdSessionsToAdd) {
-        return creationCount.addAndGet(createdSessionsToAdd);
     }
 
     /**
@@ -128,47 +178,6 @@ public class SessionStatistics {
      */
     public long getStartTime() {
         return startTime.get();
-    }
-
-    /**
-     * Resets the session usage statistics.
-     */
-    public void reset() {
-        activationCount.reset();
-        creationCount.set(0L);
-        expirationCount.set(0L);
-        rejectionCount.set(0L);
-        timeRecord.reset();
-        startTime.set(System.currentTimeMillis());
-    }
-
-    protected void sessionCreated() {
-        creationCount.incrementAndGet();
-    }
-
-    protected void sessionExpired() {
-        expirationCount.incrementAndGet();
-    }
-
-    protected void sessionActivated() {
-        activationCount.increment();
-    }
-
-    protected void sessionEvicted() {
-        activationCount.decrement();
-    }
-
-    protected void sessionRejected() {
-        rejectionCount.incrementAndGet();
-    }
-
-    /**
-     * Record length of time session has been active. Called when the
-     * session is about to be invalidated.
-     * @param sample the value to record.
-     */
-    protected void recordTime(long sample) {
-        timeRecord.record(sample);
     }
 
 }
