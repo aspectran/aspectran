@@ -48,7 +48,7 @@ public class SessionStatistics {
      * @param createdSessionsToAdd number of created sessions to add
      * @return total number of sessions created before adding
      */
-    public long getCreatedSessionsAndAdd(long createdSessionsToAdd) {
+    protected long getCreatedSessionsAndAdd(long createdSessionsToAdd) {
         return creationCount.getAndAdd(createdSessionsToAdd);
     }
 
@@ -56,7 +56,7 @@ public class SessionStatistics {
      * @param createdSessionsToAdd number of created sessions to add
      * @return total number of sessions created after adding
      */
-    public long addCreatedSessionsAndGet(long createdSessionsToAdd) {
+    protected long addCreatedSessionsAndGet(long createdSessionsToAdd) {
         return creationCount.addAndGet(createdSessionsToAdd);
     }
 
