@@ -94,7 +94,8 @@ public class ServerEndpointExporter {
      * Actually register the endpoints.
      */
     public void registerEndpoints() {
-        Assert.state(getServerContainer() != null, "jakarta.websocket.server.ServerContainer not available");
+        Assert.state(getServerContainer() != null,
+            "jakarta.websocket.server.ServerContainer not available");
 
         Set<Class<?>> endpointClasses = new LinkedHashSet<>();
         if (this.annotatedEndpointClasses != null) {
