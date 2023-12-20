@@ -16,10 +16,10 @@
 package com.aspectran.core.context.rule.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
+import com.aspectran.core.util.apon.AponParseException;
 import com.aspectran.core.util.apon.ParameterKey;
 import com.aspectran.core.util.apon.ValueType;
 
-import java.io.IOException;
 import java.util.List;
 
 public class ItemHolderParameters extends AbstractParameters {
@@ -43,7 +43,7 @@ public class ItemHolderParameters extends AbstractParameters {
         super(parameterKeys);
     }
 
-    public ItemHolderParameters(String apon) throws IOException {
+    public ItemHolderParameters(String apon) throws AponParseException {
         this();
         readFrom(apon);
     }

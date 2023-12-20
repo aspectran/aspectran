@@ -16,10 +16,9 @@
 package com.aspectran.core.context.rule.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
+import com.aspectran.core.util.apon.AponParseException;
 import com.aspectran.core.util.apon.ParameterKey;
 import com.aspectran.core.util.apon.ValueType;
-
-import java.io.IOException;
 
 public class JoinpointParameters extends AbstractParameters {
 
@@ -51,7 +50,7 @@ public class JoinpointParameters extends AbstractParameters {
         super(parameterKeys);
     }
 
-    public JoinpointParameters(String apon) throws IOException {
+    public JoinpointParameters(String apon) throws AponParseException {
         this();
         readFrom(apon);
     }

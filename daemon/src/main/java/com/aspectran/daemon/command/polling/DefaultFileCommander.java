@@ -213,7 +213,7 @@ public class DefaultFileCommander extends AbstractFileCommander {
             CommandParameters parameters = new CommandParameters();
             AponReader.parse(file, parameters);
             return parameters;
-        } catch (IOException e) {
+        } catch (Exception e) {
             logger.error("Failed to read command file: " + file, e);
             removeCommandFile(incomingDir, file.getName());
             return null;

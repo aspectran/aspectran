@@ -19,7 +19,6 @@ import com.aspectran.core.lang.NonNull;
 import com.aspectran.core.util.ClassUtils;
 import com.aspectran.core.util.StringUtils;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Iterator;
@@ -43,8 +42,8 @@ public class ArrayParameters extends AbstractParameters
         this(VariableParameters.class);
     }
 
-    public ArrayParameters(String text) throws IOException {
-        this(VariableParameters.class, text);
+    public ArrayParameters(String apon) throws AponParseException {
+        this(VariableParameters.class, apon);
     }
 
     public ArrayParameters(Class<? extends AbstractParameters> elementClass) {
@@ -52,9 +51,9 @@ public class ArrayParameters extends AbstractParameters
         this.elementClass = elementClass;
     }
 
-    public ArrayParameters(Class<? extends AbstractParameters> elementClass, String text) throws IOException {
+    public ArrayParameters(Class<? extends AbstractParameters> elementClass, String apon) throws AponParseException {
         this(elementClass);
-        readFrom(StringUtils.trimWhitespace(text));
+        readFrom(StringUtils.trimWhitespace(apon));
     }
 
     public void addParameters(Parameters parameters) {

@@ -73,7 +73,7 @@ class JsonToAponTest {
 
         MessagePayload messagePayload2 = new MessagePayload();
         AponReader reader = new AponReader(messagePayload.toString());
-        Parameters parameters = reader.read(messagePayload2);
+        reader.read(messagePayload2);
         String result2 = messagePayload.toString();
 
         assertEquals(result1, result2);

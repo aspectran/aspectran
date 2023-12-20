@@ -16,7 +16,7 @@
 package com.aspectran.core.util.apon;
 
 import java.io.File;
-import java.io.IOException;
+import java.io.Reader;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -680,11 +680,15 @@ public interface Parameters {
      */
     void updateContainer(Parameters container);
 
-    void readFrom(String text) throws IOException;
+    void readFrom(String apon) throws AponParseException;
 
-    void readFrom(File file) throws IOException;
+    void readFrom(VariableParameters parameters) throws AponParseException;
 
-    void readFrom(File file, String encoding) throws IOException;
+    void readFrom(File file) throws AponParseException;
+
+    void readFrom(File file, String encoding) throws AponParseException;
+
+    void readFrom(Reader reader) throws AponParseException;
 
     String describe();
 

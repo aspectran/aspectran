@@ -32,7 +32,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
 /**
@@ -333,7 +332,7 @@ public class FileSessionStore extends AbstractSessionStore {
                 .filter(p -> isSessionFilename(p.getFileName().toString()))
                 .forEach(p -> {
                     // first get rid of all ancient files
-                    sweepFile(now - TimeUnit.SECONDS.toMillis(getGracePeriodSecs() * 6L), p);
+                    sweepFile(now - getGracePeriodMillis(6), p);
 
                     // now process it if it wasn't deleted
                     if (Files.exists(p)) {

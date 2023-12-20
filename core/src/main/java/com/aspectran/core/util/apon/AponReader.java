@@ -63,9 +63,9 @@ public class AponReader extends AponFormat implements Closeable {
     /**
      * Reads an APON document into a {@code VariableParameters} object.
      * @return the Parameters object
-     * @throws IOException if reading APON format document fails
+     * @throws AponParseException if reading APON format document fails
      */
-    public Parameters read() throws IOException {
+    public Parameters read() throws AponParseException {
         Parameters parameters = new VariableParameters();
         return read(parameters);
     }
@@ -75,9 +75,9 @@ public class AponReader extends AponFormat implements Closeable {
      * @param <T> the generic type
      * @param parameters the Parameters object
      * @return the Parameters object
-     * @throws IOException if reading APON format document fails
+     * @throws AponParseException if reading APON format document fails
      */
-    public <T extends Parameters> T read(T parameters) throws IOException {
+    public <T extends Parameters> T read(T parameters) throws AponParseException {
         if (parameters == null) {
             throw new IllegalArgumentException("parameters must not be null");
         }
@@ -390,7 +390,7 @@ public class AponReader extends AponFormat implements Closeable {
                     sb.append(SYSTEM_NEW_LINE);
                 }
                 str = line.substring(line.indexOf(TEXT_LINE_START) + 1);
-                if (str.length() > 0) {
+                if (!str.isEmpty()) {
                     sb.append(str);
                 }
             } else if (tlen > 0) {
@@ -403,7 +403,7 @@ public class AponReader extends AponFormat implements Closeable {
                 "The end of the text line was reached with no closing round bracket found");
     }
 
-    private String unescape(String str, String line, String ltrim) throws IOException {
+    private String unescape(String str, String line, String ltrim) throws AponParseException {
         if (str == null) {
             return null;
         }
@@ -454,11 +454,11 @@ public class AponReader extends AponFormat implements Closeable {
                             c = str.charAt(i);
                             result <<= 4;
                             if (c >= '0' && c <= '9') {
-                                result += (c - '0');
+                                result += (char)(c - '0');
                             } else if (c >= 'a' && c <= 'f') {
-                                result += (c - 'a' + 10);
+                                result += (char)(c - 'a' + 10);
                             } else if (c >= 'A' && c <= 'F') {
-                                result += (c - 'A' + 10);
+                                result += (char)(c - 'A' + 10);
                             } else {
                                 throw syntaxError(line, ltrim, "Invalid number format: \\u" +
                                         str.substring(pos, pos + 4));
@@ -485,12 +485,12 @@ public class AponReader extends AponFormat implements Closeable {
         }
     }
 
-    private IOException syntaxError(String line,  String tline, String message) throws IOException {
+    private AponParseException syntaxError(String line,  String tline, String message) throws AponParseException {
         throw new MalformedAponException(lineNumber, line, tline, message);
     }
 
-    private IOException syntaxError(String line,  String tline, ParameterValue parameterValue,
-                                    ValueType expectedValueType) throws IOException {
+    private AponParseException syntaxError(String line,  String tline, ParameterValue parameterValue,
+                                    ValueType expectedValueType) throws AponParseException {
         throw new MalformedAponException(lineNumber, line, tline, parameterValue, expectedValueType);
     }
 
@@ -498,14 +498,14 @@ public class AponReader extends AponFormat implements Closeable {
      * Converts an APON formatted string into a Parameters object.
      * @param text the APON formatted string
      * @return the Parameters object
-     * @throws IOException if reading APON format document fails
+     * @throws AponParseException if reading APON format document fails
      */
-    public static Parameters parse(String text) throws IOException {
+    public static Parameters parse(String text) throws AponParseException {
         Parameters parameters = new VariableParameters();
         return parse(text, parameters);
     }
 
-    public static <T extends Parameters> T parse(String text, Class<T> requiredType) throws IOException {
+    public static <T extends Parameters> T parse(String text, Class<T> requiredType) throws AponParseException {
         T parameters = ClassUtils.createInstance(requiredType);
         return parse(text, parameters);
     }
@@ -516,9 +516,9 @@ public class AponReader extends AponFormat implements Closeable {
      * @param text the APON formatted string
      * @param parameters the Parameters object
      * @return the Parameters object
-     * @throws IOException if reading APON format document fails
+     * @throws AponParseException if reading APON format document fails
      */
-    public static <T extends Parameters> T parse(String text, T parameters) throws IOException {
+    public static <T extends Parameters> T parse(String text, T parameters) throws AponParseException {
         if (text == null) {
             throw new IllegalArgumentException("text must not be null");
         }
@@ -544,9 +544,9 @@ public class AponReader extends AponFormat implements Closeable {
      * Converts to a Parameters object from a file.
      * @param file the file to parse
      * @return the Parameters object
-     * @throws IOException if reading APON format document fails
+     * @throws AponParseException if reading APON format document fails
      */
-    public static Parameters parse(File file) throws IOException {
+    public static Parameters parse(File file) throws AponParseException {
         return parse(file, (String)null);
     }
 
@@ -555,9 +555,9 @@ public class AponReader extends AponFormat implements Closeable {
      * @param file the file to parse
      * @param encoding the character encoding
      * @return the Parameters object
-     * @throws IOException if reading APON format document fails
+     * @throws AponParseException if reading APON format document fails
      */
-    public static Parameters parse(File file, String encoding) throws IOException {
+    public static Parameters parse(File file, String encoding) throws AponParseException {
         if (file == null) {
             throw new IllegalArgumentException("file must not be null");
         }
@@ -571,9 +571,9 @@ public class AponReader extends AponFormat implements Closeable {
      * @param file the file to parse
      * @param parameters the Parameters object
      * @return the Parameters object
-     * @throws IOException if reading APON format document fails
+     * @throws AponParseException if reading APON format document fails
      */
-    public static <T extends Parameters> T parse(File file, T parameters) throws IOException {
+    public static <T extends Parameters> T parse(File file, T parameters) throws AponParseException {
         return parse(file, null, parameters);
     }
 
@@ -584,10 +584,10 @@ public class AponReader extends AponFormat implements Closeable {
      * @param encoding the character encoding
      * @param parameters the Parameters object
      * @return the Parameters object
-     * @throws IOException if reading APON format document fails
+     * @throws AponParseException if reading APON format document fails
      */
     public static <T extends Parameters> T parse(File file, String encoding, T parameters)
-            throws IOException {
+            throws AponParseException {
         if (file == null) {
             throw new IllegalArgumentException("file must not be null");
         }
@@ -621,9 +621,9 @@ public class AponReader extends AponFormat implements Closeable {
      * Converts to a Parameters object from a character-input stream.
      * @param reader the character-input stream
      * @return the Parameters object
-     * @throws IOException if reading APON format document fails
+     * @throws AponParseException if reading APON format document fails
      */
-    public static Parameters parse(Reader reader) throws IOException {
+    public static Parameters parse(Reader reader) throws AponParseException {
         if (reader == null) {
             throw new IllegalArgumentException("reader must not be null");
         }
@@ -637,9 +637,9 @@ public class AponReader extends AponFormat implements Closeable {
      * @param reader the character-input stream
      * @param parameters the Parameters object
      * @return the Parameters object
-     * @throws IOException if reading APON format document fails
+     * @throws AponParseException if reading APON format document fails
      */
-    public static <T extends Parameters> T parse(Reader reader, T parameters) throws IOException {
+    public static <T extends Parameters> T parse(Reader reader, T parameters) throws AponParseException {
         AponReader aponReader = new AponReader(reader);
         aponReader.read(parameters);
         return parameters;

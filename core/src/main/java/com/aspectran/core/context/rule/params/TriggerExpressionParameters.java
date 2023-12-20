@@ -16,10 +16,10 @@
 package com.aspectran.core.context.rule.params;
 
 import com.aspectran.core.util.apon.AbstractParameters;
+import com.aspectran.core.util.apon.AponParseException;
 import com.aspectran.core.util.apon.ParameterKey;
 import com.aspectran.core.util.apon.ValueType;
 
-import java.io.IOException;
 import java.util.Arrays;
 
 public class TriggerExpressionParameters extends AbstractParameters {
@@ -61,7 +61,7 @@ public class TriggerExpressionParameters extends AbstractParameters {
         super(parameterKeys);
     }
 
-    public TriggerExpressionParameters(String apon) throws IOException {
+    public TriggerExpressionParameters(String apon) throws AponParseException {
         this();
         readFrom(apon);
     }

@@ -22,6 +22,7 @@ import com.aspectran.core.util.ToStringBuilder;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Reader;
 import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.Collections;
@@ -780,23 +781,37 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
-    public void readFrom(String apon) throws IOException {
+    public void readFrom(String apon) throws AponParseException {
         if (apon != null) {
             AponReader.parse(apon, this);
         }
     }
 
     @Override
-    public void readFrom(File file) throws IOException {
+    public void readFrom(VariableParameters parameters) throws AponParseException {
+        if (parameters != null) {
+            readFrom(parameters.toString());
+        }
+    }
+
+    @Override
+    public void readFrom(File file) throws AponParseException {
         if (file != null) {
             AponReader.parse(file, this);
         }
     }
 
     @Override
-    public void readFrom(File file, String encoding) throws IOException {
+    public void readFrom(File file, String encoding) throws AponParseException {
         if (file != null) {
             AponReader.parse(file, encoding, this);
+        }
+    }
+
+    @Override
+    public void readFrom(Reader reader) throws AponParseException {
+        if (reader != null) {
+            AponReader.parse(reader, this);
         }
     }
 

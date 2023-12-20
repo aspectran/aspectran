@@ -67,7 +67,7 @@ public class ArrayStack<E> extends ArrayList<E> {
      */
     public E peek() throws EmptyStackException {
         int n = size();
-        if (n <= 0) {
+        if (n == 0) {
             throw new EmptyStackException();
         }
         return get(n - 1);
@@ -106,7 +106,7 @@ public class ArrayStack<E> extends ArrayList<E> {
      */
     public E pop() throws EmptyStackException {
         int n = size();
-        if (n <= 0) {
+        if (n == 0) {
             throw new EmptyStackException();
         }
         return remove(n - 1);
@@ -130,7 +130,7 @@ public class ArrayStack<E> extends ArrayList<E> {
      */
     public E update(E item) throws EmptyStackException {
         int n = size();
-        if (n <= 0) {
+        if (n == 0) {
             throw new EmptyStackException();
         }
         return set(n - 1, item);

@@ -151,23 +151,28 @@ public class XmlToApon {
             SAXParser parser = factory.newSAXParser();
             parser.parse(is, valueHandler);
         } catch (Exception e) {
-            String location;
-            if (valueHandler != null && valueHandler.getLocator() != null) {
-                Locator locator = valueHandler.getLocator();
-                location = "Line Number " + locator.getLineNumber() +
-                    ", Column " + locator.getColumnNumber();
-                if (locator.getSystemId() != null) {
-                    location = "; " + locator.getSystemId() + " " + location;
-                } else {
-                    location = "; " + location;
-                }
-            } else {
-                location = StringUtils.EMPTY;
-            }
+            String location = getLocation(valueHandler);
             throw new IOException("Failed to convert XML to APON" + location + "; " + e.getMessage(), e);
         }
 
         return container;
+    }
+
+    private static String getLocation(ParameterValueHandler valueHandler) {
+        String location;
+        if (valueHandler != null && valueHandler.getLocator() != null) {
+            Locator locator = valueHandler.getLocator();
+            location = "Line Number " + locator.getLineNumber() +
+                ", Column " + locator.getColumnNumber();
+            if (locator.getSystemId() != null) {
+                location = "; " + locator.getSystemId() + " " + location;
+            } else {
+                location = "; " + location;
+            }
+        } else {
+            location = StringUtils.EMPTY;
+        }
+        return location;
     }
 
     private static class ParameterValueHandler extends DefaultHandler {

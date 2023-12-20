@@ -21,8 +21,6 @@ import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.apon.AponReader;
 import com.aspectran.core.util.apon.Parameters;
 
-import java.io.IOException;
-
 /**
  * Password based token issuer.
  */
@@ -52,7 +50,7 @@ public class PBTokenIssuer {
             } else {
                 return (T)AponReader.parse(payload);
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new InvalidPBTokenException(token, e);
         }
     }

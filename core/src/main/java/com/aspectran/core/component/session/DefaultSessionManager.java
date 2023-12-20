@@ -93,7 +93,11 @@ public class DefaultSessionManager extends AbstractSessionHandler
     protected void doInitialize() throws Exception {
         boolean clusterEnabled = false;
         int scavengingIntervalSeconds = -1;
-        if (sessionManagerConfig != null) {
+        if (sessionManagerConfig == null) {
+            if (logger.isDebugEnabled()) {
+                logger.debug("Initializing " + getComponentName());
+            }
+        } else {
             if (logger.isDebugEnabled()) {
                 logger.debug("Initializing " + new ToStringBuilder(getComponentName(), sessionManagerConfig));
             }

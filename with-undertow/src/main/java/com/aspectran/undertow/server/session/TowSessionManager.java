@@ -23,6 +23,7 @@ import com.aspectran.core.component.session.DefaultSessionManager;
 import com.aspectran.core.component.session.SessionHandler;
 import com.aspectran.core.component.session.SessionStore;
 import com.aspectran.core.context.config.SessionManagerConfig;
+import com.aspectran.core.util.apon.AponParseException;
 import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
 import io.undertow.server.HttpServerExchange;
@@ -33,7 +34,6 @@ import io.undertow.server.session.SessionManager;
 import io.undertow.server.session.SessionManagerStatistics;
 import io.undertow.util.AttachmentKey;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
@@ -65,7 +65,7 @@ public class TowSessionManager implements SessionManager, ApplicationAdapterAwar
         SessionManagerConfig sessionManagerConfig = new SessionManagerConfig();
         try {
             sessionManagerConfig.readFrom(apon);
-        } catch (IOException e) {
+        } catch (AponParseException e) {
             throw new RuntimeException(e);
         }
         setSessionManagerConfig(sessionManagerConfig);

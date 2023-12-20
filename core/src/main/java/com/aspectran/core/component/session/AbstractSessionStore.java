@@ -50,6 +50,14 @@ public abstract class AbstractSessionStore extends AbstractComponent implements 
         return gracePeriodSecs;
     }
 
+    public long getGracePeriodMillis(float weight) {
+        if (gracePeriodSecs > 0) {
+            return TimeUnit.SECONDS.toMillis((long)(gracePeriodSecs * weight));
+        } else {
+            return 0L;
+        }
+    }
+
     /**
      * Sets the interval in secs to prevent too eager session scavenging.
      * @param gracePeriodSecs interval in secs to prevent too eager session scavenging
@@ -63,6 +71,14 @@ public abstract class AbstractSessionStore extends AbstractComponent implements 
      */
     public int getSavePeriodSecs() {
         return savePeriodSecs;
+    }
+
+    public long getSavePeriodMillis() {
+        if (savePeriodSecs > 0) {
+            return TimeUnit.SECONDS.toMillis(savePeriodSecs);
+        } else {
+            return 0L;
+        }
     }
 
     /**
@@ -118,7 +134,7 @@ public abstract class AbstractSessionStore extends AbstractComponent implements 
         }
 
         long lastSaveMs = data.getLastSaved();
-        long savePeriodMs = (savePeriodSecs <= 0 ? 0 : TimeUnit.SECONDS.toMillis(savePeriodSecs));
+        long savePeriodMs = getSavePeriodMillis();
 
         if (logger.isTraceEnabled()) {
             ToStringBuilder tsb = new ToStringBuilder("Store session");
@@ -168,12 +184,13 @@ public abstract class AbstractSessionStore extends AbstractComponent implements 
             // those that are very old so we don't find sessions that other nodes
             // that are also starting up find
             if (lastExpiryCheckTime <= 0L) {
-                time = now - TimeUnit.SECONDS.toMillis(gracePeriodSecs * 3L);
+                time = now - getGracePeriodMillis(3);
             } else {
                 // only do the check once every gracePeriod to avoid expensive searches,
                 // and find sessions that expired at least one gracePeriod ago
-                if (now > (lastExpiryCheckTime + TimeUnit.SECONDS.toMillis(gracePeriodSecs))) {
-                    time = now - TimeUnit.SECONDS.toMillis(gracePeriodSecs);
+                long gracePeriodMillis = getGracePeriodMillis(0);
+                if (now > (lastExpiryCheckTime + gracePeriodMillis)) {
+                    time = now - gracePeriodMillis;
                 }
             }
             if (time > 0L) {

@@ -22,6 +22,7 @@ import com.aspectran.core.context.config.DaemonPollingConfig;
 import com.aspectran.core.lang.NonNull;
 import com.aspectran.core.lang.Nullable;
 import com.aspectran.core.util.Aspectran;
+import com.aspectran.core.util.apon.AponParseException;
 import com.aspectran.core.util.apon.AponReader;
 import com.aspectran.daemon.command.CommandExecutor;
 import com.aspectran.daemon.command.CommandRegistry;
@@ -109,7 +110,7 @@ public class AbstractDaemon implements Daemon {
         if (aspectranConfigFile != null) {
             try {
                 AponReader.parse(aspectranConfigFile, aspectranConfig);
-            } catch (Exception e) {
+            } catch (AponParseException e) {
                 throw new IllegalArgumentException("Failed to parse aspectran config file: " +
                         aspectranConfigFile, e);
             }

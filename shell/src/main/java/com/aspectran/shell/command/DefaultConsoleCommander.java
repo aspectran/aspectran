@@ -24,6 +24,7 @@ import com.aspectran.core.lang.Nullable;
 import com.aspectran.core.util.Aspectran;
 import com.aspectran.core.util.StringUtils;
 import com.aspectran.core.util.SystemUtils;
+import com.aspectran.core.util.apon.AponParseException;
 import com.aspectran.core.util.apon.AponReader;
 import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
@@ -87,7 +88,7 @@ public class DefaultConsoleCommander implements ConsoleCommander {
         AspectranConfig aspectranConfig = new AspectranConfig();
         try {
             AponReader.parse(aspectranConfigFile, aspectranConfig);
-        } catch (Exception e) {
+        } catch (AponParseException e) {
             throw new IllegalArgumentException("Failed to parse aspectran config file: " +
                     aspectranConfigFile, e);
         }

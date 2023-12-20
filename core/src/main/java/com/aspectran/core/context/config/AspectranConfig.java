@@ -15,11 +15,10 @@
  */
 package com.aspectran.core.context.config;
 
-import com.aspectran.core.lang.NonNull;
 import com.aspectran.core.lang.Nullable;
 import com.aspectran.core.util.SystemUtils;
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.AponReader;
+import com.aspectran.core.util.apon.AponParseException;
 import com.aspectran.core.util.apon.ParameterKey;
 import com.aspectran.core.util.apon.VariableParameters;
 
@@ -70,23 +69,24 @@ public class AspectranConfig extends AbstractParameters {
         super(parameterKeys);
     }
 
-    public AspectranConfig(String apon) throws IOException {
+    public AspectranConfig(String apon) throws AponParseException {
         this();
         readFrom(apon);
     }
 
-    public AspectranConfig(@NonNull VariableParameters parameters) throws IOException {
-        this(parameters.toString());
+    public AspectranConfig(VariableParameters parameters) throws AponParseException {
+        this();
+        readFrom(parameters);
     }
 
-    public AspectranConfig(File configFile) throws IOException {
+    public AspectranConfig(File configFile) throws AponParseException {
         this();
-        AponReader.parse(configFile, this);
+        readFrom(configFile);
     }
 
-    public AspectranConfig(Reader reader) throws IOException {
+    public AspectranConfig(Reader reader) throws AponParseException {
         this();
-        AponReader.parse(reader, this);
+        readFrom(reader);
     }
 
     public SystemConfig getSystemConfig() {

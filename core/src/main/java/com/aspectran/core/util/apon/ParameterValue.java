@@ -19,7 +19,6 @@ import com.aspectran.core.util.Assert;
 import com.aspectran.core.util.ClassUtils;
 import com.aspectran.core.util.ToStringBuilder;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -513,7 +512,7 @@ public class ParameterValue implements Parameter {
             if (!(value instanceof Parameters)) {
                 try {
                     value = AponReader.parse(value.toString(), parametersClass);
-                } catch (IOException e) {
+                } catch (AponParseException e) {
                     throw new ValueTypeMismatchException(value.getClass(), parametersClass, e);
                 }
             }

@@ -17,8 +17,6 @@ package com.aspectran.core.util.apon;
 
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
@@ -27,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class ArrayParametersTest {
 
     @Test
-    void readArrayParameters() throws IOException {
+    void readArrayParameters() throws AponParseException {
         StringBuilder sb = new StringBuilder();
         sb.append("{\n");
         sb.append("  param1: 111\n");

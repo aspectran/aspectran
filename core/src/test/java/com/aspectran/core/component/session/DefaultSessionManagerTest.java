@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.component.session;
 
+import com.aspectran.core.context.config.SessionManagerConfig;
+import com.aspectran.core.util.apon.AponLines;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -24,24 +26,30 @@ import java.util.concurrent.TimeUnit;
 import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-/**
- * <p>Created: 2019/12/07</p>
- */
-class FileSessionStoreFactoryTest {
+class DefaultSessionManagerTest {
 
     @Test
     void testFileSessionStore() throws Exception {
-
-        String workerName = "t1";
+        String workerName = "t0";
 
         File storeDir = new File("./target/_sessions/" + workerName);
         storeDir.mkdir();
 
-        FileSessionStoreFactory sessionStoreFactory = new FileSessionStoreFactory();
-        sessionStoreFactory.setStoreDir(storeDir.getCanonicalPath());
+        SessionManagerConfig sessionManagerConfig = new SessionManagerConfig(new AponLines()
+                .line("workerName", workerName)
+                .line("maxActiveSessions", "9999")
+                .line("maxIdleSeconds", "489")
+                .line("evictionIdleSeconds", "1")
+                .line("scavengingIntervalSeconds", "2")
+                .line("clusterEnabled", "false")
+                .block("fileStore")
+                .line("storeDir", storeDir.getCanonicalFile())
+                .line("gracePeriodSeconds", 0)
+                .end()
+                .toString());
 
-        DefaultSessionManager sessionManager = new DefaultSessionManager();
-        sessionManager.setSessionStore(sessionStoreFactory.getSessionStore());
+        DefaultSessionManager sessionManager = new DefaultSessionManager(workerName);
+        sessionManager.setSessionManagerConfig(sessionManagerConfig);
         sessionManager.initialize();
 
         SessionHandler sessionHandler = sessionManager.getSessionHandler();
@@ -61,14 +69,16 @@ class FileSessionStoreFactoryTest {
                     assertEquals(key, "key" + val.substring(val.indexOf('-')));
                 }
 
-                TimeUnit.MILLISECONDS.sleep(100);
+                TimeUnit.MILLISECONDS.sleep(30);
             }
         } finally {
             agent.complete();
         }
 
-        await().atMost(3, TimeUnit.SECONDS).until(()
-            -> sessionHandler.getStatistics().getActiveSessions() == 0);
+        await().atMost(10, TimeUnit.SECONDS).until(() -> {
+            // System.out.println(sessionHandler.getStatistics().getActiveSessions());
+            return sessionHandler.getStatistics().getActiveSessions() == 0;
+        });
 
         sessionManager.destroy();
     }

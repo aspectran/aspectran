@@ -17,11 +17,10 @@ package com.aspectran.core.context.config;
 
 import com.aspectran.core.component.session.SessionCache;
 import com.aspectran.core.util.apon.AbstractParameters;
+import com.aspectran.core.util.apon.AponParseException;
 import com.aspectran.core.util.apon.ParameterKey;
 import com.aspectran.core.util.apon.ValueType;
 import com.aspectran.core.util.apon.VariableParameters;
-
-import java.io.IOException;
 
 public class SessionManagerConfig extends AbstractParameters {
 
@@ -71,13 +70,14 @@ public class SessionManagerConfig extends AbstractParameters {
         super(parameterKeys);
     }
 
-    public SessionManagerConfig(String apon) throws IOException {
+    public SessionManagerConfig(String apon) throws AponParseException {
         super(parameterKeys);
         readFrom(apon);
     }
 
-    public SessionManagerConfig(VariableParameters parameters) throws IOException {
-        this(parameters.toString());
+    public SessionManagerConfig(VariableParameters parameters) throws AponParseException {
+        this();
+        readFrom(parameters);
     }
 
     public String getWorkerName() {

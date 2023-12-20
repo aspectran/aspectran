@@ -16,10 +16,9 @@
 package com.aspectran.undertow.server.resource;
 
 import com.aspectran.core.util.apon.AbstractParameters;
+import com.aspectran.core.util.apon.AponParseException;
 import com.aspectran.core.util.apon.ParameterKey;
 import com.aspectran.core.util.apon.ValueType;
-
-import java.io.IOException;
 
 public class ResourcePathPatterns extends AbstractParameters {
 
@@ -42,7 +41,7 @@ public class ResourcePathPatterns extends AbstractParameters {
         super(parameterKeys);
     }
 
-    public ResourcePathPatterns(String apon) throws IOException {
+    public ResourcePathPatterns(String apon) throws AponParseException {
         this();
         readFrom(apon);
     }

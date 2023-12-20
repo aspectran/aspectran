@@ -17,8 +17,6 @@ package com.aspectran.core.util.apon;
 
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
@@ -27,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class AponReaderTest {
 
     @Test
-    void singleQuoteEscapeTest() throws IOException {
+    void singleQuoteEscapeTest() throws AponParseException {
         String input = "name: \"she\\u2019s \"";
         AponReader reader = new AponReader(input);
         Parameters parameters = reader.read();
@@ -36,7 +34,7 @@ class AponReaderTest {
     }
 
     @Test
-    void noEscapeTest() throws IOException {
+    void noEscapeTest() throws AponParseException {
         String input = "name: she\u2019s";
         AponReader reader = new AponReader(input);
         Parameters parameters = reader.read();
