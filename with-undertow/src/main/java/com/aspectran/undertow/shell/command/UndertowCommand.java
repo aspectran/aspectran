@@ -24,7 +24,6 @@ import com.aspectran.shell.command.option.ParsedOptions;
 import com.aspectran.shell.console.ShellConsole;
 import com.aspectran.shell.service.ShellService;
 import com.aspectran.undertow.server.TowServer;
-import io.undertow.Version;
 
 import java.net.BindException;
 
@@ -160,7 +159,7 @@ public class UndertowCommand extends AbstractCommand {
         console.setStyle("YELLOW");
         console.write(towServer.getState());
         console.resetStyle();
-        console.writeLine(" - Undertow " + Version.getVersionString());
+        console.writeLine(" - Undertow " + towServer.getVersion());
         console.writeLine("----------------------------------------------------------------------------");
     }
 

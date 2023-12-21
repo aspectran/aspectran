@@ -27,7 +27,6 @@ import com.aspectran.daemon.command.CommandRegistry;
 import com.aspectran.daemon.command.CommandResult;
 import com.aspectran.daemon.service.DaemonService;
 import com.aspectran.undertow.server.TowServer;
-import io.undertow.Version;
 
 import java.net.BindException;
 
@@ -143,7 +142,7 @@ public class UndertowCommand extends AbstractCommand {
     }
 
     private String getStatus(TowServer towServer) {
-        return towServer.getState() + " - " + "Undertow " + Version.getVersionString();
+        return towServer.getState() + " - " + "Undertow " + towServer.getVersion();
     }
 
     @Override

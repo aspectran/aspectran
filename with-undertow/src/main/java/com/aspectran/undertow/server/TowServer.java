@@ -9,6 +9,8 @@ import io.undertow.servlet.api.DeploymentManager;
  */
 public interface TowServer extends LifeCycle {
 
+    String getVersion();
+
     boolean isAutoStart();
 
     DeploymentManager getDeploymentManager(String deploymentName);

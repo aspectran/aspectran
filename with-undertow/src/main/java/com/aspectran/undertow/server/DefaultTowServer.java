@@ -20,7 +20,6 @@ import com.aspectran.core.component.bean.ablility.InitializableBean;
 import com.aspectran.core.util.logging.Logger;
 import com.aspectran.core.util.logging.LoggerFactory;
 import io.undertow.Undertow;
-import io.undertow.Version;
 import io.undertow.server.handlers.GracefulShutdownHandler;
 import io.undertow.servlet.api.DeploymentManager;
 
@@ -41,7 +40,7 @@ public class DefaultTowServer extends AbstractTowServer implements Initializable
         try {
             server = getBuilder().build();
             server.start();
-            logger.info("Undertow " + Version.getVersionString() + " started");
+            logger.info("Undertow " + getVersion() + " started");
         } catch (Exception e) {
             try {
                 if (server != null) {
@@ -88,7 +87,7 @@ public class DefaultTowServer extends AbstractTowServer implements Initializable
                 }
                 server.stop();
                 server = null;
-                logger.info("Undertow " + Version.getVersionString() + " stopped");
+                logger.info("Undertow " + getVersion() + " stopped");
             }
         } catch (Exception e) {
             logger.error("Unable to stop Undertow server", e);
