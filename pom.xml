@@ -334,7 +334,6 @@
                     <compilerArgs>
                         <arg>-Xlint:-try,-path,-options</arg>
                     </compilerArgs>
-                    <debug>true</debug>
                     <parameters>true</parameters>
                     <showDeprecation>true</showDeprecation>
                     <showWarnings>true</showWarnings>
