@@ -51,13 +51,13 @@ class JettyServerTest {
                 .setBasePath(basePath);
 
         aspectran = EmbeddedAspectran.run(aspectranConfig);
-        //aspectran.translate("jetty start");
+        aspectran.translate("jetty start");
     }
 
     @AfterAll
     void finish() {
         if (aspectran != null) {
-            //aspectran.translate("jetty stop");
+            aspectran.translate("jetty stop");
             aspectran.release();
         }
     }

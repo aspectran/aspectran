@@ -51,13 +51,13 @@ class DefaultTowServerTest {
                 .setBasePath(basePath);
 
         aspectran = EmbeddedAspectran.run(aspectranConfig);
-        //aspectran.translate("undertow start");
+        aspectran.translate("undertow start");
     }
 
     @AfterAll
     void finish() {
         if (aspectran != null) {
-            //aspectran.translate("undertow stop");
+            aspectran.translate("undertow stop");
             aspectran.release();
         }
     }

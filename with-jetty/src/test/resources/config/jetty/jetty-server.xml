@@ -9,7 +9,7 @@
 
     <environment>
         <properties>
-            <item name="jetty.startup" value="true" valueType="boolean"/>
+            <item name="jetty.startup" value="false" valueType="boolean"/>
             <item name="jetty.server.port" value="8099" valueType="int"/>
             <item name="jetty.server.minThreads" value="3" valueType="int"/>
             <item name="jetty.server.maxThreads" value="10" valueType="int"/>

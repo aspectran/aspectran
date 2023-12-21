@@ -67,7 +67,9 @@ public class JettyServer extends Server implements InitializableBean, Disposable
 
     @Override
     public void initialize() throws Exception {
-        start();
+        if (autoStart) {
+            start();
+        }
     }
 
     @Override
@@ -81,12 +83,10 @@ public class JettyServer extends Server implements InitializableBean, Disposable
 
     @Override
     public void doStart() throws Exception {
-        if (autoStart) {
-            logger.info("Starting embedded Jetty server");
-            super.doStart();
-            logger.info("Jetty started on port(s) " + getActualPortsDescription()
-                    + " with context path '" + getContextPath() + "'");
-        }
+        logger.info("Starting embedded Jetty server");
+        super.doStart();
+        logger.info("Jetty started on port(s) " + getActualPortsDescription()
+                + " with context path '" + getContextPath() + "'");
     }
 
     @Override
