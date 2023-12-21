@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran 7.0//EN"
+        "http://aspectran.github.io/dtd/aspectran-7.dtd">
+<aspectran>
+
+    <bean id="basePath" class="com.aspectran.core.support.BasePathFactoryBean"/>
+    <bean id="currentTranslet" class="com.aspectran.core.support.CurrentTransletFactoryBean" scope="request"/>
+    <bean id="currentActivityData" class="com.aspectran.core.support.CurrentActivityDataFactoryBean" scope="request"/>
+
+    <aspect id="activityDataAccessibility">
+        <description>
+            Each translet's activity data can be referenced as a "data" attribute.
+        </description>
+        <advice>
+            <before>
+                <echo>
+                    <item name="data">#{currentActivityData}</item>
+                </echo>
+            </before>
+        </advice>
+    </aspect>
+
+    <aspect id="errorReport">
+        <description>
+            If an unexpected error occurs during translet processing,
+            a simple error message is printed.
+        </description>
+        <exception>
+            <thrown>
+                <transform format="text">
+                    <template style="apon">
+                        |
+                        |   {{RED}}An Error Occurred!{{reset}}
+                        |{{BLUE}}-----------------------------------------------------------------------------------------{{reset}}
+                        |   #{currentTranslet^rootCauseOfRaisedException}
+                        |
+                    </template>
+                </transform>
+            </thrown>
+        </exception>
+    </aspect>
+
+    <bean id="jspViewDispatcher" class="com.aspectran.web.support.view.JspViewDispatcher">
+        <description>
+            Register a JSP View Dispatcher.
+        </description>
+        <properties>
+            <item name="prefix">/WEB-INF/jsp/</item>
+            <item name="suffix">.jsp</item>
+        </properties>
+    </bean>
+
+    <aspect id="transletSettings">
+        <description>
+            Specifies the environment variables used during request and response processing.
+        </description>
+        <settings>
+            <setting name="characterEncoding" value="utf-8"/>
+            <setting name="viewDispatcher" value="jspViewDispatcher"/>
+            <setting name="format.indentSize" value="2"/>
+            <setting name="format.dateFormat" value="yyyy-MM-dd"/>
+            <setting name="format.dateTimeFormat" value="yyyy-MM-dd HH:mm:ss"/>
+            <setting name="format.nullWritable" value="true"/>
+        </settings>
+    </aspect>
+
+    <append resource="config/undertow/tow-server.xml"/>
+    <append resource="config/undertow/tow-context.xml"/>
+    <append resource="config/undertow/tow-controller.xml"/>
+
+    <translet name="/hello">
+        <transform format="text">
+            <template style="apon">
+                |world
+            </template>
+        </transform>
+    </translet>
+
+    <translet name="/hello_jsp">
+        <dispatch name="hello"/>
+    </translet>
+
+</aspectran>

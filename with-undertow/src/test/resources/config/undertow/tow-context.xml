@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran 7.0//EN"
+        "http://aspectran.github.io/dtd/aspectran-7.dtd">
+<aspectran>
+
+    <description>
+        Aspectran configuration for setting servlet context and root web application.
+    </description>
+
+    <environment>
+        <properties>
+            <item name="tow.web.root.path">/webroot</item>
+            <item name="tow.web.root.scratch_dir">/work/_webroot</item>
+        </properties>
+    </environment>
+
+    <bean id="tow.web.root.servletContext" class="com.aspectran.undertow.server.servlet.TowServletContext"
+          scope="prototype">
+        <properties>
+            <item name="deploymentName">root.war</item>
+            <item name="contextPath">/</item>
+            <item name="resourceManager">
+                <bean class="com.aspectran.undertow.server.resource.TowResourceManager">
+                    <properties>
+                        <item name="base">%{tow.web.root.path}</item>
+                    </properties>
+                </bean>
+            </item>
+            <item name="scratchDir">%{tow.web.root.scratch_dir}</item>
+            <item name="sessionManager">#{tow.web.root.sessionManager}</item>
+            <item name="servletSessionConfig">
+                <bean class="io.undertow.servlet.api.ServletSessionConfig"/>
+            </item>
+            <item name="servlets" type="array">
+                <bean class="com.aspectran.undertow.server.servlet.TowServlet">
+                    <arguments>
+                        <item>Default JSP Servlet</item>
+                        <item>org.apache.jasper.servlet.JspServlet</item>
+                    </arguments>
+                    <properties>
+                        <item name="mappings" type="array">
+                            <value>*.jsp</value>
+                            <value>*.jspf</value>
+                            <value>*.jspx</value>
+                            <value>*.xsp</value>
+                            <value>*.JSP</value>
+                            <value>*.JSPF</value>
+                            <value>*.JSPX</value>
+                            <value>*.XSP</value>
+                        </item>
+                        <item name="loadOnStartup" valueType="int">0</item>
+                    </properties>
+                </bean>
+                <bean class="com.aspectran.undertow.server.servlet.TowServlet">
+                    <arguments>
+                        <item>web-activity-servlet</item>
+                        <item>com.aspectran.web.startup.servlet.WebActivityServlet</item>
+                    </arguments>
+                    <properties>
+                        <item name="mappings" type="array">
+                            <value>/</value>
+                        </item>
+                        <item name="loadOnStartup" valueType="int">1</item>
+                        <item name="asyncSupported" valueType="boolean">true</item>
+                    </properties>
+                </bean>
+            </item>
+            <item name="servletContainerInitializers" type="array">
+                <bean class="com.aspectran.undertow.server.servlet.TowJasperInitializer">
+                    <properties>
+                        <item name="tldResources" type="array">
+                            <value>classpath:com/aspectran/web/support/tags/aspectran.tld</value>
+                        </item>
+                    </properties>
+                </bean>
+            </item>
+            <item name="webSocketInitializer">
+                <bean class="com.aspectran.undertow.server.servlet.TowWebSocketInitializer">
+                    <properties>
+                        <item name="directBuffers" valueType="boolean">false</item>
+                        <item name="bufferSize" valueType="int">1024</item>
+                    </properties>
+                </bean>
+            </item>
+        </properties>
+    </bean>
+
+    <bean id="tow.web.root.servletHybridHandler" class="com.aspectran.undertow.server.servlet.ServletHybridHandlerFactoryBean"
+          scope="prototype">
+        <properties>
+            <item name="servletContainer">#{tow.server^servletContainer}</item>
+            <item name="staticResourceHandler">#{tow.web.root.staticResourceHandler}</item>
+        </properties>
+        <properties profile="prod">
+            <item name="outerHandlerChainWrappers" type="array">
+                <value>#{tow.encodingHandlerWrapper}</value>
+                <value>#{tow.accessLogHandlerWrapper}</value>
+            </item>
+        </properties>
+        <properties profile="!prod">
+            <item name="outerHandlerChainWrappers" type="array">
+                <value>#{tow.encodingHandlerWrapper}</value>
+            </item>
+        </properties>
+    </bean>
+
+    <bean id="tow.web.root.staticResourceHandler" class="com.aspectran.undertow.server.resource.StaticResourceHandler"
+          initMethod="autoDetect" scope="prototype">
+        <arguments>
+            <item>
+                <bean class="com.aspectran.undertow.server.resource.TowResourceManager">
+                    <properties>
+                        <item name="base">%{tow.web.root.path}</item>
+                    </properties>
+                </bean>
+            </item>
+        </arguments>
+        <properties>
+            <item name="resourcePathPatterns">
+                <bean class="com.aspectran.undertow.server.resource.ResourcePathPatterns">
+                    <arguments>
+                        <item>
+                            +: /favicon.ico
+                            +: /robots.txt
+                            +: /ads.txt
+                        </item>
+                    </arguments>
+                </bean>
+            </item>
+        </properties>
+    </bean>
+
+    <bean id="tow.web.root.sessionManager" class="com.aspectran.undertow.server.session.TowSessionManager"
+          scope="prototype">
+        <properties>
+            <item name="sessionManagerConfig">
+                <bean class="com.aspectran.core.context.config.SessionManagerConfig">
+                    <arguments>
+                        <item>
+                            workerName: n0
+                            maxActiveSessions: 99
+                            maxIdleSeconds: 600
+                            evictionIdleSeconds: 300
+                            scavengingIntervalSeconds: 180
+                            clusterEnabled: false
+                        </item>
+                    </arguments>
+                </bean>
+            </item>
+        </properties>
+        <properties profile="!rss-lettuce,!rss-lettuce-masterreplica,!rss-lettuce-cluster">
+            <item name="sessionStore">
+                <bean class="com.aspectran.core.component.session.FileSessionStoreFactory">
+                    <properties>
+                        <item name="storeDir">/work/_sessions/tow</item>
+                        <item name="nonPersistentAttributes" type="array">
+                            <value>io.undertow.websocket.current-connections</value>
+                        </item>
+                    </properties>
+                </bean>
+            </item>
+        </properties>
+    </bean>
+
+</aspectran>

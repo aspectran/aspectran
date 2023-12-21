@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran 7.0//EN"
+        "http://aspectran.github.io/dtd/aspectran-7.dtd">
+<aspectran>
+
+    <description>
+        Aspectran configuration to set up undertow server.
+    </description>
+
+    <environment>
+        <properties>
+            <item name="tow.server.startup" valueType="boolean">true</item>
+            <item name="tow.server.listener.http.port" valueType="int">8099</item>
+            <item name="tow.server.listener.http.host">0.0.0.0</item>
+        </properties>
+    </environment>
+
+    <bean id="tow.server" class="com.aspectran.undertow.server.DefaultTowServer">
+        <properties>
+            <item name="autoStart">%{tow.server.startup}</item>
+            <item name="httpListeners" type="array">
+                <bean class="com.aspectran.undertow.server.HttpListenerConfig">
+                    <properties>
+                        <item name="port" valueType="int">%{tow.server.listener.http.port}</item>
+                        <item name="host">%{tow.server.listener.http.host}</item>
+                    </properties>
+                </bean>
+            </item>
+            <item name="serverOptions">
+                <bean class="com.aspectran.undertow.server.TowOptions">
+                    <properties>
+                        <item name="decodeUrl" valueType="boolean">true</item>
+                        <item name="urlCharset">UTF-8</item>
+                    </properties>
+                </bean>
+            </item>
+            <item name="workerOptions">
+                <bean class="com.aspectran.undertow.server.TowOptions">
+                    <properties>
+                        <item name="workerName">TOW</item>
+                    </properties>
+                </bean>
+            </item>
+            <item name="servletContainer">
+                <bean class="com.aspectran.undertow.server.servlet.TowServletContainer">
+                    <properties>
+                        <item name="servletContexts" type="array">
+                            <value>#{tow.web.root.servletContext}</value>
+                        </item>
+                    </properties>
+                </bean>
+            </item>
+            <item name="handler">
+                <bean class="io.undertow.server.handlers.GracefulShutdownHandler">
+                    <arguments>
+                        <item>#{tow.web.root.servletHybridHandler}</item>
+                    </arguments>
+                </bean>
+            </item>
+        </properties>
+    </bean>
+
+    <bean id="tow.encodingHandlerWrapper" class="com.aspectran.undertow.server.encoding.EncodingHandlerWrapper"
+          scope="prototype">
+        <properties>
+            <item name="contentEncodingProviders" type="array">
+                <value>gzip</value>
+                <value>deflate</value>
+            </item>
+            <item name="maxContentSize" valueType="long">32</item>
+            <item name="mediaTypes" type="array">
+                <value>text/html</value>
+                <value>text/xml</value>
+                <value>text/plain</value>
+                <value>text/css</value>
+                <value>text/javascript</value>
+                <value>application/javascript</value>
+                <value>application/json</value>
+                <value>application/xml</value>
+                <value>application/apon</value>
+            </item>
+        </properties>
+    </bean>
+
+    <bean id="tow.accessLogHandlerWrapper" class="com.aspectran.undertow.server.accesslog.AccessLogHandlerWrapper"
+          scope="prototype">
+        <properties>
+            <item name="formatString">combined</item>
+            <item name="category">io.undertow.accesslog</item>
+        </properties>
+    </bean>
+
+</aspectran>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran 7.0//EN"
+        "http://aspectran.github.io/dtd/aspectran-7.dtd">
+<aspectran>
+
+    <description>
+        A collection of commands for controlling the Embedded Undertow Server.
+    </description>
+
+    <translet name="undertow">
+        <description style="apon">
+            |
+            |{{underline}}To control Undertow, try one of the following commands:{{reset}}
+            |   {{CYAN}}undertow start{{reset}}  Runs an Undertow Server
+            |   {{CYAN}}undertow stop{{reset}}   Stops the currently running Undertow Server
+        </description>
+        <transform format="text">
+            <template style="apon">
+                |
+                |   {{YELLOW}}Undertow #{tow.server^version} - #{tow.server^state}{{reset}}
+                |
+            </template>
+        </transform>
+    </translet>
+
+    <translet name="undertow start">
+        <description style="apon">
+            |
+            |   {{cyan}}Starting the Undertow Server...{{reset}}
+            |-----------------------------------------
+        </description>
+        <action bean="tow.server" method="start"/>
+        <transform format="text">
+            <template style="apon">
+                |
+                |   {{YELLOW}}Undertow #{tow.server^version} - #{tow.server^state}{{reset}}
+                |   Web server started on localhost:%{tow.server.port}
+                |
+            </template>
+        </transform>
+        <exception>
+            <thrown type="java.net.BindException">
+                <transform format="text">
+                    <template style="apon">
+                        |
+                        |   {{RED}}Undertow Server Error - Port %{tow.server.port} already in use{{reset}}
+                        |
+                    </template>
+                </transform>
+            </thrown>
+        </exception>
+    </translet>
+
+    <translet name="undertow stop">
+        <description style="apon">
+            |
+            |   {{cyan}}Stopping Undertow Server...{{reset}}
+            |-----------------------------------------
+        </description>
+        <action bean="tow.server" method="stop"/>
+        <transform format="text">
+            <template style="apon">
+                |
+                |   {{YELLOW}}Undertow #{tow.server^version} - #{tow.server^state}{{reset}}
+                |
+            </template>
+        </transform>
+    </translet>
+
+</aspectran>

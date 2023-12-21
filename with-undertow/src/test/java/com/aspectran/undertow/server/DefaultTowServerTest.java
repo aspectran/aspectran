@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aspectran.jetty;
+package com.aspectran.undertow.server;
 
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.context.config.AspectranConfig;
@@ -35,7 +35,7 @@ import java.io.IOException;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class JettyServerTest {
+class DefaultTowServerTest {
 
     private EmbeddedAspectran aspectran;
 
@@ -51,13 +51,13 @@ class JettyServerTest {
                 .setBasePath(basePath);
 
         aspectran = EmbeddedAspectran.run(aspectranConfig);
-        //aspectran.translate("jetty start");
+        //aspectran.translate("undertow start");
     }
 
     @AfterAll
     void finish() {
         if (aspectran != null) {
-            //aspectran.translate("jetty stop");
+            //aspectran.translate("undertow stop");
             aspectran.release();
         }
     }
