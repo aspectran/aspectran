@@ -42,7 +42,7 @@ import java.util.Map;
  * The NodeletParser is a callback based parser similar to SAX.  The big
  * difference is that rather than having a single callback for all nodes,
  * the NodeletParser has a number of callbacks mapped to various nodes.
- * The callback is called a Nodelet and it is registered
+ * The callback is called a Nodelet, and it is registered
  * with the NodeletParser against a specific XPath.
  */
 public class NodeletParser {
@@ -53,7 +53,7 @@ public class NodeletParser {
 
     private final Map<String, Nodelet> nodeletMap = new HashMap<>();
 
-    private final Map<String, NodeEndlet> endletMap = new HashMap<>();
+    private final Map<String, EndNodelet> endNodeletMap = new HashMap<>();
 
     private final ArrayStack<Object> objectStack = new ArrayStack<>();
 
@@ -116,27 +116,27 @@ public class NodeletParser {
     /**
      * Registers the nodelet to process the end elements of the specified XPath
      * and the text and CDATA data collected.
-     * @param endlet the nodelet for processing end elements, text and CDATA data collected
+     * @param nodelet the nodelet for processing end elements, text and CDATA data collected
      */
-    public void addNodeEndlet(NodeEndlet endlet) {
-        endletMap.put(xpath, endlet);
+    public void addEndNodelet(EndNodelet nodelet) {
+        endNodeletMap.put(xpath, nodelet);
     }
 
     /**
      * Adds the nodelet.
-     * @param nodeletAdder the nodelet adder
+     * @param subnodeParser the subnode parser
      */
-    public void addNodelet(NodeletAdder nodeletAdder) {
-        addNodelet(xpath, nodeletAdder);
+    public void addNodelet(SubnodeParser subnodeParser) {
+        addNodelet(xpath, subnodeParser);
     }
 
     /**
-     * Adds the nodelet.
+     * Add nodelets through the subnode parser.
      * @param xpath the xpath
-     * @param nodeletAdder the nodelet adder
+     * @param subnodeParser the subnode parser
      */
-    public void addNodelet(String xpath, NodeletAdder nodeletAdder) {
-        nodeletAdder.add(xpath, this);
+    public void addNodelet(String xpath, SubnodeParser subnodeParser) {
+        subnodeParser.parse(xpath, this);
         setXpath(xpath);
     }
 
@@ -226,10 +226,10 @@ public class NodeletParser {
 
                 @Override
                 public void endDocument() throws SAXException {
-                    NodeEndlet endlet = endletMap.get("/");
-                    if (endlet != null) {
+                    EndNodelet nodelet = endNodeletMap.get("/");
+                    if (nodelet != null) {
                         try {
-                            endlet.process(null);
+                            nodelet.process(null);
                         } catch (Exception e) {
                             throw new SAXException("Error processing nodelet at the end of document", e);
                         }
@@ -282,10 +282,10 @@ public class NodeletParser {
                         textBuffer.delete(0, textBuffer.length());
                     }
 
-                    NodeEndlet endlet = endletMap.get(pathString);
-                    if (endlet != null) {
+                    EndNodelet nodelet = endNodeletMap.get(pathString);
+                    if (nodelet != null) {
                         try {
-                            endlet.process(text);
+                            nodelet.process(text);
                         } catch (Exception e) {
                             if (nodeTracker != null) {
                                 throw new SAXException("Error processing nodelet at end element " + nodeTracker, e);

@@ -24,18 +24,18 @@ import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
 import com.aspectran.core.context.rule.assistant.ActivityRuleAssistant;
 import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.nodelet.NodeletAdder;
 import com.aspectran.core.util.nodelet.NodeletParser;
+import com.aspectran.core.util.nodelet.SubnodeParser;
 
 /**
- * The Class ActionNodeletAdder.
+ * The Class ActionNodeParser.
  *
  * @since 2011. 1. 9.
  */
-class ActionNodeletAdder implements NodeletAdder {
+class ActionNodeParser implements SubnodeParser {
 
     @Override
-    public void add(String xpath, NodeletParser parser) {
+    public void parse(String xpath, NodeletParser parser) {
         AspectranNodeParser nodeParser = parser.getNodeParser();
         ActivityRuleAssistant assistant = nodeParser.getAssistant();
 
@@ -50,8 +50,8 @@ class ActionNodeletAdder implements NodeletAdder {
             ItemRuleMap irm = new ItemRuleMap();
             parser.pushObject(irm);
         });
-        nodeParser.addItemNodelets();
-        parser.addNodeEndlet(text -> {
+        nodeParser.parseItemNode();
+        parser.addEndNodelet(text -> {
             ItemRuleMap irm = parser.popObject();
             HeaderActionRule headersActionRule = parser.popObject();
 
@@ -71,8 +71,8 @@ class ActionNodeletAdder implements NodeletAdder {
             ItemRuleMap irm = new ItemRuleMap();
             parser.pushObject(irm);
         });
-        nodeParser.addItemNodelets();
-        parser.addNodeEndlet(text -> {
+        nodeParser.parseItemNode();
+        parser.addEndNodelet(text -> {
             ItemRuleMap irm = parser.popObject();
             EchoActionRule echoActionRule = parser.popObject();
 
@@ -94,7 +94,7 @@ class ActionNodeletAdder implements NodeletAdder {
             assistant.resolveActionBeanClass(invokeActionRule);
             parser.pushObject(invokeActionRule);
         });
-        parser.addNodeEndlet(text -> {
+        parser.addEndNodelet(text -> {
             InvokeActionRule invokeActionRule = parser.popObject();
             ActionRuleApplicable applicable = parser.peekObject();
             applicable.applyActionRule(invokeActionRule);
@@ -105,8 +105,8 @@ class ActionNodeletAdder implements NodeletAdder {
             irm.setProfile(StringUtils.emptyToNull(attrs.get("profile")));
             parser.pushObject(irm);
         });
-        nodeParser.addItemNodelets();
-        parser.addNodeEndlet(text -> {
+        nodeParser.parseItemNode();
+        parser.addEndNodelet(text -> {
             ItemRuleMap irm = parser.popObject();
             InvokeActionRule invokeActionRule = parser.peekObject();
             irm = assistant.profiling(irm, invokeActionRule.getArgumentItemRuleMap());
@@ -118,8 +118,8 @@ class ActionNodeletAdder implements NodeletAdder {
             irm.setProfile(StringUtils.emptyToNull(attrs.get("profile")));
             parser.pushObject(irm);
         });
-        nodeParser.addItemNodelets();
-        parser.addNodeEndlet(text -> {
+        nodeParser.parseItemNode();
+        parser.addEndNodelet(text -> {
             ItemRuleMap irm = parser.popObject();
             InvokeActionRule invokeActionRule = parser.peekObject();
             irm = assistant.profiling(irm, invokeActionRule.getPropertyItemRuleMap());
@@ -134,7 +134,7 @@ class ActionNodeletAdder implements NodeletAdder {
             assistant.resolveActionBeanClass(invokeActionRule);
             parser.pushObject(invokeActionRule);
         });
-        parser.addNodeEndlet(text -> {
+        parser.addEndNodelet(text -> {
             InvokeActionRule invokeActionRule = parser.popObject();
             ActionRuleApplicable applicable = parser.peekObject();
             applicable.applyActionRule(invokeActionRule);
@@ -145,8 +145,8 @@ class ActionNodeletAdder implements NodeletAdder {
             irm.setProfile(StringUtils.emptyToNull(attrs.get("profile")));
             parser.pushObject(irm);
         });
-        nodeParser.addItemNodelets();
-        parser.addNodeEndlet(text -> {
+        nodeParser.parseItemNode();
+        parser.addEndNodelet(text -> {
             ItemRuleMap irm = parser.popObject();
             InvokeActionRule invokeActionRule = parser.peekObject();
             irm = assistant.profiling(irm, invokeActionRule.getArgumentItemRuleMap());
@@ -158,8 +158,8 @@ class ActionNodeletAdder implements NodeletAdder {
             irm.setProfile(StringUtils.emptyToNull(attrs.get("profile")));
             parser.pushObject(irm);
         });
-        nodeParser.addItemNodelets();
-        parser.addNodeEndlet(text -> {
+        nodeParser.parseItemNode();
+        parser.addEndNodelet(text -> {
             ItemRuleMap irm = parser.popObject();
             InvokeActionRule invokeActionRule = parser.peekObject();
             irm = assistant.profiling(irm, invokeActionRule.getPropertyItemRuleMap());
@@ -177,7 +177,7 @@ class ActionNodeletAdder implements NodeletAdder {
             IncludeActionRule includeActionRule = IncludeActionRule.newInstance(id, transletName, methodType, hidden);
             parser.pushObject(includeActionRule);
         });
-        parser.addNodeEndlet(text -> {
+        parser.addEndNodelet(text -> {
             IncludeActionRule includeActionRule = parser.popObject();
             ActionRuleApplicable applicable = parser.peekObject();
             applicable.applyActionRule(includeActionRule);
@@ -188,8 +188,8 @@ class ActionNodeletAdder implements NodeletAdder {
             irm.setProfile(StringUtils.emptyToNull(attrs.get("profile")));
             parser.pushObject(irm);
         });
-        nodeParser.addItemNodelets();
-        parser.addNodeEndlet(text -> {
+        nodeParser.parseItemNode();
+        parser.addEndNodelet(text -> {
             ItemRuleMap irm = parser.popObject();
             IncludeActionRule includeActionRule = parser.peekObject();
             irm = assistant.profiling(irm, includeActionRule.getParameterItemRuleMap());
@@ -201,8 +201,8 @@ class ActionNodeletAdder implements NodeletAdder {
             irm.setProfile(StringUtils.emptyToNull(attrs.get("profile")));
             parser.pushObject(irm);
         });
-        nodeParser.addItemNodelets();
-        parser.addNodeEndlet(text -> {
+        nodeParser.parseItemNode();
+        parser.addEndNodelet(text -> {
             ItemRuleMap irm = parser.popObject();
             IncludeActionRule includeActionRule = parser.peekObject();
             irm = assistant.profiling(irm, includeActionRule.getAttributeItemRuleMap());

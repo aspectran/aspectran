@@ -22,18 +22,18 @@ import com.aspectran.core.context.rule.SettingsAdviceRule;
 import com.aspectran.core.context.rule.assistant.ActivityRuleAssistant;
 import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.nodelet.NodeletAdder;
 import com.aspectran.core.util.nodelet.NodeletParser;
+import com.aspectran.core.util.nodelet.SubnodeParser;
 
 /**
- * The Class AspectNodeletAdder.
+ * The Class AspectNodeParser.
  * 
  * <p>Created: 2008. 06. 14 AM 6:56:29</p>
  */
-class AspectNodeletAdder implements NodeletAdder {
+class AspectNodeParser implements SubnodeParser {
 
     @Override
-    public void add(String xpath, NodeletParser parser) {
+    public void parse(String xpath, NodeletParser parser) {
         AspectranNodeParser nodeParser = parser.getNodeParser();
         ActivityRuleAssistant assistant = nodeParser.getAssistant();
 
@@ -47,7 +47,7 @@ class AspectNodeletAdder implements NodeletAdder {
             AspectRule aspectRule = AspectRule.newInstance(id, order, isolated, disabled);
             parser.pushObject(aspectRule);
         });
-        parser.addNodeEndlet(text -> {
+        parser.addEndNodelet(text -> {
             AspectRule aspectRule = parser.popObject();
             assistant.addAspectRule(aspectRule);
         });
@@ -59,7 +59,7 @@ class AspectNodeletAdder implements NodeletAdder {
             DescriptionRule descriptionRule = DescriptionRule.newInstance(profile, style);
             parser.pushObject(descriptionRule);
         });
-        parser.addNodeEndlet(text -> {
+        parser.addEndNodelet(text -> {
             DescriptionRule descriptionRule = parser.popObject();
             AspectRule aspectRule = parser.peekObject();
 
@@ -72,7 +72,7 @@ class AspectNodeletAdder implements NodeletAdder {
             String target = StringUtils.emptyToNull(attrs.get("target"));
             parser.pushObject(target);
         });
-        parser.addNodeEndlet(text -> {
+        parser.addEndNodelet(text -> {
             String target = parser.popObject();
             AspectRule aspectRule = parser.peekObject();
             AspectRule.updateJoinpoint(aspectRule, target, text);
@@ -83,7 +83,7 @@ class AspectNodeletAdder implements NodeletAdder {
             SettingsAdviceRule sar = SettingsAdviceRule.newInstance(aspectRule);
             parser.pushObject(sar);
         });
-        parser.addNodeEndlet(text -> {
+        parser.addEndNodelet(text -> {
             SettingsAdviceRule sar = parser.popObject();
             AspectRule aspectRule = parser.peekObject();
             aspectRule.setSettingsAdviceRule(sar);
@@ -95,7 +95,7 @@ class AspectNodeletAdder implements NodeletAdder {
             parser.pushObject(value);
             parser.pushObject(name);
         });
-        parser.addNodeEndlet(text -> {
+        parser.addEndNodelet(text -> {
             String name = parser.popObject();
             String value = parser.popObject();
             SettingsAdviceRule sar = parser.peekObject();
@@ -114,14 +114,14 @@ class AspectNodeletAdder implements NodeletAdder {
                 assistant.resolveAdviceBeanClass(aspectRule);
             }
         });
-        nodeParser.addAspectAdviceInnerNodelets();
+        nodeParser.parseAspectAdviceInnerNode();
         parser.setXpath(xpath + "/aspect/exception");
         parser.addNodelet(attrs -> {
             ExceptionRule exceptionRule = new ExceptionRule();
             parser.pushObject(exceptionRule);
         });
-        nodeParser.addExceptionInnerNodelets();
-        parser.addNodeEndlet(text -> {
+        nodeParser.parseExceptionInnerNode();
+        parser.addEndNodelet(text -> {
             ExceptionRule exceptionRule = parser.popObject();
             AspectRule aspectRule = parser.peekObject();
             aspectRule.setExceptionRule(exceptionRule);

@@ -19,18 +19,18 @@ import com.aspectran.core.context.rule.ChooseRule;
 import com.aspectran.core.context.rule.ChooseWhenRule;
 import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
 import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.nodelet.NodeletAdder;
 import com.aspectran.core.util.nodelet.NodeletParser;
+import com.aspectran.core.util.nodelet.SubnodeParser;
 
 /**
- * The Class ChooseNodeletAdder.
+ * The Class ChooseNodeParser.
  *
  * @since 6.0.0
  */
-class ChooseNodeletAdder implements NodeletAdder {
+class ChooseNodeParser implements SubnodeParser {
 
     @Override
-    public void add(String xpath, NodeletParser parser) {
+    public void parse(String xpath, NodeletParser parser) {
         AspectranNodeParser nodeParser = parser.getNodeParser();
 
         parser.setXpath(xpath + "/choose");
@@ -38,7 +38,7 @@ class ChooseNodeletAdder implements NodeletAdder {
             ChooseRule chooseRule = ChooseRule.newInstance();
             parser.pushObject(chooseRule);
         });
-        parser.addNodeEndlet(text -> {
+        parser.addEndNodelet(text -> {
             ChooseRule chooseRule = parser.popObject();
             ActionRuleApplicable applicable = parser.peekObject();
             applicable.applyActionRule(chooseRule);
@@ -52,9 +52,9 @@ class ChooseNodeletAdder implements NodeletAdder {
             chooseWhenRule.setExpression(expression);
             parser.pushObject(chooseWhenRule);
         });
-        nodeParser.addActionNodelets();
-        nodeParser.addResponseInnerNodelets();
-        parser.addNodeEndlet(text -> {
+        nodeParser.parseActionNode();
+        nodeParser.parseResponseInnerNode();
+        parser.addEndNodelet(text -> {
             parser.popObject();
         });
         parser.setXpath(xpath + "/choose/otherwise");
@@ -63,9 +63,9 @@ class ChooseNodeletAdder implements NodeletAdder {
             ChooseWhenRule chooseWhenRule = chooseRule.newChooseWhenRule();
             parser.pushObject(chooseWhenRule);
         });
-        nodeParser.addActionNodelets();
-        nodeParser.addResponseInnerNodelets();
-        parser.addNodeEndlet(text -> {
+        nodeParser.parseActionNode();
+        nodeParser.parseResponseInnerNode();
+        parser.addEndNodelet(text -> {
             parser.popObject();
         });
     }

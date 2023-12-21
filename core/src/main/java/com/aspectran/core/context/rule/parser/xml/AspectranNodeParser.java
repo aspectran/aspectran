@@ -41,31 +41,31 @@ public class AspectranNodeParser {
 
     private final ActivityRuleAssistant assistant;
 
-    private final ActionNodeletAdder actionNodeletAdder;
+    private final ActionNodeParser actionNodeParser;
 
-    private final AspectAdviceInnerNodeletAdder aspectAdviceInnerNodeletAdder;
+    private final AspectAdviceInnerNodeParser aspectAdviceInnerNodeParser;
 
-    private final AspectNodeletAdder aspectNodeletAdder;
+    private final AspectNodeParser aspectNodeParser;
 
-    private final BeanNodeletAdder beanNodeletAdder;
+    private final BeanNodeParser beanNodeParser;
 
-    private final ChooseNodeletAdder chooseNodeletAdder;
+    private final ChooseNodeParser chooseNodeParser;
 
-    private final EnvironmentNodeletAdder environmentNodeletAdder;
+    private final EnvironmentNodeParser environmentNodeParser;
 
-    private final ExceptionInnerNodeletAdder exceptionInnerNodeletAdder;
+    private final ExceptionInnerNodeParser exceptionInnerNodeParser;
 
-    private final ItemNodeletAdder[] itemNodeletAdders;
+    private final ItemNodeParser[] itemNodeParsers;
 
-    private final InnerBeanNodeletAdder[] innerBeanNodeletAdders;
+    private final InnerBeanNodeParser[] innerBeanNodeParsers;
 
-    private final ResponseInnerNodeletAdder responseInnerNodeletAdder;
+    private final ResponseInnerNodeParser responseInnerNodeParser;
 
-    private final ScheduleNodeletAdder scheduleNodeletAdder;
+    private final ScheduleNodeParser scheduleNodeParser;
 
-    private final TemplateNodeletAdder templateNodeletAdder;
+    private final TemplateNodeParser templateNodeParser;
 
-    private final TransletNodeletAdder transletNodeletAdder;
+    private final TransletNodeParser transletNodeParser;
 
     private final NodeletParser parser;
 
@@ -87,26 +87,26 @@ public class AspectranNodeParser {
      */
     public AspectranNodeParser(ActivityRuleAssistant assistant, boolean validating, boolean trackingLocation) {
         this.assistant = assistant;
-        this.actionNodeletAdder = new ActionNodeletAdder();
-        this.aspectAdviceInnerNodeletAdder = new AspectAdviceInnerNodeletAdder();
-        this.aspectNodeletAdder = new AspectNodeletAdder();
-        this.beanNodeletAdder = new BeanNodeletAdder();
-        this.chooseNodeletAdder = new ChooseNodeletAdder();
-        this.environmentNodeletAdder = new EnvironmentNodeletAdder();
-        this.exceptionInnerNodeletAdder = new ExceptionInnerNodeletAdder();
-        this.responseInnerNodeletAdder = new ResponseInnerNodeletAdder();
-        this.scheduleNodeletAdder = new ScheduleNodeletAdder();
-        this.templateNodeletAdder = new TemplateNodeletAdder();
-        this.transletNodeletAdder = new TransletNodeletAdder();
-        this.itemNodeletAdders = new ItemNodeletAdder[] {
-                new ItemNodeletAdder(0),
-                new ItemNodeletAdder(1),
-                new ItemNodeletAdder(2)
+        this.actionNodeParser = new ActionNodeParser();
+        this.aspectAdviceInnerNodeParser = new AspectAdviceInnerNodeParser();
+        this.aspectNodeParser = new AspectNodeParser();
+        this.beanNodeParser = new BeanNodeParser();
+        this.chooseNodeParser = new ChooseNodeParser();
+        this.environmentNodeParser = new EnvironmentNodeParser();
+        this.exceptionInnerNodeParser = new ExceptionInnerNodeParser();
+        this.responseInnerNodeParser = new ResponseInnerNodeParser();
+        this.scheduleNodeParser = new ScheduleNodeParser();
+        this.templateNodeParser = new TemplateNodeParser();
+        this.transletNodeParser = new TransletNodeParser();
+        this.itemNodeParsers = new ItemNodeParser[] {
+                new ItemNodeParser(0),
+                new ItemNodeParser(1),
+                new ItemNodeParser(2)
         };
-        this.innerBeanNodeletAdders = new InnerBeanNodeletAdder[] {
+        this.innerBeanNodeParsers = new InnerBeanNodeParser[] {
                 null,
-                new InnerBeanNodeletAdder(1),
-                new InnerBeanNodeletAdder(2)
+                new InnerBeanNodeParser(1),
+                new InnerBeanNodeParser(2)
         };
 
         this.parser = new NodeletParser(this);
@@ -116,16 +116,16 @@ public class AspectranNodeParser {
             this.parser.trackingLocation();
         }
 
-        addDescriptionNodelets();
-        addSettingsNodelets();
-        addTypeAliasNodelets();
-        addEnvironmentNodelets();
-        addAspectNodelets();
-        addBeanNodelets();
-        addScheduleNodelets();
-        addTemplateNodelets();
-        addTransletNodelets();
-        addAppendNodelets();
+        parseDescriptionNode();
+        parseSettingsNode();
+        parseTypeAliasNode();
+        parseEnvironmentNode();
+        parseAspectNode();
+        parseBeanNode();
+        parseScheduleNode();
+        parseTemplateNode();
+        parseTransletNode();
+        parseAppendNode();
     }
 
     public ActivityRuleAssistant getAssistant() {
@@ -179,9 +179,9 @@ public class AspectranNodeParser {
     }
 
     /**
-     * Adds the description nodelets.
+     * Parse the description node.
      */
-    private void addDescriptionNodelets() {
+    private void parseDescriptionNode() {
         parser.setXpath("/aspectran/description");
         parser.addNodelet(attrs -> {
             String profile = attrs.get("profile");
@@ -190,7 +190,7 @@ public class AspectranNodeParser {
             DescriptionRule descriptionRule = DescriptionRule.newInstance(profile, style);
             parser.pushObject(descriptionRule);
         });
-        parser.addNodeEndlet(text -> {
+        parser.addEndNodelet(text -> {
             DescriptionRule descriptionRule = parser.popObject();
             descriptionRule.setContent(text);
             descriptionRule = assistant.profiling(descriptionRule, assistant.getAssistantLocal().getDescriptionRule());
@@ -199,11 +199,11 @@ public class AspectranNodeParser {
     }
 
     /**
-     * Adds the settings nodelets.
+     * Parse the settings node.
      */
-    private void addSettingsNodelets() {
+    private void parseSettingsNode() {
         parser.setXpath("/aspectran/settings");
-        parser.addNodeEndlet(text -> {
+        parser.addEndNodelet(text -> {
             assistant.applySettings();
         });
         parser.setXpath("/aspectran/settings/setting");
@@ -213,7 +213,7 @@ public class AspectranNodeParser {
             parser.pushObject(value);
             parser.pushObject(name);
         });
-        parser.addNodeEndlet(text -> {
+        parser.addEndNodelet(text -> {
             String name = parser.popObject();
             String value = parser.popObject();
             if (value != null) {
@@ -225,9 +225,9 @@ public class AspectranNodeParser {
     }
 
     /**
-     * Adds the type alias nodelets.
+     * Parse the type alias node.
      */
-    private void addTypeAliasNodelets() {
+    private void parseTypeAliasNode() {
         parser.setXpath("/aspectran/typeAliases/typeAlias");
         parser.addNodelet(attrs -> {
             String alias = attrs.get("alias");
@@ -235,7 +235,7 @@ public class AspectranNodeParser {
             parser.pushObject(type);
             parser.pushObject(alias);
         });
-        parser.addNodeEndlet(text -> {
+        parser.addEndNodelet(text -> {
             String alias = parser.popObject();
             String type = parser.popObject();
             if (type != null) {
@@ -247,51 +247,51 @@ public class AspectranNodeParser {
     }
 
     /**
-     * Adds the environment nodelets.
+     * Parse the environment node.
      */
-    private void addEnvironmentNodelets() {
-        parser.addNodelet("/aspectran", environmentNodeletAdder);
+    private void parseEnvironmentNode() {
+        parser.addNodelet("/aspectran", environmentNodeParser);
     }
 
     /**
-     * Adds the aspect rule nodelets.
+     * Parse the aspect rule node.
      */
-    private void addAspectNodelets() {
-        parser.addNodelet("/aspectran", aspectNodeletAdder);
+    private void parseAspectNode() {
+        parser.addNodelet("/aspectran", aspectNodeParser);
     }
 
     /**
-     * Adds the bean nodelets.
+     * Parse the bean node.
      */
-    private void addBeanNodelets() {
-        parser.addNodelet("/aspectran", beanNodeletAdder);
+    private void parseBeanNode() {
+        parser.addNodelet("/aspectran", beanNodeParser);
     }
 
     /**
-     * Adds the schedule rule nodelets.
+     * Parse the schedule rule node.
      */
-    private void addScheduleNodelets() {
-        parser.addNodelet("/aspectran", scheduleNodeletAdder);
+    private void parseScheduleNode() {
+        parser.addNodelet("/aspectran", scheduleNodeParser);
     }
 
     /**
-     * Adds the template nodelets.
+     * Parse the template node.
      */
-    private void addTemplateNodelets() {
-        parser.addNodelet("/aspectran", templateNodeletAdder);
+    private void parseTemplateNode() {
+        parser.addNodelet("/aspectran", templateNodeParser);
     }
 
     /**
-     * Adds the translet nodelets.
+     * Parse the translet node.
      */
-    private void addTransletNodelets() {
-        parser.addNodelet("/aspectran", transletNodeletAdder);
+    private void parseTransletNode() {
+        parser.addNodelet("/aspectran", transletNodeParser);
     }
 
     /**
-     * Adds the append nodelets.
+     * Parse the append node.
      */
-    private void addAppendNodelets() {
+    private void parseAppendNode() {
         parser.setXpath("/aspectran/append");
         parser.addNodelet(attrs -> {
             String file = attrs.get("file");
@@ -308,18 +308,18 @@ public class AspectranNodeParser {
         });
     }
 
-    void addActionNodelets() {
-        parser.addNodelet(actionNodeletAdder);
+    void parseActionNode() {
+        parser.addNodelet(actionNodeParser);
     }
 
-    void addNestedActionNodelets() {
+    void parseNestedActionNode() {
         String xpath = parser.getXpath();
-        parser.addNodelet(actionNodeletAdder);
-        parser.addNodelet(chooseNodeletAdder);
+        parser.addNodelet(actionNodeParser);
+        parser.addNodelet(chooseNodeParser);
         parser.setXpath(xpath + "/choose/when");
-        parser.addNodelet(chooseNodeletAdder);
+        parser.addNodelet(chooseNodeParser);
         parser.setXpath(xpath + "/choose/otherwise");
-        parser.addNodelet(chooseNodeletAdder);
+        parser.addNodelet(chooseNodeParser);
         parser.setXpath(xpath + "/choose/when/choose/when/choose");
         parser.addNodelet(attrs -> {
             throw new IllegalRuleException("The <choose> element can only be nested up to 2 times");
@@ -339,34 +339,34 @@ public class AspectranNodeParser {
         parser.setXpath(xpath);
     }
 
-    void addAspectAdviceInnerNodelets() {
-        parser.addNodelet(aspectAdviceInnerNodeletAdder);
+    void parseAspectAdviceInnerNode() {
+        parser.addNodelet(aspectAdviceInnerNodeParser);
     }
 
-    void addExceptionInnerNodelets() {
-        parser.addNodelet(exceptionInnerNodeletAdder);
+    void parseExceptionInnerNode() {
+        parser.addNodelet(exceptionInnerNodeParser);
     }
 
-    void addResponseInnerNodelets() {
-        parser.addNodelet(responseInnerNodeletAdder);
+    void parseResponseInnerNode() {
+        parser.addNodelet(responseInnerNodeParser);
     }
 
-    void addItemNodelets() {
-        addItemNodelets(0);
+    void parseItemNode() {
+        parseItemNode(0);
     }
 
-    void addItemNodelets(int depth) {
-        parser.addNodelet(itemNodeletAdders[depth]);
+    void parseItemNode(int depth) {
+        parser.addNodelet(itemNodeParsers[depth]);
     }
 
-    void addInnerBeanNodelets(int depth) {
-        if (depth < innerBeanNodeletAdders.length - 1) {
-            parser.addNodelet(innerBeanNodeletAdders[depth + 1]);
+    void parseInnerBeanNode(int depth) {
+        if (depth < innerBeanNodeParsers.length - 1) {
+            parser.addNodelet(innerBeanNodeParsers[depth + 1]);
         }
     }
 
     int getMaxInnerBeans() {
-        return (innerBeanNodeletAdders.length - 1);
+        return (innerBeanNodeParsers.length - 1);
     }
 
 }

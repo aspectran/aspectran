@@ -20,18 +20,18 @@ import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.ExceptionThrownRule;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
 import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.nodelet.NodeletAdder;
 import com.aspectran.core.util.nodelet.NodeletParser;
+import com.aspectran.core.util.nodelet.SubnodeParser;
 
 /**
- * The Class AspectAdviceInnerNodeletAdder.
+ * The Class AspectAdviceInnerNodeParser.
  *
  * @since 2013. 8. 11.
  */
-class AspectAdviceInnerNodeletAdder implements NodeletAdder {
+class AspectAdviceInnerNodeParser implements SubnodeParser {
 
     @Override
-    public void add(String xpath, NodeletParser parser) {
+    public void parse(String xpath, NodeletParser parser) {
         AspectranNodeParser nodeParser = parser.getNodeParser();
 
         parser.setXpath(xpath + "/before");
@@ -40,32 +40,32 @@ class AspectAdviceInnerNodeletAdder implements NodeletAdder {
             AspectAdviceRule aspectAdviceRule = aspectRule.newAspectAdviceRule(AspectAdviceType.BEFORE);
             parser.pushObject(aspectAdviceRule);
         });
-        nodeParser.addActionNodelets();
-        parser.addNodeEndlet(text -> parser.popObject());
+        nodeParser.parseActionNode();
+        parser.addEndNodelet(text -> parser.popObject());
         parser.setXpath(xpath + "/after");
         parser.addNodelet(attrs -> {
             AspectRule aspectRule = parser.peekObject();
             AspectAdviceRule aspectAdviceRule = aspectRule.newAspectAdviceRule(AspectAdviceType.AFTER);
             parser.pushObject(aspectAdviceRule);
         });
-        nodeParser.addActionNodelets();
-        parser.addNodeEndlet(text -> parser.popObject());
+        nodeParser.parseActionNode();
+        parser.addEndNodelet(text -> parser.popObject());
         parser.setXpath(xpath + "/around");
         parser.addNodelet(attrs -> {
             AspectRule aspectRule = parser.peekObject();
             AspectAdviceRule aspectAdviceRule = aspectRule.newAspectAdviceRule(AspectAdviceType.AROUND);
             parser.pushObject(aspectAdviceRule);
         });
-        nodeParser.addActionNodelets();
-        parser.addNodeEndlet(text -> parser.popObject());
+        nodeParser.parseActionNode();
+        parser.addEndNodelet(text -> parser.popObject());
         parser.setXpath(xpath + "/finally");
         parser.addNodelet(attrs -> {
             AspectRule aspectRule = parser.peekObject();
             AspectAdviceRule aspectAdviceRule = aspectRule.newAspectAdviceRule(AspectAdviceType.FINALLY);
             parser.pushObject(aspectAdviceRule);
         });
-        nodeParser.addActionNodelets();
-        parser.addNodeEndlet(text -> parser.popObject());
+        nodeParser.parseActionNode();
+        parser.addEndNodelet(text -> parser.popObject());
         parser.setXpath(xpath + "/finally/thrown");
         parser.addNodelet(attrs -> {
             String exceptionType = attrs.get("type");
@@ -78,9 +78,9 @@ class AspectAdviceInnerNodeletAdder implements NodeletAdder {
             }
             parser.pushObject(etr);
         });
-        nodeParser.addActionNodelets();
-        nodeParser.addResponseInnerNodelets();
-        parser.addNodeEndlet(text -> {
+        nodeParser.parseActionNode();
+        nodeParser.parseResponseInnerNode();
+        parser.addEndNodelet(text -> {
             ExceptionThrownRule etr = parser.popObject();
             AspectAdviceRule aspectAdviceRule = parser.peekObject();
             aspectAdviceRule.setExceptionThrownRule(etr);

@@ -21,18 +21,18 @@ import com.aspectran.core.context.rule.ScheduledJobRule;
 import com.aspectran.core.context.rule.assistant.ActivityRuleAssistant;
 import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.nodelet.NodeletAdder;
 import com.aspectran.core.util.nodelet.NodeletParser;
+import com.aspectran.core.util.nodelet.SubnodeParser;
 
 /**
- * The Class ScheduleNodeletAdder.
+ * The Class ScheduleNodeParser.
  * 
  * <p>Created: 2016. 08. 29.</p>
  */
-class ScheduleNodeletAdder implements NodeletAdder {
+class ScheduleNodeParser implements SubnodeParser {
 
     @Override
-    public void add(String xpath, NodeletParser parser) {
+    public void parse(String xpath, NodeletParser parser) {
         AspectranNodeParser nodeParser = parser.getNodeParser();
         ActivityRuleAssistant assistant = nodeParser.getAssistant();
 
@@ -44,7 +44,7 @@ class ScheduleNodeletAdder implements NodeletAdder {
 
             parser.pushObject(scheduleRule);
         });
-        parser.addNodeEndlet(text -> {
+        parser.addEndNodelet(text -> {
             ScheduleRule scheduleRule = parser.popObject();
             assistant.addScheduleRule(scheduleRule);
         });
@@ -56,7 +56,7 @@ class ScheduleNodeletAdder implements NodeletAdder {
             DescriptionRule descriptionRule = DescriptionRule.newInstance(profile, style);
             parser.pushObject(descriptionRule);
         });
-        parser.addNodeEndlet(text -> {
+        parser.addEndNodelet(text -> {
             DescriptionRule descriptionRule = parser.popObject();
             ScheduleRule scheduleRule = parser.peekObject();
 
@@ -77,7 +77,7 @@ class ScheduleNodeletAdder implements NodeletAdder {
             String type = StringUtils.emptyToNull(attrs.get("type"));
             parser.pushObject(type);
         });
-        parser.addNodeEndlet(text -> {
+        parser.addEndNodelet(text -> {
             String type = parser.popObject();
             ScheduleRule scheduleRule = parser.peekObject();
             ScheduleRule.updateTrigger(scheduleRule, type, text);

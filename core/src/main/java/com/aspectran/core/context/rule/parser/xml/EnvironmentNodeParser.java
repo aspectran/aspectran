@@ -20,18 +20,18 @@ import com.aspectran.core.context.rule.EnvironmentRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.assistant.ActivityRuleAssistant;
 import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.nodelet.NodeletAdder;
 import com.aspectran.core.util.nodelet.NodeletParser;
+import com.aspectran.core.util.nodelet.SubnodeParser;
 
 /**
- * The Class EnvironmentNodeletAdder.
+ * The Class EnvironmentNodeParser.
  * 
  * <p>Created: 2016. 01. 09</p>
  */
-class EnvironmentNodeletAdder implements NodeletAdder {
+class EnvironmentNodeParser implements SubnodeParser {
 
     @Override
-    public void add(String xpath, NodeletParser parser) {
+    public void parse(String xpath, NodeletParser parser) {
         AspectranNodeParser nodeParser = parser.getNodeParser();
         ActivityRuleAssistant assistant = nodeParser.getAssistant();
 
@@ -42,7 +42,7 @@ class EnvironmentNodeletAdder implements NodeletAdder {
             EnvironmentRule environmentRule = EnvironmentRule.newInstance(profile);
             parser.pushObject(environmentRule);
         });
-        parser.addNodeEndlet(text -> {
+        parser.addEndNodelet(text -> {
             EnvironmentRule environmentRule = parser.popObject();
             assistant.addEnvironmentRule(environmentRule);
         });
@@ -54,7 +54,7 @@ class EnvironmentNodeletAdder implements NodeletAdder {
             DescriptionRule descriptionRule = DescriptionRule.newInstance(profile, style);
             parser.pushObject(descriptionRule);
         });
-        parser.addNodeEndlet(text -> {
+        parser.addEndNodelet(text -> {
             DescriptionRule descriptionRule = parser.popObject();
             EnvironmentRule environmentRule = parser.peekObject();
 
@@ -68,8 +68,8 @@ class EnvironmentNodeletAdder implements NodeletAdder {
             irm.setProfile(StringUtils.emptyToNull(attrs.get("profile")));
             parser.pushObject(irm);
         });
-        nodeParser.addItemNodelets();
-        parser.addNodeEndlet(text -> {
+        nodeParser.parseItemNode();
+        parser.addEndNodelet(text -> {
             ItemRuleMap irm = parser.popObject();
             EnvironmentRule environmentRule = parser.peekObject();
             environmentRule.addPropertyItemRuleMap(irm);

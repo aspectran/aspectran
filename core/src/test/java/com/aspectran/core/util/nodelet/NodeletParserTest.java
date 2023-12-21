@@ -66,7 +66,7 @@ class NodeletParserTest {
                 String style = attrs.get("style");
                 parser.pushObject(style);
             });
-            parser.addNodeEndlet(text -> {
+            parser.addEndNodelet(text -> {
                 String style = parser.popObject();
                 System.out.println(parser.getXpath() + " style=" + style + ", text=" + text);
             });

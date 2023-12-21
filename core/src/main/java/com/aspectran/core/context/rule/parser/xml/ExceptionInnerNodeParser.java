@@ -20,18 +20,18 @@ import com.aspectran.core.context.rule.ExceptionRule;
 import com.aspectran.core.context.rule.ExceptionThrownRule;
 import com.aspectran.core.context.rule.assistant.ActivityRuleAssistant;
 import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.nodelet.NodeletAdder;
 import com.aspectran.core.util.nodelet.NodeletParser;
+import com.aspectran.core.util.nodelet.SubnodeParser;
 
 /**
- * The Class ExceptionInnerNodeletAdder.
+ * The Class ExceptionInnerNodeParser.
  *
  * @since 2013. 8. 11.
  */
-class ExceptionInnerNodeletAdder implements NodeletAdder {
+class ExceptionInnerNodeParser implements SubnodeParser {
 
     @Override
-    public void add(String xpath, NodeletParser parser) {
+    public void parse(String xpath, NodeletParser parser) {
         AspectranNodeParser nodeParser = parser.getNodeParser();
         ActivityRuleAssistant assistant = nodeParser.getAssistant();
 
@@ -43,7 +43,7 @@ class ExceptionInnerNodeletAdder implements NodeletAdder {
             DescriptionRule descriptionRule = DescriptionRule.newInstance(profile, style);
             parser.pushObject(descriptionRule);
         });
-        parser.addNodeEndlet(text -> {
+        parser.addEndNodelet(text -> {
             DescriptionRule descriptionRule = parser.popObject();
             ExceptionRule exceptionRule = parser.peekObject();
 
@@ -63,9 +63,9 @@ class ExceptionInnerNodeletAdder implements NodeletAdder {
 
             parser.pushObject(etr);
         });
-        nodeParser.addActionNodelets();
-        nodeParser.addResponseInnerNodelets();
-        parser.addNodeEndlet(text -> {
+        nodeParser.parseActionNode();
+        nodeParser.parseResponseInnerNode();
+        parser.addEndNodelet(text -> {
             ExceptionThrownRule etr = parser.popObject();
             ExceptionRule exceptionRule = parser.peekObject();
             exceptionRule.putExceptionThrownRule(etr);

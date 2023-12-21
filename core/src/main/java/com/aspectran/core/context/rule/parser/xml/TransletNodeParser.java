@@ -26,18 +26,18 @@ import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.assistant.ActivityRuleAssistant;
 import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.nodelet.NodeletAdder;
 import com.aspectran.core.util.nodelet.NodeletParser;
+import com.aspectran.core.util.nodelet.SubnodeParser;
 
 /**
- * The Class TransletNodeletAdder.
+ * The Class TransletNodeParser.
  * 
  * <p>Created: 2008. 06. 14 AM 6:56:29</p>
  */
-class TransletNodeletAdder implements NodeletAdder {
+class TransletNodeParser implements SubnodeParser {
 
     @Override
-    public void add(String xpath, NodeletParser parser) {
+    public void parse(String xpath, NodeletParser parser) {
         AspectranNodeParser nodeParser = parser.getNodeParser();
         ActivityRuleAssistant assistant = nodeParser.getAssistant();
 
@@ -53,7 +53,7 @@ class TransletNodeletAdder implements NodeletAdder {
             TransletRule transletRule = TransletRule.newInstance(name, scan, mask, method, async, timeout);
             parser.pushObject(transletRule);
         });
-        parser.addNodeEndlet(text -> {
+        parser.addEndNodelet(text -> {
             TransletRule transletRule = parser.popObject();
             assistant.addTransletRule(transletRule);
         });
@@ -65,7 +65,7 @@ class TransletNodeletAdder implements NodeletAdder {
             DescriptionRule descriptionRule = DescriptionRule.newInstance(profile, style);
             parser.pushObject(descriptionRule);
         });
-        parser.addNodeEndlet(text -> {
+        parser.addEndNodelet(text -> {
             DescriptionRule descriptionRule = parser.popObject();
             TransletRule transletRule = parser.peekObject();
 
@@ -79,8 +79,8 @@ class TransletNodeletAdder implements NodeletAdder {
             irm.setProfile(StringUtils.emptyToNull(attrs.get("profile")));
             parser.pushObject(irm);
         });
-        nodeParser.addItemNodelets();
-        parser.addNodeEndlet(text -> {
+        nodeParser.parseItemNode();
+        parser.addEndNodelet(text -> {
             ItemRuleMap irm = parser.popObject();
             TransletRule transletRule = parser.peekObject();
             RequestRule requestRule = transletRule.touchRequestRule(false);
@@ -93,8 +93,8 @@ class TransletNodeletAdder implements NodeletAdder {
             irm.setProfile(StringUtils.emptyToNull(attrs.get("profile")));
             parser.pushObject(irm);
         });
-        nodeParser.addItemNodelets();
-        parser.addNodeEndlet(text -> {
+        nodeParser.parseItemNode();
+        parser.addEndNodelet(text -> {
             ItemRuleMap irm = parser.popObject();
             TransletRule transletRule = parser.peekObject();
             RequestRule requestRule = transletRule.touchRequestRule(false);
@@ -109,7 +109,7 @@ class TransletNodeletAdder implements NodeletAdder {
             RequestRule requestRule = RequestRule.newInstance(method, encoding);
             parser.pushObject(requestRule);
         });
-        parser.addNodeEndlet(text -> {
+        parser.addEndNodelet(text -> {
             RequestRule requestRule = parser.popObject();
             TransletRule transletRule = parser.peekObject();
             transletRule.setRequestRule(requestRule);
@@ -120,8 +120,8 @@ class TransletNodeletAdder implements NodeletAdder {
             irm.setProfile(StringUtils.emptyToNull(attrs.get("profile")));
             parser.pushObject(irm);
         });
-        nodeParser.addItemNodelets();
-        parser.addNodeEndlet(text -> {
+        nodeParser.parseItemNode();
+        parser.addEndNodelet(text -> {
             ItemRuleMap irm = parser.popObject();
             RequestRule requestRule = parser.peekObject();
             irm = assistant.profiling(irm, requestRule.getParameterItemRuleMap());
@@ -133,15 +133,15 @@ class TransletNodeletAdder implements NodeletAdder {
             irm.setProfile(StringUtils.emptyToNull(attrs.get("profile")));
             parser.pushObject(irm);
         });
-        nodeParser.addItemNodelets();
-        parser.addNodeEndlet(text -> {
+        nodeParser.parseItemNode();
+        parser.addEndNodelet(text -> {
             ItemRuleMap irm = parser.popObject();
             RequestRule requestRule = parser.peekObject();
             irm = assistant.profiling(irm, requestRule.getAttributeItemRuleMap());
             requestRule.setAttributeItemRuleMap(irm);
         });
         parser.setXpath(xpath + "/translet");
-        nodeParser.addNestedActionNodelets();
+        nodeParser.parseNestedActionNode();
         parser.setXpath(xpath + "/translet/contents");
         parser.addNodelet(attrs -> {
             String name = attrs.get("name");
@@ -149,7 +149,7 @@ class TransletNodeletAdder implements NodeletAdder {
             ContentList contentList = ContentList.newInstance(name);
             parser.pushObject(contentList);
         });
-        parser.addNodeEndlet(text -> {
+        parser.addEndNodelet(text -> {
             ContentList contentList = parser.popObject();
             if (!contentList.isEmpty()) {
                 TransletRule transletRule = parser.peekObject();
@@ -163,8 +163,8 @@ class TransletNodeletAdder implements NodeletAdder {
             ActionList actionList = ActionList.newInstance(name);
             parser.pushObject(actionList);
         });
-        nodeParser.addNestedActionNodelets();
-        parser.addNodeEndlet(text -> {
+        nodeParser.parseNestedActionNode();
+        parser.addEndNodelet(text -> {
             ActionList actionList = parser.popObject();
             if (!actionList.isEmpty()) {
                 ContentList contentList = parser.peekObject();
@@ -178,8 +178,8 @@ class TransletNodeletAdder implements NodeletAdder {
             ActionList actionList = ActionList.newInstance(name);
             parser.pushObject(actionList);
         });
-        nodeParser.addNestedActionNodelets();
-        parser.addNodeEndlet(text -> {
+        nodeParser.parseNestedActionNode();
+        parser.addEndNodelet(text -> {
             ActionList actionList = parser.popObject();
             if (!actionList.isEmpty()) {
                 ContentList contentList = new ContentList(false);
@@ -190,7 +190,7 @@ class TransletNodeletAdder implements NodeletAdder {
             }
         });
         parser.setXpath(xpath + "/translet");
-        nodeParser.addResponseInnerNodelets();
+        nodeParser.parseResponseInnerNode();
         parser.setXpath(xpath + "/translet/response");
         parser.addNodelet(attrs -> {
             String name = attrs.get("name");
@@ -199,9 +199,9 @@ class TransletNodeletAdder implements NodeletAdder {
             ResponseRule responseRule = ResponseRule.newInstance(name, encoding);
             parser.pushObject(responseRule);
         });
-        nodeParser.addNestedActionNodelets();
-        nodeParser.addResponseInnerNodelets();
-        parser.addNodeEndlet(text -> {
+        nodeParser.parseNestedActionNode();
+        nodeParser.parseResponseInnerNode();
+        parser.addEndNodelet(text -> {
             ResponseRule responseRule = parser.popObject();
             TransletRule transletRule = parser.peekObject();
             transletRule.addResponseRule(responseRule);
@@ -211,8 +211,8 @@ class TransletNodeletAdder implements NodeletAdder {
             ExceptionRule exceptionRule = new ExceptionRule();
             parser.pushObject(exceptionRule);
         });
-        nodeParser.addExceptionInnerNodelets();
-        parser.addNodeEndlet(text -> {
+        nodeParser.parseExceptionInnerNode();
+        parser.addEndNodelet(text -> {
             ExceptionRule exceptionRule = parser.popObject();
             TransletRule transletRule = parser.peekObject();
             transletRule.setExceptionRule(exceptionRule);

@@ -21,24 +21,24 @@ import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.assistant.ActivityRuleAssistant;
 import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.nodelet.NodeletAdder;
 import com.aspectran.core.util.nodelet.NodeletParser;
+import com.aspectran.core.util.nodelet.SubnodeParser;
 
 /**
  * The Class BeanInnerNodeletAdder.
  *
  * <p>Created: 2008. 06. 14 AM 6:56:29</p>
  */
-class InnerBeanNodeletAdder implements NodeletAdder {
+class InnerBeanNodeParser implements SubnodeParser {
 
     private final int depth;
 
-    InnerBeanNodeletAdder(int depth) {
+    InnerBeanNodeParser(int depth) {
         this.depth = depth;
     }
 
     @Override
-    public void add(String xpath, NodeletParser parser) {
+    public void parse(String xpath, NodeletParser parser) {
         AspectranNodeParser nodeParser = parser.getNodeParser();
         ActivityRuleAssistant assistant = nodeParser.getAssistant();
 
@@ -59,7 +59,7 @@ class InnerBeanNodeletAdder implements NodeletAdder {
 
             parser.pushObject(beanRule);
         });
-        parser.addNodeEndlet(text -> {
+        parser.addEndNodelet(text -> {
             BeanRule beanRule = parser.popObject();
             assistant.resolveBeanClass(beanRule);
             assistant.resolveFactoryBeanClass(beanRule);
@@ -83,7 +83,7 @@ class InnerBeanNodeletAdder implements NodeletAdder {
             DescriptionRule descriptionRule = DescriptionRule.newInstance(profile, style);
             parser.pushObject(descriptionRule);
         });
-        parser.addNodeEndlet(text -> {
+        parser.addEndNodelet(text -> {
             DescriptionRule descriptionRule = parser.popObject();
             BeanRule beanRule = parser.peekObject();
 
@@ -97,8 +97,8 @@ class InnerBeanNodeletAdder implements NodeletAdder {
             irm.setProfile(StringUtils.emptyToNull(attrs.get("profile")));
             parser.pushObject(irm);
         });
-        nodeParser.addItemNodelets(depth);
-        parser.addNodeEndlet(text -> {
+        nodeParser.parseItemNode(depth);
+        parser.addEndNodelet(text -> {
             ItemRuleMap irm = parser.popObject();
             BeanRule beanRule = parser.peekObject();
             irm = assistant.profiling(irm, beanRule.getConstructorArgumentItemRuleMap());
@@ -110,8 +110,8 @@ class InnerBeanNodeletAdder implements NodeletAdder {
             irm.setProfile(StringUtils.emptyToNull(attrs.get("profile")));
             parser.pushObject(irm);
         });
-        nodeParser.addItemNodelets(depth);
-        parser.addNodeEndlet(text -> {
+        nodeParser.parseItemNode(depth);
+        parser.addEndNodelet(text -> {
             ItemRuleMap irm = parser.popObject();
             BeanRule beanRule = parser.peekObject();
             irm = assistant.profiling(irm, beanRule.getPropertyItemRuleMap());

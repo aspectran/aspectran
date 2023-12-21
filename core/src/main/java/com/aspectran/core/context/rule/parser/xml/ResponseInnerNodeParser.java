@@ -26,18 +26,18 @@ import com.aspectran.core.context.rule.ability.ResponseRuleApplicable;
 import com.aspectran.core.context.rule.assistant.ActivityRuleAssistant;
 import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.nodelet.NodeletAdder;
 import com.aspectran.core.util.nodelet.NodeletParser;
+import com.aspectran.core.util.nodelet.SubnodeParser;
 
 /**
- * The Class ResponseInnerNodeletAdder.
+ * The Class ResponseInnerNodeParser.
  *
  * <p>Created: 2008. 06. 14 AM 6:56:29</p>
  */
-class ResponseInnerNodeletAdder implements NodeletAdder {
+class ResponseInnerNodeParser implements SubnodeParser {
 
     @Override
-    public void add(String xpath, NodeletParser parser) {
+    public void parse(String xpath, NodeletParser parser) {
         AspectranNodeParser nodeParser = parser.getNodeParser();
         ActivityRuleAssistant assistant = nodeParser.getAssistant();
 
@@ -52,7 +52,7 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
             TransformRule transformRule = TransformRule.newInstance(format, contentType, encoding, defaultResponse, pretty);
             parser.pushObject(transformRule);
         });
-        parser.addNodeEndlet(text -> {
+        parser.addEndNodelet(text -> {
             TransformRule transformRule = parser.popObject();
             ResponseRuleApplicable applicable = parser.peekObject();
             applicable.applyResponseRule(transformRule);
@@ -73,7 +73,7 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
                     style, null, encoding, noCache);
             parser.pushObject(templateRule);
         });
-        parser.addNodeEndlet(text -> {
+        parser.addEndNodelet(text -> {
             TemplateRule templateRule = parser.popObject();
             TransformRule transformRule = parser.peekObject();
 
@@ -93,7 +93,7 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
             DispatchRule dispatchRule = DispatchRule.newInstance(name, dispatcher, contentType, encoding, defaultResponse);
             parser.pushObject(dispatchRule);
         });
-        parser.addNodeEndlet(text -> {
+        parser.addEndNodelet(text -> {
             DispatchRule dispatchRule = parser.popObject();
             ResponseRuleApplicable applicable = parser.peekObject();
             applicable.applyResponseRule(dispatchRule);
@@ -110,7 +110,7 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
             ForwardRule forwardRule = ForwardRule.newInstance(contentType, transletName, method, defaultResponse);
             parser.pushObject(forwardRule);
         });
-        parser.addNodeEndlet(text -> {
+        parser.addEndNodelet(text -> {
             ForwardRule forwardRule = parser.popObject();
             ResponseRuleApplicable applicable = parser.peekObject();
             applicable.applyResponseRule(forwardRule);
@@ -121,8 +121,8 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
             irm.setProfile(StringUtils.emptyToNull(attrs.get("profile")));
             parser.pushObject(irm);
         });
-        nodeParser.addItemNodelets();
-        parser.addNodeEndlet(text -> {
+        nodeParser.parseItemNode();
+        parser.addEndNodelet(text -> {
             ItemRuleMap irm = parser.popObject();
             ForwardRule forwardRule = parser.peekObject();
             irm = assistant.profiling(irm, forwardRule.getAttributeItemRuleMap());
@@ -141,7 +141,7 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
                     excludeEmptyParameters, defaultResponse);
             parser.pushObject(redirectRule);
         });
-        parser.addNodeEndlet(text -> {
+        parser.addEndNodelet(text -> {
             RedirectRule redirectRule = parser.popObject();
 
             if (redirectRule.getPath() == null) {
@@ -159,8 +159,8 @@ class ResponseInnerNodeletAdder implements NodeletAdder {
             irm.setProfile(StringUtils.emptyToNull(attrs.get("profile")));
             parser.pushObject(irm);
         });
-        nodeParser.addItemNodelets();
-        parser.addNodeEndlet(text -> {
+        nodeParser.parseItemNode();
+        parser.addEndNodelet(text -> {
             ItemRuleMap irm = parser.popObject();
             RedirectRule redirectRule = parser.peekObject();
             irm = assistant.profiling(irm, redirectRule.getParameterItemRuleMap());

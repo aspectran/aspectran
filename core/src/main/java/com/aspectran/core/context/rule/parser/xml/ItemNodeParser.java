@@ -25,24 +25,24 @@ import com.aspectran.core.context.rule.type.ItemType;
 import com.aspectran.core.context.rule.type.ItemValueType;
 import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.nodelet.NodeletAdder;
 import com.aspectran.core.util.nodelet.NodeletParser;
+import com.aspectran.core.util.nodelet.SubnodeParser;
 
 /**
- * The Class ItemNodeletAdder.
+ * The Class ItemNodeParser.
  *
  * <p>Created: 2008. 06. 14 AM 6:56:29</p>
  */
-class ItemNodeletAdder implements NodeletAdder {
+class ItemNodeParser implements SubnodeParser {
 
     private final int depth;
 
-    ItemNodeletAdder(int depth) {
+    ItemNodeParser(int depth) {
         this.depth = depth;
     }
 
     @Override
-    public void add(String xpath, NodeletParser parser) {
+    public void parse(String xpath, NodeletParser parser) {
         AspectranNodeParser nodeParser = parser.getNodeParser();
         ActivityRuleAssistant assistant = nodeParser.getAssistant();
 
@@ -63,7 +63,7 @@ class ItemNodeletAdder implements NodeletAdder {
             parser.pushObject(itemRule);
         });
         if (depth < nodeParser.getMaxInnerBeans()) {
-            nodeParser.addInnerBeanNodelets(depth);
+            nodeParser.parseInnerBeanNode(depth);
         } else {
             parser.setXpath(xpath + "/item/bean");
             parser.addNodelet(attrs -> {
@@ -71,7 +71,7 @@ class ItemNodeletAdder implements NodeletAdder {
             });
             parser.setXpath(xpath + "/item");
         }
-        parser.addNodeEndlet(text -> {
+        parser.addEndNodelet(text -> {
             ItemRule itemRule = parser.popObject();
             ItemRuleMap itemRuleMap = parser.peekObject();
 
@@ -84,7 +84,7 @@ class ItemNodeletAdder implements NodeletAdder {
         });
         parser.setXpath(xpath + "/item/value");
         if (depth < nodeParser.getMaxInnerBeans()) {
-            nodeParser.addInnerBeanNodelets(depth);
+            nodeParser.parseInnerBeanNode(depth);
         } else {
             parser.setXpath(xpath + "/item/value/bean");
             parser.addNodelet(attrs -> {
@@ -92,7 +92,7 @@ class ItemNodeletAdder implements NodeletAdder {
             });
             parser.setXpath(xpath + "/item/value");
         }
-        parser.addNodeEndlet(text -> {
+        parser.addEndNodelet(text -> {
             if (StringUtils.hasText(text)) {
                 ItemRule itemRule = parser.peekObject();
                 if (itemRule.getValueType() != ItemValueType.BEAN) {
@@ -115,7 +115,7 @@ class ItemNodeletAdder implements NodeletAdder {
             parser.pushObject(name);
         });
         if (depth < nodeParser.getMaxInnerBeans()) {
-            nodeParser.addInnerBeanNodelets(depth);
+            nodeParser.parseInnerBeanNode(depth);
         } else {
             parser.setXpath(xpath + "/item/entry/bean");
             parser.addNodelet(attrs -> {
@@ -123,7 +123,7 @@ class ItemNodeletAdder implements NodeletAdder {
             });
             parser.setXpath(xpath + "/item/entry");
         }
-        parser.addNodeEndlet(text -> {
+        parser.addEndNodelet(text -> {
             String name = parser.popObject();
             String value = parser.popObject();
             String tokenize = parser.popObject();

@@ -19,18 +19,18 @@ import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.assistant.ActivityRuleAssistant;
 import com.aspectran.core.util.BooleanUtils;
 import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.nodelet.NodeletAdder;
 import com.aspectran.core.util.nodelet.NodeletParser;
+import com.aspectran.core.util.nodelet.SubnodeParser;
 
 /**
- * The Class TemplateNodeletAdder.
+ * The Class TemplateNodeParser.
  * 
  * <p>Created: 2016. 01. 09</p>
  */
-class TemplateNodeletAdder implements NodeletAdder {
+class TemplateNodeParser implements SubnodeParser {
 
     @Override
-    public void add(String xpath, NodeletParser parser) {
+    public void parse(String xpath, NodeletParser parser) {
         AspectranNodeParser nodeParser = parser.getNodeParser();
         ActivityRuleAssistant assistant = nodeParser.getAssistant();
 
@@ -51,7 +51,7 @@ class TemplateNodeletAdder implements NodeletAdder {
 
             parser.pushObject(templateRule);
         });
-        parser.addNodeEndlet(text -> {
+        parser.addEndNodelet(text -> {
             TemplateRule templateRule = parser.popObject();
 
             TemplateRule.updateTemplateSource(templateRule, text);
