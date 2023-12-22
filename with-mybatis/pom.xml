@@ -20,11 +20,11 @@
     <parent>
         <groupId>com.aspectran</groupId>
         <artifactId>aspectran-project</artifactId>
-        <version>7.4.3</version>
+        <version>7.4.4-SNAPSHOT</version>
     </parent>
 
     <artifactId>aspectran-with-mybatis</artifactId>
-    <version>7.4.3</version>
+    <version>7.4.4-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>Aspectran with MyBatis</name>
