@@ -41,7 +41,4 @@ public interface PromptStringBuilder {
 
     void clear();
 
-    @Override
-    String toString();
-
 }

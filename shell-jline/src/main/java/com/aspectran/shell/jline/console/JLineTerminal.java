@@ -207,11 +207,11 @@ public class JLineTerminal {
         return (style != null);
     }
 
-    public Style getStyle() {
+    protected Style getStyle() {
         return style;
     }
 
-    public void setStyle(Style style) {
+    protected void setStyle(Style style) {
         this.style = style;
     }
 
@@ -223,7 +223,7 @@ public class JLineTerminal {
         return toAnsi(str, getStyle());
     }
 
-    public String toAnsi(String str, Style style) {
+    protected String toAnsi(String str, Style style) {
         AttributedStyle attributedStyle = (style != null ? style.getAttributedStyle() : null);
         return JLineTextStyler.parseAsString(attributedStyle, str, terminal);
     }
