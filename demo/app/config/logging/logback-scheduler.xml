@@ -2,9 +2,9 @@
 <included>
 
     <appender name="SCHEDULER-FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${aspectran.basePath}/logs/scheduler.log</file>
+        <file>${aspectran.basePath:-app}/logs/scheduler.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <fileNamePattern>${aspectran.basePath}/logs/archived/scheduler.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <fileNamePattern>${aspectran.basePath:-app}/logs/archived/scheduler.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <maxFileSize>10MB</maxFileSize>
             <maxHistory>30</maxHistory>
             <totalSizeCap>1GB</totalSizeCap>

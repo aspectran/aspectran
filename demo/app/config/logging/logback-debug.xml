@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 
-    <include file="${aspectran.basePath}/config/logging/logback-default.xml"/>
-    <include file="${aspectran.basePath}/config/logging/logback-console.xml"/>
+    <include file="${aspectran.basePath:-app}/config/logging/logback-default.xml"/>
+    <include file="${aspectran.basePath:-app}/config/logging/logback-console.xml"/>
 
     <logger name="com.aspectran.daemon.command.polling.DefaultFileCommander" level="trace"/>
 
