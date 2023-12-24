@@ -16,13 +16,13 @@
 package com.aspectran.core.context.rule.assistant;
 
 import com.aspectran.core.context.rule.type.DefaultSettingType;
-import com.aspectran.core.util.BooleanUtils;
+import com.aspectran.utils.BooleanUtils;
 
 import java.util.Map;
 
 /**
  * The Class DefaultSettings
- * 
+ *
  * <p>Created: 2008. 03. 22 PM 5:48:09</p>
  */
 public class DefaultSettings {

@@ -27,8 +27,8 @@ import com.aspectran.core.context.rule.parser.xml.AspectranDtdResolver;
 import com.aspectran.core.context.rule.parser.xml.AspectranNodeParser;
 import com.aspectran.core.context.rule.type.AppendableFileFormatType;
 import com.aspectran.core.context.rule.type.AppenderType;
-import com.aspectran.core.util.apon.AponWriter;
-import com.aspectran.core.util.apon.XmlToApon;
+import com.aspectran.utils.apon.AponWriter;
+import com.aspectran.utils.apon.XmlToApon;
 import org.xml.sax.EntityResolver;
 
 import java.io.File;

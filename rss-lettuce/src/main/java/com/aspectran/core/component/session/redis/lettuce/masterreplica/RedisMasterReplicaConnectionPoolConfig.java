@@ -16,8 +16,8 @@
 package com.aspectran.core.component.session.redis.lettuce.masterreplica;
 
 import com.aspectran.core.component.session.SessionData;
-import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.ToStringBuilder;
+import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.ToStringBuilder;
 import io.lettuce.core.ClientOptions;
 import io.lettuce.core.RedisURI;
 import io.lettuce.core.api.StatefulRedisConnection;

@@ -21,7 +21,7 @@ import com.aspectran.core.component.bean.annotation.AvoidAdvice;
 /**
  * Interface to be implemented by any object that wishes to be notified of the
  * {@link ApplicationAdapter}.
- * 
+ *
  * <p>Created: 2016. 1. 25.</p>
  *
  * @since 2.0.0

@@ -30,10 +30,10 @@ import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.type.FormatType;
 import com.aspectran.core.context.rule.type.TokenType;
-import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.json.JsonWriter;
-import com.aspectran.core.util.logging.Logger;
-import com.aspectran.core.util.logging.LoggerFactory;
+import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.json.JsonWriter;
+import com.aspectran.utils.logging.Logger;
+import com.aspectran.utils.logging.LoggerFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;

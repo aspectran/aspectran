@@ -15,7 +15,7 @@
  */
 package com.aspectran.undertow.server.servlet;
 
-import com.aspectran.core.util.Assert;
+import com.aspectran.utils.Assert;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 

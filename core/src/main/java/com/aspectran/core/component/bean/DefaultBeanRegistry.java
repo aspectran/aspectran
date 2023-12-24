@@ -18,8 +18,8 @@ package com.aspectran.core.component.bean;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.type.BeanProxifierType;
-import com.aspectran.core.lang.NonNull;
-import com.aspectran.core.lang.Nullable;
+import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
@@ -27,7 +27,7 @@ import java.util.Collection;
 
 /**
  * The Class DefaultBeanRegistry.
- * 
+ *
  * <p>Created: 2009. 03. 09 PM 23:48:09</p>
  */
 public class DefaultBeanRegistry extends AbstractBeanRegistry {

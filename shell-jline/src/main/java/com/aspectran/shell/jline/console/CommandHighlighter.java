@@ -17,11 +17,11 @@ package com.aspectran.shell.jline.console;
 
 import com.aspectran.core.component.translet.TransletRuleRegistry;
 import com.aspectran.core.context.rule.TransletRule;
-import com.aspectran.core.util.StringUtils;
 import com.aspectran.shell.command.Command;
 import com.aspectran.shell.command.CommandRegistry;
 import com.aspectran.shell.console.ShellConsole;
 import com.aspectran.shell.service.ShellService;
+import com.aspectran.utils.StringUtils;
 import org.jline.reader.Highlighter;
 import org.jline.reader.LineReader;
 import org.jline.utils.AttributedString;

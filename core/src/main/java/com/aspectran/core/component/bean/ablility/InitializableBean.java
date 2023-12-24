@@ -19,7 +19,7 @@ import com.aspectran.core.component.bean.annotation.AvoidAdvice;
 
 /**
  * The Interface InitializableBean.
- * 
+ *
  * @since 2011. 2. 20.
  */
 public interface InitializableBean {

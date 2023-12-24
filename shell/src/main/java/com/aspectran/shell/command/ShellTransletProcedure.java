@@ -25,12 +25,12 @@ import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.type.ItemType;
 import com.aspectran.core.context.rule.type.TokenType;
-import com.aspectran.core.lang.NonNull;
-import com.aspectran.core.lang.Nullable;
-import com.aspectran.core.util.StringUtils;
 import com.aspectran.shell.console.PromptStringBuilder;
 import com.aspectran.shell.console.ShellConsole;
 import com.aspectran.shell.service.ShellService;
+import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;

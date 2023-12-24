@@ -18,13 +18,13 @@ package com.aspectran.core.activity.response.transform.apon;
 import com.aspectran.core.activity.process.result.ActionResult;
 import com.aspectran.core.activity.process.result.ContentResult;
 import com.aspectran.core.activity.process.result.ProcessResult;
-import com.aspectran.core.util.apon.ObjectToAponConverter;
-import com.aspectran.core.util.apon.Parameters;
-import com.aspectran.core.util.apon.VariableParameters;
+import com.aspectran.utils.apon.ObjectToAponConverter;
+import com.aspectran.utils.apon.Parameters;
+import com.aspectran.utils.apon.VariableParameters;
 
 /**
  * Converts a ProcessResult object to an APON object.
- * 
+ *
  * <p>Created: 2015. 03. 16 PM 11:14:29</p>
  */
 public class ContentsToAponConverter extends ObjectToAponConverter {

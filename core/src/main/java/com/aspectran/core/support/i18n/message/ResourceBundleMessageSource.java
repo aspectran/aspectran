@@ -17,9 +17,9 @@ package com.aspectran.core.support.i18n.message;
 
 import com.aspectran.core.component.bean.aware.ClassLoaderAware;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.util.ClassUtils;
-import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.ToStringBuilder;
+import com.aspectran.utils.ClassUtils;
+import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.ToStringBuilder;
 
 import java.io.IOException;
 import java.io.InputStream;

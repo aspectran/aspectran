@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.component.session;
 
-import com.aspectran.core.util.SystemUtils;
+import com.aspectran.utils.SystemUtils;
 
 import java.io.File;
 import java.io.IOException;

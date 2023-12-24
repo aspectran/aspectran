@@ -21,7 +21,7 @@ import com.aspectran.core.context.rule.ExceptionRule;
 import com.aspectran.core.context.rule.SettingsAdviceRule;
 import com.aspectran.core.context.rule.ability.Replicable;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
-import com.aspectran.core.util.ToStringBuilder;
+import com.aspectran.utils.ToStringBuilder;
 
 import java.util.ArrayList;
 import java.util.LinkedList;

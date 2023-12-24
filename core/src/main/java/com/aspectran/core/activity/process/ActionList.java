@@ -29,13 +29,13 @@ import com.aspectran.core.context.rule.HeaderActionRule;
 import com.aspectran.core.context.rule.IncludeActionRule;
 import com.aspectran.core.context.rule.InvokeActionRule;
 import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
-import com.aspectran.core.util.ToStringBuilder;
+import com.aspectran.utils.ToStringBuilder;
 
 import java.util.ArrayList;
 
 /**
  * The set of actions is called a Content or ActionList.
- * 
+ *
  * <p>Created: 2008. 03. 23 AM 1:38:14</p>
  */
 public class ActionList extends ArrayList<Executable> implements ActionRuleApplicable {

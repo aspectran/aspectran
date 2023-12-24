@@ -17,14 +17,14 @@ package com.aspectran.core.context.rule.parser.xml;
 
 import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.assistant.ActivityRuleAssistant;
-import com.aspectran.core.util.BooleanUtils;
-import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.nodelet.NodeletParser;
-import com.aspectran.core.util.nodelet.SubnodeParser;
+import com.aspectran.utils.BooleanUtils;
+import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.nodelet.NodeletParser;
+import com.aspectran.utils.nodelet.SubnodeParser;
 
 /**
  * The Class TemplateNodeParser.
- * 
+ *
  * <p>Created: 2016. 01. 09</p>
  */
 class TemplateNodeParser implements SubnodeParser {

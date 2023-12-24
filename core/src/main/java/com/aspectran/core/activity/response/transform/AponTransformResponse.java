@@ -22,15 +22,15 @@ import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.activity.response.transform.apon.ContentsToAponConverter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.rule.TransformRule;
-import com.aspectran.core.util.apon.AponWriter;
-import com.aspectran.core.util.apon.Parameters;
+import com.aspectran.utils.apon.AponWriter;
+import com.aspectran.utils.apon.Parameters;
 
 import java.io.IOException;
 import java.io.Writer;
 
 /**
  * APON Transform Response converts the response data to APON and outputs it.
- * 
+ *
  * Created: 2008. 03. 22 PM 5:51:58
  */
 public class AponTransformResponse extends TransformResponse {

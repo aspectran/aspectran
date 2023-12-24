@@ -16,7 +16,7 @@
 package com.aspectran.core.component.bean;
 
 import com.aspectran.core.context.rule.BeanRule;
-import com.aspectran.core.util.StringUtils;
+import com.aspectran.utils.StringUtils;
 
 /**
  * The Class NoUniqueBeanException.

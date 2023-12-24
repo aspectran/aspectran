@@ -15,8 +15,8 @@
  */
 package com.aspectran.core.activity.request;
 
-import com.aspectran.core.util.FilenameUtils;
-import com.aspectran.core.util.ToStringBuilder;
+import com.aspectran.utils.FilenameUtils;
+import com.aspectran.utils.ToStringBuilder;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -28,7 +28,7 @@ import java.io.OutputStream;
 
 /**
  * The Class FileParameter.
- * 
+ *
  * <p>Created: 2008. 04. 11 PM 4:19:40</p>
  */
 public class FileParameter {

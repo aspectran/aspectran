@@ -15,7 +15,7 @@
  */
 package com.aspectran.undertow.server.servlet;
 
-import com.aspectran.core.util.ClassUtils;
+import com.aspectran.utils.ClassUtils;
 import io.undertow.servlet.api.ServletInfo;
 import jakarta.servlet.Servlet;
 

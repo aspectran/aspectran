@@ -20,8 +20,8 @@ import com.aspectran.core.context.expr.token.TokenParser;
 import com.aspectran.core.context.rule.type.ItemType;
 import com.aspectran.core.context.rule.type.ItemValueType;
 import com.aspectran.core.context.rule.type.TokenType;
-import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.ToStringBuilder;
+import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.ToStringBuilder;
 
 import java.util.ArrayList;
 import java.util.Collections;

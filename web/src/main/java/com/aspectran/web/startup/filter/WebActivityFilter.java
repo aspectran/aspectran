@@ -16,10 +16,10 @@
 package com.aspectran.web.startup.filter;
 
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.logging.Logger;
-import com.aspectran.core.util.logging.LoggerFactory;
-import com.aspectran.core.util.wildcard.WildcardPattern;
+import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.logging.Logger;
+import com.aspectran.utils.logging.LoggerFactory;
+import com.aspectran.utils.wildcard.WildcardPattern;
 import com.aspectran.web.service.DefaultServletHttpRequestHandler;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;

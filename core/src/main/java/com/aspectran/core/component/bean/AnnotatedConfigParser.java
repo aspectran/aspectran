@@ -86,10 +86,10 @@ import com.aspectran.core.context.rule.type.FormatType;
 import com.aspectran.core.context.rule.type.JoinpointTargetType;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.context.rule.type.ScopeType;
-import com.aspectran.core.util.NamespaceUtils;
-import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.logging.Logger;
-import com.aspectran.core.util.logging.LoggerFactory;
+import com.aspectran.core.util.Namespace;
+import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.logging.Logger;
+import com.aspectran.utils.logging.LoggerFactory;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -197,7 +197,7 @@ public class AnnotatedConfigParser {
                     return;
                 }
             }
-            String[] nameArray = NamespaceUtils.splitNamespace(componentAnno.value());
+            String[] nameArray = Namespace.splitNamespace(componentAnno.value());
             if (beanClass.isAnnotationPresent(Aspect.class)) {
                 parseAspectRule(beanClass, nameArray);
             }
@@ -327,7 +327,7 @@ public class AnnotatedConfigParser {
             aspectId = beanClass.getName();
         }
         if (nameArray != null) {
-            aspectId = NamespaceUtils.applyNamespace(nameArray, aspectId);
+            aspectId = Namespace.applyNamespace(nameArray, aspectId);
         }
         int order = aspectAnno.order();
         boolean isolated = aspectAnno.isolated();
@@ -420,7 +420,7 @@ public class AnnotatedConfigParser {
             beanId = StringUtils.emptyToNull(beanAnno.id());
         }
         if (beanId != null && nameArray != null) {
-            beanId = NamespaceUtils.applyNamespace(nameArray, beanId);
+            beanId = Namespace.applyNamespace(nameArray, beanId);
         }
         String initMethodName = StringUtils.emptyToNull(beanAnno.initMethod());
         String destroyMethodName = StringUtils.emptyToNull(beanAnno.destroyMethod());
@@ -466,7 +466,7 @@ public class AnnotatedConfigParser {
             beanId = method.getName();
         }
         if (nameArray != null) {
-            beanId = NamespaceUtils.applyNamespace(nameArray, beanId);
+            beanId = Namespace.applyNamespace(nameArray, beanId);
         }
         String initMethodName = StringUtils.emptyToNull(beanAnno.initMethod());
         String destroyMethodName = StringUtils.emptyToNull(beanAnno.destroyMethod());
@@ -513,7 +513,7 @@ public class AnnotatedConfigParser {
         Schedule scheduleAnno = beanClass.getAnnotation(Schedule.class);
         String scheduleId = StringUtils.emptyToNull(scheduleAnno.id());
         if (scheduleId != null && nameArray != null) {
-            scheduleId = NamespaceUtils.applyNamespace(nameArray, scheduleId);
+            scheduleId = Namespace.applyNamespace(nameArray, scheduleId);
         }
 
         ScheduleRule scheduleRule = ScheduleRule.newInstance(scheduleId);
@@ -630,7 +630,7 @@ public class AnnotatedConfigParser {
             transletName = transletName.trim();
         }
         if (nameArray != null) {
-            transletName = NamespaceUtils.applyNamespaceForTranslet(nameArray, transletName);
+            transletName = Namespace.applyNamespaceForTranslet(nameArray, transletName);
         }
 
         TransletRule transletRule = TransletRule.newInstance(transletName, allowedMethods, async, timeout);

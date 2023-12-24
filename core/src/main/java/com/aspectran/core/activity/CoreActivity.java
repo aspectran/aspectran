@@ -50,10 +50,10 @@ import com.aspectran.core.context.rule.type.AspectAdviceType;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.core.context.rule.type.TokenType;
-import com.aspectran.core.lang.Nullable;
 import com.aspectran.core.support.i18n.locale.LocaleResolver;
-import com.aspectran.core.util.logging.Logger;
-import com.aspectran.core.util.logging.LoggerFactory;
+import com.aspectran.utils.annotation.jsr305.Nullable;
+import com.aspectran.utils.logging.Logger;
+import com.aspectran.utils.logging.LoggerFactory;
 
 import static com.aspectran.core.context.rule.RequestRule.CHARACTER_ENCODING_SETTING_NAME;
 import static com.aspectran.core.context.rule.RequestRule.LOCALE_RESOLVER_SETTING_NAME;

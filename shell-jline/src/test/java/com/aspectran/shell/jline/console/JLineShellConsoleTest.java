@@ -15,9 +15,9 @@
  */
 package com.aspectran.shell.jline.console;
 
-import com.aspectran.core.util.StringUtils;
 import com.aspectran.shell.console.PromptStringBuilder;
 import com.aspectran.shell.console.ShellConsole;
+import com.aspectran.utils.StringUtils;
 
 import java.io.IOException;
 

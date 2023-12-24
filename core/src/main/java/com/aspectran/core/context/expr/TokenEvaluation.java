@@ -23,12 +23,12 @@ import com.aspectran.core.component.template.TemplateRenderer;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.rule.type.TokenDirectiveType;
 import com.aspectran.core.context.rule.type.TokenType;
-import com.aspectran.core.util.BeanUtils;
-import com.aspectran.core.util.PropertiesLoaderUtils;
-import com.aspectran.core.util.ReflectionUtils;
-import com.aspectran.core.util.SystemUtils;
-import com.aspectran.core.util.logging.Logger;
-import com.aspectran.core.util.logging.LoggerFactory;
+import com.aspectran.utils.BeanUtils;
+import com.aspectran.utils.PropertiesLoaderUtils;
+import com.aspectran.utils.ReflectionUtils;
+import com.aspectran.utils.SystemUtils;
+import com.aspectran.utils.logging.Logger;
+import com.aspectran.utils.logging.LoggerFactory;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -48,7 +48,7 @@ import java.util.Set;
 
 /**
  * The Class TokenEvaluation.
- * 
+ *
  * <p>Created: 2008. 03. 29 AM 12:59:16</p>
  */
 public class TokenEvaluation implements TokenEvaluator {

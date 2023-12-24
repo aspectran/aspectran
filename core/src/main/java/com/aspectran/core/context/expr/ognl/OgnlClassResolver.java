@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.context.expr.ognl;
 
-import com.aspectran.core.util.ClassUtils;
+import com.aspectran.utils.ClassUtils;
 import ognl.DefaultClassResolver;
 
 /**

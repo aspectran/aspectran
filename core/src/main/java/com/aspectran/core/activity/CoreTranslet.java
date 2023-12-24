@@ -40,7 +40,7 @@ import com.aspectran.core.context.rule.RedirectRule;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.support.i18n.message.NoSuchMessageException;
-import com.aspectran.core.util.StringUtils;
+import com.aspectran.utils.StringUtils;
 
 import java.io.IOException;
 import java.util.Collection;

@@ -23,9 +23,9 @@ import com.aspectran.core.context.rule.ability.Replicable;
 import com.aspectran.core.context.rule.params.FilterParameters;
 import com.aspectran.core.context.rule.type.BeanRefererType;
 import com.aspectran.core.context.rule.type.ScopeType;
-import com.aspectran.core.util.BooleanUtils;
-import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.ToStringBuilder;
+import com.aspectran.utils.BooleanUtils;
+import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.ToStringBuilder;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -33,7 +33,7 @@ import java.util.List;
 
 /**
  * The Class BeanRule.
- * 
+ *
  * <p>Created: 2009. 03. 09 PM 23:48:09</p>
  */
 public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
@@ -234,7 +234,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
 
     /**
      * Returns whether this bean is a singleton.
-     * 
+     *
      * @return whether this bean is a singleton
      */
     public Boolean getSingleton() {
@@ -243,7 +243,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
 
     /**
      * Sets whether this bean is a singleton.
-     *  
+     *
      * @param singleton whether this bean is a singleton
      */
     public void setSingleton(Boolean singleton) {
@@ -252,7 +252,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
 
     /**
      * Returns whether this bean is a singleton.
-     * 
+     *
      * @return whether this bean is a singleton
      */
     public boolean isSingleton() {

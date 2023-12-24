@@ -18,11 +18,11 @@ package com.aspectran.core.scheduler.adapter;
 import com.aspectran.core.adapter.DefaultResponseAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.rule.type.ContentType;
-import com.aspectran.core.util.OutputStringWriter;
+import com.aspectran.utils.OutputStringWriter;
 
 /**
  * Adapt Quartz Job Response to Core {@link ResponseAdapter}.
- * 
+ *
  * @since 2013. 11. 20.
  */
 public class QuartzJobResponseAdapter extends DefaultResponseAdapter {

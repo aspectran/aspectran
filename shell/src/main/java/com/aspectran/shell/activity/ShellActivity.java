@@ -23,13 +23,13 @@ import com.aspectran.core.activity.request.MissingMandatoryParametersException;
 import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.activity.request.RequestParseException;
 import com.aspectran.core.adapter.DefaultSessionAdapter;
-import com.aspectran.core.lang.NonNull;
-import com.aspectran.core.util.OutputStringWriter;
 import com.aspectran.shell.adapter.ShellRequestAdapter;
 import com.aspectran.shell.adapter.ShellResponseAdapter;
 import com.aspectran.shell.command.ShellTransletProcedure;
 import com.aspectran.shell.console.ShellConsole;
 import com.aspectran.shell.service.ShellService;
+import com.aspectran.utils.OutputStringWriter;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.io.Writer;
 

@@ -15,14 +15,14 @@
  */
 package com.aspectran.core.activity.response;
 
-import com.aspectran.core.lang.NonNull;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 
 /**
  * The Class ResponseMap.
- * 
+ *
  * <p>Created: 2008. 03. 29 PM 11:50:02</p>
  */
 public class ResponseMap extends LinkedHashMap<String, Response> implements Iterable<Response> {

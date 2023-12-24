@@ -21,7 +21,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
-import static com.aspectran.core.util.PBEncryptionUtils.ENCRYPTION_PASSWORD_KEY;
+import static com.aspectran.utils.PBEncryptionUtils.ENCRYPTION_PASSWORD_KEY;
 
 /**
  * <p>Created: 2021/05/16</p>

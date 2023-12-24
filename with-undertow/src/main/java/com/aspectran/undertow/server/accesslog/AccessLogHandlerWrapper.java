@@ -16,7 +16,7 @@
 package com.aspectran.undertow.server.accesslog;
 
 import com.aspectran.core.component.bean.aware.ClassLoaderAware;
-import com.aspectran.core.util.StringUtils;
+import com.aspectran.utils.StringUtils;
 import io.undertow.server.HandlerWrapper;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.handlers.accesslog.AccessLogHandler;

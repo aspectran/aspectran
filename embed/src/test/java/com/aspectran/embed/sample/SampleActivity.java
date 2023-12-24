@@ -15,8 +15,8 @@
  */
 package com.aspectran.embed.sample;
 
-import com.aspectran.core.util.logging.Logger;
-import com.aspectran.core.util.logging.LoggerFactory;
+import com.aspectran.utils.logging.Logger;
+import com.aspectran.utils.logging.LoggerFactory;
 
 public class SampleActivity {
 

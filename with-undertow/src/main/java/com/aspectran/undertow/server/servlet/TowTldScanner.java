@@ -15,9 +15,9 @@
  */
 package com.aspectran.undertow.server.servlet;
 
-import com.aspectran.core.util.ResourceUtils;
-import com.aspectran.core.util.logging.Logger;
-import com.aspectran.core.util.logging.LoggerFactory;
+import com.aspectran.utils.ResourceUtils;
+import com.aspectran.utils.logging.Logger;
+import com.aspectran.utils.logging.LoggerFactory;
 import jakarta.servlet.ServletContext;
 import org.apache.jasper.servlet.TldScanner;
 import org.apache.tomcat.Jar;

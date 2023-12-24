@@ -23,14 +23,14 @@ import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.activity.response.ResponseException;
 import com.aspectran.core.context.rule.CustomTransformRule;
 import com.aspectran.core.context.rule.type.ResponseType;
-import com.aspectran.core.util.logging.Logger;
-import com.aspectran.core.util.logging.LoggerFactory;
+import com.aspectran.utils.logging.Logger;
+import com.aspectran.utils.logging.LoggerFactory;
 
 import java.util.ListIterator;
 
 /**
  * Responding with user-implemented {@link CustomTransformer}.
- * 
+ *
  * Created: 2019. 06. 15
  */
 public class CustomTransformResponse implements Response {

@@ -16,7 +16,7 @@
 package com.aspectran.core.component.session;
 
 import com.aspectran.core.component.Component;
-import com.aspectran.core.util.thread.Scheduler;
+import com.aspectran.utils.thread.Scheduler;
 
 import java.util.Set;
 

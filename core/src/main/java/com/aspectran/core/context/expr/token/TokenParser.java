@@ -16,7 +16,7 @@
 package com.aspectran.core.context.expr.token;
 
 import com.aspectran.core.context.rule.type.TokenType;
-import com.aspectran.core.util.StringUtils;
+import com.aspectran.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;

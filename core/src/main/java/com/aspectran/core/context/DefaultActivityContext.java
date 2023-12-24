@@ -32,13 +32,13 @@ import com.aspectran.core.context.rule.DescriptionRule;
 import com.aspectran.core.service.CoreService;
 import com.aspectran.core.support.i18n.message.DelegatingMessageSource;
 import com.aspectran.core.support.i18n.message.MessageSource;
-import com.aspectran.core.util.Assert;
-import com.aspectran.core.util.logging.Logger;
-import com.aspectran.core.util.logging.LoggerFactory;
+import com.aspectran.utils.Assert;
+import com.aspectran.utils.logging.Logger;
+import com.aspectran.utils.logging.LoggerFactory;
 
 /**
  * The Class DefaultActivityContext.
- * 
+ *
  * <p>Created: 2008. 06. 09 PM 2:12:40</p>
  */
 public class DefaultActivityContext extends AbstractComponent implements ActivityContext {

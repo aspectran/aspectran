@@ -26,17 +26,17 @@ import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.type.BeanProxifierType;
 import com.aspectran.core.context.rule.type.ScopeType;
-import com.aspectran.core.lang.NonNull;
-import com.aspectran.core.lang.Nullable;
-import com.aspectran.core.util.logging.Logger;
-import com.aspectran.core.util.logging.LoggerFactory;
+import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.annotation.jsr305.Nullable;
+import com.aspectran.utils.logging.Logger;
+import com.aspectran.utils.logging.LoggerFactory;
 
 import java.util.Set;
 import java.util.concurrent.locks.ReadWriteLock;
 
 /**
  * The Class AbstractBeanRegistry.
- * 
+ *
  * <p>Created: 2009. 03. 09 PM 23:48:09</p>
  */
 abstract class AbstractBeanRegistry extends AbstractBeanFactory implements BeanRegistry {

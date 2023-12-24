@@ -25,11 +25,11 @@ import com.aspectran.core.context.rule.params.AspectranParameters;
 import com.aspectran.core.context.rule.parser.ActivityContextParser;
 import com.aspectran.core.context.rule.parser.HybridActivityContextParser;
 import com.aspectran.core.service.AbstractCoreService;
-import com.aspectran.core.util.Assert;
-import com.aspectran.core.util.ShutdownHook;
-import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.logging.Logger;
-import com.aspectran.core.util.logging.LoggerFactory;
+import com.aspectran.utils.Assert;
+import com.aspectran.utils.ShutdownHook;
+import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.logging.Logger;
+import com.aspectran.utils.logging.LoggerFactory;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 

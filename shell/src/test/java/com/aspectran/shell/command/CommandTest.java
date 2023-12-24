@@ -15,18 +15,18 @@
  */
 package com.aspectran.shell.command;
 
-import com.aspectran.core.util.PBEncryptionUtils;
 import com.aspectran.shell.command.builtins.HelpCommand;
 import com.aspectran.shell.command.builtins.PBDecryptCommand;
 import com.aspectran.shell.command.builtins.PBEncryptCommand;
 import com.aspectran.shell.command.builtins.SysInfoCommand;
 import com.aspectran.shell.command.builtins.VerboseCommand;
 import com.aspectran.shell.console.ShellConsole;
+import com.aspectran.utils.PBEncryptionUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
-import static com.aspectran.core.util.PBEncryptionUtils.ENCRYPTION_PASSWORD_KEY;
+import static com.aspectran.utils.PBEncryptionUtils.ENCRYPTION_PASSWORD_KEY;
 
 /**
  * <p>Created: 2017. 11. 19.</p>

@@ -17,9 +17,9 @@ package com.aspectran.undertow.server;
 
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.context.config.AspectranConfig;
-import com.aspectran.core.util.FileCopyUtils;
-import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.embed.service.EmbeddedAspectran;
+import com.aspectran.utils.FileCopyUtils;
+import com.aspectran.utils.ResourceUtils;
 import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.HttpClients;

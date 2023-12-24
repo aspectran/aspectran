@@ -17,8 +17,8 @@ package com.aspectran.demo.examples.customer;
 
 import com.aspectran.core.component.bean.annotation.Bean;
 import com.aspectran.core.component.bean.annotation.Component;
-import com.aspectran.core.util.logging.Logger;
-import com.aspectran.core.util.logging.LoggerFactory;
+import com.aspectran.utils.logging.Logger;
+import com.aspectran.utils.logging.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,13 +32,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Component
 @Bean
 public class CustomerRepository {
-    
+
     private final Logger logger = LoggerFactory.getLogger(CustomerRepository.class);
 
     private final Map<Integer, Customer> customerMap;
 
     private static final AtomicInteger counter = new AtomicInteger();
-    
+
     public CustomerRepository() {
         // Pre-create 10 customers whose names begin with "Guest"
         Map<Integer, Customer> customerMap = new ConcurrentSkipListMap<>();
@@ -53,7 +53,7 @@ public class CustomerRepository {
         this.customerMap = customerMap;
         counter.set(customerMap.size());
     }
-    
+
     public Customer getCustomer(int id) {
         logger.debug("Gets the details of customer: " + id);
         return customerMap.get(id);
@@ -69,25 +69,25 @@ public class CustomerRepository {
             return false;
         }
     }
-    
+
     public List<Customer> getCustomerList() {
         logger.debug("Get a list of all customers");
 
         List<Customer> customerList = new ArrayList<>(customerMap.values());
-        
+
         logger.debug("Retrieved " + customerList.size() + " customers");
-        
+
         return customerList;
     }
-    
+
     public int insertCustomer(Customer customer) {
         int id = counter.incrementAndGet();
         customer.putValue(Customer.id, id);
-        
+
         customerMap.put(id, customer);
 
         logger.debug("Customer " + id + " is registered");
-        
+
         return id;
     }
 
@@ -111,7 +111,7 @@ public class CustomerRepository {
             return false;
         }
     }
-    
+
     public boolean approve(int id, boolean approved) {
         Customer customer = customerMap.get(id);
         if (customer != null) {
@@ -132,5 +132,5 @@ public class CustomerRepository {
             return false;
         }
     }
-    
+
 }

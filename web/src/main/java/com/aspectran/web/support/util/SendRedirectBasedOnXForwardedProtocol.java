@@ -16,7 +16,7 @@
 package com.aspectran.web.support.util;
 
 import com.aspectran.core.activity.Translet;
-import com.aspectran.core.util.StringUtils;
+import com.aspectran.utils.StringUtils;
 import com.aspectran.web.support.http.HttpHeaders;
 
 import java.io.IOException;

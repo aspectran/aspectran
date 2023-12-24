@@ -18,7 +18,7 @@ package com.aspectran.core.context.rule;
 import com.aspectran.core.context.rule.ability.BeanReferenceable;
 import com.aspectran.core.context.rule.type.AutowireTargetType;
 import com.aspectran.core.context.rule.type.BeanRefererType;
-import com.aspectran.core.util.ToStringBuilder;
+import com.aspectran.utils.ToStringBuilder;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -26,9 +26,9 @@ import java.lang.reflect.Method;
 
 /**
  * The Class AutowireRule.
- * 
+ *
  * <p>Created: 2016. 2. 24.</p>
- * 
+ *
  * @since 2.0.0
  */
 public class AutowireRule implements BeanReferenceable {

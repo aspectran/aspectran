@@ -15,7 +15,7 @@
  */
 package com.aspectran.shell.console;
 
-import com.aspectran.core.util.StringUtils;
+import com.aspectran.utils.StringUtils;
 import org.junit.jupiter.api.Test;
 
 /**

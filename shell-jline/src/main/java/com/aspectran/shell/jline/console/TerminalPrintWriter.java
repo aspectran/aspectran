@@ -15,7 +15,7 @@
  */
 package com.aspectran.shell.jline.console;
 
-import com.aspectran.core.lang.NonNull;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.io.PrintWriter;
 

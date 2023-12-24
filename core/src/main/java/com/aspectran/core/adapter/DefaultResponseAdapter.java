@@ -16,8 +16,8 @@
 package com.aspectran.core.adapter;
 
 import com.aspectran.core.context.rule.RedirectRule;
-import com.aspectran.core.util.LinkedCaseInsensitiveMultiValueMap;
-import com.aspectran.core.util.MultiValueMap;
+import com.aspectran.utils.LinkedCaseInsensitiveMultiValueMap;
+import com.aspectran.utils.MultiValueMap;
 
 import java.io.IOException;
 import java.io.OutputStream;

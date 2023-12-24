@@ -20,14 +20,14 @@ import com.aspectran.core.activity.request.RequestParseException;
 import com.aspectran.core.activity.request.SizeLimitExceededException;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.context.rule.type.MethodType;
-import com.aspectran.core.lang.Nullable;
-import com.aspectran.core.util.ClassUtils;
-import com.aspectran.core.util.LinkedMultiValueMap;
-import com.aspectran.core.util.MultiValueMap;
-import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.apon.JsonToApon;
-import com.aspectran.core.util.apon.Parameters;
-import com.aspectran.core.util.apon.XmlToApon;
+import com.aspectran.utils.ClassUtils;
+import com.aspectran.utils.LinkedMultiValueMap;
+import com.aspectran.utils.MultiValueMap;
+import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.annotation.jsr305.Nullable;
+import com.aspectran.utils.apon.JsonToApon;
+import com.aspectran.utils.apon.Parameters;
+import com.aspectran.utils.apon.XmlToApon;
 import com.aspectran.web.support.http.MediaType;
 
 import java.io.IOException;
@@ -170,7 +170,7 @@ public class WebRequestBodyParser {
             return null;
         }
     }
-    
+
     public static boolean isMultipartForm(MethodType requestMethod, MediaType mediaType) {
         return MethodType.POST.equals(requestMethod) &&
             MediaType.MULTIPART_FORM_DATA.equalsTypeAndSubtype(mediaType);

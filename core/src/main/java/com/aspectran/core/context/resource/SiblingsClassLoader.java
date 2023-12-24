@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.context.resource;
 
-import com.aspectran.core.util.ToStringBuilder;
+import com.aspectran.utils.ToStringBuilder;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
@@ -34,7 +34,7 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Set;
 
-import static com.aspectran.core.util.ClassUtils.PACKAGE_SEPARATOR_CHAR;
+import static com.aspectran.utils.ClassUtils.PACKAGE_SEPARATOR_CHAR;
 
 /**
  * Specialized class loader for Aspectran.

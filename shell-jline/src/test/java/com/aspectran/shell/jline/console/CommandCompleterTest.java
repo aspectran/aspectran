@@ -15,7 +15,7 @@
  */
 package com.aspectran.shell.jline.console;
 
-import com.aspectran.core.util.wildcard.WildcardPattern;
+import com.aspectran.utils.wildcard.WildcardPattern;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

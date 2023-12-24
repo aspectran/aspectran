@@ -24,10 +24,10 @@ import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.context.rule.ability.ResponseRuleApplicable;
 import com.aspectran.core.context.rule.assistant.ActivityRuleAssistant;
-import com.aspectran.core.util.BooleanUtils;
-import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.nodelet.NodeletParser;
-import com.aspectran.core.util.nodelet.SubnodeParser;
+import com.aspectran.utils.BooleanUtils;
+import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.nodelet.NodeletParser;
+import com.aspectran.utils.nodelet.SubnodeParser;
 
 /**
  * The Class ResponseInnerNodeParser.

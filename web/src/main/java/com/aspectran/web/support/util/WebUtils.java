@@ -16,8 +16,8 @@
 package com.aspectran.web.support.util;
 
 import com.aspectran.core.activity.Translet;
-import com.aspectran.core.lang.Nullable;
-import com.aspectran.core.util.Assert;
+import com.aspectran.utils.Assert;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 

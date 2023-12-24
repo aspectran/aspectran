@@ -16,6 +16,7 @@
 package com.aspectran.core.context.rule.type;
 
 import com.aspectran.core.activity.request.FileParameter;
+import com.aspectran.utils.apon.Parameters;
 
 /**
  * Types of supported item values.
@@ -30,7 +31,7 @@ public enum ItemValueType {
     FLOAT("float", java.lang.Float.class),
     DOUBLE("double", java.lang.Double.class),
     BOOLEAN("boolean", java.lang.Boolean.class),
-    PARAMETERS("parameters", com.aspectran.core.util.apon.Parameters.class),
+    PARAMETERS("parameters", Parameters.class),
     FILE("file", java.io.File.class),
     MULTIPART_FILE("multipartFile", FileParameter.class),
     BEAN("bean", Object.class);

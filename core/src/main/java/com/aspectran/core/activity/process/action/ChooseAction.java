@@ -21,7 +21,7 @@ import com.aspectran.core.context.expr.BooleanExpression;
 import com.aspectran.core.context.rule.ChooseRule;
 import com.aspectran.core.context.rule.ChooseWhenRule;
 import com.aspectran.core.context.rule.type.ActionType;
-import com.aspectran.core.util.ToStringBuilder;
+import com.aspectran.utils.ToStringBuilder;
 
 import java.util.List;
 

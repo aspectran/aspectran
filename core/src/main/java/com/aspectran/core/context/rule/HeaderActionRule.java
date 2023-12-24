@@ -15,14 +15,14 @@
  */
 package com.aspectran.core.context.rule;
 
-import com.aspectran.core.util.BooleanUtils;
-import com.aspectran.core.util.ToStringBuilder;
+import com.aspectran.utils.BooleanUtils;
+import com.aspectran.utils.ToStringBuilder;
 
 /**
  * The Class HeaderActionRule.
- * 
+ *
  * <p>Created: 2016. 08. 23.</p>
- * 
+ *
  * @since 3.0.0
  */
 public class HeaderActionRule {

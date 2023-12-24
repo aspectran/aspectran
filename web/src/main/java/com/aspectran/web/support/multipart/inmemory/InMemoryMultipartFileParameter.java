@@ -16,7 +16,7 @@
 package com.aspectran.web.support.multipart.inmemory;
 
 import com.aspectran.core.activity.request.FileParameter;
-import com.aspectran.core.util.FilenameUtils;
+import com.aspectran.utils.FilenameUtils;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 

@@ -25,8 +25,8 @@ import com.aspectran.core.context.env.Environment;
 import com.aspectran.core.service.AspectranCoreService;
 import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.support.i18n.message.NoSuchMessageException;
-import com.aspectran.core.util.Assert;
 import com.aspectran.embed.adapter.AspectranSessionAdapter;
+import com.aspectran.utils.Assert;
 
 import java.util.Locale;
 

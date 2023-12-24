@@ -20,7 +20,7 @@ import com.aspectran.core.activity.Translet;
 import com.aspectran.core.component.bean.ablility.FactoryBean;
 import com.aspectran.core.component.bean.annotation.AvoidAdvice;
 import com.aspectran.core.component.bean.aware.CurrentActivityAware;
-import com.aspectran.core.util.Assert;
+import com.aspectran.utils.Assert;
 
 /**
  * {@link CurrentTransletFactoryBean} that returns the {@link Translet} for the current request.

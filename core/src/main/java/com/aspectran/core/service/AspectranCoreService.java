@@ -15,9 +15,9 @@
  */
 package com.aspectran.core.service;
 
-import com.aspectran.core.util.ShutdownHook;
-import com.aspectran.core.util.logging.Logger;
-import com.aspectran.core.util.logging.LoggerFactory;
+import com.aspectran.utils.ShutdownHook;
+import com.aspectran.utils.logging.Logger;
+import com.aspectran.utils.logging.LoggerFactory;
 
 /**
  * The Class AspectranCoreService.

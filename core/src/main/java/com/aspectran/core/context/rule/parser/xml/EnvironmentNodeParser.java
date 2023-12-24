@@ -19,13 +19,13 @@ import com.aspectran.core.context.rule.DescriptionRule;
 import com.aspectran.core.context.rule.EnvironmentRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.assistant.ActivityRuleAssistant;
-import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.nodelet.NodeletParser;
-import com.aspectran.core.util.nodelet.SubnodeParser;
+import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.nodelet.NodeletParser;
+import com.aspectran.utils.nodelet.SubnodeParser;
 
 /**
  * The Class EnvironmentNodeParser.
- * 
+ *
  * <p>Created: 2016. 01. 09</p>
  */
 class EnvironmentNodeParser implements SubnodeParser {

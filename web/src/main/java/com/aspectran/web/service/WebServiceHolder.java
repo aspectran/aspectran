@@ -16,9 +16,9 @@
 package com.aspectran.web.service;
 
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.lang.Nullable;
 import com.aspectran.core.service.CoreService;
-import com.aspectran.core.util.Assert;
+import com.aspectran.utils.Assert;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServlet;
 

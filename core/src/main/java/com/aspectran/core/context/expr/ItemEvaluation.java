@@ -24,10 +24,10 @@ import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.type.ItemType;
 import com.aspectran.core.context.rule.type.ItemValueType;
-import com.aspectran.core.util.LinkedMultiValueMap;
-import com.aspectran.core.util.MultiValueMap;
-import com.aspectran.core.util.apon.Parameters;
-import com.aspectran.core.util.apon.VariableParameters;
+import com.aspectran.utils.LinkedMultiValueMap;
+import com.aspectran.utils.MultiValueMap;
+import com.aspectran.utils.apon.Parameters;
+import com.aspectran.utils.apon.VariableParameters;
 
 import java.io.File;
 import java.lang.reflect.Array;

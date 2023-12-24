@@ -16,8 +16,8 @@
 package com.aspectran.core.component.aspect.pointcut;
 
 import com.aspectran.core.context.rule.PointcutPatternRule;
-import com.aspectran.core.util.cache.Cache;
-import com.aspectran.core.util.cache.ConcurrentReferenceCache;
+import com.aspectran.utils.cache.Cache;
+import com.aspectran.utils.cache.ConcurrentReferenceCache;
 
 import java.util.List;
 import java.util.regex.Matcher;

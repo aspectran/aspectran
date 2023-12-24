@@ -15,7 +15,7 @@
  */
 package com.aspectran.demo.monitoring.stats;
 
-import com.aspectran.core.util.json.JsonWriter;
+import com.aspectran.utils.json.JsonWriter;
 
 import java.io.IOException;
 import java.util.Arrays;

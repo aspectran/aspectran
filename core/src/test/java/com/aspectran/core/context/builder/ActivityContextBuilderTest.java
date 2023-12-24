@@ -16,7 +16,7 @@
 package com.aspectran.core.context.builder;
 
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.util.ResourceUtils;
+import com.aspectran.utils.ResourceUtils;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

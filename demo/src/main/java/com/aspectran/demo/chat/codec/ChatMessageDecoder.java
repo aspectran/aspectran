@@ -15,8 +15,8 @@
  */
 package com.aspectran.demo.chat.codec;
 
-import com.aspectran.core.util.apon.JsonToApon;
 import com.aspectran.demo.chat.model.ChatMessage;
+import com.aspectran.utils.apon.JsonToApon;
 import jakarta.websocket.DecodeException;
 import jakarta.websocket.Decoder;
 import jakarta.websocket.EndpointConfig;

@@ -15,12 +15,12 @@
  */
 package com.aspectran.shell.jline;
 
-import com.aspectran.core.context.InsufficientEnvironmentException;
 import com.aspectran.core.context.config.AspectranConfig;
-import com.aspectran.core.lang.Nullable;
-import com.aspectran.core.util.ExceptionUtils;
 import com.aspectran.shell.jline.command.JLineConsoleCommander;
 import com.aspectran.shell.jline.console.JLineShellConsole;
+import com.aspectran.utils.ExceptionUtils;
+import com.aspectran.utils.InsufficientEnvironmentException;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 
 import java.io.File;
 import java.io.IOException;

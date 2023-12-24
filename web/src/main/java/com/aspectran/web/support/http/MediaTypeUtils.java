@@ -15,9 +15,9 @@
  */
 package com.aspectran.web.support.http;
 
-import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.cache.Cache;
-import com.aspectran.core.util.cache.ConcurrentLruCache;
+import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.cache.Cache;
+import com.aspectran.utils.cache.ConcurrentLruCache;
 
 import java.nio.charset.UnsupportedCharsetException;
 import java.util.ArrayList;

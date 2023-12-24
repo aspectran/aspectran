@@ -20,8 +20,8 @@ import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.activity.request.RequestParseException;
 import com.aspectran.core.component.bean.scope.RequestScope;
 import com.aspectran.core.context.rule.type.MethodType;
-import com.aspectran.core.util.MultiValueMap;
-import com.aspectran.core.util.apon.Parameters;
+import com.aspectran.utils.MultiValueMap;
+import com.aspectran.utils.apon.Parameters;
 
 import java.io.IOException;
 import java.io.InputStream;

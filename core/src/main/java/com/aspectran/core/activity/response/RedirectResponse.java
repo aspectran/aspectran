@@ -19,8 +19,8 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.rule.RedirectRule;
 import com.aspectran.core.context.rule.type.ResponseType;
-import com.aspectran.core.util.logging.Logger;
-import com.aspectran.core.util.logging.LoggerFactory;
+import com.aspectran.utils.logging.Logger;
+import com.aspectran.utils.logging.LoggerFactory;
 
 /**
  * The Class RedirectResponse.

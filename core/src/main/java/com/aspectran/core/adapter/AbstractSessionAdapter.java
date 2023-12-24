@@ -16,7 +16,7 @@
 package com.aspectran.core.adapter;
 
 import com.aspectran.core.component.bean.scope.SessionScope;
-import com.aspectran.core.util.ToStringBuilder;
+import com.aspectran.utils.ToStringBuilder;
 
 import static com.aspectran.core.component.bean.scope.SessionScope.SESSION_SCOPE_ATTR_NAME;
 

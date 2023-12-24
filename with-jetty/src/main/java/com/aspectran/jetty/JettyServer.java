@@ -17,9 +17,9 @@ package com.aspectran.jetty;
 
 import com.aspectran.core.component.bean.ablility.DisposableBean;
 import com.aspectran.core.component.bean.ablility.InitializableBean;
-import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.logging.Logger;
-import com.aspectran.core.util.logging.LoggerFactory;
+import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.logging.Logger;
+import com.aspectran.utils.logging.LoggerFactory;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.HandlerContainer;
 import org.eclipse.jetty.server.NetworkConnector;

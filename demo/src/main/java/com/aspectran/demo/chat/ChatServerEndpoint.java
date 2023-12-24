@@ -17,8 +17,6 @@ package com.aspectran.demo.chat;
 
 import com.aspectran.core.activity.InstantActivitySupport;
 import com.aspectran.core.component.bean.annotation.Component;
-import com.aspectran.core.util.logging.Logger;
-import com.aspectran.core.util.logging.LoggerFactory;
 import com.aspectran.demo.chat.codec.ChatMessageDecoder;
 import com.aspectran.demo.chat.codec.ChatMessageEncoder;
 import com.aspectran.demo.chat.model.ChatMessage;
@@ -29,6 +27,8 @@ import com.aspectran.demo.chat.model.payload.BroadcastTextMessagePayload;
 import com.aspectran.demo.chat.model.payload.DuplicatedUserPayload;
 import com.aspectran.demo.chat.model.payload.SendTextMessagePayload;
 import com.aspectran.demo.chat.model.payload.WelcomeUserPayload;
+import com.aspectran.utils.logging.Logger;
+import com.aspectran.utils.logging.LoggerFactory;
 import com.aspectran.websocket.jsr356.AspectranConfigurator;
 import jakarta.websocket.CloseReason;
 import jakarta.websocket.OnClose;

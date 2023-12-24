@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.context.resource;
 
-import com.aspectran.core.util.StringUtils;
+import com.aspectran.utils.StringUtils;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -23,13 +23,13 @@ import java.net.URL;
 import java.util.LinkedHashMap;
 import java.util.jar.JarEntry;
 
-import static com.aspectran.core.util.ResourceUtils.JAR_URL_PREFIX;
-import static com.aspectran.core.util.ResourceUtils.JAR_URL_SEPARATOR;
-import static com.aspectran.core.util.ResourceUtils.REGULAR_FILE_SEPARATOR_CHAR;
+import static com.aspectran.utils.ResourceUtils.JAR_URL_PREFIX;
+import static com.aspectran.utils.ResourceUtils.JAR_URL_SEPARATOR;
+import static com.aspectran.utils.ResourceUtils.REGULAR_FILE_SEPARATOR_CHAR;
 
 /**
  * The Class ResourceEntries.
- * 
+ *
  * <p>Created: 2014. 12. 24 PM 4:54:13</p>
  */
 public class ResourceEntries extends LinkedHashMap<String, URL> {

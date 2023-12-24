@@ -16,14 +16,14 @@
 package com.aspectran.core.activity.process;
 
 import com.aspectran.core.context.rule.ability.Replicable;
-import com.aspectran.core.util.ToStringBuilder;
+import com.aspectran.utils.ToStringBuilder;
 
 import java.util.ArrayList;
 import java.util.Objects;
 
 /**
  * The set of Content is called Contents or ContentList.
- * 
+ *
  * <p>Created: 2008. 03. 22 PM 5:47:57</p>
  */
 public class ContentList extends ArrayList<ActionList> implements Replicable<ContentList> {

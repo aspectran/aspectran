@@ -18,9 +18,9 @@ package com.aspectran.core.context.rule.appender;
 import com.aspectran.core.context.env.EnvironmentProfiles;
 import com.aspectran.core.context.rule.AppendRule;
 import com.aspectran.core.context.rule.assistant.ActivityRuleAssistant;
-import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.logging.Logger;
-import com.aspectran.core.util.logging.LoggerFactory;
+import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.logging.Logger;
+import com.aspectran.utils.logging.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -15,7 +15,7 @@
  */
 package com.aspectran.shell.jline;
 
-import com.aspectran.core.util.ResourceUtils;
+import com.aspectran.utils.ResourceUtils;
 
 import java.io.File;
 import java.io.IOException;

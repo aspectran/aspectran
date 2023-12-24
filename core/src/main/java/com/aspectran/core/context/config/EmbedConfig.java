@@ -15,8 +15,8 @@
  */
 package com.aspectran.core.context.config;
 
-import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.ParameterKey;
+import com.aspectran.utils.apon.AbstractParameters;
+import com.aspectran.utils.apon.ParameterKey;
 
 /**
  * @since 6.3.0

@@ -21,7 +21,7 @@ import com.aspectran.core.component.bean.annotation.AvoidAdvice;
  * The Interface FactoryBean.
  *
  * @param <T> the type of the bean object
- * 
+ *
  * @since 2015. 4. 2.
  */
 public interface FactoryBean<T> {

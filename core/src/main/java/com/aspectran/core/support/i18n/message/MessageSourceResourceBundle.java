@@ -15,7 +15,7 @@
  */
 package com.aspectran.core.support.i18n.message;
 
-import com.aspectran.core.lang.NonNull;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.util.Enumeration;
 import java.util.Locale;

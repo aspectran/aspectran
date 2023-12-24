@@ -21,10 +21,10 @@ import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.context.rule.appender.RuleAppendHandler;
 import com.aspectran.core.context.rule.appender.RuleAppender;
 import com.aspectran.core.context.rule.assistant.ActivityRuleAssistant;
-import com.aspectran.core.util.ExceptionUtils;
-import com.aspectran.core.util.logging.Logger;
-import com.aspectran.core.util.logging.LoggerFactory;
-import com.aspectran.core.util.nodelet.NodeletParser;
+import com.aspectran.utils.ExceptionUtils;
+import com.aspectran.utils.logging.Logger;
+import com.aspectran.utils.logging.LoggerFactory;
+import com.aspectran.utils.nodelet.NodeletParser;
 import org.xml.sax.InputSource;
 
 import java.io.IOException;

@@ -20,7 +20,7 @@ import com.aspectran.core.context.rule.ability.Replicable;
 import com.aspectran.core.context.rule.type.BeanRefererType;
 import com.aspectran.core.context.rule.type.TokenDirectiveType;
 import com.aspectran.core.context.rule.type.TokenType;
-import com.aspectran.core.util.ToStringBuilder;
+import com.aspectran.utils.ToStringBuilder;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;

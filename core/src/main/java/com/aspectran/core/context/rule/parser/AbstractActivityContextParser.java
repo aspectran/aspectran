@@ -20,13 +20,13 @@ import com.aspectran.core.context.rule.appender.ResourceRuleAppender;
 import com.aspectran.core.context.rule.appender.RuleAppender;
 import com.aspectran.core.context.rule.assistant.ActivityRuleAssistant;
 import com.aspectran.core.context.rule.type.AppendableFileFormatType;
-import com.aspectran.core.util.ResourceUtils;
-import com.aspectran.core.util.logging.Logger;
-import com.aspectran.core.util.logging.LoggerFactory;
+import com.aspectran.utils.ResourceUtils;
+import com.aspectran.utils.logging.Logger;
+import com.aspectran.utils.logging.LoggerFactory;
 
 /**
  * The Class AbstractActivityContextParser.
- * 
+ *
  * <p>Created: 2008. 06. 14 PM 8:53:29</p>
  */
 public abstract class AbstractActivityContextParser implements ActivityContextParser {

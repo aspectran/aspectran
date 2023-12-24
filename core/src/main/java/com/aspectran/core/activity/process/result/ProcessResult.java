@@ -16,8 +16,8 @@
 package com.aspectran.core.activity.process.result;
 
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.ToStringBuilder;
+import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.ToStringBuilder;
 
 import java.util.ArrayList;
 import java.util.ListIterator;
@@ -26,7 +26,7 @@ import java.util.Objects;
 
 /**
  * The Class ProcessResult.
- * 
+ *
  * <p>Created: 2008. 06. 09 PM 4:13:40</p>
  */
 public class ProcessResult extends ArrayList<ContentResult> {

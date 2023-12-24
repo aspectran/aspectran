@@ -15,10 +15,10 @@
  */
 package com.aspectran.core.component.session;
 
-import com.aspectran.core.util.ToStringBuilder;
-import com.aspectran.core.util.logging.Logger;
-import com.aspectran.core.util.logging.LoggerFactory;
-import com.aspectran.core.util.thread.AutoLock;
+import com.aspectran.utils.ToStringBuilder;
+import com.aspectran.utils.logging.Logger;
+import com.aspectran.utils.logging.LoggerFactory;
+import com.aspectran.utils.thread.AutoLock;
 
 import java.util.HashSet;
 import java.util.Map;

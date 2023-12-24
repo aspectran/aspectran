@@ -18,8 +18,8 @@ package com.aspectran.core.activity.response.transform.apon;
 import com.aspectran.core.activity.process.result.ActionResult;
 import com.aspectran.core.activity.process.result.ContentResult;
 import com.aspectran.core.activity.process.result.ProcessResult;
-import com.aspectran.core.util.apon.AponFormat;
-import com.aspectran.core.util.apon.Parameters;
+import com.aspectran.utils.apon.AponFormat;
+import com.aspectran.utils.apon.Parameters;
 import org.junit.jupiter.api.Test;
 
 import java.util.LinkedHashMap;

@@ -15,8 +15,8 @@
  */
 package com.aspectran.daemon.command;
 
-import com.aspectran.core.util.ClassUtils;
 import com.aspectran.daemon.Daemon;
+import com.aspectran.utils.ClassUtils;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;

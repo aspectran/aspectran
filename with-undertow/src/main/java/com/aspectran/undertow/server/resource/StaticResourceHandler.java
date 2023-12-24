@@ -15,10 +15,10 @@
  */
 package com.aspectran.undertow.server.resource;
 
-import com.aspectran.core.util.logging.Logger;
-import com.aspectran.core.util.logging.LoggerFactory;
-import com.aspectran.core.util.wildcard.PluralWildcardPattern;
-import com.aspectran.core.util.wildcard.WildcardPattern;
+import com.aspectran.utils.logging.Logger;
+import com.aspectran.utils.logging.LoggerFactory;
+import com.aspectran.utils.wildcard.PluralWildcardPattern;
+import com.aspectran.utils.wildcard.WildcardPattern;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.server.handlers.resource.PathResourceManager;

@@ -54,11 +54,11 @@ import com.aspectran.core.context.rule.type.AutoReloadType;
 import com.aspectran.core.context.rule.type.BeanProxifierType;
 import com.aspectran.core.context.rule.type.DefaultSettingType;
 import com.aspectran.core.service.ServiceController;
-import com.aspectran.core.util.ClassUtils;
-import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.SystemUtils;
-import com.aspectran.core.util.logging.Logger;
-import com.aspectran.core.util.logging.LoggerFactory;
+import com.aspectran.utils.ClassUtils;
+import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.SystemUtils;
+import com.aspectran.utils.logging.Logger;
+import com.aspectran.utils.logging.LoggerFactory;
 
 import java.util.List;
 

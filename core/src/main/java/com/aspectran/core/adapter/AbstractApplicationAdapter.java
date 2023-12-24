@@ -21,9 +21,9 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 
-import static com.aspectran.core.util.ResourceUtils.CLASSPATH_URL_PREFIX;
-import static com.aspectran.core.util.ResourceUtils.FILE_URL_PREFIX;
-import static com.aspectran.core.util.ResourceUtils.URL_PROTOCOL_FILE;
+import static com.aspectran.utils.ResourceUtils.CLASSPATH_URL_PREFIX;
+import static com.aspectran.utils.ResourceUtils.FILE_URL_PREFIX;
+import static com.aspectran.utils.ResourceUtils.URL_PROTOCOL_FILE;
 
 /**
  * The Class AbstractApplicationAdapter.

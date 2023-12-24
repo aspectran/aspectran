@@ -16,9 +16,9 @@
 package com.aspectran.core.context.builder.reload;
 
 import com.aspectran.core.service.ServiceController;
-import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.logging.Logger;
-import com.aspectran.core.util.logging.LoggerFactory;
+import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.logging.Logger;
+import com.aspectran.utils.logging.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,8 +28,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TimerTask;
 
-import static com.aspectran.core.util.ResourceUtils.JAR_URL_SEPARATOR;
-import static com.aspectran.core.util.ResourceUtils.URL_PROTOCOL_JAR;
+import static com.aspectran.utils.ResourceUtils.JAR_URL_SEPARATOR;
+import static com.aspectran.utils.ResourceUtils.URL_PROTOCOL_JAR;
 
 public class ContextReloadingTimerTask extends TimerTask {
 

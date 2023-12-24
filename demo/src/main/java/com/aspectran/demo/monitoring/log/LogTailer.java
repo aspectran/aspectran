@@ -15,7 +15,7 @@
  */
 package com.aspectran.demo.monitoring.log;
 
-import com.aspectran.core.util.lifecycle.AbstractLifeCycle;
+import com.aspectran.utils.lifecycle.AbstractLifeCycle;
 import org.apache.commons.io.input.ReversedLinesFileReader;
 import org.apache.commons.io.input.Tailer;
 import org.apache.commons.io.input.TailerListener;

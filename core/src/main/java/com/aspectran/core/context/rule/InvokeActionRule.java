@@ -17,8 +17,8 @@ package com.aspectran.core.context.rule;
 
 import com.aspectran.core.context.rule.ability.BeanReferenceable;
 import com.aspectran.core.context.rule.type.BeanRefererType;
-import com.aspectran.core.util.BooleanUtils;
-import com.aspectran.core.util.ToStringBuilder;
+import com.aspectran.utils.BooleanUtils;
+import com.aspectran.utils.ToStringBuilder;
 
 import java.lang.reflect.Method;
 

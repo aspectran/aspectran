@@ -24,9 +24,9 @@ import com.aspectran.core.context.config.ExposalsConfig;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.ServiceStateListener;
-import com.aspectran.core.util.logging.Logger;
-import com.aspectran.core.util.logging.LoggerFactory;
 import com.aspectran.daemon.activity.DaemonActivity;
+import com.aspectran.utils.logging.Logger;
+import com.aspectran.utils.logging.LoggerFactory;
 
 import java.util.Map;
 

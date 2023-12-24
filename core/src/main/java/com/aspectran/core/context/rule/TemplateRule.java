@@ -22,10 +22,10 @@ import com.aspectran.core.context.rule.ability.BeanReferenceable;
 import com.aspectran.core.context.rule.ability.Replicable;
 import com.aspectran.core.context.rule.type.BeanRefererType;
 import com.aspectran.core.context.rule.type.TextStyleType;
-import com.aspectran.core.util.BooleanUtils;
-import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.core.util.TextStyler;
-import com.aspectran.core.util.ToStringBuilder;
+import com.aspectran.utils.BooleanUtils;
+import com.aspectran.utils.ResourceUtils;
+import com.aspectran.utils.ToStringBuilder;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,7 +34,7 @@ import java.util.List;
 
 /**
  * The Class TemplateRule.
- * 
+ *
  * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */
 public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceable {

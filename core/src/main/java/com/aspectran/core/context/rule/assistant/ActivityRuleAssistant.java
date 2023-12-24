@@ -45,9 +45,9 @@ import com.aspectran.core.context.rule.type.DefaultSettingType;
 import com.aspectran.core.context.rule.type.ItemValueType;
 import com.aspectran.core.context.rule.type.TokenDirectiveType;
 import com.aspectran.core.context.rule.type.TokenType;
-import com.aspectran.core.util.NamespaceUtils;
-import com.aspectran.core.util.StringUtils;
+import com.aspectran.core.util.Namespace;
 import com.aspectran.core.util.TextStyler;
+import com.aspectran.utils.StringUtils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -282,7 +282,7 @@ public class ActivityRuleAssistant {
         if (transletName == null) {
             return null;
         }
-        return NamespaceUtils.applyTransletNamePattern(
+        return Namespace.applyTransletNamePattern(
             assistantLocal.getDefaultSettings(), transletName, true);
     }
 

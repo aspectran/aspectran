@@ -16,7 +16,7 @@
 package com.aspectran.web.support.multipart.commons;
 
 import com.aspectran.core.activity.request.FileParameter;
-import com.aspectran.core.util.FilenameUtils;
+import com.aspectran.utils.FilenameUtils;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItem;
@@ -29,7 +29,7 @@ import java.io.InputStream;
 /**
  * This class represents a file item that was received within
  * a multipart/form-data POST request.
- * 
+ *
  * <p>Created: 2008. 04. 11 PM 8:55:25</p>
  */
 public class CommonsMultipartFileParameter extends FileParameter {

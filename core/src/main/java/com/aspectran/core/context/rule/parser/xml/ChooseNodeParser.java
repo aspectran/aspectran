@@ -18,9 +18,9 @@ package com.aspectran.core.context.rule.parser.xml;
 import com.aspectran.core.context.rule.ChooseRule;
 import com.aspectran.core.context.rule.ChooseWhenRule;
 import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
-import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.nodelet.NodeletParser;
-import com.aspectran.core.util.nodelet.SubnodeParser;
+import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.nodelet.NodeletParser;
+import com.aspectran.utils.nodelet.SubnodeParser;
 
 /**
  * The Class ChooseNodeParser.

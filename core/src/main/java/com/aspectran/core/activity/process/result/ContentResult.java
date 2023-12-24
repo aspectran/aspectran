@@ -17,7 +17,7 @@ package com.aspectran.core.activity.process.result;
 
 import com.aspectran.core.activity.process.action.Executable;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.util.ToStringBuilder;
+import com.aspectran.utils.ToStringBuilder;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -26,7 +26,7 @@ import java.util.Set;
 
 /**
  * The Class ContentResult.
- * 
+ *
  * <p>Created: 2008. 03. 23 PM 12:01:24</p>
  */
 public class ContentResult extends ArrayList<ActionResult> {

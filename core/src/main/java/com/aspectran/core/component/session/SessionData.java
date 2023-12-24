@@ -15,8 +15,8 @@
  */
 package com.aspectran.core.component.session;
 
-import com.aspectran.core.util.CustomObjectInputStream;
-import com.aspectran.core.util.ToStringBuilder;
+import com.aspectran.utils.CustomObjectInputStream;
+import com.aspectran.utils.ToStringBuilder;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

@@ -22,7 +22,7 @@ import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.env.Environment;
 import com.aspectran.core.context.rule.BeanRule;
-import com.aspectran.core.util.ExceptionUtils;
+import com.aspectran.utils.ExceptionUtils;
 
 /**
  * The Class AbstractActivity.

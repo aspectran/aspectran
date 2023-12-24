@@ -98,6 +98,7 @@
         <module>all</module>
         <module>bom</module>
         <module>core</module>
+        <module>utils</module>
         <module>daemon</module>
         <module>embed</module>
         <module>rss-lettuce</module>

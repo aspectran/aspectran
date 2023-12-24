@@ -19,7 +19,7 @@ import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.builder.ActivityContextBuilder;
 import com.aspectran.core.context.builder.ActivityContextBuilderException;
 import com.aspectran.core.context.builder.HybridActivityContextBuilder;
-import com.aspectran.core.util.ResourceUtils;
+import com.aspectran.utils.ResourceUtils;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

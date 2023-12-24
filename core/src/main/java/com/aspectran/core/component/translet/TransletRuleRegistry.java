@@ -29,12 +29,12 @@ import com.aspectran.core.context.rule.assistant.AssistantLocal;
 import com.aspectran.core.context.rule.params.FilterParameters;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.context.rule.type.TokenType;
-import com.aspectran.core.util.ClassUtils;
-import com.aspectran.core.util.NamespaceUtils;
-import com.aspectran.core.util.PrefixSuffixPattern;
-import com.aspectran.core.util.logging.Logger;
-import com.aspectran.core.util.logging.LoggerFactory;
-import com.aspectran.core.util.wildcard.WildcardPattern;
+import com.aspectran.core.util.Namespace;
+import com.aspectran.utils.ClassUtils;
+import com.aspectran.utils.PrefixSuffixPattern;
+import com.aspectran.utils.logging.Logger;
+import com.aspectran.utils.logging.LoggerFactory;
+import com.aspectran.utils.wildcard.WildcardPattern;
 
 import java.util.Collection;
 import java.util.Comparator;
@@ -291,7 +291,7 @@ public class TransletRuleRegistry extends AbstractComponent {
     private void saveTransletRule(TransletRule transletRule) {
         transletRule.determineResponseRule();
 
-        String transletName = NamespaceUtils.applyTransletNamePattern(
+        String transletName = Namespace.applyTransletNamePattern(
             assistantLocal.getDefaultSettings(), transletRule.getName());
         transletRule.setName(transletName);
 

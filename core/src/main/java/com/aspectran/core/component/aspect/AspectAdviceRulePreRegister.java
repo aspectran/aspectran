@@ -26,7 +26,7 @@ import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.PointcutPatternRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.type.JoinpointTargetType;
-import com.aspectran.core.util.BeanDescriptor;
+import com.aspectran.utils.BeanDescriptor;
 
 import java.util.List;
 import java.util.Set;

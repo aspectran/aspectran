@@ -17,9 +17,9 @@ package com.aspectran.undertow.server.servlet;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.component.bean.aware.ApplicationAdapterAware;
-import com.aspectran.core.util.ResourceUtils;
-import com.aspectran.core.util.logging.Logger;
-import com.aspectran.core.util.logging.LoggerFactory;
+import com.aspectran.utils.ResourceUtils;
+import com.aspectran.utils.logging.Logger;
+import com.aspectran.utils.logging.LoggerFactory;
 import jakarta.servlet.ServletContext;
 import org.apache.jasper.servlet.JasperInitializer;
 import org.apache.jasper.servlet.TldScanner;
@@ -32,7 +32,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.aspectran.core.util.ResourceUtils.CLASSPATH_URL_PREFIX;
+import static com.aspectran.utils.ResourceUtils.CLASSPATH_URL_PREFIX;
 
 /**
  * Initializer for the Jasper JSP Engine.

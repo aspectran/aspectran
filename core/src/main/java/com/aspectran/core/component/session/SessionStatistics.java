@@ -15,8 +15,8 @@
  */
 package com.aspectran.core.component.session;
 
-import com.aspectran.core.util.statistic.CounterStatistic;
-import com.aspectran.core.util.statistic.SampleStatistic;
+import com.aspectran.utils.statistic.CounterStatistic;
+import com.aspectran.utils.statistic.SampleStatistic;
 
 import java.util.concurrent.atomic.AtomicLong;
 

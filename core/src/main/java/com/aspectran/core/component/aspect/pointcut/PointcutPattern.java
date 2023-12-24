@@ -16,7 +16,7 @@
 package com.aspectran.core.component.aspect.pointcut;
 
 import com.aspectran.core.context.rule.BeanRule;
-import com.aspectran.core.lang.NonNull;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.util.Objects;
 

@@ -15,10 +15,10 @@
  */
 package com.aspectran.shell.command;
 
-import com.aspectran.core.lang.NonNull;
-import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.ToStringBuilder;
 import com.aspectran.shell.console.ShellConsole;
+import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.ToStringBuilder;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.io.File;
 import java.io.FileNotFoundException;

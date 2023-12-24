@@ -15,8 +15,8 @@
  */
 package com.aspectran.core.context.resource;
 
-import com.aspectran.core.util.ClassUtils;
-import com.aspectran.core.util.StringUtils;
+import com.aspectran.utils.ClassUtils;
+import com.aspectran.utils.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,11 +31,11 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.jar.JarEntry;
 
-import static com.aspectran.core.util.ClassUtils.CLASS_FILE_SUFFIX;
-import static com.aspectran.core.util.ClassUtils.PACKAGE_SEPARATOR_CHAR;
-import static com.aspectran.core.util.ResourceUtils.CLASSPATH_URL_PREFIX;
-import static com.aspectran.core.util.ResourceUtils.FILE_URL_PREFIX;
-import static com.aspectran.core.util.ResourceUtils.REGULAR_FILE_SEPARATOR_CHAR;
+import static com.aspectran.utils.ClassUtils.CLASS_FILE_SUFFIX;
+import static com.aspectran.utils.ClassUtils.PACKAGE_SEPARATOR_CHAR;
+import static com.aspectran.utils.ResourceUtils.CLASSPATH_URL_PREFIX;
+import static com.aspectran.utils.ResourceUtils.FILE_URL_PREFIX;
+import static com.aspectran.utils.ResourceUtils.REGULAR_FILE_SEPARATOR_CHAR;
 
 /**
  * The Class ResourceManager.

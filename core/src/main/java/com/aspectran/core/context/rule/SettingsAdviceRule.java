@@ -17,10 +17,10 @@ package com.aspectran.core.context.rule;
 
 import com.aspectran.core.context.rule.params.SettingParameters;
 import com.aspectran.core.context.rule.params.SettingsParameters;
-import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.ToStringBuilder;
-import com.aspectran.core.util.apon.Parameters;
-import com.aspectran.core.util.apon.VariableParameters;
+import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.ToStringBuilder;
+import com.aspectran.utils.apon.Parameters;
+import com.aspectran.utils.apon.VariableParameters;
 
 import java.io.IOException;
 import java.util.LinkedHashMap;

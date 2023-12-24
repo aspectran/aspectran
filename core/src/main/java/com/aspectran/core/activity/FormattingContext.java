@@ -15,10 +15,10 @@
  */
 package com.aspectran.core.activity;
 
-import com.aspectran.core.util.BooleanUtils;
-import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.logging.Logger;
-import com.aspectran.core.util.logging.LoggerFactory;
+import com.aspectran.utils.BooleanUtils;
+import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.logging.Logger;
+import com.aspectran.utils.logging.LoggerFactory;
 
 /**
  * <p>Created: 2019-07-06</p>

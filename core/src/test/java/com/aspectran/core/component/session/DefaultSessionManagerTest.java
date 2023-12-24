@@ -16,7 +16,7 @@
 package com.aspectran.core.component.session;
 
 import com.aspectran.core.context.config.SessionManagerConfig;
-import com.aspectran.core.util.apon.AponLines;
+import com.aspectran.utils.apon.AponLines;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;

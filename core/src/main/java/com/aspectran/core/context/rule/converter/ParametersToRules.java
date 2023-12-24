@@ -87,7 +87,7 @@ import com.aspectran.core.context.rule.params.TypeAliasParameters;
 import com.aspectran.core.context.rule.params.TypeAliasesParameters;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
 import com.aspectran.core.context.rule.type.ItemValueType;
-import com.aspectran.core.util.StringUtils;
+import com.aspectran.utils.StringUtils;
 
 import java.util.List;
 

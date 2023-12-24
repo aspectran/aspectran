@@ -15,9 +15,9 @@
  */
 package com.aspectran.demo.chat.model.payload;
 
-import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.ParameterKey;
-import com.aspectran.core.util.apon.ValueType;
+import com.aspectran.utils.apon.AbstractParameters;
+import com.aspectran.utils.apon.ParameterKey;
+import com.aspectran.utils.apon.ValueType;
 
 /**
  * Payload with details of a message sent by the client.

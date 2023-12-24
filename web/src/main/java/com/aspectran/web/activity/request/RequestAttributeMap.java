@@ -15,8 +15,8 @@
  */
 package com.aspectran.web.activity.request;
 
-import com.aspectran.core.lang.NonNull;
-import com.aspectran.core.lang.Nullable;
+import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 import jakarta.servlet.ServletRequest;
 
 import java.util.AbstractMap;
@@ -44,7 +44,7 @@ public class RequestAttributeMap implements Map<String, Object> {
     public RequestAttributeMap(ServletRequest request) {
         setRequest(request);
     }
-    
+
     public ServletRequest getRequest() {
         if (request == null) {
             throw new IllegalStateException("ServletRequest is not specified");

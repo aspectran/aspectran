@@ -15,8 +15,8 @@
  */
 package com.aspectran.web.support.multipart.commons;
 
-import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.SystemUtils;
+import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.SystemUtils;
 import com.aspectran.web.activity.request.MultipartFormDataParser;
 
 /**

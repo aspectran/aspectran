@@ -16,7 +16,7 @@
 package com.aspectran.web.activity.request;
 
 import com.aspectran.core.adapter.RequestAdapter;
-import com.aspectran.core.lang.NonNull;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.http.HttpServletRequestWrapper;
 

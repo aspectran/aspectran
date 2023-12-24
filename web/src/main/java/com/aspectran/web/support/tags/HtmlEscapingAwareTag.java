@@ -16,7 +16,7 @@
 package com.aspectran.web.support.tags;
 
 import com.aspectran.core.adapter.ResponseAdapter;
-import com.aspectran.core.lang.Nullable;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.web.support.util.HtmlUtils;
 
 import static com.aspectran.web.support.tags.HtmlEscapeTag.DEFAULT_HTML_ESCAPE_SETTING_NAME;

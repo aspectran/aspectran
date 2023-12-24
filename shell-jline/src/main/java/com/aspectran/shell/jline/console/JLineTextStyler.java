@@ -15,10 +15,10 @@
  */
 package com.aspectran.shell.jline.console;
 
-import com.aspectran.core.lang.NonNull;
-import com.aspectran.core.lang.Nullable;
-import com.aspectran.core.util.logging.Logger;
-import com.aspectran.core.util.logging.LoggerFactory;
+import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.annotation.jsr305.Nullable;
+import com.aspectran.utils.logging.Logger;
+import com.aspectran.utils.logging.LoggerFactory;
 import org.jline.terminal.Terminal;
 import org.jline.utils.AttributedCharSequence;
 import org.jline.utils.AttributedString;

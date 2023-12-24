@@ -18,11 +18,11 @@ package com.aspectran.core.activity.response.transform.xml;
 import com.aspectran.core.activity.process.result.ActionResult;
 import com.aspectran.core.activity.process.result.ContentResult;
 import com.aspectran.core.activity.process.result.ProcessResult;
-import com.aspectran.core.util.BeanUtils;
-import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.apon.Parameter;
-import com.aspectran.core.util.apon.ParameterValue;
-import com.aspectran.core.util.apon.Parameters;
+import com.aspectran.utils.BeanUtils;
+import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.apon.Parameter;
+import com.aspectran.utils.apon.ParameterValue;
+import com.aspectran.utils.apon.Parameters;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.DTDHandler;
@@ -46,7 +46,7 @@ import java.util.Map;
 
 /**
  * Converts a ProcessResult object to a XML string.
- * 
+ *
  * <p>Created: 2008. 05. 26 PM 2:03:15</p>
  */
 public class ContentsXMLReader implements XMLReader {

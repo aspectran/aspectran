@@ -27,12 +27,12 @@ import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.expr.token.TokenParser;
 import com.aspectran.core.service.AspectranCoreService;
 import com.aspectran.core.service.AspectranServiceException;
-import com.aspectran.core.util.Assert;
-import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.logging.Logger;
-import com.aspectran.core.util.logging.LoggerFactory;
 import com.aspectran.shell.adapter.ShellSessionAdapter;
 import com.aspectran.shell.console.ShellConsole;
+import com.aspectran.utils.Assert;
+import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.logging.Logger;
+import com.aspectran.utils.logging.LoggerFactory;
 
 /**
  * Abstract base class for {@code ShellService} implementations.

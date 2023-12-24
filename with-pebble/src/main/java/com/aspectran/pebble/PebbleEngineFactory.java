@@ -17,10 +17,10 @@ package com.aspectran.pebble;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.component.bean.aware.ApplicationAdapterAware;
-import com.aspectran.core.util.LocaleUtils;
-import com.aspectran.core.util.ResourceUtils;
-import com.aspectran.core.util.logging.Logger;
-import com.aspectran.core.util.logging.LoggerFactory;
+import com.aspectran.utils.LocaleUtils;
+import com.aspectran.utils.ResourceUtils;
+import com.aspectran.utils.logging.Logger;
+import com.aspectran.utils.logging.LoggerFactory;
 import io.pebbletemplates.pebble.PebbleEngine;
 import io.pebbletemplates.pebble.loader.ClasspathLoader;
 import io.pebbletemplates.pebble.loader.DelegatingLoader;

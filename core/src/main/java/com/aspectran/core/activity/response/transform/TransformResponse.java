@@ -21,12 +21,12 @@ import com.aspectran.core.activity.response.ResponseException;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.context.rule.type.FormatType;
 import com.aspectran.core.context.rule.type.ResponseType;
-import com.aspectran.core.util.logging.Logger;
-import com.aspectran.core.util.logging.LoggerFactory;
+import com.aspectran.utils.logging.Logger;
+import com.aspectran.utils.logging.LoggerFactory;
 
 /**
  * The Class TransformResponse.
- * 
+ *
  * Created: 2008. 03. 22 PM 5:51:58
  */
 public abstract class TransformResponse implements Response {

@@ -20,8 +20,8 @@ import com.aspectran.core.context.rule.params.PointcutParameters;
 import com.aspectran.core.context.rule.params.PointcutQualifierParameters;
 import com.aspectran.core.context.rule.type.JoinpointTargetType;
 import com.aspectran.core.context.rule.type.MethodType;
-import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.ToStringBuilder;
+import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.ToStringBuilder;
 
 import java.io.IOException;
 import java.util.ArrayList;

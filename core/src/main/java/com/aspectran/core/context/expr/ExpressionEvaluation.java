@@ -21,7 +21,7 @@ import com.aspectran.core.context.expr.ognl.OgnlSupport;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.expr.token.TokenParser;
 import com.aspectran.core.context.rule.type.TokenType;
-import com.aspectran.core.util.StringUtils;
+import com.aspectran.utils.StringUtils;
 import ognl.Ognl;
 import ognl.OgnlContext;
 import ognl.OgnlException;

@@ -24,10 +24,10 @@ import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.env.Environment;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.type.MethodType;
-import com.aspectran.core.lang.NonNull;
 import com.aspectran.core.support.i18n.message.MessageSource;
-import com.aspectran.core.util.Assert;
-import com.aspectran.core.util.StringUtils;
+import com.aspectran.utils.Assert;
+import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 /**
  * Inheriting this class provides access to the activity context and

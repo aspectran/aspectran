@@ -20,12 +20,12 @@ import com.aspectran.core.component.bean.ablility.DisposableBean;
 import com.aspectran.core.component.bean.aware.ApplicationAdapterAware;
 import com.aspectran.core.context.config.SessionFileStoreConfig;
 import com.aspectran.core.context.config.SessionManagerConfig;
-import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.ToStringBuilder;
-import com.aspectran.core.util.logging.Logger;
-import com.aspectran.core.util.logging.LoggerFactory;
-import com.aspectran.core.util.thread.ScheduledExecutorScheduler;
-import com.aspectran.core.util.thread.Scheduler;
+import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.ToStringBuilder;
+import com.aspectran.utils.logging.Logger;
+import com.aspectran.utils.logging.LoggerFactory;
+import com.aspectran.utils.thread.ScheduledExecutorScheduler;
+import com.aspectran.utils.thread.Scheduler;
 
 import java.io.IOException;
 

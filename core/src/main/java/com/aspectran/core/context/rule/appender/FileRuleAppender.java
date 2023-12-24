@@ -16,7 +16,7 @@
 package com.aspectran.core.context.rule.appender;
 
 import com.aspectran.core.context.rule.type.AppenderType;
-import com.aspectran.core.util.ToStringBuilder;
+import com.aspectran.utils.ToStringBuilder;
 
 import java.io.File;
 import java.io.FileInputStream;

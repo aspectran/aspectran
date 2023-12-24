@@ -15,10 +15,10 @@
  */
 package com.aspectran.web.support.tags;
 
-import com.aspectran.core.lang.Nullable;
 import com.aspectran.core.support.i18n.message.NoSuchMessageException;
-import com.aspectran.core.util.ObjectUtils;
-import com.aspectran.core.util.StringUtils;
+import com.aspectran.utils.ObjectUtils;
+import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.web.support.util.JavaScriptUtils;
 import com.aspectran.web.support.util.TagUtils;
 import jakarta.servlet.jsp.JspException;

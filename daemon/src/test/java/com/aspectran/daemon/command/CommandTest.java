@@ -17,11 +17,11 @@ package com.aspectran.daemon.command;
 
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.type.ItemValueType;
-import com.aspectran.core.util.apon.AponFormat;
-import com.aspectran.core.util.apon.AponWriter;
 import com.aspectran.daemon.TestDaemon;
 import com.aspectran.daemon.command.builtins.InvokeActionCommand;
 import com.aspectran.daemon.command.builtins.PollingIntervalCommand;
+import com.aspectran.utils.apon.AponFormat;
+import com.aspectran.utils.apon.AponWriter;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

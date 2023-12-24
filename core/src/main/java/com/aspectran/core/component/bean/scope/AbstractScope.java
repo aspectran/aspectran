@@ -19,9 +19,9 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.component.bean.BeanInstance;
 import com.aspectran.core.component.bean.ablility.DisposableBean;
 import com.aspectran.core.context.rule.BeanRule;
-import com.aspectran.core.util.MethodUtils;
-import com.aspectran.core.util.logging.Logger;
-import com.aspectran.core.util.logging.LoggerFactory;
+import com.aspectran.utils.MethodUtils;
+import com.aspectran.utils.logging.Logger;
+import com.aspectran.utils.logging.LoggerFactory;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;

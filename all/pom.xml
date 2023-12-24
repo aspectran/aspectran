@@ -48,6 +48,11 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
+            <artifactId>aspectran-utils</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
             <artifactId>aspectran-daemon</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -244,6 +249,10 @@
                         <group>
                             <title>Aspectran Core</title>
                             <packages>com.aspectran.core*</packages>
+                        </group>
+                        <group>
+                            <title>Aspectran Utilities</title>
+                            <packages>com.aspectran.utils*</packages>
                         </group>
                         <group>
                             <title>Aspectran Daemon</title>

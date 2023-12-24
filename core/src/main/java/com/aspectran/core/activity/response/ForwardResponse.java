@@ -21,14 +21,14 @@ import com.aspectran.core.context.expr.ItemEvaluator;
 import com.aspectran.core.context.rule.ForwardRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.type.ResponseType;
-import com.aspectran.core.util.logging.Logger;
-import com.aspectran.core.util.logging.LoggerFactory;
+import com.aspectran.utils.logging.Logger;
+import com.aspectran.utils.logging.LoggerFactory;
 
 import java.util.Map;
 
 /**
  * The Class ForwardResponse.
- * 
+ *
  * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */
 public class ForwardResponse implements Response {

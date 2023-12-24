@@ -43,11 +43,11 @@ import com.aspectran.core.context.rule.ItemRuleUtils;
 import com.aspectran.core.context.rule.ParameterBindingRule;
 import com.aspectran.core.context.rule.type.AutowireTargetType;
 import com.aspectran.core.context.rule.type.BeanProxifierType;
-import com.aspectran.core.util.ClassUtils;
-import com.aspectran.core.util.MethodUtils;
-import com.aspectran.core.util.ReflectionUtils;
-import com.aspectran.core.util.logging.Logger;
-import com.aspectran.core.util.logging.LoggerFactory;
+import com.aspectran.utils.ClassUtils;
+import com.aspectran.utils.MethodUtils;
+import com.aspectran.utils.ReflectionUtils;
+import com.aspectran.utils.logging.Logger;
+import com.aspectran.utils.logging.LoggerFactory;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;

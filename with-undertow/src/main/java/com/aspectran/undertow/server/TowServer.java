@@ -1,7 +1,7 @@
 package com.aspectran.undertow.server;
 
 import com.aspectran.core.component.session.SessionHandler;
-import com.aspectran.core.util.lifecycle.LifeCycle;
+import com.aspectran.utils.lifecycle.LifeCycle;
 import io.undertow.servlet.api.DeploymentManager;
 
 /**

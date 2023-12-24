@@ -16,12 +16,12 @@
 package com.aspectran.core.activity.process.result;
 
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.ToStringBuilder;
+import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.ToStringBuilder;
 
 /**
  * Holds the result of an action's execution.
- * 
+ *
  * <p>Created: 2008. 03. 23 PM 12:01:24</p>
  */
 public class ActionResult {

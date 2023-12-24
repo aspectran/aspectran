@@ -16,11 +16,11 @@
 package com.aspectran.web.activity.response;
 
 import com.aspectran.core.activity.Activity;
-import com.aspectran.core.util.Assert;
-import com.aspectran.core.util.FilenameUtils;
-import com.aspectran.core.util.LinkedCaseInsensitiveMultiValueMap;
-import com.aspectran.core.util.MultiValueMap;
-import com.aspectran.core.util.StringUtils;
+import com.aspectran.utils.Assert;
+import com.aspectran.utils.FilenameUtils;
+import com.aspectran.utils.LinkedCaseInsensitiveMultiValueMap;
+import com.aspectran.utils.MultiValueMap;
+import com.aspectran.utils.StringUtils;
 import com.aspectran.web.activity.request.RequestHeaderParser;
 import com.aspectran.web.support.http.HttpHeaders;
 import com.aspectran.web.support.http.HttpMediaTypeNotAcceptableException;

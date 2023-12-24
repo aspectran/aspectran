@@ -99,10 +99,10 @@ import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.core.context.rule.type.ScopeType;
 import com.aspectran.core.context.rule.type.TextStyleType;
 import com.aspectran.core.util.TextStyler;
-import com.aspectran.core.util.apon.Parameter;
-import com.aspectran.core.util.apon.ParameterKey;
-import com.aspectran.core.util.apon.Parameters;
-import com.aspectran.core.util.apon.VariableParameters;
+import com.aspectran.utils.apon.Parameter;
+import com.aspectran.utils.apon.ParameterKey;
+import com.aspectran.utils.apon.Parameters;
+import com.aspectran.utils.apon.VariableParameters;
 
 import java.io.IOException;
 import java.util.List;

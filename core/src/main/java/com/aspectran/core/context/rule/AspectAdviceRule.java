@@ -24,7 +24,7 @@ import com.aspectran.core.activity.process.action.InvokeAction;
 import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
 import com.aspectran.core.context.rule.type.ActionType;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
-import com.aspectran.core.util.ToStringBuilder;
+import com.aspectran.utils.ToStringBuilder;
 
 /**
  * Advices are actions taken for a particular join point.

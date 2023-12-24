@@ -15,12 +15,12 @@
  */
 package com.aspectran.web.support.http;
 
-import com.aspectran.core.lang.NonNull;
-import com.aspectran.core.lang.Nullable;
-import com.aspectran.core.util.Assert;
-import com.aspectran.core.util.LinkedCaseInsensitiveMap;
-import com.aspectran.core.util.ObjectUtils;
-import com.aspectran.core.util.StringUtils;
+import com.aspectran.utils.Assert;
+import com.aspectran.utils.LinkedCaseInsensitiveMap;
+import com.aspectran.utils.ObjectUtils;
+import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 
 import java.io.Serializable;
 import java.nio.charset.Charset;

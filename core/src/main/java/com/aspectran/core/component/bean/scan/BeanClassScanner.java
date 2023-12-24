@@ -15,15 +15,15 @@
  */
 package com.aspectran.core.component.bean.scan;
 
-import com.aspectran.core.util.ClassScanner;
-import com.aspectran.core.util.logging.Logger;
-import com.aspectran.core.util.logging.LoggerFactory;
-import com.aspectran.core.util.wildcard.WildcardPattern;
+import com.aspectran.utils.ClassScanner;
+import com.aspectran.utils.logging.Logger;
+import com.aspectran.utils.logging.LoggerFactory;
+import com.aspectran.utils.wildcard.WildcardPattern;
 
 import java.lang.reflect.Modifier;
 
 import static com.aspectran.core.context.ActivityContext.ID_SEPARATOR_CHAR;
-import static com.aspectran.core.util.ClassUtils.PACKAGE_SEPARATOR_CHAR;
+import static com.aspectran.utils.ClassUtils.PACKAGE_SEPARATOR_CHAR;
 
 /**
  * The Class BeanClassScanner.

@@ -16,8 +16,8 @@
 package com.aspectran.demo;
 
 import com.aspectran.core.context.env.EnvironmentProfiles;
-import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.daemon.DefaultDaemon;
+import com.aspectran.utils.ResourceUtils;
 
 import java.io.File;
 

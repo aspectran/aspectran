@@ -20,8 +20,8 @@ import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.assistant.AssistantLocal;
 import com.aspectran.core.context.rule.assistant.DefaultSettings;
-import com.aspectran.core.util.logging.Logger;
-import com.aspectran.core.util.logging.LoggerFactory;
+import com.aspectran.utils.logging.Logger;
+import com.aspectran.utils.logging.LoggerFactory;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;

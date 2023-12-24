@@ -15,8 +15,8 @@
  */
 package com.aspectran.web.support.tags;
 
-import com.aspectran.core.lang.Nullable;
-import com.aspectran.core.util.Assert;
+import com.aspectran.utils.Assert;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.web.support.util.JavaScriptUtils;
 import jakarta.servlet.jsp.JspException;
 import jakarta.servlet.jsp.tagext.BodyContent;

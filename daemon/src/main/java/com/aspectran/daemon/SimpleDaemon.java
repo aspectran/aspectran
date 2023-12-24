@@ -17,8 +17,8 @@ package com.aspectran.daemon;
 
 import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.config.DaemonConfig;
-import com.aspectran.core.lang.NonNull;
-import com.aspectran.core.lang.Nullable;
+import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 
 /**
  * Since SimpleDaemon has an empty Activity context, it should be

@@ -17,12 +17,12 @@ package com.aspectran.daemon.command.builtins;
 
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.request.ParameterMap;
-import com.aspectran.core.util.OutputStringWriter;
 import com.aspectran.daemon.command.AbstractCommand;
 import com.aspectran.daemon.command.CommandParameters;
 import com.aspectran.daemon.command.CommandRegistry;
 import com.aspectran.daemon.command.CommandResult;
 import com.aspectran.daemon.service.DaemonService;
+import com.aspectran.utils.OutputStringWriter;
 
 import java.io.Writer;
 import java.util.Map;

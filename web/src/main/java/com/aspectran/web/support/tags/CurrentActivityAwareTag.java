@@ -17,10 +17,10 @@ package com.aspectran.web.support.tags;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.lang.Nullable;
-import com.aspectran.core.util.Assert;
-import com.aspectran.core.util.logging.Logger;
-import com.aspectran.core.util.logging.LoggerFactory;
+import com.aspectran.utils.Assert;
+import com.aspectran.utils.annotation.jsr305.Nullable;
+import com.aspectran.utils.logging.Logger;
+import com.aspectran.utils.logging.LoggerFactory;
 import com.aspectran.web.service.WebServiceHolder;
 import jakarta.servlet.jsp.JspException;
 import jakarta.servlet.jsp.JspTagException;

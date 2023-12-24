@@ -25,15 +25,15 @@ import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.DispatchRule;
 import com.aspectran.core.context.rule.type.ResponseType;
-import com.aspectran.core.util.logging.Logger;
-import com.aspectran.core.util.logging.LoggerFactory;
+import com.aspectran.utils.logging.Logger;
+import com.aspectran.utils.logging.LoggerFactory;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * JSP or other web resource integration.
- * 
+ *
  * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */
 public class DispatchResponse implements Response {

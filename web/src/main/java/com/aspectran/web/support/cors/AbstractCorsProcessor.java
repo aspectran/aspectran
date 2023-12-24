@@ -16,7 +16,7 @@
 package com.aspectran.web.support.cors;
 
 import com.aspectran.core.context.rule.type.MethodType;
-import com.aspectran.core.util.StringUtils;
+import com.aspectran.utils.StringUtils;
 import com.aspectran.web.support.http.HttpHeaders;
 import jakarta.servlet.http.HttpServletRequest;
 

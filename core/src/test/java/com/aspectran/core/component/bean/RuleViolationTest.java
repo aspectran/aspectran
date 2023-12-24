@@ -18,8 +18,8 @@ package com.aspectran.core.component.bean;
 import com.aspectran.core.context.builder.ActivityContextBuilder;
 import com.aspectran.core.context.builder.HybridActivityContextBuilder;
 import com.aspectran.core.context.rule.IllegalRuleException;
-import com.aspectran.core.util.ExceptionUtils;
-import com.aspectran.core.util.ResourceUtils;
+import com.aspectran.utils.ExceptionUtils;
+import com.aspectran.utils.ResourceUtils;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;

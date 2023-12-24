@@ -22,8 +22,8 @@ import com.aspectran.core.context.expr.ItemEvaluator;
 import com.aspectran.core.context.rule.HeaderActionRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.type.ActionType;
-import com.aspectran.core.util.MultiValueMap;
-import com.aspectran.core.util.ToStringBuilder;
+import com.aspectran.utils.MultiValueMap;
+import com.aspectran.utils.ToStringBuilder;
 
 import java.util.List;
 import java.util.Map;

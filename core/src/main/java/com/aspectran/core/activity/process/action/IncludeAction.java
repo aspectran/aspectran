@@ -23,7 +23,7 @@ import com.aspectran.core.context.expr.ItemEvaluator;
 import com.aspectran.core.context.rule.IncludeActionRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.type.ActionType;
-import com.aspectran.core.util.ToStringBuilder;
+import com.aspectran.utils.ToStringBuilder;
 
 import java.util.Map;
 

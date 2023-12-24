@@ -15,12 +15,12 @@
  */
 package com.aspectran.core.context.resource;
 
-import com.aspectran.core.util.FileCopyUtils;
-import com.aspectran.core.util.ResourceUtils;
-import com.aspectran.core.util.SystemUtils;
-import com.aspectran.core.util.ToStringBuilder;
-import com.aspectran.core.util.logging.Logger;
-import com.aspectran.core.util.logging.LoggerFactory;
+import com.aspectran.utils.FileCopyUtils;
+import com.aspectran.utils.ResourceUtils;
+import com.aspectran.utils.SystemUtils;
+import com.aspectran.utils.ToStringBuilder;
+import com.aspectran.utils.logging.Logger;
+import com.aspectran.utils.logging.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;

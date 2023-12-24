@@ -32,7 +32,7 @@
 
     <properties>
         <main.basedir>${project.parent.basedir}</main.basedir>
-        <jline.version>3.24.1</jline.version>
+        <jline.version>3.25.0</jline.version>
     </properties>
 
     <dependencies>
@@ -43,7 +43,12 @@
         </dependency>
         <dependency>
             <groupId>org.jline</groupId>
-            <artifactId>jline</artifactId>
+            <artifactId>jline-reader</artifactId>
+            <version>${jline.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jline</groupId>
+            <artifactId>jline-console</artifactId>
             <version>${jline.version}</version>
         </dependency>
         <dependency>
@@ -51,6 +56,12 @@
             <artifactId>jline-terminal-jna</artifactId>
             <version>${jline.version}</version>
             <scope>runtime</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>net.java.dev.jna</groupId>
+                    <artifactId>jna</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <!-- Test dependencies -->
         <dependency>

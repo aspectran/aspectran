@@ -15,12 +15,12 @@
  */
 package com.aspectran.core.context.rule;
 
-import com.aspectran.core.util.BooleanUtils;
-import com.aspectran.core.util.ToStringBuilder;
+import com.aspectran.utils.BooleanUtils;
+import com.aspectran.utils.ToStringBuilder;
 
 /**
  * The Class EchoActionRule.
- * 
+ *
  * <p>Created: 2008. 03. 22 PM 5:50:44</p>
  */
 public class EchoActionRule {

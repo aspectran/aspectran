@@ -17,7 +17,7 @@ package com.aspectran.undertow.server.resource;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.component.bean.aware.ApplicationAdapterAware;
-import com.aspectran.core.util.StringUtils;
+import com.aspectran.utils.StringUtils;
 import io.undertow.server.handlers.resource.PathResourceManager;
 
 import java.io.File;

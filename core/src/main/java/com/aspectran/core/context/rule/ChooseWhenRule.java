@@ -25,7 +25,7 @@ import com.aspectran.core.activity.response.transform.TransformResponseFactory;
 import com.aspectran.core.context.expr.BooleanExpression;
 import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
 import com.aspectran.core.context.rule.ability.ResponseRuleApplicable;
-import com.aspectran.core.util.StringUtils;
+import com.aspectran.utils.StringUtils;
 
 /**
  * <p>Created: 2019-01-06</p>

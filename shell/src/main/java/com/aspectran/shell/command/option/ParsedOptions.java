@@ -15,7 +15,7 @@
  */
 package com.aspectran.shell.command.option;
 
-import com.aspectran.core.util.StringUtils;
+import com.aspectran.utils.StringUtils;
 
 import java.io.File;
 import java.io.Serializable;

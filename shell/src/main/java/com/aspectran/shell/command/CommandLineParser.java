@@ -15,14 +15,14 @@
  */
 package com.aspectran.shell.command;
 
-import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.logging.Logger;
-import com.aspectran.core.util.logging.LoggerFactory;
 import com.aspectran.shell.command.option.DefaultOptionParser;
 import com.aspectran.shell.command.option.OptionParser;
 import com.aspectran.shell.command.option.OptionParserException;
 import com.aspectran.shell.command.option.Options;
 import com.aspectran.shell.command.option.ParsedOptions;
+import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.logging.Logger;
+import com.aspectran.utils.logging.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;

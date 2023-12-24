@@ -15,10 +15,10 @@
  */
 package com.aspectran.undertow.server.resource;
 
-import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.AponParseException;
-import com.aspectran.core.util.apon.ParameterKey;
-import com.aspectran.core.util.apon.ValueType;
+import com.aspectran.utils.apon.AbstractParameters;
+import com.aspectran.utils.apon.AponParseException;
+import com.aspectran.utils.apon.ParameterKey;
+import com.aspectran.utils.apon.ValueType;
 
 public class ResourcePathPatterns extends AbstractParameters {
 
@@ -63,5 +63,5 @@ public class ResourcePathPatterns extends AbstractParameters {
         putValue(minus, pattern);
         return this;
     }
-    
+
 }

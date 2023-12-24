@@ -16,7 +16,7 @@
 package com.aspectran.core.activity.request;
 
 import com.aspectran.core.context.rule.ItemRule;
-import com.aspectran.core.util.StringUtils;
+import com.aspectran.utils.StringUtils;
 
 import java.util.Collection;
 

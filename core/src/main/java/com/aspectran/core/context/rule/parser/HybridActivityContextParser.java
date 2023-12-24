@@ -20,11 +20,11 @@ import com.aspectran.core.context.rule.appender.RuleAppendHandler;
 import com.aspectran.core.context.rule.assistant.ActivityRuleAssistant;
 import com.aspectran.core.context.rule.converter.ParametersToRules;
 import com.aspectran.core.context.rule.params.AspectranParameters;
-import com.aspectran.core.util.StringUtils;
+import com.aspectran.utils.StringUtils;
 
 /**
  * The Class HybridActivityContextParser.
- * 
+ *
  * <p>Created: 2015. 01. 27 PM 10:36:29</p>
  */
 public class HybridActivityContextParser extends AbstractActivityContextParser {

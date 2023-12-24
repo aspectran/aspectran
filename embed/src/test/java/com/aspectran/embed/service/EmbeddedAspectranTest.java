@@ -20,7 +20,7 @@ import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.context.builder.ActivityContextBuilder;
 import com.aspectran.core.context.config.AspectranConfig;
-import com.aspectran.core.util.StringUtils;
+import com.aspectran.utils.StringUtils;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

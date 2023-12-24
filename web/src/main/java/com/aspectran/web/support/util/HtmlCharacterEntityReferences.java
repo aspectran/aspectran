@@ -15,8 +15,8 @@
  */
 package com.aspectran.web.support.util;
 
-import com.aspectran.core.lang.Nullable;
-import com.aspectran.core.util.Assert;
+import com.aspectran.utils.Assert;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 
 import java.io.IOException;
 import java.io.InputStream;

@@ -18,8 +18,8 @@ package com.aspectran.core.component.bean.scan;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.context.rule.params.FilterParameters;
-import com.aspectran.core.util.ClassUtils;
-import com.aspectran.core.util.PrefixSuffixPattern;
+import com.aspectran.utils.ClassUtils;
+import com.aspectran.utils.PrefixSuffixPattern;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;

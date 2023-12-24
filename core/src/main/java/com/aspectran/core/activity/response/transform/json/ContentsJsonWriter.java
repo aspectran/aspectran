@@ -18,15 +18,15 @@ package com.aspectran.core.activity.response.transform.json;
 import com.aspectran.core.activity.process.result.ActionResult;
 import com.aspectran.core.activity.process.result.ContentResult;
 import com.aspectran.core.activity.process.result.ProcessResult;
-import com.aspectran.core.util.Assert;
-import com.aspectran.core.util.json.JsonWriter;
+import com.aspectran.utils.Assert;
+import com.aspectran.utils.json.JsonWriter;
 
 import java.io.IOException;
 import java.io.Writer;
 
 /**
  * Converts a ProcessResult object to a JSON formatted string.
- * 
+ *
  * <p>Created: 2008. 06. 12 PM 8:20:54</p>
  */
 public class ContentsJsonWriter extends JsonWriter {

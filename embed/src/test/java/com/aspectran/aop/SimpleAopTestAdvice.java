@@ -16,8 +16,8 @@
 package com.aspectran.aop;
 
 import com.aspectran.core.activity.Translet;
-import com.aspectran.core.util.logging.Logger;
-import com.aspectran.core.util.logging.LoggerFactory;
+import com.aspectran.utils.logging.Logger;
+import com.aspectran.utils.logging.LoggerFactory;
 
 /**
  * <p>Created: 2016. 11. 5.</p>

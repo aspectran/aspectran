@@ -17,8 +17,8 @@ package com.aspectran.undertow.server;
 
 import com.aspectran.core.component.bean.ablility.DisposableBean;
 import com.aspectran.core.component.bean.ablility.InitializableBean;
-import com.aspectran.core.util.logging.Logger;
-import com.aspectran.core.util.logging.LoggerFactory;
+import com.aspectran.utils.logging.Logger;
+import com.aspectran.utils.logging.LoggerFactory;
 import io.undertow.Undertow;
 import io.undertow.server.handlers.GracefulShutdownHandler;
 import io.undertow.servlet.api.DeploymentManager;

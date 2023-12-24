@@ -19,10 +19,10 @@ import com.aspectran.core.activity.request.RequestParseException;
 import com.aspectran.core.adapter.AbstractRequestAdapter;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.context.rule.type.MethodType;
-import com.aspectran.core.util.MultiValueMap;
-import com.aspectran.core.util.apon.Parameters;
-import com.aspectran.core.util.logging.Logger;
-import com.aspectran.core.util.logging.LoggerFactory;
+import com.aspectran.utils.MultiValueMap;
+import com.aspectran.utils.apon.Parameters;
+import com.aspectran.utils.logging.Logger;
+import com.aspectran.utils.logging.LoggerFactory;
 import com.aspectran.web.activity.request.RequestAttributeMap;
 import com.aspectran.web.activity.request.WebRequestBodyParser;
 import com.aspectran.web.support.http.MediaType;
@@ -36,7 +36,7 @@ import java.util.Map;
 
 /**
  * Adapt {@link HttpServletRequest} to Core {@link RequestAdapter}.
- * 
+ *
  * @since 2011. 3. 13.
  */
 public class HttpServletRequestAdapter extends AbstractRequestAdapter {

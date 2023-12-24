@@ -20,9 +20,9 @@ import com.aspectran.core.component.bean.ablility.FactoryBean;
 import com.aspectran.core.component.bean.ablility.InitializableBean;
 import com.aspectran.core.component.bean.annotation.AvoidAdvice;
 import com.aspectran.core.component.bean.aware.ApplicationAdapterAware;
-import com.aspectran.core.util.Assert;
-import com.aspectran.core.util.ClassUtils;
-import com.aspectran.core.util.ResourceUtils;
+import com.aspectran.utils.Assert;
+import com.aspectran.utils.ClassUtils;
+import com.aspectran.utils.ResourceUtils;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 
@@ -30,7 +30,7 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Properties;
 
-import static com.aspectran.core.util.ResourceUtils.CLASSPATH_URL_PREFIX;
+import static com.aspectran.utils.ResourceUtils.CLASSPATH_URL_PREFIX;
 
 /**
  * {@code FactoryBean} that creates an MyBatis {@code SqlSessionFactory}

@@ -19,11 +19,11 @@ import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.context.rule.type.ContentType;
 import com.aspectran.core.context.rule.type.FormatType;
-import com.aspectran.core.lang.NonNull;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 /**
  * A factory for creating TransformResponse objects.
- * 
+ *
  * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */
 public class TransformResponseFactory {

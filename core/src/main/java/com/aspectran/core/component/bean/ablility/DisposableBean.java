@@ -19,7 +19,7 @@ import com.aspectran.core.component.bean.annotation.AvoidAdvice;
 
 /**
  * The Interface DisposableBean.
- * 
+ *
  * @since 2011. 2. 20.
  */
 public interface DisposableBean {

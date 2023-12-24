@@ -16,8 +16,8 @@
 package com.aspectran.websocket.jsr356;
 
 import com.aspectran.core.context.ActivityContext;
-import com.aspectran.core.util.logging.Logger;
-import com.aspectran.core.util.logging.LoggerFactory;
+import com.aspectran.utils.logging.Logger;
+import com.aspectran.utils.logging.LoggerFactory;
 import com.aspectran.web.service.WebServiceHolder;
 import jakarta.websocket.server.ServerEndpointConfig;
 import jakarta.websocket.server.ServerEndpointConfig.Configurator;

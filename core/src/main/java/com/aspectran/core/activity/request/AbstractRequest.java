@@ -16,11 +16,11 @@
 package com.aspectran.core.activity.request;
 
 import com.aspectran.core.context.rule.type.MethodType;
-import com.aspectran.core.util.ClassUtils;
-import com.aspectran.core.util.LinkedCaseInsensitiveMultiValueMap;
-import com.aspectran.core.util.MultiValueMap;
-import com.aspectran.core.util.apon.Parameters;
-import com.aspectran.core.util.apon.VariableParameters;
+import com.aspectran.utils.ClassUtils;
+import com.aspectran.utils.LinkedCaseInsensitiveMultiValueMap;
+import com.aspectran.utils.MultiValueMap;
+import com.aspectran.utils.apon.Parameters;
+import com.aspectran.utils.apon.VariableParameters;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;

@@ -16,8 +16,8 @@
 package com.aspectran.daemon.command.polling;
 
 import com.aspectran.core.context.config.DaemonConfig;
-import com.aspectran.core.util.ResourceUtils;
 import com.aspectran.daemon.SimpleDaemon;
+import com.aspectran.utils.ResourceUtils;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;

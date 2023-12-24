@@ -16,7 +16,7 @@
 package com.aspectran.core.util;
 
 import com.aspectran.core.context.rule.type.TextStyleType;
-import com.aspectran.core.util.apon.AponFormat;
+import com.aspectran.utils.apon.AponFormat;
 
 /**
  * Contains methods to transform a given text to a specific style.

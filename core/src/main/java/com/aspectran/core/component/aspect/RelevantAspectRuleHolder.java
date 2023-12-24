@@ -16,7 +16,7 @@
 package com.aspectran.core.component.aspect;
 
 import com.aspectran.core.context.rule.AspectRule;
-import com.aspectran.core.util.ToStringBuilder;
+import com.aspectran.utils.ToStringBuilder;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -15,7 +15,7 @@
  */
 package com.aspectran.web.support.http;
 
-import com.aspectran.core.lang.Nullable;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 
 import java.util.List;
 

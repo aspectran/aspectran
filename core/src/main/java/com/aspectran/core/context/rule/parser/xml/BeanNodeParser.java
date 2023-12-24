@@ -20,14 +20,14 @@ import com.aspectran.core.context.rule.DescriptionRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.assistant.ActivityRuleAssistant;
 import com.aspectran.core.context.rule.params.FilterParameters;
-import com.aspectran.core.util.BooleanUtils;
-import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.nodelet.NodeletParser;
-import com.aspectran.core.util.nodelet.SubnodeParser;
+import com.aspectran.utils.BooleanUtils;
+import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.nodelet.NodeletParser;
+import com.aspectran.utils.nodelet.SubnodeParser;
 
 /**
  * The Class BeanInnerNodeletAdder.
- * 
+ *
  * <p>Created: 2008. 06. 14 AM 6:56:29</p>
  */
 class BeanNodeParser implements SubnodeParser {

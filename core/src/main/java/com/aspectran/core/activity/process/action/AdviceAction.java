@@ -18,7 +18,7 @@ package com.aspectran.core.activity.process.action;
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.InvokeActionRule;
-import com.aspectran.core.util.ToStringBuilder;
+import com.aspectran.utils.ToStringBuilder;
 
 /**
  * {@code AdviceAction} that invokes a method for Aspect Advice.

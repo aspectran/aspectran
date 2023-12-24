@@ -15,9 +15,9 @@
  */
 package com.aspectran.core.activity.request;
 
-import com.aspectran.core.util.ClassUtils;
-import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.apon.Parameters;
+import com.aspectran.utils.ClassUtils;
+import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.apon.Parameters;
 
 /**
  * Provides convenient methods to parse the request body.

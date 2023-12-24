@@ -25,12 +25,12 @@ import com.aspectran.core.context.rule.InvokeActionRule;
 import com.aspectran.core.context.rule.ability.BeanReferenceable;
 import com.aspectran.core.context.rule.appender.RuleAppender;
 import com.aspectran.core.context.rule.type.BeanRefererType;
-import com.aspectran.core.util.BeanUtils;
-import com.aspectran.core.util.MethodUtils;
-import com.aspectran.core.util.ToStringBuilder;
-import com.aspectran.core.util.logging.Logger;
-import com.aspectran.core.util.logging.LoggerFactory;
-import com.aspectran.core.util.nodelet.NodeTracker;
+import com.aspectran.utils.BeanUtils;
+import com.aspectran.utils.MethodUtils;
+import com.aspectran.utils.ToStringBuilder;
+import com.aspectran.utils.logging.Logger;
+import com.aspectran.utils.logging.LoggerFactory;
+import com.aspectran.utils.nodelet.NodeTracker;
 
 import java.lang.reflect.Method;
 import java.util.LinkedHashMap;

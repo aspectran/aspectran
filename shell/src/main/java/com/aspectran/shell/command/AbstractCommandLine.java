@@ -16,7 +16,7 @@
 package com.aspectran.shell.command;
 
 import com.aspectran.core.activity.request.ParameterMap;
-import com.aspectran.core.lang.NonNull;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.util.Arrays;
 

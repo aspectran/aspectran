@@ -18,10 +18,10 @@ package com.aspectran.core.support.i18n.locale;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.context.rule.type.MethodType;
-import com.aspectran.core.lang.Nullable;
-import com.aspectran.core.util.LocaleUtils;
-import com.aspectran.core.util.logging.Logger;
-import com.aspectran.core.util.logging.LoggerFactory;
+import com.aspectran.utils.LocaleUtils;
+import com.aspectran.utils.annotation.jsr305.Nullable;
+import com.aspectran.utils.logging.Logger;
+import com.aspectran.utils.logging.LoggerFactory;
 
 import java.util.Locale;
 import java.util.TimeZone;

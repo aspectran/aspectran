@@ -16,10 +16,10 @@
 package com.aspectran.undertow.server;
 
 import com.aspectran.core.component.session.SessionHandler;
-import com.aspectran.core.lang.NonNull;
-import com.aspectran.core.lang.Nullable;
-import com.aspectran.core.util.lifecycle.AbstractLifeCycle;
 import com.aspectran.undertow.server.session.TowSessionManager;
+import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.annotation.jsr305.Nullable;
+import com.aspectran.utils.lifecycle.AbstractLifeCycle;
 import io.undertow.Undertow;
 import io.undertow.Version;
 import io.undertow.server.HttpHandler;

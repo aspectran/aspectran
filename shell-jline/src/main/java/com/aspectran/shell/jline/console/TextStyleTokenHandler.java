@@ -15,7 +15,7 @@
  */
 package com.aspectran.shell.jline.console;
 
-import com.aspectran.core.util.StringUtils;
+import com.aspectran.utils.StringUtils;
 
 /**
  * <p>Created: 2017. 11. 19.</p>

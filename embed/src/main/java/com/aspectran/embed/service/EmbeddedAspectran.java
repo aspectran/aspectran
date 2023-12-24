@@ -24,8 +24,8 @@ import com.aspectran.core.context.env.Environment;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.support.i18n.message.NoSuchMessageException;
-import com.aspectran.core.util.logging.Logger;
-import com.aspectran.core.util.logging.LoggerFactory;
+import com.aspectran.utils.logging.Logger;
+import com.aspectran.utils.logging.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;

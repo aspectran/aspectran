@@ -16,8 +16,8 @@
 package com.aspectran.core.context.expr.ognl;
 
 import com.aspectran.core.context.expr.ExpressionParserException;
-import com.aspectran.core.util.ConcurrentReferenceHashMap;
-import com.aspectran.core.util.StringUtils;
+import com.aspectran.utils.ConcurrentReferenceHashMap;
+import com.aspectran.utils.StringUtils;
 import ognl.Ognl;
 import ognl.OgnlContext;
 import ognl.OgnlException;

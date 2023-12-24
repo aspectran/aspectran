@@ -15,9 +15,9 @@
  */
 package com.aspectran.shell.command.option;
 
-import com.aspectran.core.util.StringUtils;
 import com.aspectran.shell.command.Command;
 import com.aspectran.shell.console.ShellConsole;
+import com.aspectran.utils.StringUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -33,7 +33,7 @@ import java.util.Map;
  * A formatter of help messages for command line options.
  */
 public class HelpFormatter {
-    
+
     private static final String NEW_LINE = System.lineSeparator();
 
     /** Default number of characters per line */
@@ -245,7 +245,7 @@ public class HelpFormatter {
     }
 
     /**
-     * Appends the usage clause for an OptionGroup to a StringBuilder.  
+     * Appends the usage clause for an OptionGroup to a StringBuilder.
      * The clause is wrapped in square brackets if the group is required.
      * The display of the options is handled by appendOption.
      * @param sb the StringBuilder to append to
@@ -273,7 +273,7 @@ public class HelpFormatter {
     }
 
     /**
-     * Appends the usage clause for an Option to a StringBuilder.  
+     * Appends the usage clause for an Option to a StringBuilder.
      * @param sb the StringBuilder to append to
      * @param option the Option to append
      * @param required whether the Option is required or not
@@ -319,7 +319,7 @@ public class HelpFormatter {
     }
 
     /**
-     * Print the help for the specified Options to the specified writer, 
+     * Print the help for the specified Options to the specified writer,
      * using the specified width, left padding and description padding.
      * @param options the Options instance
      * @return the longest opt string's length
@@ -384,9 +384,9 @@ public class HelpFormatter {
         String lpad = OptionUtils.createPadding(getLeftPad());
         String dpad = OptionUtils.createPadding(getDescPad());
 
-        // first create list containing only <lpad>-a,--aaa where 
-        // -a is opt and --aaa is long opt; in parallel look for 
-        // the longest opt string this list will be then used to 
+        // first create list containing only <lpad>-a,--aaa where
+        // -a is opt and --aaa is long opt; in parallel look for
+        // the longest opt string this list will be then used to
         // sort options ascending
         int leftWidth = 0;
         List<StringBuilder> lineBufList = new ArrayList<>();

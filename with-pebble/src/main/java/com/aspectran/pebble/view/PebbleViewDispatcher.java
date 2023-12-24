@@ -21,9 +21,9 @@ import com.aspectran.core.activity.response.dispatch.ViewDispatcherException;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.component.template.TemplateModel;
 import com.aspectran.core.context.rule.DispatchRule;
-import com.aspectran.core.util.ToStringBuilder;
-import com.aspectran.core.util.logging.Logger;
-import com.aspectran.core.util.logging.LoggerFactory;
+import com.aspectran.utils.ToStringBuilder;
+import com.aspectran.utils.logging.Logger;
+import com.aspectran.utils.logging.LoggerFactory;
 import io.pebbletemplates.pebble.PebbleEngine;
 import io.pebbletemplates.pebble.template.PebbleTemplate;
 

@@ -45,6 +45,11 @@
             </dependency>
             <dependency>
                 <groupId>com.aspectran</groupId>
+                <artifactId>aspectran-utils</artifactId>
+                <version>7.4.4-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>com.aspectran</groupId>
                 <artifactId>aspectran-daemon</artifactId>
                 <version>7.4.4-SNAPSHOT</version>
             </dependency>

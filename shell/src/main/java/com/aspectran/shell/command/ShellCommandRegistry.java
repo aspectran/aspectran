@@ -15,7 +15,7 @@
  */
 package com.aspectran.shell.command;
 
-import com.aspectran.core.util.ClassUtils;
+import com.aspectran.utils.ClassUtils;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;

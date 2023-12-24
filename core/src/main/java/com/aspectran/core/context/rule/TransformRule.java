@@ -19,8 +19,8 @@ import com.aspectran.core.context.rule.ability.Replicable;
 import com.aspectran.core.context.rule.type.ContentType;
 import com.aspectran.core.context.rule.type.FormatType;
 import com.aspectran.core.context.rule.type.ResponseType;
-import com.aspectran.core.util.BooleanUtils;
-import com.aspectran.core.util.ToStringBuilder;
+import com.aspectran.utils.BooleanUtils;
+import com.aspectran.utils.ToStringBuilder;
 
 /**
  * The Class TransformRule.

@@ -15,7 +15,7 @@
  */
 package com.aspectran.undertow.server;
 
-import com.aspectran.core.util.ResourceUtils;
+import com.aspectran.utils.ResourceUtils;
 import io.undertow.Undertow;
 
 import javax.net.ssl.KeyManager;

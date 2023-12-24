@@ -15,7 +15,7 @@
  */
 package com.aspectran.freemarker.directive;
 
-import com.aspectran.core.util.ToStringBuilder;
+import com.aspectran.utils.ToStringBuilder;
 import freemarker.template.TemplateModelException;
 
 import java.util.Map;

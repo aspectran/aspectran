@@ -17,12 +17,12 @@ package com.aspectran.core.context.rule;
 
 import com.aspectran.core.context.rule.params.AspectranParameters;
 import com.aspectran.core.context.rule.type.AppendableFileFormatType;
-import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.ToStringBuilder;
+import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.ToStringBuilder;
 
 /**
  * Define rule for importing other rules.
- * 
+ *
  * <p>Created: 2017. 05. 06.</p>
  */
 public class AppendRule {

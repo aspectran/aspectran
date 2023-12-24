@@ -16,7 +16,7 @@
 package com.aspectran.core.component.session.redis.lettuce;
 
 import com.aspectran.core.component.session.SessionData;
-import com.aspectran.core.util.Assert;
+import com.aspectran.utils.Assert;
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.RedisURI;
 import io.lettuce.core.api.StatefulRedisConnection;

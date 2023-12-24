@@ -15,10 +15,10 @@
  */
 package com.aspectran.core.context.env;
 
-import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.SystemUtils;
-import com.aspectran.core.util.logging.Logger;
-import com.aspectran.core.util.logging.LoggerFactory;
+import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.SystemUtils;
+import com.aspectran.utils.logging.Logger;
+import com.aspectran.utils.logging.LoggerFactory;
 
 import java.util.LinkedHashSet;
 import java.util.Set;

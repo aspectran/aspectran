@@ -35,11 +35,11 @@ import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.assistant.ActivityRuleAssistant;
 import com.aspectran.core.context.rule.params.FilterParameters;
 import com.aspectran.core.context.rule.type.ScopeType;
-import com.aspectran.core.util.ClassUtils;
-import com.aspectran.core.util.PrefixSuffixPattern;
-import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.logging.Logger;
-import com.aspectran.core.util.logging.LoggerFactory;
+import com.aspectran.utils.ClassUtils;
+import com.aspectran.utils.PrefixSuffixPattern;
+import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.logging.Logger;
+import com.aspectran.utils.logging.LoggerFactory;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;

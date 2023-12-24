@@ -18,9 +18,9 @@ package com.aspectran.core.component.translet.scan;
 import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.params.FilterParameters;
-import com.aspectran.core.util.ClassUtils;
-import com.aspectran.core.util.PrefixSuffixPattern;
-import com.aspectran.core.util.ResourceUtils;
+import com.aspectran.utils.ClassUtils;
+import com.aspectran.utils.PrefixSuffixPattern;
+import com.aspectran.utils.ResourceUtils;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;

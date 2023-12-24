@@ -15,15 +15,15 @@
  */
 package com.aspectran.core.context.rule;
 
-import com.aspectran.core.util.ToStringBuilder;
+import com.aspectran.utils.ToStringBuilder;
 
 import java.lang.reflect.Method;
 
 /**
  * The Class AnnotatedMethodActionRule.
- * 
+ *
  * <p>Created: 2016. 2. 10.</p>
- * 
+ *
  * @since 2.0.0
  */
 public class AnnotatedActionRule {

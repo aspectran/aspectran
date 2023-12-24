@@ -15,9 +15,9 @@
  */
 package com.aspectran.demo.chat.model.payload;
 
-import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.ParameterKey;
-import com.aspectran.core.util.apon.ValueType;
+import com.aspectran.utils.apon.AbstractParameters;
+import com.aspectran.utils.apon.ParameterKey;
+import com.aspectran.utils.apon.ValueType;
 
 /**
  * Represents the payload of a WebSocket frame to broadcast details of a user who has connected to the chat.

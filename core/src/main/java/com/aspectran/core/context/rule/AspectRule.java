@@ -22,11 +22,11 @@ import com.aspectran.core.context.rule.type.AspectAdviceType;
 import com.aspectran.core.context.rule.type.BeanRefererType;
 import com.aspectran.core.context.rule.type.JoinpointTargetType;
 import com.aspectran.core.context.rule.type.MethodType;
-import com.aspectran.core.util.BooleanUtils;
-import com.aspectran.core.util.StringUtils;
-import com.aspectran.core.util.ToStringBuilder;
-import com.aspectran.core.util.apon.AponParseException;
-import com.aspectran.core.util.apon.AponReader;
+import com.aspectran.utils.BooleanUtils;
+import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.ToStringBuilder;
+import com.aspectran.utils.apon.AponParseException;
+import com.aspectran.utils.apon.AponReader;
 
 import java.util.ArrayList;
 import java.util.List;

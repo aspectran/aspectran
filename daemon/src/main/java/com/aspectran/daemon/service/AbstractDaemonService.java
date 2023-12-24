@@ -23,8 +23,8 @@ import com.aspectran.core.context.config.DaemonConfig;
 import com.aspectran.core.context.config.SessionManagerConfig;
 import com.aspectran.core.service.AspectranCoreService;
 import com.aspectran.core.service.AspectranServiceException;
-import com.aspectran.core.util.Assert;
 import com.aspectran.daemon.adapter.DaemonSessionAdapter;
+import com.aspectran.utils.Assert;
 
 /**
  * Abstract base class for {@code DaemonService} implementations.

@@ -39,6 +39,8 @@ Aspectran consists of the following major packages:
 
 * **com.aspectran.core**  
   Package containing the core features of Aspectran
+* **com.aspectran.utils**  
+  Miscellaneous utility classes used across multiple packages
 * **com.aspectran.daemon**  
   Package for running Aspectran-based Java applications as background processes on Unix-based or Windows operating systems
 * **com.aspectran.embed**  

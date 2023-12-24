@@ -20,7 +20,7 @@ import com.aspectran.core.component.bean.annotation.AvoidAdvice;
 /**
  * The ClassLoaderAware interface provides the ability to configure a {@code ClassLoader}
  * to be used by the implementing object when loading classes or resources.
- * 
+ *
  * <p>Created: 2016. 1. 25.</p>
  *
  * @since 2.0.0

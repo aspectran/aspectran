@@ -24,7 +24,7 @@ import com.aspectran.core.context.builder.HybridActivityContextBuilder;
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.type.ItemType;
-import com.aspectran.core.util.MultiValueMap;
+import com.aspectran.utils.MultiValueMap;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;

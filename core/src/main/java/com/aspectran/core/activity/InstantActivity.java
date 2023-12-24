@@ -24,7 +24,7 @@ import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.type.MethodType;
-import com.aspectran.core.util.OutputStringWriter;
+import com.aspectran.utils.OutputStringWriter;
 
 import java.io.Writer;
 import java.util.Map;

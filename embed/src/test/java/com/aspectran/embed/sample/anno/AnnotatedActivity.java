@@ -25,8 +25,8 @@ import com.aspectran.core.component.bean.annotation.Forward;
 import com.aspectran.core.component.bean.annotation.ParamItem;
 import com.aspectran.core.component.bean.annotation.Qualifier;
 import com.aspectran.core.component.bean.annotation.Request;
-import com.aspectran.core.util.apon.Parameters;
 import com.aspectran.embed.sample.custom.TestCustomTransformer;
+import com.aspectran.utils.apon.Parameters;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;

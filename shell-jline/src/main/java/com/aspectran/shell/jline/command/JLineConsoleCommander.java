@@ -15,10 +15,10 @@
  */
 package com.aspectran.shell.jline.command;
 
-import com.aspectran.core.lang.NonNull;
 import com.aspectran.shell.command.DefaultConsoleCommander;
 import com.aspectran.shell.jline.console.JLineShellConsole;
 import com.aspectran.shell.jline.console.TerminalPrintStream;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 /**
  * The Shell Command Runner.

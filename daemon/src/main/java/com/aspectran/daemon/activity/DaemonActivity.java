@@ -19,10 +19,10 @@ import com.aspectran.core.activity.AdapterException;
 import com.aspectran.core.activity.CoreActivity;
 import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.core.adapter.DefaultSessionAdapter;
-import com.aspectran.core.util.OutputStringWriter;
 import com.aspectran.daemon.adapter.DaemonRequestAdapter;
 import com.aspectran.daemon.adapter.DaemonResponseAdapter;
 import com.aspectran.daemon.service.DaemonService;
+import com.aspectran.utils.OutputStringWriter;
 
 import java.io.Writer;
 import java.util.Map;

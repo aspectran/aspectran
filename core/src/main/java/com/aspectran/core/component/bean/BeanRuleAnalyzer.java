@@ -19,7 +19,7 @@ import com.aspectran.core.activity.Translet;
 import com.aspectran.core.component.bean.ablility.FactoryBean;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
-import com.aspectran.core.util.MethodUtils;
+import com.aspectran.utils.MethodUtils;
 
 import java.lang.reflect.Method;
 import java.util.Locale;

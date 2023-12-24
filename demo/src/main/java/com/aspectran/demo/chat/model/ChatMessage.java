@@ -15,8 +15,6 @@
  */
 package com.aspectran.demo.chat.model;
 
-import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.ParameterKey;
 import com.aspectran.demo.chat.model.payload.BroadcastAvailableUsersPayload;
 import com.aspectran.demo.chat.model.payload.BroadcastConnectedUserPayload;
 import com.aspectran.demo.chat.model.payload.BroadcastDisconnectedUserPayload;
@@ -24,6 +22,8 @@ import com.aspectran.demo.chat.model.payload.BroadcastTextMessagePayload;
 import com.aspectran.demo.chat.model.payload.DuplicatedUserPayload;
 import com.aspectran.demo.chat.model.payload.SendTextMessagePayload;
 import com.aspectran.demo.chat.model.payload.WelcomeUserPayload;
+import com.aspectran.utils.apon.AbstractParameters;
+import com.aspectran.utils.apon.ParameterKey;
 
 /**
  * The Chat Message.

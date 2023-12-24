@@ -15,7 +15,7 @@
  */
 package com.aspectran.undertow.server.servlet;
 
-import com.aspectran.core.util.ClassUtils;
+import com.aspectran.utils.ClassUtils;
 import io.undertow.servlet.api.ListenerInfo;
 
 import java.util.EventListener;

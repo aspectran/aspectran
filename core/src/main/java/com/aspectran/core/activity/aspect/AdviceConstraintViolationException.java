@@ -17,7 +17,7 @@ package com.aspectran.core.activity.aspect;
 
 import com.aspectran.core.activity.ActivityException;
 import com.aspectran.core.context.rule.AspectRule;
-import com.aspectran.core.util.StringUtils;
+import com.aspectran.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;

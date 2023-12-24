@@ -15,12 +15,12 @@
  */
 package com.aspectran.core.context.config;
 
-import com.aspectran.core.lang.Nullable;
-import com.aspectran.core.util.SystemUtils;
-import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.AponParseException;
-import com.aspectran.core.util.apon.ParameterKey;
-import com.aspectran.core.util.apon.VariableParameters;
+import com.aspectran.utils.SystemUtils;
+import com.aspectran.utils.annotation.jsr305.Nullable;
+import com.aspectran.utils.apon.AbstractParameters;
+import com.aspectran.utils.apon.AponParseException;
+import com.aspectran.utils.apon.ParameterKey;
+import com.aspectran.utils.apon.VariableParameters;
 
 import java.io.File;
 import java.io.IOException;

@@ -18,7 +18,7 @@ package com.aspectran.core.context.rule.appender;
 import com.aspectran.core.context.rule.AppendRule;
 import com.aspectran.core.context.rule.type.AppendableFileFormatType;
 import com.aspectran.core.context.rule.type.AppenderType;
-import com.aspectran.core.util.nodelet.NodeTracker;
+import com.aspectran.utils.nodelet.NodeTracker;
 
 import java.io.IOException;
 import java.io.InputStream;

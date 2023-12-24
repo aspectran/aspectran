@@ -15,7 +15,7 @@
  */
 package com.aspectran.shell.console;
 
-import com.aspectran.core.util.StringUtils;
+import com.aspectran.utils.StringUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;

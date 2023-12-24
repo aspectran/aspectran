@@ -21,10 +21,10 @@ import com.aspectran.core.component.aspect.pointcut.PointcutPattern;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.context.rule.type.JoinpointTargetType;
-import com.aspectran.core.util.cache.Cache;
-import com.aspectran.core.util.cache.ConcurrentReferenceCache;
-import com.aspectran.core.util.logging.Logger;
-import com.aspectran.core.util.logging.LoggerFactory;
+import com.aspectran.utils.cache.Cache;
+import com.aspectran.utils.cache.ConcurrentReferenceCache;
+import com.aspectran.utils.logging.Logger;
+import com.aspectran.utils.logging.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -32,7 +32,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.aspectran.core.util.ConcurrentReferenceHashMap.ReferenceType;
+import static com.aspectran.utils.ConcurrentReferenceHashMap.ReferenceType;
 
 /**
  * The Class AspectRuleRegistry.

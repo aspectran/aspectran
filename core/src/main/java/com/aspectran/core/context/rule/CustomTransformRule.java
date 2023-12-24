@@ -18,7 +18,7 @@ package com.aspectran.core.context.rule;
 import com.aspectran.core.activity.response.transform.CustomTransformer;
 import com.aspectran.core.context.rule.type.FormatType;
 import com.aspectran.core.context.rule.type.ResponseType;
-import com.aspectran.core.util.ToStringBuilder;
+import com.aspectran.utils.ToStringBuilder;
 
 /**
  * The Class CustomTransformRule.
