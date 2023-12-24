@@ -20,11 +20,11 @@
     <parent>
         <groupId>com.aspectran</groupId>
         <artifactId>aspectran-project</artifactId>
-        <version>7.4.4-SNAPSHOT</version>
+        <version>7.5.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>aspectran-all</artifactId>
-    <version>7.4.4-SNAPSHOT</version>
+    <version>7.5.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>Aspectran All-in-One</name>
@@ -44,11 +44,6 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>aspectran-core</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>aspectran-utils</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -74,6 +69,11 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>aspectran-shell-jline</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>aspectran-utils</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -251,10 +251,6 @@
                             <packages>com.aspectran.core*</packages>
                         </group>
                         <group>
-                            <title>Aspectran Utilities</title>
-                            <packages>com.aspectran.utils*</packages>
-                        </group>
-                        <group>
                             <title>Aspectran Daemon</title>
                             <packages>com.aspectran.daemon*</packages>
                         </group>
@@ -265,6 +261,10 @@
                         <group>
                             <title>Aspectran Shell</title>
                             <packages>com.aspectran.shell*</packages>
+                        </group>
+                        <group>
+                            <title>Aspectran Utilities</title>
+                            <packages>com.aspectran.utils*</packages>
                         </group>
                         <group>
                             <title>Aspectran Web</title>

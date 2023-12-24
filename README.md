@@ -39,8 +39,6 @@ Aspectran consists of the following major packages:
 
 * **com.aspectran.core**  
   Package containing the core features of Aspectran
-* **com.aspectran.utils**  
-  Miscellaneous utility classes used across multiple packages
 * **com.aspectran.daemon**  
   Package for running Aspectran-based Java applications as background processes on Unix-based or Windows operating systems
 * **com.aspectran.embed**  
@@ -49,6 +47,8 @@ Aspectran consists of the following major packages:
   Package for building interactive shell (aka command line) applications based on Aspectran
 * **com.aspectran.shell-jline**  
   Package for building feature-rich Aspectran-based interactive shell applications with JLine 3
+* **com.aspectran.utils**  
+  Miscellaneous utility classes used across multiple packages
 * **com.aspectran.web**  
   Package for building web applications using Jakarta EE
 * **com.aspectran.websocket**  

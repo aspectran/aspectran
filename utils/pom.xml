@@ -20,7 +20,7 @@
     <parent>
         <groupId>com.aspectran</groupId>
         <artifactId>aspectran-project</artifactId>
-        <version>7.4.4-SNAPSHOT</version>
+        <version>7.5.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>aspectran-utils</artifactId>
@@ -97,11 +97,6 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.awaitility</groupId>
-            <artifactId>awaitility</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
