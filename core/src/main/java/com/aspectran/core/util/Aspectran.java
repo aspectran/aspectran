@@ -37,7 +37,7 @@ public class Aspectran {
                 pkg.getImplementationVersion() != null) {
             VERSION = pkg.getImplementationVersion();
         } else {
-            VERSION = System.getProperty("aspectran.version", "7.4.x");
+            VERSION = System.getProperty("aspectran.version", "7.5.x");
         }
 
         POWERED_BY = "Powered by Aspectran " + VERSION;
