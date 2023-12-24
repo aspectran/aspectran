@@ -82,7 +82,7 @@ public abstract class TransformResponse implements Response {
         }
     }
 
-    abstract protected void transform(Activity activity) throws Exception;
+    protected abstract void transform(Activity activity) throws Exception;
 
     @Override
     public String toString() {

@@ -340,9 +340,9 @@ public abstract class AbstractRestResponse implements RestResponse {
         return headers;
     }
 
-    abstract protected List<MediaType> getSupportedContentTypes();
+    protected abstract List<MediaType> getSupportedContentTypes();
 
-    abstract protected MediaType getContentTypeByPathExtension(String extension);
+    protected abstract MediaType getContentTypeByPathExtension(String extension);
 
     protected String determineEncoding(Activity activity) {
         return activity.getTranslet().getIntendedResponseEncoding();

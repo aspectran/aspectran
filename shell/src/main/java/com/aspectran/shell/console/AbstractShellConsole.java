@@ -144,9 +144,9 @@ public abstract class AbstractShellConsole implements ShellConsole {
         return line;
     }
 
-    abstract protected String readRawCommandLine(String prompt);
+    protected abstract String readRawCommandLine(String prompt);
 
-    abstract protected String readRawLine(String prompt);
+    protected abstract String readRawLine(String prompt);
 
     private String searchQuote(String line) {
         boolean doubleQuote = false;

@@ -63,7 +63,7 @@ public abstract class AbstractTrimDirectiveModel implements TemplateDirectiveMod
      * @throws TemplateModelException the template model exception
      */
     @SuppressWarnings("rawtypes")
-    abstract protected Trimmer getTrimmer(Map params) throws TemplateModelException;
+    protected abstract Trimmer getTrimmer(Map params) throws TemplateModelException;
 
     /**
      * Parse string parameter.

@@ -31,7 +31,7 @@ import java.util.function.Consumer;
  */
 public abstract class AbstractLettuceSessionStore extends AbstractSessionStore {
 
-    abstract protected void scan(Consumer<SessionData> func);
+    protected abstract void scan(Consumer<SessionData> func);
 
     @Override
     public Set<String> doGetExpired(long time) {
