@@ -16,6 +16,7 @@
 package com.aspectran.jetty.daemon.command;
 
 import com.aspectran.core.activity.request.ParameterMap;
+import com.aspectran.core.component.bean.BeanException;
 import com.aspectran.core.component.bean.BeanRegistry;
 import com.aspectran.core.context.expr.ItemEvaluation;
 import com.aspectran.core.context.expr.ItemEvaluator;
@@ -24,9 +25,10 @@ import com.aspectran.daemon.command.AbstractCommand;
 import com.aspectran.daemon.command.CommandParameters;
 import com.aspectran.daemon.command.CommandRegistry;
 import com.aspectran.daemon.command.CommandResult;
-import com.aspectran.daemon.service.DaemonService;
 import com.aspectran.jetty.JettyServer;
+import com.aspectran.utils.ExceptionUtils;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.lifecycle.LifeCycle;
 
 import java.net.BindException;
 
@@ -47,85 +49,36 @@ public class JettyCommand extends AbstractCommand {
 
     @Override
     public CommandResult execute(CommandParameters parameters) {
-        DaemonService daemonService = getDaemonService();
-
-        try {
-            ClassLoader classLoader = daemonService.getActivityContext().getApplicationAdapter().getClassLoader();
-            classLoader.loadClass("com.aspectran.jetty.JettyServer");
-        } catch (ClassNotFoundException e) {
-            return failed("Unable to load class com.aspectran.jetty.JettyServer " +
-                    "due to missing dependency 'aspectran-with-jetty'", e);
-        }
-
         try {
             String mode = null;
             String serverName = null;
-
             ItemRuleMap parameterItemRuleMap = parameters.getParameterItemRuleMap();
             if ((parameterItemRuleMap != null && !parameterItemRuleMap.isEmpty())) {
-                ItemEvaluator evaluator = new ItemEvaluation(daemonService.getDefaultActivity());
+                ItemEvaluator evaluator = new ItemEvaluation(getDaemonService().getDefaultActivity());
                 ParameterMap parameterMap = evaluator.evaluateAsParameterMap(parameterItemRuleMap);
                 mode = parameterMap.getParameter("mode");
                 serverName = parameterMap.getParameter("server");
             }
-
+            if (mode == null) {
+                return failed("'mode' parameter is not specified");
+            }
             if (!StringUtils.hasLength(serverName)) {
                 serverName = "jetty.server";
             }
 
-            BeanRegistry beanRegistry = daemonService.getActivityContext().getBeanRegistry();
-
-            boolean justCreated = !beanRegistry.hasSingleton(JettyServer.class, serverName);
-            if (justCreated) {
-                if ("stop".equals(mode) || "restart".equals(mode)) {
-                    return failed("Jetty server is not running");
-                }
-            }
-
-            JettyServer jettyServer;
-            try {
-                jettyServer = beanRegistry.getBean(JettyServer.class, serverName);
-            } catch (Exception e) {
-                return failed("Jetty server is not available", e);
-            }
-
-            if (mode == null) {
-                return failed("'mode' parameter is not specified");
-            }
-
             switch (mode) {
                 case "start":
-                    if (!justCreated && jettyServer.isRunning()) {
-                        return failed(warn("Jetty server is already running"));
-                    }
-                    try {
-                        jettyServer.start();
-                        return success(info(getStatus(jettyServer)));
-                    } catch (BindException e) {
-                        return failed("Jetty Server Error - Port already in use", e);
-                    }
-                case "restart":
-                    try {
-                        if (jettyServer.isRunning()) {
-                            jettyServer.stop();
-                        }
-                        jettyServer.start();
-                        return success(info(getStatus(jettyServer)));
-                    } catch (BindException e) {
-                        return failed("Jetty Server Error - Port already in use");
-                    }
+                    return startJettyServer(serverName);
                 case "stop":
-                    if (!jettyServer.isRunning()) {
-                        return failed(warn("Jetty server is not running"));
+                    return stopJettyServer(serverName);
+                case "restart":
+                    CommandResult commandResult = stopJettyServer(serverName);
+                    if (commandResult.isSuccess()) {
+                        commandResult = startJettyServer(serverName);
                     }
-                    try {
-                        jettyServer.stop();
-                        return success(info(getStatus(jettyServer)));
-                    } catch (Exception e) {
-                        return failed("Jetty server stop failed", e);
-                    }
+                    return commandResult;
                 case "status":
-                    return success(getStatus(jettyServer));
+                    return printServerStatus(serverName);
                 default:
                     return failed(error("Unknown mode '" + mode + "'"));
             }
@@ -134,8 +87,87 @@ public class JettyCommand extends AbstractCommand {
         }
     }
 
-    private String getStatus(JettyServer jettyServer) {
-        return jettyServer.getState() + " - " + "Jetty " + JettyServer.getVersion();
+    private CommandResult startJettyServer(String serverName) throws Exception {
+        JettyServer jettyServer = null;
+        try {
+            if (hasJettyServer(serverName)) {
+                jettyServer = getJettyServer(serverName);
+                if (jettyServer.isRunning()) {
+                    return failed(warn("Jetty server is already running"));
+                } else {
+                    jettyServer.start();
+                    return success(info(getStatus(jettyServer.getState())));
+                }
+            } else {
+                jettyServer = getJettyServer(serverName);
+                if (!jettyServer.isRunning()) {
+                    jettyServer.start();
+                }
+                return success(info(getStatus(jettyServer.getState())));
+            }
+        } catch (Exception e) {
+            if (jettyServer != null) {
+                destroyTowServer(jettyServer);
+            }
+            Throwable cause = ExceptionUtils.getRootCause(e);
+            if (cause instanceof BindException) {
+                return failed("Jetty server failed to start. Cause: Port already in use", e);
+            } else {
+                return failed(e);
+            }
+        }
+    }
+
+    private CommandResult stopJettyServer(String serverName) {
+        try {
+            if (hasJettyServer(serverName)) {
+                JettyServer jettyServer = getJettyServer(serverName);
+                destroyTowServer(jettyServer);
+                return success(info(getStatus(LifeCycle.STOPPED)));
+            } else {
+                return failed(warn("Jetty server is not running"));
+            }
+        } catch (Exception e) {
+            return failed(e);
+        }
+    }
+
+    private CommandResult printServerStatus(String serverName) {
+        try {
+            if (hasJettyServer(serverName)) {
+                JettyServer jettyServer = getJettyServer(serverName);
+                if (jettyServer.isStarted()) {
+                    return success(info(getStatus(LifeCycle.RUNNING)));
+                } else {
+                    return success(info(getStatus(jettyServer.getState())));
+                }
+            } else {
+                return success(info(getStatus(LifeCycle.STOPPED)));
+            }
+        } catch (BeanException e) {
+            return failed("Jetty server is not available", e);
+        } catch (Exception e) {
+            return failed(e);
+        }
+    }
+
+    private String getStatus(String status) {
+        return status + " - " + "Jetty " + JettyServer.getVersion();
+    }
+
+    private JettyServer getJettyServer(String serverName) {
+        BeanRegistry beanRegistry = getDaemonService().getActivityContext().getBeanRegistry();
+        return beanRegistry.getBean(JettyServer.class, serverName);
+    }
+
+    private boolean hasJettyServer(String serverName) {
+        BeanRegistry beanRegistry = getDaemonService().getActivityContext().getBeanRegistry();
+        return beanRegistry.hasSingleton(JettyServer.class, serverName);
+    }
+
+    private void destroyTowServer(JettyServer jettyServer) throws Exception {
+        BeanRegistry beanRegistry = getDaemonService().getActivityContext().getBeanRegistry();
+        beanRegistry.destroySingleton(jettyServer);
     }
 
     @Override

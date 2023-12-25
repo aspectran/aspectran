@@ -21,7 +21,6 @@ import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.utils.lifecycle.AbstractLifeCycle;
 import io.undertow.Undertow;
-import io.undertow.Version;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.session.SessionManager;
 import io.undertow.servlet.api.Deployment;
@@ -46,11 +45,6 @@ public abstract class AbstractTowServer extends AbstractLifeCycle implements Tow
     private boolean autoStart;
 
     private int shutdownTimeoutSecs;
-
-    @Override
-    public String getVersion() {
-        return Version.getVersionString();
-    }
 
     public Undertow.Builder getBuilder() {
         return builder;

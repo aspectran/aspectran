@@ -15,6 +15,7 @@
  */
 package com.aspectran.jetty.shell.command;
 
+import com.aspectran.core.component.bean.BeanException;
 import com.aspectran.core.component.bean.BeanRegistry;
 import com.aspectran.jetty.JettyServer;
 import com.aspectran.shell.command.AbstractCommand;
@@ -23,7 +24,8 @@ import com.aspectran.shell.command.option.Arguments;
 import com.aspectran.shell.command.option.Option;
 import com.aspectran.shell.command.option.ParsedOptions;
 import com.aspectran.shell.console.ShellConsole;
-import com.aspectran.shell.service.ShellService;
+import com.aspectran.utils.ExceptionUtils;
+import com.aspectran.utils.lifecycle.LifeCycle;
 
 import java.net.BindException;
 
@@ -75,69 +77,23 @@ public class JettyCommand extends AbstractCommand {
         if (options.hasArgs()) {
             command = options.getFirstArg();
         }
-
-        ShellService shellService = getActiveShellService();
-
         String serverName = options.getValue("server", "jetty.server");
-        BeanRegistry beanRegistry = shellService.getActivityContext().getBeanRegistry();
-
-        boolean justCreated = !beanRegistry.hasSingleton(JettyServer.class, serverName);
-        if (justCreated) {
-            if ("stop".equals(command) || "restart".equals(command)) {
-                console.writeError("Jetty server is not running");
-                return;
-            }
-        }
-
-        JettyServer jettyServer;
-        try {
-            jettyServer = beanRegistry.getBean(JettyServer.class, serverName);
-        } catch (Exception e) {
-            console.writeError("Jetty server is not available. Cause: " + e.getMessage());
-            return;
-        }
 
         if (command != null) {
             switch (command) {
                 case "start":
-                    if (!justCreated && jettyServer.isRunning()) {
-                        console.writeError("Jetty server is already running");
-                        return;
-                    }
-                    try {
-                        jettyServer.start();
-                        printStatus(jettyServer, console);
-                    } catch (BindException e) {
-                        console.writeError("Jetty Server Error - Port already in use");
-                    }
+                    startJettyServer(serverName, console);
                     break;
                 case "stop":
-                    if (!jettyServer.isRunning()) {
-                        console.writeError("Jetty server is not running");
-                        return;
-                    }
-                    try {
-                        jettyServer.stop();
-                        printStatus(jettyServer, console);
-                        beanRegistry.destroySingleton(jettyServer);
-                    } catch (Exception e) {
-                        console.writeError("Jetty Server Error - " + e.getMessage());
-                    }
+                    stopJettyServer(serverName, console);
                     break;
                 case "restart":
-                    try {
-                        if (jettyServer.isRunning()) {
-                            jettyServer.stop();
-                        }
-                        jettyServer.start();
-                        printStatus(jettyServer, console);
-                        beanRegistry.destroySingleton(jettyServer);
-                    } catch (BindException e) {
-                        console.writeError("Jetty Server Error - Port already in use");
+                    if (stopJettyServer(serverName, console)) {
+                        startJettyServer(serverName, console);
                     }
                     break;
                 case "status":
-                    printStatus(jettyServer, console);
+                    printServerStatus(serverName, console);
                     break;
                 default:
                     console.writeError("Unknown command '" + String.join(" ", options.getArgs()) + "'");
@@ -149,13 +105,99 @@ public class JettyCommand extends AbstractCommand {
         }
     }
 
-    private void printStatus(JettyServer jettyServer, ShellConsole console) {
+    private void startJettyServer(String serverName, ShellConsole console) throws Exception {
+        JettyServer towServer = null;
+        try {
+            if (hasJettyServer(serverName)) {
+                towServer = getJettyServer(serverName);
+                if (towServer.isRunning()) {
+                    console.writeError("Jetty server is already running");
+                } else {
+                    towServer.start();
+                    printStatus(towServer.getState(), console);
+                }
+            } else {
+                towServer = getJettyServer(serverName);
+                if (!towServer.isRunning()) {
+                    towServer.start();
+                }
+                printStatus(towServer.getState(), console);
+            }
+        } catch (BeanException e) {
+            console.writeError("Jetty server is not available. Cause: " + e);
+        } catch (Exception e) {
+            if (towServer != null) {
+                destroyJettyServer(towServer);
+            }
+            Throwable cause = ExceptionUtils.getRootCause(e);
+            if (cause instanceof BindException) {
+                console.writeError("Jetty server failed to start. Cause: Port already in use");
+            } else {
+                console.writeError(e.toString());
+            }
+        }
+    }
+
+    private boolean stopJettyServer(String serverName, ShellConsole console) {
+        boolean success = false;
+        try {
+            if (hasJettyServer(serverName)) {
+                JettyServer towServer = getJettyServer(serverName);
+                destroyJettyServer(towServer);
+                printStatus(LifeCycle.STOPPED, console);
+                success = true;
+            } else {
+                console.writeError("Jetty server is not running");
+            }
+        } catch (BeanException e) {
+            console.writeError("Jetty server is not available. Cause: " + e);
+        } catch (Exception e) {
+            console.writeError(e.toString());
+        }
+        return success;
+    }
+
+    private void printServerStatus(String serverName, ShellConsole console) {
+        try {
+            if (hasJettyServer(serverName)) {
+                JettyServer towServer = getJettyServer(serverName);
+                if (towServer.isStarted()) {
+                    printStatus(LifeCycle.RUNNING, console);
+                } else {
+                    printStatus(towServer.getState(), console);
+                }
+            } else {
+                printStatus(LifeCycle.STOPPED, console);
+            }
+        } catch (BeanException e) {
+            console.writeError("Jetty server is not available. Cause: " + e);
+        } catch (Exception e) {
+            console.writeError(e.toString());
+        }
+    }
+
+    private void printStatus(String status, ShellConsole console) {
         console.writeLine("----------------------------------------------------------------------------");
         console.setStyle("YELLOW");
-        console.write(jettyServer.getState());
+        console.write(status);
         console.resetStyle();
         console.writeLine(" - Jetty " + JettyServer.getVersion());
         console.writeLine("----------------------------------------------------------------------------");
+    }
+
+    private JettyServer getJettyServer(String serverName) {
+        BeanRegistry beanRegistry = getActiveShellService().getActivityContext().getBeanRegistry();
+        return beanRegistry.getBean(JettyServer.class, serverName);
+    }
+
+    private boolean hasJettyServer(String serverName) {
+        BeanRegistry beanRegistry = getActiveShellService().getActivityContext().getBeanRegistry();
+        return beanRegistry.hasSingleton(JettyServer.class, serverName);
+    }
+
+    private void destroyJettyServer(JettyServer towServer) throws Exception {
+        BeanRegistry beanRegistry = getActiveShellService().getActivityContext().getBeanRegistry();
+        beanRegistry.destroySingleton(towServer);
     }
 
     @Override

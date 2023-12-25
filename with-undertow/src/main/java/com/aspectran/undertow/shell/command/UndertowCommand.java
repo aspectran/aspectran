@@ -15,6 +15,7 @@
  */
 package com.aspectran.undertow.shell.command;
 
+import com.aspectran.core.component.bean.BeanException;
 import com.aspectran.core.component.bean.BeanRegistry;
 import com.aspectran.shell.command.AbstractCommand;
 import com.aspectran.shell.command.CommandRegistry;
@@ -22,8 +23,9 @@ import com.aspectran.shell.command.option.Arguments;
 import com.aspectran.shell.command.option.Option;
 import com.aspectran.shell.command.option.ParsedOptions;
 import com.aspectran.shell.console.ShellConsole;
-import com.aspectran.shell.service.ShellService;
 import com.aspectran.undertow.server.TowServer;
+import com.aspectran.utils.ExceptionUtils;
+import com.aspectran.utils.lifecycle.LifeCycle;
 
 import java.net.BindException;
 
@@ -75,74 +77,23 @@ public class UndertowCommand extends AbstractCommand {
         if (options.hasArgs()) {
             command = options.getFirstArg();
         }
-
-        ShellService shellService = getActiveShellService();
-
         String serverName = options.getValue("server", "tow.server");
-        BeanRegistry beanRegistry = shellService.getActivityContext().getBeanRegistry();
-
-        boolean justCreated = !beanRegistry.hasSingleton(TowServer.class, serverName);
-        if (justCreated) {
-            if ("stop".equals(command) || "restart".equals(command)) {
-                console.writeError("Undertow server is not running");
-                return;
-            }
-        }
-
-        TowServer towServer;
-        try {
-            towServer = beanRegistry.getBean(TowServer.class, serverName);
-        } catch (Exception e) {
-            console.writeError("Undertow server is not available. Cause: " + e.getMessage());
-            return;
-        }
 
         if (command != null) {
             switch (command) {
                 case "start":
-                    if (!justCreated && towServer.isRunning()) {
-                        console.writeError("Undertow server is already running");
-                        return;
-                    }
-                    try {
-                        if (!towServer.isAutoStart()) {
-                            towServer.start();
-                        }
-                        printStatus(towServer, console);
-                    } catch (BindException e) {
-                        console.writeError("Undertow Server Error - Port already in use");
-                    }
+                    startTowServer(serverName, console);
                     break;
                 case "stop":
-                    if (!towServer.isRunning()) {
-                        console.writeError("Undertow server is not running");
-                        return;
-                    }
-                    try {
-                        towServer.stop();
-                        printStatus(towServer, console);
-                        beanRegistry.destroySingleton(towServer);
-                    } catch (Exception e) {
-                        console.writeError("Undertow Server Error - " + e.getMessage());
-                    }
+                    stopTowServer(serverName, console);
                     break;
                 case "restart":
-                    try {
-                        if (towServer.isRunning()) {
-                            towServer.stop();
-                            beanRegistry.destroySingleton(towServer);
-                            towServer = beanRegistry.getBean(TowServer.class, serverName);
-                        }
-                        if (!towServer.isAutoStart()) {
-                            towServer.start();
-                        }
-                        printStatus(towServer, console);
-                    } catch (BindException e) {
-                        console.writeError("Undertow Server Error - Port already in use");
+                    if (stopTowServer(serverName, console)) {
+                        startTowServer(serverName, console);
                     }
                     break;
                 case "status":
-                    printStatus(towServer, console);
+                    printServerStatus(serverName, console);
                     break;
                 default:
                     console.writeError("Unknown command '" + String.join(" ", options.getArgs()) + "'");
@@ -154,13 +105,99 @@ public class UndertowCommand extends AbstractCommand {
         }
     }
 
-    private void printStatus(TowServer towServer, ShellConsole console) {
+    private void startTowServer(String serverName, ShellConsole console) throws Exception {
+        TowServer towServer = null;
+        try {
+            if (hasTowServer(serverName)) {
+                towServer = getTowServer(serverName);
+                if (towServer.isRunning()) {
+                    console.writeError("Undertow server is already running");
+                } else {
+                    towServer.start();
+                    printStatus(towServer.getState(), console);
+                }
+            } else {
+                towServer = getTowServer(serverName);
+                if (!towServer.isRunning()) {
+                    towServer.start();
+                }
+                printStatus(towServer.getState(), console);
+            }
+        } catch (BeanException e) {
+            console.writeError("Undertow server is not available. Cause: " + e);
+        } catch (Exception e) {
+            if (towServer != null) {
+                destroyTowServer(towServer);
+            }
+            Throwable cause = ExceptionUtils.getRootCause(e);
+            if (cause instanceof BindException) {
+                console.writeError("Undertow server failed to start. Cause: Port already in use");
+            } else {
+                console.writeError(e.toString());
+            }
+        }
+    }
+
+    private boolean stopTowServer(String serverName, ShellConsole console) {
+        boolean success = false;
+        try {
+            if (hasTowServer(serverName)) {
+                TowServer towServer = getTowServer(serverName);
+                destroyTowServer(towServer);
+                printStatus(LifeCycle.STOPPED, console);
+                success = true;
+            } else {
+                console.writeError("Undertow server is not running");
+            }
+        } catch (BeanException e) {
+            console.writeError("Undertow server is not available. Cause: " + e);
+        } catch (Exception e) {
+            console.writeError(e.toString());
+        }
+        return success;
+    }
+
+    private void printServerStatus(String serverName, ShellConsole console) {
+        try {
+            if (hasTowServer(serverName)) {
+                TowServer towServer = getTowServer(serverName);
+                if (towServer.isStarted()) {
+                    printStatus(LifeCycle.RUNNING, console);
+                } else {
+                    printStatus(towServer.getState(), console);
+                }
+            } else {
+                printStatus(LifeCycle.STOPPED, console);
+            }
+        } catch (BeanException e) {
+            console.writeError("Undertow server is not available. Cause: " + e);
+        } catch (Exception e) {
+            console.writeError(e.toString());
+        }
+    }
+
+    private void printStatus(String status, ShellConsole console) {
         console.writeLine("----------------------------------------------------------------------------");
         console.setStyle("YELLOW");
-        console.write(towServer.getState());
+        console.write(status);
         console.resetStyle();
-        console.writeLine(" - Undertow " + towServer.getVersion());
+        console.writeLine(" - Undertow " + TowServer.getVersion());
         console.writeLine("----------------------------------------------------------------------------");
+    }
+
+    private TowServer getTowServer(String serverName) {
+        BeanRegistry beanRegistry = getActiveShellService().getActivityContext().getBeanRegistry();
+        return beanRegistry.getBean(TowServer.class, serverName);
+    }
+
+    private boolean hasTowServer(String serverName) {
+        BeanRegistry beanRegistry = getActiveShellService().getActivityContext().getBeanRegistry();
+        return beanRegistry.hasSingleton(TowServer.class, serverName);
+    }
+
+    private void destroyTowServer(TowServer towServer) throws Exception {
+        BeanRegistry beanRegistry = getActiveShellService().getActivityContext().getBeanRegistry();
+        beanRegistry.destroySingleton(towServer);
     }
 
     @Override

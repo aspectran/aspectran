@@ -40,7 +40,7 @@ public class DefaultTowServer extends AbstractTowServer implements Initializable
         try {
             server = getBuilder().build();
             server.start();
-            logger.info("Undertow " + getVersion() + " started");
+            logger.info("Undertow " + TowServer.getVersion() + " started");
         } catch (Exception e) {
             try {
                 if (server != null) {
@@ -87,7 +87,7 @@ public class DefaultTowServer extends AbstractTowServer implements Initializable
                 }
                 server.stop();
                 server = null;
-                logger.info("Undertow " + getVersion() + " stopped");
+                logger.info("Undertow " + TowServer.getVersion() + " stopped");
             }
         } catch (Exception e) {
             logger.error("Unable to stop Undertow server", e);

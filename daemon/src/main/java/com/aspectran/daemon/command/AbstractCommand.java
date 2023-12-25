@@ -94,7 +94,7 @@ public abstract class AbstractCommand implements Command {
     }
 
     protected CommandResult failed(Throwable throwable) {
-        logger.error(throwable.getMessage(), throwable);
+        logger.error(throwable.toString(), throwable);
         return new CommandResult(false, ExceptionUtils.getStacktrace(throwable));
     }
 

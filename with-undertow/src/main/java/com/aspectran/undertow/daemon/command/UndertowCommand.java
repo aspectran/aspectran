@@ -16,6 +16,7 @@
 package com.aspectran.undertow.daemon.command;
 
 import com.aspectran.core.activity.request.ParameterMap;
+import com.aspectran.core.component.bean.BeanException;
 import com.aspectran.core.component.bean.BeanRegistry;
 import com.aspectran.core.context.expr.ItemEvaluation;
 import com.aspectran.core.context.expr.ItemEvaluator;
@@ -24,9 +25,10 @@ import com.aspectran.daemon.command.AbstractCommand;
 import com.aspectran.daemon.command.CommandParameters;
 import com.aspectran.daemon.command.CommandRegistry;
 import com.aspectran.daemon.command.CommandResult;
-import com.aspectran.daemon.service.DaemonService;
 import com.aspectran.undertow.server.TowServer;
+import com.aspectran.utils.ExceptionUtils;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.lifecycle.LifeCycle;
 
 import java.net.BindException;
 
@@ -47,92 +49,36 @@ public class UndertowCommand extends AbstractCommand {
 
     @Override
     public CommandResult execute(CommandParameters parameters) {
-        DaemonService daemonService = getDaemonService();
-
-        try {
-            ClassLoader classLoader = daemonService.getActivityContext().getApplicationAdapter().getClassLoader();
-            classLoader.loadClass("com.aspectran.undertow.server.TowServer");
-        } catch (ClassNotFoundException e) {
-            return failed("Unable to load class com.aspectran.undertow.server.TowServer " +
-                    "due to missing dependency 'aspectran-with-undertow'", e);
-        }
-
         try {
             String mode = null;
             String serverName = null;
-
             ItemRuleMap parameterItemRuleMap = parameters.getParameterItemRuleMap();
             if ((parameterItemRuleMap != null && !parameterItemRuleMap.isEmpty())) {
-                ItemEvaluator evaluator = new ItemEvaluation(daemonService.getDefaultActivity());
+                ItemEvaluator evaluator = new ItemEvaluation(getDaemonService().getDefaultActivity());
                 ParameterMap parameterMap = evaluator.evaluateAsParameterMap(parameterItemRuleMap);
                 mode = parameterMap.getParameter("mode");
                 serverName = parameterMap.getParameter("server");
             }
-
+            if (mode == null) {
+                return failed("'mode' parameter is not specified");
+            }
             if (!StringUtils.hasLength(serverName)) {
                 serverName = "tow.server";
             }
 
-            BeanRegistry beanRegistry = daemonService.getActivityContext().getBeanRegistry();
-
-            boolean justCreated = !beanRegistry.hasSingleton(TowServer.class, serverName);
-            if (justCreated) {
-                if ("stop".equals(mode) || "restart".equals(mode)) {
-                    return failed("Undertow server is not running");
-                }
-            }
-
-            TowServer towServer;
-            try {
-                towServer = beanRegistry.getBean(TowServer.class, serverName);
-            } catch (Exception e) {
-                return failed("Undertow server is not available", e);
-            }
-
-            if (mode == null) {
-                return failed("'mode' parameter is not specified");
-            }
-
             switch (mode) {
                 case "start":
-                    if (!justCreated && towServer.isRunning()) {
-                        return failed(warn("Undertow server is already running"));
-                    }
-                    try {
-                        if (!towServer.isAutoStart()) {
-                            towServer.start();
-                        }
-                        return success(info(getStatus(towServer)));
-                    } catch (BindException e) {
-                        return failed("Undertow Server Error - Port already in use", e);
-                    }
+                    return startTowServer(serverName);
                 case "stop":
-                    if (!towServer.isRunning()) {
-                        return failed(warn("Undertow server is not running"));
-                    }
-                    try {
-                        towServer.stop();
-                        beanRegistry.destroySingleton(towServer);
-                        return success(info(getStatus(towServer)));
-                    } catch (Exception e) {
-                        return failed("Undertow server stop failed", e);
-                    }
+                    return stopTowServer(serverName);
                 case "restart":
-                    try {
-                        if (towServer.isRunning()) {
-                            towServer.stop();
-                            beanRegistry.destroySingleton(towServer);
-                            towServer = beanRegistry.getBean(TowServer.class, serverName);
-                        }
-                        if (!towServer.isAutoStart()) {
-                            towServer.start();
-                        }
-                        return success(info(getStatus(towServer)));
-                    } catch (BindException e) {
-                        return failed("Undertow Server Error - Port already in use");
+                    CommandResult commandResult = stopTowServer(serverName);
+                    if (commandResult.isSuccess()) {
+                        commandResult = startTowServer(serverName);
                     }
+                    return commandResult;
                 case "status":
-                    return success(getStatus(towServer));
+                    return printServerStatus(serverName);
                 default:
                     return failed(error("Unknown mode '" + mode + "'"));
             }
@@ -141,8 +87,87 @@ public class UndertowCommand extends AbstractCommand {
         }
     }
 
-    private String getStatus(TowServer towServer) {
-        return towServer.getState() + " - " + "Undertow " + towServer.getVersion();
+    private CommandResult startTowServer(String serverName) throws Exception {
+        TowServer towServer = null;
+        try {
+            if (hasTowServer(serverName)) {
+                towServer = getTowServer(serverName);
+                if (towServer.isRunning()) {
+                    return failed(warn("Undertow server is already running"));
+                } else {
+                    towServer.start();
+                    return success(info(getStatus(towServer.getState())));
+                }
+            } else {
+                towServer = getTowServer(serverName);
+                if (!towServer.isRunning()) {
+                    towServer.start();
+                }
+                return success(info(getStatus(towServer.getState())));
+            }
+        } catch (Exception e) {
+            if (towServer != null) {
+                destroyTowServer(towServer);
+            }
+            Throwable cause = ExceptionUtils.getRootCause(e);
+            if (cause instanceof BindException) {
+                return failed("Undertow server failed to start. Cause: Port already in use", e);
+            } else {
+                return failed(e);
+            }
+        }
+    }
+
+    private CommandResult stopTowServer(String serverName) {
+        try {
+            if (hasTowServer(serverName)) {
+                TowServer towServer = getTowServer(serverName);
+                destroyTowServer(towServer);
+                return success(info(getStatus(LifeCycle.STOPPED)));
+            } else {
+                return failed(warn("Undertow server is not running"));
+            }
+        } catch (Exception e) {
+            return failed(e);
+        }
+    }
+
+    private CommandResult printServerStatus(String serverName) {
+        try {
+            if (hasTowServer(serverName)) {
+                TowServer towServer = getTowServer(serverName);
+                if (towServer.isStarted()) {
+                    return success(info(getStatus(LifeCycle.RUNNING)));
+                } else {
+                    return success(info(getStatus(towServer.getState())));
+                }
+            } else {
+                return success(info(getStatus(LifeCycle.STOPPED)));
+            }
+        } catch (BeanException e) {
+            return failed("Undertow server is not available", e);
+        } catch (Exception e) {
+            return failed(e);
+        }
+    }
+
+    private String getStatus(String status) {
+        return status + " - " + "Undertow " + TowServer.getVersion();
+    }
+
+    private TowServer getTowServer(String serverName) {
+        BeanRegistry beanRegistry = getDaemonService().getActivityContext().getBeanRegistry();
+        return beanRegistry.getBean(TowServer.class, serverName);
+    }
+
+    private boolean hasTowServer(String serverName) {
+        BeanRegistry beanRegistry = getDaemonService().getActivityContext().getBeanRegistry();
+        return beanRegistry.hasSingleton(TowServer.class, serverName);
+    }
+
+    private void destroyTowServer(TowServer towServer) throws Exception {
+        BeanRegistry beanRegistry = getDaemonService().getActivityContext().getBeanRegistry();
+        beanRegistry.destroySingleton(towServer);
     }
 
     @Override
