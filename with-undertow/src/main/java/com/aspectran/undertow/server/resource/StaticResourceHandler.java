@@ -66,20 +66,14 @@ public class StaticResourceHandler extends ResourceHandler {
     public void autoDetect() throws IOException {
         if (getResourceManager() instanceof PathResourceManager) {
             Path base = ((PathResourceManager)getResourceManager()).getBasePath();
-            Set<String> dirs = new HashSet<>();
-            try (DirectoryStream<Path> stream = Files.newDirectoryStream(base)) {
-                for (Path path : stream) {
-                    if (Files.isDirectory(path)) {
-                        dirs.add("/" + path.getFileName().toString() + "/");
-                    }
-                }
-            }
+            Set<String> staticResources = findStaticResources(base);
+
             Set<WildcardPattern> patterns = new LinkedHashSet<>();
             if (resourcePathPatterns != null && resourcePathPatterns.hasIncludePatterns()) {
                 for (WildcardPattern pattern : resourcePathPatterns.getIncludePatterns()) {
                     boolean exists = false;
-                    for (String prefix : dirs) {
-                        if (pattern.toString().startsWith(prefix)) {
+                    for (String resource : staticResources) {
+                        if (resource.endsWith("/") && pattern.toString().startsWith(resource)) {
                             exists = true;
                             break;
                         }
@@ -89,8 +83,12 @@ public class StaticResourceHandler extends ResourceHandler {
                     }
                 }
             }
-            for (String prefix : dirs) {
-                patterns.add(WildcardPattern.compile(prefix + "**", '/'));
+            for (String resource : staticResources) {
+                if (resource.endsWith("/")) {
+                    patterns.add(WildcardPattern.compile(resource + "**", '/'));
+                } else {
+                    patterns.add(WildcardPattern.compile(resource));
+                }
             }
             if (patterns.isEmpty()) {
                 resourcePathPatterns = null;
@@ -99,12 +97,51 @@ public class StaticResourceHandler extends ResourceHandler {
                 WildcardPattern[] excludePatterns = (resourcePathPatterns != null ? resourcePathPatterns.getExcludePatterns() : null);
                 resourcePathPatterns = new PluralWildcardPattern(includePatterns, excludePatterns);
 
-                if (logger.isDebugEnabled()) {
-                    logger.debug("StaticResourceHandler includePatterns=" + Arrays.toString(includePatterns));
-                    if (excludePatterns != null) {
-                        logger.debug("StaticResourceHandler excludePatterns=" + Arrays.toString(excludePatterns));
+                logger.info("StaticResourceHandler includePatterns=" + Arrays.toString(includePatterns));
+                if (excludePatterns != null) {
+                    logger.info("StaticResourceHandler excludePatterns=" + Arrays.toString(excludePatterns));
+                }
+            }
+        }
+    }
+
+    private Set<String> findStaticResources(Path base) throws IOException {
+        Set<String> resources = new HashSet<>();
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream(base)) {
+            for (Path child : stream) {
+                if ("WEB-INF".equals(child.getFileName().toString())) {
+                    resources.add("/" + child.getFileName() + "/");
+                } else {
+                    if (Files.isDirectory(child)) {
+                        findStaticResourceDirs(child, "/" + child.getFileName() + "/", resources);
+                    } else {
+                        resources.add("/" + child.getFileName());
                     }
                 }
+            }
+        }
+        return resources;
+    }
+
+    private void findStaticResourceDirs(Path parent, String prefix, Set<String> resources) throws IOException {
+        Set<Path> children = new HashSet<>();
+        boolean found = false;
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream(parent)) {
+            for (Path child : stream) {
+                if (Files.isDirectory(child)) {
+                    children.add(child);
+                } else {
+                    children.clear();
+                    found = true;
+                    break;
+                }
+            }
+        }
+        if (found) {
+            resources.add(prefix);
+        } else if (!children.isEmpty()) {
+            for (Path child: children) {
+                findStaticResourceDirs(child, prefix + child.getFileName() + "/", resources);
             }
         }
     }
