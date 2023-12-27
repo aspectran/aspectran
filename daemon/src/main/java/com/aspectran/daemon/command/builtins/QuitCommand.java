@@ -34,7 +34,7 @@ public class QuitCommand extends AbstractCommand {
 
     @Override
     public CommandResult execute(CommandParameters parameters) {
-        if (!getCommandRegistry().getDaemon().isWait()) {
+        if (!getCommandRegistry().getDaemon().isWaiting()) {
             return failed(getCommandRegistry().getDaemon().getName() + " does not support the quit command");
         }
 

@@ -10,7 +10,7 @@ context: {
         scanIntervalSeconds: 5
         enabled: false
     }
-    singleton: false
+    singleton: true
 }
 scheduler: {
     startDelaySeconds: 3
@@ -22,7 +22,7 @@ daemon: {
         maxThreads: 5
     }
     polling: {
-        pollingInterval: 5000
+        pollingInterval: 1000
         requeuable: false
         incoming: /cmd/incoming
     }

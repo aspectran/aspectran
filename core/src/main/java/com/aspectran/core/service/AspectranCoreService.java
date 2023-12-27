@@ -26,8 +26,7 @@ public class AspectranCoreService extends AbstractCoreService {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    /** Reference to the shutdown task, if registered */
-    private ShutdownHook.Task shutdownTask;
+    private ShutdownHook.Manager shutdownHookManager;
 
     /**
      * Instantiates a new AspectranCoreService.
@@ -59,9 +58,6 @@ public class AspectranCoreService extends AbstractCoreService {
         if (getSchedulerService() != null) {
             joinDerivedService(getSchedulerService());
         }
-        if (!isDerived()) {
-            registerShutdownTask();
-        }
     }
 
     @Override
@@ -80,6 +76,19 @@ public class AspectranCoreService extends AbstractCoreService {
     protected void doStop() {
         clearDerivedService();
         stopAspectranService();
+    }
+
+    @Override
+    public void start() throws Exception {
+        super.start();
+        if (!isDerived()) {
+            registerShutdownTask();
+        }
+    }
+
+    @Override
+    public void stop() {
+        super.stop();
         removeShutdownTask();
     }
 
@@ -88,15 +97,10 @@ public class AspectranCoreService extends AbstractCoreService {
         afterContextLoaded();
     }
 
-    /**
-     * Actually performs destroys the singletons in the bean registry.
-     * Called by both {@code shutdown()} and a JVM shutdown hook, if any.
-     */
     private void stopAspectranService() {
         if (logger.isDebugEnabled()) {
             logger.debug("Destroying all cached resources...");
         }
-
         beforeContextDestroy();
         destroyActivityContext();
     }
@@ -106,25 +110,28 @@ public class AspectranCoreService extends AbstractCoreService {
      * on JVM shutdown unless it has already been closed at that time.
      */
     private void registerShutdownTask() {
-        if (this.shutdownTask == null) {
-            // Register a task to destroy the activity context on shutdown
-            this.shutdownTask = ShutdownHook.addTask(() -> {
+        shutdownHookManager = ShutdownHook.Manager.create(new ShutdownHook.Task() {
+            @Override
+            public void run() throws Exception {
                 if (isActive()) {
-                    stop();
+                    AspectranCoreService.super.stop();
                 }
-            });
-        }
+            }
+
+            @Override
+            public String toString() {
+                return "Stop " + getServiceName();
+            }
+        });
     }
 
     /**
      * De-registers a shutdown hook with the JVM runtime.
      */
     private void removeShutdownTask() {
-        // If we registered a JVM shutdown hook, we don't need it anymore now:
-        // We've already explicitly closed the context.
-        if (this.shutdownTask != null) {
-            ShutdownHook.removeTask(this.shutdownTask);
-            this.shutdownTask = null;
+        if (shutdownHookManager != null) {
+            shutdownHookManager.remove();
+            shutdownHookManager = null;
         }
     }
 

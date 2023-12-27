@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
-import java.nio.channels.OverlappingFileLockException;
 
 /**
  * Used to obtain a lock that can be used to prevent other Aspectran services
@@ -34,6 +33,8 @@ import java.nio.channels.OverlappingFileLockException;
 public class FileLocker {
 
     private static final Logger logger = LoggerFactory.getLogger(FileLocker.class);
+
+    private static final String DEFAULT_LOCK_FILENAME = ".lock";
 
     private File lockFile;
 
@@ -52,6 +53,14 @@ public class FileLocker {
         this.lockFile = lockFile;
     }
 
+    public FileLocker(String basePath) {
+        this(basePath, DEFAULT_LOCK_FILENAME);
+    }
+
+    public FileLocker(String basePath, String filename) {
+        this(new File(basePath, filename));
+    }
+
     /**
      * Try to lock the file and return true if the locking succeeds.
      * @return true if the locking succeeds; false if the lock is already held
@@ -60,7 +69,7 @@ public class FileLocker {
     public boolean lock() throws Exception {
         synchronized (this) {
             if (fileLock != null) {
-                throw new Exception("The lock is already held");
+                throw new Exception("Lock is already held");
             }
             if (logger.isDebugEnabled()) {
                 logger.debug("Acquiring lock on " + lockFile.getAbsolutePath());
@@ -68,7 +77,7 @@ public class FileLocker {
             try {
                 fileChannel = new RandomAccessFile(lockFile, "rw").getChannel();
                 fileLock = fileChannel.tryLock();
-            } catch (OverlappingFileLockException | IOException e) {
+            } catch (IOException e) {
                 throw new Exception("Exception occurred while trying to get a lock on file: " +
                         lockFile.getAbsolutePath(), e);
             }
@@ -77,7 +86,7 @@ public class FileLocker {
                     try {
                         fileChannel.close();
                     } catch (IOException ie) {
-                        // ignore
+                        logger.warn(ie);
                     }
                     fileChannel = null;
                 }
@@ -99,7 +108,13 @@ public class FileLocker {
             }
             if (fileLock != null) {
                 try {
-                    fileLock.release();
+                    if (fileLock.isValid()) {
+                        fileLock.release();
+                    } else {
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("Lock already released: " + lockFile.getAbsolutePath());
+                        }
+                    }
                     fileLock = null;
                 } catch (Exception e) {
                     throw new Exception("Unable to release locked file: " + lockFile.getAbsolutePath(), e);
@@ -108,13 +123,19 @@ public class FileLocker {
                     try {
                         fileChannel.close();
                     } catch (IOException e) {
-                        // ignore
+                        logger.warn(e);
                     }
                     fileChannel = null;
                 }
                 if (lockFile != null) {
-                    if (lockFile.exists()) {
-                        lockFile.delete();
+                    if (lockFile.delete()) {
+                        if (logger.isTraceEnabled()) {
+                            logger.trace("Deleted lock file " + lockFile.getAbsolutePath());
+                        }
+                    } else if (lockFile.exists()) {
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("Could not delete lock file " + lockFile.getAbsolutePath());
+                        }
                     }
                     lockFile = null;
                 }

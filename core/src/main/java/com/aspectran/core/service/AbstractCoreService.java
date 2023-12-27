@@ -31,7 +31,6 @@ import com.aspectran.core.scheduler.service.SchedulerService;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.FileLocker;
 import com.aspectran.utils.InsufficientEnvironmentException;
-import com.aspectran.utils.ShutdownHook;
 import com.aspectran.utils.SystemUtils;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
@@ -177,11 +176,11 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
                 if (basePath != null) {
                     setBasePath(basePath);
                 }
-
-                boolean singleton = contextConfig.isSingleton();
-                if (singleton && !checkSingletonLock()) {
-                    throw new InsufficientEnvironmentException("Another instance of Aspectran is already running; " +
-                            "Only one instance is allowed (context.singleton is set to true)");
+                if (contextConfig.isSingleton()) {
+                    if (!acquireSingletonLock()) {
+                        throw new InsufficientEnvironmentException("Another instance of Aspectran is already " +
+                                "running; Only one instance is allowed (context.singleton is set to true)");
+                    }
                 }
             }
 
@@ -211,6 +210,7 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
                 "No ActivityContextLoader configured; First, call the prepare() method");
 
         activityContextBuilder.destroy();
+        releaseSingletonLock();
     }
 
     @Override
@@ -279,7 +279,7 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
         return schedulerService;
     }
 
-    private boolean checkSingletonLock() throws Exception {
+    private boolean acquireSingletonLock() throws Exception {
         Assert.state(fileLocker == null, "Singleton lock is already configured");
         try {
             String basePath = getBasePath();
@@ -288,24 +288,21 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
             }
             Assert.state(basePath != null,
                     "Unable to determine the directory where the lock file will be located");
-            fileLocker = new FileLocker(new File(basePath, ".lock"));
-            if (fileLocker.lock()) {
-                ShutdownHook.addTask(() -> {
-                    if (fileLocker != null) {
-                        try {
-                            fileLocker.release();
-                            fileLocker = null;
-                        } catch (Exception e) {
-                            logger.warn("Unable to release singleton lock: " + e);
-                        }
-                    }
-                });
-                return true;
-            } else {
-                return false;
-            }
+            fileLocker = new FileLocker(basePath);
+            return fileLocker.lock();
         } catch (Exception e) {
             throw new Exception("Unable to acquire singleton lock", e);
+        }
+    }
+
+    private void releaseSingletonLock() {
+        if (fileLocker != null) {
+            try {
+                fileLocker.release();
+                fileLocker = null;
+            } catch (Exception e) {
+                logger.warn("Unable to release singleton lock: " + e);
+            }
         }
     }
 

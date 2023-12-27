@@ -32,6 +32,14 @@ public class ProcrunDaemon {
     private static DefaultDaemon defaultDaemon;
 
     public static void start(String[] params) {
+        start(params, 0L);
+    }
+
+    public static void stop(String[] args) {
+        stop();
+    }
+
+    protected static void start(String[] params, long waitTimeoutMillis) {
         if (defaultDaemon == null) {
             try {
                 String basePath = AspectranConfig.determineBasePath(params);
@@ -39,7 +47,7 @@ public class ProcrunDaemon {
 
                 defaultDaemon = new DefaultDaemon();
                 defaultDaemon.init(basePath, aspectranConfigFile);
-                defaultDaemon.start(true);
+                defaultDaemon.start(waitTimeoutMillis);
             } catch (Exception e) {
                 defaultDaemon = null;
                 e.printStackTrace(System.err);
@@ -47,11 +55,7 @@ public class ProcrunDaemon {
         }
     }
 
-    public static void stop(String[] args) {
-        stop();
-    }
-
-    public static void stop() {
+    protected static void stop() {
         if (defaultDaemon != null) {
             try {
                 defaultDaemon.destroy();

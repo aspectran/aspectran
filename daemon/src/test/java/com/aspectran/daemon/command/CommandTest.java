@@ -76,7 +76,7 @@ class CommandTest {
     @Test
     void testPollingIntervalCommand() {
         ItemRule argItemRule = new ItemRule();
-        argItemRule.setValue("3000");
+        argItemRule.setValue("2000");
         argItemRule.setValueType(ItemValueType.LONG);
 
         CommandParameters parameters = new CommandParameters();
@@ -86,7 +86,7 @@ class CommandTest {
 
         Command command = new PollingIntervalCommand(commandRegistry);
         CommandResult result = command.execute(parameters);
-        assertEquals("The polling interval is changed from 5000ms to 3000 ms", result.getResult());
+        assertEquals("The polling interval is changed from 1000ms to 2000 ms", result.getResult());
     }
 
     @Test

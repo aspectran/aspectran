@@ -47,8 +47,7 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
     /** Synchronization monitor for the "build" and "destroy" */
     private final Object buildDestroyMonitor = new Object();
 
-    /** Reference to the shutdown task, if registered */
-    private ShutdownHook.Task shutdownTask;
+    private ShutdownHook.Manager shutdownHookManager;
 
     public HybridActivityContextBuilder() {
         super();
@@ -196,31 +195,18 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
         }
     }
 
-    /**
-     * Registers a shutdown hook with the JVM runtime, closing this context
-     * on JVM shutdown unless it has already been closed at that time.
-     */
     private void registerDestroyTask() {
-        if (this.shutdownTask == null) {
-            // Register a task to destroy the activity context on shutdown
-            this.shutdownTask = ShutdownHook.addTask(() -> {
-                synchronized (this.buildDestroyMonitor) {
-                    doDestroy();
-                    removeDestroyTask();
-                }
-            });
-        }
+        shutdownHookManager = ShutdownHook.Manager.create(() -> {
+            synchronized (this.buildDestroyMonitor) {
+                doDestroy();
+            }
+        });
     }
 
-    /**
-     * De-registers a shutdown hook with the JVM runtime.
-     */
     private void removeDestroyTask() {
-        // If we registered a JVM shutdown hook, we don't need it anymore now:
-        // We've already explicitly closed the context.
-        if (this.shutdownTask != null) {
-            ShutdownHook.removeTask(this.shutdownTask);
-            this.shutdownTask = null;
+        if (shutdownHookManager != null) {
+            shutdownHookManager.remove();
+            shutdownHookManager = null;
         }
     }
 

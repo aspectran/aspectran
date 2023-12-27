@@ -39,7 +39,7 @@ public interface Daemon {
 
     CommandRegistry getCommandRegistry();
 
-    boolean isWait();
+    boolean isWaiting();
 
     boolean isActive();
 

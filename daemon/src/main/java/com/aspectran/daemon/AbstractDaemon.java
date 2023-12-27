@@ -54,7 +54,7 @@ public class AbstractDaemon implements Daemon {
 
     private CommandRegistry commandRegistry;
 
-    private boolean wait;
+    private boolean waiting;
 
     private Thread thread;
 
@@ -96,8 +96,8 @@ public class AbstractDaemon implements Daemon {
     }
 
     @Override
-    public boolean isWait() {
-        return wait;
+    public boolean isWaiting() {
+        return waiting;
     }
 
     @Override
@@ -169,9 +169,9 @@ public class AbstractDaemon implements Daemon {
         }
     }
 
-    protected void start(long wait) throws Exception {
+    protected void start(long waitTimeoutMillis) throws Exception {
         if (!active) {
-            this.wait = (wait >= 0L);
+            this.waiting = (waitTimeoutMillis >= 0L);
             if (name == null) {
                 name = this.getClass().getSimpleName();
             }
@@ -183,8 +183,10 @@ public class AbstractDaemon implements Daemon {
                         fileCommander.requeue();
                         while (active) {
                             try {
-                                fileCommander.polling();
-                                Thread.sleep(fileCommander.getPollingInterval());
+                                if (fileCommander != null) {
+                                    fileCommander.polling();
+                                    Thread.sleep(fileCommander.getPollingInterval());
+                                }
                             } catch (InterruptedException ie) {
                                 active = false;
                             }
@@ -195,8 +197,8 @@ public class AbstractDaemon implements Daemon {
 
             thread = new Thread(runnable, name);
             thread.start();
-            if (wait >= 0L) {
-                thread.join(wait);
+            if (waitTimeoutMillis >= 0L) {
+                thread.join(waitTimeoutMillis);
             }
         }
     }

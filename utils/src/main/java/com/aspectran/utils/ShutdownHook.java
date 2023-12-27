@@ -43,10 +43,14 @@ public class ShutdownHook {
         }
 
         if (hook == null) {
-            hook = new Thread("goodbye") {
+            hook = new Thread("shutdown") {
                 @Override
                 public void run() {
                     runTasks();
+
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Removed shutdown-hook: " + hook);
+                    }
                 }
             };
             registerHook(hook);
@@ -71,7 +75,11 @@ public class ShutdownHook {
         }
 
         // Drop the task
-        tasks.remove(task);
+        if (tasks.remove(task)) {
+            if (logger.isDebugEnabled()) {
+                logger.debug("Removed shutdown-hook task: " + task);
+            }
+        }
 
         // If there are no more tasks, then remove the hook thread
         if (tasks.isEmpty()) {
@@ -103,6 +111,7 @@ public class ShutdownHook {
             Runtime.getRuntime().removeShutdownHook(thread);
         } catch (IllegalStateException e) {
             // The VM is shutting down, not a big deal; ignore
+            logger.warn(e);
         }
 
         if (win32ConsoleCtrlCloseHook != null) {
@@ -113,23 +122,30 @@ public class ShutdownHook {
 
     private static synchronized void runTasks() {
         if (logger.isDebugEnabled()) {
-            logger.debug("Running all shutdown-hook tasks");
+            logger.debug("Running all shutdown-hook tasks: " + tasks.size());
         }
 
         List<Task> list = new ArrayList<>(tasks);
+        int count = 0;
         for (ListIterator<Task> iter = list.listIterator(list.size()); iter.hasPrevious(); ) {
             Task task = iter.previous();
-            if (logger.isDebugEnabled()) {
-                logger.debug("Running task: " + task);
-            }
-            try {
-                task.run();
-            } catch (Throwable e) {
-                logger.warn("Task failed", e);
+            if (tasks.contains(task)) {
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Running task [" + ++count + "/" + list.size() + "]: " + task);
+                }
+                try {
+                    task.run();
+                } catch (Throwable e) {
+                    logger.warn("Failed to run task: " + task, e);
+                }
+            } else {
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Task already run or removed [" + ++count + "/" + list.size() + "]: " + task);
+                }
             }
         }
-
         tasks.clear();
+
     }
 
     /**
@@ -138,6 +154,31 @@ public class ShutdownHook {
     public interface Task {
 
         void run() throws Exception;
+
+    }
+
+    public static class Manager {
+
+        private Task task;
+
+        public void register(Task task) {
+            if (this.task == null) {
+                this.task = addTask(task);
+            }
+        }
+
+        public void remove() {
+            if (this.task != null) {
+                removeTask(this.task);
+                this.task = null;
+            }
+        }
+
+        public static Manager create(Task task) {
+            Manager manager = new Manager();
+            manager.register(task);
+            return manager;
+        }
 
     }
 

@@ -31,8 +31,7 @@ public class AspectranDemoDaemon {
     public static void main(String[] args) {
         try {
             System.setProperty(EnvironmentProfiles.ACTIVE_PROFILES_PROPERTY_NAME, "daemon");
-            File current = ResourceUtils.getResourceAsFile(".");
-            File root = new File(current, "../../app");
+            File root = new File(ResourceUtils.getResourceAsFile(""), "../../app");
             System.setProperty(BASE_PATH_PROPERTY_NAME, root.getCanonicalPath()); // for logback
             String[] args2 = { root.getCanonicalPath(), "config/aspectran-config.apon" };
             DefaultDaemon.main(args2);
