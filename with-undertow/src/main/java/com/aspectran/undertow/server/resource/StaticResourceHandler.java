@@ -109,13 +109,14 @@ public class StaticResourceHandler extends ResourceHandler {
         Set<String> resources = new HashSet<>();
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(base)) {
             for (Path child : stream) {
-                if ("WEB-INF".equals(child.getFileName().toString())) {
-                    resources.add("/" + child.getFileName() + "/");
+                String fileName = child.getFileName().toString();
+                if ("WEB-INF".equalsIgnoreCase(fileName) || "META-INF".equalsIgnoreCase(fileName)) {
+                    resources.add("/" + fileName + "/");
                 } else {
                     if (Files.isDirectory(child)) {
-                        findStaticResourceDirs(child, "/" + child.getFileName() + "/", resources);
+                        findStaticResourceDirs(child, "/" + fileName + "/", resources);
                     } else {
-                        resources.add("/" + child.getFileName());
+                        resources.add("/" + fileName);
                     }
                 }
             }
