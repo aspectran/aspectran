@@ -18,23 +18,16 @@ package com.aspectran.core.service;
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.builder.ActivityContextBuilder;
-import com.aspectran.core.context.builder.ActivityContextBuilderException;
-import com.aspectran.core.context.builder.HybridActivityContextBuilder;
 import com.aspectran.core.context.config.AspectranConfig;
-import com.aspectran.core.context.config.ContextConfig;
 import com.aspectran.core.context.config.ExposalsConfig;
 import com.aspectran.core.context.config.SchedulerConfig;
-import com.aspectran.core.context.config.SystemConfig;
 import com.aspectran.core.context.resource.SiblingsClassLoader;
 import com.aspectran.core.scheduler.service.QuartzSchedulerService;
 import com.aspectran.core.scheduler.service.SchedulerService;
 import com.aspectran.utils.Assert;
-import com.aspectran.utils.FileLocker;
-import com.aspectran.utils.InsufficientEnvironmentException;
 import com.aspectran.utils.SystemUtils;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
-import com.aspectran.utils.wildcard.PluralWildcardPattern;
 
 import java.io.File;
 import java.io.IOException;
@@ -58,15 +51,11 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
 
     private AspectranConfig aspectranConfig;
 
-    private PluralWildcardPattern exposableTransletNamesPattern;
-
     private ActivityContextBuilder activityContextBuilder;
 
     private ActivityContext activityContext;
 
     private SchedulerService schedulerService;
-
-    private FileLocker fileLocker;
 
     public AbstractCoreService() {
         this(null);
@@ -79,6 +68,7 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
             Assert.state(rootService.getActivityContext() != null,
                     "Oops! No ActivityContext configured");
 
+            super.setRootService(rootService);
             this.rootService = rootService;
             this.activityContext = rootService.getActivityContext();
             this.aspectranConfig = rootService.getAspectranConfig();
@@ -87,6 +77,7 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
             setBasePath(rootService.getBasePath());
             rootService.joinDerivedService(this);
         } else {
+            super.setRootService(this);
             this.rootService = null;
             this.lateStart = false;
         }
@@ -108,9 +99,7 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
 
     @Override
     public boolean isHardReload() {
-        Assert.state(activityContextBuilder != null,
-                "No ActivityContextLoader configured; First, call the prepare() method");
-        return activityContextBuilder.isHardReload();
+        return getActivityContextBuilder().isHardReload();
     }
 
     @Override
@@ -142,75 +131,29 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
         return (rootService != null);
     }
 
-    protected boolean isExposable(String transletName) {
-        return (exposableTransletNamesPattern == null || exposableTransletNamesPattern.matches(transletName));
+    @Override
+    public AspectranConfig getAspectranConfig() {
+        return aspectranConfig;
     }
 
-    protected void setExposals(String[] includePatterns, String[] excludePatterns) {
-        if ((includePatterns != null && includePatterns.length > 0) ||
-                excludePatterns != null && excludePatterns.length > 0) {
-            exposableTransletNamesPattern = new PluralWildcardPattern(includePatterns, excludePatterns,
-                    ActivityContext.NAME_SEPARATOR_CHAR);
-        }
+    protected void setAspectranConfig(AspectranConfig aspectranConfig) {
+        this.aspectranConfig = aspectranConfig;
     }
 
-    protected void prepare(AspectranConfig aspectranConfig) throws AspectranServiceException {
-        Assert.state(activityContext == null, "ActivityContext is already configured");
-
-        try {
-            this.aspectranConfig = aspectranConfig;
-
-            SystemConfig systemConfig = aspectranConfig.getSystemConfig();
-            if (systemConfig != null) {
-                for (String key : systemConfig.getPropertyKeys()) {
-                    String value = systemConfig.getProperty(key);
-                    if (value != null) {
-                        System.setProperty(key, value);
-                    }
-                }
-            }
-
-            ContextConfig contextConfig = aspectranConfig.getContextConfig();
-            if (contextConfig != null) {
-                String basePath = contextConfig.getBasePath();
-                if (basePath != null) {
-                    setBasePath(basePath);
-                }
-                if (contextConfig.isSingleton()) {
-                    if (!acquireSingletonLock()) {
-                        throw new InsufficientEnvironmentException("Another instance of Aspectran is already " +
-                                "running; Only one instance is allowed (context.singleton is set to true)");
-                    }
-                }
-            }
-
-            activityContextBuilder = new HybridActivityContextBuilder(this);
-            activityContextBuilder.setBasePath(getBasePath());
-            activityContextBuilder.setContextConfig(contextConfig);
-            activityContextBuilder.setServiceController(this);
-
-            schedulerService = createSchedulerService(aspectranConfig.getSchedulerConfig());
-        } catch (Exception e) {
-            throw new AspectranServiceException("Unable to prepare the service", e);
-        }
+    protected boolean hasActivityContextBuilder() {
+        return (activityContextBuilder != null);
     }
 
-    protected void loadActivityContext() throws ActivityContextBuilderException {
-        Assert.state(activityContextBuilder != null,
-                "No ActivityContextLoader configured; First, call the prepare() method");
-        Assert.state(activityContext == null,
-                "ActivityContext is already configured; " +
-                        "Must destroy the current ActivityContext before reloading");
-
-        activityContextBuilder.build();
+    protected ActivityContextBuilder getActivityContextBuilder() {
+        Assert.state(hasActivityContextBuilder(),
+            "No ActivityContextLoader configured; First, call the prepare() method");
+        return activityContextBuilder;
     }
 
-    protected void destroyActivityContext() {
-        Assert.state(activityContextBuilder != null,
-                "No ActivityContextLoader configured; First, call the prepare() method");
-
-        activityContextBuilder.destroy();
-        releaseSingletonLock();
+    protected void setActivityContextBuilder(ActivityContextBuilder activityContextBuilder) {
+        Assert.state(!hasActivityContextBuilder(),
+            "ActivityContextBuilder is already configured; prepare() method can be called only once");
+        this.activityContextBuilder = activityContextBuilder;
     }
 
     @Override
@@ -218,27 +161,20 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
         return activityContext;
     }
 
-    public void setActivityContext(ActivityContext activityContext) {
+    protected void setActivityContext(ActivityContext activityContext) {
         this.activityContext = activityContext;
     }
 
     @Override
     public Activity getDefaultActivity() {
         Assert.state(getActivityContext() != null,
-                "No ActivityContext configured yet");
+            "No ActivityContext configured yet");
         return getActivityContext().getDefaultActivity();
     }
 
     @Override
     public SiblingsClassLoader getSiblingsClassLoader() {
-        Assert.state(activityContextBuilder != null,
-                "No ActivityContextLoader configured; First, call the prepare() method");
-        return activityContextBuilder.getSiblingsClassLoader();
-    }
-
-    @Override
-    public AspectranConfig getAspectranConfig() {
-        return aspectranConfig;
+        return getActivityContextBuilder().getSiblingsClassLoader();
     }
 
     @Override
@@ -246,13 +182,9 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
         return schedulerService;
     }
 
-    private SchedulerService createSchedulerService(SchedulerConfig schedulerConfig) {
-        if (schedulerConfig == null) {
-            return null;
-        }
-
-        if (!schedulerConfig.isEnabled()) {
-            return null;
+    protected void createSchedulerService(SchedulerConfig schedulerConfig) {
+        if (schedulerConfig == null || !schedulerConfig.isEnabled()) {
+            return;
         }
 
         int startDelaySeconds = schedulerConfig.getStartDelaySeconds();
@@ -276,34 +208,7 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
             String[] excludePatterns = exposalsConfig.getExcludePatterns();
             schedulerService.setExposals(includePatterns, excludePatterns);
         }
-        return schedulerService;
-    }
-
-    private boolean acquireSingletonLock() throws Exception {
-        Assert.state(fileLocker == null, "Singleton lock is already configured");
-        try {
-            String basePath = getBasePath();
-            if (basePath == null) {
-                basePath = SystemUtils.getJavaIoTmpDir();
-            }
-            Assert.state(basePath != null,
-                    "Unable to determine the directory where the lock file will be located");
-            fileLocker = new FileLocker(basePath);
-            return fileLocker.lock();
-        } catch (Exception e) {
-            throw new Exception("Unable to acquire singleton lock", e);
-        }
-    }
-
-    private void releaseSingletonLock() {
-        if (fileLocker != null) {
-            try {
-                fileLocker.release();
-                fileLocker = null;
-            } catch (Exception e) {
-                logger.warn("Unable to release singleton lock: " + e);
-            }
-        }
+        this.schedulerService = schedulerService;
     }
 
     protected void checkDirectoryStructure() {

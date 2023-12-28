@@ -24,7 +24,6 @@ import com.aspectran.core.context.rule.assistant.ActivityRuleAssistant;
 import com.aspectran.core.context.rule.params.AspectranParameters;
 import com.aspectran.core.context.rule.parser.ActivityContextParser;
 import com.aspectran.core.context.rule.parser.HybridActivityContextParser;
-import com.aspectran.core.service.AbstractCoreService;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.ShutdownHook;
 import com.aspectran.utils.StringUtils;
@@ -36,8 +35,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class HybridActivityContextBuilder extends AbstractActivityContextBuilder {
 
     private static final Logger logger = LoggerFactory.getLogger(HybridActivityContextBuilder.class);
-
-    private final AbstractCoreService coreService;
 
     private volatile ActivityContext activityContext;
 
@@ -51,13 +48,6 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
 
     public HybridActivityContextBuilder() {
         super();
-        this.coreService = null;
-    }
-
-    public HybridActivityContextBuilder(AbstractCoreService coreService) {
-        super();
-        this.coreService = coreService;
-        setServiceController(coreService);
     }
 
     @Override
@@ -146,23 +136,24 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
             activityContext = createActivityContext(assistant);
             assistant.release();
 
-            if (coreService != null) {
-                coreService.setActivityContext(activityContext);
-                activityContext.setRootService(coreService);
+            // When driven by a service
+            if (getServiceController() != null) {
+                // ActivityContext will be initialized in that service
+                activityContext.setRootService(getServiceController().getRootService());
+            } else {
+                ((Component) activityContext).initialize();
             }
-
-            ((Component)activityContext).initialize();
 
             long elapsedTime = System.currentTimeMillis() - startTime;
 
             logger.info("ActivityContext build completed in " + elapsedTime + " ms");
 
-            if (coreService == null) {
-                // If it is driven by a builder without a service
-                registerDestroyTask();
-            } else {
+            if (getServiceController() != null) {
                 // Timer starts only if it is driven by a service
                 startContextReloadingTimer();
+            } else {
+                // If it is driven by a builder without a service
+                registerDestroyTask();
             }
 
             this.active.set(true);
@@ -188,17 +179,22 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
                 ((Component)activityContext).destroy();
                 activityContext = null;
             }
-            if (coreService != null) {
-                coreService.setActivityContext(null);
-            }
             this.active.set(false);
         }
     }
 
     private void registerDestroyTask() {
-        shutdownHookManager = ShutdownHook.Manager.create(() -> {
-            synchronized (this.buildDestroyMonitor) {
-                doDestroy();
+        shutdownHookManager = ShutdownHook.Manager.create(new ShutdownHook.Task() {
+            @Override
+            public void run() throws Exception {
+                synchronized (buildDestroyMonitor) {
+                    doDestroy();
+                }
+            }
+
+            @Override
+            public String toString() {
+                return "Destroy " + HybridActivityContextBuilder.class.getSimpleName();
             }
         });
     }

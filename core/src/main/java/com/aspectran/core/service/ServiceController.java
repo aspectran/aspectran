@@ -27,6 +27,12 @@ public interface ServiceController {
     String getServiceName();
 
     /**
+     * Returns the first created CoreService that holds the ActivityContext.
+     * @return the root service
+     */
+    CoreService getRootService();
+
+    /**
      * Sets the service state listener.
      * @param serviceStateListener the new service state listener
      */

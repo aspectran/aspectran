@@ -23,9 +23,9 @@ import com.aspectran.core.context.rule.params.TriggerExpressionParameters;
 import com.aspectran.core.context.rule.type.TriggerType;
 import com.aspectran.core.service.AbstractServiceController;
 import com.aspectran.core.service.CoreService;
+import com.aspectran.utils.Assert;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
-import com.aspectran.utils.wildcard.PluralWildcardPattern;
 import org.quartz.CronScheduleBuilder;
 import org.quartz.JobBuilder;
 import org.quartz.JobDataMap;
@@ -61,17 +61,14 @@ public class QuartzSchedulerService extends AbstractServiceController implements
 
     private final Map<String, Scheduler> schedulerMap = new HashMap<>();
 
-    private final CoreService coreService;
-
     private int startDelaySeconds = 0;
 
     private boolean waitOnShutdown = false;
 
-    private PluralWildcardPattern exposableTransletNamesPattern;
-
-    public QuartzSchedulerService(CoreService coreService) {
+    public QuartzSchedulerService(CoreService rootService) {
         super(false);
-        this.coreService = coreService;
+        Assert.state(rootService != null, "rootService must not be null");
+        setRootService(rootService);
     }
 
     @Override
@@ -90,18 +87,6 @@ public class QuartzSchedulerService extends AbstractServiceController implements
 
     public void setWaitOnShutdown(boolean waitOnShutdown) {
         this.waitOnShutdown = waitOnShutdown;
-    }
-
-    public void setExposals(String[] includePatterns, String[] excludePatterns) {
-        if ((includePatterns != null && includePatterns.length > 0) ||
-                excludePatterns != null && excludePatterns.length > 0) {
-            exposableTransletNamesPattern = new PluralWildcardPattern(includePatterns, excludePatterns,
-                    ActivityContext.NAME_SEPARATOR_CHAR);
-        }
-    }
-
-    private boolean isExposable(String transletName) {
-        return (exposableTransletNamesPattern == null || exposableTransletNamesPattern.matches(transletName));
     }
 
     @Override
@@ -148,7 +133,9 @@ public class QuartzSchedulerService extends AbstractServiceController implements
 
     @Override
     public ActivityContext getActivityContext() {
-        return coreService.getActivityContext();
+        Assert.state(getRootService().getActivityContext() != null,
+            "No ActivityContext configured yet");
+        return getRootService().getActivityContext();
     }
 
     private void startSchedulerService() throws SchedulerServiceException {

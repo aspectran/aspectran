@@ -33,7 +33,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * <p>Created: 2016. 3. 26.</p>
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class ActivityContextBuilderTest {
+class HybridActivityContextBuilderTest {
 
     private ActivityContextBuilder builder;
 

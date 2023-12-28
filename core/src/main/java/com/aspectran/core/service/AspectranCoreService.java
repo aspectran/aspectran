@@ -15,7 +15,19 @@
  */
 package com.aspectran.core.service;
 
+import com.aspectran.core.component.Component;
+import com.aspectran.core.context.ActivityContext;
+import com.aspectran.core.context.builder.ActivityContextBuilder;
+import com.aspectran.core.context.builder.ActivityContextBuilderException;
+import com.aspectran.core.context.builder.HybridActivityContextBuilder;
+import com.aspectran.core.context.config.AspectranConfig;
+import com.aspectran.core.context.config.ContextConfig;
+import com.aspectran.core.context.config.SystemConfig;
+import com.aspectran.utils.Assert;
+import com.aspectran.utils.FileLocker;
+import com.aspectran.utils.InsufficientEnvironmentException;
 import com.aspectran.utils.ShutdownHook;
+import com.aspectran.utils.SystemUtils;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 
@@ -25,6 +37,8 @@ import com.aspectran.utils.logging.LoggerFactory;
 public class AspectranCoreService extends AbstractCoreService {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
+
+    private FileLocker fileLocker;
 
     private ShutdownHook.Manager shutdownHookManager;
 
@@ -37,6 +51,70 @@ public class AspectranCoreService extends AbstractCoreService {
 
     public AspectranCoreService(CoreService rootService) {
         super(rootService);
+    }
+
+    protected void prepare(AspectranConfig aspectranConfig) throws AspectranServiceException {
+        Assert.state(!hasActivityContextBuilder(),
+            "prepare() method can be called only once");
+
+        try {
+            setAspectranConfig(aspectranConfig);
+
+            SystemConfig systemConfig = aspectranConfig.getSystemConfig();
+            if (systemConfig != null) {
+                for (String key : systemConfig.getPropertyKeys()) {
+                    String value = systemConfig.getProperty(key);
+                    if (value != null) {
+                        System.setProperty(key, value);
+                    }
+                }
+            }
+
+            ContextConfig contextConfig = aspectranConfig.getContextConfig();
+            if (contextConfig != null) {
+                String basePath = contextConfig.getBasePath();
+                if (basePath != null) {
+                    setBasePath(basePath);
+                }
+                if (contextConfig.isSingleton()) {
+                    if (!acquireSingletonLock()) {
+                        throw new InsufficientEnvironmentException("Another instance of Aspectran is already " +
+                            "running; Only one instance is allowed (context.singleton is set to true)");
+                    }
+                }
+            }
+
+            ActivityContextBuilder activityContextBuilder = new HybridActivityContextBuilder();
+            activityContextBuilder.setBasePath(getBasePath());
+            activityContextBuilder.setContextConfig(contextConfig);
+            activityContextBuilder.setServiceController(getServiceController());
+            setActivityContextBuilder(activityContextBuilder);
+
+            createSchedulerService(aspectranConfig.getSchedulerConfig());
+        } catch (Exception e) {
+            throw new AspectranServiceException("Unable to prepare the service", e);
+        }
+    }
+
+    protected void buildActivityContext() throws ActivityContextBuilderException {
+        Assert.state(getActivityContext() == null,
+            "ActivityContext is already built; " +
+                "Must destroy the current ActivityContext before reloading");
+        ActivityContext activityContext = getActivityContextBuilder().build();
+        setActivityContext(activityContext);
+        try {
+            ((Component)activityContext).initialize();
+        } catch (Exception e) {
+            throw new ActivityContextBuilderException("Failed to initialize ActivityContext", e);
+        }
+    }
+
+    protected void destroyActivityContext() {
+        if (logger.isDebugEnabled()) {
+            logger.debug("Destroying all cached resources...");
+        }
+        getActivityContextBuilder().destroy();
+        setActivityContext(null);
     }
 
     /**
@@ -54,7 +132,8 @@ public class AspectranCoreService extends AbstractCoreService {
 
     @Override
     protected void doStart() throws Exception {
-        startAspectranService();
+        buildActivityContext();
+        afterContextLoaded();
         if (getSchedulerService() != null) {
             joinDerivedService(getSchedulerService());
         }
@@ -75,34 +154,50 @@ public class AspectranCoreService extends AbstractCoreService {
     @Override
     protected void doStop() {
         clearDerivedService();
-        stopAspectranService();
+        beforeContextDestroy();
+        destroyActivityContext();
     }
 
     @Override
     public void start() throws Exception {
-        super.start();
         if (!isDerived()) {
             registerShutdownTask();
         }
+        super.start();
     }
 
     @Override
     public void stop() {
         super.stop();
+        releaseSingletonLock();
         removeShutdownTask();
     }
 
-    private void startAspectranService() throws Exception {
-        loadActivityContext();
-        afterContextLoaded();
+    private boolean acquireSingletonLock() throws Exception {
+        Assert.state(fileLocker == null, "Singleton lock is already configured");
+        try {
+            String basePath = getBasePath();
+            if (basePath == null) {
+                basePath = SystemUtils.getJavaIoTmpDir();
+            }
+            Assert.state(basePath != null,
+                "Unable to determine the directory where the lock file will be located");
+            fileLocker = new FileLocker(basePath);
+            return fileLocker.lock();
+        } catch (Exception e) {
+            throw new Exception("Unable to acquire singleton lock", e);
+        }
     }
 
-    private void stopAspectranService() {
-        if (logger.isDebugEnabled()) {
-            logger.debug("Destroying all cached resources...");
+    private void releaseSingletonLock() {
+        if (fileLocker != null) {
+            try {
+                fileLocker.release();
+                fileLocker = null;
+            } catch (Exception e) {
+                logger.warn("Unable to release singleton lock: " + e);
+            }
         }
-        beforeContextDestroy();
-        destroyActivityContext();
     }
 
     /**

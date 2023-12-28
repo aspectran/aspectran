@@ -15,9 +15,11 @@
  */
 package com.aspectran.core.service;
 
+import com.aspectran.core.context.ActivityContext;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
+import com.aspectran.utils.wildcard.PluralWildcardPattern;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +35,11 @@ public abstract class AbstractServiceController implements ServiceController {
 
     private final List<ServiceController> derivedServices;
 
+    private CoreService rootService;
+
     private ServiceStateListener serviceStateListener;
+
+    private PluralWildcardPattern exposableTransletNamesPattern;
 
     /** Flag that indicates whether this service is active */
     private volatile boolean active;
@@ -49,6 +55,15 @@ public abstract class AbstractServiceController implements ServiceController {
     @Override
     public String getServiceName() {
         return getClass().getSimpleName();
+    }
+
+    @Override
+    public CoreService getRootService() {
+        return rootService;
+    }
+
+    protected void setRootService(CoreService rootService) {
+        this.rootService = rootService;
     }
 
     @Override
@@ -73,6 +88,18 @@ public abstract class AbstractServiceController implements ServiceController {
     protected void clearDerivedService() {
         if (derivedServices != null) {
             derivedServices.clear();
+        }
+    }
+
+    protected boolean isExposable(String transletName) {
+        return (exposableTransletNamesPattern == null || exposableTransletNamesPattern.matches(transletName));
+    }
+
+    protected void setExposals(String[] includePatterns, String[] excludePatterns) {
+        if ((includePatterns != null && includePatterns.length > 0) ||
+            excludePatterns != null && excludePatterns.length > 0) {
+            exposableTransletNamesPattern = new PluralWildcardPattern(includePatterns, excludePatterns,
+                ActivityContext.NAME_SEPARATOR_CHAR);
         }
     }
 

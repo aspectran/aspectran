@@ -54,7 +54,7 @@ public interface ActivityContext {
     String getDescription();
 
     /**
-     * Returns the Aspectran Service that created the current ActivityContext.
+     * Returns the first created CoreService that holds the ActivityContext.
      * @return the root service
      */
     CoreService getRootService();

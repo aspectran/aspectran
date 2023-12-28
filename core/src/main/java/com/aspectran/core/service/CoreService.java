@@ -64,7 +64,18 @@ public interface CoreService {
 
     void leaveFromRootService();
 
+    /**
+     * Returns whether this service is derived from another root service.
+     * @return whether this service is derived
+     */
     boolean isDerived();
+
+    /**
+     * Returns the Aspectran configuration parameters used to
+     * generate the AspectranService.
+     * @return the Aspectran Configuration Parameters
+     */
+    AspectranConfig getAspectranConfig();
 
     /**
      * Returns the activity context.
@@ -83,13 +94,6 @@ public interface CoreService {
      * @return the siblings class loader
      */
     SiblingsClassLoader getSiblingsClassLoader();
-
-    /**
-     * Returns the Aspectran configuration parameters used to
-     * generate the AspectranService.
-     * @return the Aspectran Configuration Parameters
-     */
-    AspectranConfig getAspectranConfig();
 
     /**
      * Returns the scheduler service.
