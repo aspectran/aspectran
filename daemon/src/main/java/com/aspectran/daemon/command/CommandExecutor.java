@@ -70,7 +70,11 @@ public class CommandExecutor {
     }
 
     public int getAvailableThreads() {
-        return maxThreads - queueSize.get();
+        return (maxThreads - queueSize.get());
+    }
+
+    public boolean execute(final CommandParameters parameters) {
+        return execute(parameters, null);
     }
 
     public boolean execute(final CommandParameters parameters, final Callback callback) {
@@ -87,10 +91,12 @@ public class CommandExecutor {
         Command command = daemon.getCommandRegistry().getCommand(commandName);
         if (command == null) {
             parameters.setResult("No command mapped to '" + commandName + "'");
-            try {
-                callback.failure();
-            } catch (Exception e) {
-                logger.error("Failed to execute callback", e);
+            if (callback != null) {
+                try {
+                    callback.failure();
+                } catch (Exception e) {
+                    logger.error("Failed to execute callback", e);
+                }
             }
             return false;
         }
@@ -120,14 +126,16 @@ public class CommandExecutor {
                 }
 
                 boolean success = execute(command, parameters);
-                try {
-                    if (success) {
-                        callback.success();
-                    } else {
-                        callback.failure();
+                if (callback != null) {
+                    try {
+                        if (success) {
+                            callback.success();
+                        } else {
+                            callback.failure();
+                        }
+                    } catch (Exception e) {
+                        logger.error("Failed to execute callback", e);
                     }
-                } catch (Exception e) {
-                    logger.error("Failed to execute callback", e);
                 }
             } finally {
                 currentThread.setName(oldThreadName);

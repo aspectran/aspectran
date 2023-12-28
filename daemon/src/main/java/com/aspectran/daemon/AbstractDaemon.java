@@ -105,20 +105,20 @@ public class AbstractDaemon implements Daemon {
         return active;
     }
 
-    protected void init(@Nullable String basePath, @Nullable File aspectranConfigFile) throws Exception {
+    protected void prepare(@Nullable String basePath, @Nullable File aspectranConfigFile) throws Exception {
         AspectranConfig aspectranConfig = new AspectranConfig();
         if (aspectranConfigFile != null) {
             try {
                 AponReader.parse(aspectranConfigFile, aspectranConfig);
             } catch (AponParseException e) {
                 throw new IllegalArgumentException("Failed to parse aspectran config file: " +
-                        aspectranConfigFile, e);
+                    aspectranConfigFile, e);
             }
         }
-        init(basePath, aspectranConfig);
+        prepare(basePath, aspectranConfig);
     }
 
-    protected void init(@Nullable String basePath, @NonNull AspectranConfig aspectranConfig) throws Exception {
+    protected void prepare(@Nullable String basePath, @NonNull AspectranConfig aspectranConfig) throws Exception {
         if (basePath != null) {
             aspectranConfig.touchContextConfig().setBasePath(basePath);
         }

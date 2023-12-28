@@ -35,7 +35,7 @@ public class DefaultDaemon extends AbstractDaemon {
         int exitStatus = 0;
 
         try {
-            defaultDaemon.init(basePath, aspectranConfigFile);
+            defaultDaemon.prepare(basePath, aspectranConfigFile);
             defaultDaemon.start(true);
         } catch (Exception e) {
             e.printStackTrace(System.err);

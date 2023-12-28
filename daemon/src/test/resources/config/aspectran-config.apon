@@ -27,6 +27,8 @@ daemon: {
         incoming: /cmd/incoming
     }
     commands: [
+        com.aspectran.daemon.command.EchoCommand
+        com.aspectran.daemon.command.builtins.SysInfoCommand
         com.aspectran.daemon.command.builtins.InvokeActionCommand
         com.aspectran.daemon.command.builtins.TransletCommand
         com.aspectran.daemon.command.builtins.PollingIntervalCommand

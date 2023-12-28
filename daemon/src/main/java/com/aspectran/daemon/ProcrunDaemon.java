@@ -16,6 +16,7 @@
 package com.aspectran.daemon;
 
 import com.aspectran.core.context.config.AspectranConfig;
+import com.aspectran.utils.Assert;
 
 import java.io.File;
 import java.util.Arrays;
@@ -31,11 +32,19 @@ public class ProcrunDaemon {
 
     private static DefaultDaemon defaultDaemon;
 
+    protected static DefaultDaemon getDefaultDaemon() {
+        Assert.state(defaultDaemon != null,
+            "No DefaultDaemon available");
+        return defaultDaemon;
+    }
+
     public static void start(String[] params) {
+        Thread.currentThread().setName("procrun-start");
         start(params, 0L);
     }
 
     public static void stop(String[] args) {
+        Thread.currentThread().setName("procrun-stop");
         stop();
     }
 
@@ -46,7 +55,7 @@ public class ProcrunDaemon {
                 File aspectranConfigFile = AspectranConfig.determineAspectranConfigFile(params);
 
                 defaultDaemon = new DefaultDaemon();
-                defaultDaemon.init(basePath, aspectranConfigFile);
+                defaultDaemon.prepare(basePath, aspectranConfigFile);
                 defaultDaemon.start(waitTimeoutMillis);
             } catch (Exception e) {
                 defaultDaemon = null;

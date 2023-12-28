@@ -53,22 +53,24 @@ public class SysInfoCommand extends AbstractCommand {
             Writer writer = new StringWriter();
             PrintWriter printWriter = new PrintWriter(writer);
             Set<Object> done = new HashSet<>();
-            for (Object arg : args) {
-                if (!done.contains(arg)) {
-                    if (!done.isEmpty()) {
-                        printWriter.println();
+            if (args != null) {
+                for (Object arg : args) {
+                    if (!done.contains(arg)) {
+                        if (!done.isEmpty()) {
+                            printWriter.println();
+                        }
+                        if ("props".equals(arg)) {
+                            printSysProperties(printWriter);
+                        } else if ("cp".equals(arg)) {
+                            printClasspath(printWriter);
+                        } else if ("mem".equals(arg)) {
+                            mem(false, printWriter);
+                        } else if ("gc".equals(arg)) {
+                            mem(true, printWriter);
+                        }
                     }
-                    if ("props".equals(arg)) {
-                        printSysProperties(printWriter);
-                    } else if ("cp".equals(arg)) {
-                        printClasspath(printWriter);
-                    } else if ("mem".equals(arg)) {
-                        mem(false, printWriter);
-                    } else if ("gc".equals(arg)) {
-                        mem(true, printWriter);
-                    }
+                    done.add(arg);
                 }
-                done.add(arg);
             }
             return success(writer.toString());
         } catch (Exception e) {

@@ -34,10 +34,10 @@ public class SimpleDaemon extends AbstractDaemon {
         super();
     }
 
-    public void init(@Nullable String basePath, @NonNull DaemonConfig daemonConfig) throws Exception {
+    public void prepare(@Nullable String basePath, @NonNull DaemonConfig daemonConfig) throws Exception {
         AspectranConfig aspectranConfig = new AspectranConfig();
         aspectranConfig.setDaemonConfig(daemonConfig);
-        super.init(basePath, aspectranConfig);
+        prepare(basePath, aspectranConfig);
     }
 
     @Override
