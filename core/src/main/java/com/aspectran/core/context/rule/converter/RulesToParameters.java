@@ -776,7 +776,7 @@ public class RulesToParameters {
 
         ItemRuleMap headerItemRuleMap = headerActionRule.getHeaderItemRuleMap();
         if (headerItemRuleMap != null) {
-            toItemRuleMap(headerItemRuleMap, actionParameters);
+            toItemParameters(headerItemRuleMap, actionParameters);
         }
 
         return actionParameters;
@@ -793,7 +793,7 @@ public class RulesToParameters {
 
         ItemRuleMap attributeItemRuleMap = echoActionRule.getEchoItemRuleMap();
         if (attributeItemRuleMap != null) {
-            toItemRuleMap(attributeItemRuleMap, actionParameters);
+            toItemParameters(attributeItemRuleMap, actionParameters);
         }
 
         return actionParameters;
@@ -899,13 +899,13 @@ public class RulesToParameters {
         return actionParameters;
     }
 
-    private static void toItemRuleMap(ItemRuleMap itemRuleMap, ActionParameters actionParameters) {
-        if (itemRuleMap == null) {
-            throw new IllegalArgumentException("itemRuleMap must not be null");
-        }
-
-        for (ItemRule itemRule : itemRuleMap.values()) {
-            actionParameters.putValue(ActionParameters.item, toItemParameters(itemRule));
+    private static void toItemHolderParameters(ItemRuleMap itemRuleMap, Parameters parameters, ParameterKey key) {
+        if (itemRuleMap.getCandidates() != null) {
+            for (ItemRuleMap irm : itemRuleMap.getCandidates()) {
+                parameters.putValue(key, toItemHolderParameters(irm));
+            }
+        } else {
+            parameters.putValue(key, toItemHolderParameters(itemRuleMap));
         }
     }
 
@@ -922,13 +922,13 @@ public class RulesToParameters {
         return itemHolderParameters;
     }
 
-    private static void toItemHolderParameters(ItemRuleMap itemRuleMap, Parameters parameters, ParameterKey key) {
-        if (itemRuleMap.getCandidates() != null) {
-            for (ItemRuleMap irm : itemRuleMap.getCandidates()) {
-                parameters.putValue(key, toItemHolderParameters(irm));
-            }
-        } else {
-            parameters.putValue(key, toItemHolderParameters(itemRuleMap));
+    private static void toItemParameters(ItemRuleMap itemRuleMap, ActionParameters actionParameters) {
+        if (itemRuleMap == null) {
+            throw new IllegalArgumentException("itemRuleMap must not be null");
+        }
+
+        for (ItemRule itemRule : itemRuleMap.values()) {
+            actionParameters.putValue(ActionParameters.item, toItemParameters(itemRule));
         }
     }
 

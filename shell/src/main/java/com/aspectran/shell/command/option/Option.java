@@ -91,7 +91,7 @@ public class Option implements Cloneable, Serializable {
         this.required = builder.required;
         this.description = builder.description;
     }
-    
+
     /**
      * Creates an Option using the specified parameters.
      * The option does not take an argument.
@@ -153,7 +153,7 @@ public class Option implements Cloneable, Serializable {
 
     /**
      * Returns the 'unique' Option identifier.
-     * 
+     *
      * @return the 'unique' Option identifier
      */
     public String getKey() {
@@ -161,7 +161,7 @@ public class Option implements Cloneable, Serializable {
         return (name == null ? longName : name);
     }
 
-    /** 
+    /**
      * Retrieve the name of this Option.
      *
      * It is this String which can be used with
@@ -431,15 +431,15 @@ public class Option implements Cloneable, Serializable {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) {
+    public boolean equals(Object other) {
+        if (this == other) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (other == null || getClass() != other.getClass()) {
             return false;
         }
 
-        Option option = (Option)o;
+        Option option = (Option)other;
         if (!Objects.equals(name, option.name)) {
             return false;
         }
@@ -519,19 +519,19 @@ public class Option implements Cloneable, Serializable {
         }
         return acceptsValue();
     }
-    
+
     /**
      * Returns a {@link Builder} to create an {@link Option} using descriptive
-     * methods.  
+     * methods.
      * @return a new {@link Builder} instance
      */
     public static Builder builder() {
         return builder(null);
     }
-    
+
     /**
      * Returns a {@link Builder} to create an {@link Option} using descriptive
-     * methods.  
+     * methods.
      * @param name short representation of the option
      * @return a new {@link Builder} instance
      * @throws IllegalArgumentException if there are any non valid Option characters in {@code name}
@@ -539,7 +539,7 @@ public class Option implements Cloneable, Serializable {
     public static Builder builder(String name) {
         return new Builder(name);
     }
-    
+
     /**
      * A nested builder class to create <code>Option</code> instances
      * using descriptive methods.

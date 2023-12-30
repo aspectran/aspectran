@@ -24,17 +24,70 @@ import com.aspectran.core.activity.Activity;
 public interface Environment {
 
     /**
-     * Returns the set of profiles explicitly made active for this environment.
-     * @return the set of profiles explicitly made active
+     * Return the set of profiles explicitly made active for this environment. Profiles
+     * are used for creating logical groupings of bean definitions to be registered
+     * conditionally, for example based on deployment environment. Profiles can be
+     * activated by setting {@linkplain EnvironmentProfiles#ACTIVE_PROFILES_PROPERTY_NAME
+     * "aspectran.profiles.active"} as a system property or by calling
+     * {@link EnvironmentProfiles#setActiveProfiles(String...)}.
+     * <p>If no profiles have explicitly been specified as active, then any
+     * {@linkplain #getDefaultProfiles() default profiles} will automatically be activated.
+     * @see #getDefaultProfiles
+     * @see EnvironmentProfiles#setActiveProfiles
+     * @see EnvironmentProfiles#ACTIVE_PROFILES_PROPERTY_NAME
      */
     String[] getActiveProfiles();
 
     /**
-     * Returns the set of profiles to be active by default when no active profiles have
+     * Return the set of profiles to be active by default when no active profiles have
      * been set explicitly.
-     * @return the set of profiles to be active by default
+     * @see #getActiveProfiles
+     * @see EnvironmentProfiles#setDefaultProfiles
+     * @see EnvironmentProfiles#DEFAULT_PROFILES_PROPERTY_NAME
      */
     String[] getDefaultProfiles();
+
+
+    /**
+     * Return the set of profiles explicitly made active for this environment.
+     * If no active profile is explicitly set, returns the set of profiles to be
+     * active by default.
+     * @see #getActiveProfiles
+     * @see EnvironmentProfiles#getActiveProfiles
+     * @see #getDefaultProfiles
+     * @see EnvironmentProfiles#getDefaultProfiles
+     */
+    String[] getCurrentProfiles();
+
+    /**
+     * Determine whether one of the given profile expressions matches the
+     * {@linkplain #getActiveProfiles() active profiles} &mdash; or in the case
+     * of no explicit active profiles, whether one of the given profile expressions
+     * matches the {@linkplain #getDefaultProfiles() default profiles}.
+     * <p>Profile expressions allow for complex, boolean profile logic to be
+     * expressed &mdash; for example {@code "p1 & p2"}, {@code "(p1 & p2) | p3"},
+     * etc. See {@link Profiles#of(String)} for details on the supported
+     * expression syntax.
+     * <p>This method is a convenient shortcut for
+     * {@code env.acceptsProfiles(Profiles.of(profileExpression))}.
+     * @since 7.5.0
+     * @see Profiles#of(String)
+     * @see #acceptsProfiles(Profiles)
+     */
+    boolean matchesProfiles(String profileExpression);
+
+    /**
+     * Determine whether the given {@link Profiles} predicate matches the
+     * {@linkplain #getActiveProfiles() active profiles} &mdash; or in the case
+     * of no explicit active profiles, whether the given {@code Profiles} predicate
+     * matches the {@linkplain #getDefaultProfiles() default profiles}.
+     * <p>If you wish provide profile expressions directly as strings, use
+     * {@link #matchesProfiles(String)} instead.
+     * @since 7.5.0
+     * @see #matchesProfiles(String)
+     * @see Profiles#of(String)
+     */
+    boolean acceptsProfiles(Profiles profiles);
 
     /**
      * Return whether one or more of the given profiles is active or, in the case of no
@@ -51,6 +104,12 @@ public interface Environment {
      * @see #getDefaultProfiles
      */
     boolean acceptsProfiles(String... profiles);
+
+    /**
+     * Add a profile to the current set of active profiles.
+     * @throws IllegalArgumentException if the profile is null, empty or whitespace-only
+     */
+    void addActiveProfile(String profile);
 
     /**
      * Returns the value of the property on environment via the currently available activity.

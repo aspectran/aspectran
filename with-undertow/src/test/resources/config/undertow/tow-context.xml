@@ -148,7 +148,7 @@
                 </bean>
             </item>
         </properties>
-        <properties profile="!rss-lettuce,!rss-lettuce-masterreplica,!rss-lettuce-cluster">
+        <properties profile="!rss-lettuce &amp; !rss-lettuce-masterreplica &amp; !rss-lettuce-cluster">
             <item name="sessionStore">
                 <bean class="com.aspectran.core.component.session.FileSessionStoreFactory">
                     <properties>

@@ -15,13 +15,15 @@
  */
 package com.aspectran.core.context.rule;
 
+import com.aspectran.core.context.env.Profiles;
+
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
  * The Class ItemRuleMap.
- * 
+ *
  * <p>Created: 2008. 03. 29 PM 5:00:20</p>
  */
 public class ItemRuleMap extends LinkedHashMap<String, ItemRule> {
@@ -29,6 +31,8 @@ public class ItemRuleMap extends LinkedHashMap<String, ItemRule> {
     private static final long serialVersionUID = 192817512158305803L;
 
     private String profile;
+
+    private Profiles profiles;
 
     private List<ItemRuleMap> candidates;
 
@@ -67,6 +71,11 @@ public class ItemRuleMap extends LinkedHashMap<String, ItemRule> {
 
     public void setProfile(String profile) {
         this.profile = profile;
+        this.profiles = (profile != null ? Profiles.of(profile) : null);
+    }
+
+    public Profiles getProfiles() {
+        return profiles;
     }
 
     public List<ItemRuleMap> getCandidates() {
@@ -77,12 +86,11 @@ public class ItemRuleMap extends LinkedHashMap<String, ItemRule> {
         this.candidates = candidates;
     }
 
-    public List<ItemRuleMap> addCandidate(ItemRuleMap itemRuleMap) {
+    public boolean addCandidate(ItemRuleMap itemRuleMap) {
         if (candidates == null) {
             candidates = new ArrayList<>();
         }
-        candidates.add(itemRuleMap);
-        return candidates;
+        return candidates.add(itemRuleMap);
     }
 
 }

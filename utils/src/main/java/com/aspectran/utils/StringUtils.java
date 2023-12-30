@@ -17,6 +17,8 @@ package com.aspectran.utils;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -287,7 +289,7 @@ public class StringUtils {
      * @param str the {@code String} to check
      * @param prefix the prefix to look for
      * @return {@code true} if the {@code String} starts with the prefix,
-     *      case insensitive, or both {@code null}
+     *      case-insensitive, or both {@code null}
      * @see java.lang.String#startsWith
      */
     public static boolean startsWithIgnoreCase(String str, String prefix) {
@@ -301,7 +303,7 @@ public class StringUtils {
      * @param str the {@code String} to check
      * @param suffix the suffix to look for
      * @return {@code true} if the {@code String} ends with the suffix,
-     *      case insensitive, or both {@code null}
+     *      case-insensitive, or both {@code null}
      * @see java.lang.String#endsWith
      */
     public static boolean endsWithIgnoreCase(String str, String suffix) {
@@ -651,17 +653,17 @@ public class StringUtils {
     /**
      * Convert a {@code Collection} into a delimited {@code String} (e.g. CSV).
      * <p>Useful for {@code toString()} implementations.</p>
-     * @param list the collection
+     * @param collection the collection
      * @param delim the delimiter to use (typically a ",")
      * @return the delimited {@code String}
      */
-    public static String toDelimitedString(Collection<?> list, String delim) {
-        if (list == null || list.isEmpty()) {
+    public static String toDelimitedString(Collection<?> collection, String delim) {
+        if (collection == null || collection.isEmpty()) {
             return EMPTY;
         }
         StringBuilder sb = new StringBuilder();
         boolean first = true;
-        for (Object o : list) {
+        for (Object o : collection) {
             if (!first) {
                 sb.append(delim);
             }
@@ -684,11 +686,11 @@ public class StringUtils {
     /**
      * Convert a {@code Collection} into a delimited {@code String}
      * by a system-dependent line separator.
-     * @param list the collection
+     * @param collection the collection
      * @return the delimited {@code String}
      */
-    public static String toLineDelimitedString(Collection<?> list) {
-        return toDelimitedString(list, System.lineSeparator());
+    public static String toLineDelimitedString(Collection<?> collection) {
+        return toDelimitedString(collection, System.lineSeparator());
     }
 
     /**
@@ -714,11 +716,34 @@ public class StringUtils {
     /**
      * Convert a {@code Collection} into a comma delimited {@code String}
      * (i.e., CSV).
-     * @param list the collection
+     * @param collection the collection
      * @return the delimited {@code String}
      */
-    public static String joinCommaDelimitedList(Collection<?> list) {
-        return toDelimitedString(list, ", ");
+    public static String joinCommaDelimitedList(Collection<?> collection) {
+        return toDelimitedString(collection, ", ");
+    }
+
+    /**
+     * Copy the given {@link Collection} into a {@code String} array.
+     * <p>The {@code Collection} must contain {@code String} elements only.
+     * @param collection the {@code Collection} to copy
+     * (potentially {@code null} or empty)
+     * @return the resulting {@code String} array
+     */
+    public static String[] toStringArray(Collection<String> collection) {
+        return (collection != null && !collection.isEmpty() ?
+            collection.toArray(EMPTY_STRING_ARRAY) : EMPTY_STRING_ARRAY);
+    }
+
+    /**
+     * Copy the given {@link Enumeration} into a {@code String} array.
+     * <p>The {@code Enumeration} must contain {@code String} elements only.
+     * @param enumeration the {@code Enumeration} to copy
+     * (potentially {@code null} or empty)
+     * @return the resulting {@code String} array
+     */
+    public static String[] toStringArray(Enumeration<String> enumeration) {
+        return (enumeration != null ? toStringArray(Collections.list(enumeration)) : EMPTY_STRING_ARRAY);
     }
 
     /**

@@ -900,11 +900,11 @@ public class MethodUtils {
         }
 
         @Override
-        public boolean equals(Object obj) {
-            if (this == obj) {
+        public boolean equals(Object other) {
+            if (this == other) {
                 return true;
             }
-            MethodDescriptor md = (MethodDescriptor)obj;
+            MethodDescriptor md = (MethodDescriptor)other;
             return (
                     exact == md.exact &&
                     methodName.equals(md.methodName) &&

@@ -16,12 +16,14 @@
 package com.aspectran.core.context.rule;
 
 import com.aspectran.core.activity.Activity;
+import com.aspectran.core.context.env.Profiles;
 import com.aspectran.core.context.expr.TokenEvaluation;
 import com.aspectran.core.context.expr.TokenEvaluator;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.expr.token.TokenParser;
 import com.aspectran.core.context.rule.ability.Replicable;
 import com.aspectran.core.context.rule.type.TextStyleType;
+import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.ToStringBuilder;
 
 import java.util.ArrayList;
@@ -34,6 +36,8 @@ public class DescriptionRule implements Replicable<DescriptionRule> {
 
     private String profile;
 
+    private Profiles profiles;
+
     private TextStyleType contentStyle;
 
     private String content;
@@ -45,13 +49,13 @@ public class DescriptionRule implements Replicable<DescriptionRule> {
     public DescriptionRule() {
     }
 
-    public DescriptionRule(DescriptionRule dr) {
-        if (dr != null) {
-            setProfile(dr.getProfile());
-            setContentStyle(dr.getContentStyle());
-            setContent(dr.getContent());
-            setFormattedContent(dr.getFormattedContent());
-            setCandidates(dr.getCandidates());
+    public DescriptionRule(DescriptionRule other) {
+        if (other != null) {
+            setProfiles(other.getProfile(), other.getProfiles());
+            setContentStyle(other.getContentStyle());
+            setContent(other.getContent());
+            setFormattedContent(other.getFormattedContent());
+            setCandidates(other.getCandidates());
         }
     }
 
@@ -61,6 +65,16 @@ public class DescriptionRule implements Replicable<DescriptionRule> {
 
     public void setProfile(String profile) {
         this.profile = profile;
+        this.profiles = (profile != null ? Profiles.of(profile) : null);
+    }
+
+    public Profiles getProfiles() {
+        return profiles;
+    }
+
+    private void setProfiles(String profile, Profiles profiles) {
+        this.profile = profile;
+        this.profiles = profiles;
     }
 
     public TextStyleType getContentStyle() {
@@ -95,18 +109,17 @@ public class DescriptionRule implements Replicable<DescriptionRule> {
         this.candidates = candidates;
     }
 
-    public List<DescriptionRule> addCandidate(DescriptionRule descriptionRule) {
+    public boolean addCandidate(DescriptionRule candidate) {
         if (candidates == null) {
             candidates = new ArrayList<>();
         }
-        candidates.add(descriptionRule);
-        return candidates;
+        return candidates.add(candidate);
     }
 
     @Override
     public DescriptionRule replicate() {
         DescriptionRule dr = new DescriptionRule();
-        dr.setProfile(profile);
+        dr.setProfiles(profile, profiles);
         dr.setContentStyle(contentStyle);
         dr.setContent(content);
         return dr;
@@ -142,12 +155,12 @@ public class DescriptionRule implements Replicable<DescriptionRule> {
             throw new IllegalRuleException("No text style type for '" + style + "'");
         }
 
-        DescriptionRule descriptionRule = new DescriptionRule();
-        descriptionRule.setContentStyle(contentStyle);
-        if (profile != null && !profile.isEmpty()) {
-            descriptionRule.setProfile(profile);
+        DescriptionRule dr = new DescriptionRule();
+        dr.setContentStyle(contentStyle);
+        if (StringUtils.hasText(profile)) {
+            dr.setProfile(profile);
         }
-        return descriptionRule;
+        return dr;
     }
 
 }

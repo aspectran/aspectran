@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.context.rule;
 
+import com.aspectran.core.context.env.Profiles;
 import com.aspectran.core.context.rule.params.AspectranParameters;
 import com.aspectran.core.context.rule.type.AppendableFileFormatType;
 import com.aspectran.utils.StringUtils;
@@ -36,6 +37,8 @@ public class AppendRule {
     private AppendableFileFormatType format;
 
     private String profile;
+
+    private Profiles profiles;
 
     private AspectranParameters aspectranParameters;
 
@@ -77,6 +80,11 @@ public class AppendRule {
 
     public void setProfile(String profile) {
         this.profile = profile;
+        this.profiles = (profile != null ? Profiles.of(profile) : null);
+    }
+
+    public Profiles getProfiles() {
+        return profiles;
     }
 
     public AspectranParameters getAspectranParameters() {
@@ -129,7 +137,7 @@ public class AppendRule {
         }
         appendRule.setFormat(appendableFileFormatType);
 
-        if (profile != null && !profile.isEmpty()) {
+        if (StringUtils.hasText(profile)) {
             appendRule.setProfile(profile);
         }
 
@@ -145,7 +153,7 @@ public class AppendRule {
     public static AppendRule newInstance(AspectranParameters aspectranParameters, String profile) {
         AppendRule appendRule = new AppendRule();
         appendRule.setAspectranParameters(aspectranParameters);
-        if (profile != null && !profile.isEmpty()) {
+        if (StringUtils.hasText(profile)) {
             appendRule.setProfile(profile);
         }
         return appendRule;

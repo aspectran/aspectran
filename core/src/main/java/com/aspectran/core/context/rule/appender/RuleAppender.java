@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.context.rule.appender;
 
+import com.aspectran.core.context.env.Profiles;
 import com.aspectran.core.context.rule.AppendRule;
 import com.aspectran.core.context.rule.type.AppendableFileFormatType;
 import com.aspectran.core.context.rule.type.AppenderType;
@@ -41,9 +42,9 @@ public interface RuleAppender {
 
     void setAppendableFileFormatType(AppendableFileFormatType appendableFileFormatType);
 
-    String[] getProfiles();
+    Profiles getProfiles();
 
-    void setProfiles(String[] profiles);
+    void setProfile(String profile);
 
     String getQualifiedName();
 

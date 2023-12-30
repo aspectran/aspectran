@@ -55,7 +55,6 @@ import com.aspectran.core.context.rule.type.BeanProxifierType;
 import com.aspectran.core.context.rule.type.DefaultSettingType;
 import com.aspectran.core.service.ServiceController;
 import com.aspectran.utils.ClassUtils;
-import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.SystemUtils;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
@@ -319,11 +318,13 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
 
     protected EnvironmentProfiles createEnvironmentProfiles() {
         EnvironmentProfiles environmentProfiles = new EnvironmentProfiles();
-        if (activeProfiles != null) {
-            environmentProfiles.setActiveProfiles(activeProfiles);
+        if (getDefaultProfiles() != null) {
+            environmentProfiles.setDefaultProfiles(getDefaultProfiles());
         }
-        if (defaultProfiles != null) {
-            environmentProfiles.setDefaultProfiles(defaultProfiles);
+        if (getActiveProfiles() != null) {
+            environmentProfiles.setActiveProfiles(getActiveProfiles());
+        } else {
+            environmentProfiles.getActiveProfiles(); // just for logging
         }
         return environmentProfiles;
     }
@@ -405,13 +406,11 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
             environment.setPropertyItemRuleMap(propertyItemRuleMap);
         }
         for (EnvironmentRule environmentRule : assistant.getEnvironmentRules()) {
-            String[] profiles = StringUtils.splitCommaDelimitedString(environmentRule.getProfile());
-            if (environmentProfiles.acceptsProfiles(profiles)) {
+            if (environmentProfiles.acceptsProfiles(environmentRule.getProfiles())) {
                 if (environmentRule.getPropertyItemRuleMapList() != null) {
-                    for (ItemRuleMap propertyItemRuleMap : environmentRule.getPropertyItemRuleMapList()) {
-                        String[] profiles2 = StringUtils.splitCommaDelimitedString(propertyItemRuleMap.getProfile());
-                        if (environmentProfiles.acceptsProfiles(profiles2)) {
-                            environment.addPropertyItemRule(propertyItemRuleMap);
+                    for (ItemRuleMap propertyIrm : environmentRule.getPropertyItemRuleMapList()) {
+                        if (environmentProfiles.acceptsProfiles(propertyIrm.getProfiles())) {
+                            environment.addPropertyItemRule(propertyIrm);
                         }
                     }
                 }

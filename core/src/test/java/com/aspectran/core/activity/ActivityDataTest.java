@@ -63,6 +63,8 @@ class ActivityDataTest {
         assertEquals("Strawberry", activityData.get("attr1"));
         assertEquals("Melon", activityData.get("attr2"));
         assertEquals(1, activityData.get("result1"));
+
+        builder.destroy();
     }
 
 }

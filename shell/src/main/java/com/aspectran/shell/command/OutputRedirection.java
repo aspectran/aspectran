@@ -61,12 +61,12 @@ public class OutputRedirection {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) {
+    public boolean equals(Object other) {
+        if (this == other) {
             return true;
         }
-        if (o instanceof OutputRedirection) {
-            OutputRedirection redirection = (OutputRedirection)o;
+        if (other instanceof OutputRedirection) {
+            OutputRedirection redirection = (OutputRedirection)other;
             return redirection.getOperand().equals(operand) &&
                     redirection.getOperator().equals(operator);
         }

@@ -26,6 +26,6 @@ import java.lang.annotation.Target;
 @Target({ElementType.TYPE, ElementType.METHOD})
 public @interface Profile {
 
-    String[] value();
+    String value();
 
 }

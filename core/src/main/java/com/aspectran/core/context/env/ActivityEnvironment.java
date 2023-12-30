@@ -49,8 +49,33 @@ public class ActivityEnvironment implements Environment {
     }
 
     @Override
+    public String[] getCurrentProfiles() {
+        String[] activeProfiles = getActiveProfiles();
+        if (activeProfiles.length > 0) {
+            return activeProfiles;
+        } else {
+            return getDefaultProfiles();
+        }
+    }
+
+    @Override
+    public boolean matchesProfiles(String profileExpression) {
+        return environmentProfiles.matchesProfiles(profileExpression);
+    }
+
+    @Override
+    public boolean acceptsProfiles(Profiles profiles) {
+        return environmentProfiles.acceptsProfiles(profiles);
+    }
+
+    @Override
     public boolean acceptsProfiles(String... profiles) {
         return environmentProfiles.acceptsProfiles(profiles);
+    }
+
+    @Override
+    public void addActiveProfile(String profile) {
+        environmentProfiles.addActiveProfile(profile);
     }
 
     public ItemRuleMap getPropertyItemRuleMap() {

@@ -61,14 +61,14 @@ public class PointcutPattern {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) {
+    public boolean equals(Object other) {
+        if (this == other) {
             return true;
         }
-        if (!(o instanceof PointcutPattern)) {
+        if (!(other instanceof PointcutPattern)) {
             return false;
         }
-        PointcutPattern pp = (PointcutPattern)o;
+        PointcutPattern pp = (PointcutPattern)other;
         return (Objects.equals(transletNamePattern, pp.getTransletNamePattern()) &&
                 Objects.equals(beanIdPattern, pp.getBeanIdPattern()) &&
                 Objects.equals(classNamePattern, pp.getClassNamePattern()) &&

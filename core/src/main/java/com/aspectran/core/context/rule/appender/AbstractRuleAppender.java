@@ -15,10 +15,10 @@
  */
 package com.aspectran.core.context.rule.appender;
 
+import com.aspectran.core.context.env.Profiles;
 import com.aspectran.core.context.rule.AppendRule;
 import com.aspectran.core.context.rule.type.AppendableFileFormatType;
 import com.aspectran.core.context.rule.type.AppenderType;
-import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.nodelet.NodeTracker;
 
 import java.io.IOException;
@@ -38,7 +38,7 @@ abstract class AbstractRuleAppender implements RuleAppender {
 
     private AppendableFileFormatType appendableFileFormatType;
 
-    private String[] profiles;
+    private Profiles profiles;
 
     private long lastModified;
 
@@ -61,21 +61,11 @@ abstract class AbstractRuleAppender implements RuleAppender {
     @Override
     public void setAppendRule(AppendRule appendRule) {
         this.appendRule = appendRule;
-
-        AppendableFileFormatType appendableFileFormatType = appendRule.getFormat();
-        if (appendableFileFormatType != null) {
-            this.appendableFileFormatType = appendableFileFormatType;
+        // If the rule does not have a format, it follows its own determined format.
+        if (appendRule.getFormat() != null) {
+            this.appendableFileFormatType = appendRule.getFormat();
         }
-
-        String profile = appendRule.getProfile();
-        if (profile != null && !profile.isEmpty()) {
-            String[] arr = StringUtils.splitCommaDelimitedString(profile);
-            if (arr.length > 0) {
-                this.profiles = arr;
-            } else {
-                this.profiles = null;
-            }
-        }
+        setProfiles(appendRule.getProfiles());
     }
 
     @Override
@@ -97,13 +87,17 @@ abstract class AbstractRuleAppender implements RuleAppender {
     }
 
     @Override
-    public String[] getProfiles() {
+    public Profiles getProfiles() {
         return profiles;
     }
 
-    @Override
-    public void setProfiles(String[] profiles) {
+    private void setProfiles(Profiles profiles) {
         this.profiles = profiles;
+    }
+
+    @Override
+    public void setProfile(String profile) {
+        setProfiles(profile != null ? Profiles.of(profile) : null);
     }
 
     @Override

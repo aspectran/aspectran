@@ -24,7 +24,7 @@ import java.util.Objects;
 
 /**
  * The Class Tokenizer.
- * 
+ *
  * <p>Created: 2008. 03. 29 AM 1:55:03</p>
  */
 public class Tokenizer {
@@ -71,7 +71,6 @@ public class Tokenizer {
         StringBuilder textBuf = new StringBuilder();
 
         List<Token> tokens = new ArrayList<>();
-
         for (int i = 0; i < inputLen; i++) {
             c = input.charAt(i);
             switch (status) {
@@ -115,16 +114,13 @@ public class Tokenizer {
                                 Token token = new Token(text);
                                 tokens.add(token);
                             }
-
                             // save token name and default value
                             Token token = createToken(symbol, nameBuf, valueBuf);
                             tokens.add(token);
-
                             status = AT_TEXT;
                             textBuf.setLength(0);
                             break;
                         }
-
                         status = AT_TEXT;
                         break;
                     }
@@ -140,13 +136,11 @@ public class Tokenizer {
                     break;
                 }
         }
-
         if (textBuf.length() > 0) {
             String text = trimBuffer(textBuf, textBuf.length(), textTrim);
             Token token = new Token(text);
             tokens.add(token);
         }
-
         return tokens;
     }
 

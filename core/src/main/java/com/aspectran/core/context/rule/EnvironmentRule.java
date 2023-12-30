@@ -15,17 +15,22 @@
  */
 package com.aspectran.core.context.rule;
 
+import com.aspectran.core.context.env.Profiles;
+import com.aspectran.utils.StringUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * The Class EnvironmentRule.
- * 
+ *
  * <p>Created: 2016. 05. 06 PM 11:23:35</p>
  */
 public class EnvironmentRule {
 
     private String profile;
+
+    private Profiles profiles;
 
     private List<ItemRuleMap> propertyItemRuleMapList;
 
@@ -37,6 +42,11 @@ public class EnvironmentRule {
 
     public void setProfile(String profile) {
         this.profile = profile;
+        this.profiles = (profile != null ? Profiles.of(profile) : null);
+    }
+
+    public Profiles getProfiles() {
+        return profiles;
     }
 
     public List<ItemRuleMap> getPropertyItemRuleMapList() {
@@ -69,7 +79,7 @@ public class EnvironmentRule {
      */
     public static EnvironmentRule newInstance(String profile) {
         EnvironmentRule environmentRule = new EnvironmentRule();
-        if (profile != null && !profile.isEmpty()) {
+        if (StringUtils.hasText(profile)) {
             environmentRule.setProfile(profile);
         }
         return environmentRule;

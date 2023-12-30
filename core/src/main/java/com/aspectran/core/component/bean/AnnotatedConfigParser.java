@@ -193,7 +193,8 @@ public class AnnotatedConfigParser {
         if (componentAnno != null) {
             if (beanClass.isAnnotationPresent(Profile.class)) {
                 Profile profileAnno = beanClass.getAnnotation(Profile.class);
-                if (!environmentProfiles.acceptsProfiles(profileAnno.value())) {
+                String profile = StringUtils.emptyToNull(profileAnno.value());
+                if (profile != null && !environmentProfiles.matchesProfiles(profile)) {
                     return;
                 }
             }
@@ -210,7 +211,8 @@ public class AnnotatedConfigParser {
             for (Method method : beanClass.getMethods()) {
                 if (method.isAnnotationPresent(Profile.class)) {
                     Profile profileAnno = method.getAnnotation(Profile.class);
-                    if (!environmentProfiles.acceptsProfiles(profileAnno.value())) {
+                    String profile = StringUtils.emptyToNull(profileAnno.value());
+                    if (profile != null && !environmentProfiles.matchesProfiles(profile)) {
                         continue;
                     }
                 }
@@ -640,7 +642,7 @@ public class AnnotatedConfigParser {
             ItemRuleMap itemRuleMap = new ItemRuleMap();
             for (ParamItem paramItemAnno : paramItemAnnos) {
                 String profile = StringUtils.emptyToNull(paramItemAnno.profile());
-                if (profile == null || environmentProfiles.acceptsProfiles(profile)) {
+                if (profile == null || environmentProfiles.matchesProfiles(profile)) {
                     itemRuleMap.putItemRule(ItemRuleUtils.toItemRule(paramItemAnno));
                 }
             }
@@ -652,7 +654,7 @@ public class AnnotatedConfigParser {
             ItemRuleMap itemRuleMap = new ItemRuleMap();
             for (AttrItem attrItemAnno : attrItemAnnos) {
                 String profile = StringUtils.emptyToNull(attrItemAnno.profile());
-                if (profile == null || environmentProfiles.acceptsProfiles(profile)) {
+                if (profile == null || environmentProfiles.matchesProfiles(profile)) {
                     itemRuleMap.putItemRule(ItemRuleUtils.toItemRule(attrItemAnno));
                 }
             }
@@ -732,7 +734,7 @@ public class AnnotatedConfigParser {
             ItemRuleMap itemRuleMap = new ItemRuleMap();
             for (AttrItem attrItemAnno : attrItemAnnos) {
                 String profile = StringUtils.emptyToNull(attrItemAnno.profile());
-                if (profile == null || environmentProfiles.acceptsProfiles(profile)) {
+                if (profile == null || environmentProfiles.matchesProfiles(profile)) {
                     itemRuleMap.putItemRule(ItemRuleUtils.toItemRule(attrItemAnno));
                 }
             }
@@ -752,7 +754,7 @@ public class AnnotatedConfigParser {
             ItemRuleMap itemRuleMap = new ItemRuleMap();
             for (ParamItem paramItemAnno : paramItemAnnos) {
                 String profile = StringUtils.emptyToNull(paramItemAnno.profile());
-                if (profile == null || environmentProfiles.acceptsProfiles(profile)) {
+                if (profile == null || environmentProfiles.matchesProfiles(profile)) {
                     itemRuleMap.putItemRule(ItemRuleUtils.toItemRule(paramItemAnno));
                 }
             }

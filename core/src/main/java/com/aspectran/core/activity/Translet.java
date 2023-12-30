@@ -75,14 +75,6 @@ public interface Translet {
     Environment getEnvironment();
 
     /**
-     * Return whether the given profile is active.
-     * If active profiles are empty whether the profile should be active by default.
-     * @param profiles the profiles
-     * @return {@code true} if profile is active, otherwise {@code false}
-     */
-    boolean acceptsProfiles(String... profiles);
-
-    /**
      * Gets the application adapter.
      * @return the application adapter
      */

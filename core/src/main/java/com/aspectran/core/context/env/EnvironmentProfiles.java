@@ -15,8 +15,10 @@
  */
 package com.aspectran.core.context.env;
 
+import com.aspectran.utils.Assert;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.SystemUtils;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 
@@ -48,7 +50,7 @@ public class EnvironmentProfiles {
     private final Set<String> defaultProfiles = new LinkedHashSet<>();
 
     public String[] getActiveProfiles() {
-        return activeProfiles.toArray(new String[0]);
+        return StringUtils.toStringArray(doGetActiveProfiles());
     }
 
     /**
@@ -56,24 +58,23 @@ public class EnvironmentProfiles {
      * {@link #setActiveProfiles} or if the current set of active profiles
      * is empty, check for the presence of the {@value #ACTIVE_PROFILES_PROPERTY_NAME}
      * property and assign its value to the set of active profiles.
-     *
      * @see #getActiveProfiles()
      * @see #ACTIVE_PROFILES_PROPERTY_NAME
      */
     private Set<String> doGetActiveProfiles() {
         synchronized (activeProfiles) {
             if (activeProfiles.isEmpty()) {
-                String[] profiles = getProfilesFromSystemProperty(ACTIVE_PROFILES_PROPERTY_NAME);
+                String[] profiles = doGetActiveProfilesProperty();
                 if (profiles != null) {
                     setActiveProfiles(profiles);
-                    String[] activeProfiles = getActiveProfiles();
-                    if (activeProfiles.length > 0) {
-                        logger.info("Activating profiles [" + StringUtils.joinCommaDelimitedList(activeProfiles) + "]");
-                    }
                 }
             }
             return activeProfiles;
         }
+    }
+
+    private String[] doGetActiveProfilesProperty() {
+        return getProfilesFromSystemProperty(ACTIVE_PROFILES_PROPERTY_NAME);
     }
 
     /**
@@ -87,9 +88,8 @@ public class EnvironmentProfiles {
      * @throws IllegalArgumentException if any profile is null, empty or whitespace-only
      */
     public void setActiveProfiles(String... profiles) {
-        if (profiles == null) {
-            throw new IllegalArgumentException("profiles must not be null");
-        }
+        Assert.notNull(profiles, "profiles must not be null");
+        logger.info("Activating profiles [" + StringUtils.joinCommaDelimitedList(profiles) + "]");
         synchronized (activeProfiles) {
             activeProfiles.clear();
             for (String profile : profiles) {
@@ -99,8 +99,17 @@ public class EnvironmentProfiles {
         }
     }
 
+    public void addActiveProfile(String profile) {
+        logger.info("Activating profile '" + profile + "'");
+        validateProfile(profile);
+        doGetActiveProfiles();
+        synchronized (this.activeProfiles) {
+            this.activeProfiles.add(profile);
+        }
+    }
+
     public String[] getDefaultProfiles() {
-        return defaultProfiles.toArray(new String[0]);
+        return StringUtils.toStringArray(doGetDefaultProfiles());
     }
 
     /**
@@ -112,17 +121,17 @@ public class EnvironmentProfiles {
     private Set<String> doGetDefaultProfiles() {
         synchronized (defaultProfiles) {
             if (defaultProfiles.isEmpty()) {
-                String[] profiles = getProfilesFromSystemProperty(DEFAULT_PROFILES_PROPERTY_NAME);
+                String[] profiles = doGetDefaultProfilesProperty();
                 if (profiles != null) {
                     setDefaultProfiles(profiles);
-                    String[] defaultProfiles = getDefaultProfiles();
-                    if (defaultProfiles.length > 0) {
-                        logger.info("Default profiles [" + StringUtils.joinCommaDelimitedList(defaultProfiles) + "]");
-                    }
                 }
             }
             return defaultProfiles;
         }
+    }
+
+    private String[] doGetDefaultProfilesProperty() {
+        return getProfilesFromSystemProperty(DEFAULT_PROFILES_PROPERTY_NAME);
     }
 
     /**
@@ -133,9 +142,8 @@ public class EnvironmentProfiles {
      * @param profiles the set of profiles to be made active by default
      */
     public void setDefaultProfiles(String... profiles) {
-        if (profiles == null) {
-            throw new IllegalArgumentException("profiles must not be null");
-        }
+        Assert.notNull(profiles, "profiles must not be null");
+        logger.info("Default profiles [" + StringUtils.joinCommaDelimitedList(profiles) + "]");
         synchronized (defaultProfiles) {
             defaultProfiles.clear();
             for (String profile : profiles) {
@@ -145,6 +153,57 @@ public class EnvironmentProfiles {
         }
     }
 
+    /**
+     * Determine whether one of the given profile expressions matches the
+     * {@linkplain #getActiveProfiles() active profiles} &mdash; or in the case
+     * of no explicit active profiles, whether one of the given profile expressions
+     * matches the {@linkplain #getDefaultProfiles() default profiles}.
+     * <p>Profile expressions allow for complex, boolean profile logic to be
+     * expressed &mdash; for example {@code "p1 & p2"}, {@code "(p1 & p2) | p3"},
+     * etc. See {@link Profiles#of(String)} for details on the supported
+     * expression syntax.
+     * <p>This method is a convenient shortcut for
+     * {@code env.acceptsProfiles(Profiles.of(profileExpressions))}.
+     * @since 7.5.0
+     * @see Profiles#of(String)
+     * @see #acceptsProfiles(Profiles)
+     */
+    public boolean matchesProfiles(String profileExpression) {
+        return acceptsProfiles(Profiles.of(profileExpression));
+    }
+
+    /**
+     * Determine whether the given {@link Profiles} predicate matches the
+     * {@linkplain #getActiveProfiles() active profiles} &mdash; or in the case
+     * of no explicit active profiles, whether the given {@code Profiles} predicate
+     * matches the {@linkplain #getDefaultProfiles() default profiles}.
+     * <p>If you wish provide profile expressions directly as strings, use
+     * {@link #matchesProfiles(String)} instead.
+     * @since 7.5.0
+     * @see #matchesProfiles(String)
+     * @see Profiles#of(String)
+     */
+    public boolean acceptsProfiles(Profiles profiles) {
+        return (profiles == null || profiles.matches(this::isProfileActive));
+    }
+
+    /**
+     * Determine whether one or more of the given profiles is active &mdash; or
+     * in the case of no explicit {@linkplain #getActiveProfiles() active profiles},
+     * whether one or more of the given profiles is included in the set of
+     * {@linkplain #getDefaultProfiles() default profiles}.
+     * <p>If a profile begins with '!' the logic is inverted, meaning this method
+     * will return {@code true} if the given profile is <em>not</em> active. For
+     * example, {@code env.acceptsProfiles("p1", "!p2")} will return {@code true}
+     * if profile 'p1' is active or 'p2' is not active.
+     * @throws IllegalArgumentException if called with a {@code null} array, an
+     * empty array, zero arguments or if any profile is {@code null}, empty, or
+     * whitespace only
+     * @see #getActiveProfiles
+     * @see #getDefaultProfiles
+     * @see #matchesProfiles(String)
+     * @see #acceptsProfiles(Profiles)
+     */
     public boolean acceptsProfiles(String... profiles) {
         if (profiles == null || profiles.length == 0) {
             return true;
@@ -185,7 +244,7 @@ public class EnvironmentProfiles {
      * @see #acceptsProfiles
      * @see #setDefaultProfiles
      */
-    protected void validateProfile(String profile) {
+    private void validateProfile(String profile) {
         if (!StringUtils.hasText(profile)) {
             throw new IllegalArgumentException("Invalid profile [" + profile + "]: must contain text");
         }
@@ -194,6 +253,7 @@ public class EnvironmentProfiles {
         }
     }
 
+    @Nullable
     private String[] getProfilesFromSystemProperty(String propName) {
         String profilesProp = SystemUtils.getProperty(propName);
         if (profilesProp != null) {

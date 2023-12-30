@@ -97,16 +97,6 @@ public class HybridActivityContextBuilder extends AbstractActivityContextBuilder
                 logger.warn("No context rules specified");
             }
 
-            if (getActiveProfiles() != null) {
-                logger.info("Activating profiles [" +
-                        StringUtils.joinCommaDelimitedList(getActiveProfiles()) + "]");
-            }
-
-            if (getDefaultProfiles() != null) {
-                logger.info("Default profiles [" +
-                        StringUtils.joinCommaDelimitedList(getDefaultProfiles()) + "]");
-            }
-
             long startTime = System.currentTimeMillis();
 
             ApplicationAdapter applicationAdapter = createApplicationAdapter();

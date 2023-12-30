@@ -18,7 +18,7 @@
     </description>
     <description profile="!demo" style="apon">
         |
-        |Current profile: #{currentEnvironment^activeProfiles}
+        |Current profiles: #{currentEnvironment^currentProfiles}
         |
     </description>
     <description profile="demo" style="apon">

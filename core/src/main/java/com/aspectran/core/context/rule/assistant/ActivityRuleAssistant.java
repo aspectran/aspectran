@@ -254,7 +254,7 @@ public class ActivityRuleAssistant {
     }
 
     /**
-     * Returns a type of an aliased type that is defined by assigning the type to the alias.
+     * Returns a type of aliased type that is defined by assigning the type to the alias.
      * @param alias the name of the alias
      * @return the aliased type
      */
@@ -263,7 +263,7 @@ public class ActivityRuleAssistant {
     }
 
     /**
-     * Returns a type of an aliased type that is defined by assigning the type to the alias.
+     * Returns a type of aliased type that is defined by assigning the type to the alias.
      * If aliased type is not found, it returns alias.
      * @param alias the name of the alias
      * @return the aliased type
@@ -806,59 +806,57 @@ public class ActivityRuleAssistant {
         }
     }
 
-    public DescriptionRule profiling(DescriptionRule newDescriptionRule, DescriptionRule oldDescriptionRule) {
-        if (newDescriptionRule.getProfile() != null && getEnvironmentProfiles() != null) {
-            String[] profiles = StringUtils.splitCommaDelimitedString(newDescriptionRule.getProfile());
-            if (getEnvironmentProfiles().acceptsProfiles(profiles)) {
-                return mergeDescriptionRule(newDescriptionRule, oldDescriptionRule);
+    public DescriptionRule profiling(DescriptionRule newDr, DescriptionRule oldDr) {
+        if (newDr.getProfiles() != null && getEnvironmentProfiles() != null) {
+            if (getEnvironmentProfiles().acceptsProfiles(newDr.getProfiles())) {
+                return mergeDescriptionRule(newDr, oldDr);
             } else {
-                if (oldDescriptionRule == null) {
+                if (oldDr == null) {
                     DescriptionRule dr = new DescriptionRule();
-                    dr.addCandidate(newDescriptionRule);
+                    dr.addCandidate(newDr);
                     return dr;
                 } else {
-                    oldDescriptionRule.addCandidate(newDescriptionRule);
-                    return oldDescriptionRule;
+                    oldDr.addCandidate(newDr);
+                    return oldDr;
                 }
             }
         } else {
-            return mergeDescriptionRule(newDescriptionRule, oldDescriptionRule);
+            return mergeDescriptionRule(newDr, oldDr);
         }
     }
 
-    private DescriptionRule mergeDescriptionRule(DescriptionRule newDescriptionRule, DescriptionRule oldDescriptionRule) {
-        if (oldDescriptionRule == null) {
-            if (newDescriptionRule.getContent() != null) {
-                String formatted = TextStyler.styling(newDescriptionRule.getContent(), newDescriptionRule.getContentStyle());
-                newDescriptionRule.setFormattedContent(formatted);
+    private DescriptionRule mergeDescriptionRule(DescriptionRule newDr, DescriptionRule oldDr) {
+        if (oldDr == null) {
+            if (newDr.getContent() != null) {
+                String formatted = TextStyler.styling(newDr.getContent(), newDr.getContentStyle());
+                newDr.setFormattedContent(formatted);
             }
-            return newDescriptionRule;
+            return newDr;
         }
         DescriptionRule dr = new DescriptionRule();
-        if (newDescriptionRule.getContent() != null) {
-            String formatted = TextStyler.styling(newDescriptionRule.getContent(), newDescriptionRule.getContentStyle());
-            if (oldDescriptionRule.getFormattedContent() != null) {
-                formatted = oldDescriptionRule.getFormattedContent() + formatted;
+        if (newDr.getContent() != null) {
+            String formatted = TextStyler.styling(newDr.getContent(), newDr.getContentStyle());
+            if (oldDr.getFormattedContent() != null) {
+                formatted = oldDr.getFormattedContent() + formatted;
             }
             dr.setFormattedContent(formatted);
-        } else if (oldDescriptionRule.getFormattedContent() != null) {
-            dr.setFormattedContent(oldDescriptionRule.getFormattedContent());
+        } else if (oldDr.getFormattedContent() != null) {
+            dr.setFormattedContent(oldDr.getFormattedContent());
         }
-        oldDescriptionRule.setFormattedContent(null);
-        if (oldDescriptionRule.getCandidates() == null) {
-            dr.addCandidate(oldDescriptionRule);
+        oldDr.setFormattedContent(null);
+        if (oldDr.getCandidates() == null) {
+            dr.addCandidate(oldDr);
         } else {
-            dr.setCandidates(oldDescriptionRule.getCandidates());
-            oldDescriptionRule.setCandidates(null);
+            dr.setCandidates(oldDr.getCandidates());
+            oldDr.setCandidates(null);
         }
-        dr.addCandidate(newDescriptionRule);
+        dr.addCandidate(newDr);
         return dr;
     }
 
     public ItemRuleMap profiling(ItemRuleMap newIrm, ItemRuleMap oldIrm) {
-        if (newIrm.getProfile() != null && getEnvironmentProfiles() != null) {
-            String[] profiles = StringUtils.splitCommaDelimitedString(newIrm.getProfile());
-            if (getEnvironmentProfiles().acceptsProfiles(profiles)) {
+        if (newIrm.getProfiles() != null && getEnvironmentProfiles() != null) {
+            if (getEnvironmentProfiles().acceptsProfiles(newIrm.getProfiles())) {
                 return mergeItemRuleMap(newIrm, oldIrm);
             } else {
                 if (oldIrm == null) {

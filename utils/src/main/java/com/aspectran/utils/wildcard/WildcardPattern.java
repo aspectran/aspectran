@@ -203,14 +203,14 @@ public class WildcardPattern {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
+    public boolean equals(Object other) {
+        if (this == other) {
             return true;
         }
-        if (!(obj instanceof WildcardPattern)) {
+        if (!(other instanceof WildcardPattern)) {
             return false;
         }
-        WildcardPattern wp = (WildcardPattern)obj;
+        WildcardPattern wp = (WildcardPattern)other;
         return (Objects.equals(wp.toString(), patternString) &&
                 Objects.equals(wp.getSeparator(), getSeparator()));
     }

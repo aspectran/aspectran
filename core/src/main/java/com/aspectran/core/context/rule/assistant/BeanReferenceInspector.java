@@ -208,14 +208,14 @@ public class BeanReferenceInspector {
         }
 
         @Override
-        public boolean equals(Object obj) {
-            if (this == obj) {
+        public boolean equals(Object other) {
+            if (this == other) {
                 return true;
             }
-            if (!(obj instanceof RefererKey)) {
+            if (!(other instanceof RefererKey)) {
                 return false;
             }
-            RefererKey key = (RefererKey)obj;
+            RefererKey key = (RefererKey)other;
             return (Objects.equals(type, key.type) &&
                     Objects.equals(qualifier, key.qualifier));
         }
