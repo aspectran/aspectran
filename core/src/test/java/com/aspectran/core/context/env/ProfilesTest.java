@@ -1,3 +1,18 @@
+/*
+ * Copyright (c) 2008-2023 The Aspectran Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.aspectran.core.context.env;
 
 import com.aspectran.utils.StringUtils;
@@ -19,6 +34,30 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class ProfilesTest {
 
     @Test
+    void malformedExpressions() {
+        assertMalformed(() -> Profiles.of("!"));
+        assertMalformed(() -> Profiles.of("abc!"));
+        assertMalformed(() -> Profiles.of("("));
+        assertMalformed(() -> Profiles.of(")"));
+        assertMalformed(() -> Profiles.of("()"));
+        assertMalformed(() -> Profiles.of("!()"));
+        assertMalformed(() -> Profiles.of("a & b | c"));
+        assertMalformed(() -> Profiles.of("(a, b), c)"));
+        assertMalformed(() -> Profiles.of("(a, b), c]"));
+        assertMalformed(() -> Profiles.of("[(a, b), c)"));
+        assertMalformed(() -> Profiles.of("((a, b), c]"));
+    }
+
+    private static void assertMalformed(Supplier<Profiles> supplier) {
+        try {
+            supplier.get();
+        } catch (IllegalArgumentException e) {
+            System.out.println(e);
+            assertTrue(e.getMessage().startsWith("Malformed profile expression"));
+        }
+    }
+
+    @Test
     void ofSingleElement() {
         Profiles profiles = Profiles.of("aspectran");
         assertTrue(profiles.matches(activeProfiles("aspectran")));
@@ -34,7 +73,7 @@ class ProfilesTest {
 
     @Test
     void ofMultipleElements() {
-        Profiles profiles = Profiles.of("aspectran | framework");
+        Profiles profiles = Profiles.of("aspectran, framework");
         assertTrue(profiles.matches(activeProfiles("aspectran")));
         assertTrue(profiles.matches(activeProfiles("framework")));
         assertFalse(profiles.matches(activeProfiles("java")));
@@ -42,7 +81,7 @@ class ProfilesTest {
 
     @Test
     void ofMultipleElementsWithInverted() {
-        Profiles profiles = Profiles.of("!aspectran | framework");
+        Profiles profiles = Profiles.of("!aspectran, framework");
         assertFalse(profiles.matches(activeProfiles("aspectran")));
         assertTrue(profiles.matches(activeProfiles("aspectran", "framework")));
         assertTrue(profiles.matches(activeProfiles("framework")));
@@ -51,7 +90,7 @@ class ProfilesTest {
 
     @Test
     void ofMultipleElementsAllInverted() {
-        Profiles profiles = Profiles.of("!aspectran | !framework");
+        Profiles profiles = Profiles.of("!aspectran, !framework");
         assertTrue(profiles.matches(activeProfiles("aspectran")));
         assertTrue(profiles.matches(activeProfiles("framework")));
         assertTrue(profiles.matches(activeProfiles("java")));
@@ -82,13 +121,13 @@ class ProfilesTest {
 
     @Test
     void ofOrExpression() {
-        Profiles profiles = Profiles.of("(aspectran | framework)");
+        Profiles profiles = Profiles.of("[aspectran, framework]");
         assertOrExpression(profiles);
     }
 
     @Test
     void ofOrExpressionWithoutSpaces() {
-        Profiles profiles = Profiles.of("(aspectran|framework)");
+        Profiles profiles = Profiles.of("[aspectran,framework]");
         assertOrExpression(profiles);
     }
 
@@ -101,19 +140,13 @@ class ProfilesTest {
 
     @Test
     void ofAndExpression() {
-        Profiles profiles = Profiles.of("(aspectran & framework)");
+        Profiles profiles = Profiles.of("(aspectran, framework)");
         assertAndExpression(profiles);
     }
 
     @Test
     void ofAndExpressionWithoutSpaces() {
-        Profiles profiles = Profiles.of("aspectran&framework)");
-        assertAndExpression(profiles);
-    }
-
-    @Test
-    void ofAndExpressionWithoutParentheses() {
-        Profiles profiles = Profiles.of("aspectran & framework");
+        Profiles profiles = Profiles.of("(aspectran,framework)");
         assertAndExpression(profiles);
     }
 
@@ -126,13 +159,13 @@ class ProfilesTest {
 
     @Test
     void ofNotAndExpression() {
-        Profiles profiles = Profiles.of("!(aspectran & framework)");
+        Profiles profiles = Profiles.of("!(aspectran, framework)");
         assertOfNotAndExpression(profiles);
     }
 
     @Test
     void ofNotAndExpressionWithoutSpaces() {
-        Profiles profiles = Profiles.of("!(aspectran&framework)");
+        Profiles profiles = Profiles.of("!(aspectran,framework)");
         assertOfNotAndExpression(profiles);
     }
 
@@ -145,31 +178,31 @@ class ProfilesTest {
 
     @Test
     void ofAndExpressionWithInvertedSingleElement() {
-        Profiles profiles = Profiles.of("!aspectran & framework");
+        Profiles profiles = Profiles.of("(!aspectran, framework)");
         assertOfAndExpressionWithInvertedSingleElement(profiles);
     }
 
     @Test
     void ofAndExpressionWithInBracketsInvertedSingleElement() {
-        Profiles profiles = Profiles.of("(!aspectran) & framework");
+        Profiles profiles = Profiles.of("((!aspectran), framework)");
         assertOfAndExpressionWithInvertedSingleElement(profiles);
     }
 
     @Test
     void ofAndExpressionWithInvertedSingleElementInBrackets() {
-        Profiles profiles = Profiles.of("! (aspectran) & framework");
+        Profiles profiles = Profiles.of("(!(aspectran), framework)");
         assertOfAndExpressionWithInvertedSingleElement(profiles);
     }
 
     @Test
     void ofAndExpressionWithInvertedSingleElementInBracketsWithoutSpaces() {
-        Profiles profiles = Profiles.of("!(aspectran)&framework");
+        Profiles profiles = Profiles.of("(!(aspectran),framework)");
         assertOfAndExpressionWithInvertedSingleElement(profiles);
     }
 
     @Test
     void ofAndExpressionWithInvertedSingleElementWithoutSpaces() {
-        Profiles profiles = Profiles.of("!aspectran&framework");
+        Profiles profiles = Profiles.of("(!aspectran,framework)");
         assertOfAndExpressionWithInvertedSingleElement(profiles);
     }
 
@@ -182,7 +215,7 @@ class ProfilesTest {
 
     @Test
     void ofOrExpressionWithInvertedSingleElementWithoutSpaces() {
-        Profiles profiles = Profiles.of("!aspectran|framework");
+        Profiles profiles = Profiles.of("[!aspectran,framework]");
         assertOfOrExpressionWithInvertedSingleElement(profiles);
     }
 
@@ -195,13 +228,13 @@ class ProfilesTest {
 
     @Test
     void ofNotOrExpression() {
-        Profiles profiles = Profiles.of("!(aspectran | framework)");
+        Profiles profiles = Profiles.of("![aspectran, framework]");
         assertOfNotOrExpression(profiles);
     }
 
     @Test
     void ofNotOrExpressionWithoutSpaces() {
-        Profiles profiles = Profiles.of("!(aspectran|framework)");
+        Profiles profiles = Profiles.of("![aspectran,framework]");
         assertOfNotOrExpression(profiles);
     }
 
@@ -214,19 +247,19 @@ class ProfilesTest {
 
     @Test
     void ofComplexExpression() {
-        Profiles profiles = Profiles.of("(aspectran & framework) | (aspectran & java)");
+        Profiles profiles = Profiles.of("[(aspectran, framework), (aspectran, java)]");
         assertComplexExpression(profiles);
     }
 
     @Test
     void ofComplexExpressionWithoutSpaces() {
-        Profiles profiles = Profiles.of("(aspectran&framework)|(aspectran&java)");
+        Profiles profiles = Profiles.of("[(aspectran,framework),(aspectran,java)]");
         assertComplexExpression(profiles);
     }
 
     @Test
     void ofComplexExpressionEnclosedInParentheses() {
-        Profiles profiles = Profiles.of("((aspectran & framework) | (aspectran & java))");
+        Profiles profiles = Profiles.of("([(aspectran,framework),(aspectran,java)])");
         assertComplexExpression(profiles);
     }
 
@@ -238,31 +271,18 @@ class ProfilesTest {
     }
 
     @Test
-    void malformedExpressions() {
-        assertMalformed(() -> Profiles.of("("));
-        assertMalformed(() -> Profiles.of(")"));
-        assertMalformed(() -> Profiles.of("a & b | c"));
-    }
-
-    private static void assertMalformed(Supplier<Profiles> supplier) {
-        try {
-            supplier.get();
-        } catch (IllegalArgumentException e) {
-            assertTrue(e.getMessage().startsWith("Malformed profile expression"));
-        }
-    }
-
-    @Test
     void sensibleToString() {
         assertEquals(Profiles.of("aspectran").toString(), "aspectran");
-        assertEquals(Profiles.of("(aspectran & framework) | (aspectran & java)").toString(), "(aspectran & framework) | (aspectran & java)");
-        assertEquals(Profiles.of("(aspectran&framework)|(aspectran&java)").toString(), "(aspectran&framework)|(aspectran&java)");
+        assertEquals(Profiles.of("[(aspectran, framework), (aspectran, java)]").toString(),
+            "[(aspectran, framework), (aspectran, java)]");
+        assertEquals(Profiles.of("[(aspectran,framework),(aspectran,java)]").toString(),
+            "[(aspectran,framework),(aspectran,java)]");
     }
 
     @Test
     void toStringGeneratesValidCompositeProfileExpression() {
         assertThatToStringGeneratesValidCompositeProfileExpression("aspectran");
-        assertThatToStringGeneratesValidCompositeProfileExpression("(aspectran & kotlin) | (aspectran & java)");
+        assertThatToStringGeneratesValidCompositeProfileExpression("[(aspectran, kotlin), (aspectran, java)]");
     }
 
     private static void assertThatToStringGeneratesValidCompositeProfileExpression(String profileExpression) {
@@ -277,8 +297,8 @@ class ProfilesTest {
 
     @Test
     void equalsAndHashCodeAreNotBasedOnLogicalStructureOfNodesWithinExpressionTree() {
-        Profiles profiles1 = Profiles.of("A | B");
-        Profiles profiles2 = Profiles.of("B | A");
+        Profiles profiles1 = Profiles.of("[A, B]");
+        Profiles profiles2 = Profiles.of("[B, A]");
 
         assertTrue(profiles1.matches(activeProfiles("A")));
         assertTrue(profiles1.matches(activeProfiles("B")));

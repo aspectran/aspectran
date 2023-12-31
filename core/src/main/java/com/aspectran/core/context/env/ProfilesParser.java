@@ -16,9 +16,7 @@ import java.util.function.Predicate;
  */
 final class ProfilesParser {
 
-    private enum Operator { AND, OR }
-
-    private enum Context { NONE, NEGATE, PARENTHESIS }
+    private enum Operator { NONE, AND, OR, NEGATE }
 
     private ProfilesParser() {
     }
@@ -29,73 +27,93 @@ final class ProfilesParser {
     }
 
     private static Profiles parseExpression(String expression) {
-        Assert.hasText(expression, () -> "Invalid profile expression [" + expression + "]: must contain text");
-        StringTokenizer tokens = new StringTokenizer(expression, "()&|!", true);
+        Assert.hasText(expression, () -> "Invalid profile expression \"" + expression + "\": must contain text");
+        StringTokenizer tokens = new StringTokenizer(expression, "()[]!, ", true);
         return parseTokens(expression, tokens);
     }
 
     private static Profiles parseTokens(String expression, StringTokenizer tokens) {
-        return parseTokens(expression, tokens, Context.NONE);
+        return parseTokens(expression, tokens, Operator.NONE);
     }
 
-    private static Profiles parseTokens(String expression, StringTokenizer tokens, Context context) {
+    private static Profiles parseTokens(String expression, StringTokenizer tokens, Operator operator) {
         List<Profiles> elements = new ArrayList<>();
-        Operator operator = null;
+        String token = null;
+        int count = 0;
         while (tokens.hasMoreTokens()) {
-            String token = tokens.nextToken().trim();
+            token = tokens.nextToken().trim();
             if (token.isEmpty()) {
                 continue;
             }
             switch (token) {
                 case "(":
-                    Profiles contents = parseTokens(expression, tokens, Context.PARENTHESIS);
-                    if (context == Context.NEGATE) {
+                case "[":
+                    Operator nested = "(".equals(token) ? Operator.AND : Operator.OR;
+                    Profiles contents = parseTokens(expression, tokens, nested);
+                    if (operator == Operator.NEGATE) {
                         return contents;
                     }
+                    assertWellFormed(expression, elements, count);
                     elements.add(contents);
                     break;
-                case "&":
-                    assertWellFormed(expression, operator == null || operator == Operator.AND);
-                    operator = Operator.AND;
-                    break;
-                case "|":
-                    assertWellFormed(expression, operator == null || operator == Operator.OR);
-                    operator = Operator.OR;
-                    break;
-                case "!":
-                    elements.add(not(parseTokens(expression, tokens, Context.NEGATE)));
-                    break;
                 case ")":
-                    Profiles merged = merge(expression, elements, operator);
-                    if (context == Context.PARENTHESIS) {
-                        return merged;
-                    }
-                    elements.clear();
-                    elements.add(merged);
-                    operator = null;
+                    assertWellFormed(expression, operator, Operator.AND, token);
+                    return merge(expression, elements, operator);
+                case "]":
+                    assertWellFormed(expression, operator, Operator.OR, token);
+                    return merge(expression, elements, operator);
+                case "!":
+                    elements.add(not(parseTokens(expression, tokens, Operator.NEGATE)));
+                    break;
+                case ",":
+                    count++;
                     break;
                 default:
                     Profiles value = equals(token);
-                    if (context == Context.NEGATE) {
+                    if (operator == Operator.NEGATE) {
                         return value;
                     }
+                    assertWellFormed(expression, elements, count);
                     elements.add(value);
             }
         }
-        return merge(expression, elements, operator);
+        assertWellFormed(expression, Operator.NONE, operator, token);
+        return merge(expression, elements, Operator.OR);
     }
 
-    private static Profiles merge(String expression, List<Profiles> elements, @Nullable Operator operator) {
-        assertWellFormed(expression, !elements.isEmpty());
+    private static Profiles merge(String expression, List<Profiles> elements, Operator operator) {
+        assertWellFormed(expression, !elements.isEmpty(), "");
         if (elements.size() == 1) {
             return elements.get(0);
+        } else {
+            Profiles[] profiles = elements.toArray(new Profiles[0]);
+            return (operator == Operator.AND ? and(profiles) : or(profiles));
         }
-        Profiles[] profiles = elements.toArray(new Profiles[0]);
-        return (operator == Operator.AND ? and(profiles) : or(profiles));
     }
 
-    private static void assertWellFormed(String expression, boolean wellFormed) {
-        Assert.isTrue(wellFormed, () -> "Malformed profile expression [" + expression + "]");
+    private static void assertWellFormed(String expression, Operator expected, Operator actual, String token) {
+        Assert.isTrue(expected == actual, () -> {
+            String message = null;
+            if (actual == Operator.NEGATE) {
+                message = "inappropriate use of negation operator; ‘!’ cannot be used alone";
+            } else if (actual == Operator.AND && expected == Operator.OR) {
+                message = "missing closing parenthesis of " + expected + " set; must be closed with ']', but ')'";
+            } else if (actual == Operator.OR && expected == Operator.AND) {
+                message = "missing closing parenthesis of " + expected + " set; must be closed with ')', but ']'";
+            } else if (token != null) {
+                message = "unnecessary operator '" + token + "'";
+            }
+            return "Malformed profile expression \"" + expression + "\"" + (message != null ? ": " + message : "");
+        });
+    }
+
+    private static void assertWellFormed(String expression, List<Profiles> elements, int size) {
+        assertWellFormed(expression, elements.size() == size,
+            "each profile or set of them must be separated by commas (',')");
+    }
+
+    private static void assertWellFormed(String expression, boolean wellFormed, String message) {
+        Assert.isTrue(wellFormed, () -> "Malformed profile expression \"" + expression + "\": " + message);
     }
 
     private static Profiles or(Profiles... profiles) {

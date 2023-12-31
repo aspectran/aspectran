@@ -32,21 +32,20 @@ public interface Profiles {
      * <p>A profile expression may contain a simple profile name (for example
      * {@code "production"}) or a compound expression. A compound expression allows
      * for more complicated profile logic to be expressed, for example
-     * {@code "production & cloud"}.
+     * {@code "(production, cloud)"}.
      * <p>The following operators are supported in profile expressions.
      * <ul>
-     * <li>{@code !} - A logical <em>NOT</em> of the profile name or compound expression</li>
-     * <li>{@code &} - A logical <em>AND</em> of the profile names or compound expressions</li>
-     * <li>{@code |} - A logical <em>OR</em> of the profile names or compound expressions</li>
+     * <li>{@code !} - A logical <em>NOT</em> of the profile name or set of them</li>
+     * <li>{@code ,} - A delimiter to separate profile names or sets of them</li>
      * </ul>
-     * <p>Please note that the {@code &} and {@code |} operators may not be mixed
-     * without using parentheses. For example, {@code "a & b | c"} is not a valid
-     * expression: it must be expressed as {@code "(a & b) | c"} or
-     * {@code "a & (b | c)"}.
-     * <p>As of Spring Framework 5.1.17, two {@code Profiles} instances returned
-     * by this method are considered equivalent to each other (in terms of
-     * {@code equals()} and {@code hashCode()} semantics) if they are created
-     * with identical <em>profile expressions</em>.
+     * <p>The following parentheses are used for compound expressions:
+     * <ul>
+     * <li>{@code ()} - A logical AND operation is applied to all profile names
+     *                  enclosed by this; aka AND set</li>
+     * <li>{@code []} - A logical OR operation is applied to all profile names
+     *                  enclosed by this; aka OR set, it can be omitted in compound
+     *                  expressions that have only one OR set.</li>
+     * </ul>
      * @param profileExpression the <em>profile expression</em> to include
      * @return a new {@link Profiles} instance
      */

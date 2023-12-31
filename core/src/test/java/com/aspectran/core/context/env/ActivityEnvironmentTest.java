@@ -95,10 +95,10 @@ class ActivityEnvironmentTest {
 
     @Test
     void testMatchesProfiles() {
-        assertTrue(environment.matchesProfiles("profile-1 & profile-2"));
-        assertFalse(environment.matchesProfiles("profile-1 & profile-x"));
-        assertTrue(environment.matchesProfiles("profile-1 | profile-z"));
-        assertTrue(environment.matchesProfiles("profile-1 & (profile-2 | profile-z)"));
+        assertTrue(environment.matchesProfiles("(profile-1, profile-2)"));
+        assertFalse(environment.matchesProfiles("(profile-1, profile-x)"));
+        assertTrue(environment.matchesProfiles("[profile-1, profile-z]"));
+        assertTrue(environment.matchesProfiles("(profile-1, [profile-2, profile-z])"));
     }
 
     @Test
