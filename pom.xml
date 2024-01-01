@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2008-2023 The Aspectran Project
+    Copyright (c) 2008-2024 The Aspectran Project
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -451,7 +451,7 @@
                                         <java>SLASHSTAR_STYLE</java>
                                     </mapping>
                                     <properties>
-                                        <copyright-range>${project.inceptionYear}-2023</copyright-range>
+                                        <copyright-range>${project.inceptionYear}-2024</copyright-range>
                                     </properties>
                                     <licenseSets>
                                         <licenseSet>
