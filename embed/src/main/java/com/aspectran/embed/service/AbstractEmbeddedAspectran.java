@@ -15,6 +15,7 @@
  */
 package com.aspectran.embed.service;
 
+import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.component.session.DefaultSessionManager;
 import com.aspectran.core.component.session.SessionAgent;
@@ -52,11 +53,6 @@ public abstract class AbstractEmbeddedAspectran extends AspectranCoreService imp
     }
 
     @Override
-    public void release() {
-        stop();
-    }
-
-    @Override
     public SessionAdapter newSessionAdapter() {
         if (sessionAgent != null) {
             return new AspectranSessionAdapter(sessionAgent);
@@ -73,7 +69,7 @@ public abstract class AbstractEmbeddedAspectran extends AspectranCoreService imp
             if (sessionManagerConfig != null && sessionManagerConfig.isEnabled()) {
                 try {
                     DefaultSessionManager sessionManager = new DefaultSessionManager();
-                    sessionManager.setApplicationAdapter(getActivityContext().getApplicationAdapter());
+                    sessionManager.setApplicationAdapter(getApplicationAdapter());
                     sessionManager.setSessionManagerConfig(sessionManagerConfig);
                     sessionManager.initialize();
                     this.sessionManager = sessionManager;
@@ -99,6 +95,16 @@ public abstract class AbstractEmbeddedAspectran extends AspectranCoreService imp
     @Override
     public Environment getEnvironment() {
         return getActivityContext().getEnvironment();
+    }
+
+    @Override
+    public ApplicationAdapter getApplicationAdapter() {
+        return getActivityContext().getApplicationAdapter();
+    }
+
+    @Override
+    public void release() {
+        stop();
     }
 
     //---------------------------------------------------------------------

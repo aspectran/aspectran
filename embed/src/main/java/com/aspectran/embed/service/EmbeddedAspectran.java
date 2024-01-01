@@ -18,17 +18,18 @@ package com.aspectran.embed.service;
 import com.aspectran.core.activity.InstantAction;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.activity.request.ParameterMap;
+import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.env.Environment;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.support.i18n.message.NoSuchMessageException;
+import com.aspectran.utils.apon.AponParseException;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.Reader;
 import java.util.Locale;
 import java.util.Map;
@@ -46,12 +47,6 @@ public interface EmbeddedAspectran {
      * @return true if the translet can be exposed; false otherwise
      */
     boolean isExposable(String transletName);
-
-    /**
-     * Create and return a new session adapter from the embedded aspectran.
-     * @return the session adapter
-     */
-    SessionAdapter newSessionAdapter();
 
     /**
      * Executes an instant activity.
@@ -187,6 +182,12 @@ public interface EmbeddedAspectran {
     Environment getEnvironment();
 
     /**
+     * Gets the application adapter.
+     * @return the application adapter
+     */
+    ApplicationAdapter getApplicationAdapter();
+
+    /**
      * Return an instance of the bean that matches the given id.
      * @param <V> the type of bean object retrieved
      * @param id the id of the bean to retrieve
@@ -237,10 +238,6 @@ public interface EmbeddedAspectran {
      */
     boolean containsBean(Class<?> type, String id);
 
-    //---------------------------------------------------------------------
-    // Implementation of MessageSource interface
-    //---------------------------------------------------------------------
-
     /**
      * Try to resolve the message. Treat as an error if the message can't be found.
      * @param code the code to lookup up, such as 'calculator.noRateSet'
@@ -269,6 +266,12 @@ public interface EmbeddedAspectran {
      * @see java.text.MessageFormat
      */
     String getMessage(String code, Object[] args, String defaultMessage, Locale locale);
+
+    /**
+     * Create and return a new session adapter from the embedded aspectran.
+     * @return the session adapter
+     */
+    SessionAdapter newSessionAdapter();
 
     /**
      * Stop the service and release all allocated resources.
@@ -300,7 +303,7 @@ public interface EmbeddedAspectran {
         AspectranConfig aspectranConfig;
         try {
             aspectranConfig = new AspectranConfig(aspectranConfigFile);
-        } catch (IOException e) {
+        } catch (AponParseException e) {
             throw new AspectranServiceException("Error parsing aspectran configuration file: " +
                     aspectranConfigFile, e);
         }
@@ -319,7 +322,7 @@ public interface EmbeddedAspectran {
         AspectranConfig aspectranConfig;
         try {
             aspectranConfig = new AspectranConfig(configFileReader);
-        } catch (IOException e) {
+        } catch (AponParseException e) {
             throw new AspectranServiceException("Error parsing aspectran configuration", e);
         }
         return run(aspectranConfig);

@@ -171,6 +171,20 @@ public abstract class AbstractActivity implements Activity {
     }
 
     @Override
+    public void terminate() throws ActivityTerminatedException {
+        terminate("Explicitly terminated by calling terminate()");
+    }
+
+    @Override
+    public void terminate(String cause) throws ActivityTerminatedException {
+        throw new ActivityTerminatedException(cause);
+    }
+
+    //---------------------------------------------------------------------
+    // Implementation of BeanRegistry interface
+    //---------------------------------------------------------------------
+
+    @Override
     public <V> V getBean(String id) {
         return context.getBeanRegistry().getBean(id);
     }
@@ -203,16 +217,6 @@ public abstract class AbstractActivity implements Activity {
     @Override
     public boolean containsBean(Class<?> type, String id) {
         return context.getBeanRegistry().containsBean(type, id);
-    }
-
-    @Override
-    public void terminate() throws ActivityTerminatedException {
-        terminate("Terminated by user code");
-    }
-
-    @Override
-    public void terminate(String cause) throws ActivityTerminatedException {
-        throw new ActivityTerminatedException(cause);
     }
 
 }

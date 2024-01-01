@@ -42,6 +42,42 @@ import java.util.List;
 public interface Activity {
 
     /**
+     * Gets the activity context.
+     * @return the activity context
+     */
+    ActivityContext getActivityContext();
+
+    /**
+     * Returns the environment of the current activity context.
+     * @return the environment
+     */
+    Environment getEnvironment();
+
+    /**
+     * Gets the application adapter.
+     * @return the application adapter
+     */
+    ApplicationAdapter getApplicationAdapter();
+
+    /**
+     * Gets the session adapter.
+     * @return the session adapter
+     */
+    SessionAdapter getSessionAdapter();
+
+    /**
+     * Gets the request adapter.
+     * @return the request adapter
+     */
+    RequestAdapter getRequestAdapter();
+
+    /**
+     * Gets the response adapter.
+     * @return the response adapter
+     */
+    ResponseAdapter getResponseAdapter();
+
+    /**
      * Performs the prepared activity.
      * @throws ActivityPerformException thrown when an exception occurs while performing an activity
      */
@@ -197,42 +233,6 @@ public interface Activity {
      * @return the aspect advice bean object
      */
     <V> V getAspectAdviceBean(String aspectId);
-
-    /**
-     * Gets the activity context.
-     * @return the activity context
-     */
-    ActivityContext getActivityContext();
-
-    /**
-     * Returns the environment of the current activity context.
-     * @return the environment
-     */
-    Environment getEnvironment();
-
-    /**
-     * Gets the application adapter.
-     * @return the application adapter
-     */
-    ApplicationAdapter getApplicationAdapter();
-
-    /**
-     * Gets the session adapter.
-     * @return the session adapter
-     */
-    SessionAdapter getSessionAdapter();
-
-    /**
-     * Gets the request adapter.
-     * @return the request adapter
-     */
-    RequestAdapter getRequestAdapter();
-
-    /**
-     * Gets the response adapter.
-     * @return the response adapter
-     */
-    ResponseAdapter getResponseAdapter();
 
     /**
      * Returns an instance of the bean that matches the given id.

@@ -36,6 +36,7 @@ import com.aspectran.utils.ExceptionUtils;
 import com.aspectran.utils.ObjectUtils;
 import com.aspectran.utils.ResourceUtils;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.apon.AponParseException;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 import com.aspectran.web.activity.WebActivity;
@@ -448,7 +449,7 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
             } else {
                 try {
                     aspectranConfig = new AspectranConfig(aspectranConfigParam);
-                } catch (IOException e) {
+                } catch (AponParseException e) {
                     throw new AspectranServiceException("Error parsing Aspectran configuration from '" +
                             ASPECTRAN_CONFIG_PARAM + "' initialization parameter in web.xml", e);
                 }
@@ -460,7 +461,7 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
         ContextConfig contextConfig = aspectranConfig.touchContextConfig();
         String[] contextRules = contextConfig.getContextRules();
         if (ObjectUtils.isEmpty(contextRules) && !contextConfig.hasAspectranParameters()) {
-            contextConfig.setContextRules(new String[] {DEFAULT_APP_CONTEXT_FILE});
+            contextConfig.setContextRules(new String[] { DEFAULT_APP_CONTEXT_FILE });
         }
 
         DefaultWebService webService = new DefaultWebService(servletContext);

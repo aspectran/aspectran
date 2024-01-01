@@ -34,7 +34,6 @@ import com.aspectran.utils.SystemUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.utils.apon.AponParseException;
-import com.aspectran.utils.apon.AponReader;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 
@@ -84,10 +83,10 @@ public class DefaultConsoleCommander implements ConsoleCommander {
         console.getOutput().flush();
     }
 
-    public void prepare(@Nullable String basePath, File aspectranConfigFile) throws Exception {
-        AspectranConfig aspectranConfig = new AspectranConfig();
+    public void prepare(@Nullable String basePath, @NonNull File aspectranConfigFile) throws Exception {
+        AspectranConfig aspectranConfig;
         try {
-            AponReader.parse(aspectranConfigFile, aspectranConfig);
+            aspectranConfig = new AspectranConfig(aspectranConfigFile);
         } catch (AponParseException e) {
             throw new IllegalArgumentException("Failed to parse aspectran config file: " +
                     aspectranConfigFile, e);
