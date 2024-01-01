@@ -282,28 +282,6 @@
 
         <plugins>
             <plugin>
-                <groupId>com.mycila</groupId>
-                <artifactId>license-maven-plugin</artifactId>
-                <configuration>
-                    <header>${main.basedir}/header.txt</header>
-                    <failIfMissing>true</failIfMissing>
-                    <aggregate>true</aggregate>
-                    <strictCheck>true</strictCheck>
-                    <properties>
-                        <copyright-range>${project.inceptionYear}-2023</copyright-range>
-                    </properties>
-                    <mapping>
-                        <java>SLASHSTAR_STYLE</java>
-                    </mapping>
-                    <includes>
-                        <include>**/*.java</include>
-                    </includes>
-                    <excludes>
-                        <exclude>.mvn/wrapper/**</exclude>
-                    </excludes>
-                </configuration>
-            </plugin>
-            <plugin>
                 <artifactId>maven-enforcer-plugin</artifactId>
                 <executions>
                     <execution>
@@ -464,6 +442,29 @@
                                 <goals>
                                     <goal>format</goal>
                                 </goals>
+                                <configuration>
+                                    <aggregate>true</aggregate>
+                                    <failIfMissing>true</failIfMissing>
+                                    <failIfUnknown>true</failIfUnknown>
+                                    <strictCheck>true</strictCheck>
+                                    <mapping>
+                                        <java>SLASHSTAR_STYLE</java>
+                                    </mapping>
+                                    <properties>
+                                        <copyright-range>${project.inceptionYear}-2023</copyright-range>
+                                    </properties>
+                                    <licenseSets>
+                                        <licenseSet>
+                                            <header>${main.basedir}/header.txt</header>
+                                            <includes>
+                                                <include>**/*.java</include>
+                                            </includes>
+                                            <excludes>
+                                                <exclude>.mvn/wrapper/**</exclude>
+                                            </excludes>
+                                        </licenseSet>
+                                    </licenseSets>
+                                </configuration>
                             </execution>
                         </executions>
                     </plugin>
