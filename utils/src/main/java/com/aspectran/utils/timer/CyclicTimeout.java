@@ -73,9 +73,9 @@ public abstract class CyclicTimeout implements Destroyable {
     }
 
     /**
-     * <p>Schedules a timeout, even if already set, cancelled or expired.</p>
-     * <p>If a timeout is already set, it will be cancelled and replaced
-     * by the new one.</p>
+     * Schedules a timeout, even if already set, cancelled or expired.
+     * If a timeout is already set, it will be cancelled and replaced
+     * by the new one.
      * @param delay The period of time before the timeout expires.
      * @param units The unit of time of the period.
      * @return true if the timeout was already set.
@@ -99,7 +99,8 @@ public abstract class CyclicTimeout implements Destroyable {
 
             if (this.timeout.compareAndSet(timeout, new Timeout(newTimeoutAt, wakeup))) {
                 if (logger.isTraceEnabled()) {
-                    logger.trace("Installed timeout in " + units.toMillis(delay) + " ms, waking up in " +
+                    logger.trace("Installed timeout in " + units.toMillis(delay) + " ms, " +
+                            (newWakeup != null ? "new" : "existing") + " waking up in " +
                         TimeUnit.NANOSECONDS.toMillis(wakeup.at - now) + " ms");
                 }
                 break;
@@ -117,8 +118,8 @@ public abstract class CyclicTimeout implements Destroyable {
     }
 
     /**
-     * <p>Cancels this CyclicTimeout so that it won't expire.</p>
-     * <p>After being cancelled, this CyclicTimeout can be scheduled again.</p>
+     * Cancels this CyclicTimeout so that it won't expire.
+     * After being cancelled, this CyclicTimeout can be scheduled again.
      * @return true if this CyclicTimeout was scheduled to expire
      * @see #destroy()
      */
@@ -128,8 +129,8 @@ public abstract class CyclicTimeout implements Destroyable {
             Timeout timeout = this.timeout.get();
             result = (timeout.at != MAX_VALUE);
             Wakeup wakeup = timeout.wakeup;
-            Timeout new_timeout = (wakeup == null ? NOT_SET : new Timeout(MAX_VALUE, wakeup));
-            if (this.timeout.compareAndSet(timeout, new_timeout)) {
+            Timeout newTimeout = (wakeup == null ? NOT_SET : new Timeout(MAX_VALUE, wakeup));
+            if (this.timeout.compareAndSet(timeout, newTimeout)) {
                 break;
             }
         }
@@ -137,18 +138,18 @@ public abstract class CyclicTimeout implements Destroyable {
     }
 
     /**
-     * <p>Invoked when the timeout expires.</p>
+     * Invoked when the timeout expires.
      */
     public abstract void onTimeoutExpired();
 
     /**
-     * <p>Destroys this CyclicTimeout.</p>
-     * <p>After being destroyed, this CyclicTimeout is not used anymore.</p>
+     * Destroys this CyclicTimeout.
+     * After being destroyed, this CyclicTimeout is not used anymore.
      */
     @Override
     public void destroy() {
         Timeout timeout = this.timeout.getAndSet(NOT_SET);
-        Wakeup wakeup = timeout == null ? null : timeout.wakeup;
+        Wakeup wakeup = (timeout != null ? timeout.wakeup : null);
         while (wakeup != null) {
             wakeup.destroy();
             wakeup = wakeup.next;
@@ -273,7 +274,7 @@ public abstract class CyclicTimeout implements Destroyable {
             return String.format("%s@%x:%dms->%s",
                 getClass().getSimpleName(),
                 hashCode(),
-                at == MAX_VALUE ? at : TimeUnit.NANOSECONDS.toMillis(at - System.nanoTime()),
+                (at == MAX_VALUE ? at : TimeUnit.NANOSECONDS.toMillis(at - System.nanoTime())),
                 next);
         }
 
