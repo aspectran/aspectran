@@ -175,9 +175,9 @@ public class DefaultEmbeddedAspectran extends AbstractEmbeddedAspectran {
 
         try {
             InstantActivity activity = new InstantActivity(getActivityContext());
+            activity.setSessionAdapter(newSessionAdapter());
             activity.setAttributeMap(attributeMap);
             activity.setParameterMap(parameterMap);
-            activity.setSessionAdapter(newSessionAdapter());
             Object result = activity.perform(() -> getActivityContext().getTemplateRenderer().render(templateId));
             return result.toString();
         } catch (Exception e) {

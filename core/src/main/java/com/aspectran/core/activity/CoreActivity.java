@@ -201,6 +201,10 @@ public class CoreActivity extends AdviceActivity {
     protected void adapt() throws AdapterException {
     }
 
+    protected boolean isRequestParsed() {
+        return requestParsed;
+    }
+
     protected void parseRequest() throws RequestParseException, ActivityTerminatedException {
         if (translet != null) {
             parseDeclaredParameters();
@@ -210,10 +214,6 @@ public class CoreActivity extends AdviceActivity {
                 resolveLocale();
             }
         }
-    }
-
-    protected boolean isRequestParsed() {
-        return requestParsed;
     }
 
     protected LocaleResolver resolveLocale() {

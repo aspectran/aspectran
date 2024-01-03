@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran 7.0//EN"
+        "aspectran-7-test.dtd">
+<aspectran>
+
+    <translet name="/echo">
+        <transform format="text">
+            <template>${msg}</template>
+        </transform>
+    </translet>
+
+    <translet name="/world">
+        <parameters>
+            <item name="world">World</item>
+        </parameters>
+        <transform format="text">
+            <template>@{hello} ${world}</template>
+        </transform>
+    </translet>
+
+    <translet name="/include11">
+        <include id="include" translet="/echo">
+            <parameters>
+                <item name="msg">Hello</item>
+            </parameters>
+        </include>
+        <transform format="text">
+            <template>@{include} World!</template>
+        </transform>
+    </translet>
+
+    <translet name="/include12">
+        <include translet="/echo">
+            <parameters>
+                <item name="msg">Hello World</item>
+            </parameters>
+        </include>
+    </translet>
+
+    <translet name="/include13">
+        <include translet="/echo">
+            <parameters>
+                <item name="msg">Hello World</item>
+            </parameters>
+        </include>
+    </translet>
+
+    <translet name="/include21">
+        <include id="include" translet="/world">
+            <attributes>
+                <item name="hello">Hello</item>
+            </attributes>
+        </include>
+        <transform format="text">
+            <template>@{include}!</template>
+        </transform>
+    </translet>
+
+    <translet name="/include22">
+        <include id="include" translet="/world">
+            <attributes>
+                <item name="hello">Hello</item>
+            </attributes>
+        </include>
+        <transform format="text"/>
+    </translet>
+
+    <translet name="/include23">
+        <include id="include" translet="/world">
+            <attributes>
+                <item name="hello">Hello</item>
+            </attributes>
+        </include>
+    </translet>
+
+</aspectran>

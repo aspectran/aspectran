@@ -16,6 +16,7 @@
 package com.aspectran.undertow.server.session;
 
 import com.aspectran.core.component.session.Session;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.server.session.SessionConfig;
 import io.undertow.server.session.SessionManager;
@@ -46,7 +47,7 @@ final class TowSessionBridge implements io.undertow.server.session.Session {
         return session.getId();
     }
 
-    void requestStarted(HttpServerExchange exchange) {
+    void requestStarted(@NonNull HttpServerExchange exchange) {
         Boolean existing = exchange.getAttachment(FIRST_REQUEST_ACCESSED);
         if (existing == null) {
             exchange.putAttachment(FIRST_REQUEST_ACCESSED, true);

@@ -47,6 +47,13 @@ public class InstantActivity extends CoreActivity {
         super(context);
     }
 
+    public InstantActivity(Activity activity) {
+        super(activity.getActivityContext());
+        setSessionAdapter(activity.getSessionAdapter());
+        setRequestAdapter(activity.getRequestAdapter());
+        setResponseAdapter(activity.getResponseAdapter());
+    }
+
     @Override
     public void setSessionAdapter(SessionAdapter sessionAdapter) {
         super.setSessionAdapter(sessionAdapter);

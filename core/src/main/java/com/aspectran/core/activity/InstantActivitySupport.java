@@ -110,10 +110,7 @@ public abstract class InstantActivitySupport implements ActivityContextAware {
             if (transletRule == null) {
                 throw new TransletNotFoundException(transletName, MethodType.GET);
             }
-            InstantActivity activity = new InstantActivity(getActivityContext());
-            activity.setSessionAdapter(currentActivity.getSessionAdapter());
-            activity.setRequestAdapter(currentActivity.getRequestAdapter());
-            activity.setResponseAdapter(currentActivity.getResponseAdapter());
+            InstantActivity activity = new InstantActivity(currentActivity);
             activity.prepare(transletName, transletRule);
             activity.perform();
         } catch (Exception e) {

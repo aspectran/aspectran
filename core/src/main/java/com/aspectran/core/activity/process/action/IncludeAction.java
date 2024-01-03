@@ -47,7 +47,7 @@ public class IncludeAction implements Executable {
     @Override
     public Object execute(Activity activity) throws Exception {
         try {
-            InstantActivity instantActivity = new InstantActivity(activity.getActivityContext());
+            InstantActivity instantActivity = new InstantActivity(activity);
             ItemRuleMap attributeItemRuleMap = includeActionRule.getAttributeItemRuleMap();
             ItemRuleMap parameterItemRuleMap = includeActionRule.getParameterItemRuleMap();
             if ((attributeItemRuleMap != null && !attributeItemRuleMap.isEmpty()) ||
