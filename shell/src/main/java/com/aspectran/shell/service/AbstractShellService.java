@@ -166,8 +166,8 @@ public abstract class AbstractShellService extends AspectranCoreService implemen
         }
     }
 
-    protected void initSessionManager() {
-        Assert.state(this.sessionManager == null, "SessionManager is already initialized");
+    protected void createSessionManager() {
+        Assert.state(this.sessionManager == null, "Session Manager is already exists for shell service");
         ShellConfig shellConfig = getAspectranConfig().getShellConfig();
         if (shellConfig != null) {
             SessionManagerConfig sessionManagerConfig = shellConfig.getSessionManagerConfig();
@@ -180,7 +180,7 @@ public abstract class AbstractShellService extends AspectranCoreService implemen
                     this.sessionManager = sessionManager;
                     this.sessionAgent = new SessionAgent(sessionManager.getSessionHandler());
                 } catch (Exception e) {
-                    throw new AspectranServiceException("Failed to initialize session manager for shell service", e);
+                    throw new AspectranServiceException("Failed to create session manager for shell service", e);
                 }
             }
         }

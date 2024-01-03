@@ -23,6 +23,7 @@ import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.env.Environment;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.utils.ExceptionUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 /**
  * The Class AbstractActivity.
@@ -47,7 +48,7 @@ public abstract class AbstractActivity implements Activity {
      * Instantiates a new abstract activity.
      * @param context the activity context
      */
-    protected AbstractActivity(ActivityContext context) {
+    protected AbstractActivity(@NonNull ActivityContext context) {
         this.context = context;
     }
 

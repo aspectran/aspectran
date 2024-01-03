@@ -21,6 +21,7 @@ import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.BeanRule;
 
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
@@ -56,13 +57,13 @@ public class JdkDynamicProxyBean extends AbstractDynamicProxyBean implements Inv
 
         AspectAdviceRuleRegistry aarr = getAspectAdviceRuleRegistry(activity, beanId, className, methodName);
         if (aarr == null) {
-            return method.invoke(bean, args);
+            return invokeSuper(method, args);
         }
 
         try {
             try {
                 beforeAdvice(aarr.getBeforeAdviceRuleList(), beanRule, activity);
-                Object result = method.invoke(bean, args);
+                Object result = invokeSuper(method, args);
                 afterAdvice(aarr.getAfterAdviceRuleList(), beanRule, activity);
                 return result;
             } finally {
@@ -73,6 +74,14 @@ public class JdkDynamicProxyBean extends AbstractDynamicProxyBean implements Inv
                 return null;
             }
             throw e;
+        }
+    }
+
+    private Object invokeSuper(Method method, Object[] args) throws Throwable {
+        try {
+            return method.invoke(bean, args);
+        } catch (InvocationTargetException e) {
+            throw e.getTargetException();
         }
     }
 

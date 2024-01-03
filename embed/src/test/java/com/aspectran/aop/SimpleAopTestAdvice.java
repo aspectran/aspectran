@@ -44,7 +44,6 @@ public class SimpleAopTestAdvice {
 
     public void globalExceptionHandling(Translet translet) {
         logger.debug("===> aspect01: [SimpleAopTestAdvice]=== globalExceptionHandling");
-        translet.removeRaisedException();
     }
 
 }

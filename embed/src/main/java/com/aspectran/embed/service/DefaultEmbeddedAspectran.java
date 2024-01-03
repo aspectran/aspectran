@@ -26,6 +26,8 @@ import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.ServiceStateListener;
 import com.aspectran.embed.activity.AspectranActivity;
+import com.aspectran.utils.Assert;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 
@@ -102,16 +104,16 @@ public class DefaultEmbeddedAspectran extends AbstractEmbeddedAspectran {
     }
 
     @Override
-    public Translet translate(String name, MethodType method,
-                              Map<String, Object> attributeMap, ParameterMap parameterMap,
-                              String body) {
-        if (name == null) {
-            throw new IllegalArgumentException("name must not be null");
-        }
+    public Translet translate(String name, @Nullable MethodType method,
+                              @Nullable Map<String, Object> attributeMap, @Nullable ParameterMap parameterMap,
+                              @Nullable String body) {
+        Assert.notNull(name, "name must not be null");
+
         if (!isExposable(name)) {
             logger.error("Unavailable translet: " + name);
             return null;
         }
+
         if (pauseTimeout != 0L) {
             if (pauseTimeout == -1L || pauseTimeout >= System.currentTimeMillis()) {
                 if (logger.isDebugEnabled()) {
@@ -199,7 +201,7 @@ public class DefaultEmbeddedAspectran extends AbstractEmbeddedAspectran {
         aspectran.setServiceStateListener(new ServiceStateListener() {
             @Override
             public void started() {
-                aspectran.initSessionManager();
+                aspectran.createSessionManager();
                 aspectran.pauseTimeout = 0L;
             }
 

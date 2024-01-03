@@ -51,6 +51,7 @@ import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.support.i18n.locale.LocaleResolver;
+import com.aspectran.utils.Assert;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
@@ -169,6 +170,10 @@ public class CoreActivity extends AdviceActivity {
      */
     public void prepare(String requestName, MethodType requestMethod, TransletRule transletRule)
             throws ActivityPrepareException {
+        Assert.notNull(requestName, "requestName must not be null");
+        Assert.notNull(requestMethod, "requestMethod must not be null");
+        Assert.notNull(transletRule, "transletRule must not be null");
+
         Translet prevTranslet = translet;
         try {
             if (logger.isDebugEnabled()) {
@@ -229,12 +234,19 @@ public class CoreActivity extends AdviceActivity {
 
     @Override
     public <V> V perform(InstantAction<V> instantAction) throws ActivityPerformException {
+        if (translet == null && instantAction == null) {
+            throw new IllegalArgumentException("Either translet or instantAction is required");
+        }
+
         V result = null;
         try {
             if (!adapted) {
-                saveCurrentActivity();
                 adapt();
                 adapted = true;
+            }
+
+            if (!forwarding) {
+                saveCurrentActivity();
             }
 
             parseRequest();
@@ -295,7 +307,15 @@ public class CoreActivity extends AdviceActivity {
         } catch (ActivityTerminatedException e) {
             throw e;
         } catch (Throwable e) {
-            throw new ActivityPerformException("Failed to perform the activity", e);
+            if (translet != null) {
+                throw new ActivityPerformException("Failed to perform activity for Translet " +
+                        translet.getTransletRule(), e);
+            } if (instantAction != null) {
+                throw new ActivityPerformException("Failed to perform activity for instant action " +
+                        instantAction, e);
+            } else {
+                throw new ActivityPerformException("Failed to perform activity", e);
+            }
         } finally {
             if (!forwarding) {
                 finish();
@@ -362,24 +382,15 @@ public class CoreActivity extends AdviceActivity {
     }
 
     private void exception() throws ActionExecutionException {
-        if (logger.isDebugEnabled()) {
-            logger.debug("Raised exception " + getRaisedException(), getRaisedException());
-        }
-
         reserveResponse(null);
         committed = false;
 
-        if (translet != null) {
-            if (getTransletRule().getExceptionRule() != null) {
-                handleException(getTransletRule().getExceptionRule());
-            }
+        if (translet != null && getTransletRule().getExceptionRule() != null) {
+            handleException(getTransletRule().getExceptionRule());
         }
         if (getExceptionRuleList() != null) {
             handleException(getExceptionRuleList());
         }
-    }
-
-    protected void release() {
     }
 
     private void finish() {
@@ -390,14 +401,11 @@ public class CoreActivity extends AdviceActivity {
                     requestScope.destroy();
                 }
             }
-
-            release();
-
             if (getResponseAdapter() != null) {
                 getResponseAdapter().flush();
             }
         } catch (Exception e) {
-            logger.error("An error was detected while finishing an activity", e);
+            logger.error("Error detected while finishing activity", e);
         } finally {
             removeCurrentActivity();
         }
@@ -463,16 +471,17 @@ public class CoreActivity extends AdviceActivity {
                 }
             }
         } catch (ActionExecutionException e) {
-            logger.error("Failed to execute action " + action, e);
+            setRaisedException(e);
+            logger.error(e.getMessage(), e);
             throw e;
         } catch (Exception e) {
             setRaisedException(e);
-            throw new ActionExecutionException("Failed to execute action " + action, e);
+            throw new ActionExecutionException(action, e);
         }
     }
 
     @Override
-    public ExceptionThrownRule handleException(ExceptionRule exceptionRule) throws ActionExecutionException {
+    protected ExceptionThrownRule handleException(ExceptionRule exceptionRule) throws ActionExecutionException {
         ExceptionThrownRule exceptionThrownRule = super.handleException(exceptionRule);
         if (translet != null && exceptionThrownRule != null && !isResponseReserved()) {
             Response response = getDesiredResponse();
@@ -543,26 +552,14 @@ public class CoreActivity extends AdviceActivity {
         return getActivityContext().getTransletRuleRegistry().getTransletRule(transletName, requestMethod);
     }
 
-    /**
-     * Returns the translet rule.
-     * @return the translet rule
-     */
     protected TransletRule getTransletRule() {
         return translet.getTransletRule();
     }
 
-    /**
-     * Returns the request rule.
-     * @return the request rule
-     */
     protected RequestRule getRequestRule() {
         return translet.getRequestRule();
     }
 
-    /**
-     * Returns the response rule.
-     * @return the response rule
-     */
     protected ResponseRule getResponseRule() {
         return translet.getResponseRule();
     }

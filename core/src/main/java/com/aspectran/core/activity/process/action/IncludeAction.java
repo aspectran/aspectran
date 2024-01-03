@@ -66,7 +66,7 @@ public class IncludeAction implements Executable {
             instantActivity.perform();
             return instantActivity.getProcessResult();
         } catch (Exception e) {
-            throw new ActionExecutionException("Failed to execute action " + this, e);
+            throw new ActionExecutionException(this, e);
         }
     }
 

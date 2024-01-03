@@ -119,13 +119,13 @@ public class InvokeAction implements Executable {
         } catch (ActionExecutionException e) {
             throw e;
         } catch (InvocationTargetException e) {
-            if (e.getCause() != null) {
-                throw (Exception)e.getCause();
+            if (e.getCause() instanceof Exception) {
+                throw new ActionExecutionException(this, e.getCause());
             } else {
-                throw new ActionExecutionException("Failed to execute action " + this, e);
+                throw new ActionExecutionException(this, e);
             }
         } catch (Exception e) {
-            throw new ActionExecutionException("Failed to execute action " + this, e);
+            throw new ActionExecutionException(this, e);
         }
     }
 

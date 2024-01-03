@@ -119,9 +119,9 @@ public abstract class AbstractDynamicProxyBean {
         }
     }
 
-    protected boolean exceptionally(List<ExceptionRule> exceptionRuleList, Exception e, Activity activity)
+    protected boolean exceptionally(List<ExceptionRule> exceptionRuleList, Exception exception, Activity activity)
             throws ActionExecutionException {
-        activity.setRaisedException(e);
+        activity.setRaisedException(exception);
         if (exceptionRuleList != null) {
             activity.handleException(exceptionRuleList);
             return activity.isResponseReserved();

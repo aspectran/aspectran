@@ -61,8 +61,8 @@ public abstract class AbstractEmbeddedAspectran extends AspectranCoreService imp
         }
     }
 
-    protected void initSessionManager() {
-        Assert.state(this.sessionManager == null, "SessionManager is already initialized");
+    protected void createSessionManager() {
+        Assert.state(this.sessionManager == null, "Session Manager is already exists for embedded aspectran");
         EmbedConfig embedConfig = getAspectranConfig().getEmbedConfig();
         if (embedConfig != null) {
             SessionManagerConfig sessionManagerConfig = embedConfig.getSessionManagerConfig();
@@ -75,7 +75,7 @@ public abstract class AbstractEmbeddedAspectran extends AspectranCoreService imp
                     this.sessionManager = sessionManager;
                     this.sessionAgent = new SessionAgent(sessionManager.getSessionHandler());
                 } catch (Exception e) {
-                    throw new AspectranServiceException("Failed to initialize session manager for embedded aspectran", e);
+                    throw new AspectranServiceException("Failed to create session manager for embedded aspectran", e);
                 }
             }
         }

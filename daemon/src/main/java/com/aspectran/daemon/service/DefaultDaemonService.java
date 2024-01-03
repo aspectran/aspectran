@@ -129,7 +129,7 @@ public class DefaultDaemonService extends AbstractDaemonService {
         daemonService.setServiceStateListener(new ServiceStateListener() {
             @Override
             public void started() {
-                daemonService.initSessionManager();
+                daemonService.createSessionManager();
                 daemonService.pauseTimeout = 0L;
             }
 

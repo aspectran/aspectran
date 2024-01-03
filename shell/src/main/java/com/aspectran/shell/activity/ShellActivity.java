@@ -101,10 +101,6 @@ public class ShellActivity extends CoreActivity {
             throw new AdapterException("Failed to adapt for the shell activity", e);
         }
 
-        if (getParentActivity() == null && getSessionAdapter() instanceof DefaultSessionAdapter) {
-            ((DefaultSessionAdapter)getSessionAdapter()).getSessionAgent().access();
-        }
-
         super.adapt();
     }
 
@@ -132,12 +128,21 @@ public class ShellActivity extends CoreActivity {
     }
 
     @Override
-    protected void release() {
+    protected void saveCurrentActivity() {
+        super.saveCurrentActivity();
+
+        if (!hasParentActivity() && getSessionAdapter() instanceof DefaultSessionAdapter) {
+            ((DefaultSessionAdapter)getSessionAdapter()).getSessionAgent().access();
+        }
+    }
+
+    @Override
+    protected void removeCurrentActivity() {
         if (!hasParentActivity() && getSessionAdapter() instanceof DefaultSessionAdapter) {
             ((DefaultSessionAdapter)getSessionAdapter()).getSessionAgent().complete();
         }
 
-        super.release();
+        super.removeCurrentActivity();
     }
 
 }

@@ -24,6 +24,7 @@ import com.aspectran.core.context.rule.BeanRule;
 import javassist.util.proxy.MethodHandler;
 import javassist.util.proxy.ProxyFactory;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
@@ -62,18 +63,18 @@ public class JavassistDynamicProxyBean extends AbstractDynamicProxyBean implemen
     }
 
     private Object invoke(Object self, Method overridden, Method proceed, Object[] args, Activity activity)
-            throws Exception {
+            throws Throwable {
         String beanId = beanRule.getId();
         String className = beanRule.getClassName();
         String methodName = overridden.getName();
         AspectAdviceRuleRegistry aarr = getAspectAdviceRuleRegistry(activity, beanId, className, methodName);
         if (aarr == null) {
-            return proceed.invoke(self, args);
+            return invokeSuper(self, proceed, args);
         }
         try {
             try {
                 beforeAdvice(aarr.getBeforeAdviceRuleList(), beanRule, activity);
-                Object result = proceed.invoke(self, args);
+                Object result = invokeSuper(self, proceed, args);
                 afterAdvice(aarr.getAfterAdviceRuleList(), beanRule, activity);
                 return result;
             } finally {
@@ -84,6 +85,14 @@ public class JavassistDynamicProxyBean extends AbstractDynamicProxyBean implemen
                 return null;
             }
             throw e;
+        }
+    }
+
+    private Object invokeSuper(Object self, Method proceed, Object[] args) throws Throwable {
+        try {
+            return proceed.invoke(self, args);
+        } catch (InvocationTargetException e) {
+            throw e.getTargetException();
         }
     }
 

@@ -20,12 +20,14 @@ import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.embed.service.EmbeddedAspectran;
+import com.aspectran.utils.ExceptionUtils;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
@@ -86,7 +88,13 @@ class AspectranSimpleAopTest {
 
     @Test
     void test4() {
-        aspectran.translate("aop/test/action2");
+        Exception exception = null;
+        try {
+            aspectran.translate("aop/test/action2");
+        } catch (Exception e) {
+            exception = ExceptionUtils.getRootCauseException(e);
+        }
+        assertInstanceOf(SimpleAopTestException.class, exception);
     }
 
     @Test
@@ -94,13 +102,6 @@ class AspectranSimpleAopTest {
         Translet translet = aspectran.translate("aop/test/action3-hello");
         String param1 = translet.toString();
         assertEquals("hello", param1);
-    }
-
-    @Test
-    void instantActivityTest() {
-        InstantActivityTestBean bean = aspectran.getBean(InstantActivityTestBean.class);
-        ActivityContext context = bean.getActivityContext();
-        System.out.println(context);
     }
 
 }

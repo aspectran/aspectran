@@ -44,6 +44,15 @@ public class ExceptionUtils {
         return t;
     }
 
+    public static Exception getRootCauseException(Exception e) {
+        Throwable cause = getRootCause(e);
+        if (cause instanceof Exception) {
+            return (Exception)cause;
+        } else {
+            return e;
+        }
+    }
+
     /**
      * Gets the stack trace from a Throwable as a String.
      * <p>The result of this method vary by JDK version as this method

@@ -70,11 +70,11 @@ public class AnnotatedActivity {
     )
     @ParamItem(
             name = "param3",
-            value = "88888888888888888888"
+            value = "88888888888888888888-forTest"
     )
     @ParamItem(
             name = "param4",
-            value = "99999999999999999999"
+            value = "99999999999999999999-forTest"
     )
     public void action2(Integer param1, int param2, int param3, Integer param4) {
         assertEquals(1234, param1);

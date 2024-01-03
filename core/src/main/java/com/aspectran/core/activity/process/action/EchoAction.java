@@ -50,7 +50,7 @@ public class EchoAction implements Executable {
             ItemEvaluator evaluator = new ItemEvaluation(activity);
             return evaluator.evaluate(itemRuleMap);
         } catch (Exception e) {
-            throw new ActionExecutionException("Failed to execute action " + this, e);
+            throw new ActionExecutionException(this, e);
         }
     }
 

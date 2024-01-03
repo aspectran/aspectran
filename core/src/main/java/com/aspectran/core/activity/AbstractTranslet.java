@@ -19,6 +19,7 @@ import com.aspectran.core.context.rule.RequestRule;
 import com.aspectran.core.context.rule.ResponseRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.type.MethodType;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 public abstract class AbstractTranslet implements Translet {
 
@@ -28,7 +29,7 @@ public abstract class AbstractTranslet implements Translet {
 
     private MethodType requestMethod;
 
-    protected AbstractTranslet(TransletRule transletRule) {
+    protected AbstractTranslet(@NonNull TransletRule transletRule) {
         this.transletRule = transletRule;
     }
 

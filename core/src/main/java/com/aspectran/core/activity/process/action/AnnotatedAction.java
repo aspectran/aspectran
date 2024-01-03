@@ -89,7 +89,7 @@ public class AnnotatedAction implements Executable {
             ParameterBindingRule[] parameterBindingRules = annotatedActionRule.getParameterBindingRules();
             return invokeMethod(activity, bean, method, parameterBindingRules);
         } catch (Exception e) {
-            throw new ActionExecutionException("Failed to execute action " + this, e);
+            throw new ActionExecutionException(this, e);
         }
     }
 

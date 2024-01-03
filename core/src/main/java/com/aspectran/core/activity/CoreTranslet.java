@@ -41,6 +41,7 @@ import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.support.i18n.message.NoSuchMessageException;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -68,7 +69,7 @@ public class CoreTranslet extends AbstractTranslet {
      * @param transletRule the translet rule
      * @param activity the current Activity
      */
-    public CoreTranslet(TransletRule transletRule, CoreActivity activity) {
+    public CoreTranslet(@NonNull TransletRule transletRule, @NonNull CoreActivity activity) {
         super(transletRule);
         this.activity = activity;
     }

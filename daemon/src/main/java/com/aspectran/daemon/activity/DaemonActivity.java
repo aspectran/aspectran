@@ -80,20 +80,25 @@ public class DaemonActivity extends CoreActivity {
         DaemonResponseAdapter responseAdapter = new DaemonResponseAdapter(outputWriter);
         setResponseAdapter(responseAdapter);
 
-        if (!hasParentActivity() && getSessionAdapter() instanceof DefaultSessionAdapter) {
-            ((DefaultSessionAdapter)getSessionAdapter()).getSessionAgent().access();
-        }
-
         super.adapt();
     }
 
     @Override
-    protected void release() {
+    protected void saveCurrentActivity() {
+        super.saveCurrentActivity();
+
+        if (!hasParentActivity() && getSessionAdapter() instanceof DefaultSessionAdapter) {
+            ((DefaultSessionAdapter)getSessionAdapter()).getSessionAgent().access();
+        }
+    }
+
+    @Override
+    protected void removeCurrentActivity() {
         if (!hasParentActivity() && getSessionAdapter() instanceof DefaultSessionAdapter) {
             ((DefaultSessionAdapter)getSessionAdapter()).getSessionAgent().complete();
         }
 
-        super.release();
+        super.removeCurrentActivity();
     }
 
 }

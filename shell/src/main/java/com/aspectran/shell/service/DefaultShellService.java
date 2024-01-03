@@ -258,7 +258,7 @@ public class DefaultShellService extends AbstractShellService {
         shellService.setServiceStateListener(new ServiceStateListener() {
             @Override
             public void started() {
-                shellService.initSessionManager();
+                shellService.createSessionManager();
                 shellService.pauseTimeout = 0L;
                 shellService.printGreetings();
                 shellService.printHelp();

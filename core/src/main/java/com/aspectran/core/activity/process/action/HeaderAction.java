@@ -68,7 +68,7 @@ public class HeaderAction implements Executable {
             }
             return valueMap;
         } catch (Exception e) {
-            throw new ActionExecutionException("Failed to execute action " + this, e);
+            throw new ActionExecutionException(this, e);
         }
     }
 

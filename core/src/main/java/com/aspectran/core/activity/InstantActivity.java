@@ -39,8 +39,6 @@ public class InstantActivity extends CoreActivity {
 
     private ParameterMap parameterMap;
 
-    private volatile boolean performed;
-
     /**
      * Instantiates a new InstantActivity.
      * @param context the activity context
@@ -94,30 +92,25 @@ public class InstantActivity extends CoreActivity {
             setResponseAdapter(responseAdapter);
         }
 
-        if (!hasParentActivity() && getSessionAdapter() instanceof DefaultSessionAdapter) {
-            ((DefaultSessionAdapter)getSessionAdapter()).getSessionAgent().access();
-        }
-
         super.adapt();
     }
 
     @Override
-    public <V> V perform(InstantAction<V> instantAction) throws ActivityPerformException {
-        if (performed) {
-            throw new ActivityPerformException("Activity has already been performed");
-        }
-        performed = true;
+    protected void saveCurrentActivity() {
+        super.saveCurrentActivity();
 
-        return super.perform(instantAction);
+        if (!hasParentActivity() && getSessionAdapter() instanceof DefaultSessionAdapter) {
+            ((DefaultSessionAdapter)getSessionAdapter()).getSessionAgent().access();
+        }
     }
 
     @Override
-    protected void release() {
+    protected void removeCurrentActivity() {
         if (!hasParentActivity() && getSessionAdapter() instanceof DefaultSessionAdapter) {
             ((DefaultSessionAdapter)getSessionAdapter()).getSessionAgent().complete();
         }
 
-        super.release();
+        super.removeCurrentActivity();
     }
 
 }
