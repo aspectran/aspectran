@@ -62,7 +62,9 @@
                 <item name="hello">Hello</item>
             </attributes>
         </include>
-        <transform format="text"/>
+        <transform format="text">
+            <template>!</template>
+        </transform>
     </translet>
 
     <translet name="/include23">

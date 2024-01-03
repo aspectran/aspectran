@@ -122,7 +122,7 @@ class InstantActivityTest {
 
     @Test
     void transletInclude22() throws TransletNotFoundException, ActivityPrepareException, ActivityPerformException, IOException {
-        assertEquals("Hello World", instantActivity2("/include22"));
+        assertEquals("Hello World!", instantActivity2("/include22"));
     }
 
     @Test
