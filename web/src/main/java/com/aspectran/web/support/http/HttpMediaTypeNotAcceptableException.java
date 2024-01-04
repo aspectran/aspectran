@@ -15,7 +15,6 @@
  */
 package com.aspectran.web.support.http;
 
-import java.io.Serial;
 import java.util.List;
 
 /**

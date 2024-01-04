@@ -15,7 +15,6 @@
  */
 package com.aspectran.utils.thread;
 
-import java.io.Serial;
 import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;

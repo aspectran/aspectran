@@ -16,7 +16,6 @@
 package com.aspectran.utils.wildcard;
 
 import com.aspectran.utils.Assert;
-import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 
 /**

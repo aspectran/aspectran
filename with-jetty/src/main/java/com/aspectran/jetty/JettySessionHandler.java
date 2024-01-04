@@ -15,6 +15,7 @@
  */
 package com.aspectran.jetty;
 
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import org.eclipse.jetty.server.session.DefaultSessionCache;
 import org.eclipse.jetty.server.session.SessionCache;
 import org.eclipse.jetty.server.session.SessionCacheFactory;
@@ -30,7 +31,7 @@ public class JettySessionHandler extends SessionHandler {
         super();
     }
 
-    public void setSessionCache(SessionCacheFactory sessionCacheFactory) {
+    public void setSessionCache(@NonNull SessionCacheFactory sessionCacheFactory) {
         setSessionCache(sessionCacheFactory.getSessionCache(this));
     }
 
