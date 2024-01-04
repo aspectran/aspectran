@@ -16,6 +16,8 @@
 package com.aspectran.utils.apon;
 
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 
 import java.io.Closeable;
 import java.io.File;
@@ -526,7 +528,8 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
         }
     }
 
-    private String readLine(String value, int start) {
+    @Nullable
+    private String readLine(@NonNull String value, int start) {
         if (start >= value.length()) {
             return null;
         }
@@ -540,7 +543,7 @@ public class AponWriter extends AponFormat implements Flushable, Closeable {
         return (end > start ? value.substring(start, end) : StringUtils.EMPTY);
     }
 
-    private int skipNewLineChar(String value, int start) {
+    private int skipNewLineChar(@NonNull String value, int start) {
         int end = start;
         boolean cr = false;
         boolean lf = false;

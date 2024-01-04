@@ -17,6 +17,7 @@ package com.aspectran.web.support.http;
 
 import com.aspectran.utils.annotation.jsr305.Nullable;
 
+import java.io.Serial;
 import java.util.List;
 
 /**
@@ -28,6 +29,8 @@ import java.util.List;
  * @author Arjen Poutsma
  */
 public class HttpMediaTypeNotSupportedException extends HttpMediaTypeException {
+
+    private static final long serialVersionUID = 1965178958479451769L;
 
     @Nullable
     private final MediaType contentType;
@@ -46,7 +49,8 @@ public class HttpMediaTypeNotSupportedException extends HttpMediaTypeException {
      * @param contentType         the unsupported content type
      * @param supportedMediaTypes the list of supported media types
      */
-    public HttpMediaTypeNotSupportedException(@Nullable MediaType contentType, List<MediaType> supportedMediaTypes) {
+    public HttpMediaTypeNotSupportedException(@Nullable MediaType contentType,
+                                              List<MediaType> supportedMediaTypes) {
         this(contentType, supportedMediaTypes, "Content type '" +
             (contentType != null ? contentType : "") + "' not supported");
     }

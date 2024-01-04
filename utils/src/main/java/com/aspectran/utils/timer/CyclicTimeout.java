@@ -15,6 +15,7 @@
  */
 package com.aspectran.utils.timer;
 
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 import com.aspectran.utils.thread.Scheduler;
@@ -80,7 +81,7 @@ public abstract class CyclicTimeout implements Destroyable {
      * @param units The unit of time of the period.
      * @return true if the timeout was already set.
      */
-    public boolean schedule(long delay, TimeUnit units) {
+    public boolean schedule(long delay, @NonNull TimeUnit units) {
         long now = System.nanoTime();
         long newTimeoutAt = now + units.toNanos(delay);
 

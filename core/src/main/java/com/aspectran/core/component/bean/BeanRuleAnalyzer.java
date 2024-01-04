@@ -20,6 +20,8 @@ import com.aspectran.core.component.bean.ablility.FactoryBean;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.utils.MethodUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 
 import java.lang.reflect.Method;
 import java.util.Locale;
@@ -31,7 +33,8 @@ public class BeanRuleAnalyzer {
 
     public static final Class<?>[] TRANSLET_ACTION_PARAMETER_TYPES = { Translet.class };
 
-    static Class<?> determineBeanClass(BeanRule beanRule) throws BeanRuleException {
+    @Nullable
+    static Class<?> determineBeanClass(@NonNull BeanRule beanRule) throws BeanRuleException {
         Class<?> targetBeanClass;
         if (beanRule.isFactoryOffered()) {
             targetBeanClass = beanRule.getFactoryBeanClass();
@@ -62,6 +65,7 @@ public class BeanRuleAnalyzer {
         return targetBeanClass;
     }
 
+    @NonNull
     private static Class<?> determineTargetBeanClassForFactoryBean(Class<?> beanClass, BeanRule beanRule)
             throws BeanRuleException {
         try {
@@ -74,7 +78,8 @@ public class BeanRuleAnalyzer {
         }
     }
 
-    static Class<?> determineFactoryMethodTargetBeanClass(Class<?> beanClass, BeanRule beanRule)
+    @NonNull
+    static Class<?> determineFactoryMethodTargetBeanClass(@NonNull Class<?> beanClass, BeanRule beanRule)
             throws BeanRuleException {
         if (beanRule.getFactoryMethod() != null) {
             Class<?> targetBeanClass = beanRule.getFactoryMethod().getReturnType();
@@ -103,7 +108,7 @@ public class BeanRuleAnalyzer {
         }
     }
 
-    static void determineInitMethod(Class<?> beanClass, BeanRule beanRule) throws BeanRuleException {
+    static void determineInitMethod(@NonNull Class<?> beanClass, @NonNull BeanRule beanRule) throws BeanRuleException {
         if (beanRule.isInitializableBean()) {
             throw new BeanRuleException("Bean initialization method is duplicated; " +
                     "Already implemented the InitializableBean", beanRule);
@@ -125,7 +130,7 @@ public class BeanRuleAnalyzer {
         }
     }
 
-    static void determineDestroyMethod(Class<?> beanClass, BeanRule beanRule) throws BeanRuleException {
+    static void determineDestroyMethod(@NonNull Class<?> beanClass, @NonNull BeanRule beanRule) throws BeanRuleException {
         if (beanRule.isDisposableBean()) {
             throw new BeanRuleException("Bean destroy method is duplicated; " +
                     "Already implemented the DisposableBean", beanRule);
@@ -140,7 +145,7 @@ public class BeanRuleAnalyzer {
         beanRule.setDestroyMethod(m);
     }
 
-    static void checkRequiredProperty(BeanRule beanRule, Method method) throws BeanRuleException {
+    static void checkRequiredProperty(@NonNull BeanRule beanRule, @NonNull Method method) throws BeanRuleException {
         String propertyName = dropCase(method.getName());
         ItemRuleMap propertyItemRuleMap = beanRule.getPropertyItemRuleMap();
         if (propertyItemRuleMap != null) {
@@ -151,7 +156,8 @@ public class BeanRuleAnalyzer {
         throw new BeanRuleException("Property '" + propertyName + "' is required for bean ", beanRule);
     }
 
-    private static String dropCase(String name) {
+    @NonNull
+    private static String dropCase(@NonNull String name) {
         if (name.startsWith("set")) {
             name = name.substring(3);
         }

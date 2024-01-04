@@ -29,6 +29,7 @@ import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.ExceptionRule;
 import com.aspectran.core.context.rule.SettingsAdviceRule;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.lang.reflect.Method;
 import java.util.List;
@@ -44,13 +45,13 @@ public abstract class AbstractDynamicProxyBean {
         this.aspectRuleRegistry = aspectRuleRegistry;
     }
 
-    protected boolean isAvoidAdvice(Method method) {
+    protected boolean isAvoidAdvice(@NonNull Method method) {
         return (Object.class == method.getDeclaringClass() ||
                 method.getDeclaringClass().isAnnotationPresent(AvoidAdvice.class) ||
                 method.isAnnotationPresent(AvoidAdvice.class));
     }
 
-    protected AspectAdviceRuleRegistry getAspectAdviceRuleRegistry(Activity activity,
+    protected AspectAdviceRuleRegistry getAspectAdviceRuleRegistry(@NonNull Activity activity,
             String beanId, String className, String methodName)
             throws AdviceConstraintViolationException, AspectAdviceException {
         String requestName;
@@ -119,7 +120,7 @@ public abstract class AbstractDynamicProxyBean {
         }
     }
 
-    protected boolean exceptionally(List<ExceptionRule> exceptionRuleList, Exception exception, Activity activity)
+    protected boolean exceptionally(List<ExceptionRule> exceptionRuleList, Exception exception, @NonNull Activity activity)
             throws ActionExecutionException {
         activity.setRaisedException(exception);
         if (exceptionRuleList != null) {
@@ -129,7 +130,7 @@ public abstract class AbstractDynamicProxyBean {
         return false;
     }
 
-    private boolean isSameBean(BeanRule beanRule, AspectAdviceRule aspectAdviceRule) {
+    private boolean isSameBean(@NonNull BeanRule beanRule, AspectAdviceRule aspectAdviceRule) {
         if (beanRule.getId() != null && beanRule.getId().equals(aspectAdviceRule.getAdviceBeanId())) {
             return true;
         }

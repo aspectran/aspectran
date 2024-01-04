@@ -17,6 +17,7 @@ package com.aspectran.core.component.session;
 
 import com.aspectran.utils.CustomObjectInputStream;
 import com.aspectran.utils.ToStringBuilder;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -231,7 +232,7 @@ public class SessionData implements Serializable {
      * @param nonPersistentAttributes the attribute names to be excluded from serialization
      * @throws IOException if an I/O error has occurred
      */
-    public static void serialize(SessionData data, OutputStream os,
+    public static void serialize(@NonNull SessionData data, OutputStream os,
                                  Set<String> nonPersistentAttributes) throws IOException {
         DataOutputStream out = new DataOutputStream(os);
         out.writeUTF(data.getId());
@@ -274,6 +275,7 @@ public class SessionData implements Serializable {
      * @return the session data
      * @throws Exception if the session data could not be read from the file
      */
+    @NonNull
     public static SessionData deserialize(InputStream is) throws Exception {
         DataInputStream dis = new DataInputStream(is);
         String id = dis.readUTF(); // the actual id from inside the file

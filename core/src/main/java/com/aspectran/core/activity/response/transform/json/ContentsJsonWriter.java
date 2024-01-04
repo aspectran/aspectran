@@ -19,6 +19,7 @@ import com.aspectran.core.activity.process.result.ActionResult;
 import com.aspectran.core.activity.process.result.ContentResult;
 import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.utils.Assert;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.json.JsonWriter;
 
 import java.io.IOException;
@@ -82,7 +83,7 @@ public class ContentsJsonWriter extends JsonWriter {
      * @param contentResult the {@code ContentResult} object to write to the writer
      * @throws IOException if an I/O error has occurred
      */
-    private void write(ContentResult contentResult) throws IOException {
+    private void write(@NonNull ContentResult contentResult) throws IOException {
         if (contentResult.getName() != null) {
             beginObject();
             writeName(contentResult.getName());

@@ -15,6 +15,7 @@
  */
 package com.aspectran.utils;
 
+import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 import com.sun.jna.Native;
@@ -63,6 +64,7 @@ public class Win32ConsoleCtrlCloseHook implements StdCallLibrary.StdCallCallback
 
     private native boolean SetConsoleCtrlHandler(StdCallLibrary.StdCallCallback handler, boolean add);
 
+    @Nullable
     public static Win32ConsoleCtrlCloseHook register(Thread hook) {
         if (!IS_WIN) {
             return null;

@@ -17,6 +17,7 @@ package com.aspectran.core.activity.request;
 
 import com.aspectran.core.context.rule.ItemRule;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.util.Collection;
 
@@ -39,7 +40,7 @@ public class MissingMandatoryAttributesException extends RequestParseException {
      * the specified attribute.
      * @param itemRules an item rule list that represents missing attributes
      */
-    public MissingMandatoryAttributesException(Collection<ItemRule> itemRules) {
+    public MissingMandatoryAttributesException(@NonNull Collection<ItemRule> itemRules) {
         super("Missing mandatory attributes: " + StringUtils.joinCommaDelimitedList(itemRules));
         this.itemRules = itemRules;
     }
@@ -48,6 +49,7 @@ public class MissingMandatoryAttributesException extends RequestParseException {
      * Returns an item rule list that represents missing attributes.
      * @return an item rule list that represents missing attributes
      */
+    @NonNull
     public Collection<ItemRule> getItemRules() {
         return itemRules;
     }

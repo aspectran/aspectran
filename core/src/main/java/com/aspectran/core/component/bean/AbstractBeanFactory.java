@@ -46,6 +46,7 @@ import com.aspectran.core.context.rule.type.BeanProxifierType;
 import com.aspectran.utils.ClassUtils;
 import com.aspectran.utils.MethodUtils;
 import com.aspectran.utils.ReflectionUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 
@@ -81,7 +82,7 @@ abstract class AbstractBeanFactory extends AbstractComponent {
         return createBean(beanRule, null);
     }
 
-    protected Object createBean(BeanRule beanRule, Scope scope) {
+    protected Object createBean(@NonNull BeanRule beanRule, Scope scope) {
         Activity activity = context.getAvailableActivity();
         Object bean;
         if (beanRule.isFactoryOffered()) {
@@ -92,7 +93,7 @@ abstract class AbstractBeanFactory extends AbstractComponent {
         return bean;
     }
 
-    protected Object getFactoryProducedObject(BeanRule beanRule, Object bean) {
+    protected Object getFactoryProducedObject(@NonNull BeanRule beanRule, Object bean) {
         if (beanRule.isFactoryBean()) {
             return invokeMethodOfFactoryBean(beanRule, bean);
         } else if (beanRule.getFactoryMethodName() != null) {
@@ -103,7 +104,7 @@ abstract class AbstractBeanFactory extends AbstractComponent {
         }
     }
 
-    private Object createNormalBean(BeanRule beanRule, Scope scope, Activity activity) {
+    private Object createNormalBean(@NonNull BeanRule beanRule, Scope scope, Activity activity) {
         try {
             Object[] args;
             Class<?>[] argTypes;
@@ -200,7 +201,7 @@ abstract class AbstractBeanFactory extends AbstractComponent {
         }
     }
 
-    private Object createOfferedFactoryBean(BeanRule beanRule, Scope scope, Activity activity) {
+    private Object createOfferedFactoryBean(@NonNull BeanRule beanRule, Scope scope, Activity activity) {
         String factoryBeanId = beanRule.getFactoryBeanId();
         Class<?> factoryBeanClass = beanRule.getFactoryBeanClass();
         Object bean;
@@ -252,7 +253,7 @@ abstract class AbstractBeanFactory extends AbstractComponent {
         }
     }
 
-    private Object instantiateBean(BeanRule beanRule, Object[] args, Class<?>[] argTypes) {
+    private Object instantiateBean(@NonNull BeanRule beanRule, Object[] args, Class<?>[] argTypes) {
         Object bean;
         if (beanRule.isProxied()) {
             bean = instantiateDynamicBeanProxy(beanRule, args, argTypes);
@@ -290,7 +291,7 @@ abstract class AbstractBeanFactory extends AbstractComponent {
         return bean;
     }
 
-    private void autowiring(BeanRule beanRule, Object bean, Activity activity) {
+    private void autowiring(@NonNull BeanRule beanRule, Object bean, Activity activity) {
         if (beanRule.getAutowireRuleList() != null) {
             for (AutowireRule autowireRule : beanRule.getAutowireRuleList()) {
                 if (autowireRule.getTargetType() == AutowireTargetType.FIELD) {
@@ -427,6 +428,7 @@ abstract class AbstractBeanFactory extends AbstractComponent {
         }
     }
 
+    @NonNull
     private Object invokeMethodOfFactoryBean(BeanRule beanRule, Object bean) {
         Object resultBean;
         try {
@@ -443,7 +445,8 @@ abstract class AbstractBeanFactory extends AbstractComponent {
         return resultBean;
     }
 
-    private static Object newInstance(Class<?> beanClass, Object[] args, Class<?>[] argTypes) {
+    @NonNull
+    private static Object newInstance(@NonNull Class<?> beanClass, Object[] args, Class<?>[] argTypes) {
         if (beanClass.isInterface()) {
             throw new BeanInstantiationException(beanClass, "Specified class is an interface");
         }
@@ -459,11 +462,13 @@ abstract class AbstractBeanFactory extends AbstractComponent {
         return newInstance(constructorToUse, args);
     }
 
+    @NonNull
     private static Object newInstance(Class<?> beanClass) {
         return newInstance(beanClass, MethodUtils.EMPTY_OBJECT_ARRAY, MethodUtils.EMPTY_CLASS_PARAMETERS);
     }
 
-    private static Object newInstance(Constructor<?> ctor, Object[] args) {
+    @NonNull
+    private static Object newInstance(@NonNull Constructor<?> ctor, Object[] args) {
         try {
             return ctor.newInstance(args);
         } catch (InstantiationException e) {
@@ -481,7 +486,7 @@ abstract class AbstractBeanFactory extends AbstractComponent {
         }
     }
 
-    private static Constructor<?> getMatchConstructor(Class<?> beanClass, Object[] args) {
+    private static Constructor<?> getMatchConstructor(@NonNull Class<?> beanClass, Object[] args) {
         Constructor<?>[] candidates = beanClass.getDeclaredConstructors();
         Constructor<?> constructorToUse = null;
         float bestMatchWeight = Float.MAX_VALUE;

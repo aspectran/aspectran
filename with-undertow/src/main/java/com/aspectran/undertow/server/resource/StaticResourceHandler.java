@@ -15,6 +15,7 @@
  */
 package com.aspectran.undertow.server.resource;
 
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 import com.aspectran.utils.wildcard.PluralWildcardPattern;
@@ -57,7 +58,7 @@ public class StaticResourceHandler extends ResourceHandler {
         super(resourceSupplier, next);
     }
 
-    public void setResourcePathPatterns(ResourcePathPatterns resourcePathPatterns) {
+    public void setResourcePathPatterns(@NonNull ResourcePathPatterns resourcePathPatterns) {
         String[] includePatterns = resourcePathPatterns.getIncludePatterns();
         String[] excludePatterns = resourcePathPatterns.getExcludePatterns();
         this.resourcePathPatterns = new PluralWildcardPattern(includePatterns, excludePatterns, '/');
@@ -105,6 +106,7 @@ public class StaticResourceHandler extends ResourceHandler {
         }
     }
 
+    @NonNull
     private Set<String> findStaticResources(Path base) throws IOException {
         Set<String> resources = new HashSet<>();
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(base)) {
@@ -152,7 +154,7 @@ public class StaticResourceHandler extends ResourceHandler {
     }
 
     @Override
-    public void handleRequest(HttpServerExchange exchange) throws Exception {
+    public void handleRequest(@NonNull HttpServerExchange exchange) throws Exception {
         String requestPath = exchange.getRequestPath();
         if (resourcePathPatterns != null) {
             if (resourcePathPatterns.matches(requestPath)) {

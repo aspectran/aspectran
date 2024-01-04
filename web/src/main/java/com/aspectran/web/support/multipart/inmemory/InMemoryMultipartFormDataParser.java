@@ -22,6 +22,7 @@ import com.aspectran.utils.FilenameUtils;
 import com.aspectran.utils.LinkedMultiValueMap;
 import com.aspectran.utils.MultiValueMap;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 import com.aspectran.web.activity.request.MultipartFormDataParser;
@@ -145,7 +146,8 @@ public class InMemoryMultipartFormDataParser implements MultipartFormDataParser 
      * @param fileItemListMap the file item list map
      * @param requestAdapter the request adapter
      */
-    private void parseMultipartParameters(Map<String, List<FileItem>> fileItemListMap, RequestAdapter requestAdapter) {
+    private void parseMultipartParameters(@NonNull Map<String, List<FileItem>> fileItemListMap,
+                                          @NonNull RequestAdapter requestAdapter) {
         String encoding = requestAdapter.getEncoding();
         MultiValueMap<String, String> parameterMap = new LinkedMultiValueMap<>();
         MultiValueMap<String, FileParameter> fileParameterMap = new LinkedMultiValueMap<>();
@@ -167,7 +169,8 @@ public class InMemoryMultipartFormDataParser implements MultipartFormDataParser 
                             continue;
                         }
 
-                        boolean valid = FilenameUtils.isValidFileExtension(fileName, allowedFileExtensions, deniedFileExtensions);
+                        boolean valid = FilenameUtils.isValidFileExtension(fileName,
+                                allowedFileExtensions, deniedFileExtensions);
                         if (!valid) {
                             continue;
                         }

@@ -21,6 +21,7 @@ import com.aspectran.core.component.session.Session;
 import com.aspectran.core.component.session.SessionBindingListener;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.core.context.rule.type.ScopeType;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 
 import java.util.Map;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -91,6 +92,7 @@ public class SessionScope extends AbstractScope implements SessionBindingListene
         return (findMatchingBeanRule(beanRule) != null);
     }
 
+    @Nullable
     private BeanRule findMatchingBeanRule(BeanRule beanRule) {
         for (Map.Entry<BeanRule, BeanInstance> entry : getScopedBeanInstances().entrySet()) {
             BeanRule target = entry.getKey();

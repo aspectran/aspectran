@@ -15,6 +15,8 @@
  */
 package com.aspectran.web.support.util;
 
+import com.aspectran.utils.annotation.jsr305.NonNull;
+
 /**
  * <p>This class is a clone of org.springframework.web.util.JavaScriptUtils</p>
  *
@@ -32,7 +34,8 @@ public abstract class JavaScriptUtils {
      * @param input the input string
      * @return the string with escaped characters
      */
-    public static String javaScriptEscape(String input) {
+    @NonNull
+    public static String javaScriptEscape(@NonNull String input) {
         StringBuilder filtered = new StringBuilder(input.length());
         char prevChar = '\u0000';
         char c;

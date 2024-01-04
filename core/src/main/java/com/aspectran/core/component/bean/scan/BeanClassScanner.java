@@ -16,6 +16,7 @@
 package com.aspectran.core.component.bean.scan;
 
 import com.aspectran.utils.ClassScanner;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 import com.aspectran.utils.wildcard.WildcardPattern;
@@ -84,7 +85,7 @@ public class BeanClassScanner extends ClassScanner {
         }
 
         @Override
-        public void save(String resourceName, Class<?> targetClass) {
+        public void save(@NonNull String resourceName, @NonNull Class<?> targetClass) {
             if (!Modifier.isPublic(targetClass.getModifiers()) ||
                     (!Modifier.isInterface(targetClass.getModifiers()) &&
                             Modifier.isAbstract(targetClass.getModifiers()))) {

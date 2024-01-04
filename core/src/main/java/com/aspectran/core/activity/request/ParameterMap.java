@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.activity.request;
 
+import com.aspectran.utils.Assert;
+
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -114,6 +116,7 @@ public class ParameterMap extends LinkedHashMap<String, String[]> {
      * @param params the other parameter map
      */
     public void setAll(Map<String, String> params) {
+        Assert.notNull(params, "params must not be null");
         for (Map.Entry<String, String> entry : params.entrySet()) {
             setParameter(entry.getKey(), entry.getValue());
         }
@@ -125,9 +128,7 @@ public class ParameterMap extends LinkedHashMap<String, String[]> {
     }
 
     public Map<String, Object> extractAsMap(Map<String, Object> targetMap) {
-        if (targetMap == null) {
-            throw new IllegalArgumentException("targetMap must not be null");
-        }
+        Assert.notNull(targetMap, "targetMap must not be null");
         for (Map.Entry<String, String[]> entry : this.entrySet()) {
             String name = entry.getKey();
             String[] values = entry.getValue();

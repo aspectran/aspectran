@@ -17,6 +17,7 @@ package com.aspectran.utils.json;
 
 import com.aspectran.utils.ArrayStack;
 import com.aspectran.utils.BeanUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.apon.Parameter;
 import com.aspectran.utils.apon.ParameterValue;
 import com.aspectran.utils.apon.Parameters;
@@ -492,8 +493,9 @@ public class JsonWriter {
      * @param string the input String, may be null
      * @return a String correctly formatted for insertion in a JSON text
      */
+    @NonNull
     private static String escape(String string) {
-        if (string == null || string.length() == 0) {
+        if (string == null || string.isEmpty()) {
             return "\"\"";
         }
 

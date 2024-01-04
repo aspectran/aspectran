@@ -15,6 +15,8 @@
  */
 package com.aspectran.shell.command.option;
 
+import com.aspectran.utils.annotation.jsr305.Nullable;
+
 /**
  * Supported Option value types.
  */
@@ -52,6 +54,7 @@ public enum OptionValueType {
      * @param alias the item value type as a {@code String}
      * @return an {@code OptionValueType}, may be {@code null}
      */
+    @Nullable
     public static OptionValueType resolve(String alias) {
         for (OptionValueType type : values()) {
             if (type.alias.equals(alias)) {

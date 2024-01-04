@@ -23,6 +23,7 @@ import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.activity.response.ResponseException;
 import com.aspectran.core.context.rule.CustomTransformRule;
 import com.aspectran.core.context.rule.type.ResponseType;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 
@@ -57,7 +58,7 @@ public class CustomTransformResponse implements Response {
     }
 
     @Override
-    public void commit(Activity activity) throws ResponseException {
+    public void commit(@NonNull Activity activity) throws ResponseException {
         CustomTransformer transformer = customTransformRule.getTransformer();
         if (transformer == null) {
             transformer = findTransformer(activity.getProcessResult());

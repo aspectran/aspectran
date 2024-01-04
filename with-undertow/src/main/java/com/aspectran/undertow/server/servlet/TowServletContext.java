@@ -17,6 +17,8 @@ package com.aspectran.undertow.server.servlet;
 
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.component.bean.aware.ApplicationAdapterAware;
+import com.aspectran.utils.Assert;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import io.undertow.server.HandlerWrapper;
 import io.undertow.server.session.SessionManager;
 import io.undertow.servlet.api.DeploymentInfo;
@@ -46,6 +48,7 @@ public class TowServletContext extends DeploymentInfo implements ApplicationAdap
 
     @Override
     public void setApplicationAdapter(ApplicationAdapter applicationAdapter) {
+        Assert.notNull(applicationAdapter, "applicationAdapter must not be null");
         this.applicationAdapter = applicationAdapter;
         setClassLoader(applicationAdapter.getClassLoader());
     }
@@ -124,7 +127,7 @@ public class TowServletContext extends DeploymentInfo implements ApplicationAdap
         }
     }
 
-    public void setServletContainerInitializers(ServletContainerInitializer[] servletContainerInitializers) {
+    public void setServletContainerInitializers(@NonNull ServletContainerInitializer[] servletContainerInitializers) {
         for (ServletContainerInitializer initializer : servletContainerInitializers) {
             Class<? extends ServletContainerInitializer> servletContainerInitializerClass = initializer.getClass();
             InstanceFactory<? extends ServletContainerInitializer> instanceFactory = new ImmediateInstanceFactory<>(initializer);

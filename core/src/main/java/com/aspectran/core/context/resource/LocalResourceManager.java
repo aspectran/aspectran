@@ -19,6 +19,7 @@ import com.aspectran.utils.FileCopyUtils;
 import com.aspectran.utils.ResourceUtils;
 import com.aspectran.utils.SystemUtils;
 import com.aspectran.utils.ToStringBuilder;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 
@@ -116,7 +117,7 @@ public class LocalResourceManager extends ResourceManager {
         }
     }
 
-    private void findResourceInDir(File dir, List<File> jarFileList) {
+    private void findResourceInDir(@NonNull File dir, List<File> jarFileList) {
         dir.listFiles(file -> {
             String filePath = file.getAbsolutePath();
             String resourceName = filePath.substring(resourceNameStart);

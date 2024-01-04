@@ -16,6 +16,7 @@
 package com.aspectran.utils.apon;
 
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 /**
  * This exception is raised when attempting to read (or write) a malformed APON element.
@@ -64,6 +65,7 @@ public class MalformedAponException extends AponParseException {
      * @param msg the message
      * @return the detail message
      */
+    @NonNull
     private static String makeMessage(int lineNumber, String line, String tline, String msg) {
         int columnNumber = (tline != null ? line.indexOf(tline) : 0);
         StringBuilder sb = new StringBuilder();
@@ -89,6 +91,7 @@ public class MalformedAponException extends AponParseException {
         return sb.toString();
     }
 
+    @NonNull
     private static String makeMessage(int lineNumber, String line, String tline, ParameterValue parameterValue,
                                       ValueType expectedValueType) {
         StringBuilder sb = new StringBuilder();

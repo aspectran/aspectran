@@ -16,6 +16,7 @@
 package com.aspectran.undertow.server.servlet;
 
 import com.aspectran.utils.ResourceUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 import jakarta.servlet.ServletContext;
@@ -92,7 +93,7 @@ public class TowTldScanner extends TldScanner {
         }
     }
 
-    private void scanJar(Jar jar) throws IOException {
+    private void scanJar(@NonNull Jar jar) throws IOException {
         boolean found = false;
         URL jarFileUrl = jar.getJarFileURL();
         jar.nextEntry();

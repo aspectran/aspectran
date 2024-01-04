@@ -15,6 +15,7 @@
  */
 package com.aspectran.utils;
 
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 import org.jasypt.encryption.ByteEncryptor;
 import org.jasypt.encryption.StringEncryptor;
@@ -115,10 +116,12 @@ public class PBEncryptionUtils {
         return encryptor;
     }
 
+    @NonNull
     public static StringEncryptor getStringEncryptor(String encryptionPassword) {
         return new CustomStringEncryptor(getByteEncryptor(encryptionPassword));
     }
 
+    @NonNull
     public static ByteEncryptor getByteEncryptor(String encryptionPassword) {
         checkPassword(encryptionPassword);
         StandardPBEByteEncryptor byteEncryptor = new StandardPBEByteEncryptor();
@@ -147,20 +150,18 @@ public class PBEncryptionUtils {
         }
 
         @Override
+        @NonNull
         public String encrypt(String inputString) {
-            if (inputString == null) {
-                throw new IllegalArgumentException("inputString must not be null");
-            }
+            Assert.notNull(inputString, "inputString must not be null");
             byte[] bytes = inputString.getBytes(MESSAGE_CHARSET);
             byte[] encrypted = encode(byteEncryptor.encrypt(bytes));
             return new String(encrypted, ENCRYPTED_MESSAGE_CHARSET);
         }
 
         @Override
+        @NonNull
         public String decrypt(String encryptedString) {
-            if (encryptedString == null) {
-                throw new IllegalArgumentException("encryptedString must not be null");
-            }
+            Assert.notNull(encryptedString, "encryptedString must not be null");
             byte[] encrypted = decode(encryptedString.getBytes(ENCRYPTED_MESSAGE_CHARSET));
             byte[] decrypted = byteEncryptor.decrypt(encrypted);
             return new String(decrypted, MESSAGE_CHARSET);

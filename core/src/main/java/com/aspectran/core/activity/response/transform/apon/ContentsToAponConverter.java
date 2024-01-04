@@ -18,6 +18,7 @@ package com.aspectran.core.activity.response.transform.apon;
 import com.aspectran.core.activity.process.result.ActionResult;
 import com.aspectran.core.activity.process.result.ContentResult;
 import com.aspectran.core.activity.process.result.ProcessResult;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.apon.ObjectToAponConverter;
 import com.aspectran.utils.apon.Parameters;
 import com.aspectran.utils.apon.VariableParameters;
@@ -58,7 +59,7 @@ public class ContentsToAponConverter extends ObjectToAponConverter {
         return container;
     }
 
-    private void putValue(Parameters container, ContentResult contentResult) {
+    private void putValue(Parameters container, @NonNull ContentResult contentResult) {
         if (contentResult.getName() != null) {
             Parameters p = new VariableParameters();
             container.putValue(contentResult.getName(), p);

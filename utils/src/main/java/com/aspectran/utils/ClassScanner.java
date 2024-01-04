@@ -15,6 +15,8 @@
  */
 package com.aspectran.utils;
 
+import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 import com.aspectran.utils.wildcard.WildcardMatcher;
@@ -72,7 +74,7 @@ public class ClassScanner {
      * @param scannedClasses the Map for scanned classes
      * @throws IOException if an I/O error has occurred
      */
-    public void scan(String classNamePattern, final Map<String, Class<?>> scannedClasses) throws IOException {
+    public void scan(String classNamePattern, @NonNull final Map<String, Class<?>> scannedClasses) throws IOException {
         scan(classNamePattern, scannedClasses::put);
     }
 
@@ -171,7 +173,7 @@ public class ClassScanner {
         });
     }
 
-    protected void scanFromJarResource(URL resource, WildcardMatcher matcher, SaveHandler saveHandler)
+    protected void scanFromJarResource(@NonNull URL resource, WildcardMatcher matcher, SaveHandler saveHandler)
             throws IOException {
         URLConnection conn = resource.openConnection();
         JarFile jarFile;
@@ -238,7 +240,8 @@ public class ClassScanner {
         }
     }
 
-    private JarFile getJarFile(String jarFileUrl) throws IOException {
+    @NonNull
+    private JarFile getJarFile(@NonNull String jarFileUrl) throws IOException {
         if (jarFileUrl.startsWith(ResourceUtils.FILE_URL_PREFIX)) {
             try {
                 return new JarFile(ResourceUtils.toURI(jarFileUrl).getSchemeSpecificPart());
@@ -251,11 +254,12 @@ public class ClassScanner {
         }
     }
 
-    private boolean isJarResource(URL url) {
+    private boolean isJarResource(@NonNull URL url) {
         String protocol = url.getProtocol();
         return (ResourceUtils.URL_PROTOCOL_JAR.equals(protocol) || ResourceUtils.URL_PROTOCOL_ZIP.equals(protocol));
     }
 
+    @Nullable
     private String determineBasePackageName(String classNamePattern) {
         WildcardPattern pattern = new WildcardPattern(classNamePattern, REGULAR_FILE_SEPARATOR_CHAR);
         WildcardMatcher matcher = new WildcardMatcher(pattern);
@@ -278,7 +282,6 @@ public class ClassScanner {
 
     private Class<?> loadClass(String className) {
         className = className.replace(REGULAR_FILE_SEPARATOR_CHAR, PACKAGE_SEPARATOR_CHAR);
-
         try {
             return classLoader.loadClass(className);
         } catch (ClassNotFoundException e) {

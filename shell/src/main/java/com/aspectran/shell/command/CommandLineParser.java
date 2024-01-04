@@ -21,6 +21,7 @@ import com.aspectran.shell.command.option.OptionParserException;
 import com.aspectran.shell.command.option.Options;
 import com.aspectran.shell.command.option.ParsedOptions;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 
@@ -107,6 +108,7 @@ public class CommandLineParser {
         return redirectionList;
     }
 
+    @NonNull
     private String[] splitCommandLine(String commandLine) {
         List<String> list = new ArrayList<>();
         Matcher m = ARGS_PATTERN.matcher(commandLine);
@@ -136,6 +138,7 @@ public class CommandLineParser {
         return list.toArray(new String[0]);
     }
 
+    @NonNull
     private String parseOutputRedirection(String line) {
         if (!StringUtils.hasLength(line)) {
             return null;
@@ -194,7 +197,8 @@ public class CommandLineParser {
         }
     }
 
-    private String stripQuotes(String str) {
+    @NonNull
+    private String stripQuotes(@NonNull String str) {
         if (str.length() > 1 &&
                 (str.startsWith("\"") && str.endsWith("\"") ||
                         str.startsWith("'") && str.endsWith("'"))) {

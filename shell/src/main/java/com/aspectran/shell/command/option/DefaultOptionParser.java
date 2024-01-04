@@ -15,6 +15,8 @@
  */
 package com.aspectran.shell.command.option;
 
+import com.aspectran.utils.annotation.jsr305.NonNull;
+
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -48,7 +50,7 @@ public class DefaultOptionParser implements OptionParser {
     private List<Object> expectedOpts;
 
     /** Flag indicating if partial matching of long options is supported. */
-    private boolean allowPartialMatching;
+    private final boolean allowPartialMatching;
 
     /**
      * Creates a new DefaultParser instance with partial matching enabled.
@@ -73,7 +75,7 @@ public class DefaultOptionParser implements OptionParser {
 
     /**
      * Create a new DefaultParser instance with the specified partial matching policy.
-     *
+     * <p>
      * By "partial matching" we mean that given the following code:
      * <pre>
      *     {@code
@@ -129,7 +131,8 @@ public class DefaultOptionParser implements OptionParser {
      * @throws OptionParserException if there are any problems encountered
      *      while parsing the command line tokens
      */
-    public ParsedOptions parse(Options options, String[] args, Properties properties, boolean skipParsingAtNonOption)
+    public ParsedOptions parse(@NonNull Options options, String[] args, Properties properties,
+                               boolean skipParsingAtNonOption)
             throws OptionParserException {
         this.options = options;
         this.skipParsingAtNonOption = skipParsingAtNonOption;
@@ -237,7 +240,7 @@ public class DefaultOptionParser implements OptionParser {
      * @param token the command line token to handle
      * @throws OptionParserException if option parsing fails
      */
-    private void handleLongOption(String token) throws OptionParserException {
+    private void handleLongOption(@NonNull String token) throws OptionParserException {
         if (token.indexOf('=') == -1) {
             handleLongOptionWithoutEqual(token);
         } else {
@@ -279,7 +282,7 @@ public class DefaultOptionParser implements OptionParser {
      * @param token the command line token to handle
      * @throws OptionParserException if option parsing fails
      */
-    private void handleLongOptionWithEqual(String token) throws OptionParserException {
+    private void handleLongOptionWithEqual(@NonNull String token) throws OptionParserException {
         int pos = token.indexOf('=');
         String name = token.substring(0, pos);
         String value = token.substring(pos + 1);
@@ -321,7 +324,7 @@ public class DefaultOptionParser implements OptionParser {
      * @param token the command line token to handle
      * @throws OptionParserException if option parsing fails
      */
-    private void handleShortAndLongOption(String token) throws OptionParserException {
+    private void handleShortAndLongOption(@NonNull String token) throws OptionParserException {
         if (token.length() == 1) {
             // -S
             if (options.hasShortOption(token)) {
@@ -379,7 +382,7 @@ public class DefaultOptionParser implements OptionParser {
      * @param token the command line token to handle
      * @throws OptionParserException if option parsing fails
      */
-    private void handleUnknownToken(String token) throws OptionParserException {
+    private void handleUnknownToken(@NonNull String token) throws OptionParserException {
         if (token.startsWith("-") && token.length() > 1 && !skipParsingAtNonOption) {
             throw new UnrecognizedOptionException("Unrecognized option: " + token, token);
         }
@@ -407,7 +410,7 @@ public class DefaultOptionParser implements OptionParser {
     /**
      * Removes the option or its group from the list of expected elements.
      */
-    private void updateRequiredOptions(Option option) throws AlreadySelectedException {
+    private void updateRequiredOptions(@NonNull Option option) throws AlreadySelectedException {
         if (option.isRequired()) {
             expectedOpts.remove(option.getKey());
         }
@@ -479,7 +482,7 @@ public class DefaultOptionParser implements OptionParser {
      * @param token the command line token to handle
      * @return true if the token like a short option
      */
-    private boolean isShortOption(String token) {
+    private boolean isShortOption(@NonNull String token) {
         // short options (-S, -SV, -S=V, -SV1=V2, -S1S2)
         if (!token.startsWith("-") || token.length() == 1) {
             return false;
@@ -491,7 +494,7 @@ public class DefaultOptionParser implements OptionParser {
             return true;
         }
         // check for several concatenated short options
-        return (name.length() > 0 && options.hasShortOption(String.valueOf(name.charAt(0))));
+        return (!name.isEmpty() && options.hasShortOption(String.valueOf(name.charAt(0))));
     }
 
     /**
@@ -499,7 +502,7 @@ public class DefaultOptionParser implements OptionParser {
      * @param token the command line token to handle
      * @return true if the token like a long option
      */
-    private boolean isLongOption(String token) {
+    private boolean isLongOption(@NonNull String token) {
         if (!token.startsWith("-") || token.length() == 1) {
             return false;
         }
@@ -508,7 +511,8 @@ public class DefaultOptionParser implements OptionParser {
         if (!getMatchingLongOptions(t).isEmpty()) {
             // long or partial long options (--L, -L, --L=V, -L=V, --l, --l=V)
             return true;
-        } else if (getLongPrefix(token) != null && !token.startsWith("--")) {
+        }
+        if (getLongPrefix(token) != null && !token.startsWith("--")) {
             // -LV
             return true;
         }
@@ -539,7 +543,7 @@ public class DefaultOptionParser implements OptionParser {
      * Search for a prefix that is the long name of an option (-Xmx512m).
      * @param token the command line token to handle
      */
-    private String getLongPrefix(String token) {
+    private String getLongPrefix(@NonNull String token) {
         String name = null;
         for (int i = token.length() - 2; i > 1; i--) {
             String prefix = token.substring(0, i);

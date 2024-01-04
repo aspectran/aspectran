@@ -29,8 +29,10 @@ import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.CoreService;
 import com.aspectran.core.service.ServiceStateListener;
 import com.aspectran.undertow.activity.TowActivity;
+import com.aspectran.utils.Assert;
 import com.aspectran.utils.ExceptionUtils;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 import com.aspectran.web.support.http.HttpHeaders;
@@ -65,7 +67,7 @@ public class DefaultTowService extends AbstractTowService {
     }
 
     @Override
-    public boolean service(HttpServerExchange exchange) throws IOException {
+    public boolean service(@NonNull HttpServerExchange exchange) throws IOException {
         String requestPath = exchange.getRequestPath();
         if (getUriDecoding() != null) {
             requestPath = URLDecoder.decode(requestPath, getUriDecoding());
@@ -160,7 +162,7 @@ public class DefaultTowService extends AbstractTowService {
         }
     }
 
-    private String getRequestInfo(HttpServerExchange exchange) {
+    private String getRequestInfo(@NonNull HttpServerExchange exchange) {
         StringBuilder sb = new StringBuilder();
         sb.append(exchange.getRequestMethod()).append(" ");
         sb.append(exchange.getRequestURI()).append(" ");
@@ -180,6 +182,7 @@ public class DefaultTowService extends AbstractTowService {
      * @return the instance of {@code DefaultTowService}
      */
     public static DefaultTowService create(CoreService rootService) {
+        Assert.notNull(rootService, "rootService must not be null");
         DefaultTowService towService = new DefaultTowService(rootService);
         AspectranConfig aspectranConfig = rootService.getAspectranConfig();
         if (aspectranConfig != null) {
@@ -205,6 +208,7 @@ public class DefaultTowService extends AbstractTowService {
      * @return the instance of {@code DefaultTowService}
      */
     public static DefaultTowService create(AspectranConfig aspectranConfig) {
+        Assert.notNull(aspectranConfig, "aspectranConfig must not be null");
         DefaultTowService towService = new DefaultTowService();
         towService.prepare(aspectranConfig);
 
@@ -217,7 +221,7 @@ public class DefaultTowService extends AbstractTowService {
         return towService;
     }
 
-    private static void applyWebConfig(DefaultTowService towService, WebConfig webConfig) {
+    private static void applyWebConfig(@NonNull DefaultTowService towService, @NonNull WebConfig webConfig) {
         towService.setUriDecoding(webConfig.getUriDecoding());
         towService.setTrailingSlashRedirect(webConfig.isTrailingSlashRedirect());
         ExposalsConfig exposalsConfig = webConfig.getExposalsConfig();
@@ -228,7 +232,7 @@ public class DefaultTowService extends AbstractTowService {
         }
     }
 
-    private static void setServiceStateListener(final DefaultTowService towService) {
+    private static void setServiceStateListener(@NonNull final DefaultTowService towService) {
         towService.setServiceStateListener(new ServiceStateListener() {
             @Override
             public void started() {

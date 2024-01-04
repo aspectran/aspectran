@@ -15,6 +15,7 @@
  */
 package com.aspectran.utils;
 
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 
 import java.lang.reflect.Constructor;
@@ -42,6 +43,7 @@ public abstract class ClassUtils {
      *      except for cases where constructor throws an unchecked exception
      *      (which will be passed as is)
      */
+    @NonNull
     public static <T> T createInstance(Class<T> cls) {
         Constructor<T> ctor;
         try {
@@ -69,7 +71,8 @@ public abstract class ClassUtils {
      *      except for cases where constructor throws an unchecked exception
      *      (which will be passed as is)
      */
-    public static <T> T createInstance(Class<T> cls, Object... args) {
+    @NonNull
+    public static <T> T createInstance(Class<T> cls, @NonNull Object... args) {
         Class<?>[] argTypes = new Class<?>[args.length];
         for (int i = 0; i < args.length; i++) {
             argTypes[i] = args[i].getClass();
@@ -89,6 +92,7 @@ public abstract class ClassUtils {
      *      except for cases where constructor throws an unchecked exception
      *      (which will be passed as is)
      */
+    @NonNull
     public static <T> T createInstance(Class<T> cls, Object[] args, Class<?>[] argTypes) {
         Constructor<T> ctor;
         try {
@@ -113,8 +117,10 @@ public abstract class ClassUtils {
      * @return the constructor reference
      * @throws NoSuchMethodException if no such constructor exists
      */
+    @NonNull
     public static <T> Constructor<T> findConstructor(Class<T> cls, Class<?>... argTypes)
             throws NoSuchMethodException {
+        Assert.notNull(cls, "cls must not be null");
         Constructor<T> ctor;
         try {
             ctor = cls.getDeclaredConstructor(argTypes);
@@ -163,7 +169,9 @@ public abstract class ClassUtils {
      * @return true if the given class is loadable; otherwise false
      * @since 6.0.0
      */
-    private static boolean isLoadable(Class<?> clazz, ClassLoader classLoader) {
+    @NonNull
+    private static boolean isLoadable(@NonNull Class<?> clazz, ClassLoader classLoader) {
+        Assert.notNull(classLoader, "classLoader must not be null");
         try {
             return (clazz == classLoader.loadClass(clazz.getName()));
             // Else: different class with same name found

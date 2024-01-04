@@ -256,6 +256,7 @@ public class DefaultConsoleCommander implements ConsoleCommander {
         }
     }
 
+    @Nullable
     private File determineWorkingDir() {
         String workPath = SystemUtils.getProperty(WORK_PATH_PROPERTY_NAME);
         if (workPath != null) {

@@ -18,6 +18,7 @@ package com.aspectran.shell.command.option;
 import com.aspectran.shell.command.Command;
 import com.aspectran.shell.console.ShellConsole;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -173,7 +174,7 @@ public class HelpFormatter {
      * Print the help with the given Command object.
      * @param command the Command instance
      */
-    public void printHelp(Command command) {
+    public void printHelp(@NonNull Command command) {
         if (command.getDescriptor().getUsage() != null) {
             printUsage(command.getDescriptor().getUsage());
         } else {
@@ -188,7 +189,7 @@ public class HelpFormatter {
      * command line syntax.
      * @param cmdLineSyntax the usage statement
      */
-    public void printUsage(String cmdLineSyntax) {
+    public void printUsage(@NonNull String cmdLineSyntax) {
         int nextLineTabStop = getSyntaxPrefix().length() + cmdLineSyntax.indexOf(' ') + 1;
         printWrapped( + nextLineTabStop, getSyntaxPrefix() + cmdLineSyntax);
     }
@@ -197,7 +198,7 @@ public class HelpFormatter {
      * Prints the usage statement for the specified command.
      * @param command the Command instance
      */
-    public void printUsage(Command command) {
+    public void printUsage(@NonNull Command command) {
         String commandName = command.getDescriptor().getName();
         StringBuilder sb = new StringBuilder(getSyntaxPrefix()).append(commandName).append(" ");
 
@@ -251,7 +252,7 @@ public class HelpFormatter {
      * @param sb the StringBuilder to append to
      * @param group the group to append
      */
-    private void appendOptionGroup(StringBuilder sb, OptionGroup group) {
+    private void appendOptionGroup(@NonNull StringBuilder sb, @NonNull OptionGroup group) {
         if (!group.isRequired()) {
             sb.append(OPTIONAL_BRACKET_OPEN);
         }
@@ -297,7 +298,7 @@ public class HelpFormatter {
         }
     }
 
-    private void appendArguments(StringBuilder sb, Arguments arguments) {
+    private void appendArguments(@NonNull StringBuilder sb, @NonNull Arguments arguments) {
         if (!arguments.isRequired()) {
             sb.append(OPTIONAL_BRACKET_OPEN);
         }
@@ -324,7 +325,7 @@ public class HelpFormatter {
      * @param options the Options instance
      * @return the longest opt string's length
      */
-    public int printOptions(Options options) {
+    public int printOptions(@NonNull Options options) {
         Collection<Option> optList = options.getAllOptions();
         StringBuilder sb = new StringBuilder();
         int leftWidth = 0;
@@ -340,7 +341,7 @@ public class HelpFormatter {
         return leftWidth;
     }
 
-    public void printArguments(List<Arguments> argumentsList, int leftWidth) {
+    public void printArguments(@NonNull List<Arguments> argumentsList, int leftWidth) {
         StringBuilder sb = new StringBuilder();
         for (Arguments arguments : argumentsList) {
             renderArguments(sb, arguments, leftWidth);
@@ -367,7 +368,7 @@ public class HelpFormatter {
      * @param nextLineTabStop the position on the next line for the first tab
      * @param text the text to be written to the PrintWriter
      */
-    private void printWrapped(int nextLineTabStop, String text) {
+    private void printWrapped(int nextLineTabStop, @NonNull String text) {
         StringBuilder sb = new StringBuilder(text.length());
         renderWrappedTextBlock(sb, nextLineTabStop, text);
         console.writeLine(sb.toString());
@@ -417,7 +418,7 @@ public class HelpFormatter {
                 }
             }
             lineBufList.add(lineBuf);
-            leftWidth = (lineBuf.length() > leftWidth ? lineBuf.length() : leftWidth);
+            leftWidth = Math.max(lineBuf.length(), leftWidth);
         }
 
         if (leftWidth > getMaxLeftWidth()) {
@@ -451,7 +452,7 @@ public class HelpFormatter {
         return leftWidth;
     }
 
-    private void renderArguments(StringBuilder sb, Arguments arguments, int leftWidth) {
+    private void renderArguments(@NonNull StringBuilder sb, @NonNull Arguments arguments, int leftWidth) {
         String lpad = OptionUtils.createPadding(getLeftPad());
         String dpad = OptionUtils.createPadding(getDescPad());
 

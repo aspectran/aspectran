@@ -18,6 +18,7 @@ package com.aspectran.web.service;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.service.CoreService;
 import com.aspectran.utils.Assert;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServlet;
@@ -36,7 +37,6 @@ public class WebServiceHolder {
     private static final Map<ClassLoader, WebService> webServicePerThread =
             new ConcurrentHashMap<>(1);
 
-    @Nullable
     private static volatile WebService currentWebService;
 
     static void putWebService(WebService webService) {
@@ -68,6 +68,7 @@ public class WebServiceHolder {
         return currentWebService;
     }
 
+    @Nullable
     public static ActivityContext getCurrentActivityContext() {
         WebService webService = getCurrentWebService();
         return (webService != null ? webService.getActivityContext() : null);
@@ -78,6 +79,7 @@ public class WebServiceHolder {
      * @param servletContext ServletContext to find the web aspectran service for
      * @return the ActivityContext for this web aspectran service
      */
+    @NonNull
     public static ActivityContext getActivityContext(ServletContext servletContext) {
         ActivityContext activityContext = getActivityContext(servletContext, ROOT_WEB_SERVICE_ATTR_NAME);
         if (activityContext == null) {
@@ -92,7 +94,9 @@ public class WebServiceHolder {
      * @param servlet the servlet
      * @return the ActivityContext for this web aspectran service
      */
+    @NonNull
     public static ActivityContext getActivityContext(HttpServlet servlet) {
+        Assert.notNull(servlet, "servlet must not be null");
         ServletContext servletContext = servlet.getServletContext();
         String attrName = STANDALONE_WEB_SERVICE_ATTR_PREFIX + servlet.getServletName();
         ActivityContext activityContext = getActivityContext(servletContext, attrName);
@@ -109,7 +113,8 @@ public class WebServiceHolder {
      * @param attrName the name of the ServletContext attribute to look for
      * @return the ActivityContext for this web aspectran service
      */
-    private static ActivityContext getActivityContext(ServletContext servletContext, String attrName) {
+    @Nullable
+    private static ActivityContext getActivityContext(@NonNull ServletContext servletContext, String attrName) {
         Object attr = servletContext.getAttribute(attrName);
         if (attr == null) {
             return null;

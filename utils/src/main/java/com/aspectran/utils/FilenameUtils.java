@@ -15,6 +15,8 @@
  */
 package com.aspectran.utils;
 
+import com.aspectran.utils.annotation.jsr305.NonNull;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Random;
@@ -62,6 +64,7 @@ public class FilenameUtils {
      * @param filename  the filename to query, null returns null
      * @return the name of the file without the path, or an empty string if none exists
      */
+    @NonNull
     public static String getName(String filename) {
         Assert.notNull(filename, "'filename' must not be null");
         int index = indexOfLastSeparator(filename);
@@ -227,7 +230,7 @@ public class FilenameUtils {
         }
         String ext = getExtension(filename).toLowerCase();
         if (allowedFileExtensions != null && !allowedFileExtensions.isEmpty()) {
-            if (ext.length() == 0) {
+            if (ext.isEmpty()) {
                 return false;
             }
             StringTokenizer st = new StringTokenizer(allowedFileExtensions.toLowerCase(), EXTENSIONS_SEPARATORS);
@@ -240,7 +243,7 @@ public class FilenameUtils {
             return false;
         }
         if (deniedFileExtensions != null && !deniedFileExtensions.isEmpty()) {
-            if (ext.length() == 0) {
+            if (ext.isEmpty()) {
                 return true;
             }
             StringTokenizer st = new StringTokenizer(deniedFileExtensions.toLowerCase(), EXTENSIONS_SEPARATORS);
@@ -330,7 +333,7 @@ public class FilenameUtils {
      * @param extSeparator the file extension separator
      * @throws IOException if failed to obtain a unique file
      */
-    public static File generateSafetyUniqueFile(File file, String extSeparator) throws IOException {
+    public static File generateSafetyUniqueFile(@NonNull File file, String extSeparator) throws IOException {
         String path = file.getCanonicalPath();
         String ext = getExtension(path);
 
@@ -354,6 +357,7 @@ public class FilenameUtils {
      * @param uniqueFilename a unique file name
      * @return file name with recovered extension
      */
+    @NonNull
     public static String recoverExtension(String uniqueFilename) {
         return StringUtils.replaceLast(uniqueFilename, NAME_SEPARATOR, EXTENSION_SEPARATOR);
     }

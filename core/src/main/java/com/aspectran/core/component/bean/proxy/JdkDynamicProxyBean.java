@@ -19,6 +19,7 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.component.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.BeanRule;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
@@ -36,7 +37,7 @@ public class JdkDynamicProxyBean extends AbstractDynamicProxyBean implements Inv
 
     private final Object bean;
 
-    private JdkDynamicProxyBean(ActivityContext context, BeanRule beanRule, Object bean) {
+    private JdkDynamicProxyBean(@NonNull ActivityContext context, BeanRule beanRule, Object bean) {
         super(context.getAspectRuleRegistry());
 
         this.context = context;
@@ -77,7 +78,7 @@ public class JdkDynamicProxyBean extends AbstractDynamicProxyBean implements Inv
         }
     }
 
-    private Object invokeSuper(Method method, Object[] args) throws Throwable {
+    private Object invokeSuper(@NonNull Method method, Object[] args) throws Throwable {
         try {
             return method.invoke(bean, args);
         } catch (InvocationTargetException e) {
@@ -85,6 +86,7 @@ public class JdkDynamicProxyBean extends AbstractDynamicProxyBean implements Inv
         }
     }
 
+    @NonNull
     public static Object newInstance(ActivityContext context, BeanRule beanRule, Object bean) {
         JdkDynamicProxyBean proxy = new JdkDynamicProxyBean(context, beanRule, bean);
         return Proxy.newProxyInstance(beanRule.getBeanClass().getClassLoader(),

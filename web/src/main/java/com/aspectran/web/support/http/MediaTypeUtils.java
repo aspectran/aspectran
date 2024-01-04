@@ -16,6 +16,7 @@
 package com.aspectran.web.support.http;
 
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.cache.Cache;
 import com.aspectran.utils.cache.ConcurrentLruCache;
 
@@ -61,7 +62,7 @@ public abstract class MediaTypeUtils {
         return cachedMimeTypes.get(mediaType);
     }
 
-    private static MediaType parseMediaTypeInternal(String mediaType) {
+    private static MediaType parseMediaTypeInternal(@NonNull String mediaType) {
         int index = mediaType.indexOf(';');
         String fullType = (index >= 0 ? mediaType.substring(0, index) : mediaType).trim();
         if (fullType.isEmpty()) {
@@ -101,7 +102,7 @@ public abstract class MediaTypeUtils {
                 nextIndex++;
             }
             String parameter = mediaType.substring(index + 1, nextIndex).trim();
-            if (parameter.length() > 0) {
+            if (!parameter.isEmpty()) {
                 if (parameters == null) {
                     parameters = new LinkedHashMap<>(4);
                 }
@@ -131,6 +132,7 @@ public abstract class MediaTypeUtils {
      * @param mediaTypes the string to tokenize
      * @return the list of tokens
      */
+    @NonNull
     public static List<String> tokenize(String mediaTypes) {
         if (!StringUtils.hasLength(mediaTypes)) {
             return Collections.emptyList();

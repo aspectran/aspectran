@@ -15,6 +15,8 @@
  */
 package com.aspectran.utils.json;
 
+import com.aspectran.utils.annotation.jsr305.NonNull;
+
 import java.io.Closeable;
 import java.io.EOFException;
 import java.io.IOException;
@@ -195,7 +197,7 @@ public class JsonReader implements Closeable {
     private static final int EMPTY_ARRAY = 1;
 
     /**
-     * A array with at least one value requires a comma and newline before
+     * An array with at least one value requires a comma and newline before
      * the next element.
      */
     private static final int NONEMPTY_ARRAY = 2;
@@ -1019,6 +1021,7 @@ public class JsonReader implements Closeable {
      * @throws NumberFormatException if any unicode escape sequences are
      *     malformed.
      */
+    @NonNull
     private String nextQuotedValue(char quote) throws IOException {
         // Like nextNonWhitespace, this uses locals 'p' and 'l' to save inner-loop field access.
         char[] buffer = this.buffer;
@@ -1072,6 +1075,7 @@ public class JsonReader implements Closeable {
      * Returns an unquoted value as a string.
      */
     @SuppressWarnings("fallthrough")
+    @NonNull
     private String nextUnquotedValue() throws IOException {
         StringBuilder builder = null;
         int i = 0;
@@ -1457,7 +1461,7 @@ public class JsonReader implements Closeable {
     /**
      * @param toFind a string to search for. Must not contain a newline.
      */
-    private boolean skipTo(String toFind) throws IOException {
+    private boolean skipTo(@NonNull String toFind) throws IOException {
         int length = toFind.length();
         outer:
         for (; pos + length <= limit || fillBuffer(length); pos++) {
@@ -1481,6 +1485,7 @@ public class JsonReader implements Closeable {
         return getClass().getSimpleName() + locationString();
     }
 
+    @NonNull
     private String locationString() {
         int line = lineNumber + 1;
         int column = pos - lineStart + 1;

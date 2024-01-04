@@ -15,6 +15,7 @@
  */
 package com.aspectran.undertow.server.encoding;
 
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.web.support.http.HttpHeaders;
 import com.aspectran.web.support.http.MediaType;
 import io.undertow.attribute.RequestHeaderAttribute;
@@ -95,6 +96,7 @@ public class EncodingHandlerWrapper implements HandlerWrapper {
         return new EncodingHandler(handler, contentEncodingRepository);
     }
 
+    @NonNull
     private Predicate[] getCompressionPredicates() {
         List<Predicate> predicates = new ArrayList<>();
         if (maxContentSize > 0L) {
@@ -116,7 +118,7 @@ public class EncodingHandlerWrapper implements HandlerWrapper {
 
         private final List<MediaType> mediaTypes;
 
-        private CompressibleMimeTypePredicate(String[] mediaTypes) {
+        private CompressibleMimeTypePredicate(@NonNull String[] mediaTypes) {
             if (mediaTypes.length == 1) {
                 this.mediaTypes = Collections.singletonList(MediaType.parseMediaType(mediaTypes[0]));
             } else {
@@ -128,7 +130,7 @@ public class EncodingHandlerWrapper implements HandlerWrapper {
         }
 
         @Override
-        public boolean resolve(HttpServerExchange exchange) {
+        public boolean resolve(@NonNull HttpServerExchange exchange) {
             String contentType = exchange.getResponseHeaders().getFirst(HttpHeaders.CONTENT_TYPE);
             if (contentType != null) {
                 for (MediaType mediaType : this.mediaTypes) {

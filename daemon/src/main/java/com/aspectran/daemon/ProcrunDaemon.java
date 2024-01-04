@@ -17,6 +17,7 @@ package com.aspectran.daemon;
 
 import com.aspectran.core.context.config.AspectranConfig;
 import com.aspectran.utils.Assert;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.io.File;
 import java.util.Arrays;
@@ -75,7 +76,7 @@ public class ProcrunDaemon {
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(@NonNull String[] args) {
         if (args.length > 0) {
             if ("start".equals(args[0])) {
                 String[] params = Arrays.copyOfRange(args, 1, args.length);

@@ -16,6 +16,7 @@
 package com.aspectran.core.component.session;
 
 import com.aspectran.utils.ToStringBuilder;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.lifecycle.AbstractLifeCycle;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
@@ -50,7 +51,7 @@ public class HouseKeeper extends AbstractLifeCycle {
     /**
      * @param sessionHandler SessionHandler associated with this scavenger
      */
-    public HouseKeeper(SessionHandler sessionHandler) {
+    public HouseKeeper(@NonNull SessionHandler sessionHandler) {
         this.sessionHandler = sessionHandler;
         this.scheduler = sessionHandler.getScheduler();
     }

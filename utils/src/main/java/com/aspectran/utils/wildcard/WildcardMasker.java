@@ -15,6 +15,10 @@
  */
 package com.aspectran.utils.wildcard;
 
+import com.aspectran.utils.Assert;
+import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.annotation.jsr305.Nullable;
+
 /**
  * Erase the characters that does not correspond to the wildcard, and
  * returns collect only the  remaining characters. In other words,
@@ -30,7 +34,10 @@ public class WildcardMasker {
      * @param input the input string
      * @return the remains string
      */
+    @Nullable
     public static String mask(WildcardPattern pattern, CharSequence input) {
+        Assert.notNull(pattern, "pattern must not be null");
+        Assert.notNull(input, "input must not be null");
         char[] tokens = pattern.getTokens();
         int[] types = pattern.getTypes();
         char separator = pattern.getSeparator();

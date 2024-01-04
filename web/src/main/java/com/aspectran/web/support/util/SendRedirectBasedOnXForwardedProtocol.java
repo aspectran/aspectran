@@ -17,6 +17,8 @@ package com.aspectran.web.support.util;
 
 import com.aspectran.core.activity.Translet;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.web.support.http.HttpHeaders;
 
 import java.io.IOException;
@@ -32,7 +34,7 @@ public class SendRedirectBasedOnXForwardedProtocol {
 
     private static final String SCHEME_DELIMITER = "://";
 
-    public static void redirect(Translet translet, String location) throws IOException {
+    public static void redirect(@NonNull Translet translet, String location) throws IOException {
         translet.redirect(getLocation(translet, location));
     }
 
@@ -41,7 +43,8 @@ public class SendRedirectBasedOnXForwardedProtocol {
         return (forwarded != null ? forwarded : location);
     }
 
-    public static String getLocationForwarded(Translet translet, String location) {
+    @Nullable
+    public static String getLocationForwarded(@NonNull Translet translet, String location) {
         String xForwardedProtocol = translet.getRequestAdapter().getHeader(HttpHeaders.X_FORWARDED_PROTO);
         if (StringUtils.hasLength(xForwardedProtocol)) {
             String host = translet.getRequestAdapter().getHeader(HttpHeaders.HOST);

@@ -76,7 +76,7 @@ public class Trimmer {
         if (str == null) {
             return null;
         }
-        if (str.length() == 0) {
+        if (str.isEmpty()) {
             return str;
         }
 

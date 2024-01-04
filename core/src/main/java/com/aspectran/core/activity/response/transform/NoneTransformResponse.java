@@ -18,6 +18,7 @@ package com.aspectran.core.activity.response.transform;
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.context.rule.TransformRule;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 /**
  * The Class NoneTransformResponse.
@@ -35,7 +36,7 @@ public class NoneTransformResponse extends TransformResponse {
     }
 
     @Override
-    protected void transform(Activity activity) throws Exception {
+    protected void transform(@NonNull Activity activity) throws Exception {
         if (getContentType() != null) {
             activity.getResponseAdapter().setContentType(getContentType());
         }

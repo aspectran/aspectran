@@ -20,6 +20,8 @@ import com.aspectran.shell.command.CommandRegistry;
 import com.aspectran.shell.command.option.Option;
 import com.aspectran.shell.command.option.ParsedOptions;
 import com.aspectran.shell.console.ShellConsole;
+import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 
 /**
  * Clear the terminal screen.
@@ -42,7 +44,7 @@ public class ClearCommand extends AbstractCommand {
     }
 
     @Override
-    public void execute(ParsedOptions options, ShellConsole console) throws Exception {
+    public void execute(@NonNull ParsedOptions options, ShellConsole console) throws Exception {
         if (options.hasOption("help")) {
             printHelp(console);
         } else {
@@ -68,11 +70,13 @@ public class ClearCommand extends AbstractCommand {
         }
 
         @Override
+        @NonNull
         public String getDescription() {
             return "Clears your screen if this is possible";
         }
 
         @Override
+        @Nullable
         public String getUsage() {
             return null;
         }

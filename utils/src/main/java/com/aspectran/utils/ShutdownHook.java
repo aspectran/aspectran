@@ -15,6 +15,7 @@
  */
 package com.aspectran.utils;
 
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 
@@ -38,9 +39,7 @@ public class ShutdownHook {
     private static Win32ConsoleCtrlCloseHook win32ConsoleCtrlCloseHook;
 
     public static synchronized <T extends Task> T addTask(final T task) {
-        if (task == null) {
-            throw new IllegalArgumentException("task must not be null");
-        }
+        Assert.notNull(task, "task must not be null");
 
         if (hook == null) {
             hook = new Thread("shutdown") {
@@ -65,9 +64,7 @@ public class ShutdownHook {
     }
 
     public static synchronized void removeTask(final Task task) {
-        if (task == null) {
-            throw new IllegalArgumentException("task must not be null");
-        }
+        Assert.notNull(task, "task must not be null");
 
         // ignore if hook never installed
         if (hook == null) {
@@ -174,6 +171,7 @@ public class ShutdownHook {
             }
         }
 
+        @NonNull
         public static Manager create(Task task) {
             Manager manager = new Manager();
             manager.register(task);

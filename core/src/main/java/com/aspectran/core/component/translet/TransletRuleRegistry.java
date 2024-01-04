@@ -32,6 +32,8 @@ import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.util.Namespace;
 import com.aspectran.utils.ClassUtils;
 import com.aspectran.utils.PrefixSuffixPattern;
+import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 import com.aspectran.utils.wildcard.WildcardPattern;
@@ -86,7 +88,7 @@ public class TransletRuleRegistry extends AbstractComponent {
 
     private AssistantLocal assistantLocal;
 
-    public TransletRuleRegistry(ApplicationAdapter applicationAdapter) {
+    public TransletRuleRegistry(@NonNull ApplicationAdapter applicationAdapter) {
         this.basePath = applicationAdapter.getBasePath();
         this.classLoader = applicationAdapter.getClassLoader();
     }
@@ -155,7 +157,8 @@ public class TransletRuleRegistry extends AbstractComponent {
         return transletRule;
     }
 
-    private TransletRule retrieveWildTransletRule(Set<TransletRule> transletRuleSet, String transletName) {
+    @Nullable
+    private TransletRule retrieveWildTransletRule(@NonNull Set<TransletRule> transletRuleSet, String transletName) {
         if (!transletRuleSet.isEmpty()) {
             for (TransletRule transletRule : transletRuleSet) {
                 WildcardPattern namePattern = transletRule.getNamePattern();
@@ -173,6 +176,7 @@ public class TransletRuleRegistry extends AbstractComponent {
         return null;
     }
 
+    @Nullable
     private TransletRule retrieveEtcTransletRule(String transletName, MethodType requestMethod) {
         if (!etcTransletRuleSet.isEmpty()) {
             for (TransletRule transletRule : etcTransletRuleSet) {
@@ -223,7 +227,8 @@ public class TransletRuleRegistry extends AbstractComponent {
         }
     }
 
-    private TransletScanner createTransletScanner(TransletRule transletRule) throws IllegalRuleException {
+    @NonNull
+    private TransletScanner createTransletScanner(@NonNull TransletRule transletRule) throws IllegalRuleException {
         TransletScanner scanner = new TransletScanner(basePath);
         if (transletRule.getFilterParameters() != null) {
             FilterParameters filterParameters = transletRule.getFilterParameters();
@@ -252,7 +257,7 @@ public class TransletRuleRegistry extends AbstractComponent {
         return scanner;
     }
 
-    private void dissectTransletRule(TransletRule transletRule) {
+    private void dissectTransletRule(@NonNull TransletRule transletRule) {
         if (transletRule.getRequestRule() == null) {
             RequestRule requestRule = new RequestRule(false);
             transletRule.setRequestRule(requestRule);
@@ -288,7 +293,7 @@ public class TransletRuleRegistry extends AbstractComponent {
         }
     }
 
-    private void saveTransletRule(TransletRule transletRule) {
+    private void saveTransletRule(@NonNull TransletRule transletRule) {
         transletRule.determineResponseRule();
 
         String transletName = Namespace.applyTransletNamePattern(
@@ -366,7 +371,7 @@ public class TransletRuleRegistry extends AbstractComponent {
         }
     }
 
-    private void savePathVariables(TransletRule transletRule) {
+    private void savePathVariables(@NonNull TransletRule transletRule) {
         final String transletName = transletRule.getName();
         List<Token> tokenList = Tokenizer.tokenize(transletName, false);
         Token[] nameTokens = tokenList.toArray(new Token[0]);
@@ -389,7 +394,7 @@ public class TransletRuleRegistry extends AbstractComponent {
         }
     }
 
-    private boolean hasPathVariables(String transletName) {
+    private boolean hasPathVariables(@NonNull String transletName) {
         return ((transletName.contains("${") || transletName.contains("@{")) && transletName.contains("}"));
     }
 
@@ -410,6 +415,7 @@ public class TransletRuleRegistry extends AbstractComponent {
         return assembleRestfulTransletName(transletName, MethodType.GET);
     }
 
+    @NonNull
     private String assembleRestfulTransletName(String transletName, MethodType requestMethod) {
         return (requestMethod + " " + transletName);
     }

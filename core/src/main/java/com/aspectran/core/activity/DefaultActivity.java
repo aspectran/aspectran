@@ -84,6 +84,16 @@ public class DefaultActivity extends AbstractActivity {
     }
 
     @Override
+    public void registerAspectAdviceRule(AspectRule aspectRule) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void registerSettingsAdviceRule(SettingsAdviceRule settingsAdviceRule) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public void executeAdvice(List<AspectAdviceRule> aspectAdviceRuleList, boolean throwable) {
         throw new UnsupportedOperationException();
     }
@@ -95,16 +105,6 @@ public class DefaultActivity extends AbstractActivity {
 
     @Override
     public void handleException(List<ExceptionRule> exceptionRuleList) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void registerAspectAdviceRule(AspectRule aspectRule) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void registerSettingsAdviceRule(SettingsAdviceRule settingsAdviceRule) {
         throw new UnsupportedOperationException();
     }
 

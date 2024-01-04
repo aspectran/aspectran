@@ -16,6 +16,7 @@
 package com.aspectran.web.support.util;
 
 import com.aspectran.utils.Assert;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import jakarta.servlet.ServletRequest;
 
 /**
@@ -63,6 +64,7 @@ public abstract class HtmlUtils {
      * @param input the (unescaped) input string
      * @return the escaped string
      */
+    @NonNull
     public static String htmlEscape(String input) {
         return htmlEscape(input, DEFAULT_CHARACTER_ENCODING);
     }
@@ -83,6 +85,7 @@ public abstract class HtmlUtils {
      * @return the escaped string
      * @since 4.1.2
      */
+    @NonNull
     public static String htmlEscape(String input, String encoding) {
         Assert.notNull(input, "Input is required");
         Assert.notNull(encoding, "Encoding is required");
@@ -112,6 +115,7 @@ public abstract class HtmlUtils {
      * @param input the (unescaped) input string
      * @return the escaped string
      */
+    @NonNull
     public static String htmlEscapeDecimal(String input) {
         return htmlEscapeDecimal(input, DEFAULT_CHARACTER_ENCODING);
     }
@@ -132,6 +136,7 @@ public abstract class HtmlUtils {
      * @return the escaped string
      * @since 4.1.2
      */
+    @NonNull
     public static String htmlEscapeDecimal(String input, String encoding) {
         Assert.notNull(input, "Input is required");
         Assert.notNull(encoding, "Encoding is required");
@@ -162,6 +167,7 @@ public abstract class HtmlUtils {
      * @param input the (unescaped) input string
      * @return the escaped string
      */
+    @NonNull
     public static String htmlEscapeHex(String input) {
         return htmlEscapeHex(input, DEFAULT_CHARACTER_ENCODING);
     }
@@ -182,6 +188,7 @@ public abstract class HtmlUtils {
      * @return the escaped string
      * @since 4.1.2
      */
+    @NonNull
     public static String htmlEscapeHex(String input, String encoding) {
         Assert.notNull(input, "Input is required");
         Assert.notNull(encoding, "Encoding is required");

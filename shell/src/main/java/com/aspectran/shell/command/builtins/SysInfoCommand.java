@@ -22,6 +22,8 @@ import com.aspectran.shell.command.option.Option;
 import com.aspectran.shell.command.option.ParsedOptions;
 import com.aspectran.shell.console.ShellConsole;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 
 import java.io.File;
 import java.lang.management.ManagementFactory;
@@ -70,7 +72,7 @@ public class SysInfoCommand extends AbstractCommand {
     }
 
     @Override
-    public void execute(ParsedOptions options, ShellConsole console) throws Exception {
+    public void execute(@NonNull ParsedOptions options, ShellConsole console) throws Exception {
         if (options.hasOptions()) {
             Iterator<Option> iter = options.iterator();
             Set<Option> done = new HashSet<>();
@@ -106,7 +108,7 @@ public class SysInfoCommand extends AbstractCommand {
         }
     }
 
-    private void printSysProperties(ShellConsole console) {
+    private void printSysProperties(@NonNull ShellConsole console) {
         console.writeLine("---------------------");
         console.writeLine("JVM system properties");
         console.writeLine("---------------------");
@@ -116,7 +118,7 @@ public class SysInfoCommand extends AbstractCommand {
         }
     }
 
-    private void printClasspath(ShellConsole console) {
+    private void printClasspath(@NonNull ShellConsole console) {
         console.writeLine("-------------------------");
         console.writeLine("JVM classpath information");
         console.writeLine("-------------------------");
@@ -141,7 +143,7 @@ public class SysInfoCommand extends AbstractCommand {
      * Displays memory usage.
      * @param gc true if performing garbage collection; false otherwise
      */
-    private void mem(boolean gc, ShellConsole console) {
+    private void mem(boolean gc, @NonNull ShellConsole console) {
         long max = Runtime.getRuntime().maxMemory();
         long total = Runtime.getRuntime().totalMemory();
         long free = Runtime.getRuntime().freeMemory();
@@ -175,7 +177,8 @@ public class SysInfoCommand extends AbstractCommand {
         console.writeLine("------------------------------------");
     }
 
-    private String escape(String s){
+    @NonNull
+    private String escape(@NonNull String s){
         return s.replace("\t", "\\t")
                 .replace("\b", "\\b")
                 .replace("\n", "\\n")
@@ -201,11 +204,13 @@ public class SysInfoCommand extends AbstractCommand {
         }
 
         @Override
+        @NonNull
         public String getDescription() {
             return "Displays current JVM runtime information";
         }
 
         @Override
+        @Nullable
         public String getUsage() {
             return null;
         }

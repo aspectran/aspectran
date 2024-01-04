@@ -16,6 +16,7 @@
 package com.aspectran.web.support.http;
 
 import com.aspectran.core.activity.Translet;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 /**
  * HTTP Status Codes for REST.
@@ -27,7 +28,7 @@ public class HttpStatusSetter {
      * @param httpStatus the http status code
      * @param translet the Translet instance
      */
-    public static void setStatus(HttpStatus httpStatus, Translet translet) {
+    public static void setStatus(@NonNull HttpStatus httpStatus, @NonNull Translet translet) {
         translet.getResponseAdapter().setStatus(httpStatus.value());
     }
 
@@ -36,7 +37,7 @@ public class HttpStatusSetter {
      * @param statusCode the http status code
      * @param translet the Translet instance
      */
-    public static void setStatus(int statusCode, Translet translet) {
+    public static void setStatus(int statusCode, @NonNull Translet translet) {
         translet.getResponseAdapter().setStatus(statusCode);
     }
 
@@ -56,7 +57,7 @@ public class HttpStatusSetter {
      * </ul>
      * @param translet the Translet instance
      */
-    public static void ok(Translet translet) {
+    public static void ok(@NonNull Translet translet) {
         translet.getResponseAdapter().setStatus(HttpStatus.OK.value());
     }
 
@@ -80,7 +81,7 @@ public class HttpStatusSetter {
      * @param translet the Translet instance
      * @param location a location header set to the given URI
      */
-    public static void created(Translet translet, String location) {
+    public static void created(@NonNull Translet translet, String location) {
         translet.getResponseAdapter().setStatus(HttpStatus.CREATED.value());
         if (location != null) {
             translet.getResponseAdapter().setHeader(HttpHeaders.LOCATION, location);
@@ -96,7 +97,7 @@ public class HttpStatusSetter {
      * or for batch processing.
      * @param translet the Translet instance
      */
-    public static void accepted(Translet translet) {
+    public static void accepted(@NonNull Translet translet) {
         translet.getResponseAdapter().setStatus(HttpStatus.ACCEPTED.value());
     }
 
@@ -107,7 +108,7 @@ public class HttpStatusSetter {
      * by the first empty line after the header fields.
      * @param translet the Translet instance
      */
-    public static void noContent(Translet translet) {
+    public static void noContent(@NonNull Translet translet) {
         translet.getResponseAdapter().setStatus(HttpStatus.NO_CONTENT.value());
     }
 
@@ -117,7 +118,7 @@ public class HttpStatusSetter {
      * Any future references to this resource SHOULD use one of the returned URIs.
      * @param translet the Translet instance
      */
-    public static void movedPermanently(Translet translet) {
+    public static void movedPermanently(@NonNull Translet translet) {
         translet.getResponseAdapter().setStatus(HttpStatus.MOVED_PERMANENTLY.value());
     }
 
@@ -131,7 +132,7 @@ public class HttpStatusSetter {
      * request might be cacheable.
      * @param translet the Translet instance
      */
-    public static void seeOther(Translet translet) {
+    public static void seeOther(@NonNull Translet translet) {
         translet.getResponseAdapter().setStatus(HttpStatus.SEE_OTHER.value());
     }
 
@@ -142,7 +143,7 @@ public class HttpStatusSetter {
      * So, client can continue to use same cached version of response.
      * @param translet the Translet instance
      */
-    public static void notModified(Translet translet) {
+    public static void notModified(@NonNull Translet translet) {
         translet.getResponseAdapter().setStatus(HttpStatus.NOT_MODIFIED.value());
     }
 
@@ -152,7 +153,7 @@ public class HttpStatusSetter {
      * MUST NOT change the request method if it performs an automatic redirection to that URI.
      * @param translet the Translet instance
      */
-    public static void temporaryRedirect(Translet translet) {
+    public static void temporaryRedirect(@NonNull Translet translet) {
         translet.getResponseAdapter().setStatus(HttpStatus.TEMPORARY_REDIRECT.value());
     }
 
@@ -163,7 +164,7 @@ public class HttpStatusSetter {
      * or deceptive request routing).
      * @param translet the Translet instance
      */
-    public static void badRequest(Translet translet) {
+    public static void badRequest(@NonNull Translet translet) {
         translet.getResponseAdapter().setStatus(HttpStatus.BAD_REQUEST.value());
     }
 
@@ -173,7 +174,7 @@ public class HttpStatusSetter {
      * For use when authentication is possible but has failed or not yet been provided.
      * @param translet the Translet instance
      */
-    public static void unauthorized(Translet translet) {
+    public static void unauthorized(@NonNull Translet translet) {
         translet.getResponseAdapter().setStatus(HttpStatus.UNAUTHORIZED.value());
     }
 
@@ -182,7 +183,7 @@ public class HttpStatusSetter {
      * The request was a legal request, but the server is refusing to respond to it.
      * @param translet the Translet instance
      */
-    public static void forbidden(Translet translet) {
+    public static void forbidden(@NonNull Translet translet) {
         translet.getResponseAdapter().setStatus(HttpStatus.FORBIDDEN.value());
     }
 
@@ -193,7 +194,7 @@ public class HttpStatusSetter {
      * in the future. Subsequent requests by the client are permissible.
      * @param translet the Translet instance
      */
-    public static void notFound(Translet translet) {
+    public static void notFound(@NonNull Translet translet) {
         translet.getResponseAdapter().setStatus(HttpStatus.NOT_FOUND.value());
     }
 
@@ -204,7 +205,7 @@ public class HttpStatusSetter {
      * must never be disabled and should not return this error code.
      * @param translet the Translet instance
      */
-    public static void methodNotAllowed(Translet translet) {
+    public static void methodNotAllowed(@NonNull Translet translet) {
         translet.getResponseAdapter().setStatus(HttpStatus.METHOD_NOT_ALLOWED.value());
     }
 
@@ -214,7 +215,7 @@ public class HttpStatusSetter {
      * acceptable according to the Accept headers sent in the request.
      * @param translet the Translet instance
      */
-    public static void notAcceptable(Translet translet) {
+    public static void notAcceptable(@NonNull Translet translet) {
         translet.getResponseAdapter().setStatus(HttpStatus.NOT_ACCEPTABLE.value());
     }
 
@@ -223,7 +224,7 @@ public class HttpStatusSetter {
      * The request could not be completed because of a conflict.
      * @param translet the Translet instance
      */
-    public static void conflict(Translet translet) {
+    public static void conflict(@NonNull Translet translet) {
         translet.getResponseAdapter().setStatus(HttpStatus.CONFLICT.value());
     }
 
@@ -233,7 +234,7 @@ public class HttpStatusSetter {
      * the requester put on the request.
      * @param translet the Translet instance
      */
-    public static void preconditionFailed(Translet translet) {
+    public static void preconditionFailed(@NonNull Translet translet) {
         translet.getResponseAdapter().setStatus(HttpStatus.PRECONDITION_FAILED.value());
     }
 
@@ -244,7 +245,7 @@ public class HttpStatusSetter {
      * the requested resource for the requested method.
      * @param translet the Translet instance
      */
-    public static void unsupportedMediaType(Translet translet) {
+    public static void unsupportedMediaType(@NonNull Translet translet) {
         translet.getResponseAdapter().setStatus(HttpStatus.UNSUPPORTED_MEDIA_TYPE.value());
     }
 
@@ -254,7 +255,7 @@ public class HttpStatusSetter {
      * prevented it from fulfilling the request.
      * @param translet the Translet instance
      */
-    public static void internalServerError(Translet translet) {
+    public static void internalServerError(@NonNull Translet translet) {
         translet.getResponseAdapter().setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 

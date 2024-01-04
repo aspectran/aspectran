@@ -28,6 +28,7 @@ import com.aspectran.daemon.command.CommandResult;
 import com.aspectran.jetty.JettyServer;
 import com.aspectran.utils.ExceptionUtils;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.lifecycle.LifeCycle;
 
 import java.net.BindException;
@@ -151,6 +152,7 @@ public class JettyCommand extends AbstractCommand {
         }
     }
 
+    @NonNull
     private String getStatus(String status) {
         return status + " - " + "Jetty " + JettyServer.getVersion();
     }
@@ -188,6 +190,7 @@ public class JettyCommand extends AbstractCommand {
         }
 
         @Override
+        @NonNull
         public String getDescription() {
             return "Use the command 'jetty' to control the Jetty server";
         }

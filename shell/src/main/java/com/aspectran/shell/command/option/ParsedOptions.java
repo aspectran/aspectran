@@ -16,6 +16,7 @@
 package com.aspectran.shell.command.option;
 
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 
 import java.io.File;
 import java.io.Serializable;
@@ -202,6 +203,7 @@ public class ParsedOptions implements Serializable {
      * @return the values of the argument if option is set, and has an argument,
      *      otherwise {@code null}
      */
+    @Nullable
     public String[] getValues(Option option) {
         List<String> values = new ArrayList<>();
         for (Option processedOption : options) {

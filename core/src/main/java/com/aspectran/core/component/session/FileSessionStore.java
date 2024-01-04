@@ -18,6 +18,7 @@ package com.aspectran.core.component.session;
 import com.aspectran.utils.MultiException;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.ToStringBuilder;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 
@@ -193,7 +194,7 @@ public class FileSessionStore extends AbstractSessionStore {
      * @param data the session data
      * @return the session id plus expiry
      */
-    private String getIdWithExpiry(SessionData data) {
+    private String getIdWithExpiry(@NonNull SessionData data) {
         if (data.getExpiry() > 0L) {
             return data.getExpiry() + "_" + data.getId();
         } else {
@@ -201,7 +202,7 @@ public class FileSessionStore extends AbstractSessionStore {
         }
     }
 
-    private long getExpiryFromFilename(String filename) {
+    private long getExpiryFromFilename(@NonNull String filename) {
         int index = filename.indexOf('_');
         if (index == -1) {
             return 0L; // never expires
@@ -221,7 +222,8 @@ public class FileSessionStore extends AbstractSessionStore {
      * @param filename the name of the file to use
      * @return the session id
      */
-    private String getIdFromFilename(String filename) {
+    @NonNull
+    private String getIdFromFilename(@NonNull String filename) {
         int index = filename.indexOf('_');
         if (index == -1) {
             return filename;

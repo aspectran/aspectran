@@ -15,6 +15,8 @@
  */
 package com.aspectran.shell.command.option;
 
+import com.aspectran.utils.annotation.jsr305.NonNull;
+
 /**
  * Thrown when an option requiring a value is not provided with a value.
  */
@@ -39,7 +41,7 @@ public class MissingOptionValueException extends OptionParserException {
      * with the specified detail message.
      * @param option the option requiring an argument
      */
-    public MissingOptionValueException(Option option) {
+    public MissingOptionValueException(@NonNull Option option) {
         this("Missing value for option: " + option.getKey());
         this.option = option;
     }

@@ -17,6 +17,7 @@ package com.aspectran.web.support.multipart.commons;
 
 import com.aspectran.core.activity.request.FileParameter;
 import com.aspectran.utils.FilenameUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItem;
@@ -42,7 +43,7 @@ public class CommonsMultipartFileParameter extends FileParameter {
      * Create an instance wrapping the given FileItem.
      * @param fileItem the FileItem to wrap
      */
-    public CommonsMultipartFileParameter(FileItem fileItem) {
+    public CommonsMultipartFileParameter(@NonNull FileItem fileItem) {
         this.fileItem = fileItem;
         this.fileSize = fileItem.getSize();
     }
@@ -170,6 +171,7 @@ public class CommonsMultipartFileParameter extends FileParameter {
      * @param filename the given filename
      * @return the canonical name of the given filename
      */
+    @NonNull
     private String getCanonicalName(String filename) {
         return FilenameUtils.getName(filename);
     }

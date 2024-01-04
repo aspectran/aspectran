@@ -15,6 +15,7 @@
  */
 package com.aspectran.utils;
 
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 
 import java.lang.ref.ReferenceQueue;
@@ -312,7 +313,7 @@ public class ConcurrentReferenceHashMap<K, V> extends AbstractMap<K, V> implemen
     }
 
     @Override
-    public boolean remove(Object key, final Object value) {
+    public boolean remove(@NonNull Object key, final Object value) {
         Boolean result = doTask(key, new Task<Boolean>(TaskOption.RESTRUCTURE_AFTER, TaskOption.SKIP_IF_EMPTY) {
             @Override
             protected Boolean execute(@Nullable Reference<K, V> ref, @Nullable Entry<K, V> entry) {
@@ -329,7 +330,7 @@ public class ConcurrentReferenceHashMap<K, V> extends AbstractMap<K, V> implemen
     }
 
     @Override
-    public boolean replace(K key, final V oldValue, final V newValue) {
+    public boolean replace(@NonNull K key, @NonNull final V oldValue, @NonNull final V newValue) {
         Boolean result = doTask(key, new Task<Boolean>(TaskOption.RESTRUCTURE_BEFORE, TaskOption.SKIP_IF_EMPTY) {
             @Override
             protected Boolean execute(@Nullable Reference<K, V> ref, @Nullable Entry<K, V> entry) {
@@ -345,7 +346,7 @@ public class ConcurrentReferenceHashMap<K, V> extends AbstractMap<K, V> implemen
 
     @Override
     @Nullable
-    public V replace(K key, final V value) {
+    public V replace(@NonNull K key, @NonNull final V value) {
         return doTask(key, new Task<V>(TaskOption.RESTRUCTURE_BEFORE, TaskOption.SKIP_IF_EMPTY) {
             @Override
             @Nullable
@@ -513,7 +514,7 @@ public class ConcurrentReferenceHashMap<K, V> extends AbstractMap<K, V> implemen
          * @return the result of the operation
          */
         @Nullable
-        public <T> T doTask(final int hash, @Nullable final Object key, final Task<T> task) {
+        private <T> T doTask(final int hash, @Nullable final Object key, @NonNull final Task<T> task) {
             boolean resize = task.hasOption(TaskOption.RESIZE);
             if (task.hasOption(TaskOption.RESTRUCTURE_BEFORE)) {
                 restructureIfNecessary(resize);
@@ -567,7 +568,7 @@ public class ConcurrentReferenceHashMap<K, V> extends AbstractMap<K, V> implemen
          *
          * @param allowResize if resizing is permitted
          */
-        protected final void restructureIfNecessary(boolean allowResize) {
+        private final void restructureIfNecessary(boolean allowResize) {
             int currCount = this.count.get();
             boolean needsResize = allowResize && (currCount > 0 && currCount >= this.resizeThreshold);
             Reference<K, V> ref = this.referenceManager.pollForPurge();
@@ -653,11 +654,13 @@ public class ConcurrentReferenceHashMap<K, V> extends AbstractMap<K, V> implemen
         }
 
         @SuppressWarnings({"unchecked"})
+        @NonNull
         private Reference<K, V>[] createReferenceArray(int size) {
             return new Reference[size];
         }
 
-        private int getIndex(int hash, Reference<K, V>[] references) {
+        @NonNull
+        private int getIndex(int hash, @NonNull Reference<K, V>[] references) {
             return (hash & (references.length - 1));
         }
 
@@ -751,6 +754,7 @@ public class ConcurrentReferenceHashMap<K, V> extends AbstractMap<K, V> implemen
         }
 
         @Override
+        @NonNull
         public String toString() {
             return (this.key + "=" + this.value);
         }
@@ -783,7 +787,7 @@ public class ConcurrentReferenceHashMap<K, V> extends AbstractMap<K, V> implemen
 
         private final EnumSet<TaskOption> options;
 
-        public Task(TaskOption... options) {
+        public Task(@NonNull TaskOption... options) {
             this.options = (options.length == 0 ? EnumSet.noneOf(TaskOption.class) : EnumSet.of(options[0], options));
         }
 
@@ -850,6 +854,7 @@ public class ConcurrentReferenceHashMap<K, V> extends AbstractMap<K, V> implemen
     private class EntrySet extends AbstractSet<Map.Entry<K, V>> {
 
         @Override
+        @NonNull
         public Iterator<Map.Entry<K, V>> iterator() {
             return new EntryIterator();
         }

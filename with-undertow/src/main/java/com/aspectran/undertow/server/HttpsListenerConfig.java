@@ -16,6 +16,7 @@
 package com.aspectran.undertow.server;
 
 import com.aspectran.utils.ResourceUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import io.undertow.Undertow;
 
 import javax.net.ssl.KeyManager;
@@ -176,7 +177,7 @@ public class HttpsListenerConfig {
         }
     }
 
-    private KeyManager[] getAliasedX509ExtendedKeyManager(String keyAlias, KeyManager[] keyManagers) {
+    private KeyManager[] getAliasedX509ExtendedKeyManager(String keyAlias, @NonNull KeyManager[] keyManagers) {
         for (int i = 0; i < keyManagers.length; i++) {
             if (keyManagers[i] instanceof X509ExtendedKeyManager) {
                 keyManagers[i] = new AliasedX509ExtendedKeyManager((X509ExtendedKeyManager)keyManagers[i], keyAlias);
@@ -197,6 +198,7 @@ public class HttpsListenerConfig {
         }
     }
 
+    @NonNull
     private KeyStore loadKeyStore(String type, String provider, String resource, String password) throws Exception {
         return loadStore(type, provider, resource, password);
     }
@@ -208,6 +210,7 @@ public class HttpsListenerConfig {
         return loadStore(type, provider, resource, password);
     }
 
+    @NonNull
     private KeyStore loadStore(String type, String provider, String resource, String password) throws Exception {
         type = (type != null ? type : "JKS");
         KeyStore store = (provider != null ? KeyStore.getInstance(type, provider) : KeyStore.getInstance(type));

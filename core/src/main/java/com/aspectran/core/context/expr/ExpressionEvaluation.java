@@ -22,6 +22,8 @@ import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.expr.token.TokenParser;
 import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 import ognl.Ognl;
 import ognl.OgnlContext;
 import ognl.OgnlException;
@@ -152,7 +154,9 @@ public class ExpressionEvaluation implements ExpressionEvaluator {
         }
     }
 
-    private String[] putTokenVariables(OgnlContext ognlContext, TokenEvaluator tokenEvaluator, Token[] tokens) {
+    @Nullable
+    private String[] putTokenVariables(OgnlContext ognlContext, TokenEvaluator tokenEvaluator,
+                                       @NonNull Token[] tokens) {
         Set<String> tokenVarNames = new LinkedHashSet<>();
         for (Token token : tokens) {
             if (token.getType() != TokenType.TEXT) {
@@ -192,15 +196,18 @@ public class ExpressionEvaluation implements ExpressionEvaluator {
         }
     }
 
+    @NonNull
     private String makeTokenVarName(Token token) {
         return TOKEN_VAR_NAME_PREFIX + makeTokenName(token) + TOKEN_VAR_NAME_SUFFIX;
     }
 
+    @NonNull
     private String makeTokenVarRefName(Token token) {
         return TOKEN_VAR_REF_NAME_PREFIX + makeTokenName(token) + TOKEN_VAR_NAME_SUFFIX;
     }
 
-    private String makeTokenName(Token token) {
+    @NonNull
+    private String makeTokenName(@NonNull Token token) {
         int hashCode = token.hashCode();
         if (hashCode >= 0) {
             return Long.toString(hashCode, 32);

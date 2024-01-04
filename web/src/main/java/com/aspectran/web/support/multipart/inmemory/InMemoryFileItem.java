@@ -15,6 +15,7 @@
  */
 package com.aspectran.web.support.multipart.inmemory;
 
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.web.support.http.MediaType;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemHeaders;
@@ -299,7 +300,7 @@ public class InMemoryFileItem implements FileItem, FileItemHeadersSupport {
      * @param out the stream to which the state should be written
      * @throws IOException if an error occurs
      */
-    private void writeObject(ObjectOutputStream out) throws IOException {
+    private void writeObject(@NonNull ObjectOutputStream out) throws IOException {
         // Read the data
         cachedContent = get();
 
@@ -313,7 +314,7 @@ public class InMemoryFileItem implements FileItem, FileItemHeadersSupport {
      * @throws IOException if an error occurs
      * @throws ClassNotFoundException if class cannot be found
      */
-    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+    private void readObject(@NonNull ObjectInputStream in) throws IOException, ClassNotFoundException {
         // read values
         in.defaultReadObject();
 

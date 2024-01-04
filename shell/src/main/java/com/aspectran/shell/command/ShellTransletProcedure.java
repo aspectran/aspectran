@@ -89,7 +89,7 @@ public class ShellTransletProcedure {
         }
     }
 
-    private boolean isSimpleItemRules(Collection<ItemRule> itemRules) {
+    private boolean isSimpleItemRules(@NonNull Collection<ItemRule> itemRules) {
         for (ItemRule itemRule : itemRules) {
             if (itemRule.getType() != ItemType.SINGLE) {
                 return false;
@@ -231,7 +231,8 @@ public class ShellTransletProcedure {
         }
     }
 
-    private Collection<ItemRule> readEachParameter(Collection<ItemRule> itemRules) {
+    @Nullable
+    private Collection<ItemRule> readEachParameter(@NonNull Collection<ItemRule> itemRules) {
         Set<ItemRule> missingItemRules = new LinkedHashSet<>();
         for (ItemRule ir : itemRules) {
             if (!ir.hasOnlyFixedValue()) {
@@ -246,7 +247,7 @@ public class ShellTransletProcedure {
         return (missingItemRules.isEmpty() ? null : missingItemRules);
     }
 
-    private String readParameter(ItemRule itemRule) {
+    private String readParameter(@NonNull ItemRule itemRule) {
         PromptStringBuilder psb = console.newPromptStringBuilder()
                 .warningStyle()
                 .append(getMandatoryMarker(itemRule.isMandatory()))
@@ -273,7 +274,8 @@ public class ShellTransletProcedure {
         }
     }
 
-    private Collection<ItemRule> readEachToken(Collection<ItemRule> itemRules) {
+    @Nullable
+    private Collection<ItemRule> readEachToken(@NonNull Collection<ItemRule> itemRules) {
         console.secondaryStyle();
         console.writeLine("Enter a value for each token:");
         console.resetStyle();
@@ -343,7 +345,7 @@ public class ShellTransletProcedure {
         return (missingItemRules.isEmpty() ? null : missingItemRules);
     }
 
-    private boolean hasSecretItem(Collection<ItemRule> itemRules) {
+    private boolean hasSecretItem(@NonNull Collection<ItemRule> itemRules) {
         boolean secret = false;
         for (ItemRule ir : itemRules) {
             if (ir.isSecret()) {
@@ -354,11 +356,12 @@ public class ShellTransletProcedure {
         return secret;
     }
 
+    @NonNull
     private String getMandatoryMarker(boolean mandatory) {
         return (mandatory ? " * " : "   ");
     }
 
-    private void writeItems(Collection<ItemRule> itemRules, TokenType tokenType) {
+    private void writeItems(@NonNull Collection<ItemRule> itemRules, TokenType tokenType) {
         for (ItemRule itemRule : itemRules) {
             if (readSimply) {
                 writeItem(itemRule, null);
@@ -373,7 +376,7 @@ public class ShellTransletProcedure {
         }
     }
 
-    private void writeItem(ItemRule itemRule, Token[] tokens) {
+    private void writeItem(@NonNull ItemRule itemRule, Token[] tokens) {
         console.warningStyle();
         console.write(getMandatoryMarker(itemRule.isMandatory()));
         console.resetStyle("bold");
@@ -392,7 +395,7 @@ public class ShellTransletProcedure {
         console.writeLine();
     }
 
-    private void writeToken(Token token) {
+    private void writeToken(@NonNull Token token) {
         if (token.getType() == TokenType.TEXT) {
             console.write(token.stringify());
         } else {
@@ -407,7 +410,8 @@ public class ShellTransletProcedure {
         }
     }
 
-    private Collection<ItemRule> checkRequiredParameters(Collection<ItemRule> itemRules) {
+    @Nullable
+    private Collection<ItemRule> checkRequiredParameters(@NonNull Collection<ItemRule> itemRules) {
         Set<ItemRule> missingItemRules = new LinkedHashSet<>();
         for (ItemRule itemRule : itemRules) {
             String[] values = parameterMap.getParameterValues(itemRule.getName());

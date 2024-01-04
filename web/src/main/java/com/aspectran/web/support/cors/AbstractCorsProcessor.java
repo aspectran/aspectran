@@ -17,6 +17,7 @@ package com.aspectran.web.support.cors;
 
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.web.support.http.HttpHeaders;
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -317,7 +318,7 @@ public abstract class AbstractCorsProcessor implements CorsProcessor {
      * @param request the http request
      * @return {@code true} if the request is a valid CORS one, else {@code false}
      */
-    protected boolean isCorsRequest(HttpServletRequest request) {
+    protected boolean isCorsRequest(@NonNull HttpServletRequest request) {
         return (request.getHeader(HttpHeaders.ORIGIN) != null);
     }
 

@@ -15,6 +15,9 @@
  */
 package com.aspectran.utils;
 
+import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.annotation.jsr305.Nullable;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -62,7 +65,7 @@ public class MethodUtils {
      * @throws IllegalAccessException the illegal access exception
      * @throws InvocationTargetException the invocation target exception
      */
-    public static void invokeSetter(Object object, String setterName, Object[] args)
+    public static void invokeSetter(Object object, @NonNull String setterName, Object[] args)
             throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         int index = setterName.indexOf('.');
         if (index > 0) {
@@ -235,6 +238,7 @@ public class MethodUtils {
      */
     public static Object invokeMethod(Object object, String methodName, Object[] args, Class<?>[] paramTypes)
             throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        Assert.notNull(object, "object must not be null");
         if (args == null) {
             args = EMPTY_OBJECT_ARRAY;
         }
@@ -526,13 +530,13 @@ public class MethodUtils {
         return invokeExactStaticMethod(objectClass, methodName, args, paramTypes);
     }
 
-    private static Object invokeMethod(Object object, Method method, Object[] args, Class<?>[] paramTypes)
+    private static Object invokeMethod(@Nullable Object object, @NonNull Method method, Object[] args, Class<?>[] paramTypes)
             throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
         Class<?>[] methodsParams = method.getParameterTypes();
         return invokeMethod(object, method, methodsParams, args, paramTypes);
     }
 
-    private static Object invokeMethod(Object object, Method method, Class<?>[] methodsParams, Object[] args,
+    private static Object invokeMethod(@Nullable Object object, @NonNull Method method, Class<?>[] methodsParams, Object[] args,
                                        Class<?>[] paramTypes)
             throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
         if (methodsParams != null && methodsParams.length > 0) {

@@ -62,7 +62,8 @@ public abstract class AbstractEmbeddedAspectran extends AspectranCoreService imp
     }
 
     protected void createSessionManager() {
-        Assert.state(this.sessionManager == null, "Session Manager is already exists for embedded aspectran");
+        Assert.state(this.sessionManager == null,
+                "Session Manager is already exists for embedded aspectran");
         EmbedConfig embedConfig = getAspectranConfig().getEmbedConfig();
         if (embedConfig != null) {
             SessionManagerConfig sessionManagerConfig = embedConfig.getSessionManagerConfig();

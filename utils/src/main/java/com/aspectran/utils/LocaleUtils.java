@@ -15,6 +15,9 @@
  */
 package com.aspectran.utils;
 
+import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.annotation.jsr305.Nullable;
+
 import java.util.Locale;
 import java.util.TimeZone;
 
@@ -40,7 +43,7 @@ public class LocaleUtils {
         if (tokens.length == 1) {
             validateLocalePart(localeValue);
             Locale resolved = Locale.forLanguageTag(localeValue);
-            if (resolved.getLanguage().length() > 0) {
+            if (!resolved.getLanguage().isEmpty()) {
                 return resolved;
             }
         }
@@ -69,7 +72,8 @@ public class LocaleUtils {
         return StringUtils.tokenize(localeSource, "_ ", false);
     }
 
-    private static Locale parseLocaleTokens(String localeString, String[] tokens) {
+    @Nullable
+    private static Locale parseLocaleTokens(String localeString, @NonNull String[] tokens) {
         String language = (tokens.length > 0 ? tokens[0] : StringUtils.EMPTY);
         String country = (tokens.length > 1 ? tokens[1] : StringUtils.EMPTY);
         validateLocalePart(language);
@@ -92,10 +96,10 @@ public class LocaleUtils {
             country = StringUtils.EMPTY;
         }
 
-        return (language.length() > 0 ? new Locale(language, country, variant) : null);
+        return (!language.isEmpty() ? new Locale(language, country, variant) : null);
     }
 
-    private static void validateLocalePart(String localePart) {
+    private static void validateLocalePart(@NonNull String localePart) {
         for (int i = 0; i < localePart.length(); i++) {
             char ch = localePart.charAt(i);
             if (ch != ' ' && ch != '_' && ch != '-' && ch != '#' && !Character.isLetterOrDigit(ch)) {
@@ -112,6 +116,7 @@ public class LocaleUtils {
      * @return a corresponding {@link TimeZone} instance
      * @throws IllegalArgumentException in case of an invalid time zone specification
      */
+    @NonNull
     public static TimeZone parseTimeZoneString(String timeZoneString) {
         TimeZone timeZone = TimeZone.getTimeZone(timeZoneString);
         if ("GMT".equals(timeZone.getID()) && !timeZoneString.startsWith("GMT")) {

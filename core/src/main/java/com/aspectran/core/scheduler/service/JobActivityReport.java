@@ -19,6 +19,7 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.context.rule.ScheduledJobRule;
 import com.aspectran.utils.ExceptionUtils;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 import org.quartz.JobDataMap;
@@ -109,7 +110,8 @@ public class JobActivityReport {
         }
     }
 
-    private String formatDate(Date date) {
+    @NonNull
+    private String formatDate(@NonNull Date date) {
         LocalDateTime ldt = LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
         return DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(ldt);
     }

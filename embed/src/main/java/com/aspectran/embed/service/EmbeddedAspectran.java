@@ -25,6 +25,7 @@ import com.aspectran.core.context.env.Environment;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.support.i18n.message.NoSuchMessageException;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.apon.AponParseException;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
@@ -283,6 +284,7 @@ public interface EmbeddedAspectran {
      * @param aspectranConfigFile the aspectran configuration file
      * @return the instance of {@code EmbeddedAspectran}
      */
+    @NonNull
     static EmbeddedAspectran run(String aspectranConfigFile) {
         if (aspectranConfigFile == null) {
             throw new IllegalArgumentException("aspectranConfigFile must not be null");
@@ -296,6 +298,7 @@ public interface EmbeddedAspectran {
      * @param aspectranConfigFile the aspectran configuration file
      * @return the instance of {@code EmbeddedAspectran}
      */
+    @NonNull
     static EmbeddedAspectran run(File aspectranConfigFile) {
         if (aspectranConfigFile == null) {
             throw new IllegalArgumentException("aspectranConfigFile must not be null");
@@ -315,6 +318,7 @@ public interface EmbeddedAspectran {
      * @param configFileReader the aspectran configuration file reader
      * @return the instance of {@code EmbeddedAspectran}
      */
+    @NonNull
     static EmbeddedAspectran run(Reader configFileReader) {
         if (configFileReader == null) {
             throw new IllegalArgumentException("aspectranConfigFile must not be null");
@@ -333,6 +337,7 @@ public interface EmbeddedAspectran {
      * @param aspectranConfig the parameters for aspectran configuration
      * @return the instance of {@code EmbeddedAspectran}
      */
+    @NonNull
     static EmbeddedAspectran run(AspectranConfig aspectranConfig) {
         if (aspectranConfig == null) {
             throw new IllegalArgumentException("aspectranConfig must not be null");

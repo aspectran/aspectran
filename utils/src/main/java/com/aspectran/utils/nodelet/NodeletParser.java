@@ -16,6 +16,7 @@
 package com.aspectran.utils.nodelet;
 
 import com.aspectran.utils.ArrayStack;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 import org.xml.sax.Attributes;
@@ -135,7 +136,7 @@ public class NodeletParser {
      * @param xpath the xpath
      * @param subnodeParser the subnode parser
      */
-    public void addNodelet(String xpath, SubnodeParser subnodeParser) {
+    public void addNodelet(String xpath, @NonNull SubnodeParser subnodeParser) {
         subnodeParser.parse(xpath, this);
         setXpath(xpath);
     }

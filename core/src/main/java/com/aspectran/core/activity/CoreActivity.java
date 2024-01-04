@@ -52,6 +52,7 @@ import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.support.i18n.locale.LocaleResolver;
 import com.aspectran.utils.Assert;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
@@ -351,6 +352,7 @@ public class CoreActivity extends AdviceActivity {
         }
     }
 
+    @Nullable
     private ForwardRule response() throws ResponseException {
         if (!committed) {
             committed = true;
@@ -372,7 +374,7 @@ public class CoreActivity extends AdviceActivity {
         return null;
     }
 
-    private void forward(ForwardRule forwardRule)
+    private void forward(@NonNull ForwardRule forwardRule)
             throws TransletNotFoundException, ActivityPrepareException, ActivityPerformException {
         reserveResponse(null);
         committed = false;

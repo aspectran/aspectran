@@ -21,6 +21,7 @@ import com.aspectran.utils.FilenameUtils;
 import com.aspectran.utils.LinkedCaseInsensitiveMultiValueMap;
 import com.aspectran.utils.MultiValueMap;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.web.activity.request.RequestHeaderParser;
 import com.aspectran.web.support.http.HttpHeaders;
 import com.aspectran.web.support.http.HttpMediaTypeNotAcceptableException;
@@ -344,11 +345,11 @@ public abstract class AbstractRestResponse implements RestResponse {
 
     protected abstract MediaType getContentTypeByPathExtension(String extension);
 
-    protected String determineEncoding(Activity activity) {
+    protected String determineEncoding(@NonNull Activity activity) {
         return activity.getTranslet().getIntendedResponseEncoding();
     }
 
-    protected MediaType determineContentType(Activity activity)
+    protected MediaType determineContentType(@NonNull Activity activity)
             throws HttpMediaTypeNotAcceptableException {
         if (isFavorPathExtension()) {
             String path = activity.getTranslet().getRequestName();

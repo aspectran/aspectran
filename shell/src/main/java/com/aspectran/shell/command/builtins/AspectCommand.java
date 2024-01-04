@@ -24,6 +24,8 @@ import com.aspectran.shell.command.option.Option;
 import com.aspectran.shell.command.option.ParsedOptions;
 import com.aspectran.shell.console.ShellConsole;
 import com.aspectran.shell.service.ShellService;
+import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.utils.apon.AponWriter;
 import com.aspectran.utils.apon.Parameters;
 
@@ -77,7 +79,7 @@ public class AspectCommand extends AbstractCommand {
     }
 
     @Override
-    public void execute(ParsedOptions options, ShellConsole console) throws Exception {
+    public void execute(@NonNull ParsedOptions options, ShellConsole console) throws Exception {
         ShellService shellService = getActiveShellService();
         if (options.hasOption("help")) {
             printHelp(console);
@@ -98,7 +100,7 @@ public class AspectCommand extends AbstractCommand {
         }
     }
 
-    private void listAspects(ShellService shellService, ShellConsole console, String[] keywords) {
+    private void listAspects(@NonNull ShellService shellService, @NonNull ShellConsole console, String[] keywords) {
         AspectRuleRegistry aspectRuleRegistry = shellService.getActivityContext().getAspectRuleRegistry();
         Collection<AspectRule> aspectRules = aspectRuleRegistry.getAspectRules();
         console.writeLine("-%4s-+-%-46s-+-%-8s-+-%-7s-",
@@ -145,7 +147,8 @@ public class AspectCommand extends AbstractCommand {
                 "----", "----------------------------------------------", "--------", "-------");
     }
 
-    private void describeAspectRule(ShellService shellService, ShellConsole console, String[] aspectIds) throws IOException {
+    private void describeAspectRule(@NonNull ShellService shellService, @NonNull ShellConsole console,
+                                    String[] aspectIds) throws IOException {
         AspectRuleRegistry aspectRuleRegistry = shellService.getActivityContext().getAspectRuleRegistry();
         Collection<AspectRule> aspectRules;
         if (aspectIds == null || aspectIds.length == 0) {
@@ -183,7 +186,8 @@ public class AspectCommand extends AbstractCommand {
         }
     }
 
-    private void changeAspectActiveState(ShellService shellService, ShellConsole console, String[] aspectIds, boolean disabled) {
+    private void changeAspectActiveState(@NonNull ShellService shellService, @NonNull ShellConsole console,
+                                         @NonNull String[] aspectIds, boolean disabled) {
         AspectRuleRegistry aspectRuleRegistry = shellService.getActivityContext().getAspectRuleRegistry();
         List<AspectRule> aspectRules = new ArrayList<>();
         for (String aspectId : aspectIds) {
@@ -235,11 +239,13 @@ public class AspectCommand extends AbstractCommand {
         }
 
         @Override
+        @NonNull
         public String getDescription() {
             return "Shows registered aspects, disables or enables them";
         }
 
         @Override
+        @Nullable
         public String getUsage() {
             return null;
         }

@@ -34,6 +34,7 @@ import com.aspectran.shell.command.ShellTransletProcedure;
 import com.aspectran.shell.command.TransletCommandLine;
 import com.aspectran.shell.console.ShellConsole;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
@@ -232,7 +233,8 @@ public class DefaultShellService extends AbstractShellService {
      * @param console the {@code Console} instance
      * @return the instance of {@code DefaultShellService}
      */
-    public static DefaultShellService create(AspectranConfig aspectranConfig, ShellConsole console) {
+    @NonNull
+    public static DefaultShellService create(@NonNull AspectranConfig aspectranConfig, ShellConsole console) {
         DefaultShellService shellService = new DefaultShellService(console);
         ShellConfig shellConfig = aspectranConfig.getShellConfig();
         if (shellConfig != null) {
@@ -243,7 +245,7 @@ public class DefaultShellService extends AbstractShellService {
         return shellService;
     }
 
-    private static void applyShellConfig(DefaultShellService shellService, ShellConfig shellConfig) {
+    private static void applyShellConfig(@NonNull DefaultShellService shellService, @NonNull ShellConfig shellConfig) {
         shellService.setVerbose(shellConfig.isVerbose());
         shellService.setGreetings(shellConfig.getGreetings());
         ExposalsConfig exposalsConfig = shellConfig.getExposalsConfig();
@@ -254,7 +256,7 @@ public class DefaultShellService extends AbstractShellService {
         }
     }
 
-    private static void setServiceStateListener(final DefaultShellService shellService) {
+    private static void setServiceStateListener(@NonNull final DefaultShellService shellService) {
         shellService.setServiceStateListener(new ServiceStateListener() {
             @Override
             public void started() {

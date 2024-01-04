@@ -15,6 +15,8 @@
  */
 package com.aspectran.utils;
 
+import com.aspectran.utils.annotation.jsr305.NonNull;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
@@ -39,7 +41,7 @@ public class CustomObjectInputStream extends ObjectInputStream {
     }
 
     @Override
-    public Class<?> resolveClass(ObjectStreamClass classDesc) throws IOException, ClassNotFoundException {
+    public Class<?> resolveClass(@NonNull ObjectStreamClass classDesc) throws IOException, ClassNotFoundException {
         try {
             return Class.forName(classDesc.getName(), false, classLoader);
         } catch (ClassNotFoundException e) {
@@ -48,7 +50,7 @@ public class CustomObjectInputStream extends ObjectInputStream {
     }
 
     @Override
-    protected Class<?> resolveProxyClass(String[] interfaces) throws ClassNotFoundException {
+    protected Class<?> resolveProxyClass(@NonNull String[] interfaces) throws ClassNotFoundException {
         Class<?>[] resolvedInterfaces = new Class<?>[interfaces.length];
         for (int i = 0; i < interfaces.length; i++) {
             resolvedInterfaces[i] = Class.forName(interfaces[i], false, classLoader);

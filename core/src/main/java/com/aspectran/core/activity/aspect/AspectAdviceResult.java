@@ -17,6 +17,7 @@ package com.aspectran.core.activity.aspect;
 
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -92,7 +93,7 @@ public class AspectAdviceResult {
         finallyAdviceResultMap.put(aspectId, actionResult);
     }
 
-    public void putAdviceResult(AspectAdviceRule aspectAdviceRule, Object adviceActionResult) {
+    public void putAdviceResult(@NonNull AspectAdviceRule aspectAdviceRule, Object adviceActionResult) {
         if (aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.BEFORE) {
             putBeforeAdviceResult(aspectAdviceRule.getAspectId(), adviceActionResult);
         } else if (aspectAdviceRule.getAspectAdviceType() == AspectAdviceType.AFTER) {

@@ -96,6 +96,7 @@ public class ArrayParameters extends AbstractParameters
         }
     }
 
+    @NonNull
     private static ParameterKey[] createParameterKeys(Class<? extends AbstractParameters> elementClass) {
         ParameterKey pk = new ParameterKey(NONAME, elementClass, true);
         return new ParameterKey[] { pk };

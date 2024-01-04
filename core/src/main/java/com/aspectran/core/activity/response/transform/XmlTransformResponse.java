@@ -23,6 +23,7 @@ import com.aspectran.core.activity.response.transform.xml.ContentsInputSource;
 import com.aspectran.core.activity.response.transform.xml.ContentsXMLReader;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.rule.TransformRule;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Source;
@@ -67,7 +68,7 @@ public class XmlTransformResponse extends TransformResponse {
     }
 
     @Override
-    protected void transform(Activity activity) throws Exception {
+    protected void transform(@NonNull Activity activity) throws Exception {
         ResponseAdapter responseAdapter = activity.getResponseAdapter();
 
         String encoding;

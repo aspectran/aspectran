@@ -36,7 +36,7 @@ public class TerminalPrintStream extends PrintStream {
         this(jlineTerminal, above, null);
     }
 
-    public TerminalPrintStream(JLineTerminal jlineTerminal, boolean above, String[] styles) {
+    public TerminalPrintStream(@NonNull JLineTerminal jlineTerminal, boolean above, String[] styles) {
         super(jlineTerminal.getOutput());
         this.jlineTerminal = jlineTerminal;
         this.above = above;

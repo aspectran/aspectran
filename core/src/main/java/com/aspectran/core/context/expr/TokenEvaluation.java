@@ -27,6 +27,7 @@ import com.aspectran.utils.BeanUtils;
 import com.aspectran.utils.PropertiesLoaderUtils;
 import com.aspectran.utils.ReflectionUtils;
 import com.aspectran.utils.SystemUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 
@@ -306,7 +307,7 @@ public class TokenEvaluation implements TokenEvaluator {
      * @param token the token
      * @return an instance of the bean
      */
-    protected Object getBean(Token token) {
+    protected Object getBean(@NonNull Token token) {
         Object value;
         if (token.getAlternativeValue() != null) {
             if (token.getDirectiveType() == TokenDirectiveType.FIELD) {
@@ -387,7 +388,7 @@ public class TokenEvaluation implements TokenEvaluator {
      * @return an environment variable
      * @throws IOException if an I/O error has occurred
      */
-    protected Object getProperty(Token token) throws IOException {
+    protected Object getProperty(@NonNull Token token) throws IOException {
         if (token.getDirectiveType() == TokenDirectiveType.CLASSPATH) {
             try {
                 Properties props = PropertiesLoaderUtils.loadProperties(token.getValue(),
@@ -416,7 +417,7 @@ public class TokenEvaluation implements TokenEvaluator {
      * @param token the token
      * @return the generated output as {@code String}
      */
-    protected String getTemplate(Token token) {
+    protected String getTemplate(@NonNull Token token) {
         TemplateRenderer templateRenderer = activity.getActivityContext().getTemplateRenderer();
 
         StringWriter writer = new StringWriter();

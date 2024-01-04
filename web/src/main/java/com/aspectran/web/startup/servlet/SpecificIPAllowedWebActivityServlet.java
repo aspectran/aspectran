@@ -15,6 +15,7 @@
  */
 package com.aspectran.web.startup.servlet;
 
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 import jakarta.servlet.ServletException;
@@ -62,7 +63,7 @@ public class SpecificIPAllowedWebActivityServlet extends WebActivityServlet {
     }
 
     @Override
-    public void service(HttpServletRequest req, HttpServletResponse res) throws IOException {
+    public void service(@NonNull HttpServletRequest req, @NonNull HttpServletResponse res) throws IOException {
         String remoteAddr = req.getRemoteAddr();
         if (!isAllowedAddress(remoteAddr)) {
             if (logger.isDebugEnabled()) {
@@ -80,7 +81,7 @@ public class SpecificIPAllowedWebActivityServlet extends WebActivityServlet {
      * @param ipAddress the IP address
      * @return true if IP address is a valid; false otherwise
      */
-    private boolean isAllowedAddress(String ipAddress) {
+    private boolean isAllowedAddress(@NonNull String ipAddress) {
         if (allowedAddresses == null) {
             return false;
         }

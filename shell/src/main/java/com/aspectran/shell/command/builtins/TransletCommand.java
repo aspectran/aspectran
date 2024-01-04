@@ -31,6 +31,8 @@ import com.aspectran.shell.command.option.ParsedOptions;
 import com.aspectran.shell.console.ShellConsole;
 import com.aspectran.shell.service.ShellService;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.utils.apon.AponWriter;
 
 import java.io.IOException;
@@ -98,7 +100,7 @@ public class TransletCommand extends AbstractCommand {
     }
 
     @Override
-    public void execute(ParsedOptions options, ShellConsole console) throws Exception {
+    public void execute(@NonNull ParsedOptions options, ShellConsole console) throws Exception {
         ShellService shellService = getActiveShellService();
         if (options.hasOption("help")) {
             printHelp(console);
@@ -142,7 +144,8 @@ public class TransletCommand extends AbstractCommand {
         }
     }
 
-    private void listTranslets(ShellService shellService, ShellConsole console, String[] keywords, boolean all) {
+    private void listTranslets(@NonNull ShellService shellService, @NonNull ShellConsole console,
+                               @Nullable String[] keywords, boolean all) {
         TransletRuleRegistry transletRuleRegistry = shellService.getActivityContext().getTransletRuleRegistry();
         Collection<TransletRule> transletRules = transletRuleRegistry.getTransletRules();
         console.writeLine("-%4s-+-%-59s-+-%-5s-",
@@ -188,8 +191,9 @@ public class TransletCommand extends AbstractCommand {
                 "----", "-----------------------------------------------------------", "-----");
     }
 
-    private void describeTransletRule(ShellService shellService, ShellConsole console, String[] transletNames,
-                                      MethodType requestMethod, boolean all) throws IOException {
+    private void describeTransletRule(@NonNull ShellService shellService, @NonNull ShellConsole console,
+                                      @Nullable String[] transletNames,
+                                      @Nullable MethodType requestMethod, boolean all) throws IOException {
         TransletRuleRegistry transletRuleRegistry = shellService.getActivityContext().getTransletRuleRegistry();
         Collection<TransletRule> transletRules;
         if (transletNames == null || transletNames.length == 0) {
@@ -262,11 +266,13 @@ public class TransletCommand extends AbstractCommand {
         }
 
         @Override
+        @NonNull
         public String getDescription() {
             return "Translet run, or you can find them";
         }
 
         @Override
+        @Nullable
         public String getUsage() {
             return null;
         }

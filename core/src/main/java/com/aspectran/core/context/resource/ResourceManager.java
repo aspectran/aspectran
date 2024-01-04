@@ -17,6 +17,7 @@ package com.aspectran.core.context.resource;
 
 import com.aspectran.utils.ClassUtils;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -53,6 +54,7 @@ public class ResourceManager {
         return resourceEntries.get(name);
     }
 
+    @NonNull
     public static Enumeration<URL> getResources(final Iterator<SiblingsClassLoader> owners) {
         return new Enumeration<>() {
             private Iterator<URL> values;
@@ -93,10 +95,12 @@ public class ResourceManager {
         };
     }
 
+    @NonNull
     public static Enumeration<URL> getResources(final Iterator<SiblingsClassLoader> owners, String name) {
         return getResources(owners, name, null);
     }
 
+    @NonNull
     public static Enumeration<URL> getResources(final Iterator<SiblingsClassLoader> owners, String name,
                                                 final Enumeration<URL> inherited) {
         if (owners == null || name == null) {
@@ -155,10 +159,12 @@ public class ResourceManager {
         };
     }
 
+    @NonNull
     public static Enumeration<URL> searchResources(final Iterator<SiblingsClassLoader> owners, String name) {
         return searchResources(owners, name, null);
     }
 
+    @NonNull
     public static Enumeration<URL> searchResources(final Iterator<SiblingsClassLoader> owners, String name,
                                                    final Enumeration<URL> inherited) {
         if (StringUtils.endsWith(name, REGULAR_FILE_SEPARATOR_CHAR)) {
@@ -249,18 +255,20 @@ public class ResourceManager {
         resourceEntries.clear();
     }
 
-    public static String resourceNameToClassName(String resourceName) {
+    @NonNull
+    public static String resourceNameToClassName(@NonNull String resourceName) {
         String className = resourceName.substring(0, resourceName.length() - CLASS_FILE_SUFFIX.length());
         className = className.replace(REGULAR_FILE_SEPARATOR_CHAR, PACKAGE_SEPARATOR_CHAR);
         return className;
     }
 
-    public static String classNameToResourceName(String className) {
+    @NonNull
+    public static String classNameToResourceName(@NonNull String className) {
         return className.replace(PACKAGE_SEPARATOR_CHAR, REGULAR_FILE_SEPARATOR_CHAR)
                 + CLASS_FILE_SUFFIX;
     }
 
-    public static String packageNameToResourceName(String packageName) {
+    public static String packageNameToResourceName(@NonNull String packageName) {
         String resourceName = packageName.replace(PACKAGE_SEPARATOR_CHAR, REGULAR_FILE_SEPARATOR_CHAR);
         if (StringUtils.endsWith(resourceName, REGULAR_FILE_SEPARATOR_CHAR)) {
             resourceName = resourceName.substring(0, resourceName.length() - 1);

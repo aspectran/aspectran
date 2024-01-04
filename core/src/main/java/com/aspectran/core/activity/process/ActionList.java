@@ -30,6 +30,7 @@ import com.aspectran.core.context.rule.IncludeActionRule;
 import com.aspectran.core.context.rule.InvokeActionRule;
 import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
 import com.aspectran.utils.ToStringBuilder;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.util.ArrayList;
 
@@ -48,7 +49,6 @@ public class ActionList extends ArrayList<Executable> implements ActionRuleAppli
 
     public ActionList(boolean explicit) {
         super(5);
-
         this.explicit = explicit;
     }
 
@@ -119,6 +119,7 @@ public class ActionList extends ArrayList<Executable> implements ActionRuleAppli
         return tsb.toString();
     }
 
+    @NonNull
     public static ActionList newInstance(String name) {
         ActionList actionList = new ActionList(true);
         actionList.setName(name);

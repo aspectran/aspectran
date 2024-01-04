@@ -17,6 +17,7 @@ package com.aspectran.core.activity.process.action;
 
 import com.aspectran.core.activity.process.ProcessException;
 import com.aspectran.core.context.rule.ParameterBindingRule;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 /**
  * This exception will be thrown when failing to bind the request parameter
@@ -30,13 +31,14 @@ public class ParameterBindingException extends ProcessException {
 
     private final ParameterBindingRule parameterBindingRule;
 
-    public ParameterBindingException(ParameterBindingRule parameterBindingRule, Throwable cause) {
+    public ParameterBindingException(@NonNull ParameterBindingRule parameterBindingRule, @NonNull Throwable cause) {
         super("Failed to bind request parameter to action method parameter " +
                 parameterBindingRule + "; nested exception is " + cause, cause);
 
         this.parameterBindingRule = parameterBindingRule;
     }
 
+    @NonNull
     public ParameterBindingRule getParameterBindingRule() {
         return parameterBindingRule;
     }

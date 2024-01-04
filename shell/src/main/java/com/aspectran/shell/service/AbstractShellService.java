@@ -167,7 +167,8 @@ public abstract class AbstractShellService extends AspectranCoreService implemen
     }
 
     protected void createSessionManager() {
-        Assert.state(this.sessionManager == null, "Session Manager is already exists for shell service");
+        Assert.state(this.sessionManager == null,
+                "Session Manager is already exists for shell service");
         ShellConfig shellConfig = getAspectranConfig().getShellConfig();
         if (shellConfig != null) {
             SessionManagerConfig sessionManagerConfig = shellConfig.getSessionManagerConfig();

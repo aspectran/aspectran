@@ -26,6 +26,7 @@ import com.aspectran.core.scheduler.service.QuartzSchedulerService;
 import com.aspectran.core.scheduler.service.SchedulerService;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.SystemUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 
@@ -108,12 +109,12 @@ public abstract class AbstractCoreService extends AbstractServiceController impl
     }
 
     @Override
-    public void joinDerivedService(CoreService coreService) {
+    public void joinDerivedService(@NonNull CoreService coreService) {
         super.joinDerivedService(coreService.getServiceController());
     }
 
     @Override
-    public void withdrawDerivedService(CoreService coreService) {
+    public void withdrawDerivedService(@NonNull CoreService coreService) {
         Assert.state(coreService.isDerived(), "Not derived service: " + coreService);
         Assert.state(!coreService.getServiceController().isActive(), "Not stopped service: " + coreService);
         super.withdrawDerivedService(coreService.getServiceController());

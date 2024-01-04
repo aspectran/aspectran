@@ -23,6 +23,7 @@ import com.aspectran.freemarker.directive.TrimDirectiveGroup;
 import com.aspectran.freemarker.directive.Trimmer;
 import com.aspectran.utils.PropertiesLoaderUtils;
 import com.aspectran.utils.ResourceUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.apon.Parameters;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
@@ -133,7 +134,7 @@ public class FreeMarkerConfigurationFactory implements ApplicationAdapterAware {
      * Set a List of Freemarker template loader paths.
      * @param templateLoaderPathList a List of Freemarker template loader paths
      */
-    public void setTemplateLoaderPath(List<String> templateLoaderPathList) {
+    public void setTemplateLoaderPath(@NonNull List<String> templateLoaderPathList) {
         this.templateLoaderPaths = templateLoaderPathList.toArray(new String[0]);
     }
 
@@ -157,7 +158,7 @@ public class FreeMarkerConfigurationFactory implements ApplicationAdapterAware {
      * Set a List of TemplateLoaders that will be used to search for templates.
      * @param templateLoaderList a List of TemplateLoaders
      */
-    public void setTemplateLoader(List<TemplateLoader> templateLoaderList) {
+    public void setTemplateLoader(@NonNull List<TemplateLoader> templateLoaderList) {
         this.templateLoaders = templateLoaderList.toArray(new TemplateLoader[0]);
     }
 
@@ -165,7 +166,7 @@ public class FreeMarkerConfigurationFactory implements ApplicationAdapterAware {
         this.trimDirectives = trimDirectives;
     }
 
-    public void setTrimDirectives(Parameters parameters) {
+    public void setTrimDirectives(@NonNull Parameters parameters) {
         String[] directiveGroupNames = parameters.getParameterNames();
         List<TrimDirective> list = new ArrayList<>();
 
@@ -320,7 +321,7 @@ public class FreeMarkerConfigurationFactory implements ApplicationAdapterAware {
      * @throws IOException if an I/O error has occurred
      * @see freemarker.cache.FileTemplateLoader
      */
-    protected TemplateLoader getTemplateLoaderForPath(String templateLoaderPath) throws IOException {
+    protected TemplateLoader getTemplateLoaderForPath(@NonNull String templateLoaderPath) throws IOException {
         if (templateLoaderPath.startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {
             String basePackagePath = templateLoaderPath.substring(ResourceUtils.CLASSPATH_URL_PREFIX.length());
             if (logger.isDebugEnabled()) {

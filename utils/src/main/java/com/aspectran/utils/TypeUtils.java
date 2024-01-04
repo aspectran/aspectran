@@ -15,6 +15,8 @@
  */
 package com.aspectran.utils;
 
+import com.aspectran.utils.annotation.jsr305.NonNull;
+
 import java.lang.reflect.Array;
 import java.util.HashMap;
 import java.util.Map;
@@ -76,7 +78,7 @@ public abstract class TypeUtils {
      * @param clazz the class to check
      * @return whether the given class is a primitive array class
      */
-    public static boolean isPrimitiveArray(Class<?> clazz) {
+    public static boolean isPrimitiveArray(@NonNull Class<?> clazz) {
         return (clazz.isArray() && clazz.getComponentType().isPrimitive());
     }
 
@@ -86,7 +88,7 @@ public abstract class TypeUtils {
      * @param clazz the class to check
      * @return whether the given class is a primitive wrapper array class
      */
-    public static boolean isPrimitiveWrapperArray(Class<?> clazz) {
+    public static boolean isPrimitiveWrapperArray(@NonNull Class<?> clazz) {
         return (clazz.isArray() && isPrimitiveWrapper(clazz.getComponentType()));
     }
 

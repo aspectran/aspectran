@@ -26,6 +26,7 @@ import com.aspectran.core.context.expr.ItemEvaluator;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.RedirectRule;
 import com.aspectran.core.context.rule.type.FormatType;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.web.support.util.SendRedirectBasedOnXForwardedProtocol;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -179,6 +180,7 @@ public class HttpServletResponseAdapter extends AbstractResponseAdapter {
         }
     }
 
+    @NonNull
     public static String makeRedirectPath(RedirectRule redirectRule, Activity activity) throws IOException {
         if (redirectRule == null) {
             throw new IllegalArgumentException("redirectRule must not be null");

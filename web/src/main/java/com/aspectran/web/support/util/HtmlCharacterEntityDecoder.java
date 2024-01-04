@@ -15,6 +15,8 @@
  */
 package com.aspectran.web.support.util;
 
+import com.aspectran.utils.annotation.jsr305.NonNull;
+
 /**
  * <p>This class is a clone of org.springframework.web.util.HtmlCharacterEntityDecoder</p>
  *
@@ -37,7 +39,7 @@ class HtmlCharacterEntityDecoder {
 
     private int nextSemicolonPosition = -2;
 
-    public HtmlCharacterEntityDecoder(HtmlCharacterEntityReferences characterEntityReferences, String original) {
+    public HtmlCharacterEntityDecoder(HtmlCharacterEntityReferences characterEntityReferences, @NonNull String original) {
         this.characterEntityReferences = characterEntityReferences;
         this.originalMessage = original;
         this.decodedMessage = new StringBuilder(original.length());
@@ -81,8 +83,7 @@ class HtmlCharacterEntityDecoder {
             }
 
             this.nextPotentialReferencePosition = this.nextPotentialReferencePosition + 1;
-        }
-        while (this.nextPotentialReferencePosition != -1);
+        } while (this.nextPotentialReferencePosition != -1);
     }
 
     private void copyCharactersTillPotentialReference() {
@@ -141,6 +142,7 @@ class HtmlCharacterEntityDecoder {
         return false;
     }
 
+    @NonNull
     private String getReferenceSubstring(int referenceOffset) {
         return this.originalMessage.substring(
                 this.nextPotentialReferencePosition + referenceOffset, this.nextSemicolonPosition);

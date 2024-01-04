@@ -21,6 +21,8 @@ import com.aspectran.shell.command.ShellCommandExecutionException;
 import com.aspectran.shell.command.option.Option;
 import com.aspectran.shell.command.option.ParsedOptions;
 import com.aspectran.shell.console.ShellConsole;
+import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 
 /**
  * Restarts the Aspectran Shell.
@@ -43,7 +45,7 @@ public class RestartCommand extends AbstractCommand {
     }
 
     @Override
-    public void execute(ParsedOptions options, ShellConsole console) throws Exception {
+    public void execute(@NonNull ParsedOptions options, ShellConsole console) throws Exception {
         if (options.hasOption("help")) {
             printHelp(console);
         } else if (console.confirmRestart()) {
@@ -78,11 +80,13 @@ public class RestartCommand extends AbstractCommand {
         }
 
         @Override
+        @NonNull
         public String getDescription() {
             return "Restarts the shell to reload all resources";
         }
 
         @Override
+        @Nullable
         public String getUsage() {
             return null;
         }

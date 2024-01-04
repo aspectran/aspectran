@@ -21,6 +21,8 @@ import com.aspectran.core.activity.InstantActivityException;
 import com.aspectran.core.component.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.BeanRule;
+import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 import javassist.util.proxy.MethodHandler;
 import javassist.util.proxy.ProxyFactory;
 
@@ -38,7 +40,7 @@ public class JavassistDynamicProxyBean extends AbstractDynamicProxyBean implemen
 
     private final BeanRule beanRule;
 
-    private JavassistDynamicProxyBean(ActivityContext context, BeanRule beanRule) {
+    private JavassistDynamicProxyBean(@NonNull ActivityContext context, BeanRule beanRule) {
         super(context.getAspectRuleRegistry());
         this.context = context;
         this.beanRule = beanRule;
@@ -62,7 +64,8 @@ public class JavassistDynamicProxyBean extends AbstractDynamicProxyBean implemen
         }
     }
 
-    private Object invoke(Object self, Method overridden, Method proceed, Object[] args, Activity activity)
+    @Nullable
+    private Object invoke(Object self, @NonNull Method overridden, Method proceed, Object[] args, Activity activity)
             throws Throwable {
         String beanId = beanRule.getId();
         String className = beanRule.getClassName();
@@ -88,7 +91,7 @@ public class JavassistDynamicProxyBean extends AbstractDynamicProxyBean implemen
         }
     }
 
-    private Object invokeSuper(Object self, Method proceed, Object[] args) throws Throwable {
+    private Object invokeSuper(Object self, @NonNull Method proceed, Object[] args) throws Throwable {
         try {
             return proceed.invoke(self, args);
         } catch (InvocationTargetException e) {

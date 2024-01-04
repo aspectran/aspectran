@@ -24,6 +24,7 @@ import com.aspectran.core.context.rule.type.TriggerType;
 import com.aspectran.core.service.AbstractServiceController;
 import com.aspectran.core.service.CoreService;
 import com.aspectran.utils.Assert;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 import org.quartz.CronScheduleBuilder;
@@ -224,7 +225,8 @@ public class QuartzSchedulerService extends AbstractServiceController implements
         return schedulerMap.get(scheduleId);
     }
 
-    private Scheduler buildScheduler(ScheduleRule scheduleRule) throws SchedulerException {
+    @NonNull
+    private Scheduler buildScheduler(@NonNull ScheduleRule scheduleRule) throws SchedulerException {
         Scheduler scheduler = null;
         if (scheduleRule.getSchedulerBeanClass() != null) {
             scheduler = (Scheduler)getActivityContext().getBeanRegistry().getBean(scheduleRule.getSchedulerBeanClass());
@@ -253,7 +255,7 @@ public class QuartzSchedulerService extends AbstractServiceController implements
         return scheduler;
     }
 
-    private JobDetail buildJobDetail(ScheduledJobRule jobRule) {
+    private JobDetail buildJobDetail(@NonNull ScheduledJobRule jobRule) {
         String jobName = jobRule.getTransletName();
         String jobGroup = jobRule.getScheduleRule().getId();
 
@@ -267,7 +269,7 @@ public class QuartzSchedulerService extends AbstractServiceController implements
                 .build();
     }
 
-    private Trigger buildTrigger(String name, String group, ScheduleRule scheduleRule) {
+    private Trigger buildTrigger(String name, String group, @NonNull ScheduleRule scheduleRule) {
         TriggerExpressionParameters expressionParameters = scheduleRule.getTriggerExpressionParameters();
         int startDelaySeconds = this.startDelaySeconds;
         if (expressionParameters.getStartDelaySeconds() != null) {

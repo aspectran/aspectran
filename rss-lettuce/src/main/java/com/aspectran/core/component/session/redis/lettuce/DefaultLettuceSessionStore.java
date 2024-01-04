@@ -16,6 +16,7 @@
 package com.aspectran.core.component.session.redis.lettuce;
 
 import com.aspectran.core.component.session.SessionData;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import io.lettuce.core.RedisConnectionException;
 import io.lettuce.core.ScanIterator;
 import io.lettuce.core.api.StatefulRedisConnection;
@@ -58,7 +59,7 @@ public class DefaultLettuceSessionStore extends AbstractLettuceSessionStore {
         }
     }
 
-    <R> R sync(Function<RedisCommands<String, SessionData>, R> func) {
+    <R> R sync(@NonNull Function<RedisCommands<String, SessionData>, R> func) {
         try (StatefulRedisConnection<String, SessionData> conn = getConnection()) {
             return func.apply(conn.sync());
         }

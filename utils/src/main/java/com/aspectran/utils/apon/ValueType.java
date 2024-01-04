@@ -15,6 +15,9 @@
  */
 package com.aspectran.utils.apon;
 
+import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.annotation.jsr305.Nullable;
+
 /**
  * Defines the type of the parameter value.
  *
@@ -49,6 +52,7 @@ public enum ValueType {
      * @param alias the specified String
      * @return the parameter value type
      */
+    @Nullable
     public static ValueType resolve(String alias) {
         for (ValueType type : values()) {
             if (type.alias.equals(alias)) {
@@ -58,7 +62,8 @@ public enum ValueType {
         return null;
     }
 
-    public static ValueType resolveByHint(String name) {
+    @Nullable
+    public static ValueType resolveByHint(@NonNull String name) {
         int hintStartIndex = name.indexOf(AponFormat.ROUND_BRACKET_OPEN);
         if (hintStartIndex > 0) {
             int hintEndIndex = name.indexOf(AponFormat.ROUND_BRACKET_CLOSE);
@@ -70,7 +75,8 @@ public enum ValueType {
         return null;
     }
 
-    public static String stripHint(String name) {
+    @NonNull
+    public static String stripHint(@NonNull String name) {
         int hintStartIndex = name.indexOf(AponFormat.ROUND_BRACKET_OPEN);
         if (hintStartIndex > 0) {
             return name.substring(0, hintStartIndex);

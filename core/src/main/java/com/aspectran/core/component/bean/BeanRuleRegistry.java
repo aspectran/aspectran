@@ -35,9 +35,11 @@ import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.assistant.ActivityRuleAssistant;
 import com.aspectran.core.context.rule.params.FilterParameters;
 import com.aspectran.core.context.rule.type.ScopeType;
+import com.aspectran.utils.Assert;
 import com.aspectran.utils.ClassUtils;
 import com.aspectran.utils.PrefixSuffixPattern;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 
@@ -98,6 +100,7 @@ public class BeanRuleRegistry {
     }
 
     public BeanRule[] getBeanRules(String name) throws ClassNotFoundException {
+        Assert.notNull(name, "name must not be null");
         if (name.startsWith(BeanRule.CLASS_DIRECTIVE_PREFIX)) {
             String className = name.substring(BeanRule.CLASS_DIRECTIVE_PREFIX.length());
             Class<?> type = classLoader.loadClass(className);
@@ -234,7 +237,8 @@ public class BeanRuleRegistry {
         }
     }
 
-    private BeanClassScanner createBeanClassScanner(BeanRule beanRule) throws IllegalRuleException {
+    @NonNull
+    private BeanClassScanner createBeanClassScanner(@NonNull BeanRule beanRule) throws IllegalRuleException {
         BeanClassScanner scanner = new BeanClassScanner(classLoader);
         if (beanRule.getFilterParameters() != null) {
             FilterParameters filterParameters = beanRule.getFilterParameters();
@@ -294,7 +298,7 @@ public class BeanRuleRegistry {
         idBasedBeanRuleMap.put(beanId, beanRule);
     }
 
-    private void saveBeanRule(Class<?> beanClass, BeanRule beanRule) throws BeanRuleException {
+    private void saveBeanRule(@NonNull Class<?> beanClass, @NonNull BeanRule beanRule) throws BeanRuleException {
         if (beanRule.getId() == null) {
             if (importantBeanTypeSet.contains(beanClass)) {
                 throw new BeanRuleException("Already exists a type-based bean that can not be overridden; Duplicated bean",
@@ -308,7 +312,8 @@ public class BeanRuleRegistry {
         set.add(beanRule);
     }
 
-    private void saveBeanRuleWithInterfaces(Class<?> beanClass, BeanRule beanRule) throws BeanRuleException {
+    private void saveBeanRuleWithInterfaces(@NonNull Class<?> beanClass, @NonNull BeanRule beanRule)
+            throws BeanRuleException {
         if (beanClass.isInterface()) {
             Class<?>[] ifcs = beanClass.getInterfaces();
             for (Class<?> ifc : ifcs) {
@@ -333,7 +338,7 @@ public class BeanRuleRegistry {
         }
     }
 
-    private void saveConfigurableBeanRule(BeanRule beanRule) throws BeanRuleException {
+    private void saveConfigurableBeanRule(@NonNull BeanRule beanRule) throws BeanRuleException {
         if (beanRule.getBeanClass() == null) {
             throw new BeanRuleException("No specified bean class", beanRule);
         }
@@ -341,9 +346,7 @@ public class BeanRuleRegistry {
     }
 
     public void addInnerBeanRule(BeanRule beanRule) throws BeanRuleException {
-        if (beanRule == null) {
-            throw new IllegalArgumentException("beanRule must not be null");
-        }
+        Assert.notNull(beanRule, "beanRule must not be null");
         if (!beanRule.isInnerBean()) {
             throw new BeanRuleException("Not an inner bean", beanRule);
         }
@@ -385,7 +388,7 @@ public class BeanRuleRegistry {
     private void parseAnnotatedConfig(ActivityRuleAssistant assistant) throws IllegalRuleException {
         AnnotatedConfigRelater relater = new AnnotatedConfigRelater() {
             @Override
-            public void relate(Class<?> targetBeanClass, BeanRule beanRule) throws IllegalRuleException {
+            public void relate(Class<?> targetBeanClass, @NonNull BeanRule beanRule) throws IllegalRuleException {
                 if (beanRule.getId() != null) {
                     saveBeanRule(beanRule.getId(), beanRule);
                 }
@@ -418,7 +421,7 @@ public class BeanRuleRegistry {
         parser.parse();
     }
 
-    private Class<?> resolveOfferedFactoryBeanClass(BeanRule beanRule) throws BeanRuleException {
+    private Class<?> resolveOfferedFactoryBeanClass(@NonNull BeanRule beanRule) throws BeanRuleException {
         BeanRule offeredFactoryBeanRule;
         if (beanRule.getFactoryBeanClass() == null) {
             offeredFactoryBeanRule = getBeanRule(beanRule.getFactoryBeanId());

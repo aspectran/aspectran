@@ -494,7 +494,7 @@ public class BeanUtils {
      * @return the type of the property
      * @throws NoSuchMethodException if an accessor method for this property cannot be found
      */
-    public static Class<?> getPropertyTypeForSetter(Object bean, String name) throws NoSuchMethodException {
+    public static Class<?> getPropertyTypeForSetter(@NonNull Object bean, String name) throws NoSuchMethodException {
         Class<?> type = bean.getClass();
         if (bean instanceof Class<?>) {
             type = getClassPropertyTypeForSetter((Class<?>)bean, name);
@@ -527,7 +527,7 @@ public class BeanUtils {
      * @return the type of the property
      * @throws NoSuchMethodException if an accessor method for this property cannot be found
      */
-    public static Class<?> getPropertyTypeForGetter(Object bean, String name) throws NoSuchMethodException {
+    public static Class<?> getPropertyTypeForGetter(@NonNull Object bean, String name) throws NoSuchMethodException {
         Class<?> type = bean.getClass();
         if (bean instanceof Class<?>) {
             type = getClassPropertyTypeForGetter((Class<?>)bean, name);
@@ -601,7 +601,7 @@ public class BeanUtils {
      * @param bean the bean
      * @return the readable properties
      */
-    public static String[] getReadablePropertyNames(Object bean) {
+    public static String[] getReadablePropertyNames(@NonNull Object bean) {
         return getBeanDescriptor(bean.getClass()).getReadablePropertyNames();
     }
 
@@ -611,7 +611,7 @@ public class BeanUtils {
      * @param bean the bean
      * @return the readable properties without non-serializable
      */
-    public static String[] getReadablePropertyNamesWithoutNonSerializable(Object bean) {
+    public static String[] getReadablePropertyNamesWithoutNonSerializable(@NonNull Object bean) {
         return getBeanDescriptor(bean.getClass()).getReadablePropertyNamesWithoutNonSerializable();
     }
 
@@ -620,7 +620,7 @@ public class BeanUtils {
      * @param bean the bean
      * @return the properties
      */
-    public static String[] getWritablePropertyNames(Object bean) {
+    public static String[] getWritablePropertyNames(@NonNull Object bean) {
         return getBeanDescriptor(bean.getClass()).getWritablePropertyNames();
     }
 

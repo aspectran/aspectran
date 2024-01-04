@@ -27,6 +27,7 @@ import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.ServiceStateListener;
 import com.aspectran.embed.activity.AspectranActivity;
 import com.aspectran.utils.Assert;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
@@ -190,6 +191,7 @@ public class DefaultEmbeddedAspectran extends AbstractEmbeddedAspectran {
      * @param aspectranConfig the parameters for aspectran configuration
      * @return the instance of {@code DefaultEmbeddedAspectran}
      */
+    @NonNull
     static DefaultEmbeddedAspectran create(AspectranConfig aspectranConfig) {
         DefaultEmbeddedAspectran aspectran = new DefaultEmbeddedAspectran();
         aspectran.prepare(aspectranConfig);
@@ -197,7 +199,7 @@ public class DefaultEmbeddedAspectran extends AbstractEmbeddedAspectran {
         return aspectran;
     }
 
-    private static void setServiceStateListener(final DefaultEmbeddedAspectran aspectran) {
+    private static void setServiceStateListener(@NonNull final DefaultEmbeddedAspectran aspectran) {
         aspectran.setServiceStateListener(new ServiceStateListener() {
             @Override
             public void started() {

@@ -16,6 +16,7 @@
 package com.aspectran.utils.apon;
 
 import com.aspectran.utils.ClassUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.json.JsonReader;
 
 import java.io.IOException;
@@ -29,16 +30,19 @@ import java.io.StringReader;
  */
 public class JsonToApon {
 
+    @NonNull
     public static Parameters from(String json) throws IOException {
         return from(json, new VariableParameters());
     }
 
+    @NonNull
     public static <T extends Parameters> T from(String json, Class<T> requiredType) throws IOException {
         T container = ClassUtils.createInstance(requiredType);
         from(json, container);
         return container;
     }
 
+    @NonNull
     public static <T extends Parameters> T from(String json, T container) throws IOException {
         if (json == null) {
             throw new IllegalArgumentException("json must not be null");
@@ -46,16 +50,19 @@ public class JsonToApon {
         return from(new StringReader(json), container);
     }
 
+    @NonNull
     public static Parameters from(Reader reader) throws IOException {
         return from(reader, new VariableParameters());
     }
 
+    @NonNull
     public static <T extends Parameters> T from(Reader reader, Class<T> requiredType) throws IOException {
         T container = ClassUtils.createInstance(requiredType);
         from(reader, container);
         return container;
     }
 
+    @NonNull
     public static <T extends Parameters> T from(Reader reader, T container) throws IOException {
         if (reader == null) {
             throw new IllegalArgumentException("reader must not be null");
@@ -75,7 +82,7 @@ public class JsonToApon {
         return container;
     }
 
-    private static void read(JsonReader reader, Parameters container, String name) throws IOException {
+    private static void read(@NonNull JsonReader reader, Parameters container, String name) throws IOException {
         switch (reader.peek()) {
             case BEGIN_OBJECT:
                 reader.beginObject();

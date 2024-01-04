@@ -27,6 +27,7 @@ import com.aspectran.core.context.rule.PointcutPatternRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.type.JoinpointTargetType;
 import com.aspectran.utils.BeanDescriptor;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.util.List;
 import java.util.Set;
@@ -40,7 +41,7 @@ public class AspectAdviceRulePreRegister {
 
     private boolean pointcutPatternVerifiable;
 
-    public AspectAdviceRulePreRegister(AspectRuleRegistry aspectRuleRegistry) {
+    public AspectAdviceRulePreRegister(@NonNull AspectRuleRegistry aspectRuleRegistry) {
         this.aspectRuleRegistry = aspectRuleRegistry;
 
         for (AspectRule aspectRule : aspectRuleRegistry.getAspectRules()) {
@@ -73,7 +74,7 @@ public class AspectAdviceRulePreRegister {
         this.pointcutPatternVerifiable = pointcutPatternVerifiable;
     }
 
-    public void register(BeanRuleRegistry beanRuleRegistry) {
+    public void register(@NonNull BeanRuleRegistry beanRuleRegistry) {
         for (BeanRule beanRule : beanRuleRegistry.getConfigurableBeanRules()) {
             if (beanRule.getProxied() == null && !beanRule.isFactoryable()) {
                 determineProxyBean(beanRule);
@@ -93,7 +94,7 @@ public class AspectAdviceRulePreRegister {
         }
     }
 
-    private void determineProxyBean(BeanRule beanRule) {
+    private void determineProxyBean(@NonNull BeanRule beanRule) {
         Class<?> beanClass = beanRule.getTargetBeanClass();
         if (beanClass.isAnnotationPresent(AvoidAdvice.class)) {
             beanRule.setProxied(false);
@@ -113,7 +114,7 @@ public class AspectAdviceRulePreRegister {
         }
     }
 
-    public void register(TransletRuleRegistry transletRuleRegistry) {
+    public void register(@NonNull TransletRuleRegistry transletRuleRegistry) {
         for (TransletRule transletRule : transletRuleRegistry.getTransletRules()) {
             if (!transletRule.hasPathVariables()) {
                 register(transletRule);
@@ -133,7 +134,7 @@ public class AspectAdviceRulePreRegister {
         }
     }
 
-    private boolean existsMatchedBean(Pointcut pointcut, BeanRule beanRule) {
+    private boolean existsMatchedBean(@NonNull Pointcut pointcut, BeanRule beanRule) {
         boolean exists = false;
         List<PointcutPatternRule> pointcutPatternRuleList = pointcut.getPointcutPatternRuleList();
         if (pointcutPatternRuleList != null) {
@@ -156,7 +157,7 @@ public class AspectAdviceRulePreRegister {
         return exists;
     }
 
-    private boolean existsBean(Pointcut pointcut, PointcutPatternRule pointcutPatternRule,
+    private boolean existsBean(Pointcut pointcut, @NonNull PointcutPatternRule pointcutPatternRule,
                                String beanId, String className, String[] methodNames) {
         boolean matched = true;
         PointcutPattern pp = pointcutPatternRule.getPointcutPattern();

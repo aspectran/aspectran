@@ -17,6 +17,7 @@ package com.aspectran.core.component.bean;
 
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 /**
  * The Class NoUniqueBeanException.
@@ -34,7 +35,7 @@ public class NoUniqueBeanException extends BeanException {
      * @param type the required type of the missing bean
      * @param beanRules the bean rules
      */
-    public NoUniqueBeanException(Class<?> type, BeanRule[] beanRules) {
+    public NoUniqueBeanException(Class<?> type, @NonNull BeanRule[] beanRules) {
         super("No qualifying bean of type '" + type + "' is defined: expected single matching bean but found " +
                 beanRules.length + ": [" + getBeanDescriptions(beanRules) + "]");
         this.type = type;
@@ -57,7 +58,7 @@ public class NoUniqueBeanException extends BeanException {
         return beanRules;
     }
 
-    public static String getBeanDescriptions(BeanRule[] beanRules) {
+    public static String getBeanDescriptions(@NonNull BeanRule[] beanRules) {
         String[] describes = new String[beanRules.length];
         for (int i = 0; i < describes.length; i++) {
             describes[i] = beanRules[i].toString();

@@ -15,6 +15,9 @@
  */
 package com.aspectran.utils.wildcard;
 
+import com.aspectran.utils.Assert;
+import com.aspectran.utils.annotation.jsr305.NonNull;
+
 import java.util.Objects;
 
 /**
@@ -70,6 +73,7 @@ public class WildcardPattern {
     }
 
     public WildcardPattern(String patternString, char separator) {
+        Assert.notNull(patternString, "patternString must not be null");
         this.patternString = patternString;
         this.separator = separator;
         this.tokens = patternString.toCharArray();
@@ -227,15 +231,17 @@ public class WildcardPattern {
         return patternString;
     }
 
+    @NonNull
     public static WildcardPattern compile(String patternString) {
         return new WildcardPattern(patternString);
     }
 
+    @NonNull
     public static WildcardPattern compile(String patternString, char separator) {
         return new WildcardPattern(patternString, separator);
     }
 
-    public static boolean hasWildcards(String str) {
+    public static boolean hasWildcards(@NonNull String str) {
         char[] ca = str.toCharArray();
         for (char c : ca) {
             if (c == STAR_CHAR

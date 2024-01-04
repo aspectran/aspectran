@@ -16,6 +16,7 @@
 package com.aspectran.core.component.bean.scope;
 
 import com.aspectran.core.context.rule.type.ScopeType;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 
 import java.util.concurrent.locks.ReadWriteLock;
 
@@ -41,6 +42,7 @@ public final class RequestScope extends AbstractScope {
     }
 
     @Override
+    @Nullable
     public ReadWriteLock getScopeLock() {
         return null;
     }

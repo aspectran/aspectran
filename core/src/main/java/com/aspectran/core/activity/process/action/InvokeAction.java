@@ -27,6 +27,7 @@ import com.aspectran.core.context.rule.type.ActionType;
 import com.aspectran.utils.BeanUtils;
 import com.aspectran.utils.MethodUtils;
 import com.aspectran.utils.ToStringBuilder;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 
@@ -176,7 +177,7 @@ public class InvokeAction implements Executable {
         return invokeMethod(bean, method, args);
     }
 
-    private static Object invokeMethod(Object bean, Method method, Object[] args) throws Exception {
+    private static Object invokeMethod(Object bean, @NonNull Method method, Object[] args) throws Exception {
         return method.invoke(bean, args);
     }
 
@@ -195,7 +196,6 @@ public class InvokeAction implements Executable {
             Map<String, Object> valueMap = evaluator.evaluate(argumentItemRuleMap);
             int argSize = argumentItemRuleMap.size();
             int argIndex;
-
             if (requiresTranslet) {
                 argIndex = 1;
                 argsTypes = new Class<?>[argSize + argIndex];
@@ -222,6 +222,7 @@ public class InvokeAction implements Executable {
         return MethodUtils.invokeMethod(bean, methodName, argsObjects, argsTypes);
     }
 
+    @NonNull
     private static Object[] createArguments(Activity activity, ItemRuleMap argumentItemRuleMap,
                                             ItemEvaluator evaluator, boolean requiresTranslet) {
         if (evaluator == null) {
@@ -239,14 +240,12 @@ public class InvokeAction implements Executable {
             index = 0;
             args = new Object[size];
         }
-
         Map<String, Object> valueMap = evaluator.evaluate(argumentItemRuleMap);
         for (String name : argumentItemRuleMap.keySet()) {
             Object o = valueMap.get(name);
             args[index] = o;
             index++;
         }
-
         return args;
     }
 

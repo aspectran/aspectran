@@ -15,6 +15,7 @@
  */
 package com.aspectran.utils;
 
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.wildcard.WildcardMatcher;
 import com.aspectran.utils.wildcard.WildcardPattern;
 
@@ -49,7 +50,7 @@ public class FileScanner {
         return scannedFiles;
     }
 
-    public void scan(String filePathPattern, final Map<String, File> scannedFiles) {
+    public void scan(String filePathPattern, @NonNull final Map<String, File> scannedFiles) {
         scan(filePathPattern, scannedFiles::put);
     }
 
@@ -65,7 +66,7 @@ public class FileScanner {
         StringBuilder sb = new StringBuilder();
         while (matcher.hasNext()) {
             String term = matcher.next();
-            if (term.length() > 0) {
+            if (!term.isEmpty()) {
                 if (!WildcardPattern.hasWildcards(term)) {
                     if (sb.length() > 0)
                         sb.append(REGULAR_FILE_SEPARATOR_CHAR);
@@ -88,11 +89,11 @@ public class FileScanner {
         return scannedFiles;
     }
 
-    public void scan(String basePath, String filePathPattern, final Map<String, File> scannedFiles) {
+    public void scan(String basePath, String filePathPattern, @NonNull final Map<String, File> scannedFiles) {
         scan(basePath, filePathPattern, scannedFiles::put);
     }
 
-    public void scan(String basePath, String filePathPattern, SaveHandler saveHandler) {
+    public void scan(@NonNull String basePath, String filePathPattern, SaveHandler saveHandler) {
         WildcardPattern pattern = WildcardPattern.compile(filePathPattern, REGULAR_FILE_SEPARATOR_CHAR);
         WildcardMatcher matcher = new WildcardMatcher(pattern);
         if (basePath.charAt(basePath.length() - 1) == REGULAR_FILE_SEPARATOR_CHAR) {

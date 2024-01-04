@@ -23,6 +23,7 @@ import com.aspectran.core.activity.response.transform.XmlTransformResponse;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.utils.Assert;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.apon.ObjectToAponConverter;
 import com.aspectran.utils.apon.Parameters;
 import com.aspectran.utils.json.JsonWriter;
@@ -146,7 +147,7 @@ public class DefaultRestResponse extends AbstractRestResponse {
         }
     }
 
-    private void toJSON(Activity activity, int indent) throws IOException {
+    private void toJSON(@NonNull Activity activity, int indent) throws IOException {
         RequestAdapter requestAdapter = activity.getRequestAdapter();
         ResponseAdapter responseAdapter = activity.getResponseAdapter();
         Writer writer = responseAdapter.getWriter();
@@ -255,7 +256,7 @@ public class DefaultRestResponse extends AbstractRestResponse {
         }
     }
 
-    private int parseIndent(MediaType contentType) {
+    private int parseIndent(@NonNull MediaType contentType) {
         try {
             String indent = contentType.getParameter("indent");
             if (indent != null) {

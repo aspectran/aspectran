@@ -90,6 +90,7 @@ public class OutputRedirection {
         return tsb.toString();
     }
 
+    @NonNull
     public static String serialize(Collection<OutputRedirection> redirectionList) {
         StringBuilder sb = new StringBuilder();
         if (redirectionList != null) {

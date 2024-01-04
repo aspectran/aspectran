@@ -26,6 +26,7 @@ import com.aspectran.undertow.server.resource.StaticResourceHandler;
 import com.aspectran.undertow.service.DefaultTowService;
 import com.aspectran.undertow.service.TowService;
 import com.aspectran.utils.Assert;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.lifecycle.LifeCycle;
 import io.undertow.server.HandlerWrapper;
 import io.undertow.server.HttpHandler;
@@ -166,7 +167,7 @@ public class HttpHybridHandlerFactory implements ActivityContextAware, Disposabl
         }
     }
 
-    private static HttpHandler wrapHandlers(HttpHandler wrapee, List<HandlerWrapper> wrappers) {
+    private static HttpHandler wrapHandlers(HttpHandler wrapee, @NonNull List<HandlerWrapper> wrappers) {
         HttpHandler current = wrapee;
         for (HandlerWrapper wrapper : wrappers) {
             current = wrapper.wrap(current);

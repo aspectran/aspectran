@@ -21,6 +21,8 @@ import com.aspectran.core.activity.InstantActivityException;
 import com.aspectran.core.component.aspect.AspectAdviceRuleRegistry;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.BeanRule;
+import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
@@ -60,7 +62,8 @@ public class CglibDynamicProxyBean extends AbstractDynamicProxyBean implements M
         }
     }
 
-    private Object intercept(Object proxy, Method method, Object[] args, MethodProxy methodProxy, Activity activity)
+    @Nullable
+    private Object intercept(Object proxy, @NonNull Method method, Object[] args, MethodProxy methodProxy, Activity activity)
             throws Throwable {
         String beanId = beanRule.getId();
         String className = beanRule.getClassName();
@@ -94,7 +97,8 @@ public class CglibDynamicProxyBean extends AbstractDynamicProxyBean implements M
      * @param argTypes the parameter types for a constructor
      * @return a new proxy bean object
      */
-    public static Object newInstance(ActivityContext context, BeanRule beanRule, Object[] args, Class<?>[] argTypes) {
+    public static Object newInstance(@NonNull ActivityContext context, @NonNull BeanRule beanRule,
+                                     Object[] args, Class<?>[] argTypes) {
         Enhancer enhancer = new Enhancer();
         enhancer.setClassLoader(context.getApplicationAdapter().getClassLoader());
         enhancer.setSuperclass(beanRule.getBeanClass());

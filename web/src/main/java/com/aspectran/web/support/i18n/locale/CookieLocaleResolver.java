@@ -19,6 +19,7 @@ import com.aspectran.core.activity.Translet;
 import com.aspectran.core.support.i18n.locale.AbstractLocaleResolver;
 import com.aspectran.core.support.i18n.locale.LocaleResolver;
 import com.aspectran.utils.LocaleUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
@@ -214,20 +215,20 @@ public class CookieLocaleResolver extends AbstractLocaleResolver {
     }
 
     @Override
-    public void setLocale(Translet translet, Locale locale) {
+    public void setLocale(@NonNull Translet translet, Locale locale) {
         translet.getRequestAdapter().setLocale(locale);
         HttpServletResponse response = translet.getResponseAdapter().getAdaptee();
         getLocaleCookieGenerator().addCookie(response, (locale != null ? toLocaleValue(locale) : ""));
     }
 
     @Override
-    public void setTimeZone(Translet translet, TimeZone timeZone) {
+    public void setTimeZone(@NonNull Translet translet, TimeZone timeZone) {
         translet.getRequestAdapter().setTimeZone(timeZone);
         HttpServletResponse response = translet.getResponseAdapter().getAdaptee();
         getTimeZoneCookieGenerator().addCookie(response, (timeZone != null ? timeZone.getID() : ""));
     }
 
-    private Locale parseLocaleCookie(Translet translet) {
+    private Locale parseLocaleCookie(@NonNull Translet translet) {
         Locale locale = null;
         String cookieName = getLocaleCookieGenerator().getCookieName();
         HttpServletRequest request = translet.getRequestAdapter().getAdaptee();
@@ -256,7 +257,7 @@ public class CookieLocaleResolver extends AbstractLocaleResolver {
         return locale;
     }
 
-    private TimeZone parseTimeZoneCookie(Translet translet) {
+    private TimeZone parseTimeZoneCookie(@NonNull Translet translet) {
         TimeZone timeZone = null;
         String cookieName = getTimeZoneCookieGenerator().getCookieName();
         HttpServletRequest request = translet.getRequestAdapter().getAdaptee();

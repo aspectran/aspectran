@@ -38,6 +38,7 @@ import com.aspectran.core.context.rule.type.ActionType;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 
@@ -78,7 +79,7 @@ public abstract class AdviceActivity extends AbstractActivity {
         super(context);
     }
 
-    protected void prepareAspectAdviceRule(TransletRule transletRule, String requestName) {
+    protected void prepareAspectAdviceRule(@NonNull TransletRule transletRule, String requestName) {
         AspectAdviceRuleRegistry aarr;
         if (transletRule.hasPathVariables()) {
             AspectAdviceRulePostRegister postRegister = new AspectAdviceRulePostRegister();
@@ -103,13 +104,8 @@ public abstract class AdviceActivity extends AbstractActivity {
         }
     }
 
-    @Override
-    public void registerSettingsAdviceRule(SettingsAdviceRule settingsAdviceRule) {
-        if (relevantAspectRules != null && relevantAspectRules.contains(settingsAdviceRule.getAspectRule())) {
-            return;
-        }
-        touchRelevantAspectRules().add(settingsAdviceRule.getAspectRule());
-        touchAspectAdviceRuleRegistry().addAspectAdviceRule(settingsAdviceRule);
+    protected void setCurrentAspectAdviceType(AspectAdviceType aspectAdviceType) {
+        this.currentAspectAdviceType = aspectAdviceType;
     }
 
     @Override
@@ -191,8 +187,13 @@ public abstract class AdviceActivity extends AbstractActivity {
         }
     }
 
-    protected void setCurrentAspectAdviceType(AspectAdviceType aspectAdviceType) {
-        this.currentAspectAdviceType = aspectAdviceType;
+    @Override
+    public void registerSettingsAdviceRule(SettingsAdviceRule settingsAdviceRule) {
+        if (relevantAspectRules != null && relevantAspectRules.contains(settingsAdviceRule.getAspectRule())) {
+            return;
+        }
+        touchRelevantAspectRules().add(settingsAdviceRule.getAspectRule());
+        touchAspectAdviceRuleRegistry().addAspectAdviceRule(settingsAdviceRule);
     }
 
     @Override
@@ -221,7 +222,8 @@ public abstract class AdviceActivity extends AbstractActivity {
     }
 
     @Override
-    public void executeAdvice(AspectAdviceRule aspectAdviceRule, boolean throwable) throws AspectAdviceException {
+    public void executeAdvice(@NonNull AspectAdviceRule aspectAdviceRule, boolean throwable)
+            throws AspectAdviceException {
         if (aspectAdviceRule.getAspectRule().isDisabled() || !isAcceptable(aspectAdviceRule.getAspectRule())) {
             touchExecutedAspectAdviceRules().add(aspectAdviceRule);
             return;
@@ -310,7 +312,7 @@ public abstract class AdviceActivity extends AbstractActivity {
         }
     }
 
-    private boolean isAcceptable(AspectRule aspectRule) {
+    private boolean isAcceptable(@NonNull AspectRule aspectRule) {
         if (aspectRule.getMethods() != null) {
             if (getTranslet() == null) {
                 return false;
@@ -455,6 +457,7 @@ public abstract class AdviceActivity extends AbstractActivity {
      * @param aspectId the aspect id
      * @return the aspect advice bean
      */
+    @Override
     @SuppressWarnings("unchecked")
     public <V> V getAspectAdviceBean(String aspectId) {
         return (aspectAdviceResult != null ? (V)aspectAdviceResult.getAspectAdviceBean(aspectId) : null);

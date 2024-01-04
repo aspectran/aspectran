@@ -19,6 +19,7 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.component.bean.BeanInstance;
 import com.aspectran.core.component.bean.ablility.DisposableBean;
 import com.aspectran.core.context.rule.BeanRule;
+import com.aspectran.utils.Assert;
 import com.aspectran.utils.MethodUtils;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
@@ -55,23 +56,15 @@ public abstract class AbstractScope implements Scope {
 
     @Override
     public void putBeanInstance(Activity activity, BeanRule beanRule, BeanInstance beanInstance) {
-        if (activity == null) {
-            throw new IllegalArgumentException("activity must not be null");
-        }
-        if (beanRule == null) {
-            throw new IllegalArgumentException("beanRule must not be null");
-        }
-        if (beanInstance == null) {
-            throw new IllegalArgumentException("beanInstance must not be null");
-        }
+        Assert.notNull(activity, "activity must not be null");
+        Assert.notNull(beanRule, "beanRule must not be null");
+        Assert.notNull(beanInstance, "beanInstance must not be null");
         scopedBeanInstances.put(beanRule, beanInstance);
     }
 
     @Override
     public BeanRule getBeanRuleByInstance(Object bean) {
-        if (bean == null) {
-            throw new IllegalArgumentException("bean must not be null");
-        }
+        Assert.notNull(bean, "bean must not be null");
         for (Map.Entry<BeanRule, BeanInstance> entry : scopedBeanInstances.entrySet()) {
             if (entry.getValue().getBean() == bean) {
                 return entry.getKey();

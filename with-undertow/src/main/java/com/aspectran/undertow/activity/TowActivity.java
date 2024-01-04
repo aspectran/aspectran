@@ -30,6 +30,7 @@ import com.aspectran.undertow.adapter.TowResponseAdapter;
 import com.aspectran.undertow.adapter.TowSessionAdapter;
 import com.aspectran.undertow.service.TowService;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.web.activity.request.MultipartFormDataParser;
 import com.aspectran.web.activity.request.MultipartRequestParseException;
 import com.aspectran.web.activity.request.WebRequestBodyParser;
@@ -59,7 +60,7 @@ public class TowActivity extends CoreActivity {
      * @param service the tow service
      * @param exchange the adaptee object
      */
-    public TowActivity(TowService service, HttpServerExchange exchange) {
+    public TowActivity(@NonNull TowService service, HttpServerExchange exchange) {
         super(service.getActivityContext());
         this.exchange = exchange;
     }

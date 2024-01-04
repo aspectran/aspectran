@@ -17,6 +17,7 @@ package com.aspectran.core.activity.request;
 
 import com.aspectran.utils.ClassUtils;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.utils.apon.Parameters;
 
 /**
@@ -29,6 +30,7 @@ public class RequestBodyParser {
     private RequestBodyParser() {
     }
 
+    @Nullable
     public static <T extends Parameters> T parseBodyAsParameters(String body, Class<T> requiredType)
             throws RequestParseException {
         if (StringUtils.isEmpty(body)) {

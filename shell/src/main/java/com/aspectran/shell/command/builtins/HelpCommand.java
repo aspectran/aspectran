@@ -24,6 +24,8 @@ import com.aspectran.shell.command.option.Option;
 import com.aspectran.shell.command.option.OptionUtils;
 import com.aspectran.shell.command.option.ParsedOptions;
 import com.aspectran.shell.console.ShellConsole;
+import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 
 import java.util.Comparator;
 import java.util.LinkedList;
@@ -54,7 +56,7 @@ public class HelpCommand extends AbstractCommand {
     }
 
     @Override
-    public void execute(ParsedOptions options, ShellConsole console) throws Exception {
+    public void execute(@NonNull ParsedOptions options, ShellConsole console) throws Exception {
         if (options.hasOption("help")) {
             printHelp(console);
             return;
@@ -135,7 +137,7 @@ public class HelpCommand extends AbstractCommand {
         return max;
     }
 
-    private boolean contains(String commandName, String[] filteredCommands) {
+    private boolean contains(String commandName, @NonNull String[] filteredCommands) {
         for (String target : filteredCommands) {
             if (commandName.equals(target)) {
                 return true;
@@ -144,7 +146,8 @@ public class HelpCommand extends AbstractCommand {
         return false;
     }
 
-    private String renderCommand(Command command, int lineWidth, int commandWidth, String leftPad, String descPad) {
+    private String renderCommand(@NonNull Command command, int lineWidth, int commandWidth,
+                                 String leftPad, String descPad) {
         String name = command.getDescriptor().getName();
         String desc = command.getDescriptor().getDescription();
 
@@ -176,11 +179,13 @@ public class HelpCommand extends AbstractCommand {
         }
 
         @Override
+        @NonNull
         public String getDescription() {
             return "Display helpful information or command specific help";
         }
 
         @Override
+        @Nullable
         public String getUsage() {
             return "help [-h] [<commands>]";
         }

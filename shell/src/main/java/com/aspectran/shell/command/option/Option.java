@@ -15,6 +15,8 @@
  */
 package com.aspectran.shell.command.option;
 
+import com.aspectran.utils.annotation.jsr305.NonNull;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -80,7 +82,7 @@ public class Option implements Cloneable, Serializable {
      * Private constructor used by the nested Builder class.
      * @param builder builder used to create this option
      */
-    private Option(Builder builder) {
+    private Option(@NonNull Builder builder) {
         this.name = builder.name;
         this.longName = builder.longName;
         this.valueName = builder.valueName;
@@ -219,7 +221,7 @@ public class Option implements Cloneable, Serializable {
      * @return if the display name for the argument value has been set
      */
     public boolean hasValueName() {
-        return (valueName != null && valueName.length() > 0);
+        return (valueName != null && !valueName.isEmpty());
     }
 
     /**
@@ -525,6 +527,7 @@ public class Option implements Cloneable, Serializable {
      * methods.
      * @return a new {@link Builder} instance
      */
+    @NonNull
     public static Builder builder() {
         return builder(null);
     }
@@ -534,8 +537,9 @@ public class Option implements Cloneable, Serializable {
      * methods.
      * @param name short representation of the option
      * @return a new {@link Builder} instance
-     * @throws IllegalArgumentException if there are any non valid Option characters in {@code name}
+     * @throws IllegalArgumentException if there are any non-valid Option characters in {@code name}
      */
+    @NonNull
     public static Builder builder(String name) {
         return new Builder(name);
     }
@@ -710,6 +714,7 @@ public class Option implements Cloneable, Serializable {
          * @return the new {@link Option}
          * @throws IllegalArgumentException if neither {@code name} or {@code longName} has been set
          */
+        @NonNull
         public Option build() {
             if (name == null && longName == null) {
                 throw new IllegalArgumentException("Either name or longName must be specified");

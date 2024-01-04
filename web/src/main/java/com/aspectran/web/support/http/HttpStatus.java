@@ -15,6 +15,8 @@
  */
 package com.aspectran.web.support.http;
 
+import com.aspectran.utils.annotation.jsr305.NonNull;
+
 /**
  * Enumeration of HTTP status codes.
  *
@@ -379,6 +381,7 @@ public enum HttpStatus {
      * @return a string representation of this status code
      */
     @Override
+    @NonNull
     public String toString() {
         return Integer.toString(this.value);
     }
@@ -389,6 +392,7 @@ public enum HttpStatus {
      * @return the enum constant with the specified numeric value
      * @throws IllegalArgumentException if this enum has no constant for the specified numeric value
      */
+    @NonNull
     public static HttpStatus valueOf(int statusCode) {
         for (HttpStatus status : values()) {
             if (status.value == statusCode) {

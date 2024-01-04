@@ -21,6 +21,7 @@ import com.aspectran.core.context.rule.type.BeanRefererType;
 import com.aspectran.core.context.rule.type.TokenDirectiveType;
 import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.utils.ToStringBuilder;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -351,7 +352,7 @@ public class Token implements BeanReferenceable, Replicable<Token> {
         return (this == token || (token instanceof Token && deepEquals((Token)token)));
     }
 
-    private boolean deepEquals(Token token) {
+    private boolean deepEquals(@NonNull Token token) {
         if (type != token.getType()) {
             return false;
         }
@@ -453,7 +454,7 @@ public class Token implements BeanReferenceable, Replicable<Token> {
                 || c == PROPERTY_SYMBOL);
     }
 
-    public static boolean hasToken(String expression) {
+    public static boolean hasToken(@NonNull String expression) {
         char[] ca = expression.toCharArray();
         boolean open = false;
         for (int i = 1; i < ca.length; i++) {

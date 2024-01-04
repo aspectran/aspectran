@@ -17,6 +17,7 @@ package com.aspectran.core.component.session;
 
 import com.aspectran.core.component.AbstractComponent;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 import com.aspectran.utils.thread.AutoLock;
@@ -227,6 +228,7 @@ public abstract class AbstractSessionCache extends AbstractComponent implements 
      * @return a Session object filled with data or null if the session doesn't exist
      * @throws Exception if the session can not be loaded
      */
+    @Nullable
     private DefaultSession loadSession(String id) throws Exception {
         if (sessionStore == null) {
             return null; // can't load it

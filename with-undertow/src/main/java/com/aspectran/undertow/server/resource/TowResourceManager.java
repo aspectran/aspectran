@@ -18,6 +18,7 @@ package com.aspectran.undertow.server.resource;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.component.bean.aware.ApplicationAdapterAware;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import io.undertow.server.handlers.resource.PathResourceManager;
 
 import java.io.File;
@@ -47,11 +48,13 @@ public class TowResourceManager extends PathResourceManager implements Applicati
         this(base, transferMinSize, true, followLinks, safePaths);
     }
 
-    protected TowResourceManager(long transferMinSize, boolean caseSensitive, boolean followLinks, String... safePaths) {
+    protected TowResourceManager(long transferMinSize, boolean caseSensitive,
+                                 boolean followLinks, String... safePaths) {
         super(transferMinSize, caseSensitive, followLinks, safePaths);
     }
 
-    public TowResourceManager(File base, long transferMinSize, boolean caseSensitive, boolean followLinks, String... safePaths) {
+    public TowResourceManager(@NonNull File base, long transferMinSize, boolean caseSensitive,
+                              boolean followLinks, String... safePaths) {
         super(base.toPath(), transferMinSize, caseSensitive, followLinks, safePaths);
     }
 

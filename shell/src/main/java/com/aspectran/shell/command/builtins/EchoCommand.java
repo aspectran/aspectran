@@ -21,6 +21,8 @@ import com.aspectran.shell.command.option.Arguments;
 import com.aspectran.shell.command.option.Option;
 import com.aspectran.shell.command.option.ParsedOptions;
 import com.aspectran.shell.console.ShellConsole;
+import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 
 /**
  * Displays a message on the screen.
@@ -47,7 +49,7 @@ public class EchoCommand extends AbstractCommand {
     }
 
     @Override
-    public void execute(ParsedOptions options, ShellConsole console) throws Exception {
+    public void execute(@NonNull ParsedOptions options, ShellConsole console) throws Exception {
         if (options.hasOption("help")) {
             printHelp(console);
         } else {
@@ -74,11 +76,13 @@ public class EchoCommand extends AbstractCommand {
         }
 
         @Override
+        @NonNull
         public String getDescription() {
             return "Displays a message on the screen";
         }
 
         @Override
+        @Nullable
         public String getUsage() {
             return null;
         }

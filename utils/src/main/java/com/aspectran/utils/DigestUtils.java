@@ -15,6 +15,8 @@
  */
 package com.aspectran.utils;
 
+import com.aspectran.utils.annotation.jsr305.NonNull;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.MessageDigest;
@@ -66,6 +68,7 @@ public abstract class DigestUtils {
      * @param bytes the bytes to calculate the digest over
      * @return a hexadecimal digest string
      */
+    @NonNull
     public static String md5DigestAsHex(byte[] bytes) {
         return digestAsHexString(MD5_ALGORITHM_NAME, bytes);
     }
@@ -76,6 +79,7 @@ public abstract class DigestUtils {
      * @param inputStream the InputStream to calculate the digest over
      * @return a hexadecimal digest string
      */
+    @NonNull
     public static String md5DigestAsHex(InputStream inputStream) throws IOException {
         return digestAsHexString(MD5_ALGORITHM_NAME, inputStream);
     }
@@ -87,6 +91,7 @@ public abstract class DigestUtils {
      * @param builder the string builder to append the digest to
      * @return the given string builder
      */
+    @NonNull
     public static StringBuilder appendMd5DigestAsHex(byte[] bytes, StringBuilder builder) {
         return appendDigestAsHex(MD5_ALGORITHM_NAME, bytes, builder);
     }
@@ -99,6 +104,7 @@ public abstract class DigestUtils {
      * @param builder the string builder to append the digest to
      * @return the given string builder
      */
+    @NonNull
     public static StringBuilder appendMd5DigestAsHex(InputStream inputStream, StringBuilder builder) throws IOException {
         return appendDigestAsHex(MD5_ALGORITHM_NAME, inputStream, builder);
     }
@@ -119,7 +125,7 @@ public abstract class DigestUtils {
         return getDigest(algorithm).digest(bytes);
     }
 
-    private static byte[] digest(String algorithm, InputStream inputStream) throws IOException {
+    private static byte[] digest(@NonNull String algorithm, @NonNull InputStream inputStream) throws IOException {
         MessageDigest messageDigest = getDigest(algorithm);
         final byte[] buffer = new byte[BUFFER_SIZE];
         int bytesRead;
@@ -129,38 +135,48 @@ public abstract class DigestUtils {
         return messageDigest.digest();
     }
 
-    private static String digestAsHexString(String algorithm, byte[] bytes) {
+    @NonNull
+    private static String digestAsHexString(@NonNull String algorithm, @NonNull byte[] bytes) {
         char[] hexDigest = digestAsHexChars(algorithm, bytes);
         return new String(hexDigest);
     }
 
-    private static String digestAsHexString(String algorithm, InputStream inputStream) throws IOException {
+    @NonNull
+    private static String digestAsHexString(@NonNull String algorithm, @NonNull InputStream inputStream)
+            throws IOException {
         char[] hexDigest = digestAsHexChars(algorithm, inputStream);
         return new String(hexDigest);
     }
 
-    private static StringBuilder appendDigestAsHex(String algorithm, byte[] bytes, StringBuilder builder) {
+    @NonNull
+    private static StringBuilder appendDigestAsHex(@NonNull String algorithm, @NonNull byte[] bytes,
+                                                   @NonNull StringBuilder builder) {
         char[] hexDigest = digestAsHexChars(algorithm, bytes);
         return builder.append(hexDigest);
     }
 
-    private static StringBuilder appendDigestAsHex(String algorithm, InputStream inputStream, StringBuilder builder)
+    @NonNull
+    private static StringBuilder appendDigestAsHex(@NonNull String algorithm, @NonNull InputStream inputStream,
+                                                   @NonNull StringBuilder builder)
             throws IOException {
         char[] hexDigest = digestAsHexChars(algorithm, inputStream);
         return builder.append(hexDigest);
     }
 
-    private static char[] digestAsHexChars(String algorithm, byte[] bytes) {
+    @NonNull
+    private static char[] digestAsHexChars(@NonNull String algorithm, @NonNull byte[] bytes) {
         byte[] digest = digest(algorithm, bytes);
         return encodeHex(digest);
     }
 
-    private static char[] digestAsHexChars(String algorithm, InputStream inputStream) throws IOException {
+    @NonNull
+    private static char[] digestAsHexChars(@NonNull String algorithm, @NonNull InputStream inputStream) throws IOException {
         byte[] digest = digest(algorithm, inputStream);
         return encodeHex(digest);
     }
 
-    private static char[] encodeHex(byte[] bytes) {
+    @NonNull
+    private static char[] encodeHex(@NonNull byte[] bytes) {
         char[] chars = new char[32];
         for (int i = 0; i < chars.length; i = i + 2) {
             byte b = bytes[i / 2];

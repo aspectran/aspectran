@@ -18,6 +18,7 @@ package com.aspectran.web.support.tags;
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.utils.Assert;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
@@ -82,7 +83,7 @@ public abstract class CurrentActivityAwareTag extends TagSupport implements TryC
     protected abstract int doStartTagInternal() throws Exception;
 
     @Override
-    public void doCatch(Throwable throwable) throws Throwable {
+    public void doCatch(@NonNull Throwable throwable) throws Throwable {
         throw throwable;
     }
 

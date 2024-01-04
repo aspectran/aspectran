@@ -15,6 +15,8 @@
  */
 package com.aspectran.web.support.http;
 
+import com.aspectran.utils.annotation.jsr305.NonNull;
+
 /**
  * Exception thrown from {@link MediaTypeUtils#parseMediaType(String)} in case of
  * encountering an invalid content type specification String.
@@ -23,6 +25,8 @@ package com.aspectran.web.support.http;
  */
 public class InvalidMediaTypeException extends IllegalArgumentException {
 
+    private static final long serialVersionUID = 3663041808275315715L;
+
     private final String mediaType;
 
     /**
@@ -30,7 +34,7 @@ public class InvalidMediaTypeException extends IllegalArgumentException {
      * @param mediaType the offending media type
      * @param message   a detail message indicating the invalid part
      */
-    public InvalidMediaTypeException(String mediaType, String message) {
+    public InvalidMediaTypeException(@NonNull String mediaType, String message) {
         super("Invalid media type \"" + mediaType + "\": " + message);
         this.mediaType = mediaType;
     }
@@ -39,6 +43,7 @@ public class InvalidMediaTypeException extends IllegalArgumentException {
      * Return the offending media type.
      * @return the media type
      */
+    @NonNull
     public String getMediaType() {
         return this.mediaType;
     }

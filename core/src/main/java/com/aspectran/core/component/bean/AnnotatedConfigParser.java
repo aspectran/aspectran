@@ -88,6 +88,8 @@ import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.context.rule.type.ScopeType;
 import com.aspectran.core.util.Namespace;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 
@@ -118,7 +120,7 @@ public class AnnotatedConfigParser {
 
     private final AnnotatedConfigRelater configRelater;
 
-    public AnnotatedConfigParser(ActivityRuleAssistant assistant, AnnotatedConfigRelater configRelater) {
+    public AnnotatedConfigParser(@NonNull ActivityRuleAssistant assistant, AnnotatedConfigRelater configRelater) {
         this.environmentProfiles = assistant.getEnvironmentProfiles();
         this.idBasedBeanRuleMap = assistant.getBeanRuleRegistry().getIdBasedBeanRuleMap();
         this.typeBasedBeanRuleMap = assistant.getBeanRuleRegistry().getTypeBasedBeanRuleMap();
@@ -187,7 +189,7 @@ public class AnnotatedConfigParser {
         }
     }
 
-    private void parseConfigurableBean(BeanRule beanRule) throws IllegalRuleException {
+    private void parseConfigurableBean(@NonNull BeanRule beanRule) throws IllegalRuleException {
         Class<?> beanClass = beanRule.getBeanClass();
         Component componentAnno = beanClass.getAnnotation(Component.class);
         if (componentAnno != null) {
@@ -230,7 +232,7 @@ public class AnnotatedConfigParser {
         }
     }
 
-    private void parseConstructorAutowire(BeanRule beanRule) throws IllegalRuleException {
+    private void parseConstructorAutowire(@NonNull BeanRule beanRule) throws IllegalRuleException {
         if (beanRule.isConstructorAutowireParsed()) {
             return;
         } else {
@@ -262,7 +264,7 @@ public class AnnotatedConfigParser {
         }
     }
 
-    private void parseFieldAutowire(BeanRule beanRule) throws IllegalRuleException {
+    private void parseFieldAutowire(@NonNull BeanRule beanRule) throws IllegalRuleException {
         if (beanRule.isFieldAutowireParsed()) {
             return;
         } else {
@@ -287,7 +289,7 @@ public class AnnotatedConfigParser {
         }
     }
 
-    private void parseMethodAutowire(BeanRule beanRule) throws IllegalRuleException {
+    private void parseMethodAutowire(@NonNull BeanRule beanRule) throws IllegalRuleException {
         if (beanRule.isMethodAutowireParsed()) {
             return;
         } else {
@@ -319,7 +321,7 @@ public class AnnotatedConfigParser {
         }
     }
 
-    private void parseAspectRule(Class<?> beanClass, String[] nameArray) throws IllegalRuleException {
+    private void parseAspectRule(@NonNull Class<?> beanClass, String[] nameArray) throws IllegalRuleException {
         Aspect aspectAnno = beanClass.getAnnotation(Aspect.class);
         String aspectId = StringUtils.emptyToNull(aspectAnno.value());
         if (aspectId == null) {
@@ -414,7 +416,7 @@ public class AnnotatedConfigParser {
         configRelater.relate(aspectRule);
     }
 
-    private void parseBeanRule(BeanRule beanRule, String[] nameArray) throws IllegalRuleException {
+    private void parseBeanRule(@NonNull BeanRule beanRule, String[] nameArray) throws IllegalRuleException {
         Class<?> beanClass = beanRule.getBeanClass();
         Bean beanAnno = beanClass.getAnnotation(Bean.class);
         String beanId = StringUtils.emptyToNull(beanAnno.value());
@@ -457,7 +459,7 @@ public class AnnotatedConfigParser {
         configRelater.relate(targetBeanClass, beanRule);
     }
 
-    private void parseFactoryBeanRule(Class<?> beanClass, Method method, String[] nameArray)
+    private void parseFactoryBeanRule(@NonNull Class<?> beanClass, @NonNull Method method, String[] nameArray)
             throws IllegalRuleException {
         Bean beanAnno = method.getAnnotation(Bean.class);
         String beanId = StringUtils.emptyToNull(beanAnno.value());
@@ -510,7 +512,7 @@ public class AnnotatedConfigParser {
         configRelater.relate(targetBeanClass, beanRule);
     }
 
-    private void parseScheduleRule(BeanRule beanRule, String[] nameArray) throws IllegalRuleException {
+    private void parseScheduleRule(@NonNull BeanRule beanRule, String[] nameArray) throws IllegalRuleException {
         Class<?> beanClass = beanRule.getBeanClass();
         Schedule scheduleAnno = beanClass.getAnnotation(Schedule.class);
         String scheduleId = StringUtils.emptyToNull(scheduleAnno.id());
@@ -557,7 +559,7 @@ public class AnnotatedConfigParser {
         configRelater.relate(scheduleRule);
     }
 
-    private void parseTransletRule(Class<?> beanClass, Method method, String[] nameArray)
+    private void parseTransletRule(@NonNull Class<?> beanClass, @NonNull Method method, String[] nameArray)
             throws IllegalRuleException {
         Request requestAnno = method.getAnnotation(Request.class);
         RequestToGet requestToGetAnno = method.getAnnotation(RequestToGet.class);
@@ -698,7 +700,8 @@ public class AnnotatedConfigParser {
         configRelater.relate(transletRule);
     }
 
-    private TransformRule parseTransformRule(Transform transformAnno) {
+    @NonNull
+    private TransformRule parseTransformRule(@NonNull Transform transformAnno) {
         FormatType formatType = transformAnno.value();
         if (formatType == FormatType.NONE) {
             formatType = transformAnno.format();
@@ -712,7 +715,8 @@ public class AnnotatedConfigParser {
         return transformRule;
     }
 
-    private DispatchRule parseDispatchRule(Dispatch dispatchAnno) throws IllegalRuleException {
+    @NonNull
+    private DispatchRule parseDispatchRule(@NonNull Dispatch dispatchAnno) throws IllegalRuleException {
         String name = StringUtils.emptyToNull(dispatchAnno.value());
         if (name == null) {
             name = StringUtils.emptyToNull(dispatchAnno.name());
@@ -723,7 +727,8 @@ public class AnnotatedConfigParser {
         return DispatchRule.newInstance(name, dispatcher, contentType, encoding);
     }
 
-    private ForwardRule parseForwardRule(Forward forwardAnno) throws IllegalRuleException {
+    @NonNull
+    private ForwardRule parseForwardRule(@NonNull Forward forwardAnno) throws IllegalRuleException {
         String translet = StringUtils.emptyToNull(forwardAnno.value());
         if (translet == null) {
             translet = StringUtils.emptyToNull(forwardAnno.translet());
@@ -743,7 +748,8 @@ public class AnnotatedConfigParser {
         return forwardRule;
     }
 
-    private RedirectRule parseRedirectRule(Redirect redirectAnno) throws IllegalRuleException {
+    @NonNull
+    private RedirectRule parseRedirectRule(@NonNull Redirect redirectAnno) throws IllegalRuleException {
         String path = StringUtils.emptyToNull(redirectAnno.value());
         if (path == null) {
             path = StringUtils.emptyToNull(redirectAnno.path());
@@ -775,7 +781,9 @@ public class AnnotatedConfigParser {
         return null;
     }
 
-    private AutowireRule createAutowireRuleForConstructor(Constructor<?> constructor) throws IllegalRuleException {
+    @Nullable
+    private AutowireRule createAutowireRuleForConstructor(@NonNull Constructor<?> constructor)
+            throws IllegalRuleException {
         java.lang.reflect.Parameter[] params = constructor.getParameters();
         if (params.length == 0) {
             return null;
@@ -816,7 +824,8 @@ public class AnnotatedConfigParser {
         return autowireRule;
     }
 
-    private AutowireRule createAutowireRuleForField(Field field) throws IllegalRuleException {
+    @NonNull
+    private AutowireRule createAutowireRuleForField(@NonNull Field field) throws IllegalRuleException {
         AutowireTargetRule autowireTargetRule = AutowireTargetRule.newInstance();
         autowireTargetRule.setType(field.getType());
         Value ValueAnno = field.getAnnotation(Value.class);
@@ -846,7 +855,8 @@ public class AnnotatedConfigParser {
         return autowireRule;
     }
 
-    private AutowireRule createAutowireRuleForFieldValue(Field field) throws IllegalRuleException {
+    @Nullable
+    private AutowireRule createAutowireRuleForFieldValue(@NonNull Field field) throws IllegalRuleException {
         Value valueAnno = field.getAnnotation(Value.class);
         if (valueAnno != null) {
             String expression = StringUtils.emptyToNull(valueAnno.value());
@@ -868,7 +878,8 @@ public class AnnotatedConfigParser {
         return null;
     }
 
-    private AutowireRule createAutowireRuleForMethod(Method method) throws IllegalRuleException {
+    @Nullable
+    private AutowireRule createAutowireRuleForMethod(@NonNull Method method) throws IllegalRuleException {
         java.lang.reflect.Parameter[] params = method.getParameters();
         if (params.length == 0) {
             return null;
@@ -918,6 +929,7 @@ public class AnnotatedConfigParser {
         return autowireRule;
     }
 
+    @NonNull
     private AnnotatedAction createAnnotatedMethodAction(String actionId, Class<?> beanClass, Method method) {
         AnnotatedActionRule annotatedActionRule = new AnnotatedActionRule();
         annotatedActionRule.setActionId(actionId);
@@ -927,7 +939,8 @@ public class AnnotatedConfigParser {
         return new AnnotatedAction(annotatedActionRule);
     }
 
-    static ParameterBindingRule[] createParameterBindingRules(Method method) {
+    @Nullable
+    static ParameterBindingRule[] createParameterBindingRules(@NonNull Method method) {
         java.lang.reflect.Parameter[] params = method.getParameters();
         if (params.length == 0) {
             return null;

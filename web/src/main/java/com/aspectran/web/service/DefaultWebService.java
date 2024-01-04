@@ -32,10 +32,12 @@ import com.aspectran.core.service.AspectranCoreService;
 import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.CoreService;
 import com.aspectran.core.service.ServiceStateListener;
+import com.aspectran.utils.Assert;
 import com.aspectran.utils.ExceptionUtils;
 import com.aspectran.utils.ObjectUtils;
 import com.aspectran.utils.ResourceUtils;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.apon.AponParseException;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
@@ -188,7 +190,7 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
         }
     }
 
-    private void asyncPerform(HttpServletRequest request, HttpServletResponse response,
+    private void asyncPerform(@NonNull HttpServletRequest request, HttpServletResponse response,
                               String requestUri, MethodType requestMethod, TransletRule transletRule) {
         final AsyncContext asyncContext;
         if (request.isAsyncStarted()) {
@@ -295,7 +297,8 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
         }
     }
 
-    private String getRequestInfo(HttpServletRequest request) {
+    @NonNull
+    private String getRequestInfo(@NonNull HttpServletRequest request) {
         StringBuilder sb = new StringBuilder();
         sb.append(request.getMethod()).append(" ");
         sb.append(request.getRequestURI()).append(" ");
@@ -318,7 +321,8 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
      * @param servletContext the servlet context
      * @return the instance of {@code DefaultWebService}
      */
-    public static DefaultWebService create(ServletContext servletContext) {
+    @NonNull public static DefaultWebService create(ServletContext servletContext) {
+        Assert.notNull(servletContext, "servletContext must not be null");
         String aspectranConfigParam = servletContext.getInitParameter(ASPECTRAN_CONFIG_PARAM);
         if (aspectranConfigParam == null) {
             logger.warn("No specified servlet context initialization parameter for instantiating WebService");
@@ -342,7 +346,10 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
      * @param rootService the root service
      * @return the instance of {@code DefaultWebService}
      */
+    @NonNull
     public static DefaultWebService create(ServletContext servletContext, CoreService rootService) {
+        Assert.notNull(servletContext, "servletContext must not be null");
+        Assert.notNull(rootService, "rootService must not be null");
         DefaultWebService webService = new DefaultWebService(servletContext, rootService);
         AspectranConfig aspectranConfig = rootService.getAspectranConfig();
         if (aspectranConfig != null) {
@@ -371,7 +378,9 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
      * @param servlet the web activity servlet
      * @return the instance of {@code DefaultWebService}
      */
+    @NonNull
     public static DefaultWebService create(WebActivityServlet servlet) {
+        Assert.notNull(servlet, "servlet must not be null");
         ServletContext servletContext = servlet.getServletContext();
         ServletConfig servletConfig = servlet.getServletConfig();
         String aspectranConfigParam = servletConfig.getInitParameter(ASPECTRAN_CONFIG_PARAM);
@@ -399,6 +408,8 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
      * @return the instance of {@code DefaultWebService}
      */
     public static DefaultWebService create(WebActivityServlet servlet, DefaultWebService rootWebService) {
+        Assert.notNull(servlet, "servlet must not be null");
+        Assert.notNull(rootWebService, "rootWebService must not be null");
         ServletContext servletContext = servlet.getServletContext();
         ServletConfig servletConfig = servlet.getServletConfig();
         String aspectranConfigParam = servletConfig.getInitParameter(ASPECTRAN_CONFIG_PARAM);
@@ -426,7 +437,7 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
      * @param aspectranConfigParam the parameter for aspectran configuration
      * @return the instance of {@code DefaultWebService}
      */
-    private static DefaultWebService create(ServletContext servletContext, String aspectranConfigParam) {
+    private static DefaultWebService create(@NonNull ServletContext servletContext, String aspectranConfigParam) {
         AspectranConfig aspectranConfig;
         if (aspectranConfigParam != null) {
             if (aspectranConfigParam.startsWith(ASPECTRAN_CONFIG_FILE_FROM)) {
@@ -476,7 +487,7 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
         return webService;
     }
 
-    private static void applyWebConfig(DefaultWebService webService, WebConfig webConfig) {
+    private static void applyWebConfig(@NonNull DefaultWebService webService, @NonNull WebConfig webConfig) {
         webService.setUriDecoding(webConfig.getUriDecoding());
 
         String defaultServletName = webConfig.getDefaultServletName();
@@ -494,7 +505,7 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
         }
     }
 
-    private static void setServiceStateListener(final DefaultWebService webService) {
+    private static void setServiceStateListener(@NonNull final DefaultWebService webService) {
         webService.setServiceStateListener(new ServiceStateListener() {
             @Override
             public void started() {

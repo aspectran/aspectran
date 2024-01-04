@@ -26,6 +26,8 @@ import com.aspectran.core.context.rule.type.ItemType;
 import com.aspectran.core.context.rule.type.ItemValueType;
 import com.aspectran.utils.LinkedMultiValueMap;
 import com.aspectran.utils.MultiValueMap;
+import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.utils.apon.Parameters;
 import com.aspectran.utils.apon.VariableParameters;
 
@@ -123,12 +125,12 @@ public class ItemEvaluation extends TokenEvaluation implements ItemEvaluator {
     }
 
     @Override
-    public MultiValueMap<String, String> evaluateAsMultiValueMap(ItemRuleMap itemRuleMap) {
+    public MultiValueMap<String, String> evaluateAsMultiValueMap(@NonNull ItemRuleMap itemRuleMap) {
         return evaluateAsMultiValueMap(itemRuleMap.values());
     }
 
     @Override
-    public MultiValueMap<String, String> evaluateAsMultiValueMap(Collection<ItemRule> itemRules) {
+    public MultiValueMap<String, String> evaluateAsMultiValueMap(@NonNull Collection<ItemRule> itemRules) {
         MultiValueMap<String, String> valueMap = new LinkedMultiValueMap<>();
         for (ItemRule itemRule : itemRules) {
             String[] values = evaluateAsStringArray(itemRule);
@@ -138,12 +140,12 @@ public class ItemEvaluation extends TokenEvaluation implements ItemEvaluator {
     }
 
     @Override
-    public ParameterMap evaluateAsParameterMap(ItemRuleMap itemRuleMap) {
+    public ParameterMap evaluateAsParameterMap(@NonNull ItemRuleMap itemRuleMap) {
         return evaluateAsParameterMap(itemRuleMap.values());
     }
 
     @Override
-    public ParameterMap evaluateAsParameterMap(Collection<ItemRule> itemRules) {
+    public ParameterMap evaluateAsParameterMap(@NonNull Collection<ItemRule> itemRules) {
         ParameterMap params = new ParameterMap();
         for (ItemRule itemRule : itemRules) {
             String[] values = evaluateAsStringArray(itemRule);
@@ -240,6 +242,7 @@ public class ItemEvaluation extends TokenEvaluation implements ItemEvaluator {
     }
 
     @SuppressWarnings("all")
+    @Nullable
     private Object[] evaluateAsArray(List<Token[]> tokensList, ItemValueType valueType)
             throws Exception {
         List<Object> list = evaluateAsList(tokensList, valueType);
@@ -363,6 +366,7 @@ public class ItemEvaluation extends TokenEvaluation implements ItemEvaluator {
         return activity.getPrototypeScopeBean(beanRule);
     }
 
+    @Nullable
     private Object[] evaluateBeanAsArray(List<BeanRule> beanRuleList) {
         List<Object> valueList = evaluateBeanAsList(beanRuleList);
         if (valueList == null) {

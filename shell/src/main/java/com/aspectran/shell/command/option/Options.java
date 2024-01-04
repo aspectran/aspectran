@@ -15,6 +15,8 @@
  */
 package com.aspectran.shell.command.option;
 
+import com.aspectran.utils.annotation.jsr305.NonNull;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -85,7 +87,7 @@ public class Options implements Serializable {
      * @param group the OptionGroup that is to be added
      * @return the resulting Options instance
      */
-    public Options addOptionGroup(OptionGroup group) {
+    public Options addOptionGroup(@NonNull OptionGroup group) {
         if (group.isRequired()) {
             requiredOpts.add(group);
         }
@@ -113,7 +115,7 @@ public class Options implements Serializable {
      * @param opt the option that is to be added
      * @return the resulting Options instance
      */
-    public Options addOption(Option opt) {
+    public Options addOption(@NonNull Option opt) {
         String key = opt.getKey();
 
         // add it to the long option list
@@ -229,7 +231,7 @@ public class Options implements Serializable {
      * @param opt the option whose OptionGroup is being queried.
      * @return the OptionGroup if <code>opt</code> is part of an OptionGroup, otherwise return null
      */
-    public OptionGroup getOptionGroup(Option opt) {
+    public OptionGroup getOptionGroup(@NonNull Option opt) {
         return optionGroups.get(opt.getKey());
     }
 

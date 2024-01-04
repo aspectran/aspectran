@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.adapter;
 
+import com.aspectran.utils.Assert;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -61,6 +63,7 @@ public abstract class AbstractApplicationAdapter implements ApplicationAdapter {
 
     @Override
     public File toRealPathAsFile(String filePath) throws IOException {
+        Assert.notNull(filePath, "filePath must not be null");
         File file;
         if (filePath.startsWith(FILE_URL_PREFIX)) {
             // Using url fully qualified paths

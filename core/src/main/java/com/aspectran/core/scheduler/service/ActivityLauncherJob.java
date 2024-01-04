@@ -20,6 +20,7 @@ import com.aspectran.core.activity.ActivityException;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.ScheduledJobRule;
 import com.aspectran.core.scheduler.activity.JobActivity;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import org.quartz.Job;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
@@ -49,6 +50,7 @@ public class ActivityLauncherJob implements Job {
         }
     }
 
+    @NonNull
     private Activity performActivity(ActivityContext context, JobExecutionContext jobExecutionContext, String transletName)
             throws ActivityException {
         JobActivity activity = new JobActivity(context, jobExecutionContext);

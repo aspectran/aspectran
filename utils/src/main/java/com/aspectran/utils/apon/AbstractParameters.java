@@ -264,7 +264,7 @@ public abstract class AbstractParameters implements Parameters {
         }
     }
 
-    private void putValue(Parameter p, String name, Object value) {
+    private void putValue(@NonNull Parameter p, String name, Object value) {
         p.putValue(value);
         if (value instanceof Parameters) {
             ((Parameters)value).setActualName(name);
@@ -774,7 +774,7 @@ public abstract class AbstractParameters implements Parameters {
     }
 
     @Override
-    public void updateContainer(Parameters container) {
+    public void updateContainer(@NonNull Parameters container) {
         for (ParameterValue parameterValue : container.getParameterValueMap().values()) {
             parameterValue.setContainer(container);
         }

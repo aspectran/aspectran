@@ -17,6 +17,7 @@ package com.aspectran.web.startup.filter;
 
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 import com.aspectran.utils.wildcard.WildcardPattern;
@@ -50,7 +51,7 @@ public class WebActivityFilter implements Filter {
     private DefaultServletHttpRequestHandler defaultServletHttpRequestHandler;
 
     @Override
-    public void init(FilterConfig filterConfig) {
+    public void init(@NonNull FilterConfig filterConfig) {
         this.filterConfig = filterConfig;
 
         String bypassesParam = filterConfig.getInitParameter("bypasses");
@@ -99,6 +100,7 @@ public class WebActivityFilter implements Filter {
         logger.info("Destroyed " + getMyName());
     }
 
+    @NonNull
     private String getMyName() {
         return getClass().getSimpleName() + '@' +
                 Integer.toString(hashCode(), 16) +

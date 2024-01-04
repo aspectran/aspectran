@@ -15,6 +15,7 @@
  */
 package com.aspectran.utils;
 
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.apon.Parameter;
 import com.aspectran.utils.apon.ParameterValue;
 import com.aspectran.utils.apon.Parameters;
@@ -183,7 +184,7 @@ public class ToStringBuilder {
         }
     }
 
-    private void append(Map<?, ?> map) {
+    private void append(@NonNull Map<?, ?> map) {
         buffer.append("{");
         int len = buffer.length();
         for (Map.Entry<?, ?> entry : map.entrySet()) {
@@ -197,7 +198,7 @@ public class ToStringBuilder {
         buffer.append("}");
     }
 
-    private void append(Collection<?> list) {
+    private void append(@NonNull Collection<?> list) {
         buffer.append("[");
         int len = buffer.length();
         for (Object o : list) {
@@ -209,7 +210,7 @@ public class ToStringBuilder {
         buffer.append("]");
     }
 
-    private void append(Enumeration<?> en) {
+    private void append(@NonNull Enumeration<?> en) {
         buffer.append("[");
         while (en.hasMoreElements()) {
             append(en.nextElement());
@@ -220,7 +221,7 @@ public class ToStringBuilder {
         buffer.append("]");
     }
 
-    private void append(Parameters parameters) {
+    private void append(@NonNull Parameters parameters) {
         int len = buffer.length();
         Map<String, ParameterValue> params = parameters.getParameterValueMap();
         for (Parameter p : params.values()) {
@@ -233,7 +234,7 @@ public class ToStringBuilder {
         }
     }
 
-    private void append(Method method) {
+    private void append(@NonNull Method method) {
         buffer.append(method.getDeclaringClass().getTypeName());
         buffer.append('.');
         buffer.append(method.getName());
@@ -258,7 +259,7 @@ public class ToStringBuilder {
         return buffer;
     }
 
-    private void checkCircularReference(Object wrapper, Object member) {
+    private void checkCircularReference(@NonNull Object wrapper, Object member) {
         if (wrapper.equals(member)) {
             throw new IllegalArgumentException("Serialization Failure: A circular reference was detected " +
                     "while converting a member object [" + member + "] in [" + wrapper + "]");

@@ -15,6 +15,8 @@
  */
 package com.aspectran.shell.command.option;
 
+import com.aspectran.utils.annotation.jsr305.NonNull;
+
 import java.util.Arrays;
 
 /**
@@ -104,7 +106,7 @@ public final class OptionUtils {
      *      should be removed
      * @return the string without the leading and trailing quotes
      */
-    static String stripLeadingAndTrailingQuotes(String str) {
+    static String stripLeadingAndTrailingQuotes(@NonNull String str) {
         int length = str.length();
         if (length > 1 && str.startsWith("\"") && str.endsWith("\"") &&
                 str.substring(1, length - 1).indexOf('"') == -1) {
@@ -118,6 +120,7 @@ public final class OptionUtils {
      * @param len the length of the String of padding to create
      * @return the String of padding
      */
+    @NonNull
     public static String createPadding(int len) {
         char[] padding = new char[len];
         Arrays.fill(padding, ' ');
@@ -130,7 +133,7 @@ public final class OptionUtils {
      * @return the String of without the trailing padding
      */
     public static String rtrim(String s) {
-        if (s == null || s.length() == 0) {
+        if (s == null || s.isEmpty()) {
             return s;
         }
         int pos = s.length();
@@ -152,7 +155,7 @@ public final class OptionUtils {
      * @return position on which the text must be wrapped or -1 if the wrap
      *      position is at the end of the text
      */
-    public static int findWrapPos(String text, int width, int startPos) {
+    public static int findWrapPos(@NonNull String text, int width, int startPos) {
         // the line ends before the max wrap pos or a new line char found
         int pos = text.indexOf('\n', startPos);
         if (pos != -1 && pos <= width) {

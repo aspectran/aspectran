@@ -17,6 +17,7 @@ package com.aspectran.undertow.server.http;
 
 import com.aspectran.undertow.server.resource.StaticResourceHandler;
 import com.aspectran.undertow.service.TowService;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import io.undertow.server.ExchangeCompletionListener;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
@@ -81,7 +82,7 @@ public class HttpHybridHandler extends ResourceHandler {
     }
 
     @Override
-    public void handleRequest(HttpServerExchange exchange) throws Exception {
+    public void handleRequest(@NonNull HttpServerExchange exchange) throws Exception {
         if (exchange.isInIoThread()) {
             exchange.dispatch(this);
         } else {

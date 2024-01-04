@@ -17,6 +17,7 @@ package com.aspectran.web.support.cors;
 
 import com.aspectran.core.activity.Translet;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 import com.aspectran.web.support.http.HttpHeaders;
@@ -48,7 +49,7 @@ public class DefaultCorsProcessor extends AbstractCorsProcessor {
     private static final String CORS_HTTP_STATUS_TEXT = "CORS.HTTP_STATUS_TEXT";
 
     @Override
-    public void processActualRequest(Translet translet) throws CorsException {
+    public void processActualRequest(@NonNull Translet translet) throws CorsException {
         HttpServletRequest req = translet.getRequestAdaptee();
         HttpServletResponse res = translet.getResponseAdaptee();
 
@@ -83,7 +84,7 @@ public class DefaultCorsProcessor extends AbstractCorsProcessor {
     }
 
     @Override
-    public void processPreflightRequest(Translet translet) throws CorsException {
+    public void processPreflightRequest(@NonNull Translet translet) throws CorsException {
         HttpServletRequest req = translet.getRequestAdaptee();
         HttpServletResponse res = translet.getResponseAdaptee();
 
@@ -100,13 +101,11 @@ public class DefaultCorsProcessor extends AbstractCorsProcessor {
         }
 
         String rawRequestHeadersString = req.getHeader(HttpHeaders.ACCESS_CONTROL_REQUEST_HEADERS);
-        if (rawRequestHeadersString != null) {
+        if (rawRequestHeadersString != null && hasAllowedHeaders()) {
             String[] requestHeaders = StringUtils.splitCommaDelimitedString(rawRequestHeadersString);
-            if (hasAllowedHeaders() && requestHeaders.length > 0) {
-                for (String requestHeader : requestHeaders) {
-                    if (!isAllowedHeader(requestHeader)) {
-                        rejectRequest(translet, CorsException.UNSUPPORTED_REQUEST_HEADER);
-                    }
+            for (String requestHeader : requestHeaders) {
+                if (!isAllowedHeader(requestHeader)) {
+                    rejectRequest(translet, CorsException.UNSUPPORTED_REQUEST_HEADER);
                 }
             }
         }
@@ -138,7 +137,7 @@ public class DefaultCorsProcessor extends AbstractCorsProcessor {
     }
 
     @Override
-    public void sendError(Translet translet) throws IOException {
+    public void sendError(@NonNull Translet translet) throws IOException {
         Throwable t = translet.getRootCauseOfRaisedException();
         if (t instanceof CorsException) {
             CorsException corsException = (CorsException)t;
@@ -154,7 +153,7 @@ public class DefaultCorsProcessor extends AbstractCorsProcessor {
      * @param ce the CORS Exception
      * @throws CorsException if the request is denied
      */
-    protected void rejectRequest(Translet translet, CorsException ce) throws CorsException {
+    protected void rejectRequest(@NonNull Translet translet, @NonNull CorsException ce) throws CorsException {
         HttpServletResponse res = translet.getResponseAdaptee();
         res.setStatus(ce.getHttpStatusCode());
 
@@ -164,7 +163,7 @@ public class DefaultCorsProcessor extends AbstractCorsProcessor {
         throw ce;
     }
 
-    protected boolean checkProcessable(HttpServletResponse res) {
+    protected boolean checkProcessable(@NonNull HttpServletResponse res) {
         if (res.getHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN) != null) {
             if (logger.isDebugEnabled()) {
                 logger.debug("Skip CORS processing: response already contains \"Access-Control-Allow-Origin\" header");

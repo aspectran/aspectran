@@ -15,6 +15,7 @@
  */
 package com.aspectran.web.startup.servlet;
 
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 import com.aspectran.web.service.DefaultWebService;
@@ -96,6 +97,7 @@ public class WebActivityServlet extends HttpServlet implements Servlet {
         logger.info("Destroyed " + getMyName());
     }
 
+    @NonNull
     private String getMyName() {
         return getClass().getSimpleName() + '@' +
                 Integer.toString(hashCode(), 16) +

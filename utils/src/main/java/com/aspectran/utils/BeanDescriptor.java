@@ -16,6 +16,7 @@
 package com.aspectran.utils;
 
 import com.aspectran.utils.annotation.NonSerializable;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -56,7 +57,7 @@ public class BeanDescriptor {
 
     private final Map<String, Class<?>> setterTypes = new HashMap<>();
 
-    private BeanDescriptor(Class<?> beanClass) {
+    private BeanDescriptor(@NonNull Class<?> beanClass) {
         this.className = beanClass.getName();
         Method[] methods = getAllMethods(beanClass);
 
@@ -86,7 +87,8 @@ public class BeanDescriptor {
         this.distinctMethodNames = nameSet.toArray(new String[0]);
     }
 
-    private Set<String> addGetterMethods(Method[] methods) {
+    @NonNull
+    private Set<String> addGetterMethods(@NonNull Method[] methods) {
         Set<String> nonSerializableReadPropertyNames = new HashSet<>();
         for (Method method : methods) {
             if (Modifier.isPublic(method.getModifiers()) && method.getParameterCount() == 0) {
@@ -109,7 +111,7 @@ public class BeanDescriptor {
         getterTypes.put(name, method.getReturnType());
     }
 
-    private void addSetterMethods(Method[] methods) {
+    private void addSetterMethods(@NonNull Method[] methods) {
         Map<String, List<Method>> conflictingSetters = new HashMap<>();
         for (Method method : methods) {
             if (Modifier.isPublic(method.getModifiers()) && method.getParameterCount() == 1) {
@@ -123,12 +125,13 @@ public class BeanDescriptor {
         resolveSetterConflicts(conflictingSetters);
     }
 
-    private void addConflictingSetter(Map<String, List<Method>> conflictingSetters, String name, Method method) {
+    private void addConflictingSetter(@NonNull Map<String, List<Method>> conflictingSetters,
+                                      String name, Method method) {
         List<Method> list = conflictingSetters.computeIfAbsent(name, k -> new ArrayList<>());
         list.add(method);
     }
 
-    private void resolveSetterConflicts(Map<String, List<Method>> conflictingSetters) {
+    private void resolveSetterConflicts(@NonNull Map<String, List<Method>> conflictingSetters) {
         for (String propName : conflictingSetters.keySet()) {
             List<Method> setters = conflictingSetters.get(propName);
             Method firstMethod = setters.get(0);
@@ -173,6 +176,7 @@ public class BeanDescriptor {
      * @param beanClass the class
      * @return an array containing all the public methods in this class
      */
+    @NonNull
     private Method[] getAllMethods(Class<?> beanClass) {
         Map<String, Method> uniqueMethods = new HashMap<>();
         Class<?> currentClass = beanClass;
@@ -191,7 +195,7 @@ public class BeanDescriptor {
         return methods.toArray(new Method[0]);
     }
 
-    private void addUniqueMethods(Map<String, Method> uniqueMethods, Method[] methods) {
+    private void addUniqueMethods(@NonNull Map<String, Method> uniqueMethods, @NonNull Method[] methods) {
         for (Method currentMethod : methods) {
             if (!currentMethod.isBridge()) {
                 String signature = getSignature(currentMethod);
@@ -202,7 +206,8 @@ public class BeanDescriptor {
         }
     }
 
-    private String getSignature(Method method) {
+    @NonNull
+    private String getSignature(@NonNull Method method) {
         StringBuilder sb = new StringBuilder();
         sb.append(method.getName());
         if (method.getParameterCount() > 0) {
@@ -219,7 +224,8 @@ public class BeanDescriptor {
         return sb.toString();
     }
 
-    private static String dropCase(String name) {
+    @NonNull
+    private static String dropCase(@NonNull String name) {
         if (name.startsWith("is")) {
             name = name.substring(2);
         } else if (name.startsWith("get") || name.startsWith("set")) {
@@ -316,7 +322,7 @@ public class BeanDescriptor {
      * @return the annotation object, or null if not found
      */
     @SuppressWarnings("unchecked")
-    public <T extends Annotation> T getSetterAnnotation(Method method, Class<T> annotationType) {
+    public <T extends Annotation> T getSetterAnnotation(@NonNull Method method, Class<T> annotationType) {
         T annotation = method.getAnnotation(annotationType);
         if (annotation != null) {
             return annotation;

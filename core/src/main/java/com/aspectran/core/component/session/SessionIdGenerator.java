@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.component.session;
 
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 
@@ -89,9 +90,9 @@ public class SessionIdGenerator {
 
     /**
      * Set up a random number generator for the session ids.
-     *
      * By preference, use a SecureRandom but allow to be injected.
      */
+    @NonNull
     private Random initRandom() {
         try {
             return new SecureRandom();

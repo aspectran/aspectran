@@ -15,6 +15,7 @@
  */
 package com.aspectran.utils;
 
+import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 
@@ -38,6 +39,7 @@ public class SystemUtils {
      * @param key the name of the system property
      * @return the system property value or <code>null</code> if a security problem occurs
      */
+    @Nullable
     public static String getProperty(String key) {
         try {
             return System.getProperty(key);

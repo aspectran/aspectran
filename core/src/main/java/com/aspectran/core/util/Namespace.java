@@ -17,6 +17,7 @@ package com.aspectran.core.util;
 
 import com.aspectran.core.context.rule.assistant.DefaultSettings;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +32,7 @@ import static com.aspectran.core.context.ActivityContext.NAME_SEPARATOR_CHAR;
  */
 public class Namespace {
 
+    @Nullable
     public static String[] splitNamespace(String namespace) {
         if (!StringUtils.hasText(namespace)) {
             return null;

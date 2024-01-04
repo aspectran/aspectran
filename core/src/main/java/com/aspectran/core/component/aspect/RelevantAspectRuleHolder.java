@@ -17,6 +17,7 @@ package com.aspectran.core.component.aspect;
 
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.utils.ToStringBuilder;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,6 +63,7 @@ public class RelevantAspectRuleHolder {
         this.dynamicAspectRuleList = dynamicAspectRuleList;
     }
 
+    @Nullable
     private List<String> getDynamicAspectIds() {
         if (dynamicAspectRuleList != null && !dynamicAspectRuleList.isEmpty()) {
             List<String> aspectIds = new ArrayList<>(dynamicAspectRuleList.size());

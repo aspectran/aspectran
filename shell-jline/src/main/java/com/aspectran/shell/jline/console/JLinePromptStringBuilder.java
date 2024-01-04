@@ -18,6 +18,7 @@ package com.aspectran.shell.jline.console;
 import com.aspectran.shell.console.DefaultPromptStringBuilder;
 import com.aspectran.shell.console.PromptStringBuilder;
 import com.aspectran.shell.jline.console.JLineTerminal.Style;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 class JLinePromptStringBuilder extends DefaultPromptStringBuilder {
 
@@ -29,7 +30,7 @@ class JLinePromptStringBuilder extends DefaultPromptStringBuilder {
 
     private Style style;
 
-    public JLinePromptStringBuilder(JLineShellConsole console) {
+    public JLinePromptStringBuilder(@NonNull JLineShellConsole console) {
         super();
         this.console = console;
         this.jlineTerminal = console.getJlineTerminal();

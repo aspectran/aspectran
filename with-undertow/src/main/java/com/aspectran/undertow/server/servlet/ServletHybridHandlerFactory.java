@@ -20,6 +20,7 @@ import com.aspectran.core.component.bean.aware.ActivityContextAware;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.service.CoreService;
 import com.aspectran.undertow.server.resource.StaticResourceHandler;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.web.service.DefaultWebService;
 import com.aspectran.web.service.WebService;
 import com.aspectran.websocket.jsr356.ServerEndpointExporter;
@@ -124,7 +125,7 @@ public class ServletHybridHandlerFactory implements ActivityContextAware {
         return rootHandler;
     }
 
-    private static HttpHandler wrapHandlers(HttpHandler wrapee, List<HandlerWrapper> wrappers) {
+    private static HttpHandler wrapHandlers(HttpHandler wrapee, @NonNull List<HandlerWrapper> wrappers) {
         HttpHandler current = wrapee;
         for (HandlerWrapper wrapper : wrappers) {
             current = wrapper.wrap(current);

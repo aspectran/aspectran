@@ -15,6 +15,8 @@
  */
 package com.aspectran.utils.apon;
 
+import com.aspectran.utils.annotation.jsr305.NonNull;
+
 /**
  * This exception will be thrown when the value type of the parameter does not match.
  *
@@ -24,7 +26,8 @@ public class ValueTypeMismatchException extends InvalidParameterValueException {
 
     private static final long serialVersionUID = 3022910656886563259L;
 
-    public ValueTypeMismatchException(Class<?> valueType, Class<?> requiredType, Throwable cause) {
+    public ValueTypeMismatchException(@NonNull Class<?> valueType, @NonNull Class<?> requiredType,
+                                      @NonNull Throwable cause) {
         super("Failed to convert value of type [" + valueType.getName() + "] " +
                 "to required type [" + requiredType.getName() + "]; nested exception is " + cause, cause);
     }

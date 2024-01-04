@@ -25,6 +25,8 @@ import com.aspectran.shell.command.option.ParsedOptions;
 import com.aspectran.shell.console.ShellConsole;
 import com.aspectran.undertow.server.TowServer;
 import com.aspectran.utils.ExceptionUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.utils.lifecycle.LifeCycle;
 
 import java.net.BindException;
@@ -63,7 +65,7 @@ public class UndertowCommand extends AbstractCommand {
     }
 
     @Override
-    public void execute(ParsedOptions options, ShellConsole console) throws Exception {
+    public void execute(@NonNull ParsedOptions options, ShellConsole console) throws Exception {
         if (!options.hasOptions() && !options.hasArgs()) {
             printQuickHelp(console);
             return;
@@ -176,7 +178,7 @@ public class UndertowCommand extends AbstractCommand {
         }
     }
 
-    private void printStatus(String status, ShellConsole console) {
+    private void printStatus(String status, @NonNull ShellConsole console) {
         console.writeLine("----------------------------------------------------------------------------");
         console.setStyle("YELLOW");
         console.write(status);
@@ -218,11 +220,13 @@ public class UndertowCommand extends AbstractCommand {
         }
 
         @Override
+        @NonNull
         public String getDescription() {
             return "Use the command 'undertow' to control the Undertow server";
         }
 
         @Override
+        @Nullable
         public String getUsage() {
             return null;
         }

@@ -26,6 +26,7 @@ import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.context.rule.type.ContentType;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Source;
@@ -79,7 +80,7 @@ public class XslTransformResponse extends TransformResponse {
     }
 
     @Override
-    protected void transform(Activity activity) throws Exception {
+    protected void transform(@NonNull Activity activity) throws Exception {
         ResponseAdapter responseAdapter = activity.getResponseAdapter();
 
         loadTemplate(activity.getApplicationAdapter());
@@ -194,7 +195,7 @@ public class XslTransformResponse extends TransformResponse {
         return createTemplates(source);
     }
     
-    private Templates createTemplates(URL url) throws TransformerConfigurationException, IOException {
+    private Templates createTemplates(@NonNull URL url) throws TransformerConfigurationException, IOException {
         URLConnection conn = url.openConnection();
         Source source = new StreamSource(conn.getInputStream());
         return createTemplates(source);
@@ -206,7 +207,7 @@ public class XslTransformResponse extends TransformResponse {
         return transFactory.newTemplates(source);
     }
 
-    private String getContentType(Templates templates) {
+    private String getContentType(@NonNull Templates templates) {
         Properties outputProperties = templates.getOutputProperties();
         String outputMethod = outputProperties.getProperty(OutputKeys.METHOD);
         String contentType = null;
@@ -222,7 +223,7 @@ public class XslTransformResponse extends TransformResponse {
         return contentType;
     }
     
-    private String getOutputEncoding(Templates templates) {
+    private String getOutputEncoding(@NonNull Templates templates) {
         Properties outputProperties = templates.getOutputProperties();
         return outputProperties.getProperty(OutputKeys.ENCODING);
     }

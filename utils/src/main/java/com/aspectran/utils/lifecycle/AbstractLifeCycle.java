@@ -16,6 +16,7 @@
 package com.aspectran.utils.lifecycle;
 
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 import com.aspectran.utils.thread.AutoLock;
@@ -143,7 +144,7 @@ public abstract class AbstractLifeCycle implements LifeCycle {
         return null;
     }
 
-    public static String getState(LifeCycle lc) {
+    public static String getState(@NonNull LifeCycle lc) {
         if (lc.isStarting()) {
             return STARTING;
         }

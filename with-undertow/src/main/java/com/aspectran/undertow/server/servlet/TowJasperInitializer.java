@@ -18,6 +18,7 @@ package com.aspectran.undertow.server.servlet;
 import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.component.bean.aware.ApplicationAdapterAware;
 import com.aspectran.utils.ResourceUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 import jakarta.servlet.ServletContext;
@@ -81,7 +82,7 @@ public class TowJasperInitializer extends JasperInitializer implements Applicati
         return tldScanner;
     }
 
-    private URL getURL(String resourceLocation) throws FileNotFoundException {
+    private URL getURL(@NonNull String resourceLocation) throws FileNotFoundException {
         try {
             if (resourceLocation.startsWith(CLASSPATH_URL_PREFIX)) {
                 return ResourceUtils.getURL(resourceLocation, applicationAdapter.getClassLoader());

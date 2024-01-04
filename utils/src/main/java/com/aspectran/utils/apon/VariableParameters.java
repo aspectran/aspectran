@@ -15,6 +15,8 @@
  */
 package com.aspectran.utils.apon;
 
+import com.aspectran.utils.annotation.jsr305.NonNull;
+
 import java.io.IOException;
 import java.io.Serializable;
 
@@ -48,6 +50,7 @@ public class VariableParameters extends AbstractParameters implements Serializab
         p.putValue(value);
     }
 
+    @NonNull
     private Parameter touchParameterValue(String name, Object value) {
         Parameter p = getParameterValueMap().get(name);
         if (p == null && !isStructureFixed()) {

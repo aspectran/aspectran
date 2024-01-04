@@ -69,7 +69,7 @@ public class ETagInterceptor {
         return this.writeWeakETag;
     }
 
-    public void intercept(Translet translet) {
+    public void intercept(@NonNull Translet translet) {
         HttpServletResponse response = translet.getResponseAdapter().getAdaptee();
         String cacheControl = response.getHeader(HttpHeaders.CACHE_CONTROL);
         if (cacheControl == null || !cacheControl.contains(DIRECTIVE_NO_STORE)) {
@@ -106,7 +106,7 @@ public class ETagInterceptor {
         return builder.toString();
     }
 
-    private boolean validateIfNoneMatch(RequestAdapter requestAdapter, String token) {
+    private boolean validateIfNoneMatch(@NonNull RequestAdapter requestAdapter, String token) {
         List<String> ifNoneMatch = requestAdapter.getHeaderValues(HttpHeaders.IF_NONE_MATCH);
         if (ifNoneMatch == null || ifNoneMatch.isEmpty()) {
             return false;
@@ -129,7 +129,7 @@ public class ETagInterceptor {
         return false;
     }
 
-    private String padETagTokenIfNecessary(String token) {
+    private String padETagTokenIfNecessary(@NonNull String token) {
         if ((token.startsWith("\"") || token.startsWith("W/\"")) && token.endsWith("\"")) {
             return token;
         } else {

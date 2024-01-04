@@ -15,6 +15,7 @@
  */
 package com.aspectran.utils.thread;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
@@ -88,6 +89,8 @@ public class AutoLock implements AutoCloseable, Serializable {
      * </pre>
      */
     public static class WithCondition extends AutoLock {
+
+        private static final long serialVersionUID = -2065722551537577160L;
 
         private final Condition condition = newCondition();
 

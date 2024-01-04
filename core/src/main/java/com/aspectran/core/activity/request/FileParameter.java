@@ -77,7 +77,7 @@ public class FileParameter {
     }
 
     /**
-     * Gets the the content type of the file.
+     * Gets the content type of the file.
      * @return the content type of the file
      */
     public String getContentType() {

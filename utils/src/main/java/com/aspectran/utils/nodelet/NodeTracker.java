@@ -15,6 +15,8 @@
  */
 package com.aspectran.utils.nodelet;
 
+import com.aspectran.utils.annotation.jsr305.NonNull;
+
 /**
  * Inner helper class for tracking the line number and column number of
  * the element's start tag while reading an XML document.
@@ -55,7 +57,7 @@ public class NodeTracker implements Cloneable {
         this.columnNumber = columnNumber;
     }
 
-    protected void update(NodeTracker tracker) {
+    protected void update(@NonNull NodeTracker tracker) {
         setName(tracker.getName());
         setLocation(tracker.getLineNumber(), tracker.getColumnNumber());
     }

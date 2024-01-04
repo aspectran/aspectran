@@ -15,6 +15,8 @@
  */
 package com.aspectran.utils;
 
+import com.aspectran.utils.annotation.jsr305.NonNull;
+
 /**
  * Miscellaneous {@link Boolean} utility methods.
  *
@@ -22,6 +24,7 @@ package com.aspectran.utils;
  */
 public class BooleanUtils {
 
+    @NonNull
     public static Boolean toBooleanObject(String booleanString) {
         return Boolean.valueOf(booleanString);
     }

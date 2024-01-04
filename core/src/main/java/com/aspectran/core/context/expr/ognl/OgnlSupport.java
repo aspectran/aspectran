@@ -18,6 +18,7 @@ package com.aspectran.core.context.expr.ognl;
 import com.aspectran.core.context.expr.ExpressionParserException;
 import com.aspectran.utils.ConcurrentReferenceHashMap;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 import ognl.Ognl;
 import ognl.OgnlContext;
 import ognl.OgnlException;
@@ -40,6 +41,7 @@ public class OgnlSupport {
     private OgnlSupport() {
     }
 
+    @Nullable
     public static Object parseExpression(String expression) throws ExpressionParserException {
         if (!StringUtils.hasLength(expression)) {
             return null;

@@ -19,6 +19,7 @@ import com.aspectran.core.adapter.ApplicationAdapter;
 import com.aspectran.core.component.bean.aware.ApplicationAdapterAware;
 import com.aspectran.utils.LocaleUtils;
 import com.aspectran.utils.ResourceUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 import io.pebbletemplates.pebble.PebbleEngine;
@@ -74,7 +75,7 @@ public class PebbleEngineFactory implements ApplicationAdapterAware {
         this.templateLoaderPaths = templateLoaderPaths;
     }
 
-    public void setTemplateLoaderPath(List<String> templateLoaderPathList) {
+    public void setTemplateLoaderPath(@NonNull List<String> templateLoaderPathList) {
         this.templateLoaderPaths = templateLoaderPathList.toArray(new String[0]);
     }
 
@@ -86,7 +87,7 @@ public class PebbleEngineFactory implements ApplicationAdapterAware {
         this.templateLoaders = templateLoaders;
     }
 
-    public void setTemplateLoader(List<Loader<?>> templateLoaderList) {
+    public void setTemplateLoader(@NonNull List<Loader<?>> templateLoaderList) {
         this.templateLoaders = templateLoaderList.toArray(new Loader<?>[0]);
     }
 
@@ -151,7 +152,7 @@ public class PebbleEngineFactory implements ApplicationAdapterAware {
      * @param templateLoaderPath the path to load templates from
      * @return an appropriate Template Loader
      */
-    protected Loader<?> getTemplateLoaderForPath(String templateLoaderPath) {
+    protected Loader<?> getTemplateLoaderForPath(@NonNull String templateLoaderPath) {
         if (templateLoaderPath.startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {
             String basePackagePath = templateLoaderPath.substring(ResourceUtils.CLASSPATH_URL_PREFIX.length());
             if (logger.isDebugEnabled()) {

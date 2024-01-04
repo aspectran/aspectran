@@ -23,7 +23,7 @@ public class TerminalPrintWriter extends PrintWriter {
 
     private final JLineTerminal jlineTerminal;
 
-    public TerminalPrintWriter(JLineTerminal jlineTerminal) {
+    public TerminalPrintWriter(@NonNull JLineTerminal jlineTerminal) {
         super(jlineTerminal.getWriter());
         this.jlineTerminal = jlineTerminal;
     }

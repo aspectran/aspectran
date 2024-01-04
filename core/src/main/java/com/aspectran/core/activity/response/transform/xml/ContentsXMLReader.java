@@ -20,6 +20,7 @@ import com.aspectran.core.activity.process.result.ContentResult;
 import com.aspectran.core.activity.process.result.ProcessResult;
 import com.aspectran.utils.BeanUtils;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.apon.Parameter;
 import com.aspectran.utils.apon.ParameterValue;
 import com.aspectran.utils.apon.Parameters;
@@ -161,7 +162,7 @@ public class ContentsXMLReader implements XMLReader {
         handler.endDocument();
     }
 
-    private void parseProcessResult(ProcessResult processResult) throws SAXException {
+    private void parseProcessResult(@NonNull ProcessResult processResult) throws SAXException {
         String contentsName = processResult.getName();
         if (processResult.isExplicit()) {
             if (contentsName != null) {
@@ -296,11 +297,11 @@ public class ContentsXMLReader implements XMLReader {
         }
     }
 
-    private void parseString(String s) throws SAXException {
+    private void parseString(@NonNull String s) throws SAXException {
         handler.characters(s.toCharArray(), 0, s.length());
     }
 
-    private void checkCircularReference(Object wrapper, Object member) throws SAXException {
+    private void checkCircularReference(@NonNull Object wrapper, Object member) throws SAXException {
         if (wrapper.equals(member)) {
             throw new SAXException("XML Serialization Failure: A circular reference was detected" +
                     " while converting a member object [" + member + "] in [" + wrapper + "]");

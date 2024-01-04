@@ -16,6 +16,8 @@
 package com.aspectran.core.context.resource;
 
 import com.aspectran.utils.ToStringBuilder;
+import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
@@ -166,6 +168,7 @@ public class SiblingsClassLoader extends ClassLoader {
         return parent.createChild(resourceLocation);
     }
 
+    @NonNull
     private SiblingsClassLoader createChild(String resourceLocation) throws InvalidResourceException {
         if (!firstborn) {
             throw new IllegalStateException("Only the first among siblings can create a child");
@@ -275,7 +278,7 @@ public class SiblingsClassLoader extends ClassLoader {
         reload(root);
     }
 
-    private void reload(SiblingsClassLoader self) throws InvalidResourceException {
+    private void reload(@NonNull SiblingsClassLoader self) throws InvalidResourceException {
         self.increaseReloadedCount();
 
         if (self.getResourceManager() != null) {
@@ -303,7 +306,7 @@ public class SiblingsClassLoader extends ClassLoader {
         reloadedCount++;
     }
 
-    private void leave(List<SiblingsClassLoader> siblings) {
+    private void leave(@NonNull List<SiblingsClassLoader> siblings) {
         for (SiblingsClassLoader sibling : siblings) {
             ResourceManager rm = sibling.getResourceManager();
             if (rm != null) {
@@ -358,6 +361,7 @@ public class SiblingsClassLoader extends ClassLoader {
         }
     }
 
+    @Nullable
     private byte[] loadClassData(String className) throws InvalidResourceException {
         if (isExcluded(className)) {
             return null;
@@ -466,7 +470,8 @@ public class SiblingsClassLoader extends ClassLoader {
         return tsb.toString();
     }
 
-    public static Iterator<SiblingsClassLoader> getMembers(final SiblingsClassLoader root) {
+    @NonNull
+    public static Iterator<SiblingsClassLoader> getMembers(@NonNull final SiblingsClassLoader root) {
         return new Iterator<>() {
             private SiblingsClassLoader next = root;
             private Iterator<SiblingsClassLoader> children = root.getChildren().iterator();
@@ -503,11 +508,6 @@ public class SiblingsClassLoader extends ClassLoader {
                     }
                 }
                 return current;
-            }
-
-            @Override
-            public void remove() {
-                throw new UnsupportedOperationException("remove");
             }
         };
     }

@@ -15,6 +15,7 @@
  */
 package com.aspectran.web.service;
 
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 import jakarta.servlet.RequestDispatcher;
@@ -79,7 +80,7 @@ public class DefaultServletHttpRequestHandler {
      * Lookup default servlet name.
      * @param servletContext the servlet context
      */
-    private void lookupDefaultServletName(ServletContext servletContext) {
+    private void lookupDefaultServletName(@NonNull ServletContext servletContext) {
         if (servletContext.getNamedDispatcher(COMMON_DEFAULT_SERVLET_NAME) != null) {
             defaultServletName = COMMON_DEFAULT_SERVLET_NAME;
         } else if (servletContext.getNamedDispatcher(RESIN_DEFAULT_SERVLET_NAME) != null) {

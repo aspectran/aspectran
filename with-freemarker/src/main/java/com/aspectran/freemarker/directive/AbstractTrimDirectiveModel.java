@@ -15,6 +15,7 @@
  */
 package com.aspectran.freemarker.directive;
 
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import freemarker.core.Environment;
 import freemarker.template.SimpleScalar;
 import freemarker.template.SimpleSequence;
@@ -72,7 +73,7 @@ public abstract class AbstractTrimDirectiveModel implements TemplateDirectiveMod
      * @return the string
      */
     @SuppressWarnings("rawtypes")
-    protected String parseStringParameter(Map params, String paramName) {
+    protected String parseStringParameter(@NonNull Map params, String paramName) {
         Object paramModel = params.get(paramName);
         if (paramModel == null) {
             return null;
@@ -91,7 +92,7 @@ public abstract class AbstractTrimDirectiveModel implements TemplateDirectiveMod
      * @throws TemplateModelException the template model exception
      */
     @SuppressWarnings("rawtypes")
-    protected String[] parseSequenceParameter(Map params, String paramName) throws TemplateModelException {
+    protected String[] parseSequenceParameter(@NonNull Map params, String paramName) throws TemplateModelException {
         Object paramModel = params.get(paramName);
         if (paramModel == null) {
             return null;
@@ -110,7 +111,8 @@ public abstract class AbstractTrimDirectiveModel implements TemplateDirectiveMod
      * @return the list
      * @throws TemplateModelException the template model exception
      */
-    private List<String> transformSimpleSequenceAsStringList(SimpleSequence sequence, String paramName)
+    @NonNull
+    private List<String> transformSimpleSequenceAsStringList(@NonNull SimpleSequence sequence, String paramName)
             throws TemplateModelException {
         List<String> list = new ArrayList<>();
         int size = sequence.size();

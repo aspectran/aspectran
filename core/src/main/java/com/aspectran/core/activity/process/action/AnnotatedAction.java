@@ -33,6 +33,7 @@ import com.aspectran.utils.ClassUtils;
 import com.aspectran.utils.MethodUtils;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.ToStringBuilder;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.apon.Parameters;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
@@ -275,6 +276,7 @@ public class AnnotatedAction implements Executable {
         return result;
     }
 
+    @NonNull
     private static Object parseModel(Translet translet, Class<?> modelType) {
         Object model = ClassUtils.createInstance(modelType);
         BeanDescriptor bd = BeanDescriptor.getInstance(modelType);

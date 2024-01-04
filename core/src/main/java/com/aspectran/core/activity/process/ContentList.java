@@ -17,6 +17,7 @@ package com.aspectran.core.activity.process;
 
 import com.aspectran.core.context.rule.ability.Replicable;
 import com.aspectran.utils.ToStringBuilder;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -36,13 +37,11 @@ public class ContentList extends ArrayList<ActionList> implements Replicable<Con
 
     public ContentList(boolean explicit) {
         super(3);
-
         this.explicit = explicit;
     }
 
     protected ContentList(ContentList contentList) {
         super(contentList);
-
         this.explicit = contentList.isExplicit();
     }
 
@@ -88,6 +87,7 @@ public class ContentList extends ArrayList<ActionList> implements Replicable<Con
         return tsb.toString();
     }
 
+    @NonNull
     public static ContentList newInstance(String name) {
         ContentList contentList = new ContentList(true);
         contentList.setName(name);

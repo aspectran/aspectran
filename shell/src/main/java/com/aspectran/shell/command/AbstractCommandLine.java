@@ -17,6 +17,7 @@ package com.aspectran.shell.command;
 
 import com.aspectran.core.activity.request.ParameterMap;
 import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 
 import java.util.Arrays;
 
@@ -75,6 +76,7 @@ public abstract class AbstractCommandLine {
         }
     }
 
+    @Nullable
     private ParameterMap extractParameterMap() {
         if (!lineParser.hasArgs()) {
             return null;

@@ -22,6 +22,7 @@ import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.activity.response.transform.apon.ContentsToAponConverter;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.rule.TransformRule;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.apon.AponWriter;
 import com.aspectran.utils.apon.Parameters;
 
@@ -54,7 +55,7 @@ public class AponTransformResponse extends TransformResponse {
     }
 
     @Override
-    public void transform(Activity activity) throws Exception {
+    public void transform(@NonNull Activity activity) throws Exception {
         ResponseAdapter responseAdapter = activity.getResponseAdapter();
 
         if (this.encoding != null) {

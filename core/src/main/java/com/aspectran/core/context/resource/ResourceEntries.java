@@ -16,6 +16,7 @@
 package com.aspectran.core.context.resource;
 
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -40,7 +41,7 @@ public class ResourceEntries extends LinkedHashMap<String, URL> {
         super();
     }
 
-    public void putResource(String resourceName, File file) throws InvalidResourceException {
+    public void putResource(String resourceName, @NonNull File file) throws InvalidResourceException {
         URL url;
         try {
             url = file.toURI().toURL();
@@ -50,7 +51,7 @@ public class ResourceEntries extends LinkedHashMap<String, URL> {
         put(resourceName, url);
     }
 
-    public void putResource(File file, JarEntry entry) throws InvalidResourceException {
+    public void putResource(@NonNull File file, @NonNull JarEntry entry) throws InvalidResourceException {
         String resourceName = entry.getName();
         URL url;
         try {

@@ -15,6 +15,8 @@
  */
 package com.aspectran.utils;
 
+import com.aspectran.utils.annotation.jsr305.NonNull;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -131,7 +133,7 @@ public class StringUtils {
         return (str != null && !str.isEmpty() && containsText(str));
     }
 
-    private static boolean containsText(CharSequence chars) {
+    private static boolean containsText(@NonNull CharSequence chars) {
         int strLen = chars.length();
         for (int i = 0; i < strLen; i++) {
             if (!Character.isWhitespace(chars.charAt(i))) {
@@ -406,7 +408,8 @@ public class StringUtils {
      * @param replacement {@code String} to insert
      * @return a {@code String} with the replacements
      */
-    public static String replaceLast(String str, String searchStr, String replacement) {
+    @NonNull
+    public static String replaceLast(@NonNull String str, @NonNull String searchStr, @NonNull String replacement) {
         int pos = str.lastIndexOf(searchStr);
         if (pos > -1) {
             return str.substring(0, pos) + replacement +
@@ -457,6 +460,7 @@ public class StringUtils {
      * @param size the size of the array
      * @return an array, containing the splitted strings
      */
+    @NonNull
     public static String[] split(String str, String delim, int size) {
         String[] arr1 = new String[size];
         String[] arr2 = split(str, delim);
@@ -510,6 +514,7 @@ public class StringUtils {
      * @param size the size of the array
      * @return an array, containing the splitted strings
      */
+    @NonNull
     public static String[] split(String str, char delim, int size) {
         String[] arr1 = new String[size];
         String[] arr2 = split(str, delim);
@@ -530,7 +535,7 @@ public class StringUtils {
      * @param searchStr the string to find
      * @return the number of times the specified string was found
      */
-    public static int search(String str, String searchStr) {
+    public static int search(@NonNull String str, @NonNull String searchStr) {
         int strLen = str.length();
         int keywLen = searchStr.length();
         int pos = 0;
@@ -556,7 +561,7 @@ public class StringUtils {
      * @param searchStr the string to find
      * @return the number of times the specified string was found
      */
-    public static int searchIgnoreCase(String str, String searchStr) {
+    public static int searchIgnoreCase(@NonNull String str, @NonNull String searchStr) {
         return search(str.toLowerCase(), searchStr.toLowerCase());
     }
 
@@ -567,7 +572,7 @@ public class StringUtils {
      * @param c the character to find
      * @return the number of times the specified character was found
      */
-    public static int search(CharSequence chars, char c) {
+    public static int search(@NonNull CharSequence chars, char c) {
         int count = 0;
         for (int i = 0; i < chars.length(); i++) {
             if (chars.charAt(i) == c) {
@@ -585,7 +590,7 @@ public class StringUtils {
      * @param searchChar the character to find
      * @return the number of times the specified character was found
      */
-    public static int searchIgnoreCase(CharSequence chars, char searchChar) {
+    public static int searchIgnoreCase(@NonNull CharSequence chars, char searchChar) {
         int count = 0;
         char cl = Character.toLowerCase(searchChar);
         for (int i = 0; i < chars.length(); i++) {
@@ -790,7 +795,7 @@ public class StringUtils {
      * @throws NumberFormatException if failed parse given size
      */
     @SuppressWarnings("fallthrough")
-    public static long convertToMachineFriendlyByteSize(String bytes) {
+    public static long convertToMachineFriendlyByteSize(@NonNull String bytes) {
         double d;
         try {
             d = Double.parseDouble(bytes.replaceAll("[GMK]?B?$", EMPTY));

@@ -17,6 +17,7 @@ package com.aspectran.web.support.multipart.inmemory;
 
 import com.aspectran.core.activity.request.FileParameter;
 import com.aspectran.utils.FilenameUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 
@@ -148,6 +149,7 @@ public class InMemoryMultipartFileParameter extends FileParameter {
      * @param filename the given filename
      * @return the canonical name of the given filename
      */
+    @NonNull
     private String getCanonicalName(String filename) {
         return FilenameUtils.getName(filename);
     }

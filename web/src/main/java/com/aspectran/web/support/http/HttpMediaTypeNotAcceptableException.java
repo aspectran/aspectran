@@ -15,6 +15,7 @@
  */
 package com.aspectran.web.support.http;
 
+import java.io.Serial;
 import java.util.List;
 
 /**
@@ -25,6 +26,8 @@ import java.util.List;
  * @author Arjen Poutsma
  */
 public class HttpMediaTypeNotAcceptableException extends HttpMediaTypeException {
+
+    private static final long serialVersionUID = -3953155861196360051L;
 
     /**
      * Create a new HttpMediaTypeNotAcceptableException.

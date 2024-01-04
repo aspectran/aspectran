@@ -26,6 +26,8 @@ import com.aspectran.shell.command.option.Option;
 import com.aspectran.shell.command.option.ParsedOptions;
 import com.aspectran.shell.console.ShellConsole;
 import com.aspectran.shell.service.ShellService;
+import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.utils.apon.AponWriter;
 import com.aspectran.utils.apon.Parameters;
 
@@ -75,7 +77,7 @@ public class JobCommand extends AbstractCommand {
     }
 
     @Override
-    public void execute(ParsedOptions options, ShellConsole console) throws Exception {
+    public void execute(@NonNull ParsedOptions options, ShellConsole console) throws Exception {
         ShellService shellService = getActiveShellService();
         if (options.hasOption("help")) {
             printHelp(console);
@@ -96,7 +98,8 @@ public class JobCommand extends AbstractCommand {
         }
     }
 
-    private void listScheduledJobs(ShellService shellService, ShellConsole console, String[] keywords) {
+    private void listScheduledJobs(@NonNull ShellService shellService, @NonNull ShellConsole console,
+                                   String[] keywords) {
         ScheduleRuleRegistry scheduleRuleRegistry = shellService.getActivityContext().getScheduleRuleRegistry();
         console.writeLine("-%4s-+-%-20s-+-%-34s-+-%-7s-",
                 "----", "--------------------", "----------------------------------", "-------");
@@ -135,7 +138,8 @@ public class JobCommand extends AbstractCommand {
                 "----", "--------------------", "----------------------------------", "-------");
     }
 
-    private void describeScheduledJobRule(ShellService shellService, ShellConsole console, String[] transletNames)
+    private void describeScheduledJobRule(@NonNull ShellService shellService, @NonNull ShellConsole console,
+                                          @Nullable String[] transletNames)
             throws IOException {
         ScheduleRuleRegistry scheduleRuleRegistry = shellService.getActivityContext().getScheduleRuleRegistry();
         if (transletNames != null && transletNames.length > 0) {
@@ -176,7 +180,8 @@ public class JobCommand extends AbstractCommand {
         }
     }
 
-    private void changeJobActiveState(ShellService shellService, ShellConsole console, String[] transletNames, boolean disabled) {
+    private void changeJobActiveState(@NonNull ShellService shellService, @NonNull ShellConsole console,
+                                      @Nullable String[] transletNames, boolean disabled) {
         ScheduleRuleRegistry scheduleRuleRegistry = shellService.getActivityContext().getScheduleRuleRegistry();
         Set<ScheduledJobRule> scheduledJobRules = scheduleRuleRegistry.getScheduledJobRules(transletNames);
         if (scheduledJobRules.isEmpty()) {
@@ -224,11 +229,13 @@ public class JobCommand extends AbstractCommand {
         }
 
         @Override
+        @NonNull
         public String getDescription() {
             return "Shows scheduled jobs, disables or enables them";
         }
 
         @Override
+        @Nullable
         public String getUsage() {
             return null;
         }

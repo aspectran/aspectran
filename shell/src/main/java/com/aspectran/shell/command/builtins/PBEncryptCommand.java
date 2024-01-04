@@ -23,6 +23,8 @@ import com.aspectran.shell.command.option.ParsedOptions;
 import com.aspectran.shell.console.ShellConsole;
 import com.aspectran.utils.PBEncryptionUtils;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 
 import java.util.List;
 
@@ -58,7 +60,7 @@ public class PBEncryptCommand extends AbstractCommand {
     }
 
     @Override
-    public void execute(ParsedOptions options, ShellConsole console) throws Exception {
+    public void execute(@NonNull ParsedOptions options, ShellConsole console) throws Exception {
         if (!options.hasOptions() && !options.hasArgs()) {
             printQuickHelp(console);
             return;
@@ -127,11 +129,13 @@ public class PBEncryptCommand extends AbstractCommand {
         }
 
         @Override
+        @NonNull
         public String getDescription() {
             return "Encrypts the input string using the encryption password";
         }
 
         @Override
+        @Nullable
         public String getUsage() {
             return null;
         }

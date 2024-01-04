@@ -58,7 +58,7 @@ abstract class AbstractBeanRegistry extends AbstractBeanFactory implements BeanR
     }
 
     @SuppressWarnings("unchecked")
-    protected <V> V getBean(BeanRule beanRule) {
+    protected <V> V getBean(@NonNull BeanRule beanRule) {
         if (beanRule.getScopeType() == ScopeType.SINGLETON) {
             return (V)getSingletonScopeBean(beanRule);
         } else if (beanRule.getScopeType() == ScopeType.PROTOTYPE) {
@@ -115,7 +115,7 @@ abstract class AbstractBeanRegistry extends AbstractBeanFactory implements BeanR
         return getScopedBean(scope, beanRule);
     }
 
-    private Object getScopedBean(Scope scope, BeanRule beanRule) {
+    private Object getScopedBean(@NonNull Scope scope, BeanRule beanRule) {
         ReadWriteLock scopeLock = scope.getScopeLock();
         if (scopeLock == null) {
             Object bean;
@@ -174,6 +174,7 @@ abstract class AbstractBeanRegistry extends AbstractBeanFactory implements BeanR
         }
     }
 
+    @Nullable
     private RequestScope getRequestScope() {
         Activity activity = getActivityContext().getAvailableActivity();
         if (activity != null) {
@@ -185,6 +186,7 @@ abstract class AbstractBeanRegistry extends AbstractBeanFactory implements BeanR
         return null;
     }
 
+    @Nullable
     private SessionScope getSessionScope() {
         Activity activity = getActivityContext().getAvailableActivity();
         if (activity != null) {
@@ -301,7 +303,7 @@ abstract class AbstractBeanRegistry extends AbstractBeanFactory implements BeanR
         }
     }
 
-    private void instantiateSingleton(BeanRule beanRule) {
+    private void instantiateSingleton(@NonNull BeanRule beanRule) {
         if (beanRule.isSingleton() && !beanRule.isLazyInit()
                 && !singletonScope.containsBeanRule(beanRule)) {
             createBean(beanRule, singletonScope);

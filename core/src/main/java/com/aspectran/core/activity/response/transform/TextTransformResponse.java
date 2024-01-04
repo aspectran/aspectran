@@ -23,6 +23,7 @@ import com.aspectran.core.activity.response.Response;
 import com.aspectran.core.adapter.ResponseAdapter;
 import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.TransformRule;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.io.Writer;
 
@@ -55,7 +56,7 @@ public class TextTransformResponse extends TransformResponse {
     }
 
     @Override
-    protected void transform(Activity activity) throws Exception {
+    protected void transform(@NonNull Activity activity) throws Exception {
         ResponseAdapter responseAdapter = activity.getResponseAdapter();
 
         if (this.encoding != null) {

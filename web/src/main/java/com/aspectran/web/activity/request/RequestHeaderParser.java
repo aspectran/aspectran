@@ -44,7 +44,7 @@ public class RequestHeaderParser {
     }
 
     @NonNull
-    public static List<MediaType> resolveAcceptContentTypes(RequestAdapter requestAdapter)
+    public static List<MediaType> resolveAcceptContentTypes(@NonNull RequestAdapter requestAdapter)
             throws HttpMediaTypeNotAcceptableException {
         Collection<String> acceptHeaderValues = requestAdapter.getHeaderValues(HttpHeaders.ACCEPT);
         if (acceptHeaderValues == null || acceptHeaderValues.isEmpty()) {

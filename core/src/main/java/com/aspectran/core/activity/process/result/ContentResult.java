@@ -18,6 +18,7 @@ package com.aspectran.core.activity.process.result;
 import com.aspectran.core.activity.process.action.Executable;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.utils.ToStringBuilder;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -90,7 +91,7 @@ public class ContentResult extends ArrayList<ActionResult> {
      * Adds the action result.
      * @param actionResult the action result
      */
-    public void addActionResult(ActionResult actionResult) {
+    public void addActionResult(@NonNull ActionResult actionResult) {
         ActionResult existing = getActionResult(actionResult.getActionId());
         if (existing != null &&
                 existing.getResultValue() instanceof ResultValueMap &&

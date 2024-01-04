@@ -15,6 +15,8 @@
  */
 package com.aspectran.utils;
 
+import com.aspectran.utils.annotation.jsr305.NonNull;
+
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
@@ -195,7 +197,7 @@ public class FileCopyUtils {
      * @throws NullPointerException if the input or output is null
      * @throws IOException          if an I/O error occurs
      */
-    private static long copyLarge(final InputStream input, final OutputStream output)
+    private static long copyLarge(@NonNull final InputStream input, final OutputStream output)
         throws IOException {
         byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
         long count = 0;
@@ -219,7 +221,8 @@ public class FileCopyUtils {
      * @param preserveFileDate whether to preserve the file date
      * @throws IOException     if an error occurs
      */
-    private static void doCopyFile(final File srcFile, final File destFile, final boolean preserveFileDate)
+    private static void doCopyFile(@NonNull final File srcFile, @NonNull final File destFile,
+                                   final boolean preserveFileDate)
         throws IOException {
         if (destFile.exists() && destFile.isDirectory()) {
             throw new IOException("Destination '" + destFile + "' exists but is a directory");

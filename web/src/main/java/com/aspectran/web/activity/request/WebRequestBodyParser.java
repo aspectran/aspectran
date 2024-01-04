@@ -24,6 +24,7 @@ import com.aspectran.utils.ClassUtils;
 import com.aspectran.utils.LinkedMultiValueMap;
 import com.aspectran.utils.MultiValueMap;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.utils.apon.JsonToApon;
 import com.aspectran.utils.apon.Parameters;
@@ -52,11 +53,13 @@ public class WebRequestBodyParser {
     private WebRequestBodyParser() {
     }
 
+    @NonNull
     public static String parseBody(InputStream inputStream, String encoding)
             throws IOException, SizeLimitExceededException {
         return parseBody(inputStream, encoding, 0L);
     }
 
+    @NonNull
     public static String parseBody(InputStream inputStream, String encoding, long maxSize)
             throws IOException, SizeLimitExceededException {
         StringBuilder sb = new StringBuilder();
@@ -81,6 +84,7 @@ public class WebRequestBodyParser {
         return sb.toString();
     }
 
+    @Nullable
     public static MultiValueMap<String, String> parseURLEncoded(String body, String encoding)
             throws UnsupportedEncodingException {
         if (StringUtils.isEmpty(body)) {
@@ -117,6 +121,7 @@ public class WebRequestBodyParser {
         }
     }
 
+    @Nullable
     public static <T extends Parameters> T parseURLEncodedAsParameters(
             RequestAdapter requestAdapter, Class<T> requiredType) throws RequestParseException {
         try {

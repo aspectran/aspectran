@@ -33,6 +33,7 @@ public class TransformResponseFactory {
      * @param transformRule the transform rule
      * @return the transform response
      */
+    @NonNull
     public static Response create(@NonNull TransformRule transformRule) {
         FormatType formatType = transformRule.getFormatType();
         Response res;

@@ -17,6 +17,7 @@ package com.aspectran.undertow.server.session;
 
 import com.aspectran.core.component.session.Session;
 import com.aspectran.core.component.session.SessionListener;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.servlet.handlers.ServletRequestContext;
 
@@ -84,6 +85,7 @@ final class TowSessionListenerBridge implements SessionListener {
         return towSessionManager.createTowSessionBridge(session);
     }
 
+    @Nullable
     static HttpServerExchange getCurrentExchange() {
         ServletRequestContext current = ServletRequestContext.current();
         return current != null ? current.getExchange() : null;

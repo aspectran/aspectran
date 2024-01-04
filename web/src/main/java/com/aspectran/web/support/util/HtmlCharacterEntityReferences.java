@@ -16,6 +16,7 @@
 package com.aspectran.web.support.util;
 
 import com.aspectran.utils.Assert;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 
 import java.io.IOException;
@@ -124,7 +125,7 @@ class HtmlCharacterEntityReferences {
      * @since 4.1.2
      */
     @Nullable
-    public String convertToReference(char character, String encoding) {
+    public String convertToReference(char character, @NonNull String encoding) {
         if (encoding.startsWith("UTF-")) {
             switch (character){
                 case '<':
@@ -140,10 +141,7 @@ class HtmlCharacterEntityReferences {
             }
         } else if (character < 1000 || (character >= 8000 && character < 10000)) {
             int index = (character < 1000 ? character : character - 7000);
-            String entityReference = characterToEntityReferenceMap[index];
-            if (entityReference != null) {
-                return entityReference;
-            }
+            return characterToEntityReferenceMap[index];
         }
         return null;
     }

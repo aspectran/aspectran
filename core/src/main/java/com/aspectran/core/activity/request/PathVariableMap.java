@@ -18,6 +18,8 @@ package com.aspectran.core.activity.request;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.context.expr.token.Token;
 import com.aspectran.core.context.rule.type.TokenType;
+import com.aspectran.utils.Assert;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -45,7 +47,11 @@ public class PathVariableMap extends HashMap<Token, String> {
         }
     }
 
+    @Nullable
     public static PathVariableMap parse(Token[] nameTokens, String requestName) {
+        Assert.notNull(nameTokens, "nameTokens must not be null");
+        Assert.notNull(requestName, "requestName must not be null");
+
         PathVariableMap pathVariables = new PathVariableMap();
 
         /*

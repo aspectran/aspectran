@@ -21,6 +21,7 @@ import com.aspectran.core.activity.response.ResponseException;
 import com.aspectran.core.context.rule.TransformRule;
 import com.aspectran.core.context.rule.type.FormatType;
 import com.aspectran.core.context.rule.type.ResponseType;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 
@@ -70,7 +71,7 @@ public abstract class TransformResponse implements Response {
     }
 
     @Override
-    public void commit(Activity activity) throws ResponseException {
+    public void commit(@NonNull Activity activity) throws ResponseException {
         if (logger.isDebugEnabled()) {
             logger.debug("Response " + transformRule);
         }
