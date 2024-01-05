@@ -38,10 +38,8 @@ public class ResourceRuleAppender extends AbstractRuleAppender {
 
     public ResourceRuleAppender(String resource, ClassLoader classLoader) {
         super(AppenderType.RESOURCE);
-
         this.resource = resource;
         this.classLoader = classLoader;
-
         setLastModified(System.currentTimeMillis());
     }
 

@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.context.rule.type;
 
+import com.aspectran.utils.annotation.jsr305.Nullable;
+
 /**
  * Supported pointcut types.
  */
@@ -40,6 +42,7 @@ public enum PointcutType {
      * @param alias the pointcut type as a {@code String}
      * @return a {@code PointcutType}, may be {@code null}
      */
+    @Nullable
     public static PointcutType resolve(String alias) {
         for (PointcutType type : values()) {
             if (type.alias.equals(alias)) {

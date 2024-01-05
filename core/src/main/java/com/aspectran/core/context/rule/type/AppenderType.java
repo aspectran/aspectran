@@ -16,6 +16,7 @@
 package com.aspectran.core.context.rule.type;
 
 import com.aspectran.core.context.rule.appender.RuleAppender;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 
 /**
  * Define the types of {@link RuleAppender}s.
@@ -46,6 +47,7 @@ public enum AppenderType {
      * @param alias the appender type as a {@code String}
      * @return an {@code AppenderType}, may be {@code null}
      */
+    @Nullable
     public static AppenderType resolve(String alias) {
         for (AppenderType type : values()) {
             if (type.alias.equals(alias)) {

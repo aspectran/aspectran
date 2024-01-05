@@ -26,6 +26,7 @@ import com.aspectran.core.util.TextStyler;
 import com.aspectran.utils.BooleanUtils;
 import com.aspectran.utils.ResourceUtils;
 import com.aspectran.utils.ToStringBuilder;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -376,8 +377,10 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceable
         return tsb.toString();
     }
 
+    @NonNull
     public static TemplateRule newInstance(String id, String engine, String name, String file,
-            String resource, String url, String content, String style, String encoding, Boolean noCache)
+                                           String resource, String url, String content, String style,
+                                           String encoding, Boolean noCache)
             throws IllegalRuleException {
 
         if (id == null) {
@@ -405,6 +408,7 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceable
         return tr;
     }
 
+    @NonNull
     public static TemplateRule newInstanceForBuiltin(String id, String engine, String name, String file,
             String resource, String url, String style, String content, String encoding, Boolean noCache)
             throws IllegalRuleException {
@@ -431,7 +435,8 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceable
         return tr;
     }
 
-    public static TemplateRule replicate(TemplateRule templateRule) {
+    @NonNull
+    public static TemplateRule replicate(@NonNull TemplateRule templateRule) {
         TemplateRule tr = new TemplateRule();
         tr.setId(templateRule.getId());
         tr.setEngineBeanId(templateRule.getEngine());
@@ -449,12 +454,12 @@ public class TemplateRule implements Replicable<TemplateRule>, BeanReferenceable
         return tr;
     }
 
-    public static void updateTemplateSource(TemplateRule templateRule, String content) {
+    public static void updateTemplateSource(@NonNull TemplateRule templateRule, String content) {
         templateRule.setContent(content);
         updateTemplateSource(templateRule);
     }
 
-    private static void updateTemplateSource(TemplateRule templateRule) {
+    private static void updateTemplateSource(@NonNull TemplateRule templateRule) {
         String content = templateRule.getContent();
         if (content != null) {
             content = TextStyler.styling(content, templateRule.getContentStyle());

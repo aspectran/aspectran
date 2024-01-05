@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.context.rule.params;
 
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.apon.AbstractParameters;
 import com.aspectran.utils.apon.AponParseException;
 import com.aspectran.utils.apon.ParameterKey;
@@ -130,6 +131,7 @@ public class TriggerExpressionParameters extends AbstractParameters {
         putValue(TriggerExpressionParameters.expression, expression);
     }
 
+    @NonNull
     public static ParameterKey[] getParameterKeys() {
         return Arrays.copyOf(parameterKeys, parameterKeys.length);
     }

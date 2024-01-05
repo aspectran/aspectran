@@ -28,6 +28,8 @@ import com.aspectran.core.context.rule.type.BeanRefererType;
 import com.aspectran.utils.BeanUtils;
 import com.aspectran.utils.MethodUtils;
 import com.aspectran.utils.ToStringBuilder;
+import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 import com.aspectran.utils.nodelet.NodeTracker;
@@ -155,7 +157,7 @@ public class BeanReferenceInspector {
         }
     }
 
-    private boolean isStaticMethodReference(RefererInfo refererInfo) {
+    private boolean isStaticMethodReference(@NonNull RefererInfo refererInfo) {
         if (refererInfo.getBeanRefererType() == BeanRefererType.TOKEN) {
             Token t = (Token)refererInfo.getReferenceable();
             if (t.getAlternativeValue() != null && t.getGetterName() != null) {
@@ -165,7 +167,7 @@ public class BeanReferenceInspector {
         return false;
     }
 
-    private void checkTransletActionParameter(InvokeActionRule invokeActionRule, BeanRule beanRule, RefererInfo refererInfo)
+    private void checkTransletActionParameter(@NonNull InvokeActionRule invokeActionRule, BeanRule beanRule, RefererInfo refererInfo)
             throws BeanRuleException {
         if (invokeActionRule.getArgumentItemRuleMap() == null) {
             Class<?> beanClass = beanRule.getTargetBeanClass();
@@ -255,7 +257,7 @@ public class BeanReferenceInspector {
 
         private final NodeTracker nodeTracker;
 
-        RefererInfo(BeanReferenceable referenceable, RuleAppender ruleAppender) {
+        RefererInfo(@NonNull BeanReferenceable referenceable, @Nullable RuleAppender ruleAppender) {
             this.referenceable = referenceable;
             this.ruleAppender = ruleAppender;
 
@@ -294,7 +296,7 @@ public class BeanReferenceInspector {
                 sb.append(ruleAppender.getQualifiedName());
                 if (nodeTracker != null) {
                     sb.append(" ");
-                    sb.append(nodeTracker.toString());
+                    sb.append(nodeTracker);
                 }
                 sb.append(" ");
             }

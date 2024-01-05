@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.context.rule.type;
 
+import com.aspectran.utils.annotation.jsr305.Nullable;
+
 /**
  * Advice types include "around", "before" and "after" advice.
  * <dl>
@@ -49,6 +51,7 @@ public enum AspectAdviceType {
      * @param alias the aspect advice type as a {@code String}
      * @return an {@code AspectAdviceType}, may be {@code null}
      */
+    @Nullable
     public static AspectAdviceType resolve(String alias) {
         for (AspectAdviceType type : values()) {
             if (type.alias.equals(alias)) {

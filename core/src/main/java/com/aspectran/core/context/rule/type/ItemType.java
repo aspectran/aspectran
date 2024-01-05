@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.context.rule.type;
 
+import com.aspectran.utils.annotation.jsr305.Nullable;
+
 /**
  * Supported item types.
  * 
@@ -46,6 +48,7 @@ public enum ItemType {
      * @param alias the item type as a {@code String}
      * @return an {@code ItemType}, may be {@code null}
      */
+    @Nullable
     public static ItemType resolve(String alias) {
         for (ItemType type : values()) {
             if (type.alias.equals(alias)) {

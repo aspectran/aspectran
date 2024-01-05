@@ -21,6 +21,7 @@ import com.aspectran.core.context.rule.type.FormatType;
 import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.utils.BooleanUtils;
 import com.aspectran.utils.ToStringBuilder;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 /**
  * The Class TransformRule.
@@ -225,17 +226,20 @@ public class TransformRule implements Replicable<TransformRule> {
         return tsb.toString();
     }
 
+    @NonNull
     public static TransformRule newInstance(String format, String contentType,
-            String encoding, Boolean defaultResponse, Boolean pretty) {
+                                            String encoding, Boolean defaultResponse, Boolean pretty) {
         FormatType formatType = FormatType.resolve(format);
         return newInstance(formatType, contentType, encoding, defaultResponse, pretty);
     }
 
+    @NonNull
     public static TransformRule newInstance(FormatType formatType, String contentType,
                                             String encoding, Boolean pretty) {
         return newInstance(formatType, contentType, encoding, null, pretty);
     }
 
+    @NonNull
     public static TransformRule newInstance(FormatType formatType, String contentType,
                                             String encoding, Boolean defaultResponse, Boolean pretty) {
         if (formatType == null && contentType != null) {
@@ -252,7 +256,7 @@ public class TransformRule implements Replicable<TransformRule> {
         return tr;
     }
 
-    public static TransformRule replicate(TransformRule transformRule) {
+    @NonNull public static TransformRule replicate(@NonNull TransformRule transformRule) {
         TransformRule tr = new TransformRule();
         tr.setFormatType(transformRule.getFormatType());
         tr.setContentType(transformRule.getContentType());

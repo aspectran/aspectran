@@ -16,6 +16,7 @@
 package com.aspectran.core.util;
 
 import com.aspectran.core.context.rule.type.TextStyleType;
+import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.apon.AponFormat;
 
 /**
@@ -46,7 +47,7 @@ public class TextStyler {
     }
 
     public static String stripAponStyle(String text) {
-        if (text == null || text.isEmpty()) {
+        if (StringUtils.isEmpty(text)) {
             return text;
         }
         StringBuilder sb = new StringBuilder(text.length());

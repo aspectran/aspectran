@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.context.rule.type;
 
+import com.aspectran.utils.annotation.jsr305.Nullable;
+
 /**
  * Supported bean scope types.
  * 
@@ -44,6 +46,7 @@ public enum ScopeType {
      * @param alias the scope type as a {@code String}
      * @return a {@code ScopeType}, may be {@code null}
      */
+    @Nullable
     public static ScopeType resolve(String alias) {
         if (alias != null) {
             for (ScopeType type : values()) {

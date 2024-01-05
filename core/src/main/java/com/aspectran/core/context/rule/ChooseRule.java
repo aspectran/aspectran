@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.context.rule;
 
+import com.aspectran.utils.annotation.jsr305.NonNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,6 +40,7 @@ public class ChooseRule {
         return chooseWhenRules;
     }
 
+    @NonNull
     public static ChooseRule newInstance() {
         return new ChooseRule();
     }

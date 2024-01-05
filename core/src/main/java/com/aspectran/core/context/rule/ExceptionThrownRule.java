@@ -29,6 +29,7 @@ import com.aspectran.core.activity.response.transform.TransformResponseFactory;
 import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
 import com.aspectran.core.context.rule.ability.ResponseRuleApplicable;
 import com.aspectran.core.context.rule.type.ActionType;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 /**
  * The Class ExceptionThrownRule.
@@ -218,6 +219,7 @@ public class ExceptionThrownRule implements ActionRuleApplicable, ResponseRuleAp
         return response;
     }
 
+    @NonNull
     public static ExceptionThrownRule newInstance(Class<? extends Throwable>[] types, AnnotatedAction action) {
         ExceptionThrownRule exceptionThrownRule = new ExceptionThrownRule();
         if (types != null && types.length > 0) {

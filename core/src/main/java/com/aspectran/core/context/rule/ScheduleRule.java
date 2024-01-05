@@ -24,6 +24,7 @@ import com.aspectran.core.context.rule.type.BeanRefererType;
 import com.aspectran.core.context.rule.type.TriggerType;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.ToStringBuilder;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -141,6 +142,7 @@ public class ScheduleRule implements BeanReferenceable {
         return tsb.toString();
     }
 
+    @NonNull
     public static ScheduleRule newInstance(String id) throws IllegalRuleException {
         if (id == null) {
             throw new IllegalRuleException("The 'schedule' element requires an 'id' attribute");
@@ -151,7 +153,7 @@ public class ScheduleRule implements BeanReferenceable {
         return scheduleRule;
     }
 
-    public static void updateTrigger(ScheduleRule scheduleRule, TriggerParameters triggerParameters)
+    public static void updateTrigger(ScheduleRule scheduleRule, @NonNull TriggerParameters triggerParameters)
             throws IllegalRuleException {
         updateTriggerType(scheduleRule, triggerParameters.getString(TriggerParameters.type));
         TriggerExpressionParameters expressionParameters = triggerParameters.getParameters(TriggerParameters.expression);
@@ -162,13 +164,13 @@ public class ScheduleRule implements BeanReferenceable {
         updateTriggerExpression(scheduleRule, expressionParameters);
     }
 
-    public static void updateTrigger(ScheduleRule scheduleRule, String type, String expression)
+    public static void updateTrigger(@NonNull ScheduleRule scheduleRule, String type, String expression)
             throws IllegalRuleException {
         updateTriggerType(scheduleRule, type);
         updateTriggerExpression(scheduleRule, expression);
     }
 
-    public static void updateTriggerType(ScheduleRule scheduleRule, String type) {
+    public static void updateTriggerType(@NonNull ScheduleRule scheduleRule, String type) {
         TriggerType triggerType;
         if (type != null) {
             triggerType = TriggerType.resolve(type);
@@ -182,7 +184,7 @@ public class ScheduleRule implements BeanReferenceable {
         scheduleRule.setTriggerType(triggerType);
     }
 
-    public static void updateTriggerExpression(ScheduleRule scheduleRule, String expression)
+    public static void updateTriggerExpression(@NonNull ScheduleRule scheduleRule, String expression)
             throws IllegalRuleException {
         if (StringUtils.hasText(expression)) {
             TriggerExpressionParameters expressionParameters;
@@ -195,7 +197,7 @@ public class ScheduleRule implements BeanReferenceable {
         }
     }
 
-    public static void updateTriggerExpression(ScheduleRule scheduleRule, TriggerExpressionParameters expressionParameters) {
+    public static void updateTriggerExpression(@NonNull ScheduleRule scheduleRule, TriggerExpressionParameters expressionParameters) {
         if (scheduleRule.getTriggerType() == TriggerType.SIMPLE) {
             Long intervalInMilliseconds = expressionParameters.getLong(TriggerExpressionParameters.intervalInMilliseconds);
             Integer intervalInSeconds = expressionParameters.getInt(TriggerExpressionParameters.intervalInSeconds);
@@ -217,7 +219,7 @@ public class ScheduleRule implements BeanReferenceable {
         scheduleRule.setTriggerExpressionParameters(expressionParameters);
     }
 
-    public static void updateTriggerExpression(ScheduleRule scheduleRule, SimpleTrigger simpleTriggerAnno) {
+    public static void updateTriggerExpression(@NonNull ScheduleRule scheduleRule, @NonNull SimpleTrigger simpleTriggerAnno) {
         TriggerExpressionParameters expressionParameters = new TriggerExpressionParameters();
         scheduleRule.setTriggerType(TriggerType.SIMPLE);
         if (simpleTriggerAnno.startDelaySeconds() > 0) {
@@ -244,7 +246,7 @@ public class ScheduleRule implements BeanReferenceable {
         updateTriggerExpression(scheduleRule, expressionParameters);
     }
 
-    public static void updateTriggerExpression(ScheduleRule scheduleRule, CronTrigger cronTriggerAnno) {
+    public static void updateTriggerExpression(@NonNull ScheduleRule scheduleRule, @NonNull CronTrigger cronTriggerAnno) {
         TriggerExpressionParameters expressionParameters = new TriggerExpressionParameters();
         scheduleRule.setTriggerType(TriggerType.CRON);
         String expression = StringUtils.emptyToNull(cronTriggerAnno.expression());

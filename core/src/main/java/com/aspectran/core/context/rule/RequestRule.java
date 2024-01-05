@@ -17,6 +17,7 @@ package com.aspectran.core.context.rule;
 
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.utils.ToStringBuilder;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.nio.charset.Charset;
 
@@ -183,10 +184,12 @@ public class RequestRule {
         return tsb.toString();
     }
 
+    @NonNull
     public static RequestRule newInstance(boolean explicit) {
         return new RequestRule(explicit);
     }
 
+    @NonNull
     public static RequestRule newInstance(String allowedMethod, String encoding) throws IllegalRuleException {
         MethodType allowedMethodType = null;
         if (allowedMethod != null) {

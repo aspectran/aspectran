@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.context.rule.type;
 
+import com.aspectran.utils.annotation.jsr305.Nullable;
+
 /**
  * Supported response types.
  * 
@@ -45,6 +47,7 @@ public enum ResponseType {
      * @param alias the response type as a {@code String}
      * @return a {@code ResponseType}, may be {@code null}
      */
+    @Nullable
     public static ResponseType resolve(String alias) {
         for (ResponseType type : values()) {
             if (type.alias.equals(alias)) {

@@ -25,6 +25,7 @@ import com.aspectran.core.context.rule.type.ItemType;
 import com.aspectran.core.context.rule.type.ItemValueType;
 import com.aspectran.utils.BooleanUtils;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.nodelet.NodeletParser;
 import com.aspectran.utils.nodelet.SubnodeParser;
 
@@ -42,7 +43,7 @@ class ItemNodeParser implements SubnodeParser {
     }
 
     @Override
-    public void parse(String xpath, NodeletParser parser) {
+    public void parse(@NonNull String xpath, @NonNull NodeletParser parser) {
         AspectranNodeParser nodeParser = parser.getNodeParser();
         ActivityRuleAssistant assistant = nodeParser.getAssistant();
 

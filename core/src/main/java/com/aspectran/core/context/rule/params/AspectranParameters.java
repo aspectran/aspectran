@@ -25,6 +25,7 @@ import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.converter.RulesToParameters;
 import com.aspectran.core.context.rule.type.DefaultSettingType;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.apon.AbstractParameters;
 import com.aspectran.utils.apon.ParameterKey;
 import com.aspectran.utils.apon.Parameters;
@@ -98,7 +99,7 @@ public class AspectranParameters extends AbstractParameters {
         return setSetting(DefaultSettingType.DEFAULT_SCHEDULER_BEAN, beanName);
     }
 
-    private AspectranParameters setSetting(DefaultSettingType defaultSettingType, Object value) {
+    private AspectranParameters setSetting(@NonNull DefaultSettingType defaultSettingType, Object value) {
         SettingsParameters settingsParameters = touchParameters(settings);
         settingsParameters.putSetting(defaultSettingType.toString(), value);
         return this;

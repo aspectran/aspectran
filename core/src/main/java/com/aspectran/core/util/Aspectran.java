@@ -15,6 +15,9 @@
  */
 package com.aspectran.core.util;
 
+import com.aspectran.utils.Assert;
+import com.aspectran.utils.annotation.jsr305.NonNull;
+
 import java.io.PrintStream;
 
 /**
@@ -70,6 +73,7 @@ public class Aspectran {
      * @param output a {@link PrintStream} object to print
      */
     public static void printAboutMe(PrintStream output) {
+        Assert.notNull(output, "output must not be null");
         output.println("Aspectran: " + VERSION);
         output.println("JVM: " + System.getProperty("java.version") +
                 " (\"" + System.getProperty("java.vm.vendor") + "\"" + " " +
@@ -82,7 +86,8 @@ public class Aspectran {
      * Prints Aspectran information to the specified print stream.
      * @param output a {@link PrintStream} object to print
      */
-    public static void printPrettyAboutMe(PrintStream output) {
+    public static void printPrettyAboutMe(@NonNull PrintStream output) {
+        Assert.notNull(output, "output must not be null");
         output.println("---------------------------------------------------------------------");
         output.printf(" %1$-9s : %2$s%n", "Aspectran", VERSION);
         output.printf(" %1$-9s : %2$s%n", "JVM", System.getProperty("java.version") +

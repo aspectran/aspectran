@@ -20,6 +20,7 @@ import com.aspectran.core.context.rule.params.AspectranParameters;
 import com.aspectran.core.context.rule.type.AppendableFileFormatType;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.ToStringBuilder;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 /**
  * Define rule for importing other rules.
@@ -117,6 +118,7 @@ public class AppendRule {
      * @return an {@code AppendRule} object
      * @throws IllegalRuleException if an illegal rule is found
      */
+    @NonNull
     public static AppendRule newInstance(String file, String resource, String url, String format, String profile)
             throws IllegalRuleException {
         AppendRule appendRule = new AppendRule();
@@ -150,6 +152,7 @@ public class AppendRule {
      * @param profile the environment profile name
      * @return an {@code AppendRule} object
      */
+    @NonNull
     public static AppendRule newInstance(AspectranParameters aspectranParameters, String profile) {
         AppendRule appendRule = new AppendRule();
         appendRule.setAspectranParameters(aspectranParameters);

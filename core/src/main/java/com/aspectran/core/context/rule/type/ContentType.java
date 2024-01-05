@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.context.rule.type;
 
+import com.aspectran.utils.annotation.jsr305.Nullable;
+
 /**
  * Supported content types.
  * 
@@ -45,6 +47,7 @@ public enum ContentType {
      * @param alias the content type as a {@code String}
      * @return a {@code ContentType}, may be {@code null}
      */
+    @Nullable
     public static ContentType resolve(String alias) {
         for (ContentType type : values()) {
             if (type.alias.equals(alias)) {

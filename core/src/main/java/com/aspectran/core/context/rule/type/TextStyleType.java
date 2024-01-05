@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.context.rule.type;
 
+import com.aspectran.utils.annotation.jsr305.Nullable;
+
 /**
  * Enumeration for styles of the text.
  * 
@@ -43,6 +45,7 @@ public enum TextStyleType {
      * @param alias the action type as a {@code String}
      * @return an {@code TextStyleType}, may be {@code null}
      */
+    @Nullable
     public static TextStyleType resolve(String alias) {
         for (TextStyleType type : values()) {
             if (type.alias.equals(alias)) {

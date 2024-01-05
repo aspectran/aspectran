@@ -22,6 +22,8 @@ import com.aspectran.core.context.rule.type.JoinpointTargetType;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.ToStringBuilder;
+import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -144,6 +146,7 @@ public class JoinpointRule {
         return tsb.toString();
     }
 
+    @NonNull
     public static JoinpointRule newInstance() {
         return new JoinpointRule();
     }
@@ -161,7 +164,7 @@ public class JoinpointRule {
         }
     }
 
-    public static void updateJoinpoint(JoinpointRule joinpointRule, JoinpointParameters joinpointParameters)
+    public static void updateJoinpoint(@NonNull JoinpointRule joinpointRule, JoinpointParameters joinpointParameters)
             throws IllegalRuleException {
         if (joinpointRule.getJoinpointTargetType() == null) {
             String target = joinpointParameters.getString(JoinpointParameters.target);
@@ -173,7 +176,7 @@ public class JoinpointRule {
         joinpointRule.setJoinpointParameters(joinpointParameters);
     }
 
-    public static void updateJoinpointTargetType(JoinpointRule joinpointRule, String target) {
+    public static void updateJoinpointTargetType(@NonNull JoinpointRule joinpointRule, String target) {
         if (target != null) {
             JoinpointTargetType joinpointTargetType = JoinpointTargetType.resolve(target);
             if (joinpointTargetType == null) {
@@ -183,7 +186,7 @@ public class JoinpointRule {
         }
     }
 
-    public static void updateMethods(JoinpointRule joinpointRule, String[] methods) {
+    public static void updateMethods(@NonNull JoinpointRule joinpointRule, String[] methods) {
         if (methods != null && methods.length > 0) {
             List<MethodType> methodTypes = new ArrayList<>(methods.length);
             for (String method : methods) {
@@ -193,13 +196,11 @@ public class JoinpointRule {
                 }
                 methodTypes.add(methodType);
             }
-            if (!methodTypes.isEmpty()) {
-                joinpointRule.setMethods(methodTypes.toArray(new MethodType[0]));
-            }
+            joinpointRule.setMethods(methodTypes.toArray(new MethodType[0]));
         }
     }
 
-    public static void updateHeaders(JoinpointRule joinpointRule, String[] headers) {
+    public static void updateHeaders(@NonNull JoinpointRule joinpointRule, String[] headers) {
         if (headers != null && headers.length > 0) {
             List<String> headerList = new ArrayList<>(headers.length);
             for (String header : headers) {
@@ -213,7 +214,7 @@ public class JoinpointRule {
         }
     }
 
-    public static void updatePointcutRule(JoinpointRule joinpointRule, PointcutParameters pointcutParameters)
+    public static void updatePointcutRule(@NonNull JoinpointRule joinpointRule, PointcutParameters pointcutParameters)
             throws IllegalRuleException {
         if (pointcutParameters == null) {
             return;
@@ -244,6 +245,7 @@ public class JoinpointRule {
         joinpointRule.setPointcutRule(pointcutRule);
     }
 
+    @Nullable
     private static List<PointcutPatternRule> mergePointcutPatternRules(List<String> patternStringList,
                                                                        List<PointcutQualifierParameters> qualifierParametersList) {
         int patternStringSize = (patternStringList != null ? patternStringList.size() : 0);
@@ -267,7 +269,7 @@ public class JoinpointRule {
         return pointcutPatternRuleList;
     }
 
-    private static PointcutPatternRule createPointcutPatternRule(PointcutQualifierParameters qualifierParameters) {
+    private static PointcutPatternRule createPointcutPatternRule(@NonNull PointcutQualifierParameters qualifierParameters) {
         PointcutPatternRule pointcutPatternRule = null;
         String translet = qualifierParameters.getString(PointcutQualifierParameters.translet);
         String bean = qualifierParameters.getString(PointcutQualifierParameters.bean);

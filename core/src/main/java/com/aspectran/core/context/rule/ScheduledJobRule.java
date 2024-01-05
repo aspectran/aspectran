@@ -17,6 +17,7 @@ package com.aspectran.core.context.rule;
 
 import com.aspectran.utils.BooleanUtils;
 import com.aspectran.utils.ToStringBuilder;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 /**
  * The Class ScheduledJobRule.
@@ -65,6 +66,7 @@ public class ScheduledJobRule {
         return tsb.toString();
     }
 
+    @NonNull
     public static ScheduledJobRule newInstance(ScheduleRule scheduleRule, String transletName,
                                                Boolean disabled) throws IllegalRuleException {
         if (transletName == null) {

@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.context.rule.type;
 
+import com.aspectran.utils.annotation.jsr305.Nullable;
+
 /**
  * Supported token types.
  * 
@@ -46,6 +48,7 @@ public enum TokenType {
      * @param alias the token type as a {@code String}
      * @return a {@code TokenType}, may be {@code null}
      */
+    @Nullable
     public static TokenType resolve(String alias) {
         for (TokenType type : values()) {
             if (type.alias.equals(alias)) {

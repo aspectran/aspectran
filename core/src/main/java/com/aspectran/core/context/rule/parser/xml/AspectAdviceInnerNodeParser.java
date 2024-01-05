@@ -20,6 +20,7 @@ import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.ExceptionThrownRule;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.nodelet.NodeletParser;
 import com.aspectran.utils.nodelet.SubnodeParser;
 
@@ -31,7 +32,7 @@ import com.aspectran.utils.nodelet.SubnodeParser;
 class AspectAdviceInnerNodeParser implements SubnodeParser {
 
     @Override
-    public void parse(String xpath, NodeletParser parser) {
+    public void parse(@NonNull String xpath, @NonNull NodeletParser parser) {
         AspectranNodeParser nodeParser = parser.getNodeParser();
 
         parser.setXpath(xpath + "/before");

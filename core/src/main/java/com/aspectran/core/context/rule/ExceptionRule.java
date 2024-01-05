@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.context.rule;
 
+import com.aspectran.utils.annotation.jsr305.NonNull;
+
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -90,7 +92,7 @@ public class ExceptionRule {
      * @param ex the throwable exception
      * @return the matched depth
      */
-    private int getMatchedDepth(String exceptionType, Throwable ex) {
+    private int getMatchedDepth(String exceptionType, @NonNull Throwable ex) {
         Throwable t = ex.getCause();
         if (t != null) {
             return getMatchedDepth(exceptionType, t);
@@ -106,7 +108,7 @@ public class ExceptionRule {
      * @param depth the depth
      * @return the matched depth
      */
-    private int getMatchedDepth(String exceptionType, Class<?> exceptionClass, int depth) {
+    private int getMatchedDepth(String exceptionType, @NonNull Class<?> exceptionClass, int depth) {
         if (exceptionClass.getName().equals(exceptionType)) {
             return depth;
         }

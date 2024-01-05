@@ -17,6 +17,7 @@ package com.aspectran.core.context.rule;
 
 import com.aspectran.core.context.env.Profiles;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,6 +78,7 @@ public class EnvironmentRule {
      * @param profile the profile
      * @return an instance of EnvironmentRule
      */
+    @NonNull
     public static EnvironmentRule newInstance(String profile) {
         EnvironmentRule environmentRule = new EnvironmentRule();
         if (StringUtils.hasText(profile)) {

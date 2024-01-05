@@ -24,7 +24,9 @@ import com.aspectran.core.context.rule.ability.Replicable;
 import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.utils.BooleanUtils;
+import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.ToStringBuilder;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.util.List;
 import java.util.Map;
@@ -292,12 +294,13 @@ public class RedirectRule implements Replicable<RedirectRule> {
         return tsb.toString();
     }
 
+    @NonNull
     public static RedirectRule newInstance(String contentType, String path, String encoding,
                                            Boolean excludeNullParameters, Boolean excludeEmptyParameters,
                                            Boolean defaultResponse) {
         RedirectRule rr = new RedirectRule();
         rr.setContentType(contentType);
-        if (path != null && path.length() > 0) {
+        if (StringUtils.hasLength(path)) {
             rr.setPath(path);
         }
         rr.setEncoding(encoding);
@@ -307,6 +310,7 @@ public class RedirectRule implements Replicable<RedirectRule> {
         return rr;
     }
 
+    @NonNull
     public static RedirectRule newInstance(String path) throws IllegalRuleException {
         if (path == null) {
             throw new IllegalRuleException("path must not be null");
@@ -316,7 +320,8 @@ public class RedirectRule implements Replicable<RedirectRule> {
         return rr;
     }
 
-    public static RedirectRule replicate(RedirectRule redirectRule) {
+    @NonNull
+    public static RedirectRule replicate(@NonNull RedirectRule redirectRule) {
         RedirectRule rr = new RedirectRule();
         rr.setContentType(redirectRule.getContentType());
         rr.setPath(redirectRule.getPath(), redirectRule.getPathTokens());

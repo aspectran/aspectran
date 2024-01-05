@@ -25,6 +25,7 @@ import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.utils.BooleanUtils;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.ToStringBuilder;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.apon.AponParseException;
 import com.aspectran.utils.apon.AponReader;
 
@@ -295,6 +296,7 @@ public class AspectRule implements BeanReferenceable {
         return tsb.toString();
     }
 
+    @NonNull
     public static AspectRule newInstance(String id, String order, Boolean isolated, Boolean disabled)
             throws IllegalRuleException {
         if (id == null) {
@@ -317,7 +319,7 @@ public class AspectRule implements BeanReferenceable {
         return aspectRule;
     }
 
-    public static void updateJoinpoint(AspectRule aspectRule, String target, String apon)
+    public static void updateJoinpoint(@NonNull AspectRule aspectRule, String target, String apon)
             throws IllegalRuleException {
         JoinpointRule joinpointRule = JoinpointRule.newInstance();
         JoinpointRule.updateJoinpointTargetType(joinpointRule, target);
@@ -325,7 +327,7 @@ public class AspectRule implements BeanReferenceable {
         aspectRule.setJoinpointRule(joinpointRule);
     }
 
-    public static void updateJoinpoint(AspectRule aspectRule, JoinpointParameters joinpointParameters)
+    public static void updateJoinpoint(@NonNull AspectRule aspectRule, @NonNull JoinpointParameters joinpointParameters)
             throws IllegalRuleException {
         JoinpointRule joinpointRule = JoinpointRule.newInstance();
 

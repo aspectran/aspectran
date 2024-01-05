@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.context.rule.type;
 
+import com.aspectran.utils.annotation.jsr305.Nullable;
+
 /**
  * Supported bean referer types.
  * 
@@ -47,6 +49,7 @@ public enum BeanRefererType {
      * @param alias the bean referrer type as a {@code String}
      * @return a {@code BeanReferrerType}, may be {@code null}
      */
+    @Nullable
     public static BeanRefererType resolve(String alias) {
         for (BeanRefererType type : values()) {
             if (type.alias.equals(alias)) {

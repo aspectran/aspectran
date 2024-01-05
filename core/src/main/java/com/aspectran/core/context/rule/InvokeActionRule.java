@@ -19,6 +19,7 @@ import com.aspectran.core.context.rule.ability.BeanReferenceable;
 import com.aspectran.core.context.rule.type.BeanRefererType;
 import com.aspectran.utils.BooleanUtils;
 import com.aspectran.utils.ToStringBuilder;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.lang.reflect.Method;
 
@@ -257,6 +258,7 @@ public class InvokeActionRule implements BeanReferenceable {
      * @return the invoke action rule
      * @throws IllegalRuleException if an illegal rule is found
      */
+    @NonNull
     public static InvokeActionRule newInstance(String id, String beanId, String methodName, Boolean hidden)
             throws IllegalRuleException {
         if (beanId == null) {
@@ -281,6 +283,7 @@ public class InvokeActionRule implements BeanReferenceable {
      * @return the invoke action rule
      * @throws IllegalRuleException if an illegal rule is found
      */
+    @NonNull
     public static InvokeActionRule newInstance(String methodName, Boolean hidden)
             throws IllegalRuleException {
         if (methodName == null) {

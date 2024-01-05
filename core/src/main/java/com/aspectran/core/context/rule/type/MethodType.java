@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.context.rule.type;
 
+import com.aspectran.utils.annotation.jsr305.Nullable;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -118,6 +120,7 @@ public enum MethodType {
      * @param value the method type as a {@code String}
      * @return a {@code MethodType}, may be {@code null}
      */
+    @Nullable
     public static MethodType[] parse(String value) {
         MethodType[] types = new MethodType[MAX_COUNT];
         int count = 0;

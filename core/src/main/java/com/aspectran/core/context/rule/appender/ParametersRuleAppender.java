@@ -32,7 +32,6 @@ public class ParametersRuleAppender extends AbstractRuleAppender {
 
     public ParametersRuleAppender() {
         super(AppenderType.PARAMETERS);
-
         setAppendableFileFormatType(AppendableFileFormatType.APON);
     }
 

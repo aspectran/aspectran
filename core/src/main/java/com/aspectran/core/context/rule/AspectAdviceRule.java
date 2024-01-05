@@ -25,6 +25,7 @@ import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
 import com.aspectran.core.context.rule.type.ActionType;
 import com.aspectran.core.context.rule.type.AspectAdviceType;
 import com.aspectran.utils.ToStringBuilder;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 /**
  * Advices are actions taken for a particular join point.
@@ -52,7 +53,7 @@ public class AspectAdviceRule implements ActionRuleApplicable {
 
     private ExceptionThrownRule exceptionThrownRule;
 
-    public AspectAdviceRule(AspectRule aspectRule, AspectAdviceType aspectAdviceType) {
+    public AspectAdviceRule(@NonNull AspectRule aspectRule, AspectAdviceType aspectAdviceType) {
         this.aspectRule = aspectRule;
         this.aspectId = aspectRule.getId();
         this.adviceBeanId = aspectRule.getAdviceBeanId();
@@ -163,6 +164,7 @@ public class AspectAdviceRule implements ActionRuleApplicable {
         return tsb.toString();
     }
 
+    @NonNull
     public static AspectAdviceRule newInstance(AspectRule aspectRule, AspectAdviceType aspectAdviceType) {
         return new AspectAdviceRule(aspectRule, aspectAdviceType);
     }

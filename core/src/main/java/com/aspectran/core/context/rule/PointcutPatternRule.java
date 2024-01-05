@@ -18,6 +18,7 @@ package com.aspectran.core.context.rule;
 import com.aspectran.core.component.aspect.pointcut.PointcutPattern;
 import com.aspectran.core.context.rule.type.PointcutType;
 import com.aspectran.utils.ToStringBuilder;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.util.List;
 
@@ -108,6 +109,7 @@ public class PointcutPatternRule {
         return tsb.toString();
     }
 
+    @NonNull
     public static PointcutPatternRule newInstance(String patternString) {
         PointcutPatternRule ppr = new PointcutPatternRule();
         ppr.setPatternString(patternString);
@@ -115,6 +117,7 @@ public class PointcutPatternRule {
         return ppr;
     }
 
+    @NonNull
     public static PointcutPatternRule newInstance(String translet, String bean, String method) {
         String transletNamePattern = null;
         String beanIdPattern = null;

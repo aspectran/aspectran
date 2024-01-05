@@ -17,6 +17,7 @@ package com.aspectran.core.context.rule;
 
 import com.aspectran.utils.BooleanUtils;
 import com.aspectran.utils.ToStringBuilder;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 /**
  * The Class EchoActionRule.
@@ -127,6 +128,7 @@ public class EchoActionRule {
      * @param hidden whether to hide result of the action
      * @return the echo action rule
      */
+    @NonNull
     public static EchoActionRule newInstance(String id, Boolean hidden) {
         EchoActionRule echoActionRule = new EchoActionRule();
         echoActionRule.setActionId(id);

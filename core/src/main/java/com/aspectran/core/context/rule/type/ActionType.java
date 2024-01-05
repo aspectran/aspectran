@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.context.rule.type;
 
+import com.aspectran.utils.annotation.jsr305.Nullable;
+
 /**
  * Supported action types.
  * 
@@ -46,6 +48,7 @@ public enum ActionType {
      * @param alias the action type as a {@code String}
      * @return an {@code ActionType}, may be {@code null}
      */
+    @Nullable
     public static ActionType resolve(String alias) {
         for (ActionType type : values()) {
             if (type.alias.equals(alias)) {

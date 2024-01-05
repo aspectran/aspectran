@@ -40,10 +40,8 @@ public class FileRuleAppender extends AbstractRuleAppender {
 
     public FileRuleAppender(String basePath, String filePath) {
         super(AppenderType.FILE);
-
         this.basePath = basePath;
         this.filePath = filePath;
-
         determineAppendedFileFormatType(filePath);
     }
 

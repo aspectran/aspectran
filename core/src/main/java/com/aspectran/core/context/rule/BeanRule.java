@@ -26,6 +26,7 @@ import com.aspectran.core.context.rule.type.ScopeType;
 import com.aspectran.utils.BooleanUtils;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.ToStringBuilder;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -160,7 +161,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
      * Sets the bean class.
      * @param beanClass the new bean class
      */
-    public void setBeanClass(Class<?> beanClass) {
+    public void setBeanClass(@NonNull Class<?> beanClass) {
         this.beanClass = beanClass;
         this.className = beanClass.getName();
         this.factoryBean = FactoryBean.class.isAssignableFrom(beanClass);
@@ -745,6 +746,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
         return tsb.toString();
     }
 
+    @NonNull
     public static BeanRule newInstance(
             String id,
             String className,
@@ -789,6 +791,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
         return beanRule;
     }
 
+    @NonNull
     public static BeanRule newOfferedFactoryBeanInstance(
             String id,
             String factoryBeanId,
@@ -827,6 +830,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
         return beanRule;
     }
 
+    @NonNull
     public static BeanRule newInnerBeanRule(
             String className,
             String initMethodName,
@@ -842,6 +846,7 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
         return beanRule;
     }
 
+    @NonNull
     public static BeanRule newInnerOfferedFactoryBeanRule(
             String factoryBeanId,
             String factoryMethodName,
@@ -856,7 +861,8 @@ public class BeanRule implements Replicable<BeanRule>, BeanReferenceable {
         return beanRule;
     }
 
-    public static BeanRule replicate(BeanRule beanRule) {
+    @NonNull
+    public static BeanRule replicate(@NonNull BeanRule beanRule) {
         BeanRule newBeanRule = new BeanRule();
         newBeanRule.setId(beanRule.getId());
         if (beanRule.getScanPattern() == null) {

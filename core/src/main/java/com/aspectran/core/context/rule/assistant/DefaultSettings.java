@@ -17,6 +17,7 @@ package com.aspectran.core.context.rule.assistant;
 
 import com.aspectran.core.context.rule.type.DefaultSettingType;
 import com.aspectran.utils.BooleanUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.util.Map;
 
@@ -44,7 +45,7 @@ public class DefaultSettings {
     public DefaultSettings() {
     }
 
-    public DefaultSettings(DefaultSettings ds) {
+    public DefaultSettings(@NonNull DefaultSettings ds) {
         this.transletNamePrefix = ds.getTransletNamePrefix();
         this.transletNameSuffix = ds.getTransletNameSuffix();
         this.beanProxifier = ds.getBeanProxifier();
@@ -105,7 +106,7 @@ public class DefaultSettings {
         this.defaultSchedulerBean = defaultSchedulerBean;
     }
 
-    public void apply(Map<DefaultSettingType, String> settings) {
+    public void apply(@NonNull Map<DefaultSettingType, String> settings) {
         if (settings.get(DefaultSettingType.TRANSLET_NAME_PREFIX) != null) {
             setTransletNamePrefix(settings.get(DefaultSettingType.TRANSLET_NAME_PREFIX));
         }

@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.context.rule.type;
 
+import com.aspectran.utils.annotation.jsr305.Nullable;
+
 /**
  * Supported bean proxifier types.
  * 
@@ -43,6 +45,7 @@ public enum BeanProxifierType {
      * @param alias the bean proxifier type as a {@code String}
      * @return a {@code BeanProxifierType}, may be {@code null}
      */
+    @Nullable
     public static BeanProxifierType resolve(String alias) {
         for (BeanProxifierType type : values()) {
             if (type.alias.equals(alias)) {

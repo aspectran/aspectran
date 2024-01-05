@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.context.rule.type;
 
+import com.aspectran.utils.annotation.jsr305.Nullable;
+
 /**
  * Supported autowire-target types.
  * 
@@ -46,6 +48,7 @@ public enum AutowireTargetType {
      * @param alias the autowire target type as a {@code String}
      * @return an {@code AutowireTargetType}, may be {@code null}
      */
+    @Nullable
     public static AutowireTargetType resolve(String alias) {
         for (AutowireTargetType type : values()) {
             if (type.alias.equals(alias)) {

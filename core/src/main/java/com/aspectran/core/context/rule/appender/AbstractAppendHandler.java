@@ -19,6 +19,7 @@ import com.aspectran.core.context.env.EnvironmentProfiles;
 import com.aspectran.core.context.rule.AppendRule;
 import com.aspectran.core.context.rule.assistant.ActivityRuleAssistant;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 
@@ -55,7 +56,7 @@ abstract class AbstractAppendHandler implements RuleAppendHandler {
     }
 
     @Override
-    public void pending(AppendRule appendRule) {
+    public void pending(@NonNull AppendRule appendRule) {
         RuleAppender appender = null;
         if (appendRule.getAspectranParameters() != null) {
             appender = new ParametersRuleAppender();

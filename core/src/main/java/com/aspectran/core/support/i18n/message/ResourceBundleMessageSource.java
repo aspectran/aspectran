@@ -20,6 +20,8 @@ import com.aspectran.core.context.ActivityContext;
 import com.aspectran.utils.ClassUtils;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.ToStringBuilder;
+import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -372,7 +374,7 @@ public class ResourceBundleMessageSource extends AbstractMessageSource implement
      * @see ResourceBundle#getString(String) ResourceBundle#getString(String)
      * @see ResourceBundle#containsKey(String) ResourceBundle#containsKey(String)
      */
-    protected String getStringOrNull(ResourceBundle bundle, String key) {
+    protected String getStringOrNull(@NonNull ResourceBundle bundle, String key) {
         if (bundle.containsKey(key)) {
             try {
                 return bundle.getString(key);
@@ -399,7 +401,9 @@ public class ResourceBundleMessageSource extends AbstractMessageSource implement
     private class MessageSourceControl extends ResourceBundle.Control {
 
         @Override
-        public ResourceBundle newBundle(String baseName, Locale locale, String format, ClassLoader loader, boolean reload)
+        @Nullable
+        public ResourceBundle newBundle(String baseName, Locale locale, @NonNull String format,
+                                        ClassLoader loader, boolean reload)
                 throws IllegalAccessException, InstantiationException, IOException {
             // Special handling of default encoding
             if (format.equals("java.properties")) {
@@ -438,6 +442,7 @@ public class ResourceBundleMessageSource extends AbstractMessageSource implement
         }
 
         @Override
+        @Nullable
         public Locale getFallbackLocale(String baseName, Locale locale) {
             return (fallbackToSystemLocale ? super.getFallbackLocale(baseName, locale) : null);
         }

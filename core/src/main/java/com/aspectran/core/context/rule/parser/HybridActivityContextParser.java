@@ -21,6 +21,7 @@ import com.aspectran.core.context.rule.assistant.ActivityRuleAssistant;
 import com.aspectran.core.context.rule.converter.ParametersToRules;
 import com.aspectran.core.context.rule.params.AspectranParameters;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 /**
  * The Class HybridActivityContextParser.
@@ -72,6 +73,7 @@ public class HybridActivityContextParser extends AbstractActivityContextParser {
         }
     }
 
+    @NonNull
     private RuleAppendHandler createRuleAppendHandler() {
         RuleAppendHandler appendHandler = new HybridRuleAppendHandler(getContextRuleAssistant(), getEncoding());
         appendHandler.setUseAponToLoadXml(isUseXmlToApon());

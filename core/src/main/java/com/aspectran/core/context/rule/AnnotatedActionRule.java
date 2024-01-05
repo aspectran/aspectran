@@ -20,7 +20,7 @@ import com.aspectran.utils.ToStringBuilder;
 import java.lang.reflect.Method;
 
 /**
- * The Class AnnotatedMethodActionRule.
+ * The Class AnnotatedActionRule.
  *
  * <p>Created: 2016. 2. 10.</p>
  *

@@ -19,6 +19,7 @@ import com.aspectran.core.activity.Translet;
 import com.aspectran.core.adapter.RequestAdapter;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.utils.LocaleUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
@@ -130,7 +131,7 @@ public class LocaleChangeInterceptor {
         return this.ignoreInvalidLocale;
     }
 
-    public void handle(Translet translet, LocaleResolver localeResolver) {
+    public void handle(@NonNull Translet translet, LocaleResolver localeResolver) {
         RequestAdapter requestAdapter = translet.getRequestAdapter();
         if (!checkRequestMethod(requestAdapter.getRequestMethod())) {
             return;

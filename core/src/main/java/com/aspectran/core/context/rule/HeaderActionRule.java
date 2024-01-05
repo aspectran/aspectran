@@ -17,6 +17,7 @@ package com.aspectran.core.context.rule;
 
 import com.aspectran.utils.BooleanUtils;
 import com.aspectran.utils.ToStringBuilder;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 /**
  * The Class HeaderActionRule.
@@ -129,6 +130,7 @@ public class HeaderActionRule {
      * @param hidden whether to hide result of the action
      * @return the header action rule
      */
+    @NonNull
     public static HeaderActionRule newInstance(String id, Boolean hidden) {
         HeaderActionRule headerActionRule = new HeaderActionRule();
         headerActionRule.setActionId(id);

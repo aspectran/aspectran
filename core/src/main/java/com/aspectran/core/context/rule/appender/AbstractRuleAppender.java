@@ -19,6 +19,7 @@ import com.aspectran.core.context.env.Profiles;
 import com.aspectran.core.context.rule.AppendRule;
 import com.aspectran.core.context.rule.type.AppendableFileFormatType;
 import com.aspectran.core.context.rule.type.AppenderType;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.nodelet.NodeTracker;
 
 import java.io.IOException;
@@ -59,7 +60,7 @@ abstract class AbstractRuleAppender implements RuleAppender {
     }
 
     @Override
-    public void setAppendRule(AppendRule appendRule) {
+    public void setAppendRule(@NonNull AppendRule appendRule) {
         this.appendRule = appendRule;
         // If the rule does not have a format, it follows its own determined format.
         if (appendRule.getFormat() != null) {
@@ -79,7 +80,7 @@ abstract class AbstractRuleAppender implements RuleAppender {
     }
 
     protected void determineAppendedFileFormatType(String resourceName) {
-        if (resourceName.toLowerCase().endsWith(".apon")) {
+        if (resourceName != null && resourceName.toLowerCase().endsWith(".apon")) {
             setAppendableFileFormatType(AppendableFileFormatType.APON);
         } else {
             setAppendableFileFormatType(AppendableFileFormatType.XML);

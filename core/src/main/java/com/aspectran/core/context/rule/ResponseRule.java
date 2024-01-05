@@ -28,6 +28,7 @@ import com.aspectran.core.context.rule.ability.Replicable;
 import com.aspectran.core.context.rule.ability.ResponseRuleApplicable;
 import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.utils.ToStringBuilder;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.nio.charset.Charset;
 
@@ -196,6 +197,7 @@ public class ResponseRule implements ActionRuleApplicable, ResponseRuleApplicabl
         return tsb.toString();
     }
 
+    @NonNull
     public static ResponseRule newInstance(String name, String encoding) throws IllegalRuleException {
         if (encoding != null) {
             try {
@@ -211,37 +213,43 @@ public class ResponseRule implements ActionRuleApplicable, ResponseRuleApplicabl
         return responseRule;
     }
 
+    @NonNull
     public static ResponseRule newInstance(TransformRule transformRule) {
         ResponseRule responseRule = new ResponseRule(false);
         responseRule.applyResponseRule(transformRule);
         return responseRule;
     }
 
+    @NonNull
     public static ResponseRule newInstance(DispatchRule dispatchRule) {
         ResponseRule responseRule = new ResponseRule(false);
         responseRule.applyResponseRule(dispatchRule);
         return responseRule;
     }
 
+    @NonNull
     public static ResponseRule newInstance(ForwardRule forwardRule) {
         ResponseRule responseRule = new ResponseRule(false);
         responseRule.applyResponseRule(forwardRule);
         return responseRule;
     }
 
+    @NonNull
     public static ResponseRule newInstance(RedirectRule redirectRule) {
         ResponseRule responseRule = new ResponseRule(false);
         responseRule.applyResponseRule(redirectRule);
         return responseRule;
     }
 
+    @NonNull
     public static ResponseRule newInstance(CustomTransformResponse response) {
         ResponseRule responseRule = new ResponseRule(false);
         responseRule.setResponse(response);
         return responseRule;
     }
 
-    public static ResponseRule replicate(ResponseRule responseRule) {
+    @NonNull
+    public static ResponseRule replicate(@NonNull ResponseRule responseRule) {
         ResponseRule rr = new ResponseRule(responseRule.isExplicit());
         rr.setName(responseRule.getName());
         rr.setEncoding(responseRule.getEncoding());

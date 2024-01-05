@@ -20,6 +20,7 @@ import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.utils.BooleanUtils;
 import com.aspectran.utils.ToStringBuilder;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 /**
  * The Class ForwardRule.
@@ -168,6 +169,7 @@ public class ForwardRule implements Replicable<ForwardRule> {
      * @return an instance of ForwardRule
      * @throws IllegalRuleException if an illegal rule is found
      */
+    @NonNull
     public static ForwardRule newInstance(String contentType, String transletName, String method, Boolean defaultResponse)
             throws IllegalRuleException {
         if (transletName == null) {
@@ -196,6 +198,7 @@ public class ForwardRule implements Replicable<ForwardRule> {
      * @return an instance of ForwardRule
      * @throws IllegalRuleException if an illegal rule is found
      */
+    @NonNull
     public static ForwardRule newInstance(String transletName) throws IllegalRuleException {
         if (transletName == null) {
             throw new IllegalRuleException("transletName must not be null");
@@ -206,7 +209,8 @@ public class ForwardRule implements Replicable<ForwardRule> {
         return fr;
     }
 
-    public static ForwardRule replicate(ForwardRule forwardRule) {
+    @NonNull
+    public static ForwardRule replicate(@NonNull ForwardRule forwardRule) {
         ForwardRule fr = new ForwardRule();
         fr.setContentType(forwardRule.getContentType());
         fr.setTransletName(forwardRule.getTransletName());

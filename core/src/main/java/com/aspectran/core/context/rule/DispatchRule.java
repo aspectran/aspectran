@@ -26,6 +26,7 @@ import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.utils.BooleanUtils;
 import com.aspectran.utils.ToStringBuilder;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.util.List;
 
@@ -236,6 +237,7 @@ public class DispatchRule implements Replicable<DispatchRule> {
      * @return an instance of DispatchRule
      * @throws IllegalRuleException if an illegal rule is found
      */
+    @NonNull
     public static DispatchRule newInstance(String name, String dispatcherName, String contentType,
                                            String encoding, Boolean defaultResponse) throws IllegalRuleException {
         if (name == null) {
@@ -259,6 +261,7 @@ public class DispatchRule implements Replicable<DispatchRule> {
      * @return the dispatch rule
      * @throws IllegalRuleException if an illegal rule is found
      */
+    @NonNull
     public static DispatchRule newInstance(String name, String dispatcher, String contentType, String encoding)
             throws IllegalRuleException {
         return newInstance(name, dispatcher, contentType, encoding, null);
@@ -270,6 +273,7 @@ public class DispatchRule implements Replicable<DispatchRule> {
      * @return the dispatch rule
      * @throws IllegalRuleException if an illegal rule is found
      */
+    @NonNull
     public static DispatchRule newInstance(String name) throws IllegalRuleException {
         if (name == null) {
             throw new IllegalRuleException("name must not be null");
@@ -284,7 +288,8 @@ public class DispatchRule implements Replicable<DispatchRule> {
      * @param dispatchRule an instance of DispatchRule
      * @return the dispatch rule
      */
-    public static DispatchRule replicate(DispatchRule dispatchRule) {
+    @NonNull
+    public static DispatchRule replicate(@NonNull DispatchRule dispatchRule) {
         DispatchRule dr = new DispatchRule();
         dr.setName(dispatchRule.getName(), dispatchRule.getNameTokens());
         dr.setContentType(dispatchRule.getContentType());

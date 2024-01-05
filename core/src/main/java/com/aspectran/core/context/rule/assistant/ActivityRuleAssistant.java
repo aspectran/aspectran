@@ -48,6 +48,8 @@ import com.aspectran.core.context.rule.type.TokenType;
 import com.aspectran.core.util.Namespace;
 import com.aspectran.core.util.TextStyler;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -362,7 +364,7 @@ public class ActivityRuleAssistant {
      * @param aspectRule the aspect rule
      * @throws IllegalRuleException if an illegal rule is found
      */
-    public void resolveAdviceBeanClass(AspectRule aspectRule) throws IllegalRuleException {
+    public void resolveAdviceBeanClass(@NonNull AspectRule aspectRule) throws IllegalRuleException {
         String beanIdOrClass = aspectRule.getAdviceBeanId();
         if (beanIdOrClass != null) {
             Class<?> beanClass = resolveDirectiveBeanClass(beanIdOrClass, aspectRule);
@@ -380,7 +382,7 @@ public class ActivityRuleAssistant {
      * @param invokeActionRule the invoke action rule
      * @throws IllegalRuleException if an illegal rule is found
      */
-    public void resolveActionBeanClass(InvokeActionRule invokeActionRule) throws IllegalRuleException {
+    public void resolveActionBeanClass(@NonNull InvokeActionRule invokeActionRule) throws IllegalRuleException {
         String beanIdOrClass = invokeActionRule.getBeanId();
         if (beanIdOrClass != null) {
             Class<?> beanClass = resolveDirectiveBeanClass(beanIdOrClass, invokeActionRule);
@@ -398,7 +400,7 @@ public class ActivityRuleAssistant {
      * @param itemRule the item rule
      * @throws IllegalRuleException if an illegal rule is found
      */
-    public void resolveBeanClass(ItemRule itemRule) throws IllegalRuleException {
+    public void resolveBeanClass(@Nullable ItemRule itemRule) throws IllegalRuleException {
         if (itemRule != null) {
             if (itemRule.getValueType() == ItemValueType.BEAN) {
                 if (itemRule.isListableType()) {
@@ -437,7 +439,7 @@ public class ActivityRuleAssistant {
      * @param tokens an array of tokens
      * @throws IllegalRuleException if an illegal rule is found
      */
-    public void resolveBeanClass(Token[] tokens) throws IllegalRuleException {
+    public void resolveBeanClass(@Nullable Token[] tokens) throws IllegalRuleException {
         if (tokens != null) {
             for (Token token : tokens) {
                 resolveBeanClass(token);
@@ -454,7 +456,8 @@ public class ActivityRuleAssistant {
         resolveBeanClass(token, token);
     }
 
-    private void resolveBeanClass(Token token, BeanReferenceable referenceable) throws IllegalRuleException {
+    private void resolveBeanClass(@Nullable Token token, @Nullable BeanReferenceable referenceable)
+            throws IllegalRuleException {
         if (token != null && token.getType() == TokenType.BEAN) {
             if (token.getDirectiveType() == TokenDirectiveType.FIELD) {
                 if (token.getGetterName() == null) {
@@ -509,7 +512,7 @@ public class ActivityRuleAssistant {
      * @param autowireRule the autowire rule
      * @throws IllegalRuleException if an illegal rule is found
      */
-    public void resolveBeanClass(AutowireRule autowireRule) throws IllegalRuleException {
+    public void resolveBeanClass(@Nullable AutowireRule autowireRule) throws IllegalRuleException {
         if (autowireRule != null) {
             if (autowireRule.getTargetType() == AutowireTargetType.FIELD) {
                 AutowireTargetRule autowireTargetRule = AutowireRule.getAutowireTargetRule(autowireRule);
@@ -806,7 +809,7 @@ public class ActivityRuleAssistant {
         }
     }
 
-    public DescriptionRule profiling(DescriptionRule newDr, DescriptionRule oldDr) {
+    public DescriptionRule profiling(@NonNull DescriptionRule newDr, @Nullable DescriptionRule oldDr) {
         if (newDr.getProfiles() != null && getEnvironmentProfiles() != null) {
             if (getEnvironmentProfiles().acceptsProfiles(newDr.getProfiles())) {
                 return mergeDescriptionRule(newDr, oldDr);
@@ -825,7 +828,8 @@ public class ActivityRuleAssistant {
         }
     }
 
-    private DescriptionRule mergeDescriptionRule(DescriptionRule newDr, DescriptionRule oldDr) {
+    @NonNull
+    private DescriptionRule mergeDescriptionRule(@NonNull DescriptionRule newDr, @Nullable DescriptionRule oldDr) {
         if (oldDr == null) {
             if (newDr.getContent() != null) {
                 String formatted = TextStyler.styling(newDr.getContent(), newDr.getContentStyle());
@@ -854,7 +858,7 @@ public class ActivityRuleAssistant {
         return dr;
     }
 
-    public ItemRuleMap profiling(ItemRuleMap newIrm, ItemRuleMap oldIrm) {
+    public ItemRuleMap profiling(@NonNull ItemRuleMap newIrm, @Nullable ItemRuleMap oldIrm) {
         if (newIrm.getProfiles() != null && getEnvironmentProfiles() != null) {
             if (getEnvironmentProfiles().acceptsProfiles(newIrm.getProfiles())) {
                 return mergeItemRuleMap(newIrm, oldIrm);
@@ -873,7 +877,7 @@ public class ActivityRuleAssistant {
         }
     }
 
-    private ItemRuleMap mergeItemRuleMap(ItemRuleMap newIrm, ItemRuleMap oldIrm) {
+    private ItemRuleMap mergeItemRuleMap(@NonNull ItemRuleMap newIrm, ItemRuleMap oldIrm) {
         if (oldIrm == null) {
             return newIrm;
         }

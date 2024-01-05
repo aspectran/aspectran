@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.support.i18n.message;
 
+import com.aspectran.utils.annotation.jsr305.NonNull;
+
 import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.Properties;
@@ -110,6 +112,7 @@ public abstract class AbstractMessageSource extends MessageSourceSupport impleme
     }
 
     @Override
+    @NonNull
     public final String getMessage(String code, Locale locale) throws NoSuchMessageException {
         return getMessage(code, (Object[])null, locale);
     }
@@ -120,6 +123,7 @@ public abstract class AbstractMessageSource extends MessageSourceSupport impleme
     }
 
     @Override
+    @NonNull
     public final String getMessage(String code, Object[] args, Locale locale) throws NoSuchMessageException {
         String msg = getMessageInternal(code, args, locale);
         if (msg != null) {

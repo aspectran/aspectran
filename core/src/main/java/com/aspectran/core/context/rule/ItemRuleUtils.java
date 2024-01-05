@@ -25,6 +25,7 @@ import com.aspectran.core.context.rule.type.ItemType;
 import com.aspectran.core.context.rule.type.ItemValueType;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.apon.Parameters;
 
 import java.io.File;
@@ -52,7 +53,7 @@ public class ItemRuleUtils {
      * @param value the value actually assigned to the item
      * @return a {@code Class} determined by the type of item or its actual value
      */
-    public static Class<?> getPrototypeClass(ItemRule itemRule, Object value) {
+    public static Class<?> getPrototypeClass(@NonNull ItemRule itemRule, Object value) {
         ItemValueType valueType = itemRule.getValueType();
         if (itemRule.getType() == ItemType.ARRAY) {
             if (valueType == ItemValueType.STRING) {
@@ -170,6 +171,7 @@ public class ItemRuleUtils {
      * @return the item rule list
      * @throws IllegalRuleException if an illegal rule is found
      */
+    @NonNull
     public static ItemRuleList toItemRuleList(List<ItemParameters> itemParametersList) throws IllegalRuleException {
         ItemRuleList itemRuleList = new ItemRuleList();
         if (itemParametersList != null) {
@@ -186,6 +188,7 @@ public class ItemRuleUtils {
      * @return an instance of {@code ItemRule}
      * @throws IllegalRuleException if an illegal rule is found
      */
+    @NonNull
     public static ItemRule toItemRule(ItemParameters itemParameters) throws IllegalRuleException {
         Assert.notNull(itemParameters, "itemParameters must not be null");
         String type = itemParameters.getString(ItemParameters.type);
@@ -229,6 +232,7 @@ public class ItemRuleUtils {
         return itemRule;
     }
 
+    @NonNull
     public static ItemRule toItemRule(ParamItem paramItem) throws IllegalRuleException {
         Assert.notNull(paramItem, "paramItem must not be null");
         String name = StringUtils.emptyToNull(paramItem.name());
@@ -243,6 +247,7 @@ public class ItemRuleUtils {
         return itemRule;
     }
 
+    @NonNull
     public static ItemRule toItemRule(AttrItem attrItem) throws IllegalRuleException {
         Assert.notNull(attrItem, "attrItem must not be null");
         String name = StringUtils.emptyToNull(attrItem.name());

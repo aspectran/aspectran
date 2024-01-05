@@ -34,9 +34,7 @@ public class UrlRuleAppender extends AbstractRuleAppender {
 
     public UrlRuleAppender(String ruleUrl) {
         super(AppenderType.URL);
-
         this.ruleUrl = ruleUrl;
-
         determineAppendedFileFormatType(ruleUrl);
     }
 

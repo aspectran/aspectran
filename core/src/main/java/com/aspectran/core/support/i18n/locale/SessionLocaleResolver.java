@@ -17,6 +17,7 @@ package com.aspectran.core.support.i18n.locale;
 
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.adapter.SessionAdapter;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.util.Locale;
 import java.util.TimeZone;
@@ -45,7 +46,7 @@ public class SessionLocaleResolver extends AbstractLocaleResolver {
     public static final String TIME_ZONE_SESSION_ATTR_NAME = SessionLocaleResolver.class.getName() + ".TIME_ZONE";
 
     @Override
-    public Locale resolveLocale(Translet translet) {
+    public Locale resolveLocale(@NonNull Translet translet) {
         SessionAdapter sessionAdapter = translet.getSessionAdapter();
         if (sessionAdapter != null) {
             Locale locale = sessionAdapter.getAttribute(LOCALE_SESSION_ATTR_NAME);
@@ -58,7 +59,7 @@ public class SessionLocaleResolver extends AbstractLocaleResolver {
     }
 
     @Override
-    public TimeZone resolveTimeZone(Translet translet) {
+    public TimeZone resolveTimeZone(@NonNull Translet translet) {
         SessionAdapter sessionAdapter = translet.getSessionAdapter();
         if (sessionAdapter != null) {
             TimeZone timeZone = sessionAdapter.getAttribute(TIME_ZONE_SESSION_ATTR_NAME);
@@ -71,7 +72,7 @@ public class SessionLocaleResolver extends AbstractLocaleResolver {
     }
 
     @Override
-    public void setLocale(Translet translet, Locale locale) {
+    public void setLocale(@NonNull Translet translet, Locale locale) {
         translet.getRequestAdapter().setLocale(locale);
         SessionAdapter sessionAdapter = translet.getSessionAdapter();
         if (sessionAdapter != null) {
@@ -80,7 +81,7 @@ public class SessionLocaleResolver extends AbstractLocaleResolver {
     }
 
     @Override
-    public void setTimeZone(Translet translet, TimeZone timeZone) {
+    public void setTimeZone(@NonNull Translet translet, TimeZone timeZone) {
         translet.getRequestAdapter().setTimeZone(timeZone);
         SessionAdapter sessionAdapter = translet.getSessionAdapter();
         if (sessionAdapter != null) {

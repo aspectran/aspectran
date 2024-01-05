@@ -19,6 +19,7 @@ import com.aspectran.core.context.rule.ChooseRule;
 import com.aspectran.core.context.rule.ChooseWhenRule;
 import com.aspectran.core.context.rule.ability.ActionRuleApplicable;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.nodelet.NodeletParser;
 import com.aspectran.utils.nodelet.SubnodeParser;
 
@@ -30,7 +31,7 @@ import com.aspectran.utils.nodelet.SubnodeParser;
 class ChooseNodeParser implements SubnodeParser {
 
     @Override
-    public void parse(String xpath, NodeletParser parser) {
+    public void parse(@NonNull String xpath, @NonNull NodeletParser parser) {
         AspectranNodeParser nodeParser = parser.getNodeParser();
 
         parser.setXpath(xpath + "/choose");

@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.context.rule.type;
 
+import com.aspectran.utils.annotation.jsr305.Nullable;
+
 /**
  * Supported join point target types.
  */
@@ -40,6 +42,7 @@ public enum JoinpointTargetType {
      * @param alias the join-point target type as a {@code String}
      * @return a {@code JoinpointTargetType}, may be {@code null}
      */
+    @Nullable
     public static JoinpointTargetType resolve(String alias) {
         for (JoinpointTargetType type : values()) {
             if (type.alias.equals(alias)) {

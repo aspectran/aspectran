@@ -20,8 +20,10 @@ import com.aspectran.core.context.expr.token.TokenParser;
 import com.aspectran.core.context.rule.type.ItemType;
 import com.aspectran.core.context.rule.type.ItemValueType;
 import com.aspectran.core.context.rule.type.TokenType;
+import com.aspectran.utils.Assert;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.ToStringBuilder;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -106,6 +108,7 @@ public class ItemRule {
      * @param name the name to set
      */
     public void setName(String name) {
+        Assert.hasText(name, "name must not be empty");
         if (name.endsWith(ARRAY_SUFFIX)) {
             this.name = name.substring(0, name.length() - 2);
             type = ItemType.ARRAY;
@@ -633,6 +636,7 @@ public class ItemRule {
      * @return the item rule
      * @throws IllegalRuleException if an illegal rule is found
      */
+    @NonNull
     public static ItemRule newInstance(String type, String name, String valueType, Boolean tokenize,
                                        Boolean mandatory, Boolean secret) throws IllegalRuleException {
         ItemRule itemRule = new ItemRule();
@@ -641,11 +645,7 @@ public class ItemRule {
         if (type != null && itemType == null) {
             throw new IllegalRuleException("No item type for '" + type + "'");
         }
-        if (itemType != null) {
-            itemRule.setType(itemType);
-        } else {
-            itemRule.setType(ItemType.SINGLE); // default
-        }
+        itemRule.setType(itemType != null ? itemType : ItemType.SINGLE);
 
         if (!StringUtils.isEmpty(name)) {
             itemRule.setName(name);

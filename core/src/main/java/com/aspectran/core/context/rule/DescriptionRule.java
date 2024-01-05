@@ -25,6 +25,7 @@ import com.aspectran.core.context.rule.ability.Replicable;
 import com.aspectran.core.context.rule.type.TextStyleType;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.ToStringBuilder;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -134,7 +135,7 @@ public class DescriptionRule implements Replicable<DescriptionRule> {
         return tsb.toString();
     }
 
-    public static String render(DescriptionRule descriptionRule, Activity activity) {
+    public static String render(@NonNull DescriptionRule descriptionRule, Activity activity) {
         String content = descriptionRule.getFormattedContent();
         if (content == null || activity == null) {
             return content;
@@ -148,6 +149,7 @@ public class DescriptionRule implements Replicable<DescriptionRule> {
         return evaluator.evaluateAsString(contentTokens);
     }
 
+    @NonNull
     public static DescriptionRule newInstance(String profile, String style)
             throws IllegalRuleException {
         TextStyleType contentStyle = TextStyleType.resolve(style);

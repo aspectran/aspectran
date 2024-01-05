@@ -16,6 +16,7 @@
 package com.aspectran.core.context.rule.type;
 
 import com.aspectran.core.activity.request.FileParameter;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.utils.apon.Parameters;
 
 /**
@@ -60,6 +61,7 @@ public enum ItemValueType {
      * @param alias the item value type as a {@code String}
      * @return an {@code ItemValueType}, may be {@code null}
      */
+    @Nullable
     public static ItemValueType resolve(String alias) {
         for (ItemValueType type : values()) {
             if (type.alias.equals(alias)) {

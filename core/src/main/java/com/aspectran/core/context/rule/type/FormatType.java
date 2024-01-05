@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.context.rule.type;
 
+import com.aspectran.utils.annotation.jsr305.Nullable;
+
 /**
  * Supported format types.
  * Defines the format types as a result of converting objects
@@ -49,6 +51,7 @@ public enum FormatType {
      * @param alias the format type as a {@code String}
      * @return a {@code FormatType}, may be {@code null}
      */
+    @Nullable
     public static FormatType resolve(String alias) {
         for (FormatType type : values()) {
             if (type.alias.equals(alias)) {
@@ -64,6 +67,7 @@ public enum FormatType {
      * @param contentType the content type as a {@code ContentType}
      * @return a {@code FormatType}, may be {@code null}
      */
+    @Nullable
     public static FormatType resolve(ContentType contentType) {
         if (contentType == ContentType.TEXT_PLAIN) {
             return TEXT;

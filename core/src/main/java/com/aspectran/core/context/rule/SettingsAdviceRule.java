@@ -19,6 +19,7 @@ import com.aspectran.core.context.rule.params.SettingParameters;
 import com.aspectran.core.context.rule.params.SettingsParameters;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.ToStringBuilder;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.apon.Parameters;
 import com.aspectran.utils.apon.VariableParameters;
 
@@ -71,10 +72,12 @@ public class SettingsAdviceRule {
         settings.put(name, value);
     }
 
+    @NonNull
     public static SettingsAdviceRule newInstance(AspectRule aspectRule) {
         return new SettingsAdviceRule(aspectRule);
     }
 
+    @NonNull
     public static SettingsAdviceRule newInstance(AspectRule aspectRule, SettingsParameters settingsParameters) {
         SettingsAdviceRule sar = new SettingsAdviceRule(aspectRule);
         updateSettingsAdviceRule(sar, settingsParameters);

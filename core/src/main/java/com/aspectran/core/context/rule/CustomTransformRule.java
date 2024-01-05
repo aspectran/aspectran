@@ -19,6 +19,8 @@ import com.aspectran.core.activity.response.transform.CustomTransformer;
 import com.aspectran.core.context.rule.type.FormatType;
 import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.utils.ToStringBuilder;
+import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 
 /**
  * The Class CustomTransformRule.
@@ -39,7 +41,7 @@ public class CustomTransformRule {
         this(null);
     }
 
-    public CustomTransformRule(CustomTransformer transformer) {
+    public CustomTransformRule(@Nullable CustomTransformer transformer) {
         this.transformer = transformer;
     }
 
@@ -64,14 +66,13 @@ public class CustomTransformRule {
         return tsb.toString();
     }
 
+    @NonNull
     public static CustomTransformRule newInstance() {
         return new CustomTransformRule();
     }
 
-    public static CustomTransformRule newInstance(CustomTransformer transformer) {
-        if (transformer == null) {
-            throw new IllegalArgumentException("transformer must not be null");
-        }
+    @NonNull
+    public static CustomTransformRule newInstance(@NonNull CustomTransformer transformer) {
         return new CustomTransformRule(transformer);
     }
 

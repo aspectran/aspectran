@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.context.rule.type;
 
+import com.aspectran.utils.annotation.jsr305.Nullable;
+
 /**
  * Supported trigger types.
  */
@@ -40,6 +42,7 @@ public enum TriggerType {
      * @param alias the trigger type as a {@code String}
      * @return a {@code TriggerType}, may be {@code null}
      */
+    @Nullable
     public static TriggerType resolve(String alias) {
         for (TriggerType type : values()) {
             if (type.alias.equals(alias)) {

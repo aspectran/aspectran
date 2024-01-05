@@ -18,6 +18,7 @@ package com.aspectran.core.context.rule;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.utils.BooleanUtils;
 import com.aspectran.utils.ToStringBuilder;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 /**
  * The Class IncludeActionRule.
@@ -204,6 +205,7 @@ public class IncludeActionRule {
      * @return the include action rule
      * @throws IllegalRuleException if an illegal rule is found
      */
+    @NonNull
     public static IncludeActionRule newInstance(String id, String transletName, String method, Boolean hidden)
             throws IllegalRuleException {
         if (transletName == null) {

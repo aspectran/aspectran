@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.context.rule.type;
 
+import com.aspectran.utils.annotation.jsr305.Nullable;
+
 /**
  * Supported default setting types.
  */
@@ -44,6 +46,7 @@ public enum DefaultSettingType {
      * @param alias the default setting type as a {@code String}
      * @return a {@code DefaultSettingType}, may be {@code null}
      */
+    @Nullable
     public static DefaultSettingType resolve(String alias) {
         for (DefaultSettingType type : values()) {
             if (type.alias.equals(alias)) {

@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.context.rule.type;
 
+import com.aspectran.utils.annotation.jsr305.Nullable;
+
 /**
  * Supported auto-reload types.
  * 
@@ -42,6 +44,7 @@ public enum AutoReloadType {
      * @param alias the auto reload type as a {@code String}
      * @return an {@code AutoReloadType}, may be {@code null}
      */
+    @Nullable
     public static AutoReloadType resolve(String alias) {
         for (AutoReloadType type : values()) {
             if (type.alias.equals(alias)) {

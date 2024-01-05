@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.context.rule.type;
 
+import com.aspectran.utils.annotation.jsr305.Nullable;
+
 /**
  * The enum AppendableFileFormatType.
  * 
@@ -42,6 +44,7 @@ public enum AppendableFileFormatType {
      * @param alias the appendable file format type as a {@code String}
      * @return an {@code AppendableFileFormatType}, may be {@code null}
      */
+    @Nullable
     public static AppendableFileFormatType resolve(String alias) {
         for (AppendableFileFormatType type : values()) {
             if (type.alias.equals(alias)) {

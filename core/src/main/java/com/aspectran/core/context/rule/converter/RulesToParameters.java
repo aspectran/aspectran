@@ -99,6 +99,8 @@ import com.aspectran.core.context.rule.type.ResponseType;
 import com.aspectran.core.context.rule.type.ScopeType;
 import com.aspectran.core.context.rule.type.TextStyleType;
 import com.aspectran.core.util.TextStyler;
+import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.utils.apon.Parameter;
 import com.aspectran.utils.apon.ParameterKey;
 import com.aspectran.utils.apon.Parameters;
@@ -118,13 +120,15 @@ public class RulesToParameters {
     private RulesToParameters() {
     }
 
+    @NonNull
     public static RootParameters toRootParameters(ActivityRuleAssistant assistant) {
         RootParameters rootParameters = new RootParameters();
         rootParameters.putValue(RootParameters.aspectran, toAspectranParameters(assistant));
         return rootParameters;
     }
 
-    private static AspectranParameters toAspectranParameters(ActivityRuleAssistant assistant) {
+    @NonNull
+    private static AspectranParameters toAspectranParameters(@NonNull ActivityRuleAssistant assistant) {
         AspectranParameters aspectranParameters = new AspectranParameters();
 
         AssistantLocal assistantLocal = assistant.getAssistantLocal();
@@ -203,7 +207,8 @@ public class RulesToParameters {
         }
     }
 
-    private static SettingsParameters toDefaultSettings(AssistantLocal assistantLocal) {
+    @Nullable
+    private static SettingsParameters toDefaultSettings(@NonNull AssistantLocal assistantLocal) {
         DefaultSettings defaultSettings = assistantLocal.getDefaultSettings();
         if (defaultSettings != null) {
             SettingsParameters settingsParameters = new SettingsParameters();
@@ -226,11 +231,13 @@ public class RulesToParameters {
                 settingsParameters.putSetting(DefaultSettingType.DEFAULT_SCHEDULER_BEAN.toString(), defaultSettings.getDefaultSchedulerBean());
             }
             return settingsParameters;
+        } else {
+            return null;
         }
-        return null;
     }
 
-    private static AppendParameters toAppendParameters(RuleAppender appender) {
+    @NonNull
+    private static AppendParameters toAppendParameters(@NonNull RuleAppender appender) {
         AppendRule appendRule = appender.getAppendRule();
         if (appendRule == null) {
             throw new IllegalArgumentException("Every appender except Root Appender requires an AppendRule");
@@ -238,6 +245,7 @@ public class RulesToParameters {
         return toAppendParameters(appendRule);
     }
 
+    @NonNull
     public static AppendParameters toAppendParameters(AppendRule appendRule) {
         if (appendRule == null) {
             throw new IllegalArgumentException("appendRule must not be null");
@@ -253,6 +261,7 @@ public class RulesToParameters {
         return appendParameters;
     }
 
+    @NonNull
     public static EnvironmentParameters toEnvironmentParameters(EnvironmentRule environmentRule) {
         if (environmentRule == null) {
             throw new IllegalArgumentException("environmentRule must not be null");
@@ -271,6 +280,7 @@ public class RulesToParameters {
         return environmentParameters;
     }
 
+    @NonNull
     public static AspectParameters toAspectParameters(AspectRule aspectRule) {
         if (aspectRule == null) {
             throw new IllegalArgumentException("aspectRule must not be null");
@@ -354,6 +364,7 @@ public class RulesToParameters {
         return aspectParameters;
     }
 
+    @NonNull
     public static BeanParameters toBeanParameters(BeanRule beanRule) {
         if (beanRule == null) {
             throw new IllegalArgumentException("beanRule must not be null");
@@ -393,10 +404,12 @@ public class RulesToParameters {
         return beanParameters;
     }
 
+    @NonNull
     public static ScheduleParameters toScheduleParameters(ScheduleRule scheduleRule) {
         return toScheduleParameters(scheduleRule, null);
     }
 
+    @NonNull
     public static ScheduleParameters toScheduleParameters(ScheduleRule scheduleRule, ScheduledJobRule scheduledJobRule) {
         if (scheduleRule == null) {
             throw new IllegalArgumentException("scheduleRule must not be null");
@@ -432,6 +445,7 @@ public class RulesToParameters {
         return scheduleParameters;
     }
 
+    @NonNull
     public static ScheduledJobParameters toScheduledJobParameters(ScheduledJobRule scheduledJobRule) {
         if (scheduledJobRule == null) {
             throw new IllegalArgumentException("scheduledJobRule must not be null");
@@ -443,6 +457,7 @@ public class RulesToParameters {
         return scheduledJobParameters;
     }
 
+    @NonNull
     public static TransletParameters toTransletParameters(TransletRule transletRule) {
         if (transletRule == null) {
             throw new IllegalArgumentException("transletRule must not be null");
@@ -558,6 +573,7 @@ public class RulesToParameters {
         return transletParameters;
     }
 
+    @NonNull
     public static ExceptionThrownParameters toExceptionThrownParameters(ExceptionThrownRule exceptionThrownRule) {
         if (exceptionThrownRule == null) {
             throw new IllegalArgumentException("exceptionThrownRule must not be null");
@@ -595,6 +611,7 @@ public class RulesToParameters {
         return exceptionThrownParameters;
     }
 
+    @NonNull
     public static ResponseParameters toResponseParameters(ResponseRule responseRule) {
         if (responseRule == null) {
             throw new IllegalArgumentException("responseRule must not be null");
@@ -628,6 +645,7 @@ public class RulesToParameters {
         return responseParameters;
     }
 
+    @NonNull
     public static TransformParameters toTransformParameters(TransformRule transformRule) {
         if (transformRule == null) {
             throw new IllegalArgumentException("transformRule must not be null");
@@ -645,6 +663,7 @@ public class RulesToParameters {
         return transformParameters;
     }
 
+    @NonNull
     public static DispatchParameters toDispatchParameters(DispatchRule dispatchRule) {
         if (dispatchRule == null) {
             throw new IllegalArgumentException("dispatchRule must not be null");
@@ -659,6 +678,7 @@ public class RulesToParameters {
         return dispatchParameters;
     }
 
+    @NonNull
     public static ForwardParameters toForwardParameters(ForwardRule forwardRule) {
         if (forwardRule == null) {
             throw new IllegalArgumentException("forwardRule must not be null");
@@ -677,6 +697,7 @@ public class RulesToParameters {
         return forwardParameters;
     }
 
+    @NonNull
     public static RedirectParameters toRedirectParameters(RedirectRule redirectRule) {
         if (redirectRule == null) {
             throw new IllegalArgumentException("redirectRule must not be null");
@@ -698,6 +719,7 @@ public class RulesToParameters {
         return redirectParameters;
     }
 
+    @NonNull
     public static TemplateParameters toTemplateParameters(TemplateRule templateRule) {
         if (templateRule == null) {
             throw new IllegalArgumentException("templateRule must not be null");
@@ -733,13 +755,14 @@ public class RulesToParameters {
         return templateParameters;
     }
 
-    private static void toActionParameters(ActionList actionList, Parameters parameters) {
+    @NonNull
+    private static void toActionParameters(@NonNull ActionList actionList, Parameters parameters) {
         for (Executable action : actionList) {
             toActionParameters(action, parameters);
         }
     }
 
-    private static void toActionParameters(Executable action, Parameters parameters) {
+    private static void toActionParameters(@NonNull Executable action, Parameters parameters) {
         if (action.getActionType() == ActionType.ACTION) {
             InvokeActionRule invokeActionRule = action.getActionRule();
             if (invokeActionRule.getBeanId() != null) {
@@ -765,6 +788,7 @@ public class RulesToParameters {
         }
     }
 
+    @NonNull
     public static ActionParameters toActionParameters(HeaderActionRule headerActionRule) {
         if (headerActionRule == null) {
             throw new IllegalArgumentException("headerActionRule must not be null");
@@ -782,6 +806,7 @@ public class RulesToParameters {
         return actionParameters;
     }
 
+    @NonNull
     public static ActionParameters toActionParameters(EchoActionRule echoActionRule) {
         if (echoActionRule == null) {
             throw new IllegalArgumentException("echoActionRule must not be null");
@@ -799,6 +824,7 @@ public class RulesToParameters {
         return actionParameters;
     }
 
+    @NonNull
     public static ActionParameters toActionParameters(InvokeActionRule invokeActionRule) {
         if (invokeActionRule == null) {
             throw new IllegalArgumentException("invokeActionRule must not be null");
@@ -823,6 +849,7 @@ public class RulesToParameters {
         return actionParameters;
     }
 
+    @NonNull
     public static ActionParameters toActionParameters(AnnotatedActionRule annotatedActionRule) {
         if (annotatedActionRule == null) {
             throw new IllegalArgumentException("annotatedActionRule must not be null");
@@ -835,6 +862,7 @@ public class RulesToParameters {
         return actionParameters;
     }
 
+    @NonNull
     public static ActionParameters toActionParameters(IncludeActionRule includeActionRule) {
         if (includeActionRule == null) {
             throw new IllegalArgumentException("includeActionRule must not be null");
@@ -859,6 +887,7 @@ public class RulesToParameters {
         return actionParameters;
     }
 
+    @NonNull
     private static ActionParameters toActionParameters(ChooseRule chooseRule) {
         if (chooseRule == null) {
             throw new IllegalArgumentException("chooseRule must not be null");
@@ -899,7 +928,7 @@ public class RulesToParameters {
         return actionParameters;
     }
 
-    private static void toItemHolderParameters(ItemRuleMap itemRuleMap, Parameters parameters, ParameterKey key) {
+    private static void toItemHolderParameters(@NonNull ItemRuleMap itemRuleMap, Parameters parameters, ParameterKey key) {
         if (itemRuleMap.getCandidates() != null) {
             for (ItemRuleMap irm : itemRuleMap.getCandidates()) {
                 parameters.putValue(key, toItemHolderParameters(irm));
@@ -909,6 +938,7 @@ public class RulesToParameters {
         }
     }
 
+    @NonNull
     public static ItemHolderParameters toItemHolderParameters(ItemRuleMap itemRuleMap) {
         if (itemRuleMap == null) {
             throw new IllegalArgumentException("itemRuleMap must not be null");
@@ -932,6 +962,7 @@ public class RulesToParameters {
         }
     }
 
+    @NonNull
     public static ItemParameters toItemParameters(ItemRule itemRule) {
         if (itemRule == null) {
             throw new IllegalArgumentException("itemRule must not be null");

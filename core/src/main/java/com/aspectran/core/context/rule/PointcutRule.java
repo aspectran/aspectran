@@ -17,6 +17,7 @@ package com.aspectran.core.context.rule;
 
 import com.aspectran.core.context.rule.type.PointcutType;
 import com.aspectran.utils.ToStringBuilder;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,6 +66,7 @@ public class PointcutRule {
         return tsb.toString();
     }
 
+    @NonNull
     public static PointcutRule newInstance(String type) throws IllegalRuleException {
         PointcutType pointcutType = null;
         if (type != null) {

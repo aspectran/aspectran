@@ -17,6 +17,7 @@ package com.aspectran.core.context.rule;
 
 import com.aspectran.core.context.expr.ExpressionEvaluation;
 import com.aspectran.utils.ToStringBuilder;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.lang.reflect.Array;
 
@@ -78,6 +79,7 @@ public class AutowireTargetRule {
         return tsb.toString();
     }
 
+    @NonNull
     public static AutowireTargetRule newInstance() {
         return new AutowireTargetRule();
     }

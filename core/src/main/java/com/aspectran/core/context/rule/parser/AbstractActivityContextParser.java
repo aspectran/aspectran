@@ -21,6 +21,7 @@ import com.aspectran.core.context.rule.appender.RuleAppender;
 import com.aspectran.core.context.rule.assistant.ActivityRuleAssistant;
 import com.aspectran.core.context.rule.type.AppendableFileFormatType;
 import com.aspectran.utils.ResourceUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 
@@ -77,7 +78,7 @@ public abstract class AbstractActivityContextParser implements ActivityContextPa
         this.debugMode = debugMode;
     }
 
-    protected RuleAppender resolveAppender(String classpathOrFilePath) {
+    protected RuleAppender resolveAppender(@NonNull String classpathOrFilePath) {
         RuleAppender appender;
         if (classpathOrFilePath.startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {
             String resource = classpathOrFilePath.substring(ResourceUtils.CLASSPATH_URL_PREFIX.length());

@@ -26,6 +26,8 @@ import com.aspectran.core.context.rule.TemplateRule;
 import com.aspectran.core.context.rule.TransletRule;
 import com.aspectran.core.context.rule.ability.BeanReferenceable;
 import com.aspectran.core.context.rule.appender.ShallowRuleAppendHandler;
+import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -152,22 +154,22 @@ public class ShallowContextRuleAssistant extends ActivityRuleAssistant {
     }
 
     @Override
-    public void resolveAdviceBeanClass(AspectRule aspectRule) {
+    public void resolveAdviceBeanClass(@NonNull AspectRule aspectRule) {
         // Do Nothing
     }
 
     @Override
-    public void resolveActionBeanClass(InvokeActionRule invokeActionRule) {
+    public void resolveActionBeanClass(@NonNull InvokeActionRule invokeActionRule) {
         // Do Nothing
     }
 
     @Override
-    public void resolveBeanClass(ItemRule itemRule) {
+    public void resolveBeanClass(@Nullable ItemRule itemRule) {
         // Do Nothing
     }
 
     @Override
-    public void resolveBeanClass(Token[] tokens) {
+    public void resolveBeanClass(@Nullable Token[] tokens) {
         // Do Nothing
     }
 
@@ -177,7 +179,7 @@ public class ShallowContextRuleAssistant extends ActivityRuleAssistant {
     }
 
     @Override
-    public void resolveBeanClass(AutowireRule autowireRule) {
+    public void resolveBeanClass(@Nullable AutowireRule autowireRule) {
         // Do Nothing
     }
 

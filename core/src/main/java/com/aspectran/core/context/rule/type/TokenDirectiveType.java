@@ -15,6 +15,8 @@
  */
 package com.aspectran.core.context.rule.type;
 
+import com.aspectran.utils.annotation.jsr305.Nullable;
+
 /**
  * Supported token directive types.
  * 
@@ -45,6 +47,7 @@ public enum TokenDirectiveType {
      * @param alias the token directive type as a {@code String}
      * @return a {@code TokenDirectiveType}, may be {@code null}
      */
+    @Nullable
     public static TokenDirectiveType resolve(String alias) {
         for (TokenDirectiveType type : values()) {
             if (type.alias.equals(alias)) {
