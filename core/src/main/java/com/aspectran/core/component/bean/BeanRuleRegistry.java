@@ -212,13 +212,13 @@ public class BeanRuleRegistry {
         }
         String scanPattern = beanRule.getScanPattern();
         if (scanPattern != null) {
-            PrefixSuffixPattern prefixSuffixPattern = PrefixSuffixPattern.parse(beanRule.getId());
+            PrefixSuffixPattern prefixSuffixPattern = PrefixSuffixPattern.of(beanRule.getId());
             List<BeanRule> scannedBeanRules = new ArrayList<>();
             BeanClassScanner scanner = createBeanClassScanner(beanRule);
             scanner.scan(scanPattern, (resourceName, targetClass) -> {
                 BeanRule replicated = beanRule.replicate();
                 if (prefixSuffixPattern != null) {
-                    replicated.setId(prefixSuffixPattern.join(resourceName));
+                    replicated.setId(prefixSuffixPattern.enclose(resourceName));
                 } else {
                     if (beanRule.getId() != null) {
                         replicated.setId(beanRule.getId() + resourceName);

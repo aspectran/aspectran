@@ -31,6 +31,7 @@ import com.aspectran.utils.BooleanUtils;
 import com.aspectran.utils.PrefixSuffixPattern;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.ToStringBuilder;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.wildcard.WildcardPattern;
 
 import java.util.ArrayList;
@@ -478,26 +479,31 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
         return tsb.toString();
     }
 
+    @NonNull
     public static TransletRule newInstance(String name, String scanPath, String maskPattern, String method,
                                            Boolean async, String timeout) throws IllegalRuleException {
         return newInstance(name, scanPath, maskPattern, parseAllowedMethods(method), async, parseTimeout(timeout));
     }
 
+    @NonNull
     public static TransletRule newInstance(String name, String scanPath, String maskPattern, String method,
                                            Boolean async, Long timeout) throws IllegalRuleException {
         return newInstance(name, scanPath, maskPattern, parseAllowedMethods(method), async, timeout);
     }
 
+    @NonNull
     public static TransletRule newInstance(String name, String scanPath, String maskPattern, MethodType[] allowedMethods,
                                            Boolean async, String timeout) throws IllegalRuleException {
         return newInstance(name, scanPath, maskPattern, allowedMethods, async, parseTimeout(timeout));
     }
 
+    @NonNull
     public static TransletRule newInstance(String name, MethodType[] allowedMethods, Boolean async, Long timeout)
             throws IllegalRuleException {
         return newInstance(name, null, null, allowedMethods, async, timeout);
     }
 
+    @NonNull
     private static TransletRule newInstance(String name, String scanPath, String maskPattern, MethodType[] allowedMethods,
                                             Boolean async, Long timeout) throws IllegalRuleException {
         if (name == null && scanPath == null) {
@@ -544,7 +550,8 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
         return parsedTimeout;
     }
 
-    public static TransletRule replicate(TransletRule transletRule) {
+    @NonNull
+    public static TransletRule replicate(@NonNull TransletRule transletRule) {
         TransletRule tr = new TransletRule();
         tr.setName(transletRule.getName());
         tr.setAllowedMethods(transletRule.getAllowedMethods());
@@ -561,7 +568,8 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
         return tr;
     }
 
-    public static TransletRule replicate(TransletRule transletRule, String newDispatchName) {
+    @NonNull
+    public static TransletRule replicate(@NonNull TransletRule transletRule, String newDispatchName) {
         TransletRule tr = new TransletRule();
         tr.setName(transletRule.getName());
         tr.setAllowedMethods(transletRule.getAllowedMethods());
@@ -587,7 +595,8 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
         return tr;
     }
 
-    private static ResponseRule replicate(ResponseRule responseRule, String newDispatchName) {
+    @NonNull
+    private static ResponseRule replicate(@NonNull ResponseRule responseRule, String newDispatchName) {
         ResponseRule rr = responseRule.replicate();
         if (rr.getResponse() != null) {
             // assign dispatch name if the dispatch response exists
@@ -596,9 +605,9 @@ public class TransletRule implements ActionRuleApplicable, ResponseRuleApplicabl
                 DispatchRule dispatchRule = dispatchResponse.getDispatchRule();
                 String dispatchName = dispatchRule.getName();
 
-                PrefixSuffixPattern prefixSuffixPattern = new PrefixSuffixPattern(dispatchName);
-                if (prefixSuffixPattern.isSplitted()) {
-                    dispatchRule.setName(prefixSuffixPattern.join(newDispatchName));
+                PrefixSuffixPattern prefixSuffixPattern = PrefixSuffixPattern.of(dispatchName);
+                if (prefixSuffixPattern != null) {
+                    dispatchRule.setName(prefixSuffixPattern.enclose(newDispatchName));
                 } else {
                     if (dispatchName != null) {
                         dispatchRule.setName(dispatchName + newDispatchName);

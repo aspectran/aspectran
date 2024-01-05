@@ -46,12 +46,12 @@ class BeanClassScannerTest {
         beanRule.setFilterParameters(filterParameters);
 
         BeanClassScanner scanner = createBeanClassScanner(beanRule);
-        PrefixSuffixPattern prefixSuffixPattern = PrefixSuffixPattern.parse(beanRule.getId());
+        PrefixSuffixPattern prefixSuffixPattern = PrefixSuffixPattern.of(beanRule.getId());
         List<BeanRule> beanRules = new ArrayList<>();
         scanner.scan(beanRule.getScanPattern(), (resourceName, targetClass) -> {
             BeanRule beanRule2 = beanRule.replicate();
             if (prefixSuffixPattern != null) {
-                beanRule2.setId(prefixSuffixPattern.join(resourceName));
+                beanRule2.setId(prefixSuffixPattern.enclose(resourceName));
             } else {
                 if (beanRule.getId() != null) {
                     beanRule2.setId(beanRule.getId() + resourceName);

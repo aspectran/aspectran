@@ -48,11 +48,11 @@ class TransletScannerTest {
 
         String scanPath = transletRule.getScanPath();
         TransletScanner scanner = createTransletScanner(basePath, transletRule);
-        PrefixSuffixPattern prefixSuffixPattern = new PrefixSuffixPattern(transletRule.getName());
+        PrefixSuffixPattern prefixSuffixPattern = PrefixSuffixPattern.of(transletRule.getName());
         scanner.scan(scanPath, (filePath, scannedFile) -> {
             TransletRule newTransletRule = TransletRule.replicate(transletRule, filePath);
-            if (prefixSuffixPattern.isSplitted()) {
-                newTransletRule.setName(prefixSuffixPattern.join(filePath));
+            if (prefixSuffixPattern != null) {
+                newTransletRule.setName(prefixSuffixPattern.enclose(filePath));
             } else {
                 if (transletRule.getName() != null) {
                     newTransletRule.setName(transletRule.getName() + filePath);
