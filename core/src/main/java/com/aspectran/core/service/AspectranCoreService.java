@@ -28,6 +28,7 @@ import com.aspectran.utils.FileLocker;
 import com.aspectran.utils.InsufficientEnvironmentException;
 import com.aspectran.utils.ShutdownHook;
 import com.aspectran.utils.SystemUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 
@@ -53,7 +54,7 @@ public class AspectranCoreService extends AbstractCoreService {
         super(rootService);
     }
 
-    protected void prepare(AspectranConfig aspectranConfig) throws AspectranServiceException {
+    protected void prepare(@NonNull AspectranConfig aspectranConfig) throws AspectranServiceException {
         Assert.state(!hasActivityContextBuilder(),
             "prepare() method can be called only once");
 

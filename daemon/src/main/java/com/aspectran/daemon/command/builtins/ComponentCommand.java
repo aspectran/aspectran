@@ -34,6 +34,7 @@ import com.aspectran.daemon.command.CommandRegistry;
 import com.aspectran.daemon.command.CommandResult;
 import com.aspectran.daemon.service.DaemonService;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.apon.AponFormat;
 import com.aspectran.utils.apon.AponWriter;
 
@@ -128,7 +129,7 @@ public class ComponentCommand extends AbstractCommand {
         }
     }
 
-    private CommandResult listAspects(DaemonService daemonService, String[] keywords) {
+    private CommandResult listAspects(@NonNull DaemonService daemonService, String[] keywords) {
         AspectRuleRegistry aspectRuleRegistry = daemonService.getActivityContext().getAspectRuleRegistry();
         Collection<AspectRule> aspectRules = aspectRuleRegistry.getAspectRules();
         Formatter formatter = new Formatter();
@@ -162,7 +163,8 @@ public class ComponentCommand extends AbstractCommand {
         return success(formatter.toString());
     }
 
-    private CommandResult describeAspectRule(DaemonService daemonService, String[] targets) throws IOException {
+    private CommandResult describeAspectRule(@NonNull DaemonService daemonService, String[] targets)
+        throws IOException {
         AspectRuleRegistry aspectRuleRegistry = daemonService.getActivityContext().getAspectRuleRegistry();
         Collection<AspectRule> aspectRules;
         if (targets == null || targets.length == 0) {
@@ -233,7 +235,7 @@ public class ComponentCommand extends AbstractCommand {
         return success(formatter.toString());
     }
 
-    private CommandResult listTranslets(DaemonService daemonService, String[] keywords, boolean all) {
+    private CommandResult listTranslets(@NonNull DaemonService daemonService, String[] keywords, boolean all) {
         TransletRuleRegistry transletRuleRegistry = daemonService.getActivityContext().getTransletRuleRegistry();
         Collection<TransletRule> transletRules = transletRuleRegistry.getTransletRules();
         Formatter formatter = new Formatter();
@@ -271,7 +273,8 @@ public class ComponentCommand extends AbstractCommand {
         return success(formatter.toString());
     }
 
-    private CommandResult describeTransletRule(DaemonService daemonService, String[] targets, boolean all) throws IOException {
+    private CommandResult describeTransletRule(@NonNull DaemonService daemonService, String[] targets, boolean all)
+        throws IOException {
         TransletRuleRegistry transletRuleRegistry = daemonService.getActivityContext().getTransletRuleRegistry();
         Collection<TransletRule> transletRules;
         if (targets == null || targets.length == 0) {
@@ -321,7 +324,7 @@ public class ComponentCommand extends AbstractCommand {
         }
     }
 
-    private CommandResult listScheduledJobs(DaemonService daemonService, String[] keywords) {
+    private CommandResult listScheduledJobs(@NonNull DaemonService daemonService, String[] keywords) {
         Collection<ScheduleRule> scheduleRules = daemonService.getActivityContext().getScheduleRuleRegistry().getScheduleRules();
         Formatter formatter = new Formatter();
         formatter.format("-%4s-+-%-20s-+-%-33s-+-%-8s-%n", "----", "--------------------",
@@ -356,7 +359,7 @@ public class ComponentCommand extends AbstractCommand {
         return success(formatter.toString());
     }
 
-    private CommandResult describeScheduledJobRule(DaemonService daemonService, String[] targets)
+    private CommandResult describeScheduledJobRule(@NonNull DaemonService daemonService, String[] targets)
             throws IOException {
         ScheduleRuleRegistry scheduleRuleRegistry = daemonService.getActivityContext().getScheduleRuleRegistry();
         if (targets == null || targets.length == 0) {
@@ -465,6 +468,7 @@ public class ComponentCommand extends AbstractCommand {
         }
 
         @Override
+        @NonNull
         public String getDescription() {
             return "Display detailed information about aspect, translet, " +
                     "or scheduled job and control its active state";

@@ -19,6 +19,7 @@ import com.aspectran.daemon.command.AbstractCommand;
 import com.aspectran.daemon.command.CommandParameters;
 import com.aspectran.daemon.command.CommandRegistry;
 import com.aspectran.daemon.command.CommandResult;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 public class PollingIntervalCommand extends AbstractCommand {
 
@@ -81,6 +82,7 @@ public class PollingIntervalCommand extends AbstractCommand {
         }
 
         @Override
+        @NonNull
         public String getDescription() {
             return "Specifies in seconds how often the daemon polls for new commands";
         }

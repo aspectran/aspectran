@@ -23,6 +23,7 @@ import com.aspectran.daemon.adapter.DaemonRequestAdapter;
 import com.aspectran.daemon.adapter.DaemonResponseAdapter;
 import com.aspectran.daemon.service.DaemonService;
 import com.aspectran.utils.OutputStringWriter;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.io.Writer;
 import java.util.Map;
@@ -44,7 +45,7 @@ public class DaemonActivity extends CoreActivity {
      * Instantiates a new daemon activity.
      * @param daemonService the daemon service
      */
-    public DaemonActivity(DaemonService daemonService) {
+    public DaemonActivity(@NonNull DaemonService daemonService) {
         super(daemonService.getActivityContext());
         this.daemonService = daemonService;
     }

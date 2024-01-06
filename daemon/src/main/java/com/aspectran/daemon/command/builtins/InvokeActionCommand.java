@@ -25,6 +25,7 @@ import com.aspectran.daemon.command.CommandParameters;
 import com.aspectran.daemon.command.CommandRegistry;
 import com.aspectran.daemon.command.CommandResult;
 import com.aspectran.daemon.service.DaemonService;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 public class InvokeActionCommand extends AbstractCommand {
 
@@ -96,6 +97,7 @@ public class InvokeActionCommand extends AbstractCommand {
         }
 
         @Override
+        @NonNull
         public String getDescription() {
             return "Executes a method on the specified bean";
         }

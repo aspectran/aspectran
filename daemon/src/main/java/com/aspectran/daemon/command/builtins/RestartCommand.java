@@ -20,6 +20,7 @@ import com.aspectran.daemon.command.CommandParameters;
 import com.aspectran.daemon.command.CommandRegistry;
 import com.aspectran.daemon.command.CommandResult;
 import com.aspectran.daemon.service.DaemonService;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 public class RestartCommand extends AbstractCommand {
 
@@ -64,6 +65,7 @@ public class RestartCommand extends AbstractCommand {
         }
 
         @Override
+        @NonNull
         public String getDescription() {
             return "Restart the daemon to reload all resources";
         }

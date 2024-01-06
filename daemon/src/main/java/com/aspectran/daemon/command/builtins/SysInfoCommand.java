@@ -21,6 +21,7 @@ import com.aspectran.daemon.command.CommandParameters;
 import com.aspectran.daemon.command.CommandRegistry;
 import com.aspectran.daemon.command.CommandResult;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.io.File;
 import java.io.PrintWriter;
@@ -78,7 +79,7 @@ public class SysInfoCommand extends AbstractCommand {
         }
     }
 
-    private void printSysProperties(PrintWriter printWriter) {
+    private void printSysProperties(@NonNull PrintWriter printWriter) {
         printWriter.println("---------------------");
         printWriter.println("JVM system properties");
         printWriter.println("---------------------");
@@ -88,7 +89,7 @@ public class SysInfoCommand extends AbstractCommand {
         }
     }
 
-    private void printClasspath(PrintWriter printWriter) {
+    private void printClasspath(@NonNull PrintWriter printWriter) {
         printWriter.println("-------------------------");
         printWriter.println("JVM classpath information");
         printWriter.println("-------------------------");
@@ -113,7 +114,7 @@ public class SysInfoCommand extends AbstractCommand {
      * Prints memory usage.
      * @param gc true if performing garbage collection; false otherwise
      */
-    private void mem(boolean gc, PrintWriter printWriter) {
+    private void mem(boolean gc, @NonNull PrintWriter printWriter) {
         long max = Runtime.getRuntime().maxMemory();
         long total = Runtime.getRuntime().totalMemory();
         long free = Runtime.getRuntime().freeMemory();
@@ -147,7 +148,8 @@ public class SysInfoCommand extends AbstractCommand {
         printWriter.println("------------------------------------");
     }
 
-    private String escape(String s){
+    @NonNull
+    private String escape(@NonNull String s){
         return s.replace("\t", "\\t")
                 .replace("\b", "\\b")
                 .replace("\n", "\\n")
@@ -173,6 +175,7 @@ public class SysInfoCommand extends AbstractCommand {
         }
 
         @Override
+        @NonNull
         public String getDescription() {
             return "Prints current JVM runtime information";
         }

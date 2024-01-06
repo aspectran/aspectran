@@ -25,6 +25,7 @@ import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.ServiceStateListener;
 import com.aspectran.daemon.activity.DaemonActivity;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 
@@ -105,7 +106,8 @@ public class DefaultDaemonService extends AbstractDaemonService {
      * @param aspectranConfig the parameters for aspectran configuration
      * @return the instance of {@code DefaultDaemonService}
      */
-    public static DefaultDaemonService create(AspectranConfig aspectranConfig) {
+    @NonNull
+    public static DefaultDaemonService create(@NonNull AspectranConfig aspectranConfig) {
         DefaultDaemonService daemonService = new DefaultDaemonService();
         daemonService.prepare(aspectranConfig);
         DaemonConfig daemonConfig = aspectranConfig.getDaemonConfig();
@@ -116,7 +118,8 @@ public class DefaultDaemonService extends AbstractDaemonService {
         return daemonService;
     }
 
-    private static void applyDaemonConfig(DefaultDaemonService daemonService, DaemonConfig daemonConfig) {
+    private static void applyDaemonConfig(@NonNull DefaultDaemonService daemonService,
+                                          @NonNull DaemonConfig daemonConfig) {
         ExposalsConfig exposalsConfig = daemonConfig.getExposalsConfig();
         if (exposalsConfig != null) {
             String[] includePatterns = exposalsConfig.getIncludePatterns();
@@ -125,7 +128,7 @@ public class DefaultDaemonService extends AbstractDaemonService {
         }
     }
 
-    private static void setServiceStateListener(final DefaultDaemonService daemonService) {
+    private static void setServiceStateListener(@NonNull final DefaultDaemonService daemonService) {
         daemonService.setServiceStateListener(new ServiceStateListener() {
             @Override
             public void started() {

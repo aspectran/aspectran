@@ -23,6 +23,7 @@ import com.aspectran.daemon.command.CommandRegistry;
 import com.aspectran.daemon.command.CommandResult;
 import com.aspectran.daemon.service.DaemonService;
 import com.aspectran.utils.OutputStringWriter;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.io.Writer;
 import java.util.Map;
@@ -40,7 +41,7 @@ public class TransletCommand extends AbstractCommand {
     }
 
     @Override
-    public CommandResult execute(CommandParameters parameters) {
+    public CommandResult execute(@NonNull CommandParameters parameters) {
         DaemonService daemonService = getDaemonService();
 
         String transletName = parameters.getTransletName();
@@ -81,6 +82,7 @@ public class TransletCommand extends AbstractCommand {
         }
 
         @Override
+        @NonNull
         public String getDescription() {
             return "Executes a translet";
         }

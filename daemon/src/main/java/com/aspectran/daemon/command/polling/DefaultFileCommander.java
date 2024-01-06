@@ -21,6 +21,8 @@ import com.aspectran.daemon.command.CommandExecutor;
 import com.aspectran.daemon.command.CommandParameters;
 import com.aspectran.utils.FilenameUtils;
 import com.aspectran.utils.ResourceUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.utils.apon.AponReader;
 import com.aspectran.utils.apon.AponWriter;
 import com.aspectran.utils.logging.Logger;
@@ -189,6 +191,7 @@ public class DefaultFileCommander extends AbstractFileCommander {
                 }
             }
 
+            @NonNull
             private String makeFileName() {
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmssSSS");
                 String datetime = formatter.format(LocalDateTime.now());
@@ -197,7 +200,7 @@ public class DefaultFileCommander extends AbstractFileCommander {
         });
     }
 
-    private File[] retrieveCommandFiles(File dir) {
+    private File[] retrieveCommandFiles(@NonNull File dir) {
         File[] files = dir.listFiles((file) -> (file.isFile() && file.getName().toLowerCase().endsWith(".apon")));
         if (files != null && files.length > 0) {
             Arrays.sort(files, Comparator.comparing(File::getName));
@@ -205,7 +208,8 @@ public class DefaultFileCommander extends AbstractFileCommander {
         return files;
     }
 
-    private CommandParameters readCommandFile(File file) {
+    @Nullable
+    private CommandParameters readCommandFile(@NonNull File file) {
         if (logger.isTraceEnabled()) {
             logger.trace("Read command file: " + file);
         }
@@ -249,6 +253,7 @@ public class DefaultFileCommander extends AbstractFileCommander {
         }
     }
 
+    @Nullable
     private String writeCommandFile(File dir, String fileName, CommandParameters parameters) {
         File file = null;
         try {

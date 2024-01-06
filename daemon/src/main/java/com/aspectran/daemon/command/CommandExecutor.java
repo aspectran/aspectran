@@ -18,6 +18,7 @@ package com.aspectran.daemon.command;
 import com.aspectran.core.context.config.DaemonExecutorConfig;
 import com.aspectran.daemon.Daemon;
 import com.aspectran.utils.ExceptionUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 
@@ -77,7 +78,7 @@ public class CommandExecutor {
         return execute(parameters, null);
     }
 
-    public boolean execute(final CommandParameters parameters, final Callback callback) {
+    public boolean execute(@NonNull final CommandParameters parameters, final Callback callback) {
         final String commandName = parameters.getCommandName();
 
         if (isolated.get()) {

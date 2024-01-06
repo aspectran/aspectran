@@ -19,6 +19,7 @@ import com.aspectran.daemon.command.AbstractCommand;
 import com.aspectran.daemon.command.CommandParameters;
 import com.aspectran.daemon.command.CommandRegistry;
 import com.aspectran.daemon.command.CommandResult;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 public class QuitCommand extends AbstractCommand {
 
@@ -62,6 +63,7 @@ public class QuitCommand extends AbstractCommand {
         }
 
         @Override
+        @NonNull
         public String getDescription() {
             return "Releases all resources and exits this daemon";
         }
