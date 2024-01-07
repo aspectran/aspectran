@@ -129,7 +129,7 @@ public class LinkedCaseInsensitiveMap<V> implements Map<String, V>, Serializable
      * Copy constructor.
      */
     @SuppressWarnings("unchecked")
-    private LinkedCaseInsensitiveMap(LinkedCaseInsensitiveMap<V> other) {
+    private LinkedCaseInsensitiveMap(@NonNull LinkedCaseInsensitiveMap<V> other) {
         this.targetMap = (LinkedHashMap<String, V>) other.targetMap.clone();
         this.caseInsensitiveKeys = (HashMap<String, String>) other.caseInsensitiveKeys.clone();
         this.locale = other.locale;
@@ -195,7 +195,7 @@ public class LinkedCaseInsensitiveMap<V> implements Map<String, V>, Serializable
     }
 
     @Override
-    public void putAll(Map<? extends String, ? extends V> map) {
+    public void putAll(@NonNull Map<? extends String, ? extends V> map) {
         if (map.isEmpty()) {
             return;
         }
@@ -332,7 +332,7 @@ public class LinkedCaseInsensitiveMap<V> implements Map<String, V>, Serializable
      * @return the key to use for storing
      * @see String#toLowerCase(Locale)
      */
-    protected String convertKey(String key) {
+    protected String convertKey(@NonNull String key) {
         return key.toLowerCase(getLocale());
     }
 

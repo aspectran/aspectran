@@ -15,6 +15,8 @@
  */
 package com.aspectran.utils;
 
+import com.aspectran.utils.annotation.jsr305.NonNull;
+
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -36,7 +38,7 @@ public class ReflectionUtils {
      * @param target the target object from which to get the field
      * @return the field's current value
      */
-    public static Object getField(Field field, Object target) {
+    public static Object getField(@NonNull Field field, Object target) {
         try {
             return field.get(target);
         } catch (IllegalAccessException e) {
@@ -53,7 +55,7 @@ public class ReflectionUtils {
      * @param target the target object on which to set the field
      * @param value the value to set (may be {@code null})
      */
-    public static void setField(Field field, Object target, Object value) {
+    public static void setField(@NonNull Field field, Object target, Object value) {
         try {
             field.set(target, value);
         } catch (IllegalAccessException e) {
@@ -70,7 +72,7 @@ public class ReflectionUtils {
      * @param args the invocation arguments (may be {@code null})
      * @return the invocation result, if any
      */
-    public static Object invokeMethod(Method method, Object target, Object... args) {
+    public static Object invokeMethod(@NonNull Method method, Object target, Object... args) {
         try {
             return method.invoke(target, args);
         } catch (InvocationTargetException | IllegalAccessException e) {
@@ -87,7 +89,7 @@ public class ReflectionUtils {
      * @param destArgs the arguments to match
      * @return the accumulated weight for all arguments
      */
-    public static float getTypeDifferenceWeight(Class<?>[] paramTypes, Object[] destArgs) {
+    public static float getTypeDifferenceWeight(@NonNull Class<?>[] paramTypes, @NonNull Object[] destArgs) {
         if (paramTypes.length != destArgs.length) {
             return Float.MAX_VALUE;
         }
@@ -126,7 +128,7 @@ public class ReflectionUtils {
      * @param destArgs the destination arguments
      * @return the accumulated weight for all arguments
      */
-    public static float getTypeDifferenceWeight(Class<?>[] srcArgs, Class<?>[] destArgs) {
+    public static float getTypeDifferenceWeight(@NonNull Class<?>[] srcArgs, @NonNull Class<?>[] destArgs) {
         float weight = 0.0f;
         for (int i = 0; i < srcArgs.length; i++) {
             Class<?> srcClass = srcArgs[i];

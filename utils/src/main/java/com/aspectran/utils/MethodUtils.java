@@ -120,7 +120,7 @@ public class MethodUtils {
      * @throws IllegalAccessException the illegal access exception
      * @throws InvocationTargetException the invocation target exception
      */
-    public static Object invokeGetter(Object object, String getterName, Object[] args)
+    public static Object invokeGetter(Object object, @NonNull String getterName, Object[] args)
             throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         int index = getterName.indexOf('.');
         if (index > 0) {
@@ -598,6 +598,7 @@ public class MethodUtils {
      * @param paramTypes with these parameters types
      * @return the accessible method
      */
+    @Nullable
     public static Method getAccessibleMethod(Class<?> clazz, String methodName, Class<?>[] paramTypes) {
         MethodDescriptor md = new MethodDescriptor(clazz, methodName, paramTypes, true);
         Method[] result = cache.get(md);
@@ -681,7 +682,9 @@ public class MethodUtils {
      * @param methodName Method name of the method we wish to call
      * @param paramTypes The parameter type signatures
      */
-    private static Method getAccessibleMethodFromSuperclass(Class<?> clazz, String methodName, Class<?>[] paramTypes) {
+    @Nullable
+    private static Method getAccessibleMethodFromSuperclass(@NonNull Class<?> clazz, String methodName,
+                                                            Class<?>[] paramTypes) {
         Class<?> parentClazz = clazz.getSuperclass();
         while (parentClazz != null) {
             if (Modifier.isPublic(parentClazz.getModifiers())) {
@@ -708,6 +711,7 @@ public class MethodUtils {
      * @param methodName Method name of the method we wish to call
      * @param paramTypes The parameter type signatures
      */
+    @Nullable
     private static Method getAccessibleMethodFromInterfaceNest(Class<?> clazz, String methodName,
                                                                Class<?>[] paramTypes) {
         Method method = null;
@@ -766,6 +770,7 @@ public class MethodUtils {
      * @param paramTypes find method with compatible parameters
      * @return the accessible method
      */
+    @Nullable
     public static Method getMatchingAccessibleMethod(Class<?> clazz, String methodName, Object[] args,
                                                      Class<?>[] paramTypes) {
         MethodDescriptor md = new MethodDescriptor(clazz, methodName, paramTypes, false);

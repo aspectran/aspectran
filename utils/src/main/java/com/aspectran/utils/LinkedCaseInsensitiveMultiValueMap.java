@@ -105,7 +105,7 @@ public class LinkedCaseInsensitiveMultiValueMap<V> implements MultiValueMap<Stri
     }
 
     @Override
-    public void setAll(Map<String, V> values) {
+    public void setAll(@NonNull Map<String, V> values) {
         for (Entry<String, V> entry : values.entrySet()) {
             set(entry.getKey(), entry.getValue());
         }

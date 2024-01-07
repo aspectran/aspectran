@@ -96,7 +96,7 @@ public class LinkedMultiValueMap<K, V> implements MultiValueMap<K, V>, Serializa
     }
 
     @Override
-    public void addAll(MultiValueMap<K, V> values) {
+    public void addAll(@NonNull MultiValueMap<K, V> values) {
         for (Entry<K, List<V>> entry : values.entrySet()) {
             addAll(entry.getKey(), entry.getValue());
         }
@@ -130,7 +130,7 @@ public class LinkedMultiValueMap<K, V> implements MultiValueMap<K, V>, Serializa
     }
 
     @Override
-    public void setAll(Map<K, V> values) {
+    public void setAll(@NonNull Map<K, V> values) {
         values.forEach(this::set);
     }
 

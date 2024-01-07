@@ -15,6 +15,7 @@
  */
 package com.aspectran.utils;
 
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 
 import java.io.File;
@@ -116,6 +117,7 @@ public class ResourceUtils {
      * @return a corresponding URL object
      * @throws FileNotFoundException if the resource cannot be resolved to a URL
      */
+    @NonNull
     public static URL getURL(String resourceLocation) throws FileNotFoundException {
         return getURL(resourceLocation, ClassUtils.getDefaultClassLoader());
     }
@@ -130,6 +132,7 @@ public class ResourceUtils {
      * @return a corresponding URL object
      * @throws FileNotFoundException if the resource cannot be resolved to a URL
      */
+    @NonNull
     public static URL getURL(String resourceLocation, ClassLoader classLoader) throws FileNotFoundException {
         Assert.notNull(resourceLocation, "Resource location must not be null");
         if (resourceLocation.startsWith(CLASSPATH_URL_PREFIX)) {
@@ -167,6 +170,7 @@ public class ResourceUtils {
      * @throws FileNotFoundException if the resource cannot be resolved to
      *      a file in the file system
      */
+    @NonNull
     public static File getFile(String resourceLocation) throws FileNotFoundException {
         return getFile(resourceLocation, ClassUtils.getDefaultClassLoader());
     }
@@ -183,6 +187,7 @@ public class ResourceUtils {
      * @throws FileNotFoundException if the resource cannot be resolved to
      *      a file in the file system
      */
+    @NonNull
     public static File getFile(String resourceLocation, ClassLoader classLoader) throws FileNotFoundException {
         Assert.notNull(resourceLocation, "Resource location must not be null");
         if (resourceLocation.startsWith(CLASSPATH_URL_PREFIX)) {
@@ -212,6 +217,7 @@ public class ResourceUtils {
      * @throws FileNotFoundException if the URL cannot be resolved to
      *      a file in the file system
      */
+    @NonNull
     public static File getFile(URL resourceUrl) throws FileNotFoundException {
         return getFile(resourceUrl, "URL");
     }
@@ -226,6 +232,7 @@ public class ResourceUtils {
      * @throws FileNotFoundException if the URL cannot be resolved to
      *      a file in the file system
      */
+    @NonNull
     public static File getFile(URL resourceUrl, String description) throws FileNotFoundException {
         Assert.notNull(resourceUrl, "Resource URL must not be null");
         if (!URL_PROTOCOL_FILE.equals(resourceUrl.getProtocol())) {
@@ -249,6 +256,7 @@ public class ResourceUtils {
      * @throws FileNotFoundException if the URL cannot be resolved to
      *      a file in the file system
      */
+    @NonNull
     public static File getFile(URI resourceUri) throws FileNotFoundException {
         return getFile(resourceUri, "URI");
     }
@@ -263,6 +271,7 @@ public class ResourceUtils {
      * @throws FileNotFoundException if the URL cannot be resolved to
      *      a file in the file system
      */
+    @NonNull
     public static File getFile(URI resourceUri, String description) throws FileNotFoundException {
         Assert.notNull(resourceUri, "Resource URI must not be null");
         if (!URL_PROTOCOL_FILE.equals(resourceUri.getScheme())) {
@@ -279,7 +288,7 @@ public class ResourceUtils {
      * @param url the URL to check
      * @return whether the URL has been identified as a file system URL
      */
-    public static boolean isFileURL(URL url) {
+    public static boolean isFileURL(@NonNull URL url) {
         String protocol = url.getProtocol();
         return (URL_PROTOCOL_FILE.equals(protocol) || URL_PROTOCOL_VFSFILE.equals(protocol) ||
                 URL_PROTOCOL_VFS.equals(protocol));
@@ -291,7 +300,7 @@ public class ResourceUtils {
      * @param url the URL to check
      * @return whether the URL has been identified as a JAR URL
      */
-    public static boolean isJarURL(URL url) {
+    public static boolean isJarURL(@NonNull URL url) {
         String protocol = url.getProtocol();
         return (URL_PROTOCOL_JAR.equals(protocol) || URL_PROTOCOL_WAR.equals(protocol) ||
                 URL_PROTOCOL_ZIP.equals(protocol) || URL_PROTOCOL_VFSZIP.equals(protocol) ||
@@ -304,7 +313,7 @@ public class ResourceUtils {
      * @param url the URL to check
      * @return whether the URL has been identified as a JAR file URL
      */
-    public static boolean isJarFileURL(URL url) {
+    public static boolean isJarFileURL(@NonNull URL url) {
         return (URL_PROTOCOL_FILE.equals(url.getProtocol()) &&
                 url.getPath().toLowerCase().endsWith(JAR_FILE_EXTENSION));
     }
@@ -316,7 +325,8 @@ public class ResourceUtils {
      * @return the URL for the actual jar file
      * @throws MalformedURLException if no valid jar file URL could be extracted
      */
-    public static URL extractJarFileURL(URL jarUrl) throws MalformedURLException {
+    @NonNull
+    public static URL extractJarFileURL(@NonNull URL jarUrl) throws MalformedURLException {
         String urlFile = jarUrl.getFile();
         int separatorIndex = urlFile.indexOf(JAR_URL_SEPARATOR);
         if (separatorIndex != -1) {
@@ -346,7 +356,8 @@ public class ResourceUtils {
      * @throws MalformedURLException if no valid jar file URL could be extracted
      * @see #extractJarFileURL(URL)
      */
-    public static URL extractArchiveURL(URL jarUrl) throws MalformedURLException {
+    @NonNull
+    public static URL extractArchiveURL(@NonNull URL jarUrl) throws MalformedURLException {
         String urlFile = jarUrl.getFile();
         int endIndex = urlFile.indexOf(WAR_URL_SEPARATOR);
         if (endIndex != -1) {
@@ -372,7 +383,8 @@ public class ResourceUtils {
      * @throws URISyntaxException if the URL wasn't a valid URI
      * @see java.net.URL#toURI()
      */
-    public static URI toURI(URL url) throws URISyntaxException {
+    @NonNull
+    public static URI toURI(@NonNull URL url) throws URISyntaxException {
         return toURI(url.toString());
     }
 
@@ -383,6 +395,7 @@ public class ResourceUtils {
      * @return the URI instance
      * @throws URISyntaxException if the location wasn't a valid URI
      */
+    @NonNull
     public static URI toURI(String location) throws URISyntaxException {
         return new URI(StringUtils.replace(location, " ", "%20"));
     }
@@ -394,6 +407,7 @@ public class ResourceUtils {
      *      {@code null} if the resource could not be found
      * @throws IOException if the resource cannot be found or read
      */
+    @NonNull
     public static URL getResource(String resource) throws IOException {
         return getResource(resource, ClassUtils.getDefaultClassLoader());
     }
@@ -406,6 +420,7 @@ public class ResourceUtils {
      *      {@code null} if the resource could not be found
      * @throws IOException if the resource cannot be found or read
      */
+    @NonNull
     public static URL getResource(String resource, ClassLoader classLoader) throws IOException {
         URL url = null;
         if (classLoader != null) {
@@ -420,10 +435,12 @@ public class ResourceUtils {
         return url;
     }
 
+    @NonNull
     public static File getResourceAsFile(String resource) throws IOException {
         return getFile(getResource(resource));
     }
 
+    @NonNull
     public static File getResourceAsFile(String resource, ClassLoader classLoader) throws IOException {
         return getFile(getResource(resource, classLoader));
     }
@@ -435,6 +452,7 @@ public class ResourceUtils {
      *      {@code null} if the resource could not be found
      * @throws IOException if the resource cannot be found or read
      */
+    @NonNull
     public static InputStream getResourceAsStream(String resource) throws IOException {
         return getResourceAsStream(resource, ClassUtils.getDefaultClassLoader());
     }
@@ -447,6 +465,7 @@ public class ResourceUtils {
      *      {@code null} if the resource could not be found
      * @throws IOException if the resource cannot be found or read
      */
+    @NonNull
     public static InputStream getResourceAsStream(String resource, ClassLoader classLoader) throws IOException {
         InputStream stream = null;
         if (classLoader != null) {
@@ -468,6 +487,7 @@ public class ResourceUtils {
      * @return the reader instance
      * @throws IOException if an error occurred when reading resources using any I/O operations
      */
+    @NonNull
     public static Reader getReader(final File file, String encoding) throws IOException {
         Assert.notNull(file, "Resource file must not be null");
         InputStream stream = new FileInputStream(file);
@@ -487,6 +507,7 @@ public class ResourceUtils {
      * @return the reader instance
      * @throws IOException if an error occurred when reading resources using any I/O operations
      */
+    @NonNull
     public static Reader getReader(final URL url, String encoding) throws IOException {
         Assert.notNull(url, "Resource URL must not be null");
         URLConnection connection = url.openConnection();
@@ -543,7 +564,8 @@ public class ResourceUtils {
      * @return the string
      * @throws IOException if an error occurred when reading resources using any I/O operations
      */
-    public static String read(Reader reader) throws IOException {
+    @NonNull
+    public static String read(@NonNull Reader reader) throws IOException {
         final char[] buffer = new char[1024];
         StringBuilder sb = new StringBuilder();
         int len;
