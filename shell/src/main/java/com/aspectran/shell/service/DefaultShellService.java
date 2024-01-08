@@ -33,6 +33,7 @@ import com.aspectran.shell.command.OutputRedirection;
 import com.aspectran.shell.command.ShellTransletProcedure;
 import com.aspectran.shell.command.TransletCommandLine;
 import com.aspectran.shell.console.ShellConsole;
+import com.aspectran.utils.ExceptionUtils;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
@@ -159,9 +160,10 @@ public class DefaultShellService extends AbstractShellService {
                              @Nullable ParameterMap parameterMap, String transletName,
                              MethodType requestMethod, TransletRule transletRule,
                              AtomicReference<Activity> activityReference) {
+        ShellActivity activity = null;
         Translet translet = null;
         try {
-            ShellActivity activity = new ShellActivity(this);
+            activity = new ShellActivity(this);
             if (activityReference != null) {
                 activityReference.set(activity);
             }
@@ -179,8 +181,16 @@ public class DefaultShellService extends AbstractShellService {
         } catch (Exception e) {
             getConsole().clearLine();
             getConsole().resetStyle();
+
+            Throwable throwable;
+            if (activity != null && activity.getRaisedException() != null) {
+                throwable = activity.getRaisedException();
+            } else {
+                throwable = e;
+            }
+            Throwable cause = ExceptionUtils.getRootCause(throwable);
             throw new AspectranServiceException("Error while processing translet: " + transletName +
-                    "; Cause: " + e.getCause(), e);
+                    "; Cause: " + ExceptionUtils.getSimpleMessage(cause), throwable);
         } finally {
             if (outputWriter != null) {
                 outputWriter.close();

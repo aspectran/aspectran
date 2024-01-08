@@ -119,6 +119,7 @@ public class PebbleViewDispatcher implements ViewDispatcher {
             PebbleTemplate compiledTemplate = pebbleEngine.getTemplate(dispatchName);
             compiledTemplate.evaluate(responseAdapter.getWriter(), model);
         } catch (Exception e) {
+            activity.setRaisedException(e);
             throw new ViewDispatcherException("Failed to dispatch to Pebble template " +
                     dispatchRule.toString(this, dispatchName), e);
         }

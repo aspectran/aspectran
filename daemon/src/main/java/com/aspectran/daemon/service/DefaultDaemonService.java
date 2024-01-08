@@ -25,6 +25,7 @@ import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.ServiceStateListener;
 import com.aspectran.daemon.activity.DaemonActivity;
+import com.aspectran.utils.ExceptionUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
@@ -82,9 +83,10 @@ public class DefaultDaemonService extends AbstractDaemonService {
             }
         }
 
+        DaemonActivity activity = null;
         Translet translet = null;
         try {
-            DaemonActivity activity = new DaemonActivity(this);
+            activity = new DaemonActivity(this);
             activity.setAttributeMap(attributeMap);
             activity.setParameterMap(parameterMap);
             activity.prepare(name, method);
@@ -95,8 +97,15 @@ public class DefaultDaemonService extends AbstractDaemonService {
                 logger.debug("Activity terminated: " + e.getMessage());
             }
         } catch (Exception e) {
+            Throwable throwable;
+            if (activity != null && activity.getRaisedException() != null) {
+                throwable = activity.getRaisedException();
+            } else {
+                throwable = e;
+            }
+            Throwable cause = ExceptionUtils.getRootCause(throwable);
             throw new AspectranServiceException("Error while processing translet: " + name +
-                    "; Cause: " + e.getCause(), e);
+                    "; Cause: " + ExceptionUtils.getSimpleMessage(cause), throwable);
         }
         return translet;
     }

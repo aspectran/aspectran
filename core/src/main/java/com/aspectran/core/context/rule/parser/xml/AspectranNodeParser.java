@@ -322,19 +322,19 @@ public class AspectranNodeParser {
         parser.addNodelet(chooseNodeParser);
         parser.setXpath(xpath + "/choose/when/choose/when/choose");
         parser.addNodelet(attrs -> {
-            throw new IllegalRuleException("The <choose> element can only be nested up to 2 times");
+            chooseElementsNestingLimitExceeded();
         });
         parser.setXpath(xpath + "/choose/when/choose/otherwise/choose");
         parser.addNodelet(attrs -> {
-            throw new IllegalRuleException("The <choose> element can only be nested up to 2 times");
+            chooseElementsNestingLimitExceeded();
         });
         parser.setXpath(xpath + "/choose/otherwise/choose/when/choose");
         parser.addNodelet(attrs -> {
-            throw new IllegalRuleException("The <choose> element can only be nested up to 2 times");
+            chooseElementsNestingLimitExceeded();
         });
         parser.setXpath(xpath + "/choose/otherwise/choose/otherwise/choose");
         parser.addNodelet(attrs -> {
-            throw new IllegalRuleException("The <choose> element can only be nested up to 2 times");
+            chooseElementsNestingLimitExceeded();
         });
         parser.setXpath(xpath);
     }
@@ -367,6 +367,10 @@ public class AspectranNodeParser {
 
     int getMaxInnerBeans() {
         return (innerBeanNodeParsers.length - 1);
+    }
+
+    private void chooseElementsNestingLimitExceeded() throws IllegalRuleException {
+        throw new IllegalRuleException("The <choose> element can be nested up to 2 times");
     }
 
 }

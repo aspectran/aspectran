@@ -36,40 +36,36 @@ class RuleViolationTest {
 
     @Test
     void overNestedInnerBeans() {
-        Throwable cause;
-        try {
-            File baseDir = ResourceUtils.getResourceAsFile(".");
-            ActivityContextBuilder builder = new HybridActivityContextBuilder();
-            builder.setBasePath(baseDir.getCanonicalPath());
-            builder.build("/config/bean/rule-violation-test1-config.xml");
-            throw new Exception("No errors");
-        } catch (Exception e) {
-            cause = ExceptionUtils.getRootCause(e);
-        }
-
         assertThrows(IllegalRuleException.class, () -> {
-            throw cause;
+            try {
+                File baseDir = ResourceUtils.getResourceAsFile(".");
+                ActivityContextBuilder builder = new HybridActivityContextBuilder();
+                builder.setBasePath(baseDir.getCanonicalPath());
+                builder.build("/config/bean/rule-violation-test1-config.xml");
+                throw new Exception("No errors");
+            } catch (Exception e) {
+                Throwable cause = ExceptionUtils.getRootCause(e);
+                assertEquals("Inner beans can be nested up to 2 times", cause.getMessage());
+                throw cause;
+            }
         });
-        assertEquals("Inner beans can only be nested up to 2 times", cause.getMessage());
     }
 
     @Test
     void overChoose() {
-        Throwable cause;
-        try {
-            File baseDir = ResourceUtils.getResourceAsFile(".");
-            ActivityContextBuilder builder = new HybridActivityContextBuilder();
-            builder.setBasePath(baseDir.getCanonicalPath());
-            builder.build("/config/bean/rule-violation-test2-config.xml");
-            throw new Exception("No errors");
-        } catch (Exception e) {
-            cause = ExceptionUtils.getRootCause(e);
-        }
-
         assertThrows(IllegalRuleException.class, () -> {
-            throw cause;
+            try {
+                File baseDir = ResourceUtils.getResourceAsFile(".");
+                ActivityContextBuilder builder = new HybridActivityContextBuilder();
+                builder.setBasePath(baseDir.getCanonicalPath());
+                builder.build("/config/bean/rule-violation-test2-config.xml");
+                throw new Exception("No errors");
+            } catch (Exception e) {
+                Throwable cause = ExceptionUtils.getRootCause(e);
+                assertEquals("The <choose> element can be nested up to 2 times", cause.getMessage());
+                throw cause;
+            }
         });
-        assertEquals("The <choose> element can only be nested up to 2 times", cause.getMessage());
     }
 
 }

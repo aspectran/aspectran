@@ -27,6 +27,7 @@ import com.aspectran.core.service.AspectranServiceException;
 import com.aspectran.core.service.ServiceStateListener;
 import com.aspectran.embed.activity.AspectranActivity;
 import com.aspectran.utils.Assert;
+import com.aspectran.utils.ExceptionUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 import com.aspectran.utils.logging.Logger;
@@ -126,9 +127,10 @@ public class DefaultEmbeddedAspectran extends AbstractEmbeddedAspectran {
             }
         }
 
+        AspectranActivity activity = null;
         Translet translet = null;
         try {
-            AspectranActivity activity = new AspectranActivity(this);
+            activity = new AspectranActivity(this);
             activity.setAttributeMap(attributeMap);
             activity.setParameterMap(parameterMap);
             activity.setBody(body);
@@ -140,8 +142,15 @@ public class DefaultEmbeddedAspectran extends AbstractEmbeddedAspectran {
                 logger.debug("Activity terminated: " + e.getMessage());
             }
         } catch (Exception e) {
+            Throwable throwable;
+            if (activity != null && activity.getRaisedException() != null) {
+                throwable = activity.getRaisedException();
+            } else {
+                throwable = e;
+            }
+            Throwable cause = ExceptionUtils.getRootCause(throwable);
             throw new AspectranServiceException("Error while processing translet: " + name +
-                    "; Cause: " + e.getCause(), e);
+                    "; Cause: " + ExceptionUtils.getSimpleMessage(cause), throwable);
         }
         return translet;
     }

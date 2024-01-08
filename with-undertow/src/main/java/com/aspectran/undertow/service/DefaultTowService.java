@@ -135,8 +135,9 @@ public class DefaultTowService extends AbstractTowService {
 
     private void perform(HttpServerExchange exchange, String requestPath,
                          MethodType requestMethod, TransletRule transletRule) {
+        TowActivity activity = null;
         try {
-            TowActivity activity = new TowActivity(this, exchange);
+            activity = new TowActivity(this, exchange);
             activity.prepare(requestPath, requestMethod, transletRule);
             activity.perform();
         } catch (ActivityTerminatedException e) {
@@ -144,11 +145,15 @@ public class DefaultTowService extends AbstractTowService {
                 logger.debug("Activity terminated: " + e.getMessage());
             }
         } catch (Exception e) {
-            Throwable cause = ExceptionUtils.getRootCause(e);
-            if (cause == null) {
-                cause = e;
+            Throwable throwable;
+            if (activity != null && activity.getRaisedException() != null) {
+                throwable = activity.getRaisedException();
+            } else {
+                throwable = e;
             }
-            logger.error("Error while processing " + requestMethod + " request " + requestPath + "; Cause: " + cause);
+            Throwable cause = ExceptionUtils.getRootCause(throwable);
+            logger.error("Error while processing " + requestMethod + " request " + requestPath +
+                    "; Cause: " + ExceptionUtils.getSimpleMessage(cause), throwable);
             if (cause instanceof RequestMethodNotAllowedException) {
                 exchange.setStatusCode(HttpStatus.METHOD_NOT_ALLOWED.value());
             } else if (cause instanceof SizeLimitExceededException) {

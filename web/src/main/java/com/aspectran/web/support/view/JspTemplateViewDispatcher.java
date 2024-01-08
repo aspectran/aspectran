@@ -127,6 +127,7 @@ public class JspTemplateViewDispatcher implements ViewDispatcher {
                 throw new FileNotFoundException("Failed to find resource '" + template + "'");
             }
         } catch (Exception e) {
+            activity.setRaisedException(e);
             throw new ViewDispatcherException("Failed to dispatch to JSP " +
                     dispatchRule.toString(this, null), e);
         }

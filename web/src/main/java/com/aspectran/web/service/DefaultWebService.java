@@ -253,8 +253,9 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
     private void perform(HttpServletRequest request, HttpServletResponse response,
                          String requestUri, MethodType requestMethod, TransletRule transletRule,
                          AtomicReference<Activity> activityReference) {
+        WebActivity activity = null;
         try {
-            WebActivity activity = new WebActivity(getActivityContext(), request, response);
+            activity = new WebActivity(getActivityContext(), request, response);
             if (activityReference != null) {
                 activityReference.set(activity);
             }
@@ -265,11 +266,15 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
                 logger.debug("Activity terminated: " + e.getMessage());
             }
         } catch (Exception e) {
-            Throwable cause = ExceptionUtils.getRootCause(e);
-            if (cause == null) {
-                cause = e;
+            Throwable throwable;
+            if (activity != null && activity.getRaisedException() != null) {
+                throwable = activity.getRaisedException();
+            } else {
+                throwable = e;
             }
-            logger.error("Error while processing " + requestMethod + " request " + requestUri + "; Cause: " + cause);
+            Throwable cause = ExceptionUtils.getRootCause(throwable);
+            logger.error("Error while processing " + requestMethod + " request " + requestUri +
+                    "; Cause: " + ExceptionUtils.getSimpleMessage(cause), throwable);
             if (!response.isCommitted()) {
                 if (cause instanceof RequestMethodNotAllowedException) {
                     sendError(response, HttpServletResponse.SC_METHOD_NOT_ALLOWED, null);

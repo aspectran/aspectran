@@ -68,7 +68,7 @@ class ItemNodeParser implements SubnodeParser {
         } else {
             parser.setXpath(xpath + "/item/bean");
             parser.addNodelet(attrs -> {
-                throw new IllegalRuleException("Inner beans can only be nested up to " + nodeParser.getMaxInnerBeans() + " times");
+                nestLimitExceeded(nodeParser.getMaxInnerBeans());
             });
             parser.setXpath(xpath + "/item");
         }
@@ -89,7 +89,7 @@ class ItemNodeParser implements SubnodeParser {
         } else {
             parser.setXpath(xpath + "/item/value/bean");
             parser.addNodelet(attrs -> {
-                throw new IllegalRuleException("Inner beans can only be nested up to " + nodeParser.getMaxInnerBeans() + " times");
+                nestLimitExceeded(nodeParser.getMaxInnerBeans());
             });
             parser.setXpath(xpath + "/item/value");
         }
@@ -120,7 +120,7 @@ class ItemNodeParser implements SubnodeParser {
         } else {
             parser.setXpath(xpath + "/item/entry/bean");
             parser.addNodelet(attrs -> {
-                throw new IllegalRuleException("Inner beans can only be nested up to " + nodeParser.getMaxInnerBeans() + " times");
+                nestLimitExceeded(nodeParser.getMaxInnerBeans());
             });
             parser.setXpath(xpath + "/item/entry");
         }
@@ -142,6 +142,17 @@ class ItemNodeParser implements SubnodeParser {
                 itemRule.putValue(name, tokens);
             }
         });
+    }
+
+    private void nestLimitExceeded(int maxInnerBeans) throws IllegalRuleException {
+        StringBuilder sb = new StringBuilder("Inner beans can be nested up to ");
+        if (maxInnerBeans > 1) {
+            sb.append(maxInnerBeans);
+            sb.append(" times");
+        } else {
+            sb.append("at most once");
+        }
+        throw new IllegalRuleException(sb.toString());
     }
 
 }

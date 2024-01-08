@@ -156,7 +156,11 @@ public abstract class AbstractActivity implements Activity {
 
     @Override
     public Throwable getRootCauseOfRaisedException() {
-        return ExceptionUtils.getRootCause(raisedException);
+        if (raisedException != null) {
+            return ExceptionUtils.getRootCause(raisedException);
+        } else {
+            return null;
+        }
     }
 
     @Override

@@ -59,9 +59,9 @@ public class AspectranShell {
             commander.prepare(basePath, aspectranConfigFile);
             commander.perform();
         } catch (Exception e) {
-            Throwable t = ExceptionUtils.getRootCause(e);
-            if (t instanceof InsufficientEnvironmentException) {
-                System.err.println(((InsufficientEnvironmentException)t).getPrettyMessage());
+            Throwable cause = ExceptionUtils.getRootCause(e);
+            if (cause instanceof InsufficientEnvironmentException) {
+                System.err.println(((InsufficientEnvironmentException)cause).getPrettyMessage());
             } else {
                 e.printStackTrace(System.err);
             }
