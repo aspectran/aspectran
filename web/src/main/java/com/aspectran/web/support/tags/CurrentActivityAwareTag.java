@@ -51,9 +51,8 @@ public abstract class CurrentActivityAwareTag extends TagSupport implements TryC
     public final int doStartTag() throws JspException {
         try {
             ActivityContext context = WebServiceHolder.getCurrentActivityContext();
-            if (context == null) {
-                throw new IllegalStateException("Failed to find WebService");
-            }
+            Assert.state(context != null,
+                "No current activity context found; WebService held in WebServiceHolder?");
             this.currentActivity = context.getCurrentActivity();
             return doStartTagInternal();
         } catch (JspException | RuntimeException ex) {
@@ -69,7 +68,7 @@ public abstract class CurrentActivityAwareTag extends TagSupport implements TryC
      * Return the current Activity.
      */
     protected final Activity getCurrentActivity() {
-        Assert.state(this.currentActivity != null, "No current activity injected");
+        Assert.state(this.currentActivity != null, "No current activity found");
         return this.currentActivity;
     }
 
