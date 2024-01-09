@@ -31,7 +31,7 @@ import java.io.IOException;
 import static com.aspectran.web.support.tags.TokenTag.TOKEN_EVALUATOR_PAGE_ATTRIBUTE;
 
 /**
- * The {@code <eval>} tag evaluates an Aspectran expression (SpEL) and either prints
+ * The {@code <eval>} tag evaluates an Aspectran expression and either prints
  * the result or assigns it to a variable. Supports the standard JSP evaluation
  * context consisting of implicit variables and scoped attributes.
  *
@@ -99,7 +99,7 @@ public class EvalTag extends HtmlEscapingAwareTag {
 
     private int scope = PageContext.PAGE_SCOPE;
 
-    private boolean javaScriptEscape = false;
+    private boolean javaScriptEscape;
 
     /**
      * Set the expression to evaluate.
@@ -146,15 +146,15 @@ public class EvalTag extends HtmlEscapingAwareTag {
             super.pageContext.setAttribute(TOKEN_EVALUATOR_PAGE_ATTRIBUTE, tokenEvaluator);
         }
         try {
-            if (var != null) {
+            if (this.var != null) {
                 Object result = ExpressionEvaluator.evaluate(this.expression, tokenEvaluator);
-                super.pageContext.setAttribute(var, result, scope);
+                super.pageContext.setAttribute(this.var, result, this.scope);
             } else {
                 try {
                     Object result = ExpressionEvaluator.evaluate(this.expression, tokenEvaluator);
                     String str = ObjectUtils.getDisplayString(result);
                     str = htmlEscape(str);
-                    if (javaScriptEscape) {
+                    if (this.javaScriptEscape) {
                         str = JavaScriptUtils.javaScriptEscape(str);
                     }
                     super.pageContext.getOut().print(str);

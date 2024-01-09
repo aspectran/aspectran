@@ -19,7 +19,7 @@ import com.aspectran.utils.annotation.jsr305.Nullable;
 import jakarta.servlet.jsp.JspTagException;
 
 /**
- * Allows implementing tag to utilize nested {@code spring:argument} tags.
+ * Allows implementing tag to utilize nested {@code aspectran:argument} tags.
  */
 public interface ArgumentAware {
 

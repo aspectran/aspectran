@@ -61,7 +61,7 @@ public interface Profiles {
      *                  enclosed by this; aka OR set, it can be omitted in compound
      *                  expressions that have only one OR set.</li>
      * </ul>
-     * @param profileExpression the <em>profile expression</em> to include
+     * @param profileExpression the expression for profiles to include or exclude
      * @return a new {@link Profiles} instance
      */
     static Profiles of(String profileExpression) {

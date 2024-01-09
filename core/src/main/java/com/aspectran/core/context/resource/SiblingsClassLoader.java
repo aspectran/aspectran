@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.context.resource;
 
+import com.aspectran.utils.ObjectUtils;
 import com.aspectran.utils.ToStringBuilder;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
@@ -453,7 +454,7 @@ public class SiblingsClassLoader extends ClassLoader {
 
     @Override
     public String toString() {
-        String name = getClass().getSimpleName() + '@' + Integer.toString(hashCode(), 16);
+        String name = ObjectUtils.simpleIdentityToString(this);
         ToStringBuilder tsb = new ToStringBuilder(name);
         tsb.append("id", id);
         if (getParent() instanceof SiblingsClassLoader) {

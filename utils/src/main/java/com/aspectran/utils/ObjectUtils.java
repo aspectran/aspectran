@@ -15,12 +15,14 @@
  */
 package com.aspectran.utils;
 
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 
 import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.StringJoiner;
 
@@ -31,13 +33,10 @@ import java.util.StringJoiner;
  */
 public abstract class ObjectUtils {
 
-    private static final int INITIAL_HASH = 7;
-    private static final int MULTIPLIER = 31;
-
     private static final String EMPTY_STRING = "";
     private static final String NULL_STRING = "null";
-    private static final String ARRAY_START = "{";
-    private static final String ARRAY_END = "}";
+    private static final String ARRAY_START = "[";
+    private static final String ARRAY_END = "]";
     private static final String EMPTY_ARRAY = ARRAY_START + ARRAY_END;
     private static final String ARRAY_ELEMENT_SEPARATOR = ", ";
     private static final Object[] EMPTY_OBJECT_ARRAY = new Object[0];
@@ -198,201 +197,114 @@ public abstract class ObjectUtils {
     }
 
     /**
-     * Return as hash code for the given object; typically the value of
-     * {@code Object#hashCode()}}. If the object is an array,
-     * this method will delegate to any of the {@code nullSafeHashCode}
-     * methods for arrays in this class. If the object is {@code null},
-     * this method returns 0.
-     * @param obj the given object
-     * @return a hash code value
+     * Return a hash code for the given elements, delegating to
+     * {@link #nullSafeHashCode(Object)} for each element. Contrary
+     * to {@link Objects#hash(Object...)}, this method can handle an
+     * element that is an array.
+     * @param elements the elements to be hashed
+     * @return a hash value of the elements
      */
-    public static int nullSafeHashCode(Object obj) {
+    public static int nullSafeHash(@Nullable Object... elements) {
+        if (elements == null) {
+            return 0;
+        }
+        int result = 1;
+        for (Object element : elements) {
+            result = 31 * result + nullSafeHashCode(element);
+        }
+        return result;
+    }
+
+    /**
+     * Return a hash code for the given object; typically the value of
+     * {@code Object#hashCode()}}. If the object is an array,
+     * this method will delegate to any of the {@code Arrays.hashCode}
+     * methods. If the object is {@code null}, this method returns 0.
+     * @see Object#hashCode()
+     * @see Arrays
+     */
+    public static int nullSafeHashCode(@Nullable Object obj) {
         if (obj == null) {
             return 0;
         }
         if (obj.getClass().isArray()) {
             if (obj instanceof Object[]) {
-                return nullSafeHashCode((Object[])obj);
+                return Arrays.hashCode((Object[])obj);
             }
             if (obj instanceof boolean[]) {
-                return nullSafeHashCode((boolean[])obj);
+                return Arrays.hashCode((boolean[])obj);
             }
             if (obj instanceof byte[]) {
-                return nullSafeHashCode((byte[])obj);
+                return Arrays.hashCode((byte[])obj);
             }
             if (obj instanceof char[]) {
-                return nullSafeHashCode((char[])obj);
+                return Arrays.hashCode((char[])obj);
             }
             if (obj instanceof double[]) {
-                return nullSafeHashCode((double[])obj);
+                return Arrays.hashCode((double[])obj);
             }
             if (obj instanceof float[]) {
-                return nullSafeHashCode((float[])obj);
+                return Arrays.hashCode((float[])obj);
             }
             if (obj instanceof int[]) {
-                return nullSafeHashCode((int[])obj);
+                return Arrays.hashCode((int[])obj);
             }
             if (obj instanceof long[]) {
-                return nullSafeHashCode((long[])obj);
+                return Arrays.hashCode((long[])obj);
             }
             if (obj instanceof short[]) {
-                return nullSafeHashCode((short[])obj);
+                return Arrays.hashCode((short[])obj);
             }
         }
         return obj.hashCode();
     }
 
     /**
-     * Return a hash code based on the contents of the specified array.
-     * If {@code array} is {@code null}, this method returns 0.
-     * @param array the specified array
-     * @return a hash code value
+     * Return a String representation of an object's overall identity.
+     * @param obj the object (may be {@code null})
+     * @return the object's identity as String representation,
+     * or an empty String if the object was {@code null}
      */
-    public static int nullSafeHashCode(Object[] array) {
-        if (array == null) {
-            return 0;
+    public static String identityToString(@Nullable Object obj) {
+        if (obj == null) {
+            return EMPTY_STRING;
         }
-        int hash = INITIAL_HASH;
-        for (Object element : array) {
-            hash = MULTIPLIER * hash + nullSafeHashCode(element);
-        }
-        return hash;
+        return obj.getClass().getName() + "@" + getIdentityHexString(obj);
     }
 
     /**
-     * Return a hash code based on the contents of the specified array.
-     * If {@code array} is {@code null}, this method returns 0.
-     * @param array the specified array
-     * @return a hash code value
+     * Return a simple String representation of an object's overall identity.
+     * @param obj the object (may be {@code null})
+     * @return the object's identity as simple String representation,
+     * or an empty String if the object was {@code null}
      */
-    public static int nullSafeHashCode(boolean[] array) {
-        if (array == null) {
-            return 0;
+    public static String simpleIdentityToString(@Nullable Object obj) {
+        if (obj == null) {
+            return EMPTY_STRING;
         }
-        int hash = INITIAL_HASH;
-        for (boolean element : array) {
-            hash = MULTIPLIER * hash + Boolean.hashCode(element);
-        }
-        return hash;
+        String name = (obj.getClass().isAnonymousClass() ? obj.getClass().getName() : obj.getClass().getSimpleName());
+        return name + "@" + getIdentityHexString(obj);
     }
 
     /**
-     * Return a hash code based on the contents of the specified array.
-     * If {@code array} is {@code null}, this method returns 0.
-     * @param array the specified array
-     * @return a hash code value
+     * Return a simple String representation of an object's overall identity, with its name.
+     * @param obj the object (may be {@code null})
+     * @return the object's identity as simple String representation,
+     * or an empty String if the object was {@code null}
      */
-    public static int nullSafeHashCode(byte[] array) {
-        if (array == null) {
-            return 0;
-        }
-        int hash = INITIAL_HASH;
-        for (byte element : array) {
-            hash = MULTIPLIER * hash + element;
-        }
-        return hash;
+    @NonNull
+    public static String simpleIdentityToString(@Nullable Object obj, @NonNull String name) {
+        return simpleIdentityToString(obj) + "(" + name + ")";
     }
 
     /**
-     * Return a hash code based on the contents of the specified array.
-     * If {@code array} is {@code null}, this method returns 0.
-     * @param array the specified array
-     * @return a hash code value
+     * Return a hex String form of an object's identity hash code.
+     * @param obj the object
+     * @return the object's identity code in hex notation
      */
-    public static int nullSafeHashCode(char[] array) {
-        if (array == null) {
-            return 0;
-        }
-        int hash = INITIAL_HASH;
-        for (char element : array) {
-            hash = MULTIPLIER * hash + element;
-        }
-        return hash;
-    }
-
-    /**
-     * Return a hash code based on the contents of the specified array.
-     * If {@code array} is {@code null}, this method returns 0.
-     * @param array the specified array
-     * @return a hash code value
-     */
-    public static int nullSafeHashCode(double[] array) {
-        if (array == null) {
-            return 0;
-        }
-        int hash = INITIAL_HASH;
-        for (double element : array) {
-            hash = MULTIPLIER * hash + Double.hashCode(element);
-        }
-        return hash;
-    }
-
-    /**
-     * Return a hash code based on the contents of the specified array.
-     * If {@code array} is {@code null}, this method returns 0.
-     * @param array the specified array
-     * @return a hash code value
-     */
-    public static int nullSafeHashCode(float[] array) {
-        if (array == null) {
-            return 0;
-        }
-        int hash = INITIAL_HASH;
-        for (float element : array) {
-            hash = MULTIPLIER * hash + Float.hashCode(element);
-        }
-        return hash;
-    }
-
-    /**
-     * Return a hash code based on the contents of the specified array.
-     * If {@code array} is {@code null}, this method returns 0.
-     * @param array the specified array
-     * @return a hash code value
-     */
-    public static int nullSafeHashCode(int[] array) {
-        if (array == null) {
-            return 0;
-        }
-        int hash = INITIAL_HASH;
-        for (int element : array) {
-            hash = MULTIPLIER * hash + element;
-        }
-        return hash;
-    }
-
-    /**
-     * Return a hash code based on the contents of the specified array.
-     * If {@code array} is {@code null}, this method returns 0.
-     * @param array the specified array
-     * @return a hash code value
-     */
-    public static int nullSafeHashCode(long[] array) {
-        if (array == null) {
-            return 0;
-        }
-        int hash = INITIAL_HASH;
-        for (long element : array) {
-            hash = MULTIPLIER * hash + Long.hashCode(element);
-        }
-        return hash;
-    }
-
-    /**
-     * Return a hash code based on the contents of the specified array.
-     * If {@code array} is {@code null}, this method returns 0.
-     * @param array the specified array
-     * @return a hash code value
-     */
-    public static int nullSafeHashCode(short[] array) {
-        if (array == null) {
-            return 0;
-        }
-        int hash = INITIAL_HASH;
-        for (short element : array) {
-            hash = MULTIPLIER * hash + element;
-        }
-        return hash;
+    @NonNull
+    public static String getIdentityHexString(Object obj) {
+        return Integer.toHexString(System.identityHashCode(obj));
     }
 
     /**

@@ -29,7 +29,7 @@ import jakarta.servlet.jsp.tagext.TagSupport;
 import jakarta.servlet.jsp.tagext.TryCatchFinally;
 
 /**
- * Superclass for all tags that require a {@link Activity}.
+ * Superclass for all tags that require an {@link Activity}.
  *
  * <p>Created: 2020/05/31</p>
  */

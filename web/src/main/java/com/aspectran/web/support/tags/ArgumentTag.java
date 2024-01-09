@@ -21,7 +21,7 @@ import jakarta.servlet.jsp.tagext.BodyTagSupport;
 
 /**
  * The {@code <argument>} tag is based on the JSTL {@code fmt:param} tag.
- * The purpose is to support arguments inside the message and theme tags.
+ * The purpose is to support arguments inside the message tags.
  *
  * <p>This tag must be nested under an argument aware tag.
  *

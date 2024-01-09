@@ -223,4 +223,18 @@
         </attribute>
     </tag>
 
+    <tag>
+        <description>Display a piece of content in a JSP file,
+            based on a specific environment profile.</description>
+        <name>profile</name>
+        <tag-class>com.aspectran.web.support.tags.ProfileTag</tag-class>
+        <body-content>scriptless</body-content>
+        <attribute>
+            <description>The expression for profiles to include or exclude.</description>
+            <name>expression</name>
+            <required>true</required>
+            <rtexprvalue>false</rtexprvalue>
+        </attribute>
+    </tag>
+
 </taglib>

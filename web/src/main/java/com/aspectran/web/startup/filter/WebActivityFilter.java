@@ -16,6 +16,7 @@
 package com.aspectran.web.startup.filter;
 
 import com.aspectran.core.context.ActivityContext;
+import com.aspectran.utils.ObjectUtils;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
@@ -102,9 +103,7 @@ public class WebActivityFilter implements Filter {
 
     @NonNull
     private String getMyName() {
-        return getClass().getSimpleName() + '@' +
-                Integer.toString(hashCode(), 16) +
-                "(" + filterConfig.getFilterName() + ")";
+        return ObjectUtils.simpleIdentityToString(this, filterConfig.getFilterName());
     }
 
 }

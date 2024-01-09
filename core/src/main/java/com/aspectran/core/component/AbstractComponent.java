@@ -15,6 +15,7 @@
  */
 package com.aspectran.core.component;
 
+import com.aspectran.utils.ObjectUtils;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 import com.aspectran.utils.thread.AutoLock;
@@ -107,7 +108,7 @@ public abstract class AbstractComponent implements Component {
 
     @Override
     public String getComponentName() {
-        return getClass().getSimpleName() + '@' + Integer.toString(hashCode(), 16);
+        return ObjectUtils.simpleIdentityToString(this);
     }
 
 }
