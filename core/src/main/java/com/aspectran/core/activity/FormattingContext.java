@@ -17,6 +17,7 @@ package com.aspectran.core.activity;
 
 import com.aspectran.utils.BooleanUtils;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 
@@ -111,7 +112,8 @@ public class FormattingContext {
         this.nullWritable = nullWritable;
     }
 
-    public static FormattingContext parse(Activity activity) {
+    @NonNull
+    public static FormattingContext parse(@NonNull Activity activity) {
         String indentStyle = activity.getSetting(FORMAT_INDENT_TAB);
         String indentSize = activity.getSetting(FORMAT_INDENT_SIZE);
         String dateFormat = activity.getSetting(FORMAT_DATE_FORMAT);

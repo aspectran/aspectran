@@ -47,8 +47,8 @@ import java.util.Properties;
 
 /**
  * XSL Transform Response converts the response data to XML and applies XSLT transformation to it.
- * 
- * Created: 2008. 03. 22 PM 5:51:58
+ *
+ * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */
 public class XslTransformResponse extends TransformResponse {
 
@@ -194,7 +194,7 @@ public class XslTransformResponse extends TransformResponse {
         Source source = new StreamSource(templateFile);
         return createTemplates(source);
     }
-    
+
     private Templates createTemplates(@NonNull URL url) throws TransformerConfigurationException, IOException {
         URLConnection conn = url.openConnection();
         Source source = new StreamSource(conn.getInputStream());
@@ -222,7 +222,7 @@ public class XslTransformResponse extends TransformResponse {
         }
         return contentType;
     }
-    
+
     private String getOutputEncoding(@NonNull Templates templates) {
         Properties outputProperties = templates.getOutputProperties();
         return outputProperties.getProperty(OutputKeys.ENCODING);

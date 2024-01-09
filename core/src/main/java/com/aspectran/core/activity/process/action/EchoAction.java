@@ -22,6 +22,7 @@ import com.aspectran.core.context.rule.EchoActionRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.type.ActionType;
 import com.aspectran.utils.ToStringBuilder;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 /**
  * {@code EchoAction} to produce attributes.
@@ -36,7 +37,7 @@ public class EchoAction implements Executable {
      * Instantiates a new EchoAction.
      * @param echoActionRule the echo action rule
      */
-    public EchoAction(EchoActionRule echoActionRule) {
+    public EchoAction(@NonNull EchoActionRule echoActionRule) {
         this.echoActionRule = echoActionRule;
     }
 

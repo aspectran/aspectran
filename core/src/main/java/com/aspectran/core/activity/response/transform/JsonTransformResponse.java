@@ -30,7 +30,7 @@ import java.io.Writer;
 /**
  * JSON Transform Response converts the response data to JSON and outputs it.
  *
- * Created: 2008. 03. 22 PM 5:51:58
+ * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */
 public class JsonTransformResponse extends TransformResponse {
 
@@ -94,8 +94,8 @@ public class JsonTransformResponse extends TransformResponse {
         return new JsonTransformResponse(getTransformRule().replicate());
     }
 
-    private void transform(ProcessResult processResult, String callback, Writer writer, FormattingContext formattingContext)
-            throws IOException {
+    private void transform(ProcessResult processResult, String callback, Writer writer,
+                           FormattingContext formattingContext) throws IOException {
         if (callback != null) {
             writer.write(callback + ROUND_BRACKET_OPEN);
         }

@@ -25,6 +25,7 @@ import com.aspectran.core.adapter.SessionAdapter;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.type.MethodType;
 import com.aspectran.utils.OutputStringWriter;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.io.Writer;
 import java.util.Map;
@@ -47,7 +48,7 @@ public class InstantActivity extends CoreActivity {
         super(context);
     }
 
-    public InstantActivity(Activity activity) {
+    public InstantActivity(@NonNull Activity activity) {
         super(activity.getActivityContext());
         setSessionAdapter(activity.getSessionAdapter());
         setRequestAdapter(activity.getRequestAdapter());

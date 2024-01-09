@@ -36,8 +36,8 @@ import java.io.Writer;
 
 /**
  * XML Transform Response converts the response data to XML and outputs it.
- * 
- * Created: 2008. 03. 22 PM 5:51:58
+ *
+ * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */
 public class XmlTransformResponse extends TransformResponse {
 

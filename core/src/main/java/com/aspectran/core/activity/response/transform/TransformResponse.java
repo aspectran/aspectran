@@ -28,7 +28,7 @@ import com.aspectran.utils.logging.LoggerFactory;
 /**
  * The Class TransformResponse.
  *
- * Created: 2008. 03. 22 PM 5:51:58
+ * <p>Created: 2008. 03. 22 PM 5:51:58</p>
  */
 public abstract class TransformResponse implements Response {
 

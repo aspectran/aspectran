@@ -18,6 +18,7 @@ package com.aspectran.web.support.multipart.commons;
 import com.aspectran.core.activity.request.FileParameter;
 import com.aspectran.core.activity.request.SizeLimitExceededException;
 import com.aspectran.core.adapter.RequestAdapter;
+import com.aspectran.utils.ExceptionUtils;
 import com.aspectran.utils.FilenameUtils;
 import com.aspectran.utils.LinkedMultiValueMap;
 import com.aspectran.utils.MultiValueMap;
@@ -145,7 +146,9 @@ public class CommonsMultipartFormDataParser implements MultipartFormDataParser {
             }
             parseMultipartParameters(fileItemListMap, requestAdapter);
         } catch (Exception e) {
-            throw new MultipartRequestParseException("Could not parse multipart servlet request", e);
+            Throwable cause = ExceptionUtils.getRootCause(e);
+            throw new MultipartRequestParseException("Failed to parse multipart request; Cause: " +
+                ExceptionUtils.getSimpleMessage(cause), e);
         }
     }
 

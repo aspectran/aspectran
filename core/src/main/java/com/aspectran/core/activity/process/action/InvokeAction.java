@@ -52,7 +52,7 @@ public class InvokeAction implements Executable {
      * Instantiates a new InvokeAction.
      * @param invokeActionRule the invoke action rule
      */
-    public InvokeAction(InvokeActionRule invokeActionRule) {
+    public InvokeAction(@NonNull InvokeActionRule invokeActionRule) {
         this.invokeActionRule = invokeActionRule;
     }
 
@@ -89,7 +89,8 @@ public class InvokeAction implements Executable {
             Method method = invokeActionRule.getMethod();
             if (method != null) {
                 if (argumentItemRuleMap != null && !argumentItemRuleMap.isEmpty()) {
-                    Object[] args = createArguments(activity, argumentItemRuleMap, evaluator, invokeActionRule.isRequiresTranslet());
+                    Object[] args = createArguments(activity, argumentItemRuleMap, evaluator,
+                        invokeActionRule.isRequiresTranslet());
                     return invokeMethod(bean, method, args);
                 } else {
                     return invokeMethod(activity, bean, method, invokeActionRule.isRequiresTranslet());
@@ -100,20 +101,24 @@ public class InvokeAction implements Executable {
                 if (activity.getTranslet() != null) {
                     if (requiresTranslet == null) {
                         try {
-                            result = invokeMethod(activity, bean, methodName, argumentItemRuleMap, evaluator, true);
+                            result = invokeMethod(activity, bean, methodName, argumentItemRuleMap,
+                                evaluator, true);
                             requiresTranslet = Boolean.TRUE;
                         } catch (NoSuchMethodException e) {
                             if (logger.isTraceEnabled()) {
                                 logger.trace("No such accessible method to invoke action " + invokeActionRule);
                             }
                             requiresTranslet = Boolean.FALSE;
-                            result = invokeMethod(activity, bean, methodName, argumentItemRuleMap, evaluator, false);
+                            result = invokeMethod(activity, bean, methodName, argumentItemRuleMap,
+                                evaluator, false);
                         }
                     } else {
-                        result = invokeMethod(activity, bean, methodName, argumentItemRuleMap, evaluator, requiresTranslet);
+                        result = invokeMethod(activity, bean, methodName, argumentItemRuleMap,
+                            evaluator, requiresTranslet);
                     }
                 } else {
-                    result = invokeMethod(activity, bean, methodName, argumentItemRuleMap, evaluator, false);
+                    result = invokeMethod(activity, bean, methodName, argumentItemRuleMap,
+                        evaluator, false);
                 }
                 return result;
             }

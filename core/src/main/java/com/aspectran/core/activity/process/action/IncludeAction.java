@@ -24,6 +24,7 @@ import com.aspectran.core.context.rule.IncludeActionRule;
 import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.type.ActionType;
 import com.aspectran.utils.ToStringBuilder;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.util.Map;
 
@@ -40,7 +41,7 @@ public class IncludeAction implements Executable {
      * Instantiates a new IncludeAction.
      * @param includeActionRule the process call action rule
      */
-    public IncludeAction(IncludeActionRule includeActionRule) {
+    public IncludeAction(@NonNull IncludeActionRule includeActionRule) {
         this.includeActionRule = includeActionRule;
     }
 

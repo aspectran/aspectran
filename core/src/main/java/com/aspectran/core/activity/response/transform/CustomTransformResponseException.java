@@ -17,11 +17,13 @@ package com.aspectran.core.activity.response.transform;
 
 import com.aspectran.core.activity.response.ResponseException;
 import com.aspectran.core.context.rule.CustomTransformRule;
+import com.aspectran.utils.ExceptionUtils;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 /**
  * The Class CustomTransformResponseException.
  *
- * Created: 2019. 06. 16
+ * <p>Created: 2019. 06. 16</p>
  */
 public class CustomTransformResponseException extends ResponseException {
 
@@ -32,8 +34,10 @@ public class CustomTransformResponseException extends ResponseException {
      * @param customTransformRule the custom transform rule
      * @param cause the real cause of the exception
      */
-    public CustomTransformResponseException(CustomTransformRule customTransformRule, Throwable cause) {
-        super("Failed to transform " + customTransformRule + "; nested exception is " + cause, cause);
+    public CustomTransformResponseException(@NonNull CustomTransformRule customTransformRule,
+                                            @NonNull Throwable cause) {
+        super("Failed to transform " + customTransformRule + "; Cause: " +
+            ExceptionUtils.getRootCauseSimpleMessage(cause), cause);
     }
 
     /**
@@ -41,8 +45,10 @@ public class CustomTransformResponseException extends ResponseException {
      * @param customTransformer the custom transformer
      * @param cause the real cause of the exception
      */
-    public CustomTransformResponseException(CustomTransformer customTransformer, Throwable cause) {
-        super("Failed to transform with " + customTransformer + "; nested exception is " + cause, cause);
+    public CustomTransformResponseException(@NonNull CustomTransformer customTransformer,
+                                            @NonNull Throwable cause) {
+        super("Failed to transform with " + customTransformer + "; Cause: " +
+            ExceptionUtils.getRootCauseSimpleMessage(cause), cause);
     }
 
 }

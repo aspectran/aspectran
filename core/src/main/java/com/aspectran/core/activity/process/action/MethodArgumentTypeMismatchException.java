@@ -16,12 +16,13 @@
 package com.aspectran.core.activity.process.action;
 
 import com.aspectran.core.activity.process.ProcessException;
+import com.aspectran.utils.ExceptionUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
 /**
  * This exception will be thrown when failing to bind the request parameter
  * to the action method parameter.
- * 
+ *
  * <p>Created: 2009. 02. 26</p>
  */
 public class MethodArgumentTypeMismatchException extends ProcessException {
@@ -33,7 +34,8 @@ public class MethodArgumentTypeMismatchException extends ProcessException {
     public MethodArgumentTypeMismatchException(@NonNull Class<?> valueType,
                                                @NonNull Class<?> requiredType, Throwable cause) {
         super("Failed to convert value of type [" + valueType.getName() + "] " +
-                "to required type [" + requiredType.getName() + "]; nested exception is " + cause, cause);
+            "to required type [" + requiredType.getName() + "]; Cause: " +
+            ExceptionUtils.getRootCauseSimpleMessage(cause), cause);
 
         this.cause = cause;
     }

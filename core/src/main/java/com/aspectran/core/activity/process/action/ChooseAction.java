@@ -22,6 +22,7 @@ import com.aspectran.core.context.rule.ChooseRule;
 import com.aspectran.core.context.rule.ChooseWhenRule;
 import com.aspectran.core.context.rule.type.ActionType;
 import com.aspectran.utils.ToStringBuilder;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 import java.util.List;
 
@@ -34,7 +35,7 @@ public class ChooseAction implements Executable {
 
     private final List<ChooseWhenRule> chooseWhenRules;
 
-    public ChooseAction(ChooseRule chooseRule) {
+    public ChooseAction(@NonNull ChooseRule chooseRule) {
         this.chooseRule = chooseRule;
         this.chooseWhenRules = chooseRule.getChooseWhenRules();
     }

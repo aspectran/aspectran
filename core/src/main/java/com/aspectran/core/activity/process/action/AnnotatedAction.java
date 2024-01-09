@@ -75,7 +75,7 @@ public class AnnotatedAction implements Executable {
      * Instantiates a new AnnotatedMethodAction.
      * @param annotatedActionRule the annotated method action rule
      */
-    public AnnotatedAction(AnnotatedActionRule annotatedActionRule) {
+    public AnnotatedAction(@NonNull AnnotatedActionRule annotatedActionRule) {
         this.annotatedActionRule = annotatedActionRule;
     }
 

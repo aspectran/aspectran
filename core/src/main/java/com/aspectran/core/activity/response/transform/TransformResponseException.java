@@ -17,10 +17,11 @@ package com.aspectran.core.activity.response.transform;
 
 import com.aspectran.core.activity.response.ResponseException;
 import com.aspectran.core.context.rule.TransformRule;
+import com.aspectran.utils.ExceptionUtils;
 
 /**
  * Thrown if an error occurs while transforming the data needed for a response.
- * 
+ *
  * <p>Created: 2008. 01. 07 AM 3:35:55</p>
  */
 public class TransformResponseException extends ResponseException {
@@ -35,7 +36,8 @@ public class TransformResponseException extends ResponseException {
      * @param cause the real cause of the exception
      */
     public TransformResponseException(TransformRule transformRule, Throwable cause) {
-        super("Failed to transform " + transformRule + "; nested exception is " + cause, cause);
+        super("Failed to transform " + transformRule + "; Cause: " +
+            ExceptionUtils.getRootCauseSimpleMessage(cause), cause);
         this.transformRule = transformRule;
     }
 

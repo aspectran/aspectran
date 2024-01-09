@@ -16,7 +16,6 @@
 package com.aspectran.utils;
 
 import com.aspectran.utils.annotation.jsr305.NonNull;
-import com.aspectran.utils.annotation.jsr305.Nullable;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -76,6 +75,11 @@ public class ExceptionUtils {
     @NonNull
     public static String getSimpleMessage(@NonNull Throwable t) {
         return (t.getMessage() != null ? t.getMessage() : t.toString());
+    }
+
+    @NonNull
+    public static String getRootCauseSimpleMessage(@NonNull Throwable t) {
+        return getSimpleMessage(getRootCause(t));
     }
 
     /*
