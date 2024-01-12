@@ -17,7 +17,6 @@ package com.aspectran.core.component.bean;
 
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.BeanRule;
-import com.aspectran.core.context.rule.type.BeanProxifierType;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
 
@@ -32,9 +31,8 @@ import java.util.Collection;
  */
 public class DefaultBeanRegistry extends AbstractBeanRegistry {
 
-    public DefaultBeanRegistry(ActivityContext context, BeanRuleRegistry beanRuleRegistry,
-                               BeanProxifierType beanProxifierType) {
-        super(context, beanRuleRegistry, beanProxifierType);
+    public DefaultBeanRegistry(ActivityContext context, BeanRuleRegistry beanRuleRegistry) {
+        super(context, beanRuleRegistry);
     }
 
     @Override

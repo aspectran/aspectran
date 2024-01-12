@@ -17,6 +17,7 @@ package com.aspectran.core.component.bean.proxy;
 
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.component.aspect.AspectAdviceRuleRegistry;
+import com.aspectran.core.component.bean.BeanFactoryUtils;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.BeanRule;
 import com.aspectran.utils.annotation.jsr305.NonNull;
@@ -87,7 +88,13 @@ public class JdkBeanProxy extends AbstractBeanProxy implements InvocationHandler
     }
 
     @NonNull
-    public static Object createProxy(ActivityContext context, BeanRule beanRule, Object bean) {
+    public static Object create(ActivityContext context, BeanRule beanRule, Object[] args, Class<?>[] argTypes) {
+        Object bean;
+        if (argTypes != null && args != null) {
+            bean = BeanFactoryUtils.newInstance(beanRule.getBeanClass(), args, argTypes);
+        } else {
+            bean = BeanFactoryUtils.newInstance(beanRule.getBeanClass());
+        }
         JdkBeanProxy proxy = new JdkBeanProxy(context, beanRule, bean);
         return Proxy.newProxyInstance(beanRule.getBeanClass().getClassLoader(),
                 beanRule.getBeanClass().getInterfaces(), proxy);

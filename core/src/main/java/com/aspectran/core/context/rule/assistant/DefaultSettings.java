@@ -34,8 +34,6 @@ public class DefaultSettings {
     /** Suffix to append to each translet name */
     private String transletNameSuffix;
 
-    private String beanProxifier;
-
     private Boolean pointcutPatternVerifiable;
 
     private String defaultTemplateEngineBean;
@@ -48,7 +46,6 @@ public class DefaultSettings {
     public DefaultSettings(@NonNull DefaultSettings ds) {
         this.transletNamePrefix = ds.getTransletNamePrefix();
         this.transletNameSuffix = ds.getTransletNameSuffix();
-        this.beanProxifier = ds.getBeanProxifier();
         this.pointcutPatternVerifiable = ds.getPointcutPatternVerifiable();
         this.defaultTemplateEngineBean = ds.getDefaultTemplateEngineBean();
         this.defaultSchedulerBean = ds.getDefaultSchedulerBean();
@@ -68,14 +65,6 @@ public class DefaultSettings {
 
     public void setTransletNameSuffix(String transletNameSuffix) {
         this.transletNameSuffix = transletNameSuffix;
-    }
-
-    public String getBeanProxifier() {
-        return beanProxifier;
-    }
-
-    public void setBeanProxifier(String beanProxifier) {
-        this.beanProxifier = beanProxifier;
     }
 
     public boolean isPointcutPatternVerifiable() {
@@ -112,9 +101,6 @@ public class DefaultSettings {
         }
         if (settings.get(DefaultSettingType.TRANSLET_NAME_SUFFIX) != null) {
             setTransletNameSuffix(settings.get(DefaultSettingType.TRANSLET_NAME_SUFFIX));
-        }
-        if (settings.get(DefaultSettingType.BEAN_PROXIFIER) != null) {
-            beanProxifier = settings.get(DefaultSettingType.BEAN_PROXIFIER);
         }
         if (settings.get(DefaultSettingType.POINTCUT_PATTERN_VERIFIABLE) != null) {
             pointcutPatternVerifiable = (settings.get(DefaultSettingType.POINTCUT_PATTERN_VERIFIABLE) == null

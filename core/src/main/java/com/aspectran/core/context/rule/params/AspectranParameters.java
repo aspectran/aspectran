@@ -83,10 +83,6 @@ public class AspectranParameters extends AbstractParameters {
         return setSetting(DefaultSettingType.TRANSLET_NAME_SUFFIX, suffixPattern);
     }
 
-    public AspectranParameters setBeanProxifier(String proxifierName) {
-        return setSetting(DefaultSettingType.BEAN_PROXIFIER, proxifierName);
-    }
-
     public AspectranParameters setPointcutPatternVerifiable(boolean verifiable) {
         return setSetting(DefaultSettingType.POINTCUT_PATTERN_VERIFIABLE, verifiable);
     }

@@ -218,9 +218,6 @@ public class RulesToParameters {
             if (defaultSettings.getTransletNameSuffix() != null) {
                 settingsParameters.putSetting(DefaultSettingType.TRANSLET_NAME_SUFFIX.toString(), defaultSettings.getTransletNameSuffix());
             }
-            if (defaultSettings.getBeanProxifier() != null) {
-                settingsParameters.putSetting(DefaultSettingType.BEAN_PROXIFIER.toString(), defaultSettings.getBeanProxifier());
-            }
             if (defaultSettings.getPointcutPatternVerifiable() != null) {
                 settingsParameters.putSetting(DefaultSettingType.POINTCUT_PATTERN_VERIFIABLE.toString(), defaultSettings.getPointcutPatternVerifiable());
             }

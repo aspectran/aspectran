@@ -24,7 +24,6 @@ public enum DefaultSettingType {
 
     TRANSLET_NAME_PREFIX("transletNamePrefix"),
     TRANSLET_NAME_SUFFIX("transletNameSuffix"),
-    BEAN_PROXIFIER("beanProxifier"),
     POINTCUT_PATTERN_VERIFIABLE("pointcutPatternVerifiable"),
     DEFAULT_TEMPLATE_ENGINE_BEAN("defaultTemplateEngineBean"),
     DEFAULT_SCHEDULER_BEAN("defaultSchedulerBean");

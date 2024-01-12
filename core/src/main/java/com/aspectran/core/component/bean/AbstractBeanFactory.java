@@ -26,9 +26,7 @@ import com.aspectran.core.component.bean.aware.Aware;
 import com.aspectran.core.component.bean.aware.ClassLoaderAware;
 import com.aspectran.core.component.bean.aware.CurrentActivityAware;
 import com.aspectran.core.component.bean.aware.EnvironmentAware;
-import com.aspectran.core.component.bean.proxy.CglibBeanProxy;
-import com.aspectran.core.component.bean.proxy.JavassistBeanProxy;
-import com.aspectran.core.component.bean.proxy.JdkBeanProxy;
+import com.aspectran.core.component.bean.proxy.ProxyBeanFactory;
 import com.aspectran.core.component.bean.scope.Scope;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.expr.ExpressionEvaluator;
@@ -42,16 +40,12 @@ import com.aspectran.core.context.rule.ItemRuleMap;
 import com.aspectran.core.context.rule.ItemRuleUtils;
 import com.aspectran.core.context.rule.ParameterBindingRule;
 import com.aspectran.core.context.rule.type.AutowireTargetType;
-import com.aspectran.core.context.rule.type.BeanProxifierType;
-import com.aspectran.utils.ClassUtils;
 import com.aspectran.utils.MethodUtils;
 import com.aspectran.utils.ReflectionUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Map;
@@ -67,11 +61,11 @@ abstract class AbstractBeanFactory extends AbstractComponent {
 
     private final ActivityContext context;
 
-    private final BeanProxifierType beanProxifierType;
+    private final ProxyBeanFactory proxyBeanFactory;
 
-    AbstractBeanFactory(ActivityContext context, BeanProxifierType beanProxifierType) {
+    AbstractBeanFactory(ActivityContext context) {
         this.context = context;
-        this.beanProxifierType = (beanProxifierType != null ? beanProxifierType : BeanProxifierType.JAVASSIST);
+        this.proxyBeanFactory = new ProxyBeanFactory(context);
     }
 
     protected ActivityContext getActivityContext() {
@@ -256,37 +250,11 @@ abstract class AbstractBeanFactory extends AbstractComponent {
     private Object instantiateBean(@NonNull BeanRule beanRule, Object[] args, Class<?>[] argTypes) {
         Object bean;
         if (beanRule.isProxied()) {
-            bean = instantiateProxiedBean(beanRule, args, argTypes);
+            bean = proxyBeanFactory.createProxy(beanRule, args, argTypes);
         } else if (args != null) {
-            bean = newInstance(beanRule.getBeanClass(), args, argTypes);
+            bean = BeanFactoryUtils.newInstance(beanRule.getBeanClass(), args, argTypes);
         } else {
-            bean = newInstance(beanRule.getBeanClass());
-        }
-        return bean;
-    }
-
-    private Object instantiateProxiedBean(BeanRule beanRule, Object[] args, Class<?>[] argTypes) {
-        Object bean;
-        if (beanProxifierType == BeanProxifierType.JAVASSIST) {
-            if (logger.isTraceEnabled()) {
-                logger.trace("Create a proxied bean " + beanRule + " using Javassist");
-            }
-            bean = JavassistBeanProxy.createProxy(context, beanRule, args, argTypes);
-        } else if (beanProxifierType == BeanProxifierType.CGLIB) {
-            if (logger.isTraceEnabled()) {
-                logger.trace("Create a proxied bean " + beanRule + " using CGLIB");
-            }
-            bean = CglibBeanProxy.createProxy(context, beanRule, args, argTypes);
-        } else {
-            if (argTypes != null && args != null) {
-                bean = newInstance(beanRule.getBeanClass(), args, argTypes);
-            } else {
-                bean = newInstance(beanRule.getBeanClass());
-            }
-            if (logger.isTraceEnabled()) {
-                logger.trace("Create a proxied bean " + beanRule + " using JDK");
-            }
-            bean = JdkBeanProxy.createProxy(context, beanRule, bean);
+            bean = BeanFactoryUtils.newInstance(beanRule.getBeanClass());
         }
         return bean;
     }
@@ -443,62 +411,6 @@ abstract class AbstractBeanFactory extends AbstractComponent {
                             beanRule);
         }
         return resultBean;
-    }
-
-    @NonNull
-    private static Object newInstance(@NonNull Class<?> beanClass, Object[] args, Class<?>[] argTypes) {
-        if (beanClass.isInterface()) {
-            throw new BeanInstantiationException(beanClass, "Specified class is an interface");
-        }
-        Constructor<?> constructorToUse;
-        try {
-            constructorToUse = getMatchConstructor(beanClass, args);
-            if (constructorToUse == null) {
-                constructorToUse = ClassUtils.findConstructor(beanClass, argTypes);
-            }
-        } catch (NoSuchMethodException e) {
-            throw new BeanInstantiationException(beanClass, "No default constructor found", e);
-        }
-        return newInstance(constructorToUse, args);
-    }
-
-    @NonNull
-    private static Object newInstance(Class<?> beanClass) {
-        return newInstance(beanClass, MethodUtils.EMPTY_OBJECT_ARRAY, MethodUtils.EMPTY_CLASS_PARAMETERS);
-    }
-
-    @NonNull
-    private static Object newInstance(@NonNull Constructor<?> ctor, Object[] args) {
-        try {
-            return ctor.newInstance(args);
-        } catch (InstantiationException e) {
-            throw new BeanInstantiationException(ctor.getDeclaringClass(),
-                    "Is it an abstract class?", e);
-        } catch (IllegalAccessException e) {
-            throw new BeanInstantiationException(ctor.getDeclaringClass(),
-                    "Has the class definition changed? Is the constructor accessible?", e);
-        } catch (IllegalArgumentException e) {
-            throw new BeanInstantiationException(ctor.getDeclaringClass(),
-                    "Illegal arguments for constructor", e);
-        } catch (InvocationTargetException e) {
-            throw new BeanInstantiationException(ctor.getDeclaringClass(),
-                    "Constructor threw exception", e.getTargetException());
-        }
-    }
-
-    private static Constructor<?> getMatchConstructor(@NonNull Class<?> beanClass, Object[] args) {
-        Constructor<?>[] candidates = beanClass.getDeclaredConstructors();
-        Constructor<?> constructorToUse = null;
-        float bestMatchWeight = Float.MAX_VALUE;
-        float matchWeight;
-        for (Constructor<?> candidate : candidates) {
-            matchWeight = ReflectionUtils.getTypeDifferenceWeight(candidate.getParameterTypes(), args);
-            if (matchWeight < bestMatchWeight) {
-                constructorToUse = candidate;
-                bestMatchWeight = matchWeight;
-            }
-        }
-        return constructorToUse;
     }
 
 }

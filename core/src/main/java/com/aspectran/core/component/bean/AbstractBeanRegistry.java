@@ -24,7 +24,6 @@ import com.aspectran.core.component.bean.scope.SessionScope;
 import com.aspectran.core.component.bean.scope.SingletonScope;
 import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.context.rule.BeanRule;
-import com.aspectran.core.context.rule.type.BeanProxifierType;
 import com.aspectran.core.context.rule.type.ScopeType;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.annotation.jsr305.Nullable;
@@ -47,9 +46,8 @@ abstract class AbstractBeanRegistry extends AbstractBeanFactory implements BeanR
 
     private final BeanRuleRegistry beanRuleRegistry;
 
-    AbstractBeanRegistry(ActivityContext context, BeanRuleRegistry beanRuleRegistry,
-                         BeanProxifierType beanProxifierType) {
-        super(context, beanProxifierType);
+    AbstractBeanRegistry(ActivityContext context, BeanRuleRegistry beanRuleRegistry) {
+        super(context);
         this.beanRuleRegistry = beanRuleRegistry;
     }
 

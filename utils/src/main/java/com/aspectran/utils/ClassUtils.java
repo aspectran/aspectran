@@ -182,6 +182,29 @@ public abstract class ClassUtils {
     }
 
     /**
+     * Determine if the supplied {@link Class} is a JVM-generated implementation
+     * class for a lambda expression or method reference.
+     * <p>This method makes a best-effort attempt at determining this, based on
+     * checks that work on modern, mainstream JVMs.
+     * @param clazz the class to check
+     * @return {@code true} if the class is a lambda implementation class
+     */
+    public static boolean isLambdaClass(@NonNull Class<?> clazz) {
+        return (clazz.isSynthetic() && (clazz.getSuperclass() == Object.class) &&
+                (clazz.getInterfaces().length > 0) && clazz.getName().contains("$$Lambda"));
+    }
+
+    @NonNull
+    public static Class<?> classForName(String name) throws ClassNotFoundException {
+        return classForName(name, getDefaultClassLoader());
+    }
+
+    @NonNull
+    public static Class<?> classForName(String name, ClassLoader classLoader) throws ClassNotFoundException {
+        return Class.forName(name, true, classLoader);
+    }
+
+    /**
      * Returns the default class loader within the current context.
      * If there is a context classloader it is returned, otherwise the classloader
      * which loaded the ClassUtils Class is returned.

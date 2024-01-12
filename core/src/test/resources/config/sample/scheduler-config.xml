@@ -5,7 +5,6 @@
 
     <settings>
         <setting name="transletNameSuffix" value=".job"/>
-        <setting name="beanProxifier" value="javassist"/>
     </settings>
 
     <bean id="defaultScheduler1" class="com.aspectran.core.scheduler.support.QuartzSchedulerFactoryBean">

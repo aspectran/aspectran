@@ -15,6 +15,7 @@
  */
 package com.aspectran.utils.logging;
 
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.commons.JakartaCommonsLogger;
 import com.aspectran.utils.logging.jdk14.Jdk14Logger;
 import com.aspectran.utils.logging.log4j2.Log4j2Logger;
@@ -50,11 +51,13 @@ public final class LoggerFactory {
         // disable construction
     }
 
-    public static Logger getLogger(Class<?> aClass) {
+    @NonNull
+    public static Logger getLogger(@NonNull Class<?> aClass) {
         return getLogger(aClass.getName());
     }
 
-    public static Logger getLogger(String name) {
+    @NonNull
+    public static Logger getLogger(@NonNull String name) {
         try {
             return loggerConstructor.newInstance(name);
         } catch (Throwable t) {

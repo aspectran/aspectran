@@ -65,8 +65,8 @@ public class JavassistBeanProxy extends AbstractBeanProxy implements MethodHandl
     }
 
     @Nullable
-    private Object invoke(Object self, @NonNull Method overridden, Method proceed, Object[] args, Activity activity)
-            throws Throwable {
+    private Object invoke(Object self, @NonNull Method overridden, Method proceed, Object[] args,
+                          Activity activity) throws Throwable {
         String beanId = beanRule.getId();
         String className = beanRule.getClassName();
         String methodName = overridden.getName();
@@ -107,7 +107,7 @@ public class JavassistBeanProxy extends AbstractBeanProxy implements MethodHandl
      * @param argTypes the parameter types for a constructor
      * @return a new proxy bean object
      */
-    public static Object createProxy(ActivityContext context, BeanRule beanRule, Object[] args, Class<?>[] argTypes) {
+    public static Object create(ActivityContext context, BeanRule beanRule, Object[] args, Class<?>[] argTypes) {
         try {
             ProxyFactory proxyFactory = new ProxyFactory();
             proxyFactory.setSuperclass(beanRule.getBeanClass());

@@ -51,8 +51,6 @@ import com.aspectran.core.context.rule.assistant.BeanReferenceException;
 import com.aspectran.core.context.rule.assistant.BeanReferenceInspector;
 import com.aspectran.core.context.rule.params.AspectranParameters;
 import com.aspectran.core.context.rule.type.AutoReloadType;
-import com.aspectran.core.context.rule.type.BeanProxifierType;
-import com.aspectran.core.context.rule.type.DefaultSettingType;
 import com.aspectran.core.service.ServiceController;
 import com.aspectran.utils.ClassUtils;
 import com.aspectran.utils.SystemUtils;
@@ -354,10 +352,7 @@ public abstract class AbstractActivityContextBuilder implements ActivityContextB
 
         initAspectRuleRegistry(assistant);
 
-        BeanProxifierType beanProxifierType = BeanProxifierType.resolve(
-                (String)assistant.getSetting(DefaultSettingType.BEAN_PROXIFIER));
-        DefaultBeanRegistry defaultBeanRegistry = new DefaultBeanRegistry(
-                activityContext, beanRuleRegistry, beanProxifierType);
+        DefaultBeanRegistry defaultBeanRegistry = new DefaultBeanRegistry(activityContext, beanRuleRegistry);
 
         TemplateRuleRegistry templateRuleRegistry = assistant.getTemplateRuleRegistry();
         DefaultTemplateRenderer defaultTemplateRenderer = new DefaultTemplateRenderer(
