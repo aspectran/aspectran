@@ -37,11 +37,11 @@ import java.util.List;
 /**
  * The Class AbstractDynamicBeanProxy.
  */
-public abstract class AbstractDynamicProxyBean {
+public abstract class AbstractBeanProxy {
 
     private final AspectRuleRegistry aspectRuleRegistry;
 
-    public AbstractDynamicProxyBean(AspectRuleRegistry aspectRuleRegistry) {
+    public AbstractBeanProxy(AspectRuleRegistry aspectRuleRegistry) {
         this.aspectRuleRegistry = aspectRuleRegistry;
     }
 

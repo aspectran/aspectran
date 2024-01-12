@@ -29,7 +29,7 @@ import java.lang.reflect.Proxy;
 /**
  * Create an instance of the dynamic proxy bean using JDK.
  */
-public class JdkDynamicProxyBean extends AbstractDynamicProxyBean implements InvocationHandler {
+public class JdkBeanProxy extends AbstractBeanProxy implements InvocationHandler {
 
     private final ActivityContext context;
 
@@ -37,7 +37,7 @@ public class JdkDynamicProxyBean extends AbstractDynamicProxyBean implements Inv
 
     private final Object bean;
 
-    private JdkDynamicProxyBean(@NonNull ActivityContext context, BeanRule beanRule, Object bean) {
+    private JdkBeanProxy(@NonNull ActivityContext context, @NonNull BeanRule beanRule, @NonNull Object bean) {
         super(context.getAspectRuleRegistry());
 
         this.context = context;
@@ -87,8 +87,8 @@ public class JdkDynamicProxyBean extends AbstractDynamicProxyBean implements Inv
     }
 
     @NonNull
-    public static Object newInstance(ActivityContext context, BeanRule beanRule, Object bean) {
-        JdkDynamicProxyBean proxy = new JdkDynamicProxyBean(context, beanRule, bean);
+    public static Object createProxy(ActivityContext context, BeanRule beanRule, Object bean) {
+        JdkBeanProxy proxy = new JdkBeanProxy(context, beanRule, bean);
         return Proxy.newProxyInstance(beanRule.getBeanClass().getClassLoader(),
                 beanRule.getBeanClass().getInterfaces(), proxy);
     }

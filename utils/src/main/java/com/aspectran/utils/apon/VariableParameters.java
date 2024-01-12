@@ -31,8 +31,8 @@ public class VariableParameters extends AbstractParameters implements Serializab
         super(null);
     }
 
-    public VariableParameters(String text) throws IOException {
-        this(null, text);
+    public VariableParameters(String apon) throws IOException {
+        this(null, apon);
     }
 
     public VariableParameters(ParameterKey[] parameterKeys) {

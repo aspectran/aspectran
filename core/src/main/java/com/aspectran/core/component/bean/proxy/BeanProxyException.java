@@ -21,18 +21,18 @@ import com.aspectran.core.context.rule.BeanRule;
 /**
  * Exception thrown when instantiation of a proxy bean failed.
  */
-public class ProxyBeanInstantiationException extends BeanException {
+public class BeanProxyException extends BeanException {
 
     private static final long serialVersionUID = -3560168431550039638L;
 
     private final BeanRule beanRule;
 
     /**
-     * Create a new ProxyBeanInstantiationException.
-     * @param beanRule the offending bean rule
+     * Create a new BeanProxyException.
+     * @param beanRule the bean rule
      * @param cause the root cause
      */
-    public ProxyBeanInstantiationException(BeanRule beanRule, Throwable cause) {
+    public BeanProxyException(BeanRule beanRule, Throwable cause) {
         super("Could not instantiate proxy bean " + beanRule, cause);
         this.beanRule = beanRule;
     }
