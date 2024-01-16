@@ -67,7 +67,7 @@ public class AnnotatedAction implements Executable {
 
     private static final Logger logger = LoggerFactory.getLogger(AnnotatedAction.class);
 
-    private static final Object UNKNOWN_VALUE_TYPE = new Object();
+    private static final Object UNKNOWN_VALUE = new Object();
 
     private final AnnotatedActionRule annotatedActionRule;
 
@@ -81,8 +81,8 @@ public class AnnotatedAction implements Executable {
 
     @Override
     public Object execute(Activity activity) throws Exception {
-        Object bean = null;
         try {
+            Object bean = null;
             if (!Modifier.isInterface(annotatedActionRule.getBeanClass().getModifiers())) {
                 bean = activity.getBean(annotatedActionRule.getBeanClass());
             }
@@ -206,7 +206,7 @@ public class AnnotatedAction implements Executable {
                 } else {
                     String[] values = translet.getParameterValues(name);
                     result = parseArrayValues(type, values, format);
-                    if (result == UNKNOWN_VALUE_TYPE) {
+                    if (result == UNKNOWN_VALUE) {
                         result = null;
                     }
                 }
@@ -260,7 +260,7 @@ public class AnnotatedAction implements Executable {
             } else {
                 String value = translet.getParameter(name);
                 result = parseValue(type, value, format);
-                if (result == UNKNOWN_VALUE_TYPE) {
+                if (result == UNKNOWN_VALUE) {
                     if (type.isAnnotationPresent(Component.class)) {
                         try {
                             result = translet.getBean(type);
@@ -296,7 +296,7 @@ public class AnnotatedAction implements Executable {
                 } else {
                     val = parseValue(type, translet.getParameter(paramName), format);
                 }
-                if (val != null && val != UNKNOWN_VALUE_TYPE) {
+                if (val != null && val != UNKNOWN_VALUE) {
                     BeanUtils.setProperty(model, name, val);
                 } else if (method.isAnnotationPresent(Required.class)) {
                     missingProperties.add(name);
@@ -419,7 +419,7 @@ public class AnnotatedAction implements Executable {
                     result = new BigDecimal(value);
                 }
             } else {
-                result = UNKNOWN_VALUE_TYPE;
+                result = UNKNOWN_VALUE;
             }
             return result;
         } catch (Exception e) {
@@ -628,7 +628,7 @@ public class AnnotatedAction implements Executable {
                     result = arr;
                 }
             } else {
-                result = UNKNOWN_VALUE_TYPE;
+                result = UNKNOWN_VALUE;
             }
             return result;
         } catch (Exception e) {

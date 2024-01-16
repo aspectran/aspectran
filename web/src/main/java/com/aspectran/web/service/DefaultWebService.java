@@ -37,6 +37,7 @@ import com.aspectran.utils.ExceptionUtils;
 import com.aspectran.utils.ObjectUtils;
 import com.aspectran.utils.ResourceUtils;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.ToStringBuilder;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.apon.AponParseException;
 import com.aspectran.utils.logging.Logger;
@@ -56,6 +57,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.util.concurrent.atomic.AtomicReference;
+
+import static com.aspectran.core.component.session.MaxSessionsExceededException.MAX_SESSIONS_EXCEEDED;
 
 /**
  * Provides overall functionality for building web applications within a web
@@ -266,23 +269,19 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
                 logger.debug("Activity terminated: " + e.getMessage());
             }
         } catch (Exception e) {
-            Throwable throwable;
+            Throwable cause;
             if (activity != null && activity.getRaisedException() != null) {
-                throwable = activity.getRaisedException();
+                cause = ExceptionUtils.getRootCause(activity.getRaisedException());
             } else {
-                throwable = e;
+                cause = ExceptionUtils.getRootCause(e);
             }
-            Throwable cause = ExceptionUtils.getRootCause(throwable);
-            logger.error("Error while processing " + requestMethod + " request " + requestUri +
-                    "; Cause: " + ExceptionUtils.getSimpleMessage(cause), throwable);
             if (!response.isCommitted()) {
                 if (cause instanceof RequestMethodNotAllowedException) {
                     sendError(response, HttpServletResponse.SC_METHOD_NOT_ALLOWED, null);
                 } else if (cause instanceof SizeLimitExceededException) {
                     sendError(response, HttpServletResponse.SC_REQUEST_ENTITY_TOO_LARGE, null);
                 } else if (cause instanceof MaxSessionsExceededException) {
-                    sendError(response, HttpServletResponse.SC_SERVICE_UNAVAILABLE,
-                            MaxSessionsExceededException.MAX_SESSIONS_EXCEEDED);
+                    sendError(response, HttpServletResponse.SC_SERVICE_UNAVAILABLE, MAX_SESSIONS_EXCEEDED);
                 } else {
                     sendError(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, null);
                 }
@@ -291,6 +290,10 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
     }
 
     private void sendError(HttpServletResponse response, int sc, String msg) {
+        ToStringBuilder tsb = new ToStringBuilder("Send error response");
+        tsb.append("code", sc);
+        tsb.append("message", msg);
+        logger.error(tsb.toString());
         try {
             if (msg != null) {
                 response.sendError(sc, msg);
@@ -326,7 +329,8 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
      * @param servletContext the servlet context
      * @return the instance of {@code DefaultWebService}
      */
-    @NonNull public static DefaultWebService create(ServletContext servletContext) {
+    @NonNull
+    public static DefaultWebService create(ServletContext servletContext) {
         Assert.notNull(servletContext, "servletContext must not be null");
         String aspectranConfigParam = servletContext.getInitParameter(ASPECTRAN_CONFIG_PARAM);
         if (aspectranConfigParam == null) {
@@ -442,6 +446,7 @@ public class DefaultWebService extends AspectranCoreService implements WebServic
      * @param aspectranConfigParam the parameter for aspectran configuration
      * @return the instance of {@code DefaultWebService}
      */
+    @NonNull
     private static DefaultWebService create(@NonNull ServletContext servletContext, String aspectranConfigParam) {
         AspectranConfig aspectranConfig;
         if (aspectranConfigParam != null) {

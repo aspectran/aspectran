@@ -211,6 +211,7 @@ public class AspectranCoreService extends AbstractCoreService {
             public void run() throws Exception {
                 if (isActive()) {
                     AspectranCoreService.super.stop();
+                    releaseSingletonLock();
                 }
             }
 

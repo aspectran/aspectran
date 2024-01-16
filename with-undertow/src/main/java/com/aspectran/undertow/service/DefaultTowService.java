@@ -32,6 +32,7 @@ import com.aspectran.undertow.activity.TowActivity;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.ExceptionUtils;
 import com.aspectran.utils.StringUtils;
+import com.aspectran.utils.ToStringBuilder;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.utils.logging.Logger;
 import com.aspectran.utils.logging.LoggerFactory;
@@ -42,6 +43,8 @@ import io.undertow.util.Headers;
 
 import java.io.IOException;
 import java.net.URLDecoder;
+
+import static com.aspectran.core.component.session.MaxSessionsExceededException.MAX_SESSIONS_EXCEEDED;
 
 /**
  * <p>Created: 2019-07-27</p>
@@ -145,28 +148,38 @@ public class DefaultTowService extends AbstractTowService {
                 logger.debug("Activity terminated: " + e.getMessage());
             }
         } catch (Exception e) {
-            Throwable throwable;
+            Throwable cause;
             if (activity != null && activity.getRaisedException() != null) {
-                throwable = activity.getRaisedException();
+                cause = ExceptionUtils.getRootCause(activity.getRaisedException());
             } else {
-                throwable = e;
+                cause = ExceptionUtils.getRootCause(e);
             }
-            Throwable cause = ExceptionUtils.getRootCause(throwable);
-            logger.error("Error while processing " + requestMethod + " request " + requestPath +
-                    "; Cause: " + ExceptionUtils.getSimpleMessage(cause), throwable);
             if (cause instanceof RequestMethodNotAllowedException) {
-                exchange.setStatusCode(HttpStatus.METHOD_NOT_ALLOWED.value());
+                sendError(exchange, HttpStatus.METHOD_NOT_ALLOWED.value(), null);
             } else if (cause instanceof SizeLimitExceededException) {
-                exchange.setStatusCode(HttpStatus.PAYLOAD_TOO_LARGE.value());
+                sendError(exchange, HttpStatus.PAYLOAD_TOO_LARGE.value(), null);
             } else if (cause instanceof MaxSessionsExceededException) {
-                exchange.setStatusCode(HttpStatus.SERVICE_UNAVAILABLE.value());
-                exchange.setReasonPhrase(MaxSessionsExceededException.MAX_SESSIONS_EXCEEDED);
+                sendError(exchange, HttpStatus.SERVICE_UNAVAILABLE.value(), MAX_SESSIONS_EXCEEDED);
             } else {
-                exchange.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+                sendError(exchange, HttpStatus.INTERNAL_SERVER_ERROR.value(), null);
             }
         }
     }
 
+    private void sendError(HttpServerExchange exchange, int sc, String msg) {
+        ToStringBuilder tsb = new ToStringBuilder("Send error response");
+        tsb.append("code", sc);
+        tsb.append("message", msg);
+        logger.error(tsb.toString());
+        if (msg != null) {
+            exchange.setStatusCode(sc);
+            exchange.setReasonPhrase(msg);
+        } else {
+            exchange.setStatusCode(sc);
+        }
+    }
+
+    @NonNull
     private String getRequestInfo(@NonNull HttpServerExchange exchange) {
         StringBuilder sb = new StringBuilder();
         sb.append(exchange.getRequestMethod()).append(" ");
@@ -186,6 +199,7 @@ public class DefaultTowService extends AbstractTowService {
      * @param rootService the root service
      * @return the instance of {@code DefaultTowService}
      */
+    @NonNull
     public static DefaultTowService create(CoreService rootService) {
         Assert.notNull(rootService, "rootService must not be null");
         DefaultTowService towService = new DefaultTowService(rootService);
@@ -212,6 +226,7 @@ public class DefaultTowService extends AbstractTowService {
      * @param aspectranConfig the aspectran configuration
      * @return the instance of {@code DefaultTowService}
      */
+    @NonNull
     public static DefaultTowService create(AspectranConfig aspectranConfig) {
         Assert.notNull(aspectranConfig, "aspectranConfig must not be null");
         DefaultTowService towService = new DefaultTowService();
