@@ -62,6 +62,7 @@ public abstract class MediaTypeUtils {
         return cachedMimeTypes.get(mediaType);
     }
 
+    @NonNull
     private static MediaType parseMediaTypeInternal(@NonNull String mediaType) {
         int index = mediaType.indexOf(';');
         String fullType = (index >= 0 ? mediaType.substring(0, index) : mediaType).trim();
@@ -168,7 +169,8 @@ public abstract class MediaTypeUtils {
      * @return the list of media types
      * @throws IllegalArgumentException if the String cannot be parsed
      */
-    public static String toString(Collection<MediaType> mediaTypes) {
+    @NonNull
+    public static String toString(@NonNull Collection<MediaType> mediaTypes) {
         StringBuilder builder = new StringBuilder();
         for (Iterator<? extends MediaType> iterator = mediaTypes.iterator(); iterator.hasNext(); ) {
             MediaType MediaType = iterator.next();

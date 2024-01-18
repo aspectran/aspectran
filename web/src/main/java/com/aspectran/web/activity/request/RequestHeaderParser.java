@@ -54,8 +54,8 @@ public class RequestHeaderParser {
         List<String> headerValues = new ArrayList<>(acceptHeaderValues);
         try {
             List<MediaType> mediaTypes = MediaType.parseMediaTypes(headerValues);
-            MediaType.sortBySpecificityAndQuality(mediaTypes);
             if (mediaTypes != null && !mediaTypes.isEmpty()) {
+                MediaType.sortBySpecificityAndQuality(mediaTypes);
                 return mediaTypes;
             } else {
                 return MEDIA_TYPE_ALL_LIST;

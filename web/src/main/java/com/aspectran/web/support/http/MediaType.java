@@ -363,7 +363,7 @@ public class MediaType implements Comparable<MediaType>, Serializable {
         TOKEN.andNot(ctl);
         TOKEN.andNot(separators);
 
-        // Not using "valueOf' to avoid static init cost
+        // Not using 'valueOf' to avoid static init cost
         ALL = new MediaType("*", "*");
         APPLICATION_ATOM_XML = new MediaType("application", "atom+xml");
         APPLICATION_CBOR = new MediaType("application", "cbor");
@@ -455,7 +455,7 @@ public class MediaType implements Comparable<MediaType>, Serializable {
      * @param charset the character set
      * @throws IllegalArgumentException if any of the parameters contain illegal characters
      */
-    public MediaType(MediaType other, @NonNull Charset charset) {
+    public MediaType(@NonNull MediaType other, @NonNull Charset charset) {
         this(other.getType(), other.getSubtype(), addCharsetParameter(charset, other.getParameters()));
         this.resolvedCharset = charset;
     }
@@ -467,7 +467,7 @@ public class MediaType implements Comparable<MediaType>, Serializable {
      * @param parameters the parameters, may be {@code null}
      * @throws IllegalArgumentException if any of the parameters contain illegal characters
      */
-    public MediaType(MediaType other, @Nullable Map<String, String> parameters) {
+    public MediaType(@NonNull MediaType other, @Nullable Map<String, String> parameters) {
         this(other.getType(), other.getSubtype(), parameters);
     }
 
@@ -503,7 +503,7 @@ public class MediaType implements Comparable<MediaType>, Serializable {
      * @throws IllegalArgumentException in case of illegal characters
      * @see <a href="https://tools.ietf.org/html/rfc2616#section-2.2">HTTP 1.1, section 2.2</a>
      */
-    private void checkToken(String token) {
+    private void checkToken(@NonNull String token) {
         for (int i = 0; i < token.length(); i++) {
             char ch = token.charAt(i);
             if (!TOKEN.get(ch)) {
@@ -530,7 +530,7 @@ public class MediaType implements Comparable<MediaType>, Serializable {
         }
     }
 
-    private boolean isQuotedString(String s) {
+    private boolean isQuotedString(@NonNull String s) {
         if (s.length() < 2) {
             return false;
         } else {
@@ -631,7 +631,8 @@ public class MediaType implements Comparable<MediaType>, Serializable {
         if (isWildcardType()) {
             // */* includes anything
             return true;
-        } else if (getType().equals(other.getType())) {
+        }
+        if (getType().equals(other.getType())) {
             if (getSubtype().equals(other.getSubtype())) {
                 return true;
             }
@@ -640,16 +641,15 @@ public class MediaType implements Comparable<MediaType>, Serializable {
                 int thisPlusIdx = getSubtype().lastIndexOf('+');
                 if (thisPlusIdx == -1) {
                     return true;
-                } else {
-                    // application/*+xml includes application/soap+xml
-                    int otherPlusIdx = other.getSubtype().lastIndexOf('+');
-                    if (otherPlusIdx != -1) {
-                        String thisSubtypeNoSuffix = getSubtype().substring(0, thisPlusIdx);
-                        String thisSubtypeSuffix = getSubtype().substring(thisPlusIdx + 1);
-                        String otherSubtypeSuffix = other.getSubtype().substring(otherPlusIdx + 1);
-                        if (thisSubtypeSuffix.equals(otherSubtypeSuffix) && WILDCARD_TYPE.equals(thisSubtypeNoSuffix)) {
-                            return true;
-                        }
+                }
+                // application/*+xml includes application/soap+xml
+                int otherPlusIdx = other.getSubtype().lastIndexOf('+');
+                if (otherPlusIdx != -1) {
+                    String thisSubtypeNoSuffix = getSubtype().substring(0, thisPlusIdx);
+                    String thisSubtypeSuffix = getSubtype().substring(thisPlusIdx + 1);
+                    String otherSubtypeSuffix = other.getSubtype().substring(otherPlusIdx + 1);
+                    if (thisSubtypeSuffix.equals(otherSubtypeSuffix) && WILDCARD_TYPE.equals(thisSubtypeNoSuffix)) {
+                        return true;
                     }
                 }
             }
@@ -674,7 +674,8 @@ public class MediaType implements Comparable<MediaType>, Serializable {
         }
         if (isWildcardType() || other.isWildcardType()) {
             return true;
-        } else if (getType().equals(other.getType())) {
+        }
+        if (getType().equals(other.getType())) {
             if (getSubtype().equals(other.getSubtype())) {
                 return true;
             }
@@ -684,7 +685,8 @@ public class MediaType implements Comparable<MediaType>, Serializable {
                 int otherPlusIdx = other.getSubtype().lastIndexOf('+');
                 if (thisPlusIdx == -1 && otherPlusIdx == -1) {
                     return true;
-                } else if (thisPlusIdx != -1 && otherPlusIdx != -1) {
+                }
+                if (thisPlusIdx != -1 && otherPlusIdx != -1) {
                     String thisSubtypeNoSuffix = getSubtype().substring(0, thisPlusIdx);
                     String otherSubtypeNoSuffix = other.getSubtype().substring(0, otherPlusIdx);
                     String thisSubtypeSuffix = getSubtype().substring(thisPlusIdx + 1);
@@ -717,11 +719,11 @@ public class MediaType implements Comparable<MediaType>, Serializable {
      * Unlike {@link Collection#contains(Object)} which relies on
      * {@link MediaType#equals(Object)}, this method only checks the type and the
      * subtype, but otherwise ignores parameters.
-     * @param MediaTypes the list of mime types to perform the check against
+     * @param mediaTypes the list of mime types to perform the check against
      * @return whether the list contains the given mime type
      */
-    public boolean isPresentIn(Collection<MediaType> MediaTypes) {
-        for (MediaType mediaType : MediaTypes) {
+    public boolean isPresentIn(@NonNull Collection<MediaType> mediaTypes) {
+        for (MediaType mediaType : mediaTypes) {
             if (mediaType.equalsTypeAndSubtype(this)) {
                 return true;
             }
@@ -748,7 +750,7 @@ public class MediaType implements Comparable<MediaType>, Serializable {
      * {@code MediaType} are equal, performing case-insensitive comparisons
      * for {@link Charset Charsets}.
      */
-    private boolean parametersAreEqual(MediaType other) {
+    private boolean parametersAreEqual(@NonNull MediaType other) {
         if (this.parameters.size() != other.parameters.size()) {
             return false;
         }
@@ -788,14 +790,14 @@ public class MediaType implements Comparable<MediaType>, Serializable {
         return value;
     }
 
-    protected void appendTo(StringBuilder builder) {
+    protected void appendTo(@NonNull StringBuilder builder) {
         builder.append(this.type);
         builder.append('/');
         builder.append(this.subtype);
         appendTo(this.parameters, builder);
     }
 
-    private void appendTo(Map<String, String> map, StringBuilder builder) {
+    private void appendTo(@NonNull Map<String, String> map, StringBuilder builder) {
         map.forEach((key, val) -> {
             builder.append(';');
             builder.append(key);
@@ -809,7 +811,7 @@ public class MediaType implements Comparable<MediaType>, Serializable {
      * @param other the Media Type to compare to
      */
     @Override
-    public int compareTo(MediaType other) {
+    public int compareTo(@NonNull MediaType other) {
         int comp = getType().compareToIgnoreCase(other.getType());
         if (comp != 0) {
             return comp;
@@ -884,7 +886,7 @@ public class MediaType implements Comparable<MediaType>, Serializable {
      * @return the same instance if the given MediaType doesn't have a quality value,
      * or a new one otherwise
      */
-    public MediaType copyQualityValue(MediaType mediaType) {
+    public MediaType copyQualityValue(@NonNull MediaType mediaType) {
         if (!mediaType.getParameters().containsKey(PARAM_QUALITY_FACTOR)) {
             return this;
         }
@@ -913,6 +915,7 @@ public class MediaType implements Comparable<MediaType>, Serializable {
      * @return the media type
      * @throws InvalidMediaTypeException if the media type value cannot be parsed
      */
+    @NonNull
     public static MediaType parseMediaType(String mediaType) {
         MediaType type = MediaTypeUtils.parseMediaType(mediaType);
         try {
@@ -929,6 +932,7 @@ public class MediaType implements Comparable<MediaType>, Serializable {
      * @return the list of media types
      * @throws InvalidMediaTypeException if the media type value cannot be parsed
      */
+    @NonNull
     public static List<MediaType> parseMediaTypes(@Nullable String mediaTypes) {
         if (!StringUtils.hasLength(mediaTypes)) {
             return Collections.emptyList();
@@ -972,6 +976,7 @@ public class MediaType implements Comparable<MediaType>, Serializable {
      * @param mediaTypes the media types to create a string representation for
      * @return the string representation
      */
+    @NonNull
     public static String toString(Collection<MediaType> mediaTypes) {
         return MediaTypeUtils.toString(mediaTypes);
     }
@@ -1059,11 +1064,13 @@ public class MediaType implements Comparable<MediaType>, Serializable {
      * @throws InvalidMediaTypeException if the media type value cannot be parsed
      * @see #parseMediaType(String)
      */
+    @NonNull
     public static MediaType valueOf(String value) {
         return parseMediaType(value);
     }
 
-    private static Map<String, String> addCharsetParameter(Charset charset, Map<String, String> parameters) {
+    @NonNull
+    private static Map<String, String> addCharsetParameter(@NonNull Charset charset, Map<String, String> parameters) {
         Map<String, String> map = new LinkedHashMap<>(parameters);
         map.put(PARAM_CHARSET, charset.name());
         return map;
@@ -1106,7 +1113,7 @@ public class MediaType implements Comparable<MediaType>, Serializable {
     public static final Comparator<MediaType> SPECIFICITY_COMPARATOR = new SpecificityComparator<MediaType>() {
 
         @Override
-        protected int compareParameters(MediaType mediaType1, MediaType mediaType2) {
+        protected int compareParameters(@NonNull MediaType mediaType1, @NonNull MediaType mediaType2) {
             double quality1 = mediaType1.getQualityValue();
             double quality2 = mediaType2.getQualityValue();
             int qualityComparison = Double.compare(quality2, quality1);
@@ -1126,7 +1133,7 @@ public class MediaType implements Comparable<MediaType>, Serializable {
     public static class SpecificityComparator<T extends MediaType> implements Comparator<T> {
 
         @Override
-        public int compare(T MediaType1, T MediaType2) {
+        public int compare(@NonNull T MediaType1, T MediaType2) {
             if (MediaType1.isWildcardType() && !MediaType2.isWildcardType()) {  // */* < audio/*
                 return 1;
             } else if (MediaType2.isWildcardType() && !MediaType1.isWildcardType()) {  // audio/* > */*
@@ -1146,7 +1153,7 @@ public class MediaType implements Comparable<MediaType>, Serializable {
             }
         }
 
-        protected int compareParameters(T mediaType1, T mediaType2) {
+        protected int compareParameters(@NonNull T mediaType1, @NonNull T mediaType2) {
             int paramsSize1 = mediaType1.getParameters().size();
             int paramsSize2 = mediaType2.getParameters().size();
             return Integer.compare(paramsSize2, paramsSize1);  // audio/basic;level=1 < audio/basic

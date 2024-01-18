@@ -18,14 +18,16 @@ package com.aspectran.web.support.util;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.utils.Assert;
 import com.aspectran.utils.annotation.jsr305.Nullable;
+import com.aspectran.web.activity.request.RequestHeaderParser;
+import com.aspectran.web.support.http.HttpMediaTypeNotAcceptableException;
+import com.aspectran.web.support.http.MediaType;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 
+import java.util.List;
+
 /**
- * <p>This class is a clone of org.springframework.web.util.WebUtils</p>
- *
  * Miscellaneous utilities for web applications.
- * Used by various framework classes.
  */
 public abstract class WebUtils {
 
@@ -70,6 +72,28 @@ public abstract class WebUtils {
         Assert.notNull(translet, "Translet must not be null");
         HttpServletRequest request = translet.getRequestAdapter().getAdaptee();
         return getCookie(request, name);
+    }
+
+    /**
+     * Returns whether the specified content types are present in the Accept header declared by user agents.
+     * @param translet current translet
+     * @param contentTypes content types to look for in the Accept header
+     * @return true if present in the Accept header, false otherwise
+     */
+    public static boolean isAcceptContentTypes(Translet translet, MediaType... contentTypes) {
+        Assert.notNull(translet, "Translet must not be null");
+        Assert.notNull(contentTypes, "contentTypes must not be null");
+        try {
+            List<MediaType> acceptContentTypes = RequestHeaderParser.resolveAcceptContentTypes(translet.getRequestAdapter());
+            for (MediaType mediaType : contentTypes) {
+                if (mediaType.isPresentIn(acceptContentTypes)) {
+                    return true;
+                }
+            }
+        } catch (HttpMediaTypeNotAcceptableException e) {
+            // ignore
+        }
+        return false;
     }
 
 }
