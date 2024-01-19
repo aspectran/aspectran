@@ -192,11 +192,11 @@ public class CommonsMultipartFileParameter extends FileParameter {
         if (fileItem.isInMemory()) {
             return true;
         }
-        // Check actual existence of temporary file.
+        // Check actual existence of temporary file
         if (fileItem instanceof DiskFileItem) {
             return ((DiskFileItem)fileItem).getStoreLocation().exists();
         }
-        // Check whether current file size is different than original one.
+        // Check whether current file size is different from original one
         return (fileItem.getSize() == fileSize);
     }
 
@@ -210,7 +210,7 @@ public class CommonsMultipartFileParameter extends FileParameter {
         if (fileItem.isInMemory()) {
             return "in memory";
         } else if (this.fileItem instanceof DiskFileItem) {
-            return "at [" + ((DiskFileItem)this.fileItem).getStoreLocation().getAbsolutePath() + "]";
+            return "as [" + ((DiskFileItem)this.fileItem).getStoreLocation().getAbsolutePath() + "]";
         } else {
             return "on disk";
         }
